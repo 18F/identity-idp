@@ -1,12 +1,12 @@
 import { createContext } from 'react';
 
 /**
- * @typedef DeviceContext
+ * @typedef DeviceContextValue
  *
  * @prop {boolean} isMobile Device is a mobile device.
  */
 
-const DeviceContext = createContext(/** @type {DeviceContext} */ ({ isMobile: false }));
+const DeviceContext = createContext(/** @type {DeviceContextValue} */ ({ isMobile: false }));
 
 DeviceContext.displayName = 'DeviceContext';
 

@@ -5,6 +5,7 @@ feature 'doc auth email sent step' do
   include DocAuthHelper
 
   before do
+    allow_any_instance_of(Idv::Steps::UploadStep).to receive(:mobile_device?).and_return(true)
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_email_sent_step
   end

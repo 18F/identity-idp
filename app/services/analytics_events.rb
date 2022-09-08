@@ -495,6 +495,11 @@ module AnalyticsEvents
     track_event('IdV: come back later visited')
   end
 
+  # The user clicked the troubleshooting option to start in-person proofing
+  def idv_verify_in_person_troubleshooting_option_clicked
+    track_event('IdV: verify in person troubleshooting option clicked')
+  end
+
   # The user visited the "ready to verify" page for the in person proofing flow
   def idv_in_person_ready_to_verify_visit
     track_event('IdV: in person ready to verify visited')
@@ -2381,36 +2386,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks exceptions that are raised when running GetUspsProofingResultsJob
-  # @param [String] reason why was the exception raised?
-  # @param [String] enrollment_id
-  # @param [String] exception_class
-  # @param [String] exception_message
-  def idv_in_person_usps_proofing_results_job_exception(
-    reason:, enrollment_id:, exception_class: nil, exception_message: nil, **extra
-  )
-    track_event(
-      'GetUspsProofingResultsJob: Exception raised',
-      reason: reason,
-      enrollment_id: enrollment_id,
-      exception_class: exception_class,
-      exception_message: exception_message,
-      **extra,
-    )
-  end
-
-  # Tracks individual enrollments that fail during GetUspsProofingResultsJob
-  # @param [String] reason why did this enrollment fail?
-  # @param [String] enrollment_id
-  def idv_in_person_usps_proofing_results_job_enrollment_failure(reason:, enrollment_id:, **extra)
-    track_event(
-      'GetUspsProofingResultsJob: Enrollment failed proofing',
-      reason: reason,
-      enrollment_id: enrollment_id,
-      **extra,
-    )
-  end
-
   # Tracks if USPS in-person proofing enrollment request fails
   # @param [String] context
   # @param [String] reason
@@ -2436,14 +2411,96 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks individual enrollments that succeed during GetUspsProofingResultsJob
-  # @param [String] reason why did this enrollment pass?
-  # @param [String] enrollment_id
-  def idv_in_person_usps_proofing_results_job_enrollment_success(reason:, enrollment_id:, **extra)
+  # GetUspsProofingResultsJob is beginning. Includes some metadata about what the job will do
+  # @param [Integer] enrollments_count number of enrollments eligible for status check
+  # @param [Integer] reprocess_delay_minutes minimum delay since last status check
+  def idv_in_person_usps_proofing_results_job_started(
+    enrollments_count:,
+    reprocess_delay_minutes:,
+    **extra
+  )
     track_event(
-      'GetUspsProofingResultsJob: Enrollment passed proofing',
+      'GetUspsProofingResultsJob: Job started',
+      enrollments_count: enrollments_count,
+      reprocess_delay_minutes: reprocess_delay_minutes,
+      **extra,
+    )
+  end
+
+  # GetUspsProofingResultsJob has completed. Includes counts of various outcomes encountered
+  # @param [Float] duration_seconds number of minutes the job was running
+  # @param [Integer] enrollments_checked number of enrollments eligible for status check
+  # @param [Integer] enrollments_errored number of enrollments for which we encountered an error
+  # @param [Integer] enrollments_expired number of enrollments which expired
+  # @param [Integer] enrollments_failed number of enrollments which failed identity proofing
+  # @param [Integer] enrollments_in_progress number of enrollments which did not have any change
+  # @param [Integer] enrollments_passed number of enrollments which passed identity proofing
+  def idv_in_person_usps_proofing_results_job_completed(
+    duration_seconds:,
+    enrollments_checked:,
+    enrollments_errored:,
+    enrollments_expired:,
+    enrollments_failed:,
+    enrollments_in_progress:,
+    enrollments_passed:,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Job completed',
+      duration_seconds: duration_seconds,
+      enrollments_checked: enrollments_checked,
+      enrollments_errored: enrollments_errored,
+      enrollments_expired: enrollments_expired,
+      enrollments_failed: enrollments_failed,
+      enrollments_in_progress: enrollments_in_progress,
+      enrollments_passed: enrollments_passed,
+      **extra,
+    )
+  end
+
+  # Tracks exceptions that are raised when running GetUspsProofingResultsJob
+  # @param [String] reason why was the exception raised?
+  # @param [String] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  def idv_in_person_usps_proofing_results_job_exception(
+    reason:,
+    enrollment_id:,
+    exception_class: nil,
+    exception_message: nil,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Exception raised',
       reason: reason,
       enrollment_id: enrollment_id,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      **extra,
+    )
+  end
+
+  # Tracks individual enrollments that are updated during GetUspsProofingResultsJob
+  # @param [String] enrollment_code
+  # @param [String] enrollment_id
+  # @param [Boolean] fraud_suspected
+  # @param [Boolean] passed did this enrollment pass or fail?
+  # @param [String] reason why did this enrollment pass or fail?
+  def idv_in_person_usps_proofing_results_job_enrollment_updated(
+    enrollment_code:,
+    enrollment_id:,
+    fraud_suspected:,
+    passed:,
+    reason:,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Enrollment status updated',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      fraud_suspected: fraud_suspected,
+      passed: passed,
+      reason: reason,
       **extra,
     )
   end

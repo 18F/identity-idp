@@ -1,24 +1,99 @@
-import { isLikelyMobile, hasMediaAccess, isCameraCapableMobile } from '@18f/identity-device';
+import {
+  isLikelyMobile,
+  hasMediaAccess,
+  isCameraCapableMobile,
+  isIPad,
+} from '@18f/identity-device';
 
-describe('isLikelyMobile', () => {
+describe('isIPad', () => {
   let originalUserAgent;
+  let originalTouchPoints;
+
   beforeEach(() => {
     originalUserAgent = navigator.userAgent;
+    originalTouchPoints = navigator.maxTouchPoints;
+    navigator.maxTouchPoints = 0;
     Object.defineProperty(navigator, 'userAgent', {
       configurable: true,
+      writable: true,
+    });
+    Object.defineProperty(navigator, 'maxTouchPoints', {
       writable: true,
     });
   });
 
   afterEach(() => {
     navigator.userAgent = originalUserAgent;
+    navigator.maxTouchPoints = originalTouchPoints;
   });
 
-  it('returns false if not mobile', () => {
+  it('returns true if ipad is in the user agent string (old format)', () => {
+    navigator.userAgent =
+      'Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B314 Safari/531.21.10';
+
+    expect(isIPad()).to.be.true();
+  });
+
+  it('returns false if the user agent is Macintosh but with 0 maxTouchPoints', () => {
     navigator.userAgent =
       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36';
 
+    expect(isIPad()).to.be.false();
+  });
+
+  it('returns true if the user agent is Macintosh but with 5 maxTouchPoints', () => {
+    navigator.userAgent =
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36';
+    navigator.maxTouchPoints = 5;
+
+    expect(isIPad()).to.be.true();
+  });
+
+  it('returns false for non-Apple userAgent, even with 5 macTouchPoints', () => {
+    navigator.userAgent =
+      'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.5195.58 Mobile Safari/537.36';
+    navigator.maxTouchPoints = 5;
+
+    expect(isIPad()).to.be.false();
+  });
+});
+
+describe('isLikelyMobile', () => {
+  let originalUserAgent;
+  let originalTouchPoints;
+
+  beforeEach(() => {
+    originalUserAgent = navigator.userAgent;
+    originalTouchPoints = navigator.maxTouchPoints;
+    navigator.maxTouchPoints = 0;
+    Object.defineProperty(navigator, 'userAgent', {
+      configurable: true,
+      writable: true,
+    });
+    Object.defineProperty(navigator, 'maxTouchPoints', {
+      writable: true,
+    });
+  });
+
+  afterEach(() => {
+    navigator.userAgent = originalUserAgent;
+    navigator.maxTouchPoints = originalTouchPoints;
+  });
+
+  it('returns false if not mobile and has no touchpoints', () => {
+    navigator.userAgent =
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36';
+    navigator.maxTouchPoints = 0;
+
     expect(isLikelyMobile()).to.be.false();
+  });
+
+  it('returns true if there is an Apple user agent and 5 maxTouchPoints', () => {
+    navigator.userAgent =
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36';
+    navigator.maxTouchPoints = 5;
+
+    expect(isLikelyMobile()).to.be.true();
   });
 
   it('returns true if likely mobile', () => {

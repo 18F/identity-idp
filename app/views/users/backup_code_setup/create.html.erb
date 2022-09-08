@@ -15,7 +15,7 @@
 
 <div class="margin-top-4 margin-bottom-5">
   <div class="grid-row">
-    <% [ @codes.first(@codes.length / 2), @codes.last(@codes.length / 2)].each do |section| %>
+    <% [@codes.first(@codes.length / 2), @codes.last(@codes.length / 2)].each do |section| %>
       <div class="grid-col-12 tablet:grid-col-6">
         <% section.each do |code| %>
           <div class="margin-bottom-2">

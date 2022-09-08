@@ -130,16 +130,23 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when a user submits OTP code sent to their phone
+    # Tracks when the user submits their idv phone number
     # @param [String] phone_number
     # param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def idv_phone_otp_submitted(phone_number:, success:, failure_reason: nil)
+    def idv_phone_submitted(phone_number:, success:, failure_reason: nil)
       track_event(
-        :idv_phone_otp_submitted,
+        :idv_phone_submitted,
         phone_number: phone_number,
         success: success,
         failure_reason: failure_reason,
+      )
+    end
+
+    # Tracks Idv phone OTP sent rate limits
+    def idv_phone_otp_sent_rate_limited
+      track_event(
+        :idv_phone_otp_sent_rate_limited,
       )
     end
 
@@ -147,6 +154,33 @@ module IrsAttemptsApi
     def idv_document_upload_rate_limited
       track_event(
         :idv_document_upload_rate_limited,
+      )
+    end
+
+    # Tracks when the user submits a password for identity proofing
+    # @param [Boolean] success
+    def idv_password_entered(success:)
+      track_event(
+        :idv_password_entered,
+        success: success,
+      )
+    end
+
+    # param [Boolean] Success
+    # param [Hash<Key, Array<String>>] failure_reason displays GPO submission failed
+    # GPO verification submitted from Letter sent to verify address
+    def idv_gpo_verification_submitted(success:, failure_reason:)
+      track_event(
+        :idv_gpo_verification_submitted,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # GPO verification submission throttled, user entered in too many invalid gpo letter codes
+    def idv_gpo_verification_throttled
+      track_event(
+        :idv_gpo_verification_throttled,
       )
     end
 
@@ -162,8 +196,62 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success
+    # Personal Key got generated for user
+    def idv_personal_key_generated(success:)
+      track_event(
+        :idv_personal_key_generated,
+        success: success,
+      )
+    end
+
+    # @param [Boolean] success
     # @param [String] phone_number
-    # The phone upload link was sent during the IDV process
+    # @param [String] otp_delivery_method
+    # @param [Hash<Key, Array<String>>] failure_reason
+    # Track when OTP is sent and what method chosen during idv flow.
+    def idv_phone_confirmation_otp_sent(success:, phone_number:,
+                                        otp_delivery_method:, failure_reason:)
+      track_event(
+        :idv_phone_confirmation_otp_sent,
+        success: success,
+        phone_number: phone_number,
+        otp_delivery_method: otp_delivery_method,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # Track when OTP phone sent is rate limited during idv flow
+    def idv_phone_confirmation_otp_sent_rate_limited
+      track_event(
+        :idv_phone_confirmation_otp_sent_rate_limited,
+      )
+    end
+
+    # Tracks when a user submits OTP code sent to their phone
+    # @param [String] phone_number
+    # param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def idv_phone_otp_submitted(phone_number:, success:, failure_reason: nil)
+      track_event(
+        :idv_phone_otp_submitted,
+        phone_number: phone_number,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # The user reached the rate limit for Idv phone OTP submitted
+    # @param [String] phone
+    def idv_phone_otp_submitted_rate_limited(phone:)
+      track_event(
+        :idv_phone_otp_submitted_rate_limited,
+        phone: phone,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] phone_number
+    # The phone number that the link was sent to during the IDV process
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def idv_phone_upload_link_sent(
       success:,
@@ -178,6 +266,13 @@ module IrsAttemptsApi
       )
     end
 
+    # The user has used a phone_upload_link to upload docs on their mobile device
+    def idv_phone_upload_link_used
+      track_event(
+        :idv_phone_upload_link_used,
+      )
+    end
+
     # @param [Boolean] success
     # @param [String] ssn
     # User entered in SSN number during Identity verification
@@ -186,6 +281,46 @@ module IrsAttemptsApi
         :idv_ssn_submitted,
         success: success,
         ssn: ssn,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] document_state
+    # @param [String] document_number
+    # @param [String] document_issued
+    # @param [String] document_expiration
+    # @param [String] first_name
+    # @param [String] last_name
+    # @param [String] date_of_birth
+    # @param [String] address
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # The verification was submitted during the IDV process
+    def idv_verification_submitted(
+      success:,
+      document_state: nil,
+      document_number: nil,
+      document_issued: nil,
+      document_expiration: nil,
+      first_name: nil,
+      last_name: nil,
+      date_of_birth: nil,
+      address: nil,
+      ssn: nil,
+      failure_reason: nil
+    )
+      track_event(
+        :idv_verification_submitted,
+        success: success,
+        document_state: document_state,
+        document_number: document_number,
+        document_issued: document_issued,
+        document_expiration: document_expiration,
+        first_name: first_name,
+        last_name: last_name,
+        date_of_birth: date_of_birth,
+        address: address,
+        ssn: ssn,
+        failure_reason: failure_reason,
       )
     end
 

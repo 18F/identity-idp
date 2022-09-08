@@ -27,7 +27,7 @@ locals:
             status: step[:status] ||
               if current_step == step[:name]
                 :current
-              elsif current_step_index > index
+              elsif current_step_index.to_i > index
                 :complete
               end,
           ) { step[:title] } %>

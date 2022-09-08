@@ -27,6 +27,9 @@ describe Proofing::LexisNexis::Ddp::Proofer do
       config: LexisNexisFixtures.example_config,
     )
   end
+  let(:issuer) { 'fake-issuer' }
+  let(:friendly_name) { 'fake-name' }
+  let(:app_id) { 'fake-app-id' }
 
   describe '#send' do
     context 'when the request times out' do
@@ -61,6 +64,12 @@ describe Proofing::LexisNexis::Ddp::Proofer do
     subject(:result) { instance.proof(applicant) }
 
     before do
+      ServiceProvider.create(
+        issuer: issuer,
+        friendly_name: friendly_name,
+        app_id: app_id,
+        device_profiling_enabled: true,
+      )
       stub_request(:post, verification_request.url).
         to_return(body: response_body, status: 200)
     end

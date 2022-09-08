@@ -66,6 +66,28 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
   end
 
+  describe 'Triggers' do
+    it 'generates a unique ID if one is not provided' do
+      user = create(:user)
+      profile = create(:profile, :gpo_verification_pending, user: user)
+      expect(InPersonEnrollment).to receive(:generate_unique_id).and_call_original
+
+      enrollment = create(:in_person_enrollment, user: user, profile: profile)
+
+      expect(enrollment.unique_id).not_to be_nil
+    end
+
+    it 'does not generated a unique ID if one is provided' do
+      user = create(:user)
+      profile = create(:profile, :gpo_verification_pending, user: user)
+      expect(InPersonEnrollment).not_to receive(:generate_unique_id)
+
+      enrollment = create(:in_person_enrollment, user: user, profile: profile, unique_id: '1234')
+
+      expect(enrollment.unique_id).to eq('1234')
+    end
+  end
+
   describe 'needs_usps_status_check' do
     let(:check_interval) { ...1.hour.ago }
     let!(:passed_enrollment) { create(:in_person_enrollment, :passed) }
@@ -101,6 +123,61 @@ RSpec.describe InPersonEnrollment, type: :model do
       needy_enrollments.each do |enrollment|
         expect(enrollment.needs_usps_status_check?(check_interval)).to be_truthy
       end
+    end
+  end
+
+  describe 'minutes_since_established' do
+    let(:enrollment) do
+      create(
+        :in_person_enrollment, :passed, enrollment_established_at: Time.zone.now - 2.hours
+      )
+    end
+
+    it 'returns number of minutes since enrollment was established' do
+      expect(enrollment.minutes_since_established).to be_within(0.01).of(120)
+    end
+
+    it 'returns nil if enrollment has not been established' do
+      enrollment.status = 'establishing'
+      enrollment.enrollment_established_at = nil
+
+      expect(enrollment.minutes_since_established).to eq(nil)
+    end
+  end
+
+  describe 'minutes_since_last_status_check' do
+    let(:enrollment) do
+      create(
+        :in_person_enrollment, :passed, status_check_attempted_at: Time.zone.now - 2.hours
+      )
+    end
+
+    it 'returns number of minutes since last status check' do
+      expect(enrollment.minutes_since_last_status_check).to be_within(0.01).of(120)
+    end
+
+    it 'returns nil if enrollment has not been status-checked' do
+      enrollment.status_check_attempted_at = nil
+
+      expect(enrollment.minutes_since_last_status_check).to eq(nil)
+    end
+  end
+
+  describe 'minutes_since_status_updated' do
+    let(:enrollment) do
+      enrollment = create(:in_person_enrollment, :passed)
+      enrollment.status_updated_at = (Time.zone.now - 2.hours)
+      enrollment
+    end
+
+    it 'returns number of minutes since the status was updated' do
+      expect(enrollment.minutes_since_last_status_update).to be_within(0.01).of(120)
+    end
+
+    it 'returns nil if enrollment status has not been updated' do
+      enrollment.status_updated_at = nil
+
+      expect(enrollment.minutes_since_last_status_update).to eq(nil)
     end
   end
 end

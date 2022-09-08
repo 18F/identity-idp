@@ -25,7 +25,7 @@ feature 'idv confirmation step', js: true do
       '.step-indicator__step--complete',
       text: t('step_indicator.flows.idv.verify_phone_or_address'),
     )
-    expect(page).not_to have_css('.step-indicator__step--pending')
+    expect(page).not_to have_content(t('step_indicator.flows.idv.get_a_letter'))
   end
 
   it 'allows the user to refresh and still displays the personal key' do
@@ -70,10 +70,8 @@ feature 'idv confirmation step', js: true do
     it 'shows status content for gpo verification progress' do
       expect(page).to have_content(t('idv.messages.mail_sent'))
       expect_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
-      expect(page).to have_css(
-        '.step-indicator__step--pending',
-        text: t('step_indicator.flows.idv.verify_phone_or_address'),
-      )
+      expect(page).to have_content(t('step_indicator.flows.idv.get_a_letter'))
+      expect(page).not_to have_content(t('step_indicator.flows.idv.verify_phone_or_address'))
     end
 
     it_behaves_like 'personal key page', :gpo

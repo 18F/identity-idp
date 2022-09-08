@@ -9,7 +9,9 @@ describe IrsAttemptsApi::RedisClient do
           event_type: 'test_event',
           session_id: 'test-session-id',
           occurred_at: Time.zone.now,
-          event_metadata: { 'foo' => 'bar' },
+          event_metadata: {
+            first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name],
+          },
         )
         event_key = event.event_key
         jwe = event.to_jwe
@@ -34,7 +36,9 @@ describe IrsAttemptsApi::RedisClient do
             event_type: 'test_event',
             session_id: 'test-session-id',
             occurred_at: now,
-            event_metadata: { 'foo' => 'bar' },
+            event_metadata: {
+              first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name],
+            },
           )
           event_key = event.event_key
           jwe = event.to_jwe
@@ -57,13 +61,17 @@ describe IrsAttemptsApi::RedisClient do
         event_type: 'test_event',
         session_id: 'test-session-id',
         occurred_at: time1,
-        event_metadata: { 'foo' => 'bar' },
+        event_metadata: {
+          first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name],
+        },
       )
       event2 = IrsAttemptsApi::AttemptEvent.new(
         event_type: 'test_event',
         session_id: 'test-session-id',
         occurred_at: time2,
-        event_metadata: { 'foo' => 'bar' },
+        event_metadata: {
+          first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name],
+        },
       )
       jwe1 = event1.to_jwe
       jwe2 = event2.to_jwe
