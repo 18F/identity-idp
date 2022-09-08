@@ -258,6 +258,19 @@ describe Users::SessionsController, devise: true do
       post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
     end
 
+    it 'tracks unsuccessful authentication for too many auth failures' do
+      allow(subject).to receive(:session_bad_password_count_max_exceeded?).and_return(true)
+
+      stub_attempts_tracker
+
+      expect(@irs_attempts_api_tracker).to receive(:email_and_password_auth).
+        with({ email: 'bob@example.com', success: false })
+      expect(@irs_attempts_api_tracker).to receive(:login_rate_limited).
+        with({ email: 'bob@example.com' })
+
+      post :create, params: { user: { email: 'bob@example.com', password: 'eatCake!' } }
+    end
+
     it 'tracks unsuccessful authentication for locked out user' do
       user = create(
         :user,
