@@ -7,7 +7,7 @@ import {
   ServiceProviderContextProvider,
 } from '@18f/identity-document-capture';
 import { FlowContext, FlowContextValue } from '@18f/identity-verify-flow';
-import AnalyticsContext from '../context/analytics';
+import { AnalyticsContextProvider } from '../context/analytics';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 import type { ServiceProviderContext } from '../context/service-provider';
 
@@ -165,9 +165,9 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
       it('logs an event when clicking the troubleshooting option', async () => {
         const trackEvent = sinon.stub();
         const { getByRole } = render(
-          <AnalyticsContext.Provider value={{ trackEvent }}>
+          <AnalyticsContextProvider trackEvent={trackEvent}>
             <DocumentCaptureTroubleshootingOptions hasErrors />
-          </AnalyticsContext.Provider>,
+          </AnalyticsContextProvider>,
           { wrapper },
         );
 

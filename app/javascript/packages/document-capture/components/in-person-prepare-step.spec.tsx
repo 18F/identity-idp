@@ -5,7 +5,7 @@ import type { ComponentType } from 'react';
 import { FlowContext } from '@18f/identity-verify-flow';
 import type { FlowContextValue } from '@18f/identity-verify-flow';
 import { Provider as MarketingSiteContextProvider } from '../context/marketing-site';
-import AnalyticsContext from '../context/analytics';
+import { AnalyticsContextProvider } from '../context/analytics';
 import InPersonPrepareStep from './in-person-prepare-step';
 
 describe('InPersonPrepareStep', () => {
@@ -33,9 +33,9 @@ describe('InPersonPrepareStep', () => {
     it('logs prepare step submission when clicking continue', async () => {
       const trackEvent = sinon.stub();
       const { getByRole } = render(
-        <AnalyticsContext.Provider value={{ trackEvent }}>
+        <AnalyticsContextProvider trackEvent={trackEvent}>
           <InPersonPrepareStep {...DEFAULT_PROPS} />
-        </AnalyticsContext.Provider>,
+        </AnalyticsContextProvider>,
         { wrapper },
       );
 
