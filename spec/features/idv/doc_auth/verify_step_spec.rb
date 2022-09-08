@@ -181,6 +181,7 @@ feature 'doc auth verify step', :js do
   end
 
   it 'throttles resolution and continues when it expires' do
+    expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited)
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_fails_resolution

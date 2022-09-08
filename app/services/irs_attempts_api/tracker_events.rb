@@ -324,6 +324,13 @@ module IrsAttemptsApi
       )
     end
 
+    # Track when idv verification is rate limited during idv flow
+    def idv_verification_rate_limited
+      track_event(
+        :idv_verification_rate_limited,
+      )
+    end
+
     # @param [Boolean] success True if the email and password matched
     # A user has initiated a logout event
     def logout_initiated(success:)
