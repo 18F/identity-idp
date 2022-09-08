@@ -32,6 +32,8 @@ export async function trackEvent(event: string, payload: object = {}): Promise<v
     // a scenario we can ignore. By absorbing the error, it should be assumed that an awaited call
     // to `trackEvent` would never create an interrupt due to a thrown error, since an unsuccessful
     // status code on the request is not an error.
+    //
+    // See: https://fetch.spec.whatwg.org/#dom-global-fetch
   }
 }
 
