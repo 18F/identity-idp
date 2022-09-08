@@ -1,10 +1,10 @@
 <% content_for(:pre_flash_content) do %>
-  <%= render 'shared/step_indicator', {
+  <%= render StepIndicatorComponent.new(
         steps: step_indicator_steps,
         current_step: :verify_phone_or_address,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      } %>
+      ) %>
 <% end %>
 
 <% title t('titles.idv.enter_security_code') %>
