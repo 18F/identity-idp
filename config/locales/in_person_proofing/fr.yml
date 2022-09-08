@@ -90,6 +90,12 @@ fr:
         dob_hint: 'Exemple: 4 28 1986'
         first_name: Prénom
         last_name: Nom de famille
+        memorable_date:
+          errors:
+            date_of_birth:
+              missing_month_day_year: 'Entrez une date de naissance'
+              range_min_age: 'Vous devez avoir plus de 13 ans pour utiliser %{app_name}'
+              range_overflow: 'Entrez une date qui est dans le passé'
         state_id_jurisdiction: État
         state_id_jurisdiction_hint: Sélectionnez l’État figurant sur votre document d’identité
         state_id_jurisdiction_prompt: '- Sélectionnez -'

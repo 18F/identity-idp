@@ -23,6 +23,9 @@ describe IdvController do
     end
 
     it 'redirects to failure page if number of attempts has been exceeded' do
+      stub_attempts_tracker
+      expect(@irs_attempts_api_tracker).to receive(:track_event).
+        with(:idv_verification_rate_limited)
       user = create(:user)
       profile = create(
         :profile,
