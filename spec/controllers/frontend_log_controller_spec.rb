@@ -40,8 +40,9 @@ describe FrontendLogController do
 
         context 'with payload' do
           let(:selected_location) { 'Bethesda' }
+          let(:flow_path) { 'standard' }
           let(:event) { 'IdV: location submitted' }
-          let(:payload) { { 'selected_location' => selected_location } }
+          let(:payload) { { 'selected_location' => selected_location, 'flow_path' => flow_path } }
 
           it 'succeeds' do
             action
@@ -49,6 +50,7 @@ describe FrontendLogController do
             expect(fake_analytics).to have_logged_event(
               'IdV: in person proofing location submitted',
               selected_location: selected_location,
+              flow_path: flow_path,
             )
             expect(response).to have_http_status(:ok)
             expect(json[:success]).to eq(true)
@@ -143,10 +145,15 @@ describe FrontendLogController do
       context 'for a named analytics method' do
         let(:field) { 'front' }
         let(:failed_attempts) { 0 }
+        let(:flow_path) { 'standard' }
         let(:params) do
           {
             'event' => 'IdV: Native camera forced after failed attempts',
-            'payload' => { 'field' => field, 'failed_attempts' => failed_attempts },
+            'payload' => {
+              'field' => field,
+              'failed_attempts' => failed_attempts,
+              'flow_path' => flow_path,
+            },
           }
         end
 
@@ -155,6 +162,7 @@ describe FrontendLogController do
             'IdV: Native camera forced after failed attempts',
             field: field,
             failed_attempts: failed_attempts,
+            flow_path: flow_path,
           )
 
           action
