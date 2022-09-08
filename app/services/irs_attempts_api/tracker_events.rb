@@ -284,6 +284,13 @@ module IrsAttemptsApi
       )
     end
 
+    # Track when idv verification is rate limited during idv flow
+    def idv_verification_rate_limited
+      track_event(
+        :idv_verification_rate_limited,
+      )
+    end
+
     # @param [Boolean] success
     # @param [String] document_state
     # @param [String] document_number
