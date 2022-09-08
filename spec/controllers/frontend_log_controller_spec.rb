@@ -14,7 +14,7 @@ describe FrontendLogController do
     context 'user is signed in' do
       before do
         sign_in user
-        allow(Analytics).to receive(:new).and_return(fake_analytics)
+        allow(controller).to receive(:analytics).and_return(fake_analytics)
       end
 
       it 'succeeds' do
