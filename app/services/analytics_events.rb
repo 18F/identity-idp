@@ -468,12 +468,16 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Integer] Number of failed attempts
+  # @param [String] Image form field
   # The number of acceptable failed attempts (maxFailedAttemptsBeforeNativeCamera) has been met
   # or exceeded, and the system has forced the use of the native camera, rather than Acuant's
   # camera, on mobile devices.
-  def idv_native_camera_forced(**extra)
+  def idv_native_camera_forced(failed_attempts:, field:, **extra)
     track_event(
       'IdV: Native camera forced after failed attempts',
+      failed_attempts: failed_attempts,
+      field: field,
       **extra,
     )
   end
@@ -505,9 +509,14 @@ module AnalyticsEvents
     track_event('IdV: in person proofing location visited', **extra)
   end
 
+  # @param [String] selected_location Selected in-person location
   # The user submitted the in person proofing location step
-  def idv_in_person_location_submitted(**extra)
-    track_event('IdV: in person proofing location submitted', **extra)
+  def idv_in_person_location_submitted(selected_location:, **extra)
+    track_event(
+      'IdV: in person proofing location submitted',
+      selected_location: selected_location,
+      **extra,
+    )
   end
 
   # The user visited the in person proofing prepare step

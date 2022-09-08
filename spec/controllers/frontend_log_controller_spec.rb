@@ -37,6 +37,36 @@ describe FrontendLogController do
           expect(response).to have_http_status(:ok)
           expect(json[:success]).to eq(true)
         end
+
+        context 'with payload' do
+          let(:selected_location) { 'Bethesda' }
+          let(:event) { 'IdV: location submitted' }
+          let(:payload) { { 'selected_location' => selected_location } }
+
+          it 'succeeds' do
+            action
+
+            expect(fake_analytics).to have_logged_event(
+              'IdV: in person proofing location submitted',
+              selected_location: selected_location,
+            )
+            expect(response).to have_http_status(:ok)
+            expect(json[:success]).to eq(true)
+          end
+
+          context 'with missing keyword arguments' do
+            let(:payload) { {} }
+
+            it 'gracefully sets the missing values to nil' do
+              action
+
+              expect(fake_analytics).to have_logged_event(
+                'IdV: in person proofing location submitted',
+                selected_location: nil,
+              )
+            end
+          end
+        end
       end
 
       context 'allowlisted analytics event with compound proc' do
@@ -111,17 +141,20 @@ describe FrontendLogController do
       end
 
       context 'for a named analytics method' do
-        let(:payload) { { 'field' => 'front', 'failed_attempts' => 0 } }
+        let(:field) { 'front' }
+        let(:failed_attempts) { 0 }
         let(:params) do
           {
             'event' => 'IdV: Native camera forced after failed attempts',
-            'payload' => payload,
+            'payload' => { 'field' => field, 'failed_attempts' => failed_attempts },
           }
         end
 
         it 'logs the analytics event without the prefix' do
           expect(fake_analytics).to receive(:track_event).with(
-            'IdV: Native camera forced after failed attempts', payload
+            'IdV: Native camera forced after failed attempts',
+            field: field,
+            failed_attempts: failed_attempts,
           )
 
           action
