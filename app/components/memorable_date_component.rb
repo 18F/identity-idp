@@ -21,7 +21,7 @@ class MemorableDateComponent < BaseComponent
   # @param [String] month Starting value for month
   # @param [String] day Starting value for day
   # @param [String] year Starting value for year
-  # @param [String] required Whether this field is required
+  # @param [Boolean] required Whether this field is required
   # @param [Date,#to_date] min Minimum allowed date, inclusive
   # @param [Date,#to_date] max Maximum allowed date, inclusive
   # @param [Hash<Symbol,String>] error_messages Array of mappings of error states to messages
@@ -111,7 +111,7 @@ class MemorableDateComponent < BaseComponent
   end
 
   # Convert a Date or date-like value to a long-form localized date string
-  def i18n_long_format date
+  def i18n_long_format(date)
     if date.respond_to?(:to_date)
       # i18n-tasks-use t('date.formats.long')
       I18n.l(date.to_date, format: :long)
