@@ -468,8 +468,8 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Integer] Number of failed attempts
-  # @param [String] Image form field
+  # @param [Integer] failed_attempts Number of failed attempts
+  # @param [String] field Image form field
   # The number of acceptable failed attempts (maxFailedAttemptsBeforeNativeCamera) has been met
   # or exceeded, and the system has forced the use of the native camera, rather than Acuant's
   # camera, on mobile devices.
