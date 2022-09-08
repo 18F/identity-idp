@@ -84,7 +84,7 @@ shared_examples 'sp requesting attributes' do |sp|
       sign_in_user(user)
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      sp == :saml ? click_submit_default_twice : click_submit_default
 
       expect(current_path).to eq(sign_up_completed_path)
 

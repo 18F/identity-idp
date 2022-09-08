@@ -5,7 +5,7 @@ describe SamlCompletionController do
     render_views
     include ActionView::Helpers::FormTagHelper
 
-    let(:form_action_regex) { /<form.+action=".+\/api\/saml\/authpost\d{4}.+"/ }
+    let(:form_action_regex) { /<form.+action=".+\/api\/saml\/finalauthpost\d{4}.+"/ }
     let(:saml_request) { 'abc123' }
     let(:relay_state) { 'def456' }
     let(:sig_alg) { 'aes256' }

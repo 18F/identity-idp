@@ -285,6 +285,11 @@ module Features
       click_button t('forms.buttons.submit.default')
     end
 
+    def click_submit_default_twice
+      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.submit.default')
+    end
+
     def click_continue
       click_button t('forms.buttons.continue') if page.has_button?(t('forms.buttons.continue'))
     end
@@ -430,12 +435,7 @@ module Features
 
       submit_form_with_valid_password
 
-      expect(page).to have_css('img[src*=sp-logos]')
-
       set_up_2fa_with_valid_phone
-
-      expect(page).to have_css('img[src*=sp-logos]')
-
       # expect(page).to have_css('img[src*=sp-logos]')
     end
 
