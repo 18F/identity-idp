@@ -584,6 +584,34 @@ describe Idv::ReviewController do
             end
           end
         end
+
+        context 'with threatmetrix required but review status did not pass' do
+          let(:applicant) do
+            Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
+          end
+          let(:stub_idv_session) do
+            stub_user_with_applicant_data(user, applicant)
+          end
+
+          before(:each) do
+            stub_request_token
+            ProofingComponent.create(
+              user: user,
+              threatmetrix: true,
+              threatmetrix_review_status: 'review',
+            )
+            allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
+              and_return(true)
+            allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
+              and_return(true)
+          end
+
+          it 'creates a disabled profile' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(user.profiles.last.deactivation_reason).to eq('threatmetrix_review_pending')
+          end
+        end
       end
 
       context 'user picked GPO confirmation' do
