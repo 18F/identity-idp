@@ -55,8 +55,9 @@ feature 'Banning users for an SP' do
 
       visit_idp_from_sp_with_ial1(:saml)
       sign_in_live_with_2fa(user)
+      click_submit_default
       click_agree_and_continue
-      expect(current_path).to eq(api_saml_auth2022_path)
+      expect(current_path).to eq(complete_saml_path)
     end
   end
 

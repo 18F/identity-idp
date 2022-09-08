@@ -415,6 +415,21 @@ describe ApplicationController do
       expect(url_with_updated_params).to eq(nil)
     end
 
+
+    context 'with a SAML request' do
+      let(:sp_session_request_url) { '/api/saml/auth2022' }
+      it 'returns the saml completion url' do
+        expect(url_with_updated_params).to eq complete_saml_url
+      end
+    end
+
+    context 'with an OIDC request' do
+      let(:sp_session_request_url) { '/openid_connect/authorize' }
+      it 'returns the original request' do
+        expect(url_with_updated_params).to eq '/openid_connect/authorize'
+      end
+    end
+
     context 'with a url that has prompt=login' do
       let(:sp_session_request_url) { '/authorize?prompt=login' }
       it 'changes it to prompt=select_account' do

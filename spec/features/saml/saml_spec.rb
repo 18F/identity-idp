@@ -20,8 +20,9 @@ feature 'saml api' do
         to have_link t('links.back_to_sp', sp: sp.friendly_name), href: return_to_sp_cancel_path
 
       sign_in_via_branded_page(user)
-      click_agree_and_continue
       click_submit_default
+      click_agree_and_continue
+      click_submit_default_twice
 
       expect(current_url).to eq sp.acs_url
     end
@@ -39,7 +40,9 @@ feature 'saml api' do
         to have_link t('links.back_to_sp', sp: sp.friendly_name), href: return_to_sp_cancel_path
 
       sign_in_via_branded_page(user)
+      click_submit_default
       click_agree_and_continue
+      click_submit_default
 
       expect(current_url).to eq account_url
     end
@@ -91,6 +94,7 @@ feature 'saml api' do
         sign_in_and_2fa_user(user)
         visit_saml_authn_request_url(overrides: { issuer: sp2_issuer })
         click_agree_and_continue
+        click_submit_default_twice
       end
 
       let(:xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
@@ -105,6 +109,7 @@ feature 'saml api' do
         sign_in_and_2fa_user(user)
         visit_saml_authn_request_url
         click_agree_and_continue
+        click_submit_default_twice
       end
 
       let(:xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
@@ -157,7 +162,6 @@ feature 'saml api' do
       end
 
       it 'redirects to /test/saml/decode_assertion after submitting the form' do
-        click_button t('forms.buttons.submit.default')
         expect(page.current_url).
           to eq(saml_settings.assertion_consumer_service_url)
       end
@@ -237,15 +241,15 @@ feature 'saml api' do
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
 
       page.driver.post saml_authn_request_url
-
       click_submit_default
       sign_in_via_branded_page(user)
-      click_agree_and_continue
       click_submit_default
+      click_agree_and_continue
+      click_submit_default_twice
 
       expect(fake_analytics.events['SAML Auth Request']).to eq(
         [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
-           service_provider: 'http://localhost:3000' }],
+          service_provider: 'http://localhost:3000' }],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 
@@ -269,11 +273,11 @@ feature 'saml api' do
           ],
         },
       )
-
       click_submit_default
       sign_in_via_branded_page(user)
-      click_agree_and_continue
       click_submit_default
+      click_agree_and_continue
+      click_submit_default_twice
 
       expect(fake_analytics.events['SAML Auth Request']).to eq(
         [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/2',
@@ -295,8 +299,9 @@ feature 'saml api' do
 
       visit_saml_authn_request_url
       sign_in_via_branded_page(user)
-      click_agree_and_continue
       click_submit_default
+      click_agree_and_continue
+      click_submit_default_twice
 
       expect(fake_analytics.events['SAML Auth Request']).to eq(
         [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',

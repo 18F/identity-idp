@@ -208,10 +208,10 @@ module SamlAuthHelper
     click_button(t('forms.buttons.submit.default'))
   end
 
-  def login_and_confirm_sp(user)
+  def login_and_confirm_sp(user, protocol)
     fill_in_credentials_and_submit(user.email, user.password)
     fill_in_code_with_last_phone_otp
-    click_submit_default
+    protocol == :saml ? click_submit_default_twice : click_submit_default
 
     expect(current_url).to match new_user_session_path
     expect(page).to have_content(t('titles.sign_up.completion_first_sign_in', app_name: APP_NAME))
