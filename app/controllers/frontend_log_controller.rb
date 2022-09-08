@@ -41,7 +41,10 @@ class FrontendLogController < ApplicationController
       elsif analytics_method.parameters.empty?
         analytics_method.bind_call(analytics)
       else
-        analytics_method.bind_call(analytics, **hash_from_method_kwargs(payload, analytics_method))
+        analytics_method.bind_call(
+          analytics,
+          **MethodSignatureHashBuilder.from_hash(payload, analytics_method),
+        )
       end
     else
       analytics.track_event("Frontend: #{event}", payload)
@@ -76,16 +79,5 @@ class FrontendLogController < ApplicationController
 
   def valid_payload?
     !log_params[:payload].nil?
-  end
-
-  def hash_from_method_kwargs(hash, method)
-    method_kwargs(method).index_with { |key| hash[key.to_s] }
-  end
-
-  def method_kwargs(method)
-    method.
-      parameters.
-      map { |type, name| name if [:key, :keyreq].include?(type) }.
-      compact
   end
 end
