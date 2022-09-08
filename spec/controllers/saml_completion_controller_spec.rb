@@ -12,12 +12,19 @@ describe SamlCompletionController do
     let(:signature) { 'xyz789' }
 
     context 'with SAML protocol params passed in appropriately via an internal redirect' do
-      let(:get_params) { "?SAMLRequest=#{saml_request}&RelayState=#{relay_state}&SigAlg=#{sig_alg}&Signature=#{signature}" }
+      let(:get_params) do
+        {
+          SAMLRequest: saml_request,
+          RelayState: relay_state,
+          SigAlg: sig_alg,
+          Signature: signature,
+        }
+      end
       let(:sp_session_request_url) { 'http://example.gov/api/saml/auth2022' }
 
       before do
         expect(controller).to receive(:sp_session).at_least(:once).and_return(
-          request_url: sp_session_request_url + get_params
+          request_url: UriService.add_params(sp_session_request_url, get_params),
         )
       end
 

@@ -436,7 +436,7 @@ class ApplicationController < ActionController::Base
     return unless sp_session[:request_url].present?
     request_url = URI(sp_session[:request_url])
     url = if request_url.path.match?('saml')
-      complete_saml_url
+            complete_saml_url
     else
       # Login.gov redirects to the orginal request_url after a user authenticates
       # replace prompt=login with prompt=select_account to prevent sign_out
