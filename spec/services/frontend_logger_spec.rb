@@ -21,10 +21,6 @@ describe FrontendLogger do
   end
   let(:logger) { described_class.new(analytics: analytics, event_map: event_map) }
 
-  before do
-    allow(analytics).to receive(:example_method_handler) { |ok:, **rest| }
-  end
-
   describe '#track_event' do
     let(:name) { nil }
     let(:attributes) { { 'ok' => true, 'other' => true } }
