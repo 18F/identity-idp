@@ -33,7 +33,7 @@ shared_examples 'a lexisnexis proofer' do
     context 'when proofing fails' do
       let(:verification_status) { 'failed' }
       let(:verification_errors) do
-        { base: ['test error'], Discovery: ['another test error'] }
+        { base: 'test error', Discovery: 'another test error' }
       end
 
       it 'results in an unsuccessful result' do

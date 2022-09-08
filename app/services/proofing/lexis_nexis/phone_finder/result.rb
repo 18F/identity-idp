@@ -11,16 +11,23 @@ module Proofing
           to: :verification_response,
         )
 
+        def initialize(verification_response)
+          @verification_response = verification_response
+        end
+
         def errors
-          verification_errors
+          return @errors if defined?(@errors)
+
+          @errors = {}
+          verification_errors.each do |key, value|
+            @errors[key] ||= []
+            @errors[key].push(value)
+          end
+          @errors
         end
 
         def exception
           nil
-        end
-
-        def initialize(verification_response)
-          @verification_response = verification_response
         end
 
         def success?
@@ -42,7 +49,7 @@ module Proofing
             success: success?,
             timed_out: timed_out?,
             transaction_id: transaction_id,
-            vendor_name: 'lexisnexis:phone_finder'
+            vendor_name: 'lexisnexis:phone_finder',
           }
         end
       end
