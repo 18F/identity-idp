@@ -1,4 +1,4 @@
-import { useState, useMemo, useContext } from 'react';
+import { useState, useMemo, useContext, useEffect } from 'react';
 import { Alert } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormSteps, PromptOnNavigate } from '@18f/identity-form-steps';
@@ -14,6 +14,7 @@ import InPersonSwitchBackStep from './in-person-switch-back-step';
 import ReviewIssuesStep from './review-issues-step';
 import ServiceProviderContext from '../context/service-provider';
 import UploadContext from '../context/upload';
+import AnalyticsContext from '../context/analytics';
 import Submission from './submission';
 import SubmissionStatus from './submission-status';
 import { RetrySubmissionError } from './submission-complete';
@@ -58,8 +59,14 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const { t } = useI18n();
   const serviceProvider = useContext(ServiceProviderContext);
   const { flowPath } = useContext(UploadContext);
+  const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { inPersonURL } = useContext(FlowContext);
   useDidUpdateEffect(onStepChange, [stepName]);
+  useEffect(() => {
+    if (stepName) {
+      trackVisitEvent(stepName);
+    }
+  }, [stepName]);
 
   /**
    * Clears error state and sets form values for submission.
@@ -182,6 +189,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
             initialActiveErrors={initialActiveErrors}
             onComplete={submitForm}
             onStepChange={setStepName}
+            onStepSubmit={trackSubmitEvent}
             autoFocus={!!submissionError}
           />
         </>
