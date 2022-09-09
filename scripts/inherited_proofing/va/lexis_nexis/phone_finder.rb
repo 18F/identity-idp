@@ -6,7 +6,7 @@ module Scripts
           class << self
             def call(user_pii)
               proofer = if IdentityConfig.store.proofer_mock_fallback
-                Proofing::Mock::AddressMockClient.new
+                          Proofing::Mock::AddressMockClient.new
               else
                 Proofing::LexisNexis::PhoneFinder::Proofer.new(
                   phone_finder_workflow: IdentityConfig.store.lexisnexis_phone_finder_workflow,
