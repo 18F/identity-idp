@@ -37,7 +37,8 @@ module Idv
         )
 
         {
-          native_camera_a_b_testing_enabled: IdentityConfig.store.idv_native_camera_a_b_testing_enabled,
+          native_camera_a_b_testing_enabled:
+            IdentityConfig.store.idv_native_camera_a_b_testing_enabled,
           native_camera_only: skip_sdk,
         }
       end
@@ -50,7 +51,6 @@ module Idv
 
         user_value < target_percent.clamp(0, 100)
       end
-
 
       def handle_stored_result
         if stored_result&.success?
