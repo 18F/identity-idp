@@ -25,13 +25,21 @@ module Db
         end
 
         queries.each do |query|
-          stream_query(query) do |row|
-            user_id = row['user_id']
-            year_month = row['year_month']
-            auth_count = row['auth_count']
-            ial = row['ial']
+          temp_copy = ial_to_year_month_to_users.deep_dup
 
-            ial_to_year_month_to_users[ial][year_month].add(user_id, auth_count)
+          with_retries(
+            max_tries: 3,
+            rescue: PG::TRSerializationFailure,
+            handler: proc { ial_to_year_month_to_users = temp_copy },
+          ) do
+            stream_query(query) do |row|
+              user_id = row['user_id']
+              year_month = row['year_month']
+              auth_count = row['auth_count']
+              ial = row['ial']
+
+              ial_to_year_month_to_users[ial][year_month].add(user_id, auth_count)
+            end
           end
         end
 
