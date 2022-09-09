@@ -19,19 +19,10 @@ module Db
 
         iaa_range = (iaa_start_date..iaa_end_date)
 
-        full_months, partial_months = Reports::MonthHelper.months(iaa_range).
-          partition do |month_range|
-            Reports::MonthHelper.full_month?(month_range)
-          end
-
-        # The subqueries create a uniform representation of data:
-        # - full months from monthly_sp_auth_counts
-        # - partial months by aggregating sp_return_logs
+        # Query a month at a time, to keep query time/result size fairly reasonable
         # The results are rows with [user_id, ial, auth_count, year_month]
-        queries = [
-          *full_month_subquery(issuer: issuer, full_months: full_months),
-          *partial_month_subqueries(issuer: issuer, partial_months: partial_months),
-        ]
+        months = Reports::MonthHelper.months(iaa_range)
+        queries = build_queries(issuer: issuer, partial_months: partial_months)
 
         ial_to_year_month_to_users = Hash.new do |ial_h, ial_k|
           ial_h[ial_k] = Hash.new { |ym_h, ym_k| ym_h[ym_k] = Multiset.new }
@@ -81,34 +72,11 @@ module Db
         rows
       end
 
-      # @return [String]
-      def full_month_subquery(issuer:, full_months:)
-        return if full_months.blank?
-        params = {
-          issuer: issuer,
-          year_months: full_months.map { |r| r.begin.strftime('%Y%m') },
-        }.transform_values { |value| quote(value) }
-
-        format(<<~SQL, params)
-          SELECT
-            monthly_sp_auth_counts.user_id
-          , monthly_sp_auth_counts.year_month
-          , monthly_sp_auth_counts.ial
-          , SUM(monthly_sp_auth_counts.auth_count)::bigint AS auth_count
-          FROM
-            monthly_sp_auth_counts
-          WHERE
-                monthly_sp_auth_counts.issuer = %{issuer}
-            AND monthly_sp_auth_counts.year_month IN %{year_months}
-          GROUP BY
-            monthly_sp_auth_counts.year_month
-          , monthly_sp_auth_counts.ial
-          , monthly_sp_auth_counts.user_id
-        SQL
-      end
-
+      # @param [String] issuer
+      # @param [Array<Range<Date>>] months ranges of dates by month that are included in this iaa,
+      #  the first and last may be partial months
       # @return [Array<String>]
-      def partial_month_subqueries(issuer:, partial_months:)
+      def build_queries(issuer:, partial_months:)
         partial_months.map do |month_range|
           params = {
             range_start: month_range.begin,
@@ -125,7 +93,7 @@ module Db
             , COUNT(sp_return_logs.id) AS auth_count
             FROM sp_return_logs
             WHERE
-                  sp_return_logs.requested_at::date BETWEEN %{range_start} AND %{range_end}
+                  sp_return_logs.requested_at BETWEEN %{range_start} AND %{range_end}
               AND sp_return_logs.returned_at IS NOT NULL
               AND sp_return_logs.issuer = %{issuer}
               AND sp_return_logs.billable = true

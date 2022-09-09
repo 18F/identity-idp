@@ -8,19 +8,24 @@ module Reports
     # @example
     #   months(Date.new(2021, 3, 15)..Date.new(2021, 5, 15))
     #   => [
-    #     Date.new(2021, 3, 15)..Date.new(2021, 3, 31),
-    #     Date.new(2021, 4, 1)..Date.new(2021, 4, 30),
-    #     Date.new(2021, 5, 1)..Date.new(2021, 5, 15),
+    #     Time.new(2021, 3, 15, 0, 0, 0)..Time.new(2021, 3, 31, 23, 59, 59),
+    #     Time.new(2021, 4, 1, 0, 0, 0)..Time.new(2021, 4, 30, 23, 59, 59),
+    #     Time.new(2021, 5, 1, 0, 0, 0)..Time.new(2021, 5, 14, 23, 59, 59),
     #   ]
     # @param [Range<Date>] date_range
-    # @return [Array<Range<Date>>]
+    # @return [Array<Range<Time>>]
     def months(date_range)
+      time_range = Range.new(
+        date_range.begin.in_time_zone('UTC').beginning_of_day,
+        (date_range.end - 1).in_time_zone('UTC').end_of_day,
+      )
+
       results = []
 
-      results << (date_range.begin..date_range.begin.end_of_month)
+      results << (time_range.begin..time_range.begin.end_of_month)
 
-      current = date_range.begin.end_of_month + 1.day
-      while current < date_range.end.beginning_of_month
+      current = time_range.begin.end_of_month + 1.day
+      while current < time_range.end.beginning_of_month
         month_start = current.beginning_of_month
         month_end = current.end_of_month
 
@@ -29,14 +34,9 @@ module Reports
         current = month_end + 1.day
       end
 
-      results << (date_range.end.beginning_of_month..date_range.end)
+      results << (time_range.end.beginning_of_month..time_range.end)
 
       results
-    end
-
-    def full_month?(date_range)
-      date_range.begin == date_range.begin.beginning_of_month &&
-        date_range.end == date_range.end.end_of_month
     end
   end
 end

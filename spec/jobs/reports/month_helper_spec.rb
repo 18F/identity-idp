@@ -4,24 +4,23 @@ RSpec.describe Reports::MonthHelper do
   include Reports::MonthHelper
 
   describe '.months' do
-    it 'breaks a range into months' do
+    it 'breaks a range into months as utc timestamps from beginning to end of day' do
       expect(months(Date.new(2021, 3, 15)..Date.new(2021, 5, 15))).to eq(
         [
-          Date.new(2021, 3, 15)..Date.new(2021, 3, 31),
-          Date.new(2021, 4, 1)..Date.new(2021, 4, 30),
-          Date.new(2021, 5, 1)..Date.new(2021, 5, 15),
+          Range.new(
+            Date.new(2021, 3, 15).in_time_zone('UTC').beginning_of_day,
+            Date.new(2021, 3, 31).in_time_zone('UTC').end_of_day,
+          ),
+          Range.new(
+            Date.new(2021, 4, 1).in_time_zone('UTC').beginning_of_day,
+            Date.new(2021, 4, 30).in_time_zone('UTC').end_of_day,
+          ),
+          Range.new(
+            Date.new(2021, 5, 1).in_time_zone('UTC').beginning_of_day,
+            Date.new(2021, 5, 14).in_time_zone('UTC').end_of_day,
+          ),
         ],
       )
-    end
-  end
-
-  describe '.full_month?' do
-    it 'is true when the range is a full month' do
-      expect(full_month?(Date.new(2021, 1, 1)..Date.new(2021, 1, 31))).to eq(true)
-    end
-
-    it 'is false when the range is not a full month' do
-      expect(full_month?(Date.new(2021, 1, 2)..Date.new(2021, 1, 30))).to eq(false)
     end
   end
 end
