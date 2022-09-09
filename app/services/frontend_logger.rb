@@ -13,11 +13,24 @@ class FrontendLogger
       else
         analytics_method.bind_call(
           analytics,
-          **MethodSignatureHashBuilder.from_hash(attributes, analytics_method),
+          **hash_from_method_kwargs(attributes, analytics_method),
         )
       end
     else
       analytics.track_event("Frontend: #{name}", attributes)
     end
+  end
+
+  private
+
+  def hash_from_method_kwargs(hash, method)
+    method_kwargs(method).index_with { |key| hash[key.to_s] }
+  end
+
+  def method_kwargs(method)
+    method.
+      parameters.
+      map { |type, name| name if [:key, :keyreq].include?(type) }.
+      compact
   end
 end
