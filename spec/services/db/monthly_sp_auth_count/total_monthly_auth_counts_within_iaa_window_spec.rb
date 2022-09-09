@@ -65,14 +65,17 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow do
         )
 
         # 11 IAL 1 auths during full month
-        create(
-          :monthly_sp_auth_count,
-          user: user,
-          service_provider: service_provider,
-          ial: 1,
-          year_month: full_month_date.strftime('%Y%m'),
-          auth_count: 11,
-        )
+        11.times do
+          create(
+            :sp_return_log,
+            user: user,
+            service_provider: service_provider,
+            ial: 1,
+            requested_at: full_month_date,
+            returned_at: full_month_date,
+            billable: true,
+          )
+        end
       end
 
       it 'counts and uniqes auths across sp_return_logs and monthly_sp_auth_counts' do

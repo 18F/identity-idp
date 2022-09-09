@@ -22,7 +22,7 @@ module Db
         # Query a month at a time, to keep query time/result size fairly reasonable
         # The results are rows with [user_id, ial, auth_count, year_month]
         months = Reports::MonthHelper.months(iaa_range)
-        queries = build_queries(issuer: issuer, partial_months: partial_months)
+        queries = build_queries(issuer: issuer, months: months)
 
         ial_to_year_month_to_users = Hash.new do |ial_h, ial_k|
           ial_h[ial_k] = Hash.new { |ym_h, ym_k| ym_h[ym_k] = Multiset.new }
@@ -76,8 +76,8 @@ module Db
       # @param [Array<Range<Date>>] months ranges of dates by month that are included in this iaa,
       #  the first and last may be partial months
       # @return [Array<String>]
-      def build_queries(issuer:, partial_months:)
-        partial_months.map do |month_range|
+      def build_queries(issuer:, months:)
+        months.map do |month_range|
           params = {
             range_start: month_range.begin,
             range_end: month_range.end,

@@ -112,22 +112,24 @@ RSpec.describe Reports::CombinedInvoiceSupplementReport do
 
         # 1 unique user in month 1 at IAA 2 sp 1 @ IAL 2
         create(
-          :monthly_sp_auth_count,
+          :sp_return_log,
           user_id: user1.id,
-          auth_count: 1,
           ial: 2,
           issuer: iaa2_sp1.issuer,
-          year_month: inside_iaa2.strftime('%Y%m'),
+          requested_at: inside_iaa2,
+          returned_at: inside_iaa2,
+          billable: true,
         )
 
         # 1 unique user in month 1 at IAA 2 sp 2 @ IAL 2
         create(
-          :monthly_sp_auth_count,
+          :sp_return_log,
           user_id: user2.id,
-          auth_count: 1,
           ial: 2,
           issuer: iaa2_sp2.issuer,
-          year_month: inside_iaa2.strftime('%Y%m'),
+          requested_at: inside_iaa2,
+          returned_at: inside_iaa2,
+          billable: true,
         )
       end
 
