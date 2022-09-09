@@ -6,7 +6,7 @@ module Reports
     # may be partial months (ex starting in the middle and ending at the end) and the intermediate
     # items are always full months (1st to last of month)
     # @example
-    #   months(Date.new(2021, 3, 15)..Date.new(2021, 5, 15))
+    #   months(Date.new(2021, 3, 15)..Date.new(2021, 5, 14))
     #   => [
     #     Time.new(2021, 3, 15, 0, 0, 0)..Time.new(2021, 3, 31, 23, 59, 59),
     #     Time.new(2021, 4, 1, 0, 0, 0)..Time.new(2021, 4, 30, 23, 59, 59),
@@ -17,7 +17,7 @@ module Reports
     def months(date_range)
       time_range = Range.new(
         date_range.begin.in_time_zone('UTC').beginning_of_day,
-        (date_range.end - 1).in_time_zone('UTC').end_of_day,
+        date_range.end.in_time_zone('UTC').end_of_day,
       )
 
       results = []
