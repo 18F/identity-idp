@@ -1,9 +1,10 @@
 import sinon from 'sinon';
-import { render, waitFor } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ComponentType } from 'react';
 import { FlowContext } from '@18f/identity-verify-flow';
 import type { FlowContextValue } from '@18f/identity-verify-flow';
+import { useSandbox } from '@18f/identity-test-helpers';
 import { Provider as MarketingSiteContextProvider } from '../context/marketing-site';
 import { AnalyticsContextProvider } from '../context/analytics';
 import InPersonPrepareStep from './in-person-prepare-step';
@@ -43,6 +44,36 @@ describe('InPersonPrepareStep', () => {
       await waitFor(() => window.location.hash === inPersonURL);
 
       expect(trackEvent).to.have.been.calledWith('IdV: prepare submitted');
+    });
+
+    context('when clicking in quick succession', () => {
+      const { clock } = useSandbox({ useFakeTimers: true });
+
+      it('logs submission only once', async () => {
+        const delay = 1000;
+        const trackEvent = sinon
+          .stub()
+          .callsFake(() => new Promise((resolve) => setTimeout(resolve, delay)));
+        const { getByRole } = render(
+          <AnalyticsContextProvider trackEvent={trackEvent}>
+            <InPersonPrepareStep {...DEFAULT_PROPS} />
+          </AnalyticsContextProvider>,
+          { wrapper },
+        );
+
+        const link = getByRole('link', { name: 'forms.buttons.continue' });
+
+        const didFollowLinkOnFirstClick = fireEvent.click(link);
+        const didFollowLinkOnSecondClick = fireEvent.click(link);
+
+        clock.tick(delay);
+
+        await waitFor(() => window.location.hash === inPersonURL);
+
+        expect(didFollowLinkOnFirstClick).to.be.false();
+        expect(didFollowLinkOnSecondClick).to.be.false();
+        expect(trackEvent).to.have.been.calledOnceWith('IdV: prepare submitted');
+      });
     });
   });
 

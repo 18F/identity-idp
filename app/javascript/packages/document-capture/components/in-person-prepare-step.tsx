@@ -1,7 +1,7 @@
+import { useContext, useState } from 'react';
 import type { MouseEventHandler } from 'react';
 import {
   Alert,
-  Button,
   Link,
   IconList,
   IconListItem,
@@ -10,11 +10,11 @@ import {
   ProcessListItem,
 } from '@18f/identity-components';
 import { removeUnloadProtection } from '@18f/identity-url';
-import { useContext } from 'react';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { getConfigValue } from '@18f/identity-config';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
+import { SpinnerButton } from '@18f/identity-spinner-button';
 import UploadContext from '../context/upload';
 import MarketingSiteContext from '../context/marketing-site';
 import AnalyticsContext from '../context/analytics';
@@ -23,6 +23,7 @@ import InPersonTroubleshootingOptions from './in-person-troubleshooting-options'
 
 function InPersonPrepareStep({ toPreviousStep, value }) {
   const { t } = useI18n();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { inPersonURL } = useContext(FlowContext);
   const { flowPath } = useContext(UploadContext);
   const { trackEvent } = useContext(AnalyticsContext);
@@ -30,18 +31,14 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
   const { selectedLocationName } = value;
 
   const onContinue: MouseEventHandler = async (event) => {
-    removeUnloadProtection();
+    event.preventDefault();
 
-    let destination;
-    if (event.target instanceof HTMLAnchorElement) {
-      event.preventDefault();
-      destination = event.target.href;
-    }
-
-    await trackEvent('IdV: prepare submitted');
-
-    if (destination) {
-      window.location = destination;
+    if (!isSubmitting) {
+      setIsSubmitting(true);
+      removeUnloadProtection();
+      const destination = (event.target as HTMLAnchorElement).href;
+      await trackEvent('IdV: prepare submitted');
+      window.location.href = destination;
     }
   };
 
@@ -109,9 +106,9 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
       {flowPath === 'hybrid' && <FormStepsButton.Continue />}
       {inPersonURL && flowPath === 'standard' && (
         <div className="margin-y-5">
-          <Button href={inPersonURL} onClick={onContinue} isBig isWide>
+          <SpinnerButton href={inPersonURL} onClick={onContinue} isBig isWide>
             {t('forms.buttons.continue')}
-          </Button>
+          </SpinnerButton>
         </div>
       )}
       <p>
