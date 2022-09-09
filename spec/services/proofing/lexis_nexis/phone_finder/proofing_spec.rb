@@ -12,6 +12,7 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
       phone: '5551231234',
     }
   end
+
   let(:verification_request) do
     Proofing::LexisNexis::PhoneFinder::VerificationRequest.new(
       applicant: applicant,
@@ -20,6 +21,31 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
   end
 
   it_behaves_like 'a lexisnexis proofer'
+
+  describe '#send' do
+    context 'when the request times out' do
+      it 'raises a timeout error' do
+        stub_request(:post, verification_request.url).to_timeout
+
+        expect { verification_request.send }.to raise_error(
+          Proofing::TimeoutError,
+          'LexisNexis timed out waiting for verification response',
+        )
+      end
+    end
+
+    context 'when the request is made' do
+      it 'it looks like the right request' do
+        request = stub_request(:post, verification_request.url).
+          with(body: verification_request.body, headers: verification_request.headers).
+          to_return(body: LexisNexisFixtures.phone_finder_success_response_json, status: 200)
+
+        verification_request.send
+
+        expect(request).to have_been_requested.once
+      end
+    end
+  end
 
   subject(:instance) do
     Proofing::LexisNexis::PhoneFinder::Proofer.new(**LexisNexisFixtures.example_config.to_h)
