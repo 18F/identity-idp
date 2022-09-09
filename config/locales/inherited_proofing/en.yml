@@ -8,6 +8,9 @@ en:
       secure_account: Secure your account
       verify_identity: Verify your identity
       welcome: Get started verifying your identity
+      lets_go: How verifying your identity works
+      verify_identity: Verify your identity
+      secure_account: Secure your account
     info:
       lets_go: 'Identity verification happens in two parts:'
       no_sp_name: VA needs to make sure you are you
