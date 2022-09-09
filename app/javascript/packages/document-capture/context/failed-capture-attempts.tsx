@@ -12,6 +12,18 @@ interface FailedCaptureAttemptsContextInterface {
    * Current number of failed capture attempts
    */
   failedCaptureAttempts: number;
+
+  /**
+   * Current number of failed submission attempts
+   */
+  failedSubmissionAttempts: number;
+
+  /**
+   * Callback when submission attempt fails.
+   * Used to increment the failedSubmissionAttempts
+   */
+  onFailedSubmissionAttempt: () => void;
+
   /**
    * Number of failed attempts before showing tips
    */
@@ -47,7 +59,9 @@ const DEFAULT_LAST_ATTEMPT_METADATA: CaptureAttemptMetadata = {
 
 const FailedCaptureAttemptsContext = createContext<FailedCaptureAttemptsContextInterface>({
   failedCaptureAttempts: 0,
+  failedSubmissionAttempts: 0,
   onFailedCaptureAttempt: () => {},
+  onFailedSubmissionAttempt: () => {},
   onResetFailedCaptureAttempts: () => {},
   maxAttemptsBeforeNativeCamera: Infinity,
   maxFailedAttemptsBeforeTips: Infinity,
@@ -73,13 +87,20 @@ function FailedCaptureAttemptsContextProvider({
   );
   const [failedCaptureAttempts, incrementFailedCaptureAttempts, onResetFailedCaptureAttempts] =
     useCounter();
+  const [failedSubmissionAttempts, incrementFailedSubmissionAttempts] = useCounter();
 
   function onFailedCaptureAttempt(metadata: CaptureAttemptMetadata) {
     incrementFailedCaptureAttempts();
     setLastAttemptMetadata(metadata);
   }
 
-  const forceNativeCamera = failedCaptureAttempts >= maxAttemptsBeforeNativeCamera;
+  function onFailedSubmissionAttempt() {
+    incrementFailedSubmissionAttempts();
+  }
+
+  const forceNativeCamera =
+    failedCaptureAttempts >= maxAttemptsBeforeNativeCamera ||
+    failedSubmissionAttempts >= maxAttemptsBeforeNativeCamera;
 
   return (
     <FailedCaptureAttemptsContext.Provider
@@ -87,6 +108,8 @@ function FailedCaptureAttemptsContextProvider({
         failedCaptureAttempts,
         onFailedCaptureAttempt,
         onResetFailedCaptureAttempts,
+        failedSubmissionAttempts,
+        onFailedSubmissionAttempt,
         maxAttemptsBeforeNativeCamera,
         maxFailedAttemptsBeforeTips,
         lastAttemptMetadata,

@@ -16,14 +16,18 @@ describe('document-capture/context/failed-capture-attempts', () => {
 
     expect(result.current).to.have.keys([
       'failedCaptureAttempts',
+      'failedSubmissionAttempts',
       'forceNativeCamera',
       'onFailedCaptureAttempt',
+      'onFailedSubmissionAttempt',
       'onResetFailedCaptureAttempts',
       'maxFailedAttemptsBeforeTips',
       'maxAttemptsBeforeNativeCamera',
       'lastAttemptMetadata',
     ]);
     expect(result.current.failedCaptureAttempts).to.equal(0);
+    expect(result.current.failedSubmissionAttempts).to.equal(0);
+    expect(result.current.onFailedSubmissionAttempt).to.be.a('function');
     expect(result.current.onFailedCaptureAttempt).to.be.a('function');
     expect(result.current.onResetFailedCaptureAttempts).to.be.a('function');
     expect(result.current.maxFailedAttemptsBeforeTips).to.be.a('number');
@@ -77,6 +81,21 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
     expect(result.current.failedCaptureAttempts).to.equal(1);
     expect(result.current.forceNativeCamera).to.equal(false);
   });
+
+  it('Updating to a number of failed submissions less than maxAttemptsBeforeNativeCamera will keep forceNativeCamera as false', () => {
+    const { result, rerender } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
+      wrapper: ({ children }) => (
+        <Provider maxAttemptsBeforeNativeCamera={2} maxFailedAttemptsBeforeTips={10}>
+          {children}
+        </Provider>
+      ),
+    });
+    result.current.onFailedSubmissionAttempt();
+    rerender(true);
+    expect(result.current.failedSubmissionAttempts).to.equal(1);
+    expect(result.current.forceNativeCamera).to.equal(false);
+  });
+
   it('Updating failed captures to a number gte the maxAttemptsBeforeNativeCamera will set forceNativeCamera to true', () => {
     const { result, rerender } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
       wrapper: ({ children }) => (
@@ -104,6 +123,46 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
     rerender({});
     expect(result.current.failedCaptureAttempts).to.equal(3);
     expect(result.current.forceNativeCamera).to.equal(true);
+  });
+
+  it('Updating failed submissions to a number gte the maxAttemptsBeforeNativeCamera will set forceNativeCamera to true', () => {
+    const { result, rerender } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
+      wrapper: ({ children }) => (
+        <Provider maxAttemptsBeforeNativeCamera={2} maxFailedAttemptsBeforeTips={10}>
+          {children}
+        </Provider>
+      ),
+    });
+    result.current.onFailedSubmissionAttempt();
+    rerender(true);
+    expect(result.current.forceNativeCamera).to.equal(false);
+    result.current.onFailedSubmissionAttempt();
+    rerender(true);
+    expect(result.current.forceNativeCamera).to.equal(true);
+    result.current.onFailedSubmissionAttempt();
+    rerender({});
+    expect(result.current.failedSubmissionAttempts).to.equal(3);
+    expect(result.current.forceNativeCamera).to.equal(true);
+  });
+
+  it('Combination of failedCapture and failedSubmission gte max does NOT force native camera', () => {
+    const { result, rerender } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
+      wrapper: ({ children }) => (
+        <Provider maxAttemptsBeforeNativeCamera={3} maxFailedAttemptsBeforeTips={10}>
+          {children}
+        </Provider>
+      ),
+    });
+    result.current.onFailedSubmissionAttempt();
+    result.current.onFailedSubmissionAttempt();
+    result.current.onFailedCaptureAttempt({
+      isAssessedAsGlare: true,
+      isAssessedAsBlurry: false,
+    });
+    rerender(true);
+    expect(result.current.failedSubmissionAttempts).to.equal(2);
+    expect(result.current.failedCaptureAttempts).to.equal(1);
+    expect(result.current.forceNativeCamera).to.equal(false);
   });
 });
 
