@@ -1,0 +1,182 @@
+<fieldset class='usa-fieldset'>
+    <label class="usa-label">     
+        <%= @label %>
+    </label>
+    <span class="usa-hint" id="dob_hint">
+        <%= @hint %>
+    </span>
+    <%= content_tag(
+              :script,
+                error_messages.to_json,
+                {
+                  type: 'application/json',
+                  class: 'validated-field__error-strings',
+                },
+                false,
+              ) %>
+    <%= f.input(
+                :month,
+                wrapper: false,
+                type: number,
+               input_html: {
+                  class: 'validated-field__input',
+                  aria: {
+                    invalid: false,
+                    describedby: "validated-field-error-#{unique_id}",
+                  },
+                },
+              ) %>
+    <div class="usa-memorable-date">
+        <div class="usa-error-message">
+            <div class="usa-form-group usa-form-group--month">
+                <label class="usa-label" for="dob_month">
+                    <%= t('in_person_proofing.form.state_id.month') %>
+                </label>
+                <input
+                class="usa-input"
+                aria-describedby="dob_hint"
+                id="dob_month"
+                name="dob_month"
+                maxlength="2"
+                pattern="[0-9]*"
+                inputmode="numeric"
+                />
+            </div>
+        </div>
+        <div class="usa-form-group usa-form-group--day">
+            <label class="usa-label" for="dob_day">
+                <%= t('in_person_proofing.form.state_id.day') %>
+            </label>
+            <input
+            class="usa-input"
+            aria-describedby="dob_hint"
+            id="dob_day"
+            name="dob_day"
+            maxlength="2"
+            pattern="[0-9]*"
+            inputmode="numeric"
+            />
+        </div>
+        <div class="usa-form-group usa-form-group--year">
+            <label class="usa-label" for="dob_year">
+                <%= t('in_person_proofing.form.state_id.year') %>
+            </label>
+            <input
+            class="usa-input"
+            aria-describedby="dob_hint"
+            id="dob_year"
+            name="dob_year"
+            minlength="4"
+            maxlength="4"
+            pattern="[0-9]*"
+            inputmode="numeric"
+            />
+        </div>
+    </div>
+</fieldset>
+
+<%#= content_tag(
+        :script,
+        error_messages.to_json,
+        {
+          type: 'application/json',
+          class: 'validated-field__error-strings',
+        },
+        false,
+      ) #%>
+
+      <%= f.input(
+            :month,
+            pattern: '^\d{2}$',
+            maxlength: 2,
+            wrapper: false,
+            input_html: {
+            class: 'validated-field__input',
+            aria: {
+                invalid: false,
+                describedby: "validated-field-error-#{unique_id}",
+            },
+            },
+        ) %>
+    <%= f.input(
+            :day,
+            pattern: '^\d{2}$',
+            maxlength: 2,
+            wrapper: false,
+            input_html: {
+            class: 'validated-field__input',
+            aria: {
+                invalid: false,
+                describedby: "validated-field-error-#{unique_id}",
+            },
+            },
+        ) %>
+    <%= f.input(
+            :year,
+            pattern: '^\d{4}$',
+            maxlength: 4,
+            wrapper: false,
+            input_html: {
+            class: 'validated-field__input',
+            aria: {
+                invalid: false,
+                describedby: "validated-field-error-#{unique_id}",
+            },
+            },
+        ) %>
+
+        <div class="usa-memorable-date">
+        <%# red box is not showing up with error: needs this class added to it usa-input--error #%>
+            <div class="usa-form-group usa-form-group--month">
+                <label class="usa-label" for="dob_month">
+                    <%= t('in_person_proofing.form.state_id.month') %>
+                </label>
+                <input
+                class="usa-input usa-input--error"
+                aria-describedby="dob_hint"
+                id="dob_month"
+                name="dob_month"
+                maxlength="2"
+                max="12"
+                pattern="[0-9]*"
+                inputmode="numeric"
+                type="number"
+                required="required"
+                />
+            </div>
+        <div class="usa-form-group usa-form-group--day">
+            <label class="usa-label" for="dob_day">
+                <%= t('in_person_proofing.form.state_id.day') %>
+            </label>
+            <input
+            class="usa-input"
+            aria-describedby="dob_hint"
+            id="dob_day"
+            name="dob_day"
+            maxlength="2"
+            max="31"
+            pattern="[0-9]*"
+            inputmode="numeric"
+            type="number"
+            required="required"
+            />
+        </div>
+        <div class="usa-form-group usa-form-group--year">
+            <label class="usa-label" for="dob_year">
+                <%= t('in_person_proofing.form.state_id.year') %>
+            </label>
+            <input
+            class="usa-input"
+            aria-describedby="dob_hint"
+            id="dob_year"
+            name="dob_year"
+            minlength="4"
+            maxlength="4"
+            pattern="[0-9]*"
+            inputmode="numeric"
+            type="number"
+            required="required"
+            />
+        </div>
+    </div>
+ <div class="usa-error-message" id="validated-field-error-<%= unique_id %>"></div>
