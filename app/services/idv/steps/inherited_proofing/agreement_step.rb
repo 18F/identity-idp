@@ -8,18 +8,11 @@ module Idv
         end
 
         def form_submit
-          skip_to_capture if params[:skip_upload]
-
           Idv::ConsentForm.new.submit(consent_form_params)
         end
 
-        def skip_to_capture
-          # See: Idv::DocAuthController#update_if_skipping_upload
-          flow_session[:skip_upload_step] = true
-        end
-
         def consent_form_params
-          params.require(:doc_auth).permit(:ial2_consent_given)
+          params.require(:inherited_proofing).permit(:ial2_consent_given)
         end
       end
     end
