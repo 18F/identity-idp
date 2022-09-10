@@ -81,5 +81,25 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
         )
       end
     end
+
+    context 'when proofing fails' do
+      let(:verification_status) { 'failed' }
+      let(:verification_errors) do
+        { base: 'test error', Discovery: 'another test error' }
+      end
+      let(:response_body) { LexisNexisFixtures.phone_finder_fail_response_json }
+
+      it 'results in an unsuccessful result' do
+        result = subject.proof(applicant)
+
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq(
+          base: ['test error'],
+          Discovery: ['another test error'],
+        )
+        expect(result.transaction_id).to eq(conversation_id)
+        expect(result.reference).to eq(reference)
+      end
+    end
   end
 end
