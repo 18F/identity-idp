@@ -429,6 +429,66 @@ describe('MemorableDateElement', () => {
       expect(formElement.reportValidity()).to.be.false();
     });
 
+    it('does not show error styles on fields unrelated to the validation message', async () => {
+      await userEvent.type(monthInput, '2');
+      await userEvent.type(yearInput, '1972');
+      expectErrorToEqual('');
+      await userEvent.click(submitButton);
+      expectErrorToEqual('Enter a day');
+      expect(formElement.reportValidity()).to.be.false();
+      expect(Array.from(monthInput.classList)).to.not.include('usa-input--error');
+      expect(Array.from(dayInput.classList)).to.include('usa-input--error');
+      expect(Array.from(yearInput.classList)).to.not.include('usa-input--error');
+
+      await userEvent.type(dayInput, 'bc');
+      expectErrorToEqual('');
+      await userEvent.click(submitButton);
+      expectErrorToEqual('Enter a day between 1 and 31');
+      expect(formElement.reportValidity()).to.be.false();
+      expect(Array.from(monthInput.classList)).to.not.include('usa-input--error');
+      expect(Array.from(dayInput.classList)).to.include('usa-input--error');
+      expect(Array.from(yearInput.classList)).to.not.include('usa-input--error');
+
+      await userEvent.type(monthInput, 'z');
+      await userEvent.clear(dayInput);
+      await userEvent.type(dayInput, '18');
+      expectErrorToEqual('');
+      await userEvent.click(submitButton);
+      expectErrorToEqual('Enter a month between 1 and 12');
+      expect(formElement.reportValidity()).to.be.false();
+      expect(Array.from(monthInput.classList)).to.include('usa-input--error');
+      expect(Array.from(dayInput.classList)).to.not.include('usa-input--error');
+      expect(Array.from(yearInput.classList)).to.not.include('usa-input--error');
+
+      await userEvent.clear(monthInput);
+      expectErrorToEqual('');
+      await userEvent.click(submitButton);
+      expectErrorToEqual('Enter a month');
+      expect(formElement.reportValidity()).to.be.false();
+      expect(Array.from(monthInput.classList)).to.include('usa-input--error');
+      expect(Array.from(dayInput.classList)).to.not.include('usa-input--error');
+      expect(Array.from(yearInput.classList)).to.not.include('usa-input--error');
+
+      await userEvent.type(monthInput, '4');
+      await userEvent.clear(yearInput);
+      expectErrorToEqual('');
+      await userEvent.click(submitButton);
+      expectErrorToEqual('Enter a year');
+      expect(formElement.reportValidity()).to.be.false();
+      expect(Array.from(monthInput.classList)).to.not.include('usa-input--error');
+      expect(Array.from(dayInput.classList)).to.not.include('usa-input--error');
+      expect(Array.from(yearInput.classList)).to.include('usa-input--error');
+
+      await userEvent.type(yearInput, '1');
+      expectErrorToEqual('');
+      await userEvent.click(submitButton);
+      expectErrorToEqual('Enter a year with 4 numbers');
+      expect(formElement.reportValidity()).to.be.false();
+      expect(Array.from(monthInput.classList)).to.not.include('usa-input--error');
+      expect(Array.from(dayInput.classList)).to.not.include('usa-input--error');
+      expect(Array.from(yearInput.classList)).to.include('usa-input--error');
+    });
+
     describe('min and max are set on lg-memorable-date', () => {
       beforeEach(() => {
         memorableDateElement.setAttribute('min', '1800-01-01');
