@@ -15,7 +15,7 @@ describe Proofing::LexisNexis::PhoneFinder::Result do
   it 'renders LexisNexis metadata' do
     # expected values originate in the fixture
     expect(subject.reference).to eq('Reference1')
-    expect(subject.transaction_id).to eq('8624642277235233040')
+    expect(subject.transaction_id).to eq('123456')
   end
 
   context 'successful response' do
@@ -26,19 +26,25 @@ describe Proofing::LexisNexis::PhoneFinder::Result do
   end
 
   context 'failed to match response' do
-    let(:response_body) { LexisNexisFixtures.instant_verify_failure_response_json }
+    let(:response_body) { LexisNexisFixtures.phone_finder_fail_response_json }
 
     it 'returns a failed to match verified result' do
       expect(subject.success?).to eq(false)
       expect(subject.verification_errors).to include(
         :base,
-        :SomeOtherProduct,
-        :InstantVerify,
+        :PhoneFinder,
       )
     end
   end
 
   context 'error response' do
-    it 'returns an error result'
+    let(:response_body) { LexisNexisFixtures.instant_verify_error_response_json }
+
+    it 'returns an error result' do
+      expect(subject.success?).to eq(false)
+      expect(subject.verification_errors).to match(
+        base: a_string_including('invalid_transaction_initiate'),
+      )
+    end
   end
 end
