@@ -58,7 +58,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  user_fully_authenticated: true,
                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
                  scope: 'openid',
-                 code_digest: anything)
+                 code_digest: kind_of(String))
           expect(@analytics).to receive(:track_event).
             with(
               'SP redirect initiated',
@@ -118,7 +118,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                      user_fully_authenticated: true,
                      acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
                      scope: 'openid profile',
-                     code_digest: anything)
+                     code_digest: kind_of(String))
               expect(@analytics).to receive(:track_event).
                 with(
                   'SP redirect initiated',
@@ -218,7 +218,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                      user_fully_authenticated: true,
                      acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                      scope: 'openid profile',
-                     code_digest: anything)
+                     code_digest: kind_of(String))
               expect(@analytics).to receive(:track_event).
                 with(
                   'SP redirect initiated',
@@ -260,7 +260,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                      user_fully_authenticated: true,
                      acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                      scope: 'openid profile',
-                     code_digest: anything)
+                     code_digest: kind_of(String))
               expect(@analytics).to receive(:track_event).
                 with(
                   'SP redirect initiated',
@@ -303,7 +303,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                      user_fully_authenticated: true,
                      acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                      scope: 'openid profile',
-                     code_digest: anything)
+                     code_digest: kind_of(String))
               expect(@analytics).to receive(:track_event).
                 with(
                   'SP redirect initiated',
