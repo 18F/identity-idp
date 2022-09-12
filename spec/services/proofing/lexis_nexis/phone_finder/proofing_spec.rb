@@ -79,26 +79,8 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
           base: include(a_kind_of(String)),
           'PhoneFinder Checks': include(a_kind_of(Hash)),
         )
-      end
-    end
-
-    context 'when proofing fails' do
-      let(:verification_status) { 'failed' }
-      let(:verification_errors) do
-        { base: 'test error', Discovery: 'another test error' }
-      end
-      let(:response_body) { LexisNexisFixtures.phone_finder_fail_response_json }
-
-      it 'results in an unsuccessful result' do
-        result = subject.proof(applicant)
-
-        expect(result.success?).to eq(false)
-        expect(result.errors).to eq(
-          base: ['test error'],
-          Discovery: ['another test error'],
-        )
-        expect(result.transaction_id).to eq(conversation_id)
-        expect(result.reference).to eq(reference)
+        expect(result.transaction_id).to eq('31000000000000')
+        expect(result.reference).to eq('Reference1')
       end
     end
   end
