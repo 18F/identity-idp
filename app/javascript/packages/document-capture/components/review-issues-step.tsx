@@ -86,9 +86,7 @@ function ReviewIssuesStep({
   const { onPageTransition, changeStepCanComplete } = useContext(FormStepsContext);
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
-  const { onFailedCaptureAttempt, onFailedSubmissionAttempt } = useContext(
-    FailedCaptureAttemptsContext,
-  );
+  const { onFailedSubmissionAttempt } = useContext(FailedCaptureAttemptsContext);
   useEffect(() => onFailedSubmissionAttempt(), []);
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed');
