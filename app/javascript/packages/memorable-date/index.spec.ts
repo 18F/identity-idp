@@ -201,7 +201,7 @@ describe('MemorableDateElement', () => {
         });
 
         context(
-          'user has entered a day and year, then moves clicks an element outside the memorable date fields',
+          'user has entered a day and year, then clicks an element outside the memorable date fields',
           () => {
             beforeEach(async function () {
               this.timeout(8000);
