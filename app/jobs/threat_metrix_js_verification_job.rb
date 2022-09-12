@@ -1,13 +1,7 @@
 class ThreatMetrixJsVerificationJob < ApplicationJob
-  include JobHelpers::StaleJobHelper
-
   queue_as :default
 
-  discard_on JobHelpers::StaleJobHelper::StaleJobError
-
   def perform(session_id:)
-    raise_stale_job! if stale_job?(enqueued_at)
-
     org_id = IdentityConfig.store.lexisnexis_threatmetrix_org_id
     session_id ||= SecureRandom.uuid
 
