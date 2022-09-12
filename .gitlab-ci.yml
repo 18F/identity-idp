@@ -232,5 +232,6 @@ prepare_deploy:
 trigger_devops:
   stage: after_test
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"
+    # DO NOT SUBMIT. Uncomment first.
+    # - if: $CI_COMMIT_BRANCH == "main"
   trigger: lg/identity-devops
