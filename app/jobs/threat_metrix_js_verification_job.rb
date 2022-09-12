@@ -4,7 +4,7 @@ class ThreatMetrixJsVerificationJob < ApplicationJob
   def perform(session_id: SecureRandom.uuid)
     org_id = IdentityConfig.store.lexisnexis_threatmetrix_org_id
 
-    return if !org_id
+    return if org_id.blank?
 
     return if !IdentityConfig.store.proofing_device_profiling_collecting_enabled
 
@@ -14,7 +14,7 @@ class ThreatMetrixJsVerificationJob < ApplicationJob
 
     cert = OpenSSL::X509::Certificate.new raw_cert
 
-    raise 'Certificate is expired' if cert.not_after < Time.now
+    raise 'Certificate is expired' if cert.not_after < Time.zone.now
 
     url = "https://h.online-metrix.net/fp/tags.js?org_id=#{org_id}&session_id=#{session_id}"
 

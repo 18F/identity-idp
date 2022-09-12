@@ -9,24 +9,26 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
     OpenSSL::PKey::RSA.new 2048
   end
 
-  let(:threatmetrix_signing_cert_expiry) { Time.now + 3600 }
+  let(:threatmetrix_signing_cert_expiry) { Time.zone.now + 3600 }
 
   let(:threatmetrix_signing_certificate) do
-    name = OpenSSL::X509::Name.parse('/CN=signing')
+    if threatmetrix_signing_key.present?
+      name = OpenSSL::X509::Name.parse('/CN=signing')
 
-    cert = OpenSSL::X509::Certificate.new
-    cert.version = 2
-    cert.serial = 0
-    cert.not_before = Time.now
-    cert.not_after = threatmetrix_signing_cert_expiry
+      cert = OpenSSL::X509::Certificate.new
+      cert.version = 2
+      cert.serial = 0
+      cert.not_before = Time.zone.now
+      cert.not_after = threatmetrix_signing_cert_expiry
 
-    cert.public_key = threatmetrix_signing_key.public_key
-    cert.subject = name
-    cert.issuer = name
+      cert.public_key = threatmetrix_signing_key.public_key
+      cert.subject = name
+      cert.issuer = name
 
-    cert.sign threatmetrix_signing_key, 'SHA1'
+      cert.sign threatmetrix_signing_key, 'SHA1'
 
-    cert.to_pem
+      cert.to_pem
+    end
   end
 
   let(:js) do
@@ -36,8 +38,7 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
   end
 
   let(:signature) do
-    if threatmetrix_signing_certificate.present?
-      cert = OpenSSL::X509::Certificate.new threatmetrix_signing_certificate
+    if threatmetrix_signing_key.present? && threatmetrix_signing_certificate.present?
       sig = threatmetrix_signing_key.sign 'SHA256', js
       sig.unpack1('H*')
     end
@@ -86,7 +87,7 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
     end
 
     context 'when certificate is not configured' do
-      let(:threatmetrix_signing_certificate) { nil }
+      let(:threatmetrix_signing_certificate) { '' }
       it 'does not run' do
         expect(instance.logger).not_to receive(:info)
         perform
@@ -94,7 +95,7 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
     end
 
     context 'when certificate is expired' do
-      let(:threatmetrix_signing_cert_expiry) { Time.now - 3600 }
+      let(:threatmetrix_signing_cert_expiry) { Time.zone.now - 3600 }
       it 'raises an error' do
         expect { perform }.to raise_error
       end
