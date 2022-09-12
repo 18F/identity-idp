@@ -20,7 +20,6 @@ fr:
       welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
         quelqu’un qui se fait passer pour vous.'
     instructions:
-      bullet1: Un numéro de téléphone associé à un forfait téléphonique à votre nom.
       consent: to be implemented
       learn_more: En savoir plus
       privacy: Nos normes de confidentialité et de sécurité
