@@ -5,6 +5,9 @@ es:
       continue: Continuar
     headings:
       welcome: Empiece con la verificación de su identidad
+      lets_go: to be implemented
+      verify_identity: to be implemented
+      secure_account: to be implemented
     info:
       no_sp_name: La agencia a la que está intentando acceder
       privacy_html: '%{app_name} es un sitio web gubernamental seguro que cumple con
@@ -13,8 +16,21 @@ es:
         privacidad y seguridad.'
       welcome_html: '%{sp_name} necesita asegurarse de que sea usted y no alguien que
         se haga pasar por usted.'
+      verify_identity: to be implemented
+      secure_account: to be implemented
+      lets_go: to be implemented
     instructions:
       bullet1: Un número de teléfono con un plan tarifario vinculado a su nombre.
       learn_more: Obtenga más información
       privacy: Nuestras normas de privacidad y seguridad
       welcome: 'Deberá contar con lo siguiente para verificar su identidad:'
+      verify_requirements: to be implemented
+      verification_content: to be implemented
+      consent: to be implemented
+      learn_more: to be implemented
+    troubleshooting:
+      headings:
+        missing_required_items: to be implemented
+      options:
+        learn_more_phone_or_mail: to be implemented
+        get_va_help: to be implemented
