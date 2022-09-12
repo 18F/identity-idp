@@ -77,6 +77,7 @@ module Idv
       def idv_failure(result)
         throttle.increment! if result.extra.dig(:proofing_results, :exception).blank?
         if throttle.throttled?
+          @flow.irs_attempts_api_tracker.idv_verification_rate_limited
           @flow.analytics.throttler_rate_limit_triggered(
             throttle_type: :idv_resolution,
             step_name: self.class.name,

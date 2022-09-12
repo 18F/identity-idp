@@ -1,0 +1,8 @@
+<%= tag.li class: css_class do %>
+  <span class="step-indicator__step-title">
+    <%= title %>
+  </span>
+  <%= tag.span class: 'usa-sr-only' do %>
+    <%= t(status, scope: [:step_indicator, :status]) %>
+  <% end %>
+<% end %>

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'shared/_step_indicator.html.erb' do
+RSpec.describe StepIndicatorComponent, type: :component do
   let(:classes) { nil }
   let(:steps) { [{ name: :one }, { name: :two }, { name: :three }] }
   let(:current_step) { :one }
@@ -28,9 +28,8 @@ describe 'shared/_step_indicator.html.erb' do
     I18n.backend = original_backend
   end
 
-  before do
-    render(
-      'shared/step_indicator',
+  subject(:rendered) do
+    render_inline StepIndicatorComponent.new(
       steps: steps,
       current_step: current_step,
       locale_scope: locale_scope,

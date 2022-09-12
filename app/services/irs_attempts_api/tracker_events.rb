@@ -4,6 +4,15 @@
 module IrsAttemptsApi
   module TrackerEvents
     # param [Boolean] success True if Account Successfully Deleted
+    # A User deletes their Login.gov account
+    def account_purged(success:)
+      track_event(
+        :account_purged,
+        success: success,
+      )
+    end
+
+    # param [Boolean] success True if Account Successfully Deleted
     # param [Hash<Key, Array<String>>] failure_reason displays why account deletion failed
     # A User confirms and deletes their Login.gov account after 24 hour period
     def account_reset_account_deleted(success:, failure_reason:)
@@ -284,6 +293,13 @@ module IrsAttemptsApi
       )
     end
 
+    # Track when idv verification is rate limited during idv flow
+    def idv_verification_rate_limited
+      track_event(
+        :idv_verification_rate_limited,
+      )
+    end
+
     # @param [Boolean] success
     # @param [String] document_state
     # @param [String] document_number
@@ -321,6 +337,15 @@ module IrsAttemptsApi
         address: address,
         ssn: ssn,
         failure_reason: failure_reason,
+      )
+    end
+
+    # @param [String] email
+    # A login attempt was rejected due to too many incorrect attempts
+    def login_rate_limited(email)
+      track_event(
+        :login_rate_limited,
+        email: email,
       )
     end
 

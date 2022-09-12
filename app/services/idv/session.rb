@@ -74,6 +74,8 @@ module Idv
         :gpo_verification_pending
       elsif in_person_enrollment?
         :in_person_verification_pending
+      elsif threatmetrix_failed_and_needs_review?
+        :threatmetrix_review_pending
       end
     end
 
@@ -165,6 +167,14 @@ module Idv
 
     def in_person_enrollment?
       ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
+    end
+
+    def threatmetrix_failed_and_needs_review?
+      return unless IdentityConfig.store.lexisnexis_threatmetrix_required_to_verify
+      return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
+      component = ProofingComponent.find_by(user: @current_user)
+      return true unless component
+      !(component.threatmetrix && component.threatmetrix_review_status == 'pass')
     end
   end
 end
