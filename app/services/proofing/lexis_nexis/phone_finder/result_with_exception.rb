@@ -1,7 +1,6 @@
 module Proofing
   module LexisNexis
     module PhoneFinder
-      # TODO: Test me pls
       class ResultWithException
         attr_reader :exception
 
