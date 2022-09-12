@@ -40,33 +40,18 @@
   </div>
 
   <div class="margin-bottom-4">
-  <%= render MemorableDateComponent.new(
-        content_tag: 'memorable-date',
-        name: :dob,
-        day: parsed_dob&.day,
-        month: parsed_dob&.month,
-        year: parsed_dob&.year,
-        required: true,
-        min: Time.zone.today - 200.years,
-        max: Time.zone.today,
-        hint: t('in_person_proofing.form.state_id.dob_hint'),
-        label: t('in_person_proofing.form.state_id.dob'),
-        form: f,
-        error_messages: {
-          missing_month_day_year: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year'),
-          range_overflow: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow'),
-        },
-        range_errors: [
-          {
-            max: Time.zone.today - 13.years,
-            message: t(
-              'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
-              app_name: APP_NAME,
-            ),
-          },
-        ],
-      )
-      %>
+    <%= render ValidatedFieldComponent.new(
+          name: :dob,
+          as: :date,
+          form: f,
+          hint: t('in_person_proofing.form.state_id.dob_hint'),
+          html5: true,
+          input_html: { value: pii[:dob] },
+          label: t('in_person_proofing.form.state_id.dob'),
+          label_html: { class: 'usa-label' },
+          maxlength: 255,
+          required: true,
+        ) %>
   </div>
 
   <div class="margin-bottom-4">

@@ -9,8 +9,6 @@ es:
       - viernes
       - sábado
       - domingo
-    formats:
-      long: '%-d de %B de %Y'
     month_names:
       - null
       - enero

@@ -30,8 +30,8 @@ class ValidatedFieldElement extends HTMLElement {
   connectedCallback() {
     this.input = this.querySelector('.validated-field__input');
     this.inputWrapper = this.querySelector('.validated-field__input-wrapper');
+    this.errorMessage = this.querySelector('.usa-error-message');
     this.descriptorId = this.input?.getAttribute('aria-describedby');
-    this.errorMessage = this.getErrorElement();
     try {
       Object.assign(
         this.errorStrings,
@@ -57,7 +57,6 @@ class ValidatedFieldElement extends HTMLElement {
     const isValid = !errorMessage;
 
     this.setErrorMessage(errorMessage);
-    this.focusOnError(isValid);
     this.setInputIsValid(isValid);
   }
 
@@ -69,11 +68,12 @@ class ValidatedFieldElement extends HTMLElement {
   setErrorMessage(message?: string | null) {
     if (message) {
       this.getOrCreateErrorMessageElement().textContent = message;
-      if (this.errorMessage?.style.display === 'none') {
-        this.errorMessage.style.display = '';
+      if (!document.activeElement?.classList.contains('usa-input--error')) {
+        this.input?.focus();
       }
     } else if (this.errorMessage) {
-      this.errorMessage.style.display = 'none';
+      this.inputWrapper?.removeChild(this.errorMessage);
+      this.errorMessage = null;
     }
   }
 
@@ -119,13 +119,8 @@ class ValidatedFieldElement extends HTMLElement {
     if (!this.errorMessage) {
       this.errorMessage = this.ownerDocument.createElement('div');
       this.errorMessage.classList.add('usa-error-message');
-
-      const descriptorId = (this.descriptorId?.split(' ') || []).find(
-        (id) => document.getElementById(id) === null,
-      );
-
-      if (descriptorId) {
-        this.errorMessage.id = descriptorId;
+      if (this.descriptorId) {
+        this.errorMessage.id = this.descriptorId;
       }
       if (this.input && TEXT_LIKE_INPUT_TYPES.has(this.input.type)) {
         this.errorMessage.style.maxWidth = `${this.input.offsetWidth}px`;
@@ -135,29 +130,6 @@ class ValidatedFieldElement extends HTMLElement {
     }
 
     return this.errorMessage;
-  }
-
-  private getErrorElement(): HTMLElement | null {
-    const describedByElementIds = this.descriptorId?.split(' ') || [];
-
-    return (
-      describedByElementIds
-        .map((id) => document.getElementById(id))
-        .find((element) => element?.classList.contains('usa-error-message')) ||
-      this.querySelector('.usa-error-message')
-    );
-  }
-
-  /**
-   * Focus on this input if it's invalid and another error element
-   * does not have focus.
-   *
-   * @param isValid Whether input is valid.
-   */
-  private focusOnError(isValid: boolean) {
-    if (!isValid && !document.activeElement?.classList.contains('usa-input--error')) {
-      this.input?.focus();
-    }
   }
 }
 
