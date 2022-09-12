@@ -86,6 +86,12 @@ es:
         dob_hint: 'Ejemplo: 4 28 1986'
         first_name: Nombre
         last_name: Apellido
+        memorable_date:
+          errors:
+            date_of_birth:
+              missing_month_day_year: 'Introduce una fecha de nacimiento'
+              range_min_age: 'Debe tener más de 13 años para usar %{app_name}'
+              range_overflow: 'Ingrese una fecha que esté en el pasado'
         state_id_jurisdiction: Estado
         state_id_jurisdiction_hint: Seleccione el estado que aparece en su cédula
         state_id_jurisdiction_prompt: '- Seleccione -'

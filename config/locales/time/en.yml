@@ -9,6 +9,8 @@ en:
       - Friday
       - Saturday
       - Sunday
+    formats:
+      long: '%B %d, %Y'
     month_names:
       - null
       - January
