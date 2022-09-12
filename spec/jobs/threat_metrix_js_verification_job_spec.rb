@@ -31,7 +31,7 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
 
   let(:js) do
     <<~END
-      console.log('Javascrqipt!');
+      console.log('Javascript!');
     END
   end
 
