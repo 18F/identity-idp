@@ -10,7 +10,6 @@ module Idv
       def sp_session
         session.fetch(:sp, {})
       end
-
     end
   end
 end

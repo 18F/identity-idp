@@ -9,7 +9,7 @@
 </div>
 <br/><br/>
 <div>
-  Address: 2345 ANYWHERE ST&emsp;&emsp;&emsp;&emsp;&emsp;<%= link_to 'change'%>
+  Address: 2345 ANYWHERE ST&emsp;&emsp;&emsp;&emsp;&emsp;<%= link_to 'change' %>
   <br/>City: YOUR CITY
   <br/>State: NY
   <br/>Zip Code: 12345  
@@ -19,13 +19,13 @@
   Social Security Number: <br/>1**-**-***1
 </div>
 <br/>
-<%= check_box("post", "validated") %>
+<%= check_box('post', 'validated') %>
 Show Social Security number
 <br/>
 <br/>
 <%= simple_form_for :inherited_proofing,
-                      url: url_for,
-                      method: 'put',
-                      html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
+                    url: url_for,
+                    method: 'put',
+                    html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
     <%= f.submit t('inherited_proofing.buttons.continue') %>
-    <% end %>
+<% end %>
