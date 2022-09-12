@@ -22,9 +22,6 @@ en:
       invalid_link: This link is expired or not valid.  Please request another link to
         verify your identity on a mobile phone.
     confirm_password_incorrect: Incorrect password.
-    inherited_proofing:
-      consent_form: Before you can continue, you must give us permission. Please check
-        the box below and then click continue.blah
     doc_auth:
       consent_form: Before you can continue, you must give us permission. Please check
         the box below and then click continue.

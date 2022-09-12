@@ -24,8 +24,6 @@ fr:
       invalid_link: Ce lien a expiré ou n’est pas valide. Veuillez demander un autre
         lien pour vérifier votre identité sur un téléphone mobile.
     confirm_password_incorrect: Mot de passe incorrect.
-    inherited_proofing:
-      consent_form: to be implemented
     doc_auth:
       consent_form: Avant de pouvoir continuer, vous devez nous donner la permission.
         Veuillez cocher la case ci-dessous puis cliquez sur continuer.
