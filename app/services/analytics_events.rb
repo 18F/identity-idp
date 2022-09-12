@@ -1460,12 +1460,14 @@ module AnalyticsEvents
   # @param [Array] acr_values
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
+  # @param [String] hash of returned "code" param
   def openid_connect_request_authorization(
     client_id:,
     scope:,
     acr_values:,
     unauthorized_scope:,
     user_fully_authenticated:,
+    code_digest:,
     **extra
   )
     track_event(
@@ -1475,6 +1477,7 @@ module AnalyticsEvents
       acr_values: acr_values,
       unauthorized_scope: unauthorized_scope,
       user_fully_authenticated: user_fully_authenticated,
+      code_digest: code_digest,
       **extra,
     )
   end
@@ -1482,11 +1485,13 @@ module AnalyticsEvents
   # Tracks when an openid connect token request is made
   # @param [String] client_id
   # @param [String] user_id
-  def openid_connect_token(client_id:, user_id:, **extra)
+  # @param [String] hash of "code" param
+  def openid_connect_token(client_id:, user_id:, code_digest:, **extra)
     track_event(
       'OpenID Connect: token',
       client_id: client_id,
       user_id: user_id,
+      code_digest: code_digest,
       **extra,
     )
   end
