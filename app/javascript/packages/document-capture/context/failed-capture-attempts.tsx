@@ -32,22 +32,33 @@ interface FailedCaptureAttemptsContextInterface {
    * The maximum number of failed Acuant capture attempts
    * before use of the native camera option is triggered
    */
-  maxAttemptsBeforeNativeCamera: number;
+  maxCaptureAttemptsBeforeNativeCamera: number;
+
+  /**
+   * The maximum number of failed document submission
+   * attempts before use of the native camera option
+   * is triggered
+   */
+  maxSubmissionAttemptsBeforeNativeCamera: number;
+
   /**
    * Callback triggered on attempt, to increment attempts
    */
   onFailedCaptureAttempt: (metadata: CaptureAttemptMetadata) => void;
+
   /**
    * Callback to trigger a reset of attempts
    */
   onResetFailedCaptureAttempts: () => void;
+
   /**
    * Metadata about the last attempt
    */
   lastAttemptMetadata: CaptureAttemptMetadata;
+
   /**
    * Whether or not the native camera is currently being forced
-   * after maxAttemptsBeforeNativeCamera number of failed attempts
+   * after maxCaptureAttemptsBeforeNativeCamera number of failed attempts
    */
   forceNativeCamera: boolean;
 }
@@ -63,7 +74,8 @@ const FailedCaptureAttemptsContext = createContext<FailedCaptureAttemptsContextI
   onFailedCaptureAttempt: () => {},
   onFailedSubmissionAttempt: () => {},
   onResetFailedCaptureAttempts: () => {},
-  maxAttemptsBeforeNativeCamera: Infinity,
+  maxCaptureAttemptsBeforeNativeCamera: Infinity,
+  maxSubmissionAttemptsBeforeNativeCamera: Infinity,
   maxFailedAttemptsBeforeTips: Infinity,
   lastAttemptMetadata: DEFAULT_LAST_ATTEMPT_METADATA,
   forceNativeCamera: false,
@@ -74,13 +86,15 @@ FailedCaptureAttemptsContext.displayName = 'FailedCaptureAttemptsContext';
 interface FailedCaptureAttemptsContextProviderProps {
   children: ReactNode;
   maxFailedAttemptsBeforeTips: number;
-  maxAttemptsBeforeNativeCamera: number;
+  maxCaptureAttemptsBeforeNativeCamera: number;
+  maxSubmissionAttemptsBeforeNativeCamera: number;
 }
 
 function FailedCaptureAttemptsContextProvider({
   children,
   maxFailedAttemptsBeforeTips,
-  maxAttemptsBeforeNativeCamera,
+  maxCaptureAttemptsBeforeNativeCamera,
+  maxSubmissionAttemptsBeforeNativeCamera,
 }: FailedCaptureAttemptsContextProviderProps) {
   const [lastAttemptMetadata, setLastAttemptMetadata] = useState<CaptureAttemptMetadata>(
     DEFAULT_LAST_ATTEMPT_METADATA,
@@ -99,8 +113,8 @@ function FailedCaptureAttemptsContextProvider({
   }
 
   const forceNativeCamera =
-    failedCaptureAttempts >= maxAttemptsBeforeNativeCamera ||
-    failedSubmissionAttempts >= maxAttemptsBeforeNativeCamera;
+    failedCaptureAttempts >= maxCaptureAttemptsBeforeNativeCamera ||
+    failedSubmissionAttempts >= maxSubmissionAttemptsBeforeNativeCamera;
 
   return (
     <FailedCaptureAttemptsContext.Provider
@@ -110,7 +124,8 @@ function FailedCaptureAttemptsContextProvider({
         onResetFailedCaptureAttempts,
         failedSubmissionAttempts,
         onFailedSubmissionAttempt,
-        maxAttemptsBeforeNativeCamera,
+        maxCaptureAttemptsBeforeNativeCamera,
+        maxSubmissionAttemptsBeforeNativeCamera,
         maxFailedAttemptsBeforeTips,
         lastAttemptMetadata,
         forceNativeCamera,

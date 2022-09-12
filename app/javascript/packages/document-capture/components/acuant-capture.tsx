@@ -298,6 +298,7 @@ function AcuantCapture(
     failedCaptureAttempts,
     onFailedCaptureAttempt,
     onResetFailedCaptureAttempts,
+    failedSubmissionAttempts,
     forceNativeCamera,
   } = useContext(FailedCaptureAttemptsContext);
 
@@ -417,7 +418,8 @@ function AcuantCapture(
       if (forceNativeCamera) {
         trackEvent('IdV: Native camera forced after failed attempts', {
           field: name,
-          failed_attempts: failedCaptureAttempts,
+          failed_capture_attempts: failedCaptureAttempts,
+          failed_submission_attempts: failedSubmissionAttempts,
         });
         return forceUpload();
       }

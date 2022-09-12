@@ -80,7 +80,8 @@ doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_tips: 3
-doc_auth_max_attempts_before_native_camera: 2
+doc_auth_max_capture_attempts_before_native_camera: 2
+doc_auth_max_submission_attempts_before_native_camera: 2
 doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
