@@ -33,24 +33,16 @@ class FrontendLogController < ApplicationController
   # rubocop:enable Layout/LineLength
 
   def create
-    event = log_params[:event]
-    payload = log_params[:payload].to_h
-    if (analytics_method = EVENT_MAP[event])
-      if analytics_method.is_a?(Proc)
-        analytics_method.call(analytics, **payload)
-      elsif analytics_method.parameters.empty?
-        analytics_method.bind_call(analytics)
-      else
-        analytics_method.bind_call(analytics, **payload)
-      end
-    else
-      analytics.track_event("Frontend: #{event}", payload)
-    end
+    frontend_logger.track_event(log_params[:event], log_params[:payload].to_h)
 
     render json: { success: true }, status: :ok
   end
 
   private
+
+  def frontend_logger
+    FrontendLogger.new(analytics: analytics, event_map: EVENT_MAP)
+  end
 
   def log_params
     params.permit(:event, payload: {})
