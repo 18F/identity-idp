@@ -4,37 +4,36 @@ en:
     buttons:
       continue: Continue
     headings:
-      welcome: Get started verifying your identity
       lets_go: How verifying your identity works
-      verify_identity: Verify your identity
       secure_account: Secure your account
+      verify_identity: Verify your identity
+      welcome: Get started verifying your identity
     info:
+      lets_go: 'Identity verification happens in two parts:'
       no_sp_name: VA needs to make sure you are you
       privacy_html: '%{app_name} is a secure, government website that adheres to the
         highest standards in data protection. We only use your data to verify
         your identity. %{link} about our privacy and security measures.'
-      welcome_html: '%{sp_name} - not someone
-        pretending to be you.'
-      verify_identity: We’ll ask for your personal information to verify your identity
-        against public records.
       secure_account: We’ll encrypt your account with your password. Encryption means
         your data is protected and only you will be able to access or change
         your information.
-      lets_go: 'Identity verification happens in two parts:'
+      verify_identity: We’ll ask for your personal information to verify your identity
+        against public records.
+      welcome_html: '%{sp_name} - not someone pretending to be you.'
     instructions:
-      learn_more: Learn more
-      privacy: Our privacy and security standards
-      welcome: To verify your identity,
-      verify_requirements: you will need a phone number with a phone plan associated with your name.
-      verification_content: You do not need to be the primary account holder on your phone plan. If your phone number 
-                            doesn’t work, we can send you a verification code by mail.
       consent: By checking this box, you are letting %{app_name} ask for, use, keep,
         and share your personal information. We will only use it to verify your
         identity.
       learn_more: Learn more
+      privacy: Our privacy and security standards
+      verification_content: You do not need to be the primary account holder on your
+        phone plan. If your phone number doesn’t work, we can send you a
+        verification code by mail.
+      verify_requirements: you will need a phone number with a phone plan associated with your name.
+      welcome: To verify your identity,
     troubleshooting:
       headings:
         missing_required_items: Don’t have a phone number? Here’s how to get help
       options:
-        learn_more_phone_or_mail: Learn more about verifying by phone or mail 
         get_va_help: Get help at VA
+        learn_more_phone_or_mail: Learn more about verifying by phone or mail
