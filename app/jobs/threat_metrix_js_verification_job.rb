@@ -10,7 +10,7 @@ class ThreatMetrixJsVerificationJob < ApplicationJob
 
     # Certificate is stored ASCII-armored in config
     raw_cert = IdentityConfig.store.lexisnexis_threatmetrix_js_signing_cert
-    return if !raw_cert
+    return if raw_cert.blank?
 
     cert = OpenSSL::X509::Certificate.new raw_cert
 
