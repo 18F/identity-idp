@@ -1,9 +1,8 @@
 class ThreatMetrixJsVerificationJob < ApplicationJob
   queue_as :default
 
-  def perform(session_id:)
+  def perform(session_id: SecureRandom.uuid)
     org_id = IdentityConfig.store.lexisnexis_threatmetrix_org_id
-    session_id ||= SecureRandom.uuid
 
     return if !org_id
 
