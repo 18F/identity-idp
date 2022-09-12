@@ -22,6 +22,8 @@ es:
       invalid_link: Este enlace ha caducado o no es válido. Solicite otro enlace para
         verificar su identidad en un teléfono móvil.
     confirm_password_incorrect: La contraseña es incorrecta.
+    inherited_proofing:
+      consent_form: to be implemented
     doc_auth:
       consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a
         continuación y luego haga clic en continuar.
