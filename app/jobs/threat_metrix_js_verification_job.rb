@@ -27,7 +27,6 @@ class ThreatMetrixJsVerificationJob < ApplicationJob
       session_id: session_id,
       http_status: resp.status,
       signature: (signature || '').each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join,
-      certificate_expiry: cert.not_after,
     }
 
     if verify_js content, signature, cert
