@@ -10,25 +10,6 @@ en:
       enabled_alert: You have enabled JavaScript in your browser.
       next_step: Please refresh this page once you have enabled JavaScript in your
         browser.
-    memorable_date:
-      day: Day
-      errors:
-        invalid_date: 'The entry is not a valid date'
-        invalid_day: 'Enter a day between 1 and 31'
-        invalid_month: 'Enter a month between 1 and 12'
-        invalid_year: 'Enter a year with 4 numbers'
-        missing_day: 'Enter a day'
-        missing_day_year: 'Enter a day and year'
-        missing_month: 'Enter a month'
-        missing_month_day: 'Enter a month and day'
-        missing_month_day_year: 'Enter a %{label}'
-        missing_month_year: 'Enter a month and year'
-        missing_year: 'Enter a year'
-        outside_date_range: 'Enter a %{label} between %{min} and %{max}'
-        range_overflow: 'Enter a date on or before %{date}'
-        range_underflow: 'Enter a date on or after %{date}'
-      month: Month
-      year: Year
     password_toggle:
       label: Password
       toggle_label: Show password
