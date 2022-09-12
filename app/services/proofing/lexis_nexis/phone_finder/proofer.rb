@@ -1,7 +1,7 @@
 module Proofing
   module LexisNexis
     module PhoneFinder
-      class Proofer #< LexisNexis::Proofer
+      class Proofer
         attr_reader :config
 
         def initialize(config)
