@@ -8,6 +8,9 @@ es:
       secure_account: to be implemented
       verify_identity: to be implemented
       welcome: Empiece con la verificación de su identidad
+      lets_go: to be implemented
+      verify_identity: to be implemented
+      secure_account: to be implemented
     info:
       lets_go: to be implemented
       no_sp_name: La agencia a la que está intentando acceder
@@ -19,6 +22,9 @@ es:
       verify_identity: to be implemented
       welcome_html: '%{sp_name} necesita asegurarse de que sea usted y no alguien que
         se haga pasar por usted.'
+      verify_identity: to be implemented
+      secure_account: to be implemented
+      lets_go: to be implemented
     instructions:
       consent: to be implemented for %{app_name}
       learn_more: Obtenga más información

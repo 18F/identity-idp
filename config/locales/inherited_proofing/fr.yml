@@ -8,6 +8,9 @@ fr:
       secure_account: to be implemented
       verify_identity: to be implemented
       welcome: Commencez à vérifier votre identité
+      lets_go: to be implemented
+      verify_identity: to be implemented
+      secure_account: to be implemented
     info:
       lets_go: to be implemented
       no_sp_name: L’agence à laquelle vous essayez d’accéder
@@ -19,6 +22,9 @@ fr:
       verify_identity: to be implemented
       welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
         quelqu’un qui se fait passer pour vous.'
+      verify_identity: to be implemented
+      secure_account: to be implemented
+      lets_go: to be implemented
     instructions:
       consent: to be implemented for %{app_name}
       learn_more: En savoir plus
