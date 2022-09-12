@@ -86,13 +86,7 @@ feature 'doc auth send link step' do
       find('span', text: 'Sri Lanka').click
     end
     focused_input = page.find('.phone-input__number:focus')
-
-    error_message_id = focused_input[:'aria-describedby']&.split(' ')&.find do |id|
-      page.has_css?(".usa-error-message##{id}")
-    end
-    expect(error_message_id).to_not be_empty
-
-    error_message = page.find_by_id(error_message_id)
+    error_message = page.find_by_id(focused_input[:'aria-describedby'])
     expect(error_message).to have_content(
       t(
         'two_factor_authentication.otp_delivery_preference.sms_unsupported',

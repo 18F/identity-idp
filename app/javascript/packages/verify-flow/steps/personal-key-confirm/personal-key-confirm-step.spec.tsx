@@ -96,7 +96,7 @@ describe('PersonalKeyConfirmStep', () => {
 
     await userEvent.type(input, '0000-0000-0000-000');
     errorMessage = document.getElementById(input.getAttribute('aria-describedby')!);
-    expect(errorMessage?.style.display === 'none').to.be.true();
+    expect(errorMessage).to.not.exist();
     await userEvent.type(input, '{Enter}');
     expect(onComplete).not.to.have.been.called();
     errorMessage = document.getElementById(input.getAttribute('aria-describedby')!);

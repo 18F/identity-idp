@@ -10,25 +10,6 @@ fr:
       enabled_alert: Vous avez activé JavaScript dans votre navigateur.
       next_step: Veuillez rafraîchir cette page une fois que vous avez activé
         JavaScript dans votre navigateur.
-    memorable_date:
-      day: Jour
-      errors:
-        invalid_date: 'L’entrée n’est pas une date valide'
-        invalid_day: 'Entrez un jour entre 1 et 31'
-        invalid_month: 'Entrez un mois entre 1 et 12'
-        invalid_year: 'Entrez une année avec 4 chiffres'
-        missing_day: 'Entrez un jour'
-        missing_day_year: 'Entrez un jour et une année'
-        missing_month: 'Entrez un mois'
-        missing_month_day: 'Entrez un mois et un jour'
-        missing_month_day_year: 'Entrez une %{label}'
-        missing_month_year: 'Entrez un mois et une année'
-        missing_year: 'Entrez une année'
-        outside_date_range: 'Entrez une %{label} entre le %{min} et le %{max}'
-        range_overflow: 'Entrez une date au plus tard le %{date}'
-        range_underflow: 'Entrez une date le ou après le %{date}'
-      month: Mois
-      year: An
     password_toggle:
       label: Mot de passe
       toggle_label: Afficher le mot de passe
