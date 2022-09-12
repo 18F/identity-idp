@@ -6,7 +6,6 @@ module Proofing
       FAILED_TO_CONTACT_PHONE_NUMBER = '7035555999'
       TRANSACTION_ID = 'address-mock-transaction-id-123'
 
-
       AddressMockClientResult = Struct.new(:success, :errors, :exception, keyword_init: true) do
         def success?
           success
