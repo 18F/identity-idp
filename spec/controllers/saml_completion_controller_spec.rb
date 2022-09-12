@@ -11,7 +11,7 @@ describe SamlCompletionController do
     let(:sig_alg) { 'aes256' }
     let(:signature) { 'xyz789' }
 
-    context 'with SAML protocol params passed in appropriately via an internal redirect' do
+    context 'with a valid service provider request session' do
       let(:get_params) do
         {
           SAMLRequest: saml_request,
@@ -36,6 +36,24 @@ describe SamlCompletionController do
         expect(response.body).to match(hidden_field_tag('RelayState', relay_state))
         expect(response.body).to match(hidden_field_tag('SigAlg', sig_alg))
         expect(response.body).to match(hidden_field_tag('Signature', signature))
+      end
+    end
+
+    context 'with a blank service provider request session' do
+      before { expect(controller).to receive(:sp_session).at_least(:once).and_return({}) }
+
+      it 'renders 404 not found' do
+        get :index
+        expect(response).to be_not_found
+      end
+    end
+
+    context 'with a nil service provider request session' do
+      before { expect(controller).to receive(:sp_from_sp_session).and_return nil }
+
+      it 'renders 404 not found' do
+        get :index
+        expect(response).to be_not_found
       end
     end
   end

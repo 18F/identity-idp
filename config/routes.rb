@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     post "/api/saml/auth#{suffix}" => 'saml_post#auth'
     # actual SAML handling POST route
     post "/api/saml/authpost#{suffix}" => 'saml_idp#auth'
+    # The internal auth post which will not be logged as an external request
     post "/api/saml/finalauthpost#{suffix}" => 'saml_idp#auth'
     get "/api/saml/auth#{suffix}" => 'saml_idp#auth'
   end
