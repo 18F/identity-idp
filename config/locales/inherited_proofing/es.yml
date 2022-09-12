@@ -4,32 +4,32 @@ es:
     buttons:
       continue: Continuar
     headings:
-      welcome: Empiece con la verificación de su identidad
       lets_go: to be implemented
-      verify_identity: to be implemented
       secure_account: to be implemented
+      verify_identity: to be implemented
+      welcome: Empiece con la verificación de su identidad
     info:
+      lets_go: to be implemented
       no_sp_name: La agencia a la que está intentando acceder
       privacy_html: '%{app_name} es un sitio web gubernamental seguro que cumple con
         las normas más estrictas de protección de datos. Solo utilizamos sus
         datos para verificar su identidad. %{link} sobre nuestras medidas de
         privacidad y seguridad.'
+      secure_account: to be implemented
+      verify_identity: to be implemented
       welcome_html: '%{sp_name} necesita asegurarse de que sea usted y no alguien que
         se haga pasar por usted.'
-      verify_identity: to be implemented
-      secure_account: to be implemented
-      lets_go: to be implemented
     instructions:
       bullet1: Un número de teléfono con un plan tarifario vinculado a su nombre.
+      consent: to be implemented
       learn_more: Obtenga más información
       privacy: Nuestras normas de privacidad y seguridad
-      welcome: 'Deberá contar con lo siguiente para verificar su identidad:'
-      verify_requirements: to be implemented
       verification_content: to be implemented
-      consent: to be implemented
+      verify_requirements: to be implemented
+      welcome: 'Deberá contar con lo siguiente para verificar su identidad:'
     troubleshooting:
       headings:
         missing_required_items: to be implemented
       options:
-        learn_more_phone_or_mail: to be implemented
         get_va_help: to be implemented
+        learn_more_phone_or_mail: to be implemented

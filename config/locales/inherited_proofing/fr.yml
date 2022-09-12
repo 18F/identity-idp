@@ -4,32 +4,32 @@ fr:
     buttons:
       continue: Continuer
     headings:
-      welcome: Commencez à vérifier votre identité
       lets_go: to be implemented
-      verify_identity: to be implemented
       secure_account: to be implemented
+      verify_identity: to be implemented
+      welcome: Commencez à vérifier votre identité
     info:
+      lets_go: to be implemented
       no_sp_name: L’agence à laquelle vous essayez d’accéder
       privacy_html: '%{app_name} est un site gouvernemental sécurisé qui respecte les
         normes les plus strictes en matière de protection des données. Nous
         n’utilisons vos données uniquement pour vérifier votre identité. %{link}
         sur nos mesures de confidentialité et de sécurité.'
+      secure_account: to be implemented
+      verify_identity: to be implemented
       welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
         quelqu’un qui se fait passer pour vous.'
-      verify_identity: to be implemented
-      secure_account: to be implemented
-      lets_go: to be implemented
     instructions:
       bullet1: Un numéro de téléphone associé à un forfait téléphonique à votre nom.
+      consent: to be implemented
       learn_more: En savoir plus
       privacy: Nos normes de confidentialité et de sécurité
-      welcome: 'Pour vérifier votre identité, vous aurez besoin de:'
-      verify_requirements: to be implemented
       verification_content: to be implemented
-      consent: to be implemented
+      verify_requirements: to be implemented
+      welcome: 'Pour vérifier votre identité, vous aurez besoin de:'
     troubleshooting:
       headings:
         missing_required_items: to be implemented
       options:
-        learn_more_phone_or_mail: to be implemented
         get_va_help: to be implemented
+        learn_more_phone_or_mail: to be implemented
