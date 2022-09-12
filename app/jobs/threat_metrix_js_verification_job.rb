@@ -14,6 +14,8 @@ class ThreatMetrixJsVerificationJob < ApplicationJob
 
     cert = OpenSSL::X509::Certificate.new raw_cert
 
+    raise 'Certificate is expired' if cert.not_after < Time.now
+
     url = "https://h.online-metrix.net/fp/tags.js?org_id=#{org_id}&session_id=#{session_id}"
 
     resp = build_faraday.get url
