@@ -555,7 +555,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_09_021833) do
     t.boolean "use_legacy_name_id_behavior", default: false
     t.boolean "irs_attempts_api_enabled"
     t.boolean "device_profiling_enabled", default: false
-    t.boolean "in_person_proofing_enabled"
+    t.boolean "in_person_proofing_enabled", default: false
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
