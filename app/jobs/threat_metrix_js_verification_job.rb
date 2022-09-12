@@ -58,11 +58,7 @@ class ThreatMetrixJsVerificationJob < ApplicationJob
     return [raw] if /[^a-fA-F0-9]/.match? signature
 
     # Convert hexadecimal signature back into binary data
-    signature = signature.
-      strip.
-      scan(/../).
-      map { |x| x.hex.chr }.
-      join
+    signature = [signature].pack('H*')
 
     content = raw[0, sig_index]
 
