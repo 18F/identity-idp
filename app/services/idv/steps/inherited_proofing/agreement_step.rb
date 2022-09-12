@@ -1,7 +1,7 @@
 module Idv
   module Steps
     module InheritedProofing
-      class AgreementStep < DocAuthBaseStep
+      class AgreementStep < InheritedProofingBaseStep
         STEP_INDICATOR_STEP = :getting_started
 
         def call
