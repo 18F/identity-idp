@@ -22,7 +22,7 @@ module Proofing
             success: success,
             timed_out: exception.is_a?(Proofing::TimeoutError),
             transaction_id: transaction_id,
-            vendor_name: 'lexisnexis:phone_finder',
+            vendor_name: 'AdressMock',
           }
         end
       end
