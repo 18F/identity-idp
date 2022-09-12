@@ -11,8 +11,9 @@ module Proofing
         def proof(applicant)
           response = VerificationRequest.new(config: config, applicant: applicant).send
           return Proofing::LexisNexis::PhoneFinder::Result.new(response)
-        rescue Proofing::TimeoutError
-          return TimedOutResult.new
+        rescue => exception
+          NewRelic::Agent.notice_error(exception)
+          ResultWithException.new(exception)
         end
 
         # vendor_name 'lexisnexis:phone_finder'
