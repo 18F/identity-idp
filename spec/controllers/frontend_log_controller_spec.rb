@@ -164,7 +164,7 @@ describe FrontendLogController do
             'IdV: Native camera forced after failed attempts',
             field: field,
             failed_capture_attempts: failed_capture_attempts,
-            failed_submission_attempts: failed_submission_attempts
+            failed_submission_attempts: failed_submission_attempts,
             flow_path: flow_path,
           )
 
