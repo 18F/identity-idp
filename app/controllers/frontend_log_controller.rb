@@ -48,7 +48,7 @@ class FrontendLogController < ApplicationController
   end
 
   def check_user_authenticated
-    return if effective_user
+    return if effective_user || request.base_url
 
     render json: { success: false }, status: :unauthorized
   end
