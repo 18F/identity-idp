@@ -101,6 +101,13 @@ module IrsAttemptsApi
       )
     end
 
+    # The user has exceeded the rate limit during idv document upload
+    def idv_document_upload_rate_limited
+      track_event(
+        :idv_document_upload_rate_limited,
+      )
+    end
+
     # @param [Boolean] success
     # @param [String] document_state
     # @param [String] document_number
@@ -139,42 +146,6 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when the user submits their idv phone number
-    # @param [String] phone_number
-    # param [Boolean] success
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def idv_phone_submitted(phone_number:, success:, failure_reason: nil)
-      track_event(
-        :idv_phone_submitted,
-        phone_number: phone_number,
-        success: success,
-        failure_reason: failure_reason,
-      )
-    end
-
-    # Tracks Idv phone OTP sent rate limits
-    def idv_phone_otp_sent_rate_limited
-      track_event(
-        :idv_phone_otp_sent_rate_limited,
-      )
-    end
-
-    # The user has exceeded the rate limit during idv document upload
-    def idv_document_upload_rate_limited
-      track_event(
-        :idv_document_upload_rate_limited,
-      )
-    end
-
-    # Tracks when the user submits a password for identity proofing
-    # @param [Boolean] success
-    def idv_password_entered(success:)
-      track_event(
-        :idv_password_entered,
-        success: success,
-      )
-    end
-
     # param [Boolean] Success
     # param [Hash<Key, Array<String>>] failure_reason displays GPO submission failed
     # GPO verification submitted from Letter sent to verify address
@@ -201,6 +172,15 @@ module IrsAttemptsApi
         :idv_letter_requested,
         success: success,
         resend: resend,
+      )
+    end
+
+    # Tracks when the user submits a password for identity proofing
+    # @param [Boolean] success
+    def idv_password_entered(success:)
+      track_event(
+        :idv_password_entered,
+        success: success,
       )
     end
 
@@ -236,6 +216,13 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks Idv phone OTP sent rate limits
+    def idv_phone_otp_sent_rate_limited
+      track_event(
+        :idv_phone_otp_sent_rate_limited,
+      )
+    end
+
     # Tracks when a user submits OTP code sent to their phone
     # @param [String] phone_number
     # param [Boolean] success
@@ -255,6 +242,19 @@ module IrsAttemptsApi
       track_event(
         :idv_phone_otp_submitted_rate_limited,
         phone: phone,
+      )
+    end
+
+    # Tracks when the user submits their idv phone number
+    # @param [String] phone_number
+    # param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def idv_phone_submitted(phone_number:, success:, failure_reason: nil)
+      track_event(
+        :idv_phone_submitted,
+        phone_number: phone_number,
+        success: success,
+        failure_reason: failure_reason,
       )
     end
 
@@ -336,6 +336,16 @@ module IrsAttemptsApi
         date_of_birth: date_of_birth,
         address: address,
         ssn: ssn,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # @param [Boolean] success True if the password was successfully changed
+    # A logged-in user has attempted to change their password
+    def logged_in_password_change(success:, failure_reason: nil)
+      track_event(
+        :logged_in_password_change,
+        success: success,
         failure_reason: failure_reason,
       )
     end
