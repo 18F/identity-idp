@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import '@18f/identity-validated-field/validated-field-element';
 import '.';
+import { findByDisplayValue } from '@testing-library/dom';
 
 const EXAMPLE_ERROR_MAPPINGS = {
   error_messages: {
@@ -47,6 +48,7 @@ const EXAMPLE_ERROR_MAPPINGS_WITH_RANGE_ERRORS = {
 describe('MemorableDateElement', () => {
   let container;
   let formElement;
+  let otherClickableElement;
   let memorableDateElement;
   let errorMessageMappingsElement;
   let errorMessageElement;
@@ -67,6 +69,7 @@ describe('MemorableDateElement', () => {
     container = document.createElement('div');
     container.innerHTML = `
         <form id="test-md-form">
+            <div id="test-md-extra-text">This is an arbitrary element to click</div>
             <lg-memorable-date id="test-memorable-date">
                 <script id="test-md-error-mappings" type="application/json" class="memorable-date__error-strings"></script>
                 <lg-validated-field>
@@ -103,7 +106,7 @@ describe('MemorableDateElement', () => {
                         maxlength="4" />
                 </lg-validated-field>
             </lg-memorable-date>
-            <div id="test-md-error-message" class="usa-error-message"></div>
+            <div id="test-md-error-message" class="usa-error-message" style="display:none;"></div>
             <button id="test-md-submit">Submit</button>
         </form>
         `;
@@ -111,6 +114,9 @@ describe('MemorableDateElement', () => {
 
     formElement = document.getElementById('test-md-form');
     expect(formElement?.tagName).to.equal('FORM');
+
+    otherClickableElement = document.getElementById('test-md-extra-text');
+    expect(otherClickableElement?.tagName).to.equal('DIV');
 
     memorableDateElement = document.getElementById('test-memorable-date');
     expect(memorableDateElement?.tagName).to.equal('LG-MEMORABLE-DATE');
@@ -160,6 +166,75 @@ describe('MemorableDateElement', () => {
       expect(formElement.reportValidity()).to.be.true();
     });
   }
+
+  // This is for a New Relic bug that overrides
+  // the addEventListener and removeEventListener functions.
+  // See here: https://discuss.newrelic.com/t/javascrypt-snippet-breaks-site/52188
+  function itIsUnaffectedByNewRelicEventBug() {
+    context(
+      'another script overrides the addEventListener in a way that loses function identity',
+      () => {
+        let originalAddEventListenerFunction;
+        beforeEach(() => {
+          originalAddEventListenerFunction = Element.prototype.addEventListener;
+          Element.prototype.addEventListener = function addEventListener(type, listener, ...args) {
+            if (listener instanceof Function) {
+              listener = function overrideListener(...eventArgs) {
+                return listener.apply(this, eventArgs);
+              };
+            }
+
+            if (arguments.length > 1) {
+              args.unshift(listener);
+            }
+
+            if (arguments.length > 0) {
+              args.unshift(type);
+            }
+            return originalAddEventListenerFunction.apply(this, args);
+          };
+        });
+
+        afterEach(() => {
+          Element.prototype.addEventListener = originalAddEventListenerFunction;
+          originalAddEventListenerFunction = null;
+        });
+
+        context(
+          'user has entered a day and year, then clicks an element outside the memorable date fields',
+          () => {
+            beforeEach(async function () {
+              this.timeout(8000);
+
+              await userEvent.click(dayInput);
+              await userEvent.type(dayInput, '1');
+              await userEvent.click(yearInput);
+              await userEvent.type(yearInput, '19');
+              await userEvent.click(otherClickableElement);
+
+              // Issue seems to happen after a 5 or more second delay in this state
+              await new Promise((resolve) => setTimeout(resolve, 6000));
+            });
+
+            it('does not hang when the user modifies the day', async () => {
+              await userEvent.click(dayInput);
+              await userEvent.type(dayInput, '5');
+              const dayInputWithText = await findByDisplayValue(memorableDateElement, '15');
+              expect(dayInputWithText.id).to.equal(dayInput.id);
+            });
+
+            it('does not hang when the user modifies the year', async () => {
+              await userEvent.click(yearInput);
+              await userEvent.type(yearInput, '4');
+              const yearInputWithText = await findByDisplayValue(memorableDateElement, '194');
+              expect(yearInputWithText.id).to.equal(yearInput.id);
+            });
+          },
+        );
+      },
+    );
+  }
+
   function itHidesValidationErrorsOnTyping() {
     it('hides validation errors on typing', async () => {
       const expectNoVisibleError = () => {
@@ -212,6 +287,7 @@ describe('MemorableDateElement', () => {
   describe('error message mappings are empty', () => {
     itAcceptsAValidDate();
     itHidesValidationErrorsOnTyping();
+    itIsUnaffectedByNewRelicEventBug();
     it('uses default required validation', async () => {
       expectErrorToEqual('');
       submitButton.click();
@@ -283,6 +359,7 @@ describe('MemorableDateElement', () => {
     });
     itAcceptsAValidDate();
     itHidesValidationErrorsOnTyping();
+    itIsUnaffectedByNewRelicEventBug();
     it('uses customized messages for required validation', async () => {
       expectErrorToEqual('');
       submitButton.click();
@@ -350,6 +427,66 @@ describe('MemorableDateElement', () => {
       await userEvent.click(submitButton);
       expectErrorToEqual('The entry is not a valid date');
       expect(formElement.reportValidity()).to.be.false();
+    });
+
+    it('does not show error styles on fields unrelated to the validation message', async () => {
+      await userEvent.type(monthInput, '2');
+      await userEvent.type(yearInput, '1972');
+      expectErrorToEqual('');
+      await userEvent.click(submitButton);
+      expectErrorToEqual('Enter a day');
+      expect(formElement.reportValidity()).to.be.false();
+      expect(Array.from(monthInput.classList)).to.not.include('usa-input--error');
+      expect(Array.from(dayInput.classList)).to.include('usa-input--error');
+      expect(Array.from(yearInput.classList)).to.not.include('usa-input--error');
+
+      await userEvent.type(dayInput, 'bc');
+      expectErrorToEqual('');
+      await userEvent.click(submitButton);
+      expectErrorToEqual('Enter a day between 1 and 31');
+      expect(formElement.reportValidity()).to.be.false();
+      expect(Array.from(monthInput.classList)).to.not.include('usa-input--error');
+      expect(Array.from(dayInput.classList)).to.include('usa-input--error');
+      expect(Array.from(yearInput.classList)).to.not.include('usa-input--error');
+
+      await userEvent.type(monthInput, 'z');
+      await userEvent.clear(dayInput);
+      await userEvent.type(dayInput, '18');
+      expectErrorToEqual('');
+      await userEvent.click(submitButton);
+      expectErrorToEqual('Enter a month between 1 and 12');
+      expect(formElement.reportValidity()).to.be.false();
+      expect(Array.from(monthInput.classList)).to.include('usa-input--error');
+      expect(Array.from(dayInput.classList)).to.not.include('usa-input--error');
+      expect(Array.from(yearInput.classList)).to.not.include('usa-input--error');
+
+      await userEvent.clear(monthInput);
+      expectErrorToEqual('');
+      await userEvent.click(submitButton);
+      expectErrorToEqual('Enter a month');
+      expect(formElement.reportValidity()).to.be.false();
+      expect(Array.from(monthInput.classList)).to.include('usa-input--error');
+      expect(Array.from(dayInput.classList)).to.not.include('usa-input--error');
+      expect(Array.from(yearInput.classList)).to.not.include('usa-input--error');
+
+      await userEvent.type(monthInput, '4');
+      await userEvent.clear(yearInput);
+      expectErrorToEqual('');
+      await userEvent.click(submitButton);
+      expectErrorToEqual('Enter a year');
+      expect(formElement.reportValidity()).to.be.false();
+      expect(Array.from(monthInput.classList)).to.not.include('usa-input--error');
+      expect(Array.from(dayInput.classList)).to.not.include('usa-input--error');
+      expect(Array.from(yearInput.classList)).to.include('usa-input--error');
+
+      await userEvent.type(yearInput, '1');
+      expectErrorToEqual('');
+      await userEvent.click(submitButton);
+      expectErrorToEqual('Enter a year with 4 numbers');
+      expect(formElement.reportValidity()).to.be.false();
+      expect(Array.from(monthInput.classList)).to.not.include('usa-input--error');
+      expect(Array.from(dayInput.classList)).to.not.include('usa-input--error');
+      expect(Array.from(yearInput.classList)).to.include('usa-input--error');
     });
 
     describe('min and max are set on lg-memorable-date', () => {
