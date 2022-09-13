@@ -25,11 +25,5 @@ module Idv
     def render_404_if_disabled
       render_not_found unless IdentityConfig.store.inherited_proofing_enabled
     end
-
-    # def redirect_if_pending_profile
-    #   return if sp_session[:ial2_strict] &&
-    #             !IdentityConfig.store.gpo_allowed_for_strict_ial2
-    #   redirect_to idv_gpo_verify_url if current_user.decorate.pending_profile_requires_verification?
-    # end
   end
 end
