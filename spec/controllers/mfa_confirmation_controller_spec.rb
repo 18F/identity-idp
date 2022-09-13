@@ -36,12 +36,17 @@ describe MfaConfirmationController do
 
     before do
       stub_sign_in(user)
+      stub_attempts_tracker
+      allow(@irs_attempts_api_tracker).to receive(:track_event)
       session[:password_attempts] = 1
     end
 
     context 'password is empty' do
       it 'redirects with error message and increments password attempts' do
         post :create, params: { user: { password: '' } }
+
+        expect(@irs_attempts_api_tracker).to have_received(:track_event).
+          with(:logged_in_password_change_reauthentication_submitted, success: false)
 
         expect(response).to redirect_to(user_password_confirm_path)
         expect(flash[:error]).to eq t('errors.confirm_password_incorrect')
@@ -52,6 +57,9 @@ describe MfaConfirmationController do
     context 'password is wrong' do
       it 'redirects with error message and increments password attempts' do
         post :create, params: { user: { password: 'wrong' } }
+
+        expect(@irs_attempts_api_tracker).to have_received(:track_event).
+          with(:logged_in_password_change_reauthentication_submitted, success: false)
 
         expect(response).to redirect_to(user_password_confirm_path)
         expect(flash[:error]).to eq t('errors.confirm_password_incorrect')
@@ -66,6 +74,9 @@ describe MfaConfirmationController do
         it 'redirects and increments the password count' do
           post :create, params: { user: { password: 'wrong' } }
 
+          expect(@irs_attempts_api_tracker).to have_received(:track_event).
+            with(:logged_in_password_change_reauthentication_submitted, success: false)
+
           expect(response).to redirect_to(user_password_confirm_path)
           expect(session[:password_attempts]).to eq 1
         end
@@ -75,6 +86,9 @@ describe MfaConfirmationController do
     context 'password is correct' do
       it 'redirects to 2FA and resets password attempts' do
         post :create, params: { user: { password: 'password' } }
+
+        expect(@irs_attempts_api_tracker).to have_received(:track_event).
+          with(:logged_in_password_change_reauthentication_submitted, success: true)
 
         expect(response).to redirect_to(user_two_factor_authentication_path(reauthn: true))
         expect(session[:password_attempts]).to eq 0
