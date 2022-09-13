@@ -359,6 +359,16 @@ module IrsAttemptsApi
       )
     end
 
+    # @param [Boolean] success True if the password was successfully changed
+    # A logged-in user has attempted to change their password
+    def logged_in_password_change(success:, failure_reason: nil)
+      track_event(
+        :logged_in_password_change,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
     # @param [String] email
     # A login attempt was rejected due to too many incorrect attempts
     def login_rate_limited(email)
