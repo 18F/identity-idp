@@ -6,6 +6,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   let(:enrollment_code) { '2048702198804358' }
   let(:current_address_matches_id) { true }
   let(:created_at) { described_class::USPS_SERVER_TIMEZONE.parse('2022-07-14T00:00:00Z') }
+  let(:enrollment_established_at) { described_class::USPS_SERVER_TIMEZONE.parse('2022-08-14T00:00:00Z') }
   let(:enrollment_selected_location_details) do
     JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
   end
@@ -15,23 +16,33 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       profile: profile,
       enrollment_code: enrollment_code,
       unique_id: InPersonEnrollment.generate_unique_id,
-      created_at: created_at,
+      enrollment_established_at:  enrollment_established_at,
       current_address_matches_id: current_address_matches_id,
       selected_location_details: enrollment_selected_location_details,
     )
   end
-
+  let(:enrollment2) do
+    InPersonEnrollment.new(
+      created_at: created_at
+    )
+  end
   subject(:presenter) { described_class.new(enrollment: enrollment) }
+  subject(:presenter2) {described_class.new(enrollment: enrollment2)}
 
   describe '#formatted_due_date' do
     subject(:formatted_due_date) { presenter.formatted_due_date }
+    subject(:formatted_due_date_two) {presenter2.formatted_due_date}
 
     around do |example|
       Time.use_zone('UTC') { example.run }
     end
 
     it 'returns a formatted due date' do
-      expect(formatted_due_date).to eq 'August 12, 2022'
+      expect(formatted_due_date).to eq 'September 12, 2022'
+    end
+
+    it 'returns formatted due date when no enrollment_established_at' do
+      expect(formatted_due_date_two). to eq 'August 12, 2022'
     end
   end
 
