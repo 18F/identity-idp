@@ -20,7 +20,7 @@ es:
       welcome_html: '%{sp_name} necesita asegurarse de que sea usted y no alguien que
         se haga pasar por usted.'
     instructions:
-      consent: to be implemented
+      consent: to be implemented for %{app_name}
       learn_more: Obtenga más información
       privacy: Nuestras normas de privacidad y seguridad
       verification_content: to be implemented
