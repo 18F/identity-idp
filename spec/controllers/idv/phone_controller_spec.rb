@@ -320,14 +320,13 @@ describe Idv::PhoneController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        context = { stages: [{ address: 'AddressMock' }] }
         result = {
           success: true,
           new_phone_added: true,
           errors: {},
           pii_like_keypaths: [[:errors, :phone], [:context, :stages, :address]],
           vendor: {
-            context: context,
+            vendor_name: 'AddressMock',
             exception: nil,
             timed_out: false,
             transaction_id: 'address-mock-transaction-id-123',
@@ -369,7 +368,6 @@ describe Idv::PhoneController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        context = { stages: [{ address: 'AddressMock' }] }
         result = {
           success: false,
           new_phone_added: true,
@@ -378,7 +376,7 @@ describe Idv::PhoneController do
           },
           pii_like_keypaths: [[:errors, :phone], [:context, :stages, :address]],
           vendor: {
-            context: context,
+            vendor_name: 'AddressMock',
             exception: nil,
             timed_out: false,
             transaction_id: 'address-mock-transaction-id-123',

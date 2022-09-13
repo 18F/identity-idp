@@ -17,7 +17,7 @@ RSpec.describe Proofing::Mock::AddressMockClient do
           exception: nil,
           timed_out: false,
           transaction_id: transaction_id,
-          vendor_name: 'AdressMock',
+          vendor_name: 'AddressMock',
         )
       end
     end
@@ -34,7 +34,7 @@ RSpec.describe Proofing::Mock::AddressMockClient do
           exception: nil,
           timed_out: false,
           transaction_id: transaction_id,
-          vendor_name: 'AdressMock',
+          vendor_name: 'AddressMock',
         )
       end
     end
@@ -51,7 +51,7 @@ RSpec.describe Proofing::Mock::AddressMockClient do
           exception: RuntimeError.new('Failed to contact proofing vendor'),
           timed_out: false,
           transaction_id: transaction_id,
-          vendor_name: 'AdressMock',
+          vendor_name: 'AddressMock',
         )
       end
     end
@@ -68,7 +68,7 @@ RSpec.describe Proofing::Mock::AddressMockClient do
           exception: Proofing::TimeoutError.new('address mock timeout'),
           timed_out: true,
           transaction_id: transaction_id,
-          vendor_name: 'AdressMock',
+          vendor_name: 'AddressMock',
         )
       end
     end
