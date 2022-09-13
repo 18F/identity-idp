@@ -18,7 +18,7 @@ describe Users::PasswordsController do
         expect(@analytics).to have_received(:track_event).
           with('Password Changed', success: true, errors: {})
         expect(@irs_attempts_api_tracker).to have_received(:track_event).
-          with(:logged_in_password_change, failure_reason: {}, success: true)
+          with(:logged_in_password_change, failure_reason: nil, success: true)
         expect(response).to redirect_to account_url
         expect(flash[:info]).to eq t('notices.password_changed')
         expect(flash[:personal_key]).to be_nil
@@ -102,9 +102,7 @@ describe Users::PasswordsController do
           :logged_in_password_change,
           success: false,
           failure_reason: {
-            password: [
-              t('errors.attributes.password.too_short.other', count: Devise.password_length.first),
-            ],
+            password: [:too_short],
           },
         )
         expect(response).to render_template(:edit)
