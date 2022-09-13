@@ -245,6 +245,15 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when sending a link to a phone is rate limited during idv flow
+    # @param [String] phone_number
+    def idv_phone_send_link_rate_limited(phone_number:)
+      track_event(
+        :idv_phone_send_link_rate_limited,
+        phone_number: phone_number,
+      )
+    end
+
     # Tracks when the user submits their idv phone number
     # @param [String] phone_number
     # param [Boolean] success
