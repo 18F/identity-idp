@@ -2509,10 +2509,5 @@ module AnalyticsEvents
   def cancel_account_reset_recovery
     track_event('Account Reset: Cancel Account Recovery Options')
   end
-
-  # Tracks if/when the 'Show password' button has been clicked
-  def show_password_button_clicked
-    track_event('Show password button clicked')
-  end
 end
 # rubocop:enable Metrics/ModuleLength
