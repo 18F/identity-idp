@@ -468,12 +468,18 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Integer] failed_attempts Number of failed attempts
+  # @param [String] field Image form field
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The number of acceptable failed attempts (maxFailedAttemptsBeforeNativeCamera) has been met
   # or exceeded, and the system has forced the use of the native camera, rather than Acuant's
   # camera, on mobile devices.
-  def idv_native_camera_forced(**extra)
+  def idv_native_camera_forced(failed_attempts:, field:, flow_path:, **extra)
     track_event(
       'IdV: Native camera forced after failed attempts',
+      failed_attempts: failed_attempts,
+      field: field,
+      flow_path: flow_path,
       **extra,
     )
   end
@@ -495,9 +501,56 @@ module AnalyticsEvents
     track_event('IdV: come back later visited')
   end
 
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user clicked the troubleshooting option to start in-person proofing
-  def idv_verify_in_person_troubleshooting_option_clicked
-    track_event('IdV: verify in person troubleshooting option clicked')
+  def idv_verify_in_person_troubleshooting_option_clicked(flow_path:, **extra)
+    track_event(
+      'IdV: verify in person troubleshooting option clicked',
+      flow_path: flow_path,
+      **extra,
+    )
+  end
+
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user visited the in person proofing location step
+  def idv_in_person_location_visited(flow_path:, **extra)
+    track_event('IdV: in person proofing location visited', flow_path: flow_path, **extra)
+  end
+
+  # @param [String] selected_location Selected in-person location
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user submitted the in person proofing location step
+  def idv_in_person_location_submitted(selected_location:, flow_path:, **extra)
+    track_event(
+      'IdV: in person proofing location submitted',
+      selected_location: selected_location,
+      flow_path: flow_path,
+      **extra,
+    )
+  end
+
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user visited the in person proofing prepare step
+  def idv_in_person_prepare_visited(flow_path:, **extra)
+    track_event('IdV: in person proofing prepare visited', flow_path: flow_path, **extra)
+  end
+
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user submitted the in person proofing prepare step
+  def idv_in_person_prepare_submitted(flow_path:, **extra)
+    track_event('IdV: in person proofing prepare submitted', flow_path: flow_path, **extra)
+  end
+
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user visited the in person proofing switch_back step
+  def idv_in_person_switch_back_visited(flow_path:, **extra)
+    track_event('IdV: in person proofing switch_back visited', flow_path: flow_path, **extra)
+  end
+
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user submitted the in person proofing switch_back step
+  def idv_in_person_switch_back_submitted(flow_path:, **extra)
+    track_event('IdV: in person proofing switch_back submitted', flow_path: flow_path, **extra)
   end
 
   # The user visited the "ready to verify" page for the in person proofing flow
