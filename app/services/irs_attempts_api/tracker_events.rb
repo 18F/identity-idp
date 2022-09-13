@@ -362,7 +362,7 @@ module IrsAttemptsApi
 
     # A logged-in user has been rate limited from submitting a password to reauthenticate prior to
     # changing their password too many times
-    def logged_in_password_change_reauthentication_rate_limited()
+    def logged_in_password_change_reauthentication_rate_limited
       track_event(
         :logged_in_password_change_reauthentication_rate_limited,
       )
