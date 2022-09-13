@@ -123,7 +123,6 @@ class MemorableDateElement extends HTMLElement {
       const otherInputs = allInputs.filter((input) => input !== event.target);
 
       otherInputs.forEach((input) => {
-        // Prevent recursion by removing listener temporarily
         input.dispatchEvent(
           new CustomEvent('input', {
             bubbles: true,
