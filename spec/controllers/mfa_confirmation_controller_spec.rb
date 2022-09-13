@@ -103,7 +103,9 @@ describe MfaConfirmationController do
         sign_in user
         session[:password_attempts] = 0
         stub_analytics
+        stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
+        allow(@irs_attempts_api_tracker).to receive(:track_event)
 
         max_allowed_attempts = IdentityConfig.store.password_max_attempts
         max_allowed_attempts.times do
@@ -115,6 +117,8 @@ describe MfaConfirmationController do
         expect(flash[:error]).to eq t('errors.max_password_attempts_reached')
         expect(@analytics).to have_received(:track_event).
           with('Password Max Attempts Reached')
+        expect(@irs_attempts_api_tracker).to have_received(:track_event).
+          with(:logged_in_password_change_reauthentication_rate_limited)
       end
     end
 

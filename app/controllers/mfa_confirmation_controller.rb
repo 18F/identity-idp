@@ -60,6 +60,7 @@ class MfaConfirmationController < ApplicationController
 
   def handle_max_password_attempts_reached
     analytics.password_max_attempts
+    irs_attempts_api_tracker.logged_in_password_change_reauthentication_rate_limited
     sign_out
     redirect_to root_url, flash: { error: t('errors.max_password_attempts_reached') }
   end

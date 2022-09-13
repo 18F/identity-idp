@@ -360,6 +360,14 @@ module IrsAttemptsApi
       )
     end
 
+    # A logged-in user has been rate limited from submitting a password to reauthenticate prior to
+    # changing their password too many times
+    def logged_in_password_change_reauthentication_rate_limited()
+      track_event(
+        :logged_in_password_change_reauthentication_rate_limited,
+      )
+    end
+
     # @param [Boolean] success True if the password submitted for reauthentication matches the
     # current password
     # A logged-in user has submitted a password to reauthenticate prior to changing their password
