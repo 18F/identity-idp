@@ -1,30 +1,19 @@
 module Proofing
   module LexisNexis
-    # Verifies through the RDP platform
     module InstantVerify
-      class Proofer < LexisNexis::Proofer
-        vendor_name 'lexisnexis:instant_verify'
+      class Proofer
+        attr_reader :config
 
-        required_attributes :uuid,
-                            :first_name,
-                            :last_name,
-                            :dob,
-                            :ssn,
-                            :address1,
-                            :city,
-                            :state,
-                            :zipcode
-
-        optional_attributes :address2, :uuid_prefix
-
-        stage :resolution
-
-        proof do |applicant, result|
-          proof_applicant(applicant, result)
+        def initialize(config)
+          @config = LexisNexis::Proofer::Config.new(config)
         end
 
-        def send_verification_request(applicant)
-          VerificationRequest.new(config: config, applicant: applicant).send
+        def proof(applicant)
+          response = VerificationRequest.new(config: config, applicant: applicant).send
+          return Proofing::LexisNexis::LexisNexis::Result.new(response) # TODO: Make this result class
+        rescue => exception
+          NewRelic::Agent.notice_error(exception)
+          ResultWithException.new(exception) # TODO: Make this class too
         end
       end
     end
