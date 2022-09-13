@@ -34,7 +34,7 @@ class PasswordToggleElement extends HTMLElement {
 
   showPasswordButtonClick() {
     this.elements.toggle.addEventListener('click', () => {
-      trackEvent('Button clicked', { path: location.pathname, success: true });
+      trackEvent('Button clicked', { path: location.pathname });
     });
   }
 }
