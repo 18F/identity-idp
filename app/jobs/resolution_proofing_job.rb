@@ -168,7 +168,7 @@ class ResolutionProofingJob < ApplicationJob
     #   state_id_success = result[:success]
     # end
 
-    resolution_success = resolution_proofer.proof(applicant_pii)
+    resolution_result = resolution_proofer.proof(applicant_pii)
     state_id_result = nil
     if should_proof_state_id
       state_id_result = state_id_proofer.proof(applicant_pii)
@@ -176,7 +176,7 @@ class ResolutionProofingJob < ApplicationJob
 
     result = adjudicate_proofing_result(instant_verify_result: resolution_result, aamva_result: state_id_result)
 
-    resolution_result = resoltuion_result[:success]
+    resolution_success = resolution_result[:success]
     state_id_success = state_id_result[:success] if state_id_result.present?
 
     CallbackLogData.new(
