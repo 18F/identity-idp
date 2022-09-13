@@ -144,14 +144,16 @@ describe FrontendLogController do
 
       context 'for a named analytics method' do
         let(:field) { 'front' }
-        let(:failed_attempts) { 0 }
+        let(:failed_capture_attempts) { 0 }
+        let(:failed_submission_attempts) { 0 }
         let(:flow_path) { 'standard' }
         let(:params) do
           {
             'event' => 'IdV: Native camera forced after failed attempts',
             'payload' => {
               'field' => field,
-              'failed_attempts' => failed_attempts,
+              'failed_capture_attempts' => failed_capture_attempts,
+              'failed_submission_attempts' => failed_submission_attempts,
               'flow_path' => flow_path,
             },
           }
@@ -161,7 +163,8 @@ describe FrontendLogController do
           expect(fake_analytics).to receive(:track_event).with(
             'IdV: Native camera forced after failed attempts',
             field: field,
-            failed_attempts: failed_attempts,
+            failed_capture_attempts: failed_capture_attempts,
+            failed_submission_attempts: failed_submission_attempts
             flow_path: flow_path,
           )
 

@@ -468,13 +468,16 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Integer] failed_attempts Number of failed attempts
+  # @param [Integer] failed_capture_attempts Number of failed Acuant SDK attempts
+  # @param [Integer] failed_submission_attempts Number of failed Acuant doc submissions
   # @param [String] field Image form field
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The number of acceptable failed attempts (maxFailedAttemptsBeforeNativeCamera) has been met
   # or exceeded, and the system has forced the use of the native camera, rather than Acuant's
   # camera, on mobile devices.
-  def idv_native_camera_forced(failed_capture_attempts:, failed_submission_attempts:, field:, flow_path:, **extra)
+  def idv_native_camera_forced(failed_capture_attempts:,
+                               failed_submission_attempts:,
+                               field:, flow_path:, **extra)
     track_event(
       'IdV: Native camera forced after failed attempts',
       failed_capture_attempts: failed_capture_attempts,
