@@ -17,7 +17,7 @@ class OpenidConnectAuthorizeForm
 
   ATTRS = [:unauthorized_scope, :acr_values, :scope, :verified_within, *SIMPLE_ATTRS].freeze
 
-  attr_reader(:code, *ATTRS)
+  attr_reader(*ATTRS)
 
   RANDOM_VALUE_MINIMUM_LENGTH = 22
   MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS = 30
@@ -82,7 +82,6 @@ class OpenidConnectAuthorizeForm
 
   def success_redirect_uri
     uri = redirect_uri unless errors.include?(:redirect_uri)
-    @code = identity&.session_uuid
 
     UriService.add_params(uri, code: code, state: state) if code
   end
@@ -111,6 +110,10 @@ class OpenidConnectAuthorizeForm
   private
 
   attr_reader :identity, :success
+
+  def code
+    identity&.session_uuid
+  end
 
   def check_for_unauthorized_scope(params)
     param_value = params[:scope]
