@@ -232,6 +232,7 @@ class IdentityConfig
     config.add(:lexisnexis_threatmetrix_required_to_verify, type: :boolean)
     config.add(:lexisnexis_threatmetrix_support_code, type: :string)
     config.add(:lexisnexis_threatmetrix_timeout, type: :float)
+    config.add(:lexisnexis_threatmetrix_js_signing_cert, type: :string)
     config.add(:liveness_checking_enabled, type: :boolean)
     config.add(:lockout_period_in_minutes, type: :integer)
     config.add(:log_to_stdout, type: :boolean)

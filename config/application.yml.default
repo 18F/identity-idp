@@ -158,6 +158,7 @@ lexisnexis_threatmetrix_timeout: 1.0
 lexisnexis_threatmetrix_enabled: false
 lexisnexis_threatmetrix_mock_enabled: true
 lexisnexis_threatmetrix_required_to_verify: false
+lexisnexis_threatmetrix_js_signing_cert: ''
 ###################################################################
 lockout_period_in_minutes: 10
 log_to_stdout: false
