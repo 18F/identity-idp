@@ -168,7 +168,7 @@ class ResolutionProofingJob < ApplicationJob
     #   state_id_success = result[:success]
     # end
 
-    resolution_result =  resolution_proofer.proof(applicant_pii)
+    resolution_success = resolution_proofer.proof(applicant_pii)
     state_id_result = nil
     if should_proof_state_id
       state_id_result = state_id_proofer.proof(applicant_pii)
@@ -181,7 +181,7 @@ class ResolutionProofingJob < ApplicationJob
 
     CallbackLogData.new(
       result: result,
-      resolution_success: resolution_result,
+      resolution_success: resolution_success,
       state_id_success: state_id_success,
     )
   end
