@@ -13,14 +13,28 @@ describe Db::MonthlySpAuthCount::TotalMonthlyAuthCounts do
 
   it 'returns the total auth counts' do
     ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: app_id)
-    MonthlySpAuthCount.create(
-      issuer: issuer, ial: 1, year_month: year_month, user_id: 2,
-      auth_count: 7
-    )
-    MonthlySpAuthCount.create(
-      issuer: issuer, ial: 1, year_month: year_month, user_id: 3,
-      auth_count: 3
-    )
+    7.times do
+      create(
+        :sp_return_log,
+        issuer: issuer,
+        ial: 1,
+        user_id: 2,
+        requested_at: Date.new(2019, 1, 15),
+        returned_at: Date.new(2019, 1, 15),
+        billable: true,
+      )
+    end
+    3.times do
+      create(
+        :sp_return_log,
+        issuer: issuer,
+        ial: 1,
+        user_id: 3,
+        requested_at: Date.new(2019, 1, 15),
+        returned_at: Date.new(2019, 1, 15),
+        billable: true,
+      )
+    end
     result = { issuer: issuer, ial: 1, year_month: year_month, total: 10, app_id: app_id }.to_json
 
     expect(subject.call.ntuples).to eq(1)
