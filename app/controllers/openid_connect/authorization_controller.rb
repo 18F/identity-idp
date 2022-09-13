@@ -25,7 +25,7 @@ module OpenidConnect
       link_identity_to_service_provider
 
       result = @authorize_form.submit
-      # track successful formsm see pre_validate_authorize_form for unsuccessful
+      # track successful forms, see pre_validate_authorize_form for unsuccessful
       # this needs to be after link_identity_to_service_provider so that "code" is present
       track_authorize_analytics(result)
 
