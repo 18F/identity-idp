@@ -8,14 +8,14 @@
 #    will default to a base uri of: IdentityConfig.store.inherited_proofing_va_base_url
 #    and a private key using: AppArtifacts.store.oidc_private_key
 #
-# $ rails r scripts/inherited_proofing/va/lexis_nexis/test_script.rb
+# $ bin/rails r scripts/inherited_proofing/va/lexis_nexis/test_script.rb
 #
 # 2) To override BASE_URI in the Idv::InheritedProofing::Va::Service class
 #    and/or use a private key file, and/or force an error return.
 #    Where -u|-t|-f forces proofing to fail
 #
 # NOTE: Private key files are forced to be located at "#{Rails.root}/tmp".
-# $ rails r scripts/inherited_proofing/va/lexis_nexis/test_script.rb https://staging-api.va.gov private.key -u|-t|-f
+# $ bin/rails r scripts/inherited_proofing/va/lexis_nexis/test_script.rb https://staging-api.va.gov private.key -u|-t|-f
 
 require_relative '../user_attributes/test_server'
 require_relative './phone_finder'

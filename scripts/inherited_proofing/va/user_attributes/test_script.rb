@@ -6,14 +6,14 @@
 #    will default to a base uri of: IdentityConfig.store.inherited_proofing_va_base_url
 #    and a private key using: AppArtifacts.store.oidc_private_key
 #
-# $ rails r scripts/inherited_proofing/va/user_attributes/test_script.rb
+# $ bin/rails r scripts/inherited_proofing/va/user_attributes/test_script.rb
 #
 # 2) To override BASE_URI in the Idv::InheritedProofing::Va::Service class
 #    and/or use a private key file:
 #
 # rubocop:disable Layout/LineLength
 # NOTE: Private key files are forced to be located at "#{Rails.root}/tmp".
-# $ rails r scripts/inherited_proofing/va/user_attributes/test_script.rb https://staging-api.va.gov private.key
+# $ bin/rails r scripts/inherited_proofing/va/user_attributes/test_script.rb https://staging-api.va.gov private.key
 # rubocop:enable Layout/LineLength
 
 require_relative '../../../../app/services/idv/inherited_proofing/va/service'
