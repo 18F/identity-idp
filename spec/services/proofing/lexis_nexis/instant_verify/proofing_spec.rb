@@ -16,6 +16,7 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
       zipcode: '70802-12345',
     }
   end
+
   let(:verification_request) do
     Proofing::LexisNexis::InstantVerify::VerificationRequest.new(
       applicant: applicant,

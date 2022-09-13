@@ -78,16 +78,11 @@ RSpec.describe AddressProofingJob, type: :job do
 
         result = document_capture_session.load_proofing_result[:result]
 
-        expect(result).to eq(
-          exception: nil,
-          errors: {},
-          success: true,
-          timed_out: false,
-          transaction_id: conversation_id,
-          context: { stages: [
-            { address: 'lexisnexis:phone_finder' },
-          ] },
-        )
+        expect(result[:exception]).to be_nil
+        expect(result[:errors]).to eq({})
+        expect(result[:success]).to be true
+        expect(result[:timed_out]).to be false
+        expect(result[:vendor_name]).to eq('lexisnexis:phone_finder')
       end
 
       it 'adds cost data' do
