@@ -528,6 +528,7 @@ describe Idv::ReviewController do
               expect(response).to redirect_to idv_personal_key_path
 
               enrollment.reload
+
               expect(enrollment.status).to eq('pending')
               expect(enrollment.user_id).to eq(user.id)
               expect(enrollment.enrollment_code).to be_a(String)
