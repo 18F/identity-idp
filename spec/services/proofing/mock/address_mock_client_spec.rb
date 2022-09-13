@@ -27,7 +27,7 @@ RSpec.describe Proofing::Mock::AddressMockClient do
         result = subject.proof(phone: '7035555555')
 
         expect(result.success?).to eq(false)
-        expect(result.errors).to eq(phone: 'The phone number could not be verified.')
+        expect(result.errors).to eq(phone: ['The phone number could not be verified.'])
         expect(result.to_h).to eq(
           success: false,
           errors: { phone: ['The phone number could not be verified.'] },
