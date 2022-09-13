@@ -45,7 +45,7 @@ module Proofing
       def unverifiable_phone_result
         AddressMockClientResult.new(
           success: false,
-          errors: { phone: 'The phone number could not be verified.' },
+          errors: { phone: ['The phone number could not be verified.'] },
           exception: nil,
         )
       end

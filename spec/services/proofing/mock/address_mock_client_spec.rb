@@ -30,7 +30,7 @@ RSpec.describe Proofing::Mock::AddressMockClient do
         expect(result.errors).to eq(phone: 'The phone number could not be verified.')
         expect(result.to_h).to eq(
           success: false,
-          errors: { phone: 'The phone number could not be verified.' },
+          errors: { phone: ['The phone number could not be verified.'] },
           exception: nil,
           timed_out: false,
           transaction_id: transaction_id,
