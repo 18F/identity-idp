@@ -478,7 +478,7 @@ module AnalyticsEvents
     track_event(
       'IdV: Native camera forced after failed attempts',
       failed_capture_attempts: failed_capture_attempts,
-      failed_submission_attempts: failed_submission_attempts
+      failed_submission_attempts: failed_submission_attempts,
       field: field,
       flow_path: flow_path,
       **extra,
