@@ -156,6 +156,7 @@ RSpec.describe 'In Person Proofing', js: true do
     click_button t('forms.buttons.back')
 
     expect(page).to have_content(t('in_person_proofing.headings.location'))
+    expect(page).to have_css('.location-collection-item', wait: 10)
     click_button t('forms.buttons.back')
 
     # Note: This is specifically for failed barcodes. Other cases may use
