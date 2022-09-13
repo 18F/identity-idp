@@ -464,8 +464,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
 
       it 'logs a hash of the code in the analytics params' do
-        identity = user.identities.where(service_provider: client_id).first
-
         code = UriService.params(form.success_redirect_uri)[:code]
 
         expect(form.submit.extra[:code_digest]).to eq(Digest::SHA256.hexdigest(code))
