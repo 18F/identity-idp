@@ -16,22 +16,16 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       profile: profile,
       enrollment_code: enrollment_code,
       unique_id: InPersonEnrollment.generate_unique_id,
+      created_at: created_at,
       enrollment_established_at:  enrollment_established_at,
       current_address_matches_id: current_address_matches_id,
       selected_location_details: enrollment_selected_location_details,
     )
   end
-  let(:enrollment2) do
-    InPersonEnrollment.new(
-      created_at: created_at
-    )
-  end
   subject(:presenter) { described_class.new(enrollment: enrollment) }
-  subject(:presenter2) {described_class.new(enrollment: enrollment2)}
 
   describe '#formatted_due_date' do
     subject(:formatted_due_date) { presenter.formatted_due_date }
-    subject(:formatted_due_date_two) {presenter2.formatted_due_date}
 
     around do |example|
       Time.use_zone('UTC') { example.run }
@@ -41,8 +35,11 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       expect(formatted_due_date).to eq 'September 12, 2022'
     end
 
-    it 'returns formatted due date when no enrollment_established_at' do
-      expect(formatted_due_date_two). to eq 'August 12, 2022'
+    context 'there is no enrollment_established_at' do
+      let(:enrollment_established_at) { nil }
+      it 'returns formatted due date when no enrollment_established_at' do
+        expect(formatted_due_date). to eq 'August 12, 2022'
+      end
     end
   end
 

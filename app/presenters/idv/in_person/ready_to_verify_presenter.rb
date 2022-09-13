@@ -32,8 +32,8 @@ module Idv
       attr_reader :enrollment
 
       def due_date
-        enrollment.enrollment_established_at ? enrollment.enrollment_established_at + IdentityConfig.store.in_person_enrollment_validity_in_days.days :
-        enrollment.created_at + IdentityConfig.store.in_person_enrollment_validity_in_days.days
+        start_date = enrollment.enrollment_established_at.presence || enrollment.created_at
+        start_date + IdentityConfig.store.in_person_enrollment_validity_in_days.days
       end
 
       def localized_hours(hours)
