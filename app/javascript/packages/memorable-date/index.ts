@@ -20,6 +20,11 @@ export const enum MemorableDateErrorMessage {
 }
 
 /**
+ * Custom input event detail flag used to prevent recursion
+ */
+const CUSTOM_INPUT_EVENT_DETAIL_FLAG = 'CustomMemorableDateInputEventDetailFlag';
+
+/**
  * Type for a range check with a corresponding error message
  */
 interface RangeErrorMessage {
@@ -103,6 +108,11 @@ class MemorableDateElement extends HTMLElement {
     this.validate();
 
     const inputListener = (event: Event) => {
+      // Don't process the event if this function generated it
+      if (event instanceof CustomEvent && event.detail?.flag === CUSTOM_INPUT_EVENT_DETAIL_FLAG) {
+        return;
+      }
+
       this.validate();
 
       // Artificially trigger input events on all inputs
@@ -111,15 +121,17 @@ class MemorableDateElement extends HTMLElement {
       // memorable-date fields at the same time as it hides the error
       // message (instead of only the selected field).
       const otherInputs = allInputs.filter((input) => input !== event.target);
-      try {
-        this.removeEventListener('input', inputListener);
-        otherInputs.forEach((input) => {
-          // Prevent recursion by removing listener temporarily
-          input.dispatchEvent(new CustomEvent('input', { bubbles: true }));
-        });
-      } finally {
-        this.addEventListener('input', inputListener);
-      }
+
+      otherInputs.forEach((input) => {
+        input.dispatchEvent(
+          new CustomEvent('input', {
+            bubbles: true,
+            detail: {
+              flag: CUSTOM_INPUT_EVENT_DETAIL_FLAG,
+            },
+          }),
+        );
+      });
     };
 
     this.addEventListener('input', inputListener);
@@ -254,9 +266,6 @@ class MemorableDateElement extends HTMLElement {
     const { allInputs } = this;
     allInputs.forEach((field) => {
       if (fields.includes(field)) {
-        field.setCustomValidity(message);
-      } else if (!field.validity.valid) {
-        // Prevent the built-in errors from overriding custom errors
         field.setCustomValidity(message);
       } else {
         field.setCustomValidity('');
