@@ -11,8 +11,8 @@ es:
       birthdate: Fecha de nacimiento
       email: Dirección de correo electrónico
       full_name: Nombre completo
-      intro_html: 'Compartiremos esta información con %{sp}:'
-      outro_html: '%{sp} solo usará esta información para conectarse a su cuenta.'
+      ial1_intro_html: "We’ll share your information with %{sp} to connect your account."
+      ial2_intro_html: "%{sp} needs to know who you are to connect your account. We’ll share this information with Partner Agency: "
       phone: Teléfono
       social_security_number: Número de Seguro Social
       verified_at: Actualizado en

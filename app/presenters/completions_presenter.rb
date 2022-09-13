@@ -57,6 +57,23 @@ class CompletionsPresenter
     end
   end
 
+  def intro
+    sp_name = current_sp.friendly_name || sp.agency&.name
+    if ial2_requested?
+      I18n.t(
+        'help_text.requested_attributes.ial2_intro_html',
+        app_name: APP_NAME,
+        sp: content_tag(:strong, sp_name),
+      )
+    else
+      I18n.t(
+        'help_text.requested_attributes.ial1_intro_html',
+        app_name: APP_NAME,
+        sp: content_tag(:strong, sp_name),
+      )
+    end
+  end
+
   def image_name
     if ial2_requested?
       'user-signup-ial2.svg'
