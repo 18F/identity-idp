@@ -229,9 +229,9 @@ prepare_deploy:
     - make build_artifact ARTIFACT_DESTINATION_FILE='./tmp/idp.tar.gz'
     - bundle exec ./scripts/artifact-upload './tmp/idp.tar.gz'
 
+# Triggers devops CD to deploy to dev
 trigger_devops:
   stage: after_test
-  # DO NOT SUBMIT. Uncomment first.
-  # rules:
-  #   - if: $CI_COMMIT_BRANCH == "main"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
   trigger: lg/identity-devops
