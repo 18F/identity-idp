@@ -90,5 +90,27 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
         expect(result.timed_out?).to eq(false)
       end
     end
+
+    context 'proofing failures that allow additional verification' do
+      context 'and attribute requires additional verification' do
+        it 'returns a result that identifies attribute as needing verification' do
+          stub_request(
+            :post, verification_request.url
+          ).to_return(
+            body: LexisNexisFixtures.instant_verify_date_of_birth_fail_response_json,
+            status: 200,
+          )
+
+          result = instance.proof(applicant)
+
+          expect(result.failed_result_can_pass_with_additional_verification?)
+          expect(result.attributes_requiring_additinal_verification).to eq([:dob])
+        end
+      end
+
+      context 'the result fails for a reason other than a failure to match attributes' do
+        it 'returns a result that cannot pass with additional verification'
+      end
+    end
   end
 end

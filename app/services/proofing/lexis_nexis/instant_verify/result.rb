@@ -34,6 +34,22 @@ module Proofing
           verification_response.verification_status == 'passed'
         end
 
+        def failed_result_can_pass_with_additional_verification?
+          return false unless !success?
+          return false unless verification_errors.keys.sort == [:"Execute Instant Verify", :base]
+          if !verification_errors[:base].match?(/total\.scoring\.model\.verification\.fail/)
+            return false
+          end
+
+          true
+        end
+
+        def attributes_requiring_additinal_verification
+          @attributes_requiring_additinal_verification ||= CheckToAttributeMapper.new(
+            verification_errors[:"Execute Instant Verify"],
+          ).map_failed_checks_to_attributes
+        end
+
         def timed_out?
           false
         end
