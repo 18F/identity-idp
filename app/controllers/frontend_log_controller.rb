@@ -26,7 +26,7 @@ class FrontendLogController < ApplicationController
     'IdV: download personal key' => :idv_personal_key_downloaded,
     'IdV: Native camera forced after failed attempts' => :idv_native_camera_forced,
     'Multi-Factor Authentication: download backup code' => :multi_factor_auth_backup_code_download,
-    'Show Password Button Clicked' => :show_password_button_clicked
+    'Show Password Button Clicked' => :show_password_button_clicked,
   }.transform_values do |method|
     method.is_a?(Proc) ? method : AnalyticsEvents.instance_method(method)
   end.freeze
