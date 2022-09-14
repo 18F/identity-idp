@@ -11,7 +11,7 @@ class AbTestBucket
     ensure_numeric_percentages
   end
 
-  def bucket(discriminator: nil)
+  def bucket(discriminator = nil)
     return :misconfigured unless valid?
     return :default if discriminator.blank?
 

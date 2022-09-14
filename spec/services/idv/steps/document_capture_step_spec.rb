@@ -52,4 +52,23 @@ describe Idv::Steps::DocumentCaptureStep do
       step.call
     end
   end
+
+  describe '#extra_view_variables' do
+    context 'with native camera A/B testing enabled' do
+      before do
+        allow(IdentityConfig.store).
+          to receive(:idv_native_camera_a_b_testing_enabled).
+          and_return(true)
+        allow(IdentityConfig.store).
+          to receive(:idv_native_camera_a_b_testing_percent).
+          and_return(100)
+        flow.flow_session[:document_capture_session_uuid] = SecureRandom.uuid
+      end
+
+      it 'includes the A/B testing variables to be passed to the view' do
+        expect(subject.extra_view_variables[:native_camera_a_b_testing_enabled]).to eq(true)
+        expect(subject.extra_view_variables[:native_camera_only]).to eq(true)
+      end
+    end
+  end
 end

@@ -14,7 +14,7 @@ describe AbTestBucket do
     it 'splits random uuids into the buckets to within an acceptable delta percent' do
       results = {}
       1000.times do
-        bucket = subject.bucket(discriminator: SecureRandom.uuid)
+        bucket = subject.bucket(SecureRandom.uuid)
         results[bucket] = (results[bucket] || 0) + 1
       end
 
@@ -34,7 +34,7 @@ describe AbTestBucket do
       test_runs.times do
         results = {}
         1000.times do
-          bucket = subject.bucket(discriminator: SecureRandom.uuid)
+          bucket = subject.bucket(SecureRandom.uuid)
           results[bucket] = (results[bucket] || 0) + 1
         end
         foo_delta = (results[:foo].to_f / 10 - foo_percent).abs
@@ -65,7 +65,7 @@ describe AbTestBucket do
     it 'divides random uuids into the buckets with no automatic default' do
       results = {}
       1000.times do
-        bucket = subject.bucket(discriminator: SecureRandom.uuid)
+        bucket = subject.bucket(SecureRandom.uuid)
         results[bucket] = (results[bucket] || 0) + 1
       end
 
@@ -77,7 +77,7 @@ describe AbTestBucket do
     let(:subject) { AbTestBucket.new }
 
     it 'returns :default' do
-      bucket = subject.bucket(discriminator: SecureRandom.uuid)
+      bucket = subject.bucket(SecureRandom.uuid)
 
       expect(bucket).to eq :default
     end
@@ -87,7 +87,7 @@ describe AbTestBucket do
     let(:foo_percent) { 110 }
 
     it 'returns :misconfigured' do
-      bucket = subject.bucket(discriminator: SecureRandom.uuid)
+      bucket = subject.bucket(SecureRandom.uuid)
 
       expect(bucket).to eq :misconfigured
     end
@@ -97,7 +97,7 @@ describe AbTestBucket do
     let(:subject) { AbTestBucket.new(buckets: { foo: '100' }) }
 
     it 'converts string percentages to numbers and returns the correct result' do
-      bucket = subject.bucket(discriminator: SecureRandom.uuid)
+      bucket = subject.bucket(SecureRandom.uuid)
 
       expect(bucket).to eq :foo
     end
@@ -107,7 +107,7 @@ describe AbTestBucket do
     let(:subject) { AbTestBucket.new(buckets: { foo: 'foo', bar: 'bar' }) }
 
     it 'converts string to zero percent and returns :default' do
-      bucket = subject.bucket(discriminator: SecureRandom.uuid)
+      bucket = subject.bucket(SecureRandom.uuid)
 
       expect(bucket).to eq :default
     end

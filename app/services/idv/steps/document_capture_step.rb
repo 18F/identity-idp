@@ -31,10 +31,13 @@ module Idv
       private
 
       def native_camera_ab_testing_variables
-        skip_sdk = randomize?(
-          IdentityConfig.store.idv_native_camera_a_b_testing_percent,
-          flow_session[:document_capture_session_uuid],
+        ab_test = AbTestBucket.new(
+          buckets: {
+            native_camera_only: IdentityConfig.store.idv_native_camera_a_b_testing_percent,
+          },
         )
+        discriminator = flow_session[:document_capture_session_uuid]
+        skip_sdk = ab_test.bucket(discriminator) == :native_camera_only
 
         {
           native_camera_a_b_testing_enabled:
