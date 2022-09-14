@@ -2,7 +2,6 @@ class FrontendLogController < ApplicationController
   respond_to :json
 
   skip_before_action :verify_authenticity_token
-  before_action :check_user_authenticated
   before_action :validate_parameter_types
 
   EVENT_MAP = {
@@ -45,12 +44,6 @@ class FrontendLogController < ApplicationController
 
   def log_params
     params.permit(:event, payload: {})
-  end
-
-  def check_user_authenticated
-    return if effective_user || request.base_url
-
-    render json: { success: false }, status: :unauthorized
   end
 
   def validate_parameter_types
