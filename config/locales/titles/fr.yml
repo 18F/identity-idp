@@ -68,8 +68,8 @@ fr:
     sign_up:
       completion_consent_expired: Cela fait un an que vous nous avez donné votre
         consentement pour partager vos informations
-      completion_first_sign_in: Continuer vers %{app_name}
-      completion_ial2: Connectez vos informations vérifiées à %{app_name}
+      completion_first_sign_in: Continuer vers %{sp}
+      completion_ial2: Connectez vos informations vérifiées à %{sp}
       completion_new_attributes: '%{sp} demande de nouvelles informations'
       completion_new_sp: Vous vous connectez pour la première fois
       confirmation: Continuer à vous connecter
