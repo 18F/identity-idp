@@ -121,6 +121,7 @@ irs_attempt_api_enabled: false
 irs_attempt_api_event_ttl_seconds: 86400
 irs_attempt_api_event_count_default: 1000
 irs_attempt_api_event_count_max: 10000
+irs_attempt_api_payload_size_logging_enabled: true
 kantara_2fa_phone_restricted: false
 kantara_2fa_phone_existing_user_restriction: false
 kantara_restriction_enforcement_date: '2022-07-19'
