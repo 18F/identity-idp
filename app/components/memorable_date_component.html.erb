@@ -1,0 +1,92 @@
+<label class="usa-label">     
+    <%= label %>
+</label>
+<span class="usa-hint">
+    <%= hint %>
+</span>
+  <%= content_tag :'lg-memorable-date', min: min, max: max, **tag_options do -%>
+    <div class="usa-memorable-date">
+      <%= content_tag(
+            :script,
+            error_messages.to_json,
+            {
+              type: 'application/json',
+              class: 'memorable-date__error-strings',
+            },
+            false,
+          ) %>
+        <lg-validated-field>
+          <%= f.simple_fields_for name do |p| %>
+            <%= p.input(
+                  :month,
+                  pattern: '(1[0-2])|(0?[1-9])',
+                  wrapper_html: { class: 'usa-form-group usa-form-group--month margin-bottom-0' },
+                  label: t('components.memorable_date.month'),
+                  label_html: { class: 'usa-label' },
+                  input_html: {
+                    type: 'text',
+                    class: 'validated-field__input memorable-date__month',
+                    minLength: 1,
+                    maxLength: 2,
+                    aria: {
+                      invalid: false,
+                      describedby: "validated-field-error-#{unique_id}",
+                    },
+                    value: month,
+                  },
+                  error: { id: "validated-field-error-#{unique_id}" },
+                  required: required,
+                ) %>
+          <% end %>
+          </lg-validated-field>
+          <lg-validated-field>
+          <%= f.simple_fields_for name do |p| %>
+          <%= p.input(
+                :day,
+                pattern: '(3[01])|([12][0-9])|(0?[1-9])',
+                wrapper_html: { class: 'usa-form-group usa-form-group--day margin-bottom-0' },
+                label: t('components.memorable_date.day'),
+                label_html: { class: 'usa-label' },
+                input_html: {
+                  type: 'text',
+                  class: 'validated-field__input memorable-date__day',
+                  minLength: 1,
+                  maxLength: 2,
+                  aria: {
+                    invalid: false,
+                    describedby: "validated-field-error-#{unique_id}",
+                  },
+                  value: day,
+                },
+                error: { id: "validated-field-error-#{unique_id}" },
+                required: required,
+              ) %>
+          <% end %>
+          </lg-validated-field>
+          <lg-validated-field>
+          <%= f.simple_fields_for name do |p| %>
+          <%= p.input(
+                :year,
+                pattern: '\d{4}',
+                wrapper_html: { class: 'usa-form-group usa-form-group--year margin-bottom-0' },
+                label: t('components.memorable_date.year'),
+                label_html: { class: 'usa-label' },
+                input_html: {
+                  type: 'text',
+                  class: 'validated-field__input memorable-date__year',
+                  minLength: 4,
+                  maxLength: 4,
+                  aria: {
+                    invalid: false,
+                    describedby: "validated-field-error-#{unique_id}",
+                  },
+                  value: year,
+                },
+                error: { id: "validated-field-error-#{unique_id}" },
+                required: required,
+              ) %>
+          <% end %>
+        </lg-validated-field>
+    </div>
+  <% end -%>
+  <div class="usa-error-message" id="validated-field-error-<%= unique_id %>" style="display:none;"></div>

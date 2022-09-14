@@ -47,6 +47,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
           unauthorized_scope: true,
           acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
           scope: 'openid',
+          code_digest: nil,
         )
       end
     end
@@ -66,6 +67,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
             unauthorized_scope: true,
             acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
             scope: 'openid',
+            code_digest: nil,
           )
         end
       end
@@ -450,12 +452,21 @@ RSpec.describe OpenidConnectAuthorizeForm do
     let(:rails_session_id) { SecureRandom.hex }
 
     context 'when the identity has been linked' do
-      it 'returns a redirect URI with the code from the identity session_uuid' do
+      before do
         form.link_identity_to_service_provider(user, rails_session_id)
+      end
+
+      it 'returns a redirect URI with the code from the identity session_uuid' do
         identity = user.identities.where(service_provider: client_id).first
 
         expect(form.success_redirect_uri).
           to eq "#{redirect_uri}?code=#{identity.session_uuid}&state=#{state}"
+      end
+
+      it 'logs a hash of the code in the analytics params' do
+        code = UriService.params(form.success_redirect_uri)[:code]
+
+        expect(form.submit.extra[:code_digest]).to eq(Digest::SHA256.hexdigest(code))
       end
     end
 

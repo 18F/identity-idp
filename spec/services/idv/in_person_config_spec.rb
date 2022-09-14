@@ -3,13 +3,10 @@ require 'rails_helper'
 describe Idv::InPersonConfig do
   let(:in_person_proofing_enabled) { false }
   let(:idv_sp_required) { false }
-  let(:in_person_proofing_enabled_issuers) { [] }
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
       and_return(in_person_proofing_enabled)
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled_issuers).
-      and_return(in_person_proofing_enabled_issuers)
     allow(IdentityConfig.store).to receive(:idv_sp_required).and_return(idv_sp_required)
   end
 
@@ -33,11 +30,21 @@ describe Idv::InPersonConfig do
       context 'with issuer argument' do
         let(:issuer) { 'example-issuer' }
 
-        it { expect(enabled_for_issuer).to eq false }
+        context 'issuer does not exist' do
+          it { expect(enabled_for_issuer).to eq false }
+        end
 
-        context 'with in person proofing enabled for issuer' do
-          let(:in_person_proofing_enabled_issuers) { [issuer] }
+        context 'issuer has in-person proofing disabled' do
+          before do
+            create(:service_provider, issuer: issuer, in_person_proofing_enabled: false)
+          end
+          it { expect(enabled_for_issuer).to eq false }
+        end
 
+        context 'issuer has in-person proofing enabled' do
+          before do
+            create(:service_provider, issuer: issuer, in_person_proofing_enabled: true)
+          end
           it { expect(enabled_for_issuer).to eq true }
         end
       end
@@ -65,14 +72,6 @@ describe Idv::InPersonConfig do
       let(:idv_sp_required) { true }
 
       it { expect(enabled_without_issuer).to eq false }
-    end
-  end
-
-  describe '.enabled_issuers' do
-    subject(:enabled_issuers) { described_class.enabled_issuers }
-
-    it 'returns enabled issuers' do
-      expect(enabled_issuers).to eq in_person_proofing_enabled_issuers
     end
   end
 end

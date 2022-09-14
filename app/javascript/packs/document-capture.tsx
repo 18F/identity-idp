@@ -7,7 +7,7 @@ import {
   AcuantContextProvider,
   UploadContextProvider,
   ServiceProviderContextProvider,
-  AnalyticsContext,
+  AnalyticsContextProvider,
   FailedCaptureAttemptsContextProvider,
   MarketingSiteContextProvider,
 } from '@18f/identity-document-capture';
@@ -116,7 +116,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     [AppContext.Provider, { value: { appName } }],
     [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
     [DeviceContext.Provider, { value: device }],
-    [AnalyticsContext.Provider, { value: { trackEvent } }],
+    [AnalyticsContextProvider, { trackEvent }],
     [
       AcuantContextProvider,
       {

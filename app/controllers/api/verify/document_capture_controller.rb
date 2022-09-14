@@ -11,6 +11,7 @@ module Api
           liveness_checking_enabled: liveness_checking_enabled?,
           analytics: analytics,
           irs_attempts_api_tracker: irs_attempts_api_tracker,
+          flow_path: params[:flow_path],
         ).submit
 
         if result.success?

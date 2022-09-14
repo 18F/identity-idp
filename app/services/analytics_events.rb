@@ -468,12 +468,18 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Integer] failed_attempts Number of failed attempts
+  # @param [String] field Image form field
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The number of acceptable failed attempts (maxFailedAttemptsBeforeNativeCamera) has been met
   # or exceeded, and the system has forced the use of the native camera, rather than Acuant's
   # camera, on mobile devices.
-  def idv_native_camera_forced(**extra)
+  def idv_native_camera_forced(failed_attempts:, field:, flow_path:, **extra)
     track_event(
       'IdV: Native camera forced after failed attempts',
+      failed_attempts: failed_attempts,
+      field: field,
+      flow_path: flow_path,
       **extra,
     )
   end
@@ -495,9 +501,56 @@ module AnalyticsEvents
     track_event('IdV: come back later visited')
   end
 
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user clicked the troubleshooting option to start in-person proofing
-  def idv_verify_in_person_troubleshooting_option_clicked
-    track_event('IdV: verify in person troubleshooting option clicked')
+  def idv_verify_in_person_troubleshooting_option_clicked(flow_path:, **extra)
+    track_event(
+      'IdV: verify in person troubleshooting option clicked',
+      flow_path: flow_path,
+      **extra,
+    )
+  end
+
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user visited the in person proofing location step
+  def idv_in_person_location_visited(flow_path:, **extra)
+    track_event('IdV: in person proofing location visited', flow_path: flow_path, **extra)
+  end
+
+  # @param [String] selected_location Selected in-person location
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user submitted the in person proofing location step
+  def idv_in_person_location_submitted(selected_location:, flow_path:, **extra)
+    track_event(
+      'IdV: in person proofing location submitted',
+      selected_location: selected_location,
+      flow_path: flow_path,
+      **extra,
+    )
+  end
+
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user visited the in person proofing prepare step
+  def idv_in_person_prepare_visited(flow_path:, **extra)
+    track_event('IdV: in person proofing prepare visited', flow_path: flow_path, **extra)
+  end
+
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user submitted the in person proofing prepare step
+  def idv_in_person_prepare_submitted(flow_path:, **extra)
+    track_event('IdV: in person proofing prepare submitted', flow_path: flow_path, **extra)
+  end
+
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user visited the in person proofing switch_back step
+  def idv_in_person_switch_back_visited(flow_path:, **extra)
+    track_event('IdV: in person proofing switch_back visited', flow_path: flow_path, **extra)
+  end
+
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user submitted the in person proofing switch_back step
+  def idv_in_person_switch_back_submitted(flow_path:, **extra)
+    track_event('IdV: in person proofing switch_back submitted', flow_path: flow_path, **extra)
   end
 
   # The user visited the "ready to verify" page for the in person proofing flow
@@ -1407,12 +1460,14 @@ module AnalyticsEvents
   # @param [Array] acr_values
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
+  # @param [String] code_digest hash of returned "code" param
   def openid_connect_request_authorization(
     client_id:,
     scope:,
     acr_values:,
     unauthorized_scope:,
     user_fully_authenticated:,
+    code_digest:,
     **extra
   )
     track_event(
@@ -1422,6 +1477,7 @@ module AnalyticsEvents
       acr_values: acr_values,
       unauthorized_scope: unauthorized_scope,
       user_fully_authenticated: user_fully_authenticated,
+      code_digest: code_digest,
       **extra,
     )
   end
@@ -1429,11 +1485,13 @@ module AnalyticsEvents
   # Tracks when an openid connect token request is made
   # @param [String] client_id
   # @param [String] user_id
-  def openid_connect_token(client_id:, user_id:, **extra)
+  # @param [String] code_digest hash of "code" param
+  def openid_connect_token(client_id:, user_id:, code_digest:, **extra)
     track_event(
       'OpenID Connect: token',
       client_id: client_id,
       user_id: user_id,
+      code_digest: code_digest,
       **extra,
     )
   end
@@ -2513,6 +2571,27 @@ module AnalyticsEvents
   # Tracks users going back or cancelling acoount recovery
   def cancel_account_reset_recovery
     track_event('Account Reset: Cancel Account Recovery Options')
+  end
+
+  # Tracks when the user reaches the verify setup errors page after failing proofing
+  def idv_setup_errors_visited
+    track_event('IdV: Verify setup errors visited')
+  end
+
+  # @param [String] redirect_url URL user was directed to
+  # @param [String, nil] step which step
+  # @param [String, nil] location which part of a step, if applicable
+  # @param ["idv", String, nil] flow which flow
+  # User was redirected to the login.gov contact page
+  def contact_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
+    track_event(
+      'Contact Page Redirect',
+      redirect_url: redirect_url,
+      step: step,
+      location: location,
+      flow: flow,
+      **extra,
+    )
   end
 end
 # rubocop:enable Metrics/ModuleLength

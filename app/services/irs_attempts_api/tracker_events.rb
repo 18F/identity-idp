@@ -4,6 +4,15 @@
 module IrsAttemptsApi
   module TrackerEvents
     # param [Boolean] success True if Account Successfully Deleted
+    # A User deletes their Login.gov account
+    def account_purged(success:)
+      track_event(
+        :account_purged,
+        success: success,
+      )
+    end
+
+    # param [Boolean] success True if Account Successfully Deleted
     # param [Hash<Key, Array<String>>] failure_reason displays why account deletion failed
     # A User confirms and deletes their Login.gov account after 24 hour period
     def account_reset_account_deleted(success:, failure_reason:)
@@ -92,6 +101,13 @@ module IrsAttemptsApi
       )
     end
 
+    # The user has exceeded the rate limit during idv document upload
+    def idv_document_upload_rate_limited
+      track_event(
+        :idv_document_upload_rate_limited,
+      )
+    end
+
     # @param [Boolean] success
     # @param [String] document_state
     # @param [String] document_number
@@ -130,42 +146,6 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when the user submits their idv phone number
-    # @param [String] phone_number
-    # param [Boolean] success
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def idv_phone_submitted(phone_number:, success:, failure_reason: nil)
-      track_event(
-        :idv_phone_submitted,
-        phone_number: phone_number,
-        success: success,
-        failure_reason: failure_reason,
-      )
-    end
-
-    # Tracks Idv phone OTP sent rate limits
-    def idv_phone_otp_sent_rate_limited
-      track_event(
-        :idv_phone_otp_sent_rate_limited,
-      )
-    end
-
-    # The user has exceeded the rate limit during idv document upload
-    def idv_document_upload_rate_limited
-      track_event(
-        :idv_document_upload_rate_limited,
-      )
-    end
-
-    # Tracks when the user submits a password for identity proofing
-    # @param [Boolean] success
-    def idv_password_entered(success:)
-      track_event(
-        :idv_password_entered,
-        success: success,
-      )
-    end
-
     # param [Boolean] Success
     # param [Hash<Key, Array<String>>] failure_reason displays GPO submission failed
     # GPO verification submitted from Letter sent to verify address
@@ -192,6 +172,15 @@ module IrsAttemptsApi
         :idv_letter_requested,
         success: success,
         resend: resend,
+      )
+    end
+
+    # Tracks when the user submits a password for identity proofing
+    # @param [Boolean] success
+    def idv_password_entered(success:)
+      track_event(
+        :idv_password_entered,
+        success: success,
       )
     end
 
@@ -227,6 +216,13 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks Idv phone OTP sent rate limits
+    def idv_phone_otp_sent_rate_limited
+      track_event(
+        :idv_phone_otp_sent_rate_limited,
+      )
+    end
+
     # Tracks when a user submits OTP code sent to their phone
     # @param [String] phone_number
     # param [Boolean] success
@@ -246,6 +242,28 @@ module IrsAttemptsApi
       track_event(
         :idv_phone_otp_submitted_rate_limited,
         phone: phone,
+      )
+    end
+
+    # Tracks when sending a link to a phone is rate limited during idv flow
+    # @param [String] phone_number
+    def idv_phone_send_link_rate_limited(phone_number:)
+      track_event(
+        :idv_phone_send_link_rate_limited,
+        phone_number: phone_number,
+      )
+    end
+
+    # Tracks when the user submits their idv phone number
+    # @param [String] phone_number
+    # param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def idv_phone_submitted(phone_number:, success:, failure_reason: nil)
+      track_event(
+        :idv_phone_submitted,
+        phone_number: phone_number,
+        success: success,
+        failure_reason: failure_reason,
       )
     end
 
@@ -273,6 +291,15 @@ module IrsAttemptsApi
       )
     end
 
+    # The user, who had previously successfully confirmed their identity, has
+    # reproofed. All the normal events are also sent, this simply notes that
+    # this is the second (or more) time they have gone through the process successfully.
+    def idv_reproof
+      track_event(
+        :idv_reproof,
+      )
+    end
+
     # @param [Boolean] success
     # @param [String] ssn
     # User entered in SSN number during Identity verification
@@ -281,6 +308,13 @@ module IrsAttemptsApi
         :idv_ssn_submitted,
         success: success,
         ssn: ssn,
+      )
+    end
+
+    # Track when idv verification is rate limited during idv flow
+    def idv_verification_rate_limited
+      track_event(
+        :idv_verification_rate_limited,
       )
     end
 
@@ -321,6 +355,44 @@ module IrsAttemptsApi
         address: address,
         ssn: ssn,
         failure_reason: failure_reason,
+      )
+    end
+
+    # @param [Boolean] success True if the password was successfully changed
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # A logged-in user has attempted to change their password
+    def logged_in_password_change(success:, failure_reason: nil)
+      track_event(
+        :logged_in_password_change,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # A logged-in user has been rate limited from submitting a password to reauthenticate prior to
+    # changing their password too many times
+    def logged_in_password_change_reauthentication_rate_limited
+      track_event(
+        :logged_in_password_change_reauthentication_rate_limited,
+      )
+    end
+
+    # @param [Boolean] success True if the password submitted for reauthentication matches the
+    # current password
+    # A logged-in user has submitted a password to reauthenticate prior to changing their password
+    def logged_in_password_change_reauthentication_submitted(success:)
+      track_event(
+        :logged_in_password_change_reauthentication_submitted,
+        success: success,
+      )
+    end
+
+    # @param [String] email
+    # A login attempt was rejected due to too many incorrect attempts
+    def login_rate_limited(email)
+      track_event(
+        :login_rate_limited,
+        email: email,
       )
     end
 

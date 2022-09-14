@@ -364,6 +364,24 @@ describe Idv::ReviewController do
           expect(disavowal_event_count).to eq 1
         end
 
+        context 'when the user goes through reproofing' do
+          it 'does not log a reproofing event during initial proofing' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(@irs_attempts_api_tracker).not_to receive(:idv_reproof)
+          end
+
+          it 'logs a reproofing event upon reproofing' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            idv_session.profile.update(verified_at: nil)
+
+            expect(@irs_attempts_api_tracker).to receive(:idv_reproof)
+
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          end
+        end
+
         context 'with idv app personal key step enabled' do
           before do
             allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
@@ -528,6 +546,7 @@ describe Idv::ReviewController do
               expect(response).to redirect_to idv_personal_key_path
 
               enrollment.reload
+
               expect(enrollment.status).to eq('pending')
               expect(enrollment.user_id).to eq(user.id)
               expect(enrollment.enrollment_code).to be_a(String)
@@ -582,6 +601,34 @@ describe Idv::ReviewController do
 
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
             end
+          end
+        end
+
+        context 'with threatmetrix required but review status did not pass' do
+          let(:applicant) do
+            Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
+          end
+          let(:stub_idv_session) do
+            stub_user_with_applicant_data(user, applicant)
+          end
+
+          before(:each) do
+            stub_request_token
+            ProofingComponent.create(
+              user: user,
+              threatmetrix: true,
+              threatmetrix_review_status: 'review',
+            )
+            allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
+              and_return(true)
+            allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
+              and_return(true)
+          end
+
+          it 'creates a disabled profile' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(user.profiles.last.deactivation_reason).to eq('threatmetrix_review_pending')
           end
         end
       end

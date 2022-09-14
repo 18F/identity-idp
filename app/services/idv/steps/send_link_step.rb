@@ -34,6 +34,11 @@ module Idv
             except: :seconds,
           ),
         )
+
+        @flow.irs_attempts_api_tracker.idv_phone_send_link_rate_limited(
+          phone_number: formatted_destination_phone,
+        )
+
         failure(message)
       end
 

@@ -50,9 +50,12 @@ module Idv
 
     def create
       irs_attempts_api_tracker.idv_password_entered(success: true)
+      log_reproof_event if Profile.find_by(id: idv_session&.profile_id)&.active?
       init_profile
       user_session[:need_personal_key_confirmation] = true
+
       redirect_to next_step
+
       analytics.idv_review_complete(success: true)
       analytics.idv_final(success: true)
 
@@ -61,6 +64,10 @@ module Idv
     end
 
     private
+
+    def log_reproof_event
+      irs_attempts_api_tracker.idv_reproof
+    end
 
     def redirect_to_idv_app_if_enabled
       return if !IdentityConfig.store.idv_api_enabled_steps.include?('password_confirm')
