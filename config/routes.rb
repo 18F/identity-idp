@@ -276,6 +276,7 @@ Rails.application.routes.draw do
     get '/redirect/return_to_sp/cancel' => 'redirect/return_to_sp#cancel', as: :return_to_sp_cancel
     get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof', as: :return_to_sp_failure_to_proof
     get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
+    get '/redirect/contact/' => 'redirect/contact#show', as: :contact_redirect
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 
