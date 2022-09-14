@@ -239,7 +239,17 @@ module Idv
         date_of_birth: pii_from_doc[:dob],
         address: pii_from_doc[:address1],
         failure_reason: client_response.errors&.except(:hints)&.presence,
-      )
+      ).merge(native_camera_ab_test_data)
+    end
+
+    def native_camera_ab_test_data
+      return {} unless IdentityConfig.store.idv_native_camera_a_b_testing_enabled
+
+      ab_test = NativeCameraABTest
+      discriminator = document_capture_session.uuid
+      {
+        native_camera_ab_test_bucket: ab_test.bucket(discriminator),
+      }
     end
 
     def acuant_sdk_capture?

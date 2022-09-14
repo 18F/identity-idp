@@ -31,11 +31,7 @@ module Idv
       private
 
       def native_camera_ab_testing_variables
-        ab_test = AbTestBucket.new(
-          buckets: {
-            native_camera_only: IdentityConfig.store.idv_native_camera_a_b_testing_percent,
-          },
-        )
+        ab_test = NativeCameraABTest
         discriminator = flow_session[:document_capture_session_uuid]
         skip_sdk = ab_test.bucket(discriminator) == :native_camera_only
 
@@ -44,15 +40,6 @@ module Idv
             IdentityConfig.store.idv_native_camera_a_b_testing_enabled,
           native_camera_only: skip_sdk,
         }
-      end
-
-      def randomize?(target_percent, discriminator)
-        return false if discriminator.blank?
-
-        max_sha = (16 ** 64) - 1
-        user_value = Digest::SHA256.hexdigest(discriminator).to_i(16).to_f / max_sha * 100
-
-        user_value < target_percent.clamp(0, 100)
       end
 
       def handle_stored_result
