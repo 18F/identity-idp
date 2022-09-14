@@ -109,7 +109,6 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_sp_required: false
 in_person_proofing_enabled: false
-in_person_proofing_enabled_issuers: '[]'
 in_person_enrollment_validity_in_days: 30
 in_person_results_delay_in_hours: 1
 include_slo_in_saml_metadata: false

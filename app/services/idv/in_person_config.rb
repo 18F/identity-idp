@@ -6,7 +6,10 @@ module Idv
       if issuer.nil?
         enabled_without_issuer?
       else
-        enabled_issuers.include?(issuer)
+        ServiceProvider.exists?(
+          issuer: issuer,
+          in_person_proofing_enabled: true,
+        )
       end
     end
 
@@ -16,10 +19,6 @@ module Idv
 
     def self.enabled?
       IdentityConfig.store.in_person_proofing_enabled
-    end
-
-    def self.enabled_issuers
-      IdentityConfig.store.in_person_proofing_enabled_issuers
     end
   end
 end
