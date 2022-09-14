@@ -21,7 +21,7 @@ class MfaConfirmationController < ApplicationController
   def create
     valid_password = current_user.valid_password?(password)
 
-    irs_attempts_api_tracker.logged_in_password_change_reauthentication_submitted(
+    irs_attempts_api_tracker.logged_in_profile_change_reauthentication_submitted(
       success: valid_password,
     )
     if valid_password
@@ -60,7 +60,7 @@ class MfaConfirmationController < ApplicationController
 
   def handle_max_password_attempts_reached
     analytics.password_max_attempts
-    irs_attempts_api_tracker.logged_in_password_change_reauthentication_rate_limited
+    irs_attempts_api_tracker.logged_in_profile_change_reauthentication_rate_limited
     sign_out
     redirect_to root_url, flash: { error: t('errors.max_password_attempts_reached') }
   end

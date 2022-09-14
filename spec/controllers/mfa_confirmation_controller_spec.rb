@@ -46,7 +46,7 @@ describe MfaConfirmationController do
         post :create, params: { user: { password: '' } }
 
         expect(@irs_attempts_api_tracker).to have_received(:track_event).
-          with(:logged_in_password_change_reauthentication_submitted, success: false)
+          with(:logged_in_profile_change_reauthentication_submitted, success: false)
 
         expect(response).to redirect_to(user_password_confirm_path)
         expect(flash[:error]).to eq t('errors.confirm_password_incorrect')
@@ -59,7 +59,7 @@ describe MfaConfirmationController do
         post :create, params: { user: { password: 'wrong' } }
 
         expect(@irs_attempts_api_tracker).to have_received(:track_event).
-          with(:logged_in_password_change_reauthentication_submitted, success: false)
+          with(:logged_in_profile_change_reauthentication_submitted, success: false)
 
         expect(response).to redirect_to(user_password_confirm_path)
         expect(flash[:error]).to eq t('errors.confirm_password_incorrect')
@@ -75,7 +75,7 @@ describe MfaConfirmationController do
           post :create, params: { user: { password: 'wrong' } }
 
           expect(@irs_attempts_api_tracker).to have_received(:track_event).
-            with(:logged_in_password_change_reauthentication_submitted, success: false)
+            with(:logged_in_profile_change_reauthentication_submitted, success: false)
 
           expect(response).to redirect_to(user_password_confirm_path)
           expect(session[:password_attempts]).to eq 1
@@ -88,7 +88,7 @@ describe MfaConfirmationController do
         post :create, params: { user: { password: 'password' } }
 
         expect(@irs_attempts_api_tracker).to have_received(:track_event).
-          with(:logged_in_password_change_reauthentication_submitted, success: true)
+          with(:logged_in_profile_change_reauthentication_submitted, success: true)
 
         expect(response).to redirect_to(user_two_factor_authentication_path(reauthn: true))
         expect(session[:password_attempts]).to eq 0
@@ -118,7 +118,7 @@ describe MfaConfirmationController do
         expect(@analytics).to have_received(:track_event).
           with('Password Max Attempts Reached')
         expect(@irs_attempts_api_tracker).to have_received(:track_event).
-          with(:logged_in_password_change_reauthentication_rate_limited)
+          with(:logged_in_profile_change_reauthentication_rate_limited)
       end
     end
 
