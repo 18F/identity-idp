@@ -6,15 +6,18 @@ describe Redirect::ContactController do
   end
 
   describe '#show' do
+    let(:location_params) { { flow: 'flow', step: 'step', location: 'location', foo: 'bar' } }
     it 'redirects to contact page' do
       redirect_url = IdentityConfig.store.idv_contact_url
 
-      get :show
+      get :show, params: { **location_params }
 
       expect(response).to redirect_to redirect_url
       expect(@analytics).to have_logged_event(
-        'External Redirect',
+        'Contact Page Redirect',
         redirect_url: redirect_url,
+        flow: 'flow',
+        step: 'step',
       )
     end
   end

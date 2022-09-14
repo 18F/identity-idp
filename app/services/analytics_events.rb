@@ -2572,5 +2572,21 @@ module AnalyticsEvents
   def idv_setup_errors_visited
     track_event('IdV: Verify setup errors visited')
   end
+
+  # @param [String] redirect_url URL user was directed to
+  # @param [String, nil] step which step
+  # @param [String, nil] location which part of a step, if applicable
+  # @param ["idv", String, nil] flow which flow
+  # User was redirected to the login.gov contact page
+  def contact_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
+    track_event(
+      'Contact Page Redirect',
+      redirect_url: redirect_url,
+      step: step,
+      location: location,
+      flow: flow,
+      **extra,
+    )
+  end
 end
 # rubocop:enable Metrics/ModuleLength
