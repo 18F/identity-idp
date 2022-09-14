@@ -70,7 +70,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   def check_enrollments(enrollments)
     proofer = UspsInPersonProofing::Proofer.new
 
-    enrollments.each do |enrollment|
+    enrollments.each_with_index do |enrollment, idx|
       # Add a unique ID for enrollments that don't have one
       enrollment.update(unique_id: enrollment.usps_unique_id) if enrollment.unique_id.blank?
 
@@ -94,6 +94,10 @@ class GetUspsProofingResultsJob < ApplicationJob
 
       # Record the attempt to update the enrollment
       enrollment.update(status_check_attempted_at: status_check_attempted_at)
+
+      # Sleep for a while before we attempt to make another call to USPS
+      request_delay = IdentityConfig.store.get_usps_proofing_results_job_request_delay_seconds
+      sleep request_delay if idx < enrollments.length - 1
     end
   end
 
