@@ -236,5 +236,36 @@ describe('maxCaptureAttemptsBeforeNativeCamera logging tests', () => {
         'IdV: Native camera forced after failed attempts',
       );
     });
+
+    it('Does not call forceNativeCamera analytics if the target environment is desktop and other criteria are met', async function () {
+      const trackEvent = sinon.spy();
+      const acuantCaptureComponent = <AcuantCapture />;
+      function TestComponent({ children }) {
+        return (
+          <AnalyticsContext.Provider value={{ trackEvent }}>
+            <DeviceContext.Provider value={{ isMobile: false }}>
+              <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+                <Provider
+                  maxCaptureAttemptsBeforeNativeCamera={0}
+                  maxFailedSubmissionAttemptsBeforeNativeCamera={0}
+                  maxFailedAttemptsBeforeTips={10}
+                >
+                  {acuantCaptureComponent}
+                  {children}
+                </Provider>
+              </AcuantContextProvider>
+            </DeviceContext.Provider>
+          </AnalyticsContext.Provider>
+        );
+      }
+      const result = render(<TestComponent />);
+      const user = userEvent.setup();
+      const fileInput = result.container.querySelector('input[type="file"]');
+      expect(fileInput).to.exist();
+      await user.click(fileInput);
+      expect(trackEvent).to.not.have.been.calledWith(
+        'IdV: Native camera forced after failed attempts',
+      );
+    });
   });
 });

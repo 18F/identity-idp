@@ -415,7 +415,7 @@ function AcuantCapture(
    */
   function startCaptureOrTriggerUpload(event: MouseEvent) {
     if (event.target === inputRef.current) {
-      if (forceNativeCamera) {
+      if (forceNativeCamera && isMobile) {
         trackEvent('IdV: Native camera forced after failed attempts', {
           field: name,
           failed_capture_attempts: failedCaptureAttempts,
