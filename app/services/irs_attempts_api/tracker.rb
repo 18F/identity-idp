@@ -21,7 +21,7 @@ module IrsAttemptsApi
       event_metadata = {
         user_agent: request&.user_agent,
         unique_session_id: hashed_session_id,
-        user_uuid: AgencyIdentityLinker.for(user: user, service_provider: sp)&.uuid,
+        user_uuid: sp && AgencyIdentityLinker.for(user: user, service_provider: sp)&.uuid,
         device_fingerprint: hashed_cookie_device_uuid,
         user_ip_address: request&.remote_ip,
         irs_application_url: sp_request_uri,

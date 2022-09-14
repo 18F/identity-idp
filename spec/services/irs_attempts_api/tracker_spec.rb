@@ -59,6 +59,23 @@ RSpec.describe IrsAttemptsApi::Tracker do
       end
     end
 
+    context 'without a service provider' do
+      let(:service_provider) { nil }
+
+      it 'still logs metadata about the event' do
+        expect(analytics).to receive(:irs_attempts_api_event_metadata).with(
+          event_type: :test_event,
+          unencrypted_payload_num_bytes: kind_of(Integer),
+          recorded: true,
+        )
+
+        event = subject.track_event(:test_event, foo: :bar)
+
+        expect(event.payload[:events].first.last[:user_uuid]).
+          to eq(nil), 'has a nil user_uuid because there can be no pairwise uuid for no agency'
+      end
+    end
+
     context 'the current session is not an IRS attempt API session' do
       let(:enabled_for_session) { false }
 
