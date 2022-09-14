@@ -6,7 +6,10 @@ module Idv
       if issuer.nil?
         enabled_without_issuer?
       else
-        ServiceProvider.find_by(issuer: issuer)&.in_person_proofing_enabled || false
+        ServiceProvider.exists?(
+          issuer: issuer,
+          in_person_proofing_enabled: true,
+        )
       end
     end
 
