@@ -10,10 +10,10 @@ module Proofing
 
         def proof(applicant)
           response = VerificationRequest.new(config: config, applicant: applicant).send
-          return Proofing::LexisNexis::LexisNexis::Result.new(response) # TODO: Make this result class
+          return Proofing::LexisNexis::InstantVerify::Result.new(response)
         rescue => exception
           NewRelic::Agent.notice_error(exception)
-          ResultWithException.new(exception) # TODO: Make this class too
+          ResultWithException.new(exception, vendor_name: 'lexisnexis:instant_verify')
         end
       end
     end
