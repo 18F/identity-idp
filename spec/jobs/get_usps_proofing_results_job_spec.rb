@@ -205,6 +205,18 @@ RSpec.describe GetUspsProofingResultsJob do
         ).to be >= 0.0
       end
 
+      context 'when an enrollment does not have a unique ID' do
+        it 'generates a backwards-compatible unique ID' do
+          pending_enrollment.update(unique_id: nil)
+          stub_request_passed_proofing_results
+          expect(pending_enrollment).to receive(:usps_unique_id).and_call_original
+
+          job.perform(Time.zone.now)
+
+          expect(pending_enrollment.unique_id).not_to be_nil
+        end
+      end
+
       describe 'sending emails' do
         it 'sends proofing failed email on response with failed status' do
           stub_request_failed_proofing_results

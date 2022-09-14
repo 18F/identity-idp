@@ -14,7 +14,6 @@ describe('StepIndicatorStep', () => {
       expect(status).to.be.ok();
       expect(step.classList.contains('step-indicator__step--current')).to.be.true();
       expect(step.classList.contains('step-indicator__step--complete')).to.be.false();
-      expect(step.classList.contains('step-indicator__step--pending')).to.be.false();
       expect(status.classList.contains('step-indicator__step-subtitle')).to.be.false();
       expect(status.classList.contains('usa-sr-only')).to.be.true();
     });
@@ -32,27 +31,8 @@ describe('StepIndicatorStep', () => {
       expect(status).to.be.ok();
       expect(step.classList.contains('step-indicator__step--current')).to.be.false();
       expect(step.classList.contains('step-indicator__step--complete')).to.be.true();
-      expect(step.classList.contains('step-indicator__step--pending')).to.be.false();
       expect(status.classList.contains('step-indicator__step-subtitle')).to.be.false();
       expect(status.classList.contains('usa-sr-only')).to.be.true();
-    });
-  });
-
-  context('pending step', () => {
-    it('renders step', () => {
-      const { getByText } = render(<StepIndicatorStep title="Step" status={StepStatus.PENDING} />);
-
-      const title = getByText('Step');
-      const status = getByText('step_indicator.status.pending');
-      const step = title.closest('.step-indicator__step')!;
-
-      expect(title).to.be.ok();
-      expect(status).to.be.ok();
-      expect(step.classList.contains('step-indicator__step--current')).to.be.false();
-      expect(step.classList.contains('step-indicator__step--complete')).to.be.false();
-      expect(step.classList.contains('step-indicator__step--pending')).to.be.true();
-      expect(status.classList.contains('step-indicator__step-subtitle')).to.be.true();
-      expect(status.classList.contains('usa-sr-only')).to.be.false();
     });
   });
 
@@ -70,7 +50,6 @@ describe('StepIndicatorStep', () => {
       expect(status).to.be.ok();
       expect(step.classList.contains('step-indicator__step--current')).to.be.false();
       expect(step.classList.contains('step-indicator__step--complete')).to.be.false();
-      expect(step.classList.contains('step-indicator__step--pending')).to.be.false();
       expect(status.classList.contains('step-indicator__step-subtitle')).to.be.false();
       expect(status.classList.contains('usa-sr-only')).to.be.true();
     });

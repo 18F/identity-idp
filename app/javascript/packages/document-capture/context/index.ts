@@ -10,8 +10,10 @@ export {
   default as ServiceProviderContext,
   Provider as ServiceProviderContextProvider,
 } from './service-provider';
-export { default as AnalyticsContext } from './analytics';
+export { default as AnalyticsContext, AnalyticsContextProvider } from './analytics';
 export {
   default as FailedCaptureAttemptsContext,
   Provider as FailedCaptureAttemptsContextProvider,
 } from './failed-capture-attempts';
+
+export type { DeviceContextValue } from './device';

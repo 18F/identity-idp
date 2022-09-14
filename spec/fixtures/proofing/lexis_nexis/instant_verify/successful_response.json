@@ -1,39 +1,43 @@
 {
   "Status": {
-    "ConversationId": "8624642277235233040",
-    "RequestId": "13936712",
+    "ConversationId": "123456",
+    "RequestId": "7890",
     "TransactionStatus": "passed",
-    "Reference": "Reference1",
-    "ServerInfo": "ASERVER-W7D"
+    "Reference": "Reference1"
   },
   "Products": [
     {
-      "ProductType": "Discovery",
-      "ExecutedStepName": "Discovery",
-      "ProductStatus": "pass"
-    },
-    {
-      "ProductType": "Velocity",
-      "ExecutedStepName": "Velocity",
+      "ProductType": "InstantVerify",
+      "ExecutedStepName": "Execute Instant Verify",
+      "ProductConfigurationName": "REDACTED_CONFIGURATION",
       "ProductStatus": "pass",
       "Items": [
         {
-          "ItemName": "FREQUENCY",
+          "ItemName": "Addr1Zip_StateMatch",
           "ItemStatus": "pass"
-        }
-      ]
-    },
-    {
-      "ProductType": "InstantVerify",
-      "ExecutedStepName": "InstantVerify",
-      "ProductStatus": "pass",
-      "Items": [
+        },
+        {
+          "ItemName": "SsnFullNameMatch",
+          "ItemStatus": "pass"
+        },
         {
           "ItemName": "SsnDeathMatchVerification",
           "ItemStatus": "pass"
         },
         {
           "ItemName": "SSNSSAValid",
+          "ItemStatus": "pass"
+        },
+        {
+          "ItemName": "IdentityOccupancyVerified",
+          "ItemStatus": "pass"
+        },
+        {
+          "ItemName": "AddrDeliverable",
+          "ItemStatus": "pass"
+        },
+        {
+          "ItemName": "AddrNotHighRisk",
           "ItemStatus": "pass"
         },
         {
@@ -45,11 +49,8 @@
           "ItemStatus": "pass"
         },
         {
-          "ItemName": "OFAC",
-          "ItemStatus": "pass",
-          "ItemReason": {
-            "Code": "ipatriot"
-          }
+          "ItemName": "LexIDDeathMatch",
+          "ItemStatus": "pass"
         }
       ]
     }

@@ -39,7 +39,7 @@ RSpec.describe Utf8Sanitizer do
     end
 
     it 'blocks null bytes in the params' do
-      post '/test', params: { some: [ 'aaa', { value: "\x00" } ] }
+      post '/test', params: { some: ['aaa', { value: "\x00" }] }
       expect(last_response).to be_bad_request
     end
 

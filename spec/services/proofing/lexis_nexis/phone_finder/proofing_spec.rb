@@ -12,6 +12,7 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
       phone: '5551231234',
     }
   end
+
   let(:verification_request) do
     Proofing::LexisNexis::PhoneFinder::VerificationRequest.new(
       applicant: applicant,
@@ -26,24 +27,63 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
   end
 
   describe '#proof' do
-    subject(:result) { instance.proof(applicant) }
+    context 'when the response is a success' do
+      let(:response_body) { LexisNexisFixtures.phone_finder_success_response_json }
 
-    before do
-      stub_request(:post, verification_request.url).
-        to_return(body: response_body, status: 200)
+      it 'is a successful result' do
+        stub_request(:post, verification_request.url).
+          to_return(body: LexisNexisFixtures.phone_finder_success_response_json, status: 200)
+
+        result = instance.proof(applicant)
+
+        expect(result.success?).to eq(true)
+        expect(result.errors).to eq({})
+      end
     end
 
     context 'when the response is a failure' do
-      let(:response_body) do
-        LexisNexisFixtures.instant_verify_date_of_birth_full_fail_response_json
-      end
+      let(:response_body) { LexisNexisFixtures.phone_finder_fail_response_json }
 
       it 'is a failure result' do
+        stub_request(:post, verification_request.url).
+          to_return(body: LexisNexisFixtures.phone_finder_fail_response_json, status: 200)
+
+        result = instance.proof(applicant)
+
         expect(result.success?).to eq(false)
         expect(result.errors).to include(
           base: include(a_kind_of(String)),
-          'Execute Instant Verify': include(a_kind_of(Hash)),
+          'PhoneFinder Checks': include(a_kind_of(Hash)),
         )
+        expect(result.transaction_id).to eq('31000000000000')
+        expect(result.reference).to eq('Reference1')
+      end
+    end
+
+    context 'when the request times out' do
+      it 'retuns a timeout result' do
+        stub_request(:post, verification_request.url).to_timeout
+
+        result = instance.proof(applicant)
+
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq({})
+        expect(result.exception).to be_a(Proofing::TimeoutError)
+        expect(result.timed_out?).to eq(true)
+      end
+    end
+
+    context 'when an error is raised' do
+      it 'returns a result with an exception' do
+        stub_request(:post, verification_request.url).to_raise(RuntimeError.new('fancy test error'))
+
+        result = instance.proof(applicant)
+
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq({})
+        expect(result.exception).to be_a(RuntimeError)
+        expect(result.exception.message).to eq('fancy test error')
+        expect(result.timed_out?).to eq(false)
       end
     end
   end

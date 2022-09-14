@@ -5,6 +5,7 @@ en:
     flows:
       idv:
         find_a_post_office: Find a Post Office
+        get_a_letter: Get a letter in the mail
         getting_started: Getting started
         go_to_the_post_office: Go to the Post Office
         secure_account: Secure your account

@@ -212,6 +212,11 @@ else
         cron: IdentityConfig.store.get_usps_proofing_results_job_cron,
         args: -> { [Time.zone.now] },
       },
+      # Periodically verify signature on ThreatMetrix javascript
+      verify_threat_metrix_js: {
+        class: 'ThreatMetrixJsVerificationJob',
+        cron: cron_1h,
+      },
     }
   end
   # rubocop:enable Metrics/BlockLength

@@ -109,7 +109,6 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_sp_required: false
 in_person_proofing_enabled: false
-in_person_proofing_enabled_issuers: '[]'
 in_person_enrollment_validity_in_days: 30
 in_person_results_delay_in_hours: 1
 include_slo_in_saml_metadata: false
@@ -158,6 +157,7 @@ lexisnexis_threatmetrix_timeout: 1.0
 lexisnexis_threatmetrix_enabled: false
 lexisnexis_threatmetrix_mock_enabled: true
 lexisnexis_threatmetrix_required_to_verify: false
+lexisnexis_threatmetrix_js_signing_cert: ''
 ###################################################################
 lockout_period_in_minutes: 10
 log_to_stdout: false
@@ -178,6 +178,7 @@ max_piv_cac_per_account: 2
 min_password_score: 3
 mx_timeout: 3
 new_sign_up_cancellation_url_enabled: true
+no_sp_device_profiling_enabled: false
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
 otps_per_ip_limit: 25

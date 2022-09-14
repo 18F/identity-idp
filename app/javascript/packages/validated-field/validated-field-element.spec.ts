@@ -6,9 +6,12 @@ import './validated-field-element';
 describe('ValidatedFieldElement', () => {
   let idCounter = 0;
 
-  function createAndConnectElement({ hasInitialError = false } = {}) {
+  function createAndConnectElement({ hasInitialError = false, errorInsideField = true } = {}) {
     const element = document.createElement('lg-validated-field');
     const errorMessageId = ++idCounter;
+    const errorHtml = hasInitialError
+      ? `<div class="usa-error-message" id="validated-field-error-${errorMessageId}">Invalid value</div>`
+      : '';
     element.innerHTML = `
       <script type="application/json" class="validated-field__error-strings">
         {
@@ -16,23 +19,25 @@ describe('ValidatedFieldElement', () => {
         }
       </script>
       <div class="validated-field__input-wrapper">
+        <label id="validated-field-label" class="usa-label">Required Field</label>
         <input
           aria-invalid="false"
-          aria-describedby="validated-field-error-${errorMessageId}"
+          aria-describedby="validated-field-label validated-field-error-${errorMessageId}"
           required="required"
           aria-required="true"
           class="validated-field__input${hasInitialError ? ' usa-input--error' : ''}"
         />
-        ${
-          hasInitialError
-            ? `<div class="usa-error-message" id="validated-field-error-${errorMessageId}">Invalid value</div>`
-            : ''
-        }
+        ${errorHtml && errorInsideField ? errorHtml : ''}
       </div>
     `;
 
-    const form = document.createElement('form');
+    const form = document.querySelector('form') || document.createElement('form');
     form.appendChild(element);
+    if (errorHtml && !errorInsideField) {
+      const errorContainer = document.createElement('div');
+      errorContainer.innerHTML = errorHtml;
+      form.appendChild(errorContainer);
+    }
     document.body.appendChild(form);
 
     return element;
@@ -51,7 +56,7 @@ describe('ValidatedFieldElement', () => {
     expect(document.activeElement).to.equal(input);
     const message = getByText(element, 'This field is required');
     expect(message).to.be.ok();
-    expect(message.id).to.equal(input.getAttribute('aria-describedby'));
+    expect(message.id).to.equal('validated-field-error-1');
   });
 
   it('shows custom validity as message content', () => {
@@ -79,7 +84,7 @@ describe('ValidatedFieldElement', () => {
 
     expect(input.classList.contains('usa-input--error')).to.be.false();
     expect(input.getAttribute('aria-invalid')).to.equal('false');
-    expect(() => getByText(element, 'This field is required')).to.throw();
+    expect(getByText(element, 'This field is required').style.display).to.equal('none');
   });
 
   it('focuses the first element with an error', () => {
@@ -109,6 +114,34 @@ describe('ValidatedFieldElement', () => {
       expect(input.classList.contains('usa-input--error')).to.be.false();
       expect(input.getAttribute('aria-invalid')).to.equal('false');
       expect(() => getByText(element, 'Invalid value')).to.throw();
+    });
+  });
+
+  context('with error message element pre-rendered in the DOM', () => {
+    it('reuses the error message element from inside the tag', () => {
+      const element = createAndConnectElement({ hasInitialError: true, errorInsideField: true });
+
+      expect(() => getByText(element, 'Invalid value')).not.to.throw();
+      expect(() => getByText(element, 'This field is required')).to.throw();
+
+      const form = element.parentNode as HTMLFormElement;
+      form.checkValidity();
+
+      expect(() => getByText(element, 'Invalid value')).to.throw();
+      expect(() => getByText(element, 'This field is required')).not.to.throw();
+    });
+
+    it('reuses the error message element from outside the tag', () => {
+      const element = createAndConnectElement({ hasInitialError: true, errorInsideField: false });
+      const form = element.parentNode as HTMLFormElement;
+
+      expect(() => getByText(form, 'Invalid value')).not.to.throw();
+      expect(() => getByText(form, 'This field is required')).to.throw();
+
+      form.checkValidity();
+
+      expect(() => getByText(form, 'Invalid value')).to.throw();
+      expect(() => getByText(form, 'This field is required')).not.to.throw();
     });
   });
 

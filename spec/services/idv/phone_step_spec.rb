@@ -49,10 +49,9 @@ describe Idv::PhoneStep do
     let(:throttle) { Throttle.new(throttle_type: :proof_address, user: user) }
 
     it 'succeeds with good params' do
-      context = { stages: [{ address: 'AddressMock' }] }
       extra = {
         vendor: {
-          context: context,
+          vendor_name: 'AddressMock',
           exception: nil,
           timed_out: false,
           transaction_id: 'address-mock-transaction-id-123',
@@ -79,10 +78,9 @@ describe Idv::PhoneStep do
     end
 
     it 'fails with bad params' do
-      context = { stages: [{ address: 'AddressMock' }] }
       extra = {
         vendor: {
-          context: context,
+          vendor_name: 'AddressMock',
           exception: nil,
           timed_out: false,
           transaction_id: 'address-mock-transaction-id-123',

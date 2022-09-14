@@ -1,3 +1,4 @@
+import type { SinonStub } from 'sinon';
 import { trackEvent, trackError } from '@18f/identity-analytics';
 import { usePropertyValue, useSandbox } from '@18f/identity-test-helpers';
 
@@ -53,6 +54,16 @@ describe('trackEvent', () => {
             method: 'POST',
           }),
         );
+      });
+    });
+
+    context('a network error occurs in the request', () => {
+      beforeEach(() => {
+        (window.fetch as SinonStub).rejects(new TypeError());
+      });
+
+      it('absorbs the error', async () => {
+        await trackEvent('name');
       });
     });
   });

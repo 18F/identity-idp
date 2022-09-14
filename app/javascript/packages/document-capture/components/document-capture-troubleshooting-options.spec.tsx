@@ -1,19 +1,26 @@
+import sinon from 'sinon';
 import { render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import type { ComponentType } from 'react';
 import {
   MarketingSiteContextProvider,
   ServiceProviderContextProvider,
 } from '@18f/identity-document-capture';
-import { FlowContext } from '@18f/identity-verify-flow';
-import DocumentCaptureTroubleshootingOptions from '@18f/identity-document-capture/components/document-capture-troubleshooting-options';
+import { FlowContext, FlowContextValue } from '@18f/identity-verify-flow';
+import { AnalyticsContextProvider } from '../context/analytics';
+import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
+import type { ServiceProviderContext } from '../context/service-provider';
 
 describe('DocumentCaptureTroubleshootingOptions', () => {
   const helpCenterRedirectURL = 'https://example.com/redirect/';
   const inPersonURL = 'https://example.com/some/idv/ipp/url';
-  const serviceProviderContext = {
+  const serviceProviderContext: ServiceProviderContext = {
     name: 'Example SP',
     failureToProofURL: 'http://example.test/url/to/failure-to-proof',
+    isLivenessRequired: false,
+    getFailureToProofURL: () => '',
   };
-  const wrappers = {
+  const wrappers: Record<string, ComponentType> = {
     MarketingSiteContext: ({ children }) => (
       <MarketingSiteContextProvider helpCenterRedirectURL={helpCenterRedirectURL}>
         {children}
@@ -33,7 +40,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
       wrapper: wrappers.MarketingSiteContext,
     });
 
-    const links = /** @type {HTMLAnchorElement[]} */ (getAllByRole('link'));
+    const links = getAllByRole('link') as HTMLAnchorElement[];
 
     expect(links).to.have.lengthOf(2);
     expect(links[0].textContent).to.equal(
@@ -58,7 +65,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
         wrapper: wrappers.helpCenterAndServiceProviderContext,
       });
 
-      const links = /** @type {HTMLAnchorElement[]} */ (getAllByRole('link'));
+      const links = getAllByRole('link') as HTMLAnchorElement[];
 
       expect(links).to.have.lengthOf(3);
       expect(links[0].textContent).to.equal(
@@ -93,7 +100,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
           },
         );
 
-        const links = /** @type {HTMLAnchorElement[]} */ (getAllByRole('link'));
+        const links = getAllByRole('link') as HTMLAnchorElement[];
 
         expect(links[0].href).to.equal(
           'https://example.com/redirect/?category=verify-your-identity&article=how-to-add-images-of-your-state-issued-id&location=custom',
@@ -136,29 +143,48 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
     });
 
     context('hasErrors and inPersonURL', () => {
-      const wrapper = ({ children }) => (
-        <FlowContext.Provider value={{ inPersonURL }}>{children}</FlowContext.Provider>
+      const wrapper: ComponentType = ({ children }) => (
+        <FlowContext.Provider value={{ inPersonURL } as FlowContextValue}>
+          {children}
+        </FlowContext.Provider>
       );
 
       it('has link to IPP flow', () => {
-        const { getByText, getAllByRole } = render(
+        const { getByText, getByRole } = render(
           <DocumentCaptureTroubleshootingOptions hasErrors />,
           { wrapper },
         );
 
         expect(getByText('components.troubleshooting_options.new_feature')).to.exist();
 
-        const buttons = getAllByRole('button');
-        const ippButton = buttons.find(
-          ({ textContent }) => textContent === 'idv.troubleshooting.options.verify_in_person',
+        const link = getByRole('link', { name: 'idv.troubleshooting.options.verify_in_person' });
+
+        expect(link).to.exist();
+      });
+
+      it('logs an event when clicking the troubleshooting option', async () => {
+        const trackEvent = sinon.stub();
+        const { getByRole } = render(
+          <AnalyticsContextProvider trackEvent={trackEvent}>
+            <DocumentCaptureTroubleshootingOptions hasErrors />
+          </AnalyticsContextProvider>,
+          { wrapper },
         );
-        expect(ippButton).to.exist();
+
+        const link = getByRole('link', { name: 'idv.troubleshooting.options.verify_in_person' });
+        await userEvent.click(link);
+
+        expect(trackEvent).to.have.been.calledWith(
+          'IdV: verify in person troubleshooting option clicked',
+        );
       });
     });
 
     context('hasErrors and inPersonURL but showInPersonOption is false', () => {
-      const wrapper = ({ children }) => (
-        <FlowContext.Provider value={{ inPersonURL }}>{children}</FlowContext.Provider>
+      const wrapper: ComponentType = ({ children }) => (
+        <FlowContext.Provider value={{ inPersonURL } as FlowContextValue}>
+          {children}
+        </FlowContext.Provider>
       );
 
       it('does not have link to IPP flow', () => {
@@ -191,7 +217,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
           },
         );
 
-        const links = /** @type {HTMLAnchorElement[]} */ (getAllByRole('link'));
+        const links = getAllByRole('link') as HTMLAnchorElement[];
 
         expect(links).to.have.lengthOf(1);
         expect(links[0].getAttribute('href')).to.equal(

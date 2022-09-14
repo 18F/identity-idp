@@ -23,6 +23,9 @@ describe IdvController do
     end
 
     it 'redirects to failure page if number of attempts has been exceeded' do
+      stub_attempts_tracker
+      expect(@irs_attempts_api_tracker).to receive(:track_event).
+        with(:idv_verification_rate_limited)
       user = create(:user)
       profile = create(
         :profile,
@@ -53,6 +56,18 @@ describe IdvController do
       get :index
 
       expect(response).to redirect_to idv_doc_auth_path
+    end
+
+    context 'with a VA inherited proofing session' do
+      before do
+        stub_sign_in
+        allow(controller).to receive(:va_inherited_proofing?).and_return(true)
+      end
+
+      it 'redirects to inherited proofing' do
+        get :index
+        expect(response).to redirect_to idv_inherited_proofing_path
+      end
     end
 
     context 'sp has reached quota limit' do

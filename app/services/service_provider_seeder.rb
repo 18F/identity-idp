@@ -29,7 +29,6 @@ class ServiceProviderSeeder
         'agency',
         'certs',
         'restrict_to_deploy_env',
-        'uuid_priority',
         'protocol',
         'native',
       ).merge(certs: cert_pems))

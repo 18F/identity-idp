@@ -2,11 +2,13 @@ require 'rails_helper'
 
 describe 'idv/come_back_later/show.html.erb' do
   let(:sp_name) { '🔒🌐💻' }
+  let(:step_indicator_steps) { Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS_GPO }
 
   before do
     @decorated_session = instance_double(ServiceProviderSessionDecorator)
     allow(@decorated_session).to receive(:sp_name).and_return(sp_name)
     allow(view).to receive(:decorated_session).and_return(@decorated_session)
+    allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
   end
 
   context 'with an SP' do
@@ -55,16 +57,12 @@ describe 'idv/come_back_later/show.html.erb' do
     end
   end
 
-  it 'shows step indicator with pending status' do
+  it 'shows step indicator with current step' do
     render
 
     expect(view.content_for(:pre_flash_content)).to have_css(
       '.step-indicator__step--current',
-      text: t('step_indicator.flows.idv.verify_phone_or_address'),
-    )
-    expect(view.content_for(:pre_flash_content)).to have_css(
-      '.step-indicator__step--complete',
-      text: t('step_indicator.flows.idv.secure_account'),
+      text: t('step_indicator.flows.idv.get_a_letter'),
     )
   end
 end

@@ -21,7 +21,9 @@ module InPersonHelper
     fill_in t('in_person_proofing.form.state_id.first_name'), with: GOOD_FIRST_NAME
     fill_in t('in_person_proofing.form.state_id.last_name'), with: GOOD_LAST_NAME
     year, month, day = GOOD_DOB.split('-')
-    fill_in t('in_person_proofing.form.state_id.dob'), with: [month, day, year].join('-')
+    fill_in t('components.memorable_date.month'), with: month
+    fill_in t('components.memorable_date.day'), with: day
+    fill_in t('components.memorable_date.year'), with: year
     select GOOD_STATE_ID_JURISDICTION,
            from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
     fill_in t('in_person_proofing.form.state_id.state_id_number'), with: GOOD_STATE_ID_NUMBER
@@ -41,7 +43,7 @@ module InPersonHelper
     mock_doc_auth_attention_with_barcode
     attach_and_submit_images
 
-    click_button t('idv.troubleshooting.options.verify_in_person')
+    click_link t('idv.troubleshooting.options.verify_in_person')
   end
 
   def complete_location_step(_user = nil)
@@ -91,5 +93,15 @@ module InPersonHelper
     )
 
     expect_step_indicator_current_step(text)
+  end
+
+  def expect_in_person_gpo_step_indicator_current_step(text)
+    # Ensure that GPO letter step is shown in the step indicator.
+    expect(page).to have_css(
+      '.step-indicator__step',
+      text: t('step_indicator.flows.idv.get_a_letter'),
+    )
+
+    expect_in_person_step_indicator_current_step(text)
   end
 end

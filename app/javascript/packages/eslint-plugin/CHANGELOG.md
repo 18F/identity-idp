@@ -46,6 +46,7 @@
   - `no-useless-constructor`
 - React: The following rules are no longer enforced:
   - `react/no-array-index-key`
+- `prefer-const` is only enforced on destructuring assignment if all variables should be `const` ([`destructuring: 'all'` option](https://eslint.org/docs/latest/rules/prefer-const#destructuring)).
 
 ## v2.0.0 (2022-03-14)
 

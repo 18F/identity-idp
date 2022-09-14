@@ -16,6 +16,7 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
       zipcode: '70802-12345',
     }
   end
+
   let(:verification_request) do
     Proofing::LexisNexis::InstantVerify::VerificationRequest.new(
       applicant: applicant,
@@ -72,7 +73,7 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
     end
 
     context 'when the response is a not a full match' do
-      let(:response_body) { LexisNexisFixtures.instant_verify_year_of_birth_fail_response_json }
+      let(:response_body) { LexisNexisFixtures.instant_verify_date_of_birth_fail_response_json }
 
       it 'is a failure result' do
         result = subject.proof(applicant)

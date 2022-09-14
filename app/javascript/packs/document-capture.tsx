@@ -7,54 +7,35 @@ import {
   AcuantContextProvider,
   UploadContextProvider,
   ServiceProviderContextProvider,
-  AnalyticsContext,
+  AnalyticsContextProvider,
   FailedCaptureAttemptsContextProvider,
   MarketingSiteContextProvider,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { trackEvent as baseTrackEvent } from '@18f/identity-analytics';
-
-/** @typedef {import('@18f/identity-document-capture').FlowPath} FlowPath */
-/** @typedef {import('@18f/identity-i18n').I18n} I18n */
+import type { FlowPath, DeviceContextValue } from '@18f/identity-document-capture';
 
 /**
- * @typedef LoginGov
- *
- * @prop {Record<string,string>} assets
- */
-
-/**
- * @typedef LoginGovGlobals
- *
- * @prop {LoginGov} LoginGov
- */
-
-/**
- * @typedef {typeof window & LoginGovGlobals} DocumentCaptureGlobal
- */
-
-/**
- * @typedef AppRootData
- *
- * @prop {string} helpCenterRedirectUrl
- * @prop {string} appName
- * @prop {string} maxCaptureAttemptsBeforeTips
- * @prop {string} maxAttemptsBeforeNativeCamera
- * @prop {FlowPath} flowPath
- * @prop {string} cancelUrl
- * @prop {string=} idvInPersonUrl
- * @prop {string} securityAndPrivacyHowItWorksUrl
- *
  * @see AppContext
  * @see MarketingSiteContextProvider
  * @see FailedCaptureAttemptsContext
  * @see UploadContext
  */
+interface AppRootData {
+  helpCenterRedirectUrl: string;
+  appName: string;
+  maxCaptureAttemptsBeforeTips: string;
+  maxAttemptsBeforeNativeCamera: string;
+  flowPath: FlowPath;
+  cancelUrl: string;
+  idvInPersonUrl?: string;
+  securityAndPrivacyHowItWorksUrl: string;
+}
 
-const appRoot = /** @type {HTMLDivElement} */ (document.getElementById('document-capture-form'));
+const appRoot = document.getElementById('document-capture-form')!;
 const isMockClient = appRoot.hasAttribute('data-mock-client');
-const keepAliveEndpoint = /** @type {string} */ (appRoot.getAttribute('data-keep-alive-endpoint'));
+const keepAliveEndpoint = appRoot.getAttribute('data-keep-alive-endpoint')!;
 const glareThreshold = Number(appRoot.getAttribute('data-glare-threshold')) ?? undefined;
 const sharpnessThreshold = Number(appRoot.getAttribute('data-sharpness-threshold')) ?? undefined;
 
@@ -65,10 +46,7 @@ function getServiceProvider() {
   return { name, failureToProofURL, isLivenessRequired };
 }
 
-/**
- * @return {Record<'front'|'back'|'selfie', string>}
- */
-function getBackgroundUploadURLs() {
+function getBackgroundUploadURLs(): Record<'front' | 'back' | 'selfie', string> {
   return ['front', 'back', 'selfie'].reduce((result, key) => {
     const url = appRoot.getAttribute(`data-${key}-image-upload-url`);
     if (url) {
@@ -76,34 +54,27 @@ function getBackgroundUploadURLs() {
     }
 
     return result;
-  }, /** @type {Record<'front'|'back'|'selfie', string>} */ ({}));
+  }, {} as Record<'front' | 'back' | 'selfie', string>);
 }
 
-/**
- * @return {string?}
- */
-function getMetaContent(name) {
-  const meta = /** @type {HTMLMetaElement?} */ (document.querySelector(`meta[name="${name}"]`));
+function getMetaContent(name): string | null {
+  const meta = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
   return meta?.content ?? null;
 }
 
-/** @type {import('@18f/identity-document-capture/context/device').DeviceContext} */
-const device = {
-  isMobile: isCameraCapableMobile(),
-};
+const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 
-/** @type {import('@18f/identity-analytics').trackEvent} */
-function trackEvent(event, payload) {
+const trackEvent: typeof baseTrackEvent = (event, payload) => {
   const { flowPath } = appRoot.dataset;
   return baseTrackEvent(event, { ...payload, flow_path: flowPath });
-}
+};
 
 (async () => {
   const backgroundUploadURLs = getBackgroundUploadURLs();
   const isAsyncForm = Object.keys(backgroundUploadURLs).length > 0;
   const csrf = getMetaContent('csrf-token');
 
-  const formData = {
+  const formData: Record<string, any> = {
     document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
     locale: document.documentElement.lang,
   };
@@ -127,7 +98,7 @@ function trackEvent(event, payload) {
   const keepAlive = () =>
     window.fetch(keepAliveEndpoint, {
       method: 'POST',
-      headers: /** @type {string[][]} */ ([csrf && ['X-CSRF-Token', csrf]].filter(Boolean)),
+      headers: [csrf && ['X-CSRF-Token', csrf]].filter(Boolean) as [string, string][],
     });
 
   const {
@@ -139,13 +110,13 @@ function trackEvent(event, payload) {
     cancelUrl: cancelURL,
     idvInPersonUrl: inPersonURL,
     securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
-  } = /** @type {AppRootData} */ (appRoot.dataset);
+  } = appRoot.dataset as DOMStringMap & AppRootData;
 
   const App = composeComponents(
     [AppContext.Provider, { value: { appName } }],
     [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
     [DeviceContext.Provider, { value: device }],
-    [AnalyticsContext.Provider, { value: { trackEvent } }],
+    [AnalyticsContextProvider, { trackEvent }],
     [
       AcuantContextProvider,
       {

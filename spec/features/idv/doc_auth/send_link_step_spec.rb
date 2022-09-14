@@ -16,6 +16,7 @@ feature 'doc auth send link step' do
   end
   let(:document_capture_session) { DocumentCaptureSession.create! }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
   it 'is on the correct page' do
     expect(page).to have_current_path(idv_doc_auth_send_link_step)
@@ -86,7 +87,13 @@ feature 'doc auth send link step' do
       find('span', text: 'Sri Lanka').click
     end
     focused_input = page.find('.phone-input__number:focus')
-    error_message = page.find_by_id(focused_input[:'aria-describedby'])
+
+    error_message_id = focused_input[:'aria-describedby']&.split(' ')&.find do |id|
+      page.has_css?(".usa-error-message##{id}")
+    end
+    expect(error_message_id).to_not be_empty
+
+    error_message = page.find_by_id(error_message_id)
     expect(error_message).to have_content(
       t(
         'two_factor_authentication.otp_delivery_preference.sms_unsupported',
@@ -99,12 +106,21 @@ feature 'doc auth send link step' do
 
   it 'throttles sending the link' do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow_any_instance_of(ApplicationController).to receive(
+      :irs_attempts_api_tracker,
+    ).and_return(fake_attempts_tracker)
+
     user = user_with_2fa
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_send_link_step
     timeout = distance_of_time_in_words(
       Throttle.attempt_window_in_minutes(:idv_send_link).minutes,
     )
+
+    expect(fake_attempts_tracker).to receive(
+      :idv_phone_send_link_rate_limited,
+    ).with({ phone_number: '+1 415-555-0199' })
+
     freeze_time do
       idv_send_link_max_attempts.times do
         expect(page).to_not have_content(

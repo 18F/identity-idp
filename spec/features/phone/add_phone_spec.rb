@@ -51,19 +51,31 @@ describe 'Add a new phone number' do
     # Required field should prompt as required on submit
     click_continue
     focused_input = page.find(':focus')
-    error_message = page.find_by_id(focused_input[:'aria-describedby'])
     expect(focused_input).to match_css('.phone-input__number.usa-input--error')
-    expect(error_message).to have_content(t('errors.messages.phone_required'))
     expect(hidden_select.value).to eq('US')
+
+    error_message_id = focused_input[:'aria-describedby']&.split(' ')&.find do |id|
+      page.has_css?(".usa-error-message##{id}")
+    end
+    expect(error_message_id).to_not be_empty
+
+    error_message = page.find_by_id(error_message_id)
+    expect(error_message).to have_content(t('errors.messages.phone_required'))
 
     # Invalid number should prompt as invalid on submit
     fill_in :new_phone_form_phone, with: 'abcd1234'
     click_continue
     focused_input = page.find(':focus')
-    error_message = page.find_by_id(focused_input[:'aria-describedby'])
     expect(focused_input).to match_css('.phone-input__number.usa-input--error')
-    expect(error_message).to have_content(t('errors.messages.invalid_phone_number'))
     expect(hidden_select.value).to eq('US')
+
+    error_message_id = focused_input[:'aria-describedby']&.split(' ')&.find do |id|
+      page.has_css?(".usa-error-message##{id}")
+    end
+    expect(error_message_id).to_not be_empty
+
+    error_message = page.find_by_id(error_message_id)
+    expect(error_message).to have_content(t('errors.messages.invalid_phone_number'))
 
     # Unsupported country should prompt as invalid and hide delivery options immediately
     page.find('div[aria-label="Country code"]').click
@@ -71,13 +83,20 @@ describe 'Add a new phone number' do
       find('span', text: 'Sri Lanka').click
     end
     focused_input = page.find('.phone-input__number:focus')
-    error_message = page.find_by_id(focused_input[:'aria-describedby'])
+
+    error_message_id = focused_input[:'aria-describedby']&.split(' ')&.find do |id|
+      page.has_css?(".usa-error-message##{id}")
+    end
+    expect(error_message_id).to_not be_empty
+
+    error_message = page.find_by_id(error_message_id)
     expect(error_message).to have_content(
       t(
         'two_factor_authentication.otp_delivery_preference.no_supported_options',
         location: 'Sri Lanka',
       ),
     )
+
     expect(page).to_not have_content(t('two_factor_authentication.otp_delivery_preference.title'))
     expect(hidden_select.value).to eq('LK')
     fill_in :new_phone_form_phone, with: '+94 071 234 5678'

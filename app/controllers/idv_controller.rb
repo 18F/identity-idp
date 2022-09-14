@@ -1,6 +1,7 @@
 class IdvController < ApplicationController
   include IdvSession
   include AccountReactivationConcern
+  include InheritedProofingConcern
 
   before_action :confirm_two_factor_authenticated
   before_action :profile_needs_reactivation?, only: [:index]
@@ -11,6 +12,7 @@ class IdvController < ApplicationController
     elsif active_profile? && !strict_ial2_upgrade_required?
       redirect_to idv_activated_url
     elsif idv_attempter_throttled?
+      irs_attempts_api_tracker.idv_verification_rate_limited
       analytics.throttler_rate_limit_triggered(
         throttle_type: :idv_resolution,
       )
@@ -36,6 +38,7 @@ class IdvController < ApplicationController
 
   def verify_identity
     analytics.idv_intro_visit
+    return redirect_to idv_inherited_proofing_url if va_inherited_proofing?
     redirect_to idv_doc_auth_url
   end
 

@@ -309,6 +309,9 @@ Layout/SpaceInLambdaLiteral:
   Enabled: true
   EnforcedStyle: require_no_space
 
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: true
+
 Layout/SpaceInsideBlockBraces:
   Enabled: true
 
@@ -1051,6 +1054,9 @@ Style/LineEndConcatenation:
 Style/MethodCallWithoutArgsParentheses:
   Enabled: true
   IgnoredMethods: []
+
+Style/MethodDefParentheses:
+  Enabled: true
 
 Style/MissingRespondToMissing:
   Enabled: true
