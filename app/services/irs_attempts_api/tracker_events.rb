@@ -350,12 +350,23 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success True if the password was successfully changed
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # A logged-in user has attempted to change their password
     def logged_in_password_change(success:, failure_reason: nil)
       track_event(
         :logged_in_password_change,
         success: success,
         failure_reason: failure_reason,
+      )
+    end
+
+    # @param [Boolean] success True if the password submitted for reauthentication matches the
+    # current password
+    # A logged-in user has submitted a password to reauthenticate prior to changing their password
+    def logged_in_password_change_reauthentication_submitted(success:)
+      track_event(
+        :logged_in_password_change_reauthentication_submitted,
+        success: success,
       )
     end
 

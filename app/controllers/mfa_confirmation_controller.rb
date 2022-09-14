@@ -19,7 +19,12 @@ class MfaConfirmationController < ApplicationController
   end
 
   def create
-    if current_user.valid_password?(password)
+    valid_password = current_user.valid_password?(password)
+
+    irs_attempts_api_tracker.logged_in_password_change_reauthentication_submitted(
+      success: valid_password,
+    )
+    if valid_password
       handle_valid_password
     else
       handle_invalid_password
