@@ -437,12 +437,12 @@ class ApplicationController < ActionController::Base
     request_url = URI(sp_session[:request_url])
     url = if request_url.path.match?('saml')
             complete_saml_url
-    else
-      # Login.gov redirects to the orginal request_url after a user authenticates
-      # replace prompt=login with prompt=select_account to prevent sign_out
-      # which should only every occur once when the user lands on Login.gov with prompt=login
-      sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
-    end
+          else
+            # Login.gov redirects to the orginal request_url after a user authenticates
+            # replace prompt=login with prompt=select_account to prevent sign_out
+            # which should only every occur once when the user lands on Login.gov with prompt=login
+            sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
+          end
 
     # If the user has changed the locale, we should preserve that as well
     if url && locale_url_param && UriService.params(url)[:locale] != locale_url_param
