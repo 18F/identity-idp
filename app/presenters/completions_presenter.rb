@@ -42,15 +42,18 @@ class CompletionsPresenter
     @ial2_requested
   end
 
+  def sp_name
+    @sp_name ||= current_sp.friendly_name || sp.agency&.name
+  end
+
   def heading
     if ial2_requested?
-      I18n.t('titles.sign_up.completion_ial2', app_name: APP_NAME)
+      I18n.t('titles.sign_up.completion_ial2', sp: sp_name)
     elsif first_time_signing_in?
-      I18n.t('titles.sign_up.completion_first_sign_in', app_name: APP_NAME)
-    elsif completion_context == :consent_expired
+      I18n.t('titles.sign_up.completion_first_sign_in', sp: sp_name)
+    elsif consent_has_expired?
       I18n.t('titles.sign_up.completion_consent_expired')
     elsif completion_context == :new_attributes
-      sp_name = current_sp.friendly_name || sp.agency&.name
       I18n.t('titles.sign_up.completion_new_attributes', sp: sp_name)
     else
       I18n.t('titles.sign_up.completion_new_sp')
@@ -58,18 +61,27 @@ class CompletionsPresenter
   end
 
   def intro
-    sp_name = current_sp.friendly_name || sp.agency&.name
     if ial2_requested?
+      if consent_has_expired?
+        I18n.t(
+          'help_text.requested_attributes.ial2_consent_reminder_html',
+          sp: sp_name,
+        )
+      else
+        I18n.t(
+          'help_text.requested_attributes.ial2_intro_html',
+          sp: sp_name,
+        )
+      end
+    elsif consent_has_expired?
       I18n.t(
-        'help_text.requested_attributes.ial2_intro_html',
-        app_name: APP_NAME,
-        sp: content_tag(:strong, sp_name),
+        'help_text.requested_attributes.ial1_consent_reminder_html',
+        sp: sp_name,
       )
     else
       I18n.t(
         'help_text.requested_attributes.ial1_intro_html',
-        app_name: APP_NAME,
-        sp: content_tag(:strong, sp_name),
+        sp: sp_name,
       )
     end
   end
@@ -99,6 +111,10 @@ class CompletionsPresenter
       current_user: current_user,
       pii: decrypted_pii,
     ).format
+  end
+
+  def consent_has_expired?
+    completion_context == :consent_expired
   end
 
   def displayable_attribute_keys

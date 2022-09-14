@@ -8,7 +8,7 @@
 <% end %>
 
 <p class="tablet:margin-right-1 tablet:margin-left-1 margin-top-4 margin-bottom-4">
-  <%= @presenter.intro %>
+  <%= @presenter.intro.html_safe %>
 </p>
 <div class='tablet:margin-left-1 tablet:margin-right-1'>
   <%= render 'sign_up/completions/requested_attributes', pii: @presenter.pii %>

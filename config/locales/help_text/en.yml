@@ -11,8 +11,15 @@ en:
       birthdate: Date of birth
       email: Email address
       full_name: Full name
-      ial1_intro_html: "We’ll share your information with %{sp} to connect your account."
-      ial2_intro_html: "%{sp} needs to know who you are to connect your account. We’ll share this information with Partner Agency: "
+      ial1_consent_reminder_html: 'You must consent each year to share your
+        information with <b>%{sp}</b>. We’ll share your information with
+        <b>%{sp}</b> to connect your account.'
+      ial1_intro_html: 'We’ll share your information with <b>%{sp}</b> to connect your account.'
+      ial2_consent_reminder_html: '<b>%{sp}</b> needs to know who you are to connect
+        to your account. You must consent each year to share your verified
+        information with <b>%{sp}</b>. We’ll share this information: '
+      ial2_intro_html: '<b>%{sp}</b> needs to know who you are to connect your
+        account. We’ll share this information with %{sp}: '
       phone: Phone number
       social_security_number: Social Security number
       verified_at: Updated on

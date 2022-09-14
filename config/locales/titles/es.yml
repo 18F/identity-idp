@@ -69,8 +69,8 @@ es:
     sign_up:
       completion_consent_expired: Ha pasado un año desde que nos dio su consentimiento
         para compartir su información
-      completion_first_sign_in: Tiene creó una cuenta con %{app_name}
-      completion_ial2: Tiene verificó su identidad con %{app_name}
+      completion_first_sign_in: Continúa con %{app_name}
+      completion_ial2: Conecte su información verificada a %{app_name}
       completion_new_attributes: '%{sp} está solicitando nueva información'
       completion_new_sp: Acabas de iniciar sesión por primera vez
       confirmation: Continuar para iniciar sesión
