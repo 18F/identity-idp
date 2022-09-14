@@ -364,6 +364,24 @@ describe Idv::ReviewController do
           expect(disavowal_event_count).to eq 1
         end
 
+        context 'when the user goes through reproofing' do
+          it 'does not log a reproofing event during initial proofing' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(@irs_attempts_api_tracker).not_to receive(:idv_reproof)
+          end
+
+          it 'logs a reproofing event upon reproofing' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            idv_session.profile.update(verified_at: nil)
+
+            expect(@irs_attempts_api_tracker).to receive(:idv_reproof)
+
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          end
+        end
+
         context 'with idv app personal key step enabled' do
           before do
             allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
