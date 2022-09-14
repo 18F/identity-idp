@@ -80,7 +80,7 @@ RSpec.describe GetUspsProofingResultsJob do
   include UspsIppHelper
 
   let(:reprocess_delay_minutes) { 2.0 }
-  let(:request_delay_seconds) { 0 }
+  let(:request_delay_ms) { 0 }
   let(:job) { GetUspsProofingResultsJob.new }
   let(:job_analytics) { FakeAnalytics.new }
 
@@ -88,8 +88,9 @@ RSpec.describe GetUspsProofingResultsJob do
     allow(job).to receive(:analytics).and_return(job_analytics)
     allow(IdentityConfig.store).to receive(:get_usps_proofing_results_job_reprocess_delay_minutes).
       and_return(reprocess_delay_minutes)
-    allow(IdentityConfig.store).to receive(:get_usps_proofing_results_job_request_delay_seconds).
-      and_return(request_delay_seconds)
+    allow(IdentityConfig.store).
+      to receive(:get_usps_proofing_results_job_request_delay_milliseconds).
+      and_return(request_delay_ms)
     stub_request_token
   end
 
@@ -213,7 +214,7 @@ RSpec.describe GetUspsProofingResultsJob do
           and_return(pending_enrollments)
         stub_request_passed_proofing_results
         expect(job).to receive(:sleep).exactly(pending_enrollments.length - 1).times.
-          with(request_delay_seconds)
+          with(request_delay_ms)
 
         job.perform(Time.zone.now)
       end

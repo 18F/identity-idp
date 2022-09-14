@@ -68,6 +68,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   DEFAULT_EMAIL_DELAY_IN_HOURS = 1
 
   def check_enrollments(enrollments)
+    request_delay_ms = IdentityConfig.store.get_usps_proofing_results_job_request_delay_milliseconds
     proofer = UspsInPersonProofing::Proofer.new
 
     enrollments.each_with_index do |enrollment, idx|
@@ -96,8 +97,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollment.update(status_check_attempted_at: status_check_attempted_at)
 
       # Sleep for a while before we attempt to make another call to USPS
-      request_delay = IdentityConfig.store.get_usps_proofing_results_job_request_delay_seconds
-      sleep request_delay if idx < enrollments.length - 1
+      sleep request_delay_ms if idx < enrollments.length - 1
     end
   end
 
