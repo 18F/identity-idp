@@ -22,8 +22,7 @@ en:
     confirmations:
       new: Send another confirmation email
     create_account_with_sp:
-      sp_text: is using %{app_name} to allow you to sign in to your account safely and
-        securely.
+      sp_text: is using %{app_name} to allow you to sign in securely.
     create_account_without_sp: Create a %{app_name} account
     edit_info:
       password: Change your password
