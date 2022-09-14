@@ -69,7 +69,7 @@ module Proofing
       end
 
       def timeout_result
-        AddressMockClientResult.new(
+        ResolutionMockClientResult.new(
           success: false,
           errors: {},
           exception: Proofing::TimeoutError.new('address mock timeout'),

@@ -90,15 +90,63 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
     end
 
     context 'with a simulated failed to contact by first name' do
-      it 'returns an unsuccessful result with exception'
+      it 'returns an unsuccessful result with exception' do
+        applicant[:first_name] = 'Fail'
+
+        result = subject.proof(applicant)
+
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq({})
+        expect(result.to_h).to eq(
+          success: false,
+          errors: {},
+          exception: RuntimeError.new('Failed to contact proofing vendor'),
+          timed_out: false,
+          reference: reference,
+          transaction_id: transaction_id,
+          vendor_name: 'ResolutionMock',
+        )
+      end
     end
 
     context 'with a simulated failed to contact by SSN' do
-      it 'returns an unsuccessful result with exception'
+      it 'returns an unsuccessful result with exception' do
+        applicant[:ssn] = '000000000'
+
+        result = subject.proof(applicant)
+
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq({})
+        expect(result.to_h).to eq(
+          success: false,
+          errors: {},
+          exception: RuntimeError.new('Failed to contact proofing vendor'),
+          timed_out: false,
+          reference: reference,
+          transaction_id: transaction_id,
+          vendor_name: 'ResolutionMock',
+        )
+      end
     end
 
     context 'with a simulated timeout by name' do
-      it 'returns a timed out result with exception'
+      it 'returns a timed out result with exception' do
+        applicant[:first_name] = 'Time'
+
+        result = subject.proof(applicant)
+
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq({})
+        expect(result.to_h).to eq(
+          success: false,
+          errors: {},
+          exception: Proofing::TimeoutError.new('address mock timeout'),
+          timed_out: true,
+          reference: reference,
+          transaction_id: transaction_id,
+          vendor_name: 'ResolutionMock',
+        )
+      end
     end
   end
 end
