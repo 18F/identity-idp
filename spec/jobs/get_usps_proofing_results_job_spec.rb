@@ -296,79 +296,117 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       context 'when an enrollment passes' do
-        before(:each) do
-          stub_request_passed_proofing_results
-        end
+        let!(:response) { stub_request_passed_proofing_results }
 
         it_behaves_like('enrollment with a status update', passed: true, status: 'passed')
 
         it 'logs details about the success' do
           job.perform(Time.zone.now)
 
+          response_as_json = JSON.parse(response[:body])
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
-            fraud_suspected: false,
             reason: 'Successful status update',
+            fraud_suspected: response_as_json['fraudSuspected'],
+            primary_id_type: response_as_json['primaryIdType'],
+            secondary_id_type: response_as_json['secondaryIdType'],
+            failure_reason: response_as_json['failureReason'],
+            transaction_end_date_time: response_as_json['transactionEndDateTime'],
+            transaction_start_date_time: response_as_json['transactionStartDateTime'],
+            status: response_as_json['status'],
+            assurance_level: response_as_json['assuranceLevel'],
+            proofing_post_office: response_as_json['proofingPostOffice'],
+            proofing_city: response_as_json['proofingCity'],
+            proofing_state: response_as_json['proofingState'],
+            scan_count: response_as_json['scanCount'],
+            response_message: response_as_json['responseMessage'],
           )
         end
       end
 
       context 'when an enrollment fails' do
-        before(:each) do
-          stub_request_failed_proofing_results
-        end
+        let!(:response) { stub_request_failed_proofing_results }
 
         it_behaves_like('enrollment with a status update', passed: false, status: 'failed')
 
         it 'logs failure details' do
           job.perform(Time.zone.now)
 
+          response_as_json = JSON.parse(response[:body])
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
-            failure_reason: 'Clerk indicates that ID name or address does not match source data.',
-            fraud_suspected: false,
-            primary_id_type: 'Uniformed Services identification card',
-            proofing_state: 'PA',
-            reason: 'Failed status',
-            secondary_id_type: 'Deed of Trust',
-            transaction_end_date_time: '12/17/2020 034055',
-            transaction_start_date_time: '12/17/2020 033855',
+            fraud_suspected: response_as_json['fraudSuspected'],
+            primary_id_type: response_as_json['primaryIdType'],
+            secondary_id_type: response_as_json['secondaryIdType'],
+            failure_reason: response_as_json['failureReason'],
+            transaction_end_date_time: response_as_json['transactionEndDateTime'],
+            transaction_start_date_time: response_as_json['transactionStartDateTime'],
+            status: response_as_json['status'],
+            assurance_level: response_as_json['assuranceLevel'],
+            proofing_post_office: response_as_json['proofingPostOffice'],
+            proofing_city: response_as_json['proofingCity'],
+            proofing_state: response_as_json['proofingState'],
+            scan_count: response_as_json['scanCount'],
+            response_message: response_as_json['responseMessage'],
           )
         end
       end
 
       context 'when an enrollment passes proofing with an unsupported ID' do
-        before(:each) do
-          stub_request_passed_proofing_unsupported_id_results
-        end
+        let!(:response) { stub_request_passed_proofing_unsupported_id_results }
 
         it_behaves_like('enrollment with a status update', passed: false, status: 'failed')
 
         it 'logs a message about the unsupported ID' do
           job.perform Time.zone.now
 
+          response_as_json = JSON.parse(response[:body])
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
-            fraud_suspected: false,
-            primary_id_type: 'Not supported',
             reason: 'Unsupported ID type',
+            fraud_suspected: response_as_json['fraudSuspected'],
+            primary_id_type: response_as_json['primaryIdType'],
+            secondary_id_type: response_as_json['secondaryIdType'],
+            failure_reason: response_as_json['failureReason'],
+            transaction_end_date_time: response_as_json['transactionEndDateTime'],
+            transaction_start_date_time: response_as_json['transactionStartDateTime'],
+            status: response_as_json['status'],
+            assurance_level: response_as_json['assuranceLevel'],
+            proofing_post_office: response_as_json['proofingPostOffice'],
+            proofing_city: response_as_json['proofingCity'],
+            proofing_state: response_as_json['proofingState'],
+            scan_count: response_as_json['scanCount'],
+            response_message: response_as_json['responseMessage'],
           )
         end
       end
 
       context 'when an enrollment expires' do
-        before(:each) do
-          stub_request_expired_proofing_results
-        end
+        let!(:response) { stub_request_expired_proofing_results }
 
         it_behaves_like('enrollment with a status update', passed: false, status: 'expired')
 
         it 'logs that the enrollment expired' do
           job.perform(Time.zone.now)
 
+          response_as_json = JSON.parse(response[:body])
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             reason: 'Enrollment has expired',
+            fraud_suspected: nil,
+            passed: false,
+            primary_id_type: response_as_json['primaryIdType'],
+            secondary_id_type: response_as_json['secondaryIdType'],
+            failure_reason: response_as_json['failureReason'],
+            transaction_end_date_time: response_as_json['transactionEndDateTime'],
+            transaction_start_date_time: response_as_json['transactionStartDateTime'],
+            status: response_as_json['status'],
+            assurance_level: response_as_json['assuranceLevel'],
+            proofing_post_office: response_as_json['proofingPostOffice'],
+            proofing_city: response_as_json['proofingCity'],
+            proofing_state: response_as_json['proofingState'],
+            scan_count: response_as_json['scanCount'],
+            response_message: response_as_json['responseMessage'],
           )
         end
       end
@@ -382,11 +420,32 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       context 'when USPS returns an unexpected status' do
-        before(:each) do
-          stub_request_passed_proofing_unsupported_status_results
-        end
+        let!(:response) { stub_request_passed_proofing_unsupported_status_results }
 
-        it_behaves_like('enrollment encountering an exception', reason: 'Unsupported status')
+        it 'logs an error message and leaves the enrollment and profile pending' do
+          job.perform(Time.zone.now)
+          pending_enrollment.reload
+
+          response_as_json = JSON.parse(response[:body])
+          expect(job_analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Exception raised',
+            enrollment_id: pending_enrollment.id,
+            enrollment_code: pending_enrollment.enrollment_code,
+            fraud_suspected: response_as_json['fraudSuspected'],
+            primary_id_type: response_as_json['primaryIdType'],
+            secondary_id_type: response_as_json['secondaryIdType'],
+            failure_reason: response_as_json['failureReason'],
+            transaction_end_date_time: response_as_json['transactionEndDateTime'],
+            transaction_start_date_time: response_as_json['transactionStartDateTime'],
+            status: response_as_json['status'],
+            assurance_level: response_as_json['assuranceLevel'],
+            proofing_post_office: response_as_json['proofingPostOffice'],
+            proofing_city: response_as_json['proofingCity'],
+            proofing_state: response_as_json['proofingState'],
+            scan_count: response_as_json['scanCount'],
+            response_message: response_as_json['responseMessage'],
+          )
+        end
 
         it 'logs the status received' do
           job.perform(Time.zone.now)
