@@ -436,15 +436,12 @@ function AcuantCapture(
           failed_submission_attempts: failedSubmissionAttempts,
         });
       }
+
       if (nativeCameraABTestingEnabled) {
         trackEvent('IdV: Native camera A/B Test', {
           native_camera_only: nativeCameraOnly,
         });
       }
-
-      trackEvent('IdV: Native camera A/B Test', {
-        native_camera_only: nativeCameraOnly,
-      });
 
       if (!allowUpload || shouldStartSelfieCapture || shouldStartAcuantCapture) {
         event.preventDefault();
