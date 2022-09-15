@@ -142,9 +142,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(result[:errors]).to eq({})
           expect(result[:success]).to be true
           expect(result[:timed_out]).to be false
-          expect(result[:vendor_name]).to eq('lexisnexis:instant_verify')
-          expect(result[:transaction_id]).to eq(lexisnexis_transaction_id)
-          expect(result[:reference]).to eq(lexisnexis_reference)
 
           # TODO: result[:context]
             # context: {
@@ -214,17 +211,15 @@ RSpec.describe ResolutionProofingJob, type: :job do
             result = document_capture_session.load_proofing_result[:result]
 
             expect(result[:exception]).to be_nil
-            expect(result[:errors]).to eq({
-                base: [
-                  a_string_starting_with(
-                    'Response error with code \'invalid_transaction_initiate\':',
-                  ),
-                ],
-              })
+            expect(result[:errors]).to match(
+              base: [
+                a_string_starting_with(
+                  'Response error with code \'invalid_transaction_initiate\':',
+                ),
+              ],
+            )
             expect(result[:success]).to be false
             expect(result[:timed_out]).to be false
-            expect(result[:transaction_id]).to eq(lexisnexis_transaction_id)
-            expect(result[:reference]).to eq(lexisnexis_reference)
 
               # TODO: result[:context]
               # context: {
@@ -328,8 +323,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(result[:errors]).to eq({})
           expect(result[:success]).to be true
           expect(result[:timed_out]).to be false
-          expect(result[:transaction_id]).to eq(lexisnexis_transaction_id)
-          expect(result[:reference]).to eq(lexisnexis_reference)
 
             # TODO: result[:context]
             # context: {
@@ -389,17 +382,15 @@ RSpec.describe ResolutionProofingJob, type: :job do
             result = document_capture_session.load_proofing_result[:result]
 
             expect(result[:exception]).to be_nil
-            expect(result[:errors]).to eq({
-                base: [
-                  a_string_starting_with(
-                    'Response error with code \'invalid_transaction_initiate\':',
-                  ),
-                ],
-              })
+            expect(result[:errors]).to match(
+              base: [
+                a_string_starting_with(
+                  'Response error with code \'invalid_transaction_initiate\':',
+                ),
+              ],
+            )
             expect(result[:success]).to be false
             expect(result[:timed_out]).to be false
-            expect(result[:transaction_id]).to eq(lexisnexis_transaction_id)
-            expect(result[:reference]).to eq(lexisnexis_reference)
 
               # TODO: result[:context]
               # context: {
