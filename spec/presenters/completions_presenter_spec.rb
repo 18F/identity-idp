@@ -53,7 +53,7 @@ describe CompletionsPresenter do
 
       it 'renders the ial2 message' do
         expect(presenter.heading).to eq(
-          I18n.t('titles.sign_up.completion_ial2', app_name: APP_NAME),
+          I18n.t('titles.sign_up.completion_ial2', sp: current_sp.friendly_name),
         )
       end
     end
@@ -61,7 +61,7 @@ describe CompletionsPresenter do
     context 'first time the user signs into any SP' do
       it 'renders the first time sign in message' do
         expect(presenter.heading).to eq(
-          I18n.t('titles.sign_up.completion_first_sign_in', app_name: APP_NAME),
+          I18n.t('titles.sign_up.completion_first_sign_in', sp: current_sp.friendly_name),
         )
       end
     end

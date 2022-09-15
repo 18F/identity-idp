@@ -522,6 +522,7 @@ describe 'OpenID Connect' do
 
       oidc_path = visit_idp_from_ial1_oidc_sp(prompt: 'select_account')
       sign_in_live_with_2fa(user)
+      sp = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:server')
 
       expect(current_url).to eq(sign_up_completed_url)
       expect(page).to have_content(
