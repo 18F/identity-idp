@@ -13,6 +13,43 @@ RSpec.describe UspsInPersonProofing::Proofer do
       expect(subject.token).to be_present
       expect(subject.token_expires_at).to be_present
     end
+
+    it 'calls the endpoint with the expected params' do
+      stub_request_token
+
+      root_url = 'http://my.root.url'
+      username = 'test username'
+      password = 'test password'
+      client_id = 'test client id'
+
+      allow(IdentityConfig.store).to receive(:usps_ipp_root_url).
+        and_return(root_url)
+      allow(IdentityConfig.store).to receive(:usps_ipp_username).
+        and_return(username)
+      allow(IdentityConfig.store).to receive(:usps_ipp_password).
+        and_return(password)
+      allow(IdentityConfig.store).to receive(:usps_ipp_client_id).
+        and_return(client_id)
+
+      subject.retrieve_token!
+
+      expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate").
+        with(
+          body: hash_including(
+            {
+              'username' => username,
+              'password' => password,
+              'grant_type' => 'implicit',
+              'response_type' => 'token',
+              'client_id' => client_id,
+              'scope' => 'ivs.ippaas.apis',
+            },
+          ),
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+          },
+        )
+    end
   end
 
   def check_facility(facility)
