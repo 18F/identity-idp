@@ -1,12 +1,13 @@
 class AbTestBucket
   include ActiveModel::Model
 
-  attr_reader :buckets
+  attr_reader :buckets, :experiment
 
   validate :within_100_percent
 
-  def initialize(buckets: { default: 100 })
+  def initialize(experiment_name: 'default', buckets: { default: 100 })
     @buckets = buckets
+    @experiment = experiment_name
     raise 'invalid bucket data structure' unless valid_bucket_data_structure?
     ensure_numeric_percentages
     raise 'bucket percentages exceed 100' unless valid?
@@ -31,7 +32,7 @@ class AbTestBucket
 
   def percent(discriminator)
     max_sha = (16 ** 64) - 1
-    Digest::SHA256.hexdigest(discriminator).to_i(16).to_f / max_sha * 100
+    Digest::SHA256.hexdigest("#{discriminator}:#{experiment}").to_i(16).to_f / max_sha * 100
   end
 
   def valid_bucket_data_structure?

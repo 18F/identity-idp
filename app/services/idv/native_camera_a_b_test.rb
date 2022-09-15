@@ -8,7 +8,7 @@ module Idv
         }
       end
 
-      super(buckets: buckets)
+      super(experiment_name: 'Native Camera Only', buckets: buckets)
     end
   end
 end
