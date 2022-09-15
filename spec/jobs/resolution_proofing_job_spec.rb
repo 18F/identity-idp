@@ -143,6 +143,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
             errors: {},
             success: true,
             timed_out: false,
+            transaction_id: lexisnexis_transaction_id,
+            reference: lexisnexis_reference,
+            # TODO: result[:context]
             # context: {
             #   should_proof_state_id: true,
             #   stages: {
@@ -174,8 +177,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
             #     },
             #   },
             # },
-            transaction_id: lexisnexis_transaction_id,
-            reference: lexisnexis_reference,
           )
           proofing_component = user.proofing_component
           expect(proofing_component.threatmetrix).to equal(true)
