@@ -369,6 +369,7 @@ class IdentityConfig
     config.add(:usps_mock_fallback, type: :boolean)
     config.add(:usps_confirmation_max_days, type: :integer)
     config.add(:usps_ipp_password, type: :string)
+    config.add(:usps_ipp_client_id, type: :string)
     config.add(:usps_ipp_root_url, type: :string)
     config.add(:usps_ipp_sponsor_id, type: :string)
     config.add(:usps_ipp_username, type: :string)

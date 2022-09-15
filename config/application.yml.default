@@ -282,6 +282,7 @@ use_dashboard_service_providers: false
 use_kms: false
 usps_confirmation_max_days: 10
 usps_ipp_password: ''
+usps_ipp_client_id: ''
 usps_ipp_root_url: ''
 usps_ipp_request_timeout: 10
 usps_ipp_sponsor_id: ''
