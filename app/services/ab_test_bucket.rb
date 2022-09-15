@@ -9,14 +9,13 @@ class AbTestBucket
     @buckets = buckets
     raise 'invalid bucket data structure' unless valid_bucket_data_structure?
     ensure_numeric_percentages
+    raise 'bucket percentages exceed 100' unless valid?
   end
 
   def bucket(discriminator = nil)
-    return :misconfigured unless valid?
     return :default if discriminator.blank?
 
-    max_sha = (16 ** 64) - 1
-    user_value = Digest::SHA256.hexdigest(discriminator).to_i(16).to_f / max_sha * 100
+    user_value = percent(discriminator)
 
     min = 0
     buckets.keys.each do |key|
@@ -29,6 +28,11 @@ class AbTestBucket
   end
 
   private
+
+  def percent(discriminator)
+    max_sha = (16 ** 64) - 1
+    Digest::SHA256.hexdigest(discriminator).to_i(16).to_f / max_sha * 100
+  end
 
   def valid_bucket_data_structure?
     hash_bucket = buckets.is_a?(Hash)

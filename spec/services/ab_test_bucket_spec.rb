@@ -5,29 +5,36 @@ describe AbTestBucket do
   let(:bar_percent) { 20 }
   let(:baz_percent) { 40 }
   let(:default_percent) { 10 }
-  let(:acceptable_delta) { 5 }
   let(:subject) do
     AbTestBucket.new(buckets: { foo: foo_percent, bar: bar_percent, baz: baz_percent })
   end
 
   context 'configured with buckets adding up to less than 100 percent' do
-    it 'splits random uuids into the buckets to within an acceptable delta percent' do
-      results = {}
-      1000.times do
-        bucket = subject.bucket(SecureRandom.uuid)
-        results[bucket] = (results[bucket] || 0) + 1
-      end
-
-      expect(results[:foo].to_f / 10).to be_within(acceptable_delta).of(foo_percent)
-      expect(results[:bar].to_f / 10).to be_within(acceptable_delta).of(bar_percent)
-      expect(results[:baz].to_f / 10).to be_within(acceptable_delta).of(baz_percent)
-      expect(results[:default].to_f / 10).to be_within(acceptable_delta).of(default_percent)
+    let(:foo_uuid) { SecureRandom.uuid }
+    let(:bar_uuid) { SecureRandom.uuid }
+    let(:baz_uuid) { SecureRandom.uuid }
+    let(:default_uuid) { SecureRandom.uuid }
+    before do
+      allow_any_instance_of(AbTestBucket).to receive(:percent).with(foo_uuid).and_return(15)
+      allow_any_instance_of(AbTestBucket).to receive(:percent).with(bar_uuid).and_return(40)
+      allow_any_instance_of(AbTestBucket).to receive(:percent).with(baz_uuid).and_return(60)
+      allow_any_instance_of(AbTestBucket).to receive(:percent).with(default_uuid).and_return(95)
     end
+    it 'sorts uuids into the buckets' do
+      expect(subject.bucket(foo_uuid)).to eq(:foo)
+      expect(subject.bucket(bar_uuid)).to eq(:bar)
+      expect(subject.bucket(baz_uuid)).to eq(:baz)
+      expect(subject.bucket(default_uuid)).to eq(:default)
+    end
+  end
+
+  context 'with random data over many runs' do
+    let(:acceptable_delta) { 5 }
 
     # A slow test that runs the above 10000 times and reports the number of times it fails to pass
     # due to the random nature of the test. With acceptable_delta == 5, the above spec succeeded
     # 99.78% of the time.
-    xit 'succeeds a LOT' do
+    xit 'succeessfully sorts data to within an acceptable delta of the desired percentage' do
       successes = 0
       failures = 0
       test_runs = 10000
@@ -83,16 +90,6 @@ describe AbTestBucket do
     end
   end
 
-  context 'configured with buckets adding up to more than 100 percent' do
-    let(:foo_percent) { 110 }
-
-    it 'returns :misconfigured' do
-      bucket = subject.bucket(SecureRandom.uuid)
-
-      expect(bucket).to eq :misconfigured
-    end
-  end
-
   context 'configured with buckets with string percentages' do
     let(:subject) { AbTestBucket.new(buckets: { foo: '100' }) }
 
@@ -110,6 +107,14 @@ describe AbTestBucket do
       bucket = subject.bucket(SecureRandom.uuid)
 
       expect(bucket).to eq :default
+    end
+  end
+
+  context 'configured with buckets adding up to more than 100 percent' do
+    let(:foo_percent) { 110 }
+
+    it 'raises a RuntimeError' do
+      expect { subject }.to raise_error(RuntimeError, 'bucket percentages exceed 100')
     end
   end
 
