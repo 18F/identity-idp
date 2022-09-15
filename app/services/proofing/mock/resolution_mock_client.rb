@@ -11,6 +11,10 @@ module Proofing
           success
         end
 
+        def timed_out?
+          false
+        end
+
         def transaction_id
           TRANSACTION_ID
         end
