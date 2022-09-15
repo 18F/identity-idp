@@ -179,7 +179,7 @@ describe Idv::Agent do
           issuer: issuer,
         )
         result = document_capture_session.load_proofing_result[:result]
-        expect(result[:context][:stages]).to include({ address: 'AddressMock' })
+        expect(result[:vendor_name]).to eq('AddressMock')
         expect(result[:success]).to eq true
       end
 
@@ -189,7 +189,7 @@ describe Idv::Agent do
           document_capture_session, trace_id: trace_id, user_id: user_id, issuer: issuer
         )
         result = document_capture_session.load_proofing_result[:result]
-        expect(result[:context][:stages]).to include({ address: 'AddressMock' })
+        expect(result[:vendor_name]).to eq('AddressMock')
         expect(result[:success]).to eq false
       end
     end

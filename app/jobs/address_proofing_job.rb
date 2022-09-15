@@ -27,15 +27,8 @@ class AddressProofingJob < ApplicationJob
     )
     Db::ProofingCost::AddUserProofingCost.call(user_id, :lexis_nexis_address)
 
-    result = proofer_result.to_h
-    result[:context] = { stages: [address: address_proofer.class.vendor_name] }
-    result[:transaction_id] = proofer_result.transaction_id
-
-    result[:timed_out] = proofer_result.timed_out?
-    result[:exception] = proofer_result.exception.inspect if proofer_result.exception
-
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
-    document_capture_session.store_proofing_result(result)
+    document_capture_session.store_proofing_result(proofer_result.to_h)
   ensure
     logger.info(
       {
