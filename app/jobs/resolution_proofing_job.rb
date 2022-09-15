@@ -178,22 +178,22 @@ class ResolutionProofingJob < ApplicationJob
   def proof_state_id(applicant_pii:, result:)
     proofer_result = state_id_proofer.proof(applicant_pii)
 
-    result.merge!(proofer_result.to_h)
+    # result.merge!(proofer_result.to_h)
 
-    exception = proofer_result.exception.inspect if proofer_result.exception
-    result[:timed_out] = proofer_result.timed_out?
-    result[:exception] = exception
+    # exception = proofer_result.exception.inspect if proofer_result.exception
+    # result[:timed_out] = proofer_result.timed_out?
+    # result[:exception] = exception
 
-    result[:context][:stages][:state_id] = {
-      client: state_id_proofer.class.vendor_name,
-      errors: proofer_result.errors,
-      success: proofer_result.success?,
-      timed_out: proofer_result.timed_out?,
-      exception: exception,
-      transaction_id: proofer_result.transaction_id,
-    }
+    # result[:context][:stages][:state_id] = {
+    #   client: state_id_proofer.class.vendor_name,
+    #   errors: proofer_result.errors,
+    #   success: proofer_result.success?,
+    #   timed_out: proofer_result.timed_out?,
+    #   exception: exception,
+    #   transaction_id: proofer_result.transaction_id,
+    # }
 
-    result
+    # result
   end
 
   def resolution_proofer
