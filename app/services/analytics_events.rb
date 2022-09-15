@@ -2573,10 +2573,6 @@ module AnalyticsEvents
     track_event('Account Reset: Cancel Account Recovery Options')
   end
 
-  # Tracks if a user clicks the "Show Password" button
-  def show_password_button_clicked
-    track_event('Show Password button clicked')
-    
   # Tracks when the user reaches the verify setup errors page after failing proofing
   def idv_setup_errors_visited
     track_event('IdV: Verify setup errors visited')
@@ -2596,6 +2592,11 @@ module AnalyticsEvents
       flow: flow,
       **extra,
     )
+  end
+
+  # Tracks if a user clicks the "Show Password button"
+  def show_password_button_clicked
+    track_event('Show Password Button Clicked')
   end
 end
 # rubocop:enable Metrics/ModuleLength
