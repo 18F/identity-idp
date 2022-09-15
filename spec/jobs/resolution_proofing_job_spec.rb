@@ -213,19 +213,18 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
             result = document_capture_session.load_proofing_result[:result]
 
-            expect(result).to match(
-              exception: nil,
-              errors: {
+            expect(result[:exception]).to be_nil
+            expect(result[:errors]).to eq({
                 base: [
                   a_string_starting_with(
                     'Response error with code \'invalid_transaction_initiate\':',
                   ),
                 ],
-              },
-              success: false,
-              timed_out: false,
-              transaction_id: lexisnexis_transaction_id,
-              reference: lexisnexis_reference,
+              })
+            expect(result[:success]).to be false
+            expect(result[:timed_out]).to be false
+            expect(result[:transaction_id]).to eq(lexisnexis_transaction_id)
+            expect(result[:reference]).to eq(lexisnexis_reference)
 
               # TODO: result[:context]
               # context: {
@@ -257,7 +256,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
               #     },
               #   },
               # },
-            )
           end
         end
 
