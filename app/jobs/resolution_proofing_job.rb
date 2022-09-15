@@ -89,15 +89,15 @@ class ResolutionProofingJob < ApplicationJob
 
     response_h = Proofing::LexisNexis::Ddp::ResponseRedacter.
       redact(threatmetrix_result.response_body)
-    callback_log_data.result[:context][:stages][:threatmetrix] = {
-      client: lexisnexis_ddp_proofer.class.vendor_name,
-      errors: threatmetrix_result.errors,
-      exception: exception,
-      success: threatmetrix_result.success?,
-      timed_out: threatmetrix_result.timed_out?,
-      transaction_id: threatmetrix_result.transaction_id,
-      response_body: response_h,
-    }
+    # callback_log_data.result[:context][:stages][:threatmetrix] = {
+    #   client: lexisnexis_ddp_proofer.class.vendor_name,
+    #   errors: threatmetrix_result.errors,
+    #   exception: exception,
+    #   success: threatmetrix_result.success?,
+    #   timed_out: threatmetrix_result.timed_out?,
+    #   transaction_id: threatmetrix_result.transaction_id,
+    #   response_body: response_h,
+    # }
   end
 
   def proof_lexisnexis_ddp_with_threatmetrix_if_needed(
