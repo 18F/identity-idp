@@ -102,24 +102,28 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
 
         # 1 unique user in month 1 at IAA 2 @ IAL 2
         create(
-          :monthly_sp_auth_count,
+          :sp_return_log,
           user_id: user1.id,
-          auth_count: 1,
           ial: 2,
           issuer: iaa2_sp.issuer,
-          year_month: inside_iaa2.strftime('%Y%m'),
+          requested_at: inside_iaa2,
+          returned_at: inside_iaa2,
+          billable: true,
         )
 
         # 2 users, each 2 auths (1 unique) in month 2 at IAA 2 @ IAL 2
         [user1, user2].each do |user|
-          create(
-            :monthly_sp_auth_count,
-            user_id: user.id,
-            auth_count: 2,
-            ial: 2,
-            issuer: iaa2_sp.issuer,
-            year_month: (inside_iaa2 + 1.month).strftime('%Y%m'),
-          )
+          2.times do
+            create(
+              :sp_return_log,
+              user_id: user.id,
+              ial: 2,
+              issuer: iaa2_sp.issuer,
+              requested_at: inside_iaa2 + 1.month,
+              returned_at: inside_iaa2 + 1.month,
+              billable: true,
+            )
+          end
         end
       end
 
@@ -188,7 +192,7 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
         let(:iaa2_key) { "#{gtc1.gtc_number}-#{format('%04d', iaa_order2.order_number)}" }
 
         let(:iaa1_range) { Date.new(2020, 4, 15)..Date.new(2021, 4, 14) }
-        let(:iaa2_range) { Date.new(2021, 4, 14)..Date.new(2022, 4, 13) }
+        let(:iaa2_range) { Date.new(2021, 4, 15)..Date.new(2022, 4, 14) }
         it 'counts up costs by issuer + ial, and includes iaa and app_id' do
           results = JSON.parse(report.perform(Time.zone.today), symbolize_names: true)
 
@@ -208,11 +212,23 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
             {
               iaa: iaa2_key,
               ial1_total_auth_count: 0,
+              ial2_total_auth_count: 1,
+              ial1_unique_users: 0,
+              ial2_unique_users: 1,
+              ial1_new_unique_users: 0,
+              ial2_new_unique_users: 1,
+              year_month: inside_iaa2.strftime('%Y%m'),
+              iaa_start_date: iaa2_range.begin.to_s,
+              iaa_end_date: iaa2_range.end.to_s,
+            },
+            {
+              iaa: iaa2_key,
+              ial1_total_auth_count: 0,
               ial2_total_auth_count: 4,
               ial1_unique_users: 0,
               ial2_unique_users: 2,
               ial1_new_unique_users: 0,
-              ial2_new_unique_users: 2,
+              ial2_new_unique_users: 1,
               year_month: (inside_iaa2 + 1.month).strftime('%Y%m'),
               iaa_start_date: iaa2_range.begin.to_s,
               iaa_end_date: iaa2_range.end.to_s,
