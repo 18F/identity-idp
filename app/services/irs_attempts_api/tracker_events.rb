@@ -195,7 +195,7 @@ module IrsAttemptsApi
 
     # @param [Boolean] success
     # @param [String] phone_number
-    # @param [String] otp_delivery_method
+    # @param [String] otp_delivery_method - Either SMS or Voice
     # @param [Hash<Key, Array<String>>] failure_reason
     # Track when OTP is sent and what method chosen during idv flow.
     def idv_phone_confirmation_otp_sent(success:, phone_number:,
@@ -426,15 +426,17 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [String] phone_number - The user's phone_number used for multi-factor authentication
     # @param [Boolean] success - True if the OTP Verification was sent
+    # @param [String] phone_number - The user's phone_number used for multi-factor authentication
+    # @param [String] otp_delivery_method - Either SMS or Voice
     # Relevant only when the user is enrolling a phone as their MFA.
-    # The user has been sent an OTP by login.gov over SMS during the MFA enrollment process.
-    def mfa_enroll_phone_otp_sent(phone_number:, success:)
+    # The user has been sent an OTP by login.gov and by what method during the MFA enrollment process.
+    def mfa_enroll_phone_otp_sent(success:, phone_number:, otp_delivery_method:)
       track_event(
         :mfa_enroll_phone_otp_sent,
-        phone_number: phone_number,
         success: success,
+        phone_number: phone_number,
+        otp_delivery_method: otp_delivery_method,
       )
     end
 
@@ -521,15 +523,17 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] reauthentication - True if the user was already logged in
-    # @param [String] phone_number - The user's phone_number used for multi-factor authentication
     # @param [Boolean] success - True if the OTP Verification was sent
-    # During a login attempt, an OTP code has been sent via SMS.
-    def mfa_login_phone_otp_sent(reauthentication:, phone_number:, success:)
+    # @param [String] phone_number - The user's phone_number used for multi-factor authentication
+    # @param [String] otp_delivery_method - Either SMS or Voice
+    # During a login attempt, an OTP code has been sent via SMS or Voice.
+    def mfa_login_phone_otp_sent(reauthentication:, success:, phone_number:, otp_delivery_method:)
       track_event(
         :mfa_login_phone_otp_sent,
         reauthentication: reauthentication,
-        phone_number: phone_number,
         success: success,
+        phone_number: phone_number,
+        otp_delivery_method: otp_delivery_method,
       )
     end
 
