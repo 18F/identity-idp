@@ -17,6 +17,12 @@ module IrsAttemptsApi
     def track_event(event_type, metadata = {})
       return unless enabled?
 
+      if metadata.has_key?(:failure_reason) &&
+         (metadata[:failure_reason].blank? ||
+          metadata[:success].present?)
+        metadata.delete(:failure_reason)
+      end
+
       event_metadata = {
         user_agent: request&.user_agent,
         unique_session_id: hashed_session_id,
