@@ -154,7 +154,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
                 transaction_id: lexisnexis_transaction_id,
                 reference: lexisnexis_reference,
                 can_pass_with_additional_verification: false,
-                attributes_requiring_additinal_verification: [],
+                attributes_requiring_additional_verification: [],
               },
               state_id: {
                 client: 'Proofing::Aamva::Proofer',
@@ -547,10 +547,16 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
         context 'with a successful response from the proofer' do
           before do
-            expect(resolution_proofer).to receive(:proof).
-              and_return(Proofing::Result.new)
-            expect(state_id_proofer).to receive(:proof).
-              and_return(Proofing::Result.new)
+            expect(resolution_proofer).to receive(
+              :proof,
+            ).and_return(
+              Proofing::Mock::ResolutionMockClient::ResolutionMockClientResult.new(
+                success: true,
+                errors: {},
+                exception: nil,
+              )
+            )
+            expect(state_id_proofer).to receive(:proof).and_return(Proofing::Result.new)
           end
 
           it 'logs the trace_id and timing info for ProofResolution info' do

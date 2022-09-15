@@ -160,7 +160,7 @@ class ResolutionProofingJob < ApplicationJob
             reference: resolution_result.reference,
             # rubocop:disable Layout/LineLength
             can_pass_with_additional_verification: resolution_result.failed_result_can_pass_with_additional_verification?,
-            attributes_requiring_additinal_verification: resolution_result.attributes_requiring_additinal_verification,
+            attributes_requiring_additional_verification: resolution_result.attributes_requiring_additional_verification,
             # rubocop:enable Layout/LineLength
           },
           state_id: {

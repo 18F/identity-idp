@@ -34,6 +34,14 @@ module Proofing
             vendor_name: 'ResolutionMock',
           }
         end
+
+        def failed_result_can_pass_with_additional_verification?
+          false
+        end
+
+        def attributes_requiring_additional_verification
+          []
+        end
       end
 
       def proof(applicant)

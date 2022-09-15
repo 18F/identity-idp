@@ -44,8 +44,8 @@ module Proofing
           true
         end
 
-        def attributes_requiring_additinal_verification
-          @attributes_requiring_additinal_verification ||= CheckToAttributeMapper.new(
+        def attributes_requiring_additional_verification
+          @attributes_requiring_additional_verification ||= CheckToAttributeMapper.new(
             verification_errors[:"Execute Instant Verify"],
           ).map_failed_checks_to_attributes
         end

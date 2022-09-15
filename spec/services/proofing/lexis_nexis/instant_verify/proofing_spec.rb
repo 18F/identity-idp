@@ -104,7 +104,7 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
           result = instance.proof(applicant)
 
           expect(result.failed_result_can_pass_with_additional_verification?)
-          expect(result.attributes_requiring_additinal_verification).to eq([:dob])
+          expect(result.attributes_requiring_additional_verification).to eq([:dob])
         end
       end
 
