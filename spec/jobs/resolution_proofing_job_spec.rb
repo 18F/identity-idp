@@ -142,39 +142,39 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(result[:errors]).to eq({})
           expect(result[:success]).to be true
           expect(result[:timed_out]).to be false
-
-          # TODO: result[:context]
-            # context: {
-            #   should_proof_state_id: true,
-            #   stages: {
-            #     resolution: {
-            #       client: Proofing::LexisNexis::InstantVerify::Proofer.vendor_name,
-            #       errors: {},
-            #       exception: nil,
-            #       success: true,
-            #       timed_out: false,
-            #       transaction_id: lexisnexis_transaction_id,
-            #       reference: lexisnexis_reference,
-            #     },
-            #     state_id: {
-            #       client: Proofing::Aamva::Proofer.vendor_name,
-            #       errors: {},
-            #       exception: nil,
-            #       success: true,
-            #       timed_out: false,
-            #       transaction_id: aamva_transaction_id,
-            #     },
-            #     threatmetrix: {
-            #       client: Proofing::Mock::DdpMockClient.vendor_name,
-            #       errors: {},
-            #       exception: nil,
-            #       success: true,
-            #       timed_out: false,
-            #       transaction_id: threatmetrix_request_id,
-            #       response_body: ddp_response_body,
-            #     },
-            #   },
-            # },
+          expect(result[:context]).to eq(
+            should_proof_state_id: true,
+            stages: {
+              resolution: {
+                client: 'Proofing::LexisNexis::InstantVerify::Proofer',
+                errors: {},
+                exception: nil,
+                success: true,
+                timed_out: false,
+                transaction_id: lexisnexis_transaction_id,
+                reference: lexisnexis_reference,
+                can_pass_with_additional_verification: false,
+                attributes_requiring_additinal_verification: [],
+              },
+              state_id: {
+                client: 'Proofing::Aamva::Proofer',
+                errors: {},
+                exception: nil,
+                success: true,
+                timed_out: false,
+                transaction_id: aamva_transaction_id,
+              },
+              threatmetrix: {
+                client: 'DdpMock',
+                errors: {},
+                exception: nil,
+                success: true,
+                timed_out: false,
+                transaction_id: threatmetrix_request_id,
+                response_body: ddp_response_body,
+              },
+            },
+          )
 
           proofing_component = user.proofing_component
           expect(proofing_component.threatmetrix).to equal(true)
@@ -220,37 +220,43 @@ RSpec.describe ResolutionProofingJob, type: :job do
             )
             expect(result[:success]).to be false
             expect(result[:timed_out]).to be false
-
-              # TODO: result[:context]
-              # context: {
-              #   should_proof_state_id: true,
-              #   stages: {
-              #     resolution: {
-              #       client: Proofing::LexisNexis::InstantVerify::Proofer.vendor_name,
-              #       errors: {
-              #         base: [
-              #           a_string_starting_with(
-              #             'Response error with code \'invalid_transaction_initiate\':',
-              #           ),
-              #         ],
-              #       },
-              #       exception: nil,
-              #       success: false,
-              #       timed_out: false,
-              #       transaction_id: lexisnexis_transaction_id,
-              #       reference: lexisnexis_reference,
-              #     },
-              #     threatmetrix: {
-              #       client: Proofing::Mock::DdpMockClient.vendor_name,
-              #       errors: {},
-              #       exception: nil,
-              #       success: true,
-              #       timed_out: false,
-              #       transaction_id: threatmetrix_request_id,
-              #       response_body: ddp_response_body,
-              #     },
-              #   },
-              # },
+            expect(result[:context]).to match(
+              should_proof_state_id: true,
+              stages: {
+                resolution: {
+                  client: 'Proofing::LexisNexis::InstantVerify::Proofer',
+                  errors: {
+                    base: [
+                      a_string_starting_with(
+                        'Response error with code \'invalid_transaction_initiate\':',
+                      ),
+                    ],
+                  },
+                  exception: nil,
+                  success: false,
+                  timed_out: false,
+                  transaction_id: lexisnexis_transaction_id,
+                  reference: lexisnexis_reference,
+                },
+                state_id: {
+                  client: 'Proofing::Aamva::Proofer',
+                  errors: {},
+                  exception: nil,
+                  success: true,
+                  timed_out: false,
+                  transaction_id: '',
+                },
+                threatmetrix: {
+                  client: 'DdpMock',
+                  errors: {},
+                  exception: nil,
+                  success: true,
+                  timed_out: false,
+                  transaction_id: threatmetrix_request_id,
+                  response_body: ddp_response_body,
+                },
+              },
+            )
           end
         end
 

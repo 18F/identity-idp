@@ -20,8 +20,12 @@ module Proofing
         }.freeze
 
         def initialize(instant_verify_errors)
-          @instant_verify_checks = instant_verify_errors['Items'].map do |item|
-            InstantVerifyCheck.new(name: item['ItemName'], status: item['ItemStatus'])
+          if instant_verify_errors.present?
+            @instant_verify_checks = instant_verify_errors['Items'].map do |item|
+              InstantVerifyCheck.new(name: item['ItemName'], status: item['ItemStatus'])
+            end
+          else
+            @instant_verify_checks = []
           end
         end
 

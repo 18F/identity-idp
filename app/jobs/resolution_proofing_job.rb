@@ -147,8 +147,8 @@ class ResolutionProofingJob < ApplicationJob
       errors: resolution_result.errors.merge(state_id_result.errors),
       exception: resolution_result.exception || state_id_result.exception,
       timed_out: resolution_result.timed_out? || state_id_result.timed_out?,
-      should_proof_state_id: should_proof_state_id,
       context: {
+        should_proof_state_id: should_proof_state_id,
         stages: {
           resolution: {
             client: resolution_proofer.class.to_s,
@@ -158,6 +158,10 @@ class ResolutionProofingJob < ApplicationJob
             timed_out: resolution_result.timed_out?,
             transaction_id: resolution_result.transaction_id,
             reference: resolution_result.reference,
+            # rubocop:disable Layout/LineLength
+            can_pass_with_additional_verification: resolution_result.failed_result_can_pass_with_additional_verification?,
+            attributes_requiring_additinal_verification: resolution_result.attributes_requiring_additinal_verification,
+            # rubocop:enable Layout/LineLength
           },
           state_id: {
             client: state_id_proofer.class.to_s,
