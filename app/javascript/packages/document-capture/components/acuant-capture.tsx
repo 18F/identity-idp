@@ -415,19 +415,23 @@ function AcuantCapture(
    */
   function startCaptureOrTriggerUpload(event: MouseEvent) {
     if (event.target === inputRef.current) {
-      if (forceNativeCamera && isMobile) {
+      const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;
+      const isEnvironmentCapture = capture !== 'user';
+      const shouldStartSelfieCapture =
+        isAcuantLoaded && capture === 'user' && !isForceUploading.current;
+      const shouldStartAcuantCapture =
+        isAcuantCaptureCapable &&
+        capture !== 'user' &&
+        !isForceUploading.current &&
+        !forceNativeCamera;
+
+      if (isAcuantCaptureCapable && isEnvironmentCapture && forceNativeCamera) {
         trackEvent('IdV: Native camera forced after failed attempts', {
           field: name,
           failed_capture_attempts: failedCaptureAttempts,
           failed_submission_attempts: failedSubmissionAttempts,
         });
-        return forceUpload();
       }
-      const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;
-      const shouldStartAcuantCapture =
-        isAcuantCaptureCapable && capture !== 'user' && !isForceUploading.current;
-      const shouldStartSelfieCapture =
-        isAcuantLoaded && capture === 'user' && !isForceUploading.current;
 
       if (!allowUpload || shouldStartSelfieCapture || shouldStartAcuantCapture) {
         event.preventDefault();
