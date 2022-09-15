@@ -96,7 +96,7 @@ module Db
             , sp_return_logs.ial
             FROM sp_return_logs
             WHERE
-                  sp_return_logs.requested_at BETWEEN %{range_start} AND %{range_end}
+                  sp_return_logs.requested_at::date BETWEEN %{range_start} AND %{range_end}
               AND sp_return_logs.returned_at IS NOT NULL
               AND sp_return_logs.issuer IN %{issuers}
               AND sp_return_logs.billable = true
