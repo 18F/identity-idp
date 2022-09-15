@@ -31,7 +31,7 @@ module Idv
       private
 
       def native_camera_ab_testing_variables
-        ab_test = NativeCameraABTest
+        ab_test = NativeCameraABTest.new
         discriminator = flow_session[:document_capture_session_uuid]
         skip_sdk = ab_test.bucket(discriminator) == :native_camera_only
 
