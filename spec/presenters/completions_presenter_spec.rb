@@ -145,6 +145,79 @@ describe CompletionsPresenter do
     end
   end
 
+  describe '#intro' do
+    describe 'ial1' do
+      context 'consent has expired since the last sign in' do
+        let(:identities) do
+          [
+            build(
+              :service_provider_identity,
+              service_provider: current_sp.issuer,
+              last_consented_at: 2.years.ago,
+            ),
+          ]
+        end
+        let(:completion_context) { :consent_expired }
+
+        it 'renders the expired IAL1 consent intro message' do
+          expect(presenter.intro).to eq(
+            I18n.t(
+              'help_text.requested_attributes.ial1_consent_reminder_html',
+              sp: current_sp.friendly_name,
+            ),
+          )
+        end
+      end
+
+      context 'when consent has not expired' do
+        it 'renders the standard intro message' do
+          expect(presenter.intro).to eq(
+            I18n.t(
+              'help_text.requested_attributes.ial1_intro_html',
+              sp: current_sp.friendly_name,
+            ),
+          )
+        end
+      end
+    end
+
+    describe 'ial2' do
+      let(:ial2_requested) { true }
+      context 'consent has expired since the last sign in' do
+        let(:identities) do
+          [
+            build(
+              :service_provider_identity,
+              service_provider: current_sp.issuer,
+              last_consented_at: 2.years.ago,
+            ),
+          ]
+        end
+        let(:completion_context) { :consent_expired }
+
+        it 'renders the expired IAL2 consent intro message' do
+          expect(presenter.intro).to eq(
+            I18n.t(
+              'help_text.requested_attributes.ial2_consent_reminder_html',
+              sp: current_sp.friendly_name,
+            ),
+          )
+        end
+      end
+
+      context 'when consent has not expired' do
+        it 'renders the standard intro message' do
+          expect(presenter.intro).to eq(
+            I18n.t(
+              'help_text.requested_attributes.ial2_intro_html',
+              sp: current_sp.friendly_name,
+            ),
+          )
+        end
+      end
+    end
+  end
+
   describe '#pii' do
     context 'ial1' do
       context 'with a subset of attributes requested' do
