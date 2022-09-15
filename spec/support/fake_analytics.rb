@@ -86,6 +86,12 @@ class FakeAnalytics
     # no-op
   end
 
+  # no-op this event in fake analytics, because it adds a lot of noise to tests
+  # expecting other events
+  def irs_attempts_api_event_metadata(**_attrs)
+    # no-op
+  end
+
   def browser_attributes
     {}
   end
