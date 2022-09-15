@@ -225,7 +225,7 @@ module Idv
           client_image_metrics: image_metadata,
           async: false,
           flow_path: params[:flow_path],
-        ),
+        ).merge(native_camera_ab_test_data),
       )
       pii_from_doc = client_response.pii_from_doc || {}
       irs_attempts_api_tracker.idv_document_upload_submitted(
@@ -239,7 +239,7 @@ module Idv
         date_of_birth: pii_from_doc[:dob],
         address: pii_from_doc[:address1],
         failure_reason: client_response.errors&.except(:hints)&.presence,
-      ).merge(native_camera_ab_test_data)
+      )
     end
 
     def native_camera_ab_test_data
