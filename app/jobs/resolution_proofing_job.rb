@@ -135,42 +135,42 @@ class ResolutionProofingJob < ApplicationJob
       resolution_proofer.proof(applicant_pii)
     end
 
-    result = proofer_result.to_h
-    resolution_success = proofer_result.success?
+    # result = proofer_result.to_h
+    # resolution_success = proofer_result.success?
 
-    result[:transaction_id] = proofer_result.transaction_id
-    result[:reference] = proofer_result.reference
+    # result[:transaction_id] = proofer_result.transaction_id
+    # result[:reference] = proofer_result.reference
 
-    exception = proofer_result.exception.inspect if proofer_result.exception
-    result[:timed_out] = proofer_result.timed_out?
-    result[:exception] = exception
+    # exception = proofer_result.exception.inspect if proofer_result.exception
+    # result[:timed_out] = proofer_result.timed_out?
+    # result[:exception] = exception
 
-    result[:context] = {
-      should_proof_state_id: should_proof_state_id,
-      stages: {
-        resolution: {
-          client: resolution_proofer.class.vendor_name,
-          errors: proofer_result.errors,
-          exception: exception,
-          success: proofer_result.success?,
-          timed_out: proofer_result.timed_out?,
-          transaction_id: proofer_result.transaction_id,
-          reference: proofer_result.reference,
-        },
-      },
-    }
+    # result[:context] = {
+    #   should_proof_state_id: should_proof_state_id,
+    #   stages: {
+    #     resolution: {
+    #       client: resolution_proofer.class.vendor_name,
+    #       errors: proofer_result.errors,
+    #       exception: exception,
+    #       success: proofer_result.success?,
+    #       timed_out: proofer_result.timed_out?,
+    #       transaction_id: proofer_result.transaction_id,
+    #       reference: proofer_result.reference,
+    #     },
+    #   },
+    # }
 
     state_id_success = nil
-    if should_proof_state_id && result[:success]
+    if should_proof_state_id && proofer_result.success?
       timer.time('state_id') do
-        proof_state_id(applicant_pii: applicant_pii, result: result)
+        proof_state_id(applicant_pii: applicant_pii, result: proofer_result.to_h)
       end
-      state_id_success = result[:success]
+      state_id_success = proofer_result.success?
     end
 
     CallbackLogData.new(
-      result: result,
-      resolution_success: resolution_success,
+      result: proofer_result.to_h,
+      resolution_success: proofer_result.success?,
       state_id_success: state_id_success,
     )
   end
