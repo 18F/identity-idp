@@ -4,6 +4,7 @@ module Idv
       class GetStartedStep < InheritedProofingBaseStep
         STEP_INDICATOR_STEP = :getting_started
         def call
+          Rails.logger.debug('xyzzy: in GetStartedStep')
         end
       end
     end
