@@ -524,7 +524,12 @@ describe 'OpenID Connect' do
       sign_in_live_with_2fa(user)
 
       expect(current_url).to eq(sign_up_completed_url)
-      expect(page).to have_content(t('titles.sign_up.completion_first_sign_in', app_name: APP_NAME))
+      expect(page).to have_content(
+        t(
+          'titles.sign_up.completion_first_sign_in',
+          sp: sp.friendly_name,
+        ),
+      )
 
       click_agree_and_continue
       expect(current_url).to start_with('http://localhost:7654/auth/result')
