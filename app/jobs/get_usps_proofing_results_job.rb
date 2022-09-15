@@ -1,4 +1,5 @@
 class GetUspsProofingResultsJob < ApplicationJob
+  MILLISECONDS_IN_SECONDS = 1000.0 # Specify float value to use floating point math
   IPP_STATUS_PASSED = 'In-person passed'
   IPP_STATUS_FAILED = 'In-person failed'
   IPP_INCOMPLETE_ERROR_MESSAGE = 'Customer has not been to a post office to complete IPP'
@@ -68,7 +69,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   DEFAULT_EMAIL_DELAY_IN_HOURS = 1
 
   def check_enrollments(enrollments)
-    request_delay_ms = IdentityConfig.store.get_usps_proofing_results_job_request_delay_milliseconds
+    request_delay_ms = IdentityConfig.store.
+      get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_IN_SECONDS
     proofer = UspsInPersonProofing::Proofer.new
 
     enrollments.each_with_index do |enrollment, idx|

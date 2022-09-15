@@ -209,14 +209,18 @@ RSpec.describe GetUspsProofingResultsJob do
         ).to be >= 0.0
       end
 
-      it 'adds a delay between requests to USPS' do
-        allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-          and_return(pending_enrollments)
-        stub_request_passed_proofing_results
-        expect(job).to receive(:sleep).exactly(pending_enrollments.length - 1).times.
-          with(request_delay_ms)
+      context 'with a request delay in ms' do
+        let(:request_delay_ms) { 750 }
 
-        job.perform(Time.zone.now)
+        it 'adds a delay between requests to USPS' do
+          allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+            and_return(pending_enrollments)
+          stub_request_passed_proofing_results
+          expect(job).to receive(:sleep).exactly(pending_enrollments.length - 1).times.
+            with(0.75)
+
+          job.perform(Time.zone.now)
+        end
       end
 
       context 'when an enrollment does not have a unique ID' do
