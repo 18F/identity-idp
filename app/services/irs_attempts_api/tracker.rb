@@ -18,8 +18,8 @@ module IrsAttemptsApi
       return unless enabled?
 
       if metadata.has_key?(:failure_reason) &&
-         metadata[:failure_reason].blank? &&
-         metadata[:success].present?
+         (metadata[:failure_reason].blank? ||
+          metadata[:success].present?)
         metadata.delete(:failure_reason)
       end
 

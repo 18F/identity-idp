@@ -34,6 +34,28 @@ RSpec.describe IrsAttemptsApi::Tracker do
   end
 
   describe '#track_event' do
+    it 'omit failure reason when success is true' do
+      freeze_time do
+        event = subject.track_event(:test_event, foo: :bar, success: true, failure_reason: nil)
+        expect(event.event_metadata).to_not have_key(:failure_reason)
+      end
+    end
+    it 'omit failure reason when failure_reason is blank' do
+      freeze_time do
+        event = subject.track_event(:test_event, foo: :bar, failure_reason: nil)
+        expect(event.event_metadata).to_not have_key(:failure_reason)
+      end
+    end
+    it 'should not omit failure reason when success is false and failure_reason is not blank' do
+      freeze_time do
+        event = subject.track_event(
+          :test_event, foo: :bar, success: false,
+                       failure_reason: { foo: [:bar] }
+        )
+        expect(event.event_metadata).to have_key(:failure_reason)
+        expect(event.event_metadata).to have_key(:success)
+      end
+    end
     it 'records the event in redis' do
       freeze_time do
         subject.track_event(:test_event, foo: :bar)
