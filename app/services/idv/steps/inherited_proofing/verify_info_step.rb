@@ -2,7 +2,7 @@ module Idv
   module Steps
     module InheritedProofing
       class VerifyInfoStep < InheritedProofingBaseStep
-        STEP_INDICATOR_STEP = :verify_phone_or_address
+        STEP_INDICATOR_STEP = :verify_phone
 
         def call
         end

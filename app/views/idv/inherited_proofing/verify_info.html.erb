@@ -1,28 +1,8 @@
 <% title t('doc_auth.headings.lets_go') %>
 
-<h2>Please verify your information</h2>
+<h2>Place holder to show Please verify your information</h2>
+<%= flow_session.inspect %>
 
-<div>
-  First name: MICHAEL<br/>
-  Last name: MOTORIST<br/>
-  Date of birth: 04/09/1970  
-</div>
-<br/><br/>
-<div>
-  Address: 2345 ANYWHERE ST&emsp;&emsp;&emsp;&emsp;&emsp;<%= link_to 'change' %>
-  <br/>City: YOUR CITY
-  <br/>State: NY
-  <br/>Zip Code: 12345  
-</div>
-<br/><br/>
-<div>
-  Social Security Number: <br/>1**-**-***1
-</div>
-<br/>
-<%= check_box('post', 'validated') %>
-Show Social Security number
-<br/>
-<br/>
 <%= simple_form_for :inherited_proofing,
                     url: url_for,
                     method: 'put',

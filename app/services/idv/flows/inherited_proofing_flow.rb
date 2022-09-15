@@ -5,13 +5,13 @@ module Idv
         get_started: Idv::Steps::InheritedProofing::GetStartedStep,
         agreement: Idv::Steps::InheritedProofing::AgreementStep,
         verify_info: Idv::Steps::InheritedProofing::VerifyInfoStep,
-        verify_phone_or_address: Idv::Steps::InheritedProofing::PhoneStep,
+        verify_phone: Idv::Steps::InheritedProofing::PhoneStep,
       }.freeze
 
       STEP_INDICATOR_STEPS = [
         { name: :getting_started },
         { name: :verify_info },
-        { name: :verify_phone_or_address },
+        { name: :verify_phone },
         { name: :secure_account },
       ].freeze
 
@@ -27,10 +27,6 @@ module Idv
       def self.session_idv(session)
         session[:idv] ||= {}
       end
-
-      # def initialize(controller, session, name)
-      #   super(controller, STEPS, ACTIONS, session[name])
-      # end
     end
   end
 end
