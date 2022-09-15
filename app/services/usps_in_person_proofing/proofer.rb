@@ -136,9 +136,6 @@ module UspsInPersonProofing
         # Note: The order of this matters for parsing the error response body.
         conn.response :raise_error
 
-        # Log request method and URL, excluding headers and body
-        conn.response :logger, nil, { headers: false, bodies: false }
-
         # Convert body to JSON
         conn.request :json
 
