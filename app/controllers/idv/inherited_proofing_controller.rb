@@ -1,11 +1,6 @@
 module Idv
   class InheritedProofingController < ApplicationController
-    # before_action :confirm_two_factor_authenticated
-    # before_action :redirect_if_pending_profile
-
-    # include IdvSession
     include Flow::FlowStateMachine
-    # include Idv::ThreatMetrixConcern
 
     before_action :render_404_if_disabled
 
