@@ -50,8 +50,11 @@ module Idv
 
     def create
       irs_attempts_api_tracker.idv_password_entered(success: true)
-      log_reproof_event if Profile.find_by(id: idv_session&.profile_id)&.active?
+
       init_profile
+
+      log_reproof_event if idv_session.profile.has_proofed_before?
+
       user_session[:need_personal_key_confirmation] = true
 
       redirect_to next_step
