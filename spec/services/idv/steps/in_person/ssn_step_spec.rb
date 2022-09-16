@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::Steps::Ipp::SsnStep do
+describe Idv::Steps::InPerson::SsnStep do
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
   let(:params) { { doc_auth: { ssn: ssn } } }
   let(:session) { { sp: { issuer: service_provider.issuer } } }
@@ -36,7 +36,7 @@ describe Idv::Steps::Ipp::SsnStep do
   end
 
   subject(:step) do
-    Idv::Steps::Ipp::SsnStep.new(flow)
+    Idv::Steps::InPerson::SsnStep.new(flow)
   end
 
   describe '#call' do
