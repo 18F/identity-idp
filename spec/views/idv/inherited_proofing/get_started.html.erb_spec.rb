@@ -49,5 +49,33 @@ describe 'idv/inherited_proofing/get_started.html.erb' do
         expect(rendered).to have_content('Empiece con la verificación de su identidad')
       end
     end
+
+    context 'without service provider' do
+      it 'renders troubleshooting options' do
+        render template: 'idv/inherited_proofing/get_started'
+
+        expect(rendered).to have_link(t('inherited_proofing.troubleshooting.options.get_va_help'))
+        expect(rendered).to have_link(
+          t('inherited_proofing.troubleshooting.options.learn_more_phone_or_mail'),
+        )
+        expect(rendered).not_to have_link(nil, href: idv_inherited_proofing_return_to_sp_path)
+      end
+    end
+
+    context 'with service provider' do
+      let(:sp_name) { 'Example App' }
+
+      it 'renders troubleshooting options' do
+        render template: 'idv/inherited_proofing/get_started'
+
+        expect(rendered).to have_link(t('inherited_proofing.troubleshooting.options.get_va_help'))
+        expect(rendered).to have_link(
+          t('inherited_proofing.troubleshooting.options.learn_more_phone_or_mail'),
+        )
+        expect(rendered).to have_link(
+          t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
+        )
+      end
+    end
   end
 end

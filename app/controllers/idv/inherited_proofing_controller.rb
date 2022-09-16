@@ -16,6 +16,10 @@ module Idv
       analytics_id: nil,
     }.freeze
 
+    def return_to_sp
+      redirect_to return_to_sp_failure_to_proof_url(step: next_step, location: params[:location])
+    end
+
     private
 
     def render_404_if_disabled
