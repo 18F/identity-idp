@@ -396,6 +396,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
             result = document_capture_session.load_proofing_result[:result]
 
+            result_context = result[:context]
+            result_context_stages = result_context[:stages]
+            result_context_stages_resolution = result_context_stages[:resolution]
+
             expect(result[:exception]).to be_nil
             expect(result[:errors]).to match(
               base: [
@@ -407,27 +411,21 @@ RSpec.describe ResolutionProofingJob, type: :job do
             expect(result[:success]).to be false
             expect(result[:timed_out]).to be false
 
-              # TODO: result[:context]
-              # context: {
-              #   should_proof_state_id: true,
-              #   stages: {
-              #     resolution: {
-              #       client: Proofing::LexisNexis::InstantVerify::Proofer.vendor_name,
-              #       errors: {
-              #         base: [
-              #           a_string_starting_with(
-              #             'Response error with code \'invalid_transaction_initiate\':',
-              #           ),
-              #         ],
-              #       },
-              #       exception: nil,
-              #       success: false,
-              #       timed_out: false,
-              #       transaction_id: lexisnexis_transaction_id,
-              #       reference: lexisnexis_reference,
-              #     },
-              #   },
-              # },
+            # result[:context]
+            expect(result_context[:should_proof_state_id])
+
+            # result[:context][:stages][:resolution]
+            expect(result_context_stages_resolution[:client]).to eq('Proofing::LexisNexis::InstantVerify::Proofer')
+            expect(result_context_stages_resolution[:errors][:base].first).to match(
+              a_string_starting_with('Response error with code \'invalid_transaction_initiate\':')
+            )
+            expect(result_context_stages_resolution[:exception]).to eq(nil)
+            expect(result_context_stages_resolution[:success]).to eq(false)
+            expect(result_context_stages_resolution[:timed_out]).to eq(false)
+            expect(result_context_stages_resolution[:transaction_id]).to eq(lexisnexis_transaction_id)
+            expect(result_context_stages_resolution[:reference]).to eq(lexisnexis_reference)
+            expect(result_context_stages_resolution[:can_pass_with_additional_verification]).to eq(false)
+            expect(result_context_stages_resolution[:attributes_requiring_additional_verification]).to eq([])
           end
         end
 
