@@ -159,8 +159,8 @@ class ResolutionProofingJob < ApplicationJob
             transaction_id: resolution_result.transaction_id,
             reference: resolution_result.reference,
             # rubocop:disable Layout/LineLength
-            # can_pass_with_additional_verification: resolution_result.failed_result_can_pass_with_additional_verification?,
-            # attributes_requiring_additional_verification: resolution_result.attributes_requiring_additional_verification,
+            can_pass_with_additional_verification: resolution_result.failed_result_can_pass_with_additional_verification?,
+            attributes_requiring_additional_verification: resolution_result.attributes_requiring_additional_verification,
             # rubocop:enable Layout/LineLength
           },
           state_id: {
