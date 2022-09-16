@@ -50,12 +50,27 @@ Database Cleaner to ignore those static tables.
 changelog: Internal, Automated Testing, Improve performance of test suite
 ```
 
-Choose from one of the following changelog categories:
+#### Changelog Messages
 
-- **Improvements** are user-facing improvements to the application experience, such as a new UI component or updated text.
-- **Bug Fixes** are corrections to a broken behavior, such as preventing a raised exception.
-- **Internal** are changes which benefit the Login.gov team, such as analytics or code quality.
-- **Upcoming Features** are iterations contributing to a feature which has not yet been enabled for users in production.
+You must include a changelog message in one commit of your pull request.
+
+A changelog message should be written in the following format:
+
+```
+changelog: [Category], [Subcategory], [Description]
+```
+
+Replace `[Category]`, `[Subcategory]`, and `[Description]` with text relevant for your changes:
+
+- **Category** must be one of the following:
+   - **Improvements** are user-facing improvements to the application experience, such as a new UI component or updated text.
+   - **Bug Fixes** are corrections to a broken behavior, such as preventing a raised exception.
+   - **Internal** are changes which benefit the Login.gov team, such as analytics or code quality.
+   - **Upcoming Features** are iterations contributing to a feature which has not yet been enabled for users in production.
+- **Subcategory** does not have any restrictions, but you should try to maintain consistency with changesets affecting similar parts of the application (for example, "In-person proofing").
+- **Description** is a plain language description of the specific changes.
+
+If multiple pull requests iterate on the same feature, it's a good idea to use the same commit message, since identical messages will be combined into a single entry when the release notes are compiled.
 
 ### Additional notes on pull requests and code reviews
 
