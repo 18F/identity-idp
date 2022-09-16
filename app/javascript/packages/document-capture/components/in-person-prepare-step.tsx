@@ -91,15 +91,15 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
 
         <IconListItem
           icon="check_circle"
-          title={t('in_person_proofing.body.prepare.bring_proof_header')}
+          title={t('in_person_proofing.process.proof_of_address.heading')}
         >
-          <p>{t('in_person_proofing.body.prepare.bring_proof_info_acceptable')}</p>
+          <p>{t('in_person_proofing.process.proof_of_address.info')}</p>
           <ul>
-            <li>{t('in_person_proofing.body.prepare.bring_proof_info_lease')}</li>
-            <li>{t('in_person_proofing.body.prepare.bring_proof_info_registration')}</li>
-            <li>{t('in_person_proofing.body.prepare.bring_proof_info_card')}</li>
-            <li>{t('in_person_proofing.body.prepare.bring_proof_info_policy')}</li>
+            {t(['in_person_proofing.process.proof_of_address.acceptable_proof']).map((proof) => (
+              <li key={proof}>{proof}</li>
+            ))}
           </ul>
+          <p>{t('in_person_proofing.process.proof_of_address.physical_or_digital_copy')}</p>
         </IconListItem>
       </IconList>
       {flowPath === 'hybrid' && <FormStepsButton.Continue />}

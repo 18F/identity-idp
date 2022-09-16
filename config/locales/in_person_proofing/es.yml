@@ -45,14 +45,6 @@ es:
         bring_id_info_id_card: 'Tarjeta de identificación estatal para no conductores'
         bring_id_info_no_other_forms: Actualmente no aceptamos otras formas de
           identificación, como pasaportes y cartillas militares.
-        bring_proof_header: Prueba de su dirección actual
-        bring_proof_info_acceptable: 'Necesita un justificante de domicilio si su
-          dirección actual es diferente a la que figura en su cédula de
-          identidad. Los comprobantes de domicilio aceptables son:'
-        bring_proof_info_card: Tarjeta de registro del vehículo
-        bring_proof_info_lease: Arrendamiento, hipoteca o escritura de fideicomiso
-        bring_proof_info_policy: Póliza de seguro del hogar o del vehículo
-        bring_proof_info_registration: Registro de votantes
         bring_title: 'Cuando vaya a la oficina de correos, lleve:'
         privacy_disclaimer: '%{app_name} es un sitio web seguro del gobierno. Nosotros y
           el Servicio Postal de los Estados Unidos utilizamos sus datos para
@@ -122,6 +114,9 @@ es:
         info: 'Necesita un justificante de domicilio si su dirección actual es diferente
           a la que figura en su cédula de identidad. Los comprobantes de
           domicilio aceptables son:'
+        physical_or_digital_copy: Puede traer una copia física o mostrar una copia
+          digital del documento. No puede mostrar una foto o una captura de
+          pantalla del documento.
       state_id:
         acceptable_documents:
           - Licencia de conducir estatal
