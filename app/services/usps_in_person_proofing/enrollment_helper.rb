@@ -47,13 +47,13 @@ module UspsInPersonProofing
         address = I18n.transliterate(
           [pii['address1'], pii['address2']].select(&:present?).join(' '),
           locale: :en,
-        ).gsub(/[^A-Za-z0-9\-' .\/#]/, '').strip
+        ).gsub(/[^A-Za-z0-9\-' .\/#]/, '').gsub(/\s+/, ' ').strip
 
         # Convert first and last names to help them pass USPS API validation
         first_name = I18n.transliterate(pii['first_name'], locale: :en).
-          gsub(/[^A-Za-z\-' ]/, '').strip
+          gsub(/[^A-Za-z\-' ]/, '').gsub(/\s+/, ' ').strip
         last_name = I18n.transliterate(pii['last_name'], locale: :en).
-          gsub(/[^A-Za-z\-' ]/, '').strip
+          gsub(/[^A-Za-z\-' ]/, '').gsub(/\s+/, ' ').strip
 
         applicant = UspsInPersonProofing::Applicant.new(
           {
