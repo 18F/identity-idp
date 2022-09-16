@@ -17,7 +17,7 @@ module Idv
 
       ACTIONS = {}.freeze
 
-      attr_reader :idv_session # this is needed to support (and satisfy) the current LOA3 flow
+      attr_reader :idv_session
 
       def initialize(controller, session, name)
         @idv_session = self.class.session_idv(session)

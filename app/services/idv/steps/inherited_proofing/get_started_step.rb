@@ -3,7 +3,6 @@ module Idv
     module InheritedProofing
       class GetStartedStep < InheritedProofingBaseStep
         STEP_INDICATOR_STEP = :getting_started
-
         def call
         end
       end

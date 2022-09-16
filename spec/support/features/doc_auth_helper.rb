@@ -35,7 +35,6 @@ module DocAuthHelper
     click_on '‹ ' + t('forms.buttons.back')
   end
 
-  # inherited_proofing
   def idv_ip_get_started_step
     idv_inherited_proofing_step_path(step: :get_started)
   end
@@ -98,7 +97,6 @@ module DocAuthHelper
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
 
-  # inherited_proofing
   def complete_get_started_step
     click_on t('inherited_proofing.buttons.continue')
   end
