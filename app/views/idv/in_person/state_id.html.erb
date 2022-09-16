@@ -47,7 +47,7 @@
         month: parsed_dob&.month,
         year: parsed_dob&.year,
         required: true,
-        min: Time.zone.today - 200.years,
+        min: '1900-01-01',
         max: Time.zone.today,
         hint: t('in_person_proofing.form.state_id.dob_hint'),
         label: t('in_person_proofing.form.state_id.dob'),

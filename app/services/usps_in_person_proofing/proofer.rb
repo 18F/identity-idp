@@ -136,9 +136,6 @@ module UspsInPersonProofing
         # Note: The order of this matters for parsing the error response body.
         conn.response :raise_error
 
-        # Log request method and URL, excluding headers and body
-        conn.response :logger, nil, { headers: false, bodies: false }
-
         # Convert body to JSON
         conn.request :json
 
@@ -170,7 +167,7 @@ module UspsInPersonProofing
         password: IdentityConfig.store.usps_ipp_password,
         grant_type: 'implicit',
         response_type: 'token',
-        client_id: '424ada78-62ae-4c53-8e3a-0b737708a9db',
+        client_id: IdentityConfig.store.usps_ipp_client_id,
         scope: 'ivs.ippaas.apis',
       }
 

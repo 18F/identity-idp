@@ -1107,6 +1107,24 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] event_type
+  # @param [Integer] unencrypted_payload_num_bytes size of payload as JSON data
+  # @param [Boolean] recorded if the full event was recorded or not
+  def irs_attempts_api_event_metadata(
+    event_type:,
+    unencrypted_payload_num_bytes:,
+    recorded:,
+    **extra
+  )
+    track_event(
+      'IRS Attempt API: Event metadata',
+      event_type: event_type,
+      unencrypted_payload_num_bytes: unencrypted_payload_num_bytes,
+      recorded: recorded,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success
   # @param [String] client_id
   # @param [Boolean] sp_initiated
@@ -1460,12 +1478,14 @@ module AnalyticsEvents
   # @param [Array] acr_values
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
+  # @param [String] code_digest hash of returned "code" param
   def openid_connect_request_authorization(
     client_id:,
     scope:,
     acr_values:,
     unauthorized_scope:,
     user_fully_authenticated:,
+    code_digest:,
     **extra
   )
     track_event(
@@ -1475,6 +1495,7 @@ module AnalyticsEvents
       acr_values: acr_values,
       unauthorized_scope: unauthorized_scope,
       user_fully_authenticated: user_fully_authenticated,
+      code_digest: code_digest,
       **extra,
     )
   end
@@ -1482,11 +1503,13 @@ module AnalyticsEvents
   # Tracks when an openid connect token request is made
   # @param [String] client_id
   # @param [String] user_id
-  def openid_connect_token(client_id:, user_id:, **extra)
+  # @param [String] code_digest hash of "code" param
+  def openid_connect_token(client_id:, user_id:, code_digest:, **extra)
     track_event(
       'OpenID Connect: token',
       client_id: client_id,
       user_id: user_id,
+      code_digest: code_digest,
       **extra,
     )
   end
@@ -2566,6 +2589,27 @@ module AnalyticsEvents
   # Tracks users going back or cancelling acoount recovery
   def cancel_account_reset_recovery
     track_event('Account Reset: Cancel Account Recovery Options')
+  end
+
+  # Tracks when the user reaches the verify setup errors page after failing proofing
+  def idv_setup_errors_visited
+    track_event('IdV: Verify setup errors visited')
+  end
+
+  # @param [String] redirect_url URL user was directed to
+  # @param [String, nil] step which step
+  # @param [String, nil] location which part of a step, if applicable
+  # @param ["idv", String, nil] flow which flow
+  # User was redirected to the login.gov contact page
+  def contact_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
+    track_event(
+      'Contact Page Redirect',
+      redirect_url: redirect_url,
+      step: step,
+      location: location,
+      flow: flow,
+      **extra,
+    )
   end
 end
 # rubocop:enable Metrics/ModuleLength

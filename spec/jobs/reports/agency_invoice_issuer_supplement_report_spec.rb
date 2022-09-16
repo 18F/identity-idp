@@ -21,22 +21,28 @@ RSpec.describe Reports::AgencyInvoiceIssuerSupplementReport do
       end
 
       before do
-        create(
-          :monthly_sp_auth_count,
-          user: user,
-          service_provider: sp,
-          ial: 1,
-          auth_count: 11,
-          year_month: iaa_range.begin.strftime('%Y%m'),
-        )
-        create(
-          :monthly_sp_auth_count,
-          user: user,
-          service_provider: sp,
-          ial: 2,
-          auth_count: 22,
-          year_month: iaa_range.begin.strftime('%Y%m'),
-        )
+        3.times do
+          create(
+            :sp_return_log,
+            user: user,
+            service_provider: sp,
+            ial: 1,
+            requested_at: iaa_range.begin + 1.day,
+            returned_at: iaa_range.begin + 1.day,
+            billable: true,
+          )
+        end
+        4.times do
+          create(
+            :sp_return_log,
+            user: user,
+            service_provider: sp,
+            ial: 2,
+            requested_at: iaa_range.begin + 1.day,
+            returned_at: iaa_range.begin + 1.day,
+            billable: true,
+          )
+        end
       end
 
       it 'totals up auth counts within IAA window by month' do
@@ -50,8 +56,8 @@ RSpec.describe Reports::AgencyInvoiceIssuerSupplementReport do
               iaa_start_date: '2021-01-01',
               iaa_end_date: '2021-12-31',
               year_month: '202101',
-              ial1_total_auth_count: 11,
-              ial2_total_auth_count: 22,
+              ial1_total_auth_count: 3,
+              ial2_total_auth_count: 4,
               ial1_unique_users: 1,
               ial2_unique_users: 1,
             },

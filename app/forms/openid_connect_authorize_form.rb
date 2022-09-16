@@ -82,7 +82,6 @@ class OpenidConnectAuthorizeForm
 
   def success_redirect_uri
     uri = redirect_uri unless errors.include?(:redirect_uri)
-    code = identity&.session_uuid
 
     UriService.add_params(uri, code: code, state: state) if code
   end
@@ -111,6 +110,10 @@ class OpenidConnectAuthorizeForm
   private
 
   attr_reader :identity, :success
+
+  def code
+    identity&.session_uuid
+  end
 
   def check_for_unauthorized_scope(params)
     param_value = params[:scope]
@@ -206,6 +209,7 @@ class OpenidConnectAuthorizeForm
       scope: scope&.sort&.join(' '),
       acr_values: acr_values&.sort&.join(' '),
       unauthorized_scope: @unauthorized_scope,
+      code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
     }
   end
 

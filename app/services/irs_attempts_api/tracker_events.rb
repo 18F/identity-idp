@@ -3,7 +3,7 @@
 # rubocop:disable Metrics/ModuleLength
 module IrsAttemptsApi
   module TrackerEvents
-    # param [Boolean] success True if Account Successfully Deleted
+    # @param [Boolean] success True if Account Successfully Deleted
     # A User deletes their Login.gov account
     def account_purged(success:)
       track_event(
@@ -12,8 +12,8 @@ module IrsAttemptsApi
       )
     end
 
-    # param [Boolean] success True if Account Successfully Deleted
-    # param [Hash<Key, Array<String>>] failure_reason displays why account deletion failed
+    # @param [Boolean] success True if Account Successfully Deleted
+    # @param [Hash<Key, Array<String>>] failure_reason displays why account deletion failed
     # A User confirms and deletes their Login.gov account after 24 hour period
     def account_reset_account_deleted(success:, failure_reason:)
       track_event(
@@ -23,7 +23,7 @@ module IrsAttemptsApi
       )
     end
 
-    # param [Boolean] success True if account reset request is cancelled
+    # @param [Boolean] success True if account reset request is cancelled
     # A user cancels the request to delete their account before 24 hour period
     def account_reset_cancel_request(success:)
       track_event(
@@ -146,8 +146,8 @@ module IrsAttemptsApi
       )
     end
 
-    # param [Boolean] Success
-    # param [Hash<Key, Array<String>>] failure_reason displays GPO submission failed
+    # @param [Boolean] success
+    # @param [Hash<Key, Array<String>>] failure_reason displays GPO submission failed
     # GPO verification submitted from Letter sent to verify address
     def idv_gpo_verification_submitted(success:, failure_reason:)
       track_event(
@@ -225,7 +225,7 @@ module IrsAttemptsApi
 
     # Tracks when a user submits OTP code sent to their phone
     # @param [String] phone_number
-    # param [Boolean] success
+    # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def idv_phone_otp_submitted(phone_number:, success:, failure_reason: nil)
       track_event(
@@ -245,9 +245,18 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when sending a link to a phone is rate limited during idv flow
+    # @param [String] phone_number
+    def idv_phone_send_link_rate_limited(phone_number:)
+      track_event(
+        :idv_phone_send_link_rate_limited,
+        phone_number: phone_number,
+      )
+    end
+
     # Tracks when the user submits their idv phone number
     # @param [String] phone_number
-    # param [Boolean] success
+    # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def idv_phone_submitted(phone_number:, success:, failure_reason: nil)
       track_event(
@@ -282,6 +291,15 @@ module IrsAttemptsApi
       )
     end
 
+    # The user, who had previously successfully confirmed their identity, has
+    # reproofed. All the normal events are also sent, this simply notes that
+    # this is the second (or more) time they have gone through the process successfully.
+    def idv_reproof
+      track_event(
+        :idv_reproof,
+      )
+    end
+
     # @param [Boolean] success
     # @param [String] ssn
     # User entered in SSN number during Identity verification
@@ -309,6 +327,7 @@ module IrsAttemptsApi
     # @param [String] last_name
     # @param [String] date_of_birth
     # @param [String] address
+    # @param [String] ssn
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # The verification was submitted during the IDV process
     def idv_verification_submitted(
@@ -341,12 +360,31 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success True if the password was successfully changed
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # A logged-in user has attempted to change their password
     def logged_in_password_change(success:, failure_reason: nil)
       track_event(
         :logged_in_password_change,
         success: success,
         failure_reason: failure_reason,
+      )
+    end
+
+    # A logged-in user has been rate limited from submitting a password to reauthenticate prior to
+    # changing their profile too many times
+    def logged_in_profile_change_reauthentication_rate_limited
+      track_event(
+        :logged_in_profile_change_reauthentication_rate_limited,
+      )
+    end
+
+    # @param [Boolean] success True if the password submitted for reauthentication matches the
+    # current password
+    # A logged-in user has submitted a password to reauthenticate prior to changing their profile
+    def logged_in_profile_change_reauthentication_submitted(success:)
+      track_event(
+        :logged_in_profile_change_reauthentication_submitted,
+        success: success,
       )
     end
 
@@ -504,7 +542,8 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [Boolean] success - True if the sms otp submitted matched what was sent
+    # @param [Boolean] reauthentication if the user was already logged in
+    # @param [Boolean] success True if the sms otp submitted matched what was sent
     # During a login attempt, the user, having previously been sent an OTP code via SMS
     # has entered an OTP code.
     def mfa_login_phone_otp_submitted(reauthentication:, success:)

@@ -89,6 +89,7 @@ class ApplicationController < ActionController::Base
       cookie_device_uuid: cookies[:device],
       sp_request_uri: decorated_session.request_url_params[:redirect_uri],
       enabled_for_session: irs_attempt_api_enabled_for_session?,
+      analytics: analytics,
     )
   end
 

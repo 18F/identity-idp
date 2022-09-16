@@ -387,6 +387,7 @@ RSpec.describe OpenidConnectTokenForm do
           errors: {},
           client_id: client_id,
           user_id: user.uuid,
+          code_digest: Digest::SHA256.hexdigest(code),
         )
       end
     end
@@ -403,6 +404,7 @@ RSpec.describe OpenidConnectTokenForm do
           error_details: hash_including(*form.errors.attribute_names),
           client_id: nil,
           user_id: nil,
+          code_digest: nil,
         )
       end
     end
