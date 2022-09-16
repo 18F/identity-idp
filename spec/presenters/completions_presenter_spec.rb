@@ -56,6 +56,25 @@ describe CompletionsPresenter do
           I18n.t('titles.sign_up.completion_ial2', sp: current_sp.friendly_name),
         )
       end
+
+      context 'renders the ial2 consent message if consent expired' do
+        let(:identities) do
+          [
+            build(
+              :service_provider_identity,
+              service_provider: current_sp.issuer,
+              last_consented_at: 2.years.ago,
+            ),
+          ]
+        end
+        let(:completion_context) { :consent_expired }
+
+        it 'renders the expired consent message' do
+          expect(presenter.heading).to eq(
+            I18n.t('titles.sign_up.completion_consent_expired_ial2'),
+          )
+        end
+      end
     end
 
     context 'first time the user signs into any SP' do
@@ -66,7 +85,7 @@ describe CompletionsPresenter do
       end
     end
 
-    context 'consent has expired since the last sign in' do
+    context 'consent has expired since the last sign in with ial1' do
       let(:identities) do
         [
           build(
