@@ -1,5 +1,5 @@
 module Idv
-  module Ipp
+  module InPerson
     module FormAddressValidator
       extend ActiveSupport::Concern
       include Idv::FormAddressValidator

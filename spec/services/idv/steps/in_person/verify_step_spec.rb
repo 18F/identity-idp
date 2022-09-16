@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::Steps::Ipp::VerifyStep do
+describe Idv::Steps::InPerson::VerifyStep do
   include Rails.application.routes.url_helpers
 
   let(:user) { build(:user) }
@@ -37,7 +37,7 @@ describe Idv::Steps::Ipp::VerifyStep do
   end
 
   subject(:step) do
-    Idv::Steps::Ipp::VerifyStep.new(flow)
+    Idv::Steps::InPerson::VerifyStep.new(flow)
   end
 
   describe '#call' do
@@ -75,14 +75,14 @@ describe Idv::Steps::Ipp::VerifyStep do
     context 'when pii_from_user is blank' do
       let(:flow) do
         Idv::Flows::InPersonFlow.new(controller, {}, 'idv/in_person').tap do |flow|
-          flow.flow_session = { 'Idv::Steps::Ipp::SsnStep' => true, pii_from_user: {} }
+          flow.flow_session = { 'Idv::Steps::InPerson::SsnStep' => true, pii_from_user: {} }
         end
       end
 
       it 'marks step as incomplete' do
-        expect(flow.flow_session['Idv::Steps::Ipp::SsnStep']).to eq true
+        expect(flow.flow_session['Idv::Steps::InPerson::SsnStep']).to eq true
         result = step.call
-        expect(flow.flow_session['Idv::Steps::Ipp::SsnStep']).to eq nil
+        expect(flow.flow_session['Idv::Steps::InPerson::SsnStep']).to eq nil
         expect(result.success?).to eq false
       end
     end
@@ -107,7 +107,7 @@ describe Idv::Steps::Ipp::VerifyStep do
           flow.flow_session = { pii_from_user: pii }
         end
 
-        Idv::Steps::Ipp::VerifyStep.new(flow)
+        Idv::Steps::InPerson::VerifyStep.new(flow)
       end
 
       before do

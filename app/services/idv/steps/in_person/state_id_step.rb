@@ -1,6 +1,6 @@
 module Idv
   module Steps
-    module Ipp
+    module InPerson
       class StateIdStep < DocAuthBaseStep
         STEP_INDICATOR_STEP = :verify_info
 
