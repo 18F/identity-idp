@@ -327,7 +327,12 @@ describe Users::TwoFactorAuthenticationController do
       it 'tracks the verification attempt event' do
         stub_attempts_tracker
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).
-          with(phone_number: '+12025551212', reauthentication: false, success: true, otp_delivery_method: 'sms')
+          with(
+            phone_number: '+12025551212',
+            reauthentication: false,
+            success: true,
+            otp_delivery_method: 'sms',
+          )
 
         get :send_code, params: { otp_delivery_selection_form:
           { otp_delivery_preference: 'sms' } }
@@ -338,7 +343,12 @@ describe Users::TwoFactorAuthenticationController do
         subject.user_session[:context] = 'reauthentication'
 
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).
-          with(phone_number: '+12025551212', reauthentication: true, success: true, otp_delivery_method: 'sms')
+          with(
+            phone_number: '+12025551212',
+            reauthentication: true,
+            success: true,
+            otp_delivery_method: 'sms',
+          )
 
         get :send_code, params: { otp_delivery_selection_form:
           { otp_delivery_preference: 'sms' } }

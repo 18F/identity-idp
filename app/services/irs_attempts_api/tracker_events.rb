@@ -430,7 +430,7 @@ module IrsAttemptsApi
     # @param [String] phone_number - The user's phone_number used for multi-factor authentication
     # @param [String] otp_delivery_method - Either SMS or Voice
     # Relevant only when the user is enrolling a phone as their MFA.
-    # The user has been sent an OTP by login.gov and by what method during the MFA enrollment process.
+    # The user has been sent an OTP and by SMS or Voice during the MFA enrollment process.
     def mfa_enroll_phone_otp_sent(success:, phone_number:, otp_delivery_method:)
       track_event(
         :mfa_enroll_phone_otp_sent,
