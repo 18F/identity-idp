@@ -138,43 +138,47 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
           result = document_capture_session.load_proofing_result[:result]
 
+          result_context = result[:context]
+          result_context_stages = result_context[:stages]
+          result_context_stages_resolution = result_context_stages[:resolution]
+          result_context_stages_state_id = result_context_stages[:state_id]
+          result_context_stages_threat_metrix = result_context_stages[:threat_metrix]
+
           expect(result[:exception]).to be_nil
           expect(result[:errors]).to eq({})
           expect(result[:success]).to be true
           expect(result[:timed_out]).to be false
-          expect(result[:context]).to eq(
-            should_proof_state_id: true,
-            stages: {
-              resolution: {
-                client: 'Proofing::LexisNexis::InstantVerify::Proofer',
-                errors: {},
-                exception: nil,
-                success: true,
-                timed_out: false,
-                transaction_id: lexisnexis_transaction_id,
-                reference: lexisnexis_reference,
-                can_pass_with_additional_verification: false,
-                attributes_requiring_additional_verification: [],
-              },
-              state_id: {
-                client: 'Proofing::Aamva::Proofer',
-                errors: {},
-                exception: nil,
-                success: true,
-                timed_out: false,
-                transaction_id: aamva_transaction_id,
-              },
-              threatmetrix: {
-                client: 'DdpMock',
-                errors: {},
-                exception: nil,
-                success: true,
-                timed_out: false,
-                transaction_id: threatmetrix_request_id,
-                response_body: ddp_response_body,
-              },
-            },
-          )
+
+          # result[:context]
+          expect(result_context[:should_proof_state_id])
+
+          # result[:context][:stages][:resolution]
+          expect(result_context_stages_resolution[:client]).to eq('Proofing::LexisNexis::InstantVerify::Proofer')
+          expect(result_context_stages_resolution[:errors]).to eq({})
+          expect(result_context_stages_resolution[:exception]).to eq(nil)
+          expect(result_context_stages_resolution[:success]).to eq(true)
+          expect(result_context_stages_resolution[:timed_out]).to eq(false)
+          expect(result_context_stages_resolution[:transaction_id]).to eq(lexisnexis_transaction_id)
+          expect(result_context_stages_resolution[:reference]).to eq(lexisnexis_reference)
+          # expect(result_context_stages_resolution[:can_pass_with_additional_verification]).to eq(false)
+          # expect(result_context_stages_resolution[:attributes_requiring_additional_verification]).to eq([])
+
+          # result[:context][:stages][:state_id]
+          expect(result_context_stages_state_id[:client]).to eq('Proofing::Aamva::Proofer')
+          expect(result_context_stages_state_id[:errors]).to eq({})
+          expect(result_context_stages_state_id[:exception]).to eq(nil)
+          expect(result_context_stages_state_id[:success]).to eq(true)
+          expect(result_context_stages_state_id[:timed_out]).to eq(false)
+          expect(result_context_stages_state_id[:transaction_id]).to eq(aamva_transaction_id)
+
+          # result[:context][:stages][:threatmetrix]
+          expect(result_context_stages_threatmetrix[:client]).to eq('DdpMock')
+          expect(result_context_stages_threatmetrix[:errors]).to eq({})
+          expect(result_context_stages_threatmetrix[:exception]).to eq(nil)
+          expect(result_context_stages_threatmetrix[:success]).to eq(true)
+          expect(result_context_stages_threatmetrix[:timed_out]).to eq(false)
+          expect(result_context_stages_threatmetrix[:transaction_id]).to eq(threatmetrix_request_id)
+          expect(result_context_stages_threatmetrix[:response_body]).to eq(ddp_response_body)
 
           proofing_component = user.proofing_component
           expect(proofing_component.threatmetrix).to equal(true)
