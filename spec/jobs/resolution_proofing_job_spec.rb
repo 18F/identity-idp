@@ -160,8 +160,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(result_context_stages_resolution[:timed_out]).to eq(false)
           expect(result_context_stages_resolution[:transaction_id]).to eq(lexisnexis_transaction_id)
           expect(result_context_stages_resolution[:reference]).to eq(lexisnexis_reference)
-          # expect(result_context_stages_resolution[:can_pass_with_additional_verification]).to eq(false)
-          # expect(result_context_stages_resolution[:attributes_requiring_additional_verification]).to eq([])
+          expect(result_context_stages_resolution[:can_pass_with_additional_verification]).to eq(false)
+          expect(result_context_stages_resolution[:attributes_requiring_additional_verification]).to eq([])
 
           # result[:context][:stages][:state_id]
           expect(result_context_stages_state_id[:client]).to eq('Proofing::Aamva::Proofer')
