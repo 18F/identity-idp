@@ -503,9 +503,14 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
               result = document_capture_session.load_proofing_result[:result]
 
-              # TODO: result[:context]
-              # expect(result[:context][:stages][:threatmetrix][:response_body]).
-              #   to eq(error: 'TMx response body was empty')
+              result_context = result[:context]
+              result_context_stages = result_context[:stages]
+              result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
+
+              # result[:context][:stages][:threatmetrix]
+              expect(result_context_stages_threatmetrix[:response_body]).to eq(
+                error: 'TMx response body was empty'
+              )
             end
           end
         end
