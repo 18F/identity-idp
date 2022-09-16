@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::Steps::Ipp::AddressStep do
+describe Idv::Steps::InPerson::AddressStep do
   let(:submitted_values) { {} }
   let(:params) { { doc_auth: submitted_values } }
   let(:user) { build(:user) }
@@ -19,7 +19,7 @@ describe Idv::Steps::Ipp::AddressStep do
   end
 
   subject(:step) do
-    Idv::Steps::Ipp::AddressStep.new(flow)
+    Idv::Steps::InPerson::AddressStep.new(flow)
   end
 
   describe '#call' do
@@ -42,7 +42,7 @@ describe Idv::Steps::Ipp::AddressStep do
       end
 
       it 'sets values in flow session' do
-        Idv::Ipp::AddressForm::ATTRIBUTES.each do |attr|
+        Idv::InPerson::AddressForm::ATTRIBUTES.each do |attr|
           expect(flow.flow_session[:pii_from_user]).to_not have_key attr
         end
 

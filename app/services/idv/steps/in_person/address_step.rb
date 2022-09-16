@@ -1,11 +1,11 @@
 module Idv
   module Steps
-    module Ipp
+    module InPerson
       class AddressStep < DocAuthBaseStep
         STEP_INDICATOR_STEP = :verify_info
 
         def call
-          Idv::Ipp::AddressForm::ATTRIBUTES.each do |attr|
+          Idv::InPerson::AddressForm::ATTRIBUTES.each do |attr|
             flow_session[:pii_from_user][attr] = flow_params[attr]
           end
         end
@@ -20,8 +20,8 @@ module Idv
         private
 
         def form_submit
-          Idv::Ipp::AddressForm.new.submit(
-            permit(*Idv::Ipp::AddressForm::ATTRIBUTES),
+          Idv::InPerson::AddressForm.new.submit(
+            permit(*Idv::InPerson::AddressForm::ATTRIBUTES),
           )
         end
       end

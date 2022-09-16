@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::Steps::Ipp::StateIdStep do
+describe Idv::Steps::InPerson::StateIdStep do
   let(:submitted_values) { {} }
   let(:params) { { doc_auth: submitted_values } }
   let(:user) { build(:user) }
@@ -19,7 +19,7 @@ describe Idv::Steps::Ipp::StateIdStep do
   end
 
   subject(:step) do
-    Idv::Steps::Ipp::StateIdStep.new(flow)
+    Idv::Steps::InPerson::StateIdStep.new(flow)
   end
 
   describe '#call' do
