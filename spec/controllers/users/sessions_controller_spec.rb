@@ -542,6 +542,24 @@ describe Users::SessionsController, devise: true do
       post :create, params: { user: { email: user.email, password: user.password } }
       expect(response).to redirect_to account_reset_pending_url
     end
+
+    it 'redirects to account page if the user is already fully authenticated' do
+      user = create(:user)
+
+      stub_sign_in(user)
+
+      post :create, params: { user: { email: user.email, password: user.password } }
+      expect(response).to redirect_to account_path
+    end
+
+    it 'redirects to 2FA page if the user is already password authenticated' do
+      user = create(:user)
+
+      stub_sign_in_before_2fa(user)
+
+      post :create, params: { user: { email: user.email, password: user.password } }
+      expect(response).to redirect_to user_two_factor_authentication_path
+    end
   end
 
   describe '#new' do
