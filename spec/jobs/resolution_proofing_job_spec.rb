@@ -142,7 +142,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           result_context_stages = result_context[:stages]
           result_context_stages_resolution = result_context_stages[:resolution]
           result_context_stages_state_id = result_context_stages[:state_id]
-          result_context_stages_threat_metrix = result_context_stages[:threat_metrix]
+          result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
 
           expect(result[:exception]).to be_nil
           expect(result[:errors]).to eq({})
@@ -172,13 +172,13 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(result_context_stages_state_id[:transaction_id]).to eq(aamva_transaction_id)
 
           # result[:context][:stages][:threatmetrix]
-          expect(result_context_stages_threat_metrix[:client]).to eq('DdpMock')
-          expect(result_context_stages_threat_metrix[:errors]).to eq({})
-          expect(result_context_stages_threat_metrix[:exception]).to eq(nil)
-          expect(result_context_stages_threat_metrix[:success]).to eq(true)
-          expect(result_context_stages_threat_metrix[:timed_out]).to eq(false)
-          expect(result_context_stages_threat_metrix[:transaction_id]).to eq(threatmetrix_request_id)
-          expect(result_context_stages_threat_metrix[:response_body]).to eq(ddp_response_body)
+          expect(result_context_stages_threatmetrix[:client]).to eq('DdpMock')
+          expect(result_context_stages_threatmetrix[:errors]).to eq({})
+          expect(result_context_stages_threatmetrix[:exception]).to eq(nil)
+          expect(result_context_stages_threatmetrix[:success]).to eq(true)
+          expect(result_context_stages_threatmetrix[:timed_out]).to eq(false)
+          expect(result_context_stages_threatmetrix[:transaction_id]).to eq(threatmetrix_request_id)
+          expect(result_context_stages_threatmetrix[:response_body]).to eq(ddp_response_body)
 
           proofing_component = user.proofing_component
           expect(proofing_component.threatmetrix).to equal(true)
