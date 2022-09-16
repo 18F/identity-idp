@@ -236,13 +236,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
             # result[:context][:stages][:resolution]
             expect(result_context_stages_resolution[:client]).to eq('Proofing::LexisNexis::InstantVerify::Proofer')
-            expect(result_context_stages_resolution[:errors]).to match({
-              base: [
-                a_string_starting_with(
-                  'Response error with code \'invalid_transaction_initiate\':',
-                ),
-              ],
-            })
+            expect(result_context_stages_resolution[:errors][:base].first).to match(
+              a_string_starting_with('Response error with code \'invalid_transaction_initiate\':')
+            )
             expect(result_context_stages_resolution[:exception]).to eq(nil)
             expect(result_context_stages_resolution[:success]).to eq(false)
             expect(result_context_stages_resolution[:timed_out]).to eq(false)
