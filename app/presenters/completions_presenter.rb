@@ -48,11 +48,15 @@ class CompletionsPresenter
 
   def heading
     if ial2_requested?
-      I18n.t('titles.sign_up.completion_ial2', sp: sp_name)
+      if consent_has_expired?
+        I18n.t('titles.sign_up.completion_consent_expired_ial1')
+      else
+        I18n.t('titles.sign_up.completion_ial2', sp: sp_name)
+      end
     elsif first_time_signing_in?
       I18n.t('titles.sign_up.completion_first_sign_in', sp: sp_name)
     elsif consent_has_expired?
-      I18n.t('titles.sign_up.completion_consent_expired')
+      I18n.t('titles.sign_up.completion_consent_expired_ial2')
     elsif completion_context == :new_attributes
       I18n.t('titles.sign_up.completion_new_attributes', sp: sp_name)
     else
