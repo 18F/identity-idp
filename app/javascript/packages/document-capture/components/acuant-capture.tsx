@@ -422,12 +422,11 @@ function AcuantCapture(
       const isEnvironmentCapture = capture !== 'user';
       const shouldStartSelfieCapture =
         isAcuantLoaded && capture === 'user' && !isForceUploading.current;
-      const shouldStartAcuantCapture =
+      let shouldStartAcuantCapture =
         isAcuantCaptureCapable &&
         capture !== 'user' &&
         !isForceUploading.current &&
-        !forceNativeCamera &&
-        !nativeCameraOnly;
+        !forceNativeCamera;
 
       if (isAcuantCaptureCapable && isEnvironmentCapture && forceNativeCamera) {
         trackEvent('IdV: Native camera forced after failed attempts', {
@@ -437,10 +436,11 @@ function AcuantCapture(
         });
       }
 
-      if (nativeCameraABTestingEnabled) {
+      if (shouldStartAcuantCapture && nativeCameraABTestingEnabled) {
         trackEvent('IdV: Native camera A/B Test', {
           native_camera_only: nativeCameraOnly,
         });
+        shouldStartAcuantCapture = !nativeCameraOnly;
       }
 
       if (!allowUpload || shouldStartSelfieCapture || shouldStartAcuantCapture) {
