@@ -155,7 +155,13 @@ The app will start using that Geolite2 file for geolocation after restart.
 By default, the application binds to `localhost`. To test on a network device or within a virtual machine, you can bind to `0.0.0.0` instead, using the following instructions:
 
 1. Determine your computer's network IP address. On macOS, you can find this in the "Network" system settings, shown under the "Status: Connected" label. This often takes the format of `192.168.1.x` or `10.0.0.x`.
-2. In `config/application.yml`, replace `localhost` in the `domain_name` setting with the IP address discovered in the previous step. Leave the trailing port `:3000` unchanged.
+2. In `config/application.yml`, add `domain_name` and `mailer_domain_name` keys under `development`, like so:
+   ```yaml
+   development:
+     domain_name: <your-local-ip>:3000
+     mailer_domain_name: <your-local-ip>:3000
+   ```
+   replacing `<your-local-ip>` with the address you found in Step 1
 3. Start the server using the command `HOST=0.0.0.0 make run`
 4. Assuming that your phone or virtual machine computer is connected on the same network, visit the application using the domain name configured in the second step (for example, `http://192.168.1.131:3000`).
 

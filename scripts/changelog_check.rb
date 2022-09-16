@@ -5,7 +5,10 @@ require 'optparse'
 CHANGELOG_REGEX =
   %r{^(?:\* )?changelog: (?<category>[\w -/]{2,}), (?<subcategory>[\w -]{2,}), (?<change>.+)$}
 CATEGORIES = [
-  'Improvements', 'Accessibility', 'Bug Fixes', 'Internal', 'Upcoming Features'
+  'Improvements',
+  'Bug Fixes',
+  'Internal',
+  'Upcoming Features',
 ]
 MAX_CATEGORY_DISTANCE = 3
 SKIP_CHANGELOG_MESSAGE = '[skip changelog]'

@@ -50,10 +50,12 @@ Database Cleaner to ignore those static tables.
 changelog: Internal, Automated Testing, Improve performance of test suite
 ```
 
-Refer to the [changelog check script] for a complete list of acceptable
-changelog categories.
+Choose from one of the following changelog categories:
 
-[changelog check script]: https://github.com/18F/identity-idp/blob/main/scripts/changelog_check.rb
+- **Improvements** are user-facing improvements to the application experience, such as a new UI component or updated text.
+- **Bug Fixes** are corrections to a broken behavior, such as preventing a raised exception.
+- **Internal** are changes which benefit the Login.gov team, such as analytics or code quality.
+- **Upcoming Features** are iterations contributing to a feature which has not yet been enabled for users in production.
 
 ### Additional notes on pull requests and code reviews
 
