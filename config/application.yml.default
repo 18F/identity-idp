@@ -51,7 +51,6 @@ aws_logo_bucket: ''
 aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: false
 backup_code_cost: '2000$8$1$'
-backup_code_reminder_redirect: false
 broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 country_phone_number_overrides: '{}'
@@ -80,7 +79,8 @@ doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_tips: 3
-doc_auth_max_attempts_before_native_camera: 2
+doc_auth_max_capture_attempts_before_native_camera: 2
+doc_auth_max_submission_attempts_before_native_camera: 2
 doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
@@ -109,7 +109,6 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_sp_required: false
 in_person_proofing_enabled: false
-in_person_proofing_enabled_issuers: '[]'
 in_person_enrollment_validity_in_days: 30
 in_person_results_delay_in_hours: 1
 include_slo_in_saml_metadata: false
@@ -122,6 +121,7 @@ irs_attempt_api_enabled: false
 irs_attempt_api_event_ttl_seconds: 86400
 irs_attempt_api_event_count_default: 1000
 irs_attempt_api_event_count_max: 10000
+irs_attempt_api_payload_size_logging_enabled: true
 kantara_2fa_phone_restricted: false
 kantara_2fa_phone_existing_user_restriction: false
 kantara_restriction_enforcement_date: '2022-07-19'
@@ -283,6 +283,7 @@ use_dashboard_service_providers: false
 use_kms: false
 usps_confirmation_max_days: 10
 usps_ipp_password: ''
+usps_ipp_client_id: ''
 usps_ipp_root_url: ''
 usps_ipp_request_timeout: 10
 usps_ipp_sponsor_id: ''
@@ -290,6 +291,7 @@ usps_ipp_username: ''
 usps_mock_fallback: true
 get_usps_proofing_results_job_cron: '0/10 * * * *'
 get_usps_proofing_results_job_reprocess_delay_minutes: 5
+get_usps_proofing_results_job_request_delay_milliseconds: 1000
 gpo_allowed_for_strict_ial2: true
 voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'

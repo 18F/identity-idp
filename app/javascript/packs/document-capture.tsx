@@ -104,7 +104,8 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
   const {
     helpCenterRedirectUrl: helpCenterRedirectURL,
     maxCaptureAttemptsBeforeTips,
-    maxAttemptsBeforeNativeCamera,
+    maxCaptureAttemptsBeforeNativeCamera,
+    maxSubmissionAttemptsBeforeNativeCamera,
     appName,
     flowPath,
     cancelUrl: cancelURL,
@@ -155,7 +156,8 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
       FailedCaptureAttemptsContextProvider,
       {
         maxFailedAttemptsBeforeTips: Number(maxCaptureAttemptsBeforeTips),
-        maxAttemptsBeforeNativeCamera: Number(maxAttemptsBeforeNativeCamera),
+        maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
+        maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
       },
     ],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],

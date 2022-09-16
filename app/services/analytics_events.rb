@@ -468,16 +468,24 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Integer] failed_attempts Number of failed attempts
+  # @param [Integer] failed_capture_attempts Number of failed Acuant SDK attempts
+  # @param [Integer] failed_submission_attempts Number of failed Acuant doc submissions
   # @param [String] field Image form field
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The number of acceptable failed attempts (maxFailedAttemptsBeforeNativeCamera) has been met
   # or exceeded, and the system has forced the use of the native camera, rather than Acuant's
   # camera, on mobile devices.
-  def idv_native_camera_forced(failed_attempts:, field:, flow_path:, **extra)
+  def idv_native_camera_forced(
+    failed_capture_attempts:,
+    failed_submission_attempts:,
+    field:,
+    flow_path:,
+    **extra
+  )
     track_event(
       'IdV: Native camera forced after failed attempts',
-      failed_attempts: failed_attempts,
+      failed_capture_attempts: failed_capture_attempts,
+      failed_submission_attempts: failed_submission_attempts,
       field: field,
       flow_path: flow_path,
       **extra,
@@ -1103,6 +1111,24 @@ module AnalyticsEvents
       'IRS Attempt API: Events submitted',
       rendered_event_count: rendered_event_count,
       success: success,
+      **extra,
+    )
+  end
+
+  # @param [String] event_type
+  # @param [Integer] unencrypted_payload_num_bytes size of payload as JSON data
+  # @param [Boolean] recorded if the full event was recorded or not
+  def irs_attempts_api_event_metadata(
+    event_type:,
+    unencrypted_payload_num_bytes:,
+    recorded:,
+    **extra
+  )
+    track_event(
+      'IRS Attempt API: Event metadata',
+      event_type: event_type,
+      unencrypted_payload_num_bytes: unencrypted_payload_num_bytes,
+      recorded: recorded,
       **extra,
     )
   end
@@ -2571,6 +2597,27 @@ module AnalyticsEvents
   # Tracks users going back or cancelling acoount recovery
   def cancel_account_reset_recovery
     track_event('Account Reset: Cancel Account Recovery Options')
+  end
+
+  # Tracks when the user reaches the verify setup errors page after failing proofing
+  def idv_setup_errors_visited
+    track_event('IdV: Verify setup errors visited')
+  end
+
+  # @param [String] redirect_url URL user was directed to
+  # @param [String, nil] step which step
+  # @param [String, nil] location which part of a step, if applicable
+  # @param ["idv", String, nil] flow which flow
+  # User was redirected to the login.gov contact page
+  def contact_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
+    track_event(
+      'Contact Page Redirect',
+      redirect_url: redirect_url,
+      step: step,
+      location: location,
+      flow: flow,
+      **extra,
+    )
   end
 end
 # rubocop:enable Metrics/ModuleLength

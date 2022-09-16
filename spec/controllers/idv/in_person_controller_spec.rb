@@ -2,15 +2,12 @@ require 'rails_helper'
 
 describe Idv::InPersonController do
   let(:in_person_proofing_enabled) { false }
-  let(:in_person_proofing_enabled_issuers) { [] }
   let(:sp) { nil }
   let(:user) { nil }
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
       and_return(in_person_proofing_enabled)
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled_issuers).
-      and_return(in_person_proofing_enabled_issuers)
     allow(controller).to receive(:current_sp).and_return(sp)
     stub_sign_in(user) if user
   end
@@ -64,7 +61,7 @@ describe Idv::InPersonController do
           end
 
           context 'with associated service provider' do
-            let(:sp) { build(:service_provider) }
+            let(:sp) { create(:service_provider, in_person_proofing_enabled: false) }
 
             it 'renders 404 not found' do
               get :index
@@ -73,7 +70,10 @@ describe Idv::InPersonController do
             end
 
             context 'with in person proofing enabled for service provider' do
-              let(:in_person_proofing_enabled_issuers) { [sp.issuer] }
+              before do
+                ServiceProvider.find_by(issuer: sp.issuer).
+                  update(in_person_proofing_enabled: true)
+              end
 
               it 'redirects to the first step' do
                 get :index

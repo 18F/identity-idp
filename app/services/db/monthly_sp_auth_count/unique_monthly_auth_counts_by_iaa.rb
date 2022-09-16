@@ -15,32 +15,31 @@ module Db
 
         return [] if !date_range || issuers.blank?
 
-        full_months, partial_months = Reports::MonthHelper.months(date_range).
-          partition do |month_range|
-            Reports::MonthHelper.full_month?(month_range)
-          end
-
-        # The subqueries create a uniform representation of data:
-        # - full months from monthly_sp_auth_counts
-        # - partial months by aggregating sp_return_logs
+        # Query a month at a time, to keep query time/result size fairly reasonable
         # The results are rows with [user_id, ial, auth_count, year_month]
-        queries = [
-          *full_month_subquery(issuers: issuers, full_months: full_months),
-          *partial_month_subqueries(issuers: issuers, partial_months: partial_months),
-        ]
+        months = Reports::MonthHelper.months(date_range)
+        queries = build_queries(issuers: issuers, months: months)
 
         ial_to_year_month_to_users = Hash.new do |ial_h, ial_k|
           ial_h[ial_k] = Hash.new { |ym_h, ym_k| ym_h[ym_k] = Multiset.new }
         end
 
         queries.each do |query|
-          stream_query(query) do |row|
-            user_id = row['user_id']
-            year_month = row['year_month']
-            auth_count = row['auth_count']
-            ial = row['ial']
+          temp_copy = ial_to_year_month_to_users.deep_dup
 
-            ial_to_year_month_to_users[ial][year_month].add(user_id, auth_count)
+          with_retries(
+            max_tries: 3,
+            rescue: PG::TRSerializationFailure,
+            handler: proc { ial_to_year_month_to_users = temp_copy },
+          ) do
+            stream_query(query) do |row|
+              user_id = row['user_id']
+              year_month = row['year_month']
+              auth_count = row['auth_count']
+              ial = row['ial']
+
+              ial_to_year_month_to_users[ial][year_month].add(user_id, auth_count)
+            end
           end
         end
 
@@ -76,31 +75,12 @@ module Db
         rows
       end
 
-      # @return [String]
-      def full_month_subquery(issuers:, full_months:)
-        return if full_months.blank?
-        params = {
-          issuers: issuers,
-          year_months: full_months.map { |r| r.begin.strftime('%Y%m') },
-        }.transform_values { |value| quote(value) }
-
-        format(<<~SQL, params)
-          SELECT
-            monthly_sp_auth_counts.user_id
-          , monthly_sp_auth_counts.year_month
-          , monthly_sp_auth_counts.auth_count
-          , monthly_sp_auth_counts.ial
-          FROM
-            monthly_sp_auth_counts
-          WHERE
-                monthly_sp_auth_counts.issuer IN %{issuers}
-            AND monthly_sp_auth_counts.year_month IN %{year_months}
-        SQL
-      end
-
+      # @param [Array<String>] issuers all the issuers for this iaa
+      # @param [Array<Range<Date>>] months ranges of dates by month that are included in this iaa,
+      #  the first and last may be partial months
       # @return [Array<String>]
-      def partial_month_subqueries(issuers:, partial_months:)
-        partial_months.map do |month_range|
+      def build_queries(issuers:, months:)
+        months.map do |month_range|
           params = {
             range_start: month_range.begin,
             range_end: month_range.end,
