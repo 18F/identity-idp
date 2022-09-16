@@ -67,8 +67,10 @@ es:
     revoke_consent: Revocar consentimiento
     rules_of_use: Reglas de uso
     sign_up:
-      completion_consent_expired_ial1: It’s been a year since you gave us consent to share your information
-      completion_consent_expired_ial2: It’s been a year since you gave us consent to share your verified identity
+      completion_consent_expired_ial1: Ya ha pasado un año desde que nos dio su
+        consentimiento para compartir su información.
+      completion_consent_expired_ial2: Ha pasado un año desde que nos dio su
+        consentimiento para compartir su identidad verificada.
       completion_first_sign_in: Continúa con %{sp}
       completion_ial2: Conecte su información verificada a %{sp}
       completion_new_attributes: '%{sp} está solicitando nueva información'

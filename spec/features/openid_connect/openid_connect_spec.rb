@@ -303,7 +303,7 @@ describe 'OpenID Connect' do
       user: user,
       client_id: client_id,
       handoff_page_steps: proc do
-        expect(page).to have_content(t('titles.sign_up.completion_consent_expired'))
+        expect(page).to have_content(t('titles.sign_up.completion_consent_expired_ial1'))
         expect(page).to_not have_content(t('titles.sign_up.completion_new_sp'))
 
         click_agree_and_continue
@@ -327,7 +327,7 @@ describe 'OpenID Connect' do
       client_id: client_id,
       handoff_page_steps: proc do
         expect(page).to have_content(t('titles.sign_up.completion_new_sp'))
-        expect(page).to_not have_content(t('titles.sign_up.completion_consent_expired'))
+        expect(page).to_not have_content(t('titles.sign_up.completion_consent_expired_ial1'))
 
         click_agree_and_continue
       end,

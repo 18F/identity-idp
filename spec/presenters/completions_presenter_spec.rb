@@ -80,7 +80,7 @@ describe CompletionsPresenter do
 
       it 'renders the expired consent message' do
         expect(presenter.heading).to eq(
-          I18n.t('titles.sign_up.completion_consent_expired'),
+          I18n.t('titles.sign_up.completion_consent_expired_ial1'),
         )
       end
     end
