@@ -338,4 +338,15 @@ describe UserDecorator do
       expect(user_decorator.connected_apps).to eq([app])
     end
   end
+
+  describe '#second_last_signed_in_at' do
+    it 'returns second most recent full authentication event' do
+      user = create(:user)
+      _event1 = create(:event, user: user, event_type: 'sign_in_after_2fa')
+      event2 = create(:event, user: user, event_type: 'sign_in_after_2fa')
+      _event3 = create(:event, user: user, event_type: 'sign_in_after_2fa')
+
+      expect(user.decorate.second_last_signed_in_at).to eq(event2.reload.created_at)
+    end
+  end
 end
