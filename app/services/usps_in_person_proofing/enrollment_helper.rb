@@ -42,13 +42,24 @@ module UspsInPersonProofing
         # Use the enrollment's unique_id value if it exists, otherwise use the deprecated
         # #usps_unique_id value in order to remain backwards-compatible. LG-7024 will remove this
         unique_id = enrollment.unique_id || enrollment.usps_unique_id
-        address = [pii['address1'], pii['address2']].select(&:present?).join(' ')
+
+        # Combine address parts and convert to help pass USPS API validation
+        address = I18n.transliterate(
+          [pii['address1'], pii['address2']].select(&:present?).join(' '),
+          locale: :en,
+        ).gsub(/[^A-Za-z0-9\-' .\/#]/, '').strip
+
+        # Convert first and last names to help them pass USPS API validation
+        first_name = I18n.transliterate(pii['first_name'], locale: :en).
+          gsub(/[^A-Za-z\-' ]/, '').strip
+        last_name = I18n.transliterate(pii['last_name'], locale: :en).
+          gsub(/[^A-Za-z\-' ]/, '').strip
 
         applicant = UspsInPersonProofing::Applicant.new(
           {
             unique_id: unique_id,
-            first_name: pii['first_name'],
-            last_name: pii['last_name'],
+            first_name: first_name,
+            last_name: last_name,
             address: address,
             city: pii['city'],
             state: pii['state'],

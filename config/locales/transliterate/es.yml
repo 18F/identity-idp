@@ -1,0 +1,21 @@
+es:
+  i18n:
+    transliterate:
+      rule:
+        # Convert quotation marks
+        ’: "'"
+        ‘: "'"
+        ‛: "'"
+        “: "\""
+        ‟: "\""
+        ”: "\""
+        # Convert hyphens
+        ‐: "-"
+        ‑: "-"
+        ‒: "-"
+        –: "-"
+        —: "-"
+        ﹘: "-"
+        # Convert number signs
+        ﹟: "#"
+        ＃: "#"
