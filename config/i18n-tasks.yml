@@ -107,7 +107,8 @@ ignore_unused:
 #     - common.brand
 
 ## Ignore these keys completely:
-# ignore:
+ignore:
+  - 'i18n.transliterate.rule.*'
 #  - kaminari.*
 
 ## Sometimes, it isn't possible for i18n-tasks to match the key correctly,
