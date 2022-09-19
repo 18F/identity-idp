@@ -2,7 +2,9 @@ module OpenidConnect
   class LogoutController < ApplicationController
     include SecureHeadersConcern
 
-    before_action :apply_secure_headers_override, only: [:index]
+    before_action :render_404_if_disabled, only: [:delete]
+    before_action :apply_secure_headers_override, only: [:index, :delete]
+    before_action :confirm_two_factor_authenticated, only: [:delete]
 
     def index
       @logout_form = OpenidConnectLogoutForm.new(
@@ -18,6 +20,19 @@ module OpenidConnect
       )
 
       if result.success? && (redirect_uri = result.extra[:redirect_uri])
+        handle_successful_logout_request(params, redirect_uri)
+      else
+        render :error
+      end
+    end
+
+    def delete
+      @logout_form = OpenidConnectLogoutForm.new(
+        params: logout_params,
+        current_user: current_user,
+      )
+      result = @logout_form.submit
+      if result.success? && (redirect_uri = result.extra[:redirect_uri])
         sign_out
         redirect_to(
           redirect_uri,
@@ -25,6 +40,21 @@ module OpenidConnect
         )
       else
         render :error
+      end
+    end
+
+    def handle_successful_logout_request(params, redirect_uri)
+      if logout_params[:client_id] && logout_params[:id_token_hint].nil?
+        @client_id = logout_params[:client_id]
+        @state = logout_params[:state]
+        @post_logout_redirect_uri = logout_params[:post_logout_redirect_uri]
+        render :index
+      else
+        sign_out
+        redirect_to(
+          redirect_uri,
+          allow_other_host: true,
+        )
       end
     end
 
@@ -40,6 +70,10 @@ module OpenidConnect
         permitted << :client_id
       end
       params.permit(*permitted)
+    end
+
+    def render_404_if_disabled
+      render_not_found unless IdentityConfig.store.accept_client_id_in_oidc_logout || IdentityConfig.store.reject_id_token_hint_in_logout
     end
   end
 end

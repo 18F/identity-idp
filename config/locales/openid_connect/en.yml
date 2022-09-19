@@ -18,6 +18,10 @@ en:
         redirect_uri_no_match: redirect_uri does not match registered redirect_uri
         unauthorized_scope: Unauthorized scope
     logout:
+      description: Testing
+      heading: Do you want to sign out of Login.gov?
+      confirm: Yes, sign out of Login.gov
+      deny: No, go to my account page
       errors:
         client_id_invalid: client_id was not recognized
         client_id_missing: client_id is missing

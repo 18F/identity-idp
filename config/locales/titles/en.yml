@@ -40,6 +40,7 @@ en:
       reset_password: Reset Password
       review: Re-enter your password
       verify_info: Verify your information
+    logout: Sign out
     mfa_setup:
       suggest_second_mfa: You’ve added your first authentication method! Add a second
         method as a backup.
