@@ -36,8 +36,8 @@ module Proofing
 
         def failed_result_can_pass_with_additional_verification?
           !success? &&
-          verification_errors.keys.sort == [:"Execute Instant Verify", :base] &&
-          !verification_errors[:base].match?(/total\.scoring\.model\.verification\.fail/)
+            verification_errors.keys.sort == [:"Execute Instant Verify", :base] &&
+            !verification_errors[:base].match?(/total\.scoring\.model\.verification\.fail/)
         end
 
         def attributes_requiring_additional_verification

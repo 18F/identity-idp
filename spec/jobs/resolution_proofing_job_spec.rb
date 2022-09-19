@@ -237,7 +237,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
             # result[:context][:stages][:resolution]
             expect(result_context_stages_resolution[:client]).to eq('Proofing::LexisNexis::InstantVerify::Proofer')
             expect(result_context_stages_resolution[:errors][:base].first).to match(
-              a_string_starting_with('Response error with code \'invalid_transaction_initiate\':')
+              a_string_starting_with('Response error with code \'invalid_transaction_initiate\':'),
             )
             expect(result_context_stages_resolution[:exception]).to eq(nil)
             expect(result_context_stages_resolution[:success]).to eq(false)
@@ -417,7 +417,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
             # result[:context][:stages][:resolution]
             expect(result_context_stages_resolution[:client]).to eq('Proofing::LexisNexis::InstantVerify::Proofer')
             expect(result_context_stages_resolution[:errors][:base].first).to match(
-              a_string_starting_with('Response error with code \'invalid_transaction_initiate\':')
+              a_string_starting_with('Response error with code \'invalid_transaction_initiate\':'),
             )
             expect(result_context_stages_resolution[:exception]).to eq(nil)
             expect(result_context_stages_resolution[:success]).to eq(false)
@@ -509,7 +509,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
               # result[:context][:stages][:threatmetrix]
               expect(result_context_stages_threatmetrix[:response_body]).to eq(
-                error: 'TMx response body was empty'
+                error: 'TMx response body was empty',
               )
             end
           end
@@ -566,7 +566,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
                 success: true,
                 errors: {},
                 exception: nil,
-              )
+              ),
             )
             expect(state_id_proofer).to receive(:proof).and_return(Proofing::Result.new)
           end

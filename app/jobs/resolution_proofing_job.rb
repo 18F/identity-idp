@@ -170,9 +170,9 @@ class ResolutionProofingJob < ApplicationJob
             timed_out: state_id_result.timed_out?,
             exception: state_id_result.exception,
             transaction_id: state_id_result.transaction_id,
-          }
-        }
-      }
+          },
+        },
+      },
     }
 
     CallbackLogData.new(
