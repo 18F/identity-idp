@@ -10,7 +10,7 @@ module Users
     skip_before_action :session_expires_at, only: %i[active keepalive]
     skip_before_action :require_no_authentication, only: [:new]
     before_action :store_sp_metadata_in_session, only: [:new]
-    before_action :check_user_needs_redirect, only: [:new]
+    before_action :check_user_needs_redirect, only: [:new, :create]
     before_action :apply_secure_headers_override, only: [:new, :create]
     before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
 
