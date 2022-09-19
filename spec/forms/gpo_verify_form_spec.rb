@@ -6,7 +6,10 @@ describe GpoVerifyForm do
   end
 
   let(:user) { create(:user, :signed_up) }
-  let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true) }
+  let(:applicant) do
+    Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.
+      merge(same_address_as_id: true).stringify_keys
+  end
   let(:entered_otp) { otp }
   let(:otp) { 'ABC123' }
   let(:code_sent_at) { Time.zone.now }
