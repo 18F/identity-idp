@@ -22,7 +22,7 @@ fr:
     confirmations:
       new: Envoyer un autre courriel de confirmation
     create_account_with_sp:
-      cta: First time using Login.gov?
+      cta: Première fois que vous utilisez Login.gov?
       sp_text: utilise %{app_name} pour vous permettre de vous connecter à votre
         compte de façon sûre et sécurisée.
     create_account_without_sp: Créer un compte %{app_name}
