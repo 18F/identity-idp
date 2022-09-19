@@ -1,0 +1,10 @@
+<% title t('inherited_proofing.headings.lets_go') %>
+
+<h2>Place holder to show Please verify your information</h2>
+
+<%= simple_form_for :inherited_proofing,
+                    url: url_for,
+                    method: 'put',
+                    html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
+    <%= f.submit t('inherited_proofing.buttons.continue') %>
+<% end %>
