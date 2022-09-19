@@ -126,6 +126,17 @@ es:
         persona, deberá llevar un comprobante de domicilio vigente si su
         dirección actual es distinta de la que aparece en su documento de
         identidad.
+    in_person_failed_suspected_fraud:
+      body:
+        intro: Entendemos que estaba intentando verificar su identidad a través de Login.gov, 
+          sin embargo, su identidad no pudo ser verificada en la oficina de correos de %{location} 
+          el %{date}.
+        contact_us: Si usted no intentó verificar su identidad en persona, por favor, póngase en 
+          contacto con nosotros e inicie sesión para cambiar su contraseña.
+        help_center: Si necesita ayuda adicional, puede visitar nuestro Centro de Ayuda o ponerse 
+          en contacto con la agencia a la que intenta acceder.
+      greeting: Hola %{name},
+      subject: No se pudo verificar su identidad en persona
     in_person_ready_to_verify:
       greeting: 'Hola, %{name}:'
       intro: Estos son los detalles para verificar su identidad en persona en una
