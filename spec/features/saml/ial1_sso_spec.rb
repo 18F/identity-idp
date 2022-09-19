@@ -104,8 +104,14 @@ feature 'IAL1 Single Sign On' do
     end
 
     it 'redirects user to verify attributes page' do
+      sp = ServiceProvider.find_by(issuer: 'http://localhost:3000')
       expect(current_url).to eq(sign_up_completed_url)
-      expect(page).to have_content(t('titles.sign_up.completion_first_sign_in', app_name: APP_NAME))
+      expect(page).to have_content(
+        t(
+          'titles.sign_up.completion_first_sign_in',
+          sp: sp.friendly_name,
+        ),
+      )
     end
 
     it 'returns to sp after clicking continue' do
