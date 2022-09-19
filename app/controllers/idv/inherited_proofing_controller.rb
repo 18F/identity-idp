@@ -1,6 +1,23 @@
 module Idv
   class InheritedProofingController < ApplicationController
+    # TODO: Add InheritedProofingConcern
+    include InheritedProofingConcern
     include Flow::FlowStateMachine
+
+    #
+    #include RenderConditionConcern
+
+    #check_or_render_not_found -> { InPersonConfig.enabled_for_issuer?(current_sp&.issuer) }
+
+    #before_action :confirm_two_factor_authenticated
+    #before_action :redirect_unless_enrollment
+
+    include IdvSession
+    #include Idv::ThreatMetrixConcern
+
+    #before_action :redirect_if_flow_completed
+    #before_action :override_csp_for_threat_metrix
+    #
 
     before_action :render_404_if_disabled
 

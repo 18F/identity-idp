@@ -1,9 +1,6 @@
 module Idv
   module Steps
     module InheritedProofing
-      # TODO: Include this
-      include InheritedProofingConcern
-
       class AgreementStep < InheritedProofingBaseStep
         STEP_INDICATOR_STEP = :getting_started
 
@@ -15,7 +12,7 @@ module Idv
         def call
           Rails.logger.debug('xyzzy: in AgreementStep')
 
-          payload_hash = inherited_proofing_service!.execute
+          payload_hash = inherited_proofing_service!.execute.dup
           form = inherited_proofing_form payload_hash
           form_response = form.submit
 
@@ -60,7 +57,8 @@ module Idv
         # rubocop:disable Layout/LineLength
         def inherited_proofing_service
           @inherited_proofing_service ||= if va_inherited_proofing?
-                                            case IdentityConfig.store.inherited_proofing_enabled
+                                            # TODO: Remove false && when ready to check in.
+                                            case false && IdentityConfig.store.inherited_proofing_enabled
                                             when true
                                               Idv::InheritedProofing::Va::Service.new va_inherited_proofing_auth_code
                                             else
@@ -75,6 +73,14 @@ module Idv
           end
         end
         # rubocop:enable Layout/LineLength
+
+        def va_inherited_proofing?
+          @flow.controller.va_inherited_proofing?
+        end
+
+        def va_inherited_proofing_auth_code
+          @flow.controller.va_inherited_proofing_auth_code
+        end
       end
     end
   end
