@@ -11,6 +11,7 @@ en:
         secure_account: Secure your account
         verify_id: Verify your ID
         verify_info: Verify your personal details
+        verify_phone: Verify phone
         verify_phone_or_address: Verify phone or address
     status:
       complete: Completed
