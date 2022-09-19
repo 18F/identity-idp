@@ -27,7 +27,7 @@ module Users
     end
 
     def create
-      track_authentication_attempt(auth_params[:email])
+      track_authentication_attempt
 
       return process_locked_out_session if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
@@ -160,7 +160,8 @@ module Users
       current_user.present? && session_alive
     end
 
-    def track_authentication_attempt(email)
+    def track_authentication_attempt
+      email = auth_params[:email]
       user = current_user || User.find_with_email(email) || AnonymousUser.new
 
       success = user_signed_in_and_not_locked_out?(user)
