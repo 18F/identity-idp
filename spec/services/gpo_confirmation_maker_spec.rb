@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe GpoConfirmationMaker do
-  context "happy path" do
+  context 'happy path' do
     let(:otp) { '123ABC' }
     let(:issuer) { 'this-is-an-issuer' }
     let(:service_provider) { build(:service_provider, issuer: issuer) }
@@ -68,7 +68,7 @@ describe GpoConfirmationMaker do
     end
   end
 
-  context "with a (bogus) zip+1" do
+  context 'with a (bogus) zip+1' do
     let(:otp) { '123ABC' }
     let(:issuer) { 'this-is-an-issuer' }
     let(:service_provider) { build(:service_provider, issuer: issuer) }
@@ -102,7 +102,7 @@ describe GpoConfirmationMaker do
 
         gpo_confirmation = GpoConfirmation.first
         entry_hash = gpo_confirmation.entry
-        expect(entry_hash[:zipcode]).to eq "12345"
+        expect(entry_hash[:zipcode]).to eq '12345'
       end
     end
   end
