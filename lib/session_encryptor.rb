@@ -14,6 +14,9 @@ class SessionEncryptor
   # personal keys are generated and stored in the session between requests, but are used
   # to decrypt PII bundles, so we treat them similarly to the PII itself.
   SENSITIVE_PATHS = [
+    # TODO: Must add 'idv/inherited_proofing' to avoid
+    # "pii_from_user unexpectedly appeared in session" error.
+    ['warden.user.user.session', 'idv/inherited_proofing'],
     ['warden.user.user.session', 'idv/doc_auth'],
     ['warden.user.user.session', 'idv/in_person'],
     ['warden.user.user.session', 'idv'],
