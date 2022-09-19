@@ -181,7 +181,7 @@ class UserMailerPreview < ActionMailer::Preview
         enrollment_code: '2048702198804358',
         created_at: Time.zone.now - 2.hours,
         status_updated_at: Time.zone.now - 1.hour,
-        current_address_matches_id: true,
+        current_address_matches_id: params['current_address_matches_id'] == 'true',
         selected_location_details: {
           'name' => 'BALTIMORE',
           'street_address' => '900 E FAYETTE ST RM 118',

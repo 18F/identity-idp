@@ -144,14 +144,16 @@ describe FrontendLogController do
 
       context 'for a named analytics method' do
         let(:field) { 'front' }
-        let(:failed_attempts) { 0 }
+        let(:failed_capture_attempts) { 0 }
+        let(:failed_submission_attempts) { 0 }
         let(:flow_path) { 'standard' }
         let(:params) do
           {
             'event' => 'IdV: Native camera forced after failed attempts',
             'payload' => {
               'field' => field,
-              'failed_attempts' => failed_attempts,
+              'failed_capture_attempts' => failed_capture_attempts,
+              'failed_submission_attempts' => failed_submission_attempts,
               'flow_path' => flow_path,
             },
           }
@@ -161,7 +163,8 @@ describe FrontendLogController do
           expect(fake_analytics).to receive(:track_event).with(
             'IdV: Native camera forced after failed attempts',
             field: field,
-            failed_attempts: failed_attempts,
+            failed_capture_attempts: failed_capture_attempts,
+            failed_submission_attempts: failed_submission_attempts,
             flow_path: flow_path,
           )
 
@@ -170,19 +173,6 @@ describe FrontendLogController do
           expect(response).to have_http_status(:ok)
           expect(json[:success]).to eq(true)
         end
-      end
-    end
-
-    context 'user is not signed in' do
-      it 'returns unauthorized' do
-        allow(Analytics).to receive(:new).and_return(fake_analytics)
-
-        expect(fake_analytics).not_to receive(:track_event)
-
-        action
-
-        expect(response).to have_http_status(:unauthorized)
-        expect(json[:success]).to eq(false)
       end
     end
 

@@ -42,9 +42,11 @@ describe 'sign_up/completions/show.html.erb' do
     expect(text).to include(service_provider.friendly_name)
     expect(text).to_not include(service_provider.agency.name)
     expect(text).to include(
-      I18n.t(
-        'help_text.requested_attributes.intro_html',
-        app_name: APP_NAME, sp: service_provider.friendly_name,
+      view_context.strip_tags(
+        I18n.t(
+          'help_text.requested_attributes.ial1_intro_html',
+          sp: service_provider.friendly_name,
+        ),
       ),
     )
   end

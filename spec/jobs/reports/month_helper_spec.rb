@@ -14,14 +14,4 @@ RSpec.describe Reports::MonthHelper do
       )
     end
   end
-
-  describe '.full_month?' do
-    it 'is true when the range is a full month' do
-      expect(full_month?(Date.new(2021, 1, 1)..Date.new(2021, 1, 31))).to eq(true)
-    end
-
-    it 'is false when the range is not a full month' do
-      expect(full_month?(Date.new(2021, 1, 2)..Date.new(2021, 1, 30))).to eq(false)
-    end
-  end
 end

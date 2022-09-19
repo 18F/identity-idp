@@ -11,8 +11,17 @@ es:
       birthdate: Fecha de nacimiento
       email: Dirección de correo electrónico
       full_name: Nombre completo
-      intro_html: 'Compartiremos esta información con %{sp}:'
-      outro_html: '%{sp} solo usará esta información para conectarse a su cuenta.'
+      ial1_consent_reminder_html: 'Usted debe dar cada año su consentimiento para
+        compartir su información con <b>%{sp}</b>. Compartiremos su información
+        con <b>%{sp}</b> para vincular su cuenta.'
+      ial1_intro_html: 'Le haremos llegar su información a <b>%{sp}</b> para conectar
+        su cuenta.'
+      ial2_consent_reminder_html: 'Para conectar su cuenta, <b>%{sp}</b> necesita
+        saber quién usted. Debe dar su consentimiento cada año para compartir su
+        información verificada con <b>%{sp}</b>. Compartiremos esta
+        información:'
+      ial2_intro_html: '<b>%{sp}</b> necesita saber quién es para conectar su cuenta.
+        Compartiremos esta información con el organismo asociado: '
       phone: Teléfono
       social_security_number: Número de Seguro Social
       verified_at: Actualizado en

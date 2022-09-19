@@ -303,7 +303,7 @@ describe 'OpenID Connect' do
       user: user,
       client_id: client_id,
       handoff_page_steps: proc do
-        expect(page).to have_content(t('titles.sign_up.completion_consent_expired'))
+        expect(page).to have_content(t('titles.sign_up.completion_consent_expired_ial1'))
         expect(page).to_not have_content(t('titles.sign_up.completion_new_sp'))
 
         click_agree_and_continue
@@ -327,7 +327,7 @@ describe 'OpenID Connect' do
       client_id: client_id,
       handoff_page_steps: proc do
         expect(page).to have_content(t('titles.sign_up.completion_new_sp'))
-        expect(page).to_not have_content(t('titles.sign_up.completion_consent_expired'))
+        expect(page).to_not have_content(t('titles.sign_up.completion_consent_expired_ial1'))
 
         click_agree_and_continue
       end,
@@ -522,9 +522,15 @@ describe 'OpenID Connect' do
 
       oidc_path = visit_idp_from_ial1_oidc_sp(prompt: 'select_account')
       sign_in_live_with_2fa(user)
+      sp = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:server')
 
       expect(current_url).to eq(sign_up_completed_url)
-      expect(page).to have_content(t('titles.sign_up.completion_first_sign_in', app_name: APP_NAME))
+      expect(page).to have_content(
+        t(
+          'titles.sign_up.completion_first_sign_in',
+          sp: sp.friendly_name,
+        ),
+      )
 
       click_agree_and_continue
       expect(current_url).to start_with('http://localhost:7654/auth/result')
