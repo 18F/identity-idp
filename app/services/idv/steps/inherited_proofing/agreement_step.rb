@@ -64,9 +64,7 @@ module Idv
                                             when true
                                               Idv::InheritedProofing::Va::Service.new va_inherited_proofing_auth_code
                                             else
-                                              # TODO: Uncomment this out when 7463 is merged.
-                                              # Idv::InheritedProofing::Va::Mocks::Service.new va_inherited_proofing_auth_code
-                                              false
+                                              Idv::InheritedProofing::Va::Mocks::Service.new va_inherited_proofing_auth_code
                                             end
           end
         end
