@@ -27,4 +27,45 @@ module InheritedProofingConcern
   def va_inherited_proofing_auth_code_params_key
     'inherited_proofing_auth'
   end
+
+  # Service Provider-agnostic members
+
+  def inherited_proofing_service_class
+    if va_inherited_proofing?
+      # TODO: Remove hard-coded false for final check in. This forces
+      # the mock VA service to be called. Turning
+      # IdentityConfig.store.inherited_proofing_enabled off doesn't help
+      # us in dev, because we will get 404 errors when calling the
+      # idv/inherited_proofing controller.
+      return case false && IdentityConfig.store.inherited_proofing_enabled
+             when true
+               Idv::InheritedProofing::Va::Service
+             else
+               Idv::InheritedProofing::Va::Mocks::Service
+             end
+    end
+
+    raise('Inherited proofing service class could not be identified')
+  end
+
+  def inherited_proofing_service
+    service_class = inherited_proofing_service_class
+    return service_class.new va_inherited_proofing_auth_code if va_inherited_proofing?
+
+    raise('Inherited proofing service could not be identified')
+  end
+
+  def inherited_proofing_form(payload_hash)
+    return Idv::InheritedProofing::Va::Form.new payload_hash: payload_hash if va_inherited_proofing?
+
+    raise('Inherited proofing form could not be identified')
+  end
+
+  def inherited_proofing_service_provider_data
+    if va_inherited_proofing?
+      { va_inherited_proofing_auth_code: va_inherited_proofing_auth_code }
+    else
+      {}
+    end
+  end
 end
