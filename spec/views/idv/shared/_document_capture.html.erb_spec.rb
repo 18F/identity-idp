@@ -14,6 +14,8 @@ describe 'idv/shared/_document_capture.html.erb' do
   let(:front_image_upload_url) { nil }
   let(:back_image_upload_url) { nil }
   let(:selfie_image_upload_url) { nil }
+  let(:native_camera_a_b_testing_enabled) { false }
+  let(:native_camera_only) { false }
 
   before do
     decorated_session = instance_double(
@@ -46,6 +48,8 @@ describe 'idv/shared/_document_capture.html.erb' do
       front_image_upload_url: front_image_upload_url,
       back_image_upload_url: back_image_upload_url,
       selfie_image_upload_url: selfie_image_upload_url,
+      native_camera_a_b_testing_enabled: native_camera_a_b_testing_enabled,
+      native_camera_only: native_camera_only,
     }
   end
 
