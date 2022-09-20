@@ -5,7 +5,7 @@ class AbTestBucket
 
   validate :within_100_percent
 
-  def initialize(experiment_name: 'default', buckets: { default: 100 })
+  def initialize(experiment_name: 'default', buckets: {})
     @buckets = buckets
     @experiment = experiment_name
     raise 'invalid bucket data structure' unless valid_bucket_data_structure?
