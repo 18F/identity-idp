@@ -58,6 +58,7 @@ module Proofing
           verification_response.conversation_id
         end
 
+        # rubocop:disable Layout/LineLength
         def to_h
           {
             attributes_requiring_additional_verification: attributes_requiring_additional_verification,
@@ -72,6 +73,7 @@ module Proofing
             vendor_name: 'lexisnexis:instant_verify',
           }
         end
+        # rubocop:enable Layout/LineLength
       end
     end
   end
