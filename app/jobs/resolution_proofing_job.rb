@@ -42,6 +42,7 @@ class ResolutionProofingJob < ApplicationJob
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
       issuer: issuer,
+      timer: timer,
     )
 
     callback_log_data = proof_lexisnexis_then_aamva(
@@ -105,7 +106,8 @@ class ResolutionProofingJob < ApplicationJob
     user:,
     threatmetrix_session_id:,
     request_ip:,
-    issuer:
+    issuer:,
+    timer:
   )
     return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
     return unless issuer_allows_threatmetrix?(issuer)
@@ -121,7 +123,9 @@ class ResolutionProofingJob < ApplicationJob
     ddp_pii[:email] = user&.confirmed_email_addresses&.first&.email
     ddp_pii[:request_ip] = request_ip
 
-    result = lexisnexis_ddp_proofer.proof(ddp_pii)
+    result = timer.time('threatmetrix') do
+      lexisnexis_ddp_proofer.proof(ddp_pii)
+    end
 
     log_threatmetrix_info(result, user)
     add_threatmetrix_proofing_component(user.id, result)
