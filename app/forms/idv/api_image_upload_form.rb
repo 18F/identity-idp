@@ -245,7 +245,7 @@ module Idv
     def native_camera_ab_test_data
       return {} unless IdentityConfig.store.idv_native_camera_a_b_testing_enabled
 
-      ab_test = NativeCameraABTest.new
+      ab_test = Idv::NativeCameraABTest.new
       discriminator = document_capture_session.uuid
       {
         native_camera_ab_test_bucket: ab_test.bucket(discriminator),
