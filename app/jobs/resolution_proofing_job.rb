@@ -143,7 +143,7 @@ class ResolutionProofingJob < ApplicationJob
     end
 
     result = {
-      success: resolution_result.success?,
+      success: resolution_result.success? && state_id_result.success?,
       errors: resolution_result.errors.merge(state_id_result.errors),
       exception: resolution_result.exception || state_id_result.exception,
       timed_out: resolution_result.timed_out? || state_id_result.timed_out?,
@@ -151,7 +151,14 @@ class ResolutionProofingJob < ApplicationJob
         should_proof_state_id: should_proof_state_id,
         stages: {
           resolution: resolution_result.to_h,
-          state_id: state_id_result.to_h,
+          state_id: {
+            errors: state_id_result.errors,
+            exception: state_id_result.exception,
+            success: state_id_result.success?,
+            timed_out: state_id_result.timed_out?,
+            vendor_name: state_id_result.to_h[:vendor_name] || state_id_proofer.class.vendor_name,
+            transaction_id: state_id_result.transaction_id,
+          }
         },
       },
     }

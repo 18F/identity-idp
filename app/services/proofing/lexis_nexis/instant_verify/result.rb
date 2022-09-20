@@ -15,10 +15,6 @@ module Proofing
           @verification_response = verification_response
         end
 
-        def client
-          Proofing::LexisNexis::InstantVerify::Proofer.to_s
-        end
-
         def errors
           return @errors if defined?(@errors)
 
@@ -63,7 +59,6 @@ module Proofing
           {
             attributes_requiring_additional_verification: attributes_requiring_additional_verification,
             can_pass_with_additional_verification: failed_result_can_pass_with_additional_verification?,
-            client: client,
             exception: exception,
             errors: errors,
             reference: reference,

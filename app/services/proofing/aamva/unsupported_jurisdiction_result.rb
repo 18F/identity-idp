@@ -27,10 +27,10 @@ module Proofing
 
       def to_h
         {
-          client: client,
           errors: errors,
           exception: exception,
           success: success?,
+          timed_out: timed_out?,
           vendor_name: 'UnsupportedJurisdiction',
         }
       end

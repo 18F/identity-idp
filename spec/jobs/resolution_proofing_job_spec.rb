@@ -153,8 +153,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(result_context[:should_proof_state_id])
 
           # result[:context][:stages][:resolution]
-          expect(result_context_stages_resolution[:client]).
-            to eq('Proofing::LexisNexis::InstantVerify::Proofer')
+          expect(result_context_stages_resolution[:vendor_name]).
+            to eq('lexisnexis:instant_verify')
           expect(result_context_stages_resolution[:errors]).to eq({})
           expect(result_context_stages_resolution[:exception]).to eq(nil)
           expect(result_context_stages_resolution[:success]).to eq(true)
@@ -167,7 +167,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
             to eq([])
 
           # result[:context][:stages][:state_id]
-          expect(result_context_stages_state_id[:client]).to eq('Proofing::Aamva::Proofer')
+          expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
           expect(result_context_stages_state_id[:errors]).to eq({})
           expect(result_context_stages_state_id[:exception]).to eq(nil)
           expect(result_context_stages_state_id[:success]).to eq(true)
@@ -238,8 +238,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
             expect(result_context[:should_proof_state_id])
 
             # result[:context][:stages][:resolution]
-            expect(result_context_stages_resolution[:client]).
-              to eq('Proofing::LexisNexis::InstantVerify::Proofer')
+            expect(result_context_stages_resolution[:vendor_name]).
+              to eq('lexisnexis:instant_verify')
             expect(result_context_stages_resolution[:errors][:base].first).to match(
               a_string_starting_with('Response error with code \'invalid_transaction_initiate\':'),
             )
@@ -255,7 +255,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
               to eq([])
 
             # result[:context][:stages][:state_id]
-            expect(result_context_stages_state_id[:client]).to eq('Proofing::Aamva::Proofer')
+            expect(result_context_stages_state_id[:vendor_name]).to eq('UnsupportedJurisdiction')
             expect(result_context_stages_state_id[:errors]).to eq({})
             expect(result_context_stages_state_id[:exception]).to eq(nil)
             expect(result_context_stages_state_id[:success]).to eq(true)
@@ -353,8 +353,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(result_context[:should_proof_state_id])
 
           # result[:context][:stages][:resolution]
-          expect(result_context_stages_resolution[:client]).
-            to eq('Proofing::LexisNexis::InstantVerify::Proofer')
+          expect(result_context_stages_resolution[:vendor_name]).
+            to eq('lexisnexis:instant_verify')
           expect(result_context_stages_resolution[:errors]).to eq({})
           expect(result_context_stages_resolution[:exception]).to eq(nil)
           expect(result_context_stages_resolution[:success]).to eq(true)
@@ -367,7 +367,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
             to eq([])
 
           # result[:context][:stages][:state_id]
-          expect(result_context_stages_state_id[:client]).to eq('Proofing::Aamva::Proofer')
+          expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
           expect(result_context_stages_state_id[:errors]).to eq({})
           expect(result_context_stages_state_id[:exception]).to eq(nil)
           expect(result_context_stages_state_id[:success]).to eq(true)
@@ -426,8 +426,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
             expect(result_context[:should_proof_state_id])
 
             # result[:context][:stages][:resolution]
-            expect(result_context_stages_resolution[:client]).
-              to eq('Proofing::LexisNexis::InstantVerify::Proofer')
+            expect(result_context_stages_resolution[:vendor_name]).
+              to eq('lexisnexis:instant_verify')
             expect(result_context_stages_resolution[:errors][:base].first).to match(
               a_string_starting_with('Response error with code \'invalid_transaction_initiate\':'),
             )
