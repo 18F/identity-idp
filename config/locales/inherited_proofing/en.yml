@@ -7,6 +7,7 @@ en:
       lets_go: How verifying your identity works
       secure_account: Secure your account
       verify_identity: Verify your identity
+      verify_information: Please verify your information
       welcome: Get started verifying your identity
     info:
       lets_go: 'Identity verification happens in two parts:'
@@ -34,6 +35,7 @@ en:
     troubleshooting:
       headings:
         missing_required_items: Don’t have a phone number? Here’s how to get help
+        need_help_updating: Need to update your information? Here’s how to get help
       options:
-        get_va_help: Get help at VA
+        get_va_help: Get help at VA.gov
         learn_more_phone_or_mail: Learn more about verifying by phone or mail

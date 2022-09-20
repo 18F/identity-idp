@@ -64,6 +64,10 @@ class OpenidConnectAuthorizeForm
     scope.include?('profile:verified_at')
   end
 
+  def cannot_validate_redirect_uri?
+    errors.include?(:redirect_uri) || errors.include?(:client_id)
+  end
+
   def service_provider
     return @service_provider if defined?(@service_provider)
     @service_provider = ServiceProvider.find_by(issuer: client_id)
@@ -81,9 +85,10 @@ class OpenidConnectAuthorizeForm
   end
 
   def success_redirect_uri
-    uri = redirect_uri unless errors.include?(:redirect_uri)
+    return if cannot_validate_redirect_uri?
+    code = identity&.session_uuid
 
-    UriService.add_params(uri, code: code, state: state) if code
+    UriService.add_params(redirect_uri, code: code, state: state) if code
   end
 
   def ial_values
@@ -218,10 +223,10 @@ class OpenidConnectAuthorizeForm
   end
 
   def error_redirect_uri
-    uri = redirect_uri unless errors.include?(:redirect_uri)
+    return if cannot_validate_redirect_uri?
 
     UriService.add_params(
-      uri,
+      redirect_uri,
       error: 'invalid_request',
       error_description: errors.full_messages.join(' '),
       state: state,

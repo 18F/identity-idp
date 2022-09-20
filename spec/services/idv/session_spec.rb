@@ -130,7 +130,7 @@ describe Idv::Session do
         it 'creates a USPS enrollment' do
           expect(UspsInPersonProofing::EnrollmentHelper).
             to receive(:schedule_in_person_enrollment).
-            with(user, subject.applicant.transform_keys(&:to_s))
+            with(user, Pii::Attributes.new_from_hash(subject.applicant))
 
           subject.create_profile_from_applicant_with_password(user.password)
 

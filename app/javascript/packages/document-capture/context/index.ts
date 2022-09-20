@@ -15,5 +15,8 @@ export {
   default as FailedCaptureAttemptsContext,
   Provider as FailedCaptureAttemptsContextProvider,
 } from './failed-capture-attempts';
-
 export type { DeviceContextValue } from './device';
+export {
+  default as NativeCameraABTestContext,
+  Provider as NativeCameraABTestContextProvider,
+} from './native-camera-a-b-test';
