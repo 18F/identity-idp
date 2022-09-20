@@ -120,7 +120,7 @@ en:
         address is different than the address on your ID.'
     in_person_failed_suspected_fraud:
       body:
-        help_center: If you need further help, you can <a
+        help_center_html: If you need further help, you can <a
           href="%{help_center_url}">visit our Help Center</a> or reach out to
           the agency you are trying to access.
         intro: We understand that you were attempting to verify your identity through
