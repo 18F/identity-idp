@@ -13,7 +13,7 @@ module Proofing
           return Proofing::LexisNexis::PhoneFinder::Result.new(response)
         rescue => exception
           NewRelic::Agent.notice_error(exception)
-          ResultWithException.new(exception)
+          ResultWithException.new(exception, vendor_name: 'lexisnexis:phone_finder')
         end
       end
     end
