@@ -288,7 +288,7 @@ describe Profile do
     end
   end
 
-  describe "#has_proofed_before" do
+  describe '#has_proofed_before' do
     it 'is false when the user has only been activated once' do
       profile.activate
       expect(profile.has_proofed_before?).to be_falsey

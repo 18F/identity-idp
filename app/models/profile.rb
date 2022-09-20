@@ -101,8 +101,7 @@ class Profile < ApplicationRecord
   end
 
   def has_proofed_before?
-    threshold = active? ? 2 : 1
-    Profile.where(user_id: user_id).where.not(activated_at: nil).count >= threshold
+    Profile.where(user_id: user_id).where.not(activated_at: nil).where.not(id: self.id).exists?
   end
 
   private
