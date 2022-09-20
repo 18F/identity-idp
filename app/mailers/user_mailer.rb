@@ -272,6 +272,20 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def in_person_failed_fraud(user, email_address, first_name:, enrollment:)
+    with_user_locale(user) do
+      @first_name = first_name
+      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
+        enrollment: enrollment,
+        url_options: url_options,
+      )
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.in_person_failed_suspected_fraud.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
   private
 
   def email_should_receive_nonessential_notifications?(email)
