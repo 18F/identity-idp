@@ -23,10 +23,6 @@ module Idv
 
     private
 
-    def render_404_if_disabled
-      render_not_found unless InPersonConfig.enabled_for_issuer?(current_sp&.issuer)
-    end
-
     def redirect_unless_enrollment
       redirect_to idv_url unless current_user.establishing_in_person_enrollment
     end

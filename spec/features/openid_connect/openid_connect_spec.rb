@@ -136,30 +136,157 @@ describe 'OpenID Connect' do
     end
   end
 
-  it 'logout includes redirect_uris in CSP headers and destroys the session' do
-    id_token = sign_in_get_id_token
+  context 'when accepting id_token_hint in logout' do
+    before do
+      allow(IdentityConfig.store).to receive(:reject_id_token_hint_in_logout).
+        and_return(false)
+    end
 
-    state = SecureRandom.hex
+    context 'when sending id_token_hint' do
+      it 'logout includes redirect_uris in CSP headers and destroys the session' do
+        id_token = sign_in_get_id_token
 
-    visit openid_connect_logout_path(
-      post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
-      state: state,
-      id_token_hint: id_token,
-      prevent_logout_redirect: true,
-    )
+        state = SecureRandom.hex
 
-    current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
-    expect(current_url_no_port).to include(
-      "http://www.example.com/openid_connect/logout?id_token_hint=#{id_token}",
-    )
+        visit openid_connect_logout_path(
+          post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
+          state: state,
+          id_token_hint: id_token,
+          prevent_logout_redirect: true,
+        )
 
-    expect(page.response_headers['Content-Security-Policy']).to include(
-      'form-action \'self\' gov.gsa.openidconnect.test:',
-    )
+        current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
+        expect(current_url_no_port).to include(
+          "http://www.example.com/openid_connect/logout?id_token_hint=#{id_token}",
+        )
 
-    visit account_path
-    expect(page).to_not have_content(t('headings.account.login_info'))
-    expect(page).to have_content(t('headings.sign_in_without_sp'))
+        expect(page.response_headers['Content-Security-Policy']).to include(
+          'form-action \'self\' gov.gsa.openidconnect.test:',
+        )
+
+        visit account_path
+        expect(page).to_not have_content(t('headings.account.login_info'))
+        expect(page).to have_content(t('headings.sign_in_without_sp'))
+      end
+    end
+
+    context 'when permitting client_id' do
+      before do
+        allow(IdentityConfig.store).to receive(:accept_client_id_in_oidc_logout).
+          and_return(true)
+      end
+
+      context 'when sending client_id' do
+        it 'logout includes redirect_uris in CSP headers and destroys the session' do
+          client_id = 'urn:gov:gsa:openidconnect:test'
+          sign_in_get_id_token(client_id: client_id)
+
+          state = SecureRandom.hex
+
+          visit openid_connect_logout_path(
+            client_id: client_id,
+            post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
+            state: state,
+            prevent_logout_redirect: true,
+          )
+
+          current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
+          expect(current_url_no_port).to include(
+            "http://www.example.com/openid_connect/logout?client_id=#{URI.encode_www_form_component(client_id)}",
+          )
+
+          expect(page.response_headers['Content-Security-Policy']).to include(
+            'form-action \'self\' gov.gsa.openidconnect.test:',
+          )
+
+          visit account_path
+          expect(page).to_not have_content(t('headings.account.login_info'))
+          expect(page).to have_content(t('headings.sign_in_without_sp'))
+        end
+      end
+    end
+
+    context 'when not permitting client_id' do
+      before do
+        allow(IdentityConfig.store).to receive(:accept_client_id_in_oidc_logout).
+          and_return(false)
+      end
+
+      context 'when sending client_id' do
+        it 'renders an error' do
+          client_id = 'urn:gov:gsa:openidconnect:test'
+          sign_in_get_id_token(client_id: client_id)
+
+          state = SecureRandom.hex
+
+          visit openid_connect_logout_path(
+            client_id: client_id,
+            post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
+            state: state,
+            prevent_logout_redirect: true,
+          )
+
+          current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
+          expect(current_url_no_port).to include(
+            "http://www.example.com/openid_connect/logout?client_id=#{URI.encode_www_form_component(client_id)}",
+          )
+          expect(page).to have_content(t('openid_connect.logout.errors.id_token_hint'))
+        end
+      end
+    end
+  end
+
+  context 'when rejecting id_token_hint in logout' do
+    before do
+      allow(IdentityConfig.store).to receive(:reject_id_token_hint_in_logout).
+        and_return(true)
+    end
+
+    it 'logout includes redirect_uris in CSP headers and destroys the session' do
+      client_id = 'urn:gov:gsa:openidconnect:test'
+      sign_in_get_id_token(client_id: client_id)
+
+      state = SecureRandom.hex
+
+      visit openid_connect_logout_path(
+        client_id: client_id,
+        post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
+        state: state,
+        prevent_logout_redirect: true,
+      )
+
+      current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
+      expect(current_url_no_port).to include(
+        "http://www.example.com/openid_connect/logout?client_id=#{URI.encode_www_form_component(client_id)}",
+      )
+
+      expect(page.response_headers['Content-Security-Policy']).to include(
+        'form-action \'self\' gov.gsa.openidconnect.test:',
+      )
+
+      visit account_path
+      expect(page).to_not have_content(t('headings.account.login_info'))
+      expect(page).to have_content(t('headings.sign_in_without_sp'))
+    end
+
+    it 'logout rejects requests that include id_token_hint' do
+      id_token = sign_in_get_id_token
+
+      state = SecureRandom.hex
+
+      visit openid_connect_logout_path(
+        id_token_hint: id_token,
+        post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
+        state: state,
+        prevent_logout_redirect: true,
+      )
+
+      current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
+      expect(current_url_no_port).to include(
+        "http://www.example.com/openid_connect/logout?id_token_hint=#{id_token}",
+      )
+      expect(page).to have_content(t('openid_connect.logout.errors.id_token_hint_present'))
+    end
   end
 
   it 'returns verified_at in an ial1 session if requested', driver: :mobile_rack_test do
@@ -303,7 +430,7 @@ describe 'OpenID Connect' do
       user: user,
       client_id: client_id,
       handoff_page_steps: proc do
-        expect(page).to have_content(t('titles.sign_up.completion_consent_expired'))
+        expect(page).to have_content(t('titles.sign_up.completion_consent_expired_ial1'))
         expect(page).to_not have_content(t('titles.sign_up.completion_new_sp'))
 
         click_agree_and_continue
@@ -327,7 +454,7 @@ describe 'OpenID Connect' do
       client_id: client_id,
       handoff_page_steps: proc do
         expect(page).to have_content(t('titles.sign_up.completion_new_sp'))
-        expect(page).to_not have_content(t('titles.sign_up.completion_consent_expired'))
+        expect(page).to_not have_content(t('titles.sign_up.completion_consent_expired_ial1'))
 
         click_agree_and_continue
       end,
@@ -522,9 +649,15 @@ describe 'OpenID Connect' do
 
       oidc_path = visit_idp_from_ial1_oidc_sp(prompt: 'select_account')
       sign_in_live_with_2fa(user)
+      sp = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:server')
 
       expect(current_url).to eq(sign_up_completed_url)
-      expect(page).to have_content(t('titles.sign_up.completion_first_sign_in', app_name: APP_NAME))
+      expect(page).to have_content(
+        t(
+          'titles.sign_up.completion_first_sign_in',
+          sp: sp.friendly_name,
+        ),
+      )
 
       click_agree_and_continue
       expect(current_url).to start_with('http://localhost:7654/auth/result')

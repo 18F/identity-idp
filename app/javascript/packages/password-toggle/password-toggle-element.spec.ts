@@ -1,10 +1,13 @@
 import userEvent from '@testing-library/user-event';
 import { getByLabelText } from '@testing-library/dom';
+import { useSandbox } from '@18f/identity-test-helpers';
+import * as analytics from '@18f/identity-analytics';
 import './password-toggle-element';
 import type PasswordToggleElement from './password-toggle-element';
 
 describe('PasswordToggleElement', () => {
   let idCounter = 0;
+  const sandbox = useSandbox();
 
   function createElement() {
     const element = document.createElement('lg-password-toggle') as PasswordToggleElement;
@@ -44,5 +47,17 @@ describe('PasswordToggleElement', () => {
     await userEvent.click(toggle);
 
     expect(input.type).to.equal('text');
+  });
+
+  it('logs an event when clicking the Show Password button', async () => {
+    sandbox.stub(analytics, 'trackEvent');
+    const element = createElement();
+    const toggle = getByLabelText(element, 'Show password') as HTMLInputElement;
+
+    await userEvent.click(toggle);
+
+    expect(analytics.trackEvent).to.have.been.calledWith('Show Password button clicked', {
+      path: window.location.pathname,
+    });
   });
 });

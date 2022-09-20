@@ -64,7 +64,7 @@ module Idv
       elsif in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           current_user,
-          applicant,
+          pii,
         )
       end
     end

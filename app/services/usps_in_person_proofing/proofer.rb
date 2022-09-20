@@ -167,7 +167,7 @@ module UspsInPersonProofing
         password: IdentityConfig.store.usps_ipp_password,
         grant_type: 'implicit',
         response_type: 'token',
-        client_id: '424ada78-62ae-4c53-8e3a-0b737708a9db',
+        client_id: IdentityConfig.store.usps_ipp_client_id,
         scope: 'ivs.ippaas.apis',
       }
 

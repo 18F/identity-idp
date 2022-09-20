@@ -33,10 +33,5 @@ module Reports
 
       results
     end
-
-    def full_month?(date_range)
-      date_range.begin == date_range.begin.beginning_of_month &&
-        date_range.end == date_range.end.end_of_month
-    end
   end
 end
