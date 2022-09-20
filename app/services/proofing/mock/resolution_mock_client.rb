@@ -12,7 +12,7 @@ module Proofing
         end
 
         def timed_out?
-          false
+          exception.is_a?(Proofing::TimeoutError)
         end
 
         def transaction_id
@@ -28,7 +28,7 @@ module Proofing
             exception: exception,
             errors: errors,
             success: success,
-            timed_out: exception.is_a?(Proofing::TimeoutError),
+            timed_out: timed_out?,
             transaction_id: transaction_id,
             reference: reference,
             vendor_name: 'ResolutionMock',
