@@ -1,6 +1,10 @@
-<% title t('inherited_proofing.headings.lets_go') %>
+<% title t('inherited_proofing.headings.verify_information') %>
 
-<h2>Place holder to show Please verify your information</h2>
+  <%= render PageHeadingComponent.new.with_content(t('inherited_proofing.headings.verify_information')) %>
+
+    Fakey McFakerson <br>
+    123 Main St <br>
+    Anytown, DC, 12345
 
 <%= simple_form_for :inherited_proofing,
                     url: url_for,
@@ -8,3 +12,17 @@
                     html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
     <%= f.submit t('inherited_proofing.buttons.continue') %>
 <% end %>
+
+
+<%= render(
+      'shared/troubleshooting_options',
+      heading_tag: :h3,
+      heading: t('inherited_proofing.troubleshooting.headings.need_help_updating'),
+      options: [
+        {
+          url: 'https://www.va.gov/resources/managing-your-vagov-profile/',
+          text: t('inherited_proofing.troubleshooting.options.get_va_help'),
+          new_tab: true,
+        },
+      ].select(&:present?),
+    ) %>

@@ -19,7 +19,13 @@ es:
         unauthorized_scope: Alcance no autorizado
     logout:
       errors:
-        id_token_hint: Id_token_hint no fue reconocido
+        client_id_invalid: client_id no fue reconocido
+        client_id_missing: falta client_id
+        id_token_hint: id_token_hint no fue reconocido
+        id_token_hint_present: Esta aplicación está mal configurada y no debería enviar
+          id_token_hint. Por favor, envíe client_id en su lugar.
+        no_client_id_or_id_token_hint: Esta aplicación está mal configurada y debe
+          enviar client_id o id_token_hint.
     token:
       errors:
         expired_code: ha expirado

@@ -19,7 +19,13 @@ en:
         unauthorized_scope: Unauthorized scope
     logout:
       errors:
+        client_id_invalid: client_id was not recognized
+        client_id_missing: client_id is missing
         id_token_hint: id_token_hint was not recognized
+        id_token_hint_present: This application is misconfigured and should not be
+          sending id_token_hint. Please send client_id instead.
+        no_client_id_or_id_token_hint: This application is misconfigured and must send
+          either client_id or id_token_hint.
     token:
       errors:
         expired_code: is expired
