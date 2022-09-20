@@ -31,14 +31,12 @@ module Idv
       private
 
       def native_camera_ab_testing_variables
-        ab_test = Idv::NativeCameraABTest.new
-        discriminator = flow_session[:document_capture_session_uuid]
-        skip_sdk = ab_test.bucket(discriminator) == :native_camera_only
+        bucket = ab_test.bucket(flow_session[:document_capture_session_uuid])
 
         {
           native_camera_a_b_testing_enabled:
             IdentityConfig.store.idv_native_camera_a_b_testing_enabled,
-          native_camera_only: skip_sdk,
+          native_camera_only: (bucket == :native_camera_only),
         }
       end
 
