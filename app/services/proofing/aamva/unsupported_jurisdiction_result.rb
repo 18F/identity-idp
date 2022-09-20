@@ -1,6 +1,10 @@
 module Proofing
   module Aamva
     class UnsupportedJurisdictionResult
+      def client
+        Proofing::Aamva::Proofer.to_s
+      end
+
       def errors
         {}
       end
@@ -23,6 +27,7 @@ module Proofing
 
       def to_h
         {
+          client: client,
           errors: errors,
           exception: exception,
           success: success?,
