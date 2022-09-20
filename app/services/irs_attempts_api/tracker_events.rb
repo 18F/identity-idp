@@ -41,15 +41,6 @@ module IrsAttemptsApi
       )
     end
 
-    # @param ["mobile", "desktop"] upload_method method chosen for uploading id verification
-    # A user has selected id document upload method
-    def document_upload_method_selected(upload_method:)
-      track_event(
-        :document_upload_method_selected,
-        upload_method: upload_method,
-      )
-    end
-
     # @param [String] email The submitted email address
     # @param [Boolean] success True if the email and password matched
     # A user has submitted an email address and password for authentication
@@ -98,6 +89,15 @@ module IrsAttemptsApi
         :forgot_password_new_password_submitted,
         success: success,
         failure_reason: failure_reason,
+      )
+    end
+
+    # @param ["mobile", "desktop"] upload_method method chosen for uploading id verification
+    # A user has selected id document upload method
+    def idv_document_upload_method_selected(upload_method:)
+      track_event(
+        :idv_document_upload_method_selected,
+        upload_method: upload_method,
       )
     end
 
@@ -269,8 +269,8 @@ module IrsAttemptsApi
 
     # @param [Boolean] success
     # @param [String] phone_number
-    # The phone number that the link was sent to during the IDV process
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # The phone number that the link was sent to during the IDV process
     def idv_phone_upload_link_sent(
       success:,
       phone_number:,
