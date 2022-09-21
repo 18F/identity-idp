@@ -648,7 +648,7 @@ GEM
     stringex (2.8.5)
     strong_migrations (0.8.0)
       activerecord (>= 5.2)
-    strscan (3.0.4)
+    strscan (3.0.1)
     subprocess (1.5.5)
     systemu (2.6.5)
     terminal-table (3.0.2)
