@@ -54,6 +54,7 @@ class GpoConfirmationMaker
   end
 
   def force_zipcode_format(raw_zipcode)
+    return raw_zipcode if raw_zipcode.nil?
     return raw_zipcode if raw_zipcode.match?(/^\d{5}$/)
     return raw_zipcode if raw_zipcode.match?(/^\d{5}-\d{4}$/)
 

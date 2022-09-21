@@ -67,7 +67,21 @@ describe GpoConfirmationMaker do
     end
   end
 
-  context 'with a (bogus) zip+1' do
+  context 'with a nil zipcode' do
+    let(:zipcode) { nil }
+
+    describe '#perform' do
+      it 'accepts the zipcode' do
+        subject.perform
+
+        gpo_confirmation = GpoConfirmation.first
+        entry_hash = gpo_confirmation.entry
+        expect(entry_hash[:zipcode]).to be_nil
+      end
+    end
+  end
+
+  context 'with a (bogus) zip+1 zipcode' do
     let(:zipcode) { '12345+0' }
 
     describe '#perform' do
