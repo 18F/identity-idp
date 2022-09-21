@@ -35,10 +35,10 @@ const STATUS_ICONS: Record<Status, Record<Icon & 'default', string>> = {
  * Text to be used as text alternative for icon.
  */
 const STATUS_ALT: Record<Status & Icon, string> = {
-  error: t('components.status_page.icons.error'),
-  question: t('components.status_page.icons.question'),
-  warning: t('components.status_page.icons.warning'),
-  lock: t('components.status_page.icons.lock'),
+  error: t('titles.icons.error.alt_text'),
+  question: t('titles.icons.info_question.alt_text'),
+  warning: t('titles.icons.warning.alt_text'),
+  lock: t('titles.icons.error_lock.alt_text'),
 };
 
 interface StatusPageProps {
