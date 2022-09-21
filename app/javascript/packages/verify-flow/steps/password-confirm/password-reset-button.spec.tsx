@@ -17,17 +17,19 @@ describe('PasswordResetButton', () => {
       .resolves({ redirect_url: REDIRECT_URL });
   });
 
-  it('triggers password reset API call and redirects', async (done) => {
+  it('triggers password reset API call and redirects', async () => {
+    let resolve: (value?: any) => void;
+    let reject: (error: Error) => void;
+
     function onComplete({ completionURL }) {
       let error;
 
       try {
         expect(completionURL).to.equal(REDIRECT_URL);
+        resolve();
       } catch (assertionError) {
-        error = assertionError;
+        reject(error);
       }
-
-      done(error);
     }
     const { getByRole } = render(
       <FlowContext.Provider value={{ onComplete } as FlowContextValue}>
@@ -36,6 +38,12 @@ describe('PasswordResetButton', () => {
     );
 
     const button = getByRole('button');
-    await userEvent.click(button);
+    await Promise.all([
+      new Promise((_resolve, _reject) => {
+        resolve = _resolve;
+        reject = _reject;
+      }),
+      userEvent.click(button),
+    ]);
   });
 });
