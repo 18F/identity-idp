@@ -29,7 +29,7 @@ es:
       information_not_verified: Información personal no verificada
       phone_verification: Número telefónico no verificado
     forget_all_browsers: Olvídate de todos los navegadores
-     icons:
+    icons:
       warning:
         alt_text: Letrero de precaución amarillo
       personal_key:
