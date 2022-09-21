@@ -27,7 +27,6 @@
   "spec/presenters/setup_presenter_spec.rb": 0.05804999999963911,
   "spec/features/remember_device/session_expiration_spec.rb": 5.3716609999974025,
   "spec/requests/redirects_spec.rb": 0.12476699999388075,
-  "spec/lib/feature_management_spec.rb": 158.021550999998,
   "spec/forms/idv/doc_pii_form_spec.rb": 0.023514000000432134,
   "spec/controllers/users/personal_keys_controller_spec.rb": 0.22581699999864213,
   "spec/services/encryption/uak_password_verifier_spec.rb": 0.21799900000041816,
