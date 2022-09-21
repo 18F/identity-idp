@@ -4,10 +4,11 @@ describe GpoConfirmationMaker do
   let(:otp) { '123ABC' }
   let(:issuer) { 'this-is-an-issuer' }
   let(:service_provider) { build(:service_provider, issuer: issuer) }
+  let(:zipcode) { '12345' }
   let(:decrypted_attributes) do
     {
       address1: '123 main st', address2: '',
-      city: 'Baton Rouge', state: 'Louisiana', zipcode: '12345',
+      city: 'Baton Rouge', state: 'Louisiana', zipcode: zipcode,
       first_name: 'Robert', last_name: 'Robertson',
       otp: otp, issuer: issuer
     }
@@ -63,6 +64,34 @@ describe GpoConfirmationMaker do
         and_return(profane, not_profane)
 
       expect(subject.otp).to eq('000000ABCD')
+    end
+  end
+
+  context 'with a nil zipcode' do
+    let(:zipcode) { nil }
+
+    describe '#perform' do
+      it 'accepts the zipcode' do
+        subject.perform
+
+        gpo_confirmation = GpoConfirmation.first
+        entry_hash = gpo_confirmation.entry
+        expect(entry_hash[:zipcode]).to be_nil
+      end
+    end
+  end
+
+  context 'with a (bogus) zip+1 zipcode' do
+    let(:zipcode) { '12345+0' }
+
+    describe '#perform' do
+      it 'strips the +0 from the zipcode' do
+        subject.perform
+
+        gpo_confirmation = GpoConfirmation.first
+        entry_hash = gpo_confirmation.entry
+        expect(entry_hash[:zipcode]).to eq '12345'
+      end
     end
   end
 end
