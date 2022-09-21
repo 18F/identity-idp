@@ -1,3 +1,12 @@
+declare global {
+  export namespace Chai {
+    export interface PromisedAssertion {
+      called(): PromisedAssertion;
+      calledWith(...args: any[]): PromisedAssertion;
+    }
+  }
+}
+
 /**
  * Chai plugin which allows a combination of `calledWith` and `eventually` to expect an eventual
  * spy (stub) call.
@@ -28,7 +37,7 @@ export function sinonChaiAsPromised({ Assertion }, utils) {
   Assertion.overwriteProperty(
     'called',
     ifEventually(function () {
-      return new Promise((resolve) => {
+      return new Promise<void>((resolve) => {
         if (this._obj.called) {
           resolve();
         } else {
@@ -41,7 +50,7 @@ export function sinonChaiAsPromised({ Assertion }, utils) {
   Assertion.overwriteMethod(
     'calledWith',
     ifEventually(function (...args) {
-      return new Promise((resolve) => {
+      return new Promise<void>((resolve) => {
         if (this._obj.calledWith(...args)) {
           resolve();
         } else {
