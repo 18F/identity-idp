@@ -1,8 +1,6 @@
 class AbTestBucket
   attr_reader :buckets, :experiment_name
 
-  validate :within_100_percent
-
   def initialize(experiment_name:, buckets: {})
     @buckets = buckets
     @experiment_name = experiment_name
