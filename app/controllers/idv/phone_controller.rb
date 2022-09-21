@@ -30,7 +30,6 @@ module Idv
 
     def create
       result = idv_form.submit(step_params)
-      puts "!!!!!!!!!! #{result.inspect}"
       analytics.idv_phone_confirmation_form_submitted(**result.to_h)
       irs_attempts_api_tracker.idv_phone_submitted(
         phone_number: step_params[:phone],

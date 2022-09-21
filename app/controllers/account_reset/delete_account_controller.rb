@@ -16,7 +16,6 @@ module AccountReset
     def delete
       granted_token = session.delete(:granted_token)
       result = AccountReset::DeleteAccount.new(granted_token).call
-      puts "!!!! #{result.inspect}"
       analytics.account_reset_delete(**result.to_h.except(:email))
 
       irs_attempts_api_tracker.account_reset_account_deleted(
