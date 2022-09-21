@@ -17,7 +17,7 @@ describe('PasswordResetButton', () => {
       .resolves({ redirect_url: REDIRECT_URL });
   });
 
-  it('triggers password reset API call and redirects', (done) => {
+  it('triggers password reset API call and redirects', async (done) => {
     function onComplete({ completionURL }) {
       let error;
 
@@ -36,6 +36,6 @@ describe('PasswordResetButton', () => {
     );
 
     const button = getByRole('button');
-    userEvent.click(button);
+    await userEvent.click(button);
   });
 });
