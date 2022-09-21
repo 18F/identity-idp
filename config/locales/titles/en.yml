@@ -29,6 +29,19 @@ en:
       information_not_verified: Personal information not verified
       phone_verification: Phone number not verified
     forget_all_browsers: Forget all browsers
+    icons:
+      warning:
+        alt_text: Yellow caution sign
+      personal_key:
+        alt_text: Personal key
+      delete:
+        alt_text: Red trash can
+      error_lock:
+        alt_text: Red error lock
+      error:
+        alt_text: Red error x
+      info_question:
+        alt_text: Blue question mark
     idv:
       cancellation_prompt: Cancel identity verification
       cancelled: Identity verification is cancelled
