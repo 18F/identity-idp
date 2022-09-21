@@ -18,7 +18,7 @@ locals:
      alt = t('titles.icons.warning.alt_text')
    end %>
 <% title local_assigns.fetch(:title, heading) %>
-<%= image_tag(image_src, width: 88, alt: alt, class: 'display-block margin-bottom-4') %>
+<%= image_tag(image_src, alt: alt, class: 'display-block margin-bottom-4 lg-icon') %>
 
 <%= render PageHeadingComponent.new.with_content(heading) %>
 

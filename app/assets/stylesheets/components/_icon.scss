@@ -36,3 +36,29 @@ $icon-min-padding: 2px;
     }
   }
 }
+
+// Login Specific Icons (non-uswds)
+.lg-icon {
+  width: 88px;
+  height: 88px;
+}
+
+
+// For displaying icons as "badges"
+// at the top of modals
+.iconic-modal-badge {
+  &::before {
+    background-repeat: no-repeat;
+    background-size: contain;
+    content: '';
+    position: absolute;
+    left: calc(50% - 44px);
+    top: 0px;
+    transform: translateY(-50%);
+    height: 88px;
+    width: 88px;
+  }
+  &.personal-key-badge::before {
+    background-image: url('personal-key/personal-key.svg');
+  }
+}

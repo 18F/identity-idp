@@ -2,9 +2,8 @@
 <div class="margin-y-2 padding-y-6 padding-x-4 tablet:padding-x-6 border border-error rounded-xl position-relative">
   <%= image_tag(
         asset_url('status/delete.svg'),
-        size: '88x88',
         alt: t('titles.icons.delete.alt_text'),
-        class: 'pin-top pin-x margin-top-neg-5 margin-x-auto',
+        class: 'pin-top pin-x margin-top-neg-5 margin-x-auto lg-icon',
       ) %>
   <%= render PageHeadingComponent.new.with_content(t('account_reset.confirm_delete_account.title')) %>
   <p><%= t('account_reset.confirm_delete_account.info_html', email: email) %></p>
