@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.shared_examples 'enrollment with a status update' do |passed:, status:|
+RSpec.shared_examples 'enrollment with a status update' do |passed:, status:, response_json:|
   it 'logs a message with common attributes' do
     freeze_time do
       pending_enrollment.update(
@@ -12,14 +12,28 @@ RSpec.shared_examples 'enrollment with a status update' do |passed:, status:|
       job.perform(Time.zone.now)
     end
 
+    response = JSON.parse(response_json)
     expect(job_analytics).to have_logged_event(
       'GetUspsProofingResultsJob: Enrollment status updated',
+      assurance_level: response['assuranceLevel'],
       enrollment_code: pending_enrollment.enrollment_code,
       enrollment_id: pending_enrollment.id,
+      failure_reason: response['failureReason'],
+      fraud_suspected: response['fraudSuspected'],
       minutes_since_last_status_check: 15.0,
       minutes_since_last_status_update: 2.days.in_minutes,
       minutes_to_completion: 3.days.in_minutes,
       passed: passed,
+      primary_id_type: response['primaryIdType'],
+      proofing_city: response['proofingCity'],
+      proofing_post_office: response['proofingPostOffice'],
+      proofing_state: response['proofingState'],
+      response_message: response['responseMessage'],
+      scan_count: response['scanCount'],
+      secondary_id_type: response['secondaryIdType'],
+      status: response['status'],
+      transaction_end_date_time: response['transactionEndDateTime'],
+      transaction_start_date_time: response['transactionStartDateTime'],
     )
   end
 
@@ -44,7 +58,8 @@ end
 
 RSpec.shared_examples 'enrollment encountering an exception' do |exception_class: nil,
                                                                 exception_message: nil,
-                                                                reason: 'Request exception'|
+                                                                reason: 'Request exception',
+                                                                response_json: {}|
   it 'logs an error message and leaves the enrollment and profile pending' do
     job.perform(Time.zone.now)
     pending_enrollment.reload
@@ -298,28 +313,18 @@ RSpec.describe GetUspsProofingResultsJob do
       context 'when an enrollment passes' do
         let!(:response) { stub_request_passed_proofing_results }
 
-        it_behaves_like('enrollment with a status update', passed: true, status: 'passed')
+        it_behaves_like(
+          'enrollment with a status update', passed: true, status: 'passed',
+                                             response_json: UspsInPersonProofing::Mock::Fixtures.
+                                             request_passed_proofing_results_response
+        )
 
         it 'logs details about the success' do
           job.perform(Time.zone.now)
 
-          response_as_json = JSON.parse(response[:body])
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             reason: 'Successful status update',
-            fraud_suspected: response_as_json['fraudSuspected'],
-            primary_id_type: response_as_json['primaryIdType'],
-            secondary_id_type: response_as_json['secondaryIdType'],
-            failure_reason: response_as_json['failureReason'],
-            transaction_end_date_time: response_as_json['transactionEndDateTime'],
-            transaction_start_date_time: response_as_json['transactionStartDateTime'],
-            status: response_as_json['status'],
-            assurance_level: response_as_json['assuranceLevel'],
-            proofing_post_office: response_as_json['proofingPostOffice'],
-            proofing_city: response_as_json['proofingCity'],
-            proofing_state: response_as_json['proofingState'],
-            scan_count: response_as_json['scanCount'],
-            response_message: response_as_json['responseMessage'],
           )
         end
       end
@@ -327,27 +332,17 @@ RSpec.describe GetUspsProofingResultsJob do
       context 'when an enrollment fails' do
         let!(:response) { stub_request_failed_proofing_results }
 
-        it_behaves_like('enrollment with a status update', passed: false, status: 'failed')
+        it_behaves_like(
+          'enrollment with a status update', passed: false, status: 'failed',
+                                             response_json: UspsInPersonProofing::Mock::Fixtures.
+                                             request_failed_proofing_results_response
+        )
 
         it 'logs failure details' do
           job.perform(Time.zone.now)
 
-          response_as_json = JSON.parse(response[:body])
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
-            fraud_suspected: response_as_json['fraudSuspected'],
-            primary_id_type: response_as_json['primaryIdType'],
-            secondary_id_type: response_as_json['secondaryIdType'],
-            failure_reason: response_as_json['failureReason'],
-            transaction_end_date_time: response_as_json['transactionEndDateTime'],
-            transaction_start_date_time: response_as_json['transactionStartDateTime'],
-            status: response_as_json['status'],
-            assurance_level: response_as_json['assuranceLevel'],
-            proofing_post_office: response_as_json['proofingPostOffice'],
-            proofing_city: response_as_json['proofingCity'],
-            proofing_state: response_as_json['proofingState'],
-            scan_count: response_as_json['scanCount'],
-            response_message: response_as_json['responseMessage'],
           )
         end
       end
@@ -355,28 +350,18 @@ RSpec.describe GetUspsProofingResultsJob do
       context 'when an enrollment passes proofing with an unsupported ID' do
         let!(:response) { stub_request_passed_proofing_unsupported_id_results }
 
-        it_behaves_like('enrollment with a status update', passed: false, status: 'failed')
+        it_behaves_like(
+          'enrollment with a status update', passed: false, status: 'failed',
+                                             response_json: UspsInPersonProofing::Mock::Fixtures.
+                                             request_passed_proofing_unsupported_id_results_response
+        )
 
         it 'logs a message about the unsupported ID' do
           job.perform Time.zone.now
 
-          response_as_json = JSON.parse(response[:body])
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             reason: 'Unsupported ID type',
-            fraud_suspected: response_as_json['fraudSuspected'],
-            primary_id_type: response_as_json['primaryIdType'],
-            secondary_id_type: response_as_json['secondaryIdType'],
-            failure_reason: response_as_json['failureReason'],
-            transaction_end_date_time: response_as_json['transactionEndDateTime'],
-            transaction_start_date_time: response_as_json['transactionStartDateTime'],
-            status: response_as_json['status'],
-            assurance_level: response_as_json['assuranceLevel'],
-            proofing_post_office: response_as_json['proofingPostOffice'],
-            proofing_city: response_as_json['proofingCity'],
-            proofing_state: response_as_json['proofingState'],
-            scan_count: response_as_json['scanCount'],
-            response_message: response_as_json['responseMessage'],
           )
         end
       end
@@ -384,29 +369,18 @@ RSpec.describe GetUspsProofingResultsJob do
       context 'when an enrollment expires' do
         let!(:response) { stub_request_expired_proofing_results }
 
-        it_behaves_like('enrollment with a status update', passed: false, status: 'expired')
+        it_behaves_like(
+          'enrollment with a status update', passed: false, status: 'expired',
+                                             response_json: UspsInPersonProofing::Mock::Fixtures.
+                                             request_expired_proofing_results_response
+        )
 
         it 'logs that the enrollment expired' do
           job.perform(Time.zone.now)
 
-          response_as_json = JSON.parse(response[:body])
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             reason: 'Enrollment has expired',
-            fraud_suspected: nil,
-            passed: false,
-            primary_id_type: response_as_json['primaryIdType'],
-            secondary_id_type: response_as_json['secondaryIdType'],
-            failure_reason: response_as_json['failureReason'],
-            transaction_end_date_time: response_as_json['transactionEndDateTime'],
-            transaction_start_date_time: response_as_json['transactionStartDateTime'],
-            status: response_as_json['status'],
-            assurance_level: response_as_json['assuranceLevel'],
-            proofing_post_office: response_as_json['proofingPostOffice'],
-            proofing_city: response_as_json['proofingCity'],
-            proofing_state: response_as_json['proofingState'],
-            scan_count: response_as_json['scanCount'],
-            response_message: response_as_json['responseMessage'],
           )
         end
       end
@@ -416,7 +390,13 @@ RSpec.describe GetUspsProofingResultsJob do
           stub_request_proofing_results_with_responses({})
         end
 
-        it_behaves_like('enrollment encountering an exception', reason: 'Bad response structure')
+        it_behaves_like(
+          'enrollment encountering an exception',
+          reason: 'Bad response structure',
+          response_json: UspsInPersonProofing::
+          Mock::Fixtures.
+          request_passed_proofing_unsupported_status_response,
+        )
       end
 
       context 'when USPS returns an unexpected status' do
@@ -426,24 +406,10 @@ RSpec.describe GetUspsProofingResultsJob do
           job.perform(Time.zone.now)
           pending_enrollment.reload
 
-          response_as_json = JSON.parse(response[:body])
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Exception raised',
             enrollment_id: pending_enrollment.id,
             enrollment_code: pending_enrollment.enrollment_code,
-            fraud_suspected: response_as_json['fraudSuspected'],
-            primary_id_type: response_as_json['primaryIdType'],
-            secondary_id_type: response_as_json['secondaryIdType'],
-            failure_reason: response_as_json['failureReason'],
-            transaction_end_date_time: response_as_json['transactionEndDateTime'],
-            transaction_start_date_time: response_as_json['transactionStartDateTime'],
-            status: response_as_json['status'],
-            assurance_level: response_as_json['assuranceLevel'],
-            proofing_post_office: response_as_json['proofingPostOffice'],
-            proofing_city: response_as_json['proofingCity'],
-            proofing_state: response_as_json['proofingState'],
-            scan_count: response_as_json['scanCount'],
-            response_message: response_as_json['responseMessage'],
           )
         end
 

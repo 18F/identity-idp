@@ -40,7 +40,6 @@ module UspsIppHelper
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
       **request_expired_proofing_results_args,
     )
-    request_expired_proofing_results_args
   end
 
   def request_expired_proofing_results_args
@@ -54,7 +53,6 @@ module UspsIppHelper
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
       **request_failed_proofing_results_args,
     )
-    request_failed_proofing_results_args
   end
 
   def request_failed_proofing_results_args
@@ -63,34 +61,25 @@ module UspsIppHelper
   end
 
   def stub_request_passed_proofing_unsupported_id_results
-    response = {
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
       status: 200,
       body: UspsInPersonProofing::Mock::
       Fixtures.request_passed_proofing_unsupported_id_results_response,
-    }
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
-      response,
     )
-    response
   end
 
   def stub_request_passed_proofing_unsupported_status_results
-    response = {
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
       status: 200,
       body: UspsInPersonProofing::Mock::
-      Fixtures.request_passed_proofing_unsupported_status_results_response,
-    }
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
-      response,
+      Fixtures.request_passed_proofing_unsupported_status_response,
     )
-    response
   end
 
   def stub_request_passed_proofing_results
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
       **request_passed_proofing_results_args,
     )
-    request_passed_proofing_results_args
   end
 
   def request_passed_proofing_results_args
