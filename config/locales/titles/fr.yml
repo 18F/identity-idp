@@ -30,18 +30,18 @@ fr:
       phone_verification: Numéro de téléphone non vérifié
     forget_all_browsers: Oubliez tous les navigateurs
     icons:
-      warning:
-        alt_text: Panneau d'avertissement jaune
-      personal_key:
-        alt_text: Clé personnelle
       delete:
         alt_text: Poubelle rouge
-      error_lock:
-        alt_text: verrouillage rouge des erreurs
       error:
         alt_text: erreur rouge x
+      error_lock:
+        alt_text: verrouillage rouge des erreurs
       info_question:
-        alt_text: point d'interrogation bleu
+        alt_text: point d’interrogation bleu
+      personal_key:
+        alt_text: Clé personnelle
+      warning:
+        alt_text: Panneau d’avertissement jaune
     idv:
       cancellation_prompt: Annulez la vérification d’identité
       cancelled: La vérification d’identité est annulée

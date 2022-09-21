@@ -30,18 +30,18 @@ en:
       phone_verification: Phone number not verified
     forget_all_browsers: Forget all browsers
     icons:
-      warning:
-        alt_text: Yellow caution sign
-      personal_key:
-        alt_text: Personal key
       delete:
         alt_text: Red trash can
-      error_lock:
-        alt_text: Red error lock
       error:
         alt_text: Red error x
+      error_lock:
+        alt_text: Red error lock
       info_question:
         alt_text: Blue question mark
+      personal_key:
+        alt_text: Personal key
+      warning:
+        alt_text: Yellow caution sign
     idv:
       cancellation_prompt: Cancel identity verification
       cancelled: Identity verification is cancelled
