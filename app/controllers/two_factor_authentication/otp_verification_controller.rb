@@ -36,8 +36,9 @@ module TwoFactorAuthentication
     end
 
     def confirm_multiple_factors_enabled
+      return if UserSessionContext.confirmation_context?(context)
       phone_enabled = phone_enabled?
-      return if UserSessionContext.confirmation_context?(context) || phone_enabled
+      return if phone_enabled
 
       if MfaPolicy.new(current_user).two_factor_enabled? &&
          !phone_enabled && user_signed_in?
