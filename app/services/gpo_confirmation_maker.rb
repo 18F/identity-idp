@@ -58,6 +58,6 @@ class GpoConfirmationMaker
     return raw_zipcode if raw_zipcode.match?(/^\d{5}$/)
     return raw_zipcode if raw_zipcode.match?(/^\d{5}-\d{4}$/)
 
-    return raw_zipcode[0..4]
+    raw_zipcode[0..4]
   end
 end
