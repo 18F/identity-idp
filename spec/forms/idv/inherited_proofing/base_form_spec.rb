@@ -6,11 +6,17 @@ RSpec.shared_examples 'the hash is blank?' do
   end
 end
 
-RSpec.describe Idv::InheritedProofing::Va::Form do
-  subject(:form) { described_class.new payload_hash: payload_hash }
+RSpec.describe Idv::InheritedProofing::BaseForm do
+  subject (:form) do
+    Class.new(Idv::InheritedProofing::BaseForm) do
+      class << self
+        def required_fields; [] end
+        def optional_fields; [] end
+      end
 
-  let(:required_fields) { %i[first_name last_name birth_date ssn address_street address_zip] }
-  let(:optional_fields) { %i[phone address_street2 address_city address_state address_country] }
+      def user_pii; {} end
+    end
+  end
 
   let(:payload_hash) do
     {
@@ -30,6 +36,40 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
     }
   end
 
+  describe '#initialize' do
+    context 'when .required_fields is not overridden' do
+      it 'raises an error' do
+        subject.singleton_class.send(:remove_method, :required_fields)
+        expected_error = 'Override this method and return an Array of required field names as Symbols'
+        expect { subject.new(payload_hash: payload_hash) }.to raise_error(expected_error)
+      end
+    end
+
+    context 'when .optional_fields is not overridden' do
+      it 'raises an error' do
+        subject.singleton_class.send(:remove_method, :optional_fields)
+        expected_error = 'Override this method and return an Array of optional field names as Symbols'
+        expect { subject.new(payload_hash: payload_hash) }.to raise_error(expected_error)
+      end
+    end
+
+    context 'when .user_pii is not overridden' do
+      subject do
+        Class.new(Idv::InheritedProofing::BaseForm) do
+          class << self
+            def required_fields; [] end
+            def optional_fields; [] end
+          end
+        end
+      end
+
+      it 'raises an error' do
+        expected_error = 'Override this method and return a user PII Hash'
+        expect { subject.new(payload_hash: payload_hash).user_pii }.to raise_error(expected_error)
+      end
+    end
+  end
+
   describe 'class methods' do
     describe '.model_name' do
       it 'returns the right model name' do
@@ -38,20 +78,26 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
     end
 
     describe '.fields' do
-      it 'returns all the fields' do
-        expect(described_class.fields).to match_array required_fields + optional_fields
-      end
-    end
+      subject (:form) do
+        Class.new(Idv::InheritedProofing::BaseForm) do
+          class << self
+            def required_fields; %i[required] end
+            def optional_fields; %i[optional] end
+          end
 
-    describe '.required_fields' do
-      it 'returns the required fields' do
-        expect(described_class.required_fields).to match_array required_fields
+          def user_pii; {} end
+        end
       end
-    end
 
-    describe '.optional_fields' do
-      it 'returns the optional fields' do
-        expect(described_class.optional_fields).to match_array optional_fields
+      let(:expected_field_names) do
+        [
+          :required,
+          :optional,
+        ].sort
+      end
+
+      it 'returns the right field names' do
+        expect(subject.fields).to match_array expected_field_names
       end
     end
   end
@@ -184,30 +230,6 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
           expect(subject.errors.full_messages).to match_array expected_error_messages
         end
       end
-
-      context 'when the payload has missing optional field data' do
-        let(:payload_hash) do
-          {
-            first_name: 'x',
-            last_name: 'x',
-            phone: nil,
-            birth_date: '01/01/2022',
-            ssn: '123456789',
-            address: {
-              street: 'x',
-              street2: nil,
-              city: '',
-              state: nil,
-              country: '',
-              zip: '12345',
-            },
-          }
-        end
-
-        it 'returns true' do
-          expect(subject.validate).to eq true
-        end
-      end
     end
   end
 
@@ -234,25 +256,6 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
       context 'when the payload has invalid field data' do
         it 'returns a FormResponse indicating errors'
       end
-    end
-  end
-
-  describe '#user_pii' do
-    let(:expected_user_pii) do
-      {
-        first_name: subject.first_name,
-        last_name: subject.last_name,
-        dob: subject.birth_date,
-        ssn: subject.ssn,
-        phone: subject.phone,
-        address1: subject.address_street,
-        city: subject.address_city,
-        state: subject.address_state,
-        zipcode: subject.address_zip,
-      }
-    end
-    it 'returns the correct user pii' do
-      expect(subject.user_pii).to eq expected_user_pii
     end
   end
 end

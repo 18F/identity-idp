@@ -1,6 +1,6 @@
 module Idv
   module InheritedProofing
-    class Form
+    class BaseForm
       include ActiveModel::Model
 
       class << self
@@ -13,31 +13,17 @@ module Idv
         end
 
         def fields
-          raise NotImplementedError, 'Override this method and return a Hash of fields'
-          # @fields ||= {
-          #   first_name: { required: true },
-          #   ...
-          #   phone: { required: false },
-          #   ...
-          #   etc.
-          # }
-        end
-
-        # Returns the field names based on the validators we've set up.
-        def field_names
-          @field_names ||= fields.keys
+          @fields ||= required_fields + optional_fields
         end
 
         def required_fields
-          @required_fields ||= fields.filter_map do |field_name, options|
-            field_name if options[:required]
-          end
+          raise NotImplementedError,
+                'Override this method and return an Array of required field names as Symbols'
         end
 
         def optional_fields
-          @optional_fields ||= fields.filter_map do |field_name, options|
-            field_name unless options[:required]
-          end
+          raise NotImplementedError,
+                'Override this method and return an Array of optional field names as Symbols'
         end
       end
 
@@ -51,17 +37,7 @@ module Idv
         raise ArgumentError, 'payload_hash is blank?' if payload_hash.blank?
         raise ArgumentError, 'payload_hash is not a Hash' unless payload_hash.is_a? Hash
 
-        # Necessary if we're to inherit from this class. Otherwise,
-        # if we put this code inline in the class definition, we'll
-        # always receive NotImplementedError errors for .fields
-        # because the subclass is not instantiated yet.
-        self.class.tap do |klass|
-          klass.send(:required_fields).each do |required_field|
-            klass.validates(required_field, presence: true)
-          end
-          # This must be performed after our validators are defined.
-          klass.attr_accessor(*klass.field_names)
-        end
+        self.class.attr_accessor(*self.class.fields)
 
         @payload_hash = payload_hash.dup
 
@@ -107,9 +83,9 @@ module Idv
 
       # Validator for field names. All fields (not the presence of data) are required.
       def validate_field_names
-        self.class.field_names.each do |field_name|
+        self.class.fields.each do |field_name|
           next if payload_field_info.key? field_name
-          errors.add(field_name, 'field is missing', type: :missing_required_field)
+          self.errors.add(field_name, 'field is missing', type: :missing_required_field)
         end
       end
 
