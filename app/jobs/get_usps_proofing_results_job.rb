@@ -29,7 +29,6 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def response_analytics_attributes(response)
-    # binding.pry
     {
       fraud_suspected: response['fraudSuspected'],
       primary_id_type: response['primaryIdType'],
@@ -182,7 +181,6 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_expired_status_update(enrollment, response)
-    # binding.pry
     enrollment_outcomes[:enrollments_expired] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),

@@ -311,7 +311,9 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       context 'when an enrollment passes' do
-        let!(:response) { stub_request_passed_proofing_results }
+        before(:each) do
+          stub_request_passed_proofing_results
+        end
 
         it_behaves_like(
           'enrollment with a status update', passed: true, status: 'passed',
@@ -330,7 +332,9 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       context 'when an enrollment fails' do
-        let!(:response) { stub_request_failed_proofing_results }
+        before(:each) do
+          stub_request_failed_proofing_results
+        end
 
         it_behaves_like(
           'enrollment with a status update', passed: false, status: 'failed',
@@ -348,7 +352,9 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       context 'when an enrollment passes proofing with an unsupported ID' do
-        let!(:response) { stub_request_passed_proofing_unsupported_id_results }
+        before(:each) do
+          stub_request_passed_proofing_unsupported_id_results
+        end
 
         it_behaves_like(
           'enrollment with a status update', passed: false, status: 'failed',
@@ -367,7 +373,9 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       context 'when an enrollment expires' do
-        let!(:response) { stub_request_expired_proofing_results }
+        before(:each) do
+          stub_request_expired_proofing_results
+        end
 
         it_behaves_like(
           'enrollment with a status update', passed: false, status: 'expired',
@@ -400,18 +408,16 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       context 'when USPS returns an unexpected status' do
-        let!(:response) { stub_request_passed_proofing_unsupported_status_results }
-
-        it 'logs an error message and leaves the enrollment and profile pending' do
-          job.perform(Time.zone.now)
-          pending_enrollment.reload
-
-          expect(job_analytics).to have_logged_event(
-            'GetUspsProofingResultsJob: Exception raised',
-            enrollment_id: pending_enrollment.id,
-            enrollment_code: pending_enrollment.enrollment_code,
-          )
+        before(:each) do
+          stub_request_passed_proofing_unsupported_status_results
         end
+
+        it_behaves_like(
+          'enrollment encountering an exception',
+          reason: 'Unsupported status',
+          response_json: UspsInPersonProofing::Mock::
+          Fixtures.request_passed_proofing_unsupported_status_response,
+        )
 
         it 'logs the status received' do
           job.perform(Time.zone.now)
