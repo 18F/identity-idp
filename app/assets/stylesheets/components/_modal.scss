@@ -34,17 +34,6 @@
     margin-right: auto;
     position: relative;
 
-    &.key-badge::before {
-      background-image: url('personal-key/personal-key.svg');
-      background-repeat: no-repeat;
-      content: '';
-      height: 88px;
-      left: 42%;
-      position: absolute;
-      top: -40px;
-      width: 88px;
-    }
-
     &[class^='modal-']::before,
     &[class*=' modal-']::before {
       background-repeat: no-repeat;
