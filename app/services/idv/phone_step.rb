@@ -1,9 +1,25 @@
 module Idv
   class PhoneStep
     def initialize(idv_session:, trace_id:)
+      Rails.logger.info('DEBUG: entering Idv::PhoneStep#initialize')
+      Rails.logger.info { "DEBUG: idv_session = #{idv_session.inspect}" } # TODO: important, contains @user_session, @current_user, see below
+      Rails.logger.info { "DEBUG: trace_id = #{trace_id}" }               # empty, hmm?
+
       self.idv_session = idv_session
       @trace_id = trace_id
     end
+
+    # idv_session = #<Idv::Session:0x00007f1db0af01e8
+    #   @user_session={"need_two_factor_authentication"=>false, "unique_session_id"=>"xjPRDXx6ieDqWuA3VsHk", "last_request_at"=>1663707073,
+    #     "auth_method"=>"backup_code", "authn_at"=>"2022-09-20 20:50:24 UTC", "context"=>"authentication", "created_at"=>"2022-09-20 20:50:24 UTC",
+    #     "reactivate_account"=>{"active"=>false, "validated_personal_key"=>false, "x509"=>nil},
+    #     "idv/inherited_proofing"=>{"error_message"=>nil, "Idv::Steps::InheritedProofing::GetStartedStep"=>true,
+    #       "pii_from_user"=>{"phone"=>"303-555-1212"},
+    #       "Idv::Steps::InheritedProofing::AgreementStep"=>true, "Idv::Steps::InheritedProofing::VerifyInfoStep"=>true},
+    #     "idv"=>{"profile_confirmation"=>true, "vendor_phone_confirmation"=>false, "user_phone_confirmation"=>false,
+    #     " address_verification_mechanism"=>"phone", "resolution_successful"=>"phone",
+    #       "applicant"=>{"first_name"=>"Jake", "last_name"=>"Jabs", "uuid"=>"c7f83167-bce2-4d20-b10a-f0e2b5355ac1"}}},
+    #   @current_user=#<User id: 10, created_at: "2022-09-05 23:01:43" ...
 
     def submit(step_params)
       self.step_params = step_params

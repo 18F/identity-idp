@@ -4,6 +4,7 @@ module Idv
       class PhoneStep < InheritedProofingBaseStep
         STEP_INDICATOR_STEP = :verify_phone
         def call
+          Rails.logger.info('DEBUG: entering PhoneStep#call')
         end
       end
     end

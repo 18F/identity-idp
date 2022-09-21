@@ -1,8 +1,10 @@
 module Idv
   class InheritedProofingController < ApplicationController
+    include IdvSession
     include Flow::FlowStateMachine
 
     before_action :render_404_if_disabled
+    before_action :redirect_if_flow_completed
 
     FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_inherited_proofing_step_url,
@@ -19,6 +21,10 @@ module Idv
 
     def render_404_if_disabled
       render_not_found unless IdentityConfig.store.inherited_proofing_enabled
+    end
+
+    def redirect_if_flow_completed
+      flow_finish if idv_session.applicant  # taken from InPersonController
     end
   end
 end

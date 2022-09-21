@@ -5,6 +5,8 @@ module Idv
         STEP_INDICATOR_STEP = :getting_started
 
         def call
+          Rails.logger.info('DEBUG: entering AgreementStep#call')
+          flow_session[:pii_from_user] = { phone: '303-555-1212' }  # dependent upon SessionEncryptor::SENSITIVE_PATHS
         end
 
         def form_submit
