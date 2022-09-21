@@ -2,14 +2,13 @@ require 'rails_helper'
 
 describe SignUp::PasswordsController do
   describe '#create' do
+    let(:success_properties) { { success: true, failure_reason: nil } }
     it 'tracks a valid password event' do
       token = 'new token'
       user = create(:user, :unconfirmed, confirmation_token: token)
 
       stub_analytics
       stub_attempts_tracker
-
-      allow(@irs_attempts_api_tracker).to receive(:track_event)
 
       analytics_hash = {
         success: true,
@@ -26,6 +25,13 @@ describe SignUp::PasswordsController do
       expect(@analytics).to receive(:track_event).
         with('Password Creation', analytics_hash)
 
+      expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).with(success_properties)
+
+      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
+        email: user.email_addresses.first.email,
+        **success_properties,
+      )
+
       post :create, params: {
         password_form: { password: 'NewVal!dPassw0rd' },
         confirmation_token: token,
@@ -33,17 +39,6 @@ describe SignUp::PasswordsController do
 
       user.reload
 
-      expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-        :user_registration_password_submitted,
-        success: true,
-        failure_reason: {},
-      )
-      expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-        :user_registration_email_confirmation,
-        email: user.email_addresses.first.email,
-        success: true,
-        failure_reason: nil,
-      )
       expect(user.valid_password?('NewVal!dPassw0rd')).to eq true
       expect(user.confirmed?).to eq true
     end
@@ -81,8 +76,6 @@ describe SignUp::PasswordsController do
       stub_analytics
       stub_attempts_tracker
 
-      allow(@irs_attempts_api_tracker).to receive(:track_event)
-
       analytics_hash = {
         success: false,
         errors: {
@@ -104,19 +97,16 @@ describe SignUp::PasswordsController do
       expect(@analytics).to receive(:track_event).
         with('Password Creation', analytics_hash)
 
-      post :create, params: { password_form: { password: 'NewVal' }, confirmation_token: token }
-
-      expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-        :user_registration_password_submitted,
+      expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).with(
         success: false,
-        failure_reason: { password: ['This password is too short (minimum is 12 characters)'] },
+        failure_reason: { password: [:too_short] },
       )
-      expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-        :user_registration_email_confirmation,
+      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
         email: user.email_addresses.first.email,
-        success: true,
-        failure_reason: nil,
+        **success_properties,
       )
+
+      post :create, params: { password_form: { password: 'NewVal' }, confirmation_token: token }
     end
   end
 

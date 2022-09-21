@@ -33,7 +33,7 @@ module Users
         )
         irs_attempts_api_tracker.personal_key_reactivation_submitted(
           success: result.success?,
-          failure_reason: result.errors,
+          failure_reason: result.to_h[:error_details] || result.errors.presence,
         )
         if result.success?
           handle_success(decrypted_pii: personal_key_form.decrypted_pii)

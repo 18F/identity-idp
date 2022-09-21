@@ -131,17 +131,18 @@ describe Idv::PhoneController do
 
   describe '#create' do
     context 'when form is invalid' do
+      let(:phone_us_code_error) { { phone: [:must_have_us_country_code] } }
+      let(:short_phone) { '703' }
       before do
         user = build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' })
         stub_verify_steps_one_and_two(user)
         stub_analytics
         stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
       end
 
       it 'renders #new' do
-        put :create, params: { idv_phone_form: { phone: '703' } }
+        put :create, params: { idv_phone_form: { phone: short_phone } }
 
         expect(flash[:error]).to eq t('errors.messages.improbable_phone')
         expect(response).to render_template(:new)
@@ -157,7 +158,7 @@ describe Idv::PhoneController do
       it 'tracks form error and does not make a vendor API call' do
         expect_any_instance_of(Idv::Agent).to_not receive(:proof_address)
 
-        put :create, params: { idv_phone_form: { phone: '703' } }
+        put :create, params: { idv_phone_form: { phone: short_phone } }
 
         result = {
           success: false,
@@ -182,16 +183,15 @@ describe Idv::PhoneController do
       end
 
       it 'tracks irs event idv_phone_submitted' do
-        put :create, params: { idv_phone_form: { phone: '703' } }
-
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :idv_phone_submitted,
+        expect(@irs_attempts_api_tracker).to receive(:idv_phone_submitted).with(
           success: false,
           phone_number: '703',
           failure_reason: {
             phone: [t('errors.messages.improbable_phone')],
           },
         )
+
+        put :create, params: { idv_phone_form: { phone: short_phone } }
       end
     end
 
@@ -200,12 +200,17 @@ describe Idv::PhoneController do
         stub_analytics
         stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
       end
 
       it 'tracks events with valid phone' do
         user = build(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
+
+        expect(@irs_attempts_api_tracker).to receive(:idv_phone_submitted).with(
+          success: true,
+          phone_number: good_phone,
+          failure_reason: nil,
+        )
 
         put :create, params: { idv_phone_form: { phone: good_phone } }
 
@@ -222,12 +227,6 @@ describe Idv::PhoneController do
 
         expect(@analytics).to have_received(:track_event).with(
           'IdV: phone confirmation form', result
-        )
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :idv_phone_submitted,
-          success: true,
-          phone_number: good_phone,
-          failure_reason: {},
         )
       end
 
