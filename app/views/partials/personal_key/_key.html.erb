@@ -13,11 +13,13 @@
         ) %>
   </p>
   <%= render ClipboardButtonComponent.new(clipboard_text: code, unstyled: true) %>
-  <%= render DownloadButtonComponent.new(
-        file_data: code,
-        file_name: 'personal_key.txt',
-        unstyled: true,
-        class: 'margin-x-2 display-inline-block',
-      ).with_content(t('forms.personal_key.download')) %>
+  <%= render ClickObserverComponent.new(event_name: 'IdV: download personal key') do %>
+    <%= render DownloadButtonComponent.new(
+          file_data: code,
+          file_name: 'personal_key.txt',
+          unstyled: true,
+          class: 'margin-x-2 display-inline-block',
+        ).with_content(t('forms.personal_key.download')) %>
+  <% end %>
   <%= render PrintButtonComponent.new(unstyled: true) %>
 </div>

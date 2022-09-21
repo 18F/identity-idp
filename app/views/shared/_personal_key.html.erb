@@ -27,17 +27,16 @@
     <% end %>
   </ul>
 
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        name: :acknowledgment,
-        as: :boolean,
-        label: t('forms.personal_key.required_checkbox'),
-        label_html: { class: 'margin-bottom-105' },
-        required: true,
-      ) %>
-
+  <%= render ClickObserverComponent.new(event_name: 'IdV: personal key acknowledgment toggled') do %>
+    <%= render ValidatedFieldComponent.new(
+          form: f,
+          name: :acknowledgment,
+          as: :boolean,
+          label: t('forms.personal_key.required_checkbox'),
+          label_html: { class: 'margin-bottom-105' },
+          required: true,
+        ) %>
+  <% end %>
 
   <%= f.submit(t('forms.buttons.continue'), full_width: true, class: 'margin-top-3') %>
 <% end %>
-
-<%== javascript_packs_tag_once 'personal-key-page-controller' %>
