@@ -415,10 +415,6 @@ describe Users::SessionsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with('Invalid Authenticity Token', analytics_hash)
 
-      expect(@analytics).to receive(:track_event).
-        with('Unsafe Redirect', { controller: 'users/sessions#create', referer: '@@@',
-                                  user_signed_in: false })
-
       request.env['HTTP_REFERER'] = '@@@'
       post :create, params: { user: { email: user.email, password: user.password } }
 
