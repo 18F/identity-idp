@@ -1,6 +1,4 @@
 class AbTestBucket
-  include ActiveModel::Model
-
   attr_reader :buckets, :experiment_name
 
   validate :within_100_percent
