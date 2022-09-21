@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_09_021833) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_21_233413) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -294,6 +294,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_09_021833) do
     t.string "unique_id", comment: "Unique ID to use with the USPS service"
     t.datetime "enrollment_established_at", comment: "When the enrollment was successfully established"
     t.string "issuer", comment: "Issuer associated with the enrollment at time of creation"
+    t.boolean "follow_up_survey_sent", default: false
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
     t.index ["unique_id"], name: "index_in_person_enrollments_on_unique_id", unique: true
     t.index ["user_id", "status"], name: "index_in_person_enrollments_on_user_id_and_status", unique: true, where: "(status = 1)"
