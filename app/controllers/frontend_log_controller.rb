@@ -2,7 +2,6 @@ class FrontendLogController < ApplicationController
   respond_to :json
 
   skip_before_action :verify_authenticity_token
-  before_action :check_user_authenticated
   before_action :validate_parameter_types
 
   # rubocop:disable Layout/LineLength
@@ -27,6 +26,7 @@ class FrontendLogController < ApplicationController
     'IdV: download personal key' => :idv_personal_key_downloaded,
     'IdV: Native camera forced after failed attempts' => :idv_native_camera_forced,
     'Multi-Factor Authentication: download backup code' => :multi_factor_auth_backup_code_download,
+    'Show Password Button Clicked' => :show_password_button_clicked,
   }.transform_values do |method|
     method.is_a?(Proc) ? method : AnalyticsEvents.instance_method(method)
   end.freeze
@@ -46,12 +46,6 @@ class FrontendLogController < ApplicationController
 
   def log_params
     params.permit(:event, payload: {})
-  end
-
-  def check_user_authenticated
-    return if effective_user
-
-    render json: { success: false }, status: :unauthorized
   end
 
   def validate_parameter_types

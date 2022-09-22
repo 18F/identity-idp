@@ -66,7 +66,9 @@ module Users
     end
 
     def phone_configuration
-      MfaContext.new(current_user).phone_configuration(user_session[:phone_id])
+      return @phone_configuration if defined?(@phone_configuration)
+      @phone_configuration =
+        MfaContext.new(current_user).phone_configuration(user_session[:phone_id])
     end
 
     def validate_otp_delivery_preference_and_send_code

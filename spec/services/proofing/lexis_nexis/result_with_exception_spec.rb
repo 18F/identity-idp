@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::LexisNexis::PhoneFinder::ResultWithException do
+RSpec.describe Proofing::LexisNexis::ResultWithException do
   let(:exception) { StandardError.new('test message') }
 
-  subject { described_class.new(exception) }
+  subject { described_class.new(exception, vendor_name: 'test-vendor') }
 
   describe '#timed_out?' do
     context 'with a timeout error' do
@@ -26,7 +26,7 @@ RSpec.describe Proofing::LexisNexis::PhoneFinder::ResultWithException do
         errors: {},
         exception: exception,
         timed_out: false,
-        vendor_name: 'lexisnexis:phone_finder',
+        vendor_name: 'test-vendor',
       )
     end
   end

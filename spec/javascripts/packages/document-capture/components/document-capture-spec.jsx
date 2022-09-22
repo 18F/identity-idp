@@ -158,6 +158,7 @@ describe('document-capture/components/document-capture', () => {
 
     await new Promise((resolve) => {
       onSubmit.callsFake(resolve);
+      // eslint-disable-next-line no-restricted-syntax
       userEvent.click(submitButton);
     });
 
@@ -426,6 +427,7 @@ describe('document-capture/components/document-capture', () => {
         resolve();
       });
 
+      // eslint-disable-next-line no-restricted-syntax
       userEvent.click(submitButton);
     });
   });
@@ -617,6 +619,8 @@ describe('document-capture/components/document-capture', () => {
 
       await new Promise((resolve) => {
         onSubmit.callsFake(resolve);
+
+        // eslint-disable-next-line no-restricted-syntax
         userEvent.click(getByText('forms.buttons.submit.default'));
       });
     });

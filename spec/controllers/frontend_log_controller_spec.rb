@@ -176,19 +176,6 @@ describe FrontendLogController do
       end
     end
 
-    context 'user is not signed in' do
-      it 'returns unauthorized' do
-        allow(Analytics).to receive(:new).and_return(fake_analytics)
-
-        expect(fake_analytics).not_to receive(:track_event)
-
-        action
-
-        expect(response).to have_http_status(:unauthorized)
-        expect(json[:success]).to eq(false)
-      end
-    end
-
     context 'anonymous user with session-associated user id' do
       let(:user_id) { user.id }
 

@@ -26,6 +26,10 @@ module Proofing
     end
     # rubocop:enable Style/OptionalArguments
 
+    def attributes_requiring_additional_verification
+      []
+    end
+
     def errors
       @errors.transform_values(&:to_a)
     end
@@ -40,6 +44,10 @@ module Proofing
 
     def failed?
       !exception? && errors?
+    end
+
+    def failed_result_can_pass_with_additional_verification?
+      false
     end
 
     def success?

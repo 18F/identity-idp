@@ -1,0 +1,40 @@
+<% title t('inherited_proofing.headings.lets_go') %>
+
+<%= render AlertComponent.new(
+      type: :error,
+      class: [
+        'js-consent-form-alert',
+        'margin-bottom-4',
+        flow_session[:error_message].blank? && 'display-none',
+      ].select(&:present?),
+      message: flow_session[:error_message].presence || t('errors.inherited_proofing.consent_form'),
+    ) %>
+
+<%= render PageHeadingComponent.new.with_content(t('inherited_proofing.headings.lets_go')) %>
+<p><%= t('inherited_proofing.info.lets_go') %></p>
+<h2><%= t('inherited_proofing.headings.verify_identity') %></h2>
+<p><%= t('inherited_proofing.info.verify_identity') %></p>
+<h2><%= t('inherited_proofing.headings.secure_account') %></h2>
+<p><%= t('inherited_proofing.info.secure_account') %></p>
+
+<%= simple_form_for(
+      :inherited_proofing,
+      url: url_for,
+      method: 'put',
+      html: { autocomplete: 'off', class: 'margin-top-2 margin-bottom-5 js-consent-continue-form' },
+    ) do |f| %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :ial2_consent_given,
+        as: :boolean,
+        label: capture do %>
+          <%= t('inherited_proofing.instructions.consent', app_name: APP_NAME) %>
+          <%= new_window_link_to(
+                t('inherited_proofing.instructions.learn_more'),
+                MarketingSite.security_and_privacy_practices_url,
+              ) %>
+        <% end,
+        required: true,
+      ) %>
+  <%= f.submit t('inherited_proofing.buttons.continue'), class: 'margin-top-4' %>
+<% end %>

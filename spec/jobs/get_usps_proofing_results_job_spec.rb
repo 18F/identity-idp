@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.shared_examples 'enrollment with a status update' do |passed:, status:|
+RSpec.shared_examples 'enrollment with a status update' do |passed:, status:, response_json:|
   it 'logs a message with common attributes' do
     freeze_time do
       pending_enrollment.update(
@@ -12,14 +12,28 @@ RSpec.shared_examples 'enrollment with a status update' do |passed:, status:|
       job.perform(Time.zone.now)
     end
 
+    response = JSON.parse(response_json)
     expect(job_analytics).to have_logged_event(
       'GetUspsProofingResultsJob: Enrollment status updated',
+      assurance_level: response['assuranceLevel'],
       enrollment_code: pending_enrollment.enrollment_code,
       enrollment_id: pending_enrollment.id,
+      failure_reason: response['failureReason'],
+      fraud_suspected: response['fraudSuspected'],
       minutes_since_last_status_check: 15.0,
       minutes_since_last_status_update: 2.days.in_minutes,
       minutes_to_completion: 3.days.in_minutes,
       passed: passed,
+      primary_id_type: response['primaryIdType'],
+      proofing_city: response['proofingCity'],
+      proofing_post_office: response['proofingPostOffice'],
+      proofing_state: response['proofingState'],
+      response_message: response['responseMessage'],
+      scan_count: response['scanCount'],
+      secondary_id_type: response['secondaryIdType'],
+      status: response['status'],
+      transaction_end_date_time: response['transactionEndDateTime'],
+      transaction_start_date_time: response['transactionStartDateTime'],
     )
   end
 
@@ -239,11 +253,11 @@ RSpec.describe GetUspsProofingResultsJob do
         it 'sends proofing failed email on response with failed status' do
           stub_request_failed_proofing_results
 
-          mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+          mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
           user = pending_enrollment.user
           user.email_addresses.each do |email_address|
             # it sends with the default delay
-            expect(mailer).to receive(:deliver_now_or_later).with(wait: 1.hour)
+            expect(mailer).to receive(:deliver_later).with(wait: 1.hour)
             expect(UserMailer).to receive(:in_person_failed).
               with(
                 user,
@@ -279,11 +293,11 @@ RSpec.describe GetUspsProofingResultsJob do
         it 'sends proofing verifed email on 2xx responses with valid JSON' do
           stub_request_passed_proofing_results
 
-          mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+          mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
           user = pending_enrollment.user
           user.email_addresses.each do |email_address|
             # it sends with the default delay
-            expect(mailer).to receive(:deliver_now_or_later).with(wait: 1.hour)
+            expect(mailer).to receive(:deliver_later).with(wait: 1.hour)
             expect(UserMailer).to receive(:in_person_verified).
               with(
                 user,
@@ -303,10 +317,10 @@ RSpec.describe GetUspsProofingResultsJob do
             allow(IdentityConfig.store).
               to(receive(:in_person_results_delay_in_hours).and_return(5))
 
-            mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+            mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
             user = pending_enrollment.user
             user.email_addresses.each do |email_address|
-              expect(mailer).to receive(:deliver_now_or_later).with(wait: 5.hours)
+              expect(mailer).to receive(:deliver_later).with(wait: 5.hours)
               expect(UserMailer).to receive(:in_person_verified).and_return(mailer)
             end
 
@@ -321,10 +335,10 @@ RSpec.describe GetUspsProofingResultsJob do
             allow(IdentityConfig.store).
               to(receive(:in_person_results_delay_in_hours).and_return(0))
 
-            mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+            mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
             user = pending_enrollment.user
             user.email_addresses.each do |email_address|
-              expect(mailer).to receive(:deliver_now_or_later).with(no_args)
+              expect(mailer).to receive(:deliver_later).with(no_args)
               expect(UserMailer).to receive(:in_person_verified).and_return(mailer)
             end
 
@@ -338,14 +352,19 @@ RSpec.describe GetUspsProofingResultsJob do
           stub_request_passed_proofing_results
         end
 
-        it_behaves_like('enrollment with a status update', passed: true, status: 'passed')
+        it_behaves_like(
+          'enrollment with a status update',
+          passed: true,
+          status: 'passed',
+          response_json: UspsInPersonProofing::Mock::Fixtures.
+            request_passed_proofing_results_response,
+        )
 
         it 'logs details about the success' do
           job.perform(Time.zone.now)
 
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
-            fraud_suspected: false,
             reason: 'Successful status update',
           )
         end
@@ -356,21 +375,19 @@ RSpec.describe GetUspsProofingResultsJob do
           stub_request_failed_proofing_results
         end
 
-        it_behaves_like('enrollment with a status update', passed: false, status: 'failed')
+        it_behaves_like(
+          'enrollment with a status update',
+          passed: false,
+          status: 'failed',
+          response_json: UspsInPersonProofing::Mock::Fixtures.
+            request_failed_proofing_results_response,
+        )
 
         it 'logs failure details' do
           job.perform(Time.zone.now)
 
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
-            failure_reason: 'Clerk indicates that ID name or address does not match source data.',
-            fraud_suspected: false,
-            primary_id_type: 'Uniformed Services identification card',
-            proofing_state: 'PA',
-            reason: 'Failed status',
-            secondary_id_type: 'Deed of Trust',
-            transaction_end_date_time: '12/17/2020 034055',
-            transaction_start_date_time: '12/17/2020 033855',
           )
         end
       end
@@ -380,15 +397,19 @@ RSpec.describe GetUspsProofingResultsJob do
           stub_request_passed_proofing_unsupported_id_results
         end
 
-        it_behaves_like('enrollment with a status update', passed: false, status: 'failed')
+        it_behaves_like(
+          'enrollment with a status update',
+          passed: false,
+          status: 'failed',
+          response_json: UspsInPersonProofing::Mock::Fixtures.
+            request_passed_proofing_unsupported_id_results_response,
+        )
 
         it 'logs a message about the unsupported ID' do
           job.perform Time.zone.now
 
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
-            fraud_suspected: false,
-            primary_id_type: 'Not supported',
             reason: 'Unsupported ID type',
           )
         end
@@ -399,7 +420,13 @@ RSpec.describe GetUspsProofingResultsJob do
           stub_request_expired_proofing_results
         end
 
-        it_behaves_like('enrollment with a status update', passed: false, status: 'expired')
+        it_behaves_like(
+          'enrollment with a status update',
+          passed: false,
+          status: 'expired',
+          response_json: UspsInPersonProofing::Mock::Fixtures.
+            request_expired_proofing_results_response,
+        )
 
         it 'logs that the enrollment expired' do
           job.perform(Time.zone.now)
@@ -416,7 +443,10 @@ RSpec.describe GetUspsProofingResultsJob do
           stub_request_proofing_results_with_responses({})
         end
 
-        it_behaves_like('enrollment encountering an exception', reason: 'Bad response structure')
+        it_behaves_like(
+          'enrollment encountering an exception',
+          reason: 'Bad response structure',
+        )
       end
 
       context 'when USPS returns an unexpected status' do
@@ -424,7 +454,10 @@ RSpec.describe GetUspsProofingResultsJob do
           stub_request_passed_proofing_unsupported_status_results
         end
 
-        it_behaves_like('enrollment encountering an exception', reason: 'Unsupported status')
+        it_behaves_like(
+          'enrollment encountering an exception',
+          reason: 'Unsupported status',
+        )
 
         it 'logs the status received' do
           job.perform(Time.zone.now)

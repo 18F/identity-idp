@@ -19,7 +19,13 @@ fr:
         unauthorized_scope: Portée non autorisée
     logout:
       errors:
+        client_id_invalid: client_id n’a pas été reconnu
+        client_id_missing: client_id est manquant
         id_token_hint: id_token_hint n’a pas été reconnu
+        id_token_hint_present: Cette application est mal configurée et ne devrait pas
+          envoyer id_token_hint. Veuillez envoyer client_id à la place.
+        no_client_id_or_id_token_hint: Cette application est mal configurée et doit
+          envoyer client_id ou id_token_hint.
     token:
       errors:
         expired_code: est expiré

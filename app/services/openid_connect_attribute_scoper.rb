@@ -76,6 +76,10 @@ class OpenidConnectAttributeScoper
     scopes.include?('profile:verified_at') || scopes.include?('profile')
   end
 
+  def all_emails_requested?
+    scopes.include?('all_emails')
+  end
+
   def filter(user_info)
     user_info.select do |key, _v|
       !ATTRIBUTE_SCOPES_MAP.key?(key) || (scopes & ATTRIBUTE_SCOPES_MAP[key]).present?

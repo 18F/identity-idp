@@ -36,10 +36,12 @@ module TwoFactorAuthentication
     end
 
     def confirm_multiple_factors_enabled
-      return if UserSessionContext.confirmation_context?(context) || phone_enabled?
+      return if UserSessionContext.confirmation_context?(context)
+      phone_enabled = phone_enabled?
+      return if phone_enabled
 
       if MfaPolicy.new(current_user).two_factor_enabled? &&
-         !phone_enabled? && user_signed_in?
+         !phone_enabled && user_signed_in?
         return redirect_to user_two_factor_authentication_url
       end
 
@@ -67,8 +69,14 @@ module TwoFactorAuthentication
     end
 
     def phone
-      MfaContext.new(current_user).phone_configuration(user_session[:phone_id])&.phone ||
+      phone_configuration&.phone ||
         user_session[:unconfirmed_phone]
+    end
+
+    def phone_configuration
+      return @phone_configuration if defined?(@phone_configuration)
+      @phone_configuration =
+        MfaContext.new(current_user).phone_configuration(user_session[:phone_id])
     end
 
     def sanitized_otp_code
@@ -112,8 +120,7 @@ module TwoFactorAuthentication
         area_code: parsed_phone.area_code,
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
-        phone_configuration_id: user_session[:phone_id] ||
-          current_user.default_phone_configuration&.id,
+        phone_configuration_id: phone_configuration&.id,
         in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       }

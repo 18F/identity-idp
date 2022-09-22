@@ -4,15 +4,6 @@
 module IrsAttemptsApi
   module TrackerEvents
     # @param [Boolean] success True if Account Successfully Deleted
-    # A User deletes their Login.gov account
-    def account_purged(success:)
-      track_event(
-        :account_purged,
-        success: success,
-      )
-    end
-
-    # @param [Boolean] success True if Account Successfully Deleted
     # @param [Hash<Key, Array<String>>] failure_reason displays why account deletion failed
     # A User confirms and deletes their Login.gov account after 24 hour period
     def account_reset_account_deleted(success:, failure_reason:)
@@ -38,15 +29,6 @@ module IrsAttemptsApi
       track_event(
         :account_reset_request_submitted,
         success: success,
-      )
-    end
-
-    # @param ["mobile", "desktop"] upload_method method chosen for uploading id verification
-    # A user has selected id document upload method
-    def document_upload_method_selected(upload_method:)
-      track_event(
-        :document_upload_method_selected,
-        upload_method: upload_method,
       )
     end
 
@@ -98,6 +80,15 @@ module IrsAttemptsApi
         :forgot_password_new_password_submitted,
         success: success,
         failure_reason: failure_reason,
+      )
+    end
+
+    # @param ["mobile", "desktop"] upload_method method chosen for uploading id verification
+    # A user has selected id document upload method
+    def idv_document_upload_method_selected(upload_method:)
+      track_event(
+        :idv_document_upload_method_selected,
+        upload_method: upload_method,
       )
     end
 
@@ -269,8 +260,8 @@ module IrsAttemptsApi
 
     # @param [Boolean] success
     # @param [String] phone_number
-    # The phone number that the link was sent to during the IDV process
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # The phone number that the link was sent to during the IDV process
     def idv_phone_upload_link_sent(
       success:,
       phone_number:,
@@ -356,6 +347,15 @@ module IrsAttemptsApi
         address: address,
         ssn: ssn,
         failure_reason: failure_reason,
+      )
+    end
+
+    # @param [Boolean] success True if Account Successfully Deleted
+    # A User deletes their Login.gov account
+    def logged_in_account_purged(success:)
+      track_event(
+        :logged_in_account_purged,
+        success: success,
       )
     end
 

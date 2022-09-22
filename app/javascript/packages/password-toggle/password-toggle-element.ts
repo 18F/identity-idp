@@ -1,4 +1,5 @@
 import { once } from '@18f/identity-decorators';
+import { trackEvent } from '@18f/identity-analytics';
 
 interface PasswordToggleElements {
   /**
@@ -16,6 +17,7 @@ class PasswordToggleElement extends HTMLElement {
   connectedCallback() {
     this.elements.toggle.addEventListener('change', () => this.setInputType());
     this.setInputType();
+    this.showPasswordButtonClick();
   }
 
   @once()
@@ -28,6 +30,12 @@ class PasswordToggleElement extends HTMLElement {
 
   setInputType() {
     this.elements.input.type = this.elements.toggle.checked ? 'text' : 'password';
+  }
+
+  showPasswordButtonClick() {
+    this.elements.toggle.addEventListener('click', () => {
+      trackEvent('Show Password button clicked', { path: window.location.pathname });
+    });
   }
 }
 

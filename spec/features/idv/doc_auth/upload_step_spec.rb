@@ -28,7 +28,7 @@ feature 'doc auth upload step' do
 
     it 'proceeds to send link via email page when user chooses to upload from computer' do
       expect(fake_attempts_tracker).to receive(
-        :document_upload_method_selected,
+        :idv_document_upload_method_selected,
       ).with({ upload_method: 'desktop' })
 
       click_on t('doc_auth.info.upload_computer_link')
@@ -42,7 +42,7 @@ feature 'doc auth upload step' do
 
     it 'proceeds to document capture when user chooses to use phone' do
       expect(fake_attempts_tracker).to receive(
-        :document_upload_method_selected,
+        :idv_document_upload_method_selected,
       ).with({ upload_method: 'mobile' })
 
       click_on t('doc_auth.buttons.use_phone')
@@ -67,7 +67,7 @@ feature 'doc auth upload step' do
 
     it 'proceeds to document capture when user chooses to upload from computer' do
       expect(fake_attempts_tracker).to receive(
-        :document_upload_method_selected,
+        :idv_document_upload_method_selected,
       ).with({ upload_method: 'desktop' })
 
       click_on t('doc_auth.info.upload_computer_link')
@@ -81,7 +81,7 @@ feature 'doc auth upload step' do
 
     it 'proceeds to send link to phone page when user chooses to use phone' do
       expect(fake_attempts_tracker).to receive(
-        :document_upload_method_selected,
+        :idv_document_upload_method_selected,
       ).with({ upload_method: 'mobile' })
 
       click_on t('doc_auth.buttons.use_phone')
