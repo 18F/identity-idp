@@ -1,15 +1,3 @@
 {
-  "status": "In-person expired",
-  "proofingPostOffice": "WILKES BARRE",
-  "proofingCity": "WILKES BARRE",
-  "proofingState": "PA",
-  "enrollmentCode": "2090002197604352",
-  "primaryIdType": "Uniformed Services identification card",
-  "transactionStartDateTime": "12/17/2020 033855",
-  "transactionEndDateTime": "12/17/2020 034055",
-  "secondaryIdType": "Deed of Trust",
-  "responseMessage": "More than 30 days have passed since opt-in to IPP",
-  "fraudSuspected": false,
-  "proofingConfirmationNumber": "350040248346707",
-  "ippAssuranceLevel": "1.5"
+  "responseMessage": "More than 30 days have passed since opt-in to IPP"
 }

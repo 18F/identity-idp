@@ -58,8 +58,7 @@ end
 
 RSpec.shared_examples 'enrollment encountering an exception' do |exception_class: nil,
                                                                 exception_message: nil,
-                                                                reason: 'Request exception',
-                                                                response_json: {}|
+                                                                reason: 'Request exception'|
   it 'logs an error message and leaves the enrollment and profile pending' do
     job.perform(Time.zone.now)
     pending_enrollment.reload
@@ -316,9 +315,11 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it_behaves_like(
-          'enrollment with a status update', passed: true, status: 'passed',
-                                             response_json: UspsInPersonProofing::Mock::Fixtures.
-                                             request_passed_proofing_results_response
+          'enrollment with a status update',
+          passed: true,
+          status: 'passed',
+          response_json: UspsInPersonProofing::Mock::Fixtures.
+            request_passed_proofing_results_response,
         )
 
         it 'logs details about the success' do
@@ -337,9 +338,11 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it_behaves_like(
-          'enrollment with a status update', passed: false, status: 'failed',
-                                             response_json: UspsInPersonProofing::Mock::Fixtures.
-                                             request_failed_proofing_results_response
+          'enrollment with a status update',
+          passed: false,
+          status: 'failed',
+          response_json: UspsInPersonProofing::Mock::Fixtures.
+            request_failed_proofing_results_response,
         )
 
         it 'logs failure details' do
@@ -357,9 +360,11 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it_behaves_like(
-          'enrollment with a status update', passed: false, status: 'failed',
-                                             response_json: UspsInPersonProofing::Mock::Fixtures.
-                                             request_passed_proofing_unsupported_id_results_response
+          'enrollment with a status update',
+          passed: false,
+          status: 'failed',
+          response_json: UspsInPersonProofing::Mock::Fixtures.
+            request_passed_proofing_unsupported_id_results_response,
         )
 
         it 'logs a message about the unsupported ID' do
@@ -378,9 +383,11 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it_behaves_like(
-          'enrollment with a status update', passed: false, status: 'expired',
-                                             response_json: UspsInPersonProofing::Mock::Fixtures.
-                                             request_expired_proofing_results_response
+          'enrollment with a status update',
+          passed: false,
+          status: 'expired',
+          response_json: UspsInPersonProofing::Mock::Fixtures.
+            request_expired_proofing_results_response,
         )
 
         it 'logs that the enrollment expired' do
@@ -401,9 +408,6 @@ RSpec.describe GetUspsProofingResultsJob do
         it_behaves_like(
           'enrollment encountering an exception',
           reason: 'Bad response structure',
-          response_json: UspsInPersonProofing::
-          Mock::Fixtures.
-          request_passed_proofing_unsupported_status_results_response,
         )
       end
 
@@ -415,8 +419,6 @@ RSpec.describe GetUspsProofingResultsJob do
         it_behaves_like(
           'enrollment encountering an exception',
           reason: 'Unsupported status',
-          response_json: UspsInPersonProofing::Mock::
-          Fixtures.request_passed_proofing_unsupported_status_results_response,
         )
 
         it 'logs the status received' do
