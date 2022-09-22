@@ -82,7 +82,7 @@ describe Users::VerifyPersonalKeyController do
     end
     let(:error_text) { 'Incorrect personal key' }
     let(:personal_key_error) { { personal_key: [error_text] } }
-    let(:failure_properties) { { success: false, failure_reason: personal_key_error}}
+    let(:failure_properties) { { success: false, failure_reason: personal_key_error } }
     let(:response_ok) { FormResponse.new(success: true, errors: {}) }
     let(:response_bad) { FormResponse.new(success: false, errors: personal_key_error, extra: {}) }
 
@@ -143,7 +143,7 @@ describe Users::VerifyPersonalKeyController do
         stub_attempts_tracker
 
         expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_submitted).with(
-          failure_properties
+          failure_properties,
         ).once
 
         allow_any_instance_of(VerifyPersonalKeyForm).to receive(:submit).and_return(response_bad)
@@ -179,7 +179,7 @@ describe Users::VerifyPersonalKeyController do
         stub_attempts_tracker
 
         expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_submitted).with(
-          failure_properties
+          failure_properties,
         ).once
 
         allow_any_instance_of(VerifyPersonalKeyForm).to receive(:submit).and_return(response_bad)
