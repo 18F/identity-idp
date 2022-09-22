@@ -8,7 +8,7 @@ module Users
     end
 
     def delete
-      irs_attempts_api_tracker.account_purged(success: true)
+      irs_attempts_api_tracker.logged_in_account_purged(success: true)
       send_push_notifications
       delete_user
       sign_out
@@ -31,7 +31,7 @@ module Users
 
       flash[:error] = t('idv.errors.incorrect_password')
       analytics.account_delete_submitted(success: false)
-      irs_attempts_api_tracker.account_purged(success: false)
+      irs_attempts_api_tracker.logged_in_account_purged(success: false)
       render :show
     end
 

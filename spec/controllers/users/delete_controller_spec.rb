@@ -43,7 +43,7 @@ describe Users::DeleteController do
         expect(@analytics).to receive(:track_event).
           with('Account Delete submitted', success: false)
         expect(@irs_attempts_api_tracker).to receive(:track_event).
-          with(:account_purged, success: false)
+          with(:logged_in_account_purged, success: false)
 
         delete
       end
@@ -70,7 +70,7 @@ describe Users::DeleteController do
       expect(@analytics).to receive(:track_event).
         with('Account Delete submitted', success: true)
       expect(@irs_attempts_api_tracker).to receive(:track_event).
-        with(:account_purged, success: true)
+        with(:logged_in_account_purged, success: true)
 
       delete
     end
