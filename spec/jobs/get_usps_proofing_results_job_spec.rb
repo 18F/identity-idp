@@ -273,11 +273,11 @@ RSpec.describe GetUspsProofingResultsJob do
         it 'sends failed email when fraudSuspected is true' do
           stub_request_failed_suspected_fraud_proofing_results
 
-          mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+          mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
           user = pending_enrollment.user
           user.email_addresses.each do |email_address|
             # it sends with the default delay
-            expect(mailer).to receive(:deliver_now_or_later).with(wait: 1.hour)
+            expect(mailer).to receive(:deliver_later).with(wait: 1.hour)
             expect(UserMailer).to receive(:in_person_failed_fraud).
               with(
                 user,
