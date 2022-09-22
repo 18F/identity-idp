@@ -34,7 +34,7 @@ module Idv
       irs_attempts_api_tracker.idv_phone_submitted(
         phone_number: step_params[:phone],
         success: result.success?,
-        failure_reason: result.to_h[:error_details] || result.errors.presence,
+        failure_reason: result.to_h[:error_details],
       )
       flash[:error] = result.first_error_message if !result.success?
       return render :new, locals: { gpo_letter_available: gpo_letter_available } if !result.success?

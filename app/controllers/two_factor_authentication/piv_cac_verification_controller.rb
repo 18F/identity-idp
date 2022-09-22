@@ -33,7 +33,7 @@ module TwoFactorAuthentication
       irs_attempts_api_tracker.mfa_login_piv_cac(
         success: result.success?,
         subject_dn: piv_cac_verification_form.x509_dn,
-        failure_reason: result.to_h[:error_details] || result.errors.presence,
+        failure_reason: result.to_h[:error_details],
       )
       if result.success?
         handle_valid_piv_cac

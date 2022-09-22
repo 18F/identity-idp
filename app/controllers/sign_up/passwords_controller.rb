@@ -16,7 +16,7 @@ module SignUp
       analytics.password_creation(**result.to_h)
       irs_attempts_api_tracker.user_registration_password_submitted(
         success: result.success?,
-        failure_reason: result.to_h[:error_details] || result.errors.presence,
+        failure_reason: result.to_h[:error_details],
       )
       store_sp_metadata_in_session unless sp_request_id.empty?
 
