@@ -36,7 +36,7 @@ function mockFraudResultSelected(event: ChangeEvent) {
 
   const { value } = event.target;
 
-  if (value === 'silly') {
+  if (value === 'chaotic') {
     document.body.style.transform = 'rotate(180deg)';
   } else {
     submitMockFraudResult({ result: value, sessionId: loadSessionId() });
@@ -63,7 +63,7 @@ function MockDeviceProfilingOptions() {
         <option value="pass">Pass</option>
         <option value="reject">Reject</option>
         <option value="review">Review</option>
-        <option value="silly">Do something chaotic</option>
+        <option value="chaotic">Do something chaotic</option>
       </select>
     </>
 );
