@@ -20,7 +20,7 @@ module AccountReset
 
       irs_attempts_api_tracker.account_reset_account_deleted(
         success: result.success?,
-        failure_reason: result.to_h[:error_details],
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
       if result.success?
         handle_successful_deletion(result)

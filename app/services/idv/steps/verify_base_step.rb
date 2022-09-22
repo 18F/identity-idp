@@ -241,7 +241,7 @@ module Idv
           date_of_birth: pii_from_doc[:dob],
           address: pii_from_doc[:address1],
           ssn: pii_from_doc[:ssn],
-          failure_reason: form_response.errors.presence,  # [:error_details] is not present here
+          failure_reason: @flow.irs_attempts_api_tracker.parse_failure_reason(form_response),
         )
 
         if form_response.success?

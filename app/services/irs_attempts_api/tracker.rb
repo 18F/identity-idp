@@ -60,6 +60,10 @@ module IrsAttemptsApi
       end
     end
 
+    def parse_failure_reason(result)
+      return result.to_h[:error_details] || result.errors.presence
+    end
+
     include TrackerEvents
 
     private
