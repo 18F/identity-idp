@@ -58,6 +58,7 @@ module Proofing
         def add_user_provided_data_to_body
           document = REXML::Document.new(body)
           user_provided_data_map.each do |xpath, data|
+            warn xpath
             REXML::XPath.first(document, xpath).add_text(data)
           end
           @body = document.to_s
@@ -106,6 +107,10 @@ module Proofing
             '//ns2:PersonGivenName' => applicant.first_name,
             '//ns2:PersonSurName' => applicant.last_name,
             '//ns1:PersonBirthDate' => applicant.dob,
+            '//ns2:AddressDeliveryPointText' => applicant.address1,
+            '//ns2:LocationCityName' => applicant.city,
+            '//ns2:LocationStateUsPostalServiceCode' => applicant.state,
+            '//ns2:LocationPostalCode' => applicant.zipcode,
           }
         end
 

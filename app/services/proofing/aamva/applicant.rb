@@ -11,6 +11,10 @@ module Proofing
           last_name: applicant[:last_name],
           dob: format_dob(applicant[:dob]),
           state_id_data: format_state_id_data(applicant),
+          address1: applicant[:address1],
+          city: applicant[:city],
+          state: applicant[:state],
+          zipcode: applicant[:zipcode],
         )
       end
 

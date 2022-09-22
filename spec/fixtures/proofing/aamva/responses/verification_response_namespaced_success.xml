@@ -19,8 +19,11 @@
         <PersonBirthDateMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonBirthDateMatchIndicator>
         <PersonLastNameExactMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonLastNameExactMatchIndicator>
         <PersonFirstNameExactMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonFirstNameExactMatchIndicator>
+        <AddressLine1MatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</AddressLine1MatchIndicator>
+        <AddressCityMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</AddressCityMatchIndicator>
+        <AddressStateCodeMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</AddressStateCodeMatchIndicator>
+        <AddressZIP5MatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</AddressZIP5MatchIndicator>
       </VerifyDriverLicenseDataResult>
     </VerifyDriverLicenseDataResponse>
   </s:Body>
 </s:Envelope>
-
