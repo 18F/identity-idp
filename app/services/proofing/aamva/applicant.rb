@@ -14,7 +14,7 @@ module Proofing
           address1: applicant[:address1],
           city: applicant[:city],
           state: applicant[:state],
-          zipcode: applicant[:zipcode],
+          zipcode: applicant.fetch(:zipcode, '')[0..4],
         )
       end
 
