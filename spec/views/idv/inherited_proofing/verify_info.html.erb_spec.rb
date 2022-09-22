@@ -22,6 +22,7 @@ describe 'idv/inherited_proofing/verify_info.html.erb' do
   it 'renders content' do
     render template: 'idv/inherited_proofing/verify_info'
 
-    expect(rendered).to have_content('Place holder to show Please verify your information')
+    expect(rendered).to have_content(t('inherited_proofing.headings.verify_information'))
+    expect(rendered).to have_link(t('inherited_proofing.troubleshooting.options.get_va_help'))
   end
 end

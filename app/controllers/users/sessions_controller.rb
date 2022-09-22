@@ -107,12 +107,7 @@ module Users
       analytics.invalid_authenticity_token(controller: controller_info)
       sign_out
       flash[:error] = t('errors.general')
-      begin
-        redirect_back fallback_location: new_user_session_url, allow_other_host: false
-      rescue ActionController::Redirecting::UnsafeRedirectError => err
-        # Exceptions raised inside exception handlers are not propagated up, so we manually rescue
-        unsafe_redirect_error(err)
-      end
+      redirect_back fallback_location: new_user_session_url, allow_other_host: false
     end
 
     def check_user_needs_redirect

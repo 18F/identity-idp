@@ -25,10 +25,20 @@ module Idv
             image_type: 'selfie',
             transaction_id: flow_session[:document_capture_session_uuid],
           ),
-        }
+        }.merge(native_camera_ab_testing_variables)
       end
 
       private
+
+      def native_camera_ab_testing_variables
+        bucket = AbTests::NATIVE_CAMERA.bucket(flow_session[:document_capture_session_uuid])
+
+        {
+          native_camera_a_b_testing_enabled:
+            IdentityConfig.store.idv_native_camera_a_b_testing_enabled,
+          native_camera_only: (bucket == :native_camera_only),
+        }
+      end
 
       def handle_stored_result
         if stored_result&.success?

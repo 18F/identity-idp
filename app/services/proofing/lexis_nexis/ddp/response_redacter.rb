@@ -61,11 +61,15 @@ module Proofing
           digital_id_trust_score_rating
           digital_id_trust_score_reason_code
           digital_id_trust_score_summary_reason_code
+          emailage.emailriskscore.billaddresstofullnameconfidence
+          emailage.emailriskscore.billaddresstolastnameconfidence
           emailage.emailriskscore.billriskcountry
           emailage.emailriskscore.correlationid
+          emailage.emailriskscore.disdescription
           emailage.emailriskscore.domain_creation_days
           emailage.emailriskscore.domainage
           emailage.emailriskscore.domaincategory
+          emailage.emailriskscore.domaincountry
           emailage.emailriskscore.domaincountrymatch
           emailage.emailriskscore.domainexists
           emailage.emailriskscore.domainrelevantinfo
@@ -81,15 +85,21 @@ module Proofing
           emailage.emailriskscore.eariskbandid
           emailage.emailriskscore.eascore
           emailage.emailriskscore.eastatusid
+          emailage.emailriskscore.emailage
+          emailage.emailriskscore.email_creation_days
           emailage.emailriskscore.emailexists
           emailage.emailriskscore.emailtobilladdressconfidence
+          emailage.emailriskscore.emailtofullnameconfidence
           emailage.emailriskscore.emailtoipconfidence
+          emailage.emailriskscore.emailtolastnameconfidence
           emailage.emailriskscore.first_seen_days
           emailage.emailriskscore.firstverificationdate
           emailage.emailriskscore.fraudrisk
           emailage.emailriskscore.ip_risklevel
           emailage.emailriskscore.ip_riskreason
           emailage.emailriskscore.iptobilladdressconfidence
+          emailage.emailriskscore.iptofullnameconfidence
+          emailage.emailriskscore.iptolastnameconfidence
           emailage.emailriskscore.namematch
           emailage.emailriskscore.overalldigitalidentityscore
           emailage.emailriskscore.phone_status

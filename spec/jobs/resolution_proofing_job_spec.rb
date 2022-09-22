@@ -138,45 +138,51 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
           result = document_capture_session.load_proofing_result[:result]
 
-          expect(result).to eq(
-            exception: nil,
-            errors: {},
-            success: true,
-            timed_out: false,
-            context: {
-              should_proof_state_id: true,
-              stages: {
-                resolution: {
-                  client: Proofing::LexisNexis::InstantVerify::Proofer.vendor_name,
-                  errors: {},
-                  exception: nil,
-                  success: true,
-                  timed_out: false,
-                  transaction_id: lexisnexis_transaction_id,
-                  reference: lexisnexis_reference,
-                },
-                state_id: {
-                  client: Proofing::Aamva::Proofer.vendor_name,
-                  errors: {},
-                  exception: nil,
-                  success: true,
-                  timed_out: false,
-                  transaction_id: aamva_transaction_id,
-                },
-                threatmetrix: {
-                  client: Proofing::Mock::DdpMockClient.vendor_name,
-                  errors: {},
-                  exception: nil,
-                  success: true,
-                  timed_out: false,
-                  transaction_id: threatmetrix_request_id,
-                  response_body: ddp_response_body,
-                },
-              },
-            },
-            transaction_id: lexisnexis_transaction_id,
-            reference: lexisnexis_reference,
-          )
+          result_context = result[:context]
+          result_context_stages = result_context[:stages]
+          result_context_stages_resolution = result_context_stages[:resolution]
+          result_context_stages_state_id = result_context_stages[:state_id]
+          result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
+
+          expect(result[:exception]).to be_nil
+          expect(result[:errors]).to eq({})
+          expect(result[:success]).to be true
+          expect(result[:timed_out]).to be false
+
+          # result[:context]
+          expect(result_context[:should_proof_state_id])
+
+          # result[:context][:stages][:resolution]
+          expect(result_context_stages_resolution[:vendor_name]).
+            to eq('lexisnexis:instant_verify')
+          expect(result_context_stages_resolution[:errors]).to eq({})
+          expect(result_context_stages_resolution[:exception]).to eq(nil)
+          expect(result_context_stages_resolution[:success]).to eq(true)
+          expect(result_context_stages_resolution[:timed_out]).to eq(false)
+          expect(result_context_stages_resolution[:transaction_id]).to eq(lexisnexis_transaction_id)
+          expect(result_context_stages_resolution[:reference]).to eq(lexisnexis_reference)
+          expect(result_context_stages_resolution[:can_pass_with_additional_verification]).
+            to eq(false)
+          expect(result_context_stages_resolution[:attributes_requiring_additional_verification]).
+            to eq([])
+
+          # result[:context][:stages][:state_id]
+          expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
+          expect(result_context_stages_state_id[:errors]).to eq({})
+          expect(result_context_stages_state_id[:exception]).to eq(nil)
+          expect(result_context_stages_state_id[:success]).to eq(true)
+          expect(result_context_stages_state_id[:timed_out]).to eq(false)
+          expect(result_context_stages_state_id[:transaction_id]).to eq(aamva_transaction_id)
+
+          # result[:context][:stages][:threatmetrix]
+          expect(result_context_stages_threatmetrix[:client]).to eq('DdpMock')
+          expect(result_context_stages_threatmetrix[:errors]).to eq({})
+          expect(result_context_stages_threatmetrix[:exception]).to eq(nil)
+          expect(result_context_stages_threatmetrix[:success]).to eq(true)
+          expect(result_context_stages_threatmetrix[:timed_out]).to eq(false)
+          expect(result_context_stages_threatmetrix[:transaction_id]).to eq(threatmetrix_request_id)
+          expect(result_context_stages_threatmetrix[:response_body]).to eq(ddp_response_body)
+
           proofing_component = user.proofing_component
           expect(proofing_component.threatmetrix).to equal(true)
           expect(proofing_component.threatmetrix_review_status).to eq('pass')
@@ -211,49 +217,60 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
             result = document_capture_session.load_proofing_result[:result]
 
-            expect(result).to match(
-              exception: nil,
-              errors: {
-                base: [
-                  a_string_starting_with(
-                    'Response error with code \'invalid_transaction_initiate\':',
-                  ),
-                ],
-              },
-              success: false,
-              timed_out: false,
-              context: {
-                should_proof_state_id: true,
-                stages: {
-                  resolution: {
-                    client: Proofing::LexisNexis::InstantVerify::Proofer.vendor_name,
-                    errors: {
-                      base: [
-                        a_string_starting_with(
-                          'Response error with code \'invalid_transaction_initiate\':',
-                        ),
-                      ],
-                    },
-                    exception: nil,
-                    success: false,
-                    timed_out: false,
-                    transaction_id: lexisnexis_transaction_id,
-                    reference: lexisnexis_reference,
-                  },
-                  threatmetrix: {
-                    client: Proofing::Mock::DdpMockClient.vendor_name,
-                    errors: {},
-                    exception: nil,
-                    success: true,
-                    timed_out: false,
-                    transaction_id: threatmetrix_request_id,
-                    response_body: ddp_response_body,
-                  },
-                },
-              },
-              transaction_id: lexisnexis_transaction_id,
-              reference: lexisnexis_reference,
+            result_context = result[:context]
+            result_context_stages = result_context[:stages]
+            result_context_stages_resolution = result_context_stages[:resolution]
+            result_context_stages_state_id = result_context_stages[:state_id]
+            result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
+
+            expect(result[:exception]).to be_nil
+            expect(result[:errors]).to match(
+              base: [
+                a_string_starting_with(
+                  'Response error with code \'invalid_transaction_initiate\':',
+                ),
+              ],
             )
+            expect(result[:success]).to be false
+            expect(result[:timed_out]).to be false
+
+            # result[:context]
+            expect(result_context[:should_proof_state_id])
+
+            # result[:context][:stages][:resolution]
+            expect(result_context_stages_resolution[:vendor_name]).
+              to eq('lexisnexis:instant_verify')
+            expect(result_context_stages_resolution[:errors][:base].first).to match(
+              a_string_starting_with('Response error with code \'invalid_transaction_initiate\':'),
+            )
+            expect(result_context_stages_resolution[:exception]).to eq(nil)
+            expect(result_context_stages_resolution[:success]).to eq(false)
+            expect(result_context_stages_resolution[:timed_out]).to eq(false)
+            expect(result_context_stages_resolution[:transaction_id]).
+              to eq(lexisnexis_transaction_id)
+            expect(result_context_stages_resolution[:reference]).to eq(lexisnexis_reference)
+            expect(result_context_stages_resolution[:can_pass_with_additional_verification]).
+              to eq(false)
+            expect(result_context_stages_resolution[:attributes_requiring_additional_verification]).
+              to eq([])
+
+            # result[:context][:stages][:state_id]
+            expect(result_context_stages_state_id[:vendor_name]).to eq('UnsupportedJurisdiction')
+            expect(result_context_stages_state_id[:errors]).to eq({})
+            expect(result_context_stages_state_id[:exception]).to eq(nil)
+            expect(result_context_stages_state_id[:success]).to eq(true)
+            expect(result_context_stages_state_id[:timed_out]).to eq(false)
+            expect(result_context_stages_state_id[:transaction_id]).to eq('')
+
+            # result[:context][:stages][:threatmetrix]
+            expect(result_context_stages_threatmetrix[:client]).to eq('DdpMock')
+            expect(result_context_stages_threatmetrix[:errors]).to eq({})
+            expect(result_context_stages_threatmetrix[:exception]).to eq(nil)
+            expect(result_context_stages_threatmetrix[:success]).to eq(true)
+            expect(result_context_stages_threatmetrix[:timed_out]).to eq(false)
+            expect(result_context_stages_threatmetrix[:transaction_id]).
+              to eq(threatmetrix_request_id)
+            expect(result_context_stages_threatmetrix[:response_body]).to eq(ddp_response_body)
           end
         end
 
@@ -322,36 +339,41 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
           result = document_capture_session.load_proofing_result[:result]
 
-          expect(result).to eq(
-            exception: nil,
-            errors: {},
-            success: true,
-            timed_out: false,
-            context: {
-              should_proof_state_id: true,
-              stages: {
-                resolution: {
-                  client: Proofing::LexisNexis::InstantVerify::Proofer.vendor_name,
-                  errors: {},
-                  exception: nil,
-                  success: true,
-                  timed_out: false,
-                  transaction_id: lexisnexis_transaction_id,
-                  reference: lexisnexis_reference,
-                },
-                state_id: {
-                  client: Proofing::Aamva::Proofer.vendor_name,
-                  errors: {},
-                  exception: nil,
-                  success: true,
-                  timed_out: false,
-                  transaction_id: aamva_transaction_id,
-                },
-              },
-            },
-            transaction_id: lexisnexis_transaction_id,
-            reference: lexisnexis_reference,
-          )
+          result_context = result[:context]
+          result_context_stages = result_context[:stages]
+          result_context_stages_resolution = result_context_stages[:resolution]
+          result_context_stages_state_id = result_context_stages[:state_id]
+
+          expect(result[:exception]).to be_nil
+          expect(result[:errors]).to eq({})
+          expect(result[:success]).to be true
+          expect(result[:timed_out]).to be false
+
+          # result[:context]
+          expect(result_context[:should_proof_state_id])
+
+          # result[:context][:stages][:resolution]
+          expect(result_context_stages_resolution[:vendor_name]).
+            to eq('lexisnexis:instant_verify')
+          expect(result_context_stages_resolution[:errors]).to eq({})
+          expect(result_context_stages_resolution[:exception]).to eq(nil)
+          expect(result_context_stages_resolution[:success]).to eq(true)
+          expect(result_context_stages_resolution[:timed_out]).to eq(false)
+          expect(result_context_stages_resolution[:transaction_id]).to eq(lexisnexis_transaction_id)
+          expect(result_context_stages_resolution[:reference]).to eq(lexisnexis_reference)
+          expect(result_context_stages_resolution[:can_pass_with_additional_verification]).
+            to eq(false)
+          expect(result_context_stages_resolution[:attributes_requiring_additional_verification]).
+            to eq([])
+
+          # result[:context][:stages][:state_id]
+          expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
+          expect(result_context_stages_state_id[:errors]).to eq({})
+          expect(result_context_stages_state_id[:exception]).to eq(nil)
+          expect(result_context_stages_state_id[:success]).to eq(true)
+          expect(result_context_stages_state_id[:timed_out]).to eq(false)
+          expect(result_context_stages_state_id[:transaction_id]).to eq(aamva_transaction_id)
+
           proofing_component = user.proofing_component
           expect(proofing_component&.threatmetrix).to be_nil
         end
@@ -385,40 +407,40 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
             result = document_capture_session.load_proofing_result[:result]
 
-            expect(result).to match(
-              exception: nil,
-              errors: {
-                base: [
-                  a_string_starting_with(
-                    'Response error with code \'invalid_transaction_initiate\':',
-                  ),
-                ],
-              },
-              success: false,
-              timed_out: false,
-              context: {
-                should_proof_state_id: true,
-                stages: {
-                  resolution: {
-                    client: Proofing::LexisNexis::InstantVerify::Proofer.vendor_name,
-                    errors: {
-                      base: [
-                        a_string_starting_with(
-                          'Response error with code \'invalid_transaction_initiate\':',
-                        ),
-                      ],
-                    },
-                    exception: nil,
-                    success: false,
-                    timed_out: false,
-                    transaction_id: lexisnexis_transaction_id,
-                    reference: lexisnexis_reference,
-                  },
-                },
-              },
-              transaction_id: lexisnexis_transaction_id,
-              reference: lexisnexis_reference,
+            result_context = result[:context]
+            result_context_stages = result_context[:stages]
+            result_context_stages_resolution = result_context_stages[:resolution]
+
+            expect(result[:exception]).to be_nil
+            expect(result[:errors]).to match(
+              base: [
+                a_string_starting_with(
+                  'Response error with code \'invalid_transaction_initiate\':',
+                ),
+              ],
             )
+            expect(result[:success]).to be false
+            expect(result[:timed_out]).to be false
+
+            # result[:context]
+            expect(result_context[:should_proof_state_id])
+
+            # result[:context][:stages][:resolution]
+            expect(result_context_stages_resolution[:vendor_name]).
+              to eq('lexisnexis:instant_verify')
+            expect(result_context_stages_resolution[:errors][:base].first).to match(
+              a_string_starting_with('Response error with code \'invalid_transaction_initiate\':'),
+            )
+            expect(result_context_stages_resolution[:exception]).to eq(nil)
+            expect(result_context_stages_resolution[:success]).to eq(false)
+            expect(result_context_stages_resolution[:timed_out]).to eq(false)
+            expect(result_context_stages_resolution[:transaction_id]).
+              to eq(lexisnexis_transaction_id)
+            expect(result_context_stages_resolution[:reference]).to eq(lexisnexis_reference)
+            expect(result_context_stages_resolution[:can_pass_with_additional_verification]).
+              to eq(false)
+            expect(result_context_stages_resolution[:attributes_requiring_additional_verification]).
+              to eq([])
           end
         end
 
@@ -496,8 +518,14 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
               result = document_capture_session.load_proofing_result[:result]
 
-              expect(result[:context][:stages][:threatmetrix][:response_body]).
-                to eq(error: 'TMx response body was empty')
+              result_context = result[:context]
+              result_context_stages = result_context[:stages]
+              result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
+
+              # result[:context][:stages][:threatmetrix]
+              expect(result_context_stages_threatmetrix[:response_body]).to eq(
+                error: 'TMx response body was empty',
+              )
             end
           end
         end
@@ -546,10 +574,16 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
         context 'with a successful response from the proofer' do
           before do
-            expect(resolution_proofer).to receive(:proof).
-              and_return(Proofing::Result.new)
-            expect(state_id_proofer).to receive(:proof).
-              and_return(Proofing::Result.new)
+            expect(resolution_proofer).to receive(
+              :proof,
+            ).and_return(
+              Proofing::Mock::ResolutionMockClient::ResolutionMockClientResult.new(
+                success: true,
+                errors: {},
+                exception: nil,
+              ),
+            )
+            expect(state_id_proofer).to receive(:proof).and_return(Proofing::Result.new)
           end
 
           it 'logs the trace_id and timing info for ProofResolution info' do
