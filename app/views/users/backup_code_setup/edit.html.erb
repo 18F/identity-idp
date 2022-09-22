@@ -1,6 +1,6 @@
 <% title t('forms.backup_code_regenerate.confirm') %>
 
-<%= image_tag(asset_url('status/warning.svg'), alt: t('image_description.warning'), class: 'display-block margin-bottom-4 alert-icon') %>
+<%= render AlertIconComponent.new(:warning, class: 'display-block margin-bottom-4') %>
 
 <%= render PageHeadingComponent.new.with_content(t('forms.backup_code_regenerate.confirm')) %>
 

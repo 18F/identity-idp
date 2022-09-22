@@ -9,16 +9,14 @@ locals:
 * options: Array of troubleshooting options.
 %>
 <% if local_assigns.fetch(:type, :error) == :error
-     image_src = 'status/error.svg'
-     troubleshooting_heading = t('idv.troubleshooting.headings.need_assistance')
-     alt = t('image_description.error')
-   else
-     image_src = 'status/warning.svg'
-     troubleshooting_heading = t('components.troubleshooting_options.default_heading')
-     alt = t('image_description.warning')
-   end %>
+    icon_name = 'error'
+    troubleshooting_heading = t('idv.troubleshooting.headings.need_assistance')
+else
+    icon_name = 'warning'
+    troubleshooting_heading = t('components.troubleshooting_options.default_heading')
+end %>
 <% title local_assigns.fetch(:title, heading) %>
-<%= image_tag(image_src, alt: alt, class: 'display-block margin-bottom-4 alert-icon') %>
+<%= render AlertIconComponent.new(icon_name, class: 'display-block margin-bottom-4') %>
 
 <%= render PageHeadingComponent.new.with_content(heading) %>
 
