@@ -239,11 +239,11 @@ RSpec.describe GetUspsProofingResultsJob do
         it 'sends proofing failed email on response with failed status' do
           stub_request_failed_proofing_results
 
-          mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+          mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
           user = pending_enrollment.user
           user.email_addresses.each do |email_address|
             # it sends with the default delay
-            expect(mailer).to receive(:deliver_now_or_later).with(wait: 1.hour)
+            expect(mailer).to receive(:deliver_later).with(wait: 1.hour)
             expect(UserMailer).to receive(:in_person_failed).
               with(
                 user,
@@ -259,11 +259,11 @@ RSpec.describe GetUspsProofingResultsJob do
         it 'sends proofing verifed email on 2xx responses with valid JSON' do
           stub_request_passed_proofing_results
 
-          mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+          mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
           user = pending_enrollment.user
           user.email_addresses.each do |email_address|
             # it sends with the default delay
-            expect(mailer).to receive(:deliver_now_or_later).with(wait: 1.hour)
+            expect(mailer).to receive(:deliver_later).with(wait: 1.hour)
             expect(UserMailer).to receive(:in_person_verified).
               with(
                 user,
@@ -283,10 +283,10 @@ RSpec.describe GetUspsProofingResultsJob do
             allow(IdentityConfig.store).
               to(receive(:in_person_results_delay_in_hours).and_return(5))
 
-            mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+            mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
             user = pending_enrollment.user
             user.email_addresses.each do |email_address|
-              expect(mailer).to receive(:deliver_now_or_later).with(wait: 5.hours)
+              expect(mailer).to receive(:deliver_later).with(wait: 5.hours)
               expect(UserMailer).to receive(:in_person_verified).and_return(mailer)
             end
 
@@ -301,10 +301,10 @@ RSpec.describe GetUspsProofingResultsJob do
             allow(IdentityConfig.store).
               to(receive(:in_person_results_delay_in_hours).and_return(0))
 
-            mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+            mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
             user = pending_enrollment.user
             user.email_addresses.each do |email_address|
-              expect(mailer).to receive(:deliver_now_or_later).with(no_args)
+              expect(mailer).to receive(:deliver_later).with(no_args)
               expect(UserMailer).to receive(:in_person_verified).and_return(mailer)
             end
 
