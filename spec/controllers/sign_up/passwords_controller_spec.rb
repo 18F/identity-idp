@@ -72,7 +72,7 @@ describe SignUp::PasswordsController do
     end
 
     it 'tracks an invalid password event' do
-      let(:password_short_error) { { password: [:too_short] } }
+      password_short_error = { password: [:too_short] }
       token = 'new token'
       user = create(:user, :unconfirmed, confirmation_token: token)
 
