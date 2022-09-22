@@ -241,7 +241,7 @@ module Idv
           date_of_birth: pii_from_doc[:dob],
           address: pii_from_doc[:address1],
           ssn: pii_from_doc[:ssn],
-          failure_reason: form_response.to_h[:error_details] || result.errors.presence,
+          failure_reason: form_response.to_h[:error_details] || form_response.errors.presence,
         )
 
         if form_response.success?

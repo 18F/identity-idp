@@ -25,7 +25,9 @@ describe SignUp::PasswordsController do
       expect(@analytics).to receive(:track_event).
         with('Password Creation', analytics_hash)
 
-      expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).with(success_properties)
+      expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).with(
+        success_properties,
+      )
 
       expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
         email: user.email_addresses.first.email,

@@ -90,7 +90,9 @@ describe Users::ResetPasswordsController, devise: true do
         allow(ForbiddenPasswords).to receive(:new).with(email_address.email).and_return(forbidden)
         expect(forbidden).to receive(:call)
 
-        expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(success_properties)
+        expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
+          success_properties,
+        )
 
         get :edit, params: { reset_password_token: 'foo' }
 
@@ -236,7 +238,9 @@ describe Users::ResetPasswordsController, devise: true do
 
           stub_user_mailer(user)
 
-          expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(success_properties)
+          expect(@irs_attempts_api_tracker).to receive(
+            :forgot_password_new_password_submitted,
+          ).with(success_properties)
 
           password = 'a really long passw0rd'
           params = { password: password, reset_password_token: raw_reset_token }
@@ -282,7 +286,9 @@ describe Users::ResetPasswordsController, devise: true do
 
         stub_user_mailer(user)
 
-        expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(success_properties)
+        expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
+          success_properties,
+        )
 
         get :edit, params: { reset_password_token: raw_reset_token }
         password = 'a really long passw0rd'
@@ -325,7 +331,9 @@ describe Users::ResetPasswordsController, devise: true do
 
         stub_user_mailer(user)
 
-        expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(success_properties)
+        expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
+          success_properties,
+        )
 
         password = 'a really long passw0rd'
         params = { password: password, reset_password_token: raw_reset_token }
