@@ -29,6 +29,27 @@ function submitMockFraudResult({ result, sessionId }: { result: string; sessionI
   });
 }
 
+const CHAOS_OPTIONS: { apply: () => void; undo: () => void }[] = [
+  {
+    apply: () => document.body.style.transform = 'scale(-1, 1)',
+    undo: () => document.body.style.transform = '',
+  },
+  {
+    apply: () => document.body.style.transform = 'rotate(5deg)',
+    undo: () => document.body.style.transform = '',
+  },
+  {
+    apply: () => document.body.style.filter = 'invert(100%)',
+    undo: () => document.body.style.filter = '',
+  },
+  {
+    apply: () => document.body.style.fontFamily = 'Comic Sans MS',
+    undo: () => document.body.style.fontFamily = '',
+  }
+];
+
+let undoLast: () => void | undefined;
+
 function mockFraudResultSelected(event: ChangeEvent) {
   if (!(event.target instanceof HTMLSelectElement)) {
     return;
@@ -37,8 +58,11 @@ function mockFraudResultSelected(event: ChangeEvent) {
   const { value } = event.target;
 
   if (value === 'chaotic') {
-    document.body.style.transform = 'rotate(180deg)';
+    const randomChaosOption = CHAOS_OPTIONS[Math.floor(Math.random() * CHAOS_OPTIONS.length)];
+    randomChaosOption.apply();
+    undoLast = randomChaosOption.undo;
   } else {
+    undoLast?.();
     submitMockFraudResult({ result: value, sessionId: loadSessionId() });
   }
 }
