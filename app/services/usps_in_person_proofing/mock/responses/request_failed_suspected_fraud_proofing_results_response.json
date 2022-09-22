@@ -9,7 +9,7 @@
     "transactionEndDateTime": "12/17/2020 034055",
     "secondaryIdType": "Deed of Trust",
     "failureReason": "Clerk indicates that ID name or address does not match source data.",
-    "fraudSuspected": "true",
+    "fraudSuspected": true,
     "proofingConfirmationNumber": "350040248346707",
     "ippAssuranceLevel": "1.5"
   }

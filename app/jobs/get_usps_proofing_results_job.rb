@@ -207,7 +207,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
 
     enrollment.update(status: :failed)
-    if response['fraudSuspected'] == 'true'
+    if response['fraudSuspected'] == true
       send_failed_fraud_email(enrollment.user, enrollment)
     else
       send_failed_email(enrollment.user, enrollment)
@@ -279,7 +279,7 @@ class GetUspsProofingResultsJob < ApplicationJob
         user,
         email_address,
         enrollment: enrollment,
-      ).deliver_later(**mail_delivery_params)
+      ).deliver_now_or_later(**mail_delivery_params)
     end
   end
 
