@@ -1,9 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe Proofing::Mock::DdpMockClient do
+  around do |ex|
+    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+    ex.run
+    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+  end
+
+  let(:threatmetrix_session_id) { SecureRandom.uuid }
+
   let(:applicant) do
     Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
-      threatmetrix_session_id: 'ABCD-1234',
+      threatmetrix_session_id: threatmetrix_session_id,
       request_ip: Faker::Internet.ip_v4_address,
     )
   end
@@ -17,6 +25,31 @@ RSpec.describe Proofing::Mock::DdpMockClient do
 
   describe '#proof' do
     subject(:result) { instance.proof(applicant) }
+
+    context 'with session data in the redis backend' do
+      before do
+        Proofing::Mock::TmxBackend.new.record_profiling_result(
+          result: redis_result,
+          session_id: threatmetrix_session_id,
+        )
+      end
+
+      context 'with explicit no_result' do
+        let(:redis_result) { 'no_result' }
+
+        it 'has a nil review status' do
+          expect(result.review_status).to be_nil
+        end
+      end
+
+      context 'with reject' do
+        let(:redis_result) { 'reject' }
+
+        it 'has a reject status' do
+          expect(result.review_status).to eq('reject')
+        end
+      end
+    end
 
     it 'passes by default' do
       expect(result.review_status).to eq('pass')
