@@ -7,6 +7,10 @@ describe Proofing::Aamva::Request::VerificationRequest do
       first_name: 'Testy',
       last_name: 'McTesterson',
       dob: '10/29/1942',
+      address1: '123 Sunnyside way',
+      city: 'Sterling',
+      state: 'VA',
+      zipcode: '20176-1234',
     )
     applicant.state_id_data.merge!(
       state_id_number: '123456789',
