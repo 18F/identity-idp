@@ -32,12 +32,33 @@ module Proofing
 
       proof do |applicant, result|
         result.transaction_id = TRANSACTION_ID
+
         response_body = File.read(
           Rails.root.join(
             'spec', 'fixtures', 'proofing', 'lexis_nexis', 'ddp', 'successful_response.json'
           ),
         )
-        result.review_status = case SsnFormatter.format(applicant[:ssn])
+        result.review_status = review_status(
+          session_id: applicant[:threatmetrix_session_id],
+          ssn: applicant[:ssn],
+        )
+
+        result.response_body = JSON.parse(
+          response_body.gsub('REVIEW_STATUS', result.review_status.to_s),
+        )
+      end
+
+      def review_status(session_id:, ssn:)
+        device_status = TmxBackend.new.profiling_result(session_id)
+
+        case device_status
+        when 'no_result'
+          return nil
+        when 'reject', 'review', 'pass'
+          return device_status
+        end
+
+        case SsnFormatter.format(ssn)
         when REJECT_STATUS_SSN
           'reject'
         when REVIEW_STATUS_SSN
@@ -47,9 +68,6 @@ module Proofing
         else
           'pass'
         end
-        result.response_body = JSON.parse(
-          response_body.gsub('REVIEW_STATUS', result.review_status.to_s),
-        )
       end
     end
   end
