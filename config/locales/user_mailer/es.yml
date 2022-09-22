@@ -134,7 +134,7 @@ es:
         help_center_html: Si necesita ayuda adicional, puede <a
           href="%{help_center_url}">visitar nuestro Centro de Ayuda</a> o ponerse 
           en contacto con la agencia a la que intenta acceder.
-      greeting: Hola %{name},
+      greeting: Hola,
       subject: No se pudo verificar su identidad en persona
     in_person_ready_to_verify:
       greeting: 'Hola, %{name}:'

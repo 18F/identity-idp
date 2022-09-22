@@ -272,9 +272,8 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_failed_fraud(user, email_address, first_name:, enrollment:)
+  def in_person_failed_fraud(user, email_address, enrollment:)
     with_user_locale(user) do
-      @first_name = first_name
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,

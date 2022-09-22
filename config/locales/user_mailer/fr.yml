@@ -138,7 +138,7 @@ fr:
         help_center_html: Si vous avez besoin d’aide supplémentaire, vous pouvez <a
           href="%{help_center_url}">consulter notre centre d’aide</a> ou contacter
           l’agence à laquelle vous essayez d’accéder.
-      greeting: Bonjour %{name},
+      greeting: Bonjour,
       subject: Votre identité n’a pas pu être vérifiée en personne
     in_person_ready_to_verify:
       greeting: Bonjour %{name},

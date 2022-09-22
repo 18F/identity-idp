@@ -163,7 +163,6 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.in_person_failed_fraud(
       user,
       email_address_record,
-      first_name: 'Helga',
       enrollment: in_person_enrollment,
     )
   end
