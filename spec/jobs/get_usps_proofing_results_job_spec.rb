@@ -403,7 +403,7 @@ RSpec.describe GetUspsProofingResultsJob do
           reason: 'Bad response structure',
           response_json: UspsInPersonProofing::
           Mock::Fixtures.
-          request_passed_proofing_unsupported_status_response,
+          request_passed_proofing_unsupported_status_results_response,
         )
       end
 
@@ -416,7 +416,7 @@ RSpec.describe GetUspsProofingResultsJob do
           'enrollment encountering an exception',
           reason: 'Unsupported status',
           response_json: UspsInPersonProofing::Mock::
-          Fixtures.request_passed_proofing_unsupported_status_response,
+          Fixtures.request_passed_proofing_unsupported_status_results_response,
         )
 
         it 'logs the status received' do

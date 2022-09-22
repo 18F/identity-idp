@@ -53,7 +53,7 @@ module UspsInPersonProofing
         load_response_fixture('request_passed_proofing_results_response.json')
       end
 
-      def self.request_passed_proofing_unsupported_status_response
+      def self.request_passed_proofing_unsupported_status_results_response
         load_response_fixture('request_passed_proofing_unsupported_status_results_response.json')
       end
 
