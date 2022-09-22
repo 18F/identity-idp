@@ -27,7 +27,7 @@ module Test
     private
 
     def tmx_backend
-      @tmx_backend ||= Proofing::Mock::TmxBackend.new
+      @tmx_backend ||= Proofing::Mock::DeviceProfilingBackend.new
     end
   end
 end

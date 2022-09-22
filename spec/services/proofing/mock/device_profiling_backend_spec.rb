@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::Mock::TmxBackend do
+RSpec.describe Proofing::Mock::DeviceProfilingBackend do
   around do |ex|
     REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
     ex.run

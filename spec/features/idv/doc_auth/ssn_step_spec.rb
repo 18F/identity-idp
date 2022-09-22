@@ -35,7 +35,8 @@ feature 'doc auth ssn step', :js do
 
       expect(page).to have_current_path(idv_doc_auth_verify_step)
 
-      expect(Proofing::Mock::TmxBackend.new.profiling_result(session_id)).to eq('review')
+      profiling_result = Proofing::Mock::DeviceProfilingBackend.new.profiling_result(session_id)
+      expect(profiling_result).to eq('review')
     end
 
     it 'does not proceed to the next page with invalid info' do

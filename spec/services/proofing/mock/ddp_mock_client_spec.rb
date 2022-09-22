@@ -28,7 +28,7 @@ RSpec.describe Proofing::Mock::DdpMockClient do
 
     context 'with session data in the redis backend' do
       before do
-        Proofing::Mock::TmxBackend.new.record_profiling_result(
+        Proofing::Mock::DeviceProfilingBackend.new.record_profiling_result(
           result: redis_result,
           session_id: threatmetrix_session_id,
         )

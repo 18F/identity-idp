@@ -49,7 +49,7 @@ module Proofing
       end
 
       def review_status(session_id:, ssn:)
-        device_status = TmxBackend.new.profiling_result(session_id)
+        device_status = DeviceProfilingBackend.new.profiling_result(session_id)
 
         case device_status
         when 'no_result'

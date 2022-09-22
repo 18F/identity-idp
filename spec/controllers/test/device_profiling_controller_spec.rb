@@ -14,7 +14,7 @@ RSpec.describe Test::DeviceProfilingController do
       expect do
         get :index, params: { session_id: session_id }
       end.to(
-        change { Proofing::Mock::TmxBackend.new.profiling_result(session_id) }.
+        change { Proofing::Mock::DeviceProfilingBackend.new.profiling_result(session_id) }.
         from(nil).to('no_result'),
       )
     end
@@ -27,7 +27,7 @@ RSpec.describe Test::DeviceProfilingController do
       expect do
         post :create, params: { session_id: session_id, result: result }
       end.to(
-        change { Proofing::Mock::TmxBackend.new.profiling_result(session_id) }.
+        change { Proofing::Mock::DeviceProfilingBackend.new.profiling_result(session_id) }.
         from(nil).to(result),
       )
     end

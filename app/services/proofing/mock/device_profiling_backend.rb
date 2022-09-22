@@ -1,6 +1,6 @@
 module Proofing
   module Mock
-    class TmxBackend
+    class DeviceProfilingBackend
       RESULTS = %w[
         no_result
         pass
