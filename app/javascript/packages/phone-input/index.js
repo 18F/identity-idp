@@ -10,7 +10,6 @@ import { replaceVariables } from '@18f/identity-i18n';
  *
  * @prop {string=} country_code_label
  * @prop {string=} invalid_phone
- * @prop {string=} country_constraint_usa
  * @prop {string=} unsupported_country
  */
 
@@ -176,11 +175,7 @@ export class PhoneInput extends HTMLElement {
     const isInvalidCountry =
       supportedCountryCodes?.length === 1 && !isValidNumberForRegion(phoneNumber, countryCode);
     if (isInvalidCountry) {
-      if (countryCode === 'US') {
-        textInput.setCustomValidity(this.strings.country_constraint_usa || '');
-      } else {
-        textInput.setCustomValidity(this.strings.invalid_phone || '');
-      }
+      textInput.setCustomValidity(this.strings.invalid_phone || '');
     }
 
     const isInvalidPhoneNumber = !isPhoneValid(phoneNumber, countryCode);
