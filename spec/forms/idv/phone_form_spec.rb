@@ -169,7 +169,7 @@ describe Idv::PhoneForm do
 
         it 'is valid' do
           expect(result.success?).to eq(true)
-          expect(result.errors).to eq([])
+          expect(result.errors).to eq({})
         end
       end
 
