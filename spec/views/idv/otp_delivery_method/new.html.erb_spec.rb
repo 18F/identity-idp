@@ -3,12 +3,20 @@ require 'rails_helper'
 describe 'idv/otp_delivery_method/new.html.erb' do
   let(:gpo_letter_available) { false }
   let(:step_indicator_steps) { Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS }
+  let(:supports_sms) { true }
+  let(:supports_voice) { true }
 
   before do
     allow(view).to receive(:user_signing_up?).and_return(false)
     allow(view).to receive(:user_fully_authenticated?).and_return(true)
     allow(view).to receive(:gpo_letter_available).and_return(gpo_letter_available)
     allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
+
+    @phone_number_capabilities = instance_double(
+      PhoneNumberCapabilities,
+      supports_sms?: supports_sms,
+      supports_voice?: supports_voice,
+    )
   end
 
   subject(:rendered) { render template: 'idv/otp_delivery_method/new' }
@@ -44,6 +52,29 @@ describe 'idv/otp_delivery_method/new.html.erb' do
     it 'disables problematic vendor option' do
       expect(rendered).to have_field('otp_delivery_preference', with: :voice, disabled: false)
       expect(rendered).to have_field('otp_delivery_preference', with: :sms, disabled: true)
+    end
+  end
+
+  it 'renders sms and voice options' do
+    expect(rendered).to have_field('otp_delivery_preference', with: :voice)
+    expect(rendered).to have_field('otp_delivery_preference', with: :sms)
+  end
+
+  context 'without sms support' do
+    let(:supports_sms) { false }
+
+    it 'renders voice option' do
+      expect(rendered).to have_field('otp_delivery_preference', with: :voice)
+      expect(rendered).not_to have_field('otp_delivery_preference', with: :sms)
+    end
+  end
+
+  context 'without voice support' do
+    let(:supports_voice) { false }
+
+    it 'renders sms option' do
+      expect(rendered).not_to have_field('otp_delivery_preference', with: :voice)
+      expect(rendered).to have_field('otp_delivery_preference', with: :sms)
     end
   end
 end
