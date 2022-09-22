@@ -12,6 +12,7 @@ module Proofing
           'PersonLastNameExactMatchIndicator' => :last_name,
           'PersonFirstNameExactMatchIndicator' => :first_name,
           'AddressLine1MatchIndicator' => :address1,
+          'AddressLine2MatchIndicator' => :address2,
           'AddressCityMatchIndicator' => :city,
           'AddressStateCodeMatchIndicator' => :state,
           'AddressZIP5MatchIndicator' => :zipcode,
