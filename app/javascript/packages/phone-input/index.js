@@ -159,7 +159,7 @@ export class PhoneInput extends HTMLElement {
   }
 
   validate() {
-    const { textInput, codeInput, supportedCountryCodes, selectedOption } = this;
+    const { textInput, codeInput, selectedOption } = this;
     if (!textInput || !codeInput || !selectedOption) {
       return;
     }
@@ -172,8 +172,7 @@ export class PhoneInput extends HTMLElement {
       return;
     }
 
-    const isInvalidCountry =
-      supportedCountryCodes?.length === 1 && !isValidNumberForRegion(phoneNumber, countryCode);
+    const isInvalidCountry = !isValidNumberForRegion(phoneNumber, countryCode);
     if (isInvalidCountry) {
       textInput.setCustomValidity(this.strings.invalid_phone || '');
     }
