@@ -126,7 +126,7 @@ en:
         intro: We understand that you were attempting to verify your identity through
           Login.gov, however your identity could not be verified at the
           %{location} Post Office on %{date}.
-      greeting: Hi,
+      greeting: Hello,
       subject: Your identity could not be verified in person
     in_person_ready_to_verify:
       greeting: Hi %{name},
