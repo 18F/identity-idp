@@ -89,7 +89,7 @@ describe Idv::PhoneForm do
     end
 
     context 'with specific allowed countries' do
-      let(:allowed_countries) { ['MP'] }
+      let(:allowed_countries) { ['MP', 'US'] }
 
       it 'validates to only allow numbers from permitted countries' do
         invalid_phones = ['+81 54 354 3643', '+12423270143']
