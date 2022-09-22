@@ -4,15 +4,6 @@
 module IrsAttemptsApi
   module TrackerEvents
     # @param [Boolean] success True if Account Successfully Deleted
-    # A User deletes their Login.gov account
-    def account_purged(success:)
-      track_event(
-        :account_purged,
-        success: success,
-      )
-    end
-
-    # @param [Boolean] success True if Account Successfully Deleted
     # @param [Hash<Key, Array<String>>] failure_reason displays why account deletion failed
     # A User confirms and deletes their Login.gov account after 24 hour period
     def account_reset_account_deleted(success:, failure_reason:)
@@ -356,6 +347,15 @@ module IrsAttemptsApi
         address: address,
         ssn: ssn,
         failure_reason: failure_reason,
+      )
+    end
+
+    # @param [Boolean] success True if Account Successfully Deleted
+    # A User deletes their Login.gov account
+    def logged_in_account_purged(success:)
+      track_event(
+        :logged_in_account_purged,
+        success: success,
       )
     end
 
