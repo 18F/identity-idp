@@ -258,7 +258,7 @@ class GetUspsProofingResultsJob < ApplicationJob
         user,
         email_address,
         enrollment: enrollment,
-      ).deliver_now_or_later(**mail_delivery_params)
+      ).deliver_later(**mail_delivery_params)
     end
   end
 
