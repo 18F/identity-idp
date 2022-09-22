@@ -60,6 +60,15 @@ RSpec.describe OpenidConnect::LogoutController do
             expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
           end
 
+          it 'includes CSP headers' do
+            add_sp_session_request_url
+            action
+
+            expect(
+              response.request.content_security_policy.directives['form-action'],
+            ).to eq(['\'self\'', 'gov.gsa.openidconnect.test:'])
+          end
+
           it 'tracks events' do
             stub_analytics
             expect(@analytics).to receive(:track_event).
@@ -579,5 +588,22 @@ RSpec.describe OpenidConnect::LogoutController do
         end
       end
     end
+  end
+
+  def add_sp_session_request_url
+    params = {
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+      client_id: service_provider,
+      nonce: SecureRandom.hex,
+      redirect_uri: 'gov.gsa.openidconnect.test://result',
+      response_type: 'code',
+      scope: 'openid profile',
+      state: SecureRandom.hex,
+    }
+    session[:sp] = {
+      request_url: URI.parse(
+        "http://#{IdentityConfig.store.domain_name}?#{URI.encode_www_form(params)}",
+      ).to_s,
+    }
   end
 end

@@ -19,12 +19,10 @@ module OpenidConnect
 
       if result.success? && (redirect_uri = result.extra[:redirect_uri])
         sign_out
-        unless logout_params[:prevent_logout_redirect] == 'true'
-          redirect_to(
-            redirect_uri,
-            allow_other_host: true,
-          )
-        end
+        redirect_to(
+          redirect_uri,
+          allow_other_host: true,
+        )
       else
         render :error
       end
@@ -35,7 +33,6 @@ module OpenidConnect
         :id_token_hint,
         :post_logout_redirect_uri,
         :state,
-        :prevent_logout_redirect,
       ]
 
       if IdentityConfig.store.accept_client_id_in_oidc_logout ||
