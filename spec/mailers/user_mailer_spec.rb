@@ -587,7 +587,6 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#in_person_failed_fraud' do
-  let(:first_name) { 'Michael' }
     let(:enrollment) do
       create(
         :in_person_enrollment,
@@ -601,7 +600,6 @@ describe UserMailer, type: :mailer do
       UserMailer.in_person_failed_fraud(
         user,
         user.email_addresses.first,
-        first_name: first_name,
         enrollment: enrollment,
       )
     end
