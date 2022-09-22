@@ -66,7 +66,9 @@ module Idv
       return unless valid_phone_for_allowed_countries?(phone)
 
       capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: user_phone?(phone))
-      unsupported_delivery_methods(capabilities).each do |delivery_method|
+      unsupported_methods = unsupported_delivery_methods(capabilities)
+      return if unsupported_methods.count != delivery_methods.count
+      unsupported_methods.each do |delivery_method|
         errors.add(
           :phone,
           I18n.t(
