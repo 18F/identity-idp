@@ -12,6 +12,7 @@ module Idv
 
     def new
       analytics.idv_phone_otp_delivery_selection_visit
+      @phone_number_capabilities = phone_number_capabilities
       render :new, locals: { gpo_letter_available: gpo_letter_available }
     end
 
@@ -24,6 +25,12 @@ module Idv
     end
 
     private
+
+    attr_reader :idv_phone
+
+    def phone_number_capabilities
+      @phone_number_capabilities ||= PhoneNumberCapabilities.new(idv_phone, phone_confirmed: false)
+    end
 
     def confirm_phone_step_complete
       redirect_to idv_phone_url if idv_session.vendor_phone_confirmation != true
