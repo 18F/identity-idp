@@ -154,5 +154,44 @@ describe Idv::PhoneForm do
         end
       end
     end
+
+    context 'with unsupported delivery method' do
+      let(:unsupported_delivery_methods) { [] }
+      let(:result) { subject.submit(params) }
+
+      before do
+        allow(subject).to receive(:unsupported_delivery_methods).
+          and_return(unsupported_delivery_methods)
+      end
+
+      context 'with one unsupported delivery method' do
+        let(:unsupported_delivery_methods) { [:sms] }
+
+        it 'is valid' do
+          expect(result.success?).to eq(true)
+          expect(result.errors).to eq([])
+        end
+      end
+
+      context 'with all delivery methods unsupported' do
+        let(:unsupported_delivery_methods) { [:sms, :voice] }
+
+        it 'is invalid' do
+          expect(result.success?).to eq(false)
+          expect(result.errors).to eq(
+            phone: [
+              t(
+                'two_factor_authentication.otp_delivery_preference.sms_unsupported',
+                location: 'United States',
+              ),
+              t(
+                'two_factor_authentication.otp_delivery_preference.voice_unsupported',
+                location: 'United States',
+              ),
+            ],
+          )
+        end
+      end
+    end
   end
 end
