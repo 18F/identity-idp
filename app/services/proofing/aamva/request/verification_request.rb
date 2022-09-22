@@ -60,7 +60,34 @@ module Proofing
           user_provided_data_map.each do |xpath, data|
             REXML::XPath.first(document, xpath).add_text(data)
           end
+          add_street_address_line_2_to_rexml_document(document) if applicant.address2.present?
           @body = document.to_s
+        end
+
+        def add_street_address_line_2_to_rexml_document(document)
+          old_address_node = document.delete_element('//ns1:Address')
+          new_address_node = old_address_node.clone
+          old_address_node.children.each do |child_node|
+            next unless child_node.node_type == :element
+
+            new_element = child_node.clone
+            new_element.add_text(child_node.text)
+            new_address_node.add_element(new_element)
+
+            if child_node.name == 'AddressDeliveryPointText'
+              new_address_node.add_element(address_line_2_element)
+            end
+          end
+          REXML::XPath.first(
+            document,
+            '//ns:verifyDriverLicenseDataRequest',
+          ).add_element(new_address_node)
+        end
+
+        def address_line_2_element
+          element = REXML::Element.new('ns2:AddressDeliveryPointText')
+          element.add_text(applicant.address2)
+          element
         end
 
         def build_request_body
