@@ -49,6 +49,7 @@ function MockDeviceProfilingOptions() {
 
   return (
     <>
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className="usa-label" htmlFor={inputId}>
         <strong className="text-accent-warm-dark">For sandbox testing only:</strong> Mock device
         profiling behavior
@@ -66,7 +67,7 @@ function MockDeviceProfilingOptions() {
         <option value="chaotic">Do something chaotic</option>
       </select>
     </>
-);
+  );
 }
 
 document.addEventListener('DOMContentLoaded', () => {
