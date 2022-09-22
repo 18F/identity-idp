@@ -41,6 +41,8 @@ es:
         %{timeout}.</strong> Por su seguridad, limitamos el número de veces que
         puede intentar verificar un documento en línea.'
     general: '¡Oops! Algo salió mal. Inténtelo de nuevo.'
+    inherited_proofing:
+      consent_form: to be implemented
     invalid_totp: El código es inválido. Vuelva a intentarlo.
     max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.
       Puede restablecer su contraseña usando el enlace “¿Olvidó su contraseña?”.

@@ -47,15 +47,6 @@ fr:
         bring_id_info_no_other_forms: Nous n’acceptons actuellement aucune autre forme
           d’identification, comme les passeports et les documents d’identité
           militaires.
-        bring_proof_header: Preuve de votre adresse actuelle
-        bring_proof_info_acceptable: 'Vous avez besoin d’un justificatif de domicile si
-          votre adresse actuelle est différente de l’adresse figurant sur votre
-          document d’identité. Les justificatifs d’adresse acceptés sont les
-          suivants:'
-        bring_proof_info_card: Carte d’immatriculation du véhicule
-        bring_proof_info_lease: Bail, hypothèque ou acte de fiducie
-        bring_proof_info_policy: Police d’assurance habitation ou véhicule
-        bring_proof_info_registration: Inscription sur les listes électorales
         bring_title: 'Lorsque vous allez au bureau de poste, veuillez apporter:'
         privacy_disclaimer: '%{app_name} est un site gouvernemental sécurisé. Nous et le
           service postal américain utilisons vos données pour vérifier votre
@@ -126,6 +117,9 @@ fr:
         info: 'Vous avez besoin d’un justificatif de domicile si votre adresse actuelle
           est différente de l’adresse figurant sur votre document d’identité.
           Les justificatifs d’adresse acceptés sont les suivants:'
+        physical_or_digital_copy: Vous pouvez apporter une copie physique ou montrer une
+          copie numérique du document. Vous ne pouvez pas montrer une photo ou
+          une capture d’écran du document.
       state_id:
         acceptable_documents:
           - Permis de conduire d’État

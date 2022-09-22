@@ -89,6 +89,7 @@ class ApplicationController < ActionController::Base
       cookie_device_uuid: cookies[:device],
       sp_request_uri: decorated_session.request_url_params[:redirect_uri],
       enabled_for_session: irs_attempt_api_enabled_for_session?,
+      analytics: analytics,
     )
   end
 
@@ -273,12 +274,7 @@ class ApplicationController < ActionController::Base
       user_signed_in: user_signed_in?,
     )
     flash[:error] = t('errors.general')
-    begin
-      redirect_back fallback_location: new_user_session_url, allow_other_host: false
-    rescue ActionController::Redirecting::UnsafeRedirectError => err
-      # Exceptions raised inside exception handlers are not propagated up, so we manually rescue
-      unsafe_redirect_error(err)
-    end
+    redirect_back fallback_location: new_user_session_url, allow_other_host: false
   end
 
   def unsafe_redirect_error(_exception)

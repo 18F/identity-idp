@@ -66,7 +66,9 @@ module Users
     end
 
     def phone_configuration
-      MfaContext.new(current_user).phone_configuration(user_session[:phone_id])
+      return @phone_configuration if defined?(@phone_configuration)
+      @phone_configuration =
+        MfaContext.new(current_user).phone_configuration(user_session[:phone_id])
     end
 
     def validate_otp_delivery_preference_and_send_code
@@ -224,19 +226,22 @@ module Users
       if UserSessionContext.reauthentication_context?(context)
         irs_attempts_api_tracker.mfa_login_phone_otp_sent(
           reauthentication: true,
-          phone_number: parsed_phone.e164,
           success: @telephony_result.success?,
+          phone_number: parsed_phone.e164,
+          otp_delivery_method: otp_delivery_preference,
         )
       elsif UserSessionContext.authentication_context?(context)
         irs_attempts_api_tracker.mfa_login_phone_otp_sent(
           reauthentication: false,
-          phone_number: parsed_phone.e164,
           success: @telephony_result.success?,
+          phone_number: parsed_phone.e164,
+          otp_delivery_method: otp_delivery_preference,
         )
       elsif UserSessionContext.confirmation_context?(context)
         irs_attempts_api_tracker.mfa_enroll_phone_otp_sent(
-          phone_number: parsed_phone.e164,
           success: @telephony_result.success?,
+          phone_number: parsed_phone.e164,
+          otp_delivery_method: otp_delivery_preference,
         )
       end
     end

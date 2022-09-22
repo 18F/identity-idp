@@ -201,26 +201,13 @@ module DocAuthRouter
   # rubocop:enable Layout/LineLength
 
   def self.doc_auth_vendor(discriminator: nil, analytics: nil)
-    if IdentityConfig.store.doc_auth_vendor_randomize
-      target_percent = IdentityConfig.store.doc_auth_vendor_randomize_percent
+    case AbTests::DOC_AUTH_VENDOR.bucket(discriminator)
+    when :alternate_vendor
+      IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
+    else
+      analytics&.idv_doc_auth_randomizer_defaulted if discriminator.blank?
 
-      if randomize?(target_percent, discriminator, analytics)
-        return IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
-      end
+      IdentityConfig.store.doc_auth_vendor
     end
-
-    IdentityConfig.store.doc_auth_vendor
-  end
-
-  def self.randomize?(target_percent, discriminator, analytics)
-    if discriminator.blank?
-      analytics&.idv_doc_auth_randomizer_defaulted
-      return false
-    end
-
-    max_sha = (16 ** 64) - 1
-    user_value = Digest::SHA256.hexdigest(discriminator).to_i(16).to_f / max_sha * 100
-
-    user_value < target_percent.clamp(0, 100)
   end
 end

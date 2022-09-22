@@ -10,6 +10,7 @@ module RedirectUriValidator
   private
 
   def allowed_redirect_uri
+    return unless service_provider.present?
     return if any_registered_sp_redirect_uris_identical_to_the_requested_uri?
 
     errors.add(
@@ -19,7 +20,7 @@ module RedirectUriValidator
   end
 
   def any_registered_sp_redirect_uris_identical_to_the_requested_uri?
-    service_provider&.redirect_uris&.any? do |sp_redirect_uri|
+    service_provider.redirect_uris.any? do |sp_redirect_uri|
       parsed_sp_redirect_uri = URI.parse(sp_redirect_uri)
 
       parsed_sp_redirect_uri == parsed_redirect_uri

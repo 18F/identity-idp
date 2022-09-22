@@ -100,6 +100,10 @@ class Profile < ApplicationRecord
     includes_phone_check?
   end
 
+  def has_proofed_before?
+    Profile.where(user_id: user_id).where.not(activated_at: nil).where.not(id: self.id).exists?
+  end
+
   private
 
   def personal_key_generator

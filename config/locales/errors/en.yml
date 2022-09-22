@@ -39,6 +39,9 @@ en:
         security, we limit the number of times you can attempt to verify a
         document online.'
     general: Oops, something went wrong. Please try again.
+    inherited_proofing:
+      consent_form: Before you can continue, you must give us permission. Please check
+        the box below and then click continue.blah
     invalid_totp: Invalid code. Please try again.
     max_password_attempts_reached: You’ve entered too many incorrect passwords. You
       can reset your password using the “Forgot your password?” link.

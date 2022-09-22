@@ -1,4 +1,5 @@
 class GetUspsProofingResultsJob < ApplicationJob
+  MILLISECONDS_PER_SECOND = 1000.0 # Specify float value to use floating point math
   IPP_STATUS_PASSED = 'In-person passed'
   IPP_STATUS_FAILED = 'In-person failed'
   IPP_INCOMPLETE_ERROR_MESSAGE = 'Customer has not been to a post office to complete IPP'
@@ -68,9 +69,11 @@ class GetUspsProofingResultsJob < ApplicationJob
   DEFAULT_EMAIL_DELAY_IN_HOURS = 1
 
   def check_enrollments(enrollments)
+    request_delay_in_seconds = IdentityConfig.store.
+      get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND
     proofer = UspsInPersonProofing::Proofer.new
 
-    enrollments.each do |enrollment|
+    enrollments.each_with_index do |enrollment, idx|
       # Add a unique ID for enrollments that don't have one
       enrollment.update(unique_id: enrollment.usps_unique_id) if enrollment.unique_id.blank?
 
@@ -94,6 +97,9 @@ class GetUspsProofingResultsJob < ApplicationJob
 
       # Record the attempt to update the enrollment
       enrollment.update(status_check_attempted_at: status_check_attempted_at)
+
+      # Sleep for a while before we attempt to make another call to USPS
+      sleep request_delay_in_seconds if idx < enrollments.length - 1
     end
   end
 
@@ -224,21 +230,25 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def send_verified_email(user, enrollment)
     user.confirmed_email_addresses.each do |email_address|
+      # rubocop:disable IdentityIdp/MailLaterLinter
       UserMailer.in_person_verified(
         user,
         email_address,
         enrollment: enrollment,
-      ).deliver_now_or_later(**mail_delivery_params)
+      ).deliver_later(**mail_delivery_params)
+      # rubocop:enable IdentityIdp/MailLaterLinter
     end
   end
 
   def send_failed_email(user, enrollment)
     user.confirmed_email_addresses.each do |email_address|
+      # rubocop:disable IdentityIdp/MailLaterLinter
       UserMailer.in_person_failed(
         user,
         email_address,
         enrollment: enrollment,
-      ).deliver_now_or_later(**mail_delivery_params)
+      ).deliver_later(**mail_delivery_params)
+      # rubocop:enable IdentityIdp/MailLaterLinter
     end
   end
 

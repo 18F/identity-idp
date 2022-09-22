@@ -64,6 +64,7 @@ lint: ## Runs all lint tests
 	bundle exec rubocop --parallel
 	@echo "--- analytics_events ---"
 	make lint_analytics_events
+	make lint_tracker_events
 	@echo "--- brakeman ---"
 	bundle exec brakeman
 	@echo "--- bundler-audit ---"

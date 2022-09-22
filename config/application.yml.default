@@ -22,6 +22,7 @@ aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","H
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
+accept_client_id_in_oidc_logout: false
 account_reset_token_valid_for_days: 1
 account_reset_wait_period_days: 1
 acuant_maintenance_window_start:
@@ -51,7 +52,6 @@ aws_logo_bucket: ''
 aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: false
 backup_code_cost: '2000$8$1$'
-backup_code_reminder_redirect: false
 broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 country_phone_number_overrides: '{}'
@@ -80,7 +80,8 @@ doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_tips: 3
-doc_auth_max_attempts_before_native_camera: 2
+doc_auth_max_capture_attempts_before_native_camera: 2
+doc_auth_max_submission_attempts_before_native_camera: 2
 doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
@@ -102,6 +103,8 @@ idv_attempt_window_in_hours: 6
 idv_contact_url: https://www.example.com
 idv_max_attempts: 5
 idv_min_age_years: 13
+idv_native_camera_a_b_testing_enabled: false
+idv_native_camera_a_b_testing_percent: 10
 idv_personal_key_confirmation_enabled: true
 idv_public_key: 'LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZ3d0RRWUpLb1pJaHZjTkFRRUJCUUFEU3dBd1NBSkJBS3p4d25rbUxqeGx1NmhsRlQ2d2JreUlweHNtYkMyaApjYW5TMGhuWm1DRGIrTEhaME5zQTdHWURpZkMxQlRBMHRuRFo0Zm9HNTRmYjNzYk9ubGpGWXVNQ0F3RUFBUT09Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo='
 idv_private_key: 'LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlCT2dJQkFBSkJBS3p4d25rbUxqeGx1NmhsRlQ2d2JreUlweHNtYkMyaGNhblMwaG5abUNEYitMSFowTnNBCjdHWURpZkMxQlRBMHRuRFo0Zm9HNTRmYjNzYk9ubGpGWXVNQ0F3RUFBUUpCQUp6TUMvOSs2RWlHQzkrZTFlWWkKVzc0ejN4MjBkanZndFlhOHh4UDh2ZnA3TjdKQXMvaGNUbjVLOCtDM2swaXUyR2RNb21qSlp2ckxwT0IyTWh4RQo3QkVDSVFEVERhbVRCMHhKSlVpV0ljNk15Y0dFa2J4SEZ3eEtURVNCaHhzREFISDZEUUloQU5IR2NwVUs5dmVSCkdrZlZTOS9MSVNZQlk2YzRUZk1NUFJZU21KVHFNRVN2QWlBZFdiY05aV1JzZjZ6YWhCVVBhemRvVWtRV3R0UFUKdVVxRm9ONVd5b2NQT1FJZ1FrUjlaK1haMUtVcTl5eERWc1FWaWFzQXJ3K1RXRWN5ZU9tUTkrSHZNNU1DSUcrMQpxVldqNW9PL0FBSU1QbXZVZmp5L0JnMnhEQVRiOEp6alFrQ3dLSnNwCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg=='
@@ -114,6 +117,7 @@ in_person_results_delay_in_hours: 1
 include_slo_in_saml_metadata: false
 inherited_proofing_enabled: false
 inherited_proofing_va_base_url: 'https://staging-api.va.gov'
+va_inherited_proofing_mock_enabled: true
 irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_auth_tokens: ''
 irs_attempt_api_csp_id: 'LOGIN.gov'
@@ -121,6 +125,7 @@ irs_attempt_api_enabled: false
 irs_attempt_api_event_ttl_seconds: 86400
 irs_attempt_api_event_count_default: 1000
 irs_attempt_api_event_count_max: 10000
+irs_attempt_api_payload_size_logging_enabled: true
 kantara_2fa_phone_restricted: false
 kantara_2fa_phone_existing_user_restriction: false
 kantara_restriction_enforcement_date: '2022-07-19'
@@ -226,6 +231,7 @@ reg_confirmed_email_max_attempts: 20
 reg_confirmed_email_window_in_minutes: 60
 reg_unconfirmed_email_max_attempts: 20
 reg_unconfirmed_email_window_in_minutes: 60
+reject_id_token_hint_in_logout: false
 remember_device_expiration_hours_aal_1: 720
 remember_device_expiration_hours_aal_2: 12
 report_timeout: 0
@@ -282,6 +288,7 @@ use_dashboard_service_providers: false
 use_kms: false
 usps_confirmation_max_days: 10
 usps_ipp_password: ''
+usps_ipp_client_id: ''
 usps_ipp_root_url: ''
 usps_ipp_request_timeout: 10
 usps_ipp_sponsor_id: ''
@@ -289,6 +296,7 @@ usps_ipp_username: ''
 usps_mock_fallback: true
 get_usps_proofing_results_job_cron: '0/10 * * * *'
 get_usps_proofing_results_job_reprocess_delay_minutes: 5
+get_usps_proofing_results_job_request_delay_milliseconds: 1000
 gpo_allowed_for_strict_ial2: true
 voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
@@ -327,6 +335,7 @@ development:
   identity_pki_local_dev: true
   in_person_proofing_enabled: true
   inherited_proofing_enabled: true
+  va_inherited_proofing_mock_enabled: true
   kantara_2fa_phone_restricted: true
   kantara_2fa_phone_existing_user_restriction: true
   kantara_restriction_enforcement_date: '2022-07-01'
@@ -482,6 +491,7 @@ test:
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: true
   inherited_proofing_enabled: true
+  va_inherited_proofing_mock_enabled: false
   irs_attempt_api_auth_tokens: 'test-token-1,test-token-2'
   irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
   irs_attempt_api_public_key_id: key1

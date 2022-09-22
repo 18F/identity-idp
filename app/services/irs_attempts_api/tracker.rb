@@ -1,10 +1,10 @@
 module IrsAttemptsApi
   class Tracker
     attr_reader :session_id, :enabled_for_session, :request, :user, :sp, :cookie_device_uuid,
-                :sp_request_uri
+                :sp_request_uri, :analytics
 
     def initialize(session_id:, request:, user:, sp:, cookie_device_uuid:,
-                   sp_request_uri:, enabled_for_session:)
+                   sp_request_uri:, enabled_for_session:, analytics:)
       @session_id = session_id # IRS session ID
       @request = request
       @user = user
@@ -12,15 +12,22 @@ module IrsAttemptsApi
       @cookie_device_uuid = cookie_device_uuid
       @sp_request_uri = sp_request_uri
       @enabled_for_session = enabled_for_session
+      @analytics = analytics
     end
 
     def track_event(event_type, metadata = {})
-      return unless enabled?
+      return if !enabled? && !IdentityConfig.store.irs_attempt_api_payload_size_logging_enabled
+
+      if metadata.has_key?(:failure_reason) &&
+         (metadata[:failure_reason].blank? ||
+          metadata[:success].present?)
+        metadata.delete(:failure_reason)
+      end
 
       event_metadata = {
         user_agent: request&.user_agent,
         unique_session_id: hashed_session_id,
-        user_uuid: AgencyIdentityLinker.for(user: user, service_provider: sp)&.uuid,
+        user_uuid: sp && AgencyIdentityLinker.for(user: user, service_provider: sp)&.uuid,
         device_fingerprint: hashed_cookie_device_uuid,
         user_ip_address: request&.remote_ip,
         irs_application_url: sp_request_uri,
@@ -34,13 +41,23 @@ module IrsAttemptsApi
         event_metadata: event_metadata,
       )
 
-      redis_client.write_event(
-        event_key: event.event_key,
-        jwe: event.to_jwe,
-        timestamp: event.occurred_at,
-      )
+      if IdentityConfig.store.irs_attempt_api_payload_size_logging_enabled
+        analytics.irs_attempts_api_event_metadata(
+          event_type: event_type,
+          unencrypted_payload_num_bytes: event.payload.to_json.bytesize,
+          recorded: !!enabled?,
+        )
+      end
 
-      event
+      if enabled?
+        redis_client.write_event(
+          event_key: event.event_key,
+          jwe: event.to_jwe,
+          timestamp: event.occurred_at,
+        )
+
+        event
+      end
     end
 
     include TrackerEvents

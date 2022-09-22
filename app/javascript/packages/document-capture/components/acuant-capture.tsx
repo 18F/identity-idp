@@ -16,6 +16,7 @@ import type { ReactNode, MouseEvent, Ref } from 'react';
 import AnalyticsContext from '../context/analytics';
 import AcuantContext from '../context/acuant';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
+import NativeCameraABTestContext from '../context/native-camera-a-b-test';
 import AcuantCamera from './acuant-camera';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
@@ -298,8 +299,11 @@ function AcuantCapture(
     failedCaptureAttempts,
     onFailedCaptureAttempt,
     onResetFailedCaptureAttempts,
+    failedSubmissionAttempts,
     forceNativeCamera,
   } = useContext(FailedCaptureAttemptsContext);
+
+  const { nativeCameraABTestingEnabled, nativeCameraOnly } = useContext(NativeCameraABTestContext);
 
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
   useEffect(() => {
@@ -414,18 +418,30 @@ function AcuantCapture(
    */
   function startCaptureOrTriggerUpload(event: MouseEvent) {
     if (event.target === inputRef.current) {
-      if (forceNativeCamera) {
-        trackEvent('IdV: Native camera forced after failed attempts', {
-          field: name,
-          failed_attempts: failedCaptureAttempts,
-        });
-        return forceUpload();
-      }
       const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;
-      const shouldStartAcuantCapture =
-        isAcuantCaptureCapable && capture !== 'user' && !isForceUploading.current;
+      const isEnvironmentCapture = capture !== 'user';
       const shouldStartSelfieCapture =
         isAcuantLoaded && capture === 'user' && !isForceUploading.current;
+      let shouldStartAcuantCapture =
+        isAcuantCaptureCapable &&
+        capture !== 'user' &&
+        !isForceUploading.current &&
+        !forceNativeCamera;
+
+      if (isAcuantCaptureCapable && isEnvironmentCapture && forceNativeCamera) {
+        trackEvent('IdV: Native camera forced after failed attempts', {
+          field: name,
+          failed_capture_attempts: failedCaptureAttempts,
+          failed_submission_attempts: failedSubmissionAttempts,
+        });
+      }
+
+      if (shouldStartAcuantCapture && nativeCameraABTestingEnabled) {
+        trackEvent('IdV: Native camera A/B Test', {
+          native_camera_only: nativeCameraOnly,
+        });
+        shouldStartAcuantCapture = !nativeCameraOnly;
+      }
 
       if (!allowUpload || shouldStartSelfieCapture || shouldStartAcuantCapture) {
         event.preventDefault();

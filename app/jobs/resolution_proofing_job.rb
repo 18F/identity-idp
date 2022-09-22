@@ -42,6 +42,7 @@ class ResolutionProofingJob < ApplicationJob
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
       issuer: issuer,
+      timer: timer,
     )
 
     callback_log_data = proof_lexisnexis_then_aamva(
@@ -105,7 +106,8 @@ class ResolutionProofingJob < ApplicationJob
     user:,
     threatmetrix_session_id:,
     request_ip:,
-    issuer:
+    issuer:,
+    timer:
   )
     return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
     return unless issuer_allows_threatmetrix?(issuer)
@@ -121,7 +123,9 @@ class ResolutionProofingJob < ApplicationJob
     ddp_pii[:email] = user&.confirmed_email_addresses&.first&.email
     ddp_pii[:request_ip] = request_ip
 
-    result = lexisnexis_ddp_proofer.proof(ddp_pii)
+    result = timer.time('threatmetrix') do
+      lexisnexis_ddp_proofer.proof(ddp_pii)
+    end
 
     log_threatmetrix_info(result, user)
     add_threatmetrix_proofing_component(user.id, result)
@@ -131,69 +135,43 @@ class ResolutionProofingJob < ApplicationJob
 
   # @return [CallbackLogData]
   def proof_lexisnexis_then_aamva(timer:, applicant_pii:, should_proof_state_id:)
-    proofer_result = timer.time('resolution') do
+    resolution_result = timer.time('resolution') do
       resolution_proofer.proof(applicant_pii)
     end
 
-    result = proofer_result.to_h
-    resolution_success = proofer_result.success?
+    state_id_result = Proofing::Aamva::UnsupportedJurisdictionResult.new
+    if should_proof_state_id && resolution_result.success?
+      timer.time('state_id') do
+        state_id_result = state_id_proofer.proof(applicant_pii)
+      end
+    end
 
-    result[:transaction_id] = proofer_result.transaction_id
-    result[:reference] = proofer_result.reference
-
-    exception = proofer_result.exception.inspect if proofer_result.exception
-    result[:timed_out] = proofer_result.timed_out?
-    result[:exception] = exception
-
-    result[:context] = {
-      should_proof_state_id: should_proof_state_id,
-      stages: {
-        resolution: {
-          client: resolution_proofer.class.vendor_name,
-          errors: proofer_result.errors,
-          exception: exception,
-          success: proofer_result.success?,
-          timed_out: proofer_result.timed_out?,
-          transaction_id: proofer_result.transaction_id,
-          reference: proofer_result.reference,
+    result = {
+      success: resolution_result.success? && state_id_result.success?,
+      errors: resolution_result.errors.merge(state_id_result.errors),
+      exception: resolution_result.exception || state_id_result.exception,
+      timed_out: resolution_result.timed_out? || state_id_result.timed_out?,
+      context: {
+        should_proof_state_id: should_proof_state_id,
+        stages: {
+          resolution: resolution_result.to_h,
+          state_id: {
+            errors: state_id_result.errors,
+            exception: state_id_result.exception,
+            success: state_id_result.success?,
+            timed_out: state_id_result.timed_out?,
+            vendor_name: state_id_result.to_h[:vendor_name] || state_id_proofer.class.vendor_name,
+            transaction_id: state_id_result.transaction_id,
+          },
         },
       },
     }
 
-    state_id_success = nil
-    if should_proof_state_id && result[:success]
-      timer.time('state_id') do
-        proof_state_id(applicant_pii: applicant_pii, result: result)
-      end
-      state_id_success = result[:success]
-    end
-
     CallbackLogData.new(
       result: result,
-      resolution_success: resolution_success,
-      state_id_success: state_id_success,
+      resolution_success: resolution_result.success?,
+      state_id_success: state_id_result.success?,
     )
-  end
-
-  def proof_state_id(applicant_pii:, result:)
-    proofer_result = state_id_proofer.proof(applicant_pii)
-
-    result.merge!(proofer_result.to_h)
-
-    exception = proofer_result.exception.inspect if proofer_result.exception
-    result[:timed_out] = proofer_result.timed_out?
-    result[:exception] = exception
-
-    result[:context][:stages][:state_id] = {
-      client: state_id_proofer.class.vendor_name,
-      errors: proofer_result.errors,
-      success: proofer_result.success?,
-      timed_out: proofer_result.timed_out?,
-      exception: exception,
-      transaction_id: proofer_result.transaction_id,
-    }
-
-    result
   end
 
   def resolution_proofer

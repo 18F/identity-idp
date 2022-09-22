@@ -18,6 +18,10 @@
       {
         "selector": "AssignmentExpression[left.property.name='href'][right.type=/(Template)?Literal/]",
         "message": "Do not assign window.location.href to a string or string template to avoid losing i18n parameters"
+      },
+      {
+        "selector": "ExpressionStatement[expression.callee.object.name='userEvent']",
+        "message": "Await the promised result of a userEvent interaction"
       }
     ]
   },
