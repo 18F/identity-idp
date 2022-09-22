@@ -36,12 +36,6 @@ en:
       country_code_label: Country code
     print_button:
       label: Print
-    status_page:
-      icons:
-        error: Error
-        lock: Lock
-        question: Question
-        warning: Warning
     troubleshooting_options:
       default_heading: 'Having trouble? Here’s what you can do:'
       new_feature: New Feature
