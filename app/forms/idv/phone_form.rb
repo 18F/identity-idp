@@ -80,7 +80,7 @@ module Idv
 
     def valid_phone_for_allowed_countries?(phone)
       if allowed_countries.present?
-        allowed_countries.all? { |country| Phonelib.valid_for_country?(phone, country) }
+        allowed_countries.any? { |country| Phonelib.valid_for_country?(phone, country) }
       else
         Phonelib.valid?(phone)
       end
