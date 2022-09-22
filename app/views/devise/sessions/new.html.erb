@@ -35,8 +35,8 @@
   <%= f.input :request_id, as: :hidden, input_html: { value: @request_id } %>
   <div class='margin-bottom-4'>
     <%= f.submit t('links.next'), full_width: true, big: false, wide: false, class: 'margin-bottom-3' %>
-    <h2 class='margin-top-1 margin-bottom-3 text-normal text-center text-center--line text-bold border-bottom'>
-      <span class='padding-x-1 bg-white' ><%= t('headings.create_account_with_sp.cta', app_name: APP_NAME) %></span>
+    <h2 class='separator-text'>
+      <%= t('headings.create_account_with_sp.cta', app_name: APP_NAME) %>
     </h2>
     <%= link_to(
           t('links.create_account'),
