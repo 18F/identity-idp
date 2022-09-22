@@ -7,16 +7,17 @@ describe 'idv/otp_delivery_method/new.html.erb' do
   let(:supports_voice) { true }
 
   before do
-    allow(view).to receive(:user_signing_up?).and_return(false)
-    allow(view).to receive(:user_fully_authenticated?).and_return(true)
-    allow(view).to receive(:gpo_letter_available).and_return(gpo_letter_available)
-    allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
-
-    @phone_number_capabilities = instance_double(
+    phone_number_capabilities = instance_double(
       PhoneNumberCapabilities,
       supports_sms?: supports_sms,
       supports_voice?: supports_voice,
     )
+
+    allow(view).to receive(:phone_number_capabilities).and_return(phone_number_capabilities)
+    allow(view).to receive(:user_signing_up?).and_return(false)
+    allow(view).to receive(:user_fully_authenticated?).and_return(true)
+    allow(view).to receive(:gpo_letter_available).and_return(gpo_letter_available)
+    allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
   end
 
   subject(:rendered) { render template: 'idv/otp_delivery_method/new' }

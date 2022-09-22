@@ -24,7 +24,7 @@
     ) do |f| %>
 
   <fieldset class="margin-bottom-4 padding-0 border-0">
-    <% if @phone_number_capabilities.supports_sms? %>
+    <% if phone_number_capabilities.supports_sms? %>
       <%= radio_button_tag(
             'otp_delivery_preference',
             :sms,
@@ -40,7 +40,7 @@
       </label>
     <% end %>
 
-    <% if @phone_number_capabilities.supports_voice? %>
+    <% if phone_number_capabilities.supports_voice? %>
       <%= radio_button_tag(
             'otp_delivery_preference',
             :voice,

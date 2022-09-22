@@ -12,8 +12,7 @@ module Idv
 
     def new
       analytics.idv_phone_otp_delivery_selection_visit
-      @phone_number_capabilities = phone_number_capabilities
-      render :new, locals: { gpo_letter_available: gpo_letter_available }
+      render :new, locals: view_locals
     end
 
     def create
@@ -27,6 +26,13 @@ module Idv
     private
 
     attr_reader :idv_phone
+
+    def view_locals
+      {
+        gpo_letter_available: gpo_letter_available,
+        phone_number_capabilities: phone_number_capabilities,
+      }
+    end
 
     def phone_number_capabilities
       PhoneNumberCapabilities.new(idv_phone, phone_confirmed: user_phone?)
@@ -55,7 +61,7 @@ module Idv
 
     def render_new_with_error_message
       flash[:error] = t('idv.errors.unsupported_otp_delivery_method')
-      render :new, locals: { gpo_letter_available: gpo_letter_available }
+      render :new, locals: view_locals
     end
 
     def send_phone_confirmation_otp_and_handle_result
