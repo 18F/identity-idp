@@ -58,7 +58,6 @@ module Proofing
         def add_user_provided_data_to_body
           document = REXML::Document.new(body)
           user_provided_data_map.each do |xpath, data|
-            warn xpath
             REXML::XPath.first(document, xpath).add_text(data)
           end
           @body = document.to_s
