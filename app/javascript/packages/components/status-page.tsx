@@ -86,7 +86,13 @@ function StatusPage({
 
   return (
     <>
-      <img src={src} alt={alt} className="display-block margin-bottom-4 alert-icon" />
+      <img
+        src={src}
+        alt={alt}
+        width={88}
+        height={88}
+        className="display-block margin-bottom-4 alert-icon"
+      />
       <PageHeading>{header}</PageHeading>
       {children}
       {actionButtons.length > 0 && (
