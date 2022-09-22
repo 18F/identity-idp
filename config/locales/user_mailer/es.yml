@@ -106,6 +106,18 @@ es:
         %{app_name} %{help_link} o el %{contact_link}.
       subject: Dirección de correo electrónico eliminada
     help_link_text: Centro de Ayuda
+    in_person_completion_survey:
+      body:
+        greeting: Hola %{name},
+        thanks: Gracias por utilizar %{app_name}.
+        intent: Queremos conocer su experiencia al verificar su identidad en persona en la oficina de correos.
+        request_description: Responde una breve encuesta anónima y su opinión nos ayudará a atender mejor tus necesidades.
+        privacy_html: Sus respuestas a esta encuesta estarán protegidas conforme a <a href="%{url}">los siguientes estándares de privacidad y seguridad</a>.
+        cta:
+          callout: Haga clic en el botón de abajo para empezar.
+          label: Tome nuestra encuesta
+      header: Tómese un minuto para decirnos cómo lo hicimos
+      subject: Cuéntenos su experiencia reciente con %{app_name}
     in_person_failed:
       body:
         with_cta: Haga clic en el botón o copie el enlace siguiente para volver a

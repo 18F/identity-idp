@@ -13,6 +13,7 @@ class IdentityLinker
     attributes = merged_attributes(extra_attrs)
     identity.update!(attributes)
     AgencyIdentityLinker.new(identity).link_identity
+    # @todo: check, then trigger IPP survey email here
     identity
   end
 
