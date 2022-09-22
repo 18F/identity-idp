@@ -43,7 +43,7 @@ function watchOnce(paths, callback) {
  *
  * @return {error is SassException}
  */
-const isSassException = (error) => !!(/** @type {SassException} */ (error).span);
+const isSassException = (error) => 'span' in /** @type {SassException} */ (error);
 
 /**
  * @param {string[]} files
