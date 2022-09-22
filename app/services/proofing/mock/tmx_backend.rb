@@ -2,10 +2,10 @@ module Proofing
   module Mock
     class TmxBackend
       RESULTS = %w[
+        no_result
+        pass
         reject
         review
-        pass
-        no_result
       ].to_set.freeze
 
       RESULT_TIMEOUT = 3600
