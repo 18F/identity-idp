@@ -29,19 +29,6 @@ es:
       information_not_verified: Información personal no verificada
       phone_verification: Número telefónico no verificado
     forget_all_browsers: Olvídate de todos los navegadores
-    icons:
-      delete:
-        alt_text: Bote de basura rojo
-      error:
-        alt_text: x roja de error
-      error_lock:
-        alt_text: candado rojo de error
-      info_question:
-        alt_text: signo de interrogación azul
-      personal_key:
-        alt_text: Clave personal
-      warning:
-        alt_text: Letrero de precaución amarillo
     idv:
       cancellation_prompt: Cancela la verificación de identidad
       cancelled: Se canceló la verificación de identidad

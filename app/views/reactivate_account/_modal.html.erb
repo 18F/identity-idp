@@ -2,7 +2,7 @@
   <%= render layout: 'shared/modal_layout', locals: { role: 'dialog' } do |label_id, description_id| %>
     <div class="padding-6 cntnr-xxskinny bg-white rounded-xxl">
       <div class="display-flex flex-align-center flex-justify-center">
-        <%= image_tag(asset_url('status/warning.svg'), class: 'lg-icon', alt: t('titles.icons.warning.alt_text')) %>
+        <%= image_tag(asset_url('status/warning.svg'), class: 'lg-icon', alt: t('image_description.warning')) %>
       </div>
       <h2 class="margin-y-2 fs-20p text-normal text-center" id="<%= label_id %>">
         <%= t('instructions.account.reactivate.modal.heading') %>

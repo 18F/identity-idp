@@ -27,7 +27,7 @@ function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
       <Modal onRequestClose={closeModalActions}>
         <div className="pin-top pin-x display-flex flex-column flex-align-center top-neg-3">
           <img
-            alt={t('titles.icons.personal_key.alt_text')}
+            alt={t('image_description.personal_key')}
             height="60"
             width="60"
             src={getAssetPath('personal-key/personal-key.svg')}
