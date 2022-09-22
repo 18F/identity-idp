@@ -54,12 +54,7 @@ module Idv
 
     def validate_valid_phone_for_allowed_countries
       return if valid_phone_for_allowed_countries?(phone)
-
-      if allowed_countries == ['US']
-        errors.add(:phone, :must_have_us_country_code, type: :must_have_us_country_code)
-      else
-        errors.add(:phone, :improbable_phone, type: :improbable_phone)
-      end
+      errors.add(:phone, :improbable_phone, type: :improbable_phone)
     end
 
     def validate_phone_delivery_methods

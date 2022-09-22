@@ -67,8 +67,6 @@ en:
       invalid_voice_number: Invalid phone number. Check that you’ve entered the
         correct country code or area code.
       missing_field: Please fill in this field.
-      must_have_us_country_code: Invalid phone number. Please make sure you enter a
-        phone number with a U.S. country code.
       no_pending_profile: No profile is waiting for verification
       not_a_number: is not a number
       otp_failed: Your security code failed to send.

@@ -116,7 +116,7 @@ describe Idv::PhoneForm do
             result = subject.submit(phone: phone)
 
             expect(result.success?).to eq(false)
-            expect(result.errors[:phone]).to include(t('errors.messages.must_have_us_country_code'))
+            expect(result.errors[:phone]).to include(t('errors.messages.improbable_phone'))
           end
           valid_phones = ['7035551234']
           valid_phones.each do |phone|

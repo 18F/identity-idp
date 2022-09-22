@@ -76,8 +76,6 @@ fr:
       invalid_voice_number: Numéro de téléphone invalide. Vérifiez que vous avez entré
         le bon indicatif international ou régional.
       missing_field: Veuillez remplir ce champ.
-      must_have_us_country_code: Numéro de téléphone non valide. Veuillez vous assurer
-        de saisir un numéro de téléphone avec un code pays des États-Unis.
       no_pending_profile: Aucun profil en attente de vérification
       not_a_number: N’est pas un nombre
       otp_failed: Échec de l’envoi de votre code de sécurité.

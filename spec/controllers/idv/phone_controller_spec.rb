@@ -143,14 +143,14 @@ describe Idv::PhoneController do
       it 'renders #new' do
         put :create, params: { idv_phone_form: { phone: '703' } }
 
-        expect(flash[:error]).to eq t('errors.messages.must_have_us_country_code')
+        expect(flash[:error]).to eq t('errors.messages.improbable_phone')
         expect(response).to render_template(:new)
       end
 
       it 'disallows non-US numbers' do
         put :create, params: { idv_phone_form: { phone: international_phone } }
 
-        expect(flash[:error]).to eq t('errors.messages.must_have_us_country_code')
+        expect(flash[:error]).to eq t('errors.messages.improbable_phone')
         expect(response).to render_template(:new)
       end
 
@@ -162,10 +162,10 @@ describe Idv::PhoneController do
         result = {
           success: false,
           errors: {
-            phone: [t('errors.messages.must_have_us_country_code')],
+            phone: [t('errors.messages.improbable_phone')],
           },
           error_details: {
-            phone: [:must_have_us_country_code],
+            phone: [:improbable_phone],
           },
           pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
           country_code: nil,
@@ -189,7 +189,7 @@ describe Idv::PhoneController do
           success: false,
           phone_number: '703',
           failure_reason: {
-            phone: [t('errors.messages.must_have_us_country_code')],
+            phone: [t('errors.messages.improbable_phone')],
           },
         )
       end
