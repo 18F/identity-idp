@@ -31,10 +31,10 @@ class StatusPageComponent < BaseComponent
   end
 
   def icon_alt
-    # i18n-tasks-use t('components.status_page.icons.error')
-    # i18n-tasks-use t('components.status_page.icons.question')
-    # i18n-tasks-use t('components.status_page.icons.warning')
-    # i18n-tasks-use t('components.status_page.icons.lock')
+    # i18n-tasks-use t('image_description.error')
+    # i18n-tasks-use t('image_description.question')
+    # i18n-tasks-use t('image_description.icons.warning')
+    # i18n-tasks-use t('image_description.icons.lock')
     t(icon || status, scope: [:components, :status_page, :icons])
   end
 end

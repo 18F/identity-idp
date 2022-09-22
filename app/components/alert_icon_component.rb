@@ -9,18 +9,16 @@ class AlertIconComponent < BaseComponent
   }
 
   attr_reader :tag_options
-  
+
   def initialize(icon_name = :warning, **tag_options)
     @icon_name = icon_name.to_sym
     @tag_options = tag_options
-    if not @tag_options.include? :alt and render?
-      @tag_options[:alt] = alt_text
-    end
+    @tag_options[:alt] = alt_text if (!@tag_options.include? :alt) && render?
     @tag_options[:class] = css_class
   end
 
   def render?
-    ICON_SOURCE.keys.include? @icon_name
+    ICON_SOURCE.key?(@icon_name)
   end
 
   def source
