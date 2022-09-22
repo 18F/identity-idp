@@ -29,10 +29,7 @@ module Idv
     attr_reader :idv_phone
 
     def phone_number_capabilities
-      @phone_number_capabilities ||= PhoneNumberCapabilities.new(
-        idv_phone,
-        phone_confirmed: user_phone?,
-      )
+      PhoneNumberCapabilities.new(idv_phone, phone_confirmed: user_phone?)
     end
 
     def user_phone?
