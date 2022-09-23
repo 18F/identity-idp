@@ -253,6 +253,7 @@ rules_of_use_horizon_years: 6
 rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timestamp than this, update directly in S3
 s3_public_reports_enabled: false
 s3_reports_enabled: false
+saml_internal_post: false
 saml_secret_rotation_enabled: false
 seed_agreements_data: true
 select_multiple_mfa_options: false
@@ -532,6 +533,7 @@ test:
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2022","secret_key_passphrase":"trust-but-verify"}]'
+  saml_internal_post: true
   scrypt_cost: 800$8$1$
   select_multiple_mfa_options: false
   secret_key_base: test_secret_key_base

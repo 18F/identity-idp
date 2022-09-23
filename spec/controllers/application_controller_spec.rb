@@ -443,6 +443,38 @@ describe ApplicationController do
         expect(url_with_updated_params).to eq('/authorize?locale=es')
       end
     end
+
+    context 'with saml_internal_post feature flag set to false' do
+      before { allow(IdentityConfig.store).to receive(:saml_internal_post).and_return false }
+      context 'with a SAML request' do
+        let(:sp_session_request_url) { '/api/saml/auth2022?SAMLRequest=blah' }
+        it 'returns the original request url' do
+          expect(url_with_updated_params).to eq '/api/saml/auth2022?SAMLRequest=blah'
+        end
+      end
+
+      context 'with an OIDC request' do
+        let(:sp_session_request_url) { '/openid_connect/authorize' }
+        it 'returns the original request' do
+          expect(url_with_updated_params).to eq '/openid_connect/authorize'
+        end
+      end
+
+      context 'with a url that has prompt=login' do
+        let(:sp_session_request_url) { '/authorize?prompt=login' }
+        it 'changes it to prompt=select_account' do
+          expect(url_with_updated_params).to eq('/authorize?prompt=select_account')
+        end
+      end
+
+      context 'when the locale has been changed' do
+        before { I18n.locale = :es }
+        let(:sp_session_request_url) { '/authorize' }
+        it 'adds the locale to the url' do
+          expect(url_with_updated_params).to eq('/authorize?locale=es')
+        end
+      end
+    end
   end
 
   def expect_user_event_to_have_been_created(user, event_type)

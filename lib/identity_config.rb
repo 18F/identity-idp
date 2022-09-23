@@ -351,6 +351,7 @@ class IdentityConfig
     config.add(:seed_agreements_data, type: :boolean)
     config.add(:select_multiple_mfa_options, type: :boolean)
     config.add(:service_provider_request_ttl_hours, type: :integer)
+    config.add(:saml_internal_post, type: :boolean)
     config.add(:session_check_delay, type: :integer)
     config.add(:session_check_frequency, type: :integer)
     config.add(:session_encryption_key, type: :string)
