@@ -14,13 +14,13 @@ module Proofing
         raise ArgumentError, "unknown result=#{result}" if !RESULTS.include?(result)
 
         REDIS_POOL.with do |redis|
-          redis.setex("tmx_mock:#{session_id}", RESULT_TIMEOUT, result)
+          redis.setex("device_profiling:#{session_id}", RESULT_TIMEOUT, result)
         end
       end
 
       def profiling_result(session_id)
         REDIS_POOL.with do |redis|
-          redis.get("tmx_mock:#{session_id}")
+          redis.get("device_profiling:#{session_id}")
         end
       end
     end
