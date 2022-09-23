@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::InheritedProofingController do
+shared_examples 'the flow steps work correctly' do
   describe '#index' do
     it 'redirects to the first step' do
       get :index
@@ -50,8 +50,34 @@ describe Idv::InheritedProofingController do
       expect(response).to redirect_to idv_inherited_proofing_step_url(step: :get_started)
     end
   end
+end
 
-  def mock_next_step(step)
-    allow_any_instance_of(Idv::Flows::InheritedProofingFlow).to receive(:next_step).and_return(step)
+def mock_next_step(step)
+  allow_any_instance_of(Idv::Flows::InheritedProofingFlow).to receive(:next_step).and_return(step)
+end
+
+describe Idv::InheritedProofingController do
+  let(:sp) { nil }
+  let(:user) { build(:user) }
+
+  before do
+    allow(controller).to receive(:current_sp).and_return(sp)
+    stub_sign_in(user)
+  end
+
+  context 'when VA inherited proofing mock is enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:va_inherited_proofing_mock_enabled).and_return(true)
+    end
+
+    it_behaves_like 'the flow steps work correctly'
+  end
+
+  context 'when VA inherited proofing mock is not enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:va_inherited_proofing_mock_enabled).and_return(false)
+    end
+
+    it_behaves_like 'the flow steps work correctly'
   end
 end

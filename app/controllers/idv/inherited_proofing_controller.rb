@@ -1,6 +1,8 @@
 module Idv
   class InheritedProofingController < ApplicationController
     include Flow::FlowStateMachine
+    include IdvSession
+    include InheritedProofingConcern
 
     before_action :render_404_if_disabled
 

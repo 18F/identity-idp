@@ -4,6 +4,16 @@ feature 'inherited proofing agreement' do
   include IdvHelper
   include DocAuthHelper
 
+  before do
+    allow(IdentityConfig.store).to receive(:va_inherited_proofing_mock_enabled).and_return true
+    allow_any_instance_of(Idv::InheritedProofingController).to \
+      receive(:va_inherited_proofing?).and_return true
+    allow_any_instance_of(Idv::InheritedProofingController).to \
+      receive(:va_inherited_proofing_auth_code).and_return auth_code
+  end
+
+  let(:auth_code) { Idv::InheritedProofing::Va::Mocks::Service::VALID_AUTH_CODE }
+
   def expect_ip_verify_info_step
     expect(page).to have_current_path(idv_ip_verify_info_step)
   end
