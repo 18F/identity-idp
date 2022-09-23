@@ -2,9 +2,13 @@ module Idv
   module Steps
     module InheritedProofing
       class AgreementStep < InheritedProofingBaseStep
+        include UserPiiManagable
+
         STEP_INDICATOR_STEP = :getting_started
 
         def call
+          inherited_proofing_save_user_pii_to_session!
+          inherited_proofing_form_response
         end
 
         def form_submit
