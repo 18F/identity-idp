@@ -13,11 +13,24 @@ class IdentityLinker
     attributes = merged_attributes(extra_attrs)
     identity.update!(attributes)
     AgencyIdentityLinker.new(identity).link_identity
-    # @todo: check, then trigger IPP survey email here
+    send_in_person_completion_survey
     identity
   end
 
   private
+
+  def send_in_person_completion_survey
+    return unless user.should_receive_in_person_completion_survey?
+
+    user.confirmed_email_addresses.each do |email_address|
+      UserMailer.in_person_completion_survey(
+        user,
+        email_address,
+      ).deliver_now_or_later
+    end
+
+    user.mark_in_person_completion_survey_sent
+  end
 
   def process_ial(extra_attrs)
     @ial = extra_attrs[:ial]

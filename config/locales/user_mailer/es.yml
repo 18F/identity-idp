@@ -108,14 +108,17 @@ es:
     help_link_text: Centro de Ayuda
     in_person_completion_survey:
       body:
-        greeting: Hola %{name},
-        thanks: Gracias por utilizar %{app_name}.
-        intent: Queremos conocer su experiencia al verificar su identidad en persona en la oficina de correos.
-        request_description: Responde una breve encuesta anónima y su opinión nos ayudará a atender mejor tus necesidades.
-        privacy_html: Sus respuestas a esta encuesta estarán protegidas conforme a <a href="%{url}">los siguientes estándares de privacidad y seguridad</a>.
         cta:
           callout: Haga clic en el botón de abajo para empezar.
           label: Tome nuestra encuesta
+        greeting: Hola,
+        intent: Queremos conocer su experiencia al verificar su identidad en persona en
+          la oficina de correos.
+        privacy_html: Sus respuestas a esta encuesta estarán protegidas conforme a <a
+          href="%{url}">los siguientes estándares de privacidad y seguridad</a>.
+        request_description: Responde una breve encuesta anónima y su opinión nos
+          ayudará a atender mejor tus necesidades.
+        thanks: Gracias por utilizar %{app_name}.
       header: Tómese un minuto para decirnos cómo lo hicimos
       subject: Cuéntenos su experiencia reciente con %{app_name}
     in_person_failed:

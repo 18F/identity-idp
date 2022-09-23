@@ -114,6 +114,7 @@ idv_sp_required: false
 in_person_proofing_enabled: false
 in_person_enrollment_validity_in_days: 30
 in_person_results_delay_in_hours: 1
+in_person_completion_survey_url: ''
 include_slo_in_saml_metadata: false
 inherited_proofing_enabled: false
 inherited_proofing_va_base_url: 'https://staging-api.va.gov'

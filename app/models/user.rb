@@ -105,6 +105,23 @@ class User < ApplicationRecord
     phone_configurations.order('made_default_at DESC NULLS LAST, created_at').first
   end
 
+  ##
+  # @param [String] issuer
+  # @return [Boolean]
+  def should_receive_in_person_completion_survey?
+    in_person_enrollments.
+      where(status: :passed).order(created_at: :desc).
+      pick(:follow_up_survey_sent) == false
+  end
+
+  ##
+  # @param [String] issuer
+  def mark_in_person_completion_survey_sent
+    in_person_enrollments.
+      where(status: :passed).order(created_at: :desc).
+      first.update(follow_up_survey_sent: true)
+  end
+
   MINIMUM_LIKELY_ENCRYPTED_DATA_LENGTH = 1000
 
   def broken_personal_key?

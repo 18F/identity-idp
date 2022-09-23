@@ -226,10 +226,10 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_completion_survey(user, email_address, first_name:, enrollment:)
+  def in_person_completion_survey(user, email_address)
     with_user_locale(user) do
-      @first_name = first_name
-      @privacy_url = MarketingSite.security_and_privacy_practices_url(locale: locale_url_param)
+      @header = t('user_mailer.in_person_completion_survey.header')
+      @privacy_url = MarketingSite.security_and_privacy_practices_url
       @survey_url = IdentityConfig.store.in_person_completion_survey_url
       mail(
         to: email_address.email,

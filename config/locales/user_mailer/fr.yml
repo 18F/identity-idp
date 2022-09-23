@@ -111,14 +111,17 @@ fr:
     help_link_text: Centre d’aide
     in_person_completion_survey:
       body:
-        greeting: Bonjour %{name},
-        thanks: Merci d'utiliser %{app_name}.
-        intent: Nous voulons connaître votre expérience en matière de vérification de votre identité en personne au bureau de poste.
-        request_description: Remplissez une courte enquête anonyme et nous utiliserons vos commentaires pour nous aider à mieux répondre à vos besoins.
-        privacy_html: Vos réponses à cette enquête seront protégées conformément aux <a href="%{url}">normes de confidentialité et de sécurité</a> suivantes.
         cta:
           callout: Cliquez sur le bouton ci-dessous pour commencer.
           label: Répondez à notre enquête
+        greeting: Bonjour,
+        intent: Nous voulons connaître votre expérience en matière de vérification de
+          votre identité en personne au bureau de poste.
+        privacy_html: Vos réponses à cette enquête seront protégées conformément aux <a
+          href="%{url}">normes de confidentialité et de sécurité</a> suivantes.
+        request_description: Remplissez une courte enquête anonyme et nous utiliserons
+          vos commentaires pour nous aider à mieux répondre à vos besoins.
+        thanks: Merci d’utiliser %{app_name}.
       header: Prenez une minute pour nous faire part de vos impressions
       subject: Parlez-nous de votre expérience récente avec %{app_name}
     in_person_failed:
