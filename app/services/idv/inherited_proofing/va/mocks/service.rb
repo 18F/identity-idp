@@ -35,8 +35,8 @@ module Idv
             },
           }.freeze
 
-          def initialize(auth_code)
-            @auth_code = auth_code
+          def initialize(service_provider_data)
+            @auth_code = service_provider_data[:auth_code]
           end
 
           def execute
