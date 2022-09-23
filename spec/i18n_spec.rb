@@ -11,7 +11,6 @@ ALLOWED_INTERPOLATION_MISMATCH_KEYS = [
 module I18n
   module Tasks
     class BaseTask
-      # rubocop:disable Layout/LineLength
       # List of keys allowed to be untranslated or are the same as English
       ALLOWED_UNTRANSLATED_KEYS = [
         { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
@@ -27,7 +26,6 @@ module I18n
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
       ].freeze
-      # rubocop:enable Layout/LineLength
 
       def untranslated_keys
         data[base_locale].key_values.each_with_object([]) do |key_value, result|
