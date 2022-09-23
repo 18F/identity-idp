@@ -6,6 +6,7 @@ class PhoneNumberCapabilities
   end
 
   INTERNATIONAL_CODES = load_config.freeze
+  US_AND_US_TERRITORY_CODES = ['AS', 'GU', 'MP', 'PR', 'US', 'VI']
 
   attr_reader :phone, :phone_confirmed
 

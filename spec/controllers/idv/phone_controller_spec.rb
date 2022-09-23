@@ -314,6 +314,7 @@ describe Idv::PhoneController do
       end
 
       it 'tracks event with valid phone' do
+        proofing_phone = Phonelib.parse(good_phone)
         user = build(:user, with: { phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
 
@@ -324,6 +325,9 @@ describe Idv::PhoneController do
           success: true,
           new_phone_added: true,
           errors: {},
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+          country_code: proofing_phone.country,
+          area_code: proofing_phone.area_code,
           pii_like_keypaths: [[:errors, :phone], [:context, :stages, :address]],
           vendor: {
             vendor_name: 'AddressMock',
@@ -362,6 +366,7 @@ describe Idv::PhoneController do
       end
 
       it 'tracks event with invalid phone' do
+        proofing_phone = Phonelib.parse(bad_phone)
         user = build(:user, with: { phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
 
@@ -371,6 +376,9 @@ describe Idv::PhoneController do
         result = {
           success: false,
           new_phone_added: true,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+          country_code: proofing_phone.country,
+          area_code: proofing_phone.area_code,
           errors: {
             phone: ['The phone number could not be verified.'],
           },

@@ -120,8 +120,13 @@ module Idv
     end
 
     def extra_analytics_attributes
+      parsed_phone = Phonelib.parse(applicant[:phone])
+
       {
         vendor: idv_result.except(:errors, :success),
+        area_code: parsed_phone.area_code,
+        country_code: parsed_phone.country,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
       }
     end
 
