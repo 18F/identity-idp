@@ -10,7 +10,6 @@ import { replaceVariables } from '@18f/identity-i18n';
  *
  * @prop {string=} country_code_label
  * @prop {string=} invalid_phone
- * @prop {string=} country_constraint_usa
  * @prop {string=} unsupported_country
  */
 
@@ -46,32 +45,34 @@ export class PhoneInput extends HTMLElement {
   countryCodePairs = {};
 
   connectedCallback() {
-    /** @type {HTMLInputElement?} */
-    this.textInput = this.querySelector('.phone-input__number');
-    /** @type {HTMLSelectElement?} */
-    this.codeInput = this.querySelector('.phone-input__international-code');
-    this.codeWrapper = this.querySelector('.phone-input__international-code-wrapper');
-    this.exampleText = this.querySelector('.phone-input__example');
+    if (this.isConnected) {
+      /** @type {HTMLInputElement?} */
+      this.textInput = this.querySelector('.phone-input__number');
+      /** @type {HTMLSelectElement?} */
+      this.codeInput = this.querySelector('.phone-input__international-code');
+      this.codeWrapper = this.querySelector('.phone-input__international-code-wrapper');
+      this.exampleText = this.querySelector('.phone-input__example');
 
-    try {
-      this.deliveryMethods = JSON.parse(this.dataset.deliveryMethods || '');
-      this.countryCodePairs = JSON.parse(this.dataset.translatedCountryCodeNames || '');
-    } catch {}
+      try {
+        this.deliveryMethods = JSON.parse(this.dataset.deliveryMethods || '');
+        this.countryCodePairs = JSON.parse(this.dataset.translatedCountryCodeNames || '');
+      } catch {}
 
-    if (!this.textInput || !this.codeInput) {
-      return;
+      if (!this.textInput || !this.codeInput) {
+        return;
+      }
+
+      this.iti = this.initializeIntlTelInput();
+
+      this.textInput.addEventListener('countrychange', () => this.syncCountryChangeToCodeInput());
+      this.textInput.addEventListener('input', () => this.validate());
+      this.codeInput.addEventListener('change', () => this.formatTextInput());
+      this.codeInput.addEventListener('change', () => this.setExampleNumber());
+      this.codeInput.addEventListener('change', () => this.validate());
+
+      this.setExampleNumber();
+      this.validate();
     }
-
-    this.iti = this.initializeIntlTelInput();
-
-    this.textInput.addEventListener('countrychange', () => this.syncCountryChangeToCodeInput());
-    this.textInput.addEventListener('input', () => this.validate());
-    this.codeInput.addEventListener('change', () => this.formatTextInput());
-    this.codeInput.addEventListener('change', () => this.setExampleNumber());
-    this.codeInput.addEventListener('change', () => this.validate());
-
-    this.setExampleNumber();
-    this.validate();
   }
 
   get selectedOption() {
@@ -160,7 +161,7 @@ export class PhoneInput extends HTMLElement {
   }
 
   validate() {
-    const { textInput, codeInput, supportedCountryCodes, selectedOption } = this;
+    const { textInput, codeInput, selectedOption } = this;
     if (!textInput || !codeInput || !selectedOption) {
       return;
     }
@@ -173,14 +174,9 @@ export class PhoneInput extends HTMLElement {
       return;
     }
 
-    const isInvalidCountry =
-      supportedCountryCodes?.length === 1 && !isValidNumberForRegion(phoneNumber, countryCode);
+    const isInvalidCountry = !isValidNumberForRegion(phoneNumber, countryCode);
     if (isInvalidCountry) {
-      if (countryCode === 'US') {
-        textInput.setCustomValidity(this.strings.country_constraint_usa || '');
-      } else {
-        textInput.setCustomValidity(this.strings.invalid_phone || '');
-      }
+      textInput.setCustomValidity(this.strings.invalid_phone || '');
     }
 
     const isInvalidPhoneNumber = !isPhoneValid(phoneNumber, countryCode);
