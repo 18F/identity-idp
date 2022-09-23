@@ -100,6 +100,7 @@ class IdentityConfig
     config.add(:acuant_get_results_timeout, type: :float)
     config.add(:acuant_create_document_timeout, type: :float)
     config.add(:add_email_link_valid_for_hours, type: :integer)
+    config.add(:address_identity_proofing_supported_country_codes, type: :json)
     config.add(:asset_host, type: :string)
     config.add(:async_wait_timeout_seconds, type: :integer)
     config.add(:async_stale_job_timeout_seconds, type: :integer)
