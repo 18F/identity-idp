@@ -57,7 +57,6 @@ class PhoneInputComponent < BaseComponent
     {
       country_code_label: t('components.phone_input.country_code_label'),
       invalid_phone: t('errors.messages.invalid_phone_number'),
-      country_constraint_usa: t('errors.messages.phone_country_constraint_usa'),
       unsupported_country: unsupported_country_string,
     }
   end
