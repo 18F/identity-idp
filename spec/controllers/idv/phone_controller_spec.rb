@@ -132,9 +132,9 @@ describe Idv::PhoneController do
   describe '#create' do
     context 'when form is invalid' do
       let(:improbable_phone_error) { { phone: [:improbable_phone] } }
-      let(:improbable_phone_message) {t('errors.messages.improbable_phone')}
+      let(:improbable_phone_message) { t('errors.messages.improbable_phone') }
       let(:improbable_phone_number) { '703' }
-      let(:improbable_phone_form) { { idv_phone_form: { phone: improbable_phone_number } }}
+      let(:improbable_phone_form) { { idv_phone_form: { phone: improbable_phone_number } } }
       before do
         user = build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' })
         stub_verify_steps_one_and_two(user)

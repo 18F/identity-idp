@@ -156,4 +156,34 @@ RSpec.describe IrsAttemptsApi::Tracker do
       end
     end
   end
+
+  describe '#parse_failure_reason' do
+    let(:mock_error_message) { 'failure_reason_from_error' }
+    let(:mock_error_details) { [{ mock_error: 'failure_reason_from_error_details' }] }
+
+    it 'parses failure_reason from error_details' do
+      test_failure_reason = subject.parse_failure_reason(
+        { errors: mock_error_message,
+          error_details: mock_error_details },
+      )
+
+      expect(test_failure_reason).to eq(mock_error_details)
+    end
+
+    it 'parses failure_reason from errors when no error_details present' do
+      class MockFailureReason
+        def errors
+          'failure_reason_from_error'
+        end
+
+        def to_h
+          {}
+        end
+      end
+
+      test_failure_reason = subject.parse_failure_reason(MockFailureReason.new)
+
+      expect(test_failure_reason).to eq(mock_error_message)
+    end
+  end
 end
