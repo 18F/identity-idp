@@ -1,6 +1,6 @@
 ## 🎫 Ticket
 
-Link to the relevant jira ticket.
+Link to the relevant ticket.
 
 ## 🛠 Summary of changes
 
