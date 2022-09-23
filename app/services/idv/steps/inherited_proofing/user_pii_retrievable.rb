@@ -33,10 +33,6 @@ module Idv
         def inherited_proofing_form(payload_hash)
           controller.inherited_proofing_form payload_hash
         end
-
-        def inherited_proofing_service_provider_data
-          controller.inherited_proofing_service_provider_data
-        end
       end
     end
   end
