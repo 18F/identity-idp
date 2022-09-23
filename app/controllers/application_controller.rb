@@ -442,7 +442,8 @@ class ApplicationController < ActionController::Base
             else
               # Login.gov redirects to the orginal request_url after a user authenticates
               # replace prompt=login with prompt=select_account to prevent sign_out
-              # which should only every occur once when the user lands on Login.gov with prompt=login
+              # which should only ever occur once when the user
+              # lands on Login.gov with prompt=login
               sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
             end
     else
