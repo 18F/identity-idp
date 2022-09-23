@@ -100,7 +100,8 @@ module Idv
       @idv_form = Idv::PhoneForm.new(
         user: current_user,
         previous_params: idv_session.previous_phone_step_params,
-        allowed_countries: PhoneNumberCapabilities::US_AND_US_TERRITORY_CODES,
+        allowed_countries:
+          PhoneNumberCapabilities::ADDRESS_IDENTITY_PROOFING_SUPPORTED_COUNTRY_CODES,
       )
     end
 
