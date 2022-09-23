@@ -67,8 +67,11 @@ module UspsIppHelper
   end
 
   def request_failed_suspected_fraud_proofing_results_args
-    { status: 200,
-      body: UspsInPersonProofing::Mock::Fixtures.request_failed_suspected_fraud_proofing_results_response }
+    {
+      status: 200,
+      body: UspsInPersonProofing::Mock::
+      Fixtures.request_failed_suspected_fraud_proofing_results_response,
+    }
   end
 
   def stub_request_passed_proofing_unsupported_id_results

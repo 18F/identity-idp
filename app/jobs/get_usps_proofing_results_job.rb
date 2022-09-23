@@ -275,11 +275,13 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def send_failed_fraud_email(user, enrollment)
     user.confirmed_email_addresses.each do |email_address|
+      # rubocop:disable IdentityIdp/MailLaterLinter
       UserMailer.in_person_failed_fraud(
         user,
         email_address,
         enrollment: enrollment,
       ).deliver_later(**mail_delivery_params)
+      # rubocop:enable IdentityIdp/MailLaterLinter
     end
   end
 
