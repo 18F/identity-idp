@@ -18,6 +18,7 @@ module SignUp
     def update
       track_completion_event('agency-page')
       update_verified_attributes
+      send_in_person_completion_survey
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
       else
@@ -88,6 +89,13 @@ module SignUp
     def pii
       pii_string = Pii::Cacher.new(current_user, user_session).fetch_string
       JSON.parse(pii_string || '{}', symbolize_names: true)
+    end
+
+    def send_in_person_completion_survey
+      Idv::InPerson::CompletionSurveySender.send_completion_survey(
+        current_user,
+        current_sp.issuer,
+      )
     end
   end
 end

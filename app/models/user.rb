@@ -107,19 +107,28 @@ class User < ApplicationRecord
 
   ##
   # @param [String] issuer
-  # @return [Boolean]
-  def should_receive_in_person_completion_survey?
-    in_person_enrollments.
-      where(status: :passed).order(created_at: :desc).
-      pick(:follow_up_survey_sent) == false
+  # @return [Boolean] Whether the user should receive a survey for completing in-person proofing
+  def should_receive_in_person_completion_survey?(issuer)
+    Idv::InPersonConfig.enabled_for_issuer?(issuer) &&
+      in_person_enrollments.
+        where(issuer: issuer, status: :passed).order(created_at: :desc).
+        pick(:follow_up_survey_sent) == false
   end
 
   ##
+  # Record that the in-person proofing survey was sent
   # @param [String] issuer
-  def mark_in_person_completion_survey_sent
-    in_person_enrollments.
-      where(status: :passed).order(created_at: :desc).
-      first.update(follow_up_survey_sent: true)
+  def mark_in_person_completion_survey_sent(issuer)
+    enrollment_id, follow_up_survey_sent = in_person_enrollments.
+      where(issuer: issuer, status: :passed).
+      order(created_at: :desc).
+      pick(:id, :follow_up_survey_sent)
+
+    if follow_up_survey_sent == false
+      # Enrollment record is present and survey was not previously sent
+      InPersonEnrollment.update(enrollment_id, follow_up_survey_sent: true)
+    end
+    nil
   end
 
   MINIMUM_LIKELY_ENCRYPTED_DATA_LENGTH = 1000
