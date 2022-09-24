@@ -85,6 +85,9 @@ RSpec.describe Idv::GpoVerifyController do
   end
 
   describe '#create' do
+    let(:otp_code_incorrect) { { otp: [:confirmation_code_incorrect] } }
+    let(:success_properties) { { success: true, failure_reason: nil } }
+
     subject(:action) do
       post(
         :create,
@@ -109,7 +112,7 @@ RSpec.describe Idv::GpoVerifyController do
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
         expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-          with(success: true, failure_reason: nil)
+          with(success_properties)
 
         action
 
@@ -146,7 +149,7 @@ RSpec.describe Idv::GpoVerifyController do
             pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
           )
           expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-            with(success: true, failure_reason: nil)
+            with(success_properties)
 
           action
 
@@ -171,12 +174,11 @@ RSpec.describe Idv::GpoVerifyController do
           errors: { otp: [t('errors.messages.confirmation_code_incorrect')] },
           pending_in_person_enrollment: false,
           enqueued_at: nil,
-          error_details: { otp: [:confirmation_code_incorrect] },
+          error_details: otp_code_incorrect,
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
-        failure_reason = { otp: ['Incorrect code. Did you type it in correctly?'] }
         expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-          with(success: false, failure_reason: failure_reason)
+          with(success: false, failure_reason: otp_code_incorrect)
 
         action
 
@@ -202,7 +204,7 @@ RSpec.describe Idv::GpoVerifyController do
           errors: { otp: [t('errors.messages.confirmation_code_incorrect')] },
           pending_in_person_enrollment: false,
           enqueued_at: nil,
-          error_details: { otp: [:confirmation_code_incorrect] },
+          error_details: otp_code_incorrect,
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         ).exactly(max_attempts).times
 

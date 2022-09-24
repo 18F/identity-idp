@@ -93,7 +93,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
 
       it 'is not valid' do
-        expect(irs_attempts_api_tracker).to receive(:idv_document_upload_rate_limited)
+        expect(irs_attempts_api_tracker).to receive(:idv_document_upload_rate_limited).with(no_args)
         expect(form.valid?).to eq(false)
         expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.throttled_heading')])
       end
