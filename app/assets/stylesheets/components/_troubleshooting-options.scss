@@ -22,6 +22,7 @@
 .troubleshooting-options__heading {
   @include u-margin-y(1.5);
   @extend %h3;
+  white-space: pre;
 }
 
 .troubleshooting-options__options {

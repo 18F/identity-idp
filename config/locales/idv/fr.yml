@@ -206,7 +206,9 @@ fr:
         review: Entrez à nouveau votre mot de passe %{app_name} pour crypter vos données
     troubleshooting:
       headings:
-        are_you_near: Êtes-vous situé près de Washington, D.C.?
+        are_you_near: 'Êtes-vous situé près de Washington, D.C. ou
+
+          Baltimore, MD?'
         missing_required_items: Est-ce qu’il vous manque un de ces éléments?
         need_assistance: 'Avez-vous besoin d’une assistance immédiate? Voici comment
           obtenir de l’aide:'
