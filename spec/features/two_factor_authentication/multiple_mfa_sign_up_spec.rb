@@ -108,7 +108,7 @@ feature 'Multi Two Factor Authentication' do
       expect(current_path).to eq account_path
     end
 
-    scenario 'user can select 1 MFA methods and cancels selecting second mfa' do
+    scenario 'user can select 1 MFA methods and skips selecting second mfa' do
       sign_in_before_2fa
 
       expect(current_path).to eq authentication_methods_setup_path
@@ -135,7 +135,7 @@ feature 'Multi Two Factor Authentication' do
 
       expect(page).to have_current_path(second_mfa_setup_path)
 
-      click_link t('links.cancel')
+      click_link t('mfa.skip')
 
       expect(page).to have_current_path(account_path)
     end
