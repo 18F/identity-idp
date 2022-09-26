@@ -510,6 +510,134 @@ RSpec.describe User do
     end
   end
 
+  describe '#should_receive_in_person_completion_survey?' do
+    let!(:user) { create(:user) }
+    let(:service_provider) { create(:service_provider) }
+    let(:issuer) { service_provider.issuer }
+
+    before do
+      allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).
+        and_return(true)
+    end
+
+    def mark_survey_sent
+      user.mark_in_person_completion_survey_sent(issuer)
+    end
+
+    def expect_false_for_survey
+      expect(user.should_receive_in_person_completion_survey?(issuer)).to be(false)
+    end
+
+    def expect_true_for_survey
+      expect(user.should_receive_in_person_completion_survey?(issuer)).to be(true)
+    end
+
+    context 'user has no enrollments' do
+      it 'should return false' do
+        expect_false_for_survey
+      end
+      describe 'after survey marked as sent' do
+        before do
+          mark_survey_sent
+        end
+        it 'should return false' do
+          expect_false_for_survey
+        end
+      end
+    end
+    context 'user has completed enrollment for different issuer but no survey' do
+      let(:other_service_provider) { create(:service_provider, issuer: 'otherissuer') }
+      let!(:enrollment) do
+        create(
+          :in_person_enrollment, user: user, issuer: other_service_provider.issuer,
+                                 status: :passed
+        )
+      end
+      it 'should return false' do
+        expect_false_for_survey
+      end
+      describe 'after survey marked as sent' do
+        before do
+          mark_survey_sent
+        end
+        it 'should return false' do
+          expect_false_for_survey
+        end
+      end
+    end
+    context 'user has incomplete enrollment but no survey' do
+      let!(:user) { create(:user, :with_pending_in_person_enrollment) }
+      it 'should return false' do
+        expect_false_for_survey
+      end
+      describe 'after survey marked as sent' do
+        before do
+          mark_survey_sent
+        end
+        it 'should return false' do
+          expect_false_for_survey
+        end
+      end
+    end
+    context 'user has completed enrollment but no survey' do
+      let!(:enrollment) do
+        create(:in_person_enrollment, user: user, issuer: issuer, status: :passed)
+      end
+      it 'should return true' do
+        expect_true_for_survey
+      end
+      describe 'after survey marked as sent' do
+        before do
+          mark_survey_sent
+        end
+        it 'should return false' do
+          expect_false_for_survey
+        end
+      end
+    end
+    context 'user has completed enrollment but no survey and feature is disabled' do
+      let!(:enrollment) do
+        create(:in_person_enrollment, user: user, issuer: issuer, status: :passed)
+      end
+
+      before do
+        allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).
+          and_return(false)
+      end
+
+      it 'should return false' do
+        expect_false_for_survey
+      end
+      describe 'after survey marked as sent' do
+        before do
+          mark_survey_sent
+        end
+        it 'should return false' do
+          expect_false_for_survey
+        end
+      end
+    end
+    context 'user has completed enrollment and survey' do
+      let!(:enrollment) do
+        create(
+          :in_person_enrollment, user: user, issuer: issuer, status: :passed,
+                                 follow_up_survey_sent: true
+        )
+      end
+      it 'should return false' do
+        expect_false_for_survey
+      end
+      describe 'after survey marked as sent' do
+        before do
+          mark_survey_sent
+        end
+        it 'should return false' do
+          expect_false_for_survey
+        end
+      end
+    end
+  end
+
   describe '#broken_personal_key?' do
     before do
       allow(IdentityConfig.store).to receive(:broken_personal_key_window_start).
