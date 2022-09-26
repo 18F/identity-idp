@@ -29,17 +29,16 @@ module Proofing
             'spec', 'fixtures', 'proofing', 'lexis_nexis', 'ddp', 'successful_response.json'
           ),
         )
-        result.review_status = review_status(
-          session_id: applicant[:threatmetrix_session_id],
-          ssn: applicant[:ssn],
-        )
 
+        status = review_status(session_id: applicant[:threatmetrix_session_id])
+
+        result.review_status = status
         result.response_body = JSON.parse(response_body).tap do |json_body|
-          json_body['review_status'] = result.review_status
+          json_body['review_status'] = status
         end
       end
 
-      def review_status(session_id:, ssn:)
+      def review_status(session_id:)
         device_status = DeviceProfilingBackend.new.profiling_result(session_id)
 
         case device_status

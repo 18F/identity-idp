@@ -69,9 +69,8 @@ function MockDeviceProfilingOptions() {
       const randomChaosOption = CHAOS_OPTIONS[Math.floor(Math.random() * CHAOS_OPTIONS.length)];
       randomChaosOption.apply();
       return randomChaosOption.undo;
-    } else {
-      submitMockFraudResult({ result: selectedValue, sessionId: loadSessionId() });
     }
+    submitMockFraudResult({ result: selectedValue, sessionId: loadSessionId() });
   }, [selectedValue]);
 
   const instanceId = useInstanceId();
