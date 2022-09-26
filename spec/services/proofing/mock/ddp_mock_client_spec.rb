@@ -26,53 +26,37 @@ RSpec.describe Proofing::Mock::DdpMockClient do
   describe '#proof' do
     subject(:result) { instance.proof(applicant) }
 
-    context 'with session data in the redis backend' do
-      before do
-        Proofing::Mock::DeviceProfilingBackend.new.record_profiling_result(
-          result: redis_result,
-          session_id: threatmetrix_session_id,
-        )
-      end
-
-      context 'with explicit no_result' do
-        let(:redis_result) { 'no_result' }
-
-        it 'has a nil review status' do
-          expect(result.review_status).to be_nil
-        end
-      end
-
-      context 'with reject' do
-        let(:redis_result) { 'reject' }
-
-        it 'has a reject status' do
-          expect(result.review_status).to eq('reject')
-        end
-      end
+    before do
+      Proofing::Mock::DeviceProfilingBackend.new.record_profiling_result(
+        result: redis_result,
+        session_id: threatmetrix_session_id,
+      )
     end
 
-    it 'passes by default' do
-      expect(result.review_status).to eq('pass')
-    end
+    context 'with explicit no_result' do
+      let(:redis_result) { 'no_result' }
 
-    context 'with magic "reject" SSN' do
-      let(:applicant) { super().merge(ssn: '666-77-8888') }
-      it 'fails' do
-        expect(result.review_status).to eq('reject')
-      end
-    end
-
-    context 'with magic "review" SSN' do
-      let(:applicant) { super().merge(ssn: '666-77-9999') }
-      it 'fails' do
-        expect(result.review_status).to eq('review')
-      end
-    end
-
-    context 'with magic "nil" SSN' do
-      let(:applicant) { super().merge(ssn: '666-77-0000') }
-      it 'fails' do
+      it 'has a nil review status' do
         expect(result.review_status).to be_nil
+        expect(result.response_body['review_status']).to be_nil
+      end
+    end
+
+    context 'with reject' do
+      let(:redis_result) { 'reject' }
+
+      it 'has a reject status' do
+        expect(result.review_status).to eq('reject')
+        expect(result.response_body['review_status']).to eq('reject')
+      end
+    end
+
+    context 'with pass' do
+      let(:redis_result) { 'pass' }
+
+      it 'has a pass status' do
+        expect(result.review_status).to eq('pass')
+        expect(result.response_body['review_status']).to eq('pass')
       end
     end
   end

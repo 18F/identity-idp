@@ -21,15 +21,6 @@ module Proofing
 
       TRANSACTION_ID = 'ddp-mock-transaction-id-123'
 
-      # Trigger the "REJECT" status
-      REJECT_STATUS_SSN = '666-77-8888'
-
-      # Trigger the "REVIEW" status
-      REVIEW_STATUS_SSN = '666-77-9999'
-
-      # Trigger a nil status
-      NIL_STATUS_SSN = '666-77-0000'
-
       proof do |applicant, result|
         result.transaction_id = TRANSACTION_ID
 
@@ -43,9 +34,9 @@ module Proofing
           ssn: applicant[:ssn],
         )
 
-        result.response_body = JSON.parse(
-          response_body.gsub('REVIEW_STATUS', result.review_status.to_s),
-        )
+        result.response_body = JSON.parse(response_body).tap do |json_body|
+          json_body['review_status'] = result.review_status
+        end
       end
 
       def review_status(session_id:, ssn:)
@@ -55,18 +46,7 @@ module Proofing
         when 'no_result'
           return nil
         when 'reject', 'review', 'pass'
-          return device_status
-        end
-
-        case SsnFormatter.format(ssn)
-        when REJECT_STATUS_SSN
-          'reject'
-        when REVIEW_STATUS_SSN
-          'review'
-        when NIL_STATUS_SSN
-          nil
-        else
-          'pass'
+          device_status
         end
       end
     end
