@@ -29,6 +29,7 @@ module I18n
         { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
+        { key: 'mailer.logo' }, # "logo is logo" in English, French and Spanish
       ].freeze
       # rubocop:enable Layout/LineLength
 
