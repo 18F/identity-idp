@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 feature 'Sign in' do
+  include JavascriptDriverHelper
+
   before(:all) do
     @original_capyabara_wait = Capybara.default_max_wait_time
     Capybara.default_max_wait_time = 5
@@ -221,7 +223,9 @@ feature 'Sign in' do
 
     visit new_user_session_path
 
-    check t('components.password_toggle.toggle_label')
+    with_awaited_fetch do
+      check t('components.password_toggle.toggle_label')
+    end
 
     expect(page).to have_css('input.password[type="text"]')
     expect(fake_analytics).to have_logged_event(
