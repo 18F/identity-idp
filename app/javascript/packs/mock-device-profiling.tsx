@@ -1,6 +1,6 @@
 import { render } from 'react-dom';
 import { useInstanceId } from '@18f/identity-react-hooks';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useState, useEffect } from 'react';
 
 const { currentScript } = document;
 
@@ -21,7 +21,12 @@ function submitMockFraudResult({ result, sessionId }: { result: string; sessionI
   });
 }
 
-const CHAOS_OPTIONS: { apply: () => void; undo: () => void }[] = [
+interface ChaosOption {
+  apply: () => void;
+  undo: () => void;
+}
+
+const CHAOS_OPTIONS: ChaosOption[] = [
   {
     apply: () => {
       document.body.style.transform = 'scale(-1, 1)';
@@ -56,24 +61,29 @@ const CHAOS_OPTIONS: { apply: () => void; undo: () => void }[] = [
   },
 ];
 
-let undoLast: () => void | undefined;
-
-function mockFraudResultSelected(event: ChangeEvent<HTMLSelectElement>) {
-  const { value } = event.target;
-
-  if (value === 'chaotic') {
-    const randomChaosOption = CHAOS_OPTIONS[Math.floor(Math.random() * CHAOS_OPTIONS.length)];
-    randomChaosOption.apply();
-    undoLast = randomChaosOption.undo;
-  } else {
-    undoLast?.();
-    submitMockFraudResult({ result: value, sessionId: loadSessionId() });
-  }
-}
-
 function MockDeviceProfilingOptions() {
+  const [selectedValue, setSelectedValue] = useState('');
+
+  useEffect(() => {
+    if (selectedValue === 'chaotic') {
+      const randomChaosOption = CHAOS_OPTIONS[Math.floor(Math.random() * CHAOS_OPTIONS.length)];
+      randomChaosOption.apply();
+      return randomChaosOption.undo;
+    } else {
+      submitMockFraudResult({ result: selectedValue, sessionId: loadSessionId() });
+    }
+  }, [selectedValue]);
+
   const instanceId = useInstanceId();
   const inputId = `select-input-${instanceId}`;
+
+  const options = [
+    { value: 'no_result', title: 'No Result' },
+    { value: 'pass', title: 'Pass' },
+    { value: 'reject', title: 'Reject' },
+    { value: 'review', title: 'Review' },
+    { value: 'chaotic', title: 'Do something chaotic' },
+  ];
 
   return (
     <>
@@ -84,15 +94,19 @@ function MockDeviceProfilingOptions() {
       </label>
       <select
         className="border-05 border-accent-warm-dark"
-        onChange={mockFraudResultSelected}
+        onChange={(event: ChangeEvent<HTMLSelectElement>) => {
+          const targetValue = event.target.value;
+          setSelectedValue(targetValue);
+        }}
         name="mock_profiling_result"
         id={inputId}
+        defaultValue={selectedValue}
       >
-        <option value="no_result">No Result</option>
-        <option value="pass">Pass</option>
-        <option value="reject">Reject</option>
-        <option value="review">Review</option>
-        <option value="chaotic">Do something chaotic</option>
+        {options.map(({ value, title }) => (
+          <option value={value} key={value}>
+            {title}
+          </option>
+        ))}
       </select>
     </>
   );
