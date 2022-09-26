@@ -173,8 +173,10 @@ class UserMailer < ActionMailer::Base
       presenter = ConfirmationEmailPresenter.new(user, view_context)
       @first_sentence = presenter.first_sentence
       @confirmation_period = presenter.confirmation_period
-      @locale = locale_url_param
-      @token = token
+      @add_email_url = add_email_confirmation_url(
+        confirmation_token: token,
+        locale: locale_url_param,
+      )
       mail(to: email, subject: t('user_mailer.add_email.subject'))
     end
   end
