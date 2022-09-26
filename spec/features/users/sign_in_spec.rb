@@ -224,7 +224,10 @@ feature 'Sign in' do
     check t('components.password_toggle.toggle_label')
 
     expect(page).to have_css('input.password[type="text"]')
-    expect(fake_analytics).to have_logged_event('Show Password Button Clicked', path: root_path)
+    expect(fake_analytics).to have_logged_event(
+      'Show Password Button Clicked',
+      path: new_user_session_path,
+    )
   end
 
   scenario 'user session expires in amount of time specified by Devise config' do
