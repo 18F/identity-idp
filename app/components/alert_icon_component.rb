@@ -12,7 +12,8 @@ class AlertIconComponent < BaseComponent
 
   def initialize(icon_name: :warning, **tag_options)
     if !ICON_SOURCE.key?(icon_name)
-      raise ArgumentError, "`icon_name` #{icon_name} is invalid, expected one of #{ICON_SOURCE.keys}"
+      raise ArgumentError,
+            "`icon_name` #{icon_name} is invalid, expected one of #{ICON_SOURCE.keys}"
     end
     @tag_options = tag_options
     @tag_options[:class] = css_class

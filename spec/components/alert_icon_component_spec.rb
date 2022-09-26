@@ -25,6 +25,6 @@ RSpec.describe AlertIconComponent, type: :component do
   end
 
   it 'raises an ArgumentError if an invalid icon name is given' do
-    expect { described_class.new(:invalid_icon_name)}.to raise_error(ArgumentError)
+    expect { described_class.new(:invalid_icon_name) }.to raise_error(ArgumentError)
   end
 end
