@@ -121,6 +121,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
           allow(state_id_proofer).to receive(:proof).
             and_return(Proofing::Result.new(transaction_id: aamva_transaction_id))
+          Proofing::Mock::DeviceProfilingBackend.new.record_profiling_result(
+            session_id: threatmetrix_session_id,
+            result: 'pass',
+          )
         end
 
         let(:lexisnexis_response) do
@@ -479,6 +483,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
               and_return(Proofing::Result.new)
             expect(state_id_proofer).to receive(:proof).
               and_return(Proofing::Result.new)
+            Proofing::Mock::DeviceProfilingBackend.new.record_profiling_result(
+              session_id: threatmetrix_session_id,
+              result: 'pass',
+            )
           end
 
           it 'logs the trace_id and timing info for ProofResolution and the Threatmetrix info' do
