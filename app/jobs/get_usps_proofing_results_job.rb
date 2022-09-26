@@ -207,7 +207,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
 
     enrollment.update(status: :failed)
-    if response['fraudSuspected'] == true
+    if response['fraudSuspected']
       send_failed_fraud_email(enrollment.user, enrollment)
     else
       send_failed_email(enrollment.user, enrollment)
