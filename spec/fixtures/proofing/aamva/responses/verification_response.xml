@@ -16,4 +16,8 @@
   <PersonFirstNameFuzzyPrimaryMatchIndicator>true</PersonFirstNameFuzzyPrimaryMatchIndicator>
   <PersonFirstNameFuzzyAlternateMatchIndicator>true</PersonFirstNameFuzzyAlternateMatchIndicator>
   <DocumentCategoryMatchIndicator>true</DocumentCategoryMatchIndicator>
+  <AddressLine1MatchIndicator>true</AddressLine1MatchIndicator>
+  <AddressCityMatchIndicator>true</AddressCityMatchIndicator>
+  <AddressStateCodeMatchIndicator>true</AddressStateCodeMatchIndicator>
+  <AddressZIP5MatchIndicator>true</AddressZIP5MatchIndicator>
 </dldv:VerifyDriverLicenseDataResponse>
