@@ -9,10 +9,10 @@ locals:
 * options: Array of troubleshooting options.
 %>
 <% if local_assigns.fetch(:type, :error) == :error
-     icon_name = 'error'
+     icon_name = :error
      troubleshooting_heading = t('idv.troubleshooting.headings.need_assistance')
 else
-  icon_name = 'warning'
+  icon_name = :warning
   troubleshooting_heading = t('components.troubleshooting_options.default_heading')
 end %>
 <% title local_assigns.fetch(:title, heading) %>
