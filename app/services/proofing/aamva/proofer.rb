@@ -3,7 +3,7 @@ require 'redacted_struct'
 
 module Proofing
   module Aamva
-    class Proofer < Proofing::Base
+    class Proofer
       Config = RedactedStruct.new(
         :auth_request_timeout,
         :auth_url,
