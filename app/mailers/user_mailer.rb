@@ -280,7 +280,7 @@ class UserMailer < ActionMailer::Base
       )
       mail(
         to: email_address.email,
-        subject: t('user_mailer.in_person_failed_suspected_fraud.subject', app_name: APP_NAME),
+        subject: t('user_mailer.in_person_failed_suspected_fraud.subject'),
       )
     end
   end

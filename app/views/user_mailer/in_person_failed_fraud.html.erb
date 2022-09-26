@@ -2,6 +2,7 @@
 <p>
   <%= t(
         'user_mailer.in_person_failed_suspected_fraud.body.intro',
+        app_name: APP_NAME,
         location: @presenter.location_name,
         date: @presenter.formatted_verified_date,
       ) %>

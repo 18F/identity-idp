@@ -132,7 +132,7 @@ es:
           href="%{help_center_url}">visitar nuestro Centro de Ayuda</a> o
           ponerse en contacto con la agencia a la que intenta acceder.
         intro: Entendemos que estaba intentando verificar su identidad a través de
-          Login.gov, sin embargo, su identidad no pudo ser verificada en la
+          %{app_name}, sin embargo, su identidad no pudo ser verificada en la
           oficina de correos de %{location} el %{date}.
       greeting: Hola,
       subject: No se pudo verificar su identidad en persona

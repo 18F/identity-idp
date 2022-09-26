@@ -136,7 +136,7 @@ fr:
           href="%{help_center_url}">consulter notre centre d’aide</a> ou
           contacter l’agence à laquelle vous essayez d’accéder.
         intro: Nous comprenons que vous avez tenté de vérifier votre identité par le
-          biais de Login.gov, mais votre identité n’a pas pu être vérifiée au
+          biais de %{app_name}, mais votre identité n’a pas pu être vérifiée au
           bureau de poste de %{location} le %{date}.
       greeting: Bonjour,
       subject: Votre identité n’a pas pu être vérifiée en personne
