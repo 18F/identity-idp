@@ -8,7 +8,7 @@ class AlertIconComponent < BaseComponent
     delete: 'status/delete.svg',
   }
 
-  attr_reader :tag_options
+  attr_reader :tag_options, :icon_name
 
   def initialize(icon_name: :warning, **tag_options)
     if !ICON_SOURCE.key?(icon_name)
@@ -20,19 +20,19 @@ class AlertIconComponent < BaseComponent
   end
 
   def render?
-    ICON_SOURCE.key?(@icon_name)
+    ICON_SOURCE.key?(icon_name)
   end
 
   def source
-    asset_url(ICON_SOURCE[@icon_name])
+    asset_url(ICON_SOURCE[icon_name])
   end
 
   def alt_text
-    t("image_description.#{@icon_name}")
+    t("image_description.#{icon_name}")
   end
 
   def css_class
-    classes = [*@tag_options[:class]]
+    classes = [*tag_options[:class]]
     classes << 'alert-icon'
     classes
   end
