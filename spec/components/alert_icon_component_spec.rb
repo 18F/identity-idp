@@ -9,22 +9,28 @@ RSpec.describe AlertIconComponent, type: :component do
   end
 
   it 'renders a warning 88x88 by default' do
+    expect(rendered).to have_css('img')
     expect(rendered).to have_css('.alert-icon')
     expect(rendered).to have_css("[alt='#{t('image_description.warning')}']")
     expect(rendered).to have_css('[width="88"][height="88"]')
   end
 
   it 'renders the alert-icon class after any custom provided classes' do
-    rendered = render_inline(described_class.new(:warning, class: 'first-class second-class'))
+    rendered = render_inline(
+      described_class.new(
+        icon_name: :warning,
+        class: 'first-class second-class',
+      ),
+    )
     expect(rendered).to have_css('[class="first-class second-class alert-icon"]')
   end
 
   it 'renders a custom alt, if provided' do
-    rendered = render_inline(described_class.new(:warning, alt: 'custom alt text'))
+    rendered = render_inline(described_class.new(icon_name: :warning, alt: 'custom alt text'))
     expect(rendered).to have_css('[alt="custom alt text"]')
   end
 
   it 'raises an ArgumentError if an invalid icon name is given' do
-    expect { described_class.new(:invalid_icon_name) }.to raise_error(ArgumentError)
+    expect { described_class.new(icon_name: :invalid_icon_name) }.to raise_error(ArgumentError)
   end
 end

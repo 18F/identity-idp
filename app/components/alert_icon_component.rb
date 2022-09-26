@@ -15,8 +15,8 @@ class AlertIconComponent < BaseComponent
       raise ArgumentError,
             "`icon_name` #{icon_name} is invalid, expected one of #{ICON_SOURCE.keys}"
     end
+    @icon_name = icon_name
     @tag_options = tag_options
-    @tag_options[:class] = css_class
   end
 
   def render?
