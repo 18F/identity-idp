@@ -10,8 +10,10 @@ class AlertIconComponent < BaseComponent
 
   attr_reader :tag_options
 
-  def initialize(icon_name = :warning, **tag_options)
-    @icon_name = icon_name.to_sym
+  def initialize(icon_name: :warning, **tag_options)
+    if !ICON_SOURCE.key?(icon_name)
+      raise ArgumentError, "`icon_name` #{icon_name} is invalid, expected one of #{ICON_SOURCE.keys}"
+    end
     @tag_options = tag_options
     @tag_options[:alt] = alt_text if (!@tag_options.include? :alt) && render?
     @tag_options[:class] = css_class

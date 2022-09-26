@@ -24,8 +24,7 @@ RSpec.describe AlertIconComponent, type: :component do
     expect(rendered).to have_css('[alt="custom alt text"]')
   end
 
-  it 'does not render if an invalid icon name is given' do
-    instance = described_class.new(:invalid_icon_name)
-    expect(instance.render?).to be(false)
+  it 'raises an ArgumentError if an invalid icon name is given' do
+    expect { described_class.new(:invalid_icon_name)}.to raise_error(ArgumentError)
   end
 end
