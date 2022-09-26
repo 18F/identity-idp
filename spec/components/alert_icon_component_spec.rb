@@ -33,4 +33,14 @@ RSpec.describe AlertIconComponent, type: :component do
   it 'raises an ArgumentError if an invalid icon name is given' do
     expect { described_class.new(icon_name: :invalid_icon_name) }.to raise_error(ArgumentError)
   end
+
+  it 'expect the size argument to be prioritized over default width and height' do
+    rendered = render_inline(described_class.new(size: '20x30'))
+    expect(rendered).to have_css('[width="20"][height="30"]')
+  end
+
+  it 'renders with the explicitly passed in width and height values' do
+    rendered = render_inline(described_class.new(width: 10, height: 20))
+    expect(rendered).to have_css('[width="10"][height="20"]')
+  end
 end

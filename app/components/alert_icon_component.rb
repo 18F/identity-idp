@@ -7,6 +7,8 @@ class AlertIconComponent < BaseComponent
     info_question: 'status/info-question.svg',
     delete: 'status/delete.svg',
   }
+  DEFAULT_WIDTH = 88
+  DEFAULT_HEIGHT = 88
 
   attr_reader :tag_options, :icon_name
 
@@ -17,6 +19,8 @@ class AlertIconComponent < BaseComponent
     end
     @icon_name = icon_name
     @tag_options = tag_options
+    @tag_options[:width] ||= DEFAULT_WIDTH
+    @tag_options[:height] ||= DEFAULT_HEIGHT
   end
 
   def render?
@@ -35,5 +39,13 @@ class AlertIconComponent < BaseComponent
     classes = [*tag_options[:class]]
     classes << 'alert-icon'
     classes
+  end
+
+  def size_attributes
+    if tag_options[:size].present?
+      { size: tag_options[:size], width: nil, height: nil }
+    else
+      { width: tag_options[:width], height: tag_options[:height] }
+    end
   end
 end
