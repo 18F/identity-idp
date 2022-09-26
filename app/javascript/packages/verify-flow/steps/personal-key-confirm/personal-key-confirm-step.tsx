@@ -30,7 +30,7 @@ function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
             alt={t('image_description.personal_key')}
             height="60"
             width="60"
-            src={getAssetPath('personal-key/personal-key.svg')}
+            src={getAssetPath('status/personal-key.svg')}
           />
         </div>
         <Modal.Heading>{t('forms.personal_key.title')}</Modal.Heading>

@@ -3,7 +3,7 @@ class AlertIconComponent < BaseComponent
     warning: 'status/warning.svg',
     error: 'status/error.svg',
     error_lock: 'status/error-lock.svg',
-    personal_key: 'personal-key/personal-key.svg',
+    personal_key: 'status/personal-key.svg',
     info_question: 'status/info-question.svg',
     delete: 'status/delete.svg',
   }
