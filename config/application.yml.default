@@ -41,6 +41,7 @@ acuant_upload_image_timeout: 1.0
 acuant_get_results_timeout: 1.0
 acuant_create_document_timeout: 1.0
 add_email_link_valid_for_hours: 24
+address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US", "VI"]'
 asset_host: ''
 async_wait_timeout_seconds: 60
 async_stale_job_timeout_seconds: 300

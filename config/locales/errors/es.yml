@@ -69,15 +69,12 @@ es:
       invalid_voice_number: Numero de telefono invalido. Verifique que haya ingresado
         el código de país o de área correcto.
       missing_field: Por favor, rellene este campo.
-      must_have_us_country_code: Número de teléfono no válido. Asegúrate de introducir
-        un número de teléfono con un código país de EE. UU.
       no_pending_profile: Ningún perfil está esperando verificación
       not_a_number: no es un número
       otp_failed: Se produjo un error al enviar el código de seguridad.
       password_incorrect: La contraseña es incorrecta
       personal_key_incorrect: La clave personal es incorrecta
       phone_confirmation_throttled: Lo intentaste muchas veces, vuelve a intentarlo en %{timeout}.
-      phone_country_constraint_usa: Debe ser un número telefónico de los Estados Unidos
       phone_duplicate: Esta cuenta ya está utilizando el número de teléfono que
         ingresó como autenticador. Por favor, use un número de teléfono
         diferente.

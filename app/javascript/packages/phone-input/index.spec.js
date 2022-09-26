@@ -43,7 +43,6 @@ describe('PhoneInput', () => {
         {
           "country_code_label": "Country code",
           "invalid_phone": "Phone number is not valid",
-          "country_constraint_usa": "Must be a U.S. phone number",
           "unsupported_country": "We are unable to verify phone numbers from %{location}"
         }
       </script>
@@ -133,25 +132,13 @@ describe('PhoneInput', () => {
     });
 
     it('validates phone from region', async () => {
-      const input = createAndConnectElement({ isSingleOption: true });
+      const input = createAndConnectElement({ isNonUSSingleOption: true });
 
       /** @type {HTMLInputElement} */
       const phoneNumber = getByLabelText(input, 'Phone number');
 
-      await userEvent.type(phoneNumber, '306-555-1234');
-      expect(phoneNumber.validationMessage).to.equal('Must be a U.S. phone number');
-    });
-
-    context('with non-U.S. single option', () => {
-      it('validates phone from region', async () => {
-        const input = createAndConnectElement({ isNonUSSingleOption: true });
-
-        /** @type {HTMLInputElement} */
-        const phoneNumber = getByLabelText(input, 'Phone number');
-
-        await userEvent.type(phoneNumber, '513-555-1234');
-        expect(phoneNumber.validationMessage).to.equal('Phone number is not valid');
-      });
+      await userEvent.type(phoneNumber, '513-555-1234');
+      expect(phoneNumber.validationMessage).to.equal('Phone number is not valid');
     });
   });
 

@@ -13,11 +13,7 @@
               <td>
                 <center>
                   <%= link_to t('user_mailer.email_confirmation_instructions.link_text'),
-                              add_email_confirmation_url(
-                                _request_id: @request_id,
-                                confirmation_token: @token,
-                                locale: @locale,
-                              ),
+                              @add_email_url,
                               target: '_blank',
                               class: 'float-center',
                               align: 'center',
@@ -35,12 +31,8 @@
 </table>
 
 <p>
-  <%= link_to add_email_confirmation_url(_request_id: @request_id, confirmation_token: @token, locale: @locale),
-              sign_up_create_email_confirmation_url(
-                _request_id: @request_id,
-                confirmation_token: @token,
-                locale: @locale,
-              ),
+  <%= link_to @add_email_url,
+              @add_email_url,
               target: '_blank',
               rel: 'noopener' %>
 </p>

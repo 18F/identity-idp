@@ -54,19 +54,16 @@ module Idv
 
     def validate_valid_phone_for_allowed_countries
       return if valid_phone_for_allowed_countries?(phone)
-
-      if allowed_countries == ['US']
-        errors.add(:phone, :must_have_us_country_code, type: :must_have_us_country_code)
-      else
-        errors.add(:phone, :improbable_phone, type: :improbable_phone)
-      end
+      errors.add(:phone, :improbable_phone, type: :improbable_phone)
     end
 
     def validate_phone_delivery_methods
       return unless valid_phone_for_allowed_countries?(phone)
 
       capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: user_phone?(phone))
-      unsupported_delivery_methods(capabilities).each do |delivery_method|
+      unsupported_methods = unsupported_delivery_methods(capabilities)
+      return if unsupported_methods.count != delivery_methods.count
+      unsupported_methods.each do |delivery_method|
         errors.add(
           :phone,
           I18n.t(
@@ -80,7 +77,7 @@ module Idv
 
     def valid_phone_for_allowed_countries?(phone)
       if allowed_countries.present?
-        allowed_countries.all? { |country| Phonelib.valid_for_country?(phone, country) }
+        allowed_countries.any? { |country| Phonelib.valid_for_country?(phone, country) }
       else
         Phonelib.valid?(phone)
       end

@@ -9,8 +9,8 @@ module Idv
 
         attr_reader :auth_code
 
-        def initialize(auth_code)
-          @auth_code = auth_code
+        def initialize(service_provider_data)
+          @auth_code = service_provider_data[:auth_code]
         end
 
         # Calls the endpoint and returns the decrypted response.

@@ -34,7 +34,7 @@ module Idv
       irs_attempts_api_tracker.idv_phone_submitted(
         phone_number: step_params[:phone],
         success: result.success?,
-        failure_reason: result.errors,
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
       flash[:error] = result.first_error_message if !result.success?
       return render :new, locals: { gpo_letter_available: gpo_letter_available } if !result.success?
@@ -100,7 +100,8 @@ module Idv
       @idv_form = Idv::PhoneForm.new(
         user: current_user,
         previous_params: idv_session.previous_phone_step_params,
-        allowed_countries: ['US'],
+        allowed_countries:
+          PhoneNumberCapabilities::ADDRESS_IDENTITY_PROOFING_SUPPORTED_COUNTRY_CODES,
       )
     end
 

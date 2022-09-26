@@ -5,6 +5,21 @@ describe UserMailer, type: :mailer do
   let(:email_address) { user.email_addresses.first }
   let(:banned_email) { 'banned_email+123abc@gmail.com' }
 
+  describe '#add_email' do
+    let(:token) { SecureRandom.hex }
+    let(:mail) { UserMailer.add_email(user, email_address, token) }
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'renders the add_email_confirmation_url' do
+      add_email_url = add_email_confirmation_url(confirmation_token: token)
+
+      expect(mail.html_part.body).to have_content(add_email_url)
+      expect(mail.html_part.body).to_not have_content(sign_up_create_email_confirmation_url)
+    end
+  end
+
   describe '#email_deleted' do
     let(:mail) { UserMailer.email_deleted(user, 'old@email.com') }
 

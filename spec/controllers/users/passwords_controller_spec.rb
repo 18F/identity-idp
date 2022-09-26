@@ -10,15 +10,15 @@ describe Users::PasswordsController do
         stub_analytics
         stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
+
+        expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).
+          with(failure_reason: nil, success: true)
 
         params = { password: 'salty new password' }
         patch :update, params: { update_user_password_form: params }
 
         expect(@analytics).to have_received(:track_event).
           with('Password Changed', success: true, errors: {})
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).
-          with(:logged_in_password_change, failure_reason: nil, success: true)
         expect(response).to redirect_to account_url
         expect(flash[:info]).to eq t('notices.password_changed')
         expect(flash[:personal_key]).to be_nil
@@ -78,12 +78,17 @@ describe Users::PasswordsController do
 
     context 'form returns failure' do
       it 'renders edit' do
+        password_short_error = { password: [:too_short] }
         stub_sign_in
 
         stub_analytics
         stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
+
+        expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).with(
+          success: false,
+          failure_reason: password_short_error,
+        )
 
         params = { password: 'new' }
         patch :update, params: { update_user_password_form: params }
@@ -96,14 +101,7 @@ describe Users::PasswordsController do
               t('errors.attributes.password.too_short.other', count: Devise.password_length.first),
             ],
           },
-          error_details: { password: [:too_short] },
-        )
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :logged_in_password_change,
-          success: false,
-          failure_reason: {
-            password: [:too_short],
-          },
+          error_details: password_short_error,
         )
         expect(response).to render_template(:edit)
       end

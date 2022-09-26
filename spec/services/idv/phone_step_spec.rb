@@ -49,7 +49,11 @@ describe Idv::PhoneStep do
     let(:throttle) { Throttle.new(throttle_type: :proof_address, user: user) }
 
     it 'succeeds with good params' do
+      proofing_phone = Phonelib.parse(good_phone)
       extra = {
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+        country_code: proofing_phone.country,
+        area_code: proofing_phone.area_code,
         vendor: {
           vendor_name: 'AddressMock',
           exception: nil,
@@ -78,7 +82,11 @@ describe Idv::PhoneStep do
     end
 
     it 'fails with bad params' do
+      proofing_phone = Phonelib.parse(bad_phone)
       extra = {
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+        country_code: proofing_phone.country,
+        area_code: proofing_phone.area_code,
         vendor: {
           vendor_name: 'AddressMock',
           exception: nil,
