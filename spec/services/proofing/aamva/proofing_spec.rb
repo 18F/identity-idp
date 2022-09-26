@@ -69,7 +69,8 @@ describe Proofing::Aamva::Proofer do
         subject.aamva_proof(state_id_data, result)
 
         expect(result.failed?).to eq(true)
-        expect(result.errors).to eq(dob: ['UNVERIFIED'])
+        expect(result.errors).to include(dob: ['UNVERIFIED'])
+        expect(result.errors).to include(address2: ['MISSING'])
       end
     end
 
@@ -82,7 +83,8 @@ describe Proofing::Aamva::Proofer do
         subject.aamva_proof(state_id_data, result)
 
         expect(result.failed?).to eq(true)
-        expect(result.errors).to eq(dob: ['MISSING'])
+        expect(result.errors).to include(dob: ['MISSING'])
+        expect(result.errors).to include(address2: ['MISSING'])
       end
     end
   end
