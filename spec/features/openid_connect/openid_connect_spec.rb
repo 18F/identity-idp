@@ -143,7 +143,7 @@ describe 'OpenID Connect' do
     end
 
     context 'when sending id_token_hint' do
-      it 'logout includes redirect_uris in CSP headers and destroys the session' do
+      it 'logout destroys the session' do
         id_token = sign_in_get_id_token
 
         state = SecureRandom.hex
@@ -152,16 +152,6 @@ describe 'OpenID Connect' do
           post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
           state: state,
           id_token_hint: id_token,
-          prevent_logout_redirect: true,
-        )
-
-        current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
-        expect(current_url_no_port).to include(
-          "http://www.example.com/openid_connect/logout?id_token_hint=#{id_token}",
-        )
-
-        expect(page.response_headers['Content-Security-Policy']).to include(
-          'form-action \'self\' gov.gsa.openidconnect.test:',
         )
 
         visit account_path
@@ -177,7 +167,7 @@ describe 'OpenID Connect' do
       end
 
       context 'when sending client_id' do
-        it 'logout includes redirect_uris in CSP headers and destroys the session' do
+        it 'logout destroys the session' do
           client_id = 'urn:gov:gsa:openidconnect:test'
           sign_in_get_id_token(client_id: client_id)
 
@@ -187,16 +177,6 @@ describe 'OpenID Connect' do
             client_id: client_id,
             post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
             state: state,
-            prevent_logout_redirect: true,
-          )
-
-          current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
-          expect(current_url_no_port).to include(
-            "http://www.example.com/openid_connect/logout?client_id=#{URI.encode_www_form_component(client_id)}",
-          )
-
-          expect(page.response_headers['Content-Security-Policy']).to include(
-            'form-action \'self\' gov.gsa.openidconnect.test:',
           )
 
           visit account_path
@@ -223,7 +203,6 @@ describe 'OpenID Connect' do
             client_id: client_id,
             post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
             state: state,
-            prevent_logout_redirect: true,
           )
 
           current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
@@ -242,7 +221,7 @@ describe 'OpenID Connect' do
         and_return(true)
     end
 
-    it 'logout includes redirect_uris in CSP headers and destroys the session' do
+    it 'logout destroys the session' do
       client_id = 'urn:gov:gsa:openidconnect:test'
       sign_in_get_id_token(client_id: client_id)
 
@@ -252,16 +231,6 @@ describe 'OpenID Connect' do
         client_id: client_id,
         post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
         state: state,
-        prevent_logout_redirect: true,
-      )
-
-      current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
-      expect(current_url_no_port).to include(
-        "http://www.example.com/openid_connect/logout?client_id=#{URI.encode_www_form_component(client_id)}",
-      )
-
-      expect(page.response_headers['Content-Security-Policy']).to include(
-        'form-action \'self\' gov.gsa.openidconnect.test:',
       )
 
       visit account_path
@@ -278,7 +247,6 @@ describe 'OpenID Connect' do
         id_token_hint: id_token,
         post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
         state: state,
-        prevent_logout_redirect: true,
       )
 
       current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
@@ -691,11 +659,6 @@ describe 'OpenID Connect' do
         post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
         state: state,
         id_token_hint: id_token,
-      )
-
-      current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
-      expect(current_url_no_port).to eq(
-        "gov.gsa.openidconnect.test://result/signout?state=#{state}",
       )
 
       visit account_path

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::InheritedProofing::Va::Mocks::Service do
-  subject { described_class.new(auth_code) }
+  subject { described_class.new({ auth_code: auth_code }) }
   let(:auth_code) { described_class::VALID_AUTH_CODE }
 
   describe '#initialize' do

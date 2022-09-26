@@ -19,6 +19,10 @@ describe 'layouts/user_mailer.html.erb' do
     expect(rendered).to have_css("img[src*='.mail']")
   end
 
+  it 'includes alt text for app logo that reads Login.gov logo' do
+    expect(rendered).to have_css("img[alt='#{t('mailer.logo', app_name: APP_NAME)}']")
+  end
+
   it 'includes the message subject in the body' do
     expect(rendered).to have_content @mail.subject
   end

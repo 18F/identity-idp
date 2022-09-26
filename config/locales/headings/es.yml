@@ -22,6 +22,7 @@ es:
     confirmations:
       new: Enviar otro email de confirmación
     create_account_with_sp:
+      cta: ¿Es la primera vez que utiliza %{app_name}?
       sp_text: está utilizando %{app_name} para permitirle iniciar sesión en su cuenta
         de forma segura.
     create_account_without_sp: Establezca una cuenta de %{app_name}

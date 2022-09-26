@@ -5,6 +5,21 @@ describe UserMailer, type: :mailer do
   let(:email_address) { user.email_addresses.first }
   let(:banned_email) { 'banned_email+123abc@gmail.com' }
 
+  describe '#add_email' do
+    let(:token) { SecureRandom.hex }
+    let(:mail) { UserMailer.add_email(user, email_address, token) }
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'renders the add_email_confirmation_url' do
+      add_email_url = add_email_confirmation_url(confirmation_token: token)
+
+      expect(mail.html_part.body).to have_content(add_email_url)
+      expect(mail.html_part.body).to_not have_content(sign_up_create_email_confirmation_url)
+    end
+  end
+
   describe '#email_deleted' do
     let(:mail) { UserMailer.email_deleted(user, 'old@email.com') }
 
@@ -576,6 +591,28 @@ describe UserMailer, type: :mailer do
 
     let(:mail) do
       UserMailer.in_person_failed(
+        user,
+        user.email_addresses.first,
+        enrollment: enrollment,
+      )
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+  end
+
+  describe '#in_person_failed_fraud' do
+    let(:enrollment) do
+      create(
+        :in_person_enrollment,
+        selected_location_details: { name: 'FRIENDSHIP' },
+        status_updated_at: Time.zone.now - 2.hours,
+      )
+    end
+
+    let(:mail) do
+      p enrollment
+      UserMailer.in_person_failed_fraud(
         user,
         user.email_addresses.first,
         enrollment: enrollment,

@@ -35,7 +35,7 @@ module Idv
         analytics.idv_gpo_verification_submitted(**result.to_h)
         irs_attempts_api_tracker.idv_gpo_verification_submitted(
           success: result.success?,
-          failure_reason: result.errors.presence,
+          failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
         )
 
         if result.success?

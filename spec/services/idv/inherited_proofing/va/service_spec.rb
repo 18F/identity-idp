@@ -10,7 +10,7 @@ RSpec.describe Idv::InheritedProofing::Va::Service do
   include_context 'va_api_context'
   include_context 'va_user_context'
 
-  subject(:service) { described_class.new auth_code }
+  subject(:service) { described_class.new(auth_code: auth_code) }
 
   before do
     allow(service).to receive(:private_key).and_return(private_key)
