@@ -2,7 +2,7 @@
   <%= render layout: 'shared/modal_layout', locals: { role: 'dialog' } do |label_id, description_id| %>
     <div class="padding-6 cntnr-xxskinny bg-white rounded-xxl">
       <div class="display-flex flex-align-center flex-justify-center">
-          <%= render AlertIconComponent.new(:warning) %>
+          <%= render AlertIconComponent.new(icon_name: :warning) %>
       </div>
       <h2 class="margin-y-2 fs-20p text-normal text-center" id="<%= label_id %>">
         <%= t('instructions.account.reactivate.modal.heading') %>
