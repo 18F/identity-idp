@@ -20,6 +20,7 @@ module JavascriptDriverHelper
     Timeout.timeout(Capybara.default_max_wait_time) do
       loop if page.evaluate_script('window.isFetching')
     end
+  ensure
     page.execute_script(teardown_js)
   end
 end
