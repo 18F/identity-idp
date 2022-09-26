@@ -2,20 +2,12 @@ import { render } from 'react-dom';
 import { useInstanceId } from '@18f/identity-react-hooks';
 import { ChangeEvent } from 'react';
 
-/**
- * Loads the ?session_id=SESSION_ID param from the <script> tag. Unfortunately
- * import.meta.url doesn't have live URL params so we need to scrape the DOM.
- */
+const { currentScript } = document;
+
 function loadSessionId(): string | undefined {
-  let sessionId;
-  Array.from(document.scripts).every((scriptTag) => {
-    if (scriptTag.src.includes('session_id')) {
-      sessionId = new URL(scriptTag.src).searchParams.get('session_id');
-      return false;
-    }
-    return true;
-  });
-  return sessionId;
+  if (currentScript instanceof HTMLScriptElement) {
+    return new URL(currentScript.src).searchParams.get('session_id') || undefined;
+  }
 }
 
 function submitMockFraudResult({ result, sessionId }: { result: string; sessionId?: string }) {
