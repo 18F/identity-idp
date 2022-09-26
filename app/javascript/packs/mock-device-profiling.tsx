@@ -66,11 +66,7 @@ const CHAOS_OPTIONS: { apply: () => void; undo: () => void }[] = [
 
 let undoLast: () => void | undefined;
 
-function mockFraudResultSelected(event: ChangeEvent) {
-  if (!(event.target instanceof HTMLSelectElement)) {
-    return;
-  }
-
+function mockFraudResultSelected(event: ChangeEvent<HTMLSelectElement>) {
   const { value } = event.target;
 
   if (value === 'chaotic') {
