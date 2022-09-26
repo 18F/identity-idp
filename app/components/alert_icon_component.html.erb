@@ -1,1 +1,5 @@
-<%= image_tag(source, width: 88, height: 88, alt: alt_text, **tag_options, class: css_class) %>
+<% if tag_options[:size].present? %>
+    <%= image_tag(source, alt: alt_text, **tag_options, class: css_class) %>
+<% else %>
+    <%= image_tag(source, width: 88, height: 88, alt: alt_text, **tag_options, class: css_class) %>
+<% end %>
