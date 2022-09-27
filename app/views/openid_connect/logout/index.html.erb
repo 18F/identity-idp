@@ -1,8 +1,8 @@
-<% title t('openid_connect.logout.heading') %>
+<% title t('openid_connect.logout.heading', app_name: APP_NAME) %>
 
 <div class='text-center'>
   <%= image_tag(asset_url('user-access.svg'), width: '280', alt: '') %>
-  <%= render PageHeadingComponent.new.with_content(t('openid_connect.logout.heading')) %>
+  <%= render PageHeadingComponent.new.with_content(t('openid_connect.logout.heading', app_name: APP_NAME)) %>
 </div>
 
 <div class='sm-left-align'>
@@ -16,7 +16,7 @@
           },
           method: :delete,
           class: 'usa-button usa-button--big usa-button usa-button--full-width',
-        ) { t('openid_connect.logout.confirm') } %>
+        ) { t('openid_connect.logout.confirm', app_name: APP_NAME) } %>
   </div>
   <div class='margin-top-2 text-center'>
     <%= link_to(account_path, class: 'usa-button usa-button--big usa-button--outline usa-button--full-width') { t('openid_connect.logout.deny') } %>

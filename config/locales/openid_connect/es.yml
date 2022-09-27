@@ -18,7 +18,7 @@ es:
         redirect_uri_no_match: Redirect_uri no coincide con redirect_uri registrado
         unauthorized_scope: Alcance no autorizado
     logout:
-      confirm: Sí, cerrar sesión en Login.gov
+      confirm: Sí, cerrar sesión en %{app_name}
       deny: No, ir a la página de mi cuenta
       errors:
         client_id_invalid: client_id no fue reconocido
@@ -28,7 +28,7 @@ es:
           id_token_hint. Por favor, envíe client_id en su lugar.
         no_client_id_or_id_token_hint: Esta aplicación está mal configurada y debe
           enviar client_id o id_token_hint.
-      heading: ¿Quieres cerrar sesión en Login.gov?
+      heading: ¿Quieres cerrar sesión en %{app_name}?
     token:
       errors:
         expired_code: ha expirado
