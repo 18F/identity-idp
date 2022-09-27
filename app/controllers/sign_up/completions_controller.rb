@@ -92,6 +92,8 @@ module SignUp
     end
 
     def send_in_person_completion_survey
+      return unless sp_session_ial == 2
+
       Idv::InPerson::CompletionSurveySender.send_completion_survey(
         current_user,
         current_sp.issuer,
