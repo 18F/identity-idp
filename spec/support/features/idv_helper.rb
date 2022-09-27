@@ -75,14 +75,22 @@ module IdvHelper
       visit_saml_authn_request_url(overrides: saml_overrides)
     elsif sp == :oidc
       @state = SecureRandom.hex
-      @client_id = 'urn:gov:gsa:openidconnect:sp:server'
+      @client_id = sp_oidc_issuer
       @nonce = SecureRandom.hex
       visit_idp_from_oidc_sp_with_ial2(state: @state, client_id: @client_id, nonce: @nonce, **extra)
     end
   end
 
+  def sp_oidc_redirect_uri
+    'http://localhost:7654/auth/result'
+  end
+
+  def sp_oidc_issuer
+    'urn:gov:gsa:openidconnect:sp:server'
+  end
+
   def visit_idp_from_oidc_sp_with_ial2(
-    client_id: 'urn:gov:gsa:openidconnect:sp:server',
+    client_id: sp_oidc_issuer,
     state: SecureRandom.hex,
     nonce: SecureRandom.hex,
     verified_within: nil
@@ -92,7 +100,7 @@ module IdvHelper
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email profile:name phone social_security_number',
-      redirect_uri: 'http://localhost:7654/auth/result',
+      redirect_uri: sp_oidc_redirect_uri,
       state: state,
       prompt: 'select_account',
       nonce: nonce,
@@ -102,11 +110,11 @@ module IdvHelper
 
   def visit_idp_from_oidc_sp_with_loa3
     visit openid_connect_authorize_path(
-      client_id: 'urn:gov:gsa:openidconnect:sp:server',
+      client_id: sp_oidc_issuer,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email profile:name phone social_security_number',
-      redirect_uri: 'http://localhost:7654/auth/result',
+      redirect_uri: sp_oidc_redirect_uri,
       state: SecureRandom.hex,
       prompt: 'select_account',
       nonce: SecureRandom.hex,
@@ -115,11 +123,11 @@ module IdvHelper
 
   def visit_idp_from_oidc_sp_with_ial2_strict
     visit openid_connect_authorize_path(
-      client_id: 'urn:gov:gsa:openidconnect:sp:server',
+      client_id: sp_oidc_issuer,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email profile:name phone social_security_number',
-      redirect_uri: 'http://localhost:7654/auth/result',
+      redirect_uri: sp_oidc_redirect_uri,
       state: SecureRandom.hex,
       prompt: 'select_account',
       nonce: SecureRandom.hex,
