@@ -47,7 +47,6 @@ en:
     no_auth_option: No sign-in method found
     openid_connect:
       authorization: OpenID Connect Authorization
-      logout: OpenID Connect Logout
     passwords:
       change: Change the password for your account
       confirm: Confirm the password for your account

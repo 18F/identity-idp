@@ -18,8 +18,6 @@ en:
         redirect_uri_no_match: redirect_uri does not match registered redirect_uri
         unauthorized_scope: Unauthorized scope
     logout:
-      description: Testing
-      heading: Do you want to sign out of Login.gov?
       confirm: Yes, sign out of Login.gov
       deny: No, go to my account page
       errors:
@@ -30,6 +28,7 @@ en:
           sending id_token_hint. Please send client_id instead.
         no_client_id_or_id_token_hint: This application is misconfigured and must send
           either client_id or id_token_hint.
+      heading: Do you want to sign out of Login.gov?
     token:
       errors:
         expired_code: is expired
