@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 feature 'Sign in' do
+  include JavascriptDriverHelper
+
   before(:all) do
     @original_capyabara_wait = Capybara.default_max_wait_time
     Capybara.default_max_wait_time = 5
@@ -216,11 +218,20 @@ feature 'Sign in' do
   end
 
   scenario 'user can see and use password visibility toggle', js: true do
+    fake_analytics = FakeAnalytics.new
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+
     visit new_user_session_path
 
-    check t('components.password_toggle.toggle_label')
+    with_awaited_fetch do
+      check t('components.password_toggle.toggle_label')
+    end
 
     expect(page).to have_css('input.password[type="text"]')
+    expect(fake_analytics).to have_logged_event(
+      'Show Password Button Clicked',
+      path: new_user_session_path,
+    )
   end
 
   scenario 'user session expires in amount of time specified by Devise config' do

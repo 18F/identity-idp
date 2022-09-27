@@ -2,5 +2,11 @@
 en:
   image_description:
     camera_mobile_phone: Camera flashing on a mobile phone
+    delete: Red trash can
+    error: Red error x
+    error_lock: Red error lock
+    info_question: Blue question mark
+    personal_key: Personal key
     totp_qrcode: QR code for authenticator app
     us_flag: US flag
+    warning: Yellow caution sign

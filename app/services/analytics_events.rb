@@ -2672,8 +2672,9 @@ module AnalyticsEvents
   end
 
   # Tracks if a user clicks the "Show Password button"
-  def show_password_button_clicked
-    track_event('Show Password Button Clicked')
+  # @param [String] path URL path where the click occurred
+  def show_password_button_clicked(path:, **extra)
+    track_event('Show Password Button Clicked', path: path, **extra)
   end
 end
 # rubocop:enable Metrics/ModuleLength

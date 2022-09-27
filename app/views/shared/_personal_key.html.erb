@@ -45,7 +45,7 @@
       t('forms.buttons.continue'),
       update_path,
       class: 'display-block usa-button usa-button--big usa-button--wide personal-key-continue margin-top-5',
-      'data-toggle': @confirm,
+      'data-toggle': FeatureManagement.idv_personal_key_confirmation_enabled? ? 'modal' : 'skip',
     ) %>
 <%= render 'shared/personal_key_confirmation_modal', code: code, update_path: update_path %>
 <%== javascript_packs_tag_once 'personal-key-page-controller' %>

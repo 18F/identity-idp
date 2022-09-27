@@ -207,7 +207,11 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
 
     enrollment.update(status: :failed)
-    send_failed_email(enrollment.user, enrollment)
+    if response['fraudSuspected']
+      send_failed_fraud_email(enrollment.user, enrollment)
+    else
+      send_failed_email(enrollment.user, enrollment)
+    end
   end
 
   def handle_successful_status_update(enrollment, response)
@@ -261,6 +265,18 @@ class GetUspsProofingResultsJob < ApplicationJob
     user.confirmed_email_addresses.each do |email_address|
       # rubocop:disable IdentityIdp/MailLaterLinter
       UserMailer.in_person_failed(
+        user,
+        email_address,
+        enrollment: enrollment,
+      ).deliver_later(**mail_delivery_params)
+      # rubocop:enable IdentityIdp/MailLaterLinter
+    end
+  end
+
+  def send_failed_fraud_email(user, enrollment)
+    user.confirmed_email_addresses.each do |email_address|
+      # rubocop:disable IdentityIdp/MailLaterLinter
+      UserMailer.in_person_failed_fraud(
         user,
         email_address,
         enrollment: enrollment,

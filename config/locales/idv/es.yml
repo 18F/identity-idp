@@ -187,16 +187,13 @@ es:
         resend: '¿Desea otra carta?'
         verify: '¿Desea una carta?'
       otp_delivery_method: '¿Cómo te gustaría recibir el código?'
-      personal_key: Clave personal
       review: Revise y envíe
       session:
         phone: Ingresa un número de teléfono para ayudar a verificar tu identidad
         review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
     troubleshooting:
       headings:
-        are_you_near: '¿Reside cerca de Washington, D.C. o
-
-          Baltimore, MD?'
+        are_you_near: '¿Reside cerca de Washington, D.C.<wbr/>o Baltimore, MD?'
         missing_required_items: '¿Le falta alguno de estos puntos?'
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
         still_having_trouble: '¿Sigue teniendo dificultades?'

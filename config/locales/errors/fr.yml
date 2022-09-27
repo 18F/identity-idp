@@ -12,9 +12,6 @@ fr:
       granted_token_missing: Le lien de suppression de votre compte %{app_name} n’est
         pas valide. Veuillez réessayer en cliquant sur le lien dans votre
         e-mail.
-    alt:
-      error: Erreur
-      warning: Avertissement
     attributes:
       password:
         too_short:

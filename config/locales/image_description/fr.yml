@@ -2,5 +2,11 @@
 fr:
   image_description:
     camera_mobile_phone: Appareil photo clignotant sur un téléphone mobile
+    delete: Poubelle rouge
+    error: erreur rouge x
+    error_lock: verrouillage rouge des erreurs
+    info_question: point d’interrogation bleu
+    personal_key: Clé personnelle
     totp_qrcode: Code QR pour l’application d’authentification
     us_flag: Drapeau américain
+    warning: Panneau d’avertissement jaune

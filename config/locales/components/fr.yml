@@ -36,12 +36,6 @@ fr:
       country_code_label: Code pays
     print_button:
       label: Imprimer cette page
-    status_page:
-      icons:
-        error: Erreur
-        lock: Serrure
-        question: Question
-        warning: Avertissement
     troubleshooting_options:
       default_heading: 'Des difficultés? Voici ce que vous pouvez faire:'
       new_feature: Nouvelle fonction

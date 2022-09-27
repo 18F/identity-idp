@@ -159,6 +159,14 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
+  def in_person_failed_fraud
+    UserMailer.in_person_failed_fraud(
+      user,
+      email_address_record,
+      enrollment: in_person_enrollment,
+    )
+  end
+
   private
 
   def user
