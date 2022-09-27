@@ -19,8 +19,6 @@ class AlertIconComponent < BaseComponent
     end
     @icon_name = icon_name
     @tag_options = tag_options
-    @tag_options[:width] ||= DEFAULT_WIDTH
-    @tag_options[:height] ||= DEFAULT_HEIGHT
   end
 
   def render?
@@ -42,10 +40,6 @@ class AlertIconComponent < BaseComponent
   end
 
   def size_attributes
-    if tag_options[:size].present?
-      { size: tag_options[:size], width: nil, height: nil }
-    else
-      { width: tag_options[:width], height: tag_options[:height] }
-    end
+    { width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT }
   end
 end
