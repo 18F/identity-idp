@@ -55,7 +55,6 @@ default:
 
 stages:
   - build
-  - scan
   - test
   - after_test
 
@@ -67,7 +66,6 @@ workflow:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod"'
     - if: '$CI_MERGE_REQUEST_IID || $CI_EXTERNAL_PULL_REQUEST_IID'
-    - if: '$CI_COMMIT_BRANCH == "stages/tspencer"'
 
 check_changelog:
   stage: build
@@ -240,12 +238,13 @@ trigger_devops:
 
 # Veracode SAST scanning POC.
 veracode_scan:
-  stage: scan
+  stage: test
   when: manual
   artifacts:
-    reports:
-        sast:
-          - results.json
+    name: ${CI_PROJECT_NAME}_${CI_COMMIT_REF_NAME}_${CI_COMMIT_SHA}_pipeline-results
+    paths:
+      - results.json
+    expire_in: 1 week
   script:
     - apt install -y default-jre default-jdk
     - gem install veracode
