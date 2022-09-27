@@ -193,11 +193,11 @@ RSpec.describe OpenidConnect::LogoutController do
     describe '#delete' do
       subject(:action) do
         delete :delete,
-            params: {
-              client_id: service_provider,
-              post_logout_redirect_uri: post_logout_redirect_uri,
-              state: state,
-            }
+               params: {
+                 client_id: service_provider,
+                 post_logout_redirect_uri: post_logout_redirect_uri,
+                 state: state,
+               }
       end
       context 'returns 404' do
         before { sign_in user }
@@ -460,11 +460,11 @@ RSpec.describe OpenidConnect::LogoutController do
       context 'when sending id_token_hint' do
         subject(:action) do
           delete :delete,
-            params: {
-              client_id: service_provider,
-              post_logout_redirect_uri: post_logout_redirect_uri,
-              state: state,
-            }
+                 params: {
+                   client_id: service_provider,
+                   post_logout_redirect_uri: post_logout_redirect_uri,
+                   state: state,
+                 }
         end
         context 'user is signed in' do
           before { stub_sign_in(user) }

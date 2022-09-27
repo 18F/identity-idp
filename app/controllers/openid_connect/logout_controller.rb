@@ -43,7 +43,7 @@ module OpenidConnect
       end
     end
 
-    def handle_successful_logout_request(params, redirect_uri)
+    def handle_successful_logout_request(redirect_uri)
       if logout_params[:client_id] && logout_params[:id_token_hint].nil?
         @client_id = logout_params[:client_id]
         @state = logout_params[:state]
@@ -73,7 +73,9 @@ module OpenidConnect
     end
 
     def render_404_if_disabled
-      render_not_found unless IdentityConfig.store.accept_client_id_in_oidc_logout || IdentityConfig.store.reject_id_token_hint_in_logout
+      unless IdentityConfig.store.accept_client_id_in_oidc_logout || IdentityConfig.store.reject_id_token_hint_in_logout
+        render_not_found
+      end
     end
   end
 end
