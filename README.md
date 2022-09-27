@@ -235,3 +235,4 @@ To set this _permanently_, add the following to your `~/.zshrc` or `~/.bash_prof
 ```
 ulimit -Sn 65536
 ```
+
