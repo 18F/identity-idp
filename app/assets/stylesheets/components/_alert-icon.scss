@@ -22,3 +22,9 @@
     background-image: url('status/personal-key.svg');
   }
 }
+.alert-icon-centered-top {
+  position: absolute;
+  left: 50%;
+  top: 0px;
+  transform: translateX(-50%) translateY(-50%);
+}
