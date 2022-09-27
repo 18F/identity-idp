@@ -1,5 +1,5 @@
-require 'ostruct'
-require 'redacted_struct'
+# require 'ostruct'
+# require 'redacted_struct'
 
 module Proofing
   module Aamva
@@ -24,27 +24,17 @@ module Proofing
 
       attr_reader :config
 
-      def initialize(**attrs)
-        @config = Config.new(**attrs)
+      def initialize(config)
+        @config = Config.new(config)
       end
 
-      vendor_name 'aamva:state_id'
-
-      required_attributes(
-        :uuid,
-        :first_name,
-        :last_name,
-        :dob,
-        :state_id_number,
-        :state_id_type,
-        :state_id_jurisdiction,
-      )
-
-      optional_attributes :uuid_prefix
-
-      stage :state_id
-
-      proof :aamva_proof
+      def proof(applicant)
+        response = VerificationRequest.new(config: config, applicant: applicant).send
+        return Proofing::LexisNexis::Aamva::Result.new(response)
+      rescue => exception
+        NewRelic::Agent.notice_error(exception)
+        ResultWithException.new(exception, vendor_name: 'lexisnexis:phone_finder')
+      end
 
       def aamva_proof(applicant, result)
         aamva_applicant = Aamva::Applicant.from_proofer_applicant(OpenStruct.new(applicant))
@@ -58,6 +48,26 @@ module Proofing
           end
         end
       end
+
+      # def vendor_name
+      #   'aamva:state_id'
+      # end
+
+      # required_attributes(
+      #   :uuid,
+      #   :first_name,
+      #   :last_name,
+      #   :dob,
+      #   :state_id_number,
+      #   :state_id_type,
+      #   :state_id_jurisdiction,
+      # )
+
+      # optional_attributes :uuid_prefix
+
+      # stage :state_id
+
+      # proof :aamva_proof
     end
   end
 end
