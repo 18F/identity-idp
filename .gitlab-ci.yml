@@ -241,8 +241,7 @@ trigger_devops:
 # Veracode SAST scanning POC.
 veracode_scan:
   stage: scan
-  only:
-    - stages/tspencer
+  when: manual
   artifacts:
     reports:
         sast:
