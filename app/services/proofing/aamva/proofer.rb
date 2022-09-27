@@ -29,7 +29,7 @@ module Proofing
       end
 
       def proof(applicant)
-        response = VerificationRequest.new(config: config, applicant: applicant).send
+        response = Request::VerificationRequest.new(config: config, applicant: applicant).send
         return Proofing::LexisNexis::Aamva::Result.new(response)
       rescue => exception
         NewRelic::Agent.notice_error(exception)
