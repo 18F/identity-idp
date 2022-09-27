@@ -247,12 +247,16 @@ veracode_scan:
         sast:
           - results.json
   script:
+    - apt install -y default-jre default-jdk
+    - gem install veracode
+    - veracode prepare
+    - ls tmp/veracode-*.zip > tmp/veracodepackage
     - curl -O https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
     - unzip pipeline-scan-LATEST.zip pipeline-scan.jar
     - java -jar pipeline-scan.jar
       --veracode_api_id "${VERACODE_API_ID}"
       --veracode_api_key "${VERACODE_API_SECRET}"
-      --file "build/libs/sample.jar"
+      --file "$(cat tmp/veracodepackage)"
       --fail_on_severity="Very High, High"
       --fail_on_cwe="80"
       --baseline_file "${CI_BASELINE_PATH}"
