@@ -1,8 +1,13 @@
 module OpenidConnect
   class LogoutController < ApplicationController
     include SecureHeadersConcern
+    include RenderConditionConcern
 
-    before_action :render_404_if_disabled, only: [:delete]
+    check_or_render_not_found -> do
+      IdentityConfig.store.accept_client_id_in_oidc_logout ||
+        IdentityConfig.store.reject_id_token_hint_in_logout
+    end, only: [:delete]
+
     before_action :apply_secure_headers_override, only: [:index, :delete]
     before_action :confirm_two_factor_authenticated, only: [:delete]
 
@@ -70,12 +75,6 @@ module OpenidConnect
         permitted << :client_id
       end
       params.permit(*permitted)
-    end
-
-    def render_404_if_disabled
-      unless IdentityConfig.store.accept_client_id_in_oidc_logout || IdentityConfig.store.reject_id_token_hint_in_logout
-        render_not_found
-      end
     end
   end
 end
