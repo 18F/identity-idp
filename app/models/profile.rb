@@ -17,6 +17,7 @@ class Profile < ApplicationRecord
     verification_cancelled: 4,
     in_person_verification_pending: 5,
     threatmetrix_review_pending: 6,
+    in_person_contingency_deactivation: 7,
   }
 
   attr_reader :personal_key
