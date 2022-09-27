@@ -67,7 +67,6 @@ workflow:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod"'
     - if: '$CI_MERGE_REQUEST_IID || $CI_EXTERNAL_PULL_REQUEST_IID'
-    - if: '$CI_COMMIT_BRANCH == "stages/tspencer"'
 
 check_changelog:
   stage: build
