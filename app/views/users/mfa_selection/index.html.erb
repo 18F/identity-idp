@@ -25,7 +25,7 @@
 <% end %>
 
 <%= render PageFooterComponent.new do %>
-  <%= link_to t('mfa.skip'), @after_setup_path, method: :get, class: 'usa-button usa-button--unstyled' %>
+  <%= link_to t('mfa.skip'), @after_setup_path, method: :get %>
 <% end %>
 
 <%= javascript_packs_tag_once('webauthn-unhide') %>
