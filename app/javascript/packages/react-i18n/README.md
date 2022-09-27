@@ -20,7 +20,7 @@ While the subject markup itself cannot contain attributes, the return value of t
 
 ```tsx
 formatHTML('Hello <lg-sparkles>world</lg-sparkles>!', {
-  'lg-sparkles': ({children}) => <span className="lg-sparkles">{children}</span>
+  'lg-sparkles': ({ children }) => <span className="lg-sparkles">{children}</span>,
 });
 ```
 
@@ -29,9 +29,7 @@ formatHTML('Hello <lg-sparkles>world</lg-sparkles>!', {
 ```tsx
 function App({ children }) {
   return (
-    <I18nContext.Provider value={{ string_key: 'translation' }}>
-      {children}
-    </I18nContext.Provider>
+    <I18nContext.Provider value={{ string_key: 'translation' }}>{children}</I18nContext.Provider>
   );
 }
 ```
