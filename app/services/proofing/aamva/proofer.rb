@@ -24,6 +24,10 @@ module Proofing
 
       attr_reader :config
 
+      def self.vendor_name
+        'aamva:state_id'
+      end
+
       def initialize(config)
         @config = Config.new(config)
       end
@@ -53,10 +57,6 @@ module Proofing
           end
         end
       end
-
-      # def vendor_name
-      #   'aamva:state_id'
-      # end
 
       # required_attributes(
       #   :uuid,
