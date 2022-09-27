@@ -11,28 +11,3 @@
   padding-bottom: 1rem;
   border-color: $border-color;
 }
-
-@media screen {
-  .wrap-name {
-    overflow-wrap: break-word;
-  }
-}
-
-@media screen and (min-width: 320px) {
-  .usa-button-mobile {
-    width: -webkit-fill-available;
-    margin-top: 8px;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .usa-button-mobile-hidden {
-    display: none;
-  }
-}
-
-@media screen and (min-width: 481px) {
-  .usa-button-desktop-hidden {
-    display: none;
-  }
-}
