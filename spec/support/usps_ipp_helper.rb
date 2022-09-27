@@ -60,18 +60,33 @@ module UspsIppHelper
       body: UspsInPersonProofing::Mock::Fixtures.request_failed_proofing_results_response }
   end
 
+  def stub_request_failed_suspected_fraud_proofing_results
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
+      **request_failed_suspected_fraud_proofing_results_args,
+    )
+  end
+
+  def request_failed_suspected_fraud_proofing_results_args
+    {
+      status: 200,
+      body: UspsInPersonProofing::Mock::
+      Fixtures.request_failed_suspected_fraud_proofing_results_response,
+    }
+  end
+
   def stub_request_passed_proofing_unsupported_id_results
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
-      status: 200, body: UspsInPersonProofing::Mock::Fixtures.
-        request_passed_proofing_unsupported_id_results_response
+      status: 200,
+      body: UspsInPersonProofing::Mock::
+      Fixtures.request_passed_proofing_unsupported_id_results_response,
     )
   end
 
   def stub_request_passed_proofing_unsupported_status_results
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
       status: 200,
-      body: UspsInPersonProofing::Mock::Fixtures.
-        request_passed_proofing_unsupported_status_results_response,
+      body: UspsInPersonProofing::Mock::
+      Fixtures.request_passed_proofing_unsupported_status_results_response,
     )
   end
 

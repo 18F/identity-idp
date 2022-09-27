@@ -10,7 +10,7 @@ module Scripts
           attr_reader :base_uri
 
           def initialize(auth_code:, private_key_file: nil, base_uri: nil)
-            super auth_code
+            super({ auth_code: auth_code })
 
             if private_key_file.present?
               @private_key_file = force_tmp_private_key_file_name(private_key_file)

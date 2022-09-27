@@ -150,6 +150,12 @@ Rails.application.routes.draw do
       end
     end
 
+    if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
+      get '/test/device_profiling' => 'test/device_profiling#index',
+          as: :test_device_profiling_iframe
+      post '/test/device_profiling' => 'test/device_profiling#create'
+    end
+
     get '/auth_method_confirmation' => 'mfa_confirmation#show'
     post '/auth_method_confirmation/skip' => 'mfa_confirmation#skip'
 

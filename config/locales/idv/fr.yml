@@ -199,7 +199,6 @@ fr:
         resend: Vous voulez une autre lettre?
         verify: Vous voulez une lettre?
       otp_delivery_method: Comment souhaitez-vous recevoir le code ?
-      personal_key: Clé personnelle
       review: Réviser et soumettre
       session:
         phone: Entrez un numéro de téléphone pour vous aider à vérifier votre identité

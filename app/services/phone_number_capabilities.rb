@@ -6,6 +6,8 @@ class PhoneNumberCapabilities
   end
 
   INTERNATIONAL_CODES = load_config.freeze
+  ADDRESS_IDENTITY_PROOFING_SUPPORTED_COUNTRY_CODES =
+    IdentityConfig.store.address_identity_proofing_supported_country_codes
 
   attr_reader :phone, :phone_confirmed
 

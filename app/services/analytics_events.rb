@@ -2547,11 +2547,45 @@ module AnalyticsEvents
   # @param [String] enrollment_id
   # @param [String] exception_class
   # @param [String] exception_message
+  # @param [String] enrollment_code
+  # @param [Float] minutes_since_last_status_check
+  # @param [Float] minutes_since_last_status_update
+  # @param [Float] minutes_to_completion
+  # @param [Boolean] fraud_suspected
+  # @param [String] primary_id_type
+  # @param [String] secondary_id_type
+  # @param [String] failure_reason
+  # @param [String] transaction_end_date_time
+  # @param [String] transaction_start_date_time
+  # @param [String] status
+  # @param [String] assurance_level
+  # @param [String] proofing_post_office
+  # @param [String] proofing_city
+  # @param [String] proofing_state
+  # @param [String] scan_count
+  # @param [String] response_message
   def idv_in_person_usps_proofing_results_job_exception(
     reason:,
     enrollment_id:,
     exception_class: nil,
     exception_message: nil,
+    enrollment_code: nil,
+    minutes_since_last_status_check: nil,
+    minutes_since_last_status_update: nil,
+    minutes_to_completion: nil,
+    fraud_suspected: nil,
+    primary_id_type: nil,
+    secondary_id_type: nil,
+    failure_reason: nil,
+    transaction_end_date_time: nil,
+    transaction_start_date_time: nil,
+    status: nil,
+    assurance_level: nil,
+    proofing_post_office: nil,
+    proofing_city: nil,
+    proofing_state: nil,
+    scan_count: nil,
+    response_message: nil,
     **extra
   )
     track_event(
@@ -2560,6 +2594,23 @@ module AnalyticsEvents
       enrollment_id: enrollment_id,
       exception_class: exception_class,
       exception_message: exception_message,
+      enrollment_code: enrollment_code,
+      minutes_since_last_status_check: minutes_since_last_status_check,
+      minutes_since_last_status_update: minutes_since_last_status_update,
+      minutes_to_completion: minutes_to_completion,
+      fraud_suspected: fraud_suspected,
+      primary_id_type: primary_id_type,
+      secondary_id_type: secondary_id_type,
+      failure_reason: failure_reason,
+      transaction_end_date_time: transaction_end_date_time,
+      transaction_start_date_time: transaction_start_date_time,
+      status: status,
+      assurance_level: assurance_level,
+      proofing_post_office: proofing_post_office,
+      proofing_city: proofing_city,
+      proofing_state: proofing_state,
+      scan_count: scan_count,
+      response_message: response_message,
       **extra,
     )
   end
@@ -2621,8 +2672,9 @@ module AnalyticsEvents
   end
 
   # Tracks if a user clicks the "Show Password button"
-  def show_password_button_clicked
-    track_event('Show Password Button Clicked')
+  # @param [String] path URL path where the click occurred
+  def show_password_button_clicked(path:, **extra)
+    track_event('Show Password Button Clicked', path: path, **extra)
   end
 end
 # rubocop:enable Metrics/ModuleLength

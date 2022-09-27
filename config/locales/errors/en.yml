@@ -10,9 +10,6 @@ en:
         Please try clicking the link in your email again.
       granted_token_missing: The link to delete your %{app_name} account is invalid.
         Please try clicking the link in your email again.
-    alt:
-      error: Error
-      warning: Warning
     attributes:
       password:
         too_short:
@@ -67,15 +64,12 @@ en:
       invalid_voice_number: Invalid phone number. Check that you’ve entered the
         correct country code or area code.
       missing_field: Please fill in this field.
-      must_have_us_country_code: Invalid phone number. Please make sure you enter a
-        phone number with a U.S. country code.
       no_pending_profile: No profile is waiting for verification
       not_a_number: is not a number
       otp_failed: Your security code failed to send.
       password_incorrect: Incorrect password
       personal_key_incorrect: Incorrect personal key
       phone_confirmation_throttled: You tried too many times, please try again in %{timeout}.
-      phone_country_constraint_usa: Must be a U.S. phone number
       phone_duplicate: This account is already using the phone number you entered as
         an authenticator. Please use a different phone number.
       phone_required: Phone number is required

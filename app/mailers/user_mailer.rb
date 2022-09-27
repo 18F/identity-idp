@@ -173,8 +173,10 @@ class UserMailer < ActionMailer::Base
       presenter = ConfirmationEmailPresenter.new(user, view_context)
       @first_sentence = presenter.first_sentence
       @confirmation_period = presenter.confirmation_period
-      @locale = locale_url_param
-      @token = token
+      @add_email_url = add_email_confirmation_url(
+        confirmation_token: token,
+        locale: locale_url_param,
+      )
       mail(to: email, subject: t('user_mailer.add_email.subject'))
     end
   end
@@ -280,6 +282,19 @@ class UserMailer < ActionMailer::Base
       mail(
         to: email_address.email,
         subject: t('user_mailer.in_person_failed.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
+  def in_person_failed_fraud(user, email_address, enrollment:)
+    with_user_locale(user) do
+      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
+        enrollment: enrollment,
+        url_options: url_options,
+      )
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.in_person_failed_suspected_fraud.subject'),
       )
     end
   end

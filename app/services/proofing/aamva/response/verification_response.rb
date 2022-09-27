@@ -11,6 +11,11 @@ module Proofing
           'PersonBirthDateMatchIndicator' => :dob,
           'PersonLastNameExactMatchIndicator' => :last_name,
           'PersonFirstNameExactMatchIndicator' => :first_name,
+          'AddressLine1MatchIndicator' => :address1,
+          'AddressLine2MatchIndicator' => :address2,
+          'AddressCityMatchIndicator' => :city,
+          'AddressStateCodeMatchIndicator' => :state,
+          'AddressZIP5MatchIndicator' => :zipcode,
         }.freeze
 
         REQUIRED_VERIFICATION_ATTRIBUTES = %i[

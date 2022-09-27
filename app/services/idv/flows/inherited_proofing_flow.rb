@@ -22,6 +22,11 @@ module Idv
       def initialize(controller, session, name)
         @idv_session = self.class.session_idv(session)
         super(controller, STEPS, ACTIONS, session[name])
+
+        @flow_session ||= {}
+        @flow_session[:pii_from_user] ||= { uuid: current_user.uuid }
+        applicant = @idv_session['applicant'] || {}
+        @flow_session[:pii_from_user] = @flow_session[:pii_from_user].to_h.merge(applicant)
       end
 
       def self.session_idv(session)

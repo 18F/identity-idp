@@ -131,42 +131,49 @@ describe Idv::PhoneController do
 
   describe '#create' do
     context 'when form is invalid' do
+      let(:improbable_phone_error) { { phone: [:improbable_phone] } }
+      let(:improbable_phone_message) { t('errors.messages.improbable_phone') }
+      let(:improbable_phone_number) { '703' }
+      let(:improbable_phone_form) { { idv_phone_form: { phone: improbable_phone_number } } }
       before do
         user = build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' })
         stub_verify_steps_one_and_two(user)
         stub_analytics
         stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
       end
 
       it 'renders #new' do
-        put :create, params: { idv_phone_form: { phone: '703' } }
+        put :create, params: improbable_phone_form
 
-        expect(flash[:error]).to eq t('errors.messages.must_have_us_country_code')
+        expect(flash[:error]).to eq improbable_phone_message
         expect(response).to render_template(:new)
       end
 
       it 'disallows non-US numbers' do
         put :create, params: { idv_phone_form: { phone: international_phone } }
 
-        expect(flash[:error]).to eq t('errors.messages.must_have_us_country_code')
+        expect(flash[:error]).to eq improbable_phone_message
         expect(response).to render_template(:new)
       end
 
-      it 'tracks form error and does not make a vendor API call' do
+      it 'tracks form error events and does not make a vendor API call' do
         expect_any_instance_of(Idv::Agent).to_not receive(:proof_address)
 
-        put :create, params: { idv_phone_form: { phone: '703' } }
+        expect(@irs_attempts_api_tracker).to receive(:idv_phone_submitted).with(
+          success: false,
+          phone_number: improbable_phone_number,
+          failure_reason: improbable_phone_error,
+        )
+
+        put :create, params: improbable_phone_form
 
         result = {
           success: false,
           errors: {
-            phone: [t('errors.messages.must_have_us_country_code')],
+            phone: [improbable_phone_message],
           },
-          error_details: {
-            phone: [:must_have_us_country_code],
-          },
+          error_details: improbable_phone_error,
           pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
           country_code: nil,
           area_code: nil,
@@ -180,19 +187,6 @@ describe Idv::PhoneController do
         )
         expect(subject.idv_session.vendor_phone_confirmation).to be_falsy
       end
-
-      it 'tracks irs event idv_phone_submitted' do
-        put :create, params: { idv_phone_form: { phone: '703' } }
-
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :idv_phone_submitted,
-          success: false,
-          phone_number: '703',
-          failure_reason: {
-            phone: [t('errors.messages.must_have_us_country_code')],
-          },
-        )
-      end
     end
 
     context 'when form is valid' do
@@ -200,12 +194,17 @@ describe Idv::PhoneController do
         stub_analytics
         stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
       end
 
       it 'tracks events with valid phone' do
         user = build(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
+
+        expect(@irs_attempts_api_tracker).to receive(:idv_phone_submitted).with(
+          success: true,
+          phone_number: good_phone,
+          failure_reason: nil,
+        )
 
         put :create, params: { idv_phone_form: { phone: good_phone } }
 
@@ -222,12 +221,6 @@ describe Idv::PhoneController do
 
         expect(@analytics).to have_received(:track_event).with(
           'IdV: phone confirmation form', result
-        )
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :idv_phone_submitted,
-          success: true,
-          phone_number: good_phone,
-          failure_reason: {},
         )
       end
 
@@ -314,6 +307,7 @@ describe Idv::PhoneController do
       end
 
       it 'tracks event with valid phone' do
+        proofing_phone = Phonelib.parse(good_phone)
         user = build(:user, with: { phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
 
@@ -324,6 +318,9 @@ describe Idv::PhoneController do
           success: true,
           new_phone_added: true,
           errors: {},
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+          country_code: proofing_phone.country,
+          area_code: proofing_phone.area_code,
           pii_like_keypaths: [[:errors, :phone], [:context, :stages, :address]],
           vendor: {
             vendor_name: 'AddressMock',
@@ -362,6 +359,7 @@ describe Idv::PhoneController do
       end
 
       it 'tracks event with invalid phone' do
+        proofing_phone = Phonelib.parse(bad_phone)
         user = build(:user, with: { phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
 
@@ -371,6 +369,9 @@ describe Idv::PhoneController do
         result = {
           success: false,
           new_phone_added: true,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+          country_code: proofing_phone.country,
+          area_code: proofing_phone.area_code,
           errors: {
             phone: ['The phone number could not be verified.'],
           },

@@ -89,7 +89,7 @@ describe Idv::PhoneForm do
     end
 
     context 'with specific allowed countries' do
-      let(:allowed_countries) { ['MP'] }
+      let(:allowed_countries) { ['MP', 'US'] }
 
       it 'validates to only allow numbers from permitted countries' do
         invalid_phones = ['+81 54 354 3643', '+12423270143']
@@ -116,7 +116,7 @@ describe Idv::PhoneForm do
             result = subject.submit(phone: phone)
 
             expect(result.success?).to eq(false)
-            expect(result.errors[:phone]).to include(t('errors.messages.must_have_us_country_code'))
+            expect(result.errors[:phone]).to include(t('errors.messages.improbable_phone'))
           end
           valid_phones = ['7035551234']
           valid_phones.each do |phone|
@@ -151,6 +151,45 @@ describe Idv::PhoneForm do
           result = subject.submit(phone: phone)
 
           expect(result.success?).to eq(true)
+        end
+      end
+    end
+
+    context 'with unsupported delivery method' do
+      let(:unsupported_delivery_methods) { [] }
+      let(:result) { subject.submit(params) }
+
+      before do
+        allow(subject).to receive(:unsupported_delivery_methods).
+          and_return(unsupported_delivery_methods)
+      end
+
+      context 'with one unsupported delivery method' do
+        let(:unsupported_delivery_methods) { [:sms] }
+
+        it 'is valid' do
+          expect(result.success?).to eq(true)
+          expect(result.errors).to eq({})
+        end
+      end
+
+      context 'with all delivery methods unsupported' do
+        let(:unsupported_delivery_methods) { [:sms, :voice] }
+
+        it 'is invalid' do
+          expect(result.success?).to eq(false)
+          expect(result.errors).to eq(
+            phone: [
+              t(
+                'two_factor_authentication.otp_delivery_preference.sms_unsupported',
+                location: 'United States',
+              ),
+              t(
+                'two_factor_authentication.otp_delivery_preference.voice_unsupported',
+                location: 'United States',
+              ),
+            ],
+          )
         end
       end
     end

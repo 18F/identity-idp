@@ -8,7 +8,7 @@ feature 'Analytics Regression', js: true do
   let(:fake_analytics) { FakeAnalytics.new }
   # rubocop:disable Layout/LineLength
   let(:happy_path_events) do
-    common_events = {
+    {
       'IdV: intro visited' => {},
       'IdV: doc auth welcome visited' => { flow_path: 'standard', step: 'welcome', step_count: 1 },
       'IdV: doc auth welcome submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'welcome', step_count: 1 },
@@ -37,19 +37,11 @@ feature 'Analytics Regression', js: true do
       'IdV: final resolution' => { success: true },
       'IdV: personal key visited' => {},
       'IdV: personal key submitted' => {},
-    }
-    {
-      FSMv1: common_events.merge(
-        'Frontend: IdV: show personal key modal' => {},
-      ),
-      FSMv2: common_events.merge(
-        'IdV: personal key confirm visited' => {},
-        'IdV: personal key confirm submitted' => {},
-      ),
+      'Frontend: IdV: show personal key modal' => {},
     }
   end
   let(:gpo_path_events) do
-    common_events = {
+    {
       'IdV: intro visited' => {},
       'IdV: doc auth welcome visited' => { flow_path: 'standard', step: 'welcome', step_count: 1 },
       'IdV: doc auth welcome submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'welcome', step_count: 1 },
@@ -74,10 +66,6 @@ feature 'Analytics Regression', js: true do
       'IdV: doc auth optional verify_wait submitted' => { success: true, errors: {}, address_edited: false, proofing_results: { exception: nil, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', timed_out: false, context: { should_proof_state_id: true, stages: { resolution: { client: 'ResolutionMock', errors: {}, exception: nil, success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc' }, state_id: { client: 'StateIdMock', errors: {}, success: true, timed_out: false, exception: nil, transaction_id: 'state-id-mock-transaction-id-456', state: 'MT', state_id_jurisdiction: 'ND' } } } }, ssn_is_unique: true, step: 'verify_wait_step_show' },
       'IdV: phone of record visited' => {},
       'IdV: USPS address letter requested' => { enqueued_at: Time.zone.now },
-    }
-    {
-      FSMv1: common_events,
-      FSMv2: common_events,
     }
   end
   let(:in_person_path_events) do
@@ -141,62 +129,45 @@ feature 'Analytics Regression', js: true do
       and_return(fake_analytics)
   end
 
-  {
-    FSMv1: [],
-    FSMv2: %w[password_confirm personal_key personal_key_confirm],
-  }.each do |flow_version, steps_enabled|
-    context flow_version do
-      before do
-        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(steps_enabled)
-        WebMock.allow_net_connect!(net_http_connect_on_start: true)
+  context 'Happy path' do
+    before do
+      sign_in_and_2fa_user(user)
+      visit_idp_from_sp_with_ial2(:oidc)
+      complete_welcome_step
+      complete_agreement_step
+      complete_upload_step
+      complete_document_capture_step
+      complete_ssn_step
+      complete_verify_step
+      complete_phone_step(user)
+      complete_review_step(user)
+      acknowledge_and_confirm_personal_key
+    end
+
+    it 'records all of the events' do
+      happy_path_events.each do |event, _attributes|
+        expect(fake_analytics).to have_logged_event(event)
       end
+    end
+  end
 
-      after do
-        webmock_allow_list = WebMock::Config.instance.allow
-        WebMock.disallow_net_connect!(net_http_connect_on_start: nil, allow: webmock_allow_list)
-      end
+  context 'GPO path' do
+    before do
+      sign_in_and_2fa_user(user)
+      visit_idp_from_sp_with_ial2(:oidc)
+      complete_welcome_step
+      complete_agreement_step
+      complete_upload_step
+      complete_document_capture_step
+      complete_ssn_step
+      complete_verify_step
+      enter_gpo_flow
+      gpo_step
+    end
 
-      context 'Happy path' do
-        before do
-          sign_in_and_2fa_user(user)
-          visit_idp_from_sp_with_ial2(:oidc)
-          complete_welcome_step
-          complete_agreement_step
-          complete_upload_step
-          complete_document_capture_step
-          complete_ssn_step
-          complete_verify_step
-          complete_phone_step(user)
-          complete_review_step(user)
-          acknowledge_and_confirm_personal_key
-        end
-
-        it 'records all of the events' do
-          happy_path_events[flow_version].each do |event, _attributes|
-            expect(fake_analytics).to have_logged_event(event)
-          end
-        end
-      end
-
-      context 'GPO path' do
-        before do
-          sign_in_and_2fa_user(user)
-          visit_idp_from_sp_with_ial2(:oidc)
-          complete_welcome_step
-          complete_agreement_step
-          complete_upload_step
-          complete_document_capture_step
-          complete_ssn_step
-          complete_verify_step
-          enter_gpo_flow
-          gpo_step
-        end
-
-        it 'records all of the events' do
-          gpo_path_events[flow_version].each do |event, _attributes|
-            expect(fake_analytics).to have_logged_event(event)
-          end
-        end
+    it 'records all of the events' do
+      gpo_path_events.each do |event, _attributes|
+        expect(fake_analytics).to have_logged_event(event)
       end
     end
   end

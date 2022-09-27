@@ -179,7 +179,6 @@ en:
         resend: Want another letter?
         verify: Want a letter?
       otp_delivery_method: How would you like to receive a code?
-      personal_key: Personal key
       review: Review and submit
       session:
         phone: Enter a phone number with your name on the plan

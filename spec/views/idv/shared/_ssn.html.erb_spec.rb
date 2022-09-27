@@ -31,6 +31,8 @@ describe 'idv/shared/_ssn.html.erb' do
       success_alert_enabled: false,
       threatmetrix_session_id: session_id,
       updating_ssn: updating_ssn,
+      threatmetrix_javascript_urls: [tags_js_url],
+      threatmetrix_iframe_url: tags_iframe_url,
     }
   end
 

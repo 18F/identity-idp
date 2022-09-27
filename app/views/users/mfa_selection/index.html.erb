@@ -24,6 +24,8 @@
   <%= f.submit t('forms.buttons.continue'), class: 'margin-bottom-1' %>
 <% end %>
 
-<%= render 'shared/cancel', link: @after_setup_path %>
+<%= render PageFooterComponent.new do %>
+  <%= link_to t('mfa.skip'), @after_setup_path, method: :get %>
+<% end %>
 
 <%= javascript_packs_tag_once('webauthn-unhide') %>

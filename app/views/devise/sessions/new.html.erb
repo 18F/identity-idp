@@ -34,11 +34,14 @@
       ) %>
   <%= f.input :request_id, as: :hidden, input_html: { value: @request_id } %>
   <div class='margin-bottom-4'>
-    <%= f.submit t('links.next'), full_width: true, big: false, wide: false, class: 'margin-bottom-2' %>
+    <%= f.submit t('links.next'), full_width: true, wide: false %>
+    <h2 class='separator-text'>
+      <%= t('headings.create_account_with_sp.cta', app_name: APP_NAME) %>
+    </h2>
     <%= link_to(
           t('links.create_account'),
           sign_up_email_url(request_id: @request_id),
-          class: 'text-no-underline usa-button usa-button--outline usa-button--full-width',
+          class: 'usa-button usa-button--big usa-button--outline usa-button--full-width margin-top-1',
         ) %>
   </div>
 <% end %>

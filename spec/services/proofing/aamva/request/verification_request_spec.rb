@@ -7,6 +7,10 @@ describe Proofing::Aamva::Request::VerificationRequest do
       first_name: 'Testy',
       last_name: 'McTesterson',
       dob: '10/29/1942',
+      address1: '123 Sunnyside way',
+      city: 'Sterling',
+      state: 'VA',
+      zipcode: '20176-1234',
     )
     applicant.state_id_data.merge!(
       state_id_number: '123456789',
@@ -38,6 +42,35 @@ describe Proofing::Aamva::Request::VerificationRequest do
 
       expect(subject.body).to_not include('<foo></bar>')
       expect(subject.body).to include('&lt;foo&gt;&lt;/bar&gt;')
+    end
+
+    it 'includes an address line 2 if one is present' do
+      applicant.address2 = 'Apt 1'
+
+      document = REXML::Document.new(subject.body)
+      address_node = REXML::XPath.first(document, '//ns:verifyDriverLicenseDataRequest/ns1:Address')
+
+      address_node_element_names = address_node.elements.map(&:name)
+      address_node_element_values = address_node.elements.map(&:text)
+
+      expect(address_node_element_names).to eq(
+        [
+          'AddressDeliveryPointText',
+          'AddressDeliveryPointText',
+          'LocationCityName',
+          'LocationStateUsPostalServiceCode',
+          'LocationPostalCode',
+        ],
+      )
+      expect(address_node_element_values).to eq(
+        [
+          applicant.address1,
+          applicant.address2,
+          applicant.city,
+          applicant.state,
+          applicant.zipcode,
+        ],
+      )
     end
   end
 
