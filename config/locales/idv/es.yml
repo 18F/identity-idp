@@ -187,7 +187,6 @@ es:
         resend: '¿Desea otra carta?'
         verify: '¿Desea una carta?'
       otp_delivery_method: '¿Cómo te gustaría recibir el código?'
-      personal_key: Clave personal
       review: Revise y envíe
       session:
         phone: Ingresa un número de teléfono para ayudar a verificar tu identidad

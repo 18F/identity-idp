@@ -1,7 +1,4 @@
-<%= image_tag asset_url('status/warning.svg'),
-              alt: t('errors.alt.warning'),
-              width: 54,
-              class: 'margin-bottom-2' %>
+<%= render AlertIconComponent.new(icon_name: :warning, class: 'margin-bottom-2') %>
 
 <%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.opt_in.title')) %>
 

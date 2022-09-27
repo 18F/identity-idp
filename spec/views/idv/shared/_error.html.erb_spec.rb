@@ -140,7 +140,7 @@ describe 'idv/shared/_error.html.erb' do
       let(:type) { :warning }
 
       it 'includes informative image' do
-        expect(rendered).to have_css("[src*='warning'][alt=#{t('errors.alt.warning')}]")
+        expect(rendered).to have_css("[src*='warning'][alt='#{t('image_description.warning')}']")
       end
 
       it 'shows an appropriate troubleshooting heading' do
@@ -155,7 +155,7 @@ describe 'idv/shared/_error.html.erb' do
       let(:type) { :error }
 
       it 'includes informative image' do
-        expect(rendered).to have_css("[src*='error'][alt=#{t('errors.alt.error')}]")
+        expect(rendered).to have_css("[src*='error'][alt='#{t('image_description.error')}']")
       end
 
       it 'shows an appropriate troubleshooting heading' do
