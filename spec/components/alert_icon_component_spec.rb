@@ -1,14 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe AlertIconComponent, type: :component do
-  let(:icon_name) { nil }
-  let(:tag_options) { {} }
-
-  subject(:rendered) do
-    render_inline(described_class.new)
-  end
-
   it 'renders a warning 88x88 by default' do
+    rendered = render_inline(described_class.new)
     expect(rendered).to have_css('img')
     expect(rendered).to have_css('.alert-icon')
     expect(rendered).to have_css("[alt='#{t('image_description.warning')}']")
