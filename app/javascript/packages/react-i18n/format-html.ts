@@ -1,11 +1,7 @@
-import { createElement, cloneElement, createContext, useContext } from 'react';
-import { i18n } from '@18f/identity-i18n';
+import { createElement, cloneElement } from 'react';
+import type { ComponentClass, FunctionComponent, ReactNode } from 'react';
 
-/** @typedef {import('react').FC|import('react').ComponentClass} Component */
-
-export const I18nContext = createContext(i18n);
-
-I18nContext.displayName = 'I18nContext';
+type Handlers = Record<string, ComponentClass | FunctionComponent | string>;
 
 /**
  * Given an HTML string and an object of tag names to React component, returns a new React node
@@ -25,26 +21,23 @@ I18nContext.displayName = 'I18nContext';
  * });
  * ```
  *
- * @param {string} html HTML to format.
- * @param {Record<string,Component|string>} handlers Mapping of tag names to tag name or component.
- *
- * @return {import('react').ReactNode}
+ * @param html HTML to format.
+ * @param handlers Mapping of tag names to tag name or component.
  */
-export function formatHTML(html, handlers) {
+function formatHTML(html: string, handlers: Handlers): ReactNode {
   const pattern = new RegExp(`</?(?:${Object.keys(handlers).join('|')})(?: .*?)?>`, 'g');
   const matches = html.match(pattern);
   if (!matches) {
     return html;
   }
 
-  /** @type {Array<import('react').ReactNode>} */
-  const parts = html.split(pattern);
+  const parts: Array<string | ReactNode> = html.split(pattern);
 
   for (let i = 0; i < matches.length; i += 2) {
     const match = matches[i];
     const end = match.search(/[ >]/);
     const tag = matches[i].slice(1, end);
-    const part = /** @type {string} */ (parts[i + 1]);
+    const part = parts[i + 1] as string;
     const replacement = createElement(handlers[tag], null, part);
     parts[i + 1] = cloneElement(replacement, { key: part });
   }
@@ -52,8 +45,4 @@ export function formatHTML(html, handlers) {
   return parts.filter(Boolean);
 }
 
-export function useI18n() {
-  const { t } = useContext(I18nContext);
-
-  return { t, formatHTML };
-}
+export default formatHTML;
