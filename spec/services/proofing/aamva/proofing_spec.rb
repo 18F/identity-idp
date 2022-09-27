@@ -95,7 +95,7 @@ describe Proofing::Aamva::Proofer do
       end
 
       let(:aamva_applicant) do
-        Aamva::Applicant.from_proofer_applicant(OpenStruct.new(state_id_data.merge(applicant_data)))
+        Proofing::Aamva::Applicant.from_proofer_applicant(OpenStruct.new(state_id_data.merge(applicant_data)))
       end
 
       let(:transaction_locator_id) { SecureRandom.uuid }
