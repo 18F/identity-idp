@@ -55,6 +55,7 @@ default:
 
 stages:
   - build
+  - scan
   - test
   - after_test
 
@@ -235,3 +236,27 @@ trigger_devops:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
   trigger: lg/identity-devops
+
+# Veracode SAST scanning POC
+veracode_scan:
+  stage: scan
+  only:
+    - stages/tspencer
+  artifacts:
+    reports:
+        sast:
+          - results.json
+  script:
+    - curl -O https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
+    - unzip pipeline-scan-LATEST.zip pipeline-scan.jar
+    - java -jar pipeline-scan.jar
+      --veracode_api_id "${VERACODE_API_ID}"
+      --veracode_api_key "${VERACODE_API_SECRET}"
+      --file "build/libs/sample.jar"
+      --fail_on_severity="Very High, High"
+      --fail_on_cwe="80"
+      --baseline_file "${CI_BASELINE_PATH}"
+      --timeout "${CI_TIMEOUT}"
+      --project_name "${CI_PROJECT_PATH}"
+      --project_url "${CI_REPOSITORY_URL}"
+      --project_ref "${CI_COMMIT_REF_NAME}"
