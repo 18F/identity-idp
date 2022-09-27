@@ -1,7 +1,7 @@
 <label class="usa-label">     
     <%= label %>
 </label>
-<div class="usa-hint">
+<div class="usa-hint" id="validated-field-hint-<%= unique_id %>">
     <%= hint %>
 </div>
   <%= content_tag :'lg-memorable-date', min: min, max: max, **tag_options do -%>
@@ -30,7 +30,10 @@
                     maxLength: 2,
                     aria: {
                       invalid: false,
-                      describedby: "validated-field-error-#{unique_id}",
+                      describedby: [
+                        "validated-field-error-#{unique_id}",
+                        "validated-field-hint-#{unique_id}",
+                      ],
                     },
                     value: month,
                   },
@@ -54,7 +57,10 @@
                   maxLength: 2,
                   aria: {
                     invalid: false,
-                    describedby: "validated-field-error-#{unique_id}",
+                    describedby: [
+                        "validated-field-error-#{unique_id}",
+                        "validated-field-hint-#{unique_id}",
+                    ],
                   },
                   value: day,
                 },
@@ -78,7 +84,10 @@
                   maxLength: 4,
                   aria: {
                     invalid: false,
-                    describedby: "validated-field-error-#{unique_id}",
+                    describedby: [
+                        "validated-field-error-#{unique_id}",
+                        "validated-field-hint-#{unique_id}",
+                    ],
                   },
                   value: year,
                 },
