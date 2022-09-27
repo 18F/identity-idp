@@ -262,10 +262,7 @@ prepare_deploy:
 trigger_devops:
   stage: after_test
   only:
-    - stages/prod
     - main
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
   trigger: lg/identity-devops
 
 # Veracode SAST scanning POC.
