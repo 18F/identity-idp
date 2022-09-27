@@ -20,7 +20,7 @@ module OpenidConnect
       )
 
       if result.success? && (redirect_uri = result.extra[:redirect_uri])
-        handle_successful_logout_request(params, redirect_uri)
+        handle_successful_logout_request(redirect_uri)
       else
         render :error
       end
@@ -44,7 +44,7 @@ module OpenidConnect
     end
 
     def handle_successful_logout_request(redirect_uri)
-      if logout_params[:client_id] && logout_params[:id_token_hint].nil?
+      if logout_params[:client_id] && logout_params[:id_token_hint].nil? && current_user
         @client_id = logout_params[:client_id]
         @state = logout_params[:state]
         @post_logout_redirect_uri = logout_params[:post_logout_redirect_uri]
