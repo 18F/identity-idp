@@ -26,17 +26,7 @@ describe Proofing::Aamva::Proofer do
   end
   let(:result) { Proofing::Result.new }
 
-  subject do
-    described_class.new(
-      auth_request_timeout: AamvaFixtures.example_config.auth_request_timeout,
-      auth_url: AamvaFixtures.example_config.auth_url,
-      cert_enabled: AamvaFixtures.example_config.cert_enabled,
-      private_key: AamvaFixtures.example_config.private_key,
-      public_key: AamvaFixtures.example_config.public_key,
-      verification_request_timeout: AamvaFixtures.example_config.verification_request_timeout,
-      verification_url: AamvaFixtures.example_config.verification_url,
-    )
-  end
+  subject { described_class.new(AamvaFixtures.example_config.to_h) }
 
   let(:verification_response) { AamvaFixtures.verification_response }
 
