@@ -29,11 +29,16 @@ module Proofing
       end
 
       def proof(applicant)
-        response = Request::VerificationRequest.new(config: config, applicant: applicant).send
+        response = Request::VerificationRequest.new(
+          config: config,
+          applicant: applicant,
+          session_id: '',
+          auth_token: '',
+        ).send
         return Proofing::LexisNexis::Aamva::Result.new(response)
       rescue => exception
         NewRelic::Agent.notice_error(exception)
-        ResultWithException.new(exception, vendor_name: 'lexisnexis:phone_finder')
+        ResultWithException.new(exception, vendor_name: 'aamva:state_id')
       end
 
       def aamva_proof(applicant, result)
