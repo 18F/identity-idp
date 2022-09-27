@@ -71,9 +71,6 @@ workflow:
 
 check_changelog:
   stage: build
-  only:
-    - stages/prod
-    - main
   variables:
     GIT_DEPTH: 100
   script:
@@ -93,9 +90,6 @@ check_changelog:
       fi
 install:
   stage: build
-  only:
-    - stages/prod
-    - main
   variables:
     RAILS_ENV: test
   cache:
@@ -113,9 +107,6 @@ install:
 
 specs:
   stage: test
-  only:
-    - stages/prod
-    - main
   parallel: 11
   cache:
     - <<: *ruby_cache
@@ -167,9 +158,6 @@ specs:
 
 lint:
   stage: test
-  only:
-    - stages/prod
-    - main
   cache:
     - <<: *ruby_cache
     - <<: *yarn_cache
@@ -181,9 +169,6 @@ lint:
 
 js_build:
   stage: test
-  only:
-    - stages/prod
-    - main
   cache:
     - <<: *ruby_cache
     - <<: *yarn_production_cache
@@ -196,9 +181,6 @@ js_build:
 
 js_tests:
   stage: test
-  only:
-    - stages/prod
-    - main
   cache:
     - <<: *yarn_cache
   script:
@@ -207,9 +189,6 @@ js_tests:
 
 pinpoint-check:
   stage: test
-  only:
-    - stages/prod
-    - main
   cache:
     - <<: *ruby_cache
     - <<: *yarn_cache
@@ -220,9 +199,6 @@ pinpoint-check:
 
 coverage:
   stage: after_test
-  only:
-    - stages/prod
-    - main
   cache:
     - <<: *ruby_cache
   script:
@@ -243,9 +219,6 @@ coverage:
 
 prepare_deploy:
   stage: after_test
-  only:
-    - stages/prod
-    - main
   tags:
     - build-pool
   variables:
@@ -261,8 +234,8 @@ prepare_deploy:
 # Triggers devops CD to deploy to dev
 trigger_devops:
   stage: after_test
-  only:
-    - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
   trigger: lg/identity-devops
 
 # Veracode SAST scanning POC.
