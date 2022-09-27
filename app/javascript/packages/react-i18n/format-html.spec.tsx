@@ -64,4 +64,12 @@ describe('formatHTML', () => {
     expect(container.querySelectorAll('[data-after]')).to.have.lengthOf(2);
     expect(container.querySelectorAll('[data-before]')).to.have.lengthOf(0);
   });
+
+  it('supports self-closing (void) elements', () => {
+    const formatted = formatHTML('Hello<br /><br/><em>world</em>!', { br: 'br', em: 'em' });
+
+    const { container } = render(<>{formatted}</>);
+
+    expect(container.innerHTML).to.equal('Hello<br><br><em>world</em>!');
+  });
 });
