@@ -35,7 +35,7 @@ module Proofing
           session_id: '',
           auth_token: '',
         ).send
-        return Proofing::LexisNexis::Aamva::Result.new(response)
+        return Result.new(response)
       rescue => exception
         NewRelic::Agent.notice_error(exception)
         ResultWithException.new(exception, vendor_name: 'aamva:state_id')
