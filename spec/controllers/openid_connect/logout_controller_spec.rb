@@ -199,20 +199,22 @@ RSpec.describe OpenidConnect::LogoutController do
                  state: state,
                }
       end
-      context 'returns 404' do
-        before { sign_in user }
-        it 'destroys the session' do
-          action
+      context 'when sending client_id' do
+        context 'user is signed in' do
+          before { sign_in user }
+          it 'returns 404' do
+            action
 
-          expect(response).to be_not_found
+            expect(response).to be_not_found
+          end
         end
-      end
 
-      context 'returns 404' do
-        it 'destroys the session' do
-          action
+        context 'user is not signed in' do
+          it 'returns 404' do
+            action
 
-          expect(response).to be_not_found
+            expect(response).to be_not_found
+          end
         end
       end
     end
@@ -457,7 +459,7 @@ RSpec.describe OpenidConnect::LogoutController do
     end
 
     describe '#delete' do
-      context 'when sending id_token_hint' do
+      context 'when sending client_id' do
         subject(:action) do
           delete :delete,
                  params: {
@@ -466,12 +468,13 @@ RSpec.describe OpenidConnect::LogoutController do
                    state: state,
                  }
         end
+
         context 'user is signed in' do
           before { stub_sign_in(user) }
           it 'destroys the session' do
             action
 
-            expect(response).to be_not_found
+            expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
           end
         end
 
@@ -479,7 +482,36 @@ RSpec.describe OpenidConnect::LogoutController do
           it 'destroys the session' do
             action
 
-            expect(response).to be_not_found
+            expect(response).to redirect_to(new_user_session_path)
+          end
+        end
+      end
+
+      context 'when sending id_token_hint' do
+        let(:id_token_hint) { valid_id_token_hint }
+        subject(:action) do
+          delete :delete,
+                 params: {
+                   id_token_hint: id_token_hint,
+                   post_logout_redirect_uri: post_logout_redirect_uri,
+                   state: state,
+                 }
+        end
+
+        context 'user is signed in' do
+          before { stub_sign_in(user) }
+          it 'destroys the session' do
+            action
+
+            expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
+          end
+        end
+
+        context 'user is not signed in' do
+          it 'destroys the session' do
+            action
+
+            expect(response).to redirect_to(new_user_session_path)
           end
         end
       end
@@ -635,6 +667,65 @@ RSpec.describe OpenidConnect::LogoutController do
           action
 
           expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
+        end
+      end
+    end
+
+    describe '#delete' do
+      context 'when sending client_id' do
+        subject(:action) do
+          delete :delete,
+                 params: {
+                   client_id: service_provider,
+                   post_logout_redirect_uri: post_logout_redirect_uri,
+                   state: state,
+                 }
+        end
+
+        context 'user is signed in' do
+          before { stub_sign_in(user) }
+          it 'destroys the session' do
+            action
+
+            expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
+          end
+        end
+
+        context 'user is not signed in' do
+          it 'destroys the session' do
+            action
+
+            expect(response).to redirect_to(new_user_session_path)
+          end
+        end
+      end
+
+      context 'when sending id_token_hint' do
+        let(:id_token_hint) { valid_id_token_hint }
+        subject(:action) do
+          delete :delete,
+                 params: {
+                   id_token_hint: id_token_hint,
+                   post_logout_redirect_uri: post_logout_redirect_uri,
+                   state: state,
+                 }
+        end
+
+        context 'user is signed in' do
+          before { stub_sign_in(user) }
+          it 'destroys the session' do
+            action
+
+            expect(response).to render_template(:error)
+          end
+        end
+
+        context 'user is not signed in' do
+          it 'destroys the session' do
+            action
+
+            expect(response).to redirect_to(new_user_session_path)
+          end
         end
       end
     end
