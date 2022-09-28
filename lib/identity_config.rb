@@ -178,7 +178,6 @@ class IdentityConfig
     config.add(:hmac_fingerprinter_key_queue, type: :json)
     config.add(:identity_pki_disabled, type: :boolean)
     config.add(:identity_pki_local_dev, type: :boolean)
-    config.add(:idv_api_enabled_steps, type: :json, options: { symbolize_names: true })
     config.add(:idv_attempt_window_in_hours, type: :integer)
     config.add(:idv_contact_url, type: :string)
     config.add(:idv_max_attempts, type: :integer)

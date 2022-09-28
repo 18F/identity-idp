@@ -193,6 +193,8 @@ Rails.application.routes.draw do
     get '/rules_of_use' => 'users/rules_of_use#new'
     post '/rules_of_use' => 'users/rules_of_use#create'
 
+    delete '/openid_connect/logout' => 'openid_connect/logout#delete'
+
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     get '/piv_cac_error' => 'users/piv_cac_authentication_setup#error', as: :setup_piv_cac_error
     delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
@@ -355,12 +357,7 @@ Rails.application.routes.draw do
       post '/confirmations' => 'personal_key#update'
     end
 
-    get '/verify/v2(/:step)' => 'verify#show', as: :idv_app
-    get '/verify/v2/password_confirm/forgot_password' => 'verify#show', as: :idv_app_forgot_password
-
     namespace :api do
-      post '/verify/v2/password_confirm' => 'verify/password_confirm#create'
-      post '/verify/v2/password_reset' => 'verify/password_reset#create'
       post '/verify/v2/document_capture' => 'verify/document_capture#create'
       delete '/verify/v2/document_capture_errors' => 'verify/document_capture_errors#delete'
     end

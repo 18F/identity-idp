@@ -73,7 +73,6 @@ module Idv
     end
 
     def redirect_to_idv_app_if_enabled
-      return if !IdentityConfig.store.idv_api_enabled_steps.include?('password_confirm')
       redirect_to idv_app_path
     end
 

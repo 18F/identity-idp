@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe VerifyController do
   describe '#show' do
-    let(:idv_api_enabled_steps) { [] }
     let(:password) { 'sekrit phrase' }
     let(:user) { create(:user, :signed_up, password: password) }
     let(:applicant) do
@@ -24,8 +23,6 @@ describe VerifyController do
     subject(:response) { get :show, params: { step: step } }
 
     before do
-      allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
-        and_return(idv_api_enabled_steps)
       allow(controller).to receive(:current_sp).and_return(sp)
       stub_sign_in(user)
       stub_idv_session
@@ -34,43 +31,6 @@ describe VerifyController do
 
     it 'renders 404' do
       expect(response).to be_not_found
-    end
-
-    context 'with idv api enabled' do
-      let(:idv_api_enabled_steps) { ['password_confirm', 'personal_key', 'personal_key_confirm'] }
-      let(:step) { 'password_confirm' }
-
-      context 'invalid step' do
-        let(:step) { 'bad' }
-
-        it 'renders 404' do
-          expect(response).to be_not_found
-        end
-      end
-
-      it 'renders view' do
-        expect(response).to render_template(:show)
-      end
-
-      it 'sets app data' do
-        response
-
-        expect(assigns[:app_data]).to include(
-          base_path: idv_app_path,
-          cancel_url: idv_cancel_path,
-          enabled_step_names: idv_api_enabled_steps,
-          initial_values: { 'userBundleToken' => kind_of(String) },
-          store_key: kind_of(String),
-        )
-      end
-
-      context 'empty step' do
-        let(:step) { nil }
-
-        it 'renders view' do
-          expect(response).to render_template(:show)
-        end
-      end
     end
 
     def stub_idv_session

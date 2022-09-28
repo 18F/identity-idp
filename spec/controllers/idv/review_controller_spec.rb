@@ -219,19 +219,6 @@ describe Idv::ReviewController do
           ),
         )
       end
-
-      context 'idv app password confirm step is enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
-            and_return(['password_confirm'])
-        end
-
-        it 'redirects to idv app' do
-          get :new
-
-          expect(response).to redirect_to idv_app_path
-        end
-      end
     end
 
     context 'user has not requested too much mail' do
@@ -379,19 +366,6 @@ describe Idv::ReviewController do
             expect(@irs_attempts_api_tracker).to receive(:idv_reproof)
 
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-          end
-        end
-
-        context 'with idv app personal key step enabled' do
-          before do
-            allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
-              and_return(['password_confirm', 'personal_key', 'personal_key_confirm'])
-          end
-
-          it 'redirects to idv app personal key path' do
-            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-
-            expect(response).to redirect_to idv_app_url
           end
         end
 
