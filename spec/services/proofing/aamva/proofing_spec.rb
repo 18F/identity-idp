@@ -108,7 +108,7 @@ describe Proofing::Aamva::Proofer do
       end
 
       it 'the result is successful' do
-        result = subject.proof(aamva_applicant)
+        result = subject.proof(state_id_data.merge(applicant_data))
         expect(result.success?).to eq(true)
         expect(result.errors).to be_empty
 
