@@ -13,6 +13,11 @@
 <% end %>
 <%= render 'shared/sp_alert' %>
 
+<h1>KeyPairComponent</h1>
+<div style="border: 1px">
+  <%= render KeyPairComponent.new %>
+</div>
+
 <%= simple_form_for(
       resource,
       as: resource_name,
