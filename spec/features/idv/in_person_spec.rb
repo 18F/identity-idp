@@ -216,7 +216,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(current_path).to eq(sign_up_completed_path)
     end
 
-    it 'sends a survey when they share information with that partner' do
+    it 'sends a survey when they share information with that partner', allow_browser_log: true do
       click_button t('sign_up.agree_and_continue')
       expect(last_email.html_part.body).
         to have_selector(
