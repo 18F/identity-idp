@@ -13,11 +13,6 @@
 <% end %>
 <%= render 'shared/sp_alert' %>
 
-<h1>KeyPairComponent</h1>
-<div style="border: 1px">
-  <%= render KeyPairComponent.new %>
-</div>
-
 <%= simple_form_for(
       resource,
       as: resource_name,
@@ -38,6 +33,7 @@
         wrapper_html: { class: 'margin-top-6' },
       ) %>
   <%= f.input :request_id, as: :hidden, input_html: { value: @request_id } %>
+  <%= render KeyPairComponent.new %>
   <div class='margin-bottom-4'>
     <%= f.submit t('links.next'), full_width: true, wide: false %>
     <h2 class='separator-text'>

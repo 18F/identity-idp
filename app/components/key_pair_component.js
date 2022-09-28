@@ -23,35 +23,16 @@ class KeyPairGenerator extends HTMLElement {
     this.duration = t1 - t0; // milliseconds
   }
 
-  customSplit(str, maxLength) {
-    if (str.length <= maxLength) return str;
-    var reg = new RegExp('.{1,' + maxLength + '}', 'g');
-    var parts = str.match(reg);
-    return parts.join('\n');
-  }
-
   constructor() {
     super();
   }
 
   connectedCallback() {
-    this.generateKeyPair()
-      .then(() => {
-        this.innerHTML = `
-        <h2>Duration</h2>
-        <div> The generation of the key pair took ${this.duration.toFixed(0)} milliseconds.</div>
-        <h2>Public Key</h2>
-        <div style='font-family: monospace; font-size: 8px'>${this.customSplit(
-          this.publicB64key,
-          65,
-        )}</div>
-      `;
-      })
-      .then(() => {
-        trackEvent('IdV: key pair generation', {
-          duration: this.duration.toFixed(0),
-        });
+    this.generateKeyPair().then(() => {
+      trackEvent('IdV: key pair generation', {
+        duration: this.duration.toFixed(0),
       });
+    });
   }
 }
 
