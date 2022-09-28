@@ -53,7 +53,11 @@ describe Proofing::Aamva::Proofer do
 
     context 'when verification is unsuccessful' do
       let(:verification_response) do
-        XmlHelper.modify_xml_at_xpath(super(), '//PersonBirthDateMatchIndicator', 'false')
+        XmlHelper.modify_xml_at_xpath(
+          super(),
+          '//PersonBirthDateMatchIndicator',
+          'false'
+        )
       end
 
       it 'the result should be failed' do
@@ -68,7 +72,10 @@ describe Proofing::Aamva::Proofer do
 
     context 'when verification attributes are missing' do
       let(:verification_response) do
-        XmlHelper.delete_xml_at_xpath(super(), '//PersonBirthDateMatchIndicator')
+        XmlHelper.delete_xml_at_xpath(
+          super(),
+          '//PersonBirthDateMatchIndicator'
+        )
       end
 
       it 'the result should be failed' do

@@ -35,7 +35,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
     )
   end
   let(:state_id_proofer) do
-    instance_double(Proofing::Aamva::Proofer, class: Proofing::Aamva::Proofer)
+    instance_double(
+      Proofing::Aamva::Proofer,
+      class: Proofing::Aamva::Proofer
+    )
   end
   let(:ddp_proofer) { Proofing::Mock::DdpMockClient.new }
   let(:trace_id) { SecureRandom.uuid }
@@ -120,7 +123,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
           allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
 
           allow(state_id_proofer).to receive(:proof).
-            and_return(Proofing::Aamva::Result.new(transaction_id: aamva_transaction_id))
+            and_return(
+              Proofing::Aamva::Result.new(transaction_id: aamva_transaction_id)
+            )
           Proofing::Mock::DeviceProfilingBackend.new.record_profiling_result(
             session_id: threatmetrix_session_id,
             result: 'pass',
@@ -482,7 +487,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
             expect(resolution_proofer).to receive(:proof).
               and_return(Proofing::Result.new)
             expect(state_id_proofer).to receive(:proof).
-              and_return(Proofing::Result.new)
+              and_return(Proofing::Aamva::Result.new)
             Proofing::Mock::DeviceProfilingBackend.new.record_profiling_result(
               session_id: threatmetrix_session_id,
               result: 'pass',
