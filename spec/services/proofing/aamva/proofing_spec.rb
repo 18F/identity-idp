@@ -46,6 +46,7 @@ describe Proofing::Aamva::Proofer do
 
         expect(result.success?).to eq(true)
         expect(result.errors).to be_empty
+        expect(result.transaction_id).to eq('1234-abcd-efgh')
       end
     end
 
@@ -60,6 +61,7 @@ describe Proofing::Aamva::Proofer do
         expect(result.failed?).to eq(true)
         expect(result.errors).to include(dob: ['UNVERIFIED'])
         expect(result.errors).to include(address2: ['MISSING'])
+        expect(result.transaction_id).to eq('1234-abcd-efgh')
       end
     end
 
@@ -74,44 +76,7 @@ describe Proofing::Aamva::Proofer do
         expect(result.failed?).to eq(true)
         expect(result.errors).to include(dob: ['MISSING'])
         expect(result.errors).to include(address2: ['MISSING'])
-      end
-    end
-  end
-
-  describe '#proof' do
-    context 'when verification is successful' do
-      let(:applicant_data) do
-        {
-          uuid: SecureRandom.hex(32),
-          dob: '19800101',
-          last_name: 'Simpson',
-          first_name: 'Homer',
-          address1: '123 Street St',
-          city: 'Springfield',
-          state: 'IL',
-          zipcode: '12345',
-        }
-      end
-
-      let(:aamva_applicant) do
-        Proofing::Aamva::Applicant.from_proofer_applicant(
-          OpenStruct.new(
-            state_id_data.merge(applicant_data),
-          ),
-        )
-      end
-
-      let(:transaction_locator_id) { SecureRandom.uuid }
-      let(:verification_response) do
-        XmlHelper.modify_xml_at_xpath(super(), '//TransactionLocatorID', transaction_locator_id)
-      end
-
-      it 'the result is successful' do
-        result = subject.proof(state_id_data.merge(applicant_data))
-        expect(result.success?).to eq(true)
-        expect(result.errors).to be_empty
-
-        expect(result.transaction_id).to eq(transaction_locator_id)
+        expect(result.transaction_id).to eq('1234-abcd-efgh')
       end
     end
   end
