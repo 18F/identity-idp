@@ -96,7 +96,8 @@ describe Idv::PhoneConfirmationOtpVerificationForm do
 
         expect(user.second_factor_attempts_count).to eq(3)
         expect(user.second_factor_locked_at).to be_within(1.second).of(Time.zone.now)
-        expect(irs_attempts_api_tracker).to have_received(:idv_phone_otp_submitted_rate_limited)
+        expect(irs_attempts_api_tracker).to have_received(:idv_phone_otp_submitted_rate_limited).
+          with({ phone_number: phone })
       end
     end
 
