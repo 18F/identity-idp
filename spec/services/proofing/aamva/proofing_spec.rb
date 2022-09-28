@@ -45,7 +45,8 @@ describe Proofing::Aamva::Proofer do
         result = subject.proof(state_id_data)
 
         expect(result.success?).to eq(true)
-        expect(result.errors).to be_empty
+        # TODO: Find a better way to express this than errors
+        expect(result.errors).to include(address2: ['MISSING'])
         expect(result.transaction_id).to eq('1234-abcd-efgh')
       end
     end
@@ -58,7 +59,7 @@ describe Proofing::Aamva::Proofer do
       it 'the result should be failed' do
         result = subject.proof(state_id_data)
 
-        expect(result.failed?).to eq(true)
+        expect(result.success?).to eq(false)
         expect(result.errors).to include(dob: ['UNVERIFIED'])
         expect(result.errors).to include(address2: ['MISSING'])
         expect(result.transaction_id).to eq('1234-abcd-efgh')
@@ -73,7 +74,7 @@ describe Proofing::Aamva::Proofer do
       it 'the result should be failed' do
         result = subject.proof(state_id_data)
 
-        expect(result.failed?).to eq(true)
+        expect(result.success?).to eq(false)
         expect(result.errors).to include(dob: ['MISSING'])
         expect(result.errors).to include(address2: ['MISSING'])
         expect(result.transaction_id).to eq('1234-abcd-efgh')
