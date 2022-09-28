@@ -229,10 +229,10 @@ module IrsAttemptsApi
 
     # The user reached the rate limit for Idv phone OTP submitted
     # @param [String] phone
-    def idv_phone_otp_submitted_rate_limited(phone:)
+    def idv_phone_otp_submitted_rate_limited(phone_number:)
       track_event(
         :idv_phone_otp_submitted_rate_limited,
-        phone: phone,
+        phone_number: phone_number,
       )
     end
 
