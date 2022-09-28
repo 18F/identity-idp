@@ -66,10 +66,10 @@ describe('formatHTML', () => {
   });
 
   it('supports self-closing (void) elements', () => {
-    const formatted = formatHTML('Hello<br /><br/><em>world</em>!', { br: 'br', em: 'em' });
+    const formatted = formatHTML('Hello<br /><br/><em>world</em><br/>!', { br: 'br', em: 'em' });
 
     const { container } = render(<>{formatted}</>);
 
-    expect(container.innerHTML).to.equal('Hello<br><br><em>world</em>!');
+    expect(container.innerHTML).to.equal('Hello<br><br><em>world</em><br>!');
   });
 });
