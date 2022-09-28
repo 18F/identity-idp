@@ -5,20 +5,15 @@
   <%= render PageHeadingComponent.new.with_content(t('openid_connect.logout.heading', app_name: APP_NAME)) %>
 </div>
 
-<div class='sm-left-align'>
-  <div class='margin-top-5 text-center'>
-    <%= button_to(
-          openid_connect_logout_path,
-          params: {
-            client_id: @client_id,
-            state: @state,
-            post_logout_redirect_uri: @post_logout_redirect_uri,
-          },
-          method: :delete,
-          class: 'usa-button usa-button--big usa-button usa-button--full-width',
-        ) { t('openid_connect.logout.confirm', app_name: APP_NAME) } %>
-  </div>
-  <div class='margin-top-2 text-center'>
-    <%= link_to(account_path, class: 'usa-button usa-button--big usa-button--outline usa-button--full-width') { t('openid_connect.logout.deny') } %>
-  </div>
-</div>
+<%= button_to(
+      openid_connect_logout_path,
+      params: {
+        client_id: @client_id,
+        state: @state,
+        post_logout_redirect_uri: @post_logout_redirect_uri,
+      },
+      method: :delete,
+      form_class: 'margin-top-5 margin-bottom-2',
+      class: 'usa-button usa-button--big usa-button usa-button--full-width',
+    ) { t('openid_connect.logout.confirm', app_name: APP_NAME) } %>
+<%= link_to(account_path, class: 'usa-button usa-button--big usa-button--outline usa-button--full-width') { t('openid_connect.logout.deny') } %>
