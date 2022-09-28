@@ -182,7 +182,7 @@ RSpec.describe OpenidConnect::LogoutController do
       end
 
       context 'user is not signed in' do
-        it 'redirects back with an error' do
+        it 'redirects back to the client' do
           action
 
           expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
@@ -449,7 +449,7 @@ RSpec.describe OpenidConnect::LogoutController do
         end
 
         context 'user is not signed in' do
-          it 'redirects back with an error' do
+          it 'redirects back to client' do
             action
 
             expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
@@ -663,7 +663,7 @@ RSpec.describe OpenidConnect::LogoutController do
       end
 
       context 'user is not signed in' do
-        it 'redirects back with an error' do
+        it 'redirects back to client' do
           action
 
           expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
