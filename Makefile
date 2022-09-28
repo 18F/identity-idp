@@ -129,6 +129,8 @@ test_serial: $(CONFIG) ## Runs RSpec and yarn tests serially
 
 fast_test: export RAILS_ENV := test
 fast_test: ## Abbreviated test run, runs RSpec tests without accessibility specs
+	ulimit -Sn 61440
+	bundle exec rails tmp:clear
 	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
 
 tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local HTTPS development
