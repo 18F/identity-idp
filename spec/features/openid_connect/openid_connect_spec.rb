@@ -167,7 +167,7 @@ describe 'OpenID Connect' do
       end
 
       context 'when sending client_id' do
-        it 'logout destroys the session' do
+        it 'logout destroys the session when confirming logout' do
           client_id = 'urn:gov:gsa:openidconnect:test'
           sign_in_get_id_token(client_id: client_id)
 
@@ -178,10 +178,29 @@ describe 'OpenID Connect' do
             post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
             state: state,
           )
+          expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
+          click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
 
           visit account_path
           expect(page).to_not have_content(t('headings.account.login_info'))
           expect(page).to have_content(t('headings.sign_in_without_sp'))
+        end
+
+        it 'does not destroy the session and redirects to account page when denying logout' do
+          client_id = 'urn:gov:gsa:openidconnect:test'
+          sign_in_get_id_token(client_id: client_id)
+
+          state = SecureRandom.hex
+
+          visit openid_connect_logout_path(
+            client_id: client_id,
+            post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
+            state: state,
+          )
+          expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
+          click_link t('openid_connect.logout.deny')
+
+          expect(page).to have_content(t('headings.account.login_info'))
         end
       end
     end
@@ -221,7 +240,7 @@ describe 'OpenID Connect' do
         and_return(true)
     end
 
-    it 'logout destroys the session' do
+    it 'logout destroys the session when confirming logout' do
       client_id = 'urn:gov:gsa:openidconnect:test'
       sign_in_get_id_token(client_id: client_id)
 
@@ -232,6 +251,8 @@ describe 'OpenID Connect' do
         post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
         state: state,
       )
+      expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
+      click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
 
       visit account_path
       expect(page).to_not have_content(t('headings.account.login_info'))
