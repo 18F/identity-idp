@@ -2,7 +2,7 @@
 <div class="margin-y-2 padding-y-6 padding-x-4 tablet:padding-x-6 border border-error rounded-xl position-relative">
   <%= render AlertIconComponent.new(
         icon_name: :delete,
-        class: 'alert-icon-centered-top',
+        class: 'alert-icon--centered-top',
       ) %>
   <%= render PageHeadingComponent.new.with_content(t('account_reset.confirm_delete_account.title')) %>
   <p><%= t('account_reset.confirm_delete_account.info_html', email: email) %></p>
