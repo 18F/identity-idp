@@ -41,36 +41,6 @@ module Proofing
         NewRelic::Agent.notice_error(exception)
         Proofing::Result.new(exception: exception)
       end
-
-      private
-
-      def attributes
-        [*required_attributes, *optional_attributes]
-      end
-
-      def optional_attributes
-        [:uuid_prefix]
-      end
-
-      def required_attributes
-        %i(
-          uuid
-          first_name
-          last_name
-          dob
-          state_id_number
-          state_id_type
-          state_id_jurisdiction
-        )
-      end
-
-      def stage
-        :state_id
-      end
-
-      def vendor_name
-        'aamva:state_id'
-      end
     end
   end
 end

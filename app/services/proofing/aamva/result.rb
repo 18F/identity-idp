@@ -28,6 +28,22 @@ module Proofing
       def transaction_id
         verification_response.transaction_locator_id
       end
+
+      def exception
+        nil
+      end
+
+      def timed_out?
+        false
+      end
+
+      def vendor_name
+        'aamva:state_id'
+      end
+
+      def to_h
+        # TODO
+      end
     end
   end
 end
