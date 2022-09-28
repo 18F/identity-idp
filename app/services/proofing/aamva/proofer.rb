@@ -33,16 +33,14 @@ module Proofing
       end
 
       def proof(applicant)
-        response = Request::VerificationRequest.new(
-          config: config,
-          applicant: applicant,
-          session_id: '',
-          auth_token: '',
-        ).send
-        return Result.new(response)
+        vendor_applicant = restrict_attributes(applicant)
+        validate_attributes(vendor_applicant)
+        result = Proofing::Result.new
+        execute_proof(proofer, vendor_applicant, result)
+        result
       rescue => exception
         NewRelic::Agent.notice_error(exception)
-        ResultWithException.new(exception, vendor_name: 'aamva:state_id')
+        Proofing::Result.new(exception: exception)
       end
 
       def aamva_proof(applicant, result)
