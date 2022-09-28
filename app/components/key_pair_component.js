@@ -31,6 +31,7 @@ class KeyPairGenerator extends HTMLElement {
     this.generateKeyPair().then(() => {
       trackEvent('IdV: key pair generation', {
         duration: this.duration.toFixed(0),
+        location: this.dataset.location,
       });
     });
   }
