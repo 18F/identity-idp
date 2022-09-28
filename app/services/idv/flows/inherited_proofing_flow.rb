@@ -10,7 +10,6 @@ module Idv
       STEP_INDICATOR_STEPS = [
         { name: :getting_started },
         { name: :verify_info },
-        { name: :verify_phone },
         { name: :secure_account },
       ].freeze
 
