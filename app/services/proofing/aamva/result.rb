@@ -9,6 +9,7 @@ module Proofing
       )
 
       def initialize(verification_response)
+        raise ArgumentError unless verification_response.instance_of? Response::VerificationResponse
         @verification_response = verification_response
       end
 
