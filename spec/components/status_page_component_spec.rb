@@ -7,7 +7,7 @@ RSpec.describe StatusPageComponent, type: :component do
     rendered = render_inline(StatusPageComponent.new(status: :warning)) { |c| c.header { '' } }
 
     expect(rendered).to have_css(
-      "img[alt='#{t('components.status_page.icons.warning')}'][src*='warning']",
+      "img[alt='#{t('image_description.warning')}'][src*='warning']",
     )
   end
 
@@ -17,7 +17,7 @@ RSpec.describe StatusPageComponent, type: :component do
     end
 
     expect(rendered).to have_css(
-      "img[alt='#{t('components.status_page.icons.lock')}'][src*='error-lock']",
+      "img[alt='#{t('image_description.error_lock')}'][src*='error-lock']",
     )
   end
 

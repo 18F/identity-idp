@@ -37,6 +37,10 @@ module UspsInPersonProofing
         load_response_fixture('request_failed_proofing_results_response.json')
       end
 
+      def self.request_failed_suspected_fraud_proofing_results_response
+        load_response_fixture('request_failed_suspected_fraud_proofing_results_response.json')
+      end
+
       def self.request_passed_proofing_unsupported_id_results_response
         load_response_fixture('request_passed_proofing_unsupported_id_results_response.json')
       end

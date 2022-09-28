@@ -11,14 +11,10 @@ ALLOWED_INTERPOLATION_MISMATCH_KEYS = [
 module I18n
   module Tasks
     class BaseTask
-      # rubocop:disable Layout/LineLength
       # List of keys allowed to be untranslated or are the same as English
       ALLOWED_UNTRANSLATED_KEYS = [
         { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
         { key: 'doc_auth.headings.photo', locales: %i[fr] }, # "Photo" is "Photo" in French
-        { key: 'components.status_page.icons.error', locales: %i[es] }, # "Error" is "Error" in Spanish
-        { key: 'components.status_page.icons.question', locales: %i[fr] }, # "Question" is "Question" in French
-        { key: 'errors.alt.error', locales: %i[es] }, # "Error" is "Error" in Spanish
         { key: /^i18n\.locale\./ }, # Show locale options translated as that language
         { key: /^countries/ }, # Some countries have the same name across languages
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
@@ -29,8 +25,8 @@ module I18n
         { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
+        { key: 'mailer.logo' }, # "logo is logo" in English, French and Spanish
       ].freeze
-      # rubocop:enable Layout/LineLength
 
       def untranslated_keys
         data[base_locale].key_values.each_with_object([]) do |key_value, result|

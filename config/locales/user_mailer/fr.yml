@@ -130,6 +130,16 @@ fr:
         identité en personne, vous devez apporter un justificatif de domicile
         valable si votre adresse actuelle est différente de celle figurant sur
         votre pièce d’identité.
+    in_person_failed_suspected_fraud:
+      body:
+        help_center_html: Si vous avez besoin d’aide supplémentaire, vous pouvez <a
+          href="%{help_center_url}">consulter notre centre d’aide</a> ou
+          contacter l’agence à laquelle vous essayez d’accéder.
+        intro: Nous comprenons que vous avez tenté de vérifier votre identité par le
+          biais de %{app_name}, mais votre identité n’a pas pu être vérifiée au
+          bureau de poste de %{location} le %{date}.
+      greeting: Bonjour,
+      subject: Votre identité n’a pas pu être vérifiée en personne
     in_person_ready_to_verify:
       greeting: Bonjour %{name},
       intro: Voici les détails pour vérifier votre identité en personne dans un bureau
