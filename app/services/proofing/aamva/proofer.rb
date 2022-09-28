@@ -30,27 +30,24 @@ module Proofing
       end
 
       def proof(applicant)
-        vendor_applicant = restrict_attributes(applicant)
-        validate_attributes(vendor_applicant)
         result = Proofing::Result.new
-        execute_proof(proofer, vendor_applicant, result)
-        result
-      rescue => exception
-        NewRelic::Agent.notice_error(exception)
-        Proofing::Result.new(exception: exception)
-      end
-
-      def aamva_proof(applicant, result)
         aamva_applicant = Aamva::Applicant.from_proofer_applicant(OpenStruct.new(applicant))
-        response = Aamva::VerificationClient.new(config).
-          send_verification_request(applicant: aamva_applicant)
-        result.transaction_id = response.transaction_locator_id
+        response = Aamva::VerificationClient.new(
+          config,
+        ).send_verification_request(
+          applicant: aamva_applicant,
+        )
         unless response.success?
           response.verification_results.each do |attribute, v_result|
             result.add_error(attribute.to_sym, 'UNVERIFIED') if v_result == false
             result.add_error(attribute.to_sym, 'MISSING') if v_result.nil?
           end
         end
+        result.transaction_id = response.transaction_locator_id
+        result
+      rescue => exception
+        NewRelic::Agent.notice_error(exception)
+        Proofing::Result.new(exception: exception)
       end
 
       private

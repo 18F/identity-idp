@@ -24,7 +24,6 @@ describe Proofing::Aamva::Proofer do
       first_name_fuzzy_alternative: true,
     }
   end
-  let(:result) { Proofing::Result.new }
 
   subject { described_class.new(AamvaFixtures.example_config.to_h) }
 
@@ -40,10 +39,10 @@ describe Proofing::Aamva::Proofer do
       to_return(body: verification_response)
   end
 
-  describe '#aamva_proof' do
+  describe '#proof' do
     context 'when verification is successful' do
       it 'the result is successful' do
-        subject.aamva_proof(state_id_data, result)
+        result = subject.proof(state_id_data)
 
         expect(result.success?).to eq(true)
         expect(result.errors).to be_empty
@@ -56,7 +55,7 @@ describe Proofing::Aamva::Proofer do
       end
 
       it 'the result should be failed' do
-        subject.aamva_proof(state_id_data, result)
+        result = subject.proof(state_id_data)
 
         expect(result.failed?).to eq(true)
         expect(result.errors).to include(dob: ['UNVERIFIED'])
@@ -70,7 +69,7 @@ describe Proofing::Aamva::Proofer do
       end
 
       it 'the result should be failed' do
-        subject.aamva_proof(state_id_data, result)
+        result = subject.proof(state_id_data)
 
         expect(result.failed?).to eq(true)
         expect(result.errors).to include(dob: ['MISSING'])
@@ -97,8 +96,8 @@ describe Proofing::Aamva::Proofer do
       let(:aamva_applicant) do
         Proofing::Aamva::Applicant.from_proofer_applicant(
           OpenStruct.new(
-            state_id_data.merge(applicant_data)
-          )
+            state_id_data.merge(applicant_data),
+          ),
         )
       end
 
