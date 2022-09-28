@@ -12,10 +12,7 @@ module OpenidConnect
     before_action :confirm_two_factor_authenticated, only: [:delete]
 
     def index
-      @logout_form = OpenidConnectLogoutForm.new(
-        params: logout_params,
-        current_user: current_user,
-      )
+      @logout_form = build_logout_form
 
       result = @logout_form.submit
 
@@ -32,10 +29,7 @@ module OpenidConnect
     end
 
     def delete
-      @logout_form = OpenidConnectLogoutForm.new(
-        params: logout_params,
-        current_user: current_user,
-      )
+      @logout_form = build_logout_form
       result = @logout_form.submit
       if result.success? && (redirect_uri = result.extra[:redirect_uri])
         sign_out
@@ -46,6 +40,15 @@ module OpenidConnect
       else
         render :error
       end
+    end
+
+    private
+
+    def build_logout_form
+      OpenidConnectLogoutForm.new(
+        params: logout_params,
+        current_user: current_user,
+      )
     end
 
     def handle_successful_logout_request(redirect_uri)
