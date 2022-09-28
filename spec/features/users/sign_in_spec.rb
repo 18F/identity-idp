@@ -224,6 +224,9 @@ feature 'Sign in' do
     visit new_user_session_path
 
     check t('components.password_toggle.toggle_label')
+
+    # Clicking the checkbox triggers a frontend event logging request. Wait for network requests to
+    # settle before continuing to avoid a race condition.
     Capybara.current_session.server.wait_for_pending_requests
 
     expect(page).to have_css('input.password[type="text"]')
