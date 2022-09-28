@@ -91,6 +91,9 @@ describe Proofing::Aamva::Proofer do
         expect(result.errors).to include(dob: ['MISSING'])
         expect(result.errors).to include(address2: ['MISSING'])
         expect(result.transaction_id).to eq('1234-abcd-efgh')
+        expect(result.vendor_name).to eq('aamva:state_id')
+        expect(result.exception).to eq(nil)
+        expect(result.timed_out?).to eq(false)
       end
     end
   end
