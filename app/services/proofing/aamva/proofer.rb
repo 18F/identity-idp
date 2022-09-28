@@ -24,10 +24,36 @@ module Proofing
 
       attr_reader :config
 
+      # Class methods
+      def self.attributes
+        [*required_attributes, *optional_attributes]
+      end
+
+      def self.optional_attributes(*optional_attributes)
+        [:uuid_prefix]
+      end
+
+      def self.required_attributes
+        [
+          :uuid,
+          :first_name,
+          :last_name,
+          :dob,
+          :state_id_number,
+          :state_id_type,
+          :state_id_jurisdiction,
+        ]
+      end
+
+      def self.stage
+        :state_id
+      end
+
       def self.vendor_name
         'aamva:state_id'
       end
 
+      # Instance methods
       def initialize(config)
         @config = Config.new(config)
       end
@@ -55,22 +81,6 @@ module Proofing
           end
         end
       end
-
-      # required_attributes(
-      #   :uuid,
-      #   :first_name,
-      #   :last_name,
-      #   :dob,
-      #   :state_id_number,
-      #   :state_id_type,
-      #   :state_id_jurisdiction,
-      # )
-
-      # optional_attributes :uuid_prefix
-
-      # stage :state_id
-
-      # proof :aamva_proof
     end
   end
 end
