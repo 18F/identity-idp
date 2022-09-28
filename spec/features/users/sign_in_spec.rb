@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 feature 'Sign in' do
-  include JavascriptDriverHelper
-
   before(:all) do
     @original_capyabara_wait = Capybara.default_max_wait_time
     Capybara.default_max_wait_time = 5
