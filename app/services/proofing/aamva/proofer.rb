@@ -1,6 +1,3 @@
-# require 'ostruct'
-# require 'redacted_struct'
-
 module Proofing
   module Aamva
     class Proofer
@@ -30,7 +27,8 @@ module Proofing
       end
 
       def proof(applicant)
-        aamva_applicant = Aamva::Applicant.from_proofer_applicant(OpenStruct.new(applicant))
+        aamva_applicant =
+          Aamva::Applicant.from_proofer_applicant(OpenStruct.new(applicant))
         response = Aamva::VerificationClient.new(
           config,
         ).send_verification_request(
