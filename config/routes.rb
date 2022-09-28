@@ -31,6 +31,7 @@ Rails.application.routes.draw do
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
+  delete '/openid_connect/logout' => 'openid_connect/logout#delete'
 
   get '/no_js/detect.css' => 'no_js#index', as: :no_js_detect_css
 
@@ -192,8 +193,6 @@ Rails.application.routes.draw do
 
     get '/rules_of_use' => 'users/rules_of_use#new'
     post '/rules_of_use' => 'users/rules_of_use#create'
-
-    delete '/openid_connect/logout' => 'openid_connect/logout#delete'
 
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     get '/piv_cac_error' => 'users/piv_cac_authentication_setup#error', as: :setup_piv_cac_error
