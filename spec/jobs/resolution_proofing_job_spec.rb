@@ -120,7 +120,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
 
           allow(state_id_proofer).to receive(:proof).
-            and_return(Proofing::Result.new(transaction_id: aamva_transaction_id))
+            and_return(Proofing::Aamva::Result.new(transaction_id: aamva_transaction_id))
           Proofing::Mock::DeviceProfilingBackend.new.record_profiling_result(
             session_id: threatmetrix_session_id,
             result: 'pass',
@@ -325,7 +325,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
 
           allow(state_id_proofer).to receive(:proof).
-            and_return(Proofing::Result.new(transaction_id: aamva_transaction_id))
+            and_return(Proofing::Aamva::Result.new(transaction_id: aamva_transaction_id))
         end
 
         let(:lexisnexis_response) do
