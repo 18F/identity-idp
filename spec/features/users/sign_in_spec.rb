@@ -223,9 +223,8 @@ feature 'Sign in' do
 
     visit new_user_session_path
 
-    with_awaited_fetch do
-      check t('components.password_toggle.toggle_label')
-    end
+    check t('components.password_toggle.toggle_label')
+    Capybara.current_session.server.wait_for_pending_requests
 
     expect(page).to have_css('input.password[type="text"]')
     expect(fake_analytics).to have_logged_event(
