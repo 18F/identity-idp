@@ -33,7 +33,11 @@ function formatHTML(html: string, handlers: Handlers): ReactNode {
 
   const parts: Array<string | ReactNode> = html.split(pattern);
 
-  for (let i = 0; i < matches.length; i += 2) {
+  // Count spliced insertions to use as an offset when replacing parts, since the subsequent loop's
+  // iterator is based on matches and the original parts array.
+  let spliceCount = 0;
+
+  for (let i = 0; i < matches.length; i++) {
     const match = matches[i];
     const end = match.search(/ |\/?>/);
     const tag = matches[i].slice(1, end);
@@ -42,12 +46,13 @@ function formatHTML(html: string, handlers: Handlers): ReactNode {
 
     if (isSelfClosing) {
       const replacement = createElement(handlers[tag], { key });
-      parts[i + 1] = replacement;
-      i--;
+      parts.splice(i + spliceCount + 1, 0, replacement);
+      spliceCount++;
     } else {
-      const part = parts[i + 1] as string;
+      const part = parts[i + spliceCount + 1] as string;
       const replacement = createElement(handlers[tag], { key }, part);
-      parts[i + 1] = replacement;
+      parts[i + spliceCount + 1] = replacement;
+      i++; // Increment to skip the closing tag
     }
   }
 
