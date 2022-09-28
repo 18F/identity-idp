@@ -155,14 +155,7 @@ class ResolutionProofingJob < ApplicationJob
         should_proof_state_id: should_proof_state_id,
         stages: {
           resolution: resolution_result.to_h,
-          state_id: {
-            errors: state_id_result.errors,
-            exception: state_id_result.exception,
-            success: state_id_result.success?,
-            timed_out: state_id_result.timed_out?,
-            vendor_name: state_id_result.to_h[:vendor_name] || state_id_proofer.class.vendor_name,
-            transaction_id: state_id_result.transaction_id,
-          },
+          state_id: state_id_result.to_h,
         },
       },
     }
