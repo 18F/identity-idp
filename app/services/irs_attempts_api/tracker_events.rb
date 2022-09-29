@@ -390,7 +390,7 @@ module IrsAttemptsApi
 
     # @param [String] email
     # A login attempt was rejected due to too many incorrect attempts
-    def login_rate_limited(email)
+    def login_rate_limited(email:)
       track_event(
         :login_rate_limited,
         email: email,
