@@ -3,6 +3,10 @@ class FakeSamlRequest
     self
   end
 
+  def matching_cert
+    nil
+  end
+
   def identifier
     'http://localhost:3000'
   end
