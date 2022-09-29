@@ -512,7 +512,7 @@ RSpec.describe GetUspsProofingResultsJob do
         it_behaves_like(
           'enrollment encountering an exception',
           exception_class: 'Faraday::ParsingError',
-          exception_message: "809: unexpected token at 'invalid'",
+          exception_message: "783: unexpected token at 'invalid'",
         )
       end
 
