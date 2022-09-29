@@ -25,6 +25,9 @@ class KeyPairGeneratorElement extends HTMLElement {
 
   connectedCallback() {
     this.generateKeyPair().then(() => {
+      if (this.duration === undefined) {
+        this.duration = -1;
+      }
       trackEvent('IdV: key pair generation', {
         duration: this.duration.toFixed(0),
         location: this.dataset.location,
