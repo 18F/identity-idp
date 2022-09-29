@@ -72,6 +72,19 @@ describe Proofing::Aamva::Proofer do
         expect(result.vendor_name).to eq('aamva:state_id')
         expect(result.exception).to eq(nil)
         expect(result.timed_out?).to eq(false)
+
+        expect(result.verified_attributes).to eq(
+          %i(
+            state_id_number
+            state_id_type
+            last_name
+            first_name
+            address1
+            city
+            state
+            zipcode
+          )
+        )
       end
     end
 
