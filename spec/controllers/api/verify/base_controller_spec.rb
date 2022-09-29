@@ -5,7 +5,6 @@ describe Api::Verify::BaseController do
     subject(:response) { post :create }
 
     controller Api::Verify::BaseController do
-
       def create
         render json: {}
       end
