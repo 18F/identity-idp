@@ -47,7 +47,7 @@ describe Proofing::Aamva::Proofer do
         expect(result.success?).to eq(true)
         # TODO: Find a better way to express this than errors
         expect(result.transaction_id).to eq('1234-abcd-efgh')
-        expect(result.errors).to include(address2: ['MISSING'])
+        expect(result.errors).to eq({})
         expect(result.vendor_name).to eq('aamva:state_id')
         expect(result.exception).to eq(nil)
         expect(result.timed_out?).to eq(false)

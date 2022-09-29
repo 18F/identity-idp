@@ -17,6 +17,8 @@ module Proofing
         return @errors if defined? @errors
 
         @errors = {}
+        return @errors if verification_response.success?
+
         verification_response.verification_results.each do |attribute, v_result|
           next if v_result == true
           @errors[attribute.to_sym] ||= []
@@ -43,7 +45,14 @@ module Proofing
       end
 
       def to_h
-        # TODO
+        {
+          exception: exception,
+          errors: errors,
+          success: success?,
+          timed_out: timed_out?,
+          transaction_id: transaction_id,
+          vendor_name: vendor_name,
+        }
       end
     end
   end
