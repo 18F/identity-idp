@@ -8,7 +8,6 @@ module Idv
 
     before_action :confirm_idv_steps_complete
     before_action :confirm_idv_phone_confirmed
-    before_action :redirect_to_idv_app_if_enabled
     before_action :confirm_current_password, only: [:create]
 
     rescue_from UspsInPersonProofing::Exception::RequestEnrollException,
@@ -70,10 +69,6 @@ module Idv
 
     def log_reproof_event
       irs_attempts_api_tracker.idv_reproof
-    end
-
-    def redirect_to_idv_app_if_enabled
-      redirect_to idv_app_path
     end
 
     def flash_message_content
