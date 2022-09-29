@@ -551,6 +551,21 @@ RSpec.describe User do
         it_should_not_send_survey
       end
     end
+    context 'user has completed survey for other issuer and enrollments for both issuers' do
+      let(:other_service_provider) { create(:service_provider, issuer: 'otherissuer') }
+      let!(:enrollment) do
+        create(:in_person_enrollment, user: user, issuer: issuer, status: :passed)
+      end
+      let!(:enrollment2) do
+        create(
+          :in_person_enrollment, user: user, issuer: other_service_provider.issuer,
+                                 status: :passed, follow_up_survey_sent: true
+        )
+      end
+      it 'should send survey' do
+        it_should_send_survey
+      end
+    end
     context 'user has incomplete enrollment but no survey' do
       let!(:user) { create(:user, :with_pending_in_person_enrollment) }
       it 'should not send survey' do
@@ -563,6 +578,20 @@ RSpec.describe User do
       end
       it 'should send survey' do
         it_should_send_survey
+      end
+    end
+    context 'user has multiple enrollments but only completed a survey for the last one' do
+      let!(:enrollment) do
+        create(:in_person_enrollment, user: user, issuer: issuer, status: :passed)
+      end
+      let!(:enrollment2) do
+        create(
+          :in_person_enrollment, user: user, issuer: issuer, status: :passed,
+                                 follow_up_survey_sent: true
+        )
+      end
+      it 'should not send survey' do
+        it_should_not_send_survey
       end
     end
     context 'user has completed enrollment but no survey and feature is disabled' do

@@ -108,10 +108,10 @@ en:
         greeting: Hello,
         intent: We want to hear about your experience verifying your identity in person
           at the Post Office.
-        privacy_html: Your answers to this survey will be protected according to our <a
-          href="%{url}">privacy and security standards</a>.
+        privacy_html: Your answers to this survey will be protected according to the
+          following <a href="%{url}">privacy and security standards</a>.
         request_description: Fill out a short, anonymous survey and we’ll use your input
-          to help us get even better at serving your needs.
+          to help us get better at serving your needs.
         thanks: Thanks for using %{app_name}.
       header: Take a minute to tell us how we did
       subject: Tell us about your recent experience with %{app_name}
