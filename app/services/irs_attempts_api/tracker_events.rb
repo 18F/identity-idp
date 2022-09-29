@@ -6,7 +6,7 @@ module IrsAttemptsApi
     # @param [Boolean] success True if Account Successfully Deleted
     # @param [Hash<Key, Array<String>>] failure_reason displays why account deletion failed
     # A User confirms and deletes their Login.gov account after 24 hour period
-    def account_reset_account_deleted(success:, failure_reason:)
+    def account_reset_account_deleted(success:, failure_reason: nil)
       track_event(
         :account_reset_account_deleted,
         success: success,
@@ -140,7 +140,7 @@ module IrsAttemptsApi
     # @param [Boolean] success
     # @param [Hash<Key, Array<String>>] failure_reason displays GPO submission failed
     # GPO verification submitted from Letter sent to verify address
-    def idv_gpo_verification_submitted(success:, failure_reason:)
+    def idv_gpo_verification_submitted(success:, failure_reason: nil)
       track_event(
         :idv_gpo_verification_submitted,
         success: success,
@@ -190,7 +190,7 @@ module IrsAttemptsApi
     # @param [Hash<Key, Array<String>>] failure_reason
     # Track when OTP is sent and what method chosen during idv flow.
     def idv_phone_confirmation_otp_sent(success:, phone_number:,
-                                        otp_delivery_method:, failure_reason:)
+                                        otp_delivery_method:, failure_reason: nil)
       track_event(
         :idv_phone_confirmation_otp_sent,
         success: success,
@@ -615,7 +615,7 @@ module IrsAttemptsApi
     # Tracks when user has entered personal key after forgot password steps
     # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def personal_key_reactivation_submitted(success:, failure_reason:)
+    def personal_key_reactivation_submitted(success:, failure_reason: nil)
       track_event(
         :personal_key_reactivation_submitted,
         success: success,
