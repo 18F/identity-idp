@@ -90,6 +90,20 @@ RSpec.shared_examples 'enrollment encountering an exception' do |exception_class
   end
 end
 
+RSpec.shared_examples 'enrollment encountering an error that has a nil response' do |error_type:|
+  it 'logs that response is not present' do
+    expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(error_type))
+
+    job.perform(Time.zone.now)
+
+    expect(job_analytics).to have_logged_event(
+      'GetUspsProofingResultsJob: Exception raised',
+      response_present: false,
+      exception_class: error_type.to_s,
+    )
+  end
+end
+
 RSpec.describe GetUspsProofingResultsJob do
   include UspsIppHelper
 
@@ -558,17 +572,10 @@ RSpec.describe GetUspsProofingResultsJob do
           stub_request_with_timeout_error({})
         end
 
-        it 'logs that response is not present' do
-          expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(Faraday::TimeoutError))
-
-          job.perform(Time.zone.now)
-
-          expect(job_analytics).to have_logged_event(
-            'GetUspsProofingResultsJob: Exception raised',
-            response_present: false,
-            exception_class: Faraday::TimeoutError.to_s,
-          )
-        end
+        it_behaves_like(
+          'enrollment encountering an error that has a nil response',
+          error_type: Faraday::TimeoutError,
+        )
       end
 
       context 'when a nil status error occurs' do
@@ -576,18 +583,10 @@ RSpec.describe GetUspsProofingResultsJob do
           stub_request_with_nil_status_error({})
         end
 
-        it 'logs that response is not present' do
-          expect(NewRelic::Agent).to receive(:notice_error).
-            with(instance_of(Faraday::NilStatusError))
-
-          job.perform(Time.zone.now)
-
-          expect(job_analytics).to have_logged_event(
-            'GetUspsProofingResultsJob: Exception raised',
-            response_present: false,
-            exception_class: Faraday::NilStatusError.to_s,
-          )
-        end
+        it_behaves_like(
+          'enrollment encountering an error that has a nil response',
+          error_type: Faraday::NilStatusError,
+        )
       end
 
       context 'when a server error occurs' do
@@ -595,18 +594,10 @@ RSpec.describe GetUspsProofingResultsJob do
           stub_request_with_server_error({})
         end
 
-        it 'logs that response is not present' do
-          expect(NewRelic::Agent).to receive(:notice_error).
-            with(instance_of(Faraday::ServerError))
-
-          job.perform(Time.zone.now)
-
-          expect(job_analytics).to have_logged_event(
-            'GetUspsProofingResultsJob: Exception raised',
-            response_present: false,
-            exception_class: Faraday::ServerError.to_s,
-          )
-        end
+        it_behaves_like(
+          'enrollment encountering an error that has a nil response',
+          error_type: Faraday::ServerError,
+        )
       end
     end
 
