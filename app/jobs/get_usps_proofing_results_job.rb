@@ -30,6 +30,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def response_analytics_attributes(response)
+    return { response_present: false } unless response.present?
+
     {
       fraud_suspected: response['fraudSuspected'],
       primary_id_type: response['primaryIdType'],
@@ -44,6 +46,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofing_state: response['proofingState'],
       scan_count: response['scanCount'],
       response_message: response['responseMessage'],
+      response_present: true,
     }
   end
 
@@ -108,6 +111,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       rescue Faraday::BadRequestError => err
         handle_bad_request_error(err, enrollment)
       rescue StandardError => err
+        NewRelic::Agent.notice_error(err)
         handle_standard_error(err, enrollment)
       end
 
@@ -145,10 +149,16 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_standard_error(err, enrollment)
+    response_attributes = if err.respond_to?(:response)
+                            response_analytics_attributes(err.response)
+                          else
+                            response_analytics_attributes(nil)
+                          end
+
     enrollment_outcomes[:enrollments_errored] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       **enrollment_analytics_attributes(enrollment, complete: false),
-      **response_analytics_attributes(err.response),
+      **response_attributes,
       reason: 'Request exception',
       exception_class: err.class.to_s,
       exception_message: err.message,
