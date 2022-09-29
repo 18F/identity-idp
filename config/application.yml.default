@@ -133,6 +133,7 @@ irs_attempt_api_payload_size_logging_enabled: true
 kantara_2fa_phone_restricted: false
 kantara_2fa_phone_existing_user_restriction: false
 kantara_restriction_enforcement_date: '2022-07-19'
+key_pair_generation_percent: 0
 liveness_checking_enabled: false
 logins_per_ip_track_only_mode: false
 # LexisNexis #####################################################
