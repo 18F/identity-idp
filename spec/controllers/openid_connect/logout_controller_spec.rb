@@ -45,7 +45,7 @@ RSpec.describe OpenidConnect::LogoutController do
       end
 
       context 'user is signed in' do
-        before { sign_in user }
+        before { stub_sign_in(user) }
 
         context 'with valid params' do
           it 'destroys the session' do
@@ -73,10 +73,25 @@ RSpec.describe OpenidConnect::LogoutController do
             stub_analytics
             expect(@analytics).to receive(:track_event).
               with(
+                'OIDC Logout Requested',
+                hash_including(
+                  success: true,
+                  client_id: service_provider,
+                  client_id_parameter_present: false,
+                  id_token_hint_parameter_present: true,
+                  errors: {},
+                  sp_initiated: true,
+                  oidc: true,
+                ),
+              )
+            expect(@analytics).to receive(:track_event).
+              with(
                 'Logout Initiated',
                 hash_including(
                   success: true,
                   client_id: service_provider,
+                  client_id_parameter_present: false,
+                  id_token_hint_parameter_present: true,
                   errors: {},
                   sp_initiated: true,
                   oidc: true,
@@ -130,22 +145,20 @@ RSpec.describe OpenidConnect::LogoutController do
             errors = {
               redirect_uri: [t('openid_connect.authorization.errors.redirect_uri_no_match')],
             }
+
             expect(@analytics).to receive(:track_event).
               with(
-                'Logout Initiated',
+                'OIDC Logout Requested',
                 success: false,
                 client_id: service_provider,
+                client_id_parameter_present: false,
+                id_token_hint_parameter_present: true,
                 errors: errors,
                 error_details: hash_including(*errors.keys),
                 sp_initiated: true,
                 oidc: true,
                 method: nil,
                 saml_request_valid: nil,
-              )
-            stub_attempts_tracker
-            expect(@irs_attempts_api_tracker).to receive(:logout_initiated).
-              with(
-                success: false,
               )
 
             action
@@ -160,20 +173,17 @@ RSpec.describe OpenidConnect::LogoutController do
 
             expect(@analytics).to receive(:track_event).
               with(
-                'Logout Initiated',
+                'OIDC Logout Requested',
                 success: false,
                 client_id: nil,
+                client_id_parameter_present: false,
+                id_token_hint_parameter_present: true,
                 errors: hash_including(*errors_keys),
                 error_details: hash_including(*errors_keys),
                 sp_initiated: true,
                 oidc: true,
                 method: nil,
                 saml_request_valid: nil,
-              )
-            stub_attempts_tracker
-            expect(@irs_attempts_api_tracker).to receive(:logout_initiated).
-              with(
-                success: false,
               )
 
             action
@@ -182,10 +192,39 @@ RSpec.describe OpenidConnect::LogoutController do
       end
 
       context 'user is not signed in' do
-        it 'redirects back with an error' do
+        it 'redirects back to the client' do
           action
 
           expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
+        end
+      end
+    end
+
+    describe '#delete' do
+      subject(:action) do
+        delete :delete,
+               params: {
+                 client_id: service_provider,
+                 post_logout_redirect_uri: post_logout_redirect_uri,
+                 state: state,
+               }
+      end
+      context 'when sending client_id' do
+        context 'user is signed in' do
+          before { stub_sign_in(user) }
+          it 'returns 404' do
+            action
+
+            expect(response).to be_not_found
+          end
+        end
+
+        context 'user is not signed in' do
+          it 'returns 404' do
+            action
+
+            expect(response).to be_not_found
+          end
         end
       end
     end
@@ -213,7 +252,7 @@ RSpec.describe OpenidConnect::LogoutController do
         end
 
         context 'user is signed in' do
-          before { sign_in user }
+          before { stub_sign_in(user) }
 
           context 'with valid params' do
             it 'destroys the session' do
@@ -232,10 +271,25 @@ RSpec.describe OpenidConnect::LogoutController do
               stub_analytics
               expect(@analytics).to receive(:track_event).
                 with(
+                  'OIDC Logout Requested',
+                  hash_including(
+                    success: true,
+                    client_id: service_provider,
+                    client_id_parameter_present: false,
+                    id_token_hint_parameter_present: true,
+                    errors: {},
+                    sp_initiated: true,
+                    oidc: true,
+                  ),
+                )
+              expect(@analytics).to receive(:track_event).
+                with(
                   'Logout Initiated',
                   hash_including(
                     success: true,
                     client_id: service_provider,
+                    client_id_parameter_present: false,
+                    id_token_hint_parameter_present: true,
                     errors: {},
                     sp_initiated: true,
                     oidc: true,
@@ -274,20 +328,17 @@ RSpec.describe OpenidConnect::LogoutController do
               }
               expect(@analytics).to receive(:track_event).
                 with(
-                  'Logout Initiated',
+                  'OIDC Logout Requested',
                   success: false,
                   client_id: service_provider,
+                  client_id_parameter_present: false,
+                  id_token_hint_parameter_present: true,
                   errors: errors,
                   error_details: hash_including(*errors.keys),
                   sp_initiated: true,
                   oidc: true,
                   method: nil,
                   saml_request_valid: nil,
-                )
-              stub_attempts_tracker
-              expect(@irs_attempts_api_tracker).to receive(:logout_initiated).
-                with(
-                  success: false,
                 )
 
               action
@@ -302,20 +353,17 @@ RSpec.describe OpenidConnect::LogoutController do
 
               expect(@analytics).to receive(:track_event).
                 with(
-                  'Logout Initiated',
+                  'OIDC Logout Requested',
                   success: false,
                   client_id: nil,
+                  client_id_parameter_present: false,
+                  id_token_hint_parameter_present: true,
                   errors: hash_including(*errors_keys),
                   error_details: hash_including(*errors_keys),
                   sp_initiated: true,
                   oidc: true,
                   method: nil,
                   saml_request_valid: nil,
-                )
-              stub_attempts_tracker
-              expect(@irs_attempts_api_tracker).to receive(:logout_initiated).
-                with(
-                  success: false,
                 )
 
               action
@@ -343,40 +391,44 @@ RSpec.describe OpenidConnect::LogoutController do
         end
 
         context 'user is signed in' do
-          before { sign_in user }
+          before { stub_sign_in(user) }
 
           context 'with valid params' do
-            it 'destroys the session' do
-              expect(controller).to receive(:sign_out).and_call_original
-
-              action
-            end
-
-            it 'redirects back to the client' do
+            it 'renders logout confirmation page' do
               action
 
-              expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
+              expect(response).to render_template(:index)
             end
 
             it 'tracks events' do
               stub_analytics
               expect(@analytics).to receive(:track_event).
                 with(
-                  'Logout Initiated',
+                  'OIDC Logout Requested',
                   hash_including(
                     success: true,
                     client_id: service_provider,
+                    client_id_parameter_present: true,
+                    id_token_hint_parameter_present: false,
+                    errors: {},
+                    sp_initiated: true,
+                    oidc: true,
+                  ),
+                )
+              expect(@analytics).to receive(:track_event).
+                with(
+                  'OIDC Logout Page Visited',
+                  hash_including(
+                    success: true,
+                    client_id: service_provider,
+                    client_id_parameter_present: true,
+                    id_token_hint_parameter_present: false,
                     errors: {},
                     sp_initiated: true,
                     oidc: true,
                   ),
                 )
 
-              stub_attempts_tracker
-              expect(@irs_attempts_api_tracker).to receive(:logout_initiated).
-                with(
-                  success: true,
-                )
               action
             end
           end
@@ -404,20 +456,19 @@ RSpec.describe OpenidConnect::LogoutController do
               }
               expect(@analytics).to receive(:track_event).
                 with(
-                  'Logout Initiated',
-                  success: false,
-                  client_id: service_provider,
-                  errors: errors,
-                  error_details: hash_including(*errors.keys),
-                  sp_initiated: true,
-                  oidc: true,
-                  method: nil,
-                  saml_request_valid: nil,
-                )
-              stub_attempts_tracker
-              expect(@irs_attempts_api_tracker).to receive(:logout_initiated).
-                with(
-                  success: false,
+                  'OIDC Logout Requested',
+                  hash_including(
+                    success: false,
+                    client_id: service_provider,
+                    client_id_parameter_present: true,
+                    id_token_hint_parameter_present: false,
+                    errors: errors,
+                    error_details: hash_including(*errors.keys),
+                    sp_initiated: true,
+                    oidc: true,
+                    method: nil,
+                    saml_request_valid: nil,
+                  ),
                 )
 
               action
@@ -426,10 +477,69 @@ RSpec.describe OpenidConnect::LogoutController do
         end
 
         context 'user is not signed in' do
-          it 'redirects back with an error' do
+          it 'redirects back to client' do
             action
 
             expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
+          end
+        end
+      end
+    end
+
+    describe '#delete' do
+      context 'when sending client_id' do
+        subject(:action) do
+          delete :delete,
+                 params: {
+                   client_id: service_provider,
+                   post_logout_redirect_uri: post_logout_redirect_uri,
+                   state: state,
+                 }
+        end
+
+        context 'user is signed in' do
+          before { stub_sign_in(user) }
+          it 'destroys the session' do
+            action
+
+            expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
+          end
+        end
+
+        context 'user is not signed in' do
+          it 'destroys the session' do
+            action
+
+            expect(response).to redirect_to(new_user_session_path)
+          end
+        end
+      end
+
+      context 'when sending id_token_hint' do
+        let(:id_token_hint) { valid_id_token_hint }
+        subject(:action) do
+          delete :delete,
+                 params: {
+                   id_token_hint: id_token_hint,
+                   post_logout_redirect_uri: post_logout_redirect_uri,
+                   state: state,
+                 }
+        end
+
+        context 'user is signed in' do
+          before { stub_sign_in(user) }
+          it 'destroys the session' do
+            action
+
+            expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
+          end
+        end
+
+        context 'user is not signed in' do
+          it 'destroys the session' do
+            action
+
+            expect(response).to redirect_to(new_user_session_path)
           end
         end
       end
@@ -455,40 +565,45 @@ RSpec.describe OpenidConnect::LogoutController do
       end
 
       context 'user is signed in' do
-        before { sign_in user }
+        before { stub_sign_in(user) }
 
         context 'with valid params' do
-          it 'destroys the session' do
-            expect(controller).to receive(:sign_out).and_call_original
-
-            action
-          end
-
-          it 'redirects back to the client' do
+          it 'renders logout confirmation page' do
             action
 
-            expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
+            expect(response).to render_template(:index)
           end
 
           it 'tracks events' do
             stub_analytics
             expect(@analytics).to receive(:track_event).
               with(
-                'Logout Initiated',
+                'OIDC Logout Requested',
                 hash_including(
                   success: true,
                   client_id: service_provider,
+                  client_id_parameter_present: true,
+                  id_token_hint_parameter_present: false,
                   errors: {},
                   sp_initiated: true,
                   oidc: true,
                 ),
               )
 
-            stub_attempts_tracker
-            expect(@irs_attempts_api_tracker).to receive(:logout_initiated).
+            expect(@analytics).to receive(:track_event).
               with(
-                success: true,
+                'OIDC Logout Page Visited',
+                hash_including(
+                  success: true,
+                  client_id: service_provider,
+                  client_id_parameter_present: true,
+                  id_token_hint_parameter_present: false,
+                  errors: {},
+                  sp_initiated: true,
+                  oidc: true,
+                ),
               )
+
             action
           end
         end
@@ -516,20 +631,17 @@ RSpec.describe OpenidConnect::LogoutController do
             }
             expect(@analytics).to receive(:track_event).
               with(
-                'Logout Initiated',
+                'OIDC Logout Requested',
                 success: false,
                 client_id: service_provider,
+                client_id_parameter_present: true,
+                id_token_hint_parameter_present: true,
                 errors: errors,
                 error_details: hash_including(*errors.keys),
                 sp_initiated: true,
                 oidc: true,
                 method: nil,
                 saml_request_valid: nil,
-              )
-            stub_attempts_tracker
-            expect(@irs_attempts_api_tracker).to receive(:logout_initiated).
-              with(
-                success: false,
               )
 
             action
@@ -559,20 +671,17 @@ RSpec.describe OpenidConnect::LogoutController do
             }
             expect(@analytics).to receive(:track_event).
               with(
-                'Logout Initiated',
+                'OIDC Logout Requested',
                 success: false,
                 client_id: service_provider,
+                client_id_parameter_present: true,
+                id_token_hint_parameter_present: false,
                 errors: errors,
                 error_details: hash_including(*errors.keys),
                 sp_initiated: true,
                 oidc: true,
                 method: nil,
                 saml_request_valid: nil,
-              )
-            stub_attempts_tracker
-            expect(@irs_attempts_api_tracker).to receive(:logout_initiated).
-              with(
-                success: false,
               )
 
             action
@@ -581,10 +690,109 @@ RSpec.describe OpenidConnect::LogoutController do
       end
 
       context 'user is not signed in' do
-        it 'redirects back with an error' do
+        it 'redirects back to client' do
           action
 
           expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
+        end
+      end
+    end
+
+    describe '#delete' do
+      context 'when sending client_id' do
+        subject(:action) do
+          delete :delete,
+                 params: {
+                   client_id: service_provider,
+                   post_logout_redirect_uri: post_logout_redirect_uri,
+                   state: state,
+                 }
+        end
+
+        context 'user is signed in' do
+          before { stub_sign_in(user) }
+          it 'destroys the session' do
+            action
+
+            expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
+          end
+
+          it 'tracks events' do
+            stub_analytics
+
+            expect(@analytics).to receive(:track_event).
+              with(
+                'OIDC Logout Submitted',
+                success: true,
+                client_id: service_provider,
+                client_id_parameter_present: true,
+                id_token_hint_parameter_present: false,
+                errors: {},
+                error_details: nil,
+                sp_initiated: true,
+                oidc: true,
+                method: nil,
+                saml_request_valid: nil,
+              )
+            expect(@analytics).to receive(:track_event).
+              with(
+                'Logout Initiated',
+                success: true,
+                client_id: service_provider,
+                client_id_parameter_present: true,
+                id_token_hint_parameter_present: false,
+                errors: {},
+                error_details: nil,
+                sp_initiated: true,
+                oidc: true,
+                method: nil,
+                saml_request_valid: nil,
+              )
+            stub_attempts_tracker
+            expect(@irs_attempts_api_tracker).to receive(:logout_initiated).
+              with(
+                success: true,
+              )
+
+            action
+          end
+        end
+
+        context 'user is not signed in' do
+          it 'destroys the session' do
+            action
+
+            expect(response).to redirect_to(new_user_session_path)
+          end
+        end
+      end
+
+      context 'when sending id_token_hint' do
+        let(:id_token_hint) { valid_id_token_hint }
+        subject(:action) do
+          delete :delete,
+                 params: {
+                   id_token_hint: id_token_hint,
+                   post_logout_redirect_uri: post_logout_redirect_uri,
+                   state: state,
+                 }
+        end
+
+        context 'user is signed in' do
+          before { stub_sign_in(user) }
+          it 'destroys the session' do
+            action
+
+            expect(response).to render_template(:error)
+          end
+        end
+
+        context 'user is not signed in' do
+          it 'destroys the session' do
+            action
+
+            expect(response).to redirect_to(new_user_session_path)
+          end
         end
       end
     end

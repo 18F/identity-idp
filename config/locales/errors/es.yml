@@ -10,9 +10,6 @@ es:
         válido. Haz clic de nuevo en el enlace en tu correo electrónico.
       granted_token_missing: El enlace para eliminar tu cuenta de %{app_name} no es
         válido. Haz clic de nuevo en el enlace en tu correo electrónico.
-    alt:
-      error: Error
-      warning: Advertencia
     attributes:
       password:
         too_short:
