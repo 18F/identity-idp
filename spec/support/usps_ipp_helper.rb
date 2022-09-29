@@ -117,6 +117,27 @@ module UspsIppHelper
     }
   end
 
+  def stub_request_with_timeout_error(*_response)
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
+    ).to_raise(Faraday::TimeoutError)
+  end
+
+  def stub_request_with_nil_status_error(*_response)
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
+    ).to_raise(Faraday::NilStatusError)
+  end
+
+  def stub_request_with_server_error(*_response)
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
+    ).to_raise(Faraday::ServerError)
+  end
+
   def stub_request_proofing_results_with_responses(*responses)
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
       responses,

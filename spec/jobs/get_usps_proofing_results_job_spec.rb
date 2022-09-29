@@ -552,6 +552,62 @@ RSpec.describe GetUspsProofingResultsJob do
           )
         end
       end
+
+      context 'when a timeout error occurs' do
+        before(:each) do
+          stub_request_with_timeout_error({})
+        end
+
+        it 'logs that response is not present' do
+          expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(Faraday::TimeoutError))
+
+          job.perform(Time.zone.now)
+
+          expect(job_analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Exception raised',
+            response_present: false,
+            exception_class: Faraday::TimeoutError.to_s,
+          )
+        end
+      end
+
+      context 'when a nil status error occurs' do
+        before(:each) do
+          stub_request_with_nil_status_error({})
+        end
+
+        it 'logs that response is not present' do
+          expect(NewRelic::Agent).to receive(:notice_error).
+            with(instance_of(Faraday::NilStatusError))
+
+          job.perform(Time.zone.now)
+
+          expect(job_analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Exception raised',
+            response_present: false,
+            exception_class: Faraday::NilStatusError.to_s,
+          )
+        end
+      end
+
+      context 'when a server error occurs' do
+        before(:each) do
+          stub_request_with_server_error({})
+        end
+
+        it 'logs that response is not present' do
+          expect(NewRelic::Agent).to receive(:notice_error).
+            with(instance_of(Faraday::ServerError))
+
+          job.perform(Time.zone.now)
+
+          expect(job_analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Exception raised',
+            response_present: false,
+            exception_class: Faraday::ServerError.to_s,
+          )
+        end
+      end
     end
 
     describe 'IPP disabled' do
