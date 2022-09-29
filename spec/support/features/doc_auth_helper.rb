@@ -107,6 +107,12 @@ module DocAuthHelper
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
 
+  def complete_inherited_proofing_steps_before_verify_step(expect_accessible: false)
+    complete_inherited_proofing_steps_before_agreement_step(expect_accessible: expect_accessible)
+    complete_agreement_step
+    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+  end
+
   def complete_doc_auth_steps_before_agreement_step(expect_accessible: false)
     complete_doc_auth_steps_before_welcome_step(expect_accessible: expect_accessible)
     complete_welcome_step

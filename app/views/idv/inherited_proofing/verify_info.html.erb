@@ -1,10 +1,6 @@
 <% title t('inherited_proofing.headings.verify_information') %>
 
-  <%= render PageHeadingComponent.new.with_content(t('inherited_proofing.headings.verify_information')) %>
-
-    Fakey McFakerson <br>
-    123 Main St <br>
-    Anytown, DC, 12345
+<%= render 'verify', pii: flow_session[:pii_from_user], step_url: step_url, remote_identity_proofing: true %>
 
 <%= simple_form_for :inherited_proofing,
                     url: url_for,
