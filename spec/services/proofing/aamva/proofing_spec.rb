@@ -79,10 +79,7 @@ describe Proofing::Aamva::Proofer do
             state_id_type
             last_name
             first_name
-            address1
-            city
-            state
-            zipcode
+            address
           )
         )
       end
