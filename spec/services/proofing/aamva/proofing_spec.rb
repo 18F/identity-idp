@@ -59,7 +59,7 @@ describe Proofing::Aamva::Proofer do
         XmlHelper.modify_xml_at_xpath(
           super(),
           '//PersonBirthDateMatchIndicator',
-          'false'
+          'false',
         )
       end
 
@@ -68,7 +68,6 @@ describe Proofing::Aamva::Proofer do
 
         expect(result.success?).to eq(false)
         expect(result.errors).to include(dob: ['UNVERIFIED'])
-        expect(result.errors).to include(address2: ['MISSING'])
         expect(result.transaction_id).to eq('1234-abcd-efgh')
         expect(result.vendor_name).to eq('aamva:state_id')
         expect(result.exception).to eq(nil)
@@ -80,7 +79,7 @@ describe Proofing::Aamva::Proofer do
       let(:verification_response) do
         XmlHelper.delete_xml_at_xpath(
           super(),
-          '//PersonBirthDateMatchIndicator'
+          '//PersonBirthDateMatchIndicator',
         )
       end
 
@@ -89,7 +88,6 @@ describe Proofing::Aamva::Proofer do
 
         expect(result.success?).to eq(false)
         expect(result.errors).to include(dob: ['MISSING'])
-        expect(result.errors).to include(address2: ['MISSING'])
         expect(result.transaction_id).to eq('1234-abcd-efgh')
         expect(result.vendor_name).to eq('aamva:state_id')
         expect(result.exception).to eq(nil)
