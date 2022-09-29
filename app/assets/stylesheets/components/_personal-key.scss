@@ -1,8 +1,15 @@
-.key-badge {
-  position: relative;
+.personal-key-block {
+  background-image: url('personal-key/pkey-block.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+
+  @include at-media('tablet') {
+    @include u-padding-x(1);
+    @include u-padding-y(2);
+  }
 }
 
-.separator-text__code {
+.personal-key-block__code {
   @include u-font-family('mono');
   font-size: 1.5rem;
 
@@ -17,19 +24,8 @@
   }
 }
 
-@include at-media('tablet') {
-  .separator-text > div {
-    &::after {
-      color: #000;
-      padding: 0 0.5rem;
-    }
-  }
-}
-
-.bg-pk-box {
-  background-image: url('personal-key/pkey-block.svg');
-  background-position: center;
-  background-repeat: no-repeat;
+.key-badge {
+  position: relative;
 }
 
 .bg-personal-key {
