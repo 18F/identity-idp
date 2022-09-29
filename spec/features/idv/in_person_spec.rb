@@ -3,6 +3,7 @@ require 'axe-rspec'
 
 RSpec.describe 'In Person Proofing', js: true do
   include IdvStepHelper
+  include SpAuthHelper
   include InPersonHelper
 
   before do
@@ -177,51 +178,25 @@ RSpec.describe 'In Person Proofing', js: true do
   end
 
   context 'after in-person proofing is completed and passed for a partner' do
-    let(:user) { user_with_totp_2fa }
+    let(:sp) { nil }
     before do
-      ServiceProvider.find_by(issuer: sp_oidc_issuer).
-        update(in_person_proofing_enabled: true)
-
-      visit_idp_from_sp_with_ial2(:oidc)
-      sign_in_user(user)
-      uncheck(t('forms.messages.remember_device'))
-      fill_in_code_with_last_totp(user)
-      click_submit_default
-
-      expect(page).to have_current_path(idv_doc_auth_welcome_step)
-      begin_in_person_proofing
-      complete_all_in_person_proofing_steps
-
-      complete_phone_step(user)
-      complete_review_step(user)
-      acknowledge_and_confirm_personal_key
-      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
-
-      visit account_path
-      first(:link, t('links.sign_out')).click
-
-      # Mark IPP as passed
-      enrollment = user.in_person_enrollments.last
-      expect(enrollment).to_not be_nil
-      enrollment.profile.activate
-      enrollment.update(status: :passed)
-
-      visit_idp_from_sp_with_ial2(:oidc)
-
-      sign_in_user(user)
-      uncheck(t('forms.messages.remember_device'))
-      fill_in_code_with_last_totp(user)
-      click_submit_default
-
-      expect(current_path).to eq(sign_up_completed_path)
+      create_in_person_ial2_account_go_back_to_sp_and_sign_out(sp)
     end
 
-    it 'sends a survey when they share information with that partner', allow_browser_log: true do
-      click_button t('sign_up.agree_and_continue')
-      expect(last_email.html_part.body).
-        to have_selector(
-          "a[href='#{IdentityConfig.store.in_person_completion_survey_url}']",
-        )
+    [
+      :oidc,
+      :saml,
+    ].each do |service_provider|
+      context "using #{service_provider}" do
+        let(:sp) { service_provider }
+        it 'sends a survey when they share information with that partner',
+           allow_browser_log: true do
+          expect(last_email.html_part.body).
+            to have_selector(
+              "a[href='#{IdentityConfig.store.in_person_completion_survey_url}']",
+            )
+        end
+      end
     end
   end
 

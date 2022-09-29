@@ -89,6 +89,14 @@ module IdvHelper
     'urn:gov:gsa:openidconnect:sp:server'
   end
 
+  def service_provider_issuer(sp)
+    if sp == :saml
+      sp1_issuer
+    elsif sp == :oidc
+      sp_oidc_issuer
+    end
+  end
+
   def visit_idp_from_oidc_sp_with_ial2(
     client_id: sp_oidc_issuer,
     state: SecureRandom.hex,
