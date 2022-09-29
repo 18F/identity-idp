@@ -6,7 +6,7 @@ module IrsAttemptsApi
     # @param [Boolean] success True if Account Successfully Deleted
     # @param [Hash<Key, Array<String>>] failure_reason displays why account deletion failed
     # A User confirms and deletes their Login.gov account after 24 hour period
-    def account_reset_account_deleted(success:, failure_reason:)
+    def account_reset_account_deleted(success:, failure_reason: nil)
       track_event(
         :account_reset_account_deleted,
         success: success,
@@ -140,7 +140,7 @@ module IrsAttemptsApi
     # @param [Boolean] success
     # @param [Hash<Key, Array<String>>] failure_reason displays GPO submission failed
     # GPO verification submitted from Letter sent to verify address
-    def idv_gpo_verification_submitted(success:, failure_reason:)
+    def idv_gpo_verification_submitted(success:, failure_reason: nil)
       track_event(
         :idv_gpo_verification_submitted,
         success: success,
@@ -190,7 +190,7 @@ module IrsAttemptsApi
     # @param [Hash<Key, Array<String>>] failure_reason
     # Track when OTP is sent and what method chosen during idv flow.
     def idv_phone_confirmation_otp_sent(success:, phone_number:,
-                                        otp_delivery_method:, failure_reason:)
+                                        otp_delivery_method:, failure_reason: nil)
       track_event(
         :idv_phone_confirmation_otp_sent,
         success: success,
@@ -215,14 +215,14 @@ module IrsAttemptsApi
     end
 
     # Tracks when a user submits OTP code sent to their phone
-    # @param [String] phone_number
     # @param [Boolean] success
+    # @param [String] phone_number
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def idv_phone_otp_submitted(phone_number:, success:, failure_reason: nil)
+    def idv_phone_otp_submitted(success:, phone_number:, failure_reason: nil)
       track_event(
         :idv_phone_otp_submitted,
-        phone_number: phone_number,
         success: success,
+        phone_number: phone_number,
         failure_reason: failure_reason,
       )
     end
@@ -246,14 +246,14 @@ module IrsAttemptsApi
     end
 
     # Tracks when the user submits their idv phone number
-    # @param [String] phone_number
     # @param [Boolean] success
+    # @param [String] phone_number
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def idv_phone_submitted(phone_number:, success:, failure_reason: nil)
+    def idv_phone_submitted(success:, phone_number:, failure_reason: nil)
       track_event(
         :idv_phone_submitted,
-        phone_number: phone_number,
         success: success,
+        phone_number: phone_number,
         failure_reason: failure_reason,
       )
     end
@@ -390,7 +390,7 @@ module IrsAttemptsApi
 
     # @param [String] email
     # A login attempt was rejected due to too many incorrect attempts
-    def login_rate_limited(email)
+    def login_rate_limited(email:)
       track_event(
         :login_rate_limited,
         email: email,
@@ -460,8 +460,8 @@ module IrsAttemptsApi
     end
 
     # Tracks when the user has attempted to enroll the piv cac MFA method to their account
-    # @param [String] subject_dn
     # @param [Boolean] success
+    # @param [String] subject_dn
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def mfa_enroll_piv_cac(
       success:,
@@ -522,16 +522,16 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [Boolean] reauthentication - True if the user was already logged in
     # @param [Boolean] success - True if the OTP Verification was sent
+    # @param [Boolean] reauthentication - True if the user was already logged in
     # @param [String] phone_number - The user's phone_number used for multi-factor authentication
     # @param [String] otp_delivery_method - Either SMS or Voice
     # During a login attempt, an OTP code has been sent via SMS or Voice.
-    def mfa_login_phone_otp_sent(reauthentication:, success:, phone_number:, otp_delivery_method:)
+    def mfa_login_phone_otp_sent(success:, reauthentication:, phone_number:, otp_delivery_method:)
       track_event(
         :mfa_login_phone_otp_sent,
-        reauthentication: reauthentication,
         success: success,
+        reauthentication: reauthentication,
         phone_number: phone_number,
         otp_delivery_method: otp_delivery_method,
       )
@@ -615,7 +615,7 @@ module IrsAttemptsApi
     # Tracks when user has entered personal key after forgot password steps
     # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def personal_key_reactivation_submitted(success:, failure_reason:)
+    def personal_key_reactivation_submitted(success:, failure_reason: nil)
       track_event(
         :personal_key_reactivation_submitted,
         success: success,
