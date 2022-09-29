@@ -119,6 +119,21 @@ RSpec.describe AnalyticsEventsDocumenter do
       end
     end
 
+    context 'when a method includes a positional param' do
+      let(:source_code) { <<~RUBY }
+        class AnalyticsEvents
+          def some_event(success)
+            track_event('Some Event')
+          end
+        end
+      RUBY
+
+      it 'reports the invalid param' do
+        expect(documenter.missing_documentation.first).
+          to include('some_event unexpected positional parameters ["success"]')
+      end
+    end
+
     context 'when a method skips documenting an param, such as pii_like_keypaths' do
       let(:source_code) { <<~RUBY }
         class AnalyticsEvents
