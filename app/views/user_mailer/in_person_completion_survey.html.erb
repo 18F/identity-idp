@@ -1,12 +1,14 @@
-<p class="margin-bottom-3"><%= t('user_mailer.in_person_completion_survey.body.greeting') %></p>
-<p class="margin-bottom-3"><%= t('user_mailer.in_person_completion_survey.body.thanks', app_name: APP_NAME) %></p>
-<p class="margin-bottom-3"><%= t('user_mailer.in_person_completion_survey.body.intent') %></p>
-<p class="margin-bottom-3"><%= t('user_mailer.in_person_completion_survey.body.request_description') %></p>
-<p class="margin-bottom-3"><%= t(
-                                 'user_mailer.in_person_completion_survey.body.privacy_html',
-                                 url: @privacy_url,
-                               ) %></p>
-<p class="margin-bottom-4"><%= t('user_mailer.in_person_completion_survey.body.cta.callout') %></p>
+<p><%= t('user_mailer.in_person_completion_survey.body.greeting') %></p>
+<p><%= t('user_mailer.in_person_completion_survey.body.thanks', app_name: APP_NAME) %></p>
+<p>
+<%= t('user_mailer.in_person_completion_survey.body.intent') %>
+<%= t('user_mailer.in_person_completion_survey.body.request_description') %>
+<%= t(
+      'user_mailer.in_person_completion_survey.body.privacy_html',
+      url: @privacy_url,
+    ) %>
+</p>
+<p><%= t('user_mailer.in_person_completion_survey.body.cta.callout') %></p>
 
 <table class="button expanded large radius">
   <tbody>
@@ -22,8 +24,7 @@
                               target: '_blank',
                               class: 'float-center',
                               align: 'center',
-                              rel: 'noopener',
-                              style: 'padding: 1rem 0' %>
+                              rel: 'noopener' %>
                 </center>
               </td>
             </tr>
