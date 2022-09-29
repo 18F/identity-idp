@@ -57,6 +57,7 @@ module TwoFactorAuthCode
         auth_method: @view.user_session[:auth_method],
         aal_level_requested: @view.sp_session[:aal_level_requested],
         piv_cac_requested: @view.sp_session[:piv_cac_requested],
+        phishing_resistant_requested: @view.sp_session[:phishing_resistant_requested],
       )
     end
 

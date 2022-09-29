@@ -70,7 +70,7 @@ class MfaContext
     PersonalKeyConfiguration.new(user)
   end
 
-  def aal3_configurations
+  def phishing_resistant_configurations
     webauthn_configurations + piv_cac_configurations
   end
 

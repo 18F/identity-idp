@@ -12,13 +12,13 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
   end
 
   let(:allow_user_to_switch_method) { false }
-  let(:aal3_required) { false }
+  let(:phishing_resistant_required) { false }
   let(:platform_authenticator) { false }
   let(:multiple_factors_enabled) { false }
   let(:service_provider_mfa_policy) do
     instance_double(
       ServiceProviderMfaPolicy,
-      aal3_required?: aal3_required,
+      phishing_resistant_required?: phishing_resistant_required,
       allow_user_to_switch_method?: allow_user_to_switch_method,
       multiple_factors_enabled?: multiple_factors_enabled,
     )
@@ -29,8 +29,8 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
   end
 
   describe '#webauthn_help' do
-    context 'with aal3 required' do
-      let(:aal3_required) { true }
+    context 'with phishing-resistant required' do
+      let(:phishing_resistant_required) { true }
 
       context 'the user only has a security key enabled' do
         let(:allow_user_to_switch_method) { false }
@@ -53,8 +53,8 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       end
     end
 
-    context 'with aal3 not required' do
-      let(:aal3_required) { false }
+    context 'with phishing-resistant not required' do
+      let(:phishing_resistant_required) { false }
 
       it 'displays the help text' do
         expect(presenter.webauthn_help).to eq(
@@ -177,9 +177,9 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
   end
 
   describe '#link_text' do
-    let(:aal3_required) { true }
+    let(:phishing_resistant_required) { true }
 
-    context 'with multiple AAL3 methods' do
+    context 'with multiple phishing-resistant methods' do
       let(:allow_user_to_switch_method) { true }
 
       it 'supplies link text' do
@@ -187,7 +187,7 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       end
     end
 
-    context 'with only one AAL3 method do' do
+    context 'with only one phishing-resistant method do' do
       it 'supplies no link text' do
         expect(presenter.link_text).to eq('')
       end

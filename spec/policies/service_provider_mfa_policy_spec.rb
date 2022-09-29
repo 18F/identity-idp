@@ -6,6 +6,7 @@ describe ServiceProviderMfaPolicy do
   let(:auth_method) { 'phone' }
   let(:aal_level_requested) { 1 }
   let(:piv_cac_requested) { false }
+  let(:phishing_resistant_requested) { nil }
 
   subject(:policy) do
     described_class.new(
@@ -14,36 +15,44 @@ describe ServiceProviderMfaPolicy do
       auth_method: auth_method,
       aal_level_requested: aal_level_requested,
       piv_cac_requested: piv_cac_requested,
+      phishing_resistant_requested: phishing_resistant_requested,
     )
   end
 
-  describe '#aal3_required?' do
-    context 'aal3 requested' do
+  describe '#phishing_resistant_required?' do
+    context 'AAL 3 requested' do
       let(:aal_level_requested) { 3 }
       before { service_provider.default_aal = nil }
 
-      it { expect(policy.aal3_required?).to eq(true) }
+      it { expect(policy.phishing_resistant_required?).to eq(true) }
+    end
+
+    context 'phishing-resistant requested' do
+      let(:phishing_resistant_requested) { true }
+      before { service_provider.default_aal = nil }
+
+      it { expect(policy.phishing_resistant_required?).to eq(true) }
     end
 
     context 'no aal level requested, SP default is aal3' do
       let(:aal_level_requested) { nil }
       before { service_provider.default_aal = 3 }
 
-      it { expect(policy.aal3_required?).to eq(true) }
+      it { expect(policy.phishing_resistant_required?).to eq(true) }
     end
 
     context 'aal2 requested, no default set' do
       let(:aal_level_requested) { 2 }
       before { service_provider.default_aal = nil }
 
-      it { expect(policy.aal3_required?).to eq(false) }
+      it { expect(policy.phishing_resistant_required?).to eq(false) }
     end
 
     context 'aal2 level requested, SP default is aal3' do
       let(:aal_level_requested) { 2 }
       before { service_provider.default_aal = 3 }
 
-      it { expect(policy.aal3_required?).to eq(false) }
+      it { expect(policy.phishing_resistant_required?).to eq(false) }
     end
   end
 
@@ -233,10 +242,10 @@ describe ServiceProviderMfaPolicy do
   end
 
   describe '#allow_user_to_switch_method?' do
-    context 'aal3 required' do
+    context 'phishing-resistant required' do
       let(:aal_level_requested) { 3 }
 
-      context 'the user has more than one aal3 method' do
+      context 'the user has more than one phishing-resistant method' do
         before do
           setup_user_webauthn_token
           setup_user_piv

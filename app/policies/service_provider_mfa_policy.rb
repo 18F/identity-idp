@@ -1,5 +1,5 @@
 class ServiceProviderMfaPolicy
-  AAL3_METHODS = %w[webauthn webauthn_platform piv_cac].freeze
+  PHISHING_RESISTANT_METHODS = %w[webauthn webauthn_platform piv_cac].freeze
 
   attr_reader :mfa_context, :auth_method, :service_provider
 
@@ -8,7 +8,8 @@ class ServiceProviderMfaPolicy
     service_provider:,
     auth_method:,
     aal_level_requested:,
-    piv_cac_requested:
+    piv_cac_requested:,
+    phishing_resistant_requested:
   )
     @user = user
     @mfa_context = MfaContext.new(user)
@@ -16,6 +17,7 @@ class ServiceProviderMfaPolicy
     @service_provider = service_provider
     @aal_level_requested = aal_level_requested
     @piv_cac_requested = piv_cac_requested
+    @phishing_resistant_requested = phishing_resistant_requested
   end
 
   def user_needs_sp_auth_method_verification?
@@ -25,8 +27,8 @@ class ServiceProviderMfaPolicy
 
     if piv_cac_required?
       auth_method.to_s != 'piv_cac'
-    elsif aal3_required?
-      !AAL3_METHODS.include?(auth_method.to_s)
+    elsif phishing_resistant_required?
+      !PHISHING_RESISTANT_METHODS.include?(auth_method.to_s)
     else
       false
     end
@@ -34,7 +36,7 @@ class ServiceProviderMfaPolicy
 
   def user_needs_sp_auth_method_setup?
     return true if piv_cac_required? && !piv_cac_enabled?
-    return true if aal3_required? && !aal3_enabled?
+    return true if phishing_resistant_required? && !phishing_resistant_enabled?
     false
   end
 
@@ -42,10 +44,12 @@ class ServiceProviderMfaPolicy
     !user_needs_sp_auth_method_setup? && !user_needs_sp_auth_method_verification?
   end
 
-  def aal3_required?
-    return aal3_requested? if aal_requested?
-
-    service_provider&.default_aal == 3
+  def phishing_resistant_required?
+    if phishing_resistant_requested? || aal_requested?
+      !!phishing_resistant_requested?
+    else
+      service_provider&.default_aal == 3
+    end
   end
 
   def piv_cac_required?
@@ -54,7 +58,7 @@ class ServiceProviderMfaPolicy
 
   def allow_user_to_switch_method?
     return false if piv_cac_required?
-    return true unless aal3_required?
+    return true unless phishing_resistant_required?
     piv_cac_enabled? && webauthn_enabled?
   end
 
@@ -64,7 +68,7 @@ class ServiceProviderMfaPolicy
 
   private
 
-  def aal3_enabled?
+  def phishing_resistant_enabled?
     piv_cac_enabled? || webauthn_enabled?
   end
 
@@ -72,8 +76,9 @@ class ServiceProviderMfaPolicy
     @aal_level_requested.present?
   end
 
-  def aal3_requested?
-    @aal_level_requested == 3
+  def phishing_resistant_requested?
+    @aal_level_requested == 3 ||
+      @phishing_resistant_requested
   end
 
   def piv_cac_enabled?

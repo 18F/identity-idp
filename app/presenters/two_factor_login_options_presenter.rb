@@ -8,14 +8,14 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     view:,
     user_session_context:,
     service_provider:,
-    aal3_required:,
+    phishing_resistant_required:,
     piv_cac_required:
   )
     @user = user
     @view = view
     @user_session_context = user_session_context
     @service_provider = service_provider
-    @aal3_required = aal3_required
+    @phishing_resistant_required = phishing_resistant_required
     @piv_cac_required = piv_cac_required
   end
 
@@ -36,8 +36,8 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
     if @piv_cac_required
       configurations = mfa.piv_cac_configurations
-    elsif @aal3_required
-      configurations = mfa.aal3_configurations
+    elsif @phishing_resistant_required
+      configurations = mfa.phishing_resistant_configurations
     else
       configurations = mfa.two_factor_configurations
       # for now, we include the personal key since that's our current behavior,
