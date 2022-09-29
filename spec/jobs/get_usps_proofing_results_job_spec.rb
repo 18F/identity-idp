@@ -223,6 +223,25 @@ RSpec.describe GetUspsProofingResultsJob do
         ).to be >= 0.0
       end
 
+      context 'a standard error is raised when requesting proofing results' do
+        let(:error_message) { 'A standard error happened' }
+        let!(:error) { StandardError.new(error_message) }
+        let!(:proofer) { described_class.new }
+
+        it 'logs failure details' do
+          allow(UspsInPersonProofing::Proofer).to receive(:new).and_return(proofer)
+          allow(proofer).to receive(:request_proofing_results).and_raise(error)
+          expect(NewRelic::Agent).to receive(:notice_error).with(error)
+
+          job.perform(Time.zone.now)
+
+          expect(job_analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Exception raised',
+            exception_message: error_message,
+          )
+        end
+      end
+
       context 'with a request delay in ms' do
         let(:request_delay_ms) { 750 }
 
