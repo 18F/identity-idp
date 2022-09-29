@@ -33,7 +33,7 @@
         wrapper_html: { class: 'margin-top-6' },
       ) %>
   <% if AbTests::KEY_PAIR_GENERATION.bucket(SecureRandom.uuid) == :key_pair_group %>
-    <%= render KeyPairComponent.new(location: 'sign_in') %>
+    <%= render KeyPairGeneratorComponent.new(location: 'sign_in') %>
   <% end %>
   <%= f.input :request_id, as: :hidden, input_html: { value: @request_id } %>
   <div class='margin-bottom-4'>

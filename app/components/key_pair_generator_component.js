@@ -1,6 +1,6 @@
 import { trackEvent } from '@18f/identity-analytics';
 
-class KeyPairGenerator extends HTMLElement {
+class KeyPairGeneratorElement extends HTMLElement {
   async generateKeyPair() {
     const t0 = performance.now();
     const keypair = await crypto.subtle.generateKey(
@@ -23,10 +23,6 @@ class KeyPairGenerator extends HTMLElement {
     this.duration = t1 - t0; // milliseconds
   }
 
-  constructor() {
-    super();
-  }
-
   connectedCallback() {
     this.generateKeyPair().then(() => {
       trackEvent('IdV: key pair generation', {
@@ -37,4 +33,4 @@ class KeyPairGenerator extends HTMLElement {
   }
 }
 
-customElements.define('lg-kp', KeyPairGenerator);
+customElements.define('lg-key-pair-generator', KeyPairGeneratorElement);

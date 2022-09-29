@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class KeyPairComponent < BaseComponent
+class KeyPairGeneratorComponent < BaseComponent
   attr_reader :location
 
   def initialize(location:)
