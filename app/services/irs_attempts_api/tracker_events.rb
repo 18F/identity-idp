@@ -215,14 +215,14 @@ module IrsAttemptsApi
     end
 
     # Tracks when a user submits OTP code sent to their phone
-    # @param [String] phone_number
     # @param [Boolean] success
+    # @param [String] phone_number
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def idv_phone_otp_submitted(phone_number:, success:, failure_reason: nil)
+    def idv_phone_otp_submitted(success:, phone_number:, failure_reason: nil)
       track_event(
         :idv_phone_otp_submitted,
-        phone_number: phone_number,
         success: success,
+        phone_number: phone_number,
         failure_reason: failure_reason,
       )
     end
@@ -246,14 +246,14 @@ module IrsAttemptsApi
     end
 
     # Tracks when the user submits their idv phone number
-    # @param [String] phone_number
     # @param [Boolean] success
+    # @param [String] phone_number
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def idv_phone_submitted(phone_number:, success:, failure_reason: nil)
+    def idv_phone_submitted(success:, phone_number:, failure_reason: nil)
       track_event(
         :idv_phone_submitted,
-        phone_number: phone_number,
         success: success,
+        phone_number: phone_number,
         failure_reason: failure_reason,
       )
     end
@@ -460,8 +460,8 @@ module IrsAttemptsApi
     end
 
     # Tracks when the user has attempted to enroll the piv cac MFA method to their account
-    # @param [String] subject_dn
     # @param [Boolean] success
+    # @param [String] subject_dn
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def mfa_enroll_piv_cac(
       success:,
@@ -522,16 +522,16 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [Boolean] reauthentication - True if the user was already logged in
     # @param [Boolean] success - True if the OTP Verification was sent
+    # @param [Boolean] reauthentication - True if the user was already logged in
     # @param [String] phone_number - The user's phone_number used for multi-factor authentication
     # @param [String] otp_delivery_method - Either SMS or Voice
     # During a login attempt, an OTP code has been sent via SMS or Voice.
-    def mfa_login_phone_otp_sent(reauthentication:, success:, phone_number:, otp_delivery_method:)
+    def mfa_login_phone_otp_sent(success:, reauthentication:, phone_number:, otp_delivery_method:)
       track_event(
         :mfa_login_phone_otp_sent,
-        reauthentication: reauthentication,
         success: success,
+        reauthentication: reauthentication,
         phone_number: phone_number,
         otp_delivery_method: otp_delivery_method,
       )
