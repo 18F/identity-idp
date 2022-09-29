@@ -55,7 +55,7 @@ feature 'Accessibility on IDV pages', :js do
       fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
       click_continue
 
-      expect(current_path).to be_in([idv_personal_key_path, idv_app_path])
+      expect(current_path).to be_in([idv_personal_key_path])
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
@@ -68,7 +68,7 @@ feature 'Accessibility on IDV pages', :js do
       fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
       click_continue
 
-      expect(current_path).to be_in([idv_personal_key_path, idv_app_path])
+      expect(current_path).to be_in([idv_personal_key_path])
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
@@ -81,7 +81,7 @@ feature 'Accessibility on IDV pages', :js do
       fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
       click_continue
 
-      expect(current_path).to be_in([idv_personal_key_path, idv_app_path])
+      expect(current_path).to be_in([idv_personal_key_path])
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
