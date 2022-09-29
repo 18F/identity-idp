@@ -32,6 +32,7 @@ module Proofing
           success: success?,
           timed_out: timed_out?,
           vendor_name: 'UnsupportedJurisdiction',
+          transaction_id: transaction_id,
         }
       end
     end
