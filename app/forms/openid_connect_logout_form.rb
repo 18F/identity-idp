@@ -29,7 +29,9 @@ class OpenidConnectLogoutForm
             },
             if: :reject_id_token_hint?
   validates :post_logout_redirect_uri, presence: true
-  validates :state, presence: true, length: { minimum: RANDOM_VALUE_MINIMUM_LENGTH }
+  validates :state,
+            length: { minimum: RANDOM_VALUE_MINIMUM_LENGTH },
+            if: -> { !state.nil? }
 
   validate :id_token_hint_or_client_id_present,
            if: -> { accept_client_id? && !reject_id_token_hint? }
@@ -150,9 +152,10 @@ class OpenidConnectLogoutForm
   end
 
   def logout_redirect_uri
-    uri = post_logout_redirect_uri unless errors.include?(:redirect_uri)
+    return nil if errors.include?(:redirect_uri)
+    return post_logout_redirect_uri unless state.present?
 
-    UriService.add_params(uri, state: state)
+    UriService.add_params(post_logout_redirect_uri, state: state)
   end
 
   def error_redirect_uri
