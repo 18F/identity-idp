@@ -14,7 +14,7 @@ import AnalyticsContext from '../context/analytics';
  * Non-breaking space (`&nbsp;`) represented as unicode escape sequence, which React will more
  * happily tolerate than an HTML entity.
  */
-const NBSP_UNICODE = '\u00A0';
+export const NBSP_UNICODE = '\u00A0';
 
 /**
  * Returns a new string from the given string, replacing spaces with non-breaking spaces.
@@ -23,7 +23,7 @@ const NBSP_UNICODE = '\u00A0';
  *
  * @return String with non-breaking spaces.
  */
-const nonBreaking = (string) => string.split(' ').join(NBSP_UNICODE);
+export const nonBreaking = (string) => string.split(' ').join(NBSP_UNICODE);
 
 /**
  * An error representing a failure to complete encrypted upload of image.

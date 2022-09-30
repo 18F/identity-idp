@@ -6,6 +6,21 @@ import type { TroubleshootingOption } from '@18f/identity-components/troubleshoo
 import ServiceProviderContext from '../context/service-provider';
 import MarketingSiteContext from '../context/marketing-site';
 import AnalyticsContext from '../context/analytics';
+import { nonBreaking } from '../higher-order/with-background-encrypted-upload';
+
+/**
+ * Returns an internationalized list with appropriately placed non-breaking spaces
+ *
+ * @param {list} string Original string.
+ *
+ * @return String with non-breaking spaces.
+ */
+const toI18nList = (list) => {
+  const nonBreakingListItems = list.map(nonBreaking);
+  const i18nList = new Intl.ListFormat('en', { type: 'disjunction', style: 'short' });
+
+  return i18nList.format(nonBreakingListItems);
+};
 
 interface DocumentCaptureTroubleshootingOptionsProps {
   /**
@@ -82,9 +97,12 @@ function DocumentCaptureTroubleshootingOptions({
       {hasErrors && inPersonURL && showInPersonOption && (
         <TroubleshootingOptions
           isNewFeatures
-          heading={formatHTML(t('idv.troubleshooting.headings.are_you_near'), {
-            br: 'br',
-          })}
+          heading={formatHTML(
+            t('idv.troubleshooting.headings.are_you_near', {
+              pilot_locations: toI18nList(t(['in_person_proofing.pilot_locations'])),
+            }),
+            { wbr: 'wbr' },
+          )}
           options={[
             {
               url: '#location',

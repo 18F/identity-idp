@@ -118,3 +118,7 @@ en:
         info: 'Your ID must not be expired. Acceptable forms of ID are:'
         no_other_documents: We do not currently accept any other forms of
           identification, such as passports and military IDs.
+    pilot_locations:
+      - Washington, D.C.
+      - Baltimore, MD
+

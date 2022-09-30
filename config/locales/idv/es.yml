@@ -193,7 +193,7 @@ es:
         review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
     troubleshooting:
       headings:
-        are_you_near: '¿Reside cerca de Washington, D.C. <br/>o Baltimore, MD?'
+        are_you_near: '¿Reside cerca de %{pilot_locations}?'
         missing_required_items: '¿Le falta alguno de estos puntos?'
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
         still_having_trouble: '¿Sigue teniendo dificultades?'
