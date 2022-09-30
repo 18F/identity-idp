@@ -47,15 +47,25 @@ module InPersonHelper
   end
 
   def complete_location_step(_user = nil)
+    # Wait for page to load before selecting location
+    expect(page).to have_css('.location-collection-item')
     first('.location-collection-item').
       click_button(t('in_person_proofing.body.location.location_button'))
   end
 
   def complete_prepare_step(_user = nil)
+    # Wait for page to load before clicking continue
+    expect(page).to have_content(
+      t('in_person_proofing.headings.prepare'),
+    )
     click_link t('forms.buttons.continue')
   end
 
   def complete_state_id_step(_user = nil)
+    # Wait for page to load before attempting to fill out form
+    expect(page).to have_current_path(
+      idv_in_person_step_path(step: :state_id),
+    )
     fill_out_state_id_form_ok
     click_idv_continue
   end

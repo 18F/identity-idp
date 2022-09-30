@@ -134,6 +134,13 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
+  def in_person_completion_survey
+    UserMailer.in_person_completion_survey(
+      user,
+      email_address_record,
+    )
+  end
+
   def in_person_ready_to_verify
     UserMailer.in_person_ready_to_verify(
       user,

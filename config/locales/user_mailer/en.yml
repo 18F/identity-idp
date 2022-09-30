@@ -100,6 +100,21 @@ en:
         %{app_name} %{help_link} or %{contact_link}.
       subject: Email address deleted
     help_link_text: Help Center
+    in_person_completion_survey:
+      body:
+        cta:
+          callout: Click the button below to get started.
+          label: Take our survey
+        greeting: Hello,
+        intent: We want to hear about your experience verifying your identity in person
+          at the Post Office.
+        privacy_html: Your answers to this survey will be protected according to the
+          following <a href="%{url}">privacy and security standards</a>.
+        request_description: Fill out a short, anonymous survey and we’ll use your input
+          to help us get better at serving your needs.
+        thanks: Thanks for using %{app_name}.
+      header: Take a minute to tell us how we did
+      subject: Tell us about your recent experience with %{app_name}
     in_person_failed:
       body:
         with_cta: Click the button or copy the link below to try verifying your identity

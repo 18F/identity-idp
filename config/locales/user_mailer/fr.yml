@@ -109,6 +109,21 @@ fr:
         veuillez visiter le %{help_link} de %{app_name} ou %{contact_link}.
       subject: Adresse email supprimée
     help_link_text: Centre d’aide
+    in_person_completion_survey:
+      body:
+        cta:
+          callout: Cliquez sur le bouton ci-dessous pour commencer.
+          label: Répondez à notre enquête
+        greeting: Bonjour,
+        intent: Nous voulons connaître votre expérience en matière de vérification de
+          votre identité en personne au bureau de poste.
+        privacy_html: Vos réponses à cette enquête seront protégées conformément aux <a
+          href="%{url}">normes de confidentialité et de sécurité</a> suivantes.
+        request_description: Remplissez une courte enquête anonyme et nous utiliserons
+          vos commentaires pour nous aider à mieux répondre à vos besoins.
+        thanks: Merci d’utiliser %{app_name}.
+      header: Prenez une minute pour nous faire part de vos impressions
+      subject: Parlez-nous de votre expérience récente avec %{app_name}
     in_person_failed:
       body:
         with_cta: Cliquez sur le bouton ou copiez le lien ci-dessous pour essayer de
