@@ -4,7 +4,7 @@ Rails.application.configure do
   config.action_view.cache_template_loading = true
   config.eager_load = false
   config.public_file_server.enabled = true
-  config.public_file_server.headers = { 'Cache-Control' => 'public, no-cache, must-revalidate' }
+  config.public_file_server.headers = { 'Cache-Control' => 'public, max-age=600' }
   config.consider_all_requests_local = true
   config.action_controller.perform_caching = false
   config.cache_store = :null_store
