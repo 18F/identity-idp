@@ -280,6 +280,72 @@ describe 'throttling requests' do
     end
   end
 
+  describe 'email registrations per ip' do
+    it 'reads the limit and period from configuration' do
+      post '/sign_up/enter_email', params: { user: { email: 'test@test.com' } },
+                                   headers: { REMOTE_ADDR: '1.2.3.4' }
+
+      throttle_data = request.env['rack.attack.throttle_data']['email_registrations/ip']
+
+      expect(throttle_data[:count]).to eq(1)
+      expect(throttle_data[:limit]).to eq(IdentityConfig.store.email_registrations_per_ip_limit)
+      expect(throttle_data[:period]).to eq(
+        IdentityConfig.store.email_registrations_per_ip_period.seconds,
+      )
+    end
+
+    context 'when the number of requests is lower than the limit' do
+      it 'does not throttle' do
+        headers = { REMOTE_ADDR: '1.2.3.4' }
+
+        post '/sign_up/enter_email',
+             params: { user: { email: 'test@example.com', terms_accepted: '1' } }, headers: headers
+        post '/sign_up/enter_email',
+             params: { user: { email: 'test1@example.com', terms_accepted: '1' } }, headers: headers
+
+        expect(response.status).to eq(302)
+      end
+    end
+
+    context 'when the number of email registrations per ip is higher than the limit per period' do
+      around do |ex|
+        freeze_time { ex.run }
+      end
+
+      it 'throttles with a custom response' do
+        analytics = FakeAnalytics.new
+        allow(Analytics).to receive(:new).and_return(analytics)
+        allow(analytics).to receive(:track_event)
+
+        Rack::Attack::EMAIL_REGISTRATION_PATHS.each do |path|
+          headers = { REMOTE_ADDR: '1.2.3.4' }
+          first_email = 'test1@example.com'
+          second_email = 'test2@example.com'
+          third_email = 'test3@example.com'
+          fourth_email = 'test4@example.com'
+
+          puts path
+          post path, params: { user: { email: first_email, terms_accepted: '1' } }, headers: headers
+          post path, params: { user: { email: second_email, terms_accepted: '1' } },
+                     headers: headers
+          post path, params: { user: { email: third_email, terms_accepted: '1' } }, headers: headers
+          post path, params: { user: { email: fourth_email, terms_accepted: '1' } },
+                     headers: headers
+
+          expect(response.status).to eq(429)
+          expect(response.body).
+            to include('Please wait a few minutes before you try again.')
+          expect(response.header['Content-type']).to include('text/html')
+          expect(analytics).
+            to have_received(:track_event).with(
+              'Rate Limit Triggered',
+              type: 'email_registrations/ip',
+            )
+        end
+      end
+    end
+  end
+
   describe 'otps per ip' do
     around do |ex|
       freeze_time { ex.run }

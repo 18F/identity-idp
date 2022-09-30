@@ -6,6 +6,8 @@ module Rack
       IPAddr.new(x)
     end
 
+    EMAIL_REGISTRATION_PATHS = ['/sign_up/enter_email', '/es/sign_up/enter_email',
+                                '/fr/sign_up/enter_email']
     # If the app is behind a load balancer, `ip` will return the IP of the
     # load balancer instead of the actual IP the request came from, and since
     # all requests will seem to come from the same IP, throttling will be
@@ -118,6 +120,31 @@ module Rack
         period: IdentityConfig.store.logins_per_ip_period,
       ) do |req|
         req.remote_ip if req.path == '/' && req.post?
+      end
+    end
+
+    ### Prevent Email Registration Spam ###
+
+    # A user can use the registration path to spam email addresses.
+
+    # Throttle email registration transactions by IP address
+    #
+    # Key: "rack::attack:#{Time.now.to_i/:period}:email_registration/ip:#{req.remote_ip}"
+    if IdentityConfig.store.email_registrations_per_ip_track_only_mode
+      track(
+        'email_registrations/ip',
+        limit: IdentityConfig.store.email_registrations_per_ip_limit,
+        period: IdentityConfig.store.email_registrations_per_ip_period,
+      ) do |req|
+        req.remote_ip if EMAIL_REGISTRATION_PATHS.include?(req.path) && req.post?
+      end
+    else
+      throttle(
+        'email_registrations/ip',
+        limit: IdentityConfig.store.email_registrations_per_ip_limit,
+        period: IdentityConfig.store.email_registrations_per_ip_period,
+      ) do |req|
+        req.remote_ip if EMAIL_REGISTRATION_PATHS.include?(req.path) && req.post?
       end
     end
 
