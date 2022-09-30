@@ -52,6 +52,7 @@ module Proofing
         attributes.add :address if address_verified?(results)
 
         results.delete :address1
+        results.delete :address2
         results.delete :city
         results.delete :state
         results.delete :zipcode
