@@ -7,6 +7,7 @@
 // For displaying icons as "badges"
 // at the top of modals
 .iconic-modal-badge {
+  position: relative;
   &::before {
     background-repeat: no-repeat;
     background-size: contain;
@@ -26,5 +27,5 @@
   position: absolute;
   left: 50%;
   top: 0px;
-  transform: translateX(-50%) translateY(-50%);
+  transform: translate(-50%, -50%);
 }
