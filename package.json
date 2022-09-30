@@ -73,7 +73,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.0",
     "eslint-plugin-react-hooks": "^4.3.0",
-    "jsdom": "^19.0.0",
+    "jsdom": "^20.0.0",
     "mocha": "^9.1.0",
     "mq-polyfill": "^1.1.8",
     "postcss": "^8.4.5",
