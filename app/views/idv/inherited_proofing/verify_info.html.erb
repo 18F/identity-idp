@@ -1,6 +1,4 @@
-<% title t('inherited_proofing.headings.verify_information') %>
-
-<%= render 'verify', pii: flow_session[:pii_from_user], step_url: step_url, remote_identity_proofing: true %>
+<%= render 'verify', pii: pii, step_url: step_url, remote_identity_proofing: true %>
 
 <%= simple_form_for :inherited_proofing,
                     url: url_for,
