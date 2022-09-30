@@ -26,22 +26,22 @@ feature 'inherited proofing verify info' do
     end
 
     it 'renders content' do
-      expect(page).to have_content(t('inherited_proofing.headings.verify_information'))
+      expect(page).to have_content(t('titles.idv.verify_info'))
       expect(page).to have_link(t('inherited_proofing.troubleshooting.options.get_va_help'))
     end
   end
 
   describe 'user info' do
     it "displays the user's personal information" do
-      expect(page).to have_text user_attributes[:first_name]
-      expect(page).to have_text user_attributes[:last_name]
+      expect(page).to have_text user_attributes[:first_name].upcase
+      expect(page).to have_text user_attributes[:last_name].upcase
       expect(page).to have_text user_attributes[:birth_date]
     end
 
     it "displays the user's address" do
-      expect(page).to have_text user_attributes[:address][:street]
-      expect(page).to have_text user_attributes[:address][:city]
-      expect(page).to have_text user_attributes[:address][:state]
+      expect(page).to have_text user_attributes[:address][:street].upcase
+      expect(page).to have_text user_attributes[:address][:city].upcase
+      expect(page).to have_text user_attributes[:address][:state].upcase
       expect(page).to have_text user_attributes[:address][:zip]
     end
 
