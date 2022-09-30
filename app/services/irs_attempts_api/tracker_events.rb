@@ -189,21 +189,13 @@ module IrsAttemptsApi
     # @param [String] otp_delivery_method - Either SMS or Voice
     # @param [Hash<Key, Array<String>>] failure_reason
     # Track when OTP is sent and what method chosen during idv flow.
-    def idv_phone_confirmation_otp_sent(success:, phone_number:,
-                                        otp_delivery_method:, failure_reason: nil)
+    def idv_phone_otp_sent(success:, phone_number:, otp_delivery_method:, failure_reason: nil)
       track_event(
-        :idv_phone_confirmation_otp_sent,
+        :idv_phone_otp_sent,
         success: success,
         phone_number: phone_number,
         otp_delivery_method: otp_delivery_method,
         failure_reason: failure_reason,
-      )
-    end
-
-    # Track when OTP phone sent is rate limited during idv flow
-    def idv_phone_confirmation_otp_sent_rate_limited
-      track_event(
-        :idv_phone_confirmation_otp_sent_rate_limited,
       )
     end
 
