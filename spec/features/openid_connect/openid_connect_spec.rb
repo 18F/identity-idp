@@ -158,6 +158,19 @@ describe 'OpenID Connect' do
         expect(page).to_not have_content(t('headings.account.login_info'))
         expect(page).to have_content(t('headings.sign_in_without_sp'))
       end
+
+      it 'logout does not require state' do
+        id_token = sign_in_get_id_token
+
+        visit openid_connect_logout_path(
+          post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
+          id_token_hint: id_token,
+        )
+
+        visit account_path
+        expect(page).to_not have_content(t('headings.account.login_info'))
+        expect(page).to have_content(t('headings.sign_in_without_sp'))
+      end
     end
 
     context 'when permitting client_id' do
@@ -177,6 +190,22 @@ describe 'OpenID Connect' do
             client_id: client_id,
             post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
             state: state,
+          )
+          expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
+          click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
+
+          visit account_path
+          expect(page).to_not have_content(t('headings.account.login_info'))
+          expect(page).to have_content(t('headings.sign_in_without_sp'))
+        end
+
+        it 'logout does not require state' do
+          client_id = 'urn:gov:gsa:openidconnect:test'
+          sign_in_get_id_token(client_id: client_id)
+
+          visit openid_connect_logout_path(
+            client_id: client_id,
+            post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
           )
           expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
           click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
@@ -250,6 +279,22 @@ describe 'OpenID Connect' do
         client_id: client_id,
         post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
         state: state,
+      )
+      expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
+      click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
+
+      visit account_path
+      expect(page).to_not have_content(t('headings.account.login_info'))
+      expect(page).to have_content(t('headings.sign_in_without_sp'))
+    end
+
+    it 'logout does not require state' do
+      client_id = 'urn:gov:gsa:openidconnect:test'
+      sign_in_get_id_token(client_id: client_id)
+
+      visit openid_connect_logout_path(
+        client_id: client_id,
+        post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
       )
       expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
       click_button t('openid_connect.logout.confirm', app_name: APP_NAME)

@@ -1,5 +1,5 @@
 module DateParser
-  AMERICAN_REGEX = %r{(?<month>\d{1,2})/(?<day>\d{1,2})/(?<year>\d{4})}.freeze
+  AMERICAN_REGEX = %r{(?<month>\d{1,2})/(?<day>\d{1,2})/(?<year>\d{4})}
 
   # Date parsing with a fallback for american-style Month/Day/Year
   # since we have legacy data in PII bundles that may be stored this way

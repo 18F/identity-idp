@@ -69,7 +69,7 @@ module Idv
       result = send_phone_confirmation_otp
       analytics.idv_phone_confirmation_otp_sent(**result.to_h)
 
-      irs_attempts_api_tracker.idv_phone_confirmation_otp_sent(
+      irs_attempts_api_tracker.idv_phone_otp_sent(
         phone_number: @idv_phone,
         success: result.success?,
         otp_delivery_method: params[:otp_delivery_preference],
@@ -84,7 +84,6 @@ module Idv
 
     def handle_send_phone_confirmation_otp_failure(result)
       if send_phone_confirmation_otp_rate_limited?
-        irs_attempts_api_tracker.idv_phone_confirmation_otp_sent_rate_limited
         handle_too_many_otp_sends
       else
         invalid_phone_number(result.extra[:telephony_response].error)

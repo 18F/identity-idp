@@ -62,9 +62,11 @@ module OpenidConnect
     def handle_successful_logout_request(result, redirect_uri)
       if require_logout_confirmation?
         analytics.oidc_logout_visited(**result.to_h.except(:redirect_uri))
-        @client_id = logout_params[:client_id]
-        @state = logout_params[:state]
-        @post_logout_redirect_uri = logout_params[:post_logout_redirect_uri]
+        @params = {
+          client_id: logout_params[:client_id],
+          post_logout_redirect_uri: logout_params[:post_logout_redirect_uri],
+        }
+        @params[:state] = logout_params[:state] if !logout_params[:state].nil?
         render :index
       else
         analytics.logout_initiated(**result.to_h.except(:redirect_uri))

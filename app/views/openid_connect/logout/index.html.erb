@@ -7,11 +7,7 @@
 
 <%= button_to(
       openid_connect_logout_path,
-      params: {
-        client_id: @client_id,
-        state: @state,
-        post_logout_redirect_uri: @post_logout_redirect_uri,
-      },
+      params: @params,
       method: :delete,
       form_class: 'margin-top-5 margin-bottom-2',
       class: 'usa-button usa-button--big usa-button usa-button--full-width',
