@@ -22,12 +22,6 @@ locals:
         <dt class="display-inline"> <%= t('idv.form.dob') %>: </dt>
         <dd class="display-inline margin-left-0"> <%= pii[:dob] %> </dd>
       </div>
-      <% if !remote_identity_proofing %>
-        <div>
-          <dt class="display-inline"> <%= t('idv.form.id_number') %>: </dt>
-          <dd class="display-inline margin-left-0"> <%= pii[:state_id_number] %> </dd>
-        </div>
-      <% end %>
     </dl>
   </div>
   <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 padding-top-1 border-y border-primary-light">
