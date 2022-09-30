@@ -565,6 +565,7 @@ describe SamlIdpController do
             endpoint: '/api/saml/auth2022',
             idv: false,
             finish_profile: false,
+            matching_cert_serial: saml_test_sp_cert_serial,
           })
         expect(@analytics).to receive(:track_event).
           with('SP redirect initiated', {
@@ -723,6 +724,7 @@ describe SamlIdpController do
             endpoint: '/api/saml/auth2022',
             idv: false,
             finish_profile: false,
+            matching_cert_serial: saml_test_sp_cert_serial,
           })
         expect(@analytics).to receive(:track_event).
           with('SP redirect initiated', { ial: 0, billed_ial: 2 })
@@ -1120,6 +1122,55 @@ describe SamlIdpController do
       end
     end
 
+    context 'no matching cert from the SAML request' do
+      let(:user) { create(:user, :signed_up) }
+
+      before do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+      end
+
+      it 'notes that in the analytics event' do
+        auth_settings = saml_settings(
+          overrides: {
+            authn_context: [
+              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            ],
+            security: {
+              authn_requests_signed: false,
+            },
+          },
+        )
+        service_provider = build(:service_provider, issuer: auth_settings.issuer)
+        IdentityLinker.new(user, service_provider).link_identity
+        user.identities.last.update!(verified_attributes: ['email'])
+        generate_saml_response(user, auth_settings)
+
+        expect(response.status).to eq(200)
+
+        analytics_hash = {
+          success: true,
+          errors: {},
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+          authn_context: [
+            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          ],
+          authn_context_comparison: 'exact',
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          service_provider: 'http://localhost:3000',
+          endpoint: '/api/saml/auth2022',
+          idv: false,
+          finish_profile: false,
+          matching_cert_serial: nil,
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with('SAML Auth', analytics_hash)
+      end
+    end
+
     context 'no IAL explicitly requested' do
       let(:user) { create(:user, :signed_up) }
 
@@ -1152,6 +1203,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1187,6 +1239,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1220,6 +1273,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1289,6 +1343,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(name_id.children.first.to_s).to eq(user.agency_identities.last.uuid)
@@ -1319,6 +1374,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(name_id.children.first.to_s).to eq(user.email_addresses.first.email)
@@ -1349,6 +1405,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(name_id.children.first.to_s).to eq(user.id.to_s)
@@ -1837,6 +1894,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: true,
           finish_profile: false,
+          matching_cert_serial: nil,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -1880,6 +1938,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -1914,6 +1973,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: true,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(@analytics).to receive(:track_event).

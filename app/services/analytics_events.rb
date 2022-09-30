@@ -1135,6 +1135,8 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [String] client_id
+  # @param [Boolean] client_id_parameter_present
+  # @param [Boolean] id_token_hint_parameter_present
   # @param [Boolean] sp_initiated
   # @param [Boolean] oidc
   # @param [Boolean] saml_request_valid
@@ -1147,6 +1149,8 @@ module AnalyticsEvents
     client_id: nil,
     sp_initiated: nil,
     oidc: nil,
+    client_id_parameter_present: nil,
+    id_token_hint_parameter_present: nil,
     saml_request_valid: nil,
     errors: nil,
     error_details: nil,
@@ -1157,6 +1161,128 @@ module AnalyticsEvents
       'Logout Initiated',
       success: success,
       client_id: client_id,
+      client_id_parameter_present: client_id_parameter_present,
+      id_token_hint_parameter_present: id_token_hint_parameter_present,
+      errors: errors,
+      error_details: error_details,
+      sp_initiated: sp_initiated,
+      oidc: oidc,
+      saml_request_valid: saml_request_valid,
+      method: method,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [String] client_id
+  # @param [Boolean] client_id_parameter_present
+  # @param [Boolean] id_token_hint_parameter_present
+  # @param [Boolean] sp_initiated
+  # @param [Boolean] oidc
+  # @param [Boolean] saml_request_valid
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] method
+  # OIDC Logout Requested
+  def oidc_logout_requested(
+    success: nil,
+    client_id: nil,
+    sp_initiated: nil,
+    oidc: nil,
+    client_id_parameter_present: nil,
+    id_token_hint_parameter_present: nil,
+    saml_request_valid: nil,
+    errors: nil,
+    error_details: nil,
+    method: nil,
+    **extra
+  )
+    track_event(
+      'OIDC Logout Requested',
+      success: success,
+      client_id: client_id,
+      client_id_parameter_present: client_id_parameter_present,
+      id_token_hint_parameter_present: id_token_hint_parameter_present,
+      errors: errors,
+      error_details: error_details,
+      sp_initiated: sp_initiated,
+      oidc: oidc,
+      saml_request_valid: saml_request_valid,
+      method: method,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [String] client_id
+  # @param [Boolean] client_id_parameter_present
+  # @param [Boolean] id_token_hint_parameter_present
+  # @param [Boolean] sp_initiated
+  # @param [Boolean] oidc
+  # @param [Boolean] saml_request_valid
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] method
+  # OIDC Logout Visited
+  def oidc_logout_visited(
+    success: nil,
+    client_id: nil,
+    sp_initiated: nil,
+    oidc: nil,
+    client_id_parameter_present: nil,
+    id_token_hint_parameter_present: nil,
+    saml_request_valid: nil,
+    errors: nil,
+    error_details: nil,
+    method: nil,
+    **extra
+  )
+    track_event(
+      'OIDC Logout Page Visited',
+      success: success,
+      client_id: client_id,
+      client_id_parameter_present: client_id_parameter_present,
+      id_token_hint_parameter_present: id_token_hint_parameter_present,
+      errors: errors,
+      error_details: error_details,
+      sp_initiated: sp_initiated,
+      oidc: oidc,
+      saml_request_valid: saml_request_valid,
+      method: method,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [String] client_id
+  # @param [Boolean] client_id_parameter_present
+  # @param [Boolean] id_token_hint_parameter_present
+  # @param [Boolean] sp_initiated
+  # @param [Boolean] oidc
+  # @param [Boolean] saml_request_valid
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] method
+  # OIDC Logout Submitted
+  def oidc_logout_submitted(
+    success: nil,
+    client_id: nil,
+    sp_initiated: nil,
+    oidc: nil,
+    client_id_parameter_present: nil,
+    id_token_hint_parameter_present: nil,
+    saml_request_valid: nil,
+    errors: nil,
+    error_details: nil,
+    method: nil,
+    **extra
+  )
+    track_event(
+      'OIDC Logout Submitted',
+      success: success,
+      client_id: client_id,
+      client_id_parameter_present: client_id_parameter_present,
+      id_token_hint_parameter_present: id_token_hint_parameter_present,
       errors: errors,
       error_details: error_details,
       sp_initiated: sp_initiated,

@@ -31,6 +31,7 @@ Rails.application.routes.draw do
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
+  delete '/openid_connect/logout' => 'openid_connect/logout#delete'
 
   get '/no_js/detect.css' => 'no_js#index', as: :no_js_detect_css
 

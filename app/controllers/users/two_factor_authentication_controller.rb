@@ -225,15 +225,15 @@ module Users
 
       if UserSessionContext.reauthentication_context?(context)
         irs_attempts_api_tracker.mfa_login_phone_otp_sent(
-          reauthentication: true,
           success: @telephony_result.success?,
+          reauthentication: true,
           phone_number: parsed_phone.e164,
           otp_delivery_method: otp_delivery_preference,
         )
       elsif UserSessionContext.authentication_context?(context)
         irs_attempts_api_tracker.mfa_login_phone_otp_sent(
-          reauthentication: false,
           success: @telephony_result.success?,
+          reauthentication: false,
           phone_number: parsed_phone.e164,
           otp_delivery_method: otp_delivery_preference,
         )

@@ -32,8 +32,8 @@ module Idv
       result = idv_form.submit(step_params)
       analytics.idv_phone_confirmation_form_submitted(**result.to_h)
       irs_attempts_api_tracker.idv_phone_submitted(
-        phone_number: step_params[:phone],
         success: result.success?,
+        phone_number: step_params[:phone],
         failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
       flash[:error] = result.first_error_message if !result.success?

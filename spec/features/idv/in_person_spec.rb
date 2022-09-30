@@ -3,6 +3,7 @@ require 'axe-rspec'
 
 RSpec.describe 'In Person Proofing', js: true do
   include IdvStepHelper
+  include SpAuthHelper
   include InPersonHelper
 
   before do
@@ -173,6 +174,29 @@ RSpec.describe 'In Person Proofing', js: true do
 
     expect(page).to have_field('file-input-4') do |field|
       field.value.present?
+    end
+  end
+
+  context 'after in-person proofing is completed and passed for a partner' do
+    let(:sp) { nil }
+    before do
+      create_in_person_ial2_account_go_back_to_sp_and_sign_out(sp)
+    end
+
+    [
+      :oidc,
+      :saml,
+    ].each do |service_provider|
+      context "using #{service_provider}" do
+        let(:sp) { service_provider }
+        it 'sends a survey when they share information with that partner',
+           allow_browser_log: true do
+          expect(last_email.html_part.body).
+            to have_selector(
+              "a[href='#{IdentityConfig.store.in_person_completion_survey_url}']",
+            )
+        end
+      end
     end
   end
 

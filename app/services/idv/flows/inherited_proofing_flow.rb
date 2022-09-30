@@ -5,13 +5,11 @@ module Idv
         get_started: Idv::Steps::InheritedProofing::GetStartedStep,
         agreement: Idv::Steps::InheritedProofing::AgreementStep,
         verify_info: Idv::Steps::InheritedProofing::VerifyInfoStep,
-        verify_phone: Idv::Steps::InheritedProofing::PhoneStep,
       }.freeze
 
       STEP_INDICATOR_STEPS = [
         { name: :getting_started },
         { name: :verify_info },
-        { name: :verify_phone },
         { name: :secure_account },
       ].freeze
 

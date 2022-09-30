@@ -64,10 +64,26 @@ RSpec.describe OpenidConnectLogoutForm do
         it 'has a successful response' do
           expect(result).to be_success
         end
+
+        context 'with missing state' do
+          let(:state) { nil }
+
+          it 'deactivates the identity' do
+            expect { result }.to change { identity.reload.session_uuid }.to(nil)
+          end
+
+          it 'has a redirect URI without errors' do
+            expect(UriService.params(result.extra[:redirect_uri])).to_not have_key(:error)
+          end
+
+          it 'has a successful response' do
+            expect(result).to be_success
+          end
+        end
       end
 
       context 'with an invalid form' do
-        let(:state) { nil }
+        let(:state) { 'ab' }
 
         it 'is not successful' do
           expect(result).to_not be_success
@@ -86,9 +102,8 @@ RSpec.describe OpenidConnectLogoutForm do
         context 'when state is missing' do
           let(:state) { nil }
 
-          it 'is not valid' do
-            expect(valid?).to eq(false)
-            expect(form.errors[:state]).to be_present
+          it 'is valid' do
+            expect(valid?).to eq(true)
           end
         end
 
@@ -245,10 +260,22 @@ RSpec.describe OpenidConnectLogoutForm do
         it 'has a successful response' do
           expect(result).to be_success
         end
+
+        context 'without state' do
+          let(:state) { nil }
+
+          it 'has a redirect URI without errors' do
+            expect(UriService.params(result.extra[:redirect_uri])).to_not have_key(:error)
+          end
+
+          it 'has a successful response' do
+            expect(result).to be_success
+          end
+        end
       end
 
       context 'with an invalid form' do
-        let(:state) { nil }
+        let(:state) { 'ab' }
 
         it 'is not successful' do
           expect(result).to_not be_success
@@ -267,9 +294,8 @@ RSpec.describe OpenidConnectLogoutForm do
         context 'when state is missing' do
           let(:state) { nil }
 
-          it 'is not valid' do
-            expect(valid?).to eq(false)
-            expect(form.errors[:state]).to be_present
+          it 'is valid' do
+            expect(valid?).to eq(true)
           end
         end
 
