@@ -185,6 +185,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(result_context_stages_threatmetrix[:success]).to eq(true)
           expect(result_context_stages_threatmetrix[:timed_out]).to eq(false)
           expect(result_context_stages_threatmetrix[:transaction_id]).to eq(threatmetrix_request_id)
+          expect(result_context_stages_threatmetrix[:review_status]).to eq('pass')
           expect(result_context_stages_threatmetrix[:response_body]).to eq(ddp_response_body)
 
           proofing_component = user.proofing_component
