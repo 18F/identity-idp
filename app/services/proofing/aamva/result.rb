@@ -71,6 +71,7 @@ module Proofing
           timed_out: timed_out?,
           transaction_id: transaction_id,
           vendor_name: vendor_name,
+          verified_attributes: verified_attributes.to_a,
         }
       end
 

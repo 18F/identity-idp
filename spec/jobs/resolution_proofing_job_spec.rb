@@ -184,6 +184,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(result_context_stages_state_id[:success]).to eq(true)
           expect(result_context_stages_state_id[:timed_out]).to eq(false)
           expect(result_context_stages_state_id[:transaction_id]).to eq(aamva_transaction_id)
+          expect(result_context_stages_state_id[:verified_attributes]).to eq(
+            %w(address state_id_number state_id_type dob last_name first_name)
+          )
 
           # result[:context][:stages][:threatmetrix]
           expect(result_context_stages_threatmetrix[:client]).to eq('DdpMock')
@@ -273,6 +276,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
             expect(result_context_stages_state_id[:success]).to eq(true)
             expect(result_context_stages_state_id[:timed_out]).to eq(false)
             expect(result_context_stages_state_id[:transaction_id]).to eq('')
+            expect(result_context_stages_state_id[:verified_attributes]).to eq(nil)
 
             # result[:context][:stages][:threatmetrix]
             expect(result_context_stages_threatmetrix[:client]).to eq('DdpMock')
@@ -391,6 +395,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(result_context_stages_state_id[:success]).to eq(true)
           expect(result_context_stages_state_id[:timed_out]).to eq(false)
           expect(result_context_stages_state_id[:transaction_id]).to eq(aamva_transaction_id)
+          expect(result_context_stages_state_id[:verified_attributes]).to eq(
+            %w(address state_id_number state_id_type dob last_name first_name)
+          )
 
           proofing_component = user.proofing_component
           expect(proofing_component&.threatmetrix).to be_nil
