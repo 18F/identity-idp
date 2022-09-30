@@ -50,7 +50,7 @@ module Proofing
         results = verification_response.verification_results
 
         attributes.add :address if address_verified?(results)
-        
+
         results.delete :address1
         results.delete :city
         results.delete :state
@@ -78,9 +78,9 @@ module Proofing
 
       def address_verified?(results)
         results[:address1] &&
-        results[:city] &&
-        results[:state] &&
-        results[:zipcode]
+          results[:city] &&
+          results[:state] &&
+          results[:zipcode]
       end
     end
   end

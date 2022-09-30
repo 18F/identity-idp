@@ -53,15 +53,15 @@ describe Proofing::Aamva::Proofer do
         expect(result.timed_out?).to eq(false)
 
         expect(result.verified_attributes).to eq(
-          %i(
+          %i[
             dob
             state_id_number
             state_id_type
             last_name
             first_name
             address
-          ).to_set
-         )
+          ].to_set,
+        )
       end
     end
 
@@ -85,13 +85,13 @@ describe Proofing::Aamva::Proofer do
         expect(result.timed_out?).to eq(false)
 
         expect(result.verified_attributes).to eq(
-          %i(
+          %i[
             state_id_number
             state_id_type
             last_name
             first_name
             address
-          ).to_set
+          ].to_set,
         )
       end
     end
@@ -115,13 +115,13 @@ describe Proofing::Aamva::Proofer do
         expect(result.timed_out?).to eq(false)
 
         expect(result.verified_attributes).to eq(
-          %i(
+          %i[
             state_id_number
             state_id_type
             last_name
             first_name
             address
-          ).to_set
+          ].to_set,
         )
       end
     end
