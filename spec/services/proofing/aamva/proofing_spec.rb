@@ -60,7 +60,7 @@ describe Proofing::Aamva::Proofer do
             last_name
             first_name
             address
-          )
+          ).to_set
          )
       end
     end
@@ -91,7 +91,7 @@ describe Proofing::Aamva::Proofer do
             last_name
             first_name
             address
-          )
+          ).to_set
         )
       end
     end
@@ -121,7 +121,7 @@ describe Proofing::Aamva::Proofer do
             last_name
             first_name
             address
-          )
+          ).to_set
         )
       end
     end

@@ -45,6 +45,24 @@ module Proofing
         'aamva:state_id'
       end
 
+      def verified_attributes
+        attributes = Set.new
+        results = verification_response.verification_results
+
+        attributes.add :address if address_verified?(results)
+        
+        results.delete :address1
+        results.delete :city
+        results.delete :state
+        results.delete :zipcode
+
+        results.each do |attribute, verified|
+          attributes.add attribute if verified
+        end
+
+        attributes
+      end
+
       def to_h
         {
           exception: exception,
@@ -54,6 +72,15 @@ module Proofing
           transaction_id: transaction_id,
           vendor_name: vendor_name,
         }
+      end
+
+      private
+
+      def address_verified?(results)
+        results[:address1] &&
+        results[:city] &&
+        results[:state] &&
+        results[:zipcode]
       end
     end
   end
