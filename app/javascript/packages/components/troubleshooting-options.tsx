@@ -14,7 +14,7 @@ export type TroubleshootingOption = Omit<BlockLinkProps, 'href'> & {
 interface TroubleshootingOptionsProps {
   headingTag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
-  heading?: string;
+  heading?: ReactNode;
 
   options: TroubleshootingOption[];
 
