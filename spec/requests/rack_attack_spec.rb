@@ -195,23 +195,25 @@ describe 'throttling requests' do
         allow(Analytics).to receive(:new).and_return(analytics)
         allow(analytics).to receive(:track_event)
 
-        headers = { REMOTE_ADDR: '1.2.3.4' }
-        first_email = 'test1@example.com'
-        second_email = 'test2@example.com'
-        third_email = 'test3@example.com'
-        fourth_email = 'test4@example.com'
+        Rack::Attack::SIGN_IN_PATHS.each do |path|
+          headers = { REMOTE_ADDR: '1.2.3.4' }
+          first_email = 'test1@example.com'
+          second_email = 'test2@example.com'
+          third_email = 'test3@example.com'
+          fourth_email = 'test4@example.com'
 
-        post '/', params: { user: { email: first_email } }, headers: headers
-        post '/', params: { user: { email: second_email } }, headers: headers
-        post '/', params: { user: { email: third_email } }, headers: headers
-        post '/', params: { user: { email: fourth_email } }, headers: headers
+          post path, params: { user: { email: first_email } }, headers: headers
+          post path, params: { user: { email: second_email } }, headers: headers
+          post path, params: { user: { email: third_email } }, headers: headers
+          post path, params: { user: { email: fourth_email } }, headers: headers
 
-        expect(response.status).to eq(429)
-        expect(response.body).
-          to include('Please wait a few minutes before you try again.')
-        expect(response.header['Content-type']).to include('text/html')
-        expect(analytics).
-          to have_received(:track_event).with('Rate Limit Triggered', type: 'logins/ip')
+          expect(response.status).to eq(429)
+          expect(response.body).
+            to include('Please wait a few minutes before you try again.')
+          expect(response.header['Content-type']).to include('text/html')
+          expect(analytics).
+            to have_received(:track_event).with('Rate Limit Triggered', type: 'logins/ip')
+        end
       end
     end
   end
@@ -258,20 +260,22 @@ describe 'throttling requests' do
         allow(Analytics).to receive(:new).and_return(analytics)
         allow(analytics).to receive(:track_event)
 
-        (logins_per_email_and_ip_limit + 1).times do |index|
-          post '/', params: {
-            user: { email: index.even? ? 'test@example.com' : ' test@EXAMPLE.com   ' },
-          }, headers: { REMOTE_ADDR: '1.2.3.4' }
+        Rack::Attack::SIGN_IN_PATHS.each do |path|
+          (logins_per_email_and_ip_limit + 1).times do |index|
+            post path, params: {
+              user: { email: index.even? ? 'test@example.com' : ' test@EXAMPLE.com   ' },
+            }, headers: { REMOTE_ADDR: '1.2.3.4' }
+          end
+
+          analytics_hash = { type: 'logins/email+ip' }
+
+          expect(response.status).to eq(429)
+          expect(response.body).
+            to include('Please wait a few minutes before you try again.')
+          expect(response.header['Content-type']).to include('text/html')
+          expect(analytics).
+            to have_received(:track_event).with('Rate Limit Triggered', analytics_hash)
         end
-
-        analytics_hash = { type: 'logins/email+ip' }
-
-        expect(response.status).to eq(429)
-        expect(response.body).
-          to include('Please wait a few minutes before you try again.')
-        expect(response.header['Content-type']).to include('text/html')
-        expect(analytics).
-          to have_received(:track_event).with('Rate Limit Triggered', analytics_hash)
       end
     end
 

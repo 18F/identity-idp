@@ -8,6 +8,8 @@ module Rack
 
     EMAIL_REGISTRATION_PATHS = ['/sign_up/enter_email', '/es/sign_up/enter_email',
                                 '/fr/sign_up/enter_email']
+    SIGN_IN_PATHS = ['/', '/es', '/fr']
+
     # If the app is behind a load balancer, `ip` will return the IP of the
     # load balancer instead of the actual IP the request came from, and since
     # all requests will seem to come from the same IP, throttling will be
@@ -111,7 +113,7 @@ module Rack
         limit: IdentityConfig.store.logins_per_ip_limit,
         period: IdentityConfig.store.logins_per_ip_period,
       ) do |req|
-        req.remote_ip if req.path == '/' && req.post?
+        req.remote_ip if SIGN_IN_PATHS.include?(req.path) && req.post?
       end
     else
       throttle(
@@ -119,7 +121,7 @@ module Rack
         limit: IdentityConfig.store.logins_per_ip_limit,
         period: IdentityConfig.store.logins_per_ip_period,
       ) do |req|
-        req.remote_ip if req.path == '/' && req.post?
+        req.remote_ip if SIGN_IN_PATHS.include?(req.path) && req.post?
       end
     end
 
@@ -205,7 +207,7 @@ module Rack
     # over and over.
     # After maxretry requests in findtime minutes, block all requests from that IP for bantime.
     blocklist('logins/email+ip') do |req|
-      if req.path == '/' && req.post?
+      if SIGN_IN_PATHS.include?(req.path) && req.post?
         # `filter` returns false if POST request is for the login page (but still
         # increments the count), so requests below the limit are not blocked until
         # they hit the limit. At that point, `filter` will return true and block.
@@ -222,7 +224,7 @@ module Rack
 
         Allow2Ban.filter(email_and_ip, maxretry: maxretry, findtime: findtime, bantime: bantime) do
           # The count for the email and IP combination is incremented if the return value is truthy.
-          req.path == '/' && req.post?
+          SIGN_IN_PATHS.include?(req.path) && req.post?
         end
       end
     end
