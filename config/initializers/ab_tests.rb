@@ -25,4 +25,12 @@ module AbTests
       key_pair_group: IdentityConfig.store.key_pair_generation_percent || nil,
     }.compact,
   )
+
+  def self.reload_ab_test_initializer!
+    # undefine the AB tests instances so we can re-initialize them with different config values
+    AbTests.constants.each do |const_name|
+      AbTests.class_eval { remove_const(const_name) }
+    end
+    load Rails.root.join('config', 'initializers', 'ab_tests.rb').to_s
+  end
 end
