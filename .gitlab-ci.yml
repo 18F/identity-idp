@@ -252,6 +252,8 @@ veracode_scan:
   script:
     - apt install -y default-jre default-jdk
     - gem install veracode
+    - pwd ; ls
+    - mkdir tmp
     - veracode prepare
     - ls tmp/veracode-*.zip > tmp/veracodepackage
     - curl -O https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
