@@ -110,8 +110,6 @@ class GetUspsProofingResultsJob < ApplicationJob
         errored = false
       rescue Faraday::BadRequestError => err
         handle_bad_request_error(err, enrollment)
-      rescue Faraday::ParsingError => err
-        handle_parsing_err(err, enrollment)
       rescue StandardError => err
         NewRelic::Agent.notice_error(err)
         handle_standard_error(err, err.message, enrollment)
@@ -148,11 +146,6 @@ class GetUspsProofingResultsJob < ApplicationJob
       )
       enrollment_outcomes[:enrollments_errored] += 1
     end
-  end
-
-  def handle_parsing_err(err, enrollment)
-    message = err.message.split(':')[1].lstrip
-    handle_standard_error(err, message, enrollment)
   end
 
   def handle_standard_error(err, err_message, enrollment)
