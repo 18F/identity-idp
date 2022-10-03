@@ -545,7 +545,6 @@
   "spec/services/active_profile_encryptor_spec.rb": 0.04471200000261888,
   "spec/services/user_alerts/alert_user_about_account_verified_spec.rb": 0.5963879999981145,
   "spec/presenters/two_factor_authentication/sms_selection_presenter_spec.rb": 0.07933999999659136,
-  "spec/controllers/users/aal3_controller_spec.rb": 0.011302000006253365,
   "spec/services/proofing/aamva/soap_error_handler_spec.rb": 0.04945200000656769,
   "spec/features/phone/confirmation_spec.rb": 166.29932700000063,
   "spec/presenters/two_factor_authentication/selection_presenter_spec.rb": 0.023615999998582993,
