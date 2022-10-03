@@ -3,7 +3,7 @@ module Flow
     extend ActiveSupport::Concern
 
     included do
-      before_action :fsm_initialize
+      before_action :flow_state_machine_initialize
       before_action :ensure_correct_step, only: :show
     end
 
@@ -69,7 +69,7 @@ module Flow
       sp_session[:issuer]
     end
 
-    def fsm_initialize
+    def flow_state_machine_initialize
       klass = self.class
       flow = klass::FLOW_STATE_MACHINE_SETTINGS[:flow]
       @name = klass.name.underscore.gsub('_controller', '')

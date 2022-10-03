@@ -17,7 +17,7 @@ describe Idv::InPersonController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :fsm_initialize,
+        :flow_state_machine_initialize,
         :ensure_correct_step,
         :override_csp_for_threat_metrix,
       )
