@@ -116,7 +116,7 @@ module Flow
     end
 
     def call_optional_show_step(optional_step)
-      return unless @flow.class.const_defined?('OPTIONAL_SHOW_STEPS')
+      return unless @flow.class.const_defined?(:OPTIONAL_SHOW_STEPS)
       optional_show_step = @flow.class::OPTIONAL_SHOW_STEPS.with_indifferent_access[optional_step]
       return unless optional_show_step
       result = optional_show_step.new(@flow).base_call
@@ -140,9 +140,9 @@ module Flow
     end
 
     def step_indicator_params
-      return if !flow.class.const_defined?('STEP_INDICATOR_STEPS')
+      return if !flow.class.const_defined?(:STEP_INDICATOR_STEPS)
       handler = flow.step_handler(current_step)
-      return if !handler || !handler.const_defined?('STEP_INDICATOR_STEP')
+      return if !handler || !handler.const_defined?(:STEP_INDICATOR_STEP)
       {
         steps: flow.class::STEP_INDICATOR_STEPS,
         current_step: handler::STEP_INDICATOR_STEP,
