@@ -141,7 +141,7 @@ module SamlAuthHelper
     'https://rp2.serviceprovider.com/auth/saml/metadata'
   end
 
-  def phishing_resistant_issuer
+  def aal3_issuer
     'https://aal3.serviceprovider.com/auth/saml/metadata'
   end
 
