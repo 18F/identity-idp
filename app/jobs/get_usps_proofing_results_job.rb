@@ -112,7 +112,7 @@ class GetUspsProofingResultsJob < ApplicationJob
         handle_bad_request_error(err, enrollment)
       rescue StandardError => err
         NewRelic::Agent.notice_error(err)
-        handle_standard_error(err, err.message, enrollment)
+        handle_standard_error(err, enrollment)
       end
 
       process_enrollment_response(enrollment, response) unless errored
@@ -148,7 +148,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     end
   end
 
-  def handle_standard_error(err, err_message, enrollment)
+  def handle_standard_error(err, enrollment)
     response_attributes = if err.respond_to?(:response)
                             response_analytics_attributes(err.response)
                           else
@@ -161,7 +161,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       **response_attributes,
       reason: 'Request exception',
       exception_class: err.class.to_s,
-      exception_message: err_message,
+      exception_message: err.message,
     )
   end
 
