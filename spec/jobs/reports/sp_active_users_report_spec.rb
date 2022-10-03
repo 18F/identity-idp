@@ -34,7 +34,7 @@ describe Reports::SpActiveUsersReport do
     result = [{ issuer: issuer, app_id: app_id, total_ial1_active: 2,
                 total_ial2_active: 3 }].to_json
 
-    expect(subject.perform(Time.zone.today)).to eq(result)
+    expect(subject.perform(job_date)).to eq(result)
   end
 
   it 'when Oct 1, returns total active user counts per sp by ial1 and ial2 for last fiscal year' do
