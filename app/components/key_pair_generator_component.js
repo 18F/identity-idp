@@ -26,16 +26,14 @@ class KeyPairGeneratorElement extends HTMLElement {
       true,
       ['encrypt', 'decrypt'],
     );
-    this.privateB64key = await this.exportKey('pkcs8', keypair.privateKey);
-    this.publicB64key = await this.exportKey('spki', keypair.publicKey);
+    const encodedPrivateKey = await crypto.subtle.exportKey('pkcs8', keypair.privateKey);
+    this.privateB64key = btoa(String.fromCharCode.apply(null, new Uint8Array(encodedPrivateKey)));
+
+    const encodedPublicKey = await crypto.subtle.exportKey('spki', keypair.publicKey);
+    this.publicB64key = btoa(String.fromCharCode.apply(null, new Uint8Array(encodedPublicKey)));
 
     const t1 = performance.now();
     this.duration = t1 - t0; // milliseconds
-  }
-
-  async exportKey(format, key) {
-    const encodedKey = await crypto.subtle.exportKey(format, key);
-    return btoa(String.fromCharCode.apply(null, new Uint8Array(encodedKey)));
   }
 }
 
