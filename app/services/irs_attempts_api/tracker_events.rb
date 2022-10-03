@@ -605,7 +605,6 @@ module IrsAttemptsApi
     end
 
     # Tracks when User personal key has been rate limited by too many attempts
-    # @param [Boolean] success
     def personal_key_reactivation_rate_limited
       track_event(
         :personal_key_reactivation_rate_limited,
