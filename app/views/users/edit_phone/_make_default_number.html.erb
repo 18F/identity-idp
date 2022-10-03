@@ -11,6 +11,7 @@
           :otp_make_default_number,
           @edit_phone_form.default_phone_configuration?,
           class: 'usa-checkbox__input usa-checkbox__input--bordered',
+          disabled: @edit_phone_form.one_phone_configured?,
         ) %>
     <label
       class="usa-checkbox__label"
