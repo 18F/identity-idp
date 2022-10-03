@@ -148,10 +148,10 @@ module IrsAttemptsApi
       )
     end
 
-    # GPO verification submission throttled, user entered in too many invalid gpo letter codes
-    def idv_gpo_verification_throttled
+    # GPO verification submission rate limited, user entered in too many invalid gpo letter codes
+    def idv_gpo_verification_rate_limited
       track_event(
-        :idv_gpo_verification_throttled,
+        :idv_gpo_verification_rate_limited,
       )
     end
 
@@ -615,11 +615,11 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when User personal key has been throttled by too many attempts
+    # Tracks when User personal key has been rate limited by too many attempts
     # @param [Boolean] success
-    def personal_key_reactivation_throttled(success:)
+    def personal_key_reactivation_rate_limited(success:)
       track_event(
-        :personal_key_reactivation_throttled,
+        :personal_key_reactivation_rate_limited,
         success: success,
       )
     end
