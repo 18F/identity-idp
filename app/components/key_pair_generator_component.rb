@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class KeyPairGeneratorComponent < BaseComponent
   attr_reader :location
 

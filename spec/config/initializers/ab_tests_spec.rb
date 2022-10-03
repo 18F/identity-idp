@@ -10,7 +10,7 @@ describe AbTests do
       allow(IdentityConfig.store).to receive(:idv_native_camera_a_b_testing_percent).
         and_return(percent)
 
-      AbTests.reload_ab_test_initializer!
+      described_class.reload_ab_test_initializer!
     end
 
     after do
@@ -19,11 +19,11 @@ describe AbTests do
       allow(IdentityConfig.store).to receive(:idv_native_camera_a_b_testing_percent).
         and_call_original
 
-      AbTests.reload_ab_test_initializer!
+      described_class.reload_ab_test_initializer!
     end
 
     context 'configured with buckets adding up to less than 100 percent' do
-      let(:subject) { AbTests::NATIVE_CAMERA }
+      let(:subject) { described_class::NATIVE_CAMERA }
       let(:a_uuid) { SecureRandom.uuid }
       let(:b_uuid) { SecureRandom.uuid }
       before do

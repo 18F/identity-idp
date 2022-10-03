@@ -23,11 +23,12 @@ module AbTests
     experiment_name: 'Key Pair Generation',
     buckets: {
       key_pair_group: IdentityConfig.store.key_pair_generation_percent,
-    }.compact,
+    },
   )
 
   def self.reload_ab_test_initializer!
-    # undefine the AB tests instances so we can re-initialize them with different config values
+    # To be used in specs to undefine the AB tests instances so we can re-initialize them
+    # with different config values
     AbTests.constants.each do |const_name|
       AbTests.class_eval { remove_const(const_name) }
     end
