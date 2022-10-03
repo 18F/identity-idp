@@ -106,9 +106,10 @@ en:
       email_body: Don’t lose your personal key or share it with others. We’ll ask for
         it if you reset your password.
       email_title: Save it. Keep it safe.
-      info: You’ll need this personal key if you forget your password. If you reset
-        your password and don’t have this key, you’ll have to verify your
-        identity again.
+      info: "If you reset your password without your personal key:"
+      info_bullets:
+        - You'll lose access to your account
+        - You'll need to verify your identity again
     sp_handoff_bounced: Your sign in was successful, but %{sp_name} sent you back to
       %{app_name}. Please contact %{sp_link} for help.
     sp_handoff_bounced_with_no_sp: your service provider

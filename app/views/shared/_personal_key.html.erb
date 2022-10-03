@@ -1,10 +1,10 @@
 <%= render PageHeadingComponent.new.with_content(t('headings.personal_key')) %>
-<p>
-  <%= t('instructions.personal_key.info') %>
-</p>
 <div class="full-width-box margin-y-5">
   <%= render 'partials/personal_key/key', code: code %>
 </div>
+
+<br />
+
 <%= render ButtonComponent.new(
       action: ->(**tag_options, &block) do
         link_to(
@@ -29,17 +29,19 @@
       outline: true,
       class: 'margin-bottom-2 tablet:margin-bottom-0',
     ) %>
-<div class="margin-y-5 clearfix">
-  <%= image_tag(
-        asset_url('alert/icon-lock-alert-important.svg'),
-        alt: '',
-        size: '80',
-        class: 'float-left margin-right-2',
-      ) %>
-  <p class="margin-bottom-0">
-    <strong><%= t('instructions.personal_key.email_title') %></strong>
-  </p>
-  <p><%= t('instructions.personal_key.email_body') %></p>
+
+<div>
+</div>
+
+<br />
+
+<div>
+<%= t('instructions.personal_key.info') %>
+<ul>
+  <% t('instructions.personal_key.info_bullets').each do |bullet| %>
+  <%=  "<li>#{bullet}</li>".html_safe %>
+  <% end %>
+</ul>
 </div>
 <%= button_to(
       t('forms.buttons.continue'),
