@@ -32,9 +32,7 @@
         required: true,
         wrapper_html: { class: 'margin-top-6' },
       ) %>
-  <% if AbTests::KEY_PAIR_GENERATION.bucket(SecureRandom.uuid) == :key_pair_group %>
-    <%= render KeyPairGeneratorComponent.new(location: 'sign_in') %>
-  <% end %>
+  <%= render KeyPairGeneratorComponent.new(location: 'sign_in') %>
   <%= f.input :request_id, as: :hidden, input_html: { value: @request_id } %>
   <div class='margin-bottom-4'>
     <%= f.submit t('links.next'), full_width: true, wide: false %>
