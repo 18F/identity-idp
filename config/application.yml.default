@@ -86,6 +86,9 @@ doc_auth_max_submission_attempts_before_native_camera: 2
 doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
+email_registrations_per_ip_limit: 20
+email_registrations_per_ip_period: 20
+email_registrations_per_ip_track_only_mode: false
 enable_load_testing_mode: false
 enable_partner_api: false
 enable_rate_limiting: true
@@ -410,6 +413,7 @@ production:
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: login.gov
+  email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
   hmac_fingerprinter_key:
@@ -504,6 +508,7 @@ test:
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2
   logins_per_ip_limit: 3
+  email_registrations_per_ip_limit: 3
   max_bad_passwords: 5
   max_mail_events: 2
   newrelic_browser_app_id: ''
