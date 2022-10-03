@@ -148,10 +148,10 @@ module IrsAttemptsApi
       )
     end
 
-    # GPO verification submission throttled, user entered in too many invalid gpo letter codes
-    def idv_gpo_verification_throttled
+    # GPO verification submission rate limited, user entered in too many invalid gpo letter codes
+    def idv_gpo_verification_rate_limited
       track_event(
-        :idv_gpo_verification_throttled,
+        :idv_gpo_verification_rate_limited,
       )
     end
 
@@ -189,21 +189,13 @@ module IrsAttemptsApi
     # @param [String] otp_delivery_method - Either SMS or Voice
     # @param [Hash<Key, Array<String>>] failure_reason
     # Track when OTP is sent and what method chosen during idv flow.
-    def idv_phone_confirmation_otp_sent(success:, phone_number:,
-                                        otp_delivery_method:, failure_reason: nil)
+    def idv_phone_otp_sent(success:, phone_number:, otp_delivery_method:, failure_reason: nil)
       track_event(
-        :idv_phone_confirmation_otp_sent,
+        :idv_phone_otp_sent,
         success: success,
         phone_number: phone_number,
         otp_delivery_method: otp_delivery_method,
         failure_reason: failure_reason,
-      )
-    end
-
-    # Track when OTP phone sent is rate limited during idv flow
-    def idv_phone_confirmation_otp_sent_rate_limited
-      track_event(
-        :idv_phone_confirmation_otp_sent_rate_limited,
       )
     end
 
@@ -623,11 +615,11 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when User personal key has been throttled by too many attempts
+    # Tracks when User personal key has been rate limited by too many attempts
     # @param [Boolean] success
-    def personal_key_reactivation_throttled(success:)
+    def personal_key_reactivation_rate_limited(success:)
       track_event(
-        :personal_key_reactivation_throttled,
+        :personal_key_reactivation_rate_limited,
         success: success,
       )
     end

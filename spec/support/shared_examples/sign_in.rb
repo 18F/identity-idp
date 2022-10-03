@@ -242,7 +242,7 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
           fill_in_credentials_and_submit(user.email, user.password)
 
           expect(page).to have_content(t('account.personal_key.needs_new'))
-          code = page.all('.separator-text__code').map(&:text).join(' ')
+          code = page.all('.personal-key-block__code').map(&:text).join(' ')
           acknowledge_and_confirm_personal_key
 
           expect(user.reload.valid_personal_key?(code)).to eq(true)
@@ -265,7 +265,7 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
           click_button t('forms.buttons.submit.default')
 
           expect(page).to have_content(t('account.personal_key.needs_new'))
-          code = page.all('.separator-text__code').map(&:text).join(' ')
+          code = page.all('.personal-key-block__code').map(&:text).join(' ')
           acknowledge_and_confirm_personal_key
 
           expect(user.reload.valid_personal_key?(code)).to eq(true)

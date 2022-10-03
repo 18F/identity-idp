@@ -623,6 +623,47 @@ describe UserMailer, type: :mailer do
     it_behaves_like 'an email that respects user email locale preference'
   end
 
+  describe '#in_person_completion_survey' do
+    let(:mail) do
+      UserMailer.in_person_completion_survey(
+        user,
+        email_address,
+      )
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t(
+        'user_mailer.in_person_completion_survey.subject',
+        app_name: APP_NAME,
+      )
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).
+        to have_content(
+          t(
+            'user_mailer.in_person_completion_survey.body.thanks',
+            app_name: APP_NAME,
+          ),
+        )
+      expect(mail.html_part.body).
+        to have_selector(
+          "a[href='#{MarketingSite.security_and_privacy_practices_url}']",
+        )
+      expect(mail.html_part.body).
+        to have_selector(
+          "a[href='#{IdentityConfig.store.in_person_completion_survey_url}']",
+        )
+    end
+  end
+
   def strip_tags(str)
     ActionController::Base.helpers.strip_tags(str)
   end

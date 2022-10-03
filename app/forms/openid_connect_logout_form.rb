@@ -20,21 +20,20 @@ class OpenidConnectLogoutForm
               message: I18n.t('openid_connect.logout.errors.client_id_missing'),
             },
             if: :reject_id_token_hint?
-  validates :client_id,
-            absence: true,
-            unless: -> { accept_client_id? }
   validates :id_token_hint,
             absence: {
               message: I18n.t('openid_connect.logout.errors.id_token_hint_present'),
             },
             if: :reject_id_token_hint?
   validates :post_logout_redirect_uri, presence: true
-  validates :state, presence: true, length: { minimum: RANDOM_VALUE_MINIMUM_LENGTH }
+  validates :state,
+            length: { minimum: RANDOM_VALUE_MINIMUM_LENGTH },
+            if: -> { !state.nil? }
 
   validate :id_token_hint_or_client_id_present,
-           if: -> { accept_client_id? && !reject_id_token_hint? }
+           if: -> { !reject_id_token_hint? }
   validate :validate_identity, unless: :reject_id_token_hint?
-  validate :valid_client_id, if: :accept_client_id?
+  validate :valid_client_id
 
   def initialize(params:, current_user:)
     ATTRS.each do |key|
@@ -56,10 +55,6 @@ class OpenidConnectLogoutForm
   private
 
   attr_reader :identity, :success
-
-  def accept_client_id?
-    IdentityConfig.store.accept_client_id_in_oidc_logout || reject_id_token_hint?
-  end
 
   def reject_id_token_hint?
     IdentityConfig.store.reject_id_token_hint_in_logout
@@ -150,9 +145,10 @@ class OpenidConnectLogoutForm
   end
 
   def logout_redirect_uri
-    uri = post_logout_redirect_uri unless errors.include?(:redirect_uri)
+    return nil if errors.include?(:redirect_uri)
+    return post_logout_redirect_uri unless state.present?
 
-    UriService.add_params(uri, state: state)
+    UriService.add_params(post_logout_redirect_uri, state: state)
   end
 
   def error_redirect_uri

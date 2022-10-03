@@ -85,6 +85,7 @@ RSpec.describe Idv::GpoVerifyController do
   end
 
   describe '#create' do
+    let(:otp_code_error_message) { { otp: [t('errors.messages.confirmation_code_incorrect')] } }
     let(:otp_code_incorrect) { { otp: [:confirmation_code_incorrect] } }
     let(:success_properties) { { success: true, failure_reason: nil } }
 
@@ -171,7 +172,7 @@ RSpec.describe Idv::GpoVerifyController do
         expect(@analytics).to receive(:track_event).with(
           'IdV: GPO verification submitted',
           success: false,
-          errors: { otp: [t('errors.messages.confirmation_code_incorrect')] },
+          errors: otp_code_error_message,
           pending_in_person_enrollment: false,
           enqueued_at: nil,
           error_details: otp_code_incorrect,
@@ -201,7 +202,7 @@ RSpec.describe Idv::GpoVerifyController do
         expect(@analytics).to receive(:track_event).with(
           'IdV: GPO verification submitted',
           success: false,
-          errors: { otp: [t('errors.messages.confirmation_code_incorrect')] },
+          errors: otp_code_error_message,
           pending_in_person_enrollment: false,
           enqueued_at: nil,
           error_details: otp_code_incorrect,
@@ -213,7 +214,7 @@ RSpec.describe Idv::GpoVerifyController do
           throttle_type: :verify_gpo_key,
         ).once
 
-        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_throttled).once
+        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_rate_limited).once
 
         (max_attempts + 1).times do |i|
           post(

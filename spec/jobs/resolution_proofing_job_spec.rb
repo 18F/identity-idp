@@ -27,7 +27,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
   let(:lexisnexis_transaction_id) { SecureRandom.uuid }
   let(:lexisnexis_reference) { SecureRandom.uuid }
-  let(:aamva_transaction_id) { SecureRandom.uuid }
+  let(:aamva_transaction_id) { '1234-abcd-efgh' }
   let(:resolution_proofer) do
     instance_double(
       Proofing::LexisNexis::InstantVerify::Proofer,
@@ -35,7 +35,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
     )
   end
   let(:state_id_proofer) do
-    instance_double(Proofing::Aamva::Proofer, class: Proofing::Aamva::Proofer)
+    Proofing::Aamva::Proofer.new(AamvaFixtures.example_config.to_h)
   end
   let(:ddp_proofer) { Proofing::Mock::DdpMockClient.new }
   let(:trace_id) { SecureRandom.uuid }
@@ -93,16 +93,25 @@ RSpec.describe ResolutionProofingJob, type: :job do
           device_profiling_enabled: true,
         )
       end
-      context 'webmock lexisnexis and threatmetrix' do
+      context 'webmock lexisnexis, threatmetrix, and AAMVA' do
         before do
           stub_request(
             :post,
             'https://lexisnexis.example.com/restws/identity/v2/abc123/aaa/conversation',
           ).to_return(body: lexisnexis_response.to_json)
+
           stub_request(
             :post,
             'https://www.example.com/api/session-query',
           ).to_return(body: LexisNexisFixtures.ddp_success_response_json)
+
+          stub_request(:post, AamvaFixtures.example_config.auth_url).
+            to_return(
+              { body: AamvaFixtures.security_token_response },
+              { body: AamvaFixtures.authentication_token_response },
+            )
+          stub_request(:post, AamvaFixtures.example_config.verification_url).
+            to_return(body: AamvaFixtures.verification_response)
 
           allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
@@ -119,8 +128,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
           allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
 
-          allow(state_id_proofer).to receive(:proof).
-            and_return(Proofing::Result.new(transaction_id: aamva_transaction_id))
           Proofing::Mock::DeviceProfilingBackend.new.record_profiling_result(
             session_id: threatmetrix_session_id,
             result: 'pass',
@@ -177,6 +184,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(result_context_stages_state_id[:success]).to eq(true)
           expect(result_context_stages_state_id[:timed_out]).to eq(false)
           expect(result_context_stages_state_id[:transaction_id]).to eq(aamva_transaction_id)
+          expect(result_context_stages_state_id[:verified_attributes]).to eq(
+            %w[address state_id_number state_id_type dob last_name first_name],
+          )
 
           # result[:context][:stages][:threatmetrix]
           expect(result_context_stages_threatmetrix[:client]).to eq('DdpMock')
@@ -185,6 +195,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(result_context_stages_threatmetrix[:success]).to eq(true)
           expect(result_context_stages_threatmetrix[:timed_out]).to eq(false)
           expect(result_context_stages_threatmetrix[:transaction_id]).to eq(threatmetrix_request_id)
+          expect(result_context_stages_threatmetrix[:review_status]).to eq('pass')
           expect(result_context_stages_threatmetrix[:response_body]).to eq(ddp_response_body)
 
           proofing_component = user.proofing_component
@@ -265,6 +276,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
             expect(result_context_stages_state_id[:success]).to eq(true)
             expect(result_context_stages_state_id[:timed_out]).to eq(false)
             expect(result_context_stages_state_id[:transaction_id]).to eq('')
+            expect(result_context_stages_state_id[:verified_attributes]).to eq(nil)
 
             # result[:context][:stages][:threatmetrix]
             expect(result_context_stages_threatmetrix[:client]).to eq('DdpMock')
@@ -304,10 +316,19 @@ RSpec.describe ResolutionProofingJob, type: :job do
             :post,
             'https://lexisnexis.example.com/restws/identity/v2/abc123/aaa/conversation',
           ).to_return(body: lexisnexis_response.to_json)
+
           stub_request(
             :post,
             'https://www.example.com/api/session-query',
           ).to_return(body: LexisNexisFixtures.ddp_success_response_json)
+
+          stub_request(:post, AamvaFixtures.example_config.auth_url).
+            to_return(
+              { body: AamvaFixtures.security_token_response },
+              { body: AamvaFixtures.authentication_token_response },
+            )
+          stub_request(:post, AamvaFixtures.example_config.verification_url).
+            to_return(body: AamvaFixtures.verification_response)
 
           allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
@@ -323,9 +344,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
             and_return('aaa')
 
           allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
-
-          allow(state_id_proofer).to receive(:proof).
-            and_return(Proofing::Result.new(transaction_id: aamva_transaction_id))
         end
 
         let(:lexisnexis_response) do
@@ -377,6 +395,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(result_context_stages_state_id[:success]).to eq(true)
           expect(result_context_stages_state_id[:timed_out]).to eq(false)
           expect(result_context_stages_state_id[:transaction_id]).to eq(aamva_transaction_id)
+          expect(result_context_stages_state_id[:verified_attributes]).to eq(
+            %w[address state_id_number state_id_type dob last_name first_name],
+          )
 
           proofing_component = user.proofing_component
           expect(proofing_component&.threatmetrix).to be_nil

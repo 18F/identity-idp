@@ -46,6 +46,10 @@ module SamlAuthHelper
     @saml_test_sp_cert ||= File.read(Rails.root.join('certs', 'sp', 'saml_test_sp.crt'))
   end
 
+  def saml_test_sp_cert_serial
+    OpenSSL::X509::Certificate.new(saml_test_sp_cert).serial.to_s
+  end
+
   def idp_fingerprint
     @idp_fingerprint ||= Fingerprinter.fingerprint_cert(
       OpenSSL::X509::Certificate.new(saml_test_idp_cert),

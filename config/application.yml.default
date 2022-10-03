@@ -22,7 +22,6 @@ aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","H
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
-accept_client_id_in_oidc_logout: false
 account_reset_token_valid_for_days: 1
 account_reset_wait_period_days: 1
 acuant_maintenance_window_start:
@@ -86,6 +85,9 @@ doc_auth_max_submission_attempts_before_native_camera: 2
 doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
+email_registrations_per_ip_limit: 20
+email_registrations_per_ip_period: 20
+email_registrations_per_ip_track_only_mode: false
 enable_load_testing_mode: false
 enable_partner_api: false
 enable_rate_limiting: true
@@ -115,6 +117,7 @@ idv_sp_required: false
 in_person_proofing_enabled: false
 in_person_enrollment_validity_in_days: 30
 in_person_results_delay_in_hours: 1
+in_person_completion_survey_url: 'https://login.gov'
 include_slo_in_saml_metadata: false
 inherited_proofing_enabled: false
 inherited_proofing_va_base_url: 'https://staging-api.va.gov'
@@ -409,6 +412,7 @@ production:
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: login.gov
+  email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
   hmac_fingerprinter_key:
@@ -503,6 +507,7 @@ test:
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2
   logins_per_ip_limit: 3
+  email_registrations_per_ip_limit: 3
   max_bad_passwords: 5
   max_mail_events: 2
   newrelic_browser_app_id: ''

@@ -3,9 +3,9 @@
     <%= t('users.personal_key.header') %>
   </h2>
   <div class="bg-personal-key padding-top-4 margin-y-2">
-    <div class="padding-x-0 tablet:padding-x-1 padding-y-2 separator-text bg-pk-box">
+    <div class="personal-key-block">
       <% code.split('-').each do |word| %>
-        <% concat(content_tag(:strong, word, class: 'separator-text__code', data: { personal_key: '' })) %>
+        <% concat(content_tag(:strong, word, class: 'personal-key-block__code', data: { personal_key: '' })) %>
       <% end %>
     </div>
   </div>
