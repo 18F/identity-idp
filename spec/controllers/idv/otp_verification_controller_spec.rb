@@ -21,7 +21,6 @@ describe Idv::OtpVerificationController do
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
-    allow(@irs_attempts_api_tracker).to receive(:track_event)
 
     sign_in(user)
     stub_verify_steps_one_and_two(user)
@@ -103,30 +102,28 @@ describe Idv::OtpVerificationController do
     describe 'track irs analytics event' do
       context 'when the phone otp code is valid' do
         it 'captures success event' do
-          put :update, params: { code: phone_confirmation_otp_code }
-
-          expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-            :idv_phone_otp_submitted,
-            phone_number: phone,
+          expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
             success: true,
+            phone_number: phone,
             failure_reason: {},
           )
+
+          put :update, params: { code: phone_confirmation_otp_code }
         end
       end
 
       context 'when the phone otp code is invalid' do
         it 'captures failure event' do
-          put :update, params: { code: '000' }
-
-          expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-            :idv_phone_otp_submitted,
-            phone_number: phone,
+          expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
             success: false,
+            phone_number: phone,
             failure_reason: {
               code_matches: false,
               code_expired: false,
             },
           )
+
+          put :update, params: { code: '000' }
         end
       end
     end

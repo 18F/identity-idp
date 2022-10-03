@@ -97,6 +97,7 @@ class ResolutionProofingJob < ApplicationJob
       success: threatmetrix_result.success?,
       timed_out: threatmetrix_result.timed_out?,
       transaction_id: threatmetrix_result.transaction_id,
+      review_status: threatmetrix_result.review_status,
       response_body: response_h,
     }
   end

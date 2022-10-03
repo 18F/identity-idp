@@ -194,6 +194,7 @@ class IdentityConfig
     config.add(:in_person_proofing_enabled, type: :boolean)
     config.add(:in_person_enrollment_validity_in_days, type: :integer)
     config.add(:in_person_results_delay_in_hours, type: :integer)
+    config.add(:in_person_completion_survey_url, type: :string)
     config.add(:include_slo_in_saml_metadata, type: :boolean)
     config.add(:inherited_proofing_enabled, type: :boolean)
     config.add(:inherited_proofing_va_base_url, type: :string)
