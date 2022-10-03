@@ -22,7 +22,6 @@ aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","H
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
-accept_client_id_in_oidc_logout: true
 account_reset_token_valid_for_days: 1
 account_reset_wait_period_days: 1
 acuant_maintenance_window_start:
