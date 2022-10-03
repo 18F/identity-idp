@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { TroubleshootingOptions } from '@18f/identity-components';
-import { useI18n } from '@18f/identity-react-i18n';
+import { useI18n, formatHTML } from '@18f/identity-react-i18n';
 import type { TroubleshootingOption } from '@18f/identity-components/troubleshooting-options';
 import ServiceProviderContext from '../context/service-provider';
 import MarketingSiteContext from '../context/marketing-site';
@@ -82,7 +82,9 @@ function DocumentCaptureTroubleshootingOptions({
       {hasErrors && inPersonURL && showInPersonOption && (
         <TroubleshootingOptions
           isNewFeatures
-          heading={t('idv.troubleshooting.headings.are_you_near')}
+          heading={formatHTML(t('idv.troubleshooting.headings.are_you_near'), {
+            br: 'br',
+          })}
           options={[
             {
               url: '#location',

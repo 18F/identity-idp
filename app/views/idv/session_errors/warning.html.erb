@@ -12,7 +12,7 @@
 
   <% c.troubleshooting_options do |tc| %>
     <% tc.header { t('components.troubleshooting_options.default_heading') } %>
-    <% if user_session.dig(:'idv/doc_auth', :had_barcode_read_failure) %>
+    <% if user_session&.dig(:'idv/doc_auth', :had_barcode_read_failure) %>
       <% tc.option(
            url: idv_doc_auth_step_path(step: :redo_document_capture),
            action: FormLinkComponent.method(:new),

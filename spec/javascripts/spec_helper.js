@@ -26,7 +26,7 @@ const windowGlobals = Object.fromEntries(
 );
 Object.assign(global, windowGlobals);
 global.window.fetch = () => Promise.reject(new Error('Fetch must be stubbed'));
-global.window.crypto = webcrypto;
+Object.defineProperty(global.window, 'crypto', { value: webcrypto });
 global.window.URL.createObjectURL = createObjectURLAsDataURL;
 global.window.URL.revokeObjectURL = () => {};
 Object.defineProperty(global.window.Image.prototype, 'src', {
