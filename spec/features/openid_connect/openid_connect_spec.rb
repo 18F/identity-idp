@@ -173,92 +173,57 @@ describe 'OpenID Connect' do
       end
     end
 
-    context 'when permitting client_id' do
-      before do
-        allow(IdentityConfig.store).to receive(:accept_client_id_in_oidc_logout).
-          and_return(true)
+    context 'when sending client_id' do
+      it 'logout destroys the session when confirming logout' do
+        client_id = 'urn:gov:gsa:openidconnect:test'
+        sign_in_get_id_token(client_id: client_id)
+
+        state = SecureRandom.hex
+
+        visit openid_connect_logout_path(
+          client_id: client_id,
+          post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
+          state: state,
+        )
+        expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
+        click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
+
+        visit account_path
+        expect(page).to_not have_content(t('headings.account.login_info'))
+        expect(page).to have_content(t('headings.sign_in_without_sp'))
       end
 
-      context 'when sending client_id' do
-        it 'logout destroys the session when confirming logout' do
-          client_id = 'urn:gov:gsa:openidconnect:test'
-          sign_in_get_id_token(client_id: client_id)
+      it 'logout does not require state' do
+        client_id = 'urn:gov:gsa:openidconnect:test'
+        sign_in_get_id_token(client_id: client_id)
 
-          state = SecureRandom.hex
+        visit openid_connect_logout_path(
+          client_id: client_id,
+          post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
+        )
+        expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
+        click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
 
-          visit openid_connect_logout_path(
-            client_id: client_id,
-            post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
-            state: state,
-          )
-          expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
-          click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
-
-          visit account_path
-          expect(page).to_not have_content(t('headings.account.login_info'))
-          expect(page).to have_content(t('headings.sign_in_without_sp'))
-        end
-
-        it 'logout does not require state' do
-          client_id = 'urn:gov:gsa:openidconnect:test'
-          sign_in_get_id_token(client_id: client_id)
-
-          visit openid_connect_logout_path(
-            client_id: client_id,
-            post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
-          )
-          expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
-          click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
-
-          visit account_path
-          expect(page).to_not have_content(t('headings.account.login_info'))
-          expect(page).to have_content(t('headings.sign_in_without_sp'))
-        end
-
-        it 'does not destroy the session and redirects to account page when denying logout' do
-          client_id = 'urn:gov:gsa:openidconnect:test'
-          sign_in_get_id_token(client_id: client_id)
-
-          state = SecureRandom.hex
-
-          visit openid_connect_logout_path(
-            client_id: client_id,
-            post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
-            state: state,
-          )
-          expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
-          click_link t('openid_connect.logout.deny')
-
-          expect(page).to have_content(t('headings.account.login_info'))
-        end
-      end
-    end
-
-    context 'when not permitting client_id' do
-      before do
-        allow(IdentityConfig.store).to receive(:accept_client_id_in_oidc_logout).
-          and_return(false)
+        visit account_path
+        expect(page).to_not have_content(t('headings.account.login_info'))
+        expect(page).to have_content(t('headings.sign_in_without_sp'))
       end
 
-      context 'when sending client_id' do
-        it 'renders an error' do
-          client_id = 'urn:gov:gsa:openidconnect:test'
-          sign_in_get_id_token(client_id: client_id)
+      it 'does not destroy the session and redirects to account page when denying logout' do
+        client_id = 'urn:gov:gsa:openidconnect:test'
+        sign_in_get_id_token(client_id: client_id)
 
-          state = SecureRandom.hex
+        state = SecureRandom.hex
 
-          visit openid_connect_logout_path(
-            client_id: client_id,
-            post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
-            state: state,
-          )
+        visit openid_connect_logout_path(
+          client_id: client_id,
+          post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
+          state: state,
+        )
+        expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
+        click_link t('openid_connect.logout.deny')
 
-          current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
-          expect(current_url_no_port).to include(
-            "http://www.example.com/openid_connect/logout?client_id=#{URI.encode_www_form_component(client_id)}",
-          )
-          expect(page).to have_content(t('openid_connect.logout.errors.id_token_hint'))
-        end
+        expect(page).to have_content(t('headings.account.login_info'))
       end
     end
   end
