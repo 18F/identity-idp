@@ -33,6 +33,27 @@ FactoryBot.define do
       pii { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
     end
 
+    # todo: is there a better way to group these traits?
+    trait :in_person_pending do
+      transient do
+        issuer { nil }
+      end
+
+      in_person_enrollment { build(:in_person_enrollment, :pending, issuer: issuer) }
+      deactivation_reason { 'in_person_verification_pending' }
+      proofing_components { { document_check: 'usps' } }
+    end
+
+    trait :in_person_proofed do
+      transient do
+        issuer { nil }
+      end
+
+      active
+      in_person_enrollment { build(:in_person_enrollment, :passed, issuer: issuer) }
+      proofing_components { { document_check: 'usps' } }
+    end
+
     after(:build) do |profile, evaluator|
       if evaluator.pii
         pii_attrs = Pii::Attributes.new_from_hash(evaluator.pii)

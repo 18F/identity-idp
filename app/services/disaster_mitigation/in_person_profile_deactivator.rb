@@ -1,5 +1,5 @@
 module DisasterMitigation
-  class DeactivateInPersonProfiles
+  class InPersonProfileDeactivator
     def self.deactivate_profiles(dry_run, status_type, partner_id)
       # todo: catch errors, handle errors
       validate_arguments(status_type, partner_id)
@@ -19,7 +19,7 @@ module DisasterMitigation
       puts 'Steps to reverse this process: tktk'
     end
 
-    def self.validate_arguments
+    def self.validate_arguments(status_type, partner_id)
       # tktk
       # ensure status_type is a valid value
       # any checks for partner id?
