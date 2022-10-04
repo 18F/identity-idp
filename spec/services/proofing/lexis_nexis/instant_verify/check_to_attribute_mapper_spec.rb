@@ -92,5 +92,15 @@ RSpec.describe Proofing::LexisNexis::InstantVerify::CheckToAttributeMapper do
         expect(result).to eq([:dob])
       end
     end
+
+    context 'when the checks does not include any items' do
+      let(:instant_verify_errors) { {} }
+
+      it 'returns an empty array' do
+        result = subject.map_failed_checks_to_attributes
+
+        expect(result).to eq([])
+      end
+    end
   end
 end
