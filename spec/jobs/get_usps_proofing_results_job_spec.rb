@@ -67,11 +67,13 @@ RSpec.shared_examples 'enrollment encountering an exception' do |exception_class
     expect(pending_enrollment.profile.active).to eq(false)
     expect(job_analytics).to have_logged_event(
       'GetUspsProofingResultsJob: Exception raised',
-      reason: reason,
-      enrollment_id: pending_enrollment.id,
-      enrollment_code: pending_enrollment.enrollment_code,
-      exception_class: exception_class,
-      exception_message: exception_message,
+      include(
+        reason: reason,
+        enrollment_id: pending_enrollment.id,
+        enrollment_code: pending_enrollment.enrollment_code,
+        exception_class: exception_class,
+        exception_message: exception_message,
+      ),
     )
   end
 
@@ -87,6 +89,20 @@ RSpec.shared_examples 'enrollment encountering an exception' do |exception_class
       expect(pending_enrollment.status_updated_at).to eq(Time.zone.now - 2.days)
       expect(pending_enrollment.status_check_attempted_at).to eq(Time.zone.now)
     end
+  end
+end
+
+RSpec.shared_examples 'enrollment encountering an error that has a nil response' do |error_type:|
+  it 'logs that response is not present' do
+    expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(error_type))
+
+    job.perform(Time.zone.now)
+
+    expect(job_analytics).to have_logged_event(
+      'GetUspsProofingResultsJob: Exception raised',
+      response_present: false,
+      exception_class: error_type.to_s,
+    )
   end
 end
 
@@ -498,7 +514,7 @@ RSpec.describe GetUspsProofingResultsJob do
         it_behaves_like(
           'enrollment encountering an exception',
           exception_class: 'Faraday::ParsingError',
-          exception_message: "809: unexpected token at 'invalid'",
+          exception_message: /unexpected token at 'invalid'$/,
         )
       end
 
@@ -551,6 +567,39 @@ RSpec.describe GetUspsProofingResultsJob do
             'GetUspsProofingResultsJob: Enrollment status updated',
           )
         end
+      end
+
+      context 'when a timeout error occurs' do
+        before(:each) do
+          stub_request_proofing_results_with_timeout_error
+        end
+
+        it_behaves_like(
+          'enrollment encountering an error that has a nil response',
+          error_type: Faraday::TimeoutError,
+        )
+      end
+
+      context 'when a nil status error occurs' do
+        before(:each) do
+          stub_request_proofing_results_with_nil_status_error
+        end
+
+        it_behaves_like(
+          'enrollment encountering an error that has a nil response',
+          error_type: Faraday::NilStatusError,
+        )
+      end
+
+      context 'when a server error occurs' do
+        before(:each) do
+          stub_request_proofing_results_with_server_error
+        end
+
+        it_behaves_like(
+          'enrollment encountering an error that has a nil response',
+          error_type: Faraday::ServerError,
+        )
       end
     end
 
