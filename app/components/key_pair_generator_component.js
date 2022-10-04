@@ -7,7 +7,7 @@ class KeyPairGeneratorElement extends HTMLElement {
         this.duration = -1;
       }
       trackEvent('IdV: key pair generation', {
-        duration: this.duration.toFixed(0),
+        duration: Math.round(this.duration),
         location: this.dataset.location,
       });
     });
