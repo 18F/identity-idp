@@ -46,6 +46,14 @@ module OidcAuthHelper
     oidc_path
   end
 
+  def visit_idp_from_ial1_oidc_sp_requesting_phishing_resistant(**args)
+    params = ial1_params(**args)
+    include_phishing_resistant(params)
+    oidc_path = openid_connect_authorize_path params
+    visit oidc_path
+    oidc_path
+  end
+
   def visit_idp_from_ial1_oidc_sp_defaulting_to_aal3(**args)
     args[:client_id] ||= OIDC_AAL3_ISSUER
     params = ial1_params(**args)
@@ -95,6 +103,11 @@ module OidcAuthHelper
     end
     ial2_params[:prompt] = prompt if prompt
     ial2_params
+  end
+
+  def include_phishing_resistant(params)
+    params[:acr_values] = "#{params[:acr_values]} " +
+                          Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF
   end
 
   def include_aal3(params)

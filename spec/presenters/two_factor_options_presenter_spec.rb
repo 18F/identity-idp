@@ -25,12 +25,15 @@ describe TwoFactorOptionsPresenter do
       ]
     end
 
-    context 'when an AAL3 only SP is being used' do
+    context 'when a phishing-resistant only SP is being used' do
       let(:presenter) do
-        described_class.new(user_agent: user_agent, user: user_with_2fa, aal3_required: true)
+        described_class.new(
+          user_agent: user_agent, user: user_with_2fa,
+          phishing_resistant_required: true
+        )
       end
 
-      it 'only displays AAL3 MFA methods' do
+      it 'only displays phishing-resistant MFA methods' do
         expect(presenter.options.map(&:class)).to eq [
           TwoFactorAuthentication::WebauthnPlatformSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,

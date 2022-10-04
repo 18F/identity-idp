@@ -36,7 +36,7 @@ describe Users::MfaSelectionController do
       params = ActionController::Parameters.new(voice_params)
       response = FormResponse.new(success: true, errors: {}, extra: { selection: ['voice'] })
 
-      form_params = { user: user, aal3_required: false, piv_cac_required: nil }
+      form_params = { user: user, phishing_resistant_required: false, piv_cac_required: nil }
       form = instance_double(TwoFactorOptionsForm)
       allow(TwoFactorOptionsForm).to receive(:new).with(form_params).and_return(form)
       expect(form).to receive(:submit).

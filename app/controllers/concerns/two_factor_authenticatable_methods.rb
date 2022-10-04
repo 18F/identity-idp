@@ -80,8 +80,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def check_sp_required_mfa_bypass
     return unless service_provider_mfa_policy.user_needs_sp_auth_method_verification?
     method = two_factor_authentication_method
-    return if service_provider_mfa_policy.aal3_required? &&
-              ServiceProviderMfaPolicy::AAL3_METHODS.include?(method)
+    return if service_provider_mfa_policy.phishing_resistant_required? &&
+              ServiceProviderMfaPolicy::PHISHING_RESISTANT_METHODS.include?(method)
     return if service_provider_mfa_policy.piv_cac_required? && method == 'piv_cac'
     prompt_to_verify_sp_required_mfa
   end

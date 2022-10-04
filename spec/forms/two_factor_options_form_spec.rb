@@ -2,12 +2,12 @@ require 'rails_helper'
 
 describe TwoFactorOptionsForm do
   let(:user) { build(:user) }
-  let(:aal3_required) { false }
+  let(:phishing_resistant_required) { false }
   let(:piv_cac_required) { false }
   subject do
     described_class.new(
       user: user,
-      aal3_required: aal3_required,
+      phishing_resistant_required: phishing_resistant_required,
       piv_cac_required: piv_cac_required,
     )
   end
@@ -132,7 +132,7 @@ describe TwoFactorOptionsForm do
       let(:user) { build(:user, :with_authentication_app) }
       let(:enabled_mfa_methods_count) { 1 }
       let(:mfa_selection) { ['phone'] }
-      let(:aal3_required) { true }
+      let(:phishing_resistant_required) { true }
       let(:piv_cac_required) { false }
 
       before do
