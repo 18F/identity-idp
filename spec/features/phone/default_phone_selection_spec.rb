@@ -54,6 +54,12 @@ describe 'default phone selection' do
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         )
       end
+
+      it 'shows a disabled checkbox' do
+        sign_in_visit_add_phone_path(user, phone_config2)
+
+        expect(rendered).to have_field('two_factor_options_form[selection][]', disabled: true)
+      end
     end
 
     context 'when the user edits exiting phone and sets it as default' do
