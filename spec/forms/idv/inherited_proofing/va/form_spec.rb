@@ -6,11 +6,16 @@ RSpec.shared_examples 'the hash is blank?' do
   end
 end
 
+RSpec.shared_examples 'the required_fields match' do
+  it 'returns the required fields' do
+    expect(subject.required_fields).to match_array required_fields
+  end
+end
+
 RSpec.describe Idv::InheritedProofing::Va::Form do
   subject(:form) { described_class.new payload_hash: payload_hash }
 
-  let(:required_fields) { %i[first_name last_name birth_date ssn address_street address_zip] }
-  let(:optional_fields) { %i[phone address_street2 address_city address_state address_country] }
+  let(:required_fields) { [] }
 
   let(:payload_hash) do
     {
@@ -34,24 +39,6 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
     describe '.model_name' do
       it 'returns the right model name' do
         expect(described_class.model_name).to eq 'IdvInheritedProofingVaForm'
-      end
-    end
-
-    describe '.fields' do
-      it 'returns all the fields' do
-        expect(described_class.fields).to match_array required_fields + optional_fields
-      end
-    end
-
-    describe '.required_fields' do
-      it 'returns the required fields' do
-        expect(described_class.required_fields).to match_array required_fields
-      end
-    end
-
-    describe '.optional_fields' do
-      it 'returns the optional fields' do
-        expect(described_class.optional_fields).to match_array optional_fields
       end
     end
   end
@@ -83,6 +70,8 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
       it 'raises no errors' do
         expect { subject }.to_not raise_error
       end
+
+      it_behaves_like 'the required_fields match'
     end
   end
 
@@ -257,6 +246,7 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
         zipcode: subject.address_zip,
       }
     end
+
     it 'returns the correct user pii' do
       expect(subject.user_pii).to eq expected_user_pii
     end

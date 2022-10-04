@@ -234,6 +234,11 @@ GEM
       railties (>= 6.0.0)
     data_uri (0.1.0)
     debug_inspector (1.1.0)
+    deco_lite (1.3.0)
+      activemodel (~> 7.0, >= 7.0.3.1)
+      activesupport (~> 7.0, >= 7.0.3.1)
+      immutable_struct_ex (~> 0.2.0)
+      mad_flatter (~> 2.0)
     derailed_benchmarks (1.8.1)
       benchmark-ips (~> 2)
       get_process_mem (~> 0)
@@ -363,6 +368,7 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       terminal-table (>= 1.5.1)
     ice_nine (0.11.2)
+    immutable_struct_ex (0.2.3)
     io-console (0.5.9)
     ipaddr (1.2.4)
     irb (1.3.7)
@@ -391,6 +397,9 @@ GEM
     lumberjack (1.2.8)
     macaddr (1.7.2)
       systemu (~> 2.6.5)
+    mad_flatter (2.0.0)
+      activesupport (~> 7.0, >= 7.0.3.1)
+      immutable_struct_ex (~> 0.2.0)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
     marcel (1.0.2)
@@ -747,6 +756,7 @@ DEPENDENCIES
   connection_pool
   cssbundling-rails
   data_uri
+  deco_lite (~> 1.3)
   derailed_benchmarks (~> 1.8)
   devise (~> 4.8)
   dotiw (>= 4.0.1)

@@ -18,6 +18,7 @@ gem 'bootsnap', '~> 1.9.0', require: false
 gem 'browser'
 gem 'connection_pool'
 gem 'cssbundling-rails'
+gem 'deco_lite', '~> 1.3'
 gem 'devise', '~> 4.8'
 gem 'dotiw', '>= 4.0.1'
 gem 'faraday'
