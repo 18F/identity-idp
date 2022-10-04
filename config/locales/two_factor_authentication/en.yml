@@ -88,9 +88,12 @@ en:
       voice: Phone call
       voice_unsupported: We are unable to call phone numbers in %{location}.
     otp_make_default_number:
-      instruction: Please check the box below if you want this to be the default phone
-        number you receive text messages or phone calls.
+      instruction: Make this phone number the default number where you receive text
+        message or phone calls.
       label: Default phone number
+      one_number_instruction: You must have more than one phone number added to select
+        a default phone number.
+      one_number_title: This is your default number
       title: Make this your default phone number?
     personal_key_fallback:
       question: Don’t have your personal key?
