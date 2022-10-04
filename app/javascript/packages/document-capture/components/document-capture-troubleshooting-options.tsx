@@ -83,7 +83,7 @@ function DocumentCaptureTroubleshootingOptions({
         <TroubleshootingOptions
           isNewFeatures
           heading={formatHTML(t('idv.troubleshooting.headings.are_you_near'), {
-            br: 'br',
+            wbr: 'wbr',
           })}
           options={[
             {
