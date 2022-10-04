@@ -29,6 +29,7 @@ en:
         no_client_id_or_id_token_hint: This application is misconfigured and must send
           either client_id or id_token_hint.
       heading: Do you want to sign out of %{app_name}?
+      heading_with_sp: Do you want to sign out of %{app_name} and return to %{service_provider}?
     token:
       errors:
         expired_code: is expired

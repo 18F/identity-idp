@@ -52,6 +52,20 @@ class OpenidConnectLogoutForm
     FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
   end
 
+  # Used by RedirectUriValidator
+  def service_provider
+    return @service_provider if defined?(@service_provider)
+    sp_from_client_id = ServiceProvider.find_by(issuer: client_id)
+
+    @service_provider = if reject_id_token_hint?
+                          sp_from_client_id
+    else
+      identity&.service_provider_record || sp_from_client_id
+    end
+
+    @service_provider
+  end
+
   private
 
   attr_reader :identity, :success
@@ -115,17 +129,6 @@ class OpenidConnectLogoutForm
         :id_token_hint, t('openid_connect.logout.errors.id_token_hint'),
         type: :id_token_hint
       )
-    end
-  end
-
-  # Used by RedirectUriValidator
-  def service_provider
-    sp_from_client_id = ServiceProvider.find_by(issuer: client_id)
-
-    if reject_id_token_hint?
-      sp_from_client_id
-    else
-      identity&.service_provider_record || sp_from_client_id
     end
   end
 
