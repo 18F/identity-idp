@@ -2,18 +2,18 @@ import { trackEvent } from '@18f/identity-analytics';
 
 class KeyPairGeneratorElement extends HTMLElement {
   connectedCallback() {
-    this.generateKeyPair().then(() => {
-      if (this.duration === undefined) {
-        this.duration = -1;
-      }
-      trackEvent('IdV: key pair generation', {
-        duration: Math.round(this.duration),
-        location: this.dataset.location,
-      });
+    this.logDuration();
+  }
+
+  async logDuration() {
+    const duration = await this.generateKeyPairDuration();
+    trackEvent('IdV: key pair generation', {
+      duration: Math.round(duration),
+      location: this.dataset.location,
     });
   }
 
-  async generateKeyPair() {
+  async generateKeyPairDuration() {
     const t0 = performance.now();
 
     const keypair = await crypto.subtle.generateKey(
@@ -33,7 +33,7 @@ class KeyPairGeneratorElement extends HTMLElement {
     this.publicB64key = btoa(String.fromCharCode.apply(null, new Uint8Array(encodedPublicKey)));
 
     const t1 = performance.now();
-    this.duration = t1 - t0; // milliseconds
+    return t1 - t0; // milliseconds
   }
 }
 
