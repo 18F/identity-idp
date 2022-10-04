@@ -16,6 +16,10 @@ module Proofing
         {}
       end
 
+      def transaction_id
+        nil
+      end
+
       def timed_out?
         exception.is_a?(Proofing::TimeoutError)
       end
