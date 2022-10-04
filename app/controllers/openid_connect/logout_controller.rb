@@ -61,7 +61,7 @@ module OpenidConnect
           post_logout_redirect_uri: logout_params[:post_logout_redirect_uri],
         }
         @params[:state] = logout_params[:state] if !logout_params[:state].nil?
-        @service_provider = @logout_form.service_provider&.friendly_name
+        @service_provider_name = @logout_form.service_provider&.friendly_name
         render :index
       else
         analytics.logout_initiated(**result.to_h.except(:redirect_uri))
