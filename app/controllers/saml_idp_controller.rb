@@ -119,6 +119,7 @@ class SamlIdpController < ApplicationController
       idv: identity_needs_verification?,
       finish_profile: profile_needs_verification?,
       requested_ial: requested_ial,
+      request_signed: saml_request.signed?,
       matching_cert_serial: saml_request.service_provider.matching_cert&.serial&.to_s,
     )
     analytics.saml_auth(**analytics_payload)
