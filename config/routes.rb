@@ -356,12 +356,7 @@ Rails.application.routes.draw do
       post '/confirmations' => 'personal_key#update'
     end
 
-    get '/verify/v2(/:step)' => 'verify#show', as: :idv_app
-    get '/verify/v2/password_confirm/forgot_password' => 'verify#show', as: :idv_app_forgot_password
-
     namespace :api do
-      post '/verify/v2/password_confirm' => 'verify/password_confirm#create'
-      post '/verify/v2/password_reset' => 'verify/password_reset#create'
       post '/verify/v2/document_capture' => 'verify/document_capture#create'
       delete '/verify/v2/document_capture_errors' => 'verify/document_capture_errors#delete'
     end
