@@ -769,6 +769,9 @@ Performance/Squeeze:
 Performance/StartWith:
   Enabled: true
 
+Performance/StringIdentifierArgument:
+  Enabled: true
+
 Performance/StringReplacement:
   Enabled: true
 
