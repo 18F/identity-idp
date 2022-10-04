@@ -606,10 +606,11 @@ RSpec.describe ResolutionProofingJob, type: :job do
             expect(resolution_proofer).to receive(
               :proof,
             ).and_return(
-              Proofing::Mock::ResolutionMockClient::ResolutionMockClientResult.new(
+              Proofing::ResolutionResult.new(
                 success: true,
                 errors: {},
                 exception: nil,
+                vendor_name: 'ResolutionMock'
               ),
             )
             expect(state_id_proofer).to receive(:proof).and_return(Proofing::Result.new)
