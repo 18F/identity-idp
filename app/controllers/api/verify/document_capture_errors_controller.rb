@@ -3,8 +3,6 @@ module Api
     class DocumentCaptureErrorsController < BaseController
       include EffectiveUser
 
-      self.required_step = nil
-
       def delete
         form = DocumentCaptureErrorsDeleteForm.new(
           document_capture_session_uuid: params[:document_capture_session_uuid],
