@@ -425,6 +425,7 @@ class ApplicationController < ActionController::Base
       auth_method: user_session[:auth_method],
       aal_level_requested: sp_session[:aal_level_requested],
       piv_cac_requested: sp_session[:piv_cac_requested],
+      phishing_resistant_requested: sp_session[:phishing_resistant_requested],
     )
   end
 

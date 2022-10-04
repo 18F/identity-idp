@@ -27,7 +27,7 @@ feature 'webauthn sign up' do
     it 'marks the session AAL3 on setup and does not require authentication' do
       mock_webauthn_setup_challenge
 
-      visit_idp_from_ial1_oidc_sp_requesting_aal3(prompt: 'select_account')
+      visit_idp_from_ial1_oidc_sp_requesting_phishing_resistant(prompt: 'select_account')
       select_2fa_option('webauthn', visible: :all)
 
       expect(current_path).to eq webauthn_setup_path

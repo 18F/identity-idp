@@ -50,7 +50,7 @@ module TwoFactorAuthentication
         view: view_context,
         user_session_context: context,
         service_provider: current_sp,
-        aal3_required: service_provider_mfa_policy.aal3_required?,
+        phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
         piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
       )
     end

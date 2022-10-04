@@ -17,10 +17,10 @@ module TwoFactorAuthCode
     end
 
     def webauthn_help
-      if service_provider_mfa_policy.aal3_required? &&
+      if service_provider_mfa_policy.phishing_resistant_required? &&
          service_provider_mfa_policy.allow_user_to_switch_method?
         t('instructions.mfa.webauthn.confirm_webauthn_or_aal3_html')
-      elsif service_provider_mfa_policy.aal3_required?
+      elsif service_provider_mfa_policy.phishing_resistant_required?
         t('instructions.mfa.webauthn.confirm_webauthn_only_html')
       elsif platform_authenticator?
         t('instructions.mfa.webauthn.confirm_webauthn_platform_html', app_name: APP_NAME)
@@ -74,7 +74,7 @@ module TwoFactorAuthCode
     end
 
     def link_text
-      if service_provider_mfa_policy.aal3_required?
+      if service_provider_mfa_policy.phishing_resistant_required?
         if service_provider_mfa_policy.allow_user_to_switch_method?
           t('two_factor_authentication.webauthn_piv_available')
         else
@@ -86,7 +86,7 @@ module TwoFactorAuthCode
     end
 
     def link_path
-      if service_provider_mfa_policy.aal3_required?
+      if service_provider_mfa_policy.phishing_resistant_required?
         if service_provider_mfa_policy.allow_user_to_switch_method?
           login_two_factor_piv_cac_url
         else

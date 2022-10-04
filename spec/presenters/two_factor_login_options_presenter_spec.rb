@@ -5,7 +5,7 @@ describe TwoFactorLoginOptionsPresenter do
 
   let(:user) { User.new }
   let(:view) { ActionController::Base.new.view_context }
-  let(:aal3_required) { false }
+  let(:phishing_resistant_required) { false }
   let(:piv_cac_required) { false }
   let(:user_session_context) { UserSessionContext::DEFAULT_CONTEXT }
 
@@ -15,7 +15,7 @@ describe TwoFactorLoginOptionsPresenter do
       view: view,
       user_session_context: user_session_context,
       service_provider: nil,
-      aal3_required: false,
+      phishing_resistant_required: false,
       piv_cac_required: false,
     )
   end

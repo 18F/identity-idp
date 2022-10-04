@@ -1,7 +1,7 @@
 class TwoFactorOptionsForm
   include ActiveModel::Model
 
-  attr_accessor :selection, :user, :aal3_required, :piv_cac_required
+  attr_accessor :selection, :user, :phishing_resistant_required, :piv_cac_required
 
   validates :selection, inclusion: { in: %w[phone sms voice auth_app piv_cac
                                             webauthn webauthn_platform
@@ -10,9 +10,9 @@ class TwoFactorOptionsForm
   validates :selection, length: { minimum: 1 }, if: :has_no_mfa_or_in_required_flow?
   validates :selection, length: { minimum: 2, message: 'phone' }, if: :phone_validations?
 
-  def initialize(user:, aal3_required:, piv_cac_required:)
+  def initialize(user:, phishing_resistant_required:, piv_cac_required:)
     self.user = user
-    self.aal3_required = aal3_required
+    self.phishing_resistant_required = phishing_resistant_required
     self.piv_cac_required = piv_cac_required
   end
 
@@ -38,8 +38,8 @@ class TwoFactorOptionsForm
     }
   end
 
-  def in_aal3_or_piv_cac_required_flow?
-    aal3_required || piv_cac_required
+  def in_phishing_resistant_or_piv_cac_required_flow?
+    phishing_resistant_required || piv_cac_required
   end
 
   def user_needs_updating?
@@ -62,7 +62,7 @@ class TwoFactorOptionsForm
   end
 
   def has_no_mfa_or_in_required_flow?
-    has_no_configured_mfa? || in_aal3_or_piv_cac_required_flow?
+    has_no_configured_mfa? || in_phishing_resistant_or_piv_cac_required_flow?
   end
 
   def kantara_2fa_phone_restricted?
