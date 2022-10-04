@@ -1,7 +1,7 @@
 import { basename, join } from 'path';
 import { writeFile } from 'fs/promises';
 import sass from 'sass-embedded';
-import { transform as parcelTransform, browserslistToTargets } from '@parcel/css';
+import { transform as lightningTransform, browserslistToTargets } from 'lightningcss';
 import browserslist from 'browserslist';
 
 /** @typedef {import('sass-embedded').CompileResult} CompileResult */
@@ -37,7 +37,7 @@ export async function buildFile(file, options) {
 
   let outFile = basename(file, '.scss');
 
-  const parcelResult = parcelTransform({
+  const parcelResult = lightningTransform({
     filename: outFile,
     code: Buffer.from(sassResult.css),
     minify: optimize,
