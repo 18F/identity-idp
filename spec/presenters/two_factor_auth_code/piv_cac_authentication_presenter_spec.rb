@@ -9,12 +9,12 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
   let(:presenter) { presenter_with(reauthn: reauthn, user_email: user_email) }
 
   let(:allow_user_to_switch_method) { false }
-  let(:aal3_required) { true }
+  let(:phishing_resistant_required) { true }
   let(:piv_cac_required) { false }
   let(:service_provider_mfa_policy) do
     instance_double(
       ServiceProviderMfaPolicy,
-      aal3_required?: aal3_required,
+      phishing_resistant_required?: phishing_resistant_required,
       piv_cac_required?: piv_cac_required,
       allow_user_to_switch_method?: allow_user_to_switch_method,
     )
@@ -33,7 +33,7 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
   end
 
   describe '#piv_cac_help' do
-    let(:aal3_required) { false }
+    let(:phishing_resistant_required) { false }
     let(:piv_cac_required) { false }
 
     it 'returns help text' do
@@ -46,7 +46,7 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
     end
 
     context 'with PIV/CAC only requested' do
-      let(:aal3_required) { true }
+      let(:phishing_resistant_required) { true }
       let(:piv_cac_required) { true }
 
       context 'with a user who only has a PIV' do
@@ -70,8 +70,8 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
       end
     end
 
-    context 'with AAL3 requested' do
-      let(:aal3_required) { true }
+    context 'with phishing-resistant requested' do
+      let(:phishing_resistant_required) { true }
       let(:piv_cac_required) { false }
 
       context 'with a user who only has a PIV' do
@@ -87,7 +87,7 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
       context 'with a user who has a PIV and security key' do
         let(:allow_user_to_switch_method) { true }
 
-        it 'returns the PIV or AAL3 help text' do
+        it 'returns the PIV or phishing-resistant help text' do
           expect(presenter.piv_cac_help).to eq(
             t('instructions.mfa.piv_cac.confirm_piv_cac_or_aal3_html'),
           )
@@ -103,16 +103,16 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
   end
 
   describe '#link_text' do
-    let(:aal3_required) { true }
+    let(:phishing_resistant_required) { true }
 
-    context 'with multiple AAL3 methods' do
+    context 'with multiple phishing-resistant methods' do
       let(:allow_user_to_switch_method) { true }
 
       it 'supplies link text' do
         expect(presenter.link_text).to eq(t('two_factor_authentication.piv_cac_webauthn_available'))
       end
     end
-    context 'with only one AAL3 method do' do
+    context 'with only one phishing-resistant method do' do
       let(:allow_user_to_switch_method) { false }
 
       it ' supplies no link text' do

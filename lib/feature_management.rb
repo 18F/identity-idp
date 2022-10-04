@@ -112,10 +112,6 @@ class FeatureManagement
     !Rails.env.test? && IdentityConfig.store.log_to_stdout
   end
 
-  def self.idv_api_enabled?
-    IdentityConfig.store.idv_api_enabled_steps.present?
-  end
-
   def self.idv_personal_key_confirmation_enabled?
     IdentityConfig.store.idv_personal_key_confirmation_enabled
   end

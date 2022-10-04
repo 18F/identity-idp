@@ -106,7 +106,7 @@ group :development, :test do
   gem 'puma'
   gem 'rspec-rails', '6.0.0.rc1'
   gem 'rubocop', '~> 1.29.1', require: false
-  gem 'rubocop-performance', '~> 1.12.0', require: false
+  gem 'rubocop-performance', '~> 1.14.0', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
 end
 

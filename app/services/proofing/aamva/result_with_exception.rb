@@ -1,5 +1,5 @@
 module Proofing
-  module LexisNexis
+  module Aamva
     class ResultWithException
       attr_reader :exception, :vendor_name
 
@@ -14,10 +14,6 @@ module Proofing
 
       def errors
         {}
-      end
-
-      def transaction_id
-        nil
       end
 
       def timed_out?

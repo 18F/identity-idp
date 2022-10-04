@@ -1,12 +1,6 @@
 module OpenidConnect
   class LogoutController < ApplicationController
     include SecureHeadersConcern
-    include RenderConditionConcern
-
-    check_or_render_not_found -> do
-      IdentityConfig.store.accept_client_id_in_oidc_logout ||
-        IdentityConfig.store.reject_id_token_hint_in_logout
-    end, only: [:delete]
 
     before_action :apply_secure_headers_override, only: [:index, :delete]
     before_action :confirm_two_factor_authenticated, only: [:delete]
@@ -81,17 +75,7 @@ module OpenidConnect
     end
 
     def logout_params
-      permitted = [
-        :id_token_hint,
-        :post_logout_redirect_uri,
-        :state,
-      ]
-
-      if IdentityConfig.store.accept_client_id_in_oidc_logout ||
-         IdentityConfig.store.reject_id_token_hint_in_logout
-        permitted << :client_id
-      end
-      params.permit(*permitted)
+      params.permit(:client_id, :id_token_hint, :post_logout_redirect_uri, :state)
     end
   end
 end

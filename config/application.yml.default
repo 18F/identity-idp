@@ -22,7 +22,6 @@ aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","H
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
-accept_client_id_in_oidc_logout: true
 account_reset_token_valid_for_days: 1
 account_reset_wait_period_days: 1
 acuant_maintenance_window_start:
@@ -86,6 +85,9 @@ doc_auth_max_submission_attempts_before_native_camera: 2
 doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
+email_registrations_per_ip_limit: 20
+email_registrations_per_ip_period: 20
+email_registrations_per_ip_track_only_mode: false
 enable_load_testing_mode: false
 enable_partner_api: false
 enable_rate_limiting: true
@@ -99,7 +101,6 @@ gpo_designated_receiver_pii: '{}'
 hide_phone_mfa_signup: false
 identity_pki_disabled: false
 identity_pki_local_dev: false
-idv_api_enabled_steps: '[]'
 idv_attempt_window_in_hours: 6
 idv_contact_url: https://www.example.com
 idv_max_attempts: 5
@@ -107,8 +108,6 @@ idv_min_age_years: 13
 idv_native_camera_a_b_testing_enabled: false
 idv_native_camera_a_b_testing_percent: 10
 idv_personal_key_confirmation_enabled: true
-idv_public_key: 'LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZ3d0RRWUpLb1pJaHZjTkFRRUJCUUFEU3dBd1NBSkJBS3p4d25rbUxqeGx1NmhsRlQ2d2JreUlweHNtYkMyaApjYW5TMGhuWm1DRGIrTEhaME5zQTdHWURpZkMxQlRBMHRuRFo0Zm9HNTRmYjNzYk9ubGpGWXVNQ0F3RUFBUT09Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo='
-idv_private_key: 'LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlCT2dJQkFBSkJBS3p4d25rbUxqeGx1NmhsRlQ2d2JreUlweHNtYkMyaGNhblMwaG5abUNEYitMSFowTnNBCjdHWURpZkMxQlRBMHRuRFo0Zm9HNTRmYjNzYk9ubGpGWXVNQ0F3RUFBUUpCQUp6TUMvOSs2RWlHQzkrZTFlWWkKVzc0ejN4MjBkanZndFlhOHh4UDh2ZnA3TjdKQXMvaGNUbjVLOCtDM2swaXUyR2RNb21qSlp2ckxwT0IyTWh4RQo3QkVDSVFEVERhbVRCMHhKSlVpV0ljNk15Y0dFa2J4SEZ3eEtURVNCaHhzREFISDZEUUloQU5IR2NwVUs5dmVSCkdrZlZTOS9MSVNZQlk2YzRUZk1NUFJZU21KVHFNRVN2QWlBZFdiY05aV1JzZjZ6YWhCVVBhemRvVWtRV3R0UFUKdVVxRm9ONVd5b2NQT1FJZ1FrUjlaK1haMUtVcTl5eERWc1FWaWFzQXJ3K1RXRWN5ZU9tUTkrSHZNNU1DSUcrMQpxVldqNW9PL0FBSU1QbXZVZmp5L0JnMnhEQVRiOEp6alFrQ3dLSnNwCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg=='
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_sp_required: false
@@ -275,7 +274,7 @@ totp_code_interval: 30
 unauthorized_scope_enabled: false
 usps_upload_enabled: false
 usps_upload_sftp_timeout: 5
-valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true"]'
+valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true","http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true","http://idmanagement.gov/ns/assurance/aal/2?hspd12=true"]'
 vendor_status_acuant: 'operational'
 vendor_status_lexisnexis_instant_verify: 'operational'
 vendor_status_lexisnexis_trueid: 'operational'
@@ -410,6 +409,7 @@ production:
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: login.gov
+  email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
   hmac_fingerprinter_key:
@@ -504,6 +504,7 @@ test:
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2
   logins_per_ip_limit: 3
+  email_registrations_per_ip_limit: 3
   max_bad_passwords: 5
   max_mail_events: 2
   newrelic_browser_app_id: ''

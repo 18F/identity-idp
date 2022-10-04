@@ -261,7 +261,7 @@ describe Users::TwoFactorAuthenticationController do
 
       before do
         stub_sign_in(user)
-        controller.session[:sp] = { aal3_requested: true, piv_cac_requested: true }
+        controller.session[:sp] = { phishing_resistant_requeste: true, piv_cac_requested: true }
       end
 
       it 'redirects to MFA setup if no PIV/CAC is enabled' do

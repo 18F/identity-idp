@@ -24,19 +24,8 @@ describe Proofing::Aamva::Proofer do
       first_name_fuzzy_alternative: true,
     }
   end
-  let(:result) { Proofing::Result.new }
 
-  subject do
-    described_class.new(
-      auth_request_timeout: AamvaFixtures.example_config.auth_request_timeout,
-      auth_url: AamvaFixtures.example_config.auth_url,
-      cert_enabled: AamvaFixtures.example_config.cert_enabled,
-      private_key: AamvaFixtures.example_config.private_key,
-      public_key: AamvaFixtures.example_config.public_key,
-      verification_request_timeout: AamvaFixtures.example_config.verification_request_timeout,
-      verification_url: AamvaFixtures.example_config.verification_url,
-    )
-  end
+  subject { described_class.new(AamvaFixtures.example_config.to_h) }
 
   let(:verification_response) { AamvaFixtures.verification_response }
 
@@ -50,73 +39,90 @@ describe Proofing::Aamva::Proofer do
       to_return(body: verification_response)
   end
 
-  describe '#aamva_proof' do
+  describe '#proof' do
     context 'when verification is successful' do
       it 'the result is successful' do
-        subject.aamva_proof(state_id_data, result)
+        result = subject.proof(state_id_data)
 
         expect(result.success?).to eq(true)
-        expect(result.errors).to be_empty
+        # TODO: Find a better way to express this than errors
+        expect(result.transaction_id).to eq('1234-abcd-efgh')
+        expect(result.errors).to eq({})
+        expect(result.vendor_name).to eq('aamva:state_id')
+        expect(result.exception).to eq(nil)
+        expect(result.timed_out?).to eq(false)
+
+        expect(result.verified_attributes).to eq(
+          %i[
+            dob
+            state_id_number
+            state_id_type
+            last_name
+            first_name
+            address
+          ].to_set,
+        )
       end
     end
 
     context 'when verification is unsuccessful' do
       let(:verification_response) do
-        XmlHelper.modify_xml_at_xpath(super(), '//PersonBirthDateMatchIndicator', 'false')
+        XmlHelper.modify_xml_at_xpath(
+          super(),
+          '//PersonBirthDateMatchIndicator',
+          'false',
+        )
       end
 
       it 'the result should be failed' do
-        subject.aamva_proof(state_id_data, result)
+        result = subject.proof(state_id_data)
 
-        expect(result.failed?).to eq(true)
+        expect(result.success?).to eq(false)
         expect(result.errors).to include(dob: ['UNVERIFIED'])
+        expect(result.transaction_id).to eq('1234-abcd-efgh')
+        expect(result.vendor_name).to eq('aamva:state_id')
+        expect(result.exception).to eq(nil)
+        expect(result.timed_out?).to eq(false)
+
+        expect(result.verified_attributes).to eq(
+          %i[
+            state_id_number
+            state_id_type
+            last_name
+            first_name
+            address
+          ].to_set,
+        )
       end
     end
 
     context 'when verification attributes are missing' do
       let(:verification_response) do
-        XmlHelper.delete_xml_at_xpath(super(), '//PersonBirthDateMatchIndicator')
+        XmlHelper.delete_xml_at_xpath(
+          super(),
+          '//PersonBirthDateMatchIndicator',
+        )
       end
 
       it 'the result should be failed' do
-        subject.aamva_proof(state_id_data, result)
+        result = subject.proof(state_id_data)
 
-        expect(result.failed?).to eq(true)
+        expect(result.success?).to eq(false)
         expect(result.errors).to include(dob: ['MISSING'])
-      end
-    end
-  end
+        expect(result.transaction_id).to eq('1234-abcd-efgh')
+        expect(result.vendor_name).to eq('aamva:state_id')
+        expect(result.exception).to eq(nil)
+        expect(result.timed_out?).to eq(false)
 
-  describe '#proof' do
-    context 'when verification is successful' do
-      let(:applicant_data) do
-        {
-          uuid: SecureRandom.hex(32),
-          dob: '19800101',
-          last_name: 'Simpson',
-          first_name: 'Homer',
-          address1: '123 Street St',
-          city: 'Springfield',
-          state: 'IL',
-          zipcode: '12345',
-        }
-      end
-
-      let(:aamva_applicant) do
-        Aamva::Applicant.from_proofer_applicant(OpenStruct.new(state_id_data.merge(applicant_data)))
-      end
-
-      let(:transaction_locator_id) { SecureRandom.uuid }
-      let(:verification_response) do
-        XmlHelper.modify_xml_at_xpath(super(), '//TransactionLocatorID', transaction_locator_id)
-      end
-
-      it 'the result is successful' do
-        result = subject.proof(state_id_data.merge(applicant_data))
-        expect(result.success?).to eq(true)
-        expect(result.errors).to be_empty
-
-        expect(result.transaction_id).to eq(transaction_locator_id)
+        expect(result.verified_attributes).to eq(
+          %i[
+            state_id_number
+            state_id_type
+            last_name
+            first_name
+            address
+          ].to_set,
+        )
       end
     end
   end

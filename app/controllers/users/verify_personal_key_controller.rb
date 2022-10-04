@@ -22,7 +22,7 @@ module Users
 
     def create
       if throttle.throttled_else_increment?
-        irs_attempts_api_tracker.personal_key_reactivation_throttled(success: false)
+        irs_attempts_api_tracker.personal_key_reactivation_rate_limited(success: false)
         render_throttled
       else
         result = personal_key_form.submit

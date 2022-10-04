@@ -52,4 +52,17 @@ describe 'idv/session_errors/warning.html.erb' do
       )
     end
   end
+
+  context 'with a nil user_session' do
+    let(:user_session) { nil }
+
+    it 'does not render troubleshooting option to retake photos' do
+      expect(rendered).to have_link(t('idv.failure.button.warning'), href: try_again_path)
+      expect(rendered).to_not have_content(t('components.troubleshooting_options.default_heading'))
+      expect(rendered).to_not have_link(
+        t('idv.troubleshooting.options.add_new_photos'),
+        href: idv_doc_auth_step_path(step: :redo_document_capture),
+      )
+    end
+  end
 end

@@ -218,7 +218,7 @@ module Features
       create(:user, :signed_up, :with_authentication_app, password: VALID_PASSWORD)
     end
 
-    def user_with_aal3_2fa
+    def user_with_phishing_resistant_2fa
       create(:user, :signed_up, :with_webauthn, password: VALID_PASSWORD)
     end
 

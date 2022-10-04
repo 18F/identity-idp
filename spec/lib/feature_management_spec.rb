@@ -353,24 +353,6 @@ describe 'FeatureManagement' do
     end
   end
 
-  describe 'idv_api_enabled?' do
-    context 'with no steps enabled' do
-      it 'returns false' do
-        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return([])
-
-        expect(FeatureManagement.idv_api_enabled?).to eq(false)
-      end
-    end
-
-    context 'with steps enabled' do
-      it 'returns true' do
-        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['example'])
-
-        expect(FeatureManagement.idv_api_enabled?).to eq(true)
-      end
-    end
-  end
-
   describe '.voip_allowed_phones' do
     before do
       # clear memoization

@@ -22,6 +22,8 @@ module Saml
       AAL_AUTHN_CONTEXT_PREFIX = 'http://idmanagement.gov/ns/assurance/aal'.freeze
       AAL1_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/1".freeze
       AAL2_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/2".freeze
+      AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/2?phishing_resistant=true".freeze
+      AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/2?hspd12=true".freeze
       AAL3_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/3".freeze
       AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/3?hspd12=true".freeze
 
@@ -54,6 +56,8 @@ module Saml
         DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::DEFAULT_AAL,
         AAL1_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::AAL1,
         AAL2_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::AAL2,
+        AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::AAL2,
+        AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::AAL2,
         AAL3_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::AAL3,
         AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::AAL3,
       }.freeze

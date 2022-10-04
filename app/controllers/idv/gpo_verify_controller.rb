@@ -28,7 +28,7 @@ module Idv
       @gpo_verify_form = build_gpo_verify_form
 
       if throttle.throttled_else_increment?
-        irs_attempts_api_tracker.idv_gpo_verification_throttled
+        irs_attempts_api_tracker.idv_gpo_verification_rate_limited
         render_throttled
       else
         result = @gpo_verify_form.submit

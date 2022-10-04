@@ -305,7 +305,7 @@ module SamlAuthHelper
       client_id: client_id,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF + ' ' +
-        Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
+        Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email x509 x509:presented',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,

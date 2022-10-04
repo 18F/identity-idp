@@ -121,52 +121,20 @@ RSpec.describe OpenidConnectLogoutForm do
         context 'without an id_token_hint' do
           let(:id_token_hint) { nil }
 
-          context 'when accepting client_id' do
-            before do
-              allow(IdentityConfig.store).to receive(:accept_client_id_in_oidc_logout).
-                and_return(true)
-            end
+          context 'without client_id' do
+            let(:client_id) { nil }
 
-            context 'without client_id' do
-              let(:client_id) { nil }
-
-              it 'is not valid' do
-                expect(valid?).to eq(false)
-                expect(form.errors[:base]).to be_present
-              end
-            end
-
-            context 'with a valid client_id' do
-              let(:client_id) { service_provider }
-
-              it 'is valid' do
-                expect(valid?).to eq(true)
-              end
+            it 'is not valid' do
+              expect(valid?).to eq(false)
+              expect(form.errors[:base]).to be_present
             end
           end
 
-          context 'when not accepting client_id' do
-            before do
-              allow(IdentityConfig.store).to receive(:accept_client_id_in_oidc_logout).
-                and_return(false)
-            end
+          context 'with a valid client_id' do
+            let(:client_id) { service_provider }
 
-            context 'without client_id' do
-              let(:client_id) { nil }
-
-              it 'is not valid' do
-                expect(valid?).to eq(false)
-                expect(form.errors[:id_token_hint]).to be_present
-              end
-            end
-
-            context 'with a valid client_id' do
-              let(:client_id) { service_provider }
-
-              it 'is not valid' do
-                expect(valid?).to eq(false)
-                expect(form.errors[:client_id]).to be_present
-              end
+            it 'is valid' do
+              expect(valid?).to eq(true)
             end
           end
         end

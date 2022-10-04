@@ -477,6 +477,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         expect(session[:sp]).to eq(
           aal_level_requested: nil,
           piv_cac_requested: false,
+          phishing_resistant_requested: false,
           ial: 1,
           ial2: false,
           ial2_strict: false,

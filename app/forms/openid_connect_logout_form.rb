@@ -20,9 +20,6 @@ class OpenidConnectLogoutForm
               message: I18n.t('openid_connect.logout.errors.client_id_missing'),
             },
             if: :reject_id_token_hint?
-  validates :client_id,
-            absence: true,
-            unless: -> { accept_client_id? }
   validates :id_token_hint,
             absence: {
               message: I18n.t('openid_connect.logout.errors.id_token_hint_present'),
@@ -34,9 +31,9 @@ class OpenidConnectLogoutForm
             if: -> { !state.nil? }
 
   validate :id_token_hint_or_client_id_present,
-           if: -> { accept_client_id? && !reject_id_token_hint? }
+           if: -> { !reject_id_token_hint? }
   validate :validate_identity, unless: :reject_id_token_hint?
-  validate :valid_client_id, if: :accept_client_id?
+  validate :valid_client_id
 
   def initialize(params:, current_user:)
     ATTRS.each do |key|
@@ -58,10 +55,6 @@ class OpenidConnectLogoutForm
   private
 
   attr_reader :identity, :success
-
-  def accept_client_id?
-    IdentityConfig.store.accept_client_id_in_oidc_logout || reject_id_token_hint?
-  end
 
   def reject_id_token_hint?
     IdentityConfig.store.reject_id_token_hint_in_logout

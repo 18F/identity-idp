@@ -16,8 +16,6 @@ describe('Cancel', () => {
           value={{
             cancelURL: 'http://example.test/cancel',
             currentStep: 'one',
-            basePath: '',
-            onComplete() {},
           }}
         >
           <Cancel />
