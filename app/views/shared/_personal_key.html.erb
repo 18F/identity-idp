@@ -1,4 +1,4 @@
-<%= render PageHeadingComponent.new.with_content(t('headings.personal_key')) %>
+<%= render PageHeadingComponent.new.with_content(t('forms.personal_key_partial.header')) %>
 <div class="full-width-box margin-y-5">
   <%= render 'partials/personal_key/key', code: code %>
 </div>
@@ -7,43 +7,35 @@
 
 <div>
   <%= render AccordionComponent.new do |c| %>
-    <% c.header { "What is a personal key?" } %>
-    <p>
-    A personal key "locks" your personal information with your account.
-    It's the only way to unlock your information if you lose or forget
-    your password.
-    </p>
-
-    <p>
-    When you reset your password, Login.gov will ask for your personal
-    key to make sure you are you - not someone pretending to be you.
-    </p>
+    <% c.header { t('forms.personal_key_partial.explanation.header') } %>
+    <% t('forms.personal_key_partial.explanation.text').each do |paragraph| %>
+      <%= "<p>#{paragraph}</p>".html_safe %>
+    <% end %>
   <% end %>
 </div>
 
 <div>
-  <input type="checkbox" value="1" name="acknowledgement_checkbox" class="usa-checkbox__input"
- />
+  <%= tag.input(
+      type: 'checkbox',
+      id: 'acknowledgement_checkbox',
+      class: 'masked-text__toggle usa-checkbox__input usa-checkbox__input--bordered,'
+      ) %>
   <label for="acknowledgement_checkbox" class="usa-checkbox__label">
+    <p><b><%= t('forms.personal_key_partial.acknowledgement.header') %></b></p>
     <p>
-      <b>
-        You need your personal key if you forget your password.
-        Keep it safe and don't share it with anyone.
-      </b>
-    </p>
-    <p>
-      <%= t('instructions.personal_key.info') %>
+      <%= t('forms.personal_key_partial.acknowledgement.text') %>
       <ul>
-        <% t('instructions.personal_key.info_bullets').each do |bullet| %>
-        <%=  "<li>#{bullet}</li>".html_safe %>
+        <% t('forms.personal_key_partial.acknowledgement.bullets').each do |bullet| %>
+          <%= "<li>#{bullet}</li>".html_safe %>
         <% end %>
       </ul>
     </p>
     <p>
-      Check the box above to continue
+      <%= t('forms.personal_key_partial.acknowledgement.instructions') %>
     </p>
   </label>
 </div>
+<%= javascript_packs_tag_once 'acknowledgement_checkbox' %>
 
 <%= button_to(
       t('forms.buttons.continue'),
