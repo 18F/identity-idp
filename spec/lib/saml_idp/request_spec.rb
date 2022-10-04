@@ -14,6 +14,8 @@ module SamlIdp
 
     let(:raw_authn_forceauthn_false) { "<samlp:AuthnRequest AssertionConsumerServiceURL='http://localhost:3000/saml/consume' Destination='http://localhost:1337/saml/auth' ID='_af43d1a0-e111-0130-661a-3c0754403fdb' IssueInstant='2013-08-06T22:01:35Z' Version='2.0' ForceAuthn='false' xmlns:samlp='urn:oasis:names:tc:SAML:2.0:protocol'><saml:Issuer xmlns:saml='urn:oasis:names:tc:SAML:2.0:assertion'>localhost:3000</saml:Issuer><samlp:RequestedAuthnContext Comparison='exact'><saml:AuthnContextClassRef xmlns:saml='urn:oasis:names:tc:SAML:2.0:assertion'>urn:oasis:names:tc:SAML:2.0:ac:classes:Password</saml:AuthnContextClassRef></samlp:RequestedAuthnContext></samlp:AuthnRequest>" }
 
+    let(:raw_authn_enveloped_signature) { "<samlp:AuthnRequest AssertionConsumerServiceURL='http://localhost:3000/saml/consume' Destination='http://localhost:1337/saml/auth' ID='_af43d1a0-e111-0130-661a-3c0754403fdb' IssueInstant='2013-08-06T22:01:35Z' Version='2.0' ForceAuthn='false' xmlns:samlp='urn:oasis:names:tc:SAML:2.0:protocol'><saml:Issuer xmlns:saml='urn:oasis:names:tc:SAML:2.0:assertion'>localhost:3000</saml:Issuer><ds:Signature xmlns:ds='http://www.w3.org/2000/09/xmldsig#'></ds:Signature><samlp:RequestedAuthnContext Comparison='exact'><saml:AuthnContextClassRef xmlns:saml='urn:oasis:names:tc:SAML:2.0:assertion'>urn:oasis:names:tc:SAML:2.0:ac:classes:Password</saml:AuthnContextClassRef></samlp:RequestedAuthnContext></samlp:AuthnRequest>" }
+
     describe "deflated request" do
       let(:deflated_request) { Base64.encode64(Zlib::Deflate.deflate(raw_authn_request, 9)[2..-5]) }
 
@@ -54,6 +56,28 @@ module SamlIdp
 
       it "has a valid valid_signature" do
         expect(subject.valid_signature?).to be_truthy
+      end
+
+      it "correctly indicates that it isn't signed" do
+        expect(subject.signed?).to be_falsey
+      end
+
+      context "with signature in params" do
+        subject do
+          described_class.new(raw_authn_request, { get_params: { Signature: 'abc' } })
+        end
+
+        it "correctly indicates that it is signed (even invalidly)" do
+          expect(subject.signed?).to be_truthy
+        end
+      end
+
+      context "with an enveloped signature" do
+        subject { described_class.new raw_authn_enveloped_signature }
+
+        it "correctly indicates that it is signed (even invalidly)" do
+          expect(subject.signed?).to be_truthy
+        end
       end
 
       it "should return acs_url for response_url" do

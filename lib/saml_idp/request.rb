@@ -154,6 +154,10 @@ module SamlIdp
       return true
     end
 
+    def signed?
+      document.signed? || !!self.options[:get_params]&.key?(:Signature)
+    end
+
     def valid_signature?
       # Force signatures for logout requests because there is no other
       # protection against a cross-site DoS.
