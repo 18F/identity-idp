@@ -825,6 +825,36 @@ describe SamlIdpController do
           expect(authn_context_class_ref).to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
         end
 
+        it 'returns AAL3 authn_context when AAL3 is requested' do
+          allow(controller).to receive(:user_session).and_return({ auth_method: 'piv_cac' })
+          user = create(:user, :with_piv_or_cac)
+          auth_settings = saml_settings(
+            overrides: { authn_context: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF },
+          )
+          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
+          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
+
+          expect(response.status).to eq(200)
+          expect(authn_context_class_ref).to eq(
+            Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+
+        it 'returns AAL3-HSPD12 authn_context when AAL3-HSPD12 is requested' do
+          allow(controller).to receive(:user_session).and_return({ auth_method: 'piv_cac' })
+          user = create(:user, :with_piv_or_cac)
+          auth_settings = saml_settings(
+            overrides: { authn_context: Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF },
+          )
+          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
+          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
+
+          expect(response.status).to eq(200)
+          expect(authn_context_class_ref).to eq(
+            Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+
         it 'returns AAL2-HSPD12 authn_context when AAL2-HSPD12 is requested' do
           allow(controller).to receive(:user_session).and_return({ auth_method: 'piv_cac' })
           user = create(:user, :with_piv_or_cac)
