@@ -20,6 +20,8 @@ module IrsAttemptsApi
     def read_events(timestamp:)
       key = key(timestamp)
       redis_pool.with do |client|
+        # see client.hscan which refs https://redis.io/commands/scan/
+        # but it's... a lil' bit weird.
         client.hgetall(key)
       end
     end
