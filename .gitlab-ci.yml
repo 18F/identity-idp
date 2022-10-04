@@ -257,8 +257,9 @@ veracode_scan:
     - ls tmp/veracode-*.zip > tmp/veracodepackage
     - curl -O https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
     - unzip pipeline-scan-LATEST.zip pipeline-scan.jar
-    - env | grep -i proxy
     - java -jar pipeline-scan.jar
+      -Dhttps.proxyHost=obproxy-test-pool.login.gov.internal
+      -Dhttps.proxyPort=3128
       --veracode_api_id "$VERACODE_API_ID"
       --veracode_api_key "$VERACODE_API_SECRET"
       --file "$(cat tmp/veracodepackage)"
