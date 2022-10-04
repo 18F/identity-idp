@@ -5,48 +5,50 @@
 
 <br />
 
-<%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        link_to(
-          "data:text/plain;charset=utf-8,#{CGI.escape(code)}",
-          download: 'personal_key.txt',
-          **tag_options,
-          &block
-        )
-      end,
-      icon: :file_download,
-      outline: true,
-      class: 'margin-right-2 margin-bottom-2 tablet:margin-bottom-0',
-    ).with_content(t('forms.backup_code.download')) %>
-<%= render PrintButtonComponent.new(
-      icon: :print,
-      outline: true,
-      type: :button,
-      class: 'margin-right-2 margin-bottom-2 tablet:margin-bottom-0',
-    ) %>
-<%= render ClipboardButtonComponent.new(
-      clipboard_text: code,
-      outline: true,
-      class: 'margin-bottom-2 tablet:margin-bottom-0',
-    ) %>
-
 <div>
-</div>
+  <%= render AccordionComponent.new do |c| %>
+    <% c.header { "What is a personal key?" } %>
+    <p>
+    A personal key "locks" your personal information with your account.
+    It's the only way to unlock your information if you lose or forget
+    your password.
+    </p>
 
-<br />
-
-<div>
-<%= t('instructions.personal_key.info') %>
-<ul>
-  <% t('instructions.personal_key.info_bullets').each do |bullet| %>
-  <%=  "<li>#{bullet}</li>".html_safe %>
+    <p>
+    When you reset your password, Login.gov will ask for your personal
+    key to make sure you are you - not someone pretending to be you.
+    </p>
   <% end %>
-</ul>
 </div>
+
+<div>
+  <input type="checkbox" value="1" name="acknowledgement_checkbox" class="usa-checkbox__input"
+ />
+  <label for="acknowledgement_checkbox" class="usa-checkbox__label">
+    <p>
+      <b>
+        You need your personal key if you forget your password.
+        Keep it safe and don't share it with anyone.
+      </b>
+    </p>
+    <p>
+      <%= t('instructions.personal_key.info') %>
+      <ul>
+        <% t('instructions.personal_key.info_bullets').each do |bullet| %>
+        <%=  "<li>#{bullet}</li>".html_safe %>
+        <% end %>
+      </ul>
+    </p>
+    <p>
+      Check the box above to continue
+    </p>
+  </label>
+</div>
+
 <%= button_to(
       t('forms.buttons.continue'),
       update_path,
-      class: 'display-block usa-button usa-button--big usa-button--wide personal-key-continue margin-top-5',
+      class: 'display-block usa-button usa-button--full-width usa-button--wide personal-key-continue margin-top-5',
       'data-toggle': FeatureManagement.idv_personal_key_confirmation_enabled? ? 'modal' : 'skip',
     ) %>
 <%= render 'shared/personal_key_confirmation_modal', code: code, update_path: update_path %>

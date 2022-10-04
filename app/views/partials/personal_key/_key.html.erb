@@ -12,4 +12,30 @@
           date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')),
         ) %>
   </p>
+
+  <%= render ClipboardButtonComponent.new(
+      clipboard_text: code,
+      unstyled: true) %>
+
+  <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+          link_to(
+            "data:text/plain;charset=utf-8,#{CGI.escape(code)}",
+            download: 'personal_key.txt',
+            **tag_options,
+            &block
+          )
+        end,
+  icon: :file_download,
+  unstyled: true,
+  class: 'margin-right-2 margin-bottom-2 tablet:margin-bottom-0',
+  ).with_content(t('forms.backup_code.download')) %>
+
+  <%= render PrintButtonComponent.new(
+        icon: :print,
+        unstyled: true,
+        type: :button,
+        class: 'margin-right-2 margin-bottom-2 tablet:margin-bottom-0',
+      ) %>
+
 </div>
