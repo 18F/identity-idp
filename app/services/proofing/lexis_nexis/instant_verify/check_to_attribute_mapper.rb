@@ -20,7 +20,8 @@ module Proofing
         }.freeze
 
         def initialize(instant_verify_errors)
-          if instant_verify_errors.present?
+          items = instant_verify_errors&.dig('Items')
+          if items.present?
             @instant_verify_checks = instant_verify_errors['Items'].map do |item|
               InstantVerifyCheck.new(name: item['ItemName'], status: item['ItemStatus'])
             end
