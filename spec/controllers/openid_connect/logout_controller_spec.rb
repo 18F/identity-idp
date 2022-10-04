@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe OpenidConnect::LogoutController do
   let(:state) { SecureRandom.hex }
   let(:code) { SecureRandom.uuid }
+  let(:valid_post_logout_redirect_uri) { 'gov.gsa.openidconnect.test://result/signout' }
   let(:post_logout_redirect_uri) { 'gov.gsa.openidconnect.test://result/signout' }
 
   let(:user) { build(:user) }
@@ -10,7 +11,7 @@ RSpec.describe OpenidConnect::LogoutController do
   let(:service_provider) do
     create(
       :service_provider, issuer: 'test', redirect_uris: [
-        post_logout_redirect_uri,
+        valid_post_logout_redirect_uri,
       ]
     )
   end
@@ -257,7 +258,7 @@ RSpec.describe OpenidConnect::LogoutController do
                   'OIDC Logout Requested',
                   hash_including(
                     success: false,
-                    client_id: service_provider,
+                    client_id: service_provider.issuer,
                     client_id_parameter_present: true,
                     id_token_hint_parameter_present: false,
                     errors: errors,
@@ -289,7 +290,7 @@ RSpec.describe OpenidConnect::LogoutController do
         subject(:action) do
           delete :delete,
                  params: {
-                   client_id: service_provider,
+                   client_id: service_provider.issuer,
                    post_logout_redirect_uri: post_logout_redirect_uri,
                    state: state,
                  }
@@ -355,7 +356,7 @@ RSpec.describe OpenidConnect::LogoutController do
       subject(:action) do
         get :index,
             params: {
-              client_id: service_provider,
+              client_id: service_provider.issuer,
               id_token_hint: id_token_hint,
               post_logout_redirect_uri: post_logout_redirect_uri,
               state: state,
@@ -379,7 +380,7 @@ RSpec.describe OpenidConnect::LogoutController do
                 'OIDC Logout Requested',
                 hash_including(
                   success: true,
-                  client_id: service_provider,
+                  client_id: service_provider.issuer,
                   client_id_parameter_present: true,
                   id_token_hint_parameter_present: false,
                   errors: {},
@@ -393,7 +394,7 @@ RSpec.describe OpenidConnect::LogoutController do
                 'OIDC Logout Page Visited',
                 hash_including(
                   success: true,
-                  client_id: service_provider,
+                  client_id: service_provider.issuer,
                   client_id_parameter_present: true,
                   id_token_hint_parameter_present: false,
                   errors: {},
@@ -431,7 +432,7 @@ RSpec.describe OpenidConnect::LogoutController do
               with(
                 'OIDC Logout Requested',
                 success: false,
-                client_id: service_provider,
+                client_id: service_provider.issuer,
                 client_id_parameter_present: true,
                 id_token_hint_parameter_present: true,
                 errors: errors,
@@ -471,7 +472,7 @@ RSpec.describe OpenidConnect::LogoutController do
               with(
                 'OIDC Logout Requested',
                 success: false,
-                client_id: service_provider,
+                client_id: service_provider.issuer,
                 client_id_parameter_present: true,
                 id_token_hint_parameter_present: false,
                 errors: errors,
@@ -501,7 +502,7 @@ RSpec.describe OpenidConnect::LogoutController do
         subject(:action) do
           delete :delete,
                  params: {
-                   client_id: service_provider,
+                   client_id: service_provider.issuer,
                    post_logout_redirect_uri: post_logout_redirect_uri,
                    state: state,
                  }
@@ -522,7 +523,7 @@ RSpec.describe OpenidConnect::LogoutController do
               with(
                 'OIDC Logout Submitted',
                 success: true,
-                client_id: service_provider,
+                client_id: service_provider.issuer,
                 client_id_parameter_present: true,
                 id_token_hint_parameter_present: false,
                 errors: {},
@@ -536,7 +537,7 @@ RSpec.describe OpenidConnect::LogoutController do
               with(
                 'Logout Initiated',
                 success: true,
-                client_id: service_provider,
+                client_id: service_provider.issuer,
                 client_id_parameter_present: true,
                 id_token_hint_parameter_present: false,
                 errors: {},
@@ -599,7 +600,7 @@ RSpec.describe OpenidConnect::LogoutController do
   def add_sp_session_request_url
     params = {
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-      client_id: service_provider,
+      client_id: service_provider.issuer,
       nonce: SecureRandom.hex,
       redirect_uri: 'gov.gsa.openidconnect.test://result',
       response_type: 'code',
