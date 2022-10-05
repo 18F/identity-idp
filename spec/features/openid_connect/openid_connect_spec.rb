@@ -175,17 +175,23 @@ describe 'OpenID Connect' do
 
     context 'when sending client_id' do
       it 'logout destroys the session when confirming logout' do
-        client_id = 'urn:gov:gsa:openidconnect:test'
-        sign_in_get_id_token(client_id: client_id)
+        service_provider = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:test')
+        sign_in_get_id_token(client_id: service_provider.issuer)
 
         state = SecureRandom.hex
 
         visit openid_connect_logout_path(
-          client_id: client_id,
+          client_id: service_provider.issuer,
           post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
           state: state,
         )
-        expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
+        expect(page).to have_content(
+          t(
+            'openid_connect.logout.heading_with_sp',
+            app_name: APP_NAME,
+            service_provider_name: service_provider.friendly_name,
+          ),
+        )
         click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
 
         visit account_path
@@ -194,14 +200,20 @@ describe 'OpenID Connect' do
       end
 
       it 'logout does not require state' do
-        client_id = 'urn:gov:gsa:openidconnect:test'
-        sign_in_get_id_token(client_id: client_id)
+        service_provider = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:test')
+        sign_in_get_id_token(client_id: service_provider.issuer)
 
         visit openid_connect_logout_path(
-          client_id: client_id,
+          client_id: service_provider.issuer,
           post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
         )
-        expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
+        expect(page).to have_content(
+          t(
+            'openid_connect.logout.heading_with_sp',
+            app_name: APP_NAME,
+            service_provider_name: service_provider.friendly_name,
+          ),
+        )
         click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
 
         visit account_path
@@ -210,17 +222,23 @@ describe 'OpenID Connect' do
       end
 
       it 'does not destroy the session and redirects to account page when denying logout' do
-        client_id = 'urn:gov:gsa:openidconnect:test'
-        sign_in_get_id_token(client_id: client_id)
+        service_provider = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:test')
+        sign_in_get_id_token(client_id: service_provider.issuer)
 
         state = SecureRandom.hex
 
         visit openid_connect_logout_path(
-          client_id: client_id,
+          client_id: service_provider.issuer,
           post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
           state: state,
         )
-        expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
+        expect(page).to have_content(
+          t(
+            'openid_connect.logout.heading_with_sp',
+            app_name: APP_NAME,
+            service_provider_name: service_provider.friendly_name,
+          ),
+        )
         click_link t('openid_connect.logout.deny')
 
         expect(page).to have_content(t('headings.account.login_info'))
@@ -235,17 +253,23 @@ describe 'OpenID Connect' do
     end
 
     it 'logout destroys the session when confirming logout' do
-      client_id = 'urn:gov:gsa:openidconnect:test'
-      sign_in_get_id_token(client_id: client_id)
+      service_provider = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:test')
+      sign_in_get_id_token(client_id: service_provider.issuer)
 
       state = SecureRandom.hex
 
       visit openid_connect_logout_path(
-        client_id: client_id,
+        client_id: service_provider.issuer,
         post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
         state: state,
       )
-      expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
+      expect(page).to have_content(
+        t(
+          'openid_connect.logout.heading_with_sp',
+          app_name: APP_NAME,
+          service_provider_name: service_provider.friendly_name,
+        ),
+      )
       click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
 
       visit account_path
@@ -254,14 +278,20 @@ describe 'OpenID Connect' do
     end
 
     it 'logout does not require state' do
-      client_id = 'urn:gov:gsa:openidconnect:test'
-      sign_in_get_id_token(client_id: client_id)
+      service_provider = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:test')
+      sign_in_get_id_token(client_id: service_provider.issuer)
 
       visit openid_connect_logout_path(
-        client_id: client_id,
+        client_id: service_provider.issuer,
         post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
       )
-      expect(page).to have_content(t('openid_connect.logout.heading', app_name: APP_NAME))
+      expect(page).to have_content(
+        t(
+          'openid_connect.logout.heading_with_sp',
+          app_name: APP_NAME,
+          service_provider_name: service_provider.friendly_name,
+        ),
+      )
       click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
 
       visit account_path
