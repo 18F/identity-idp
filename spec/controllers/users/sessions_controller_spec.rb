@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Users::SessionsController, devise: true do
   include ActionView::Helpers::DateHelper
-  let(:mock_valid_site) {'http://example.com'}
+  let(:mock_valid_site) { 'http://example.com' }
 
   describe 'GET /users/sign_in' do
     it 'clears the session when user is not yet 2fa-ed' do
@@ -261,7 +261,7 @@ describe Users::SessionsController, devise: true do
 
     it 'tracks unsuccessful authentication for too many auth failures' do
       allow(subject).to receive(:session_bad_password_count_max_exceeded?).and_return(true)
-      mock_email_parameter = {email: 'bob@example.com'}
+      mock_email_parameter = { email: 'bob@example.com' }
 
       stub_attempts_tracker
 
