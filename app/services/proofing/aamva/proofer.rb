@@ -57,15 +57,15 @@ module Proofing
       end
 
       def parse_verification_errors(verification_response)
-        errors = {}
+        errors = errors = Hash.new { |h, k| h[k] = [] }
+
         return errors if verification_response.success?
 
         verification_response.verification_results.each do |attribute, v_result|
           attribute_key = attribute.to_sym
           next if v_result == true
-          errors[attribute_key] ||= []
-          errors[attribute_key].push('UNVERIFIED') if v_result == false
-          errors[attribute_key].push('MISSING') if v_result.nil?
+          errors[attribute_key] << 'UNVERIFIED' if v_result == false
+          errors[attribute_key] << 'MISSING' if v_result.nil?
         end
         errors
       end
