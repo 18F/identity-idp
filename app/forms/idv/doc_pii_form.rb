@@ -4,7 +4,8 @@ module Idv
 
     validate :validate_pii
 
-    attr_reader :first_name, :last_name, :dob, :state, :zipcode, :attention_with_barcode, :jurisdiction
+    attr_reader :first_name, :last_name, :dob, :state, :zipcode, :attention_with_barcode,
+                :jurisdiction
     alias_method :attention_with_barcode?, :attention_with_barcode
 
     def initialize(pii:, attention_with_barcode: false)
