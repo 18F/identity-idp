@@ -29,6 +29,8 @@ es:
         no_client_id_or_id_token_hint: Esta aplicación está mal configurada y debe
           enviar client_id o id_token_hint.
       heading: ¿Quieres cerrar sesión en %{app_name}?
+      heading_with_sp: ¿Quiere cerrar sesión en %{app_name} y regresar a
+        %{service_provider_name}?
     token:
       errors:
         expired_code: ha expirado

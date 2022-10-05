@@ -2,7 +2,11 @@
 
 <div class='text-center'>
   <%= image_tag(asset_url('user-access.svg'), width: '280', height: '91', alt: '') %>
-  <%= render PageHeadingComponent.new.with_content(t('openid_connect.logout.heading', app_name: APP_NAME)) %>
+  <% if @service_provider_name.present? %>
+    <%= render PageHeadingComponent.new.with_content(t('openid_connect.logout.heading_with_sp', app_name: APP_NAME, service_provider_name: @service_provider_name)) %>
+  <% else %>
+    <%= render PageHeadingComponent.new.with_content(t('openid_connect.logout.heading', app_name: APP_NAME)) %>
+  <% end %>
 </div>
 
 <%= button_to(
