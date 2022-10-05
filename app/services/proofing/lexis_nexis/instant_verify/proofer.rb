@@ -37,10 +37,9 @@ module Proofing
         end
 
         def parse_verification_errors(verification_response)
-          errors = {}
+          errors = Hash.new { |h, k| h[k] = [] }
           verification_response.verification_errors.each do |key, value|
-            errors[key] ||= []
-            errors[key].push(value)
+            errors[key] << value
           end
           errors
         end
