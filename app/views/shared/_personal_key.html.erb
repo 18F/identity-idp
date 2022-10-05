@@ -9,21 +9,23 @@
   <%= render AccordionComponent.new do |c| %>
     <% c.header { t('forms.personal_key_partial.explanation.header') } %>
     <% t('forms.personal_key_partial.explanation.text').each do |paragraph| %>
-      <%= "<p>#{paragraph}</p>".html_safe %>
+      <p><%= paragraph%></p>
     <% end %>
   <% end %>
 </div>
 
 <%= simple_form_for('') do |f| %>
   <% @acceptance_prompt = capture do %>
-    <b>
-      <%= t('forms.personal_key_partial.acknowledgement.header') %>
-    </b>
+    <p>
+      <b>
+        <%= t('forms.personal_key_partial.acknowledgement.header') %>
+      </b>
+    </p>
     <p>
       <%= t('forms.personal_key_partial.acknowledgement.text') %>
       <ul>
         <% t('forms.personal_key_partial.acknowledgement.bullets').each do |bullet| %>
-          <%= "<li>#{bullet}</li>".html_safe %>
+          <li><%= bullet %></li>
         <% end %>
       </ul>
     </p>

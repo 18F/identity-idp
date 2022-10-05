@@ -24,7 +24,7 @@ fr:
     personal_key:
       close: Fermer
       confirmation_error: Vous avez entré un clé personnelle erronée.
-      generated_on_html: Générée le %{date}
+      generated_on_html: Votre clé personnelle a été générée le %{date}
       header: Votre clé personnelle
     phones:
       error_message: Vous avez ajouté le nombre maximum de numéros de téléphone.

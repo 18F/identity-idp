@@ -35,7 +35,7 @@ es:
     phone_input:
       country_code_label: Código del país
     print_button:
-      label: Imprima esta página
+      label: Imprima
     troubleshooting_options:
       default_heading: '¿Tiene alguna dificultad? Esto es lo que puede hacer:'
       new_feature: Nueva función

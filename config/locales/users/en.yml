@@ -22,6 +22,7 @@ en:
       close: Close
       confirmation_error: You’ve entered an incorrect personal key.
       generated_on_html: Your personal key was generated on %{date}
+      header: Your personal key
     phones:
       error_message: You’ve added the maximum number of phone numbers.
     rules_of_use:
