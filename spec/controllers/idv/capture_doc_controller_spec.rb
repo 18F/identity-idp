@@ -9,7 +9,7 @@ describe Idv::CaptureDocController do
       expect(subject).to have_actions(
         :before,
         :ensure_user_id_in_session,
-        :flow_state_machine_initialize,
+        :initialize_flow_state_machine,
         :ensure_correct_step,
       )
     end
