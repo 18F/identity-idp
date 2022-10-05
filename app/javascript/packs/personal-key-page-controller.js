@@ -11,6 +11,7 @@ const input = formEl.querySelector('input[type="text"]');
 const modalTrigger = document.querySelector('[data-toggle="modal"]');
 const modalDismiss = document.querySelector('[data-dismiss="personal-key-confirm"]');
 const downloadLink = document.querySelector('a[download]');
+const acknowledgmentCheckbox = document.getElementById('acknowledgment');
 
 function scrapePersonalKey() {
   const keywords = [];
@@ -69,6 +70,13 @@ function downloadForIE(event) {
   window.navigator.msSaveBlob(blob, filename);
 }
 
+function trackAcknowledgment(click_event) {
+  if (click_event.target.checked)
+    trackEvent('IdV: personal key acknowledged');
+  else
+    trackEvent('IdV: personal key un-acknowledgedj');
+}
+
 function trackDownload() {
   trackEvent('IdV: download personal key');
 }
@@ -79,6 +87,7 @@ if (modalTrigger) {
 modalDismiss.addEventListener('click', hide);
 input.addEventListener('input', validateInput);
 downloadLink.addEventListener('click', trackDownload);
+acknowledgmentCheckbox.addEventListener('click', trackAcknowledgment);
 
 if (window.navigator.msSaveBlob) {
   downloadLink.addEventListener('click', downloadForIE);

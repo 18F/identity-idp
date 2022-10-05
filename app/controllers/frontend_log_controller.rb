@@ -15,6 +15,8 @@ class FrontendLogController < ApplicationController
     'IdV: switch_back submitted' => :idv_in_person_switch_back_submitted,
     'IdV: download personal key' => :idv_personal_key_downloaded,
     'IdV: Native camera forced after failed attempts' => :idv_native_camera_forced,
+    'IdV: personal key acknowledged' => :idv_personal_key_acknowledged,
+    'IdV: personal key un-acknowledged' => :idv_personal_key_unacknowledged,
     'Multi-Factor Authentication: download backup code' => :multi_factor_auth_backup_code_download,
     'Show Password button clicked' => :show_password_button_clicked,
   }.transform_values { |method| AnalyticsEvents.instance_method(method) }.freeze
