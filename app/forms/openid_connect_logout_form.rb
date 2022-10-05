@@ -57,11 +57,12 @@ class OpenidConnectLogoutForm
     return @service_provider if defined?(@service_provider)
     sp_from_client_id = ServiceProvider.find_by(issuer: client_id)
 
-    @service_provider = if reject_id_token_hint?
-                          sp_from_client_id
-    else
-      identity&.service_provider_record || sp_from_client_id
-    end
+    @service_provider =
+      if reject_id_token_hint?
+        sp_from_client_id
+      else
+        identity&.service_provider_record || sp_from_client_id
+      end
 
     @service_provider
   end
