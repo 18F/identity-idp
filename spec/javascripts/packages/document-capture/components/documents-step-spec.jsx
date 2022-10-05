@@ -53,7 +53,7 @@ describe('document-capture/components/documents-step', () => {
   });
 
   it('renders additional tips after failed attempts', async () => {
-    const { getByLabelText, getByText, getByRole } = render(
+    const { getByLabelText, getByText, findByRole } = render(
       <FailedCaptureAttemptsContextProvider maxFailedAttemptsBeforeTips={2}>
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
@@ -82,7 +82,7 @@ describe('document-capture/components/documents-step', () => {
       'doc_auth.tips.capture_troubleshooting_glare doc_auth.tips.capture_troubleshooting_lead',
     );
 
-    await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
+    await userEvent.click(await findByRole('button', { name: 'idv.failure.button.warning' }));
 
     // Only show troubleshooting a single time, even after 2 more failed attempts.
     await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
