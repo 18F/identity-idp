@@ -50,7 +50,7 @@ shared_examples_for 'personal key page' do |address_verification_mechanism|
       input = page.find(':focus')
 
       # Validate as incorrect
-      input.fill_in with: 'wrong'
+      input.fill_in with: 'wrong!'
       within('[role=dialog]') { click_on t('forms.buttons.continue') }
       expect(page).to have_content(t('users.personal_key.confirmation_error'))
 
