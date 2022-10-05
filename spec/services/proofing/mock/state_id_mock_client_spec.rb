@@ -21,6 +21,7 @@ RSpec.describe Proofing::Mock::StateIdMockClient do
           timed_out: false,
           transaction_id: transaction_id,
           vendor_name: 'StateIdMock',
+          verified_attributes: [],
         )
       end
     end
@@ -43,6 +44,7 @@ RSpec.describe Proofing::Mock::StateIdMockClient do
           timed_out: false,
           transaction_id: transaction_id,
           vendor_name: 'StateIdMock',
+          verified_attributes: [],
         )
       end
     end
@@ -63,6 +65,7 @@ RSpec.describe Proofing::Mock::StateIdMockClient do
           timed_out: true,
           transaction_id: transaction_id,
           vendor_name: 'StateIdMock',
+          verified_attributes: [],
         )
       end
     end
