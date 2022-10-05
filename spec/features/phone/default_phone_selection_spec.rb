@@ -21,7 +21,7 @@ describe 'default phone selection' do
         )
       end
 
-      it 'does not indicate that it is the default text ' do
+      it 'does not indicate that it is the default number on the account page ' do
         sign_in_before_2fa(user)
         expect(page).not_to have_content t('account.index.default')
       end
@@ -53,12 +53,6 @@ describe 'default phone selection' do
           number: '(***) ***-3434',
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         )
-      end
-
-      it 'shows a disabled checkbox' do
-        sign_in_visit_add_phone_path(user, phone_config2)
-
-        expect(rendered).to have_field('two_factor_options_form[selection][]', disabled: true)
       end
     end
 
