@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Users::SessionsController, devise: true do
   include ActionView::Helpers::DateHelper
+  let(:mock_valid_site) {'http://example.com'}
 
   describe 'GET /users/sign_in' do
     it 'clears the session when user is not yet 2fa-ed' do
@@ -200,7 +201,7 @@ describe Users::SessionsController, devise: true do
     include AccountResetHelper
     it 'tracks the successful authentication for existing user' do
       user = create(:user, :signed_up)
-      subject.session['user_return_to'] = 'http://example.com'
+      subject.session['user_return_to'] = mock_valid_site
 
       stub_analytics
       stub_attempts_tracker
@@ -208,7 +209,7 @@ describe Users::SessionsController, devise: true do
         success: true,
         user_id: user.uuid,
         user_locked_out: false,
-        stored_location: 'http://example.com',
+        stored_location: mock_valid_site,
         sp_request_url_present: false,
         remember_device: false,
       }
@@ -216,7 +217,7 @@ describe Users::SessionsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with('Email and Password Authentication', analytics_hash)
 
-      expect(@irs_attempts_api_tracker).to receive(:email_and_password_auth).
+      expect(@irs_attempts_api_tracker).to receive(:login_email_and_password_auth).
         with(email: user.email, success: true)
 
       post :create, params: { user: { email: user.email, password: user.password } }
@@ -260,15 +261,16 @@ describe Users::SessionsController, devise: true do
 
     it 'tracks unsuccessful authentication for too many auth failures' do
       allow(subject).to receive(:session_bad_password_count_max_exceeded?).and_return(true)
+      mock_email_parameter = {email: 'bob@example.com'}
 
       stub_attempts_tracker
 
-      expect(@irs_attempts_api_tracker).to receive(:email_and_password_auth).
-        with({ email: 'bob@example.com', success: false })
+      expect(@irs_attempts_api_tracker).to receive(:login_email_and_password_auth).
+        with({ **mock_email_parameter, success: false })
       expect(@irs_attempts_api_tracker).to receive(:login_rate_limited).
-        with({ email: 'bob@example.com' })
+        with(mock_email_parameter)
 
-      post :create, params: { user: { email: 'bob@example.com', password: 'eatCake!' } }
+      post :create, params: { user: { **mock_email_parameter, password: 'eatCake!' } }
     end
 
     it 'tracks unsuccessful authentication for locked out user' do
@@ -295,7 +297,7 @@ describe Users::SessionsController, devise: true do
     end
 
     it 'tracks the presence of SP request_url in session' do
-      subject.session[:sp] = { request_url: 'http://example.com' }
+      subject.session[:sp] = { request_url: mock_valid_site }
       stub_analytics
       analytics_hash = {
         success: false,
@@ -576,8 +578,8 @@ describe Users::SessionsController, devise: true do
       it 'tracks page visit, any alert flashes, and the Devise stored location' do
         stub_analytics
         allow(controller).to receive(:flash).and_return(alert: 'hello')
-        subject.session['user_return_to'] = 'http://example.com'
-        properties = { flash: 'hello', stored_location: 'http://example.com' }
+        subject.session['user_return_to'] = mock_valid_site
+        properties = { flash: 'hello', stored_location: mock_valid_site }
 
         expect(@analytics).to receive(:track_event).with('Sign in page visited', properties)
 
