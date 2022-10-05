@@ -276,7 +276,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
             expect(result_context_stages_state_id[:success]).to eq(true)
             expect(result_context_stages_state_id[:timed_out]).to eq(false)
             expect(result_context_stages_state_id[:transaction_id]).to eq('')
-            expect(result_context_stages_state_id[:verified_attributes]).to eq(nil)
+            expect(result_context_stages_state_id[:verified_attributes]).to eq([])
 
             # result[:context][:stages][:threatmetrix]
             expect(result_context_stages_threatmetrix[:client]).to eq('DdpMock')

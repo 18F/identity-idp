@@ -140,7 +140,9 @@ class ResolutionProofingJob < ApplicationJob
       resolution_proofer.proof(applicant_pii)
     end
 
-    state_id_result = Proofing::Aamva::UnsupportedJurisdictionResult.new
+    state_id_result = Proofing::StateIdResult.new(
+      success: true, errors: {}, exception: nil, vendor_name: 'UnsupportedJurisdiction',
+    )
     if should_proof_state_id && resolution_result.success?
       timer.time('state_id') do
         state_id_result = state_id_proofer.proof(applicant_pii)
