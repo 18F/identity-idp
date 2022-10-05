@@ -2802,5 +2802,17 @@ module AnalyticsEvents
   def show_password_button_clicked(path:, **extra)
     track_event('Show Password Button Clicked', path: path, **extra)
   end
+
+  # Logs after an email is sent
+  # @param [String] action type of email being sent
+  # @param [String, nil] ses_message_id AWS SES Message ID
+  def email_sent(action:, ses_message_id:, **extra)
+    track_event(
+      'Email Sent',
+      action: action,
+      ses_message_id: ses_message_id,
+      **extra,
+    )
+  end
 end
 # rubocop:enable Metrics/ModuleLength

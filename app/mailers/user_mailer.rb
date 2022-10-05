@@ -2,7 +2,9 @@ class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
 
+  before_action { @user = params && params[:user] }
   before_action :attach_images
+  after_action :add_metadata
   default(
     from: email_with_name(
       IdentityConfig.store.email_from,
@@ -14,9 +16,13 @@ class UserMailer < ActionMailer::Base
     ),
   )
 
-  def email_confirmation_instructions(user, email, token, request_id:, instructions:)
-    with_user_locale(user) do
-      presenter = ConfirmationEmailPresenter.new(user, view_context)
+  def add_metadata
+    message.instance_variable_set(:@_metadata, { user: @user, action: action_name })
+  end
+
+  def email_confirmation_instructions(email, token, request_id:, instructions:)
+    with_user_locale(@user) do
+      presenter = ConfirmationEmailPresenter.new(@user, view_context)
       @first_sentence = instructions || presenter.first_sentence
       @confirmation_period = presenter.confirmation_period
       @request_id = request_id

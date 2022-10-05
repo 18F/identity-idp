@@ -52,8 +52,7 @@ class SendSignUpEmailConfirmation
   end
 
   def send_confirmation_email(request_id, instructions)
-    UserMailer.email_confirmation_instructions(
-      user,
+    UserMailer.with(user: user).email_confirmation_instructions(
       email_address.email,
       confirmation_token,
       request_id: request_id,
