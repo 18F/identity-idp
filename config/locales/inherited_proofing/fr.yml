@@ -5,6 +5,7 @@ fr:
       continue: Continuer
     headings:
       lets_go: to be implemented
+      retrieval: Nous récupérons vos informations depuis My HealtheVet.
       secure_account: to be implemented
       verify_identity: to be implemented
       verify_information: to be implemented
@@ -16,6 +17,8 @@ fr:
         normes les plus strictes en matière de protection des données. Nous
         n’utilisons vos données uniquement pour vérifier votre identité. %{link}
         sur nos mesures de confidentialité et de sécurité.'
+      retrieval_time: Cette opération peut prendre jusqu'à une minute. Nous chargerons automatiquement l'étape suivante lorsque ce sera fait.
+      retrieval_thanks: Merci de votre patience!
       secure_account: to be implemented
       verify_identity: to be implemented
       welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
