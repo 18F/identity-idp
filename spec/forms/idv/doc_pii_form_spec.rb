@@ -14,6 +14,7 @@ describe Idv::DocPiiForm do
       dob: valid_dob,
       zipcode: Faker::Address.zip_code,
       state: Faker::Address.state_abbr,
+      state_id_jurisdiction: 'AL'
     }
   end
   let(:name_errors_pii) do
@@ -39,6 +40,17 @@ describe Idv::DocPiiForm do
       dob: valid_dob,
       state: Faker::Address.state_abbr,
       zipcode: 12345,
+      state_id_jurisdiction: 'AL',
+    }
+  end
+  let(:jurisdiction_error_pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: valid_dob,
+      zipcode: Faker::Address.zip_code,
+      state: Faker::Address.state_abbr,
+      state_id_jurisdiction: 'XX'
     }
   end
   let(:pii) { nil }
@@ -138,6 +150,16 @@ describe Idv::DocPiiForm do
 
         expect(result.extra[:attention_with_barcode]).to eq(true)
       end
+    end
+  end
+
+  context 'when there is an invalid jurisdiction' do
+    let(:subject) { Idv::DocPiiForm.new(pii: jurisdiction_error_pii)}
+
+    it 'responds with an unsuccessful result' do
+      result = subject.submit
+
+      expect(result.success?).to eq(false)
     end
   end
 end
