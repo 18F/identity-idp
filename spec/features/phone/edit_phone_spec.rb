@@ -12,9 +12,6 @@ describe 'editing a phone' do
     expect(current_path).to eq(manage_phone_path(id: phone_configuration.id))
   end
 
-  it 'allows a user to select a default number' do
-  end
-
   it "does not allow a user to edit another user's phone number" do
     user = create(:user, :signed_up)
     sign_in_and_2fa_user(user)
