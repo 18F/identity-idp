@@ -17,8 +17,9 @@ es:
         las normas más estrictas de protección de datos. Solo utilizamos sus
         datos para verificar su identidad. %{link} sobre nuestras medidas de
         privacidad y seguridad.'
-      retrieval_time: Esto puede tardar hasta un minuto. Cargaremos el siguiente paso automáticamente cuando haya terminado.
       retrieval_thanks: ¡Gracias por su paciencia!
+      retrieval_time: Esto puede tardar hasta un minuto. Cargaremos el siguiente paso
+        automáticamente cuando haya terminado.
       secure_account: to be implemented
       verify_identity: to be implemented
       welcome_html: '%{sp_name} necesita asegurarse de que sea usted y no alguien que
