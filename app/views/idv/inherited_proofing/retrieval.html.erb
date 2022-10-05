@@ -2,14 +2,14 @@
 
 <%= render PageHeadingComponent.new.with_content(t('inherited_proofing.headings.retrieval')) %>
 
-<div class="shield-spinner margin-y-4" id='spinner'>
-  <div class='text-center'>
+  <div class='margin-y-4 text-center'>
     <%= image_tag(
           asset_url('shield-spinner.gif'),
           alt: t('inherited_proofing.headings.retrieval'),
+          width: 120,
+          height: 120
         ) %>
   </div>
-</div>
 
 <p><%= t('inherited_proofing.info.retrieval_time') %></p>
 <p><%= t('inherited_proofing.info.retrieval_thanks') %></p>
