@@ -66,7 +66,7 @@ describe Idv::Steps::DocumentCaptureStep do
 
         stub_const(
           'AbTests::NATIVE_CAMERA',
-          FakeAbTestBucket.new(session_uuid => :native_camera_only),
+          FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => :native_camera_only) },
         )
       end
 
