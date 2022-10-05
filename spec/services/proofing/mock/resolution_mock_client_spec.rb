@@ -25,6 +25,8 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           reference: reference,
           transaction_id: transaction_id,
           vendor_name: 'ResolutionMock',
+          can_pass_with_additional_verification: false,
+          attributes_requiring_additional_verification: [],
         )
       end
     end
@@ -45,6 +47,8 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           reference: reference,
           transaction_id: transaction_id,
           vendor_name: 'ResolutionMock',
+          can_pass_with_additional_verification: false,
+          attributes_requiring_additional_verification: [],
         )
       end
     end
@@ -65,6 +69,8 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           reference: reference,
           transaction_id: transaction_id,
           vendor_name: 'ResolutionMock',
+          can_pass_with_additional_verification: false,
+          attributes_requiring_additional_verification: [],
         )
       end
     end
@@ -85,6 +91,8 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           reference: reference,
           transaction_id: transaction_id,
           vendor_name: 'ResolutionMock',
+          can_pass_with_additional_verification: false,
+          attributes_requiring_additional_verification: [],
         )
       end
     end
@@ -105,6 +113,8 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           reference: reference,
           transaction_id: transaction_id,
           vendor_name: 'ResolutionMock',
+          can_pass_with_additional_verification: false,
+          attributes_requiring_additional_verification: [],
         )
       end
     end
@@ -125,6 +135,8 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           reference: reference,
           transaction_id: transaction_id,
           vendor_name: 'ResolutionMock',
+          can_pass_with_additional_verification: false,
+          attributes_requiring_additional_verification: [],
         )
       end
     end
@@ -145,6 +157,8 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           reference: reference,
           transaction_id: transaction_id,
           vendor_name: 'ResolutionMock',
+          can_pass_with_additional_verification: false,
+          attributes_requiring_additional_verification: [],
         )
       end
     end
