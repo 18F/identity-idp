@@ -13,7 +13,7 @@ const isTestEnv = env === 'test';
 const mode = isProductionEnv ? 'production' : 'development';
 const hashSuffix = isProductionEnv ? '-[contenthash:8]' : '';
 const devServerPort = process.env.WEBPACK_PORT;
-const devtool = process.env.WEBPACK_DEVTOOL || (isProductionEnv ? false : 'eval-source-map');
+const devtool = process.env.WEBPACK_DEVTOOL || (isProductionEnv ? 'source-map' : 'eval-source-map');
 
 const entries = glob('app/{components,javascript/packs}/*.{ts,tsx,js,jsx}');
 
