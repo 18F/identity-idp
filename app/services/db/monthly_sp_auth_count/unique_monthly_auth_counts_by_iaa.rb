@@ -29,14 +29,18 @@ module Db
 
           with_retries(
             max_tries: 3,
-            rescue: [PG::TRSerializationFailure, PG::UnableToSend],
+            rescue: [
+              ActiveRecord::SerializationFailure,
+              PG::TRSerializationFailure,
+              PG::UnableToSend,
+            ],
             handler: proc do
               ial_to_year_month_to_users = temp_copy
               ActiveRecord::Base.connection.reconnect!
             end,
           ) do
             Reports::BaseReport.transaction_with_timeout do
-              stream_query(query) do |row|
+              ActiveRecord::Base.connection.execute(query).each do |row|
                 user_id = row['user_id']
                 year_month = row['year_month']
                 auth_count = row['auth_count']
