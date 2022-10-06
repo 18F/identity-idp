@@ -28,7 +28,10 @@ describe 'editing a phone' do
       sign_in_and_2fa_user(user)
 
       visit(manage_phone_path(id: phone_configuration.id))
-      expect(page).to have_field('edit_phone_form[make_default_number]', disabled: true)
+      expect(page).to have_field(
+        t('two_factor_authentication.otp_make_default_number.label'),
+        disabled: true,
+      )
     end
   end
 end

@@ -1,20 +1,19 @@
 <div class="margin-bottom-4">
   <fieldset class="margin-0 padding-0 border-0">
-  <% if @edit_phone_form.one_phone_configured? %>
     <legend class="margin-bottom-1">
-      <%= t('two_factor_authentication.otp_make_default_number.one_number_title') %>
+      <% if @edit_phone_form.one_phone_configured? %>
+        <%= t('two_factor_authentication.otp_make_default_number.one_number_title') %>
+      <% else %>
+        <%= t('two_factor_authentication.otp_make_default_number.title') %>
+      <% end %>
     </legend>
-    <p class="margin-top-0 margin-bottom-2" id="otp_make_default_number_instruction">
-      <%= t('two_factor_authentication.otp_make_default_number.one_number_instruction') %>
+    <p class="margin-top-0 margin-bottom-2">
+      <% if @edit_phone_form.one_phone_configured? %>
+        <%= t('two_factor_authentication.otp_make_default_number.one_number_instruction') %>
+      <% else %>
+        <%= t('two_factor_authentication.otp_make_default_number.instruction') %>
+      <% end %>
     </p>
-  <% else %>
-    <legend class="margin-bottom-1">
-      <%= t('two_factor_authentication.otp_make_default_number.title') %>
-    </legend>
-    <p class="margin-top-0 margin-bottom-2" id="otp_make_default_number_instruction">
-      <%= t('two_factor_authentication.otp_make_default_number.instruction') %>
-    </p>
-  <% end %>
     <%= check_box_tag(
           'edit_phone_form[make_default_number]',
           :otp_make_default_number,
