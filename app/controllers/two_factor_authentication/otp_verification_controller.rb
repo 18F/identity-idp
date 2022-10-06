@@ -55,7 +55,7 @@ module TwoFactorAuthentication
     def confirm_voice_capability
       return if two_factor_authentication_method == 'sms'
 
-      phone_is_confirmed = UserSessionContext.authentication_context?(context)
+      phone_is_confirmed = UserSessionContext.authentication_or_reauthentication_context?(context)
 
       capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: phone_is_confirmed)
 
@@ -98,7 +98,7 @@ module TwoFactorAuthentication
           reauthentication: true,
           success: properties[:success],
         )
-      elsif UserSessionContext.authentication_context?(context)
+      elsif UserSessionContext.authentication_or_reauthentication_context?(context)
         irs_attempts_api_tracker.mfa_login_phone_otp_submitted(
           reauthentication: false,
           success: properties[:success],

@@ -126,7 +126,7 @@ class ApplicationController < ActionController::Base
   end
 
   def context
-    user_session[:context] || UserSessionContext::DEFAULT_CONTEXT
+    user_session[:context] || UserSessionContext::AUTHENTICATION_CONTEXT
   end
 
   def current_sp
