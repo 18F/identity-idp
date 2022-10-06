@@ -205,7 +205,9 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#signup_with_your_email' do
-    let(:mail) { UserMailer.signup_with_your_email(user, user.email) }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: user.email_addresses.first).signup_with_your_email
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'

@@ -57,20 +57,20 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def signup_with_your_email(user, email)
-    with_user_locale(user) do
+  def signup_with_your_email
+    with_user_locale(@user) do
       @root_url = root_url(locale: locale_url_param)
-      mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
+      mail(to: @email_address.email, subject: t('mailer.email_reuse_notice.subject'))
     end
   end
 
-  def reset_password_instructions(user, email, token:)
-    with_user_locale(user) do
+  def reset_password_instructions(token:)
+    with_user_locale(@user) do
       @locale = locale_url_param
       @token = token
-      @pending_profile_requires_verification = user.decorate.pending_profile_requires_verification?
+      @pending_profile_requires_verification = @user.decorate.pending_profile_requires_verification?
       @hide_title = @pending_profile_requires_verification
-      mail(to: email, subject: t('user_mailer.reset_password_instructions.subject'))
+      mail(to: @email_address, subject: t('user_mailer.reset_password_instructions.subject'))
     end
   end
 

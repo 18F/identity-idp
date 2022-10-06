@@ -24,11 +24,13 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def signup_with_your_email
-    UserMailer.signup_with_your_email(user, email_address)
+    UserMailer.with(user: user, email_address: email_address).signup_with_your_email
   end
 
   def reset_password_instructions
-    UserMailer.reset_password_instructions(user, email_address, token: SecureRandom.hex)
+    UserMailer.with(user: user, email_address: email_address).reset_password_instructions(
+      token: SecureRandom.hex,
+    )
   end
 
   def password_changed
