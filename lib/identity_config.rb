@@ -211,6 +211,7 @@ class IdentityConfig
     config.add(:kantara_2fa_phone_restricted, type: :boolean)
     config.add(:kantara_2fa_phone_existing_user_restriction, type: :boolean)
     config.add(:kantara_restriction_enforcement_date, type: :timestamp)
+    config.add(:key_pair_generation_percent, type: :integer)
     config.add(:lexisnexis_base_url, type: :string)
     config.add(:lexisnexis_request_mode, type: :string)
     config.add(:lexisnexis_account_id, type: :string)

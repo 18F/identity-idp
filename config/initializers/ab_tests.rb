@@ -18,4 +18,11 @@ module AbTests
         nil,
     }.compact,
   )
+
+  KEY_PAIR_GENERATION = AbTestBucket.new(
+    experiment_name: 'Key Pair Generation',
+    buckets: {
+      key_pair_group: IdentityConfig.store.key_pair_generation_percent,
+    },
+  )
 end

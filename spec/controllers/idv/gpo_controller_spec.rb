@@ -3,8 +3,10 @@ require 'rails_helper'
 describe Idv::GpoController do
   let(:user) { create(:user) }
 
-  before { stub_analytics }
-  before { stub_attempts_tracker }
+  before do
+    stub_analytics
+    stub_attempts_tracker
+  end
 
   describe 'before_actions' do
     it 'includes authentication before_action' do
@@ -102,7 +104,7 @@ describe Idv::GpoController do
       end
 
       it 'logs attempts api tracking' do
-        expect(@irs_attempts_api_tracker).to receive(:idv_letter_requested).
+        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_letter_requested).
           with(success: true, resend: false)
 
         put :create
@@ -129,7 +131,7 @@ describe Idv::GpoController do
       end
 
       it 'logs attempts api tracking' do
-        expect(@irs_attempts_api_tracker).to receive(:idv_letter_requested).
+        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_letter_requested).
           with(success: true, resend: true)
 
         put :create

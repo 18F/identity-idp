@@ -11,31 +11,6 @@ module Proofing
       TRANSACTION_ID = 'state-id-mock-transaction-id-456'
       TRIGGER_MVA_TIMEOUT = 'mvatimeout'
 
-      StateIdMockClientResult = Struct.new(:success, :errors, :exception, keyword_init: true) do
-        def success?
-          success
-        end
-
-        def timed_out?
-          exception.is_a?(Proofing::TimeoutError)
-        end
-
-        def transaction_id
-          TRANSACTION_ID
-        end
-
-        def to_h
-          {
-            exception: exception,
-            errors: errors,
-            success: success,
-            timed_out: timed_out?,
-            transaction_id: transaction_id,
-            vendor_name: 'StateIdMock',
-          }
-        end
-      end
-
       def proof(applicant)
         return mva_timeout_result if applicant[:state_id_number].downcase == TRIGGER_MVA_TIMEOUT
 
@@ -50,26 +25,36 @@ module Proofing
 
         return unverifiable_result(errors) if errors.any?
 
-        StateIdMockClientResult.new(success: true, errors: {}, exception: nil)
+        StateIdResult.new(
+          success: true,
+          errors: {},
+          exception: nil,
+          vendor_name: 'StateIdMock',
+          transaction_id: TRANSACTION_ID,
+        )
       end
 
       private
 
       def mva_timeout_result
-        StateIdMockClientResult.new(
+        StateIdResult.new(
           success: false,
           errors: {},
           exception: Proofing::TimeoutError.new(
             'ExceptionId: 0047, ExceptionText: MVA did not respond in a timely fashion',
           ),
+          vendor_name: 'StateIdMock',
+          transaction_id: TRANSACTION_ID,
         )
       end
 
       def unverifiable_result(errors)
-        StateIdMockClientResult.new(
+        StateIdResult.new(
           success: false,
           errors: errors,
           exception: nil,
+          vendor_name: 'StateIdMock',
+          transaction_id: TRANSACTION_ID,
         )
       end
 
