@@ -327,6 +327,7 @@ describe Idv::PhoneController do
             exception: nil,
             timed_out: false,
             transaction_id: 'address-mock-transaction-id-123',
+            reference: '',
           },
         }
 
@@ -381,6 +382,7 @@ describe Idv::PhoneController do
             exception: nil,
             timed_out: false,
             transaction_id: 'address-mock-transaction-id-123',
+            reference: '',
           },
         }
 
