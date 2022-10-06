@@ -9,9 +9,11 @@ module Db
       # @param [Array<String>] issuers issuers for the iaa
       # @param [Date] start_date iaa start date
       # @param [Date] end_date iaa end date
+      # @param [Proc,#call] query_with_timeout block that sets up a timeout
       # @return [PG::Result, Array]
-      def call(key:, issuers:, start_date:, end_date:)
+      def call(key:, issuers:, start_date:, end_date:, &query_with_timeout)
         date_range = start_date...end_date
+        query_with_timeout = method(:default_call) if !block_given?
 
         return [] if !date_range || issuers.blank?
 
@@ -29,16 +31,21 @@ module Db
 
           with_retries(
             max_tries: 3,
-            rescue: PG::TRSerializationFailure,
-            handler: proc { ial_to_year_month_to_users = temp_copy },
+            rescue: [PG::TRSerializationFailure, PG::UnableToSend],
+            handler: proc do
+              ial_to_year_month_to_users = temp_copy
+              ActiveRecord::Base.connection.reconnect!
+            end,
           ) do
-            stream_query(query) do |row|
-              user_id = row['user_id']
-              year_month = row['year_month']
-              auth_count = row['auth_count']
-              ial = row['ial']
+            query_with_timeout.call do
+              stream_query(query) do |row|
+                user_id = row['user_id']
+                year_month = row['year_month']
+                auth_count = row['auth_count']
+                ial = row['ial']
 
-              ial_to_year_month_to_users[ial][year_month].add(user_id, auth_count)
+                ial_to_year_month_to_users[ial][year_month].add(user_id, auth_count)
+              end
             end
           end
         end
@@ -105,6 +112,10 @@ module Db
             , sp_return_logs.ial
           SQL
         end
+      end
+
+      def default_call
+        yield
       end
     end
   end

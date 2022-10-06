@@ -15,26 +15,24 @@ module Reports
       iaas = IaaReportingHelper.iaas
 
       by_iaa_results = iaas.flat_map do |iaa|
-        transaction_with_timeout do
-          Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(
-            key: iaa.key,
-            issuers: iaa.issuers,
-            start_date: iaa.start_date,
-            end_date: iaa.end_date,
-          )
-        end
+        Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(
+          key: iaa.key,
+          issuers: iaa.issuers,
+          start_date: iaa.start_date,
+          end_date: iaa.end_date,
+          &method(:transaction_with_timeout)
+        )
       end
 
       by_issuer_results = iaas.flat_map do |iaa|
         iaa.issuers.flat_map do |issuer|
-          transaction_with_timeout do
-            Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow.call(
-              issuer: issuer,
-              iaa_start_date: iaa.start_date,
-              iaa_end_date: iaa.end_date,
-              iaa: iaa.key,
-            )
-          end
+          Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow.call(
+            issuer: issuer,
+            iaa_start_date: iaa.start_date,
+            iaa_end_date: iaa.end_date,
+            iaa: iaa.key,
+            &method(:transaction_with_timeout)
+          )
         end
       end
 
