@@ -13,7 +13,7 @@ class FakeAbTestBucket
   # @example
   #   ab.assign('aaa' => :default, 'bbb' => :experiment)
   def assign(discriminator_to_bucket)
-    @discriminator_to_bucket = discriminator_to_bucket
+    @discriminator_to_bucket.merge!(discriminator_to_bucket)
   end
 
   def assign_all(bucket)
