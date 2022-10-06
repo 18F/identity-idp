@@ -48,7 +48,7 @@ function LocationCollectionItem({
         <div>{`${t('in_person_proofing.body.location.retail_hours_sun')} ${sundayHours}`}</div>
         <Button
           id={`location_button_mobile_${selectId}`}
-          className="tablet:display-none margin-top-2"
+          className="tablet:display-none margin-top-2 width-full"
           onClick={(event) => handleSelect(event, selectId)}
           type="submit"
         >
