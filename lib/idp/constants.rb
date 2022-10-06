@@ -69,7 +69,7 @@ module Idp
       MP
       PR
       VI
-    ].freeze
+    ].to_set.freeze
 
     DEFAULT_IAL = 1
     IAL_MAX = 0
@@ -98,7 +98,7 @@ module Idp
       state_id_expiration: '2099-12-31',
       state_id_issued: '2019-12-31',
       phone: nil,
-    }.to_set.freeze
+    }.freeze
 
     MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900-66-1234').freeze
 
