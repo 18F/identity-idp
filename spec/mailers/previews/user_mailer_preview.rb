@@ -44,7 +44,8 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def personal_key_sign_in
-    UserMailer.personal_key_sign_in(user, email_address, disavowal_token: SecureRandom.hex)
+    UserMailer.with(user: user, email_address: email_address_record).
+      personal_key_sign_in(disavowal_token: SecureRandom.hex)
   end
 
   def new_device_sign_in

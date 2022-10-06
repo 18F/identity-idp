@@ -92,12 +92,12 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def personal_key_sign_in(user, email, disavowal_token:)
-    return unless email_should_receive_nonessential_notifications?(email)
+  def personal_key_sign_in(disavowal_token:)
+    return unless email_should_receive_nonessential_notifications?(@email_address.email)
 
-    with_user_locale(user) do
+    with_user_locale(@user) do
       @disavowal_token = disavowal_token
-      mail(to: email, subject: t('user_mailer.personal_key_sign_in.subject'))
+      mail(to: @email_address.email, subject: t('user_mailer.personal_key_sign_in.subject'))
     end
   end
 

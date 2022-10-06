@@ -85,7 +85,10 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#personal_key_sign_in' do
-    let(:mail) { UserMailer.personal_key_sign_in(user, user.email, disavowal_token: 'asdf1234') }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: user.email_addresses.first).
+        personal_key_sign_in(disavowal_token: 'asdf1234')
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -108,7 +111,9 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.personal_key_sign_in(user, banned_email, disavowal_token: 'asdf1234')
+      mail = UserMailer.with(user: user, email_address: banned_email_address).
+        personal_key_sign_in(disavowal_token: 'asdf1234')
+
       expect(mail.to).to eq(nil)
     end
   end
