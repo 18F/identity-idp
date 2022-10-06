@@ -3,22 +3,22 @@ require 'rails_helper'
 describe UserSessionContext do
   let(:confirmation) { { context: 'confirmation' } }
 
-  describe '.initial_authentication_context?' do
+  describe '.authentication_context?' do
     it 'returns true when context is default context' do
       expect(
-        UserSessionContext.initial_authentication_context?(UserSessionContext::DEFAULT_CONTEXT),
+        UserSessionContext.authentication_context?(UserSessionContext::AUTHENTICATION_CONTEXT),
       ).to eq true
     end
 
     it 'returns false when context is not default context' do
       expect(
-        UserSessionContext.initial_authentication_context?(
+        UserSessionContext.authentication_context?(
           UserSessionContext::CONFIRMATION_CONTEXT,
         ),
       ).to eq false
 
       expect(
-        UserSessionContext.initial_authentication_context?(
+        UserSessionContext.authentication_context?(
           UserSessionContext::REAUTHENTICATION_CONTEXT,
         ),
       ).to eq false
@@ -34,25 +34,29 @@ describe UserSessionContext do
 
     it 'returns false when context is default context' do
       expect(
-        UserSessionContext.reauthentication_context?(UserSessionContext::DEFAULT_CONTEXT),
+        UserSessionContext.reauthentication_context?(UserSessionContext::AUTHENTICATION_CONTEXT),
       ).to eq false
     end
   end
 
-  describe '.authentication_context?' do
+  describe '.authentication_or_reauthentication_context?' do
     it 'returns true when context is default or reauth context' do
       expect(
-        UserSessionContext.authentication_context?(UserSessionContext::DEFAULT_CONTEXT),
+        UserSessionContext.authentication_or_reauthentication_context?(
+          UserSessionContext::AUTHENTICATION_CONTEXT,
+        ),
       ).to eq true
 
       expect(
-        UserSessionContext.authentication_context?(UserSessionContext::REAUTHENTICATION_CONTEXT),
+        UserSessionContext.authentication_or_reauthentication_context?(
+          UserSessionContext::REAUTHENTICATION_CONTEXT,
+        ),
       ).to eq true
     end
 
     it 'returns false when context is confirmation context' do
       expect(
-        UserSessionContext.initial_authentication_context?(
+        UserSessionContext.authentication_context?(
           UserSessionContext::CONFIRMATION_CONTEXT,
         ),
       ).to eq false
@@ -68,7 +72,7 @@ describe UserSessionContext do
 
     it 'returns false when context is default or reauth context' do
       expect(
-        UserSessionContext.confirmation_context?(UserSessionContext::DEFAULT_CONTEXT),
+        UserSessionContext.confirmation_context?(UserSessionContext::AUTHENTICATION_CONTEXT),
       ).to eq false
 
       expect(

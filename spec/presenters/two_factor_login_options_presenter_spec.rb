@@ -7,7 +7,7 @@ describe TwoFactorLoginOptionsPresenter do
   let(:view) { ActionController::Base.new.view_context }
   let(:phishing_resistant_required) { false }
   let(:piv_cac_required) { false }
-  let(:user_session_context) { UserSessionContext::DEFAULT_CONTEXT }
+  let(:user_session_context) { UserSessionContext::AUTHENTICATION_CONTEXT }
 
   subject(:presenter) do
     TwoFactorLoginOptionsPresenter.new(
@@ -96,7 +96,7 @@ describe TwoFactorLoginOptionsPresenter do
     subject(:cancel_link) { presenter.cancel_link }
 
     context 'default user session context' do
-      let(:user_session_context) { UserSessionContext::DEFAULT_CONTEXT }
+      let(:user_session_context) { UserSessionContext::AUTHENTICATION_CONTEXT }
 
       it { should eq sign_out_path }
     end
