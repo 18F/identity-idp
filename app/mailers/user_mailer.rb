@@ -73,11 +73,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def account_does_not_exist(email, request_id)
-    @sign_up_email_url = sign_up_email_url(request_id: request_id, locale: locale_url_param)
-    mail(to: email, subject: t('user_mailer.account_does_not_exist.subject', app_name: APP_NAME))
-  end
-
   def personal_key_sign_in(user, email, disavowal_token:)
     return unless email_should_receive_nonessential_notifications?(email)
 

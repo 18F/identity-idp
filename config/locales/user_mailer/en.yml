@@ -1,14 +1,6 @@
 ---
 en:
   user_mailer:
-    account_does_not_exist:
-      intro_html: This email address is not yet associated with a %{app_name} account.
-        If you’d like to create a %{app_name} account using this email address,
-        please click the link below or copy and paste the entire link into your
-        browser. If you didn’t request a password reset, you can ignore this
-        message.
-      link_text: Create your account
-      subject: Your %{app_name} password reset request
     account_reset_cancel:
       intro_html: This email confirms you have cancelled your request to delete your
         %{app_name} account.
