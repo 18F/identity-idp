@@ -113,13 +113,12 @@ describe UserMailer, type: :mailer do
     let(:token) { 'asdf123' }
 
     let(:mail) do
-      UserMailer.email_confirmation_instructions(
-        user,
-        user.email,
-        token,
-        request_id: request_id,
-        instructions: instructions,
-      )
+      UserMailer.with(user: user, email_address: user.email_addresses.first).
+        email_confirmation_instructions(
+          token,
+          request_id: request_id,
+          instructions: instructions,
+        )
     end
 
     it_behaves_like 'a system email'

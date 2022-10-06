@@ -2,6 +2,9 @@ class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
 
+  class UserEmailAddressMismatchError < StandardError; end
+
+  before_action :validate_user_and_email_address
   before_action :attach_images
   default(
     from: email_with_name(
@@ -14,15 +17,28 @@ class UserMailer < ActionMailer::Base
     ),
   )
 
-  def email_confirmation_instructions(user, email, token, request_id:, instructions:)
-    with_user_locale(user) do
-      presenter = ConfirmationEmailPresenter.new(user, view_context)
+  def validate_user_and_email_address
+    @user = params.fetch(:user)
+    @email_address = params.fetch(:email_address)
+    if @user.id != @email_address.user_id
+      raise UserEmailAddressMisMatchError.new(
+        "User ID #{@user.id} does not match EmailAddress ID #{@email_address.id}",
+      )
+    end
+  end
+
+  def email_confirmation_instructions(token, request_id:, instructions:)
+    with_user_locale(@user) do
+      presenter = ConfirmationEmailPresenter.new(@user, view_context)
       @first_sentence = instructions || presenter.first_sentence
       @confirmation_period = presenter.confirmation_period
       @request_id = request_id
       @locale = locale_url_param
       @token = token
-      mail(to: email, subject: t('user_mailer.email_confirmation_instructions.subject'))
+      mail(
+        to: @email_address.email,
+        subject: t('user_mailer.email_confirmation_instructions.subject'),
+      )
     end
   end
 
