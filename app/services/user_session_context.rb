@@ -1,5 +1,4 @@
 class UserSessionContext
-  DEFAULT_CONTEXT = 'authentication'.freeze
   AUTHENTICATION_CONTEXT = 'authentication'.freeze
   REAUTHENTICATION_CONTEXT = 'reauthentication'.freeze
   CONFIRMATION_CONTEXT = 'confirmation'.freeze
