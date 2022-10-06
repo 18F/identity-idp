@@ -41,10 +41,6 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.phone_added(user, email_address_record, disavowal_token: SecureRandom.hex)
   end
 
-  def account_does_not_exist
-    UserMailer.account_does_not_exist(email_address, SecureRandom.uuid)
-  end
-
   def personal_key_sign_in
     UserMailer.personal_key_sign_in(user, email_address, disavowal_token: SecureRandom.hex)
   end
