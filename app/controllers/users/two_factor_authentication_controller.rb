@@ -304,7 +304,9 @@ module Users
     end
 
     def phone_to_deliver_to
-      return phone_configuration&.phone if UserSessionContext.authentication_or_reauthentication_context?(context)
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
+        return phone_configuration&.phone
+      end
 
       user_session[:unconfirmed_phone]
     end

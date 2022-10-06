@@ -42,11 +42,15 @@ describe UserSessionContext do
   describe '.authentication_or_reauthentication_context?' do
     it 'returns true when context is default or reauth context' do
       expect(
-        UserSessionContext.authentication_or_reauthentication_context?(UserSessionContext::AUTHENTICATION_CONTEXT),
+        UserSessionContext.authentication_or_reauthentication_context?(
+          UserSessionContext::AUTHENTICATION_CONTEXT,
+        ),
       ).to eq true
 
       expect(
-        UserSessionContext.authentication_or_reauthentication_context?(UserSessionContext::REAUTHENTICATION_CONTEXT),
+        UserSessionContext.authentication_or_reauthentication_context?(
+          UserSessionContext::REAUTHENTICATION_CONTEXT,
+        ),
       ).to eq true
     end
 
