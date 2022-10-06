@@ -74,12 +74,12 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def password_changed(user, email_address, disavowal_token:)
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
+  def password_changed(disavowal_token:)
+    return unless email_should_receive_nonessential_notifications?(@email_address.email)
 
-    with_user_locale(user) do
+    with_user_locale(@user) do
       @disavowal_token = disavowal_token
-      mail(to: email_address.email, subject: t('devise.mailer.password_updated.subject'))
+      mail(to: @email_address.email, subject: t('devise.mailer.password_updated.subject'))
     end
   end
 

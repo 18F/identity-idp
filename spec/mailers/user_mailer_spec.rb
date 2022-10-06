@@ -4,6 +4,7 @@ describe UserMailer, type: :mailer do
   let(:user) { build(:user) }
   let(:email_address) { user.email_addresses.first }
   let(:banned_email) { 'banned_email+123abc@gmail.com' }
+  let(:banned_email_address) { create(:email_address, email: banned_email, user: user) }
 
   describe '#add_email' do
     let(:token) { SecureRandom.hex }
@@ -48,7 +49,12 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#password_changed' do
-    let(:mail) { UserMailer.password_changed(user, email_address, disavowal_token: '123abc') }
+    let(:mail) do
+      UserMailer.with(
+        user: user,
+        email_address: email_address,
+      ).password_changed(disavowal_token: '123abc')
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -72,8 +78,8 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      email_address = EmailAddress.new(email: banned_email)
-      mail = UserMailer.password_changed(user, email_address, disavowal_token: '123abc')
+      mail = UserMailer.with(user: user, email_address: banned_email_address).
+        password_changed(disavowal_token: '123abc')
       expect(mail.to).to eq(nil)
     end
   end
