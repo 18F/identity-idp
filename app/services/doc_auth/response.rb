@@ -4,7 +4,6 @@ module DocAuth
 
     ID_TYPE_SLUGS = {
       'Identification Card' => 'state_id_card',
-      'Permit' => 'drivers_permit',
       'Drivers License' => 'drivers_license',
     }
 
