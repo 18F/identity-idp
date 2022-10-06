@@ -15,24 +15,27 @@ describe SendSignUpEmailConfirmation do
         confirmation_token: nil,
         confirmation_sent_at: nil,
       )
-      user.reload
     end
 
     subject { described_class.new(user) }
 
     it 'sends the user an email with a confirmation link and the request id' do
       email_address.update!(confirmed_at: Time.zone.now)
-      mail = double
-      expect(mail).to receive(:deliver_now_or_later)
-      expect(UserMailer).to receive(:email_confirmation_instructions).with(
-        user,
-        email_address.email,
-        confirmation_token,
-        request_id: request_id,
-        instructions: instructions,
-      ).and_return(mail)
+
+      mail = UserMailer.with(user: user, email_address: email_address).
+        email_confirmation_instructions(
+          confirmation_token,
+          request_id: request_id,
+          instructions: instructions,
+        )
 
       subject.call(request_id: request_id, instructions: instructions)
+      expect(UserMailer.deliveries.count).to eq 1
+      delivered_mail = UserMailer.deliveries.first
+      delivered_body = UserMailer.deliveries.first.to_s
+      expect(delivered_body).to include(request_id)
+      expect(delivered_body).to include(instructions)
+      expect(delivered_mail.subject).to eq(mail.subject)
     end
 
     context 'when resetting a password' do

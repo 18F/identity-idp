@@ -13,9 +13,7 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def unconfirmed_email_instructions
-    UserMailer.unconfirmed_email_instructions(
-      user,
-      email_address,
+    UserMailer.with(user: user, email_address: email_address).unconfirmed_email_instructions(
       SecureRandom.hex,
       request_id: SecureRandom.uuid,
       instructions: I18n.t(

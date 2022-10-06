@@ -60,9 +60,7 @@ class SendSignUpEmailConfirmation
   end
 
   def send_pw_reset_request_unconfirmed_user_email(request_id, instructions)
-    UserMailer.unconfirmed_email_instructions(
-      user,
-      email_address.email,
+    UserMailer.with(user: user, email_address: email_address).unconfirmed_email_instructions(
       confirmation_token,
       request_id: request_id,
       instructions: instructions,

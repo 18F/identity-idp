@@ -42,15 +42,18 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def unconfirmed_email_instructions(user, email, token, request_id:, instructions:)
-    with_user_locale(user) do
-      presenter = ConfirmationEmailPresenter.new(user, view_context)
+  def unconfirmed_email_instructions(token, request_id:, instructions:)
+    with_user_locale(@user) do
+      presenter = ConfirmationEmailPresenter.new(@user, view_context)
       @first_sentence = instructions || presenter.first_sentence
       @confirmation_period = presenter.confirmation_period
       @request_id = request_id
       @locale = locale_url_param
       @token = token
-      mail(to: email, subject: t('user_mailer.email_confirmation_instructions.email_not_found'))
+      mail(
+        to: @email_address.email,
+        subject: t('user_mailer.email_confirmation_instructions.email_not_found'),
+      )
     end
   end
 
