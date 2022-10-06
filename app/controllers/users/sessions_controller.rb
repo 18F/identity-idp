@@ -172,7 +172,7 @@ module Users
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
       )
-      irs_attempts_api_tracker.email_and_password_auth(
+      irs_attempts_api_tracker.login_email_and_password_auth(
         email: email,
         success: success,
       )

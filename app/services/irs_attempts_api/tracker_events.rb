@@ -32,17 +32,6 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [String] email The submitted email address
-    # @param [Boolean] success True if the email and password matched
-    # A user has submitted an email address and password for authentication
-    def email_and_password_auth(email:, success:)
-      track_event(
-        :email_and_password_auth,
-        email: email,
-        success: success,
-      )
-    end
-
     # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def forgot_password_email_confirmed(success:, failure_reason: nil)
@@ -376,6 +365,17 @@ module IrsAttemptsApi
     def logged_in_profile_change_reauthentication_submitted(success:)
       track_event(
         :logged_in_profile_change_reauthentication_submitted,
+        success: success,
+      )
+    end
+
+    # @param [String] email The submitted email address
+    # @param [Boolean] success True if the email and password matched
+    # A user has submitted an email address and password for authentication
+    def login_email_and_password_auth(email:, success:)
+      track_event(
+        :login_email_and_password_auth,
+        email: email,
         success: success,
       )
     end
