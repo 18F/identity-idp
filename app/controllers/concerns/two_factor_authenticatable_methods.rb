@@ -23,7 +23,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     PushNotification::HttpPush.deliver(event)
 
     if context && type
-      if UserSessionContext.authentication_context?(context)
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
         irs_attempts_api_tracker.mfa_login_rate_limited(mfa_device_type: type)
       elsif UserSessionContext.confirmation_context?(context)
         irs_attempts_api_tracker.mfa_enroll_rate_limited(mfa_device_type: type)
@@ -37,7 +37,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     analytics.multi_factor_auth_max_sends
 
     if context && phone
-      if UserSessionContext.authentication_context?(context)
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
         irs_attempts_api_tracker.mfa_login_phone_otp_sent_rate_limited(
           phone_number: phone,
         )
@@ -69,7 +69,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def check_already_authenticated
-    return unless UserSessionContext.initial_authentication_context?(context)
+    return unless UserSessionContext.authentication_context?(context)
     return unless user_fully_authenticated?
     return if remember_device_expired_for_sp?
     return if service_provider_mfa_policy.user_needs_sp_auth_method_verification?
@@ -112,7 +112,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def handle_valid_otp_for_context
-    if UserSessionContext.authentication_context?(context)
+    if UserSessionContext.authentication_or_reauthentication_context?(context)
       handle_valid_otp_for_authentication_context
     elsif UserSessionContext.confirmation_context?(context)
       handle_valid_otp_for_confirmation_context
@@ -313,7 +313,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def display_phone_to_deliver_to
-    if UserSessionContext.authentication_context?(context)
+    if UserSessionContext.authentication_or_reauthentication_context?(context)
       phone_configuration.masked_phone
     else
       user_session[:unconfirmed_phone]
@@ -321,7 +321,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def voice_otp_delivery_unsupported?
-    if UserSessionContext.authentication_context?(context)
+    if UserSessionContext.authentication_or_reauthentication_context?(context)
       PhoneNumberCapabilities.new(phone_configuration&.phone, phone_confirmed: true).supports_voice?
     else
       phone = user_session[:unconfirmed_phone]
