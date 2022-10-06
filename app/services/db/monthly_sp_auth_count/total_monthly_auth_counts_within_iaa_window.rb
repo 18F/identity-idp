@@ -13,13 +13,11 @@ module Db
       # @param [String] iaa
       # @param [Date] iaa_start_date
       # @param [Date] iaa_end_date
-      # @param [Proc,#call] query_with_timeout block that sets up a timeout
       # @return [PG::Result,Array]
-      def call(issuer:, iaa:, iaa_start_date:, iaa_end_date:, &query_with_timeout)
+      def call(issuer:, iaa:, iaa_start_date:, iaa_end_date:)
         return [] if !iaa_start_date || !iaa_end_date
 
         iaa_range = (iaa_start_date..iaa_end_date)
-        query_with_timeout = method(:default_call) if !block_given?
 
         # Query a month at a time, to keep query time/result size fairly reasonable
         # The results are rows with [user_id, ial, auth_count, year_month]
@@ -41,7 +39,7 @@ module Db
               ActiveRecord::Base.connection.reconnect!
             end,
           ) do
-            query_with_timeout.call do
+            Reports::BaseReport.transaction_with_timeout do
               stream_query(query) do |row|
                 user_id = row['user_id']
                 year_month = row['year_month']

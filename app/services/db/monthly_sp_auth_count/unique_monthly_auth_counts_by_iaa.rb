@@ -9,11 +9,9 @@ module Db
       # @param [Array<String>] issuers issuers for the iaa
       # @param [Date] start_date iaa start date
       # @param [Date] end_date iaa end date
-      # @param [Proc,#call] query_with_timeout block that sets up a timeout
       # @return [PG::Result, Array]
-      def call(key:, issuers:, start_date:, end_date:, &query_with_timeout)
+      def call(key:, issuers:, start_date:, end_date:)
         date_range = start_date...end_date
-        query_with_timeout = method(:default_call) if !block_given?
 
         return [] if !date_range || issuers.blank?
 
@@ -37,7 +35,7 @@ module Db
               ActiveRecord::Base.connection.reconnect!
             end,
           ) do
-            query_with_timeout.call do
+            Reports::BaseReport.transaction_with_timeout do
               stream_query(query) do |row|
                 user_id = row['user_id']
                 year_month = row['year_month']
@@ -112,10 +110,6 @@ module Db
             , sp_return_logs.ial
           SQL
         end
-      end
-
-      def default_call
-        yield
       end
     end
   end

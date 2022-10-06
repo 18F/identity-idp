@@ -20,7 +20,6 @@ module Reports
           issuers: iaa.issuers,
           start_date: iaa.start_date,
           end_date: iaa.end_date,
-          &method(:transaction_with_timeout)
         )
       end
 
@@ -31,7 +30,6 @@ module Reports
             iaa_start_date: iaa.start_date,
             iaa_end_date: iaa.end_date,
             iaa: iaa.key,
-            &method(:transaction_with_timeout)
           )
         end
       end
