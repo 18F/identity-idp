@@ -34,6 +34,14 @@ RSpec.describe DocAuthRouter do
   end
 
   describe '.doc_auth_vendor' do
+    def reload_ab_test_initializer!
+      # undefine the AB tests instances so we can re-initialize them with different config values
+      AbTests.constants.each do |const_name|
+        AbTests.class_eval { remove_const(const_name) }
+      end
+      load Rails.root.join('config', 'initializers', 'ab_tests.rb').to_s
+    end
+
     let(:doc_auth_vendor) { 'test1' }
     let(:doc_auth_vendor_randomize_alternate_vendor) { 'test2' }
     let(:discriminator) { SecureRandom.uuid }
@@ -51,7 +59,7 @@ RSpec.describe DocAuthRouter do
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize).
         and_return(doc_auth_vendor_randomize)
 
-      AbTests.reload_ab_test_initializer!
+      reload_ab_test_initializer!
     end
 
     after do
@@ -60,7 +68,7 @@ RSpec.describe DocAuthRouter do
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize).
         and_call_original
 
-      AbTests.reload_ab_test_initializer!
+      reload_ab_test_initializer!
     end
 
     context 'with a nil discriminator' do

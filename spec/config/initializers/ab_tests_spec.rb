@@ -1,6 +1,14 @@
 require 'rails_helper'
 
 describe AbTests do
+  def reload_ab_test_initializer!
+    # undefine the AB tests instances so we can re-initialize them with different config values
+    AbTests.constants.each do |const_name|
+      AbTests.class_eval { remove_const(const_name) }
+    end
+    load Rails.root.join('config', 'initializers', 'ab_tests.rb').to_s
+  end
+
   describe '::NATIVE_CAMERA' do
     let(:percent) { 30 }
 
@@ -10,7 +18,7 @@ describe AbTests do
       allow(IdentityConfig.store).to receive(:idv_native_camera_a_b_testing_percent).
         and_return(percent)
 
-      described_class.reload_ab_test_initializer!
+      reload_ab_test_initializer!
     end
 
     after do
@@ -19,7 +27,7 @@ describe AbTests do
       allow(IdentityConfig.store).to receive(:idv_native_camera_a_b_testing_percent).
         and_call_original
 
-      described_class.reload_ab_test_initializer!
+      reload_ab_test_initializer!
     end
 
     context 'configured with buckets adding up to less than 100 percent' do
