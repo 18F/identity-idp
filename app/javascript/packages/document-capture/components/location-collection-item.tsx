@@ -28,7 +28,7 @@ function LocationCollectionItem({
     <li className="location-collection-item">
       <div className="usa-collection__body">
         <div className="display-flex flex-justify">
-          <h3 className="usa-collection__heading break-word">{name}</h3>
+          <h3 className="usa-collection__heading">{name}</h3>
           <Button
             id={`location_button_desktop_${selectId}`}
             className="display-none tablet:display-inline-block"
