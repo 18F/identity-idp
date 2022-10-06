@@ -83,12 +83,12 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def phone_added(user, email_address, disavowal_token:)
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
+  def phone_added(disavowal_token:)
+    return unless email_should_receive_nonessential_notifications?(@email_address.email)
 
-    with_user_locale(user) do
+    with_user_locale(@user) do
       @disavowal_token = disavowal_token
-      mail(to: email_address.email, subject: t('user_mailer.phone_added.subject'))
+      mail(to: @email_address.email, subject: t('user_mailer.phone_added.subject'))
     end
   end
 

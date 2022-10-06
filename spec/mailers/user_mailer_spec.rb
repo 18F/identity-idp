@@ -247,7 +247,10 @@ describe UserMailer, type: :mailer do
 
   describe '#phone_added' do
     disavowal_token = 'i_am_disavowal_token'
-    let(:mail) { UserMailer.phone_added(user, email_address, disavowal_token: disavowal_token) }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        phone_added(disavowal_token: disavowal_token)
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -267,8 +270,8 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      email_address = EmailAddress.new(email: banned_email)
-      mail = UserMailer.phone_added(user, email_address, disavowal_token: disavowal_token)
+      mail = UserMailer.with(user: user, email_address: banned_email_address).
+        phone_added(disavowal_token: disavowal_token)
       expect(mail.to).to eq(nil)
     end
   end

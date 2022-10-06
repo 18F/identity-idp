@@ -39,7 +39,8 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def phone_added
-    UserMailer.phone_added(user, email_address_record, disavowal_token: SecureRandom.hex)
+    UserMailer.with(user: user, email_address: email_address_record).
+      phone_added(disavowal_token: SecureRandom.hex)
   end
 
   def personal_key_sign_in

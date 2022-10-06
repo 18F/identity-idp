@@ -225,8 +225,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def send_phone_added_email
     event = create_user_event_with_disavowal(:phone_added, current_user)
     current_user.confirmed_email_addresses.each do |email_address|
-      UserMailer.phone_added(current_user, email_address, disavowal_token: event.disavowal_token).
-        deliver_now_or_later
+      UserMailer.with(user: current_user, email_address: email_address).
+        phone_added(disavowal_token: event.disavowal_token).deliver_now_or_later
     end
   end
 
