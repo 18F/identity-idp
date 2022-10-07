@@ -98,7 +98,7 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def email_added
-    UserMailer.email_added(user, email_address)
+    UserMailer.with(user: user, email_address: email_address_record).email_added
   end
 
   def email_deleted

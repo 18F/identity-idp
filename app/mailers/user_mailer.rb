@@ -211,11 +211,11 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def email_added(user, email)
-    return unless email_should_receive_nonessential_notifications?(email)
+  def email_added
+    return unless email_should_receive_nonessential_notifications?(email_address.email)
 
     with_user_locale(user) do
-      mail(to: email, subject: t('user_mailer.email_added.subject'))
+      mail(to: email_address.email, subject: t('user_mailer.email_added.subject'))
     end
   end
 

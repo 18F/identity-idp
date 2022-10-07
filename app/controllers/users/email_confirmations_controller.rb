@@ -50,8 +50,8 @@ module Users
     def confirm_and_notify(email_address)
       email_address.update!(confirmed_at: Time.zone.now)
       email_address.user.confirmed_email_addresses.each do |confirmed_email_address|
-        UserMailer.email_added(email_address.user, confirmed_email_address.email).
-          deliver_now_or_later
+        UserMailer.with(user: email_address.user, email_address: confirmed_email_address).
+          email_added.deliver_now_or_later
       end
       notify_subscribers(email_address)
     end
