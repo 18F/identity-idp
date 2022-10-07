@@ -11,8 +11,6 @@ describe Funnel::Registration::TotalRegisteredCount do
   it 'returns 0 until the user is fully registered' do
     user = create(:user)
     user_id = user.id
-    Funnel::Registration::Create.call(user_id)
-
     expect(Funnel::Registration::TotalRegisteredCount.call).to eq(0)
 
     expect(Funnel::Registration::TotalRegisteredCount.call).to eq(0)

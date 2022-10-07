@@ -50,9 +50,7 @@ describe Funnel::Registration::RangeRegisteredCount do
 
   def register_user(year, month, day)
     travel_to Date.new(year, month, day) do
-      user = create(:user)
-      user_id = user.id
-      Funnel::Registration::Create.call(user_id)
+      create(:user)
     end
   end
 end

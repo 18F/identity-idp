@@ -277,10 +277,7 @@ describe Users::WebauthnSetupController do
             :mfa_enroll_webauthn_platform, success: true
           )
 
-          registration_log = Funnel::Registration::Create.call(user.id)
           patch :confirm, params: params
-
-          expect(registration_log.reload.first_mfa).to eq 'webauthn_platform'
         end
       end
 

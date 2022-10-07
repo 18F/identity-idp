@@ -6,9 +6,7 @@ describe Funnel::Registration::AddMfa do
 
   let(:user_id) do
     user = create(:user)
-    user_id = user.id
-    Funnel::Registration::Create.call(user_id)
-    user_id
+    user.id
   end
   let(:funnel) { RegistrationLog.all.first }
 
