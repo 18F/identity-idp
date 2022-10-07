@@ -44,9 +44,8 @@ const sharpnessThreshold = Number(appRoot.getAttribute('data-sharpness-threshold
 
 function getServiceProvider() {
   const { spName: name = null, failureToProofUrl: failureToProofURL = '' } = appRoot.dataset;
-  const isLivenessRequired = appRoot.hasAttribute('data-liveness-required');
 
-  return { name, failureToProofURL, isLivenessRequired };
+  return { name, failureToProofURL };
 }
 
 function getBackgroundUploadURLs(): Record<'front' | 'back', string> {

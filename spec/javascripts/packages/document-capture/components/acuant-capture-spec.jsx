@@ -811,7 +811,6 @@ describe('document-capture/components/acuant-capture', () => {
 
       expect(defaultPrevented).to.be.false();
       expect(window.AcuantCameraUI.start.called).to.be.false();
-      expect(window.AcuantPassiveLiveness.startSelfieCapture.called).to.be.false();
       expect(input.getAttribute('capture')).to.equal('user');
     });
 
