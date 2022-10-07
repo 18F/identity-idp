@@ -67,8 +67,8 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def account_reset_granted
-    UserMailer.account_reset_granted(
-      user, email_address_record, user.build_account_reset_request
+    UserMailer.with(user: user, email_address: email_address_record).account_reset_granted(
+      user.build_account_reset_request,
     )
   end
 

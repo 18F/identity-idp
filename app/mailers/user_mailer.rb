@@ -150,7 +150,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def account_reset_granted(user, email_address, account_reset)
+  def account_reset_granted(account_reset)
     with_user_locale(user) do
       @token = account_reset&.request_token
       @granted_token = account_reset&.granted_token
