@@ -31,7 +31,7 @@ class SessionEncryptor
     :city,
     :dob,
     :state_id_expiration,
-  ).values
+  ).values.append('@example.com')
   SENSITIVE_REGEX = %r{#{SENSITIVE_DEFAULT_FIELDS.join('|')}}i
 
   def load(value)
