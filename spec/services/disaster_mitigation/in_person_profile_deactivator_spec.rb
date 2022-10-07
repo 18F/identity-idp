@@ -45,21 +45,21 @@ RSpec.describe DisasterMitigation::InPersonProfileDeactivator do
         end
 
         it 'deactivates pending profiles for the specified partner ID' do
-          described_class.deactivate_profiles(false, status_type, issuer)
+          described_class.deactivate_profiles(status_type, issuer, false, '<reversal steps>')
           target_profiles.each do |profile|
             profile.reload
-            expect(profile.deactivation_reason).to eq('in_person_contingency_deactivation')
+            expect(profile.deactivation_reason).to eq('in_person_verification_deactivated')
             expect(profile.in_person_enrollment.status).to eq('cancelled')
           end
         end
 
         it 'does not deactivate non-pending profiles or profiles for other partners' do
-          described_class.deactivate_profiles(false, status_type, issuer)
+          described_class.deactivate_profiles(status_type, issuer, false, '<reversal steps>')
           untargeted_profiles = profiles - target_profiles
           untargeted_profiles.each do |profile|
             profile.reload
             expect(profile.updated_at).to eq(profile.created_at)
-            expect(profile.deactivation_reason).not_to eq('in_person_contingency_deactivation')
+            expect(profile.deactivation_reason).not_to eq('in_person_verification_deactivated')
             expect(profile.in_person_enrollment.status).not_to eq('cancelled')
           end
         end

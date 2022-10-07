@@ -1,31 +1,33 @@
 module DisasterMitigation
   class InPersonProfileDeactivator
-    def self.deactivate_profiles(dry_run, status_type, partner_id)
-      # todo: catch errors, handle errors
+    def self.deactivate_profiles(status_type, partner_id, dry_run, reversal_info)
       validate_arguments(status_type, partner_id)
-      # expected params: partner ID, activate or deactivate, pending or active or both
+      # todo: catch, log, and handle exceptions
+      # todo: log to somehwere that gets sent to cloudwatch
       puts 'Deactivating some profiles!'
-      puts 'Steps to reverse this process: tktk'
+      puts "Steps to reverse this process: #{reversal_info}"
 
       profiles = retrieve_profiles(status_type, partner_id)
 
       puts "Found #{profiles.count} profiles to deactivate"
 
-      profiles.each do |profile|
-        continue if dry_run
-        profile.deactivate('in_person_contingency_deactivation')
-        profile.in_person_enrollment.status = 'cancelled'
-        profile.in_person_enrollment.save!
+      unless dry_run
+        # todo: consider running all of this in one transaction
+        profiles.each do |profile|
+          profile.deactivate('in_person_verification_deactivated')
+          profile.in_person_enrollment.status = 'cancelled'
+          profile.in_person_enrollment.save!
+        end
       end
 
+      puts "Steps to reverse this process: #{reversal_info}"
+      # todo: log some stats: count of target records found, count of records updated, duration of task
       puts 'Completed'
-      puts 'Steps to reverse this process: tktk'
     end
 
     def self.validate_arguments(status_type, partner_id)
-      # tktk
-      # ensure status_type is a valid value
-      # any checks for partner id?
+      # todo: ensure status_type is a valid value
+      # todo: ensure partner_id is a string
     end
 
     def self.retrieve_profiles(status_type, partner_id)
@@ -33,26 +35,41 @@ module DisasterMitigation
         pending_profiles(partner_id)
       elsif status_type == 'passed'
         active_profiles(partner_id)
-      else
-        pending_and_active_profiles(partner_id)
+      elsif status_type == 'pending or passed'
+        pending_or_passed_profiles(partner_id)
+      elsif status_type == 'pending and deactivated'
+        pending_and_deactivated_profiles(partner_id)
+      elsif status_type == 'passed and deactivated'
+        passed_and_deactivated_profiles(partner_id)
+      elsif status_type == 'deactivated'
+        deactivated_profiles(partner_id)
       end
     end
 
     def self.pending_profiles(partner_id)
-      # will this work with nil partner_id?
       Profile.where("proofing_components->>'document_check'= 'usps'").where(
         active: false, deactivation_reason: 'in_person_verification_pending',
       ).joins(:in_person_enrollment).where(in_person_enrollment: { status: 'pending',
                                                                    issuer: partner_id })
     end
 
-    def self.active_profiles(partner_id)
+    def self.passed_profiles(partner_id)
     end
 
-    def self.pending_and_active_profiles(partner_id)
+    def self.pending_or_passed_profiles(partner_id)
+    end
+
+    def self.pending_and_deactivated_profiles(partner_id)
+    end
+
+    def self.passed_and_deactivated_profiles(partner_id)
+    end
+
+    def self.deactivated_profiles(partner_id)
     end
 
     def self.queries
+      # just some misc queries I wanted to keep around as WIP
       # all IPP profiles
       profiles = Profile.where("proofing_components->>'document_check' = 'usps'")
       # active IPP profiles
