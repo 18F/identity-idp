@@ -246,7 +246,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_completion_survey(user, email_address)
+  def in_person_completion_survey
     with_user_locale(user) do
       @header = t('user_mailer.in_person_completion_survey.header')
       @privacy_url = MarketingSite.security_and_privacy_practices_url

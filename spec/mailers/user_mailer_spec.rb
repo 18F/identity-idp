@@ -607,10 +607,7 @@ describe UserMailer, type: :mailer do
 
   describe '#in_person_completion_survey' do
     let(:mail) do
-      UserMailer.in_person_completion_survey(
-        user,
-        email_address,
-      )
+      UserMailer.with(user: user, email_address: email_address).in_person_completion_survey
     end
 
     it_behaves_like 'a system email'

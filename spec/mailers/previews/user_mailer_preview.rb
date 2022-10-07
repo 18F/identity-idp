@@ -118,10 +118,7 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def in_person_completion_survey
-    UserMailer.in_person_completion_survey(
-      user,
-      email_address_record,
-    )
+    UserMailer.with(user: user, email_address: email_address_record).in_person_completion_survey
   end
 
   def in_person_ready_to_verify

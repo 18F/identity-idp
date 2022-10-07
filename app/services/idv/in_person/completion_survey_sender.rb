@@ -8,10 +8,8 @@ module Idv
         return unless user.should_receive_in_person_completion_survey?(issuer)
 
         user.confirmed_email_addresses.each do |email_address|
-          UserMailer.in_person_completion_survey(
-            user,
-            email_address,
-          ).deliver_now_or_later
+          UserMailer.with(user: user, email_address: email_address).in_person_completion_survey.
+            deliver_now_or_later
         end
 
         user.mark_in_person_completion_survey_sent(issuer)
