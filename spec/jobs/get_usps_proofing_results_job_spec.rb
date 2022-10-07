@@ -7,7 +7,6 @@ RSpec.shared_examples 'enrollment with a status update' do |passed:, status:, re
         enrollment_established_at: Time.zone.now - 3.days,
         status_check_attempted_at: Time.zone.now - 15.minutes,
         status_updated_at: Time.zone.now - 2.days,
-        issuer: ServiceProvider.find_by(issuer: 'http://localhost:3000').issuer,
       )
 
       job.perform(Time.zone.now)
@@ -35,7 +34,7 @@ RSpec.shared_examples 'enrollment with a status update' do |passed:, status:, re
       status: response['status'],
       transaction_end_date_time: response['transactionEndDateTime'],
       transaction_start_date_time: response['transactionStartDateTime'],
-      issuer: 'http://localhost:3000',
+      issuer: pending_enrollment.issuer,
     )
   end
 
@@ -130,7 +129,11 @@ RSpec.describe GetUspsProofingResultsJob do
     describe 'IPP enabled' do
       let!(:pending_enrollments) do
         [
-          create(:in_person_enrollment, :pending, selected_location_details: { name: 'BALTIMORE' }),
+          create(
+            :in_person_enrollment, :pending,
+            selected_location_details: { name: 'BALTIMORE' },
+            issuer: 'http://localhost:3000'
+          ),
           create(
             :in_person_enrollment, :pending,
             selected_location_details: { name: 'FRIENDSHIP' }
