@@ -423,7 +423,6 @@ describe Users::ResetPasswordsController, devise: true do
       it 'sends password reset email to user and tracks event' do
         expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_sent).with(
           email: email,
-          success: true,
         )
 
         expect do
@@ -464,7 +463,6 @@ describe Users::ResetPasswordsController, devise: true do
       it 'sends password reset email to user and tracks event' do
         expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_sent).with(
           email: user.email,
-          success: true,
         )
 
         expect { put :create, params: params }.
@@ -499,7 +497,6 @@ describe Users::ResetPasswordsController, devise: true do
           with('Password Reset: Email Submitted', analytics_hash)
         expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_sent).with(
           email: user.email,
-          success: true,
         )
 
         params = { password_reset_email_form: { email: user.email } }

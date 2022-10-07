@@ -14,12 +14,10 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [Boolean] success True if account reset request is cancelled
     # A user cancels the request to delete their account before 24 hour period
-    def account_reset_cancel_request(success:)
+    def account_reset_cancel_request()
       track_event(
         :account_reset_cancel_request,
-        success: success,
       )
     end
 
@@ -53,12 +51,10 @@ module IrsAttemptsApi
 
     # Tracks when the user has requested a forgot password email
     # @param [String] email The submitted email address
-    # @param [Boolean] success True if the forgot password email was sent
-    def forgot_password_email_sent(email:, success:)
+    def forgot_password_email_sent(email:)
       track_event(
         :forgot_password_email_sent,
         email: email,
-        success: success,
       )
     end
 
@@ -126,13 +122,11 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [Boolean] success
     # @param [String] resend
     # The Address validation letter has been requested by user
-    def idv_gpo_letter_requested(success:, resend:)
+    def idv_gpo_letter_requested(resend:)
       track_event(
         :idv_gpo_letter_requested,
-        success: success,
         resend: resend,
       )
     end
@@ -164,12 +158,10 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [Boolean] success
     # Personal Key got generated for user
-    def idv_personal_key_generated(success:)
+    def idv_personal_key_generated()
       track_event(
         :idv_personal_key_generated,
-        success: success,
       )
     end
 
@@ -272,13 +264,11 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [Boolean] success
     # @param [String] ssn
     # User entered in SSN number during Identity verification
-    def idv_ssn_submitted(success:, ssn:)
+    def idv_ssn_submitted(ssn:)
       track_event(
         :idv_ssn_submitted,
-        success: success,
         ssn: ssn,
       )
     end

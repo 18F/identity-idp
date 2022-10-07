@@ -32,7 +32,7 @@ describe AccountReset::PendingController do
       account_reset_request = AccountResetRequest.create(user: user, requested_at: 1.hour.ago)
 
       expect(@irs_attempts_api_tracker).to receive(:track_event).
-        with(:account_reset_cancel_request, success: true)
+        with(:account_reset_cancel_request)
 
       post :cancel
 

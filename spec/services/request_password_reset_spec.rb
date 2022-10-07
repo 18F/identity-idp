@@ -75,10 +75,10 @@ RSpec.describe RequestPasswordReset do
         subject
       end
 
-      it 'calls irs tracking method forgot_password_email_sent ' do
+      it 'calls irs tracking method forgot_password_email_sent' do
         subject
 
-        expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_sent)
+        expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_sent).once
       end
     end
 
@@ -157,7 +157,7 @@ RSpec.describe RequestPasswordReset do
         form.perform
 
         expect(form.send(:user)).to eq(@user_confirmed)
-        expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_sent)
+        expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_sent).with({:email=>"aaa@test.com"})
       end
     end
 

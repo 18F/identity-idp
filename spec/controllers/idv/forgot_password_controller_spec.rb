@@ -40,7 +40,6 @@ describe Idv::ForgotPasswordController do
       expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
         :forgot_password_email_sent,
         email: user.email,
-        success: true,
       )
     end
   end

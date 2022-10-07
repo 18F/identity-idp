@@ -47,7 +47,7 @@ module Idv
 
     def update_tracking
       analytics.idv_gpo_address_letter_requested(resend: resend_requested?)
-      irs_attempts_api_tracker.idv_gpo_letter_requested(success: true, resend: resend_requested?)
+      irs_attempts_api_tracker.idv_gpo_letter_requested(resend: resend_requested?)
       create_user_event(:gpo_mail_sent, current_user)
 
       ProofingComponent.create_or_find_by(user: current_user).update(address_check: 'gpo_letter')

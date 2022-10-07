@@ -66,7 +66,6 @@ describe Idv::Steps::SsnStep do
 
       it 'logs attempts api event' do
         expect(attempts_api).to receive(:idv_ssn_submitted).with(
-          success: true,
           ssn: ssn,
         )
         step.call
