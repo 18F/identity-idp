@@ -76,6 +76,7 @@ describe Users::WebauthnSetupController do
       end
 
       it 'tracks the submission' do
+        Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics)
         result = {
           enabled_mfa_methods_count: 3,
           mfa_method_counts: {
@@ -196,6 +197,7 @@ describe Users::WebauthnSetupController do
           }
         end
         it 'should log expected events' do
+          Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics)
           expect(@analytics).to receive(:track_event).with(
             'Multi-Factor Authentication Setup',
             {
