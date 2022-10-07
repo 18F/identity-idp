@@ -358,7 +358,10 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#account_reset_complete' do
-    let(:mail) { UserMailer.account_reset_complete(user, email_address) }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        account_reset_complete
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'

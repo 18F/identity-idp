@@ -161,7 +161,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def account_reset_complete(user, email_address)
+  def account_reset_complete
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.account_reset_complete.subject'))
     end

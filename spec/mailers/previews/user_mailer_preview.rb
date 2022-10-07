@@ -73,7 +73,7 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def account_reset_complete
-    UserMailer.account_reset_complete(user, email_address_record)
+    UserMailer.with(user: user, email_address: email_address_record).account_reset_complete
   end
 
   def account_reset_cancel
