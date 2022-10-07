@@ -122,9 +122,7 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def in_person_ready_to_verify
-    UserMailer.in_person_ready_to_verify(
-      user,
-      email_address_record,
+    UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
       enrollment: in_person_enrollment,
     )
   end

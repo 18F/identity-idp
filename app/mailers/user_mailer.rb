@@ -258,7 +258,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_ready_to_verify(user, email_address, enrollment:)
+  def in_person_ready_to_verify(enrollment:)
     attachments.inline['barcode.png'] = BarcodeOutputter.new(
       code: enrollment.enrollment_code,
     ).image_data

@@ -531,9 +531,7 @@ describe UserMailer, type: :mailer do
     end
 
     let(:mail) do
-      UserMailer.in_person_ready_to_verify(
-        user,
-        user.email_addresses.first,
+      UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
         enrollment: enrollment,
       )
     end
