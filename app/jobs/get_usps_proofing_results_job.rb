@@ -26,6 +26,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       minutes_since_last_status_check: enrollment.minutes_since_last_status_check,
       minutes_since_last_status_update: enrollment.minutes_since_last_status_update,
       minutes_to_completion: complete ? enrollment.minutes_since_established : nil,
+      issuer: enrollment.issuer,
     }
   end
 
