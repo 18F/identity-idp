@@ -276,7 +276,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_verified(user, email_address, enrollment:)
+  def in_person_verified(enrollment:)
     with_user_locale(user) do
       @hide_title = true
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(

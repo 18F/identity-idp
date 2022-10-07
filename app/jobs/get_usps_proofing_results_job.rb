@@ -263,9 +263,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   def send_verified_email(user, enrollment)
     user.confirmed_email_addresses.each do |email_address|
       # rubocop:disable IdentityIdp/MailLaterLinter
-      UserMailer.in_person_verified(
-        user,
-        email_address,
+      UserMailer.with(user: user, email_address: email_address).in_person_verified(
         enrollment: enrollment,
       ).deliver_later(**mail_delivery_params)
       # rubocop:enable IdentityIdp/MailLaterLinter
