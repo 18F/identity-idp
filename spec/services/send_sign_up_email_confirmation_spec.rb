@@ -84,17 +84,21 @@ describe SendSignUpEmailConfirmation do
       let(:user) { email_address.user }
 
       it 'regenerates a token if the token is expired' do
-        mail = double
-        expect(mail).to receive(:deliver_now_or_later)
-
-        expect(UserMailer).to receive(:email_confirmation_instructions).with(
-          user, email_address.email, confirmation_token, instance_of(Hash)
-        ).and_return(mail)
+        expected_mail = UserMailer.with(user: user, email_address: email_address).
+          email_confirmation_instructions(
+            confirmation_token, request_id: nil, instructions: nil
+          )
 
         subject.call
 
         expect(email_address.reload.confirmation_token).to eq(confirmation_token)
         expect(email_address.confirmation_sent_at).to be_within(5.seconds).of(Time.zone.now)
+
+        expect(UserMailer.deliveries.count).to eq 1
+        delivered_mail = UserMailer.deliveries.first
+        delivered_body = UserMailer.deliveries.first.to_s
+        expect(delivered_body).to include(confirmation_token)
+        expect(delivered_mail.subject).to eq(expected_mail.subject)
       end
     end
   end
