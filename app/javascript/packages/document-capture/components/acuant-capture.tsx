@@ -420,8 +420,6 @@ function AcuantCapture(
     if (event.target === inputRef.current) {
       const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;
       const isEnvironmentCapture = capture !== 'user';
-      const shouldStartSelfieCapture =
-        isAcuantLoaded && capture === 'user' && !isForceUploading.current;
       let shouldStartAcuantCapture =
         isAcuantCaptureCapable &&
         capture !== 'user' &&
@@ -443,18 +441,11 @@ function AcuantCapture(
         shouldStartAcuantCapture = !nativeCameraOnly;
       }
 
-      if (!allowUpload || shouldStartSelfieCapture || shouldStartAcuantCapture) {
+      if (!allowUpload || shouldStartAcuantCapture) {
         event.preventDefault();
       }
 
-      if (shouldStartSelfieCapture) {
-        window.AcuantPassiveLiveness.startSelfieCapture(
-          ifStillMounted((nextImageData) => {
-            const dataURI = `data:image/jpeg;base64,${nextImageData}`;
-            onChangeAndResetError(dataURI);
-          }),
-        );
-      } else if (shouldStartAcuantCapture && !isAcuantInstanceActive) {
+      if (shouldStartAcuantCapture && !isAcuantInstanceActive) {
         setIsCapturingEnvironment(true);
       }
 

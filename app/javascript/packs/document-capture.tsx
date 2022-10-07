@@ -49,15 +49,15 @@ function getServiceProvider() {
   return { name, failureToProofURL, isLivenessRequired };
 }
 
-function getBackgroundUploadURLs(): Record<'front' | 'back' | 'selfie', string> {
-  return ['front', 'back', 'selfie'].reduce((result, key) => {
+function getBackgroundUploadURLs(): Record<'front' | 'back', string> {
+  return ['front', 'back'].reduce((result, key) => {
     const url = appRoot.getAttribute(`data-${key}-image-upload-url`);
     if (url) {
       result[key] = url;
     }
 
     return result;
-  }, {} as Record<'front' | 'back' | 'selfie', string>);
+  }, {} as Record<'front' | 'back', string>);
 }
 
 function getMetaContent(name): string | null {

@@ -85,7 +85,6 @@ describe('document-capture/components/review-issues-step', () => {
 
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
-    expect(getByLabelText('doc_auth.headings.document_capture_selfie')).to.be.ok();
   });
 
   it('calls onChange callback with uploaded image', async () => {
@@ -209,7 +208,6 @@ describe('document-capture/components/review-issues-step', () => {
 
         expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
         expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
-        expect(getByLabelText('doc_auth.headings.document_capture_selfie')).to.be.ok();
       });
     });
   });

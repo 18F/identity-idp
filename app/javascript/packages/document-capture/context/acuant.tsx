@@ -31,10 +31,6 @@ declare global {
      */
     acuantConfig: AcuantConfig;
     /**
-     * Acuant Passive Liveness API
-     */
-    AcuantPassiveLiveness: AcuantPassiveLivenessInterface;
-    /**
      * Possible AcuantJavascriptWebSdk on the window object (11.5.0)
      */
     AcuantJavascriptWebSdk: AcuantJavascriptWebSdkInterface;
@@ -81,14 +77,6 @@ type AcuantInitialize = (
 ) => void;
 
 type AcuantWorkersInitialize = (callback: () => void) => void;
-
-/**
- * Start liveness capture
- */
-type AcuantStartSelfieCapture = (callback: (nextImageData: string) => void) => void;
-interface AcuantPassiveLivenessInterface {
-  startSelfieCapture: AcuantStartSelfieCapture;
-}
 
 interface AcuantContextProviderProps {
   /**

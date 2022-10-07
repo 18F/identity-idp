@@ -80,7 +80,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const submissionFormValues = useMemo(
     () =>
       formValues && {
-        ...(isAsyncForm ? except(formValues, 'front', 'back', 'selfie') : formValues),
+        ...(isAsyncForm ? except(formValues, 'front', 'back') : formValues),
         flow_path: flowPath,
       },
     [isAsyncForm, formValues, flowPath],

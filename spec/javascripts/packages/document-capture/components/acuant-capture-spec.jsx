@@ -845,25 +845,6 @@ describe('document-capture/components/acuant-capture', () => {
       expect(() => getByText('doc_auth.tips.document_capture_hint')).to.throw();
     });
 
-    it('still captures selfie value when upload disallowed', () => {
-      const { getByLabelText } = render(
-        <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" capture="user" allowUpload={false} />
-          </AcuantContextProvider>
-        </DeviceContext.Provider>,
-      );
-
-      initialize();
-
-      const button = getByLabelText('Image');
-      const defaultPrevented = !fireEvent.click(button);
-
-      expect(defaultPrevented).to.be.true();
-      expect(window.AcuantCameraUI.start.called).to.be.false();
-      expect(window.AcuantPassiveLiveness.startSelfieCapture.called).to.be.true();
-    });
-
     it('does not show hint if capture is supported', () => {
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
@@ -892,29 +873,6 @@ describe('document-capture/components/acuant-capture', () => {
       const hint = getByText('doc_auth.tips.document_capture_hint');
 
       expect(hint).to.be.ok();
-    });
-
-    it('captures selfie', async () => {
-      const onChange = sinon.stub();
-      const { getByLabelText } = render(
-        <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" capture="user" onChange={onChange} />
-          </AcuantContextProvider>
-        </DeviceContext.Provider>,
-      );
-
-      initialize({
-        startSelfieCapture: sinon.stub().callsArgWithAsync(0, ''),
-      });
-
-      const button = getByLabelText('Image');
-      const defaultPrevented = !fireEvent.click(button);
-
-      expect(defaultPrevented).to.be.true();
-      expect(window.AcuantCameraUI.start.called).to.be.false();
-      expect(window.AcuantPassiveLiveness.startSelfieCapture.called).to.be.true();
-      await waitFor(() => expect(onChange.calledOnce).to.be.true());
     });
   });
 

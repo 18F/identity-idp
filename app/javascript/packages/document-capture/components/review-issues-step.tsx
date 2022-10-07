@@ -32,11 +32,6 @@ interface ReviewIssuesStepValue {
   back: Blob | string | null | undefined;
 
   /**
-   * Back image value.
-   */
-  selfie: Blob | string | null | undefined;
-
-  /**
    * Front image metadata.
    */
   front_image_metadata?: string;
@@ -80,7 +75,6 @@ function ReviewIssuesStep({
   const { isMobile } = useContext(DeviceContext);
   const serviceProvider = useContext(ServiceProviderContext);
   const { trackEvent } = useContext(AnalyticsContext);
-  const selfieError = errors.find(({ field }) => field === 'selfie')?.error;
   const [hasDismissed, setHasDismissed] = useState(remainingAttempts === Infinity);
   const { onPageTransition, changeStepCanComplete } = useContext(FormStepsContext);
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
@@ -121,7 +115,7 @@ function ReviewIssuesStep({
       >
         {!!unknownFieldErrors &&
           unknownFieldErrors
-            .filter((error) => !['front', 'back', 'selfie'].includes(error.field!))
+            .filter((error) => !['front', 'back'].includes(error.field!))
             .map(({ error }) => <p key={error.message}>{error.message}</p>)}
 
         {remainingAttempts <= DISPLAY_ATTEMPTS && (
@@ -165,45 +159,7 @@ function ReviewIssuesStep({
           className="document-capture-review-issues-step__input"
         />
       ))}
-      {serviceProvider.isLivenessRequired && (
-        <>
-          <hr className="margin-y-4" />
-          <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_selfie_header_text')}</p>
-          <ul>
-            <li>{t('doc_auth.tips.review_issues_selfie_text1')}</li>
-            <li>{t('doc_auth.tips.review_issues_selfie_text2')}</li>
-            <li>{t('doc_auth.tips.review_issues_selfie_text3')}</li>
-            <li>{t('doc_auth.tips.review_issues_selfie_text4')}</li>
-          </ul>
-          {isMobile || !hasMediaAccess() ? (
-            <AcuantCapture
-              ref={registerField('selfie', { isRequired: true })}
-              capture="user"
-              label={t('doc_auth.headings.document_capture_selfie')}
-              bannerText={t('doc_auth.headings.photo')}
-              value={value.selfie}
-              onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
-              allowUpload={false}
-              className="document-capture-review-issues-step__input"
-              errorMessage={selfieError?.message}
-              name="selfie"
-            />
-          ) : (
-            <SelfieCapture
-              ref={registerField('selfie', { isRequired: true })}
-              value={value.selfie}
-              onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
-              errorMessage={selfieError?.message}
-              className={[
-                'document-capture-review-issues-step__input',
-                !value.selfie && 'document-capture-review-issues-step__input--unconstrained-width',
-              ]
-                .filter(Boolean)
-                .join(' ')}
-            />
-          )}
-        </>
-      )}
+
       <FormStepsButton.Submit />
       <DocumentCaptureTroubleshootingOptions />
       <Cancel />
