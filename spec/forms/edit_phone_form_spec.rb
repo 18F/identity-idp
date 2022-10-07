@@ -107,4 +107,13 @@ describe EditPhoneForm do
       end
     end
   end
+
+  describe 'user has one number' do
+    let(:user) { create(:user, :signed_up) }
+    let(:phone_configuration) { user.phone_configurations.first }
+
+    it 'recognizes it as the only method set up' do
+      expect(user.default_phone_configuration).to eq(phone_configuration)
+    end
+  end
 end
