@@ -9,7 +9,7 @@
   <%= render AccordionComponent.new do |c| %>
     <% c.header { t('forms.personal_key_partial.explanation.header') } %>
     <% t('forms.personal_key_partial.explanation.text').each do |paragraph| %>
-      <p><%= paragraph%></p>
+      <p><%= paragraph %></p>
     <% end %>
   <% end %>
 </div>
@@ -40,7 +40,7 @@
         as: :boolean,
         label: @acceptance_prompt,
         label_html: { class: 'margin-y-0' },
-        required: true
+        required: true,
       ) %>
 
   <%= button_to(

@@ -70,11 +70,12 @@ function downloadForIE(event) {
   window.navigator.msSaveBlob(blob, filename);
 }
 
-function trackAcknowledgment(click_event) {
-  if (click_event.target.checked)
+function trackAcknowledgment(clickEvent) {
+  if (clickEvent.target.checked) {
     trackEvent('IdV: personal key acknowledged');
-  else
-    trackEvent('IdV: personal key un-acknowledgedj');
+  } else {
+    trackEvent('IdV: personal key un-acknowledged');
+  }
 }
 
 function trackDownload() {
