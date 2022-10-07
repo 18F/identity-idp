@@ -48,7 +48,7 @@ describe Users::SessionsController, devise: true do
       end
 
       it 'includes the timeout key' do
-        timeout =  Time.zone.now + 10
+        timeout = Time.zone.now + 10
         controller.session[:session_expires_at] = timeout
         get :active
 
