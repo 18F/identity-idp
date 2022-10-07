@@ -28,12 +28,12 @@ describe FrontendLogController do
       end
 
       context 'allowlisted analytics event' do
-        let(:event) { 'IdV: personal key visited' }
+        let(:event) { 'IdV: download personal key' }
 
         it 'succeeds' do
           action
 
-          expect(fake_analytics).to have_logged_event('IdV: personal key visited')
+          expect(fake_analytics).to have_logged_event('IdV: personal key downloaded')
           expect(response).to have_http_status(:ok)
           expect(json[:success]).to eq(true)
         end
@@ -68,19 +68,6 @@ describe FrontendLogController do
               )
             end
           end
-        end
-      end
-
-      context 'allowlisted analytics event with compound proc' do
-        let(:event) { 'IdV: password confirm submitted' }
-
-        it 'succeeds' do
-          action
-
-          expect(fake_analytics).to have_logged_event('IdV: review complete')
-          expect(fake_analytics).to have_logged_event('IdV: final resolution', success: true)
-          expect(response).to have_http_status(:ok)
-          expect(json[:success]).to eq(true)
         end
       end
 

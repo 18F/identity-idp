@@ -13,23 +13,11 @@ class FrontendLogController < ApplicationController
     'IdV: prepare submitted' => :idv_in_person_prepare_submitted,
     'IdV: switch_back visited' => :idv_in_person_switch_back_visited,
     'IdV: switch_back submitted' => :idv_in_person_switch_back_submitted,
-    'IdV: forgot password visited' => :idv_forgot_password,
-    'IdV: password confirm visited' => :idv_review_info_visited,
-    'IdV: password confirm submitted' => proc do |analytics|
-      analytics.idv_review_complete(success: true)
-      analytics.idv_final(success: true)
-    end,
-    'IdV: personal key visited' => :idv_personal_key_visited,
-    'IdV: personal key submitted' => :idv_personal_key_submitted,
-    'IdV: personal key confirm visited' => :idv_personal_key_confirm_visited,
-    'IdV: personal key confirm submitted' => :idv_personal_key_confirm_submitted,
     'IdV: download personal key' => :idv_personal_key_downloaded,
     'IdV: Native camera forced after failed attempts' => :idv_native_camera_forced,
     'Multi-Factor Authentication: download backup code' => :multi_factor_auth_backup_code_download,
     'Show Password button clicked' => :show_password_button_clicked,
-  }.transform_values do |method|
-    method.is_a?(Proc) ? method : AnalyticsEvents.instance_method(method)
-  end.freeze
+  }.transform_values { |method| AnalyticsEvents.instance_method(method) }.freeze
   # rubocop:enable Layout/LineLength
 
   def create
