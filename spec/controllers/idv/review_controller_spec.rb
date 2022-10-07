@@ -442,7 +442,6 @@ describe Idv::ReviewController do
                   user,
                   email_address,
                   enrollment: instance_of(InPersonEnrollment),
-                  first_name: kind_of(String),
                 ).
                 and_return(mailer)
             end

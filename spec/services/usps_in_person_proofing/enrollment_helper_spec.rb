@@ -101,7 +101,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
               user,
               email_address,
               enrollment: instance_of(InPersonEnrollment),
-              first_name: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:first_name],
             ).
             and_return(mailer)
         end

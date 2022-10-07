@@ -512,7 +512,6 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#in_person_ready_to_verify' do
-    let(:first_name) { 'Michael' }
     let!(:enrollment) do
       create(
         :in_person_enrollment,
@@ -526,7 +525,6 @@ describe UserMailer, type: :mailer do
       UserMailer.in_person_ready_to_verify(
         user,
         user.email_addresses.first,
-        first_name: first_name,
         enrollment: enrollment,
       )
     end
