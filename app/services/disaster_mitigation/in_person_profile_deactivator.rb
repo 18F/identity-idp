@@ -1,71 +1,110 @@
 module DisasterMitigation
   class InPersonProfileDeactivator
-    def self.deactivate_profiles(status_type, partner_id, dry_run, reversal_info)
-      validate_arguments(status_type, partner_id)
+    def self.deactivate_pending_profiles(issuer, dry_run)
+      started_at = Time.zone.now
       # todo: catch, log, and handle exceptions
       # todo: log to somehwere that gets sent to cloudwatch
-      puts 'Deactivating some profiles!'
-      puts "Steps to reverse this process: #{reversal_info}"
 
-      profiles = retrieve_profiles(status_type, partner_id)
+      validate_arguments(issuer, dry_run)
 
+      profiles = pending_profiles(issuer)
       puts "Found #{profiles.count} profiles to deactivate"
 
-      unless dry_run
-        # todo: consider running all of this in one transaction
-        profiles.each do |profile|
-          profile.deactivate('in_person_verification_deactivated')
-          profile.in_person_enrollment.status = 'cancelled'
-          profile.in_person_enrollment.save!
-        end
+      deactivate_profiles(profiles) unless dry_run
+
+      finished_at = Time.zone.now
+      profiles_updated = dry_run ? 0 : profiles.count
+      {
+        dry_run: dry_run,
+        duration_seconds: finished_at - started_at,
+        finished_at: finished_at,
+        issuer: issuer,
+        profiles_count: profiles.count,
+        profiles_updated: profiles_updated,
+        started_at: started_at,
+        target_profiles: 'pending and deactivated profiles',
+      }
+    end
+
+    def reactivate_pending_profiles(issuer, dry_run)
+      started_at = Time.zone.now
+      # todo: catch, log, and handle exceptions
+      # todo: log to somehwere that gets sent to cloudwatch
+
+      validate_arguments(issuer, dry_run)
+
+      profiles = pending_and_deactivated_profiles(issuer)
+      puts "Found #{profiles.count} profiles to deactivate"
+
+      reactivate_profiles(profiles) unless dry_run
+
+      finished_at = Time.zone.now
+      profiles_updated = dry_run ? 0 : profiles.count
+      {
+        dry_run: dry_run,
+        duration_seconds: finished_at - started_at,
+        finished_at: finished_at,
+        issuer: issuer,
+        profiles_count: profiles.count,
+        profiles_updated: profiles_updated,
+        started_at: started_at,
+        target_profiles: 'pending and deactivated profiles',
+      }
+    end
+
+    def deactivate_passed_profiles(issuer, dry_run); end
+
+    def reactivate_passed_profiles(issuer, dry_run); end
+
+    def deactivate_pending_or_passed_profiles(issuer, dry_run); end
+
+    def reactivate_pending_or_passed_profiles(issuer, dry_run); end
+
+    private
+
+    def self.validate_arguments(issuer, dry_run)
+      # todo: ensure issuer is a string or nil and dry_run is a boolean
+    end
+
+    def self.deactivate_profiles(profiles)
+      # todo: consider running all of this in one transaction
+      profiles.each do |profile|
+        profile.deactivate('in_person_verification_deactivated')
+        profile.in_person_enrollment.status = 'cancelled'
+        profile.in_person_enrollment.save!
       end
-
-      puts "Steps to reverse this process: #{reversal_info}"
-      # todo: log some stats: count of target records found, count of records updated, duration of task
-      puts 'Completed'
     end
 
-    def self.validate_arguments(status_type, partner_id)
-      # todo: ensure status_type is a valid value
-      # todo: ensure partner_id is a string
-    end
-
-    def self.retrieve_profiles(status_type, partner_id)
-      if status_type == 'pending'
-        pending_profiles(partner_id)
-      elsif status_type == 'passed'
-        active_profiles(partner_id)
-      elsif status_type == 'pending or passed'
-        pending_or_passed_profiles(partner_id)
-      elsif status_type == 'pending and deactivated'
-        pending_and_deactivated_profiles(partner_id)
-      elsif status_type == 'passed and deactivated'
-        passed_and_deactivated_profiles(partner_id)
-      elsif status_type == 'deactivated'
-        deactivated_profiles(partner_id)
+    def self.reactivate_profiles(profiles)
+      # todo: either do all profiles in other transaction or each profile in one transaction
+      # todo: what should happen if the user has created a new profile since they were deactivated?
+      profiles.each do |profile|
+        profile.activate
+        profile.in_person_enrollment.status = 'pending'
+        profile.in_person_enrollment.save!
       end
     end
 
-    def self.pending_profiles(partner_id)
+    def self.pending_profiles(issuer)
       Profile.where("proofing_components->>'document_check'= 'usps'").where(
         active: false, deactivation_reason: 'in_person_verification_pending',
       ).joins(:in_person_enrollment).where(in_person_enrollment: { status: 'pending',
-                                                                   issuer: partner_id })
+                                                                   issuer: issuer })
     end
 
-    def self.passed_profiles(partner_id)
+    def self.passed_profiles(issuer)
     end
 
-    def self.pending_or_passed_profiles(partner_id)
+    def self.pending_or_passed_profiles(issuer)
     end
 
-    def self.pending_and_deactivated_profiles(partner_id)
+    def self.pending_and_deactivated_profiles(issuer)
     end
 
-    def self.passed_and_deactivated_profiles(partner_id)
+    def self.passed_and_deactivated_profiles(issuer)
     end
 
-    def self.deactivated_profiles(partner_id)
+    def self.deactivated_profiles(issuer)
     end
 
     def self.queries
