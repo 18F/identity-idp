@@ -128,6 +128,10 @@ RSpec.configure do |config|
     Bullet.enable = false
   end
 
+  config.around(:each, freeze_time: true) do |example|
+    freeze_time { example.run }
+  end
+
   config.after(:each, type: :feature, js: true) do |spec|
     next unless page.driver.browser.respond_to?(:manage)
 
