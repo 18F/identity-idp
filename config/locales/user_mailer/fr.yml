@@ -147,7 +147,7 @@ fr:
       greeting: Bonjour,
       subject: Votre identité n’a pas pu être vérifiée en personne
     in_person_ready_to_verify:
-      greeting: Bonjour %{name},
+      greeting: Bonjour,
       intro: Voici les détails pour vérifier votre identité en personne dans un bureau
         de poste des États-Unis près de chez vous.
       subject: Vous êtes prêt à vérifier votre identité avec %{app_name} en personne
