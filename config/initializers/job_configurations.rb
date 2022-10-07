@@ -217,6 +217,12 @@ else
         class: 'ThreatMetrixJsVerificationJob',
         cron: cron_1h,
       },
+      # Batch up IRS Attempts API events
+      irs_attempt_events_aggregator: {
+        class: 'IrsAttemptEventsBatchJob',
+        cron: cron_1h,
+        args: -> { [Time.zone.now - 1.hour] },
+      },
     }
   end
   # rubocop:enable Metrics/BlockLength
