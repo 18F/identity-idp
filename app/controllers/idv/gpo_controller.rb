@@ -97,7 +97,8 @@ module Idv
 
     def send_reminder
       current_user.confirmed_email_addresses.each do |email_address|
-        UserMailer.letter_reminder(current_user, email_address.email).deliver_now_or_later
+        UserMailer.with(user: current_user, email_address: email_address).
+          letter_reminder.deliver_now_or_later
       end
     end
 

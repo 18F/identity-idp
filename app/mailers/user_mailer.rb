@@ -190,11 +190,11 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def letter_reminder(user, email)
-    return unless email_should_receive_nonessential_notifications?(email)
+  def letter_reminder
+    return unless email_should_receive_nonessential_notifications?(email_address.email)
 
     with_user_locale(user) do
-      mail(to: email, subject: t('user_mailer.letter_reminder.subject'))
+      mail(to: email_address.email, subject: t('user_mailer.letter_reminder.subject'))
     end
   end
 

@@ -90,7 +90,7 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def letter_reminder
-    UserMailer.letter_reminder(user, email_address)
+    UserMailer.with(user: user, email_address: email_address_record).letter_reminder
   end
 
   def add_email

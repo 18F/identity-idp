@@ -460,7 +460,7 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#letter_reminder' do
-    let(:mail) { UserMailer.letter_reminder(user, email_address.email) }
+    let(:mail) { UserMailer.with(user: user, email_address: email_address).letter_reminder }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -479,7 +479,7 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.letter_reminder(user, banned_email)
+      mail = UserMailer.with(user: user, email_address: banned_email_address).letter_reminder
       expect(mail.to).to eq(nil)
     end
   end
