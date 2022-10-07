@@ -290,7 +290,10 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#account_reset_request' do
-    let(:mail) { UserMailer.account_reset_request(user, email_address, account_reset) }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).account_reset_request(account_reset)
+    end
+
     let(:account_reset) { user.account_reset_request }
 
     it_behaves_like 'a system email'

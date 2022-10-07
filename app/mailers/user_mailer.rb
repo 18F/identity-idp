@@ -139,7 +139,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def account_reset_request(user, email_address, account_reset)
+  def account_reset_request(account_reset)
     with_user_locale(user) do
       @token = account_reset&.request_token
       @header = t('user_mailer.account_reset_request.header')
