@@ -40,7 +40,9 @@ module SamlIdpAuthConcern
 
     return if @result.success?
 
-    analytics.saml_auth(**@result.to_h)
+    analytics.saml_auth(
+      **@result.to_h.merge(request_signed: saml_request.signed?),
+    )
     render 'saml_idp/auth/error', status: :bad_request
   end
 
