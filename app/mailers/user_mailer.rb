@@ -4,6 +4,8 @@ class UserMailer < ActionMailer::Base
 
   class UserEmailAddressMismatchError < StandardError; end
 
+  attr_reader :user, :email_address
+
   before_action :validate_user_and_email_address
   before_action :attach_images
   default(
@@ -28,76 +30,76 @@ class UserMailer < ActionMailer::Base
   end
 
   def email_confirmation_instructions(token, request_id:, instructions:)
-    with_user_locale(@user) do
-      presenter = ConfirmationEmailPresenter.new(@user, view_context)
+    with_user_locale(user) do
+      presenter = ConfirmationEmailPresenter.new(user, view_context)
       @first_sentence = instructions || presenter.first_sentence
       @confirmation_period = presenter.confirmation_period
       @request_id = request_id
       @locale = locale_url_param
       @token = token
       mail(
-        to: @email_address.email,
+        to: email_address.email,
         subject: t('user_mailer.email_confirmation_instructions.subject'),
       )
     end
   end
 
   def unconfirmed_email_instructions(token, request_id:, instructions:)
-    with_user_locale(@user) do
-      presenter = ConfirmationEmailPresenter.new(@user, view_context)
+    with_user_locale(user) do
+      presenter = ConfirmationEmailPresenter.new(user, view_context)
       @first_sentence = instructions || presenter.first_sentence
       @confirmation_period = presenter.confirmation_period
       @request_id = request_id
       @locale = locale_url_param
       @token = token
       mail(
-        to: @email_address.email,
+        to: email_address.email,
         subject: t('user_mailer.email_confirmation_instructions.email_not_found'),
       )
     end
   end
 
   def signup_with_your_email
-    with_user_locale(@user) do
+    with_user_locale(user) do
       @root_url = root_url(locale: locale_url_param)
-      mail(to: @email_address.email, subject: t('mailer.email_reuse_notice.subject'))
+      mail(to: email_address.email, subject: t('mailer.email_reuse_notice.subject'))
     end
   end
 
   def reset_password_instructions(token:)
-    with_user_locale(@user) do
+    with_user_locale(user) do
       @locale = locale_url_param
       @token = token
-      @pending_profile_requires_verification = @user.decorate.pending_profile_requires_verification?
+      @pending_profile_requires_verification = user.decorate.pending_profile_requires_verification?
       @hide_title = @pending_profile_requires_verification
-      mail(to: @email_address, subject: t('user_mailer.reset_password_instructions.subject'))
+      mail(to: email_address, subject: t('user_mailer.reset_password_instructions.subject'))
     end
   end
 
   def password_changed(disavowal_token:)
-    return unless email_should_receive_nonessential_notifications?(@email_address.email)
+    return unless email_should_receive_nonessential_notifications?(email_address.email)
 
-    with_user_locale(@user) do
+    with_user_locale(user) do
       @disavowal_token = disavowal_token
-      mail(to: @email_address.email, subject: t('devise.mailer.password_updated.subject'))
+      mail(to: email_address.email, subject: t('devise.mailer.password_updated.subject'))
     end
   end
 
   def phone_added(disavowal_token:)
-    return unless email_should_receive_nonessential_notifications?(@email_address.email)
+    return unless email_should_receive_nonessential_notifications?(email_address.email)
 
-    with_user_locale(@user) do
+    with_user_locale(user) do
       @disavowal_token = disavowal_token
-      mail(to: @email_address.email, subject: t('user_mailer.phone_added.subject'))
+      mail(to: email_address.email, subject: t('user_mailer.phone_added.subject'))
     end
   end
 
   def personal_key_sign_in(disavowal_token:)
-    return unless email_should_receive_nonessential_notifications?(@email_address.email)
+    return unless email_should_receive_nonessential_notifications?(email_address.email)
 
-    with_user_locale(@user) do
+    with_user_locale(user) do
       @disavowal_token = disavowal_token
-      mail(to: @email_address.email, subject: t('user_mailer.personal_key_sign_in.subject'))
+      mail(to: email_address.email, subject: t('user_mailer.personal_key_sign_in.subject'))
     end
   end
 
