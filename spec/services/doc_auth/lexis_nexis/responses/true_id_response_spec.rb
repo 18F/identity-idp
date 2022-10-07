@@ -425,4 +425,42 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       it { expect(attention_with_barcode).to eq(true) }
     end
   end
+
+  describe '#billed?' do
+    subject(:billed?) do
+      described_class.new(success_response, false, config).billed?
+    end
+
+    let(:success_response_body) do
+      body = JSON.parse(super(), symbolize_names: true)
+
+      parameter = body[:Products].
+        first[:ParameterDetails].
+        find { |h| h[:Name] == 'DocAuthResult' }
+
+      parameter[:Values] = [{ Value: doc_auth_result }]
+
+      body.to_json
+    end
+
+    context 'with no doc auth result' do
+      let(:doc_auth_result) { nil }
+      it { is_expected.to eq(false) }
+    end
+
+    context 'with doc auth result of Passed' do
+      let(:doc_auth_result) { 'Passed' }
+      it { is_expected.to eq(true) }
+    end
+
+    context 'with doc auth result of Attention' do
+      let(:doc_auth_result) { 'Attention' }
+      it { is_expected.to eq(true) }
+    end
+
+    context 'with doc auth result of Unknown' do
+      let(:doc_auth_result) { 'Unknown' }
+      it { is_expected.to eq(true) }
+    end
+  end
 end
