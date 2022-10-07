@@ -8,5 +8,7 @@
   </head>
   <body class="padding-2">
     <%= yield %>
+    <%= javascript_packs_tag_once('application', prepend: true) %>
+    <%= render_javascript_pack_once_tags %>
   </body>
 </html>
