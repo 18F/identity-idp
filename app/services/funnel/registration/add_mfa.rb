@@ -7,7 +7,7 @@ module Funnel
         return if funnel.registered_at.present?
 
         analytics.user_registration_user_fully_registered(mfa_method: mfa_method)
-        funnel.update!(registered_at: now)
+        funnel.update!(submitted_at: now, registered_at: now)
       end
     end
   end
