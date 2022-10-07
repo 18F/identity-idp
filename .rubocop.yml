@@ -286,6 +286,7 @@ Layout/SpaceAroundMethodCallOperator:
 Layout/SpaceAroundOperators:
   Enabled: true
   EnforcedStyleForExponentOperator: space
+  AllowForAlignment: false
 
 Layout/SpaceBeforeBlockBraces:
   Enabled: true
