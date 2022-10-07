@@ -480,12 +480,19 @@ module AnalyticsEvents
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [String] request_came_from the controller and action from the
   #   source such as "users/sessions#new"
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user clicked cancel during IDV (presented with an option to go back or confirm)
-  def idv_cancellation_visited(step:, request_came_from:, **extra)
+  def idv_cancellation_visited(
+    step:,
+    request_came_from:,
+    proofing_components: nil,
+    **extra
+  )
     track_event(
       'IdV: cancellation visited',
       step: step,
       request_came_from: request_came_from,
+      proofing_components: proofing_components,
       **extra,
     )
   end
@@ -515,20 +522,37 @@ module AnalyticsEvents
   end
 
   # @param [String] step the step that the user was on when they clicked cancel
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user confirmed their choice to cancel going through IDV
-  def idv_cancellation_confirmed(step:, **extra)
-    track_event('IdV: cancellation confirmed', step: step, **extra)
+  def idv_cancellation_confirmed(step:, proofing_components: nil, **extra)
+    track_event(
+      'IdV: cancellation confirmed',
+      step: step,
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # @param [String] step the step that the user was on when they clicked cancel
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user chose to go back instead of cancel IDV
-  def idv_cancellation_go_back(step:, **extra)
-    track_event('IdV: cancellation go back', step: step, **extra)
+  def idv_cancellation_go_back(step:, proofing_components: nil, **extra)
+    track_event(
+      'IdV: cancellation go back',
+      step: step,
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # The user visited the "come back later" page shown during the GPO mailing flow
-  def idv_come_back_later_visit
-    track_event('IdV: come back later visited')
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  def idv_come_back_later_visit(proofing_components: nil, **extra)
+    track_event(
+      'IdV: come back later visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
@@ -583,9 +607,14 @@ module AnalyticsEvents
     track_event('IdV: in person proofing switch_back submitted', flow_path: flow_path, **extra)
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user visited the "ready to verify" page for the in person proofing flow
-  def idv_in_person_ready_to_verify_visit
-    track_event('IdV: in person ready to verify visited')
+  def idv_in_person_ready_to_verify_visit(proofing_components: nil, **extra)
+    track_event(
+      'IdV: in person ready to verify visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # @param [String] step_name which step the user was on
@@ -724,34 +753,48 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # User visited forgot password page
-  def idv_forgot_password
-    track_event('IdV: forgot password visited')
+  def idv_forgot_password(proofing_components: nil, **extra)
+    track_event(
+      'IdV: forgot password visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # User confirmed forgot password
-  def idv_forgot_password_confirmed
-    track_event('IdV: forgot password confirmed')
+  def idv_forgot_password_confirmed(proofing_components: nil, **extra)
+    track_event(
+      'IdV: forgot password confirmed',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # @param [DateTime] enqueued_at
   # @param [Boolean] resend
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # GPO letter was enqueued and the time at which it was enqueued
-  def idv_gpo_address_letter_enqueued(enqueued_at:, resend:, **extra)
+  def idv_gpo_address_letter_enqueued(enqueued_at:, resend:, proofing_components: nil, **extra)
     track_event(
       'IdV: USPS address letter enqueued',
       enqueued_at: enqueued_at,
       resend: resend,
+      proofing_components: proofing_components,
       **extra,
     )
   end
 
   # @param [Boolean] resend
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # GPO letter was requested
-  def idv_gpo_address_letter_requested(resend:, **extra)
+  def idv_gpo_address_letter_requested(resend:, proofing_components: nil, **extra)
     track_event(
       'IdV: USPS address letter requested',
       resend: resend,
+      proofing_components: proofing_components,
       **extra,
     )
   end
@@ -801,26 +844,39 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # Tracks the last step of IDV, indicates the user successfully prooved
   def idv_final(
     success:,
+    proofing_components: nil,
     **extra
   )
     track_event(
       'IdV: final resolution',
       success: success,
+      proofing_components: proofing_components,
       **extra,
     )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # User visited IDV personal key page
-  def idv_personal_key_visited
-    track_event('IdV: personal key visited')
+  def idv_personal_key_visited(proofing_components: nil, **extra)
+    track_event(
+      'IdV: personal key visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # User submitted IDV personal key page
-  def idv_personal_key_submitted
-    track_event('IdV: personal key submitted')
+  def idv_personal_key_submitted(proofing_components: nil, **extra)
+    track_event(
+      'IdV: personal key submitted',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # A user has downloaded their backup codes
@@ -830,39 +886,62 @@ module AnalyticsEvents
 
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.previous_event_name IdV: download personal key
-  def idv_personal_key_downloaded
-    track_event('IdV: personal key downloaded')
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  def idv_personal_key_downloaded(proofing_components: nil, **extra)
+    track_event(
+      'IdV: personal key downloaded',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user submitted their phone on the phone confirmation page
   def idv_phone_confirmation_form_submitted(
     success:,
     errors:,
+    proofing_components: nil,
     **extra
   )
     track_event(
       'IdV: phone confirmation form',
       success: success,
       errors: errors,
+      proofing_components: proofing_components,
       **extra,
     )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user was rate limited for submitting too many OTPs during the IDV phone step
-  def idv_phone_confirmation_otp_rate_limit_attempts
-    track_event('Idv: Phone OTP attempts rate limited')
+  def idv_phone_confirmation_otp_rate_limit_attempts(proofing_components: nil, **extra)
+    track_event(
+      'Idv: Phone OTP attempts rate limited',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user was locked out for hitting the phone OTP rate limit during IDV
-  def idv_phone_confirmation_otp_rate_limit_locked_out
-    track_event('Idv: Phone OTP rate limited user')
+  def idv_phone_confirmation_otp_rate_limit_locked_out(proofing_components: nil, **extra)
+    track_event(
+      'Idv: Phone OTP rate limited user',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user was rate limited for requesting too many OTPs during the IDV phone step
-  def idv_phone_confirmation_otp_rate_limit_sends
-    track_event('Idv: Phone OTP sends rate limited')
+  def idv_phone_confirmation_otp_rate_limit_sends(proofing_components: nil, **extra)
+    track_event(
+      'Idv: Phone OTP sends rate limited',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # @param [Boolean] success
@@ -872,6 +951,7 @@ module AnalyticsEvents
   # @param [String] area_code area code of phone number
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
   # @param [Hash] telephony_response response from Telephony gem
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user resent an OTP during the IDV phone step
   def idv_phone_confirmation_otp_resent(
     success:,
@@ -881,6 +961,7 @@ module AnalyticsEvents
     area_code:,
     rate_limit_exceeded:,
     telephony_response:,
+    proofing_components: nil,
     **extra
   )
     track_event(
@@ -892,6 +973,7 @@ module AnalyticsEvents
       area_code: area_code,
       rate_limit_exceeded: rate_limit_exceeded,
       telephony_response: telephony_response,
+      proofing_components: proofing_components,
       **extra,
     )
   end
@@ -904,6 +986,7 @@ module AnalyticsEvents
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
   # @param [Hash] telephony_response response from Telephony gem
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user requested an OTP to confirm their phone during the IDV phone step
   def idv_phone_confirmation_otp_sent(
     success:,
@@ -914,6 +997,7 @@ module AnalyticsEvents
     rate_limit_exceeded:,
     phone_fingerprint:,
     telephony_response:,
+    proofing_components: nil,
     **extra
   )
     track_event(
@@ -926,22 +1010,26 @@ module AnalyticsEvents
       rate_limit_exceeded: rate_limit_exceeded,
       phone_fingerprint: phone_fingerprint,
       telephony_response: telephony_response,
+      proofing_components: proofing_components,
       **extra,
     )
   end
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
     errors:,
+    proofing_components: nil,
     **extra
   )
     track_event(
       'IdV: phone confirmation vendor',
       success: success,
       errors: errors,
+      proofing_components: proofing_components,
       **extra,
     )
   end
@@ -951,8 +1039,8 @@ module AnalyticsEvents
   # @param [Boolean] code_expired if the confirmation code expired
   # @param [Boolean] code_matches
   # @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
-  # @param [Time, nil] second_factor_locked_at timestamp when the phone was
-  # locked out at
+  # @param [Time, nil] second_factor_locked_at timestamp when the phone was locked out
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # When a user attempts to confirm posession of a new phone number during the IDV process
   def idv_phone_confirmation_otp_submitted(
     success:,
@@ -961,6 +1049,7 @@ module AnalyticsEvents
     code_matches:,
     second_factor_attempts_count:,
     second_factor_locked_at:,
+    proofing_components: nil,
     **extra
   )
     track_event(
@@ -971,24 +1060,38 @@ module AnalyticsEvents
       code_matches: code_matches,
       second_factor_attempts_count: second_factor_attempts_count,
       second_factor_locked_at: second_factor_locked_at,
+      proofing_components: proofing_components,
       **extra,
     )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # When a user visits the page to confirm posession of a new phone number during the IDV process
-  def idv_phone_confirmation_otp_visit
-    track_event('IdV: phone confirmation otp visited')
+  def idv_phone_confirmation_otp_visit(proofing_components: nil, **extra)
+    track_event(
+      'IdV: phone confirmation otp visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # @param ['warning','jobfail','failure'] type
   # @param [Time] throttle_expires_at when the throttle expires
   # @param [Integer] remaining_attempts number of attempts remaining
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # When a user gets an error during the phone finder flow of IDV
-  def idv_phone_error_visited(type:, throttle_expires_at: nil, remaining_attempts: nil, **extra)
+  def idv_phone_error_visited(
+    type:,
+    proofing_components: nil,
+    throttle_expires_at: nil,
+    remaining_attempts: nil,
+    **extra
+  )
     track_event(
       'IdV: phone error visited',
       {
         type: type,
+        proofing_components: proofing_components,
         throttle_expires_at: throttle_expires_at,
         remaining_attempts: remaining_attempts,
         **extra,
@@ -1000,9 +1103,11 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Hash] error_details
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   def idv_phone_otp_delivery_selection_submitted(
     success:,
     otp_delivery_preference:,
+    proofing_components: nil,
     errors: nil,
     error_details: nil,
     **extra
@@ -1014,63 +1119,91 @@ module AnalyticsEvents
         errors: errors,
         error_details: error_details,
         otp_delivery_preference: otp_delivery_preference,
+        proofing_components: proofing_components,
         **extra,
       }.compact,
     )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # User visited idv phone of record
-  def idv_phone_of_record_visited
-    track_event('IdV: phone of record visited')
-  end
-
-  # User visited idv phone OTP delivery selection
-  def idv_phone_otp_delivery_selection_visit
-    track_event('IdV: Phone OTP delivery Selection Visited')
-  end
-
-  # @param [String] step the step the user was on when they clicked use a different phone number
-  # User decided to use a different phone number in idv
-  def idv_phone_use_different(step:, **extra)
+  def idv_phone_of_record_visited(proofing_components: nil, **extra)
     track_event(
-      'IdV: use different phone number',
-      step: step,
+      'IdV: phone of record visited',
+      proofing_components: proofing_components,
       **extra,
     )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # User visited idv phone OTP delivery selection
+  def idv_phone_otp_delivery_selection_visit(proofing_components: nil, **extra)
+    track_event(
+      'IdV: Phone OTP delivery Selection Visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String] step the step the user was on when they clicked use a different phone number
+  # User decided to use a different phone number in idv
+  def idv_phone_use_different(step:, proofing_components: nil, **extra)
+    track_event(
+      'IdV: use different phone number',
+      step: step,
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The system encountered an error and the proofing results are missing
-  def idv_proofing_resolution_result_missing
-    track_event('Proofing Resolution Result Missing')
+  def idv_proofing_resolution_result_missing(proofing_components: nil, **extra)
+    track_event(
+      'Proofing Resolution Result Missing',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # User submitted IDV password confirm page
   # @param [Boolean] success
-  def idv_review_complete(success:, **extra)
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  def idv_review_complete(success:, proofing_components: nil, **extra)
     track_event(
       'IdV: review complete',
       success: success,
+      proofing_components: proofing_components,
       **extra,
     )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # User visited IDV password confirm page
-  def idv_review_info_visited
-    track_event('IdV: review info visited')
+  def idv_review_info_visited(proofing_components: nil, **extra)
+    track_event(
+      'IdV: review info visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # @param [String] step
   # @param [String] location
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # User started over idv
   def idv_start_over(
     step:,
     location:,
+    proofing_components: nil,
     **extra
   )
     track_event(
       'IdV: start over',
       step: step,
       location: location,
+      proofing_components: proofing_components,
       **extra,
     )
   end
@@ -2800,9 +2933,14 @@ module AnalyticsEvents
     track_event('Account Reset: Cancel Account Recovery Options')
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # Tracks when the user reaches the verify setup errors page after failing proofing
-  def idv_setup_errors_visited
-    track_event('IdV: Verify setup errors visited')
+  def idv_setup_errors_visited(proofing_components: nil, **extra)
+    track_event(
+      'IdV: Verify setup errors visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # @param [String] redirect_url URL user was directed to
@@ -2829,10 +2967,16 @@ module AnalyticsEvents
 
   # Tracks if a user clicks the 'acknowledge' checkbox during personal
   # key creation
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [boolean] checked whether the user checked or un-checked
   #                  the box with this click
-  def idv_personal_key_acknowledgment_toggled(checked:, **extra)
-    track_event('IdV: personal key acknowledgment toggled', checked: checked, **extra)
+  def idv_personal_key_acknowledgment_toggled(checked:, proofing_components:, **extra)
+    track_event(
+      'IdV: personal key acknowledgment toggled',
+      checked: checked,
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 end
 # rubocop:enable Metrics/ModuleLength

@@ -74,12 +74,14 @@ describe Idv::PhoneErrorsController do
       end
 
       it 'logs an event' do
-        logged_attributes = { type: action, remaining_attempts: 4 }
-
         get action
 
-        expect(@analytics).to have_received(:track_event).
-          with('IdV: phone error visited', logged_attributes)
+        expect(@analytics).to have_received(:track_event).with(
+          'IdV: phone error visited',
+          type: action,
+          remaining_attempts: 4,
+          proofing_components: nil,
+        )
       end
     end
   end
@@ -125,12 +127,14 @@ describe Idv::PhoneErrorsController do
       end
 
       it 'logs an event' do
-        logged_attributes = { type: action, remaining_attempts: 4 }
-
         get action
 
-        expect(@analytics).to have_received(:track_event).
-          with('IdV: phone error visited', logged_attributes)
+        expect(@analytics).to have_received(:track_event).with(
+          'IdV: phone error visited',
+          type: action,
+          remaining_attempts: 4,
+          proofing_components: nil,
+        )
       end
     end
   end
@@ -161,15 +165,15 @@ describe Idv::PhoneErrorsController do
       it 'logs an event' do
         freeze_time do
           throttle_window = Throttle.attempt_window_in_minutes(:proof_address).minutes
-          logged_attributes = {
-            type: action,
-            throttle_expires_at: attempted_at + throttle_window,
-          }
 
           get action
 
-          expect(@analytics).to have_received(:track_event).
-            with('IdV: phone error visited', logged_attributes)
+          expect(@analytics).to have_received(:track_event).with(
+            'IdV: phone error visited',
+            type: action,
+            throttle_expires_at: attempted_at + throttle_window,
+            proofing_components: nil,
+          )
         end
       end
     end

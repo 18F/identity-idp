@@ -70,7 +70,7 @@ describe Idv::OtpDeliveryMethodController do
       get :new
 
       expect(@analytics).to have_received(:track_event).
-        with('IdV: Phone OTP delivery Selection Visited')
+        with('IdV: Phone OTP delivery Selection Visited', proofing_components: nil)
     end
   end
 
@@ -135,6 +135,7 @@ describe Idv::OtpDeliveryMethodController do
           success: true,
           errors: {},
           otp_delivery_preference: 'sms',
+          proofing_components: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -168,6 +169,7 @@ describe Idv::OtpDeliveryMethodController do
           success: true,
           errors: {},
           otp_delivery_preference: 'voice',
+          proofing_components: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -197,6 +199,7 @@ describe Idv::OtpDeliveryMethodController do
           errors: { otp_delivery_preference: ['is not included in the list'] },
           error_details: { otp_delivery_preference: [:inclusion] },
           otp_delivery_preference: '🎷',
+          proofing_components: nil,
         }
 
         expect(@analytics).to have_received(:track_event).

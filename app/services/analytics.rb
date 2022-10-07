@@ -2,6 +2,9 @@
 
 class Analytics
   include AnalyticsEvents
+  include Idv::AnalyticsEventsEnhancer
+
+  attr_reader :user, :request, :sp, :ahoy
 
   def initialize(user:, request:, sp:, session:, ahoy: nil)
     @user = user
@@ -86,8 +89,6 @@ class Analytics
     )
     attributes[:success] ? 'success' : 'fail'
   end
-
-  attr_reader :user, :request, :sp, :ahoy
 
   def request_attributes
     attributes = {
