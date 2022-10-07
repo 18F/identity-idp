@@ -565,6 +565,7 @@ describe SamlIdpController do
             endpoint: '/api/saml/auth2022',
             idv: false,
             finish_profile: false,
+            request_signed: true,
             matching_cert_serial: saml_test_sp_cert_serial,
           })
         expect(@analytics).to receive(:track_event).
@@ -724,6 +725,7 @@ describe SamlIdpController do
             endpoint: '/api/saml/auth2022',
             idv: false,
             finish_profile: false,
+            request_signed: true,
             matching_cert_serial: saml_test_sp_cert_serial,
           })
         expect(@analytics).to receive(:track_event).
@@ -766,6 +768,7 @@ describe SamlIdpController do
           authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
           authn_context_comparison: 'exact',
           service_provider: 'http://localhost:3000',
+          request_signed: true,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -938,6 +941,7 @@ describe SamlIdpController do
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
           service_provider: nil,
+          request_signed: true,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -981,6 +985,7 @@ describe SamlIdpController do
           authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
           authn_context_comparison: 'exact',
           service_provider: nil,
+          request_signed: true,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1227,6 +1232,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          request_signed: false,
           matching_cert_serial: nil,
         }
 
@@ -1267,6 +1273,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
         }
 
@@ -1303,6 +1310,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
         }
 
@@ -1337,6 +1345,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
         }
 
@@ -1367,6 +1376,7 @@ describe SamlIdpController do
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
           service_provider: 'http://localhost:3000',
+          request_signed: true,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1407,6 +1417,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
         }
 
@@ -1438,6 +1449,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
         }
 
@@ -1469,6 +1481,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
         }
 
@@ -1958,6 +1971,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: true,
           finish_profile: false,
+          request_signed: false,
           matching_cert_serial: nil,
         }
 
@@ -2002,6 +2016,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
         }
 
@@ -2037,6 +2052,7 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: true,
+          request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
         }
 
