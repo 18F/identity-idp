@@ -50,7 +50,9 @@ describe Funnel::Registration::RangeRegisteredCount do
 
   def register_user(year, month, day)
     travel_to Date.new(year, month, day) do
-      create(:user)
+      user = create(:user)
+      user_id = user.id
+      Funnel::Registration::AddMfa.call(user_id, 'backup_codes', analytics)
     end
   end
 end
