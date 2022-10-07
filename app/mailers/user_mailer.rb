@@ -235,14 +235,13 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_ready_to_verify(user, email_address, first_name:, enrollment:)
+  def in_person_ready_to_verify(user, email_address, enrollment:)
     attachments.inline['barcode.png'] = BarcodeOutputter.new(
       code: enrollment.enrollment_code,
     ).image_data
 
     with_user_locale(user) do
       @header = t('in_person_proofing.headings.barcode')
-      @first_name = first_name
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
