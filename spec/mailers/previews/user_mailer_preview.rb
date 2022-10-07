@@ -85,7 +85,8 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def doc_auth_desktop_link_to_sp
-    UserMailer.doc_auth_desktop_link_to_sp(user, email_address, 'Example App', '/')
+    UserMailer.with(user: user, email_address: email_address_record).
+      doc_auth_desktop_link_to_sp('Example App', '/')
   end
 
   def letter_reminder

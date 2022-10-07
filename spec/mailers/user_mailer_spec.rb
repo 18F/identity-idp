@@ -435,7 +435,10 @@ describe UserMailer, type: :mailer do
   describe '#doc_auth_desktop_link_to_sp' do
     let(:app) { 'login.gov' }
     let(:link) { root_url }
-    let(:mail) { UserMailer.doc_auth_desktop_link_to_sp(user, email_address.email, app, link) }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        doc_auth_desktop_link_to_sp(app, link)
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'

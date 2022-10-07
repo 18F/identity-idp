@@ -182,11 +182,11 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def doc_auth_desktop_link_to_sp(user, email_address, application, link)
+  def doc_auth_desktop_link_to_sp(application, link)
     with_user_locale(user) do
       @link = link
       @application = application
-      mail(to: email_address, subject: t('user_mailer.doc_auth_link.subject'))
+      mail(to: email_address.email, subject: t('user_mailer.doc_auth_link.subject'))
     end
   end
 
