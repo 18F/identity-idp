@@ -117,7 +117,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def new_device_sign_in(user:, email_address:, date:, location:, disavowal_token:)
+  def new_device_sign_in(date:, location:, disavowal_token:)
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 
     with_user_locale(user) do

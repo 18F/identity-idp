@@ -49,9 +49,7 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def new_device_sign_in
-    UserMailer.new_device_sign_in(
-      user: user,
-      email_address: email_address_record,
+    UserMailer.with(user: user, email_address: email_address_record).new_device_sign_in(
       date: 'February 25, 2019 15:02',
       location: 'Washington, DC',
       disavowal_token: SecureRandom.hex,

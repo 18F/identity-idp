@@ -141,9 +141,7 @@ describe UserMailer, type: :mailer do
     location = 'Washington, DC'
     disavowal_token = 'asdf1234'
     let(:mail) do
-      UserMailer.new_device_sign_in(
-        user: user,
-        email_address: email_address,
+      UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
         date: date,
         location: location,
         disavowal_token: disavowal_token,
@@ -178,9 +176,7 @@ describe UserMailer, type: :mailer do
 
     it 'does not send mail to emails in nonessential email banlist' do
       email_address = EmailAddress.new(email: banned_email)
-      mail = UserMailer.new_device_sign_in(
-        user: user,
-        email_address: email_address,
+      mail = UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
         date: date,
         location: location,
         disavowal_token: disavowal_token,
