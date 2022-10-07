@@ -303,7 +303,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_failed_fraud(user, email_address, enrollment:)
+  def in_person_failed_fraud(enrollment:)
     with_user_locale(user) do
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
