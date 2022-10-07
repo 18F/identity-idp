@@ -9,7 +9,6 @@ import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import DeviceContext from '../context/device';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import AcuantCapture from './acuant-capture';
-import SelfieCapture from './selfie-capture';
 import ServiceProviderContext from '../context/service-provider';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import type { PII } from '../services/upload';

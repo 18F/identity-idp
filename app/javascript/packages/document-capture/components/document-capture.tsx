@@ -7,7 +7,6 @@ import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import type { FormStep } from '@18f/identity-form-steps';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep from './documents-step';
-import SelfieStep from './selfie-step';
 import InPersonPrepareStep from './in-person-prepare-step';
 import InPersonLocationStep from './in-person-location-step';
 import InPersonSwitchBackStep from './in-person-switch-back-step';
@@ -145,10 +144,6 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
         {
           name: 'documents',
           form: DocumentsStep,
-        },
-        serviceProvider.isLivenessRequired && {
-          name: 'selfie',
-          form: SelfieStep,
         },
       ].filter(Boolean) as FormStep[]);
 
