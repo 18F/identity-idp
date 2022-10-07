@@ -15,7 +15,7 @@ module IrsAttemptsApi
     end
 
     # A user cancels the request to delete their account before 24 hour period
-    def account_reset_cancel_request()
+    def account_reset_cancel_request
       track_event(
         :account_reset_cancel_request,
       )
@@ -159,7 +159,7 @@ module IrsAttemptsApi
     end
 
     # Personal Key got generated for user
-    def idv_personal_key_generated()
+    def idv_personal_key_generated
       track_event(
         :idv_personal_key_generated,
       )
