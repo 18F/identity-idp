@@ -585,7 +585,6 @@ describe UserMailer, type: :mailer do
     end
 
     let(:mail) do
-      p enrollment
       UserMailer.in_person_failed_fraud(
         user,
         user.email_addresses.first,
