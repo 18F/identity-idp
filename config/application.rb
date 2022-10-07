@@ -159,5 +159,12 @@ module Identity
       # explicitly remove it when we want to disable it
       config.middleware.delete Rack::Attack
     end
+
+    config.view_component.show_previews = IdentityConfig.store.component_previews_enabled
+    if IdentityConfig.store.component_previews_enabled
+      config.view_component.preview_paths = [Rails.root.join('spec', 'components', 'previews')]
+      config.view_component.default_preview_layout = 'component_preview'
+      config.lookbook.auto_refresh = false
+    end
   end
 end
