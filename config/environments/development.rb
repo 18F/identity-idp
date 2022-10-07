@@ -28,6 +28,13 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = { address: ENV['SMTP_HOST'] || 'localhost', port: 1025 }
   config.action_mailer.show_previews = IdentityConfig.store.rails_mailer_previews_enabled
 
+  config.view_component.show_previews = IdentityConfig.store.component_previews_enabled
+  if IdentityConfig.store.component_previews_enabled
+    config.view_component.preview_paths = [Rails.root.join('spec', 'components', 'previews')]
+    config.view_component.default_preview_layout = 'component_preview'
+    config.lookbook.auto_refresh = false
+  end
+
   routes.default_url_options[:protocol] = 'https' if ENV['HTTPS'] == 'on'
 
   config.lograge.ignore_actions = ['Users::SessionsController#active']

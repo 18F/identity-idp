@@ -154,6 +154,8 @@ Rails.application.routes.draw do
       end
     end
 
+    mount Lookbook::Engine, at: '/components' if IdentityConfig.store.component_previews_enabled
+
     if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
       get '/test/device_profiling' => 'test/device_profiling#index',
           as: :test_device_profiling_iframe

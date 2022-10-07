@@ -76,6 +76,9 @@ gem 'yard'
 # It should not be updated without verifying that the behavior still matches JS version 4.4.2.
 gem 'zxcvbn', '0.1.7'
 
+# Lookbook must be listed after ViewComponent, so listed here out of default alphabetical order.
+gem 'lookbook', '~> 1.1.0'
+
 group :development do
   gem 'better_errors', '>= 2.5.1'
   gem 'binding_of_caller'
