@@ -1,3 +1,17 @@
+# UserMailer handles all email sending to the User class. It expects to be called using `with`
+# that receives a `user` and `email_address`. This pattern is preferred as the User and
+# EmailAddress database records are needed across any email being sent.
+#
+# Arguments sent to UserMailer must not include personally-identifiable information (PII).
+# This includes email addresses. All arguments to UserMailer are stored in the database when the
+# email is being sent asynchronusly by ActiveJob and we must not put PII in the database in
+# plaintext.
+#
+# Example:
+#
+#   UserMailer.with(user: user, email_address: email_address).
+#     reset_password_instructions(token: token)
+#
 class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
