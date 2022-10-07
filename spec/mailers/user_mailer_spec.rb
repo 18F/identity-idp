@@ -186,7 +186,9 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#personal_key_regenerated' do
-    let(:mail) { UserMailer.personal_key_regenerated(user, user.email) }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).personal_key_regenerated
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -206,7 +208,8 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.personal_key_regenerated(user, banned_email)
+      mail = UserMailer.with(user: user, email_address: banned_email_address).
+        personal_key_regenerated
       expect(mail.to).to eq(nil)
     end
   end

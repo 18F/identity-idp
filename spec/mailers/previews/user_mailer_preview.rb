@@ -57,7 +57,7 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def personal_key_regenerated
-    UserMailer.personal_key_regenerated(user, email_address)
+    UserMailer.with(user: user, email_address: email_address).personal_key_regenerated
   end
 
   def account_reset_request
