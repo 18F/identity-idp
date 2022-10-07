@@ -219,11 +219,11 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def email_deleted(user, email)
-    return unless email_should_receive_nonessential_notifications?(email)
+  def email_deleted
+    return unless email_should_receive_nonessential_notifications?(email_address.email)
 
     with_user_locale(user) do
-      mail(to: email, subject: t('user_mailer.email_deleted.subject'))
+      mail(to: email_address.email, subject: t('user_mailer.email_deleted.subject'))
     end
   end
 

@@ -102,7 +102,7 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def email_deleted
-    UserMailer.email_deleted(user, email_address)
+    UserMailer.with(user: user, email_address: email_address_record).email_deleted
   end
 
   def add_email_associated_with_another_account

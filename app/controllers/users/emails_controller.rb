@@ -3,7 +3,6 @@ module Users
     before_action :confirm_two_factor_authenticated
     before_action :authorize_user_to_edit_email, except: %i[add show verify resend]
     before_action :check_max_emails_per_account, only: %i[show add]
-    before_action :retain_confirmed_emails, only: %i[delete]
 
     def show
       @add_user_email_form = AddUserEmailForm.new
@@ -103,13 +102,10 @@ module Users
       redirect_to account_url(anchor: 'emails')
     end
 
-    def retain_confirmed_emails
-      @current_confirmed_emails = current_user.confirmed_email_addresses.map(&:email)
-    end
-
     def send_delete_email_notification
-      @current_confirmed_emails.each do |confirmed_email|
-        UserMailer.email_deleted(current_user, confirmed_email).deliver_now_or_later
+      current_user.confirmed_email_addresses.each do |confirmed_email_address|
+        UserMailer.with(user: current_user, email_address: confirmed_email_address).
+          email_deleted.deliver_now_or_later
       end
     end
   end

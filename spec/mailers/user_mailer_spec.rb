@@ -22,13 +22,15 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#email_deleted' do
-    let(:mail) { UserMailer.email_deleted(user, 'old@email.com') }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).email_deleted
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the old email' do
-      expect(mail.to).to eq ['old@email.com']
+      expect(mail.to).to eq [email_address.email]
     end
 
     it 'renders the subject' do
@@ -43,7 +45,7 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.email_deleted(user, banned_email)
+      mail = UserMailer.with(user: user, email_address: banned_email_address).email_deleted
       expect(mail.to).to eq(nil)
     end
   end
