@@ -408,7 +408,7 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#please_reset_password' do
-    let(:mail) { UserMailer.please_reset_password(user, email_address.email) }
+    let(:mail) { UserMailer.with(user: user, email_address: email_address).please_reset_password }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'

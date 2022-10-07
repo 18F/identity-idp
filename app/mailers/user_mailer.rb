@@ -173,10 +173,10 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def please_reset_password(user, email_address)
+  def please_reset_password
     with_user_locale(user) do
       mail(
-        to: email_address,
+        to: email_address.email,
         subject: t('user_mailer.please_reset_password.subject', app_name: APP_NAME),
       )
     end
