@@ -6,7 +6,7 @@ module PrivateKeyFileHelper
     file_name = force_tmp_private_key_file_name file_name: file_name
 
     if Rails.env.test? && !File.exist?(file_name)
-      puts "WARNING: Private key file '#{file_name}' not found!"
+      puts "WARNING: Private key file '#{file_name}' not found!" # rubocop:disable Rails/Output
     end
 
     if File.exist?(file_name)
