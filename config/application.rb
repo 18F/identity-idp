@@ -165,6 +165,7 @@ module Identity
       config.view_component.preview_paths = [Rails.root.join('spec', 'components', 'previews')]
       config.view_component.default_preview_layout = 'component_preview'
       config.lookbook.auto_refresh = false
+      config.view_component.preview_controller = 'ComponentPreviewController'
     end
   end
 end
