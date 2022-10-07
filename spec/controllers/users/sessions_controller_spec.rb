@@ -47,23 +47,23 @@ describe Users::SessionsController, devise: true do
         expect(json['live']).to eq true
       end
 
-      it 'includes the timeout key' do
-        timeout =  Time.zone.now + 10
+      it 'includes the timeout key', freeze_time: true do
+        timeout = Time.zone.now + 10
         controller.session[:session_expires_at] = timeout
         get :active
 
         json ||= JSON.parse(response.body)
 
-        expect(json['timeout'].to_datetime.to_i).to be_within(1).of(timeout.to_i)
+        expect(json['timeout'].to_datetime.to_i).to eq(timeout.to_i)
       end
 
-      it 'includes the remaining key' do
+      it 'includes the remaining key', freeze_time: true do
         controller.session[:session_expires_at] = Time.zone.now + 10
         get :active
 
         json ||= JSON.parse(response.body)
 
-        expect(json['remaining']).to be_within(1).of(10)
+        expect(json['remaining']).to eq(10)
       end
     end
 
@@ -76,15 +76,15 @@ describe Users::SessionsController, devise: true do
         expect(json['live']).to eq false
       end
 
-      it 'includes session_expires_at' do
+      it 'includes session_expires_at', freeze_time: true do
         get :active
 
         json ||= JSON.parse(response.body)
 
-        expect(json['timeout'].to_datetime.to_i).to be_within(1).of(Time.zone.now.to_i - 1)
+        expect(json['timeout'].to_datetime.to_i).to eq(Time.zone.now.to_i - 1)
       end
 
-      it 'includes the remaining time' do
+      it 'includes the remaining time', freeze_time: true do
         get :active
 
         json ||= JSON.parse(response.body)
@@ -98,11 +98,11 @@ describe Users::SessionsController, devise: true do
         expected_time = now + 10
         session[:pinged_at] = now
 
-        travel_to(Time.zone.now + 10) do
+        travel_to(expected_time) do
           get :active
         end
 
-        expect(session[:pinged_at].to_i).to be_within(1).of(expected_time.to_i)
+        expect(session[:pinged_at].to_i).to eq(expected_time.to_i)
       end
     end
 
