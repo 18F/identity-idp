@@ -53,9 +53,7 @@ class SendAddEmailConfirmation
   end
 
   def send_confirmation_email
-    UserMailer.add_email(
-      user,
-      email_address.email,
+    UserMailer.with(user: user, email_address: email_address).add_email(
       confirmation_token,
     ).deliver_now_or_later
   end

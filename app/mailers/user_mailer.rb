@@ -198,7 +198,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def add_email(user, email, token)
+  def add_email(token)
     with_user_locale(user) do
       presenter = ConfirmationEmailPresenter.new(user, view_context)
       @first_sentence = presenter.first_sentence
@@ -207,7 +207,7 @@ class UserMailer < ActionMailer::Base
         confirmation_token: token,
         locale: locale_url_param,
       )
-      mail(to: email, subject: t('user_mailer.add_email.subject'))
+      mail(to: email_address.email, subject: t('user_mailer.add_email.subject'))
     end
   end
 

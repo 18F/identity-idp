@@ -8,7 +8,7 @@ describe UserMailer, type: :mailer do
 
   describe '#add_email' do
     let(:token) { SecureRandom.hex }
-    let(:mail) { UserMailer.add_email(user, email_address, token) }
+    let(:mail) { UserMailer.with(user: user, email_address: email_address).add_email(token) }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
