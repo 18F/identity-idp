@@ -290,7 +290,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_failed(user, email_address, enrollment:)
+  def in_person_failed(enrollment:)
     with_user_locale(user) do
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,

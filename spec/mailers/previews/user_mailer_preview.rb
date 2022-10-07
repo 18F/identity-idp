@@ -134,9 +134,7 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def in_person_failed
-    UserMailer.in_person_failed(
-      user,
-      email_address_record,
+    UserMailer.with(user: user, email_address: email_address_record).in_person_failed(
       enrollment: in_person_enrollment,
     )
   end
