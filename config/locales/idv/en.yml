@@ -185,7 +185,8 @@ en:
         review: Re-enter your %{app_name} password to protect your data
     troubleshooting:
       headings:
-        are_you_near: 'Are you located near Washington, D.C. <br/>or Baltimore, MD?'
+        # Note: there are intentional irregular non-breaking whitespaces to ensure coupling of place names.
+        are_you_near: 'Are you located near Washington, D.C. <wbr/>or Baltimore, MD?'
         missing_required_items: Are you missing one of these items?
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
         still_having_trouble: Still having trouble?

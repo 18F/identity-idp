@@ -32,17 +32,6 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [String] email The submitted email address
-    # @param [Boolean] success True if the email and password matched
-    # A user has submitted an email address and password for authentication
-    def email_and_password_auth(email:, success:)
-      track_event(
-        :email_and_password_auth,
-        email: email,
-        success: success,
-      )
-    end
-
     # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def forgot_password_email_confirmed(success:, failure_reason: nil)
@@ -138,13 +127,13 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success
-    # @param [Hash<Key, Array<String>>] failure_reason displays GPO submission failed
-    # GPO verification submitted from Letter sent to verify address
-    def idv_gpo_verification_submitted(success:, failure_reason: nil)
+    # @param [String] resend
+    # The Address validation letter has been requested by user
+    def idv_gpo_letter_requested(success:, resend:)
       track_event(
-        :idv_gpo_verification_submitted,
+        :idv_gpo_letter_requested,
         success: success,
-        failure_reason: failure_reason,
+        resend: resend,
       )
     end
 
@@ -156,13 +145,13 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success
-    # @param [String] resend
-    # The Address validation letter has been requested by user
-    def idv_letter_requested(success:, resend:)
+    # @param [Hash<Key, Array<String>>] failure_reason displays GPO submission failed
+    # GPO verification submitted from Letter sent to verify address
+    def idv_gpo_verification_submitted(success:, failure_reason: nil)
       track_event(
-        :idv_letter_requested,
+        :idv_gpo_verification_submitted,
         success: success,
-        resend: resend,
+        failure_reason: failure_reason,
       )
     end
 
@@ -376,6 +365,17 @@ module IrsAttemptsApi
     def logged_in_profile_change_reauthentication_submitted(success:)
       track_event(
         :logged_in_profile_change_reauthentication_submitted,
+        success: success,
+      )
+    end
+
+    # @param [String] email The submitted email address
+    # @param [Boolean] success True if the email and password matched
+    # A user has submitted an email address and password for authentication
+    def login_email_and_password_auth(email:, success:)
+      track_event(
+        :login_email_and_password_auth,
+        email: email,
         success: success,
       )
     end
@@ -604,6 +604,13 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when User personal key has been rate limited by too many attempts
+    def personal_key_reactivation_rate_limited
+      track_event(
+        :personal_key_reactivation_rate_limited,
+      )
+    end
+
     # Tracks when user has entered personal key after forgot password steps
     # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
@@ -612,15 +619,6 @@ module IrsAttemptsApi
         :personal_key_reactivation_submitted,
         success: success,
         failure_reason: failure_reason,
-      )
-    end
-
-    # Tracks when User personal key has been rate limited by too many attempts
-    # @param [Boolean] success
-    def personal_key_reactivation_rate_limited(success:)
-      track_event(
-        :personal_key_reactivation_rate_limited,
-        success: success,
       )
     end
 

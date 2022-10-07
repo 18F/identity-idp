@@ -31,7 +31,7 @@ describe AbTests do
     end
 
     context 'configured with buckets adding up to less than 100 percent' do
-      let(:subject) { AbTests::NATIVE_CAMERA }
+      let(:subject) { described_class::NATIVE_CAMERA }
       let(:a_uuid) { SecureRandom.uuid }
       let(:b_uuid) { SecureRandom.uuid }
       before do

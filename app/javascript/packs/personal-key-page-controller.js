@@ -30,8 +30,12 @@ function resetForm() {
 }
 
 function validateInput() {
-  const value = encodeInput(input.value);
-  const isValid = value === personalKey;
+  let isValid = false;
+  try {
+    const value = encodeInput(input.value);
+    isValid = value === personalKey;
+  } catch {}
+
   input.setCustomValidity(isValid ? '' : t('users.personal_key.confirmation_error'));
 }
 

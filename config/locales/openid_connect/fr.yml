@@ -29,6 +29,8 @@ fr:
         no_client_id_or_id_token_hint: Cette application est mal configurée et doit
           envoyer client_id ou id_token_hint.
       heading: Voulez-vous vous déconnecter de %{app_name}?
+      heading_with_sp: Souhaitez-vous vous déconnecter de %{app_name} et revenir à
+        %{service_provider_name}?
     token:
       errors:
         expired_code: est expiré

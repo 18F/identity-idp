@@ -10,10 +10,36 @@ module Proofing
 
         def proof(applicant)
           response = VerificationRequest.new(config: config, applicant: applicant).send
-          return Proofing::LexisNexis::PhoneFinder::Result.new(response)
+          return build_result_from_response(response)
         rescue => exception
           NewRelic::Agent.notice_error(exception)
-          ResultWithException.new(exception, vendor_name: 'lexisnexis:phone_finder')
+          AddressResult.new(
+            success: false,
+            errors: {},
+            exception: exception,
+            vendor_name: 'lexisnexis:phone_finder',
+          )
+        end
+
+        private
+
+        def build_result_from_response(verification_response)
+          AddressResult.new(
+            success: verification_response.verification_status == 'passed',
+            errors: parse_verification_errors(verification_response),
+            exception: nil,
+            vendor_name: 'lexisnexis:phone_finder',
+            transaction_id: verification_response.conversation_id,
+            reference: verification_response.reference,
+          )
+        end
+
+        def parse_verification_errors(verification_response)
+          errors = Hash.new { |h, k| h[k] = [] }
+          verification_response.verification_errors.each do |key, value|
+            errors[key] << value
+          end
+          errors
         end
       end
     end

@@ -53,6 +53,6 @@ class OtpDeliverySelectionForm
   end
 
   def confirmed_phone?
-    UserSessionContext.authentication_context?(context)
+    UserSessionContext.authentication_or_reauthentication_context?(context)
   end
 end
