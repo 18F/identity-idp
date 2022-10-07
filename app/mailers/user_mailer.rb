@@ -232,7 +232,7 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
   end
 
-  def account_verified(user, email_address, date_time:, sp_name:, disavowal_token:)
+  def account_verified(date_time:, sp_name:, disavowal_token:)
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 
     with_user_locale(user) do

@@ -491,10 +491,11 @@ describe UserMailer, type: :mailer do
     let(:sp_name) { '' }
     let(:date_time) { Time.zone.now }
     let(:mail) do
-      UserMailer.account_verified(
-        user, email_address, date_time: date_time, sp_name: sp_name,
-                             disavowal_token: disavowal_token
-      )
+      UserMailer.with(user: user, email_address: email_address).
+        account_verified(
+          date_time: date_time, sp_name: sp_name,
+          disavowal_token: disavowal_token
+        )
     end
 
     it_behaves_like 'a system email'
@@ -509,11 +510,12 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      email_address = EmailAddress.new(email: banned_email)
-      mail = UserMailer.account_verified(
-        user, email_address, date_time: date_time, sp_name: sp_name,
-                             disavowal_token: disavowal_token
-      )
+      mail = UserMailer.with(user: user, email_address: banned_email_address).
+        account_verified(
+          date_time: date_time,
+          sp_name: sp_name,
+          disavowal_token: disavowal_token,
+        )
       expect(mail.to).to eq(nil)
     end
   end

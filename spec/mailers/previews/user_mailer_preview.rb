@@ -110,9 +110,7 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def account_verified
-    UserMailer.account_verified(
-      user,
-      email_address_record,
+    UserMailer.with(user: user, email_address: email_address_record).account_verified(
       date_time: DateTime.now,
       sp_name: 'Example App',
       disavowal_token: SecureRandom.hex,
