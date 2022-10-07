@@ -382,6 +382,31 @@ describe UserMailer, type: :mailer do
     end
   end
 
+  describe '#account_reset_cancel' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        account_reset_cancel
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.account_reset_cancel.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).
+        to have_content(
+          strip_tags(t('user_mailer.account_reset_cancel.intro_html', app_name: APP_NAME)),
+        )
+    end
+  end
+
   describe '#please_reset_password' do
     let(:mail) { UserMailer.please_reset_password(user, email_address.email) }
 

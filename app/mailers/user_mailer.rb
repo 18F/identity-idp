@@ -167,7 +167,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def account_reset_cancel(user, email_address)
+  def account_reset_cancel
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.account_reset_cancel.subject'))
     end
