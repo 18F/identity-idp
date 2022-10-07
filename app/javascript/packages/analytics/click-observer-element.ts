@@ -1,4 +1,4 @@
-import trackEvent from './track-event';
+import { trackEvent } from '.';
 
 class ClickObserverElement extends HTMLElement {
   trackEvent: typeof trackEvent = trackEvent;
