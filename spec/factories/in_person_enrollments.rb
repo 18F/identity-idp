@@ -5,7 +5,6 @@ FactoryBot.define do
     current_address_matches_id { true }
     selected_location_details { { name: 'BALTIMORE' } }
     unique_id { SecureRandom.hex(9) }
-    # todo: set timestamps
 
     trait :establishing do
       status { :establishing }
@@ -16,24 +15,31 @@ FactoryBot.define do
       enrollment_code { Faker::Number.number(digits: 16) }
       enrollment_established_at { Time.zone.now }
       status_updated_at { Time.zone.now }
+      profile { association :profile, :in_person_pending, user: user }
     end
 
     trait :passed do
       pending
       status { :passed }
+      status_updated_at { Time.zone.now }
       status_check_attempted_at { Time.zone.now }
+      profile { association :profile, :in_person_proofed, user: user }
     end
 
     trait :expired do
       pending
       status { :expired }
+      status_updated_at { Time.zone.now }
       status_check_attempted_at { Time.zone.now }
+      profile { association :profile, :in_person_pending, user: user }
     end
 
     trait :failed do
       pending
       status { :failed }
+      status_updated_at { Time.zone.now }
       status_check_attempted_at { Time.zone.now }
+      profile { association :profile, :in_person_pending, user: user }
     end
   end
 end

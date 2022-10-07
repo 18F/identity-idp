@@ -12,7 +12,10 @@ module DisasterMitigation
       puts "Found #{profiles.count} profiles to deactivate"
 
       profiles.each do |profile|
-        profile.deactivate('in_person_contingency_deactivation') unless dry_run
+        continue if dry_run
+        profile.deactivate('in_person_contingency_deactivation')
+        profile.in_person_enrollment.status = 'cancelled'
+        profile.in_person_enrollment.save!
       end
 
       puts 'Completed'
@@ -37,7 +40,7 @@ module DisasterMitigation
 
     def self.pending_profiles(partner_id)
       # will this work with nil partner_id?
-      pending_profiles = Profile.where("proofing_components->>'document_check'= 'usps'").where(
+      Profile.where("proofing_components->>'document_check'= 'usps'").where(
         active: false, deactivation_reason: 'in_person_verification_pending',
       ).joins(:in_person_enrollment).where(in_person_enrollment: { status: 'pending',
                                                                    issuer: partner_id })
@@ -56,8 +59,8 @@ module DisasterMitigation
       # note: the join and check for passed is not necessary; we could just be satisfied if it is active. we could still perform the check for an enrollment as a data integrity check though. another data integrity check is making sure that the deactivation reason is nil
       active_profiles = Profile.where("proofing_components->>'document_check'= 'usps'").where(active: true)
       active_profiles.each do |profile|
-        unless profile.deactivation_reason.nil? && profile&.in_person_enrollment.status == 'passed'
-          puts "deactivation_reason is nil? #{profile.deactivation_reason.nil?}; enrollments passed? #{profile&.in_person_enrollment.status == 'passed'}"
+        unless profile.deactivation_reason.nil? && profile&.in_person_enrollment&.status == 'passed'
+          puts "deactivation_reason is nil? #{profile.deactivation_reason.nil?}; enrollments passed? #{profile&.in_person_enrollment&.status == 'passed'}"
           raise 'Unexpected state'
         end
       end
