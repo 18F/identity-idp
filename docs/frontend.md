@@ -220,6 +220,24 @@ Many issues can be fixed automatically by appending a `--fix` flag to the comman
 yarn run lint --fix
 ```
 
+## Debugging
+
+### Production Errors
+
+JavaScript errors that occur in production environments are automatically logged to NewRelic.
+Because JavaScript is transpiled and minified in production, these files can be difficult to debug.
+Fortunately, [NewRelic supports source maps](https://docs.newrelic.com/docs/browser/browser-monitoring/browser-pro-features/upload-source-maps-un-minify-js-errors/)
+to produce a readable stack trace of the original code.
+
+When viewing an instance of a JavaScript error, NewRelic will prompt for a sourcemap corresponding
+to a specific JavaScript file URL.
+
+![NewRelic minified stack trace](https://user-images.githubusercontent.com/1779930/194325242-1e0cb00a-6ee1-4fb0-82b1-b017ced703b5.png)
+
+To retrieve the sourcemap for this URL, simply copy the URL into your browser URL bar and append
+`.map`. Navigating to this URL should download the `.map` file to your computer, which you can then
+drag-and-drop onto the NewRelic web interface to reveal the decompiled stack trace.
+
 ## Devices
 
 The application should support:
