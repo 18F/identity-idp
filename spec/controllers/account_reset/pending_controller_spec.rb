@@ -18,15 +18,7 @@ describe AccountReset::PendingController do
   end
 
   describe '#cancel' do
-    it 'cancels the account reset request' do
-      account_reset_request = AccountResetRequest.create(user: user, requested_at: 1.hour.ago)
-
-      post :cancel
-
-      expect(account_reset_request.reload.cancelled_at).to_not be_nil
-    end
-
-    it 'logs the cancellation in attempts api' do
+    it 'cancels the account reset request and logs the cancellation event' do
       stub_attempts_tracker
 
       account_reset_request = AccountResetRequest.create(user: user, requested_at: 1.hour.ago)
