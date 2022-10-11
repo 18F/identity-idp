@@ -10,7 +10,7 @@ class ComponentPreviewController < ViewComponentsController
   alias_method :enqueue_component_scripts, :render_javascript_pack_once_tags
 
   def override_csp_for_component_preview
-    policy = current_content_security_policy
+    policy = request.content_security_policy
 
     # In development environments, both ViewComponent and Lookbook explicitly disable CSP. The CSP
     # would be enforced in deployed environments, and we extend it only if present.
@@ -22,7 +22,5 @@ class ComponentPreviewController < ViewComponentsController
 
     # Lookbook displays component previews inside a frame, hosted on the same domain.
     policy.frame_ancestors(*policy.frame_ancestors, :self)
-
-    request.content_security_policy = policy
   end
 end
