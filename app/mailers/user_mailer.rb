@@ -86,7 +86,7 @@ class UserMailer < ActionMailer::Base
       @token = token
       @pending_profile_requires_verification = user.decorate.pending_profile_requires_verification?
       @hide_title = @pending_profile_requires_verification
-      mail(to: email_address, subject: t('user_mailer.reset_password_instructions.subject'))
+      mail(to: email_address.email, subject: t('user_mailer.reset_password_instructions.subject'))
     end
   end
 

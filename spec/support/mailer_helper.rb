@@ -18,7 +18,7 @@ module MailerHelper
     expect(mail.subject).to eq hash[:subject] if hash[:subject]
 
     if hash[:body]
-      delivered_body = mail.to_s
+      delivered_body = mail.text_part.decoded.gsub("\r\n", ' ')
       hash[:body].to_a.each do |expected_body|
         expect(delivered_body).to include(expected_body)
       end
