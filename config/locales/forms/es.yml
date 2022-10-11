@@ -154,6 +154,7 @@ es:
       intro_link_text: Conozca más sobre el desbloqueo facial o táctil.
       login_text: 'Cuando esté listo, presione el botón:'
       nickname: Apodo de dispositivo.
+      warning_text: TODO THIS IS A PLACEHOLDER
     webauthn_setup:
       continue: Continuar
       instructions_text: Presione el botón en su clave de seguridad para registrarlo

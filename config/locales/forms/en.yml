@@ -143,6 +143,7 @@ en:
       intro_link_text: Learn more about face or touch unlock.
       login_text: 'When you are ready, press the button:'
       nickname: Device nickname
+      warning_text: We recommend setting up a second authentication method to ensure that you can sign in on other devices where a built-in authenticator is not present.
     webauthn_setup:
       continue: Continue
       instructions_text: Press the button on your security key to register it with %{app_name}
