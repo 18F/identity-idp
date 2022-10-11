@@ -61,9 +61,11 @@ RSpec.configure do |config|
     begin
       REDIS_POOL.with { |namespaced| namespaced.redis.info }
     rescue RuntimeError => error
+      # rubocop:disable Rails/Output
       puts error
       puts 'It appears Redis is not running, but it is required for (some) specs to run'
       exit 1
+      # rubocop:enable Rails/Output
     end
   end
 
@@ -73,10 +75,12 @@ RSpec.configure do |config|
       next if defined?($ran_asset_build)
       $ran_asset_build = true
       # rubocop:enable Style/GlobalVars
+      # rubocop:disable Rails/Output
       print '                       Bundling JavaScript and stylesheets... '
       system 'WEBPACK_PORT= yarn build > /dev/null 2>&1'
       system 'yarn build:css > /dev/null 2>&1'
       puts '✨ Done!'
+      # rubocop:enable Rails/Output
     end
   end
 
@@ -126,6 +130,10 @@ RSpec.configure do |config|
     example.run
     Capybara::Webmock.stop
     Bullet.enable = false
+  end
+
+  config.around(:each, freeze_time: true) do |example|
+    freeze_time { example.run }
   end
 
   config.after(:each, type: :feature, js: true) do |spec|

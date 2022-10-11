@@ -266,30 +266,6 @@ describe UserMailer, type: :mailer do
     end
   end
 
-  describe '#account_does_not_exist' do
-    let(:mail) { UserMailer.account_does_not_exist('test@test.com', 'request_id') }
-
-    it_behaves_like 'a system email'
-
-    it 'sends to the current email' do
-      expect(mail.to).to eq ['test@test.com']
-    end
-
-    it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_does_not_exist.subject', app_name: APP_NAME)
-    end
-
-    it 'renders the body' do
-      expect(mail.html_part.body).to have_content(
-        t('user_mailer.account_does_not_exist.intro_html', app_name: APP_NAME),
-      )
-      expect(mail.html_part.body).to have_link(
-        t('user_mailer.account_does_not_exist.link_text'),
-        href: sign_up_email_url(request_id: 'request_id'),
-      )
-    end
-  end
-
   def expect_email_body_to_have_help_and_contact_links
     expect(mail.html_part.body).to have_link(
       t('user_mailer.help_link_text'), href: MarketingSite.help_url
@@ -536,7 +512,6 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#in_person_ready_to_verify' do
-    let(:first_name) { 'Michael' }
     let!(:enrollment) do
       create(
         :in_person_enrollment,
@@ -550,7 +525,6 @@ describe UserMailer, type: :mailer do
       UserMailer.in_person_ready_to_verify(
         user,
         user.email_addresses.first,
-        first_name: first_name,
         enrollment: enrollment,
       )
     end
@@ -611,7 +585,6 @@ describe UserMailer, type: :mailer do
     end
 
     let(:mail) do
-      p enrollment
       UserMailer.in_person_failed_fraud(
         user,
         user.email_addresses.first,

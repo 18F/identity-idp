@@ -286,6 +286,7 @@ Layout/SpaceAroundMethodCallOperator:
 Layout/SpaceAroundOperators:
   Enabled: true
   EnforcedStyleForExponentOperator: space
+  AllowForAlignment: false
 
 Layout/SpaceBeforeBlockBraces:
   Enabled: true
@@ -839,6 +840,15 @@ Rails/MatchRoute:
 
 Rails/NegateInclude:
   Enabled: false
+
+Rails/Output:
+  Enabled: true
+  Include:
+    - app/**/*.rb
+    - config/**/*.rb
+    - db/**/*.rb
+    - lib/**/*.rb
+    - spec/**/*.rb # in addition to default
 
 Rails/Pluck:
   Enabled: true

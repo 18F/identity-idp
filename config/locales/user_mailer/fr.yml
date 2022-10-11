@@ -1,15 +1,6 @@
 ---
 fr:
   user_mailer:
-    account_does_not_exist:
-      intro_html: Cette adresse e-mail n’est pas encore associée à un compte
-        %{app_name}. Si vous souhaitez créer un compte %{app_name} avec cette
-        adresse e-mail, veuillez cliquer sur le lien ci-dessous ou faites un
-        copier-coller de l’intégralité du lien sur votre navigateur. Si vous
-        n’avez pas sollicité une réinitialisation de votre mot de passe, nous
-        vous prions de bien vouloir ignorer ce message.
-      link_text: Créer votre compte
-      subject: Votre demande de réinitialisation de votre mot de passe %{app_name}
     account_reset_cancel:
       intro_html: Cet e-mail confirme que vous avez annulé votre demande de
         suppression de votre compte %{app_name}.
@@ -156,7 +147,7 @@ fr:
       greeting: Bonjour,
       subject: Votre identité n’a pas pu être vérifiée en personne
     in_person_ready_to_verify:
-      greeting: Bonjour %{name},
+      greeting: Bonjour,
       intro: Voici les détails pour vérifier votre identité en personne dans un bureau
         de poste des États-Unis près de chez vous.
       subject: Vous êtes prêt à vérifier votre identité avec %{app_name} en personne

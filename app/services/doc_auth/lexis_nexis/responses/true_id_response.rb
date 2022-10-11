@@ -126,6 +126,10 @@ module DocAuth
             parsed_alerts.dig(:failed, 0, :result) == 'Attention'
         end
 
+        def billed?
+          !!doc_auth_result
+        end
+
         private
 
         def response_info
@@ -157,10 +161,6 @@ module DocAuth
             vendor: 'TrueID',
             billed: billed?,
           }
-        end
-
-        def billed?
-          !!doc_auth_result && !doc_auth_result_unknown?
         end
 
         def all_passed?
