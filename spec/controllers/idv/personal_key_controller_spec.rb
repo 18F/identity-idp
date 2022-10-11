@@ -114,9 +114,7 @@ describe Idv::PersonalKeyController do
 
     it 'logs when user generates personal key' do
       idv_session.personal_key = nil
-      expect(@irs_attempts_api_tracker).to receive(:idv_personal_key_generated).with(
-        success: true,
-      )
+      expect(@irs_attempts_api_tracker).to receive(:idv_personal_key_generated)
       get :show
     end
 

@@ -403,7 +403,8 @@ describe Users::ResetPasswordsController, devise: true do
 
     context 'user exists' do
       let(:email) { 'test@example.com' }
-      let!(:user) { create(:user, :signed_up, email: email) }
+      let(:email_param) { { email: email } }
+      let!(:user) { create(:user, :signed_up, **email_param) }
       let(:analytics_hash) do
         {
           success: true,
@@ -422,12 +423,11 @@ describe Users::ResetPasswordsController, devise: true do
 
       it 'sends password reset email to user and tracks event' do
         expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_sent).with(
-          email: email,
-          success: true,
+          **email_param,
         )
 
         expect do
-          put :create, params: { password_reset_email_form: { email: email } }
+          put :create, params: { password_reset_email_form: email_param }
         end.to change { ActionMailer::Base.deliveries.count }.by(1)
 
         expect(@analytics).to have_received(:track_event).
@@ -464,7 +464,6 @@ describe Users::ResetPasswordsController, devise: true do
       it 'sends password reset email to user and tracks event' do
         expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_sent).with(
           email: user.email,
-          success: true,
         )
 
         expect { put :create, params: params }.
@@ -499,7 +498,6 @@ describe Users::ResetPasswordsController, devise: true do
           with('Password Reset: Email Submitted', analytics_hash)
         expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_sent).with(
           email: user.email,
-          success: true,
         )
 
         params = { password_reset_email_form: { email: user.email } }
