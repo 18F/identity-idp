@@ -42,8 +42,6 @@ Rails.application.config.content_security_policy do |policy|
     policy.frame_ancestors :self
   end
 
-  policy.frame_ancestors :self if IdentityConfig.store.component_previews_enabled
-
   policy.default_src :self
   policy.child_src :self # CSP 2.0 only; replaces frame_src
   policy.form_action :self
