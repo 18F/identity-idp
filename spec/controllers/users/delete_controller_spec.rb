@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe Users::DeleteController do
-  include Features::MailerHelper
-
   describe '#show' do
     it 'shows and logs a visit' do
       stub_analytics

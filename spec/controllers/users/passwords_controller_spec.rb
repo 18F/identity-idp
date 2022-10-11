@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe Users::PasswordsController do
-  include Features::MailerHelper
-
   describe '#update' do
     context 'form returns success' do
       it 'redirects to profile and sends a password change email' do

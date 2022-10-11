@@ -12,11 +12,6 @@ describe RegisterUserEmailForm do
       it 'sets success to true to prevent revealing account existence' do
         existing_user = create(:user, :signed_up, email: 'taken@gmail.com')
 
-        mailer = instance_double(ActionMailer::MessageDelivery)
-        allow(UserMailer).to receive(:signup_with_your_email).
-          with(existing_user, existing_user.email).and_return(mailer)
-        allow(mailer).to receive(:deliver_now_or_later)
-
         extra = {
           email_already_exists: true,
           throttled: false,
@@ -30,7 +25,13 @@ describe RegisterUserEmailForm do
           **extra,
         )
         expect(subject.email).to eq 'taken@gmail.com'
-        expect(mailer).to have_received(:deliver_now_or_later)
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          0, {
+            to: [subject.email],
+            subject: t('mailer.email_reuse_notice.subject'),
+          }
+        )
       end
 
       it 'creates throttle events after reaching throttle limit' do
