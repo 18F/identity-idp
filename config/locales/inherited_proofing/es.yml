@@ -3,6 +3,23 @@ es:
   inherited_proofing:
     buttons:
       continue: Continuar
+    cancel:
+      actions:
+        keep_going: No, continuar
+        start_over: Empezar de nuevo
+      description:
+        start_over: Si empieza de nuevo, el proceso se reiniciará y la información que
+          haya ingresado se perderá.
+      headings:
+        confirmation:
+          hybrid: Ha cancelado la carga de fotos de su identificación en este teléfono
+        prompt:
+          standard: ¿Cancelar la verificación de su identidad?
+        start_over: Empezar de nuevo a verificar su identidad
+      instructions:
+        switch_back: Regrese a su computadora para continuar con la verificación de su
+          identidad.
+        switch_back_image: Flecha que apunta del teléfono a la computadora
     headings:
       lets_go: to be implemented
       retrieval: Estamos recuperando su información de My HealtheVet
