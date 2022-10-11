@@ -113,14 +113,6 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    DocAuth::Mock::DocAuthMockClient.reset!
-    descendants = ActiveJob::Base.descendants + [ActiveJob::Base]
-
-    ActiveJob::Base.queue_adapter = :inline
-    descendants.each(&:disable_test_adapter)
-  end
-
-  config.before(:each) do
     IrsAttemptsApi::RedisClient.clear_attempts!
   end
 
