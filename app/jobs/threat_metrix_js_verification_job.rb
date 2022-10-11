@@ -3,43 +3,45 @@ class ThreatMetrixJsVerificationJob < ApplicationJob
 
   def perform(session_id: SecureRandom.uuid)
     org_id = IdentityConfig.store.lexisnexis_threatmetrix_org_id
-
-    return if org_id.blank?
-
-    return if !IdentityConfig.store.proofing_device_profiling_collecting_enabled
+    js = nil
+    valid = nil
+    error = nil
+    signature = nil
 
     # Certificate is stored ASCII-armored in config
     raw_cert = IdentityConfig.store.lexisnexis_threatmetrix_js_signing_cert
-    return if raw_cert.blank?
-
-    cert = OpenSSL::X509::Certificate.new raw_cert
-
-    raise 'Certificate is expired' if cert.not_after < Time.zone.now
+    cert = OpenSSL::X509::Certificate.new(raw_cert) if raw_cert.present?
+    raise 'JS signing certificate is missing' if !cert
+    raise 'JS signing certificate is expired' if cert.not_after < Time.zone.now
 
     url = "https://h.online-metrix.net/fp/tags.js?org_id=#{org_id}&session_id=#{session_id}"
+    resp = build_faraday.get(url)
+    content, signature = parse_js(resp.body)
 
-    resp = build_faraday.get url
-
-    content, signature = parse_js resp.body
-
-    log_payload = {
-      name: 'ThreatMetrixJsVerification',
-      org_id: org_id,
-      session_id: session_id,
-      http_status: resp.status,
-      signature: (signature || '').each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join,
-    }
-
-    if verify_js content, signature, cert
-      log_payload[:valid] = true
+    if js_verified?(content, signature, cert)
+      valid = true
     else
       # When signature validation fails, we include the JS payload in the
       # log message for future analysis
-      log_payload[:valid] = false
-      log_payload[:js] = content
+      valid = false
+      js = content
     end
-
-    logger.info(log_payload.to_json)
+  rescue => err
+    error = err
+  ensure
+    logger.info(
+      {
+        name: 'ThreatMetrixJsVerification',
+        org_id: org_id,
+        session_id: session_id,
+        http_status: resp&.status,
+        signature: (signature || '').each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join,
+        js: js,
+        valid: valid,
+        error_class: error&.class,
+        error_message: error&.message
+      }.compact.to_json,
+    )
   end
 
   def build_faraday
@@ -67,12 +69,12 @@ class ThreatMetrixJsVerificationJob < ApplicationJob
     [content, signature]
   end
 
-  def verify_js(js, signature, cert)
+  def js_verified?(js, signature, cert)
     return false if signature.nil?
 
     public_key = cert&.public_key
     return false if public_key.nil?
 
-    public_key.verify 'SHA256', signature, js
+    public_key.verify('SHA256', signature, js)
   end
 end

@@ -78,33 +78,28 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
         )
     end
 
-    context 'when collecting is disabled' do
-      let(:proofing_device_profiling_collecting_enabled) { false }
-      it 'does not run' do
-        expect(instance.logger).not_to receive(:info)
-        perform
-      end
-    end
-
     context 'when certificate is not configured' do
       let(:threatmetrix_signing_certificate) { '' }
-      it 'does not run' do
-        expect(instance.logger).not_to receive(:info)
+      it 'logs an error_message' do
+        expect(instance.logger).to receive(:info) do |message|
+          expect(JSON.parse(message, symbolize_names: true)).to include(
+            name: 'ThreatMetrixJsVerification',
+            error_message: 'JS signing certificate is missing',
+          )
+        end
         perform
       end
     end
 
     context 'when certificate is expired' do
       let(:threatmetrix_signing_cert_expiry) { Time.zone.now - 3600 }
-      it 'raises an error' do
-        expect { perform }.to raise_error
-      end
-    end
-
-    context 'when org id is not configured' do
-      let(:threatmetrix_org_id) { nil }
-      it 'does not run' do
-        expect(instance.logger).not_to receive(:info)
+      it 'logs an error_message' do
+        expect(instance.logger).to receive(:info) do |message|
+          expect(JSON.parse(message, symbolize_names: true)).to include(
+            name: 'ThreatMetrixJsVerification',
+            error_message: 'JS signing certificate is expired',
+          )
+        end
         perform
       end
     end
