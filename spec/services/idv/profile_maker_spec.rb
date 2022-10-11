@@ -63,7 +63,6 @@ describe Idv::ProfileMaker do
 
         expect(profile.initiating_issuer).to eq initiating_issuer
       end
-
     end
   end
 end
