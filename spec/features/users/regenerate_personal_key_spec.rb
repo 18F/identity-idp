@@ -52,7 +52,7 @@ feature 'View personal key', js: true do
         expect(page).to have_content(t('account.personal_key.get_new'))
         click_continue
 
-        expect(page).to have_content(t('headings.personal_key'))
+        expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
         acknowledge_and_confirm_personal_key
 
         expect(user.reload.encrypted_recovery_code_digest).to_not eq old_digest

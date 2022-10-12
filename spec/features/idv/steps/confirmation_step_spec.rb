@@ -27,7 +27,7 @@ feature 'idv confirmation step', js: true do
   it 'allows the user to refresh and still displays the personal key' do
     # Visit the current path is the same as refreshing
     visit current_path
-    expect(page).to have_content(t('headings.personal_key'))
+    expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
   end
 
   context 'verifying by gpo' do
