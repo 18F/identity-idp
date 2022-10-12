@@ -116,6 +116,7 @@ RSpec.describe GetUspsProofingResultsJob do
   let(:job_analytics) { FakeAnalytics.new }
 
   before do
+    ActiveJob::Base.queue_adapter = :test
     allow(job).to receive(:analytics).and_return(job_analytics)
     allow(IdentityConfig.store).to receive(:get_usps_proofing_results_job_reprocess_delay_minutes).
       and_return(reprocess_delay_minutes)
