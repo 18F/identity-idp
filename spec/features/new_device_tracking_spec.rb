@@ -9,23 +9,21 @@ describe 'New device tracking' do
     end
 
     it 'sends a user notification on signin' do
-      allow(UserMailer).to receive(:new_device_sign_in).and_call_original
-
       sign_in_user(user)
 
       expect(user.reload.devices.length).to eq 2
 
       device = user.devices.order(created_at: :desc).first
 
-      expect(UserMailer).to have_received(:new_device_sign_in).
-        with(
-          user: user,
-          email_address: user.email_addresses.first,
-          date: device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
-            strftime('%B %-d, %Y %H:%M Eastern Time'),
-          location: 'From 127.0.0.1 (IP address potentially located in United States)',
-          disavowal_token: instance_of(String),
-        )
+      expect_delivered_email_count(1)
+      expect_delivered_email(
+        0, {
+          to: [user.email_addresses.first.email],
+          subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
+          body: [device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
+                 strftime('%B %-d, %Y %H:%M Eastern Time'), 'From 127.0.0.1 (IP address potentially located in United States)']
+        }
+      )
     end
   end
 
@@ -48,23 +46,21 @@ describe 'New device tracking' do
     end
 
     it 'does not send an SMS' do
-      allow(UserMailer).to receive(:new_device_sign_in).and_call_original
-
       sign_in_user(user)
 
       expect(user.reload.devices.length).to eq 2
 
       device = user.devices.order(created_at: :desc).first
-
-      expect(UserMailer).to have_received(:new_device_sign_in).
-        with(
-          user: user,
-          email_address: user.email_addresses.first,
-          date: device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
-            strftime('%B %-d, %Y %H:%M Eastern Time'),
-          location: 'From 127.0.0.1 (IP address potentially located in United States)',
-          disavowal_token: instance_of(String),
-        )
+      expect_delivered_email_count(1)
+      expect_delivered_email(
+        0, {
+          to: [user.email_addresses.first.email],
+          subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
+          body: [device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
+                 strftime('%B %-d, %Y %H:%M Eastern Time'), 'From 127.0.0.1 (IP address potentially located in United States)']
+        }
+      )
+      expect(Telephony::Test::Message.messages.count).to eq 0
     end
   end
 end
