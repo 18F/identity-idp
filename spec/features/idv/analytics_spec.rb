@@ -24,13 +24,13 @@ feature 'Analytics Regression', js: true do
       'IdV: doc auth image upload form submitted' => { success: true, errors: {}, attempts: nil, remaining_attempts: 3, user_id: nil, flow_path: 'standard' },
       'IdV: doc auth image upload vendor pii validation' => { success: true, errors: {}, user_id: nil, remaining_attempts: 3, flow_path: 'standard' },
       'IdV: doc auth verify_document_status submitted' => { success: true, errors: {}, remaining_attempts: 3, flow_path: 'standard', step: 'verify_document_status', step_count: 1 },
-      'IdV: doc auth document_capture submitted' => { success: false, errors: { front_image: ['Please fill in this field.'], back_image: ['Please fill in this field.'] }, is_fallback_link: false, error_details: { front_image: [:blank], back_image: [:blank] }, flow_path: 'standard', step: 'document_capture', step_count: 1 },
+      'IdV: doc auth document_capture submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'document_capture', step_count: 1 },
       'IdV: doc auth ssn visited' => { flow_path: 'standard', step: 'ssn', step_count: 1 },
       'IdV: doc auth ssn submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'ssn', step_count: 1 },
       'IdV: doc auth verify visited' => { flow_path: 'standard', step: 'verify', step_count: 1 },
       'IdV: doc auth verify submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'verify', step_count: 1 },
       'IdV: doc auth verify_wait visited' => { flow_path: 'standard', step: 'verify_wait', step_count: 1 },
-      'IdV: doc auth optional verify_wait submitted' => { success: true, errors: {}, address_edited: false, proofing_results: { exception: nil, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', timed_out: false, context: { should_proof_state_id: true, stages: { resolution: { client: 'ResolutionMock', errors: {}, exception: nil, success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc' }, state_id: { client: 'StateIdMock', errors: {}, success: true, timed_out: false, exception: nil, transaction_id: 'state-id-mock-transaction-id-456', state: 'MT', state_id_jurisdiction: 'ND' } } } }, ssn_is_unique: true, step: 'verify_wait_step_show' },
+      'IdV: doc auth optional verify_wait submitted' => { success: true, errors: {}, address_edited: false, proofing_results: { exception: nil, timed_out: false, context: { should_proof_state_id: true, stages: { resolution: { vendor_name: 'ResolutionMock', errors: {}, exception: nil, success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [] }, state_id: { vendor_name: 'StateIdMock', errors: {}, success: true, timed_out: false, exception: nil, transaction_id: 'state-id-mock-transaction-id-456', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND' } } } }, ssn_is_unique: true, step: 'verify_wait_step_show' },
       'IdV: phone of record visited' => {},
       'IdV: phone confirmation form' => { success: true, errors: {}, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202' },
       'IdV: phone confirmation vendor' => { success: true, errors: {}, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false },
@@ -57,15 +57,15 @@ feature 'Analytics Regression', js: true do
       'IdV: doc auth image upload form submitted' => { success: true, errors: {}, attempts: nil, remaining_attempts: 3, user_id: nil, flow_path: 'standard' },
       'IdV: doc auth image upload vendor pii validation' => { success: true, errors: {}, user_id: nil, remaining_attempts: 3, flow_path: 'standard' },
       'IdV: doc auth verify_document_status submitted' => { success: true, errors: {}, remaining_attempts: 3, flow_path: 'standard', step: 'verify_document_status', step_count: 1 },
-      'IdV: doc auth document_capture submitted' => { success: false, errors: { front_image: ['Please fill in this field.'], back_image: ['Please fill in this field.'] }, is_fallback_link: false, error_details: { front_image: [:blank], back_image: [:blank] }, flow_path: 'standard', step: 'document_capture', step_count: 1 },
+      'IdV: doc auth document_capture submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'document_capture', step_count: 1 },
       'IdV: doc auth ssn visited' => { flow_path: 'standard', step: 'ssn', step_count: 1 },
       'IdV: doc auth ssn submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'ssn', step_count: 1 },
       'IdV: doc auth verify visited' => { flow_path: 'standard', step: 'verify', step_count: 1 },
       'IdV: doc auth verify submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'verify', step_count: 1 },
       'IdV: doc auth verify_wait visited' => { flow_path: 'standard', step: 'verify_wait', step_count: 1 },
-      'IdV: doc auth optional verify_wait submitted' => { success: true, errors: {}, address_edited: false, proofing_results: { exception: nil, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', timed_out: false, context: { should_proof_state_id: true, stages: { resolution: { client: 'ResolutionMock', errors: {}, exception: nil, success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc' }, state_id: { client: 'StateIdMock', errors: {}, success: true, timed_out: false, exception: nil, transaction_id: 'state-id-mock-transaction-id-456', state: 'MT', state_id_jurisdiction: 'ND' } } } }, ssn_is_unique: true, step: 'verify_wait_step_show' },
+      'IdV: doc auth optional verify_wait submitted' => { success: true, errors: {}, address_edited: false, proofing_results: { exception: nil, timed_out: false, context: { should_proof_state_id: true, stages: { resolution: { vendor_name: 'ResolutionMock', errors: {}, exception: nil, success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [] }, state_id: { vendor_name: 'StateIdMock', errors: {}, success: true, timed_out: false, exception: nil, transaction_id: 'state-id-mock-transaction-id-456', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND' } } } }, ssn_is_unique: true, step: 'verify_wait_step_show' },
       'IdV: phone of record visited' => {},
-      'IdV: USPS address letter requested' => { enqueued_at: Time.zone.now },
+      'IdV: USPS address letter requested' => { resend: false },
     }
   end
   let(:in_person_path_events) do
@@ -145,8 +145,8 @@ feature 'Analytics Regression', js: true do
     end
 
     it 'records all of the events' do
-      happy_path_events.each do |event, _attributes|
-        expect(fake_analytics).to have_logged_event(event)
+      happy_path_events.each do |event, attributes|
+        expect(fake_analytics).to have_logged_event(event, attributes)
       end
     end
   end
@@ -166,8 +166,8 @@ feature 'Analytics Regression', js: true do
     end
 
     it 'records all of the events' do
-      gpo_path_events.each do |event, _attributes|
-        expect(fake_analytics).to have_logged_event(event)
+      gpo_path_events.each do |event, attributes|
+        expect(fake_analytics).to have_logged_event(event, attributes)
       end
     end
   end
