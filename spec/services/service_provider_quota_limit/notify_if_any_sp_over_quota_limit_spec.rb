@@ -11,7 +11,7 @@ describe Db::ServiceProviderQuotaLimit::NotifyIfAnySpOverQuotaLimit do
     end
 
     it 'notifies the emails in the email list' do
-      expect(UserMailer).to receive(:sps_over_quota_limit).with(email).and_call_original
+      expect(ReportMailer).to receive(:sps_over_quota_limit).with(email).and_call_original
 
       subject.call
     end
@@ -23,7 +23,7 @@ describe Db::ServiceProviderQuotaLimit::NotifyIfAnySpOverQuotaLimit do
     end
 
     it 'does not notify the emails in the email list' do
-      expect(UserMailer).to_not receive(:sps_over_quota_limit).with(email).and_call_original
+      expect(ReportMailer).to_not receive(:sps_over_quota_limit).with(email).and_call_original
 
       subject.call
     end

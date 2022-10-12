@@ -1,0 +1,11 @@
+---
+en:
+  report_mailer:
+    deleted_accounts_report:
+      issuers: Issuers
+      name: Name
+      subject: Deleted accounts report
+    sps_over_quota_limit:
+      help: ''
+      info: There are SPs that have gone over their quota limit.
+      subject: Some SPs have reached their quota limit

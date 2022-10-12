@@ -61,10 +61,6 @@ fr:
       reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
         à %{app_name} pour le réinitialiser.
     contact_link_text: communiquez avec nous
-    deleted_accounts_report:
-      issuers: Émetteurs
-      name: Nom
-      subject: Rapport sur les comptes supprimés
     doc_auth_link:
       message: Vous avez demandé à vérifier votre identité sur un ordinateur de
         bureau. Veuillez vous connecter à %{sp_link}
@@ -281,7 +277,3 @@ fr:
       link_text: Allez à %{app_name}
       reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
         à %{app_name} pour le réinitialiser.
-    sps_over_quota_limit:
-      help: ''
-      info: Certains SP ont dépassé leur limite de quota.
-      subject: Certains SP ont atteint leur limite de quota
