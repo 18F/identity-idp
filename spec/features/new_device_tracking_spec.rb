@@ -21,7 +21,8 @@ describe 'New device tracking' do
           to: [user.email_addresses.first.email],
           subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
           body: [device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
-                 strftime('%B %-d, %Y %H:%M Eastern Time'), 'From 127.0.0.1 (IP address potentially located in United States)']
+                 strftime('%B %-d, %Y %H:%M Eastern Time'),
+                 'From 127.0.0.1 (IP address potentially located in United States)'],
         }
       )
     end
@@ -57,7 +58,8 @@ describe 'New device tracking' do
           to: [user.email_addresses.first.email],
           subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
           body: [device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
-                 strftime('%B %-d, %Y %H:%M Eastern Time'), 'From 127.0.0.1 (IP address potentially located in United States)']
+                 strftime('%B %-d, %Y %H:%M Eastern Time'),
+                 'From 127.0.0.1 (IP address potentially located in United States)'],
         }
       )
       expect(Telephony::Test::Message.messages.count).to eq 0
