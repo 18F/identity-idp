@@ -324,6 +324,8 @@ module Features
     end
 
     def click_acknowledge_personal_key
+      checkbox_header = t('forms.personal_key_partial.acknowledgement.header')
+      find(text: /#{checkbox_header}/)
       click_continue
     end
 
