@@ -19,6 +19,8 @@ interface TroubleshootingOptionsProps {
   options: TroubleshootingOption[];
 
   isNewFeatures?: boolean;
+
+  divider?: boolean;
 }
 
 function TroubleshootingOptions({
@@ -26,6 +28,7 @@ function TroubleshootingOptions({
   heading,
   options,
   isNewFeatures,
+  divider = true,
 }: TroubleshootingOptionsProps) {
   const { t } = useI18n();
 
@@ -36,7 +39,7 @@ function TroubleshootingOptions({
   const HeadingTag = headingTag;
 
   return (
-    <section className="troubleshooting-options">
+    <section className={`troubleshooting-options ${divider && 'troubleshooting-options--bar'}`}>
       {isNewFeatures && (
         <span className="usa-tag bg-accent-cool-darker text-uppercase display-inline-block">
           {t('components.troubleshooting_options.new_feature')}
