@@ -14,6 +14,8 @@ module Idv
         def inherited_proofing_save_session!
           return unless inherited_proofing_form_response.success?
 
+          mark_step_complete(:verify_wait)
+
           flow_session[:pii_from_user] =
             flow_session[:pii_from_user].to_h.merge(inherited_proofing_user_pii)
           # This is unnecessary, but added for completeness. Any subsequent FLOWS we
