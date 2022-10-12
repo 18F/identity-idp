@@ -14,8 +14,6 @@ feature 'idv confirmation step', js: true do
     complete_idv_steps_before_confirmation_step(address_verification_mechanism)
   end
 
-  it_behaves_like 'personal key page'
-
   it 'shows status content for phone verification progress' do
     expect(page).to have_content(t('idv.messages.confirm'))
     expect_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
@@ -41,8 +39,6 @@ feature 'idv confirmation step', js: true do
       expect(page).to have_content(t('step_indicator.flows.idv.get_a_letter'))
       expect(page).not_to have_content(t('step_indicator.flows.idv.verify_phone_or_address'))
     end
-
-    it_behaves_like 'personal key page', :gpo
   end
 
   context 'with associated sp' do
