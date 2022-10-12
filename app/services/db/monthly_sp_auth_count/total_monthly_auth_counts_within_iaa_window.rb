@@ -35,6 +35,7 @@ module Db
             max_tries: 3,
             rescue: [
               ActiveRecord::SerializationFailure,
+              PG::ConnectionBad,
               PG::TRSerializationFailure,
               PG::UnableToSend,
             ],
