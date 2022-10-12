@@ -24,6 +24,7 @@ class ThreatMetrixJsVerificationJob < ApplicationJob
     js = content if !valid
   rescue => err
     error = err
+    raise err
   ensure
     logger.info(
       {

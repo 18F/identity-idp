@@ -80,27 +80,29 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
 
     context 'when certificate is not configured' do
       let(:threatmetrix_signing_certificate) { '' }
-      it 'logs an error_message' do
+      it 'logs an error_message, and raises' do
         expect(instance.logger).to receive(:info) do |message|
           expect(JSON.parse(message, symbolize_names: true)).to include(
             name: 'ThreatMetrixJsVerification',
             error_message: 'JS signing certificate is missing',
           )
         end
-        perform
+
+        expect { perform }.to raise_error(RuntimeError,  'JS signing certificate is missing')
       end
     end
 
     context 'when certificate is expired' do
       let(:threatmetrix_signing_cert_expiry) { Time.zone.now - 3600 }
-      it 'logs an error_message' do
+      it 'logs an error_message, and raises' do
         expect(instance.logger).to receive(:info) do |message|
           expect(JSON.parse(message, symbolize_names: true)).to include(
             name: 'ThreatMetrixJsVerification',
             error_message: 'JS signing certificate is expired',
           )
         end
-        perform
+
+        expect { perform }.to raise_error(RuntimeError,  'JS signing certificate is expired')
       end
     end
 
