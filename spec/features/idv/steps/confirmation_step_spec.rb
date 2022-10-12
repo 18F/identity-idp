@@ -41,6 +41,8 @@ feature 'idv confirmation step', js: true do
     end
   end
 
+  it "forces the user to click the 'acknowledge' checkbox before proceeding"
+
   context 'with associated sp' do
     let(:sp) { :oidc }
 
