@@ -114,6 +114,10 @@ RSpec.configure do |config|
 
   config.before(:each) do
     DocAuth::Mock::DocAuthMockClient.reset!
+    descendants = ActiveJob::Base.descendants + [ActiveJob::Base]
+
+    ActiveJob::Base.queue_adapter = :test
+    descendants.each(&:disable_test_adapter)
   end
 
   config.before(:each) do
