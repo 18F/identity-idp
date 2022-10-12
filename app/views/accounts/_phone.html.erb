@@ -10,7 +10,7 @@
       <div class="grid-row grid-gap-2">
         <div class="grid-col-fill">
           <%= PhoneFormatter.format(phone_configuration.phone) %>
-          <% if current_user.default_phone_configuration == phone_configuration %>
+          <% if current_user.default_phone_configuration == phone_configuration && MfaContext.new(current_user).phone_configurations.count > 1 %>
             (<%= I18n.t('account.index.default') %>)
           <% end %>
         </div>

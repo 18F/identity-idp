@@ -11,7 +11,7 @@ describe EditPhoneForm do
     }
   end
 
-  subject { described_class.new(user, phone_configuration) }
+  subject { EditPhoneForm.new(user, phone_configuration) }
 
   describe '#submit' do
     context 'when delivery_preference is not voice or sms' do
@@ -104,6 +104,27 @@ describe EditPhoneForm do
 
           expect(user.default_phone_configuration).to_not eq(phone_configuration)
         end
+      end
+    end
+  end
+
+  describe '#one_phone_configured?' do
+    context 'when editing a form with only one number set up' do
+      let(:user) { create(:user, :signed_up) }
+      let(:phone_configuration) { user.phone_configurations.first }
+
+      it 'recognizes it as the only method set up' do
+        expect(subject.one_phone_configured?).to eq(true)
+      end
+    end
+
+    context 'when editing a form with multiple numbers set up' do
+      before do
+        create(:phone_configuration, user: user, made_default_at: Time.zone.now)
+      end
+
+      it 'recognizes that there are multiple phone methods set up' do
+        expect(user.phone_configurations.count).to eq(2)
       end
     end
   end

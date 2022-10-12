@@ -95,10 +95,12 @@ es:
       voice: Llamada telefónica
       voice_unsupported: No podemos llamar a números de teléfono en %{location}.
     otp_make_default_number:
-      instruction: Marque la casilla a continuación si desea que este sea el teléfono
-        predeterminado número que recibe mensajes de texto o llamadas
-        telefónicas.
+      instruction: Establece este número de teléfono como predeterminado para que
+        recibas en él mensajes de texto o llamadas telefónicas.
       label: Número de teléfono predeterminado
+      one_number_instruction: Debes tener más de un número de teléfono agregado para
+        seleccionar un número de teléfono predeterminado.
+      one_number_title: Este es tu número predeterminado
       title: '¿Es este tu número de teléfono predeterminado?'
     personal_key_fallback:
       question: '¿No tiene su clave personal?'

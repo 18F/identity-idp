@@ -20,4 +20,18 @@ describe 'editing a phone' do
 
     expect(page).to have_content('The page you were looking for doesn’t exist')
   end
+
+  context 'with only one phone number' do
+    it 'does not allow you to check default phone number if only one number is set up' do
+      user = create(:user, :signed_up)
+      phone_configuration = user.phone_configurations.first
+      sign_in_and_2fa_user(user)
+
+      visit(manage_phone_path(id: phone_configuration.id))
+      expect(page).to have_field(
+        t('two_factor_authentication.otp_make_default_number.label'),
+        disabled: true,
+      )
+    end
+  end
 end
