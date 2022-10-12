@@ -72,7 +72,6 @@ feature 'Analytics Regression', js: true do
       'IdV: review complete' => { success: true },
       'IdV: final resolution' => { success: true },
       'IdV: personal key visited' => {},
-      'Frontend: IdV: show personal key modal' => {},
       'IdV: personal key submitted' => {},
       'IdV: come back later visited' => {},
     }
