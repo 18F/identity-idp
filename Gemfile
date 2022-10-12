@@ -125,7 +125,7 @@ group :test do
   gem 'rails-controller-testing', '>= 1.0.4'
   gem 'rspec-retry'
   gem 'shoulda-matchers', '~> 4.0', require: false
-  gem 'webdrivers', '~> 4.0'
+  gem 'webdrivers', '~> 5.2.0'
   gem 'webmock'
   gem 'zonebie'
 end
