@@ -1,10 +1,6 @@
 import { trackEvent } from '@18f/identity-analytics';
 
-const modalSelector = '#personal-key-confirm';
-
 const personalKeyWords = [].slice.call(document.querySelectorAll('[data-personal-key]'));
-const formEl = document.getElementById('confirm-key');
-const input = formEl.querySelector('input[type="text"]');
 const downloadLink = document.querySelector('a[download]');
 const acknowledgmentCheckbox = document.getElementById('acknowledgment');
 
