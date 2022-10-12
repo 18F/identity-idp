@@ -36,10 +36,13 @@ function TroubleshootingOptions({
     return null;
   }
 
+  const classes = ['troubleshooting-options', divider && 'troubleshooting-options--divider']
+    .filter(Boolean)
+    .join(' ');
   const HeadingTag = headingTag;
 
   return (
-    <section className={`troubleshooting-options ${divider && 'troubleshooting-options--bar'}`}>
+    <section className={classes}>
       {isNewFeatures && (
         <span className="usa-tag bg-accent-cool-darker text-uppercase display-inline-block">
           {t('components.troubleshooting_options.new_feature')}
