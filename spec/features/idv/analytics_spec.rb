@@ -68,6 +68,14 @@ feature 'Analytics Regression', js: true do
       'IdV: doc auth optional verify_wait submitted' => { success: true, errors: {}, address_edited: false, proofing_results: { exception: nil, timed_out: false, context: { should_proof_state_id: true, stages: { resolution: { vendor_name: 'ResolutionMock', errors: {}, exception: nil, success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [] }, state_id: { vendor_name: 'StateIdMock', errors: {}, success: true, timed_out: false, exception: nil, transaction_id: 'state-id-mock-transaction-id-456', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND' } } } }, ssn_is_unique: true, step: 'verify_wait_step_show' },
       'IdV: phone of record visited' => {},
       'IdV: USPS address letter requested' => { resend: false },
+      'IdV: review info visited' => {},
+      'IdV: USPS address letter enqueued' => { enqueued_at: Time.zone.now, resend: false },
+      'IdV: review complete' => { success: true },
+      'IdV: final resolution' => { success: true },
+      'IdV: personal key visited' => {},
+      'Frontend: IdV: show personal key modal' => {},
+      'IdV: personal key submitted' => {},
+      'IdV: come back later visited' => {},
     }
   end
   let(:in_person_path_events) do
@@ -165,6 +173,8 @@ feature 'Analytics Regression', js: true do
       complete_verify_step
       enter_gpo_flow
       gpo_step
+      complete_review_step(user)
+      acknowledge_and_confirm_personal_key
     end
 
     it 'records all of the events' do
