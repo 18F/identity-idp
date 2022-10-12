@@ -227,9 +227,11 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def add_email_associated_with_another_account(email)
-    @root_url = root_url(locale: locale_url_param)
-    mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
+  def add_email_associated_with_another_account
+    with_user_locale(user) do
+      @root_url = root_url(locale: locale_url_param)
+      mail(to: email_address.email, subject: t('mailer.email_reuse_notice.subject'))
+    end
   end
 
   def account_verified(date_time:, sp_name:, disavowal_token:)

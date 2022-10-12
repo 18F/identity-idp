@@ -106,7 +106,8 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def add_email_associated_with_another_account
-    UserMailer.add_email_associated_with_another_account(email_address)
+    UserMailer.with(user: user, email_address: email_address_record).
+      add_email_associated_with_another_account
   end
 
   def account_verified

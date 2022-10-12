@@ -47,9 +47,11 @@ class SendAddEmailConfirmation
   end
 
   def send_email_associated_with_another_account_email
-    UserMailer.add_email_associated_with_another_account(
-      email_address.email,
-    ).deliver_now_or_later
+    UserMailer.with(
+      user: user,
+      email_address: email_address,
+    ).add_email_associated_with_another_account.
+      deliver_now_or_later
   end
 
   def send_confirmation_email

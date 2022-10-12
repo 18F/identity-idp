@@ -43,10 +43,27 @@ describe UserMailer, type: :mailer do
       )
       expect_email_body_to_have_help_and_contact_links
     end
+  end
 
-    it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).email_deleted
-      expect(mail.to).to eq(nil)
+  describe '#add_email_associated_with_another_account' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        add_email_associated_with_another_account
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'sends to the specified email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('mailer.email_reuse_notice.subject')
+    end
+
+    it 'renders the body' do
+      expect_email_body_to_have_help_and_contact_links
     end
   end
 
