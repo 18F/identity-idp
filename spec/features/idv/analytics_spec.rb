@@ -34,6 +34,8 @@ feature 'Analytics Regression', js: true do
       'IdV: phone of record visited' => {},
       'IdV: phone confirmation form' => { success: true, errors: {}, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202' },
       'IdV: phone confirmation vendor' => { success: true, errors: {}, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false },
+      'IdV: review info visited' => {},
+      'IdV: review complete' => { success: true },
       'IdV: final resolution' => { success: true },
       'IdV: personal key visited' => {},
       'IdV: personal key submitted' => {},
