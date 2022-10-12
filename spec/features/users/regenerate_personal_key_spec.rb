@@ -60,4 +60,3 @@ feature 'View personal key', js: true do
     end
   end
 end
-
