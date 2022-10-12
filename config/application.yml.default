@@ -118,7 +118,7 @@ in_person_completion_survey_url: 'https://login.gov'
 include_slo_in_saml_metadata: false
 inherited_proofing_enabled: false
 inherited_proofing_va_base_url: 'https://staging-api.va.gov'
-va_inherited_proofing_mock_enabled: true
+va_inherited_proofing_mock_enabled: false
 irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_auth_tokens: ''
 irs_attempt_api_csp_id: 'LOGIN.gov'
@@ -337,7 +337,7 @@ development:
   identity_pki_local_dev: true
   in_person_proofing_enabled: true
   inherited_proofing_enabled: true
-  va_inherited_proofing_mock_enabled: true
+  va_inherited_proofing_mock_enabled: false
   kantara_2fa_phone_restricted: true
   kantara_2fa_phone_existing_user_restriction: true
   kantara_restriction_enforcement_date: '2022-07-01'
