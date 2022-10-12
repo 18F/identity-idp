@@ -18,14 +18,10 @@ class ThreatMetrixJsVerificationJob < ApplicationJob
     resp = build_faraday.get(url)
     content, signature = parse_js(resp.body)
 
-    if js_verified?(content, signature, cert)
-      valid = true
-    else
-      # When signature validation fails, we include the JS payload in the
-      # log message for future analysis
-      valid = false
-      js = content
-    end
+    valid = js_verified?(content, signature, cert)
+    # When signature validation fails, we include the JS payload in the
+    # log message for future analysis
+    js = content if !valid
   rescue => err
     error = err
   ensure
