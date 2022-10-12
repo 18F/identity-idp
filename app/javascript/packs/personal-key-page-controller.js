@@ -30,36 +30,6 @@ function resetForm() {
   input.setCustomValidity('');
 }
 
-function validateInput() {
-  let isValid = false;
-  try {
-    const value = encodeInput(input.value);
-    isValid = value === personalKey;
-  } catch {}
-
-  input.setCustomValidity(isValid ? '' : t('users.personal_key.confirmation_error'));
-}
-
-function show(event) {
-  event.preventDefault();
-
-  modal.on('show', function () {
-    input.focus();
-  });
-
-  trackEvent('IdV: show personal key modal');
-  modal.show();
-}
-
-function hide() {
-  modal.on('hide', function () {
-    resetForm();
-  });
-
-  trackEvent('IdV: hide personal key modal');
-  modal.hide();
-}
-
 function downloadForIE(event) {
   event.preventDefault();
 
@@ -82,11 +52,6 @@ function trackDownload() {
   trackEvent('IdV: download personal key');
 }
 
-if (modalTrigger) {
-  modalTrigger.addEventListener('click', show);
-}
-modalDismiss.addEventListener('click', hide);
-input.addEventListener('input', validateInput);
 downloadLink.addEventListener('click', trackDownload);
 acknowledgmentCheckbox.addEventListener('click', trackAcknowledgment);
 
