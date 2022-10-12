@@ -11,6 +11,10 @@ module MailerHelper
     expect(ActionMailer::Base.deliveries.count).to eq count
   end
 
+  def strip_tags(str)
+    ActionController::Base.helpers.strip_tags(str)
+  end
+
   def expect_delivered_email(index, hash)
     mail = ActionMailer::Base.deliveries[index]
     expect(mail.to).to eq hash[:to] if hash[:to]
