@@ -88,7 +88,7 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
           )
         end
 
-        expect { perform }.to raise_error(RuntimeError,  'JS signing certificate is missing')
+        expect { perform }.to raise_error(RuntimeError, 'JS signing certificate is missing')
       end
     end
 
@@ -102,7 +102,7 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
           )
         end
 
-        expect { perform }.to raise_error(RuntimeError,  'JS signing certificate is expired')
+        expect { perform }.to raise_error(RuntimeError, 'JS signing certificate is expired')
       end
     end
 

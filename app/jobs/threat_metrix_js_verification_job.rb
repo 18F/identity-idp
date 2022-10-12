@@ -36,7 +36,7 @@ class ThreatMetrixJsVerificationJob < ApplicationJob
         js: js,
         valid: valid,
         error_class: error&.class,
-        error_message: error&.message
+        error_message: error&.message,
       }.compact.to_json,
     )
   end
