@@ -38,20 +38,8 @@ RSpec.describe 'shared/_personal_key.html.erb' do
         and_return(idv_personal_key_confirmation_enabled)
     end
 
-    context 'without idv personal key confirmation' do
-      let(:idv_personal_key_confirmation_enabled) { false }
-
-      it 'renders button with [data-toggle="skip"]' do
-        expect(rendered).to have_css('[data-toggle="skip"]')
-      end
-    end
-
-    context 'with idv personal key confirmation' do
-      let(:idv_personal_key_confirmation_enabled) { true }
-
-      it 'renders button with [data-toggle="modal"]' do
-        expect(rendered).to have_css('[data-toggle="modal"]')
-      end
+    it 'renders with [data-toggle="skip"]' do
+      expect(rendered).to have_css('[data-toggle="skip"]')
     end
   end
 end

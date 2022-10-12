@@ -39,7 +39,6 @@ feature 'Analytics Regression', js: true do
       'IdV: final resolution' => { success: true },
       'IdV: personal key visited' => {},
       'IdV: personal key submitted' => {},
-      'Frontend: IdV: show personal key modal' => {},
     }
   end
   let(:gpo_path_events) do
@@ -121,7 +120,6 @@ feature 'Analytics Regression', js: true do
       'IdV: review complete' => { success: true },
       'IdV: final resolution' => { success: true },
       'IdV: personal key visited' => {},
-      'Frontend: IdV: show personal key modal' => {},
       'IdV: personal key submitted' => {},
       'IdV: in person ready to verify visited' => {},
     }
