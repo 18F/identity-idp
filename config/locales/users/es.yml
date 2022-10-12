@@ -23,7 +23,6 @@ es:
       close: Cerrar
       confirmation_error: Ha ingresado una clave personal incorrecta.
       generated_on_html: Tu clave personal fue generada el %{date}
-      header: Su clave personal
     phones:
       error_message: Agregó el número máximo de números de teléfono.
     rules_of_use:
