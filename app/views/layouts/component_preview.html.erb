@@ -3,8 +3,6 @@
   <head>
     <title>Component Preview</title>
     <%= stylesheet_link_tag 'application', media: 'all' %>
-    <%# See: https://github.com/allmarkedup/lookbook/issues/184 %>
-    <%= content_tag(:style, nonce: content_security_policy_nonce) { '* { box-sizing: border-box; }' } %>
   </head>
   <body class="padding-2">
     <%= yield %>
