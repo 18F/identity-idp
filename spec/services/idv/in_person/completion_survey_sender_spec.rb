@@ -17,6 +17,9 @@ describe Idv::InPerson::CompletionSurveySender do
       before do
         allow(user).to receive(:should_receive_in_person_completion_survey?).
           with(issuer).and_return(true)
+
+        create(:service_provider, issuer: issuer)
+        create(:in_person_enrollment, user: user, issuer: issuer, status: :passed)
       end
 
       it 'sends a survey to the user\'s confirmed email addresses' do
