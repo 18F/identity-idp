@@ -46,13 +46,7 @@ shared_examples_for 'personal key page' do |address_verification_mechanism|
     it 'validates as case-insensitive, crockford-normalized, length-limited, dash-flexible' do
       code_segments = scrape_personal_key.split('-')
 
-      # DEBUG
-      save_screenshot('before-click-acknowledge-personal-key.png');
-
       click_acknowledge_personal_key
-
-      # DEBUG
-      save_screenshot('after-click-acknowledge-personal-key.png');
 
       input = page.find(':focus')
 
