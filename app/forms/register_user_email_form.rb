@@ -95,7 +95,6 @@ class RegisterUserEmailForm
     self.success = true
     user.accepted_terms_at = Time.zone.now
     user.save!
-    Funnel::Registration::Create.call(user.id)
     SendSignUpEmailConfirmation.new(user).call(
       request_id: email_request_id(request_id),
       instructions: instructions,

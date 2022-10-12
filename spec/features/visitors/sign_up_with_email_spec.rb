@@ -8,7 +8,6 @@ feature 'Visitor signs up with email address' do
     expect(page).to have_content t('notices.signed_up_but_unconfirmed.first_paragraph_start')
     expect(page).to have_content t('notices.signed_up_but_unconfirmed.first_paragraph_end')
     expect(page).to have_content email
-    expect(Funnel::Registration::TotalSubmittedCount.call).to eq(1)
     expect(Funnel::Registration::TotalRegisteredCount.call).to eq(0)
   end
 
@@ -54,7 +53,6 @@ feature 'Visitor signs up with email address' do
     visit sign_up_email_path
     sign_up_and_2fa_ial1_user
 
-    expect(Funnel::Registration::TotalSubmittedCount.call).to eq(1)
     expect(Funnel::Registration::TotalRegisteredCount.call).to eq(1)
     expect(current_path).to eq account_path
   end

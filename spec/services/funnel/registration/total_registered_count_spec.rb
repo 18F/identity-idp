@@ -11,11 +11,7 @@ describe Funnel::Registration::TotalRegisteredCount do
   it 'returns 0 until the user is fully registered' do
     user = create(:user)
     user_id = user.id
-    Funnel::Registration::Create.call(user_id)
-
     expect(Funnel::Registration::TotalRegisteredCount.call).to eq(0)
-
-    Funnel::Registration::AddPassword.call(user_id)
 
     expect(Funnel::Registration::TotalRegisteredCount.call).to eq(0)
 
@@ -40,8 +36,6 @@ describe Funnel::Registration::TotalRegisteredCount do
   def register_user
     user = create(:user)
     user_id = user.id
-    Funnel::Registration::Create.call(user_id)
-    Funnel::Registration::AddPassword.call(user_id)
     Funnel::Registration::AddMfa.call(user_id, 'backup_codes', analytics)
   end
 end
