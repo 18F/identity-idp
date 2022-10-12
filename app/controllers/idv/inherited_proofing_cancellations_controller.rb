@@ -3,6 +3,7 @@ module Idv
     include IdvSession
     include GoBackHelper
     include InheritedProofing404Concern
+    include AllowWhitelistedFlowStepConcern
 
     before_action :confirm_idv_needed
 
@@ -57,6 +58,12 @@ module Idv
 
     def session_go_back_path
       idv_session.go_back_path
+    end
+
+    # AllowWhitelistedFlowStepConcern Concern overrides
+
+    def flow_step_whitelist
+      Idv::Flows::InheritedProofingFlow::STEPS.keys
     end
 
     # IdvSession Concern overrides

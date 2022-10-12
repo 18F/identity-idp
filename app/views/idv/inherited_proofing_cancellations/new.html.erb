@@ -11,7 +11,7 @@
     NOTE: Render "Start Over" button here, but first have to create an IP-specific SessionController.
     <%#= render ButtonComponent.new(
           action: ->(**tag_options, &block) do
-            button_to(idv_session_path(step: params[:step]), **tag_options, &block)
+            button_to(idv_session_path(step: @flow_step), **tag_options, &block)
           end,
           method: :delete,
           big: true,
@@ -20,7 +20,7 @@
     <div class="margin-top-2">
       <%= render ButtonComponent.new(
             action: ->(**tag_options, &block) do
-              button_to(idv_inherited_proofing_cancel_path(step: params[:step]), **tag_options, &block)
+              button_to(idv_inherited_proofing_cancel_path(step: @flow_step), **tag_options, &block)
             end,
             method: :put,
             big: true,
@@ -41,7 +41,7 @@
   <div class="margin-top-4">
     <%= render SpinnerButtonComponent.new(
           action: ->(**tag_options, &block) do
-            button_to(idv_inherited_proofing_cancel_path(step: params[:step], location: 'cancel'), **tag_options, &block)
+            button_to(idv_inherited_proofing_cancel_path(step: @flow_step, location: 'cancel'), **tag_options, &block)
           end,
           method: :delete,
           big: true,
