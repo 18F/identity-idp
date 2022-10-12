@@ -41,10 +41,18 @@ feature 'idv confirmation step', js: true do
     end
   end
 
-  it "forces the user to click the 'acknowledge' checkbox before proceeding"
-
   context 'with associated sp' do
     let(:sp) { :oidc }
+
+    it "forces the user to click the 'acknowledge' checkbox before proceeding" do
+      click_continue
+
+      expect(page).to have_content(t('forms.validation.required_checkbox'))
+      expect(current_path).to eq(idv_personal_key_path)
+
+      acknowledge_and_confirm_personal_key
+      expect(page).to have_current_path(sign_up_completed_path)
+    end
 
     it 'redirects to the completions page and then to the SP' do
       acknowledge_and_confirm_personal_key
