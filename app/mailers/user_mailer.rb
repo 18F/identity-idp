@@ -197,18 +197,6 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
   end
 
-  def sps_over_quota_limit(email)
-    mail(to: email, subject: t('user_mailer.sps_over_quota_limit.subject'))
-  end
-
-  def deleted_user_accounts_report(email:, name:, issuers:, data:)
-    @name = name
-    @issuers = issuers
-    @data = data
-    attachments['deleted_user_accounts.csv'] = data
-    mail(to: email, subject: t('user_mailer.deleted_accounts_report.subject'))
-  end
-
   def account_verified(user, email_address, date_time:, sp_name:, disavowal_token:)
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 

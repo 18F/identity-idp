@@ -11,7 +11,7 @@ describe Reports::DeletedUserAccountsReport do
   subject { described_class.new }
 
   it 'is does not send out an email with nothing configured' do
-    expect(UserMailer).to_not receive(:deleted_user_accounts_report)
+    expect(ReportMailer).to_not receive(:deleted_user_accounts_report)
 
     subject.perform(Time.zone.today)
   end
@@ -29,10 +29,10 @@ describe Reports::DeletedUserAccountsReport do
     allow(IdentityConfig.store).to receive(:deleted_user_accounts_report_configs).and_return(
       [{ 'name' => name, 'issuers' => [issuer], 'emails' => [email] }],
     )
-    allow(UserMailer).to receive(:deleted_user_accounts_report).and_call_original
+    allow(ReportMailer).to receive(:deleted_user_accounts_report).and_call_original
 
     report = "#{last_authenticated_at},#{uuid}\r\n"
-    expect(UserMailer).to receive(:deleted_user_accounts_report).with(
+    expect(ReportMailer).to receive(:deleted_user_accounts_report).with(
       email: email, name: name, issuers: [issuer], data: report,
     )
 

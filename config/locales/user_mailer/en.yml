@@ -56,10 +56,6 @@ en:
       link_text: Go to %{app_name}
       reset_password_html: If you can’t remember your password, go to %{app_name} to reset it.
     contact_link_text: contact us
-    deleted_accounts_report:
-      issuers: Issuers
-      name: Name
-      subject: Deleted accounts report
     doc_auth_link:
       message: You’ve requested to verify your identity on a desktop computer.  Please
         sign in to %{sp_link}
@@ -254,7 +250,3 @@ en:
         in with this email address, you can ignore this message.
       link_text: Go to %{app_name}
       reset_password_html: If you can’t remember your password, go to %{app_name} to reset it.
-    sps_over_quota_limit:
-      help: ''
-      info: There are SPs that have gone over their quota limit.
-      subject: Some SPs have reached their quota limit
