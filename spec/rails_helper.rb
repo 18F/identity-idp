@@ -113,6 +113,10 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
+    DocAuth::Mock::DocAuthMockClient.reset!
+  end
+
+  config.before(:each) do
     IrsAttemptsApi::RedisClient.clear_attempts!
   end
 
