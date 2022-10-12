@@ -33,6 +33,10 @@ class EditPhoneForm
     phone_configuration == user.default_phone_configuration
   end
 
+  def one_phone_configured?
+    user.phone_configurations.count == 1
+  end
+
   private
 
   attr_writer :delivery_preference, :make_default_number
