@@ -49,22 +49,6 @@ function DocumentCaptureTroubleshootingOptions({
 
   return (
     <>
-      {hasErrors && inPersonURL && showInPersonOption && (
-        <TroubleshootingOptions
-          isNewFeatures
-          heading={formatHTML(t('idv.troubleshooting.headings.are_you_near'), {
-            wbr: 'wbr',
-          })}
-          divider={false}
-          options={[
-            {
-              url: '#location',
-              text: t('idv.troubleshooting.options.verify_in_person'),
-              onClick: () => trackEvent('IdV: verify in person troubleshooting option clicked'),
-            },
-          ]}
-        />
-      )}
       <TroubleshootingOptions
         heading={heading}
         options={
@@ -95,6 +79,22 @@ function DocumentCaptureTroubleshootingOptions({
           ].filter(Boolean) as TroubleshootingOption[]
         }
       />
+      {hasErrors && inPersonURL && showInPersonOption && (
+        <TroubleshootingOptions
+          isNewFeatures
+          heading={formatHTML(t('idv.troubleshooting.headings.are_you_near'), {
+            wbr: 'wbr',
+          })}
+          divider={false}
+          options={[
+            {
+              url: '#location',
+              text: t('idv.troubleshooting.options.verify_in_person'),
+              onClick: () => trackEvent('IdV: verify in person troubleshooting option clicked'),
+            },
+          ]}
+        />
+      )}
     </>
   );
 }
