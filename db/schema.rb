@@ -437,7 +437,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_12_172457) do
     t.jsonb "proofing_components"
     t.string "name_zip_birth_year_signature"
     t.date "reproof_at"
-    t.string "initiating_issuer"
+    t.bigint "initiating_service_provider_id"
     t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
     t.index ["reproof_at"], name: "index_profiles_on_reproof_at"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"

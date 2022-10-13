@@ -5,14 +5,14 @@ describe Idv::ProfileMaker do
     let(:applicant) { { first_name: 'Some', last_name: 'One' } }
     let(:user) { create(:user, :signed_up) }
     let(:user_password) { user.password }
-    let(:initiating_issuer) { nil }
+    let(:initiating_service_provider) { nil }
 
     subject do
       described_class.new(
         applicant: applicant,
         user: user,
         user_password: user_password,
-        initiating_issuer: initiating_issuer,
+        initiating_service_provider: initiating_service_provider,
       )
     end
 
@@ -55,13 +55,13 @@ describe Idv::ProfileMaker do
       end
     end
 
-    context 'with an initiating issuer' do
-      let(:initiating_issuer) { 'sp_who_initially_requested_identity_verification' }
+    context 'with an initiating service provider' do
+      let(:initiating_service_provider) { create(:service_provider) }
 
       it 'creates a profile with the initiating sp recorded' do
         profile = subject.save_profile(active: true, deactivation_reason: nil)
 
-        expect(profile.initiating_issuer).to eq initiating_issuer
+        expect(profile.initiating_service_provider).to eq initiating_service_provider
       end
     end
   end

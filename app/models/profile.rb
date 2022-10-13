@@ -2,6 +2,7 @@ class Profile < ApplicationRecord
   self.ignored_columns = %w[phone_confirmed]
 
   belongs_to :user
+  belongs_to :initiating_service_provider, class_name: 'ServiceProvider'
   has_many :gpo_confirmation_codes, dependent: :destroy
   has_one :in_person_enrollment, dependent: :destroy
 
