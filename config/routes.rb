@@ -349,6 +349,9 @@ Rails.application.routes.draw do
       get '/inherited_proofing/:step' => 'inherited_proofing#show', as: :inherited_proofing_step
       put '/inherited_proofing/:step' => 'inherited_proofing#update'
       get '/inherited_proofing/return_to_sp' => 'inherited_proofing#return_to_sp'
+      get '/inherited_proofing/cancel/' => 'inherited_proofing_cancellations#new', as: :inherited_proofing_cancel
+      put '/inherited_proofing/cancel' => 'inherited_proofing_cancellations#update'
+      delete '/inherited_proofing/cancel' => 'inherited_proofing_cancellations#destroy'
 
       # deprecated routes
       get '/confirmations' => 'personal_key#show'
