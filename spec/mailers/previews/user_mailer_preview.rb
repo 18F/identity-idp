@@ -1,21 +1,18 @@
 class UserMailerPreview < ActionMailer::Preview
   def email_confirmation_instructions
-    UserMailer.email_confirmation_instructions(
-      user,
-      email_address,
-      SecureRandom.hex,
-      request_id: SecureRandom.uuid,
-      instructions: I18n.t(
-        'user_mailer.email_confirmation_instructions.first_sentence.forgot_password',
-        app_name: APP_NAME,
-      ),
-    )
+    UserMailer.with(user: user, email_address: email_address_record).
+      email_confirmation_instructions(
+        SecureRandom.hex,
+        request_id: SecureRandom.uuid,
+        instructions: I18n.t(
+          'user_mailer.email_confirmation_instructions.first_sentence.forgot_password',
+          app_name: APP_NAME,
+        ),
+      )
   end
 
   def unconfirmed_email_instructions
-    UserMailer.unconfirmed_email_instructions(
-      user,
-      email_address,
+    UserMailer.with(user: user, email_address: email_address_record).unconfirmed_email_instructions(
       SecureRandom.hex,
       request_id: SecureRandom.uuid,
       instructions: I18n.t(
@@ -26,29 +23,32 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def signup_with_your_email
-    UserMailer.signup_with_your_email(user, email_address)
+    UserMailer.with(user: user, email_address: email_address_record).signup_with_your_email
   end
 
   def reset_password_instructions
-    UserMailer.reset_password_instructions(user, email_address, token: SecureRandom.hex)
+    UserMailer.with(user: user, email_address: email_address_record).reset_password_instructions(
+      token: SecureRandom.hex,
+    )
   end
 
   def password_changed
-    UserMailer.password_changed(user, email_address_record, disavowal_token: SecureRandom.hex)
+    UserMailer.with(user: user, email_address: email_address_record).
+      password_changed(disavowal_token: SecureRandom.hex)
   end
 
   def phone_added
-    UserMailer.phone_added(user, email_address_record, disavowal_token: SecureRandom.hex)
+    UserMailer.with(user: user, email_address: email_address_record).
+      phone_added(disavowal_token: SecureRandom.hex)
   end
 
   def personal_key_sign_in
-    UserMailer.personal_key_sign_in(user, email_address, disavowal_token: SecureRandom.hex)
+    UserMailer.with(user: user, email_address: email_address_record).
+      personal_key_sign_in(disavowal_token: SecureRandom.hex)
   end
 
   def new_device_sign_in
-    UserMailer.new_device_sign_in(
-      user: user,
-      email_address: email_address_record,
+    UserMailer.with(user: user, email_address: email_address_record).new_device_sign_in(
       date: 'February 25, 2019 15:02',
       location: 'Washington, DC',
       disavowal_token: SecureRandom.hex,
@@ -56,61 +56,61 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def personal_key_regenerated
-    UserMailer.personal_key_regenerated(user, email_address)
+    UserMailer.with(user: user, email_address: email_address_record).personal_key_regenerated
   end
 
   def account_reset_request
-    UserMailer.account_reset_request(
-      user, email_address_record, user.build_account_reset_request
+    UserMailer.with(user: user, email_address: email_address_record).account_reset_request(
+      user.build_account_reset_request,
     )
   end
 
   def account_reset_granted
-    UserMailer.account_reset_granted(
-      user, email_address_record, user.build_account_reset_request
+    UserMailer.with(user: user, email_address: email_address_record).account_reset_granted(
+      user.build_account_reset_request,
     )
   end
 
   def account_reset_complete
-    UserMailer.account_reset_complete(user, email_address_record)
+    UserMailer.with(user: user, email_address: email_address_record).account_reset_complete
   end
 
   def account_reset_cancel
-    UserMailer.account_reset_cancel(user, email_address_record)
+    UserMailer.with(user: user, email_address: email_address_record).account_reset_cancel
   end
 
   def please_reset_password
-    UserMailer.please_reset_password(user, email_address)
+    UserMailer.with(user: user, email_address: email_address_record).please_reset_password
   end
 
   def doc_auth_desktop_link_to_sp
-    UserMailer.doc_auth_desktop_link_to_sp(user, email_address, 'Example App', '/')
+    UserMailer.with(user: user, email_address: email_address_record).
+      doc_auth_desktop_link_to_sp('Example App', '/')
   end
 
   def letter_reminder
-    UserMailer.letter_reminder(user, email_address)
+    UserMailer.with(user: user, email_address: email_address_record).letter_reminder
   end
 
   def add_email
-    UserMailer.add_email(user, email_address, SecureRandom.hex)
+    UserMailer.with(user: user, email_address: email_address_record).add_email(SecureRandom.hex)
   end
 
   def email_added
-    UserMailer.email_added(user, email_address)
+    UserMailer.with(user: user, email_address: email_address_record).email_added
   end
 
   def email_deleted
-    UserMailer.email_deleted(user, email_address)
+    UserMailer.with(user: user, email_address: email_address_record).email_deleted
   end
 
   def add_email_associated_with_another_account
-    UserMailer.add_email_associated_with_another_account(email_address)
+    UserMailer.with(user: user, email_address: email_address_record).
+      add_email_associated_with_another_account
   end
 
   def account_verified
-    UserMailer.account_verified(
-      user,
-      email_address_record,
+    UserMailer.with(user: user, email_address: email_address_record).account_verified(
       date_time: DateTime.now,
       sp_name: 'Example App',
       disavowal_token: SecureRandom.hex,
@@ -118,40 +118,29 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def in_person_completion_survey
-    UserMailer.in_person_completion_survey(
-      user,
-      email_address_record,
-    )
+    UserMailer.with(user: user, email_address: email_address_record).in_person_completion_survey
   end
 
   def in_person_ready_to_verify
-    UserMailer.in_person_ready_to_verify(
-      user,
-      email_address_record,
+    UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
       enrollment: in_person_enrollment,
     )
   end
 
   def in_person_verified
-    UserMailer.in_person_verified(
-      user,
-      email_address_record,
+    UserMailer.with(user: user, email_address: email_address_record).in_person_verified(
       enrollment: in_person_enrollment,
     )
   end
 
   def in_person_failed
-    UserMailer.in_person_failed(
-      user,
-      email_address_record,
+    UserMailer.with(user: user, email_address: email_address_record).in_person_failed(
       enrollment: in_person_enrollment,
     )
   end
 
   def in_person_failed_fraud
-    UserMailer.in_person_failed_fraud(
-      user,
-      email_address_record,
+    UserMailer.with(user: user, email_address: email_address_record).in_person_failed_fraud(
       enrollment: in_person_enrollment,
     )
   end

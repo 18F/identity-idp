@@ -104,12 +104,13 @@ module Users
     end
 
     def retain_confirmed_emails
-      @current_confirmed_emails = current_user.confirmed_email_addresses.map(&:email)
+      @current_confirmed_emails = current_user.confirmed_email_addresses.to_a
     end
 
     def send_delete_email_notification
       @current_confirmed_emails.each do |confirmed_email|
-        UserMailer.email_deleted(current_user, confirmed_email).deliver_now_or_later
+        UserMailer.with(user: current_user, email_address: confirmed_email).
+          email_deleted.deliver_now_or_later
       end
     end
   end

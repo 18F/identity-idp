@@ -9,15 +9,23 @@ describe UserAlerts::AlertUserAboutPasswordChange do
       confirmed_email_addresses = create_list(:email_address, 2, user: user)
       create(:email_address, user: user, confirmed_at: nil)
 
-      allow(UserMailer).to receive(:password_changed).and_call_original
-
       described_class.call(user, disavowal_token)
 
-      expect(UserMailer).to have_received(:password_changed).twice
-      expect(UserMailer).to have_received(:password_changed).
-        with(user, confirmed_email_addresses[0], disavowal_token: disavowal_token)
-      expect(UserMailer).to have_received(:password_changed).
-        with(user, confirmed_email_addresses[1], disavowal_token: disavowal_token)
+      expect_delivered_email_count(2)
+      expect_delivered_email(
+        0, {
+          to: [confirmed_email_addresses[0].email],
+          subject: t('devise.mailer.password_updated.subject'),
+          body: [disavowal_token],
+        }
+      )
+      expect_delivered_email(
+        1, {
+          to: [confirmed_email_addresses[1].email],
+          subject: t('devise.mailer.password_updated.subject'),
+          body: [disavowal_token],
+        }
+      )
     end
   end
 end
