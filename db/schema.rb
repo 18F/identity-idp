@@ -13,6 +13,7 @@
 ActiveRecord::Schema[7.0].define(version: 2022_10_12_172457) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "account_reset_requests", force: :cascade do |t|
