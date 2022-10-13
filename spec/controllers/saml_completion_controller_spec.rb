@@ -10,6 +10,7 @@ describe SamlCompletionController do
     let(:relay_state) { 'def456' }
     let(:sig_alg) { 'aes256' }
     let(:signature) { 'xyz789' }
+    let(:path_year) { '2022' }
 
     context 'with a valid service provider request session' do
       let(:get_params) do
@@ -20,7 +21,7 @@ describe SamlCompletionController do
           Signature: signature,
         }
       end
-      let(:sp_session_request_url) { 'http://example.gov/api/saml/auth2022' }
+      let(:sp_session_request_url) { "http://example.gov/api/saml/auth#{path_year}" }
 
       before do
         expect(controller).to receive(:sp_session).at_least(:once).and_return(
@@ -29,7 +30,7 @@ describe SamlCompletionController do
       end
 
       it 'renders the appropriate form' do
-        get :index
+        get :index, params: { path_year: path_year }
 
         expect(response.body).to match(form_action_regex)
         expect(response.body).to match(hidden_field_tag('SAMLRequest', saml_request))
@@ -43,7 +44,7 @@ describe SamlCompletionController do
       before { expect(controller).to receive(:sp_session).at_least(:once).and_return({}) }
 
       it 'renders 404 not found' do
-        get :index
+        get :index, params: { path_year: path_year }
         expect(response).to be_not_found
       end
     end
@@ -52,7 +53,7 @@ describe SamlCompletionController do
       before { expect(controller).to receive(:sp_from_sp_session).and_return nil }
 
       it 'renders 404 not found' do
-        get :index
+        get :index, params: { path_year: path_year }
         expect(response).to be_not_found
       end
     end
