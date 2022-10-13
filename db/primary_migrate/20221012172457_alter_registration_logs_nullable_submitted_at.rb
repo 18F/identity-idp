@@ -1,13 +1,7 @@
 class AlterRegistrationLogsNullableSubmittedAt < ActiveRecord::Migration[7.0]
-  def up
+  def change
     safety_assured do
-      execute 'ALTER TABLE "registration_logs" ALTER COLUMN submitted_at DROP NOT NULL'
-    end
-  end
-
-  def down
-    safety_assured do
-      execute 'ALTER TABLE "registration_logs" ALTER COLUMN submitted_at SET NOT NULL'
+      change_column_null :registration_logs, :submitted_at, true
     end
   end
 end
