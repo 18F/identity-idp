@@ -7,7 +7,7 @@
 #     button_to(idv_inherited_proofing_cancel_path(step: params[:step]), ...) ...
 #     end
 # %>
-module AllowWhitelistedFlowStepConcern
+module AllowlistedFlowStepConcern
   extend ActiveSupport::Concern
 
   included do
@@ -18,7 +18,7 @@ module AllowWhitelistedFlowStepConcern
 
   def flow_step!
     flow_step = flow_step_param
-    unless flow_step_whitelist.include? flow_step
+    unless flow_step_allowlist.include? flow_step
       Rails.logger.warn "Flow step param \"#{flow_step})\" was not whitelisted!"
       render_not_found and return
     end
@@ -31,7 +31,7 @@ module AllowWhitelistedFlowStepConcern
     params[:step]
   end
 
-  def flow_step_whitelist
-    raise NotImplementedError, '#flow_step_whitelist must be overridden'
+  def flow_step_allowlist
+    raise NotImplementedError, '#flow_step_allowlist must be overridden'
   end
 end
