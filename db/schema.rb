@@ -13,7 +13,6 @@
 ActiveRecord::Schema[7.0].define(version: 2022_10_12_172457) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
-  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "account_reset_requests", force: :cascade do |t|
@@ -437,7 +436,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_12_172457) do
     t.jsonb "proofing_components"
     t.string "name_zip_birth_year_signature"
     t.date "reproof_at"
-    t.bigint "initiating_service_provider_id"
+    t.string "initiating_service_provider_issuer"
     t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
     t.index ["reproof_at"], name: "index_profiles_on_reproof_at"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
