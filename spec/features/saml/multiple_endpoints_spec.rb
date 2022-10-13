@@ -30,6 +30,7 @@ describe 'multiple saml endpoints' do
       sign_in_and_2fa_user(user)
       visit endpoint_authn_request
       click_agree_and_continue
+      click_submit_default
 
       response_node = page.find('#SAMLResponse', visible: false)
       decoded_response = Base64.decode64(response_node.value)
