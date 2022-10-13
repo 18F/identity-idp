@@ -12,10 +12,8 @@ describe FrontendLogger do
   end
 
   let(:analytics) { ExampleAnalytics.new }
-  let(:proc_handler) { proc {} }
   let(:event_map) do
     {
-      'proc' => proc_handler,
       'method' => ExampleAnalyticsEvents.instance_method(:example_method_handler),
     }
   end
@@ -34,16 +32,6 @@ describe FrontendLogger do
         call
 
         expect(analytics).to have_logged_event('Frontend: unknown', attributes)
-      end
-    end
-
-    context 'with proc event handler' do
-      let(:name) { 'proc' }
-
-      it 'calls proc with analytics instance' do
-        expect(proc_handler).to receive(:call).with(analytics, attributes)
-
-        call
       end
     end
 
