@@ -812,17 +812,6 @@ module AnalyticsEvents
     track_event('IdV: personal key downloaded')
   end
 
-  # @identity.idp.previous_event_name IdV: show personal key modal
-  # User opened IDV personal key confirmation modal
-  def idv_personal_key_confirm_visited
-    track_event('IdV: personal key confirm visited')
-  end
-
-  # User submitted IDV personal key confirmation modal
-  def idv_personal_key_confirm_submitted
-    track_event('IdV: personal key confirm submitted')
-  end
-
   # @param [Boolean] success
   # @param [Hash] errors
   # The user submitted their phone on the phone confirmation page
