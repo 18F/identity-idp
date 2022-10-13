@@ -433,6 +433,36 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
           )
+          expect(job_analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Success or failure email initiated',
+            email_version: 'Failed email version',
+          )
+        end
+      end
+
+      context 'when an enrollment fails and fraud is suspected' do
+        before(:each) do
+          stub_request_failed_suspected_fraud_proofing_results
+        end
+
+        it_behaves_like(
+          'enrollment with a status update',
+          passed: false,
+          status: 'failed',
+          response_json: UspsInPersonProofing::Mock::Fixtures.
+            request_failed_suspected_fraud_proofing_results_response,
+        )
+
+        it 'logs fraud failure details' do
+          job.perform(Time.zone.now)
+
+          expect(job_analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Enrollment status updated',
+          )
+          expect(job_analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Success or failure email initiated',
+            email_version: 'Failed fraud suspected email version',
+          )
         end
       end
 
