@@ -1,19 +1,18 @@
 class UserMailerPreview < ActionMailer::Preview
   def email_confirmation_instructions
-    UserMailer.email_confirmation_instructions(
-      user,
-      email_address,
-      SecureRandom.hex,
-      request_id: SecureRandom.uuid,
-      instructions: I18n.t(
-        'user_mailer.email_confirmation_instructions.first_sentence.forgot_password',
-        app_name: APP_NAME,
-      ),
-    )
+    UserMailer.with(user: user, email_address: email_address_record).
+      email_confirmation_instructions(
+        SecureRandom.hex,
+        request_id: SecureRandom.uuid,
+        instructions: I18n.t(
+          'user_mailer.email_confirmation_instructions.first_sentence.forgot_password',
+          app_name: APP_NAME,
+        ),
+      )
   end
 
   def unconfirmed_email_instructions
-    UserMailer.with(user: user, email_address: email_address).unconfirmed_email_instructions(
+    UserMailer.with(user: user, email_address: email_address_record).unconfirmed_email_instructions(
       SecureRandom.hex,
       request_id: SecureRandom.uuid,
       instructions: I18n.t(
@@ -24,11 +23,11 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def signup_with_your_email
-    UserMailer.with(user: user, email_address: email_address).signup_with_your_email
+    UserMailer.with(user: user, email_address: email_address_record).signup_with_your_email
   end
 
   def reset_password_instructions
-    UserMailer.with(user: user, email_address: email_address).reset_password_instructions(
+    UserMailer.with(user: user, email_address: email_address_record).reset_password_instructions(
       token: SecureRandom.hex,
     )
   end
@@ -57,7 +56,7 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def personal_key_regenerated
-    UserMailer.with(user: user, email_address: email_address).personal_key_regenerated
+    UserMailer.with(user: user, email_address: email_address_record).personal_key_regenerated
   end
 
   def account_reset_request
