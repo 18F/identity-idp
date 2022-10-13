@@ -407,6 +407,10 @@ RSpec.describe GetUspsProofingResultsJob do
             'GetUspsProofingResultsJob: Enrollment status updated',
             reason: 'Successful status update',
           )
+          expect(job_analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Success or failure email initiated',
+            email_version: 'Success email version',
+          )
         end
       end
 
