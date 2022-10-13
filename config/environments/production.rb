@@ -11,7 +11,6 @@ Rails.application.configure do
     # and request is nil during asset precompilation
     (IdentityConfig.store.asset_host.presence || IdentityConfig.store.domain_name) if request
   end
-  config.assets.js_compressor = :uglifier
   config.assets.compile = false
   config.assets.digest = true
   config.assets.gzip = false
