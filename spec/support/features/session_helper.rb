@@ -129,7 +129,6 @@ module Features
 
     def sign_up
       user = create(:user, :unconfirmed)
-      Funnel::Registration::Create.call(user.id)
       confirm_last_user
       user
     end

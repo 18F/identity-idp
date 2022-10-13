@@ -59,10 +59,6 @@ es:
       link_text: Ir a %{app_name}
       reset_password_html: Si no recuerda su contraseña, vaya a %{app_name} para restablecerla.
     contact_link_text: Contáctenos
-    deleted_accounts_report:
-      issuers: Emisores
-      name: Nombre
-      subject: Informe de cuentas eliminadas
     doc_auth_link:
       message: Ha solicitado verificar su identidad en una computadora de escritorio.
         Inicie sesión en %{sp_link}
@@ -266,7 +262,3 @@ es:
         una sesión con este email, puede ignorar este mensaje.
       link_text: Ir a %{app_name}
       reset_password_html: Si no recuerda su contraseña, vaya a %{app_name} para restablecerla.
-    sps_over_quota_limit:
-      help: ''
-      info: Hay SP que han superado su límite de cuota.
-      subject: Algunos SP han alcanzado su límite de cuota.

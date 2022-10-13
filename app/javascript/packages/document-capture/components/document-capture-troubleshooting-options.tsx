@@ -85,6 +85,7 @@ function DocumentCaptureTroubleshootingOptions({
           heading={formatHTML(t('idv.troubleshooting.headings.are_you_near'), {
             wbr: 'wbr',
           })}
+          divider={false}
           options={[
             {
               url: '#location',

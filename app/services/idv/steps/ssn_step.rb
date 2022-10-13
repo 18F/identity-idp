@@ -11,7 +11,6 @@ module Idv
         flow_session[:pii_from_doc][:ssn] = ssn
 
         @flow.irs_attempts_api_tracker.idv_ssn_submitted(
-          success: true,
           ssn: ssn,
         )
 

@@ -107,19 +107,6 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.add_email_associated_with_another_account(email_address)
   end
 
-  def sps_over_quota_limit
-    UserMailer.sps_over_quota_limit(email_address)
-  end
-
-  def deleted_user_accounts_report
-    UserMailer.deleted_user_accounts_report(
-      email: email_address,
-      name: 'my name',
-      issuers: %w[issuer1 issuer2],
-      data: 'data',
-    )
-  end
-
   def account_verified
     UserMailer.account_verified(
       user,

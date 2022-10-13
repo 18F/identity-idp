@@ -2,11 +2,12 @@ require 'rails_helper'
 
 describe Users::BackupCodeSetupController do
   it 'creates backup codes and logs expected events' do
-    user = build(:user, :signed_up)
+    user = create(:user, :signed_up)
     stub_sign_in(user)
-    stub_analytics
+    analytics = stub_analytics
     stub_attempts_tracker
 
+    Funnel::Registration::AddMfa.call(user.id, 'phone', analytics)
     expect(PushNotification::HttpPush).to receive(:deliver).
       with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
     expect(@analytics).to receive(:track_event).

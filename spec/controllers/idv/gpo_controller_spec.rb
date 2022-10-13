@@ -105,7 +105,7 @@ describe Idv::GpoController do
 
       it 'logs attempts api tracking' do
         expect(@irs_attempts_api_tracker).to receive(:idv_gpo_letter_requested).
-          with(success: true, resend: false)
+          with(resend: false)
 
         put :create
       end
@@ -132,7 +132,7 @@ describe Idv::GpoController do
 
       it 'logs attempts api tracking' do
         expect(@irs_attempts_api_tracker).to receive(:idv_gpo_letter_requested).
-          with(success: true, resend: true)
+          with(resend: true)
 
         put :create
       end
