@@ -6,14 +6,12 @@
       <% end %>
     </div>
   </div>
-  <p class="margin-y-0">
+  <p class="margin-bottom-105">
     <%= t(
           'users.personal_key.generated_on_html',
           date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')),
         ) %>
   </p>
-
-  <br />
 
   <%= render ClipboardButtonComponent.new(
         clipboard_text: code,
