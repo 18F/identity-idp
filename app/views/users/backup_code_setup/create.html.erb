@@ -30,7 +30,7 @@
   <div class="margin-top-1">
     <% if desktop_device? %>
       <%= render DownloadButtonComponent.new(
-            data: @codes.join("\n"),
+            file_data: @codes.join("\n"),
             file_name: 'backup_codes.txt',
             outline: true,
           ) %>

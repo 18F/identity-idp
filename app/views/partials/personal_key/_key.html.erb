@@ -14,7 +14,7 @@
   </p>
   <%= render ClipboardButtonComponent.new(clipboard_text: code, unstyled: true) %>
   <%= render DownloadButtonComponent.new(
-        data: code,
+        file_data: code,
         file_name: 'personal_key.txt',
         unstyled: true,
         class: 'margin-x-2 display-inline-block',

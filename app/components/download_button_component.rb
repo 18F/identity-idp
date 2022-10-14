@@ -1,12 +1,12 @@
 class DownloadButtonComponent < ButtonComponent
-  attr_reader :data, :file_name, :tag_options
+  attr_reader :file_data, :file_name, :tag_options
 
-  def initialize(data:, file_name:, **tag_options)
+  def initialize(file_data:, file_name:, **tag_options)
     super(
       icon: :file_download,
       action: ->(**tag_options, &block) do
         link_to(
-          "data:text/plain;charset=utf-8,#{CGI.escape(data)}",
+          "data:text/plain;charset=utf-8,#{CGI.escape(file_data)}",
           download: file_name,
           **tag_options,
           &block
@@ -15,7 +15,7 @@ class DownloadButtonComponent < ButtonComponent
       **tag_options,
     )
 
-    @data = data
+    @file_data = file_data
     @file_name = file_name
   end
 
