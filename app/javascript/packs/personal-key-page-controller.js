@@ -26,7 +26,7 @@ function downloadForIE(event) {
 
 function trackAcknowledgment(clickEvent) {
   trackEvent(
-    'IdV: personal key acknowledgment toggled',
+    'IdV: personal key acknowledgment toggle',
     { checked: clickEvent.target.checked },
   );
 }
