@@ -79,63 +79,6 @@ describe('document-capture/components/document-capture', () => {
     await findByText('doc_auth.errors.camera.blocked_detail');
   });
 
-  it.skip('renders unhandled submission failure', async () => {
-    // I believe this to be a selfie related test
-    const { getByLabelText, getByText, getAllByText, findAllByText, findByText } = render(
-      <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-        <DocumentCapture />
-      </AcuantContextProvider>,
-      {
-        uploadError: new Error('Server unavailable'),
-        expectedUploads: 2,
-      },
-    );
-
-    const continueButton = getByText('forms.buttons.continue');
-    await userEvent.click(continueButton);
-    await findAllByText('simple_form.required.text');
-    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
-    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
-    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    await userEvent.click(continueButton);
-
-    let submitButton = getByText('forms.buttons.submit.default');
-    await userEvent.click(submitButton);
-    await findAllByText('simple_form.required.text');
-    const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
-    fireEvent.change(selfieInput, { target: { files: [validUpload] } });
-    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    await userEvent.click(submitButton);
-
-    await findByText('doc_auth.errors.general.network_error');
-
-    expect(console).to.have.loggedError(/^Error: Uncaught/);
-    expect(console).to.have.loggedError(
-      /React will try to recreate this component tree from scratch using the error boundary you provided/,
-    );
-
-    // Make sure that the first element after a tab is what we expect it to be.
-    await userEvent.tab();
-    const firstFocusable = getByLabelText('doc_auth.headings.document_capture_front');
-    expect(document.activeElement).to.equal(firstFocusable);
-
-    const hasValueSelected = getAllByText('doc_auth.forms.change_file').length === 3;
-    expect(hasValueSelected).to.be.true();
-
-    // Verify re-submission. It will fail again, but test can at least assure that the interstitial
-    // screen is shown once more.
-
-    submitButton = getByText('forms.buttons.submit.default');
-    await userEvent.click(submitButton);
-
-    await findByText('doc_auth.errors.general.network_error');
-
-    expect(console).to.have.loggedError(/^Error: Uncaught/);
-    expect(console).to.have.loggedError(
-      /React will try to recreate this component tree from scratch using the error boundary you provided/,
-    );
-  });
-
   it.skip('renders handled submission failure', async () => {
     // I believe this to be a selfie related test
     const uploadError = new UploadFormEntriesError();
