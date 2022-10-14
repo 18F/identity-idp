@@ -22,6 +22,7 @@ module ActionMailer
 end
 
 class MailerSensitiveInformationChecker
+  include ::NewRelic::Agent::MethodTracer
   class SensitiveKeyError < StandardError; end
 
   class SensitiveValueError < StandardError; end
@@ -68,5 +69,9 @@ class MailerSensitiveInformationChecker
     else
       raise exception
     end
+  end
+
+  class << self
+    add_method_tracer :check_for_sensitive_pii!, "Custom/#{name}/check_for_sensitive_pii!"
   end
 end
