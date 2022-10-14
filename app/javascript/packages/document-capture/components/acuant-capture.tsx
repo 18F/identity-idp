@@ -272,7 +272,6 @@ function AcuantCapture(
   const {
     isReady,
     isActive: isAcuantInstanceActive,
-    isAcuantLoaded,
     isError,
     isCameraSupported,
     glareThreshold,
@@ -287,7 +286,6 @@ function AcuantCapture(
   const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(false);
   const [ownErrorMessage, setOwnErrorMessage] = useState<string | null>(null);
   const [hasStartedCropping, setHasStartedCropping] = useState(false);
-  const ifStillMounted = useIfStillMounted();
   useMemo(() => setOwnErrorMessage(null), [value]);
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();

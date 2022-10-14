@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react';
-import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { FormStepsContext, FormStepsButton } from '@18f/identity-form-steps';
@@ -8,7 +7,6 @@ import { Cancel } from '@18f/identity-verify-flow';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import DeviceContext from '../context/device';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
-import AcuantCapture from './acuant-capture';
 import ServiceProviderContext from '../context/service-provider';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import type { PII } from '../services/upload';
@@ -72,8 +70,6 @@ function ReviewIssuesStep({
   captureHints = false,
 }: ReviewIssuesStepProps) {
   const { t } = useI18n();
-  const { isMobile } = useContext(DeviceContext);
-  const serviceProvider = useContext(ServiceProviderContext);
   const { trackEvent } = useContext(AnalyticsContext);
   const [hasDismissed, setHasDismissed] = useState(remainingAttempts === Infinity);
   const { onPageTransition, changeStepCanComplete } = useContext(FormStepsContext);

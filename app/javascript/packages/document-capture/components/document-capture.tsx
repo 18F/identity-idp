@@ -56,7 +56,6 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
   const [stepName, setStepName] = useState<string | undefined>(undefined);
   const { t } = useI18n();
-  const serviceProvider = useContext(ServiceProviderContext);
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { inPersonURL } = useContext(FlowContext);
