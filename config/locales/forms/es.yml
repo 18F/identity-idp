@@ -82,7 +82,6 @@ es:
           - Tendrás que verificar tu identidad nuevamente
         header: Necesitarás tu clave personal si olvidas tu contraseña. Mantenla en un
           lugar seguro y no la compartas con nadie.
-        instructions: Marca la casilla de arriba para continuar.
         text: 'Si restableces tu contraseña sin tu clave personal:'
       explanation:
         header: ¿Qué es una clave personal?

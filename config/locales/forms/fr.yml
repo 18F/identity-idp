@@ -83,7 +83,6 @@ fr:
           - Vous allez devoir vérifier à nouveau votre identité
         header: En cas d’oubli de votre mot de passe, vous aurez besoin de votre clé
           personnelle. Gardez-la en sécurité et ne la partagez avec personne.
-        instructions: Cochez la case ci-dessus pour continuer.
         text: 'Si vous réinitialisez votre mot de passe sans votre clé personnelle:'
       explanation:
         header: Qu’est-ce qu’une clé personnelle?

@@ -76,7 +76,6 @@ en:
           - You’ll need to verify your identity again
         header: You need your personal key if you forget your password. Keep it safe and
           don’t share it with anyone.
-        instructions: Check the box above to continue
         text: 'If you reset your password without your personal key:'
       explanation:
         header: What is a personal key?
