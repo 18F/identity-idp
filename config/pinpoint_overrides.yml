@@ -128,7 +128,7 @@ ML:
 MP:
   country_code: '1'
   name: Northern Mariana Islands
-  supports_sms: true
+  supports_sms: false
   supports_voice: true
 MX:
   supports_voice: false
