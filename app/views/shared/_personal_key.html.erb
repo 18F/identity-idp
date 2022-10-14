@@ -17,14 +17,14 @@
         <%= t('forms.personal_key_partial.acknowledgement.header') %>
       </b>
     </p>
-    <p>
+    <p class="margin-bottom-0">
       <%= t('forms.personal_key_partial.acknowledgement.text') %>
-      <ul>
-        <% t('forms.personal_key_partial.acknowledgement.bullets').each do |bullet| %>
-          <li><%= bullet %></li>
-        <% end %>
-      </ul>
     </p>
+    <ul>
+      <% t('forms.personal_key_partial.acknowledgement.bullets').each do |bullet| %>
+        <li><%= bullet %></li>
+      <% end %>
+    </ul>
     <p>
       <%= t('forms.personal_key_partial.acknowledgement.instructions') %>
     </p>
