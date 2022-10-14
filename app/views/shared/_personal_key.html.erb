@@ -13,9 +13,9 @@
 <%= simple_form_for('', url: update_path) do |f| %>
   <% @acceptance_prompt = capture do %>
     <p>
-      <b>
+      <strong>
         <%= t('forms.personal_key_partial.acknowledgement.header') %>
-      </b>
+      </strong>
     </p>
     <p class="margin-bottom-0">
       <%= t('forms.personal_key_partial.acknowledgement.text') %>
