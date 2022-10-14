@@ -3,14 +3,12 @@
   <%= render 'partials/personal_key/key', code: code %>
 </div>
 
-<div>
-  <%= render AccordionComponent.new do |c| %>
-    <% c.header { t('forms.personal_key_partial.explanation.header') } %>
-    <% t('forms.personal_key_partial.explanation.text').each do |paragraph| %>
-      <p><%= paragraph %></p>
-    <% end %>
+<%= render AccordionComponent.new do |c| %>
+  <% c.header { t('forms.personal_key_partial.explanation.header') } %>
+  <% t('forms.personal_key_partial.explanation.text').each do |paragraph| %>
+    <p><%= paragraph %></p>
   <% end %>
-</div>
+<% end %>
 
 <%= simple_form_for('', url: update_path) do |f| %>
   <% @acceptance_prompt = capture do %>
