@@ -38,6 +38,24 @@ RSpec.shared_examples 'enrollment with a status update' do |passed:, status:, re
     )
   end
 
+  context 'email_analytics_attributes' do
+    before(:each) do
+      stub_request_passed_proofing_results
+    end
+    it 'logs message with email analytics attributes' do
+      freeze_time do
+        job.perform(Time.zone.now)
+        expect(job_analytics).to have_logged_event(
+        'GetUspsProofingResultsJob: Success or failure email initiated',
+        timestamp: Time.zone.now,
+        user_id: pending_enrollment.user_id,
+        service_provider: pending_enrollment.issuer,
+        delay_time_amount: {wait: 1.hour}
+      )
+    end
+  end
+end
+
   it 'updates the status of the enrollment and profile appropriately' do
     freeze_time do
       pending_enrollment.update(
