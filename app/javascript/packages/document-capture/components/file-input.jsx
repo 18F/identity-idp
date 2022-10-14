@@ -323,7 +323,6 @@ function FileInput(props, ref) {
             aria-label={getLabelFromValue(label, value)}
             aria-busy={isValuePending}
             onChange={onChangeIfValid}
-            capture={capture}
             onClick={onClick}
             onDrop={onDrop}
             accept={accept ? accept.join() : undefined}
