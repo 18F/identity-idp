@@ -8,6 +8,11 @@ AO:
   supports_voice: false
 AR:
   supports_voice: false
+AS:
+  country_code: '1684'
+  name: American Samoa
+  supports_sms: false
+  supports_voice: false
 AT:
   supports_voice: false
 AU:
