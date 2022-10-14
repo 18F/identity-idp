@@ -13,7 +13,6 @@ en:
       caution_delete: If you delete your backup codes you will no longer be able to
         use them to sign in.
       confirm_delete: Are you sure you want to delete your backup codes?
-      download: Download
       generate: Get codes
       last_code: You used your last backup code. Please print, copy or download the
         codes below. You can use these new codes the next time you sign in.

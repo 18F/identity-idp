@@ -29,18 +29,11 @@
   </div>
   <div class="margin-top-1">
     <% if desktop_device? %>
-      <%= render ButtonComponent.new(
-            action: ->(**tag_options, &block) do
-              link_to(
-                "data:text/plain;charset=utf-8,#{CGI.escape(@codes.join("\n"))}",
-                download: 'backup_codes.txt',
-                **tag_options,
-                &block
-              )
-            end,
+      <%= render DownloadButtonComponent.new(
+            data: @codes.join("\n"),
+            file_name: 'backup_codes.txt',
             outline: true,
-            icon: :file_download,
-          ).with_content(t('forms.backup_code.download')) %>
+          ) %>
     <% end %>
     <%= render PrintButtonComponent.new(
           icon: :print,
