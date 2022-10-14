@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
-import { render as baseRender, fireEvent } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import httpUpload, {
   UploadFormEntriesError,
   toFormEntryError,
@@ -119,99 +119,6 @@ describe('document-capture/components/document-capture', () => {
     const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
     window.dispatchEvent(event);
     expect(event.defaultPrevented).to.be.false();
-  });
-
-  it.skip('renders async upload pending progress', async () => {
-    // I belive this to be a selfie related test
-    const statusChecks = 3;
-    let remainingStatusChecks = statusChecks;
-    sandbox.stub(window, 'fetch').resolves({ ok: true, headers: new window.Headers() });
-    const upload = sinon.stub().callsFake((payload, { endpoint }) => {
-      switch (endpoint) {
-        case 'about:blank#upload':
-          expect(payload).to.have.keys([
-            'front_image_iv',
-            'front_image_url',
-            'front_image_metadata',
-            'back_image_iv',
-            'back_image_url',
-            'back_image_metadata',
-            'selfie_image_iv',
-            'selfie_image_url',
-            'flow_path',
-          ]);
-
-          return Promise.resolve({ success: true, isPending: true });
-        case 'about:blank#status':
-          expect(payload).to.be.empty();
-
-          return Promise.resolve({ success: true, isPending: Boolean(remainingStatusChecks--) });
-        default:
-          throw new Error();
-      }
-    });
-    const key = await window.crypto.subtle.generateKey(
-      {
-        name: 'AES-GCM',
-        length: 256,
-      },
-      true,
-      ['encrypt', 'decrypt'],
-    );
-
-    const { getByLabelText, getByText, getAllByText, findAllByText } = baseRender(
-      <UploadContextProvider
-        endpoint="about:blank#upload"
-        statusEndpoint="about:blank#status"
-        statusPollInterval={0}
-        backgroundUploadURLs={{
-          front: 'about:blank#front',
-          back: 'about:blank#back',
-          selfie: 'about:blank#selfie',
-        }}
-        backgroundUploadEncryptKey={key}
-        upload={upload}
-      >
-        <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-          <DocumentCapture isAsyncForm />
-        </AcuantContextProvider>
-      </UploadContextProvider>,
-    );
-
-    const continueButton = getByText('forms.buttons.continue');
-    await userEvent.click(continueButton);
-    await findAllByText('simple_form.required.text');
-    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
-    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
-    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    await userEvent.click(continueButton);
-
-    const submitButton = getByText('forms.buttons.submit.default');
-    await userEvent.click(submitButton);
-    await findAllByText('simple_form.required.text');
-    const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
-    fireEvent.change(selfieInput, { target: { files: [validUpload] } });
-    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    await userEvent.click(submitButton);
-
-    return new Promise((resolve) => {
-      onSubmit.callsFake(() => {
-        // Error logged at initial pending retry.
-        expect(console).to.have.loggedError(/^Error: Uncaught/);
-        expect(console).to.have.loggedError(/React will try to recreate this component/);
-
-        // Error logged at every scheduled check thereafter.
-        for (let i = 0; i < statusChecks; i++) {
-          expect(console).to.have.loggedError(/^Error: Uncaught/);
-          expect(console).to.have.loggedError(/React will try to recreate this component/);
-        }
-
-        resolve();
-      });
-
-      // eslint-disable-next-line no-restricted-syntax
-      userEvent.click(submitButton);
-    });
   });
 
   it.skip('calls onStepChange callback on step changes', async () => {
