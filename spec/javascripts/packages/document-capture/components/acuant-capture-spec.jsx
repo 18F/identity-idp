@@ -784,36 +784,6 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.start.called).to.be.false();
     });
 
-    it('triggers forced upload with `capture` value', () => {
-      const { getByText, getByLabelText } = render(
-        <I18nContext.Provider
-          value={
-            new I18n({
-              strings: {
-                'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>',
-              },
-            })
-          }
-        >
-          <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-              <AcuantCapture label="Image" capture="user" />
-            </AcuantContextProvider>
-          </DeviceContext.Provider>
-        </I18nContext.Provider>,
-      );
-
-      initialize();
-
-      const button = getByText('Upload');
-      const input = getByLabelText('Image');
-      const defaultPrevented = !fireEvent.click(button);
-
-      expect(defaultPrevented).to.be.false();
-      expect(window.AcuantCameraUI.start.called).to.be.false();
-      expect(input.getAttribute('capture')).to.equal('user');
-    });
-
     it('optionally disallows upload', () => {
       const { getByText, getByLabelText } = render(
         <I18nContext.Provider
