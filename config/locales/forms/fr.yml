@@ -15,7 +15,7 @@ fr:
       caution_delete: Si vous supprimez vos codes de sauvegarde, vous ne pourrez plus
         les utiliser pour vous connecter.
       confirm_delete: Êtes-vous sûr de vouloir supprimer vos codes de sauvegarde?
-      download: Télécharger (fichier texte)
+      download: Télécharger
       generate: Obtenir des codes
       last_code: Vous avez utilisé votre dernier code de sauvegarde. Veuillez
         imprimer, copier ou télécharger les codes ci-dessous. Vous pourrez
@@ -72,6 +72,7 @@ fr:
     personal_key:
       alternative: Vous n’avez pas votre clé personnelle?
       confirmation_label: Clé personnelle
+      download: Télécharger (fichier texte)
       instructions: Veuillez confirmer que vous avez une copie de votre clé
         personnelle en l’entrant ci-dessous.
       title: Entrez votre clé personnelle

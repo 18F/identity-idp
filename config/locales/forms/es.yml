@@ -14,7 +14,7 @@ es:
       caution_delete: Si elimina sus códigos de respaldo, ya no podrá usarlos para
         iniciar sesión.
       confirm_delete: '¿Estás seguro de que deseas eliminar tus códigos de respaldo?'
-      download: Descargar (archivo de texto)
+      download: Descargar
       generate: Obtener códigos
       last_code: Usted utilizó el último código de seguridad. Imprima, copie o
         descargue los códigos que aparecen a continuación. Puede introducir
@@ -71,6 +71,7 @@ es:
     personal_key:
       alternative: '¿No tiene su clave personal?'
       confirmation_label: Clave personal
+      download: Descargar (archivo de texto)
       instructions: Confirme que tiene una copia de su clave personal ingresándola a
         continuación.
       title: Ingrese su clave personal
