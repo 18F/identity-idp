@@ -96,12 +96,6 @@ interface AcuantCaptureProps {
    */
   onCameraAccessDeclined?: () => void;
   /**
-   * Facing mode of caopture. If capture is not
-   * specified and a camera is supported, defaults
-   * to the Acuant environment camera capture.
-   */
-  capture: 'user' | 'environment';
-  /**
    * Optional additional class names
    */
   className?: string;
@@ -261,7 +255,6 @@ function AcuantCapture(
     value,
     onChange = () => {},
     onCameraAccessDeclined = () => {},
-    capture,
     className,
     allowUpload = true,
     errorMessage,
@@ -417,14 +410,10 @@ function AcuantCapture(
   function startCaptureOrTriggerUpload(event: MouseEvent) {
     if (event.target === inputRef.current) {
       const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;
-      const isEnvironmentCapture = capture !== 'user';
       let shouldStartAcuantCapture =
-        isAcuantCaptureCapable &&
-        capture !== 'user' &&
-        !isForceUploading.current &&
-        !forceNativeCamera;
+        isAcuantCaptureCapable && !isForceUploading.current && !forceNativeCamera;
 
-      if (isAcuantCaptureCapable && isEnvironmentCapture && forceNativeCamera) {
+      if (isAcuantCaptureCapable && forceNativeCamera) {
         trackEvent('IdV: Native camera forced after failed attempts', {
           field: name,
           failed_capture_attempts: failedCaptureAttempts,
@@ -560,7 +549,6 @@ function AcuantCapture(
         fileLoadingText={t('doc_auth.info.image_loading')}
         fileLoadedText={t('doc_auth.info.image_loaded')}
         accept={isMockClient ? undefined : ['image/jpeg', 'image/png']}
-        capture={capture}
         value={value}
         errorMessage={ownErrorMessage ?? errorMessage}
         isValuePending={hasStartedCropping}
