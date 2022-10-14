@@ -25,11 +25,10 @@ function downloadForIE(event) {
 }
 
 function trackAcknowledgment(clickEvent) {
-  if (clickEvent.target.checked) {
-    trackEvent('IdV: personal key acknowledged');
-  } else {
-    trackEvent('IdV: personal key un-acknowledged');
-  }
+  trackEvent(
+    'IdV: personal key acknowledgment toggled',
+    { checked: clickEvent.target.checked },
+  );
 }
 
 function trackDownload() {
