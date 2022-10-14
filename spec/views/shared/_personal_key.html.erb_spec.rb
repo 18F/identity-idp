@@ -29,17 +29,4 @@ RSpec.describe 'shared/_personal_key.html.erb' do
       expect(data_uri.data).to eq(personal_key)
     end
   end
-
-  describe 'continue button' do
-    let(:idv_personal_key_confirmation_enabled) { nil }
-
-    before do
-      allow(FeatureManagement).to receive(:idv_personal_key_confirmation_enabled?).
-        and_return(idv_personal_key_confirmation_enabled)
-    end
-
-    it 'renders with [data-toggle="skip"]' do
-      expect(rendered).to have_css('[data-toggle="skip"]')
-    end
-  end
 end
