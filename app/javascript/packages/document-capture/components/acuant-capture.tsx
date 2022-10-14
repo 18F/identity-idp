@@ -8,7 +8,7 @@ import {
   useImperativeHandle,
 } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import { useIfStillMounted, useDidUpdateEffect } from '@18f/identity-react-hooks';
+import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { Button, FullScreen } from '@18f/identity-components';
 import type { FullScreenRefHandle } from '@18f/identity-components';
 import type { FocusTrap } from 'focus-trap';

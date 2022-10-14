@@ -11,7 +11,6 @@ import InPersonPrepareStep from './in-person-prepare-step';
 import InPersonLocationStep from './in-person-location-step';
 import InPersonSwitchBackStep from './in-person-switch-back-step';
 import ReviewIssuesStep from './review-issues-step';
-import ServiceProviderContext from '../context/service-provider';
 import UploadContext from '../context/upload';
 import AnalyticsContext from '../context/analytics';
 import Submission from './submission';

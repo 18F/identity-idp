@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
-import { render as baseRender, fireEvent, cleanup } from '@testing-library/react';
+import { render as baseRender, fireEvent } from '@testing-library/react';
 import httpUpload, {
   UploadFormEntriesError,
   toFormEntryError,
@@ -17,13 +17,12 @@ import DocumentCapture, {
 } from '@18f/identity-document-capture/components/document-capture';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { expect } from 'chai';
-import { useSandbox, useDefineProperty } from '@18f/identity-test-helpers';
+import { useSandbox } from '@18f/identity-test-helpers';
 import { render, useAcuant, useDocumentCaptureForm } from '../../../support/document-capture';
 import { getFixture, getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/document-capture', () => {
   const onSubmit = useDocumentCaptureForm();
-  const defineProperty = useDefineProperty();
   const sandbox = useSandbox();
   const { initialize } = useAcuant();
 
