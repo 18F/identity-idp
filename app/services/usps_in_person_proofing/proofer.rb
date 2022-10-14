@@ -112,7 +112,9 @@ module UspsInPersonProofing
     end
 
     def token_valid?
-      @@token.present? && @@token_expires_at.present? && @@token_expires_at.future?
+      @@token.present? &&
+        @@token_expires_at.present? &&
+        (@@token_expires_at - 1.second).future?
     end
 
     private
