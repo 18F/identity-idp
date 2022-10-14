@@ -18,6 +18,22 @@ describe('ClickObserverElement', () => {
 
       expect(trackEvent).to.have.been.calledWith('Button clicked');
     });
+
+    context('for a checkbox', () => {
+      it('includes checked state in event payload', async () => {
+        document.body.innerHTML = `
+          <lg-click-observer event-name="Checkbox toggled">
+            <input type="checkbox" aria-label="Toggle">
+          </lg-click-observer>`;
+        const observer = document.body.querySelector('lg-click-observer')!;
+        const trackEvent = sinon.stub(observer, 'trackEvent');
+
+        const button = getByRole(document.body, 'checkbox', { name: 'Toggle' });
+        await userEvent.click(button);
+
+        expect(trackEvent).to.have.been.calledWith('Checkbox toggled', { checked: true });
+      });
+    });
   });
 
   context('without an event name', () => {
