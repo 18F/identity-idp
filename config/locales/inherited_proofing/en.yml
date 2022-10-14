@@ -3,6 +3,22 @@ en:
   inherited_proofing:
     buttons:
       continue: Continue
+    cancel:
+      actions:
+        keep_going: No, keep going
+        start_over: Start over
+      description:
+        start_over: If you start over, you will restart this process from the beginning
+          and the information you entered will not be saved.
+      headings:
+        confirmation:
+          hybrid: You have cancelled uploading photos of your ID on this phone
+        prompt:
+          standard: Cancel verifying your identity?
+        start_over: Start over verifying your identity
+      instructions:
+        switch_back: Switch back to your computer to finish verifying your identity.
+        switch_back_image: Arrow pointing from phone to computer
     headings:
       lets_go: How verifying your identity works
       retrieval: We are retrieving your information from My HealtheVet

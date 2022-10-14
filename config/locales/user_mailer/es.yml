@@ -1,14 +1,6 @@
 ---
 es:
   user_mailer:
-    account_does_not_exist:
-      intro_html: Esta dirección de correo electrónico aún no está asociada con una
-        cuenta %{app_name}. Si quieres crear una cuenta %{app_name} usando esta
-        dirección de correo electrónico, haz clic en el siguiente enlace o copia
-        y pega el enlace completo en tu navegador. Si no has solicitado
-        restablecer tu contraseña puedes ignorar este mensaje.
-      link_text: Crea tu cuenta
-      subject: Tu solicitud para restablecer tu contraseña de %{app_name}
     account_reset_cancel:
       intro_html: Este correo electrónico confirma que ha cancelado su solicitud para
         eliminar su cuenta de %{app_name}.
@@ -67,10 +59,6 @@ es:
       link_text: Ir a %{app_name}
       reset_password_html: Si no recuerda su contraseña, vaya a %{app_name} para restablecerla.
     contact_link_text: Contáctenos
-    deleted_accounts_report:
-      issuers: Emisores
-      name: Nombre
-      subject: Informe de cuentas eliminadas
     doc_auth_link:
       message: Ha solicitado verificar su identidad en una computadora de escritorio.
         Inicie sesión en %{sp_link}
@@ -152,7 +140,7 @@ es:
       greeting: Hola,
       subject: No se pudo verificar su identidad en persona
     in_person_ready_to_verify:
-      greeting: 'Hola, %{name}:'
+      greeting: Hola,
       intro: Estos son los detalles para verificar su identidad en persona en una
         oficina de correos de los Estados Unidos cercana a usted.
       subject: Está listo para verificar su identidad con %{app_name} en persona
@@ -274,7 +262,3 @@ es:
         una sesión con este email, puede ignorar este mensaje.
       link_text: Ir a %{app_name}
       reset_password_html: Si no recuerda su contraseña, vaya a %{app_name} para restablecerla.
-    sps_over_quota_limit:
-      help: ''
-      info: Hay SP que han superado su límite de cuota.
-      subject: Algunos SP han alcanzado su límite de cuota.

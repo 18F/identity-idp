@@ -39,7 +39,6 @@ RSpec.describe RequestPasswordReset do
         ).perform
         user = User.find_with_email(email)
         expect(user).to be_present
-        expect(RegistrationLog.first.user_id).to eq(user.id)
       end
     end
 
@@ -75,10 +74,10 @@ RSpec.describe RequestPasswordReset do
         subject
       end
 
-      it 'calls irs tracking method forgot_password_email_sent ' do
+      it 'calls irs tracking method forgot_password_email_sent' do
         subject
 
-        expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_sent)
+        expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_sent).once
       end
     end
 
@@ -142,22 +141,24 @@ RSpec.describe RequestPasswordReset do
     end
 
     context 'when two users have the same email address' do
-      let(:email) { 'aaa@test.com' }
+      let(:email_param) { { email: 'aaa@test.com' } }
 
       before do
-        @user_unconfirmed = create(:user, email: email, confirmed_at: nil)
-        @user_confirmed = create(:user, email: email, confirmed_at: Time.zone.now)
+        @user_unconfirmed = create(:user, **email_param, confirmed_at: nil)
+        @user_confirmed = create(:user, **email_param, confirmed_at: Time.zone.now)
       end
 
       it 'always finds the user with the confirmed email address' do
         form = RequestPasswordReset.new(
-          email: email,
+          **email_param,
           irs_attempts_api_tracker: irs_attempts_api_tracker,
         )
         form.perform
 
         expect(form.send(:user)).to eq(@user_confirmed)
-        expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_sent)
+        expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_sent).with(
+          email_param,
+        )
       end
     end
 

@@ -435,19 +435,15 @@ describe Idv::ReviewController do
           end
 
           it 'sends ready to verify email' do
-            mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
-            user.email_addresses.each do |email_address|
-              expect(UserMailer).to receive(:in_person_ready_to_verify).
-                with(
-                  user,
-                  email_address,
-                  enrollment: instance_of(InPersonEnrollment),
-                  first_name: kind_of(String),
-                ).
-                and_return(mailer)
-            end
-
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect_delivered_email_count(1)
+            expect_delivered_email(
+              0, {
+                to: [user.email_addresses.first.email],
+                subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
+              }
+            )
           end
 
           context 'when there is a 4xx error' do

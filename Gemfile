@@ -57,7 +57,7 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', github: '18F/saml_idp', tag: '0.17.0-18f'
+gem 'saml_idp', github: '18F/saml_idp', tag: '0.18.0-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
 gem 'sprockets-rails'
@@ -125,7 +125,7 @@ group :test do
   gem 'rails-controller-testing', '>= 1.0.4'
   gem 'rspec-retry'
   gem 'shoulda-matchers', '~> 4.0', require: false
-  gem 'webdrivers', '~> 4.0'
+  gem 'webdrivers', '~> 5.2.0'
   gem 'webmock'
   gem 'zonebie'
 end

@@ -65,7 +65,7 @@ module Idv
 
     def generate_personal_key
       cacher = Pii::Cacher.new(current_user, user_session)
-      irs_attempts_api_tracker.idv_personal_key_generated(success: true)
+      irs_attempts_api_tracker.idv_personal_key_generated
       idv_session.profile.encrypt_recovery_pii(cacher.fetch)
     end
 

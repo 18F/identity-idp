@@ -15,7 +15,7 @@ feature 'IAL1 Single Sign On' do
 
       perform_in_browser(:two) do
         confirm_email_in_a_different_browser(email)
-
+        click_submit_default
         expect(current_path).to eq sign_up_completed_path
         within('.requested-attributes') do
           expect(page).to have_content t('help_text.requested_attributes.email')
@@ -31,7 +31,7 @@ feature 'IAL1 Single Sign On' do
 
         continue_as(email)
 
-        expect(current_url).to eq request_url
+        expect(current_url).to eq complete_saml_url
         expect(page.get_rack_session.keys).to include('sp')
       end
     end
@@ -43,10 +43,10 @@ feature 'IAL1 Single Sign On' do
       visit request_url
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_submit_default_twice
       click_agree_and_continue
 
-      expect(current_url).to eq request_url
+      expect(current_url).to eq complete_saml_url
 
       visit root_path
       expect(current_path).to eq account_path
@@ -85,10 +85,10 @@ feature 'IAL1 Single Sign On' do
 
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_submit_default_twice
       click_agree_and_continue
 
-      expect(current_url).to eq request_url
+      expect(current_url).to eq complete_saml_url
     end
   end
 
@@ -116,7 +116,7 @@ feature 'IAL1 Single Sign On' do
 
     it 'returns to sp after clicking continue' do
       click_agree_and_continue
-      expect(current_url).to eq(saml_authn_request)
+      expect(current_url).to eq(complete_saml_url)
     end
 
     it 'it confirms the user wants to continue to the SP after signing in again' do
@@ -133,7 +133,7 @@ feature 'IAL1 Single Sign On' do
       expect(current_url).to match(user_authorization_confirmation_path)
       continue_as(user.email)
 
-      expect(current_url).to eq(saml_authn_request)
+      expect(current_url).to eq(complete_saml_url)
     end
   end
 
@@ -217,8 +217,9 @@ feature 'IAL1 Single Sign On' do
       click_submit_default
 
       expect(current_url).to match new_user_session_path
-
+      click_submit_default
       click_agree_and_continue
+      click_submit_default
 
       xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
 

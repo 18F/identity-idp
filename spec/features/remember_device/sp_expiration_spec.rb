@@ -10,7 +10,7 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
       travel_to(expiration_time.from_now - 1.day) do
         visit_idp_from_sp_with_ial1(protocol)
         sign_in_user(user)
-
+        click_submit_default if protocol == :saml
         expect(page).to have_current_path(sign_up_completed_path)
       end
     end
@@ -24,7 +24,7 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
         expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
 
         fill_in_code_with_last_phone_otp
-        click_submit_default
+        protocol == :saml ? click_submit_default_twice : click_submit_default
 
         expect(page).to have_current_path(sign_up_completed_path)
       end
@@ -39,7 +39,7 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
         expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
 
         fill_in_code_with_last_phone_otp
-        click_submit_default
+        protocol == :saml ? click_submit_default_twice : click_submit_default
 
         expect(page).to have_current_path(sign_up_completed_path)
       end
@@ -69,7 +69,7 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
           expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
 
           fill_in_code_with_last_phone_otp
-          click_submit_default
+          protocol == :saml ? click_submit_default_twice : click_submit_default
         end
 
         expect(page).to have_current_path(sign_up_completed_path)
@@ -85,7 +85,7 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
         expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
 
         fill_in_code_with_last_phone_otp
-        click_submit_default
+        protocol == :saml ? click_submit_default_twice : click_submit_default
 
         expect(page).to have_current_path(sign_up_completed_path)
       end

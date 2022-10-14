@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe Users::PasswordsController do
-  include Features::MailerHelper
-
   describe '#update' do
     context 'form returns success' do
       it 'redirects to profile and sends a password change email' do
@@ -63,16 +61,19 @@ describe Users::PasswordsController do
 
       it 'sends the user an email' do
         user = create(:user)
-        mail = double
-        expect(mail).to receive(:deliver_now_or_later)
-        expect(UserMailer).to receive(:password_changed).
-          with(user, user.email_addresses.first, hash_including(:disavowal_token)).
-          and_return(mail)
 
         stub_sign_in(user)
 
         params = { password: 'salty new password' }
         patch :update, params: { update_user_password_form: params }
+
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          0, {
+            to: [user.email_addresses.first.email],
+            subject: t('devise.mailer.password_updated.subject'),
+          }
+        )
       end
     end
 

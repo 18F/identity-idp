@@ -25,10 +25,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: f10c8ba1b4e10ba983a79b1d0fd39cadca95a728
-  tag: 0.17.0-18f
+  revision: 7f516c9e2c608ac92ee0c41daecfdb9208c7ec5a
+  tag: 0.18.0-18f
   specs:
-    saml_idp (0.17.0.pre.18f)
+    saml_idp (0.18.0.pre.18f)
       activesupport
       builder
       faraday
@@ -692,10 +692,10 @@ GEM
       openssl (~> 2.2)
       safety_net_attestation (~> 0.4.0)
       tpm-key_attestation (~> 0.10.0)
-    webdrivers (4.7.0)
+    webdrivers (5.2.0)
       nokogiri (~> 1.6)
       rubyzip (>= 1.3.0)
-      selenium-webdriver (> 3.141, < 5.0)
+      selenium-webdriver (~> 4.0)
     webmock (3.14.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
@@ -830,7 +830,7 @@ DEPENDENCIES
   valid_email (>= 0.1.3)
   view_component (~> 2.51.0)
   webauthn (~> 2.1)
-  webdrivers (~> 4.0)
+  webdrivers (~> 5.2.0)
   webmock
   xmldsig (~> 0.6)
   xmlenc (~> 0.7, >= 0.7.1)

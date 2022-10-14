@@ -81,4 +81,24 @@ describe('TroubleshootingOptions', () => {
     const tag = getByText('components.troubleshooting_options.new_feature');
     expect(tag.classList.contains('text-uppercase')).to.eq(true);
   });
+
+  it('renders with expected classes', () => {
+    const { container } = render(<TroubleshootingOptions {...DEFAULT_PROPS} />);
+
+    const element = container.firstElementChild!;
+
+    expect(element.classList.contains('troubleshooting-options')).to.be.true();
+    expect(element.classList.contains('troubleshooting-options--divider')).to.be.true();
+  });
+
+  context('with divider disabled', () => {
+    it('renders with expected classes', () => {
+      const { container } = render(<TroubleshootingOptions {...DEFAULT_PROPS} divider={false} />);
+
+      const element = container.firstElementChild!;
+
+      expect(element.classList.contains('troubleshooting-options')).to.be.true();
+      expect(element.classList.contains('troubleshooting-options--divider')).to.be.false();
+    });
+  });
 });
