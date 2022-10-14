@@ -1,11 +1,7 @@
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
-import { fireEvent } from '@testing-library/react';
-import httpUpload, {
-  UploadFormEntriesError,
-  toFormEntryError,
-} from '@18f/identity-document-capture/services/upload';
+import httpUpload from '@18f/identity-document-capture/services/upload';
 import {
   ServiceProviderContextProvider,
   UploadContextProvider,
@@ -119,42 +115,6 @@ describe('document-capture/components/document-capture', () => {
     const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
     window.dispatchEvent(event);
     expect(event.defaultPrevented).to.be.false();
-  });
-
-  it.skip('calls onStepChange callback on step changes', async () => {
-    // I believe this to be a selfie related test
-    const uploadError = new UploadFormEntriesError();
-    uploadError.formEntryErrors = [{ field: 'front', message: '' }].map(toFormEntryError);
-    const onStepChange = sinon.spy();
-    const { getByLabelText, getByText, getAllByText, findAllByText } = render(
-      <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-        <DocumentCapture onStepChange={onStepChange} />
-      </AcuantContextProvider>,
-      { uploadError },
-    );
-
-    const continueButton = getByText('forms.buttons.continue');
-    await userEvent.click(continueButton);
-    await findAllByText('simple_form.required.text');
-    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
-    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
-    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    await userEvent.click(continueButton);
-    expect(onStepChange.callCount).to.equal(1);
-
-    const submitButton = getByText('forms.buttons.submit.default');
-    await userEvent.click(submitButton);
-    expect(onStepChange.callCount).to.equal(1);
-    await findAllByText('simple_form.required.text');
-    const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
-    await fireEvent.change(selfieInput, { target: { files: validUpload } });
-    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    await userEvent.click(submitButton);
-    expect(onStepChange.callCount).to.equal(1);
-
-    await waitFor(() => expect(() => getAllByText('doc_auth.info.interstitial_eta')).to.throw());
-
-    expect(onStepChange.callCount).to.equal(1);
   });
 
   describe('pending promise values', () => {
