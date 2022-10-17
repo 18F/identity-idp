@@ -8,7 +8,7 @@ class SamlCompletionController < ApplicationController
   def index
     if sp_session.present?
       request_url = URI(sp_session[:request_url])
-      action_url =  api_saml_finalauthpost_url(path_year: params[:path_year])
+      action_url = api_saml_finalauthpost_url(path_year: params[:path_year])
 
       # Takes the query params which were set internally in the
       # sp_session (so they should always be valid).
