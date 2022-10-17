@@ -75,6 +75,7 @@ fr:
       download: Télécharger (fichier texte)
       instructions: Veuillez confirmer que vous avez une copie de votre clé
         personnelle en l’entrant ci-dessous.
+      required_checkbox: Veuillez cocher cette case pour continuer.
       title: Entrez votre clé personnelle
     personal_key_partial:
       acknowledgement:

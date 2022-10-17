@@ -74,6 +74,7 @@ es:
       download: Descargar (archivo de texto)
       instructions: Confirme que tiene una copia de su clave personal ingresándola a
         continuación.
+      required_checkbox: Marque esta casilla para continuar.
       title: Ingrese su clave personal
     personal_key_partial:
       acknowledgement:

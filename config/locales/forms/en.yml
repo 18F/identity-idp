@@ -68,6 +68,7 @@ en:
       confirmation_label: Personal key
       download: Download (text file)
       instructions: Please confirm you have a copy of your personal key by entering it below.
+      required_checkbox: Please check this box to continue.
       title: Enter your personal key
     personal_key_partial:
       acknowledgement:
