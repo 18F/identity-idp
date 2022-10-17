@@ -149,7 +149,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     else
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
         **enrollment_analytics_attributes(enrollment, complete: false),
-        **response_analytics_attributes(err.response),
+        **response_analytics_attributes(err.response&.[](:body)),
         reason: 'Request exception',
         exception_class: err.class.to_s,
         exception_message: err.message,
