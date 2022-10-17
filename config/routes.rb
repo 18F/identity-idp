@@ -19,7 +19,7 @@ Rails.application.routes.draw do
     match '/api/saml/logout(:path_year)' => 'saml_idp#logout', via: %i[get post delete]
     match '/api/saml/remotelogout(:path_year)' => 'saml_idp#remotelogout', via: %i[get post]
     # JS-driven POST redirect route to preserve existing session
-    post '/api/saml/auth(:path_year)' => 'saml_post#auth'
+    post '/api/saml/auth(:path_year)' => 'saml_post#auth', as: :api_saml_auth
     # actual SAML handling POST route
     post '/api/saml/authpost(:path_year)' => 'saml_idp#auth'
     # The internal auth post which will not be logged as an external request

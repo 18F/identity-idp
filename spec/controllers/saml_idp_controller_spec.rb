@@ -16,7 +16,7 @@ describe SamlIdpController do
         success: true,
       )
 
-      delete :logout
+      delete :logout, params: { path_year: '2022' }
     end
 
     it 'tracks the event when sp initiated' do
@@ -30,7 +30,7 @@ describe SamlIdpController do
         success: true,
       )
 
-      delete :logout, params: { SAMLRequest: 'foo' }
+      delete :logout, params: { SAMLRequest: 'foo', path_year: '2022' }
     end
 
     it 'tracks the event when the saml request is invalid' do
@@ -102,7 +102,10 @@ describe SamlIdpController do
         ),
       ).to eq(true)
 
-      delete :logout, params: payload.to_h.merge(Signature: Base64.encode64(signature))
+      delete :logout, params: payload.to_h.merge(
+        Signature: Base64.encode64(signature),
+        path_year: '2022',
+      )
 
       expect(response).to be_ok
     end
@@ -110,7 +113,7 @@ describe SamlIdpController do
     it 'rejects requests from a wrong cert' do
       delete :logout, params: UriService.params(
         OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
-      )
+      ).merge(path_year: '2022')
 
       expect(response).to be_bad_request
     end
@@ -123,7 +126,7 @@ describe SamlIdpController do
       result = { service_provider: nil, saml_request_valid: false }
       expect(@analytics).to receive(:track_event).with('Remote Logout initiated', result)
 
-      post :remotelogout, params: { SAMLRequest: 'foo' }
+      post :remotelogout, params: { SAMLRequest: 'foo', path_year: '2022' }
     end
 
     let(:agency) { create(:agency) }
@@ -252,7 +255,10 @@ describe SamlIdpController do
         ),
       ).to eq(true)
 
-      post :remotelogout, params: payload.to_h.merge(Signature: Base64.encode64(signature))
+      post :remotelogout, params: payload.to_h.merge(
+        Signature: Base64.encode64(signature),
+        path_year: '2022',
+      )
 
       expect(response).to be_ok
       expect(session_accessor.load).to be_empty
@@ -289,7 +295,10 @@ describe SamlIdpController do
         ),
       ).to eq(true)
 
-      post :remotelogout, params: payload.to_h.merge(Signature: Base64.encode64(signature))
+      post :remotelogout, params: payload.to_h.merge(
+        Signature: Base64.encode64(signature),
+        path_year: '2022',
+      )
 
       expect(response).to be_bad_request
     end
@@ -320,7 +329,10 @@ describe SamlIdpController do
         ),
       ).to eq(true)
 
-      post :remotelogout, params: payload.to_h.merge(Signature: Base64.encode64(signature))
+      post :remotelogout, params: payload.to_h.merge(
+        Signature: Base64.encode64(signature),
+        path_year: '2022',
+      )
 
       expect(response).to be_bad_request
     end
@@ -351,7 +363,10 @@ describe SamlIdpController do
         ),
       ).to eq(true)
 
-      post :remotelogout, params: payload.to_h.merge(Signature: Base64.encode64(signature))
+      post :remotelogout, params: payload.to_h.merge(
+        Signature: Base64.encode64(signature),
+        path_year: '2022',
+      )
 
       expect(response).to be_bad_request
     end
@@ -359,7 +374,7 @@ describe SamlIdpController do
     it 'rejects requests from a wrong cert' do
       post :remotelogout, params: UriService.params(
         OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
-      )
+      ).merge(path_year: '2022')
 
       expect(response).to be_bad_request
     end
@@ -367,7 +382,7 @@ describe SamlIdpController do
 
   describe '/api/saml/metadata' do
     before do
-      get :metadata
+      get :metadata, params: { path_year: '2022' }
     end
 
     let(:org_name) { 'login.gov' }
@@ -1983,7 +1998,7 @@ describe SamlIdpController do
         expect(@analytics).to receive(:track_event).
           with('SAML Auth', analytics_hash)
 
-        get :auth
+        get :auth, params: { path_year: '2022' }
       end
     end
 

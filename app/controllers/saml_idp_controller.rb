@@ -90,7 +90,7 @@ class SamlIdpController < ApplicationController
   end
 
   def saml_metadata
-    SamlEndpoint.new(request).saml_metadata
+    SamlEndpoint.new(params[:path_year]).saml_metadata
   end
 
   def redirect_to_verification_url
@@ -115,7 +115,7 @@ class SamlIdpController < ApplicationController
 
   def capture_analytics
     analytics_payload = @result.to_h.merge(
-      endpoint: remap_auth_post_path(request.env['PATH_INFO']),
+      endpoint: api_saml_auth_path(path_year: params[:path_year]),
       idv: identity_needs_verification?,
       finish_profile: profile_needs_verification?,
       requested_ial: requested_ial,
