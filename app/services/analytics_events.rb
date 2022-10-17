@@ -2796,7 +2796,7 @@ module AnalyticsEvents
   # key creation
   # @param [boolean] checked whether the user checked or un-checked
   #                  the box with this click
-  def personal_key_acknowledgment_toggled(checked:, **extra)
+  def idv_personal_key_acknowledgment_toggled(checked:, **extra)
     track_event('IdV: personal key acknowledgment toggled', checked: checked, **extra)
   end
 end
