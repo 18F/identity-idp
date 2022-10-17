@@ -39,6 +39,7 @@ feature 'Analytics Regression', js: true do
       'IdV: final resolution' => { success: true },
       'IdV: personal key visited' => {},
       'IdV: personal key submitted' => {},
+      'IdV: personal key acknowledgment toggled' => {},
     }
   end
   let(:gpo_path_events) do
