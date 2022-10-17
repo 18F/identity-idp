@@ -27,6 +27,10 @@ module Idv
           elsif current_async_state.missing?
             flash[:error] = I18n.t('idv.failure.timeout')
             # Need to add path to error pages once they exist
+            # LG-7257
+            # This method overrides VerifyBaseStep#process_async_state:
+            # See the VerifyBaseStep#process_async_state "elsif current_async_state.missing?"
+            # logic as to what is typically needed/performed when hitting this logic path.
           elsif current_async_state.done?
             async_state_done(current_async_state)
           end
