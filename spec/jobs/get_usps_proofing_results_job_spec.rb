@@ -46,15 +46,15 @@ RSpec.shared_examples 'enrollment with a status update' do |passed:, status:, re
       freeze_time do
         job.perform(Time.zone.now)
         expect(job_analytics).to have_logged_event(
-        'GetUspsProofingResultsJob: Success or failure email initiated',
-        timestamp: Time.zone.now,
-        user_id: pending_enrollment.user_id,
-        service_provider: pending_enrollment.issuer,
-        delay_time_seconds: 3600
-      )
+          'GetUspsProofingResultsJob: Success or failure email initiated',
+          timestamp: Time.zone.now,
+          user_id: pending_enrollment.user_id,
+          service_provider: pending_enrollment.issuer,
+          delay_time_seconds: 3600,
+        )
+      end
     end
   end
-end
 
   it 'updates the status of the enrollment and profile appropriately' do
     freeze_time do
