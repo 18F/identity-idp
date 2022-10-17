@@ -2792,8 +2792,12 @@ module AnalyticsEvents
     track_event('Show Password Button Clicked', path: path, **extra)
   end
 
-  def personal_key_acknowledgment_toggled(path:, **extra)
-    track_event('Personal key acknowledgment checkbox toggled', path: path, **extra)
+  # Tracks if a user clicks the 'acknowledge' checkbox during personal
+  # key creatino
+  # @param [boolean] Whether the user checked or un-checked the box
+  #                  with this click
+  def personal_key_acknowledgment_toggled(checked:, **extra)
+    track_event('Personal key acknowledgment checkbox toggled', checked: checked, **extra)
   end
 end
 # rubocop:enable Metrics/ModuleLength
