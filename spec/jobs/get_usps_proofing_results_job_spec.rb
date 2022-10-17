@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.shared_examples 'enrollment with a status update' do |passed:, status:, response_json:|
+RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, response_json:|
   it 'logs a message with common attributes' do
     freeze_time do
       pending_enrollment.update(
@@ -75,7 +75,7 @@ RSpec.shared_examples 'enrollment with a status update' do |passed:, status:, re
   end
 end
 
-RSpec.shared_examples 'enrollment encountering an exception' do |exception_class: nil,
+RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class: nil,
                                                                 exception_message: nil,
                                                                 reason: 'Request exception'|
   it 'logs an error message and leaves the enrollment and profile pending' do
@@ -111,7 +111,7 @@ RSpec.shared_examples 'enrollment encountering an exception' do |exception_class
   end
 end
 
-RSpec.shared_examples 'enrollment encountering an error that has a nil response' do |error_type:|
+RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response' do |error_type:|
   it 'logs that response is not present' do
     expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(error_type))
 
@@ -399,7 +399,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it_behaves_like(
-          'enrollment with a status update',
+          'enrollment_with_a_status_update',
           passed: true,
           status: 'passed',
           response_json: UspsInPersonProofing::Mock::Fixtures.
@@ -426,7 +426,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it_behaves_like(
-          'enrollment with a status update',
+          'enrollment_with_a_status_update',
           passed: false,
           status: 'failed',
           response_json: UspsInPersonProofing::Mock::Fixtures.
@@ -478,7 +478,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it_behaves_like(
-          'enrollment with a status update',
+          'enrollment_with_a_status_update',
           passed: false,
           status: 'failed',
           response_json: UspsInPersonProofing::Mock::Fixtures.
@@ -501,7 +501,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it_behaves_like(
-          'enrollment with a status update',
+          'enrollment_with_a_status_update',
           passed: false,
           status: 'expired',
           response_json: UspsInPersonProofing::Mock::Fixtures.
@@ -524,7 +524,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it_behaves_like(
-          'enrollment encountering an exception',
+          'enrollment_encountering_an_exception',
           reason: 'Bad response structure',
         )
       end
@@ -535,7 +535,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it_behaves_like(
-          'enrollment encountering an exception',
+          'enrollment_encountering_an_exception',
           reason: 'Unsupported status',
         )
 
@@ -557,7 +557,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it_behaves_like(
-          'enrollment encountering an exception',
+          'enrollment_encountering_an_exception',
           exception_class: 'Faraday::ParsingError',
           exception_message: /unexpected token at 'invalid'$/,
         )
@@ -569,7 +569,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it_behaves_like(
-          'enrollment encountering an exception',
+          'enrollment_encountering_an_exception',
           exception_class: 'Faraday::BadRequestError',
           exception_message: 'the server responded with status 400',
         )
@@ -581,7 +581,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it_behaves_like(
-          'enrollment encountering an exception',
+          'enrollment_encountering_an_exception',
           exception_class: 'Faraday::ServerError',
           exception_message: 'the server responded with status 500',
         )
@@ -620,7 +620,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it_behaves_like(
-          'enrollment encountering an error that has a nil response',
+          'enrollment_encountering_an_error_that_has_a_nil_response',
           error_type: Faraday::TimeoutError,
         )
       end
@@ -631,7 +631,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it_behaves_like(
-          'enrollment encountering an error that has a nil response',
+          'enrollment_encountering_an_error_that_has_a_nil_response',
           error_type: Faraday::NilStatusError,
         )
       end
@@ -642,7 +642,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it_behaves_like(
-          'enrollment encountering an error that has a nil response',
+          'enrollment_encountering_an_error_that_has_a_nil_response',
           error_type: Faraday::ServerError,
         )
       end
