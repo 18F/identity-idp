@@ -2797,7 +2797,7 @@ module AnalyticsEvents
   # @param [boolean] checked whether the user checked or un-checked
   #                  the box with this click
   def personal_key_acknowledgment_toggled(checked:, **extra)
-    track_event('IdV: Personal key acknowledgment toggled', checked: checked, **extra)
+    track_event('IdV: personal key acknowledgment toggled', checked: checked, **extra)
   end
 end
 # rubocop:enable Metrics/ModuleLength
