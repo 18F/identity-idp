@@ -24,7 +24,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       timestamp: Time.zone.now,
       user_id: enrollment.user_id,
       service_provider: enrollment.issuer,
-      delay_time_amount: delay_time,
+      delay_time_seconds: delay_time,
     }
   end
 
@@ -219,6 +219,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def handle_failed_status(enrollment, response)
     enrollment_outcomes[:enrollments_failed] += 1
+    wait_time = mail_delivery_params[:wait]
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(response),
@@ -230,13 +231,13 @@ class GetUspsProofingResultsJob < ApplicationJob
     if response['fraudSuspected']
       send_failed_fraud_email(enrollment.user, enrollment)
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
-        **email_analytics_attributes(enrollment, **mail_delivery_params),
+        **email_analytics_attributes(enrollment, wait_time),
         email_version: 'Failed fraud suspected email version',
       )
     else
       send_failed_email(enrollment.user, enrollment)
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
-        **email_analytics_attributes(enrollment, **mail_delivery_params),
+        **email_analytics_attributes(enrollment, wait_time),
         email_version: 'Failed email version',
       )
     end
@@ -244,6 +245,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def handle_successful_status_update(enrollment, response)
     enrollment_outcomes[:enrollments_passed] += 1
+    wait_time = mail_delivery_params[:wait]
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(**response),
@@ -252,7 +254,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       reason: 'Successful status update',
     )
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
-      **email_analytics_attributes(enrollment, **mail_delivery_params),
+      **email_analytics_attributes(enrollment, wait_time),
       email_version: 'Success email version',
     )
     enrollment.profile.activate

@@ -50,7 +50,7 @@ RSpec.shared_examples 'enrollment with a status update' do |passed:, status:, re
         timestamp: Time.zone.now,
         user_id: pending_enrollment.user_id,
         service_provider: pending_enrollment.issuer,
-        delay_time_amount: {wait: 1.hour}
+        delay_time_seconds: 3600
       )
     end
   end
