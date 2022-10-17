@@ -8,6 +8,11 @@ AO:
   supports_voice: false
 AR:
   supports_voice: false
+AS:
+  country_code: '1684'
+  name: American Samoa
+  supports_sms: false
+  supports_voice: true
 AT:
   supports_voice: false
 AU:
@@ -123,7 +128,7 @@ ML:
 MP:
   country_code: '1'
   name: Northern Mariana Islands
-  supports_sms: true
+  supports_sms: false
   supports_voice: true
 MX:
   supports_voice: false
