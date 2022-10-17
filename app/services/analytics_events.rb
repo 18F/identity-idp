@@ -2793,7 +2793,7 @@ module AnalyticsEvents
   end
 
   # Tracks if a user clicks the 'acknowledge' checkbox during personal
-  # key creatino
+  # key creation
   # @param [boolean] checked whether the user checked or un-checked
   #                  the box with this click
   def personal_key_acknowledgment_toggled(checked:, **extra)
