@@ -59,11 +59,6 @@ class SamlEndpoint
   end
 
   def suffix
-    @suffix ||= begin
-      suffixes = self.class.endpoint_configs.pluck(:suffix)
-      suffixes.find do |suffix|
-        request.path.match(/(metadata|auth(post)?|logout)#{suffix}$/)
-      end
-    end
+    params[:path_year]
   end
 end
