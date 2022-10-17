@@ -15,6 +15,26 @@ RSpec.describe InheritedProofingConcern do
   let(:auth_code) { Idv::InheritedProofing::Va::Mocks::Service::VALID_AUTH_CODE }
   let(:payload_hash) { Idv::InheritedProofing::Va::Mocks::Service::PAYLOAD_HASH }
 
+  describe '#inherited_proofing_service_provider_id' do
+    context 'when the service provider id can be identified' do
+      it 'returns the service provider id as a Symbol' do
+        expect(subject.inherited_proofing_service_provider_id).to eq \
+          Idv::InheritedProofing::ServiceProviders::VA
+      end
+    end
+
+    context 'when the service provider id cannot be identified' do
+      before do
+        allow(subject).to receive(:va_inherited_proofing_auth_code).and_return nil
+      end
+
+      it 'raises an error' do
+        expected_error = 'Inherited proofing service id could not be identified'
+        expect { subject.inherited_proofing_service_provider_id }.to raise_error expected_error
+      end
+    end
+  end
+
   describe '#va_inherited_proofing?' do
     context 'when the va auth code is present' do
       it 'returns true' do
