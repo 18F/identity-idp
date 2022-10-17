@@ -22,9 +22,7 @@ module UspsInPersonProofing
 
       def send_ready_to_verify_email(user, enrollment)
         user.confirmed_email_addresses.each do |email_address|
-          UserMailer.in_person_ready_to_verify(
-            user,
-            email_address,
+          UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
             enrollment: enrollment,
           ).deliver_now_or_later
         end

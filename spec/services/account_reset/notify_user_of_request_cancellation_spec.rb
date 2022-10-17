@@ -10,18 +10,21 @@ describe AccountReset::NotifyUserOfRequestCancellation do
       email_address1 = user.email_addresses.first
       email_address2 = create(:email_address, user: user)
 
-      mail1 = double
-      mail2 = double
-
-      expect(UserMailer).to receive(:account_reset_cancel).
-        with(user, email_address1).and_return(mail1)
-      expect(UserMailer).to receive(:account_reset_cancel).
-        with(user, email_address2).and_return(mail2)
-
-      expect(mail1).to receive(:deliver_now_or_later)
-      expect(mail2).to receive(:deliver_now_or_later)
-
       subject.call
+
+      expect_delivered_email_count(2)
+      expect_delivered_email(
+        0, {
+          to: [email_address1.email],
+          subject: t('user_mailer.account_reset_cancel.subject'),
+        }
+      )
+      expect_delivered_email(
+        1, {
+          to: [email_address2.email],
+          subject: t('user_mailer.account_reset_cancel.subject'),
+        }
+      )
     end
 
     it 'sends a text to all of the user phone numbers' do

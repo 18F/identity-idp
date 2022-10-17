@@ -8,14 +8,7 @@ class FrontendLogger
 
   def track_event(name, attributes)
     if (analytics_method = event_map[name])
-      if analytics_method.is_a?(Proc)
-        analytics_method.call(analytics, **attributes)
-      else
-        analytics_method.bind_call(
-          analytics,
-          **hash_from_method_kwargs(attributes, analytics_method),
-        )
-      end
+      analytics_method.bind_call(analytics, **hash_from_method_kwargs(attributes, analytics_method))
     else
       analytics.track_event("Frontend: #{name}", attributes)
     end

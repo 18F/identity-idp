@@ -35,8 +35,9 @@ feature 'signing into an SP with multiple emails enabled' do
         visit authn_request
         signin(email, user.password)
         fill_in_code_with_last_phone_otp
-        click_submit_default
+        click_submit_default_twice
         click_agree_and_continue if current_path == sign_up_completed_path
+        click_submit_default
 
         xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
         email_from_saml_response = xmldoc.attribute_value_for('email')
@@ -83,8 +84,9 @@ feature 'signing into an SP with multiple emails enabled' do
       visit authn_request(settings)
       signin(emails.first, user.password)
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_submit_default_twice
       click_agree_and_continue
+      click_submit_default
 
       xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
 

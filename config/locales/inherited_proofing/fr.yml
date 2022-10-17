@@ -3,6 +3,24 @@ fr:
   inherited_proofing:
     buttons:
       continue: Continuer
+    cancel:
+      actions:
+        keep_going: Non, continuer
+        start_over: Recommencer
+      description:
+        start_over: Si vous recommencez, vous reprendrez ce processus depuis le début et
+          les informations que vous avez saisies ne seront pas enregistrées.
+      headings:
+        confirmation:
+          hybrid: Vous avez annulé le téléchargement de vos photos d’identité sur ce
+            téléphone
+        prompt:
+          standard: Annuler la vérification de votre identité?
+        start_over: Recommencez la vérification de votre identité
+      instructions:
+        switch_back: Retournez sur votre ordinateur pour continuer à vérifier votre
+          identité.
+        switch_back_image: Flèche pointant du téléphone vers l’ordinateur
     headings:
       lets_go: to be implemented
       retrieval: Nous récupérons vos informations depuis My HealtheVet.

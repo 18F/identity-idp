@@ -18,9 +18,9 @@ describe 'redirect_uri validation' do
 
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_submit_default_twice
       click_agree_and_continue
-      click_submit_default
+      click_submit_default_twice
 
       expect(current_url).to eq sp.acs_url
     end

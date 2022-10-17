@@ -1,0 +1,8 @@
+<% title t('titles.inherited_proofing.cancelled') %>
+
+<%= render StatusPageComponent.new(status: :error) do |c| %>
+  <% c.header { t('inherited_proofing.cancel.headings.confirmation.hybrid') } %>
+
+  <p><%= t('inherited_proofing.cancel.instructions.switch_back') %></p>
+  <%= image_tag(asset_url('inherited_proofing/switch.png'), width: 193, alt: t('inherited_proofing.cancel.instructions.switch_back_image')) %>
+<% end %>

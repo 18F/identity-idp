@@ -25,10 +25,6 @@ describe 'Add a new phone number' do
     user = create(:user, :signed_up)
     phone = '+1 (225) 278-1234'
 
-    expect(UserMailer).to receive(:phone_added).
-      with(user, user.email_addresses.first, hash_including(:disavowal_token)).
-      and_call_original
-
     sign_in_and_2fa_user(user)
     within('.sidenav') do
       click_on t('account.navigation.add_phone_number')
@@ -37,6 +33,14 @@ describe 'Add a new phone number' do
     click_continue
     fill_in_code_with_last_phone_otp
     click_submit_default
+
+    expect_delivered_email_count(1)
+    expect_delivered_email(
+      0, {
+        to: [user.email_addresses.first.email],
+        subject: t('user_mailer.phone_added.subject'),
+      }
+    )
   end
 
   scenario 'adding a new phone number validates number', js: true do

@@ -94,18 +94,15 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
       end
 
       it 'sends verification emails' do
-        mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
-        user.email_addresses.each do |email_address|
-          expect(UserMailer).to receive(:in_person_ready_to_verify).
-            with(
-              user,
-              email_address,
-              enrollment: instance_of(InPersonEnrollment),
-            ).
-            and_return(mailer)
-        end
-
         subject.schedule_in_person_enrollment(user, pii)
+
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          0, {
+            to: [user.email_addresses.first.email],
+            subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
+          }
+        )
       end
     end
   end
