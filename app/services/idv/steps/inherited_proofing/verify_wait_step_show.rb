@@ -17,7 +17,10 @@ module Idv
 
         def process_async_state(current_async_state)
           if current_async_state.none?
-            inherited_proofing_save_user_pii_to_session!
+            if inherited_proofing_form_response.success?
+              mark_step_complete(:verify_wait)
+              inherited_proofing_save_user_pii_to_session!
+            end
             inherited_proofing_form_response
           elsif current_async_state.in_progress?
             nil
