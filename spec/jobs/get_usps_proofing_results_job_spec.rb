@@ -77,7 +77,8 @@ end
 
 RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class: nil,
                                                                 exception_message: nil,
-                                                                reason: 'Request exception'|
+                                                                reason: 'Request exception',
+                                                                response_message: ''|
   it 'logs an error message and leaves the enrollment and profile pending' do
     job.perform(Time.zone.now)
     pending_enrollment.reload
@@ -108,6 +109,15 @@ RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class
       expect(pending_enrollment.status_updated_at).to eq(Time.zone.now - 2.days)
       expect(pending_enrollment.status_check_attempted_at).to eq(Time.zone.now)
     end
+  end
+
+  it 'logs the expected error message' do
+    job.perform(Time.zone.now)
+
+    expect(job_analytics).to have_logged_event(
+      'GetUspsProofingResultsJob: Exception raised',
+      response_message: response_message,
+    )
   end
 end
 
@@ -565,13 +575,17 @@ RSpec.describe GetUspsProofingResultsJob do
 
       context 'when USPS returns a 4xx status code' do
         before(:each) do
-          stub_request_proofing_results_with_responses({ status: 400 })
+          stub_request_proofing_results_with_responses({
+            status: 400,
+            body: { 'responseMessage' => 'Applicant does not exist' }.to_json,
+          })
         end
 
         it_behaves_like(
           'enrollment_encountering_an_exception',
           exception_class: 'Faraday::BadRequestError',
           exception_message: 'the server responded with status 400',
+          response_message: 'Applicant does not exist',
         )
       end
 
