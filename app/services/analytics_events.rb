@@ -2791,5 +2791,9 @@ module AnalyticsEvents
   def show_password_button_clicked(path:, **extra)
     track_event('Show Password Button Clicked', path: path, **extra)
   end
+
+  def personal_key_acknowledgment_toggled(path:, **extra)
+    track_event('Personal key acknowledgment checkbox toggled', path: path, **extra)
+  end
 end
 # rubocop:enable Metrics/ModuleLength
