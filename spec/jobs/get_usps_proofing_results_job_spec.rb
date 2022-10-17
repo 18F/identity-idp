@@ -427,7 +427,7 @@ RSpec.describe GetUspsProofingResultsJob do
           )
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Success or failure email initiated',
-            email_version: 'Success email version',
+            email_type: 'Success email type',
           )
         end
       end
@@ -453,7 +453,7 @@ RSpec.describe GetUspsProofingResultsJob do
           )
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Success or failure email initiated',
-            email_version: 'Failed email version',
+            email_type: 'Failed email type',
           )
         end
       end
@@ -479,7 +479,7 @@ RSpec.describe GetUspsProofingResultsJob do
           )
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Success or failure email initiated',
-            email_version: 'Failed fraud suspected email version',
+            email_type: 'Failed fraud suspected email type',
           )
         end
       end

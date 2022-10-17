@@ -2767,14 +2767,14 @@ module AnalyticsEvents
   end
 
   # Tracks emails that are initiated during GetUspsProofingResultsJob
-  # @param [String] email_version success, failed or failed fraud
+  # @param [String] email_type success, failed or failed fraud
   def idv_in_person_usps_proofing_results_job_email_initiated(
-    email_version:,
+    email_type:,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: Success or failure email initiated',
-      email_version: email_version,
+      email_type: email_type,
       **extra,
     )
   end
