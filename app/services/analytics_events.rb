@@ -2794,8 +2794,8 @@ module AnalyticsEvents
 
   # Tracks if a user clicks the 'acknowledge' checkbox during personal
   # key creatino
-  # @param [boolean] Whether the user checked or un-checked the box
-  #                  with this click
+  # @param [boolean] checked whether the user checked or un-checked
+  #                  the box with this click
   def personal_key_acknowledgment_toggled(checked:, **extra)
     track_event('Personal key acknowledgment checkbox toggled', checked: checked, **extra)
   end
