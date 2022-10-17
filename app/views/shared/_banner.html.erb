@@ -56,7 +56,6 @@
       </div>
     </div>
     <%= render 'shared/banner_ie_not_supported' if @browser_is_ie11 %>
-    <%= render 'shared/no_pii_banner' if FeatureManagement.show_no_pii_banner? %>
   </section>
   <div class="page-header<%= ' page-header--basic' if !content_for?(:header) %>">
     <% if content_for?(:header) %>
