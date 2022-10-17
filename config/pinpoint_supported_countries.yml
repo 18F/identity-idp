@@ -483,7 +483,7 @@ JP:
   country_code: '81'
   name: Japan
   supports_sms: true
-  supports_voice: true
+  supports_voice: false
 KE:
   country_code: '254'
   name: Kenya
