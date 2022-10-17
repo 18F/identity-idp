@@ -3,7 +3,7 @@ module Idv
     include IdvSession
     include GoBackHelper
     include InheritedProofing404Concern
-    include AllowWhitelistedFlowStepConcern
+    include AllowlistedFlowStepConcern
 
     before_action :confirm_idv_needed
 
@@ -25,6 +25,7 @@ module Idv
     end
 
     def destroy
+      # NOTE: Uncomment this when analytics are implemented.
       # analytics.idv_inherited_proofing_cancellation_confirmed(step: params[:step])
       cancel_session
       render json: { redirect_url: cancelled_redirect_path }
@@ -52,6 +53,10 @@ module Idv
       account_path
     end
 
+    def location_params
+      params.permit(:step, :location).to_h.symbolize_keys
+    end
+
     def session_go_back_path=(path)
       idv_session.go_back_path = path
     end
@@ -60,22 +65,10 @@ module Idv
       idv_session.go_back_path
     end
 
-    # AllowWhitelistedFlowStepConcern Concern overrides
+    # AllowlistedFlowStepConcern Concern overrides
 
-    def flow_step_whitelist
-      Idv::Flows::InheritedProofingFlow::STEPS.keys
-    end
-
-    # IdvSession Concern overrides
-
-    def confirm_idv_vendor_session_started
-      return if flash[:allow_confirmations_continue]
-
-      redirect_to idv_inherited_proofing_url unless idv_session.proofing_started?
-    end
-
-    def hybrid_session?
-      false
+    def flow_step_allowlist
+      @flow_step_allowlist ||= Idv::Flows::InheritedProofingFlow::STEPS.keys.map(&:to_s)
     end
 
     # NOTE: Override and use Inherited Proofing (IP)-specific :throttle_type
