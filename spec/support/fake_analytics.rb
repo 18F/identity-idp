@@ -81,7 +81,7 @@ class FakeAnalytics < Analytics
 
   def track_event(event, attributes = {})
     events[event] ||= []
-    events[event] << attributes.as_json
+    events[event] << attributes
     nil
   end
 
@@ -102,13 +102,12 @@ end
 
 RSpec::Matchers.define :have_logged_event do |event_name, attributes|
   attributes ||= {}
-  attributes = attributes.as_json
 
   match do |actual|
     if RSpec::Support.is_a_matcher?(attributes)
       expect(actual.events[event_name]).to include(attributes)
     else
-      expect(actual.events[event_name]).to(be_any { |event| attributes <= event })
+      expect(actual.events[event_name]).to(be_any { |event| attributes.as_json <= event.as_json })
     end
   end
 
