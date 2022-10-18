@@ -41,7 +41,7 @@ module Idv
       end
     end
 
-    def self.included(mod)
+    def self.included(_mod)
       raise 'this mixin is intended to be prepended, not included'
     end
 
