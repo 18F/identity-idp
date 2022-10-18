@@ -249,16 +249,9 @@ describe ApplicationController do
         allow(controller).to receive(:analytics_user).and_return(user)
         allow(controller).to receive(:current_sp).and_return(sp)
 
-        analytics = instance_double(Analytics, decorate: nil)
         expect(Analytics).to receive(:new).
-          with(
-            user: user,
-            request: request,
-            sp: sp.issuer,
-            session: match_array({}),
-            ahoy: controller.ahoy,
-          ).
-          and_return(analytics)
+          with(user: user, request: request, sp: sp.issuer, session: match_array({}),
+               ahoy: controller.ahoy)
 
         controller.analytics
       end
@@ -271,16 +264,9 @@ describe ApplicationController do
         user = instance_double(AnonymousUser)
         allow(AnonymousUser).to receive(:new).and_return(user)
 
-        analytics = instance_double(Analytics, decorate: nil)
         expect(Analytics).to receive(:new).
-          with(
-            user: user,
-            request: request,
-            sp: nil,
-            session: match_array({}),
-            ahoy: controller.ahoy,
-          ).
-          and_return(analytics)
+          with(user: user, request: request, sp: nil, session: match_array({}),
+               ahoy: controller.ahoy)
 
         controller.analytics
       end
