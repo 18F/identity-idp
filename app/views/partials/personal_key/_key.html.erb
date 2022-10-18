@@ -1,7 +1,4 @@
 <div class="border-y border-primary-light bg-primary-lightest padding-y-3 text-center">
-  <h2 class="margin-y-0">
-    <%= t('users.personal_key.header') %>
-  </h2>
   <div class="bg-personal-key padding-top-4 margin-y-2">
     <div class="personal-key-block">
       <% code.split('-').each do |word| %>
@@ -9,10 +6,37 @@
       <% end %>
     </div>
   </div>
-  <p class="margin-y-0">
+  <p class="margin-bottom-105">
     <%= t(
           'users.personal_key.generated_on_html',
           date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')),
         ) %>
   </p>
+
+  <%= render ClipboardButtonComponent.new(
+        clipboard_text: code,
+        unstyled: true,
+      ) %>
+
+  <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+          link_to(
+            "data:text/plain;charset=utf-8,#{CGI.escape(code)}",
+            download: 'personal_key.txt',
+            **tag_options,
+            &block
+          )
+        end,
+        icon: :file_download,
+        unstyled: true,
+        class: 'margin-x-2 display-inline-block',
+      ).with_content(t('forms.personal_key.download')) %>
+
+  <%= render PrintButtonComponent.new(
+        icon: :print,
+        unstyled: true,
+        type: :button,
+        class: 'margin-right-2 margin-bottom-2 tablet:margin-bottom-0',
+      ) %>
+
 </div>

@@ -1,51 +1,43 @@
-<%= render PageHeadingComponent.new.with_content(t('headings.personal_key')) %>
-<p>
-  <%= t('instructions.personal_key.info') %>
-</p>
+<%= render PageHeadingComponent.new.with_content(t('forms.personal_key_partial.header')) %>
 <div class="full-width-box margin-y-5">
   <%= render 'partials/personal_key/key', code: code %>
 </div>
-<%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        link_to(
-          "data:text/plain;charset=utf-8,#{CGI.escape(code)}",
-          download: 'personal_key.txt',
-          **tag_options,
-          &block
-        )
-      end,
-      icon: :file_download,
-      outline: true,
-      class: 'margin-right-2 margin-bottom-2 tablet:margin-bottom-0',
-    ).with_content(t('forms.backup_code.download')) %>
-<%= render PrintButtonComponent.new(
-      icon: :print,
-      outline: true,
-      type: :button,
-      class: 'margin-right-2 margin-bottom-2 tablet:margin-bottom-0',
-    ) %>
-<%= render ClipboardButtonComponent.new(
-      clipboard_text: code,
-      outline: true,
-      class: 'margin-bottom-2 tablet:margin-bottom-0',
-    ) %>
-<div class="margin-y-5 clearfix">
-  <%= image_tag(
-        asset_url('alert/icon-lock-alert-important.svg'),
-        alt: '',
-        size: '80',
-        class: 'float-left margin-right-2',
-      ) %>
-  <p class="margin-bottom-0">
-    <strong><%= t('instructions.personal_key.email_title') %></strong>
+
+<%= render AccordionComponent.new do |c| %>
+  <% c.header { t('forms.personal_key_partial.explanation.header') } %>
+  <% t('forms.personal_key_partial.explanation.text').each do |paragraph| %>
+    <p><%= paragraph %></p>
+  <% end %>
+<% end %>
+
+<%= simple_form_for('', url: update_path) do |f| %>
+  <p>
+    <strong>
+      <%= t('forms.personal_key_partial.acknowledgement.header') %>
+    </strong>
   </p>
-  <p><%= t('instructions.personal_key.email_body') %></p>
-</div>
-<%= button_to(
-      t('forms.buttons.continue'),
-      update_path,
-      class: 'display-block usa-button usa-button--big usa-button--wide personal-key-continue margin-top-5',
-      'data-toggle': FeatureManagement.idv_personal_key_confirmation_enabled? ? 'modal' : 'skip',
-    ) %>
-<%= render 'shared/personal_key_confirmation_modal', code: code, update_path: update_path %>
+
+  <p class="margin-bottom-0">
+    <%= t('forms.personal_key_partial.acknowledgement.text') %>
+  </p>
+
+  <ul>
+    <% t('forms.personal_key_partial.acknowledgement.bullets').each do |bullet| %>
+      <li><%= bullet %></li>
+    <% end %>
+  </ul>
+
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :acknowledgment,
+        as: :boolean,
+        label: t('forms.personal_key.required_checkbox'),
+        label_html: { class: 'margin-bottom-105' },
+        required: true,
+      ) %>
+
+
+  <%= f.submit(t('forms.buttons.continue'), full_width: true, class: 'margin-top-3') %>
+<% end %>
+
 <%== javascript_packs_tag_once 'personal-key-page-controller' %>

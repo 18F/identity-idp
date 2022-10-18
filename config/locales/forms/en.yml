@@ -66,8 +66,27 @@ en:
     personal_key:
       alternative: Don’t have your personal key?
       confirmation_label: Personal key
+      download: Download (text file)
       instructions: Please confirm you have a copy of your personal key by entering it below.
+      required_checkbox: Please check this box to continue.
       title: Enter your personal key
+    personal_key_partial:
+      acknowledgement:
+        bullets:
+          - You’ll lose access to your account
+          - You’ll need to verify your identity again
+        header: You need your personal key if you forget your password. Keep it safe and
+          don’t share it with anyone.
+        text: 'If you reset your password without your personal key:'
+      explanation:
+        header: What is a personal key?
+        text:
+          - A personal key “locks” your personal information with your account.
+            It’s the only way to unlock your information if you lose or forget
+            your password.
+          - When you reset your password, Login.gov will ask for your personal
+            key to make sure you are you - not someone pretending to be you.
+      header: Save your personal key
     phone:
       buttons:
         delete: Remove phone
