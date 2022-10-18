@@ -80,7 +80,6 @@ describe Idv::PhoneErrorsController do
           'IdV: phone error visited',
           type: action,
           remaining_attempts: 4,
-          proofing_components: nil,
         )
       end
     end
@@ -133,7 +132,6 @@ describe Idv::PhoneErrorsController do
           'IdV: phone error visited',
           type: action,
           remaining_attempts: 4,
-          proofing_components: nil,
         )
       end
     end
@@ -172,7 +170,6 @@ describe Idv::PhoneErrorsController do
             'IdV: phone error visited',
             type: action,
             throttle_expires_at: attempted_at + throttle_window,
-            proofing_components: nil,
           )
         end
       end
