@@ -2,7 +2,7 @@
 
 class Analytics
   include AnalyticsEvents
-  include Idv::AnalyticsEventsEnhancer
+  prepend Idv::AnalyticsEventsEnhancer
 
   attr_reader :user, :request, :sp, :ahoy
 
