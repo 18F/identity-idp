@@ -148,7 +148,7 @@ module UspsInPersonProofing
       retrieve_token! unless token_valid?
 
       {
-        'Authorization' => @@token,
+        'Authorization' => token,
         'RequestID' => request_id,
       }
     end
