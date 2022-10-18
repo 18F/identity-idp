@@ -10,8 +10,8 @@ RSpec.describe UspsInPersonProofing::Proofer do
       stub_request_token
       subject.retrieve_token!
 
-      expect(subject.class.token).to be_present
-      expect(subject.class.token_expires_at).to be_present
+      expect(subject.token).to be_present
+      expect(subject.token_expires_at).to be_present
     end
 
     it 'calls the endpoint with the expected params' do
