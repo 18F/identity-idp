@@ -2,7 +2,8 @@ class SessionEncryptor
   class SensitiveKeyError < StandardError; end
 
   class SensitiveValueError < StandardError; end
-  NEW_CIPHERTEXT_HEADER = 'v2'
+  CIPHERTEXT_HEADER = 'v3'
+  MINIMUM_COMPRESS_LIMIT = 300
   SENSITIVE_KEYS = [
     'first_name', 'middle_name', 'last_name', 'address1', 'address2', 'city', 'state', 'zipcode',
     'zip_code', 'same_address_as_id', 'dob', 'phone_number', 'phone', 'ssn', 'prev_address1',
@@ -37,25 +38,53 @@ class SessionEncryptor
   def load(value)
     return LegacySessionEncryptor.new.load(value) if should_use_legacy_encryptor_for_read?(value)
 
-    _v2, ciphertext = value.split(':')
+    payload = MessagePack.unpack(value)
+    ciphertext = payload['t']
+    compressed = payload['c']
     decrypted = outer_decrypt(ciphertext)
+    decrypted = if compressed == 1
+      Zlib.gunzip(decrypted)
+    else
+      decrypted
+    end
 
-    session = JSON.parse(decrypted, quirks_mode: true).with_indifferent_access
+    session = JSON.parse(decrypted).with_indifferent_access
     kms_decrypt_sensitive_paths!(session)
 
     session
   end
 
   def dump(value)
+    copied_value = value.deep_dup
+    old_size = LegacySessionEncryptor.new.dump(copied_value).bytesize
     return LegacySessionEncryptor.new.dump(value) if should_use_legacy_encryptor_for_write?
     value.deep_stringify_keys!
 
     kms_encrypt_pii!(value)
     kms_encrypt_sensitive_paths!(value, SENSITIVE_PATHS)
     alert_or_raise_if_contains_sensitive_keys!(value)
-    plain = JSON.generate(value, quirks_mode: true)
+    plain = JSON.generate(value)
     alert_or_raise_if_contains_sensitive_value!(plain, value)
-    NEW_CIPHERTEXT_HEADER + ':' + outer_encrypt(plain)
+    plain_compressed = Zlib.gzip(plain)
+    text = { v: CIPHERTEXT_HEADER, t: outer_encrypt(plain), c: 0 }.to_msgpack
+    text_compressed = { v: CIPHERTEXT_HEADER, t: outer_encrypt(plain_compressed), c: 1 }.to_msgpack
+    new_size = text.bytesize
+    new_compressed_size = text_compressed.bytesize
+
+    Rails.logger.info(
+      {
+        name: 'metrics.session_size',
+        old_size_bytes: old_size,
+        new_size_bytes: new_size,
+        new_compressed_size_bytes: new_compressed_size,
+      }.to_json,
+    )
+
+    if should_compress?(plain)
+      text_compressed
+    else
+      text
+    end
   end
 
   def kms_encrypt(text)
@@ -69,11 +98,11 @@ class SessionEncryptor
   end
 
   def outer_encrypt(plaintext)
-    Encryption::Encryptors::AesEncryptor.new.encrypt(plaintext, session_encryption_key)
+    Encryption::Encryptors::SmallAesEncryptor.new.encrypt(plaintext, session_encryption_key)
   end
 
   def outer_decrypt(ciphertext)
-    Encryption::Encryptors::AesEncryptor.new.decrypt(ciphertext, session_encryption_key)
+    Encryption::Encryptors::SmallAesEncryptor.new.decrypt(ciphertext, session_encryption_key)
   end
 
   private
@@ -140,7 +169,7 @@ class SessionEncryptor
     return if sensitive_data.blank?
 
     sensitive_data = JSON.parse(
-      kms_decrypt(sensitive_data), quirks_mode: true
+      kms_decrypt(sensitive_data),
     )
 
     session.deep_merge!(sensitive_data)
@@ -179,13 +208,15 @@ class SessionEncryptor
   end
 
   def should_use_legacy_encryptor_for_read?(value)
-    ## Legacy ciphertexts will not include a colon and thus will have no header
-    header = value.split(':').first
-    header != NEW_CIPHERTEXT_HEADER
+    value.start_with?(LegacySessionEncryptor::CIPHERTEXT_HEADER)
+  end
+
+  def should_compress?(value)
+    value.bytesize >= MINIMUM_COMPRESS_LIMIT
   end
 
   def should_use_legacy_encryptor_for_write?
-    !IdentityConfig.store.session_encryptor_v2_enabled
+    !IdentityConfig.store.session_encryptor_v3_enabled
   end
 
   def session_encryption_key

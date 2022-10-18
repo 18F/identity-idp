@@ -15,9 +15,9 @@ RSpec.describe SessionEncryptor do
       end
     end
 
-    context 'with version 2 encryption enabled' do
+    context 'with version 3 encryption enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:session_encryptor_v2_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:session_encryptor_v3_enabled).and_return(true)
       end
 
       it 'decrypts the new version of the session' do
@@ -33,9 +33,9 @@ RSpec.describe SessionEncryptor do
   end
 
   describe '#dump' do
-    context 'with version 2 encryption enabled' do
+    context 'with version 3 encryption enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:session_encryptor_v2_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:session_encryptor_v3_enabled).and_return(true)
       end
 
       it 'transparently encrypts/decrypts sensitive elements of the session' do
@@ -97,10 +97,11 @@ RSpec.describe SessionEncryptor do
           'idv/doc_auth' => { 'ssn' => '666-66-6666' },
           'other_value' => 42,
         } }
-
         ciphertext = subject.dump(session)
 
-        partially_decrypted = subject.outer_decrypt(ciphertext.split(':').last)
+        partially_decrypted = Zlib.gunzip(
+          subject.outer_decrypt(MessagePack.unpack(ciphertext)['t']),
+        )
         partially_decrypted_json = JSON.parse(partially_decrypted)
 
         expect(partially_decrypted_json.fetch('warden.user.user.session')['idv']).to eq nil
@@ -112,6 +113,16 @@ RSpec.describe SessionEncryptor do
         expect(
           partially_decrypted_json.fetch('warden.user.user.session')['other_value'],
         ).to eq 42
+      end
+
+      it 'does not compress when payload is small' do
+        session = { 'a' => 0 }
+        ciphertext = subject.dump(session)
+
+        session_payload = MessagePack.unpack(ciphertext)
+        expect(session_payload['c']).to eq 0
+        session_decrypted = JSON.parse(subject.outer_decrypt(session_payload['t']))
+        expect(session_decrypted).to eq session
       end
 
       it 'raises if reserved key is used' do
@@ -182,9 +193,9 @@ RSpec.describe SessionEncryptor do
       end
     end
 
-    context 'without version 2 encryption enabled' do
+    context 'without version 3 encryption enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:session_encryptor_v2_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:session_encryptor_v3_enabled).and_return(false)
       end
 
       it 'encrypts the session with the legacy encryptor' do

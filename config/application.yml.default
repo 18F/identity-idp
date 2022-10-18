@@ -286,7 +286,7 @@ service_provider_request_ttl_hours: 24
 session_check_delay: 30
 session_check_frequency: 30
 session_encryptor_alert_enabled: false
-session_encryptor_v2_enabled: true
+session_encryptor_v3_enabled: false
 session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
