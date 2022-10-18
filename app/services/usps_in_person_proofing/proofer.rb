@@ -1,7 +1,6 @@
 module UspsInPersonProofing
   class Proofer
-    mattr_reader :token
-    mattr_reader :token_expires_at
+    mattr_reader :token, :token_expires_at
     attr_reader :token, :token_expires_at
 
     # Makes HTTP request to get nearby in-person proofing facilities
