@@ -25,7 +25,7 @@ module Users
     end
 
     def resend
-      email_address = EmailAddress.find_with_email(session_email)
+      email_address = EmailAddress.where(user_id: current_user.id).find_with_email(session_email)
 
       if email_address && !email_address.confirmed?
         SendAddEmailConfirmation.new(current_user).call(email_address)
