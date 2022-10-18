@@ -290,7 +290,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image.rewind
           back_image.rewind
 
-          cipher = Encryption::AesCipher.new
+          cipher = Encryption::LegacyAesCipher.new
 
           front_image_ciphertext =
             document_writer.storage.read_image(name: upload_event[:document_front_image_filename])

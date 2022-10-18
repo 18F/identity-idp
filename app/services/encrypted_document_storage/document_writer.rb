@@ -34,7 +34,7 @@ module EncryptedDocumentStorage
     end
 
     def aes_cipher
-      @aes_cipher ||= Encryption::AesCipher.new
+      @aes_cipher ||= Encryption::LegacyAesCipher.new
     end
 
     # @return [String] A new, unique S3 key for an image of the given content type.

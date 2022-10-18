@@ -37,8 +37,8 @@ describe Encryption::Encryptors::PiiEncryptor do
       expect(scrypt_password).to receive(:digest).and_return(scrypt_digest)
       expect(SCrypt::Password).to receive(:new).and_return(scrypt_password)
 
-      cipher = instance_double(Encryption::AesCipher)
-      expect(Encryption::AesCipher).to receive(:new).and_return(cipher)
+      cipher = instance_double(Encryption::LegacyAesCipher)
+      expect(Encryption::LegacyAesCipher).to receive(:new).and_return(cipher)
       expect(cipher).to receive(:encrypt).
         with(plaintext, decoded_scrypt_digest).
         and_return('aes_ciphertext')
@@ -93,8 +93,8 @@ describe Encryption::Encryptors::PiiEncryptor do
         with('kms_ciphertext', { 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc' }).
         and_return('aes_ciphertext')
 
-      cipher = instance_double(Encryption::AesCipher)
-      expect(Encryption::AesCipher).to receive(:new).and_return(cipher)
+      cipher = instance_double(Encryption::LegacyAesCipher)
+      expect(Encryption::LegacyAesCipher).to receive(:new).and_return(cipher)
       expect(cipher).to receive(:decrypt).
         with('aes_ciphertext', decoded_scrypt_digest).
         and_return(plaintext)

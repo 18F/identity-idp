@@ -1,9 +1,5 @@
-# frozen_string_literal: true
-
 module Encryption
-  class AesCipher
-    include Encodable
-
+  class SmallAesCipher
     def encrypt(plaintext, cek)
       self.cipher = self.class.encryption_cipher
       # The key length for the AES-256-GCM cipher is fixed at 128 bits, or 32
@@ -32,9 +28,10 @@ module Encryption
     def encipher(plaintext)
       iv = cipher.random_iv
       cipher.auth_data = 'PII'
-      ciphertext = cipher.update(plaintext) + cipher.final
+      ciphertext = cipher.update(plaintext) << cipher.final
       tag = cipher.auth_tag
-      { iv: encode(iv), ciphertext: encode(ciphertext), tag: encode(tag) }.to_json
+
+      { iv: iv, ciphertext: ciphertext, tag: tag }.to_msgpack
     end
 
     def decipher(payload)
@@ -46,27 +43,27 @@ module Encryption
     end
 
     def try_decipher(unpacked_payload)
-      cipher.update(ciphertext(unpacked_payload)) + cipher.final
+      cipher.update(ciphertext(unpacked_payload)) << cipher.final
     rescue OpenSSL::Cipher::CipherError => err
-      raise EncryptionError, 'failed to decipher payload: ' + err.to_s
+      raise EncryptionError, "failed to decipher payload: #{err}"
     end
 
     def unpack_payload(payload)
-      JSON.parse(payload, symbolize_names: true)
+      MessagePack.unpack(payload)
     rescue StandardError
       raise EncryptionError, 'Unable to parse encrypted payload'
     end
 
     def iv(unpacked_payload)
-      decode(unpacked_payload[:iv])
+      unpacked_payload['iv']
     end
 
     def tag(unpacked_payload)
-      decode(unpacked_payload[:tag])
+      unpacked_payload['tag']
     end
 
     def ciphertext(unpacked_payload)
-      decode(unpacked_payload[:ciphertext])
+      unpacked_payload['ciphertext']
     end
   end
 end

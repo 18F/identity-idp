@@ -17,7 +17,7 @@ RSpec.describe EncryptedDocumentStorage::DocumentWriter do
       back_filename = Rails.root.join('tmp', 'encrypted_doc_storage', result.back_filename)
       key = Base64.strict_decode64(result.encryption_key)
 
-      aes_cipher = Encryption::AesCipher.new
+      aes_cipher = Encryption::LegacyAesCipher.new
 
       written_front_image = aes_cipher.decrypt(File.read(front_filename), key)
       written_back_image = aes_cipher.decrypt(File.read(back_filename), key)

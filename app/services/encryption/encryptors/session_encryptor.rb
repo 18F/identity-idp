@@ -5,7 +5,7 @@ module Encryption
       include ::NewRelic::Agent::MethodTracer
 
       def encrypt(plaintext)
-        aes_ciphertext = AesEncryptor.new.encrypt(plaintext, aes_encryption_key)
+        aes_ciphertext = LegacyAesEncryptor.new.encrypt(plaintext, aes_encryption_key)
         kms_ciphertext = KmsClient.new.encrypt(aes_ciphertext, 'context' => 'session-encryption')
         encode(kms_ciphertext)
       end
@@ -20,7 +20,7 @@ module Encryption
       private
 
       def aes_encryptor
-        AesEncryptor.new
+        LegacyAesEncryptor.new
       end
 
       def aes_encryption_key

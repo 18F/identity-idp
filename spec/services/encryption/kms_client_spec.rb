@@ -17,7 +17,7 @@ describe Encryption::KmsClient do
     )
     # rubocop:enable Layout/LineLength
 
-    encryptor = Encryption::Encryptors::AesEncryptor.new
+    encryptor = Encryption::Encryptors::LegacyAesEncryptor.new
     {
       'a' * 3000 => 'local1',
       'b' * 3000 => 'local2',
@@ -30,7 +30,7 @@ describe Encryption::KmsClient do
         with(ciphertext, local_encryption_key).
         and_return(plaintext)
     end
-    allow(Encryption::Encryptors::AesEncryptor).to receive(:new).and_return(encryptor)
+    allow(Encryption::Encryptors::LegacyAesEncryptor).to receive(:new).and_return(encryptor)
     allow(FeatureManagement).to receive(:kms_multi_region_enabled?).and_return(kms_multi_region_enabled) # rubocop:disable Layout/LineLength
     allow(FeatureManagement).to receive(:use_kms?).and_return(kms_enabled)
     allow(IdentityConfig.store).to receive(:aws_kms_regions).and_return(aws_kms_regions)

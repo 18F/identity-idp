@@ -30,7 +30,7 @@ module Encryption
     end
 
     def initialize
-      @aes_cipher = AesCipher.new
+      @aes_cipher = LegacyAesCipher.new
       @kms_client = KmsClient.new
     end
 
