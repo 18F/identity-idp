@@ -3,6 +3,7 @@ en:
   inherited_proofing:
     buttons:
       continue: Continue
+      try_again: Try again
     cancel:
       actions:
         keep_going: No, keep going
@@ -59,3 +60,8 @@ en:
       options:
         get_va_help: Get help at VA.gov
         learn_more_phone_or_mail: Learn more about verifying by phone or mail
+    errors:
+      cannot_retrieve:
+        info: We are temporarily having trouble retrieving your information. Please try again.
+        heading: We could not retrieve your information from My HealtheVet
+        title: Couldn't retrieve information

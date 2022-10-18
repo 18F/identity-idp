@@ -3,6 +3,7 @@ es:
   inherited_proofing:
     buttons:
       continue: Continuar
+      try_again: Inténtelo de nuevo
     cancel:
       actions:
         keep_going: No, continuar
@@ -55,3 +56,8 @@ es:
       options:
         get_va_help: to be implemented
         learn_more_phone_or_mail: to be implemented
+    errors:
+      cannot_retrieve:
+        info: Estamos teniendo problemas temporalmente para obtener su información. Inténtelo de nuevo.
+        heading: No hemos podido obtener su información de My HealtheVet
+        title: to be implemented
