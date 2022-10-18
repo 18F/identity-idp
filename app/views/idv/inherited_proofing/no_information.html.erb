@@ -11,15 +11,15 @@
   <%= link_to t('inherited_proofing.buttons.try_again'), root_url, class: 'usa-button usa-button--big usa-button--wide' %>
 
   <%= render(
-      'shared/troubleshooting_options',
-      heading_tag: :h3,
-      heading: t('components.troubleshooting_options.default_heading'),
-      options: [
-        {
-          url: 'https://www.va.gov/resources/managing-your-vagov-profile/',
-          text: t('inherited_proofing.troubleshooting.options.get_va_help'),
-          new_tab: true,
-        },
-      ].select(&:present?),
-    ) %>
+        'shared/troubleshooting_options',
+        heading_tag: :h3,
+        heading: t('components.troubleshooting_options.default_heading'),
+        options: [
+          {
+            url: 'https://www.va.gov/resources/managing-your-vagov-profile/',
+            text: t('inherited_proofing.troubleshooting.options.get_va_help'),
+            new_tab: true,
+          },
+        ].select(&:present?),
+      ) %>
 <% end %>

@@ -21,6 +21,12 @@ es:
         switch_back: Regrese a su computadora para continuar con la verificación de su
           identidad.
         switch_back_image: Flecha que apunta del teléfono a la computadora
+    errors:
+      cannot_retrieve:
+        heading: No hemos podido obtener su información de My HealtheVet
+        info: Estamos teniendo problemas temporalmente para obtener su información.
+          Inténtelo de nuevo.
+        title: to be implemented
     headings:
       lets_go: to be implemented
       retrieval: Estamos recuperando su información de My HealtheVet
@@ -56,8 +62,3 @@ es:
       options:
         get_va_help: to be implemented
         learn_more_phone_or_mail: to be implemented
-    errors:
-      cannot_retrieve:
-        info: Estamos teniendo problemas temporalmente para obtener su información. Inténtelo de nuevo.
-        heading: No hemos podido obtener su información de My HealtheVet
-        title: to be implemented
