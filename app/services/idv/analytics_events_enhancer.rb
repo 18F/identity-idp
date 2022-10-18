@@ -35,15 +35,14 @@ module Idv
       idv_start_over
     ].freeze
 
-    extend ActiveSupport::Concern
-
-    included do
-      DECORATED_METHODS.each do |method_name|
-        alias_method "original_#{method_name}", method_name
-        define_method(method_name) do |**kwargs|
-          send("original_#{method_name}", **kwargs, **common_analytics_attributes)
-        end
+    DECORATED_METHODS.each do |method_name|
+      define_method(method_name) do |**kwargs|
+        super(**kwargs, **common_analytics_attributes)
       end
+    end
+
+    def self.included(mod)
+      raise 'this mixin is intended to be prepended, not included'
     end
 
     private

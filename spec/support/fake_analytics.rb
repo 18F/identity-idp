@@ -2,7 +2,7 @@ class FakeAnalytics < Analytics
   PiiDetected = Class.new(StandardError)
 
   include AnalyticsEvents
-  include Idv::AnalyticsEventsEnhancer
+  prepend Idv::AnalyticsEventsEnhancer
 
   module PiiAlerter
     def track_event(event, original_attributes = {})

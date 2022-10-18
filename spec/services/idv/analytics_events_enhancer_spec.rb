@@ -3,12 +3,11 @@ require 'rails_helper'
 describe Idv::AnalyticsEventsEnhancer do
   class ExampleAnalytics
     include AnalyticsEvents
+    prepend Idv::AnalyticsEventsEnhancer
 
     def idv_final(**kwargs)
       @called_kwargs = kwargs
     end
-
-    include Idv::AnalyticsEventsEnhancer
 
     attr_reader :user, :called_kwargs
 
