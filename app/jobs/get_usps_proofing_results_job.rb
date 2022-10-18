@@ -231,13 +231,13 @@ class GetUspsProofingResultsJob < ApplicationJob
       send_failed_fraud_email(enrollment.user, enrollment)
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
         **email_analytics_attributes(enrollment),
-        email_type: 'Failed fraud suspected email type',
+        email_type: 'Failed fraud suspected',
       )
     else
       send_failed_email(enrollment.user, enrollment)
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
         **email_analytics_attributes(enrollment),
-        email_type: 'Failed email type',
+        email_type: 'Failed',
       )
     end
   end
@@ -253,7 +253,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
-      email_type: 'Success email type',
+      email_type: 'Success',
     )
     enrollment.profile.activate
     enrollment.update(status: :passed)
