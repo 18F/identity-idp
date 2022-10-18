@@ -6,6 +6,25 @@ describe UserMailer, type: :mailer do
   let(:banned_email) { 'banned_email+123abc@gmail.com' }
   let(:banned_email_address) { create(:email_address, email: banned_email, user: user) }
 
+  describe '#validate_user_and_email_address' do
+    let(:mail) { UserMailer.with(user: user, email_address: email_address).signup_with_your_email }
+
+    context 'with user and email address match' do
+      it 'does not raise an error' do
+        expect { mail.body }.not_to raise_error
+      end
+    end
+
+    context 'with user and email address mismatch' do
+      let(:user) { create(:user) }
+      let(:email_address) { EmailAddress.new }
+
+      it 'raises an error' do
+        expect { mail.body }.to raise_error(UserMailer::UserEmailAddressMismatchError)
+      end
+    end
+  end
+
   describe '#add_email' do
     let(:token) { SecureRandom.hex }
     let(:mail) { UserMailer.with(user: user, email_address: email_address).add_email(token) }
