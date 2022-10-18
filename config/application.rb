@@ -16,6 +16,8 @@ require_relative '../lib/email_delivery_observer'
 
 Bundler.require(*Rails.groups)
 
+require_relative '../lib/mailer_sensitive_information_checker'
+
 APP_NAME = 'Login.gov'.freeze
 
 module Identity
