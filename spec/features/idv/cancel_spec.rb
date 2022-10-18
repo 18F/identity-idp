@@ -6,11 +6,12 @@ describe 'cancel IdV', :js do
   include InteractionHelper
 
   let(:sp) { nil }
-  let(:fake_analytics) { FakeAnalytics.new }
+  let(:user) { user_with_2fa }
+  let(:fake_analytics) { FakeAnalytics.new(user: user) }
 
   before do
     start_idv_from_sp(sp)
-    sign_in_and_2fa_user
+    sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_agreement_step
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
   end
@@ -58,6 +59,52 @@ describe 'cancel IdV', :js do
     # After visiting /verify, expect to redirect to the first step in the IdV flow.
     visit idv_path
     expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
+  end
+
+  context 'when user has recorded proofing components' do
+    before do
+      complete_agreement_step
+      complete_upload_step
+      complete_document_capture_step
+    end
+
+    it 'includes proofing components in events' do
+      click_link t('links.cancel')
+
+      expect(fake_analytics).to have_logged_event(
+        'IdV: cancellation visited',
+        step: 'ssn',
+        proofing_components: { document_check: 'mock', document_type: 'state_id' },
+      )
+
+      click_on t('idv.cancel.actions.keep_going')
+
+      expect(fake_analytics).to have_logged_event(
+        'IdV: cancellation go back',
+        step: 'ssn',
+        proofing_components: { document_check: 'mock', document_type: 'state_id' },
+      )
+
+      click_link t('links.cancel')
+      click_on t('idv.cancel.actions.start_over')
+
+      expect(fake_analytics).to have_logged_event(
+        'IdV: start over',
+        step: 'ssn',
+        proofing_components: { document_check: 'mock', document_type: 'state_id' },
+      )
+
+      complete_doc_auth_steps_before_ssn_step
+      click_link t('links.cancel')
+
+      click_spinner_button_and_wait t('idv.cancel.actions.account_page')
+
+      expect(fake_analytics).to have_logged_event(
+        'IdV: cancellation confirmed',
+        step: 'ssn',
+        proofing_components: { document_check: 'mock', document_type: 'state_id' },
+      )
+    end
   end
 
   context 'with an sp' do

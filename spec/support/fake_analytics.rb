@@ -1,7 +1,8 @@
-class FakeAnalytics
+class FakeAnalytics < Analytics
   PiiDetected = Class.new(StandardError)
 
   include AnalyticsEvents
+  include Idv::AnalyticsEventsEnhancer
 
   module PiiAlerter
     def track_event(event, original_attributes = {})
@@ -71,9 +72,11 @@ class FakeAnalytics
   prepend PiiAlerter
 
   attr_reader :events
+  attr_accessor :user
 
-  def initialize
+  def initialize(user: AnonymousUser.new)
     @events = Hash.new
+    @user = user
   end
 
   def track_event(event, attributes = {})
@@ -101,12 +104,10 @@ RSpec::Matchers.define :have_logged_event do |event_name, attributes|
   attributes ||= {}
 
   match do |actual|
-    expect(actual).to be_kind_of(FakeAnalytics)
-
     if RSpec::Support.is_a_matcher?(attributes)
       expect(actual.events[event_name]).to include(attributes)
     else
-      expect(actual.events[event_name]).to(be_any { |event| attributes <= event })
+      expect(actual.events[event_name]).to(be_any { |event| attributes.as_json <= event.as_json })
     end
   end
 

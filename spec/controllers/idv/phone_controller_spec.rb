@@ -90,8 +90,11 @@ describe Idv::PhoneController do
       it 'logs an event showing that the user wants to choose a different number' do
         get :new, params: params
 
-        expect(@analytics).to have_received(:track_event).
-          with('IdV: use different phone number', step: step)
+        expect(@analytics).to have_received(:track_event).with(
+          'IdV: use different phone number',
+          step: step,
+          proofing_components: nil,
+        )
       end
     end
 
@@ -180,6 +183,7 @@ describe Idv::PhoneController do
           carrier: 'Test Mobile Carrier',
           phone_type: :mobile,
           types: [],
+          proofing_components: nil,
         }
 
         expect(@analytics).to have_received(:track_event).with(
@@ -217,6 +221,7 @@ describe Idv::PhoneController do
           carrier: 'Test Mobile Carrier',
           phone_type: :mobile,
           types: [:fixed_or_mobile],
+          proofing_components: nil,
         }
 
         expect(@analytics).to have_received(:track_event).with(
@@ -329,6 +334,7 @@ describe Idv::PhoneController do
             transaction_id: 'address-mock-transaction-id-123',
             reference: '',
           },
+          proofing_components: nil,
         }
 
         expect(@analytics).to receive(:track_event).ordered.with(
@@ -384,6 +390,7 @@ describe Idv::PhoneController do
             transaction_id: 'address-mock-transaction-id-123',
             reference: '',
           },
+          proofing_components: nil,
         }
 
         expect(@analytics).to receive(:track_event).ordered.with(

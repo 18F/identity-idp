@@ -70,7 +70,7 @@ describe Idv::OtpDeliveryMethodController do
       get :new
 
       expect(@analytics).to have_received(:track_event).
-        with('IdV: Phone OTP delivery Selection Visited')
+        with('IdV: Phone OTP delivery Selection Visited', proofing_components: nil)
     end
   end
 
