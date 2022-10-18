@@ -11,7 +11,6 @@ fr:
         secure_account: Sécurisez votre compte
         verify_id: Vérifier votre identité
         verify_info: Vérifier vos données personnelles
-        verify_phone: to implement
         verify_phone_or_address: Vérifier le téléphone ou l’adresse
     status:
       complete: Terminé
