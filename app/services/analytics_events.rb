@@ -2755,6 +2755,19 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks emails that are initiated during GetUspsProofingResultsJob
+  # @param [String] email_type success, failed or failed fraud
+  def idv_in_person_usps_proofing_results_job_email_initiated(
+    email_type:,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Success or failure email initiated',
+      email_type: email_type,
+      **extra,
+    )
+  end
+
   # Tracks users visiting the recovery options page
   def account_reset_recovery_options_visit
     track_event('Account Reset: Recovery Options Visited')
