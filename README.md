@@ -242,8 +242,11 @@ To set this _permanently_, add the following to your `~/.zshrc` or `~/.bash_prof
 ulimit -Sn 65536
 ```
 
-If you are running MacOS, you may find it is not taking your revised ulimit seriously. [Insist by](https://medium.com/mindful-technology/too-many-open-files-limit-ulimit-on-mac-os-x-add0f1bfddde) adding the following file at `/Library/LaunchDaemons/limit.maxfiles.plist` and set it to be owned by root:
-
+If you are running MacOS, you may find it is not taking your revised ulimit seriously. [You must insist.](https://medium.com/mindful-technology/too-many-open-files-limit-ulimit-on-mac-os-x-add0f1bfddde) Run this command to edit a property list file:
+```
+sudo nano /Library/LaunchDaemons/limit.maxfiles.plist
+```
+Paste the following contents into the text editor:
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
@@ -266,5 +269,8 @@ If you are running MacOS, you may find it is not taking your revised ulimit seri
     <false/>
   </dict>
 </plist>
+
 ```
+Use Control+X to save the file.
+
 Restart your Mac to cause the .plist to take effect. Check the limits again and you should see both `ulimit -n` and `launchctl limit maxfiles` return a limit of 524288.
