@@ -266,6 +266,28 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # Tracks request for adding new emails to an account
+  def add_email_request(success:, errors:, **extra)
+    track_event(
+      'Add Email Requested',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # Tracks request for resending confirmation for new emails to an account
+  def resend_add_email_request(success:, **extra)
+    track_event(
+      'Resend Add Email Requested',
+      success: success,
+      **extra,
+    )
+  end
+
   # Tracks if Email Language is visited
   def email_language_visited
     track_event('Email Language: Visited')
