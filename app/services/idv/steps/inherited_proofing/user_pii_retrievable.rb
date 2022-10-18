@@ -27,13 +27,11 @@ module Idv
         end
 
         def inherited_proofing_service
-          # controller.inherited_proofing_service
-          Idv::InheritedProofing::Va::Mocks::Service.new({ auth_code: 'mocked-auth-code-for-testing' })
+          controller.inherited_proofing_service
         end
 
         def inherited_proofing_form(payload_hash)
-          # controller.inherited_proofing_form payload_hash
-          Idv::InheritedProofing::Va::Form.new payload_hash: payload_hash
+          controller.inherited_proofing_form payload_hash
         end
       end
     end

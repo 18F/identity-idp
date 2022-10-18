@@ -6,7 +6,7 @@ module Idv
 
         def inherited_proofing_save_user_pii_to_session!
           inherited_proofing_save_session!
-          # inherited_proofing_skip_steps!
+          inherited_proofing_skip_steps!
         end
 
         private
@@ -14,14 +14,14 @@ module Idv
         def inherited_proofing_save_session!
           return unless inherited_proofing_form_response.success?
 
-          @flow_session[:pii_from_user] =
-            @flow_session[:pii_from_user].to_h.merge(inherited_proofing_user_pii)
+          flow_session[:pii_from_user] =
+            flow_session[:pii_from_user].to_h.merge(inherited_proofing_user_pii)
           # This is unnecessary, but added for completeness. Any subsequent FLOWS we
           # might splice into will pull from idv_session['applicant'] and merge into
           # flow_session[:pii_from_user] anyhow in their #initialize(r); any subsequent
           # STEP FLOWS we might splice into will populate idv_session['applicant'] and
           # ultimately get merged in to flow_session[:pii_from_user] as well.
-          # idv_session['applicant'] = @flow_session[:pii_from_user]
+          idv_session['applicant'] = @flow_session[:pii_from_user]
         end
 
         def inherited_proofing_skip_steps!
