@@ -1,5 +1,6 @@
 module UspsInPersonProofing
   class Proofer
+    mattr_reader :token, :token_expires_at
     attr_reader :token, :token_expires_at
 
     # Makes HTTP request to get nearby in-person proofing facilities
@@ -18,13 +19,8 @@ module UspsInPersonProofing
         zipCode: location.zip_code,
       }.to_json
 
-      headers = request_headers.merge(
-        'Authorization' => @token,
-        'RequestID' => request_id,
-      )
-
       parse_facilities(
-        faraday.post(url, body, headers) do |req|
+        faraday.post(url, body, dynamic_headers) do |req|
           req.options.context = { service_name: 'usps_facilities' }
         end.body,
       )
@@ -112,12 +108,12 @@ module UspsInPersonProofing
     # @return [String] the token
     def retrieve_token!
       body = request_token
-      @token_expires_at = Time.zone.now + body['expires_in']
-      @token = "#{body['token_type']} #{body['access_token']}"
+      @@token_expires_at = Time.zone.now + body['expires_in']
+      @@token = "#{body['token_type']} #{body['access_token']}"
     end
 
     def token_valid?
-      @token.present? && @token_expires_at.present? && @token_expires_at.future?
+      token.present? && token_expires_at.present? && token_expires_at.future?
     end
 
     private
@@ -152,7 +148,7 @@ module UspsInPersonProofing
       retrieve_token! unless token_valid?
 
       {
-        'Authorization' => @token,
+        'Authorization' => token,
         'RequestID' => request_id,
       }
     end
