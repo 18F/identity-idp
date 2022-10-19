@@ -14,7 +14,7 @@ declare global {
  */
 export function dataURIToBlob(uri: string) {
   const data = decodeURIComponent(uri.split(',')[1]);
-  const bytes = Uint8Array.from(data.split('').map((char) => char.charCodeAt(0)));
+  const bytes = Uint8Array.from(data, (char) => char.charCodeAt(0));
   return new Blob([bytes], { type: 'text/plain' });
 }
 
