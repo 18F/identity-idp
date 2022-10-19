@@ -140,7 +140,9 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_bad_request_error(err, enrollment)
-    case err.response&.[](:body)&.[]('responseMessage')
+    # todo: would there ever not be a response body?
+    response = err.response&.[](:body)
+    case response&.[]('responseMessage')
     when IPP_INCOMPLETE_ERROR_MESSAGE
       # Customer has not been to post office for IPP
       enrollment_outcomes[:enrollments_in_progress] += 1
@@ -149,7 +151,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     else
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
         **enrollment_analytics_attributes(enrollment, complete: false),
-        **response_analytics_attributes(err.response&.[](:body)),
+        **response_analytics_attributes(response),
         reason: 'Request exception',
         exception_class: err.class.to_s,
         exception_message: err.message,
@@ -246,7 +248,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     enrollment_outcomes[:enrollments_passed] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
-      **response_analytics_attributes(**response),
+      **response_analytics_attributes(response),
       fraud_suspected: response['fraudSuspected'],
       passed: true,
       reason: 'Successful status update',

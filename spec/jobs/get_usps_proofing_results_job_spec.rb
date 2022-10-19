@@ -78,7 +78,7 @@ end
 RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class: nil,
                                                                 exception_message: nil,
                                                                 reason: 'Request exception',
-                                                                response_message: ''|
+                                                                response_message: nil|
   it 'logs an error message and leaves the enrollment and profile pending' do
     job.perform(Time.zone.now)
     pending_enrollment.reload
@@ -462,7 +462,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it_behaves_like(
-          'enrollment with a status update',
+          'enrollment_with_a_status_update',
           passed: false,
           status: 'failed',
           response_json: UspsInPersonProofing::Mock::Fixtures.
@@ -575,10 +575,12 @@ RSpec.describe GetUspsProofingResultsJob do
 
       context 'when USPS returns a 4xx status code' do
         before(:each) do
-          stub_request_proofing_results_with_responses({
-            status: 400,
-            body: { 'responseMessage' => 'Applicant does not exist' }.to_json,
-          })
+          stub_request_proofing_results_with_responses(
+            {
+              status: 400,
+              body: { 'responseMessage' => 'Applicant does not exist' }.to_json,
+            },
+          )
         end
 
         it_behaves_like(
