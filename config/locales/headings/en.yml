@@ -34,7 +34,6 @@ en:
       confirm: Confirm your current password to continue
       confirm_for_personal_key: Enter password and get a new personal key
       forgot: Forgot your password?
-    personal_key: Save your personal key
     piv_cac:
       certificate:
         bad: The PIV/CAC certificate you selected is invalid

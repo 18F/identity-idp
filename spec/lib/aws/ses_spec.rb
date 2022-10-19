@@ -35,7 +35,7 @@ describe Aws::SES::Base do
 
     it 'sets the message id on the mail argument' do
       subject.deliver!(mail)
-      expect(mail.message_id).to eq('123abc@email.amazonses.com')
+      expect(mail.header['ses-message-id'].value).to eq('123abc')
     end
 
     it 'retries timed out requests' do

@@ -19,13 +19,15 @@ module Reports
         emails = report_hash['emails']
         issuers = report_hash['issuers']
         report = deleted_user_accounts_data_for_issuers(issuers)
+        # rubocop:disable IdentityIdp/MailLaterLinter
         emails.each do |email|
           ReportMailer.deleted_user_accounts_report(
             email: email,
             name: name,
             issuers: issuers,
             data: report,
-          ).deliver_now_or_later
+          ).deliver_now
+          # rubocop:enable IdentityIdp/MailLaterLinter
         end
       end
     end

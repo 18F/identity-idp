@@ -32,7 +32,7 @@ feature 'idv review step', :js do
     fill_in 'Password', with: user_password
     click_idv_continue
 
-    expect(page).to have_content(t('headings.personal_key'))
+    expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
     expect(current_path).to eq idv_personal_key_path
   end
 

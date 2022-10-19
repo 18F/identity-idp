@@ -13,6 +13,7 @@ module Users
       @add_user_email_form = AddUserEmailForm.new
 
       result = @add_user_email_form.submit(current_user, permitted_params)
+      analytics.add_email_request(**result.to_h)
 
       if result.success?
         process_successful_creation
@@ -25,13 +26,15 @@ module Users
     end
 
     def resend
-      email_address = EmailAddress.find_with_email(session_email)
+      email_address = EmailAddress.where(user_id: current_user.id).find_with_email(session_email)
 
       if email_address && !email_address.confirmed?
+        analytics.resend_add_email_request(success: true)
         SendAddEmailConfirmation.new(current_user).call(email_address)
         flash[:success] = t('notices.resend_confirmation_email.success')
         redirect_to add_email_verify_email_url
       else
+        analytics.resend_add_email_request(success: false)
         flash[:error] = t('errors.general')
         redirect_to add_email_url
       end
