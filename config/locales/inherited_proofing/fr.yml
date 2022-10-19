@@ -3,6 +3,7 @@ fr:
   inherited_proofing:
     buttons:
       continue: Continuer
+      try_again: Réessayez
     cancel:
       actions:
         keep_going: Non, continuer
@@ -21,6 +22,12 @@ fr:
         switch_back: Retournez sur votre ordinateur pour continuer à vérifier votre
           identité.
         switch_back_image: Flèche pointant du téléphone vers l’ordinateur
+    errors:
+      cannot_retrieve:
+        heading: Nous n’avons pas pu récupérer vos informations dans My HealtheVet
+        info: Nous avons temporairement des difficultés à récupérer vos informations.
+          Veuillez réessayer.
+        title: to be implemented
     headings:
       lets_go: to be implemented
       retrieval: Nous récupérons vos informations depuis My HealtheVet.
