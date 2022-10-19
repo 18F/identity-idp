@@ -29,11 +29,13 @@
   </div>
   <div class="margin-top-1">
     <% if desktop_device? %>
-      <%= render DownloadButtonComponent.new(
-            file_data: @codes.join("\n"),
-            file_name: 'backup_codes.txt',
-            outline: true,
-          ) %>
+      <%= render ClickObserverComponent.new(event_name: 'Multi-Factor Authentication: download backup code') do %>
+        <%= render DownloadButtonComponent.new(
+              file_data: @codes.join("\n"),
+              file_name: 'backup_codes.txt',
+              outline: true,
+            ) %>
+      <% end %>
     <% end %>
     <%= render PrintButtonComponent.new(
           icon: :print,
@@ -52,4 +54,3 @@
 <%= form_tag(backup_code_continue_path, method: :patch) do %>
   <%= button_tag t('forms.buttons.continue'), type: 'submit', class: 'usa-button usa-button--big usa-button--wide' %>
 <% end %>
-<%= javascript_packs_tag_once 'backup-code-analytics' %>
