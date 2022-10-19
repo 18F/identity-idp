@@ -337,7 +337,7 @@ development:
   identity_pki_local_dev: true
   in_person_proofing_enabled: true
   inherited_proofing_enabled: true
-  va_inherited_proofing_mock_enabled: false
+  va_inherited_proofing_mock_enabled: true
   kantara_2fa_phone_restricted: true
   kantara_2fa_phone_existing_user_restriction: true
   kantara_restriction_enforcement_date: '2022-07-01'
