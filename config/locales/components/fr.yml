@@ -5,6 +5,8 @@ fr:
       image_alt: Code-barres
     clipboard_button:
       label: Copier
+    download_button:
+      label: Télécharger
     javascript_required:
       browser_instructions: 'Suivez les instructions de votre navigateur pour activer JavaScript:'
       enabled_alert: Vous avez activé JavaScript dans votre navigateur.
