@@ -277,7 +277,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
             expect(result_context_stages_state_id[:timed_out]).to eq(false)
             expect(result_context_stages_state_id[:transaction_id]).to eq('1234-abcd-efgh')
             expect(result_context_stages_state_id[:verified_attributes]).to eq(
-              ["address", "state_id_number", "state_id_type", "dob", "last_name", "first_name"],
+              ['address', 'state_id_number', 'state_id_type', 'dob', 'last_name', 'first_name'],
             )
 
             # result[:context][:stages][:threatmetrix]
