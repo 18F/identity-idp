@@ -22,8 +22,8 @@ fr:
         retail_hours: Heures de vente au détail
         retail_hours_closed: Fermé
         retail_phone_label: Numéro de téléphone
-        speak_to_associate: Vous pouvez vous adresser à n’importe quel employé de ce
-          bureau de poste pour faire vérifier votre identité.
+        speak_to_associate: Vous pouvez vous adresser à n’importe quel collaborateur du
+          guichet de vente au détail pour vérifier votre identité.
       location:
         location_button: Sélectionner
         location_step_about: Si vous ne parvenez pas à ajouter votre pièce d’identité,
