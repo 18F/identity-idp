@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import { getByRole } from '@testing-library/dom';
+import { getByRole, getByText } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import './click-observer-element';
 
@@ -32,6 +32,23 @@ describe('ClickObserverElement', () => {
         await userEvent.click(button);
 
         expect(trackEvent).to.have.been.calledWith('Checkbox toggled', { checked: true });
+      });
+
+      context('clicking on associated label', () => {
+        it('logs a single event', async () => {
+          document.body.innerHTML = `
+            <lg-click-observer event-name="Checkbox toggled">
+              <input type="checkbox" id="checkbox">
+              <label for="checkbox">Toggle</label>
+            </lg-click-observer>`;
+          const observer = document.body.querySelector('lg-click-observer')!;
+          const trackEvent = sinon.stub(observer, 'trackEvent');
+
+          const label = getByText(document.body, 'Toggle');
+          await userEvent.click(label);
+
+          expect(trackEvent).to.have.been.calledOnceWith('Checkbox toggled', { checked: true });
+        });
       });
     });
   });
