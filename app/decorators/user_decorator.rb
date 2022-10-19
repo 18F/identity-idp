@@ -57,8 +57,13 @@ class UserDecorator
     !identity_verified?
   end
 
-  def identity_verified?
-    user.active_profile.present?
+  def identity_verified?(service_provider: nil)
+    user.active_profile.present? && !reproof_for_irs?(service_provider: service_provider)
+  end
+
+  def reproof_for_irs?(service_provider:)
+    service_provider&.irs_attempts_api_enabled &&
+      !user.active_profile&.initiating_service_provider&.irs_attempts_api_enabled
   end
 
   def active_profile_newer_than_pending_profile?
