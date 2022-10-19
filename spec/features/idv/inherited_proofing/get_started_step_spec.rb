@@ -1,8 +1,7 @@
 require 'rails_helper'
 
 feature 'inherited proofing get started' do
-  include IdvHelper
-  include DocAuthHelper
+  include InheritedProofingHelper
 
   before do
     allow(IdentityConfig.store).to receive(:va_inherited_proofing_mock_enabled).and_return true
