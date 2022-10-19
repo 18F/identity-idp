@@ -24,6 +24,7 @@ module IrsAttemptsApi
         event_data_encryption_key,
         typ: 'secevent+jwe',
         zip: 'DEF',
+        alg: 'RSA-OAEP',
         enc: 'A256GCM',
       )
     end
