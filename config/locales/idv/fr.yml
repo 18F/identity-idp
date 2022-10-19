@@ -111,7 +111,8 @@ fr:
           pièce d’identité officielle, etc.
     form:
       address1: Adresse
-      address2: Adresse (optional)
+      address2: Adresse Ligne 2
+      address2_optional: Adresse Ligne 2 (optional)
       city: Ville
       dob: Date de naissance
       first_name: Prénom
