@@ -2,10 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 
 export type ParamValue = string | undefined;
 
-interface HistoryOptions {
-  basePath?: string;
-}
-
 /**
  * Returns the step name from a given path, ignoring any subpaths or leading or trailing slashes.
  *
@@ -13,19 +9,9 @@ interface HistoryOptions {
  *
  * @return Step name.
  */
-export const getStepParam = (path: string): string =>
-  decodeURIComponent(path.split('/').filter(Boolean)[0]);
+export const getStepParam = (path: string): string => decodeURIComponent(path.replace(/^#/, ''));
 
-export function getParamURL(value: ParamValue, { basePath }: HistoryOptions): string {
-  let prefix = typeof basePath === 'string' ? basePath.replace(/\/$/, '') : '#';
-  if (value && basePath) {
-    prefix += '/';
-  }
-
-  return [prefix, encodeURIComponent(value || '')].filter(Boolean).join('');
-}
-
-const onURLChange = () => window.dispatchEvent(new window.CustomEvent('lg:url-change'));
+const getParamURL = (value: ParamValue) => `#${encodeURIComponent(value || '')}`;
 
 const subscribers: Array<() => void> = [];
 
@@ -43,13 +29,9 @@ const subscribers: Array<() => void> = [];
  */
 function useHistoryParam(
   initialValue?: string,
-  { basePath }: HistoryOptions = {},
 ): [string | undefined, (nextParamValue: ParamValue) => void] {
   function getCurrentValue(): ParamValue {
-    const path =
-      typeof basePath === 'string'
-        ? window.location.pathname.split(basePath)[1]
-        : window.location.hash.slice(1);
+    const path = window.location.hash.slice(1);
 
     if (path) {
       return getStepParam(path);
@@ -63,8 +45,7 @@ function useHistoryParam(
     // Push the next value to history, both to update the URL, and to allow the user to return to
     // an earlier value (see `popstate` sync behavior).
     if (nextValue !== value) {
-      window.history.pushState(null, '', getParamURL(nextValue, { basePath }));
-      onURLChange();
+      window.history.pushState(null, '', getParamURL(nextValue));
       subscribers.forEach((sync) => sync());
     }
 
@@ -75,15 +56,12 @@ function useHistoryParam(
 
   useEffect(() => {
     if (initialValue && initialValue !== getCurrentValue()) {
-      window.history.replaceState(null, '', getParamURL(initialValue, { basePath }));
-      onURLChange();
+      window.history.replaceState(null, '', getParamURL(initialValue));
     }
 
     window.addEventListener('popstate', syncValue);
-    window.addEventListener('popstate', onURLChange);
     return () => {
       window.removeEventListener('popstate', syncValue);
-      window.removeEventListener('popstate', onURLChange);
     };
   }, []);
 
