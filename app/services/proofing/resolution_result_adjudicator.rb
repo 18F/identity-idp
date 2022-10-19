@@ -37,6 +37,8 @@ module Proofing
     def result_and_adjudication_reason
       if resolution_result.success? && state_id_result.success?
         [true, :pass_resolution_and_state_id]
+      elsif !state_id_result.success?
+        [false, :fail_state_id]
       elsif !should_proof_state_id?
         [false, :fail_resolution_skip_state_id]
       elsif state_id_attributes_cover_resolution_failures?
