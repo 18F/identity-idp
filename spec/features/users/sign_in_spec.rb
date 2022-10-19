@@ -266,6 +266,8 @@ feature 'Sign in' do
     end
 
     scenario 'user sees warning before session times out' do
+      expect(page).to have_content(/14 minutes and 5[0-9] seconds/, wait: 5)
+
       time1 = page.text[/14 minutes and 5[0-9] seconds/]
       sleep(1)
       time2 = page.text[/14 minutes and 5[0-9] seconds/]
