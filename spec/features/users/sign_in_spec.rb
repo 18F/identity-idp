@@ -266,8 +266,6 @@ feature 'Sign in' do
     end
 
     scenario 'user sees warning before session times out' do
-      expect(page).to have_css('#session-timeout-msg')
-
       time1 = page.text[/14 minutes and 5[0-9] seconds/]
       sleep(1)
       time2 = page.text[/14 minutes and 5[0-9] seconds/]
@@ -299,7 +297,6 @@ feature 'Sign in' do
       sign_in_user(user)
       visit user_two_factor_authentication_path
 
-      expect(page).to have_css('#session-timeout-msg')
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.continue'))
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.sign_out'))
     end
