@@ -24,6 +24,6 @@ class DownloadButtonComponent < ButtonComponent
   end
 
   def content
-    t('components.download_button.label')
+    super || t('components.download_button.label')
   end
 end

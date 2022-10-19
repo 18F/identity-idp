@@ -4,18 +4,20 @@ RSpec.describe DownloadButtonComponent, type: :component do
   let(:file_data) { 'Downloaded Text' }
   let(:file_name) { 'file.txt' }
   let(:tag_options) { {} }
-
-  subject(:rendered) do
-    render_inline DownloadButtonComponent.new(
+  let(:instance) do
+    DownloadButtonComponent.new(
       file_data: file_data,
       file_name: file_name,
       **tag_options,
     )
   end
 
+  subject(:rendered) { render_inline instance }
+
   it 'renders link with data and file name' do
     expect(rendered).to have_css(
       "lg-download-button a[href*='#{CGI.escape(file_data)}'][download='#{file_name}']",
+      text: t('components.download_button.label'),
     )
   end
 
@@ -24,6 +26,15 @@ RSpec.describe DownloadButtonComponent, type: :component do
 
     it 'renders button given the tag options' do
       expect(rendered).to have_css('.usa-button.usa-button--outline[data-foo="bar"]')
+    end
+  end
+
+  context 'with content' do
+    let(:content) { 'Download File' }
+    let(:instance) { super().with_content(content) }
+
+    it 'renders with the given content' do
+      expect(rendered).to have_content(content)
     end
   end
 end
