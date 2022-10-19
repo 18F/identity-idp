@@ -1,6 +1,9 @@
 class ThreatMetrixJsVerificationJob < ApplicationJob
   queue_as :default
 
+  # Ignorable configuration error
+  class ConfigurationError < StandardError; end
+
   def perform(session_id: SecureRandom.uuid)
     org_id = IdentityConfig.store.lexisnexis_threatmetrix_org_id
     js = nil
@@ -11,7 +14,7 @@ class ThreatMetrixJsVerificationJob < ApplicationJob
     # Certificate is stored ASCII-armored in config
     raw_cert = IdentityConfig.store.lexisnexis_threatmetrix_js_signing_cert
     cert = OpenSSL::X509::Certificate.new(raw_cert) if raw_cert.present?
-    raise 'JS signing certificate is missing' if !cert
+    raise ConfigurationError, 'JS signing certificate is missing' if !cert
     raise 'JS signing certificate is expired' if cert.not_after < Time.zone.now
 
     url = "https://h.online-metrix.net/fp/tags.js?org_id=#{org_id}&session_id=#{session_id}"
@@ -22,6 +25,9 @@ class ThreatMetrixJsVerificationJob < ApplicationJob
     # When signature validation fails, we include the JS payload in the
     # log message for future analysis
     js = content if !valid
+  rescue ConfigurationError => err
+    error = err
+    # configuration errors are OK, those don't need to get re-raised
   rescue => err
     error = err
     raise err

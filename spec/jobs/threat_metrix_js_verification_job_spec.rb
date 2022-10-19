@@ -80,15 +80,16 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
 
     context 'when certificate is not configured' do
       let(:threatmetrix_signing_certificate) { '' }
-      it 'logs an error_message, and raises' do
+      it 'logs an error_message but does not raise' do
         expect(instance.logger).to receive(:info) do |message|
           expect(JSON.parse(message, symbolize_names: true)).to include(
             name: 'ThreatMetrixJsVerification',
+            error_class: 'ThreatMetrixJsVerificationJob::ConfigurationError',
             error_message: 'JS signing certificate is missing',
           )
         end
 
-        expect { perform }.to raise_error(RuntimeError, 'JS signing certificate is missing')
+        expect { perform }.to_not raise_error
       end
     end
 
@@ -98,11 +99,30 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
         expect(instance.logger).to receive(:info) do |message|
           expect(JSON.parse(message, symbolize_names: true)).to include(
             name: 'ThreatMetrixJsVerification',
+            error_class: 'RuntimeError',
             error_message: 'JS signing certificate is expired',
           )
         end
 
         expect { perform }.to raise_error(RuntimeError, 'JS signing certificate is expired')
+      end
+    end
+
+    context 'error that is not a configuration error' do
+      before do
+        stub_request(:get, "https://h.online-metrix.net/fp/tags.js?org_id=#{threatmetrix_org_id}&session_id=#{threatmetrix_session_id}").
+          to_timeout
+      end
+
+      it 'logs an error_message, and raises' do
+        expect(instance.logger).to receive(:info) do |message|
+          expect(JSON.parse(message, symbolize_names: true)).to include(
+            name: 'ThreatMetrixJsVerification',
+            error_class: 'Faraday::ConnectionFailed',
+          )
+        end
+
+        expect { perform }.to raise_error(Faraday::ConnectionFailed)
       end
     end
 
