@@ -1,24 +1,22 @@
-<div id='session-timeout-msg' class='display-none' tabindex='-1'>
-  <%= render layout: 'shared/modal_layout', locals: { role: 'dialog' } do |label_id, description_id| %>
-    <div class='padding-4 tablet:padding-6 cntnr-xxskinny bg-white rounded-xxl modal-timeout'>
-      <h2 class='margin-y-2 fs-20p text-normal text-center' id='<%= label_id %>'>
-        <%= t('headings.session_timeout_warning') %>
-      </h2>
-      <hr class='margin-bottom-4 border-width-05' />
-      <div class='margin-bottom-6'>
-        <p>
-          <%= modal.message %>
-        </p>
-        <p class="usa-sr-only" id='<%= description_id %>' role="timer" aria-live="polite" aria-atomic="true">
-          <%= modal.sr_message %>
-        </p>
-      </div>
-      <%= button_tag modal.continue,
-                     id: 'session-keepalive-btn',
-                     class: 'usa-button usa-button--big usa-button--full-width margin-bottom-2' %>
-      <%= link_to modal.sign_out,
-                  destroy_user_session_path,
-                  class: 'usa-button usa-button--big usa-button--full-width usa-button--outline' %>
+<%= render ModalComponent.new(class: 'session-timeout') do |c| %>
+  <div class='padding-4 tablet:padding-6 cntnr-xxskinny bg-white rounded-xxl modal-timeout'>
+    <h2 class='margin-y-2 fs-20p text-normal text-center' id='<%= c.label_id %>'>
+      <%= t('headings.session_timeout_warning') %>
+    </h2>
+    <hr class='margin-bottom-4 border-width-05' />
+    <div class='margin-bottom-6'>
+      <p>
+        <%= modal.message %>
+      </p>
+      <p class="usa-sr-only" id='<%= c.description_id %>' role="timer" aria-live="polite" aria-atomic="true">
+        <%= modal.sr_message %>
+      </p>
     </div>
-  <% end %>
-</div>
+    <%= button_tag modal.continue,
+                   id: 'session-keepalive-btn',
+                   class: 'usa-button usa-button--big usa-button--full-width margin-bottom-2' %>
+    <%= link_to modal.sign_out,
+                destroy_user_session_path,
+                class: 'usa-button usa-button--big usa-button--full-width usa-button--outline' %>
+  </div>
+<% end %>
