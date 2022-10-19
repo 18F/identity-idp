@@ -21,7 +21,7 @@ module Idv
           # flow_session[:pii_from_user] anyhow in their #initialize(r); any subsequent
           # STEP FLOWS we might splice into will populate idv_session['applicant'] and
           # ultimately get merged in to flow_session[:pii_from_user] as well.
-          idv_session['applicant'] = @flow_session[:pii_from_user]
+          idv_session['applicant'] = flow_session[:pii_from_user]
         end
 
         def inherited_proofing_skip_steps!
