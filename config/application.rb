@@ -12,8 +12,11 @@ require_relative '../lib/asset_sources'
 require_relative '../lib/identity_config'
 require_relative '../lib/fingerprinter'
 require_relative '../lib/identity_job_log_subscriber'
+require_relative '../lib/email_delivery_observer'
 
 Bundler.require(*Rails.groups)
+
+require_relative '../lib/mailer_sensitive_information_checker'
 
 APP_NAME = 'Login.gov'.freeze
 
@@ -93,6 +96,7 @@ module Identity
         mail.display_name = IdentityConfig.store.email_from_display_name
       end.to_s,
     }
+    config.action_mailer.observers = %w[EmailDeliveryObserver]
 
     require 'headers_filter'
     config.middleware.insert_before 0, HeadersFilter
