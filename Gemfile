@@ -77,7 +77,7 @@ gem 'yard'
 gem 'zxcvbn', '0.1.7'
 
 # Lookbook must be listed after ViewComponent, so listed here out of default alphabetical order.
-gem 'lookbook', '~> 1.1.1'
+gem 'lookbook', '~> 1.2.1'
 
 group :development do
   gem 'better_errors', '>= 2.5.1'
