@@ -1,6 +1,5 @@
 class InheritedProofingJob < ApplicationJob
   include JobHelpers::StaleJobHelper
-  include Idv::InheritedProofing::ServiceProviderServices
 
   queue_as :default
 
