@@ -10,7 +10,9 @@ Importing the element will register the `<lg-modal>` custom element:
 import '@18f/identity-modal/modal-element';
 ```
 
-The custom element will implement the copying behavior, but all markup must already exist.
+The custom element will implement modal behavior, including focus trap and a programmatic interface for showing and dismissing the modal.
+
+However, all markup must already exist.
 
 ```html
 <lg-modal class="usa-modal-wrapper" hidden>
@@ -30,3 +32,13 @@ The custom element will implement the copying behavior, but all markup must alre
   </div>
 </lg-modal>
 ```
+
+## API
+
+### `ModalElement#show`
+
+Shows the modal dialog.
+
+### `ModalElement#hide`
+
+Hides the modal dialog.

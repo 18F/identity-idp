@@ -9,6 +9,9 @@ class ModalElement extends HTMLElement {
     this.addEventListener('click', this.#handleDismiss);
   }
 
+  /**
+   * Shows the modal dialog.
+   */
   show() {
     this.removeAttribute('hidden');
     this.classList.add('is-visible');
@@ -16,6 +19,9 @@ class ModalElement extends HTMLElement {
     this.trap.activate();
   }
 
+  /**
+   * Hides the modal dialog.
+   */
   hide() {
     this.setAttribute('hidden', '');
     this.classList.remove('is-visible');
