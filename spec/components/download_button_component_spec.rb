@@ -15,8 +15,9 @@ RSpec.describe DownloadButtonComponent, type: :component do
   subject(:rendered) { render_inline instance }
 
   it 'renders link with data and file name' do
+    expect(rendered).to have_css('lg-download-button')
     expect(rendered).to have_css(
-      "lg-download-button a[href*='#{CGI.escape(file_data)}'][download='#{file_name}']",
+      "a[href='data:text/plain;charset=utf-8,Downloaded%20Text'][download='#{file_name}']",
       text: t('components.download_button.label'),
     )
   end
