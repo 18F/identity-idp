@@ -26,7 +26,8 @@ module Idv
 
           InheritedProofingJob.perform_later(
             controller.inherited_proofing_service_provider_id,
-            controller.inherited_proofing_service_provider_data, doc_capture_session.uuid
+            controller.inherited_proofing_service_provider_data,
+            doc_capture_session.uuid,
           )
         end
       end

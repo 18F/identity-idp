@@ -2,7 +2,6 @@ module Idv
   module Steps
     module InheritedProofing
       class VerifyWaitStepShow < VerifyBaseStep
-        include UserPiiManagable
         delegate :controller, :idv_session, to: :@flow
 
         STEP_INDICATOR_STEP = :getting_started
