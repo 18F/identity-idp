@@ -4,7 +4,9 @@ import userEvent from '@testing-library/user-event';
 import './modal-element';
 
 describe('ModalElement', () => {
-  function createElement() {
+  let modal: HTMLElementTagNameMap['lg-modal'];
+
+  beforeEach(() => {
     document.body.innerHTML = `
       <lg-modal class="usa-modal-wrapper" hidden>
         <div role="dialog" class="usa-modal-overlay" aria-describedby="modal-description-7ace89e6" aria-labelledby="modal-label-7ace89e6">
@@ -21,11 +23,14 @@ describe('ModalElement', () => {
       <button>Outside Button</button>
     `;
 
-    return document.querySelector('lg-modal')!;
-  }
+    modal = document.querySelector('lg-modal')!;
+  });
+
+  afterEach(() => {
+    modal.hide();
+  });
 
   it('toggles hidden when clicking dismiss button', async () => {
-    const modal = createElement();
     modal.show();
     sinon.spy(modal, 'hide');
     const dismissButton = screen.getByRole('button', { name: 'Dismiss' });
@@ -36,7 +41,6 @@ describe('ModalElement', () => {
 
   describe('#show', () => {
     it('toggles visible', () => {
-      const modal = createElement();
       modal.show();
 
       expect(modal.hasAttribute('hidden')).to.be.false();
@@ -45,7 +49,6 @@ describe('ModalElement', () => {
     });
 
     it('traps focus', async () => {
-      const modal = createElement();
       modal.show();
 
       await waitFor(() => document.activeElement?.textContent === 'First Button');
@@ -58,7 +61,6 @@ describe('ModalElement', () => {
 
   describe('#hide', () => {
     it('toggles hidden', () => {
-      const modal = createElement();
       modal.show();
       modal.hide();
 
@@ -68,7 +70,6 @@ describe('ModalElement', () => {
     });
 
     it('releases focus trap', async () => {
-      const modal = createElement();
       modal.show();
       await waitFor(() => document.activeElement?.textContent === 'First Button');
       modal.hide();
