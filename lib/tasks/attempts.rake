@@ -46,6 +46,9 @@ namespace :attempts do
   desc 'Confirm your dev setup is configured properly'
   task check_enabled: :environment do
     failed = false
+    auth_token = IdentityConfig.store.irs_attempt_api_auth_tokens.sample
+    puts 'There are no configured irs_attempt_api_auth_tokens' if auth_token.nil?
+    private_key_path = 'keys/attempts_api_private_key.key'
 
     if IdentityConfig.store.irs_attempt_api_enabled
       puts '✅ Feature flag is enabled'
@@ -59,7 +62,7 @@ namespace :attempts do
       puts '✅ Sinatra app SP has irs_attempts_api_enabled=true'
     else
       failed = true
-      puts "❌ FAILED: Set irs_attempts_api_enabled=true on ServiceProvider.find #{sp.id}"
+      puts '❌ FAILED: Run rake attempts:enable_for_sinatra'
     end
 
     if IdentityConfig.store.irs_attempt_api_auth_tokens.include?(auth_token)
@@ -76,6 +79,12 @@ namespace :attempts do
     end
 
     puts 'Remember to restart Rails after updating application.yml.default!' if failed
+  end
+
+  desc 'Enable irs_attempts_api_enabled for Sinatra SP'
+  task enable_for_sinatra: :environment do
+    sp = ServiceProvider.find_by(friendly_name: 'Example Sinatra App')
+    sp.update(irs_attempts_api_enabled: true)
   end
 
   desc 'Clear all events from Redis'
