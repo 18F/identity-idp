@@ -54,25 +54,7 @@ module IdvHelper
 
   def visit_idp_from_sp_with_ial2(sp, **extra)
     if sp == :saml
-      saml_overrides = {
-        issuer: sp1_issuer,
-        authn_context: [
-          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-        ],
-        security: {
-          embed_sign: false,
-        },
-      }
-      if javascript_enabled?
-        service_provider = ServiceProvider.find_by(issuer: sp1_issuer)
-        acs_url = URI.parse(service_provider.acs_url)
-        acs_url.host = page.server.host
-        acs_url.port = page.server.port
-        service_provider.update(acs_url: acs_url.to_s)
-      end
-      visit_saml_authn_request_url(overrides: saml_overrides)
+      visit_idp_from_saml_sp_with_ial2
     elsif sp == :oidc
       @state = SecureRandom.hex
       @client_id = sp_oidc_issuer
@@ -95,6 +77,28 @@ module IdvHelper
     elsif sp == :oidc
       sp_oidc_issuer
     end
+  end
+
+  def visit_idp_from_saml_sp_with_ial2(issuer: sp1_issuer)
+    saml_overrides = {
+      issuer: issuer,
+      authn_context: [
+        Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+        "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+      ],
+      security: {
+        embed_sign: false,
+      },
+    }
+    if javascript_enabled?
+      service_provider = ServiceProvider.find_by(issuer: sp1_issuer)
+      acs_url = URI.parse(service_provider.acs_url)
+      acs_url.host = page.server.host
+      acs_url.port = page.server.port
+      service_provider.update(acs_url: acs_url.to_s)
+    end
+    visit_saml_authn_request_url(overrides: saml_overrides)
   end
 
   def visit_idp_from_oidc_sp_with_ial2(

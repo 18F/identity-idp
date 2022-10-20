@@ -1,10 +1,10 @@
 namespace :attempts do
-  auth_token = IdentityConfig.store.irs_attempt_api_auth_tokens.sample
-  puts 'There are no configured irs_attempt_api_auth_tokens' if auth_token.nil?
-  private_key_path = 'keys/attempts_api_private_key.key'
-
   desc 'Retrieve events via the API'
   task fetch_events: :environment do
+    auth_token = IdentityConfig.store.irs_attempt_api_auth_tokens.sample
+    puts 'There are no configured irs_attempt_api_auth_tokens' if auth_token.nil?
+    private_key_path = 'keys/attempts_api_private_key.key'
+
     conn = Faraday.new(url: 'http://localhost:3000')
     body = "timestamp=#{Time.zone.now.iso8601}"
 

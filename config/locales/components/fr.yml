@@ -5,6 +5,8 @@ fr:
       image_alt: Code-barres
     clipboard_button:
       label: Copier
+    download_button:
+      label: Télécharger
     javascript_required:
       browser_instructions: 'Suivez les instructions de votre navigateur pour activer JavaScript:'
       enabled_alert: Vous avez activé JavaScript dans votre navigateur.
@@ -35,7 +37,7 @@ fr:
     phone_input:
       country_code_label: Code pays
     print_button:
-      label: Imprimer cette page
+      label: Imprimer
     troubleshooting_options:
       default_heading: 'Des difficultés? Voici ce que vous pouvez faire:'
       new_feature: Nouvelle fonctionnalité

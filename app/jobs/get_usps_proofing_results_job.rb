@@ -19,6 +19,15 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
 
+  def email_analytics_attributes(enrollment)
+    {
+      timestamp: Time.zone.now,
+      user_id: enrollment.user_id,
+      service_provider: enrollment.issuer,
+      delay_time_seconds: mail_delivery_params[:wait],
+    }
+  end
+
   def enrollment_analytics_attributes(enrollment, complete:)
     {
       enrollment_code: enrollment.enrollment_code,
@@ -220,8 +229,16 @@ class GetUspsProofingResultsJob < ApplicationJob
     enrollment.update(status: :failed)
     if response['fraudSuspected']
       send_failed_fraud_email(enrollment.user, enrollment)
+      analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
+        **email_analytics_attributes(enrollment),
+        email_type: 'Failed fraud suspected',
+      )
     else
       send_failed_email(enrollment.user, enrollment)
+      analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
+        **email_analytics_attributes(enrollment),
+        email_type: 'Failed',
+      )
     end
   end
 
@@ -233,6 +250,10 @@ class GetUspsProofingResultsJob < ApplicationJob
       fraud_suspected: response['fraudSuspected'],
       passed: true,
       reason: 'Successful status update',
+    )
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
+      **email_analytics_attributes(enrollment),
+      email_type: 'Success',
     )
     enrollment.profile.activate
     enrollment.update(status: :passed)

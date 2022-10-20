@@ -109,13 +109,6 @@ es:
         intro: 'Seguridad de la contraseña:'
         iv: Buena
         v: '¡Muy buena!'
-    personal_key:
-      email_body: No pierdas tu clave personal ni la compartas con otros. La pediremos
-        si restableces tu contraseña.
-      email_title: Guárdala. Manténla segura.
-      info: Necesitarás esta clave personal si olvidas tu contraseña. Si restableces
-        tu contraseña y no tienes esta clave, deberás verificar tu identidad
-        nuevamente.
     sp_handoff_bounced: Su inicio de sesión fue exitoso, pero %{sp_name} lo envió de
       regreso a %{app_name}. Póngase en contacto con %{sp_link} para obtener
       ayuda.

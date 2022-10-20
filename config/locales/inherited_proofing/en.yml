@@ -3,6 +3,7 @@ en:
   inherited_proofing:
     buttons:
       continue: Continue
+      try_again: Try again
     cancel:
       actions:
         keep_going: No, keep going
@@ -19,6 +20,12 @@ en:
       instructions:
         switch_back: Switch back to your computer to finish verifying your identity.
         switch_back_image: Arrow pointing from phone to computer
+    errors:
+      cannot_retrieve:
+        heading: We could not retrieve your information from My HealtheVet
+        info: We are temporarily having trouble retrieving your information. Please try
+          again.
+        title: Couldn’t retrieve information
     headings:
       lets_go: How verifying your identity works
       retrieval: We are retrieving your information from My HealtheVet

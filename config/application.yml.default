@@ -107,7 +107,6 @@ idv_max_attempts: 5
 idv_min_age_years: 13
 idv_native_camera_a_b_testing_enabled: false
 idv_native_camera_a_b_testing_percent: 10
-idv_personal_key_confirmation_enabled: true
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_sp_required: false
@@ -118,7 +117,7 @@ in_person_completion_survey_url: 'https://login.gov'
 include_slo_in_saml_metadata: false
 inherited_proofing_enabled: false
 inherited_proofing_va_base_url: 'https://staging-api.va.gov'
-va_inherited_proofing_mock_enabled: true
+va_inherited_proofing_mock_enabled: false
 irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_auth_tokens: ''
 irs_attempt_api_csp_id: 'LOGIN.gov'

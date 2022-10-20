@@ -323,12 +323,11 @@ module Features
 
     def acknowledge_and_confirm_personal_key
       click_acknowledge_personal_key
-
-      page.find(':focus').fill_in with: scrape_personal_key
-      within('[role=dialog]') { click_continue }
     end
 
     def click_acknowledge_personal_key
+      checkbox_header = t('forms.validation.required_checkbox')
+      find('label', text: /#{checkbox_header}/).click
       click_continue
     end
 

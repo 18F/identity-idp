@@ -41,6 +41,13 @@ feature 'inherited proofing agreement' do
 
       expect_ip_verify_info_step
     end
+
+    context 'when clicking on the Cancel link' do
+      it 'redirects to the Cancellation UI' do
+        click_link t('links.cancel')
+        expect(page).to have_current_path(idv_inherited_proofing_cancel_path(step: :agreement))
+      end
+    end
   end
 
   context 'when JS is disabled' do
@@ -62,6 +69,13 @@ feature 'inherited proofing agreement' do
       click_continue
 
       expect_ip_verify_info_step
+    end
+
+    context 'when clicking on the Cancel link' do
+      it 'redirects to the Cancellation UI' do
+        click_link t('links.cancel')
+        expect(page).to have_current_path(idv_inherited_proofing_cancel_path(step: :agreement))
+      end
     end
   end
 end
