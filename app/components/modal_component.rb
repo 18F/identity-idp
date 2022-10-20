@@ -1,10 +1,6 @@
 class ModalComponent < BaseComponent
   attr_reader :tag_options
 
-  renders_many :dismiss_buttons, ->(**button_options) do
-    ButtonComponent.new(**button_options, data: button_options[:data].to_h.merge(dismiss: ''))
-  end
-
   def initialize(**tag_options)
     @tag_options = tag_options
   end
@@ -19,5 +15,15 @@ class ModalComponent < BaseComponent
 
   def description_id
     "modal-description-#{unique_id}"
+  end
+
+  def dismiss_button(**button_options, &block)
+    render(
+      ButtonComponent.new(
+        **button_options,
+        data: button_options[:data].to_h.merge(dismiss: ''),
+      ),
+      &block
+    )
   end
 end
