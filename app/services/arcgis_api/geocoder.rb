@@ -12,7 +12,7 @@ module ArcgisApi
       parse_suggestions(
         faraday.get(url, params) do |req|
           req.options.context = { service_name: 'arcgis_geocoder_suggest' }
-        end.body
+        end.body,
       )
     end
 
@@ -50,7 +50,7 @@ module ArcgisApi
       suggestions['suggestions'].map do |suggestion|
         {
           text: suggestion['text'],
-          magicKey: suggestion['magicKey']
+          magicKey: suggestion['magicKey'],
         }
       end
     end
