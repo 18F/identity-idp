@@ -4,10 +4,10 @@ module Idv
       def inherited_proofing_form(payload_hash)
         if va_inherited_proofing?
           return Idv::InheritedProofing::Va::Form.new payload_hash: payload_hash
-          end
+        end
 
         raise 'Inherited proofing form could not be identified'
       end
-      end
     end
   end
+end
