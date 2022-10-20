@@ -6,6 +6,9 @@
   align-items: start;
   justify-content: center;
 
+  // Pending upstream Login Design System revision:
+  background: rgba(color('base-darker'), 50%);
+
   @include at-media('tablet') {
     align-items: center;
   }
@@ -25,12 +28,4 @@
   hr {
     width: 5rem;
   }
-}
-
-// ===============================================
-// Pending upstream Login Design System revisions:
-// ===============================================
-
-.usa-modal-overlay {
-  background: rgba(color('base-darker'), 50%);
 }
