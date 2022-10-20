@@ -34,7 +34,9 @@ module Idv
         end
 
         def api_call_already_in_progress?
-          DocumentCaptureSession.find_by(uuid: flow_session["inherited_proofing_verify_step_document_capture_session_uuid"])&.in_progress?
+          DocumentCaptureSession.find_by(
+            uuid: flow_session['inherited_proofing_verify_step_document_capture_session_uuid'],
+          )&.in_progress?
         end
       end
     end
