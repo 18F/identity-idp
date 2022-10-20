@@ -2,6 +2,7 @@ module Idv
   module Steps
     module InheritedProofing
       class VerifyWaitStepShow < VerifyBaseStep
+        include UserPiiManagable
         delegate :controller, :idv_session, to: :@flow
 
         STEP_INDICATOR_STEP = :getting_started
@@ -47,7 +48,7 @@ module Idv
           form_response = form.submit
 
           if form_response.success?
-            flow_session[:pii_from_user] = form.user_pii
+            inherited_proofing_save_user_pii_to_session!(form.user_pii)
             mark_step_complete(:verify_wait)
           else
             mark_step_incomplete(:agreement)
