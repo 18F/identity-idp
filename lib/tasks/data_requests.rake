@@ -58,9 +58,9 @@ namespace :data_requests do
   #temporary thing for a one-off
   desc 'Percentages of overall users with different MFA types configured'
   task user_mfa_percentages: :environment do
-    # ActiveRecord::Base.logger = Logger.new(STDOUT)
+    ActiveRecord::Base.logger = Logger.new(STDOUT)
     CSV.open('/tmp/mfa_counts.csv', 'w') do |csv|
-      csv << %w[phone webauthn backup_codes piv_cac auth_app]
+      csv << %w[phone webauthn webauthn_platform backup_codes piv_cac auth_app]
       User.includes(
         :phone_configurations,
         :webauthn_configurations,
@@ -69,41 +69,46 @@ namespace :data_requests do
         :auth_app_configurations
       ).find_in_batches do |batch|
         batch.each do |user|
-          phone_count, webauthn_count, backup_codes_count, piv_cac_count, auth_app_count = 0, 0, 0, 0, 0
+          phone_count, webauthn_count, webauthn_platform_count, backup_codes_count, piv_cac_count, auth_app_count = 0, 0, 0, 0, 0, 0
           phone_count += 1 if user.phone_configurations.select(&:mfa_enabled?).any?
-          webauthn_count += 1 if user.webauthn_configurations.select(&:mfa_enabled?).any?
+          webauthn_count += 1 if user.webauthn_configurations.select do |w|
+            w.mfa_enabled? && (w.friendly_name == :webauthn)
+          end.any?
+          webauthn_platform_count += 1 if user.webauthn_configurations.select do |w|
+            w.mfa_enabled? && (w.friendly_name == :webauthn)
+          end.any?
           backup_codes_count += 1 if user.backup_code_configurations.first.present? # collapses all rows into 1
           piv_cac_count += 1 if user.piv_cac_configurations.select(&:mfa_enabled?).any?
           auth_app_count += 1 if user.auth_app_configurations.select(&:mfa_enabled?).any?
 
-          csv << [phone_count, webauthn_count, backup_codes_count, piv_cac_count, auth_app_count]
+          csv << [phone_count, webauthn_count, webauthn_platform_count, backup_codes_count, piv_cac_count, auth_app_count]
         end
       end
     end
 
+    phone_total, webauthn_total, webauthn_platform_total, backup_codes_total, piv_cac_total, auth_app_total = 0, 0, 0, 0, 0, 0
+    total = 0
 
-    csv = CSV.read('/tmp/mfa_counts.csv', headers: true)
-    phone_total, webauthn_total, backup_codes_total, piv_cac_total, auth_app_total = 0, 0, 0, 0, 0
-
-    csv.each do |r|
+    CSV.foreach('/tmp/mfa_counts.csv', headers: true) do |r|
+      total += 1
       phone_total += r['phone'].to_i
       webauthn_total += r['webauthn'].to_i
+      webauthn_platform_total += r['webauthn_platform'].to_i
       backup_codes_total += r['backup_codes'].to_i
       piv_cac_total += r['piv_cac'].to_i
       auth_app_total += r['auth_app'].to_i
     end
-
-    total = csv.length
-
+    puts "total: #{total}"
     phone_percentage = (phone_total.to_f / total) * 100
     webauthn_percentage = (webauthn_total.to_f / total) * 100
+    webauthn_platform_percentage = (webauthn_platform_total.to_f / total) * 100
     backup_codes_percentage = (backup_codes_total.to_f / total) * 100
     piv_cac_percentage = (piv_cac_total.to_f / total) * 100
     auth_app_percentage = (auth_app_total.to_f / total) * 100
 
     CSV.open('/tmp/mfa_percentages.csv', 'w') do |csv|
-      csv << %w[phone webauthn backup_codes piv_cac auth_app]
-      csv << [phone_percentage, webauthn_percentage, backup_codes_percentage, piv_cac_percentage, auth_app_percentage]
+      csv << %w[phone webauthn webauthn_platform backup_codes piv_cac auth_app]
+      csv << [phone_percentage, webauthn_percentage, webauthn_platform_percentage, backup_codes_percentage, piv_cac_percentage, auth_app_percentage]
     end
   end
 end
