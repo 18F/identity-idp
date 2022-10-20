@@ -53,7 +53,7 @@ module Proofing
       failed_resolution_attributes = resolution_result.attributes_requiring_additional_verification
       passed_state_id_attributes = state_id_result.verified_attributes
 
-      (failed_resolution_attributes - passed_state_id_attributes).empty?
+      (failed_resolution_attributes.to_a - passed_state_id_attributes.to_a).empty?
     end
   end
 end
