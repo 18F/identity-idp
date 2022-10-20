@@ -27,15 +27,6 @@
   }
 }
 
-lg-modal.session-timeout-modal .modal-content::before {
-  content: '';
-  display: block;
-  height: 48px;
-  margin: units(2) auto units(4);
-  width: 48px;
-  background: url('clock.svg') no-repeat;
-}
-
 // ===============================================
 // Pending upstream Login Design System revisions:
 // ===============================================

@@ -1,4 +1,7 @@
 <%= render ModalComponent.new(class: 'session-timeout-modal') do |c| %>
+  <div class="display-flex flex-align-center flex-justify-center">
+    <%= render AlertIconComponent.new(icon_name: :info_question) %>
+  </div>
   <h2 class="margin-y-2 fs-20p text-normal text-center" id="<%= c.label_id %>">
     <%= t('headings.session_timeout_warning') %>
   </h2>
