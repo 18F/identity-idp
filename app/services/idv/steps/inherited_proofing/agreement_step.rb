@@ -18,6 +18,8 @@ module Idv
         end
 
         def enqueue_job
+          return if api_call_already_in_progress?
+
           doc_capture_session = create_document_capture_session(
             inherited_proofing_verify_step_document_capture_session_uuid_key,
           )
@@ -29,6 +31,10 @@ module Idv
             controller.inherited_proofing_service_provider_data,
             doc_capture_session.uuid,
           )
+        end
+
+        def api_call_already_in_progress?
+          DocumentCaptureSession.find_by(uuid: flow_session["inherited_proofing_verify_step_document_capture_session_uuid"])&.in_progress?
         end
       end
     end
