@@ -5,5 +5,5 @@
               start: start,
               frequency: frequency,
             } %>
-<%= render(partial: 'session_timeout/warning', locals: { modal: modal }) %>
+<%= render(partial: 'session_timeout/warning', locals: { modal_presenter: modal }) %>
 <%= javascript_packs_tag_once 'session-timeout-ping' %>

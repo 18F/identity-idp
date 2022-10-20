@@ -8,16 +8,16 @@
   <hr class="margin-bottom-4 border-info border-width-05" />
   <div class="margin-bottom-6">
     <p>
-      <%= modal.message %>
+      <%= modal_presenter.message %>
     </p>
     <p class="usa-sr-only" id="<%= c.description_id %>" role="timer" aria-live="polite" aria-atomic="true">
-      <%= modal.sr_message %>
+      <%= modal_presenter.sr_message %>
     </p>
   </div>
-  <%= button_tag modal.continue,
+  <%= button_tag modal_presenter.continue,
                  id: 'session-keepalive-btn',
                  class: 'usa-button usa-button--big usa-button--full-width margin-bottom-2' %>
-  <%= link_to modal.sign_out,
+  <%= link_to modal_presenter.sign_out,
               destroy_user_session_path,
               class: 'usa-button usa-button--big usa-button--full-width usa-button--outline' %>
 <% end %>
