@@ -1,18 +1,14 @@
 <%= content_tag(:'lg-modal', class: css_class, hidden: true) do %>
-  <div class="usa-modal-overlay">
-    <%= tag.div(
-          role: 'dialog',
-          class: 'padding-x-2 padding-y-6 modal',
-          aria: {
-            describedby: description_id,
-            labelledby: label_id,
-          },
-        ) do %>
-      <div class="modal-center">
-        <div class="modal-content">
-          <%= content %>
-        </div>
-      </div>
-    <% end %>
-  </div>
+  <%= tag.div(
+        role: 'dialog',
+        class: 'usa-modal-overlay',
+        aria: {
+          describedby: description_id,
+          labelledby: label_id,
+        },
+      ) do %>
+    <div class="modal-content">
+      <%= content %>
+    </div>
+  <% end %>
 <% end %>

@@ -45,7 +45,7 @@ const start = parseInt(warningEl?.dataset.start || defaultTime, 10) * 1000;
 const timeoutUrl = warningEl?.dataset.timeoutUrl;
 const initialTime = new Date();
 
-const modal = document.querySelector<ModalElement>('lg-modal.session-timeout')!;
+const modal = document.querySelector<ModalElement>('lg-modal.session-timeout-modal')!;
 const keepaliveEl = document.getElementById('session-keepalive-btn');
 const countdownEls: NodeListOf<CountdownElement> = modal.querySelectorAll('lg-countdown');
 const csrfEl: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
