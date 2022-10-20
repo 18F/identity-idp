@@ -168,6 +168,9 @@ module Identity
       config.lookbook.auto_refresh = false
       config.lookbook.project_name = "#{APP_NAME} Component Previews"
       config.lookbook.ui_theme = 'blue'
+
+      require 'component_preview_csp'
+      config.middleware.insert_after ActionDispatch::Static, ComponentPreviewCsp
     end
   end
 end
