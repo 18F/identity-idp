@@ -86,7 +86,7 @@ module Proofing
           attributes.add attribute if verified
         end
 
-        attributes.to_a
+        attributes
       end
 
       def address_verified?(results)
