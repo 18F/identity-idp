@@ -593,13 +593,14 @@ RSpec.describe GetUspsProofingResultsJob do
 
       context 'when USPS returns a 5xx status code' do
         before(:each) do
-          stub_request_proofing_results_with_responses({ status: 500 })
+          stub_request_proofing_results_internal_server_error
         end
 
         it_behaves_like(
           'enrollment_encountering_an_exception',
           exception_class: 'Faraday::ServerError',
           exception_message: 'the server responded with status 500',
+          response_message: 'An internal error occurred processing the request',
         )
       end
 
@@ -649,17 +650,6 @@ RSpec.describe GetUspsProofingResultsJob do
         it_behaves_like(
           'enrollment_encountering_an_error_that_has_a_nil_response',
           error_type: Faraday::NilStatusError,
-        )
-      end
-
-      context 'when a server error occurs' do
-        before(:each) do
-          stub_request_proofing_results_with_server_error
-        end
-
-        it_behaves_like(
-          'enrollment_encountering_an_error_that_has_a_nil_response',
-          error_type: Faraday::ServerError,
         )
       end
     end

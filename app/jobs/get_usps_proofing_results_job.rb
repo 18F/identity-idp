@@ -40,6 +40,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def response_analytics_attributes(response)
+    # todo: we should be logging the response status code when one is present
     return { response_present: false } unless response.present?
 
     {
@@ -111,24 +112,31 @@ class GetUspsProofingResultsJob < ApplicationJob
       status_check_attempted_at = Time.zone.now
       enrollment_outcomes[:enrollments_checked] += 1
       response = nil
-      errored = true
 
       begin
         response = proofer.request_proofing_results(
           enrollment.unique_id, enrollment.enrollment_code
         )
-        errored = false
       rescue Faraday::BadRequestError => err
+        # 400 status code. This is used for some status updates and some common client errors
         handle_bad_request_error(err, enrollment)
+      rescue Faraday::ClientError, Faraday::ServerError => err
+        # 4xx or 5xx status code. These are unexpected but will have some sort of response body that we can try to log data from
+        NewRelic::Agent.notice_error(err)
+        handle_client_or_server_error(err, enrollment)
+      rescue Faraday::Error => err
+        # Timeouts, failed connections, parsing errors, and other HTTP errors
+        NewRelic::Agent.notice_error(err)
+        handle_faraday_error(err, enrollment)
       rescue StandardError => err
         NewRelic::Agent.notice_error(err)
         handle_standard_error(err, enrollment)
+      else
+        process_enrollment_response(enrollment, response)
+      ensure
+        # Record the attempt to update the enrollment
+        enrollment.update(status_check_attempted_at: status_check_attempted_at)
       end
-
-      process_enrollment_response(enrollment, response) unless errored
-
-      # Record the attempt to update the enrollment
-      enrollment.update(status_check_attempted_at: status_check_attempted_at)
 
       # Sleep for a while before we attempt to make another call to USPS
       sleep request_delay_in_seconds if idx < enrollments.length - 1
@@ -140,8 +148,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_bad_request_error(err, enrollment)
-    # todo: would there ever not be a response body?
-    response = err.response&.[](:body)
+    response = err.response_body
     case response&.[]('responseMessage')
     when IPP_INCOMPLETE_ERROR_MESSAGE
       # Customer has not been to post office for IPP
@@ -160,13 +167,34 @@ class GetUspsProofingResultsJob < ApplicationJob
     end
   end
 
-  def handle_standard_error(err, enrollment)
-    response_attributes = if err.respond_to?(:response)
-                            response_analytics_attributes(err.response)
-                          else
-                            response_analytics_attributes(nil)
-                          end
+  def handle_client_or_server_error(err, enrollment)
+    response = err.response_body
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
+      **enrollment_analytics_attributes(enrollment, complete: false),
+      **response_analytics_attributes(response),
+      reason: 'Request exception',
+      exception_class: err.class.to_s,
+      exception_message: err.message,
+    )
+    enrollment_outcomes[:enrollments_errored] += 1
+  end
 
+  def handle_faraday_error(err, enrollment)
+    # todo: will the body have been parsed in this case?
+    # todo: should we check for a response body in these cases? Don't think there will be one
+    response = err.response_body
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
+      **enrollment_analytics_attributes(enrollment, complete: false),
+      **response_analytics_attributes(response),
+      reason: 'Request exception',
+      exception_class: err.class.to_s,
+      exception_message: err.message,
+    )
+    enrollment_outcomes[:enrollments_errored] += 1
+  end
+
+  def handle_standard_error(err, enrollment)
+    response_attributes = response_analytics_attributes(nil)
     enrollment_outcomes[:enrollments_errored] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       **enrollment_analytics_attributes(enrollment, complete: false),
