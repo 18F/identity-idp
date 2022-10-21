@@ -6,9 +6,10 @@ module OpenidConnect
     include SecureHeadersConcern
     include AuthorizationCountConcern
     include BillableEventTrackable
+    include InheritedProofingConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
-    before_action :validate_authorize_form, only: [:index]
+    before_action :pre_validate_authorize_form, only: [:index]
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
     before_action :store_request, only: [:index]
     before_action :check_sp_active, only: [:index]
@@ -22,6 +23,12 @@ module OpenidConnect
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
       return redirect_to(sign_up_completed_url) if needs_completion_screen_reason
       link_identity_to_service_provider
+
+      result = @authorize_form.submit
+      # track successful forms, see pre_validate_authorize_form for unsuccessful
+      # this needs to be after link_identity_to_service_provider so that "code" is present
+      track_authorize_analytics(result)
+
       if auth_count == 1 && first_visit_for_sp?
         return redirect_to(user_authorization_confirmation_url)
       end
@@ -37,16 +44,19 @@ module OpenidConnect
 
     def check_sp_handoff_bounced
       return unless SpHandoffBounce::IsBounced.call(sp_session)
-      analytics.track_event(Analytics::SP_HANDOFF_BOUNCED_DETECTED)
+      analytics.sp_handoff_bounced_detected
       redirect_to bounced_url
       true
     end
 
     def confirm_user_is_authenticated_with_fresh_mfa
       bump_auth_count unless user_fully_authenticated?
-      return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated? &&
-                                                                 service_provider_mfa_policy.
-                                                                 auth_method_confirms_to_sp_request?
+
+      unless user_fully_authenticated? && service_provider_mfa_policy.
+          auth_method_confirms_to_sp_request?
+        return confirm_two_factor_authenticated(request_id)
+      end
+
       redirect_to user_two_factor_authentication_url if device_not_remembered?
     end
 
@@ -65,7 +75,7 @@ module OpenidConnect
     def handle_successful_handoff
       track_events
       SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
-      redirect_to @authorize_form.success_redirect_uri
+      redirect_to @authorize_form.success_redirect_uri, allow_other_host: true
       delete_branded_experience
     end
 
@@ -81,7 +91,7 @@ module OpenidConnect
 
     def track_authorize_analytics(result)
       analytics_attributes = result.to_h.except(:redirect_uri).
-                             merge(user_fully_authenticated: user_fully_authenticated?)
+        merge(user_fully_authenticated: user_fully_authenticated?)
 
       analytics.openid_connect_request_authorization(**analytics_attributes)
     end
@@ -90,6 +100,7 @@ module OpenidConnect
       ((@authorize_form.ial2_requested? || @authorize_form.ial2_strict_requested?) &&
         (current_user.decorate.identity_not_verified? ||
         decorated_session.requested_more_recent_verification?)) ||
+        current_user.decorate.reproof_for_irs?(service_provider: current_sp) ||
         identity_needs_strict_ial2_verification?
     end
 
@@ -105,14 +116,15 @@ module OpenidConnect
       params.permit(OpenidConnectAuthorizeForm::ATTRS)
     end
 
-    def validate_authorize_form
+    def pre_validate_authorize_form
       result = @authorize_form.submit
-      track_authorize_analytics(result)
-
       return if result.success?
 
+      # track forms with errors
+      track_authorize_analytics(result)
+
       if (redirect_uri = result.extra[:redirect_uri])
-        redirect_to redirect_uri
+        redirect_to redirect_uri, allow_other_host: true
       else
         render :error
       end
@@ -151,8 +163,7 @@ module OpenidConnect
         user: current_user,
       )
 
-      analytics.track_event(
-        Analytics::SP_REDIRECT_INITIATED,
+      analytics.sp_redirect_initiated(
         ial: event_ial_context.ial,
         billed_ial: event_ial_context.bill_for_ial_1_or_2,
       )

@@ -92,6 +92,9 @@ en:
       info:
         lead: It must be at least %{min_length} characters long and not be a commonly
           used password. That’s it!
+      password_key: You need your 16-character personal key to reset your password if
+        you verified your identity with this account. If you don’t have it, you
+        can still reset your password and then reverify your identity.
       strength:
         i: Very weak
         ii: Weak
@@ -99,13 +102,6 @@ en:
         intro: 'Password strength: '
         iv: Good
         v: Great!
-    personal_key:
-      email_body: Don’t lose your personal key or share it with others. We’ll ask for
-        it if you reset your password.
-      email_title: Save it. Keep it safe.
-      info: You’ll need this personal key if you forget your password. If you reset
-        your password and don’t have this key, you’ll have to verify your
-        identity again.
     sp_handoff_bounced: Your sign in was successful, but %{sp_name} sent you back to
       %{app_name}. Please contact %{sp_link} for help.
     sp_handoff_bounced_with_no_sp: your service provider

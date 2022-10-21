@@ -22,6 +22,14 @@ module Idv
         { name: :secure_account },
       ].freeze
 
+      STEP_INDICATOR_STEPS_GPO = [
+        { name: :getting_started },
+        { name: :verify_id },
+        { name: :verify_info },
+        { name: :secure_account },
+        { name: :get_a_letter },
+      ].freeze
+
       OPTIONAL_SHOW_STEPS = {
         verify_wait: Idv::Steps::VerifyWaitStepShow,
       }.freeze
@@ -33,7 +41,6 @@ module Idv
         redo_address: Idv::Actions::RedoAddressAction,
         redo_ssn: Idv::Actions::RedoSsnAction,
         redo_document_capture: Idv::Actions::RedoDocumentCaptureAction,
-        verify_document: Idv::Actions::VerifyDocumentAction,
         verify_document_status: Idv::Actions::VerifyDocumentStatusAction,
       }.freeze
 

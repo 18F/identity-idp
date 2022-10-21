@@ -29,6 +29,8 @@ class SessionDecorator
 
   def sp_name; end
 
+  def sp_issuer; end
+
   def sp_logo; end
 
   def sp_logo_url; end
@@ -44,6 +46,10 @@ class SessionDecorator
   end
 
   def irs_attempts_api_session_id; end
+
+  def request_url_params
+    {}
+  end
 
   private
 

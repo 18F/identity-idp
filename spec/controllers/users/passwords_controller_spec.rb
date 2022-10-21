@@ -1,14 +1,16 @@
 require 'rails_helper'
 
 describe Users::PasswordsController do
-  include Features::MailerHelper
-
   describe '#update' do
     context 'form returns success' do
       it 'redirects to profile and sends a password change email' do
         stub_sign_in
         stub_analytics
+        stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
+
+        expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).
+          with(failure_reason: nil, success: true)
 
         params = { password: 'salty new password' }
         patch :update, params: { update_user_password_form: params }
@@ -47,27 +49,47 @@ describe Users::PasswordsController do
         patch :update, params: { update_user_password_form: params }
       end
 
+      it 'sends a security event' do
+        user = create(:user)
+        stub_sign_in(user)
+        security_event = PushNotification::PasswordResetEvent.new(user: user)
+        expect(PushNotification::HttpPush).to receive(:deliver).with(security_event)
+
+        params = { password: 'salty new password' }
+        patch :update, params: { update_user_password_form: params }
+      end
+
       it 'sends the user an email' do
         user = create(:user)
-        mail = double
-        expect(mail).to receive(:deliver_now_or_later)
-        expect(UserMailer).to receive(:password_changed).
-          with(user, user.email_addresses.first, hash_including(:disavowal_token)).
-          and_return(mail)
 
         stub_sign_in(user)
 
         params = { password: 'salty new password' }
         patch :update, params: { update_user_password_form: params }
+
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          0, {
+            to: [user.email_addresses.first.email],
+            subject: t('devise.mailer.password_updated.subject'),
+          }
+        )
       end
     end
 
     context 'form returns failure' do
       it 'renders edit' do
+        password_short_error = { password: [:too_short] }
         stub_sign_in
 
         stub_analytics
+        stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
+
+        expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).with(
+          success: false,
+          failure_reason: password_short_error,
+        )
 
         params = { password: 'new' }
         patch :update, params: { update_user_password_form: params }
@@ -80,7 +102,7 @@ describe Users::PasswordsController do
               t('errors.attributes.password.too_short.other', count: Devise.password_length.first),
             ],
           },
-          error_details: { password: [:too_short] },
+          error_details: password_short_error,
         )
         expect(response).to render_template(:edit)
       end

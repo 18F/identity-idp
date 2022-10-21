@@ -45,7 +45,13 @@ class User < ApplicationRecord
   has_many :sign_in_restrictions, dependent: :destroy
   has_many :in_person_enrollments, dependent: :destroy
 
-  has_one :pending_in_person_enrollment, -> { where(status: :pending).order(created_at: :desc) },
+  has_one :pending_in_person_enrollment,
+          -> { where(status: :pending).order(created_at: :desc) },
+          class_name: 'InPersonEnrollment', foreign_key: :user_id, inverse_of: :user,
+          dependent: :destroy
+
+  has_one :establishing_in_person_enrollment,
+          -> { where(status: :establishing).order(created_at: :desc) },
           class_name: 'InPersonEnrollment', foreign_key: :user_id, inverse_of: :user,
           dependent: :destroy
 
@@ -92,11 +98,37 @@ class User < ApplicationRecord
   end
 
   def pending_profile
-    profiles.verification_pending.order(created_at: :desc).first
+    profiles.gpo_verification_pending.order(created_at: :desc).first
   end
 
   def default_phone_configuration
     phone_configurations.order('made_default_at DESC NULLS LAST, created_at').first
+  end
+
+  ##
+  # @param [String] issuer
+  # @return [Boolean] Whether the user should receive a survey for completing in-person proofing
+  def should_receive_in_person_completion_survey?(issuer)
+    Idv::InPersonConfig.enabled_for_issuer?(issuer) &&
+      in_person_enrollments.
+        where(issuer: issuer, status: :passed).order(created_at: :desc).
+        pick(:follow_up_survey_sent) == false
+  end
+
+  ##
+  # Record that the in-person proofing survey was sent
+  # @param [String] issuer
+  def mark_in_person_completion_survey_sent(issuer)
+    enrollment_id, follow_up_survey_sent = in_person_enrollments.
+      where(issuer: issuer, status: :passed).
+      order(created_at: :desc).
+      pick(:id, :follow_up_survey_sent)
+
+    if follow_up_survey_sent == false
+      # Enrollment record is present and survey was not previously sent
+      InPersonEnrollment.update(enrollment_id, follow_up_survey_sent: true)
+    end
+    nil
   end
 
   MINIMUM_LIKELY_ENCRYPTED_DATA_LENGTH = 1000

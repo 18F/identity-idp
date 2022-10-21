@@ -32,13 +32,12 @@ RSpec.describe OtpVerificationForm do
       end
     end
 
-    context 'when the format of the code is not exactly 6 characters' do
+    context 'when numeric is enabled and the code is not exactly 6 digits' do
       it 'returns FormResponse with success: false' do
         user = build_stubbed(:user)
         invalid_codes = [
-          '123abcd',
-          '1234567',
-          'abcde',
+          'abcdef',
+          '12345a',
           "aaaaa\n123456\naaaaaaaaa",
         ]
 

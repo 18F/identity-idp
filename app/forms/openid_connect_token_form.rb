@@ -69,7 +69,7 @@ class OpenidConnectTokenForm
     return if code.blank? || code.include?("\x00")
 
     @identity = ServiceProviderIdentity.where(session_uuid: code).
-                order(updated_at: :desc).first
+      order(updated_at: :desc).first
   end
 
   def pkce?
@@ -195,6 +195,7 @@ class OpenidConnectTokenForm
     {
       client_id: client_id,
       user_id: identity&.user&.uuid,
+      code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
     }
   end
 

@@ -8,7 +8,7 @@ describe SignUp::CancellationsController do
       properties = { request_came_from: 'no referer' }
 
       expect(@analytics).to receive(:track_event).with(
-        Analytics::USER_REGISTRATION_CANCELLATION, properties
+        'User registration: cancellation visited', properties
       )
 
       get :new
@@ -21,7 +21,7 @@ describe SignUp::CancellationsController do
       properties = { request_came_from: 'users/sessions#new' }
 
       expect(@analytics).to receive(:track_event).with(
-        Analytics::USER_REGISTRATION_CANCELLATION, properties
+        'User registration: cancellation visited', properties
       )
 
       get :new

@@ -3,15 +3,15 @@ fr:
   two_factor_authentication:
     account_reset:
       cancel_link: Annuler votre demande
-      link: supprimer votre compte
+      link: réinitialiser votre compte
       pending_html: Vous avez actuellement une demande en attente pour supprimer votre
         compte.  Il faut compter 24 heures à partir du moment où vous avez fait
         la demande pour terminer le processus.  Veuillez vérifier plus tard.
         %{cancel_link}
       successful_cancel: Je vous remercie. Votre demande de suppression de votre
         compte %{app_name} a été annulée.
-      text_html: Si vous ne pouvez pas utiliser l’une de ces options de sécurité
-        ci-dessus, vous pouvez réinitialiser vos préférences par %{link}.
+      text_html: Si vous ne pouvez utiliser aucune des méthodes d’authentification
+        ci-dessus, vous pouvez %{link}.
     backup_code_fallback:
       question: Vous n’avez pas vos codes de secours disponibles?
     backup_code_header_text: Entrez votre code de sécurité de secours
@@ -99,10 +99,12 @@ fr:
       voice_unsupported: Il nous est impossible d’appeler des numéros de téléphone
         dans le %{location}.
     otp_make_default_number:
-      instruction: Veuillez cocher la case ci-dessous si vous voulez que ce soit le
-        téléphone par défaut. numéro que vous recevez des messages texte ou des
-        appels téléphoniques.
+      instruction: Faites de ce numéro de téléphone le numéro par défaut où vous
+        recevez des messages texte ou des appels téléphoniques.
       label: Numéro de téléphone par défaut
+      one_number_instruction: Vous devez avoir ajouté plus d’un numéro de téléphone
+        pour pouvoir sélectionner un numéro de téléphone par défaut.
+      one_number_title: Il s’agit de votre numéro par défaut
       title: Faites-en votre numéro de téléphone par défaut?
     personal_key_fallback:
       question: Vous n’avez pas votre clé personnelle?

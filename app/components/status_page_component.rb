@@ -5,6 +5,8 @@ class StatusPageComponent < BaseComponent
     error: [nil, :lock],
   }.freeze
 
+  VALID_STATUS = %i[info error warning].freeze
+
   renders_one :header, ::PageHeadingComponent
   renders_many :action_buttons, ->(**button_options) do
     ButtonComponent.new(**button_options, big: true, wide: true)
@@ -14,8 +16,8 @@ class StatusPageComponent < BaseComponent
   attr_reader :status, :icon
 
   def initialize(status: :error, icon: nil)
-    if !ICONS.key?(status)
-      raise ArgumentError, "`status` #{status} is invalid, expected one of #{ICONS.keys}"
+    if !VALID_STATUS.include?(status)
+      raise ArgumentError, "`status` #{status} is invalid, expected one of #{VALID_STATUS}"
     end
 
     if !ICONS[status].include?(icon)
@@ -26,15 +28,11 @@ class StatusPageComponent < BaseComponent
     @status = status
   end
 
-  def icon_src
-    image_path("status/#{[status, icon].compact.join('-')}", extname: '.svg')
-  end
-
-  def icon_alt
-    # i18n-tasks-use t('components.status_page.icons.error')
-    # i18n-tasks-use t('components.status_page.icons.question')
-    # i18n-tasks-use t('components.status_page.icons.warning')
-    # i18n-tasks-use t('components.status_page.icons.lock')
-    t(icon || status, scope: [:components, :status_page, :icons])
+  def icon_name
+    if @icon
+      "#{status}_#{icon}".to_sym
+    else
+      status.to_sym
+    end
   end
 end

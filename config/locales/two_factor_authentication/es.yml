@@ -3,14 +3,14 @@ es:
   two_factor_authentication:
     account_reset:
       cancel_link: Cancelar su solicitud
-      link: eliminando su cuenta
+      link: restablecer su cuenta
       pending_html: Actualmente tiene una solicitud pendiente para eliminar su cuenta.
         Se necesitan 24 horas desde el momento en que realizó la solicitud para
         completar el proceso.  Por favor, vuelva más tarde. %{cancel_link}
       successful_cancel: Gracias. Su solicitud para eliminar su cuenta de %{app_name}
         ha sido cancelada.
-      text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,
-        puede restablecer tus preferencias por %{link}.
+      text_html: Si no puede utilizar ninguno de los métodos de autenticación
+        anteriores, puede %{link}.
     backup_code_fallback:
       question: '¿No tienes tus códigos de seguridad disponibles?'
     backup_code_header_text: Ingrese su código de seguridad de respaldo
@@ -95,10 +95,12 @@ es:
       voice: Llamada telefónica
       voice_unsupported: No podemos llamar a números de teléfono en %{location}.
     otp_make_default_number:
-      instruction: Marque la casilla a continuación si desea que este sea el teléfono
-        predeterminado número que recibe mensajes de texto o llamadas
-        telefónicas.
+      instruction: Establece este número de teléfono como predeterminado para que
+        recibas en él mensajes de texto o llamadas telefónicas.
       label: Número de teléfono predeterminado
+      one_number_instruction: Debes tener más de un número de teléfono agregado para
+        seleccionar un número de teléfono predeterminado.
+      one_number_title: Este es tu número predeterminado
       title: '¿Es este tu número de teléfono predeterminado?'
     personal_key_fallback:
       question: '¿No tiene su clave personal?'

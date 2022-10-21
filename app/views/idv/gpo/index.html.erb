@@ -1,27 +1,26 @@
 <% title t('titles.idv.get_letter') %>
 
 <% content_for(:pre_flash_content) do %>
-  <%= render 'shared/step_indicator', {
-        steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
-        current_step: :verify_phone_or_address,
+  <%= render StepIndicatorComponent.new(
+        steps: step_indicator_steps,
+        current_step: @step_indicator_current_step,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      } %>
+      ) %>
 <% end %>
 
 <%= render PageHeadingComponent.new.with_content(@presenter.title) %>
 
 <p>
-  <%= @presenter.byline %>
-  <%= t('idv.messages.gpo.timeframe') %>
+  <%= t('idv.messages.gpo.address_on_file_html') %>
+  <%= t('idv.messages.gpo.timeframe_html') %>
 </p>
 
 <div class="margin-top-6 margin-bottom-5">
-  <% if @presenter.gpo_mail_bounced? %>
-    <%= render 'idv/gpo/new_address', presenter: @presenter %>
-  <% else %>
-    <%= render 'idv/gpo/address_on_file', presenter: @presenter %>
-  <% end %>
+  <%= button_to @presenter.button,
+                idv_gpo_path,
+                method: 'put',
+                class: 'usa-button usa-button--big usa-button--wide' %>
 </div>
 
 <%= render(
@@ -41,4 +40,4 @@
       ],
     ) %>
 
-<%= render 'idv/doc_auth/back', fallback_path: @presenter.fallback_back_path %>
+<%= render 'idv/shared/back', fallback_path: @presenter.fallback_back_path %>

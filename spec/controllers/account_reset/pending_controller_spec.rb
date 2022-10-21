@@ -18,8 +18,13 @@ describe AccountReset::PendingController do
   end
 
   describe '#cancel' do
-    it 'cancels the account reset request' do
+    it 'cancels the account reset request and logs the cancellation event' do
+      stub_attempts_tracker
+
       account_reset_request = AccountResetRequest.create(user: user, requested_at: 1.hour.ago)
+
+      expect(@irs_attempts_api_tracker).to receive(:track_event).
+        with(:account_reset_cancel_request)
 
       post :cancel
 

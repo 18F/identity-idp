@@ -8,7 +8,7 @@ module Users
     before_action :confirm_user_needs_2fa_setup
 
     def index
-      @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
+      two_factor_options_form
       @presenter = two_factor_options_presenter
       analytics.user_registration_2fa_setup_visit
     end
@@ -16,6 +16,10 @@ module Users
     def create
       result = submit_form
       analytics.user_registration_2fa_setup(**result.to_h)
+      irs_attempts_api_tracker.mfa_enroll_options_selected(
+        success: result.success?,
+        mfa_device_types: @two_factor_options_form.selection,
+      )
 
       if result.success?
         process_valid_form
@@ -24,6 +28,7 @@ module Users
         flash[:phone_error] = t('errors.two_factor_auth_setup.must_select_additional_option')
         redirect_to authentication_methods_setup_path(anchor: 'select_phone')
       else
+        flash[:error] = t('errors.two_factor_auth_setup.must_select_option')
         @presenter = two_factor_options_presenter
         render :index
       end
@@ -35,15 +40,22 @@ module Users
     private
 
     def submit_form
-      @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
-      @two_factor_options_form.submit(two_factor_options_form_params)
+      two_factor_options_form.submit(two_factor_options_form_params)
     end
 
     def two_factor_options_presenter
       TwoFactorOptionsPresenter.new(
         user_agent: request.user_agent,
         user: current_user,
-        aal3_required: service_provider_mfa_policy.aal3_required?,
+        phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
+        piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
+      )
+    end
+
+    def two_factor_options_form
+      @two_factor_options_form ||= TwoFactorOptionsForm.new(
+        user: current_user,
+        phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
         piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
       )
     end

@@ -43,7 +43,7 @@ describe Users::TotpSetupController, devise: true do
         }
 
         expect(@analytics).
-          to have_received(:track_event).with(Analytics::TOTP_SETUP_VISIT, properties)
+          to have_received(:track_event).with('TOTP Setup Visited', properties)
       end
     end
 
@@ -77,7 +77,7 @@ describe Users::TotpSetupController, devise: true do
         }
 
         expect(@analytics).
-          to have_received(:track_event).with(Analytics::TOTP_SETUP_VISIT, properties)
+          to have_received(:track_event).with('TOTP Setup Visited', properties)
       end
     end
   end
@@ -92,6 +92,8 @@ describe Users::TotpSetupController, devise: true do
           stub_sign_in(user)
           stub_analytics
           allow(@analytics).to receive(:track_event)
+          stub_attempts_tracker
+          allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = 'abcdehij'
 
           patch :confirm, params: { name: name, code: 123 }
@@ -108,10 +110,16 @@ describe Users::TotpSetupController, devise: true do
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
+            enabled_mfa_methods_count: 0,
+            in_multi_mfa_selection_flow: false,
+            pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
+
+          expect(@irs_attempts_api_tracker).to have_received(:track_event).
+            with(:mfa_enroll_totp, success: false)
         end
       end
 
@@ -122,6 +130,8 @@ describe Users::TotpSetupController, devise: true do
           stub_sign_in(user)
           stub_analytics
           allow(@analytics).to receive(:track_event)
+          stub_attempts_tracker
+          allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
 
           patch :confirm, params: { name: name, code: generate_totp_code(secret) }
@@ -137,10 +147,16 @@ describe Users::TotpSetupController, devise: true do
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: next_auth_app_id,
+            enabled_mfa_methods_count: 2,
+            in_multi_mfa_selection_flow: false,
+            pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
+
+          expect(@irs_attempts_api_tracker).to have_received(:track_event).
+            with(:mfa_enroll_totp, success: true)
         end
       end
 
@@ -151,6 +167,8 @@ describe Users::TotpSetupController, devise: true do
           stub_sign_in(user)
           stub_analytics
           allow(@analytics).to receive(:track_event)
+          stub_attempts_tracker
+          allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
 
           patch :confirm, params: { name: name }
@@ -167,10 +185,16 @@ describe Users::TotpSetupController, devise: true do
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
+            enabled_mfa_methods_count: 1,
+            in_multi_mfa_selection_flow: false,
+            pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
+
+          expect(@irs_attempts_api_tracker).to have_received(:track_event).
+            with(:mfa_enroll_totp, success: false)
         end
       end
 
@@ -181,6 +205,8 @@ describe Users::TotpSetupController, devise: true do
           stub_sign_in(user)
           stub_analytics
           allow(@analytics).to receive(:track_event)
+          stub_attempts_tracker
+          allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
 
           patch :confirm, params: { code: generate_totp_code(secret) }
@@ -198,10 +224,16 @@ describe Users::TotpSetupController, devise: true do
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
+            enabled_mfa_methods_count: 1,
+            in_multi_mfa_selection_flow: false,
+            pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
+
+          expect(@irs_attempts_api_tracker).to have_received(:track_event).
+            with(:mfa_enroll_totp, success: false)
         end
       end
     end
@@ -212,6 +244,8 @@ describe Users::TotpSetupController, devise: true do
           stub_sign_in_before_2fa
           stub_analytics
           allow(@analytics).to receive(:track_event)
+          stub_attempts_tracker
+          allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = 'abcdehij'
 
           patch :confirm, params: { name: name, code: 123 }
@@ -228,9 +262,15 @@ describe Users::TotpSetupController, devise: true do
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
+            enabled_mfa_methods_count: 0,
+            in_multi_mfa_selection_flow: false,
+            pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
+
+          expect(@irs_attempts_api_tracker).to have_received(:track_event).
+            with(:mfa_enroll_totp, success: false)
         end
       end
 
@@ -241,6 +281,8 @@ describe Users::TotpSetupController, devise: true do
           stub_sign_in_before_2fa
           stub_analytics
           allow(@analytics).to receive(:track_event)
+          stub_attempts_tracker
+          allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
           subject.user_session[:mfa_selections] = mfa_selections
           allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
@@ -259,17 +301,23 @@ describe Users::TotpSetupController, devise: true do
               totp_secret_present: true,
               multi_factor_auth_method: 'totp',
               auth_app_configuration_id: next_auth_app_id,
+              enabled_mfa_methods_count: 1,
+              in_multi_mfa_selection_flow: true,
+              pii_like_keypaths: [[:mfa_method_counts, :phone]],
             }
 
             expect(@analytics).to have_received(:track_event).
               with('Multi-Factor Authentication Setup', result)
+
+            expect(@irs_attempts_api_tracker).to have_received(:track_event).
+              with(:mfa_enroll_totp, success: true)
           end
         end
 
         context 'when user has multiple MFA methods left in user session' do
           let(:mfa_selections) { ['auth_app', 'voice'] }
 
-          it 'redirects to mfa confirmation path with a success message and still logs analytics' do
+          it 'redirects to next mfa path with a success message and still logs analytics' do
             expect(response).to redirect_to(phone_setup_url)
 
             result = {
@@ -278,10 +326,16 @@ describe Users::TotpSetupController, devise: true do
               totp_secret_present: true,
               multi_factor_auth_method: 'totp',
               auth_app_configuration_id: next_auth_app_id,
+              enabled_mfa_methods_count: 1,
+              in_multi_mfa_selection_flow: true,
+              pii_like_keypaths: [[:mfa_method_counts, :phone]],
             }
 
             expect(@analytics).to have_received(:track_event).
               with('Multi-Factor Authentication Setup', result)
+
+            expect(@irs_attempts_api_tracker).to have_received(:track_event).
+              with(:mfa_enroll_totp, success: true)
           end
         end
       end
@@ -291,6 +345,8 @@ describe Users::TotpSetupController, devise: true do
           stub_sign_in_before_2fa
           stub_analytics
           allow(@analytics).to receive(:track_event)
+          stub_attempts_tracker
+          allow(@irs_attempts_api_tracker).to receive(:track_event)
 
           patch :confirm, params: { name: name, code: 123 }
         end
@@ -306,10 +362,16 @@ describe Users::TotpSetupController, devise: true do
             totp_secret_present: false,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
+            enabled_mfa_methods_count: 0,
+            in_multi_mfa_selection_flow: false,
+            pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
+
+          expect(@irs_attempts_api_tracker).to have_received(:track_event).
+            with(:mfa_enroll_totp, success: false)
         end
       end
     end
@@ -334,7 +396,7 @@ describe Users::TotpSetupController, devise: true do
         expect(user.reload.auth_app_configurations.any?).to eq false
         expect(response).to redirect_to(account_two_factor_authentication_path)
         expect(flash[:success]).to eq t('notices.totp_disabled')
-        expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_USER_DISABLED)
+        expect(@analytics).to have_received(:track_event).with('TOTP: User Disabled')
         expect(subject).to have_received(:create_user_event).with(:authenticator_disabled)
       end
     end

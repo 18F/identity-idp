@@ -11,8 +11,7 @@ module UserEncryptedAttributeOverrides
     end
 
     def find_with_email(email)
-      email_address = EmailAddress.confirmed.find_with_email(email) ||
-                      EmailAddress.unconfirmed.find_with_email(email)
+      email_address = EmailAddress.find_with_confirmed_or_unconfirmed_email(email)
       email_address&.user
     end
 

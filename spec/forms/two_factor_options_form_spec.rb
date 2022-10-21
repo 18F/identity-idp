@@ -2,7 +2,15 @@ require 'rails_helper'
 
 describe TwoFactorOptionsForm do
   let(:user) { build(:user) }
-  subject { described_class.new(user) }
+  let(:phishing_resistant_required) { false }
+  let(:piv_cac_required) { false }
+  subject do
+    described_class.new(
+      user: user,
+      phishing_resistant_required: phishing_resistant_required,
+      piv_cac_required: piv_cac_required,
+    )
+  end
 
   describe '#submit' do
     let(:submit_phone) { subject.submit(selection: 'phone') }
@@ -34,6 +42,20 @@ describe TwoFactorOptionsForm do
         expect(result.success?).to eq false
         expect(result.errors).to include :selection
       end
+    end
+
+    it 'is unsuccessful if the selection is empty' do
+      result = subject.submit(selection: [])
+
+      expect(result.success?).to eq false
+      expect(result.errors).to include :selection
+    end
+
+    it 'is successful if user has existing method and does not select any options' do
+      create(:phone_configuration, user: user)
+
+      result = subject.submit(selection: [])
+      expect(result.success?).to eq true
     end
 
     it 'includes analytics hash with a methods count of zero' do
@@ -104,6 +126,37 @@ describe TwoFactorOptionsForm do
 
         expect(result.to_h).to include(enabled_mfa_methods_count: 1)
       end
+    end
+
+    context 'when a user wants to is required to add piv_cac on sign in' do
+      let(:user) { build(:user, :with_authentication_app) }
+      let(:enabled_mfa_methods_count) { 1 }
+      let(:mfa_selection) { ['phone'] }
+      let(:phishing_resistant_required) { true }
+      let(:piv_cac_required) { false }
+
+      before do
+        allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
+      end
+
+      context 'when user is didnt select an mfa' do
+        let(:mfa_selection) { nil }
+
+        it 'does not submits the form' do
+          submission = subject.submit(selection: mfa_selection)
+          expect(submission.success?).to be_falsey
+        end
+      end
+
+      context 'when user selects an mfa' do
+        it 'submits the form' do
+          submission = subject.submit(selection: mfa_selection)
+          expect(submission.success?).to be_truthy
+        end
+      end
+    end
+
+    context 'when user doesnt select mfa selection with existing account' do
     end
 
     context 'when the feature flag toggle for 2FA phone restriction is off' do

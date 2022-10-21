@@ -1,0 +1,19 @@
+<% title t('openid_connect.logout.heading', app_name: APP_NAME) %>
+
+<div class='text-center'>
+  <%= image_tag(asset_url('user-access.svg'), width: '280', height: '91', alt: '') %>
+  <% if @service_provider_name.present? %>
+    <%= render PageHeadingComponent.new.with_content(t('openid_connect.logout.heading_with_sp', app_name: APP_NAME, service_provider_name: @service_provider_name)) %>
+  <% else %>
+    <%= render PageHeadingComponent.new.with_content(t('openid_connect.logout.heading', app_name: APP_NAME)) %>
+  <% end %>
+</div>
+
+<%= button_to(
+      openid_connect_logout_path,
+      params: @params,
+      method: :delete,
+      form_class: 'margin-top-5 margin-bottom-2',
+      class: 'usa-button usa-button--big usa-button usa-button--full-width',
+    ) { t('openid_connect.logout.confirm', app_name: APP_NAME) } %>
+<%= link_to(account_path, class: 'usa-button usa-button--big usa-button--outline usa-button--full-width') { t('openid_connect.logout.deny') } %>

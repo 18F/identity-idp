@@ -36,8 +36,9 @@ describe Users::MfaSelectionController do
       params = ActionController::Parameters.new(voice_params)
       response = FormResponse.new(success: true, errors: {}, extra: { selection: ['voice'] })
 
+      form_params = { user: user, phishing_resistant_required: false, piv_cac_required: nil }
       form = instance_double(TwoFactorOptionsForm)
-      allow(TwoFactorOptionsForm).to receive(:new).with(user).and_return(form)
+      allow(TwoFactorOptionsForm).to receive(:new).with(form_params).and_return(form)
       expect(form).to receive(:submit).
         with(params.require(:two_factor_options_form).permit(:selection)).
         and_return(response)
@@ -173,23 +174,41 @@ describe Users::MfaSelectionController do
     end
 
     context 'when the form is empty' do
-      before do
-        stub_sign_in
+      let(:user) { build(:user, :signed_up) }
 
-        patch :update, params: {
-          two_factor_options_form: {
-          },
-        }
+      before do
+        stub_sign_in(user)
       end
-      it 'renders the index page' do
-        expect(response).to redirect_to two_factor_options_path
+
+      context 'with no active MFA' do
+        it 'redirects to the index page with a flash error' do
+          patch :update, params: {
+            two_factor_options_form: {
+            },
+          }
+
+          expect(response).to redirect_to two_factor_options_path
+          expect(flash[:error]).to eq(
+            t('errors.two_factor_auth_setup.must_select_option'),
+          )
+        end
       end
-      it 'contains a flash message' do
-        expect(flash[:error]).to eq(
-          t('errors.two_factor_auth_setup.must_select_option'),
-        )
+
+      context 'with an active MFA' do
+        it 'redirects to after_mfa_setup_path' do
+          create(:phone_configuration, user: user)
+
+          patch :update, params: {
+            two_factor_options_form: {
+              selection: [''],
+            },
+          }
+
+          expect(response).to redirect_to account_path
+        end
       end
     end
+
     context 'when the selection is not valid' do
       it 'renders the index page' do
         stub_sign_in

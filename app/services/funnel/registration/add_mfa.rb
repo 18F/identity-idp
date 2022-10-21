@@ -1,24 +1,13 @@
 module Funnel
   module Registration
     class AddMfa
-      def self.call(user_id, mfa_method)
+      def self.call(user_id, mfa_method, analytics)
         now = Time.zone.now
-        funnel = RegistrationLog.find_by(user_id: user_id)
-        return if funnel.blank? || funnel.second_mfa.present?
+        funnel = RegistrationLog.create_or_find_by(user_id: user_id)
+        return if funnel.registered_at.present?
 
-        params = if funnel.first_mfa.present?
-                   {
-                     second_mfa: mfa_method,
-                   }
-                 else
-                   {
-                     first_mfa: mfa_method,
-                     first_mfa_at: now,
-                     registered_at: now,
-                   }
-                 end
-
-        funnel.update!(params)
+        analytics.user_registration_user_fully_registered(mfa_method: mfa_method)
+        funnel.update!(registered_at: now)
       end
     end
   end

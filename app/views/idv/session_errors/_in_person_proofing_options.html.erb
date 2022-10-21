@@ -1,6 +1,0 @@
-<% if IdentityConfig.store.in_person_proofing_enabled %>
-  <%= render TroubleshootingOptionsComponent.new(new_features: true) do |c| %>
-    <% c.header { t('idv.troubleshooting.headings.are_you_near') } %>
-    <% c.option(url: idv_in_person_url, new_tab: false).with_content(t('idv.troubleshooting.options.verify_in_person')) %>
-  <% end %>
-<% end %>

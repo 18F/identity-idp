@@ -1,18 +1,10 @@
 ---
 en:
   user_mailer:
-    account_does_not_exist:
-      intro_html: This email address is not yet associated with a %{app_name} account.
-        If you’d like to create a %{app_name} account using this email address,
-        please click the link below or copy and paste the entire link into your
-        browser. If you didn’t request a password reset, you can ignore this
-        message.
-      link_text: Create your account
-      subject: Your %{app_name} password reset request
     account_reset_cancel:
       intro_html: This email confirms you have cancelled your request to delete your
         %{app_name} account.
-      subject: Delete your account
+      subject: Request canceled
     account_reset_complete:
       intro_html: This email confirms you have deleted your %{app_name} account.
       subject: Account deleted
@@ -64,10 +56,6 @@ en:
       link_text: Go to %{app_name}
       reset_password_html: If you can’t remember your password, go to %{app_name} to reset it.
     contact_link_text: contact us
-    deleted_accounts_report:
-      issuers: Issuers
-      name: Name
-      subject: Deleted accounts report
     doc_auth_link:
       message: You’ve requested to verify your identity on a desktop computer.  Please
         sign in to %{sp_link}
@@ -100,6 +88,70 @@ en:
         %{app_name} %{help_link} or %{contact_link}.
       subject: Email address deleted
     help_link_text: Help Center
+    in_person_completion_survey:
+      body:
+        cta:
+          callout: Click the button below to get started.
+          label: Take our survey
+        greeting: Hello,
+        intent: We want to hear about your experience verifying your identity in person
+          at the Post Office.
+        privacy_html: Your answers to this survey will be protected according to the
+          following <a href="%{url}">privacy and security standards</a>.
+        request_description: Fill out a short, anonymous survey and we’ll use your input
+          to help us get better at serving your needs.
+        thanks: Thanks for using %{app_name}.
+      header: Take a minute to tell us how we did
+      subject: Tell us about your recent experience with %{app_name}
+    in_person_failed:
+      body:
+        with_cta: Click the button or copy the link below to try verifying your identity
+          online again through %{sp_or_app_name}. If you are still experiencing
+          issues, please contact the agency you are trying to access.
+        without_cta: Please try verifying your identity again from %{sp_name}’s website.
+          If you are still experiencing issues, please contact the agency you
+          are trying to access.
+      intro: Your identity could not be verified at the %{location} Post Office on
+        %{date}.
+      subject: Your identity could not be verified in person
+      verifying_identity: 'When verifying your identity:'
+      verifying_step_not_expired: 'Your state-issued ID or driver’s license must not
+        be expired. We do not currently accept any other forms of
+        identification, such as passports and military IDs.'
+      verifying_step_proof_of_address: 'If you try to verify your identity in person
+        again, you need to bring a valid proof of address if your current
+        address is different than the address on your ID.'
+    in_person_failed_suspected_fraud:
+      body:
+        help_center_html: If you need further help, you can <a
+          href="%{help_center_url}">visit our Help Center</a> or reach out to
+          the agency you are trying to access.
+        intro: We understand that you were attempting to verify your identity through
+          %{app_name}, however your identity could not be verified at the
+          %{location} Post Office on %{date}.
+      greeting: Hello,
+      subject: Your identity could not be verified in person
+    in_person_ready_to_verify:
+      greeting: Hello,
+      intro: Here are the details to verify your identity in person at a United States
+        Post Office near you.
+      subject: You’re ready to verify your identity with %{app_name} in person
+    in_person_verified:
+      greeting: Hello,
+      intro: You successfully verified your identity at the %{location} Post Office on
+        %{date}.
+      next_sign_in:
+        with_sp:
+          with_cta: Next, click the button or copy the link below to access %{sp_name} and
+            sign in.
+          without_cta: You can now sign in from %{sp_name}’s website.
+        without_sp: Next, click the button or copy the link below to sign in to
+          %{app_name}.
+      sign_in: Sign in
+      subject: You successfully verified your identity with %{app_name}
+      warning_contact_us_html: If you did not attempt to verify your identity in
+        person, please <a href="%{contact_us_url}">contact us</a> and <a
+        href="%{sign_in_url}">sign in</a> to change your password.
     letter_reminder:
       info_html: The letter you are about to receive will contain a confirmation code
         that helps us verify your address. You can complete the identity
@@ -181,6 +233,10 @@ en:
       subject: Unusual activity — reset your %{app_name} password
     reset_password_instructions:
       footer: This link expires in %{expires} hours.
+      gpo_letter_description: If you reset your password, the confirmation code in
+        your letter will no longer work and you’ll have to verify your identity
+        again.
+      gpo_letter_header: Your letter is on the way
       header: To finish resetting your password, please click the link below  or copy
         and paste the entire link into your browser.
       link_text: Reset your password
@@ -194,7 +250,3 @@ en:
         in with this email address, you can ignore this message.
       link_text: Go to %{app_name}
       reset_password_html: If you can’t remember your password, go to %{app_name} to reset it.
-    sps_over_quota_limit:
-      help: ''
-      info: There are SPs that have gone over their quota limit.
-      subject: Some SPs have reached their quota limit

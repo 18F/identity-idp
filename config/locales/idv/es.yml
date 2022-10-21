@@ -6,10 +6,10 @@ es:
         %{last_number}
     buttons:
       cancel: Cancele y regrese a su perfil
-      change_address_label: Cambiar dirección
-      change_label: Cambio
-      change_ssn_label: Cambiar número de Seguridad Social
-      change_state_id_label: Cambiar ID de estado
+      change_address_label: Actualizar su dirección actual
+      change_label: Actualizar
+      change_ssn_label: Actualizar su número de la Seguridad Social
+      change_state_id_label: Actualizar la información de su cédula de identidad
       continue_plain: Continuar
       mail:
         resend: Enviar otra carta
@@ -88,11 +88,15 @@ es:
         warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
           Los errores más comunes suelen producirse al ingresar un Número de
           Seguridad Social o un Código Postal incorrecto.
+      setup:
+        fail_html: 'Por favor, %{contact_form_link} e introduzca el código
+          <b>%{support_code}</b> en el campo de detalle.'
+        heading: Hay un problema con tu información
+        link_text: rellene nuestro formulario decontacto
       timeout: Estamos experimentando un tiempo de espera superior al habitual al
         procesar su solicitud. Inténtalo de nuevo.
     forgot_password:
-      link_html: '¿Se te olvidó tu contraseña? %{link}'
-      link_text: Siga estas instrucciones
+      link_text: '¿Se te olvidó tu contraseña?'
       modal_header: '¿Estás seguro de que no puedes recordar tu contraseña?'
       reset_password: Restablecer la contraseña
       try_again: Inténtalo de nuevo
@@ -102,11 +106,12 @@ es:
           documento de identidad emitido por el estado, etc.
     form:
       address1: Dirección
-      address2: Dirección (opcional)
+      address2: Línea de dirección 2
+      address2_optional: Línea de dirección 2 (opcional)
       city: Ciudad
       dob: Fecha de nacimiento
       first_name: Nombre de pila
-      id_number: Número de identificación
+      id_number: Número de cédula
       last_name: Apellido
       password: Contraseña
       ssn: Número de seguridad social
@@ -129,13 +134,13 @@ es:
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
       confirm: Usted ha encriptado sus datos verificados.
       gpo:
-        address_on_file: Le enviaremos una carta con un código de confirmación a la
-          dirección que nos facilitó en el paso anterior.
-        new_address: Le enviaremos una carta con un código de confirmación a la
-          dirección que especifique.
+        address_on_file_html: Le enviaremos una carta con <strong>un código de
+          confirmación</strong> a la dirección que nos facilitó en el paso
+          anterior.
         resend: Envíeme otra carta
-        timeframe: Las correspondencias se envían al día siguiente por correo de primera
-          clase de USPS y por lo general tardan entre 3 y 7 días laborables.
+        timeframe_html: Las cartas se envían al día siguiente por First Class Mail de
+          USPS y <strong>suelen tardar entre 3 y 7 días hábiles en
+          llegar</strong>.
       mail_sent: Su carta está en camino
       otp_delivery_method:
         phone_number_html: Enviaremos un código a <strong>%{phone}</strong> para
@@ -183,14 +188,13 @@ es:
         resend: '¿Desea otra carta?'
         verify: '¿Desea una carta?'
       otp_delivery_method: '¿Cómo te gustaría recibir el código?'
-      personal_key: Clave personal
       review: Revise y envíe
       session:
         phone: Ingresa un número de teléfono para ayudar a verificar tu identidad
         review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
     troubleshooting:
       headings:
-        are_you_near: '¿Se encuentra cerca de Washington D. C.?'
+        are_you_near: '¿Reside cerca de Washington, D.C. <wbr/>o Baltimore, MD?'
         missing_required_items: '¿Le falta alguno de estos puntos?'
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
         still_having_trouble: '¿Sigue teniendo dificultades?'
@@ -204,11 +208,12 @@ es:
         learn_more_verify_by_mail: Obtenga más información sobre la verificación de su
           dirección por correo
         learn_more_verify_by_phone: Obtenga más información sobre la verificación de su número de teléfono
+        learn_more_verify_in_person: Más información sobre la verificación en persona
         supported_documents: Vea la lista de documentos de identidad emitidos por el
           estado que son aceptados
         verify_by_mail: Verifique su dirección por correo
-        verify_in_person: Verifique su identificación de manera presencial en una
-          oficina de correos
+        verify_in_person: Verifique su documento de identidad en persona en una oficina
+          de correos
     welcome:
       no_js_header: Debe habilitar JavaScript para verificar su identidad.
       no_js_intro: '%{sp_name} requiere que usted verifique su identidad. Debe

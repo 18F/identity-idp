@@ -1,0 +1,23 @@
+<%= render 'verify', pii: pii, step_url: step_url %>
+
+<%= simple_form_for :inherited_proofing,
+                    url: url_for,
+                    method: 'put',
+                    html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
+    <%= f.submit t('inherited_proofing.buttons.continue') %>
+<% end %>
+
+<%= render(
+      'shared/troubleshooting_options',
+      heading_tag: :h3,
+      heading: t('inherited_proofing.troubleshooting.headings.need_help_updating'),
+      options: [
+        {
+          url: 'https://www.va.gov/resources/managing-your-vagov-profile/',
+          text: t('inherited_proofing.troubleshooting.options.get_va_help'),
+          new_tab: true,
+        },
+      ].select(&:present?),
+    ) %>
+
+<%= render 'idv/inherited_proofing/cancel', step: 'verify_info' %>

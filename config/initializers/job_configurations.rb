@@ -206,6 +206,17 @@ else
         cron: cron_1m,
         args: -> { [Time.zone.now] },
       },
+      # Queue usps proofing job to GoodJob
+      get_usps_proofing_results_job: {
+        class: 'GetUspsProofingResultsJob',
+        cron: IdentityConfig.store.get_usps_proofing_results_job_cron,
+        args: -> { [Time.zone.now] },
+      },
+      # Periodically verify signature on ThreatMetrix javascript
+      verify_threat_metrix_js: {
+        class: 'ThreatMetrixJsVerificationJob',
+        cron: cron_1h,
+      },
     }
   end
   # rubocop:enable Metrics/BlockLength

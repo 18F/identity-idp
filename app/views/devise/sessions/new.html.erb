@@ -4,7 +4,7 @@
 
 <% if decorated_session.sp_name %>
   <div class='text-center'>
-    <%= image_tag(asset_url('user-access.svg'), width: '280', alt: '') %>
+    <%= image_tag(asset_url('user-access.svg'), width: '280', height: '91', alt: '') %>
 
     <%= render decorated_session.registration_heading %>
   </div>
@@ -13,27 +13,36 @@
 <% end %>
 <%= render 'shared/sp_alert' %>
 
-<%= validated_form_for(
+<%= simple_form_for(
       resource,
       as: resource_name,
       url: session_path(resource_name),
       html: { autocomplete: 'off' },
     ) do |f|
 %>
-  <%= f.input :email,
-              label: t('account.index.email'),
-              required: true,
-              input_html: { class: 'margin-bottom-6',
-                            autocorrect: 'off',
-                            aria: { invalid: false } } %>
-  <%= render PasswordToggleComponent.new(form: f, required: true) %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :email,
+        label: t('account.index.email'),
+        required: true,
+        input_html: { autocorrect: 'off' },
+      ) %>
+  <%= render PasswordToggleComponent.new(
+        form: f,
+        required: true,
+        wrapper_html: { class: 'margin-top-6' },
+      ) %>
+  <%= render KeyPairGeneratorComponent.new(location: 'sign_in') %>
   <%= f.input :request_id, as: :hidden, input_html: { value: @request_id } %>
   <div class='margin-bottom-4'>
-    <%= submit_tag t('links.next'), class: 'usa-button usa-button--primary usa-button--full-width margin-bottom-2' %>
+    <%= f.submit t('links.next'), full_width: true, wide: false %>
+    <h2 class='separator-text'>
+      <%= t('headings.create_account_with_sp.cta', app_name: APP_NAME) %>
+    </h2>
     <%= link_to(
           t('links.create_account'),
           sign_up_email_url(request_id: @request_id),
-          class: 'text-no-underline usa-button usa-button--outline usa-button--full-width',
+          class: 'usa-button usa-button--big usa-button--outline usa-button--full-width margin-top-1',
         ) %>
   </div>
 <% end %>

@@ -43,7 +43,7 @@ describe Encryption::PasswordVerifier do
       kms_client = Encryption::KmsClient.new
       expect(kms_client).to receive(:encrypt).with(
         encoded_scrypt_password,
-        'user_uuid' => user_uuid, 'context' => 'password-digest',
+        { 'user_uuid' => user_uuid, 'context' => 'password-digest' },
       ).and_return('kms_ciphertext')
       expect(Encryption::KmsClient).to receive(:new).and_return(kms_client)
 

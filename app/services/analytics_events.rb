@@ -22,7 +22,8 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name Account Reset
   # @param [Boolean] success
   # @param [String] user_id
-  # @param [Integer] account_age_in_days
+  # @param [Integer, nil] account_age_in_days number of days since the account was confirmed
+  # (rounded) or nil if the account was not confirmed
   # @param [Hash] mfa_method_counts
   # @param [Hash] errors
   # An account has been deleted through the account reset flow
@@ -163,6 +164,35 @@ module AnalyticsEvents
     track_event('Authentication Confirmation: Reset selected')
   end
 
+  # Tracks when the user creates a set of backup mfa codes.
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def backup_code_created(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'Backup Code Created',
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
+  # Track user creating new BackupCodeSetupForm, record form submission Hash
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  def backup_code_setup_visit(
+    success:,
+    errors: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      'Backup Code Setup Visited',
+      success: success,
+      errors: errors,
+      error_details: error_details,
+      **extra,
+    )
+  end
+
   # A user that has been banned from an SP has authenticated, they are redirected
   # to a page showing them that they have been banned
   def banned_user_redirect
@@ -232,6 +262,28 @@ module AnalyticsEvents
       'Email Deletion Requested',
       success: success,
       errors: errors,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # Tracks request for adding new emails to an account
+  def add_email_request(success:, errors:, **extra)
+    track_event(
+      'Add Email Requested',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # Tracks request for resending confirmation for new emails to an account
+  def resend_add_email_request(success:, **extra)
+    track_event(
+      'Resend Add Email Requested',
+      success: success,
       **extra,
     )
   end
@@ -428,31 +480,141 @@ module AnalyticsEvents
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [String] request_came_from the controller and action from the
   #   source such as "users/sessions#new"
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user clicked cancel during IDV (presented with an option to go back or confirm)
-  def idv_cancellation_visited(step:, request_came_from:, **extra)
+  def idv_cancellation_visited(
+    step:,
+    request_came_from:,
+    proofing_components: nil,
+    **extra
+  )
     track_event(
       'IdV: cancellation visited',
       step: step,
       request_came_from: request_came_from,
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  # @param [Integer] failed_capture_attempts Number of failed Acuant SDK attempts
+  # @param [Integer] failed_submission_attempts Number of failed Acuant doc submissions
+  # @param [String] field Image form field
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The number of acceptable failed attempts (maxFailedAttemptsBeforeNativeCamera) has been met
+  # or exceeded, and the system has forced the use of the native camera, rather than Acuant's
+  # camera, on mobile devices.
+  def idv_native_camera_forced(
+    failed_capture_attempts:,
+    failed_submission_attempts:,
+    field:,
+    flow_path:,
+    **extra
+  )
+    track_event(
+      'IdV: Native camera forced after failed attempts',
+      failed_capture_attempts: failed_capture_attempts,
+      failed_submission_attempts: failed_submission_attempts,
+      field: field,
+      flow_path: flow_path,
       **extra,
     )
   end
 
   # @param [String] step the step that the user was on when they clicked cancel
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user confirmed their choice to cancel going through IDV
-  def idv_cancellation_confirmed(step:, **extra)
-    track_event('IdV: cancellation confirmed', step: step, **extra)
+  def idv_cancellation_confirmed(step:, proofing_components: nil, **extra)
+    track_event(
+      'IdV: cancellation confirmed',
+      step: step,
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # @param [String] step the step that the user was on when they clicked cancel
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user chose to go back instead of cancel IDV
-  def idv_cancellation_go_back(step:, **extra)
-    track_event('IdV: cancellation go back', step: step, **extra)
+  def idv_cancellation_go_back(step:, proofing_components: nil, **extra)
+    track_event(
+      'IdV: cancellation go back',
+      step: step,
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # The user visited the "come back later" page shown during the GPO mailing flow
-  def idv_come_back_later_visit
-    track_event('IdV: come back later visited')
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  def idv_come_back_later_visit(proofing_components: nil, **extra)
+    track_event(
+      'IdV: come back later visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user clicked the troubleshooting option to start in-person proofing
+  def idv_verify_in_person_troubleshooting_option_clicked(flow_path:, **extra)
+    track_event(
+      'IdV: verify in person troubleshooting option clicked',
+      flow_path: flow_path,
+      **extra,
+    )
+  end
+
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user visited the in person proofing location step
+  def idv_in_person_location_visited(flow_path:, **extra)
+    track_event('IdV: in person proofing location visited', flow_path: flow_path, **extra)
+  end
+
+  # @param [String] selected_location Selected in-person location
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user submitted the in person proofing location step
+  def idv_in_person_location_submitted(selected_location:, flow_path:, **extra)
+    track_event(
+      'IdV: in person proofing location submitted',
+      selected_location: selected_location,
+      flow_path: flow_path,
+      **extra,
+    )
+  end
+
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user visited the in person proofing prepare step
+  def idv_in_person_prepare_visited(flow_path:, **extra)
+    track_event('IdV: in person proofing prepare visited', flow_path: flow_path, **extra)
+  end
+
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user submitted the in person proofing prepare step
+  def idv_in_person_prepare_submitted(flow_path:, **extra)
+    track_event('IdV: in person proofing prepare submitted', flow_path: flow_path, **extra)
+  end
+
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user visited the in person proofing switch_back step
+  def idv_in_person_switch_back_visited(flow_path:, **extra)
+    track_event('IdV: in person proofing switch_back visited', flow_path: flow_path, **extra)
+  end
+
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # The user submitted the in person proofing switch_back step
+  def idv_in_person_switch_back_submitted(flow_path:, **extra)
+    track_event('IdV: in person proofing switch_back submitted', flow_path: flow_path, **extra)
+  end
+
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # The user visited the "ready to verify" page for the in person proofing flow
+  def idv_in_person_ready_to_verify_visit(proofing_components: nil, **extra)
+    track_event(
+      'IdV: in person ready to verify visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # @param [String] step_name which step the user was on
@@ -540,6 +702,13 @@ module AnalyticsEvents
     )
   end
 
+  def idv_doc_auth_randomizer_defaulted
+    track_event(
+      'IdV: doc_auth random vendor error',
+      error: 'document_capture_session_uuid_key missing',
+    )
+  end
+
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] user_id
@@ -584,33 +753,48 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # User visited forgot password page
-  def idv_forgot_password
-    track_event('IdV: forgot password visited')
-  end
-
-  # User confirmed forgot password
-  def idv_forgot_password_confirmed
-    track_event('IdV: forgot password confirmed')
-  end
-
-  # GPO address letter requested
-  def idv_gpo_address_letter_requested
-    track_event('IdV: USPS address letter requested')
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # GPO address submitted
-  def idv_gpo_address_submitted(
-    success:,
-    errors:,
-    **extra
-  )
+  def idv_forgot_password(proofing_components: nil, **extra)
     track_event(
-      'IdV: USPS address submitted',
-      success: success,
-      errors: errors,
+      'IdV: forgot password visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # User confirmed forgot password
+  def idv_forgot_password_confirmed(proofing_components: nil, **extra)
+    track_event(
+      'IdV: forgot password confirmed',
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  # @param [DateTime] enqueued_at
+  # @param [Boolean] resend
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # GPO letter was enqueued and the time at which it was enqueued
+  def idv_gpo_address_letter_enqueued(enqueued_at:, resend:, proofing_components: nil, **extra)
+    track_event(
+      'IdV: USPS address letter enqueued',
+      enqueued_at: enqueued_at,
+      resend: resend,
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] resend
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # GPO letter was requested
+  def idv_gpo_address_letter_requested(resend:, proofing_components: nil, **extra)
+    track_event(
+      'IdV: USPS address letter requested',
+      resend: resend,
+      proofing_components: proofing_components,
       **extra,
     )
   end
@@ -660,26 +844,39 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # Tracks the last step of IDV, indicates the user successfully prooved
   def idv_final(
     success:,
+    proofing_components: nil,
     **extra
   )
     track_event(
       'IdV: final resolution',
       success: success,
+      proofing_components: proofing_components,
       **extra,
     )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # User visited IDV personal key page
-  def idv_personal_key_visited
-    track_event('IdV: personal key visited')
+  def idv_personal_key_visited(proofing_components: nil, **extra)
+    track_event(
+      'IdV: personal key visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # User submitted IDV personal key page
-  def idv_personal_key_submitted
-    track_event('IdV: personal key submitted')
+  def idv_personal_key_submitted(proofing_components: nil, **extra)
+    track_event(
+      'IdV: personal key submitted',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # A user has downloaded their backup codes
@@ -689,50 +886,62 @@ module AnalyticsEvents
 
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.previous_event_name IdV: download personal key
-  def idv_personal_key_downloaded
-    track_event('IdV: personal key downloaded')
-  end
-
-  # @identity.idp.previous_event_name IdV: show personal key modal
-  # User opened IDV personal key confirmation modal
-  def idv_personal_key_confirm_visited
-    track_event('IdV: personal key confirm visited')
-  end
-
-  # User submitted IDV personal key confirmation modal
-  def idv_personal_key_confirm_submitted
-    track_event('IdV: personal key confirm submitted')
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  def idv_personal_key_downloaded(proofing_components: nil, **extra)
+    track_event(
+      'IdV: personal key downloaded',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user submitted their phone on the phone confirmation page
   def idv_phone_confirmation_form_submitted(
     success:,
     errors:,
+    proofing_components: nil,
     **extra
   )
     track_event(
       'IdV: phone confirmation form',
       success: success,
       errors: errors,
+      proofing_components: proofing_components,
       **extra,
     )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user was rate limited for submitting too many OTPs during the IDV phone step
-  def idv_phone_confirmation_otp_rate_limit_attempts
-    track_event('Idv: Phone OTP attempts rate limited')
+  def idv_phone_confirmation_otp_rate_limit_attempts(proofing_components: nil, **extra)
+    track_event(
+      'Idv: Phone OTP attempts rate limited',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user was locked out for hitting the phone OTP rate limit during IDV
-  def idv_phone_confirmation_otp_rate_limit_locked_out
-    track_event('Idv: Phone OTP rate limited user')
+  def idv_phone_confirmation_otp_rate_limit_locked_out(proofing_components: nil, **extra)
+    track_event(
+      'Idv: Phone OTP rate limited user',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user was rate limited for requesting too many OTPs during the IDV phone step
-  def idv_phone_confirmation_otp_rate_limit_sends
-    track_event('Idv: Phone OTP sends rate limited')
+  def idv_phone_confirmation_otp_rate_limit_sends(proofing_components: nil, **extra)
+    track_event(
+      'Idv: Phone OTP sends rate limited',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # @param [Boolean] success
@@ -742,6 +951,7 @@ module AnalyticsEvents
   # @param [String] area_code area code of phone number
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
   # @param [Hash] telephony_response response from Telephony gem
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user resent an OTP during the IDV phone step
   def idv_phone_confirmation_otp_resent(
     success:,
@@ -751,6 +961,7 @@ module AnalyticsEvents
     area_code:,
     rate_limit_exceeded:,
     telephony_response:,
+    proofing_components: nil,
     **extra
   )
     track_event(
@@ -762,6 +973,7 @@ module AnalyticsEvents
       area_code: area_code,
       rate_limit_exceeded: rate_limit_exceeded,
       telephony_response: telephony_response,
+      proofing_components: proofing_components,
       **extra,
     )
   end
@@ -774,6 +986,7 @@ module AnalyticsEvents
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
   # @param [Hash] telephony_response response from Telephony gem
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user requested an OTP to confirm their phone during the IDV phone step
   def idv_phone_confirmation_otp_sent(
     success:,
@@ -784,6 +997,7 @@ module AnalyticsEvents
     rate_limit_exceeded:,
     phone_fingerprint:,
     telephony_response:,
+    proofing_components: nil,
     **extra
   )
     track_event(
@@ -796,22 +1010,26 @@ module AnalyticsEvents
       rate_limit_exceeded: rate_limit_exceeded,
       phone_fingerprint: phone_fingerprint,
       telephony_response: telephony_response,
+      proofing_components: proofing_components,
       **extra,
     )
   end
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
     errors:,
+    proofing_components: nil,
     **extra
   )
     track_event(
       'IdV: phone confirmation vendor',
       success: success,
       errors: errors,
+      proofing_components: proofing_components,
       **extra,
     )
   end
@@ -821,8 +1039,8 @@ module AnalyticsEvents
   # @param [Boolean] code_expired if the confirmation code expired
   # @param [Boolean] code_matches
   # @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
-  # @param [Time, nil] second_factor_locked_at timestamp when the phone was
-  # locked out at
+  # @param [Time, nil] second_factor_locked_at timestamp when the phone was locked out
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # When a user attempts to confirm posession of a new phone number during the IDV process
   def idv_phone_confirmation_otp_submitted(
     success:,
@@ -831,6 +1049,7 @@ module AnalyticsEvents
     code_matches:,
     second_factor_attempts_count:,
     second_factor_locked_at:,
+    proofing_components: nil,
     **extra
   )
     track_event(
@@ -841,24 +1060,38 @@ module AnalyticsEvents
       code_matches: code_matches,
       second_factor_attempts_count: second_factor_attempts_count,
       second_factor_locked_at: second_factor_locked_at,
+      proofing_components: proofing_components,
       **extra,
     )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # When a user visits the page to confirm posession of a new phone number during the IDV process
-  def idv_phone_confirmation_otp_visit
-    track_event('IdV: phone confirmation otp visited')
+  def idv_phone_confirmation_otp_visit(proofing_components: nil, **extra)
+    track_event(
+      'IdV: phone confirmation otp visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # @param ['warning','jobfail','failure'] type
   # @param [Time] throttle_expires_at when the throttle expires
   # @param [Integer] remaining_attempts number of attempts remaining
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # When a user gets an error during the phone finder flow of IDV
-  def idv_phone_error_visited(type:, throttle_expires_at: nil, remaining_attempts: nil, **extra)
+  def idv_phone_error_visited(
+    type:,
+    proofing_components: nil,
+    throttle_expires_at: nil,
+    remaining_attempts: nil,
+    **extra
+  )
     track_event(
       'IdV: phone error visited',
       {
         type: type,
+        proofing_components: proofing_components,
         throttle_expires_at: throttle_expires_at,
         remaining_attempts: remaining_attempts,
         **extra,
@@ -870,9 +1103,11 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Hash] error_details
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   def idv_phone_otp_delivery_selection_submitted(
     success:,
     otp_delivery_preference:,
+    proofing_components: nil,
     errors: nil,
     error_details: nil,
     **extra
@@ -884,58 +1119,91 @@ module AnalyticsEvents
         errors: errors,
         error_details: error_details,
         otp_delivery_preference: otp_delivery_preference,
+        proofing_components: proofing_components,
         **extra,
       }.compact,
     )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # User visited idv phone of record
-  def idv_phone_of_record_visited
-    track_event('IdV: phone of record visited')
-  end
-
-  # User visited idv phone OTP delivery selection
-  def idv_phone_otp_delivery_selection_visit
-    track_event('IdV: Phone OTP delivery Selection Visited')
-  end
-
-  # @param [String] step the step the user was on when they clicked use a different phone number
-  # User decided to use a different phone number in idv
-  def idv_phone_use_different(step:, **extra)
+  def idv_phone_of_record_visited(proofing_components: nil, **extra)
     track_event(
-      'IdV: use different phone number',
-      step: step,
+      'IdV: phone of record visited',
+      proofing_components: proofing_components,
       **extra,
     )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # User visited idv phone OTP delivery selection
+  def idv_phone_otp_delivery_selection_visit(proofing_components: nil, **extra)
+    track_event(
+      'IdV: Phone OTP delivery Selection Visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String] step the step the user was on when they clicked use a different phone number
+  # User decided to use a different phone number in idv
+  def idv_phone_use_different(step:, proofing_components: nil, **extra)
+    track_event(
+      'IdV: use different phone number',
+      step: step,
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The system encountered an error and the proofing results are missing
-  def idv_proofing_resolution_result_missing
-    track_event('Proofing Resolution Result Missing')
+  def idv_proofing_resolution_result_missing(proofing_components: nil, **extra)
+    track_event(
+      'Proofing Resolution Result Missing',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # User submitted IDV password confirm page
-  def idv_review_complete
-    track_event('IdV: review complete')
+  # @param [Boolean] success
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  def idv_review_complete(success:, proofing_components: nil, **extra)
+    track_event(
+      'IdV: review complete',
+      success: success,
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # User visited IDV password confirm page
-  def idv_review_info_visited
-    track_event('IdV: review info visited')
+  def idv_review_info_visited(proofing_components: nil, **extra)
+    track_event(
+      'IdV: review info visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # @param [String] step
   # @param [String] location
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # User started over idv
   def idv_start_over(
     step:,
     location:,
+    proofing_components: nil,
     **extra
   )
     track_event(
       'IdV: start over',
       step: step,
       location: location,
+      proofing_components: proofing_components,
       **extra,
     )
   end
@@ -956,28 +1224,63 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Integer] acknowledged_event_count number of acknowledged events in the API call
+  # @param [String] controller
+  # @param [String] referer
+  # @param [Boolean] user_signed_in
+  # Redirect was almost sent to an invalid external host unexpectedly
+  def unsafe_redirect_error(
+    controller:,
+    referer:,
+    user_signed_in: nil,
+    **extra
+  )
+    track_event(
+      'Unsafe Redirect',
+      controller: controller,
+      referer: referer,
+      user_signed_in: user_signed_in,
+      **extra,
+    )
+  end
+
   # @param [Integer] rendered_event_count how many events were rendered in the API response
-  # @param [String] set_errors JSON encoded representation of SET errors from the client
-  # An IRS Attempt API client has acknowledged receipt of security event tokens and polled for a
-  # new set of events
+  # @param [Boolean] success
+  # An IRS Attempt API client has requested events
   def irs_attempts_api_events(
-    acknowledged_event_count:,
     rendered_event_count:,
-    set_errors:,
+    success:,
     **extra
   )
     track_event(
       'IRS Attempt API: Events submitted',
-      acknowledged_event_count: acknowledged_event_count,
       rendered_event_count: rendered_event_count,
-      set_errors: set_errors,
+      success: success,
+      **extra,
+    )
+  end
+
+  # @param [String] event_type
+  # @param [Integer] unencrypted_payload_num_bytes size of payload as JSON data
+  # @param [Boolean] recorded if the full event was recorded or not
+  def irs_attempts_api_event_metadata(
+    event_type:,
+    unencrypted_payload_num_bytes:,
+    recorded:,
+    **extra
+  )
+    track_event(
+      'IRS Attempt API: Event metadata',
+      event_type: event_type,
+      unencrypted_payload_num_bytes: unencrypted_payload_num_bytes,
+      recorded: recorded,
       **extra,
     )
   end
 
   # @param [Boolean] success
   # @param [String] client_id
+  # @param [Boolean] client_id_parameter_present
+  # @param [Boolean] id_token_hint_parameter_present
   # @param [Boolean] sp_initiated
   # @param [Boolean] oidc
   # @param [Boolean] saml_request_valid
@@ -990,6 +1293,8 @@ module AnalyticsEvents
     client_id: nil,
     sp_initiated: nil,
     oidc: nil,
+    client_id_parameter_present: nil,
+    id_token_hint_parameter_present: nil,
     saml_request_valid: nil,
     errors: nil,
     error_details: nil,
@@ -1000,6 +1305,128 @@ module AnalyticsEvents
       'Logout Initiated',
       success: success,
       client_id: client_id,
+      client_id_parameter_present: client_id_parameter_present,
+      id_token_hint_parameter_present: id_token_hint_parameter_present,
+      errors: errors,
+      error_details: error_details,
+      sp_initiated: sp_initiated,
+      oidc: oidc,
+      saml_request_valid: saml_request_valid,
+      method: method,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [String] client_id
+  # @param [Boolean] client_id_parameter_present
+  # @param [Boolean] id_token_hint_parameter_present
+  # @param [Boolean] sp_initiated
+  # @param [Boolean] oidc
+  # @param [Boolean] saml_request_valid
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] method
+  # OIDC Logout Requested
+  def oidc_logout_requested(
+    success: nil,
+    client_id: nil,
+    sp_initiated: nil,
+    oidc: nil,
+    client_id_parameter_present: nil,
+    id_token_hint_parameter_present: nil,
+    saml_request_valid: nil,
+    errors: nil,
+    error_details: nil,
+    method: nil,
+    **extra
+  )
+    track_event(
+      'OIDC Logout Requested',
+      success: success,
+      client_id: client_id,
+      client_id_parameter_present: client_id_parameter_present,
+      id_token_hint_parameter_present: id_token_hint_parameter_present,
+      errors: errors,
+      error_details: error_details,
+      sp_initiated: sp_initiated,
+      oidc: oidc,
+      saml_request_valid: saml_request_valid,
+      method: method,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [String] client_id
+  # @param [Boolean] client_id_parameter_present
+  # @param [Boolean] id_token_hint_parameter_present
+  # @param [Boolean] sp_initiated
+  # @param [Boolean] oidc
+  # @param [Boolean] saml_request_valid
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] method
+  # OIDC Logout Visited
+  def oidc_logout_visited(
+    success: nil,
+    client_id: nil,
+    sp_initiated: nil,
+    oidc: nil,
+    client_id_parameter_present: nil,
+    id_token_hint_parameter_present: nil,
+    saml_request_valid: nil,
+    errors: nil,
+    error_details: nil,
+    method: nil,
+    **extra
+  )
+    track_event(
+      'OIDC Logout Page Visited',
+      success: success,
+      client_id: client_id,
+      client_id_parameter_present: client_id_parameter_present,
+      id_token_hint_parameter_present: id_token_hint_parameter_present,
+      errors: errors,
+      error_details: error_details,
+      sp_initiated: sp_initiated,
+      oidc: oidc,
+      saml_request_valid: saml_request_valid,
+      method: method,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [String] client_id
+  # @param [Boolean] client_id_parameter_present
+  # @param [Boolean] id_token_hint_parameter_present
+  # @param [Boolean] sp_initiated
+  # @param [Boolean] oidc
+  # @param [Boolean] saml_request_valid
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] method
+  # OIDC Logout Submitted
+  def oidc_logout_submitted(
+    success: nil,
+    client_id: nil,
+    sp_initiated: nil,
+    oidc: nil,
+    client_id_parameter_present: nil,
+    id_token_hint_parameter_present: nil,
+    saml_request_valid: nil,
+    errors: nil,
+    error_details: nil,
+    method: nil,
+    **extra
+  )
+    track_event(
+      'OIDC Logout Submitted',
+      success: success,
+      client_id: client_id,
+      client_id_parameter_present: client_id_parameter_present,
+      id_token_hint_parameter_present: id_token_hint_parameter_present,
       errors: errors,
       error_details: error_details,
       sp_initiated: sp_initiated,
@@ -1020,6 +1447,9 @@ module AnalyticsEvents
   # @param [Integer] webauthn_configuration_id
   # @param [Integer] phone_configuration_id
   # @param [Boolean] confirmation_for_add_phone
+  # @param [String] area_code
+  # @param [String] country_code
+  # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -1033,6 +1463,9 @@ module AnalyticsEvents
     confirmation_for_add_phone: nil,
     phone_configuration_id: nil,
     pii_like_keypaths: nil,
+    area_code: nil,
+    country_code: nil,
+    phone_fingerprint: nil,
     **extra
   )
     track_event(
@@ -1048,6 +1481,9 @@ module AnalyticsEvents
       confirmation_for_add_phone: confirmation_for_add_phone,
       phone_configuration_id: phone_configuration_id,
       pii_like_keypaths: pii_like_keypaths,
+      area_code: area_code,
+      country_code: country_code,
+      phone_fingerprint: phone_fingerprint,
       **extra,
     )
   end
@@ -1275,10 +1711,16 @@ module AnalyticsEvents
 
   # Tracks when a user sets up a multi factor auth method
   # @param [String] multi_factor_auth_method
-  def multi_factor_auth_setup(multi_factor_auth_method:, **extra)
+  # @param [Boolean] in_multi_mfa_selection_flow
+  # @param [integer] enabled_mfa_methods_count
+  def multi_factor_auth_setup(multi_factor_auth_method:,
+                              enabled_mfa_methods_count:, in_multi_mfa_selection_flow:,
+                              **extra)
     track_event(
       'Multi-Factor Authentication Setup',
       multi_factor_auth_method: multi_factor_auth_method,
+      in_multi_mfa_selection_flow: in_multi_mfa_selection_flow,
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
       **extra,
     )
   end
@@ -1294,11 +1736,15 @@ module AnalyticsEvents
 
   # Tracks when an openid connect bearer token authentication request is made
   # @param [Boolean] success
+  # @param [Integer] ial
+  # @param [String] client_id Service Provider issuer
   # @param [Hash] errors
-  def openid_connect_bearer_token(success:, errors:, **extra)
+  def openid_connect_bearer_token(success:, ial:, client_id:, errors:, **extra)
     track_event(
       'OpenID Connect: bearer token authentication',
       success: success,
+      ial: ial,
+      client_id: client_id,
       errors: errors,
       **extra,
     )
@@ -1310,12 +1756,14 @@ module AnalyticsEvents
   # @param [Array] acr_values
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
+  # @param [String] code_digest hash of returned "code" param
   def openid_connect_request_authorization(
     client_id:,
     scope:,
     acr_values:,
     unauthorized_scope:,
     user_fully_authenticated:,
+    code_digest:,
     **extra
   )
     track_event(
@@ -1325,6 +1773,7 @@ module AnalyticsEvents
       acr_values: acr_values,
       unauthorized_scope: unauthorized_scope,
       user_fully_authenticated: user_fully_authenticated,
+      code_digest: code_digest,
       **extra,
     )
   end
@@ -1332,11 +1781,13 @@ module AnalyticsEvents
   # Tracks when an openid connect token request is made
   # @param [String] client_id
   # @param [String] user_id
-  def openid_connect_token(client_id:, user_id:, **extra)
+  # @param [String] code_digest hash of "code" param
+  def openid_connect_token(client_id:, user_id:, code_digest:, **extra)
     track_event(
       'OpenID Connect: token',
       client_id: client_id,
       user_id: user_id,
+      code_digest: code_digest,
       **extra,
     )
   end
@@ -1790,6 +2241,67 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when a user is bounced back from the service provider due to an integration issue.
+  def sp_handoff_bounced_detected
+    track_event('SP handoff bounced detected')
+  end
+
+  # Tracks when a user visits the bounced page.
+  def sp_handoff_bounced_visit
+    track_event('SP handoff bounced visited')
+  end
+
+  # Tracks when a user vists the "This agency no longer uses Login.gov" page.
+  def sp_inactive_visit
+    track_event('SP inactive visited')
+  end
+
+  # Tracks when a user is redirected back to the service provider
+  # @param [Integer] ial
+  # @param [Integer] billed_ial
+  def sp_redirect_initiated(ial:, billed_ial:, **extra)
+    track_event(
+      'SP redirect initiated',
+      ial: ial,
+      billed_ial: billed_ial,
+      **extra,
+    )
+  end
+
+  # Tracks when a user triggered a rate limit throttle
+  # @param [String] throttle_type
+  def throttler_rate_limit_triggered(throttle_type:, **extra)
+    track_event(
+      'Throttler Rate Limit Triggered',
+      throttle_type: throttle_type,
+      **extra,
+    )
+  end
+
+  # Tracks when a user visits TOTP device setup
+  # @param [Boolean] user_signed_up
+  # @param [Boolean] totp_secret_present
+  # @param [Integer] enabled_mfa_methods_count
+  def totp_setup_visit(
+    user_signed_up:,
+    totp_secret_present:,
+    enabled_mfa_methods_count:,
+    **extra
+  )
+    track_event(
+      'TOTP Setup Visited',
+      user_signed_up: user_signed_up,
+      totp_secret_present: totp_secret_present,
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
+  # Tracks when a user disabled a TOTP device
+  def totp_user_disabled
+    track_event('TOTP: User Disabled')
+  end
+
   # Tracks when service provider consent is revoked
   # @param [String] issuer issuer of the service provider consent to be revoked
   def sp_revoke_consent_revoked(issuer:, **extra)
@@ -1810,6 +2322,34 @@ module AnalyticsEvents
     )
   end
 
+  # Record SAML authentication payload Hash
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] nameid_format
+  # @param [Array] authn_context
+  # @param [String] authn_context_comparison
+  # @param [String] service_provider
+  def saml_auth(
+    success:,
+    errors:,
+    nameid_format:,
+    authn_context:,
+    authn_context_comparison:,
+    service_provider:,
+    **extra
+  )
+    track_event(
+      'SAML Auth',
+      success: success,
+      errors: errors,
+      nameid_format: nameid_format,
+      authn_context: authn_context,
+      authn_context_comparison: authn_context_comparison,
+      service_provider: service_provider,
+      **extra,
+    )
+  end
+
   # @param [Integer] requested_ial
   # @param [String] service_provider
   # An external request for SAML Authentication was received
@@ -1825,6 +2365,74 @@ module AnalyticsEvents
         service_provider: service_provider,
         **extra,
       }.compact,
+    )
+  end
+
+  # tracks if the session is kept alive
+  def session_kept_alive
+    track_event('Session Kept Alive')
+  end
+
+  # tracks if the session timed out
+  def session_timed_out
+    track_event('Session Timed Out')
+  end
+
+  # tracks when a user's session is timed out
+  def session_total_duration_timeout
+    track_event('User Maximum Session Length Exceeded')
+  end
+
+  # @param [String] flash
+  # @param [String] stored_location
+  # tracks when a user visits the sign in page
+  def sign_in_page_visit(flash:, stored_location:, **extra)
+    track_event(
+      'Sign in page visited',
+      flash: flash,
+      stored_location: stored_location,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Boolean] new_user
+  # @param [Boolean] has_other_auth_methods
+  # @param [Integer] phone_configuration_id
+  # tracks when a user opts into SMS
+  def sms_opt_in_submitted(
+    success:,
+    new_user:,
+    has_other_auth_methods:,
+    phone_configuration_id:,
+    **extra
+  )
+    track_event(
+      'SMS Opt-In: Submitted',
+      success: success,
+      new_user: new_user,
+      has_other_auth_methods: has_other_auth_methods,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] new_user
+  # @param [Boolean] has_other_auth_methods
+  # @param [Integer] phone_configuration_id
+  # tracks when a user visits the sms opt in page
+  def sms_opt_in_visit(
+    new_user:,
+    has_other_auth_methods:,
+    phone_configuration_id:,
+    **extra
+  )
+    track_event(
+      'SMS Opt-In: Visited',
+      new_user: new_user,
+      has_other_auth_methods: has_other_auth_methods,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
     )
   end
 
@@ -1886,15 +2494,80 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [Integer] enabled_mfa_methods_count
+  # @param [Integer] selected_mfa_count
+  # @param ['voice', 'auth_app'] selection
   # Tracks when the the user has selected and submitted MFA auth methods on user registration
-  def user_registration_2fa_setup(success:, errors: nil, **extra)
+  def user_registration_2fa_setup(
+    success:,
+    errors: nil,
+    selected_mfa_count: nil,
+    enabled_mfa_methods_count: nil,
+    selection: nil,
+    **extra
+  )
     track_event(
       'User Registration: 2FA Setup',
       {
         success: success,
         errors: errors,
+        selected_mfa_count: selected_mfa_count,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        selection: selection,
         **extra,
       }.compact,
+    )
+  end
+
+  # @param [String] mfa_method
+  # Tracks when the the user fully registered by submitting their first MFA method into the system
+  def user_registration_user_fully_registered(
+    mfa_method:,
+    **extra
+  )
+    track_event(
+      'User Registration: User Fully Registered',
+      {
+        mfa_method: mfa_method,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] mfa_method_counts
+  # @param [Integer] enabled_mfa_methods_count
+  # @param [Hash] pii_like_keypaths
+  # Tracks when a user has completed MFA setup
+  def user_registration_mfa_setup_complete(
+    success:,
+    mfa_method_counts:,
+    enabled_mfa_methods_count:,
+    pii_like_keypaths:,
+    **extra
+  )
+    track_event(
+      'User Registration: MFA Setup Complete',
+      {
+        success: success,
+        mfa_method_counts: mfa_method_counts,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        pii_like_keypaths: pii_like_keypaths,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user's piv cac is disabled
+  def user_registration_piv_cac_disabled
+    track_event('User Registration: piv cac disabled')
+  end
+
+  # Tracks when user's piv cac setup
+  def user_registration_piv_cac_setup_visit(**extra)
+    track_event(
+      'User Registration: piv cac setup visited',
+      **extra,
     )
   end
 
@@ -1911,6 +2584,411 @@ module AnalyticsEvents
   # Tracks when user visits MFA selection page
   def user_registration_2fa_setup_visit
     track_event('User Registration: 2FA Setup visited')
+  end
+
+  # @param [String] redirect_from
+  # @param [Hash] vendor_status
+  # Tracks when vendor has outage
+  def vendor_outage(
+    redirect_from:,
+    vendor_status:,
+    **extra
+  )
+    track_event(
+      'Vendor Outage',
+      redirect_from: redirect_from,
+      vendor_status: vendor_status,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Integer] mfa_method_counts
+  # Tracks when WebAuthn is deleted
+  def webauthn_deleted(success:, mfa_method_counts:, pii_like_keypaths:, **extra)
+    track_event(
+      'WebAuthn Deleted',
+      success: success,
+      mfa_method_counts: mfa_method_counts,
+      pii_like_keypaths: pii_like_keypaths,
+      **extra,
+    )
+  end
+
+  # @param [Hash] platform_authenticator
+  # @param [Hash] errors
+  # @param [Integer] enabled_mfa_methods_count
+  # @param [Boolean] success
+  # Tracks when WebAuthn setup is visited
+  def webauthn_setup_visit(platform_authenticator:, errors:, enabled_mfa_methods_count:, success:,
+                           **extra)
+    track_event(
+      'WebAuthn Setup Visited',
+      platform_authenticator: platform_authenticator,
+      errors: errors,
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      success: success,
+      **extra,
+    )
+  end
+
+  # Tracks when user visits enter email page
+  def user_registration_enter_email_visit
+    track_event('User Registration: enter email visited')
+  end
+
+  # @param [Integer] enabled_mfa_methods_count
+  # Tracks when user visits the phone setup step during registration
+  def user_registration_phone_setup_visit(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'User Registration: phone setup visited',
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
+  # Tracks when user cancels registration
+  # @param [String] request_came_from the controller/action the request came from
+  def user_registration_cancellation(request_came_from:, **extra)
+    track_event(
+      'User registration: cancellation visited',
+      request_came_from: request_came_from,
+      **extra,
+    )
+  end
+
+  # Tracks when user completes registration
+  # @param [Boolean] ial2
+  # @param [Boolean] ialmax
+  # @param [String] service_provider_name
+  # @param [String] page_occurence
+  # @param [String] needs_completion_screen_reason
+  # @param [Array] sp_request_requested_attributes
+  # @param [Array] sp_session_requested_attributes
+  def user_registration_complete(
+    ial2:,
+    service_provider_name:,
+    page_occurence:,
+    needs_completion_screen_reason:,
+    sp_session_requested_attributes:,
+    sp_request_requested_attributes: nil,
+    ialmax: nil,
+    **extra
+  )
+    track_event(
+      'User registration: complete',
+      ial2: ial2,
+      ialmax: ialmax,
+      service_provider_name: service_provider_name,
+      page_occurence: page_occurence,
+      needs_completion_screen_reason: needs_completion_screen_reason,
+      sp_request_requested_attributes: sp_request_requested_attributes,
+      sp_session_requested_attributes: sp_session_requested_attributes,
+      **extra,
+    )
+  end
+
+  # Tracks when user submits registration email
+  # @param [Boolean] success
+  # @param [Boolean] throttled
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] user_id
+  # @param [String] domain_name
+  def user_registration_email(
+    success:,
+    throttled:,
+    errors:,
+    error_details: nil,
+    user_id: nil,
+    domain_name: nil,
+    **extra
+  )
+    track_event(
+      'User Registration: Email Submitted',
+      {
+        success: success,
+        throttled: throttled,
+        errors: errors,
+        error_details: error_details,
+        user_id: user_id,
+        domain_name: domain_name,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user confirms registration email
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] user_id
+  def user_registration_email_confirmation(
+    success:,
+    errors:,
+    error_details: nil,
+    user_id: nil,
+    **extra
+  )
+    track_event(
+      'User Registration: Email Confirmation',
+      success: success,
+      errors: errors,
+      error_details: error_details,
+      user_id: user_id,
+      **extra,
+    )
+  end
+
+  # Tracks if USPS in-person proofing enrollment request fails
+  # @param [String] context
+  # @param [String] reason
+  # @param [Integer] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  def idv_in_person_usps_request_enroll_exception(
+    context:,
+    reason:,
+    enrollment_id:,
+    exception_class:,
+    exception_message:,
+    **extra
+  )
+    track_event(
+      'USPS IPPaaS enrollment failed',
+      context: context,
+      enrollment_id: enrollment_id,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      reason: reason,
+      **extra,
+    )
+  end
+
+  # GetUspsProofingResultsJob is beginning. Includes some metadata about what the job will do
+  # @param [Integer] enrollments_count number of enrollments eligible for status check
+  # @param [Integer] reprocess_delay_minutes minimum delay since last status check
+  def idv_in_person_usps_proofing_results_job_started(
+    enrollments_count:,
+    reprocess_delay_minutes:,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Job started',
+      enrollments_count: enrollments_count,
+      reprocess_delay_minutes: reprocess_delay_minutes,
+      **extra,
+    )
+  end
+
+  # GetUspsProofingResultsJob has completed. Includes counts of various outcomes encountered
+  # @param [Float] duration_seconds number of minutes the job was running
+  # @param [Integer] enrollments_checked number of enrollments eligible for status check
+  # @param [Integer] enrollments_errored number of enrollments for which we encountered an error
+  # @param [Integer] enrollments_expired number of enrollments which expired
+  # @param [Integer] enrollments_failed number of enrollments which failed identity proofing
+  # @param [Integer] enrollments_in_progress number of enrollments which did not have any change
+  # @param [Integer] enrollments_passed number of enrollments which passed identity proofing
+  def idv_in_person_usps_proofing_results_job_completed(
+    duration_seconds:,
+    enrollments_checked:,
+    enrollments_errored:,
+    enrollments_expired:,
+    enrollments_failed:,
+    enrollments_in_progress:,
+    enrollments_passed:,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Job completed',
+      duration_seconds: duration_seconds,
+      enrollments_checked: enrollments_checked,
+      enrollments_errored: enrollments_errored,
+      enrollments_expired: enrollments_expired,
+      enrollments_failed: enrollments_failed,
+      enrollments_in_progress: enrollments_in_progress,
+      enrollments_passed: enrollments_passed,
+      **extra,
+    )
+  end
+
+  # Tracks exceptions that are raised when running GetUspsProofingResultsJob
+  # @param [String] reason why was the exception raised?
+  # @param [String] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [String] enrollment_code
+  # @param [Float] minutes_since_last_status_check
+  # @param [Float] minutes_since_last_status_update
+  # @param [Float] minutes_to_completion
+  # @param [Boolean] fraud_suspected
+  # @param [String] primary_id_type
+  # @param [String] secondary_id_type
+  # @param [String] failure_reason
+  # @param [String] transaction_end_date_time
+  # @param [String] transaction_start_date_time
+  # @param [String] status
+  # @param [String] assurance_level
+  # @param [String] proofing_post_office
+  # @param [String] proofing_city
+  # @param [String] proofing_state
+  # @param [String] scan_count
+  # @param [String] response_message
+  def idv_in_person_usps_proofing_results_job_exception(
+    reason:,
+    enrollment_id:,
+    exception_class: nil,
+    exception_message: nil,
+    enrollment_code: nil,
+    minutes_since_last_status_check: nil,
+    minutes_since_last_status_update: nil,
+    minutes_to_completion: nil,
+    fraud_suspected: nil,
+    primary_id_type: nil,
+    secondary_id_type: nil,
+    failure_reason: nil,
+    transaction_end_date_time: nil,
+    transaction_start_date_time: nil,
+    status: nil,
+    assurance_level: nil,
+    proofing_post_office: nil,
+    proofing_city: nil,
+    proofing_state: nil,
+    scan_count: nil,
+    response_message: nil,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Exception raised',
+      reason: reason,
+      enrollment_id: enrollment_id,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      enrollment_code: enrollment_code,
+      minutes_since_last_status_check: minutes_since_last_status_check,
+      minutes_since_last_status_update: minutes_since_last_status_update,
+      minutes_to_completion: minutes_to_completion,
+      fraud_suspected: fraud_suspected,
+      primary_id_type: primary_id_type,
+      secondary_id_type: secondary_id_type,
+      failure_reason: failure_reason,
+      transaction_end_date_time: transaction_end_date_time,
+      transaction_start_date_time: transaction_start_date_time,
+      status: status,
+      assurance_level: assurance_level,
+      proofing_post_office: proofing_post_office,
+      proofing_city: proofing_city,
+      proofing_state: proofing_state,
+      scan_count: scan_count,
+      response_message: response_message,
+      **extra,
+    )
+  end
+
+  # Tracks individual enrollments that are updated during GetUspsProofingResultsJob
+  # @param [String] enrollment_code
+  # @param [String] enrollment_id
+  # @param [Boolean] fraud_suspected
+  # @param [Boolean] passed did this enrollment pass or fail?
+  # @param [String] reason why did this enrollment pass or fail?
+  def idv_in_person_usps_proofing_results_job_enrollment_updated(
+    enrollment_code:,
+    enrollment_id:,
+    fraud_suspected:,
+    passed:,
+    reason:,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Enrollment status updated',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      fraud_suspected: fraud_suspected,
+      passed: passed,
+      reason: reason,
+      **extra,
+    )
+  end
+
+  # Tracks emails that are initiated during GetUspsProofingResultsJob
+  # @param [String] email_type success, failed or failed fraud
+  def idv_in_person_usps_proofing_results_job_email_initiated(
+    email_type:,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Success or failure email initiated',
+      email_type: email_type,
+      **extra,
+    )
+  end
+
+  # Tracks users visiting the recovery options page
+  def account_reset_recovery_options_visit
+    track_event('Account Reset: Recovery Options Visited')
+  end
+
+  # Tracks users going back or cancelling acoount recovery
+  def cancel_account_reset_recovery
+    track_event('Account Reset: Cancel Account Recovery Options')
+  end
+
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # Tracks when the user reaches the verify setup errors page after failing proofing
+  def idv_setup_errors_visited(proofing_components: nil, **extra)
+    track_event(
+      'IdV: Verify setup errors visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  # @param [String] redirect_url URL user was directed to
+  # @param [String, nil] step which step
+  # @param [String, nil] location which part of a step, if applicable
+  # @param ["idv", String, nil] flow which flow
+  # User was redirected to the login.gov contact page
+  def contact_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
+    track_event(
+      'Contact Page Redirect',
+      redirect_url: redirect_url,
+      step: step,
+      location: location,
+      flow: flow,
+      **extra,
+    )
+  end
+
+  # Tracks if a user clicks the "Show Password button"
+  # @param [String] path URL path where the click occurred
+  def show_password_button_clicked(path:, **extra)
+    track_event('Show Password Button Clicked', path: path, **extra)
+  end
+
+  # Tracks if a user clicks the 'acknowledge' checkbox during personal
+  # key creation
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [boolean] checked whether the user checked or un-checked
+  #                  the box with this click
+  def idv_personal_key_acknowledgment_toggled(checked:, proofing_components:, **extra)
+    track_event(
+      'IdV: personal key acknowledgment toggled',
+      checked: checked,
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  # Logs after an email is sent
+  # @param [String] action type of email being sent
+  # @param [String, nil] ses_message_id AWS SES Message ID
+  def email_sent(action:, ses_message_id:, **extra)
+    track_event(
+      'Email Sent',
+      action: action,
+      ses_message_id: ses_message_id,
+      **extra,
+    )
   end
 end
 # rubocop:enable Metrics/ModuleLength

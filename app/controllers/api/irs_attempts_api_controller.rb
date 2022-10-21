@@ -6,55 +6,62 @@
 #
 module Api
   class IrsAttemptsApiController < ApplicationController
-    before_action :render_404_if_disabled
+    include RenderConditionConcern
+
+    check_or_render_not_found -> { IdentityConfig.store.irs_attempt_api_enabled }
+
+    skip_before_action :verify_authenticity_token
     before_action :authenticate_client
+    prepend_before_action :skip_session_load
+    prepend_before_action :skip_session_expiration
 
     respond_to :json
 
     def create
-      acknowledge_acked_events
-      render json: { sets: security_event_tokens }
+      if timestamp
+        result = encrypted_security_event_log_result
+
+        headers['X-Payload-Key'] = Base64.strict_encode64(result.encrypted_key)
+        headers['X-Payload-IV'] = Base64.strict_encode64(result.iv)
+        send_data Base64.strict_encode64(result.encrypted_data),
+                  disposition: "filename=#{result.filename}"
+      else
+        render json: { status: :unprocessable_entity, description: 'Invalid timestamp parameter' },
+               status: :unprocessable_entity
+      end
       analytics.irs_attempts_api_events(**analytics_properties)
     end
 
     private
 
-    def render_404_if_disabled
-      render_not_found unless IdentityConfig.store.irs_attempt_api_enabled
-    end
-
     def authenticate_client
-      bearer, token = request.authorization.split(' ', 2)
-      if bearer != 'Bearer' || !valid_auth_tokens.include?(token)
+      bearer, csp_id, token = request.authorization&.split(' ', 3)
+      if bearer != 'Bearer' || !valid_auth_tokens.include?(token) ||
+         csp_id != IdentityConfig.store.irs_attempt_api_csp_id
         render json: { status: 401, description: 'Unauthorized' }, status: :unauthorized
       end
     end
 
-    def acknowledge_acked_events
-      redis_client.delete_events(ack_event_ids)
-    end
-
-    def ack_event_ids
-      params['ack'] || []
-    end
-
-    def requested_event_count
-      count = if params['maxEvents']
-                params['maxEvents'].to_i
-              else
-                IdentityConfig.store.irs_attempt_api_event_count_default
-              end
-
-      [count, IdentityConfig.store.irs_attempt_api_event_count_max].min
-    end
-
     def security_event_tokens
-      @security_event_tokens ||= redis_client.read_events(requested_event_count)
+      return {} unless timestamp
+
+      events = redis_client.read_events(timestamp: timestamp)
+      sets = {}
+      events.each_pair do |k, v|
+        key_id, jti = k.split(':')
+        sets[jti] = { key_id => v }
+      end
+      sets
     end
 
-    def security_event_token_errors
-      return unless params['setErrs'].present?
-      params['setErrs'].to_json
+    def encrypted_security_event_log_result
+      json = security_event_tokens.to_json
+      decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
+      pub_key = OpenSSL::PKey::RSA.new(decoded_key_der)
+
+      IrsAttemptsApi::EnvelopeEncryptor.encrypt(
+        data: json, timestamp: timestamp, public_key: pub_key,
+      )
     end
 
     def redis_client
@@ -67,10 +74,19 @@ module Api
 
     def analytics_properties
       {
-        acknowledged_event_count: ack_event_ids.count,
         rendered_event_count: security_event_tokens.keys.count,
-        set_errors: security_event_token_errors,
+        timestamp: timestamp&.iso8601,
+        success: timestamp.present?,
       }
+    end
+
+    def timestamp
+      timestamp_param = params.permit(:timestamp)[:timestamp]
+      return nil if timestamp_param.nil?
+
+      Time.strptime(timestamp_param, '%Y-%m-%dT%H:%M:%S%z')
+    rescue ArgumentError
+      nil
     end
   end
 end

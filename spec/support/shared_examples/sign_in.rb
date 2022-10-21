@@ -13,14 +13,14 @@ shared_examples 'signing in with the site in Spanish' do |sp|
     end
 
     fill_in_code_with_last_phone_otp
-    click_submit_default
+    sp == :saml ? click_submit_default_twice : click_submit_default
 
     expect(current_url).to eq(sign_up_completed_url(locale: 'es'))
 
     click_agree_and_continue
 
     if sp == :saml
-      expect(current_url).to eq UriService.add_params(@saml_authn_request, locale: 'es')
+      expect(current_url).to eq UriService.add_params(complete_saml_url, locale: 'es')
     elsif sp == :oidc
       redirect_uri = URI(current_url)
 
@@ -49,7 +49,7 @@ shared_examples 'visiting 2fa when fully authenticated' do |sp|
 
     click_continue
     continue_as
-    expect(current_url).to eq @saml_authn_request if sp == :saml
+    expect(current_url).to eq complete_saml_url if sp == :saml
 
     if sp == :oidc
       redirect_uri = URI(current_url)
@@ -109,7 +109,7 @@ shared_examples 'signing in as IAL1 with personal key after resetting password' 
     click_submit_default
     click_agree_and_continue
 
-    expect(current_url).to eq @saml_authn_request if sp == :saml
+    expect(current_url).to eq complete_saml_url if sp == :saml
     if sp == :oidc
       redirect_uri = URI(current_url)
 
@@ -242,7 +242,7 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
           fill_in_credentials_and_submit(user.email, user.password)
 
           expect(page).to have_content(t('account.personal_key.needs_new'))
-          code = page.all('.separator-text__code').map(&:text).join(' ')
+          code = page.all('.personal-key-block__code').map(&:text).join(' ')
           acknowledge_and_confirm_personal_key
 
           expect(user.reload.valid_personal_key?(code)).to eq(true)
@@ -257,6 +257,7 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
           visit_idp_from_sp_with_ial1(protocol)
           click_on t('account.login.piv_cac')
           fill_in_piv_cac_credentials_and_submit(user)
+          click_submit_default if protocol == :saml
 
           expect(page).to have_content(t('account.personal_key.needs_new'))
           expect(page).to have_content(t('headings.passwords.confirm_for_personal_key'))
@@ -265,7 +266,7 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
           click_button t('forms.buttons.submit.default')
 
           expect(page).to have_content(t('account.personal_key.needs_new'))
-          code = page.all('.separator-text__code').map(&:text).join(' ')
+          code = page.all('.personal-key-block__code').map(&:text).join(' ')
           acknowledge_and_confirm_personal_key
 
           expect(user.reload.valid_personal_key?(code)).to eq(true)
@@ -298,7 +299,7 @@ def ial1_sign_in_with_personal_key_goes_to_sp(sp)
   click_submit_default
   click_agree_and_continue
 
-  expect(current_url).to eq @saml_authn_request if sp == :saml
+  expect(current_url).to eq complete_saml_url if sp == :saml
 
   return unless sp == :oidc
 
@@ -314,7 +315,7 @@ def ial1_sign_in_with_piv_cac_goes_to_sp(sp)
 
   click_on t('account.login.piv_cac')
   fill_in_piv_cac_credentials_and_submit(user)
-
+  click_submit_default if sp == :saml
   click_agree_and_continue
   return unless sp == :oidc
   redirect_uri = URI(current_url)

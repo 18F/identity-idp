@@ -5,9 +5,9 @@ describe TwoFactorLoginOptionsPresenter do
 
   let(:user) { User.new }
   let(:view) { ActionController::Base.new.view_context }
-  let(:aal3_required) { false }
+  let(:phishing_resistant_required) { false }
   let(:piv_cac_required) { false }
-  let(:user_session_context) { UserSessionContext::DEFAULT_CONTEXT }
+  let(:user_session_context) { UserSessionContext::AUTHENTICATION_CONTEXT }
 
   subject(:presenter) do
     TwoFactorLoginOptionsPresenter.new(
@@ -15,7 +15,7 @@ describe TwoFactorLoginOptionsPresenter do
       view: view,
       user_session_context: user_session_context,
       service_provider: nil,
-      aal3_required: false,
+      phishing_resistant_required: false,
       piv_cac_required: false,
     )
   end
@@ -61,6 +61,22 @@ describe TwoFactorLoginOptionsPresenter do
       )
   end
 
+  it 'supplies a recovery options link when feature toggle is on' do
+    allow(IdentityConfig.store).to \
+      receive(:show_account_recovery_recovery_options).and_return(true)
+    allow_any_instance_of(TwoFactorLoginOptionsPresenter).to \
+      receive(:account_reset_token_valid?).and_return(false)
+
+    expect(presenter.account_reset_or_cancel_link).to eq \
+      t(
+        'two_factor_authentication.account_reset.text_html',
+        link: view.link_to(
+          t('two_factor_authentication.account_reset.link'),
+          account_reset_recovery_options_path(locale: LinkLocaleResolver.locale),
+        ),
+      )
+  end
+
   context 'with multiple webauthn configurations' do
     let(:user) { create(:user) }
     before(:each) do
@@ -80,7 +96,7 @@ describe TwoFactorLoginOptionsPresenter do
     subject(:cancel_link) { presenter.cancel_link }
 
     context 'default user session context' do
-      let(:user_session_context) { UserSessionContext::DEFAULT_CONTEXT }
+      let(:user_session_context) { UserSessionContext::AUTHENTICATION_CONTEXT }
 
       it { should eq sign_out_path }
     end

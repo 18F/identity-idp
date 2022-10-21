@@ -43,8 +43,7 @@ feature 'Password recovery via personal key' do
     click_link t('account.index.reactivation.link')
     click_on t('links.account.reactivate.without_key')
     click_on t('forms.buttons.continue')
-    complete_all_doc_auth_steps
-    click_idv_continue
+    complete_all_doc_auth_steps_before_password_step
     fill_in 'Password', with: new_password
     click_idv_continue
     acknowledge_and_confirm_personal_key
@@ -89,7 +88,7 @@ feature 'Password recovery via personal key' do
       click_on t('links.account.reactivate.without_key')
       click_on t('links.cancel')
 
-      expect(page).not_to have_content('[id="reactivate-account-modal"]')
+      expect(page).not_to have_css('[role="dialog"]:not([hidden])')
     end
   end
 

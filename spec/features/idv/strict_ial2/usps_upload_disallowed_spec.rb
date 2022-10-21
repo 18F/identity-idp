@@ -51,7 +51,7 @@ feature 'Strict IAL2 with usps upload disallowed', js: true do
   it 'does not prompt a pending user for a mailed code' do
     user = create(
       :profile,
-      deactivation_reason: :verification_pending,
+      deactivation_reason: :gpo_verification_pending,
       pii: { first_name: 'John', ssn: '111223333' },
     ).user
 
@@ -63,8 +63,7 @@ feature 'Strict IAL2 with usps upload disallowed', js: true do
     # Directed to the start of the proofing flow instead of GPO code verification
     expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
 
-    complete_all_doc_auth_steps
-    click_idv_continue
+    complete_all_doc_auth_steps_before_password_step
     fill_in 'Password', with: user.password
     click_continue
     acknowledge_and_confirm_personal_key

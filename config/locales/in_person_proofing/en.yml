@@ -6,6 +6,52 @@ en:
         info: 'If your current address does not match the address on your ID, you will
           need to bring proof of your current address to the Post Office.'
         learn_more: Learn more
+      barcode:
+        deadline: Your deadline to verify your identity in person is %{deadline}.
+        deadline_restart: If you go after the deadline, your information will not be
+          saved and you will need to restart the process.
+        emailed_info: We have emailed this information to the email you used to log in.
+        items_to_bring: 'Bring these items with you to the Post Office:'
+        items_to_bring_questions: Questions about what to bring?
+        learn_more: Learn more
+        location_details: Location details
+        no_appointment_required: No appointment is required.
+        retail_hours: Retail hours
+        retail_hours_closed: Closed
+        retail_phone_label: Phone number
+        speak_to_associate: You can speak with any retail associate at this Post Office
+          to verify your identity.
+      location:
+        location_button: Select
+        location_step_about: If you are having trouble adding your ID, you may be able
+          to verify in person at a local United States Post Office in select
+          locations.
+        none_found: No locations found.
+        post_office: 'Post Office ™'
+        retail_hours_heading: Retail Hours
+        retail_hours_sat: 'Sat:'
+        retail_hours_sun: 'Sun:'
+        retail_hours_weekday: 'Monday to Friday:'
+      prepare:
+        alert_selected_post_office: 'You’ve selected the %{name} Post Office.'
+        bring_barcode_header: A copy of your barcode
+        bring_barcode_info: 'We will give you a unique code that expires within 30 days.'
+        bring_id_header: 'Your state-issued ID'
+        bring_id_info_acceptable: 'Your ID must not be expired. Acceptable forms of ID are:'
+        bring_id_info_dl: State Driver’s License
+        bring_id_info_id_card: 'State Non-Driver’s Identification Card'
+        bring_id_info_no_other_forms: We do not currently accept any other forms of
+          Identification, such as passports and military IDs
+        bring_title: 'When you go to the Post Office, please bring:'
+        privacy_disclaimer: '%{app_name} is a secure, government website. We and the
+          U.S. Postal Service use your data to verify your identity.'
+        privacy_disclaimer_link: Learn more about privacy and security.
+        privacy_disclaimer_questions: Questions?
+        verify_step_about: 'Complete the steps below to generate the barcode you’ll take
+          with you to the Post Office:'
+        verify_step_enter_phone: Enter a phone number with your name on the plan.
+        verify_step_enter_pii: 'Enter your name, date of birth, state-issued ID number,
+          address and Social Security number.'
       state_id:
         info_html: 'Enter information <strong>exactly as it appears on your state-issued
           ID.</strong> We will use this information to confirm it matches your
@@ -27,6 +73,12 @@ en:
         dob_hint: 'Example: 4 28 1986'
         first_name: First name
         last_name: Last name
+        memorable_date:
+          errors:
+            date_of_birth:
+              missing_month_day_year: 'Enter a date of birth'
+              range_min_age: 'You must be over 13 years of age to use %{app_name}'
+              range_overflow: 'Enter a date that is in the past'
         state_id_jurisdiction: State
         state_id_jurisdiction_hint: Select the state shown on your ID
         state_id_jurisdiction_prompt: '- Select -'
@@ -36,7 +88,33 @@ en:
       address: Enter your current address
       barcode: You’re ready to verify your identity in person
       location: Select a location to verify your ID
+      prepare: Verify your identity in person
       state_id: Enter the information on your ID
+      switch_back: Switch back to your computer to prepare to verify your identity in person
       update_address: Update your current address
       update_state_id: Update the information on your ID
-      welcome: Verify your identity in person
+    process:
+      barcode:
+        caption_label: Enrollment code
+        heading: A copy of your barcode
+        info: Print or scan from your mobile device.
+      proof_of_address:
+        acceptable_proof:
+          - Lease, Mortgage, or Deed of Trust
+          - Voter Registration
+          - Vehicle Registration Card
+          - Home or Vehicle Insurance Policy
+        heading: Proof of your current address
+        info: 'You need a proof of address if your current address is different than the
+          address on your ID. Acceptable forms of proof of address are:'
+        physical_or_digital_copy: You can bring a physical copy or show a digital copy
+          of the document. You cannot show a photo or screenshot of the
+          document.
+      state_id:
+        acceptable_documents:
+          - State Driver’s License
+          - State Non-Driver’s Identification Card
+        heading: Your state-issued ID
+        info: 'Your ID must not be expired. Acceptable forms of ID are:'
+        no_other_documents: We do not currently accept any other forms of
+          identification, such as passports and military IDs.

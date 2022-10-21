@@ -14,12 +14,12 @@ RSpec.describe User do
     it { is_expected.to have_many(:in_person_enrollments).dependent(:destroy) }
     it {
       is_expected.to have_one(:pending_in_person_enrollment).
-      conditions(status: :pending).
-      order(created_at: :desc).
-      class_name('InPersonEnrollment').
-      with_foreign_key(:user_id).
-      inverse_of(:user).
-      dependent(:destroy)
+        conditions(status: :pending).
+        order(created_at: :desc).
+        class_name('InPersonEnrollment').
+        with_foreign_key(:user_id).
+        inverse_of(:user).
+        dependent(:destroy)
     }
   end
 
@@ -193,69 +193,115 @@ RSpec.describe User do
   context 'when user has IPP enrollments' do
     let(:user) { create(:user, :signed_up) }
 
-    let(:profile1) {
+    let(:failed_enrollment_profile) do
       create(:profile, :verification_cancelled, user: user, pii: { first_name: 'Jane' })
-    }
-    let(:profile2) {
-      create(:profile, :verification_pending, user: user, pii: { first_name: 'Susan' })
-    }
+    end
+    let(:pending_enrollment_profile) do
+      create(:profile, :gpo_verification_pending, user: user, pii: { first_name: 'Susan' })
+    end
+    let(:establishing_enrollment_profile) do
+      create(:profile, :gpo_verification_pending, user: user, pii: { first_name: 'Susan' })
+    end
 
-    let!(:enrollment1) { create(:in_person_enrollment, :failed, user: user, profile: profile1) }
-    let!(:enrollment2) { create(:in_person_enrollment, :pending, user: user, profile: profile2) }
+    let!(:failed_enrollment) do
+      create(:in_person_enrollment, :failed, user: user, profile: failed_enrollment_profile)
+    end
+    let!(:pending_enrollment) do
+      create(:in_person_enrollment, :pending, user: user, profile: pending_enrollment_profile)
+    end
+    let!(:establishing_enrollment) do
+      create(
+        :in_person_enrollment,
+        :establishing,
+        user: user,
+        profile: establishing_enrollment_profile,
+      )
+    end
 
     describe '#in_person_enrollments' do
       it 'returns multiple IPP enrollments' do
-        expect(user.in_person_enrollments).to eq [enrollment1, enrollment2]
+        expect(user.in_person_enrollments).to eq [
+          failed_enrollment,
+          pending_enrollment,
+          establishing_enrollment,
+        ]
       end
 
       it 'deletes everything and does not result in an error when'\
       ' the user is deleted before the profile' do
-        enrollment_id1 = enrollment1.id
-        enrollment_id2 = enrollment2.id
-        profile_id1 = profile1.id
-        profile_id2 = profile2.id
+        failed_enrollment_id = failed_enrollment.id
+        pending_enrollment_id = pending_enrollment.id
+        establishing_enrollment_id = establishing_enrollment.id
+        failed_enrollment_profile_id = failed_enrollment_profile.id
+        pending_enrollment_profile_id = pending_enrollment_profile.id
+        establishing_enrollment_profile_id = establishing_enrollment_profile.id
         user_id = user.id
 
         expect(User.find_by(id: user_id)).to eq user
-        expect(Profile.find_by(id: profile_id1)).to eq profile1
-        expect(Profile.find_by(id: profile_id2)).to eq profile2
-        expect(InPersonEnrollment.find_by(id: enrollment_id1)).to eq enrollment1
-        expect(InPersonEnrollment.find_by(id: enrollment_id2)).to eq enrollment2
+        expect(Profile.find_by(id: failed_enrollment_profile_id)).to eq failed_enrollment_profile
+        expect(Profile.find_by(id: pending_enrollment_profile_id)).to eq pending_enrollment_profile
+        expect(Profile.find_by(id: establishing_enrollment_profile_id)).to eq(
+          establishing_enrollment_profile,
+        )
+        expect(InPersonEnrollment.find_by(id: failed_enrollment_id)).to eq failed_enrollment
+        expect(InPersonEnrollment.find_by(id: pending_enrollment_id)).to eq pending_enrollment
+        expect(InPersonEnrollment.find_by(id: establishing_enrollment_id)).to eq(
+          establishing_enrollment,
+        )
         user.destroy
         expect(User.find_by(id: user_id)).to eq nil
-        expect(Profile.find_by(id: profile_id1)).to eq nil
-        expect(Profile.find_by(id: profile_id2)).to eq nil
-        expect(InPersonEnrollment.find_by(id: enrollment_id1)).to eq nil
-        expect(InPersonEnrollment.find_by(id: enrollment_id2)).to eq nil
-        profile1.destroy # Profile is already deleted, but we shouldn't get an error here.
+        expect(Profile.find_by(id: failed_enrollment_profile_id)).to eq nil
+        expect(Profile.find_by(id: pending_enrollment_profile_id)).to eq nil
+        expect(Profile.find_by(id: establishing_enrollment_profile_id)).to eq nil
+        expect(InPersonEnrollment.find_by(id: failed_enrollment_id)).to eq nil
+        expect(InPersonEnrollment.find_by(id: pending_enrollment_id)).to eq nil
+        expect(InPersonEnrollment.find_by(id: establishing_enrollment_id)).to eq nil
+        failed_enrollment_profile.destroy # Profile is already deleted, but check for no errors
       end
 
       it 'deletes everything under the profile and does not result in an'\
       ' error when the profile is deleted before the user' do
-        enrollment_id1 = enrollment1.id
-        enrollment_id2 = enrollment2.id
-        profile_id1 = profile1.id
-        profile_id2 = profile2.id
+        failed_enrollment_id = failed_enrollment.id
+        pending_enrollment_id = pending_enrollment.id
+        establishing_enrollment_id = establishing_enrollment.id
+        failed_enrollment_profile_id = failed_enrollment_profile.id
+        pending_enrollment_profile_id = pending_enrollment_profile.id
+        establishing_enrollment_profile_id = establishing_enrollment_profile.id
         user_id = user.id
 
         expect(User.find_by(id: user_id)).to eq user
-        expect(Profile.find_by(id: profile_id1)).to eq profile1
-        expect(Profile.find_by(id: profile_id2)).to eq profile2
-        expect(InPersonEnrollment.find_by(id: enrollment_id1)).to eq enrollment1
-        expect(InPersonEnrollment.find_by(id: enrollment_id2)).to eq enrollment2
-        profile1.destroy
+        expect(Profile.find_by(id: failed_enrollment_profile_id)).to eq failed_enrollment_profile
+        expect(Profile.find_by(id: pending_enrollment_profile_id)).to eq pending_enrollment_profile
+        expect(InPersonEnrollment.find_by(id: failed_enrollment_id)).to eq failed_enrollment
+        expect(InPersonEnrollment.find_by(id: pending_enrollment_id)).to eq pending_enrollment
+        expect(InPersonEnrollment.find_by(id: establishing_enrollment_id)).to eq(
+          establishing_enrollment,
+        )
+        failed_enrollment_profile.destroy
         expect(User.find_by(id: user_id)).to eq user
-        expect(Profile.find_by(id: profile_id1)).to eq nil
-        expect(Profile.find_by(id: profile_id2)).to eq profile2
-        expect(InPersonEnrollment.find_by(id: enrollment_id1)).to eq nil
-        expect(InPersonEnrollment.find_by(id: enrollment_id2)).to eq enrollment2
+        expect(Profile.find_by(id: failed_enrollment_profile_id)).to eq nil
+        expect(Profile.find_by(id: pending_enrollment_profile_id)).to eq pending_enrollment_profile
+        expect(Profile.find_by(id: establishing_enrollment_profile_id)).to eq(
+          establishing_enrollment_profile,
+        )
+        expect(InPersonEnrollment.find_by(id: failed_enrollment_id)).to eq nil
+        expect(InPersonEnrollment.find_by(id: pending_enrollment_id)).to eq pending_enrollment
+        expect(InPersonEnrollment.find_by(id: establishing_enrollment_id)).to eq(
+          establishing_enrollment,
+        )
         user.destroy # Should work even though first profile was deleted after user was loaded
       end
     end
 
     describe '#pending_in_person_enrollment' do
       it 'returns the pending IPP enrollment' do
-        expect(user.pending_in_person_enrollment).to eq enrollment2
+        expect(user.pending_in_person_enrollment).to eq pending_enrollment
+      end
+    end
+
+    describe '#establishing_in_person_enrollment' do
+      it 'returns the establishing IPP enrollment' do
+        expect(user.establishing_in_person_enrollment).to eq establishing_enrollment
       end
     end
   end
@@ -425,18 +471,18 @@ RSpec.describe User do
   end
 
   describe '#pending_profile' do
-    context 'when a profile with a verification_pending deactivation_reason exists' do
+    context 'when a profile with a gpo_verification_pending deactivation_reason exists' do
       it 'returns the most recent profile' do
         user = User.new
         _old_profile = create(
           :profile,
-          :verification_pending,
+          :gpo_verification_pending,
           created_at: 1.day.ago,
           user: user,
         )
         new_profile = create(
           :profile,
-          :verification_pending,
+          :gpo_verification_pending,
           user: user,
         )
 
@@ -444,7 +490,7 @@ RSpec.describe User do
       end
     end
 
-    context 'when a verification_pending profile does not exist' do
+    context 'when a gpo_verification_pending profile does not exist' do
       it 'returns nil' do
         user = User.new
         create(
@@ -460,6 +506,118 @@ RSpec.describe User do
         )
 
         expect(user.pending_profile).to be_nil
+      end
+    end
+  end
+
+  describe '#should_receive_in_person_completion_survey?' do
+    let!(:user) { create(:user) }
+    let(:service_provider) { create(:service_provider) }
+    let(:issuer) { service_provider.issuer }
+
+    before do
+      allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).
+        and_return(true)
+    end
+
+    def test_send_survey(should_send)
+      expect(user.should_receive_in_person_completion_survey?(issuer)).to be(should_send)
+      user.mark_in_person_completion_survey_sent(issuer)
+      expect(user.should_receive_in_person_completion_survey?(issuer)).to be(false)
+    end
+
+    def it_should_send_survey
+      test_send_survey(true)
+    end
+
+    def it_should_not_send_survey
+      test_send_survey(false)
+    end
+
+    context 'user has no enrollments' do
+      it 'should not send survey' do
+        it_should_not_send_survey
+      end
+    end
+    context 'user has completed enrollment for different issuer but no survey' do
+      let(:other_service_provider) { create(:service_provider, issuer: 'otherissuer') }
+      let!(:enrollment) do
+        create(
+          :in_person_enrollment, user: user, issuer: other_service_provider.issuer,
+                                 status: :passed
+        )
+      end
+      it 'should not send survey' do
+        it_should_not_send_survey
+      end
+    end
+    context 'user has completed survey for other issuer and enrollments for both issuers' do
+      let(:other_service_provider) { create(:service_provider, issuer: 'otherissuer') }
+      let!(:enrollment) do
+        create(:in_person_enrollment, user: user, issuer: issuer, status: :passed)
+      end
+      let!(:enrollment2) do
+        create(
+          :in_person_enrollment, user: user, issuer: other_service_provider.issuer,
+                                 status: :passed, follow_up_survey_sent: true
+        )
+      end
+      it 'should send survey' do
+        it_should_send_survey
+      end
+    end
+    context 'user has incomplete enrollment but no survey' do
+      let!(:user) { create(:user, :with_pending_in_person_enrollment) }
+      it 'should not send survey' do
+        it_should_not_send_survey
+      end
+    end
+    context 'user has completed enrollment but no survey' do
+      let!(:enrollment) do
+        create(:in_person_enrollment, user: user, issuer: issuer, status: :passed)
+      end
+      it 'should send survey' do
+        it_should_send_survey
+      end
+    end
+    context 'user has multiple enrollments but only completed a survey for the last one' do
+      let!(:enrollment) do
+        create(:in_person_enrollment, user: user, issuer: issuer, status: :passed)
+      end
+      let!(:enrollment2) do
+        create(
+          :in_person_enrollment, user: user, issuer: issuer, status: :passed,
+                                 follow_up_survey_sent: true
+        )
+      end
+      it 'should not send survey' do
+        it_should_not_send_survey
+      end
+    end
+    context 'user has completed enrollment but no survey and feature is disabled' do
+      let!(:enrollment) do
+        create(:in_person_enrollment, user: user, issuer: issuer, status: :passed)
+      end
+
+      before do
+        allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).
+          and_return(false)
+      end
+
+      it 'should not send survey' do
+        it_should_not_send_survey
+      end
+    end
+    context 'user has completed enrollment and survey' do
+      let!(:enrollment) do
+        create(
+          :in_person_enrollment, user: user, issuer: issuer, status: :passed,
+                                 follow_up_survey_sent: true
+        )
+      end
+
+      it 'should not send survey' do
+        it_should_not_send_survey
       end
     end
   end

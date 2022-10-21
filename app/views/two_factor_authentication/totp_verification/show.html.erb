@@ -17,6 +17,7 @@
         autofocus: true,
         size: 16,
         class: 'width-auto',
+        maxlength: TwoFactorAuthenticatable::OTP_LENGTH,
       ) %>
   <%= f.input(
         :remember_device,
@@ -28,10 +29,7 @@
           checked: @presenter.remember_device_box_checked?,
         },
       ) %>
-  <%= submit_tag(
-        t('forms.buttons.submit.default'),
-        class: 'display-block usa-button usa-button--wide usa-button--big margin-top-5',
-      ) %>
+  <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-top-5' %>
 <% end %>
 
 <%= render 'shared/fallback_links', presenter: @presenter %>

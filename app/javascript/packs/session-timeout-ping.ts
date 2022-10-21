@@ -1,4 +1,6 @@
+import { forceRedirect } from '@18f/identity-url';
 import type { CountdownElement } from '@18f/identity-countdown-element';
+import type { ModalElement } from '@18f/identity-modal';
 
 interface NewRelicAgent {
   /**
@@ -7,19 +9,11 @@ interface NewRelicAgent {
   addPageAction: (name: string, attributes: object) => void;
 }
 
-interface LoginGov {
-  Modal: (any) => void;
-}
-
 interface NewRelicGlobals {
   /**
    * New Relic agent
    */
   newrelic?: NewRelicAgent;
-}
-
-interface LoginGovGlobals {
-  LoginGov: LoginGov;
 }
 
 interface PingResponse {
@@ -39,9 +33,7 @@ interface PingResponse {
   timeout: string;
 }
 
-type LoginGovGlobal = typeof window & NewRelicGlobals & LoginGovGlobals;
-
-const login = (window as LoginGovGlobal).LoginGov;
+type LoginGovGlobal = typeof window & NewRelicGlobals;
 
 const warningEl = document.getElementById('session-timeout-cntnr');
 
@@ -51,13 +43,11 @@ const frequency = parseInt(warningEl?.dataset.frequency || defaultTime, 10) * 10
 const warning = parseInt(warningEl?.dataset.warning || defaultTime, 10) * 1000;
 const start = parseInt(warningEl?.dataset.start || defaultTime, 10) * 1000;
 const timeoutUrl = warningEl?.dataset.timeoutUrl;
-const warningInfo = warningEl?.dataset.warningInfoHtml || '';
-warningEl?.insertAdjacentHTML('afterbegin', warningInfo);
 const initialTime = new Date();
 
-const modal = new login.Modal({ el: '#session-timeout-msg' });
+const modal = document.querySelector<ModalElement>('lg-modal.session-timeout-modal')!;
 const keepaliveEl = document.getElementById('session-keepalive-btn');
-const countdownEls: NodeListOf<CountdownElement> = modal.el.querySelectorAll('lg-countdown');
+const countdownEls: NodeListOf<CountdownElement> = modal.querySelectorAll('lg-countdown');
 const csrfEl: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
 
 let csrfToken = '';
@@ -76,9 +66,7 @@ function notifyNewRelic(request, error, actionName) {
 
 function handleTimeout(redirectURL: string) {
   window.dispatchEvent(new window.CustomEvent('lg:session-timeout'));
-  window.onbeforeunload = null;
-  window.onunload = null;
-  window.location.href = redirectURL;
+  forceRedirect(redirectURL);
 }
 
 function success(data: PingResponse) {
@@ -92,15 +80,13 @@ function success(data: PingResponse) {
     return;
   }
 
-  if (showWarning && !modal.shown) {
+  if (showWarning) {
     modal.show();
     countdownEls.forEach((countdownEl) => {
       countdownEl.expiration = new Date(data.timeout);
       countdownEl.start();
     });
-  }
-
-  if (!showWarning && modal.shown) {
+  } else {
     modal.hide();
     countdownEls.forEach((countdownEl) => countdownEl.stop());
   }

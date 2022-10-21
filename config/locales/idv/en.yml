@@ -82,11 +82,15 @@ en:
         heading: We could not find records matching your personal information.
         warning: Please check the information you entered and try again. Common mistakes
           are an incorrect Social Security number or ZIP Code.
+      setup:
+        fail_html: 'Please %{contact_form_link} and enter the code
+          <b>%{support_code}</b> in the detail field.'
+        heading: There is an issue with your information
+        link_text: fill out our contact form
       timeout: We are experiencing higher than usual wait time processing your
         request. Please try again.
     forgot_password:
-      link_html: Forgot password? %{link}
-      link_text: Follow these instructions
+      link_text: Forgot password?
       modal_header: Are you sure you can’t remember your password?
       reset_password: Reset password
       try_again: Try again
@@ -97,7 +101,8 @@ en:
           state-issued ID, etc.
     form:
       address1: Address
-      address2: Address (optional)
+      address2: Address line 2
+      address2_optional: Address line 2 (optional)
       city: City
       dob: Date of birth
       first_name: First name
@@ -124,13 +129,11 @@ en:
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: You have encrypted your verified data
       gpo:
-        address_on_file: We will mail a letter with a confirmation code to the address
-          that you provided on the previous step.
-        new_address: We will mail a letter with a confirmation code to the address you
-          specify.
+        address_on_file_html: We will mail a letter with a <strong>confirmation
+          code</strong> to the address that you provided on the previous step.
         resend: Send me another letter
-        timeframe: Letters are sent the next business day via USPS First Class Mail and
-          typically take 3 to 7 business days.
+        timeframe_html: Letters are sent the next business day via USPS First Class Mail
+          and <strong>typically take 3 to 7 business days to arrive</strong>.
       mail_sent: Your letter is on its way
       otp_delivery_method:
         phone_number_html: We’ll send a code to <strong>%{phone}</strong> to verify that
@@ -177,14 +180,14 @@ en:
         resend: Want another letter?
         verify: Want a letter?
       otp_delivery_method: How would you like to receive a code?
-      personal_key: Personal key
       review: Review and submit
       session:
         phone: Enter a phone number with your name on the plan
         review: Re-enter your %{app_name} password to protect your data
     troubleshooting:
       headings:
-        are_you_near: 'Are you near Washington, D.C.?'
+        # Note: there are intentional irregular non-breaking whitespaces to ensure coupling of place names.
+        are_you_near: 'Are you located near Washington, D.C. <wbr/>or Baltimore, MD?'
         missing_required_items: Are you missing one of these items?
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
         still_having_trouble: Still having trouble?
@@ -197,6 +200,7 @@ en:
         learn_more_address_verification_options: Learn more about verifying by phone or mail
         learn_more_verify_by_mail: Learn more about verifying your address by mail
         learn_more_verify_by_phone: Learn more about verifying your phone number
+        learn_more_verify_in_person: Learn more about verifying in person
         supported_documents: See a list of accepted state-issued IDs
         verify_by_mail: Verify your address by mail instead
         verify_in_person: Verify your ID in person at a Post Office

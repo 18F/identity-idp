@@ -11,23 +11,23 @@ describe UserAlerts::AlertUserAboutNewDevice do
       confirmed_email_addresses = create_list(:email_address, 2, user: user)
       create(:email_address, user: user, confirmed_at: nil)
 
-      allow(UserMailer).to receive(:new_device_sign_in).and_call_original
-
       described_class.call(user, device, disavowal_token)
 
-      expect(UserMailer).to have_received(:new_device_sign_in).twice
-      expect(UserMailer).to have_received(:new_device_sign_in).
-        with(user: user,
-             email_address: confirmed_email_addresses[0],
-             date: instance_of(String),
-             location: instance_of(String),
-             disavowal_token: disavowal_token)
-      expect(UserMailer).to have_received(:new_device_sign_in).
-        with(user: user,
-             email_address: confirmed_email_addresses[1],
-             date: instance_of(String),
-             location: instance_of(String),
-             disavowal_token: disavowal_token)
+      expect_delivered_email_count(2)
+      expect_delivered_email(
+        0, {
+          to: [confirmed_email_addresses[0].email],
+          subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
+          body: [disavowal_token],
+        }
+      )
+      expect_delivered_email(
+        1, {
+          to: [confirmed_email_addresses[1].email],
+          subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
+          body: [disavowal_token],
+        }
+      )
     end
   end
 end

@@ -5,9 +5,9 @@ RSpec.describe IrsAttemptsApi::AttemptEvent do
   let(:irs_attempt_api_public_key) { irs_attempt_api_private_key.public_key }
 
   before do
-    encoded_pubic_key = Base64.strict_encode64(irs_attempt_api_public_key.to_der)
+    encoded_public_key = Base64.strict_encode64(irs_attempt_api_public_key.to_der)
     allow(IdentityConfig.store).to receive(:irs_attempt_api_public_key).
-                                   and_return(encoded_pubic_key)
+      and_return(encoded_public_key)
   end
 
   let(:jti) { 'test-unique-id' }
@@ -32,7 +32,14 @@ RSpec.describe IrsAttemptsApi::AttemptEvent do
     it 'returns a JWE for the event' do
       jwe = subject.to_jwe
 
+      header_str, *_rest = JWE::Serialization::Compact.decode(jwe)
+      headers = JSON.parse(header_str)
+
+      expect(headers['alg']).to eq('RSA-OAEP')
+      expect(headers['kid']).to eq(JWT::JWK.new(irs_attempt_api_public_key).kid)
+
       decrypted_jwe_payload = JWE.decrypt(jwe, irs_attempt_api_private_key)
+
       token = JSON.parse(decrypted_jwe_payload)
 
       expect(token['iss']).to eq('http://www.example.com/')

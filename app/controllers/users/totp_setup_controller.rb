@@ -24,7 +24,12 @@ module Users
     def confirm
       result = totp_setup_form.submit
 
-      analytics.multi_factor_auth_setup(**result.to_h)
+      properties = result.to_h.merge(analytics_properties)
+      analytics.multi_factor_auth_setup(**properties)
+
+      irs_attempts_api_tracker.mfa_enroll_totp(
+        success: result.success?,
+      )
 
       if result.success?
         process_valid_code
@@ -66,12 +71,11 @@ module Users
 
     def track_event
       mfa_user = MfaContext.new(current_user)
-      properties = {
+      analytics.totp_setup_visit(
         user_signed_up: MfaPolicy.new(current_user).two_factor_enabled?,
         totp_secret_present: new_totp_secret.present?,
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-      }
-      analytics.track_event(Analytics::TOTP_SETUP_VISIT, properties)
+      )
     end
 
     def store_totp_secret_in_session
@@ -98,11 +102,11 @@ module Users
       analytics.multi_factor_auth_added_totp(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
-      Funnel::Registration::AddMfa.call(current_user.id, 'auth_app')
+      Funnel::Registration::AddMfa.call(current_user.id, 'auth_app', analytics)
     end
 
     def process_successful_disable
-      analytics.track_event(Analytics::TOTP_USER_DISABLED)
+      analytics.totp_user_disabled
       create_user_event(:authenticator_disabled)
       revoke_remember_device(current_user)
       revoke_otp_secret_key
@@ -140,6 +144,13 @@ module Users
 
     def current_auth_app_count
       current_user.auth_app_configurations.count
+    end
+
+    def analytics_properties
+      {
+        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
+        pii_like_keypaths: [[:mfa_method_counts, :phone]],
+      }
     end
   end
 end

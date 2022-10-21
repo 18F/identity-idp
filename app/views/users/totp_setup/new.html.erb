@@ -46,6 +46,7 @@
             aria: { label: t('forms.totp_setup.totp_step_4') },
             size: 18,
             class: 'width-auto',
+            maxlength: TwoFactorAuthenticatable::OTP_LENGTH,
           ) %>
     <% end %>
   <% end %>
@@ -58,10 +59,7 @@
           checked: @presenter.remember_device_box_checked?,
         },
       ) %>
-  <%= submit_tag(
-        t('forms.buttons.submit.default'),
-        class: 'display-block usa-button usa-button--big usa-button--wide margin-y-5',
-      ) %>
+  <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-y-5' %>
 <% end %>
 
 <%= render 'shared/cancel_or_back_to_options' %>

@@ -15,11 +15,11 @@ module Users
     before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
 
     def new
-      analytics.track_event(
-        Analytics::SIGN_IN_PAGE_VISIT,
+      analytics.sign_in_page_visit(
         flash: flash[:alert],
         stored_location: session['user_return_to'],
       )
+      override_csp_for_google_analytics
 
       @request_id = request_id_if_valid
       @ial = sp_session_ial
@@ -41,6 +41,9 @@ module Users
 
     def destroy
       analytics.logout_initiated(sp_initiated: false, oidc: false)
+      irs_attempts_api_tracker.logout_initiated(
+        success: true,
+      )
       super
     end
 
@@ -54,13 +57,13 @@ module Users
     def keepalive
       response.headers['Etag'] = '' # clear etags to prevent caching
       session[:session_expires_at] = now + Devise.timeout_in if alive?
-      analytics.track_event(Analytics::SESSION_KEPT_ALIVE) if alive?
+      analytics.session_kept_alive if alive?
 
       render json: { live: alive?, timeout: expires_at, remaining: remaining_session_time }
     end
 
     def timeout
-      analytics.track_event(Analytics::SESSION_TIMED_OUT)
+      analytics.session_timed_out
       request_id = sp_session[:request_id]
       sign_out
       flash[:info] = t(
@@ -91,6 +94,10 @@ module Users
     end
 
     def process_locked_out_session
+      irs_attempts_api_tracker.login_rate_limited(
+        email: auth_params[:email],
+      )
+
       flash[:error] = t('errors.sign_in.bad_password_limit')
       redirect_to root_url(request_id: request_id)
     end
@@ -165,7 +172,7 @@ module Users
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
       )
-      irs_attempts_api_tracker.email_and_password_auth(
+      irs_attempts_api_tracker.login_email_and_password_auth(
         email: email,
         success: success,
       )
@@ -209,12 +216,32 @@ module Users
       ).call
     end
 
-    LETTERS_AND_DASHES = /\A[a-z0-9\-]+\Z/i.freeze
+    LETTERS_AND_DASHES = /\A[a-z0-9\-]+\Z/i
 
     def request_id_if_valid
       request_id = (params[:request_id] || sp_session[:request_id]).to_s
 
       request_id if LETTERS_AND_DASHES.match?(request_id)
     end
+
+    def override_csp_for_google_analytics
+      return unless IdentityConfig.store.participate_in_dap
+      policy = current_content_security_policy
+      policy.script_src(*policy.script_src, 'dap.digitalgov.gov', 'www.google-analytics.com')
+      policy.connect_src(*policy.connect_src, 'www.google-analytics.com')
+      request.content_security_policy = policy
+    end
+  end
+
+  def unsafe_redirect_error(_exception)
+    controller_info = "#{controller_path}##{action_name}"
+    analytics.unsafe_redirect_error(
+      controller: controller_info,
+      user_signed_in: user_signed_in?,
+      referer: request.referer,
+    )
+
+    flash[:error] = t('errors.general')
+    redirect_to new_user_session_url
   end
 end

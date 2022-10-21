@@ -29,13 +29,19 @@ module Users
     private
 
     def render_prompt
-      analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT)
+      analytics.user_registration_piv_cac_setup_visit
       render :prompt
     end
 
     def process_piv_cac_setup
       result = user_piv_cac_form.submit
-      analytics.multi_factor_auth_setup(**result.to_h)
+      properties = result.to_h.merge(analytics_properties)
+      analytics.multi_factor_auth_setup(**properties)
+      irs_attempts_api_tracker.mfa_enroll_piv_cac(
+        success: result.success?,
+        subject_dn: user_piv_cac_form.x509_dn,
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
+      )
       if result.success?
         process_valid_submission
       else
@@ -65,6 +71,13 @@ module Users
       )
       create_user_event(:piv_cac_enabled)
       redirect_to login_add_piv_cac_success_url
+    end
+
+    def analytics_properties
+      {
+        in_multi_mfa_selection_flow: false,
+        enabled_mfa_methods_count: MfaContext.new(current_user).enabled_mfa_methods_count,
+      }
     end
   end
 end

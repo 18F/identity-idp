@@ -115,6 +115,7 @@ describe ImageUploadResponsePresenter do
       it 'returns hash of properties' do
         expected = {
           success: false,
+          result_failed: false,
           errors: [{ field: :limit, message: t('errors.doc_auth.throttled_heading') }],
           redirect: idv_session_errors_throttled_url,
           remaining_attempts: 0,
@@ -140,6 +141,7 @@ describe ImageUploadResponsePresenter do
       it 'returns hash of properties' do
         expected = {
           success: false,
+          result_failed: false,
           errors: [{ field: :front, message: t('doc_auth.errors.not_a_file') }],
           hints: true,
           remaining_attempts: 3,
@@ -147,6 +149,32 @@ describe ImageUploadResponsePresenter do
         }
 
         expect(presenter.as_json).to eq expected
+      end
+
+      context 'hard fail' do
+        let(:form_response) do
+          FormResponse.new(
+            success: false,
+            errors: {
+              front: t('doc_auth.errors.not_a_file'),
+              hints: true,
+            },
+            extra: { doc_auth_result: 'Failed', remaining_attempts: 3 },
+          )
+        end
+
+        it 'returns hash of properties' do
+          expected = {
+            success: false,
+            result_failed: true,
+            errors: [{ field: :front, message: t('doc_auth.errors.not_a_file') }],
+            hints: true,
+            remaining_attempts: 3,
+            ocr_pii: nil,
+          }
+
+          expect(presenter.as_json).to eq expected
+        end
       end
 
       context 'no remaining attempts' do
@@ -164,6 +192,7 @@ describe ImageUploadResponsePresenter do
         it 'returns hash of properties' do
           expected = {
             success: false,
+            result_failed: false,
             errors: [{ field: :front, message: t('doc_auth.errors.not_a_file') }],
             hints: true,
             redirect: idv_session_errors_throttled_url,
@@ -190,6 +219,7 @@ describe ImageUploadResponsePresenter do
       it 'returns hash of properties' do
         expected = {
           success: false,
+          result_failed: false,
           errors: [],
           hints: true,
           remaining_attempts: 3,

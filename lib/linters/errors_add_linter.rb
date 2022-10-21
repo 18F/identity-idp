@@ -1,16 +1,16 @@
 module RuboCop
   module Cop
     module IdentityIdp
-      # This lint ensures `redirect_back` is called with
-      # the fallback_location option and allow_other_host set to false.
-      # This is to prevent open redirects via the Referer header.
+      # This lint helps make sure that we have language-agnostic identifiers
+      # for errors that we log. The error strings are different in each locale
+      # so this helps us compare them more directly.
       #
       # @example
       #   #bad
       #   errors.add(:iss, 'invalid issuer')
       #
       #   #good
-      #   rrors.add(:iss, 'invalid issuer', type: issue)
+      #   errors.add(:iss, 'invalid issuer', type: :invalid_issuer)
       #
       class ErrorsAddLinter < RuboCop::Cop::Cop
         MSG = 'Please set a unique key for this error'.freeze

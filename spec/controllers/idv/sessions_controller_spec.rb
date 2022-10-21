@@ -17,6 +17,7 @@ describe Idv::SessionsController do
       allow(idv_session).to receive(:clear)
       allow(subject).to receive(:idv_session).and_return(idv_session)
       controller.user_session['idv/doc_auth'] = flow_session
+      controller.user_session['idv/in_person'] = flow_session
       controller.user_session[:decrypted_pii] = pii
     end
 
@@ -26,6 +27,7 @@ describe Idv::SessionsController do
       delete :destroy
 
       expect(controller.user_session['idv/doc_auth']).to be_blank
+      expect(controller.user_session['idv/in_person']).to be_blank
       expect(controller.user_session[:decrypted_pii]).to be_blank
     end
 
@@ -49,7 +51,7 @@ describe Idv::SessionsController do
       let(:user) do
         create(
           :user,
-          profiles: [create(:profile, deactivation_reason: :verification_pending)],
+          profiles: [create(:profile, deactivation_reason: :gpo_verification_pending)],
         )
       end
 
@@ -64,6 +66,34 @@ describe Idv::SessionsController do
           step: 'gpo_verify',
           location: 'clear_and_start_over',
         )
+      end
+    end
+
+    context 'with in person enrollment' do
+      let(:user) { build(:user, :with_pending_in_person_enrollment) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      end
+
+      it 'cancels pending in person enrollment' do
+        pending_enrollment = user.pending_in_person_enrollment
+        expect(user.reload.pending_in_person_enrollment).to_not be_blank
+        delete :destroy
+
+        pending_enrollment.reload
+        expect(pending_enrollment.status).to eq('cancelled')
+        expect(user.reload.pending_in_person_enrollment).to be_blank
+      end
+
+      it 'cancels establishing in person enrollment' do
+        establishing_enrollment = create(:in_person_enrollment, :establishing, user: user)
+        expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(1)
+        delete :destroy
+
+        establishing_enrollment.reload
+        expect(establishing_enrollment.status).to eq('cancelled')
+        expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(0)
       end
     end
   end

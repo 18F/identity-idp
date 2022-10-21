@@ -39,9 +39,9 @@ type FormValues = Record<string, any>;
 
 export interface FormStepComponentProps<V> {
   /**
-   * Update values, merging with existing values.
+   * Update values, merging with existing values if configured as a patch.
    */
-  onChange: (nextValues: Partial<V>) => void;
+  onChange: (nextValues: Partial<V>, options?: { patch: boolean }) => void;
 
   /**
    * Trigger a field error.
@@ -166,15 +166,13 @@ interface FormStepsProps {
   promptOnNavigate?: boolean;
 
   /**
-   * When using path fragments for maintaining history, the base path to which the current step name
-   * is appended.
-   */
-  basePath?: string;
-
-  /**
    * Format string for page title, interpolated with step title as `%{step}` parameter.
    */
   titleFormat?: string;
+}
+
+interface PreviousStepErrorsLookup {
+  [stepName: string]: FormStepError<Record<string, Error>>[] | undefined;
 }
 
 /**
@@ -232,19 +230,20 @@ function FormSteps({
   initialActiveErrors = [],
   autoFocus,
   promptOnNavigate = true,
-  basePath,
   titleFormat,
 }: FormStepsProps) {
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
   const formRef = useRef(null as HTMLFormElement | null);
-  const [stepName, setStepName] = useHistoryParam(initialStep, { basePath });
+  const [stepName, setStepName] = useHistoryParam(initialStep);
   const [stepErrors, setStepErrors] = useState([] as Error[]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [stepCanComplete, setStepCanComplete] = useState<boolean | undefined>(undefined);
   const fields = useRef({} as Record<string, FieldsRefEntry>);
   const didSubmitWithErrors = useRef(false);
   const forceRender = useForceRender();
   const ifStillMounted = useIfStillMounted();
+
   useEffect(() => {
     if (activeErrors.length && didSubmitWithErrors.current) {
       const activeErrorFieldElement = getFieldActiveErrorFieldElement(activeErrors, fields.current);
@@ -259,8 +258,27 @@ function FormSteps({
     didSubmitWithErrors.current = false;
   }, [activeErrors]);
 
+  useEffect(() => {
+    // reset stepName if it doesn't correspond to an existing step
+    const stepsCheck = steps.map((step) => step?.name).filter(Boolean);
+    if (stepName && !stepsCheck.includes(stepName)) {
+      setStepName(undefined);
+    }
+  }, [stepName, steps]);
+
   const stepIndex = Math.max(getStepIndexByName(steps, stepName), 0);
   const step = steps[stepIndex] as FormStep | undefined;
+
+  // Preserve/restore non-blocking errors for each step regardless of field association
+  const [previousStepErrors, setPreviousStepErrors] = useState<PreviousStepErrorsLookup>({});
+  useEffect(() => {
+    if (step?.name) {
+      const prevErrs = previousStepErrors[step?.name];
+      if (prevErrs && prevErrs.length > 0) {
+        setActiveErrors(prevErrs);
+      }
+    }
+  }, [step?.name, previousStepErrors]);
 
   /**
    * After a change in content, maintain focus by resetting to the beginning of the new content.
@@ -338,8 +356,8 @@ function FormSteps({
   const { form: Form, submit, name } = step;
 
   /**
-   * Increments state to the next step, or calls onComplete callback if the current step is the last
-   * step.
+   * Increments state to the next step, or calls onComplete callback
+   * if the current step is the last step.
    */
   const toNextStep: FormEventHandler = async (event) => {
     event.preventDefault();
@@ -352,6 +370,10 @@ function FormSteps({
     }
 
     const nextActiveErrors = getValidationErrors();
+    setPreviousStepErrors((prev) => ({
+      ...prev,
+      [stepName || steps[0].name]: activeErrors,
+    }));
     setActiveErrors(nextActiveErrors);
     if (nextActiveErrors.length) {
       didSubmitWithErrors.current = true;
@@ -376,19 +398,27 @@ function FormSteps({
     onStepSubmit(step?.name);
 
     const nextStepIndex = stepIndex + 1;
-    const isComplete = nextStepIndex === steps.length;
+    const isComplete =
+      stepCanComplete !== undefined ? stepCanComplete : nextStepIndex === steps.length;
     if (isComplete) {
       onComplete(values);
     } else {
       const { name: nextStepName } = steps[nextStepIndex];
       setStepName(nextStepName);
     }
+    // unset stepCanComplete so the next step that needs to can set it
+    setStepCanComplete(undefined);
   };
 
   const toPreviousStep = () => {
     const previousStepIndex = Math.max(stepIndex - 1, 0);
     const { name: nextStepName } = steps[previousStepIndex];
     setStepName(nextStepName);
+  };
+
+  // wrap setter in a function to pass to FormStepsContext
+  const changeStepCanComplete = (isComplete: boolean) => {
+    setStepCanComplete(isComplete);
   };
 
   const isLastStep = stepIndex + 1 === steps.length;
@@ -401,17 +431,23 @@ function FormSteps({
           {error.message}
         </Alert>
       ))}
-      <FormStepsContext.Provider value={{ isLastStep, isSubmitting, onPageTransition }}>
+      <FormStepsContext.Provider
+        value={{ isLastStep, changeStepCanComplete, isSubmitting, onPageTransition }}
+      >
         <Form
           key={name}
           value={values}
           errors={activeErrors}
           unknownFieldErrors={unknownFieldErrors}
-          onChange={ifStillMounted((nextValuesPatch) => {
+          onChange={ifStillMounted((nextValues, { patch } = { patch: true }) => {
             setActiveErrors((prevActiveErrors) =>
-              prevActiveErrors.filter(({ field }) => !field || !(field in nextValuesPatch)),
+              prevActiveErrors.filter(({ field }) => !field || !(field in nextValues)),
             );
-            setPatchValues(nextValuesPatch);
+            if (patch) {
+              setPatchValues(nextValues);
+            } else {
+              setValues(nextValues);
+            }
           })}
           onError={ifStillMounted((error, { field } = {}) => {
             if (field) {

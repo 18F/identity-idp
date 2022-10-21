@@ -2,7 +2,6 @@ module Idv
   module Actions
     class RedoDocumentCaptureAction < Idv::Steps::DocAuthBaseStep
       def call
-        mark_step_incomplete(:ssn)
         mark_step_incomplete(:document_capture)
         unless flow_session[:skip_upload_step]
           mark_step_incomplete(:email_sent)

@@ -1,5 +1,76 @@
 module Idp
   module Constants
+    module Vendors
+      ACUANT = 'acuant'
+      LEXIS_NEXIS = 'lexis_nexis'
+      MOCK = 'mock'
+      USPS = 'usps'
+      AAMVA = 'aamva'
+    end
+
+    # US State and Territory codes are
+    # taken from the FIPS standard, which
+    # can be found at:
+    # https://www.census.gov/library/reference/code-lists/ansi.html#state
+    STATE_AND_TERRITORY_CODES = %w[
+      AL
+      AK
+      AZ
+      AR
+      CA
+      CO
+      CT
+      DE
+      DC
+      FL
+      GA
+      HI
+      ID
+      IL
+      IN
+      IA
+      KS
+      KY
+      LA
+      ME
+      MD
+      MA
+      MI
+      MN
+      MS
+      MO
+      MT
+      NE
+      NV
+      NH
+      NJ
+      NM
+      NY
+      NC
+      ND
+      OH
+      OK
+      OR
+      PA
+      RI
+      SC
+      SD
+      TN
+      TX
+      UT
+      VT
+      VA
+      WA
+      WV
+      WI
+      WY
+      AS
+      GU
+      MP
+      PR
+      VI
+    ].to_set.freeze
+
     DEFAULT_IAL = 1
     IAL_MAX = 0
     IAL1 = 1
@@ -25,6 +96,7 @@ module Idp
       state_id_jurisdiction: 'ND',
       state_id_type: 'drivers_license',
       state_id_expiration: '2099-12-31',
+      state_id_issued: '2019-12-31',
       phone: nil,
     }.freeze
 

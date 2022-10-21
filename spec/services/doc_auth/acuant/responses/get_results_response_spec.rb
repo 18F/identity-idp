@@ -22,7 +22,6 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       expect(response.exception).to be_nil
 
       response_hash = response.to_h
-
       expected_hash = {
         success: true,
         errors: {},
@@ -35,6 +34,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
           failed: all(a_hash_including(:name, :result)),
           passed: all(a_hash_including(:name, :result)),
         ),
+        log_alert_results: a_hash_including('2d_barcode_content': { no_side: 'Passed' }),
         image_metrics: a_hash_including(:back, :front),
         alert_failure_count: 2,
         tamper_result: 'Passed',
@@ -67,6 +67,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         zipcode: '58501',
         dob: '1984-04-01',
         state_id_expiration: '2022-10-24',
+        state_id_issued: '2014-10-24',
         state_id_number: 'DOE-84-1165',
         state_id_jurisdiction: 'ND',
         state_id_type: 'state_id_card',
@@ -131,6 +132,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
           first_name: 'FAKEY',
           last_name: 'MCFAKERSON',
           state_id_expiration: '2021-01-14',
+          state_id_issued: '2017-06-01',
         )
       end
     end
@@ -154,9 +156,46 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
         hints: true,
       )
+      expect(response.to_h[:log_alert_results]).to eq(
+        document_classification: { no_side: 'Failed' },
+      )
       expect(response.exception).to be_nil
       expect(response.result_code).to eq(DocAuth::Acuant::ResultCodes::UNKNOWN)
       expect(response.result_code.billed?).to eq(false)
+    end
+
+    context 'when visiual_pattern passes and fails' do
+      let(:http_response) do
+        [1, 2].each do |index|
+          parsed_response_body['Alerts'] << {
+            Key: 'Visible Pattern',
+            Name: 'Visible Pattern',
+            RegionReferences: [],
+            Result: index,
+          }
+        end
+
+        instance_double(
+          Faraday::Response,
+          body: parsed_response_body.to_json,
+        )
+      end
+
+      it 'returns log_alert_results for visible_pattern with multiple results comma separated' do
+        expect(response.to_h[:processed_alerts]).to eq(
+          passed: [{ name: 'Visible Pattern', result: 'Passed' }],
+          failed:
+            [{ name: 'Document Classification',
+               result: 'Failed' },
+             { name: 'Visible Pattern',
+               result: 'Failed' }],
+        )
+
+        expect(response.to_h[:log_alert_results]).to eq(
+          { visible_pattern: { no_side: 'Failed' },
+            document_classification: { no_side: 'Failed' } },
+        )
+      end
     end
 
     context 'when with an acuant error message' do

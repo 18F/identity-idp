@@ -18,10 +18,14 @@ module SignUp
     def update
       track_completion_event('agency-page')
       update_verified_attributes
+      send_in_person_completion_survey
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
       else
-        redirect_to(sp_session_request_url_with_updated_params || account_url)
+        redirect_to(
+          sp_session_request_url_with_updated_params || account_url,
+          allow_other_host: true,
+        )
       end
     end
 
@@ -79,12 +83,21 @@ module SignUp
     end
 
     def track_completion_event(last_page)
-      analytics.track_event(Analytics::USER_REGISTRATION_COMPLETE, analytics_attributes(last_page))
+      analytics.user_registration_complete(**analytics_attributes(last_page))
     end
 
     def pii
       pii_string = Pii::Cacher.new(current_user, user_session).fetch_string
       JSON.parse(pii_string || '{}', symbolize_names: true)
+    end
+
+    def send_in_person_completion_survey
+      return unless sp_session_ial == ::Idp::Constants::IAL2
+
+      Idv::InPerson::CompletionSurveySender.send_completion_survey(
+        current_user,
+        current_sp.issuer,
+      )
     end
   end
 end

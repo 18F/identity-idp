@@ -22,9 +22,18 @@ module Users
         remember_device_default: remember_device_default,
         platform_authenticator: @platform_authenticator,
       )
-      analytics.track_event(Analytics::WEBAUTHN_SETUP_VISIT, result.to_h)
+      analytics.webauthn_setup_visit(**result.to_h)
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
+
+      if !result.success?
+        if @platform_authenticator
+          irs_attempts_api_tracker.mfa_enroll_webauthn_platform(success: false)
+        else
+          irs_attempts_api_tracker.mfa_enroll_webauthn_roaming(success: false)
+        end
+      end
+
       flash_error(result.errors) unless result.success?
     end
 
@@ -39,7 +48,15 @@ module Users
         remember_device_default: remember_device_default,
         platform_authenticator: @platform_authenticator,
       )
-      analytics.multi_factor_auth_setup(**result.to_h)
+      properties = result.to_h.merge(analytics_properties)
+      analytics.multi_factor_auth_setup(**properties)
+
+      if @platform_authenticator
+        irs_attempts_api_tracker.mfa_enroll_webauthn_platform(success: result.success?)
+      else
+        irs_attempts_api_tracker.mfa_enroll_webauthn_roaming(success: result.success?)
+      end
+
       if result.success?
         process_valid_webauthn(form)
       else
@@ -116,8 +133,7 @@ module Users
 
     def track_delete(success)
       counts_hash = MfaContext.new(current_user.reload).enabled_two_factor_configuration_counts_hash
-      analytics.track_event(
-        Analytics::WEBAUTHN_DELETED,
+      analytics.webauthn_deleted(
         success: success,
         mfa_method_counts: counts_hash,
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
@@ -136,16 +152,23 @@ module Users
         platform_authenticator: form.platform_authenticator?,
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
-      Funnel::Registration::AddMfa.call(current_user.id, 'webauthn')
       mark_user_as_fully_authenticated
       handle_remember_device
       if form.platform_authenticator?
+        Funnel::Registration::AddMfa.call(current_user.id, 'webauthn_platform', analytics)
         flash[:success] = t('notices.webauthn_platform_configured')
       else
+        Funnel::Registration::AddMfa.call(current_user.id, 'webauthn', analytics)
         flash[:success] = t('notices.webauthn_configured')
       end
       user_session[:auth_method] = 'webauthn'
       redirect_to next_setup_path || after_mfa_setup_path
+    end
+
+    def analytics_properties
+      {
+        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
+      }
     end
 
     def handle_remember_device

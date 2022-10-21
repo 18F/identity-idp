@@ -18,6 +18,11 @@ describe Proofing::Aamva::Response::VerificationResponse do
       dob: true,
       last_name: true,
       first_name: true,
+      address1: true,
+      address2: nil,
+      city: true,
+      state: true,
+      zipcode: true,
     }
   end
 

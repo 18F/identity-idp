@@ -3,7 +3,7 @@ module Flow
     extend ActiveSupport::Concern
 
     included do
-      before_action :fsm_initialize
+      before_action :initialize_flow_state_machine
       before_action :ensure_correct_step, only: :show
     end
 
@@ -67,14 +67,15 @@ module Flow
       sp_session[:issuer]
     end
 
-    def fsm_initialize
+    def initialize_flow_state_machine
       klass = self.class
-      flow = klass::FSM_SETTINGS[:flow]
+      flow = klass::FLOW_STATE_MACHINE_SETTINGS[:flow]
       @name = klass.name.underscore.gsub('_controller', '')
       @namespace = flow.name.split('::').first.underscore
-      @step_url = klass::FSM_SETTINGS[:step_url]
-      @final_url = klass::FSM_SETTINGS[:final_url]
-      @view = klass::FSM_SETTINGS[:view]
+      @step_url = klass::FLOW_STATE_MACHINE_SETTINGS[:step_url]
+      @final_url = klass::FLOW_STATE_MACHINE_SETTINGS[:final_url]
+      @analytics_id = klass::FLOW_STATE_MACHINE_SETTINGS[:analytics_id]
+      @view = klass::FLOW_STATE_MACHINE_SETTINGS[:view]
 
       current_session[@name] ||= {}
       @flow = flow.new(self, current_session, @name)
@@ -113,7 +114,7 @@ module Flow
     end
 
     def call_optional_show_step(optional_step)
-      return unless @flow.class.const_defined?('OPTIONAL_SHOW_STEPS')
+      return unless @flow.class.const_defined?(:OPTIONAL_SHOW_STEPS)
       optional_show_step = @flow.class::OPTIONAL_SHOW_STEPS.with_indifferent_access[optional_step]
       return unless optional_show_step
       result = optional_show_step.new(@flow).base_call
@@ -135,8 +136,9 @@ module Flow
     end
 
     def step_indicator_params
+      return if !flow.class.const_defined?(:STEP_INDICATOR_STEPS)
       handler = flow.step_handler(current_step)
-      return if !flow.class.const_defined?('STEP_INDICATOR_STEPS') || !handler
+      return if !handler || !handler.const_defined?(:STEP_INDICATOR_STEP)
       {
         steps: flow.class::STEP_INDICATOR_STEPS,
         current_step: handler::STEP_INDICATOR_STEP,
@@ -209,7 +211,7 @@ end
 # class FooController
 #   include Flow::FlowStateMachine
 #
-#   FSM_SETTINGS = {
+#   FLOW_STATE_MACHINE_SETTINGS = {
 #     step_url: :foo_step_url,
 #     final_url: :after_foo_url,
 #     flow: FooFlow,

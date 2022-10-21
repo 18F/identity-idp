@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'FeatureManagement', type: :feature do
+describe 'FeatureManagement' do
   describe '#prefill_otp_codes?' do
     context 'when SMS sending is disabled' do
       before { allow(FeatureManagement).to receive(:telephony_test_adapter?).and_return(true) }
@@ -349,24 +349,6 @@ describe 'FeatureManagement', type: :feature do
 
         allow(IdentityConfig.store).to receive(:log_to_stdout).and_return(false)
         expect(FeatureManagement.log_to_stdout?).to eq(false)
-      end
-    end
-  end
-
-  describe 'idv_api_enabled?' do
-    context 'with no steps enabled' do
-      it 'returns false' do
-        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return([])
-
-        expect(FeatureManagement.idv_api_enabled?).to eq(false)
-      end
-    end
-
-    context 'with steps enabled' do
-      it 'returns true' do
-        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['example'])
-
-        expect(FeatureManagement.idv_api_enabled?).to eq(true)
       end
     end
   end

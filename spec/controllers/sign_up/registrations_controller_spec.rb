@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe SignUp::RegistrationsController, devise: true do
-  include Features::MailerHelper
-
   describe '#new' do
     it 'allows user to visit the sign up page' do
       get :new
@@ -30,12 +28,19 @@ describe SignUp::RegistrationsController, devise: true do
   end
 
   describe '#create' do
+    let(:success_properties) { { success: true, failure_reason: nil } }
     context 'when registering with a new email' do
       it 'tracks successful user registration' do
         stub_analytics
+        stub_attempts_tracker
 
         allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
+
+        expect(@irs_attempts_api_tracker).to receive(:user_registration_email_submitted).with(
+          email: 'new@example.com',
+          **success_properties,
+        )
 
         post :create, params: { user: { email: 'new@example.com', terms_accepted: '1' } }
 
@@ -51,7 +56,7 @@ describe SignUp::RegistrationsController, devise: true do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
+          with('User Registration: Email Submitted', analytics_hash)
 
         expect(subject).to have_received(:create_user_event).with(:account_created, user)
       end
@@ -88,6 +93,7 @@ describe SignUp::RegistrationsController, devise: true do
       existing_user = create(:user, email: 'test@example.com')
 
       stub_analytics
+      stub_attempts_tracker
 
       analytics_hash = {
         success: true,
@@ -99,7 +105,13 @@ describe SignUp::RegistrationsController, devise: true do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
+        with('User Registration: Email Submitted', analytics_hash)
+
+      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_submitted).with(
+        email: 'TEST@example.com ',
+        **success_properties,
+      )
+
       expect(subject).to_not receive(:create_user_event)
 
       post :create, params: { user: { email: 'TEST@example.com ', terms_accepted: '1' } }
@@ -107,6 +119,7 @@ describe SignUp::RegistrationsController, devise: true do
 
     it 'tracks unsuccessful user registration' do
       stub_analytics
+      stub_attempts_tracker
 
       analytics_hash = {
         success: false,
@@ -119,7 +132,14 @@ describe SignUp::RegistrationsController, devise: true do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
+        with('User Registration: Email Submitted', analytics_hash)
+
+      expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+        :user_registration_email_submitted,
+        email: 'invalid@',
+        success: false,
+        failure_reason: { email: [:invalid] },
+      )
 
       post :create, params: { user: { email: 'invalid@', request_id: '', terms_accepted: '1' } }
     end

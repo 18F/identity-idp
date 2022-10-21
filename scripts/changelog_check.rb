@@ -3,9 +3,12 @@ require 'open3'
 require 'optparse'
 
 CHANGELOG_REGEX =
-  %r{^(?:\* )?changelog: (?<category>[\w -/]{2,}), (?<subcategory>[\w -]{2,}), (?<change>.+)$}
+  %r{^(?:\* )?[cC]hangelog: ?(?<category>[\w -/]{2,}), ?(?<subcategory>[\w -]{2,}), ?(?<change>.+)$}
 CATEGORIES = [
-  'Improvements', 'Accessibility', 'Bug Fixes', 'Internal', 'Upcoming Features'
+  'Improvements',
+  'Bug Fixes',
+  'Internal',
+  'Upcoming Features',
 ]
 MAX_CATEGORY_DISTANCE = 3
 SKIP_CHANGELOG_MESSAGE = '[skip changelog]'
@@ -57,11 +60,11 @@ end
 # The string is first split on DELIMITER, and then the body is split into
 # individual lines.
 def build_structured_git_log(git_log)
-  git_log.strip.split('DELIMITER').map { |commit|
+  git_log.strip.split('DELIMITER').map do |commit|
     commit.split("\nbody:").map do |commit_message_lines|
       commit_message_lines.split(%r{[\r\n]}).filter { |line| line != '' }
     end
-  }.map do |title_and_commit_messages|
+  end.map do |title_and_commit_messages|
     title = title_and_commit_messages.first.first.delete_prefix('title: ')
     messages = title_and_commit_messages[1]
     SquashedCommit.new(
@@ -134,7 +137,7 @@ def generate_changelog(git_log)
 
     changelog_entry = ChangelogEntry.new(
       category: category,
-      subcategory: change[:subcategory].capitalize,
+      subcategory: change[:subcategory],
       pr_number: pr_number&.named_captures&.fetch('pr'),
       change: change[:change].sub(/./, &:upcase),
     )
@@ -150,13 +153,14 @@ end
 # Entries with the same category and change are grouped into one changelog line so that we can
 # support multi-PR changes.
 def format_changelog(changelog_entries)
-  changelog_entries = changelog_entries.group_by { |entry| [entry.category, entry.change] }
+  changelog_entries = changelog_entries.
+    sort_by(&:subcategory).
+    group_by { |entry| [entry.category, entry.change] }
 
   changelog = ''
   CATEGORIES.each do |category|
     category_changes = changelog_entries.
-      filter { |(changelog_category, _change), _changes| changelog_category == category }.
-      sort_by { |(_category, change), _changes| change }
+      filter { |(changelog_category, _change), _changes| changelog_category == category }
 
     next if category_changes.empty?
     changelog.concat("## #{category}\n")

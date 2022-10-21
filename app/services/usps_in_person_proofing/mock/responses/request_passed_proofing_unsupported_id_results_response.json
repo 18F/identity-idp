@@ -1,0 +1,13 @@
+{
+  "status": "In-person passed",
+  "proofingPostOffice": "WILKES BARRE",
+  "proofingCity": "WILKES BARRE",
+  "proofingState": "PA",
+  "enrollmentCode": "2090002197504352",
+  "primaryIdType": "Not supported",
+  "transactionStartDateTime": "12/17/2020 033855",
+  "transactionEndDateTime": "12/17/2020 034055",
+  "fraudSuspected": false,
+  "proofingConfirmationNumber": "350040248346701",
+  "ippAssuranceLevel": "1.5"
+}

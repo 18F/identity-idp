@@ -1,21 +1,25 @@
 module Idv
   class DocAuthController < ApplicationController
     before_action :confirm_two_factor_authenticated
-    before_action :redirect_if_mail_bounced
     before_action :redirect_if_pending_profile
+    before_action :redirect_if_pending_in_person_enrollment
     before_action :extend_timeout_using_meta_refresh_for_select_paths
 
-    include IdvSession # remove if we retire the non docauth LOA3 flow
+    include IdvSession
     include Flow::FlowStateMachine
     include Idv::DocumentCaptureConcern
+    include Idv::ThreatMetrixConcern
 
+    before_action :redirect_if_flow_completed
     before_action :override_document_capture_step_csp
     before_action :update_if_skipping_upload
     # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action :check_for_outage, only: :show
     # rubocop:enable Rails/LexicallyScopedActionFilter
 
-    FSM_SETTINGS = {
+    before_action :override_csp_for_threat_metrix
+
+    FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_doc_auth_step_url,
       final_url: :idv_review_url,
       flow: Idv::Flows::DocAuthFlow,
@@ -26,14 +30,19 @@ module Idv
       redirect_to return_to_sp_failure_to_proof_url(step: next_step, location: params[:location])
     end
 
-    def redirect_if_mail_bounced
-      redirect_to idv_gpo_url if current_user.decorate.gpo_mail_bounced?
-    end
-
     def redirect_if_pending_profile
       return if sp_session[:ial2_strict] &&
                 !IdentityConfig.store.gpo_allowed_for_strict_ial2
       redirect_to idv_gpo_verify_url if current_user.decorate.pending_profile_requires_verification?
+    end
+
+    def redirect_if_flow_completed
+      flow_finish if idv_session.applicant
+    end
+
+    def redirect_if_pending_in_person_enrollment
+      return if !IdentityConfig.store.in_person_proofing_enabled
+      redirect_to idv_in_person_ready_to_verify_url if current_user.pending_in_person_enrollment
     end
 
     def update_if_skipping_upload

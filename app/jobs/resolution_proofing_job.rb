@@ -12,8 +12,17 @@ class ResolutionProofingJob < ApplicationJob
     keyword_init: true,
   )
 
-  def perform(result_id:, encrypted_arguments:, trace_id:, should_proof_state_id:,
-              dob_year_only:)
+  def perform(
+    result_id:,
+    encrypted_arguments:,
+    trace_id:,
+    should_proof_state_id:,
+    user_id: nil,
+    threatmetrix_session_id: nil,
+    request_ip: nil,
+    issuer: nil,
+    dob_year_only: nil # rubocop:disable Lint:UnusedMethodArgument
+  )
     timer = JobHelpers::Timer.new
 
     raise_stale_job! if stale_job?(enqueued_at)
@@ -25,165 +34,132 @@ class ResolutionProofingJob < ApplicationJob
 
     applicant_pii = decrypted_args[:applicant_pii]
 
-    callback_log_data = if dob_year_only && should_proof_state_id
-                          proof_aamva_then_lexisnexis_dob_only(
-                            timer: timer,
-                            applicant_pii: applicant_pii,
-                            dob_year_only: dob_year_only,
-                          )
-                        else
-                          proof_lexisnexis_then_aamva(
-                            timer: timer,
-                            applicant_pii: applicant_pii,
-                            should_proof_state_id: should_proof_state_id,
-                          )
-                        end
+    user = User.find_by(id: user_id)
+
+    optional_threatmetrix_result = proof_lexisnexis_ddp_with_threatmetrix_if_needed(
+      applicant_pii: applicant_pii,
+      user: user,
+      threatmetrix_session_id: threatmetrix_session_id,
+      request_ip: request_ip,
+      issuer: issuer,
+      timer: timer,
+    )
+
+    callback_log_data = proof_lexisnexis_then_aamva(
+      timer: timer,
+      applicant_pii: applicant_pii,
+      should_proof_state_id: should_proof_state_id,
+    )
+
+    if optional_threatmetrix_result.present?
+      add_threatmetrix_result_to_callback_result(
+        callback_log_data: callback_log_data,
+        threatmetrix_result: optional_threatmetrix_result,
+      )
+    end
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
   ensure
-    logger.info(
-      {
-        name: 'ProofResolution',
-        trace_id: trace_id,
-        resolution_success: callback_log_data&.resolution_success,
-        state_id_success: callback_log_data&.state_id_success,
-        timing: timer.results,
-      }.to_json,
+    logger_info_hash(
+      name: 'ProofResolution',
+      trace_id: trace_id,
+      resolution_success: callback_log_data&.resolution_success,
+      state_id_success: callback_log_data&.state_id_success,
+      timing: timer.results,
     )
   end
 
   private
 
+  def log_threatmetrix_info(threatmetrix_result, user)
+    logger_info_hash(
+      name: 'ThreatMetrix',
+      user_id: user&.uuid,
+      threatmetrix_request_id: threatmetrix_result.transaction_id,
+      threatmetrix_success: threatmetrix_result.success?,
+    )
+  end
+
+  def logger_info_hash(hash)
+    logger.info(hash.to_json)
+  end
+
+  def add_threatmetrix_result_to_callback_result(callback_log_data:, threatmetrix_result:)
+    exception = threatmetrix_result.exception.inspect if threatmetrix_result.exception
+
+    response_h = Proofing::LexisNexis::Ddp::ResponseRedacter.
+      redact(threatmetrix_result.response_body)
+    callback_log_data.result[:context][:stages][:threatmetrix] = {
+      client: lexisnexis_ddp_proofer.class.vendor_name,
+      errors: threatmetrix_result.errors,
+      exception: exception,
+      success: threatmetrix_result.success?,
+      timed_out: threatmetrix_result.timed_out?,
+      transaction_id: threatmetrix_result.transaction_id,
+      review_status: threatmetrix_result.review_status,
+      response_body: response_h,
+    }
+  end
+
+  def proof_lexisnexis_ddp_with_threatmetrix_if_needed(
+    applicant_pii:,
+    user:,
+    threatmetrix_session_id:,
+    request_ip:,
+    issuer:,
+    timer:
+  )
+    return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
+    return unless issuer_allows_threatmetrix?(issuer)
+
+    # The API call will fail without a session ID, so do not attempt to make
+    # it to avoid leaking data when not required.
+    return if threatmetrix_session_id.blank?
+
+    return unless applicant_pii
+
+    ddp_pii = applicant_pii.dup
+    ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
+    ddp_pii[:email] = user&.confirmed_email_addresses&.first&.email
+    ddp_pii[:request_ip] = request_ip
+
+    result = timer.time('threatmetrix') do
+      lexisnexis_ddp_proofer.proof(ddp_pii)
+    end
+
+    log_threatmetrix_info(result, user)
+    add_threatmetrix_proofing_component(user.id, result)
+
+    result
+  end
+
   # @return [CallbackLogData]
   def proof_lexisnexis_then_aamva(timer:, applicant_pii:, should_proof_state_id:)
-    proofer_result = timer.time('resolution') do
+    resolution_result = timer.time('resolution') do
       resolution_proofer.proof(applicant_pii)
     end
 
-    result = proofer_result.to_h
-    resolution_success = proofer_result.success?
-
-    result[:transaction_id] = proofer_result.transaction_id
-    result[:reference] = proofer_result.reference
-
-    exception = proofer_result.exception.inspect if proofer_result.exception
-    result[:timed_out] = proofer_result.timed_out?
-    result[:exception] = exception
-
-    result[:context] = {
-      dob_year_only: false,
-      should_proof_state_id: should_proof_state_id,
-      stages: {
-        resolution: {
-          client: resolution_proofer.class.vendor_name,
-          errors: proofer_result.errors,
-          exception: exception,
-          success: proofer_result.success?,
-          timed_out: proofer_result.timed_out?,
-          transaction_id: proofer_result.transaction_id,
-          reference: proofer_result.reference,
-        },
-      },
-    }
-
-    state_id_success = nil
-    if should_proof_state_id && result[:success]
+    state_id_result = Proofing::StateIdResult.new(
+      success: true, errors: {}, exception: nil, vendor_name: 'UnsupportedJurisdiction',
+    )
+    if should_proof_state_id
       timer.time('state_id') do
-        proof_state_id(applicant_pii: applicant_pii, result: result)
+        state_id_result = state_id_proofer.proof(applicant_pii)
       end
-      state_id_success = result[:success]
     end
+
+    result = Proofing::ResolutionResultAdjudicator.new(
+      resolution_result: resolution_result,
+      state_id_result: state_id_result,
+      should_proof_state_id: should_proof_state_id,
+    ).adjudicated_result.to_h
 
     CallbackLogData.new(
       result: result,
-      resolution_success: resolution_success,
-      state_id_success: state_id_success,
+      resolution_success: resolution_result.success?,
+      state_id_success: state_id_result.success?,
     )
-  end
-
-  # @return [CallbackLogData]
-  def proof_aamva_then_lexisnexis_dob_only(timer:, applicant_pii:, dob_year_only:)
-    proofer_result = timer.time('state_id') do
-      state_id_proofer.proof(applicant_pii)
-    end
-
-    result = proofer_result.to_h
-    state_id_success = proofer_result.success?
-    resolution_success = nil
-    exception = proofer_result.exception.inspect if proofer_result.exception
-
-    result[:context] = {
-      dob_year_only: dob_year_only,
-      should_proof_state_id: true,
-      stages: {
-        state_id: {
-          client: state_id_proofer.class.vendor_name,
-          errors: proofer_result.errors,
-          exception: exception,
-          success: state_id_success,
-          timed_out: proofer_result.timed_out?,
-          transaction_id: proofer_result.transaction_id,
-        },
-      },
-    }
-
-    if state_id_success
-      lexisnexis_result = timer.time('resolution') do
-        resolution_proofer.proof(applicant_pii.merge(dob_year_only: dob_year_only))
-      end
-
-      resolution_success = lexisnexis_result.success?
-      exception = lexisnexis_result.exception.inspect if lexisnexis_result.exception
-
-      result.merge!(lexisnexis_result.to_h) do |key, orig, current|
-        key == :messages ? orig + current : current
-      end
-
-      result[:context][:stages][:resolution] = {
-        client: resolution_proofer.class.vendor_name,
-        errors: lexisnexis_result.errors,
-        exception: exception,
-        success: lexisnexis_result.success?,
-        timed_out: lexisnexis_result.timed_out?,
-        transaction_id: lexisnexis_result.transaction_id,
-        reference: lexisnexis_result.reference,
-      }
-
-      result[:transaction_id] = lexisnexis_result.transaction_id
-      result[:reference] = lexisnexis_result.reference
-      result[:timed_out] = lexisnexis_result.timed_out?
-      result[:exception] = lexisnexis_result.exception.inspect if lexisnexis_result.exception
-    end
-
-    CallbackLogData.new(
-      result: result,
-      resolution_success: resolution_success,
-      state_id_success: state_id_success,
-    )
-  end
-
-  def proof_state_id(applicant_pii:, result:)
-    proofer_result = state_id_proofer.proof(applicant_pii)
-
-    result.merge!(proofer_result.to_h) do |key, orig, current|
-      key == :messages ? orig + current : current
-    end
-
-    exception = proofer_result.exception.inspect if proofer_result.exception
-    result[:timed_out] = proofer_result.timed_out?
-    result[:exception] = exception
-
-    result[:context][:stages][:state_id] = {
-      client: state_id_proofer.class.vendor_name,
-      errors: proofer_result.errors,
-      success: proofer_result.success?,
-      timed_out: proofer_result.timed_out?,
-      exception: exception,
-      transaction_id: proofer_result.transaction_id,
-    }
-
-    result
   end
 
   def resolution_proofer
@@ -198,6 +174,19 @@ class ResolutionProofingJob < ApplicationJob
           username: IdentityConfig.store.lexisnexis_username,
           password: IdentityConfig.store.lexisnexis_password,
           request_mode: IdentityConfig.store.lexisnexis_request_mode,
+        )
+      end
+  end
+
+  def lexisnexis_ddp_proofer
+    @lexisnexis_ddp_proofer ||=
+      if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
+        Proofing::Mock::DdpMockClient.new
+      else
+        Proofing::LexisNexis::Ddp::Proofer.new(
+          api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
+          org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
+          base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
         )
       end
   end
@@ -217,5 +206,17 @@ class ResolutionProofingJob < ApplicationJob
           verification_url: IdentityConfig.store.aamva_verification_url,
         )
       end
+  end
+
+  def add_threatmetrix_proofing_component(user_id, threatmetrix_result)
+    ProofingComponent.
+      create_or_find_by(user_id: user_id).
+      update(threatmetrix: true,
+             threatmetrix_review_status: threatmetrix_result.review_status)
+  end
+
+  def issuer_allows_threatmetrix?(issuer)
+    return IdentityConfig.store.no_sp_device_profiling_enabled if issuer.blank?
+    ServiceProvider.find_by(issuer: issuer)&.device_profiling_enabled
   end
 end

@@ -12,10 +12,7 @@ feature 'doc auth verify step', :js do
   it 'is on the correct page' do
     expect(page).to have_current_path(idv_address_path)
     expect(page).to have_content(t('doc_auth.headings.address'))
-    expect(page).to have_css(
-      '.step-indicator__step--current',
-      text: t('step_indicator.flows.idv.verify_info'),
-    )
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
   end
 
   it 'allows the user to enter in a new address' do

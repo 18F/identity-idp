@@ -5,17 +5,17 @@ feature 'idv phone step', :js do
   include IdvHelper
 
   context 'with valid information' do
-    it 'allows the user to continue to the phone otp delivery selection step' do
-      start_idv_from_sp
-      complete_idv_steps_before_phone_step
-      fill_out_phone_form_ok
-      click_idv_continue
+    # it 'allows the user to continue to the phone otp delivery selection step' do
+    #   start_idv_from_sp
+    #   complete_idv_steps_before_phone_step
+    #   fill_out_phone_form_ok
+    #   click_idv_continue
 
-      expect(page).to have_content(t('idv.titles.otp_delivery_method'))
-      expect(page).to have_current_path(idv_otp_delivery_method_path)
-    end
+    #   expect(page).to have_content(t('idv.titles.otp_delivery_method'))
+    #   expect(page).to have_current_path(idv_otp_delivery_method_path)
+    # end
 
-    it 'redirects to the confirmation step when the phone matches the 2fa phone number', js: true do
+    it 'redirects to the otp delivery step when the phone matches the 2fa phone number', js: true do
       user = user_with_2fa
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
@@ -23,8 +23,8 @@ feature 'idv phone step', :js do
 
       click_idv_continue
 
-      expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
-      expect(page).to have_current_path(idv_review_path)
+      expect(page).to have_content(t('idv.titles.otp_delivery_method', app_name: APP_NAME))
+      expect(page).to have_current_path(idv_otp_delivery_method_path)
     end
 
     it 'allows a user without a phone number to continue' do
@@ -124,14 +124,13 @@ feature 'idv phone step', :js do
       complete_idv_steps_before_phone_step(user)
 
       allow(DocumentCaptureSession).to receive(:find_by).and_return(nil)
-
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
       click_idv_continue
       expect(page).to have_content(t('idv.failure.timeout'))
       expect(page).to have_current_path(idv_phone_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
       click_idv_continue
-      expect(page).to have_current_path(idv_review_path)
+      expect(page).to have_current_path(idv_otp_delivery_method_path)
     end
   end
 

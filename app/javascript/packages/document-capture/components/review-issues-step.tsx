@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
@@ -17,6 +17,7 @@ import DocumentCaptureTroubleshootingOptions from './document-capture-troublesho
 import Warning from './warning';
 import AnalyticsContext from '../context/analytics';
 import BarcodeAttentionWarning from './barcode-attention-warning';
+import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 
 type DocumentSide = 'front' | 'back';
 
@@ -50,6 +51,8 @@ interface ReviewIssuesStepValue {
 interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepValue> {
   remainingAttempts: number;
 
+  isFailedResult: boolean;
+
   captureHints: boolean;
 
   pii?: PII;
@@ -70,23 +73,32 @@ function ReviewIssuesStep({
   onError = () => {},
   registerField = () => undefined,
   remainingAttempts = Infinity,
+  isFailedResult = false,
   pii,
   captureHints = false,
 }: ReviewIssuesStepProps) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
   const serviceProvider = useContext(ServiceProviderContext);
-  const { addPageAction } = useContext(AnalyticsContext);
+  const { trackEvent } = useContext(AnalyticsContext);
   const selfieError = errors.find(({ field }) => field === 'selfie')?.error;
   const [hasDismissed, setHasDismissed] = useState(remainingAttempts === Infinity);
-  const { onPageTransition } = useContext(FormStepsContext);
+  const { onPageTransition, changeStepCanComplete } = useContext(FormStepsContext);
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
+  const { onFailedSubmissionAttempt } = useContext(FailedCaptureAttemptsContext);
+  useEffect(() => onFailedSubmissionAttempt(), []);
   function onWarningPageDismissed() {
-    addPageAction('IdV: Capture troubleshooting dismissed');
+    trackEvent('IdV: Capture troubleshooting dismissed');
 
     setHasDismissed(true);
   }
+
+  // let FormSteps know, via FormStepsContext, whether this page
+  // is ready to submit form values
+  useEffect(() => {
+    changeStepCanComplete(!!hasDismissed);
+  }, [hasDismissed]);
 
   if (!hasDismissed) {
     if (pii) {
@@ -104,6 +116,7 @@ function ReviewIssuesStep({
           <DocumentCaptureTroubleshootingOptions
             location="post_submission_warning"
             hasErrors={!!errors?.length}
+            showInPersonOption={!isFailedResult}
           />
         }
       >

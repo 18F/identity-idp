@@ -3,9 +3,8 @@ export { default as FormError } from './form-error';
 export { default as RequiredValueMissingError } from './required-value-missing-error';
 export { default as FormStepsContext } from './form-steps-context';
 export { default as FormStepsButton } from './form-steps-button';
-export { default as HistoryLink } from './history-link';
 export { default as PromptOnNavigate } from './prompt-on-navigate';
-export { default as useHistoryParam, getStepParam, getParamURL } from './use-history-param';
+export { default as useHistoryParam } from './use-history-param';
 
 export type {
   FormStepError,

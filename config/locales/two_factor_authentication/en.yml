@@ -3,14 +3,14 @@ en:
   two_factor_authentication:
     account_reset:
       cancel_link: Cancel your request
-      link: deleting your account
+      link: reset your account
       pending_html: You currently have a pending request to delete your account. It
         takes 24 hours from the time you made the request to complete the
         process. Please check back later. %{cancel_link}
       successful_cancel: Thank you. Your request to delete your %{app_name} account
         has been cancelled.
       text_html: If you can’t use any of the authentication methods above, you can
-        reset your preferences by %{link}.
+        %{link}.
     backup_code_fallback:
       question: Don’t have your backup codes available?
     backup_code_header_text: Enter your backup security code
@@ -88,9 +88,12 @@ en:
       voice: Phone call
       voice_unsupported: We are unable to call phone numbers in %{location}.
     otp_make_default_number:
-      instruction: Please check the box below if you want this to be the default phone
-        number you receive text messages or phone calls.
+      instruction: Make this phone number the default number where you receive text
+        message or phone calls.
       label: Default phone number
+      one_number_instruction: You must have more than one phone number added to select
+        a default phone number.
+      one_number_title: This is your default number
       title: Make this your default phone number?
     personal_key_fallback:
       question: Don’t have your personal key?

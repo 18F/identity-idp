@@ -4,6 +4,7 @@ module DocAuthHelper
   include DocumentCaptureStepHelper
 
   GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+  SSN_THAT_FAILS_RESOLUTION = '123-45-6666'
 
   def session_from_completed_flow_steps(finished_step)
     session = { doc_auth: {} }
@@ -15,7 +16,7 @@ module DocAuthHelper
   end
 
   def fill_out_ssn_form_with_ssn_that_fails_resolution
-    fill_in t('idv.form.ssn_label_html'), with: '123-45-6666'
+    fill_in t('idv.form.ssn_label_html'), with: SSN_THAT_FAILS_RESOLUTION
   end
 
   def fill_out_ssn_form_with_ssn_that_raises_exception
@@ -32,6 +33,18 @@ module DocAuthHelper
 
   def click_doc_auth_back_link
     click_on '‹ ' + t('forms.buttons.back')
+  end
+
+  def idv_ip_get_started_step
+    idv_inherited_proofing_step_path(step: :get_started)
+  end
+
+  def idv_ip_verify_info_step
+    idv_inherited_proofing_step_path(step: :verify_info)
+  end
+
+  def idv_inherited_proofing_agreement_step
+    idv_inherited_proofing_step_path(step: :agreement)
   end
 
   def idv_doc_auth_welcome_step
@@ -79,6 +92,27 @@ module DocAuthHelper
     click_on t('doc_auth.buttons.continue')
   end
 
+  def complete_inherited_proofing_steps_before_get_started_step(expect_accessible: false)
+    visit idv_ip_get_started_step unless current_path == idv_ip_get_started_step
+    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+  end
+
+  def complete_get_started_step
+    click_on t('inherited_proofing.buttons.continue')
+  end
+
+  def complete_inherited_proofing_steps_before_agreement_step(expect_accessible: false)
+    complete_inherited_proofing_steps_before_get_started_step(expect_accessible: expect_accessible)
+    complete_get_started_step
+    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+  end
+
+  def complete_inherited_proofing_steps_before_verify_step(expect_accessible: false)
+    complete_inherited_proofing_steps_before_agreement_step(expect_accessible: expect_accessible)
+    complete_agreement_step
+    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+  end
+
   def complete_doc_auth_steps_before_agreement_step(expect_accessible: false)
     complete_doc_auth_steps_before_welcome_step(expect_accessible: expect_accessible)
     complete_welcome_step
@@ -121,6 +155,13 @@ module DocAuthHelper
     allow(BrowserCache).to receive(:parse).and_return(mobile_device)
     complete_doc_auth_steps_before_upload_step
     click_on t('doc_auth.info.upload_computer_link')
+  end
+
+  def complete_doc_auth_steps_before_phone_otp_step(expect_accessible: false)
+    complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
+    click_idv_continue
+    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    click_idv_continue
   end
 
   def mobile_device
@@ -174,10 +215,17 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
 
-  def complete_proofing_steps
-    complete_all_doc_auth_steps
+  def complete_all_doc_auth_steps_before_password_step(expect_accessible: false)
+    complete_all_doc_auth_steps(expect_accessible: expect_accessible)
+    fill_out_phone_form_ok if find('#idv_phone_form_phone').value.blank?
     click_continue
+    verify_phone_otp
     expect(page).to have_current_path(idv_review_path, wait: 10)
+    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+  end
+
+  def complete_proofing_steps
+    complete_all_doc_auth_steps_before_password_step
     fill_in 'Password', with: RequestHelper::VALID_PASSWORD
     click_continue
     acknowledge_and_confirm_personal_key
@@ -250,6 +298,12 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
         pii: idv_result[:pii_from_doc],
       )
     end
+  end
+
+  def verify_phone_otp
+    choose_idv_otp_delivery_method_sms
+    fill_in_code_with_last_phone_otp
+    click_submit_default
   end
 
   def fill_out_address_form_ok

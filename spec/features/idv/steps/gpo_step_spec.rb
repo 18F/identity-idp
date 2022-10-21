@@ -64,7 +64,7 @@ feature 'idv gpo step', :js do
       profile = user.profiles.first
 
       expect(profile.active?).to eq false
-      expect(profile.deactivation_reason).to eq 'verification_pending'
+      expect(profile.deactivation_reason).to eq 'gpo_verification_pending'
     end
   end
 end

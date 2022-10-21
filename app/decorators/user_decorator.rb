@@ -57,13 +57,13 @@ class UserDecorator
     !identity_verified?
   end
 
-  def identity_verified?
-    user.active_profile.present?
+  def identity_verified?(service_provider: nil)
+    user.active_profile.present? && !reproof_for_irs?(service_provider: service_provider)
   end
 
-  def gpo_mail_bounced?
-    return unless pending_profile
-    pending_profile&.gpo_confirmation_codes&.order(created_at: :desc)&.first&.bounced_at
+  def reproof_for_irs?(service_provider:)
+    service_provider&.irs_attempts_api_enabled &&
+      !user.active_profile&.initiating_service_provider&.irs_attempts_api_enabled
   end
 
   def active_profile_newer_than_pending_profile?
@@ -79,9 +79,9 @@ class UserDecorator
 
   def qrcode(otp_secret_key)
     options = {
-      issuer: 'Login.gov',
+      issuer: APP_NAME,
       otp_secret_key: otp_secret_key,
-      digits: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
+      digits: TwoFactorAuthenticatable::OTP_LENGTH,
       interval: IdentityConfig.store.totp_code_interval,
     }
     url = ROTP::TOTP.new(otp_secret_key, options).provisioning_uri(email)
@@ -99,7 +99,7 @@ class UserDecorator
 
   def recent_events
     events = Event.where(user_id: user.id).order('created_at DESC').limit(MAX_RECENT_EVENTS).
-             map(&:decorate)
+      map(&:decorate)
     (events + identity_events).sort_by(&:happened_at).reverse
   end
 
@@ -114,6 +114,11 @@ class UserDecorator
 
   def devices?
     !recent_devices.empty?
+  end
+
+  def second_last_signed_in_at
+    user.events.where(event_type: 'sign_in_after_2fa').
+      order(created_at: :desc).limit(2).pluck(:created_at).second
   end
 
   def connected_apps

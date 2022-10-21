@@ -16,6 +16,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       liveness_checking_enabled: liveness_checking_enabled?,
       service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
+      irs_attempts_api_tracker: irs_attempts_api_tracker,
     )
   end
 
@@ -32,6 +33,7 @@ RSpec.describe Idv::ApiImageUploadForm do
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:liveness_checking_enabled?) { true }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:irs_attempts_api_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
   describe '#valid?' do
     context 'with all valid images' do
@@ -91,6 +93,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
 
       it 'is not valid' do
+        expect(irs_attempts_api_tracker).to receive(:idv_document_upload_rate_limited).with(no_args)
         expect(form.valid?).to eq(false)
         expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.throttled_heading')])
       end

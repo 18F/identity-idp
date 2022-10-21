@@ -3,13 +3,16 @@ require 'rails_helper'
 describe Idv::DocAuthController do
   include DocAuthHelper
 
+  let(:user) { build(:user) }
+
   describe 'before_actions' do
     it 'includes corrects before_actions' do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :fsm_initialize,
+        :initialize_flow_state_machine,
         :ensure_correct_step,
+        :override_csp_for_threat_metrix,
       )
     end
 
@@ -18,15 +21,19 @@ describe Idv::DocAuthController do
     end
   end
 
+  let(:user) { build(:user) }
+
   before do |example|
-    stub_sign_in unless example.metadata[:skip_sign_in]
+    stub_sign_in(user) if user
     stub_analytics
     allow(@analytics).to receive(:track_event)
     allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', domain: 'example.com'))
   end
 
-  describe 'unauthenticated', :skip_sign_in do
+  describe 'unauthenticated' do
+    let(:user) { nil }
+
     it 'redirects to the root url' do
       get :index
 
@@ -39,6 +46,20 @@ describe Idv::DocAuthController do
       get :index
 
       expect(response).to redirect_to idv_doc_auth_step_url(step: :welcome)
+    end
+
+    context 'with pending in person enrollment' do
+      let(:user) { build(:user, :with_pending_in_person_enrollment) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      end
+
+      it 'redirects to in person ready to verify page' do
+        get :index
+
+        expect(response).to redirect_to idv_in_person_ready_to_verify_url
+      end
     end
   end
 
@@ -53,10 +74,6 @@ describe Idv::DocAuthController do
           :flow_session,
           step_template: 'idv/doc_auth/document_capture',
           flow_namespace: 'idv',
-          step_indicator: hash_including(
-            :steps,
-            current_step: :verify_id,
-          ),
         ),
       ).and_call_original
 
@@ -110,6 +127,24 @@ describe Idv::DocAuthController do
         'IdV: ' + "#{Analytics::DOC_AUTH} welcome visited".downcase,
         hash_including(step: 'welcome', step_count: 2),
       )
+    end
+
+    context 'with an existing applicant' do
+      before do
+        idv_session = Idv::Session.new(
+          user_session: controller.user_session,
+          current_user: user,
+          service_provider: nil,
+        )
+        idv_session.applicant = {}
+        allow(controller).to receive(:idv_session).and_return(idv_session)
+      end
+
+      it 'finishes the flow' do
+        get :show, params: { step: 'welcome' }
+
+        expect(response).to redirect_to idv_review_url
+      end
     end
   end
 
@@ -174,86 +209,22 @@ describe Idv::DocAuthController do
         'IdV: ' + "#{Analytics::DOC_AUTH} welcome submitted".downcase, result
       )
     end
-  end
 
-  describe 'async document verify' do
-    let(:front_image_url) { 'http://foo.com/bar1' }
-    let(:back_image_url) { 'http://foo.com/bar2' }
-    let(:selfie_image_url) { 'http://foo.com/bar3' }
-    let(:encryption_key) { SecureRandom.random_bytes(32) }
-    let(:front_image_iv) { SecureRandom.random_bytes(12) }
-    let(:back_image_iv) { SecureRandom.random_bytes(12) }
-    let(:selfie_image_iv) { SecureRandom.random_bytes(12) }
-    encryption_helper = JobHelpers::EncryptionHelper.new
-
-    before do
-      mock_document_capture_step
-
-      encryption_helper = JobHelpers::EncryptionHelper.new
-      stub_request(:get, front_image_url).
-        to_return(body: encryption_helper.encrypt(
-          data: '{}', key: encryption_key, iv: front_image_iv,
-        ))
-      stub_request(:get, back_image_url).
-        to_return(body: encryption_helper.encrypt(
-          data: '{}', key: encryption_key, iv: back_image_iv,
-        ))
-      stub_request(:get, selfie_image_url).
-        to_return(body: encryption_helper.encrypt(
-          data: '{}', key: encryption_key, iv: selfie_image_iv,
-        ))
-    end
-    let(:successful_response) do
-      { success: true }.to_json
-    end
-
-    context 'with selfie checking disabled' do
-      it 'successfully submits the images' do
-        put :update, params: { step: 'verify_document',
-                               document_capture_session_uuid: 'foo',
-                               encryption_key: Base64.encode64(encryption_key),
-                               front_image_iv: Base64.encode64(front_image_iv),
-                               back_image_iv: Base64.encode64(back_image_iv),
-                               selfie_image_iv: Base64.encode64(selfie_image_iv),
-                               front_image_url: front_image_url,
-                               back_image_url: back_image_url,
-                               selfie_image_url: selfie_image_url }
-
-        expect(response.status).to eq(202)
-        expect(response.body).to eq(successful_response)
-      end
-
-      it 'fails to submit the images' do
-        put :update, params: { step: 'verify_document' }
-
-        expect(response.status).to eq(400)
-      end
-    end
-
-    context 'with selfie checking enabled' do
+    context 'with an existing applicant' do
       before do
-        allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
+        idv_session = Idv::Session.new(
+          user_session: controller.user_session,
+          current_user: user,
+          service_provider: nil,
+        )
+        idv_session.applicant = {}
+        allow(controller).to receive(:idv_session).and_return(idv_session)
       end
 
-      it 'successfully submits the images' do
-        put :update, params: { step: 'verify_document',
-                               document_capture_session_uuid: 'foo',
-                               encryption_key: Base64.encode64(encryption_key),
-                               front_image_iv: Base64.encode64(front_image_iv),
-                               back_image_iv: Base64.encode64(back_image_iv),
-                               selfie_image_iv: Base64.encode64(selfie_image_iv),
-                               front_image_url: front_image_url,
-                               back_image_url: back_image_url,
-                               selfie_image_url: selfie_image_url }
+      it 'finishes the flow' do
+        put :update, params: { step: 'ssn' }
 
-        expect(response.status).to eq(202)
-        expect(response.body).to eq(successful_response)
-      end
-
-      it 'fails to submit the images' do
-        put :update, params: { step: 'verify_document' }
-
-        expect(response.status).to eq(400)
+        expect(response).to redirect_to idv_review_url
       end
     end
   end
@@ -317,13 +288,27 @@ describe Idv::DocAuthController do
         attention_with_barcode: false,
       }
     end
+    let(:hard_fail_result) do
+      {
+        pii_from_doc: {},
+        success: false,
+        errors: { front: 'Wrong document' },
+        messages: ['message'],
+        attention_with_barcode: false,
+        doc_auth_result: 'Failed',
+      }
+    end
 
     it 'returns status of success' do
       set_up_document_capture_result(
-        uuid: verify_document_action_session_uuid,
+        uuid: document_capture_session_uuid,
         idv_result: good_result,
       )
-      put :update, params: { step: 'verify_document_status' }
+      put :update,
+          params: {
+            step: 'verify_document_status',
+            document_capture_session_uuid: document_capture_session_uuid,
+          }
 
       expect(response.status).to eq(200)
       expect(response.body).to eq({ success: true }.to_json)
@@ -331,10 +316,14 @@ describe Idv::DocAuthController do
 
     it 'returns status of in progress' do
       set_up_document_capture_result(
-        uuid: verify_document_action_session_uuid,
+        uuid: document_capture_session_uuid,
         idv_result: nil,
       )
-      put :update, params: { step: 'verify_document_status' }
+      put :update,
+          params: {
+            step: 'verify_document_status',
+            document_capture_session_uuid: document_capture_session_uuid,
+          }
 
       expect(response.status).to eq(202)
       expect(response.body).to eq({ success: true }.to_json)
@@ -342,10 +331,14 @@ describe Idv::DocAuthController do
 
     it 'returns status of fail' do
       set_up_document_capture_result(
-        uuid: verify_document_action_session_uuid,
+        uuid: document_capture_session_uuid,
         idv_result: fail_result,
       )
-      put :update, params: { step: 'verify_document_status' }
+      put :update,
+          params: {
+            step: 'verify_document_status',
+            document_capture_session_uuid: document_capture_session_uuid,
+          }
 
       expect(response.status).to eq(400)
       expect(response.body).to eq(
@@ -354,16 +347,77 @@ describe Idv::DocAuthController do
           errors: [{ field: 'front', message: 'Wrong document' }],
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
           ocr_pii: nil,
+          result_failed: false,
+        }.to_json,
+      )
+    end
+
+    it 'returns status of hard fail' do
+      set_up_document_capture_result(
+        uuid: document_capture_session_uuid,
+        idv_result: hard_fail_result,
+      )
+      put :update,
+          params: {
+            step: 'verify_document_status',
+            document_capture_session_uuid: document_capture_session_uuid,
+          }
+
+      expect(response.status).to eq(400)
+      expect(response.body).to eq(
+        {
+          success: false,
+          errors: [{ field: 'front', message: 'Wrong document' }],
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
+          ocr_pii: nil,
+          result_failed: true,
         }.to_json,
       )
     end
 
     it 'returns status of fail with incomplete PII from doc auth' do
       set_up_document_capture_result(
-        uuid: verify_document_action_session_uuid,
+        uuid: document_capture_session_uuid,
         idv_result: bad_pii_result,
       )
-      put :update, params: { step: 'verify_document_status' }
+
+      expect(@analytics).to receive(:track_event).with(
+        "IdV: #{Analytics::DOC_AUTH.downcase} image upload vendor pii validation", include(
+          errors: include(
+            pii: [I18n.t('doc_auth.errors.general.no_liveness')],
+          ),
+          error_details: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
+          attention_with_barcode: false,
+          success: false,
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
+          flow_path: 'standard',
+          pii_like_keypaths: [[:pii]],
+          user_id: nil,
+        )
+      )
+
+      expect(@analytics).to receive(:track_event).with(
+        "IdV: #{Analytics::DOC_AUTH.downcase} verify_document_status submitted", include(
+          errors: include(
+            pii: [I18n.t('doc_auth.errors.general.no_liveness')],
+          ),
+          error_details: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
+          attention_with_barcode: false,
+          success: false,
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
+          step: 'verify_document_status',
+          flow_path: 'standard',
+          step_count: 1,
+          pii_like_keypaths: [[:pii]],
+          doc_auth_result: nil,
+        )
+      )
+
+      put :update,
+          params: {
+            step: 'verify_document_status',
+            document_capture_session_uuid: document_capture_session_uuid,
+          }
 
       expect(response.status).to eq(400)
       expect(response.body).to eq(
@@ -373,20 +427,8 @@ describe Idv::DocAuthController do
                      message: I18n.t('doc_auth.errors.general.no_liveness') }],
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
           ocr_pii: nil,
+          result_failed: false,
         }.to_json,
-      )
-      expect(@analytics).to have_received(:track_event).with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} verify_document_status submitted".downcase, {
-          errors: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
-          error_details: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
-          attention_with_barcode: false,
-          success: false,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
-          step: 'verify_document_status',
-          flow_path: 'standard',
-          step_count: 1,
-          pii_like_keypaths: [[:pii]],
-        }
       )
     end
   end
@@ -396,20 +438,18 @@ describe Idv::DocAuthController do
   end
 
   let(:user) { create(:user, :signed_up) }
-  let(:verify_document_action_session_uuid) { DocumentCaptureSession.create!(user: user).uuid }
+  let(:document_capture_session_uuid) { DocumentCaptureSession.create!(user: user).uuid }
 
   def mock_document_capture_step
     stub_sign_in(user)
-    DocumentCaptureSession.create(user_id: user.id, result_id: 1, uuid: 'foo')
     allow_any_instance_of(Flow::BaseFlow).to \
       receive(:flow_session).and_return(
-        'document_capture_session_uuid' => 'foo',
+        'document_capture_session_uuid' => document_capture_session_uuid,
         'Idv::Steps::WelcomeStep' => true,
         'Idv::Steps::SendLinkStep' => true,
         'Idv::Steps::LinkSentStep' => true,
         'Idv::Steps::EmailSentStep' => true,
         'Idv::Steps::UploadStep' => true,
-        verify_document_action_document_capture_session_uuid: verify_document_action_session_uuid,
       )
   end
 end

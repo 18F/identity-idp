@@ -16,6 +16,10 @@ module Users
       result = @update_user_password_form.submit(user_params)
 
       analytics.password_changed(**result.to_h)
+      irs_attempts_api_tracker.logged_in_password_change(
+        success: result.success?,
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
+      )
 
       if result.success?
         handle_valid_password
@@ -38,11 +42,17 @@ module Users
     end
 
     def handle_valid_password
+      send_password_reset_risc_event
       create_event_and_notify_user_about_password_change
       bypass_sign_in current_user
 
       flash[:personal_key] = @update_user_password_form.personal_key
       redirect_to account_url, flash: { info: t('notices.password_changed') }
+    end
+
+    def send_password_reset_risc_event
+      event = PushNotification::PasswordResetEvent.new(user: current_user)
+      PushNotification::HttpPush.deliver(event)
     end
 
     def create_event_and_notify_user_about_password_change

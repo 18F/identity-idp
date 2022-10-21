@@ -94,6 +94,11 @@ export interface UploadErrorResponse {
    * Personally-identifiable information from OCR analysis.
    */
   ocr_pii?: PII;
+
+  /**
+   * Whether the unsuccessful result was the failure type.
+   */
+  result_failed: boolean;
 }
 
 export type UploadImplementation = (
@@ -138,11 +143,6 @@ interface UploadContextProviderProps {
   statusPollInterval?: number;
 
   /**
-   * HTTP method to send payload.
-   */
-  method: 'POST' | 'PUT';
-
-  /**
    * CSRF token to send as parameter to upload implementation.
    */
   csrf: string | null;
@@ -177,18 +177,16 @@ function UploadContextProvider({
   endpoint,
   statusEndpoint,
   statusPollInterval,
-  method,
   csrf,
   formData = DEFAULT_FORM_DATA,
   flowPath,
   children,
 }: UploadContextProviderProps) {
-  const uploadWithCSRF = (payload) =>
-    upload({ ...payload, ...formData }, { endpoint, method, csrf });
+  const uploadWithCSRF = (payload) => upload({ ...payload, ...formData }, { endpoint, csrf });
 
   const getStatus = () =>
     statusEndpoint
-      ? upload({ ...formData }, { endpoint: statusEndpoint, method, csrf })
+      ? upload({ ...formData }, { endpoint: statusEndpoint, method: 'PUT', csrf })
       : Promise.reject();
 
   const value = useObjectMemo({

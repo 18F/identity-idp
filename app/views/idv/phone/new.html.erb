@@ -1,10 +1,10 @@
 <% content_for(:pre_flash_content) do %>
-  <%= render 'shared/step_indicator', {
-        steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
+  <%= render StepIndicatorComponent.new(
+        steps: step_indicator_steps,
         current_step: :verify_phone_or_address,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      } %>
+      ) %>
 <% end %>
 
 <div id="form-steps-wait-alert">
@@ -39,7 +39,7 @@
   <%= t('idv.messages.phone.final_note_html') %>
 </p>
 
-<%= validated_form_for(
+<%= simple_form_for(
       @idv_form,
       url: idv_phone_path,
       data: {
@@ -56,7 +56,7 @@
     ) do |f| %>
   <%= render PhoneInputComponent.new(
         form: f,
-        allowed_countries: ['US'],
+        allowed_countries: @idv_form.allowed_countries,
         required: true,
         class: 'margin-bottom-4',
       ) %>

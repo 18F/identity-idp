@@ -21,15 +21,14 @@
     "app/javascript/packages",
     "app/javascript/packs",
     "spec/javascripts/spec_helper.d.ts",
-    "spec/javascripts/**/*.ts"
+    "spec/javascripts/**/*.ts",
+    "scripts"
   ],
   "exclude": [
     "**/fixtures",
     "**/*.spec.js",
     "app/javascript/packs/application.js",
-    "app/javascript/packs/personal-key-page-controller.js",
     "app/javascript/packs/pw-strength.js",
-    "app/javascript/packs/reactivate-account-modal.js",
     "app/javascript/packs/saml-post.js",
     "app/javascript/packs/ssn-field.js",
     "app/javascript/packs/upload-step.js",

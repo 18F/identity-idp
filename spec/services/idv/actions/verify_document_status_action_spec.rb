@@ -6,8 +6,18 @@ describe Idv::Actions::VerifyDocumentStatusAction do
   let(:user) { create(:user) }
   let(:sp_session) { {} }
   let(:session) { { 'idv/doc_auth' => {}, sp: sp_session } }
+  let(:document_capture_session) { DocumentCaptureSession.create(user: user) }
+  let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:controller) do
-    instance_double(Idv::DocAuthController, url_options: {}, session: session, analytics: analytics)
+    instance_double(
+      Idv::DocAuthController,
+      url_options: {},
+      session: session,
+      analytics: analytics,
+      params: ActionController::Parameters.new(
+        document_capture_session_uuid: document_capture_session_uuid,
+      ),
+    )
   end
   let(:flow) { Idv::Flows::DocAuthFlow.new(controller, session, 'idv/doc_auth') }
   let(:analytics) { FakeAnalytics.new }
@@ -73,6 +83,14 @@ describe Idv::Actions::VerifyDocumentStatusAction do
         )
       end
 
+      context 'with existing applicant' do
+        let(:session) { super().merge(idv: { 'applicant' => {} }) }
+
+        it 'clears applicant' do
+          expect(session[:idv]['applicant']).to be_blank
+        end
+      end
+
       context 'unbilled' do
         let(:billed) { false }
 
@@ -119,35 +137,41 @@ describe Idv::Actions::VerifyDocumentStatusAction do
       end
     end
 
-    it 'calls analytics if missing from no document capture session' do
-      subject.call
+    context 'with no document capture session' do
+      let(:document_capture_session_uuid) { nil }
 
-      expect(analytics).to have_logged_event('Proofing Document Result Missing', {})
-      expect(analytics).to have_logged_event(
-        'Doc Auth Async',
-        error: 'failed to load verify_document_capture_session',
-        uuid: nil,
-      )
+      it 'calls analytics' do
+        subject.call
+
+        expect(analytics).to have_logged_event('Proofing Document Result Missing', {})
+        expect(analytics).to have_logged_event(
+          'Doc Auth Async',
+          error: 'failed to load verify_document_capture_session',
+          uuid: nil,
+        )
+      end
     end
 
-    it 'calls analytics if missing from no result in document capture session' do
-      verify_document_capture_session = DocumentCaptureSession.new(
-        uuid: 'uuid',
-        result_id: 'result_id',
-        user: create(:user),
-      )
+    context 'with document capture session with no result' do
+      let(:document_capture_session) do
+        DocumentCaptureSession.create(
+          uuid: 'uuid',
+          result_id: 'result_id',
+          user: create(:user),
+        )
+      end
 
-      expect(subject).to receive(:verify_document_capture_session).
-        and_return(verify_document_capture_session).at_least(:once)
-      subject.call
+      it 'calls analytics' do
+        subject.call
 
-      expect(analytics).to have_logged_event('Proofing Document Result Missing', {})
-      expect(analytics).to have_logged_event(
-        'Doc Auth Async',
-        error: 'failed to load async result',
-        uuid: verify_document_capture_session.uuid,
-        result_id: verify_document_capture_session.result_id,
-      )
+        expect(analytics).to have_logged_event('Proofing Document Result Missing', {})
+        expect(analytics).to have_logged_event(
+          'Doc Auth Async',
+          error: 'failed to load async result',
+          uuid: document_capture_session.uuid,
+          result_id: document_capture_session.result_id,
+        )
+      end
     end
   end
 end

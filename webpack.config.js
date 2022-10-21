@@ -11,14 +11,15 @@ const isLocalhost = host === 'localhost';
 const isProductionEnv = env === 'production';
 const isTestEnv = env === 'test';
 const mode = isProductionEnv ? 'production' : 'development';
-const hashSuffix = isProductionEnv ? '-[contenthash:8]' : '';
+const hashSuffix = isProductionEnv ? '-[chunkhash:8]' : '';
 const devServerPort = process.env.WEBPACK_PORT;
+const devtool = process.env.WEBPACK_DEVTOOL || (isProductionEnv ? 'source-map' : 'eval-source-map');
 
 const entries = glob('app/{components,javascript/packs}/*.{ts,tsx,js,jsx}');
 
 module.exports = /** @type {import('webpack').Configuration} */ ({
   mode,
-  devtool: isProductionEnv ? false : 'eval-source-map',
+  devtool,
   target: ['web', 'es5'],
   devServer: {
     static: {
@@ -77,7 +78,20 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
           : filename;
       },
       writeToDisk: true,
+      integrity: isProductionEnv,
       output: 'manifest.json',
+      transform(manifest) {
+        const srcIntegrity = {};
+        for (const [key, { src, integrity }] of Object.entries(manifest)) {
+          if (integrity) {
+            srcIntegrity[src] = integrity;
+            delete manifest[key];
+          }
+        }
+
+        manifest.integrity = srcIntegrity;
+        return manifest;
+      },
     }),
     new RailsI18nWebpackPlugin({
       onMissingString(key, locale) {

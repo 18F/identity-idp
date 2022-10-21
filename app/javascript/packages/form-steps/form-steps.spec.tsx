@@ -1,10 +1,11 @@
-import { useContext } from 'react';
+import { useContext, useCallback } from 'react';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
 import { PageHeading } from '@18f/identity-components';
 import * as analytics from '@18f/identity-analytics';
+import { t } from '@18f/identity-i18n';
 import FormSteps, { FormStepComponentProps, getStepIndexByName } from './form-steps';
 import FormError from './form-error';
 import FormStepsContext from './form-steps-context';
@@ -250,6 +251,43 @@ describe('FormSteps', () => {
     expect(onChange).to.have.been.calledWith({ changed: true, secondInputOne: 'one' });
   });
 
+  it('provides set onChange option for non-patch value change', async () => {
+    const steps = [
+      {
+        name: 'first',
+        title: 'First Title',
+        form: ({ onChange, value }) => (
+          <>
+            <button
+              type="button"
+              onClick={useCallback(
+                sinon
+                  .stub()
+                  .onFirstCall()
+                  .callsFake(() => onChange({ a: 1 }))
+                  .onSecondCall()
+                  .callsFake(() => onChange({ b: 2 }, { patch: false })),
+                [],
+              )}
+            >
+              Change Value
+            </button>
+            <span data-testid="value">{JSON.stringify(value)}</span>
+          </>
+        ),
+      },
+    ];
+
+    const { getByRole, getByTestId } = render(<FormSteps steps={steps} />);
+
+    const button = getByRole('button', { name: 'Change Value' });
+    await userEvent.click(button);
+    await userEvent.click(button);
+
+    const value = getByTestId('value');
+    expect(value.textContent).to.equal('{"b":2}');
+  });
+
   it('submits with form values', async () => {
     const onComplete = sinon.spy();
     const { getByText, getByLabelText } = render(
@@ -327,6 +365,12 @@ describe('FormSteps', () => {
     expect(window.location.hash).to.equal('#second');
   });
 
+  it('resets hash in URL if there is no matching step', () => {
+    window.location.hash = '#example';
+    render(<FormSteps steps={STEPS} />);
+    expect(window.location.hash).to.equal('');
+  });
+
   it('syncs step by history events', async () => {
     const { getByText, findByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
 
@@ -345,6 +389,38 @@ describe('FormSteps', () => {
     expect((getByLabelText('Second Input One') as HTMLInputElement).value).to.equal('one');
     expect((getByLabelText('Second Input Two') as HTMLInputElement).value).to.equal('two');
     expect(window.location.hash).to.equal('#second');
+  });
+
+  it('retains errors from prior steps', async () => {
+    const errors = [
+      {
+        field: 'nonExistentField1',
+        error: new FormError('abcde'),
+      },
+      {
+        field: 'nonExistentField2',
+        error: new FormError('12345'),
+      },
+    ];
+    const { getByText, findByText } = render(
+      <FormSteps steps={STEPS} initialActiveErrors={errors} />,
+    );
+
+    const checkFormHasExpectedErrors = () =>
+      findByText('Errors:', { exact: false }).then((e) =>
+        expect(e.parentElement?.textContent).contains('abcde,12345'),
+      );
+
+    await expect(checkFormHasExpectedErrors()).to.be.fulfilled();
+
+    await userEvent.click(getByText(t('forms.buttons.continue')));
+
+    await expect(findByText('Second Title')).to.be.fulfilled();
+    await expect(checkFormHasExpectedErrors()).to.be.rejected();
+
+    window.history.back();
+
+    await expect(checkFormHasExpectedErrors()).to.be.fulfilled();
   });
 
   it('shifts focus to next heading on step change', async () => {

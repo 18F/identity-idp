@@ -23,6 +23,7 @@
 <%= button_to(
       account_reset_request_path,
       class: 'usa-button usa-button--unstyled',
+      method: :post,
     ) { t('account_reset.request.yes_continue') } %>
 
 <%= render PageFooterComponent.new do %>

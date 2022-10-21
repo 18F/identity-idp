@@ -8,8 +8,10 @@ module UserOtpMethods
   end
 
   def create_direct_otp
+    otp = OtpCodeGenerator.generate_digits(TwoFactorAuthenticatable::DIRECT_OTP_LENGTH)
+
     update(
-      direct_otp: OtpCodeGenerator.generate_digits(TwoFactorAuthenticatable::DIRECT_OTP_LENGTH),
+      direct_otp: otp,
       direct_otp_sent_at: Time.zone.now,
     )
   end

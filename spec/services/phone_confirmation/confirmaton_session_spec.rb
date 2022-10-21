@@ -48,7 +48,9 @@ RSpec.describe PhoneConfirmation::ConfirmationSession do
   end
 
   describe '#matches_code?' do
-    let(:code) { OtpCodeGenerator.generate_digits(TwoFactorAuthenticatable::DIRECT_OTP_LENGTH) }
+    let(:code) do
+      OtpCodeGenerator.generate_alphanumeric_digits(TwoFactorAuthenticatable::DIRECT_OTP_LENGTH)
+    end
     subject do
       described_class.new(
         code: code,

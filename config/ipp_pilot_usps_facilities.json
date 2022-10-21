@@ -1,0 +1,158 @@
+{
+  "postOffices": [
+    {
+      "parking": "Lot",
+      "hours": [
+        {
+          "weekdayHours": "8:30 AM - 7:00 PM"
+        },
+        {
+          "saturdayHours": "8:30 AM - 5:00 PM"
+        },
+        {
+          "sundayHours": "Closed"
+        }
+      ],
+      "distance": "0.0 mi",
+      "streetAddress": "900 E FAYETTE ST RM 118",
+      "city": "BALTIMORE",
+      "phone": "410-347-4202",
+      "name": "BALTIMORE",
+      "zip4": "9715",
+      "state": "MD",
+      "zip5": "21233"
+    },
+    {
+      "parking": "Street",
+      "hours": [
+        {
+          "weekdayHours": "9:00 AM - 5:00 PM"
+        },
+        {
+          "saturdayHours": "9:00 AM - 4:00 PM"
+        },
+        {
+          "sundayHours": "Closed"
+        }
+      ],
+      "distance": "0.0 mi",
+      "streetAddress": "6900 WISCONSIN AVE STE 100",
+      "city": "CHEVY CHASE",
+      "phone": "301-941-2670",
+      "name": "BETHESDA",
+      "zip4": "9996",
+      "state": "MD",
+      "zip5": "20815"
+    },
+    {
+      "parking": "Lot",
+      "hours": [
+        {
+          "weekdayHours": "8:00 AM - 6:00 PM"
+        },
+        {
+          "saturdayHours": "8:00 AM - 4:00 PM"
+        },
+        {
+          "sundayHours": "10:00 AM - 4:00 PM"
+        }
+      ],
+      "distance": "0.0 mi",
+      "streetAddress": "4005 WISCONSIN AVE NW",
+      "city": "WASHINGTON",
+      "phone": "202-842-3332",
+      "name": "FRIENDSHIP",
+      "zip4": "9997",
+      "state": "DC",
+      "zip5": "20016"
+    },
+    {
+      "parking": "Lot",
+      "hours": [
+        {
+          "weekdayHours": "9:00 AM - 5:00 PM"
+        },
+        {
+          "saturdayHours": "9:00 AM - 4:00 PM"
+        },
+        {
+          "sundayHours": "Closed"
+        }
+      ],
+      "distance": "0.0 mi",
+      "streetAddress": "900 BRENTWOOD RD NE",
+      "city": "WASHINGTON",
+      "phone": "202-636-1259",
+      "name": "WASHINGTON",
+      "zip4": "9998",
+      "state": "DC",
+      "zip5": "20066"
+    },
+    {
+      "parking": "Street",
+      "hours": [
+        {
+          "weekdayHours": "9:00 AM - 5:00 PM"
+        },
+        {
+          "saturdayHours": "9:00 AM - 1:00 PM"
+        },
+        {
+          "sundayHours": "Closed"
+        }
+      ],
+      "distance": "0.0 mi",
+      "streetAddress": "3118 WASHINGTON BLVD",
+      "city": "ARLINGTON",
+      "phone": "703-993-0072",
+      "name": "ARLINGTON",
+      "zip4": "9998",
+      "state": "VA",
+      "zip5": "22201"
+    },
+    {
+      "parking": "Lot",
+      "hours": [
+        {
+          "weekdayHours": "9:00 AM - 6:00 PM"
+        },
+        {
+          "saturdayHours": "9:00 AM - 1:00 PM"
+        },
+        {
+          "sundayHours": "Closed"
+        }
+      ],
+      "distance": "0.0 mi",
+      "streetAddress": "44715 PRENTICE DR",
+      "city": "DULLES",
+      "phone": "703-406-6291",
+      "name": "ASHBURN",
+      "zip4": "9996",
+      "state": "VA",
+      "zip5": "20101"
+    },
+    {
+      "parking": "Lot",
+      "hours": [
+        {
+          "weekdayHours": "9:00 AM - 8:00 PM"
+        },
+        {
+          "saturdayHours": "9:00 AM - 5:00 PM"
+        },
+        {
+          "sundayHours": "9:00 AM - 5:00 PM"
+        }
+      ],
+      "distance": "0.0 mi",
+      "streetAddress": "8409 LEE HWY",
+      "city": "MERRIFIELD",
+      "phone": "703-698-6377",
+      "name": "MERRIFIELD",
+      "zip4": "9998",
+      "state": "VA",
+      "zip5": "22116"
+    }
+  ]
+}

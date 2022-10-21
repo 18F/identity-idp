@@ -129,7 +129,6 @@ module Features
 
     def sign_up
       user = create(:user, :unconfirmed)
-      Funnel::Registration::Create.call(user.id)
       confirm_last_user
       user
     end
@@ -214,7 +213,11 @@ module Features
       create(:user, :signed_up, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
     end
 
-    def user_with_aal3_2fa
+    def user_with_totp_2fa
+      create(:user, :signed_up, :with_authentication_app, password: VALID_PASSWORD)
+    end
+
+    def user_with_phishing_resistant_2fa
       create(:user, :signed_up, :with_webauthn, password: VALID_PASSWORD)
     end
 
@@ -266,6 +269,11 @@ module Features
       fill_in I18n.t('forms.two_factor.code'), with: last_phone_otp
     end
 
+    def fill_in_code_with_last_totp(user)
+      accept_rules_of_use_and_continue_if_displayed
+      fill_in I18n.t('forms.two_factor.code'), with: last_totp(user)
+    end
+
     def accept_rules_of_use_and_continue_if_displayed
       return unless current_path == rules_of_use_path
       check 'rules_of_use_form[terms_accepted]'
@@ -273,6 +281,11 @@ module Features
     end
 
     def click_submit_default
+      click_button t('forms.buttons.submit.default')
+    end
+
+    def click_submit_default_twice
+      click_button t('forms.buttons.submit.default')
       click_button t('forms.buttons.submit.default')
     end
 
@@ -310,12 +323,11 @@ module Features
 
     def acknowledge_and_confirm_personal_key
       click_acknowledge_personal_key
-
-      page.find(':focus').fill_in with: scrape_personal_key
-      within('[role=dialog]') { click_continue }
     end
 
     def click_acknowledge_personal_key
+      checkbox_header = t('forms.validation.required_checkbox')
+      find('label', text: /#{checkbox_header}/).click
       click_continue
     end
 
@@ -421,12 +433,7 @@ module Features
 
       submit_form_with_valid_password
 
-      expect(page).to have_css('img[src*=sp-logos]')
-
       set_up_2fa_with_valid_phone
-
-      expect(page).to have_css('img[src*=sp-logos]')
-
       # expect(page).to have_css('img[src*=sp-logos]')
     end
 

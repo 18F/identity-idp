@@ -1,9 +1,8 @@
 import { basename, join } from 'path';
 import { writeFile } from 'fs/promises';
 import sass from 'sass-embedded';
-import postcss from 'postcss';
-import autoprefixer from 'autoprefixer';
-import cssnano from 'cssnano';
+import { transform as lightningTransform, browserslistToTargets } from 'lightningcss';
+import browserslist from 'browserslist';
 
 /** @typedef {import('sass-embedded').CompileResult} CompileResult */
 /** @typedef {import('sass-embedded').Options<'sync'>} SyncSassOptions */
@@ -15,14 +14,9 @@ import cssnano from 'cssnano';
  * @prop {boolean} optimize Whether to optimize output for production.
  */
 
-/**
- * Returns the given array with false values omitted.
- *
- * @template A
- *
- * @param {A[]} array
- */
-const compact = (array) => /** @type {Array<Exclude<A, false>>} */ (array.filter(Boolean));
+const TARGETS = browserslistToTargets(
+  browserslist(browserslist.loadConfig({ path: process.cwd() })),
+);
 
 /**
  * Compiles a given Sass file.
@@ -41,15 +35,20 @@ export async function buildFile(file, options) {
     quietDeps: true,
   });
 
-  const postcssPlugins = compact([autoprefixer, optimize && cssnano]);
-  const postcssResult = await postcss(postcssPlugins).process(sassResult.css, { from: file });
-
   let outFile = basename(file, '.scss');
+
+  const parcelResult = lightningTransform({
+    filename: outFile,
+    code: Buffer.from(sassResult.css),
+    minify: optimize,
+    targets: TARGETS,
+  });
+
   if (outDir) {
     outFile = join(outDir, outFile);
   }
 
-  await writeFile(outFile, postcssResult.css);
+  await writeFile(outFile, parcelResult.code);
 
   return sassResult;
 }

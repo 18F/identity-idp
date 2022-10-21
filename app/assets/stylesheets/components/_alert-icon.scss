@@ -1,0 +1,31 @@
+// Login Specific Icons (non-uswds)
+.alert-icon {
+  width: 88px;
+  height: 88px;
+}
+
+// For displaying icons as "badges"
+// at the top of modals
+.iconic-modal-badge {
+  position: relative;
+  &::before {
+    background-repeat: no-repeat;
+    background-size: contain;
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0px;
+    transform: translateX(-50%) translateY(-50%);
+    height: 88px;
+    width: 88px;
+  }
+  &.personal-key-badge::before {
+    background-image: url('status/personal-key.svg');
+  }
+}
+.alert-icon--centered-top {
+  position: absolute;
+  left: 50%;
+  top: 0px;
+  transform: translate(-50%, -50%);
+}

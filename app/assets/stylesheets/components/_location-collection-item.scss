@@ -1,0 +1,13 @@
+.location-collection-item {
+  max-width: 64ex;
+  list-style-type: none;
+  padding-left: 0;
+  align-items: flex-start;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  display: flex;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  padding-bottom: 1rem;
+  border-color: $border-color;
+}

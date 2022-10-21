@@ -146,7 +146,7 @@ describe SignUp::CompletionsController do
         patch :update
 
         expect(@analytics).to have_received(:track_event).with(
-          Analytics::USER_REGISTRATION_COMPLETE,
+          'User registration: complete',
           ial2: false,
           ialmax: nil,
           service_provider_name: subject.decorated_session.sp_name,
@@ -205,7 +205,7 @@ describe SignUp::CompletionsController do
         patch :update
 
         expect(@analytics).to have_received(:track_event).with(
-          Analytics::USER_REGISTRATION_COMPLETE,
+          'User registration: complete',
           ial2: true,
           ialmax: nil,
           service_provider_name: subject.decorated_session.sp_name,
@@ -232,6 +232,32 @@ describe SignUp::CompletionsController do
           last_consented_at: now,
           clear_deleted_at: true,
         )
+        allow(Idv::InPerson::CompletionSurveySender).to receive(:send_completion_survey).
+          with(user, sp.issuer)
+        freeze_time do
+          travel_to(now)
+          patch :update
+        end
+      end
+
+      it 'sends the in-person proofing completion survey' do
+        user = create(:user, profiles: [create(:profile, :verified, :active)])
+        stub_sign_in(user)
+        sp = create(:service_provider, issuer: 'https://awesome')
+        subject.session[:sp] = {
+          issuer: sp.issuer,
+          ial: 2,
+          request_url: 'http://example.com',
+          requested_attributes: %w[email first_name verified_at],
+        }
+        allow(@linker).to receive(:link_identity).with(
+          ial: 2,
+          verified_attributes: %w[email first_name verified_at],
+          last_consented_at: now,
+          clear_deleted_at: true,
+        )
+        expect(Idv::InPerson::CompletionSurveySender).to receive(:send_completion_survey).
+          with(user, sp.issuer)
         freeze_time do
           travel_to(now)
           patch :update

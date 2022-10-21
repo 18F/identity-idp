@@ -2,6 +2,9 @@
 
 class Analytics
   include AnalyticsEvents
+  prepend Idv::AnalyticsEventsEnhancer
+
+  attr_reader :user, :request, :sp, :ahoy
 
   def initialize(user:, request:, sp:, session:, ahoy: nil)
     @user = user
@@ -87,8 +90,6 @@ class Analytics
     attributes[:success] ? 'success' : 'fail'
   end
 
-  attr_reader :user, :request, :sp, :ahoy
-
   def request_attributes
     attributes = {
       user_ip: request.remote_ip,
@@ -135,42 +136,5 @@ class Analytics
     Time.zone.parse(value)
   end
 
-  # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  SP_HANDOFF_BOUNCED_DETECTED = 'SP handoff bounced detected'
-  SP_HANDOFF_BOUNCED_VISIT = 'SP handoff bounced visited'
-  SP_INACTIVE_VISIT = 'SP inactive visited'
-  BACKUP_CODE_CREATED = 'Backup Code Created'
-  BACKUP_CODE_DELETED = 'Backup Code Delete'
-  BACKUP_CODE_SETUP_VISIT = 'Backup Code Setup Visited'
-  BACKUP_CODE_SETUP_SUBMITTED = 'Backup Code Setup submitted'
-  SAML_AUTH = 'SAML Auth'
-  SESSION_TIMED_OUT = 'Session Timed Out'
-  SESSION_KEPT_ALIVE = 'Session Kept Alive'
-  SESSION_TOTAL_DURATION_TIMEOUT = 'User Maximum Session Length Exceeded'
-  SIGN_IN_PAGE_VISIT = 'Sign in page visited'
-  SMS_OPT_IN_SUBMITTED = 'SMS Opt-In: Submitted'
-  SMS_OPT_IN_VISIT = 'SMS Opt-In: Visited'
-  SP_REDIRECT_INITIATED = 'SP redirect initiated'
-  TELEPHONY_OTP_SENT = 'Telephony: OTP sent'
-  THROTTLER_RATE_LIMIT_TRIGGERED = 'Throttler Rate Limit Triggered'
-  TOTP_SETUP_VISIT = 'TOTP Setup Visited'
-  TOTP_USER_DISABLED = 'TOTP: User Disabled TOTP'
-  USER_REGISTRATION_CANCELLATION = 'User registration: cancellation visited'
-  USER_REGISTRATION_COMPLETE = 'User registration: complete'
-  USER_REGISTRATION_EMAIL = 'User Registration: Email Submitted'
-  USER_REGISTRATION_EMAIL_CONFIRMATION = 'User Registration: Email Confirmation'
-  USER_REGISTRATION_EMAIL_CONFIRMATION_RESEND = 'User Registration: Email Confirmation requested due to invalid token'
-  USER_REGISTRATION_ENTER_EMAIL_VISIT = 'User Registration: enter email visited'
-  USER_REGISTRATION_INTRO_VISIT = 'User Registration: intro visited'
-  USER_REGISTRATION_2FA_SETUP = 'User Registration: 2FA Setup'
-  USER_REGISTRATION_2FA_SETUP_VISIT = 'User Registration: 2FA Setup visited'
-  USER_REGISTRATION_PHONE_SETUP_VISIT = 'User Registration: phone setup visited'
-  USER_REGISTRATION_PERSONAL_KEY_VISIT = 'User Registration: personal key visited'
-  USER_REGISTRATION_PIV_CAC_DISABLED = 'User Registration: piv cac disabled'
-  USER_REGISTRATION_PIV_CAC_SETUP_VISIT = 'User Registration: piv cac setup visited'
-  VENDOR_OUTAGE = 'Vendor Outage'
-  WEBAUTHN_DELETED = 'WebAuthn Deleted'
-  WEBAUTHN_SETUP_VISIT = 'WebAuthn Setup Visited'
 end
-# rubocop:enable Layout/LineLength

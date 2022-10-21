@@ -3,7 +3,10 @@ require 'rails_helper'
 describe Idv::GpoController do
   let(:user) { create(:user) }
 
-  before { stub_analytics }
+  before do
+    stub_analytics
+    stub_attempts_tracker
+  end
 
   describe 'before_actions' do
     it 'includes authentication before_action' do
@@ -51,26 +54,10 @@ describe Idv::GpoController do
       expect(response).to be_ok
     end
 
-    it 'renders wait page while job is in progress' do
-      allow(controller).to receive(:async_state).and_return(
-        ProofingSessionAsyncResult.new(
-          status: ProofingSessionAsyncResult::IN_PROGRESS,
-        ),
-      )
+    it 'assigns the current step indicator step as "verify phone or address"' do
       get :index
 
-      expect(response).to render_template :wait
-    end
-
-    it 'logs an event when there is a timeout' do
-      allow(controller).to receive(:async_state).and_return(
-        ProofingSessionAsyncResult.new(
-          status: ProofingSessionAsyncResult::MISSING,
-        ),
-      )
-
-      get :index
-      expect(@analytics).to have_logged_event('Proofing Address Result Missing', {})
+      expect(assigns(:step_indicator_current_step)).to eq(:verify_phone_or_address)
     end
 
     context 'with letter already sent' do
@@ -85,6 +72,18 @@ describe Idv::GpoController do
           'IdV: USPS address visited',
           letter_already_sent: true,
         )
+      end
+    end
+
+    context 'resending a letter' do
+      before do
+        allow(controller).to receive(:resend_requested?).and_return(true)
+      end
+
+      it 'assigns the current step indicator step as "get a letter"' do
+        get :index
+
+        expect(assigns(:step_indicator_current_step)).to eq(:get_a_letter)
       end
     end
   end
@@ -102,6 +101,13 @@ describe Idv::GpoController do
 
         expect(response).to redirect_to idv_review_path
         expect(subject.idv_session.address_verification_mechanism).to eq :gpo
+      end
+
+      it 'logs attempts api tracking' do
+        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_letter_requested).
+          with(resend: false)
+
+        put :create
       end
     end
 
@@ -122,6 +128,13 @@ describe Idv::GpoController do
       it 'calls GpoConfirmationMaker to send another letter with reveal_gpo_code on' do
         allow(FeatureManagement).to receive(:reveal_gpo_code?).and_return(true)
         expect_resend_letter_to_send_letter_and_redirect(otp: true)
+      end
+
+      it 'logs attempts api tracking' do
+        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_letter_requested).
+          with(resend: true)
+
+        put :create
       end
 
       it 'redirects to capture password if pii is locked' do

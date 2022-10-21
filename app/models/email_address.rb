@@ -8,7 +8,6 @@ class EmailAddress < ApplicationRecord
   validates :email_fingerprint, presence: true
 
   scope :confirmed, -> { where('confirmed_at IS NOT NULL') }
-  scope :unconfirmed, -> { where(confirmed_at: nil) }
 
   def email=(email)
     set_encrypted_attribute(name: :email, value: email)
@@ -41,6 +40,13 @@ class EmailAddress < ApplicationRecord
     def find_with_confirmation_token(token)
       return if token.blank? || token.include?("\x00")
       EmailAddress.find_by(confirmation_token: token)
+    end
+
+    # It is possible for the same email address to exist more than once if it is unconfirmed,
+    # but only one row with that email address can be confirmed.  This method finds the first email
+    # address but will return the confirmed one first if it exists.
+    def find_with_confirmed_or_unconfirmed_email(email)
+      EmailAddress.order('confirmed_at ASC NULLS LAST').find_with_email(email)
     end
 
     def update_last_sign_in_at_on_user_id_and_email(user_id:, email:)

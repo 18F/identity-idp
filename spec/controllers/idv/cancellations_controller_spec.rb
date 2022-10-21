@@ -17,9 +17,13 @@ describe Idv::CancellationsController do
     it 'tracks the event in analytics when referer is nil' do
       stub_sign_in
       stub_analytics
-      properties = { request_came_from: 'no referer', step: nil }
 
-      expect(@analytics).to receive(:track_event).with('IdV: cancellation visited', properties)
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: cancellation visited',
+        request_came_from: 'no referer',
+        step: nil,
+        proofing_components: nil,
+      )
 
       get :new
     end
@@ -28,9 +32,13 @@ describe Idv::CancellationsController do
       stub_sign_in
       stub_analytics
       request.env['HTTP_REFERER'] = 'http://example.com/'
-      properties = { request_came_from: 'users/sessions#new', step: nil }
 
-      expect(@analytics).to receive(:track_event).with('IdV: cancellation visited', properties)
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: cancellation visited',
+        request_came_from: 'users/sessions#new',
+        step: nil,
+        proofing_components: nil,
+      )
 
       get :new
     end
@@ -38,9 +46,13 @@ describe Idv::CancellationsController do
     it 'tracks the event in analytics when step param is present' do
       stub_sign_in
       stub_analytics
-      properties = { request_came_from: 'no referer', step: 'first' }
 
-      expect(@analytics).to receive(:track_event).with('IdV: cancellation visited', properties)
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: cancellation visited',
+        request_came_from: 'no referer',
+        step: 'first',
+        proofing_components: nil,
+      )
 
       get :new, params: { step: 'first' }
     end
@@ -100,6 +112,7 @@ describe Idv::CancellationsController do
       expect(@analytics).to receive(:track_event).with(
         'IdV: cancellation go back',
         step: 'first',
+        proofing_components: nil,
       )
 
       put :update, params: { step: 'first', cancel: 'true' }
@@ -136,6 +149,7 @@ describe Idv::CancellationsController do
       expect(@analytics).to receive(:track_event).with(
         'IdV: cancellation confirmed',
         step: 'first',
+        proofing_components: nil,
       )
 
       delete :destroy, params: { step: 'first' }
@@ -171,8 +185,10 @@ describe Idv::CancellationsController do
     end
 
     context 'when regular session' do
+      let(:user) { create(:user) }
+
       before do
-        stub_sign_in
+        stub_sign_in(user)
       end
 
       it 'destroys session' do
@@ -187,6 +203,46 @@ describe Idv::CancellationsController do
         parsed_body = JSON.parse(response.body, symbolize_names: true)
         expect(response).not_to render_template(:destroy)
         expect(parsed_body).to eq({ redirect_url: account_path })
+      end
+
+      context 'with in person enrollment' do
+        let(:user) { build(:user, :with_pending_in_person_enrollment) }
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          allow(controller).to receive(:user_session).and_return(
+            'idv/in_person' => { 'pii_from_user' => {},
+                                 'Idv::Steps::InPerson::StateIdStep' => true,
+                                 'Idv::Steps::InPerson::AddressStep' => true },
+          )
+        end
+
+        it 'cancels pending in person enrollment' do
+          pending_enrollment = user.pending_in_person_enrollment
+          expect(user.reload.pending_in_person_enrollment).to_not be_blank
+          delete :destroy
+
+          pending_enrollment.reload
+          expect(pending_enrollment.status).to eq('cancelled')
+          expect(user.reload.pending_in_person_enrollment).to be_blank
+        end
+
+        it 'cancels establishing in person enrollment' do
+          establishing_enrollment = create(:in_person_enrollment, :establishing, user: user)
+          expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(1)
+          delete :destroy
+
+          establishing_enrollment.reload
+          expect(establishing_enrollment.status).to eq('cancelled')
+          expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(0)
+        end
+
+        it 'deletes in person flow data' do
+          expect(controller.user_session['idv/in_person']).not_to be_blank
+          delete :destroy
+
+          expect(controller.user_session['idv/in_person']).to be_blank
+        end
       end
     end
   end

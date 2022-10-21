@@ -18,28 +18,36 @@ describe Reports::SpUserCountsReport do
     freeze_time do
       timestamp = Time.zone.now.iso8601
       expect(subject).to receive(:write_hash_to_reports_log).with(
-        app_id: app_id,
-        ial1_user_total: 3,
-        ial2_user_total: 0,
-        issuer: issuer,
-        name: 'Report SP User Counts',
-        time: timestamp,
-        user_total: 3,
+        {
+          app_id: app_id,
+          ial1_user_total: 3,
+          ial2_user_total: 0,
+          issuer: issuer,
+          name: 'Report SP User Counts',
+          time: timestamp,
+          user_total: 3,
+        },
       )
       expect(subject).to receive(:write_hash_to_reports_log).with(
-        name: 'Report Registered Users Count',
-        time: timestamp,
-        count: 0,
+        {
+          name: 'Report Registered Users Count',
+          time: timestamp,
+          count: 0,
+        },
       )
       expect(subject).to receive(:write_hash_to_reports_log).with(
-        name: 'Report IAL1 Users Linked to SPs Count',
-        time: timestamp,
-        count: 2,
+        {
+          name: 'Report IAL1 Users Linked to SPs Count',
+          time: timestamp,
+          count: 2,
+        },
       )
       expect(subject).to receive(:write_hash_to_reports_log).with(
-        name: 'Report IAL2 Users Linked to SPs Count',
-        time: timestamp,
-        count: 1,
+        {
+          name: 'Report IAL2 Users Linked to SPs Count',
+          time: timestamp,
+          count: 1,
+        },
       )
       subject.perform(Time.zone.today)
     end

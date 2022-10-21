@@ -46,6 +46,7 @@
                                           attachments['logo.png'].url,
                                           size: '142x19',
                                           style: 'width: 142px; height: 19px;',
+                                          alt: t('mailer.logo', app_name: APP_NAME),
                                         ) %>
                                   </th>
                                   <th class="expander"></th>
@@ -71,8 +72,11 @@
                                         </tr>
                                       </tbody>
                                     </table>
-                                    <h4><%= @header || message.subject %>
-                                    </h4><%= yield %>
+                                    <% unless @hide_title %>
+                                      <h4><%= @header || message.subject %>
+                                      </h4>
+                                    <% end %>
+                                    <%= yield %>
                                     <table class="spacer">
                                       <tbody>
                                         <tr>

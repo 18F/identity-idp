@@ -11,6 +11,12 @@ class MfaConfirmationController < ApplicationController
     user_session.delete(:mfa_selections)
     user_session.delete(:next_mfa_selection_choice)
     analytics.user_registration_suggest_another_mfa_notice_skipped
+    analytics.user_registration_mfa_setup_complete(
+      mfa_method_counts: mfa_context.enabled_two_factor_configuration_counts_hash,
+      enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+      pii_like_keypaths: [[:mfa_method_counts, :phone]],
+      success: true,
+    )
     redirect_to after_mfa_setup_path
   end
 
@@ -19,7 +25,12 @@ class MfaConfirmationController < ApplicationController
   end
 
   def create
-    if current_user.valid_password?(password)
+    valid_password = current_user.valid_password?(password)
+
+    irs_attempts_api_tracker.logged_in_profile_change_reauthentication_submitted(
+      success: valid_password,
+    )
+    if valid_password
       handle_valid_password
     else
       handle_invalid_password
@@ -55,7 +66,12 @@ class MfaConfirmationController < ApplicationController
 
   def handle_max_password_attempts_reached
     analytics.password_max_attempts
+    irs_attempts_api_tracker.logged_in_profile_change_reauthentication_rate_limited
     sign_out
     redirect_to root_url, flash: { error: t('errors.max_password_attempts_reached') }
+  end
+
+  def mfa_context
+    @mfa_context ||= MfaContext.new(current_user)
   end
 end

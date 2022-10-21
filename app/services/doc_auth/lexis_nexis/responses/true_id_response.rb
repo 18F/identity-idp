@@ -39,6 +39,9 @@ module DocAuth
           'Fields_xpirationDate_Day' => :state_id_expiration_day, # this is NOT a typo
           'Fields_ExpirationDate_Month' => :state_id_expiration_month,
           'Fields_ExpirationDate_Year' => :state_id_expiration_year,
+          'Fields_IssueDate_Day' => :state_id_issued_day,
+          'Fields_IssueDate_Month' => :state_id_issued_month,
+          'Fields_IssueDate_Year' => :state_id_issued_year,
           'Fields_DocumentClassName' => :state_id_type,
         }.freeze
         attr_reader :config
@@ -105,6 +108,13 @@ module DocAuth
           )
           pii[:state_id_expiration] = exp_date if exp_date
 
+          issued_date = parse_date(
+            year: pii.delete(:state_id_issued_year),
+            month: pii.delete(:state_id_issued_month),
+            day: pii.delete(:state_id_issued_day),
+          )
+          pii[:state_id_issued] = issued_date if issued_date
+
           pii
         end
 
@@ -116,6 +126,10 @@ module DocAuth
             parsed_alerts.dig(:failed, 0, :result) == 'Attention'
         end
 
+        def billed?
+          !!doc_auth_result
+        end
+
         private
 
         def response_info
@@ -124,6 +138,7 @@ module DocAuth
 
         def create_response_info
           alerts = parsed_alerts
+          log_alert_formatter = DocAuth::ProcessedAlertToLogAlertFormatter.new
 
           {
             liveness_enabled: @liveness_checking_enabled,
@@ -133,6 +148,7 @@ module DocAuth
             doc_auth_result: doc_auth_result,
             processed_alerts: alerts,
             alert_failure_count: alerts[:failed]&.count.to_i,
+            log_alert_results: log_alert_formatter.log_alerts(alerts),
             portrait_match_results: true_id_product[:PORTRAIT_MATCH_RESULT],
             image_metrics: parse_image_metrics,
           }
@@ -145,10 +161,6 @@ module DocAuth
             vendor: 'TrueID',
             billed: billed?,
           }
-        end
-
-        def billed?
-          !!doc_auth_result && !doc_auth_result_unknown?
         end
 
         def all_passed?
@@ -246,9 +258,13 @@ module DocAuth
         end
 
         def parse_date(year:, month:, day:)
-          if year.to_i.positive? && month.to_i.positive? && day.to_i.positive?
-            Date.new(year.to_i, month.to_i, day.to_i).to_s
-          end
+          Date.new(year.to_i, month.to_i, day.to_i).to_s if year.to_i.positive?
+        rescue ArgumentError
+          message = {
+            event: 'Failure to parse TrueID date',
+          }.to_json
+          Rails.logger.info(message)
+          nil
         end
       end
     end

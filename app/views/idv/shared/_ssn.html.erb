@@ -28,6 +28,24 @@ locals:
   <%= new_window_link_to(t('doc_auth.instructions.learn_more'), MarketingSite.security_and_privacy_practices_url) %>
 </p>
 
+<% if IdentityConfig.store.proofing_device_profiling_collecting_enabled %>
+  <% unless IdentityConfig.store.lexisnexis_threatmetrix_org_id.empty? %>
+    <% if threatmetrix_session_id.present? %>
+      <% threatmetrix_javascript_urls.each do |threatmetrix_javascript_url| %>
+        <%= javascript_include_tag threatmetrix_javascript_url, nonce: true %>
+      <% end %>
+      <noscript>
+        <%= content_tag(
+              :iframe,
+              '',
+              src: threatmetrix_iframe_url,
+              style: 'width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;',
+            ) %>
+      </noscript>
+    <% end %>
+  <% end %>
+<% end %>
+
 <% if IdentityConfig.store.proofer_mock_fallback %>
   <div class="usa-alert usa-alert--info margin-bottom-4" role="status">
     <div class="usa-alert__body">
@@ -50,17 +68,17 @@ locals:
 
   <p><%= flow_session[:error_message] %></p>
 
-  <button type="submit" class="display-block margin-y-5 usa-button usa-button--big usa-button--wide">
+  <%= f.submit class: 'display-block margin-y-5' do %>
     <% if updating_ssn %>
       <%= t('forms.buttons.submit.update') %>
     <% else %>
       <%= t('forms.buttons.continue') %>
     <% end %>
-  </button>
+  <% end %>
 <% end %>
 
 <% if updating_ssn %>
-  <%= render 'idv/doc_auth/back', action: 'cancel_update_ssn' %>
+  <%= render 'idv/shared/back', action: 'cancel_update_ssn' %>
 <% else %>
   <%= render 'idv/doc_auth/cancel', step: 'ssn' %>
 <% end %>

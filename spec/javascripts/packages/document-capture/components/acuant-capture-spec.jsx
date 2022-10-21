@@ -219,6 +219,7 @@ describe('document-capture/components/acuant-capture', () => {
           callbacks.onCaptured();
           onCropped = () => callbacks.onCropped(ACUANT_CAPTURE_SUCCESS_RESULT);
         }),
+        end: sinon.stub(),
       });
 
       const firstInput = getByLabelText('First Image');
@@ -232,6 +233,7 @@ describe('document-capture/components/acuant-capture', () => {
 
       onCropped();
       await waitFor(() => firstInput.getAttribute('aria-busy') === 'false');
+      await expect(window.window.AcuantCameraUI.end).to.eventually.be.called();
 
       fireEvent.click(secondInput);
 
@@ -257,9 +259,9 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('shows error if capture fails', async () => {
-      const addPageAction = sinon.spy();
+      const trackEvent = sinon.spy();
       const { container, getByLabelText, findByText } = render(
-        <AnalyticsContext.Provider value={{ addPageAction }}>
+        <AnalyticsContext.Provider value={{ trackEvent }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
               <AcuantCapture label="Image" name="test" />
@@ -278,7 +280,7 @@ describe('document-capture/components/acuant-capture', () => {
       await findByText('doc_auth.errors.camera.failed');
       expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
       expect(container.querySelector('.full-screen')).to.be.null();
-      expect(addPageAction).to.have.been.calledWith('IdV: Image capture failed', {
+      expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
         field: 'test',
         error: 'Camera not supported',
       });
@@ -286,9 +288,9 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('shows sequence break error', async () => {
-      const addPageAction = sinon.spy();
+      const trackEvent = sinon.spy();
       const { container, getByLabelText, findByText } = render(
-        <AnalyticsContext.Provider value={{ addPageAction }}>
+        <AnalyticsContext.Provider value={{ trackEvent }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
               <AcuantCapture label="Image" name="test" />
@@ -313,7 +315,7 @@ describe('document-capture/components/acuant-capture', () => {
       await findByText('doc_auth.errors.upload_error errors.messages.try_again');
       expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
       expect(container.querySelector('.full-screen')).to.be.null();
-      expect(addPageAction).to.have.been.calledWith('IdV: Image capture failed', {
+      expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
         field: 'test',
         error: 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)',
       });
@@ -327,10 +329,10 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('calls onCameraAccessDeclined if camera access is declined', async () => {
-      const addPageAction = sinon.spy();
+      const trackEvent = sinon.spy();
       const onCameraAccessDeclined = sinon.stub();
       const { container, getByLabelText } = render(
-        <AnalyticsContext.Provider value={{ addPageAction }}>
+        <AnalyticsContext.Provider value={{ trackEvent }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
               <AcuantCapture
@@ -355,7 +357,7 @@ describe('document-capture/components/acuant-capture', () => {
         expect(window.AcuantCameraUI.end).to.eventually.be.called(),
       ]);
       expect(container.querySelector('.full-screen')).to.be.null();
-      expect(addPageAction).to.have.been.calledWith('IdV: Image capture failed', {
+      expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
         field: 'test',
         error: 'User or system denied camera access',
       });
@@ -388,8 +390,8 @@ describe('document-capture/components/acuant-capture', () => {
       const button = getByLabelText('Image');
       await userEvent.click(button);
 
-      await waitFor(() => !container.querySelector('.full-screen'));
-      expect(document.activeElement).to.equal(outsideInput);
+      await waitFor(() => document.activeElement === outsideInput);
+      expect(container.classList.contains('full-screen')).to.be.false();
     });
 
     it('renders pending state while cropping', async () => {
@@ -546,9 +548,9 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('renders error message if capture succeeds but photo glare exceeds threshold', async () => {
-      const addPageAction = sinon.spy();
+      const trackEvent = sinon.spy();
       const { getByText, findByText } = render(
-        <AnalyticsContext.Provider value={{ addPageAction }}>
+        <AnalyticsContext.Provider value={{ trackEvent }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank" glareThreshold={50}>
               <AcuantCapture label="Image" name="test" />
@@ -573,7 +575,7 @@ describe('document-capture/components/acuant-capture', () => {
       fireEvent.click(button);
 
       const error = await findByText('doc_auth.errors.glare.failed_short');
-      expect(addPageAction).to.have.been.calledWith('IdV: test image added', {
+      expect(trackEvent).to.have.been.calledWith('IdV: test image added', {
         documentType: 'id',
         mimeType: 'image/jpeg',
         source: 'acuant',
@@ -596,9 +598,9 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('renders error message if capture succeeds but photo is too blurry', async () => {
-      const addPageAction = sinon.spy();
+      const trackEvent = sinon.spy();
       const { getByText, findByText } = render(
-        <AnalyticsContext.Provider value={{ addPageAction }}>
+        <AnalyticsContext.Provider value={{ trackEvent }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider
               sdkSrc="about:blank"
@@ -627,7 +629,7 @@ describe('document-capture/components/acuant-capture', () => {
       fireEvent.click(button);
 
       const error = await findByText('doc_auth.errors.sharpness.failed_short');
-      expect(addPageAction).to.have.been.calledWith('IdV: test image added', {
+      expect(trackEvent).to.have.been.calledWith('IdV: test image added', {
         documentType: 'id',
         mimeType: 'image/jpeg',
         source: 'acuant',
@@ -690,9 +692,9 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('removes error message once image is corrected', async () => {
-      const addPageAction = sinon.spy();
+      const trackEvent = sinon.spy();
       const { getByText, findByText } = render(
-        <AnalyticsContext.Provider value={{ addPageAction }}>
+        <AnalyticsContext.Provider value={{ trackEvent }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider
               sdkSrc="about:blank"
@@ -734,7 +736,7 @@ describe('document-capture/components/acuant-capture', () => {
 
       fireEvent.click(button);
       await waitFor(() => !error.textContent);
-      expect(addPageAction).to.have.been.calledWith('IdV: test image added', {
+      expect(trackEvent).to.have.been.calledWith('IdV: test image added', {
         documentType: 'id',
         mimeType: 'image/jpeg',
         source: 'acuant',
@@ -978,9 +980,9 @@ describe('document-capture/components/acuant-capture', () => {
   });
 
   it('logs metrics for manual upload', async () => {
-    const addPageAction = sinon.stub();
+    const trackEvent = sinon.stub();
     const { getByLabelText } = render(
-      <AnalyticsContext.Provider value={{ addPageAction }}>
+      <AnalyticsContext.Provider value={{ trackEvent }}>
         <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
           <AcuantCapture label="Image" name="test" />
         </AcuantContextProvider>
@@ -990,7 +992,7 @@ describe('document-capture/components/acuant-capture', () => {
     const input = getByLabelText('Image');
     uploadFile(input, validUpload);
 
-    await expect(addPageAction).to.eventually.be.calledWith('IdV: test image added', {
+    await expect(trackEvent).to.eventually.be.calledWith('IdV: test image added', {
       height: sinon.match.number,
       mimeType: 'image/jpeg',
       source: 'upload',
@@ -1001,7 +1003,7 @@ describe('document-capture/components/acuant-capture', () => {
   });
 
   it('logs clicks', async () => {
-    const addPageAction = sinon.stub();
+    const trackEvent = sinon.stub();
     const { getByText, getByLabelText } = render(
       <I18nContext.Provider
         value={
@@ -1011,7 +1013,7 @@ describe('document-capture/components/acuant-capture', () => {
         }
       >
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AnalyticsContext.Provider value={{ addPageAction }}>
+          <AnalyticsContext.Provider value={{ trackEvent }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
               <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
@@ -1029,25 +1031,25 @@ describe('document-capture/components/acuant-capture', () => {
     const upload = getByText('Upload');
     fireEvent.click(upload);
 
-    expect(addPageAction).to.have.been.calledThrice();
-    expect(addPageAction.getCall(0)).to.have.been.calledWith('IdV: test image clicked', {
+    expect(trackEvent).to.have.been.calledThrice();
+    expect(trackEvent.getCall(0)).to.have.been.calledWith('IdV: test image clicked', {
       source: 'placeholder',
       isDrop: false,
     });
-    expect(addPageAction.getCall(1)).to.have.been.calledWith('IdV: test image clicked', {
+    expect(trackEvent.getCall(1)).to.have.been.calledWith('IdV: test image clicked', {
       source: 'button',
       isDrop: false,
     });
-    expect(addPageAction.getCall(2)).to.have.been.calledWith('IdV: test image clicked', {
+    expect(trackEvent.getCall(2)).to.have.been.calledWith('IdV: test image clicked', {
       source: 'upload',
       isDrop: false,
     });
   });
 
   it('logs drag-and-drop as click interaction', () => {
-    const addPageAction = sinon.stub();
+    const trackEvent = sinon.stub();
     const { getByLabelText } = render(
-      <AnalyticsContext.Provider value={{ addPageAction }}>
+      <AnalyticsContext.Provider value={{ trackEvent }}>
         <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
           <AcuantCapture label="Image" name="test" />
         </AcuantContextProvider>
@@ -1057,16 +1059,16 @@ describe('document-capture/components/acuant-capture', () => {
     const input = getByLabelText('Image');
     fireEvent.drop(input);
 
-    expect(addPageAction.getCall(0)).to.have.been.calledWith('IdV: test image clicked', {
+    expect(trackEvent.getCall(0)).to.have.been.calledWith('IdV: test image clicked', {
       source: 'placeholder',
       isDrop: true,
     });
   });
 
   it('logs attempts', async () => {
-    const addPageAction = sinon.stub();
+    const trackEvent = sinon.stub();
     const { getByLabelText } = render(
-      <AnalyticsContext.Provider value={{ addPageAction }}>
+      <AnalyticsContext.Provider value={{ trackEvent }}>
         <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
           <AcuantCapture label="Image" name="test" />
         </AcuantContextProvider>
@@ -1076,14 +1078,14 @@ describe('document-capture/components/acuant-capture', () => {
     const input = getByLabelText('Image');
     uploadFile(input, validUpload);
 
-    await expect(addPageAction).to.eventually.be.calledWith(
+    await expect(trackEvent).to.eventually.be.calledWith(
       'IdV: test image added',
       sinon.match({ attempt: 1 }),
     );
 
     uploadFile(input, validUpload);
 
-    await expect(addPageAction).to.eventually.be.calledWith(
+    await expect(trackEvent).to.eventually.be.calledWith(
       'IdV: test image added',
       sinon.match({ attempt: 2 }),
     );

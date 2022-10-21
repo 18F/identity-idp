@@ -18,7 +18,7 @@ aamva_auth_request_timeout: 5.0
 aamva_auth_url: 'https://example.org:12345/auth/url'
 aamva_cert_enabled: true
 aamva_sp_banlist_issuers: '[]'
-aamva_supported_jurisdictions: '["AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NJ","NM","OH","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WY"]'
+aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NJ","NM","OH","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WV","WY"]'
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
@@ -40,6 +40,7 @@ acuant_upload_image_timeout: 1.0
 acuant_get_results_timeout: 1.0
 acuant_create_document_timeout: 1.0
 add_email_link_valid_for_hours: 24
+address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US", "VI"]'
 asset_host: ''
 async_wait_timeout_seconds: 60
 async_stale_job_timeout_seconds: 300
@@ -53,10 +54,12 @@ aws_kms_multi_region_enabled: false
 backup_code_cost: '2000$8$1$'
 broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
+component_previews_enabled: false
 country_phone_number_overrides: '{}'
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_sharpness_threshold: 40
 doc_auth_error_glare_threshold: 40
+database_pool_extra_connections_for_worker: 4
 database_pool_idp: 5
 database_statement_timeout: 2_500
 database_timeout: 5_000
@@ -76,11 +79,16 @@ doc_auth_s3_request_timeout: 5
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
-doc_auth_max_attempts: 20
+doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_tips: 3
+doc_auth_max_capture_attempts_before_native_camera: 2
+doc_auth_max_submission_attempts_before_native_camera: 2
 doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
+email_registrations_per_ip_limit: 20
+email_registrations_per_ip_period: 20
+email_registrations_per_ip_track_only_mode: false
 enable_load_testing_mode: false
 enable_partner_api: false
 enable_rate_limiting: true
@@ -94,25 +102,35 @@ gpo_designated_receiver_pii: '{}'
 hide_phone_mfa_signup: false
 identity_pki_disabled: false
 identity_pki_local_dev: false
-idv_api_enabled_steps: '[]'
 idv_attempt_window_in_hours: 6
+idv_contact_url: https://www.example.com
 idv_max_attempts: 5
 idv_min_age_years: 13
-idv_public_key: 'LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZ3d0RRWUpLb1pJaHZjTkFRRUJCUUFEU3dBd1NBSkJBS3p4d25rbUxqeGx1NmhsRlQ2d2JreUlweHNtYkMyaApjYW5TMGhuWm1DRGIrTEhaME5zQTdHWURpZkMxQlRBMHRuRFo0Zm9HNTRmYjNzYk9ubGpGWXVNQ0F3RUFBUT09Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo='
-idv_private_key: 'LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlCT2dJQkFBSkJBS3p4d25rbUxqeGx1NmhsRlQ2d2JreUlweHNtYkMyaGNhblMwaG5abUNEYitMSFowTnNBCjdHWURpZkMxQlRBMHRuRFo0Zm9HNTRmYjNzYk9ubGpGWXVNQ0F3RUFBUUpCQUp6TUMvOSs2RWlHQzkrZTFlWWkKVzc0ejN4MjBkanZndFlhOHh4UDh2ZnA3TjdKQXMvaGNUbjVLOCtDM2swaXUyR2RNb21qSlp2ckxwT0IyTWh4RQo3QkVDSVFEVERhbVRCMHhKSlVpV0ljNk15Y0dFa2J4SEZ3eEtURVNCaHhzREFISDZEUUloQU5IR2NwVUs5dmVSCkdrZlZTOS9MSVNZQlk2YzRUZk1NUFJZU21KVHFNRVN2QWlBZFdiY05aV1JzZjZ6YWhCVVBhemRvVWtRV3R0UFUKdVVxRm9ONVd5b2NQT1FJZ1FrUjlaK1haMUtVcTl5eERWc1FWaWFzQXJ3K1RXRWN5ZU9tUTkrSHZNNU1DSUcrMQpxVldqNW9PL0FBSU1QbXZVZmp5L0JnMnhEQVRiOEp6alFrQ3dLSnNwCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg=='
+idv_native_camera_a_b_testing_enabled: false
+idv_native_camera_a_b_testing_percent: 10
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
-in_person_proofing_enabled: true
+idv_sp_required: false
+in_person_proofing_enabled: false
+in_person_enrollment_validity_in_days: 30
+in_person_results_delay_in_hours: 1
+in_person_completion_survey_url: 'https://login.gov'
 include_slo_in_saml_metadata: false
+inherited_proofing_enabled: false
+inherited_proofing_va_base_url: 'https://staging-api.va.gov'
+va_inherited_proofing_mock_enabled: false
 irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_auth_tokens: ''
+irs_attempt_api_csp_id: 'LOGIN.gov'
 irs_attempt_api_enabled: false
 irs_attempt_api_event_ttl_seconds: 86400
 irs_attempt_api_event_count_default: 1000
 irs_attempt_api_event_count_max: 10000
+irs_attempt_api_payload_size_logging_enabled: true
 kantara_2fa_phone_restricted: false
 kantara_2fa_phone_existing_user_restriction: false
 kantara_restriction_enforcement_date: '2022-07-19'
+key_pair_generation_percent: 0
 liveness_checking_enabled: false
 logins_per_ip_track_only_mode: false
 # LexisNexis #####################################################
@@ -136,6 +154,18 @@ lexisnexis_trueid_liveness_nocropping_workflow: customers.gsa.trueid.workflow
 lexisnexis_trueid_noliveness_cropping_workflow: customers.gsa.trueid.workflow
 lexisnexis_trueid_noliveness_nocropping_workflow: customers.gsa.trueid.workflow
 ###################################################################
+# LexisNexis DDP/ThreatMetrix #####################################
+lexisnexis_threatmetrix_api_key: test_api_key
+lexisnexis_threatmetrix_base_url: https://www.example.com
+lexisnexis_threatmetrix_org_id: test_account
+lexisnexis_threatmetrix_policy: test-policy
+lexisnexis_threatmetrix_support_code: ABCD
+lexisnexis_threatmetrix_timeout: 1.0
+lexisnexis_threatmetrix_enabled: false
+lexisnexis_threatmetrix_mock_enabled: true
+lexisnexis_threatmetrix_required_to_verify: false
+lexisnexis_threatmetrix_js_signing_cert: ''
+###################################################################
 lockout_period_in_minutes: 10
 log_to_stdout: false
 logins_per_email_and_ip_bantime: 60
@@ -155,6 +185,7 @@ max_piv_cac_per_account: 2
 min_password_score: 3
 mx_timeout: 3
 new_sign_up_cancellation_url_enabled: true
+no_sp_device_profiling_enabled: false
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
 otps_per_ip_limit: 25
@@ -182,7 +213,8 @@ piv_cac_verify_token_url: https://localhost:8443/
 platform_authentication_enabled: true
 poll_rate_for_verify_in_seconds: 3
 proofer_mock_fallback: true
-proofing_send_partial_dob: false
+proofing_device_profiling_collecting_enabled: true
+proofing_device_profiling_decisioning_enabled: false
 proof_address_max_attempts: 5
 proof_address_max_attempt_window_in_minutes: 360
 proof_ssn_max_attempts: 10
@@ -201,6 +233,7 @@ reg_confirmed_email_max_attempts: 20
 reg_confirmed_email_window_in_minutes: 60
 reg_unconfirmed_email_max_attempts: 20
 reg_unconfirmed_email_window_in_minutes: 60
+reject_id_token_hint_in_logout: false
 remember_device_expiration_hours_aal_1: 720
 remember_device_expiration_hours_aal_2: 12
 report_timeout: 0
@@ -222,6 +255,7 @@ rules_of_use_horizon_years: 6
 rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timestamp than this, update directly in S3
 s3_public_reports_enabled: false
 s3_reports_enabled: false
+saml_internal_post: false
 saml_secret_rotation_enabled: false
 seed_agreements_data: true
 select_multiple_mfa_options: false
@@ -234,15 +268,15 @@ session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
 set_remember_device_session_expiration: false
-sp_context_needed_environment: 'prod'
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
+show_account_recovery_recovery_options: false
 test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false
 usps_upload_enabled: false
 usps_upload_sftp_timeout: 5
-valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true"]'
+valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true","http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true","http://idmanagement.gov/ns/assurance/aal/2?hspd12=true"]'
 vendor_status_acuant: 'operational'
 vendor_status_lexisnexis_instant_verify: 'operational'
 vendor_status_lexisnexis_trueid: 'operational'
@@ -257,10 +291,15 @@ use_dashboard_service_providers: false
 use_kms: false
 usps_confirmation_max_days: 10
 usps_ipp_password: ''
+usps_ipp_client_id: ''
 usps_ipp_root_url: ''
 usps_ipp_request_timeout: 10
 usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
+usps_mock_fallback: true
+get_usps_proofing_results_job_cron: '0/10 * * * *'
+get_usps_proofing_results_job_reprocess_delay_minutes: 5
+get_usps_proofing_results_job_request_delay_milliseconds: 1000
 gpo_allowed_for_strict_ial2: true
 voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
@@ -275,6 +314,7 @@ development:
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   aws_logo_bucket: ''
   aws_kms_regions: '["us-west-2", "us-east-1"]'
+  component_previews_enabled: true
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
   database_host: ''
@@ -297,11 +337,16 @@ development:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
-  idv_api_enabled_steps: '["password_confirm", "personal_key","personal_key_confirm"]'
+  in_person_proofing_enabled: true
+  inherited_proofing_enabled: true
+  va_inherited_proofing_mock_enabled: true
   kantara_2fa_phone_restricted: true
   kantara_2fa_phone_existing_user_restriction: true
   kantara_restriction_enforcement_date: '2022-07-01'
   irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
+  irs_attempt_api_public_key_id: key1
+  irs_attempt_api_enabled: true
+  irs_attempt_api_auth_tokens: 'abc123'
   liveness_checking_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true
@@ -309,6 +354,7 @@ development:
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
+  no_sp_device_profiling_enabled: true
   nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: 5
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
@@ -323,6 +369,7 @@ development:
   secret_key_base: development_secret_key_base
   select_multiple_mfa_options: true
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
+  show_account_recovery_recovery_options: true
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   sps_over_quota_limit_notify_email_list: '[]'
   state_tracking_enabled: true
@@ -365,12 +412,14 @@ production:
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: login.gov
+  email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
-  in_person_proofing_enabled: false
+  idv_sp_required: true
   irs_attempt_api_public_key: change-me-pls
+  irs_attempt_api_public_key_id: key1
   kantara_2fa_phone_restricted: false
   kantara_2fa_phone_existing_user_restriction: false
   kantara_restriction_enforcement_date: '2022-07-19'
@@ -447,14 +496,18 @@ test:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: true
+  inherited_proofing_enabled: true
+  va_inherited_proofing_mock_enabled: false
   irs_attempt_api_auth_tokens: 'test-token-1,test-token-2'
   irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
+  irs_attempt_api_public_key_id: key1
   kantara_2fa_phone_restricted: false
   kantara_2fa_phone_existing_user_restriction: false
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2
   logins_per_ip_limit: 3
+  email_registrations_per_ip_limit: 3
   max_bad_passwords: 5
   max_mail_events: 2
   newrelic_browser_app_id: ''
@@ -473,7 +526,7 @@ test:
   phone_setups_per_ip_period: 10
   phone_setups_per_ip_track_only_mode: false
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
-  poll_rate_for_verify_in_seconds: 1
+  poll_rate_for_verify_in_seconds: 0
   recurring_jobs_disabled_names: '["disabled job"]'
   reg_confirmed_email_max_attempts: 3
   reg_unconfirmed_email_max_attempts: 4
@@ -486,6 +539,7 @@ test:
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2022","secret_key_passphrase":"trust-but-verify"}]'
+  saml_internal_post: true
   scrypt_cost: 800$8$1$
   select_multiple_mfa_options: false
   secret_key_base: test_secret_key_base

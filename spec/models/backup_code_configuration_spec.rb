@@ -25,9 +25,10 @@ RSpec.describe BackupCodeConfiguration, type: :model do
       user = User.new
       user.save
       BackupCodeGenerator.new(user).create
-      backup_code_config = BackupCodeConfiguration.new(user_id: user.id)
 
-      expect(backup_code_config.mfa_enabled?).to be_truthy
+      user.backup_code_configurations.each do |backup_code_config|
+        expect(backup_code_config.mfa_enabled?).to be_truthy
+      end
     end
   end
 

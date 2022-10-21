@@ -30,7 +30,7 @@ RSpec.describe BlockLinkComponent, type: :component do
   end
 
   context 'with custom renderer' do
-    class ExampleComponent < BaseComponent
+    class ExampleBlockLinkCustomRendererComponent < BaseComponent
       def initialize(href:, **)
         @href = href
       end
@@ -43,7 +43,7 @@ RSpec.describe BlockLinkComponent, type: :component do
     it 'renders using the custom renderer' do
       rendered = render_inline BlockLinkComponent.new(
         url: '/',
-        action: ExampleComponent.method(:new),
+        action: ExampleBlockLinkCustomRendererComponent.method(:new),
       ).with_content('Link Text')
 
       expect(rendered).to have_css('button[data-href="/"]', text: 'Example Link Text')

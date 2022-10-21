@@ -3,15 +3,20 @@ require 'rails_helper'
 describe AccountReset::DeleteAccountController do
   include AccountResetHelper
 
+  let(:invalid_token_message) do
+    t('errors.account_reset.granted_token_invalid', app_name: APP_NAME)
+  end
+  let(:invalid_token_error) { { token: [invalid_token_message] } }
+
   describe '#delete' do
     it 'logs a good token to the analytics' do
       user = create(:user, :signed_up, :with_backup_code)
-      create(:phone_configuration, user: user, phone: '+1 703-555-1214')
+      create(:phone_configuration, user: user, phone: Faker::PhoneNumber.cell_phone)
       create_list(:webauthn_configuration, 2, user: user)
       create_account_reset_request_for(user)
       grant_request(user)
 
-      session[:granted_token] = AccountResetRequest.all[0].granted_token
+      session[:granted_token] = AccountResetRequest.first.granted_token
       stub_analytics
       properties = {
         user_id: user.uuid,
@@ -29,16 +34,34 @@ describe AccountReset::DeleteAccountController do
       expect(response).to redirect_to account_reset_confirm_delete_account_url
     end
 
+    it 'logs a good token to the attempts api' do
+      user = create(:user, :signed_up, :with_backup_code)
+      create(:phone_configuration, user: user, phone: Faker::PhoneNumber.cell_phone)
+      create_list(:webauthn_configuration, 2, user: user)
+      create_account_reset_request_for(user)
+      grant_request(user)
+
+      session[:granted_token] = AccountResetRequest.first.granted_token
+      stub_attempts_tracker
+
+      expect(@irs_attempts_api_tracker).to receive(:account_reset_account_deleted).with(
+        success: true,
+        failure_reason: nil,
+      )
+
+      delete :delete
+
+      expect(response).to redirect_to account_reset_confirm_delete_account_url
+    end
+
     it 'redirects to root if the token does not match one in the DB' do
       session[:granted_token] = 'foo'
       stub_analytics
       properties = {
         user_id: 'anonymous-uuid',
         success: false,
-        errors: { token: [t('errors.account_reset.granted_token_invalid', app_name: APP_NAME)] },
-        error_details: {
-          token: [t('errors.account_reset.granted_token_invalid', app_name: APP_NAME)],
-        },
+        errors: invalid_token_error,
+        error_details: invalid_token_error,
         mfa_method_counts: {},
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 0,
@@ -48,9 +71,19 @@ describe AccountReset::DeleteAccountController do
       delete :delete
 
       expect(response).to redirect_to(root_url)
-      expect(flash[:error]).to eq(
-        t('errors.account_reset.granted_token_invalid', app_name: APP_NAME),
+      expect(flash[:error]).to eq(invalid_token_message)
+    end
+
+    it 'logs an error in irs attempts tracker' do
+      session[:granted_token] = 'foo'
+      stub_attempts_tracker
+
+      expect(@irs_attempts_api_tracker).to receive(:account_reset_account_deleted).with(
+        success: false,
+        failure_reason: invalid_token_error,
       )
+
+      delete :delete
     end
 
     it 'displays a flash and redirects to root if the token is missing' do
@@ -95,7 +128,7 @@ describe AccountReset::DeleteAccountController do
       expect(@analytics).to receive(:track_event).with('Account Reset: delete', properties)
 
       travel_to(Time.zone.now + 2.days) do
-        session[:granted_token] = AccountResetRequest.all[0].granted_token
+        session[:granted_token] = AccountResetRequest.first.granted_token
         delete :delete
       end
 
@@ -112,10 +145,8 @@ describe AccountReset::DeleteAccountController do
       properties = {
         user_id: 'anonymous-uuid',
         success: false,
-        errors: { token: [t('errors.account_reset.granted_token_invalid', app_name: APP_NAME)] },
-        error_details: {
-          token: [t('errors.account_reset.granted_token_invalid', app_name: APP_NAME)],
-        },
+        errors: invalid_token_error,
+        error_details: invalid_token_error,
       }
       expect(@analytics).to receive(:track_event).
         with('Account Reset: granted token validation', properties)
@@ -123,9 +154,7 @@ describe AccountReset::DeleteAccountController do
       get :show, params: { token: 'FOO' }
 
       expect(response).to redirect_to(root_url)
-      expect(flash[:error]).to eq(
-        t('errors.account_reset.granted_token_invalid', app_name: APP_NAME),
-      )
+      expect(flash[:error]).to eq(invalid_token_message)
     end
 
     it 'displays a flash and redirects to root if the token is expired' do
@@ -146,7 +175,7 @@ describe AccountReset::DeleteAccountController do
         with('Account Reset: granted token validation', properties)
 
       travel_to(Time.zone.now + 2.days) do
-        get :show, params: { token: AccountResetRequest.all[0].granted_token }
+        get :show, params: { token: AccountResetRequest.first.granted_token }
       end
 
       expect(response).to redirect_to(root_url)

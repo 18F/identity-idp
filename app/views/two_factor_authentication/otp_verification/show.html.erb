@@ -19,7 +19,8 @@
           value: @presenter.code_value,
           required: true,
           autofocus: true,
-          numeric: false,
+          numeric: true,
+          maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
         ) %>
   </div>
   <%= f.input(
@@ -31,10 +32,7 @@
           checked: @presenter.remember_device_box_checked?,
         },
       ) %>
-  <%= submit_tag(
-        t('forms.buttons.submit.default'),
-        class: 'usa-button usa-button--big usa-button--wide display-block margin-y-5',
-      ) %>
+  <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-y-5' %>
   <%= hidden_field_tag 'otp_make_default_number',
                        @presenter.otp_make_default_number %>
   <%= render ButtonComponent.new(

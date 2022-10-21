@@ -1,5 +1,5 @@
-<%= form_tag create_verify_personal_key_path, id: 'verify-key', method: 'post', name: 'verify-key' do %>
-  <div class="padding-top-6 padding-x-1 tablet:padding-x-8 key-badge border border-dashed border-secondary rounded-xl">
+<%= simple_form_for('', url: create_verify_personal_key_path, method: 'post') do |f| %>
+  <div class="padding-top-6 padding-x-1 tablet:padding-x-8 iconic-modal-badge personal-key-badge border border-dashed border-secondary rounded-xl">
     <h3 class="margin-top-0 margin-bottom-2">
       <%= t('forms.personal_key.title') %>
     </h3>
@@ -7,7 +7,7 @@
       <%= t('forms.personal_key.instructions') %>
     </p>
 
-    <%= render 'shared/personal_key_input', code: '', validation_needed: false %>
+    <%= render 'shared/personal_key_input', code: '', form: f %>
   </div>
 
   <div class="margin-top-4">

@@ -85,7 +85,7 @@ class SamlIdpController < ApplicationController
     bump_auth_count unless user_fully_authenticated?
     return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated? &&
                                                                service_provider_mfa_policy.
-                                                               auth_method_confirms_to_sp_request?
+                                                                 auth_method_confirms_to_sp_request?
     redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
   end
 
@@ -119,8 +119,10 @@ class SamlIdpController < ApplicationController
       idv: identity_needs_verification?,
       finish_profile: profile_needs_verification?,
       requested_ial: requested_ial,
+      request_signed: saml_request.signed?,
+      matching_cert_serial: saml_request.service_provider.matching_cert&.serial&.to_s,
     )
-    analytics.track_event(Analytics::SAML_AUTH, analytics_payload)
+    analytics.saml_auth(**analytics_payload)
   end
 
   def log_external_saml_auth_request
@@ -162,8 +164,7 @@ class SamlIdpController < ApplicationController
   end
 
   def track_events
-    analytics.track_event(
-      Analytics::SP_REDIRECT_INITIATED,
+    analytics.sp_redirect_initiated(
       ial: ial_context.ial,
       billed_ial: ial_context.bill_for_ial_1_or_2,
     )

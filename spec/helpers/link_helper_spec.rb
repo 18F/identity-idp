@@ -39,7 +39,8 @@ RSpec.describe LinkHelper do
       it 'renders a form' do
         expect(subject).to have_selector("form[action='#{url}']")
         expect(subject).to have_selector("input[name='_method'][value='#{method}']", visible: :all)
-        expect(subject).to have_selector("input.#{css_class}[type='submit'][value='#{text}']")
+        expect(subject).to have_selector("button.#{css_class}[type='submit']")
+        expect(subject).to have_text(text)
       end
     end
   end

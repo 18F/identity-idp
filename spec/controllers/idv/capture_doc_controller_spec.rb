@@ -9,7 +9,7 @@ describe Idv::CaptureDocController do
       expect(subject).to have_actions(
         :before,
         :ensure_user_id_in_session,
-        :fsm_initialize,
+        :initialize_flow_state_machine,
         :ensure_correct_step,
       )
     end
@@ -19,7 +19,9 @@ describe Idv::CaptureDocController do
 
   before do
     stub_analytics
+    stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
+    allow(@irs_attempts_api_tracker).to receive(:idv_phone_upload_link_used)
     allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', domain: 'example.com'))
   end
@@ -33,6 +35,8 @@ describe Idv::CaptureDocController do
       it 'redirects to the root url' do
         get :index
 
+        expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used)
+
         expect(response).to redirect_to root_url
       end
     end
@@ -40,6 +44,8 @@ describe Idv::CaptureDocController do
     context 'with a bad session' do
       it 'redirects to the root url' do
         get :index, params: { 'document-capture-session': 'foo' }
+
+        expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used)
 
         expect(response).to redirect_to root_url
       end
@@ -51,6 +57,8 @@ describe Idv::CaptureDocController do
           get :index, params: { 'document-capture-session': session_uuid }
         end
 
+        expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used)
+
         expect(response).to redirect_to root_url
       end
     end
@@ -58,6 +66,8 @@ describe Idv::CaptureDocController do
     context 'with a good session uuid' do
       it 'redirects to the first step' do
         get :index, params: { 'document-capture-session': session_uuid }
+
+        expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used)
 
         expect(response).to redirect_to idv_capture_doc_step_url(step: :document_capture)
       end
@@ -67,6 +77,8 @@ describe Idv::CaptureDocController do
       it 'redirects to the first step' do
         mock_session(user.id)
         get :index
+
+        expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used)
 
         expect(response).to redirect_to idv_capture_doc_step_url(step: :document_capture)
       end
@@ -89,15 +101,13 @@ describe Idv::CaptureDocController do
             :flow_session,
             step_template: 'idv/capture_doc/document_capture',
             flow_namespace: 'idv',
-            step_indicator: hash_including(
-              :steps,
-              current_step: :verify_id,
-            ),
           ),
         ).and_call_original
 
         mock_next_step(:document_capture)
         get :show, params: { step: 'document_capture' }
+
+        expect(@irs_attempts_api_tracker).not_to have_received(:idv_phone_upload_link_used)
       end
 
       it 'renders the capture_complete template' do
@@ -107,28 +117,30 @@ describe Idv::CaptureDocController do
             :flow_session,
             step_template: 'idv/capture_doc/capture_complete',
             flow_namespace: 'idv',
-            step_indicator: hash_including(
-              :steps,
-              current_step: :verify_id,
-            ),
           ),
         ).and_call_original
 
         mock_next_step(:capture_complete)
         get :show, params: { step: 'capture_complete' }
+
+        expect(@irs_attempts_api_tracker).not_to have_received(:idv_phone_upload_link_used)
       end
 
       it 'renders a 404 with a non existent step' do
         get :show, params: { step: 'foo' }
 
+        expect(@irs_attempts_api_tracker).not_to have_received(:idv_phone_upload_link_used)
+
         expect(response).to_not be_not_found
       end
 
-      it 'tracks analytics' do
+      it 'tracks expected events' do
         mock_next_step(:capture_complete)
         result = { step: 'capture_complete', flow_path: 'hybrid', step_count: 1 }
 
         get :show, params: { step: 'capture_complete' }
+
+        expect(@irs_attempts_api_tracker).not_to have_received(:idv_phone_upload_link_used)
 
         expect(@analytics).to have_received(:track_event).with(
           'IdV: ' + "#{Analytics::DOC_AUTH} capture_complete visited".downcase, result
@@ -140,6 +152,8 @@ describe Idv::CaptureDocController do
 
         get :show, params: { step: 'capture_complete' }
         get :show, params: { step: 'capture_complete' }
+
+        expect(@irs_attempts_api_tracker).not_to have_received(:idv_phone_upload_link_used)
 
         expect(@analytics).to have_received(:track_event).ordered.with(
           'IdV: ' + "#{Analytics::DOC_AUTH} capture_complete visited".downcase,

@@ -22,6 +22,10 @@ module Users
       result = PasswordResetTokenValidator.new(token_user).submit
 
       analytics.password_reset_token(**result.to_h)
+      irs_attempts_api_tracker.forgot_password_email_confirmed(
+        success: result.success?,
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
+      )
 
       if result.success?
         @reset_password_form = ResetPasswordForm.new(build_user)
@@ -39,6 +43,10 @@ module Users
       result = @reset_password_form.submit(user_params)
 
       analytics.password_reset_password(**result.to_h)
+      irs_attempts_api_tracker.forgot_password_new_password_submitted(
+        success: result.success?,
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
+      )
 
       if result.success?
         handle_successful_password_reset
@@ -81,11 +89,17 @@ module Users
         email: email,
         request_id: request_id,
         analytics: analytics,
+        irs_attempts_api_tracker: irs_attempts_api_tracker,
       ).perform
 
       return unless result
 
-      analytics.track_event(Analytics::USER_REGISTRATION_EMAIL, result.to_h)
+      analytics.user_registration_email(**result.to_h)
+      irs_attempts_api_tracker.user_registration_email_submitted(
+        email: email,
+        success: result.success?,
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
+      )
       create_user_event(:account_created, user)
     end
 
@@ -111,9 +125,15 @@ module Users
     end
 
     def handle_successful_password_reset
+      send_password_reset_risc_event
       create_reset_event_and_send_notification
       flash[:info] = t('devise.passwords.updated_not_active') if is_flashing_format?
       redirect_to new_user_session_url
+    end
+
+    def send_password_reset_risc_event
+      event = PushNotification::PasswordResetEvent.new(user: resource)
+      PushNotification::HttpPush.deliver(event)
     end
 
     def handle_unsuccessful_password_reset(result)

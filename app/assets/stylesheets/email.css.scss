@@ -1,5 +1,8 @@
+@import 'required';
 @import 'variables/email';
 @import 'foundation-emails/scss/foundation-emails';
+@import 'identity-style-guide/dist/assets/scss/packages/required';
+@import 'identity-style-guide/dist/assets/scss/packages/utilities';
 
 .gray {
   &:active,
@@ -117,4 +120,39 @@ h4 {
     padding-left: $global-gutter-small !important;
     padding-right: $global-gutter-small !important;
   }
+}
+
+.info-alert {
+  background-color: color('info-lighter');
+  padding: 0 units(0.5);
+
+  td {
+    padding: units(1.5);
+    padding-right: units(1);
+
+    & + td {
+      padding-left: 0;
+      padding-right: units(1.5);
+    }
+  }
+}
+
+.process-list td {
+  padding-bottom: units(4);
+}
+
+.process-list__circle {
+  border-radius: 50%;
+  width: units(3);
+  height: units(2.5);
+  background-color: color($theme-process-list-counter-background-color);
+  border: units($theme-process-list-counter-border-width) solid
+    color($theme-process-list-counter-border-color);
+  color: color('white');
+  font-size: units(2);
+  font-weight: 700;
+  text-align: center;
+  line-height: 1;
+  padding-top: units(0.5);
+  margin-right: units(1.5);
 }

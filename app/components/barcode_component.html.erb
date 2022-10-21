@@ -1,0 +1,21 @@
+<%# Beware: This component is used in mailer content, so be mindful of email markup compatibility %>
+<%= content_tag(
+      :div,
+      role: 'figure',
+      'aria-labelledby': barcode_caption_id,
+      class: css_class,
+      **tag_options,
+    ) do %>
+  <%= image_tag(
+        barcode_image_url,
+        skip_pipeline: true,
+        alt: t('components.barcode.image_alt'),
+        class: 'display-block',
+      ) %>
+  <div id="<%= barcode_caption_id %>" class="text-center">
+    <% if label.present? %>
+      <span class="usa-sr-only"><%= label %>:</span>
+    <% end %>
+    <%= formatted_data %>
+  </div>
+<% end %>

@@ -6,10 +6,10 @@ fr:
         %{last_number}
     buttons:
       cancel: Annuler et retourner à votre profil
-      change_address_label: Changement d’adresse
-      change_label: Changement
-      change_ssn_label: Changement de numéro de sécurité sociale
-      change_state_id_label: Modifier l’ID d’état
+      change_address_label: Mettre à jour votre adresse actuelle
+      change_label: Mettre à jour
+      change_ssn_label: Mettre à jour votre numéro de Sécurité Sociale
+      change_state_id_label: Mettre à jour les informations figurant sur votre document d’identité
       continue_plain: Continuer
       mail:
         resend: Envoyer une autre lettre
@@ -92,11 +92,15 @@ fr:
         warning: Veuillez vérifier les informations que vous avez saisies et réessayer.
           Les erreurs les plus courantes sont un numéro de sécurité sociale ou
           un code postal incorrect.
+      setup:
+        fail_html: 'Veuillez %{contact_form_link} et entrer le code
+          <b>%{support_code}</b> dans le champ de détail.'
+        heading: Il y a un problème avec vos informations
+        link_text: remplir notre formulaire de contact
       timeout: Le temps d’attente pour le traitement de votre demande est plus long
         que d’habitude Veuillez réessayer.
     forgot_password:
-      link_html: Mot de passe oublié? %{link}
-      link_text: Suivez ces instructions
+      link_text: Mot de passe oublié?
       modal_header: Êtes-vous sûr de ne pas pouvoir vous souvenir de votre mot de passe?
       reset_password: Réinitialiser le mot de passe
       try_again: Réessayer
@@ -107,7 +111,8 @@ fr:
           pièce d’identité officielle, etc.
     form:
       address1: Adresse
-      address2: Adresse (optional)
+      address2: Adresse Ligne 2
+      address2_optional: Adresse Ligne 2 (optional)
       city: Ville
       dob: Date de naissance
       first_name: Prénom
@@ -117,7 +122,7 @@ fr:
       ssn: Numéro de sécurité sociale
       ssn_label_html: Numéro de sécurité sociale
       state: État
-      zipcode: Code ZIP
+      zipcode: Code postal
     index:
       id:
         need_html: Si vous créez un compte, vous aurez besoin d’un <strong>identifiant
@@ -136,14 +141,13 @@ fr:
       come_back_later_sp_html: Vous pouvez revenir à <strong>%{sp}</strong> pour le moment.
       confirm: Vous avez crypté vos données vérifiées
       gpo:
-        address_on_file: Nous enverrons une lettre avec un code de confirmation à
-          l’adresse que vous avez indiquée à l’étape précédente.
-        new_address: Nous vous enverrons une lettre avec un code de confirmation à
-          l’adresse que vous spécifiez.
+        address_on_file_html: Nous enverrons une lettre avec <strong>un code de
+          confirmation</strong> à l’adresse que vous avez indiquée à l’étape
+          précédente.
         resend: Envoyez-moi une autre lettre
-        timeframe: Les lettres sont envoyées le jour ouvrable suivant par courrier de
-          première classe USPS et prennent généralement de 3 à 7 jours
-          ouvrables.
+        timeframe_html: Les lettres sont envoyées les jours ouvrables par courriel de
+          première classe de USPS et <strong>prennent généralement entre trois à
+          sept jours ouvrables pour être reçues</strong>.
       mail_sent: Votre lettre est en route
       otp_delivery_method:
         phone_number_html: Nous enverrons un code à <strong>%{phone}</strong> pour
@@ -196,14 +200,13 @@ fr:
         resend: Vous voulez une autre lettre?
         verify: Vous voulez une lettre?
       otp_delivery_method: Comment souhaitez-vous recevoir le code ?
-      personal_key: Clé personnelle
       review: Réviser et soumettre
       session:
         phone: Entrez un numéro de téléphone pour vous aider à vérifier votre identité
         review: Entrez à nouveau votre mot de passe %{app_name} pour crypter vos données
     troubleshooting:
       headings:
-        are_you_near: Êtes-vous près de Washington, D.C.?
+        are_you_near: 'Êtes-vous situé près de Washington, D.C. <wbr/>ou Baltimore, MD?'
         missing_required_items: Est-ce qu’il vous manque un de ces éléments?
         need_assistance: 'Avez-vous besoin d’une assistance immédiate? Voici comment
           obtenir de l’aide:'
@@ -218,9 +221,10 @@ fr:
         learn_more_address_verification_options: En savoir plus sur la vérification par téléphone ou par courrier
         learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
         learn_more_verify_by_phone: En savoir plus sur la vérification de votre numéro de téléphone
+        learn_more_verify_in_person: En savoir plus sur la vérification en personne
         supported_documents: Voir la liste des pièces d’identité acceptées et délivrées par l’État
         verify_by_mail: Vérifiez plutôt votre adresse par courrier
-        verify_in_person: Vérifiez votre identité en personne dans un bureau de poste
+        verify_in_person: Vérifier votre identité en personne dans un bureau de poste
     welcome:
       no_js_header: Vous devez activer JavaScript pour vérifier votre identité.
       no_js_intro: '%{sp_name} a besoin de vous pour vérifier votre identité. Vous

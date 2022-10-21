@@ -4,7 +4,6 @@ feature 'adding email address' do
   let(:email) { 'test@test.com' }
 
   it 'allows the user to add an email and confirm with an active session' do
-    allow(UserMailer).to receive(:email_added).and_call_original
     user = create(:user, :signed_up)
     sign_in_user_and_add_email(user)
     unconfirmed_email_text = "#{email}  #{t('email_addresses.unconfirmed')}"
@@ -17,11 +16,29 @@ feature 'adding email address' do
     expect(page).to have_current_path(account_path)
     expect(page).to have_content(t('devise.confirmations.confirmed'))
     expect(page).to_not have_content(unconfirmed_email_text)
-    expect(UserMailer).to have_received(:email_added).twice
+
+    expect_delivered_email_count(3)
+    expect_delivered_email(
+      0, {
+        to: [user.confirmed_email_addresses[1].email],
+        subject: t('user_mailer.add_email.subject'),
+      }
+    )
+    expect_delivered_email(
+      1, {
+        to: [user.confirmed_email_addresses[0].email],
+        subject: t('user_mailer.email_added.subject'),
+      }
+    )
+    expect_delivered_email(
+      2, {
+        to: [user.confirmed_email_addresses[1].email],
+        subject: t('user_mailer.email_added.subject'),
+      }
+    )
   end
 
   it 'allows the user to add an email and confirm without an active session' do
-    allow(UserMailer).to receive(:email_added).and_call_original
     user = create(:user, :signed_up)
     sign_in_user_and_add_email(user)
 
@@ -30,7 +47,26 @@ feature 'adding email address' do
     click_on_link_in_confirmation_email
     expect(page).to have_current_path(root_path)
     expect(page).to have_content(t('devise.confirmations.confirmed_but_sign_in'))
-    expect(UserMailer).to have_received(:email_added).twice
+
+    expect_delivered_email_count(3)
+    expect_delivered_email(
+      0, {
+        to: [user.confirmed_email_addresses[1].email],
+        subject: t('user_mailer.add_email.subject'),
+      }
+    )
+    expect_delivered_email(
+      1, {
+        to: [user.confirmed_email_addresses[0].email],
+        subject: t('user_mailer.email_added.subject'),
+      }
+    )
+    expect_delivered_email(
+      2, {
+        to: [user.confirmed_email_addresses[1].email],
+        subject: t('user_mailer.email_added.subject'),
+      }
+    )
   end
 
   it 'notifies user they are already confirmed without an active session' do
@@ -46,6 +82,14 @@ feature 'adding email address' do
     expect(page).to have_current_path(root_path)
     action = t('devise.confirmations.sign_in')
     expect(page).to have_content(t('devise.confirmations.already_confirmed', action: action))
+
+    expect_delivered_email_count(3)
+    expect_delivered_email(
+      0, {
+        to: [user.confirmed_email_addresses[1].email],
+        subject: t('user_mailer.add_email.subject'),
+      }
+    )
   end
 
   it 'notifies user they are already confirmed with an active session' do
@@ -58,6 +102,14 @@ feature 'adding email address' do
 
     expect(page).to have_current_path(account_path)
     expect(page).to have_content(t('devise.confirmations.already_confirmed', action: nil).strip)
+
+    expect_delivered_email_count(3)
+    expect_delivered_email(
+      0, {
+        to: [user.confirmed_email_addresses[1].email],
+        subject: t('user_mailer.add_email.subject'),
+      }
+    )
   end
 
   it 'notifies user they are already confirmed on another account after clicking on link' do
@@ -72,16 +124,38 @@ feature 'adding email address' do
     expect(page).to have_content(
       t('devise.confirmations.confirmed_but_remove_from_other_account', app_name: APP_NAME),
     )
+
+    expect_delivered_email_count(1)
+    expect_delivered_email(
+      0, {
+        to: [user.reload.email_addresses[1].email],
+        subject: t('user_mailer.add_email.subject'),
+      }
+    )
   end
 
   it 'notifies user they are already confirmed on another account via email' do
-    create(:user, :signed_up, email: email)
+    initial_user = create(:user, :signed_up, email: email)
 
     user = create(:user, :signed_up)
     sign_in_user_and_add_email(user, false)
 
     expect(last_email_sent.default_part_body.to_s).to have_content(
       t('user_mailer.add_email_associated_with_another_account.intro_html', app_name: APP_NAME),
+    )
+
+    expect_delivered_email_count(1)
+    expect_delivered_email(
+      0, {
+        to: [initial_user.email_addresses.first.email],
+        subject: t('mailer.email_reuse_notice.subject'),
+      }
+    )
+    expect_delivered_email(
+      0, {
+        to: [email],
+        subject: t('mailer.email_reuse_notice.subject'),
+      }
     )
   end
 
@@ -163,9 +237,21 @@ feature 'adding email address' do
     user = create(:user, :signed_up)
     sign_in_user_and_add_email(user)
 
-    expect(UserMailer).to receive(:add_email).
-      with(user, anything, anything).and_call_original
     click_button t('links.resend')
+
+    expect_delivered_email_count(2)
+    expect_delivered_email(
+      0, {
+        to: [user.reload.email_addresses[1].email],
+        subject: t('user_mailer.add_email.subject'),
+      }
+    )
+    expect_delivered_email(
+      1, {
+        to: [user.email_addresses[1].email],
+        subject: t('user_mailer.add_email.subject'),
+      }
+    )
   end
 
   it 'invalidates the confirmation email/token after 24 hours' do
@@ -179,6 +265,14 @@ feature 'adding email address' do
       expect(page).to have_current_path(root_path)
       expect(page).to_not have_content(t('devise.confirmations.confirmed_but_sign_in'))
     end
+
+    expect_delivered_email_count(1)
+    expect_delivered_email(
+      0, {
+        to: [user.reload.email_addresses[1].email],
+        subject: t('user_mailer.add_email.subject'),
+      }
+    )
   end
 
   it 'does not raise a 500 if user submits in rapid succession violating a db constraint' do
@@ -203,7 +297,7 @@ feature 'adding email address' do
     expect(page).to have_content(t('email_addresses.add.duplicate'))
   end
 
-  def sign_in_user_and_add_email(user, add_email = true)
+  def sign_in_user_and_add_email(user, _add_email = true)
     sign_in_and_2fa_user(user)
 
     visit account_path
@@ -214,14 +308,6 @@ feature 'adding email address' do
     end
 
     expect(page).to have_current_path(add_email_path)
-
-    if add_email
-      expect(UserMailer).to receive(:add_email).
-        with(user, anything, anything).and_call_original
-    else
-      expect(UserMailer).to receive(:add_email_associated_with_another_account).
-        with(email).and_call_original
-    end
 
     fill_in t('forms.registration.labels.email'), with: email
     click_button t('forms.buttons.submit.default')

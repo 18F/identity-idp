@@ -1,10 +1,6 @@
 Login.gov Identity Provider (IdP)
 =================================
 
-[![Build Status](https://circleci.com/gh/18F/identity-idp.svg?style=svg)](https://circleci.com/gh/18F/identity-idp)
-[![Code Climate](https://api.codeclimate.com/v1/badges/e78d453f7cbcac64a664/maintainability)](https://codeclimate.com/github/18F/identity-idp/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/e78d453f7cbcac64a664/test_coverage)](https://codeclimate.com/github/18F/identity-idp/test_coverage)
-
 Login.gov is the public's one account for government. Use one account and password for secure, private access to participating government agencies.
 
 This repository contains the core code base and documentation for the identity management system powering secure.login.gov.
@@ -27,12 +23,15 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 - Ruby ~> 3.0.4
 - [PostgreSQL](http://www.postgresql.org/download/)
 - [Redis 5+](http://redis.io/)
-- [Node.js v14](https://nodejs.org)
--- (to install Node.js v.14 using brew: `brew install node@14`)
+- [Node.js v16](https://nodejs.org)
 - [Yarn](https://yarnpkg.com/en/)
 - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
 
-2. Test that you have Postgres and Redis running.
+2. You will need to install openssl version 1.1:
+
+- Run `brew install openssl@1.1`
+
+3. Test that you have Postgres and Redis running.
 
   For example, if you've installed with Homebrew, you can start the services like this:
 
@@ -46,13 +45,6 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   $ brew services list
   ```
 
-3. Create the development and test databases:
-
-  ```
-  $ psql -c "CREATE DATABASE identity_idp_development;"
-  $ psql -c "CREATE DATABASE identity_idp_test;"
-  ```
-
 4. Run the following command to set up your local environment:
 
   ```
@@ -61,6 +53,8 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
   This command copies sample configuration files, installs required gems
   and sets up the database. Check out our Makefile commands to learn more about what this command does: https://github.com/18F/identity-idp/blob/main/Makefile
+
+  Note: If you didn't explicitly install `openssl@1.1` in Step 2 above and you use a M1 Mac, you may see an error on this step. Homebrew works differently on a M1 Mac, so specifying the version is necessary for the make script to work, but may still work on x86.
 
 5. Now that you have you have everything installed, you can run the following command to start your local server:
 
@@ -126,18 +120,10 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
 #### Viewing email messages
 
-  Login.gov uses a tool called [Mailcatcher](https://github.com/sj26/mailcatcher) to view email messages locally. When Mailcatcher is running, visit http://localhost:1080/ to see them.
+  In local development, the application does not deliver real email messages. Instead, we use a tool called [Mailcatcher](https://github.com/sj26/mailcatcher) to capture all messages.
 
-  We spin up a Mailcatcher process by default through `make run`, but if you want to run Mailcatcher as a standalone process, just run:
-
-  ```
-  $ mailcatcher
-  ```
-
-  If you would like to run the application on a different port:
-
-  * Change the port number for `mailer_domain_name` and `domain_name` in `config/application.yml`
-  * Run the app on your desired port like `make run PORT=1234`
+  - To view email messages which would have been sent, visit http://localhost:1080/ while the application is running.
+  - To view email templates with placeholder values, visit http://localhost:3000/rails/mailers/ to see a list of template previews.
 
 #### Translations
 
@@ -169,7 +155,13 @@ The app will start using that Geolite2 file for geolocation after restart.
 By default, the application binds to `localhost`. To test on a network device or within a virtual machine, you can bind to `0.0.0.0` instead, using the following instructions:
 
 1. Determine your computer's network IP address. On macOS, you can find this in the "Network" system settings, shown under the "Status: Connected" label. This often takes the format of `192.168.1.x` or `10.0.0.x`.
-2. In `config/application.yml`, replace `localhost` in the `domain_name` setting with the IP address discovered in the previous step. Leave the trailing port `:3000` unchanged.
+2. In `config/application.yml`, add `domain_name` and `mailer_domain_name` keys under `development`, like so:
+   ```yaml
+   development:
+     domain_name: <your-local-ip>:3000
+     mailer_domain_name: <your-local-ip>:3000
+   ```
+   replacing `<your-local-ip>` with the address you found in Step 1
 3. Start the server using the command `HOST=0.0.0.0 make run`
 4. Assuming that your phone or virtual machine computer is connected on the same network, visit the application using the domain name configured in the second step (for example, `http://192.168.1.131:3000`).
 
@@ -206,11 +198,6 @@ $ bundle install
 $ yarn install
 ```
 
-#### I am receiving errors related to Capybara in feature tests
-You may need to install _chromedriver_ or your chromedriver may be the wrong version (`$ which chromedriver && chromedriver --version`).
-
-chromedriver can be installed using [Homebrew](https://formulae.brew.sh/cask/chromedriver) or [direct download](https://chromedriver.chromium.org/downloads). The version of chromedriver should correspond to the version of Chrome you have installed `(Chrome > About Google Chrome)`; if installing via Homebrew, make sure the versions match up.
-
 #### I am receiving errors when creating the development and test databases
 
 If you receive the following error (where _whoami_ == _your username_):
@@ -230,12 +217,23 @@ $ createdb `whoami`
 $ make test_serial
 ```
 
-##### Errors related to too many _open files_
+##### Errors related to Capybara in feature tests
+You may need to install _chromedriver_ or your chromedriver may be the wrong version (`$ which chromedriver && chromedriver --version`).
+
+chromedriver can be installed using [Homebrew](https://formulae.brew.sh/cask/chromedriver) or [direct download](https://chromedriver.chromium.org/downloads). The version of chromedriver should correspond to the version of Chrome you have installed `(Chrome > About Google Chrome)`; if installing via Homebrew, make sure the versions match up. After your system recieves an automatic Chrome browser update you may have to upgrade (or reinstall) chromedriver.
+
+If `chromedriver -v` does not work you may have to [allow it](https://stackoverflow.com/questions/60362018/macos-catalinav-10-15-3-error-chromedriver-cannot-be-opened-because-the-de) with `xattr`.
+
+##### Errors related to _too many open files_
 You may receive connection errors similar to the following:
 
 `Failed to open TCP connection to 127.0.0.1:9515 (Too many open files - socket(2) for "127.0.0.1" port 9515)`
 
-Running the following, _prior_ to running tests, may solve the problem:
+You are encountering you OS's [limits on allowed file descriptors](https://wilsonmar.github.io/maximum-limits/). Check the limits with both:
+* `ulimit -n`
+* `launchctl limit maxfiles`
+
+Try this to increase the user limit:
 ```
 $ ulimit -Sn 65536 && make test
 ```
@@ -243,3 +241,36 @@ To set this _permanently_, add the following to your `~/.zshrc` or `~/.bash_prof
 ```
 ulimit -Sn 65536
 ```
+
+If you are running MacOS, you may find it is not taking your revised ulimit seriously. [You must insist.](https://medium.com/mindful-technology/too-many-open-files-limit-ulimit-on-mac-os-x-add0f1bfddde) Run this command to edit a property list file:
+```
+sudo nano /Library/LaunchDaemons/limit.maxfiles.plist
+```
+Paste the following contents into the text editor:
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+          "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>limit.maxfiles</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>launchctl</string>
+      <string>limit</string>
+      <string>maxfiles</string>
+      <string>524288</string>
+      <string>524288</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>ServiceIPC</key>
+    <false/>
+  </dict>
+</plist>
+
+```
+Use Control+X to save the file.
+
+Restart your Mac to cause the .plist to take effect. Check the limits again and you should see both `ulimit -n` and `launchctl limit maxfiles` return a limit of 524288.

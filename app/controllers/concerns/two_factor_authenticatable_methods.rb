@@ -17,15 +17,37 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     authenticate_user!(force: true)
   end
 
-  def handle_second_factor_locked_user(type)
+  def handle_second_factor_locked_user(type:, context: nil)
     analytics.multi_factor_auth_max_attempts
     event = PushNotification::MfaLimitAccountLockedEvent.new(user: current_user)
     PushNotification::HttpPush.deliver(event)
+
+    if context && type
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
+        irs_attempts_api_tracker.mfa_login_rate_limited(mfa_device_type: type)
+      elsif UserSessionContext.confirmation_context?(context)
+        irs_attempts_api_tracker.mfa_enroll_rate_limited(mfa_device_type: type)
+      end
+    end
+
     handle_max_attempts(type + '_login_attempts')
   end
 
-  def handle_too_many_otp_sends
+  def handle_too_many_otp_sends(phone: nil, context: nil)
     analytics.multi_factor_auth_max_sends
+
+    if context && phone
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
+        irs_attempts_api_tracker.mfa_login_phone_otp_sent_rate_limited(
+          phone_number: phone,
+        )
+      elsif UserSessionContext.confirmation_context?(context)
+        irs_attempts_api_tracker.mfa_enroll_phone_otp_sent_rate_limited(
+          phone_number: phone,
+        )
+      end
+    end
+
     handle_max_attempts('otp_requests')
   end
 
@@ -47,7 +69,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def check_already_authenticated
-    return unless UserSessionContext.initial_authentication_context?(context)
+    return unless UserSessionContext.authentication_context?(context)
     return unless user_fully_authenticated?
     return if remember_device_expired_for_sp?
     return if service_provider_mfa_policy.user_needs_sp_auth_method_verification?
@@ -58,8 +80,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def check_sp_required_mfa_bypass
     return unless service_provider_mfa_policy.user_needs_sp_auth_method_verification?
     method = two_factor_authentication_method
-    return if service_provider_mfa_policy.aal3_required? &&
-              ServiceProviderMfaPolicy::AAL3_METHODS.include?(method)
+    return if service_provider_mfa_policy.phishing_resistant_required? &&
+              ServiceProviderMfaPolicy::PHISHING_RESISTANT_METHODS.include?(method)
     return if service_provider_mfa_policy.piv_cac_required? && method == 'piv_cac'
     prompt_to_verify_sp_required_mfa
   end
@@ -90,7 +112,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def handle_valid_otp_for_context
-    if UserSessionContext.authentication_context?(context)
+    if UserSessionContext.authentication_or_reauthentication_context?(context)
       handle_valid_otp_for_authentication_context
     elsif UserSessionContext.confirmation_context?(context)
       handle_valid_otp_for_confirmation_context
@@ -108,13 +130,13 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   # Method will be renamed in the next refactor.
   # You can pass in any "type" with a corresponding I18n key in
   # two_factor_authentication.invalid_#{type}
-  def handle_invalid_otp(type: 'otp')
+  def handle_invalid_otp(type:, context: nil)
     update_invalid_user
 
     flash.now[:error] = invalid_otp_error(type)
 
     if decorated_user.locked_out?
-      handle_second_factor_locked_user(type)
+      handle_second_factor_locked_user(context: context, type: type)
     else
       render_show_after_invalid
     end
@@ -123,6 +145,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def invalid_otp_error(type)
     case type
     when 'otp'
+      t('two_factor_authentication.invalid_otp')
+    when 'totp'
       t('two_factor_authentication.invalid_otp')
     when 'personal_key'
       t('two_factor_authentication.invalid_personal_key')
@@ -161,7 +185,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     mfa_user = MfaContext.new(current_user)
     mfa_count = mfa_user.enabled_mfa_methods_count
     analytics.multi_factor_auth_added_phone(enabled_mfa_methods_count: mfa_count)
-    Funnel::Registration::AddMfa.call(current_user.id, 'phone')
+    Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics)
   end
 
   def handle_valid_otp_for_authentication_context
@@ -201,8 +225,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def send_phone_added_email
     event = create_user_event_with_disavowal(:phone_added, current_user)
     current_user.confirmed_email_addresses.each do |email_address|
-      UserMailer.phone_added(current_user, email_address, disavowal_token: event.disavowal_token).
-        deliver_now_or_later
+      UserMailer.with(user: current_user, email_address: email_address).
+        phone_added(disavowal_token: event.disavowal_token).deliver_now_or_later
     end
   end
 
@@ -289,7 +313,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def display_phone_to_deliver_to
-    if UserSessionContext.authentication_context?(context)
+    if UserSessionContext.authentication_or_reauthentication_context?(context)
       phone_configuration.masked_phone
     else
       user_session[:unconfirmed_phone]
@@ -297,7 +321,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def voice_otp_delivery_unsupported?
-    if UserSessionContext.authentication_context?(context)
+    if UserSessionContext.authentication_or_reauthentication_context?(context)
       PhoneNumberCapabilities.new(phone_configuration&.phone, phone_confirmed: true).supports_voice?
     else
       phone = user_session[:unconfirmed_phone]

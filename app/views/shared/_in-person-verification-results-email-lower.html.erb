@@ -1,0 +1,39 @@
+<% if @presenter.show_cta? %>
+  <div class="margin-top-5">
+    <table class="button expanded large radius">
+      <tbody>
+        <tr>
+          <td>
+            <table>
+              <tbody>
+                <tr>
+                  <td style="text-align: center">
+                    <%= link_to t('user_mailer.in_person_verified.sign_in'),
+                                @presenter.sign_in_url,
+                                target: '_blank',
+                                class: 'float-center',
+                                rel: 'noopener' %>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td class="expander"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    <%= link_to @presenter.sign_in_url, @presenter.sign_in_url, target: '_blank', rel: 'noopener' %>
+  </p>
+<% end %>
+
+<p>
+  <%= t(
+        'user_mailer.in_person_verified.warning_contact_us_html',
+        contact_us_url: MarketingSite.contact_url,
+        sign_in_url: root_url,
+      )
+  %>
+</p>

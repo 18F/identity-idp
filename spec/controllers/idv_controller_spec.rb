@@ -23,6 +23,9 @@ describe IdvController do
     end
 
     it 'redirects to failure page if number of attempts has been exceeded' do
+      stub_attempts_tracker
+      expect(@irs_attempts_api_tracker).to receive(:track_event).
+        with(:idv_verification_rate_limited)
       user = create(:user)
       profile = create(
         :profile,
@@ -55,6 +58,18 @@ describe IdvController do
       expect(response).to redirect_to idv_doc_auth_path
     end
 
+    context 'with a VA inherited proofing session' do
+      before do
+        stub_sign_in
+        allow(controller).to receive(:va_inherited_proofing?).and_return(true)
+      end
+
+      it 'redirects to inherited proofing' do
+        get :index
+        expect(response).to redirect_to idv_inherited_proofing_path
+      end
+    end
+
     context 'sp has reached quota limit' do
       let(:issuer) { 'foo' }
 
@@ -72,18 +87,16 @@ describe IdvController do
 
     context 'no SP context' do
       let(:user) { build(:user, password: ControllerHelper::VALID_PASSWORD) }
+      let(:idv_sp_required) { false }
 
       before do
         stub_sign_in(user)
         session[:sp] = {}
-        allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(true)
-        allow(IdentityConfig.store).to receive(:sp_context_needed_environment).and_return('prod')
+        allow(IdentityConfig.store).to receive(:idv_sp_required).and_return(idv_sp_required)
       end
 
-      context 'prod environment' do
-        before do
-          allow(Identity::Hostdata).to receive(:env).and_return('prod')
-        end
+      context 'sp required' do
+        let(:idv_sp_required) { true }
 
         it 'redirects back to the account page' do
           get :index
@@ -105,23 +118,8 @@ describe IdvController do
         end
       end
 
-      context 'non-prod environment' do
-        before do
-          allow(Identity::Hostdata).to receive(:env).and_return('staging')
-        end
-
-        it 'begins the identity proofing process' do
-          get :index
-
-          expect(response).to redirect_to idv_doc_auth_url
-        end
-      end
-
-      context 'local development' do
-        before do
-          allow(Identity::Hostdata).to receive(:env).and_return(nil)
-          allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(false)
-        end
+      context 'sp not required' do
+        let(:idv_sp_required) { false }
 
         it 'begins the identity proofing process' do
           get :index

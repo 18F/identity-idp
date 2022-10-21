@@ -14,7 +14,6 @@ es:
       caution_delete: Si elimina sus códigos de respaldo, ya no podrá usarlos para
         iniciar sesión.
       confirm_delete: '¿Estás seguro de que deseas eliminar tus códigos de respaldo?'
-      download: Descargar
       generate: Obtener códigos
       last_code: Usted utilizó el último código de seguridad. Imprima, copie o
         descargue los códigos que aparecen a continuación. Puede introducir
@@ -32,6 +31,12 @@ es:
         no serán válidos.
       confirm: '¿Está seguro de que desea volver a generar sus códigos de copia de
         seguridad?'
+    backup_code_reminder:
+      body_info: Si por alguna razón no puede acceder a su método de autenticación
+        principal, puede usar códigos de recuperación para ingresar a su cuenta.
+      have_codes: Tengo mis códigos
+      heading: '¿Todavía tiene sus códigos de recuperación?'
+      need_new_codes: Necesito un nuevo conjunto de códigos de recuperación
     buttons:
       back: Atrás
       cancel: Sí, cancelar
@@ -65,9 +70,29 @@ es:
     personal_key:
       alternative: '¿No tiene su clave personal?'
       confirmation_label: Clave personal
+      download: Descargar (archivo de texto)
       instructions: Confirme que tiene una copia de su clave personal ingresándola a
         continuación.
+      required_checkbox: Marque esta casilla para continuar.
       title: Ingrese su clave personal
+    personal_key_partial:
+      acknowledgement:
+        bullets:
+          - Perderás el acceso a tu cuenta
+          - Tendrás que verificar tu identidad nuevamente
+        header: Necesitarás tu clave personal si olvidas tu contraseña. Mantenla en un
+          lugar seguro y no la compartas con nadie.
+        text: 'Si restableces tu contraseña sin tu clave personal:'
+      explanation:
+        header: ¿Qué es una clave personal?
+        text:
+          - Una clave personal “bloquea” la información personal de tu cuenta.
+            Es la única manera de desbloquear tu información si pierdes u
+            olvidas tu contraseña.
+          - Si restableces tu contraseña, Login.gov te pedirá tu clave personal
+            para asegurarse de que se trata de ti, y no de alguien que quiere
+            hacerse pasar por ti.
+      header: Guarda tu clave personal
     phone:
       buttons:
         delete: Eliminar el teléfono
@@ -115,10 +140,15 @@ es:
     validation:
       required_checkbox: Marque esta casilla para continuar
     verify_profile:
-      instructions: Ingrese el código de 10 caracteres que le enviamos en la carta.
+      instructions: Introduzca el código de 10 caracteres de la carta que ha recibido.
       name: Código de confirmación
       submit: Confirmar cuenta
       title: Confirme su cuenta
+      welcome_back: Bienvenido de nuevo
+      welcome_back_description: '<p>Si ha recibido su carta, introduzca su código de
+        confirmación a continuación.</p> <p>Si su carta aún no ha llegado, tenga
+        paciencia, ya que las <strong>cartas suelen tardar de 3 a 7 días hábiles
+        en llegar</strong>. Gracias por su paciencia.</p>'
     webauthn_delete:
       caution: Si elimina su clave de seguridad, no podrá usarla para acceder a su
         cuenta %{app_name}.

@@ -32,8 +32,8 @@ RSpec.describe DocAuth::Acuant::Requests::FacialMatchRequest do
 
       it 'returns a successful response' do
         request_stub = stub_request(:post, url).
-                       with(body: request_body).
-                       to_return(body: response_body)
+          with(body: request_body).
+          to_return(body: response_body)
 
         response = described_class.new(
           config: config,
@@ -53,8 +53,8 @@ RSpec.describe DocAuth::Acuant::Requests::FacialMatchRequest do
 
       it 'returns an unsuccessful response' do
         request_stub = stub_request(:post, url).
-                       with(body: request_body).
-                       to_return(body: response_body)
+          with(body: request_body).
+          to_return(body: response_body)
 
         response = described_class.new(
           config: config,

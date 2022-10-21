@@ -8,9 +8,13 @@ describe SamlIdpController do
   describe '/api/saml/logout' do
     it 'tracks the event when idp initiated' do
       stub_analytics
+      stub_attempts_tracker
 
       result = { sp_initiated: false, oidc: false, saml_request_valid: true }
       expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
+      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
+        success: true,
+      )
 
       delete :logout
     end
@@ -18,18 +22,26 @@ describe SamlIdpController do
     it 'tracks the event when sp initiated' do
       allow(controller).to receive(:saml_request).and_return(FakeSamlLogoutRequest.new)
       stub_analytics
+      stub_attempts_tracker
 
       result = { sp_initiated: true, oidc: false, saml_request_valid: true }
       expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
+      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
+        success: true,
+      )
 
       delete :logout, params: { SAMLRequest: 'foo' }
     end
 
     it 'tracks the event when the saml request is invalid' do
       stub_analytics
+      stub_attempts_tracker
 
       result = { sp_initiated: true, oidc: false, saml_request_valid: false }
       expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
+      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
+        success: true,
+      )
 
       delete :logout, params: { SAMLRequest: 'foo' }
     end
@@ -537,27 +549,30 @@ describe SamlIdpController do
       it 'tracks IAL2 authentication events' do
         stub_analytics
         expect(@analytics).to receive(:track_event).
-          with('SAML Auth Request',
-               requested_ial: authn_context,
-               service_provider: sp1_issuer)
+          with('SAML Auth Request', {
+            requested_ial: authn_context,
+            service_provider: sp1_issuer,
+          })
         expect(@analytics).to receive(:track_event).
-          with(Analytics::SAML_AUTH,
-               success: true,
-               errors: {},
-               nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-               authn_context: [authn_context],
-               authn_context_comparison: 'exact',
-               requested_ial: authn_context,
-               service_provider: sp1_issuer,
-               endpoint: '/api/saml/auth2022',
-               idv: false,
-               finish_profile: false)
+          with('SAML Auth', {
+            success: true,
+            errors: {},
+            nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+            authn_context: [authn_context],
+            authn_context_comparison: 'exact',
+            requested_ial: authn_context,
+            service_provider: sp1_issuer,
+            endpoint: '/api/saml/auth2022',
+            idv: false,
+            finish_profile: false,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
+          })
         expect(@analytics).to receive(:track_event).
-          with(
-            Analytics::SP_REDIRECT_INITIATED,
+          with('SP redirect initiated', {
             ial: ial,
             billed_ial: [ial, 2].min,
-          )
+          })
 
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
         saml_get_auth(ial2_settings)
@@ -694,27 +709,27 @@ describe SamlIdpController do
       it 'tracks IAL2 authentication events' do
         stub_analytics
         expect(@analytics).to receive(:track_event).
-          with('SAML Auth Request',
-               requested_ial: 'ialmax',
-               service_provider: sp1_issuer)
+          with('SAML Auth Request', {
+            requested_ial: 'ialmax',
+            service_provider: sp1_issuer,
+          })
         expect(@analytics).to receive(:track_event).
-          with(Analytics::SAML_AUTH,
-               success: true,
-               errors: {},
-               nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-               authn_context: ['http://idmanagement.gov/ns/assurance/ial/1'],
-               authn_context_comparison: 'minimum',
-               requested_ial: 'ialmax',
-               service_provider: sp1_issuer,
-               endpoint: '/api/saml/auth2022',
-               idv: false,
-               finish_profile: false)
+          with('SAML Auth', {
+            success: true,
+            errors: {},
+            nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+            authn_context: ['http://idmanagement.gov/ns/assurance/ial/1'],
+            authn_context_comparison: 'minimum',
+            requested_ial: 'ialmax',
+            service_provider: sp1_issuer,
+            endpoint: '/api/saml/auth2022',
+            idv: false,
+            finish_profile: false,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
+          })
         expect(@analytics).to receive(:track_event).
-          with(
-            Analytics::SP_REDIRECT_INITIATED,
-            ial: 0,
-            billed_ial: 2,
-          )
+          with('SP redirect initiated', { ial: 0, billed_ial: 2 })
 
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
         saml_get_auth(ialmax_settings)
@@ -753,10 +768,11 @@ describe SamlIdpController do
           authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
           authn_context_comparison: 'exact',
           service_provider: 'http://localhost:3000',
+          request_signed: true,
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
     end
 
@@ -811,6 +827,68 @@ describe SamlIdpController do
           expect(response.status).to eq(200)
           expect(authn_context_class_ref).to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
         end
+
+        it 'returns AAL3 authn_context when AAL3 is requested' do
+          allow(controller).to receive(:user_session).and_return({ auth_method: 'piv_cac' })
+          user = create(:user, :with_piv_or_cac)
+          auth_settings = saml_settings(
+            overrides: { authn_context: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF },
+          )
+          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
+          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
+
+          expect(response.status).to eq(200)
+          expect(authn_context_class_ref).to eq(
+            Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+
+        it 'returns AAL3-HSPD12 authn_context when AAL3-HSPD12 is requested' do
+          allow(controller).to receive(:user_session).and_return({ auth_method: 'piv_cac' })
+          user = create(:user, :with_piv_or_cac)
+          auth_settings = saml_settings(
+            overrides: { authn_context: Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF },
+          )
+          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
+          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
+
+          expect(response.status).to eq(200)
+          expect(authn_context_class_ref).to eq(
+            Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+
+        it 'returns AAL2-HSPD12 authn_context when AAL2-HSPD12 is requested' do
+          allow(controller).to receive(:user_session).and_return({ auth_method: 'piv_cac' })
+          user = create(:user, :with_piv_or_cac)
+          auth_settings = saml_settings(
+            overrides: { authn_context: Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF },
+          )
+          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
+          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
+
+          expect(response.status).to eq(200)
+          expect(authn_context_class_ref).to eq(
+            Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+
+        it 'returns AAL2-phishing-resistant authn_context when AAL2-phishing-resistant requested' do
+          allow(controller).to receive(:user_session).and_return({ auth_method: 'webauthn' })
+          user = create(:user, :with_webauthn)
+          auth_settings = saml_settings(
+            overrides: {
+              authn_context: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+            },
+          )
+          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
+          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
+
+          expect(response.status).to eq(200)
+          expect(authn_context_class_ref).to eq(
+            Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
       end
     end
 
@@ -863,10 +941,11 @@ describe SamlIdpController do
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
           service_provider: nil,
+          request_signed: true,
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
     end
 
@@ -906,10 +985,11 @@ describe SamlIdpController do
           authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
           authn_context_comparison: 'exact',
           service_provider: nil,
+          request_signed: true,
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
     end
 
@@ -983,6 +1063,7 @@ describe SamlIdpController do
           issuer: saml_settings.issuer,
           aal_level_requested: aal_level,
           piv_cac_requested: false,
+          phishing_resistant_requested: false,
           ial: 1,
           ial2: false,
           ial2_strict: false,
@@ -1014,6 +1095,7 @@ describe SamlIdpController do
           issuer: saml_settings.issuer,
           aal_level_requested: aal_level,
           piv_cac_requested: false,
+          phishing_resistant_requested: false,
           ial: 1,
           ial2: false,
           ial2_strict: false,
@@ -1109,6 +1191,56 @@ describe SamlIdpController do
       end
     end
 
+    context 'no matching cert from the SAML request' do
+      let(:user) { create(:user, :signed_up) }
+
+      before do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+      end
+
+      it 'notes that in the analytics event' do
+        auth_settings = saml_settings(
+          overrides: {
+            authn_context: [
+              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            ],
+            security: {
+              authn_requests_signed: false,
+            },
+          },
+        )
+        service_provider = build(:service_provider, issuer: auth_settings.issuer)
+        IdentityLinker.new(user, service_provider).link_identity
+        user.identities.last.update!(verified_attributes: ['email'])
+        generate_saml_response(user, auth_settings)
+
+        expect(response.status).to eq(200)
+
+        analytics_hash = {
+          success: true,
+          errors: {},
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+          authn_context: [
+            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          ],
+          authn_context_comparison: 'exact',
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          service_provider: 'http://localhost:3000',
+          endpoint: '/api/saml/auth2022',
+          idv: false,
+          finish_profile: false,
+          request_signed: false,
+          matching_cert_serial: nil,
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with('SAML Auth', analytics_hash)
+      end
+    end
+
     context 'no IAL explicitly requested' do
       let(:user) { create(:user, :signed_up) }
 
@@ -1141,10 +1273,12 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          request_signed: true,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
     end
 
@@ -1176,10 +1310,12 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          request_signed: true,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
 
       it 'defaults to email when added to issuers_with_email_nameid_format' do
@@ -1209,10 +1345,12 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          request_signed: true,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
     end
 
@@ -1238,10 +1376,11 @@ describe SamlIdpController do
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
           service_provider: 'http://localhost:3000',
+          request_signed: true,
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
     end
 
@@ -1278,11 +1417,13 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          request_signed: true,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(name_id.children.first.to_s).to eq(user.agency_identities.last.uuid)
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
 
       it 'sends the appropriate identifier for email NameID SPs' do
@@ -1308,11 +1449,13 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          request_signed: true,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(name_id.children.first.to_s).to eq(user.email_addresses.first.email)
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
 
       it 'sends the old user ID for legacy SPS' do
@@ -1338,11 +1481,13 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          request_signed: true,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(name_id.children.first.to_s).to eq(user.id.to_s)
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
     end
 
@@ -1380,9 +1525,10 @@ describe SamlIdpController do
       it 'logs SAML Auth Request but does not log SAML Auth' do
         stub_analytics
         expect(@analytics).to receive(:track_event).
-          with('SAML Auth Request',
-               requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-               service_provider: 'http://localhost:3000')
+          with('SAML Auth Request', {
+            requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            service_provider: 'http://localhost:3000',
+          })
 
         saml_get_auth(saml_settings)
       end
@@ -1825,14 +1971,17 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: true,
           finish_profile: false,
+          request_signed: false,
+          matching_cert_serial: nil,
         }
 
         expect(@analytics).to receive(:track_event).
-          with('SAML Auth Request',
-               requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-               service_provider: 'http://localhost:3000')
+          with('SAML Auth Request', {
+            requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            service_provider: 'http://localhost:3000',
+          })
         expect(@analytics).to receive(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
 
         get :auth
       end
@@ -1867,19 +2016,18 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
+          request_signed: true,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(@analytics).to receive(:track_event).
-          with('SAML Auth Request',
-               requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-               service_provider: 'http://localhost:3000')
-        expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth Request', {
+            requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            service_provider: 'http://localhost:3000',
+          })
+        expect(@analytics).to receive(:track_event).with('SAML Auth', analytics_hash)
         expect(@analytics).to receive(:track_event).
-          with(
-            Analytics::SP_REDIRECT_INITIATED,
-            ial: 1,
-            billed_ial: 1,
-          )
+          with('SP redirect initiated', { ial: 1, billed_ial: 1 })
 
         generate_saml_response(user)
       end
@@ -1904,19 +2052,21 @@ describe SamlIdpController do
           endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: true,
+          request_signed: true,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(@analytics).to receive(:track_event).
-          with('SAML Auth Request',
-               requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-               service_provider: 'http://localhost:3000')
-        expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth Request', {
+            requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            service_provider: 'http://localhost:3000',
+          })
+        expect(@analytics).to receive(:track_event).with('SAML Auth', analytics_hash)
         expect(@analytics).to receive(:track_event).
-          with(
-            Analytics::SP_REDIRECT_INITIATED,
+          with('SP redirect initiated', {
             ial: 1,
             billed_ial: 1,
-          )
+          })
 
         generate_saml_response(user)
       end

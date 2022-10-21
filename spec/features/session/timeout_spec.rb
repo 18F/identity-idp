@@ -47,7 +47,7 @@ feature 'Session Timeout' do
 
         expect(page).to have_current_path(root_path)
         expect(page).to have_content(t('devise.failure.timeout'))
-        expect(fake_analytics).to have_logged_event(Analytics::SESSION_TOTAL_DURATION_TIMEOUT, {})
+        expect(fake_analytics).to have_logged_event('User Maximum Session Length Exceeded', {})
       end
     end
   end

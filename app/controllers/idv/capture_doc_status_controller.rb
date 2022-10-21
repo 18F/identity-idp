@@ -5,12 +5,7 @@ module Idv
     respond_to :json
 
     def show
-      render(
-        json: {
-          redirect: status == :too_many_requests ? idv_session_errors_throttled_url : nil,
-        }.compact,
-        status: status,
-      )
+      render(json: { redirect: redirect_url }.compact, status: status)
     end
 
     private
@@ -23,7 +18,7 @@ module Idv
           :gone
         elsif throttled?
           :too_many_requests
-        elsif confirmed_barcode_attention_result?
+        elsif confirmed_barcode_attention_result? || user_has_establishing_in_person_enrollment?
           :ok
         elsif session_result.blank? || pending_barcode_attention_confirmation?
           :accepted
@@ -32,6 +27,16 @@ module Idv
         else
           :ok
         end
+      end
+    end
+
+    def redirect_url
+      return unless flow_session && document_capture_session
+
+      if throttled?
+        idv_session_errors_throttled_url
+      elsif user_has_establishing_in_person_enrollment?
+        idv_in_person_url
       end
     end
 
@@ -55,10 +60,16 @@ module Idv
     end
 
     def throttled?
-      Throttle.new(
-        user: document_capture_session.user,
-        throttle_type: :idv_doc_auth,
-      ).throttled?
+      throttle.throttled?
+    end
+
+    def throttle
+      @throttle ||= Throttle.new(user: document_capture_session.user, throttle_type: :idv_doc_auth)
+    end
+
+    def user_has_establishing_in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
+      current_user.establishing_in_person_enrollment.present?
     end
 
     def confirmed_barcode_attention_result?

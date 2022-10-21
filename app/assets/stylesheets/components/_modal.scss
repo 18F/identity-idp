@@ -1,97 +1,30 @@
-.usa-modal-wrapper {
+.usa-modal-overlay {
   // Temporary styles to avoid inheriting too much of the USWDS opinionated modal styling until
   // modal styles are settled in the Login.gov Design System.
   text-align: left;
-}
+  display: flex;
+  align-items: start;
+  justify-content: center;
 
-.modal {
-  bottom: 0;
-  display: block;
-  left: 0;
-  outline: 0;
-  overflow: hidden;
-  -webkit-overflow-scrolling: auto;
-  position: fixed;
-  right: 0;
-  top: 0;
-  z-index: 1100;
-}
+  // Pending upstream Login Design System revision:
+  background: rgba(color('base-darker'), 50%);
 
-.modal-center {
-  display: table;
-  height: 100%;
-  width: 100%;
+  @include at-media('tablet') {
+    align-items: center;
+  }
 }
 
 .modal-content {
-  display: table-cell;
-  vertical-align: top;
+  @include u-padding(4);
+  @include u-bg('white');
+  max-width: $container-xskinny-width;
+  border-radius: $border-radius-xxl;
 
-  [class^='cntnr'],
-  [class*=' cntnr'] {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
-
-    &.key-badge::before {
-      background-image: url('p-key.svg');
-      background-repeat: no-repeat;
-      content: '';
-      height: 60px;
-      left: 45%;
-      position: absolute;
-      top: -25px;
-      width: 60px;
-    }
-
-    &[class^='modal-']::before,
-    &[class*=' modal-']::before {
-      background-repeat: no-repeat;
-      content: '';
-      display: block;
-      height: 48px;
-      margin: units(2) auto units(4);
-      position: relative;
-      width: 48px;
-    }
-
-    hr {
-      width: 5rem;
-    }
-  }
-}
-
-@include at-media('tablet') {
-  .modal-content {
-    vertical-align: middle;
-  }
-}
-
-.modal-timeout {
-  &::before {
-    background-image: url('clock.svg');
+  @include at-media('tablet') {
+    @include u-padding(6);
   }
 
   hr {
-    border-color: color('info');
+    width: 5rem;
   }
-}
-
-.modal-warning {
-  &::before {
-    background-image: url('status/warning.svg');
-  }
-
-  hr {
-    border-color: color('warning');
-  }
-}
-
-// ===============================================
-// Pending upstream Login Design System revisions:
-// ===============================================
-
-.usa-modal-overlay {
-  background: rgba(color('base-darker'), 50%);
 }

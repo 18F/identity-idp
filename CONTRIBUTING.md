@@ -50,127 +50,27 @@ Database Cleaner to ignore those static tables.
 changelog: Internal, Automated Testing, Improve performance of test suite
 ```
 
-Refer to the [changelog check script] for a complete list of acceptable
-changelog categories.
+#### Changelog Messages
 
-[changelog check script]: https://github.com/18F/identity-idp/blob/main/scripts/changelog_check.rb
+You must include a changelog message in one commit of your pull request.
 
-### Style, Readability, and OO
-- Rubocop or Reek offenses are not disabled unless they are false positives.
-If you're not sure, please ask a teammate.
+A changelog message should be written in the following format:
 
-- Related methods in the same class are in descending order of abstraction.
-This is best explained through this video: https://youtu.be/0rsilnpU1DU?t=554
-
-- Compound conditionals are replaced with more readable methods that describe
-the business rule. For example, a conditional like
-`user_session[:personal_key].nil? && current_user.personal_key.present?` could
-be extracted into a method called
-`current_user_has_already_confirmed_their_personal_key?`.
-Another example is explained in this video: https://youtu.be/0rsilnpU1DU?t=40s
-
-- Service Objects should usually only have one public method, usually named
-`call`. This mostly applies to classes that perform a specific task, unlike
-Presenters, View Objects, and Value Objects, for example. Read
-[7 Patterns to Refactor Fat ActiveRecord Models] for a good overview of the
-different types of classes used in Rails.
-
-  References:
-  - https://medium.com/selleo/essential-rubyonrails-patterns-part-1-service-objects-1af9f9573ca1
-  - https://multithreaded.stitchfix.com/blog/2015/06/02/anatomy-of-service-objects-in-rails/
-  - https://hackernoon.com/the-3-tenets-of-service-objects-c936b891b3c2
-  - http://katafrakt.me//2018/07/04/writing-service-objects/
-  - https://pawelurbanek.com/2018/02/12/ruby-on-rails-service-objects-and-testing-in-isolation/
-
-[7 Patterns to Refactor Fat ActiveRecord Models]: https://codeclimate.com/blog/7-ways-to-decompose-fat-activerecord-models/
-
-### RESTful controllers
-
-* Only use CRUD methods in controllers.
-
-* Prefer adding a new controller with one of the CRUD methods over creating a
-  custom method in an existing controller. For example, if your app allows a
-  user to update their email and their password on two different pages, instead of
-  using a single controller with methods called `update_email` and
-  `update_password`, create two controllers and name the methods `update`, i.e.
-  `EmailsController#update` and `PasswordsController#update`. See
-  http://jeromedalbert.com/how-dhh-organizes-his-rails-controllers/ for more about
-  this design pattern.
-
-### Lean controllers
-* Keep as much business logic as possible out of controllers.
-
-* Use specialized classes to handle the operations
-  * These will be Form Objects for the most part, since
-  most of what the app does is process user input via a form submission, or
-  clicking a link in email that contains a token.
-
-* Form Object rules:
-  - Should have a single public method called `submit` that returns a [FormResponse] object.
-  - Should use ActiveModel validations to validate the user input.
-  - Should be placed in `app/forms`.
-
-* Examples of Form/Service Objects:
-  - [EmailConfirmationTokenValidator]
-  - [PasswordForm]
-
-* The basic outline of how a controller interacts with this class is:
-```ruby
-result = Class.new(user).submit(params) # this returns a FormResponse object
-# all the necessary analytics attributes are captured inside the Form Object
-analytics.track_event('Some Event Name', result.to_h)
-
-if result.success?
-  handle_success
-else
-  handle_failure
-end
+```
+changelog: [Category], [Subcategory], [Description]
 ```
 
-* Only make one call to `analytics.track_event` after submitting the form, as
-opposed to one call when handling success and another when handling failure. The
-Form Object, when used properly, will return a FormResponse object that already
-tells us whether the action was successful or not.
+Replace `[Category]`, `[Subcategory]`, and `[Description]` with text relevant for your changes:
 
-### Importance of the controller design for analytics
+- **Category** must be one of the following:
+   - **Improvements** are user-facing improvements to the application experience, such as a new UI component or updated text.
+   - **Bug Fixes** are corrections to a broken behavior, such as preventing a raised exception.
+   - **Internal** are changes which benefit the Login.gov team, such as analytics or code quality.
+   - **Upcoming Features** are iterations contributing to a feature which has not yet been enabled for users in production.
+- **Subcategory** does not have any restrictions, but you should try to maintain consistency with changesets affecting similar parts of the application (for example, "In-person proofing").
+- **Description** is a plain language description of the specific changes.
 
-This design pattern was the result of many iterations, and agreed upon by all
-team members in early 2017. It keeps controllers clean and predictable. Having a
-controller interact with a Form Object or some other specialized class is not a
-new concept. Rails developers have been using them since at least 2012. What
-might seem new is the `FormResponse` object. **The most important reason
-controllers expect an object that responds to `success?` and `to_h` is to define
-an analytics API, or a contract, if you will, between the analytics logs and the
-folks who query them.**
-
-For example, if someone wants to look up all events that have failed, they would
-run this query in Kibana: `properties.event_properties.success:false`. Now let's
-say a developer introduces a new controller that doesn't adhere to our established
-convention, and captures analytics in their own way, without adding `success`
-and `errors` keys, which are expected to be included in all analytics events.
-This means that any failures for this controller won't show up when running the
-query above, and the person running the query might not realize data is missing.
-
-Deviating from the convention also causes confusion. The next developer to join
-the team will not be sure which pattern to use, and might end up picking the
-wrong pattern. As Sandi Metz says:
-
-> For better or for worse, the patterns you establish today will be replicated
-forever. When the code lies you must be alert to programmers believing and then
-propagating that lie.
-
-### Secure controllers
-Rails by default is currently vulnerable to [cache poisoning attacks]
-through modification of the `X-Forwarded-For` and `Host` headers. In
-order to protect against the latter, there are two pieces that must be
-in place. The first one is already taken care of by defining
-`default_url_options` in `ApplicationController` with a `host` value
-that we control.
-
-The other one is up to you when adding or modifying redirects:
-
-- Always use `_url` helpers (as opposed to `_path`) when calling
-`redirect_to` in a controller.
+If multiple pull requests iterate on the same feature, it's a good idea to use the same commit message, since identical messages will be combined into a single entry when the release notes are compiled.
 
 ### Additional notes on pull requests and code reviews
 
@@ -181,26 +81,9 @@ reading.
 [review]: https://engineering.18f.gov/code-review/
 [thoughts]: http://glen.nu/ramblings/oncodereview.php
 
-- Prioritize code reviews for the current sprint above your other work
-- Review pull requests for the current sprint within 24 hours of being opened
 - Keep pull requests as small as possible, and focused on a single topic
 - Once a pull request is good to go, the person who opened it squashes related
 commits together, merges it, then deletes the branch.
-
-### Recommended reading, viewing, and courses
-
-- [Practical Object-Oriented Design in Ruby](http://www.poodr.com/)
-- [99 Bottles of OOP](https://sandimetz.dpdcart.com/)
-- [Sandi Metz blog](https://www.sandimetz.com/blog/)
-- [Sandi Metz talks](https://www.youtube.com/playlist?list=PLFQBiiaZoyrcTBYAGAUjvEUI6TUrp110W)
-- [Learn Clean Code](https://thoughtbot.com/upcase/clean-code)
-- [Ruby Science](https://gumroad.com/l/ruby-science)
-- [Ruby Tapas](https://www.rubytapas.com/)
-- [Master the Object-Oriented Mindset in Ruby and Rails](https://avdi.codes/moom/)
-- [Refactoring Rails](https://www.refactoringrails.io/)
-- [Growing Rails Applications in Practice](https://pragprog.com/book/d-kegrap/growing-rails-applications-in-practice)
-- [The 30-Day Code Quality Challenge](https://www.codequalitychallenge.com/)
-- [SourceMaking](https://sourcemaking.com/)
 
 ## Public domain
 

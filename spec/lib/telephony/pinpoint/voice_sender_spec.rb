@@ -13,12 +13,12 @@ describe Telephony::Pinpoint::VoiceSender do
 
   def mock_build_client
     allow(voice_sender).
-    to receive(:build_client).with(voice_config).and_return(pinpoint_client)
+      to receive(:build_client).with(voice_config).and_return(pinpoint_client)
   end
 
   def mock_build_backup_client
     allow(voice_sender).
-    to receive(:build_client).with(backup_voice_config).and_return(backup_pinpoint_client)
+      to receive(:build_client).with(backup_voice_config).and_return(backup_pinpoint_client)
   end
 
   describe '#send' do
@@ -58,6 +58,7 @@ describe Telephony::Pinpoint::VoiceSender do
 
       expect(response.success?).to eq(true)
       expect(response.extra[:message_id]).to eq('fake-message-id')
+      expect(response.extra[:origination_phone_number]).to eq(sending_phone)
     end
 
     context 'when the current locale is spanish' do

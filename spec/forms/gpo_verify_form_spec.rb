@@ -2,14 +2,23 @@ require 'rails_helper'
 
 describe GpoVerifyForm do
   subject(:form) do
-    GpoVerifyForm.new(user: user, otp: entered_otp)
+    GpoVerifyForm.new(user: user, pii: applicant, otp: entered_otp)
   end
 
-  let(:user) { pending_profile.user }
+  let(:user) { create(:user, :signed_up) }
+  let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true) }
   let(:entered_otp) { otp }
   let(:otp) { 'ABC123' }
   let(:code_sent_at) { Time.zone.now }
-  let(:pending_profile) { create(:profile, deactivation_reason: :verification_pending) }
+  let(:pending_profile) do
+    create(
+      :profile,
+      user: user,
+      deactivation_reason: :gpo_verification_pending,
+      proofing_components: proofing_components,
+    )
+  end
+  let(:proofing_components) { nil }
 
   before do
     next if pending_profile.blank?
@@ -100,6 +109,43 @@ describe GpoVerifyForm do
         subject.submit
 
         expect(pending_profile.reload).to be_active
+      end
+
+      it 'logs the date the code was sent at' do
+        result = subject.submit
+
+        confirmation_code = pending_profile.gpo_confirmation_codes.last
+        expect(result.to_h[:enqueued_at]).to eq(confirmation_code.code_sent_at)
+      end
+
+      context 'pending in person enrollment' do
+        let!(:enrollment) do
+          create(:in_person_enrollment, :establishing, profile: pending_profile, user: user)
+        end
+        let(:proofing_components) do
+          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+        end
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        end
+
+        it 'sets profile to pending in person verification' do
+          subject.submit
+          pending_profile.reload
+
+          expect(pending_profile).not_to be_active
+          expect(pending_profile.deactivation_reason).to eq('in_person_verification_pending')
+        end
+
+        it 'updates establishing in-person enrollment to pending' do
+          subject.submit
+
+          enrollment.reload
+
+          expect(enrollment.status).to eq('pending')
+          expect(enrollment.user_id).to eq(user.id)
+          expect(enrollment.enrollment_code).to be_a(String)
+        end
       end
     end
 

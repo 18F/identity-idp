@@ -10,7 +10,7 @@ feature 'sign up with backup code' do
       have_content t('two_factor_authentication.login_options.backup_code_info')
     select_2fa_option('backup_code')
 
-    expect(page).to have_link(t('forms.backup_code.download'))
+    expect(page).to have_link(t('components.download_button.label'))
     expect(current_path).to eq backup_code_setup_path
 
     click_on 'Continue'
@@ -28,7 +28,7 @@ feature 'sign up with backup code' do
 
     select_2fa_option('backup_code')
 
-    expect(page).to_not have_link(t('forms.backup_code.download'))
+    expect(page).to_not have_link(t('components.download_button.label'))
   end
 
   it 'works for each code and refreshes the codes on the last one' do
@@ -72,6 +72,21 @@ feature 'sign up with backup code' do
     click_agree_and_continue
 
     expect(current_url).to start_with('http://localhost:7654/auth/result')
+  end
+
+  context 'when the user needs a backup code reminder' do
+    let!(:user) { create(:user, :signed_up, :with_authentication_app, :with_backup_code) }
+    let!(:event) do
+      create(:event, user: user, event_type: :sign_in_after_2fa, created_at: 9.months.ago)
+    end
+
+    it 'redirects the user to the backup code reminder url' do
+      sign_in_user(user)
+      fill_in_code_with_last_totp(user)
+      click_submit_default
+
+      expect(current_path).to eq backup_code_reminder_path
+    end
   end
 
   def sign_out_user

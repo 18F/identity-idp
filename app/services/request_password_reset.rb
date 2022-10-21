@@ -1,10 +1,15 @@
 RequestPasswordReset = RedactedStruct.new(
-  :email, :request_id, :analytics, keyword_init: true,
-                                   allowed_members: [:request_id]
+  :email, :request_id, :analytics, :irs_attempts_api_tracker,
+  keyword_init: true,
+  allowed_members: [:request_id]
 ) do
   def perform
     if user_should_receive_registration_email?
-      form = RegisterUserEmailForm.new(password_reset_requested: true, analytics: analytics)
+      form = RegisterUserEmailForm.new(
+        password_reset_requested: true,
+        analytics: analytics,
+        attempts_tracker: irs_attempts_api_tracker,
+      )
       result = form.submit({ email: email, terms_accepted: '1' }, instructions)
       [form.user, result]
     else
@@ -17,16 +22,18 @@ RequestPasswordReset = RedactedStruct.new(
 
   def send_reset_password_instructions
     if Throttle.new(user: user, throttle_type: :reset_password_email).throttled_else_increment?
-      analytics.track_event(
-        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
-        throttle_type: :reset_password_email,
-      )
+      analytics.throttler_rate_limit_triggered(throttle_type: :reset_password_email)
+      irs_attempts_api_tracker.forgot_password_email_rate_limited(email: email)
     else
       token = user.set_reset_password_token
-      UserMailer.reset_password_instructions(user, email, token: token).deliver_now_or_later
+      UserMailer.with(user: user, email_address: email_address_record).reset_password_instructions(
+        token: token,
+      ).deliver_now_or_later
 
       event = PushNotification::RecoveryActivatedEvent.new(user: user)
       PushNotification::HttpPush.deliver(event)
+
+      irs_attempts_api_tracker.forgot_password_email_sent(email: email)
     end
   end
 
@@ -61,10 +68,11 @@ RequestPasswordReset = RedactedStruct.new(
     @user ||= email_address_record&.user
   end
 
+  # We want to find the EmailAddress with preferring to find the confirmed one first
+  # if both a confirmed and an unconfirmed row exist
   def email_address_record
     @email_address_record ||= begin
-      EmailAddress.confirmed.find_with_email(email) ||
-        EmailAddress.unconfirmed.find_with_email(email)
+      EmailAddress.find_with_confirmed_or_unconfirmed_email(email)
     end
   end
 end

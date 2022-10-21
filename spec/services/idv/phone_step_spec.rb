@@ -17,7 +17,13 @@ describe Idv::PhoneStep do
       current_user: user,
       service_provider: service_provider,
     )
-    idvs.applicant = { first_name: 'Some' }
+    idvs.applicant = {
+      first_name: 'Some',
+      last_name: 'One',
+      uuid: SecureRandom.uuid,
+      dob: 50.years.ago.to_date.to_s,
+      ssn: '666-12-1234',
+    }
     idvs
   end
   let(:good_phone) { '2255555000' }
@@ -32,27 +38,32 @@ describe Idv::PhoneStep do
   end
   let(:trace_id) { SecureRandom.uuid }
 
-  subject {
+  subject do
     described_class.new(
       idv_session: idv_session,
       trace_id: trace_id,
     )
-  }
+  end
 
   describe '#submit' do
     let(:throttle) { Throttle.new(throttle_type: :proof_address, user: user) }
 
     it 'succeeds with good params' do
-      context = { stages: [{ address: 'AddressMock' }] }
+      proofing_phone = Phonelib.parse(good_phone)
       extra = {
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+        country_code: proofing_phone.country,
+        area_code: proofing_phone.area_code,
         vendor: {
-          messages: [],
-          context: context,
+          vendor_name: 'AddressMock',
           exception: nil,
           timed_out: false,
           transaction_id: 'address-mock-transaction-id-123',
+          reference: '',
         },
       }
+
+      original_applicant = idv_session.applicant.dup
 
       subject.submit(phone: good_phone)
 
@@ -64,23 +75,29 @@ describe Idv::PhoneStep do
       expect(result.extra).to eq(extra)
       expect(idv_session.vendor_phone_confirmation).to eq true
       expect(idv_session.applicant).to eq(
-        first_name: 'Some',
-        phone: good_phone,
-        uuid_prefix: service_provider.app_id,
+        original_applicant.merge(
+          phone: good_phone,
+          uuid_prefix: service_provider.app_id,
+        ),
       )
     end
 
     it 'fails with bad params' do
-      context = { stages: [{ address: 'AddressMock' }] }
+      proofing_phone = Phonelib.parse(bad_phone)
       extra = {
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+        country_code: proofing_phone.country,
+        area_code: proofing_phone.area_code,
         vendor: {
-          messages: [],
-          context: context,
+          vendor_name: 'AddressMock',
           exception: nil,
           timed_out: false,
           transaction_id: 'address-mock-transaction-id-123',
+          reference: '',
         },
       }
+
+      original_applicant = idv_session.applicant.dup
 
       subject.submit(phone: bad_phone)
       expect(subject.async_state.done?).to eq true
@@ -92,7 +109,7 @@ describe Idv::PhoneStep do
       expect(result.extra).to eq(extra)
       expect(idv_session.vendor_phone_confirmation).to be_falsy
       expect(idv_session.user_phone_confirmation).to be_falsy
-      expect(idv_session.applicant).to eq(first_name: 'Some')
+      expect(idv_session.applicant).to eq(original_applicant)
     end
 
     it 'increments step attempts' do
@@ -111,7 +128,7 @@ describe Idv::PhoneStep do
       expect { subject.submit(phone: fail_phone) }.to_not change { throttle.attempts }
     end
 
-    it 'marks the phone as confirmed if it matches 2FA phone' do
+    it 'marks the phone as unconfirmed if it matches 2FA phone' do
       user.phone_configurations = [build(:phone_configuration, user: user, phone: good_phone)]
 
       subject.submit(phone: good_phone)
@@ -120,7 +137,7 @@ describe Idv::PhoneStep do
 
       expect(result.success?).to eq(true)
       expect(idv_session.vendor_phone_confirmation).to eq(true)
-      expect(idv_session.user_phone_confirmation).to eq(true)
+      expect(idv_session.user_phone_confirmation).to eq(false)
     end
 
     it 'does not mark the phone as confirmed if it does not match 2FA phone' do

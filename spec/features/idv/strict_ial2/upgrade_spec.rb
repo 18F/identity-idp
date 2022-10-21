@@ -21,8 +21,7 @@ feature 'Strict IAL2 upgrade', js: true do
 
     expect(page.current_path).to eq(idv_doc_auth_welcome_step)
 
-    complete_all_doc_auth_steps
-    click_idv_continue
+    complete_all_doc_auth_steps_before_password_step
     fill_in 'Password', with: user.password
     click_continue
     acknowledge_and_confirm_personal_key
@@ -53,8 +52,7 @@ feature 'Strict IAL2 upgrade', js: true do
 
       expect(page.current_path).to eq(idv_doc_auth_welcome_step)
 
-      complete_all_doc_auth_steps
-      click_idv_continue
+      complete_all_doc_auth_steps_before_password_step
       fill_in 'Password', with: user.password
       click_continue
       acknowledge_and_confirm_personal_key

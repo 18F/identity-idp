@@ -15,6 +15,7 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
       },
       liveness_checking_enabled: liveness_checking_enabled?,
       analytics: analytics,
+      irs_attempts_api_tracker: irs_attempts_api_tracker,
     )
   end
 
@@ -28,6 +29,7 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:analytics) { FakeAnalytics.new }
+  let(:irs_attempts_api_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:liveness_checking_enabled?) { true }
 
   describe '#valid?' do
@@ -121,11 +123,12 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
       end
 
       it 'is not valid' do
+        expect(irs_attempts_api_tracker).to receive(:idv_document_upload_rate_limited)
         expect(form.valid?).to eq(false)
         expect(form.errors.attribute_names).to eq([:limit])
         expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.throttled_heading')])
         expect(analytics).to have_logged_event(
-          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          'Throttler Rate Limit Triggered',
           throttle_type: :idv_doc_auth,
         )
       end

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe DocAuth::Mock::ResultResponse do
   let(:warn_notifier) { instance_double('Proc') }
 
-  subject(:response) {
+  subject(:response) do
     config = DocAuth::Mock::Config.new(
       dpi_threshold: 290,
       sharpness_threshold: 40,
@@ -11,7 +11,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       warn_notifier: warn_notifier,
     )
     described_class.new(input, config, false)
-  }
+  end
 
   context 'with an image file' do
     let(:input) { DocAuthImageFixtures.document_front_image }
@@ -246,7 +246,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
   end
 
   context 'with a yaml file containing a passing result' do
-    subject(:response) {
+    subject(:response) do
       config = DocAuth::Mock::Config.new(
         {
           dpi_threshold: 290,
@@ -255,7 +255,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         },
       )
       described_class.new(input, config, true)
-    }
+    end
 
     let(:input) do
       <<~YAML
@@ -274,6 +274,34 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to eq({})
       expect(response.attention_with_barcode?).to eq(false)
+      expect(response.extra).to eq(
+        doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
+        billed: true,
+      )
+    end
+  end
+
+  context 'with a yaml file containing a failed result' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+      YAML
+    end
+
+    it 'returns a failed result' do
+      expect(response.success?).to eq(false)
+      expect(response.errors).to eq(
+        general: [DocAuth::Errors::BARCODE_READ_CHECK],
+        back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+        hints: true,
+      )
+      expect(response.exception).to eq(nil)
+      expect(response.pii_from_doc).to eq({})
+      expect(response.attention_with_barcode?).to eq(false)
+      expect(response.extra).to eq(
+        doc_auth_result: DocAuth::Acuant::ResultCodes::FAILED.name,
+        billed: true,
+      )
     end
   end
 
@@ -315,6 +343,10 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         state_id_type: 'drivers_license',
       )
       expect(response.attention_with_barcode?).to eq(false)
+      expect(response.extra).to eq(
+        doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
+        billed: true,
+      )
     end
   end
 end

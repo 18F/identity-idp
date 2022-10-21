@@ -11,14 +11,12 @@ module Reports
 
     def perform(_date)
       raw_results = IaaReportingHelper.iaas.flat_map do |iaa|
-        transaction_with_timeout do
-          Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(
-            key: iaa.key,
-            issuers: iaa.issuers,
-            start_date: iaa.start_date,
-            end_date: iaa.end_date,
-          )
-        end
+        Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(
+          key: iaa.key,
+          issuers: iaa.issuers,
+          start_date: iaa.start_date,
+          end_date: iaa.end_date,
+        )
       end
 
       results = combine_by_iaa_month(raw_results)

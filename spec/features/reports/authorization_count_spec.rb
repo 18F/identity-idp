@@ -97,6 +97,7 @@ describe 'authorization count' do
       it 'does not count second IAL1 auth at same sp' do
         visit_idp_from_ial1_saml_sp(issuer: issuer_1)
         click_agree_and_continue
+        click_submit_default
         expect_ial1_count_only(issuer_1)
 
         visit_idp_from_ial1_saml_sp(issuer: issuer_1)
@@ -107,13 +108,15 @@ describe 'authorization count' do
       it 'counts step up from IAL1 to IAL2 after proofing' do
         visit_idp_from_ial1_saml_sp(issuer: issuer_1)
         click_agree_and_continue
+        click_submit_default
         expect_ial1_count_only(issuer_1)
 
         create(:profile, :active, :verified, :with_pii, user: user)
         visit_idp_from_ial2_saml_sp(issuer: issuer_1)
         fill_in t('account.index.password'), with: user.password
-        click_submit_default
+        click_submit_default_twice
         click_agree_and_continue
+        click_submit_default
         expect_ial1_and_ial2_count(issuer_1)
       end
 
@@ -134,6 +137,7 @@ describe 'authorization count' do
           },
         )
         click_agree_and_continue
+        click_submit_default
         expect_ial1_count_only(issuer_1)
       end
 
@@ -154,8 +158,9 @@ describe 'authorization count' do
           },
         )
         fill_in t('account.index.password'), with: user.password
-        click_submit_default
+        click_submit_default_twice
         click_agree_and_continue
+        click_submit_default
         expect_ial2_count_only(issuer_1)
       end
 
@@ -177,8 +182,9 @@ describe 'authorization count' do
           },
         )
         fill_in t('account.index.password'), with: user.password
-        click_submit_default
+        click_submit_default_twice
         click_agree_and_continue
+        click_submit_default
         expect_ial2_count_only(issuer_1)
       end
       # rubocop:enable Layout/LineLength
@@ -262,16 +268,19 @@ describe 'authorization count' do
       it 'counts IAL1 auth at same sp' do
         visit_idp_from_ial2_saml_sp(issuer: issuer_1)
         click_agree_and_continue
+        click_submit_default
         expect_ial2_count_only(issuer_1)
 
         visit_idp_from_ial1_saml_sp(issuer: issuer_1)
         click_agree_and_continue
+        click_submit_default
         expect_ial1_and_ial2_count(issuer_1)
       end
 
       it 'does not count second IAL2 auth at same sp' do
         visit_idp_from_ial2_saml_sp(issuer: issuer_1)
         click_agree_and_continue
+        click_submit_default
         expect_ial2_count_only(issuer_1)
 
         visit_idp_from_ial2_saml_sp(issuer: issuer_1)
@@ -282,30 +291,36 @@ describe 'authorization count' do
       it 'counts step up from IAL1 to IAL2 at same sp' do
         visit_idp_from_ial1_saml_sp(issuer: issuer_1)
         click_agree_and_continue
+        click_submit_default
         expect_ial1_count_only(issuer_1)
 
         visit_idp_from_ial2_saml_sp(issuer: issuer_1)
         click_agree_and_continue
+        click_submit_default
         expect_ial1_and_ial2_count(issuer_1)
       end
 
       it 'counts IAL1 auth at another sp' do
         visit_idp_from_ial1_saml_sp(issuer: issuer_1)
         click_agree_and_continue
+        click_submit_default
         expect_ial1_count_only(issuer_1)
 
         visit_idp_from_ial1_saml_sp(issuer: issuer_2)
         click_agree_and_continue
+        click_submit_default
         expect_ial1_count_only(issuer_2)
       end
 
       it 'counts IAL2 auth at another sp' do
         visit_idp_from_ial2_saml_sp(issuer: issuer_1)
         click_agree_and_continue
+        click_submit_default
         expect_ial2_count_only(issuer_1)
 
         visit_idp_from_ial2_saml_sp(issuer: issuer_2)
         click_agree_and_continue
+        click_submit_default
         expect_ial2_count_only(issuer_2)
       end
 
@@ -326,6 +341,7 @@ describe 'authorization count' do
           },
         )
         click_agree_and_continue
+        click_submit_default
         expect_ial2_count_only(issuer_1)
       end
 
@@ -347,6 +363,7 @@ describe 'authorization count' do
           },
         )
         click_agree_and_continue
+        click_submit_default
         expect_ial2_count_only(issuer_1)
       end
       # rubocop:enable Layout/LineLength

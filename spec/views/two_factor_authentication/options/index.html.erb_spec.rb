@@ -9,9 +9,9 @@ describe 'two_factor_authentication/options/index.html.erb' do
     @presenter = TwoFactorLoginOptionsPresenter.new(
       user: user,
       view: view,
-      user_session_context: UserSessionContext::DEFAULT_CONTEXT,
+      user_session_context: UserSessionContext::AUTHENTICATION_CONTEXT,
       service_provider: nil,
-      aal3_required: false,
+      phishing_resistant_required: false,
       piv_cac_required: false,
     )
     @two_factor_options_form = TwoFactorLoginOptionsForm.new(user)

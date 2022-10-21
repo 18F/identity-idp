@@ -8,10 +8,16 @@
 
 <p>
   <%= t('in_person_proofing.body.address.info') %>
-  <%= new_window_link_to(t('in_person_proofing.body.address.learn_more'), MarketingSite.security_and_privacy_practices_url) %>
+  <%= new_window_link_to(
+        t('in_person_proofing.body.address.learn_more'),
+        MarketingSite.help_center_article_url(
+          category: 'verify-your-identity',
+          article: 'verify-your-identity-in-person',
+        ),
+      ) %>
 </p>
 
-<%= validated_form_for(
+<%= simple_form_for(
       :doc_auth, url: url_for, method: 'PUT',
                  html: { autocomplete: 'off' }
     ) do |f| %>
@@ -59,7 +65,7 @@
           as: :tel,
           error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.zipcode') },
           form: f,
-          input_html: { value: pii[:zipcode] },
+          input_html: { value: pii[:zipcode], class: 'zipcode' },
           label: t('in_person_proofing.form.address.zipcode'),
           label_html: { class: 'usa-label' },
           name: :zipcode,
@@ -82,13 +88,19 @@
         wrapper: :uswds_radio_buttons,
       ) %>
 
-  <%= render ButtonComponent.new(big: true, wide: true, class: 'margin-top-1') do %>
+  <%= f.submit class: 'margin-top-1' do %>
     <% if updating_address %>
       <%= t('forms.buttons.submit.update') %>
     <% else %>
       <%= t('forms.buttons.continue') %>
     <% end %>
   <% end %>
+<% end %>
+
+<% if updating_address %>
+  <%= render 'idv/shared/back', action: 'cancel_update_address' %>
+<% else %>
+  <%= render 'idv/doc_auth/cancel', step: 'address' %>
 <% end %>
 
 <%= javascript_packs_tag_once('formatted-fields') %>

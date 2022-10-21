@@ -10,19 +10,28 @@ module SignUp
     CREATE_ACCOUNT = 'create_account'
 
     def new
-      @register_user_email_form = RegisterUserEmailForm.new(analytics: analytics)
-      analytics.track_event(Analytics::USER_REGISTRATION_ENTER_EMAIL_VISIT)
+      @register_user_email_form = RegisterUserEmailForm.new(
+        analytics: analytics,
+        attempts_tracker: irs_attempts_api_tracker,
+      )
+      analytics.user_registration_enter_email_visit
       render :new, locals: { request_id: nil }, formats: :html
     end
 
     def create
       @register_user_email_form = RegisterUserEmailForm.new(
         analytics: analytics,
+        attempts_tracker: irs_attempts_api_tracker,
       )
 
       result = @register_user_email_form.submit(permitted_params)
 
-      analytics.track_event(Analytics::USER_REGISTRATION_EMAIL, result.to_h)
+      analytics.user_registration_email(**result.to_h)
+      irs_attempts_api_tracker.user_registration_email_submitted(
+        email: permitted_params[:email],
+        success: result.success?,
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
+      )
 
       if result.success?
         process_successful_creation

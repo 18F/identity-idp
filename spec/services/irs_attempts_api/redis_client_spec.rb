@@ -2,75 +2,85 @@ require 'rails_helper'
 
 describe IrsAttemptsApi::RedisClient do
   describe '#write_event' do
-    it 'writes the attempt data to redis with the JTI as the key' do
-      event = IrsAttemptsApi::AttemptEvent.new(
-        event_type: 'test_event',
-        session_id: 'test-session-id',
-        occurred_at: Time.zone.now,
-        event_metadata: { 'foo' => 'bar' },
-      )
-      jti = event.jti
-      jwe = event.to_jwe
+    it 'writes the attempt data to redis with the event key as the key' do
+      freeze_time do
+        now = Time.zone.now
+        event = IrsAttemptsApi::AttemptEvent.new(
+          event_type: 'test_event',
+          session_id: 'test-session-id',
+          occurred_at: Time.zone.now,
+          event_metadata: {
+            first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name],
+          },
+        )
+        event_key = event.event_key
+        jwe = event.to_jwe
 
-      subject.write_event(jti: jti, jwe: jwe)
+        subject.write_event(event_key: event_key, jwe: jwe, timestamp: now)
 
-      result = subject.redis_pool.with do |client|
-        client.get(jti)
+        result = subject.redis_pool.with do |client|
+          client.hget(subject.key(now), event_key)
+        end
+        expect(result).to eq(jwe)
       end
-      expect(result).to eq(jwe)
     end
   end
 
   describe '#read_events' do
     it 'reads the event events from redis' do
-      events = {}
-      3.times do
-        event = IrsAttemptsApi::AttemptEvent.new(
-          event_type: 'test_event',
-          session_id: 'test-session-id',
-          occurred_at: Time.zone.now,
-          event_metadata: { 'foo' => 'bar' },
-        )
-        jti = event.jti
-        jwe = event.to_jwe
-        events[jti] = jwe
-      end
-      events.each do |jti, jwe|
-        subject.write_event(jti: jti, jwe: jwe)
-      end
+      freeze_time do
+        now = Time.zone.now
+        events = {}
+        3.times do
+          event = IrsAttemptsApi::AttemptEvent.new(
+            event_type: 'test_event',
+            session_id: 'test-session-id',
+            occurred_at: now,
+            event_metadata: {
+              first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name],
+            },
+          )
+          event_key = event.event_key
+          jwe = event.to_jwe
+          events[event_key] = jwe
+        end
+        events.each do |event_key, jwe|
+          subject.write_event(event_key: event_key, jwe: jwe, timestamp: now)
+        end
 
-      result = subject.read_events
+        result = subject.read_events(timestamp: now)
 
-      expect(result).to eq(events)
+        expect(result).to eq(events)
+      end
     end
-  end
 
-  describe '#delete_events' do
-    it 'deletes the events from redis' do
-      events = {}
-      3.times do
-        event = IrsAttemptsApi::AttemptEvent.new(
-          event_type: 'test_event',
-          session_id: 'test-session-id',
-          occurred_at: Time.zone.now,
-          event_metadata: { 'foo' => 'bar' },
-        )
-        jti = event.jti
-        events[jti] = event.to_jwe
-      end
-      events.each do |jti, jwe|
-        subject.write_event(jti: jti, jwe: jwe)
-      end
+    it 'stores events in hourly buckets' do
+      time1 = Time.new(2022, 1, 1, 1, 0, 0, 'Z')
+      time2 = Time.new(2022, 1, 1, 2, 0, 0, 'Z')
+      event1 = IrsAttemptsApi::AttemptEvent.new(
+        event_type: 'test_event',
+        session_id: 'test-session-id',
+        occurred_at: time1,
+        event_metadata: {
+          first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name],
+        },
+      )
+      event2 = IrsAttemptsApi::AttemptEvent.new(
+        event_type: 'test_event',
+        session_id: 'test-session-id',
+        occurred_at: time2,
+        event_metadata: {
+          first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name],
+        },
+      )
+      jwe1 = event1.to_jwe
+      jwe2 = event2.to_jwe
 
-      subject.redis_pool.with do |client|
-        expect(client.exists(*events.keys)).to eq(3)
-      end
+      subject.write_event(event_key: event1.event_key, jwe: jwe1, timestamp: event1.occurred_at)
+      subject.write_event(event_key: event2.event_key, jwe: jwe2, timestamp: event2.occurred_at)
 
-      subject.delete_events(events.keys)
-
-      subject.redis_pool.with do |client|
-        expect(client.exists(*events.keys)).to eq(0)
-      end
+      expect(subject.read_events(timestamp: time1)).to eq({ event1.event_key => jwe1 })
+      expect(subject.read_events(timestamp: time2)).to eq({ event2.event_key => jwe2 })
     end
   end
 end

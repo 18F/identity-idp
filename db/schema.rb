@@ -10,9 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema.define(version: 2022_07_05_200821) do
-
+ActiveRecord::Schema[7.0].define(version: 2022_10_12_173528) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -20,14 +18,14 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
 
   create_table "account_reset_requests", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.datetime "requested_at"
+    t.datetime "requested_at", precision: nil
     t.string "request_token"
-    t.datetime "cancelled_at"
-    t.datetime "reported_fraud_at"
-    t.datetime "granted_at"
+    t.datetime "cancelled_at", precision: nil
+    t.datetime "reported_fraud_at", precision: nil
+    t.datetime "granted_at", precision: nil
     t.string "granted_token"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["cancelled_at", "granted_at", "requested_at"], name: "index_account_reset_requests_on_timestamps"
     t.index ["granted_token"], name: "index_account_reset_requests_on_granted_token", unique: true
     t.index ["request_token"], name: "index_account_reset_requests_on_request_token", unique: true
@@ -55,17 +53,17 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
     t.string "encrypted_otp_secret_key", null: false
     t.string "name", null: false
     t.integer "totp_timestamp"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["user_id", "created_at"], name: "index_auth_app_configurations_on_user_id_and_created_at", unique: true
     t.index ["user_id", "name"], name: "index_auth_app_configurations_on_user_id_and_name", unique: true
   end
 
   create_table "backup_code_configurations", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.datetime "used_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "used_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "salted_code_fingerprint"
     t.string "code_salt"
     t.string "code_cost"
@@ -76,8 +74,8 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
   create_table "deleted_users", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "uuid", null: false
-    t.datetime "user_created_at", null: false
-    t.datetime "deleted_at", null: false
+    t.datetime "user_created_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil, null: false
     t.index ["user_id"], name: "index_deleted_users_on_user_id", unique: true
     t.index ["uuid"], name: "index_deleted_users_on_uuid", unique: true
   end
@@ -86,98 +84,98 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
     t.integer "user_id", null: false
     t.string "cookie_uuid", null: false
     t.string "user_agent", null: false
-    t.datetime "last_used_at", null: false
+    t.datetime "last_used_at", precision: nil, null: false
     t.string "last_ip", limit: 255, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["cookie_uuid"], name: "index_devices_on_cookie_uuid"
     t.index ["user_id", "last_used_at"], name: "index_device_user_id_last_used_at"
   end
 
   create_table "doc_auth_logs", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.datetime "welcome_view_at"
+    t.datetime "welcome_view_at", precision: nil
     t.integer "welcome_view_count", default: 0
-    t.datetime "upload_view_at"
+    t.datetime "upload_view_at", precision: nil
     t.integer "upload_view_count", default: 0
-    t.datetime "send_link_view_at"
+    t.datetime "send_link_view_at", precision: nil
     t.integer "send_link_view_count", default: 0
-    t.datetime "link_sent_view_at"
+    t.datetime "link_sent_view_at", precision: nil
     t.integer "link_sent_view_count", default: 0
-    t.datetime "email_sent_view_at"
+    t.datetime "email_sent_view_at", precision: nil
     t.integer "email_sent_view_count", default: 0
-    t.datetime "front_image_view_at"
+    t.datetime "front_image_view_at", precision: nil
     t.integer "front_image_view_count", default: 0
     t.integer "front_image_submit_count", default: 0
     t.integer "front_image_error_count", default: 0
-    t.datetime "back_image_view_at"
+    t.datetime "back_image_view_at", precision: nil
     t.integer "back_image_view_count", default: 0
     t.integer "back_image_submit_count", default: 0
     t.integer "back_image_error_count", default: 0
-    t.datetime "mobile_front_image_view_at"
+    t.datetime "mobile_front_image_view_at", precision: nil
     t.integer "mobile_front_image_view_count", default: 0
-    t.datetime "mobile_back_image_view_at"
+    t.datetime "mobile_back_image_view_at", precision: nil
     t.integer "mobile_back_image_view_count", default: 0
-    t.datetime "ssn_view_at"
+    t.datetime "ssn_view_at", precision: nil
     t.integer "ssn_view_count", default: 0
-    t.datetime "verify_view_at"
+    t.datetime "verify_view_at", precision: nil
     t.integer "verify_view_count", default: 0
     t.integer "verify_submit_count", default: 0
     t.integer "verify_error_count", default: 0
-    t.datetime "verify_phone_view_at"
+    t.datetime "verify_phone_view_at", precision: nil
     t.integer "verify_phone_view_count", default: 0
-    t.datetime "usps_address_view_at"
+    t.datetime "usps_address_view_at", precision: nil
     t.integer "usps_address_view_count", default: 0
-    t.datetime "encrypt_view_at"
+    t.datetime "encrypt_view_at", precision: nil
     t.integer "encrypt_view_count", default: 0
-    t.datetime "verified_view_at"
+    t.datetime "verified_view_at", precision: nil
     t.integer "verified_view_count", default: 0
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "mobile_front_image_submit_count", default: 0
     t.integer "mobile_front_image_error_count", default: 0
     t.integer "mobile_back_image_submit_count", default: 0
     t.integer "mobile_back_image_error_count", default: 0
     t.integer "usps_letter_sent_submit_count", default: 0
     t.integer "usps_letter_sent_error_count", default: 0
-    t.datetime "capture_mobile_back_image_view_at"
+    t.datetime "capture_mobile_back_image_view_at", precision: nil
     t.integer "capture_mobile_back_image_view_count", default: 0
-    t.datetime "capture_complete_view_at"
+    t.datetime "capture_complete_view_at", precision: nil
     t.integer "capture_complete_view_count", default: 0
     t.integer "capture_mobile_back_image_submit_count", default: 0
     t.integer "capture_mobile_back_image_error_count", default: 0
-    t.datetime "no_sp_session_started_at"
-    t.datetime "choose_method_view_at"
+    t.datetime "no_sp_session_started_at", precision: nil
+    t.datetime "choose_method_view_at", precision: nil
     t.integer "choose_method_view_count", default: 0
-    t.datetime "present_cac_view_at"
+    t.datetime "present_cac_view_at", precision: nil
     t.integer "present_cac_view_count", default: 0
     t.integer "present_cac_submit_count", default: 0
     t.integer "present_cac_error_count", default: 0
-    t.datetime "enter_info_view_at"
+    t.datetime "enter_info_view_at", precision: nil
     t.integer "enter_info_view_count", default: 0
-    t.datetime "success_view_at"
+    t.datetime "success_view_at", precision: nil
     t.integer "success_view_count", default: 0
-    t.datetime "selfie_view_at"
+    t.datetime "selfie_view_at", precision: nil
     t.integer "selfie_view_count", default: 0
     t.integer "selfie_submit_count", default: 0
     t.integer "selfie_error_count", default: 0
     t.string "issuer"
     t.string "last_document_error"
-    t.datetime "document_capture_view_at"
+    t.datetime "document_capture_view_at", precision: nil
     t.integer "document_capture_view_count", default: 0
     t.integer "document_capture_submit_count", default: 0
     t.integer "document_capture_error_count", default: 0
-    t.datetime "agreement_view_at"
+    t.datetime "agreement_view_at", precision: nil
     t.integer "agreement_view_count", default: 0
     t.string "state"
     t.boolean "aamva"
-    t.datetime "verify_submit_at"
+    t.datetime "verify_submit_at", precision: nil
     t.integer "verify_phone_submit_count", default: 0
-    t.datetime "verify_phone_submit_at"
-    t.datetime "document_capture_submit_at"
-    t.datetime "back_image_submit_at"
-    t.datetime "capture_mobile_back_image_submit_at"
-    t.datetime "mobile_back_image_submit_at"
+    t.datetime "verify_phone_submit_at", precision: nil
+    t.datetime "document_capture_submit_at", precision: nil
+    t.datetime "back_image_submit_at", precision: nil
+    t.datetime "capture_mobile_back_image_submit_at", precision: nil
+    t.datetime "mobile_back_image_submit_at", precision: nil
     t.index ["issuer"], name: "index_doc_auth_logs_on_issuer"
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
@@ -187,12 +185,12 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
     t.string "uuid"
     t.string "result_id"
     t.bigint "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "requested_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "requested_at", precision: nil
     t.boolean "ial2_strict"
     t.string "issuer"
-    t.datetime "cancelled_at"
+    t.datetime "cancelled_at", precision: nil
     t.boolean "ocr_confirmation_pending", default: false
     t.index ["result_id"], name: "index_document_capture_sessions_on_result_id"
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
@@ -202,13 +200,13 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
   create_table "email_addresses", force: :cascade do |t|
     t.bigint "user_id"
     t.string "confirmation_token", limit: 255
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
+    t.datetime "confirmed_at", precision: nil
+    t.datetime "confirmation_sent_at", precision: nil
     t.string "email_fingerprint", default: "", null: false
     t.string "encrypted_email", default: "", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "last_sign_in_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "last_sign_in_at", precision: nil
     t.index ["confirmation_token"], name: "index_email_addresses_on_confirmation_token", unique: true
     t.index ["email_fingerprint", "user_id"], name: "index_email_addresses_on_email_fingerprint_and_user_id", unique: true
     t.index ["email_fingerprint"], name: "index_email_addresses_on_email_fingerprint", unique: true, where: "(confirmed_at IS NOT NULL)"
@@ -218,11 +216,11 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
   create_table "events", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "event_type", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "device_id"
     t.string "ip"
-    t.datetime "disavowed_at"
+    t.datetime "disavowed_at", precision: nil
     t.string "disavowal_token_fingerprint"
     t.index ["device_id", "created_at"], name: "index_events_on_device_id_and_created_at"
     t.index ["disavowal_token_fingerprint"], name: "index_events_on_disavowal_token_fingerprint"
@@ -258,10 +256,10 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
 
   create_table "identities", id: :serial, force: :cascade do |t|
     t.string "service_provider", limit: 255
-    t.datetime "last_authenticated_at"
+    t.datetime "last_authenticated_at", precision: nil
     t.integer "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "session_uuid", limit: 255
     t.string "uuid", null: false
     t.string "nonce"
@@ -271,11 +269,11 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
     t.string "code_challenge"
     t.string "rails_session_id"
     t.json "verified_attributes"
-    t.datetime "verified_at"
-    t.datetime "last_consented_at"
-    t.datetime "last_ial1_authenticated_at"
-    t.datetime "last_ial2_authenticated_at"
-    t.datetime "deleted_at"
+    t.datetime "verified_at", precision: nil
+    t.datetime "last_consented_at", precision: nil
+    t.datetime "last_ial1_authenticated_at", precision: nil
+    t.datetime "last_ial2_authenticated_at", precision: nil
+    t.datetime "deleted_at", precision: nil
     t.index ["access_token"], name: "index_identities_on_access_token", unique: true
     t.index ["session_uuid"], name: "index_identities_on_session_uuid", unique: true
     t.index ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", unique: true
@@ -284,15 +282,22 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
 
   create_table "in_person_enrollments", comment: "Details and status of an in-person proofing enrollment for one user and profile", force: :cascade do |t|
     t.bigint "user_id", null: false, comment: "Foreign key to the user this enrollment belongs to"
-    t.bigint "profile_id", null: false, comment: "Foreign key to the profile this enrollment belongs to"
+    t.bigint "profile_id", comment: "Foreign key to the profile this enrollment belongs to"
     t.string "enrollment_code", comment: "The code returned by the USPS service"
-    t.datetime "status_check_attempted_at", comment: "The last time a status check was attempted"
-    t.datetime "status_updated_at", comment: "The last time the status was successfully updated with a value from the USPS API"
+    t.datetime "status_check_attempted_at", precision: nil, comment: "The last time a status check was attempted"
+    t.datetime "status_updated_at", precision: nil, comment: "The last time the status was successfully updated with a value from the USPS API"
     t.integer "status", default: 0, comment: "The status of the enrollment"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "current_address_matches_id", comment: "True if the user indicates that their current address matches the address on the ID they're bringing to the Post Office."
+    t.jsonb "selected_location_details", comment: "The location details of the Post Office the user selected (including title, address, hours of operation)"
+    t.string "unique_id", comment: "Unique ID to use with the USPS service"
+    t.datetime "enrollment_established_at", comment: "When the enrollment was successfully established"
+    t.string "issuer", comment: "Issuer associated with the enrollment at time of creation"
+    t.boolean "follow_up_survey_sent", default: false
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
-    t.index ["user_id", "status"], name: "index_in_person_enrollments_on_user_id_and_status", unique: true, where: "(status = 0)"
+    t.index ["unique_id"], name: "index_in_person_enrollments_on_unique_id", unique: true
+    t.index ["user_id", "status"], name: "index_in_person_enrollments_on_user_id_and_status", unique: true, where: "(status = 1)"
     t.index ["user_id"], name: "index_in_person_enrollments_on_user_id"
   end
 
@@ -327,7 +332,7 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
   end
 
   create_table "letter_requests_to_usps_ftp_logs", force: :cascade do |t|
-    t.datetime "ftp_at", null: false
+    t.datetime "ftp_at", precision: nil, null: false
     t.integer "letter_requests_count", null: false
     t.index ["ftp_at"], name: "index_letter_requests_to_usps_ftp_logs_on_ftp_at"
   end
@@ -350,12 +355,12 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
   end
 
   create_table "otp_requests_trackers", id: :serial, force: :cascade do |t|
-    t.datetime "otp_last_sent_at"
+    t.datetime "otp_last_sent_at", precision: nil
     t.integer "otp_send_count", default: 0
     t.string "attribute_cost"
     t.string "phone_fingerprint", default: "", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "phone_confirmed", default: false
     t.index ["phone_fingerprint", "phone_confirmed"], name: "index_on_phone_and_confirmed", unique: true
   end
@@ -387,11 +392,11 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
     t.text "encrypted_phone", null: false
     t.integer "delivery_preference", default: 0, null: false
     t.boolean "mfa_enabled", default: true, null: false
-    t.datetime "confirmation_sent_at"
-    t.datetime "confirmed_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "made_default_at"
+    t.datetime "confirmation_sent_at", precision: nil
+    t.datetime "confirmed_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "made_default_at", precision: nil
     t.index ["user_id", "made_default_at", "created_at"], name: "index_phone_configurations_on_made_default_at"
   end
 
@@ -399,8 +404,8 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
     t.string "encrypted_phone"
     t.string "phone_fingerprint", null: false
     t.string "uuid"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["phone_fingerprint"], name: "index_phone_number_opt_outs_on_phone_fingerprint", unique: true
     t.index ["uuid"], name: "index_phone_number_opt_outs_on_uuid", unique: true
   end
@@ -409,8 +414,8 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
     t.integer "user_id", null: false
     t.string "x509_dn_uuid", null: false
     t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "x509_issuer"
     t.index ["user_id", "created_at"], name: "index_piv_cac_configurations_on_user_id_and_created_at", unique: true
     t.index ["user_id", "name"], name: "index_piv_cac_configurations_on_user_id_and_name", unique: true
@@ -420,10 +425,10 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
   create_table "profiles", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.boolean "active", default: false, null: false
-    t.datetime "verified_at"
-    t.datetime "activated_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "verified_at", precision: nil
+    t.datetime "activated_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.text "encrypted_pii"
     t.string "ssn_signature", limit: 64
     t.text "encrypted_pii_recovery"
@@ -432,6 +437,7 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
     t.jsonb "proofing_components"
     t.string "name_zip_birth_year_signature"
     t.date "reproof_at"
+    t.string "initiating_service_provider_issuer"
     t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
     t.index ["reproof_at"], name: "index_profiles_on_reproof_at"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
@@ -446,10 +452,15 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
     t.string "source_check"
     t.string "resolution_check"
     t.string "address_check"
-    t.datetime "verified_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "verified_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "liveness_check"
+    t.string "device_fingerprinting_vendor"
+    t.boolean "threatmetrix"
+    t.string "threatmetrix_review_status"
+    t.string "threatmetrix_risk_rating"
+    t.string "threatmetrix_policy_score"
     t.index ["user_id"], name: "index_proofing_components_on_user_id", unique: true
     t.index ["verified_at"], name: "index_proofing_components_on_verified_at"
   end
@@ -463,24 +474,18 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
     t.integer "lexis_nexis_address_count", default: 0
     t.integer "gpo_letter_count", default: 0
     t.integer "phone_otp_count", default: 0
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "acuant_result_count", default: 0
     t.integer "acuant_selfie_count", default: 0
+    t.integer "threatmetrix_count", default: 0
     t.index ["user_id"], name: "index_proofing_costs_on_user_id", unique: true
   end
 
   create_table "registration_logs", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.datetime "submitted_at", null: false
-    t.datetime "confirmed_at"
-    t.datetime "password_at"
-    t.string "first_mfa"
-    t.datetime "first_mfa_at"
-    t.string "second_mfa"
-    t.datetime "registered_at"
+    t.datetime "registered_at", precision: nil
     t.index ["registered_at"], name: "index_registration_logs_on_registered_at"
-    t.index ["submitted_at"], name: "index_registration_logs_on_submitted_at"
     t.index ["user_id"], name: "index_registration_logs_on_user_id", unique: true
   end
 
@@ -489,9 +494,9 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
     t.string "event_type", null: false
     t.string "jti"
     t.string "issuer"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "occurred_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "occurred_at", precision: nil
     t.index ["jti", "user_id", "issuer"], name: "index_security_events_on_jti_and_user_id_and_issuer", unique: true
     t.index ["user_id"], name: "index_security_events_on_user_id"
   end
@@ -516,8 +521,8 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
     t.text "sp_initiated_login_url"
     t.text "return_to_sp_url"
     t.json "attribute_bundle"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "active", default: false, null: false
     t.boolean "approved", default: false, null: false
     t.boolean "native", default: false, null: false
@@ -544,14 +549,16 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
     t.boolean "email_nameid_format_allowed", default: false
     t.boolean "use_legacy_name_id_behavior", default: false
     t.boolean "irs_attempts_api_enabled"
+    t.boolean "device_profiling_enabled", default: false
+    t.boolean "in_person_proofing_enabled", default: false
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
   create_table "sign_in_restrictions", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "service_provider"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["user_id", "service_provider"], name: "index_sign_in_restrictions_on_user_id_and_service_provider", unique: true
   end
 
@@ -559,20 +566,20 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
     t.string "issuer", null: false
     t.integer "agency_id", null: false
     t.string "cost_type", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "ial"
     t.string "transaction_id"
     t.index ["created_at"], name: "index_sp_costs_on_created_at"
   end
 
   create_table "sp_return_logs", force: :cascade do |t|
-    t.datetime "requested_at", null: false
+    t.datetime "requested_at", precision: nil, null: false
     t.string "request_id", null: false
     t.integer "ial", null: false
     t.string "issuer", null: false
     t.integer "user_id"
-    t.datetime "returned_at"
+    t.datetime "returned_at", precision: nil
     t.boolean "billable"
     t.index "((requested_at)::date), issuer", name: "index_sp_return_logs_on_requested_at_date_issuer", where: "(returned_at IS NOT NULL)"
     t.index ["request_id"], name: "index_sp_return_logs_on_request_id", unique: true
@@ -580,25 +587,25 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
 
   create_table "users", id: :serial, force: :cascade do |t|
     t.string "reset_password_token", limit: 255
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "confirmed_at"
+    t.datetime "reset_password_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
+    t.datetime "confirmed_at", precision: nil
     t.integer "second_factor_attempts_count", default: 0
     t.string "uuid", limit: 255, null: false
-    t.datetime "second_factor_locked_at"
-    t.datetime "phone_confirmed_at"
+    t.datetime "second_factor_locked_at", precision: nil
+    t.datetime "phone_confirmed_at", precision: nil
     t.string "direct_otp"
-    t.datetime "direct_otp_sent_at"
+    t.datetime "direct_otp_sent_at", precision: nil
     t.string "unique_session_id"
     t.integer "otp_delivery_preference", default: 0, null: false
     t.string "encrypted_password_digest", default: ""
     t.string "encrypted_recovery_code_digest", default: ""
-    t.datetime "remember_device_revoked_at"
+    t.datetime "remember_device_revoked_at", precision: nil
     t.string "email_language", limit: 10
-    t.datetime "accepted_terms_at"
-    t.datetime "encrypted_recovery_code_digest_generated_at"
+    t.datetime "accepted_terms_at", precision: nil
+    t.datetime "encrypted_recovery_code_digest_generated_at", precision: nil
     t.date "non_restricted_mfa_required_prompt_skip_date"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
@@ -607,18 +614,18 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
   create_table "usps_confirmation_codes", force: :cascade do |t|
     t.integer "profile_id", null: false
     t.string "otp_fingerprint", null: false
-    t.datetime "code_sent_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "bounced_at"
+    t.datetime "code_sent_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "bounced_at", precision: nil
     t.index ["otp_fingerprint"], name: "index_usps_confirmation_codes_on_otp_fingerprint"
     t.index ["profile_id"], name: "index_usps_confirmation_codes_on_profile_id"
   end
 
   create_table "usps_confirmations", id: :serial, force: :cascade do |t|
     t.text "entry", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "webauthn_configurations", force: :cascade do |t|
@@ -626,8 +633,8 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
     t.string "name", null: false
     t.text "credential_id", null: false
     t.text "credential_public_key", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.boolean "platform_authenticator"
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
@@ -636,6 +643,7 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"
   add_foreign_key "in_person_enrollments", "profiles"
+  add_foreign_key "in_person_enrollments", "service_providers", column: "issuer", primary_key: "issuer"
   add_foreign_key "in_person_enrollments", "users"
   add_foreign_key "integration_usages", "iaa_orders"
   add_foreign_key "integration_usages", "integrations"

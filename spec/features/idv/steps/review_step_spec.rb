@@ -32,8 +32,8 @@ feature 'idv review step', :js do
     fill_in 'Password', with: user_password
     click_idv_continue
 
-    expect(page).to have_content(t('headings.personal_key'))
-    expect(current_path).to be_in([idv_personal_key_path, idv_app_path])
+    expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
+    expect(current_path).to eq idv_personal_key_path
   end
 
   context 'choosing to confirm address with phone' do
@@ -109,40 +109,6 @@ feature 'idv review step', :js do
 
         expect(gpo_confirmation_entry[:issuer]).to eq(nil)
       end
-    end
-  end
-
-  context 'with idv app feature enabled', js: true do
-    before do
-      allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
-        and_return(['password_confirm', 'personal_key', 'personal_key_confirm'])
-    end
-
-    it 'redirects to personal key step after user enters their password', allow_browser_log: true do
-      start_idv_from_sp
-      complete_idv_steps_before_review_step
-
-      click_on t('idv.messages.review.intro')
-
-      expect(page).to have_content('FAKEY')
-      expect(page).to have_content('MCFAKERSON')
-      expect(page).to have_content('1 FAKE RD')
-      expect(page).to have_content('GREAT FALLS, MT 59010')
-      expect(page).to have_content('October 6, 1938')
-      expect(page).to have_content(DocAuthHelper::GOOD_SSN)
-      expect(page).to have_content('(202) 555-1212')
-
-      fill_in t('components.password_toggle.label'), with: 'this is not the right password'
-      click_idv_continue
-
-      expect(page).to have_content(t('idv.errors.incorrect_password'))
-      expect(page).to have_current_path(idv_app_path(step: :password_confirm))
-
-      fill_in t('components.password_toggle.label'), with: user_password
-      click_idv_continue
-
-      expect(page).to have_content(t('headings.personal_key'))
-      expect(page).to have_current_path(idv_app_path(step: :personal_key))
     end
   end
 end

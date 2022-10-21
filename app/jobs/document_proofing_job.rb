@@ -81,7 +81,8 @@ class DocumentProofingJob < ApplicationJob
         remaining_attempts: throttle.remaining_count,
         client_image_metrics: image_metadata,
         flow_path: flow_path,
-      ).merge(analytics_data),
+      ).merge(analytics_data).
+        merge(native_camera_ab_test_data(dcs)),
     )
   ensure
     logger.info(
@@ -95,6 +96,14 @@ class DocumentProofingJob < ApplicationJob
   end
 
   private
+
+  def native_camera_ab_test_data(document_capture_session)
+    return {} unless IdentityConfig.store.idv_native_camera_a_b_testing_enabled
+
+    {
+      native_camera_ab_test_bucket: AbTests::NATIVE_CAMERA.bucket(document_capture_session.uuid),
+    }
+  end
 
   def build_analytics(document_capture_session)
     Analytics.new(
@@ -134,8 +143,8 @@ class DocumentProofingJob < ApplicationJob
   end
 
   def acuant_sdk_capture?(image_metadata)
-    image_metadata.dig(:front, :source) == 'acuant' &&
-      image_metadata.dig(:back, :source) == 'acuant'
+    image_metadata.dig(:front, :source) == Idp::Constants::Vendors::ACUANT &&
+      image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT
   end
 
   def s3_helper

@@ -4,8 +4,7 @@ shared_examples 'clearing and restarting idv' do
 
     expect(user.reload.pending_profile?).to eq(false)
 
-    complete_all_doc_auth_steps
-    click_idv_continue
+    complete_all_doc_auth_steps_before_password_step
     fill_in 'Password', with: user.password
     click_idv_continue
     acknowledge_and_confirm_personal_key

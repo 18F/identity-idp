@@ -3,6 +3,8 @@ require 'rails_helper'
 describe Users::TwoFactorAuthenticationController do
   include ActionView::Helpers::DateHelper
 
+  let(:otp_preference_sms) { { otp_delivery_preference: 'sms' } }
+
   describe 'before_actions' do
     it 'includes the appropriate before_actions' do
       expect(subject).to have_actions(
@@ -137,7 +139,7 @@ describe Users::TwoFactorAuthenticationController do
         expect(Telephony::Test::Message.messages.length).to eq(1)
         expect(Telephony::Test::Call.calls.length).to eq(0)
         expect(response).to redirect_to(
-          login_two_factor_path(otp_delivery_preference: 'sms', reauthn: 'true'),
+          login_two_factor_path(**otp_preference_sms, reauthn: 'true'),
         )
       end
     end
@@ -213,7 +215,7 @@ describe Users::TwoFactorAuthenticationController do
         expect(Telephony::Test::Message.messages.length).to eq(1)
         expect(Telephony::Test::Call.calls.length).to eq(0)
         expect(response).
-          to redirect_to login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
+          to redirect_to login_two_factor_path(**otp_preference_sms, reauthn: false)
       end
 
       context 'when no options are enabled and available for use' do
@@ -259,7 +261,7 @@ describe Users::TwoFactorAuthenticationController do
 
       before do
         stub_sign_in(user)
-        controller.session[:sp] = { aal3_requested: true, piv_cac_requested: true }
+        controller.session[:sp] = { phishing_resistant_requeste: true, piv_cac_requested: true }
       end
 
       it 'redirects to MFA setup if no PIV/CAC is enabled' do
@@ -271,7 +273,12 @@ describe Users::TwoFactorAuthenticationController do
   end
 
   describe '#send_code' do
+    let(:otp_delivery_form_sms) { { otp_delivery_selection_form: otp_preference_sms } }
     context 'when selecting SMS OTP delivery' do
+      let(:valid_phone_number) { { phone_number: '+12025551212' } }
+      let(:success_parameters) do
+        { success: true, **valid_phone_number, otp_delivery_method: 'sms' }
+      end
       before do
         @user = create(:user, :with_phone)
         sign_in_before_2fa(@user)
@@ -280,7 +287,7 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'sends OTP via SMS for sign in' do
-        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+        get :send_code, params: otp_delivery_form_sms
 
         expect(Telephony).to have_received(:send_authentication_otp).with(
           otp: subject.current_user.direct_otp,
@@ -293,17 +300,17 @@ describe Users::TwoFactorAuthenticationController do
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
         expect(response).to redirect_to(
-          login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false),
+          login_two_factor_path(**otp_preference_sms, reauthn: false),
         )
       end
 
-      it 'tracks the events' do
+      it 'tracks the analytics events' do
         stub_analytics
 
         analytics_hash = {
           success: true,
           errors: {},
-          otp_delivery_preference: 'sms',
+          **otp_preference_sms,
           resend: 'true',
           context: 'authentication',
           country_code: 'US',
@@ -317,11 +324,30 @@ describe Users::TwoFactorAuthenticationController do
         expect(@analytics).to receive(:track_event).
           ordered.
           with('Telephony: OTP sent', hash_including(
-            resend: 'true', success: true, otp_delivery_preference: 'sms',
+            resend: 'true', success: true, **otp_preference_sms,
           ))
 
-        get :send_code, params: { otp_delivery_selection_form:
-                                  { otp_delivery_preference: 'sms', resend: 'true' } }
+        get :send_code, params: {
+          otp_delivery_selection_form: { **otp_preference_sms, resend: 'true' },
+        }
+      end
+
+      it 'tracks the verification attempt event' do
+        stub_attempts_tracker
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).
+          with(reauthentication: false, **success_parameters)
+
+        get :send_code, params: otp_delivery_form_sms
+      end
+
+      it 'tracks the attempt event when user session context is reauthentication' do
+        stub_attempts_tracker
+        subject.user_session[:context] = 'reauthentication'
+
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).
+          with(reauthentication: true, **success_parameters)
+
+        get :send_code, params: otp_delivery_form_sms
       end
 
       it 'calls OtpRateLimiter#exceeded_otp_send_limit? and #increment' do
@@ -334,17 +360,24 @@ describe Users::TwoFactorAuthenticationController do
         expect(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).twice
         expect(otp_rate_limiter).to receive(:increment)
 
-        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+        get :send_code, params: otp_delivery_form_sms
       end
 
       it 'marks the user as locked out after too many attempts' do
         expect(@user.second_factor_locked_at).to be_nil
 
+        allow(OtpRateLimiter).to receive(:exceeded_otp_send_limit?).
+          and_return(true)
+
+        stub_attempts_tracker
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent_rate_limited).
+          with(**valid_phone_number)
+
         freeze_time do
           (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do
             get :send_code, params: {
               otp_delivery_selection_form: {
-                otp_delivery_preference: 'sms',
+                **otp_preference_sms,
                 otp_make_default_number: nil,
               },
             }
@@ -363,9 +396,7 @@ describe Users::TwoFactorAuthenticationController do
           expect(Telephony).to_not receive(:send_authentication_otp)
           expect(Telephony).to_not receive(:send_confirmation_otp)
 
-          get :send_code, params: {
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
-          }
+          get :send_code, params: otp_delivery_form_sms
         end
       end
 
@@ -378,9 +409,7 @@ describe Users::TwoFactorAuthenticationController do
         end
 
         it 'redirects to the opt in controller' do
-          get :send_code, params: {
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
-          }
+          get :send_code, params: otp_delivery_form_sms
 
           opt_out = PhoneNumberOptOut.create_or_find_with_phone(
             Telephony::Test::ErrorSimulator::OPT_OUT_PHONE_NUMBER,
@@ -444,6 +473,9 @@ describe Users::TwoFactorAuthenticationController do
             success: true,
             otp_delivery_preference: 'voice',
             country_code: 'US',
+            telephony_response: hash_including(
+              origination_phone_number: Telephony::Test::VoiceSender::ORIGINATION_PHONE_NUMBER,
+            ),
           ))
 
         get :send_code, params: {
@@ -483,7 +515,7 @@ describe Users::TwoFactorAuthenticationController do
 
         allow(Telephony).to receive(:send_confirmation_otp).and_call_original
 
-        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+        get :send_code, params: otp_delivery_form_sms
 
         expect(Telephony).to have_received(:send_confirmation_otp).with(
           otp: subject.current_user.direct_otp,
@@ -495,6 +527,18 @@ describe Users::TwoFactorAuthenticationController do
         )
       end
 
+      it 'tracks the enrollment attempt event' do
+        sign_in_before_2fa(@user)
+        subject.user_session[:context] = 'confirmation'
+        subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
+
+        stub_attempts_tracker
+        expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_sent).
+          with({ phone_number: '+12025551213', success: true, otp_delivery_method: 'sms' })
+
+        get :send_code, params: otp_delivery_form_sms
+      end
+
       it 'rate limits confirmation OTPs on sign up' do
         sign_in_before_2fa(@user)
         subject.user_session[:context] = 'confirmation'
@@ -503,8 +547,7 @@ describe Users::TwoFactorAuthenticationController do
         freeze_time do
           (IdentityConfig.store.phone_confirmation_max_attempts + 1).times do
             subject.user_session[:unconfirmed_phone] = '+1 (202) 555-1213'
-            get :send_code,
-                params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+            get :send_code, params: otp_delivery_form_sms
           end
 
           timeout = distance_of_time_in_words(
@@ -521,6 +564,34 @@ describe Users::TwoFactorAuthenticationController do
         end
       end
 
+      it 'marks the user as locked out after too many attempts on sign up' do
+        sign_in_before_2fa(@user)
+        subject.user_session[:context] = 'confirmation'
+        subject.user_session[:unconfirmed_phone] = '+1 (202) 555-1213'
+
+        expect(@user.second_factor_locked_at).to be_nil
+
+        allow(OtpRateLimiter).to receive(:exceeded_otp_send_limit?).
+          and_return(true)
+
+        stub_attempts_tracker
+        expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_sent_rate_limited).
+          with(phone_number: '+12025551213')
+
+        freeze_time do
+          (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do
+            get :send_code, params: {
+              otp_delivery_selection_form: {
+                **otp_preference_sms,
+                otp_make_default_number: nil,
+              },
+            }
+          end
+
+          expect(@user.reload.second_factor_locked_at).to eq Time.zone.now
+        end
+      end
+
       it 'rate limits confirmation OTPs when adding number to existing account' do
         stub_sign_in(@user)
         subject.user_session[:context] = 'confirmation'
@@ -529,8 +600,7 @@ describe Users::TwoFactorAuthenticationController do
         freeze_time do
           (IdentityConfig.store.phone_confirmation_max_attempts + 1).times do
             subject.user_session[:unconfirmed_phone] = '+1 (202) 555-1213'
-            get :send_code,
-                params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+            get :send_code, params: otp_delivery_form_sms
           end
 
           timeout = distance_of_time_in_words(
@@ -553,7 +623,7 @@ describe Users::TwoFactorAuthenticationController do
         subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
         subject.user_session[:unconfirmed_phone] = '+1 (225) 555-1000'
 
-        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+        get :send_code, params: otp_delivery_form_sms
 
         expect(flash[:error]).to eq(I18n.t('telephony.error.friendly_message.generic'))
       end
@@ -569,7 +639,7 @@ describe Users::TwoFactorAuthenticationController do
           otp_delivery_selection_form: { otp_delivery_preference: 'pigeon' },
         }
 
-        expect(response).to redirect_to login_two_factor_url(otp_delivery_preference: 'sms')
+        expect(response).to redirect_to login_two_factor_url(**otp_preference_sms)
       end
     end
   end

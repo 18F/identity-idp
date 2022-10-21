@@ -64,11 +64,9 @@ feature 'Internationalization' do
 
     it 'allows user to manually toggle language from dropdown menu', js: true do
       visit root_path
-      using_wait_time(5) do
-        within(:css, '.i18n-desktop-toggle') do
-          click_button t('i18n.language', locale: 'en')
-          click_link t('i18n.locale.es')
-        end
+      within(:css, '.i18n-desktop-toggle') do
+        click_button t('i18n.language', locale: 'en')
+        click_link t('i18n.locale.es')
       end
 
       expect(page).to have_content t('headings.sign_in_without_sp', locale: 'es')

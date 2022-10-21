@@ -1,0 +1,101 @@
+<p>
+  <%= t('user_mailer.in_person_ready_to_verify.greeting') %><br>
+  <%= t('user_mailer.in_person_ready_to_verify.intro') %>
+</p>
+
+<table class="info-alert margin-y-4">
+  <tr>
+    <td width="16">
+      <%= image_tag('email/info.png', width: 16, height: 16, alt: '') %>
+    </td>
+    <td>
+      <p class="margin-bottom-1"><strong><%= t('in_person_proofing.body.barcode.deadline', deadline: @presenter.formatted_due_date) %></strong></p>
+      <p class="margin-bottom-0"><%= t('in_person_proofing.body.barcode.deadline_restart') %></p>
+    </td>
+  </tr>
+</table>
+
+<div class="border-1px border-primary-light radius-lg padding-4">
+  <h2 class="margin-top-0 margin-bottom-2 font-heading-lg text-bold">
+    <%= t('in_person_proofing.body.barcode.items_to_bring') %>
+  </h2>
+  <table class="process-list">
+    <tr>
+      <td><div class="process-list__circle">1</div></td>
+      <td>
+        <h3 class="font-heading-md text-bold"><%= t('in_person_proofing.process.barcode.heading') %></h3>
+        <p><%= t('in_person_proofing.process.barcode.info') %></p>
+        <%= render BarcodeComponent.new(
+              barcode_data: @presenter.enrollment_code,
+              barcode_image_url: @presenter.barcode_image_url,
+              label: nil,
+              label_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
+            ) %>
+      </td>
+    </tr>
+    <tr>
+      <td><div class="process-list__circle">2</div></td>
+      <td>
+        <h3 class="font-heading-md text-bold"><%= t('in_person_proofing.process.state_id.heading') %></h3>
+        <p class="margin-bottom-105"><%= t('in_person_proofing.process.state_id.info') %></p>
+        <ul class="usa-list margin-y-105">
+          <% t('in_person_proofing.process.state_id.acceptable_documents').each do |document| %>
+            <li><%= document %></li>
+          <% end %>
+        </ul>
+        <p><%= t('in_person_proofing.process.state_id.no_other_documents') %></p>
+      </td>
+    </tr>
+    <% if @presenter.needs_proof_of_address? %>
+      <tr>
+        <td><div class="process-list__circle">3</div></td>
+        <td>
+          <h3 class="font-heading-md text-bold"><%= t('in_person_proofing.process.proof_of_address.heading') %></h3>
+          <p class="margin-bottom-105"><%= t('in_person_proofing.process.proof_of_address.info') %></p>
+          <ul class="usa-list margin-y-105">
+            <% t('in_person_proofing.process.proof_of_address.acceptable_proof').each do |proof| %>
+              <li><%= proof %></li>
+            <% end %>
+          </ul>
+          <p><%= t('in_person_proofing.process.proof_of_address.physical_or_digital_copy') %></p>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  <p class="margin-bottom-0">
+    <%= t('in_person_proofing.body.barcode.items_to_bring_questions') %>
+    <%= link_to(
+          t('in_person_proofing.body.barcode.learn_more'),
+          MarketingSite.help_center_article_url(
+            category: 'verify-your-identity',
+            article: 'verify-your-identity-in-person',
+          ),
+        ) %>
+  </p>
+</div>
+
+<% if @presenter.selected_location_details.present? %>
+  <div class="margin-y-4">
+    <h2 class="font-sans-md margin-bottom-1 text-normal text-bold"><%= @presenter.selected_location_details['name'] %></h2>
+    <div class="margin-bottom-1">
+      <%= @presenter.selected_location_details['street_address'] %><br>
+      <%= @presenter.selected_location_details['formatted_city_state_zip'] %>
+    </div>
+    <div><strong><%= t('in_person_proofing.body.barcode.retail_hours') %></strong></div>
+    <div class="margin-bottom-2">
+      <%= t('date.range', from: t('date.day_names')[0], to: t('date.day_names')[4]) %>: <%= @presenter.selected_location_hours(:weekday) %><br>
+      <%= t('date.day_names')[5] %>: <%= @presenter.selected_location_hours(:saturday) %><br>
+      <%= t('date.day_names')[6] %>: <%= @presenter.selected_location_hours(:sunday) %>
+    </div>
+    <div>
+      <%= @presenter.selected_location_details[:phone] %>
+    </div>
+  </div>
+<% end %>
+
+<p><%= t('in_person_proofing.body.barcode.speak_to_associate') %></p>
+
+<p>
+  <strong><%= t('in_person_proofing.body.barcode.deadline', deadline: @presenter.formatted_due_date) %></strong>
+  <%= t('in_person_proofing.body.barcode.no_appointment_required') %>
+</p>

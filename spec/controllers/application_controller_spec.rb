@@ -134,6 +134,48 @@ describe ApplicationController do
 
       expect(response).to redirect_to(new_user_session_url)
     end
+
+    it 'redirects back to home page if present and referer is invalid' do
+      referer = '@@ABC'
+
+      request.env['HTTP_REFERER'] = referer
+
+      get :index
+
+      expect(response).to redirect_to(new_user_session_url)
+    end
+  end
+
+  describe 'handling UnsafeRedirectError exceptions' do
+    controller do
+      def index
+        raise ActionController::Redirecting::UnsafeRedirectError
+      end
+    end
+
+    it 'tracks the Unsafe Redirect event and does not sign the user out' do
+      referer = '@@ABC'
+      request.env['HTTP_REFERER'] = referer
+      sign_in_as_user
+      expect(subject.current_user).to be_present
+
+      stub_analytics
+      event_properties = { controller: 'anonymous#index', user_signed_in: true, referer: referer }
+      expect(@analytics).to receive(:track_event).
+        with('Unsafe Redirect', event_properties)
+
+      get :index
+
+      expect(flash[:error]).to eq t('errors.general')
+      expect(response).to redirect_to(root_url)
+      expect(subject.current_user).to be_present
+    end
+
+    it 'redirects back to home page' do
+      get :index
+
+      expect(response).to redirect_to(new_user_session_url)
+    end
   end
 
   describe '#append_info_to_payload' do
@@ -373,6 +415,20 @@ describe ApplicationController do
       expect(url_with_updated_params).to eq(nil)
     end
 
+    context 'with a SAML request' do
+      let(:sp_session_request_url) { '/api/saml/auth2022' }
+      it 'returns the saml completion url' do
+        expect(url_with_updated_params).to eq complete_saml_url
+      end
+    end
+
+    context 'with an OIDC request' do
+      let(:sp_session_request_url) { '/openid_connect/authorize' }
+      it 'returns the original request' do
+        expect(url_with_updated_params).to eq '/openid_connect/authorize'
+      end
+    end
+
     context 'with a url that has prompt=login' do
       let(:sp_session_request_url) { '/authorize?prompt=login' }
       it 'changes it to prompt=select_account' do
@@ -385,6 +441,38 @@ describe ApplicationController do
       let(:sp_session_request_url) { '/authorize' }
       it 'adds the locale to the url' do
         expect(url_with_updated_params).to eq('/authorize?locale=es')
+      end
+    end
+
+    context 'with saml_internal_post feature flag set to false' do
+      before { allow(IdentityConfig.store).to receive(:saml_internal_post).and_return false }
+      context 'with a SAML request' do
+        let(:sp_session_request_url) { '/api/saml/auth2022?SAMLRequest=blah' }
+        it 'returns the original request url' do
+          expect(url_with_updated_params).to eq '/api/saml/auth2022?SAMLRequest=blah'
+        end
+      end
+
+      context 'with an OIDC request' do
+        let(:sp_session_request_url) { '/openid_connect/authorize' }
+        it 'returns the original request' do
+          expect(url_with_updated_params).to eq '/openid_connect/authorize'
+        end
+      end
+
+      context 'with a url that has prompt=login' do
+        let(:sp_session_request_url) { '/authorize?prompt=login' }
+        it 'changes it to prompt=select_account' do
+          expect(url_with_updated_params).to eq('/authorize?prompt=select_account')
+        end
+      end
+
+      context 'when the locale has been changed' do
+        before { I18n.locale = :es }
+        let(:sp_session_request_url) { '/authorize' }
+        it 'adds the locale to the url' do
+          expect(url_with_updated_params).to eq('/authorize?locale=es')
+        end
       end
     end
   end

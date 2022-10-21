@@ -12,8 +12,6 @@ describe UserAlerts::AlertUserAboutAccountVerified do
       create(:email_address, user: user, confirmed_at: nil)
       confirmed_email_addresses = user.confirmed_email_addresses
 
-      allow(UserMailer).to receive(:account_verified).and_call_original
-
       described_class.call(
         user: user,
         date_time: date_time,
@@ -21,17 +19,28 @@ describe UserAlerts::AlertUserAboutAccountVerified do
         disavowal_token: disavowal_token,
       )
 
-      expect(UserMailer).to have_received(:account_verified).
-        exactly(confirmed_email_addresses.count).times
-
-      confirmed_email_addresses.each do |email|
-        expect(UserMailer).to have_received(:account_verified).
-          with(user,
-               email,
-               date_time: date_time,
-               sp_name: '',
-               disavowal_token: disavowal_token)
-      end
+      expect_delivered_email_count(3)
+      expect_delivered_email(
+        0, {
+          to: [confirmed_email_addresses[0].email],
+          subject: t('user_mailer.account_verified.subject', sp_name: ''),
+          body: [disavowal_token],
+        }
+      )
+      expect_delivered_email(
+        1, {
+          to: [confirmed_email_addresses[1].email],
+          subject: t('user_mailer.account_verified.subject', sp_name: ''),
+          body: [disavowal_token],
+        }
+      )
+      expect_delivered_email(
+        2, {
+          to: [confirmed_email_addresses[2].email],
+          subject: t('user_mailer.account_verified.subject', sp_name: ''),
+          body: [disavowal_token],
+        }
+      )
     end
   end
 end

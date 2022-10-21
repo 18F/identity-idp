@@ -49,7 +49,7 @@ RSpec.describe Idv::GpoPresenter do
   describe '#fallback_back_path' do
     context 'when the user has a pending profile' do
       it 'returns the verify account path' do
-        create(:profile, user: user, deactivation_reason: :verification_pending)
+        create(:profile, user: user, deactivation_reason: :gpo_verification_pending)
         expect(subject.fallback_back_path).to eq('/account/verify')
       end
     end

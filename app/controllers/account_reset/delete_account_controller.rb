@@ -18,6 +18,10 @@ module AccountReset
       result = AccountReset::DeleteAccount.new(granted_token).call
       analytics.account_reset_delete(**result.to_h.except(:email))
 
+      irs_attempts_api_tracker.account_reset_account_deleted(
+        success: result.success?,
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
+      )
       if result.success?
         handle_successful_deletion(result)
       else

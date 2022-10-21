@@ -36,10 +36,6 @@ Rails.application.configure do
 
   config.middleware.use RackSessionAccess::Middleware
 
-  # Disable lograge when computing coverage and not in CircleCI, where lograge is required.
-  # This enables scanning for view test coverage with `rake test:scan_log_for_view_coverage`
-  config.lograge.enabled = !ENV['COVERAGE'] || ENV['CI']
-
   config.after_initialize do
     # Having bullet enabled in the test environment causes issues with unit
     # tests that may not make user of eager loaded values. We disable it by
@@ -55,6 +51,7 @@ Rails.application.configure do
       :webauthn_configurations,
       :email_addresses,
       :proofing_component,
+      :account_reset_request,
     ].each do |association|
       Bullet.add_safelist(type: :n_plus_one_query, class_name: 'User', association: association)
     end

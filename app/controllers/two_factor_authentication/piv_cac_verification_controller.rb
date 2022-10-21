@@ -20,7 +20,7 @@ module TwoFactorAuthentication
       redirect_to PivCacService.piv_cac_service_link(
         nonce: piv_cac_nonce,
         redirect_uri: login_two_factor_piv_cac_url,
-      )
+      ), allow_other_host: true
     end
 
     private
@@ -29,6 +29,11 @@ module TwoFactorAuthentication
       result = piv_cac_verification_form.submit
       analytics.track_mfa_submit_event(
         result.to_h.merge(analytics_properties),
+      )
+      irs_attempts_api_tracker.mfa_login_piv_cac(
+        success: result.success?,
+        subject_dn: piv_cac_verification_form.x509_dn,
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
       if result.success?
         handle_valid_piv_cac
@@ -52,7 +57,7 @@ module TwoFactorAuthentication
 
     def handle_invalid_piv_cac
       clear_piv_cac_information
-      handle_invalid_otp(type: 'piv_cac')
+      handle_invalid_otp(context: context, type: 'piv_cac')
     end
 
     # This overrides the method in TwoFactorAuthenticatable so that we

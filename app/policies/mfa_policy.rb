@@ -8,7 +8,7 @@ class MfaPolicy
     mfa_user.two_factor_enabled?
   end
 
-  def aal3_mfa_enabled?
+  def phishing_resistant_mfa_enabled?
     mfa_user.piv_cac_configurations.present? ||
       mfa_user.webauthn_configurations.present?
   end

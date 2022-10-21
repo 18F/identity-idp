@@ -141,6 +141,7 @@ en:
       welcome: Get started verifying your identity
     info:
       camera_required: Your mobile phone must have a camera and a web browser.
+      capture_status_big_document: Too Close
       capture_status_capturing: Capturing
       capture_status_none: Align
       capture_status_small_document: Move Closer
@@ -215,6 +216,7 @@ en:
       send_sms: We’ll send a text message to your device with a link.  Follow that
         link to your browser to take photos of the front and back of your ID.
       switch_back: Switch back to your computer to finish verifying your identity.
+      switch_back_image: Arrow pointing from phone to computer
       test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are
         considered valid. Do not enter real PII in this field.
       text1a: such as a phone or computer.

@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
+  rescue_from ActionController::Redirecting::UnsafeRedirectError, with: :unsafe_redirect_error
   rescue_from ActionController::InvalidAuthenticityToken, with: :invalid_auth_token
   rescue_from ActionController::UnknownFormat, with: :render_not_found
   rescue_from ActionView::MissingTemplate, with: :render_not_acceptable
@@ -82,7 +83,13 @@ class ApplicationController < ActionController::Base
   def irs_attempts_api_tracker
     @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new(
       session_id: irs_attempts_api_session_id,
+      request: request,
+      user: effective_user,
+      sp: current_sp,
+      cookie_device_uuid: cookies[:device],
+      sp_request_uri: decorated_session.request_url_params[:redirect_uri],
       enabled_for_session: irs_attempt_api_enabled_for_session?,
+      analytics: analytics,
     )
   end
 
@@ -119,7 +126,7 @@ class ApplicationController < ActionController::Base
   end
 
   def context
-    user_session[:context] || UserSessionContext::DEFAULT_CONTEXT
+    user_session[:context] || UserSessionContext::AUTHENTICATION_CONTEXT
   end
 
   def current_sp
@@ -270,6 +277,18 @@ class ApplicationController < ActionController::Base
     redirect_back fallback_location: new_user_session_url, allow_other_host: false
   end
 
+  def unsafe_redirect_error(_exception)
+    controller_info = "#{controller_path}##{action_name}"
+    analytics.unsafe_redirect_error(
+      controller: controller_info,
+      user_signed_in: user_signed_in?,
+      referer: request.referer,
+    )
+
+    flash[:error] = t('errors.general')
+    redirect_to new_user_session_url
+  end
+
   def user_fully_authenticated?
     !reauthn? && user_signed_in? &&
       two_factor_enabled? &&
@@ -294,15 +313,23 @@ class ApplicationController < ActionController::Base
 
   def confirm_two_factor_authenticated(id = nil)
     return prompt_to_sign_in_with_request_id(id) if user_needs_new_session_with_request_id?(id)
+
     authenticate_user!(force: true)
-    return prompt_to_setup_mfa unless two_factor_enabled?
-    return prompt_to_verify_mfa unless user_fully_authenticated?
-    return prompt_to_setup_mfa if service_provider_mfa_policy.
-                                  user_needs_sp_auth_method_setup?
-    return prompt_to_setup_non_restricted_mfa if two_factor_kantara_enabled?
-    return prompt_to_verify_sp_required_mfa if service_provider_mfa_policy.
-                                               user_needs_sp_auth_method_verification?
+
+    if !two_factor_enabled?
+      return prompt_to_setup_mfa
+    elsif !user_fully_authenticated?
+      return prompt_to_verify_mfa
+    elsif service_provider_mfa_policy.user_needs_sp_auth_method_setup?
+      return prompt_to_setup_mfa
+    elsif two_factor_kantara_enabled?
+      return prompt_to_setup_non_restricted_mfa
+    elsif service_provider_mfa_policy.user_needs_sp_auth_method_verification?
+      return prompt_to_verify_sp_required_mfa
+    end
+
     enforce_total_session_duration_timeout
+
     true
   end
 
@@ -312,7 +339,7 @@ class ApplicationController < ActionController::Base
   end
 
   def sign_out_with_timeout_error
-    analytics.track_event(Analytics::SESSION_TOTAL_DURATION_TIMEOUT)
+    analytics.session_total_duration_timeout
     sign_out
     flash[:info] = t('devise.failure.timeout')
     redirect_to root_url
@@ -398,6 +425,7 @@ class ApplicationController < ActionController::Base
       auth_method: user_session[:auth_method],
       aal_level_requested: sp_session[:aal_level_requested],
       piv_cac_requested: sp_session[:piv_cac_requested],
+      phishing_resistant_requested: sp_session[:phishing_resistant_requested],
     )
   end
 
@@ -406,10 +434,22 @@ class ApplicationController < ActionController::Base
   end
 
   def sp_session_request_url_with_updated_params
-    # Login.gov redirects to the orginal request_url after a user authenticates
-    # replace prompt=login with prompt=select_account to prevent sign_out
-    # which should only every occur once when the user lands on Login.gov with prompt=login
-    url = sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
+    # Temporarily place SAML route update behind a feature flag
+    if IdentityConfig.store.saml_internal_post
+      return unless sp_session[:request_url].present?
+      request_url = URI(sp_session[:request_url])
+      url = if request_url.path.match?('saml')
+              complete_saml_url
+            else
+              # Login.gov redirects to the orginal request_url after a user authenticates
+              # replace prompt=login with prompt=select_account to prevent sign_out
+              # which should only ever occur once when the user
+              # lands on Login.gov with prompt=login
+              sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
+            end
+    else
+      url = sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
+    end
 
     # If the user has changed the locale, we should preserve that as well
     if url && locale_url_param && UriService.params(url)[:locale] != locale_url_param

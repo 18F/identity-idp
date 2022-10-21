@@ -2,11 +2,13 @@ require 'rails_helper'
 
 describe SignUp::PasswordsController do
   describe '#create' do
+    let(:success_properties) { { success: true, failure_reason: nil } }
     it 'tracks a valid password event' do
       token = 'new token'
       user = create(:user, :unconfirmed, confirmation_token: token)
 
       stub_analytics
+      stub_attempts_tracker
 
       analytics_hash = {
         success: true,
@@ -17,11 +19,20 @@ describe SignUp::PasswordsController do
 
       expect(@analytics).to receive(:track_event).
         with(
-          Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION,
-          { errors: {}, success: true, user_id: user.uuid },
+          'User Registration: Email Confirmation',
+          { errors: {}, error_details: nil, success: true, user_id: user.uuid },
         )
       expect(@analytics).to receive(:track_event).
         with('Password Creation', analytics_hash)
+
+      expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).with(
+        success_properties,
+      )
+
+      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
+        email: user.email_addresses.first.email,
+        **success_properties,
+      )
 
       post :create, params: {
         password_form: { password: 'NewVal!dPassw0rd' },
@@ -29,6 +40,7 @@ describe SignUp::PasswordsController do
       }
 
       user.reload
+
       expect(user.valid_password?('NewVal!dPassw0rd')).to eq true
       expect(user.confirmed?).to eq true
     end
@@ -60,10 +72,12 @@ describe SignUp::PasswordsController do
     end
 
     it 'tracks an invalid password event' do
+      password_short_error = { password: [:too_short] }
       token = 'new token'
       user = create(:user, :unconfirmed, confirmation_token: token)
 
       stub_analytics
+      stub_attempts_tracker
 
       analytics_hash = {
         success: false,
@@ -71,21 +85,27 @@ describe SignUp::PasswordsController do
           password:
             ["This password is too short (minimum is #{Devise.password_length.first} characters)"],
         },
-        error_details: {
-          password: [:too_short],
-        },
+        error_details: password_short_error,
         user_id: user.uuid,
         request_id_present: false,
       }
 
       expect(@analytics).to receive(:track_event).
         with(
-          Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION,
-          { errors: {}, success: true, user_id: user.uuid },
+          'User Registration: Email Confirmation',
+          { errors: {}, error_details: nil, success: true, user_id: user.uuid },
         )
-
       expect(@analytics).to receive(:track_event).
         with('Password Creation', analytics_hash)
+
+      expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).with(
+        success: false,
+        failure_reason: password_short_error,
+      )
+      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
+        email: user.email_addresses.first.email,
+        **success_properties,
+      )
 
       post :create, params: { password_form: { password: 'NewVal' }, confirmation_token: token }
     end

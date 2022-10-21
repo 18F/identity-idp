@@ -1,0 +1,68 @@
+---
+en:
+  inherited_proofing:
+    buttons:
+      continue: Continue
+      try_again: Try again
+    cancel:
+      actions:
+        keep_going: No, keep going
+        start_over: Start over
+      description:
+        start_over: If you start over, you will restart this process from the beginning
+          and the information you entered will not be saved.
+      headings:
+        confirmation:
+          hybrid: You have cancelled uploading photos of your ID on this phone
+        prompt:
+          standard: Cancel verifying your identity?
+        start_over: Start over verifying your identity
+      instructions:
+        switch_back: Switch back to your computer to finish verifying your identity.
+        switch_back_image: Arrow pointing from phone to computer
+    errors:
+      cannot_retrieve:
+        heading: We could not retrieve your information from My HealtheVet
+        info: We are temporarily having trouble retrieving your information. Please try
+          again.
+        title: Couldn’t retrieve information
+    headings:
+      lets_go: How verifying your identity works
+      retrieval: We are retrieving your information from My HealtheVet
+      secure_account: Secure your account
+      verify_identity: Verify your identity
+      verify_information: Please verify your information
+      welcome: Get started verifying your identity
+    info:
+      lets_go: 'Identity verification happens in two parts:'
+      no_sp_name: VA needs to make sure you are you
+      privacy_html: '%{app_name} is a secure, government website that adheres to the
+        highest standards in data protection. We only use your data to verify
+        your identity. %{link} about our privacy and security measures.'
+      retrieval_thanks: Thanks for your patience!
+      retrieval_time: This might take up to a minute. We’ll load the next step
+        automatically when it’s done.
+      secure_account: We’ll encrypt your account with your password. Encryption means
+        your data is protected and only you will be able to access or change
+        your information.
+      verify_identity: We’ll ask for your personal information to verify your identity
+        against public records.
+      welcome_html: '%{sp_name} - not someone pretending to be you.'
+    instructions:
+      consent: By checking this box, you are letting %{app_name} ask for, use, keep,
+        and share your personal information. We will only use it to verify your
+        identity.
+      learn_more: Learn more
+      privacy: Our privacy and security standards
+      verification_content: You do not need to be the primary account holder on your
+        phone plan. If your phone number doesn’t work, we can send you a
+        verification code by mail.
+      verify_requirements: you will need a phone number with a phone plan associated with your name.
+      welcome: To verify your identity,
+    troubleshooting:
+      headings:
+        missing_required_items: Don’t have a phone number? Here’s how to get help
+        need_help_updating: Need to update your information? Here’s how to get help
+      options:
+        get_va_help: Get help at VA.gov
+        learn_more_phone_or_mail: Learn more about verifying by phone or mail

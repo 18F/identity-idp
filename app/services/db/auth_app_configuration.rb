@@ -30,7 +30,7 @@ module Db
     def self.confirm(secret, code)
       totp = ROTP::TOTP.new(
         secret,
-        digits: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
+        digits: TwoFactorAuthenticatable::OTP_LENGTH,
         interval: IdentityConfig.store.totp_code_interval,
       )
       totp.verify(

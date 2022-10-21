@@ -9,6 +9,22 @@ class AgencyIdentityLinker
       AgencyIdentity.new(user_id: @sp_identity.user_id, uuid: @sp_identity.uuid)
   end
 
+  # @return [AgencyIdentity, ServiceProviderIdentity] the AgencyIdentity for this user at this
+  #   service provider or falls back to the ServiceProviderIdentity if one does not exist.
+  def self.for(user:, service_provider:)
+    agency = service_provider.agency
+
+    ai = AgencyIdentity.where(user: user, agency: agency).take
+    return ai if ai.present?
+
+    spi = ServiceProviderIdentity.where(
+      user: user, service_provider: service_provider.issuer,
+    ).take
+
+    return nil unless spi.present?
+    new(spi).link_identity
+  end
+
   def self.sp_identity_from_uuid_and_sp(uuid, service_provider)
     ai = AgencyIdentity.where(uuid: uuid).take
     criteria = if ai

@@ -1,10 +1,11 @@
 import { useContext } from 'react';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { TroubleshootingOptions } from '@18f/identity-components';
-import { useI18n } from '@18f/identity-react-i18n';
+import { useI18n, formatHTML } from '@18f/identity-react-i18n';
 import type { TroubleshootingOption } from '@18f/identity-components/troubleshooting-options';
 import ServiceProviderContext from '../context/service-provider';
-import HelpCenterContext from '../context/help-center';
+import MarketingSiteContext from '../context/marketing-site';
+import AnalyticsContext from '../context/analytics';
 
 interface DocumentCaptureTroubleshootingOptionsProps {
   /**
@@ -23,6 +24,11 @@ interface DocumentCaptureTroubleshootingOptionsProps {
   showDocumentTips?: boolean;
 
   /**
+   * Whether to include option to verify in person.
+   */
+  showInPersonOption?: boolean;
+
+  /**
    * If there are any errors (toggles whether or not to show in person proofing option)
    */
   hasErrors?: boolean;
@@ -32,15 +38,33 @@ function DocumentCaptureTroubleshootingOptions({
   heading,
   location = 'document_capture_troubleshooting_options',
   showDocumentTips = true,
+  showInPersonOption = true,
   hasErrors,
 }: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
   const { inPersonURL } = useContext(FlowContext);
-  const { getHelpCenterURL } = useContext(HelpCenterContext);
+  const { getHelpCenterURL } = useContext(MarketingSiteContext);
+  const { trackEvent } = useContext(AnalyticsContext);
   const { name: spName, getFailureToProofURL } = useContext(ServiceProviderContext);
 
   return (
     <>
+      {hasErrors && inPersonURL && showInPersonOption && (
+        <TroubleshootingOptions
+          isNewFeatures
+          heading={formatHTML(t('idv.troubleshooting.headings.are_you_near'), {
+            wbr: 'wbr',
+          })}
+          divider={false}
+          options={[
+            {
+              url: '#location',
+              text: t('idv.troubleshooting.options.verify_in_person'),
+              onClick: () => trackEvent('IdV: verify in person troubleshooting option clicked'),
+            },
+          ]}
+        />
+      )}
       <TroubleshootingOptions
         heading={heading}
         options={
@@ -71,18 +95,6 @@ function DocumentCaptureTroubleshootingOptions({
           ].filter(Boolean) as TroubleshootingOption[]
         }
       />
-      {hasErrors && inPersonURL && (
-        <TroubleshootingOptions
-          isNewFeatures
-          heading={t('idv.troubleshooting.headings.are_you_near')}
-          options={[
-            {
-              url: inPersonURL,
-              text: t('idv.troubleshooting.options.verify_in_person'),
-            },
-          ]}
-        />
-      )}
     </>
   );
 }

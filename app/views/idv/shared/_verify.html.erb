@@ -46,6 +46,12 @@ locals:
         <dt class="display-inline"> <%= t('idv.form.address1') %>: </dt>
         <dd class="display-inline margin-left-0"> <%= pii[:address1] %> </dd>
       </div>
+      <% if pii[:address2].present? %>
+        <div>
+          <dt class="display-inline"> <%= t('idv.form.address2') %>: </dt>
+          <dd class="display-inline margin-left-0"> <%= pii[:address2] %> </dd>
+        </div>
+      <% end %>
       <div>
         <dt class="display-inline"> <%= t('idv.form.city') %>: </dt>
         <dd class="display-inline margin-left-0"> <%= pii[:city] %> </dd>
@@ -70,7 +76,7 @@ locals:
   </div>
   <div class="grid-row grid-gap grid-gap-2 padding-top-1">
     <div class='grid-col-fill'>
-      <%= t('idv.form.ssn') %>: 
+      <%= t('idv.form.ssn') %>:
       <%= render(
             'shared/masked_text',
             text: SsnFormatter.format(pii[:ssn]),
@@ -107,7 +113,7 @@ locals:
               form_steps_wait: '',
               error_message: t('idv.failure.exceptions.internal_error'),
               alert_target: '#form-steps-wait-alert',
-              wait_step_path: idv_doc_auth_step_path(step: :verify_wait),
+              wait_step_path: step_url.call(step: :verify_wait),
               poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
             },
           },

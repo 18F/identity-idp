@@ -1,0 +1,65 @@
+---
+fr:
+  inherited_proofing:
+    buttons:
+      continue: Continuer
+      try_again: Réessayez
+    cancel:
+      actions:
+        keep_going: Non, continuer
+        start_over: Recommencer
+      description:
+        start_over: Si vous recommencez, vous reprendrez ce processus depuis le début et
+          les informations que vous avez saisies ne seront pas enregistrées.
+      headings:
+        confirmation:
+          hybrid: Vous avez annulé le téléchargement de vos photos d’identité sur ce
+            téléphone
+        prompt:
+          standard: Annuler la vérification de votre identité?
+        start_over: Recommencez la vérification de votre identité
+      instructions:
+        switch_back: Retournez sur votre ordinateur pour continuer à vérifier votre
+          identité.
+        switch_back_image: Flèche pointant du téléphone vers l’ordinateur
+    errors:
+      cannot_retrieve:
+        heading: Nous n’avons pas pu récupérer vos informations dans My HealtheVet
+        info: Nous avons temporairement des difficultés à récupérer vos informations.
+          Veuillez réessayer.
+        title: to be implemented
+    headings:
+      lets_go: to be implemented
+      retrieval: Nous récupérons vos informations depuis My HealtheVet.
+      secure_account: to be implemented
+      verify_identity: to be implemented
+      verify_information: to be implemented
+      welcome: Commencez à vérifier votre identité
+    info:
+      lets_go: to be implemented
+      no_sp_name: L’agence à laquelle vous essayez d’accéder
+      privacy_html: '%{app_name} est un site gouvernemental sécurisé qui respecte les
+        normes les plus strictes en matière de protection des données. Nous
+        n’utilisons vos données uniquement pour vérifier votre identité. %{link}
+        sur nos mesures de confidentialité et de sécurité.'
+      retrieval_thanks: Merci de votre patience!
+      retrieval_time: Cette opération peut prendre jusqu’à une minute. Nous chargerons
+        automatiquement l’étape suivante lorsque ce sera fait.
+      secure_account: to be implemented
+      verify_identity: to be implemented
+      welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
+        quelqu’un qui se fait passer pour vous.'
+    instructions:
+      consent: to be implemented for %{app_name}
+      learn_more: En savoir plus
+      privacy: Nos normes de confidentialité et de sécurité
+      verification_content: to be implemented
+      verify_requirements: to be implemented
+      welcome: 'Pour vérifier votre identité, vous aurez besoin de:'
+    troubleshooting:
+      headings:
+        missing_required_items: to be implemented
+        need_help_updating: to be implemented
+      options:
+        get_va_help: to be implemented
+        learn_more_phone_or_mail: to be implemented

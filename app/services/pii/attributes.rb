@@ -5,7 +5,7 @@ module Pii
 
   Attributes = RedactedStruct.new(
     :first_name, :middle_name, :last_name,
-    :address1, :address2, :city, :state, :zipcode,
+    :address1, :address2, :city, :state, :zipcode, :same_address_as_id,
     :ssn, :dob, :phone,
     :prev_address1, :prev_address2, :prev_city, :prev_state, :prev_zipcode,
     *DEPRECATED_PII_ATTRIBUTES

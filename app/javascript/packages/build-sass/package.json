@@ -7,10 +7,9 @@
     "build-sass": "./cli.js"
   },
   "dependencies": {
-    "autoprefixer": "^10.4.4",
+    "browserslist": "^4.21.4",
     "chokidar": "^3.5.3",
-    "cssnano": "^5.1.7",
-    "postcss": "^8.4.12",
-    "sass-embedded": "^1.53.0"
+    "lightningcss": "^1.16.0",
+    "sass-embedded": "^1.55.0"
   }
 }

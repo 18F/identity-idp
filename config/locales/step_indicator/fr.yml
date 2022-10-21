@@ -4,9 +4,10 @@ fr:
     accessible_label: Progression par étapes
     flows:
       idv:
-        find_a_post_office: Trouver un Bureau de Poste
+        find_a_post_office: Trouver un bureau de poste
+        get_a_letter: Recevoir une lettre par la poste
         getting_started: Démarrer
-        go_to_the_post_office: Aller au Bureau de Poste
+        go_to_the_post_office: Se rendre au bureau de poste
         secure_account: Sécurisez votre compte
         verify_id: Vérifier votre identité
         verify_info: Vérifier vos données personnelles

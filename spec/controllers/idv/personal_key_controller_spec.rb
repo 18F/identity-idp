@@ -6,11 +6,6 @@ describe Idv::PersonalKeyController do
 
   def stub_idv_session
     stub_sign_in(user)
-    idv_session = Idv::Session.new(
-      user_session: subject.user_session,
-      current_user: user,
-      service_provider: nil,
-    )
     idv_session.applicant = applicant
     idv_session.resolution_successful = true
     profile_maker = Idv::ProfileMaker.new(
@@ -18,7 +13,7 @@ describe Idv::PersonalKeyController do
       user: user,
       user_password: password,
     )
-    profile = profile_maker.save_profile
+    profile = profile_maker.save_profile(active: false)
     idv_session.pii = profile_maker.pii_attributes
     idv_session.profile_id = profile.id
     idv_session.personal_key = profile.personal_key
@@ -27,18 +22,15 @@ describe Idv::PersonalKeyController do
 
   let(:password) { 'sekrit phrase' }
   let(:user) { create(:user, :signed_up, password: password) }
-  let(:applicant) do
-    {
-      first_name: 'Some',
-      last_name: 'One',
-      address1: '123 Any St',
-      address2: 'Ste 456',
-      city: 'Anywhere',
-      state: 'KS',
-      zipcode: '66666',
-    }
-  end
+  let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:profile) { subject.idv_session.profile }
+  let(:idv_session) do
+    Idv::Session.new(
+      user_session: subject.user_session,
+      current_user: user,
+      service_provider: nil,
+    )
+  end
 
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
@@ -91,6 +83,7 @@ describe Idv::PersonalKeyController do
   describe '#show' do
     before do
       stub_idv_session
+      stub_attempts_tracker
     end
 
     it 'sets code instance variable' do
@@ -119,24 +112,15 @@ describe Idv::PersonalKeyController do
       expect(flash[:allow_confirmations_continue]).to eq true
     end
 
+    it 'logs when user generates personal key' do
+      idv_session.personal_key = nil
+      expect(@irs_attempts_api_tracker).to receive(:idv_personal_key_generated)
+      get :show
+    end
+
     it 'sets flash.now[:success]' do
       get :show
       expect(flash[:success]).to eq t('idv.messages.confirm')
-    end
-
-    context 'user selected gpo verification' do
-      before do
-        subject.idv_session.address_verification_mechanism = 'gpo'
-      end
-
-      it 'assigns step indicator steps with pending status' do
-        get :show
-
-        expect(flash.now[:success]).to eq t('idv.messages.mail_sent')
-        expect(assigns(:step_indicator_steps)).to include(
-          hash_including(name: :verify_phone_or_address, status: :pending),
-        )
-      end
     end
   end
 
@@ -150,7 +134,7 @@ describe Idv::PersonalKeyController do
         subject.idv_session.address_verification_mechanism = 'phone'
         subject.idv_session.vendor_phone_confirmation = true
         subject.idv_session.user_phone_confirmation = true
-        subject.idv_session.complete_session
+        subject.idv_session.create_profile_from_applicant_with_password(password)
       end
 
       it 'redirects to sign up completed for an sp' do
@@ -177,13 +161,69 @@ describe Idv::PersonalKeyController do
     context 'user selected gpo verification' do
       before do
         subject.idv_session.address_verification_mechanism = 'gpo'
-        subject.idv_session.complete_session
+        subject.idv_session.create_profile_from_applicant_with_password(password)
       end
 
       it 'redirects to come back later path' do
         patch :update
 
         expect(response).to redirect_to idv_come_back_later_path
+      end
+
+      context 'with in person profile' do
+        before do
+          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        end
+
+        it 'creates a profile and returns completion url' do
+          patch :update
+
+          expect(response).to redirect_to idv_come_back_later_path
+        end
+      end
+    end
+
+    context 'with in person profile' do
+      let!(:enrollment) { create(:in_person_enrollment, :pending, user: user, profile: profile) }
+
+      before do
+        ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      end
+
+      it 'creates a profile and returns completion url' do
+        patch :update
+
+        expect(response).to redirect_to idv_in_person_ready_to_verify_url
+      end
+    end
+
+    context 'with device profiling decisioning enabled' do
+      before do
+        ProofingComponent.create(user: user, threatmetrix: true, threatmetrix_review_status: nil)
+        allow(IdentityConfig.store).
+          to receive(:proofing_device_profiling_decisioning_enabled).and_return(true)
+      end
+
+      it 'redirects to account path when threatmetrix review status is nil' do
+        patch :update
+
+        expect(response).to redirect_to account_path
+      end
+
+      it 'redirects to account path when device profiling passes' do
+        ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'pass')
+        patch :update
+
+        expect(response).to redirect_to account_path
+      end
+
+      it 'redirects to come back later path when device profiling fails' do
+        ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'fail')
+        patch :update
+
+        expect(response).to redirect_to idv_setup_errors_path
       end
     end
   end

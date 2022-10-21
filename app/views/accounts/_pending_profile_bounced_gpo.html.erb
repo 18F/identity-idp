@@ -1,8 +1,0 @@
-<%= render AlertComponent.new(type: :warning, text_tag: 'div') do %>
-  <p>
-    <%= t('account.index.verification.bounced') %>
-  </p>
-  <p class="margin-bottom-0">
-    <%= link_to t('account.index.verification.update_address'), idv_gpo_path %>
-  </p>
-<% end %>

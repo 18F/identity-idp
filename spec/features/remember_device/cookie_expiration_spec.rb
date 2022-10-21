@@ -42,17 +42,10 @@ describe 'signing in with remember device and closing browser' do
     click_submit_default
   end
 
-  # see http://jamesferg.com/testing/bdd/hacking-capybara-cookies/
   def expire_cookies
-    cookies = Capybara.
-      current_session.
-      driver.
-      browser.
-      current_session.
-      instance_variable_get(:@rack_mock_session).
-      cookie_jar.
-      instance_variable_get(:@cookies)
-
-    cookies.reject! { |c| c.expired? != false }
+    cookie_jar = Capybara.current_session.driver.browser.current_session.cookie_jar
+    cookie_jar.to_hash.each do |name, value|
+      cookie_jar.delete(name) if cookie_jar.get_cookie(name).expired? != false
+    end
   end
 end

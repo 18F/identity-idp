@@ -7,12 +7,12 @@
   <p><strong><%= t('idv.failure.attempts', count: @remaining_attempts) %></strong></p>
 
   <% c.action_button(
-       action: ->(**tag_options, &block) { link_to(idv_doc_auth_path, **tag_options, &block) },
+       action: ->(**tag_options, &block) { link_to(@try_again_path, **tag_options, &block) },
      ) { t('idv.forgot_password.try_again') } %>
 
   <% c.troubleshooting_options do |tc| %>
     <% tc.header { t('components.troubleshooting_options.default_heading') } %>
-    <% if user_session.dig(:'idv/doc_auth', :had_barcode_read_failure) %>
+    <% if user_session&.dig(:'idv/doc_auth', :had_barcode_read_failure) %>
       <% tc.option(
            url: idv_doc_auth_step_path(step: :redo_document_capture),
            action: FormLinkComponent.method(:new),

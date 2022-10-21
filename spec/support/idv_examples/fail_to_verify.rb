@@ -11,6 +11,7 @@ shared_examples 'fail to verify idv info' do |step|
     fill_out_idv_form_fail if step == :profile
     fill_out_phone_form_fail if step == :phone
     click_continue
+    click_continue
   end
 
   it 'renders a warning failure screen and lets the user try again' do

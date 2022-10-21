@@ -1,0 +1,12 @@
+<%= content_tag(
+      :'lg-step-indicator',
+      role: 'region',
+      aria: { label: t('step_indicator.accessible_label') },
+      class: css_class,
+    ) do %>
+  <ol class="step-indicator__scroller">
+    <% steps.each do |step| %>
+      <%= render StepIndicatorStepComponent.new(**step) %>
+    <% end %>
+  </ol>
+<% end %>

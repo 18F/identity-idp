@@ -22,7 +22,7 @@ RSpec.describe DocumentCaptureSessionAsyncResult do
       let(:status) { DocumentCaptureSessionAsyncResult::DONE }
 
       context 'with unsuccessful result' do
-        let(:idv_result) { { success: false, errors: {}, messages: ['some message'] } }
+        let(:idv_result) { { success: false, errors: {} } }
 
         it 'is false' do
           expect(subject.success?).to eq false
@@ -30,7 +30,7 @@ RSpec.describe DocumentCaptureSessionAsyncResult do
       end
 
       context 'with successful result' do
-        let(:idv_result) { { success: true, errors: {}, messages: [] } }
+        let(:idv_result) { { success: true, errors: {} } }
 
         it 'is true' do
           expect(subject.success?).to eq true

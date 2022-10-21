@@ -1,12 +1,12 @@
 <% title t('titles.idv.review') %>
 
 <% content_for(:pre_flash_content) do %>
-  <%= render 'shared/step_indicator', {
-        steps: @step_indicator_steps,
+  <%= render StepIndicatorComponent.new(
+        steps: step_indicator_steps,
         current_step: :secure_account,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      } %>
+      ) %>
 <% end %>
 
 <%= render PageHeadingComponent.new.with_content(t('idv.titles.session.review', app_name: APP_NAME)) %>
@@ -32,10 +32,7 @@
         wrapper_html: { class: 'margin-bottom-0' },
       ) %>
   <div class="text-right margin-top-2 margin-bottom-4">
-    <%= t(
-          'idv.forgot_password.link_html',
-          link: link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url, class: 'margin-left-1'),
-        ) %>
+    <%= link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url, class: 'margin-left-1') %>
   </div>
   <%= render AccordionComponent.new do |c| %>
     <% c.header { t('idv.messages.review.intro') } %>
@@ -43,11 +40,7 @@
                                     phone: PhoneFormatter.format(@applicant[:phone]) %>
   <% end %>
 
-  <%= f.button(
-        :submit,
-        t('forms.buttons.continue'),
-        class: 'usa-button--big usa-button--wide margin-top-5',
-      ) %>
+  <%= f.submit t('forms.buttons.continue'), class: 'margin-top-5' %>
 <% end %>
 
 <%= render 'idv/doc_auth/cancel', step: 'review' %>

@@ -15,7 +15,7 @@ module Redirect
       else
         tracker_method.call(redirect_url: url, **location_params)
       end
-      redirect_to(url)
+      redirect_to(url, allow_other_host: true)
     end
   end
 end

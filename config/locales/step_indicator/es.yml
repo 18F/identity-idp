@@ -4,9 +4,10 @@ es:
     accessible_label: Progreso por pasos
     flows:
       idv:
-        find_a_post_office: Encontrar una Oficina de Correos
+        find_a_post_office: Encontrar una oficina de correos
+        get_a_letter: Reciba una carta por correo
         getting_started: Inicio
-        go_to_the_post_office: Ir a la Oficina de Correos
+        go_to_the_post_office: Ir a la oficina de correos
         secure_account: Proteje tu cuenta
         verify_id: Verifica tu identificación
         verify_info: Verifica tus datos personales

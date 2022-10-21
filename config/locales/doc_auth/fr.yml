@@ -178,6 +178,7 @@ fr:
       welcome: Commencez à vérifier votre identité
     info:
       camera_required: Votre téléphone portable doit avoir une caméra et un navigateur Web.
+      capture_status_big_document: Trop près
       capture_status_capturing: Prendre la photo
       capture_status_none: Alignez
       capture_status_small_document: Approchez-vous
@@ -266,6 +267,7 @@ fr:
         ce lien vers votre navigateur pour prendre des photos du recto et du
         verso de votre identifiant.
       switch_back: Retournez sur votre ordinateur pour continuer à vérifier votre identité.
+      switch_back_image: Flèche pointant du téléphone vers l’ordinateur
       test_ssn: Dans l’environnement de test seuls les SSN commençant par “900-” ou
         “900-” sont considérés comme valides. N’entrez pas de vrais PII dans ce
         champ.

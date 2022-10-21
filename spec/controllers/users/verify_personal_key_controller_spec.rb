@@ -54,13 +54,16 @@ describe Users::VerifyPersonalKeyController do
 
       it 'renders throttled page' do
         stub_analytics
+        stub_attempts_tracker
         expect(@analytics).to receive(:track_event).with(
           'Personal key reactivation: Personal key form visited',
         ).once
         expect(@analytics).to receive(:track_event).with(
-          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          'Throttler Rate Limit Triggered',
           throttle_type: :verify_personal_key,
         ).once
+
+        expect(@irs_attempts_api_tracker).not_to receive(:personal_key_reactivation_rate_limited)
 
         get :new
 
@@ -70,7 +73,7 @@ describe Users::VerifyPersonalKeyController do
   end
 
   describe '#create' do
-    let!(:profiles) {
+    let!(:profiles) do
       [
         create(
           :profile,
@@ -79,9 +82,12 @@ describe Users::VerifyPersonalKeyController do
           pii: { ssn: '123456789' },
         ),
       ]
-    }
+    end
     let(:error_text) { 'Incorrect personal key' }
+    let(:personal_key_bad_params) { { personal_key: 'baaad' } }
     let(:personal_key_error) { { personal_key: [error_text] } }
+    let(:failure_properties) { { success: false, failure_reason: personal_key_error } }
+    let(:pii_like_keypaths_errors) { [[:errors, :personal_key], [:error_details, :personal_key]] }
     let(:response_ok) { FormResponse.new(success: true, errors: {}) }
     let(:response_bad) { FormResponse.new(success: false, errors: personal_key_error, extra: {}) }
 
@@ -98,7 +104,7 @@ describe Users::VerifyPersonalKeyController do
           'Personal key reactivation: Personal key form submitted',
           errors: {},
           success: true,
-          pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
+          pii_like_keypaths: pii_like_keypaths_errors,
         ).once
 
         expect(@analytics).to receive(:track_event).with(
@@ -109,45 +115,80 @@ describe Users::VerifyPersonalKeyController do
 
         expect(subject.reactivate_account_session.validated_personal_key?).to eq(true)
       end
+
+      it 'tracks irs attempts api for relevant users' do
+        stub_attempts_tracker
+
+        expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_submitted).with(
+          failure_reason: nil,
+          success: true,
+        ).once
+
+        post :create, params: { personal_key: profiles.first.personal_key }
+
+        expect(subject.reactivate_account_session.validated_personal_key?).to eq(true)
+      end
     end
 
     context 'with an invalid form' do
-      let(:bad_key) { 'baaad' }
-
-      before do
-        post :create, params: { personal_key: bad_key }
-      end
-
       it 'sets an error in the flash' do
+        post :create, params: personal_key_bad_params
+
         expect(flash[:error]).to eq(error_text)
       end
 
       it 'redirects to form' do
+        post :create, params: personal_key_bad_params
         expect(response).to redirect_to(verify_personal_key_url)
+      end
+
+      it 'tracks irs attempts api for relevant users' do
+        stub_attempts_tracker
+
+        expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_submitted).with(
+          failure_properties,
+        ).once
+
+        allow_any_instance_of(VerifyPersonalKeyForm).to receive(:submit).and_return(response_bad)
+
+        post :create, params: personal_key_bad_params
       end
     end
 
     context 'with throttle reached' do
-      let(:bad_key) { 'baaad' }
-
       it 'renders throttled page' do
         stub_analytics
+        stub_attempts_tracker
         expect(@analytics).to receive(:track_event).with(
           'Personal key reactivation: Personal key form submitted',
-          errors: { personal_key: ['Please fill in this field.', 'Incorrect personal key'] },
+          errors: { personal_key: ['Please fill in this field.', error_text] },
           error_details: { personal_key: [:blank, :personal_key_incorrect] },
           success: false,
-          pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
+          pii_like_keypaths: pii_like_keypaths_errors,
         ).once
         expect(@analytics).to receive(:track_event).with(
-          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          'Throttler Rate Limit Triggered',
           throttle_type: :verify_personal_key,
         ).once
 
+        expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_rate_limited).once
+
         max_attempts = Throttle.max_attempts(:verify_personal_key)
-        (max_attempts + 1).times { post :create, params: { personal_key: bad_key } }
+        (max_attempts + 1).times { post :create, params: personal_key_bad_params }
 
         expect(response).to render_template(:throttled)
+      end
+
+      it 'tracks irs attempts api for relevant users' do
+        stub_attempts_tracker
+
+        expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_submitted).with(
+          failure_properties,
+        ).once
+
+        allow_any_instance_of(VerifyPersonalKeyForm).to receive(:submit).and_return(response_bad)
+
+        post :create, params: personal_key_bad_params
       end
     end
   end

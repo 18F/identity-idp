@@ -1,30 +1,58 @@
 module Proofing
   module Mock
-    class AddressMockClient < Proofing::Base
-      vendor_name 'AddressMock'
-
-      required_attributes :phone
-
-      optional_attributes :uuid, :uuid_prefix
-
-      stage :address
-
+    class AddressMockClient
       UNVERIFIABLE_PHONE_NUMBER = '7035555555'
       PROOFER_TIMEOUT_PHONE_NUMBER = '7035555888'
       FAILED_TO_CONTACT_PHONE_NUMBER = '7035555999'
       TRANSACTION_ID = 'address-mock-transaction-id-123'
 
-      proof do |applicant, result|
+      def proof(applicant)
         plain_phone = applicant[:phone].gsub(/\D/, '').delete_prefix('1')
         if plain_phone == UNVERIFIABLE_PHONE_NUMBER
-          result.add_error(:phone, 'The phone number could not be verified.')
+          unverifiable_phone_result
         elsif plain_phone == FAILED_TO_CONTACT_PHONE_NUMBER
-          raise 'Failed to contact proofing vendor'
+          failed_to_contact_vendor_result
         elsif plain_phone == PROOFER_TIMEOUT_PHONE_NUMBER
-          raise Proofing::TimeoutError, 'address mock timeout'
+          timeout_result
+        else
+          address_result(success: true, errors: {}, exception: nil)
         end
-        result.transaction_id = TRANSACTION_ID
-        result.context[:message] = 'some context for the mock address proofer'
+      end
+
+      private
+
+      def unverifiable_phone_result
+        address_result(
+          success: false,
+          errors: { phone: ['The phone number could not be verified.'] },
+          exception: nil,
+        )
+      end
+
+      def failed_to_contact_vendor_result
+        address_result(
+          success: false,
+          errors: {},
+          exception: RuntimeError.new('Failed to contact proofing vendor'),
+        )
+      end
+
+      def timeout_result
+        address_result(
+          success: false,
+          errors: {},
+          exception: Proofing::TimeoutError.new('address mock timeout'),
+        )
+      end
+
+      def address_result(success:, errors:, exception:)
+        AddressResult.new(
+          success: success,
+          errors: errors,
+          exception: exception,
+          transaction_id: TRANSACTION_ID,
+          vendor_name: 'AddressMock',
+        )
       end
     end
   end

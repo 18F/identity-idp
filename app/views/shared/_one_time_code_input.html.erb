@@ -9,13 +9,15 @@ locals:
 * transport: WebOTP transport method. Defaults to 'sms'.
 * value: Field value. Defaults to `''`.
 * class: CSS classes to add (optional)
-* numeric: if the field should only accept digits. Defualts to true
+* numeric: if the field should only accept digits. Defaults to true
+* maxlength: Sets maxlength for the field. Defaults to TwoFactorAuthenticatable::DIRECT_OTP_LENGTH
 %>
 <% form = local_assigns.delete(:form)
    name = local_assigns.delete(:name) { :code }
    required = local_assigns.delete(:required) { false }
    numeric = local_assigns.delete(:numeric) { true }
    transport = local_assigns.delete(:transport) { 'sms' }
+   maxlength = local_assigns.delete(:maxlength) { TwoFactorAuthenticatable::DIRECT_OTP_LENGTH }
    classes = ['field font-family-mono usa-input one-time-code-input']
    classes << local_assigns.delete(:class) if local_assigns[:class] %>
 
@@ -27,7 +29,7 @@ locals:
       input_html: {
         'data-transport': transport,
         pattern: numeric ? '[0-9]*' : '[a-zA-Z0-9]*',
-        maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
+        maxlength: maxlength,
         autocomplete: 'one-time-code',
         inputmode: numeric ? 'numeric' : 'text',
         **local_assigns,

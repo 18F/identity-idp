@@ -20,6 +20,11 @@ describe 'default phone selection' do
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         )
       end
+
+      it 'does not indicate that it is the default number on the account page ' do
+        sign_in_before_2fa(user)
+        expect(page).not_to have_content t('account.index.default')
+      end
     end
 
     context 'when the user creates a new default phone number' do

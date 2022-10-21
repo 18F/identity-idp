@@ -20,10 +20,13 @@ module IrsAttemptsApi
 
     def to_jwe
       JWE.encrypt(
-        security_event_token_data.to_json,
+        payload.to_json,
         event_data_encryption_key,
         typ: 'secevent+jwe',
         zip: 'DEF',
+        alg: 'RSA-OAEP',
+        enc: 'A256GCM',
+        kid: JWT::JWK.new(event_data_encryption_key).kid,
       )
     end
 
@@ -32,8 +35,9 @@ module IrsAttemptsApi
       parsed_event = JSON.parse(decrypted_event)
       event_type = parsed_event['events'].keys.first.split('/').last
       event_data = parsed_event['events'].values.first
+      jti = parsed_event['jti'].split(':').last
       AttemptEvent.new(
-        jti: parsed_event['jti'],
+        jti: jti,
         iat: parsed_event['iat'],
         event_type: event_type,
         session_id: event_data['subject']['session_id'],
@@ -42,9 +46,11 @@ module IrsAttemptsApi
       )
     end
 
-    private
+    def event_key
+      "#{event_data_encryption_key_id}:#{jti}"
+    end
 
-    def security_event_token_data
+    def payload
       {
         jti: jti,
         iat: iat,
@@ -55,6 +61,8 @@ module IrsAttemptsApi
         },
       }
     end
+
+    private
 
     def event_data
       {
@@ -71,9 +79,15 @@ module IrsAttemptsApi
       "https://schemas.login.gov/secevent/irs-attempts-api/event-type/#{dasherized_name}"
     end
 
+    def event_data_encryption_key_id
+      IdentityConfig.store.irs_attempt_api_public_key_id
+    end
+
     def event_data_encryption_key
-      decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
-      OpenSSL::PKey::RSA.new(decoded_key_der)
+      @event_data_encryption_key ||= begin
+        decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
+        OpenSSL::PKey::RSA.new(decoded_key_der)
+      end
     end
   end
 end

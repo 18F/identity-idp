@@ -54,8 +54,8 @@ RSpec.describe Agreements::Iaa do
 
   describe 'delegated methods' do
     it 'does not permit arbitrary sends to the gtc or order objects' do
-      expect { iaa.send('gtc_not_permitted') }.to raise_error(NoMethodError)
-      expect { iaa.send('order_not_permitted') }.to raise_error(NoMethodError)
+      expect { iaa.send(:gtc_not_permitted) }.to raise_error(NoMethodError)
+      expect { iaa.send(:order_not_permitted) }.to raise_error(NoMethodError)
     end
   end
 

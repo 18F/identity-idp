@@ -1,11 +1,31 @@
 require 'rails_helper'
 
 describe Users::BackupCodeSetupController do
-  it 'creates backup codes' do
-    user = build(:user, :signed_up)
+  it 'creates backup codes and logs expected events' do
+    user = create(:user, :signed_up)
     stub_sign_in(user)
+    analytics = stub_analytics
+    stub_attempts_tracker
+
+    Funnel::Registration::AddMfa.call(user.id, 'phone', analytics)
     expect(PushNotification::HttpPush).to receive(:deliver).
       with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+    expect(@analytics).to receive(:track_event).
+      with('Backup Code Setup Visited', {
+        success: true,
+        errors: {},
+        mfa_method_counts: { phone: 1 },
+        pii_like_keypaths: [[:mfa_method_counts, :phone]],
+        error_details: nil,
+        enabled_mfa_methods_count: 1,
+      })
+    expect(@analytics).to receive(:track_event).
+      with('Backup Code Created', {
+        enabled_mfa_methods_count: 2,
+      })
+    expect(@irs_attempts_api_tracker).to receive(:track_event).
+      with(:mfa_enroll_backup_code, success: true)
+
     post :create
 
     expect(response).to render_template('create')

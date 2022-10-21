@@ -53,12 +53,15 @@ describe('TimeElement', () => {
     usePropertyValue(Intl.DateTimeFormat.prototype, 'formatToParts', undefined);
 
     it('sets text using Intl.DateTimeFormat#format as fallback', () => {
+      const date = new Date(2020, 3, 21, 14, 3, 24);
       const element = createElement({
         format: '%{month} %{day}, %{year} at %{hour}:%{minute} %{day_period}',
-        timestamp: new Date(2020, 3, 21, 14, 3, 24).toISOString(),
+        timestamp: date.toISOString(),
       });
 
-      expect(element.textContent).to.equal('April 21, 2020, 2:03 PM');
+      const expected = element.formatter.format(date);
+
+      expect(element.textContent).to.equal(expected);
     });
   });
 });

@@ -44,7 +44,7 @@ describe Encryption::Encryptors::PiiEncryptor do
         and_return('aes_ciphertext')
 
       expect(subject.send(:kms_client)).to receive(:encrypt).
-        with('aes_ciphertext', 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc').
+        with('aes_ciphertext', { 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc' }).
         and_return('kms_ciphertext')
 
       expected_ciphertext = Base64.strict_encode64('kms_ciphertext')

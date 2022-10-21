@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe Funnel::Registration::RangeRegisteredCount do
+  let(:analytics) { FakeAnalytics.new }
   subject { described_class }
 
   let(:start) { '2019-01-01 00:00:00' }
@@ -51,9 +52,7 @@ describe Funnel::Registration::RangeRegisteredCount do
     travel_to Date.new(year, month, day) do
       user = create(:user)
       user_id = user.id
-      Funnel::Registration::Create.call(user_id)
-      Funnel::Registration::AddPassword.call(user_id)
-      Funnel::Registration::AddMfa.call(user_id, 'backup_codes')
+      Funnel::Registration::AddMfa.call(user_id, 'backup_codes', analytics)
     end
   end
 end

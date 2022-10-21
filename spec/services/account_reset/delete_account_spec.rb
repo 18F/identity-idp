@@ -12,5 +12,19 @@ describe AccountReset::DeleteAccount do
       Db::DeletedUser::Create.call(user.id)
       AccountReset::DeleteAccount.new(token).call
     end
+
+    context 'when user.confirmed_at is nil' do
+      let(:user) { create(:user, confirmed_at: nil) }
+
+      it 'does not blow up' do
+        create_account_reset_request_for(user)
+        grant_request(user)
+
+        token = AccountResetRequest.where(user_id: user.id).first.granted_token
+        expect { AccountReset::DeleteAccount.new(token).call }.to_not raise_error
+
+        expect(User.find_by(id: user.id)).to be_nil
+      end
+    end
   end
 end

@@ -16,9 +16,9 @@
   <hr class="margin-y-4 border-width-05 border-info">
 </div>
 
-<%= validated_form_for @password_reset_email_form,
-                       html: { autocomplete: 'off', method: :post, class: 'margin-bottom-2' },
-                       url: user_password_path do |f| %>
+<%= simple_form_for @password_reset_email_form,
+                    html: { autocomplete: 'off', method: :post, class: 'margin-bottom-2' },
+                    url: user_password_path do |f| %>
 
   <%= f.input :email, as: :hidden %>
   <%= f.input :resend, as: :hidden %>

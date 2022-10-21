@@ -108,6 +108,10 @@ fr:
       info:
         lead: Il doit avoir une longueur minimale de %{min_length} caractères et ne pas
           être un mot de passe couramment utilisé. C’est tout!
+      password_key: Vous avez besoin de votre clé personnelle de 16 caractères pour
+        réinitialiser votre mot de passe si vous avez vérifié votre identité
+        avec ce compte. Si vous ne l’avez pas, vous pouvez toujours
+        réinitialiser votre mot de passe et ensuite revérifier votre identité.
       strength:
         i: Très faible
         ii: Faible
@@ -115,14 +119,6 @@ fr:
         intro: 'Force du mot de passe : '
         iv: Bonne
         v: Excellente!
-    personal_key:
-      email_body: Ne perdez pas votre clé personnelle et ne la partagez pas avec
-        d’autres. Nous vous le demanderons si vous réinitialisez votre mot de
-        passe.
-      email_title: Sauvegarde le. Garde-le en sécurité.
-      info: Vous aurez besoin de cette clé personnelle si vous oubliez votre mot de
-        passe. Si vous réinitialisez votre mot de passe et que vous ne possédez
-        pas cette clé, vous devrez vérifier votre identité à nouveau.
     sp_handoff_bounced: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à
       %{app_name}. Veuillez contacter %{sp_link} pour obtenir de l’aide.
     sp_handoff_bounced_with_no_sp: votre fournisseur de service

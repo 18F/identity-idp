@@ -18,7 +18,7 @@ import CaptureAdvice from './capture-advice';
  * @param {CaptureTroubleshootingProps} props
  */
 function CaptureTroubleshooting({ children }) {
-  const { addPageAction } = useContext(AnalyticsContext);
+  const { trackEvent } = useContext(AnalyticsContext);
   const [didShowTroubleshooting, setDidShowTroubleshooting] = useState(false);
   const { failedCaptureAttempts, maxFailedAttemptsBeforeTips, lastAttemptMetadata } = useContext(
     FailedCaptureAttemptsContext,
@@ -28,13 +28,13 @@ function CaptureTroubleshooting({ children }) {
   const { isAssessedAsGlare, isAssessedAsBlurry } = lastAttemptMetadata;
 
   function onCaptureTipsShown() {
-    addPageAction('IdV: Capture troubleshooting shown', lastAttemptMetadata);
+    trackEvent('IdV: Capture troubleshooting shown', lastAttemptMetadata);
 
     onPageTransition();
   }
 
   function onCaptureTipsDismissed() {
-    addPageAction('IdV: Capture troubleshooting dismissed');
+    trackEvent('IdV: Capture troubleshooting dismissed');
 
     setDidShowTroubleshooting(true);
   }

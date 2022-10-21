@@ -1,18 +1,19 @@
 class TwoFactorOptionsForm
   include ActiveModel::Model
 
-  attr_reader :selection
-  attr_reader :configuration_id
+  attr_accessor :selection, :user, :phishing_resistant_required, :piv_cac_required
 
   validates :selection, inclusion: { in: %w[phone sms voice auth_app piv_cac
                                             webauthn webauthn_platform
                                             backup_code] }
 
-  validates :selection, length: { minimum: 1 }
+  validates :selection, length: { minimum: 1 }, if: :has_no_mfa_or_in_required_flow?
   validates :selection, length: { minimum: 2, message: 'phone' }, if: :phone_validations?
 
-  def initialize(user)
+  def initialize(user:, phishing_resistant_required:, piv_cac_required:)
     self.user = user
+    self.phishing_resistant_required = phishing_resistant_required
+    self.piv_cac_required = piv_cac_required
   end
 
   def submit(params)
@@ -25,9 +26,6 @@ class TwoFactorOptionsForm
 
   private
 
-  attr_accessor :user
-  attr_writer :selection
-
   def mfa_user
     @mfa_user ||= MfaContext.new(user)
   end
@@ -35,8 +33,13 @@ class TwoFactorOptionsForm
   def extra_analytics_attributes
     {
       selection: selection,
+      selected_mfa_count: selection.count,
       enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
     }
+  end
+
+  def in_phishing_resistant_or_piv_cac_required_flow?
+    phishing_resistant_required || piv_cac_required
   end
 
   def user_needs_updating?
@@ -54,8 +57,12 @@ class TwoFactorOptionsForm
     selection.include?('phone') || selection.include?('voice') || selection.include?('sms')
   end
 
-  def phone_only_mfa_method?
-    MfaContext.new(user).enabled_mfa_methods_count == 0
+  def has_no_configured_mfa?
+    mfa_user.enabled_mfa_methods_count == 0
+  end
+
+  def has_no_mfa_or_in_required_flow?
+    has_no_configured_mfa? || in_phishing_resistant_or_piv_cac_required_flow?
   end
 
   def kantara_2fa_phone_restricted?
@@ -63,13 +70,13 @@ class TwoFactorOptionsForm
   end
 
   def phone_alternative_enabled?
-    count = MfaContext.new(user).enabled_mfa_methods_count
+    count = mfa_user.enabled_mfa_methods_count
     count >= 2 || (count == 1 && MfaContext.new(user).phone_configurations.none?)
   end
 
   def phone_validations?
     IdentityConfig.store.select_multiple_mfa_options &&
-      phone_selected? && phone_only_mfa_method? &&
+      phone_selected? && has_no_configured_mfa? &&
       !phone_alternative_enabled? && kantara_2fa_phone_restricted?
   end
 end

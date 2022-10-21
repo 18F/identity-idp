@@ -1,19 +1,10 @@
 ---
 fr:
   user_mailer:
-    account_does_not_exist:
-      intro_html: Cette adresse e-mail n’est pas encore associée à un compte
-        %{app_name}. Si vous souhaitez créer un compte %{app_name} avec cette
-        adresse e-mail, veuillez cliquer sur le lien ci-dessous ou faites un
-        copier-coller de l’intégralité du lien sur votre navigateur. Si vous
-        n’avez pas sollicité une réinitialisation de votre mot de passe, nous
-        vous prions de bien vouloir ignorer ce message.
-      link_text: Créer votre compte
-      subject: Votre demande de réinitialisation de votre mot de passe %{app_name}
     account_reset_cancel:
       intro_html: Cet e-mail confirme que vous avez annulé votre demande de
         suppression de votre compte %{app_name}.
-      subject: Supprimer votre compte
+      subject: Demande annulée
     account_reset_complete:
       intro_html: Cet e-mail confirme que vous avez supprimé votre compte %{app_name}.
       subject: Compte supprimé
@@ -70,10 +61,6 @@ fr:
       reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
         à %{app_name} pour le réinitialiser.
     contact_link_text: communiquez avec nous
-    deleted_accounts_report:
-      issuers: Émetteurs
-      name: Nom
-      subject: Rapport sur les comptes supprimés
     doc_auth_link:
       message: Vous avez demandé à vérifier votre identité sur un ordinateur de
         bureau. Veuillez vous connecter à %{sp_link}
@@ -109,6 +96,75 @@ fr:
         veuillez visiter le %{help_link} de %{app_name} ou %{contact_link}.
       subject: Adresse email supprimée
     help_link_text: Centre d’aide
+    in_person_completion_survey:
+      body:
+        cta:
+          callout: Cliquez sur le bouton ci-dessous pour commencer.
+          label: Répondez à notre enquête
+        greeting: Bonjour,
+        intent: Nous voulons connaître votre expérience en matière de vérification de
+          votre identité en personne au bureau de poste.
+        privacy_html: Vos réponses à cette enquête seront protégées conformément aux <a
+          href="%{url}">normes de confidentialité et de sécurité</a> suivantes.
+        request_description: Remplissez une courte enquête anonyme et nous utiliserons
+          vos commentaires pour nous aider à mieux répondre à vos besoins.
+        thanks: Merci d’utiliser %{app_name}.
+      header: Prenez une minute pour nous faire part de vos impressions
+      subject: Parlez-nous de votre expérience récente avec %{app_name}
+    in_person_failed:
+      body:
+        with_cta: Cliquez sur le bouton ou copiez le lien ci-dessous pour essayer de
+          vérifier à nouveau votre identité en ligne par le biais de
+          %{sp_or_app_name}. Si vous rencontrez toujours des problèmes, veuillez
+          contacter l’agence à laquelle vous essayez d’accéder.
+        without_cta: Veuillez essayer de confirmer votre identité à nouveau sur le site
+          Web de %{sp_name}. Si vous rencontrez toujours des difficultés,
+          veuillez contacter l’agence à laquelle vous essayez d’accéder.
+      intro: Votre identité n’a pas pu être vérifiée au bureau de poste de %{location}
+        le %{date}.
+      subject: Votre identité n’a pas pu être vérifiée en personne
+      verifying_identity: 'Lors de la vérification de votre identité :'
+      verifying_step_not_expired: Votre carte d’identité ou votre permis de conduire
+        délivré par l’État ne doit pas être périmé. Nous n’acceptons
+        actuellement aucune autre forme d’identification, comme les passeports
+        et les cartes d’identité militaires.
+      verifying_step_proof_of_address: Si vous tentez à nouveau de vérifier votre
+        identité en personne, vous devez apporter un justificatif de domicile
+        valable si votre adresse actuelle est différente de celle figurant sur
+        votre pièce d’identité.
+    in_person_failed_suspected_fraud:
+      body:
+        help_center_html: Si vous avez besoin d’aide supplémentaire, vous pouvez <a
+          href="%{help_center_url}">consulter notre centre d’aide</a> ou
+          contacter l’agence à laquelle vous essayez d’accéder.
+        intro: Nous comprenons que vous avez tenté de vérifier votre identité par le
+          biais de %{app_name}, mais votre identité n’a pas pu être vérifiée au
+          bureau de poste de %{location} le %{date}.
+      greeting: Bonjour,
+      subject: Votre identité n’a pas pu être vérifiée en personne
+    in_person_ready_to_verify:
+      greeting: Bonjour,
+      intro: Voici les détails pour vérifier votre identité en personne dans un bureau
+        de poste des États-Unis près de chez vous.
+      subject: Vous êtes prêt à vérifier votre identité avec %{app_name} en personne
+    in_person_verified:
+      greeting: Bonjour,
+      intro: Vous avez vérifié avec succès votre identité au bureau de poste de
+        %{location} le %{date}.
+      next_sign_in:
+        with_sp:
+          with_cta: Ensuite, cliquez sur le bouton ou copiez le lien ci-dessous pour
+            accéder à %{sp_name} et connectez-vous.
+          without_cta: Vous pouvez maintenant vous connecter à partir du site Web de
+            %{sp_name}.
+        without_sp: Ensuite, cliquez sur le bouton ou copiez le lien ci-dessous pour
+          vous connecter à %{app_name}.
+      sign_in: Se connecter
+      subject: Vous avez vérifié avec succès votre identité avec %{app_name}
+      warning_contact_us_html: Si vous n’avez pas essayé de vérifier votre identité en
+        personne, veuillez <a href="%{contact_us_url}">nous contacter</a> et
+        vous <a href="%{sign_in_url}">connecter</a> pour changer votre mot de
+        passe.
     letter_reminder:
       info_html: La lettre que vous êtes sur le point de recevoir contiendra un code
         de confirmation nous permettant de vérifier votre adresse. Vous pouvez
@@ -200,6 +256,10 @@ fr:
       subject: Activité inhabituelle — réinitialisez votre mot de passe %{app_name}
     reset_password_instructions:
       footer: Ce lien expire dans %{expires} heures.
+      gpo_letter_description: Si vous réinitialisez votre mot de passe, le code de
+        confirmation contenu dans votre lettre ne correspondra plus et vous
+        devrez de vérifier à nouveau votre identité.
+      gpo_letter_header: Votre lettre est en route
       header: Pour terminer la réinitialisation de votre mot de passe, veuillez
         cliquer sur le lien ci-dessous ou copier et coller le lien complet dans
         votre navigateur.
@@ -217,7 +277,3 @@ fr:
       link_text: Allez à %{app_name}
       reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
         à %{app_name} pour le réinitialiser.
-    sps_over_quota_limit:
-      help: ''
-      info: Certains SP ont dépassé leur limite de quota.
-      subject: Certains SP ont atteint leur limite de quota

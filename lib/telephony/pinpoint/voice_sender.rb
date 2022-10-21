@@ -17,6 +17,9 @@ module Telephony
           start = Time.zone.now
           client = build_client(voice_config)
           next if client.nil?
+
+          origination_phone_number = voice_config.longcode_pool.sample
+
           response = client.send_voice_message(
             content: {
               ssml_message: {
@@ -26,7 +29,7 @@ module Telephony
               },
             },
             destination_phone_number: to,
-            origination_phone_number: voice_config.longcode_pool.sample,
+            origination_phone_number: origination_phone_number,
           )
           finish = Time.zone.now
           return Response.new(
@@ -35,6 +38,7 @@ module Telephony
             extra: {
               message_id: response.message_id,
               duration_ms: Util.duration_ms(start: start, finish: finish),
+              origination_phone_number: origination_phone_number,
             },
           )
         rescue Aws::PinpointSMSVoice::Errors::ServiceError,

@@ -45,6 +45,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
     it 'tracks the page visit and context' do
       user = build_stubbed(:user, :with_phone, with: { phone: '+1 (703) 555-0100' })
       stub_sign_in_before_2fa(user)
+      parsed_phone = Phonelib.parse(subject.current_user.default_phone_configuration.phone)
 
       stub_analytics
       analytics_hash = {
@@ -52,6 +53,11 @@ describe TwoFactorAuthentication::OtpVerificationController do
         multi_factor_auth_method: 'sms',
         confirmation_for_add_phone: false,
         phone_configuration_id: subject.current_user.default_phone_configuration.id,
+        area_code: parsed_phone.area_code,
+        country_code: parsed_phone.country,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        enabled_mfa_methods_count: 1,
+        in_multi_mfa_selection_flow: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -81,6 +87,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
   end
 
   describe '#create' do
+    let(:parsed_phone) { Phonelib.parse(subject.current_user.default_phone_configuration.phone) }
     context 'when the user enters an invalid OTP during authentication context' do
       before do
         sign_in_before_2fa
@@ -94,10 +101,21 @@ describe TwoFactorAuthentication::OtpVerificationController do
           context: 'authentication',
           multi_factor_auth_method: 'sms',
           phone_configuration_id: subject.current_user.default_phone_configuration.id,
+          area_code: parsed_phone.area_code,
+          country_code: parsed_phone.country,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+          enabled_mfa_methods_count: 1,
+          in_multi_mfa_selection_flow: false,
         }
+
         stub_analytics
+        stub_attempts_tracker
+
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(properties)
+
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
+          with({ reauthentication: false, success: false })
 
         post :create, params:
         { code: '12345',
@@ -140,17 +158,29 @@ describe TwoFactorAuthentication::OtpVerificationController do
           context: 'authentication',
           multi_factor_auth_method: 'sms',
           phone_configuration_id: subject.current_user.default_phone_configuration.id,
+          area_code: parsed_phone.area_code,
+          country_code: parsed_phone.country,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+          enabled_mfa_methods_count: 1,
+          in_multi_mfa_selection_flow: false,
         }
 
         stub_analytics
+        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(properties)
 
         expect(@analytics).to receive(:track_event).
-                          with('Multi-Factor Authentication: max attempts reached')
+          with('Multi-Factor Authentication: max attempts reached')
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
+          with({ reauthentication: false, success: false })
+
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
+          with(mfa_device_type: 'otp')
 
         post :create, params:
         { code: '12345',
@@ -192,14 +222,37 @@ describe TwoFactorAuthentication::OtpVerificationController do
           context: 'authentication',
           multi_factor_auth_method: 'sms',
           phone_configuration_id: subject.current_user.default_phone_configuration.id,
+          area_code: parsed_phone.area_code,
+          country_code: parsed_phone.country,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+          enabled_mfa_methods_count: 1,
+          in_multi_mfa_selection_flow: false,
         }
 
         stub_analytics
+        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(properties)
         expect(@analytics).to receive(:track_event).
           with('User marked authenticated', authentication_type: :valid_2fa)
+
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
+          with(reauthentication: false, success: true)
+
+        post :create, params: {
+          code: subject.current_user.reload.direct_otp,
+          otp_delivery_preference: 'sms',
+        }
+      end
+
+      it 'tracks the attempt event with reauthentication parameter true' do
+        stub_attempts_tracker
+
+        subject.user_session[:context] = 'reauthentication'
+
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
+          with(reauthentication: true, success: true)
 
         post :create, params: {
           code: subject.current_user.reload.direct_otp,
@@ -253,6 +306,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
       describe 'when user submits an invalid OTP' do
         before do
+          stub_attempts_tracker
+
+          expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
+            with({ reauthentication: false, success: false })
           post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
         end
 
@@ -267,6 +324,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
       describe 'when user submits a valid OTP' do
         before do
+          stub_attempts_tracker
+
+          expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
+            with({ reauthentication: false, success: true })
           post :create, params: {
             code: subject.current_user.direct_otp,
             otp_delivery_preference: 'sms',
@@ -288,13 +349,20 @@ describe TwoFactorAuthentication::OtpVerificationController do
         sign_in_as_user
         subject.user_session[:unconfirmed_phone] = '+1 (703) 555-5555'
         subject.user_session[:context] = 'confirmation'
+
         @previous_phone_confirmed_at =
           MfaContext.new(subject.current_user).phone_configurations.first&.confirmed_at
+
         subject.current_user.create_direct_otp
+
         stub_analytics
+        stub_attempts_tracker
+
         allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
+
         @mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+
         subject.current_user.email_addresses.each do |email_address|
           allow(UserMailer).to receive(:phone_added).
             with(subject.current_user, email_address, disavowal_token: instance_of(String)).
@@ -306,7 +374,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
       context 'user has an existing phone number' do
         context 'user enters a valid code' do
           before do
-            phone_id = MfaContext.new(subject.current_user).phone_configurations.last.id
+            phone_configuration = MfaContext.new(subject.current_user).phone_configurations.last
+            phone_id = phone_configuration.id
+            parsed_phone = Phonelib.parse(phone_configuration.phone)
 
             properties = {
               success: true,
@@ -315,11 +385,20 @@ describe TwoFactorAuthentication::OtpVerificationController do
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
               phone_configuration_id: phone_id,
+              area_code: parsed_phone.area_code,
+              country_code: parsed_phone.country,
+              phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+              enabled_mfa_methods_count: 1,
+              in_multi_mfa_selection_flow: false,
             }
 
             expect(@analytics).to receive(:track_event).
               with('Multi-Factor Authentication Setup', properties)
             controller.user_session[:phone_id] = phone_id
+
+            expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_submitted).
+              with(success: true)
+
             post(
               :create,
               params: {
@@ -337,16 +416,30 @@ describe TwoFactorAuthentication::OtpVerificationController do
           it 'tracks the update event and notifies via email about number change' do
             expect(subject).to have_received(:create_user_event).with(:phone_changed)
             expect(subject).to have_received(:create_user_event).exactly(:once)
-            subject.current_user.email_addresses.each do |email_address|
-              expect(UserMailer).to have_received(:phone_added).
-                with(subject.current_user, email_address, disavowal_token: instance_of(String))
-            end
-            expect(@mailer).to have_received(:deliver_now_or_later)
+
+            expect_delivered_email_count(1)
+            expect_delivered_email(
+              0, {
+                to: [subject.current_user.email_addresses.first.email],
+                subject: t('user_mailer.phone_added.subject'),
+              }
+            )
           end
         end
 
         context 'user enters an invalid code' do
-          before { post :create, params: { code: '999', otp_delivery_preference: 'sms' } }
+          before do
+            expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_submitted).
+              with(success: false)
+
+            post(
+              :create,
+              params: {
+                code: '999',
+                otp_delivery_preference: 'sms',
+              },
+            )
+          end
 
           it 'increments second_factor_attempts_count' do
             expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
@@ -378,10 +471,28 @@ describe TwoFactorAuthentication::OtpVerificationController do
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
               phone_configuration_id: subject.current_user.default_phone_configuration.id,
+              area_code: parsed_phone.area_code,
+              country_code: parsed_phone.country,
+              phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+              enabled_mfa_methods_count: 1,
+              in_multi_mfa_selection_flow: false,
             }
 
             expect(@analytics).to have_received(:track_event).
               with('Multi-Factor Authentication Setup', properties)
+          end
+
+          context 'user has exceeded the maximum number of attempts' do
+            it 'tracks the attempt event' do
+              allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
+              sign_in_before_2fa
+
+              stub_attempts_tracker
+              expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_rate_limited).
+                with(mfa_device_type: 'otp')
+
+              post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
+            end
           end
         end
 
@@ -415,6 +526,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           end
 
           it 'tracks the confirmation event' do
+            parsed_phone = Phonelib.parse('+1 (703) 555-5555')
             properties = {
               success: true,
               errors: {},
@@ -422,6 +534,11 @@ describe TwoFactorAuthentication::OtpVerificationController do
               multi_factor_auth_method: 'sms',
               confirmation_for_add_phone: false,
               phone_configuration_id: nil,
+              area_code: parsed_phone.area_code,
+              country_code: parsed_phone.country,
+              phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+              enabled_mfa_methods_count: 0,
+              in_multi_mfa_selection_flow: false,
             }
 
             expect(@analytics).to have_received(:track_event).

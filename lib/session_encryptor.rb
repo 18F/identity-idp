@@ -5,15 +5,16 @@ class SessionEncryptor
   NEW_CIPHERTEXT_HEADER = 'v2'
   SENSITIVE_KEYS = [
     'first_name', 'middle_name', 'last_name', 'address1', 'address2', 'city', 'state', 'zipcode',
-    'zip_code', 'dob', 'phone_number', 'phone', 'ssn', 'prev_address1', 'prev_address2',
-    'prev_city', 'prev_state', 'prev_zipcode', 'pii', 'pii_from_doc', 'pii_from_user', 'password',
-    'personal_key', 'email', 'email_address', 'unconfirmed_phone'
+    'zip_code', 'same_address_as_id', 'dob', 'phone_number', 'phone', 'ssn', 'prev_address1',
+    'prev_address2', 'prev_city', 'prev_state', 'prev_zipcode', 'pii', 'pii_from_doc',
+    'pii_from_user', 'password', 'personal_key', 'email', 'email_address', 'unconfirmed_phone'
   ].to_set.freeze
 
   # 'idv/doc_auth' and 'idv' are used during the proofing process and can contain PII
   # personal keys are generated and stored in the session between requests, but are used
   # to decrypt PII bundles, so we treat them similarly to the PII itself.
   SENSITIVE_PATHS = [
+    ['warden.user.user.session', 'idv/inherited_proofing'],
     ['warden.user.user.session', 'idv/doc_auth'],
     ['warden.user.user.session', 'idv/in_person'],
     ['warden.user.user.session', 'idv'],

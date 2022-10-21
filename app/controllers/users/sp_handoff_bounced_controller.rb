@@ -1,7 +1,7 @@
 module Users
   class SpHandoffBouncedController < Devise::SessionsController
     def bounced
-      analytics.track_event(Analytics::SP_HANDOFF_BOUNCED_VISIT)
+      analytics.sp_handoff_bounced_visit
       @sp_name = I18n.t('instructions.sp_handoff_bounced_with_no_sp')
       update_sp_info
     end

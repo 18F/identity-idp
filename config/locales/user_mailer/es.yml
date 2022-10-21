@@ -1,18 +1,10 @@
 ---
 es:
   user_mailer:
-    account_does_not_exist:
-      intro_html: Esta dirección de correo electrónico aún no está asociada con una
-        cuenta %{app_name}. Si quieres crear una cuenta %{app_name} usando esta
-        dirección de correo electrónico, haz clic en el siguiente enlace o copia
-        y pega el enlace completo en tu navegador. Si no has solicitado
-        restablecer tu contraseña puedes ignorar este mensaje.
-      link_text: Crea tu cuenta
-      subject: Tu solicitud para restablecer tu contraseña de %{app_name}
     account_reset_cancel:
       intro_html: Este correo electrónico confirma que ha cancelado su solicitud para
         eliminar su cuenta de %{app_name}.
-      subject: Eliminar su cuenta
+      subject: Solicitud cancelada
     account_reset_complete:
       intro_html: Este correo electrónico confirma que ha eliminado su cuenta de
         %{app_name}.
@@ -67,10 +59,6 @@ es:
       link_text: Ir a %{app_name}
       reset_password_html: Si no recuerda su contraseña, vaya a %{app_name} para restablecerla.
     contact_link_text: Contáctenos
-    deleted_accounts_report:
-      issuers: Emisores
-      name: Nombre
-      subject: Informe de cuentas eliminadas
     doc_auth_link:
       message: Ha solicitado verificar su identidad en una computadora de escritorio.
         Inicie sesión en %{sp_link}
@@ -106,6 +94,73 @@ es:
         %{app_name} %{help_link} o el %{contact_link}.
       subject: Dirección de correo electrónico eliminada
     help_link_text: Centro de Ayuda
+    in_person_completion_survey:
+      body:
+        cta:
+          callout: Haga clic en el botón de abajo para empezar.
+          label: Tome nuestra encuesta
+        greeting: Hola,
+        intent: Queremos conocer su experiencia al verificar su identidad en persona en
+          la oficina de correos.
+        privacy_html: Sus respuestas a esta encuesta estarán protegidas conforme a <a
+          href="%{url}">los siguientes estándares de privacidad y seguridad</a>.
+        request_description: Responde una breve encuesta anónima y su opinión nos
+          ayudará a atender mejor tus necesidades.
+        thanks: Gracias por utilizar %{app_name}.
+      header: Tómese un minuto para decirnos cómo lo hicimos
+      subject: Cuéntenos su experiencia reciente con %{app_name}
+    in_person_failed:
+      body:
+        with_cta: Haga clic en el botón o copie el enlace siguiente para volver a
+          intentar verificar su identidad en línea con %{sp_or_app_name}. Si
+          sigue teniendo problemas, póngase en contacto con la agencia a la que
+          intenta acceder.
+        without_cta: Vuelva a comprobar su identidad desde el sitio web de la
+          %{sp_name}. En caso de persistir los problemas, contacte con la
+          agencia a la que intenta entrar.
+      intro: El %{date}, no se pudo verificar su identidad en la oficina de correos de
+        %{location}.
+      subject: No se pudo verificar su identidad en persona
+      verifying_identity: 'Al verificar su identidad:'
+      verifying_step_not_expired: Su documento de identidad o permiso de conducir
+        emitido por el estado debe estar vigente. Por el momento, no aceptamos
+        otras formas de identificación, como pasaportes o cartillas militares.
+      verifying_step_proof_of_address: Si vuelve a intentar verificar su identidad en
+        persona, deberá llevar un comprobante de domicilio vigente si su
+        dirección actual es distinta de la que aparece en su documento de
+        identidad.
+    in_person_failed_suspected_fraud:
+      body:
+        help_center_html: Si necesita ayuda adicional, puede <a
+          href="%{help_center_url}">visitar nuestro Centro de Ayuda</a> o
+          ponerse en contacto con la agencia a la que intenta acceder.
+        intro: Entendemos que estaba intentando verificar su identidad a través de
+          %{app_name}, sin embargo, su identidad no pudo ser verificada en la
+          oficina de correos de %{location} el %{date}.
+      greeting: Hola,
+      subject: No se pudo verificar su identidad en persona
+    in_person_ready_to_verify:
+      greeting: Hola,
+      intro: Estos son los detalles para verificar su identidad en persona en una
+        oficina de correos de los Estados Unidos cercana a usted.
+      subject: Está listo para verificar su identidad con %{app_name} en persona
+    in_person_verified:
+      greeting: Hola,
+      intro: El %{date}, verificó correctamente su identidad en la oficina de correos
+        de %{location}.
+      next_sign_in:
+        with_sp:
+          with_cta: Seguidamente, haga clic en el botón o copie el siguiente enlace para
+            poder entrar en la %{sp_name} e inicie la sesión.
+          without_cta: Ya puede iniciar la sesión desde el sitio web de la %{sp_name}.
+        without_sp: Luego, haga clic en el botón o copie el enlace que aparece a
+          continuación para iniciar sesión en %{app_name}.
+      sign_in: Iniciar sesión
+      subject: Verificó correctamente su identidad con %{app_name}
+      warning_contact_us_html: Si usted no intentó verificar su identidad en persona,
+        por favor, póngase en <a href="%{contact_us_url}">contacto con
+        nosotros</a> e <a href="%{sign_in_url}">inicie sesión</a> para cambiar
+        su contraseña.
     letter_reminder:
       info_html: La carta que está a punto de recibir contendrá un código de
         confirmación que nos ayudará a verificar su dirección. Puede completar
@@ -190,6 +245,10 @@ es:
       subject: Actividad inusual — restablezca su contraseña de %{app_name}
     reset_password_instructions:
       footer: Este enlace expira en %{expires} horas.
+      gpo_letter_description: Si restablece su contraseña, el código de confirmación
+        que figura en su carta dejará de funcionar y tendrá que volver a
+        verificar su identidad.
+      gpo_letter_header: Su carta está en camino
       header: Para terminar de restablecer su contraseña, haga clic en el enlace de
         abajo o copie y pegue el enlace completo en su navegador.
       link_text: Restablezca su contraseña
@@ -203,7 +262,3 @@ es:
         una sesión con este email, puede ignorar este mensaje.
       link_text: Ir a %{app_name}
       reset_password_html: Si no recuerda su contraseña, vaya a %{app_name} para restablecerla.
-    sps_over_quota_limit:
-      help: ''
-      info: Hay SP que han superado su límite de cuota.
-      subject: Algunos SP han alcanzado su límite de cuota.

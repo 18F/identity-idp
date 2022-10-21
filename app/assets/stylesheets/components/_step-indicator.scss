@@ -1,6 +1,5 @@
 $step-indicator-current-step-border-width: 3px;
 $step-indicator-line-height: 4px;
-$step-indicator-pending-color: #a8b6c6;
 
 lg-step-indicator {
   display: block;
@@ -106,13 +105,9 @@ lg-step-indicator {
   border: $step-indicator-current-step-border-width solid color('success');
 }
 
-.step-indicator__step--complete:not(.step-indicator__step--pending)::before {
+.step-indicator__step--complete::before {
   background-color: color('white');
   background-image: url('alert/success.svg');
-}
-
-.step-indicator__step--pending::before {
-  background-image: url('alert/pending.svg');
 }
 
 .step-indicator__step:not(:last-child)::after {
@@ -126,11 +121,7 @@ lg-step-indicator {
   width: calc(100% - 1rem - #{$step-indicator-line-height * 2});
 }
 
-.step-indicator__step--pending:not(:last-child)::after {
-  background-color: $step-indicator-pending-color;
-}
-
-.step-indicator__step--complete:not(.step-indicator__step--pending):not(:last-child)::after {
+.step-indicator__step--complete:not(:last-child)::after {
   background-color: color('success');
 }
 

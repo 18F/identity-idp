@@ -20,8 +20,7 @@ RSpec.describe 'proofing components' do
 
       expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
 
-      complete_all_doc_auth_steps
-      click_idv_continue
+      complete_all_doc_auth_steps_before_password_step
       fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
       click_continue
       acknowledge_and_confirm_personal_key
@@ -52,7 +51,7 @@ RSpec.describe 'proofing components' do
 
   it 'clears liveness enabled proofing component when user re-proofs without liveness', js: true do
     allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-    user = user_with_2fa
+    user = user_with_totp_2fa
     sign_in_and_2fa_user(user)
     visit_idp_from_oidc_sp_with_ial2_strict
     complete_proofing_steps
@@ -64,7 +63,7 @@ RSpec.describe 'proofing components' do
 
     trigger_reset_password_and_click_email_link(user.email)
     reset_password_and_sign_back_in(user, user.password)
-    fill_in_code_with_last_phone_otp
+    fill_in_code_with_last_totp(user)
     click_submit_default
 
     expect(user.reload.profiles.where(active: true)).to be_empty

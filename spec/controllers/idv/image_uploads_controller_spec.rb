@@ -36,8 +36,9 @@ describe Idv::ImageUploadsController do
         ]
       end
 
-      it 'tracks analytics' do
+      it 'tracks events' do
         stub_analytics
+        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_event).with(
           'IdV: doc auth image upload form submitted,',
@@ -57,6 +58,11 @@ describe Idv::ImageUploadsController do
 
         expect(@analytics).not_to receive(:track_event).with(
           'IdV: doc auth image upload vendor submitted',
+          any_args,
+        )
+
+        expect(@irs_attempts_api_tracker).not_to receive(:track_event).with(
+          :idv_document_upload_submitted,
           any_args,
         )
 
@@ -91,8 +97,9 @@ describe Idv::ImageUploadsController do
         end
       end
 
-      it 'tracks analytics' do
+      it 'tracks events' do
         stub_analytics
+        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_event).with(
           'IdV: doc auth image upload form submitted',
@@ -108,6 +115,11 @@ describe Idv::ImageUploadsController do
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+        )
+
+        expect(@irs_attempts_api_tracker).not_to receive(:track_event).with(
+          :idv_document_upload_submitted,
+          any_args,
         )
 
         expect(@analytics).not_to receive(:track_event).with(
@@ -159,6 +171,7 @@ describe Idv::ImageUploadsController do
             success: false,
             errors: [{ field: 'front', message: 'Please fill in this field.' }],
             remaining_attempts: Throttle.max_attempts(:idv_doc_auth) - 2,
+            result_failed: false,
             ocr_pii: nil,
           },
         )
@@ -176,15 +189,17 @@ describe Idv::ImageUploadsController do
             errors: [{ field: 'limit', message: 'We could not verify your ID' }],
             redirect: idv_session_errors_throttled_url,
             remaining_attempts: 0,
+            result_failed: false,
             ocr_pii: nil,
           },
         )
       end
 
-      it 'tracks analytics' do
+      it 'tracks events' do
         Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
 
         stub_analytics
+        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_event).with(
           'IdV: doc auth image upload form submitted',
@@ -200,6 +215,11 @@ describe Idv::ImageUploadsController do
           remaining_attempts: 0,
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+        )
+
+        expect(@irs_attempts_api_tracker).not_to receive(:track_event).with(
+          :idv_document_upload_submitted,
+          any_args,
         )
 
         expect(@analytics).not_to receive(:track_event).with(
@@ -222,8 +242,9 @@ describe Idv::ImageUploadsController do
         expect(document_capture_session.reload.load_result.success?).to eq(true)
       end
 
-      it 'tracks analytics' do
+      it 'tracks events' do
         stub_analytics
+        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_event).with(
           'IdV: doc auth image upload form submitted',
@@ -270,6 +291,20 @@ describe Idv::ImageUploadsController do
           flow_path: 'standard',
         )
 
+        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+          :idv_document_upload_submitted,
+          success: true,
+          failure_reason: nil,
+          document_state: 'MT',
+          document_number: '1111111111111',
+          document_issued: '2019-12-31',
+          document_expiration: '2099-12-31',
+          first_name: 'FAKEY',
+          last_name: 'MCFAKERSON',
+          date_of_birth: '1938-10-06',
+          address: '1 FAKE RD',
+        )
+
         action
 
         expect_funnel_update_counts(user, 1)
@@ -305,6 +340,7 @@ describe Idv::ImageUploadsController do
 
           it 'tracks name validation errors in analytics' do
             stub_analytics
+            stub_attempts_tracker
 
             expect(@analytics).to receive(:track_event).with(
               'IdV: doc auth image upload form submitted',
@@ -356,6 +392,20 @@ describe Idv::ImageUploadsController do
               flow_path: 'standard',
             )
 
+            expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+              :idv_document_upload_submitted,
+              success: true,
+              failure_reason: nil,
+              document_state: 'ND',
+              document_number: nil,
+              document_issued: nil,
+              document_expiration: nil,
+              first_name: nil,
+              last_name: 'MCFAKERSON',
+              date_of_birth: '10/06/1938',
+              address: nil,
+            )
+
             action
           end
         end
@@ -365,6 +415,7 @@ describe Idv::ImageUploadsController do
 
           it 'tracks state validation errors in analytics' do
             stub_analytics
+            stub_attempts_tracker
 
             expect(@analytics).to receive(:track_event).with(
               'IdV: doc auth image upload form submitted',
@@ -416,6 +467,20 @@ describe Idv::ImageUploadsController do
               flow_path: 'standard',
             )
 
+            expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+              :idv_document_upload_submitted,
+              success: true,
+              failure_reason: nil,
+              document_state: 'Maryland',
+              document_number: nil,
+              document_issued: nil,
+              document_expiration: nil,
+              first_name: 'FAKEY',
+              last_name: 'MCFAKERSON',
+              date_of_birth: '10/06/1938',
+              address: nil,
+            )
+
             action
           end
         end
@@ -425,6 +490,7 @@ describe Idv::ImageUploadsController do
 
           it 'tracks dob validation errors in analytics' do
             stub_analytics
+            stub_attempts_tracker
 
             expect(@analytics).to receive(:track_event).with(
               'IdV: doc auth image upload form submitted',
@@ -476,6 +542,20 @@ describe Idv::ImageUploadsController do
               flow_path: 'standard',
             )
 
+            expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+              :idv_document_upload_submitted,
+              success: true,
+              failure_reason: nil,
+              document_state: 'ND',
+              document_number: nil,
+              document_issued: nil,
+              document_expiration: nil,
+              first_name: 'FAKEY',
+              last_name: 'MCFAKERSON',
+              date_of_birth: nil,
+              address: nil,
+            )
+
             action
           end
         end
@@ -507,8 +587,9 @@ describe Idv::ImageUploadsController do
         ]
       end
 
-      it 'tracks analytics' do
+      it 'tracks events' do
         stub_analytics
+        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_event).with(
           'IdV: doc auth image upload form submitted',
@@ -545,6 +626,22 @@ describe Idv::ImageUploadsController do
           flow_path: 'standard',
         )
 
+        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+          :idv_document_upload_submitted,
+          success: false,
+          failure_reason: {
+            front: [I18n.t('doc_auth.errors.general.multiple_front_id_failures')],
+          },
+          document_state: nil,
+          document_number: nil,
+          document_issued: nil,
+          document_expiration: nil,
+          first_name: nil,
+          last_name: nil,
+          date_of_birth: nil,
+          address: nil,
+        )
+
         action
 
         expect_funnel_update_counts(user, 1)
@@ -569,8 +666,9 @@ describe Idv::ImageUploadsController do
         ]
       end
 
-      it 'tracks analytics' do
+      it 'tracks events' do
         stub_analytics
+        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_event).with(
           'IdV: doc auth image upload form submitted',
@@ -607,6 +705,23 @@ describe Idv::ImageUploadsController do
           },
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+        )
+
+        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+          :idv_document_upload_submitted,
+          success: false,
+          failure_reason: {
+            general: [I18n.t('doc_auth.errors.alerts.barcode_content_check')],
+            back: [I18n.t('doc_auth.errors.general.fallback_field_level')],
+          },
+          document_state: nil,
+          document_number: nil,
+          document_issued: nil,
+          document_expiration: nil,
+          first_name: nil,
+          last_name: nil,
+          date_of_birth: nil,
+          address: nil,
         )
 
         action

@@ -288,6 +288,30 @@ describe Profile do
     end
   end
 
+  describe '#has_proofed_before' do
+    it 'is false when the user has only been activated once' do
+      profile.activate
+      expect(profile.has_proofed_before?).to be_falsey
+    end
+
+    it 'is true when the user is re-activated' do
+      existing_profile = Profile.create(user: user)
+      existing_profile.activate
+      profile.activate
+
+      existing_profile.reload
+      profile.reload
+
+      # Now, existing_profile should be deactivated
+      expect(existing_profile.active).to be_falsey
+      expect(existing_profile.activated_at).to_not be_nil
+      expect(profile.active).to be_truthy
+      expect(profile.activated_at).to_not be_nil
+
+      expect(profile.has_proofed_before?).to be_truthy
+    end
+  end
+
   describe '#activate' do
     it 'activates current Profile, de-activates all other Profile for the user' do
       active_profile = Profile.create(user: user, active: true)

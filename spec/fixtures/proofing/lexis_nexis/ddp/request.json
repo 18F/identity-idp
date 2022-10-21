@@ -1,0 +1,27 @@
+{
+  "api_key": "test_api_key",
+  "org_id": "test_org_id",
+  "account_address_street1": "123 Main St",
+  "account_address_street2": "Ste 3",
+  "account_address_city": "Baton Rouge",
+  "account_address_state": "LA",
+  "account_address_country": "US",
+  "account_address_zip": "70802-12345",
+  "account_date_of_birth": "19800101",
+  "account_email": "test@example.com",
+  "account_first_name": "Testy",
+  "account_last_name": "McTesterson",
+  "account_telephone": "",
+  "account_drivers_license_number": "12345678",
+  "account_drivers_license_type": "us_dl",
+  "account_drivers_license_issuer" : "LA",
+  "event_type": "ACCOUNT_CREATION",
+  "policy": "test-policy",
+  "service_type": "all",
+  "session_id": "UNIQUE_SESSION_ID",
+  "national_id_number": "123456789",
+  "national_id_type": "US_SSN",
+  "input_ip_address": "127.0.0.1",
+  "local_attrib_1": "ABCD"
+
+}

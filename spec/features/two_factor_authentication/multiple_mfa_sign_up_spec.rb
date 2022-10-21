@@ -32,7 +32,7 @@ feature 'Multi Two Factor Authentication' do
 
       click_continue
 
-      expect(page).to have_link(t('forms.backup_code.download'))
+      expect(page).to have_link(t('components.download_button.label'))
 
       click_continue
 
@@ -93,7 +93,7 @@ feature 'Multi Two Factor Authentication' do
 
       click_continue
 
-      expect(page).to have_link(t('forms.backup_code.download'))
+      expect(page).to have_link(t('components.download_button.label'))
 
       click_continue
 
@@ -108,7 +108,7 @@ feature 'Multi Two Factor Authentication' do
       expect(current_path).to eq account_path
     end
 
-    scenario 'user can select 1 MFA methods and cancels selecting second mfa' do
+    scenario 'user can select 1 MFA methods and skips selecting second mfa' do
       sign_in_before_2fa
 
       expect(current_path).to eq authentication_methods_setup_path
@@ -121,7 +121,7 @@ feature 'Multi Two Factor Authentication' do
 
       click_continue
 
-      expect(page).to have_link(t('forms.backup_code.download'))
+      expect(page).to have_link(t('components.download_button.label'))
 
       click_continue
 
@@ -135,43 +135,10 @@ feature 'Multi Two Factor Authentication' do
 
       expect(page).to have_current_path(second_mfa_setup_path)
 
-      click_link t('links.cancel')
+      click_link t('mfa.skip')
 
       expect(page).to have_current_path(account_path)
     end
-  end
-
-  scenario 'redirects to the second_mfa path with an error' do
-    sign_in_before_2fa
-
-    expect(current_path).to eq authentication_methods_setup_path
-
-    click_2fa_option('backup_code')
-
-    click_continue
-
-    expect(current_path).to eq backup_code_setup_path
-
-    click_continue
-
-    expect(page).to have_link(t('forms.backup_code.download'))
-
-    click_continue
-
-    expect(page).to have_content(t('notices.backup_codes_configured'))
-
-    expect(page).to have_current_path(
-      auth_method_confirmation_path,
-    )
-
-    click_link t('mfa.add')
-
-    expect(page).to have_current_path(second_mfa_setup_path)
-
-    click_continue
-
-    expect(page).
-      to have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
   end
 
   describe 'user attempts to submit with only the phone MFA method selected', js: true do
@@ -183,7 +150,7 @@ feature 'Multi Two Factor Authentication' do
 
     scenario 'redirects to the two_factor path with an error and phone option selected' do
       expect(page).
-      to have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
+        to have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
       expect(
         URI.parse(current_url).path + '#' + URI.parse(current_url).fragment,
       ).to eq authentication_methods_setup_path(anchor: 'select_phone')
@@ -192,7 +159,7 @@ feature 'Multi Two Factor Authentication' do
     scenario 'clears the error when another mfa method is selected' do
       click_2fa_option('backup_code')
       expect(page).
-         to_not have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
+        to_not have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
     end
 
     scenario 'clears the error when phone mfa method is unselected' do

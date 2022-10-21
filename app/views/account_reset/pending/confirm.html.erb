@@ -3,6 +3,7 @@
 <%= button_to(
       account_reset_pending_cancel_path,
       class: 'usa-button usa-button--wide usa-button--big margin-bottom-2',
+      method: :post,
     ) { t('forms.buttons.continue') } %>
 
 <%= link_to(t('links.go_back'), account_reset_pending_path) %>

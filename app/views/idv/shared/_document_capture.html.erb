@@ -20,7 +20,7 @@
       ),
       document_capture_session_uuid: flow_session[:document_capture_session_uuid],
       endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
-    send(@step_url, step: :verify_document) :
+    api_verify_v2_document_capture_url :
     api_verify_images_url,
       status_endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
     send(@step_url, step: :verify_document_status) :
@@ -29,6 +29,10 @@
       sharpness_threshold: IdentityConfig.store.doc_auth_client_sharpness_threshold,
       status_poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
       max_capture_attempts_before_tips: IdentityConfig.store.doc_auth_max_capture_attempts_before_tips,
+      max_capture_attempts_before_native_camera: IdentityConfig.store.doc_auth_max_capture_attempts_before_native_camera,
+      max_submission_attempts_before_native_camera: IdentityConfig.store.doc_auth_max_submission_attempts_before_native_camera,
+      native_camera_a_b_testing_enabled: native_camera_a_b_testing_enabled,
+      native_camera_only: native_camera_only,
       sp_name: sp_name,
       flow_path: flow_path,
       cancel_url: idv_cancel_path,
@@ -37,9 +41,10 @@
       back_image_upload_url: back_image_upload_url,
       selfie_image_upload_url: selfie_image_upload_url,
       keep_alive_endpoint: sessions_keepalive_url,
-      idv_in_person_url: IdentityConfig.store.in_person_proofing_enabled ? idv_in_person_url : nil,
+      idv_in_person_url: Idv::InPersonConfig.enabled_for_issuer?(decorated_session.sp_issuer) ? idv_in_person_url : nil,
+      security_and_privacy_how_it_works_url: MarketingSite.security_and_privacy_how_it_works_url,
     } %>
-  <%= validated_form_for(
+  <%= simple_form_for(
         :doc_auth,
         url: url_for,
         method: 'PUT',

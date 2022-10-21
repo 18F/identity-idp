@@ -1,3 +1,8 @@
+require_relative 'idv_helper'
+require_relative 'javascript_driver_helper'
+require_relative 'doc_auth_helper'
+require_relative '../saml_auth_helper'
+
 module IdvStepHelper
   def self.included(base)
     base.class_eval do
@@ -24,11 +29,20 @@ module IdvStepHelper
   def complete_phone_step(user)
     fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
     click_idv_continue
+    verify_phone_otp
+  end
+
+  def enter_gpo_flow
+    click_on t('idv.troubleshooting.options.verify_by_mail')
   end
 
   def complete_idv_steps_before_gpo_step(user = user_with_2fa)
     complete_idv_steps_before_phone_step(user)
-    click_on t('idv.troubleshooting.options.verify_by_mail')
+    enter_gpo_flow
+  end
+
+  def gpo_step
+    click_on t('idv.buttons.mail.send')
   end
 
   def complete_idv_steps_before_phone_otp_delivery_selection_step(user = user_with_2fa)
@@ -43,23 +57,11 @@ module IdvStepHelper
   end
 
   def complete_idv_steps_with_phone_before_review_step(user = user_with_2fa)
-    if IdentityConfig.store.idv_api_enabled_steps.include?('password_confirm')
-      sign_in_and_2fa_user(user)
-      stub_idv_session(
-        applicant: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE,
-        resolution_successful: true,
-        address_verification_mechanism: 'phone',
-        user_phone_confirmation: true,
-        vendor_phone_confirmation: true,
-      )
-      visit idv_app_path(step: :password_confirm)
-    else
-      complete_idv_steps_before_phone_step(user)
-      complete_phone_step(user)
-    end
+    complete_idv_steps_before_phone_step(user)
+    complete_phone_step(user)
   end
 
-  def complete_review_step(user)
+  def complete_review_step(user = user_with_2fa)
     password = user.password || user_password
     fill_in 'Password', with: password
     click_idv_continue
@@ -73,18 +75,8 @@ module IdvStepHelper
   alias complete_idv_steps_before_review_step complete_idv_steps_with_phone_before_review_step
 
   def complete_idv_steps_with_gpo_before_review_step(user = user_with_2fa)
-    if IdentityConfig.store.idv_api_enabled_steps.include?('password_confirm')
-      sign_in_and_2fa_user(user)
-      stub_idv_session(
-        applicant: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
-        resolution_successful: 'phone',
-        address_verification_mechanism: 'gpo',
-      )
-      visit idv_app_path(step: :password_confirm)
-    else
-      complete_idv_steps_before_gpo_step(user)
-      click_on t('idv.buttons.mail.send')
-    end
+    complete_idv_steps_before_gpo_step(user)
+    gpo_step
   end
 
   def complete_idv_steps_with_gpo_before_confirmation_step(user = user_with_2fa)
@@ -104,6 +96,10 @@ module IdvStepHelper
 
   def complete_idv_steps_before_step(step, user = user_with_2fa)
     send("complete_idv_steps_before_#{step}_step", user)
+  end
+
+  def expect_step_indicator_current_step(text)
+    expect(page).to have_css('.step-indicator__step--current', text: text)
   end
 
   private

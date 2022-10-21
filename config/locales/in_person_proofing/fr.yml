@@ -3,24 +3,76 @@ fr:
   in_person_proofing:
     body:
       address:
-        info: Si votre adresse actuelle ne correspond pas à l’adresse sur votre pièce
-          d’identité, vous devrez apporter une preuve de votre adresse actuelle
-          au bureau de poste.
+        info: Si votre adresse actuelle ne correspond pas à l’adresse figurant sur votre
+          document d’identité, vous devrez apporter une preuve de votre adresse
+          actuelle au bureau de poste.
         learn_more: Apprendre encore plus
+      barcode:
+        deadline: La date limite pour vérifier votre identité en personne est le
+          %{deadline}.
+        deadline_restart: Si vous partez après la date limite, vos informations ne
+          seront pas sauvegardées et vous devrez recommencer le processus.
+        emailed_info: Nous avons envoyé ces informations à l’adresse électronique que
+          vous avez utilisée pour vous connecter.
+        items_to_bring: 'Apportez ces articles avec vous au bureau de poste:'
+        items_to_bring_questions: Des questions sur ce qu’il faut apporter?
+        learn_more: En savoir plus
+        location_details: Détails de l’emplacement
+        no_appointment_required: Aucun rendez-vous n’est exigé.
+        retail_hours: Heures de vente au détail
+        retail_hours_closed: Fermé
+        retail_phone_label: Numéro de téléphone
+        speak_to_associate: Vous pouvez vous adresser à n’importe quel employé de ce
+          bureau de poste pour faire vérifier votre identité.
+      location:
+        location_button: Sélectionner
+        location_step_about: Si vous ne parvenez pas à ajouter votre pièce d’identité,
+          vous pourrez peut-être vérifier en personne dans un bureau de poste
+          américain local dans certains endroits.
+        none_found: Aucun endroit trouvé.
+        post_office: Bureau de Poste
+        retail_hours_heading: Heures de vente au détail
+        retail_hours_sat: 'Sam:'
+        retail_hours_sun: 'Dim:'
+        retail_hours_weekday: 'Lundi à Vendredi:'
+      prepare:
+        alert_selected_post_office: 'Vous avez sélectionné le bureau de poste de %{name}.'
+        bring_barcode_header: Une copie de votre code-barres
+        bring_barcode_info: 'Nous vous donnerons un code unique qui expirera dans les 30 jours.'
+        bring_id_header: 'Votre document d’identité délivré par l’État'
+        bring_id_info_acceptable: 'Votre pièce d’identité ne doit pas être expirée. Les
+          formes d’identification acceptables sont:'
+        bring_id_info_dl: Permis de conduire d’État
+        bring_id_info_id_card: 'Document d’identité de non-conducteur d’État'
+        bring_id_info_no_other_forms: Nous n’acceptons actuellement aucune autre forme
+          d’identification, comme les passeports et les documents d’identité
+          militaires.
+        bring_title: 'Lorsque vous allez au bureau de poste, veuillez apporter:'
+        privacy_disclaimer: '%{app_name} est un site gouvernemental sécurisé. Nous et le
+          service postal américain utilisons vos données pour vérifier votre
+          identité.'
+        privacy_disclaimer_link: En savoir plus sur la confidentialité et la sécurité.
+        privacy_disclaimer_questions: Vous avez des questions?
+        verify_step_about: 'Suivez les étapes ci-dessous pour générer le code-barres que
+          vous emporterez avec vous au bureau de poste:'
+        verify_step_enter_phone: Entrez un numéro de téléphone avec votre nom sur le contrat.
+        verify_step_enter_pii: 'Saisissez votre nom, votre date de naissance, votre
+          document d’identité délivré par l’État, votre adresse et votre numéro
+          de sécurité sociale.'
       state_id:
-        info_html: 'Entrez les informations <strong>exactement telles qu’elles
-          apparaissent sur votre pièce d’identité délivrée par l’État.</strong>
-          Nous utiliserons ces informations pour confirmer qu’elles
-          correspondent à votre pièce d’identité en personne.'
+        info_html: 'Saisissez les informations <strong>exactement comme elles figurent
+          sur votre document d’identité nationale.</strong> Nous utiliserons ces
+          informations pour confirmer qu’elles correspondent à votre pièce
+          d’identité en personne.'
     form:
       address:
         address1: Adresse
         address2: Adresse (facultatif)
         city: Ville
-        same_address: Cette adresse est-elle affichée sur la pièce d’identité délivrée
-          par l’État que vous apportez au bureau de poste?
-        same_address_choice_no: J’ai une adresse différente sur ma carte d’identité
-        same_address_choice_yes: Cette adresse figure sur ma pièce d’identité délivrée par l’État
+        same_address: Cette adresse figure-t-elle sur la pièce d’identité délivrée par
+          l’État que vous apportez au bureau de poste?
+        same_address_choice_no: J’ai une adresse différente sur mon document d’identité
+        same_address_choice_yes: Cette adresse figure sur mon document d’identité nationale
         state: État
         state_prompt: '- Sélectionnez -'
         zipcode: Code postal
@@ -29,16 +81,52 @@ fr:
         dob_hint: 'Exemple: 4 28 1986'
         first_name: Prénom
         last_name: Nom de famille
+        memorable_date:
+          errors:
+            date_of_birth:
+              missing_month_day_year: 'Entrez une date de naissance'
+              range_min_age: 'Vous devez avoir plus de 13 ans pour utiliser %{app_name}'
+              range_overflow: 'Entrez une date qui est dans le passé'
         state_id_jurisdiction: État
-        state_id_jurisdiction_hint: Sélectionnez l’état indiqué sur votre pièce d’identité
+        state_id_jurisdiction_hint: Sélectionnez l’État figurant sur votre document d’identité
         state_id_jurisdiction_prompt: '- Sélectionnez -'
         state_id_number: Numéro d’identification
-        state_id_number_hint: Peut inclure des chiffres et des lettres
+        state_id_number_hint: Peut comprendre des lettres et des chiffres
     headings:
       address: Entrez votre adresse actuelle
       barcode: Vous êtes prêt à vérifier votre identité en personne
-      location: Sélectionnez un emplacement pour vérifier votre identité
-      state_id: Entrez les informations sur votre pièce d’identité
+      location: Sélectionnez un lieu pour vérifier votre identité
+      prepare: Vérifiez votre identité en personne
+      state_id: Saisissez les informations figurant sur votre document d’identité
+      switch_back: Retournez sur votre ordinateur pour vous préparer à vérifier votre
+        identité en personne
       update_address: Mettre à jour votre adresse actuelle
-      update_state_id: Mettre à jour les informations sur votre id
-      welcome: Vérifiez votre identité en personne
+      update_state_id: Mettre à jour les informations figurant sur votre document d’identité
+    process:
+      barcode:
+        caption_label: Code d’inscription
+        heading: Une copie de votre code-barres
+        info: Imprimez ou numérisez depuis votre appareil mobile.
+      proof_of_address:
+        acceptable_proof:
+          - Bail, hypothèque ou acte de fiducie
+          - Inscription sur les listes électorales
+          - Carte d’immatriculation du véhicule
+          - Police d’assurance habitation ou véhicule
+        heading: Preuve de votre adresse actuelle
+        info: 'Vous avez besoin d’un justificatif de domicile si votre adresse actuelle
+          est différente de l’adresse figurant sur votre document d’identité.
+          Les justificatifs d’adresse acceptés sont les suivants:'
+        physical_or_digital_copy: Vous pouvez apporter une copie physique ou montrer une
+          copie numérique du document. Vous ne pouvez pas montrer une photo ou
+          une capture d’écran du document.
+      state_id:
+        acceptable_documents:
+          - Permis de conduire d’État
+          - Document d’identité de non-conducteur d’État
+        heading: Votre document d’identité délivré par l’État
+        info: 'Votre pièce d’identité ne doit pas être expirée. Les formes
+          d’identification acceptables sont:'
+        no_other_documents: Nous n’acceptons actuellement aucune autre forme
+          d’identification, comme les passeports et les documents d’identité
+          militaires.

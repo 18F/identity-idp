@@ -1,22 +1,22 @@
 module Proofing
   class Result
     attr_reader :exception
-    attr_accessor :context, :transaction_id, :reference
+    attr_accessor :context, :transaction_id, :reference, :review_status, :response_body
 
     def initialize(
       errors: {},
-      messages: Set.new,
       context: {},
       exception: nil,
       transaction_id: nil,
-      reference: nil
+      reference: nil,
+      response_body: nil
     )
       @errors = errors
-      @messages = messages
       @context = context
       @exception = exception
       @transaction_id = transaction_id
       @reference = reference
+      @response_body = response_body
     end
 
     # rubocop:disable Style/OptionalArguments
@@ -26,17 +26,12 @@ module Proofing
     end
     # rubocop:enable Style/OptionalArguments
 
-    def add_message(message)
-      @messages.add(message)
-      self
+    def attributes_requiring_additional_verification
+      []
     end
 
     def errors
       @errors.transform_values(&:to_a)
-    end
-
-    def messages
-      @messages.to_a
     end
 
     def errors?
@@ -51,6 +46,10 @@ module Proofing
       !exception? && errors?
     end
 
+    def failed_result_can_pass_with_additional_verification?
+      false
+    end
+
     def success?
       !exception? && !errors?
     end
@@ -62,7 +61,6 @@ module Proofing
     def to_h
       {
         errors: errors,
-        messages: messages,
         exception: exception,
         success: success?,
       }

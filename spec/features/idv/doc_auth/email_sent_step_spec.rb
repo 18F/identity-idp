@@ -5,6 +5,7 @@ feature 'doc auth email sent step' do
   include DocAuthHelper
 
   before do
+    allow_any_instance_of(Idv::Steps::UploadStep).to receive(:mobile_device?).and_return(true)
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_email_sent_step
   end
@@ -15,9 +16,6 @@ feature 'doc auth email sent step' do
     expect(page).to have_content(
       t('doc_auth.instructions.email_sent', email: user.confirmed_email_addresses.first.email),
     )
-    expect(page).to have_css(
-      '.step-indicator__step--current',
-      text: t('step_indicator.flows.idv.verify_id'),
-    )
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
   end
 end

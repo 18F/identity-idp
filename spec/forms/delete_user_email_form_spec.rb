@@ -54,9 +54,9 @@ describe DeleteUserEmailForm do
             email: email_address.email,
           )).ordered
         expect(PushNotification::HttpPush).to receive(:deliver).once.
-            with(PushNotification::RecoveryInformationChangedEvent.new(
-              user: user,
-            )).ordered
+          with(PushNotification::RecoveryInformationChangedEvent.new(
+            user: user,
+          )).ordered
 
         submit
       end

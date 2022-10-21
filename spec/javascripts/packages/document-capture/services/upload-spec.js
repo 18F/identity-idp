@@ -169,6 +169,7 @@ describe('document-capture/services/upload', () => {
               ],
               remaining_attempts: 3,
               hints: true,
+              result_failed: true,
               ocr_pii: { first_name: 'Fakey', last_name: 'McFakerson', dob: '1938-10-06' },
             }),
         }),
@@ -187,6 +188,7 @@ describe('document-capture/services/upload', () => {
         last_name: 'McFakerson',
         dob: '1938-10-06',
       });
+      expect(error.isFailedResult).to.be.true();
       expect(error.formEntryErrors[0]).to.be.instanceOf(UploadFormEntryError);
       expect(error.formEntryErrors[0].field).to.equal('front');
       expect(error.formEntryErrors[0].message).to.equal('Please fill in this field');

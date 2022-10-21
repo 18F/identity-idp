@@ -1,41 +1,64 @@
 module Proofing
   module Mock
     class ResolutionMockClient < Proofing::Base
-      vendor_name 'ResolutionMock'
-
-      required_attributes :first_name, :ssn, :zipcode
-
-      optional_attributes :uuid, :uuid_prefix
-
-      stage :resolution
-
       UNVERIFIABLE_ZIP_CODE = '00000'
-      NO_CONTACT_SSN = '000-00-0000'
+      NO_CONTACT_SSN = /000-?00-?0000/
       TRANSACTION_ID = 'resolution-mock-transaction-id-123'
       REFERENCE = 'aaa-bbb-ccc'
 
-      proof do |applicant, result|
+      def proof(applicant)
         first_name = applicant[:first_name]
         ssn = applicant[:ssn]
+        zipcode = applicant[:zipcode]
 
-        raise 'Failed to contact proofing vendor' if /Fail/i.match?(first_name)
-        raise 'Failed to contact proofing vendor' if ssn == NO_CONTACT_SSN
+        return failed_to_contact_vendor_result if /Fail/i.match?(first_name)
+        return failed_to_contact_vendor_result if ssn.match?(NO_CONTACT_SSN)
+        return timeout_result if first_name.match?(/Time/i)
 
         if first_name.match?(/Bad/i)
-          result.add_error(:first_name, 'Unverified first name.')
-
-        elsif first_name.match?(/Time/i)
-          raise Proofing::TimeoutError, 'resolution mock timeout'
-
+          unverifiable_result(first_name: ['Unverified first name.'])
         elsif !verified_ssn?(ssn)
-          result.add_error(:ssn, 'Unverified SSN.')
-
-        elsif applicant[:zipcode] == UNVERIFIABLE_ZIP_CODE
-          result.add_error(:zipcode, 'Unverified ZIP code.')
+          unverifiable_result(ssn: ['Unverified SSN.'])
+        elsif zipcode == UNVERIFIABLE_ZIP_CODE
+          unverifiable_result(zipcode: ['Unverified ZIP code.'])
+        else
+          resolution_result(success: true, errors: {}, exception: nil)
         end
+      end
 
-        result.transaction_id = TRANSACTION_ID
-        result.reference = REFERENCE
+      def unverifiable_result(**errors)
+        resolution_result(
+          success: false,
+          errors: errors,
+          exception: nil,
+        )
+      end
+
+      def failed_to_contact_vendor_result
+        resolution_result(
+          success: false,
+          errors: {},
+          exception: RuntimeError.new('Failed to contact proofing vendor'),
+        )
+      end
+
+      def timeout_result
+        resolution_result(
+          success: false,
+          errors: {},
+          exception: Proofing::TimeoutError.new('address mock timeout'),
+        )
+      end
+
+      def resolution_result(success:, errors:, exception:)
+        ResolutionResult.new(
+          success: success,
+          errors: errors,
+          exception: exception,
+          transaction_id: TRANSACTION_ID,
+          reference: REFERENCE,
+          vendor_name: 'ResolutionMock',
+        )
       end
 
       # To reduce the chances of allowing real PII in the mock proofer, we only allow SSNs that

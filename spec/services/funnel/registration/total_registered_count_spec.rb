@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe Funnel::Registration::TotalRegisteredCount do
+  let(:analytics) { FakeAnalytics.new }
   subject { described_class }
 
   it 'returns 0' do
@@ -10,15 +11,11 @@ describe Funnel::Registration::TotalRegisteredCount do
   it 'returns 0 until the user is fully registered' do
     user = create(:user)
     user_id = user.id
-    Funnel::Registration::Create.call(user_id)
+    expect(Funnel::Registration::TotalRegisteredCount.call).to eq(0)
 
     expect(Funnel::Registration::TotalRegisteredCount.call).to eq(0)
 
-    Funnel::Registration::AddPassword.call(user_id)
-
-    expect(Funnel::Registration::TotalRegisteredCount.call).to eq(0)
-
-    Funnel::Registration::AddMfa.call(user_id, 'phone')
+    Funnel::Registration::AddMfa.call(user_id, 'phone', analytics)
 
     expect(Funnel::Registration::TotalRegisteredCount.call).to eq(1)
   end
@@ -39,8 +36,6 @@ describe Funnel::Registration::TotalRegisteredCount do
   def register_user
     user = create(:user)
     user_id = user.id
-    Funnel::Registration::Create.call(user_id)
-    Funnel::Registration::AddPassword.call(user_id)
-    Funnel::Registration::AddMfa.call(user_id, 'backup_codes')
+    Funnel::Registration::AddMfa.call(user_id, 'backup_codes', analytics)
   end
 end

@@ -22,10 +22,14 @@ module Telephony
         end
 
         response = nil
+        sender_id = Telephony.config.country_sender_ids[country_code.to_s]
         Telephony.config.pinpoint.sms_configs.each do |sms_config|
           start = Time.zone.now
           client = build_client(sms_config)
           next if client.nil?
+
+          sender_config = build_sender_config(country_code, sms_config, sender_id)
+
           pinpoint_response = client.send_messages(
             application_id: sms_config.application_id,
             message_request: {
@@ -38,9 +42,7 @@ module Telephony
                 sms_message: {
                   body: message,
                   message_type: 'TRANSACTIONAL',
-                  origination_number: origination_number(country_code, sms_config),
-                  sender_id: Telephony.config.country_sender_ids[country_code.to_s],
-                },
+                }.merge(sender_config),
               },
             },
           )
@@ -92,7 +94,7 @@ module Telephony
           )
           break if response
         rescue Seahorse::Client::NetworkingError,
-               Aws::Pinpoint::Errors::InternalServerErrorException => error
+               Aws::Pinpoint::Errors::ServiceError => error
           PinpointHelper.notify_pinpoint_failover(
             error: error,
             region: sms_config.region,
@@ -139,6 +141,19 @@ module Telephony
           sms_config.country_code_longcode_pool[country_code].sample
         else
           sms_config.shortcode
+        end
+      end
+
+      # If we are sending with Sender ID, we should not include origination_number
+      def build_sender_config(country_code, sms_config, sender_id)
+        if sender_id
+          {
+            sender_id: sender_id,
+          }
+        else
+          {
+            origination_number: origination_number(country_code, sms_config),
+          }
         end
       end
 

@@ -13,11 +13,19 @@ describe Idv::PhoneConfirmationOtpVerificationForm do
       delivery_method: :sms,
     )
   end
+  let(:irs_attempts_api_tracker) do
+    instance_double(
+      IrsAttemptsApi::Tracker,
+      idv_phone_otp_submitted_rate_limited: true,
+    )
+  end
 
   describe '#submit' do
     def try_submit(code)
       described_class.new(
-        user: user, user_phone_confirmation_session: user_phone_confirmation_session,
+        user: user,
+        user_phone_confirmation_session: user_phone_confirmation_session,
+        irs_attempts_api_tracker: irs_attempts_api_tracker,
       ).submit(code: code)
     end
 
@@ -64,6 +72,10 @@ describe Idv::PhoneConfirmationOtpVerificationForm do
     context 'when the code is expired' do
       let(:phone_confirmation_otp_sent_at) { 11.minutes.ago }
 
+      before do
+        allow(IrsAttemptsApi::Tracker).to receive(:new).and_return(irs_attempts_api_tracker)
+      end
+
       it 'returns an unsuccessful result' do
         result = try_submit(phone_confirmation_otp_code)
 
@@ -84,6 +96,8 @@ describe Idv::PhoneConfirmationOtpVerificationForm do
 
         expect(user.second_factor_attempts_count).to eq(3)
         expect(user.second_factor_locked_at).to be_within(1.second).of(Time.zone.now)
+        expect(irs_attempts_api_tracker).to have_received(:idv_phone_otp_submitted_rate_limited).
+          with({ phone_number: phone })
       end
     end
 

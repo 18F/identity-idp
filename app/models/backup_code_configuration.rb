@@ -14,7 +14,7 @@ class BackupCodeConfiguration < ApplicationRecord
   end
 
   def mfa_enabled?
-    user.backup_code_configurations.unused.any? if user
+    persisted? && used_at.nil?
   end
 
   def selection_presenters

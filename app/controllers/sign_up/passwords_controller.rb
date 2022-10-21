@@ -14,6 +14,10 @@ module SignUp
     def create
       result = password_form.submit(permitted_params)
       analytics.password_creation(**result.to_h)
+      irs_attempts_api_tracker.user_registration_password_submitted(
+        success: result.success?,
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
+      )
       store_sp_metadata_in_session unless sp_request_id.empty?
 
       if result.success?
@@ -52,7 +56,6 @@ module SignUp
       ).call
       @user.email_addresses.take.update(confirmed_at: now)
 
-      Funnel::Registration::AddPassword.call(@user.id)
       sign_in_and_redirect_user
     end
 
