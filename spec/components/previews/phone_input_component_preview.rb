@@ -1,5 +1,5 @@
 class PhoneInputComponentPreview < BaseComponentPreview
-  # @!group Kitchen Sink
+  # @!group Preview
   # @display form true
   def default
     render(PhoneInputComponent.new(form: form_builder))
@@ -16,7 +16,7 @@ class PhoneInputComponentPreview < BaseComponentPreview
 
   # @display form true
   # @param allowed_countries text
-  def playground(allowed_countries: 'US,CA,FR')
+  def workbench(allowed_countries: 'US,CA,FR')
     render(
       PhoneInputComponent.new(
         form: form_builder,

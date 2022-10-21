@@ -1,5 +1,5 @@
 class BlockLinkComponentPreview < BaseComponentPreview
-  # @!group Kitchen Sink
+  # @!group Preview
   def default
     render(BlockLinkComponent.new(url: '', new_tab: false).with_content('Link text'))
   end
@@ -12,7 +12,7 @@ class BlockLinkComponentPreview < BaseComponentPreview
   # @param content text
   # @param url text
   # @param new_tab toggle
-  def playground(content: 'Link text', url: '', new_tab: false)
+  def workbench(content: 'Link text', url: '', new_tab: false)
     render(BlockLinkComponent.new(url: url, new_tab: new_tab).with_content(content))
   end
 end

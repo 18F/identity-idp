@@ -1,5 +1,5 @@
 class MemorableDateComponentPreview < BaseComponentPreview
-  # @!group Kitchen Sink
+  # @!group Preview
   # @display form true
   def default
     render(
@@ -18,7 +18,7 @@ class MemorableDateComponentPreview < BaseComponentPreview
   # @param hint text
   # @param min datetime-local
   # @param max datetime-local
-  def playground(label: 'Date', min: nil, max: nil, hint: 'Example: 4 28 1986')
+  def workbench(label: 'Date', min: nil, max: nil, hint: 'Example: 4 28 1986')
     render(
       MemorableDateComponent.new(
         form: form_builder,

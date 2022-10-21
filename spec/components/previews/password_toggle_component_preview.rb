@@ -1,5 +1,5 @@
 class PasswordToggleComponentPreview < BaseComponentPreview
-  # @!group Kitchen Sink
+  # @!group Preview
   def default
     render(PasswordToggleComponent.new(form: form_builder))
   end
@@ -8,7 +8,7 @@ class PasswordToggleComponentPreview < BaseComponentPreview
   # @param label text
   # @param toggle_label text
   # @param toggle_position select [~,top,bottom]
-  def playground(label: nil, toggle_label: nil, toggle_position: 'top')
+  def workbench(label: nil, toggle_label: nil, toggle_position: 'top')
     render(
       PasswordToggleComponent.new(
         form: form_builder,

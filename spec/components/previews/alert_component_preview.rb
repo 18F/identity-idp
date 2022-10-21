@@ -1,5 +1,5 @@
 class AlertComponentPreview < BaseComponentPreview
-  # @!group Kitchen Sink
+  # @!group Preview
   def default
     render(AlertComponent.new(message: 'A default message'))
   end
@@ -35,7 +35,7 @@ class AlertComponentPreview < BaseComponentPreview
 
   # @param message text
   # @param type select [info, success, warning, error, emergency, other]
-  def playground(message: 'An important message', type: :info)
+  def workbench(message: 'An important message', type: :info)
     render(AlertComponent.new(message: message, type: type))
   end
 end

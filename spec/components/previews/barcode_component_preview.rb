@@ -1,5 +1,5 @@
 class BarcodeComponentPreview < BaseComponentPreview
-  # @!group Kitchen Sink
+  # @!group Preview
   def default
     render(BarcodeComponent.new(barcode_data: '1234567812345678', label: 'Barcode'))
   end
@@ -7,7 +7,7 @@ class BarcodeComponentPreview < BaseComponentPreview
 
   # @param barcode_data text
   # @param label text
-  def playground(barcode_data: '1234567812345678', label: 'Barcode')
+  def workbench(barcode_data: '1234567812345678', label: 'Barcode')
     render(BarcodeComponent.new(barcode_data: barcode_data, label: label))
   end
 end

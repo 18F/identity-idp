@@ -1,5 +1,5 @@
 class SpinnerButtonComponentPreview < BaseComponentPreview
-  # @!group Kitchen Sink
+  # @!group Preview
   def default
     render(SpinnerButtonComponent.new(big: true).with_content('Submit'))
   end
@@ -16,7 +16,7 @@ class SpinnerButtonComponentPreview < BaseComponentPreview
 
   # @display form true
   # @param action_message text
-  def playground(action_message: nil)
+  def workbench(action_message: nil)
     render(
       SpinnerButtonComponent.new(
         form: form_builder,

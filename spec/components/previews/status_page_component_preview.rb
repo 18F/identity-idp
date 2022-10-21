@@ -1,5 +1,5 @@
 class StatusPageComponentPreview < BaseComponentPreview
-  # @!group Kitchen Sink
+  # @!group Preview
   def error
     render(StatusPageComponent.new(status: :error).with_content(example_long_content))
   end
@@ -21,7 +21,7 @@ class StatusPageComponentPreview < BaseComponentPreview
 
   # @param status select [~,info,warning,error]
   # @param icon select [~,question,lock]
-  def playground(status: 'error', icon: nil)
+  def workbench(status: 'error', icon: nil)
     render(
       StatusPageComponent.new(
         status: status.to_sym,

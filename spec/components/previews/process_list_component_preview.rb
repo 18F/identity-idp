@@ -1,5 +1,5 @@
 class ProcessListComponentPreview < BaseComponentPreview
-  # @!group Kitchen Sink
+  # @!group Preview
   def default
     render(ProcessListComponent.new) do |c|
       c.item(heading: 'Item 1') { 'Item 1 Content' }
@@ -31,7 +31,7 @@ class ProcessListComponentPreview < BaseComponentPreview
 
   # @param connected toggle
   # @param big toggle
-  def playground(big: false, connected: false)
+  def workbench(big: false, connected: false)
     render(ProcessListComponent.new(big: big, connected: connected)) do |c|
       c.item(heading: 'Item 1') { 'Item 1 Content' }
       c.item(heading: 'Item 2') { 'Item 2 Content' }

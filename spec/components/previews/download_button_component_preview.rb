@@ -1,5 +1,5 @@
 class DownloadButtonComponentPreview < BaseComponentPreview
-  # @!group Kitchen Sink
+  # @!group Preview
   def default
     render(DownloadButtonComponent.new(file_data: 'File Data', file_name: 'file_name.txt'))
   end
@@ -7,7 +7,7 @@ class DownloadButtonComponentPreview < BaseComponentPreview
 
   # @param file_data text
   # @param file_name text
-  def playground(file_data: 'File Data', file_name: 'file_name.txt')
+  def workbench(file_data: 'File Data', file_name: 'file_name.txt')
     render(DownloadButtonComponent.new(file_data: file_data, file_name: file_name))
   end
 end

@@ -1,5 +1,5 @@
 class AccordionComponentPreview < BaseComponentPreview
-  # @!group Kitchen Sink
+  # @!group Preview
   def default
     render(AccordionComponent.new) do |c|
       c.header { 'Header' }
@@ -18,7 +18,7 @@ class AccordionComponentPreview < BaseComponentPreview
   # @param header text
   # @param content text
   # @param bordered toggle
-  def playground(header: 'Header', content: 'Content', bordered: true)
+  def workbench(header: 'Header', content: 'Content', bordered: true)
     render(AccordionComponent.new(bordered: bordered)) do |c|
       c.header { header }
       content

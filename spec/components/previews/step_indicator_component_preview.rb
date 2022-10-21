@@ -1,5 +1,5 @@
 class StepIndicatorComponentPreview < BaseComponentPreview
-  # @!group Kitchen Sink
+  # @!group Preview
   def default
     render StepIndicatorComponent.new(
       steps: [
@@ -14,7 +14,7 @@ class StepIndicatorComponentPreview < BaseComponentPreview
   # @!endgroup
 
   # @param current_step select [~,First Step,Second Step,Third Step,Fourth Step]
-  def playground(current_step: 'Second Step')
+  def workbench(current_step: 'Second Step')
     render StepIndicatorComponent.new(
       steps: [
         { name: :first_step, title: 'First Step' },

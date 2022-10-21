@@ -1,5 +1,5 @@
 class TroubleshootingOptionsComponentPreview < BaseComponentPreview
-  # @!group Kitchen Sink
+  # @!group Preview
   def default
     render(TroubleshootingOptionsComponent.new) do |c|
       c.header { 'Header' }
@@ -11,7 +11,7 @@ class TroubleshootingOptionsComponentPreview < BaseComponentPreview
   # @!endgroup
 
   # @param header text
-  def playground(header: 'Header')
+  def workbench(header: 'Header')
     render(TroubleshootingOptionsComponent.new) do |c|
       c.header { header }
       c.option(url: '') { 'Option 1' }

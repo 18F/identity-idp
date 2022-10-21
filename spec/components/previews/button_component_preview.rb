@@ -2,7 +2,7 @@ class ButtonComponentPreview < BaseComponentPreview
   include ActionView::Context
   include ActionView::Helpers::TagHelper
 
-  # @!group Kitchen Sink
+  # @!group Preview
   def default
     render(ButtonComponent.new.with_content('Button'))
   end
@@ -55,7 +55,7 @@ class ButtonComponentPreview < BaseComponentPreview
   # @param outline toggle
   # @param unstyled toggle
   # @param danger toggle
-  def playground(
+  def workbench(
     content: 'Button',
     icon: nil,
     big: false,

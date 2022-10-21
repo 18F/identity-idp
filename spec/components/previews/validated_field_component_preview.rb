@@ -1,5 +1,5 @@
 class ValidatedFieldComponentPreview < BaseComponentPreview
-  # @!group Kitchen Sink
+  # @!group Preview
   # @display form true
   def text_field
     render(
@@ -51,7 +51,7 @@ class ValidatedFieldComponentPreview < BaseComponentPreview
   # @param label text
   # @param required toggle
   # @param input_type select [~,Text,Email Address,Boolean]
-  def playground(label: 'Input', required: true, input_type: 'Text')
+  def workbench(label: 'Input', required: true, input_type: 'Text')
     render(
       ValidatedFieldComponent.new(
         form: form_builder,
