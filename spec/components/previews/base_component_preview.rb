@@ -15,7 +15,7 @@ class BaseComponentPreview < ViewComponent::Preview
   end
 
   def form_instance
-    {}
+    nil
   end
 
   # rubocop:disable Layout/LineLength
