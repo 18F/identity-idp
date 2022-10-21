@@ -162,6 +162,8 @@ module Identity
 
     config.view_component.show_previews = IdentityConfig.store.component_previews_enabled
     if IdentityConfig.store.component_previews_enabled
+      require 'lookbook'
+
       config.view_component.preview_controller = 'ComponentPreviewController'
       config.view_component.preview_paths = [Rails.root.join('spec', 'components', 'previews')]
       config.view_component.default_preview_layout = 'component_preview'
