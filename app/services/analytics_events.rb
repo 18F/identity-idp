@@ -3072,5 +3072,33 @@ module AnalyticsEvents
   def idv_in_person_proofing_state_id_submitted(**extra)
     track_event('IdV: in person proofing state_id submitted', **extra)
   end
+
+  def idv_doc_auth_redo_document_capture_submitted(**extra)
+    track_event('IdV: doc auth redo_document_capture submitted', **extra)
+  end
+
+  def idv_doc_auth_send_link_visited(**extra)
+    track_event('IdV: doc auth send_link visited', **extra)
+  end
+
+  def idv_doc_auth_send_link_submitted(**extra)
+    track_event('IdV: doc auth send_link submitted', **extra)
+  end
+
+  def idv_doc_auth_link_sent_visited(**extra)
+    track_event('IdV: doc auth link_sent visited', **extra)
+  end
+
+  def idv_doc_auth_link_sent_submitted(**extra)
+    track_event('IdV: doc auth send_link submitted', **extra)
+  end
+
+  def idv_doc_auth_cancel_send_link_submitted(**extra)
+    track_event('IdV: doc auth cancel_send_link submitted', **extra)
+  end
+
+  def idv_doc_auth_cancel_link_sent_submitted(**extra)
+    track_event('IdV: doc auth cancel_link_sent submitted', **extra)
+  end
 end
 # rubocop:enable Metrics/ModuleLength
