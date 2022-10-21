@@ -8,7 +8,7 @@ module ArcgisApi
       def self.load_response_fixture(filename)
         path = File.join(
           File.dirname(__FILE__),
-          'responses',
+          '../fixtures/arcgis_api_responses',
           filename,
         )
         File.read(path)

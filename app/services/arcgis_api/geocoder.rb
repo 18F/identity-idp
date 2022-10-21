@@ -1,9 +1,9 @@
 module ArcgisApi
   class Geocoder
+    Suggestion = Struct.new(:text, :magic_key, keyword_init: true)
+
     # Makes HTTP request to get potential address matches
     # Requests text input and will only match possible addresses
-    # Returns an array of Suggestion structs including
-    # the suggestion text, a magicKey value, and the isCollection flag.
     # A maximum of 5 suggestions are included in the suggestions array.
     # @param text [String]
     # @return [Array<Suggestion>] Suggestions
