@@ -116,6 +116,7 @@ class IdentityConfig
     config.add(:backup_code_cost, type: :string)
     config.add(:broken_personal_key_window_start, type: :timestamp)
     config.add(:broken_personal_key_window_finish, type: :timestamp)
+    config.add(:component_previews_enabled, type: :boolean)
     config.add(:country_phone_number_overrides, type: :json)
     config.add(:dashboard_api_token, type: :string)
     config.add(:dashboard_url, type: :string)
