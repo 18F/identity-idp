@@ -125,6 +125,63 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     @worker_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
   end
 
+  ActiveSupport::Notifications.subscribe("enqueue_job.good_job") do |name, started, finished, unique_id, data|
+    hash = { name: name, duration_ms: (finished-started) * 1_000, timestamp: started }
+    IdentityJobLogSubscriber.worker_logger.info(hash.to_json)
+  end
+  ActiveSupport::Notifications.subscribe("perform_job.good_job") do |name, started, finished, unique_id, data|
+    hash = { name: name, duration_ms: (finished-started) * 1_000, timestamp: started }
+    IdentityJobLogSubscriber.worker_logger.info(hash.to_json)
+  end
+  ActiveSupport::Notifications.subscribe("cleanup_preserved_jobs.good_job") do |name, started, finished, unique_id, data|
+    hash = { name: name, duration_ms: (finished-started) * 1_000, timestamp: started }
+    IdentityJobLogSubscriber.worker_logger.info(hash.to_json)
+  end
+  ActiveSupport::Notifications.subscribe("notifier_unlisten.good_job") do |name, started, finished, unique_id, data|
+    hash = { name: name, duration_ms: (finished-started) * 1_000, timestamp: started }
+    IdentityJobLogSubscriber.worker_logger.info(hash.to_json)
+  end
+  ActiveSupport::Notifications.subscribe("notifier_notified.good_job") do |name, started, finished, unique_id, data|
+    hash = { name: name, duration_ms: (finished-started) * 1_000, timestamp: started }
+    IdentityJobLogSubscriber.worker_logger.info(hash.to_json)
+  end
+  ActiveSupport::Notifications.subscribe("notifier_listen.good_job") do |name, started, finished, unique_id, data|
+    hash = { name: name, duration_ms: (finished-started) * 1_000, timestamp: started }
+    IdentityJobLogSubscriber.worker_logger.info(hash.to_json)
+  end
+  ActiveSupport::Notifications.subscribe("notifier_notify_error.good_job") do |name, started, finished, unique_id, data|
+    hash = { name: name, duration_ms: (finished-started) * 1_000, timestamp: started }
+    IdentityJobLogSubscriber.worker_logger.info(hash.to_json)
+  end
+  ActiveSupport::Notifications.subscribe("cron_manager_start.good_job") do |name, started, finished, unique_id, data|
+    hash = { name: name, duration_ms: (finished-started) * 1_000, timestamp: started }
+    IdentityJobLogSubscriber.worker_logger.info(hash.to_json)
+  end
+  ActiveSupport::Notifications.subscribe("finished_timer_task") do |name, started, finished, unique_id, data|
+    hash = { name: name, duration_ms: (finished-started) * 1_000, timestamp: started, result: data[:result] }
+    IdentityJobLogSubscriber.worker_logger.info(hash.to_json)
+  end
+  ActiveSupport::Notifications.subscribe("finished_job_task.good_job") do |name, started, finished, unique_id, data|
+    hash = { name: name, duration_ms: (finished-started) * 1_000, timestamp: started, result: data[:result] }
+    IdentityJobLogSubscriber.worker_logger.info(hash.to_json)
+  end
+  ActiveSupport::Notifications.subscribe("scheduler_create_pool.good_job") do |name, started, finished, unique_id, data|
+    hash = { name: name, duration_ms: (finished-started) * 1_000, timestamp: started }
+    IdentityJobLogSubscriber.worker_logger.info(hash.to_json)
+  end
+  ActiveSupport::Notifications.subscribe("scheduler_restart_pools.good_job") do |name, started, finished, unique_id, data|
+    hash = { name: name, duration_ms: (finished-started) * 1_000, timestamp: started }
+    IdentityJobLogSubscriber.worker_logger.info(hash.to_json)
+  end
+  ActiveSupport::Notifications.subscribe("scheduler_shutdown.good_job") do |name, started, finished, unique_id, data|
+    hash = { name: name, duration_ms: (finished-started) * 1_000, timestamp: started }
+    IdentityJobLogSubscriber.worker_logger.info(hash.to_json)
+  end
+  ActiveSupport::Notifications.subscribe("scheduler_shutdown_start.good_job") do |name, started, finished, unique_id, data|
+    hash = { name: name, duration_ms: (finished-started) * 1_000, timestamp: started }
+    IdentityJobLogSubscriber.worker_logger.info(hash.to_json)
+  end
+
   private
 
   # @return [Hash]
