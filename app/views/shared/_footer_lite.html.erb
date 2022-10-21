@@ -1,6 +1,6 @@
 <footer class='footer bg-primary-lighter tablet:bg-primary-darker'>
   <div class="tablet:display-none border-bottom border-primary-light">
-    <%= render 'shared/language_picker', id_suffix: 'mobile' %>
+    <%= render LanguagePickerComponent.new %>
   </div>
   <div class="padding-y-1 padding-x-2 tablet:padding-x-0 tablet:padding-y-0">
     <div class="display-flex flex-align-center flex-justify-center">
@@ -26,7 +26,7 @@
       </div>
       <div class="display-flex flex-align-center flex-justify-center">
         <div class="display-none tablet:display-block margin-x-2 margin-y-05">
-          <%= render 'shared/language_picker', id_suffix: 'desktop' %>
+          <%= render LanguagePickerComponent.new %>
         </div>
 
         <div class="display-flex tablet:display-none">

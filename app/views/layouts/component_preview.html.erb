@@ -4,7 +4,7 @@
     <title>Component Preview</title>
     <%= stylesheet_link_tag 'application', media: 'all' %>
   </head>
-  <body class="padding-2">
+  <body class="padding-2 <%= params[:lookbook][:display][:body_class] %>">
     <% if params[:lookbook][:display][:form] == true %>
       <form>
         <%= yield %>
