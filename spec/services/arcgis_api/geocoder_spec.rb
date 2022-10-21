@@ -11,8 +11,8 @@ RSpec.describe ArcgisApi::Geocoder do
 
       suggestions = subject.suggest('100 Main')
 
-      expect(suggestions[0][:magicKey]).to be_present
-      expect(suggestions[0][:text]).to be_present
+      expect(suggestions.first.magic_key).to be_present
+      expect(suggestions.first.text).to be_present
     end
   end
 end

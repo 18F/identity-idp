@@ -1,5 +1,12 @@
 module ArcgisApi
   class Geocoder
+    # Makes HTTP request to get potential address matches
+    # Requests text input and will only match possible addresses
+    # Returns an array of Suggestion structs including
+    # the suggestion text, a magicKey value, and the isCollection flag.
+    # A maximum of 5 suggestions are included in the suggestions array.
+    # @param text [String]
+    # @return [Array<Suggestion>] Suggestions
     def suggest(text)
       url = "#{root_url}/suggest"
       params = {
@@ -14,9 +21,6 @@ module ArcgisApi
           req.options.context = { service_name: 'arcgis_geocoder_suggest' }
         end.body,
       )
-    end
-
-    def findAddressCandidates
     end
 
     private
@@ -48,10 +52,10 @@ module ArcgisApi
 
     def parse_suggestions(suggestions)
       suggestions['suggestions'].map do |suggestion|
-        {
+        Suggestion.new(
           text: suggestion['text'],
-          magicKey: suggestion['magicKey'],
-        }
+          magic_key: suggestion['magicKey'],
+        )
       end
     end
   end
