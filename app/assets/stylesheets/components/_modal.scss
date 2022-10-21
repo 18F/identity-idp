@@ -17,12 +17,11 @@
 .modal-content {
   @include u-padding(4);
   @include u-bg('white');
-  max-width: $container-xxskinny-width;
+  max-width: $container-xskinny-width;
   border-radius: $border-radius-xxl;
 
   @include at-media('tablet') {
     @include u-padding(6);
-    max-width: $container-xskinny-width;
   }
 
   hr {
