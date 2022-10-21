@@ -57,7 +57,7 @@ feature 'doc capture document capture step', js: true do
     click_idv_continue
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
     expect(fake_analytics).to have_logged_event(
-      "IdV: doc auth document_capture submitted",
+      'IdV: doc auth document_capture submitted',
       step: 'document_capture',
       flow_path: 'hybrid',
     )

@@ -130,7 +130,10 @@ module Flow
 
       if @analytics_id
         optional_show_step_name = optional_show_step.to_s.demodulize.underscore
-        optional_properties = result.to_h.merge(step: optional_show_step_name, analytics_id: @analytics_id)
+        optional_properties = result.to_h.merge(
+          step: optional_show_step_name,
+          analytics_id: @analytics_id,
+        )
 
         analytics.public_send(
           optional_show_step.analytics_optional_step_event,
