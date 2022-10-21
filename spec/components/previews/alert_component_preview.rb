@@ -1,4 +1,4 @@
-class AlertComponentPreview < ViewComponent::Preview
+class AlertComponentPreview < BaseComponentPreview
   # @!group Kitchen Sink
   def default
     render(AlertComponent.new(message: 'A default message'))

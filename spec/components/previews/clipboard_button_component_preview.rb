@@ -1,4 +1,4 @@
-class ClipboardButtonComponentPreview < ViewComponent::Preview
+class ClipboardButtonComponentPreview < BaseComponentPreview
   # @!group Kitchen Sink
   def default
     render(ClipboardButtonComponent.new(clipboard_text: 'Copied Text'))

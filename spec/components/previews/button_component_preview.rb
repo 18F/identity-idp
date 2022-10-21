@@ -1,4 +1,4 @@
-class ButtonComponentPreview < ViewComponent::Preview
+class ButtonComponentPreview < BaseComponentPreview
   include ActionView::Context
   include ActionView::Helpers::TagHelper
 

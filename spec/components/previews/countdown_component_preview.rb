@@ -1,4 +1,4 @@
-class CountdownComponentPreview < ViewComponent::Preview
+class CountdownComponentPreview < BaseComponentPreview
   # @!group Kitchen Sink
   def default
     render(CountdownComponent.new(expiration: Time.zone.now + 1.5.minutes))

@@ -1,4 +1,4 @@
-class ProcessListComponentPreview < ViewComponent::Preview
+class ProcessListComponentPreview < BaseComponentPreview
   # @!group Kitchen Sink
   def default
     render(ProcessListComponent.new) do |c|

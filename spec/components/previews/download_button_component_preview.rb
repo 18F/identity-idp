@@ -1,4 +1,4 @@
-class DownloadButtonComponentPreview < ViewComponent::Preview
+class DownloadButtonComponentPreview < BaseComponentPreview
   # @!group Kitchen Sink
   def default
     render(DownloadButtonComponent.new(file_data: 'File Data', file_name: 'file_name.txt'))

@@ -1,4 +1,4 @@
-class AccordionComponentPreview < ViewComponent::Preview
+class AccordionComponentPreview < BaseComponentPreview
   # @!group Kitchen Sink
   def default
     render(AccordionComponent.new) do |c|

@@ -1,4 +1,4 @@
-class MemorableDateComponentPreview < ViewComponent::Preview
+class MemorableDateComponentPreview < BaseComponentPreview
   # @!group Kitchen Sink
   # @display form true
   def default
@@ -28,21 +28,6 @@ class MemorableDateComponentPreview < ViewComponent::Preview
         min: min,
         max: max,
       ),
-    )
-  end
-
-  private
-
-  def form_builder
-    SimpleForm::FormBuilder.new(
-      '',
-      {},
-      ActionView::Base.new(
-        ActionView::LookupContext.new(ActionController::Base.view_paths),
-        {},
-        nil,
-      ),
-      {},
     )
   end
 end

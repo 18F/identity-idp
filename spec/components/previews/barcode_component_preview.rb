@@ -1,4 +1,4 @@
-class BarcodeComponentPreview < ViewComponent::Preview
+class BarcodeComponentPreview < BaseComponentPreview
   # @!group Kitchen Sink
   def default
     render(BarcodeComponent.new(barcode_data: '1234567812345678', label: 'Barcode'))

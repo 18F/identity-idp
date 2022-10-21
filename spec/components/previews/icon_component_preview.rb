@@ -1,4 +1,4 @@
-class IconComponentPreview < ViewComponent::Preview
+class IconComponentPreview < BaseComponentPreview
   # @!group Kitchen Sink
   def default
     render(IconComponent.new(icon: :content_copy))

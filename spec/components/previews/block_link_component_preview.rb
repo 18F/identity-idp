@@ -1,4 +1,4 @@
-class BlockLinkComponentPreview < ViewComponent::Preview
+class BlockLinkComponentPreview < BaseComponentPreview
   # @!group Kitchen Sink
   def default
     render(BlockLinkComponent.new(url: '', new_tab: false).with_content('Link text'))
