@@ -36,6 +36,7 @@ RSpec.describe IrsAttemptsApi::AttemptEvent do
       headers = JSON.parse(header_str)
 
       expect(headers['alg']).to eq('RSA-OAEP')
+      expect(headers['kid']).to eq(JWT::JWK.new(irs_attempt_api_public_key).kid)
 
       decrypted_jwe_payload = JWE.decrypt(jwe, irs_attempt_api_private_key)
 
