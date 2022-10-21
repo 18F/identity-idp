@@ -7,6 +7,10 @@ module InheritedProofingConcern
 
   include Idv::InheritedProofing::ServiceProviders
 
+  def inherited_proofing?
+    inherited_proofing_service_provider.present?
+  end
+
   def inherited_proofing_service_provider
     return VA if va_inherited_proofing?
   end
