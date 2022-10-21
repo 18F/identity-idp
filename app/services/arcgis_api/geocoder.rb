@@ -38,11 +38,8 @@ module ArcgisApi
         # Note: The order of this matters for parsing the error response body.
         conn.response :raise_error
 
-        # Convert body to JSON
-        conn.request :json
-
         # Parse JSON responses
-        conn.response :json
+        conn.response :json, content_type: 'application/json'
       end
     end
 
@@ -50,8 +47,14 @@ module ArcgisApi
       { 'Authorization' => "Bearer #{IdentityConfig.store.arcgis_api_key}" }
     end
 
-    def parse_suggestions(suggestions)
-      suggestions['suggestions'].map do |suggestion|
+    def parse_suggestions(response_body)
+      if response_body['error']
+        if response_body['error']['code'] >= 400 && response_body['error']['code'] < 500
+          raise Faraday::ClientError.new(response_body)
+        end
+      end
+
+      response_body['suggestions'].map do |suggestion|
         Suggestion.new(
           text: suggestion['text'],
           magic_key: suggestion['magicKey'],
