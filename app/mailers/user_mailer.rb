@@ -278,6 +278,27 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def in_person_ready_to_verify_reminder(enrollment:)
+    attachments.inline['barcode.png'] = BarcodeOutputter.new(
+      code: enrollment.enrollment_code,
+    ).image_data
+
+    with_user_locale(user) do
+      @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
+        enrollment: enrollment,
+        barcode_image_url: attachments['barcode.png'].url,
+      )
+      @header = t('in_person_proofing.headings.reminder', days: @presenter.days_reminder)
+      mail(
+        to: email_address.email,
+        subject: t(
+          'user_mailer.in_person_ready_to_verify_reminder.subject',
+          days: @presenter.days_reminder,
+        ),
+      )
+    end
+  end
+
   def in_person_verified(enrollment:)
     with_user_locale(user) do
       @hide_title = true

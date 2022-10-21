@@ -127,6 +127,15 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
+  def in_person_ready_to_verify_reminder
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).in_person_ready_to_verify_reminder(
+      enrollment: in_person_enrollment,
+    )
+  end
+
   def in_person_verified
     UserMailer.with(user: user, email_address: email_address_record).in_person_verified(
       enrollment: in_person_enrollment,
@@ -166,6 +175,7 @@ class UserMailerPreview < ActionMailer::Preview
         profile: unsaveable(Profile.new(user: user)),
         enrollment_code: '2048702198804358',
         created_at: Time.zone.now - 2.hours,
+        issuer: 'http://localhost:3000',
         status_updated_at: Time.zone.now - 1.hour,
         current_address_matches_id: params['current_address_matches_id'] == 'true',
         selected_location_details: {
@@ -177,7 +187,6 @@ class UserMailerPreview < ActionMailer::Preview
           'saturday_hours' => '9:00 AM - 12:00 PM',
           'sunday_hours' => 'Closed',
         },
-        service_provider: params[:issuer] ? ServiceProvider.find_by(issuer: params[:issuer]) : nil,
       ),
     )
   end
