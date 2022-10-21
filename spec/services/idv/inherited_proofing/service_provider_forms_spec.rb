@@ -7,7 +7,7 @@ RSpec.describe Idv::InheritedProofing::ServiceProviderForms do
     end.new
   end
 
-  let(:service_provider) { Idv::InheritedProofing::ServiceProviders::VA }
+  let(:service_provider) { :va }
   let(:payload_hash) { Idv::InheritedProofing::Va::Mocks::Service::PAYLOAD_HASH }
 
   describe '#inherited_proofing_form_for' do

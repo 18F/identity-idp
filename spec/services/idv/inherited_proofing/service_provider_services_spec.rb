@@ -7,7 +7,7 @@ RSpec.describe Idv::InheritedProofing::ServiceProviderServices do
     end.new
   end
 
-  let(:service_provider) { Idv::InheritedProofing::ServiceProviders::VA }
+  let(:service_provider) { :va }
   let(:service_provider_data) { { auth_code: auth_code } }
   let(:auth_code) { Idv::InheritedProofing::Va::Mocks::Service::VALID_AUTH_CODE }
 

@@ -43,7 +43,7 @@ RSpec.describe InheritedProofingConcern do
     end
 
     context 'when a service provider can be identified' do
-      let(:va) { Idv::InheritedProofing::ServiceProviders::VA }
+      let(:va) { :va }
 
       it 'returns the service provider' do
         expect(subject.inherited_proofing_service_provider).to eq va
