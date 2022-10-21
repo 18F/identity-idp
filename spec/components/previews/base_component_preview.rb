@@ -4,7 +4,7 @@ class BaseComponentPreview < ViewComponent::Preview
   def form_builder
     @form_builder ||= SimpleForm::FormBuilder.new(
       '',
-      {},
+      form_instance,
       ActionView::Base.new(
         ActionView::LookupContext.new(ActionController::Base.view_paths),
         {},
@@ -12,5 +12,9 @@ class BaseComponentPreview < ViewComponent::Preview
       ),
       {},
     )
+  end
+
+  def form_instance
+    {}
   end
 end
