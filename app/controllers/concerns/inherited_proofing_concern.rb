@@ -49,7 +49,9 @@ module InheritedProofingConcern
   end
 
   def inherited_proofing_form(payload_hash)
-    return Idv::InheritedProofing::Va::Form.new payload_hash: payload_hash if va_inherited_proofing?
+    if va_inherited_proofing?
+      return Idv::InheritedProofing::Va::Form.new(payload_hash: payload_hash)
+    end
 
     raise 'Inherited proofing form could not be identified'
   end

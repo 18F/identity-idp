@@ -12,11 +12,16 @@ module Idv
 
         private
 
-        # This needs error handling.
         def inherited_proofing_info
           return @inherited_proofing_info if defined? @inherited_proofing_info
 
-          payload_hash = inherited_proofing_service.execute.dup
+          begin
+            payload_hash = inherited_proofing_service.execute.dup
+          rescue InheritedProofing::ApiRequestError => e
+            # TODO: log to analytics
+            raise
+          end
+
           form = inherited_proofing_form(payload_hash)
           form_response = form.submit
 

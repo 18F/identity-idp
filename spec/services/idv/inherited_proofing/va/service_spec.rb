@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.shared_examples 'an invalid auth code error is raised' do
   it 'raises an error' do
-    expect { subject.execute }.to raise_error 'The provided auth_code is blank?'
+    expect { subject.execute }.to raise_error(Idv::InheritedProofing::ApiRequestError)
   end
 end
 
@@ -61,6 +61,12 @@ RSpec.describe Idv::InheritedProofing::Va::Service do
 
         it_behaves_like 'an invalid auth code error is raised'
       end
+    end
+
+    it 'raises an error when API request fails' do
+      stub_request(:get, request_uri).to_raise(Faraday::TimeoutError)
+
+      expect { service.execute }.to raise_error(Idv::InheritedProofing::ApiRequestError)
     end
   end
 end

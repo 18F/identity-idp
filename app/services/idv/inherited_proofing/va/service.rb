@@ -1,9 +1,8 @@
 module Idv
   module InheritedProofing
     module Va
-      # Encapsulates request, response, error handling, validation, etc. for calling
-      # the VA service to gain PII for a particular user that will be subsequently
-      # used to proof the user using inherited proofing.
+      # Encapsulates request, response, error handling, validation, etc. for calling the VA service
+      # to return user PII that is used for proofing.
       class Service
         BASE_URI = IdentityConfig.store.inherited_proofing_va_base_url
 
@@ -13,11 +12,16 @@ module Idv
           @auth_code = service_provider_data[:auth_code]
         end
 
-        # Calls the endpoint and returns the decrypted response.
         def execute
-          raise 'The provided auth_code is blank?' if auth_code.blank?
+          raise Idv::InheritedProofing::ApiRequestError, 'missing auth_code' if auth_code.blank?
 
-          response = request
+          begin
+            response = request
+          rescue Faraday::ConnectionFailed, Faraday::TimeoutError
+            raise Idv::InheritedProofing::ApiRequestError, 'connection error'
+          end
+
+          # TODO: check for response errors
           payload_to_hash decrypt_payload(response)
         end
 

@@ -364,7 +364,8 @@ Rails.application.routes.draw do
       get '/:step' => 'inherited_proofing#show', as: :step
       put '/:step' => 'inherited_proofing#update'
       get '/return_to_sp' => 'inherited_proofing#return_to_sp'
-      get '/errors/no_information' => 'inherited_proofing#no_information'
+      get '/errors/no_information' => 'inherited_proofing#no_information'     # TODO: remove this Rakesh line
+      get '/inherited_proofing/error/:type' => 'inherited_proofing_error#show'
     end
 
     namespace :api do
