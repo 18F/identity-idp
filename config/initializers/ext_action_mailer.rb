@@ -12,7 +12,6 @@ module ActionMailer
     prepend DeliverLaterArgumentChecker
 
     def deliver_now_or_later(opts = {})
-      MailerSensitiveInformationChecker.check_for_sensitive_pii!(@params, @args, @action)
       if IdentityConfig.store.deliver_mail_async
         deliver_later(opts)
       else
