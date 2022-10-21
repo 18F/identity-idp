@@ -162,7 +162,7 @@ feature 'IAL1 Single Sign On' do
     it 'preserves the request_id in the url' do
       visit saml_authn_request_url
 
-      within(:css, '.i18n-desktop-dropdown', visible: false) do
+      within(:css, '#language-picker-desktop', visible: false) do
         find_link(t('i18n.locale.es'), visible: false).click
       end
 

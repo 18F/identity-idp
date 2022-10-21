@@ -1,0 +1,29 @@
+<% sanitized_requested_url = request.query_parameters.slice(:request_id) %>
+
+<div class="language-picker usa-accordion">
+  <button
+    aria-controls="language-picker-<%= id_suffix %>"
+    class="usa-accordion__button language-picker__label"
+  >
+    <%= image_tag(asset_url('globe-blue.svg'), width: 12, height: 12, alt: '', class: 'tablet:display-none') %>
+    <%= image_tag(asset_url('globe-white.svg'), width: 12, height: 12, alt: '', class: 'display-none tablet:display-inline') %>
+    <span id="language-picker-description-<%= id_suffix %>">
+      <%= t('i18n.language') %>
+    </span>
+  </button>
+  <ul
+    id="language-picker-<%= id_suffix %>"
+    aria-describedby="language-picker-description-<%= id_suffix %>"
+    class="usa-accordion__content language-picker__list"
+  >
+    <% I18n.available_locales.each do |locale| %>
+      <li>
+        <%= link_to(
+              t("i18n.locale.#{locale}"),
+              sanitized_requested_url.merge(locale: locale),
+              lang: locale,
+            ) %>
+      </li>
+    <% end %>
+  </ul>
+</div>

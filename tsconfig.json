@@ -27,7 +27,6 @@
   "exclude": [
     "**/fixtures",
     "**/*.spec.js",
-    "app/javascript/packs/application.js",
     "app/javascript/packs/pw-strength.js",
     "app/javascript/packs/saml-post.js",
     "app/javascript/packs/ssn-field.js",

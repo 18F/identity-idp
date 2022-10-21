@@ -1,29 +1,8 @@
-<% show_language_dropdown = I18n.available_locales.count > 1
-   sanitized_requested_url = request.query_parameters.slice(:request_id) %>
-
 <footer class='footer bg-primary-lighter tablet:bg-primary-darker'>
-  <% if show_language_dropdown %>
-    <div class='tablet:display-none border-bottom border-primary-light'>
-      <div class="padding-y-1 padding-x-2 tablet:padding-x-0 h5">
-        <div class="i18n-mobile-toggle display-flex flex-align-center flex-justify-center">
-            <button class="text-primary fs-13p language-mobile-button" aria-expanded="false">
-              <%= image_tag asset_url('globe-blue.svg'), width: 12,
-                                                         class: 'margin-right-1', alt: t('shared.footer_lite.blue_globe'), 'aria-hidden': 'true' %><%= t('i18n.language') %><span class="caret display-inline-block margin-left-05" aria-hidden="true">&#9662;</span>
-            </button>
-        </div>
-      </div>
-    </div>
-    <div class='i18n-dropdown i18n-mobile-dropdown tablet:display-none display-none'>
-      <ul class='usa-list--unstyled margin-bottom-0 text-center'>
-        <% I18n.available_locales.each do |locale| %>
-          <li class='border-bottom border-primary-light'>
-            <%= link_to t("i18n.locale.#{locale}"), sanitized_requested_url.merge(locale: locale), class: 'display-block padding-y-105 padding-x-2 text-no-underline fs-13p', lang: locale %>
-          </li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-  <div class="padding-y-1 padding-x-2 tablet:padding-x-0 <%= 'tablet:padding-y-0' if show_language_dropdown %>">
+  <div class="tablet:display-none border-bottom border-primary-light">
+    <%= render 'shared/language_picker', id_suffix: 'mobile' %>
+  </div>
+  <div class="padding-y-1 padding-x-2 tablet:padding-x-0 tablet:padding-y-0">
     <div class="display-flex flex-align-center flex-justify-center">
       <div class="display-flex flex-auto">
         <div class="display-flex tablet:display-none">
@@ -46,25 +25,9 @@
         </div>
       </div>
       <div class="display-flex flex-align-center flex-justify-center">
-        <% if show_language_dropdown %>
-          <div class='i18n-desktop-toggle display-none tablet:display-flex margin-x-2 padding-y-1'>
-            <button class='text-white text-no-underline border border-primary radius-lg padding-x-1 padding-y-05 language-desktop-button' aria-expanded='false'>
-              <%= image_tag asset_url('globe-white.svg'), width: 12,
-                                                          class: 'margin-right-1', alt: '' %><%= t('i18n.language') %>
-              <span class="caret display-inline-block margin-left-05" aria-hidden="true">&#9662;</span>
-            </button>
-            <ul class="i18n-dropdown i18n-desktop-dropdown usa-dark-background bg-primary usa-list--unstyled margin-bottom-0 display-none">
-              <% I18n.available_locales.each do |locale| %>
-                <li class='border-bottom border-primary-darker'>
-                  <%= link_to t("i18n.locale.#{locale}"),
-                              sanitized_requested_url.merge(locale: locale),
-                              class: 'display-block padding-left-3 padding-y-2 text-no-underline',
-                              lang: locale %>
-                </li>
-              <% end %>
-            </ul>
-          </div>
-        <% end %>
+        <div class="display-none tablet:display-block margin-x-2 margin-y-05">
+          <%= render 'shared/language_picker', id_suffix: 'desktop' %>
+        </div>
 
         <div class="display-flex tablet:display-none">
           <%= new_window_link_to(
