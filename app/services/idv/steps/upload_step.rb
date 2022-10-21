@@ -3,6 +3,14 @@ module Idv
     class UploadStep < DocAuthBaseStep
       STEP_INDICATOR_STEP = :verify_id
 
+      def self.analytics_visited_event
+        :idv_doc_auth_upload_visited
+      end
+
+      def self.analytics_submitted_event
+        :idv_doc_auth_upload_submitted
+      end
+
       def call
         @flow.irs_attempts_api_tracker.idv_document_upload_method_selected(
           upload_method: params[:type],

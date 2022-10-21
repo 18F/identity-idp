@@ -5,6 +5,14 @@ module Idv
         front_image back_image selfie_image
       ].freeze
 
+      def self.analytics_visited_event
+        :idv_doc_auth_document_capture_visited
+      end
+
+      def self.analytics_submitted_event
+        :idv_doc_auth_document_capture_submitted
+      end
+
       def call
         handle_stored_result if !FeatureManagement.document_capture_async_uploads_enabled?
       end

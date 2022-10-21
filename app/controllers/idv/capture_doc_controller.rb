@@ -15,7 +15,7 @@ module Idv
       step_url: :idv_capture_doc_step_url,
       final_url: :root_url,
       flow: Idv::Flows::CaptureDocFlow,
-      analytics_id: Analytics::DOC_AUTH,
+      analytics_id: 'Doc Auth',
     }.freeze
 
     def return_to_sp

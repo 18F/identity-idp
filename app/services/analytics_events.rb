@@ -2990,5 +2990,87 @@ module AnalyticsEvents
       **extra,
     )
   end
+
+  def idv_doc_auth_welcome_visited(**extra)
+    track_event('IdV: doc auth welcome visited', **extra)
+  end
+
+  def idv_doc_auth_welcome_submitted(**extra)
+    track_event('IdV: doc auth welcome submitted', **extra)
+  end
+
+  def idv_doc_auth_agreement_visited(**extra)
+    track_event('IdV: doc auth agreement visited', **extra)
+  end
+
+  def idv_doc_auth_agreement_submitted(**extra)
+    track_event('IdV: doc auth agreement submitted', **extra)
+  end
+
+  def idv_doc_auth_upload_visited(**extra)
+    track_event('IdV: doc auth upload visited', **extra)
+  end
+
+  def idv_doc_auth_upload_submitted(**extra)
+    track_event('IdV: doc auth upload submitted', **extra)
+  end
+
+  def idv_doc_auth_document_capture_visited(**extra)
+    track_event('IdV: doc auth document_capture visited', **extra)
+  end
+
+  def idv_doc_auth_document_capture_submitted(**extra)
+    track_event('IdV: doc auth document_capture submitted', **extra)
+  end
+
+  def idv_doc_auth_verify_document_status_submitted(**extra)
+    track_event('IdV: doc auth verify_document_status submitted', **extra)
+  end
+
+  # @identity.idp.previous_event_name IdV: in person proofing ssn visited
+  def idv_doc_auth_ssn_visited(**extra)
+    track_event('IdV: doc auth ssn visited', **extra)
+  end
+
+  # @identity.idp.previous_event_name IdV: in person proofing ssn submitted
+  def idv_doc_auth_ssn_submitted(**extra)
+    track_event('IdV: doc auth ssn submitted', **extra)
+  end
+
+  # @identity.idp.previous_event_name IdV: in person proofing verify visited
+  def idv_doc_auth_verify_visited(**extra)
+    track_event('IdV: doc auth verify visited', **extra)
+  end
+
+  # @identity.idp.previous_event_name IdV: in person proofing verify submitted
+  def idv_doc_auth_verify_submitted(**extra)
+    track_event('IdV: doc auth verify submitted', **extra)
+  end
+
+  # @identity.idp.previous_event_name IdV: in person proofing verify_wait visited
+  def idv_doc_auth_verify_wait_step_visited(**extra)
+    track_event('IdV: doc auth verify_wait visited', **extra)
+  end
+
+  # @identity.idp.previous_event_name IdV: in person proofing optional verify_wait submitted
+  def idv_doc_auth_optional_verify_wait_submitted(**extra)
+    track_event('IdV: doc auth optional verify_wait submitted', **extra)
+  end
+
+  def idv_in_person_proofing_address_visited(**extra)
+    track_event('IdV: in person proofing address visited', **extra)
+  end
+
+  def idv_in_person_proofing_address_submitted(**extra)
+    track_event('IdV: in person proofing address submitted', **extra)
+  end
+
+  def idv_in_person_proofing_state_id_visited(**extra)
+    track_event('IdV: in person proofing state_id visited', **extra)
+  end
+
+  def idv_in_person_proofing_state_id_submitted(**extra)
+    track_event('IdV: in person proofing state_id submitted', **extra)
+  end
 end
 # rubocop:enable Metrics/ModuleLength

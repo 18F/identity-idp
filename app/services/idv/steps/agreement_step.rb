@@ -3,6 +3,14 @@ module Idv
     class AgreementStep < DocAuthBaseStep
       STEP_INDICATOR_STEP = :getting_started
 
+      def self.analytics_visited_event
+        :idv_doc_auth_agreement_visited
+      end
+
+      def self.analytics_submitted_event
+        :idv_doc_auth_agreement_submitted
+      end
+
       def call
       end
 
