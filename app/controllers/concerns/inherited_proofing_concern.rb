@@ -5,14 +5,12 @@
 module InheritedProofingConcern
   extend ActiveSupport::Concern
 
-  include Idv::InheritedProofing::ServiceProviders
-
   def inherited_proofing?
     inherited_proofing_service_provider.present?
   end
 
   def inherited_proofing_service_provider
-    return VA if va_inherited_proofing?
+    return :va if va_inherited_proofing?
   end
 
   # Department of Veterans Affairs (VA) methods.
@@ -39,7 +37,7 @@ module InheritedProofingConcern
   end
 
   def inherited_proofing_service_provider_data
-    if inherited_proofing_service_provider == VA
+    if inherited_proofing_service_provider == :va
       { auth_code: va_inherited_proofing_auth_code }
     else
       {}
