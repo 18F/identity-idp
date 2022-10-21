@@ -4,6 +4,12 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
+<% if @platform_authenticator %>
+    <%= render AlertComponent.new(type: :warning, text_tag: 'div') do %>
+      <%= t('forms.webauthn_platform_setup.warning_text') %>
+    <% end %>
+<% end %>
+
 <%= @presenter.intro_html %>
 
 <%= simple_form_for(
@@ -23,11 +29,6 @@
   <%= hidden_field_tag :webauthn_public_key, '', id: 'webauthn_public_key' %>
   <%= hidden_field_tag :attestation_object, '', id: 'attestation_object' %>
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
-  <% if @platform_authenticator %>
-    <%= render AlertComponent.new(type: :warning, text_tag: 'div') do %>
-      <%= t('forms.webauthn_platform_setup.warning_text') %>
-    <% end %>
-  <% end %>
   <%= hidden_field_tag :platform_authenticator, @platform_authenticator, id: 'platform_authenticator' %>
   <%= label_tag 'code', @presenter.nickname_label, class: 'display-block text-bold', for: 'nickname' %>
   <%= text_field_tag(
