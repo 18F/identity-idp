@@ -13,13 +13,11 @@ module ActionMailer
 
     def deliver_now_or_later(opts = {})
       MailerSensitiveInformationChecker.check_for_sensitive_pii!(@params, @args, @action)
-      # rubocop:disable IdentityIdp/MailLaterLinter
       if IdentityConfig.store.deliver_mail_async
         deliver_later(opts)
       else
         deliver_now
       end
-      # rubocop:enable IdentityIdp/MailLaterLinter
     end
   end
 end
