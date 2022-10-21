@@ -100,7 +100,7 @@ describe Idv::DocAuthController do
       get :show, params: { step: 'welcome' }
 
       expect(@analytics).to have_received(:track_event).with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} welcome visited".downcase, result
+        'IdV: doc auth welcome visited', result
       )
     end
 
@@ -111,7 +111,7 @@ describe Idv::DocAuthController do
       get :show, params: { step: 'verify_wait' }
 
       expect(@analytics).to have_received(:track_event).with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} optional verify_wait submitted".downcase, result
+        'IdV: doc auth optional verify_wait submitted', result
       )
     end
 
@@ -120,11 +120,11 @@ describe Idv::DocAuthController do
       get :show, params: { step: 'welcome' }
 
       expect(@analytics).to have_received(:track_event).ordered.with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} welcome visited".downcase,
+        'IdV: doc auth welcome visited',
         hash_including(step: 'welcome', step_count: 1),
       )
       expect(@analytics).to have_received(:track_event).ordered.with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} welcome visited".downcase,
+        'IdV: doc auth welcome visited',
         hash_including(step: 'welcome', step_count: 2),
       )
     end
@@ -165,7 +165,7 @@ describe Idv::DocAuthController do
       put :update, params: { step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
 
       expect(@analytics).to have_received(:track_event).with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} ssn submitted".downcase, result
+        'IdV: doc auth ssn submitted', result
       )
     end
 
@@ -178,11 +178,11 @@ describe Idv::DocAuthController do
       put :update, params: { step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
 
       expect(@analytics).to have_received(:track_event).with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} ssn submitted".downcase,
+        'IdV: doc auth ssn submitted',
         hash_including(step: 'ssn', step_count: 1),
       )
       expect(@analytics).to have_received(:track_event).with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} ssn submitted".downcase,
+        'IdV: doc auth ssn submitted',
         hash_including(step: 'ssn', step_count: 2),
       )
     end
@@ -206,7 +206,7 @@ describe Idv::DocAuthController do
 
       expect(response).to redirect_to idv_doc_auth_errors_no_camera_url
       expect(@analytics).to have_received(:track_event).with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} welcome submitted".downcase, result
+        'IdV: doc auth welcome submitted', result
       )
     end
 
@@ -382,7 +382,7 @@ describe Idv::DocAuthController do
       )
 
       expect(@analytics).to receive(:track_event).with(
-        "IdV: #{Analytics::DOC_AUTH.downcase} image upload vendor pii validation", include(
+        'IdV: doc auth image upload vendor pii validation', include(
           errors: include(
             pii: [I18n.t('doc_auth.errors.general.no_liveness')],
           ),
@@ -397,7 +397,7 @@ describe Idv::DocAuthController do
       )
 
       expect(@analytics).to receive(:track_event).with(
-        "IdV: #{Analytics::DOC_AUTH.downcase} verify_document_status submitted", include(
+        'IdV: doc auth verify_document_status submitted', include(
           errors: include(
             pii: [I18n.t('doc_auth.errors.general.no_liveness')],
           ),

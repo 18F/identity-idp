@@ -143,7 +143,7 @@ describe Idv::CaptureDocController do
         expect(@irs_attempts_api_tracker).not_to have_received(:idv_phone_upload_link_used)
 
         expect(@analytics).to have_received(:track_event).with(
-          'IdV: ' + "#{Analytics::DOC_AUTH} capture_complete visited".downcase, result
+          'IdV: doc auth capture_complete visited', result
         )
       end
 
@@ -156,11 +156,11 @@ describe Idv::CaptureDocController do
         expect(@irs_attempts_api_tracker).not_to have_received(:idv_phone_upload_link_used)
 
         expect(@analytics).to have_received(:track_event).ordered.with(
-          'IdV: ' + "#{Analytics::DOC_AUTH} capture_complete visited".downcase,
+          'IdV: doc auth capture_complete visited',
           hash_including(step: 'capture_complete', step_count: 1),
         )
         expect(@analytics).to have_received(:track_event).ordered.with(
-          'IdV: ' + "#{Analytics::DOC_AUTH} capture_complete visited".downcase,
+          'IdV: doc auth capture_complete visited',
           hash_including(step: 'capture_complete', step_count: 2),
         )
       end

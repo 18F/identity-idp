@@ -57,7 +57,7 @@ feature 'doc capture document capture step', js: true do
     click_idv_continue
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
     expect(fake_analytics).to have_logged_event(
-      "IdV: #{Analytics::DOC_AUTH.downcase} document_capture submitted",
+      "IdV: doc auth document_capture submitted",
       step: 'document_capture',
       flow_path: 'hybrid',
     )
@@ -166,10 +166,7 @@ feature 'doc capture document capture step', js: true do
     it 'logs events as an anonymous user' do
       visit request_uri
 
-      expect(fake_analytics).to have_logged_event(
-        Analytics::DOC_AUTH,
-        success: false,
-      )
+      expect(fake_analytics).to have_logged_event('Doc Auth', success: false)
     end
   end
 
@@ -177,7 +174,7 @@ feature 'doc capture document capture step', js: true do
     it 'logs events as the inherited user' do
       complete_doc_capture_steps_before_first_step(user)
       expect(fake_analytics).to have_logged_event(
-        'IdV: ' + "#{Analytics::DOC_AUTH} document_capture visited".downcase,
+        'IdV: doc auth document_capture visited',
         step: 'document_capture',
         flow_path: 'hybrid',
       )

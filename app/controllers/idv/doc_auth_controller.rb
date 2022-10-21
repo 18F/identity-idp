@@ -23,7 +23,7 @@ module Idv
       step_url: :idv_doc_auth_step_url,
       final_url: :idv_review_url,
       flow: Idv::Flows::DocAuthFlow,
-      analytics_id: Analytics::DOC_AUTH,
+      analytics_id: 'Doc Auth',
     }.freeze
 
     def return_to_sp
