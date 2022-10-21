@@ -33,6 +33,7 @@ gem 'jsbundling-rails', '~> 1.0.0'
 gem 'jwe'
 gem 'jwt'
 gem 'lograge', '>= 0.11.2'
+gem 'lookbook', '~> 1.2.1', require: false
 gem 'lru_redux'
 gem 'maxminddb'
 gem 'multiset'
@@ -75,9 +76,6 @@ gem 'yard'
 # This version of the zxcvbn gem matches the data and behavior of the zxcvbn NPM package.
 # It should not be updated without verifying that the behavior still matches JS version 4.4.2.
 gem 'zxcvbn', '0.1.7'
-
-# Lookbook must be listed after ViewComponent, so listed here out of default alphabetical order.
-gem 'lookbook', '~> 1.2.1', require: false
 
 group :development do
   gem 'better_errors', '>= 2.5.1'
