@@ -3100,5 +3100,26 @@ module AnalyticsEvents
   def idv_doc_auth_cancel_link_sent_submitted(**extra)
     track_event('IdV: doc auth cancel_link_sent submitted', **extra)
   end
+
+  def idv_doc_auth_capture_complete_visited(**extra)
+    track_event('IdV: doc auth capture_complete visited', **extra)
+  end
+
+  # @identity.idp.previous_event_name IdV: in person proofing redo_address submitted
+  def idv_doc_auth_redo_address_submitted(**extra)
+    track_event('IdV: doc auth redo_address submitted', **extra)
+  end
+
+  def idv_doc_auth_redo_ssn_submitted(**extra)
+    track_event('IdV: doc auth redo_ssn submitted', **extra)
+  end
+
+  def idv_in_person_proofing_redo_state_id_submitted(**extra)
+    track_event('IdV: in person proofing redo_state_id submitted', **extra)
+  end
+
+  def idv_doc_auth_email_sent_visited(**extra)
+    track_event('IdV: doc auth email_sent visited', **extra)
+  end
 end
 # rubocop:enable Metrics/ModuleLength
