@@ -49,9 +49,9 @@ module ArcgisApi
 
     def parse_suggestions(response_body)
       if response_body['error']
-        if response_body['error']['code'] >= 400 && response_body['error']['code'] < 500
-          raise Faraday::ClientError.new(response_body)
-        end
+        error_code = response_body.dig('error', 'code')
+
+        raise Faraday::ClientError.new(RuntimeError.new("received error code #{error_code}"), response_body)
       end
 
       response_body['suggestions'].map do |suggestion|
