@@ -77,6 +77,34 @@ namespace :dev do
     end
   end
 
+  desc 'Create in-person enrollment records for N random users'
+  task enroll_random_users_in_person: :environment do
+    num_users = (ENV['NUM_USERS'] || 100).to_i
+    # num_created = 0
+    unless ENV['PROGRESS'] == 'no'
+      progress = ProgressBar.create(
+        title: 'Enrollments',
+        total: num_users,
+        format: '%t: |%B| %j%% [%a / %e]',
+      )
+    end
+    random = Random.new(num_users)
+    enrollment_status = InPersonEnrollment.statuses[(ENV['ENROLLMENT_STATUS'] || "pending")]
+    enrollments = (0...num_users).map do |n|
+      user = User.find_with_email("testuser#{n}@example.com")
+      next if user.nil?
+      enrollment = {
+        user_id: user.id,
+        status: enrollment_status,
+        unique_id: SecureRandom.hex(9),
+        enrollment_established_at: Time.zone.now - random.rand(0..5).days.ago
+      }
+      progress&.increment
+      enrollment
+    end
+    InPersonEnrollment.create!(enrollments)
+  end
+
   desc 'Create a user with multiple emails and output the emails and passwords'
   task create_multiple_email_user: :environment do
     emails = [
