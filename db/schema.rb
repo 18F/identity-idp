@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_21_233413) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_12_173528) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -437,6 +437,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_21_233413) do
     t.jsonb "proofing_components"
     t.string "name_zip_birth_year_signature"
     t.date "reproof_at"
+    t.string "initiating_service_provider_issuer"
     t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
     t.index ["reproof_at"], name: "index_profiles_on_reproof_at"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
@@ -483,15 +484,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_21_233413) do
 
   create_table "registration_logs", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.datetime "submitted_at", precision: nil, null: false
-    t.datetime "confirmed_at", precision: nil
-    t.datetime "password_at", precision: nil
-    t.string "first_mfa"
-    t.datetime "first_mfa_at", precision: nil
-    t.string "second_mfa"
     t.datetime "registered_at", precision: nil
     t.index ["registered_at"], name: "index_registration_logs_on_registered_at"
-    t.index ["submitted_at"], name: "index_registration_logs_on_submitted_at"
     t.index ["user_id"], name: "index_registration_logs_on_user_id", unique: true
   end
 

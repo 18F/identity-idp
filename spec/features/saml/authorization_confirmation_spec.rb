@@ -17,6 +17,7 @@ feature 'SAML Authorization Confirmation' do
       click_submit_default
       visit request_url
       click_agree_and_continue
+      click_submit_default
       visit sign_out_url
 
       user
@@ -41,7 +42,7 @@ feature 'SAML Authorization Confirmation' do
       expect(page).to have_content second_email.email
 
       continue_as(second_email.email)
-      expect(current_url).to eq(request_url)
+      expect(current_url).to eq(complete_saml_url)
     end
 
     it 'it allows the user to switch accounts prior to continuing to the SP' do
@@ -55,7 +56,7 @@ feature 'SAML Authorization Confirmation' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_url).to eq(request_url)
+      expect(current_url).to eq(complete_saml_url)
     end
 
     it 'does not render an error if a user goes back after opting to switch accounts' do

@@ -9,9 +9,9 @@ module Aws
       def initialize(*); end
 
       def deliver(mail)
-        response = ses_client.send_raw_email(raw_message: { data: mail.to_s })
-        mail.message_id = "#{response.message_id}@email.amazonses.com"
-        response
+        ses_client.send_raw_email(raw_message: { data: mail.to_s }).tap do |response|
+          mail.header[:ses_message_id] = response.message_id
+        end
       end
 
       alias deliver! deliver

@@ -5,17 +5,13 @@
     margin-bottom: 0;
   }
 
-  &::before {
+  &.troubleshooting-options--divider::before {
     @include u-margin-bottom(4);
     background-color: color('secondary');
     content: '';
     display: block;
     height: 4px;
     width: 5rem;
-  }
-
-  & + &::before {
-    content: none;
   }
 }
 

@@ -4,10 +4,30 @@ describe UserMailer, type: :mailer do
   let(:user) { build(:user) }
   let(:email_address) { user.email_addresses.first }
   let(:banned_email) { 'banned_email+123abc@gmail.com' }
+  let(:banned_email_address) { create(:email_address, email: banned_email, user: user) }
+
+  describe '#validate_user_and_email_address' do
+    let(:mail) { UserMailer.with(user: user, email_address: email_address).signup_with_your_email }
+
+    context 'with user and email address match' do
+      it 'does not raise an error' do
+        expect { mail.body }.not_to raise_error
+      end
+    end
+
+    context 'with user and email address mismatch' do
+      let(:user) { create(:user) }
+      let(:email_address) { EmailAddress.new }
+
+      it 'raises an error' do
+        expect { mail.body }.to raise_error(UserMailer::UserEmailAddressMismatchError)
+      end
+    end
+  end
 
   describe '#add_email' do
     let(:token) { SecureRandom.hex }
-    let(:mail) { UserMailer.add_email(user, email_address, token) }
+    let(:mail) { UserMailer.with(user: user, email_address: email_address).add_email(token) }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -21,13 +41,15 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#email_deleted' do
-    let(:mail) { UserMailer.email_deleted(user, 'old@email.com') }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).email_deleted
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the old email' do
-      expect(mail.to).to eq ['old@email.com']
+      expect(mail.to).to eq [email_address.email]
     end
 
     it 'renders the subject' do
@@ -40,15 +62,37 @@ describe UserMailer, type: :mailer do
       )
       expect_email_body_to_have_help_and_contact_links
     end
+  end
 
-    it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.email_deleted(user, banned_email)
-      expect(mail.to).to eq(nil)
+  describe '#add_email_associated_with_another_account' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        add_email_associated_with_another_account
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'sends to the specified email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('mailer.email_reuse_notice.subject')
+    end
+
+    it 'renders the body' do
+      expect_email_body_to_have_help_and_contact_links
     end
   end
 
   describe '#password_changed' do
-    let(:mail) { UserMailer.password_changed(user, email_address, disavowal_token: '123abc') }
+    let(:mail) do
+      UserMailer.with(
+        user: user,
+        email_address: email_address,
+      ).password_changed(disavowal_token: '123abc')
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -72,14 +116,17 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      email_address = EmailAddress.new(email: banned_email)
-      mail = UserMailer.password_changed(user, email_address, disavowal_token: '123abc')
+      mail = UserMailer.with(user: user, email_address: banned_email_address).
+        password_changed(disavowal_token: '123abc')
       expect(mail.to).to eq(nil)
     end
   end
 
   describe '#personal_key_sign_in' do
-    let(:mail) { UserMailer.personal_key_sign_in(user, user.email, disavowal_token: 'asdf1234') }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: user.email_addresses.first).
+        personal_key_sign_in(disavowal_token: 'asdf1234')
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -102,7 +149,9 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.personal_key_sign_in(user, banned_email, disavowal_token: 'asdf1234')
+      mail = UserMailer.with(user: user, email_address: banned_email_address).
+        personal_key_sign_in(disavowal_token: 'asdf1234')
+
       expect(mail.to).to eq(nil)
     end
   end
@@ -113,13 +162,12 @@ describe UserMailer, type: :mailer do
     let(:token) { 'asdf123' }
 
     let(:mail) do
-      UserMailer.email_confirmation_instructions(
-        user,
-        user.email,
-        token,
-        request_id: request_id,
-        instructions: instructions,
-      )
+      UserMailer.with(user: user, email_address: user.email_addresses.first).
+        email_confirmation_instructions(
+          token,
+          request_id: request_id,
+          instructions: instructions,
+        )
     end
 
     it_behaves_like 'a system email'
@@ -131,9 +179,7 @@ describe UserMailer, type: :mailer do
     location = 'Washington, DC'
     disavowal_token = 'asdf1234'
     let(:mail) do
-      UserMailer.new_device_sign_in(
-        user: user,
-        email_address: email_address,
+      UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
         date: date,
         location: location,
         disavowal_token: disavowal_token,
@@ -168,9 +214,7 @@ describe UserMailer, type: :mailer do
 
     it 'does not send mail to emails in nonessential email banlist' do
       email_address = EmailAddress.new(email: banned_email)
-      mail = UserMailer.new_device_sign_in(
-        user: user,
-        email_address: email_address,
+      mail = UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
         date: date,
         location: location,
         disavowal_token: disavowal_token,
@@ -180,7 +224,9 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#personal_key_regenerated' do
-    let(:mail) { UserMailer.personal_key_regenerated(user, user.email) }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).personal_key_regenerated
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -200,13 +246,16 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.personal_key_regenerated(user, banned_email)
+      mail = UserMailer.with(user: user, email_address: banned_email_address).
+        personal_key_regenerated
       expect(mail.to).to eq(nil)
     end
   end
 
   describe '#signup_with_your_email' do
-    let(:mail) { UserMailer.signup_with_your_email(user, user.email) }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: user.email_addresses.first).signup_with_your_email
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -240,7 +289,10 @@ describe UserMailer, type: :mailer do
 
   describe '#phone_added' do
     disavowal_token = 'i_am_disavowal_token'
-    let(:mail) { UserMailer.phone_added(user, email_address, disavowal_token: disavowal_token) }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        phone_added(disavowal_token: disavowal_token)
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -260,8 +312,8 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      email_address = EmailAddress.new(email: banned_email)
-      mail = UserMailer.phone_added(user, email_address, disavowal_token: disavowal_token)
+      mail = UserMailer.with(user: user, email_address: banned_email_address).
+        phone_added(disavowal_token: disavowal_token)
       expect(mail.to).to eq(nil)
     end
   end
@@ -276,7 +328,10 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#account_reset_request' do
-    let(:mail) { UserMailer.account_reset_request(user, email_address, account_reset) }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).account_reset_request(account_reset)
+    end
+
     let(:account_reset) { user.account_reset_request }
 
     it_behaves_like 'a system email'
@@ -316,7 +371,10 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#account_reset_granted' do
-    let(:mail) { UserMailer.account_reset_granted(user, email_address, user.account_reset_request) }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        account_reset_granted(user.account_reset_request)
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -338,7 +396,10 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#account_reset_complete' do
-    let(:mail) { UserMailer.account_reset_complete(user, email_address) }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        account_reset_complete
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -359,8 +420,33 @@ describe UserMailer, type: :mailer do
     end
   end
 
+  describe '#account_reset_cancel' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        account_reset_cancel
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.account_reset_cancel.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).
+        to have_content(
+          strip_tags(t('user_mailer.account_reset_cancel.intro_html', app_name: APP_NAME)),
+        )
+    end
+  end
+
   describe '#please_reset_password' do
-    let(:mail) { UserMailer.please_reset_password(user, email_address.email) }
+    let(:mail) { UserMailer.with(user: user, email_address: email_address).please_reset_password }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -387,7 +473,10 @@ describe UserMailer, type: :mailer do
   describe '#doc_auth_desktop_link_to_sp' do
     let(:app) { 'login.gov' }
     let(:link) { root_url }
-    let(:mail) { UserMailer.doc_auth_desktop_link_to_sp(user, email_address.email, app, link) }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        doc_auth_desktop_link_to_sp(app, link)
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -409,7 +498,7 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#letter_reminder' do
-    let(:mail) { UserMailer.letter_reminder(user, email_address.email) }
+    let(:mail) { UserMailer.with(user: user, email_address: email_address).letter_reminder }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -428,54 +517,8 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.letter_reminder(user, banned_email)
+      mail = UserMailer.with(user: user, email_address: banned_email_address).letter_reminder
       expect(mail.to).to eq(nil)
-    end
-  end
-
-  describe '#sps_over_quota_limit' do
-    let(:mail) { UserMailer.sps_over_quota_limit(email_address.email) }
-
-    it_behaves_like 'a system email'
-
-    it 'sends to the current email' do
-      expect(mail.to).to eq [email_address.email]
-    end
-
-    it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.sps_over_quota_limit.subject')
-    end
-
-    it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.sps_over_quota_limit.info')))
-    end
-  end
-
-  describe 'deleted_user_accounts_report' do
-    let(:mail) do
-      UserMailer.deleted_user_accounts_report(
-        email: email_address.email,
-        name: 'my name',
-        issuers: %w[issuer1 issuer2],
-        data: 'data',
-      )
-    end
-
-    it_behaves_like 'a system email'
-
-    it 'sends to the current email' do
-      expect(mail.to).to eq [email_address.email]
-    end
-
-    it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.deleted_accounts_report.subject')
-    end
-
-    it 'renders the body' do
-      expect(mail.html_part.body).to have_content('my name')
-      expect(mail.html_part.body).to have_content('issuer1')
-      expect(mail.html_part.body).to have_content('issuer2')
     end
   end
 
@@ -484,10 +527,11 @@ describe UserMailer, type: :mailer do
     let(:sp_name) { '' }
     let(:date_time) { Time.zone.now }
     let(:mail) do
-      UserMailer.account_verified(
-        user, email_address, date_time: date_time, sp_name: sp_name,
-                             disavowal_token: disavowal_token
-      )
+      UserMailer.with(user: user, email_address: email_address).
+        account_verified(
+          date_time: date_time, sp_name: sp_name,
+          disavowal_token: disavowal_token
+        )
     end
 
     it_behaves_like 'a system email'
@@ -502,11 +546,12 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      email_address = EmailAddress.new(email: banned_email)
-      mail = UserMailer.account_verified(
-        user, email_address, date_time: date_time, sp_name: sp_name,
-                             disavowal_token: disavowal_token
-      )
+      mail = UserMailer.with(user: user, email_address: banned_email_address).
+        account_verified(
+          date_time: date_time,
+          sp_name: sp_name,
+          disavowal_token: disavowal_token,
+        )
       expect(mail.to).to eq(nil)
     end
   end
@@ -522,9 +567,7 @@ describe UserMailer, type: :mailer do
     end
 
     let(:mail) do
-      UserMailer.in_person_ready_to_verify(
-        user,
-        user.email_addresses.first,
+      UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
         enrollment: enrollment,
       )
     end
@@ -543,9 +586,7 @@ describe UserMailer, type: :mailer do
     end
 
     let(:mail) do
-      UserMailer.in_person_verified(
-        user,
-        user.email_addresses.first,
+      UserMailer.with(user: user, email_address: email_address).in_person_verified(
         enrollment: enrollment,
       )
     end
@@ -564,9 +605,7 @@ describe UserMailer, type: :mailer do
     end
 
     let(:mail) do
-      UserMailer.in_person_failed(
-        user,
-        user.email_addresses.first,
+      UserMailer.with(user: user, email_address: email_address).in_person_failed(
         enrollment: enrollment,
       )
     end
@@ -585,9 +624,7 @@ describe UserMailer, type: :mailer do
     end
 
     let(:mail) do
-      UserMailer.in_person_failed_fraud(
-        user,
-        user.email_addresses.first,
+      UserMailer.with(user: user, email_address: email_address).in_person_failed_fraud(
         enrollment: enrollment,
       )
     end
@@ -598,10 +635,7 @@ describe UserMailer, type: :mailer do
 
   describe '#in_person_completion_survey' do
     let(:mail) do
-      UserMailer.in_person_completion_survey(
-        user,
-        email_address,
-      )
+      UserMailer.with(user: user, email_address: email_address).in_person_completion_survey
     end
 
     it_behaves_like 'a system email'
@@ -637,7 +671,28 @@ describe UserMailer, type: :mailer do
     end
   end
 
-  def strip_tags(str)
-    ActionController::Base.helpers.strip_tags(str)
+  describe '#deliver_later' do
+    it 'does not queue email if it potentially contains sensitive value' do
+      user = create(:user)
+      mailer = UserMailer.with(
+        user: user,
+        email_address: user.email_addresses.first,
+      ).add_email(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
+      expect { mailer.deliver_later }.to raise_error(
+        MailerSensitiveInformationChecker::SensitiveValueError,
+      )
+    end
+
+    it 'does not queue email if it potentially contains sensitive keys' do
+      user = create(:user)
+      mailer = UserMailer.with(user: user, email_address: user.email_addresses.first).add_email(
+        {
+          first_name: nil,
+        },
+      )
+      expect { mailer.deliver_later }.to raise_error(
+        MailerSensitiveInformationChecker::SensitiveKeyError,
+      )
+    end
   end
 end

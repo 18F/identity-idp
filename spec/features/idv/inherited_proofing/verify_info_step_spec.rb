@@ -1,8 +1,7 @@
 require 'rails_helper'
 
 feature 'inherited proofing verify info' do
-  include IdvHelper
-  include DocAuthHelper
+  include InheritedProofingHelper
   include_context 'va_user_context'
 
   before do
@@ -18,8 +17,7 @@ feature 'inherited proofing verify info' do
 
   let(:auth_code) { Idv::InheritedProofing::Va::Mocks::Service::VALID_AUTH_CODE }
 
-  # LG-7255: Need to uncomment this test once this card is completed.
-  xdescribe 'page content' do
+  describe 'page content' do
     it 'renders the Continue button' do
       expect(page).to have_button(t('inherited_proofing.buttons.continue'))
     end
@@ -30,8 +28,7 @@ feature 'inherited proofing verify info' do
     end
   end
 
-  # LG-7255: Need to uncomment this test once this card is completed.
-  xdescribe 'user info' do
+  describe 'user info' do
     it "displays the user's personal information" do
       expect(page).to have_text user_attributes[:first_name]
       expect(page).to have_text user_attributes[:last_name]

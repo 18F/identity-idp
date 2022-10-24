@@ -40,6 +40,9 @@ fr:
       reset_password: Réinitialisez le mot de passe
       review: Saisissez à nouveau votre mot de passe
       verify_info: Vérifiez vos informations
+    inherited_proofing:
+      cancellation_prompt: Annulez la vérification d’identité
+      cancelled: La vérification d’identité est annulée
     mfa_setup:
       suggest_second_mfa: Vous avez ajouté votre première méthode d’authentification !
         Ajoutez-en une deuxième  en guise de sauvegarde.

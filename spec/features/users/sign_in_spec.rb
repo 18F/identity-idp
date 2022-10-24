@@ -266,7 +266,7 @@ feature 'Sign in' do
     end
 
     scenario 'user sees warning before session times out' do
-      expect(page).to have_css('#session-timeout-msg')
+      expect(page).to have_content(/14 minutes and 5[0-9] seconds/, wait: 5)
 
       time1 = page.text[/14 minutes and 5[0-9] seconds/]
       sleep(1)
@@ -299,7 +299,6 @@ feature 'Sign in' do
       sign_in_user(user)
       visit user_two_factor_authentication_path
 
-      expect(page).to have_css('#session-timeout-msg')
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.continue'))
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.sign_out'))
     end
@@ -890,14 +889,14 @@ feature 'Sign in' do
       )
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_submit_default_twice
 
       expect(current_path).to eq sign_up_completed_path
       expect(page).to have_content(user.email)
 
       click_agree_and_continue
 
-      expect(current_url).to eq @saml_authn_request
+      expect(current_url).to eq complete_saml_url
     end
 
     it 'returns ial2 info for a verified user' do
@@ -918,13 +917,14 @@ feature 'Sign in' do
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
+      click_submit_default
 
       expect(current_path).to eq sign_up_completed_path
       expect(page).to have_content('1**-**-***3')
 
       click_agree_and_continue
 
-      expect(current_url).to eq @saml_authn_request
+      expect(current_url).to eq complete_saml_url
     end
   end
 

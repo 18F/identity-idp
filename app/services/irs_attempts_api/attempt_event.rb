@@ -24,7 +24,9 @@ module IrsAttemptsApi
         event_data_encryption_key,
         typ: 'secevent+jwe',
         zip: 'DEF',
+        alg: 'RSA-OAEP',
         enc: 'A256GCM',
+        kid: JWT::JWK.new(event_data_encryption_key).kid,
       )
     end
 
@@ -82,8 +84,10 @@ module IrsAttemptsApi
     end
 
     def event_data_encryption_key
-      decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
-      OpenSSL::PKey::RSA.new(decoded_key_der)
+      @event_data_encryption_key ||= begin
+        decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
+        OpenSSL::PKey::RSA.new(decoded_key_der)
+      end
     end
   end
 end

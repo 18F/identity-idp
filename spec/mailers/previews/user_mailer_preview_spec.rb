@@ -13,7 +13,8 @@ RSpec.describe UserMailerPreview do
   it 'has a preview method for each mailer method' do
     mailer_methods = UserMailer.instance_methods(false)
     preview_methods = UserMailerPreview.instance_methods(false)
-    expect(mailer_methods - preview_methods).to be_empty
+    mailer_helper_methods = [:email_address, :user, :validate_user_and_email_address, :add_metadata]
+    expect(mailer_methods - mailer_helper_methods - preview_methods).to be_empty
   end
 
   it 'uses user and email records that cannot be saved' do

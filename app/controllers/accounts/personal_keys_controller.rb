@@ -36,7 +36,8 @@ module Accounts
     # @return [FormResponse]
     def send_new_personal_key_notifications
       emails = current_user.confirmed_email_addresses.map do |email_address|
-        UserMailer.personal_key_regenerated(current_user, email_address.email).deliver_now_or_later
+        UserMailer.with(user: current_user, email_address: email_address).personal_key_regenerated.
+          deliver_now_or_later
       end
 
       telephony_responses = MfaContext.new(current_user).

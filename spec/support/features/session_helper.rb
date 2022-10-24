@@ -129,7 +129,6 @@ module Features
 
     def sign_up
       user = create(:user, :unconfirmed)
-      Funnel::Registration::Create.call(user.id)
       confirm_last_user
       user
     end
@@ -285,6 +284,11 @@ module Features
       click_button t('forms.buttons.submit.default')
     end
 
+    def click_submit_default_twice
+      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.submit.default')
+    end
+
     def click_continue
       click_button t('forms.buttons.continue') if page.has_button?(t('forms.buttons.continue'))
     end
@@ -319,12 +323,11 @@ module Features
 
     def acknowledge_and_confirm_personal_key
       click_acknowledge_personal_key
-
-      page.find(':focus').fill_in with: scrape_personal_key
-      within('[role=dialog]') { click_continue }
     end
 
     def click_acknowledge_personal_key
+      checkbox_header = t('forms.validation.required_checkbox')
+      find('label', text: /#{checkbox_header}/).click
       click_continue
     end
 
@@ -430,12 +433,7 @@ module Features
 
       submit_form_with_valid_password
 
-      expect(page).to have_css('img[src*=sp-logos]')
-
       set_up_2fa_with_valid_phone
-
-      expect(page).to have_css('img[src*=sp-logos]')
-
       # expect(page).to have_css('img[src*=sp-logos]')
     end
 

@@ -95,7 +95,6 @@ class RegisterUserEmailForm
     self.success = true
     user.accepted_terms_at = Time.zone.now
     user.save!
-    Funnel::Registration::Create.call(user.id)
     SendSignUpEmailConfirmation.new(user).call(
       request_id: email_request_id(request_id),
       instructions: instructions,
@@ -154,7 +153,8 @@ class RegisterUserEmailForm
         email: email, email_already_registered: true,
       )
     else
-      UserMailer.signup_with_your_email(existing_user, email).deliver_now_or_later
+      UserMailer.with(user: existing_user, email_address: email_address_record).
+        signup_with_your_email.deliver_now_or_later
     end
   end
 
@@ -162,8 +162,14 @@ class RegisterUserEmailForm
     existing_user.email_addresses.none?(&:confirmed?)
   end
 
+  def email_address_record
+    return @email_address_record if defined?(@email_address_record)
+    @email_address_record = EmailAddress.find_with_email(email)
+    @email_address_record
+  end
+
   def existing_user
-    @existing_user ||= User.find_with_email(email) || AnonymousUser.new
+    @existing_user ||= email_address_record&.user || AnonymousUser.new
   end
 
   def email_request_id(request_id)

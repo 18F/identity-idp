@@ -61,6 +61,7 @@ describe Idv::ResendOtpController do
         area_code: '225',
         rate_limit_exceeded: false,
         telephony_response: instance_of(Telephony::Response),
+        proofing_components: nil,
       }
 
       expect(@analytics).to have_received(:track_event).with(

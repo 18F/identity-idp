@@ -17,7 +17,8 @@ feature 'SAML RelayState' do
         params: params,
       )
 
-      login_and_confirm_sp(user)
+      login_and_confirm_sp(user, :saml)
+      click_submit_default
 
       expect(find_field('SAMLResponse', type: :hidden).value).not_to be_blank
       expect(find_field('RelayState', type: :hidden).value).to eq(relay_state_value)
@@ -31,8 +32,8 @@ feature 'SAML RelayState' do
         },
       )
       post_saml_authn_request(auth_settings, params)
-
-      login_and_confirm_sp(user)
+      login_and_confirm_sp(user, :saml)
+      click_submit_default
 
       expect(find_field('SAMLResponse', type: :hidden).value).not_to be_blank
       expect(find_field('RelayState', type: :hidden).value).to eq(relay_state_value)
@@ -50,7 +51,8 @@ feature 'SAML RelayState' do
         },
       )
 
-      login_and_confirm_sp(user)
+      login_and_confirm_sp(user, :saml)
+      click_submit_default
 
       expect(find_field('SAMLResponse', type: :hidden).value).not_to be_blank
       expect do
@@ -67,7 +69,8 @@ feature 'SAML RelayState' do
       )
       post_saml_authn_request(auth_settings)
 
-      login_and_confirm_sp(user)
+      login_and_confirm_sp(user, :saml)
+      click_submit_default
 
       expect(find_field('SAMLResponse', type: :hidden).value).not_to be_blank
       expect do

@@ -416,11 +416,14 @@ describe TwoFactorAuthentication::OtpVerificationController do
           it 'tracks the update event and notifies via email about number change' do
             expect(subject).to have_received(:create_user_event).with(:phone_changed)
             expect(subject).to have_received(:create_user_event).exactly(:once)
-            subject.current_user.email_addresses.each do |email_address|
-              expect(UserMailer).to have_received(:phone_added).
-                with(subject.current_user, email_address, disavowal_token: instance_of(String))
-            end
-            expect(@mailer).to have_received(:deliver_now_or_later)
+
+            expect_delivered_email_count(1)
+            expect_delivered_email(
+              0, {
+                to: [subject.current_user.email_addresses.first.email],
+                subject: t('user_mailer.phone_added.subject'),
+              }
+            )
           end
         end
 

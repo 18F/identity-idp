@@ -1,0 +1,7 @@
+<%#
+locals:
+* step: Current step, used in analytics logging.
+%>
+<%= render PageFooterComponent.new do %>
+  <%= link_to cancel_link_text, idv_inherited_proofing_cancel_path(step: local_assigns[:step]) %>
+<% end %>

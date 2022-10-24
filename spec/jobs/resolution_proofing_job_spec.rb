@@ -270,13 +270,15 @@ RSpec.describe ResolutionProofingJob, type: :job do
               to eq([])
 
             # result[:context][:stages][:state_id]
-            expect(result_context_stages_state_id[:vendor_name]).to eq('UnsupportedJurisdiction')
+            expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
             expect(result_context_stages_state_id[:errors]).to eq({})
             expect(result_context_stages_state_id[:exception]).to eq(nil)
             expect(result_context_stages_state_id[:success]).to eq(true)
             expect(result_context_stages_state_id[:timed_out]).to eq(false)
-            expect(result_context_stages_state_id[:transaction_id]).to eq('')
-            expect(result_context_stages_state_id[:verified_attributes]).to eq([])
+            expect(result_context_stages_state_id[:transaction_id]).to eq('1234-abcd-efgh')
+            expect(result_context_stages_state_id[:verified_attributes]).to eq(
+              ['address', 'state_id_number', 'state_id_type', 'dob', 'last_name', 'first_name'],
+            )
 
             # result[:context][:stages][:threatmetrix]
             expect(result_context_stages_threatmetrix[:client]).to eq('DdpMock')
@@ -559,11 +561,12 @@ RSpec.describe ResolutionProofingJob, type: :job do
           end
         end
 
-        context 'does not call state id with an unsuccessful response from the proofer' do
+        context 'does call state id with an unsuccessful response from the proofer' do
           it 'posts back to the callback url' do
             expect(resolution_proofer).to receive(:proof).
               and_return(Proofing::Result.new(exception: 'error'))
-            expect(state_id_proofer).not_to receive(:proof)
+            expect(state_id_proofer).to receive(:proof).
+              and_return(Proofing::Result.new)
 
             perform
           end
@@ -639,11 +642,12 @@ RSpec.describe ResolutionProofingJob, type: :job do
           end
         end
 
-        context 'does not call state id with an unsuccessful response from the proofer' do
+        context 'does call state id with an unsuccessful response from the proofer' do
           it 'posts back to the callback url' do
             expect(resolution_proofer).to receive(:proof).
               and_return(Proofing::Result.new(exception: 'error'))
-            expect(state_id_proofer).not_to receive(:proof)
+            expect(state_id_proofer).to receive(:proof).
+              and_return(Proofing::Result.new)
 
             perform
           end

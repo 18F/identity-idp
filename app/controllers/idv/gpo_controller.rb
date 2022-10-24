@@ -50,7 +50,7 @@ module Idv
       irs_attempts_api_tracker.idv_gpo_letter_requested(resend: resend_requested?)
       create_user_event(:gpo_mail_sent, current_user)
 
-      ProofingComponent.create_or_find_by(user: current_user).update(address_check: 'gpo_letter')
+      ProofingComponent.find_or_create_by(user: current_user).update(address_check: 'gpo_letter')
     end
 
     def resend_requested?
@@ -97,7 +97,8 @@ module Idv
 
     def send_reminder
       current_user.confirmed_email_addresses.each do |email_address|
-        UserMailer.letter_reminder(current_user, email_address.email).deliver_now_or_later
+        UserMailer.with(user: current_user, email_address: email_address).
+          letter_reminder.deliver_now_or_later
       end
     end
 

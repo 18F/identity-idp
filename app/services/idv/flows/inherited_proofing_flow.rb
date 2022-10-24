@@ -4,7 +4,12 @@ module Idv
       STEPS = {
         get_started: Idv::Steps::InheritedProofing::GetStartedStep,
         agreement: Idv::Steps::InheritedProofing::AgreementStep,
+        verify_wait: Idv::Steps::InheritedProofing::VerifyWaitStep,
         verify_info: Idv::Steps::InheritedProofing::VerifyInfoStep,
+      }.freeze
+
+      OPTIONAL_SHOW_STEPS = {
+        verify_wait: Idv::Steps::InheritedProofing::VerifyWaitStepShow,
       }.freeze
 
       STEP_INDICATOR_STEPS = [
