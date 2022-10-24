@@ -18,9 +18,11 @@ RSpec.describe ArcgisApi::Geocoder do
     it 'returns an error response body but with Status coded as 200' do
       stub_request_suggestions_error
 
-      expect { subject.suggest('100 Main') }.to raise_error(
-        an_instance_of(Faraday::ClientError),
-      )
+      expect { subject.suggest('100 Main') }.to raise_error do |error|
+        expect(error).to be_instance_of(Faraday::ClientError)
+        expect(error.message).to eq('received error code 400')
+        expect(error.response).to be_kind_of(Hash)
+      end
     end
 
     it 'returns an error with Status coded as 4** in HTML' do

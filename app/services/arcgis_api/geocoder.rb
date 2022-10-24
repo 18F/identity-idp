@@ -100,6 +100,7 @@ module ArcgisApi
     end
 
     # handles API error state when returned as a status of 200
+    # @param response_body [Hash]
     def handle_api_errors(response_body)
       if response_body['error']
         error_code = response_body.dig('error', 'code')
