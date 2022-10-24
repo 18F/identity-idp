@@ -135,7 +135,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     context '4 days until due date' do
       it 'returns 3 days' do
-        travel_to(enrollment_established_at + 26.days) do
+        travel_to(enrollment_established_at + (IdentityConfig.store.in_person_enrollment_validity_in_days - 4).days) do
           expect(days_remaining).to eq(3)
         end
       end
@@ -143,7 +143,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     context '11 days until due date' do
       it 'returns 10 days' do
-        travel_to(enrollment_established_at + 19.days) do
+        travel_to(enrollment_established_at + (IdentityConfig.store.in_person_enrollment_validity_in_days - 11).days) do
           expect(days_remaining).to eq(10)
         end
       end
@@ -151,7 +151,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     context '20 days until due date' do
       it 'returns nil' do
-        travel_to(enrollment_established_at + 10.days) do
+        travel_to(enrollment_established_at + (IdentityConfig.store.in_person_enrollment_validity_in_days - 20).days) do
           expect(days_remaining).to eq(nil)
         end
       end
