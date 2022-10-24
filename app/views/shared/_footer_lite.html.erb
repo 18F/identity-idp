@@ -1,7 +1,5 @@
 <footer class='footer bg-primary-lighter tablet:bg-primary-darker'>
-  <div class="tablet:display-none border-bottom border-primary-light">
-    <%= render LanguagePickerComponent.new %>
-  </div>
+  <%= render LanguagePickerComponent.new(class: 'tablet:display-none border-bottom border-primary-light') %>
   <div class="padding-y-1 padding-x-2 tablet:padding-x-0 tablet:padding-y-0">
     <div class="display-flex flex-align-center flex-justify-center">
       <div class="display-flex flex-auto">
@@ -25,9 +23,7 @@
         </div>
       </div>
       <div class="display-flex flex-align-center flex-justify-center">
-        <div class="display-none tablet:display-block margin-x-2 margin-y-05">
-          <%= render LanguagePickerComponent.new %>
-        </div>
+        <%= render LanguagePickerComponent.new(class: 'display-none tablet:display-block margin-x-2 margin-y-05') %>
 
         <div class="display-flex tablet:display-none">
           <%= new_window_link_to(
