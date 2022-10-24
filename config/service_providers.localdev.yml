@@ -433,6 +433,19 @@ development:
       - 'sp_sinatra_demo'
     friendly_name: 'Example Sinatra App'
 
+  'urn:gov:gsa:openidconnect:sp:mock_irs':
+    agency_id: 1
+    ial: 2
+    irs_attempts_api_enabled: true
+    push_notification_url: http://localhost:9292/api/push_notifications
+    redirect_uris:
+      - 'http://localhost:9292/'
+      - 'http://localhost:9292/auth/result'
+      - 'http://localhost:9292/logout'
+    certs:
+      - 'sp_sinatra_demo'
+    friendly_name: 'Login Mock IRS'
+
   'urn:gov:gsa:openidconnect:sp:expressjs':
     agency: 'GSA'
     certs:
