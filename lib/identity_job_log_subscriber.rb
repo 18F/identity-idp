@@ -196,7 +196,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   end
 
   def should_error?(job, ex)
-    if job.class.respond_to?(:warning_error_classes)
+    if job.is_a?(ApplicationJob)
       job.class.warning_error_classes.none? { |warning_class| ex.is_a?(warning_class) }
     else
       true
