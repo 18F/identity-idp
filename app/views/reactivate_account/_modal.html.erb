@@ -1,28 +1,20 @@
-<div id="reactivate-account-modal" class="display-none" tabindex="-1">
-  <%= render layout: 'shared/modal_layout', locals: { role: 'dialog' } do |label_id, description_id| %>
-    <div class="padding-6 cntnr-xxskinny bg-white rounded-xxl">
-      <div class="display-flex flex-align-center flex-justify-center">
-          <%= render AlertIconComponent.new(icon_name: :warning) %>
-      </div>
-      <h2 class="margin-y-2 fs-20p text-normal text-center" id="<%= label_id %>">
-        <%= t('instructions.account.reactivate.modal.heading') %>
-      </h2>
-      <hr class="margin-bottom-4 border-width-05" />
-      <div class="margin-bottom-8" id="<%= description_id %>">
-        <%= t('instructions.account.reactivate.modal.copy') %>
-      </div>
-      <%= form_tag reactivate_account_path, method: :put do %>
-        <%= button_tag t('forms.buttons.continue'), type: 'submit',
-                                                    class: 'usa-button usa-button--big usa-button--full-width margin-bottom-2',
-                                                    name: :personal_key %>
-      <% end %>
-
-      <button class="usa-button usa-button--big usa-button--full-width usa-button--outline" type="button" id="no-key-reactivate-dismiss">
-        <%= t('links.cancel') %>
-      </button>
-    </div>
-
+<%= render ModalComponent.new(class: 'reactivate-account-modal') do |c| %>
+  <div class="display-flex flex-align-center flex-justify-center">
+    <%= render AlertIconComponent.new(icon_name: :warning) %>
+  </div>
+  <h2 class="margin-y-2 fs-20p text-normal text-center" id="<%= c.label_id %>">
+    <%= t('instructions.account.reactivate.modal.heading') %>
+  </h2>
+  <hr class="margin-bottom-4 border-warning border-width-05" />
+  <div class="margin-bottom-8" id="<%= c.description_id %>">
+    <%= t('instructions.account.reactivate.modal.copy') %>
+  </div>
+  <%= form_tag reactivate_account_path, method: :put do %>
+    <%= button_tag t('forms.buttons.continue'), type: 'submit',
+                                                class: 'usa-button usa-button--big usa-button--full-width margin-bottom-2',
+                                                name: :personal_key %>
   <% end %>
-</div>
 
+  <%= c.dismiss_button(big: true, full_width: true, outline: true) { t('links.cancel') } %>
+<% end %>
 <%= javascript_packs_tag_once 'reactivate-account-modal' %>
