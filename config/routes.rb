@@ -154,6 +154,11 @@ Rails.application.routes.draw do
       end
     end
 
+    if IdentityConfig.store.component_previews_enabled
+      require 'lookbook'
+      mount Lookbook::Engine, at: '/components'
+    end
+
     if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
       get '/test/device_profiling' => 'test/device_profiling#index',
           as: :test_device_profiling_iframe
@@ -364,6 +369,7 @@ Rails.application.routes.draw do
       get '/:step' => 'inherited_proofing#show', as: :step
       put '/:step' => 'inherited_proofing#update'
       get '/return_to_sp' => 'inherited_proofing#return_to_sp'
+      get '/errors/no_information' => 'inherited_proofing#no_information'
     end
 
     namespace :api do

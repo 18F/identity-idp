@@ -671,7 +671,6 @@ describe UserMailer, type: :mailer do
     end
   end
 
-  # rubocop:disable IdentityIdp/MailLaterLinter
   describe '#deliver_later' do
     it 'does not queue email if it potentially contains sensitive value' do
       user = create(:user)
@@ -696,5 +695,4 @@ describe UserMailer, type: :mailer do
       )
     end
   end
-  # rubocop:enable IdentityIdp/MailLaterLinter
 end

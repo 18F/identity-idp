@@ -1,28 +1,16 @@
 module Idv
   module InheritedProofing
     module ServiceProviderServices
-      include Idv::InheritedProofing::ServiceProviders
-
-      # Not sure I like the naming here because it might imply the ServiceProvider#id.
-      # However, we're using it here as the Inherited Proofing-specific Service
-      # Provider (SP) identification, because we're currently identifying the SP
-      # identify (in the case of the VA anyhow) by what is in Session.
-      def inherited_proofing_service_provider_id
-        return VA if va_inherited_proofing?
-
-        raise 'Inherited proofing service id could not be identified'
+      def inherited_proofing_service_for(service_provider, service_provider_data:)
+        inherited_proofing_service_class_for(service_provider).new(service_provider_data)
       end
 
-      def inherited_proofing_service
-        inherited_proofing_service_class.new inherited_proofing_service_provider_data
-      end
-
-      def inherited_proofing_service_class
+      def inherited_proofing_service_class_for(service_provider)
         unless IdentityConfig.store.inherited_proofing_enabled
           raise 'Inherited Proofing is not enabled'
         end
 
-        if va_inherited_proofing?
+        if service_provider == :va
           if IdentityConfig.store.va_inherited_proofing_mock_enabled
             return Idv::InheritedProofing::Va::Mocks::Service
           end
@@ -30,14 +18,6 @@ module Idv
         end
 
         raise 'Inherited proofing service class could not be identified'
-      end
-
-      def inherited_proofing_service_provider_data
-        if va_inherited_proofing?
-          { auth_code: va_inherited_proofing_auth_code }
-        else
-          {}
-        end
       end
     end
   end

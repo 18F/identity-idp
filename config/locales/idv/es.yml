@@ -106,7 +106,8 @@ es:
           documento de identidad emitido por el estado, etc.
     form:
       address1: Dirección
-      address2: Dirección (opcional)
+      address2: Línea de dirección 2
+      address2_optional: Línea de dirección 2 (opcional)
       city: Ciudad
       dob: Fecha de nacimiento
       first_name: Nombre de pila
