@@ -12,7 +12,7 @@
 %>
 <%= tag.div id: 'document-capture-form', data: {
       app_name: APP_NAME,
-      liveness_required: false,
+      liveness_required: nil,
       mock_client: (DocAuthRouter.doc_auth_vendor(discriminator: session_id) == 'mock').presence,
       help_center_redirect_url: help_center_redirect_url(
         flow: :idv,
