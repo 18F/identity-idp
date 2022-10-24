@@ -101,7 +101,8 @@ en:
           state-issued ID, etc.
     form:
       address1: Address
-      address2: Address (optional)
+      address2: Address line 2
+      address2_optional: Address line 2 (optional)
       city: City
       dob: Date of birth
       first_name: First name

@@ -7,7 +7,8 @@ class IdvController < ApplicationController
   before_action :profile_needs_reactivation?, only: [:index]
 
   def index
-    if decorated_session.requested_more_recent_verification?
+    if decorated_session.requested_more_recent_verification? ||
+       current_user.decorate.reproof_for_irs?(service_provider: current_sp)
       verify_identity
     elsif active_profile? && !strict_ial2_upgrade_required?
       redirect_to idv_activated_url
@@ -38,7 +39,7 @@ class IdvController < ApplicationController
 
   def verify_identity
     analytics.idv_intro_visit
-    return redirect_to idv_inherited_proofing_url if va_inherited_proofing?
+    return redirect_to idv_inherited_proofing_url if inherited_proofing?
     redirect_to idv_doc_auth_url
   end
 

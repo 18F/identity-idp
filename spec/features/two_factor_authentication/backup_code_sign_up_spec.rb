@@ -10,7 +10,7 @@ feature 'sign up with backup code' do
       have_content t('two_factor_authentication.login_options.backup_code_info')
     select_2fa_option('backup_code')
 
-    expect(page).to have_link(t('forms.backup_code.download'))
+    expect(page).to have_link(t('components.download_button.label'))
     expect(current_path).to eq backup_code_setup_path
 
     click_on 'Continue'
@@ -28,7 +28,7 @@ feature 'sign up with backup code' do
 
     select_2fa_option('backup_code')
 
-    expect(page).to_not have_link(t('forms.backup_code.download'))
+    expect(page).to_not have_link(t('components.download_button.label'))
   end
 
   it 'works for each code and refreshes the codes on the last one' do

@@ -58,7 +58,10 @@ describe Idv::OtpVerificationController do
     it 'tracks an analytics event' do
       get :show
 
-      expect(@analytics).to have_received(:track_event).with('IdV: phone confirmation otp visited')
+      expect(@analytics).to have_received(:track_event).with(
+        'IdV: phone confirmation otp visited',
+        proofing_components: nil,
+      )
     end
   end
 
@@ -91,6 +94,7 @@ describe Idv::OtpVerificationController do
         code_matches: true,
         second_factor_attempts_count: 0,
         second_factor_locked_at: nil,
+        proofing_components: nil,
       }
 
       expect(@analytics).to have_received(:track_event).with(

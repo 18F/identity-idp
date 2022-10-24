@@ -100,6 +100,7 @@ module OpenidConnect
       ((@authorize_form.ial2_requested? || @authorize_form.ial2_strict_requested?) &&
         (current_user.decorate.identity_not_verified? ||
         decorated_session.requested_more_recent_verification?)) ||
+        current_user.decorate.reproof_for_irs?(service_provider: current_sp) ||
         identity_needs_strict_ial2_verification?
     end
 

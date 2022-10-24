@@ -108,7 +108,7 @@ module Idv
       idv_session.vendor_phone_confirmation = true
       idv_session.user_phone_confirmation = false
 
-      ProofingComponent.create_or_find_by(user: idv_session.current_user).
+      ProofingComponent.find_or_create_by(user: idv_session.current_user).
         update(address_check: 'lexis_nexis_address')
     end
 

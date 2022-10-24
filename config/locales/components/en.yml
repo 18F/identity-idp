@@ -5,6 +5,8 @@ en:
       image_alt: Barcode
     clipboard_button:
       label: Copy
+    download_button:
+      label: Download
     javascript_required:
       browser_instructions: 'Follow the instructions for your browser to enable JavaScript:'
       enabled_alert: You have enabled JavaScript in your browser.

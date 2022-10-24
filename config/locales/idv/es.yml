@@ -106,7 +106,8 @@ es:
           documento de identidad emitido por el estado, etc.
     form:
       address1: Dirección
-      address2: Dirección (opcional)
+      address2: Línea de dirección 2
+      address2_optional: Línea de dirección 2 (opcional)
       city: Ciudad
       dob: Fecha de nacimiento
       first_name: Nombre de pila
@@ -211,7 +212,8 @@ es:
         supported_documents: Vea la lista de documentos de identidad emitidos por el
           estado que son aceptados
         verify_by_mail: Verifique su dirección por correo
-        verify_in_person: Verifique su cédula de identidad en persona en una oficina de correos
+        verify_in_person: Verifique su documento de identidad en persona en una oficina
+          de correos
     welcome:
       no_js_header: Debe habilitar JavaScript para verificar su identidad.
       no_js_intro: '%{sp_name} requiere que usted verifique su identidad. Debe

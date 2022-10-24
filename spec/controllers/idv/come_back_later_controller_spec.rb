@@ -16,7 +16,10 @@ describe Idv::ComeBackLaterController do
     it 'renders the show template' do
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).with('IdV: come back later visited')
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: come back later visited',
+        proofing_components: nil,
+      )
 
       get :show
 

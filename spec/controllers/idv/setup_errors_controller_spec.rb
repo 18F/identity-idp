@@ -10,7 +10,10 @@ describe Idv::SetupErrorsController do
   it 'renders the show template' do
     stub_analytics
 
-    expect(@analytics).to receive(:track_event).with('IdV: Verify setup errors visited')
+    expect(@analytics).to receive(:track_event).with(
+      'IdV: Verify setup errors visited',
+      proofing_components: nil,
+    )
 
     get :show
 

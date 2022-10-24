@@ -162,6 +162,7 @@ module Idv
         applicant: applicant,
         user: current_user,
         user_password: user_password,
+        initiating_service_provider: service_provider,
       )
     end
 

@@ -38,6 +38,12 @@ class ValidatedFieldComponent < BaseComponent
   end
 
   def inferred_input_type
-    form.send(:default_input_type, name, form.send(:find_attribute_column, name), tag_options)
+    if form.respond_to?(:default_input_type)
+      form.send(:default_input_type, name, form.send(:find_attribute_column, name), tag_options)
+    elsif tag_options.key?(:as)
+      tag_options[:as]
+    else
+      :text
+    end
   end
 end

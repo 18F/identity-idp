@@ -78,34 +78,51 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
         )
     end
 
-    context 'when collecting is disabled' do
-      let(:proofing_device_profiling_collecting_enabled) { false }
-      it 'does not run' do
-        expect(instance.logger).not_to receive(:info)
-        perform
-      end
-    end
-
     context 'when certificate is not configured' do
       let(:threatmetrix_signing_certificate) { '' }
-      it 'does not run' do
-        expect(instance.logger).not_to receive(:info)
-        perform
+      it 'logs an error_message but does not raise' do
+        expect(instance.logger).to receive(:info) do |message|
+          expect(JSON.parse(message, symbolize_names: true)).to include(
+            name: 'ThreatMetrixJsVerification',
+            error_class: 'ThreatMetrixJsVerificationJob::ConfigurationError',
+            error_message: 'JS signing certificate is missing',
+          )
+        end
+
+        expect { perform }.to_not raise_error
       end
     end
 
     context 'when certificate is expired' do
       let(:threatmetrix_signing_cert_expiry) { Time.zone.now - 3600 }
-      it 'raises an error' do
-        expect { perform }.to raise_error
+      it 'logs an error_message, and raises' do
+        expect(instance.logger).to receive(:info) do |message|
+          expect(JSON.parse(message, symbolize_names: true)).to include(
+            name: 'ThreatMetrixJsVerification',
+            error_class: 'RuntimeError',
+            error_message: 'JS signing certificate is expired',
+          )
+        end
+
+        expect { perform }.to raise_error(RuntimeError, 'JS signing certificate is expired')
       end
     end
 
-    context 'when org id is not configured' do
-      let(:threatmetrix_org_id) { nil }
-      it 'does not run' do
-        expect(instance.logger).not_to receive(:info)
-        perform
+    context 'error that is not a configuration error' do
+      before do
+        stub_request(:get, "https://h.online-metrix.net/fp/tags.js?org_id=#{threatmetrix_org_id}&session_id=#{threatmetrix_session_id}").
+          to_timeout
+      end
+
+      it 'logs an error_message, and raises' do
+        expect(instance.logger).to receive(:info) do |message|
+          expect(JSON.parse(message, symbolize_names: true)).to include(
+            name: 'ThreatMetrixJsVerification',
+            error_class: 'Faraday::ConnectionFailed',
+          )
+        end
+
+        expect { perform }.to raise_error(Faraday::ConnectionFailed)
       end
     end
 

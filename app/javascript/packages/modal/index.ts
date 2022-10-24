@@ -1,1 +1,1 @@
-export { default as Modal } from './modal';
+export type { default as ModalElement } from './modal-element';
