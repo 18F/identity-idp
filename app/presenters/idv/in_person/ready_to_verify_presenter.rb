@@ -14,7 +14,7 @@ module Idv
       end
 
       # Reminder of days left is exclusive of the day the email is sent, hence the reminder num is 1 less than days_to_due_date
-      def days_reminder
+      def days_remaining
         return 3 if enrollment.days_to_due_date == 4
         return 10 if enrollment.days_to_due_date == 11
       end

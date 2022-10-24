@@ -6,7 +6,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   let(:enrollment_code) { '2048702198804358' }
   let(:current_address_matches_id) { true }
   let(:created_at) { described_class::USPS_SERVER_TIMEZONE.parse('2022-07-14T00:00:00Z') }
-  let(:issuer) {'http://localhost:3000'}
+  let(:issuer) { 'http://localhost:3000' }
   let(:enrollment_established_at) do
     described_class::USPS_SERVER_TIMEZONE.parse('2022-08-14T00:00:00Z')
   end
@@ -130,13 +130,13 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     end
   end
 
-  describe '#days_reminder' do
-    subject(:days_reminder) { presenter.days_reminder }
- 
+  describe '#days_remaining' do
+    subject(:days_remaining) { presenter.days_remaining }
+
     context '4 days until due date' do
       it 'returns 3 days' do
         travel_to(enrollment_established_at + 26.days) do
-          expect(days_reminder).to eq(3)
+          expect(days_remaining).to eq(3)
         end
       end
     end
@@ -144,7 +144,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     context '11 days until due date' do
       it 'returns 10 days' do
         travel_to(enrollment_established_at + 19.days) do
-          expect(days_reminder).to eq(10)
+          expect(days_remaining).to eq(10)
         end
       end
     end
@@ -152,7 +152,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     context '20 days until due date' do
       it 'returns nil' do
         travel_to(enrollment_established_at + 10.days) do
-          expect(days_reminder).to eq(nil)
+          expect(days_remaining).to eq(nil)
         end
       end
     end
