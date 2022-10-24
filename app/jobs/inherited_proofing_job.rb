@@ -1,4 +1,6 @@
 class InheritedProofingJob < ApplicationJob
+  include Idv::InheritedProofing::ServiceProviderServices
+  include Idv::InheritedProofing::ServiceProviderForms
   include JobHelpers::StaleJobHelper
 
   queue_as :default
@@ -8,10 +10,10 @@ class InheritedProofingJob < ApplicationJob
   def perform(service_provider, service_provider_data, uuid)
     document_capture_session = DocumentCaptureSession.find_by(uuid: uuid)
 
-    payload_hash = Idv::InheritedProofing::ServiceProviderServiceFactory.execute(
-      service_provider: service_provider,
+    payload_hash = inherited_proofing_service_for(
+      service_provider,
       service_provider_data: service_provider_data,
-    )
+    ).execute
 
     raise_stale_job! if stale_job?(enqueued_at)
 

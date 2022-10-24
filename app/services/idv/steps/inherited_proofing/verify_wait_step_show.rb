@@ -3,6 +3,7 @@ module Idv
     module InheritedProofing
       class VerifyWaitStepShow < VerifyBaseStep
         include UserPiiManagable
+        include Idv::InheritedProofing::ServiceProviderForms
         delegate :controller, :idv_session, to: :@flow
 
         STEP_INDICATOR_STEP = :getting_started
@@ -41,9 +42,11 @@ module Idv
         end
 
         def async_state_done(_current_async_state)
-          service_provider = controller.inherited_proofing_service_provider_id
-          form = Idv::InheritedProofing::ServiceProviderFormFactory.form(
-            service_provider: service_provider, payload_hash: api_job_result[:result],
+          service_provider = controller.inherited_proofing_service_provider
+
+          form = inherited_proofing_form_for(
+            service_provider,
+            payload_hash: api_job_result[:result],
           )
           form_response = form.submit
 
