@@ -3127,10 +3127,6 @@ module AnalyticsEvents
     track_event('IdV: doc auth cancel_update_ssn submitted', **extra)
   end
 
-  def idv_doc_auth_cancel_update_ssn_submitted(**extra)
-    track_event('IdV: doc auth cancel_update_ssn submitted', **extra)
-  end
-
   def idv_in_person_proofing_cancel_update_state_id(**extra)
     track_event('IdV: in person proofing cancel_update_state_id submitted', **extra)
   end
