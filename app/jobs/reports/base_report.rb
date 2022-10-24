@@ -4,9 +4,6 @@ module Reports
   class BaseReport < ApplicationJob
     queue_as :long_running
 
-    # We use good_job's concurrency features to cancel "extra" or duplicative runs of the same job
-    discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
-
     def self.transaction_with_timeout(rails_env = Rails.env)
       # rspec-rails's use_transactional_tests does not seem to act as expected when switching
       # connections mid-test, so we just skip for now :[

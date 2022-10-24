@@ -2,13 +2,6 @@ module Reports
   class AgencyInvoiceIssuerSupplementReport < BaseReport
     REPORT_NAME = 'agency-invoice-issuer-supplemement-report'.freeze
 
-    include GoodJob::ActiveJobExtensions::Concurrency
-
-    good_job_control_concurrency_with(
-      total_limit: 1,
-      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
-    )
-
     def perform(_date)
       raw_results = service_providers.flat_map do |service_provider|
         transaction_with_timeout do
