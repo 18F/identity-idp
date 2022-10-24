@@ -6,4 +6,4 @@ class ComponentPreviewController < ViewComponentsController
 
   helper_method :enqueue_component_scripts
   alias_method :enqueue_component_scripts, :render_javascript_pack_once_tags
-end
+end if IdentityConfig.store.component_previews_enabled
