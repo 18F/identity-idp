@@ -136,7 +136,12 @@ describe Idv::CaptureDocController do
 
       it 'tracks expected events' do
         mock_next_step(:capture_complete)
-        result = { step: 'capture_complete', flow_path: 'hybrid', step_count: 1 }
+        result = {
+          step: 'capture_complete',
+          flow_path: 'hybrid',
+          step_count: 1,
+          analytics_id: 'Doc Auth',
+        }
 
         get :show, params: { step: 'capture_complete' }
 
