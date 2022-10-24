@@ -6,6 +6,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   let(:enrollment_code) { '2048702198804358' }
   let(:current_address_matches_id) { true }
   let(:created_at) { described_class::USPS_SERVER_TIMEZONE.parse('2022-07-14T00:00:00Z') }
+  let(:issuer) {'http://localhost:3000'}
   let(:enrollment_established_at) do
     described_class::USPS_SERVER_TIMEZONE.parse('2022-08-14T00:00:00Z')
   end
@@ -17,6 +18,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       user: user,
       profile: profile,
       enrollment_code: enrollment_code,
+      issuer: issuer,
       unique_id: InPersonEnrollment.generate_unique_id,
       created_at: created_at,
       enrollment_established_at: enrollment_established_at,
@@ -117,6 +119,43 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       let(:current_address_matches_id) { false }
 
       it { expect(needs_proof_of_address).to eq true }
+    end
+  end
+
+  describe '#partner_agency' do
+    subject(:partner_agency) { presenter.partner_agency }
+
+    it 'returns partner agency' do
+      expect(partner_agency).to eq('http://localhost:3000')
+    end
+  end
+
+  describe '#days_reminder' do
+    subject(:days_reminder) { presenter.days_reminder }
+
+    context '4 days until due date' do
+
+      before do
+        allow(presenter).to receive(:enrollment.days_to_due_date).and_return(4)
+      end
+      
+      it 'returns 3 days' do
+        expect(presenter.days_reminder).to eq(3)
+      end
+    end
+
+    context '11 days until due date' do
+      let(:days_to_due_date) { 11 }
+      it 'returns 10 days' do
+        expect(days_reminder).to eq(10)
+      end
+    end
+
+    context '20 days until due date' do
+      let(:days_to_due_date) { 20 }
+      it 'returns nothing' do
+        expect(days_reminder).to eq(nil)
+      end
     end
   end
 

@@ -15,12 +15,12 @@ module Idv
 
       # Reminder of days left is exclusive of the day the email is sent, hence the reminder num is 1 less than days_to_due_date
       def days_reminder
-        return 3 if days_to_due_date == 4
-        return 10 if days_to_due_date == 11
+        return 3 if enrollment.days_to_due_date == 4
+        return 10 if enrollment.days_to_due_date == 11
       end
 
       def formatted_due_date
-        due_date.in_time_zone(USPS_SERVER_TIMEZONE).strftime(I18n.t('time.formats.event_date'))
+        enrollment.due_date.in_time_zone(USPS_SERVER_TIMEZONE).strftime(I18n.t('time.formats.event_date'))
       end
 
       def selected_location_hours(prefix)
@@ -40,16 +40,6 @@ module Idv
       private
 
       attr_reader :enrollment
-
-      def due_date
-        start_date = enrollment.enrollment_established_at.presence || enrollment.created_at
-        start_date + IdentityConfig.store.in_person_enrollment_validity_in_days.days
-      end
-
-      def days_to_due_date
-        today = DateTime.now
-        (today...due_date).count
-      end
 
       def localized_hours(hours)
         case hours
