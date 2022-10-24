@@ -177,6 +177,7 @@ class IdentityConfig
     config.add(:geo_data_file_path, type: :string)
     config.add(:good_job_max_threads, type: :integer)
     config.add(:good_job_queues, type: :string)
+    config.add(:good_job_queue_select_limit, type: :integer)
     config.add(:gpo_designated_receiver_pii, type: :json, options: { symbolize_names: true })
     config.add(:hide_phone_mfa_signup, type: :boolean)
     config.add(:hmac_fingerprinter_key, type: :string)
