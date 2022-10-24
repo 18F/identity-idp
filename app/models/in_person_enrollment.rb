@@ -65,6 +65,16 @@ class InPersonEnrollment < ApplicationRecord
     SecureRandom.hex(9)
   end
 
+  def due_date
+    start_date = enrollment_established_at.presence || created_at
+    start_date + IdentityConfig.store.in_person_enrollment_validity_in_days.days
+  end
+
+  def days_to_due_date
+    today = DateTime.now
+    (today...due_date).count
+  end
+
   private
 
   def on_status_updated
