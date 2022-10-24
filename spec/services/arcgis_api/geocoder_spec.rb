@@ -31,4 +31,29 @@ RSpec.describe ArcgisApi::Geocoder do
       )
     end
   end
+
+  describe '#find_address_candidates' do
+    it 'returns candidates from magic_key' do
+      stub_request_candidates_response
+
+      suggestions = subject.find_address_candidates('abc123')
+
+      expect(suggestions.first.address).to be_present
+      expect(suggestions.first.address).to be_present
+      expect(suggestions.first.location).to be_present
+      expect(suggestions.first.street_address).to be_present
+      expect(suggestions.first.city).to be_present
+      expect(suggestions.first.state).to be_present
+      expect(suggestions.first.zip_code).to be_present
+    end
+
+    # https://developers.arcgis.com/rest/geocode/api-reference/geocoding-service-output.htm#ESRI_SECTION3_619341BEAA3A4F488FC66FAE8E479563
+    it 'handles no results' do
+      stub_request_candidates_empty_response
+
+      suggestions = subject.find_address_candidates('abc123')
+
+      expect(suggestions).to be_empty
+    end
+  end
 end

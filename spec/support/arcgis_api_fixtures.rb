@@ -13,6 +13,14 @@ module ArcgisApi
         load_response_fixture('request_suggestions_error.html')
       end
 
+      def self.request_candidates_response
+        load_response_fixture('request_candidates_response.json')
+      end
+
+      def self.request_candidates_empty_response
+        load_response_fixture('request_candidates_response_empty.json')
+      end
+
       def self.load_response_fixture(filename)
         path = File.join(
           File.dirname(__FILE__),
