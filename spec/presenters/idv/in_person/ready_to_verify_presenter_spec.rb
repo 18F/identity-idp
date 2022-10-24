@@ -132,29 +132,28 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
   describe '#days_reminder' do
     subject(:days_reminder) { presenter.days_reminder }
-
+ 
     context '4 days until due date' do
-
-      before do
-        allow(presenter).to receive(:enrollment.days_to_due_date).and_return(4)
-      end
-      
       it 'returns 3 days' do
-        expect(presenter.days_reminder).to eq(3)
+        travel_to(enrollment_established_at + 26.days) do
+          expect(days_reminder).to eq(3)
+        end
       end
     end
 
     context '11 days until due date' do
-      let(:days_to_due_date) { 11 }
       it 'returns 10 days' do
-        expect(days_reminder).to eq(10)
+        travel_to(enrollment_established_at + 19.days) do
+          expect(days_reminder).to eq(10)
+        end
       end
     end
 
     context '20 days until due date' do
-      let(:days_to_due_date) { 20 }
-      it 'returns nothing' do
-        expect(days_reminder).to eq(nil)
+      it 'returns nil' do
+        travel_to(enrollment_established_at + 10.days) do
+          expect(days_reminder).to eq(nil)
+        end
       end
     end
   end
