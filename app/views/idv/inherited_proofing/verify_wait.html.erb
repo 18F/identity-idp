@@ -1,3 +1,4 @@
+<%= content_for(:meta_refresh) { @meta_refresh.to_s } %>
 <% title t('inherited_proofing.headings.retrieval') %>
 
 <%= render PageHeadingComponent.new.with_content(t('inherited_proofing.headings.retrieval')) %>
