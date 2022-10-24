@@ -149,13 +149,6 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       end
     end
 
-    context '20 days until due date' do
-      it 'returns nil' do
-        travel_to(enrollment_established_at + (IdentityConfig.store.in_person_enrollment_validity_in_days - 20).days) do
-          expect(days_remaining).to eq(nil)
-        end
-      end
-    end
   end
 
   describe '#barcode_image_url' do
