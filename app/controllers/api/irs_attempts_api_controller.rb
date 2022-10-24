@@ -19,12 +19,12 @@ module Api
 
     def create
       if timestamp
-        result = encrypted_security_event_log_result
+        send_data security_event_tokens
 
-        headers['X-Payload-Key'] = Base64.strict_encode64(result.encrypted_key)
-        headers['X-Payload-IV'] = Base64.strict_encode64(result.iv)
-        send_data Base64.strict_encode64(result.encrypted_data),
-                  disposition: "filename=#{result.filename}"
+        # headers['X-Payload-Key'] = Base64.strict_encode64(rejsult.encrypted_key)
+        # headers['X-Payload-IV'] = Base64.strict_encode64(result.iv)
+        # send_data Base64.strict_encode64(result.encrypted_data),
+        #           disposition: "filename=#{result.filename}"
       else
         render json: { status: :unprocessable_entity, description: 'Invalid timestamp parameter' },
                status: :unprocessable_entity
@@ -46,12 +46,7 @@ module Api
       return {} unless timestamp
 
       events = redis_client.read_events(timestamp: timestamp)
-      sets = {}
-      events.each_pair do |k, v|
-        key_id, jti = k.split(':')
-        sets[jti] = { key_id => v }
-      end
-      sets
+      events.values.join("\r\n")
     end
 
     def encrypted_security_event_log_result
@@ -74,7 +69,7 @@ module Api
 
     def analytics_properties
       {
-        rendered_event_count: security_event_tokens.keys.count,
+        rendered_event_count: 1, # FIXME
         timestamp: timestamp&.iso8601,
         success: timestamp.present?,
       }
