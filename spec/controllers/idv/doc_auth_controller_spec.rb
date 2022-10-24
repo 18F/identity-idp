@@ -95,7 +95,7 @@ describe Idv::DocAuthController do
     end
 
     it 'tracks analytics' do
-      result = { step: 'welcome', flow_path: 'standard', step_count: 1 }
+      result = { step: 'welcome', flow_path: 'standard', step_count: 1, analytics_id: 'Doc Auth' }
 
       get :show, params: { step: 'welcome' }
 
@@ -160,6 +160,7 @@ describe Idv::DocAuthController do
         flow_path: 'standard',
         step_count: 1,
         pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]],
+        analytics_id: 'Doc Auth',
       }
 
       put :update, params: { step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
@@ -196,6 +197,7 @@ describe Idv::DocAuthController do
         step: 'welcome',
         flow_path: 'standard',
         step_count: 1,
+        analytics_id: 'Doc Auth',
       }
 
       put :update, params: {
