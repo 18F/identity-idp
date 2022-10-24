@@ -5,9 +5,11 @@
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
 <% if @platform_authenticator %>
-    <%= render AlertComponent.new(type: :warning, text_tag: 'div') do %>
-      <%= t('forms.webauthn_platform_setup.warning_text') %>
-    <% end %>
+    <p>
+      <%= render AlertComponent.new(type: :warning, text_tag: 'div') do %>
+        <%= t('forms.webauthn_platform_setup.warning_text') %>
+      <% end %>
+    </p>
 <% end %>
 
 <%= @presenter.intro_html %>
