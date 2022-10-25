@@ -69,20 +69,21 @@ RSpec.configure do |config|
     end
   end
 
-  if !ENV['CI']
-    config.before(js: true) do
-      # rubocop:disable Style/GlobalVars
-      next if defined?($ran_asset_build)
-      $ran_asset_build = true
-      # rubocop:enable Style/GlobalVars
-      # rubocop:disable Rails/Output
-      print '                       Bundling JavaScript and stylesheets... '
-      system 'WEBPACK_PORT= yarn build > /dev/null 2>&1'
-      system 'yarn build:css > /dev/null 2>&1'
-      puts '✨ Done!'
-      # rubocop:enable Rails/Output
-    end
-  end
+  # TODO: PUT THIS BACK!!!
+  # if !ENV['CI']
+  #   config.before(js: true) do
+  #     # rubocop:disable Style/GlobalVars
+  #     next if defined?($ran_asset_build)
+  #     $ran_asset_build = true
+  #     # rubocop:enable Style/GlobalVars
+  #     # rubocop:disable Rails/Output
+  #     print '                       Bundling JavaScript and stylesheets... '
+  #     system 'WEBPACK_PORT= yarn build > /dev/null 2>&1'
+  #     system 'yarn build:css > /dev/null 2>&1'
+  #     puts '✨ Done!'
+  #     # rubocop:enable Rails/Output
+  #   end
+  # end
 
   config.before(:each) do
     I18n.locale = :en
