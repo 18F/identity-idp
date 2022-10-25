@@ -101,7 +101,7 @@ describe Profile do
     end
 
     it 'returns false if the profile does not have liveness' do
-      proofing_components = { liveness_check: nils }
+      proofing_components = { liveness_check: nil }
       profile = create(:profile, :active, proofing_components: proofing_components)
 
       expect(profile.strict_ial2_proofed?).to eq(false)
