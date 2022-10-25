@@ -21,10 +21,12 @@ module Flow
     def update
       step = current_step
       result = flow.handle(step)
-      if @analytics_id
-        increment_step_name_counts
-        analytics.track_event(analytics_submitted, result.to_h.merge(analytics_properties))
-      end
+
+      increment_step_name_counts
+      analytics.public_send(
+        flow.step_handler(step).analytics_submitted_event,
+        **result.to_h.merge(analytics_properties),
+      )
 
       register_update_step(step, result)
       if flow.json
@@ -46,10 +48,12 @@ module Flow
     end
 
     def track_step_visited
-      if @analytics_id
-        increment_step_name_counts
-        analytics.track_event(analytics_visited, analytics_properties)
-      end
+      increment_step_name_counts
+      analytics.public_send(
+        flow.step_handler(current_step).analytics_visited_event,
+        **analytics_properties,
+      )
+
       Funnel::DocAuth::RegisterStep.new(user_id, issuer).call(current_step, :view, true)
     end
 
@@ -121,12 +125,16 @@ module Flow
       return unless optional_show_step
       result = optional_show_step.new(@flow).base_call
 
-      if @analytics_id
-        optional_show_step_name = optional_show_step.to_s.demodulize.underscore
-        optional_properties = result.to_h.merge(step: optional_show_step_name)
+      optional_show_step_name = optional_show_step.to_s.demodulize.underscore
+      optional_properties = result.to_h.merge(
+        step: optional_show_step_name,
+        analytics_id: @analytics_id,
+      )
 
-        analytics.track_event(analytics_optional_step, optional_properties)
-      end
+      analytics.public_send(
+        optional_show_step.analytics_optional_step_event,
+        **optional_properties,
+      )
 
       if next_step.to_s != optional_step
         if next_step_is_url
@@ -162,23 +170,12 @@ module Flow
       redirect_to send(@step_url, step: step)
     end
 
-    def analytics_submitted
-      'IdV: ' + "#{@analytics_id} #{current_step} submitted".downcase
-    end
-
-    def analytics_visited
-      'IdV: ' + "#{@analytics_id} #{current_step} visited".downcase
-    end
-
-    def analytics_optional_step
-      'IdV: ' + "#{@analytics_id} optional #{current_step} submitted".downcase
-    end
-
     def analytics_properties
       {
         flow_path: @flow.flow_path,
         step: current_step,
         step_count: current_flow_step_counts[current_step_name],
+        analytics_id: @analytics_id,
       }
     end
 

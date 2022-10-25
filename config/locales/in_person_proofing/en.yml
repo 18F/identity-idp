@@ -19,8 +19,7 @@ en:
         retail_hours: Retail hours
         retail_hours_closed: Closed
         retail_phone_label: Phone number
-        speak_to_associate: You can speak with any retail associate at this Post Office
-          to verify your identity.
+        speak_to_associate: You can see any associate at the retail window to verify your identity.
       location:
         location_button: Select
         location_step_about: If you are having trouble adding your ID, you may be able

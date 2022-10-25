@@ -41,7 +41,6 @@ class OpenidConnectAuthorizeForm
   validate :validate_prompt
   validate :validate_verified_within_format
   validate :validate_verified_within_duration
-  validate :validate_liveness_checking_enabled_if_ial2_strict_requested
 
   def initialize(params)
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
@@ -109,8 +108,7 @@ class OpenidConnectAuthorizeForm
 
   def_delegators :ial_context,
                  :ial2_or_greater?,
-                 :ial2_requested?,
-                 :ial2_strict_requested?
+                 :ial2_requested?
 
   private
 
@@ -248,13 +246,5 @@ class OpenidConnectAuthorizeForm
         type: :no_auth
       )
     end
-  end
-
-  def validate_liveness_checking_enabled_if_ial2_strict_requested
-    return if !ial2_strict_requested? || FeatureManagement.liveness_checking_enabled?
-    errors.add(
-      :acr_values, t('openid_connect.authorization.errors.liveness_checking_disabled'),
-      type: :liveness_checking_disabled
-    )
   end
 end

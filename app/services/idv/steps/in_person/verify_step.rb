@@ -4,6 +4,14 @@ module Idv
       class VerifyStep < VerifyBaseStep
         STEP_INDICATOR_STEP = :verify_info
 
+        def self.analytics_visited_event
+          :idv_doc_auth_verify_visited
+        end
+
+        def self.analytics_submitted_event
+          :idv_doc_auth_verify_submitted
+        end
+
         def call
           pii[:state_id_type] = 'drivers_license' unless invalid_state?
           add_proofing_component

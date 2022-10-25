@@ -4,13 +4,6 @@ module Reports
   class SpActiveUsersReport < BaseReport
     REPORT_NAME = 'sp-active-users-report'.freeze
 
-    include GoodJob::ActiveJobExtensions::Concurrency
-
-    good_job_control_concurrency_with(
-      total_limit: 1,
-      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
-    )
-
     # This daily job captures the total number of active users per SP from the beginning of the the
     # current fiscal year until now.
     #

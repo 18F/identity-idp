@@ -28,7 +28,7 @@
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :address2,
-        label: t('idv.form.address2'),
+        label: t('idv.form.address2_optional'),
         required: false,
         maxlength: 255,
         input_html: { value: @pii['address2'] },

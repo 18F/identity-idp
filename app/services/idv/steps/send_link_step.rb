@@ -5,6 +5,14 @@ module Idv
 
       STEP_INDICATOR_STEP = :verify_id
 
+      def self.analytics_visited_event
+        :idv_doc_auth_send_link_visited
+      end
+
+      def self.analytics_submitted_event
+        :idv_doc_auth_send_link_submitted
+      end
+
       def call
         return throttled_failure if throttle.throttled_else_increment?
         telephony_result = send_link

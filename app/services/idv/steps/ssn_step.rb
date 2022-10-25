@@ -5,6 +5,14 @@ module Idv
 
       include ThreatMetrixStepHelper
 
+      def self.analytics_visited_event
+        :idv_doc_auth_ssn_visited
+      end
+
+      def self.analytics_submitted_event
+        :idv_doc_auth_ssn_submitted
+      end
+
       def call
         return invalid_state_response if invalid_state?
 

@@ -690,4 +690,29 @@ describe UserMailer, type: :mailer do
         )
     end
   end
+
+  describe '#deliver_later' do
+    it 'does not queue email if it potentially contains sensitive value' do
+      user = create(:user)
+      mailer = UserMailer.with(
+        user: user,
+        email_address: user.email_addresses.first,
+      ).add_email(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
+      expect { mailer.deliver_later }.to raise_error(
+        MailerSensitiveInformationChecker::SensitiveValueError,
+      )
+    end
+
+    it 'does not queue email if it potentially contains sensitive keys' do
+      user = create(:user)
+      mailer = UserMailer.with(user: user, email_address: user.email_addresses.first).add_email(
+        {
+          first_name: nil,
+        },
+      )
+      expect { mailer.deliver_later }.to raise_error(
+        MailerSensitiveInformationChecker::SensitiveKeyError,
+      )
+    end
+  end
 end

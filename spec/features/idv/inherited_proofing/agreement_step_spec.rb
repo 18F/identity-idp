@@ -1,8 +1,7 @@
 require 'rails_helper'
 
 feature 'inherited proofing agreement' do
-  include IdvHelper
-  include DocAuthHelper
+  include InheritedProofingHelper
 
   before do
     allow(IdentityConfig.store).to receive(:va_inherited_proofing_mock_enabled).and_return true
@@ -34,8 +33,7 @@ feature 'inherited proofing agreement' do
       expect(page).to have_content(t('forms.validation.required_checkbox'))
     end
 
-    # LG-7255: Need to uncomment this test once this card is completed.
-    xit 'allows the user to continue after checking the checkbox' do
+    it 'allows the user to continue after checking the checkbox' do
       check t('inherited_proofing.instructions.consent', app_name: APP_NAME)
       click_continue
 
@@ -63,8 +61,7 @@ feature 'inherited proofing agreement' do
       expect(page).to have_content(t('errors.doc_auth.consent_form'))
     end
 
-    # LG-7255: Need to uncomment this test once this card is completed.
-    xit 'allows the user to continue after checking the checkbox' do
+    it 'allows the user to continue after checking the checkbox' do
       check t('inherited_proofing.instructions.consent', app_name: APP_NAME)
       click_continue
 

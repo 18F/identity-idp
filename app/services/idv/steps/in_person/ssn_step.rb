@@ -6,6 +6,14 @@ module Idv
 
         include ThreatMetrixStepHelper
 
+        def self.analytics_visited_event
+          :idv_doc_auth_ssn_visited
+        end
+
+        def self.analytics_submitted_event
+          :idv_doc_auth_ssn_submitted
+        end
+
         def call
           flow_session[:pii_from_user][:ssn] = ssn
 

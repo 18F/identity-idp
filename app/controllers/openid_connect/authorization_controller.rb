@@ -97,14 +97,10 @@ module OpenidConnect
     end
 
     def identity_needs_verification?
-      ((@authorize_form.ial2_requested? || @authorize_form.ial2_strict_requested?) &&
+      (@authorize_form.ial2_requested? &&
         (current_user.decorate.identity_not_verified? ||
         decorated_session.requested_more_recent_verification?)) ||
-        identity_needs_strict_ial2_verification?
-    end
-
-    def identity_needs_strict_ial2_verification?
-      @authorize_form.ial2_strict_requested? && !current_user.active_profile&.strict_ial2_proofed?
+        current_user.decorate.reproof_for_irs?(service_provider: current_sp)
     end
 
     def build_authorize_form_from_params

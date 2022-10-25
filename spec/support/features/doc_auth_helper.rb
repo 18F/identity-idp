@@ -35,18 +35,6 @@ module DocAuthHelper
     click_on '‹ ' + t('forms.buttons.back')
   end
 
-  def idv_ip_get_started_step
-    idv_inherited_proofing_step_path(step: :get_started)
-  end
-
-  def idv_ip_verify_info_step
-    idv_inherited_proofing_step_path(step: :verify_info)
-  end
-
-  def idv_inherited_proofing_agreement_step
-    idv_inherited_proofing_step_path(step: :agreement)
-  end
-
   def idv_doc_auth_welcome_step
     idv_doc_auth_step_path(step: :welcome)
   end
@@ -90,27 +78,6 @@ module DocAuthHelper
 
   def complete_welcome_step
     click_on t('doc_auth.buttons.continue')
-  end
-
-  def complete_inherited_proofing_steps_before_get_started_step(expect_accessible: false)
-    visit idv_ip_get_started_step unless current_path == idv_ip_get_started_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
-  end
-
-  def complete_get_started_step
-    click_on t('inherited_proofing.buttons.continue')
-  end
-
-  def complete_inherited_proofing_steps_before_agreement_step(expect_accessible: false)
-    complete_inherited_proofing_steps_before_get_started_step(expect_accessible: expect_accessible)
-    complete_get_started_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
-  end
-
-  def complete_inherited_proofing_steps_before_verify_step(expect_accessible: false)
-    complete_inherited_proofing_steps_before_agreement_step(expect_accessible: expect_accessible)
-    complete_agreement_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
 
   def complete_doc_auth_steps_before_agreement_step(expect_accessible: false)

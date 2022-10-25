@@ -1,0 +1,14 @@
+<%= content_tag(:'lg-modal', **tag_options, class: css_class, hidden: true) do %>
+  <%= tag.div(
+        role: 'dialog',
+        class: 'usa-modal-overlay',
+        aria: {
+          describedby: description_id,
+          labelledby: label_id,
+        },
+      ) do %>
+    <div class="modal-content">
+      <%= content %>
+    </div>
+  <% end %>
+<% end %>

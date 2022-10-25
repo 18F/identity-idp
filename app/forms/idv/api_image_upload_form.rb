@@ -5,16 +5,14 @@ module Idv
 
     validates_presence_of :front
     validates_presence_of :back
-    validates_presence_of :selfie, if: :liveness_checking_enabled?
     validates_presence_of :document_capture_session
 
     validate :validate_images
     validate :throttle_if_rate_limited
 
-    def initialize(params, liveness_checking_enabled:, service_provider:, analytics: nil,
+    def initialize(params, service_provider:, analytics: nil,
                    uuid_prefix: nil, irs_attempts_api_tracker: nil)
       @params = params
-      @liveness_checking_enabled = liveness_checking_enabled
       @service_provider = service_provider
       @analytics = analytics
       @readable = {}
@@ -68,8 +66,8 @@ module Idv
       response = doc_auth_client.post_images(
         front_image: front.read,
         back_image: back.read,
-        selfie_image: selfie&.read,
-        liveness_checking_enabled: liveness_checking_enabled?,
+        selfie_image: nil,
+        liveness_checking_enabled: false,
         image_source: image_source,
         user_uuid: user_uuid,
         uuid_prefix: uuid_prefix,
@@ -125,10 +123,6 @@ module Idv
       client_response
     end
 
-    def liveness_checking_enabled?
-      @liveness_checking_enabled
-    end
-
     def image_source
       if acuant_sdk_capture?
         DocAuth::ImageSources::ACUANT_SDK
@@ -143,10 +137,6 @@ module Idv
 
     def back
       as_readable(:back)
-    end
-
-    def selfie
-      as_readable(:selfie)
     end
 
     def document_capture_session
@@ -165,12 +155,6 @@ module Idv
       if back.is_a? DataUrlImage::InvalidUrlFormatError
         errors.add(
           :back, t('doc_auth.errors.not_a_file'),
-          type: :not_a_file
-        )
-      end
-      if selfie.is_a? DataUrlImage::InvalidUrlFormatError
-        errors.add(
-          :selfie, t('doc_auth.errors.not_a_file'),
           type: :not_a_file
         )
       end
@@ -272,13 +256,12 @@ module Idv
       Db::AddDocumentVerificationAndSelfieCosts.
         new(user_id: user_id,
             service_provider: service_provider,
-            liveness_checking_enabled: liveness_checking_enabled?).
+            liveness_checking_enabled: false).
         call(response)
     end
 
     def update_funnel(client_response)
       steps = %i[front_image back_image]
-      steps << :selfie if liveness_checking_enabled?
       steps.each do |step|
         Funnel::DocAuth::RegisterStep.new(user_id, service_provider&.issuer).
           call(step.to_s, :update, client_response.success?)

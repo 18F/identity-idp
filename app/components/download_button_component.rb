@@ -6,7 +6,7 @@ class DownloadButtonComponent < ButtonComponent
       icon: :file_download,
       action: ->(**tag_options, &block) do
         link_to(
-          "data:text/plain;charset=utf-8,#{CGI.escape(file_data)}",
+          "data:text/plain;charset=utf-8,#{ERB::Util.url_encode(file_data)}",
           download: file_name,
           **tag_options,
           &block

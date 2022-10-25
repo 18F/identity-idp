@@ -22,6 +22,7 @@ class UserMailer < ActionMailer::Base
 
   before_action :validate_user_and_email_address
   before_action :attach_images
+  after_action :add_metadata
   default(
     from: email_with_name(
       IdentityConfig.store.email_from,
@@ -41,6 +42,10 @@ class UserMailer < ActionMailer::Base
         "User ID #{@user.id} does not match EmailAddress ID #{@email_address.id}",
       )
     end
+  end
+
+  def add_metadata
+    message.instance_variable_set(:@_metadata, { user: user, action: action_name })
   end
 
   def email_confirmation_instructions(token, request_id:, instructions:)

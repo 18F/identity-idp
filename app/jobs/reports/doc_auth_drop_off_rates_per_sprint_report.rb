@@ -5,13 +5,6 @@ module Reports
     REPORT_NAME = 'doc-auth-drop-offs-per-sprint-report'.freeze
     FIRST_SPRINT_DATE = '10-10-2019'.freeze
 
-    include GoodJob::ActiveJobExtensions::Concurrency
-
-    good_job_control_concurrency_with(
-      total_limit: 1,
-      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
-    )
-
     def perform(_date)
       ret = generate_report
       save_report(REPORT_NAME, ret.join, extension: 'txt')

@@ -7,7 +7,6 @@ module Idv
     before_action :confirm_idv_needed
     before_action :confirm_user_completed_idv_profile_step
     before_action :confirm_mail_not_spammed
-    before_action :confirm_gpo_allowed_if_strict_ial2
 
     def index
       @presenter = GpoPresenter.new(current_user, url_options)
@@ -55,12 +54,6 @@ module Idv
 
     def resend_requested?
       current_user.decorate.pending_profile_requires_verification?
-    end
-
-    def confirm_gpo_allowed_if_strict_ial2
-      return unless sp_session[:ial2_strict]
-      return if IdentityConfig.store.gpo_allowed_for_strict_ial2
-      redirect_to idv_phone_url
     end
 
     def confirm_mail_not_spammed

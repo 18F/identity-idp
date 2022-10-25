@@ -61,7 +61,6 @@ module Idv
 
     def proof_document(
       document_capture_session,
-      liveness_checking_enabled:,
       trace_id:,
       image_metadata:,
       analytics_data:,
@@ -73,7 +72,6 @@ module Idv
 
       DocumentProofingJob.perform_later(
         encrypted_arguments: encrypted_arguments,
-        liveness_checking_enabled: liveness_checking_enabled,
         result_id: document_capture_session.result_id,
         trace_id: trace_id,
         image_metadata: image_metadata,
