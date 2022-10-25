@@ -25,6 +25,7 @@ module Idv
           )
 
           doc_capture_session.create_doc_auth_session
+          doc_capture_session.create_proofing_session
 
           InheritedProofingJob.perform_later(
             controller.inherited_proofing_service_provider,
