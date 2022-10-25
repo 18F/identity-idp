@@ -8,19 +8,16 @@ module Idv
     validates_presence_of :document_capture_session
     validates_presence_of :front_image_iv
     validates_presence_of :back_image_iv
-    validates_presence_of :selfie_image_iv, if: :liveness_checking_enabled?
 
     validate :throttle_if_rate_limited
 
     def initialize(
       params,
-      liveness_checking_enabled:,
       analytics:,
       irs_attempts_api_tracker:,
       flow_path: nil
     )
       @params = params
-      @liveness_checking_enabled = liveness_checking_enabled
       @analytics = analytics
       @irs_attempts_api_tracker = irs_attempts_api_tracker
       @flow_path = flow_path
@@ -48,10 +45,6 @@ module Idv
     def remaining_attempts
       return unless document_capture_session
       throttle.remaining_count
-    end
-
-    def liveness_checking_enabled?
-      @liveness_checking_enabled
     end
 
     def document_capture_session_uuid
@@ -121,13 +114,6 @@ module Idv
       unless valid_url?(:back_image_url)
         errors.add(
           :back_image_url, invalid_link,
-          type: :invalid_link
-        )
-      end
-      return if valid_url?(:selfie_image_url)
-      if liveness_checking_enabled?
-        errors.add(
-          :selfie_image_url, invalid_link,
           type: :invalid_link
         )
       end
