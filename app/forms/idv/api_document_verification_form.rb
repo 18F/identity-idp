@@ -73,10 +73,6 @@ module Idv
       params[:back_image_iv]
     end
 
-    def selfie_image_iv
-      params[:selfie_image_iv]
-    end
-
     def valid_url?(key)
       uri = params[key]
       parsed_uri = URI.parse(uri)

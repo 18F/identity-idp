@@ -9,8 +9,6 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
         front_image_iv: front_image_iv,
         back_image_url: back_image_url,
         back_image_iv: back_image_iv,
-        selfie_image_url: selfie_image_url,
-        selfie_image_iv: selfie_image_iv,
         document_capture_session_uuid: document_capture_session_uuid,
       },
       analytics: analytics,
@@ -23,8 +21,6 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
   let(:front_image_iv) { 'front-iv' }
   let(:back_image_url) { 'http://example.com/back' }
   let(:back_image_iv) { 'back-iv' }
-  let(:selfie_image_url) { 'http://example.com/selfie' }
-  let(:selfie_image_iv) { 'selfie-iv' }
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:analytics) { FakeAnalytics.new }
