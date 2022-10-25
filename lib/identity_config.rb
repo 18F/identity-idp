@@ -190,6 +190,7 @@ class IdentityConfig
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
     config.add(:idv_send_link_max_attempts, type: :integer)
     config.add(:idv_sp_required, type: :boolean)
+    config.add(:ie11_support_end_date, type: :timestamp)
     config.add(:in_person_proofing_enabled, type: :boolean)
     config.add(:in_person_enrollment_validity_in_days, type: :integer)
     config.add(:in_person_results_delay_in_hours, type: :integer)

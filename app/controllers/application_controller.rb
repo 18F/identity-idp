@@ -496,10 +496,6 @@ class ApplicationController < ActionController::Base
     }
   end
 
-  def browser_is_ie11?
-    @browser_is_ie11 = BrowserCache.parse(request.user_agent).ie?(11)
-  end
-
   def mobile?
     BrowserCache.parse(request.user_agent).mobile?
   end

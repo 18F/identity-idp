@@ -110,6 +110,7 @@ idv_native_camera_a_b_testing_percent: 10
 idv_personal_key_confirmation_enabled: true
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
+ie11_support_end_date: '2022-12-31'
 idv_sp_required: false
 in_person_proofing_enabled: false
 in_person_enrollment_validity_in_days: 30
