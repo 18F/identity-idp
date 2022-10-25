@@ -170,10 +170,9 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_client_or_server_error(err, enrollment)
-    response = err.response_body
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       **enrollment_analytics_attributes(enrollment, complete: false),
-      **response_analytics_attributes(response),
+      **response_analytics_attributes(err.response_body),
       exception_class: err.class.to_s,
       exception_message: err.message,
       reason: 'Request exception',
