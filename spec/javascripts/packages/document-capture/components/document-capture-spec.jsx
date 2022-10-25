@@ -15,18 +15,24 @@ import { FlowContext } from '@18f/identity-verify-flow';
 import { expect } from 'chai';
 import { useSandbox } from '@18f/identity-test-helpers';
 import { render, useAcuant, useDocumentCaptureForm } from '../../../support/document-capture';
-import { getFixtureFile } from '../../../support/file';
+import { getFixture, getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/document-capture', () => {
   const onSubmit = useDocumentCaptureForm();
   const sandbox = useSandbox();
   const { initialize } = useAcuant();
 
+  function isFormValid(form) {
+    return [...form.querySelectorAll('input')].every((input) => input.checkValidity());
+  }
+
   let originalHash;
   let validUpload;
+  let validSelfieBase64;
 
   before(async () => {
     validUpload = await getFixtureFile('doc_auth_images/id-front.jpg');
+    validSelfieBase64 = await getFixture('doc_auth_images/selfie.jpg', 'base64');
   });
 
   beforeEach(() => {
@@ -73,6 +79,221 @@ describe('document-capture/components/document-capture', () => {
     await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
 
     await findByText('doc_auth.errors.camera.blocked_detail');
+  });
+
+  it.skip('progresses through steps to completion', async () => {
+    // I believe this to be a selfie related test
+    const { getByLabelText, getByText, getAllByText, findAllByText } = render(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+          <DocumentCapture />
+        </AcuantContextProvider>
+      </DeviceContext.Provider>,
+    );
+
+    initialize();
+    window.AcuantCameraUI.start.callsFake(async (callbacks) => {
+      await Promise.resolve();
+      callbacks.onCaptured();
+      await Promise.resolve();
+      callbacks.onCropped({
+        glare: 70,
+        sharpness: 70,
+        image: {
+          data: validSelfieBase64,
+        },
+      });
+    });
+    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, validSelfieBase64);
+
+    // Attempting to proceed without providing values will trigger error messages.
+    let continueButton = getByText('forms.buttons.continue');
+    await userEvent.click(continueButton);
+    let errors = await findAllByText('simple_form.required.text');
+    expect(errors).to.have.lengthOf(2);
+    expect(document.activeElement).to.equal(
+      getByLabelText('doc_auth.headings.document_capture_front'),
+    );
+
+    // Providing values should remove errors progressively.
+    fireEvent.change(getByLabelText('doc_auth.headings.document_capture_front'), {
+      target: {
+        files: [validUpload],
+      },
+    });
+    await waitFor(() => expect(getAllByText('simple_form.required.text')).to.have.lengthOf(1));
+    expect(document.activeElement).to.equal(
+      getByLabelText('doc_auth.headings.document_capture_front'),
+    );
+
+    await userEvent.click(getByLabelText('doc_auth.headings.document_capture_back'));
+
+    // Continue only once all errors have been removed.
+    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
+    continueButton = getByText('forms.buttons.continue');
+    expect(isFormValid(continueButton.closest('form'))).to.be.true();
+    await userEvent.click(continueButton);
+
+    // Trigger validation by attempting to submit.
+    const submitButton = getByText('forms.buttons.submit.default');
+
+    await userEvent.click(submitButton);
+    errors = await findAllByText('simple_form.required.text');
+    expect(errors).to.have.lengthOf(1);
+    expect(document.activeElement).to.equal(
+      getByLabelText('doc_auth.headings.document_capture_selfie'),
+    );
+
+    // Provide value.
+    const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
+    fireEvent.click(selfieInput);
+
+    // Continue only once all errors have been removed.
+    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
+    expect(isFormValid(submitButton.closest('form'))).to.be.true();
+
+    await new Promise((resolve) => {
+      onSubmit.callsFake(resolve);
+      // eslint-disable-next-line no-restricted-syntax
+      userEvent.click(submitButton);
+    });
+
+    // At this point, the page should redirect, so we do not expect that the user should be prompted
+    // about unsaved changes in navigating.
+    const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
+    window.dispatchEvent(event);
+    expect(event.defaultPrevented).to.be.false();
+  });
+
+  it.skip('renders unhandled submission failure', async () => {
+    // I believe this to be a selfie related test
+    const { getByLabelText, getByText, getAllByText, findAllByText, findByText } = render(
+      <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+        <DocumentCapture />
+      </AcuantContextProvider>,
+      {
+        uploadError: new Error('Server unavailable'),
+        expectedUploads: 2,
+      },
+    );
+
+    const continueButton = getByText('forms.buttons.continue');
+    await userEvent.click(continueButton);
+    await findAllByText('simple_form.required.text');
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
+    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
+    await userEvent.click(continueButton);
+
+    let submitButton = getByText('forms.buttons.submit.default');
+    await userEvent.click(submitButton);
+    await findAllByText('simple_form.required.text');
+    const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
+    fireEvent.change(selfieInput, { target: { files: [validUpload] } });
+    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
+    await userEvent.click(submitButton);
+
+    await findByText('doc_auth.errors.general.network_error');
+
+    expect(console).to.have.loggedError(/^Error: Uncaught/);
+    expect(console).to.have.loggedError(
+      /React will try to recreate this component tree from scratch using the error boundary you provided/,
+    );
+
+    // Make sure that the first element after a tab is what we expect it to be.
+    await userEvent.tab();
+    const firstFocusable = getByLabelText('doc_auth.headings.document_capture_front');
+    expect(document.activeElement).to.equal(firstFocusable);
+
+    const hasValueSelected = getAllByText('doc_auth.forms.change_file').length === 3;
+    expect(hasValueSelected).to.be.true();
+
+    // Verify re-submission. It will fail again, but test can at least assure that the interstitial
+    // screen is shown once more.
+
+    submitButton = getByText('forms.buttons.submit.default');
+    await userEvent.click(submitButton);
+
+    await findByText('doc_auth.errors.general.network_error');
+
+    expect(console).to.have.loggedError(/^Error: Uncaught/);
+    expect(console).to.have.loggedError(
+      /React will try to recreate this component tree from scratch using the error boundary you provided/,
+    );
+  });
+
+  it.skip('renders handled submission failure', async () => {
+    // I believe this to be a selfie related test
+    const uploadError = new UploadFormEntriesError();
+    uploadError.formEntryErrors = [
+      { field: 'front', message: 'Image has glare' },
+      { field: 'back', message: 'Please fill in this field' },
+      { message: 'An unknown error occurred' },
+    ].map(toFormEntryError);
+    const { getByLabelText, getByText, getAllByText, findAllByText, findAllByRole } = render(
+      <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+        <DocumentCapture />
+      </AcuantContextProvider>,
+      {
+        uploadError,
+        expectedUploads: 2,
+      },
+    );
+
+    const continueButton = getByText('forms.buttons.continue');
+    await userEvent.click(continueButton);
+    await findAllByText('simple_form.required.text');
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
+    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
+    await userEvent.click(continueButton);
+
+    let submitButton = getByText('forms.buttons.submit.default');
+    await userEvent.click(submitButton);
+    await findAllByText('simple_form.required.text');
+    const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
+    fireEvent.change(selfieInput, { target: { files: [validUpload] } });
+    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
+    await userEvent.click(submitButton);
+
+    let notices = await findAllByRole('alert');
+    expect(notices[0].textContent).to.equal('Image has glare');
+    expect(notices[1].textContent).to.equal('Please fill in this field');
+    expect(getByText('An unknown error occurred')).to.be.ok();
+
+    expect(console).to.have.loggedError(/^Error: Uncaught/);
+    expect(console).to.have.loggedError(
+      /React will try to recreate this component tree from scratch using the error boundary you provided/,
+    );
+
+    // Make sure that the first focusable element after a tab is what we expect it to be.
+    await userEvent.tab();
+    const firstFocusable = getByLabelText('doc_auth.headings.document_capture_front');
+    expect(document.activeElement).to.equal(firstFocusable);
+
+    const hasValueSelected = !!getByLabelText('doc_auth.headings.document_capture_front');
+    expect(hasValueSelected).to.be.true();
+
+    submitButton = getByText('forms.buttons.submit.default');
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
+
+    // Once fields are changed, their notices should be cleared. If all field-specific errors are
+    // addressed, submit should be enabled once more.
+    notices = await findAllByRole('alert');
+    const errorNotices = notices.filter((notice) => notice.classList.contains('usa-alert--error'));
+    expect(errorNotices).to.have.lengthOf(0);
+
+    // Verify re-submission. It will fail again, but test can at least assure that the interstitial
+    // screen is shown once more.
+    await userEvent.click(submitButton);
+
+    await waitFor(() => expect(() => getAllByText('doc_auth.info.interstitial_eta')).to.throw());
+
+    expect(console).to.have.loggedError(/^Error: Uncaught/);
+    expect(console).to.have.loggedError(
+      /React will try to recreate this component tree from scratch using the error boundary you provided/,
+    );
   });
 
   it('redirects from a server error', async () => {
