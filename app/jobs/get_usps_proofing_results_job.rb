@@ -121,11 +121,13 @@ class GetUspsProofingResultsJob < ApplicationJob
         # 400 status code. This is used for some status updates and some common client errors
         handle_bad_request_error(err, enrollment)
       rescue Faraday::ClientError, Faraday::ServerError => err
-        # 4xx or 5xx status code. These are unexpected but will have some sort of response body that we can try to log data from
+        # 4xx or 5xx status code. These are unexpected but will have some sort of
+        # response body that we can try to log data from
         NewRelic::Agent.notice_error(err)
         handle_client_or_server_error(err, enrollment)
       rescue Faraday::Error => err
-        # Timeouts, failed connections, parsing errors, and other HTTP errors
+        # Timeouts, failed connections, parsing errors, and other HTTP errors. These
+        # generally won't have a response body
         NewRelic::Agent.notice_error(err)
         handle_faraday_error(err, enrollment)
       rescue StandardError => err
@@ -159,9 +161,10 @@ class GetUspsProofingResultsJob < ApplicationJob
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
         **enrollment_analytics_attributes(enrollment, complete: false),
         **response_analytics_attributes(response),
-        reason: 'Request exception',
         exception_class: err.class.to_s,
         exception_message: err.message,
+        reason: 'Request exception',
+        response_status_code: err.response_status,
       )
       enrollment_outcomes[:enrollments_errored] += 1
     end
@@ -172,9 +175,10 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       **enrollment_analytics_attributes(enrollment, complete: false),
       **response_analytics_attributes(response),
-      reason: 'Request exception',
       exception_class: err.class.to_s,
       exception_message: err.message,
+      reason: 'Request exception',
+      response_status_code: err.response_status,
     )
     enrollment_outcomes[:enrollments_errored] += 1
   end
@@ -183,12 +187,14 @@ class GetUspsProofingResultsJob < ApplicationJob
     # todo: will the body have been parsed in this case?
     # todo: should we check for a response body in these cases? Don't think there will be one
     response = err.response_body
+    response_status_code = err.response_status || err&.response&.status
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       **enrollment_analytics_attributes(enrollment, complete: false),
       **response_analytics_attributes(response),
-      reason: 'Request exception',
       exception_class: err.class.to_s,
       exception_message: err.message,
+      reason: 'Request exception',
+      response_status_code: response_status_code,
     )
     enrollment_outcomes[:enrollments_errored] += 1
   end
@@ -199,9 +205,9 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       **enrollment_analytics_attributes(enrollment, complete: false),
       **response_attributes,
-      reason: 'Request exception',
       exception_class: err.class.to_s,
       exception_message: err.message,
+      reason: 'Request exception',
     )
   end
 

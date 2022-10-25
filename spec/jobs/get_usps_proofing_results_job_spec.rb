@@ -20,6 +20,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
       enrollment_id: pending_enrollment.id,
       failure_reason: response['failureReason'],
       fraud_suspected: response['fraudSuspected'],
+      issuer: pending_enrollment.issuer,
       minutes_since_last_status_check: 15.0,
       minutes_since_last_status_update: 2.days.in_minutes,
       minutes_to_completion: 3.days.in_minutes,
@@ -34,7 +35,6 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
       status: response['status'],
       transaction_end_date_time: response['transactionEndDateTime'],
       transaction_start_date_time: response['transactionStartDateTime'],
-      issuer: pending_enrollment.issuer,
     )
   end
 
@@ -47,10 +47,10 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
         job.perform(Time.zone.now)
         expect(job_analytics).to have_logged_event(
           'GetUspsProofingResultsJob: Success or failure email initiated',
+          delay_time_seconds: 3600,
+          service_provider: pending_enrollment.issuer,
           timestamp: Time.zone.now,
           user_id: pending_enrollment.user_id,
-          service_provider: pending_enrollment.issuer,
-          delay_time_seconds: 3600,
         )
       end
     end
@@ -78,7 +78,8 @@ end
 RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class: nil,
                                                                 exception_message: nil,
                                                                 reason: 'Request exception',
-                                                                response_message: nil|
+                                                                response_message: nil,
+                                                                response_status_code: nil|
   it 'logs an error message and leaves the enrollment and profile pending' do
     job.perform(Time.zone.now)
     pending_enrollment.reload
@@ -88,11 +89,12 @@ RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class
     expect(job_analytics).to have_logged_event(
       'GetUspsProofingResultsJob: Exception raised',
       include(
-        reason: reason,
-        enrollment_id: pending_enrollment.id,
         enrollment_code: pending_enrollment.enrollment_code,
+        enrollment_id: pending_enrollment.id,
         exception_class: exception_class,
         exception_message: exception_message,
+        reason: reason,
+        response_status_code: response_status_code,
       ),
     )
   end
@@ -570,6 +572,7 @@ RSpec.describe GetUspsProofingResultsJob do
           'enrollment_encountering_an_exception',
           exception_class: 'Faraday::ParsingError',
           exception_message: /unexpected token at 'invalid'$/,
+          response_status_code: 200,
         )
       end
 
@@ -588,6 +591,7 @@ RSpec.describe GetUspsProofingResultsJob do
           exception_class: 'Faraday::BadRequestError',
           exception_message: 'the server responded with status 400',
           response_message: 'Applicant does not exist',
+          response_status_code: 400,
         )
       end
 
@@ -601,6 +605,7 @@ RSpec.describe GetUspsProofingResultsJob do
           exception_class: 'Faraday::ServerError',
           exception_message: 'the server responded with status 500',
           response_message: 'An internal error occurred processing the request',
+          response_status_code: 500,
         )
       end
 

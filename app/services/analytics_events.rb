@@ -2834,6 +2834,7 @@ module AnalyticsEvents
   # @param [String] proofing_state
   # @param [String] scan_count
   # @param [String] response_message
+  # @param [Integer] response_status_code
   def idv_in_person_usps_proofing_results_job_exception(
     reason:,
     enrollment_id:,
@@ -2856,6 +2857,7 @@ module AnalyticsEvents
     proofing_state: nil,
     scan_count: nil,
     response_message: nil,
+    response_status_code: nil,
     **extra
   )
     track_event(
@@ -2881,6 +2883,7 @@ module AnalyticsEvents
       proofing_state: proofing_state,
       scan_count: scan_count,
       response_message: response_message,
+      response_status_code: response_status_code,
       **extra,
     )
   end
