@@ -76,10 +76,10 @@ feature 'doc auth welcome step' do
       expect(log.upload_view_at).not_to be_nil
 
       expect(fake_analytics).to have_logged_event(
-        'IdV: ' + "#{Analytics::DOC_AUTH} upload visited".downcase, step: 'upload', step_count: 1
+        'IdV: doc auth upload visited', step: 'upload', step_count: 1
       )
       expect(fake_analytics).to have_logged_event(
-        'IdV: ' + "#{Analytics::DOC_AUTH} upload submitted".downcase,
+        'IdV: doc auth upload submitted',
         step: 'upload', step_count: 2, success: true,
       )
     end

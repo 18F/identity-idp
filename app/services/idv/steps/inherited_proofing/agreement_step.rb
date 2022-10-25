@@ -5,6 +5,14 @@ module Idv
         delegate :controller, :idv_session, to: :@flow
         STEP_INDICATOR_STEP = :getting_started
 
+        def self.analytics_visited_event
+          :idv_inherited_proofing_agreement_visited
+        end
+
+        def self.analytics_submitted_event
+          :idv_inherited_proofing_agreement_submitted
+        end
+
         def call
           enqueue_job
         end

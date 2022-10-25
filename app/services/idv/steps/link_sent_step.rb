@@ -5,6 +5,14 @@ module Idv
 
       HYBRID_FLOW_STEPS = %i[upload send_link link_sent email_sent document_capture]
 
+      def self.analytics_visited_event
+        :idv_doc_auth_link_sent_visited
+      end
+
+      def self.analytics_submitted_event
+        :idv_doc_auth_link_sent_submitted
+      end
+
       def call
         return render_document_capture_cancelled if document_capture_session&.cancelled_at
         return render_step_incomplete_error unless take_photo_with_phone_successful?

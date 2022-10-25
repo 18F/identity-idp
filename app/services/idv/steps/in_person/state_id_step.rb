@@ -4,6 +4,14 @@ module Idv
       class StateIdStep < DocAuthBaseStep
         STEP_INDICATOR_STEP = :verify_info
 
+        def self.analytics_visited_event
+          :idv_in_person_proofing_state_id_visited
+        end
+
+        def self.analytics_submitted_event
+          :idv_in_person_proofing_state_id_submitted
+        end
+
         def call
           Idv::StateIdForm::ATTRIBUTES.each do |attr|
             flow_session[:pii_from_user][attr] = flow_params[attr]

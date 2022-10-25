@@ -11,7 +11,7 @@ module Idv
       step_url: :idv_inherited_proofing_step_url,
       final_url: :idv_phone_url,
       flow: Idv::Flows::InheritedProofingFlow,
-      analytics_id: nil,
+      analytics_id: 'Inherited Proofing',
     }.freeze
 
     def return_to_sp
