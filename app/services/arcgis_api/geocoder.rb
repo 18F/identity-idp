@@ -12,7 +12,7 @@ module ArcgisApi
       f: 'json',
       countryCode: 'USA',
       category: 'address',
-    }
+    }.freeze
 
     # Makes an HTTP request to quickly find potential address matches. Each match that is found
     # will include an associated magic_key value which can later be used to get more details about
