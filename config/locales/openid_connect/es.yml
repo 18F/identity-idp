@@ -8,7 +8,6 @@ es:
           one: el valor debe ser al menos %{count} día o más
           other: el valor debe tener al menos %{count} días o más
         invalid_verified_within_format: Formato no reconocido para verified_within
-        liveness_checking_disabled: La verificación de la vida está deshabilitada
         missing_ial: Falta un nivel de IAL válido
         no_auth: Los acr_values no están autorizados
         no_valid_acr_values: ial_valores encontrados no aceptables
