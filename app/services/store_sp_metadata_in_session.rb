@@ -37,7 +37,6 @@ class StoreSpMetadataInSession
       issuer: sp_request.issuer,
       ial: ial_context.ial,
       ial2: ial_context.ial2_requested?,
-      ial2_strict: ial_context.ial2_strict_requested?,
       ialmax: ial_context.ialmax_requested?,
       aal_level_requested: aal_requested,
       piv_cac_requested: hspd12_requested,
