@@ -1,4 +1,4 @@
-2module OpenidConnect
+module OpenidConnect
   class AuthorizationController < ApplicationController
     include FullyAuthenticatable
     include RememberDeviceConcern
