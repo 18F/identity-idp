@@ -136,26 +136,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
               sp_return_log = SpReturnLog.find_by(issuer: client_id)
               expect(sp_return_log.ial).to eq(2)
             end
-
-            context 'with the IAL2-strict flag' do
-              before do
-                params[:acr_values] = Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF
-                allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-                stub_sign_in user
-              end
-
-              it 'creates an IAL2 SpReturnLog record' do
-                IdentityLinker.new(user, service_provider).link_identity(ial: 22)
-                user.identities.last.update!(
-                  verified_attributes: %w[given_name family_name birthdate verified_at],
-                )
-                allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
-                action
-
-                sp_return_log = SpReturnLog.find_by(issuer: client_id)
-                expect(sp_return_log.ial).to eq(2)
-              end
-            end
           end
 
           context 'account is not already verified' do

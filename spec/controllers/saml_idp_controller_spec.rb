@@ -594,25 +594,6 @@ describe SamlIdpController do
                       Idp::Constants::IAL2
     end
 
-    context 'with IAL2 strict and the identity is already verified' do
-      before do
-        allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-      end
-
-      it_behaves_like 'a verified identity',
-                      Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
-                      Idp::Constants::IAL2_STRICT
-    end
-
-    context 'with IAL2 and the identity is not already verified' do
-      it 'redirects to IdV URL for IAL2 proofer' do
-        user = create(:user, :signed_up)
-        generate_saml_response(user, ial2_settings)
-
-        expect(response).to redirect_to idv_path
-      end
-    end
-
     context 'with IAL2 and the profile is reset' do
       it 'redirects to IdV URL for IAL2 proofer' do
         user = create(:profile, :password_reset).user

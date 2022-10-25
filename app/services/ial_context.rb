@@ -40,10 +40,6 @@ class IalContext
     ial2_requested? || ial2_strict_requested? || default_to_ial2?
   end
 
-  def ial2_strict_requested?
-    ial == ::Idp::Constants::IAL2_STRICT
-  end
-
   private
 
   def int_ial(input)
