@@ -4,13 +4,6 @@ module Reports
   class SpUserQuotasReport < BaseReport
     REPORT_NAME = 'sp-user-quotas-report'.freeze
 
-    include GoodJob::ActiveJobExtensions::Concurrency
-
-    good_job_control_concurrency_with(
-      total_limit: 1,
-      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
-    )
-
     def perform(_date)
       results = run_report_and_save_to_s3
       update_quota_limit_cache

@@ -258,14 +258,4 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
       partner_account: partner_account,
     )
   end
-
-  describe '#good_job_concurrency_key' do
-    let(:date) { Time.zone.today }
-
-    it 'is the job name and the date' do
-      job = described_class.new(date)
-      expect(job.good_job_concurrency_key).
-        to eq("#{described_class::REPORT_NAME}-#{date}")
-    end
-  end
 end
