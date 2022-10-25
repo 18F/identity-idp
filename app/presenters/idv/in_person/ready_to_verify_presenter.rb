@@ -13,13 +13,14 @@ module Idv
         @barcode_image_url = barcode_image_url
       end
 
-      # Reminder of days left is exclusive of the day the email is sent, hence the reminder num is 1 less than days_to_due_date
+      # Reminder is exclusive of the day the email is sent (1 less than days_to_due_date)
       def days_remaining
         enrollment.days_to_due_date - 1
       end
 
       def formatted_due_date
-        enrollment.due_date.in_time_zone(USPS_SERVER_TIMEZONE).strftime(I18n.t('time.formats.event_date'))
+        enrollment.due_date.in_time_zone(USPS_SERVER_TIMEZONE).
+          strftime(I18n.t('time.formats.event_date'))
       end
 
       def selected_location_hours(prefix)

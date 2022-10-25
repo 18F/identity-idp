@@ -132,10 +132,11 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
   describe '#days_remaining' do
     subject(:days_remaining) { presenter.days_remaining }
+    let(:config) { IdentityConfig.store.in_person_enrollment_validity_in_days }
 
     context '4 days until due date' do
       it 'returns 3 days' do
-        travel_to(enrollment_established_at + (IdentityConfig.store.in_person_enrollment_validity_in_days - 4).days) do
+        travel_to(enrollment_established_at + (config - 4).days) do
           expect(days_remaining).to eq(3)
         end
       end
@@ -143,7 +144,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     context '11 days until due date' do
       it 'returns 10 days' do
-        travel_to(enrollment_established_at + (IdentityConfig.store.in_person_enrollment_validity_in_days - 11).days) do
+        travel_to(enrollment_established_at + (config - 11).days) do
           expect(days_remaining).to eq(10)
         end
       end
