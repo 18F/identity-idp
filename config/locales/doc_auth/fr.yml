@@ -193,8 +193,9 @@ fr:
       interstitial_eta: Cette opération peut prendre jusqu’à une minute. Nous
         chargerons automatiquement l’étape suivante lorsqu’elle sera terminée.
       interstitial_thanks: Merci de votre patience!
-      irs_reproofing_explanation: Comme mesure de sécurité supplémentaire, vous
-        devez vérifier à nouveau votre identité pour l'IRS.
+      keep_window_open: Ne fermez pas cette fenêtre.
+      irs_reproofing_explanation: Comme mesure de sécurité supplémentaire, vous devez
+        vérifier à nouveau votre identité pour l’IRS.
       lets_go: La vérification de l’identité se fait en deux temps
       link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour
         prendre une photo de votre identité émise par l’État.
