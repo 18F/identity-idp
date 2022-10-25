@@ -1,0 +1,28 @@
+{
+  "spatialReference": {
+    "wkid": 4326,
+    "latestWkid": 4326
+  },
+  "candidates": [
+    {
+      "address": "100 Main Ave, La Grande, Oregon, 97850",
+      "location": {
+        "x": -118.10754025791812,
+        "y": 45.328271485226445
+      },
+      "score": 100,
+      "attributes": {
+        "StAddr": "100 Main Ave",
+        "City": "La Grande",
+        "RegionAbbr": "OR",
+        "Postal": "97850"
+      },
+      "extent": {
+        "xmin": -118.10854025791812,
+        "ymin": 45.327271485226447,
+        "xmax": -118.10654025791811,
+        "ymax": 45.329271485226442
+      }
+    }
+  ]
+}
