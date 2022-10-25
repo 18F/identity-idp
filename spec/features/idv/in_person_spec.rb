@@ -168,13 +168,10 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content(t('doc_auth.headings.review_issues'))
 
     # Images should still be present
-    expect(page).to have_field('file-input-3') do |field|
-      field.value.present?
-    end
-
-    expect(page).to have_field('file-input-4') do |field|
-      field.value.present?
-    end
+    front_label = [t('doc_auth.headings.document_capture_front'), 'logo.png'].join(' - ')
+    back_label = [t('doc_auth.headings.document_capture_back'), 'logo.png'].join(' - ')
+    expect(page).to have_field(front_label) { |field| field.value.present? }
+    expect(page).to have_field(back_label) { |field| field.value.present? }
   end
 
   context 'after in-person proofing is completed and passed for a partner' do
