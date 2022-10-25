@@ -595,6 +595,34 @@ module AnalyticsEvents
     track_event('IdV: in person proofing prepare submitted', flow_path: flow_path, **extra)
   end
 
+  def idv_in_person_proofing_address_submitted(**extra)
+    track_event('IdV: in person proofing address submitted', **extra)
+  end
+
+  def idv_in_person_proofing_address_visited(**extra)
+    track_event('IdV: in person proofing address visited', **extra)
+  end
+
+  def idv_in_person_proofing_cancel_update_address(**extra)
+    track_event('IdV: in person proofing cancel_update_address submitted', **extra)
+  end
+
+  def idv_in_person_proofing_cancel_update_state_id(**extra)
+    track_event('IdV: in person proofing cancel_update_state_id submitted', **extra)
+  end
+
+  def idv_in_person_proofing_redo_state_id_submitted(**extra)
+    track_event('IdV: in person proofing redo_state_id submitted', **extra)
+  end
+
+  def idv_in_person_proofing_state_id_submitted(**extra)
+    track_event('IdV: in person proofing state_id submitted', **extra)
+  end
+
+  def idv_in_person_proofing_state_id_visited(**extra)
+    track_event('IdV: in person proofing state_id visited', **extra)
+  end
+
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user visited the in person proofing switch_back step
   def idv_in_person_switch_back_visited(flow_path:, **extra)
@@ -2854,34 +2882,6 @@ module AnalyticsEvents
       user_id: user_id,
       **extra,
     )
-  end
-
-  def idv_in_person_proofing_address_submitted(**extra)
-    track_event('IdV: in person proofing address submitted', **extra)
-  end
-
-  def idv_in_person_proofing_address_visited(**extra)
-    track_event('IdV: in person proofing address visited', **extra)
-  end
-
-  def idv_in_person_proofing_cancel_update_address(**extra)
-    track_event('IdV: in person proofing cancel_update_address submitted', **extra)
-  end
-
-  def idv_in_person_proofing_cancel_update_state_id(**extra)
-    track_event('IdV: in person proofing cancel_update_state_id submitted', **extra)
-  end
-
-  def idv_in_person_proofing_redo_state_id_submitted(**extra)
-    track_event('IdV: in person proofing redo_state_id submitted', **extra)
-  end
-
-  def idv_in_person_proofing_state_id_submitted(**extra)
-    track_event('IdV: in person proofing state_id submitted', **extra)
-  end
-
-  def idv_in_person_proofing_state_id_visited(**extra)
-    track_event('IdV: in person proofing state_id visited', **extra)
   end
 
   # Tracks if USPS in-person proofing enrollment request fails
