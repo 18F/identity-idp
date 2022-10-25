@@ -9,8 +9,6 @@ describe Api::Verify::DocumentCaptureController do
   let(:front_image_iv) { 'front-iv' }
   let(:back_image_url) { 'http://example.com/back' }
   let(:back_image_iv) { 'back-iv' }
-  let(:selfie_image_url) { 'http://example.com/selfie' }
-  let(:selfie_image_iv) { 'selfie-iv' }
   let(:front_image_metadata) do
     { width: 40, height: 40, mimeType: 'image/png', source: 'upload' }
   end
@@ -81,17 +79,14 @@ describe Api::Verify::DocumentCaptureController do
               'encryption_key' => encryption_key,
               'front_image_iv' => front_image_iv,
               'back_image_iv' => back_image_iv,
-              'selfie_image_iv' => selfie_image_iv,
               'front_image_url' => front_image_url,
               'back_image_url' => back_image_url,
-              'selfie_image_url' => selfie_image_url,
             },
           },
         ).and_return(agent)
 
         expect(agent).to receive(:proof_document).with(
           document_capture_session,
-          liveness_checking_enabled: false,
           trace_id: nil,
           image_metadata: image_metadata,
           analytics_data: analytics_data,
@@ -102,10 +97,8 @@ describe Api::Verify::DocumentCaptureController do
           encryption_key: encryption_key,
           front_image_iv: front_image_iv,
           back_image_iv: back_image_iv,
-          selfie_image_iv: selfie_image_iv,
           front_image_url: front_image_url,
           back_image_url: back_image_url,
-          selfie_image_url: selfie_image_url,
           front_image_metadata: front_image_metadata.to_json,
           back_image_metadata: back_image_metadata.to_json,
           document_capture_session_uuid: document_capture_session_uuid,
@@ -128,10 +121,8 @@ describe Api::Verify::DocumentCaptureController do
             encryption_key: encryption_key,
             front_image_iv: nil,
             back_image_iv: back_image_iv,
-            selfie_image_iv: selfie_image_iv,
             front_image_url: front_image_url,
             back_image_url: back_image_url,
-            selfie_image_url: selfie_image_url,
             document_capture_session_uuid: document_capture_session_uuid,
           }
 

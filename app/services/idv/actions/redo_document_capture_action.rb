@@ -1,6 +1,10 @@
 module Idv
   module Actions
     class RedoDocumentCaptureAction < Idv::Steps::DocAuthBaseStep
+      def self.analytics_submitted_event
+        :idv_doc_auth_redo_document_capture_submitted
+      end
+
       def call
         mark_step_incomplete(:document_capture)
         unless flow_session[:skip_upload_step]

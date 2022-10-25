@@ -390,7 +390,6 @@ class IdentityConfig
     config.add(:get_usps_proofing_results_job_cron, type: :string)
     config.add(:get_usps_proofing_results_job_reprocess_delay_minutes, type: :integer)
     config.add(:get_usps_proofing_results_job_request_delay_milliseconds, type: :integer)
-    config.add(:gpo_allowed_for_strict_ial2, type: :boolean)
     config.add(:usps_upload_sftp_directory, type: :string)
     config.add(:usps_upload_sftp_host, type: :string)
     config.add(:usps_upload_sftp_password, type: :string)

@@ -8,6 +8,10 @@ module Idv
 
         STEP_INDICATOR_STEP = :getting_started
 
+        def self.analytics_optional_step_event
+          :idv_doc_auth_optional_verify_wait_submitted
+        end
+
         def call
           poll_with_meta_refresh(IdentityConfig.store.poll_rate_for_verify_in_seconds)
 

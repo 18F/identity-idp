@@ -4,6 +4,12 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
+<% if @platform_authenticator %>
+  <%= render AlertComponent.new(type: :warning, class: 'margin-y-1') do %>
+    <%= t('forms.webauthn_platform_setup.warning_text') %>
+  <% end %>
+<% end %>
+
 <%= @presenter.intro_html %>
 
 <%= simple_form_for(

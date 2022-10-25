@@ -5,14 +5,15 @@ class DocumentProofingJob < ApplicationJob
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
+  # rubocop:disable Lint/UnusedMethodArgument
   def perform(
     result_id:,
     encrypted_arguments:,
     trace_id:,
-    liveness_checking_enabled:,
     image_metadata:,
     analytics_data:,
-    flow_path:
+    flow_path:,
+    liveness_checking_enabled: nil
   )
     timer = JobHelpers::Timer.new
 
@@ -32,10 +33,8 @@ class DocumentProofingJob < ApplicationJob
     encryption_key = Base64.decode64(document_args[:encryption_key].to_s)
     front_image_iv = Base64.decode64(document_args[:front_image_iv].to_s)
     back_image_iv = Base64.decode64(document_args[:back_image_iv].to_s)
-    selfie_image_iv = Base64.decode64(document_args[:selfie_image_iv].to_s)
     front_image_url = document_args[:front_image_url]
     back_image_url = document_args[:back_image_url]
-    selfie_image_url = document_args[:selfie_image_url]
 
     front_image = decrypt_image_from_s3(
       timer: timer, name: :front, url: front_image_url, iv: front_image_iv, key: encryption_key,
@@ -43,12 +42,6 @@ class DocumentProofingJob < ApplicationJob
     back_image = decrypt_image_from_s3(
       timer: timer, name: :back, url: back_image_url, iv: back_image_iv, key: encryption_key,
     )
-    if liveness_checking_enabled
-      selfie_image = decrypt_image_from_s3(
-        timer: timer, name: :selfie, url: selfie_image_url, iv: selfie_image_iv,
-        key: encryption_key
-      )
-    end
 
     analytics = build_analytics(dcs)
     doc_auth_client = build_doc_auth_client(analytics, dcs)
@@ -57,9 +50,9 @@ class DocumentProofingJob < ApplicationJob
       doc_auth_client.post_images(
         front_image: front_image,
         back_image: back_image,
-        selfie_image: selfie_image || '',
+        selfie_image: nil,
         image_source: image_source(image_metadata),
-        liveness_checking_enabled: liveness_checking_enabled,
+        liveness_checking_enabled: false,
         user_uuid: user_uuid,
         uuid_prefix: uuid_prefix,
       )
@@ -94,6 +87,7 @@ class DocumentProofingJob < ApplicationJob
       }.to_json,
     )
   end
+  # rubocop:enable Lint/UnusedMethodArgument
 
   private
 

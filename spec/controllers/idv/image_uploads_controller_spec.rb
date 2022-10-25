@@ -12,7 +12,6 @@ describe Idv::ImageUploadsController do
         front_image_metadata: '{"glare":99.99}',
         back: DocAuthImageFixtures.document_back_image_multipart,
         back_image_metadata: '{"glare":99.99}',
-        selfie: DocAuthImageFixtures.selfie_image_multipart,
         document_capture_session_uuid: document_capture_session.uuid,
         flow_path: 'standard',
       }

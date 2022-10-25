@@ -7,7 +7,6 @@ module Api
       def create
         result = Idv::ApiDocumentVerificationForm.new(
           verify_params,
-          liveness_checking_enabled: false,
           analytics: analytics,
           irs_attempts_api_tracker: irs_attempts_api_tracker,
           flow_path: params[:flow_path],
@@ -37,7 +36,6 @@ module Api
         }
         Idv::Agent.new(applicant).proof_document(
           verify_document_capture_session,
-          liveness_checking_enabled: false,
           trace_id: amzn_trace_id,
           image_metadata: image_metadata,
           analytics_data: {
