@@ -36,8 +36,7 @@ module ArcgisApi
     end
 
     # Makes HTTP request to find an exact address using magic_key
-    # Requires a magic_key returned from a previous response from #suggest
-    # @param magic_key [String]
+    # @param magic_key [String] a magic key value from a previous call to the #suggest method
     # @return [Array<AddressCandidate>] AddressCandidates
     def find_address_candidates(magic_key)
       url = "#{root_url}/findAddressCandidates"
