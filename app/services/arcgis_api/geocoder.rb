@@ -14,7 +14,9 @@ module ArcgisApi
       category: 'address',
     }
 
-    # Makes HTTP request to quickly find potential address matches
+    # Makes an HTTP request to quickly find potential address matches. Each match that is found
+    # will include an associated magic_key value which can later be used to get more details about
+    # the address using the #find_address_candidates method
     # Requests text input and will only match possible addresses
     # A maximum of 5 suggestions are included in the suggestions array.
     # @param text [String]
