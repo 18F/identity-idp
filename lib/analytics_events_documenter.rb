@@ -4,6 +4,7 @@ require 'json'
 require 'optparse'
 require 'stringio'
 require 'active_support/core_ext/object/blank'
+require_relative './identity_config'
 
 # Parses YARD output for AnalyticsEvents methods
 class AnalyticsEventsDocumenter
@@ -137,6 +138,10 @@ class AnalyticsEventsDocumenter
         previous_event_names: method_object.tags(PREVIOUS_EVENT_NAME_TAG).map(&:text),
         description: method_object.docstring.presence,
         attributes: attributes,
+        method_name: method_object.name,
+        source_line: method_object.line,
+        source_file: method_object.file,
+        source_sha: IdentityConfig::GIT_SHA,
       }
     end
 

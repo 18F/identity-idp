@@ -217,6 +217,10 @@ RSpec.describe AnalyticsEventsDocumenter do
               { name: 'success', types: ['Boolean'], description: nil },
               { name: 'count', types: ['Integer'], description: 'number of attempts' },
             ],
+            method_name: :some_event,
+            source_file: '(stdin)',
+            source_line: 5,
+            source_sha: kind_of(String),
           },
           {
             event_name: 'Other Event',
@@ -226,6 +230,10 @@ RSpec.describe AnalyticsEventsDocumenter do
             ],
             description: nil,
             attributes: [],
+            method_name: :other_event,
+            source_file: '(stdin)',
+            source_line: 11,
+            source_sha: kind_of(String),
           },
         ],
       )
@@ -246,7 +254,7 @@ RSpec.describe AnalyticsEventsDocumenter do
       RUBY
 
       it 'still finds events' do
-        expect(documenter.as_json[:events]).to eq(
+        expect(documenter.as_json[:events]).to match_array(
           [
             {
               event_name: 'some_event',
@@ -255,6 +263,10 @@ RSpec.describe AnalyticsEventsDocumenter do
               attributes: [
                 { name: 'success', types: ['Boolean'], description: nil },
               ],
+              method_name: :some_event,
+              source_file: '(stdin)',
+              source_line: 4,
+              source_sha: kind_of(String),
             },
           ],
         )
