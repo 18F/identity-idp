@@ -21,8 +21,8 @@ es:
         retail_hours: Horario de atención al público
         retail_hours_closed: Cerrado
         retail_phone_label: Número de teléfono
-        speak_to_associate: Puedes hablar con cualquier socio de ventas en esta oficina
-          de correos para verificar tu identidad.
+        speak_to_associate: Para verificar su identidad, puede acudir a cualquier
+          empleado en ventanilla.
       location:
         location_button: Seleccionar
         location_step_about: Si tiene problemas para añadir su cédula de identidad, es
