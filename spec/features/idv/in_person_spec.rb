@@ -170,8 +170,8 @@ RSpec.describe 'In Person Proofing', js: true do
     # Images should still be present
     front_label = [t('doc_auth.headings.document_capture_front'), 'logo.png'].join(' - ')
     back_label = [t('doc_auth.headings.document_capture_back'), 'logo.png'].join(' - ')
-    expect(page).to have_field(front_label) { |field| field.value.present? }
-    expect(page).to have_field(back_label) { |field| field.value.present? }
+    expect(page).to have_field(front_label)
+    expect(page).to have_field(back_label)
   end
 
   context 'after in-person proofing is completed and passed for a partner' do
