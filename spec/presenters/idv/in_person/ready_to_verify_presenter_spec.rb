@@ -148,7 +148,6 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
         end
       end
     end
-
   end
 
   describe '#barcode_image_url' do
