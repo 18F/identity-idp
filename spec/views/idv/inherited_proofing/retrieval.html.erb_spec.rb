@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe 'idv/inherited_proofing/retrieval.html.erb' do
+describe 'idv/inherited_proofing/verify_wait.html.erb' do
   it 'renders' do
-    render template: 'idv/inherited_proofing/retrieval'
+    render template: 'idv/inherited_proofing/verify_wait'
 
     # Appropriate header
     expect(rendered).to have_text(t('inherited_proofing.headings.retrieval'))

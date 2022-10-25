@@ -69,6 +69,8 @@ module Identity
     config.good_job.enable_cron = true
     config.good_job.max_threads = IdentityConfig.store.good_job_max_threads
     config.good_job.queues = IdentityConfig.store.good_job_queues
+    config.good_job.preserve_job_records = false
+    config.good_job.queue_select_limit = IdentityConfig.store.good_job_queue_select_limit
     # see config/initializers/job_configurations.rb for cron schedule
 
     includes_star_queue = config.good_job.queues.split(';').any? do |name_threads|
@@ -158,6 +160,21 @@ module Identity
       # Rack::Attack auto-includes itself as a Railtie, so we need to
       # explicitly remove it when we want to disable it
       config.middleware.delete Rack::Attack
+    end
+
+    config.view_component.show_previews = IdentityConfig.store.component_previews_enabled
+    if IdentityConfig.store.component_previews_enabled
+      require 'lookbook'
+
+      config.view_component.preview_controller = 'ComponentPreviewController'
+      config.view_component.preview_paths = [Rails.root.join('spec', 'components', 'previews')]
+      config.view_component.default_preview_layout = 'component_preview'
+      config.lookbook.auto_refresh = false
+      config.lookbook.project_name = "#{APP_NAME} Component Previews"
+      config.lookbook.ui_theme = 'blue'
+
+      require 'component_preview_csp'
+      config.middleware.insert_after ActionDispatch::Static, ComponentPreviewCsp
     end
   end
 end

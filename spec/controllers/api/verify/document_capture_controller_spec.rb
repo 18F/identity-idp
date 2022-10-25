@@ -23,7 +23,6 @@ describe Api::Verify::DocumentCaptureController do
   let(:password) { 'iambatman' }
   let(:user) { create(:user, :signed_up) }
   let(:flow_path) { 'standard' }
-  let(:liveness_checking_enabled) { false }
   let(:analytics_data) do
     { browser_attributes:
       { browser_bot: false,
@@ -92,7 +91,7 @@ describe Api::Verify::DocumentCaptureController do
 
         expect(agent).to receive(:proof_document).with(
           document_capture_session,
-          liveness_checking_enabled: liveness_checking_enabled,
+          liveness_checking_enabled: false,
           trace_id: nil,
           image_metadata: image_metadata,
           analytics_data: analytics_data,

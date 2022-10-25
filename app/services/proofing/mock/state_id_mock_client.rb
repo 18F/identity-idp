@@ -12,7 +12,7 @@ module Proofing
       TRIGGER_MVA_TIMEOUT = 'mvatimeout'
 
       def proof(applicant)
-        return mva_timeout_result if applicant[:state_id_number].downcase == TRIGGER_MVA_TIMEOUT
+        return mva_timeout_result if mva_timeout?(applicant[:state_id_number])
 
         errors = {}
         if state_not_supported?(applicant[:state_id_jurisdiction])
@@ -56,6 +56,11 @@ module Proofing
           vendor_name: 'StateIdMock',
           transaction_id: TRANSACTION_ID,
         )
+      end
+
+      def mva_timeout?(state_id_number)
+        return false if state_id_number.blank?
+        state_id_number.downcase == TRIGGER_MVA_TIMEOUT
       end
 
       def state_not_supported?(state_id_jurisdiction)

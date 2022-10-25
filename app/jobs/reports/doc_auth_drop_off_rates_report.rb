@@ -4,13 +4,6 @@ module Reports
   class DocAuthDropOffRatesReport < BaseReport
     REPORT_NAME = 'doc-auth-drop-off-rates-report'.freeze
 
-    include GoodJob::ActiveJobExtensions::Concurrency
-
-    good_job_control_concurrency_with(
-      total_limit: 1,
-      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
-    )
-
     def perform(_date)
       ret = generate_report
       save_report(REPORT_NAME, ret.join, extension: 'txt')
