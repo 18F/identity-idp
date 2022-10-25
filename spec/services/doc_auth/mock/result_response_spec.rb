@@ -10,7 +10,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       glare_threshold: 40,
       warn_notifier: warn_notifier,
     )
-    described_class.new(input, config, false)
+    described_class.new(input, config)
   end
 
   context 'with an image file' do
@@ -254,22 +254,22 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           glare_threshold: 40,
         },
       )
-      described_class.new(input, config, true)
+      described_class.new(input, config)
     end
 
     let(:input) do
       <<~YAML
         doc_auth_result: Passed
-        liveness_result: Fail
       YAML
     end
 
     it 'returns a passed result' do
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(
-        general: [DocAuth::Errors::SELFIE_FAILURE],
-        selfie: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
-        hints: false,
+        back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+        front: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+        general: [DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS],
+        hints: true,
       )
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to eq({})
