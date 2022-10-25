@@ -71,7 +71,7 @@ module DocAuth
         back_image_response = post_back_image(image: back_image, instance_id: instance_id)
         return back_image_response unless back_image_response.success?
 
-        process_results(instance_id)
+        get_results(instance_id: instance_id)
       end
 
       def get_results(instance_id:)
@@ -91,10 +91,6 @@ module DocAuth
       # rubocop:enable Lint/UnusedMethodArgument
 
       private
-
-      def process_results(instance_id)
-        get_results(instance_id: instance_id)
-      end
 
       def method_mocked?(method_name)
         mocked_response_for_method(method_name).present?
