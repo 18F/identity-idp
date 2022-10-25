@@ -565,6 +565,22 @@ module AnalyticsEvents
     )
   end
 
+  def idv_inherited_proofing_agreement_submitted(**extra)
+    track_event('Idv: inherited proofing agreement submitted', **extra)
+  end
+
+  def idv_inherited_proofing_agreement_visited(**extra)
+    track_event('Idv: inherited proofing agreement visited', **extra)
+  end
+
+  def idv_inherited_proofing_get_started_submitted(**extra)
+    track_event('Idv: inherited proofing get_started submitted', **extra)
+  end
+
+  def idv_inherited_proofing_get_started_visited(**extra)
+    track_event('Idv: inherited proofing get_started visited', **extra)
+  end
+
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user visited the in person proofing location step
   def idv_in_person_location_visited(flow_path:, **extra)
