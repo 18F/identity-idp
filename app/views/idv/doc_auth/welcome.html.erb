@@ -9,9 +9,12 @@
       ) do %>
 
     <% if @current_user&.decorate&.reproof_for_irs?(service_provider: @current_sp) %>
-      <%= render AlertComponent.new(type: :info,
-                                    message: t('doc_auth.info.irs_reproofing_explanation'),
-                                    class: ['margin-bottom-2', 'irs-reproofing-notice']) %>
+    <%= render AlertComponent.new(
+          type: :info,
+          message: t('doc_auth.info.irs_reproofing_explanation'),
+          class: ['margin-bottom-2', 'irs-reproofing-notice'],
+        )
+    %>
     <% end %>
 
   <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.welcome')) %>

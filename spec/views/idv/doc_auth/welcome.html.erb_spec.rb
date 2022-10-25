@@ -19,7 +19,7 @@ describe 'idv/doc_auth/welcome.html.erb' do
     let(:need_irs_reproofing) { false }
 
     before do
-      user_decoration = instance_double("user decoration")
+      user_decoration = instance_double('user decoration')
       allow(user_decoration).to receive(:reproof_for_irs?).and_return(need_irs_reproofing)
       fake_user = instance_double(User)
       allow(fake_user).to receive(:decorate).and_return(user_decoration)
