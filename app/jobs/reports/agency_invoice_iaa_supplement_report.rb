@@ -2,13 +2,6 @@ module Reports
   class AgencyInvoiceIaaSupplementReport < BaseReport
     REPORT_NAME = 'agency-invoice-iaa-supplemement-report'.freeze
 
-    include GoodJob::ActiveJobExtensions::Concurrency
-
-    good_job_control_concurrency_with(
-      total_limit: 1,
-      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
-    )
-
     def perform(_date)
       raw_results = IaaReportingHelper.iaas.flat_map do |iaa|
         Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(

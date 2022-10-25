@@ -41,6 +41,8 @@ acuant_get_results_timeout: 1.0
 acuant_create_document_timeout: 1.0
 add_email_link_valid_for_hours: 24
 address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US", "VI"]'
+arcgis_api_root_url: 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer'
+arcgis_api_key: ''
 asset_host: ''
 async_wait_timeout_seconds: 60
 async_stale_job_timeout_seconds: 300
@@ -98,6 +100,7 @@ event_disavowal_expiration_hours: 240
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 good_job_max_threads: 5
 good_job_queues: 'default:5;low:1;*'
+good_job_queue_select_limit: 5_000
 gpo_designated_receiver_pii: '{}'
 hide_phone_mfa_signup: false
 identity_pki_disabled: false
