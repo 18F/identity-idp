@@ -40,7 +40,6 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def response_analytics_attributes(response)
-    # todo: we should be logging the response status code when one is present
     return { response_present: false } unless response.present?
 
     {
@@ -184,13 +183,11 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_faraday_error(err, enrollment)
-    # todo: will the body have been parsed in this case?
-    # todo: should we check for a response body in these cases? Don't think there will be one
-    response = err.response_body
     response_status_code = err.response_status || err&.response&.status
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       **enrollment_analytics_attributes(enrollment, complete: false),
-      **response_analytics_attributes(response),
+      # There probably isn't a response body for these types of errors but we check for one anyway
+      **response_analytics_attributes(err.response_body),
       exception_class: err.class.to_s,
       exception_message: err.message,
       reason: 'Request exception',
