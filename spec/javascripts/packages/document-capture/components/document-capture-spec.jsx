@@ -526,9 +526,7 @@ describe('document-capture/components/document-capture', () => {
 
         await userEvent.click(getByText('forms.buttons.submit.default'));
 
-        const verifyInPersonButton = await findByText(
-          'idv.troubleshooting.options.verify_in_person',
-        );
+        const verifyInPersonButton = await findByText('in_person_proofing.body.cta.button');
         await userEvent.click(verifyInPersonButton);
 
         expect(console).to.have.loggedError(/^Error: Uncaught/);

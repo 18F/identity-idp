@@ -43,7 +43,7 @@ module InPersonHelper
     mock_doc_auth_attention_with_barcode
     attach_and_submit_images
 
-    click_link t('idv.troubleshooting.options.verify_in_person')
+    click_link t('in_person_proofing.body.cta.button')
   end
 
   def complete_location_step(_user = nil)

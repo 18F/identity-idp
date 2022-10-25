@@ -1,13 +1,10 @@
-import sinon from 'sinon';
 import { render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import type { ComponentType } from 'react';
 import {
   MarketingSiteContextProvider,
   ServiceProviderContextProvider,
 } from '@18f/identity-document-capture';
 import { FlowContext, FlowContextValue } from '@18f/identity-verify-flow';
-import { AnalyticsContextProvider } from '../context/analytics';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 import type { ServiceProviderContext } from '../context/service-provider';
 
@@ -126,19 +123,23 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
 
   context('in person proofing links', () => {
     context('without inPersonURL', () => {
-      it('has no IPP information', () => {
-        const { queryByText } = render(<DocumentCaptureTroubleshootingOptions />);
+      it('does not render in-person call to action', () => {
+        const { queryByRole } = render(<DocumentCaptureTroubleshootingOptions />);
 
-        expect(queryByText('components.troubleshooting_options.new_feature')).to.not.exist();
+        const section = queryByRole('region', { name: 'in_person_proofing.headings.cta' });
+
+        expect(section).not.to.exist();
       });
 
       context('with showAlternativeProofingOptions', () => {
-        it('has no IPP information', () => {
-          const { queryByText } = render(
+        it('renders in-person call to action', () => {
+          const { queryByRole } = render(
             <DocumentCaptureTroubleshootingOptions showAlternativeProofingOptions />,
           );
 
-          expect(queryByText('components.troubleshooting_options.new_feature')).to.not.exist();
+          const section = queryByRole('region', { name: 'in_person_proofing.headings.cta' });
+
+          expect(section).not.to.exist();
         });
       });
     });
@@ -150,43 +151,24 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
         </FlowContext.Provider>
       );
 
-      it('has no IPP information', () => {
-        const { queryByText } = render(<DocumentCaptureTroubleshootingOptions />);
+      it('does not render in-person call to action', () => {
+        const { queryByRole } = render(<DocumentCaptureTroubleshootingOptions />, { wrapper });
 
-        expect(queryByText('components.troubleshooting_options.new_feature')).to.not.exist();
+        const section = queryByRole('region', { name: 'in_person_proofing.headings.cta' });
+
+        expect(section).not.to.exist();
       });
 
       context('with showAlternativeProofingOptions', () => {
-        it('has link to IPP flow', () => {
-          const { getByText, getByRole } = render(
+        it('renders in-person call to action', () => {
+          const { queryByRole } = render(
             <DocumentCaptureTroubleshootingOptions showAlternativeProofingOptions />,
-            {
-              wrapper,
-            },
-          );
-
-          expect(getByText('components.troubleshooting_options.new_feature')).to.exist();
-
-          const link = getByRole('link', { name: 'idv.troubleshooting.options.verify_in_person' });
-
-          expect(link).to.exist();
-        });
-
-        it('logs an event when clicking the troubleshooting option', async () => {
-          const trackEvent = sinon.stub();
-          const { getByRole } = render(
-            <AnalyticsContextProvider trackEvent={trackEvent}>
-              <DocumentCaptureTroubleshootingOptions showAlternativeProofingOptions />
-            </AnalyticsContextProvider>,
             { wrapper },
           );
 
-          const link = getByRole('link', { name: 'idv.troubleshooting.options.verify_in_person' });
-          await userEvent.click(link);
+          const section = queryByRole('region', { name: 'in_person_proofing.headings.cta' });
 
-          expect(trackEvent).to.have.been.calledWith(
-            'IdV: verify in person troubleshooting option clicked',
-          );
+          expect(section).to.exist();
         });
       });
     });

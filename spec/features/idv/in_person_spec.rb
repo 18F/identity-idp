@@ -224,7 +224,7 @@ RSpec.describe 'In Person Proofing', js: true do
         mock_doc_auth_attention_with_barcode
         attach_and_submit_images
 
-        click_link t('idv.troubleshooting.options.verify_in_person')
+        click_link t('in_person_proofing.body.cta.button')
 
         bethesda_location = page.find_all('.location-collection-item')[1]
         bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
