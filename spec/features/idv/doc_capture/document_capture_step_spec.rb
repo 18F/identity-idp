@@ -7,14 +7,10 @@ feature 'doc capture document capture step', js: true do
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
   let(:user) { user_with_2fa }
-  let(:liveness_enabled) { true }
   let(:doc_auth_enable_presigned_s3_urls) { false }
-  let(:sp_requests_ial2_strict) { true }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:sp_name) { 'Test SP' }
   before do
-    allow(IdentityConfig.store).to receive(:liveness_checking_enabled).
-      and_return(liveness_enabled)
     allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls).
       and_return(doc_auth_enable_presigned_s3_urls)
     allow(Identity::Hostdata::EC2).to receive(:load).
@@ -23,12 +19,38 @@ feature 'doc capture document capture step', js: true do
     allow_any_instance_of(DocumentProofingJob).to receive(:build_analytics).
       and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).and_return(sp_name)
-    if sp_requests_ial2_strict && liveness_enabled
-      visit_idp_from_oidc_sp_with_ial2_strict
-    else
-      visit_idp_from_oidc_sp_with_ial2
-    end
+
+    visit_idp_from_oidc_sp_with_ial2
+
     allow_any_instance_of(Browser).to receive(:mobile?).and_return(true)
+  end
+
+  it 'is on the correct page and shows the document upload options' do
+    complete_doc_capture_steps_before_first_step(user)
+
+    expect(current_path).to eq(idv_capture_doc_document_capture_step)
+    expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
+    expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+    # Document capture tips
+    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
+    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
+    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
+    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
+    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
+    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
+
+    # No selfie option, evidenced by "Submit" button instead of "Continue"
+    expect(page).to have_content(t('forms.buttons.submit.default'))
+  end
+
+  it 'proceeds to the next page with valid info' do
+    complete_doc_capture_steps_before_first_step(user)
+
+    attach_and_submit_images
+
+    expect(page).to have_current_path(next_step)
   end
 
   it 'offers the user the option to cancel and return to desktop' do
@@ -106,7 +128,7 @@ feature 'doc capture document capture step', js: true do
             pii_from_doc: {},
           },
         )
-        click_idv_continue
+        click_submit_default
       end
 
       click_idv_continue
@@ -124,7 +146,7 @@ feature 'doc capture document capture step', js: true do
             pii_from_doc: {},
           },
         )
-        click_idv_continue
+        click_submit_default
       end
 
       click_idv_continue
@@ -199,36 +221,23 @@ feature 'doc capture document capture step', js: true do
     end
   end
 
-  context 'when liveness checking is not enabled' do
-    let(:liveness_enabled) { false }
+  it 'logs a warning event when there are unknown errors in the response', :allow_browser_log do
+    complete_doc_capture_steps_before_first_step(user)
 
-    before do
-      complete_doc_capture_steps_before_first_step(user)
+    Tempfile.create(['ia2_mock', '.yml']) do |yml_file|
+      yml_file.rewind
+      yml_file.puts <<~YAML
+        failed_alerts:
+        - name: Some Made Up Error
+      YAML
+      yml_file.close
+
+      attach_images(yml_file.path)
+      click_submit_default
     end
 
-    it 'is on the correct page and shows the document upload options' do
-      expect(current_path).to eq(idv_capture_doc_document_capture_step)
-      expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
-      expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-
-      # Document capture tips
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
-
-      # No selfie option, evidenced by "Submit" button instead of "Continue"
-      expect(page).to have_content(t('forms.buttons.submit.default'))
-    end
-
-    it 'proceeds to the next page with valid info' do
-      attach_and_submit_images
-
-      expect(page).to have_current_path(next_step)
-    end
+    expect(page).to have_content(t('errors.doc_auth.throttled_heading'), wait: 5)
+    expect(fake_analytics).to have_logged_event('Doc Auth Warning', {})
   end
 
   def next_step

@@ -7,25 +7,20 @@ feature 'doc auth document capture step', :js do
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
   let(:user) { user_with_2fa }
-  let(:liveness_enabled) { false }
   let(:doc_auth_enable_presigned_s3_urls) { false }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:sp_name) { 'Test SP' }
   before do
-    allow(IdentityConfig.store).to receive(:liveness_checking_enabled).
-      and_return(liveness_enabled)
     allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls).
       and_return(doc_auth_enable_presigned_s3_urls)
     allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).and_return(sp_name)
-    if liveness_enabled
-      visit_idp_from_oidc_sp_with_ial2_strict
-    else
-      visit_idp_from_oidc_sp_with_ial2
-    end
+
+    visit_idp_from_oidc_sp_with_ial2
+
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_document_capture_step
   end
@@ -93,41 +88,37 @@ feature 'doc auth document capture step', :js do
     expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
   end
 
-  context 'when liveness checking is not enabled' do
-    let(:liveness_enabled) { false }
+  it 'is on the correct page and shows the document upload options' do
+    expect(current_path).to eq(idv_doc_auth_document_capture_step)
+    expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
+    expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
-    it 'is on the correct page and shows the document upload options' do
-      expect(current_path).to eq(idv_doc_auth_document_capture_step)
-      expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
-      expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+    # Document capture tips
+    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
+    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
+    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
+    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
+    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
+    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
 
-      # Document capture tips
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
+    # No selfie option, evidenced by "Submit" button instead of "Continue"
+    expect(page).to have_content(t('forms.buttons.submit.default'))
+  end
 
-      # No selfie option, evidenced by "Submit" button instead of "Continue"
-      expect(page).to have_content(t('forms.buttons.submit.default'))
-    end
+  it 'proceeds to the next page with valid info' do
+    attach_and_submit_images
 
-    it 'proceeds to the next page with valid info' do
-      attach_and_submit_images
+    expect(page).to have_current_path(next_step)
+    expect_costing_for_document
+    expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
+  end
 
-      expect(page).to have_current_path(next_step)
-      expect_costing_for_document
-      expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
-    end
+  it 'does not track state if state tracking is disabled' do
+    allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
+    attach_and_submit_images
 
-    it 'does not track state if state tracking is disabled' do
-      allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
-      attach_and_submit_images
-
-      expect(DocAuthLog.find_by(user_id: user.id).state).to be_nil
-    end
+    expect(DocAuthLog.find_by(user_id: user.id).state).to be_nil
   end
 
   context 'when using async uploads' do
