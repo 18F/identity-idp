@@ -9,11 +9,8 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
         front_image_iv: front_image_iv,
         back_image_url: back_image_url,
         back_image_iv: back_image_iv,
-        selfie_image_url: selfie_image_url,
-        selfie_image_iv: selfie_image_iv,
         document_capture_session_uuid: document_capture_session_uuid,
       },
-      liveness_checking_enabled: liveness_checking_enabled?,
       analytics: analytics,
       irs_attempts_api_tracker: irs_attempts_api_tracker,
     )
@@ -24,42 +21,16 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
   let(:front_image_iv) { 'front-iv' }
   let(:back_image_url) { 'http://example.com/back' }
   let(:back_image_iv) { 'back-iv' }
-  let(:selfie_image_url) { 'http://example.com/selfie' }
-  let(:selfie_image_iv) { 'selfie-iv' }
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:analytics) { FakeAnalytics.new }
   let(:irs_attempts_api_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
-  let(:liveness_checking_enabled?) { true }
 
   describe '#valid?' do
     context 'with all valid images' do
       it 'is valid' do
         expect(form.valid?).to eq(true)
         expect(form.errors).to be_blank
-      end
-    end
-
-    context 'with valid front and back but no selfie' do
-      let(:selfie_image_url) { nil }
-
-      context 'with liveness required' do
-        let(:liveness_checking_enabled?) { true }
-
-        it 'is not valid' do
-          expect(form.valid?).to eq(false)
-          expect(form.errors.attribute_names).to eq([:selfie_image_url])
-          expect(form.errors[:selfie_image_url]).to eq([t('doc_auth.errors.not_a_file')])
-        end
-      end
-
-      context 'without liveness require' do
-        let(:liveness_checking_enabled?) { false }
-
-        it 'is valid' do
-          expect(form.valid?).to eq(true)
-          expect(form.errors).to be_blank
-        end
       end
     end
 

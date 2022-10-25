@@ -7,7 +7,6 @@ module Api
       def create
         result = Idv::ApiDocumentVerificationForm.new(
           verify_params,
-          liveness_checking_enabled: false,
           analytics: analytics,
           irs_attempts_api_tracker: irs_attempts_api_tracker,
           flow_path: params[:flow_path],
