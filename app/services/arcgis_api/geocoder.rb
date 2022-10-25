@@ -5,7 +5,10 @@ module ArcgisApi
       :address, :location, :street_address, :city, :state, :zip_code,
       keyword_init: true
     )
-    COMMON_DEFAULTS = {
+
+    # These are option URL params that tend to apply to multiple endpoints
+    # https://developers.arcgis.com/rest/geocode/api-reference/geocoding-find-address-candidates.htm#ESRI_SECTION2_38613C3FCB12462CAADD55B2905140BF
+    COMMON_DEFAULT_PARAMETERS = {
       f: 'json',
       countryCode: 'USA',
       category: 'address',
@@ -20,7 +23,7 @@ module ArcgisApi
       url = "#{root_url}/suggest"
       params = {
         text: text,
-        **COMMON_DEFAULTS,
+        **COMMON_DEFAULT_PARAMETERS,
       }
 
       parse_suggestions(
@@ -38,8 +41,8 @@ module ArcgisApi
       url = "#{root_url}/findAddressCandidates"
       params = {
         magicKey: magic_key,
-        outFields: '*',
-        **COMMON_DEFAULTS,
+        outFields: 'StAddr,City,RegionAbbr,Postal',
+        **COMMON_DEFAULT_PARAMETERS,
       }
 
       parse_address_candidates(

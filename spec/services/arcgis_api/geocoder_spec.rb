@@ -57,5 +57,15 @@ RSpec.describe ArcgisApi::Geocoder do
 
       expect(suggestions).to be_empty
     end
+
+    it 'returns an error response body but with Status coded as 200' do
+      stub_request_candidates_error
+
+      expect { subject.find_address_candidates('abc123') }.to raise_error do |error|
+        expect(error).to be_instance_of(Faraday::ClientError)
+        expect(error.message).to eq('received error code 400')
+        expect(error.response).to be_kind_of(Hash)
+      end
+    end
   end
 end
