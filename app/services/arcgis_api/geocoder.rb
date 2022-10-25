@@ -5,6 +5,7 @@ module ArcgisApi
       :address, :location, :street_address, :city, :state, :zip_code,
       keyword_init: true
     )
+    Location = Struct.new(:latitude, :longitude, keyword_init: true)
 
     # These are option URL params that tend to apply to multiple endpoints
     # https://developers.arcgis.com/rest/geocode/api-reference/geocoding-find-address-candidates.htm#ESRI_SECTION2_38613C3FCB12462CAADD55B2905140BF
@@ -94,7 +95,12 @@ module ArcgisApi
       response_body['candidates'].map do |candidate|
         AddressCandidate.new(
           address: candidate['address'],
-          location: candidate['location'],
+          location: Location.new(
+            longitude: candidate.dig('location', 'x'),
+            latitude: candidate.dig(
+              'location', 'y'
+            ),
+          ),
           street_address: candidate.dig('attributes', 'StAddr'),
           city: candidate.dig('attributes', 'City'),
           state: candidate.dig('attributes', 'RegionAbbr'),

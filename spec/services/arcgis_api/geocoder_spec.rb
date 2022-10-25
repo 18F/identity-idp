@@ -40,13 +40,16 @@ RSpec.describe ArcgisApi::Geocoder do
 
       suggestions = subject.find_address_candidates('abc123')
 
-      expect(suggestions.first.address).to be_present
-      expect(suggestions.first.address).to be_present
-      expect(suggestions.first.location).to be_present
-      expect(suggestions.first.street_address).to be_present
-      expect(suggestions.first.city).to be_present
-      expect(suggestions.first.state).to be_present
-      expect(suggestions.first.zip_code).to be_present
+      expect(suggestions.first.as_json).to eq(
+        {
+          'address' => '100 Main Ave, La Grande, Oregon, 97850',
+          'location' => { 'longitude' => -118.10754025791812, 'latitude' => 45.328271485226445 },
+          'street_address' => '100 Main Ave',
+          'city' => 'La Grande',
+          'state' => 'OR',
+          'zip_code' => '97850',
+        },
+      )
     end
 
     # https://developers.arcgis.com/rest/geocode/api-reference/geocoding-service-output.htm#ESRI_SECTION3_619341BEAA3A4F488FC66FAE8E479563
