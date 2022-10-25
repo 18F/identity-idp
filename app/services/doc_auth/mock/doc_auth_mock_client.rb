@@ -48,7 +48,7 @@ module DocAuth
 
       def post_selfie
         raise NotImplementedError,
-                'This method should be removed when one of the same name is removed from AcuantClient'
+                'Remove when method of same name is removed from AcuantClient'
       end
 
       def post_images(

@@ -79,7 +79,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       image: yaml,
     )
     get_results_response = client.get_results(
-      instance_id: create_document_response.instance_id
+      instance_id: create_document_response.instance_id,
     )
 
     expect(get_results_response.pii_from_doc).to eq(
