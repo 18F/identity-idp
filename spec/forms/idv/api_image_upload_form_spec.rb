@@ -125,7 +125,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             general: [t('doc_auth.errors.general.no_liveness')],
             hints: true,
             front: [t('doc_auth.errors.general.fallback_field_level')],
-            back: [t('doc_auth.errors.general.fallback_field_level')]
+            back: [t('doc_auth.errors.general.fallback_field_level')],
           },
         )
         expect(response.attention_with_barcode?).to eq(false)
