@@ -37,4 +37,65 @@ describe 'dev rake tasks' do
       ENV['PROGRESS'] = prev_progress
     end
   end
+
+  describe 'dev:enroll_random_users_in_person' do
+    prev_num_users = nil
+    prev_progress = nil
+    prev_enrollment_status = nil
+    before do
+      prev_num_users = ENV['NUM_USERS']
+      prev_progress = ENV['PROGRESS']
+      prev_enrollment_status = ENV['ENROLLMENT_STATUS']
+      ENV['NUM_USERS'] = '40'
+      ENV['PROGRESS'] = 'no'
+      Rake::Task['dev:random_users'].invoke
+    end
+    after do
+      ENV['NUM_USERS'] = prev_num_users
+      ENV['PROGRESS'] = prev_progress
+      ENV['ENROLLMENT_STATUS'] = prev_enrollment_status
+    end
+    it 'runs successfully, defaults to pending' do
+      ENV['NUM_USERS'] = '35'
+
+      expect(InPersonEnrollment.count).to eq 0
+
+      Rake::Task['dev:enroll_random_users_in_person'].invoke
+
+      expect(InPersonEnrollment.count).to eq 35
+      expect(InPersonEnrollment.distinct.count('user_id')).to eq 35
+      expect(InPersonEnrollment.pending.count).to eq 35
+
+      # Spot check attributes on last record
+      last_record = InPersonEnrollment.last
+      expect(last_record.attributes).to include(
+        'status' => 'pending',
+        'enrollment_established_at' => respond_to(:to_date),
+        'unique_id' => an_instance_of(String),
+        'enrollment_code' => an_instance_of(String),
+      )
+      expect(last_record.profile).to be_instance_of(Profile)
+      expect(last_record.profile.active).to be(false)
+    end
+
+    it 'can create establishing enrollments' do
+      ENV['NUM_USERS'] = '35'
+      ENV['ENROLLMENT_STATUS'] = 'establishing'
+
+      expect(InPersonEnrollment.count).to eq 0
+
+      Rake::Task['dev:enroll_random_users_in_person'].invoke
+
+      expect(InPersonEnrollment.count).to eq 35
+      expect(InPersonEnrollment.distinct.count('user_id')).to eq 35
+      expect(InPersonEnrollment.establishing.count).to eq 35
+
+      # Spot check attributes on last record
+      last_record = InPersonEnrollment.last
+      expect(last_record.attributes).to include(
+        'status' => 'establishing',
+      )
+      expect(last_record.profile).to be_nil
+    end
+  end
 end

@@ -77,10 +77,10 @@ namespace :dev do
     end
   end
 
-  desc 'Create in-person enrollment records for N random users'
+  desc 'Create in-person enrollments for N random users'
   task enroll_random_users_in_person: :environment do
     num_users = (ENV['NUM_USERS'] || 100).to_i
-    # num_created = 0
+    pw = 'salty pickles'
     unless ENV['PROGRESS'] == 'no'
       progress = ProgressBar.create(
         title: 'Enrollments',
@@ -89,20 +89,44 @@ namespace :dev do
       )
     end
     random = Random.new(num_users)
-    enrollment_status = InPersonEnrollment.statuses[(ENV['ENROLLMENT_STATUS'] || "pending")]
-    enrollments = (0...num_users).map do |n|
-      user = User.find_with_email("testuser#{n}@example.com")
-      next if user.nil?
-      enrollment = {
-        user_id: user.id,
-        status: enrollment_status,
-        unique_id: SecureRandom.hex(9),
-        enrollment_established_at: Time.zone.now - random.rand(0..5).days.ago
-      }
-      progress&.increment
-      enrollment
+    raw_enrollment_status = (ENV['ENROLLMENT_STATUS'] || 'pending')
+    enrollment_status = InPersonEnrollment.statuses[raw_enrollment_status]
+    is_established = ['pending', 'passed', 'failed', 'expired'].include?(raw_enrollment_status)
+
+    InPersonEnrollment.transaction do
+      (0...num_users).each do |n|
+        email_addr = "testuser#{n}@example.com"
+        user = User.find_with_email(email_addr)
+        next if user.nil?
+        if is_established
+          profile = Profile.new(user: user)
+          pii = Pii::Attributes.new_from_hash(
+            first_name: 'Test',
+            last_name: "User #{n}",
+            dob: '1970-05-01',
+            ssn: "666-#{n}", # doesn't need to be legit 9 digits, just unique
+          )
+          personal_key = profile.encrypt_pii(pii, pw)
+          enrollment = InPersonEnrollment.create!(
+            user: user,
+            profile: profile,
+            status: enrollment_status,
+            enrollment_established_at: Time.zone.now - random.rand(0..5).days,
+            unique_id: SecureRandom.hex(9),
+            enrollment_code: SecureRandom.hex(16),
+          )
+          enrollment.profile.activate if raw_enrollment_status == 'passed'
+          Rails.logger.warn "email=#{email_addr} personal_key=#{personal_key}"
+        else
+          InPersonEnrollment.create!(
+            user: user,
+            status: enrollment_status,
+          )
+        end
+        progress&.increment
+        enrollment
+      end
     end
-    InPersonEnrollment.create!(enrollments)
   end
 
   desc 'Create a user with multiple emails and output the emails and passwords'
