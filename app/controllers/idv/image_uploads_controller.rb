@@ -20,7 +20,7 @@ module Idv
     def image_upload_form
       @image_upload_form ||= Idv::ApiImageUploadForm.new(
         params,
-        liveness_checking_enabled: liveness_checking_enabled?,
+        liveness_checking_enabled: false,
         service_provider: current_sp,
         analytics: analytics,
         uuid_prefix: current_sp&.app_id,
