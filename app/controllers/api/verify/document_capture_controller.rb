@@ -37,7 +37,6 @@ module Api
         }
         Idv::Agent.new(applicant).proof_document(
           verify_document_capture_session,
-          liveness_checking_enabled: false,
           trace_id: amzn_trace_id,
           image_metadata: image_metadata,
           analytics_data: {
