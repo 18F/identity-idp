@@ -24,7 +24,6 @@ module Idv
             inherited_proofing_verify_step_document_capture_session_uuid_key,
           )
 
-          doc_capture_session.create_doc_auth_session
           doc_capture_session.create_proofing_session
 
           InheritedProofingJob.perform_later(
