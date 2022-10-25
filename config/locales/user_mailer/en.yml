@@ -140,7 +140,7 @@ en:
       greeting: Hello,
       intro: Don’t miss the chance to verify your identity at your local Post Office.
         Complete this step to access %{partner_agency}.
-      subject: Verify your identity at a Post Office in the next %{days} days
+      subject: Verify your identity at a Post Office in the next %{days_remaining} days
     in_person_verified:
       greeting: Hello,
       intro: You successfully verified your identity at the %{location} Post Office on

@@ -149,7 +149,7 @@ es:
       intro: No pierda la oportunidad de verificar su identidad en su oficina de
         correos local. Complete este paso para acceder %{partner_agency}.
       subject: Verifique su identidad en una oficina de correos en los próximos
-        %{days} días
+        %{days_remaining} días
     in_person_verified:
       greeting: Hola,
       intro: El %{date}, verificó correctamente su identidad en la oficina de correos

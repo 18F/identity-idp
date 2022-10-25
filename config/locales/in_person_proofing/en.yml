@@ -89,7 +89,7 @@ en:
       barcode: You’re ready to verify your identity in person
       location: Select a location to verify your ID
       prepare: Verify your identity in person
-      reminder: You have %{days} days left to verify your identity in person
+      reminder: You have %{days_remaining} days left to verify your identity in person
       state_id: Enter the information on your ID
       switch_back: Switch back to your computer to prepare to verify your identity in person
       update_address: Update your current address
