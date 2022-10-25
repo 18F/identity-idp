@@ -187,14 +187,4 @@ describe Reports::IaaBillingReport do
     expect(tuples).to include(results_for_2_iaas_1.to_json)
     expect(tuples).to include(results_for_2_iaas_2.to_json)
   end
-
-  describe '#good_job_concurrency_key' do
-    let(:date) { Time.zone.today }
-
-    it 'is the job name and the date' do
-      job = described_class.new(date)
-      expect(job.good_job_concurrency_key).
-        to eq("#{described_class::REPORT_NAME}-#{date}")
-    end
-  end
 end
