@@ -183,12 +183,13 @@ class GetUspsProofingResultsJob < ApplicationJob
     NewRelic::Agent.notice_error(err)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       **enrollment_analytics_attributes(enrollment, complete: false),
-      # There probably isn't a response body for these types of errors but we check for one anyway
+      # There probably isn't a response body or status for these types of errors but we try to log
+      # them in case there is
       **response_analytics_attributes(err.response_body),
+      response_status_code: err.response_status,
       exception_class: err.class.to_s,
       exception_message: err.message,
       reason: 'Request exception',
-      response_status_code: err.response_status,
     )
     enrollment_outcomes[:enrollments_errored] += 1
   end
