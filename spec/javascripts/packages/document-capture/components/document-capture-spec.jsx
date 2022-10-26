@@ -19,7 +19,7 @@ import { FlowContext } from '@18f/identity-verify-flow';
 import { expect } from 'chai';
 import { useSandbox } from '@18f/identity-test-helpers';
 import { render, useAcuant, useDocumentCaptureForm } from '../../../support/document-capture';
-import { getFixture, getFixtureFile } from '../../../support/file';
+import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/document-capture', () => {
   const onSubmit = useDocumentCaptureForm();
