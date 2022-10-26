@@ -1,5 +1,5 @@
 require 'rails_helper'
-require_relative 'empty_hash_shared_example'
+
 
 RSpec.describe Idv::InheritedProofing::BaseForm do
   subject { form_object }

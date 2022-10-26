@@ -1,5 +1,4 @@
 require 'rails_helper'
-require_relative '../empty_hash_shared_example'
 
 RSpec.describe Idv::InheritedProofing::Va::Form do
   subject(:form) { described_class.new payload_hash: payload_hash }
