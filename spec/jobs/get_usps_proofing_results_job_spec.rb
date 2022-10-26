@@ -94,6 +94,7 @@ RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class
         exception_class: exception_class,
         exception_message: exception_message,
         reason: reason,
+        response_message: response_message,
         response_status_code: response_status_code,
       ),
     )
@@ -111,15 +112,6 @@ RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class
       expect(pending_enrollment.status_updated_at).to eq(Time.zone.now - 2.days)
       expect(pending_enrollment.status_check_attempted_at).to eq(Time.zone.now)
     end
-  end
-
-  it 'logs the expected error message' do
-    job.perform(Time.zone.now)
-
-    expect(job_analytics).to have_logged_event(
-      'GetUspsProofingResultsJob: Exception raised',
-      response_message: response_message,
-    )
   end
 end
 
@@ -580,7 +572,7 @@ RSpec.describe GetUspsProofingResultsJob do
         before(:each) do
           stub_request_proofing_results_with_responses(
             {
-              status: 400,
+              status: 410,
               body: { 'responseMessage' => 'Applicant does not exist' }.to_json,
             },
           )
@@ -588,11 +580,16 @@ RSpec.describe GetUspsProofingResultsJob do
 
         it_behaves_like(
           'enrollment_encountering_an_exception',
-          exception_class: 'Faraday::BadRequestError',
-          exception_message: 'the server responded with status 400',
+          exception_class: 'Faraday::ClientError',
+          exception_message: 'the server responded with status 410',
           response_message: 'Applicant does not exist',
-          response_status_code: 400,
+          response_status_code: 410,
         )
+
+        it 'logs the error to NewRelic' do
+          expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(Faraday::ClientError))
+          job.perform(Time.zone.now)
+        end
       end
 
       context 'when USPS returns a 5xx status code' do
@@ -607,6 +604,11 @@ RSpec.describe GetUspsProofingResultsJob do
           response_message: 'An internal error occurred processing the request',
           response_status_code: 500,
         )
+
+        it 'logs the error to NewRelic' do
+          expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(Faraday::ServerError))
+          job.perform(Time.zone.now)
+        end
       end
 
       context 'when there is no status update' do

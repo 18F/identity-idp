@@ -122,15 +122,12 @@ class GetUspsProofingResultsJob < ApplicationJob
       rescue Faraday::ClientError, Faraday::ServerError => err
         # 4xx or 5xx status code. These are unexpected but will have some sort of
         # response body that we can try to log data from
-        NewRelic::Agent.notice_error(err)
         handle_client_or_server_error(err, enrollment)
       rescue Faraday::Error => err
         # Timeouts, failed connections, parsing errors, and other HTTP errors. These
         # generally won't have a response body
-        NewRelic::Agent.notice_error(err)
         handle_faraday_error(err, enrollment)
       rescue StandardError => err
-        NewRelic::Agent.notice_error(err)
         handle_standard_error(err, enrollment)
       else
         process_enrollment_response(enrollment, response)
@@ -170,6 +167,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_client_or_server_error(err, enrollment)
+    NewRelic::Agent.notice_error(err)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       **enrollment_analytics_attributes(enrollment, complete: false),
       **response_analytics_attributes(err.response_body),
@@ -182,6 +180,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_faraday_error(err, enrollment)
+    NewRelic::Agent.notice_error(err)
     response_status_code = err.response_status || err&.response&.status
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       **enrollment_analytics_attributes(enrollment, complete: false),
@@ -196,6 +195,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_standard_error(err, enrollment)
+    NewRelic::Agent.notice_error(err)
     response_attributes = response_analytics_attributes(nil)
     enrollment_outcomes[:enrollments_errored] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
