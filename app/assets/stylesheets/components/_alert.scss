@@ -1,7 +1,7 @@
 .usa-alert--info-important {
   @include u-bg('accent-cool-darker');
   color: color('white');
-  
+
   &::before {
     background-image: url('alert/info-white.svg');
   }
