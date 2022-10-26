@@ -141,16 +141,11 @@ module Proofing
         end
 
         def state_id_number
-          south_carolina_zero_padding
-
-          applicant.state_id_data.state_id_number
-        end
-
-        def south_carolina_zero_padding
-          return unless applicant.state_id_data.state_id_jurisdiction == 'SC'
-
-          while applicant.state_id_data.state_id_number.length < 8
-            applicant.state_id_data.state_id_number = "0#{applicant.state_id_data.state_id_number}"
+          case applicant.state_id_data.state_id_jurisdiction
+          when 'SC'
+            applicant.state_id_data.state_id_number.rjust(8, '0')
+          else
+            applicant.state_id_data.state_id_number
           end
         end
 
