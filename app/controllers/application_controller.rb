@@ -29,7 +29,6 @@ class ApplicationController < ActionController::Base
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
   prepend_before_action :set_locale
-  prepend_before_action :browser_is_ie11?
   prepend_before_action :set_x_request_url
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
