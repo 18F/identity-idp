@@ -41,8 +41,9 @@ acuant_get_results_timeout: 1.0
 acuant_create_document_timeout: 1.0
 add_email_link_valid_for_hours: 24
 address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US", "VI"]'
-arcgis_api_root_url: 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer'
-arcgis_api_key: ''
+arcgis_api_root_url: 'https://gis.gsa.gov'
+arcgis_api_username: ''
+arcgis_api_password: ''
 asset_host: ''
 async_wait_timeout_seconds: 60
 async_stale_job_timeout_seconds: 300
