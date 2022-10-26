@@ -48,7 +48,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       state_id_issued: '2019-12-31',
       phone: nil,
     )
-
   end
 
   it 'if the document is a YAML file it returns the PII from the YAML file' do

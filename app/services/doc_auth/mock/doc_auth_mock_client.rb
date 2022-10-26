@@ -47,8 +47,7 @@ module DocAuth
       end
 
       def post_selfie
-        raise NotImplementedError,
-                'Remove when method of same name is removed from AcuantClient'
+        raise NotImplementedError, 'Remove when same method is removed from Acuant'
       end
 
       # NOTE: remove selfie_image and liveness_checking_enabled args
