@@ -10,7 +10,7 @@ class IdvController < ApplicationController
     if decorated_session.requested_more_recent_verification? ||
        current_user.decorate.reproof_for_irs?(service_provider: current_sp)
       verify_identity
-    elsif active_profile? && !strict_ial2_upgrade_required?
+    elsif active_profile?
       redirect_to idv_activated_url
     elsif idv_attempter_throttled?
       irs_attempts_api_tracker.idv_verification_rate_limited
