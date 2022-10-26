@@ -26,6 +26,7 @@ es:
         heading: No hemos podido obtener su información de My HealtheVet
         info: Estamos teniendo problemas temporalmente para obtener su información.
           Inténtelo de nuevo.
+        failure_info: to be implemented
         title: to be implemented
     headings:
       lets_go: to be implemented
@@ -59,6 +60,9 @@ es:
       headings:
         missing_required_items: to be implemented
         need_help_updating: to be implemented
+        need_assistance: to be implemented
       options:
         get_va_help: to be implemented
         learn_more_phone_or_mail: to be implemented
+        get_partner_help: to be implemented
+        contact_support: to be implemented

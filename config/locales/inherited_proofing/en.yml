@@ -25,6 +25,7 @@ en:
         heading: We could not retrieve your information from My HealtheVet
         info: We are temporarily having trouble retrieving your information. Please try
           again.
+        failure_info: Please check back later.
         title: Couldn’t retrieve information
     headings:
       lets_go: How verifying your identity works
@@ -63,6 +64,11 @@ en:
       headings:
         missing_required_items: Don’t have a phone number? Here’s how to get help
         need_help_updating: Need to update your information? Here’s how to get help
+        need_assistance: 'Need immediate assistance? Here’s how to get help:'
       options:
         get_va_help: Get help at VA.gov
         learn_more_phone_or_mail: Learn more about verifying by phone or mail
+        get_partner_help: Get help at Partner Agency
+        contact_support: Contact Login.gov Support
+
+

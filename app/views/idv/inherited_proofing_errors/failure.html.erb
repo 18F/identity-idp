@@ -1,0 +1,27 @@
+<%= render(
+      'idv/shared/error',
+      title: t('inherited_proofing.errors.cannot_retrieve.title'),
+      heading: t('inherited_proofing.errors.cannot_retrieve.heading'),
+    ) do %>
+  <p>
+     <%= t('inherited_proofing.errors.cannot_retrieve.failure_info') %>
+  </p>
+
+  <%= render(
+        'shared/troubleshooting_options',
+        heading: t('inherited_proofing.troubleshooting.headings.need_assistance'),
+        class: 'troubleshooting-options--divider',
+        options: [
+          {
+            url: 'https://www.va.gov/resources/managing-your-vagov-profile/',
+            text: t('inherited_proofing.troubleshooting.options.get_partner_help'),
+            new_tab: true,
+          },
+          {
+            url: 'https://www.va.gov/resources/managing-your-vagov-profile/',
+            text: t('inherited_proofing.troubleshooting.options.contact_support'),
+            new_tab: true,
+          },
+        ].select(&:present?),
+      ) %>
+<% end %>
