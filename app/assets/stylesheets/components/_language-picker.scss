@@ -88,6 +88,10 @@
     @include u-padding-y(1.5);
     display: block;
     color: color('white');
+
+    &:focus {
+      outline-offset: units(2px);
+    }
   }
 
   li + li {
