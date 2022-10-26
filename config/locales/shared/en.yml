@@ -7,10 +7,10 @@ en:
         government organization in the United States.
       gov_heading: Official websites use .gov
       how: Here’s how you know
+      ie_not_supported: Internet Explorer 11 will not be supported after %{date}
       landmark_label: Official government website
       lock: Lock
       lock_description: A locked padlock
-      ie_not_supported: Internet Explorer 11 will not be supported after %{date}
       official_site: An official website of the United States government
       secure_description_html: A <strong>lock</strong> (%{lock_icon}) or
         <strong>https://</strong> means you’ve safely connected to the .gov

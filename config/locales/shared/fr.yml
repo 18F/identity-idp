@@ -7,10 +7,10 @@ fr:
         organisation gouvernementale officielle des États-Unis.
       gov_heading: Les sites Web officiels utilisent .gov
       how: Voici comment vous savez
+      ie_not_supported: Internet Explorer 11 ne sera pas pris en charge après le %{date}
       landmark_label: Site officiel du gouvernement
       lock: Serrure
       lock_description: Un cadenas fermé
-      ie_not_supported: Internet Explorer 11 ne sera pas pris en charge après le %{date}
       official_site: Un site web officiel du gouvernement des États-Unis
       secure_description_html: Un <strong>verrou</strong> (%{lock_icon}) ou
         <strong>https://</strong> signifie que vous êtes connecté en toute
