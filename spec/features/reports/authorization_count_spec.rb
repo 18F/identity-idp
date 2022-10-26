@@ -81,16 +81,6 @@ describe 'authorization count' do
         click_agree_and_continue
         expect_ial1_count_only(client_id_1)
       end
-
-      it 'counts IAL2 auth when ial2 strict is requested' do
-        allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-        create(:profile, :active, :verified, :with_pii, :with_liveness, user: user)
-        visit_idp_from_ial2_strict_oidc_sp(client_id: client_id_1)
-        fill_in t('account.index.password'), with: user.password
-        click_submit_default
-        click_agree_and_continue
-        expect_ial2_count_only(client_id_1)
-      end
     end
 
     context 'using saml' do
@@ -139,53 +129,6 @@ describe 'authorization count' do
         click_agree_and_continue
         click_submit_default
         expect_ial1_count_only(issuer_1)
-      end
-
-      it 'counts IAL2 auth when ial2 strict is requested' do
-        create(:profile, :active, :verified, :with_pii, user: user)
-        visit_saml_authn_request_url(
-          overrides: {
-            issuer: issuer_1,
-            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-            authn_context: [
-              Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-            ],
-            security: {
-              embed_sign: false,
-            },
-          },
-        )
-        fill_in t('account.index.password'), with: user.password
-        click_submit_default_twice
-        click_agree_and_continue
-        click_submit_default
-        expect_ial2_count_only(issuer_1)
-      end
-
-      it 'counts IAL2 auth when ial2 strict is requested' do
-        allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-        create(:profile, :active, :verified, :with_pii, :with_liveness, user: user)
-        visit_saml_authn_request_url(
-          overrides: {
-            issuer: issuer_1,
-            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-            authn_context: [
-              Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-            ],
-            security: {
-              embed_sign: false,
-            },
-          },
-        )
-        fill_in t('account.index.password'), with: user.password
-        click_submit_default_twice
-        click_agree_and_continue
-        click_submit_default
-        expect_ial2_count_only(issuer_1)
       end
       # rubocop:enable Layout/LineLength
     end
@@ -251,14 +194,6 @@ describe 'authorization count' do
 
       it 'counts IAL2 auth when ial max is requested' do
         visit_idp_from_ial_max_oidc_sp(client_id: client_id_1)
-        click_agree_and_continue
-        expect_ial2_count_only(client_id_1)
-      end
-
-      it 'counts IAL2 auth when ial2 strict is requested' do
-        allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-        user.active_profile.update(proofing_components: { liveness_check: 'vendor' })
-        visit_idp_from_ial2_strict_oidc_sp(client_id: client_id_1)
         click_agree_and_continue
         expect_ial2_count_only(client_id_1)
       end
@@ -332,28 +267,6 @@ describe 'authorization count' do
             name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: [
               Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-            ],
-            security: {
-              embed_sign: false,
-            },
-          },
-        )
-        click_agree_and_continue
-        click_submit_default
-        expect_ial2_count_only(issuer_1)
-      end
-
-      it 'counts IAL2 auth when ial2 strict is requested' do
-        allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-        user.active_profile.update(proofing_components: { liveness_check: 'vendor' })
-        visit_saml_authn_request_url(
-          overrides: {
-            issuer: issuer_1,
-            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-            authn_context: [
-              Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
               "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
               "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
             ],
