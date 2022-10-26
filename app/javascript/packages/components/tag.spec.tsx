@@ -10,6 +10,24 @@ describe('Tag', () => {
     expect(tag.classList.contains('usa-tag')).to.be.true();
   });
 
+  it('renders as informative', () => {
+    const { getByText } = render(<Tag isInformative>Recommended</Tag>);
+
+    const tag = getByText('Recommended');
+
+    expect(tag.classList.contains('usa-tag')).to.be.true();
+    expect(tag.classList.contains('usa-tag--informative')).to.be.true();
+  });
+
+  it('renders as big', () => {
+    const { getByText } = render(<Tag isBig>Recommended</Tag>);
+
+    const tag = getByText('Recommended');
+
+    expect(tag.classList.contains('usa-tag')).to.be.true();
+    expect(tag.classList.contains('usa-tag--big')).to.be.true();
+  });
+
   it('renders with additional HTML attribute props', () => {
     const { getByText } = render(
       <Tag id="recommended-tag" className="example">

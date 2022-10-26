@@ -3,6 +3,9 @@
 // ===============================================
 
 .usa-tag {
-  @include u-bg('accent-cool-darker');
   display: inline-block;
+}
+
+.usa-tag--informative {
+  @include u-bg('accent-cool-darker');
 }
