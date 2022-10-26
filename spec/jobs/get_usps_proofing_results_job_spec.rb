@@ -564,7 +564,6 @@ RSpec.describe GetUspsProofingResultsJob do
           'enrollment_encountering_an_exception',
           exception_class: 'Faraday::ParsingError',
           exception_message: /unexpected token at 'invalid'$/,
-          response_status_code: 200,
         )
       end
 
