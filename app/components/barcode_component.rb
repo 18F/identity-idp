@@ -34,7 +34,7 @@ class BarcodeComponent < BaseComponent
   end
 
   def css_class
-    [*tag_options[:class], 'display-inline-block margin-0']
+    [*tag_options[:class], 'display-inline-block']
   end
 
   private

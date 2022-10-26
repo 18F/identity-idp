@@ -53,11 +53,6 @@ RSpec.describe IalContext do
       it { expect(ial_context.ial2_service_provider?).to eq(true) }
     end
 
-    context 'when the service provider is ial2 strict' do
-      let(:sp_ial) { Idp::Constants::IAL2_STRICT }
-      it { expect(ial_context.ial2_service_provider?).to eq(true) }
-    end
-
     context 'when the service provider is ial3' do
       let(:sp_ial) { 3 }
       it { expect(ial_context.ial2_service_provider?).to eq(true) }
@@ -93,24 +88,6 @@ RSpec.describe IalContext do
       let(:sp_ial) { Idp::Constants::IAL2 }
       let(:ial) { Idp::Constants::IAL1 }
       it { expect(ial_context.default_to_ial2?).to eq(false) }
-    end
-
-    context 'when the service provider is ial2 strict and ial1 is requested' do
-      let(:sp_ial) { Idp::Constants::IAL2_STRICT }
-      let(:ial) { Idp::Constants::IAL1 }
-      it { expect(ial_context.default_to_ial2?).to eq(false) }
-    end
-
-    context 'when the service provider is ial2 strict and ial2 is requested' do
-      let(:sp_ial) { Idp::Constants::IAL2_STRICT }
-      let(:ial) { Idp::Constants::IAL2 }
-      it { expect(ial_context.default_to_ial2?).to eq(false) }
-    end
-
-    context 'when the service provider is ial2 strict and ial2 is requested' do
-      let(:sp_ial) { Idp::Constants::IAL2_STRICT }
-      let(:ial) { nil }
-      it { expect(ial_context.default_to_ial2?).to eq(true) }
     end
   end
 
@@ -168,11 +145,6 @@ RSpec.describe IalContext do
       let(:ial) { Idp::Constants::IAL2 }
       it { expect(ial_context.ialmax_requested?).to eq(false) }
     end
-
-    context 'when ial 2 strict is requested' do
-      let(:ial) { Idp::Constants::IAL2_STRICT }
-      it { expect(ial_context.ialmax_requested?).to eq(false) }
-    end
   end
 
   describe '#bill_for_ial_1_or_2' do
@@ -214,11 +186,6 @@ RSpec.describe IalContext do
       end
       it { expect(ial_context.bill_for_ial_1_or_2).to eq(2) }
     end
-
-    context 'when ial2 strict' do
-      let(:ial) { Idp::Constants::IAL2_STRICT }
-      it { expect(ial_context.bill_for_ial_1_or_2).to eq(2) }
-    end
   end
 
   describe '#ial2_or_greater?' do
@@ -252,24 +219,6 @@ RSpec.describe IalContext do
       it { expect(ial_context.ial2_or_greater?).to eq(false) }
     end
 
-    context 'when the service provider is ial2 strict and ial1 is requested' do
-      let(:sp_ial) { Idp::Constants::IAL2_STRICT }
-      let(:ial) { Idp::Constants::IAL1 }
-      it { expect(ial_context.ial2_or_greater?).to eq(false) }
-    end
-
-    context 'when the service provider is ial2 strict and ial2 is requested' do
-      let(:sp_ial) { Idp::Constants::IAL2_STRICT }
-      let(:ial) { Idp::Constants::IAL2 }
-      it { expect(ial_context.ial2_or_greater?).to eq(true) }
-    end
-
-    context 'when the service provider is ial2 strict and ial2 is requested' do
-      let(:sp_ial) { Idp::Constants::IAL2_STRICT }
-      let(:ial) { nil }
-      it { expect(ial_context.ial2_or_greater?).to eq(true) }
-    end
-
     context 'when ialmax is requested' do
       let(:ial) { Idp::Constants::IAL_MAX }
       it { expect(ial_context.ial2_or_greater?).to eq(false) }
@@ -282,11 +231,6 @@ RSpec.describe IalContext do
 
     context 'when ial 2 is requested' do
       let(:ial) { Idp::Constants::IAL2 }
-      it { expect(ial_context.ial2_or_greater?).to eq(true) }
-    end
-
-    context 'when ial 2 strict is requested' do
-      let(:ial) { Idp::Constants::IAL2_STRICT }
       it { expect(ial_context.ial2_or_greater?).to eq(true) }
     end
   end
@@ -319,28 +263,10 @@ RSpec.describe IalContext do
       it { expect(ial_context.ial2_requested?).to eq(true) }
     end
 
-    context 'when ial 2 strict is requested' do
-      let(:ial) { Idp::Constants::IAL2_STRICT }
-      it { expect(ial_context.ial2_requested?).to eq(false) }
-    end
-
     context 'when the SP is nil' do
       let(:service_provider) { nil }
       let(:ial) { Idp::Constants::IAL2 }
       it { expect(ial_context.ial2_requested?).to eq(true) }
-    end
-  end
-
-  describe '#ial2_strict_requested?' do
-    context 'with the strict authn context passed in' do
-      let(:ial) { Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF }
-      it { expect(ial_context.ial2_strict_requested?).to eq(true) }
-    end
-
-    context 'when the SP is nil' do
-      let(:service_provider) { nil }
-      let(:ial) { Idp::Constants::IAL2 }
-      it { expect(ial_context.ial2_strict_requested?).to eq(false) }
     end
   end
 end
