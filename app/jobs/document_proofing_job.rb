@@ -12,8 +12,7 @@ class DocumentProofingJob < ApplicationJob
     trace_id:,
     image_metadata:,
     analytics_data:,
-    flow_path:,
-    liveness_checking_enabled: nil
+    flow_path:
   )
     timer = JobHelpers::Timer.new
 

@@ -19,7 +19,6 @@ module Idv
           document_check: doc_auth_vendor,
           document_type: 'state_id',
         }
-        component_attributes[:liveness_check] = doc_auth_vendor if liveness_checking_enabled?
         ProofingComponent.create_or_find_by(user: current_user).update(component_attributes)
       end
 
@@ -90,8 +89,7 @@ module Idv
       def add_costs(result)
         Db::AddDocumentVerificationAndSelfieCosts.
           new(user_id: user_id,
-              service_provider: current_sp,
-              liveness_checking_enabled: liveness_checking_enabled?).
+              service_provider: current_sp).
           call(result)
       end
 
@@ -99,16 +97,10 @@ module Idv
         session.fetch(:sp, {})
       end
 
-      def liveness_checking_enabled?
-        return false if !FeatureManagement.liveness_checking_enabled?
-        !!current_user.decorate.password_reset_profile&.strict_ial2_proofed?
-      end
-
       def create_document_capture_session(key)
         document_capture_session = DocumentCaptureSession.create(
           user_id: user_id,
           issuer: sp_session[:issuer],
-          ial2_strict: false,
         )
         flow_session[key] = document_capture_session.uuid
 

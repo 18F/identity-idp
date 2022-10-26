@@ -3,7 +3,6 @@ require 'rails_helper'
 describe Db::AddDocumentVerificationAndSelfieCosts do
   let(:user_id) { 1 }
   let(:service_provider) { build(:service_provider, issuer: 'foo') }
-  let(:liveness_checking_enabled) { false }
   let(:billed_response) do
     DocAuth::Response.new(
       success: true,
@@ -30,8 +29,7 @@ describe Db::AddDocumentVerificationAndSelfieCosts do
   subject do
     described_class.new(
       user_id: user_id,
-      service_provider: service_provider,
-      liveness_checking_enabled: liveness_checking_enabled,
+      service_provider: service_provider
     )
   end
 
@@ -56,8 +54,6 @@ describe Db::AddDocumentVerificationAndSelfieCosts do
   end
 
   context 'with a selfie' do
-    let(:liveness_checking_enabled) { true }
-
     it 'has costing for front, back, and result when is is billed' do
       subject.call(billed_response)
 

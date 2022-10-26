@@ -13,7 +13,6 @@ describe 'idv/doc_auth/upload.html.erb' do
 
   context 'with liveness enabled' do
     it 'renders liveness content' do
-      allow(view).to receive(:liveness_checking_enabled?).and_return(true)
       render template: 'idv/doc_auth/upload'
 
       expect(rendered).to have_content(t('doc_auth.headings.upload_liveness_enabled'))
@@ -24,7 +23,6 @@ describe 'idv/doc_auth/upload.html.erb' do
 
   context 'with liveness disabled' do
     it 'does not render liveness content' do
-      allow(view).to receive(:liveness_checking_enabled?).and_return(false)
       render template: 'idv/doc_auth/upload'
 
       expect(rendered).to have_content(t('doc_auth.headings.upload'))

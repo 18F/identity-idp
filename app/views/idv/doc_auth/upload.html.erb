@@ -3,22 +3,12 @@
 <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
 
 <%= render PageHeadingComponent.new do %>
-  <% if liveness_checking_enabled? %>
-    <%= t('doc_auth.headings.upload_liveness_enabled') %>
-  <% else %>
-    <%= t('doc_auth.headings.upload') %>
-  <% end %>
+  <%= t('doc_auth.headings.upload') %>
 <% end %>
 
-<% if liveness_checking_enabled? %>
-  <p>
-    <%= t('doc_auth.info.upload_liveness_enabled') %>
-  </p>
-<% else %>
-  <p>
-    <%= t('doc_auth.info.upload') %>
-  </p>
-<% end %>
+<p>
+  <%= t('doc_auth.info.upload') %>
+</p>
 
 <p>
   <%= t('doc_auth.info.upload_no_image_storage') %>
@@ -36,15 +26,11 @@
         ) %>
   </div>
   <div class="grid-col-12 tablet:grid-col-9">
-    <div id="recommended-tag" class="usa-tag text-ink bg-primary-lighter margin-top-1 display-inline-block <%= 'display-none' if liveness_checking_enabled? %>">
+    <div id="recommended-tag" class="usa-tag text-ink bg-primary-lighter margin-top-1 display-inline-block">
       <%= t('doc_auth.info.tag') %>
     </div>
     <h2 class="margin-y-105">
-      <% if liveness_checking_enabled? %>
-        <%= t('doc_auth.headings.upload_from_phone_liveness_enabled') %>
-      <% else %>
-        <%= t('doc_auth.headings.upload_from_phone') %>
-      <% end %>
+      <%= t('doc_auth.headings.upload_from_phone') %>
     </h2>
     <%= t('doc_auth.info.upload_from_phone') %>
     <%= simple_form_for(
@@ -60,7 +46,7 @@
 
 <hr class="margin-y-4" />
 
-<div id="upload-comp-liveness-off" class="<%= 'display-none' if liveness_checking_enabled? %>">
+<div id="upload-comp-liveness-off">
   <%= t('doc_auth.info.upload_from_computer') %>&nbsp;
   <%= simple_form_for(
         :doc_auth,
@@ -71,7 +57,7 @@
     <%= f.submit t('doc_auth.info.upload_computer_link'), unstyled: true, big: false, wide: false %>
   <% end %>
 </div>
-<div id="upload-comp-liveness" class="<%= 'display-none' unless liveness_checking_enabled? %>">
+<div id="upload-comp-liveness" class="display-none">
   <strong><%= t('doc_auth.info.upload_from_computer') %></strong>
   <%= t('doc_auth.info.upload_from_computer_not_allowed', app_name: APP_NAME) %>
 </div>
