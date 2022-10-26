@@ -51,7 +51,7 @@ module DocAuth
                 'Remove when method of same name is removed from AcuantClient'
       end
 
-      # TODO: remove selfie_image and liveness_checking_enabled args
+      # NOTE: remove selfie_image and liveness_checking_enabled args
       # when they are no longer expected by the front-end and specs
       def post_images(
         front_image:,
