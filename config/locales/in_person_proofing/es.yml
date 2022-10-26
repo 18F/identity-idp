@@ -93,7 +93,7 @@ es:
     headings:
       address: Ingrese su dirección actual
       barcode: Está listo para verificar su identidad en persona
-      cta: Verifique su documento de identidad en persona
+      cta: Verificar su identidad de forma presencial
       location: Seleccione un lugar para verificar su cédula
       prepare: Verifique su identidad en persona
       state_id: Ingrese la información de su cédula

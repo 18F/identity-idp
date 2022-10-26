@@ -96,7 +96,7 @@ fr:
     headings:
       address: Entrez votre adresse actuelle
       barcode: Vous êtes prêt à vérifier votre identité en personne
-      cta: Vérifier votre identité en personne
+      cta: Vérifiez votre identité en personne
       location: Sélectionnez un lieu pour vérifier votre identité
       prepare: Vérifiez votre identité en personne
       state_id: Saisissez les informations figurant sur votre document d’identité
