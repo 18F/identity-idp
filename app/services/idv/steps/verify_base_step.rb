@@ -223,6 +223,7 @@ module Idv
           result: current_async_state.result,
           state: pii[:state],
           state_id_jurisdiction: pii[:state_id_jurisdiction],
+          state_id_number: pii[:state_id_number],
           # todo: add other edited fields?
           extra: {
             address_edited: !!flow_session['address_edited'],
@@ -276,17 +277,28 @@ module Idv
         flow_session.delete(verify_step_document_capture_session_uuid_key)
       end
 
-      def idv_result_to_form_response(result:, state: nil, state_id_jurisdiction: nil, extra: {})
+      def idv_result_to_form_response(
+        result:,
+        state: nil,
+        state_id_jurisdiction: nil,
+        state_id_number: nil,
+        extra: {}
+      )
         state_id = result.dig(:context, :stages, :state_id)
         if state_id
           state_id[:state] = state if state
           state_id[:state_id_jurisdiction] = state_id_jurisdiction if state_id_jurisdiction
+          state_id[:state_id_number] = redact(state_id_number) if state_id_number
         end
         FormResponse.new(
           success: idv_success(result),
           errors: idv_errors(result),
           extra: extra.merge(proofing_results: idv_extra(result)),
         )
+      end
+
+      def redact(text)
+        text.gsub(/[a-z]/i, 'X').gsub(/\d/i, '#')
       end
     end
   end
