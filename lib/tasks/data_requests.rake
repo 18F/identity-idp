@@ -75,7 +75,7 @@ namespace :data_requests do
             w.mfa_enabled? && (w.friendly_name == :webauthn)
           end.any?
           webauthn_platform_count += 1 if user.webauthn_configurations.select do |w|
-            w.mfa_enabled? && (w.friendly_name == :webauthn)
+            w.mfa_enabled? && (w.friendly_name == :webauthn_platform)
           end.any?
           backup_codes_count += 1 if user.backup_code_configurations.first.present? # collapses all rows into 1
           piv_cac_count += 1 if user.piv_cac_configurations.select(&:mfa_enabled?).any?
