@@ -181,7 +181,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def handle_faraday_error(err, enrollment)
     NewRelic::Agent.notice_error(err)
-    response_status_code = err.response_status || err&.response&.status
+    response_status_code = err.response_status || err.response&.status
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       **enrollment_analytics_attributes(enrollment, complete: false),
       # There probably isn't a response body for these types of errors but we check for one anyway
