@@ -236,7 +236,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
       method: :get_results,
       response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
         attention_with_barcode_response,
-        false,
         DocAuth::LexisNexis::Config.new,
       ),
     )
