@@ -10,7 +10,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       glare_threshold: 40,
       warn_notifier: warn_notifier,
     )
-    described_class.new(input, config, false)
+    described_class.new(input, config)
   end
 
   context 'with an image file' do
@@ -254,28 +254,78 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           glare_threshold: 40,
         },
       )
-      described_class.new(input, config, true)
+      described_class.new(input, config)
     end
 
     let(:input) do
       <<~YAML
-        doc_auth_result: Passed
-        liveness_result: Fail
+        document:
+          type: license
+          first_name: Susan
+          last_name: Smith
+          middle_name: Q
+          address1: 1 Microsoft Way
+          address2: Apt 3
+          city: Bayside
+          state: NY
+          zipcode: '11364'
+          dob: 10/06/1938
+          phone: +1 314-555-1212
+          state_id_number: '123456789'
+          state_id_type: drivers_license
+          state_id_jurisdiction: 'NY'
       YAML
     end
 
     it 'returns a passed result' do
+      expect(response.success?).to eq(true)
+      expect(response.errors).to eq({})
+      expect(response.exception).to eq(nil)
+      expect(response.pii_from_doc).to eq(
+        first_name: 'Susan',
+        middle_name: 'Q',
+        last_name: 'Smith',
+        phone: '+1 314-555-1212',
+        address1: '1 Microsoft Way',
+        address2: 'Apt 3',
+        city: 'Bayside',
+        state: 'NY',
+        state_id_jurisdiction: 'NY',
+        state_id_number: '123456789',
+        zipcode: '11364',
+        dob: '1938-10-06',
+        state_id_type: 'drivers_license',
+        type: 'license',
+      )
+      expect(response.attention_with_barcode?).to eq(false)
+      expect(response.extra).to eq(
+        doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
+        billed: true,
+      )
+    end
+  end
+
+  context 'with a yaml file containing a read error' do
+    let(:input) do
+      <<~YAML
+        image_metrics:
+          back:
+            HorizontalResolution: 100
+      YAML
+    end
+
+    it 'returns caution result' do
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(
-        general: [DocAuth::Errors::SELFIE_FAILURE],
-        selfie: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+        general: [DocAuth::Errors::DPI_LOW_ONE_SIDE],
+        back: [DocAuth::Errors::DPI_LOW_FIELD],
         hints: false,
       )
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to eq({})
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
-        doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
+        doc_auth_result: DocAuth::Acuant::ResultCodes::CAUTION.name,
         billed: true,
       )
     end
