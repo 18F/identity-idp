@@ -167,6 +167,14 @@ h4 {
   @include u-border('primary-light');
 }
 
+.display-inline-block {
+  @include u-display('inline-block');
+}
+
+.display-block {
+  @include u-display('block');
+}
+
 .font-heading-lg {
   @include u-font('heading', 'lg');
 }
@@ -225,6 +233,10 @@ h4 {
 
 .text-bold {
   @include u-text('bold');
+}
+
+.text-center {
+  @include u-text('center');
 }
 
 .usa-list {
