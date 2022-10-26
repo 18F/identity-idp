@@ -57,7 +57,7 @@ module ArcgisApi
     end
 
     # Makes a request to retrieve a new token
-    # it expires (1 hour minutes).
+    # it expires after 1 hour
     # @return [String] the token
     def retrieve_token!
       body = request_token
