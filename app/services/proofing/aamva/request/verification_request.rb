@@ -128,7 +128,7 @@ module Proofing
 
         def user_provided_data_map
           {
-            '//ns2:IdentificationID' => applicant.state_id_data.state_id_number,
+            '//ns2:IdentificationID' => state_id_number,
             '//ns1:MessageDestinationId' => message_destination_id,
             '//ns2:PersonGivenName' => applicant.first_name,
             '//ns2:PersonSurName' => applicant.last_name,
@@ -138,6 +138,20 @@ module Proofing
             '//ns2:LocationStateUsPostalServiceCode' => applicant.state,
             '//ns2:LocationPostalCode' => applicant.zipcode,
           }
+        end
+
+        def state_id_number
+          south_carolina_zero_padding
+
+          applicant.state_id_data.state_id_number
+        end
+
+        def south_carolina_zero_padding
+          return unless applicant.state_id_data.state_id_jurisdiction == 'SC'
+
+          while applicant.state_id_data.state_id_number.length < 8
+            applicant.state_id_data.state_id_number = "0#{applicant.state_id_data.state_id_number}"
+          end
         end
 
         def timeout

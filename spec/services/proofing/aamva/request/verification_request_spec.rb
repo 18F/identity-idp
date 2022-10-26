@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Proofing::Aamva::Request::VerificationRequest do
+  let(:state_id_jurisdiction) { 'CA' }
+  let(:state_id_number) { '123456789' }
   let(:applicant) do
     applicant = Proofing::Aamva::Applicant.from_proofer_applicant(
       uuid: '1234-abcd-efgh',
@@ -13,8 +15,8 @@ describe Proofing::Aamva::Request::VerificationRequest do
       zipcode: '20176-1234',
     )
     applicant.state_id_data.merge!(
-      state_id_number: '123456789',
-      state_id_jurisdiction: 'CA',
+      state_id_number: state_id_number,
+      state_id_jurisdiction: state_id_jurisdiction,
       state_id_type: 'drivers_license',
     )
     applicant
@@ -126,6 +128,28 @@ describe Proofing::Aamva::Request::VerificationRequest do
           ::Proofing::TimeoutError,
           'AAMVA raised Faraday::ConnectionFailed waiting for verification response: error',
         )
+      end
+    end
+  end
+
+  describe 'South Carolina id number padding' do
+    let(:state_id_jurisdiction) { 'SC' }
+    let(:rendered_state_id_number) do
+      body = REXML::Document.new(subject.body)
+      REXML::XPath.first(body, '//ns2:IdentificationID')&.text
+    end
+
+    context 'id is greater than 8 digits' do
+      it 'passes the id through as is' do
+        expect(rendered_state_id_number).to eq(state_id_number)
+      end
+    end
+
+    context 'id is less than 8 digits' do
+      let(:state_id_number) { '1234567' }
+
+      it 'zero-pads the id to 8 digits' do
+        expect(rendered_state_id_number).to eq("0#{state_id_number}")
       end
     end
   end
