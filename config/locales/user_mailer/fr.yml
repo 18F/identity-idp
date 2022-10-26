@@ -151,7 +151,7 @@ fr:
       greeting: Bonjour,
       intro: Ne manquez pas l’occasion de vérifier votre identité dans votre bureau de
         poste de proximité. Complétez cette étape pour accéder à
-        %{partner_agency}.
+        %{sp_name}.
       subject: Vérifiez votre identité auprès d’un bureau de poste dans les %{days_remaining}
         prochains jours.
     in_person_verified:

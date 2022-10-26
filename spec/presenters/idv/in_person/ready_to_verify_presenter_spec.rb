@@ -14,17 +14,18 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
   end
   let(:enrollment) do
-    InPersonEnrollment.new(
-      user: user,
-      profile: profile,
-      enrollment_code: enrollment_code,
-      issuer: issuer,
-      unique_id: InPersonEnrollment.generate_unique_id,
-      created_at: created_at,
-      enrollment_established_at: enrollment_established_at,
-      current_address_matches_id: current_address_matches_id,
-      selected_location_details: enrollment_selected_location_details,
-    )
+    # InPersonEnrollment.new(
+    #   user: user,
+    #   profile: profile,
+    #   enrollment_code: enrollment_code,
+    #   issuer: issuer,
+    #   unique_id: InPersonEnrollment.generate_unique_id,
+    #   created_at: created_at,
+    #   enrollment_established_at: enrollment_established_at,
+    #   current_address_matches_id: current_address_matches_id,
+    #   selected_location_details: enrollment_selected_location_details,
+    # )
+    create(:in_person_enrollment, :with_service_provider, user: user, profile: profile)
   end
   subject(:presenter) { described_class.new(enrollment: enrollment) }
 
@@ -122,11 +123,11 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     end
   end
 
-  describe '#partner_agency' do
-    subject(:partner_agency) { presenter.partner_agency }
+  describe '#sp_name' do
+    subject(:sp_name) { presenter.sp_name }
 
     it 'returns partner agency' do
-      expect(partner_agency).to eq('http://localhost:3000')
+      expect(sp_name).to eq('Test Service Provider')
     end
   end
 

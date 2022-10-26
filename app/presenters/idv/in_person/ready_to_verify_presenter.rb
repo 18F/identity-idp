@@ -8,9 +8,10 @@ module Idv
 
       delegate :selected_location_details, :enrollment_code, to: :enrollment
 
-      def initialize(enrollment:, barcode_image_url: nil)
+      def initialize(enrollment:, barcode_image_url: nil, sp_name: nil)
         @enrollment = enrollment
         @barcode_image_url = barcode_image_url
+        @sp_name = sp_name
       end
 
       # Reminder is exclusive of the day the email is sent (1 less than days_to_due_date)
@@ -33,9 +34,17 @@ module Idv
         !enrollment.current_address_matches_id
       end
 
-      def partner_agency
-        enrollment.issuer
+      def service_provider
+        # if we initialize sp_name then need to pass it to presenter, but it is not needed by the rtv email
+        #enrollment.issuer
+        enrollment.service_provider
+
       end
+
+      def sp_name
+        service_provider ? service_provider.friendly_name : ''
+      end
+
 
       private
 

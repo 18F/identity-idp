@@ -176,6 +176,7 @@ class UserMailerPreview < ActionMailer::Preview
         enrollment_code: '2048702198804358',
         created_at: Time.zone.now - 2.hours,
         issuer: 'http://localhost:3000',
+        service_provider: ServiceProvider.new( friendly_name: 'Fake', issuer: 'Issuer' ),
         status_updated_at: Time.zone.now - 1.hour,
         current_address_matches_id: params['current_address_matches_id'] == 'true',
         selected_location_details: {
