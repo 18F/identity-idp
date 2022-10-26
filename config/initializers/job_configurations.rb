@@ -212,6 +212,12 @@ else
         cron: IdentityConfig.store.get_usps_proofing_results_job_cron,
         args: -> { [Time.zone.now] },
       },
+      # Queue daily ready to verify reminder email job
+      email_job: {
+        class: 'EmailJob',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
       # Periodically verify signature on ThreatMetrix javascript
       verify_threat_metrix_js: {
         class: 'ThreatMetrixJsVerificationJob',
