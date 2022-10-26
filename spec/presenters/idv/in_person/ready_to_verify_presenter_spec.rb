@@ -25,7 +25,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     #   current_address_matches_id: current_address_matches_id,
     #   selected_location_details: enrollment_selected_location_details,
     # )
-    create(:in_person_enrollment, :with_service_provider, user: user, profile: profile)
+    create(:in_person_enrollment, :with_service_provider, :pending, user: user, profile: profile)
   end
   subject(:presenter) { described_class.new(enrollment: enrollment) }
 

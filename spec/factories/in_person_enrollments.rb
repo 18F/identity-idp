@@ -33,7 +33,6 @@ FactoryBot.define do
     end
 
     trait :with_service_provider do
-      pending
       service_provider { association :service_provider }
     end
   end
