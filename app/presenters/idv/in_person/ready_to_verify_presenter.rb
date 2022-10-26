@@ -35,16 +35,12 @@ module Idv
       end
 
       def service_provider
-        # if we initialize sp_name then need to pass it to presenter, but it is not needed by the rtv email
-        #enrollment.issuer
         enrollment.service_provider
-
       end
 
       def sp_name
         service_provider ? service_provider.friendly_name : ''
       end
-
 
       private
 

@@ -3,10 +3,8 @@ require 'rails_helper'
 RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   let(:user) { build(:user) }
   let(:profile) { build(:profile, user: user) }
-  let(:enrollment_code) { '2048702198804358' }
   let(:current_address_matches_id) { true }
   let(:created_at) { described_class::USPS_SERVER_TIMEZONE.parse('2022-07-14T00:00:00Z') }
-  let(:issuer) { 'http://localhost:3000' }
   let(:enrollment_established_at) do
     described_class::USPS_SERVER_TIMEZONE.parse('2022-08-14T00:00:00Z')
   end
@@ -14,18 +12,15 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
   end
   let(:enrollment) do
-    # InPersonEnrollment.new(
-    #   user: user,
-    #   profile: profile,
-    #   enrollment_code: enrollment_code,
-    #   issuer: issuer,
-    #   unique_id: InPersonEnrollment.generate_unique_id,
-    #   created_at: created_at,
-    #   enrollment_established_at: enrollment_established_at,
-    #   current_address_matches_id: current_address_matches_id,
-    #   selected_location_details: enrollment_selected_location_details,
-    # )
-    create(:in_person_enrollment, :with_service_provider, :pending, user: user, profile: profile)
+    create(
+      :in_person_enrollment, :with_service_provider, :pending,
+      user: user,
+      profile: profile,
+      created_at: created_at,
+      enrollment_established_at: enrollment_established_at,
+      current_address_matches_id: current_address_matches_id,
+      selected_location_details: enrollment_selected_location_details
+    )
   end
   subject(:presenter) { described_class.new(enrollment: enrollment) }
 
@@ -126,7 +121,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   describe '#sp_name' do
     subject(:sp_name) { presenter.sp_name }
 
-    it 'returns partner agency' do
+    it 'returns friendly service provider name' do
       expect(sp_name).to eq('Test Service Provider')
     end
   end
@@ -139,14 +134,6 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       it 'returns 3 days' do
         travel_to(enrollment_established_at + (config - 4).days) do
           expect(days_remaining).to eq(3)
-        end
-      end
-    end
-
-    context '11 days until due date' do
-      it 'returns 10 days' do
-        travel_to(enrollment_established_at + (config - 11).days) do
-          expect(days_remaining).to eq(10)
         end
       end
     end
