@@ -8,16 +8,10 @@ describe('document-capture/context/service-provider', () => {
   it('has expected default properties', () => {
     const { result } = renderHook(() => useContext(ServiceProviderContext));
 
-    expect(result.current).to.have.keys([
-      'name',
-      'failureToProofURL',
-      'getFailureToProofURL',
-      'isLivenessRequired',
-    ]);
+    expect(result.current).to.have.keys(['name', 'failureToProofURL', 'getFailureToProofURL']);
     expect(result.current.name).to.be.null();
     expect(result.current.failureToProofURL).to.be.a('string');
     expect(result.current.getFailureToProofURL).to.be.a('function');
-    expect(result.current.isLivenessRequired).to.be.true();
   });
 
   describe('Provider', () => {

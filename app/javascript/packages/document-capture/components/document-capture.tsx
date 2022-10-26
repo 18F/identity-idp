@@ -7,12 +7,10 @@ import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import type { FormStep } from '@18f/identity-form-steps';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep from './documents-step';
-import SelfieStep from './selfie-step';
 import InPersonPrepareStep from './in-person-prepare-step';
 import InPersonLocationStep from './in-person-location-step';
 import InPersonSwitchBackStep from './in-person-switch-back-step';
 import ReviewIssuesStep from './review-issues-step';
-import ServiceProviderContext from '../context/service-provider';
 import UploadContext from '../context/upload';
 import AnalyticsContext from '../context/analytics';
 import Submission from './submission';
@@ -57,7 +55,6 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
   const [stepName, setStepName] = useState<string | undefined>(undefined);
   const { t } = useI18n();
-  const serviceProvider = useContext(ServiceProviderContext);
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { inPersonURL } = useContext(FlowContext);
@@ -81,7 +78,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const submissionFormValues = useMemo(
     () =>
       formValues && {
-        ...(isAsyncForm ? except(formValues, 'front', 'back', 'selfie') : formValues),
+        ...(isAsyncForm ? except(formValues, 'front', 'back') : formValues),
         flow_path: flowPath,
       },
     [isAsyncForm, formValues, flowPath],
@@ -145,10 +142,6 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
         {
           name: 'documents',
           form: DocumentsStep,
-        },
-        serviceProvider.isLivenessRequired && {
-          name: 'selfie',
-          form: SelfieStep,
         },
       ].filter(Boolean) as FormStep[]);
 

@@ -100,7 +100,6 @@ describe('document-capture/components/documents-step', () => {
         value={{
           name: 'Example App',
           failureToProofURL: 'https://example.com/?step=document_capture',
-          isLivenessRequired: false,
         }}
       >
         <DocumentsStep />

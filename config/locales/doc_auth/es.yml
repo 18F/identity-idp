@@ -5,7 +5,6 @@ es:
       camera_video_capture_instructions: Tomaremos la foto automáticamente
       camera_video_capture_label: Visor con encuadre para centrar tu documento
       document_capture_dialog: Captura del documento
-      selfie_alt_text: Una foto subida
     buttons:
       add_new_photos: Añadir nuevas fotos
       continue: Continuar
@@ -149,14 +148,11 @@ es:
       document_capture: Añada su documento de identidad expedido por el estado
       document_capture_back: Parte trasera de su documento de identidad
       document_capture_front: Parte delantera de su documento de identidad
-      document_capture_selfie: Su foto
       front: Parte Delantera
       interstitial: Estamos procesando sus imágenes
       lets_go: Cómo funciona la verificación de su identidad
-      photo: Foto
       review_issues: Revise sus imágenes e inténtelo de nuevo
       secure_account: Asegure su cuenta
-      selfie: Tómese una foto
       ssn: Ingresa tu número de Seguro Social
       ssn_update: Actualice su número de Seguro Social
       take_picture: Toma una foto con un teléfono
@@ -232,17 +228,6 @@ es:
       consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
         utilice, conserve y comparta su información personal. Solo la
         utilizaremos para verificar su identidad.
-      document_capture_selfie_consent_action: '<lg-underline>Permita el acceso a la
-        cámara</lg-underline> y busque una notificación en su navegador o revise
-        la configuración del sistema para confirmar el acceso a la cámara.'
-      document_capture_selfie_consent_banner: '%{app_name} necesita permiso para usar la cámara de su dispositivo'
-      document_capture_selfie_consent_blocked: '%{app_name} necesita permiso para usar
-        su cámara para que pueda probar que su identificación le pertenece.'
-      document_capture_selfie_consent_blocked_action: Verifique la configuración de su
-        navegador web para este sitio o la configuración del sistema de su
-        computadora para permitir que %{app_name} acceda a la cámara.
-      document_capture_selfie_instructions: Ahora toma una foto de ti mismo. Lo
-        compararemos con la imagen en el frente de su identificación.
       email_sent: Enlace enviado a %{email}. Compruebe el correo electrónico de su
         escritorio y siga las instrucciones para verificar su identidad.
       learn_more: Obtenga más información
@@ -282,18 +267,9 @@ es:
       document_capture_id_text2: Tome la foto en una superficie plana
       document_capture_id_text3: No use el flash de su cámara
       document_capture_id_text4: El tamaño del archivo debe ser de al menos 2 MB
-      document_capture_selfie_text1: Mire a la cámara y asegúrese de que tiene toda la cabeza en la foto
-      document_capture_selfie_text2: Tome una foto contra un fondo plano
-      document_capture_selfie_text3: No use sombrero o anteojos
       review_issues_id_header_text: 'Revise las imágenes de su documento de identidad
         expedido por el estado:'
       review_issues_id_text1: '¿Ha usado un fondo oscuro?'
       review_issues_id_text2: '¿Tomó la foto en una superficie plana?'
       review_issues_id_text3: '¿Tiene el flash de su cámara apagado?'
       review_issues_id_text4: '¿Todos los detalles están nítidos y claramente visibles?'
-      review_issues_selfie_header_text: 'Revise su propia foto:'
-      review_issues_selfie_text1: '¿Está de cara a la cámara?'
-      review_issues_selfie_text2: '¿Tiene en la foto toda la cabeza y la cara?'
-      review_issues_selfie_text3: '¿Está la foto contra un fondo liso?'
-      review_issues_selfie_text4: '¿Su cara está totalmente visible, no está cubierta
-        por un sombrero o por anteojos?'

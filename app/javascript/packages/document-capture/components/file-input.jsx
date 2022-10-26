@@ -32,7 +32,6 @@ import usePrevious from '../hooks/use-previous';
  * @prop {string} fileLoadingText Status message text to show when file is pending.
  * @prop {string} fileLoadedText Status message text to show once pending file is loaded.
  * @prop {string[]=} accept Optional array of file input accept patterns.
- * @prop {'user'|'environment'=} capture Optional facing mode if file input is used for capture.
  * @prop {Blob|string|null|undefined} value Current value.
  * @prop {ReactNode=} errorMessage Error to show.
  * @prop {boolean=} isValuePending Whether to show the input in an indeterminate loading state,
@@ -115,7 +114,6 @@ function FileInput(props, ref) {
     fileLoadingText,
     fileLoadedText,
     accept,
-    capture,
     value,
     errorMessage,
     isValuePending,
@@ -325,7 +323,6 @@ function FileInput(props, ref) {
             aria-label={getLabelFromValue(label, value)}
             aria-busy={isValuePending}
             onChange={onChangeIfValid}
-            capture={capture}
             onClick={onClick}
             onDrop={onDrop}
             accept={accept ? accept.join() : undefined}
