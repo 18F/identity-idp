@@ -1,0 +1,27 @@
+<%= content_tag(:div, **tag_options, class: css_class) do %>
+  <button
+    aria-controls="language-picker-<%= unique_id %>"
+    class="usa-accordion__button language-picker__label"
+  >
+    <%= image_tag(asset_url('globe-blue.svg'), width: 12, height: 12, alt: '', class: 'tablet:display-none') %>
+    <%= image_tag(asset_url('globe-white.svg'), width: 12, height: 12, alt: '', class: 'display-none tablet:display-inline') %>
+    <span id="language-picker-description-<%= unique_id %>">
+      <%= t('i18n.language') %>
+    </span>
+  </button>
+  <ul
+    id="language-picker-<%= unique_id %>"
+    aria-describedby="language-picker-description-<%= unique_id %>"
+    class="usa-accordion__content language-picker__list"
+  >
+    <% I18n.available_locales.each do |locale| %>
+      <li>
+        <%= link_to(
+              t("i18n.locale.#{locale}"),
+              url_generator.call(sanitized_request_params.merge(locale: locale)),
+              lang: locale,
+            ) %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
