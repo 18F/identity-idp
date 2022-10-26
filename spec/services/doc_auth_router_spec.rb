@@ -210,7 +210,7 @@ RSpec.describe DocAuthRouter do
             front: [DocAuth::Errors::VISIBLE_PHOTO_CHECK],
             back: [DocAuth::Errors::REF_CONTROL_NUMBER_CHECK],
             selfie: [DocAuth::Errors::SELFIE_FAILURE],
-            general: [DocAuth::Errors::GENERAL_ERROR_LIVENESS],
+            general: [DocAuth::Errors::GENERAL_ERROR],
             not_translated: true,
           },
         ),
