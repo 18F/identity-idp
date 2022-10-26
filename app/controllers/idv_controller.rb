@@ -49,10 +49,6 @@ class IdvController < ApplicationController
     redirect_to reactivate_account_url
   end
 
-  def strict_ial2_upgrade_required?
-    sp_session[:ial2_strict] && !current_user.active_profile&.strict_ial2_proofed?
-  end
-
   def active_profile?
     current_user.active_profile.present?
   end

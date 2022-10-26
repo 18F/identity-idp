@@ -116,25 +116,6 @@ describe Idv::Actions::VerifyDocumentStatusAction do
           )
         end
       end
-
-      context 'ial2 strict' do
-        let(:sp_session) { { ial2_strict: true } }
-
-        before do
-          allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-        end
-
-        it 'adds costs' do
-          subject.call
-
-          expect(SpCost.where(issuer: issuer).map(&:cost_type)).to contain_exactly(
-            'acuant_front_image',
-            'acuant_back_image',
-            'acuant_selfie',
-            'acuant_result',
-          )
-        end
-      end
     end
 
     context 'with no document capture session' do

@@ -101,7 +101,6 @@ module Idv
 
       def liveness_checking_enabled?
         return false if !FeatureManagement.liveness_checking_enabled?
-        return sp_session[:ial2_strict] if sp_session.key?(:ial2_strict)
         !!current_user.decorate.password_reset_profile&.strict_ial2_proofed?
       end
 
@@ -109,7 +108,7 @@ module Idv
         document_capture_session = DocumentCaptureSession.create(
           user_id: user_id,
           issuer: sp_session[:issuer],
-          ial2_strict: sp_session[:ial2_strict],
+          ial2_strict: false,
         )
         flow_session[key] = document_capture_session.uuid
 

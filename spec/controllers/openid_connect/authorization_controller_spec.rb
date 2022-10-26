@@ -460,7 +460,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
           phishing_resistant_requested: false,
           ial: 1,
           ial2: false,
-          ial2_strict: false,
           ialmax: false,
           issuer: 'urn:gov:gsa:openidconnect:test',
           request_id: sp_request_id,

@@ -24,10 +24,6 @@ module IdvSession
     session[:doc_capture_user_id].present?
   end
 
-  def strict_ial2_upgrade_required?
-    sp_session[:ial2_strict] && !effective_user.active_profile&.strict_ial2_proofed?
-  end
-
   def confirm_idv_vendor_session_started
     return if flash[:allow_confirmations_continue]
     redirect_to idv_doc_auth_url unless idv_session.proofing_started?

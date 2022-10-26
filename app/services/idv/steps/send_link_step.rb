@@ -80,7 +80,6 @@ module Idv
           requested_at: Time.zone.now,
           cancelled_at: nil,
           issuer: sp_session[:issuer],
-          ial2_strict: sp_session[:ial2_strict],
         )
       end
 
