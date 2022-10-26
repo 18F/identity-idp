@@ -304,6 +304,32 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
     end
   end
+  
+  context 'with a yaml file containing a read error' do
+    let(:input) do
+      <<~YAML
+      image_metrics:
+        back:
+          HorizontalResolution: 100
+      YAML
+    end
+
+    it 'returns caution result' do
+      expect(response.success?).to eq(false)
+      expect(response.errors).to eq(
+        general: [DocAuth::Errors::DPI_LOW_ONE_SIDE],
+        back: [DocAuth::Errors::DPI_LOW_FIELD],
+        hints: false,
+      )
+      expect(response.exception).to eq(nil)
+      expect(response.pii_from_doc).to eq({})
+      expect(response.attention_with_barcode?).to eq(false)
+      expect(response.extra).to eq(
+        doc_auth_result: DocAuth::Acuant::ResultCodes::CAUTION.name,
+        billed: true,
+      )
+    end
+  end
 
   context 'with a yaml file containing a failed result' do
     let(:input) do
