@@ -175,7 +175,6 @@ class UserMailerPreview < ActionMailer::Preview
         profile: unsaveable(Profile.new(user: user)),
         enrollment_code: '2048702198804358',
         created_at: Time.zone.now - 2.hours,
-        issuer: 'http://localhost:3000',
         service_provider: ServiceProvider.new(
           friendly_name: 'Test Service Provider',
           issuer: SecureRandom.uuid,
