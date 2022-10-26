@@ -4,8 +4,6 @@
 # Login.gov account.
 module InheritedProofingConcern
   extend ActiveSupport::Concern
-  include Idv::InheritedProofing::ServiceProviderForms
-  include Idv::InheritedProofing::ServiceProviderServices
 
   # Returns true if Inherited Proofing is currently underway.
   def inherited_proofing?
