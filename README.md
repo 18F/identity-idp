@@ -189,6 +189,10 @@ There was an initial attempt to dockerize the IDP but it is currently deprecated
 
 If you'd like to work with the previous implementation see the [Docker documentation](./docs/Docker.md) to install the IdP as a container.
 
+### Linting
+
+Run `make lint`
+
 ### Troubleshooting
 #### I am receiving errors when running `$ make setup`
 
@@ -274,3 +278,11 @@ Paste the following contents into the text editor:
 Use Control+X to save the file.
 
 Restart your Mac to cause the .plist to take effect. Check the limits again and you should see both `ulimit -n` and `launchctl limit maxfiles` return a limit of 524288.
+
+##### Errors related to _sassc_
+
+If you are getting the error:
+```
+LoadError: cannot load such file -- sassc
+```
+Try `make run` for a short time, then use Ctrl+C to kill it
