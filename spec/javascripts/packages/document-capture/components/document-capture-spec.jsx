@@ -1,7 +1,11 @@
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
+import { render as baseRender, fireEvent } from '@testing-library/react';
 import { waitFor } from '@testing-library/dom';
-import httpUpload from '@18f/identity-document-capture/services/upload';
+import httpUpload, {
+  UploadFormEntriesError,
+  toFormEntryError,
+} from '@18f/identity-document-capture/services/upload';
 import {
   ServiceProviderContextProvider,
   UploadContextProvider,
@@ -28,11 +32,9 @@ describe('document-capture/components/document-capture', () => {
 
   let originalHash;
   let validUpload;
-  let validSelfieBase64;
 
   before(async () => {
     validUpload = await getFixtureFile('doc_auth_images/id-front.jpg');
-    validSelfieBase64 = await getFixture('doc_auth_images/selfie.jpg', 'base64');
   });
 
   beforeEach(() => {
@@ -81,8 +83,7 @@ describe('document-capture/components/document-capture', () => {
     await findByText('doc_auth.errors.camera.blocked_detail');
   });
 
-  it.skip('progresses through steps to completion', async () => {
-    // I believe this to be a selfie related test
+  it('progresses through steps to completion', async () => {
     const { getByLabelText, getByText, getAllByText, findAllByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
         <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
@@ -100,16 +101,15 @@ describe('document-capture/components/document-capture', () => {
         glare: 70,
         sharpness: 70,
         image: {
-          data: validSelfieBase64,
+          data: validUpload,
         },
       });
     });
-    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, validSelfieBase64);
 
     // Attempting to proceed without providing values will trigger error messages.
-    let continueButton = getByText('forms.buttons.continue');
-    await userEvent.click(continueButton);
-    let errors = await findAllByText('simple_form.required.text');
+    let submitButton = getByText('forms.buttons.submit.default');
+    await userEvent.click(submitButton);
+    const errors = await findAllByText('simple_form.required.text');
     expect(errors).to.have.lengthOf(2);
     expect(document.activeElement).to.equal(
       getByLabelText('doc_auth.headings.document_capture_front'),
@@ -130,26 +130,7 @@ describe('document-capture/components/document-capture', () => {
 
     // Continue only once all errors have been removed.
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    continueButton = getByText('forms.buttons.continue');
-    expect(isFormValid(continueButton.closest('form'))).to.be.true();
-    await userEvent.click(continueButton);
-
-    // Trigger validation by attempting to submit.
-    const submitButton = getByText('forms.buttons.submit.default');
-
-    await userEvent.click(submitButton);
-    errors = await findAllByText('simple_form.required.text');
-    expect(errors).to.have.lengthOf(1);
-    expect(document.activeElement).to.equal(
-      getByLabelText('doc_auth.headings.document_capture_selfie'),
-    );
-
-    // Provide value.
-    const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
-    fireEvent.click(selfieInput);
-
-    // Continue only once all errors have been removed.
-    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
+    submitButton = getByText('forms.buttons.submit.default');
     expect(isFormValid(submitButton.closest('form'))).to.be.true();
 
     await new Promise((resolve) => {
@@ -165,8 +146,7 @@ describe('document-capture/components/document-capture', () => {
     expect(event.defaultPrevented).to.be.false();
   });
 
-  it.skip('renders unhandled submission failure', async () => {
-    // I believe this to be a selfie related test
+  it('renders unhandled submission failure', async () => {
     const { getByLabelText, getByText, getAllByText, findAllByText, findByText } = render(
       <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
         <DocumentCapture />
@@ -177,19 +157,11 @@ describe('document-capture/components/document-capture', () => {
       },
     );
 
-    const continueButton = getByText('forms.buttons.continue');
-    await userEvent.click(continueButton);
-    await findAllByText('simple_form.required.text');
-    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
-    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
-    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    await userEvent.click(continueButton);
-
     let submitButton = getByText('forms.buttons.submit.default');
     await userEvent.click(submitButton);
     await findAllByText('simple_form.required.text');
-    const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
-    fireEvent.change(selfieInput, { target: { files: [validUpload] } });
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     await userEvent.click(submitButton);
 
@@ -205,7 +177,7 @@ describe('document-capture/components/document-capture', () => {
     const firstFocusable = getByLabelText('doc_auth.headings.document_capture_front');
     expect(document.activeElement).to.equal(firstFocusable);
 
-    const hasValueSelected = getAllByText('doc_auth.forms.change_file').length === 3;
+    const hasValueSelected = getAllByText('doc_auth.forms.change_file').length === 2;
     expect(hasValueSelected).to.be.true();
 
     // Verify re-submission. It will fail again, but test can at least assure that the interstitial
@@ -222,8 +194,7 @@ describe('document-capture/components/document-capture', () => {
     );
   });
 
-  it.skip('renders handled submission failure', async () => {
-    // I believe this to be a selfie related test
+  it('renders handled submission failure', async () => {
     const uploadError = new UploadFormEntriesError();
     uploadError.formEntryErrors = [
       { field: 'front', message: 'Image has glare' },
@@ -240,19 +211,11 @@ describe('document-capture/components/document-capture', () => {
       },
     );
 
-    const continueButton = getByText('forms.buttons.continue');
-    await userEvent.click(continueButton);
-    await findAllByText('simple_form.required.text');
-    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
-    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
-    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    await userEvent.click(continueButton);
-
     let submitButton = getByText('forms.buttons.submit.default');
     await userEvent.click(submitButton);
     await findAllByText('simple_form.required.text');
-    const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
-    fireEvent.change(selfieInput, { target: { files: [validUpload] } });
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     await userEvent.click(submitButton);
 
@@ -336,6 +299,86 @@ describe('document-capture/components/document-capture', () => {
     const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
     window.dispatchEvent(event);
     expect(event.defaultPrevented).to.be.false();
+  });
+
+  it('renders async upload pending progress', async () => {
+    const statusChecks = 3;
+    let remainingStatusChecks = statusChecks;
+    sandbox.stub(window, 'fetch').resolves({ ok: true, headers: new window.Headers() });
+    const upload = sinon.stub().callsFake((payload, { endpoint }) => {
+      switch (endpoint) {
+        case 'about:blank#upload':
+          expect(payload).to.have.keys([
+            'front_image_iv',
+            'front_image_url',
+            'front_image_metadata',
+            'back_image_iv',
+            'back_image_url',
+            'back_image_metadata',
+            'flow_path',
+          ]);
+
+          return Promise.resolve({ success: true, isPending: true });
+        case 'about:blank#status':
+          expect(payload).to.be.empty();
+
+          return Promise.resolve({ success: true, isPending: Boolean(remainingStatusChecks--) });
+        default:
+          throw new Error();
+      }
+    });
+    const key = await window.crypto.subtle.generateKey(
+      {
+        name: 'AES-GCM',
+        length: 256,
+      },
+      true,
+      ['encrypt', 'decrypt'],
+    );
+
+    const { getByLabelText, getByText, getAllByText, findAllByText } = baseRender(
+      <UploadContextProvider
+        endpoint="about:blank#upload"
+        statusEndpoint="about:blank#status"
+        statusPollInterval={0}
+        backgroundUploadURLs={{
+          front: 'about:blank#front',
+          back: 'about:blank#back',
+        }}
+        backgroundUploadEncryptKey={key}
+        upload={upload}
+      >
+        <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+          <DocumentCapture isAsyncForm />
+        </AcuantContextProvider>
+      </UploadContextProvider>,
+    );
+
+    const submitButton = getByText('forms.buttons.submit.default');
+    await userEvent.click(submitButton);
+    await findAllByText('simple_form.required.text');
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
+    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
+
+    return new Promise((resolve) => {
+      onSubmit.callsFake(() => {
+        // Error logged at initial pending retry.
+        expect(console).to.have.loggedError(/^Error: Uncaught/);
+        expect(console).to.have.loggedError(/React will try to recreate this component/);
+
+        // Error logged at every scheduled check thereafter.
+        for (let i = 0; i < statusChecks; i++) {
+          expect(console).to.have.loggedError(/^Error: Uncaught/);
+          expect(console).to.have.loggedError(/React will try to recreate this component/);
+        }
+
+        resolve();
+      });
+
+      // eslint-disable-next-line no-restricted-syntax
+      userEvent.click(submitButton);
+    });
   });
 
   describe('pending promise values', () => {
