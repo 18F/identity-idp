@@ -103,24 +103,30 @@ class GetUspsProofingResultsJob < ApplicationJob
       status_check_attempted_at = Time.zone.now
       enrollment_outcomes[:enrollments_checked] += 1
       response = nil
-      errored = true
 
       begin
         response = proofer.request_proofing_results(
           enrollment.unique_id, enrollment.enrollment_code
         )
-        errored = false
       rescue Faraday::BadRequestError => err
+        # 400 status code. This is used for some status updates and some common client errors
         handle_bad_request_error(err, enrollment)
+      rescue Faraday::ClientError, Faraday::ServerError => err
+        # 4xx or 5xx status code. These are unexpected but will have some sort of
+        # response body that we can try to log data from
+        handle_client_or_server_error(err, enrollment)
+      rescue Faraday::Error => err
+        # Timeouts, failed connections, parsing errors, and other HTTP errors. These
+        # generally won't have a response body
+        handle_faraday_error(err, enrollment)
       rescue StandardError => err
-        NewRelic::Agent.notice_error(err)
         handle_standard_error(err, enrollment)
+      else
+        process_enrollment_response(enrollment, response)
+      ensure
+        # Record the attempt to update the enrollment
+        enrollment.update(status_check_attempted_at: status_check_attempted_at)
       end
-
-      process_enrollment_response(enrollment, response) unless errored
-
-      # Record the attempt to update the enrollment
-      enrollment.update(status_check_attempted_at: status_check_attempted_at)
 
       # Sleep for a while before we attempt to make another call to USPS
       sleep request_delay_in_seconds if idx < enrollments.length - 1
@@ -132,7 +138,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_bad_request_error(err, enrollment)
-    case err.response&.[](:body)&.[]('responseMessage')
+    response = err.response_body
+    case response&.[]('responseMessage')
     when IPP_INCOMPLETE_ERROR_MESSAGE
       # Customer has not been to post office for IPP
       enrollment_outcomes[:enrollments_in_progress] += 1
@@ -141,29 +148,54 @@ class GetUspsProofingResultsJob < ApplicationJob
     else
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
         **enrollment_analytics_attributes(enrollment, complete: false),
-        **response_analytics_attributes(err.response),
-        reason: 'Request exception',
+        **response_analytics_attributes(response),
         exception_class: err.class.to_s,
         exception_message: err.message,
+        reason: 'Request exception',
+        response_status_code: err.response_status,
       )
       enrollment_outcomes[:enrollments_errored] += 1
     end
   end
 
-  def handle_standard_error(err, enrollment)
-    response_attributes = if err.respond_to?(:response)
-                            response_analytics_attributes(err.response)
-                          else
-                            response_analytics_attributes(nil)
-                          end
+  def handle_client_or_server_error(err, enrollment)
+    NewRelic::Agent.notice_error(err)
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
+      **enrollment_analytics_attributes(enrollment, complete: false),
+      **response_analytics_attributes(err.response_body),
+      exception_class: err.class.to_s,
+      exception_message: err.message,
+      reason: 'Request exception',
+      response_status_code: err.response_status,
+    )
+    enrollment_outcomes[:enrollments_errored] += 1
+  end
 
+  def handle_faraday_error(err, enrollment)
+    NewRelic::Agent.notice_error(err)
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
+      **enrollment_analytics_attributes(enrollment, complete: false),
+      # There probably isn't a response body or status for these types of errors but we try to log
+      # them in case there is
+      **response_analytics_attributes(err.response_body),
+      response_status_code: err.response_status,
+      exception_class: err.class.to_s,
+      exception_message: err.message,
+      reason: 'Request exception',
+    )
+    enrollment_outcomes[:enrollments_errored] += 1
+  end
+
+  def handle_standard_error(err, enrollment)
+    NewRelic::Agent.notice_error(err)
+    response_attributes = response_analytics_attributes(nil)
     enrollment_outcomes[:enrollments_errored] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       **enrollment_analytics_attributes(enrollment, complete: false),
       **response_attributes,
-      reason: 'Request exception',
       exception_class: err.class.to_s,
       exception_message: err.message,
+      reason: 'Request exception',
     )
   end
 
@@ -238,7 +270,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     enrollment_outcomes[:enrollments_passed] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
-      **response_analytics_attributes(**response),
+      **response_analytics_attributes(response),
       fraud_suspected: response['fraudSuspected'],
       passed: true,
       reason: 'Successful status update',

@@ -133,19 +133,6 @@ module IdvHelper
     )
   end
 
-  def visit_idp_from_oidc_sp_with_ial2_strict
-    visit openid_connect_authorize_path(
-      client_id: sp_oidc_issuer,
-      response_type: 'code',
-      acr_values: Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
-      scope: 'openid email profile:name phone social_security_number',
-      redirect_uri: sp_oidc_redirect_uri,
-      state: SecureRandom.hex,
-      prompt: 'select_account',
-      nonce: SecureRandom.hex,
-    )
-  end
-
   def visit_idp_from_saml_sp_with_loa3
     saml_overrides = {
       issuer: sp1_issuer,
