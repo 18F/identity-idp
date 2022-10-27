@@ -24,6 +24,17 @@ RSpec.describe LanguagePickerComponent, type: :component do
     expect(button_controls).to eq(list)
   end
 
+  it 'renders language options in their native locale' do
+    rendered = render_inline LanguagePickerComponent.new
+
+    I18n.available_locales.each do |locale|
+      expect(rendered).to have_xpath(
+        ".//a[text()='#{t("i18n.locale.#{locale}", locale: locale)}'][@lang='#{locale}']",
+        visible: false,
+      )
+    end
+  end
+
   context 'with tag options' do
     it 'renders with attributes' do
       rendered = render_inline LanguagePickerComponent.new(class: 'example', data: { foo: 'bar' })
