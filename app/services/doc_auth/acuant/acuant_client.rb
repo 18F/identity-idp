@@ -41,6 +41,7 @@ module DocAuth
         front_image:,
         back_image:,
         image_source:,
+        liveness_checking_enabled: nil,
         user_uuid: nil,
         uuid_prefix: nil
       )
