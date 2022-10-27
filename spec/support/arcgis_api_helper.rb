@@ -40,10 +40,10 @@ module ArcgisApiHelper
     )
   end
 
-  def stub_generate_token_response(expires_at = 1.hour.from_now.to_i)
+  def stub_generate_token_response(expires_at: 1.hour.from_now.to_i, token: 'abc123')
     stub_request(:post, %r{/generateToken}).to_return(
       status: 200, body: {
-        token: 'abc123',
+        token: token,
         expires: expires_at,
         ssl: true,
       }.to_json,
