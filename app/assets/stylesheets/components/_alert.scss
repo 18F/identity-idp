@@ -1,18 +1,8 @@
-.irs-reproofing-notice {
-  background-color: #007187;
-  color: #ffffff;
-}
-
-.irs-reproofing-notice:before {
-  background-image: url('alert/irs-info.svg') no-repeat center/contain;
-  background-color: #fff;
-}
-
-@supports ((-webkit-mask: url('')) or (mask: url(''))) {
-  .irs-reproofing-notice:before {
-    background: none;
-    background-color: #fff;
-    -webkit-mask: url('alert/irs-info.svg') no-repeat center/contain;
-    mask: url('alert/irs-info.svg') no-repeat center/contain;
+.usa-alert--info-important {
+  @include u-bg('accent-cool-darker');
+  color: color('white');
+  
+  &::before {
+    background-image: url('alert/info-white.svg');
   }
 }
