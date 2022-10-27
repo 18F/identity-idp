@@ -45,6 +45,7 @@ module DocAuth
           image_source: image_source,
         ).fetch
       end
+      # rubocop:enable Lint/UnusedMethodArgument
     end
   end
 end
