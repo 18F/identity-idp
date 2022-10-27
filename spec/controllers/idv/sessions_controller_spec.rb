@@ -1,5 +1,62 @@
 require 'rails_helper'
 
+shared_examples 'the idv/doc_auth session is cleared' do
+  it 'clears the session' do
+    expect(controller.user_session['idv/doc_auth']).to be_blank
+  end
+end
+
+shared_examples 'the idv/in_person session is cleared' do
+  it 'clears the session' do
+    expect(controller.user_session['idv/in_person']).to be_blank
+  end
+end
+
+shared_examples 'the idv/inherited_proofing session is cleared' do
+  it 'clears the session' do
+    expect(controller.user_session['idv/inherited_proofing']).to be_blank
+  end
+end
+
+shared_examples 'the decrypted_pii session is cleared' do
+  it 'clears the session' do
+    expect(controller.user_session[:decrypted_pii]).to be_blank
+  end
+end
+
+shared_examples 'a redirect occurs to the start of identity verificaton' do
+  it 'redirects' do
+    delete :destroy
+
+    expect(response).to redirect_to(idv_url)
+  end
+end
+
+shared_examples 'logs IDV start over analytics with step and location params' do
+  it 'logs the analytics' do
+    delete :destroy, params: { step: 'first', location: 'get_help' }
+
+    expect(@analytics).to have_logged_event(
+      'IdV: start over',
+      step: 'first',
+      location: 'get_help',
+    )
+  end
+end
+
+# LG-7128: Implement Inherited Proofing analytics here.
+shared_examples 'logs Inherited Proofing start over analytics with step and location params' do
+  xit 'logs the analytics' do
+    delete :destroy, params: { step: 'first', location: 'get_help' }
+
+    expect(@analytics).to have_logged_event(
+      'InheritedProofing: start over',
+      step: 'first',
+      location: 'get_help',
+    )
+  end
+end
+
 describe Idv::SessionsController do
   let(:user) { build(:user) }
 
@@ -16,84 +73,122 @@ describe Idv::SessionsController do
     before do
       allow(idv_session).to receive(:clear)
       allow(subject).to receive(:idv_session).and_return(idv_session)
-      controller.user_session['idv/doc_auth'] = flow_session
-      controller.user_session['idv/in_person'] = flow_session
+      controller.user_session['idv/doc_auth'] = { idv_doc_auth_session: true }
+      controller.user_session['idv/in_person'] = { idv_in_person_session: true }
       controller.user_session[:decrypted_pii] = pii
     end
 
-    it 'deletes idv session' do
-      expect(idv_session).to receive(:clear)
-
-      delete :destroy
-
-      expect(controller.user_session['idv/doc_auth']).to be_blank
-      expect(controller.user_session['idv/in_person']).to be_blank
-      expect(controller.user_session[:decrypted_pii]).to be_blank
-    end
-
-    it 'logs start over with step and location params' do
-      delete :destroy, params: { step: 'first', location: 'get_help' }
-
-      expect(@analytics).to have_logged_event(
-        'IdV: start over',
-        step: 'first',
-        location: 'get_help',
-      )
-    end
-
-    it 'redirects to start of identity verificaton' do
-      delete :destroy
-
-      expect(response).to redirect_to(idv_url)
-    end
-
-    context 'pending profile' do
-      let(:user) do
-        create(
-          :user,
-          profiles: [create(:profile, deactivation_reason: :gpo_verification_pending)],
-        )
-      end
-
-      it 'cancels verification attempt' do
-        cancel = double
-        expect(Idv::CancelVerificationAttempt).to receive(:new).and_return(cancel)
-        expect(cancel).to receive(:call)
-
-        delete :destroy, params: { step: 'gpo_verify', location: 'clear_and_start_over' }
-        expect(@analytics).to have_logged_event(
-          'IdV: start over',
-          step: 'gpo_verify',
-          location: 'clear_and_start_over',
-        )
-      end
-    end
-
-    context 'with in person enrollment' do
-      let(:user) { build(:user, :with_pending_in_person_enrollment) }
-
+    context 'when inherited proofing' do
       before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:inherited_proofing_enabled).and_return(true)
+        allow(subject).to receive(:inherited_proofing?).and_return true
       end
 
-      it 'cancels pending in person enrollment' do
-        pending_enrollment = user.pending_in_person_enrollment
-        expect(user.reload.pending_in_person_enrollment).to_not be_blank
-        delete :destroy
+      context 'when destroying the session' do
+        before do
+          allow(IdentityConfig.store).to receive(:inherited_proofing_enabled).and_return(true)
+          allow(subject).to receive(:inherited_proofing?).and_return true
+          controller.user_session['idv/inherited_proofing'] = idv_inherited_proofing_session
 
-        pending_enrollment.reload
-        expect(pending_enrollment.status).to eq('cancelled')
-        expect(user.reload.pending_in_person_enrollment).to be_blank
+          expect(idv_session).to receive(:clear)
+
+          delete :destroy
+        end
+
+        let(:auth_code) { Idv::InheritedProofing::Va::Mocks::Service::VALID_AUTH_CODE }
+        let(:payload_hash) { Idv::InheritedProofing::Va::Mocks::Service::PAYLOAD_HASH }
+        let(:pii) { Idv::InheritedProofing::Va::Form.new(payload_hash: payload_hash).user_pii }
+
+        let(:idv_inherited_proofing_session) do
+          {
+            'pii_from_user' => {
+              'uuid' => '5b7a6a09-840a-4139-b1e2-edee2462f8d2',
+            },
+            'error_message' => nil,
+            'Idv::Steps::InheritedProofing::GetStartedStep' => true,
+          }
+        end
+
+        it_behaves_like 'the idv/doc_auth session is cleared'
+        it_behaves_like 'the idv/in_person session is cleared'
+        it_behaves_like 'the idv/inherited_proofing session is cleared'
+        it_behaves_like 'the decrypted_pii session is cleared'
       end
 
-      it 'cancels establishing in person enrollment' do
-        establishing_enrollment = create(:in_person_enrollment, :establishing, user: user)
-        expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(1)
-        delete :destroy
+      # In the case of Inherited Proofing (IP) we will redirect to the
+      # idv_url, which will pass through the IdvController and eventually
+      # redirect us to the idv_inherited_proofing_url. This is by design
+      # so that analytics can be logged, throttling and quotes can be
+      # properly checked; this could not take place if we simply redirected
+      # to idv_inherited_proofing_url.
+      it_behaves_like 'a redirect occurs to the start of identity verificaton'
+      it_behaves_like 'logs IDV start over analytics with step and location params'
+      it_behaves_like 'logs Inherited Proofing start over analytics with step and location params'
+    end
 
-        establishing_enrollment.reload
-        expect(establishing_enrollment.status).to eq('cancelled')
-        expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(0)
+    context 'when idv proofing' do
+      context 'when destroying the session' do
+        before do
+          expect(idv_session).to receive(:clear)
+          delete :destroy
+        end
+
+        it_behaves_like 'the idv/doc_auth session is cleared'
+        it_behaves_like 'the idv/in_person session is cleared'
+        it_behaves_like 'the decrypted_pii session is cleared'
+      end
+
+      it_behaves_like 'logs IDV start over analytics with step and location params'
+      it_behaves_like 'a redirect occurs to the start of identity verificaton'
+
+      context 'pending profile' do
+        let(:user) do
+          create(
+            :user,
+            profiles: [create(:profile, deactivation_reason: :gpo_verification_pending)],
+          )
+        end
+
+        it 'cancels verification attempt' do
+          cancel = double
+          expect(Idv::CancelVerificationAttempt).to receive(:new).and_return(cancel)
+          expect(cancel).to receive(:call)
+
+          delete :destroy, params: { step: 'gpo_verify', location: 'clear_and_start_over' }
+          expect(@analytics).to have_logged_event(
+            'IdV: start over',
+            step: 'gpo_verify',
+            location: 'clear_and_start_over',
+          )
+        end
+      end
+
+      context 'with in person enrollment' do
+        let(:user) { build(:user, :with_pending_in_person_enrollment) }
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        end
+
+        it 'cancels pending in person enrollment' do
+          pending_enrollment = user.pending_in_person_enrollment
+          expect(user.reload.pending_in_person_enrollment).to_not be_blank
+          delete :destroy
+
+          pending_enrollment.reload
+          expect(pending_enrollment.status).to eq('cancelled')
+          expect(user.reload.pending_in_person_enrollment).to be_blank
+        end
+
+        it 'cancels establishing in person enrollment' do
+          establishing_enrollment = create(:in_person_enrollment, :establishing, user: user)
+          expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(1)
+          delete :destroy
+
+          establishing_enrollment.reload
+          expect(establishing_enrollment.status).to eq('cancelled')
+          expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(0)
+        end
       end
     end
   end
