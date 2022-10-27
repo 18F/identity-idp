@@ -59,14 +59,9 @@ module ArcgisApi
     # it expires after 1 hour
     # @return [String] Auth token
     def retrieve_token!
-      token_response_body = request_token
-      new_token = token_response_body['token']
-
-      Rails.cache.write(
-        API_TOKEN_CACHE_KEY, new_token,
-        expires_at: Time.zone.at(token_response_body['expires'])
-      )
-      new_token
+      token, expires = request_token.fetch_values('token', 'expires')
+      Rails.cache.write(API_TOKEN_CACHE_KEY, token, expires_at: Time.zone.at(expires))
+      token
     end
 
     # Checks the cache for an unexpired token and returns that.
