@@ -69,6 +69,9 @@ module ArcgisApi
       new_token
     end
 
+    # Checks the cache for an unexpired token and returns that.
+    # If the cache has expired, retrieves a new token and returns it
+    # @return [String] Auth token
     def token
       Rails.cache.read(API_TOKEN_CACHE_KEY) || retrieve_token!
     end

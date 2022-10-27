@@ -88,7 +88,7 @@ RSpec.describe ArcgisApi::Geocoder do
       allow(Rails).to receive(:cache).and_return(memory_store)
       Rails.cache.clear
     end
-  
+
     it 'sets token and token_expires_at' do
       stub_generate_token_response
       subject.retrieve_token!
@@ -137,15 +137,27 @@ RSpec.describe ArcgisApi::Geocoder do
       stub_generate_token_response(1.hour.from_now.to_i)
       stub_request_suggestions
       subject.suggest('100 Main')
-      expect(subject.token_valid?).to be(true)
+      expect(Rails.cache.exist?(ArcgisApi::Geocoder::API_TOKEN_CACHE_KEY)).to be(true)
 
       travel 2.hours
-      expect(subject.token_valid?).to be(false)
+      expect(Rails.cache.exist?(ArcgisApi::Geocoder::API_TOKEN_CACHE_KEY)).to be(false)
 
       stub_generate_token_response
       stub_request_suggestions
       subject.suggest('100 Main')
-      expect(subject.token_valid?).to be(true)
+      expect(Rails.cache.exist?(ArcgisApi::Geocoder::API_TOKEN_CACHE_KEY)).to be(true)
+    end
+
+    it 'reuses the cached token across instances' do
+      stub_generate_token_response
+      stub_request_suggestions
+      stub_request_suggestions
+
+      client1 = ArcgisApi::Geocoder.new
+      client2 = ArcgisApi::Geocoder.new
+
+      client1.suggest('1')
+      client2.suggest('100')
     end
   end
 end
