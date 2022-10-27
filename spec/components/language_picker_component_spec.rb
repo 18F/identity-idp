@@ -5,10 +5,12 @@ RSpec.describe LanguagePickerComponent, type: :component do
     with_request_url('/') { example.run }
   end
 
-  it 'renders language picker accordion element' do
+  it 'renders collapsed language picker accordion element' do
     rendered = render_inline LanguagePickerComponent.new
 
     expect(rendered).to have_css('.language-picker.usa-accordion')
+    expect(rendered).to have_css('.usa-accordion__button[aria-expanded="false"]')
+    expect(rendered).to have_css('.usa-accordion__content', visible: false)
   end
 
   context 'with tag options' do
