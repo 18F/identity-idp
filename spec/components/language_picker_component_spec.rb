@@ -13,6 +13,17 @@ RSpec.describe LanguagePickerComponent, type: :component do
     expect(rendered).to have_css('.usa-accordion__content', visible: false)
   end
 
+  it 'renders with accessible relationships' do
+    rendered = render_inline LanguagePickerComponent.new
+
+    list = rendered.at_css('ul')
+    list_description = rendered.at_css("##{list['aria-describedby']}").text.strip
+    button_controls = rendered.at_css("##{rendered.at_css('[aria-controls]')['aria-controls']}")
+
+    expect(list_description).to eq(t('i18n.language'))
+    expect(button_controls).to eq(list)
+  end
+
   context 'with tag options' do
     it 'renders with attributes' do
       rendered = render_inline LanguagePickerComponent.new(class: 'example', data: { foo: 'bar' })
