@@ -63,16 +63,11 @@ es:
           información para confirmar que coincide con su cédula en persona.'
     form:
       address:
-        address1: Dirección
-        address2: Dirección (opcional)
-        city: Ciudad
         same_address: '¿Aparece esta dirección en la cédula de identidad emitido por el
           Estado que va a llevar a la oficina de Correos?'
         same_address_choice_no: Tengo una dirección diferente en mi cédula de identidad
         same_address_choice_yes: Esta dirección aparece en mi cédula de identidad emitida por el estado
-        state: Estado
         state_prompt: '- Seleccione -'
-        zipcode: Código postal
       state_id:
         dob: Fecha de nacimiento
         dob_hint: 'Ejemplo: 4 28 1986'

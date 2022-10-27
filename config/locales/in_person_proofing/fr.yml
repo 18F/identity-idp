@@ -66,16 +66,11 @@ fr:
           d’identité en personne.'
     form:
       address:
-        address1: Adresse
-        address2: Adresse (facultatif)
-        city: Ville
         same_address: Cette adresse figure-t-elle sur la pièce d’identité délivrée par
           l’État que vous apportez au bureau de poste?
         same_address_choice_no: J’ai une adresse différente sur mon document d’identité
         same_address_choice_yes: Cette adresse figure sur mon document d’identité nationale
-        state: État
         state_prompt: '- Sélectionnez -'
-        zipcode: Code postal
       state_id:
         dob: Date de naissance
         dob_hint: 'Exemple: 4 28 1986'
