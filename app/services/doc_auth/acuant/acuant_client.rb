@@ -32,23 +32,6 @@ module DocAuth
         ).fetch
       end
 
-      def post_selfie(image:, instance_id:)
-        get_face_image_response = Requests::GetFaceImageRequest.new(
-          config: config,
-          instance_id: instance_id,
-        ).fetch
-        return get_face_image_response unless get_face_image_response.success?
-
-        facial_match_response = Requests::FacialMatchRequest.new(
-          config: config,
-          selfie_image: image,
-          document_face_image: get_face_image_response.image,
-        ).fetch
-        liveness_response = Requests::LivenessRequest.new(config: config, image: image).fetch
-
-        facial_match_response.merge(liveness_response)
-      end
-
       def get_results(instance_id:)
         Requests::GetResultsRequest.new(config: config, instance_id: instance_id).fetch
       end
@@ -57,9 +40,7 @@ module DocAuth
       def post_images(
         front_image:,
         back_image:,
-        selfie_image:,
         image_source:,
-        liveness_checking_enabled: nil,
         user_uuid: nil,
         uuid_prefix: nil
       )
@@ -77,11 +58,7 @@ module DocAuth
         results_response = get_results(instance_id: instance_id)
         return results_response unless results_response.success?
 
-        if liveness_checking_enabled
-          post_selfie(image: selfie_image, instance_id: instance_id).merge(results_response)
-        else
-          results_response
-        end
+        results_response
       end
       # rubocop:enable Lint/UnusedMethodArgument
     end
