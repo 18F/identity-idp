@@ -30,11 +30,11 @@ module InPersonHelper
   end
 
   def fill_out_address_form_ok
-    fill_in t('in_person_proofing.form.address.address1'), with: GOOD_ADDRESS1
-    fill_in t('in_person_proofing.form.address.address2'), with: GOOD_ADDRESS2
-    fill_in t('in_person_proofing.form.address.city'), with: GOOD_CITY
-    fill_in t('in_person_proofing.form.address.zipcode'), with: GOOD_ZIPCODE
-    select GOOD_STATE, from: t('in_person_proofing.form.address.state')
+    fill_in t('idv.form.address1'), with: GOOD_ADDRESS1
+    fill_in t('idv.form.address2_optional'), with: GOOD_ADDRESS2
+    fill_in t('idv.form.city'), with: GOOD_CITY
+    fill_in t('idv.form.zipcode'), with: GOOD_ZIPCODE
+    select GOOD_STATE, from: t('idv.form.state')
     choose t('in_person_proofing.form.address.same_address_choice_yes')
   end
 
