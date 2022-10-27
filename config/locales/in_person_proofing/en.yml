@@ -57,16 +57,11 @@ en:
           ID in person.'
     form:
       address:
-        address1: Address
-        address2: Address (optional)
-        city: City
         same_address: 'Is this address displayed on the state-issued ID that you are
           bringing to the Post Office?'
         same_address_choice_no: I have a different address on my ID
         same_address_choice_yes: This address is on my state-issued ID
-        state: State
         state_prompt: '- Select -'
-        zipcode: ZIP Code
       state_id:
         dob: Date of birth
         dob_hint: 'Example: 4 28 1986'

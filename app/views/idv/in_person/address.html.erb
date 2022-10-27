@@ -24,7 +24,7 @@
   <%= render ValidatedFieldComponent.new(
         form: f,
         input_html: { value: pii[:address1] },
-        label: t('in_person_proofing.form.address.address1'),
+        label: t('idv.form.address1'),
         label_html: { class: 'usa-label' },
         maxlength: 255,
         name: :address1,
@@ -33,7 +33,7 @@
   <%= render ValidatedFieldComponent.new(
         form: f,
         input_html: { value: pii[:address2] },
-        label: t('in_person_proofing.form.address.address2'),
+        label: t('idv.form.address2_optional'),
         label_html: { class: 'usa-label' },
         maxlength: 255,
         name: :address2,
@@ -42,7 +42,7 @@
   <%= render ValidatedFieldComponent.new(
         form: f,
         input_html: { value: pii[:city] },
-        label: t('in_person_proofing.form.address.city'),
+        label: t('idv.form.city'),
         label_html: { class: 'usa-label' },
         maxlength: 255,
         name: :city,
@@ -51,7 +51,7 @@
   <%= render ValidatedFieldComponent.new(
         collection: us_states_territories,
         form: f,
-        label: t('in_person_proofing.form.address.state'),
+        label: t('idv.form.state'),
         label_html: { class: 'usa-label' },
         name: :state,
         prompt: t('in_person_proofing.form.address.state_prompt'),
@@ -66,7 +66,7 @@
           error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.zipcode') },
           form: f,
           input_html: { value: pii[:zipcode], class: 'zipcode' },
-          label: t('in_person_proofing.form.address.zipcode'),
+          label: t('idv.form.zipcode'),
           label_html: { class: 'usa-label' },
           name: :zipcode,
           pattern: '\d{5}([\-]\d{4})?',
