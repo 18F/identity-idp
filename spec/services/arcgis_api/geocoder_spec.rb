@@ -126,18 +126,30 @@ RSpec.describe ArcgisApi::Geocoder do
     end
 
     it 'implicitly refreshes the token when expired' do
+      root_url = 'http://my.root.url'
+      allow(IdentityConfig.store).to receive(:arcgis_api_root_url).
+        and_return(root_url)
+
       stub_generate_token_response(1.hour.from_now.to_i)
       stub_request_suggestions
       subject.suggest('100 Main')
-      expect(Rails.cache.exist?(ArcgisApi::Geocoder::API_TOKEN_CACHE_KEY)).to be(true)
 
       travel 2.hours
-      expect(Rails.cache.exist?(ArcgisApi::Geocoder::API_TOKEN_CACHE_KEY)).to be(false)
 
       stub_generate_token_response
       stub_request_suggestions
       subject.suggest('100 Main')
-      expect(Rails.cache.exist?(ArcgisApi::Geocoder::API_TOKEN_CACHE_KEY)).to be(true)
+
+      expect(WebMock).to have_requested(:post, %r{/generateToken}).twice
+      expect(WebMock).to have_requested(:get, %r{/suggest}).
+        with(
+          headers: {
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Authorization' => 'Bearer abc123',
+            'User-Agent' => 'Faraday v1.8.0',
+          },
+        ).twice
     end
 
     it 'reuses the cached token across instances' do
