@@ -184,6 +184,8 @@ es:
       interstitial_eta: Esto puede tardar hasta un minuto. Cargaremos el siguiente
         paso automáticamente cuando esté terminado.
       interstitial_thanks: '¡Gracias por su paciencia!'
+      irs_reproofing_explanation: Como medida adicional de seguridad, tiene que
+        verificar su identidad de nuevo para el Servicio Interno de Impuestos.
       keep_window_open: No cierres esta ventana.
       lets_go: 'La verificación de la identidad se realiza en dos partes:'
       link_sent: Verifique su teléfono y siga las instrucciones para tomar una

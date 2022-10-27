@@ -155,6 +155,7 @@ en:
       interstitial_eta: This might take up to a minute. We’ll load the next step
         automatically when it’s done.
       interstitial_thanks: Thanks for your patience!
+      irs_reproofing_explanation: As an extra security measure, you must verify your identity again for IRS
       keep_window_open: Do not close this window.
       lets_go: 'Identity verification happens in two parts:'
       link_sent: Please check your phone and follow instructions to take a photo of
