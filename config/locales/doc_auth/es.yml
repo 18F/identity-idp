@@ -80,8 +80,6 @@ es:
         invalid: Ese formato no es admitido, por favor elija un archivo JPG o PNG.
       general:
         fallback_field_level: Agregue una imagen nueva
-        liveness: No pudimos verificar su documento de identidad y su foto. Intente
-          tomar nuevas fotografías.
         multiple_back_id_failures: No pudimos verificar la parte trasera de su documento
           de identidad. Intente tomar una nueva foto.
         multiple_front_id_failures: No pudimos verificar la parte delantera de su
