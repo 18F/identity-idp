@@ -13,13 +13,12 @@ RSpec.describe DocAuth::ErrorGenerator do
     doc_result: nil,
     passed: [],
     failed: [],
-    liveness_result: nil,
     image_metrics: {}
   )
     {
       conversation_id: 31000406181234,
       reference: 'Reference1',
-      liveness_enabled: liveness_result.present? ? true : false,
+      liveness_enabled: false,
       vendor: 'Test',
       transaction_reason_code: 'testing',
       doc_auth_result: doc_result,
@@ -28,12 +27,12 @@ RSpec.describe DocAuth::ErrorGenerator do
         failed: failed,
       },
       alert_failure_count: failed&.count.to_i,
-      portrait_match_results: { FaceMatchResult: liveness_result },
+      portrait_match_results: { FaceMatchResult: 'Pass' },
       image_metrics: image_metrics,
     }
   end
 
-  context 'The correct errors are delivered with liveness off when' do
+  context 'The correct errors are delivered when' do
     it 'DocAuthResult is Attention' do
       error_info = build_error_info(
         doc_result: 'Attention',
@@ -203,64 +202,6 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:hints]).to eq(true)
-    end
-  end
-
-  context 'The correct errors are delivered with liveness on when' do
-    it 'DocAuthResult is Attention and selfie has passed' do
-      error_info = build_error_info(
-        doc_result: 'Attention',
-        liveness_result: 'Pass',
-        failed: [{ name: '2D Barcode Read', result: 'Attention' }],
-      )
-
-      output = described_class.new(config).generate_doc_auth_errors(error_info)
-
-      expect(output.keys).to contain_exactly(:general, :back, :hints)
-      expect(output[:general]).to contain_exactly(DocAuth::Errors::BARCODE_READ_CHECK)
-      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
-      expect(output[:hints]).to eq(true)
-    end
-
-    it 'DocAuthResult is Attention and selfie has failed' do
-      error_info = build_error_info(
-        doc_result: 'Attention',
-        liveness_result: 'Fail',
-        failed: [{ name: '2D Barcode Read', result: 'Attention' }],
-      )
-
-      output = described_class.new(config).generate_doc_auth_errors(error_info)
-
-      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
-      expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
-      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
-      expect(output[:hints]).to eq(true)
-    end
-
-    it 'DocAuthResult is Attention and selfie has succeeded' do
-      error_info = build_error_info(
-        doc_result: 'Attention',
-        liveness_result: 'Pass',
-        failed: [{ name: '2D Barcode Read', result: 'Attention' }],
-      )
-
-      output = described_class.new(config).generate_doc_auth_errors(error_info)
-
-      expect(output.keys).to contain_exactly(:general, :back, :hints)
-      expect(output[:general]).to contain_exactly(DocAuth::Errors::BARCODE_READ_CHECK)
-      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
-      expect(output[:hints]).to eq(true)
-    end
-
-    it 'DocAuthResult has passed but liveness failed' do
-      error_info = build_error_info(doc_result: 'Passed', liveness_result: 'Fail')
-
-      output = described_class.new(config).generate_doc_auth_errors(error_info)
-
-      expect(output.keys).to contain_exactly(:general, :selfie, :hints)
-      expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
-      expect(output[:selfie]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
-      expect(output[:hints]).to eq(false)
     end
   end
 
