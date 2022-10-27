@@ -49,9 +49,6 @@ fr:
           d’identité. Essayez de prendre de nouvelles photos.
         ref_control_number_check: Nous n’avons pas pu lire le code-barres du numéro de
           contrôle. Essayez de prendre de nouvelles photos.
-        selfie_failure: Nous n’avons pas pu associer votre photo à votre pièce
-          d’identité. Essayez de prendre une nouvelle photo de vous-même ou du
-          recto de votre carte d’identité.
         sex_check: Nous n’avons pas pu lire le sexe sur votre pièce d’identité. Essayez
           de prendre de nouvelles photos.
         visible_color_check: Nous n’avons pas pu vérifier votre pièce d’identité. Elle a
