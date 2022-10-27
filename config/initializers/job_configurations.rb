@@ -213,8 +213,8 @@ else
         args: -> { [Time.zone.now] },
       },
       # Queue daily ready to verify reminder email job
-      email_job: {
-        class: 'EmailJob',
+      email_reminder_job: {
+        class: 'EmailReminderJob',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
