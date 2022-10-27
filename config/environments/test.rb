@@ -7,7 +7,7 @@ Rails.application.configure do
   config.public_file_server.headers = { 'Cache-Control' => 'public, max-age=3600' }
   config.consider_all_requests_local = true
   config.action_controller.perform_caching = false
-  config.cache_store = :null_store
+  config.cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
   config.action_dispatch.show_exceptions = false
   config.action_controller.allow_forgery_protection = false
   config.active_support.test_order = :random

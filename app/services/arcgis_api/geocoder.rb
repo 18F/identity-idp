@@ -6,7 +6,7 @@ module ArcgisApi
       keyword_init: true
     )
     Location = Struct.new(:latitude, :longitude, keyword_init: true)
-    API_TOKEN_CACHE_KEY = 'arcgis_api_token'
+    API_TOKEN_CACHE_KEY = :arcgis_api_token
 
     # These are option URL params that tend to apply to multiple endpoints
     # https://developers.arcgis.com/rest/geocode/api-reference/geocoding-find-address-candidates.htm#ESRI_SECTION2_38613C3FCB12462CAADD55B2905140BF
