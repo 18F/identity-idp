@@ -89,7 +89,7 @@ RSpec.describe DocAuth::ErrorGenerator do
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
       expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
-      expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
       expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:hints]).to eq(true)
@@ -107,7 +107,7 @@ RSpec.describe DocAuth::ErrorGenerator do
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
       expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
-      expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
       expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:hints]).to eq(true)
@@ -159,7 +159,7 @@ RSpec.describe DocAuth::ErrorGenerator do
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
       expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
-      expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
       expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:hints]).to eq(true)
@@ -232,7 +232,7 @@ RSpec.describe DocAuth::ErrorGenerator do
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
       expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
-      expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_LIVENESS)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
       expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:hints]).to eq(true)
     end

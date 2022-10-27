@@ -180,7 +180,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       )
       expect(output[:success]).to eq(false)
       expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
-      expect(errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS)
+      expect(errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
       expect(errors[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(errors[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(errors[:hints]).to eq(true)
@@ -199,7 +199,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         success: false,
         exception: nil,
         errors: {
-          general: [DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS],
+          general: [DocAuth::Errors::GENERAL_ERROR],
           front: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
           back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
           hints: true,
@@ -258,7 +258,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(
-        general: [DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS],
+        general: [DocAuth::Errors::GENERAL_ERROR],
         hints: true,
       )
       expect(output).to include(:lexis_nexis_status, :lexis_nexis_info, :exception)

@@ -14,8 +14,7 @@ module DocAuth
     DOCUMENT_EXPIRED_CHECK = 'doc_expired_check' # document has expired
     EXPIRATION_CHECKS = 'expiration_checks' # expiration date valid, expiration crosscheck
     FULL_NAME_CHECK = 'full_name_check'
-    GENERAL_ERROR_LIVENESS = 'general_error_liveness'
-    GENERAL_ERROR_NO_LIVENESS = 'general_error_no_liveness'
+    GENERAL_ERROR = 'general_error'
     ID_NOT_RECOGNIZED = 'id_not_recognized'
     ID_NOT_VERIFIED = 'id_not_verified'
     ISSUE_DATE_CHECKS = 'issue_date_checks'
@@ -52,8 +51,7 @@ module DocAuth
       DOC_NUMBER_CHECKS,
       EXPIRATION_CHECKS,
       FULL_NAME_CHECK,
-      GENERAL_ERROR_LIVENESS,
-      GENERAL_ERROR_NO_LIVENESS,
+      GENERAL_ERROR,
       ID_NOT_RECOGNIZED,
       ID_NOT_VERIFIED,
       ISSUE_DATE_CHECKS,
@@ -109,8 +107,7 @@ module DocAuth
       # Multiple Errors
       MULTIPLE_FRONT_ID_FAILURES => { long_msg: MULTIPLE_FRONT_ID_FAILURES, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       MULTIPLE_BACK_ID_FAILURES => { long_msg: MULTIPLE_BACK_ID_FAILURES, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
-      GENERAL_ERROR_LIVENESS => { long_msg: GENERAL_ERROR_LIVENESS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
-      GENERAL_ERROR_NO_LIVENESS => { long_msg: GENERAL_ERROR_NO_LIVENESS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      GENERAL_ERROR => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       # Liveness
       SELFIE_FAILURE => { long_msg: SELFIE_FAILURE, field_msg: FALLBACK_FIELD_LEVEL, hints: false },
     }

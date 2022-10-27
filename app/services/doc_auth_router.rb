@@ -28,11 +28,8 @@ module DocAuthRouter
     # i18n-tasks-use t('doc_auth.errors.alerts.full_name_check')
     DocAuth::Errors::FULL_NAME_CHECK =>
       'doc_auth.errors.alerts.full_name_check',
-    # i18n-tasks-use t('doc_auth.errors.general.liveness')
-    DocAuth::Errors::GENERAL_ERROR_LIVENESS =>
-      'doc_auth.errors.general.liveness',
     # i18n-tasks-use t('doc_auth.errors.general.no_liveness')
-    DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS =>
+    DocAuth::Errors::GENERAL_ERROR =>
       'doc_auth.errors.general.no_liveness',
     # i18n-tasks-use t('doc_auth.errors.alerts.id_not_recognized')
     DocAuth::Errors::ID_NOT_RECOGNIZED =>

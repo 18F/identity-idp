@@ -62,7 +62,7 @@ module DocAuth
           if true_id_product&.dig(:AUTHENTICATION_RESULT).present?
             ErrorGenerator.new(config).generate_doc_auth_errors(response_info)
           elsif true_id_product.present?
-            ErrorGenerator.wrapped_general_error(false)
+            ErrorGenerator.wrapped_general_error
           else
             { network: true } # return a generic technical difficulties error to user
           end
