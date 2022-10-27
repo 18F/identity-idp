@@ -57,14 +57,16 @@ module ArcgisApi
 
     # Makes a request to retrieve a new token
     # it expires after 1 hour
+    # @return [String] Auth token
     def retrieve_token!
-      if token.blank?
-        token_response_body = request_token
-        Rails.cache.write(
-          API_TOKEN_CACHE_KEY, token_response_body['token'],
-          expires_at: Time.zone.at(token_response_body['expires'])
-        )
-      end
+      token_response_body = request_token
+      new_token = token_response_body['token']
+
+      Rails.cache.write(
+        API_TOKEN_CACHE_KEY, new_token,
+        expires_at: Time.zone.at(token_response_body['expires'])
+      )
+      new_token
     end
 
     def token_valid?
@@ -72,7 +74,7 @@ module ArcgisApi
     end
 
     def token
-      Rails.cache.read(API_TOKEN_CACHE_KEY)
+      Rails.cache.read(API_TOKEN_CACHE_KEY) || retrieve_token!
     end
 
     private
@@ -142,8 +144,6 @@ module ArcgisApi
     #
     # Returns the same value returned by that block of code.
     def dynamic_headers
-      retrieve_token! unless token_valid?
-
       { 'Authorization' => "Bearer #{token}" }
     end
 
