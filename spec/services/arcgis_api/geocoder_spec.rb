@@ -81,12 +81,19 @@ RSpec.describe ArcgisApi::Geocoder do
   end
 
   describe '#retrieve_token!' do
+    let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
+    let(:cache) { Rails.cache }
+
+    before do
+      allow(Rails).to receive(:cache).and_return(memory_store)
+      Rails.cache.clear
+    end
+  
     it 'sets token and token_expires_at' do
       stub_generate_token_response
       subject.retrieve_token!
 
       expect(subject.token).to be_present
-      expect(subject.token_expires_at).to be_present
     end
 
     it 'calls the endpoint with the expected params' do

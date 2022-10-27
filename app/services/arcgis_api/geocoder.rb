@@ -1,13 +1,12 @@
 module ArcgisApi
   class Geocoder
-    mattr_reader :token, :token_expires_at
-
     Suggestion = Struct.new(:text, :magic_key, keyword_init: true)
     AddressCandidate = Struct.new(
       :address, :location, :street_address, :city, :state, :zip_code,
       keyword_init: true
     )
     Location = Struct.new(:latitude, :longitude, keyword_init: true)
+    API_TOKEN_CACHE_KEY = 'arcgis_api_token'
 
     # These are option URL params that tend to apply to multiple endpoints
     # https://developers.arcgis.com/rest/geocode/api-reference/geocoding-find-address-candidates.htm#ESRI_SECTION2_38613C3FCB12462CAADD55B2905140BF
@@ -58,15 +57,22 @@ module ArcgisApi
 
     # Makes a request to retrieve a new token
     # it expires after 1 hour
-    # @return [String] the token
     def retrieve_token!
-      body = request_token
-      @@token_expires_at = Time.zone.at(body['expires'])
-      @@token = body['token']
+      if token.blank?
+        token_response_body = request_token
+        Rails.cache.write(
+          API_TOKEN_CACHE_KEY, token_response_body['token'],
+          expires_at: Time.zone.at(token_response_body['expires'])
+        )
+      end
     end
 
     def token_valid?
-      token.present? && token_expires_at.present? && token_expires_at.future?
+      Rails.cache.exist?(API_TOKEN_CACHE_KEY)
+    end
+
+    def token
+      Rails.cache.read(API_TOKEN_CACHE_KEY)
     end
 
     private
