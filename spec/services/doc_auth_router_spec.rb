@@ -168,22 +168,6 @@ RSpec.describe DocAuthRouter do
       expect(response.errors[:network]).to eq(I18n.t('doc_auth.errors.general.network_error'))
     end
 
-    it 'translates generic selfie errors' do
-      DocAuth::Mock::DocAuthMockClient.mock_response!(
-        method: :get_results,
-        response: DocAuth::Response.new(
-          success: false,
-          errors: {
-            selfie: [DocAuth::Errors::SELFIE_FAILURE],
-          },
-        ),
-      )
-
-      response = proxy.get_results(instance_id: 'abcdef')
-
-      expect(response.errors[:selfie]).to eq([I18n.t('doc_auth.errors.alerts.selfie_failure')])
-    end
-
     it 'translates generic network errors' do
       DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_images,
@@ -223,7 +207,7 @@ RSpec.describe DocAuthRouter do
         front: [I18n.t('doc_auth.errors.alerts.visible_photo_check')],
         back: [I18n.t('doc_auth.errors.alerts.ref_control_number_check')],
         selfie: [I18n.t('doc_auth.errors.alerts.selfie_failure')],
-        general: [I18n.t('doc_auth.errors.general.liveness')],
+        general: [I18n.t('doc_auth.errors.general.no_liveness')],
         not_translated: true,
       )
     end
