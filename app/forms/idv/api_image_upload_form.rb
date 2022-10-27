@@ -66,8 +66,6 @@ module Idv
       response = doc_auth_client.post_images(
         front_image: front.read,
         back_image: back.read,
-        selfie_image: nil,
-        liveness_checking_enabled: false,
         image_source: image_source,
         user_uuid: user_uuid,
         uuid_prefix: uuid_prefix,

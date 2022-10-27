@@ -24,9 +24,14 @@ module DocAuth
         raise NotImplementedError
       end
 
+      # The unused selfie_image and liveness_checking_enabled should be removed once the calls to
+      # these no longer have those args
+      # rubocop:disable Lint/UnusedMethodArgument
       def post_images(
         front_image:,
         back_image:,
+        selfie_image: nil,
+        liveness_checking_enabled: nil,
         image_source: nil,
         user_uuid: nil,
         uuid_prefix: nil
