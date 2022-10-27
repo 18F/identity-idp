@@ -12,8 +12,7 @@ class DocumentProofingJob < ApplicationJob
     trace_id:,
     image_metadata:,
     analytics_data:,
-    flow_path:,
-    liveness_checking_enabled: nil
+    flow_path:
   )
     timer = JobHelpers::Timer.new
 
@@ -50,9 +49,7 @@ class DocumentProofingJob < ApplicationJob
       doc_auth_client.post_images(
         front_image: front_image,
         back_image: back_image,
-        selfie_image: nil,
         image_source: image_source(image_metadata),
-        liveness_checking_enabled: false,
         user_uuid: user_uuid,
         uuid_prefix: uuid_prefix,
       )
