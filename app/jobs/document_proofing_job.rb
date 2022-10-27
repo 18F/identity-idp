@@ -5,7 +5,6 @@ class DocumentProofingJob < ApplicationJob
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
-  # rubocop:disable Lint/UnusedMethodArgument
   def perform(
     result_id:,
     encrypted_arguments:,
