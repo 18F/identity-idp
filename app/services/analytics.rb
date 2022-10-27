@@ -135,6 +135,4 @@ class Analytics
     return value unless value.is_a?(String)
     Time.zone.parse(value)
   end
-
-  DOC_AUTH = 'Doc Auth' # visited or submitted is appended
 end

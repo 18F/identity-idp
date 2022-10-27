@@ -5,6 +5,14 @@ module Idv
         delegate :controller, :idv_session, to: :@flow
         STEP_INDICATOR_STEP = :getting_started
 
+        def self.analytics_visited_event
+          :idv_inherited_proofing_agreement_visited
+        end
+
+        def self.analytics_submitted_event
+          :idv_inherited_proofing_agreement_submitted
+        end
+
         def call
           enqueue_job
         end
@@ -24,7 +32,7 @@ module Idv
             inherited_proofing_verify_step_document_capture_session_uuid_key,
           )
 
-          doc_capture_session.create_doc_auth_session
+          doc_capture_session.create_proofing_session
 
           InheritedProofingJob.perform_later(
             controller.inherited_proofing_service_provider,

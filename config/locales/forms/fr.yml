@@ -178,6 +178,10 @@ fr:
       intro_link_text: En savoir plus sur le déverrouillage facial ou tactile.
       login_text: 'Lorsque vous êtes prêt, appuyez sur le bouton:'
       nickname: Pseudo dispositivo
+      warning_text: Si vous perdez ou changez votre appareil, vous devrez
+        réinitialiser votre compte. Nous vous conseillons de mettre en place
+        plusieurs méthodes d’authentification afin d’éviter que votre compte ne
+        se bloque.
     webauthn_setup:
       continue: Continuer
       instructions_text: Appuyez sur le bouton de votre clé de sécurité pour

@@ -143,7 +143,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
 
     it 'returns 500 error' do
       stub_request_token
-      stub_request_enroll_internal_failure_response
+      stub_request_enroll_internal_server_error_response
       applicant = double(
         'applicant',
         address: Faker::Address.street_address,

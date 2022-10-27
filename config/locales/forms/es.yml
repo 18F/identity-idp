@@ -173,6 +173,9 @@ es:
       intro_link_text: Conozca más sobre el desbloqueo facial o táctil.
       login_text: 'Cuando esté listo, presione el botón:'
       nickname: Apodo de dispositivo.
+      warning_text: En caso de que pierdas o cambies tu dispositivo, tienes que
+        restablecer tu cuenta. Para evitar el bloqueo de la cuenta, te
+        recomendamos que configures diferentes métodos de autenticación.
     webauthn_setup:
       continue: Continuar
       instructions_text: Presione el botón en su clave de seguridad para registrarlo

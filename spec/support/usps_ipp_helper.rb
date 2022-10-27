@@ -23,10 +23,10 @@ module UspsIppHelper
     )
   end
 
-  def stub_request_enroll_internal_failure_response
+  def stub_request_enroll_internal_server_error_response
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant}).to_return(
       status: 500, body: UspsInPersonProofing::Mock::Fixtures.
-        request_enroll_internal_failure_response
+        internal_server_error_response
     )
   end
 
@@ -131,11 +131,11 @@ module UspsIppHelper
     ).to_raise(Faraday::NilStatusError)
   end
 
-  def stub_request_proofing_results_with_server_error
-    stub_request(
-      :post,
-      %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
-    ).to_raise(Faraday::ServerError)
+  def stub_request_proofing_results_internal_server_error
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
+      status: 500, body: UspsInPersonProofing::Mock::Fixtures.
+        internal_server_error_response
+    )
   end
 
   def stub_request_proofing_results_with_responses(*responses)

@@ -1,0 +1,100 @@
+.language-picker {
+  position: relative;
+  width: auto;
+
+  .usa-accordion__content {
+    @include u-bg('primary');
+    @include u-border(1px, 'primary-darker');
+    margin: 0.25rem 0 0;
+    overflow: visible;
+    padding: 0;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    z-index: 10;
+    bottom: 100%;
+  }
+}
+
+.language-picker__label {
+  align-items: center;
+  display: flex;
+  background-position: right units(1.5) center;
+  background-position-y: calc(50% + 2px);
+  padding: units(0.5);
+  padding-left: units(1);
+  padding-right: units(1);
+  border-color: transparent;
+
+  @include at-media-max('tablet') {
+    justify-content: center;
+    border-radius: 0;
+  }
+
+  @include at-media('tablet') {
+    border-color: color('primary');
+
+    &,
+    &:hover {
+      color: color('white');
+    }
+  }
+
+  span {
+    margin: 0 units(1);
+  }
+
+  &::after {
+    content: '';
+    display: block;
+    width: 0.8125rem;
+    height: 0.8125rem;
+    background-size: 0.8125rem;
+  }
+
+  &.usa-accordion__button[aria-expanded='false'],
+  &.usa-accordion__button[aria-expanded='true'] {
+    background-image: none;
+  }
+
+  &.usa-accordion__button[aria-expanded='false'] {
+    &:hover {
+      background-color: transparent;
+    }
+
+    &::after {
+      background-image: url(identity-style-guide/dist/assets/img/angle-arrow-up.svg);
+
+      @include at-media('tablet') {
+        background-image: url(identity-style-guide/dist/assets/img/angle-arrow-up-white.svg);
+      }
+    }
+  }
+
+  &.usa-accordion__button[aria-expanded='true'] {
+    @include u-bg('primary');
+    color: color('white');
+
+    &::after {
+      background-image: url(identity-style-guide/dist/assets/img/angle-arrow-down-white.svg);
+    }
+  }
+}
+
+.language-picker__list {
+  @include list-reset;
+
+  a {
+    @include u-padding-y(1.5);
+    display: block;
+    color: color('white');
+
+    &:focus {
+      outline-offset: units(2px);
+    }
+  }
+
+  li + li {
+    border-top: 1px solid color('primary-darker');
+  }
+}

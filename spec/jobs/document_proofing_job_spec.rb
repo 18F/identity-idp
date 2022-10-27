@@ -3,17 +3,14 @@ require 'rails_helper'
 RSpec.describe DocumentProofingJob, type: :job do
   let(:front_image_url) { 'http://bucket.s3.amazonaws.com/bar1' }
   let(:back_image_url) { 'http://bucket.s3.amazonaws.com/bar2' }
-  let(:selfie_image_url) { 'http://bucket.s3.amazonaws.com/bar3' }
   let(:encryption_key) { SecureRandom.random_bytes(32) }
   let(:front_image_iv) { SecureRandom.random_bytes(12) }
   let(:back_image_iv) { SecureRandom.random_bytes(12) }
-  let(:selfie_image_iv) { SecureRandom.random_bytes(12) }
   let(:trace_id) { SecureRandom.uuid }
   let(:source) { nil }
   let(:front_image_metadata) { { mimeType: 'image/png', source: source } }
   let(:back_image_metadata) { { mimeType: 'image/png', source: source } }
   let(:image_metadata) { { front: front_image_metadata, back: back_image_metadata } }
-  let(:liveness_checking_enabled) { true }
 
   let(:applicant_pii) do
     {
@@ -33,7 +30,6 @@ RSpec.describe DocumentProofingJob, type: :job do
   before do
     encrypt_and_stub_s3(body: body, url: front_image_url, iv: front_image_iv, key: encryption_key)
     encrypt_and_stub_s3(body: body, url: back_image_url, iv: back_image_iv, key: encryption_key)
-    encrypt_and_stub_s3(body: body, url: selfie_image_url, iv: selfie_image_iv, key: encryption_key)
   end
 
   let(:encrypted_arguments) do
@@ -43,10 +39,8 @@ RSpec.describe DocumentProofingJob, type: :job do
           encryption_key: Base64.encode64(encryption_key),
           front_image_iv: Base64.encode64(front_image_iv),
           back_image_iv: Base64.encode64(back_image_iv),
-          selfie_image_iv: Base64.encode64(selfie_image_iv),
           front_image_url: front_image_url,
           back_image_url: back_image_url,
-          selfie_image_url: selfie_image_url,
         },
       }.to_json,
     )
@@ -62,7 +56,6 @@ RSpec.describe DocumentProofingJob, type: :job do
     it 'stores results' do
       DocumentProofingJob.perform_later(
         result_id: document_capture_session.result_id,
-        liveness_checking_enabled: liveness_checking_enabled,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         image_metadata: image_metadata,
@@ -81,7 +74,6 @@ RSpec.describe DocumentProofingJob, type: :job do
     subject(:perform) do
       instance.perform(
         result_id: document_capture_session.result_id,
-        liveness_checking_enabled: liveness_checking_enabled,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         image_metadata: image_metadata,
@@ -106,10 +98,6 @@ RSpec.describe DocumentProofingJob, type: :job do
         stub_request(:post, "#{doc_url}/Image?light=0&side=1").to_return(body: '')
         stub_request(:get, doc_url).to_return(body: '{"Result":1}')
         stub_request(:get, "#{doc_url}/Field/Image?key=Photo").to_return(body: '')
-        stub_request(:post, 'https://facial_match.example.com/api/v1/facematch').
-          to_return(body: '{"IsMatch":true}')
-        stub_request(:post, 'https://liveness.example.com/api/v1/liveness').
-          to_return(body: '{"LivenessResult":{"LivenessAssessment": "Live"}}')
         stub_request(:post, 'https://example.login.gov/api/callbacks/proof-document/:token').
           to_return(body: '')
 
@@ -117,118 +105,51 @@ RSpec.describe DocumentProofingJob, type: :job do
           to receive(:pii_from_doc).and_return(applicant_pii)
       end
 
-      context 'liveness checking disabled' do
-        let(:liveness_checking_enabled) { false }
+      it 'returns a successful response' do
+        perform
 
-        it 'returns a response' do
-          perform
+        result = document_capture_session.load_doc_auth_async_result
 
-          result = document_capture_session.load_doc_auth_async_result
+        expect(result.result).to eq(
+          alert_failure_count: 0,
+          vendor: 'Acuant',
+          doc_auth_result: 'Passed',
+          billed: true,
+          errors: {},
+          log_alert_results: {},
+          attention_with_barcode: false,
+          image_metrics: {},
+          processed_alerts: { failed: [], passed: [] },
+          success: true,
+          exception: nil,
+          tamper_result: nil,
+        )
 
-          expect(result.result).to eq(
-            alert_failure_count: 0,
-            vendor: 'Acuant',
-            doc_auth_result: 'Passed',
-            billed: true,
-            errors: {},
-            log_alert_results: {},
-            attention_with_barcode: false,
-            image_metrics: {},
-            processed_alerts: { failed: [], passed: [] },
-            success: true,
-            exception: nil,
-            tamper_result: nil,
-          )
+        expect(job_analytics).to have_logged_event(
+          'IdV: doc auth image upload vendor submitted',
+          success: true,
+          errors: {},
+          attention_with_barcode: false,
+          exception: nil,
+          vendor: 'Acuant',
+          billed: true,
+          doc_auth_result: 'Passed',
+          processed_alerts: { failed: [], passed: [] },
+          alert_failure_count: 0,
+          image_metrics: {},
+          state: 'MT',
+          state_id_type: 'drivers_license',
+          async: true,
+          attempts: 0,
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
+          client_image_metrics: {
+            front: front_image_metadata,
+            back: back_image_metadata,
+          },
+          tamper_result: nil,
+        )
 
-          expect(job_analytics).to have_logged_event(
-            'IdV: doc auth image upload vendor submitted',
-            success: true,
-            errors: {},
-            attention_with_barcode: false,
-            exception: nil,
-            vendor: 'Acuant',
-            billed: true,
-            doc_auth_result: 'Passed',
-            processed_alerts: { failed: [], passed: [] },
-            alert_failure_count: 0,
-            image_metrics: {},
-            state: 'MT',
-            state_id_type: 'drivers_license',
-            async: true,
-            attempts: 0,
-            remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
-            client_image_metrics: {
-              front: front_image_metadata,
-              back: back_image_metadata,
-            },
-            tamper_result: nil,
-          )
-
-          expect(result.pii_from_doc).to eq(applicant_pii)
-        end
-      end
-
-      context 'liveness checking enabled' do
-        let(:liveness_checking_enabled) { true }
-
-        it 'returns a response' do
-          perform
-
-          result = document_capture_session.load_doc_auth_async_result
-
-          expect(result.result).to eq(
-            alert_failure_count: 0,
-            vendor: 'Acuant',
-            billed: true,
-            errors: {},
-            log_alert_results: {},
-            attention_with_barcode: false,
-            face_match_results: { is_match: true, match_score: nil },
-            image_metrics: {},
-            processed_alerts: { failed: [], passed: [] },
-            doc_auth_result: 'Passed',
-            selfie_liveness_results: {
-              acuant_error: { code: nil, message: nil },
-              liveness_assessment: 'Live',
-              liveness_score: nil,
-            },
-            success: true,
-            exception: nil,
-            tamper_result: nil,
-          )
-
-          expect(job_analytics).to have_logged_event(
-            'IdV: doc auth image upload vendor submitted',
-            success: true,
-            errors: {},
-            attention_with_barcode: false,
-            exception: nil,
-            vendor: 'Acuant',
-            billed: true,
-            doc_auth_result: 'Passed',
-            processed_alerts: { failed: [], passed: [] },
-            alert_failure_count: 0,
-            image_metrics: {},
-            state: 'MT',
-            state_id_type: 'drivers_license',
-            async: true,
-            attempts: 0,
-            remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
-            face_match_results: { is_match: true, match_score: nil },
-            selfie_liveness_results: {
-              acuant_error: { code: nil, message: nil },
-              liveness_assessment: 'Live',
-              liveness_score: nil,
-            },
-            client_image_metrics: {
-              front: front_image_metadata,
-              back: back_image_metadata,
-            },
-            tamper_result: nil,
-          )
-
-          expect(result.pii_from_doc).to eq(applicant_pii)
-        end
+        expect(result.pii_from_doc).to eq(applicant_pii)
       end
 
       it 'logs the trace_id and timing info' do
@@ -238,10 +159,8 @@ RSpec.describe DocumentProofingJob, type: :job do
             timing: hash_including(
               'decrypt.back': kind_of(Float),
               'decrypt.front': kind_of(Float),
-              'decrypt.selfie': kind_of(Float),
               'download.back': kind_of(Float),
               'download.front': kind_of(Float),
-              'download.selfie': kind_of(Float),
             ),
           )
         end
@@ -253,7 +172,6 @@ RSpec.describe DocumentProofingJob, type: :job do
     context 'with local image URLs instead of S3 URLs' do
       let(:front_image_url) { 'http://example.com/bar1' }
       let(:back_image_url) { 'http://example.com/bar2' }
-      let(:selfie_image_url) { 'http://example.com/bar3' }
 
       before do
         data = { document: applicant_pii }.to_json
@@ -265,9 +183,6 @@ RSpec.describe DocumentProofingJob, type: :job do
         stub_request(:get, back_image_url).to_return(
           body: encryption_helper.encrypt(data: data, key: encryption_key, iv: back_image_iv),
         )
-        stub_request(:get, selfie_image_url).to_return(
-          body: encryption_helper.encrypt(data: data, key: encryption_key, iv: selfie_image_iv),
-        )
       end
 
       it 'still downloads and decrypts the content' do
@@ -275,7 +190,6 @@ RSpec.describe DocumentProofingJob, type: :job do
 
         expect(a_request(:get, front_image_url)).to have_been_made
         expect(a_request(:get, back_image_url)).to have_been_made
-        expect(a_request(:get, selfie_image_url)).to have_been_made
       end
     end
 
