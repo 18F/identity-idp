@@ -4,6 +4,16 @@
 # Login.gov account.
 module InheritedProofingConcern
   extend ActiveSupport::Concern
+  include Idv::InheritedProofing::ServiceProviderForms
+  include Idv::InheritedProofing::ServiceProviderServices
+
+  def inherited_proofing?
+    inherited_proofing_service_provider.present?
+  end
+
+  def inherited_proofing_service_provider
+    return :va if va_inherited_proofing?
+  end
 
   # Department of Veterans Affairs (VA) methods.
   # https://github.com/department-of-veterans-affairs/va.gov-team/blob/master/products/identity/Inherited%20Proofing/MHV%20Inherited%20Proofing/inherited-proofing-interface.md
@@ -28,34 +38,8 @@ module InheritedProofingConcern
     'inherited_proofing_auth'
   end
 
-  # Service Provider-agnostic members for now.
-  # Think about putting this in a factory(ies).
-
-  def inherited_proofing_service
-    inherited_proofing_service_class.new inherited_proofing_service_provider_data
-  end
-
-  def inherited_proofing_service_class
-    raise 'Inherited Proofing is not enabled' unless IdentityConfig.store.inherited_proofing_enabled
-
-    if va_inherited_proofing?
-      if IdentityConfig.store.va_inherited_proofing_mock_enabled
-        return Idv::InheritedProofing::Va::Mocks::Service
-      end
-      return Idv::InheritedProofing::Va::Service
-    end
-
-    raise 'Inherited proofing service class could not be identified'
-  end
-
-  def inherited_proofing_form(payload_hash)
-    return Idv::InheritedProofing::Va::Form.new payload_hash: payload_hash if va_inherited_proofing?
-
-    raise 'Inherited proofing form could not be identified'
-  end
-
   def inherited_proofing_service_provider_data
-    if va_inherited_proofing?
+    if inherited_proofing_service_provider == :va
       { auth_code: va_inherited_proofing_auth_code }
     else
       {}

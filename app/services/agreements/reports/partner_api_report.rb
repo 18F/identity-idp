@@ -3,15 +3,6 @@ module Agreements
     class PartnerApiReport < ApplicationJob
       queue_as :low
 
-      include GoodJob::ActiveJobExtensions::Concurrency
-
-      good_job_control_concurrency_with(
-        total_limit: 1,
-        key: -> { "partner-api-report-#{arguments.first}" },
-      )
-
-      discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
-
       def perform(_date)
         return unless IdentityConfig.store.enable_partner_api
 

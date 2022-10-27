@@ -33,7 +33,7 @@ describe Idv::Agent do
       let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
 
       context 'proofing state_id enabled' do
-        it 'does not proof state_id if resolution fails' do
+        it 'still proofs state_id if resolution fails' do
           agent = Idv::Agent.new(
             Idp::Constants::MOCK_IDV_APPLICANT.merge(uuid: user.uuid, ssn: '444-55-6666'),
           )
@@ -49,7 +49,7 @@ describe Idv::Agent do
 
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
-          expect(result[:context][:stages][:state_id][:vendor_name]).to eq 'UnsupportedJurisdiction'
+          expect(result[:context][:stages][:state_id][:vendor_name]).to eq 'StateIdMock'
         end
 
         it 'does proof state_id if resolution succeeds' do
@@ -82,7 +82,7 @@ describe Idv::Agent do
           )
           agent.proof_resolution(
             document_capture_session,
-            should_proof_state_id: true,
+            should_proof_state_id: false,
             trace_id: trace_id,
             user_id: user.id,
             threatmetrix_session_id: nil,

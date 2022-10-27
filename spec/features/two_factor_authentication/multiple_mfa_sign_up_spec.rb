@@ -32,7 +32,7 @@ feature 'Multi Two Factor Authentication' do
 
       click_continue
 
-      expect(page).to have_link(t('forms.backup_code.download'))
+      expect(page).to have_link(t('components.download_button.label'))
 
       click_continue
 
@@ -93,7 +93,7 @@ feature 'Multi Two Factor Authentication' do
 
       click_continue
 
-      expect(page).to have_link(t('forms.backup_code.download'))
+      expect(page).to have_link(t('components.download_button.label'))
 
       click_continue
 
@@ -121,7 +121,7 @@ feature 'Multi Two Factor Authentication' do
 
       click_continue
 
-      expect(page).to have_link(t('forms.backup_code.download'))
+      expect(page).to have_link(t('components.download_button.label'))
 
       click_continue
 

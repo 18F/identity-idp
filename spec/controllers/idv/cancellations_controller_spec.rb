@@ -17,9 +17,13 @@ describe Idv::CancellationsController do
     it 'tracks the event in analytics when referer is nil' do
       stub_sign_in
       stub_analytics
-      properties = { request_came_from: 'no referer', step: nil }
 
-      expect(@analytics).to receive(:track_event).with('IdV: cancellation visited', properties)
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: cancellation visited',
+        request_came_from: 'no referer',
+        step: nil,
+        proofing_components: nil,
+      )
 
       get :new
     end
@@ -28,9 +32,13 @@ describe Idv::CancellationsController do
       stub_sign_in
       stub_analytics
       request.env['HTTP_REFERER'] = 'http://example.com/'
-      properties = { request_came_from: 'users/sessions#new', step: nil }
 
-      expect(@analytics).to receive(:track_event).with('IdV: cancellation visited', properties)
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: cancellation visited',
+        request_came_from: 'users/sessions#new',
+        step: nil,
+        proofing_components: nil,
+      )
 
       get :new
     end
@@ -38,9 +46,13 @@ describe Idv::CancellationsController do
     it 'tracks the event in analytics when step param is present' do
       stub_sign_in
       stub_analytics
-      properties = { request_came_from: 'no referer', step: 'first' }
 
-      expect(@analytics).to receive(:track_event).with('IdV: cancellation visited', properties)
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: cancellation visited',
+        request_came_from: 'no referer',
+        step: 'first',
+        proofing_components: nil,
+      )
 
       get :new, params: { step: 'first' }
     end
@@ -100,6 +112,7 @@ describe Idv::CancellationsController do
       expect(@analytics).to receive(:track_event).with(
         'IdV: cancellation go back',
         step: 'first',
+        proofing_components: nil,
       )
 
       put :update, params: { step: 'first', cancel: 'true' }
@@ -136,6 +149,7 @@ describe Idv::CancellationsController do
       expect(@analytics).to receive(:track_event).with(
         'IdV: cancellation confirmed',
         step: 'first',
+        proofing_components: nil,
       )
 
       delete :destroy, params: { step: 'first' }

@@ -22,6 +22,7 @@ RSpec.describe Idv::PhoneOtpRateLimitable, type: :controller do
 
       expect(@analytics).to have_received(:track_event).with(
         'Idv: Phone OTP sends rate limited',
+        proofing_components: nil,
       )
     end
 

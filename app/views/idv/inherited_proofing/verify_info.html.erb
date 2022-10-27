@@ -7,7 +7,6 @@
     <%= f.submit t('inherited_proofing.buttons.continue') %>
 <% end %>
 
-
 <%= render(
       'shared/troubleshooting_options',
       heading_tag: :h3,
@@ -20,3 +19,5 @@
         },
       ].select(&:present?),
     ) %>
+
+<%= render 'idv/inherited_proofing/cancel', step: 'verify_info' %>

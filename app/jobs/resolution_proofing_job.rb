@@ -143,25 +143,17 @@ class ResolutionProofingJob < ApplicationJob
     state_id_result = Proofing::StateIdResult.new(
       success: true, errors: {}, exception: nil, vendor_name: 'UnsupportedJurisdiction',
     )
-    if should_proof_state_id && resolution_result.success?
+    if should_proof_state_id
       timer.time('state_id') do
         state_id_result = state_id_proofer.proof(applicant_pii)
       end
     end
 
-    result = {
-      success: resolution_result.success? && state_id_result.success?,
-      errors: resolution_result.errors.merge(state_id_result.errors),
-      exception: resolution_result.exception || state_id_result.exception,
-      timed_out: resolution_result.timed_out? || state_id_result.timed_out?,
-      context: {
-        should_proof_state_id: should_proof_state_id,
-        stages: {
-          resolution: resolution_result.to_h,
-          state_id: state_id_result.to_h,
-        },
-      },
-    }
+    result = Proofing::ResolutionResultAdjudicator.new(
+      resolution_result: resolution_result,
+      state_id_result: state_id_result,
+      should_proof_state_id: should_proof_state_id,
+    ).adjudicated_result.to_h
 
     CallbackLogData.new(
       result: result,

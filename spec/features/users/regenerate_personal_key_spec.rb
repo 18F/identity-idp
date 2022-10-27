@@ -54,22 +54,11 @@ feature 'View personal key', js: true do
         expect(page).to have_content(t('account.personal_key.get_new'))
         click_continue
 
-        expect(page).to have_content(t('headings.personal_key'))
+        expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
         acknowledge_and_confirm_personal_key
 
         expect(user.reload.encrypted_recovery_code_digest).to_not eq old_digest
       end
-    end
-
-    describe 'personal key actions and information' do
-      before do
-        sign_in_and_2fa_user(user)
-        visit account_two_factor_authentication_path
-        click_on(t('account.links.regenerate_personal_key'), match: :prefer_exact)
-        click_continue
-      end
-
-      it_behaves_like 'personal key page'
     end
   end
 end

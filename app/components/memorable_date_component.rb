@@ -56,6 +56,10 @@ class MemorableDateComponent < BaseComponent
     @range_errors = range_errors
   end
 
+  def self.scripts
+    super + ValidatedFieldComponent.scripts
+  end
+
   # Get error messages to be provided to the component.
   # Includes both a hash lookup for general error messages
   # and an array lookup for custom range error messages.

@@ -154,6 +154,11 @@ Rails.application.routes.draw do
       end
     end
 
+    if IdentityConfig.store.component_previews_enabled
+      require 'lookbook'
+      mount Lookbook::Engine, at: '/components'
+    end
+
     if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
       get '/test/device_profiling' => 'test/device_profiling#index',
           as: :test_device_profiling_iframe
@@ -348,17 +353,23 @@ Rails.application.routes.draw do
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
 
-      get '/inherited_proofing' => 'inherited_proofing#index'
-      get '/inherited_proofing/:step' => 'inherited_proofing#show', as: :inherited_proofing_step
-      put '/inherited_proofing/:step' => 'inherited_proofing#update'
-      get '/inherited_proofing/return_to_sp' => 'inherited_proofing#return_to_sp'
-      get '/inherited_proofing/cancel/' => 'inherited_proofing_cancellations#new', as: :inherited_proofing_cancel
-      put '/inherited_proofing/cancel' => 'inherited_proofing_cancellations#update'
-      delete '/inherited_proofing/cancel' => 'inherited_proofing_cancellations#destroy'
-
       # deprecated routes
       get '/confirmations' => 'personal_key#show'
       post '/confirmations' => 'personal_key#update'
+    end
+
+    # Inherited Proofing (IP)-specific routes.
+    scope '/verify/inherited_proofing', module: 'idv', as: 'idv_inherited_proofing' do
+      # NOTE: cancellation routes need to be before any other IP
+      # routes in this scope.
+      get '/cancel' => 'inherited_proofing_cancellations#new', as: :cancel
+      put '/cancel' => 'inherited_proofing_cancellations#update'
+      delete '/cancel' => 'inherited_proofing_cancellations#destroy'
+      get '/' => 'inherited_proofing#index'
+      get '/:step' => 'inherited_proofing#show', as: :step
+      put '/:step' => 'inherited_proofing#update'
+      get '/return_to_sp' => 'inherited_proofing#return_to_sp'
+      get '/errors/no_information' => 'inherited_proofing#no_information'
     end
 
     namespace :api do
