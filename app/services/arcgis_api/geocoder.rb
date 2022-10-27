@@ -69,10 +69,6 @@ module ArcgisApi
       new_token
     end
 
-    def token_valid?
-      Rails.cache.exist?(API_TOKEN_CACHE_KEY)
-    end
-
     def token
       Rails.cache.read(API_TOKEN_CACHE_KEY) || retrieve_token!
     end
