@@ -102,7 +102,6 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
         result = subject.post_images(
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
-          selfie_image: DocAuthImageFixtures.selfie_image,
           image_source: image_source,
         )
 
@@ -126,7 +125,6 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
         result = subject.post_images(
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
-          selfie_image: DocAuthImageFixtures.selfie_image,
           image_source: image_source,
         )
 

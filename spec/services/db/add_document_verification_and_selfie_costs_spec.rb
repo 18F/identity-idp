@@ -60,7 +60,6 @@ describe Db::AddDocumentVerificationAndSelfieCosts do
       expect(costing_for(:acuant_front_image)).to be_present
       expect(costing_for(:acuant_back_image)).to be_present
       expect(costing_for(:acuant_result)).to be_present
-      expect(costing_for(:acuant_selfie)).to be_present
     end
 
     it 'has costing for front, back, but not result when it is not billed' do
@@ -69,7 +68,6 @@ describe Db::AddDocumentVerificationAndSelfieCosts do
       expect(costing_for(:acuant_front_image)).to be_present
       expect(costing_for(:acuant_back_image)).to be_present
       expect(costing_for(:acuant_result)).to be_nil
-      expect(costing_for(:acuant_selfie)).to be_present
     end
 
     it 'does not fail when _count field is null' do
