@@ -46,9 +46,6 @@ es:
           identidad. Intente tomar nuevas fotos.
         ref_control_number_check: No pudimos leer el código de barras del número de
           control. Intente tomar nuevas fotografías.
-        selfie_failure: No pudimos hacer coincidir su foto con su documento de
-          identidad. Intente tomarse una nueva foto de usted o de la parte
-          delantera de su documento de identidad.
         sex_check: No pudimos leer el sexo en su documento de identidad. Intente tomar
           nuevas fotos.
         visible_color_check: No pudimos verificar su documento de identidad. Puede que
@@ -83,8 +80,6 @@ es:
         invalid: Ese formato no es admitido, por favor elija un archivo JPG o PNG.
       general:
         fallback_field_level: Agregue una imagen nueva
-        liveness: No pudimos verificar su documento de identidad y su foto. Intente
-          tomar nuevas fotografías.
         multiple_back_id_failures: No pudimos verificar la parte trasera de su documento
           de identidad. Intente tomar una nueva foto.
         multiple_front_id_failures: No pudimos verificar la parte delantera de su

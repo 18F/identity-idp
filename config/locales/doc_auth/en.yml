@@ -38,8 +38,6 @@ en:
           the picture. Try taking new pictures.
         issue_date_checks: We couldn’t read the issue date on your ID. Try taking new pictures.
         ref_control_number_check: We couldn’t read the control number barcode. Try taking new pictures.
-        selfie_failure: We couldn’t match the photo of you to your ID. Try taking a new
-          picture of yourself or the front of your ID.
         sex_check: We couldn’t read the sex on your ID. Try taking new pictures.
         visible_color_check: We couldn’t verify your ID. It might have moved when you
           took the picture, or the picture is too dark. Try taking new pictures
@@ -67,8 +65,6 @@ en:
         invalid: This file type is not accepted, please choose a JPG or PNG file.
       general:
         fallback_field_level: Please add a new image
-        liveness: We couldn’t verify your ID and photo of yourself. Try taking new
-          pictures.
         multiple_back_id_failures: We couldn’t verify the back of your ID. Try taking a new picture.
         multiple_front_id_failures: We couldn’t verify the front of your ID. Try taking a new picture.
         network_error: We are having technical difficulties on our end. Please try to
