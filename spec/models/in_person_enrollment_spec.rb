@@ -88,6 +88,36 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
   end
 
+  describe 'needs_email_reminder' do
+    let(:days) { IdentityConfig.store.email_reminder_first_check }
+    let!(:passed_enrollment) { create(:in_person_enrollment, :passed) }
+    let!(:failing_enrollment) { create(:in_person_enrollment, :failed) }
+    let!(:expired_enrollment) { create(:in_person_enrollment, :expired) }
+    let!(:pending_enrollment_needing_reminder) do
+      [
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 19.days),
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 26.days),
+      ]
+    end
+
+    let!(:pending_enrollments) do
+      [
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now),
+        create(:in_person_enrollment, :pending, created_at: Time.zone.now),
+      ]
+    end
+
+    it 'returns only pending enrollments that need reminder' do
+      expect(InPersonEnrollment.count).to eq(7)
+      results = InPersonEnrollment.needs_email_reminder(days)
+      expect(results.length).to eq pending_enrollment_needing_reminder.length
+      expect(results.pluck(:id)).to match_array pending_enrollment_needing_reminder.pluck(:id)
+      results.each do |result|
+        expect(result.pending?).to be_truthy
+      end
+    end
+  end
+
   describe 'needs_usps_status_check' do
     let(:check_interval) { ...1.hour.ago }
     let!(:passed_enrollment) { create(:in_person_enrollment, :passed) }
