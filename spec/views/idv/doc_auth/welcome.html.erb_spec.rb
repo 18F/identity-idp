@@ -55,12 +55,6 @@ describe 'idv/doc_auth/welcome.html.erb' do
     end
   end
 
-  it 'renders selfie instructions' do
-    render template: 'idv/doc_auth/welcome'
-
-    expect(rendered).to_not have_text(t('doc_auth.instructions.bullet1a'))
-  end
-
   context 'during the acuant maintenance window' do
     let(:start) { Time.zone.parse('2020-01-01T00:00:00Z') }
     let(:now) { Time.zone.parse('2020-01-01T12:00:00Z') }
