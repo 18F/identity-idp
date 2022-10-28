@@ -349,4 +349,38 @@ describe UserDecorator do
       expect(user.decorate.second_last_signed_in_at).to eq(event2.reload.created_at)
     end
   end
+
+  describe '#reproof_for_irs?' do
+    let(:service_provider) { create(:service_provider) }
+
+    it 'returns false if the service provider is not an attempts API service provider' do
+      user = create(:user, :proofed)
+
+      expect(user.decorate.reproof_for_irs?(service_provider: service_provider)).to be_falsy
+    end
+
+    context 'an attempts API service provider' do
+      let(:service_provider) { create(:service_provider, :irs) }
+
+      it 'returns false if the user has not proofed before' do
+        user = create(:user)
+
+        expect(user.decorate.reproof_for_irs?(service_provider: service_provider)).to be_falsy
+      end
+
+      it 'returns false if the active profile initiating SP was an attempts API SP' do
+        user = create(:user, :proofed)
+
+        user.active_profile.update!(initiating_service_provider: service_provider)
+
+        expect(user.decorate.reproof_for_irs?(service_provider: service_provider)).to be_falsy
+      end
+
+      it 'returns true if the active profile initiating SP was not an attempts API SP' do
+        user = create(:user, :proofed)
+
+        expect(user.decorate.reproof_for_irs?(service_provider: service_provider)).to be_truthy
+      end
+    end
+  end
 end
