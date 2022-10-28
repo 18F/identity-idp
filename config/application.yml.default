@@ -92,6 +92,7 @@ email_from_display_name: Login.gov
 email_registrations_per_ip_limit: 20
 email_registrations_per_ip_period: 20
 email_registrations_per_ip_track_only_mode: false
+email_reminder_first_check: 11
 enable_load_testing_mode: false
 enable_partner_api: false
 enable_rate_limiting: true
