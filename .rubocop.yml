@@ -7,6 +7,7 @@ require:
   - rubocop-rails
   - rubocop-performance
   - ./lib/linters/localized_validation_message_linter.rb
+  - ./lib/linters/image_size_linter.rb
   - ./lib/linters/mail_later_linter.rb
   - ./lib/linters/redirect_back_linter.rb
   - ./lib/linters/url_options_linter.rb
@@ -57,6 +58,16 @@ IdentityIdp/ErrorsAddLinter:
   Enabled: true
   Exclude:
     - 'spec/**/*.rb'
+
+IdentityIdp/ImageSizeLinter:
+  Enabled: true
+  Exclude:
+    - app/components/barcode_component.html.erb
+    - app/views/partials/multi_factor_authentication/_mfa_selection.html.erb
+    - app/views/shared/_nav_branded.html.erb
+    - app/views/sign_up/completions/show.html.erb
+    - app/views/users/two_factor_authentication_setup/index.html.erb
+    - app/views/users/webauthn_setup/new.html.erb
 
 IdentityIdp/RedirectBackLinter:
   Enabled: true
