@@ -112,12 +112,49 @@ RSpec::Matchers.define :have_logged_event do |event_name, attributes|
   end
 
   failure_message do |actual|
-    <<~MESSAGE
-      Expected that FakeAnalytics would have received event #{event_name.inspect}
-      with #{attributes.inspect}.
+    matching_events = actual.events[event_name]
+    if matching_events&.length == 1 && attributes.instance_of?(Hash)
+      # We found one matching event. Let's show the user a diff of the actual and expected
+      # attributes
+      expected = attributes
+      actual = matching_events.first
+      message = ''
+      message += "expected: #{expected}\n"
+      message += "     got: #{actual}\n\n"
+      message += "Diff:#{differ.diff(actual, expected)}"
+      message
+    elsif matching_events&.length == 1 && attributes.instance_of?(RSpec::Matchers::BuiltIn::Include)
+      # We found one matching event and an `include` matcher. Let's show the user a diff of the
+      # actual and expected attributes
+      expected = attributes.expecteds.first
+      actual_attrs = matching_events.first
+      actual_compared = actual_attrs.slice(*expected.keys)
+      actual_ignored = actual_attrs.except(*expected.keys)
+      message = ''
+      message += "expected: include #{expected}\n"
+      message += "     got: #{actual_attrs}\n\n"
+      message += "Diff:#{differ.diff(actual_compared, expected)}\n"
+      message += "Attributes ignored by the include matcher:#{differ.diff(
+        actual_ignored, {}
+      )}"
+      message
+    else
+      <<~MESSAGE
+        Expected that FakeAnalytics would have received event #{event_name.inspect}
+        with #{attributes.inspect}.
 
-      Events received:
-      #{actual.events.pretty_inspect}
-    MESSAGE
+        Events received:
+        #{actual.events.pretty_inspect}
+      MESSAGE
+    end
+  end
+
+  def differ
+    RSpec::Support::Differ.new(
+      object_preparer: lambda { |object|
+                         RSpec::Matchers::Composable.surface_descriptions_in(object)
+                       },
+      color: RSpec::Matchers.configuration.color?,
+    )
   end
 end
