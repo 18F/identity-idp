@@ -204,16 +204,11 @@ describe('MemorableDateElement', () => {
           'user has entered a day and year, then clicks an element outside the memorable date fields',
           () => {
             beforeEach(async function () {
-              this.timeout(8000);
-
               await userEvent.click(dayInput);
               await userEvent.type(dayInput, '1');
               await userEvent.click(yearInput);
               await userEvent.type(yearInput, '19');
               await userEvent.click(otherClickableElement);
-
-              // Issue seems to happen after a 5 or more second delay in this state
-              await new Promise((resolve) => setTimeout(resolve, 6000));
             });
 
             it('does not hang when the user modifies the day', async () => {
