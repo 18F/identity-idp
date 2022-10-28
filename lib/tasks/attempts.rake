@@ -13,19 +13,23 @@ namespace :attempts do
         "Bearer #{IdentityConfig.store.irs_attempt_api_csp_id} #{auth_token}"
     end
 
-    puts "Response Body:"
-    puts resp.body
-
-    events = resp.body.split("\r\n")
-
+    iv = Base64.strict_decode64(resp.headers['x-payload-iv'])
+    encrypted_key = Base64.strict_decode64(resp.headers['x-payload-key'])
     private_key = OpenSSL::PKey::RSA.new(File.read(private_key_path))
+    key = private_key.private_decrypt(encrypted_key)
+    decrypted = IrsAttemptsApi::EnvelopeEncryptor.decrypt(
+      encrypted_data: resp.body, key: key, iv: iv,
+    )
+
+    events = decrypted.split("\r\n")
+    puts "Found #{events.count} events"
 
     if File.exist?(private_key_path)
       puts events.any? ? 'Decrypted events:' : 'No events returned.'
 
       events.each do |jwe|
         begin
-          puts JSON.parse(JWE.decrypt(jwe, private_key))
+          pp JSON.parse(JWE.decrypt(jwe, private_key))
         rescue => e
           puts 'Failed to parse/decrypt event!'
           puts e.inspect

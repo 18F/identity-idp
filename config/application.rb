@@ -13,6 +13,7 @@ require_relative '../lib/identity_config'
 require_relative '../lib/fingerprinter'
 require_relative '../lib/identity_job_log_subscriber'
 require_relative '../lib/email_delivery_observer'
+require_relative '../lib/base_16' # Should I need to do this?
 
 Bundler.require(*Rails.groups)
 
