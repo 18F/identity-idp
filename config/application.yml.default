@@ -194,6 +194,7 @@ newrelic_browser_app_id: ''
 newrelic_browser_key: ''
 newrelic_browser_trust_key: ''
 newrelic_browser_license_key: ''
+newrelic_license_key: ''
 no_sp_device_profiling_enabled: false
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
