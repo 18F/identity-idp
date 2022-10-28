@@ -22,6 +22,19 @@ class InPersonEnrollment < ApplicationRecord
   before_save(:on_status_updated, if: :will_save_change_to_status?)
   before_create(:set_unique_id, unless: :unique_id)
 
+  def self.needs_email_reminder(days)
+    config = IdentityConfig.store.in_person_enrollment_validity_in_days.days
+    reminder_email_timestamp = Time.zone.now - config + days.days
+    where(status: :pending).
+      and(
+        where.not(enrollment_established_at: nil).
+        and(
+          where('enrollment_established_at <= ?', reminder_email_timestamp),
+        ),
+      ).
+      order(enrollment_established_at: :asc)
+  end
+
   # Find enrollments that need a status check via the USPS API
   def self.needs_usps_status_check(check_interval)
     where(status: :pending).

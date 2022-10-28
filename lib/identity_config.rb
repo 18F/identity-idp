@@ -168,6 +168,7 @@ class IdentityConfig
     config.add(:email_registrations_per_ip_track_only_mode, type: :boolean)
     config.add(:email_from, type: :string)
     config.add(:email_from_display_name, type: :string)
+    config.add(:email_reminder_first_check, type: :integer)
     config.add(:enable_load_testing_mode, type: :boolean)
     config.add(:enable_partner_api, type: :boolean)
     config.add(:enable_rate_limiting, type: :boolean)
