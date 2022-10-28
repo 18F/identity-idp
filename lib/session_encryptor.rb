@@ -99,8 +99,7 @@ class SessionEncryptor
   # We use #reduce to build the nested empty hash if needed. If Hash#bury
   # (https://bugs.ruby-lang.org/issues/11747) existed, we could use that instead.
   def kms_encrypt_sensitive_paths!(session, sensitive_paths)
-    sensitive_data = {
-    }
+    sensitive_data = {}
 
     sensitive_paths.each do |path|
       all_but_last_key = path[0..-2]

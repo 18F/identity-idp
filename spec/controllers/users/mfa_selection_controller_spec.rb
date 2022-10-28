@@ -183,8 +183,7 @@ describe Users::MfaSelectionController do
       context 'with no active MFA' do
         it 'redirects to the index page with a flash error' do
           patch :update, params: {
-            two_factor_options_form: {
-            },
+            two_factor_options_form: {},
           }
 
           expect(response).to redirect_to two_factor_options_path
