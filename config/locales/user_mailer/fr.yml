@@ -149,6 +149,8 @@ fr:
       subject: Vous êtes prêt à vérifier votre identité avec %{app_name} en personne
     in_person_ready_to_verify_reminder:
       greeting: Bonjour,
+      heading: Il vous reste %{days_remaining} jours pour vérifier votre identité en
+        personne
       intro: Ne manquez pas l’occasion de vérifier votre identité dans votre bureau de
         poste de proximité. Complétez cette étape pour accéder à %{sp_name}.
       subject: Vérifiez votre identité auprès d’un bureau de poste dans les

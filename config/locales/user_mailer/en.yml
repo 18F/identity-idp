@@ -138,6 +138,7 @@ en:
       subject: You’re ready to verify your identity with %{app_name} in person
     in_person_ready_to_verify_reminder:
       greeting: Hello,
+      heading: You have %{days_remaining} days left to verify your identity in person
       intro: Don’t miss the chance to verify your identity at your local Post Office.
         Complete this step to access %{sp_name}.
       subject: Verify your identity at a Post Office in the next %{days_remaining} days

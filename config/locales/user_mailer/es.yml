@@ -146,6 +146,7 @@ es:
       subject: Está listo para verificar su identidad con %{app_name} en persona
     in_person_ready_to_verify_reminder:
       greeting: Hola,
+      heading: Tiene %{days_remaining} días para verificar su identidad en persona
       intro: No pierda la oportunidad de verificar su identidad en su oficina de
         correos local. Complete este paso para acceder %{sp_name}.
       subject: Verifique su identidad en una oficina de correos en los próximos

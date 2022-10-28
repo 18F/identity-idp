@@ -293,7 +293,10 @@ class UserMailer < ActionMailer::Base
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
       )
-      @header = t('in_person_proofing.headings.reminder', days_remaining: @presenter.days_remaining)
+      @header = t(
+        'user_mailer.in_person_ready_to_verify_reminder.heading',
+        days_remaining: @presenter.days_remaining,
+      )
       mail(
         to: email_address.email,
         subject: t(

@@ -94,7 +94,6 @@ es:
       barcode: Está listo para verificar su identidad en persona
       location: Seleccione un lugar para verificar su cédula
       prepare: Verifique su identidad en persona
-      reminder: Tiene %{days_remaining} días para verificar su identidad en persona
       state_id: Ingrese la información de su cédula
       switch_back: Vuelva a su computadora para prepararse para verificar su identidad
         en persona
