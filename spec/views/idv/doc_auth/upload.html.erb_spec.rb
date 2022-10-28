@@ -11,16 +11,6 @@ describe 'idv/doc_auth/upload.html.erb' do
     allow(view).to receive(:user_signing_up?).and_return(false)
   end
 
-  context 'with liveness enabled' do
-    it 'renders liveness content' do
-      render template: 'idv/doc_auth/upload'
-
-      expect(rendered).to have_content(t('doc_auth.headings.upload_liveness_enabled'))
-      expect(rendered).to have_content(t('doc_auth.info.upload_liveness_enabled'))
-      expect(rendered).to have_content(t('doc_auth.headings.upload_from_phone_liveness_enabled'))
-    end
-  end
-
   context 'with liveness disabled' do
     it 'does not render liveness content' do
       render template: 'idv/doc_auth/upload'
