@@ -44,13 +44,13 @@ module Idv
           end
 
           def execute
-            valid_auth_code ? PAYLOAD_HASH : ERROR_HASH
+            invalid_auth_code ? ERROR_HASH : PAYLOAD_HASH
           end
 
           private
 
-          def valid_auth_code
-            @auth_code == VALID_AUTH_CODE
+          def invalid_auth_code
+            @auth_code != VALID_AUTH_CODE
           end
         end
       end
