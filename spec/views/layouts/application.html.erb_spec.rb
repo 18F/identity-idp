@@ -165,6 +165,7 @@ describe 'layouts/application.html.erb' do
 
   context 'when new relic browser key and app id are present' do
     it 'it render the new relic javascript' do
+      allow(IdentityConfig.store).to receive(:newrelic_browser_key).and_return('foo')
       allow(IdentityConfig.store).to receive(:newrelic_browser_app_id).and_return('foo')
 
       render
@@ -175,6 +176,7 @@ describe 'layouts/application.html.erb' do
 
   context 'when new relic browser key and app id are not present' do
     it 'it does not render the new relic javascript' do
+      allow(IdentityConfig.store).to receive(:newrelic_browser_key).and_return('')
       allow(IdentityConfig.store).to receive(:newrelic_browser_app_id).and_return('')
 
       render

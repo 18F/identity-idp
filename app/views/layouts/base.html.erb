@@ -45,7 +45,7 @@
   <%= javascript_include_tag_without_preload 'respond.min' %>
   <![endif]-->
 
-  <% if IdentityConfig.store.newrelic_browser_app_id.present? %>
+  <% if IdentityConfig.store.newrelic_browser_key.present? && IdentityConfig.store.newrelic_browser_app_id.present? %>
   <%= render 'shared/newrelic/browser_instrumentation' %>
   <% end %>
 
