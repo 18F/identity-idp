@@ -19,12 +19,13 @@ module Api
 
     def create
       if timestamp
-        send_data security_event_tokens
+        result = encrypted_security_event_log_result
 
-        # headers['X-Payload-Key'] = Base64.strict_encode64(rejsult.encrypted_key)
-        # headers['X-Payload-IV'] = Base64.strict_encode64(result.iv)
-        # send_data Base64.strict_encode64(result.encrypted_data),
-        #           disposition: "filename=#{result.filename}"
+        headers['X-Payload-Key'] = Base64.strict_encode64(result.encrypted_key)
+        headers['X-Payload-IV'] = Base64.strict_encode64(result.iv)
+
+        send_data result.encrypted_data,
+                  disposition: "filename=#{result.filename}"
       else
         render json: { status: :unprocessable_entity, description: 'Invalid timestamp parameter' },
                status: :unprocessable_entity
@@ -46,16 +47,16 @@ module Api
       return {} unless timestamp
 
       events = redis_client.read_events(timestamp: timestamp)
-      events.values.join("\r\n")
+      events.values
     end
 
     def encrypted_security_event_log_result
-      json = security_event_tokens.to_json
+      events = security_event_tokens.join("\r\n")
       decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
       pub_key = OpenSSL::PKey::RSA.new(decoded_key_der)
 
       IrsAttemptsApi::EnvelopeEncryptor.encrypt(
-        data: json, timestamp: timestamp, public_key: pub_key,
+        data: events, timestamp: timestamp, public_key: pub_key,
       )
     end
 
@@ -69,7 +70,7 @@ module Api
 
     def analytics_properties
       {
-        rendered_event_count: 1, # FIXME
+        rendered_event_count: security_event_tokens.count,
         timestamp: timestamp&.iso8601,
         success: timestamp.present?,
       }
