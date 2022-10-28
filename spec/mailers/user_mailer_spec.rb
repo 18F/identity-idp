@@ -576,6 +576,26 @@ describe UserMailer, type: :mailer do
     it_behaves_like 'an email that respects user email locale preference'
   end
 
+  describe '#in_person_ready_to_verify_reminder' do
+    let!(:enrollment) do
+      create(
+        :in_person_enrollment,
+        :pending,
+        selected_location_details: { name: 'FRIENDSHIP' },
+        status_updated_at: Time.zone.now - 2.hours,
+      )
+    end
+
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify_reminder(
+        enrollment: enrollment,
+      )
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+  end
+
   describe '#in_person_verified' do
     let(:enrollment) do
       create(
