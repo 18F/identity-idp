@@ -1,5 +1,3 @@
-require 'pry'
-
 module RuboCop
   module Cop
     module IdentityIdp
