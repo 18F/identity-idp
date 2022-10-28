@@ -17,8 +17,17 @@ module Idv
         def execute
           raise 'The provided auth_code is blank?' if auth_code.blank?
 
-          response = request
-          payload_to_hash decrypt_payload(response)
+          begin
+            response = request
+            payload_to_hash decrypt_payload(response)
+          rescue => error
+            {
+              network_error: {
+                raw: error.message,
+                safe: t('inherited_proofing.safe.network_error.key', error.response[:status]),
+              },
+            }
+          end
         end
 
         private
