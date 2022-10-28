@@ -107,7 +107,7 @@ RSpec.describe InPersonEnrollment, type: :model do
       ]
     end
 
-    it 'returns only pending enrollments that need reminder' do
+    it 'returns pending enrollments that need reminder' do
       expect(InPersonEnrollment.count).to eq(7)
       results = InPersonEnrollment.needs_email_reminder(days)
       expect(results.length).to eq pending_enrollment_needing_reminder.length
@@ -115,6 +115,11 @@ RSpec.describe InPersonEnrollment, type: :model do
       results.each do |result|
         expect(result.pending?).to be_truthy
       end
+    end
+
+    it 'excludes pending enrollments that do not need reminder' do
+      results = InPersonEnrollment.needs_email_reminder(days)
+      expect(results.pluck(:id)).not_to match_array pending_enrollments.pluck(:id)
     end
   end
 
