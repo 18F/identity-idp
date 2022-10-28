@@ -29,7 +29,7 @@ describe Db::AddDocumentVerificationAndSelfieCosts do
   subject do
     described_class.new(
       user_id: user_id,
-      service_provider: service_provider
+      service_provider: service_provider,
     )
   end
 
