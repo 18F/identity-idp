@@ -8,72 +8,74 @@ es:
     buttons:
       add_new_photos: Añadir nuevas fotos
       continue: Continuar
-      take_or_upload_picture: "<lg-take-photo>Toma una foto</lg-take-photo> o <lg-upload>Sube
-        una foto</lg-upload>"
+      take_or_upload_picture: '<lg-take-photo>Toma una foto</lg-take-photo> o
+        <lg-upload>Sube una foto</lg-upload>'
       take_picture: Tomar una foto
       take_picture_retry: Retirar la foto
       upload_picture: Subir foto
       use_phone: Usa tu telefono
     errors:
       alerts:
-        barcode_content_check: No pudimos leer el código de barras en el reverso de
-          su documento de identidad. Puede ser debido a un problema con el código
-          de barras, o bien el código de barras es un nuevo tipo que aún no reconocemos.
-          Use otro documento de identidad expedido por el estado si tiene uno.
+        barcode_content_check: No pudimos leer el código de barras en el reverso de su
+          documento de identidad. Puede ser debido a un problema con el código
+          de barras, o bien el código de barras es un nuevo tipo que aún no
+          reconocemos. Use otro documento de identidad expedido por el estado si
+          tiene uno.
         barcode_read_check: No pudimos leer el código de barras en el reverso de su
           documento de identidad. Intente tomar una nueva foto.
-        birth_date_checks: No pudimos leer la fecha de nacimiento en su documento
-          de identidad. Intente tomar nuevas fotografías.
-        control_number_check: No pudimos leer el número de referencia en el reverso
-          de su documento de identidad. Intente tomar una nueva foto.
+        birth_date_checks: No pudimos leer la fecha de nacimiento en su documento de
+          identidad. Intente tomar nuevas fotografías.
+        control_number_check: No pudimos leer el número de referencia en el reverso de
+          su documento de identidad. Intente tomar una nueva foto.
         doc_crosscheck: No pudimos reconocer su documento de identidad. Puede estar
-          desgastado o dañado, o la parte delantera y trasera del documento de identidad
-          no coinciden. Intente tomar nuevas fotos.
-        doc_number_checks: No pudimos leer el número de documento en su documento
-          de identidad. Intente tomar nuevas fotografías.
+          desgastado o dañado, o la parte delantera y trasera del documento de
+          identidad no coinciden. Intente tomar nuevas fotos.
+        doc_number_checks: No pudimos leer el número de documento en su documento de
+          identidad. Intente tomar nuevas fotografías.
         expiration_checks: El documento ha caducado, o no pudimos leer la fecha de
-          caducidad en su documento de identidad. Si su documento de identidad no
-          ha caducado, intente tomar nuevas fotografías.
-        full_name_check: No pudimos leer el nombre completo en su documento de identidad.
-          Intente tomar nuevas fotos.
+          caducidad en su documento de identidad. Si su documento de identidad
+          no ha caducado, intente tomar nuevas fotografías.
+        full_name_check: No pudimos leer el nombre completo en su documento de
+          identidad. Intente tomar nuevas fotos.
         id_not_recognized: No pudimos reconocer su documento de identidad. Puede estar
-          desgastado o dañado, o ser un tipo de documento de identidad que no reconocemos.
-          Intente tomar nuevas fotografías.
-        id_not_verified: No pudimos verificar su documento de identidad. Puede que
-          se haya movido cuando tomó la foto. Intente tomar nuevas fotos.
+          desgastado o dañado, o ser un tipo de documento de identidad que no
+          reconocemos. Intente tomar nuevas fotografías.
+        id_not_verified: No pudimos verificar su documento de identidad. Puede que se
+          haya movido cuando tomó la foto. Intente tomar nuevas fotos.
         issue_date_checks: No pudimos leer la fecha de emisión en su documento de
           identidad. Intente tomar nuevas fotos.
         ref_control_number_check: No pudimos leer el código de barras del número de
           control. Intente tomar nuevas fotografías.
         sex_check: No pudimos leer el sexo en su documento de identidad. Intente tomar
           nuevas fotos.
-        visible_color_check: No pudimos verificar su documento de identidad. Puede
-          que se haya movido cuando tomó la foto, o la foto es demasiado oscura. Intente
-          tomar nuevas fotografías con una luz más brillante.
+        visible_color_check: No pudimos verificar su documento de identidad. Puede que
+          se haya movido cuando tomó la foto, o la foto es demasiado oscura.
+          Intente tomar nuevas fotografías con una luz más brillante.
         visible_photo_check: No pudimos verificar la foto de su identificación. Intente
           tomar nuevas fotografías.
       barcode_attention:
-        confirm_info: Si la información que aparece a continuación es incorrecta,
-          por favor, suba nuevas fotos de su ID emitido por el estado.
+        confirm_info: Si la información que aparece a continuación es incorrecta, por
+          favor, suba nuevas fotos de su ID emitido por el estado.
         heading: No pudimos leer el código de barras en su ID.
       camera:
         blocked: Su cámara está bloqueada
-        blocked_detail: No tenemos permiso para acceder a la cámara. Por favor, compruebe
-          la configuración de su navegador o sistema, recargue esta página o suba
-          una foto en su lugar.
+        blocked_detail: No tenemos permiso para acceder a la cámara. Por favor,
+          compruebe la configuración de su navegador o sistema, recargue esta
+          página o suba una foto en su lugar.
         failed: No se ha podido encender la cámara, por favor, inténtelo de nuevo.
       dpi:
         failed_short: La imagen es demasiado pequeña o está borrosa, por favor inténtelo
           de nuevo.
         top_msg: No pudimos leer su identificación. Es posible que el tamaño de su
-          imagen sea demasiado chico, que su identificación sea demasiado pequeña
-          o que la foto esté borrosa. Asegúrese de que su identificación ocupe un
-          gran espacio dentro del marco de la imagen e intente tomar una nueva foto.
-        top_msg_plural: No pudimos leer su identificación. Es posible que los tamaños
-          de sus imágenes sean demasiado chicos, que su identificación sea demasiado
-          pequeña o que las fotos estén borrosas. Asegúrese de que su identificación
-          ocupe un gran espacio dentro del marco de la imagen e intente tomar nuevas
-          fotos.
+          imagen sea demasiado chico, que su identificación sea demasiado
+          pequeña o que la foto esté borrosa. Asegúrese de que su identificación
+          ocupe un gran espacio dentro del marco de la imagen e intente tomar
+          una nueva foto.
+        top_msg_plural: No pudimos leer su identificación. Es posible que los tamaños de
+          sus imágenes sean demasiado chicos, que su identificación sea
+          demasiado pequeña o que las fotos estén borrosas. Asegúrese de que su
+          identificación ocupe un gran espacio dentro del marco de la imagen e
+          intente tomar nuevas fotos.
       file_type:
         invalid: Ese formato no es admitido, por favor elija un archivo JPG o PNG.
       general:
@@ -88,24 +90,26 @@ es:
           nuevas fotografías.
       glare:
         failed_short: Hay reflejos en la imagen, por favor inténtelo de nuevo.
-        top_msg: No pudimos leer su identificación. Es posible que su foto tenga reflejos.
-          Asegúrese de que el flash de su cámara esté desactivado e intente tomar
-          una nueva foto.
+        top_msg: No pudimos leer su identificación. Es posible que su foto tenga
+          reflejos. Asegúrese de que el flash de su cámara esté desactivado e
+          intente tomar una nueva foto.
         top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos
-          tengan reflejos. Asegúrese de que el flash de su cámara esté desactivado
-          e intente tomar nuevas fotos.
+          tengan reflejos. Asegúrese de que el flash de su cámara esté
+          desactivado e intente tomar nuevas fotos.
       http:
         image_load: El archivo de imagen que ha añadido no es compatible. Por favor,
           tome nuevas fotos de su identificación y vuelva a intentarlo.
         image_size: El tamaño de la imagen es demasiado grande o demasiado pequeño.
-          Añada imágenes de su documento de identidad de unos 2025 x 1275 píxeles.
-        pixel_depth: No es compatible con la profundidad de píxeles de su archivo
-          de imagen. Tome nuevas fotos de su documento de identidad e inténtelo nuevamente.
-          La profundidad de píxeles de la imagen admitida es de 24 bits RGB.
+          Añada imágenes de su documento de identidad de unos 2025 x 1275
+          píxeles.
+        pixel_depth: No es compatible con la profundidad de píxeles de su archivo de
+          imagen. Tome nuevas fotos de su documento de identidad e inténtelo
+          nuevamente. La profundidad de píxeles de la imagen admitida es de 24
+          bits RGB.
       no_camera:
         explanation: Para continuar, inicie sesión en su cuenta de %{app_name} en
-          cualquier dispositivo que tenga una cámara, como un teléfono móvil, una
-          tableta o una computadora con cámara web.
+          cualquier dispositivo que tenga una cámara, como un teléfono móvil,
+          una tableta o una computadora con cámara web.
         heading: Necesita una cámara para verificar su identidad
         title: Necesita cámara
       not_a_file: La selección no era un archivo válido.
@@ -113,28 +117,29 @@ es:
         birth_date_min_age: Tu cumpleaños no cumple con el requisito de edad mínima.
       sharpness:
         failed_short: La imagen está borrosa, por favor inténtelo de nuevo.
-        top_msg: No pudimos leer su identificación. Es posible que su foto esté demasiado
-          borrosa u oscura. Intente tomar una nueva foto en un área iluminada.
-        top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos
-          estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un área
+        top_msg: No pudimos leer su identificación. Es posible que su foto esté
+          demasiado borrosa u oscura. Intente tomar una nueva foto en un área
           iluminada.
+        top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos
+          estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un
+          área iluminada.
       upload_error: Lo siento, algo salió mal por nuestra parte.
     forms:
       captured_image: Imagen capturada
       change_file: Cambiar archivo
-      choose_file_html: Arrastre el archivo aquí o <lg-underline>elija de la carpeta</lg-underline>
+      choose_file_html: Arrastre el archivo aquí o <lg-underline>elija de la
+        carpeta</lg-underline>
       doc_success: Hemos verificado su información personal
       selected_file: Archivo seleccionado
     headings:
       address: Actualice su dirección postal
       back: Parte Trasera
       capture_complete: Hemos verificado su identificación expedida por el estado
-      capture_scan_warning_html: No pudimos leer el código de barras en su ID. Si
-        la información que aparece a continuación es incorrecta, por favor, %{link}
+      capture_scan_warning_html: No pudimos leer el código de barras en su ID. Si la
+        información que aparece a continuación es incorrecta, por favor, %{link}
         de su ID emitido por el estado.
       capture_scan_warning_link: suba nuevas fotos
-      capture_troubleshooting_tips: "¿Tiene problemas para agregar su identificación
-        emitida por el estado?"
+      capture_troubleshooting_tips: '¿Tiene problemas para agregar su identificación emitida por el estado?'
       document_capture: Añada su documento de identidad expedido por el estado
       document_capture_back: Parte trasera de su documento de identidad
       document_capture_front: Parte delantera de su documento de identidad
@@ -147,7 +152,8 @@ es:
       ssn_update: Actualice su número de Seguro Social
       take_picture: Toma una foto con un teléfono
       text_message: Enviamos un mensaje a su teléfono
-      upload: "¿Cómo le gustaría subir su documento de identidad expedido por el estado?"
+      upload: '¿Cómo le gustaría subir su documento de identidad expedido por el
+        estado?'
       upload_from_phone: Tome una foto con un teléfono móvil para cargar su identificación
       verify_identity: Verifique su identidad
       welcome: Empiece con la verificación de su identidad
@@ -159,90 +165,91 @@ es:
       capture_status_small_document: Muévete mas cerca
       capture_status_tap_to_capture: Toque para capturar
       document_capture_intro_acknowledgment: Recopilaremos información sobre usted
-        leyendo su identificación emitida por el estado. No almacenamos las imágenes
-        que subes. Solo verificamos su identidad.
+        leyendo su identificación emitida por el estado. No almacenamos las
+        imágenes que subes. Solo verificamos su identidad.
       image_loaded: Imagen cargada
       image_loading: Cargando la imagen
       image_updated: Imagen actualizada
       interstitial_eta: Esto puede tardar hasta un minuto. Cargaremos el siguiente
         paso automáticamente cuando esté terminado.
-      interstitial_thanks: "¡Gracias por su paciencia!"
-      irs_reproofing_explanation: Como medida adicional de seguridad, tiene que verificar
-        su identidad de nuevo para el Servicio Interno de Impuestos.
+      interstitial_thanks: '¡Gracias por su paciencia!'
+      irs_reproofing_explanation: Como medida adicional de seguridad, tiene que
+        verificar su identidad de nuevo para el Servicio Interno de Impuestos.
       keep_window_open: No cierres esta ventana.
       lets_go: 'La verificación de la identidad se realiza en dos partes:'
-      link_sent: Verifique su teléfono y siga las instrucciones para tomar una fotografía
-        de la identificación emitida por su estado.
+      link_sent: Verifique su teléfono y siga las instrucciones para tomar una
+        fotografía de la identificación emitida por su estado.
       link_sent_complete_no_polling: Cuando termines, haz clic en “Continuar” para
         completar la verificación de tu identidad.
-      link_sent_complete_polling: El siguiente paso se cargará automáticamente una
-        vez que verifiques tu identidad a través de tu teléfono.
+      link_sent_complete_polling: El siguiente paso se cargará automáticamente una vez
+        que verifiques tu identidad a través de tu teléfono.
       no_sp_name: La agencia a la que está intentando acceder
-      privacy_html: "%{app_name} es un sitio web gubernamental seguro que cumple con
-        las normas más estrictas de protección de datos. Solo utilizamos sus datos
-        para verificar su identidad. %{link} sobre nuestras medidas de privacidad
-        y seguridad."
+      privacy_html: '%{app_name} es un sitio web gubernamental seguro que cumple con
+        las normas más estrictas de protección de datos. Solo utilizamos sus
+        datos para verificar su identidad. %{link} sobre nuestras medidas de
+        privacidad y seguridad.'
       secure_account: Vamos a encriptar su cuenta con su contraseña. La encriptación
-        significa que sus datos están protegidos y solo usted podrá acceder o modificar
-        su información.
+        significa que sus datos están protegidos y solo usted podrá acceder o
+        modificar su información.
       ssn: Necesitamos su número de Seguro Social para validar su nombre, fecha de
-        nacimiento y habla a. Su número de Seguro Social está encriptado. Con su consentimiento,
-        compartimos este información con la agencia gubernamental a la que está intentando
-        acceder para verificar su identidad.
+        nacimiento y habla a. Su número de Seguro Social está encriptado. Con su
+        consentimiento, compartimos este información con la agencia
+        gubernamental a la que está intentando acceder para verificar su
+        identidad.
       tag: Recomendado
-      take_picture: Use la cámara en su teléfono móvil y cargue imágenes de su identificación.
-        Solo usamos las imágenes para verificar su identidad.
+      take_picture: Use la cámara en su teléfono móvil y cargue imágenes de su
+        identificación. Solo usamos las imágenes para verificar su identidad.
       upload: Recopilaremos información sobre usted leyendo su documento de identidad
         expedido por el estado.
       upload_computer_link: Sube desde tu computadora
-      upload_from_computer: "¿No tiene un teléfono?"
-      upload_from_computer_not_allowed: Inicie sesión en su cuenta de %{app_name}
-        en cualquier dispositivo que tenga una cámara, como una tableta o una computadora
-        con una cámara web.
+      upload_from_computer: '¿No tiene un teléfono?'
+      upload_from_computer_not_allowed: Inicie sesión en su cuenta de %{app_name} en
+        cualquier dispositivo que tenga una cámara, como una tableta o una
+        computadora con una cámara web.
       upload_from_phone: Sube imágenes directamente desde la cámara de tu teléfono
-      upload_no_image_storage: No almacenamos imágenes que cargue. Solo verificamos
-        su identidad.
-      verify_identity: Le preguntaremos sus datos personales para verificar su identidad
-        comparándola con los registros públicos.
-      welcome_html: "%{sp_name} necesita asegurarse de que sea usted y no alguien
-        que se haga pasar por usted."
+      upload_no_image_storage: No almacenamos imágenes que cargue. Solo verificamos su identidad.
+      verify_identity: Le preguntaremos sus datos personales para verificar su
+        identidad comparándola con los registros públicos.
+      welcome_html: '%{sp_name} necesita asegurarse de que sea usted y no alguien que
+        se haga pasar por usted.'
     instructions:
       bullet1: Su documento de identidad emitido por el estado.
       bullet2: Su Número de Seguridad Social.
       bullet3: Un número de teléfono con un plan tarifario vinculado a su nombre.
-      consent: Al marcar esta casilla, usted permite que %{app_name} solicite, utilice,
-        conserve y comparta su información personal. Solo la utilizaremos para verificar
-        su identidad.
+      consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
+        utilice, conserve y comparta su información personal. Solo la
+        utilizaremos para verificar su identidad.
       email_sent: Enlace enviado a %{email}. Compruebe el correo electrónico de su
         escritorio y siga las instrucciones para verificar su identidad.
       learn_more: Obtenga más información
       privacy: Nuestras normas de privacidad y seguridad
-      send_sms: Le enviaremos un mensaje de texto a su dispositivo con un enlace.
-        Siga ese enlace a su navegador para tomar fotografías de la parte delantera
-        y trasera de su identificación.
-      switch_back: Regrese a su computadora para continuar con la verificación de
-        su identidad.
+      send_sms: Le enviaremos un mensaje de texto a su dispositivo con un enlace. Siga
+        ese enlace a su navegador para tomar fotografías de la parte delantera y
+        trasera de su identificación.
+      switch_back: Regrese a su computadora para continuar con la verificación de su
+        identidad.
       switch_back_image: Flecha que apunta del teléfono a la computadora
       test_ssn: En el entorno de prueba solo los SSN que comienzan con “900-” o “666-”
         se consideran válidos. No ingrese PII real en este campo.
       text2: No es necesario disponer de la credencial.
       text3: No es necesario que usted sea el titular principal de la cuenta de su
-        plan de teléfono. Si su número de teléfono no funciona, podemos enviarle un
-        código de verificación por correo.
+        plan de teléfono. Si su número de teléfono no funciona, podemos enviarle
+        un código de verificación por correo.
       welcome: 'Deberá contar con lo siguiente para verificar su identidad:'
     tips:
       capture_troubleshooting_blurry: La foto que adjuntó está demasiado borrosa.
       capture_troubleshooting_clean: Asegúrese de que el código de barras no esté
-        dañado o sucio y que se pueda leer toda la información de su identificación.
+        dañado o sucio y que se pueda leer toda la información de su
+        identificación.
       capture_troubleshooting_clean_image: Parte posterior de un documento de identidad
       capture_troubleshooting_glare: La foto que adjuntó tiene destellos.
-      capture_troubleshooting_lead: 'Estos son algunos consejos para tomar una buena
-        foto:'
+      capture_troubleshooting_lead: 'Estos son algunos consejos para tomar una buena foto:'
       capture_troubleshooting_lighting: Asegúrese de que haya suficiente luz. Lo mejor
         es usar luz solar indirecta. Evite destellos, sombras y reflejos.
       capture_troubleshooting_lighting_image: Sol con nube
-      capture_troubleshooting_surface: Tome la foto en una superficie plana y con
-        un fondo oscuro. Asegúrese de que los bordes de su identificación sean visibles.
+      capture_troubleshooting_surface: Tome la foto en una superficie plana y con un
+        fondo oscuro. Asegúrese de que los bordes de su identificación sean
+        visibles.
       capture_troubleshooting_surface_image: Parte frontal de un documento de identidad
       document_capture_header_text: 'Para obtener los mejores resultados:'
       document_capture_hint: Debe ser un JPG o PNG
@@ -252,7 +259,7 @@ es:
       document_capture_id_text4: El tamaño del archivo debe ser de al menos 2 MB
       review_issues_id_header_text: 'Revise las imágenes de su documento de identidad
         expedido por el estado:'
-      review_issues_id_text1: "¿Ha usado un fondo oscuro?"
-      review_issues_id_text2: "¿Tomó la foto en una superficie plana?"
-      review_issues_id_text3: "¿Tiene el flash de su cámara apagado?"
-      review_issues_id_text4: "¿Todos los detalles están nítidos y claramente visibles?"
+      review_issues_id_text1: '¿Ha usado un fondo oscuro?'
+      review_issues_id_text2: '¿Tomó la foto en una superficie plana?'
+      review_issues_id_text3: '¿Tiene el flash de su cámara apagado?'
+      review_issues_id_text4: '¿Todos los detalles están nítidos y claramente visibles?'
