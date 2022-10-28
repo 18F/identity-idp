@@ -15,8 +15,13 @@
         <div class="cover-container">
           <div class="masthead clearfix">
             <div class="inner">
-                <%= image_tag asset_url('logo-white.svg'), width: 150, alt: APP_NAME,
-                                                           class: 'masthead-brand' %>
+                <%= image_tag(
+                      asset_url('logo-white.svg'),
+                      width: 150,
+                      height: 20,
+                      alt: APP_NAME,
+                      class: 'masthead-brand',
+                    ) %>
             </div>
           </div>
           <div class="inner cover">
