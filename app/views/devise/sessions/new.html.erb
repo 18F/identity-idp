@@ -1,5 +1,11 @@
 <% title t('titles.visitors.index') %>
-
+<% if @browser_is_ie11 %>
+  <%= render AlertComponent.new(
+        type: :warning,
+        class: 'margin-bottom-2',
+        message: t('account.login.ie_not_supported', date: I18n.l(IdentityConfig.store.ie11_support_end_date, format: :event_date)),
+      ) %>
+<% end %>
 <%= render 'shared/maintenance_window_alert' %>
 
 <% if decorated_session.sp_name %>

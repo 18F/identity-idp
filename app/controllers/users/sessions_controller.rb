@@ -23,6 +23,7 @@ module Users
 
       @request_id = request_id_if_valid
       @ial = sp_session_ial
+      @browser_is_ie11 = browser_is_ie11?
       super
     end
 
@@ -152,6 +153,10 @@ module Users
 
     def remaining_session_time
       expires_at.to_i - Time.zone.now.to_i
+    end
+
+    def browser_is_ie11?
+      BrowserCache.parse(request.user_agent).ie?(11)
     end
 
     def alive?
