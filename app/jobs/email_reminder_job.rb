@@ -7,6 +7,14 @@ class EmailReminderJob < ApplicationJob
 
   discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
 
+  def perform(_now)
+    email_reminder_first_check = IdentityConfig.store.email_reminder_first_check
+    enrollments = InPersonEnrollment.needs_email_reminder(email_reminder_first_check)
+    check_enrollments(enrollments)
+  end
+
+  private
+
   def check_enrollment_date(enrollment)
     REMINDER_BENCHMARKS.include?(enrollment.days_to_due_date)
   end
@@ -28,11 +36,5 @@ class EmailReminderJob < ApplicationJob
       ).deliver_now
       # rubocop:enable IdentityIdp/MailLaterLinter
     end
-  end
-
-  def perform(_now)
-    email_reminder_first_check = IdentityConfig.store.email_reminder_first_check
-    enrollments = InPersonEnrollment.needs_email_reminder(email_reminder_first_check)
-    check_enrollments(enrollments)
   end
 end
