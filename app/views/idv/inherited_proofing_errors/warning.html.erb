@@ -12,6 +12,7 @@
 
   <%= render(
         'shared/troubleshooting_options',
+        class: 'troubleshooting-options--divider',
         heading: t('components.troubleshooting_options.default_heading'),
         options: [
           {
@@ -19,6 +20,6 @@
             text: t('inherited_proofing.troubleshooting.options.get_va_help'),
             new_tab: true,
           },
-        ].select(&:present?),
+        ],
       ) %>
 <% end %>
