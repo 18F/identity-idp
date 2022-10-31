@@ -21,7 +21,7 @@ RSpec.describe Idv::InheritedProofing::Va::Mocks::Service do
       let(:auth_code) { "invalid-#{described_class::VALID_AUTH_CODE}" }
 
       it 'returns an error' do
-        expect { subject.execute }.to raise_error(/auth_code is invalid/)
+        expect(subject.execute).to eq(described_class::ERROR_HASH)
       end
     end
   end

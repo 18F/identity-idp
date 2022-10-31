@@ -35,17 +35,22 @@ module Idv
             },
           }.freeze
 
+          ERROR_HASH = {
+            errors: 'InheritedProofing::Errors::MHVIdentityDataNotFoundError',
+          }.freeze
+
           def initialize(service_provider_data)
             @auth_code = service_provider_data[:auth_code]
           end
 
           def execute
-            if (@auth_code != VALID_AUTH_CODE)
-              raise TypeError,
-                    "auth_code is invalid: #{@auth_code}"
-            end
+            invalid_auth_code ? ERROR_HASH : PAYLOAD_HASH
+          end
 
-            PAYLOAD_HASH
+          private
+
+          def invalid_auth_code
+            @auth_code != VALID_AUTH_CODE
           end
         end
       end
