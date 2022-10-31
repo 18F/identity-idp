@@ -242,6 +242,7 @@ describe 'OpenID Connect' do
         click_link t('openid_connect.logout.deny')
 
         expect(page).to have_content(t('headings.account.login_info'))
+        expect(page).not_to have_content(service_provider.friendly_name)
       end
     end
   end
@@ -297,6 +298,30 @@ describe 'OpenID Connect' do
       visit account_path
       expect(page).to_not have_content(t('headings.account.login_info'))
       expect(page).to have_content(t('headings.sign_in_without_sp'))
+    end
+
+    it 'does not destroy the session and redirects to account page when denying logout' do
+      service_provider = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:test')
+      sign_in_get_id_token(client_id: service_provider.issuer)
+
+      state = SecureRandom.hex
+
+      visit openid_connect_logout_path(
+        client_id: service_provider.issuer,
+        post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
+        state: state,
+      )
+      expect(page).to have_content(
+        t(
+          'openid_connect.logout.heading_with_sp',
+          app_name: APP_NAME,
+          service_provider_name: service_provider.friendly_name,
+        ),
+      )
+      click_link t('openid_connect.logout.deny')
+
+      expect(page).to have_content(t('headings.account.login_info'))
+      expect(page).not_to have_content(service_provider.friendly_name)
     end
 
     it 'logout rejects requests that include id_token_hint' do

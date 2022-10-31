@@ -17,7 +17,6 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
   const serviceProviderContext: ServiceProviderContext = {
     name: 'Example SP',
     failureToProofURL: 'http://example.test/url/to/failure-to-proof',
-    isLivenessRequired: false,
     getFailureToProofURL: () => '',
   };
   const wrappers: Record<string, ComponentType> = {

@@ -140,7 +140,7 @@ RSpec.describe DocAuthRouter do
       )
 
       response = I18n.with_locale(:es) do
-        proxy.get_results(instance_id: 'abcdef', liveness_enabled: false)
+        proxy.get_results(instance_id: 'abcdef')
       end
 
       expect(response.errors[:some_other_key]).to eq(['will not be translated'])
@@ -163,25 +163,9 @@ RSpec.describe DocAuthRouter do
         ),
       )
 
-      response = proxy.get_results(instance_id: 'abcdef', liveness_enabled: false)
+      response = proxy.get_results(instance_id: 'abcdef')
 
       expect(response.errors[:network]).to eq(I18n.t('doc_auth.errors.general.network_error'))
-    end
-
-    it 'translates generic selfie errors' do
-      DocAuth::Mock::DocAuthMockClient.mock_response!(
-        method: :get_results,
-        response: DocAuth::Response.new(
-          success: false,
-          errors: {
-            selfie: [DocAuth::Errors::SELFIE_FAILURE],
-          },
-        ),
-      )
-
-      response = proxy.get_results(instance_id: 'abcdef', liveness_enabled: false)
-
-      expect(response.errors[:selfie]).to eq([I18n.t('doc_auth.errors.alerts.selfie_failure')])
     end
 
     it 'translates generic network errors' do
@@ -195,7 +179,7 @@ RSpec.describe DocAuthRouter do
         ),
       )
 
-      response = proxy.post_images(front_image: 'a', back_image: 'b', selfie_image: 'c')
+      response = proxy.post_images(front_image: 'a', back_image: 'b')
 
       expect(response.errors[:network]).to eq(I18n.t('doc_auth.errors.general.network_error'))
     end
@@ -209,21 +193,19 @@ RSpec.describe DocAuthRouter do
             id: [DocAuth::Errors::EXPIRATION_CHECKS],
             front: [DocAuth::Errors::VISIBLE_PHOTO_CHECK],
             back: [DocAuth::Errors::REF_CONTROL_NUMBER_CHECK],
-            selfie: [DocAuth::Errors::SELFIE_FAILURE],
-            general: [DocAuth::Errors::GENERAL_ERROR_LIVENESS],
+            general: [DocAuth::Errors::GENERAL_ERROR],
             not_translated: true,
           },
         ),
       )
 
-      response = proxy.post_images(front_image: 'a', back_image: 'b', selfie_image: 'c')
+      response = proxy.post_images(front_image: 'a', back_image: 'b')
 
       expect(response.errors).to eq(
         id: [I18n.t('doc_auth.errors.alerts.expiration_checks')],
         front: [I18n.t('doc_auth.errors.alerts.visible_photo_check')],
         back: [I18n.t('doc_auth.errors.alerts.ref_control_number_check')],
-        selfie: [I18n.t('doc_auth.errors.alerts.selfie_failure')],
-        general: [I18n.t('doc_auth.errors.general.liveness')],
+        general: [I18n.t('doc_auth.errors.general.no_liveness')],
         not_translated: true,
       )
     end
@@ -241,7 +223,7 @@ RSpec.describe DocAuthRouter do
 
       expect(Rails.logger).to receive(:warn).with('unknown DocAuth error=some_obscure_error')
 
-      response = proxy.post_images(front_image: 'a', back_image: 'b', selfie_image: 'c')
+      response = proxy.post_images(front_image: 'a', back_image: 'b')
 
       expect(response.errors).to eq(
         id: [I18n.t('doc_auth.errors.general.no_liveness')],
@@ -260,7 +242,7 @@ RSpec.describe DocAuthRouter do
         ),
       )
 
-      response = proxy.post_images(front_image: 'a', back_image: 'b', selfie_image: 'c')
+      response = proxy.post_images(front_image: 'a', back_image: 'b')
 
       expect(response.errors).to eq(general: [I18n.t('doc_auth.errors.http.image_load')])
       expect(response.exception.message).to eq('Test 438 HTTP failure')

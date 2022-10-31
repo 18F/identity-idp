@@ -2,7 +2,6 @@
 @import 'variables/email';
 @import 'foundation-emails/scss/foundation-emails';
 @import 'identity-style-guide/dist/assets/scss/packages/required';
-@import 'identity-style-guide/dist/assets/scss/packages/utilities';
 
 .gray {
   &:active,
@@ -155,4 +154,99 @@ h4 {
   line-height: 1;
   padding-top: units(0.5);
   margin-right: units(1.5);
+}
+
+// Design system utility classes are duplicated here as a compromise to allow for consistent usage
+// while avoiding performance cost of importing the full design system. Feel free to add as needed.
+
+.border-1px {
+  @include u-border(1px);
+}
+
+.border-primary-light {
+  @include u-border('primary-light');
+}
+
+.display-inline-block {
+  @include u-display('inline-block');
+}
+
+.display-block {
+  @include u-display('block');
+}
+
+.font-heading-lg {
+  @include u-font('heading', 'lg');
+}
+
+.font-heading-md {
+  @include u-font('heading', 'md');
+}
+
+.font-sans-md {
+  @include u-font('sans', 'md');
+}
+
+.margin-bottom-0 {
+  @include u-margin-bottom(0);
+}
+
+.margin-bottom-1 {
+  @include u-margin-bottom(1);
+}
+
+.margin-bottom-105 {
+  @include u-margin-bottom(1.5);
+}
+
+.margin-bottom-2 {
+  @include u-margin-bottom(2);
+}
+
+.margin-bottom-4 {
+  @include u-margin-bottom(4);
+}
+
+.margin-top-0 {
+  @include u-margin-top(0);
+}
+
+.margin-top-5 {
+  @include u-margin-top(5);
+}
+
+.margin-y-105 {
+  @include u-margin-y(1.5);
+}
+
+.margin-y-4 {
+  @include u-margin-y(4);
+}
+
+.padding-4 {
+  @include u-padding(4);
+}
+
+.padding-bottom-4 {
+  @include u-padding-bottom(4);
+}
+
+.radius-lg {
+  @include u-radius('lg');
+}
+
+.text-bold {
+  @include u-text('bold');
+}
+
+.text-center {
+  @include u-text('center');
+}
+
+.usa-list {
+  @extend %usa-list;
+
+  li {
+    @extend %usa-list-item;
+  }
 }

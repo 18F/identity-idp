@@ -67,7 +67,6 @@ function DocumentSideAcuantCapture({
       errorMessage={error ? error.message : undefined}
       name={side}
       className={className}
-      capture="environment"
     />
   );
 }

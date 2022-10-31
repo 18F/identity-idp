@@ -27,7 +27,7 @@ export interface UploadFieldError {
   /**
    * Field name
    */
-  field: 'front' | 'back' | 'selfie' | 'network';
+  field: 'front' | 'back' | 'network';
 
   /**
    * Error message.

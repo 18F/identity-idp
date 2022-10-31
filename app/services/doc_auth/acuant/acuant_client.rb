@@ -57,8 +57,8 @@ module DocAuth
       def post_images(
         front_image:,
         back_image:,
-        selfie_image:,
         image_source:,
+        selfie_image: nil,
         liveness_checking_enabled: nil,
         user_uuid: nil,
         uuid_prefix: nil

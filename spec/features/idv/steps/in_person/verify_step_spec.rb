@@ -45,7 +45,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
     # click update address button
     click_button t('idv.buttons.change_address_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_address'))
-    fill_in t('in_person_proofing.form.address.address1'), with: 'bad address'
+    fill_in t('idv.form.address1'), with: 'bad address'
     click_doc_auth_back_link
     expect(page).to have_content(t('headings.verify'))
     expect(page).to have_text(InPersonHelper::GOOD_ADDRESS1)

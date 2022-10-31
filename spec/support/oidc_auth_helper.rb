@@ -15,14 +15,6 @@ module OidcAuthHelper
     oidc_path
   end
 
-  def visit_idp_from_ial2_strict_oidc_sp(**args)
-    args[:acr_values] = Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF
-    params = ial2_params(**args)
-    oidc_path = openid_connect_authorize_path params
-    visit oidc_path
-    oidc_path
-  end
-
   def visit_idp_from_ial_max_oidc_sp(**args)
     args[:acr_values] = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
     params = ial2_params(**args)

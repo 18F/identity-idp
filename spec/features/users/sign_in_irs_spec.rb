@@ -55,12 +55,18 @@ feature 'Sign in to the IRS' do
     context 'user verified with other agency signs in to IRS' do
       let(:initiating_service_provider_issuer) { not_irs.issuer }
 
-      it 'forces the user to re-verify their identity' do
+      before do
         visit_idp_from_oidc_sp_with_ial2(client_id: irs.issuer)
         fill_in_credentials_and_submit(user.email, user.password)
         fill_in_code_with_last_phone_otp
         click_submit_default
+      end
 
+      it 'displays the text explaining about IRS re-proofing' do
+        expect(page).to have_content(t('doc_auth.info.irs_reproofing_explanation'))
+      end
+
+      it 'forces the user to re-verify their identity' do
         expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
       end
     end
@@ -94,12 +100,18 @@ feature 'Sign in to the IRS' do
     context 'user verified with other agency signs in to IRS' do
       let(:initiating_service_provider_issuer) { not_irs.issuer }
 
-      it 'forces the user to re-verify their identity' do
+      before do
         visit_idp_from_saml_sp_with_ial2(issuer: irs.issuer)
         fill_in_credentials_and_submit(user.email, user.password)
         fill_in_code_with_last_phone_otp
         click_submit_default
+      end
 
+      it 'displays the text explaining about IRS re-proofing' do
+        expect(page).to have_content(t('doc_auth.info.irs_reproofing_explanation'))
+      end
+
+      it 'forces the user to re-verify their identity' do
         expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
       end
     end

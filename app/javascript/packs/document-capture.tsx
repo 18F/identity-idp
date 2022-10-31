@@ -44,20 +44,19 @@ const sharpnessThreshold = Number(appRoot.getAttribute('data-sharpness-threshold
 
 function getServiceProvider() {
   const { spName: name = null, failureToProofUrl: failureToProofURL = '' } = appRoot.dataset;
-  const isLivenessRequired = appRoot.hasAttribute('data-liveness-required');
 
-  return { name, failureToProofURL, isLivenessRequired };
+  return { name, failureToProofURL };
 }
 
-function getBackgroundUploadURLs(): Record<'front' | 'back' | 'selfie', string> {
-  return ['front', 'back', 'selfie'].reduce((result, key) => {
+function getBackgroundUploadURLs(): Record<'front' | 'back', string> {
+  return ['front', 'back'].reduce((result, key) => {
     const url = appRoot.getAttribute(`data-${key}-image-upload-url`);
     if (url) {
       result[key] = url;
     }
 
     return result;
-  }, {} as Record<'front' | 'back' | 'selfie', string>);
+  }, {} as Record<'front' | 'back', string>);
 }
 
 function getMetaContent(name): string | null {

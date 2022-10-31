@@ -10,7 +10,6 @@ import { addSearchParams } from '@18f/identity-url';
  * @prop {string} failureToProofURL URL to redirect user on failure to proof.
  * @prop {(location: string) => string} getFailureToProofURL Returns failure to proof URL for a
  * specific location within the step.
- * @prop {boolean} isLivenessRequired Whether liveness capture should be expected from the user.
  */
 
 const ServiceProviderContext = createContext(
@@ -18,7 +17,6 @@ const ServiceProviderContext = createContext(
     name: null,
     failureToProofURL: '',
     getFailureToProofURL: () => '',
-    isLivenessRequired: true,
   }),
 );
 

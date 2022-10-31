@@ -5,7 +5,6 @@ fr:
       camera_video_capture_instructions: Nous prendrons automatiquement la photo
       camera_video_capture_label: Viseur avec cadre pour centrer votre pièce d’identité
       document_capture_dialog: Capture du document
-      selfie_alt_text: Une photo téléversée
     buttons:
       add_new_photos: Ajoutez de nouvelles photos
       continue: Continuer
@@ -50,9 +49,6 @@ fr:
           d’identité. Essayez de prendre de nouvelles photos.
         ref_control_number_check: Nous n’avons pas pu lire le code-barres du numéro de
           contrôle. Essayez de prendre de nouvelles photos.
-        selfie_failure: Nous n’avons pas pu associer votre photo à votre pièce
-          d’identité. Essayez de prendre une nouvelle photo de vous-même ou du
-          recto de votre carte d’identité.
         sex_check: Nous n’avons pas pu lire le sexe sur votre pièce d’identité. Essayez
           de prendre de nouvelles photos.
         visible_color_check: Nous n’avons pas pu vérifier votre pièce d’identité. Elle a
@@ -89,8 +85,6 @@ fr:
           ou PNG.
       general:
         fallback_field_level: Veuillez ajouter une nouvelle image
-        liveness: Nous n’avons pas pu vérifier votre pièce d’identité et votre photo.
-          Essayez de prendre de nouvelles photos.
         multiple_back_id_failures: Nous n’avons pas pu vérifier le verso de votre pièce
           d’identité. Essayez de prendre une nouvelle photo.
         multiple_front_id_failures: Nous n’avons pas pu vérifier le recto de votre pièce
@@ -155,14 +149,11 @@ fr:
       document_capture: Ajoutez votre carte d’identité délivrée par l’État
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
-      document_capture_selfie: Votre photo
       front: Recto
       interstitial: Nous traitons vos images
       lets_go: Comment fonctionne la vérification de votre identité
-      photo: Photo
       review_issues: Vérifiez vos images et essayez à nouveau
       secure_account: Sécuriser votre compte
-      selfie: Prenez une photo de vous-même
       ssn: Saisissez votre numéro de sécurité sociale
       ssn_update: Mettre à jour votre numéro de Sécurité Sociale
       take_picture: Prendre une photo avec un téléphone
@@ -193,6 +184,8 @@ fr:
       interstitial_eta: Cette opération peut prendre jusqu’à une minute. Nous
         chargerons automatiquement l’étape suivante lorsqu’elle sera terminée.
       interstitial_thanks: Merci de votre patience!
+      irs_reproofing_explanation: Comme mesure de sécurité supplémentaire, vous devez
+        vérifier à nouveau votre identité pour l’IRS.
       keep_window_open: Ne fermez pas cette fenêtre.
       lets_go: La vérification de l’identité se fait en deux temps
       link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour
@@ -245,20 +238,6 @@ fr:
       consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
         conserver et partager vos renseignements personnels. Nous ne les
         utiliserons que pour vérifier votre identité.
-      document_capture_selfie_consent_action: '<lg-underline>Autorisez l’accès à la
-        caméra</lg-underline> et recherchez une notification dans votre
-        navigateur ou vérifiez les paramètres de votre système pour confirmer
-        l’accès à la caméra.'
-      document_capture_selfie_consent_banner: '%{app_name} a besoin d’une autorisation
-        pour utiliser la caméra de votre appareil'
-      document_capture_selfie_consent_blocked: '%{app_name} a besoin d’une
-        autorisation pour utiliser votre caméra afin que vous puissiez prouver
-        que votre identifiant vous appartient.'
-      document_capture_selfie_consent_blocked_action: Vérifiez les paramètres de votre
-        navigateur Web pour ce site ou les paramètres système de votre
-        ordinateur pour permettre à %{app_name} d’accéder à la caméra.
-      document_capture_selfie_instructions: Maintenant, prenez une photo de vous. Nous
-        le comparerons à l’image au recto de votre pièce d’identité.
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau et
         suivez les instructions pour vérifier votre identité.
       learn_more: En savoir plus
@@ -300,18 +279,9 @@ fr:
       document_capture_id_text2: Prenez la photo sur une surface plane
       document_capture_id_text3: N’utilisez pas le flash de votre appareil photo
       document_capture_id_text4: La taille du fichier doit être d’au moins 2 Mo
-      document_capture_selfie_text1: Faites face à l’appareil photo et assurez-vous
-        que toute votre tête est visible sur la photo
-      document_capture_selfie_text2: Prenez une photo avec un arrière-plan uni
-      document_capture_selfie_text3: Ne pas porter de chapeau ou de lunettes
       review_issues_id_header_text: 'Examinez les images de votre carte d’identité délivrée par l’État:'
       review_issues_id_text1: Avez-vous utilisé un fond sombre?
       review_issues_id_text2: Avez-vous pris la photo sur une surface plane?
       review_issues_id_text3: Le flash de votre caméra est-il éteint?
       review_issues_id_text4: Tous les détails sont-ils nets et clairement visibles?
-      review_issues_selfie_header_text: 'Examinez l’auto-portrait:'
-      review_issues_selfie_text1: Êtes-vous face à la caméra?
-      review_issues_selfie_text2: Est-ce que vous avez toute la tête et le visage sur la photo?
-      review_issues_selfie_text3: La photo est-elle sur un fond uni?
-      review_issues_selfie_text4: Votre visage est-il entièrement visible, sans être
         couvert par un chapeau ou des lunettes?

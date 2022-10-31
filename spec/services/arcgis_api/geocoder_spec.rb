@@ -6,6 +6,10 @@ RSpec.describe ArcgisApi::Geocoder do
   let(:subject) { ArcgisApi::Geocoder.new }
 
   describe '#suggest' do
+    before(:each) do
+      stub_generate_token_response
+    end
+
     it 'returns suggestions' do
       stub_request_suggestions
 
@@ -35,6 +39,10 @@ RSpec.describe ArcgisApi::Geocoder do
   end
 
   describe '#find_address_candidates' do
+    before(:each) do
+      stub_generate_token_response
+    end
+
     it 'returns candidates from magic_key' do
       stub_request_candidates_response
 
@@ -69,6 +77,110 @@ RSpec.describe ArcgisApi::Geocoder do
         expect(error.message).to eq('received error code 400')
         expect(error.response).to be_kind_of(Hash)
       end
+    end
+  end
+
+  describe '#retrieve_token!' do
+    it 'sets token and token_expires_at' do
+      stub_generate_token_response
+      subject.retrieve_token!
+
+      expect(subject.token).to be_present
+    end
+
+    it 'calls the endpoint with the expected params' do
+      stub_generate_token_response
+      username = 'test username'
+      password = 'test password'
+
+      allow(IdentityConfig.store).to receive(:arcgis_api_username).
+        and_return(username)
+      allow(IdentityConfig.store).to receive(:arcgis_api_password).
+        and_return(password)
+
+      subject.retrieve_token!
+
+      expect(WebMock).to have_requested(:post, %r{/generateToken}).
+        with(
+          body: 'username=test+username&password=test+password&referer=www.example.com&f=json',
+          headers: {
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'User-Agent' => 'Faraday v1.8.0',
+          },
+        )
+    end
+
+    it 'reuses the cached token on subsequent requests' do
+      stub_generate_token_response
+      stub_request_suggestions
+      stub_request_suggestions
+      stub_request_suggestions
+
+      subject.suggest('1')
+      subject.suggest('100')
+      subject.suggest('100 Main')
+
+      expect(WebMock).to have_requested(:post, %r{/generateToken}).once
+      expect(WebMock).to have_requested(:get, %r{/suggest}).times(3)
+    end
+
+    it 'implicitly refreshes the token when expired' do
+      root_url = 'http://my.root.url'
+      allow(IdentityConfig.store).to receive(:arcgis_api_root_url).
+        and_return(root_url)
+
+      stub_generate_token_response(expires_at: 1.hour.from_now.to_i, token: 'token1')
+      stub_request_suggestions
+      subject.suggest('100 Main')
+
+      travel 2.hours
+
+      stub_generate_token_response(token: 'token2')
+      stub_request_suggestions
+      subject.suggest('100 Main')
+
+      expect(WebMock).to have_requested(:post, %r{/generateToken}).twice
+      expect(WebMock).to have_requested(:get, %r{/suggest}).
+        with(
+          headers: {
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Authorization' => 'Bearer token1',
+            'User-Agent' => 'Faraday v1.8.0',
+          },
+        ).once
+      expect(WebMock).to have_requested(:get, %r{/suggest}).
+        with(
+          headers: {
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Authorization' => 'Bearer token2',
+            'User-Agent' => 'Faraday v1.8.0',
+          },
+        ).once
+    end
+
+    it 'reuses the cached token across instances' do
+      stub_generate_token_response(token: 'token1')
+      stub_request_suggestions
+      stub_request_suggestions
+
+      client1 = ArcgisApi::Geocoder.new
+      client2 = ArcgisApi::Geocoder.new
+
+      client1.suggest('1')
+      client2.suggest('100')
+
+      expect(WebMock).to have_requested(:get, %r{/suggest}).
+        with(
+          headers: {
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Authorization' => 'Bearer token1',
+            'User-Agent' => 'Faraday v1.8.0',
+          },
+        ).twice
     end
   end
 end

@@ -5,7 +5,6 @@ en:
       camera_video_capture_instructions: We will automatically take the picture
       camera_video_capture_label: Viewfinder with frame to center your ID
       document_capture_dialog: Document capture
-      selfie_alt_text: An uploaded image
     buttons:
       add_new_photos: Add new photos
       continue: Continue
@@ -39,8 +38,6 @@ en:
           the picture. Try taking new pictures.
         issue_date_checks: We couldn’t read the issue date on your ID. Try taking new pictures.
         ref_control_number_check: We couldn’t read the control number barcode. Try taking new pictures.
-        selfie_failure: We couldn’t match the photo of you to your ID. Try taking a new
-          picture of yourself or the front of your ID.
         sex_check: We couldn’t read the sex on your ID. Try taking new pictures.
         visible_color_check: We couldn’t verify your ID. It might have moved when you
           took the picture, or the picture is too dark. Try taking new pictures
@@ -68,8 +65,6 @@ en:
         invalid: This file type is not accepted, please choose a JPG or PNG file.
       general:
         fallback_field_level: Please add a new image
-        liveness: We couldn’t verify your ID and photo of yourself. Try taking new
-          pictures.
         multiple_back_id_failures: We couldn’t verify the back of your ID. Try taking a new picture.
         multiple_front_id_failures: We couldn’t verify the front of your ID. Try taking a new picture.
         network_error: We are having technical difficulties on our end. Please try to
@@ -121,14 +116,11 @@ en:
       document_capture: Add your state-issued ID
       document_capture_back: Back of your ID
       document_capture_front: Front of your ID
-      document_capture_selfie: Your photo
       front: Front
       interstitial: We are processing your images
       lets_go: How verifying your identity works
-      photo: Photo
       review_issues: Check your images and try again
       secure_account: Secure your account
-      selfie: Take a photo of yourself
       ssn: Enter your Social Security number
       ssn_update: Update your Social Security number
       take_picture: Take a photo with a phone
@@ -155,6 +147,7 @@ en:
       interstitial_eta: This might take up to a minute. We’ll load the next step
         automatically when it’s done.
       interstitial_thanks: Thanks for your patience!
+      irs_reproofing_explanation: As an extra security measure, you must verify your identity again for IRS
       keep_window_open: Do not close this window.
       lets_go: 'Identity verification happens in two parts:'
       link_sent: Please check your phone and follow instructions to take a photo of
@@ -198,17 +191,6 @@ en:
       consent: By checking this box, you are letting %{app_name} ask for, use, keep,
         and share your personal information. We will only use it to verify your
         identity.
-      document_capture_selfie_consent_action: '<lg-underline>Allow access to the
-        camera</lg-underline> and look for a notification in your browser or
-        check your system settings to confirm camera access.'
-      document_capture_selfie_consent_banner: '%{app_name} needs permission to use your device’s camera'
-      document_capture_selfie_consent_blocked: '%{app_name} needs permission to use
-        your camera so that you can prove your ID belongs to you.'
-      document_capture_selfie_consent_blocked_action: Check your web browser’s
-        settings for this site or your computer’s system settings to allow
-        %{app_name} to access the camera.
-      document_capture_selfie_instructions: Now take a picture of yourself. We’ll
-        compare it to the image on the front of your ID.
       email_sent: Link sent to %{email}. Please check your desktop email and follow
         instructions to verify your identity.
       learn_more: Learn more
@@ -244,16 +226,8 @@ en:
       document_capture_id_text2: Take the photo on a flat surface
       document_capture_id_text3: Do not use the flash on your camera
       document_capture_id_text4: File size should be at least 2 MB
-      document_capture_selfie_text1: Face the camera and ensure your entire head is in the photo
-      document_capture_selfie_text2: Take a photo against a plain background
-      document_capture_selfie_text3: Do not wear a hat or glasses
       review_issues_id_header_text: 'Review the images of your state-issued ID:'
       review_issues_id_text1: Did you use a dark background?
       review_issues_id_text2: Did you take the photo on a flat surface?
       review_issues_id_text3: Is the flash on your camera off?
       review_issues_id_text4: Are all details sharp and clearly visible?
-      review_issues_selfie_header_text: 'Review the photo of yourself:'
-      review_issues_selfie_text1: Are you facing the camera?
-      review_issues_selfie_text2: Is your entire head and face in the photo?
-      review_issues_selfie_text3: Is the photo against a plain background?
-      review_issues_selfie_text4: Is your face fully visible, not covered by a hat or glasses?
