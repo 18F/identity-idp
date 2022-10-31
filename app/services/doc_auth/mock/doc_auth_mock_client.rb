@@ -46,12 +46,6 @@ module DocAuth
         DocAuth::Response.new(success: true)
       end
 
-      def post_selfie
-        raise NotImplementedError, 'Remove when same method is removed from Acuant'
-      end
-
-      # NOTE: remove selfie_image and liveness_checking_enabled args
-      # when they are no longer expected by the front-end and specs
       def post_images(
         front_image:,
         back_image:,
