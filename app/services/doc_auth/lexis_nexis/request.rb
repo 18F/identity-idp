@@ -86,7 +86,7 @@ module DocAuth
         Faraday.new(url: url.to_s, headers: headers) do |conn|
           conn.request :retry, retry_options
           conn.request :instrumentation, name: 'request_metric.faraday'
-          conn.request :basic_auth, username, password
+          conn.request :authorization, :basic, username, password
           conn.adapter :net_http
           conn.options.timeout = timeout
           conn.options.read_timeout = timeout
