@@ -151,9 +151,9 @@ RSpec::Matchers.define :have_logged_event do |event_name, attributes|
 
   def differ
     RSpec::Support::Differ.new(
-      object_preparer: lambda { |object|
+      object_preparer: lambda do |object|
                          RSpec::Matchers::Composable.surface_descriptions_in(object)
-                       },
+                       end,
       color: RSpec::Matchers.configuration.color?,
     )
   end
