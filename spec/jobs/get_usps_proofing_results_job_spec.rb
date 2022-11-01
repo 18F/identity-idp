@@ -562,8 +562,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
         it_behaves_like(
           'enrollment_encountering_an_exception',
-          exception_class: 'JSON::ParserError',
-          exception_message: /unexpected token at 'invalid'$/,
+          reason: 'Bad response structure',
         )
       end
 

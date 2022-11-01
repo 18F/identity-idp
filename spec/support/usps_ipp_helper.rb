@@ -152,8 +152,9 @@ module UspsIppHelper
 
   def stub_request_proofing_results_internal_server_error
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
-      status: 500, body: UspsInPersonProofing::Mock::Fixtures.
-        internal_server_error_response
+      status: 500,
+      body: UspsInPersonProofing::Mock::Fixtures.internal_server_error_response,
+      headers: { 'content-type' => 'application/json' },
     )
   end
 
