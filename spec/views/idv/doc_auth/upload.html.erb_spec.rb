@@ -9,15 +9,13 @@ describe 'idv/doc_auth/upload.html.erb' do
     allow(view).to receive(:user_fully_authenticated?).and_return(user_fully_authenticated)
     allow(view).to receive(:url_for).and_return('https://www.example.com/')
     allow(view).to receive(:user_signing_up?).and_return(false)
+
+    render template: 'idv/doc_auth/upload'
   end
 
-  context 'with liveness disabled' do
-    it 'does not render liveness content' do
-      render template: 'idv/doc_auth/upload'
-
-      expect(rendered).to have_content(t('doc_auth.headings.upload'))
-      expect(rendered).to have_content(t('doc_auth.info.upload'))
-      expect(rendered).to have_content(t('doc_auth.headings.upload_from_phone'))
-    end
+  it 'renders the headings and info' do
+    expect(rendered).to have_content(t('doc_auth.headings.upload'))
+    expect(rendered).to have_content(t('doc_auth.info.upload'))
+    expect(rendered).to have_content(t('doc_auth.headings.upload_from_phone'))
   end
 end
