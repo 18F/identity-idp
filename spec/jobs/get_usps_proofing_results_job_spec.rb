@@ -586,7 +586,8 @@ RSpec.describe GetUspsProofingResultsJob do
         )
 
         it 'logs the error to NewRelic' do
-          expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(Faraday::BadRequestError))
+          expect(NewRelic::Agent).to receive(:notice_error).
+            with(instance_of(Faraday::BadRequestError))
           job.perform(Time.zone.now)
         end
       end
