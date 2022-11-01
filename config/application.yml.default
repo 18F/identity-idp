@@ -94,7 +94,7 @@ email_registrations_per_ip_period: 20
 email_registrations_per_ip_track_only_mode: false
 email_reminder_first_check: 11
 email_reminder_second_check: 4
-email_reminder_final_check: 1
+email_reminder_final_check: 2
 enable_load_testing_mode: false
 enable_partner_api: false
 enable_rate_limiting: true

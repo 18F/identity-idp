@@ -29,7 +29,7 @@ class InPersonEnrollment < ApplicationRecord
         and(
           where('enrollment_established_at <= ?', start_interval).
           and(
-            where('enrollment_established_at > ?', end_interval),
+            where('enrollment_established_at >= ?', end_interval),
           ),
         ),
       ).
