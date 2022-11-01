@@ -1,9 +1,11 @@
+# See https://www.rfc-editor.org/rfc/rfc4648#section-8
 class Base16
-
-  # The IRS has requested data be encoded this way. Loosely emulate the Base64 class.
-
   def self.encode16(str)
-    str.bytes.map { |char| char.to_s(16).upcase.rjust(2, "0") }.join
+    output = ''
+    str.bytes.each do |char|
+      output << char.to_s(16).upcase.rjust(2, "0")
+    end
+    output
   end
 
   def self.decode16(str)
