@@ -230,15 +230,6 @@ RSpec.describe OpenidConnectTokenForm do
           end
         end
 
-        context 'with a bad audience' do
-          before { jwt_payload[:exp] = 5.minutes.ago.to_i }
-
-          it 'is invalid' do
-            expect(valid?).to eq(false)
-            expect(form.errors[:client_assertion]).to include('Signature has expired')
-          end
-        end
-
         context 'with an already expired assertion' do
           before { jwt_payload[:exp] = 5.minutes.ago.to_i }
 
