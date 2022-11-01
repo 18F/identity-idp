@@ -46,10 +46,6 @@ module DocAuth
         DocAuth::Response.new(success: true)
       end
 
-      def post_selfie
-        raise NotImplementedError, 'Remove when same method is removed from Acuant'
-      end
-
       # NOTE: remove selfie_image arg when it is no longer expected by
       # the front-end and specs
       def post_images(
