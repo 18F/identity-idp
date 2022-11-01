@@ -19,7 +19,6 @@ module DocAuthImageFixtures
     Rack::Test::UploadedFile.new(fixture_path('id-back.jpg'), 'image/jpeg')
   end
 
-
   def self.error_yaml_multipart
     path = File.join(
       File.dirname(__FILE__),
