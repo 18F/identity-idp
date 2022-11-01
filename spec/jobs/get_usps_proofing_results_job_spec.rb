@@ -562,8 +562,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
         it_behaves_like(
           'enrollment_encountering_an_exception',
-          exception_class: 'Faraday::ParsingError',
-          exception_message: /unexpected token at 'invalid'$/,
+          reason: 'Bad response structure',
         )
       end
 
@@ -598,6 +597,7 @@ RSpec.describe GetUspsProofingResultsJob do
             {
               status: 410,
               body: { 'responseMessage' => 'Applicant does not exist' }.to_json,
+              headers: { 'content-type': 'application/json' },
             },
           )
         end

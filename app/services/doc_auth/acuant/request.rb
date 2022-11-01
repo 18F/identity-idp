@@ -86,13 +86,13 @@ module DocAuth
           interval_randomness: 0.5,
           backoff_factor: 2,
           retry_statuses: [404],
-          retry_block: lambda do |_env, _options, retries, exc|
-            send_exception_notification(exc, retry: retries)
+          retry_block: lambda do |env:, options:, retry_count:, exception:, will_retry_in:|
+            send_exception_notification(exception, custom_params: { retry: retry_count })
           end,
         }
 
         Faraday.new(url: url.to_s, headers: headers) do |conn|
-          conn.request :basic_auth, config.assure_id_username, config.assure_id_password
+          conn.request :authorization, :basic, config.assure_id_username, config.assure_id_password
           conn.request :instrumentation, name: 'request_metric.faraday'
           conn.request :retry, retry_options
           conn.adapter :net_http
