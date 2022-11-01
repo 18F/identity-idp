@@ -23,6 +23,12 @@ es:
         retail_phone_label: Número de teléfono
         speak_to_associate: Para verificar su identidad, puede acudir a cualquier
           empleado en ventanilla.
+      cta:
+        button: Buscar una oficina de correos
+        new_feature: Nuevo artículo
+        prompt: '¿Reside cerca de Washington, D.C. <wbr/>o Baltimore, MD?'
+        prompt_detail: Es posible que pueda verificar su identidad en persona en una
+          oficina de correos cercana.
       location:
         location_button: Seleccionar
         location_step_about: Si tiene problemas para añadir su cédula de identidad, es
@@ -87,6 +93,7 @@ es:
     headings:
       address: Ingrese su dirección actual
       barcode: Está listo para verificar su identidad en persona
+      cta: Verificar su identidad de forma presencial
       location: Seleccione un lugar para verificar su cédula
       prepare: Verifique su identidad en persona
       state_id: Ingrese la información de su cédula
