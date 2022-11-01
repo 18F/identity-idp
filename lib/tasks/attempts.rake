@@ -90,4 +90,66 @@ namespace :attempts do
   task purge_events: :environment do
     IrsAttemptsApi::RedisClient.clear_attempts!
   end
+  desc 'Generate a simple gzipped file'
+  task write_event: :environment do
+    # message = "Testing gzip compression. If you can read this, it works!"
+    #
+    # file = File.new('./gzip-test.txt.gz', 'wb')
+    # file.write Zlib.gzip(message)
+    # file.close
+
+    events = [_generate_event, _generate_event]
+
+    decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
+    pub_key = OpenSSL::PKey::RSA.new(decoded_key_der)
+
+    result = IrsAttemptsApi::EnvelopeEncryptor.encrypt(
+      data: events.join("\r\n"),
+      timestamp: Time.zone.now,
+      public_key: pub_key,
+    )
+
+    file = File.open(result.filename, 'wb')
+    file.write(result.encrypted_data)
+    puts "IV: #{Base64.encode64(result.iv)}"
+    puts "Encrypted key: #{Base64.encode64(result.encrypted_key).gsub("\n", '')}"
+  end
+
+  task decrypt_file: :environment do
+    iv = Base64.strict_decode64(ENV['IRS_IV'])
+    encrypted_key = Base64.strict_decode64(ENV['IRS_KEY'])
+    puts "File is #{ARGV[1]}"
+    file_contents = File.read("./#{ARGV[1]}")
+
+    puts "IV: #{iv.size}"
+    puts "Key: #{encrypted_key.size}"
+    puts "File contents: #{file_contents}"
+
+    private_key_path = 'keys/attempts_api_private_key.key'
+    private_key = OpenSSL::PKey::RSA.new(File.read(private_key_path))
+    key = private_key.private_decrypt(encrypted_key)
+    decrypted = IrsAttemptsApi::EnvelopeEncryptor.decrypt(
+      encrypted_data: file_contents, key: key, iv: iv,
+    )
+
+    puts decrypted
+
+  end
+
+  task :decode16 do |_task, args|
+    file = File.open(ARGV[1], 'rb')
+    decoded = Base16.decode16(file.read)
+  end
+
+  # Don't commit this
+  def _generate_event
+    event = IrsAttemptsApi::AttemptEvent.new(
+      event_type: 'test',
+      session_id: SecureRandom.uuid,
+      occurred_at: Time.zone.now,
+      event_metadata: {foo: 'bar'},
+      jti: SecureRandom.uuid,
+      iat: Time.zone.now.to_i
+    ).to_jwe
+  end
 end
