@@ -495,11 +495,11 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('renders retry button when value and capture supported', async () => {
-      const selfie = await getFixtureFile('doc_auth_images/selfie.jpg');
+      const image = await getFixtureFile('doc_auth_images/id-front.jpg');
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" value={selfie} />
+            <AcuantCapture label="Image" value={image} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );

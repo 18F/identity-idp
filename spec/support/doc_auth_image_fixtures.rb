@@ -19,22 +19,6 @@ module DocAuthImageFixtures
     Rack::Test::UploadedFile.new(fixture_path('id-back.jpg'), 'image/jpeg')
   end
 
-  def self.document_face_image
-    load_image_data('id-face.jpg')
-  end
-
-  def self.document_face_image_multipart
-    Rack::Test::UploadedFile.new(fixture_path('id-face.jpg'), 'image/jpeg')
-  end
-
-  def self.selfie_image
-    load_image_data('selfie.jpg')
-  end
-
-  def self.selfie_image_multipart
-    Rack::Test::UploadedFile.new(fixture_path('selfie.jpg'), 'image/jpeg')
-  end
-
   def self.error_yaml_multipart
     path = File.join(
       File.dirname(__FILE__),

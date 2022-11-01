@@ -6,7 +6,7 @@
 <% end %>
 <% add_document_capture_image_urls_to_csp(
      request,
-     [front_image_upload_url, back_image_upload_url, selfie_image_upload_url],
+     [front_image_upload_url, back_image_upload_url],
    )
    session_id = flow_session[:document_capture_session_uuid]
 %>
@@ -39,7 +39,6 @@
       failure_to_proof_url: failure_to_proof_url,
       front_image_upload_url: front_image_upload_url,
       back_image_upload_url: back_image_upload_url,
-      selfie_image_upload_url: selfie_image_upload_url,
       keep_alive_endpoint: sessions_keepalive_url,
       idv_in_person_url: Idv::InPersonConfig.enabled_for_issuer?(decorated_session.sp_issuer) ? idv_in_person_url : nil,
       security_and_privacy_how_it_works_url: MarketingSite.security_and_privacy_how_it_works_url,
