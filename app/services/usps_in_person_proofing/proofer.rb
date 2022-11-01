@@ -77,9 +77,11 @@ module UspsInPersonProofing
         enrollmentCode: enrollment_code,
       }
 
-      faraday.post(url, body, dynamic_headers) do |req|
+      body = faraday.post(url, body, dynamic_headers) do |req|
         req.options.context = { service_name: 'usps_proofing_results' }
       end.body
+
+      JSON.parse(body)
     end
 
     # Makes HTTP request to retrieve enrollment code
