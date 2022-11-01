@@ -1,0 +1,4 @@
+@import 'identity-style-guide/dist/assets/scss/uswds/utilities/utility-fonts';
+@import 'identity-style-guide/dist/assets/scss/uswds/utilities/rules/package';
+@import 'variables/utilities';
+@include render-utilities-in($utilities-package);

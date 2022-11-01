@@ -1,0 +1,96 @@
+@use 'sass:map';
+
+$utilities-package: map.remove(
+  $utilities-package,
+  'align-self',
+  'add-aspect',
+  'bottom',
+  'box-shadow',
+  'circle',
+  'cursor',
+  'height',
+  'left',
+  'letter-spacing',
+  'measure',
+  'max-height',
+  'max-width',
+  'min-height',
+  'min-width',
+  'opacity',
+  'order',
+  'outline',
+  'outline-color',
+  'pin',
+  'right',
+  'square',
+  'text-decoration',
+  'text-decoration-color',
+  'text-indent',
+  'text-transform',
+  'top',
+  'vertical-align',
+  'z-index'
+);
+
+$utilities-package: map.deep-merge(
+  $utilities-package,
+  (
+    'background-color': (
+      'settings': (
+        hover: false,
+      ),
+    ),
+    'border': (
+      'settings': (
+        hover: false,
+        responsive: false,
+      ),
+    ),
+    'border-color': (
+      'settings': (
+        hover: false,
+        responsive: false,
+      ),
+    ),
+    'border-radius': (
+      'settings': (
+        responsive: false,
+      ),
+    ),
+    'color': (
+      'settings': (
+        hover: false,
+      ),
+    ),
+    'font': (
+      'settings': (
+        responsive: false,
+      ),
+    ),
+    'font-weight': (
+      'settings': (
+        responsive: false,
+      ),
+    ),
+    'justify-content': (
+      'settings': (
+        responsive: false,
+      ),
+    ),
+    'line-height': (
+      'settings': (
+        responsive: false,
+      ),
+    ),
+    'width': (
+      'settings': (
+        responsive: false,
+      ),
+    ),
+  )
+);
+
+$utilities-package: map.deep-remove($utilities-package, 'border-radius', 'modifiers', 'top');
+$utilities-package: map.deep-remove($utilities-package, 'border-radius', 'modifiers', 'right');
+$utilities-package: map.deep-remove($utilities-package, 'border-radius', 'modifiers', 'bottom');
+$utilities-package: map.deep-remove($utilities-package, 'border-radius', 'modifiers', 'left');

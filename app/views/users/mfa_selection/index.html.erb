@@ -2,7 +2,7 @@
 
 <%= render PageHeadingComponent.new.with_content(t('mfa.additional_mfa_required.heading')) %>
 
-<p class="maxw-mobile-lg margin-bottom-0"><%= @presenter.intro %></p>
+<p class="margin-bottom-0"><%= @presenter.intro %></p> <!-- TBD -->
 
 <%= simple_form_for @two_factor_options_form,
                     html: { autocomplete: 'off' },
