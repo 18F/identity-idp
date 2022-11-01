@@ -1,6 +1,5 @@
 require 'rails_helper'
 
-# rubocop:disable Layout/LineLength
 # Simulates a user (in this case, a VA inherited proofing-authorized user)
 # coming over to login.gov from a service provider, and hitting the
 # OpenidConnect::AuthorizationController#index action.
@@ -30,8 +29,10 @@ end
 
 def complete_idv_steps_up_to_inherited_proofing_we_are_retrieving_step(user,
                                                                        expect_accessible: false)
-  complete_idv_steps_up_to_inherited_proofing_how_verifying_step user,
-                                                                 expect_accessible: expect_accessible
+  complete_idv_steps_up_to_inherited_proofing_how_verifying_step(
+    user,
+    expect_accessible: expect_accessible,
+  )
   unless current_path.match?(/inherited_proofing[?|\/].*verify_wait/)
     check t('inherited_proofing.instructions.consent', app_name: APP_NAME), allow_label_click: true
     click_on t('inherited_proofing.buttons.continue')
@@ -154,14 +155,15 @@ feature 'inherited proofing cancel process', :js do
     # includes ActiveJob to move to the next step. Marking the necessary step as completed below,
     # does not seem to do the trick for some reason. This has been manually verified in the
     # meantime.
-    xcontext 'from the "We are retrieving your information..." view, and clicking the "Cancel" link' do
+    xcontext 'from the "We are retrieving your information..." view, and clicking "Cancel"' do
       before do
-        allow_any_instance_of(Idv::Steps::InheritedProofing::AgreementStep).to receive(:enqueue_job).and_wrap_original do |target, *args|
-          target.receiver.mark_step_complete(:agreement)
-          # Omit the original call.
-          # target.call(*args)
-          nil
-        end
+        allow_any_instance_of(Idv::Steps::InheritedProofing::AgreementStep).
+          to receive(:enqueue_job).and_wrap_original do |target, *args|
+            target.receiver.mark_step_complete(:agreement)
+            # Omit the original call.
+            # target.call(*args)
+            nil
+          end
         complete_idv_steps_up_to_inherited_proofing_we_are_retrieving_step user
       end
 
@@ -253,4 +255,3 @@ feature 'inherited proofing cancel process', :js do
     end
   end
 end
-# rubocop:enable Layout/LineLength
