@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'base16'
 
 RSpec.describe Base16 do
 
