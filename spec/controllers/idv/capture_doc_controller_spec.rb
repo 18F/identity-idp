@@ -97,7 +97,6 @@ describe Idv::CaptureDocController do
           locals: hash_including(
             :back_image_upload_url,
             :front_image_upload_url,
-            :selfie_image_upload_url,
             :flow_session,
             step_template: 'idv/capture_doc/document_capture',
             flow_namespace: 'idv',
