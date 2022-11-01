@@ -132,7 +132,7 @@ module UspsIppHelper
     {
       status: 400,
       body: UspsInPersonProofing::Mock::Fixtures.request_in_progress_proofing_results_response,
-      headers: { 'content-type' => 'application/json' }
+      headers: { 'content-type' => 'application/json' },
     }
   end
 
@@ -175,7 +175,7 @@ module UspsIppHelper
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/requestEnrollmentCode}).to_return(
       status: 200,
       body: UspsInPersonProofing::Mock::Fixtures.request_enrollment_code_response,
-      headers: { 'content-type' => 'application/json' }
+      headers: { 'content-type' => 'application/json' },
     )
   end
 end
