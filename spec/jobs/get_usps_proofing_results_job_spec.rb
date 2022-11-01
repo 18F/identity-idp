@@ -572,6 +572,7 @@ RSpec.describe GetUspsProofingResultsJob do
             {
               status: 400,
               body: { 'responseMessage' => 'This USPS location has closed 😭' }.to_json,
+              headers: { 'content-type': 'application/json' },
             },
           )
         end
