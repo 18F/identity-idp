@@ -51,10 +51,8 @@ module Api
           :encryption_key,
           :front_image_iv,
           :back_image_iv,
-          :selfie_image_iv,
           :front_image_url,
           :back_image_url,
-          :selfie_image_url,
         ).to_h
       end
 
@@ -63,10 +61,8 @@ module Api
           :encryption_key,
           :front_image_iv,
           :back_image_iv,
-          :selfie_image_iv,
           :front_image_url,
           :back_image_url,
-          :selfie_image_url,
           :document_capture_session_uuid,
           :flow_path,
         )
