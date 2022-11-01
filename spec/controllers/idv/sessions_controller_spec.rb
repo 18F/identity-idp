@@ -24,7 +24,7 @@ shared_examples 'the decrypted_pii session is cleared' do
   end
 end
 
-shared_examples 'a redirect occurs to the start of identity verificaton' do
+shared_examples 'a redirect occurs to the start of identity verification' do
   it 'redirects' do
     delete :destroy
 
@@ -121,7 +121,7 @@ describe Idv::SessionsController do
       # so that analytics can be logged, throttling and quotes can be
       # properly checked; this could not take place if we simply redirected
       # to idv_inherited_proofing_url.
-      it_behaves_like 'a redirect occurs to the start of identity verificaton'
+      it_behaves_like 'a redirect occurs to the start of identity verification'
       it_behaves_like 'logs IDV start over analytics with step and location params'
       it_behaves_like 'logs Inherited Proofing start over analytics with step and location params'
     end
@@ -139,7 +139,7 @@ describe Idv::SessionsController do
       end
 
       it_behaves_like 'logs IDV start over analytics with step and location params'
-      it_behaves_like 'a redirect occurs to the start of identity verificaton'
+      it_behaves_like 'a redirect occurs to the start of identity verification'
 
       context 'pending profile' do
         let(:user) do
