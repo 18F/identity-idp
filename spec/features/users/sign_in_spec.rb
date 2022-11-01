@@ -318,15 +318,6 @@ feature 'Sign in' do
       expect(page).to have_field(t('forms.registration.labels.email'), with: '')
       expect(current_url).to match Regexp.escape(sign_up_email_path(request_id: '123abc'))
     end
-
-    it 'does not refresh the page after the session expires', js: true do
-      allow(Devise).to receive(:timeout_in).and_return(60)
-
-      visit root_path
-      expect(page).to_not have_content(
-        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
-      )
-    end
   end
 
   context 'signing back in after session timeout length' do
@@ -365,6 +356,7 @@ feature 'Sign in' do
 
       expect(page).to have_content(
         t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
+        wait: 5,
       )
       expect(find_field('Email').value).to be_blank
       expect(find_field('Password').value).to be_blank

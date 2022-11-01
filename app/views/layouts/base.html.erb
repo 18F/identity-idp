@@ -67,7 +67,7 @@
 
   <%= render 'shared/footer_lite' %>
 
-  <% if current_user # Render the JS snipped that collects platform authenticator analytics %>
+  <% if current_user %>
     <%= render partial: 'session_timeout/ping',
                locals: {
                  timeout_url: timeout_url,
