@@ -26,7 +26,6 @@ RSpec.describe Idv::ApiImageUploadForm do
   let(:back_image_metadata) do
     { width: 20, height: 20, mimeType: 'image/png', source: 'upload' }.to_json
   end
-  let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:fake_analytics) { FakeAnalytics.new }

@@ -2,7 +2,7 @@ module Idv
   module Steps
     class DocumentCaptureStep < DocAuthBaseStep
       IMAGE_UPLOAD_PARAM_NAMES = %i[
-        front_image back_image selfie_image
+        front_image back_image
       ].freeze
 
       def self.analytics_visited_event
@@ -27,10 +27,6 @@ module Idv
           ),
           back_image_upload_url: url_builder.presigned_image_upload_url(
             image_type: 'back',
-            transaction_id: flow_session[:document_capture_session_uuid],
-          ),
-          selfie_image_upload_url: url_builder.presigned_image_upload_url(
-            image_type: 'selfie',
             transaction_id: flow_session[:document_capture_session_uuid],
           ),
         }.merge(native_camera_ab_testing_variables)

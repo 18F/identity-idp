@@ -13,7 +13,6 @@ describe 'idv/shared/_document_capture.html.erb' do
   let(:in_person_proofing_enabled_issuer) { nil }
   let(:front_image_upload_url) { nil }
   let(:back_image_upload_url) { nil }
-  let(:selfie_image_upload_url) { nil }
   let(:native_camera_a_b_testing_enabled) { false }
   let(:native_camera_only) { false }
 
@@ -47,7 +46,6 @@ describe 'idv/shared/_document_capture.html.erb' do
       failure_to_proof_url: failure_to_proof_url,
       front_image_upload_url: front_image_upload_url,
       back_image_upload_url: back_image_upload_url,
-      selfie_image_upload_url: selfie_image_upload_url,
       native_camera_a_b_testing_enabled: native_camera_a_b_testing_enabled,
       native_camera_only: native_camera_only,
     }
@@ -71,7 +69,6 @@ describe 'idv/shared/_document_capture.html.erb' do
       let(:async_uploads_enabled) { true }
       let(:front_image_upload_url) { 'https://s3.example.com/bucket/a?X-Amz-Security-Token=UAOL2' }
       let(:back_image_upload_url) { 'https://s3.example.com/bucket/b?X-Amz-Security-Token=UAOL2' }
-      let(:selfie_image_upload_url) { 'https://s3.example.com/bucket/c?X-Amz-Security-Token=UAOL2' }
 
       it 'does modifies CSP connect_src headers to include upload urls' do
         render_partial
@@ -79,7 +76,6 @@ describe 'idv/shared/_document_capture.html.erb' do
         connect_src = controller.request.content_security_policy.connect_src
         expect(connect_src).to include('https://s3.example.com/bucket/a')
         expect(connect_src).to include('https://s3.example.com/bucket/b')
-        expect(connect_src).to include('https://s3.example.com/bucket/c')
       end
     end
   end
