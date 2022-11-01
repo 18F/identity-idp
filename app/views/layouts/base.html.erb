@@ -12,9 +12,6 @@
   <% if content_for?(:meta_refresh) %>
   <meta content="<%= yield(:meta_refresh) %>" http-equiv="refresh" />
   <% end %>
-  <% if !current_user && !@skip_session_expiration %>
-    <%= render 'session_timeout/expire_session' %>
-  <% end %>
 
   <% if session_with_trust? || FeatureManagement.disallow_all_web_crawlers? %>
   <meta content="noindex,nofollow" name="robots" />
@@ -70,7 +67,7 @@
 
   <%= render 'shared/footer_lite' %>
 
-  <% if current_user %>
+  <% if current_user # Render the JS snipped that collects platform authenticator analytics %>
     <%= render partial: 'session_timeout/ping',
                locals: {
                  timeout_url: timeout_url,
@@ -78,6 +75,11 @@
                  start: session_timeout_start,
                  frequency: session_timeout_frequency,
                  modal: session_modal,
+               } %>
+  <% elsif !@skip_session_expiration %>
+    <%= render partial: 'session_timeout/expire_session',
+               locals: {
+                 session_timeout_in: Devise.timeout_in,
                } %>
   <% end %>
 

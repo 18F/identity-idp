@@ -306,8 +306,7 @@ feature 'Sign in' do
 
   context 'signed out' do
     it 'refreshes the current page after session expires', js: true do
-      allow(IdentityConfig.store).to receive(:session_timeout_in_minutes).
-        and_return(1.second.in_minutes)
+      allow(Devise).to receive(:timeout_in).and_return(1)
 
       visit sign_up_email_path(request_id: '123abc')
       fill_in t('forms.registration.labels.email'), with: 'test@example.com'
@@ -318,6 +317,15 @@ feature 'Sign in' do
       )
       expect(page).to have_field(t('forms.registration.labels.email'), with: '')
       expect(current_url).to match Regexp.escape(sign_up_email_path(request_id: '123abc'))
+    end
+
+    it 'does not refresh the page after the session expires', js: true do
+      allow(Devise).to receive(:timeout_in).and_return(60)
+
+      visit root_path
+      expect(page).to_not have_content(
+        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
+      )
     end
   end
 
@@ -349,9 +357,7 @@ feature 'Sign in' do
     end
 
     it 'refreshes the page (which clears the form) and notifies the user', js: true do
-      allow(IdentityConfig.store).to receive(:session_timeout_in_minutes).
-        and_return(1.second.in_minutes)
-
+      allow(Devise).to receive(:timeout_in).and_return(1)
       user = create(:user)
       visit root_path
       fill_in 'Email', with: user.email
@@ -359,7 +365,6 @@ feature 'Sign in' do
 
       expect(page).to have_content(
         t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
-        wait: 5,
       )
       expect(find_field('Email').value).to be_blank
       expect(find_field('Password').value).to be_blank
