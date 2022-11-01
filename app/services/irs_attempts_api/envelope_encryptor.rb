@@ -38,6 +38,10 @@ module IrsAttemptsApi
       cipher.iv = iv
       decrypted = cipher.update(Base16.decode16(encrypted_data)) + cipher.final
 
+      # file = File.open('./test3.txt.gz', 'wb')
+      # file.write(decrypted)
+      # file.close
+
       Zlib.gunzip(decrypted)
     end
   end
