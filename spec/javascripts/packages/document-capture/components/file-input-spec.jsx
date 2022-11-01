@@ -139,12 +139,8 @@ describe('document-capture/components/file-input', () => {
   it('renders an optional hint', () => {
     const { getByLabelText } = render(<FileInput label="File" hint="Must be small" />);
 
-    /**
-     * The second id in the `aria-descrbedby` value will specify the original
-     * hint.
-     */
     const input = getByLabelText('File');
-    const hintId = input.getAttribute('aria-describedby').split(' ')[1];
+    const hintId = input.getAttribute('aria-describedby');
     const hint = document.getElementById(hintId).textContent;
 
     expect(hint).to.equal('Must be small');
@@ -237,10 +233,10 @@ describe('document-capture/components/file-input', () => {
     expect(onChange.getCall(0).args[0]).to.equal(file);
   });
 
-  it('has a blank aria-label with no input added', () => {
+  it('has an appropriate 2-part aria-label with no input added', () => {
     const { getByLabelText } = render(<FileInput label="File" />);
 
-    const queryByAriaLabel = getByLabelText('');
+    const queryByAriaLabel = getByLabelText('File doc_auth.forms.choose_file_html');
 
     expect(queryByAriaLabel).to.exist();
   });
