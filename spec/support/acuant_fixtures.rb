@@ -27,14 +27,6 @@ module AcuantFixtures
     load_response_fixture('facial_match_response_failure.json')
   end
 
-  def self.liveness_response_success
-    load_response_fixture('liveness_response_success.json')
-  end
-
-  def self.liveness_response_failure
-    load_response_fixture('liveness_response_failure.json')
-  end
-
   def self.load_response_fixture(filename)
     path = File.join(
       File.dirname(__FILE__),
