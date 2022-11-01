@@ -78,8 +78,8 @@ module DocAuth
           interval_randomness: 0.5,
           backoff_factor: 2,
           retry_statuses: [404, 500],
-          retry_block: lambda do |_env, _options, retries, exc|
-            NewRelic::Agent.notice_error(exc, custom_params: { retry: retries })
+          retry_block: lambda do |env:, options:, retry_count:, exception:, will_retry_in:|
+            NewRelic::Agent.notice_error(exception, custom_params: { retry: retry_count })
           end,
         }
 
