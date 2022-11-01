@@ -1,30 +1,6 @@
 require 'rails_helper'
 
 # rubocop:disable Layout/LineLength
-shared_examples 'steps up to "Get started..." are completed' do
-  it 'should have current path equal to the Getting Started page' do
-    expect(page).to have_current_path(/inherited_proofing[?|\/].*get_started/)
-  end
-end
-
-shared_examples 'steps up to "How verifying..." are completed' do
-  it 'should have current path equal to the How Verifying (agreement step) page' do
-    expect(page).to have_current_path(/inherited_proofing[?|\/].*agreement/)
-  end
-end
-
-shared_examples 'steps up to "We are retrieving..." are completed' do
-  it 'should have current path equal to the We are retrieving (verify_wait step) page' do
-    expect(page).to have_current_path(/inherited_proofing[?|\/].*verify_wait/)
-  end
-end
-
-shared_examples 'steps up to "Verify your information..." are completed' do
-  it 'should have current path equal to the Verify your information (verify_info step) page' do
-    expect(page).to have_current_path(/inherited_proofing[?|\/].*verify_info/)
-  end
-end
-
 shared_examples 'the user is redirected to the Cancellation View' do
   it 'redirects to the Cancellations view' do
     expect(page).to have_current_path(idv_inherited_proofing_cancel_path(step: :get_started))
@@ -93,7 +69,9 @@ feature 'inherited proofing cancel process', :js do
         complete_idv_steps_up_to_inherited_proofing_get_started_step user
       end
 
-      it_behaves_like 'steps up to "Get started..." are completed'
+      it 'should have current path equal to the Getting Started page' do
+        expect(page).to have_current_path(/inherited_proofing[?|\/].*get_started/)
+      end
 
       context 'when clicking the "Start Over" button from the "Cancel" view' do
         before do
@@ -137,7 +115,9 @@ feature 'inherited proofing cancel process', :js do
         complete_idv_steps_up_to_inherited_proofing_how_verifying_step user
       end
 
-      it_behaves_like 'steps up to "How verifying..." are completed'
+      it 'should have current path equal to the How Verifying (agreement step) page' do
+        expect(page).to have_current_path(/inherited_proofing[?|\/].*agreement/)
+      end
 
       context 'when clicking the "Start Over" button from the "Cancel" view' do
         before do
@@ -191,7 +171,9 @@ feature 'inherited proofing cancel process', :js do
         complete_idv_steps_up_to_inherited_proofing_we_are_retrieving_step user
       end
 
-      it_behaves_like 'steps up to "We are retrieving..." are completed'
+      it 'should have current path equal to the We are retrieving (verify_wait step) page' do
+        expect(page).to have_current_path(/inherited_proofing[?|\/].*verify_wait/)
+      end
 
       context 'when clicking the "Start Over" button from the "Cancel" view' do
         before do
@@ -235,7 +217,9 @@ feature 'inherited proofing cancel process', :js do
         complete_idv_steps_up_to_inherited_proofing_verify_your_info_step user
       end
 
-      it_behaves_like 'steps up to "Verify your information..." are completed'
+      it 'should have current path equal to the Verify your information (verify_info step) page' do
+        expect(page).to have_current_path(/inherited_proofing[?|\/].*verify_info/)
+      end
 
       context 'when clicking the "Start Over" button from the "Cancel" view' do
         before do
