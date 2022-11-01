@@ -25,3 +25,7 @@ end
 
 # So we can run db:migrate during CI to verify migrations
 StrongMigrations.start_after = 20190126105161
+
+# Added to run tests locally; the defaults cause timeouts when setting things up. J.A.M.
+StrongMigrations.lock_timeout = 10.seconds
+StrongMigrations.statement_timeout = 1.hour

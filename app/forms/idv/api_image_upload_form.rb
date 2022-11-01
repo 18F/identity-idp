@@ -253,8 +253,7 @@ module Idv
     def add_costs(response)
       Db::AddDocumentVerificationAndSelfieCosts.
         new(user_id: user_id,
-            service_provider: service_provider,
-            liveness_checking_enabled: false).
+            service_provider: service_provider).
         call(response)
     end
 

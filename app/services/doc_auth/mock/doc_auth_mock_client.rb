@@ -46,11 +46,12 @@ module DocAuth
         DocAuth::Response.new(success: true)
       end
 
+      # NOTE: remove selfie_image arg when it is no longer expected by
+      # the front-end and specs
       def post_images(
         front_image:,
         back_image:,
         selfie_image: nil,
-        liveness_checking_enabled: nil,
         image_source: nil,
         user_uuid: nil,
         uuid_prefix: nil

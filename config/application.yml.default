@@ -135,7 +135,7 @@ irs_attempt_api_payload_size_logging_enabled: true
 kantara_2fa_phone_restricted: false
 kantara_2fa_phone_existing_user_restriction: false
 kantara_restriction_enforcement_date: '2022-07-19'
-liveness_checking_enabled: false
+key_pair_generation_percent: 0
 logins_per_ip_track_only_mode: false
 # LexisNexis #####################################################
 lexisnexis_base_url: https://www.example.com
@@ -350,7 +350,6 @@ development:
   irs_attempt_api_public_key_id: key1
   irs_attempt_api_enabled: true
   irs_attempt_api_auth_tokens: 'abc123'
-  liveness_checking_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true
   max_bad_passwords: 5

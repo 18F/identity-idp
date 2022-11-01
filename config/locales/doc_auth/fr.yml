@@ -162,9 +162,6 @@ fr:
         l’État?
       upload_from_phone: Prenez une photo avec un téléphone portable pour télécharger
         votre pièce d’identité
-      upload_from_phone_liveness_enabled: Utilisez un téléphone portable pour ajouter
-        votre pièce d’identité et prendre une photo de vous-même
-      upload_liveness_enabled: Comment souhaitez-vous vérifier votre identité?
       verify_identity: Vérifier votre identité
       welcome: Commencez à vérifier votre identité
     info:
@@ -221,10 +218,6 @@ fr:
         avec une caméra Web.
       upload_from_phone: Téléchargez des images directement depuis l’appareil photo de
         votre téléphone
-      upload_liveness_enabled: Nous recueillons des informations sur vous en lisant
-        votre carte d’identité délivrée par l’État. Ensuite, vous prendrez une
-        photo de vous-même pour confirmer que vous êtes bien le propriétaire de
-        la carte d’identité.
       upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
       verify_identity: Nous vous demanderons vos informations personnelles afin de
         vérifier votre identité par rapport aux registres publics.
@@ -232,7 +225,6 @@ fr:
         quelqu’un qui se fait passer pour vous.'
     instructions:
       bullet1: Votre carte d’identité émise par l’État
-      bullet1a: Un appareil équipé d’une caméra
       bullet2: Votre numéro de sécurité sociale
       bullet3: Un numéro de téléphone associé à un forfait téléphonique à votre nom
       consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
@@ -250,7 +242,6 @@ fr:
       test_ssn: Dans l’environnement de test seuls les SSN commençant par “900-” ou
         “900-” sont considérés comme valides. N’entrez pas de vrais PII dans ce
         champ.
-      text1a: tel qu’un téléphone ou un ordinateur
       text2: Vous n’aurez pas besoin de la carte avec vous.
       text3: Il n’est pas nécessaire que vous soyez le titulaire principal du compte
         de votre forfait téléphonique. Si votre numéro de téléphone ne
