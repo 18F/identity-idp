@@ -1,12 +1,6 @@
 require 'rails_helper'
 
 # rubocop:disable Layout/LineLength
-shared_examples 'the user is redirected to the Cancellation View' do
-  it 'redirects to the Cancellations view' do
-    expect(page).to have_current_path(idv_inherited_proofing_cancel_path(step: :get_started))
-  end
-end
-
 # Simulates a user (in this case, a VA inherited proofing-authorized user)
 # coming over to login.gov from a service provider, and hitting the
 # OpenidConnect::AuthorizationController#index action.
