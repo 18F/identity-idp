@@ -5,15 +5,13 @@ class DocumentProofingJob < ApplicationJob
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
-  # rubocop:disable Lint/UnusedMethodArgument
   def perform(
     result_id:,
     encrypted_arguments:,
     trace_id:,
     image_metadata:,
     analytics_data:,
-    flow_path:,
-    liveness_checking_enabled: nil
+    flow_path:
   )
     timer = JobHelpers::Timer.new
 
@@ -85,7 +83,6 @@ class DocumentProofingJob < ApplicationJob
       }.to_json,
     )
   end
-  # rubocop:enable Lint/UnusedMethodArgument
 
   private
 
