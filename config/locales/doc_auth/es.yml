@@ -203,9 +203,6 @@ es:
         expedido por el estado.
       upload_computer_link: Sube desde tu computadora
       upload_from_computer: '¿No tiene un teléfono?'
-      upload_from_computer_not_allowed: Inicie sesión en su cuenta de %{app_name} en
-        cualquier dispositivo que tenga una cámara, como una tableta o una
-        computadora con una cámara web.
       upload_from_phone: Sube imágenes directamente desde la cámara de tu teléfono
       upload_no_image_storage: No almacenamos imágenes que cargue. Solo verificamos su identidad.
       verify_identity: Le preguntaremos sus datos personales para verificar su

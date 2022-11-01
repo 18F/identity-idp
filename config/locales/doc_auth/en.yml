@@ -170,8 +170,6 @@ en:
       upload: We’ll collect information about you by reading your state-issued ID.
       upload_computer_link: Upload from your computer
       upload_from_computer: Don’t have a phone?
-      upload_from_computer_not_allowed: Sign in to your %{app_name} account on any
-        device that has a camera, like a tablet or computer with a webcam.
       upload_from_phone: Upload pictures directly from your phone camera
       upload_no_image_storage: We do not store images you upload. We only verify your identity.
       verify_identity: We’ll ask for your personal information to verify your identity

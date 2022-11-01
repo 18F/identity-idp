@@ -213,9 +213,6 @@ fr:
         d’identité délivrée par l’État.
       upload_computer_link: Téléchargez depuis votre ordinateur
       upload_from_computer: Vous n’avez pas de téléphone?
-      upload_from_computer_not_allowed: Connectez-vous à votre compte %{app_name} sur
-        tout appareil doté d’une caméra, comme une tablette ou un ordinateur
-        avec une caméra Web.
       upload_from_phone: Téléchargez des images directement depuis l’appareil photo de
         votre téléphone
       upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.

@@ -30,7 +30,6 @@
     "app/javascript/packs/pw-strength.js",
     "app/javascript/packs/saml-post.js",
     "app/javascript/packs/ssn-field.js",
-    "app/javascript/packs/upload-step.js",
     "app/javascript/packs/webauthn-authenticate.js",
     "app/javascript/packs/webauthn-setup.js",
     "app/javascript/packs/webauthn-unhide.js"
