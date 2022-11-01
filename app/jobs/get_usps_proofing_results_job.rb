@@ -146,6 +146,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     when IPP_EXPIRED_ERROR_MESSAGE
       handle_expired_status_update(enrollment, err.response)
     else
+      NewRelic::Agent.notice_error(err)
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
         **enrollment_analytics_attributes(enrollment, complete: false),
         **response_analytics_attributes(response),
