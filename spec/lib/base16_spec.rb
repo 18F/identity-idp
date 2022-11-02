@@ -38,7 +38,7 @@ RSpec.describe Base16 do
   context 'with a less reasonable input' do
     context 'given a zany-face emoji' do
       let(:input) { "🤪" }
-      it 'should return the same thing but does not' do
+      it 'returns the same bytes' do
         encoded = described_class.encode16(input)
         decoded = described_class.decode16(encoded).force_encoding('UTF-8')
         expect(decoded).to eq input
