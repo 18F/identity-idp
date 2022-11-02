@@ -57,7 +57,7 @@ es:
     email:
       buttons:
         delete: Eliminar correo electrónico
-    example: 'Ejemplo:'
+    example: 'ejemplo:'
     messages:
       remember_device: Recuerde este navegador
     password: Contraseña

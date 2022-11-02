@@ -148,18 +148,17 @@ es:
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
       phone:
-        alert_html: '<strong>Este número de teléfono debe…</strong>'
-        description: Verificamos los registros para asegurarnos de que eres quien eres,
-          y de que eres el propietario de tu cuenta.
-        final_note_html: '<strong>Si configura un teléfono para la autenticación de dos
-          factores</strong>, este puede ser un número diferente.'
+        alert_html: '<strong>Este número de teléfono:</strong>'
+        description: Comprobaremos este número con los registros y le enviaremos un código 
+          único. Esto es para ayudar a verificar su identidad.
+        final_note_html: '<strong>Si configura un teléfono para la autenticación 
+         multifactor</strong>, este puede ser un número diferente.'
         phone_of_record: Teléfono del registro
         rules:
-          - ser un plan telefónico que esté asociado a su nombre. En este caso,
-            no es necesario que usted sea el titular principal de la cuenta.
-          - no ser un teléfono virtual (como Google Voice o Skype), como tampoco
-            un número de teléfono de tarificación adicional (pago).
-          - un número de EE. UU.
+          - No debe ser un teléfono virtual (como Google Voice o Skype) ni un número 
+            de tarifa premium (de pago)
+          - Debe ser un número de Estados Unidos (incluidos los territorios de Estados Unidos)
+          - Debe ser su número principal o el número que utilice con más frecuencia
       return_to_profile: '‹ Volver a tu perfil de %{app_name}'
       review:
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
@@ -190,7 +189,7 @@ es:
       otp_delivery_method: '¿Cómo te gustaría recibir el código?'
       review: Revise y envíe
       session:
-        phone: Ingresa un número de teléfono para ayudar a verificar tu identidad
+        phone: Introduzca su número de teléfono
         review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
     troubleshooting:
       headings:
