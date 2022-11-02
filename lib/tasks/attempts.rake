@@ -1,3 +1,5 @@
+require 'base16'
+
 namespace :attempts do
   desc 'Retrieve events via the API'
   task fetch_events: :environment do

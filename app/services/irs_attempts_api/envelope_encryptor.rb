@@ -1,3 +1,5 @@
+require 'base16'
+
 module IrsAttemptsApi
   class EnvelopeEncryptor
     Result = Struct.new(:filename, :iv, :encrypted_key, :encrypted_data, keyword_init: true)
