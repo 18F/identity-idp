@@ -67,7 +67,7 @@ en:
         try_again: try again
       sms:
         confirm_code_html: Need another code? %{resend_code_link}. Message rates may apply.
-        number_message_html: We sent a security code to %{number}. This code will expire
+        number_message_html: We sent a one-time code to %{number}. This code will expire
           in %{expiration} minutes.
       voice:
         confirm_code_html: Want us to call you again? %{resend_code_link}
