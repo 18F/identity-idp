@@ -101,13 +101,15 @@ class FakeAnalytics < Analytics
 end
 
 RSpec::Matchers.define :have_logged_event do |event_name, attributes|
-  attributes ||= {}
-
   match do |actual|
-    if RSpec::Support.is_a_matcher?(attributes)
+    if attributes.nil?
+      expect(actual.events).to have_key(event_name)
+    elsif attributes.instance_of?(RSpec::Matchers::BuiltIn::Include)
+      # todo: is there a more general purpose way to do this? will it work if I remove this block and just
+      # rely on the next clause matcher?
       expect(actual.events[event_name]).to include(attributes)
     else
-      expect(actual.events[event_name]).to(be_any { |event| attributes.as_json <= event.as_json })
+      expect(actual.events[event_name]).to(be_any { |event| expect(event).to match(attributes) })
     end
   end
 
