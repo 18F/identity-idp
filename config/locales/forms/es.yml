@@ -134,7 +134,7 @@ es:
     two_factor:
       backup_code: Código de seguridad
       # removed "security code" form labels as they trigger ios credit card reader
-      code: Código de un solo uso
+      code: Código único
       personal_key: Clave personal
       try_again: Use otro número de teléfono.
     validation:
