@@ -134,7 +134,8 @@ specs:
     paths:
       - coverage/
       - rspec.xml
-    junit: rspec.xml
+    reports:
+      junit: rspec.xml
   script:
     - *bundle_install
     - *yarn_install
