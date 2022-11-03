@@ -12,9 +12,7 @@ REDIS_THROTTLE_POOL = ConnectionPool.new(size: IdentityConfig.store.redis_thrott
   )
 end
 
-REDIS_SESSION_POOL_WRAPPER = ConnectionPool::Wrapper.new(
-  size: IdentityConfig.store.redis_session_pool_size,
-) do
+REDIS_SESSION_POOL = ConnectionPool.new(size: IdentityConfig.store.redis_session_pool_size) do
   # redis-session-store does its own namespacing in session_store.rb
   Redis.new(url: IdentityConfig.store.redis_url)
 end

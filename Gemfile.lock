@@ -37,6 +37,15 @@ GIT
       uuid
 
 GIT
+  remote: https://github.com/18f/redis-session-store.git
+  revision: 1e97057f3d860c4dce758c61e7de66b8450b5f94
+  ref: margolis-use-connection-pool
+  specs:
+    redis-session-store (0.12.pre.18f)
+      actionpack (>= 6, < 8)
+      redis (>= 3, < 5)
+
+GIT
   remote: https://github.com/hashrocket/capybara-webmock.git
   revision: 63d790a0b6c779b9700634bfc153e25ccdeb3688
   ref: 63d790a0
@@ -533,9 +542,6 @@ GEM
     redis (4.7.1)
     redis-namespace (1.8.1)
       redis (>= 3.0.4)
-    redis-session-store (0.11.4)
-      actionpack (>= 3, < 8)
-      redis (>= 3, < 5)
     regexp_parser (2.6.0)
     reline (0.2.7)
       io-console (~> 0.5)
@@ -800,7 +806,7 @@ DEPENDENCIES
   redacted_struct
   redis (>= 3.2.0)
   redis-namespace
-  redis-session-store (>= 0.11.4)
+  redis-session-store!
   retries
   rotp (~> 6.1)
   rqrcode
