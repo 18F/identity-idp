@@ -128,9 +128,9 @@ class UserDecorator
 
   def delete_account_bullet_key
     if identity_verified?
-      I18n.t('users.delete.bullet_2_loa3', app_name: APP_NAME)
+      I18n.t('users.delete.bullet_2_verified', app_name: APP_NAME)
     else
-      I18n.t('users.delete.bullet_2_loa1', app_name: APP_NAME)
+      I18n.t('users.delete.bullet_2_basic', app_name: APP_NAME)
     end
   end
 
