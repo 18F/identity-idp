@@ -8,25 +8,25 @@ class EmailReminderJob < ApplicationJob
   discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
 
   def perform(_now)
-
     # final reminder job done first in case of job failure
-    # 4-2 days interval
     email_reminder_late_benchmark = IdentityConfig.store.email_reminder_late_benchmark
     email_reminder_final_benchmark = IdentityConfig.store.email_reminder_final_benchmark
+    late_benchmark = calculate_interval(email_reminder_late_benchmark)
+    final_benchmark = calculate_interval(email_reminder_final_benchmark)
     second_set_enrollments = InPersonEnrollment.needs_late_email_reminder(
-      calculate_interval(email_reminder_late_benchmark),
-      calculate_interval(email_reminder_final_benchmark),
+      late_benchmark,
+      final_benchmark,
     )
     second_set_enrollments.each do |enrollment|
       send_reminder_email(enrollment.user, enrollment)
       enrollment.update!(late_reminder_sent: true)
     end
 
-    # 11-5 days is interval
     email_reminder_early_benchmark = IdentityConfig.store.email_reminder_early_benchmark
+    early_benchmark = calculate_interval(email_reminder_early_benchmark)
     first_set_enrollments = InPersonEnrollment.needs_early_email_reminder(
-      calculate_interval(email_reminder_early_benchmark),
-      calculate_interval(email_reminder_late_benchmark),
+      early_benchmark,
+      late_benchmark,
     )
     first_set_enrollments.each do |enrollment|
       send_reminder_email(enrollment.user, enrollment)
@@ -38,7 +38,7 @@ class EmailReminderJob < ApplicationJob
 
   def calculate_interval(benchmark)
     config = IdentityConfig.store.in_person_enrollment_validity_in_days.days
-    reminder_email_timestamp = (Date.today - config) + benchmark.days
+    (Date.today - config) + benchmark.days
   end
 
   def send_reminder_email(user, enrollment)
