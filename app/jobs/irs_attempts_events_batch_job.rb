@@ -16,7 +16,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
 
     # write to a file and store on the disk until S3 is setup
     begin
-      Dir.mkdir(dir_path) unless File.exist?(dir_path)
+      FileUtils.mkdir_p(dir_path)
 
      File.open("#{dir_path}/#{result.filename}", 'wb') do |file|
        file.write(result.encrypted_data) 
