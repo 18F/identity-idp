@@ -94,7 +94,6 @@ namespace :attempts do
   end
   desc 'Generate a simple gzipped file'
   task write_event: :environment do
-
     events = [_generate_event, _generate_event]
 
     decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
@@ -109,7 +108,7 @@ namespace :attempts do
     file = File.open(result.filename, 'wb')
     file.write(result.encrypted_data)
     puts "IV: #{Base64.encode64(result.iv)}"
-    puts "Encrypted key: #{Base64.encode64(result.encrypted_key).gsub("\n", '')}"
+    puts "Encrypted key: #{Base64.encode64(result.encrypted_key).delete("\n")}"
   end
 
   task decrypt_file: :environment do
@@ -130,7 +129,6 @@ namespace :attempts do
     )
 
     puts decrypted
-
   end
 
   task :decode16 do |_task, args|
@@ -144,9 +142,9 @@ namespace :attempts do
       event_type: 'test',
       session_id: SecureRandom.uuid,
       occurred_at: Time.zone.now,
-      event_metadata: {foo: 'bar'},
+      event_metadata: { foo: 'bar' },
       jti: SecureRandom.uuid,
-      iat: Time.zone.now.to_i
+      iat: Time.zone.now.to_i,
     ).to_jwe
   end
 end

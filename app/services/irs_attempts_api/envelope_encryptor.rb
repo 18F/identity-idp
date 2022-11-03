@@ -20,7 +20,6 @@ module IrsAttemptsApi
       filename =
         "FCI-#{IdentityConfig.store.irs_attempt_api_csp_id}_#{formatted_time}_#{digest}.dat.gz.hex"
 
-
       Result.new(
         filename: filename,
         iv: iv,
@@ -39,7 +38,6 @@ module IrsAttemptsApi
       cipher.key = key
       cipher.iv = iv
       decrypted = cipher.update(Base16.decode16(encrypted_data)) + cipher.final
-
 
       Zlib.gunzip(decrypted)
     end
