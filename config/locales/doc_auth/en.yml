@@ -177,9 +177,9 @@ en:
       welcome_html: '%{sp_name} needs to make sure you are you — not someone
         pretending to be you.'
     instructions:
-      bullet1: Your State-issued ID
-      bullet2: Your Social Security number
-      bullet3: A phone number on a phone plan associated with your name
+      bullet1: State-issued ID
+      bullet2: Social Security number
+      bullet3: Phone number
       consent: By checking this box, you are letting %{app_name} ask for, use, keep,
         and share your personal information. We will only use it to verify your
         identity.
@@ -193,11 +193,12 @@ en:
       switch_back_image: Arrow pointing from phone to computer
       test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are
         considered valid. Do not enter real PII in this field.
+      text1: Your ID cannot be expired.
       text2: You will not need the card with you.
-      text3: You do not need to be the primary account holder on your phone plan. If
-        your phone number doesn’t work, we can send you a verification code by
-        mail.
-      welcome: 'To verify your identity, you will need:'
+      text3_html: We’ll call or text this number to verify your identity. If we can’t
+        verify your phone number, you can verify by mail instead.
+        %{learn_more_link}
+      welcome: 'You will need your:'
     tips:
       capture_troubleshooting_blurry: The photo you added is too blurry.
       capture_troubleshooting_clean: Make sure that the barcode is not damaged or
