@@ -221,9 +221,9 @@ fr:
       welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
         quelqu’un qui se fait passer pour vous.'
     instructions:
-      bullet1: Votre carte d’identité émise par l’État
-      bullet2: Votre numéro de sécurité sociale
-      bullet3: Un numéro de téléphone associé à un forfait téléphonique à votre nom
+      bullet1: Carte d'identité délivrée par l'État
+      bullet2: Numéro de sécurité sociale
+      bullet3: Numéro de téléphone
       consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
         conserver et partager vos renseignements personnels. Nous ne les
         utiliserons que pour vérifier votre identité.
@@ -239,12 +239,10 @@ fr:
       test_ssn: Dans l’environnement de test seuls les SSN commençant par “900-” ou
         “900-” sont considérés comme valides. N’entrez pas de vrais PII dans ce
         champ.
-      text2: Vous n’aurez pas besoin de la carte avec vous.
-      text3: Il n’est pas nécessaire que vous soyez le titulaire principal du compte
-        de votre forfait téléphonique. Si votre numéro de téléphone ne
-        fonctionne pas, nous pouvons vous envoyer un code de vérification par
-        courrier.
-      welcome: 'Pour vérifier votre identité, vous aurez besoin de:'
+      text1: Votre carte d'identité ne doit pas être expirée.
+      text2: Vous n'aurez pas besoin de la carte sur vous.
+      text3_html: Nous appellerons ou enverrons un SMS à ce numéro pour vérifier votre identité. Si nous ne pouvons pas vérifier votre numéro de téléphone, vous pouvez le faire par courrier. %{learn_more_link}
+      welcome: 'Vous aurez besoin de votre:'
     tips:
       capture_troubleshooting_blurry: La photo que vous avez ajoutée est trop floue.
       capture_troubleshooting_clean: Assurez-vous que le code-barres ne soit pas
