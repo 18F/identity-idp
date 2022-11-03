@@ -2,9 +2,7 @@ require 'rails_helper'
 require 'base16'
 
 RSpec.describe Base16 do
-
   context 'with reasonable inputs' do
-
     context 'given "Hello, World"' do
       let(:input) { 'Hello, world' }
 
