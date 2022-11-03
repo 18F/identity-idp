@@ -195,7 +195,7 @@ Run `make lint`
 
 ### Running jobs
 
-We run background jobs / workers with ActiveJob and GoodJob. You shouldn't normally have to start it manually because the `Procfile` handles it. The manual command is: `bundle exec good_job start`
+We run background jobs / workers with ActiveJob and GoodJob. You shouldn't normally have to start it manually because [the `Procfile`](Procfile) handles it. The manual command is: `bundle exec good_job start`
 
 Processes can be configured to run via async jobs or synchronously using flags such as `deliver_mail_async` in [application.yml](config/application.yml.default)
 
