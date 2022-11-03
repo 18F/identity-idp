@@ -193,6 +193,10 @@ If you'd like to work with the previous implementation see the [Docker documenta
 
 Run `make lint`
 
+### Running jobs
+
+We run background jobs / workers with ActiveJob and GoodJob: `bundle exec good_job start`
+
 ### Troubleshooting
 #### I am receiving errors when running `$ make setup`
 
