@@ -18,12 +18,9 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     begin
       Dir.mkdir(dir_path) unless File.exist?(dir_path)
 
-      file = File.open("#{dir_path}/#{result.filename}", 'wb')
-      file.write(result.encrypted_data)
-    rescue IOError => e
-      Rails.logger.debug e
-    ensure
-      file&.close
+     File.open("#{dir_path}/#{result.filename}", 'wb') do |file|
+       file.write(result.encrypted_data) 
+     end
     end
     return file.path
 
