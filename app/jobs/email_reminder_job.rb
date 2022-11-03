@@ -38,7 +38,7 @@ class EmailReminderJob < ApplicationJob
 
   def calculate_interval(benchmark)
     config = IdentityConfig.store.in_person_enrollment_validity_in_days.days
-    reminder_email_timestamp = (Time.zone.now - config) + benchmark.days
+    reminder_email_timestamp = (Date.today - config) + benchmark.days
   end
 
   def send_reminder_email(user, enrollment)
