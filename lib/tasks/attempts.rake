@@ -94,11 +94,6 @@ namespace :attempts do
   end
   desc 'Generate a simple gzipped file'
   task write_event: :environment do
-    # message = "Testing gzip compression. If you can read this, it works!"
-    #
-    # file = File.new('./gzip-test.txt.gz', 'wb')
-    # file.write Zlib.gzip(message)
-    # file.close
 
     events = [_generate_event, _generate_event]
 
