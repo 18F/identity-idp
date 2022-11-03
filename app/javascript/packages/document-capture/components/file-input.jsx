@@ -200,9 +200,6 @@ function FileInput(props, ref) {
    * @return {{'aria-label': string} | {'aria-labelledby': string}}
    */
   function getAriaLabelPropsFromValue(fileLabel, fileValue) {
-    // aria-label={getLabelFromValue(label, value)}
-    // aria-labelledby={`${labelId} ${innerHintId}`}
-
     if (fileValue instanceof window.File) {
       return {
         'aria-label': `${fileLabel} - ${fileValue.name}`,
