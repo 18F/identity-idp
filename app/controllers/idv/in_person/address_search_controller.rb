@@ -3,7 +3,6 @@ require 'json'
 module Idv
   module InPerson
     class AddressSearchController < ApplicationController
-      include ArcgisApi
       include RenderConditionConcern
 
       check_or_render_not_found -> { InPersonConfig.enabled? }
@@ -23,7 +22,7 @@ module Idv
       protected
 
       def geocoder
-        @geocoder ||= Geocoder.new
+        @geocoder ||= ArcgisApi::Geocoder.new
       end
 
       def suggest(address)
