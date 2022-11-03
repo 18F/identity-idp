@@ -22,7 +22,7 @@ RSpec.describe IrsAttemptsApi::EnvelopeEncryptor do
         data: text, timestamp: time,
         public_key: public_key
       )
-      digest = Digest::SHA256.hexdigest(result.encrypted_data)
+      digest = Digest::SHA256.hexdigest(Base16.decode16(result.encrypted_data))
 
       expect(result.filename).to include(
         IrsAttemptsApi::EnvelopeEncryptor.formatted_timestamp(time),
