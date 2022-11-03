@@ -197,6 +197,8 @@ Run `make lint`
 
 We run background jobs / workers with ActiveJob and GoodJob: `bundle exec good_job start`
 
+Processes can be configured to run via async jobs or synchronously using flags such as `deliver_mail_async` in [application.yml](config/application.yml.default)
+
 ### Troubleshooting
 #### I am receiving errors when running `$ make setup`
 
