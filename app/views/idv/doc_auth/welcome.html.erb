@@ -25,12 +25,28 @@
     <h2><%= t('doc_auth.instructions.welcome') %></h2>
 
     <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
-      <%= c.item(heading: t('doc_auth.instructions.bullet1')) %>
+      <%= c.item(heading: t('doc_auth.instructions.bullet1')) do %>
+        <p><%= t('doc_auth.instructions.text1') %></p>
+      <% end %>
       <%= c.item(heading: t('doc_auth.instructions.bullet2')) do %>
         <p><%= t('doc_auth.instructions.text2') %></p>
       <% end %>
       <%= c.item(heading: t('doc_auth.instructions.bullet3')) do %>
-        <p><%= t('doc_auth.instructions.text3') %></p>
+        <p>
+          <%= t(
+                'doc_auth.instructions.text3_html',
+                learn_more_link: new_window_link_to(
+                  t('idv.troubleshooting.options.learn_more_address_verification_options'),
+                  help_center_redirect_path(
+                    category: 'verify-your-identity',
+                    article: 'phone-number-and-phone-plan-in-your-name',
+                    flow: :idv,
+                    step: :welcome,
+                    location: 'missing_items',
+                  ),
+                ),
+              ) %>
+        </p>
       <% end %>
     <% end %>
 
