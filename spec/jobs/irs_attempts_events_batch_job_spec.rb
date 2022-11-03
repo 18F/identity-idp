@@ -58,7 +58,7 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         # batches events from the beginning of the previous hour by default
         # file is stored at:  "./attempts_api_output" by default
 
-        IrsAttemptsEventsBatchJob.perform_now()
+        IrsAttemptsEventsBatchJob.perform_now
 
         expect(file_double.path).to eq('./attempts_api_output/test_filename')
       end
