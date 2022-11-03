@@ -88,38 +88,60 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
   end
 
-  describe 'needs_email_reminder' do
-    let(:days) { IdentityConfig.store.email_reminder_early_benchmark }
+  describe 'email_reminders' do
+    let(:early_benchmark) { Date.today - 19.days }
+    let(:late_benchmark) { Date.today - 26.days }
+    let(:final_benchmark) { Date.today - 29.days }
     let!(:passed_enrollment) { create(:in_person_enrollment, :passed) }
     let!(:failing_enrollment) { create(:in_person_enrollment, :failed) }
     let!(:expired_enrollment) { create(:in_person_enrollment, :expired) }
-    let!(:pending_enrollment_needing_reminder) do
+
+    # send on days 11-5
+    let!(:pending_enrollment_needing_early_reminder) do
       [
-        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 19.days),
-        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 26.days),
+        create(:in_person_enrollment, :pending, enrollment_established_at: Date.today - 19.days),
+        create(:in_person_enrollment, :pending, enrollment_established_at: Date.today - 25.days),
       ]
     end
 
-    let!(:pending_enrollments) do
+    # send on days 4 - 2
+    let!(:pending_enrollment_needing_late_reminder) do
+      [
+        create(:in_person_enrollment, :pending, enrollment_established_at: Date.today - 26.days),
+        create(:in_person_enrollment, :pending, enrollment_established_at: Date.today - 28.days),
+      ]
+    end
+
+    let!(:pending_enrollment) do
       [
         create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now),
         create(:in_person_enrollment, :pending, created_at: Time.zone.now),
       ]
     end
 
-    it 'returns pending enrollments that need reminder' do
-      expect(InPersonEnrollment.count).to eq(7)
-      results = InPersonEnrollment.needs_email_reminder(days)
-      expect(results.length).to eq pending_enrollment_needing_reminder.length
-      expect(results.pluck(:id)).to match_array pending_enrollment_needing_reminder.pluck(:id)
+    it 'returns pending enrollments that need early reminder' do
+      expect(InPersonEnrollment.count).to eq(9)
+      results = InPersonEnrollment.needs_early_email_reminder(early_benchmark, late_benchmark)
+      expect(results.length).to eq pending_enrollment_needing_early_reminder.length
+      expect(results.pluck(:id)).to match_array pending_enrollment_needing_early_reminder.pluck(:id)
+      results.each do |result|
+        expect(result.pending?).to be_truthy
+      end
+    end
+
+    it 'returns pending enrollments that need late reminder' do
+      expect(InPersonEnrollment.count).to eq(9)
+      results = InPersonEnrollment.needs_early_email_reminder(late_benchmark, final_benchmark)
+      expect(results.length).to eq(2)
+      expect(results.pluck(:id)).to match_array pending_enrollment_needing_late_reminder.pluck(:id)
       results.each do |result|
         expect(result.pending?).to be_truthy
       end
     end
 
     it 'excludes pending enrollments that do not need reminder' do
-      results = InPersonEnrollment.needs_email_reminder(days)
-      expect(results.pluck(:id)).not_to match_array pending_enrollments.pluck(:id)
+      results = InPersonEnrollment.needs_early_email_reminder(late_benchmark, final_benchmark)
+      # expect(results.pluck(:id)).not_to match_array pending_enrollments.pluck(:id)
     end
   end
 
