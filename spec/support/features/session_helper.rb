@@ -242,7 +242,7 @@ module Features
     end
 
     def click_send_security_code
-      click_button t('forms.buttons.send_security_code')
+      click_button t('forms.buttons.send_one_time_code')
     end
 
     def sign_in_live_with_2fa(user = user_with_2fa)
