@@ -131,7 +131,7 @@ namespace :attempts do
     puts decrypted
   end
 
-  task :decode16 do |_task, args|
+  task decode16: :environment do |_task, args|
     file = File.open(ARGV[1], 'rb')
     decoded = Base16.decode16(file.read)
   end
