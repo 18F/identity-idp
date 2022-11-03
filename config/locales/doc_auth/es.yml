@@ -156,7 +156,7 @@ es:
         estado?'
       upload_from_phone: Tome una foto con un teléfono móvil para cargar su identificación
       verify_identity: Verifique su identidad
-      welcome: Empiece con la verificación de su identidad
+      welcome: Comience a verificar su identidad
     info:
       camera_required: Su teléfono móvil debe tener una cámara y un navegador web.
       capture_status_big_document: Demasiado cerca
@@ -207,12 +207,12 @@ es:
       upload_no_image_storage: No almacenamos imágenes que cargue. Solo verificamos su identidad.
       verify_identity: Le preguntaremos sus datos personales para verificar su
         identidad comparándola con los registros públicos.
-      welcome_html: '%{sp_name} necesita asegurarse de que sea usted y no alguien que
-        se haga pasar por usted.'
+      welcome_html: '%{sp_name} necesita asegurarse de que es usted y no es alguien
+        que se hace pasar por usted.'
     instructions:
-      bullet1: Su documento de identidad emitido por el estado.
-      bullet2: Su Número de Seguridad Social.
-      bullet3: Un número de teléfono con un plan tarifario vinculado a su nombre.
+      bullet1: Documento de identidad emitido por el estado.
+      bullet2: Número de seguro social
+      bullet3: Número de teléfono
       consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
         utilice, conserve y comparta su información personal. Solo la
         utilizaremos para verificar su identidad.
@@ -228,11 +228,12 @@ es:
       switch_back_image: Flecha que apunta del teléfono a la computadora
       test_ssn: En el entorno de prueba solo los SSN que comienzan con “900-” o “666-”
         se consideran válidos. No ingrese PII real en este campo.
-      text2: No es necesario disponer de la credencial.
-      text3: No es necesario que usted sea el titular principal de la cuenta de su
-        plan de teléfono. Si su número de teléfono no funciona, podemos enviarle
-        un código de verificación por correo.
-      welcome: 'Deberá contar con lo siguiente para verificar su identidad:'
+      text1: Su documento de identidad no puede estar caducado.
+      text2: No necesitará la tarjeta con usted.
+      text3_html: Le llamaremos o enviaremos un mensaje de texto a este número para
+        verificar su identidad. Si no podemos verificar su número de teléfono,
+        puede hacerlo por correo. %{learn_more_link}
+      welcome: 'Necesitará su:'
     tips:
       capture_troubleshooting_blurry: La foto que adjuntó está demasiado borrosa.
       capture_troubleshooting_clean: Asegúrese de que el código de barras no esté
