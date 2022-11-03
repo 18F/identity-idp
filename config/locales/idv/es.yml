@@ -145,6 +145,8 @@ es:
       otp_delivery_method:
         phone_number_html: Enviaremos un código a <strong>%{phone}</strong> para
           verificar que el número de teléfono le pertenece.
+      otp_delivery_method_description: Si ha introducido un teléfono fijo más arriba, 
+        seleccione "Llamada telefónica" más abajo.
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
       phone:
@@ -186,7 +188,7 @@ es:
       mail:
         resend: '¿Desea otra carta?'
         verify: '¿Desea una carta?'
-      otp_delivery_method: '¿Cómo te gustaría recibir el código?'
+      otp_delivery_method: '¿Cómo debemos enviar un código?'
       review: Revise y envíe
       session:
         phone: Introduzca su número de teléfono

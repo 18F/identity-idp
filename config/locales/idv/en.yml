@@ -138,6 +138,8 @@ en:
       otp_delivery_method:
         phone_number_html: We’ll send a code to <strong>%{phone}</strong> to verify that
           the phone number belongs to you.
+      otp_delivery_method_description: If you entered a landline above, please select 
+        "Phone call" below.
       personal_key: This is your new personal key. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.
       phone:
@@ -178,7 +180,7 @@ en:
       mail:
         resend: Want another letter?
         verify: Want a letter?
-      otp_delivery_method: How would you like to receive a code?
+      otp_delivery_method: How should we send a code?
       review: Review and submit
       session:
         phone: Enter your phone number

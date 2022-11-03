@@ -152,6 +152,8 @@ fr:
       otp_delivery_method:
         phone_number_html: Nous enverrons un code à <strong>%{phone}</strong> pour
           vérifier que le numéro de téléphone vous appartient.
+      otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus, 
+        veuillez sélectionner « Appel téléphonique » ci-dessous.
       personal_key: Il s’agit de votre nouvelle clé personnelle. Notez-la et
         conservez-la dans un endroit sécuritaire. Vous en aurez besoin si vous
         perdez votre mot de passe.
@@ -198,7 +200,7 @@ fr:
       mail:
         resend: Vous voulez une autre lettre?
         verify: Vous voulez une lettre?
-      otp_delivery_method: Comment souhaitez-vous recevoir le code ?
+      otp_delivery_method: Comment envoyer un code?
       review: Réviser et soumettre
       session:
         phone: Entrez votre numéro de téléphone
