@@ -1,13 +1,10 @@
-import sinon from 'sinon';
 import { render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import type { ComponentType } from 'react';
 import {
   MarketingSiteContextProvider,
   ServiceProviderContextProvider,
 } from '@18f/identity-document-capture';
 import { FlowContext, FlowContextValue } from '@18f/identity-verify-flow';
-import { AnalyticsContextProvider } from '../context/analytics';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 import type { ServiceProviderContext } from '../context/service-provider';
 
@@ -125,75 +122,54 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
   });
 
   context('in person proofing links', () => {
-    context('no errors and no inPersonURL', () => {
-      it('has no IPP information', () => {
-        const { queryByText } = render(<DocumentCaptureTroubleshootingOptions />);
+    context('without inPersonURL', () => {
+      it('does not render in-person call to action', () => {
+        const { queryByRole } = render(<DocumentCaptureTroubleshootingOptions />);
 
-        expect(queryByText('components.troubleshooting_options.new_feature')).to.not.exist();
+        const section = queryByRole('region', { name: 'in_person_proofing.headings.cta' });
+
+        expect(section).not.to.exist();
+      });
+
+      context('with showAlternativeProofingOptions', () => {
+        it('renders in-person call to action', () => {
+          const { queryByRole } = render(
+            <DocumentCaptureTroubleshootingOptions showAlternativeProofingOptions />,
+          );
+
+          const section = queryByRole('region', { name: 'in_person_proofing.headings.cta' });
+
+          expect(section).not.to.exist();
+        });
       });
     });
 
-    context('hasErrors but no inPersonURL', () => {
-      it('has no IPP information', () => {
-        const { queryByText } = render(<DocumentCaptureTroubleshootingOptions hasErrors />);
-
-        expect(queryByText('components.troubleshooting_options.new_feature')).to.not.exist();
-      });
-    });
-
-    context('hasErrors and inPersonURL', () => {
+    context('with inPersonURL', () => {
       const wrapper: ComponentType = ({ children }) => (
         <FlowContext.Provider value={{ inPersonURL } as FlowContextValue}>
           {children}
         </FlowContext.Provider>
       );
 
-      it('has link to IPP flow', () => {
-        const { getByText, getByRole } = render(
-          <DocumentCaptureTroubleshootingOptions hasErrors />,
-          { wrapper },
-        );
+      it('does not render in-person call to action', () => {
+        const { queryByRole } = render(<DocumentCaptureTroubleshootingOptions />, { wrapper });
 
-        expect(getByText('components.troubleshooting_options.new_feature')).to.exist();
+        const section = queryByRole('region', { name: 'in_person_proofing.headings.cta' });
 
-        const link = getByRole('link', { name: 'idv.troubleshooting.options.verify_in_person' });
-
-        expect(link).to.exist();
+        expect(section).not.to.exist();
       });
 
-      it('logs an event when clicking the troubleshooting option', async () => {
-        const trackEvent = sinon.stub();
-        const { getByRole } = render(
-          <AnalyticsContextProvider trackEvent={trackEvent}>
-            <DocumentCaptureTroubleshootingOptions hasErrors />
-          </AnalyticsContextProvider>,
-          { wrapper },
-        );
+      context('with showAlternativeProofingOptions', () => {
+        it('renders in-person call to action', () => {
+          const { queryByRole } = render(
+            <DocumentCaptureTroubleshootingOptions showAlternativeProofingOptions />,
+            { wrapper },
+          );
 
-        const link = getByRole('link', { name: 'idv.troubleshooting.options.verify_in_person' });
-        await userEvent.click(link);
+          const section = queryByRole('region', { name: 'in_person_proofing.headings.cta' });
 
-        expect(trackEvent).to.have.been.calledWith(
-          'IdV: verify in person troubleshooting option clicked',
-        );
-      });
-    });
-
-    context('hasErrors and inPersonURL but showInPersonOption is false', () => {
-      const wrapper: ComponentType = ({ children }) => (
-        <FlowContext.Provider value={{ inPersonURL } as FlowContextValue}>
-          {children}
-        </FlowContext.Provider>
-      );
-
-      it('does not have link to IPP flow', () => {
-        const { queryAllByText, queryAllByRole } = render(
-          <DocumentCaptureTroubleshootingOptions hasErrors showInPersonOption={false} />,
-          { wrapper },
-        );
-
-        expect(queryAllByText('components.troubleshooting_options.new_feature').length).to.equal(0);
-        expect(queryAllByRole('button').length).to.equal(0);
+          expect(section).to.exist();
+        });
       });
     });
   });

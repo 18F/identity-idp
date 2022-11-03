@@ -48,8 +48,7 @@ module Idv
         FormResponse.new(
           success: valid?,
           errors: errors,
-          extra: {
-          },
+          extra: {},
         )
       end
 

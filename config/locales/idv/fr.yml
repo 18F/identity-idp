@@ -206,7 +206,6 @@ fr:
         review: Entrez à nouveau votre mot de passe %{app_name} pour crypter vos données
     troubleshooting:
       headings:
-        are_you_near: 'Êtes-vous situé près de Washington, D.C. <wbr/>ou Baltimore, MD?'
         missing_required_items: Est-ce qu’il vous manque un de ces éléments?
         need_assistance: 'Avez-vous besoin d’une assistance immédiate? Voici comment
           obtenir de l’aide:'
@@ -224,7 +223,6 @@ fr:
         learn_more_verify_in_person: En savoir plus sur la vérification en personne
         supported_documents: Voir la liste des pièces d’identité acceptées et délivrées par l’État
         verify_by_mail: Vérifiez plutôt votre adresse par courrier
-        verify_in_person: Vérifier votre identité en personne dans un bureau de poste
     welcome:
       no_js_header: Vous devez activer JavaScript pour vérifier votre identité.
       no_js_intro: '%{sp_name} a besoin de vous pour vérifier votre identité. Vous

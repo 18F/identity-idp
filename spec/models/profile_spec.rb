@@ -46,26 +46,6 @@ describe Profile do
     end
   end
 
-  describe '#includes_liveness_check?' do
-    it 'returns true if a component for liveness is present' do
-      profile = create(:profile, proofing_components: { liveness_check: 'acuant' })
-
-      expect(profile.includes_liveness_check?).to eq(true)
-    end
-
-    it 'returns false if a component for liveness is not present' do
-      profile = create(:profile, proofing_components: { liveness_check: nil })
-
-      expect(profile.includes_liveness_check?).to eq(false)
-    end
-
-    it 'returns false if proofing_components is blank' do
-      profile = create(:profile, proofing_components: '')
-
-      expect(profile.includes_liveness_check?).to eq(false)
-    end
-  end
-
   describe '#includes_phone_check?' do
     it 'returns true if the address_check component is lexis_nexis_address' do
       profile = create(:profile, proofing_components: { address_check: 'lexis_nexis_address' })
@@ -83,28 +63,6 @@ describe Profile do
       profile = create(:profile, proofing_components: '')
 
       expect(profile.includes_phone_check?).to eq(false)
-    end
-  end
-
-  describe '#strict_ial2_proofed?' do
-    it 'returns false if the profile is not active' do
-      profile = create(:profile, active: false)
-
-      expect(profile.strict_ial2_proofed?).to eq(false)
-    end
-
-    it 'returns true if the profile does have liveness' do
-      proofing_components = { liveness_check: :acuant }
-      profile = create(:profile, :active, proofing_components: proofing_components)
-
-      expect(profile.strict_ial2_proofed?).to eq(true)
-    end
-
-    it 'returns false if the profile does not have liveness' do
-      proofing_components = { liveness_check: nil }
-      profile = create(:profile, :active, proofing_components: proofing_components)
-
-      expect(profile.strict_ial2_proofed?).to eq(false)
     end
   end
 

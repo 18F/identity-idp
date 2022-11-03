@@ -98,11 +98,6 @@ module DocAuthHelper
   end
 
   def complete_upload_step
-    if javascript_enabled?
-      # By default, user would be prevented from continuing on desktop if the proofing flow requires
-      # liveness and there is no detectable camera. This forces the desktop link to be visible.
-      page.find('#upload-comp-liveness-off', visible: :all).evaluate_script('this.className = ""')
-    end
     click_on t('doc_auth.info.upload_computer_link')
   end
 

@@ -70,7 +70,6 @@ describe Idv::DocAuthController do
         locals: hash_including(
           :back_image_upload_url,
           :front_image_upload_url,
-          :selfie_image_upload_url,
           :flow_session,
           step_template: 'idv/doc_auth/document_capture',
           flow_namespace: 'idv',

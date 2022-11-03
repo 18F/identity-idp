@@ -31,5 +31,9 @@ FactoryBot.define do
       status_check_attempted_at { Time.zone.now }
       status_updated_at { Time.zone.now }
     end
+
+    trait :with_service_provider do
+      service_provider { association :service_provider }
+    end
   end
 end

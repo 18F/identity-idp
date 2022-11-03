@@ -90,19 +90,9 @@ class Profile < ApplicationRecord
     values.join(':')
   end
 
-  def includes_liveness_check?
-    return false if proofing_components.blank?
-    proofing_components['liveness_check'].present?
-  end
-
   def includes_phone_check?
     return false if proofing_components.blank?
     proofing_components['address_check'] == 'lexis_nexis_address'
-  end
-
-  def strict_ial2_proofed?
-    return false unless active
-    includes_liveness_check?
   end
 
   def has_proofed_before?

@@ -1,11 +1,11 @@
 import { useContext } from 'react';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { TroubleshootingOptions } from '@18f/identity-components';
-import { useI18n, formatHTML } from '@18f/identity-react-i18n';
+import { useI18n } from '@18f/identity-react-i18n';
 import type { TroubleshootingOption } from '@18f/identity-components/troubleshooting-options';
 import ServiceProviderContext from '../context/service-provider';
 import MarketingSiteContext from '../context/marketing-site';
-import AnalyticsContext from '../context/analytics';
+import InPersonCallToAction from './in-person-call-to-action';
 
 interface DocumentCaptureTroubleshootingOptionsProps {
   /**
@@ -24,47 +24,25 @@ interface DocumentCaptureTroubleshootingOptionsProps {
   showDocumentTips?: boolean;
 
   /**
-   * Whether to include option to verify in person.
+   * Whether to display alternative options for verifying.
    */
-  showInPersonOption?: boolean;
-
-  /**
-   * If there are any errors (toggles whether or not to show in person proofing option)
-   */
-  hasErrors?: boolean;
+  showAlternativeProofingOptions?: boolean;
 }
 
 function DocumentCaptureTroubleshootingOptions({
   heading,
   location = 'document_capture_troubleshooting_options',
   showDocumentTips = true,
-  showInPersonOption = true,
-  hasErrors,
+  showAlternativeProofingOptions,
 }: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
   const { inPersonURL } = useContext(FlowContext);
   const { getHelpCenterURL } = useContext(MarketingSiteContext);
-  const { trackEvent } = useContext(AnalyticsContext);
   const { name: spName, getFailureToProofURL } = useContext(ServiceProviderContext);
 
   return (
     <>
-      {hasErrors && inPersonURL && showInPersonOption && (
-        <TroubleshootingOptions
-          isNewFeatures
-          heading={formatHTML(t('idv.troubleshooting.headings.are_you_near'), {
-            wbr: 'wbr',
-          })}
-          divider={false}
-          options={[
-            {
-              url: '#location',
-              text: t('idv.troubleshooting.options.verify_in_person'),
-              onClick: () => trackEvent('IdV: verify in person troubleshooting option clicked'),
-            },
-          ]}
-        />
-      )}
+      {showAlternativeProofingOptions && inPersonURL && <InPersonCallToAction />}
       <TroubleshootingOptions
         heading={heading}
         options={

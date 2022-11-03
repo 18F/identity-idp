@@ -30,11 +30,6 @@ module ApplicationHelper
     sp_session && sp_session[:ial2]
   end
 
-  def liveness_checking_enabled?
-    return false if !FeatureManagement.liveness_checking_enabled?
-    !!current_user&.decorate&.password_reset_profile&.strict_ial2_proofed?
-  end
-
   def cancel_link_text
     if user_signing_up?
       t('links.cancel_account_creation')

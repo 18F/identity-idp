@@ -103,11 +103,6 @@ RSpec.describe ArcgisApi::Geocoder do
       expect(WebMock).to have_requested(:post, %r{/generateToken}).
         with(
           body: 'username=test+username&password=test+password&referer=www.example.com&f=json',
-          headers: {
-            'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'User-Agent' => 'Faraday v1.8.0',
-          },
         )
     end
 
@@ -142,23 +137,9 @@ RSpec.describe ArcgisApi::Geocoder do
 
       expect(WebMock).to have_requested(:post, %r{/generateToken}).twice
       expect(WebMock).to have_requested(:get, %r{/suggest}).
-        with(
-          headers: {
-            'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization' => 'Bearer token1',
-            'User-Agent' => 'Faraday v1.8.0',
-          },
-        ).once
+        with(headers: { 'Authorization' => 'Bearer token1' }).once
       expect(WebMock).to have_requested(:get, %r{/suggest}).
-        with(
-          headers: {
-            'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization' => 'Bearer token2',
-            'User-Agent' => 'Faraday v1.8.0',
-          },
-        ).once
+        with(headers: { 'Authorization' => 'Bearer token1' }).once
     end
 
     it 'reuses the cached token across instances' do
@@ -173,14 +154,7 @@ RSpec.describe ArcgisApi::Geocoder do
       client2.suggest('100')
 
       expect(WebMock).to have_requested(:get, %r{/suggest}).
-        with(
-          headers: {
-            'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization' => 'Bearer token1',
-            'User-Agent' => 'Faraday v1.8.0',
-          },
-        ).twice
+        with(headers: { 'Authorization' => 'Bearer token1' }).twice
     end
   end
 end

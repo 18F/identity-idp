@@ -23,6 +23,7 @@ es:
         switch_back_image: Flecha que apunta del teléfono a la computadora
     errors:
       cannot_retrieve:
+        failure_info: to be implemented
         heading: No hemos podido obtener su información de My HealtheVet
         info: Estamos teniendo problemas temporalmente para obtener su información.
           Inténtelo de nuevo.
@@ -58,6 +59,7 @@ es:
     troubleshooting:
       headings:
         missing_required_items: to be implemented
+        need_assistance: to be implemented
         need_help_updating: to be implemented
       options:
         get_va_help: to be implemented

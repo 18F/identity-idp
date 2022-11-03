@@ -127,8 +127,6 @@ en:
       text_message: We sent a message to your phone
       upload: How would you like to upload your state-issued ID?
       upload_from_phone: Take a photo with a mobile phone to upload your ID
-      upload_from_phone_liveness_enabled: Use a mobile phone to add your ID and take a photo of yourself
-      upload_liveness_enabled: How would you like to verify your identity?
       verify_identity: Verify your identity
       welcome: Get started verifying your identity
     info:
@@ -172,12 +170,7 @@ en:
       upload: We’ll collect information about you by reading your state-issued ID.
       upload_computer_link: Upload from your computer
       upload_from_computer: Don’t have a phone?
-      upload_from_computer_not_allowed: Sign in to your %{app_name} account on any
-        device that has a camera, like a tablet or computer with a webcam.
       upload_from_phone: Upload pictures directly from your phone camera
-      upload_liveness_enabled: We’ll collect information about you by reading your
-        state-issued ID. Then, you’ll take a photo of yourself to confirm that
-        you are the owner of the ID.
       upload_no_image_storage: We do not store images you upload. We only verify your identity.
       verify_identity: We’ll ask for your personal information to verify your identity
         against public records.
@@ -185,7 +178,6 @@ en:
         pretending to be you.'
     instructions:
       bullet1: Your State-issued ID
-      bullet1a: A device with a camera
       bullet2: Your Social Security number
       bullet3: A phone number on a phone plan associated with your name
       consent: By checking this box, you are letting %{app_name} ask for, use, keep,
@@ -201,7 +193,6 @@ en:
       switch_back_image: Arrow pointing from phone to computer
       test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are
         considered valid. Do not enter real PII in this field.
-      text1a: such as a phone or computer.
       text2: You will not need the card with you.
       text3: You do not need to be the primary account holder on your phone plan. If
         your phone number doesn’t work, we can send you a verification code by

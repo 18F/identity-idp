@@ -22,6 +22,7 @@ en:
         switch_back_image: Arrow pointing from phone to computer
     errors:
       cannot_retrieve:
+        failure_info: Please check back later.
         heading: We could not retrieve your information from My HealtheVet
         info: We are temporarily having trouble retrieving your information. Please try
           again.
@@ -62,6 +63,7 @@ en:
     troubleshooting:
       headings:
         missing_required_items: Don’t have a phone number? Here’s how to get help
+        need_assistance: 'Need immediate assistance? Here’s how to get help:'
         need_help_updating: Need to update your information? Here’s how to get help
       options:
         get_va_help: Get help at VA.gov

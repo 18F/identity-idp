@@ -562,17 +562,43 @@ RSpec.describe GetUspsProofingResultsJob do
 
         it_behaves_like(
           'enrollment_encountering_an_exception',
-          exception_class: 'Faraday::ParsingError',
-          exception_message: /unexpected token at 'invalid'$/,
+          reason: 'Bad response structure',
         )
       end
 
-      context 'when USPS returns a 4xx status code' do
+      context 'when USPS returns an unexpected 400 status code' do
+        before(:each) do
+          stub_request_proofing_results_with_responses(
+            {
+              status: 400,
+              body: { 'responseMessage' => 'This USPS location has closed 😭' }.to_json,
+              headers: { 'content-type': 'application/json' },
+            },
+          )
+        end
+
+        it_behaves_like(
+          'enrollment_encountering_an_exception',
+          exception_class: 'Faraday::BadRequestError',
+          exception_message: 'the server responded with status 400',
+          response_message: 'This USPS location has closed 😭',
+          response_status_code: 400,
+        )
+
+        it 'logs the error to NewRelic' do
+          expect(NewRelic::Agent).to receive(:notice_error).
+            with(instance_of(Faraday::BadRequestError))
+          job.perform(Time.zone.now)
+        end
+      end
+
+      context 'when USPS returns a >400 status code' do
         before(:each) do
           stub_request_proofing_results_with_responses(
             {
               status: 410,
               body: { 'responseMessage' => 'Applicant does not exist' }.to_json,
+              headers: { 'content-type': 'application/json' },
             },
           )
         end

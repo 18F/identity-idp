@@ -102,8 +102,7 @@ function ReviewIssuesStep({
         troubleshootingOptions={
           <DocumentCaptureTroubleshootingOptions
             location="post_submission_warning"
-            hasErrors={!!errors?.length}
-            showInPersonOption={!isFailedResult}
+            showAlternativeProofingOptions={!isFailedResult}
           />
         }
       >

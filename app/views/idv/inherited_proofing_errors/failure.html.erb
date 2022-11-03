@@ -1,24 +1,26 @@
 <%= render(
       'idv/shared/error',
-      type: :warning,
       title: t('inherited_proofing.errors.cannot_retrieve.title'),
       heading: t('inherited_proofing.errors.cannot_retrieve.heading'),
     ) do %>
   <p>
-     <%= t('inherited_proofing.errors.cannot_retrieve.info') %>
+     <%= t('inherited_proofing.errors.cannot_retrieve.failure_info') %>
   </p>
-
-  <%= link_to t('inherited_proofing.buttons.try_again'), root_url, class: 'usa-button usa-button--big usa-button--wide' %>
 
   <%= render(
         'shared/troubleshooting_options',
-        heading: t('components.troubleshooting_options.default_heading'),
+        heading: t('inherited_proofing.troubleshooting.headings.need_assistance'),
         options: [
           {
             url: 'https://www.va.gov/resources/managing-your-vagov-profile/',
             text: t('inherited_proofing.troubleshooting.options.get_va_help'),
             new_tab: true,
           },
-        ].select(&:present?),
+          {
+            url: 'https://www.va.gov/resources/managing-your-vagov-profile/',
+            text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
+            new_tab: true,
+          },
+        ],
       ) %>
 <% end %>

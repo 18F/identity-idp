@@ -66,7 +66,7 @@ function DocumentsStep({
         />
       ))}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
-      <DocumentCaptureTroubleshootingOptions hasErrors={!!errors.length} />
+      <DocumentCaptureTroubleshootingOptions />
       <Cancel />
     </CaptureTroubleshooting>
   );

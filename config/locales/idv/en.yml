@@ -187,7 +187,6 @@ en:
     troubleshooting:
       headings:
         # Note: there are intentional irregular non-breaking whitespaces to ensure coupling of place names.
-        are_you_near: 'Are you located near Washington, D.C. <wbr/>or Baltimore, MD?'
         missing_required_items: Are you missing one of these items?
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
         still_having_trouble: Still having trouble?
@@ -203,7 +202,6 @@ en:
         learn_more_verify_in_person: Learn more about verifying in person
         supported_documents: See a list of accepted state-issued IDs
         verify_by_mail: Verify your address by mail instead
-        verify_in_person: Verify your ID in person at a Post Office
     welcome:
       no_js_header: You must enable JavaScript to verify your identity.
       no_js_intro: '%{sp_name} needs you to verify your identity. You need to enable
