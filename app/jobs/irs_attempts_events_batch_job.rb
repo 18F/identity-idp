@@ -18,9 +18,9 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     begin
       FileUtils.mkdir_p(dir_path)
 
-     File.open("#{dir_path}/#{result.filename}", 'wb') do |file|
-       file.write(result.encrypted_data) 
-     end
+      File.open("#{dir_path}/#{result.filename}", 'wb') do |file|
+        file.write(result.encrypted_data)
+      end
     end
     return file.path
 
