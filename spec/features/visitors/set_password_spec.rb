@@ -57,7 +57,7 @@ feature 'Visitor sets password during signup' do
 
     expect(page).to have_css('input.password[type="password"]')
 
-    check t('components.password_toggle.toggle_label')
+    check t('components.password_toggle.toggle_label.show')
 
     expect(page).to_not have_css('input.password[type="password"]')
     expect(page).to have_css('input.password[type="text"]')

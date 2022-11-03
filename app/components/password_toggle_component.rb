@@ -1,21 +1,25 @@
 class PasswordToggleComponent < BaseComponent
-  attr_reader :form, :label, :toggle_label, :field_options, :tag_options
+  attr_reader :form, :field_options, :tag_options
 
   def initialize(
     form:,
-    toggle_label: t('components.password_toggle.toggle_label'),
     field_options: {},
     **tag_options
   )
     @form = form
-    @label = label
-    @toggle_label = toggle_label
     @field_options = field_options
     @tag_options = tag_options
   end
 
-  def default_label
-    t('components.password_toggle.label')
+  def label_text
+    field_options[:label] || t('components.password_toggle.label')
+  end
+
+  def visibility_label_attributes
+    {
+      'toggle-label-show': t('components.password_toggle.toggle_label.show'),
+      'toggle-label-hide': t('components.password_toggle.toggle_label.hide'),
+    }
   end
 
   def toggle_id

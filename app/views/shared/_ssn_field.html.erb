@@ -6,7 +6,6 @@ locals:
 <%# maxlength set and includes '-' delimiters to work around cleave bug %>
 <%= render PasswordToggleComponent.new(
       form: f,
-      toggle_label: t('forms.ssn.show'),
       field_options: {
         name: :ssn,
         as: :password,

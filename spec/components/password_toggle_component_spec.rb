@@ -13,7 +13,7 @@ RSpec.describe PasswordToggleComponent, type: :component do
   it 'renders default markup' do
     expect(rendered).to have_css('lg-password-toggle')
     expect(rendered).to have_field(t('components.password_toggle.label'), type: :password)
-    expect(rendered).to have_field(t('components.password_toggle.toggle_label'), type: :checkbox)
+    expect(rendered).to have_field(t('components.password_toggle.toggle_label.show'), type: :button)
   end
 
   it 'renders with accessible linking between toggle and input' do
@@ -21,17 +21,6 @@ RSpec.describe PasswordToggleComponent, type: :component do
 
     expect(input_id).to be_present
     expect(rendered).to have_css("[aria-controls='#{input_id}']")
-  end
-
-  describe '#toggle_label' do
-    context 'with custom label' do
-      let(:toggle_label) { 'Custom Toggle Label' }
-      let(:options) { { toggle_label: toggle_label } }
-
-      it 'renders custom field label' do
-        expect(rendered).to have_field(toggle_label, type: :checkbox)
-      end
-    end
   end
 
   describe '#toggle_id' do

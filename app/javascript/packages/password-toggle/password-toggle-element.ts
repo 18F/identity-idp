@@ -1,41 +1,40 @@
-import { once } from '@18f/identity-decorators';
 import { trackEvent } from '@18f/identity-analytics';
 
-interface PasswordToggleElements {
-  /**
-   * Checkbox toggle for visibility.
-   */
-  toggle: HTMLInputElement;
-
-  /**
-   * Text or password input.
-   */
-  input: HTMLInputElement;
+interface PasswordToggleLabels {
+  show: string;
+  hide: string;
 }
 
 class PasswordToggleElement extends HTMLElement {
   connectedCallback() {
-    this.elements.toggle.addEventListener('change', () => this.setInputType());
+    this.toggle.addEventListener('click', () => this.onToggleClick());
     this.setInputType();
-    this.showPasswordButtonClick();
   }
 
-  @once()
-  get elements(): PasswordToggleElements {
+  get labels(): PasswordToggleLabels {
     return {
-      toggle: this.querySelector('.password-toggle__toggle')!,
-      input: this.querySelector('.password-toggle__input')!,
+      show: this.getAttribute('toggle-label-show')!,
+      hide: this.getAttribute('toggle-label-hide')!,
     };
   }
 
-  setInputType() {
-    this.elements.input.type = this.elements.toggle.checked ? 'text' : 'password';
+  get input(): HTMLInputElement {
+    return this.querySelector('.password-toggle__input')!;
   }
 
-  showPasswordButtonClick() {
-    this.elements.toggle.addEventListener('click', () => {
-      trackEvent('Show Password button clicked', { path: window.location.pathname });
-    });
+  get toggle(): HTMLButtonElement {
+    return this.querySelector('.password-toggle__toggle')!;
+  }
+
+  setInputType() {
+    const isCurrentlyHidden = this.toggle.textContent === this.labels.show;
+    this.input.type = isCurrentlyHidden ? 'text' : 'password';
+    this.toggle.textContent = isCurrentlyHidden ? this.labels.hide : this.labels.show;
+  }
+
+  onToggleClick() {
+    this.setInputType();
+    trackEvent('Show Password button clicked', { path: window.location.pathname });
   }
 }
 

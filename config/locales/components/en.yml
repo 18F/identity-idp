@@ -33,7 +33,9 @@ en:
       year: Year
     password_toggle:
       label: Password
-      toggle_label: Show password
+      toggle_label:
+        show: Show
+        hide: Hide
     phone_input:
       country_code_label: Country code
     print_button:
