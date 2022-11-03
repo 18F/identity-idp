@@ -5,6 +5,7 @@ import BackButton from './back-button';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
 import AnalyticsContext from '../context/analytics';
+import AddressSearch from './address-search';
 
 interface PostOffice {
   address: string;
@@ -31,7 +32,6 @@ interface FormattedLocation {
 }
 
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
-
 const getResponse = () => window.fetch(LOCATIONS_URL).then((res) => res.json());
 
 const formatLocation = (postOffices: PostOffice[]) => {
@@ -135,6 +135,11 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
     [locationData, inProgress],
   );
 
+  const handleFoundAddress = useCallback(async () => {
+    console.log('issue req')
+    /* issue request for po locations */
+  }, []);
+
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -183,6 +188,9 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.location')}</PageHeading>
+      <AddressSearch
+        onAddressFound={(address) => handleFoundAddress(address)}
+      />
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
       {locationsContent}
       <BackButton onClick={toPreviousStep} />
