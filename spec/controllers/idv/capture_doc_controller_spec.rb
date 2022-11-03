@@ -138,6 +138,7 @@ describe Idv::CaptureDocController do
         result = {
           step: 'capture_complete',
           flow_path: 'hybrid',
+          reproofing: false,
           step_count: 1,
           analytics_id: 'Doc Auth',
         }
