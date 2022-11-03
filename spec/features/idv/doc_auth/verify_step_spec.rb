@@ -56,7 +56,7 @@ feature 'doc auth verify step', :js do
     expect(DocAuthLog.find_by(user_id: user.id).aamva).to eq(true)
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth optional verify_wait submitted',
-      address_edited: false,
+      include(address_edited: false),
     )
   end
 
@@ -83,7 +83,7 @@ feature 'doc auth verify step', :js do
 
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth optional verify_wait submitted',
-      address_edited: true,
+      include(address_edited: true),
     )
   end
 
@@ -99,7 +99,7 @@ feature 'doc auth verify step', :js do
 
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth optional verify_wait submitted',
-      address_edited: false,
+      include(address_edited: false),
     )
   end
 
@@ -299,7 +299,7 @@ feature 'doc auth verify step', :js do
         and_return(nil)
 
       click_idv_continue
-      expect(fake_analytics).to have_logged_event('Proofing Resolution Result Missing', {})
+      expect(fake_analytics).to have_logged_event('Proofing Resolution Result Missing')
       expect(page).to have_content(t('idv.failure.timeout'))
       expect(page).to have_current_path(idv_doc_auth_verify_step)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original

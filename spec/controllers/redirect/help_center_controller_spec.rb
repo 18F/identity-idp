@@ -42,7 +42,7 @@ describe Redirect::HelpCenterController do
         expect(response).to redirect_to redirect_url
         expect(@analytics).to have_logged_event(
           'External Redirect',
-          redirect_url: redirect_url,
+          include(redirect_url: redirect_url),
         )
       end
 

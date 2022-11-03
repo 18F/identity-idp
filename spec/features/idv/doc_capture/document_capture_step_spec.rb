@@ -61,6 +61,8 @@ feature 'doc capture document capture step', js: true do
     expect(page).to have_text(t('idv.cancel.headings.prompt.hybrid'))
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation visited',
+      proofing_components: nil,
+      request_came_from: 'idv/capture_doc#show',
       step: 'document_capture',
     )
 
@@ -69,6 +71,7 @@ feature 'doc capture document capture step', js: true do
     expect(page).to have_text(t('idv.cancel.headings.confirmation.hybrid'))
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation confirmed',
+      proofing_components: nil,
       step: 'document_capture',
     )
   end
@@ -80,8 +83,10 @@ feature 'doc capture document capture step', js: true do
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth document_capture submitted',
-      step: 'document_capture',
-      flow_path: 'hybrid',
+      include(
+        step: 'document_capture',
+        flow_path: 'hybrid',
+      ),
     )
   end
 
@@ -188,7 +193,13 @@ feature 'doc capture document capture step', js: true do
     it 'logs events as an anonymous user' do
       visit request_uri
 
-      expect(fake_analytics).to have_logged_event('Doc Auth', success: false)
+      expect(fake_analytics).to have_logged_event(
+        'Doc Auth',
+        include(
+          success: false,
+          user_id: 'anonymous-uuid',
+        ),
+      )
     end
   end
 
@@ -197,8 +208,10 @@ feature 'doc capture document capture step', js: true do
       complete_doc_capture_steps_before_first_step(user)
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth document_capture visited',
-        step: 'document_capture',
-        flow_path: 'hybrid',
+        include(
+          step: 'document_capture',
+          flow_path: 'hybrid',
+        ),
       )
     end
 
@@ -211,8 +224,10 @@ feature 'doc capture document capture step', js: true do
       within_window new_window do
         expect(fake_analytics).to have_logged_event(
           'Return to SP: Failed to proof',
-          step: 'document_capture',
-          location: 'document_capture_troubleshooting_options',
+          include(
+            step: 'document_capture',
+            location: 'document_capture_troubleshooting_options',
+          ),
         )
       end
     end
@@ -234,7 +249,7 @@ feature 'doc capture document capture step', js: true do
     end
 
     expect(page).to have_content(t('errors.doc_auth.throttled_heading'), wait: 5)
-    expect(fake_analytics).to have_logged_event('Doc Auth Warning', {})
+    expect(fake_analytics).to have_logged_event('Doc Auth Warning')
   end
 
   def next_step

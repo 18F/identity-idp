@@ -86,6 +86,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           attempts: 1,
           remaining_attempts: 3,
           user_id: document_capture_session.user.uuid,
+          flow_path: anything,
         )
       end
 
@@ -111,7 +112,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       it 'logs a doc auth warning' do
         form.submit
 
-        expect(fake_analytics).to have_logged_event('Doc Auth Warning', {})
+        expect(fake_analytics).to have_logged_event('Doc Auth Warning')
       end
 
       it 'returns the expected response' do
@@ -145,6 +146,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           attempts: 1,
           remaining_attempts: 3,
           user_id: document_capture_session.user.uuid,
+          flow_path: anything,
         )
       end
 

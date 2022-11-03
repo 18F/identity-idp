@@ -29,8 +29,10 @@ feature 'doc auth welcome step' do
 
     expect(fake_analytics).to have_logged_event(
       'Return to SP: Failed to proof',
-      step: 'welcome',
+      flow: nil,
       location: 'missing_items',
+      redirect_url: instance_of(String),
+      step: 'welcome',
     )
   end
 
