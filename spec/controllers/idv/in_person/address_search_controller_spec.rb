@@ -60,5 +60,13 @@ describe Idv::InPerson::AddressSearchController do
         expect(addresses.length).to eq 0
       end
     end
+
+    context 'with feature disabled' do
+      let(:in_person_proofing_enabled) { false }
+
+      it 'renders 404' do
+        expect(response.status).to eq(404)
+      end
+    end
   end
 end
