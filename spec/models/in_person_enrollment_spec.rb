@@ -89,7 +89,7 @@ RSpec.describe InPersonEnrollment, type: :model do
   end
 
   describe 'needs_email_reminder' do
-    let(:days) { IdentityConfig.store.email_reminder_first_check }
+    let(:days) { IdentityConfig.store.email_reminder_early_benchmark }
     let!(:passed_enrollment) { create(:in_person_enrollment, :passed) }
     let!(:failing_enrollment) { create(:in_person_enrollment, :failed) }
     let!(:expired_enrollment) { create(:in_person_enrollment, :expired) }

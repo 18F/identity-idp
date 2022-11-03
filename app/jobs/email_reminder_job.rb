@@ -11,11 +11,11 @@ class EmailReminderJob < ApplicationJob
 
     # final reminder job done first in case of job failure
     # 4-2 days interval
-    email_reminder_second_check = IdentityConfig.store.email_reminder_second_check
-    email_reminder_final_check = IdentityConfig.store.email_reminder_final_check
+    email_reminder_late_benchmark = IdentityConfig.store.email_reminder_late_benchmark
+    email_reminder_final_benchmark = IdentityConfig.store.email_reminder_final_benchmark
     second_set_enrollments = InPersonEnrollment.needs_late_email_reminder(
-      calculate_interval(email_reminder_second_check),
-      calculate_interval(email_reminder_final_check),
+      calculate_interval(email_reminder_late_benchmark),
+      calculate_interval(email_reminder_final_benchmark),
     )
     second_set_enrollments.each do |enrollment|
       send_reminder_email(enrollment.user, enrollment)
@@ -23,10 +23,10 @@ class EmailReminderJob < ApplicationJob
     end
 
     # 11-5 days is interval
-    email_reminder_first_check = IdentityConfig.store.email_reminder_first_check
+    email_reminder_early_benchmark = IdentityConfig.store.email_reminder_early_benchmark
     first_set_enrollments = InPersonEnrollment.needs_early_email_reminder(
-      calculate_interval(email_reminder_first_check),
-      calculate_interval(email_reminder_second_check),
+      calculate_interval(email_reminder_early_benchmark),
+      calculate_interval(email_reminder_late_benchmark),
     )
     first_set_enrollments.each do |enrollment|
       send_reminder_email(enrollment.user, enrollment)
