@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
   describe '#perform' do
 
-    events = { "key1": "SomeEncryptedEvent1", "key1": "SomeEncryptedEvent2", "key1": "SomeEncryptedEvent3" }
+    events = { "key1": "SomeEncryptedEvent1" }
     Result = Struct.new(:filename, :iv, :encrypted_key, :encrypted_data, keyword_init: true)
 
     let(:redis_client) { instance_double(IrsAttemptsApi::RedisClient) }
@@ -62,9 +62,6 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         # file is stored at:  "./attempts_api_output" by default
 
         file_path = IrsAttemptsEventsBatchJob.perform_now()
-
-       # expect(file_double).to receive(:write)
-       # expect(file_double).to receive(:close)
 
         expect(file_path).to eq("./attempts_api_output/test_filename")
         

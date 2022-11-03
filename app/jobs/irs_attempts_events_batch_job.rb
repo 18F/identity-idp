@@ -25,7 +25,6 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     ensure
       file.close unless file.nil?
     end
-    #puts "Wrote to file: #{file.path}"
     return file.path
 
     # Write the file to S3 instead of whatever dir_path winds up being
