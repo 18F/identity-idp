@@ -22,7 +22,6 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
         file.write(result.encrypted_data)
       end
     end
-    return file.path
 
     # Write the file to S3 instead of whatever dir_path winds up being
   end
