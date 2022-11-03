@@ -33,7 +33,7 @@ es:
       cancellation_prompt: Cancela la verificación de identidad
       cancelled: Se canceló la verificación de identidad
       come_back_soon: Vuelve pronto
-      enter_security_code: Introduzca su código único
+      enter_one_time_code: Introduzca su código único
       get_letter: Recibe una carta
       personal_key: Guarda tu llave personal
       phone: Verifica tu número telefónico
