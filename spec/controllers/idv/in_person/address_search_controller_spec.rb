@@ -16,7 +16,7 @@ describe Idv::InPerson::AddressSearchController do
   end
 
   describe '#index' do
-    let(:geocoder) { double('geocoder') }
+    let(:geocoder) { double('Geocoder') }
     let(:suggestions) do
       [
         OpenStruct.new({ magic_key: 'a' }),
@@ -34,8 +34,9 @@ describe Idv::InPerson::AddressSearchController do
     subject(:response) { get :index }
 
     before do
-      allow(controller).to receive(:find_address_candidates).and_return(addresses)
-      allow(controller).to receive(:suggest).and_return(suggestions)
+      allow(controller).to receive(:geocoder).and_return(geocoder)
+      allow(geocoder).to receive(:find_address_candidates).and_return(addresses)
+      allow(geocoder).to receive(:suggest).and_return(suggestions)
     end
 
     context 'with successful fetch' do
@@ -50,7 +51,7 @@ describe Idv::InPerson::AddressSearchController do
     context 'with unsuccessful fetch' do
       before do
         exception = Faraday::ConnectionFailed.new('error')
-        allow(controller).to receive(:suggest).and_raise(exception)
+        allow(geocoder).to receive(:suggest).and_raise(exception)
       end
 
       it 'gets an empty pilot response' do

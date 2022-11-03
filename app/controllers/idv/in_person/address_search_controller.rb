@@ -10,8 +10,8 @@ module Idv
       def index
         arcgis_api_response = []
         begin
-          suggestion = suggest(permitted_params[:address]).first
-          arcgis_api_response = [find_address_candidates(suggestion.magic_key).first]
+          suggestion = geocoder.suggest(permitted_params[:address]).first
+          arcgis_api_response = [geocoder.find_address_candidates(suggestion.magic_key).first]
         rescue Faraday::ConnectionFailed => _error
           nil
         end
@@ -23,14 +23,6 @@ module Idv
 
       def geocoder
         @geocoder ||= ArcgisApi::Geocoder.new
-      end
-
-      def suggest(address)
-        geocoder.suggest(address)
-      end
-
-      def find_address_candidates(magic_key)
-        geocoder.find_address_candidates(magic_key)
       end
 
       def permitted_params
