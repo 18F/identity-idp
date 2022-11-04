@@ -124,6 +124,7 @@ group :test do
   gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
   gem 'rspec-retry'
+  gem 'rspec_junit_formatter'
   gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'webdrivers', '~> 5.2.0'
   gem 'webmock'
