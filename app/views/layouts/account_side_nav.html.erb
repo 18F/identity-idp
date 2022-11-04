@@ -7,6 +7,8 @@
 <% end %>
 
 <% content_for :content do %>
+  <!-- Todo add translation for the following link -->
+  <%= link_to 'Skip to edit account profile', '#account-profile', class: 'usa-skipnav position-fixed' %>
   <div class="display-none tablet:display-flex grid-row grid-gap margin-bottom-4">
     <div class="grid-offset-2 grid-col-3">
       <%= image_tag(
@@ -29,7 +31,7 @@
     <div class="display-none tablet:display-block tablet:grid-col-4">
       <%= render 'accounts/side_nav' %>
     </div>
-    <div class="tablet:grid-col-8">
+    <div class="tablet:grid-col-8" id="account-profile">
       <%= yield %>
     </div>
   </div>
