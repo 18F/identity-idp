@@ -1,49 +1,5 @@
 require 'rails_helper'
 
-shared_examples 'the idv/doc_auth session is cleared' do
-  it 'clears the session' do
-    expect(controller.user_session['idv/doc_auth']).to be_blank
-  end
-end
-
-shared_examples 'the idv/in_person session is cleared' do
-  it 'clears the session' do
-    expect(controller.user_session['idv/in_person']).to be_blank
-  end
-end
-
-shared_examples 'the idv/inherited_proofing session is cleared' do
-  it 'clears the session' do
-    expect(controller.user_session['idv/inherited_proofing']).to be_blank
-  end
-end
-
-shared_examples 'the decrypted_pii session is cleared' do
-  it 'clears the session' do
-    expect(controller.user_session[:decrypted_pii]).to be_blank
-  end
-end
-
-shared_examples 'a redirect occurs to the start of identity verification' do
-  it 'redirects' do
-    delete :destroy
-
-    expect(response).to redirect_to(idv_url)
-  end
-end
-
-shared_examples 'logs IDV start over analytics with step and location params' do
-  it 'logs the analytics' do
-    delete :destroy, params: { step: 'first', location: 'get_help' }
-
-    expect(@analytics).to have_logged_event(
-      'IdV: start over',
-      step: 'first',
-      location: 'get_help',
-    )
-  end
-end
-
 describe Idv::SessionsController do
   let(:user) { build(:user) }
 
@@ -73,14 +29,38 @@ describe Idv::SessionsController do
         delete :destroy
       end
 
-      it_behaves_like 'the idv/doc_auth session is cleared'
-      it_behaves_like 'the idv/in_person session is cleared'
-      it_behaves_like 'the idv/inherited_proofing session is cleared'
-      it_behaves_like 'the decrypted_pii session is cleared'
+      it 'clears the idv/doc_auth session' do
+        expect(controller.user_session['idv/doc_auth']).to be_blank
+      end
+
+      it 'clears the idv/in_person session' do
+        expect(controller.user_session['idv/in_person']).to be_blank
+      end
+
+      it 'clears the idv/inherited_proofing session' do
+        expect(controller.user_session['idv/inherited_proofing']).to be_blank
+      end
+
+      it 'clears the decrypted_pii session' do
+        expect(controller.user_session[:decrypted_pii]).to be_blank
+      end
     end
 
-    it_behaves_like 'logs IDV start over analytics with step and location params'
-    it_behaves_like 'a redirect occurs to the start of identity verification'
+    it 'logs IDV start over analytics with step and location params' do
+      delete :destroy, params: { step: 'first', location: 'get_help' }
+
+      expect(@analytics).to have_logged_event(
+        'IdV: start over',
+        step: 'first',
+        location: 'get_help',
+      )
+    end
+
+    it 'redirect occurs to the start of identity verification' do
+      delete :destroy
+
+      expect(response).to redirect_to(idv_url)
+    end
 
     context 'pending profile' do
       let(:user) do
