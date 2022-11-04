@@ -6,12 +6,18 @@ RSpec.describe UspsInPersonProofing::Proofer do
   let(:subject) { UspsInPersonProofing::Proofer.new }
 
   describe '#retrieve_token!' do
-    it 'sets token and token_expires_at' do
-      stub_request_token
-      subject.retrieve_token!
-
-      expect(subject.token).to be_present
-      expect(subject.token_expires_at).to be_present
+    let(:applicant) do
+      double(
+        'applicant',
+        address: Faker::Address.street_address,
+        city: Faker::Address.city,
+        state: Faker::Address.state_abbr,
+        zip_code: Faker::Address.zip_code,
+        first_name: Faker::Name.first_name,
+        last_name: Faker::Name.last_name,
+        email: Faker::Internet.safe_email,
+        unique_id: '123456789',
+      )
     end
 
     it 'calls the endpoint with the expected params' do
@@ -49,6 +55,70 @@ RSpec.describe UspsInPersonProofing::Proofer do
             'Content-Type': 'application/json; charset=utf-8',
           },
         )
+    end
+
+    it 'caches the token' do
+      stub_request_token
+      token = subject.retrieve_token!
+
+      expect(subject).not_to receive(:request_token)
+      expect(subject.token).to eq(token)
+    end
+
+    it 'reuses the cached token on subsequent requests' do
+      stub_request_token
+      stub_request_enroll
+      stub_request_enroll
+      stub_request_enroll
+
+      subject.request_enroll(applicant)
+      subject.request_enroll(applicant)
+      subject.request_enroll(applicant)
+    end
+
+    it 'implicitly refreshes the token when expired' do
+      root_url = 'http://my.root.url'
+      allow(IdentityConfig.store).to receive(:usps_ipp_root_url).
+        and_return(root_url)
+
+      stub_request_token(expires_in: 1.hour.to_i, access_token: 'token1')
+      stub_request_enroll
+      subject.request_enroll(applicant)
+
+      travel 2.hours
+
+      stub_request_token(access_token: 'token2')
+      stub_request_enroll
+      subject.request_enroll(applicant)
+
+      expect(WebMock).to have_requested(:post, %r{/oauth/authenticate}).twice
+      expect(WebMock).to have_requested(
+        :post,
+        %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
+      ).
+        with(headers: { 'Authorization' => 'token1' }).once
+      expect(WebMock).to have_requested(
+        :post,
+        %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
+      ).
+        with(headers: { 'Authorization' => 'token2' }).once
+    end
+
+    it 'reuses the cached token across instances' do
+      stub_request_token(access_token: 'token1')
+      stub_request_enroll
+      stub_request_enroll
+
+      client2 = UspsInPersonProofing::Proofer.new
+
+      subject.request_enroll(applicant)
+      client2.request_enroll(applicant)
+
+      expect(WebMock).to have_requested(
+        :post,
+        %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
+      ).
+        with(headers: { 'Authorization' => 'token1' }).twice
     end
   end
 

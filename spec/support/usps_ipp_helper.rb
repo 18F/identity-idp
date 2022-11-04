@@ -1,8 +1,13 @@
 module UspsIppHelper
-  def stub_request_token
+  def stub_request_token(access_token: nil, expires_in: nil)
+    # Overwrite fixture values if values are specified
+    defaults = JSON.parse(UspsInPersonProofing::Mock::Fixtures.request_token_response)
+    body = defaults.merge(
+      { access_token: access_token, expires_in: expires_in }.compact,
+    )
     stub_request(:post, %r{/oauth/authenticate}).to_return(
       status: 200,
-      body: UspsInPersonProofing::Mock::Fixtures.request_token_response,
+      body: body.to_json,
       headers: { 'content-type' => 'application/json' },
     )
   end

@@ -81,11 +81,12 @@ RSpec.describe ArcgisApi::Geocoder do
   end
 
   describe '#retrieve_token!' do
-    it 'sets token and token_expires_at' do
+    it 'caches the token' do
       stub_generate_token_response
-      subject.retrieve_token!
+      token = subject.retrieve_token!
 
-      expect(subject.token).to be_present
+      expect(subject).not_to receive(:request_token)
+      expect(subject.token).to eq(token)
     end
 
     it 'calls the endpoint with the expected params' do

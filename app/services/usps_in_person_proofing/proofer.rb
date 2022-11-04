@@ -1,6 +1,6 @@
 module UspsInPersonProofing
   class Proofer
-    mattr_reader :token, :token_expires_at
+    API_TOKEN_CACHE_KEY = :usps_ippaas_api_token
 
     # Makes HTTP request to get nearby in-person proofing facilities
     # Requires address, city, state and zip code.
@@ -102,17 +102,20 @@ module UspsInPersonProofing
     end
 
     # Makes a request to retrieve a new OAuth token
-    # and modifies self to store the token and when
+    # and updates the cached token value
     # it expires (15 minutes).
-    # @return [String] the token
+    # @return [String] Auth token
     def retrieve_token!
-      body = request_token
-      @@token_expires_at = Time.zone.now + body['expires_in']
-      @@token = "#{body['token_type']} #{body['access_token']}"
+      token, expires_in = request_token.fetch_values('access_token', 'expires_in')
+      Rails.cache.write(API_TOKEN_CACHE_KEY, token, expires_at: Time.zone.now + expires_in)
+      token
     end
 
-    def token_valid?
-      token.present? && token_expires_at.present? && token_expires_at.future?
+    # Checks the cache for an unexpired token and returns it. If the cache has expired, retrieves
+    # a new token and returns it
+    # @return [String] Auth token
+    def token
+      Rails.cache.read(API_TOKEN_CACHE_KEY) || retrieve_token!
     end
 
     private
@@ -144,8 +147,7 @@ module UspsInPersonProofing
     #
     # Returns the same value returned by that block of code.
     def dynamic_headers
-      retrieve_token! unless token_valid?
-
+      # todo: are we sending the token correctly? I'm surprised it isn't Bearer: token
       {
         'Authorization' => token,
         'RequestID' => request_id,
