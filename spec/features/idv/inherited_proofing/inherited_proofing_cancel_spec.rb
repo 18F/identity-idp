@@ -10,7 +10,7 @@ def send_user_from_service_provider_to_login_gov_openid_connect(user)
 end
 
 def complete_idv_steps_up_to_inherited_proofing_get_started_step(user, expect_accessible: false)
-  unless current_path.match?(/inherited_proofing[?|\/].*get_started/)
+  unless current_path.match?(/inherited_proofing\/get_started|inherited_proofing\?step=get_started/)
     complete_idv_steps_before_phone_step(user)
     click_link t('links.cancel')
     click_button t('idv.cancel.actions.start_over')
@@ -22,7 +22,7 @@ end
 def complete_idv_steps_up_to_inherited_proofing_how_verifying_step(user, expect_accessible: false)
   complete_idv_steps_up_to_inherited_proofing_get_started_step user,
                                                                expect_accessible: expect_accessible
-  unless current_path.match?(/inherited_proofing[?|\/].*agreement/)
+  unless current_path.match?(/inherited_proofing\/agreement|inherited_proofing\?step=agreement/)
     click_on t('inherited_proofing.buttons.continue')
   end
 end
@@ -33,7 +33,7 @@ def complete_idv_steps_up_to_inherited_proofing_we_are_retrieving_step(user,
     user,
     expect_accessible: expect_accessible,
   )
-  unless current_path.match?(/inherited_proofing[?|\/].*verify_wait/)
+  unless current_path.match?(/inherited_proofing\/verify_wait|inherited_proofing\?step=verify_wait/)
     check t('inherited_proofing.instructions.consent', app_name: APP_NAME), allow_label_click: true
     click_on t('inherited_proofing.buttons.continue')
   end
