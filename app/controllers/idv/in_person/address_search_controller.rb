@@ -1,5 +1,3 @@
-require 'json'
-
 module Idv
   module InPerson
     class AddressSearchController < ApplicationController
