@@ -20,6 +20,10 @@ class IdTokenBuilder
     )
   end
 
+  def ttl
+    session_accessor.ttl
+  end
+
   private
 
   attr_reader :code
@@ -62,7 +66,7 @@ class IdTokenBuilder
   end
 
   def expires
-    now.to_i + session_accessor.ttl
+    now.to_i + ttl
   end
 
   def hash_token(token)
