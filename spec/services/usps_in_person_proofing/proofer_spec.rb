@@ -106,11 +106,12 @@ RSpec.describe UspsInPersonProofing::Proofer do
       stub_request_enroll
       stub_request_enroll
 
-      client2 = UspsInPersonProofing::Proofer.new
+      other_instance = UspsInPersonProofing::Proofer.new
 
       subject.request_enroll(applicant)
-      client2.request_enroll(applicant)
+      other_instance.request_enroll(applicant)
 
+      expect(WebMock).to have_requested(:post, %r{/oauth/authenticate}).once
       expect(WebMock).to have_requested(
         :post,
         %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},

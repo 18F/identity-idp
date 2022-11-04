@@ -111,11 +111,12 @@ module UspsInPersonProofing
         'expires_in',
         'token_type',
       )
+      authz = "#{token_type} #{token}"
       Rails.cache.write(
-        API_TOKEN_CACHE_KEY, "#{token_type} #{token}",
+        API_TOKEN_CACHE_KEY, authz,
         expires_at: Time.zone.now + expires_in
       )
-      token
+      authz
     end
 
     # Checks the cache for an unexpired token and returns it. If the cache has expired, retrieves
