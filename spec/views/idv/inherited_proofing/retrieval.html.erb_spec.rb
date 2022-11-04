@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe 'idv/inherited_proofing/verify_wait.html.erb' do
+  include Devise::Test::ControllerHelpers
+
   it 'renders' do
     render template: 'idv/inherited_proofing/verify_wait'
 
