@@ -46,6 +46,19 @@ describe Idv::InPerson::AddressSearchController do
         addresses = JSON.parse(json)
         expect(addresses.length).to eq 1
       end
+
+      context 'with no suggestions' do
+        let(:suggestions) do
+          []
+        end
+
+        it 'returns empty array' do
+          response = get :index
+          json = response.body
+          addresses = JSON.parse(json)
+          expect(addresses.length).to eq 0
+        end
+      end
     end
 
     context 'with unsuccessful fetch' do
