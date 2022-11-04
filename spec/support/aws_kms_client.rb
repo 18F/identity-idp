@@ -1,4 +1,16 @@
 module AwsKmsClientHelper
+  # The real ConnectionPools persist clients across specs which
+  # makes stubbing via the Aws.config unreliable
+  class FakeConnectionPool
+    def initialize(**options)
+      @options = options
+    end
+
+    def with
+      yield Aws::KMS::Client.new(**@options)
+    end
+  end
+
   def stub_aws_kms_client(random_key = random_str, ciphered_key = random_str)
     aws_key_id = IdentityConfig.store.aws_kms_key_id
     Aws.config[:kms] = {

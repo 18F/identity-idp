@@ -7,6 +7,13 @@ describe Encryption::MultiRegionKmsClient do
   let(:aws_region) { 'us-north-1' }
 
   before do
+    stub_const(
+      'Encryption::MultiRegionKmsClient::KMS_REGION_CLIENT_POOL',
+      Hash.new do |h, region|
+        h[region] = AwsKmsClientHelper::FakeConnectionPool.new(region: region)
+      end,
+    )
+
     allow(FeatureManagement).to receive(:use_kms?).and_return(kms_enabled)
     allow(FeatureManagement).to receive(:kms_multi_region_enabled?).
       and_return(kms_multi_region_enabled)

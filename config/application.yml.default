@@ -51,6 +51,8 @@ aws_http_timeout: 5
 aws_http_retry_limit: 2
 aws_http_retry_max_delay: 1
 aws_kms_key_id: alias/login-dot-gov-test-keymaker
+aws_kms_client_contextless_pool_size: 5
+aws_kms_client_multi_pool_size: 5
 aws_logo_bucket: ''
 aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: false
