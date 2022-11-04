@@ -32,7 +32,7 @@ namespace :attempts do
       events.each do |jwe|
         begin
           pp JSON.parse(JWE.decrypt(jwe, private_key))
-        rescue => e
+        rescue
           puts 'Failed to parse/decrypt event!'
         end
         puts "\n"
