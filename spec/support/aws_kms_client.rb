@@ -2,12 +2,12 @@ module AwsKmsClientHelper
   # The real ConnectionPools persist clients across specs which
   # makes stubbing via the Aws.config unreliable
   class FakeConnectionPool
-    def initialize(**options)
-      @options = options
+    def initialize(&block)
+      @block = block
     end
 
     def with
-      yield Aws::KMS::Client.new(**@options)
+      yield @block.call
     end
   end
 

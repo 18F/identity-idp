@@ -8,7 +8,7 @@ describe Encryption::ContextlessKmsClient do
   before do
     stub_const(
       'Encryption::ContextlessKmsClient::KMS_CLIENT_POOL',
-      AwsKmsClientHelper::FakeConnectionPool.new,
+      AwsKmsClientHelper::FakeConnectionPool.new { Aws::KMS::Client.new },
     )
   end
 
