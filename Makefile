@@ -61,7 +61,7 @@ lint: ## Runs all lint tests
 	@echo "--- erb-lint ---"
 	make lint_erb
 	@echo "--- rubocop ---"
-	bundle exec rubocop --parallel
+	bundle exec rubocop --parallel $([ -n "$GITLAB_CI" ] && echo "--format junit --out rubocop.xml")
 	@echo "--- analytics_events ---"
 	make lint_analytics_events
 	make lint_tracker_events

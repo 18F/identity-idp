@@ -167,6 +167,13 @@ lint:
     - *bundle_install
     - *yarn_install
     - make lint
+  artifacts:
+    expire_in: 31d
+    when: always
+    paths:
+      - rubocop.xml
+    reports:
+      junit: rubocop.xml
 
 js_build:
   stage: test
