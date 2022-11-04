@@ -12,7 +12,7 @@ module X509
 
     def ttl
       uuid = session_uuid
-      session_store.instance_eval { redis.ttl(prefixed(uuid)) }
+      session_store.instance_eval { with_redis { |redis| redis.ttl(prefixed(uuid)) } }
     end
 
     def load
