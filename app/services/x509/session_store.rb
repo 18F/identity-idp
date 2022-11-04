@@ -2,7 +2,6 @@
 # in an out-of-band fashion (using only the session UUID) instead of having access
 # to the user_session from Devise/Warden
 # Should only be used outside of a normal browser session (such as the OpenID Connect API)
-# See X509::Cacher for accessing PII inside of a normal browser session
 module X509
   class SessionStore
     attr_reader :session_accessor
