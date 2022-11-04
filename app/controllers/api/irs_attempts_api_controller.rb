@@ -43,8 +43,9 @@ module Api
       end
     end
 
+    # @return [Array<String>] JWE strings
     def security_event_tokens
-      return {} unless timestamp
+      return [] unless timestamp
 
       events = redis_client.read_events(timestamp: timestamp)
       events.values
