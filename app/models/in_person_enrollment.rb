@@ -27,7 +27,7 @@ class InPersonEnrollment < ApplicationRecord
       and(
         where.not(enrollment_established_at: nil).
         and(
-          where(enrollment_established_at: (late_benchmark)...(early_benchmark.end_of_day)),
+          where(enrollment_established_at: late_benchmark...(early_benchmark.end_of_day)),
         ),
       ).
       order(enrollment_established_at: :asc)
