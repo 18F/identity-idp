@@ -73,16 +73,12 @@ describe Idv::SessionsController do
 
       context 'when destroying the session' do
         before do
-          allow(IdentityConfig.store).to receive(:inherited_proofing_enabled).and_return(true)
-          allow(subject).to receive(:inherited_proofing?).and_return true
           controller.user_session['idv/inherited_proofing'] = idv_inherited_proofing_session
-
           expect(idv_session).to receive(:clear)
 
           delete :destroy
         end
 
-        let(:auth_code) { Idv::InheritedProofing::Va::Mocks::Service::VALID_AUTH_CODE }
         let(:payload_hash) { Idv::InheritedProofing::Va::Mocks::Service::PAYLOAD_HASH }
         let(:pii) { Idv::InheritedProofing::Va::Form.new(payload_hash: payload_hash).user_pii }
 
