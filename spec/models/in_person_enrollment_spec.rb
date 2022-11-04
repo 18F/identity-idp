@@ -89,9 +89,9 @@ RSpec.describe InPersonEnrollment, type: :model do
   end
 
   describe 'email_reminders' do
-    let(:early_benchmark) { Date.today - 19.days }
-    let(:late_benchmark) { Date.today - 26.days }
-    let(:final_benchmark) { Date.today - 29.days }
+    let(:early_benchmark) { Time.zone.now - 19.days }
+    let(:late_benchmark) { Time.zone.now - 26.days }
+    let(:final_benchmark) { Time.zone.now - 29.days }
     let!(:passed_enrollment) { create(:in_person_enrollment, :passed) }
     let!(:failing_enrollment) { create(:in_person_enrollment, :failed) }
     let!(:expired_enrollment) { create(:in_person_enrollment, :expired) }
@@ -99,16 +99,16 @@ RSpec.describe InPersonEnrollment, type: :model do
     # send on days 11-5
     let!(:pending_enrollment_needing_early_reminder) do
       [
-        create(:in_person_enrollment, :pending, enrollment_established_at: Date.today - 19.days),
-        create(:in_person_enrollment, :pending, enrollment_established_at: Date.today - 25.days),
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 19.days),
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 25.days),
       ]
     end
 
     # send on days 4 - 2
     let!(:pending_enrollment_needing_late_reminder) do
       [
-        create(:in_person_enrollment, :pending, enrollment_established_at: Date.today - 26.days),
-        create(:in_person_enrollment, :pending, enrollment_established_at: Date.today - 28.days),
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 26.days),
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 28.days),
       ]
     end
 
