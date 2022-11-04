@@ -87,7 +87,6 @@ namespace :attempts do
     sp.update(irs_attempts_api_enabled: true)
   end
 
-  
   desc 'Clear all events from Redis'
   task purge_events: :environment do
     IrsAttemptsApi::RedisClient.clear_attempts!
