@@ -8,18 +8,17 @@ module Idv
       check_or_render_not_found -> { InPersonConfig.enabled? }
 
       def index
-        arcgis_api_response = []
-        begin
-          suggestion = geocoder.suggest(permitted_params[:address]).first
-          arcgis_api_response = [geocoder.find_address_candidates(suggestion.magic_key).first]
-        rescue Faraday::ConnectionFailed => _error
-          nil
-        end
-
-        render json: arcgis_api_response
+        render json: addresses
       end
 
       protected
+
+      def addresses
+        suggestion = geocoder.suggest(permitted_params[:address]).first
+        [geocoder.find_address_candidates(suggestion.magic_key).first]
+      rescue Faraday::ConnectionFailed => _error
+        []
+      end
 
       def geocoder
         @geocoder ||= ArcgisApi::Geocoder.new
