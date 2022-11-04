@@ -126,6 +126,7 @@ RSpec.describe InPersonEnrollment, type: :model do
       expect(results.pluck(:id)).to match_array pending_enrollment_needing_early_reminder.pluck(:id)
       results.each do |result|
         expect(result.pending?).to be_truthy
+        expect(result.early_reminder_sent?).to be_falsey
       end
     end
 
@@ -136,12 +137,8 @@ RSpec.describe InPersonEnrollment, type: :model do
       expect(results.pluck(:id)).to match_array pending_enrollment_needing_late_reminder.pluck(:id)
       results.each do |result|
         expect(result.pending?).to be_truthy
+        expect(result.late_reminder_sent?).to be_falsey
       end
-    end
-
-    it 'excludes pending enrollments that do not need reminder' do
-      results = InPersonEnrollment.needs_early_email_reminder(late_benchmark, final_benchmark)
-      # expect(results.pluck(:id)).not_to match_array pending_enrollments.pluck(:id)
     end
   end
 
