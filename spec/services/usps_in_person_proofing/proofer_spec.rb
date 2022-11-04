@@ -74,13 +74,10 @@ RSpec.describe UspsInPersonProofing::Proofer do
       subject.request_enroll(applicant)
       subject.request_enroll(applicant)
       subject.request_enroll(applicant)
+      expect(WebMock).to have_requested(:post, %r{/oauth/authenticate}).once
     end
 
     it 'implicitly refreshes the token when expired' do
-      root_url = 'http://my.root.url'
-      allow(IdentityConfig.store).to receive(:usps_ipp_root_url).
-        and_return(root_url)
-
       stub_request_token(expires_in: 1.hour.to_i, access_token: 'token1')
       stub_request_enroll
       subject.request_enroll(applicant)

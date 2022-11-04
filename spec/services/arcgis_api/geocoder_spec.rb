@@ -122,10 +122,6 @@ RSpec.describe ArcgisApi::Geocoder do
     end
 
     it 'implicitly refreshes the token when expired' do
-      root_url = 'http://my.root.url'
-      allow(IdentityConfig.store).to receive(:arcgis_api_root_url).
-        and_return(root_url)
-
       stub_generate_token_response(expires_at: 1.hour.from_now.to_i, token: 'token1')
       stub_request_suggestions
       subject.suggest('100 Main')
