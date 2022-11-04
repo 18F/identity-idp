@@ -1,8 +1,14 @@
 require 'rails_helper'
 
 describe 'throttling requests' do
-  before(:all) { Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new }
-  before(:each) { Rack::Attack.cache.store.clear }
+  around do |ex|
+    original_store = Rack::Attack.cache.store
+    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+    Rack::Attack.cache.store.clear
+    ex.run
+  ensure
+    Rack::Attack.cache.store = original_store
+  end
 
   let(:requests_per_ip_limit) { IdentityConfig.store.requests_per_ip_limit }
   let(:logins_per_ip_limit) { IdentityConfig.store.logins_per_ip_limit }

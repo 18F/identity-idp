@@ -36,6 +36,7 @@ module Rack
       namespace: 'rack-attack',
       url: IdentityConfig.store.redis_throttle_url,
       expires_in: 2.weeks.to_i,
+      pool_size: IdentityConfig.store.redis_throttle_pool_size,
     )
 
     ### Configure Safelisting ###
