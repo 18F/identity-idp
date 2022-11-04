@@ -14,6 +14,7 @@ module Encryption
 
     def initialize
       @aws_client_pools = {}
+      # Eager-loaded per-region clients based on current region configs
       IdentityConfig.store.aws_kms_regions.each do |region|
         @aws_client_pools[region] = KMS_REGION_CLIENT_POOL[region]
       end
