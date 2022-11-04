@@ -90,7 +90,7 @@ module LexisNexisFixtures
     end
 
     def phone_finder_success_response_json
-      raw = read_fixture_file_at_path('phone_finder/response.json')
+      raw = read_fixture_file_at_path('phone_finder/rdp1_response.json')
       JSON.parse(raw).to_json
     end
 
