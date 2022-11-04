@@ -23,5 +23,5 @@ fr:
     reverify: Veuillez vérifier votre identité de nouveau.
     sign_out: Déconnexion
     two_factor_authentication:
-      get_another_code: Obtenir un autre code
+      get_another_code: Envoyer un autre code
     what_is_totp: Qu’est-ce qu’une application d’authentification?

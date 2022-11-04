@@ -23,5 +23,5 @@ en:
     reverify: Please verify your identity again.
     sign_out: Sign out
     two_factor_authentication:
-      get_another_code: Get another code
+      get_another_code: Send another code
     what_is_totp: What is an authentication app?
