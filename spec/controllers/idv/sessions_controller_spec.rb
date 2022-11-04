@@ -44,19 +44,6 @@ shared_examples 'logs IDV start over analytics with step and location params' do
   end
 end
 
-# LG-7128: Implement Inherited Proofing analytics here.
-shared_examples 'logs Inherited Proofing start over analytics with step and location params' do
-  xit 'logs the analytics' do
-    delete :destroy, params: { step: 'first', location: 'get_help' }
-
-    expect(@analytics).to have_logged_event(
-      'InheritedProofing: start over',
-      step: 'first',
-      location: 'get_help',
-    )
-  end
-end
-
 describe Idv::SessionsController do
   let(:user) { build(:user) }
 
@@ -123,7 +110,6 @@ describe Idv::SessionsController do
       # to idv_inherited_proofing_url.
       it_behaves_like 'a redirect occurs to the start of identity verification'
       it_behaves_like 'logs IDV start over analytics with step and location params'
-      it_behaves_like 'logs Inherited Proofing start over analytics with step and location params'
     end
 
     context 'when idv proofing' do
