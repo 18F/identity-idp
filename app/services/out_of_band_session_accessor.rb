@@ -31,7 +31,7 @@ class OutOfBandSessionAccessor
 
   # @api private
   # Only used for convenience in tests
-    # @param [Pii::Attributes] pii
+  # @param [Pii::Attributes] pii
   def put_pii(pii, expiration = 5.minutes)
     data = {
       decrypted_pii: pii.to_h.to_json,
