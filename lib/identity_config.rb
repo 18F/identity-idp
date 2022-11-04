@@ -322,6 +322,7 @@ class IdentityConfig
     config.add(:redis_throttle_url)
     config.add(:redis_url)
     config.add(:redis_pool_size, type: :integer)
+    config.add(:redis_session_pool_size, type: :integer)
     config.add(:redis_throttle_pool_size, type: :integer)
     config.add(:reg_confirmed_email_max_attempts, type: :integer)
     config.add(:reg_confirmed_email_window_in_minutes, type: :integer)
