@@ -5,41 +5,29 @@
 # See X509::Cacher for accessing PII inside of a normal browser session
 module X509
   class SessionStore
-    attr_reader :session_uuid
+    attr_reader :session_accessor
+
+    delegate :ttl, :destroy, to: :session_accessor
 
     def initialize(session_uuid)
-      @session_uuid = session_uuid
+      @session_accessor = OutOfBandSessionAccessor.new(session_uuid)
     end
 
-    def ttl
-      uuid = session_uuid
-      session_store.instance_eval { redis.ttl(prefixed(uuid)) }
-    end
-
+    # @return [X509::Attributes]
     def load
-      session = session_store.send(:load_session_from_redis, session_uuid) || {}
+      session = session_accessor.load
       X509::Attributes.new_from_json(session.dig('warden.user.user.session', :decrypted_x509))
     end
 
     # @api private
     # Only used for convenience in tests
-    # @param [X509::Attributes] x509
+    # @param [X509::Attributes] piv_cert_info
     def put(piv_cert_info, expiration = 5.minutes)
       session_data = {
-        'warden.user.user.session' => {
-          decrypted_x509: piv_cert_info.to_h.to_json,
-        },
+        decrypted_x509: piv_cert_info.to_h.to_json,
       }
 
-      session_store.
-        send(:set_session, {}, session_uuid, session_data, expire_after: expiration.to_i)
-    end
-
-    private
-
-    def session_store
-      config = Rails.application.config
-      config.session_store.new({}, config.session_options)
+      session_accessor.put(session_data, expiration)
     end
   end
 end

@@ -25,7 +25,7 @@ class OutOfBandSessionAccessor
 
   # @api private
   # Only used for convenience in tests
-  # @param [Pii::Attributes] pii
+  # @param [#to_h] data
   def put(data, expiration = 5.minutes)
     session_data = {
       'warden.user.user.session' => data.to_h,
