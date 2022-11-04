@@ -3,8 +3,9 @@ class OpenidConnectUserInfoPresenter
 
   attr_reader :identity
 
-  def initialize(identity)
+  def initialize(identity, session_accessor: nil)
     @identity = identity
+    @out_of_band_session_accessor = session_accessor
   end
 
   def user_info

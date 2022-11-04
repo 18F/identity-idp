@@ -25,7 +25,8 @@ class IdTokenBuilder
   attr_reader :code
 
   def jwt_payload
-    OpenidConnectUserInfoPresenter.new(identity).user_info.
+    OpenidConnectUserInfoPresenter.new(identity, session_accessor: session_accessor).
+      user_info.
       merge(id_token_claims).
       merge(timestamp_claims)
   end
@@ -61,12 +62,15 @@ class IdTokenBuilder
   end
 
   def expires
-    ttl = OutOfBandSessionAccessor.new(identity.rails_session_id).ttl
-    now.to_i + ttl
+    now.to_i + session_accessor.ttl
   end
 
   def hash_token(token)
     leftmost_128_bits = Digest::SHA256.digest(token).byteslice(0, NUM_BYTES_FIRST_128_BITS)
     Base64.urlsafe_encode64(leftmost_128_bits, padding: false)
+  end
+
+  def session_accessor
+    @session_accessor ||= OutOfBandSessionAccessor.new(identity.rails_session_id)
   end
 end
