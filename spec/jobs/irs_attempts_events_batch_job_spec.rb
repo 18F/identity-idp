@@ -2,65 +2,62 @@ require 'rails_helper'
 
 RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
   describe '#perform' do
-    events = { key1: 'SomeEncryptedEvent1' }
-    Result = Struct.new(:filename, :iv, :encrypted_key, :encrypted_data, keyword_init: true)
-
-    let(:redis_client) { instance_double(IrsAttemptsApi::RedisClient) }
-    let(:envelope_encryptor) { instance_double(IrsAttemptsApi::EnvelopeEncryptor) }
-
-    let(:file_double) { instance_double(File) }
-
     context 'IRS attempts API is enabled' do
+      let(:start_time) { Time.new(2020, 1, 1, 12, 0, 0, 'UTC') }
+      let(:private_key) { OpenSSL::PKey::RSA.new(4096) }
+      let(:events) do
+        [
+          {
+            event_key: 'key1',
+            jwe: 'some_event_data_encrypted_with_jwe',
+            timestamp: start_time + 10.minutes,
+          },
+          {
+            event_key: 'key2',
+            jwe: 'some_other_event_data_encrypted_with_jwe',
+            timestamp: start_time + 15.minutes,
+          },
+        ]
+      end
+
       before do
         allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_public_key).
+          and_return(Base64.strict_encode64(private_key.public_key.to_der))
 
-        allow(IrsAttemptsApi::RedisClient).
-          to receive(:new).
-          and_return(redis_client)
+        Dir.mktmpdir do |dir|
+          @dir_path = dir
+        end
 
-        allow(redis_client).
-          to receive(:read_events).
-          and_return(events)
+        travel_to start_time + 1.hour
 
-        allow(IrsAttemptsApi::EnvelopeEncryptor).
-          to receive(:encrypt).
-          and_return(
-            Result.new(
-              filename: 'test_filename',
-              encrypted_data: 'EnvelopeEncryptedEvents',
-            ),
+        redis_client = IrsAttemptsApi::RedisClient.new
+        events.each do |event|
+          redis_client.write_event(
+            event_key: event[:event_key], jwe: event[:jwe],
+            timestamp: event[:timestamp]
           )
-
-        allow(File).
-          to receive(:exists?).
-          and_return(true)
-
-        allow(File).
-          to receive(:open).
-          and_return(file_double)
-
-        allow(file_double).
-          to receive(:write)
-
-        allow(file_double).
-          to receive(:close)
-
-        allow(file_double).
-          to receive(:path).
-          and_return('./attempts_api_output/test_filename')
+        end
       end
 
       it 'batches and writes attempt events to an encrypted file' do
-        # event hash values are read from redis,
-        # then wrote to a file that then is passed through envelope encryptor
+        result = IrsAttemptsEventsBatchJob.perform_now(timestamp: start_time, dir_path: @dir_path)
+        expect(result[:file_path]).not_to be_nil
 
-        # batch job is run hourly by default
-        # batches events from the beginning of the previous hour by default
-        # file is stored at:  "./attempts_api_output" by default
+        file_data = File.open(result[:file_path], 'rb') do |file|
+          file.read
+        end
 
-        IrsAttemptsEventsBatchJob.perform_now
+        final_key = private_key.private_decrypt(result[:encryptor_result].encrypted_key)
 
-        expect(file_double.path).to eq('./attempts_api_output/test_filename')
+        decrypted_result = IrsAttemptsApi::EnvelopeEncryptor.decrypt(
+          encrypted_data: file_data,
+          key: final_key, iv: result[:encryptor_result].iv
+        )
+
+        events_jwes = events.pluck(:jwe)
+
+        expect(decrypted_result).to eq(events_jwes.join("\r\n"))
       end
     end
 
@@ -69,7 +66,7 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(false)
       end
 
-      it 'returns nil if IRS attempts API is not enabled' do
+      it 'returns nil' do
         file_path = IrsAttemptsEventsBatchJob.perform_now
         expect(file_path).to eq(nil)
       end
