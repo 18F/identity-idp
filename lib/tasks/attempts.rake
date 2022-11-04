@@ -81,6 +81,7 @@ namespace :attempts do
     puts 'Remember to restart Rails after updating application.yml.default!' if failed
   end
 
+  
   desc 'Enable irs_attempts_api_enabled for Sinatra SP'
   task enable_for_sinatra: :environment do
     sp = ServiceProvider.find_by(friendly_name: 'Example Sinatra App')
