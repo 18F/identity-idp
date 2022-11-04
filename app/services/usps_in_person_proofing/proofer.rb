@@ -106,8 +106,15 @@ module UspsInPersonProofing
     # it expires (15 minutes).
     # @return [String] Auth token
     def retrieve_token!
-      token, expires_in = request_token.fetch_values('access_token', 'expires_in')
-      Rails.cache.write(API_TOKEN_CACHE_KEY, token, expires_at: Time.zone.now + expires_in)
+      token, expires_in, token_type = request_token.fetch_values(
+        'access_token',
+        'expires_in',
+        'token_type',
+      )
+      Rails.cache.write(
+        API_TOKEN_CACHE_KEY, "#{token_type} #{token}",
+        expires_at: Time.zone.now + expires_in
+      )
       token
     end
 
@@ -147,7 +154,6 @@ module UspsInPersonProofing
     #
     # Returns the same value returned by that block of code.
     def dynamic_headers
-      # todo: are we sending the token correctly? I'm surprised it isn't Bearer: token
       {
         'Authorization' => token,
         'RequestID' => request_id,

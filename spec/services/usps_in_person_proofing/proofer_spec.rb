@@ -93,12 +93,12 @@ RSpec.describe UspsInPersonProofing::Proofer do
         :post,
         %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
       ).
-        with(headers: { 'Authorization' => 'token1' }).once
+        with(headers: { 'Authorization' => 'Bearer token1' }).once
       expect(WebMock).to have_requested(
         :post,
         %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
       ).
-        with(headers: { 'Authorization' => 'token2' }).once
+        with(headers: { 'Authorization' => 'Bearer token2' }).once
     end
 
     it 'reuses the cached token across instances' do
@@ -115,7 +115,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
         :post,
         %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
       ).
-        with(headers: { 'Authorization' => 'token1' }).twice
+        with(headers: { 'Authorization' => 'Bearer token1' }).twice
     end
   end
 
