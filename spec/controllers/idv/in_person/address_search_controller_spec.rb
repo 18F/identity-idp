@@ -5,13 +5,13 @@ describe Idv::InPerson::AddressSearchController do
 
   let(:user) { create(:user) }
   let(:sp) { nil }
-  let(:in_person_proofing_enabled) { true }
+  let(:arcgis_search_enabled) { true }
 
   before do
     stub_analytics
     stub_sign_in(user) if user
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
-      and_return(in_person_proofing_enabled)
+    allow(IdentityConfig.store).to receive(:arcgis_search_enabled).
+      and_return(arcgis_search_enabled)
     allow(controller).to receive(:current_sp).and_return(sp)
   end
 
@@ -76,7 +76,7 @@ describe Idv::InPerson::AddressSearchController do
     end
 
     context 'with feature disabled' do
-      let(:in_person_proofing_enabled) { false }
+      let(:arcgis_search_enabled) { false }
 
       it 'renders 404' do
         expect(response.status).to eq(404)
