@@ -13,7 +13,8 @@ module Idv
 
       def addresses
         suggestion = geocoder.suggest(permitted_params[:address]).first
-        [geocoder.find_address_candidates(suggestion.magic_key).first]
+        return [] if !suggestion
+        geocoder.find_address_candidates(suggestion.magic_key).slice(0, 1)
       rescue Faraday::ConnectionFailed => _error
         []
       end
