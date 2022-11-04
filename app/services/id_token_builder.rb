@@ -61,7 +61,7 @@ class IdTokenBuilder
   end
 
   def expires
-    ttl = Pii::SessionStore.new(identity.rails_session_id).ttl
+    ttl = OutOfBandSessionAccessor.new(identity.rails_session_id).ttl
     now.to_i + ttl
   end
 
