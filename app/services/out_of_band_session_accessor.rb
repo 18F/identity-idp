@@ -16,13 +16,13 @@ class OutOfBandSessionAccessor
 
   # @return [Pii::Attributes, nil]
   def load_pii
-    session = load.dig('warden.user.user.session')
+    session = session_data.dig('warden.user.user.session')
     Pii::Cacher.new(nil, session).fetch if session
   end
 
   # @return [X509::Attributes]
   def load_x509
-    X509::Attributes.new_from_json(load.dig('warden.user.user.session', :decrypted_x509))
+    X509::Attributes.new_from_json(session_data.dig('warden.user.user.session', :decrypted_x509))
   end
 
   def destroy
@@ -40,6 +40,8 @@ class OutOfBandSessionAccessor
     put(data, expiration)
   end
 
+  # @api private
+  # Only used for convenience in tests
   # @param [X509::Attributes] piv_cert_info
   def put_x509(piv_cert_info, expiration = 5.minutes)
     data = {
@@ -61,8 +63,8 @@ class OutOfBandSessionAccessor
   end
 
   # @return [Hash]
-  def load
-    session_store.send(:load_session_from_redis, session_uuid) || {}
+  def session_data
+    @session_data ||= session_store.send(:load_session_from_redis, session_uuid) || {}
   end
 
   def session_store
