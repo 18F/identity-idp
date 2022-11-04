@@ -61,7 +61,7 @@ lint: ## Runs all lint tests
 	@echo "--- erb-lint ---"
 	make lint_erb
 	@echo "--- rubocop ---"
-ifeq ($(JUNIT_OUTPUT), true)
+ifdef JUNIT_OUTPUT
 	bundle exec rubocop --parallel --format junit --out rubocop.xml
 else
 	bundle exec rubocop --parallel
