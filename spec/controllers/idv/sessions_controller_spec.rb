@@ -58,7 +58,8 @@ describe Idv::SessionsController do
       allow(subject).to receive(:idv_session).and_return(idv_session)
       controller.user_session['idv/doc_auth'] = { idv_doc_auth_session: true }
       controller.user_session['idv/in_person'] = { idv_in_person_session: true }
-      controller.user_session['idv/inherited_proofing'] = { idv_idv_inherited_proofing_session: true }
+      controller.user_session['idv/inherited_proofing'] =
+        { idv_idv_inherited_proofing_session: true }
       controller.user_session[:decrypted_pii] = pii
     end
 
