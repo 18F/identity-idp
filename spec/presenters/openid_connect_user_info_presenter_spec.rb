@@ -45,7 +45,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       let(:x509_subject) { 'x509-subject' }
 
       before do
-        X509::SessionStore.new(rails_session_id).put(x509, 5.minutes.to_i)
+        OutOfBandSessionAccessor.new(rails_session_id).put_x509(x509, 5.minutes.to_i)
       end
 
       context 'when the identity has piv/cac associated' do
@@ -101,7 +101,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       end
 
       before do
-        Pii::SessionStore.new(rails_session_id).put(pii, 5.minutes.to_i)
+        OutOfBandSessionAccessor.new(rails_session_id).put_pii(pii, 5.minutes.to_i)
       end
 
       context 'when the identity has ial2 access' do
