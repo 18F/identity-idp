@@ -61,7 +61,7 @@ module Idv
             mark_step_incomplete(:agreement)
           end
 
-          return form_response
+          form_response
         end
 
         def dcs_uuid

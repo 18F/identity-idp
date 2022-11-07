@@ -120,6 +120,29 @@ module IdvHelper
     )
   end
 
+  def visit_idp_from_oidc_va_with_ial2(
+    client_id: sp_oidc_issuer,
+    state: SecureRandom.hex,
+    nonce: SecureRandom.hex,
+    verified_within: nil
+  )
+    @state = state
+    @client_id = sp_oidc_issuer
+    @nonce = nonce
+    visit openid_connect_authorize_path(
+      client_id: client_id,
+      response_type: 'code',
+      acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+      scope: 'openid email profile:name phone social_security_number',
+      redirect_uri: sp_oidc_redirect_uri,
+      state: state,
+      prompt: 'select_account',
+      nonce: nonce,
+      verified_within: verified_within,
+      inherited_proofing_auth: Idv::InheritedProofing::Va::Mocks::Service::VALID_AUTH_CODE,
+    )
+  end
+
   def visit_idp_from_oidc_sp_with_loa3
     visit openid_connect_authorize_path(
       client_id: sp_oidc_issuer,

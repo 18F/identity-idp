@@ -155,8 +155,6 @@ es:
       upload: '¿Cómo le gustaría subir su documento de identidad expedido por el
         estado?'
       upload_from_phone: Tome una foto con un teléfono móvil para cargar su identificación
-      upload_from_phone_liveness_enabled: Utilice un celular para agregar su documento de identidad y tomarse
-      upload_liveness_enabled: '¿Cómo te gustaría verificar su identidad?'
       verify_identity: Verifique su identidad
       welcome: Empiece con la verificación de su identidad
     info:
@@ -205,13 +203,7 @@ es:
         expedido por el estado.
       upload_computer_link: Sube desde tu computadora
       upload_from_computer: '¿No tiene un teléfono?'
-      upload_from_computer_not_allowed: Inicie sesión en su cuenta de %{app_name} en
-        cualquier dispositivo que tenga una cámara, como una tableta o una
-        computadora con una cámara web.
       upload_from_phone: Sube imágenes directamente desde la cámara de tu teléfono
-      upload_liveness_enabled: Recopilaremos información sobre usted leyendo su
-        documento de identidad expedido por el estado. Luego, se tomará una foto
-        para confirmar que es el propietario del documento de identidad.
       upload_no_image_storage: No almacenamos imágenes que cargue. Solo verificamos su identidad.
       verify_identity: Le preguntaremos sus datos personales para verificar su
         identidad comparándola con los registros públicos.
@@ -219,7 +211,6 @@ es:
         se haga pasar por usted.'
     instructions:
       bullet1: Su documento de identidad emitido por el estado.
-      bullet1a: Un dispositivo con cámara
       bullet2: Su Número de Seguridad Social.
       bullet3: Un número de teléfono con un plan tarifario vinculado a su nombre.
       consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
@@ -237,7 +228,6 @@ es:
       switch_back_image: Flecha que apunta del teléfono a la computadora
       test_ssn: En el entorno de prueba solo los SSN que comienzan con “900-” o “666-”
         se consideran válidos. No ingrese PII real en este campo.
-      text1a: como un teléfono o una computadora.
       text2: No es necesario disponer de la credencial.
       text3: No es necesario que usted sea el titular principal de la cuenta de su
         plan de teléfono. Si su número de teléfono no funciona, podemos enviarle

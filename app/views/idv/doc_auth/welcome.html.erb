@@ -26,11 +26,6 @@
 
     <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
       <%= c.item(heading: t('doc_auth.instructions.bullet1')) %>
-      <% if liveness_checking_enabled? %>
-        <%= c.item(heading: t('doc_auth.instructions.bullet1a')) do %>
-          <p><%= t('doc_auth.instructions.text1a') %></p>
-        <% end %>
-      <% end %>
       <%= c.item(heading: t('doc_auth.instructions.bullet2')) do %>
         <p><%= t('doc_auth.instructions.text2') %></p>
       <% end %>

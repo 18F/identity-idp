@@ -147,7 +147,7 @@ feature 'Sign in' do
 
     select_2fa_option('phone')
     fill_in :new_phone_form_phone, with: '2025551314'
-    click_send_security_code
+    click_send_one_time_code
     fill_in_code_with_last_phone_otp
     click_submit_default
     click_agree_and_continue
@@ -306,8 +306,7 @@ feature 'Sign in' do
 
   context 'signed out' do
     it 'refreshes the current page after session expires', js: true do
-      allow(IdentityConfig.store).to receive(:session_timeout_in_minutes).
-        and_return(1.second.in_minutes)
+      allow(Devise).to receive(:timeout_in).and_return(1)
 
       visit sign_up_email_path(request_id: '123abc')
       fill_in t('forms.registration.labels.email'), with: 'test@example.com'
@@ -349,9 +348,7 @@ feature 'Sign in' do
     end
 
     it 'refreshes the page (which clears the form) and notifies the user', js: true do
-      allow(IdentityConfig.store).to receive(:session_timeout_in_minutes).
-        and_return(1.second.in_minutes)
-
+      allow(Devise).to receive(:timeout_in).and_return(1)
       user = create(:user)
       visit root_path
       fill_in 'Email', with: user.email

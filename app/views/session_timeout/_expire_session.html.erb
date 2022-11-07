@@ -1,1 +1,7 @@
-<meta http-equiv="refresh" content="<%= IdentityConfig.store.session_timeout_in_minutes.minutes.seconds.to_i %>;url=<%= timeout_refresh_path %>" />
+<%= tag.div id: 'js-expire-session',
+            data: {
+              session_timeout_in: session_timeout_in,
+              timeout_refresh_path: timeout_refresh_path,
+            } %>
+
+<%= javascript_packs_tag_once 'session-expire-session' %>

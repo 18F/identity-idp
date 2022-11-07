@@ -488,7 +488,7 @@ describe('document-capture/components/document-capture', () => {
     context('in person steps', () => {
       it('renders the step indicator', async () => {
         const endpoint = '/upload';
-        const { getByLabelText, getByText, findByText } = render(
+        const { getByLabelText, getByText, queryByText, findByText } = render(
           <UploadContextProvider upload={httpUpload} endpoint={endpoint}>
             <ServiceProviderContextProvider value={{ isLivenessRequired: false }}>
               <FlowContext.Provider
@@ -514,6 +514,10 @@ describe('document-capture/components/document-capture', () => {
             json: () => ({ success: false, remaining_attempts: 1, errors: [{}] }),
           });
 
+        expect(queryByText('idv.troubleshooting.options.verify_in_person')).not.to.exist();
+        await userEvent.click(getByText('forms.buttons.submit.default'));
+        expect(queryByText('idv.troubleshooting.options.verify_in_person')).not.to.exist();
+
         const frontImage = getByLabelText('doc_auth.headings.document_capture_front');
         const backImage = getByLabelText('doc_auth.headings.document_capture_back');
         await userEvent.upload(frontImage, validUpload);
@@ -522,9 +526,7 @@ describe('document-capture/components/document-capture', () => {
 
         await userEvent.click(getByText('forms.buttons.submit.default'));
 
-        const verifyInPersonButton = await findByText(
-          'idv.troubleshooting.options.verify_in_person',
-        );
+        const verifyInPersonButton = await findByText('in_person_proofing.body.cta.button');
         await userEvent.click(verifyInPersonButton);
 
         expect(console).to.have.loggedError(/^Error: Uncaught/);

@@ -60,7 +60,7 @@ function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProp
         <DocumentCaptureTroubleshootingOptions
           location="post_submission_warning"
           showDocumentTips={false}
-          hasErrors
+          showAlternativeProofingOptions
         />
       }
     >

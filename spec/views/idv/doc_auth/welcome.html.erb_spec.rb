@@ -55,30 +55,6 @@ describe 'idv/doc_auth/welcome.html.erb' do
     end
   end
 
-  context 'when liveness checking enabled' do
-    before do
-      allow(view).to receive(:liveness_checking_enabled?).and_return(true)
-    end
-
-    it 'renders selfie instructions' do
-      render template: 'idv/doc_auth/welcome'
-
-      expect(rendered).to have_text(t('doc_auth.instructions.bullet1a'))
-    end
-  end
-
-  context 'when liveness checking is disabled' do
-    before do
-      allow(view).to receive(:liveness_checking_enabled?).and_return(false)
-    end
-
-    it 'renders selfie instructions' do
-      render template: 'idv/doc_auth/welcome'
-
-      expect(rendered).to_not have_text(t('doc_auth.instructions.bullet1a'))
-    end
-  end
-
   context 'during the acuant maintenance window' do
     let(:start) { Time.zone.parse('2020-01-01T00:00:00Z') }
     let(:now) { Time.zone.parse('2020-01-01T12:00:00Z') }

@@ -168,13 +168,10 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content(t('doc_auth.headings.review_issues'))
 
     # Images should still be present
-    expect(page).to have_field('file-input-3') do |field|
-      field.value.present?
-    end
-
-    expect(page).to have_field('file-input-4') do |field|
-      field.value.present?
-    end
+    front_label = [t('doc_auth.headings.document_capture_front'), 'logo.png'].join(' - ')
+    back_label = [t('doc_auth.headings.document_capture_back'), 'logo.png'].join(' - ')
+    expect(page).to have_field(front_label)
+    expect(page).to have_field(back_label)
   end
 
   context 'after in-person proofing is completed and passed for a partner' do
@@ -224,7 +221,7 @@ RSpec.describe 'In Person Proofing', js: true do
         mock_doc_auth_attention_with_barcode
         attach_and_submit_images
 
-        click_link t('idv.troubleshooting.options.verify_in_person')
+        click_link t('in_person_proofing.body.cta.button')
 
         bethesda_location = page.find_all('.location-collection-item')[1]
         bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))

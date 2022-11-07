@@ -33,7 +33,6 @@ es:
         en %{timeout}. También puede retroceder y elegir utilizar su computadora
         como alternativa.
       throttled_heading: No pudimos verificar la identificación
-      throttled_heading_liveness: No pudimos verificar la identificación ni la foto
       throttled_text_html: '<strong>Por favor, inténtelo de nuevo en
         %{timeout}.</strong> Por su seguridad, limitamos el número de veces que
         puede intentar verificar un documento en línea.'

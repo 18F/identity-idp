@@ -22,7 +22,7 @@ shared_examples 'phone rate limitting' do |delivery_method|
     sign_up_and_set_password
     select_2fa_option(:phone)
     fill_in :new_phone_form_phone, with: phone
-    click_send_security_code
+    click_send_one_time_code
 
     expect(page).to have_content(t('two_factor_authentication.max_otp_requests_reached'))
 

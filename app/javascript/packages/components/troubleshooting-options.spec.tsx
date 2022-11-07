@@ -66,39 +66,11 @@ describe('TroubleshootingOptions', () => {
     expect(link.hasAttribute('data-example')).to.be.true();
   });
 
-  it('renders a new features tag with isNewFeatures', () => {
-    const { getByText } = render(
-      <TroubleshootingOptions
-        heading=""
-        isNewFeatures
-        options={[
-          { text: <>Option 1</>, url: 'https://example.com/1', isExternal: true },
-          { text: 'Option 2', url: 'https://example.com/2' },
-        ]}
-      />,
-    );
-
-    const tag = getByText('components.troubleshooting_options.new_feature');
-    expect(tag.classList.contains('text-uppercase')).to.eq(true);
-  });
-
   it('renders with expected classes', () => {
     const { container } = render(<TroubleshootingOptions {...DEFAULT_PROPS} />);
 
     const element = container.firstElementChild!;
 
     expect(element.classList.contains('troubleshooting-options')).to.be.true();
-    expect(element.classList.contains('troubleshooting-options--divider')).to.be.true();
-  });
-
-  context('with divider disabled', () => {
-    it('renders with expected classes', () => {
-      const { container } = render(<TroubleshootingOptions {...DEFAULT_PROPS} divider={false} />);
-
-      const element = container.firstElementChild!;
-
-      expect(element.classList.contains('troubleshooting-options')).to.be.true();
-      expect(element.classList.contains('troubleshooting-options--divider')).to.be.false();
-    });
   });
 });

@@ -8,8 +8,8 @@ en:
         cancel: Back to profile
         delete: Delete account
       bullet_1: You won’t have a %{app_name} account
-      bullet_2_loa1: We’ll delete your email address, password, and phone number
-      bullet_2_loa3: '%{app_name} will delete your email address, password, phone
+      bullet_2_basic: We’ll delete your email address, password, and phone number
+      bullet_2_verified: '%{app_name} will delete your email address, password, phone
         number, name, address, date of birth and Social Security number from our
         system.'
       bullet_3: You won’t be able to securely access your information using %{app_name}.

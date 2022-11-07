@@ -230,15 +230,6 @@ RSpec.describe OpenidConnectTokenForm do
           end
         end
 
-        context 'with a bad audience' do
-          before { jwt_payload[:exp] = 5.minutes.ago.to_i }
-
-          it 'is invalid' do
-            expect(valid?).to eq(false)
-            expect(form.errors[:client_assertion]).to include('Signature has expired')
-          end
-        end
-
         context 'with an already expired assertion' do
           before { jwt_payload[:exp] = 5.minutes.ago.to_i }
 
@@ -415,7 +406,7 @@ RSpec.describe OpenidConnectTokenForm do
 
     context 'with valid params' do
       before do
-        Pii::SessionStore.new(identity.rails_session_id).put({}, 5.minutes.to_i)
+        OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii({}, 5.minutes.to_i)
       end
 
       it 'has a properly-encoded id_token with an expiration that matches the expires_in' do

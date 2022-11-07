@@ -45,7 +45,7 @@ RSpec.describe AccessTokenVerifier do
       let(:access_token) { identity.access_token }
       before do
         identity.save!
-        Pii::SessionStore.new(identity.rails_session_id).put({}, 1)
+        OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii({}, 1)
       end
 
       it 'is successful' do
@@ -59,7 +59,7 @@ RSpec.describe AccessTokenVerifier do
     context 'with a valid access_token' do
       before do
         identity.save!
-        Pii::SessionStore.new(identity.rails_session_id).put({}, 1)
+        OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii({}, 1)
       end
       let(:access_token) { identity.access_token }
 
@@ -77,7 +77,7 @@ RSpec.describe AccessTokenVerifier do
     end
 
     context 'with an expired access_token' do
-      before { Pii::SessionStore.new(identity.rails_session_id).destroy }
+      before { OutOfBandSessionAccessor.new(identity.rails_session_id).destroy }
 
       let(:access_token) { identity.access_token }
 

@@ -51,6 +51,8 @@ aws_http_timeout: 5
 aws_http_retry_limit: 2
 aws_http_retry_max_delay: 1
 aws_kms_key_id: alias/login-dot-gov-test-keymaker
+aws_kms_client_contextless_pool_size: 5
+aws_kms_client_multi_pool_size: 5
 aws_logo_bucket: ''
 aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: false
@@ -138,7 +140,7 @@ irs_attempt_api_payload_size_logging_enabled: true
 kantara_2fa_phone_restricted: false
 kantara_2fa_phone_existing_user_restriction: false
 kantara_restriction_enforcement_date: '2022-07-19'
-liveness_checking_enabled: false
+key_pair_generation_percent: 0
 logins_per_ip_track_only_mode: false
 # LexisNexis #####################################################
 lexisnexis_base_url: https://www.example.com
@@ -236,6 +238,9 @@ recovery_code_length: 4
 redis_irs_attempt_api_url: redis://localhost:6379/2
 redis_throttle_url: redis://localhost:6379/1
 redis_url: redis://localhost:6379/0
+redis_pool_size: 10
+redis_session_pool_size: 10
+redis_throttle_pool_size: 5
 reg_confirmed_email_max_attempts: 20
 reg_confirmed_email_window_in_minutes: 60
 reg_unconfirmed_email_max_attempts: 20
@@ -353,7 +358,6 @@ development:
   irs_attempt_api_public_key_id: key1
   irs_attempt_api_enabled: true
   irs_attempt_api_auth_tokens: 'abc123'
-  liveness_checking_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true
   max_bad_passwords: 5
