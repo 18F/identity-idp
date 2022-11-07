@@ -64,12 +64,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # SP Costs Report to S3
-      sp_costs: {
-        class: 'Reports::SpCostReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Agency Invoice Supplement Report to S3
       sp_invoice_supplement_by_iaa: {
         class: 'Reports::AgencyInvoiceIaaSupplementReport',
