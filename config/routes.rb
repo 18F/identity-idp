@@ -362,6 +362,7 @@ Rails.application.routes.draw do
     scope '/verify/inherited_proofing', module: 'idv', as: 'idv_inherited_proofing' do
       # NOTE: cancellation routes need to be before any other IP
       # routes in this scope.
+      delete '/session' => 'sessions#destroy'
       get '/cancel' => 'inherited_proofing_cancellations#new', as: :cancel
       put '/cancel' => 'inherited_proofing_cancellations#update'
       delete '/cancel' => 'inherited_proofing_cancellations#destroy'
