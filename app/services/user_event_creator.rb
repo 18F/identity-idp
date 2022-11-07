@@ -57,11 +57,12 @@ class UserEventCreator
     device = create_device_for_user(user)
     if user_has_multiple_devices && disavowal_token.nil?
       event = create_user_event_with_disavowal(
-        event_type, user, device,
+        event_type, user, device
       )
       send_new_device_notification(
-        user: user, device: device,
-        disavowal_token: event.disavowal_token
+        user: user,
+        device: device,
+        disavowal_token: event.disavowal_token,
       )
       event
     else
