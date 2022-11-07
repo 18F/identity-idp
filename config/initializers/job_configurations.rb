@@ -129,12 +129,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # IAA Billing Report
-      iaa_billing_report: {
-        class: 'Reports::IaaBillingReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Send deleted user accounts to S3
       deleted_user_accounts: {
         class: 'Reports::DeletedUserAccountsReport',
