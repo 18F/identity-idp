@@ -9,29 +9,43 @@ describe Idv::SessionsController do
   end
 
   describe '#destroy' do
-    let(:idv_session) { double }
-    let(:flow_session) { {} }
-    let(:pii) { { first_name: 'Jane' } }
-
     before do
       allow(idv_session).to receive(:clear)
       allow(subject).to receive(:idv_session).and_return(idv_session)
       controller.user_session['idv/doc_auth'] = flow_session
       controller.user_session['idv/in_person'] = flow_session
+      controller.user_session['idv/inherited_proofing'] = flow_session
       controller.user_session[:decrypted_pii] = pii
     end
 
-    it 'deletes idv session' do
-      expect(idv_session).to receive(:clear)
+    let(:idv_session) { double }
+    let(:flow_session) { { x: {} } }
+    let(:pii) { { first_name: 'Jane' } }
 
-      delete :destroy
+    context 'when destroying the session' do
+      before do
+        expect(idv_session).to receive(:clear)
+        delete :destroy
+      end
 
-      expect(controller.user_session['idv/doc_auth']).to be_blank
-      expect(controller.user_session['idv/in_person']).to be_blank
-      expect(controller.user_session[:decrypted_pii]).to be_blank
+      it 'clears the idv/doc_auth session' do
+        expect(controller.user_session['idv/doc_auth']).to be_blank
+      end
+
+      it 'clears the idv/in_person session' do
+        expect(controller.user_session['idv/in_person']).to be_blank
+      end
+
+      it 'clears the idv/inherited_proofing session' do
+        expect(controller.user_session['idv/inherited_proofing']).to be_blank
+      end
+
+      it 'clears the decrypted_pii session' do
+        expect(controller.user_session[:decrypted_pii]).to be_blank
+      end
     end
 
-    it 'logs start over with step and location params' do
+    it 'logs IDV start over analytics with step and location params' do
       delete :destroy, params: { step: 'first', location: 'get_help' }
 
       expect(@analytics).to have_logged_event(
@@ -41,7 +55,7 @@ describe Idv::SessionsController do
       )
     end
 
-    it 'redirects to start of identity verificaton' do
+    it 'redirect occurs to the start of identity verification' do
       delete :destroy
 
       expect(response).to redirect_to(idv_url)

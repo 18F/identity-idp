@@ -37,7 +37,7 @@ module Features
       user = sign_up_and_set_password
       select_2fa_option('phone')
       fill_in 'new_phone_form_phone', with: '202-555-1212'
-      click_send_security_code
+      click_send_one_time_code
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -241,8 +241,8 @@ module Features
       )
     end
 
-    def click_send_security_code
-      click_button t('forms.buttons.send_security_code')
+    def click_send_one_time_code
+      click_button t('forms.buttons.send_one_time_code')
     end
 
     def sign_in_live_with_2fa(user = user_with_2fa)
@@ -501,14 +501,14 @@ module Features
     def set_up_2fa_with_valid_phone
       select_2fa_option('phone')
       fill_in 'new_phone_form[phone]', with: '202-555-1212'
-      click_send_security_code
+      click_send_one_time_code
       fill_in_code_with_last_phone_otp
       click_submit_default
     end
 
     def set_up_mfa_with_valid_phone
       fill_in 'new_phone_form[phone]', with: '202-555-1212'
-      click_send_security_code
+      click_send_one_time_code
       fill_in_code_with_last_phone_otp
       click_submit_default
     end
