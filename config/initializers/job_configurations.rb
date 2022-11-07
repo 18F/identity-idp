@@ -87,12 +87,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # SP Active Users Report to S3
-      sp_active_users_period_pf_performance: {
-        class: 'Reports::SpActiveUsersOverPeriodOfPerformanceReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Send deleted user accounts to S3
       deleted_user_accounts: {
         class: 'Reports::DeletedUserAccountsReport',
