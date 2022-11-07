@@ -34,7 +34,7 @@ class AccessTokenVerifier
   def load_identity(access_token)
     identity = ServiceProviderIdentity.where(access_token: access_token).take
 
-    if identity && Pii::SessionStore.new(identity.rails_session_id).ttl.positive?
+    if identity && OutOfBandSessionAccessor.new(identity.rails_session_id).ttl.positive?
       @identity = identity
     else
       errors.add(

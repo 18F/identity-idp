@@ -8,10 +8,9 @@
   <p><%= t('inherited_proofing.cancel.description.start_over') %></p>
 
   <div class="margin-top-4">
-    <%# NOTE: Render "Start Over" button here, but first have to create an IP-specific SessionController. %>
-    <%#= render ButtonComponent.new(
+    <%= render ButtonComponent.new(
           action: ->(**tag_options, &block) do
-            button_to(idv_session_path(step: @flow_step), **tag_options, &block)
+            button_to(idv_inherited_proofing_session_path(step: @flow_step), **tag_options, &block)
           end,
           method: :delete,
           big: true,
