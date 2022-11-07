@@ -17,7 +17,7 @@ es:
     backup_code_prompt: Puede utilizar este código de seguridad una vez. Después de
       ingresarlo, deberá usar una nueva clave.
     choose_another_option: '‹ Elige otra opción'
-    header_text: Ingrese su código de seguridad
+    header_text: Introduzca su código único
     important_alert_icon: ícono de aviso importante
     invalid_backup_code: Esa código de respaldo no es válida.
     invalid_otp: Ese código de seguridad no es válido. Puede intentar ingresarlo de

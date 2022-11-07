@@ -16,7 +16,7 @@ feature 'Two Factor Authentication' do
       expect(page).
         to have_content t('titles.phone_setup')
 
-      send_security_code_without_entering_phone_number
+      send_one_time_code_without_entering_phone_number
 
       expect(current_path).to eq phone_setup_path
 
@@ -45,7 +45,7 @@ feature 'Two Factor Authentication' do
         select_phone_delivery_option(:voice)
         select 'Bahamas', from: 'new_phone_form_international_code'
         fill_in 'new_phone_form_phone', with: unsupported_phone
-        click_send_security_code
+        click_send_one_time_code
 
         expect(current_path).to eq phone_setup_path
         expect(page).to have_content t(
@@ -66,7 +66,7 @@ feature 'Two Factor Authentication' do
 
         expect(page).to have_css('.phone-input__example', text: '(201) 555-0123')
 
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.phone_required'))
 
@@ -76,32 +76,32 @@ feature 'Two Factor Authentication' do
 
         fill_in 'new_phone_form_phone', with: '+81 54 354 364'
 
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.invalid_phone_number'))
 
         fill_in 'new_phone_form_phone', with: ''
 
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.phone_required'))
 
         fill_in 'new_phone_form_phone', with: '+212 5376'
         expect(page).to have_css('.phone-input__example', text: '0650-123456')
 
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.invalid_phone_number'))
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'MA'
 
         fill_in 'new_phone_form_phone', with: ''
 
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.phone_required'))
         fill_in 'new_phone_form_phone', with: '+81 54354'
 
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.invalid_phone_number'))
 
@@ -211,23 +211,23 @@ feature 'Two Factor Authentication' do
     visit account_path
   end
 
-  def send_security_code_without_entering_phone_number
-    click_send_security_code
+  def send_one_time_code_without_entering_phone_number
+    click_send_one_time_code
   end
 
   def submit_2fa_setup_form_with_empty_string_phone
     fill_in 'new_phone_form_phone', with: ''
-    click_send_security_code
+    click_send_one_time_code
   end
 
   def submit_2fa_setup_form_with_invalid_phone
     fill_in 'new_phone_form_phone', with: 'five one zero five five five four three two one'
-    click_send_security_code
+    click_send_one_time_code
   end
 
   def submit_2fa_setup_form_with_valid_phone
     fill_in 'new_phone_form_phone', with: '703-555-1212'
-    click_send_security_code
+    click_send_one_time_code
   end
 
   describe 'When the user has already set up 2FA' do

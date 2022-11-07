@@ -17,7 +17,7 @@ en:
     backup_code_prompt: You can use this security code once. After you enter it,
       you’ll need to use a new key.
     choose_another_option: '‹ Choose another option'
-    header_text: Enter your security code
+    header_text: Enter your one-time code
     important_alert_icon: important alert icon
     invalid_backup_code: That backup code is invalid.
     invalid_otp: That security code is invalid. You can try entering it again or

@@ -42,7 +42,7 @@ en:
       edit: Edit
       manage: Manage
       resend_confirmation: Resend confirmation instructions
-      send_security_code: Send code
+      send_one_time_code: Send code
       submit:
         confirm_change: Confirm change
         default: Submit

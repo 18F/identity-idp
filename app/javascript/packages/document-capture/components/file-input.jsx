@@ -159,6 +159,7 @@ function FileInput(props, ref) {
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;
   const innerHintId = `${hintId}-inner`;
+  const labelId = `${inputId}-label`;
 
   /**
    * In response to a file input change event, confirms that the file is valid before calling
@@ -194,17 +195,29 @@ function FileInput(props, ref) {
   }
 
   /**
-   * @param {string} fileLabel String velue of the label for input to display
+   * @param {string} fileLabel String value of the label for input to display
    * @param {Blob|string|null|undefined} fileValue File or string for which to generate label.
+   * @return {{'aria-label': string} | {'aria-labelledby': string}}
    */
-  function getLabelFromValue(fileLabel, fileValue) {
+  function getAriaLabelPropsFromValue(fileLabel, fileValue) {
     if (fileValue instanceof window.File) {
-      return `${fileLabel} - ${fileValue.name}`;
+      return {
+        'aria-label': `${fileLabel} - ${fileValue.name}`,
+      };
     }
+
     if (fileValue) {
-      return `${fileLabel} - ${t('doc_auth.forms.captured_image')}`;
+      return {
+        'aria-label': `${fileLabel} - ${t('doc_auth.forms.captured_image')}`,
+      };
     }
-    return '';
+
+    // When no file is selected, provide a slightly more verbose label
+    // including the actual <label> contents and the prompt to drag a file or
+    // choose from a folder.
+    return {
+      'aria-labelledby': `${labelId} ${innerHintId}`,
+    };
   }
 
   const shownErrorMessage = errorMessage ?? ownErrorMessage;
@@ -241,6 +254,7 @@ function FileInput(props, ref) {
        */}
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label
+        id={labelId}
         htmlFor={inputId}
         className={['usa-label', shownErrorMessage && 'usa-label--error'].filter(Boolean).join(' ')}
       >
@@ -320,13 +334,13 @@ function FileInput(props, ref) {
             id={inputId}
             className="usa-file-input__input"
             type="file"
-            aria-label={getLabelFromValue(label, value)}
+            {...getAriaLabelPropsFromValue(label, value)}
             aria-busy={isValuePending}
             onChange={onChangeIfValid}
             onClick={onClick}
             onDrop={onDrop}
             accept={accept ? accept.join() : undefined}
-            aria-describedby={hint ? `${innerHintId} ${hintId}` : undefined}
+            aria-describedby={hint ? hintId : undefined}
           />
         </div>
       </div>

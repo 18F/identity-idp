@@ -48,7 +48,7 @@ fr:
       edit: Modifier
       manage: Administrer
       resend_confirmation: Envoyer les instructions de confirmation de nouveau
-      send_security_code: Envoyer le code
+      send_one_time_code: Envoyer le code
       submit:
         confirm_change: Confirmer le changement
         default: Soumettre
