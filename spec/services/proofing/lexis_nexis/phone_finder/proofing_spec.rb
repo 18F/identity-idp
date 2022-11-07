@@ -28,9 +28,19 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
 
   describe '#proof' do
     context 'when the response is a success' do
-      it 'is a successful result' do
+      it 'is a successful rdp1 result' do
         stub_request(:post, verification_request.url).
           to_return(body: LexisNexisFixtures.phone_finder_rdp1_success_response_json, status: 200)
+
+        result = instance.proof(applicant)
+
+        expect(result.success?).to eq(true)
+        expect(result.errors).to eq({})
+      end
+
+      it 'is a successful rdp2 result' do
+        stub_request(:post, verification_request.url).
+          to_return(body: LexisNexisFixtures.phone_finder_rdp2_success_response_json, status: 200)
 
         result = instance.proof(applicant)
 

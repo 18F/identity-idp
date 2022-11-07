@@ -47,7 +47,9 @@ module Proofing
         return {} if products.nil?
 
         products.each_with_object({}) do |product, error_messages|
-          next if product['ProductStatus'] == 'pass'
+          next if product['ProductStatus'] == 'pass' # don't log passes
+
+          product.delete('ParameterDetails') # don't log reflected PII
 
           key = product.fetch('ExecutedStepName').to_sym
           error_messages[key] = product
