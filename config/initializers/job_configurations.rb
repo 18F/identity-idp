@@ -28,12 +28,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Send Unique Monthly Auths Report to S3
-      unique_monthly_auths: {
-        class: 'Reports::UniqueMonthlyAuthsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Send Unique Yearly Auths Report to S3
       unique_yearly_auths: {
         class: 'Reports::UniqueYearlyAuthsReport',
