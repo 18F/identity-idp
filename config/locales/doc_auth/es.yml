@@ -230,9 +230,9 @@ es:
         se consideran válidos. No ingrese PII real en este campo.
       text1: Su documento de identidad no puede estar caducado.
       text2: No necesitará la tarjeta con usted.
-      text3_html: Le llamaremos o enviaremos un mensaje de texto a este número para
+      text3: Le llamaremos o enviaremos un mensaje de texto a este número para
         verificar su identidad. Si no podemos verificar su número de teléfono,
-        puede hacerlo por correo. %{learn_more_link}
+        puede hacerlo por correo.
       welcome: 'Necesitará su:'
     tips:
       capture_troubleshooting_blurry: La foto que adjuntó está demasiado borrosa.

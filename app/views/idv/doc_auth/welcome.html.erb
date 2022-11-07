@@ -33,17 +33,15 @@
       <% end %>
       <%= c.item(heading: t('doc_auth.instructions.bullet3')) do %>
         <p>
-          <%= t(
-                'doc_auth.instructions.text3_html',
-                learn_more_link: new_window_link_to(
-                  t('idv.troubleshooting.options.learn_more_address_verification_options'),
-                  help_center_redirect_path(
-                    category: 'verify-your-identity',
-                    article: 'phone-number-and-phone-plan-in-your-name',
-                    flow: :idv,
-                    step: :welcome,
-                    location: 'missing_items',
-                  ),
+          <%= t('doc_auth.instructions.text3') %>
+          <%= new_window_link_to(
+                t('idv.troubleshooting.options.learn_more_address_verification_options'),
+                help_center_redirect_path(
+                  category: 'verify-your-identity',
+                  article: 'phone-number-and-phone-plan-in-your-name',
+                  flow: :idv,
+                  step: :welcome,
+                  location: 'missing_items',
                 ),
               ) %>
         </p>
