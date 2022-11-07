@@ -29,11 +29,11 @@
     <div class="display-none tablet:display-block tablet:grid-col-4">
       <%= render 'accounts/side_nav' %>
     </div>
-    <div class="tablet:grid-col-8">
+    <main class="tablet:grid-col-8" id="main-content">
       <%= yield %>
-    </div>
+    </main>
   </div>
 <% end %>
 
 <%= javascript_packs_tag_once('navigation') %>
-<%= render template: 'layouts/base', locals: { disable_card: true } %>
+<%= render template: 'layouts/base', locals: { disable_card: true, custom_main: true } %>
