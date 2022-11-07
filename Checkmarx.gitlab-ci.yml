@@ -1,0 +1,144 @@
+#
+# Include this file in your .gitlab-ci.yml file to automate & integrate Checkmarx security scans.
+#
+# These variables can be overridden in your .gitlab-ci.yml file or as envionrment variables.
+#
+# Please refer to https://checkmarx.com/gitlab for detailed instructions.
+#
+
+variables:
+    GITLAB_URL: "${CI_SERVER_URL}"
+    GITLAB_API_URL: "${CI_API_V4_URL}"
+    CHECKMARX_DOCKER_IMAGE: "cx-flow"
+    CX_FLOW_BUG_TRACKER: "GitLab"
+    CX_FLOW_BUG_TRACKER_IMPL: ${CX_FLOW_BUG_TRACKER}
+    CX_FLOW_EXE: "java -jar /app/cx-flow.jar"
+    CX_PROJECT: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
+    CHECKMARX_VERSION: "9.0"
+    CHECKMARX_SETTINGS_OVERRIDE: "false"
+    CHECKMARX_EXCLUDE_FILES: ""
+    CHECKMARX_EXCLUDE_FOLDERS: ""
+    CHECKMARX_CONFIGURATION: "Default Configuration"
+    CHECKMARX_SCAN_PRESET: "Checkmarx Default"
+    CX_FLOW_FILTER_SEVERITY: "High"
+    CX_FLOW_FILTER_CATEGORY: ""
+    CX_FLOW_FILTER_CWE: ""
+    CX_FLOW_FILTER_STATUS: ""
+    CX_FLOW_FILTER_STATE: ""
+    CX_FLOW_ENABLED_VULNERABILITY_SCANNERS: sast
+    CX_FLOW_ZIP_EXCLUDE: ".jar"
+    CX_TEAM: "/CxServer/"
+    CX_FLOW_BREAK_BUILD: "false"
+    SCA_FILTER_SEVERITY: ""
+    SCA_FILTER_SCORE: ""
+    SCA_THRESHOLDS_SCORE: ""
+    SCA_TEAM: ""
+    GITLAB_BLOCK_MERGE: "false"
+    GITLAB_ERROR_MERGE: "false"
+    SECURITY_DASHBOARD_ON_MR: "false"
+    PARAMS: ""
+
+checkmarx-scan-security-dashboard:
+  stage: test
+  rules:
+    - if: '$CX_FLOW_BUG_TRACKER == "GitLabDashboard" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  image:
+    name: checkmarx/${CHECKMARX_DOCKER_IMAGE}
+    entrypoint: ['']
+  variables:
+    CHECKMARX_INCREMENTAL: "false"
+  script:
+    - ${CX_FLOW_EXE}
+          --scan 
+          --app="${CI_PROJECT_NAME}" 
+          --namespace="${CI_PROJECT_NAMESPACE}" 
+          --repo-name="${CI_PROJECT_NAME}" 
+          --repo-url="${CI_REPOSITORY_URL}" 
+          --cx-team="${CX_TEAM}" 
+          --cx-project="${CX_PROJECT}" 
+          --branch="${CI_COMMIT_BRANCH}"
+          --spring.profiles.active="${CX_FLOW_ENABLED_VULNERABILITY_SCANNERS}" 
+          --f=. 
+          ${PARAMS}
+  artifacts:
+     reports:
+       sast: gl-sast-report.json
+       dependency_scanning: gl-dependency-scanning-report.json
+
+checkmarx-scan:
+  stage: test
+  rules:
+    - if: '$CX_FLOW_BUG_TRACKER != "GitLabDashboard" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  image:
+    name: checkmarx/${CHECKMARX_DOCKER_IMAGE}
+    entrypoint: ['']
+  variables:
+    CHECKMARX_INCREMENTAL: "false"
+  script:
+    - ${CX_FLOW_EXE}
+          --scan 
+          --app="${CI_PROJECT_NAME}" 
+          --namespace="${CI_PROJECT_NAMESPACE}" 
+          --repo-name="${CI_PROJECT_NAME}" 
+          --repo-url="${CI_REPOSITORY_URL}" 
+          --cx-team="${CX_TEAM}" 
+          --cx-project="${CX_PROJECT}" 
+          --branch="${CI_COMMIT_BRANCH}"
+          --spring.profiles.active="${CX_FLOW_ENABLED_VULNERABILITY_SCANNERS}" 
+          --f=. 
+          ${PARAMS}
+
+checkmarx-scan-mr:
+  stage: test
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+  image:   
+    name: checkmarx/${CHECKMARX_DOCKER_IMAGE}
+    entrypoint: ['']
+  variables:
+    CHECKMARX_INCREMENTAL: "true"
+  script:
+    - ${CX_FLOW_EXE}
+          --scan 
+          --bug-tracker="GITLABMERGE"
+          --app="${CI_PROJECT_NAME}" 
+          --namespace="${CI_PROJECT_NAMESPACE}"
+          --repo-name="${CI_PROJECT_NAME}"
+          --repo-url="${CI_REPOSITORY_URL}" 
+          --cx-team="${CX_TEAM}" 
+          --cx-project="${CX_PROJECT}" 
+          --branch="${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}" 
+          --project-id="${CI_PROJECT_ID}" 
+          --merge-id="${CI_MERGE_REQUEST_IID}" 
+          --spring.profiles.active="${CX_FLOW_ENABLED_VULNERABILITY_SCANNERS}" 
+          --f=. 
+          ${PARAMS}
+
+checkmarx-scan-security-dashboard-on-mr:
+  stage: .post
+  needs: ["checkmarx-scan-mr"]
+  rules:
+    - if: '$SECURITY_DASHBOARD_ON_MR == "true" && $CI_PIPELINE_SOURCE == "merge_request_event"'
+  image:   
+    name: checkmarx/${CHECKMARX_DOCKER_IMAGE}
+    entrypoint: ['']
+  variables:
+      CX_FLOW_BUG_TRACKER: "GitLabDashboard"
+      CX_FLOW_BUG_TRACKER_IMPL: ${CX_FLOW_BUG_TRACKER}
+  script:
+    - ${CX_FLOW_EXE}
+          --project
+          --app="${CI_PROJECT_NAME}"
+          --namespace="${CI_PROJECT_NAMESPACE}"
+          --repo-name="${CI_PROJECT_NAME}"
+          --repo-url="${CI_REPOSITORY_URL}"
+          --cx-team="${CX_TEAM}"
+          --cx-project="${CX_PROJECT}"
+          --branch="${CI_COMMIT_BRANCH}"
+          --spring.profiles.active="${CX_FLOW_ENABLED_VULNERABILITY_SCANNERS}"
+          --f=.
+          ${PARAMS}
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
+      dependency_scanning: gl-dependency-scanning-report.json

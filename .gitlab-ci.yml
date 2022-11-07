@@ -246,3 +246,6 @@ trigger_devops:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
   trigger: lg/identity-devops
+
+# checkmarx scanning (from https://raw.githubusercontent.com/checkmarx-ltd/cx-flow/develop/templates/gitlab/v3/Checkmarx.gitlab-ci.yml from https://checkmarx.com/resource/documents/en/34965-8218-gitlab-integration.html)
+include: 'Checkmarx.gitlab-ci.yml'
