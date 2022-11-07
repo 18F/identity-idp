@@ -195,9 +195,8 @@ en:
         considered valid. Do not enter real PII in this field.
       text1: Your ID cannot be expired.
       text2: You will not need the card with you.
-      text3_html: We’ll call or text this number to verify your identity. If we can’t
+      text3: We’ll call or text this number to verify your identity. If we can’t
         verify your phone number, you can verify by mail instead.
-        %{learn_more_link}
       welcome: 'You will need your:'
     tips:
       capture_troubleshooting_blurry: The photo you added is too blurry.
