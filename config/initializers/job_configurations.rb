@@ -46,12 +46,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Send Doc Auth Funnel Report to S3
-      doc_auth_funnel_report: {
-        class: 'Reports::DocAuthFunnelReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Proofing Costs Report to S3
       proofing_costs: {
         class: 'Reports::ProofingCostsReport',
