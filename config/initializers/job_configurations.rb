@@ -22,12 +22,6 @@ else
         cron: cron_5m,
         args: -> { [Time.zone.now] },
       },
-      # Send OMB Fitara report to s3
-      omb_fitara_report: {
-        class: 'Reports::OmbFitaraReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Send Agency User Counts Report to S3
       agency_user_counts: {
         class: 'Reports::AgencyUserCountsReport',
