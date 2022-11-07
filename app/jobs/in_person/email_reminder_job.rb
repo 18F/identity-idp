@@ -1,6 +1,5 @@
 module InPerson
   class EmailReminderJob < ApplicationJob
-
     queue_as :low
 
     include GoodJob::ActiveJobExtensions::Concurrency
@@ -54,3 +53,4 @@ module InPerson
       end
     end
   end
+end
