@@ -52,12 +52,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Doc auth drop off rates per sprint to S3
-      doc_auth_dropoff_per_sprint: {
-        class: 'Reports::DocAuthDropOffRatesPerSprintReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Agency Invoice Supplement Report to S3
       sp_invoice_supplement_by_iaa: {
         class: 'Reports::AgencyInvoiceIaaSupplementReport',
@@ -96,12 +90,6 @@ else
       # SP Active Users Report to S3
       sp_active_users_period_pf_performance: {
         class: 'Reports::SpActiveUsersOverPeriodOfPerformanceReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Doc auth drop off rates report
-      doc_auth_dropoff_rates: {
-        class: 'Reports::DocAuthDropOffRatesReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
