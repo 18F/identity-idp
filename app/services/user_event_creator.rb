@@ -66,8 +66,10 @@ class UserEventCreator
       event
     else
       create_event_for_device(
-        device: device, event_type: event_type, user: user,
-        disavowal_token: disavowal_token
+        device: device,
+        event_type: event_type,
+        user: user,
+        disavowal_token: disavowal_token,
       )
     end
   end
