@@ -156,5 +156,14 @@ RSpec.describe ArcgisApi::Geocoder do
       expect(WebMock).to have_requested(:get, %r{/suggest}).
         with(headers: { 'Authorization' => 'Bearer token1' }).twice
     end
+
+    it 'manually sets the expiration if the cache store is redis' do
+      stub_generate_token_response
+      redis = double('Redis cache store')
+      expect(redis).to receive(:expire).once
+      expect(Rails.cache).to receive(:redis).and_return(redis)
+
+      subject.retrieve_token!
+    end
   end
 end
