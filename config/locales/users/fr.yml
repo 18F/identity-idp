@@ -8,11 +8,11 @@ fr:
         cancel: Retour au profil
         delete: Supprimer le compte
       bullet_1: Vous n’aurez pas de compte %{app_name}.
-      bullet_2_loa1: Nous effacerons votre adresse email, votre mot de passe et votre
+      bullet_2_basic: Nous effacerons votre adresse email, votre mot de passe et votre
         numéro de téléphone
-      bullet_2_loa3: '%{app_name} supprimera votre adresse e-mail, votre mot de passe
-        et votre numéro de téléphone, votre nom, votre adresse, votre date de
-        naissance et votre numéro de sécurité sociale de notre système.'
+      bullet_2_verified: '%{app_name} supprimera votre adresse e-mail, votre mot de
+        passe et votre numéro de téléphone, votre nom, votre adresse, votre date
+        de naissance et votre numéro de sécurité sociale de notre système.'
       bullet_3: Vous ne pourrez pas accéder en toute sécurité à vos informations en
         utilisant %{app_name}.
       bullet_4: Nous informerons les agences auxquelles vous accédez avec %{app_name}

@@ -88,7 +88,7 @@ RSpec.describe OpenidConnect::UserInfoController do
         )
       end
       before do
-        Pii::SessionStore.new(identity.rails_session_id).put({}, 50)
+        OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii({}, 50)
       end
 
       it 'renders user info' do

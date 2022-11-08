@@ -5,6 +5,13 @@ describe Encryption::ContextlessKmsClient do
   let(:local_plaintext) { 'local plaintext' }
   let(:local_ciphertext) { 'local ciphertext' }
 
+  before do
+    stub_const(
+      'Encryption::ContextlessKmsClient::KMS_CLIENT_POOL',
+      AwsKmsClientHelper::FakeConnectionPool.new { Aws::KMS::Client.new },
+    )
+  end
+
   context 'with kms plaintext less than 4k' do
     let(:kms_plaintext) { 'kms plaintext' }
     let(:kms_ciphertext) { 'kms ciphertext' }

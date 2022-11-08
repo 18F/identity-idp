@@ -168,7 +168,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
         )
 
         expect(rendered).to have_link(
-          t('links.two_factor_authentication.get_another_code'),
+          t('links.two_factor_authentication.send_another_code'),
           href: resend_path,
         )
       end
@@ -207,7 +207,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
         )
 
         expect(rendered).to have_link(
-          t('links.two_factor_authentication.get_another_code'),
+          t('links.two_factor_authentication.send_another_code'),
           href: resend_path,
         )
       end

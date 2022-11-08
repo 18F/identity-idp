@@ -14,7 +14,7 @@ describe 'phone otp confirmation' do
       select_2fa_option(:phone)
       fill_in :new_phone_form_phone, with: phone
       select_phone_delivery_option(delivery_method)
-      click_send_security_code
+      click_send_one_time_code
     end
 
     def expect_successful_otp_confirmation(delivery_method)
