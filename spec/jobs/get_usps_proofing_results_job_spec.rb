@@ -91,7 +91,7 @@ RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class
     expect(pending_enrollment.profile.active).to eq(false)
     expect(job_analytics).to have_logged_event(
       'GetUspsProofingResultsJob: Exception raised',
-      include(
+      hash_including(
         enrollment_code: pending_enrollment.enrollment_code,
         enrollment_id: pending_enrollment.id,
         exception_class: exception_class,
@@ -126,7 +126,7 @@ RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response'
 
     expect(job_analytics).to have_logged_event(
       'GetUspsProofingResultsJob: Exception raised',
-      include(
+      hash_including(
         response_present: false,
         exception_class: error_type.to_s,
       ),
@@ -287,7 +287,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Exception raised',
-            include(exception_message: error_message),
+            hash_including(exception_message: error_message),
           )
         end
       end
@@ -421,7 +421,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
-            include(reason: 'Successful status update'),
+            hash_including(reason: 'Successful status update'),
           )
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Success or failure email initiated',
@@ -512,7 +512,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
-            include(reason: 'Unsupported ID type'),
+            hash_including(reason: 'Unsupported ID type'),
           )
         end
       end
@@ -535,7 +535,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
-            include(reason: 'Enrollment has expired'),
+            hash_including(reason: 'Enrollment has expired'),
           )
         end
       end
@@ -568,7 +568,7 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(pending_enrollment.pending?).to be_truthy
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Exception raised',
-            include(status: 'Not supported'),
+            hash_including(status: 'Not supported'),
           )
         end
       end

@@ -56,7 +56,7 @@ feature 'doc auth verify step', :js do
     expect(DocAuthLog.find_by(user_id: user.id).aamva).to eq(true)
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth optional verify_wait submitted',
-      include(address_edited: false),
+      hash_including(address_edited: false),
     )
   end
 
@@ -83,7 +83,7 @@ feature 'doc auth verify step', :js do
 
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth optional verify_wait submitted',
-      include(address_edited: true),
+      hash_including(address_edited: true),
     )
   end
 
@@ -99,7 +99,7 @@ feature 'doc auth verify step', :js do
 
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth optional verify_wait submitted',
-      include(address_edited: false),
+      hash_including(address_edited: false),
     )
   end
 

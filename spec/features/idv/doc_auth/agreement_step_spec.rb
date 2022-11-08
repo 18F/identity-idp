@@ -83,7 +83,7 @@ feature 'doc auth welcome step' do
       )
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth upload submitted',
-        include(step: 'upload', step_count: 2, success: true),
+        hash_including(step: 'upload', step_count: 2, success: true),
       )
     end
   end

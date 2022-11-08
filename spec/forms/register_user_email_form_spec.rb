@@ -158,7 +158,7 @@ describe RegisterUserEmailForm do
           domain_name: 'invalid_email',
         }
 
-        expect(subject.submit(email: 'invalid_email', terms_accepted: '1').to_h).to include(
+        expect(subject.submit(email: 'invalid_email', terms_accepted: '1').to_h).to hash_including(
           success: false,
           errors: errors,
           error_details: hash_including(*errors.keys),

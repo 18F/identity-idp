@@ -116,7 +116,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
 
           expect(@analytics).to have_logged_event(
             'SMS Opt-In: Submitted',
-            include(success: true),
+            hash_including(success: true),
           )
         end
 
@@ -146,7 +146,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
 
           expect(@analytics).to have_logged_event(
             'SMS Opt-In: Submitted',
-            include(success: false),
+            hash_including(success: false),
           )
         end
 
@@ -174,7 +174,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
 
           expect(@analytics).to have_logged_event(
             'SMS Opt-In: Submitted',
-            include(success: false),
+            hash_including(success: false),
           )
         end
 

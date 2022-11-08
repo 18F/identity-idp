@@ -25,7 +25,7 @@ describe 'cancel IdV', :js do
     expect(current_path).to eq(idv_cancel_path)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation visited',
-      include(step: 'agreement'),
+      hash_including(step: 'agreement'),
     )
 
     click_on t('idv.cancel.actions.keep_going')
@@ -33,7 +33,7 @@ describe 'cancel IdV', :js do
     expect(current_path).to eq(original_path)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation go back',
-      include(step: 'agreement'),
+      hash_including(step: 'agreement'),
     )
   end
 
@@ -44,13 +44,16 @@ describe 'cancel IdV', :js do
     expect(current_path).to eq(idv_cancel_path)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation visited',
-      include(step: 'agreement'),
+      hash_including(step: 'agreement'),
     )
 
     click_on t('idv.cancel.actions.start_over')
 
     expect(current_path).to eq(idv_doc_auth_welcome_step)
-    expect(fake_analytics).to have_logged_event('IdV: start over', include(step: 'agreement'))
+    expect(fake_analytics).to have_logged_event(
+      'IdV: start over',
+      hash_including(step: 'agreement'),
+    )
   end
 
   it 'shows a cancellation message with option to cancel and reset idv' do
@@ -60,7 +63,7 @@ describe 'cancel IdV', :js do
     expect(current_path).to eq(idv_cancel_path)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation visited',
-      include(step: 'agreement'),
+      hash_including(step: 'agreement'),
     )
 
     click_spinner_button_and_wait t('idv.cancel.actions.account_page')
@@ -68,7 +71,7 @@ describe 'cancel IdV', :js do
     expect(current_path).to eq(account_path)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation confirmed',
-      include(step: 'agreement'),
+      hash_including(step: 'agreement'),
     )
 
     # After visiting /verify, expect to redirect to the first step in the IdV flow.
@@ -138,7 +141,7 @@ describe 'cancel IdV', :js do
       expect(current_path).to eq(idv_cancel_path)
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation visited',
-        include(step: 'agreement'),
+        hash_including(step: 'agreement'),
       )
 
       click_spinner_button_and_wait t('idv.cancel.actions.exit', app_name: APP_NAME)
@@ -146,7 +149,7 @@ describe 'cancel IdV', :js do
       expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation confirmed',
-        include(step: 'agreement'),
+        hash_including(step: 'agreement'),
       )
 
       start_idv_from_sp(sp)

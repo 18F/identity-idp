@@ -83,7 +83,7 @@ feature 'doc capture document capture step', js: true do
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth document_capture submitted',
-      include(
+      hash_including(
         step: 'document_capture',
         flow_path: 'hybrid',
       ),
@@ -195,7 +195,7 @@ feature 'doc capture document capture step', js: true do
 
       expect(fake_analytics).to have_logged_event(
         'Doc Auth',
-        include(
+        hash_including(
           success: false,
           user_id: 'anonymous-uuid',
         ),
@@ -208,7 +208,7 @@ feature 'doc capture document capture step', js: true do
       complete_doc_capture_steps_before_first_step(user)
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth document_capture visited',
-        include(
+        hash_including(
           step: 'document_capture',
           flow_path: 'hybrid',
         ),
@@ -224,7 +224,7 @@ feature 'doc capture document capture step', js: true do
       within_window new_window do
         expect(fake_analytics).to have_logged_event(
           'Return to SP: Failed to proof',
-          include(
+          hash_including(
             step: 'document_capture',
             location: 'document_capture_troubleshooting_options',
           ),

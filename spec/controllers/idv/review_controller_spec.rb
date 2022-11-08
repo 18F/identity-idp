@@ -295,7 +295,10 @@ describe Idv::ReviewController do
           'IdV: review complete', success: true,
                                   proofing_components: nil
         )
-        expect(@analytics).to have_logged_event('IdV: final resolution', include(success: true))
+        expect(@analytics).to have_logged_event(
+          'IdV: final resolution',
+          hash_including(success: true),
+        )
         expect(response).to redirect_to idv_personal_key_path
       end
 
