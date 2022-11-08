@@ -28,18 +28,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Send Unique Monthly Auths Report to S3
-      unique_monthly_auths: {
-        class: 'Reports::UniqueMonthlyAuthsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Send Unique Yearly Auths Report to S3
-      unique_yearly_auths: {
-        class: 'Reports::UniqueYearlyAuthsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Send Agency User Counts Report to S3
       agency_user_counts: {
         class: 'Reports::AgencyUserCountsReport',
@@ -138,12 +126,6 @@ else
       # Doc auth drop off rates report
       doc_auth_dropoff_rates: {
         class: 'Reports::DocAuthDropOffRatesReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # IAA Billing Report
-      iaa_billing_report: {
-        class: 'Reports::IaaBillingReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
