@@ -50,12 +50,31 @@ feature 'doc auth welcome step' do
   end
 
   it 'logs missing items troubleshooting link click' do
-    click_on t('idv.troubleshooting.options.learn_more_address_verification_options')
+    within '.troubleshooting-options' do
+      click_on t('idv.troubleshooting.options.learn_more_address_verification_options')
+    end
 
     expect(fake_analytics).to have_logged_event(
       'External Redirect',
       step: 'welcome',
       location: 'missing_items',
+      flow: 'idv',
+      redirect_url: MarketingSite.help_center_article_url(
+        category: 'verify-your-identity',
+        article: 'phone-number-and-phone-plan-in-your-name',
+      ),
+    )
+  end
+
+  it 'logs "you will need" learn more link click' do
+    within '.usa-process-list' do
+      click_on t('idv.troubleshooting.options.learn_more_address_verification_options')
+    end
+
+    expect(fake_analytics).to have_logged_event(
+      'External Redirect',
+      step: 'welcome',
+      location: 'you_will_need',
       flow: 'idv',
       redirect_url: MarketingSite.help_center_article_url(
         category: 'verify-your-identity',
