@@ -29,6 +29,8 @@ fr:
         info: Nous avons temporairement des difficultés à récupérer vos informations.
           Veuillez réessayer.
         title: to be implemented
+      service_provider:
+        communication: 'la communication a échoué'
     headings:
       lets_go: to be implemented
       retrieval: Nous récupérons vos informations depuis My HealtheVet.

@@ -4,7 +4,9 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
   subject(:form) { described_class.new payload_hash: payload_hash }
 
   let(:required_fields) { %i[first_name last_name birth_date ssn address_street address_zip] }
-  let(:optional_fields) { %i[phone address_street2 address_city address_state address_country] }
+  let(:optional_fields) do
+    %i[phone address_street2 address_city address_state address_country service_error]
+  end
 
   let(:payload_hash) do
     {
@@ -56,7 +58,7 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
         let(:payload_hash) { :x }
 
         it 'raises an error' do
-          expect { subject }.to raise_error 'payload_hash is not a Hash'
+          expect { form }.to raise_error 'payload_hash is not a Hash'
         end
       end
 
@@ -75,7 +77,7 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
 
     context 'when passing a valid payload hash' do
       it 'raises no errors' do
-        expect { subject }.to_not raise_error
+        expect { form }.to_not raise_error
       end
     end
   end
@@ -83,7 +85,7 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
   describe '#validate' do
     context 'with valid payload data' do
       it 'returns true' do
-        expect(subject.validate).to eq true
+        expect(form.validate).to be true
       end
     end
 
@@ -119,12 +121,12 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
         end
 
         it 'returns false' do
-          expect(subject.validate).to eq false
+          expect(form.validate).to be false
         end
 
         it 'adds the correct error messages for missing fields' do
           subject.validate
-          expect(subject.errors.full_messages).to match_array expected_error_messages
+          expect(form.errors.full_messages).to match_array expected_error_messages
         end
       end
 
@@ -160,12 +162,12 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
         end
 
         it 'returns false' do
-          expect(subject.validate).to eq false
+          expect(form.validate).to be false
         end
 
         it 'adds the correct error messages for required fields that are missing data' do
           subject.validate
-          expect(subject.errors.full_messages).to match_array expected_error_messages
+          expect(form.errors.full_messages).to match_array expected_error_messages
         end
       end
 
@@ -189,7 +191,24 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
         end
 
         it 'returns true' do
-          expect(subject.validate).to eq true
+          expect(form.validate).to be true
+        end
+      end
+
+      context 'when there is a service-related error' do
+        before do
+          subject.validate
+        end
+
+        let(:payload_hash) { { service_error: 'service error' } }
+
+        it 'returns false' do
+          expect(form.valid?).to be false
+        end
+
+        it 'adds a user-friendly model error' do
+          expect(form.errors.full_messages).to \
+            match_array ['Service provider communication was unsuccessful']
         end
       end
     end
@@ -230,9 +249,31 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
 
         it 'returns a FormResponse indicating the correct errors and status' do
           form_response = subject.submit
-          expect(form_response.success?).to eq false
+          expect(form_response.success?).to be false
           expect(form_response.errors).to match_array expected_errors
+          expect(form_response.extra).to eq({})
         end
+      end
+    end
+
+    context 'with a valid payload' do
+      it 'returns a FormResponse indicating the no errors and successful status' do
+        form_response = subject.submit
+        expect(form_response.success?).to be true
+        expect(form_response.errors).to eq({})
+        expect(form_response.extra).to eq({})
+      end
+    end
+
+    context 'when there is a service-related error' do
+      let(:payload_hash) { { service_error: 'service error' } }
+
+      it 'adds the unfiltered error to the FormResponse :extra Hash' do
+        form_response = subject.submit
+        expect(form_response.success?).to be false
+        expect(form_response.errors).to \
+          eq({ service_provider: ['communication was unsuccessful'] })
+        expect(form_response.extra).to eq({ service_error: 'service error' })
       end
     end
   end
@@ -252,7 +293,23 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
       }
     end
     it 'returns the correct user pii' do
-      expect(subject.user_pii).to eq expected_user_pii
+      expect(form.user_pii).to eq expected_user_pii
+    end
+  end
+
+  describe '#service_error?' do
+    context 'when there is a service-related error' do
+      let(:payload_hash) { { service_error: 'service error' } }
+
+      it 'returns true' do
+        expect(form.service_error?).to be true
+      end
+    end
+
+    context 'when there is not a service-related error' do
+      it 'returns false' do
+        expect(form.service_error?).to be false
+      end
     end
   end
 end

@@ -35,6 +35,8 @@ module Idv
         raise ArgumentError, 'payload_hash is blank?' if payload_hash.blank?
         raise ArgumentError, 'payload_hash is not a Hash' unless payload_hash.is_a? Hash
 
+        super()
+
         self.class.attr_accessor(*self.class.fields)
 
         @payload_hash = payload_hash.dup
@@ -43,12 +45,10 @@ module Idv
       end
 
       def submit
-        validate
-
         FormResponse.new(
-          success: valid?,
+          success: validate,
           errors: errors,
-          extra: {},
+          extra: extra || {},
         )
       end
 
@@ -63,6 +63,11 @@ module Idv
       private
 
       attr_writer :payload_hash
+
+      # Return extra data used to instantiate the FormResponse
+      # returned upon #submit.
+      def extra
+      end
 
       # Populates our field data from the payload hash.
       def populate_field_data
