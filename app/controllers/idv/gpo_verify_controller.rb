@@ -42,12 +42,12 @@ module Idv
           if result.extra[:pending_in_person_enrollment]
             redirect_to idv_in_person_ready_to_verify_url
           else
-            event = create_user_event_with_disavowal(:account_verified)
+            event, disavowal_token = create_user_event_with_disavowal(:account_verified)
             UserAlerts::AlertUserAboutAccountVerified.call(
               user: current_user,
               date_time: event.created_at,
               sp_name: decorated_session.sp_name,
-              disavowal_token: event.disavowal_token,
+              disavowal_token: disavowal_token,
             )
             flash[:success] = t('account.index.verification.success')
             redirect_to sign_up_completed_url

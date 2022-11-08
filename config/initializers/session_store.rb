@@ -13,7 +13,7 @@ Rails.application.config.session_store(
     ttl: IdentityConfig.store.session_timeout_in_minutes.minutes,
 
     key_prefix: "#{IdentityConfig.store.domain_name}:session:",
-    url: IdentityConfig.store.redis_url,
+    client: REDIS_SESSION_POOL_WRAPPER,
   },
   on_session_load_error: SessionEncryptorErrorHandler,
   serializer: SessionEncryptor.new,

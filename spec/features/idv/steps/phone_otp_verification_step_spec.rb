@@ -49,7 +49,7 @@ feature 'phone otp verification step spec', :js do
 
     sent_message_count = Telephony::Test::Message.messages.count
 
-    click_on t('links.two_factor_authentication.get_another_code')
+    click_on t('links.two_factor_authentication.send_another_code')
 
     expect(Telephony::Test::Message.messages.count).to eq(sent_message_count + 1)
     expect(current_path).to eq(idv_otp_verification_path)
@@ -73,7 +73,7 @@ feature 'phone otp verification step spec', :js do
     )
     allow(Telephony).to receive(:send_confirmation_otp).and_return(response)
 
-    click_on t('links.two_factor_authentication.get_another_code')
+    click_on t('links.two_factor_authentication.send_another_code')
 
     expect(page).to have_content(I18n.t('telephony.error.friendly_message.generic'))
     expect(page).to have_current_path(idv_phone_path)
@@ -92,7 +92,7 @@ feature 'phone otp verification step spec', :js do
     )
     allow(Telephony).to receive(:send_confirmation_otp).and_return(response)
 
-    click_on t('links.two_factor_authentication.get_another_code')
+    click_on t('links.two_factor_authentication.send_another_code')
 
     expect(page).to have_content(calling_area_error.friendly_message)
     expect(page).to have_current_path(idv_phone_path)

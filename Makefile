@@ -61,7 +61,11 @@ lint: ## Runs all lint tests
 	@echo "--- erb-lint ---"
 	make lint_erb
 	@echo "--- rubocop ---"
+ifdef JUNIT_OUTPUT
+	bundle exec rubocop --parallel --format progress --format junit --out rubocop.xml --display-only-failed
+else
 	bundle exec rubocop --parallel
+endif
 	@echo "--- analytics_events ---"
 	make lint_analytics_events
 	make lint_tracker_events

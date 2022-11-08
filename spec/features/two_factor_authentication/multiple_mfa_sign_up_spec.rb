@@ -23,7 +23,7 @@ feature 'Multi Two Factor Authentication' do
       expect(current_path).to eq phone_setup_path
 
       fill_in 'new_phone_form_phone', with: '703-555-1212'
-      click_send_security_code
+      click_send_one_time_code
 
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -56,7 +56,7 @@ feature 'Multi Two Factor Authentication' do
       expect(current_path).to eq phone_setup_path
 
       fill_in 'new_phone_form_phone', with: '703-555-1212'
-      click_send_security_code
+      click_send_one_time_code
 
       fill_in_code_with_last_phone_otp
       click_submit_default

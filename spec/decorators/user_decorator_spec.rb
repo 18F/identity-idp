@@ -313,13 +313,13 @@ describe UserDecorator do
     it 'returns ial1 if identity is not verified' do
       allow(user_decorator).to receive(:identity_verified?).and_return(false)
       expect(user_decorator.delete_account_bullet_key).
-        to eq t('users.delete.bullet_2_loa1', app_name: APP_NAME)
+        to eq t('users.delete.bullet_2_basic', app_name: APP_NAME)
     end
 
     it 'returns ial2 if identity is verified' do
       allow(user_decorator).to receive(:identity_verified?).and_return(true)
       expect(user_decorator.delete_account_bullet_key).
-        to eq t('users.delete.bullet_2_loa3', app_name: APP_NAME)
+        to eq t('users.delete.bullet_2_verified', app_name: APP_NAME)
     end
   end
 
