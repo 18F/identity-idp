@@ -18,7 +18,7 @@ module IrsAttemptsApi
       formatted_time = formatted_timestamp(timestamp)
 
       filename =
-        "FCI-#{IdentityConfig.store.irs_attempt_api_csp_id}_#{formatted_time}_#{digest}.dat.gz.hex"
+        "FCI-Logingov_#{formatted_time}_#{digest}.dat.gz.hex"
 
       Result.new(
         filename: filename,
