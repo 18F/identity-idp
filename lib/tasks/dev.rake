@@ -93,7 +93,7 @@ namespace :dev do
     enrollment_status = InPersonEnrollment.statuses[raw_enrollment_status]
     is_established = ['pending', 'passed', 'failed', 'expired'].include?(raw_enrollment_status)
 
-    create_in_usps = (!!ENV['CREATE_PENDING_ENROLLMENT_IN_USPS'] || false)
+    create_in_usps = !!ENV['CREATE_PENDING_ENROLLMENT_IN_USPS']
 
     InPersonEnrollment.transaction do
       (0...num_users).each do |n|
