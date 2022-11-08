@@ -58,12 +58,16 @@
   <%= yield(:mobile_nav) if content_for?(:mobile_nav) %>
   <%= render 'shared/banner' %>
 
-  <%= content_tag(local_assigns[:custom_main].present? ? 'div' : 'main', { class: 'site-wrap bg-primary-lighter', id: local_assigns[:custom_main].present? ? 'main-wrapper' : 'main-content' }) do %>
-      <div class="grid-container padding-y-4 tablet:padding-y-8 <%= local_assigns[:disable_card].present? ? '' : 'card' %>">
-        <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
-        <%= render FlashComponent.new(flash: flash) %>
-        <%= content_for?(:content) ? yield(:content) : yield %>
-      </div>
+  <%= content_tag(
+        local_assigns[:user_main_tag] == false ? 'div' : 'main',
+        class: 'site-wrap bg-primary-lighter',
+        id: local_assigns[:user_main_tag] == false ? nil : 'main-content',
+      ) do %>
+    <div class="grid-container padding-y-4 tablet:padding-y-8 <%= local_assigns[:disable_card].present? ? '' : 'card' %>">
+      <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
+      <%= render FlashComponent.new(flash: flash) %>
+      <%= content_for?(:content) ? yield(:content) : yield %>
+    </div>
   <% end %>
 
   <%= render 'shared/footer_lite' %>
