@@ -7,12 +7,14 @@
       as: :user,
       url: capture_password_url,
       method: :post,
-      html: { autocomplete: 'off', class: 'margin-top-6' },
+      html: { autocomplete: 'off', class: 'margin-top-4' },
     ) do |f| %>
   <%= render PasswordToggleComponent.new(
         form: f,
-        label: t('account.index.password'),
-        required: true,
+        field_options: {
+          label: t('account.index.password'),
+          required: true,
+        },
       ) %>
   <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-y-5' %>
 <% end %>
