@@ -81,7 +81,7 @@ module Api
       timestamp_param = params.permit(:timestamp)[:timestamp]
       return nil if timestamp_param.nil?
 
-      date_fmt = timestamp_param.match?('\.') ? '%Y-%m-%dT%H:%M:%S.%N%z' : '%Y-%m-%dT%H:%M:%S%z'
+      date_fmt = timestamp_param.include?('.') ? '%Y-%m-%dT%H:%M:%S.%N%z' : '%Y-%m-%dT%H:%M:%S%z'
 
       Time.strptime(timestamp_param, date_fmt)
     rescue ArgumentError
