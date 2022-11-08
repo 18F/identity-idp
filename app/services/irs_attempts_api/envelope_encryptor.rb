@@ -13,7 +13,8 @@ module IrsAttemptsApi
       key = cipher.random_key
       iv = cipher.random_iv
       encrypted_data = cipher.update(compressed_data) + cipher.final
-      digest = Digest::SHA256.hexdigest(encrypted_data)
+      encoded_data = Base16.encode16(encrypted_data)
+      digest = Digest::SHA256.hexdigest(encoded_data)
       encrypted_key = public_key.public_encrypt(key)
       formatted_time = formatted_timestamp(timestamp)
 
@@ -24,7 +25,7 @@ module IrsAttemptsApi
         filename: filename,
         iv: iv,
         encrypted_key: encrypted_key,
-        encrypted_data: Base16.encode16(encrypted_data),
+        encrypted_data: encoded_data,
       )
     end
 
