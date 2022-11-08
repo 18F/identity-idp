@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_04_210336) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_08_182937) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -343,15 +343,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_04_210336) do
     t.integer "user_id", null: false
     t.integer "auth_count", default: 1, null: false
     t.index ["issuer", "year_month", "user_id"], name: "index_monthly_auth_counts_on_issuer_and_year_month_and_user_id", unique: true
-  end
-
-  create_table "monthly_sp_auth_counts", force: :cascade do |t|
-    t.string "issuer", null: false
-    t.integer "ial", limit: 2, null: false
-    t.string "year_month", null: false
-    t.integer "user_id", null: false
-    t.integer "auth_count", default: 1, null: false
-    t.index ["issuer", "ial", "year_month", "user_id"], name: "index_monthly_sp_auth_counts_on_issuer_ial_month_user_id", unique: true
   end
 
   create_table "otp_requests_trackers", id: :serial, force: :cascade do |t|
