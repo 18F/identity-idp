@@ -2,7 +2,6 @@
 # session UUID) instead of having access to the user session from Devise/Warden.
 # Should only used outside of a normal browser session (such as the OpenID
 # Connect API or remote SAML Logout).
-
 class OutOfBandSessionAccessor
   attr_reader :session_uuid
 
@@ -15,8 +14,15 @@ class OutOfBandSessionAccessor
     session_store.instance_eval { redis.ttl(prefixed(uuid)) }
   end
 
-  def load
-    session_store.send(:load_session_from_redis, session_uuid) || {}
+  # @return [Pii::Attributes, nil]
+  def load_pii
+    session = session_data.dig('warden.user.user.session')
+    Pii::Cacher.new(nil, session).fetch if session
+  end
+
+  # @return [X509::Attributes]
+  def load_x509
+    X509::Attributes.new_from_json(session_data.dig('warden.user.user.session', :decrypted_x509))
   end
 
   def destroy
@@ -26,6 +32,27 @@ class OutOfBandSessionAccessor
   # @api private
   # Only used for convenience in tests
   # @param [Pii::Attributes] pii
+  def put_pii(pii, expiration = 5.minutes)
+    data = {
+      decrypted_pii: pii.to_h.to_json,
+    }
+
+    put(data, expiration)
+  end
+
+  # @api private
+  # Only used for convenience in tests
+  # @param [X509::Attributes] piv_cert_info
+  def put_x509(piv_cert_info, expiration = 5.minutes)
+    data = {
+      decrypted_x509: piv_cert_info.to_h.to_json,
+    }
+
+    put(data, expiration)
+  end
+
+  private
+
   def put(data, expiration = 5.minutes)
     session_data = {
       'warden.user.user.session' => data.to_h,
@@ -35,7 +62,10 @@ class OutOfBandSessionAccessor
       send(:set_session, {}, session_uuid, session_data, expire_after: expiration.to_i)
   end
 
-  private
+  # @return [Hash]
+  def session_data
+    @session_data ||= session_store.send(:load_session_from_redis, session_uuid) || {}
+  end
 
   def session_store
     @session_store ||= begin

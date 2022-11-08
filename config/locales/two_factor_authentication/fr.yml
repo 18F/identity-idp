@@ -18,7 +18,7 @@ fr:
     backup_code_prompt: Vous pouvez utiliser ce code de sécurité une fois. Après
       l’avoir entré, vous devrez utiliser une nouvelle clé.
     choose_another_option: '‹ Choisissez une autre option'
-    header_text: Entrez votre code de sécurité
+    header_text: Entrez votre code à usage unique
     important_alert_icon: Icône d’alerte importante
     invalid_backup_code: Ce code de sauvegarde est invalide.
     invalid_otp: Ce code de sécurité est non valide. Vous pouvez essayer de l’entrer
