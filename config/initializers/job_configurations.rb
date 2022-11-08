@@ -28,18 +28,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Send Unique Monthly Auths Report to S3
-      unique_monthly_auths: {
-        class: 'Reports::UniqueMonthlyAuthsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Send Unique Yearly Auths Report to S3
-      unique_yearly_auths: {
-        class: 'Reports::UniqueYearlyAuthsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Send Agency User Counts Report to S3
       agency_user_counts: {
         class: 'Reports::AgencyUserCountsReport',
@@ -141,12 +129,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # IAA Billing Report
-      iaa_billing_report: {
-        class: 'Reports::IaaBillingReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Send deleted user accounts to S3
       deleted_user_accounts: {
         class: 'Reports::DeletedUserAccountsReport',
@@ -216,6 +198,12 @@ else
       verify_threat_metrix_js: {
         class: 'ThreatMetrixJsVerificationJob',
         cron: cron_1h,
+      },
+      # Batch up IRS Attempts API events
+      irs_attempt_events_aggregator: {
+        class: 'IrsAttemptsEventsBatchJob',
+        cron: cron_1h,
+        args: -> { [timestamp: Time.zone.now - 1.hour] },
       },
     }
   end

@@ -149,8 +149,8 @@ module Users
     end
 
     def create_reset_event_and_send_notification
-      event = create_user_event_with_disavowal(:password_changed, resource)
-      UserAlerts::AlertUserAboutPasswordChange.call(resource, event.disavowal_token)
+      _event, disavowal_token = create_user_event_with_disavowal(:password_changed, resource)
+      UserAlerts::AlertUserAboutPasswordChange.call(resource, disavowal_token)
     end
 
     def user_params
