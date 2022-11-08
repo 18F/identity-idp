@@ -58,10 +58,10 @@ RSpec.describe Api::IrsAttemptsApiController do
     end
 
     context 'with a timestamp including a fractional second' do
-      let(:timestamp) { "2022-11-08T18:00:00.000Z" }
+      let(:timestamp) { '2022-11-08T18:00:00.000Z' }
 
       it 'accepts the timestamp as valid' do
-        post :create, params: {timestamp: timestamp}
+        post :create, params: { timestamp: timestamp }
         expect(response.status).to eq(200)
       end
     end
