@@ -49,7 +49,8 @@ module Proofing
         products.each_with_object({}) do |product, error_messages|
           next if product['ProductStatus'] == 'pass'
 
-          product.delete('ParameterDetails') # don't log reflected PII
+          # don't log PhoneFinder reflected PII
+          product.delete('ParameterDetails') if product['ProductType'] == 'PhoneFinder'
 
           key = product.fetch('ExecutedStepName').to_sym
           error_messages[key] = product
