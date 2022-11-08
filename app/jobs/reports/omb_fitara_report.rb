@@ -6,6 +6,13 @@ module Reports
     MOST_RECENT_MONTHS_COUNT = 2
     REPORT_NAME = 'omb-fitara-report'.freeze
 
+    include GoodJob::ActiveJobExtensions::Concurrency
+
+    good_job_control_concurrency_with(
+      total_limit: 1,
+      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
+    )
+
     def perform(_date)
       results = transaction_with_timeout do
         report_hash
