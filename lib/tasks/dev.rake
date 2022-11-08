@@ -103,9 +103,12 @@ namespace :dev do
         if is_established
           unless raw_enrollment_status == 'pending' && !user.pending_in_person_enrollment.nil?
             profile = Profile.new(user: user)
+
+            # Convert index to a string of letters to be a valid last name for the USPS API
             usps_compatible_number_alternative = n.to_s.chars.map do |c|
               ('a'.ord + c.to_i).chr
             end.join('')
+
             pii = Pii::Attributes.new_from_hash(
               first_name: 'Test',
               last_name: "User #{usps_compatible_number_alternative}",
