@@ -6,6 +6,13 @@ module Reports
   class VerificationFailuresReport < BaseReport
     REPORT_NAME = 'verification-failures-report'.freeze
 
+    include GoodJob::ActiveJobExtensions::Concurrency
+
+    good_job_control_concurrency_with(
+      total_limit: 1,
+      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
+    )
+
     def perform(date)
       csv_reports = []
       configs = IdentityConfig.store.verification_errors_report_configs
