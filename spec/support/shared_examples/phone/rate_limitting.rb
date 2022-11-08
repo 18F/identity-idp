@@ -2,7 +2,7 @@ shared_examples 'phone rate limitting' do |delivery_method|
   it 'limits the number of times the user can resend an OTP' do
     visit_otp_confirmation(delivery_method)
     2.times do
-      click_on t('links.two_factor_authentication.get_another_code')
+      click_on t('links.two_factor_authentication.send_another_code')
     end
 
     expect(page).to have_content(t('two_factor_authentication.max_otp_requests_reached'))
@@ -13,7 +13,7 @@ shared_examples 'phone rate limitting' do |delivery_method|
   it 'limits the number of times a code can be sent to a phone across accounts' do
     visit_otp_confirmation(delivery_method)
     2.times do
-      click_on t('links.two_factor_authentication.get_another_code')
+      click_on t('links.two_factor_authentication.send_another_code')
     end
 
     Capybara.reset_session!

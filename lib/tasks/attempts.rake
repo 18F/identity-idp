@@ -1,3 +1,5 @@
+require 'base16'
+
 namespace :attempts do
   desc 'Retrieve events via the API'
   task fetch_events: :environment do
@@ -13,29 +15,27 @@ namespace :attempts do
         "Bearer #{IdentityConfig.store.irs_attempt_api_csp_id} #{auth_token}"
     end
 
-    encrypted_data = Base64.strict_decode64(resp.body)
     iv = Base64.strict_decode64(resp.headers['x-payload-iv'])
     encrypted_key = Base64.strict_decode64(resp.headers['x-payload-key'])
     private_key = OpenSSL::PKey::RSA.new(File.read(private_key_path))
     key = private_key.private_decrypt(encrypted_key)
     decrypted = IrsAttemptsApi::EnvelopeEncryptor.decrypt(
-      encrypted_data: encrypted_data, key: key, iv: iv,
+      encrypted_data: resp.body, key: key, iv: iv,
     )
 
-    events = JSON.parse(decrypted)
+    events = decrypted.split("\r\n")
+    puts "Found #{events.count} events"
 
     if File.exist?(private_key_path)
       puts events.any? ? 'Decrypted events:' : 'No events returned.'
 
-      events.each do |_jti, jwes|
-        jwes.each do |_key_id, jwe|
-          begin
-            pp JSON.parse(JWE.decrypt(jwe, private_key))
-          rescue
-            puts 'Failed to parse/decrypt event!'
-          end
-          puts "\n"
+      events.each do |jwe|
+        begin
+          pp JSON.parse(JWE.decrypt(jwe, private_key))
+        rescue
+          puts 'Failed to parse/decrypt event!'
         end
+        puts "\n"
       end
     else
       puts "No decryption key in #{private_key_path}; cannot decrypt events."
@@ -46,6 +46,9 @@ namespace :attempts do
   desc 'Confirm your dev setup is configured properly'
   task check_enabled: :environment do
     failed = false
+    auth_token = IdentityConfig.store.irs_attempt_api_auth_tokens.sample
+    puts 'There are no configured irs_attempt_api_auth_tokens' if auth_token.nil?
+    private_key_path = 'keys/attempts_api_private_key.key'
 
     if IdentityConfig.store.irs_attempt_api_enabled
       puts '✅ Feature flag is enabled'
@@ -59,7 +62,7 @@ namespace :attempts do
       puts '✅ Sinatra app SP has irs_attempts_api_enabled=true'
     else
       failed = true
-      puts "❌ FAILED: Set irs_attempts_api_enabled=true on ServiceProvider.find #{sp.id}"
+      puts '❌ FAILED: Run rake attempts:enable_for_sinatra'
     end
 
     if IdentityConfig.store.irs_attempt_api_auth_tokens.include?(auth_token)
@@ -76,6 +79,12 @@ namespace :attempts do
     end
 
     puts 'Remember to restart Rails after updating application.yml.default!' if failed
+  end
+
+  desc 'Enable irs_attempts_api_enabled for Sinatra SP'
+  task enable_for_sinatra: :environment do
+    sp = ServiceProvider.find_by(friendly_name: 'Example Sinatra App')
+    sp.update(irs_attempts_api_enabled: true)
   end
 
   desc 'Clear all events from Redis'

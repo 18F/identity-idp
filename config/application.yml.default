@@ -44,6 +44,7 @@ address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US
 arcgis_api_root_url: 'https://gis.gsa.gov'
 arcgis_api_username: ''
 arcgis_api_password: ''
+arcgis_search_enabled: false
 asset_host: ''
 async_wait_timeout_seconds: 60
 async_stale_job_timeout_seconds: 300
@@ -51,6 +52,8 @@ aws_http_timeout: 5
 aws_http_retry_limit: 2
 aws_http_retry_max_delay: 1
 aws_kms_key_id: alias/login-dot-gov-test-keymaker
+aws_kms_client_contextless_pool_size: 5
+aws_kms_client_multi_pool_size: 5
 aws_logo_bucket: ''
 aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: false
@@ -234,6 +237,7 @@ redis_irs_attempt_api_url: redis://localhost:6379/2
 redis_throttle_url: redis://localhost:6379/1
 redis_url: redis://localhost:6379/0
 redis_pool_size: 10
+redis_session_pool_size: 10
 redis_throttle_pool_size: 5
 reg_confirmed_email_max_attempts: 20
 reg_confirmed_email_window_in_minutes: 60

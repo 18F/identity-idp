@@ -1,3 +1,5 @@
+require 'base16'
+
 module IrsAttemptsApi
   class EnvelopeEncryptor
     Result = Struct.new(:filename, :iv, :encrypted_key, :encrypted_data, keyword_init: true)
@@ -6,7 +8,7 @@ module IrsAttemptsApi
     # provided so that only the owner of the private key may decrypt this data.
     def self.encrypt(data:, timestamp:, public_key:)
       compressed_data = Zlib.gzip(data)
-      cipher = OpenSSL::Cipher.new('aes-128-cbc')
+      cipher = OpenSSL::Cipher.new('aes-256-cbc')
       cipher.encrypt
       key = cipher.random_key
       iv = cipher.random_iv
@@ -16,13 +18,13 @@ module IrsAttemptsApi
       formatted_time = formatted_timestamp(timestamp)
 
       filename =
-        "FCI-#{IdentityConfig.store.irs_attempt_api_csp_id}_#{formatted_time}_#{digest}.json.gz"
+        "FCI-#{IdentityConfig.store.irs_attempt_api_csp_id}_#{formatted_time}_#{digest}.dat.gz.hex"
 
       Result.new(
         filename: filename,
         iv: iv,
         encrypted_key: encrypted_key,
-        encrypted_data: encrypted_data,
+        encrypted_data: Base16.encode16(encrypted_data),
       )
     end
 
@@ -31,11 +33,11 @@ module IrsAttemptsApi
     end
 
     def self.decrypt(encrypted_data:, key:, iv:)
-      cipher = OpenSSL::Cipher.new('aes-128-cbc')
+      cipher = OpenSSL::Cipher.new('aes-256-cbc')
       cipher.decrypt
       cipher.key = key
       cipher.iv = iv
-      decrypted = cipher.update(encrypted_data) + cipher.final
+      decrypted = cipher.update(Base16.decode16(encrypted_data)) + cipher.final
 
       Zlib.gunzip(decrypted)
     end

@@ -350,6 +350,7 @@ Rails.application.routes.draw do
           as: :in_person_ready_to_verify
       get '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
+      post '/in_person/addresses' => 'in_person/address_search#index'
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
 
@@ -362,6 +363,7 @@ Rails.application.routes.draw do
     scope '/verify/inherited_proofing', module: 'idv', as: 'idv_inherited_proofing' do
       # NOTE: cancellation routes need to be before any other IP
       # routes in this scope.
+      delete '/session' => 'sessions#destroy'
       get '/cancel' => 'inherited_proofing_cancellations#new', as: :cancel
       put '/cancel' => 'inherited_proofing_cancellations#update'
       delete '/cancel' => 'inherited_proofing_cancellations#destroy'

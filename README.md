@@ -193,6 +193,12 @@ If you'd like to work with the previous implementation see the [Docker documenta
 
 Run `make lint`
 
+### Running jobs
+
+We run background jobs / workers with ActiveJob and GoodJob. You shouldn't normally have to start it manually because `make run` runs [the `Procfile`](Procfile), which handles it. The manual command is: `bundle exec good_job start`
+
+Processes can be configured to run via async jobs or synchronously using flags such as `deliver_mail_async` in [application.yml](config/application.yml.default)
+
 ### Troubleshooting
 #### I am receiving errors when running `$ make setup`
 

@@ -133,11 +133,32 @@ describe Idv::CaptureDocController do
         expect(response).to_not be_not_found
       end
 
+      it 'tracks expected events for irs reproofing' do
+        allow_any_instance_of(UserDecorator).to receive(:reproof_for_irs?).and_return(true)
+        mock_next_step(:capture_complete)
+        result = {
+          step: 'capture_complete',
+          flow_path: 'hybrid',
+          irs_reproofing: true,
+          step_count: 1,
+          analytics_id: 'Doc Auth',
+        }
+
+        get :show, params: { step: 'capture_complete' }
+
+        expect(@irs_attempts_api_tracker).not_to have_received(:idv_phone_upload_link_used)
+
+        expect(@analytics).to have_received(:track_event).with(
+          'IdV: doc auth capture_complete visited', result
+        )
+      end
+
       it 'tracks expected events' do
         mock_next_step(:capture_complete)
         result = {
           step: 'capture_complete',
           flow_path: 'hybrid',
+          irs_reproofing: false,
           step_count: 1,
           analytics_id: 'Doc Auth',
         }
