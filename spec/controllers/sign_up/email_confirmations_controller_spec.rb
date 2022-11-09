@@ -69,7 +69,7 @@ describe SignUp::EmailConfirmationsController do
 
     it 'tracks confirmation token as a double-quoted empty string' do
       expect(@analytics).to receive(:track_event).
-        with('User Registration: Email Confirmation', analytics_hash)
+        with('User Registration: Email Confirmation', analytics_token_error_hash)
 
       expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
         **attempts_tracker_error_hash,
