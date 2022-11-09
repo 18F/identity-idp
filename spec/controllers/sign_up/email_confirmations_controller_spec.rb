@@ -4,7 +4,7 @@ describe SignUp::EmailConfirmationsController do
   describe '#create' do
     let(:token_not_found_error) { { confirmation_token: [:not_found] } }
     let(:token_expired_error) { { confirmation_token: [:expired] } }
-    let(:analytics_error_properties) do
+    let(:analytics_token_error_hash) do
       {
         success: false,
         error_details: token_not_found_error,
@@ -12,7 +12,7 @@ describe SignUp::EmailConfirmationsController do
         user_id: nil,
       }
     end
-    let(:attempts_tracker_error_properties) do
+    let(:attempts_tracker_error_hash) do
       {
         email: nil,
         success: false,
@@ -26,13 +26,11 @@ describe SignUp::EmailConfirmationsController do
     end
 
     it 'tracks nil email confirmation token' do
-      analytics_hash = analytics_error_properties
-
       expect(@analytics).to receive(:track_event).
-        with('User Registration: Email Confirmation', analytics_hash)
+        with('User Registration: Email Confirmation', analytics_token_error_hash)
 
       expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
-        **attempts_tracker_error_properties,
+        **attempts_tracker_error_hash,
       )
 
       get :create, params: { confirmation_token: nil }
@@ -42,13 +40,11 @@ describe SignUp::EmailConfirmationsController do
     end
 
     it 'tracks blank email confirmation token' do
-      analytics_hash = analytics_error_properties
-
       expect(@analytics).to receive(:track_event).
-        with('User Registration: Email Confirmation', analytics_hash)
+        with('User Registration: Email Confirmation', analytics_token_error_hash)
 
       expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
-        **attempts_tracker_error_properties,
+        **attempts_tracker_error_hash,
       )
 
       get :create, params: { confirmation_token: '' }
@@ -58,13 +54,11 @@ describe SignUp::EmailConfirmationsController do
     end
 
     it 'tracks confirmation token as a single-quoted empty string' do
-      analytics_hash = analytics_error_properties
-
       expect(@analytics).to receive(:track_event).
-        with('User Registration: Email Confirmation', analytics_hash)
+        with('User Registration: Email Confirmation', analytics_token_error_hash)
 
       expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
-        **attempts_tracker_error_properties,
+        **attempts_tracker_error_hash,
       )
 
       get :create, params: { confirmation_token: "''" }
@@ -74,13 +68,11 @@ describe SignUp::EmailConfirmationsController do
     end
 
     it 'tracks confirmation token as a double-quoted empty string' do
-      analytics_hash = analytics_error_properties
-
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Confirmation', analytics_hash)
 
       expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
-        **attempts_tracker_error_properties,
+        **attempts_tracker_error_hash,
       )
 
       get :create, params: { confirmation_token: '""' }
