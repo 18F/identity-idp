@@ -62,13 +62,29 @@ describe Idv::Steps::SendLinkStep do
     Idv::Steps::SendLinkStep.new(flow)
   end
 
+  before do
+    allow(controller).to receive(:irs_attempts_api_tracker).
+      and_return(irs_attempts_api_tracker)
+  end
+
+  describe 'the telephony_response' do
+    before do
+      step.call
+    end
+
+    it 'is logged' do
+      puts "controller.analytics: #{controller.analytics.inspect}"
+
+      expect(controller.analytics).to have_logged_event(
+        'IdV: doc auth send_link submitted',
+        message_id: 'fake-message-id',
+        request_id: 'fake-message-request-id',
+      )
+    end
+  end
+
   describe 'the return value from #call' do
     let(:response) { step.call }
-
-    before do
-      allow(controller).to receive(:irs_attempts_api_tracker).
-        and_return(irs_attempts_api_tracker)
-    end
 
     it 'includes the telephony response' do
       expect(response.extra[:telephony_response]).to eq(
