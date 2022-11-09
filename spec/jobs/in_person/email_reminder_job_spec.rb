@@ -37,7 +37,6 @@ RSpec.describe InPerson::EmailReminderJob do
     context 'late email reminder' do
       let(:second_set_enrollments) {[pending_enrollment_needing_late_reminder]}
       it 'queues emails for enrollments that need the late email reminder sent' do
-        #  binding.pry
         user = pending_enrollment_needing_late_reminder.user
         freeze_time do
           expect do
@@ -48,17 +47,17 @@ RSpec.describe InPerson::EmailReminderJob do
               and_return(second_set_enrollments)
               expect(second_set_enrollments[0].enrollment_code).to eq(pending_enrollment_needing_late_reminder.enrollment_code)
             job.perform(Time.zone.now)
-            puts " adapter = #{ActiveJob::Base.queue_adapter.pretty_inspect}"
-            puts "jobs = #{ActiveJob::Base.queue_adapter.enqueued_jobs}"
           end.to have_enqueued_mail(UserMailer, :in_person_ready_to_verify_reminder).with(
             params: { user: user, email_address: user.email_addresses.first },
             args: [{ enrollment: pending_enrollment_needing_late_reminder }],
-          ).at(Time.zone.now)
+          )
+          expect(pending_enrollment_needing_late_reminder.late_reminder_sent).to be_truthy
         end
       end
     end
 
     context 'early email reminder' do
+      let(:first_set_enrollments) {[pending_enrollment_needing_early_reminder]}
       it 'queues emails for enrollments that need the early email reminder sent' do
         user = pending_enrollment_needing_early_reminder.user
 
@@ -70,12 +69,14 @@ RSpec.describe InPerson::EmailReminderJob do
 
             allow(InPersonEnrollment).to receive(:needs_early_email_reminder).
               with(early_benchmark, late_benchmark).
-              and_return([pending_enrollment_needing_early_reminder])
+              and_return(first_set_enrollments)
+
               job.perform(Time.zone.now)
+              #  binding.pry
           end.to have_enqueued_mail(UserMailer, :in_person_ready_to_verify_reminder).with(
             params: { user: user, email_address: user.email_addresses.first },
             args: [{ enrollment: pending_enrollment_needing_early_reminder }],
-          ).at(Time.zone.now)
+          )
         end
       end
     end
