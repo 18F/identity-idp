@@ -14,4 +14,11 @@ RSpec.describe Agreements::Reports::PartnerApiReport do
       expect(described_class.new.perform(today)).to eq(true)
     end
   end
+
+  describe '#good_job_concurrency_key' do
+    it 'is the job name and the date' do
+      job = described_class.new(today)
+      expect(job.good_job_concurrency_key).to eq("partner-api-report-#{today}")
+    end
+  end
 end
