@@ -73,8 +73,6 @@ describe Idv::Steps::SendLinkStep do
     end
 
     it 'is logged' do
-      puts "controller.analytics: #{controller.analytics.inspect}"
-
       expect(controller.analytics).to have_logged_event(
         'IdV: doc auth send_link submitted',
         message_id: 'fake-message-id',
