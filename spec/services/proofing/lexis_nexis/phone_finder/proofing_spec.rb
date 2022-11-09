@@ -52,7 +52,7 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
     context 'when the response is a failure' do
       it 'is a failure result' do
         stub_request(:post, verification_request.url).
-          to_return(body: LexisNexisFixtures.phone_finder_fail_response_json, status: 200)
+          to_return(body: LexisNexisFixtures.phone_finder_rdp1_fail_response_json, status: 200)
 
         result = instance.proof(applicant)
 
