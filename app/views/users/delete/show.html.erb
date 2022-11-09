@@ -24,12 +24,14 @@
 
   <%= render PasswordToggleComponent.new(
         form: f,
-        name: :password,
-        label: t('idv.form.password'),
-        required: true,
+        field_options: {
+          name: :password,
+          label: t('idv.form.password'),
+          required: true,
+        },
       ) %>
 
-  <%= f.submit t('users.delete.actions.delete'), danger: true, class: 'margin-top-1 margin-bottom-2' %>
+  <%= f.submit t('users.delete.actions.delete'), danger: true, class: 'margin-top-5 margin-bottom-2' %>
 <% end %>
 
 <%= link_to(
