@@ -208,6 +208,7 @@ class IdentityConfig
     config.add(:va_inherited_proofing_mock_enabled, type: :boolean)
     config.add(:irs_attempt_api_audience)
     config.add(:irs_attempt_api_auth_tokens, type: :comma_separated_string_list)
+    config.add(:irs_attempt_api_bucket_name, type: :string)
     config.add(:irs_attempt_api_csp_id)
     config.add(:irs_attempt_api_enabled, type: :boolean)
     config.add(:irs_attempt_api_event_ttl_seconds, type: :integer)
