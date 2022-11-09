@@ -13,23 +13,15 @@ RSpec.describe InPerson::EmailReminderJob do
 
     allow(IdentityConfig.store).to receive(:email_reminder_late_benchmark).
       and_return(late_benchmark)
+
+    puts "job: #{job.pretty_inspect}"
   end
 
   let!(:passed_enrollment) { create(:in_person_enrollment, :passed) }
   let!(:failing_enrollment) { create(:in_person_enrollment, :failed) }
   let!(:expired_enrollment) { create(:in_person_enrollment, :expired) }
-  let!(:pending_enrollment_needing_late_reminder) do
-    [
-      create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 29.days),
-      create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 26.days),
-    ]
-  end
-  let!(:pending_enrollment_needing_early_reminder) do
-    [
-      create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 19.days),
-      create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 25.days),
-    ]
-  end
+  let!(:pending_enrollment_needing_late_reminder) {create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 26.days)}
+  let!(:pending_enrollment_needing_early_reminder) {create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 19.days)}
 
   let!(:pending_enrollments) do
     [
@@ -39,45 +31,53 @@ RSpec.describe InPerson::EmailReminderJob do
   end
 
   describe '#perform' do
-    subject(:perform) { InPerson::EmailReminderJob.new.perform(Time.zone.now) }
+    it 'checks enrollments' do
+    end
 
-    it 'queues emails for enrollments that need the late email reminder sent' do
-      # binding.pry
-      user = pending_enrollment_needing_late_reminder[0].user
-
-      freeze_time do
-        expect do
-          job.perform(Time.zone.now)
-          late_benchmark = Time.zone.now - 26.days
-          final_benchmark = Time.zone.now - 29.days
-
-          allow(InPersonEnrollment).to receive(:needs_late_email_reminder).
-            with(late_benchmark, final_benchmark).
-            and_return(pending_enrollment_needing_late_reminder)
-        end.to have_enqueued_mail(UserMailer, :in_person_ready_to_verify_reminder).with(
-          params: { user: user, email_address: user.email_addresses.first },
-          args: [{ enrollment: pending_enrollment_needing_late_reminder[0] }],
-        ).at(Time.zone.now)
+    context 'late email reminder' do
+      it 'queues emails for enrollments that need the late email reminder sent' do
+        #  binding.pry
+        user = pending_enrollment_needing_late_reminder.user
+        freeze_time do
+          expect do
+            late_benchmark = Time.zone.now - 26.days
+            final_benchmark = Time.zone.now - 29.days
+            #  this does return the correct item
+            allow(InPersonEnrollment).to receive(:needs_late_email_reminder).
+              with(late_benchmark, final_benchmark).
+              and_return([pending_enrollment_needing_late_reminder])
+              # expect(:second_set_enrollments).to eq(pending_enrollment_needing_late_reminder)
+            job.perform(Time.zone.now)
+            puts " adapter = #{ActiveJob::Base.queue_adapter.pretty_inspect}"
+            puts "jobs = #{ActiveJob::Base.queue_adapter.enqueued_jobs}"
+          end.to have_enqueued_mail(UserMailer, :in_person_ready_to_verify_reminder).with(
+            params: { user: user, email_address: user.email_addresses.first },
+            args: [{ enrollment: pending_enrollment_needing_late_reminder }],
+          ).at(Time.zone.now)
+        end
       end
     end
 
-    it 'queues emails for enrollments that need the early email reminder sent' do
-      # binding.pry
-      user = pending_enrollment_needing_late_reminder[0].user
+    expects array but isnt getting it 
+    context 'early email reminder' do
+      it 'queues emails for enrollments that need the early email reminder sent' do
+        user = pending_enrollment_needing_early_reminder.user
 
-      freeze_time do
-        expect do
-          job.perform(Time.zone.now)
-          early_benchmark = Time.zone.now - 19.days
-          late_benchmark = Time.zone.now - 25.days
+        freeze_time do
+          expect do
 
-          allow(InPersonEnrollment).to receive(:needs_late_email_reminder).
-            with(early_benchmark, late_benchmark).
-            and_return(pending_enrollment_needing_early_reminder)
-        end.to have_enqueued_mail(UserMailer, :in_person_ready_to_verify_reminder).with(
-          params: { user: user, email_address: user.email_addresses.first },
-          args: [{ enrollment: pending_enrollment_needing_early_reminder[0] }],
-        ).at(Time.zone.now)
+            early_benchmark = Time.zone.now - 19.days
+            late_benchmark = Time.zone.now - 26.days
+
+            allow(InPersonEnrollment).to receive(:needs_early_email_reminder).
+              with(early_benchmark, late_benchmark).
+              and_return([pending_enrollment_needing_early_reminder])
+              job.perform(Time.zone.now)
+          end.to have_enqueued_mail(UserMailer, :in_person_ready_to_verify_reminder).with(
+            params: { user: user, email_address: user.email_addresses.first },
+            args: [{ enrollment: pending_enrollment_needing_early_reminder }],
+          ).at(Time.zone.now)
+        end
       end
     end
   end
