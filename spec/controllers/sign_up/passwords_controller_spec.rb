@@ -29,7 +29,7 @@ describe SignUp::PasswordsController do
         success_properties,
       )
 
-      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
+      expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation).with(
         email: user.email_addresses.first.email,
         **success_properties,
       )
@@ -102,7 +102,7 @@ describe SignUp::PasswordsController do
         success: false,
         failure_reason: password_short_error,
       )
-      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
+      expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation).with(
         email: user.email_addresses.first.email,
         **success_properties,
       )
