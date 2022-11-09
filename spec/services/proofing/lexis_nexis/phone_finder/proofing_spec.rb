@@ -49,7 +49,7 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
       end
     end
 
-    context 'when the response is a failure' do
+    context 'when the rdp1 response is a failure' do
       it 'is a failure result' do
         stub_request(:post, verification_request.url).
           to_return(body: LexisNexisFixtures.phone_finder_rdp1_fail_response_json, status: 200)
@@ -63,6 +63,22 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
         )
         expect(result.transaction_id).to eq('31000000000000')
         expect(result.reference).to eq('Reference1')
+      end
+    end
+
+    context 'when the rdp2 response is a failure' do
+      it 'is a failure result' do
+        stub_request(:post, verification_request.url).
+          to_return(body: LexisNexisFixtures.phone_finder_rdp2_fail_response_json, status: 200)
+
+        result = instance.proof(applicant)
+        result_json_hash = result.errors[:PhoneFinder].first
+
+        expect(result.success?).to eq(false)
+        expect(result_json_hash['ProductStatus']).to eq('fail')
+        expect(result_json_hash['Items'].class).to eq(Array)
+        # check that key contaning PII is removed and not logged
+        expect(result_json_hash['ParameterDetails']).to eq(nil)
       end
     end
 
