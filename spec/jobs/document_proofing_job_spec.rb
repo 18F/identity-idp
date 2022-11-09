@@ -156,7 +156,7 @@ RSpec.describe DocumentProofingJob, type: :job do
 
       it 'logs the trace_id and timing info' do
         expect(instance.logger).to receive(:info) do |message|
-          expect(JSON.parse(message, symbolize_names: true)).to hash_including(
+          expect(JSON.parse(message, symbolize_names: true)).to include(
             trace_id: trace_id,
             timing: hash_including(
               'decrypt.back': kind_of(Float),
