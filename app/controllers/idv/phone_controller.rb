@@ -2,6 +2,8 @@ module Idv
   class PhoneController < ApplicationController
     include IdvStepConcern
     include StepIndicatorConcern
+    include PhoneOtpRateLimitable
+    include PhoneOtpSendable
 
     attr_reader :idv_form
 
@@ -60,7 +62,7 @@ module Idv
         if VendorStatus.new.all_phone_vendor_outage?
           redirect_to vendor_outage_path(from: :idv_phone)
         else
-          redirect_to idv_otp_delivery_method_url
+          send_phone_confirmation_otp_and_handle_result
         end
       else
         redirect_to idv_review_url
@@ -73,6 +75,31 @@ module Idv
 
     def submit_proofing_attempt
       step.submit(step_params.to_h)
+    end
+
+    def send_phone_confirmation_otp_and_handle_result
+      result = send_phone_confirmation_otp
+      analytics.idv_phone_confirmation_otp_sent(**result.to_h)
+
+      irs_attempts_api_tracker.idv_phone_otp_sent(
+        phone_number: @idv_phone,
+        success: result.success?,
+        otp_delivery_method: params[:otp_delivery_preference],
+        failure_reason: result.success? ? {} : otp_sent_tracker_error(result),
+      )
+      if result.success?
+        redirect_to idv_otp_verification_url
+      else
+        handle_send_phone_confirmation_otp_failure(result)
+      end
+    end
+
+    def handle_send_phone_confirmation_otp_failure(result)
+      if send_phone_confirmation_otp_rate_limited?
+        handle_too_many_otp_sends
+      else
+        invalid_phone_number(result.extra[:telephony_response].error)
+      end
     end
 
     def handle_proofing_failure
@@ -89,7 +116,7 @@ module Idv
     end
 
     def step_params
-      params.require(:idv_phone_form).permit(:phone)
+      params.require(:idv_phone_form).permit(:phone, :otp_delivery_preference)
     end
 
     def confirm_step_needed

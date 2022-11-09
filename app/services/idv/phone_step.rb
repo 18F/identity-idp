@@ -7,7 +7,7 @@ module Idv
 
     def submit(step_params)
       self.step_params = step_params
-      idv_session.previous_phone_step_params = step_params.slice(:phone)
+      idv_session.previous_phone_step_params = step_params.slice(:phone, :otp_delivery_preference)
       proof_address
     end
 
@@ -94,6 +94,12 @@ module Idv
       end
     end
 
+    def otp_delivery_preference
+      preference = idv_session.previous_phone_step_params[:otp_delivery_preference]
+      return :sms if preference.empty?
+      preference.to_sym
+    end
+
     def throttle
       @throttle ||= Throttle.new(user: idv_session.current_user, throttle_type: :proof_address)
     end
@@ -115,7 +121,7 @@ module Idv
     def start_phone_confirmation_session
       idv_session.user_phone_confirmation_session = PhoneConfirmation::ConfirmationSession.start(
         phone: PhoneFormatter.format(applicant[:phone]),
-        delivery_method: :sms,
+        delivery_method: otp_delivery_preference,
       )
     end
 
