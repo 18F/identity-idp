@@ -24,6 +24,7 @@ module SignUp
       irs_attempts_api_tracker.user_registration_email_confirmation(
         email: @email_address&.email,
         success: true,
+        failure_reason: nil,
       )
       request_id = params.fetch(:_request_id, '')
       redirect_to sign_up_enter_password_url(
