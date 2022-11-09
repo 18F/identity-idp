@@ -28,9 +28,19 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
 
   describe '#proof' do
     context 'when the response is a success' do
-      it 'is a successful result' do
+      it 'is a successful rdp1 result' do
         stub_request(:post, verification_request.url).
-          to_return(body: LexisNexisFixtures.phone_finder_success_response_json, status: 200)
+          to_return(body: LexisNexisFixtures.phone_finder_rdp1_success_response_json, status: 200)
+
+        result = instance.proof(applicant)
+
+        expect(result.success?).to eq(true)
+        expect(result.errors).to eq({})
+      end
+
+      it 'is a successful rdp2 result' do
+        stub_request(:post, verification_request.url).
+          to_return(body: LexisNexisFixtures.phone_finder_rdp2_success_response_json, status: 200)
 
         result = instance.proof(applicant)
 
@@ -39,10 +49,10 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
       end
     end
 
-    context 'when the response is a failure' do
+    context 'when the rdp1 response is a failure' do
       it 'is a failure result' do
         stub_request(:post, verification_request.url).
-          to_return(body: LexisNexisFixtures.phone_finder_fail_response_json, status: 200)
+          to_return(body: LexisNexisFixtures.phone_finder_rdp1_fail_response_json, status: 200)
 
         result = instance.proof(applicant)
 
@@ -53,6 +63,22 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
         )
         expect(result.transaction_id).to eq('31000000000000')
         expect(result.reference).to eq('Reference1')
+      end
+    end
+
+    context 'when the rdp2 response is a failure' do
+      it 'is a failure result' do
+        stub_request(:post, verification_request.url).
+          to_return(body: LexisNexisFixtures.phone_finder_rdp2_fail_response_json, status: 200)
+
+        result = instance.proof(applicant)
+        result_json_hash = result.errors[:PhoneFinder].first
+
+        expect(result.success?).to eq(false)
+        expect(result_json_hash['ProductStatus']).to eq('fail')
+        expect(result_json_hash['Items'].class).to eq(Array)
+        # check that key contaning PII is removed and not logged
+        expect(result_json_hash['ParameterDetails']).to eq(nil)
       end
     end
 

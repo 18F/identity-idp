@@ -47,11 +47,10 @@ module Proofing
         return {} if products.nil?
 
         products.each_with_object({}) do |product, error_messages|
-          if product['ProductType'] == 'InstantVerify'
-            next if product['ProductStatus'] == 'pass'
-          elsif product['ProductStatus'] == 'pass'
-            next
-          end
+          next if product['ProductStatus'] == 'pass'
+
+          # don't log PhoneFinder reflected PII
+          product.delete('ParameterDetails') if product['ProductType'] == 'PhoneFinder'
 
           key = product.fetch('ExecutedStepName').to_sym
           error_messages[key] = product
