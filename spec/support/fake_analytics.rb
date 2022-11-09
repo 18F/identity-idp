@@ -119,7 +119,7 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
       # attributes
       expected = attributes_matcher
       actual = matching_events.first
-      message = ''
+      message = "Expected that FakeAnalytics would have received matching event #{event}\n"
       message += "expected: #{expected}\n"
       message += "     got: #{actual}\n\n"
       message += "Diff:#{differ.diff(actual, expected)}"
@@ -132,7 +132,7 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
       actual_attrs = matching_events.first
       actual_compared = actual_attrs.slice(*expected.keys)
       actual_ignored = actual_attrs.except(*expected.keys)
-      message = ''
+      message = "Expected that FakeAnalytics would have received matching event #{event}"
       message += "expected: include #{expected}\n"
       message += "     got: #{actual_attrs}\n\n"
       message += "Diff:#{differ.diff(actual_compared, expected)}\n"
