@@ -35,6 +35,7 @@ RSpec.describe InPerson::EmailReminderJob do
     end
 
     context 'late email reminder' do
+      let(:second_set_enrollments) {[pending_enrollment_needing_late_reminder]}
       it 'queues emails for enrollments that need the late email reminder sent' do
         #  binding.pry
         user = pending_enrollment_needing_late_reminder.user
@@ -42,11 +43,10 @@ RSpec.describe InPerson::EmailReminderJob do
           expect do
             late_benchmark = Time.zone.now - 26.days
             final_benchmark = Time.zone.now - 29.days
-            #  this does return the correct item
             allow(InPersonEnrollment).to receive(:needs_late_email_reminder).
               with(late_benchmark, final_benchmark).
-              and_return([pending_enrollment_needing_late_reminder])
-              # expect(:second_set_enrollments).to eq(pending_enrollment_needing_late_reminder)
+              and_return(second_set_enrollments)
+              expect(second_set_enrollments[0].enrollment_code).to eq(pending_enrollment_needing_late_reminder.enrollment_code)
             job.perform(Time.zone.now)
             puts " adapter = #{ActiveJob::Base.queue_adapter.pretty_inspect}"
             puts "jobs = #{ActiveJob::Base.queue_adapter.enqueued_jobs}"
@@ -58,7 +58,6 @@ RSpec.describe InPerson::EmailReminderJob do
       end
     end
 
-    expects array but isnt getting it 
     context 'early email reminder' do
       it 'queues emails for enrollments that need the early email reminder sent' do
         user = pending_enrollment_needing_early_reminder.user
