@@ -1,7 +1,7 @@
 class IrsAttemptsEventsBatchJob < ApplicationJob
   queue_as :default
 
-  def perform(timestamp = Time.zone.now - 1.hour, dir_path = './attempts_api_batch_job_output')
+  def perform(timestamp = Time.zone.now - 1.hour)
     return nil unless IdentityConfig.store.irs_attempt_api_enabled
 
     events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: timestamp)
@@ -15,31 +15,22 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     )
 
     # Write the file to S3 - Can we skip the file write step? Do we need to write out a temp file?
-    if IdentityConfig.store.irs_attempt_api_bucket_name.nil?
-      # write to a file and store on the disk until S3 is setup
-      FileUtils.mkdir_p(dir_path)
+    bucket_name = IdentityConfig.store.irs_attempt_api_bucket_name
+    bucket_url = "s3://#{bucket_name}/#{result.filename}"
 
-      file_path = "#{dir_path}/#{result.filename}"
+    create_and_upload_to_attempts_s3_resource(bucket_name: bucket_name, filename: result.filename, encrypted_data: result.encrypted_data)
 
-      File.open(file_path, 'wb') do |file|
-        file.write(result.encrypted_data)
-      end
-      return { encryptor_result: result, file_path: file_path }
-    else
-      bucket_name = IdentityConfig.store.irs_attempt_api_bucket_name
-      bucket_url = "s3://#{bucket_name}/#{result.filename}"
+    encoded_iv = Base64.strict_encode64(result.iv)
+    encoded_encrypted_key = Base64.strict_encode64(result.encrypted_key)
 
-      puts "uploading to #{bucket_url}"
+    IrsAttemptApiLogFile.create(
+      filename: bucket_url, iv: encoded_iv,
+      encrypted_key: encoded_encrypted_key, requested_time: timestamp
+    )
+  end
 
-      aws_object = Aws::S3::Resource.new.bucket(bucket_name).object(result.filename)
-      aws_object.put(body: result.encrypted_data, acl: 'private', content_type: 'text/plain')
-
-      puts "upload completed to #{bucket_url}"
-
-      IrsAttemptApiLogFile.create(
-        filename: bucket_url, iv: result.iv,
-        encrypted_key: result.encrypted_key, requested_time: timestamp
-      )
-    end
+  def create_and_upload_to_attempts_s3_resource(bucket_name:, filename:, encrypted_data:)
+    aws_object = Aws::S3::Resource.new.bucket(bucket_name).object(filename)
+    aws_object.put(body: encrypted_data, acl: 'private', content_type: 'text/plain')
   end
 end
