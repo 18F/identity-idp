@@ -161,7 +161,7 @@ else
       irs_attempt_events_aggregator: {
         class: 'IrsAttemptsEventsBatchJob',
         cron: cron_1h,
-        args: -> { [timestamp: Time.zone.now - 1.hour] },
+        args: -> { [Time.zone.now - 1.hour] },
       },
     }
   end
