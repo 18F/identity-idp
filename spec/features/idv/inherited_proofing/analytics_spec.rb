@@ -1,0 +1,92 @@
+require 'rails_helper'
+
+feature 'Inherited Proofing Analytics Regression', js: true do
+  include InheritedProofingHelper
+
+  let(:user) { user_with_2fa }
+  let(:fake_analytics) { FakeAnalytics.new }
+  let(:auth_code) { Idv::InheritedProofing::Va::Mocks::Service::VALID_AUTH_CODE }
+  # rubocop:disable Layout/LineLength
+  let(:happy_path_events) do
+    {
+      'Idv: inherited proofing get started visited' => {:flow_path=>"standard", :step=>"get_started", :step_count=>1, :analytics_id=>"Inherited Proofing"},
+      'Idv: inherited proofing get started submitted' => {:success=>true, :errors=>{}, :flow_path=>"standard", :step=>"get_started", :step_count=>1, :analytics_id=>"Inherited Proofing"},
+      'Idv: inherited proofing agreement visited' => {:flow_path=>"standard", :step=>"agreement", :step_count=>1, :analytics_id=>"Inherited Proofing"},
+      'Idv: inherited proofing agreement submitted' => {:success=>true, :errors=>{}, :flow_path=>"standard",:step=>"agreement", :step_count=>1, :analytics_id=>"Inherited Proofing"},
+      'Idv: inherited proofing verify wait step visited' => {:flow_path=>"standard", :step=>"verify_wait", :step_count=>1, :analytics_id=>"Inherited Proofing"},
+      'Idv: inherited proofing verify wait submitted' => {:success=>true, :errors=>{}, :step=>"verify_wait_step_show", :analytics_id=>"Inherited Proofing"},
+      'Idv: inherited proofing verify visited' => {:flow_path=>"standard", :step=>"verify_info", :step_count=>1, :analytics_id=>"Inherited Proofing"},
+      'Idv: inherited proofing verify submitted' => {:success=>true, :errors=>{}, :flow_path=>"standard", :step=>"verify_info", :step_count=>1, :analytics_id=>"Inherited Proofing"},
+    }
+  end
+  # let(:gpo_path_events) do
+  #   {
+  #     'IdV: intro visited' => {},
+  #     'IdV: doc auth welcome visited' => { flow_path: 'standard', step: 'welcome', step_count: 1 },
+  #     'IdV: doc auth welcome submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'welcome', step_count: 1 },
+  #     'IdV: doc auth agreement visited' => { flow_path: 'standard', step: 'agreement', step_count: 1 },
+  #     'IdV: doc auth agreement submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'agreement', step_count: 1 },
+  #     'IdV: doc auth upload visited' => { flow_path: 'standard', step: 'upload', step_count: 1 },
+  #     'IdV: doc auth upload submitted' => { success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'upload', step_count: 1 },
+  #     'IdV: doc auth document_capture visited' => { flow_path: 'standard', step: 'document_capture', step_count: 1 },
+  #     'Frontend: IdV: front image added' => { 'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard' },
+  #     'Frontend: IdV: document capture async upload encryption' => { 'success' => true, 'flow_path' => 'standard' },
+  #     'Frontend: IdV: back image added' => { 'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard' },
+  #     'Frontend: IdV: document capture async upload submitted' => { 'success' => true, 'trace_id' => nil, 'status_code' => 200, 'flow_path' => 'standard' },
+  #     'IdV: doc auth image upload form submitted' => { success: true, errors: {}, attempts: nil, remaining_attempts: 3, user_id: nil, flow_path: 'standard' },
+  #     'IdV: doc auth image upload vendor pii validation' => { success: true, errors: {}, user_id: nil, remaining_attempts: 3, flow_path: 'standard' },
+  #     'IdV: doc auth verify_document_status submitted' => { success: true, errors: {}, remaining_attempts: 3, flow_path: 'standard', step: 'verify_document_status', step_count: 1 },
+  #     'IdV: doc auth document_capture submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'document_capture', step_count: 1 },
+  #     'IdV: doc auth ssn visited' => { flow_path: 'standard', step: 'ssn', step_count: 1 },
+  #     'IdV: doc auth ssn submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'ssn', step_count: 1 },
+  #     'IdV: doc auth verify visited' => { flow_path: 'standard', step: 'verify', step_count: 1 },
+  #     'IdV: doc auth verify submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'verify', step_count: 1 },
+  #     'IdV: doc auth verify_wait visited' => { flow_path: 'standard', step: 'verify_wait', step_count: 1 },
+  #     'IdV: doc auth optional verify_wait submitted' => { success: true, errors: {}, address_edited: false, proofing_results: { exception: nil, timed_out: false, context: { should_proof_state_id: true, adjudication_reason: 'pass_resolution_and_state_id', stages: { resolution: { vendor_name: 'ResolutionMock', errors: {}, exception: nil, success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [] }, state_id: { vendor_name: 'StateIdMock', errors: {}, success: true, timed_out: false, exception: nil, transaction_id: 'state-id-mock-transaction-id-456', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' } } } }, ssn_is_unique: true, step: 'verify_wait_step_show' },
+  #     'IdV: phone of record visited' => { proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis' } },
+  #     'IdV: USPS address letter requested' => { resend: false, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis' } },
+  #     'IdV: review info visited' => { proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
+  #     'IdV: USPS address letter enqueued' => { enqueued_at: Time.zone.now.utc, resend: false, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
+  #     'IdV: review complete' => { success: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
+  #     'IdV: final resolution' => { success: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
+  #     'IdV: personal key visited' => { proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
+  #     'IdV: personal key acknowledgment toggled' => { checked: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
+  #     'IdV: personal key submitted' => { proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
+  #     'IdV: come back later visited' => { proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
+  #   }
+  # end
+  # rubocop:enable Layout/LineLength
+
+  # Needed for enqueued_at in gpo_step
+  # around do |ex|
+  #   freeze_time { ex.run }
+  # end
+
+  before do
+    allow_any_instance_of(ApplicationController).to receive(:analytics) do |controller|
+      fake_analytics.user = controller.analytics_user
+      fake_analytics
+    end
+
+    allow(IdentityConfig.store).to receive(:va_inherited_proofing_mock_enabled).and_return true
+    allow_any_instance_of(Idv::InheritedProofingController).to \
+      receive(:va_inherited_proofing?).and_return true
+    allow_any_instance_of(Idv::InheritedProofingController).to \
+      receive(:va_inherited_proofing_auth_code).and_return auth_code
+    # allow_any_instance_of(InheritedProofingJob).to receive(:build_analytics).
+    #   and_return(fake_analytics)
+  end
+
+  context 'Happy path' do
+    before do
+    sign_in_and_2fa_user
+    complete_all_inherited_proofing_steps_to_handoff
+    end
+
+    it 'records all of the events' do
+      happy_path_events.each do |event, attributes|
+        expect(fake_analytics).to have_logged_event(event, attributes)
+      end
+    end
+  end
+end
