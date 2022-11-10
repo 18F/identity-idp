@@ -45,13 +45,14 @@ describe Idv::SessionsController do
       end
     end
 
-    it 'logs IDV start over analytics with step and location params' do
+    it 'tracks the event in analytics' do
       delete :destroy, params: { step: 'first', location: 'get_help' }
 
       expect(@analytics).to have_logged_event(
         'IdV: start over',
         step: 'first',
         location: 'get_help',
+        analytics_id: nil,
       )
     end
 

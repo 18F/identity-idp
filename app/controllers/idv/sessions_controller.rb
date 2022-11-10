@@ -43,12 +43,10 @@ module Idv
     end
 
     def log_analytics
-      # LG-7128: Implement Inherited Proofing analytics here.
-      # include InheritedProofingConcern and if inherited_proofing?,
-      # pass flow/param/analytics_ids param to the existing idv_start_over event.
       analytics.idv_start_over(
         step: location_params[:step],
         location: location_params[:location],
+        analytics_id: @analytics_id,
       )
     end
   end

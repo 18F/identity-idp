@@ -115,13 +115,13 @@ describe Idv::InheritedProofingCancellationsController do
       end
 
       it 'renders template' do
-        subject
+        action
 
         expect(response).to render_template(:new)
       end
 
       it 'stores go back path' do
-        subject
+        action
 
         expect(controller.user_session[:idv][:go_back_path]).to eq(go_back_path)
       end
@@ -138,7 +138,7 @@ describe Idv::InheritedProofingCancellationsController do
           analytics_id: nil,
         )
 
-        subject
+        action
       end
     end
   end
