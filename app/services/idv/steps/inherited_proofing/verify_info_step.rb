@@ -5,11 +5,11 @@ module Idv
         STEP_INDICATOR_STEP = :verify_info
 
         def self.analytics_visited_event
-          :idv_inherited_proofing_verify_visited
+          :idv_doc_auth_verify_visited
         end
 
         def self.analytics_submitted_event
-          :idv_inherited_proofing_verify_submitted
+          :idv_doc_auth_verify_submitted
         end
 
         def call

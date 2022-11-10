@@ -621,61 +621,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] step Document step user is on
-  # The user submits verification that their imported data is correct
-  def idv_inherited_proofing_verify_submitted(success:, errors:, flow_path:, step:, **extra)
-    track_event(
-      'Idv: inherited proofing verify submitted',
-      success: success,
-      errors: errors,
-      flow_path: flow_path,
-      step: step,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [String] step Document step user is on
-  # Optional Step: The user visits the retrieving user/verify wait information page while api
-  # call is made
-  def idv_inherited_proofing_optional_verify_wait_submitted(success:, errors:, step:, **extra)
-    track_event(
-      'Idv: inherited proofing verify wait submitted',
-      success: success,
-      errors: errors,
-      step: step,
-      **extra,
-    )
-  end
-
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] step Document step user is on
-  # The user visits the retrieving user/verify wait information page while api call is made
-  def idv_inherited_proofing_verify_wait_step_visited(flow_path:, step:, **extra)
-    track_event(
-      'Idv: inherited proofing verify wait step visited',
-      flow_path: flow_path,
-      step: step,
-      **extra,
-    )
-  end
-
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] step Document step user is on
-  # The user visits the verify page to review their data
-  def idv_inherited_proofing_verify_visited(flow_path:, step:, **extra)
-    track_event(
-      'Idv: inherited proofing verify visited',
-      flow_path: flow_path,
-      step: step,
-      **extra,
-    )
-  end
-
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user visited the in person proofing location step
   def idv_in_person_location_visited(flow_path:, **extra)

@@ -9,7 +9,7 @@ module Idv
         STEP_INDICATOR_STEP = :getting_started
 
         def self.analytics_optional_step_event
-          :idv_inherited_proofing_optional_verify_wait_submitted
+          :idv_doc_auth_optional_verify_wait_submitted
         end
 
         def call
