@@ -236,7 +236,7 @@ describe Idv::InheritedProofingCancellationsController do
           step: step.to_s,
           proofing_components: nil,
           analytics_id: nil,
-          )
+        )
 
         action
       end
