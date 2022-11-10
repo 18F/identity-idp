@@ -1,4 +1,4 @@
-<!-- Comment in the sections you need for your PR! -->
+<!-- Uncomment and update the sections you need for your PR! -->
 
 <!--
 ## 🎫 Ticket
