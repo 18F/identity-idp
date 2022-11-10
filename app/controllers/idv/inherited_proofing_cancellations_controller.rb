@@ -8,9 +8,7 @@ module Idv
     before_action :confirm_idv_needed
 
     def new
-      # LG-7128: Implement Inherited Proofing analytics here.
-      # properties = ParseControllerFromReferer.new(request.referer).call
-      # analytics.idv_inherited_proofing_cancellation_visited(step: params[:step], **properties)
+      analytics.idv_cancellation_visited(step: params[:step], **analytics_properties)
       self.session_go_back_path = go_back_path || idv_inherited_proofing_path
       @presenter = CancellationsPresenter.new(
         sp_name: decorated_session.sp_name,
@@ -19,14 +17,12 @@ module Idv
     end
 
     def update
-      # LG-7128: Implement Inherited Proofing analytics here.
-      # analytics.idv_inherited_proofing_cancellation_go_back(step: params[:step])
+      analytics.idv_cancellation_go_back(step: params[:step], **analytics_properties)
       redirect_to session_go_back_path || idv_inherited_proofing_path
     end
 
     def destroy
-      # LG-7128: Implement Inherited Proofing analytics here.
-      # analytics.idv_inherited_proofing_cancellation_confirmed(step: params[:step])
+      analytics.idv_cancellation_confirmed(step: params[:step], **analytics_properties)
       cancel_session
       render json: { redirect_url: cancelled_redirect_path }
     end
@@ -81,6 +77,11 @@ module Idv
 
     def effective_user_id
       current_user&.id
+    end
+
+    def analytics_properties
+      route_properties = ParseControllerFromReferer.new(request.referer).call
+      route_properties.merge({ analytics_id: @analytics_id })
     end
   end
 end

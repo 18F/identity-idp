@@ -572,7 +572,7 @@ module AnalyticsEvents
   # The user agrees to allow us to access their data via api call
   def idv_inherited_proofing_agreement_submitted(success:, errors:, flow_path:, step:, **extra)
     track_event(
-      'Idv: inherited proofing agreement submitted',
+      'IdV: inherited proofing agreement submitted',
       success: success,
       errors: errors,
       flow_path: flow_path,
@@ -586,7 +586,7 @@ module AnalyticsEvents
   # The user visited the inherited proofing agreement page
   def idv_inherited_proofing_agreement_visited(flow_path:, step:, **extra)
     track_event(
-      'Idv: inherited proofing agreement visited',
+      'IdV: inherited proofing agreement visited',
       flow_path: flow_path,
       step: step,
       **extra,
@@ -600,7 +600,7 @@ module AnalyticsEvents
   # The user chooses to begin the inherited proofing process
   def idv_inherited_proofing_get_started_submitted(success:, errors:, flow_path:, step:, **extra)
     track_event(
-      'Idv: inherited proofing get started submitted',
+      'IdV: inherited proofing get started submitted',
       success: success,
       errors: errors,
       flow_path: flow_path,
@@ -614,7 +614,7 @@ module AnalyticsEvents
   # The user visited the inherited proofing get started step
   def idv_inherited_proofing_get_started_visited(flow_path:, step:, **extra)
     track_event(
-      'Idv: inherited proofing get started visited',
+      'IdV: inherited proofing get started visited',
       flow_path: flow_path,
       step: step,
       **extra,
