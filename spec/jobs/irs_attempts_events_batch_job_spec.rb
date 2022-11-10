@@ -25,9 +25,9 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         allow(IdentityConfig.store).to receive(:irs_attempt_api_public_key).
           and_return(Base64.strict_encode64(private_key.public_key.to_der))
 
-        Dir.mktmpdir do |dir|
-          @dir_path = dir
-        end
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_bucket_name).and_return("some-s3-bucket-name")
+
+        allow_any_instance_of(described_class).to receive(:create_and_upload_to_attempts_s3_resource)
 
         travel_to start_time + 1.hour
 
@@ -41,23 +41,29 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
       end
 
       it 'batches and writes attempt events to an encrypted file' do
-        result = IrsAttemptsEventsBatchJob.perform_now(start_time, dir_path: @dir_path)
-        expect(result[:file_path]).not_to be_nil
+        #expect_any_instance_of(described_class).to receive(:create_and_upload_to_attempts_s3_resource).
+          #with(bucket_name: "some-s3-bucket-name")
+        
+        result = IrsAttemptsEventsBatchJob.perform_now(start_time)
 
-        file_data = File.open(result[:file_path], 'rb') do |file|
-          file.read
-        end
+        expect(result[:requested_time]).to eq(start_time)
 
-        final_key = private_key.private_decrypt(result[:encryptor_result].encrypted_key)
+        #expect(result[:file_path]).not_to be_nil
 
-        decrypted_result = IrsAttemptsApi::EnvelopeEncryptor.decrypt(
-          encrypted_data: file_data,
-          key: final_key, iv: result[:encryptor_result].iv
-        )
+        #file_data = File.open(result[:file_path], 'rb') do |file|
+        #  file.read
+        #end
 
-        events_jwes = events.pluck(:jwe)
+        #final_key = private_key.private_decrypt(result[:encryptor_result].encrypted_key)
 
-        expect(decrypted_result).to eq(events_jwes.join("\r\n"))
+        #decrypted_result = IrsAttemptsApi::EnvelopeEncryptor.decrypt(
+        #  encrypted_data: file_data,
+        #  key: final_key, iv: result[:encryptor_result].iv
+        #)
+
+        #events_jwes = events.pluck(:jwe)
+
+        #expect(decrypted_result).to eq(events_jwes.join("\r\n"))
       end
     end
 
