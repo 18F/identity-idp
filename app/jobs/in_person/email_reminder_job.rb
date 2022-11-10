@@ -12,10 +12,12 @@ module InPerson
       email_reminder_final_benchmark = IdentityConfig.store.email_reminder_final_benchmark
       late_benchmark = calculate_interval(email_reminder_late_benchmark)
       final_benchmark = calculate_interval(email_reminder_final_benchmark)
+
       second_set_enrollments = InPersonEnrollment.needs_late_email_reminder(
         late_benchmark,
         final_benchmark,
       )
+
       second_set_enrollments.each do |enrollment|
         send_reminder_email(enrollment.user, enrollment)
         enrollment.update!(late_reminder_sent: true)
@@ -23,6 +25,7 @@ module InPerson
 
       email_reminder_early_benchmark = IdentityConfig.store.email_reminder_early_benchmark
       early_benchmark = calculate_interval(email_reminder_early_benchmark)
+
       first_set_enrollments = InPersonEnrollment.needs_early_email_reminder(
         early_benchmark,
         late_benchmark,
@@ -48,7 +51,7 @@ module InPerson
           email_address: email_address,
         ).in_person_ready_to_verify_reminder(
           enrollment: enrollment,
-        ).deliver_now
+        ).deliver_later
         # rubocop:enable IdentityIdp/MailLaterLinter
       end
     end
