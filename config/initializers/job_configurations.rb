@@ -52,12 +52,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Agency Invoice Supplement Report to S3
-      sp_invoice_supplement_by_issuer: {
-        class: 'Reports::AgencyInvoiceIssuerSupplementReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Combined Invoice Supplement Report to S3
       combined_invoice_supplement_report: {
         class: 'Reports::CombinedInvoiceSupplementReport',
