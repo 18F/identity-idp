@@ -37,7 +37,11 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:state_id_proofer) do
     Proofing::Aamva::Proofer.new(AamvaFixtures.example_config.to_h)
   end
-  let(:ddp_proofer) { Proofing::Mock::DdpMockClient.new }
+  let(:ddp_proofer) {
+    Proofing::LexisNexis::Ddp::Proofer.new(
+      LexisNexisFixtures.example_ddp_config.to_h
+    )
+  }
   let(:trace_id) { SecureRandom.uuid }
   let(:user) { create(:user, :signed_up) }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
