@@ -9,14 +9,14 @@ feature 'Inherited Proofing Analytics Regression', js: true do
   # rubocop:disable Layout/LineLength
   let(:happy_path_events) do
     {
-      'Idv: inherited proofing get started visited' => {:flow_path=>"standard", :step=>"get_started", :step_count=>1, :analytics_id=>"Inherited Proofing"},
-      'Idv: inherited proofing get started submitted' => {:success=>true, :errors=>{}, :flow_path=>"standard", :step=>"get_started", :step_count=>1, :analytics_id=>"Inherited Proofing"},
-      'Idv: inherited proofing agreement visited' => {:flow_path=>"standard", :step=>"agreement", :step_count=>1, :analytics_id=>"Inherited Proofing"},
-      'Idv: inherited proofing agreement submitted' => {:success=>true, :errors=>{}, :flow_path=>"standard",:step=>"agreement", :step_count=>1, :analytics_id=>"Inherited Proofing"},
-      'Idv: inherited proofing verify wait step visited' => {:flow_path=>"standard", :step=>"verify_wait", :step_count=>1, :analytics_id=>"Inherited Proofing"},
-      'Idv: inherited proofing verify wait submitted' => {:success=>true, :errors=>{}, :step=>"verify_wait_step_show", :analytics_id=>"Inherited Proofing"},
-      'Idv: inherited proofing verify visited' => {:flow_path=>"standard", :step=>"verify_info", :step_count=>1, :analytics_id=>"Inherited Proofing"},
-      'Idv: inherited proofing verify submitted' => {:success=>true, :errors=>{}, :flow_path=>"standard", :step=>"verify_info", :step_count=>1, :analytics_id=>"Inherited Proofing"},
+      'Idv: inherited proofing get started visited' => { flow_path: 'standard', step: 'get_started', step_count: 1, analytics_id: 'Inherited Proofing' },
+      'Idv: inherited proofing get started submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'get_started', step_count: 1, analytics_id: 'Inherited Proofing' },
+      'Idv: inherited proofing agreement visited' => { flow_path: 'standard', step: 'agreement', step_count: 1, analytics_id: 'Inherited Proofing' },
+      'Idv: inherited proofing agreement submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'agreement', step_count: 1, analytics_id: 'Inherited Proofing' },
+      'Idv: inherited proofing verify wait step visited' => { flow_path: 'standard', step: 'verify_wait', step_count: 1, analytics_id: 'Inherited Proofing' },
+      'Idv: inherited proofing verify wait submitted' => { success: true, errors: {}, step: 'verify_wait_step_show', analytics_id: 'Inherited Proofing' },
+      'Idv: inherited proofing verify visited' => { flow_path: 'standard', step: 'verify_info', step_count: 1, analytics_id: 'Inherited Proofing' },
+      'Idv: inherited proofing verify submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'verify_info', step_count: 1, analytics_id: 'Inherited Proofing' },
     }
   end
   # let(:gpo_path_events) do
@@ -79,8 +79,8 @@ feature 'Inherited Proofing Analytics Regression', js: true do
 
   context 'Happy path' do
     before do
-    sign_in_and_2fa_user
-    complete_all_inherited_proofing_steps_to_handoff
+      sign_in_and_2fa_user
+      complete_all_inherited_proofing_steps_to_handoff
     end
 
     it 'records all of the events' do

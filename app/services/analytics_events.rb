@@ -577,7 +577,8 @@ module AnalyticsEvents
       errors: errors,
       flow_path: flow_path,
       step: step,
-      **extra)
+      **extra,
+    )
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
@@ -639,7 +640,8 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] step Document step user is on
-  # Optional Step: The user visits the retrieving user/verify wait information page while api call is made
+  # Optional Step: The user visits the retrieving user/verify wait information page while api
+  # call is made
   def idv_inherited_proofing_optional_verify_wait_submitted(success:, errors:, step:, **extra)
     track_event(
       'Idv: inherited proofing verify wait submitted',

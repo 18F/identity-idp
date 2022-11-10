@@ -49,10 +49,6 @@ module InheritedProofingHelper
   end
 
   # get_started > agreement > verify_wait > please verify > complete
-  def complete_inherited_proofing_verify_step
-    click_on t('inherited_proofing.buttons.continue')
-  end
-
   def complete_all_inherited_proofing_steps_to_handoff(expect_accessible: false)
     complete_inherited_proofing_steps_before_verify_step(expect_accessible: expect_accessible)
     complete_inherited_proofing_verify_step
