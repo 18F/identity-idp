@@ -12,7 +12,7 @@ RSpec.describe IrsAttemptsApi::EnvelopeEncryptor do
 
       expect(result.encrypted_data).to_not eq text
       expect(result.encrypted_data).to_not include(text)
-      expect(Base64.decode64(result.encrypted_data)).to_not include(text)
+      expect(Base16.decode16(result.encrypted_data)).to_not include(text)
     end
 
     it 'filename includes digest and truncated timestamp' do

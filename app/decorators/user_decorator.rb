@@ -62,8 +62,8 @@ class UserDecorator
   end
 
   def reproof_for_irs?(service_provider:)
-    return false unless user.active_profile.present?
     return false unless service_provider&.irs_attempts_api_enabled
+    return false unless user.active_profile.present?
     !user.active_profile.initiating_service_provider&.irs_attempts_api_enabled
   end
 

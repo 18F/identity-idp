@@ -2,6 +2,8 @@ require 'rails_helper'
 require 'rake'
 
 describe 'dev rake tasks' do
+  include UspsIppHelper
+
   before do
     Rake.application.rake_require 'tasks/dev'
     Rake::Task.define_task(:environment)
@@ -22,6 +24,7 @@ describe 'dev rake tasks' do
     prev_enrollment_status = nil
     prev_verified = nil
     prev_scrypt_cost = nil
+    prev_pending_in_usps = nil
 
     before(:each) do
       prev_num_users = ENV['NUM_USERS']
@@ -29,6 +32,7 @@ describe 'dev rake tasks' do
       prev_enrollment_status = ENV['ENROLLMENT_STATUS']
       prev_verified = ENV['VERIFIED']
       prev_scrypt_cost = ENV['SCRYPT_COST']
+      prev_pending_in_usps = ENV['CREATE_PENDING_ENROLLMENT_IN_USPS']
 
       ENV['PROGRESS'] = 'no'
       ENV['NUM_USERS'] = '10'
@@ -43,6 +47,7 @@ describe 'dev rake tasks' do
       ENV['ENROLLMENT_STATUS'] = prev_enrollment_status
       ENV['VERIFIED'] = prev_verified
       ENV['SCRYPT_COST'] = prev_scrypt_cost
+      ENV['CREATE_PENDING_ENROLLMENT_IN_USPS'] = prev_pending_in_usps
     end
 
     describe 'dev:random_users' do
@@ -308,6 +313,35 @@ describe 'dev rake tasks' do
         )
         expect(last_record.profile).to be_instance_of(Profile)
         expect(last_record.profile.active).to be(true)
+      end
+
+      it 'creates the enrollment in USPS IPPaaS when CREATE_PENDING_ENROLLMENT_IN_USPS is truthy' do
+        ENV['CREATE_PENDING_ENROLLMENT_IN_USPS'] = '1'
+        stub_request_token
+        stub_request_enroll
+
+        expect(User.count).to eq 0
+        expect(InPersonEnrollment.count).to eq 0
+
+        Rake::Task['dev:random_in_person_users'].invoke
+
+        expect(User.count).to eq 10
+        expect(InPersonEnrollment.count).to eq 10
+        expect(InPersonEnrollment.distinct.count('user_id')).to eq 10
+        expect(InPersonEnrollment.pending.count).to eq 10
+
+        # Spot check attributes on last record
+        last_record = InPersonEnrollment.last
+        expect(last_record.attributes).to include(
+          'status' => 'pending',
+          'enrollment_established_at' => respond_to(:to_date),
+          'unique_id' => an_instance_of(String),
+
+          # Check for the enrollment code in the stubbed response
+          'enrollment_code' => '2048702198804353',
+        )
+        expect(last_record.profile).to be_instance_of(Profile)
+        expect(last_record.profile.active).to be(false)
       end
     end
   end

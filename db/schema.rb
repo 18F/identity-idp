@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_04_204944) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_04_210336) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -210,7 +210,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_04_204944) do
     t.index ["confirmation_token"], name: "index_email_addresses_on_confirmation_token", unique: true
     t.index ["email_fingerprint", "user_id"], name: "index_email_addresses_on_email_fingerprint_and_user_id", unique: true
     t.index ["email_fingerprint"], name: "index_email_addresses_on_email_fingerprint", unique: true, where: "(confirmed_at IS NOT NULL)"
-    t.index ["user_id", "last_sign_in_at"], name: "index_email_addresses_on_user_id_and_last_sign_in_at", order: { last_sign_in_at: :desc }
     t.index ["user_id"], name: "index_email_addresses_on_user_id"
   end
 

@@ -57,6 +57,15 @@ RSpec.describe Api::IrsAttemptsApiController do
       end
     end
 
+    context 'with a timestamp including a fractional second' do
+      let(:timestamp) { '2022-11-08T18:00:00.000Z' }
+
+      it 'accepts the timestamp as valid' do
+        post :create, params: { timestamp: timestamp }
+        expect(response.status).to eq(200)
+      end
+    end
+
     it 'renders a 404 if disabled' do
       allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(false)
 

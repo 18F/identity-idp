@@ -4,6 +4,20 @@ module Reports
   class DailyDropoffsReport < BaseReport
     REPORT_NAME = 'daily-dropoffs-report'
 
+    STEPS = %w[
+      welcome
+      agreement
+      capture_document
+      cap_doc_submit
+      ssn
+      verify_info
+      verify_submit
+      phone
+      encrypt
+      personal_key
+      verified
+    ].freeze
+
     include GoodJob::ActiveJobExtensions::Concurrency
 
     good_job_control_concurrency_with(
@@ -50,7 +64,7 @@ module Reports
           agency
           start
           finish
-        ] + Db::DocAuthLog::DropOffRatesHelper::STEPS
+        ] + STEPS
 
         query_results.each do |sp_result|
           csv << [
@@ -60,7 +74,7 @@ module Reports
             sp_result['agency'],
             start.iso8601,
             finish.iso8601,
-            *Db::DocAuthLog::DropOffRatesHelper::STEPS.map { |step| sp_result[step].to_i },
+            *STEPS.map { |step| sp_result[step].to_i },
           ]
         end
       end

@@ -22,24 +22,6 @@ else
         cron: cron_5m,
         args: -> { [Time.zone.now] },
       },
-      # Send OMB Fitara report to s3
-      omb_fitara_report: {
-        class: 'Reports::OmbFitaraReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Send Unique Monthly Auths Report to S3
-      unique_monthly_auths: {
-        class: 'Reports::UniqueMonthlyAuthsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Send Unique Yearly Auths Report to S3
-      unique_yearly_auths: {
-        class: 'Reports::UniqueYearlyAuthsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Send Agency User Counts Report to S3
       agency_user_counts: {
         class: 'Reports::AgencyUserCountsReport',
@@ -64,27 +46,9 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Send Doc Auth Funnel Report to S3
-      doc_auth_funnel_report: {
-        class: 'Reports::DocAuthFunnelReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Proofing Costs Report to S3
       proofing_costs: {
         class: 'Reports::ProofingCostsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Doc auth drop off rates per sprint to S3
-      doc_auth_dropoff_per_sprint: {
-        class: 'Reports::DocAuthDropOffRatesPerSprintReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # SP Costs Report to S3
-      sp_costs: {
-        class: 'Reports::SpCostReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
@@ -111,12 +75,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Total SP Costs Report to S3
-      total_sp_costs: {
-        class: 'Reports::TotalSpCostReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Total IAL2 Costs Report to S3
       total_ial2_costs: {
         class: 'Reports::TotalIal2CostsReport',
@@ -126,24 +84,6 @@ else
       # SP Active Users Report to S3
       sp_active_users_report: {
         class: 'Reports::SpActiveUsersReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # SP Active Users Report to S3
-      sp_active_users_period_pf_performance: {
-        class: 'Reports::SpActiveUsersOverPeriodOfPerformanceReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Doc auth drop off rates report
-      doc_auth_dropoff_rates: {
-        class: 'Reports::DocAuthDropOffRatesReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # IAA Billing Report
-      iaa_billing_report: {
-        class: 'Reports::IaaBillingReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
@@ -216,6 +156,12 @@ else
       verify_threat_metrix_js: {
         class: 'ThreatMetrixJsVerificationJob',
         cron: cron_1h,
+      },
+      # Batch up IRS Attempts API events
+      irs_attempt_events_aggregator: {
+        class: 'IrsAttemptsEventsBatchJob',
+        cron: cron_1h,
+        args: -> { [timestamp: Time.zone.now - 1.hour] },
       },
     }
   end

@@ -44,6 +44,7 @@ address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US
 arcgis_api_root_url: 'https://gis.gsa.gov'
 arcgis_api_username: ''
 arcgis_api_password: ''
+arcgis_search_enabled: false
 asset_host: ''
 async_wait_timeout_seconds: 60
 async_stale_job_timeout_seconds: 300
@@ -212,7 +213,9 @@ phone_setups_per_ip_track_only_mode: false
 pii_lock_timeout_in_minutes: 30
 pinpoint_sms_sender_id: 'aaa'
 pinpoint_sms_configs: '[]'
+pinpoint_sms_pool_size: 5
 pinpoint_voice_configs: '[]'
+pinpoint_voice_pool_size: 5
 piv_cac_service_url: https://localhost:8443/
 piv_cac_service_timeout: 5.0
 piv_cac_verify_token_url: https://localhost:8443/
