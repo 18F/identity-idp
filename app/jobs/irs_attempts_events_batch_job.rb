@@ -1,7 +1,7 @@
 class IrsAttemptsEventsBatchJob < ApplicationJob
   queue_as :default
 
-  def perform(timestamp: Time.zone.now - 1.hour, dir_path: './attempts_api_output')
+  def perform(timestamp = Time.zone.now - 1.hour, dir_path: './attempts_api_output')
     return nil unless IdentityConfig.store.irs_attempt_api_enabled
 
     events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: timestamp)
