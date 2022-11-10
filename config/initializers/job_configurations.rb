@@ -22,12 +22,6 @@ else
         cron: cron_5m,
         args: -> { [Time.zone.now] },
       },
-      # Send Agency User Counts Report to S3
-      agency_user_counts: {
-        class: 'Reports::AgencyUserCountsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Send Total Monthly Auths Report to S3
       total_monthly_auths: {
         class: 'Reports::TotalMonthlyAuthsReport',
