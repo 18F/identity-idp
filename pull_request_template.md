@@ -37,9 +37,3 @@ If relevant, include a screenshot or screen capture of the changes.
 
 </details>
 -->
-
-<!--
-## 🚀 Notes for Deployment
-
-Include any special instructions for deployment.
--->
