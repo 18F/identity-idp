@@ -32,8 +32,6 @@ feature 'Inherited Proofing Analytics Regression', js: true do
       receive(:va_inherited_proofing?).and_return true
     allow_any_instance_of(Idv::InheritedProofingController).to \
       receive(:va_inherited_proofing_auth_code).and_return auth_code
-    # allow_any_instance_of(InheritedProofingJob).to receive(:build_analytics).
-    #   and_return(fake_analytics)
   end
 
   context 'Happy path' do
