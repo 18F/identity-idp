@@ -41,7 +41,7 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
       end
 
       it 'batches and writes attempt events to an encrypted file' do
-        result = IrsAttemptsEventsBatchJob.perform_now(timestamp: start_time, dir_path: @dir_path)
+        result = IrsAttemptsEventsBatchJob.perform_now(start_time, dir_path: @dir_path)
         expect(result[:file_path]).not_to be_nil
 
         file_data = File.open(result[:file_path], 'rb') do |file|
