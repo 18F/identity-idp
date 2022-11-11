@@ -61,7 +61,7 @@ module Idv
 
     def personal_key
       irs_attempts_api_tracker.idv_personal_key_generated
-      
+
       idv_session.personal_key || generate_personal_key
     end
 
