@@ -142,6 +142,8 @@ describe Idv::CaptureDocController do
           irs_reproofing: true,
           step_count: 1,
           analytics_id: 'Doc Auth',
+          native_camera_a_b_testing_enabled: false,
+          native_camera_only: false,
         }
 
         get :show, params: { step: 'capture_complete' }
@@ -161,6 +163,8 @@ describe Idv::CaptureDocController do
           irs_reproofing: false,
           step_count: 1,
           analytics_id: 'Doc Auth',
+          native_camera_a_b_testing_enabled: false,
+          native_camera_only: false,
         }
 
         get :show, params: { step: 'capture_complete' }
