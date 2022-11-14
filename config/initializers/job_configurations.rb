@@ -22,12 +22,6 @@ else
         cron: cron_5m,
         args: -> { [Time.zone.now] },
       },
-      # Send Agency User Counts Report to S3
-      agency_user_counts: {
-        class: 'Reports::AgencyUserCountsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Send Total Monthly Auths Report to S3
       total_monthly_auths: {
         class: 'Reports::TotalMonthlyAuthsReport',
@@ -43,18 +37,6 @@ else
       # Proofing Costs Report to S3
       proofing_costs: {
         class: 'Reports::ProofingCostsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Agency Invoice Supplement Report to S3
-      sp_invoice_supplement_by_iaa: {
-        class: 'Reports::AgencyInvoiceIaaSupplementReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Agency Invoice Supplement Report to S3
-      sp_invoice_supplement_by_issuer: {
-        class: 'Reports::AgencyInvoiceIssuerSupplementReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
