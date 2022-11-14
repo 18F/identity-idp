@@ -5,8 +5,8 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
     context 'IRS attempts API is enabled' do
       let(:start_time) { Time.new(2020, 1, 1, 12, 0, 0, 'UTC') }
       let(:private_key) { OpenSSL::PKey::RSA.new(4096) }
-      let(:public_key) { private_key.public_key }
-      let(:encoded_public_key) { Base64.strict_encode64(public_key.to_der) }
+      #let(:public_key) { private_key.public_key }
+      let(:encoded_public_key) { Base64.strict_encode64(private_key.public_key.to_der) }
       let(:bucket_name) { 'test-bucket-name' }
       let(:events) do
         [
@@ -52,25 +52,27 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         redis_client = IrsAttemptsApi::RedisClient.new
         events.each do |event|
           redis_client.write_event(
-            event_key: event[:event_key], jwe: event[:jwe],
-            timestamp: event[:timestamp]
+            event_key: event[:event_key],
+            jwe: event[:jwe],
+            timestamp: event[:timestamp],
           )
         end
       end
 
       it 'batches and writes attempt events to an encrypted file' do
-        # puts "PUBLIC KEY = "
-        # puts Base64.strict_encode64(public_key.to_der)
+        expect(IrsAttemptsApi::EnvelopeEncryptor).to receive(:encrypt).with(
+          data: events.pluck(:jwe).join("\r\n"),
+          timestamp: start_time,
+          public_key_str: encoded_public_key,
+        )
 
-        # expect(IrsAttemptsApi::EnvelopeEncryptor).to receive(:encrypt).with(
-        #  data: events.collect{|e| e[:jwe]}.join("\r\n"),
-        #  timestamp: start_time,
-        #  public_key: OpenSSL::PKey::RSA.new(encoded_public_key),
-        # )
-
-        # expect_any_instance_of(described_class).to receive(
-        #  :create_and_upload_to_attempts_s3_resource,
-        # )
+        expect_any_instance_of(described_class).to receive(
+          :create_and_upload_to_attempts_s3_resource,
+        ).with(
+          bucket_name: 'test-bucket-name',
+          filename: 'test-filename',
+          encrypted_data: 'test-encrypted-data',
+        )
 
         result = IrsAttemptsEventsBatchJob.perform_now(start_time)
 
@@ -88,12 +90,6 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         )
 
         expect(result[:requested_time]).to eq(start_time)
-
-        # expect(result[:file_path]).not_to be_nil
-
-        # file_data = File.open(result[:file_path], 'rb') do |file|
-        #  file.read
-        # end
 
         # decrypted_result = IrsAttemptsApi::EnvelopeEncryptor.decrypt(
         #  encrypted_data: file_data,

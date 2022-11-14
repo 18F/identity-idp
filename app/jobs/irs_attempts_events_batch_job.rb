@@ -9,10 +9,10 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: timestamp)
     event_values = events.values.join("\r\n")
 
-    decoded_key_string = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
+    public_key = IdentityConfig.store.irs_attempt_api_public_key
 
     result = IrsAttemptsApi::EnvelopeEncryptor.encrypt(
-      data: event_values, timestamp: timestamp, public_key_str: decoded_key_string,
+      data: event_values, timestamp: timestamp, public_key_str: public_key,
     )
 
     bucket_name = IdentityConfig.store.irs_attempt_api_bucket_name
