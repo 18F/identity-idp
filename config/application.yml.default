@@ -381,7 +381,6 @@ development:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   show_account_recovery_recovery_options: true
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
-  sps_over_quota_limit_notify_email_list: '[]'
   state_tracking_enabled: true
   telephony_adapter: test
   use_dashboard_service_providers: true
@@ -463,7 +462,6 @@ production:
   seed_agreements_data: false
   session_encryption_key:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
-  sps_over_quota_limit_notify_email_list: '[]'
   state_tracking_enabled: false
   telephony_adapter: pinpoint
   use_kms: true
@@ -555,7 +553,6 @@ test:
   secret_key_base: test_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   skip_encryption_allowed_list: '[]'
-  sps_over_quota_limit_notify_email_list: '["test1@test.com"]'
   state_tracking_enabled: true
   telephony_adapter: test
   test_ssn_allowed_list: '999999999'

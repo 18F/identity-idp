@@ -26,9 +26,6 @@ es:
       document_verification_timeout: El servidor tardó demasiado en responder. Inténtalo de nuevo.
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
-      quota_reached: Lo sentimos, su proveedor de servicios ha alcanzado su límite de
-        verificación de identidad. Póngase en contacto con su proveedor de
-        servicios para obtener más información.
       send_link_throttle: Ha intentado demasiadas veces, por favor, inténtelo de nuevo
         en %{timeout}. También puede retroceder y elegir utilizar su computadora
         como alternativa.
