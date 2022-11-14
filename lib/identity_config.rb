@@ -378,7 +378,6 @@ class IdentityConfig
     config.add(:show_account_recovery_recovery_options, type: :boolean)
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
-    config.add(:sps_over_quota_limit_notify_email_list, type: :json)
     config.add(:state_tracking_enabled, type: :boolean)
     config.add(:telephony_adapter, type: :string)
     config.add(:test_ssn_allowed_list, type: :comma_separated_string_list)

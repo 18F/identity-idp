@@ -40,12 +40,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Send Sp User Quotas Report to S3
-      sp_user_quotas: {
-        class: 'Reports::SpUserQuotasReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Proofing Costs Report to S3
       proofing_costs: {
         class: 'Reports::ProofingCostsReport',
