@@ -25,7 +25,7 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         allow(IdentityConfig.store).to receive(:irs_attempt_api_public_key).
           and_return(Base64.strict_encode64(private_key.public_key.to_der))
 
-        allow(IdentityConfig.store).to receive(:irs_attempt_api_bucket_name).and_return("some-s3-bucket-name")
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_bucket_name)
 
         allow_any_instance_of(described_class).to receive(:create_and_upload_to_attempts_s3_resource)
 
@@ -41,11 +41,13 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
       end
 
       it 'batches and writes attempt events to an encrypted file' do
-        #expect_any_instance_of(described_class).to receive(:create_and_upload_to_attempts_s3_resource).
-          #with(bucket_name: "some-s3-bucket-name")
-        
+        expect_any_instance_of(described_class).to receive(:create_and_upload_to_attempts_s3_resource)        
         result = IrsAttemptsEventsBatchJob.perform_now(start_time)
 
+        expect(result).not_to be_nil
+        expect(result[:filename]).not_to be_nil
+        expect(result[:iv]).not_to be_nil
+        expect(result[:encrypted_key]).not_to be_nil
         expect(result[:requested_time]).to eq(start_time)
 
         #expect(result[:file_path]).not_to be_nil
