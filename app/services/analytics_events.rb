@@ -565,20 +565,60 @@ module AnalyticsEvents
     )
   end
 
-  def idv_inherited_proofing_agreement_submitted(**extra)
-    track_event('Idv: inherited proofing agreement submitted', **extra)
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [String] step Document step user is on
+  # The user agrees to allow us to access their data via api call
+  def idv_inherited_proofing_agreement_submitted(success:, errors:, flow_path:, step:, **extra)
+    track_event(
+      'Idv: inherited proofing agreement submitted',
+      success: success,
+      errors: errors,
+      flow_path: flow_path,
+      step: step,
+      **extra,
+    )
   end
 
-  def idv_inherited_proofing_agreement_visited(**extra)
-    track_event('Idv: inherited proofing agreement visited', **extra)
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [String] step Document step user is on
+  # The user visited the inherited proofing agreement page
+  def idv_inherited_proofing_agreement_visited(flow_path:, step:, **extra)
+    track_event(
+      'Idv: inherited proofing agreement visited',
+      flow_path: flow_path,
+      step: step,
+      **extra,
+    )
   end
 
-  def idv_inherited_proofing_get_started_submitted(**extra)
-    track_event('Idv: inherited proofing get_started submitted', **extra)
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [String] step Document step user is on
+  # The user chooses to begin the inherited proofing process
+  def idv_inherited_proofing_get_started_submitted(success:, errors:, flow_path:, step:, **extra)
+    track_event(
+      'Idv: inherited proofing get started submitted',
+      success: success,
+      errors: errors,
+      flow_path: flow_path,
+      step: step,
+      **extra,
+    )
   end
 
-  def idv_inherited_proofing_get_started_visited(**extra)
-    track_event('Idv: inherited proofing get_started visited', **extra)
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [String] step Document step user is on
+  # The user visited the inherited proofing get started step
+  def idv_inherited_proofing_get_started_visited(flow_path:, step:, **extra)
+    track_event(
+      'Idv: inherited proofing get started visited',
+      flow_path: flow_path,
+      step: step,
+      **extra,
+    )
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
