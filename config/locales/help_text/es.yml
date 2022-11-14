@@ -3,8 +3,6 @@ es:
   help_text:
     change_factor: Antes de que pueda restablecer su %{factor}, tendrá que confirmar
       su contraseña y utilizar su método de autenticación.
-    no_factor:
-      delete_account: Para eliminar su cuenta, confirme su contraseña y código de seguridad.
     requested_attributes:
       address: Dirección de correo postal
       all_emails: Direcciones de correo electrónico en su cuenta

@@ -64,7 +64,6 @@ es:
       missing_field: Por favor, rellene este campo.
       no_pending_profile: Ningún perfil está esperando verificación
       not_a_number: no es un número
-      otp_failed: Se produjo un error al enviar el código de seguridad.
       password_incorrect: La contraseña es incorrecta
       personal_key_incorrect: La clave personal es incorrecta
       phone_confirmation_throttled: Lo intentaste muchas veces, vuelve a intentarlo en %{timeout}.

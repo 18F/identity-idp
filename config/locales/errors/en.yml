@@ -63,7 +63,6 @@ en:
       missing_field: Please fill in this field.
       no_pending_profile: No profile is waiting for verification
       not_a_number: is not a number
-      otp_failed: Your security code failed to send.
       password_incorrect: Incorrect password
       personal_key_incorrect: Incorrect personal key
       phone_confirmation_throttled: You tried too many times, please try again in %{timeout}.
