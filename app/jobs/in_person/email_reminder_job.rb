@@ -17,7 +17,6 @@ module InPerson
         late_benchmark,
         final_benchmark,
       )
-
       second_set_enrollments.each do |enrollment|
         send_reminder_email(enrollment.user, enrollment)
         enrollment.update!(late_reminder_sent: true)
