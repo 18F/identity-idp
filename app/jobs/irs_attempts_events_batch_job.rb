@@ -2,7 +2,8 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
   queue_as :default
 
   def perform(timestamp = Time.zone.now - 1.hour)
-    enabled = IdentityConfig.store.irs_attempt_api_enabled && IdentityConfig.store.irs_attempt_api_bucket_name
+    enabled = IdentityConfig.store.irs_attempt_api_enabled &&
+              IdentityConfig.store.irs_attempt_api_bucket_name
     return nil unless enabled
 
     events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: timestamp)
@@ -18,7 +19,10 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     bucket_name = IdentityConfig.store.irs_attempt_api_bucket_name
     bucket_url = "s3://#{bucket_name}/#{result.filename}"
 
-    create_and_upload_to_attempts_s3_resource(bucket_name: bucket_name, filename: result.filename, encrypted_data: result.encrypted_data)
+    create_and_upload_to_attempts_s3_resource(
+      bucket_name: bucket_name, filename: result.filename,
+      encrypted_data: result.encrypted_data
+    )
 
     encoded_iv = Base64.strict_encode64(result.iv)
     encoded_encrypted_key = Base64.strict_encode64(result.encrypted_key)

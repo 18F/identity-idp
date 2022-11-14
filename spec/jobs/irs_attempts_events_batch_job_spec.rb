@@ -7,7 +7,7 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
       let(:private_key) { OpenSSL::PKey::RSA.new(4096) }
       let(:public_key) { private_key.public_key }
       let(:encoded_public_key) { Base64.strict_encode64(public_key.to_der) }
-      let(:bucket_name) { "test-bucket-name" }
+      let(:bucket_name) { 'test-bucket-name' }
       let(:events) do
         [
           {
@@ -23,12 +23,12 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         ]
       end
 
-      let(:envelope_encryptor_result) do 
+      let(:envelope_encryptor_result) do
         IrsAttemptsApi::EnvelopeEncryptor::Result.new(
-          filename: "test-filename", 
-          iv: "test-iv", 
-          encrypted_key: "test-encrypted-key",
-          encrypted_data: "test-encrypted-data",
+          filename: 'test-filename',
+          iv: 'test-iv',
+          encrypted_key: 'test-encrypted-key',
+          encrypted_data: 'test-encrypted-data',
         )
       end
 
@@ -43,7 +43,9 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         allow(IrsAttemptsApi::EnvelopeEncryptor).to receive(:encrypt).
           and_return(envelope_encryptor_result)
 
-        allow_any_instance_of(described_class).to receive(:create_and_upload_to_attempts_s3_resource)
+        allow_any_instance_of(described_class).to receive(
+          :create_and_upload_to_attempts_s3_resource,
+        )
 
         travel_to start_time + 1.hour
 
@@ -57,38 +59,50 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
       end
 
       it 'batches and writes attempt events to an encrypted file' do
+        # puts "PUBLIC KEY = "
+        # puts Base64.strict_encode64(public_key.to_der)
 
-        #puts "PUBLIC KEY = "
-        #puts Base64.strict_encode64(public_key.to_der)
+        # expect(IrsAttemptsApi::EnvelopeEncryptor).to receive(:encrypt).with(
+        #  data: events.collect{|e| e[:jwe]}.join("\r\n"),
+        #  timestamp: start_time,
+        #  public_key: OpenSSL::PKey::RSA.new(encoded_public_key),
+        # )
 
-        #expect(IrsAttemptsApi::EnvelopeEncryptor).to receive(:encrypt).with(
-        #  data: events.collect{|e| e[:jwe]}.join("\r\n"), timestamp: start_time, public_key: OpenSSL::PKey::RSA.new(encoded_public_key),
-        #)
-
-        #expect_any_instance_of(described_class).to receive(:create_and_upload_to_attempts_s3_resource)
+        # expect_any_instance_of(described_class).to receive(
+        #  :create_and_upload_to_attempts_s3_resource,
+        # )
 
         result = IrsAttemptsEventsBatchJob.perform_now(start_time)
 
         expect(result).not_to be_nil
-        expect(result[:filename]).to eq("s3://#{bucket_name}/#{envelope_encryptor_result[:filename]}")
-        expect(result[:iv]).to eq(Base64.strict_encode64(envelope_encryptor_result[:iv]))
-        expect(result[:encrypted_key]).to eq(Base64.strict_encode64(envelope_encryptor_result[:encrypted_key]))
+        expect(result[:filename]).to eq(
+          "s3://#{bucket_name}/#{envelope_encryptor_result[:filename]}",
+        )
+
+        expect(result[:iv]).to eq(
+          Base64.strict_encode64(envelope_encryptor_result[:iv]),
+        )
+
+        expect(result[:encrypted_key]).to eq(
+          Base64.strict_encode64(envelope_encryptor_result[:encrypted_key]),
+        )
+
         expect(result[:requested_time]).to eq(start_time)
 
-        #expect(result[:file_path]).not_to be_nil
+        # expect(result[:file_path]).not_to be_nil
 
-        #file_data = File.open(result[:file_path], 'rb') do |file|
+        # file_data = File.open(result[:file_path], 'rb') do |file|
         #  file.read
-        #end
+        # end
 
-        #decrypted_result = IrsAttemptsApi::EnvelopeEncryptor.decrypt(
+        # decrypted_result = IrsAttemptsApi::EnvelopeEncryptor.decrypt(
         #  encrypted_data: file_data,
         #  key: final_key, iv: result[:encryptor_result].iv
-        #)
+        # )
 
-        #events_jwes = events.pluck(:jwe)
+        # events_jwes = events.pluck(:jwe)
 
-        #expect(decrypted_result).to eq(events_jwes.join("\r\n"))
+        # expect(decrypted_result).to eq(events_jwes.join("\r\n"))
       end
     end
 
