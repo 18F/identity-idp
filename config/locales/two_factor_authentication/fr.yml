@@ -21,8 +21,8 @@ fr:
     header_text: Entrez votre code à usage unique
     important_alert_icon: Icône d’alerte importante
     invalid_backup_code: Ce code de sauvegarde est invalide.
-    invalid_otp: Ce code de sécurité est non valide. Vous pouvez essayer de l’entrer
-      de nouveau ou demander un nouveau code de sécurité à utilisation unique.
+    invalid_otp: That one-time code is invalid. You can try entering it again or
+      request a new one-time code.
     invalid_personal_key: Cette clé personnelle est non valide.
     invalid_piv_cac: Ce PIV/CAC n’a pas fonctionné. Assurez-vous que c’est le bon
       PIV/CAC pour ce compte. Si c’est le cas, votre PIV/CAC, votre NIP ou un
@@ -42,11 +42,10 @@ fr:
       piv_cac: Employés du gouvernement
       piv_cac_info: Utilisez votre carte PIV / CAC pour sécuriser votre compte.
       sms: SMS
-      sms_info_html: Obtenez votre code de sécurité par SMS à <strong>%{phone}</strong>.
+      sms_info_html: Get one-time code via text message to <strong>%{phone}</strong>.
       voice: Appel téléphonique
-      voice_info_html: Obtenez votre code de sécurité Obtenez votre code de sécurité
-        par SMS à  à <strong>%{phone}</strong>. (Seulement les numéros de
-        téléphone en Amerique du Nord)
+      voice_info_html: Get one-time code via phone call to <strong>%{phone}</strong>
+        (North America phone numbers only).
       webauthn: Clé de sécurité
       webauthn_info: Utilisez votre clé de sécurité pour accéder à votre compte.
       webauthn_platform: Déverrouillage facial ou tactile
@@ -60,11 +59,11 @@ fr:
       temporairement verrouillé car vous avez saisi trop de fois le code de
       sauvegarde.
     max_generic_login_attempts_reached: Pour votre sécurité, votre compte est temporairement verrouillé.
-    max_otp_login_attempts_reached: Pour votre sécurité, votre compte est
-      temporairement verrouillé, car vous avez entré le code de sécurité à
-      utilisation unique de façon erronée à de trop nombreuses reprises.
-    max_otp_requests_reached: Pour votre sécurité, votre compte est temporairement
-      verrouillé car vous avez demandé un code de sécurité à trop de reprises.
+    max_otp_login_attempts_reached: For your security, your account is temporarily
+      locked because you have entered the one-time code incorrectly too
+      many times.
+    max_otp_requests_reached: For your security, your account is temporarily locked
+      because you have requested a one-time code too many times.
     max_personal_key_login_attempts_reached: Pour votre sécurité, votre compte est
       temporairement verrouillé, car vous avez entré le code de sécurité à
       utilisation unique de façon erronée à de trop nombreuses reprises.
@@ -77,16 +76,14 @@ fr:
       cant_use_phone: 'Vous ne pouvez pas utiliser votre téléphone?'
       error_retry: 'Désolé, nous avons des difficultés à vous connecter. Veuillez
         réessayer.'
-      opted_out_html: 'Vous avez choisi de ne plus recevoir de SMS à %{phone_number}.
-        Vous pouvez vous inscrire et recevoir à nouveau un code de sécurité à ce
-        numéro de téléphone.'
+      opted_out_html: 'You’ve opted out of receiving text messages at %{phone_number}.
+        You can opt in and receive a one-time code again to that phone number.'
       opted_out_last_30d_html: 'Vous avez choisi de ne plus recevoir de SMS au
         %{phone_number} au cours des 30 derniers jours. Nous ne pouvons opter
         pour un numéro de téléphone qu’une fois tous les 30 jours.'
-      title: 'Nous n’avons pas pu envoyer un code de sécurité à votre numéro de
-        téléphone'
-      wait_30d_opt_in: 'Après 30 jours, vous pouvez vous inscrire et recevoir un code
-        de sécurité à ce numéro de téléphone.'
+      title: We could not send a one-time code to your phone number
+      wait_30d_opt_in: 'After 30 days, you can opt in and receive a one-time code to
+        that phone number.'
     otp_delivery_preference:
       instruction: Vous pouvez modifier cette sélection lors de votre prochaine connexion.
       no_supported_options: Nous ne sommes pas en mesure de vérifier les numéros de
@@ -118,8 +115,7 @@ fr:
     phone_fallback:
       question: Vous ne pouvez pas utiliser votre téléphone?
     phone_fee_disclosure: Des messages et débits de données peuvent être appliqués.
-    phone_info_html: Nous vous enverrons ou appellerons avec un code de sécurité
-      <strong>chaque fois que vous vous connectez</strong>.
+    phone_info_html: We’ll send you a one-time code <strong>each time you sign in</strong>.
     phone_label: Numéro de téléphone
     piv_cac_fallback:
       question: Votre PIV ou CAC n’est pas disponible?
@@ -161,12 +157,12 @@ fr:
       piv_cac_info: Cartes PIV/CAC pour les fonctionnaires et les militaires. Bureau
         uniquement.
       sms: SMS
-      sms_info: Obtenez votre code de sécurité par SMS.
+      sms_info: Get your one-time code via text message / SMS.
       unused_backup_code:
         one: '(%{count} code non utilisé)'
         other: '(%{count} codes non utilisés)'
       voice: Appel téléphonique
-      voice_info: Obtenez votre code de sécurité par appel téléphonique.
+      voice_info: Get your one-time code via phone call.
       webauthn: Clef de sécurité
       webauthn_info: Un appareil physique, souvent en forme de clé USB, que vous
         branchez sur votre appareil.
