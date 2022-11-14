@@ -219,7 +219,7 @@ pinpoint_voice_pool_size: 5
 piv_cac_service_url: https://localhost:8443/
 piv_cac_service_timeout: 5.0
 piv_cac_verify_token_url: https://localhost:8443/
-platform_authentication_enabled: true
+platform_authentication_enabled: false
 poll_rate_for_verify_in_seconds: 3
 proofer_mock_fallback: true
 proofing_device_profiling_collecting_enabled: true
