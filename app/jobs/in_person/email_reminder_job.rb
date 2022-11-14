@@ -8,10 +8,12 @@ module InPerson
 
     def perform(_now)
       # final reminder job done first in case of job failure
-      email_reminder_late_benchmark = IdentityConfig.store.email_reminder_late_benchmark
-      email_reminder_final_benchmark = IdentityConfig.store.email_reminder_final_benchmark
-      late_benchmark = calculate_interval(email_reminder_late_benchmark)
-      final_benchmark = calculate_interval(email_reminder_final_benchmark)
+      in_person_email_reminder_late_benchmark_in_days =
+        IdentityConfig.store.in_person_email_reminder_late_benchmark_in_days
+      in_person_email_reminder_final_benchmark_in_days =
+        IdentityConfig.store.in_person_email_reminder_final_benchmark_in_days
+      late_benchmark = calculate_interval(in_person_email_reminder_late_benchmark_in_days)
+      final_benchmark = calculate_interval(in_person_email_reminder_final_benchmark_in_days)
 
       second_set_enrollments = InPersonEnrollment.needs_late_email_reminder(
         late_benchmark,
@@ -22,8 +24,9 @@ module InPerson
         enrollment.update!(late_reminder_sent: true)
       end
 
-      email_reminder_early_benchmark = IdentityConfig.store.email_reminder_early_benchmark
-      early_benchmark = calculate_interval(email_reminder_early_benchmark)
+      in_person_email_reminder_early_benchmark_in_days =
+        IdentityConfig.store.in_person_email_reminder_early_benchmark_in_days
+      early_benchmark = calculate_interval(in_person_email_reminder_early_benchmark_in_days)
 
       first_set_enrollments = InPersonEnrollment.needs_early_email_reminder(
         early_benchmark,
