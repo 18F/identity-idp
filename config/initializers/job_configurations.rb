@@ -93,12 +93,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Send GPO Report to S3
-      gpo_report: {
-        class: 'Reports::GpoReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Send Monthly GPO Letter Requests Report to S3
       gpo_monthly_letter_requests: {
         class: 'Reports::MonthlyGpoLetterRequestsReport',
