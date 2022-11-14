@@ -145,6 +145,8 @@ feature 'Analytics Regression', js: true do
     end
     allow_any_instance_of(DocumentProofingJob).to receive(:build_analytics).
       and_return(fake_analytics)
+    allow(IdentityConfig.store).to receive(:idv_native_camera_a_b_testing_enabled).
+      and_return(false)
   end
 
   context 'Happy path' do

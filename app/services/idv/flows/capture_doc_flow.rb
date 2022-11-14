@@ -27,7 +27,7 @@ module Idv
       end
 
       def extra_analytics_properties
-        bucket = AbTests::NATIVE_CAMERA.bucket(flow_session[:document_capture_session_uuid])
+        bucket = AbTests::NATIVE_CAMERA.bucket(session[:document_capture_session_uuid])
 
         {
           native_camera_a_b_testing_enabled:
