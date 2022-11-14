@@ -70,8 +70,7 @@
   </div>
 <% end %>
 
-<% if TwoFactorAuthentication::WebauthnPolicy.new(current_user).platform_configured? &&
-    IdentityConfig.store.platform_authentication_enabled %>
+<% if TwoFactorAuthentication::WebauthnPolicy.new(current_user).platform_configured? %>
   <div class="margin-bottom-4 card profile-info-box">
     <%= render 'accounts/webauthn_platform' %>
   </div>
