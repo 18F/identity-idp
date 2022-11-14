@@ -61,19 +61,9 @@ module Idv
       idv_session.go_back_path
     end
 
-    # AllowlistedFlowStepConcern Concern overrides
-
     def flow_step_allowlist
       @flow_step_allowlist ||= Idv::Flows::InheritedProofingFlow::STEPS.keys.map(&:to_s)
     end
-
-    # NOTE: Override and use Inherited Proofing (IP)-specific :throttle_type
-    # if current IDV-specific :idv_resolution type is unacceptable!
-    # def idv_attempter_throttled?
-    #   ...
-    # end
-
-    # IdvSession Concern > EffectiveUser Concern overrides
 
     def effective_user_id
       current_user&.id

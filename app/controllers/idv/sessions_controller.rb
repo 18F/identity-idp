@@ -46,7 +46,6 @@ module Idv
       analytics.idv_start_over(
         step: location_params[:step],
         location: location_params[:location],
-        analytics_id: @analytics_id,
       )
     end
   end

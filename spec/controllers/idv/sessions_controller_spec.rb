@@ -52,7 +52,6 @@ describe Idv::SessionsController do
         'IdV: start over',
         step: 'first',
         location: 'get_help',
-        analytics_id: nil,
       )
     end
 
