@@ -2,19 +2,19 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
   queue_as :default
 
   def perform(timestamp = Time.zone.now - 1.hour)
-    return nil unless IdentityConfig.store.irs_attempt_api_enabled
+    enabled = IdentityConfig.store.irs_attempt_api_enabled && IdentityConfig.store.irs_attempt_api_bucket_name
+    return nil unless enabled
 
     events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: timestamp)
     event_values = events.values.join("\r\n")
 
-    decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
-    pub_key = OpenSSL::PKey::RSA.new(decoded_key_der)
+    decoded_key_string = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
+    pub_key = OpenSSL::PKey::RSA.new(decoded_key_string)
 
     result = IrsAttemptsApi::EnvelopeEncryptor.encrypt(
       data: event_values, timestamp: timestamp, public_key: pub_key,
     )
 
-    # Write the file to S3 - Can we skip the file write step? Do we need to write out a temp file?
     bucket_name = IdentityConfig.store.irs_attempt_api_bucket_name
     bucket_url = "s3://#{bucket_name}/#{result.filename}"
 
