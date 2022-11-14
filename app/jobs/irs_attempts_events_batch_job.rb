@@ -10,10 +10,9 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     event_values = events.values.join("\r\n")
 
     decoded_key_string = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
-    pub_key = OpenSSL::PKey::RSA.new(decoded_key_string)
 
     result = IrsAttemptsApi::EnvelopeEncryptor.encrypt(
-      data: event_values, timestamp: timestamp, public_key: pub_key,
+      data: event_values, timestamp: timestamp, public_key_str: decoded_key_string,
     )
 
     bucket_name = IdentityConfig.store.irs_attempt_api_bucket_name

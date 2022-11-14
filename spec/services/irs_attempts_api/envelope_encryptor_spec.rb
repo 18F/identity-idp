@@ -1,13 +1,13 @@
 require 'rails_helper'
 RSpec.describe IrsAttemptsApi::EnvelopeEncryptor do
   let(:private_key) { OpenSSL::PKey::RSA.new(4096) }
-  let(:public_key) { private_key.public_key }
+  let(:public_key) { Base64.strict_encode64(private_key.public_key.to_der) }
   describe '.encrypt' do
     it 'returns encrypted result' do
       text = Idp::Constants::MOCK_IDV_APPLICANT[:first_name]
       time = Time.zone.now
       result = IrsAttemptsApi::EnvelopeEncryptor.encrypt(
-        data: text, timestamp: time, public_key: public_key,
+        data: text, timestamp: time, public_key_str: public_key,
       )
 
       expect(result.encrypted_data).to_not eq text
@@ -20,7 +20,7 @@ RSpec.describe IrsAttemptsApi::EnvelopeEncryptor do
       time = Time.zone.now
       result = IrsAttemptsApi::EnvelopeEncryptor.encrypt(
         data: text, timestamp: time,
-        public_key: public_key
+        public_key_str: public_key
       )
       digest = Digest::SHA256.hexdigest(result.encrypted_data)
 
@@ -37,7 +37,7 @@ RSpec.describe IrsAttemptsApi::EnvelopeEncryptor do
       time = Time.zone.now
       result = IrsAttemptsApi::EnvelopeEncryptor.encrypt(
         data: text, timestamp: time,
-        public_key: public_key
+        public_key_str: public_key
       )
       key = private_key.private_decrypt(result.encrypted_key)
 
