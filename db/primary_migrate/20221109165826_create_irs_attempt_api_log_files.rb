@@ -4,7 +4,7 @@ class CreateIrsAttemptApiLogFiles < ActiveRecord::Migration[7.0]
       t.string :filename
       t.string :iv
       t.text :encrypted_key
-      t.datetime :requested_time
+      t.datetime :requested_time, index: true
 
       t.timestamps
     end
