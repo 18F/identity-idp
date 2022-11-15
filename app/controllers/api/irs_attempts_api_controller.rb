@@ -52,11 +52,10 @@ module Api
     end
 
     def encrypted_security_event_log_result
-      events = security_event_tokens.join("\r\n")
-      decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
-
       IrsAttemptsApi::EnvelopeEncryptor.encrypt(
-        data: events, timestamp: timestamp, public_key_str: decoded_key_der,
+        data: security_event_tokens.join("\r\n"),
+        timestamp: timestamp,
+        public_key_str: IdentityConfig.store.irs_attempt_api_public_key,
       )
     end
 
