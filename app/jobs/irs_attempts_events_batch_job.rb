@@ -16,7 +16,6 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
 
     # write to a file and store on the disk until S3 is setup
     @file_path = ''
-    Rails.logger.debug dir_path
     if Dir.exist?(dir_path)
       @file_path = "#{dir_path}/#{result.filename}"
 

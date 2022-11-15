@@ -44,8 +44,6 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
       end
 
       it 'batches and writes attempt events to an encrypted file' do
-        Rails.logger.debug 'ljdlfjoslkfjsflksjglksjkglsjglskgjsd'
-        Rails.logger.debug @dir_path
         result = IrsAttemptsEventsBatchJob.perform_now(start_time, @dir_path)
         expect(result[:file_path]).not_to be_nil
 
