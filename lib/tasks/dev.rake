@@ -79,6 +79,7 @@ namespace :dev do
 
   desc 'Create in-person enrollments for N random users'
   task random_in_person_users: [:environment, :random_users] do
+    USPS_REQUEST_DELAY_MS = (ENV['USPS_REQUEST_DELAY_MS'] || 0).to_i
     num_users = (ENV['NUM_USERS'] || 100).to_i
     pw = 'salty pickles'
     unless ENV['PROGRESS'] == 'no'
@@ -133,6 +134,7 @@ namespace :dev do
                 user,
                 pii,
               )
+              sleep(USPS_REQUEST_DELAY_MS) if USPS_REQUEST_DELAY_MS
             else
               enrollment = InPersonEnrollment.create!(
                 user: user,

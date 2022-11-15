@@ -25,6 +25,7 @@ describe 'dev rake tasks' do
     prev_verified = nil
     prev_scrypt_cost = nil
     prev_pending_in_usps = nil
+    usps_request_delay_ms = nil
 
     before(:each) do
       prev_num_users = ENV['NUM_USERS']
@@ -33,6 +34,7 @@ describe 'dev rake tasks' do
       prev_verified = ENV['VERIFIED']
       prev_scrypt_cost = ENV['SCRYPT_COST']
       prev_pending_in_usps = ENV['CREATE_PENDING_ENROLLMENT_IN_USPS']
+      usps_request_delay_ms = ENV['USPS_REQUEST_DELAY_MS']
 
       ENV['PROGRESS'] = 'no'
       ENV['NUM_USERS'] = '10'
@@ -48,6 +50,7 @@ describe 'dev rake tasks' do
       ENV['VERIFIED'] = prev_verified
       ENV['SCRYPT_COST'] = prev_scrypt_cost
       ENV['CREATE_PENDING_ENROLLMENT_IN_USPS'] = prev_pending_in_usps
+      ENV['USPS_REQUEST_DELAY_MS'] = usps_request_delay_ms
     end
 
     describe 'dev:random_users' do
@@ -342,6 +345,17 @@ describe 'dev rake tasks' do
         )
         expect(last_record.profile).to be_instance_of(Profile)
         expect(last_record.profile.active).to be(false)
+      end
+
+      it 'waits between USPS IPPaaS requests when USPS_REQUEST_DELAY_MS is set' do
+        ENV['CREATE_PENDING_ENROLLMENT_IN_USPS'] = '1'
+        ENV['USPS_REQUEST_DELAY_MS'] = '200'
+        stub_request_token
+        stub_request_enroll
+
+        expect_any_instance_of(Object).to receive(:sleep).exactly(10).times.with(200)
+
+        Rake::Task['dev:random_in_person_users'].invoke
       end
     end
   end
