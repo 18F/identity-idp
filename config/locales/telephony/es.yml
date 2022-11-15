@@ -31,7 +31,7 @@ es:
           de teléfono. Puedes solicitar un código por mensaje de texto o
           utilizar un número diferente para recibir una llamada telefónica.
         duplicate_endpoint: El número de teléfono ingresado no es válido.
-        generic: Se produjo un error al enviar el código de seguridad.
+        generic: No se pudo enviar su código de verificación.
         invalid_calling_area: No se admiten llamadas a ese número de teléfono. Intenta
           enviar un SMS si tienes un teléfono que permita enviar SMS.
         invalid_phone_number: El número de teléfono ingresado no está en el formato correcto.
