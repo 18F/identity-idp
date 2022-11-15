@@ -7,7 +7,7 @@ fr:
       votre compte %{app_name} pour le annuler.
     authentication_otp:
       sms: |-
-        %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez jamais partager ce code avec personne.
+        %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.
 
         @%{domain} #%{code}
       voice: Bonjour! Votre code de sécurité à utilisation unique de %{app_name} est,
@@ -15,7 +15,7 @@ fr:
         expirera dans %{expiration} minutes.
     confirmation_otp:
       sms: |-
-        %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez jamais partager ce code avec personne.
+        %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.
 
         @%{domain} #%{code}
       voice: Bonjour! Votre code de sécurité à utilisation unique de %{app_name} est,
