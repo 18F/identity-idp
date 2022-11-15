@@ -69,7 +69,7 @@ en:
         multiple_front_id_failures: We couldn’t verify the front of your ID. Try taking a new picture.
         network_error: We are having technical difficulties on our end. Please try to
           submit your images again later.
-        no_liveness: We couldn’t verify your ID. Try taking new pictures.
+        no_liveness: Try taking new pictures.
       glare:
         failed_short: Image has glare, please try again.
         top_msg: We couldn’t read your ID. Your photo may have glare. Make sure that the
