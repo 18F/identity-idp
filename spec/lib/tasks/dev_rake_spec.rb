@@ -353,7 +353,7 @@ describe 'dev rake tasks' do
         stub_request_token
         stub_request_enroll
 
-        expect_any_instance_of(Object).to receive(:sleep).exactly(10).times.with(200)
+        expect_any_instance_of(Object).to receive(:sleep).exactly(10).times.with(0.2)
 
         Rake::Task['dev:random_in_person_users'].invoke
       end

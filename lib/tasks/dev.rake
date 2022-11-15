@@ -134,7 +134,7 @@ namespace :dev do
                 user,
                 pii,
               )
-              sleep(USPS_REQUEST_DELAY_MS) if USPS_REQUEST_DELAY_MS
+              sleep(USPS_REQUEST_DELAY_MS / 1000.0) if USPS_REQUEST_DELAY_MS
             else
               enrollment = InPersonEnrollment.create!(
                 user: user,
