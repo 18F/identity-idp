@@ -10,7 +10,7 @@ module Idv
     before_action :confirm_profile_has_been_created
 
     def show
-      analytics.idv_personal_key_visited
+      analytics.idv_personal_key_visited(proofing_method: "#{proofing_method} verification")
       add_proofing_component
 
       finish_idv_session
@@ -18,11 +18,16 @@ module Idv
 
     def update
       user_session[:need_personal_key_confirmation] = false
-      analytics.idv_personal_key_submitted
+
+      analytics.idv_personal_key_submitted(proofing_method: "#{proofing_method} verification")
       redirect_to next_step
     end
 
     private
+
+    def proofing_method
+      user_session['idv']['address_verification_mechanism']
+    end
 
     def next_step
       if pending_profile? && idv_session.address_verification_mechanism == 'gpo'
