@@ -5,7 +5,7 @@ class AddressProofingJob < ApplicationJob
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
-  def perform(user_id:, issuer:, result_id:, encrypted_arguments:, trace_id:)
+  def perform(issuer:, result_id:, encrypted_arguments:, trace_id:, user_id: nil)
     timer = JobHelpers::Timer.new
 
     raise_stale_job! if stale_job?(enqueued_at)

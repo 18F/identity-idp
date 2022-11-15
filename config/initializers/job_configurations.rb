@@ -34,12 +34,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Proofing Costs Report to S3
-      proofing_costs: {
-        class: 'Reports::ProofingCostsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Combined Invoice Supplement Report to S3
       combined_invoice_supplement_report: {
         class: 'Reports::CombinedInvoiceSupplementReport',
