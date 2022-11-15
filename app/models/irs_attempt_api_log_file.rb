@@ -1,0 +1,2 @@
+class IrsAttemptApiLogFile < ApplicationRecord
+end
