@@ -5,7 +5,6 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
     context 'IRS attempts API is enabled' do
       let(:start_time) { Time.new(2020, 1, 1, 12, 0, 0, 'UTC') }
       let(:private_key) { OpenSSL::PKey::RSA.new(4096) }
-      # let(:public_key) { private_key.public_key }
       let(:encoded_public_key) { Base64.strict_encode64(private_key.public_key.to_der) }
       let(:bucket_name) { 'test-bucket-name' }
       let(:events) do
@@ -90,15 +89,6 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         )
 
         expect(result[:requested_time]).to eq(start_time)
-
-        # decrypted_result = IrsAttemptsApi::EnvelopeEncryptor.decrypt(
-        #  encrypted_data: file_data,
-        #  key: final_key, iv: result[:encryptor_result].iv
-        # )
-
-        # events_jwes = events.pluck(:jwe)
-
-        # expect(decrypted_result).to eq(events_jwes.join("\r\n"))
       end
     end
 
