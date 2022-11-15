@@ -66,7 +66,7 @@ class TwoFactorOptionsForm
   end
 
   def webauthn_platform_enabled?
-    IdentityConfig.store.platform_authentication_enabled
+    IdentityConfig.store.platform_authentication_sign_up_enabled
   end
 
   def kantara_2fa_phone_restricted?
