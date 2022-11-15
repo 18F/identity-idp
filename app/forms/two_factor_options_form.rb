@@ -65,10 +65,6 @@ class TwoFactorOptionsForm
     has_no_configured_mfa? || in_phishing_resistant_or_piv_cac_required_flow?
   end
 
-  def webauthn_platform_enabled?
-    IdentityConfig.store.platform_authentication_sign_up_enabled
-  end
-
   def kantara_2fa_phone_restricted?
     IdentityConfig.store.kantara_2fa_phone_restricted
   end

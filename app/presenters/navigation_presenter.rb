@@ -30,7 +30,7 @@ class NavigationPresenter
             I18n.t('account.navigation.add_authentication_apps'),
             authenticator_setup_url,
           ),
-          IdentityConfig.store.platform_authentication_sign_up_enabled ? NavItem.new(
+          IdentityConfig.store.platform_auth_set_up_enabled ? NavItem.new(
             I18n.t('account.navigation.add_platform_authenticator'),
             webauthn_setup_path(platform: true),
           ) : nil,

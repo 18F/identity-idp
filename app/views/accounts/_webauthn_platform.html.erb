@@ -20,7 +20,7 @@
     <div class="clearfix"></div>
   <% end %>
 </div>
-
+<% if IdentityConfig.store.platform_auth_set_up_enabled %>
 <%= render ButtonComponent.new(
       action: ->(**tag_options, &block) do
         link_to(webauthn_setup_path(platform: true), **tag_options, &block)

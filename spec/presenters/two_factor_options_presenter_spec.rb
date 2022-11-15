@@ -14,7 +14,7 @@ describe TwoFactorOptionsPresenter do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:platform_authentication_sign_up_enabled).
+    allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).
       and_return(false)
   end
 
@@ -59,9 +59,9 @@ describe TwoFactorOptionsPresenter do
         ]
       end
     end
-    context 'when platform_authentication_sign_up_enabled is enabled' do
+    context 'when platform_auth_set_up_enabled is enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:platform_authentication_sign_up_enabled).
+        allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).
           and_return(true)
       end
 
