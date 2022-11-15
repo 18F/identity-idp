@@ -28,7 +28,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
     context 'common OTP delivery screen behavior' do
       it 'has a localized title' do
-        expect(view).to receive(:title).with(t('titles.enter_2fa_code'))
+        expect(view).to receive(:title).with(t('titles.enter_2fa_code.one_time_code'))
 
         render
       end
