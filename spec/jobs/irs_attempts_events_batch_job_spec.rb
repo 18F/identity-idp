@@ -20,14 +20,17 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         ]
       end
 
+      around do |ex|
+        Dir.mktmpdir do |dir|
+          @dir_path = dir
+          ex.run
+        end
+      end
+
       before do
         allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:irs_attempt_api_public_key).
           and_return(Base64.strict_encode64(private_key.public_key.to_der))
-
-        Dir.mktmpdir do |dir|
-          @dir_path = dir
-        end
 
         travel_to start_time + 1.hour
 
@@ -41,7 +44,9 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
       end
 
       it 'batches and writes attempt events to an encrypted file' do
-        result = IrsAttemptsEventsBatchJob.perform_now(start_time, dir_path: @dir_path)
+        Rails.logger.debug 'ljdlfjoslkfjsflksjglksjkglsjglskgjsd'
+        Rails.logger.debug @dir_path
+        result = IrsAttemptsEventsBatchJob.perform_now(start_time, @dir_path)
         expect(result[:file_path]).not_to be_nil
 
         file_data = File.open(result[:file_path], 'rb') do |file|
