@@ -7,7 +7,7 @@ es:
       %{app_name} para cancelar.
     authentication_otp:
       sms: |-
-        %{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don't share this code with anyone.
+        %{app_name}: El código de un solo uso es %{code}. Este código se vence en %{expiration} minutos. No lo comparta con ninguna persona.
 
         @%{domain} #%{code}
       voice: '¡Hola! Su código de acceso de %{app_name} es, %{code}, nuevamente, su
@@ -15,7 +15,7 @@ es:
         minutos.'
     confirmation_otp:
       sms: |-
-        %{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don't share this code with anyone.
+        %{app_name}: El código de un solo uso es %{code}. Este código se vence en %{expiration} minutos. No lo comparta con ninguna persona.
 
         @%{domain} #%{code}
       voice: '¡Hola! Su código de acceso de %{app_name} es, %{code}, nuevamente, su
@@ -26,10 +26,10 @@ es:
       estado'
     error:
       friendly_message:
-        daily_voice_limit_reached: Your one-time code failed to send because you
-          exceeded the maximum number of phone calls in 24 hours to this phone
-          number. You can either request a code by text message or use a
-          different number to receive a phone call.
+        daily_voice_limit_reached: Su código de un solo uso no se ha podido enviar, ya
+          que ha superado el número máximo de llamadas en 24 horas a este número
+          de teléfono. Puedes solicitar un código por mensaje de texto o
+          utilizar un número diferente para recibir una llamada telefónica.
         duplicate_endpoint: El número de teléfono ingresado no es válido.
         generic: Se produjo un error al enviar el código de seguridad.
         invalid_calling_area: No se admiten llamadas a ese número de teléfono. Intenta

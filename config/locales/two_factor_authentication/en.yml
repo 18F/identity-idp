@@ -55,8 +55,8 @@ en:
       too many times.
     max_generic_login_attempts_reached: For your security, your account is temporarily locked.
     max_otp_login_attempts_reached: For your security, your account is temporarily
-      locked because you have entered the one-time code incorrectly too
-      many times.
+      locked because you have entered the one-time code incorrectly too many
+      times.
     max_otp_requests_reached: For your security, your account is temporarily locked
       because you have requested a one-time code too many times.
     max_personal_key_login_attempts_reached: For your security, your account is

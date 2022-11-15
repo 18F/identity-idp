@@ -20,8 +20,8 @@ es:
     header_text: Introduzca su código único
     important_alert_icon: ícono de aviso importante
     invalid_backup_code: Esa código de respaldo no es válida.
-    invalid_otp: That one-time code is invalid. You can try entering it again or
-      request a new one-time code.
+    invalid_otp: El código de un solo uso no es válido. Puede intentar ingresarlo
+      nuevamente o solicitar uno nuevo.
     invalid_personal_key: Esa clave personal no es válida.
     invalid_piv_cac: Ese PIV/CAC no funcionó. Asegúrese de que sea el PIV/CAC
       correcto para esta cuenta. Si es así, puede haber un problema con su
@@ -40,10 +40,12 @@ es:
       piv_cac: Empleados del Gobierno
       piv_cac_info: Use su tarjeta PIV / CAC para asegurar su cuenta.
       sms: Mensaje de texto / SMS
-      sms_info_html: Get one-time code via text message to <strong>%{phone}</strong>.
+      sms_info_html: Obtenga el código de un solo uso a través de un mensaje de texto
+        al <strong>%{phone}</strong>.
       voice: Llamada telefónica automatizada
-      voice_info_html: Get one-time code via phone call to <strong>%{phone}</strong>
-        (North America phone numbers only).
+      voice_info_html: Obtenga el código de un solo uso a través de una llamada
+        telefónica al <strong>%{phone}</strong>. (Solo números de teléfono de
+        América del Norte).
       webauthn: Llave de seguridad
       webauthn_info: Use su llave de seguridad para acceder a su cuenta.
       webauthn_platform: Desbloqueo facial o táctil
@@ -57,11 +59,11 @@ es:
       bloqueada temporalmente porque ha ingresado el código de respaldo
       incorrectamente muchas veces.
     max_generic_login_attempts_reached: Para su seguridad, su cuenta está bloqueada temporalmente.
-    max_otp_login_attempts_reached: For your security, your account is temporarily
-      locked because you have entered the one-time code incorrectly too
-      many times.
-    max_otp_requests_reached: For your security, your account is temporarily locked
-      because you have requested a one-time code too many times.
+    max_otp_login_attempts_reached: Como medida de seguridad, su cuenta ha sido
+      bloqueada de forma temporal, ya que ingresó el código de un solo uso de
+      forma incorrecta reiteradas veces.
+    max_otp_requests_reached: Para su seguridad, su cuenta está temporalmente
+      bloqueada porque ha solicitado un código único demasiadas veces.
     max_personal_key_login_attempts_reached: Para su seguridad, su cuenta ha sido
       bloqueada temporalmente porque ha ingresado incorrectamente la clave
       personal demasiadas veces.
@@ -74,14 +76,15 @@ es:
       cant_use_phone: '¿No puede utilizar su teléfono?'
       error_retry: 'Lo sentimos, estamos teniendo problemas para aceptarlo. Por favor,
         inténtelo de nuevo.'
-      opted_out_html: 'You’ve opted out of receiving text messages at %{phone_number}.
-        You can opt in and receive a one-time code again to that phone number.'
+      opted_out_html: 'Ha optado por no recibir mensajes de texto en el
+        %{phone_number}. Puede optar por recibir de nuevo un código de un solo
+        uso a ese número de teléfono.'
       opted_out_last_30d_html: 'Canceló su suscripción para recibir mensajes de texto
         al %{phone_number} en los últimos 30 días. Solo podemos suscribir un
         número telefónico una vez cada 30 días.'
-      title: We could not send a one-time code to your phone number
-      wait_30d_opt_in: 'After 30 days, you can opt in and receive a one-time code to
-        that phone number.'
+      title: No hemos podido enviar el código de un solo uso a su número de teléfono
+      wait_30d_opt_in: 'Luego de 30 días, usted podrá recibir el código de un solo uso
+        a ese número de teléfono.'
     otp_delivery_preference:
       instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
       no_supported_options: No podemos verificar los números de teléfono de %{location}
@@ -110,7 +113,8 @@ es:
     phone_fallback:
       question: '¿No puede utilizar su teléfono?'
     phone_fee_disclosure: Se pueden aplicar tarifas por mensajes y datos.
-    phone_info_html: We’ll send you a one-time code <strong>each time you sign in</strong>.
+    phone_info_html: Le enviaremos un código de un solo uso <strong>cada vez que
+      ingrese</strong>.
     phone_label: Número de teléfono
     piv_cac_fallback:
       question: '¿No tienes su PIV o CAC disponibles?'
@@ -153,12 +157,12 @@ es:
       piv_cac_info: Credenciales PIV/CAC para empleados gubernamentales y del
         ejército. Únicamente versión de escritorio.
       sms: Mensaje de texto / SMS
-      sms_info: Get your one-time code via text message / SMS.
+      sms_info: Obtenga su código de un solo uso a través de un mensaje de texto/SMS.
       unused_backup_code:
         one: '(%{count} código sin usar)'
         other: '(%{count} códigos sin usar)'
       voice: Llamada telefónica
-      voice_info: Get your one-time code via phone call.
+      voice_info: Obtenga su código de un solo uso a través de una llamada telefónica.
       webauthn: Clave de seguridad
       webauthn_info: Un dispositivo físico que suele tener la forma de una unidad USB
         y se conecta a su dispositivo.

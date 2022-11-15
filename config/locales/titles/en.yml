@@ -25,8 +25,8 @@ en:
       password: Edit your password
       phone: Edit your phone number
     enter_2fa_code:
-      security_code: Enter the secure one-time security code
       one_time_code: Enter the secure one-time code
+      security_code: Enter the secure one-time security code
     failure:
       information_not_verified: Personal information not verified
       phone_verification: Phone number not verified
