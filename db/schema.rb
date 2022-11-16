@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_09_165826) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_15_181559) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -464,23 +464,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_09_165826) do
     t.string "threatmetrix_policy_score"
     t.index ["user_id"], name: "index_proofing_components_on_user_id", unique: true
     t.index ["verified_at"], name: "index_proofing_components_on_verified_at"
-  end
-
-  create_table "proofing_costs", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "acuant_front_image_count", default: 0
-    t.integer "acuant_back_image_count", default: 0
-    t.integer "aamva_count", default: 0
-    t.integer "lexis_nexis_resolution_count", default: 0
-    t.integer "lexis_nexis_address_count", default: 0
-    t.integer "gpo_letter_count", default: 0
-    t.integer "phone_otp_count", default: 0
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.integer "acuant_result_count", default: 0
-    t.integer "acuant_selfie_count", default: 0
-    t.integer "threatmetrix_count", default: 0
-    t.index ["user_id"], name: "index_proofing_costs_on_user_id", unique: true
   end
 
   create_table "registration_logs", force: :cascade do |t|
