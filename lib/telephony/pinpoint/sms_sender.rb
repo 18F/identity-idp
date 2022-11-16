@@ -13,6 +13,20 @@ module Telephony
         'UNKNOWN_FAILURE' => UnknownFailureError,
       }.freeze
 
+      # One connection pool per config (aka per-region)
+      # @param [Hash<PinpointSmsConfig, ConnectionPool<Aws::Pinpoint::Client>>]
+      CLIENT_POOL = Hash.new do |h, sms_config|
+        h[sms_config] = ConnectionPool.new(size: IdentityConfig.store.pinpoint_voice_pool_size) do
+          credentials = AwsCredentialBuilder.new(sms_config).call
+
+          Aws::Pinpoint::Client.new(
+            region: sms_config.region,
+            retry_limit: 0,
+            credentials: credentials,
+          )
+        end
+      end
+
       # rubocop:disable Metrics/BlockLength
       # rubocop:disable Lint/UnusedMethodArgument
       # @return [Response]
@@ -25,52 +39,51 @@ module Telephony
         sender_id = Telephony.config.country_sender_ids[country_code.to_s]
         Telephony.config.pinpoint.sms_configs.each do |sms_config|
           start = Time.zone.now
-          client = build_client(sms_config)
-          next if client.nil?
+          CLIENT_POOL[sms_config].with do |client|
+            sender_config = build_sender_config(country_code, sms_config, sender_id)
 
-          sender_config = build_sender_config(country_code, sms_config, sender_id)
-
-          pinpoint_response = client.send_messages(
-            application_id: sms_config.application_id,
-            message_request: {
-              addresses: {
-                to => {
-                  channel_type: 'SMS',
+            pinpoint_response = client.send_messages(
+              application_id: sms_config.application_id,
+              message_request: {
+                addresses: {
+                  to => {
+                    channel_type: 'SMS',
+                  },
+                },
+                message_configuration: {
+                  sms_message: {
+                    body: message,
+                    message_type: 'TRANSACTIONAL',
+                  }.merge(sender_config),
                 },
               },
-              message_configuration: {
-                sms_message: {
-                  body: message,
-                  message_type: 'TRANSACTIONAL',
-                }.merge(sender_config),
+            )
+            finish = Time.zone.now
+            response = build_response(pinpoint_response, start: start, finish: finish)
+            if response.success? ||
+               response.error.is_a?(OptOutError) ||
+               response.error.is_a?(PermanentFailureError)
+              return response
+            end
+            PinpointHelper.notify_pinpoint_failover(
+              error: response.error,
+              region: sms_config.region,
+              channel: :sms,
+              extra: response.extra,
+            )
+          rescue Aws::Pinpoint::Errors::ServiceError,
+                 Seahorse::Client::NetworkingError => e
+            finish = Time.zone.now
+            response = handle_pinpoint_error(e)
+            PinpointHelper.notify_pinpoint_failover(
+              error: e,
+              region: sms_config.region,
+              channel: :sms,
+              extra: {
+                duration_ms: Util.duration_ms(start: start, finish: finish),
               },
-            },
-          )
-          finish = Time.zone.now
-          response = build_response(pinpoint_response, start: start, finish: finish)
-          if response.success? ||
-             response.error.is_a?(OptOutError) ||
-             response.error.is_a?(PermanentFailureError)
-            return response
+            )
           end
-          PinpointHelper.notify_pinpoint_failover(
-            error: response.error,
-            region: sms_config.region,
-            channel: :sms,
-            extra: response.extra,
-          )
-        rescue Aws::Pinpoint::Errors::ServiceError,
-               Seahorse::Client::NetworkingError => e
-          finish = Time.zone.now
-          response = handle_pinpoint_error(e)
-          PinpointHelper.notify_pinpoint_failover(
-            error: e,
-            region: sms_config.region,
-            channel: :sms,
-            extra: {
-              duration_ms: Util.duration_ms(start: start, finish: finish),
-            },
-          )
         end
         response || PinpointHelper.handle_config_failure(:sms)
       end
@@ -87,20 +100,20 @@ module Telephony
 
         Telephony.config.pinpoint.sms_configs.each do |sms_config|
           error = nil
-          client = build_client(sms_config)
-          next if client.nil?
-          response = client.phone_number_validate(
-            number_validate_request: { phone_number: phone_number },
-          )
+          CLIENT_POOL[sms_config].with do |client|
+            response = client.phone_number_validate(
+              number_validate_request: { phone_number: phone_number },
+            )
+          rescue Seahorse::Client::NetworkingError,
+                 Aws::Pinpoint::Errors::ServiceError => error
+            PinpointHelper.notify_pinpoint_failover(
+              error: error,
+              region: sms_config.region,
+              channel: :sms,
+              extra: {},
+            )
+          end
           break if response
-        rescue Seahorse::Client::NetworkingError,
-               Aws::Pinpoint::Errors::ServiceError => error
-          PinpointHelper.notify_pinpoint_failover(
-            error: error,
-            region: sms_config.region,
-            channel: :sms,
-            extra: {},
-          )
         end
 
         type = case response&.number_validate_response&.phone_type
@@ -120,19 +133,6 @@ module Telephony
           type: type,
           carrier: response&.number_validate_response&.carrier,
           error: error,
-        )
-      end
-
-      # @api private
-      # @param [PinpointSmsConfig] sms_config
-      # @return [nil, Aws::Pinpoint::Client]
-      def build_client(sms_config)
-        credentials = AwsCredentialBuilder.new(sms_config).call
-        return if credentials.nil?
-        Aws::Pinpoint::Client.new(
-          region: sms_config.region,
-          retry_limit: 0,
-          credentials: credentials,
         )
       end
 

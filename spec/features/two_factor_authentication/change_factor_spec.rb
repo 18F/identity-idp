@@ -31,7 +31,7 @@ feature 'Changing authentication factor' do
         travel(IdentityConfig.store.reauthn_window + 1)
         visit manage_phone_path(id: phone_configuration)
         complete_2fa_confirmation_without_entering_otp
-        click_link t('links.two_factor_authentication.get_another_code')
+        click_link t('links.two_factor_authentication.send_another_code')
 
         expect(Telephony).to have_received(:send_authentication_otp).with(
           otp: user.reload.direct_otp,

@@ -13,7 +13,7 @@ fr:
       address: Mettez à jour votre adresse postale
       doc_capture: Ajoutez votre pièce d’identité
       link_sent: Lien envoyé
-      otp_delivery: Recevez un code de sécurité
+      otp_delivery: Recevez un code à usage unique
       processing_images: Traitement de vos images
       ssn: Entrez votre numéro de sécurité sociale
       switch_back: Retournez sur votre ordinateur
@@ -24,7 +24,9 @@ fr:
       email_language: Modifier la préférence de langue des e-mails
       password: Modifier votre mot de passe
       phone: Modifier votre numéro de téléphone
-    enter_2fa_code: Entrez le code de sécurité à utilisation unique
+    enter_2fa_code:
+      one_time_code: Entrez le code de sécurité à usage unique
+      security_code: Entrez le code de sécurité à utilisation unique
     failure:
       information_not_verified: Informations personnelles non vérifiées
       phone_verification: Numéro de téléphone non vérifié
@@ -55,7 +57,8 @@ fr:
       confirm: Confirmez le mot de passe de votre compte
       forgot: Réinitialisez le mot de passe
     personal_key: Juste au cas
-    phone_setup: Envoyer votre code de sécurité par SMS ou par appel téléphonique
+    phone_setup: Envoyez votre code à usage unique par message texte (SMS) ou par
+      appel téléphonique.
     piv_cac_login:
       add: Ajoutez votre PIV ou CAC
       new: Utilisez votre PIV / CAC pour vous connecter à votre compte

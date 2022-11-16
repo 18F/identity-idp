@@ -33,7 +33,7 @@ describe UserEventCreator do
   describe '#create_user_event' do
     context 'when a device exists for the user' do
       it 'updates the device and creates an event' do
-        event = subject.create_user_event(event_type, user)
+        event, _disavowal_token = subject.create_user_event(event_type, user)
 
         expect(event.event_type).to eq(event_type)
         expect(event.ip).to eq(ip_address)
@@ -49,7 +49,7 @@ describe UserEventCreator do
       it 'creates a device and creates an event' do
         expect(UserAlerts::AlertUserAboutNewDevice).to_not receive(:call)
 
-        event = subject.create_user_event(event_type, user)
+        event, _disavowal_token = subject.create_user_event(event_type, user)
 
         expect(event.event_type).to eq(event_type)
         expect(event.ip).to eq(ip_address)
@@ -62,7 +62,7 @@ describe UserEventCreator do
         allow(UserAlerts::AlertUserAboutNewDevice).to receive(:call)
         create(:device, user: user)
 
-        event = subject.create_user_event(event_type, user)
+        event, _disavowal_token = subject.create_user_event(event_type, user)
 
         expect(event).to be_a(Event)
         expect(UserAlerts::AlertUserAboutNewDevice).to have_received(:call).
@@ -76,7 +76,7 @@ describe UserEventCreator do
       it 'creates a device and creates an event' do
         expect(UserAlerts::AlertUserAboutNewDevice).to_not receive(:call)
 
-        event = subject.create_user_event(event_type, user)
+        event, _disavowal_token = subject.create_user_event(event_type, user)
 
         expect(event.event_type).to eq(event_type)
         expect(event.ip).to eq(ip_address)
@@ -88,7 +88,7 @@ describe UserEventCreator do
         let(:existing_device_cookie) { nil }
 
         it 'assigns one to the device' do
-          event = subject.create_user_event(event_type, user)
+          event, _disavowal_token = subject.create_user_event(event_type, user)
 
           expect(event.device.cookie_uuid.length).to eq(UserEventCreator::COOKIE_LENGTH)
         end
@@ -98,7 +98,7 @@ describe UserEventCreator do
         allow(UserAlerts::AlertUserAboutNewDevice).to receive(:call)
         create(:device, user: user)
 
-        event = subject.create_user_event(event_type, user)
+        event, _disavowal_token = subject.create_user_event(event_type, user)
 
         expect(event).to be_a(Event)
         expect(UserAlerts::AlertUserAboutNewDevice).to have_received(:call).
@@ -109,10 +109,10 @@ describe UserEventCreator do
 
   describe '#create_user_event_with_disavowal' do
     it 'creates a device with a disavowal' do
-      event = subject.create_user_event_with_disavowal(event_type, user)
+      event, disavowal_token = subject.create_user_event_with_disavowal(event_type, user)
 
-      expect(event.disavowal_token).to_not be_nil
-      expect(event.disavowal_token_fingerprint).to_not be_nil
+      expect(event.disavowal_token_fingerprint).
+        to eq(Pii::Fingerprinter.fingerprint(disavowal_token))
     end
   end
 
@@ -121,7 +121,7 @@ describe UserEventCreator do
     let(:event_type) { :password_invalidated }
 
     it 'creates an event without a device and without an IP address' do
-      event = subject.create_out_of_band_user_event(event_type)
+      event, _disavowal_token = subject.create_out_of_band_user_event(event_type)
 
       expect(event.event_type).to eq(event_type.to_s)
       expect(event.ip).to be_blank

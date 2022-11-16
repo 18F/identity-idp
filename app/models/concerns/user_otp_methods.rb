@@ -4,7 +4,7 @@ module UserOtpMethods
   extend ActiveSupport::Concern
 
   def max_login_attempts?
-    second_factor_attempts_count.to_i >= max_login_attempts
+    second_factor_attempts_count.to_i >= IdentityConfig.store.login_otp_confirmation_max_attempts
   end
 
   def create_direct_otp
@@ -36,9 +36,5 @@ module UserOtpMethods
 
   def clear_direct_otp
     update(direct_otp: nil, direct_otp_sent_at: nil)
-  end
-
-  def max_login_attempts
-    3
   end
 end

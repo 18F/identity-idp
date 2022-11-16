@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_04_204944) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_09_165826) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -210,7 +210,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_04_204944) do
     t.index ["confirmation_token"], name: "index_email_addresses_on_confirmation_token", unique: true
     t.index ["email_fingerprint", "user_id"], name: "index_email_addresses_on_email_fingerprint_and_user_id", unique: true
     t.index ["email_fingerprint"], name: "index_email_addresses_on_email_fingerprint", unique: true, where: "(confirmed_at IS NOT NULL)"
-    t.index ["user_id", "last_sign_in_at"], name: "index_email_addresses_on_user_id_and_last_sign_in_at", order: { last_sign_in_at: :desc }
     t.index ["user_id"], name: "index_email_addresses_on_user_id"
   end
 
@@ -334,6 +333,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_04_204944) do
     t.index ["service_provider_id"], name: "index_integrations_on_service_provider_id"
   end
 
+  create_table "irs_attempt_api_log_files", force: :cascade do |t|
+    t.string "filename"
+    t.string "iv"
+    t.text "encrypted_key"
+    t.datetime "requested_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["requested_time"], name: "index_irs_attempt_api_log_files_on_requested_time"
+  end
+
   create_table "letter_requests_to_usps_ftp_logs", force: :cascade do |t|
     t.datetime "ftp_at", precision: nil, null: false
     t.integer "letter_requests_count", null: false
@@ -346,15 +355,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_04_204944) do
     t.integer "user_id", null: false
     t.integer "auth_count", default: 1, null: false
     t.index ["issuer", "year_month", "user_id"], name: "index_monthly_auth_counts_on_issuer_and_year_month_and_user_id", unique: true
-  end
-
-  create_table "monthly_sp_auth_counts", force: :cascade do |t|
-    t.string "issuer", null: false
-    t.integer "ial", limit: 2, null: false
-    t.string "year_month", null: false
-    t.integer "user_id", null: false
-    t.integer "auth_count", default: 1, null: false
-    t.index ["issuer", "ial", "year_month", "user_id"], name: "index_monthly_sp_auth_counts_on_issuer_ial_month_user_id", unique: true
   end
 
   create_table "otp_requests_trackers", id: :serial, force: :cascade do |t|

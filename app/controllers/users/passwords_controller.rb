@@ -56,8 +56,8 @@ module Users
     end
 
     def create_event_and_notify_user_about_password_change
-      event = create_user_event_with_disavowal(:password_changed)
-      UserAlerts::AlertUserAboutPasswordChange.call(current_user, event.disavowal_token)
+      _event, disavowal_token = create_user_event_with_disavowal(:password_changed)
+      UserAlerts::AlertUserAboutPasswordChange.call(current_user, disavowal_token)
     end
 
     def handle_invalid_password

@@ -7,7 +7,7 @@
 <% end %>
 
 <% content_for :content do %>
-  <div class="display-none tablet:display-flex grid-row grid-gap margin-bottom-4">
+  <aside class="display-none tablet:display-flex grid-row grid-gap margin-bottom-4">
     <div class="grid-offset-2 grid-col-3">
       <%= image_tag(
             asset_path('user-access.svg'),
@@ -24,16 +24,16 @@
         <%= link_to t('account.navigation.learn_more', app_name: APP_NAME), MarketingSite.base_url %>
       </div>
     </div>
-  </div>
+  </aside>
   <div class="grid-row grid-gap">
     <div class="display-none tablet:display-block tablet:grid-col-4">
       <%= render 'accounts/side_nav' %>
     </div>
-    <div class="tablet:grid-col-8">
+    <main class="tablet:grid-col-8" id="main-content">
       <%= yield %>
-    </div>
+    </main>
   </div>
 <% end %>
 
 <%= javascript_packs_tag_once('navigation') %>
-<%= render template: 'layouts/base', locals: { disable_card: true } %>
+<%= render template: 'layouts/base', locals: { disable_card: true, user_main_tag: false } %>
