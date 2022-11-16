@@ -489,6 +489,87 @@ feature 'Two Factor Authentication' do
     end
   end
 
+  describe 'webauthn_platform' do
+    include WebAuthnHelper
+
+    before do
+      allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
+    end
+
+    let(:webauthn_configuration) do
+      create(
+        :webauthn_configuration,
+        credential_id: credential_id,
+        credential_public_key: credential_public_key,
+        platform_authenticator: true,
+        user: user,
+      )
+    end
+    let(:user) do
+      create(:user, :with_backup_code)
+    end
+
+    context 'sign in' do
+      context 'with platform auth sign up enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
+        end
+
+        it 'shows signed in user options with webauthn visible' do
+          sign_in_user(webauthn_configuration.user)
+
+          click_link t('two_factor_authentication.login_options_link_text')
+
+          expect(page).
+            to have_content t('two_factor_authentication.login_options.webauthn_platform')
+          expect(page).
+            to have_content t('two_factor_authentication.login_options.backup_code')
+          expect(page).
+            to_not have_content t('two_factor_authentication.login_options.auth_app')
+        end
+
+        it 'allows user to be signed in without issue' do
+          mock_webauthn_verification_challenge
+
+          sign_in_user(webauthn_configuration.user)
+          mock_press_button_on_hardware_key_on_verification
+          click_button t('forms.buttons.continue')
+
+          expect(page).to have_current_path(account_path)
+        end
+      end
+
+      context 'with platform auth sign up disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(false)
+        end
+
+        it 'shows signed in user options with webauthn visible' do
+          sign_in_user(webauthn_configuration.user)
+
+          click_link t('two_factor_authentication.login_options_link_text')
+
+          expect(page).
+            to have_content t('two_factor_authentication.login_options.webauthn_platform')
+          expect(page).
+            to have_content t('two_factor_authentication.login_options.backup_code')
+          expect(page).
+            to_not have_content t('two_factor_authentication.login_options.auth_app')
+        end
+
+        it 'allows user to be signed in without issue' do
+          mock_webauthn_verification_challenge
+
+          sign_in_user(webauthn_configuration.user)
+          mock_press_button_on_hardware_key_on_verification
+          click_button t('forms.buttons.continue')
+
+          expect(page).to have_current_path(account_path)
+        end
+      end
+    end
+  end
+
   describe 'second factor locked' do
     before do
       allow_any_instance_of(UserDecorator).to receive(:locked_out?).and_return(true)
