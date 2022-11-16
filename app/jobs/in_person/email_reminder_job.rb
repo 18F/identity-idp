@@ -4,17 +4,17 @@ module InPerson
 
     include GoodJob::ActiveJobExtensions::Concurrency
 
+    good_job_control_concurrency_with(
+      total_limit: 1,
+      key: 'in_person_email_reminder_job',
+    )
+
     discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
 
     def perform(_now)
-      # final reminder job done first in case of job failure
-      in_person_email_reminder_late_benchmark_in_days =
-        IdentityConfig.store.in_person_email_reminder_late_benchmark_in_days
-      in_person_email_reminder_final_benchmark_in_days =
-        IdentityConfig.store.in_person_email_reminder_final_benchmark_in_days
-      late_benchmark = calculate_interval(in_person_email_reminder_late_benchmark_in_days)
-      final_benchmark = calculate_interval(in_person_email_reminder_final_benchmark_in_days)
+      return true unless IdentityConfig.store.in_person_proofing_enabled
 
+      # final reminder job done first in case of job failure
       second_set_enrollments = InPersonEnrollment.needs_late_email_reminder(
         late_benchmark,
         final_benchmark,
@@ -23,10 +23,6 @@ module InPerson
         send_reminder_email(enrollment.user, enrollment)
         enrollment.update!(late_reminder_sent: true)
       end
-
-      in_person_email_reminder_early_benchmark_in_days =
-        IdentityConfig.store.in_person_email_reminder_early_benchmark_in_days
-      early_benchmark = calculate_interval(in_person_email_reminder_early_benchmark_in_days)
 
       first_set_enrollments = InPersonEnrollment.needs_early_email_reminder(
         early_benchmark,
@@ -41,8 +37,20 @@ module InPerson
     private
 
     def calculate_interval(benchmark)
-      config = IdentityConfig.store.in_person_enrollment_validity_in_days.days
-      (Time.zone.now - config) + benchmark.days
+      days_until_expired = IdentityConfig.store.in_person_enrollment_validity_in_days.days
+      (Time.zone.now - days_until_expired) + benchmark.days
+    end
+
+    def early_benchmark
+      calculate_interval(IdentityConfig.store.in_person_email_reminder_early_benchmark_in_days)
+    end
+
+    def late_benchmark
+      calculate_interval(IdentityConfig.store.in_person_email_reminder_late_benchmark_in_days)
+    end
+
+    def final_benchmark
+      calculate_interval(IdentityConfig.store.in_person_email_reminder_final_benchmark_in_days)
     end
 
     def send_reminder_email(user, enrollment)
