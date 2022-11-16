@@ -80,7 +80,6 @@ namespace :dev do
   desc 'Create in-person enrollments for N random users'
   task random_in_person_users: [:environment, :random_users] do
     usps_request_delay_ms = (ENV['USPS_REQUEST_DELAY_MS'] || 0).to_i
-    usps_request_delay_ms.freeze
     num_users = (ENV['NUM_USERS'] || 100).to_i
     pw = 'salty pickles'
     unless ENV['PROGRESS'] == 'no'
@@ -134,7 +133,6 @@ namespace :dev do
               success = false
               num_attempts = 0
               max_attempts = (ENV['MAX_NUM_ATTEMPTS'] || 3).to_i
-              max_attempts.freeze
               until success || num_attempts >= max_attempts
                 num_attempts += 1
                 begin
