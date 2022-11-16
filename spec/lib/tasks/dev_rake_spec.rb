@@ -28,6 +28,7 @@ describe 'dev rake tasks' do
     usps_request_delay_ms = nil
 
     before(:each) do
+      allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
       prev_num_users = ENV['NUM_USERS']
       prev_progress = ENV['PROGRESS']
       prev_enrollment_status = ENV['ENROLLMENT_STATUS']
@@ -354,6 +355,85 @@ describe 'dev rake tasks' do
         stub_request_enroll
 
         expect_any_instance_of(Object).to receive(:sleep).exactly(10).times.with(0.2)
+
+        Rake::Task['dev:random_in_person_users'].invoke
+      end
+
+      it 'retries when it gets an error from USPS' do
+        ENV['NUM_USERS'] = '1'
+        ENV['CREATE_PENDING_ENROLLMENT_IN_USPS'] = '1'
+        stub_request_token
+        # Stub the requests to timeout twice and then succeed
+        stub_request(
+          :post,
+          %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
+        ).to_raise(Faraday::TimeoutError).times(2).then.
+          to_return(
+            status: 200,
+            body: UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
+            headers: { 'content-type' => 'application/json' },
+          ).times(1)
+
+        expect(UspsInPersonProofing::EnrollmentHelper).
+          to receive(:schedule_in_person_enrollment).and_call_original.exactly(3).times
+        expect(Rails.logger).to receive(:error).
+          with('Exception raised while enrolling user: Exception from WebMock').exactly(2).times
+
+        Rake::Task['dev:random_in_person_users'].invoke
+
+        expect(User.count).to eq 1
+        expect(InPersonEnrollment.count).to eq 1
+        expect(InPersonEnrollment.pending.count).to eq 1
+      end
+
+      it 'stops retrying after 3 attempts and fails the transaction' do
+        ENV['NUM_USERS'] = '10'
+        ENV['CREATE_PENDING_ENROLLMENT_IN_USPS'] = '1'
+        stub_request_token
+        # Allow one enrollment to succeed and then timeout three times
+        stub_request(
+          :post,
+          %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
+        ).
+          to_return(
+            status: 200,
+            body: UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
+            headers: { 'content-type' => 'application/json' },
+          ).
+          then.to_raise(Faraday::TimeoutError).times(3)
+
+        expect(UspsInPersonProofing::EnrollmentHelper).
+          to receive(:schedule_in_person_enrollment).and_call_original.exactly(4).times
+        expect(Rails.logger).to receive(:error).
+          with('Exception raised while enrolling user: Exception from WebMock').exactly(3).times
+
+        expect do
+          Rake::Task['dev:random_in_person_users'].invoke
+        end.to raise_error(UspsInPersonProofing::Exception::RequestEnrollException)
+
+        expect(User.count).to eq 10
+        expect(InPersonEnrollment.count).to eq 0
+        expect(InPersonEnrollment.pending.count).to eq 0
+      end
+
+      it 'waits USPS_REQUEST_DELAY_MS ms between retries' do
+        ENV['NUM_USERS'] = '1'
+        ENV['CREATE_PENDING_ENROLLMENT_IN_USPS'] = '1'
+        ENV['USPS_REQUEST_DELAY_MS'] = '200'
+        stub_request_token
+        # Stub the requests to timeout twice and then succeed
+        stub_request(
+          :post,
+          %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
+        ).to_raise(Faraday::TimeoutError).times(2).then.
+          to_return(
+            status: 200,
+            body: UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
+            headers: { 'content-type' => 'application/json' },
+          ).times(1)
+        expect(UspsInPersonProofing::EnrollmentHelper).
+          to receive(:schedule_in_person_enrollment).and_call_original.exactly(3).times
+        expect_any_instance_of(Object).to receive(:sleep).exactly(3).times.with(0.2)
 
         Rake::Task['dev:random_in_person_users'].invoke
       end
