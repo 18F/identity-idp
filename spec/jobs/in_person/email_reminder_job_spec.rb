@@ -5,6 +5,7 @@ RSpec.describe InPerson::EmailReminderJob do
 
   before do
     ActiveJob::Base.queue_adapter = :test
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
   end
 
   describe '#perform' do
@@ -16,6 +17,19 @@ RSpec.describe InPerson::EmailReminderJob do
     end
     let!(:pending_enrollment_needing_early_reminder) do
       create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 19.days)
+    end
+
+    let!(:pending_enrollment_received_late_reminder) do
+      create(
+        :in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 26.days,
+                                         late_reminder_sent: true
+      )
+    end
+    let!(:pending_enrollment_received_early_reminder) do
+      create(
+        :in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 19.days,
+                                         early_reminder_sent: true
+      )
     end
 
     let!(:pending_enrollments) do
@@ -37,10 +51,20 @@ RSpec.describe InPerson::EmailReminderJob do
         pending_enrollment_needing_late_reminder.reload
         expect(pending_enrollment_needing_late_reminder.late_reminder_sent).to be_truthy
       end
+
+      it 'does not queue emails for enrollments that had late email reminder sent' do
+        user = pending_enrollment_received_late_reminder.user
+        expect do
+          job.perform(Time.zone.now)
+        end.not_to have_enqueued_mail(UserMailer, :in_person_ready_to_verify_reminder).with(
+          params: { user: user, email_address: user.email_addresses.first },
+          args: [{ enrollment: pending_enrollment_received_late_reminder }],
+        )
+        expect(pending_enrollment_received_late_reminder.late_reminder_sent).to be_truthy
+      end
     end
 
     context 'early email reminder' do
-      let(:first_set_enrollments) { [pending_enrollment_needing_early_reminder] }
       it 'queues emails for enrollments that need the early email reminder sent' do
         user = pending_enrollment_needing_early_reminder.user
         expect do
@@ -51,6 +75,17 @@ RSpec.describe InPerson::EmailReminderJob do
         )
         pending_enrollment_needing_early_reminder.reload
         expect(pending_enrollment_needing_early_reminder.early_reminder_sent).to be_truthy
+      end
+
+      it 'does not queue emails for enrollments that had early email reminder sent' do
+        user = pending_enrollment_received_early_reminder.user
+        expect do
+          job.perform(Time.zone.now)
+        end.not_to have_enqueued_mail(UserMailer, :in_person_ready_to_verify_reminder).with(
+          params: { user: user, email_address: user.email_addresses.first },
+          args: [{ enrollment: pending_enrollment_received_early_reminder }],
+        )
+        expect(pending_enrollment_received_early_reminder.early_reminder_sent).to be_truthy
       end
     end
   end

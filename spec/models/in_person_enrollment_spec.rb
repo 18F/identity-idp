@@ -132,7 +132,7 @@ RSpec.describe InPersonEnrollment, type: :model do
 
     it 'returns pending enrollments that need late reminder' do
       expect(InPersonEnrollment.count).to eq(9)
-      results = InPersonEnrollment.needs_early_email_reminder(late_benchmark, final_benchmark)
+      results = InPersonEnrollment.needs_late_email_reminder(late_benchmark, final_benchmark)
       expect(results.length).to eq(2)
       expect(results.pluck(:id)).to match_array pending_enrollment_needing_late_reminder.pluck(:id)
       results.each do |result|
