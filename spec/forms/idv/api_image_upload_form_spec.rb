@@ -15,6 +15,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
       irs_attempts_api_tracker: irs_attempts_api_tracker,
+      store_encrypted_images: store_encrypted_images,
     )
   end
 
@@ -30,6 +31,7 @@ RSpec.describe Idv::ApiImageUploadForm do
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:irs_attempts_api_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:store_encrypted_images) { false }
 
   describe '#valid?' do
     context 'with all valid images' do
@@ -242,6 +244,39 @@ RSpec.describe Idv::ApiImageUploadForm do
       it 'includes doc_pii errors' do
         response = form.submit
         expect(response.errors[:doc_pii]).to eq('bad')
+      end
+    end
+
+    describe 'encrypted document storage' do
+      context 'when encrypted image storage is enabled' do
+        let(:store_encrypted_images) { true }
+
+        it 'writes encrypted documents' do
+          # This is not a _great_ way to test this. Once we start writing these events to the
+          # attempts API we should use the fake attempts API to grab the 'reference` value for the
+          # front and back image and check that those files are written.
+          document_writer = form.send(:encrypted_document_storage_writer)
+
+          expect(document_writer).to receive(:encrypt_and_write_document).with(
+            front_image: DocAuthImageFixtures.document_front_image_multipart.read,
+            back_image: DocAuthImageFixtures.document_back_image_multipart.read,
+          ).and_call_original
+
+          form.submit
+        end
+      end
+
+      context 'when the attempts API is not enabled' do
+        let(:store_encrypted_images) { false }
+
+        it 'when encrypted image storage is disabled' do
+          document_writer = instance_double(EncryptedDocumentStorage::DocumentWriter)
+          allow(form).to receive(:encrypted_document_storage_writer).and_return(document_writer)
+
+          expect(document_writer).to_not receive(:encrypt_and_write_document)
+
+          form.submit
+        end
       end
     end
 
