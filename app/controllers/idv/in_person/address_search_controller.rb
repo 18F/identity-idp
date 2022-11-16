@@ -1,18 +1,22 @@
 module Idv
   module InPerson
     class AddressSearchController < ApplicationController
-      include RenderConditionConcern
+      include ApplicationHelper # for liveness_checking_enabled?
 
-      check_or_render_not_found -> { IdentityConfig.store.arcgis_search_enabled }
+      # include RenderConditionConcern
+
+      # check_or_render_not_found -> { IdentityConfig.store.arcgis_search_enabled }
+
+      respond_to :json
 
       def index
-        render json: addresses
+        render json: addresses(params[:address])
       end
 
       protected
 
-      def addresses
-        suggestion = geocoder.suggest(permitted_params[:address]).first
+      def addresses(search_term)
+        suggestion = geocoder.suggest(search_term).first
         return [] unless suggestion
         geocoder.find_address_candidates(suggestion.magic_key).slice(0, 1)
       rescue Faraday::ConnectionFailed
@@ -23,9 +27,9 @@ module Idv
         @geocoder ||= ArcgisApi::Geocoder.new
       end
 
-      def permitted_params
-        params.permit(:address)
-      end
+      # def permitted_params
+      #   params.permit(:address)
+      # end
     end
   end
 end

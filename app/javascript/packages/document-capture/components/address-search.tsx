@@ -12,23 +12,35 @@ interface AddressSearchProps {
   onAddressFound?: (location: Location) => void;
 }
 
-const ADDRESS_SEARCH_URL = '/verify/in_person/addresses';
+function toFormData(object: Record<string, any>): FormData {
+  return Object.keys(object).reduce((form, key) => {
+    const value = object[key];
+    if (value !== undefined) {
+      form.append(key, value);
+    }
 
-function buildAddressSearchUrl(addressQuery) {
-  return `${ADDRESS_SEARCH_URL}?address=${addressQuery}`;
+    return form;
+  }, new window.FormData());
 }
+
+const ADDRESS_SEARCH_URL = '/api/addresses';
 
 function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
   const handleAddressSearch = useCallback(async (e) => {
     try {
-      const response = await fetch(buildAddressSearchUrl(unvalidatedAddressInput));
+      const response = await fetch(ADDRESS_SEARCH_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ address: '120 broadway' }),
+      });
+      // console.log(await response.json())
       const addressCandidates = await response.json();
       const [bestMatchedAddress] = addressCandidates;
 
       onAddressFound(bestMatchedAddress);
     } catch (e) {
-
+      console.log(e);
     }
 
   }, [unvalidatedAddressInput]);
