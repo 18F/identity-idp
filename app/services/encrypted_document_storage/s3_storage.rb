@@ -1,6 +1,7 @@
 module EncryptedDocumentStorage
   class S3Storage
     def write_image(encrypted_image:, reference:)
+      # TODO: Use a configurable bucket name here
       s3_client.put_object(
         bucket: 'TODO-use-a-real-bucket',
         body: encrypted_image,
