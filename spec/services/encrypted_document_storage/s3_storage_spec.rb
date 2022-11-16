@@ -14,7 +14,7 @@ RSpec.describe EncryptedDocumentStorage::S3Storage do
       expect(stubbed_s3_client).to receive(:put_object).and_call_original
       stubbed_s3_client.stub_responses(
         :put_object,
-        -> (context) {
+        ->(context) {
           params = context.params
           expect(params[:bucket]).to eq('TODO-use-a-real-bucket')
           expect(params[:key]).to eq(reference)
