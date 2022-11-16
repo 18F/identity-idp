@@ -133,7 +133,7 @@ namespace :dev do
 
               success = false
               num_attempts = 0
-              max_attempts = 3
+              max_attempts = (ENV['MAX_NUM_ATTEMPTS'] || 3).to_i
               max_attempts.freeze
               until success || num_attempts >= max_attempts
                 num_attempts += 1

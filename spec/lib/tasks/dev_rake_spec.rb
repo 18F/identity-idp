@@ -26,15 +26,17 @@ describe 'dev rake tasks' do
     prev_scrypt_cost = nil
     prev_pending_in_usps = nil
     usps_request_delay_ms = nil
+    max_num_attempts = nil
 
     before(:each) do
       allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
-      prev_num_users = ENV['NUM_USERS']
-      prev_progress = ENV['PROGRESS']
+      max_num_attempts = ENV['MAX_NUM_ATTEMPTS']
       prev_enrollment_status = ENV['ENROLLMENT_STATUS']
-      prev_verified = ENV['VERIFIED']
-      prev_scrypt_cost = ENV['SCRYPT_COST']
+      prev_num_users = ENV['NUM_USERS']
       prev_pending_in_usps = ENV['CREATE_PENDING_ENROLLMENT_IN_USPS']
+      prev_progress = ENV['PROGRESS']
+      prev_scrypt_cost = ENV['SCRYPT_COST']
+      prev_verified = ENV['VERIFIED']
       usps_request_delay_ms = ENV['USPS_REQUEST_DELAY_MS']
 
       ENV['PROGRESS'] = 'no'
@@ -45,13 +47,14 @@ describe 'dev rake tasks' do
     end
 
     after(:each) do
+      ENV['CREATE_PENDING_ENROLLMENT_IN_USPS'] = prev_pending_in_usps
+      ENV['ENROLLMENT_STATUS'] = prev_enrollment_status
+      ENV['MAX_NUM_ATTEMPTS'] = max_num_attempts
       ENV['NUM_USERS'] = prev_num_users
       ENV['PROGRESS'] = prev_progress
-      ENV['ENROLLMENT_STATUS'] = prev_enrollment_status
-      ENV['VERIFIED'] = prev_verified
       ENV['SCRYPT_COST'] = prev_scrypt_cost
-      ENV['CREATE_PENDING_ENROLLMENT_IN_USPS'] = prev_pending_in_usps
       ENV['USPS_REQUEST_DELAY_MS'] = usps_request_delay_ms
+      ENV['VERIFIED'] = prev_verified
     end
 
     describe 'dev:random_users' do
@@ -386,7 +389,38 @@ describe 'dev rake tasks' do
         expect(InPersonEnrollment.pending.count).to eq 1
       end
 
-      it 'stops retrying after 3 attempts and fails the transaction' do
+      it 'stops retrying after MAX_NUM_ATTEMPTS attempts and fails the transaction' do
+        ENV['MAX_NUM_ATTEMPTS'] = '5'
+        ENV['NUM_USERS'] = '10'
+        ENV['CREATE_PENDING_ENROLLMENT_IN_USPS'] = '1'
+        stub_request_token
+        # Allow one enrollment to succeed and then timeout three times
+        stub_request(
+          :post,
+          %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
+        ).
+          to_return(
+            status: 200,
+            body: UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
+            headers: { 'content-type' => 'application/json' },
+          ).
+          then.to_raise(Faraday::TimeoutError).times(5)
+
+        expect(UspsInPersonProofing::EnrollmentHelper).
+          to receive(:schedule_in_person_enrollment).and_call_original.exactly(6).times
+        expect(Rails.logger).to receive(:error).
+          with('Exception raised while enrolling user: Exception from WebMock').exactly(5).times
+
+        expect do
+          Rake::Task['dev:random_in_person_users'].invoke
+        end.to raise_error(UspsInPersonProofing::Exception::RequestEnrollException)
+
+        expect(User.count).to eq 10
+        expect(InPersonEnrollment.count).to eq 0
+        expect(InPersonEnrollment.pending.count).to eq 0
+      end
+
+      it 'defaults to MAX_NUM_ATTEMPTS=3 if not specified' do
         ENV['NUM_USERS'] = '10'
         ENV['CREATE_PENDING_ENROLLMENT_IN_USPS'] = '1'
         stub_request_token
@@ -410,10 +444,6 @@ describe 'dev rake tasks' do
         expect do
           Rake::Task['dev:random_in_person_users'].invoke
         end.to raise_error(UspsInPersonProofing::Exception::RequestEnrollException)
-
-        expect(User.count).to eq 10
-        expect(InPersonEnrollment.count).to eq 0
-        expect(InPersonEnrollment.pending.count).to eq 0
       end
 
       it 'waits USPS_REQUEST_DELAY_MS ms between retries' do
