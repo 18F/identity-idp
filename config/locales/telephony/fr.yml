@@ -31,7 +31,7 @@ fr:
           téléphone en 24 heures. Vous pouvez demander un code par SMS ou
           utiliser un autre numéro pour recevoir un appel téléphonique.
         duplicate_endpoint: Le numéro de téléphone entré n’est pas valide.
-        generic: Échec de l’envoi de votre code de sécurité.
+        generic: Votre code à usage unique n'a pas été envoyé.
         invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris en
           charge. Veuillez essayer par SMS si vous possédez un téléphone
           disposant de cette fonction.

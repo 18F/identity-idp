@@ -28,7 +28,7 @@ en:
           number. You can either request a code by text message or use a
           different number to receive a phone call.
         duplicate_endpoint: The phone number entered is not valid.
-        generic: Your security code failed to send.
+        generic: Your one-time code failed to send.
         invalid_calling_area: Calls to that phone number are not supported. Please try
           SMS if you have an SMS-capable phone.
         invalid_phone_number: The phone number entered is not valid.
