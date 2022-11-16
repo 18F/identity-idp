@@ -496,7 +496,7 @@ feature 'Two Factor Authentication' do
       allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
     end
 
-    let(:webauthn_configuration) do
+    let!(:webauthn_configuration) do
       create(
         :webauthn_configuration,
         credential_id: credential_id,
@@ -506,7 +506,7 @@ feature 'Two Factor Authentication' do
       )
     end
     let(:user) do
-      create(:user, :with_backup_code)
+      create(:user)
     end
 
     context 'sign in' do
@@ -522,8 +522,6 @@ feature 'Two Factor Authentication' do
 
           expect(page).
             to have_content t('two_factor_authentication.login_options.webauthn_platform')
-          expect(page).
-            to have_content t('two_factor_authentication.login_options.backup_code')
           expect(page).
             to_not have_content t('two_factor_authentication.login_options.auth_app')
         end
