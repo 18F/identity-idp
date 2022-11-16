@@ -249,6 +249,7 @@ class IdentityConfig
     config.add(:lexisnexis_threatmetrix_js_signing_cert, type: :string)
     config.add(:lockout_period_in_minutes, type: :integer)
     config.add(:log_to_stdout, type: :boolean)
+    config.add(:login_otp_confirmation_max_attempts, type: :integer)
     config.add(:logins_per_email_and_ip_bantime, type: :integer)
     config.add(:logins_per_email_and_ip_limit, type: :integer)
     config.add(:logins_per_email_and_ip_period, type: :integer)
