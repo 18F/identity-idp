@@ -71,7 +71,8 @@
       <div class="grid-col-12 tablet:grid-col-6">
         <%= f.radio_button(
               :otp_delivery_preference,
-              :sms,
+            :sms,
+            checked: true, # We want SMS to be default checked
               disabled: VendorStatus.new.vendor_outage?(:sms),
               class: 'usa-radio__input usa-radio__input--bordered',
             ) %>

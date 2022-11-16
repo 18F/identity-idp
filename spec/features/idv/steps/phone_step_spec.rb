@@ -4,6 +4,16 @@ feature 'idv phone step', :js do
   include IdvStepHelper
   include IdvHelper
 
+  context 'defaults on page load' do
+    it 'selects sms delivery option by default', js: true do
+      user = user_with_2fa
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step(user)
+      #fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
+      expect(page).to have_checked_field(t('two_factor_authentication.otp_delivery_preference.sms'), visible: false)
+    end
+  end
+
   context 'with valid information' do
     # it 'allows the user to continue to the phone otp delivery selection step' do
     #   start_idv_from_sp
@@ -20,14 +30,27 @@ feature 'idv phone step', :js do
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
-
-      click_idv_continue
-
+      #click_idv_continue
+      click_idv_send_security_code
+      save_and_open_page
       expect(page).to have_content(t('idv.titles.otp_delivery_method', app_name: APP_NAME))
-      expect(page).to have_current_path(idv_otp_delivery_method_path)
+      expect(page).to have_current_path(idv_phone_path)
     end
 
-    it 'allows a user without a phone number to continue' do
+    
+
+    it 'has no specific delivery option selected by default', js: true do
+      user = user_with_2fa
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step(user)
+      fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
+      expect(page).to_not have_checked_field(t('two_factor_authentication.otp_delivery_preference.sms'), visible: false)
+      expect(page).to_not have_checked_field(t('two_factor_authentication.otp_delivery_preference.voice'), visible: false)
+                                             
+    end
+    
+
+    xit 'allows a user without a phone number to continue' do
       user = create(:user, :with_authentication_app, :with_backup_code)
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
