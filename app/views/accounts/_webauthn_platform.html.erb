@@ -21,10 +21,11 @@
   <% end %>
 </div>
 <% if IdentityConfig.store.platform_auth_set_up_enabled %>
-<%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        link_to(webauthn_setup_path(platform: true), **tag_options, &block)
-      end,
-      icon: :add,
-      class: 'usa-button usa-button--outline margin-top-2',
-    ).with_content(t('account.index.webauthn_platform_add')) %>
+  <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+          link_to(webauthn_setup_path(platform: true), **tag_options, &block)
+        end,
+        icon: :add,
+        class: 'usa-button usa-button--outline margin-top-2',
+      ).with_content(t('account.index.webauthn_platform_add')) %>
+<% end %>
