@@ -9,7 +9,6 @@ feature 'idv phone step', :js do
       user = user_with_2fa
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
-      #fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
       expect(page).to have_checked_field(t('two_factor_authentication.otp_delivery_preference.sms'), visible: false)
     end
   end
@@ -37,19 +36,8 @@ feature 'idv phone step', :js do
       expect(page).to have_current_path(idv_phone_path)
     end
 
-    
 
-    it 'has no specific delivery option selected by default', js: true do
-      user = user_with_2fa
-      start_idv_from_sp
-      complete_idv_steps_before_phone_step(user)
-      fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
-      expect(page).to_not have_checked_field(t('two_factor_authentication.otp_delivery_preference.sms'), visible: false)
-      expect(page).to_not have_checked_field(t('two_factor_authentication.otp_delivery_preference.voice'), visible: false)
-                                             
-    end
-    
-
+    # I don't think we want to allow this behavior anymore
     xit 'allows a user without a phone number to continue' do
       user = create(:user, :with_authentication_app, :with_backup_code)
       start_idv_from_sp
@@ -69,6 +57,27 @@ feature 'idv phone step', :js do
     end
   end
 
+
+  context 'invalid form information' do
+    it 'displays error message if no phone number is entered', js: true do
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step
+      fill_in("idv_phone_form_phone", with: "") # clear the pre-populated phone number
+      click_idv_send_security_code
+      #expect(page).to have_current_path(idv_phone_path)
+      expect(page).to have_content(t('errors.messages.phone_required'))
+    end
+
+    it 'displays error message if an invalid phone number is entered' do
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step
+      fill_in :idv_phone_form_phone, with: '578190'
+      click_idv_send_security_code
+      #expect(page).to have_current_path(idv_phone_path)
+      expect(page).to have_content(t('errors.messages.invalid_phone_number'))
+    end
+  end
+
   context 'after submitting valid information' do
     it 'is re-entrant before confirming OTP' do
       first_phone_number = '7032231234'
@@ -77,19 +86,19 @@ feature 'idv phone step', :js do
       start_idv_from_sp
       complete_idv_steps_before_phone_step
       fill_out_phone_form_ok(first_phone_number)
-      click_idv_continue
-      choose_idv_otp_delivery_method_sms
+      click_idv_send_security_code
 
       expect(page).to have_content('+1 703-223-1234')
 
       click_link t('forms.two_factor.try_again')
-
+      save_and_open_page
       expect(page).to have_content(t('idv.titles.session.phone'))
       expect(page).to have_current_path(idv_phone_path(step: 'phone_otp_verification'))
 
+      fill_out_phone_form_ok("") # clear field
       fill_out_phone_form_ok(second_phone_number)
-      click_idv_continue
-      choose_idv_otp_delivery_method_sms
+      click_idv_otp_delivery_method_sms
+      click_idv_send_security_code
 
       expect(page).to have_content('+1 703-789-7890')
     end
