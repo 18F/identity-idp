@@ -83,7 +83,6 @@ module Idv
 
       def add_cost(token, transaction_id: nil)
         Db::SpCost::AddSpCost.call(current_sp, 2, token, transaction_id: transaction_id)
-        Db::ProofingCost::AddUserProofingCost.call(user_id, token)
       end
 
       def add_costs(result)

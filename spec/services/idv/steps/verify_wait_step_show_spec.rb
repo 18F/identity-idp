@@ -85,11 +85,6 @@ describe Idv::Steps::VerifyWaitStepShow do
       expect(sp_costs[0].transaction_id).to eq(resolution_transaction_id)
       sp_costs = SpCost.where(issuer: issuer, cost_type: 'threatmetrix')
       expect(sp_costs[0].transaction_id).to eq(threatmetrix_transaction_id)
-
-      proofing_cost = ProofingCost.last
-      expect(proofing_cost.user_id).to eq(user.id)
-      expect(proofing_cost.threatmetrix_count).to eq(1)
-      expect(proofing_cost.lexis_nexis_resolution_count).to eq(1)
     end
 
     it 'clears pii from session' do
