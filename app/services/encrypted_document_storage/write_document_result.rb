@@ -1,8 +1,8 @@
 module EncryptedDocumentStorage
   WriteDocumentResult = Struct.new(
     :front_reference,
-    :base_reference,
+    :back_reference,
     :encryption_key,
-    key_word_init: true,
+    keyword_init: true,
   )
 end

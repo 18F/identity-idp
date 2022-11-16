@@ -1,9 +1,9 @@
 module EncryptedDocumentStorage
   class S3Storage
-    def write_document(encrypted_document:, reference:)
+    def write_image(encrypted_image:, reference:)
       s3_client.put_object(
         bucket: 'TODO-use-a-real-bucket',
-        body: encrypted_document,
+        body: encrypted_image,
         key: reference,
       )
     end

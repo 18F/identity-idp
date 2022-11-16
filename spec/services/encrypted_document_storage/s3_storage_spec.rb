@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe EncryptedDocumentStorage::S3Storage do
-  describe '#write_document' do
+  describe '#write_image' do
     it 'writes the document to S3' do
-      encrypted_document = 'hello, i am the encrypted document.'
+      encrypted_image = 'hello, i am the encrypted document.'
       reference = '123abc'
 
       storage = EncryptedDocumentStorage::S3Storage.new
@@ -18,11 +18,11 @@ RSpec.describe EncryptedDocumentStorage::S3Storage do
           params = context.params
           expect(params[:bucket]).to eq('TODO-use-a-real-bucket')
           expect(params[:key]).to eq(reference)
-          expect(params[:body]).to eq(encrypted_document)
+          expect(params[:body]).to eq(encrypted_image)
         },
       )
 
-      storage.write_document(encrypted_document: encrypted_document, reference: reference)
+      storage.write_image(encrypted_image: encrypted_image, reference: reference)
     end
   end
 end
