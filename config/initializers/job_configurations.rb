@@ -22,12 +22,6 @@ else
         cron: cron_5m,
         args: -> { [Time.zone.now] },
       },
-      # Send Agency User Counts Report to S3
-      agency_user_counts: {
-        class: 'Reports::AgencyUserCountsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Send Total Monthly Auths Report to S3
       total_monthly_auths: {
         class: 'Reports::TotalMonthlyAuthsReport',
@@ -37,30 +31,6 @@ else
       # Send Sp User Counts Report to S3
       sp_user_counts: {
         class: 'Reports::SpUserCountsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Send Sp User Quotas Report to S3
-      sp_user_quotas: {
-        class: 'Reports::SpUserQuotasReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Proofing Costs Report to S3
-      proofing_costs: {
-        class: 'Reports::ProofingCostsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Agency Invoice Supplement Report to S3
-      sp_invoice_supplement_by_iaa: {
-        class: 'Reports::AgencyInvoiceIaaSupplementReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Agency Invoice Supplement Report to S3
-      sp_invoice_supplement_by_issuer: {
-        class: 'Reports::AgencyInvoiceIssuerSupplementReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
@@ -90,12 +60,6 @@ else
       # Send deleted user accounts to S3
       deleted_user_accounts: {
         class: 'Reports::DeletedUserAccountsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Send GPO Report to S3
-      gpo_report: {
-        class: 'Reports::GpoReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
@@ -161,7 +125,7 @@ else
       irs_attempt_events_aggregator: {
         class: 'IrsAttemptsEventsBatchJob',
         cron: cron_1h,
-        args: -> { [timestamp: Time.zone.now - 1.hour] },
+        args: -> { [Time.zone.now - 1.hour] },
       },
     }
   end

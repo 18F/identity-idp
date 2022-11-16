@@ -1,30 +1,39 @@
 class IrsAttemptsEventsBatchJob < ApplicationJob
   queue_as :default
 
-  def perform(timestamp: Time.zone.now - 1.hour, dir_path: './attempts_api_output')
-    return nil unless IdentityConfig.store.irs_attempt_api_enabled
+  def perform(timestamp = Time.zone.now - 1.hour)
+    enabled = IdentityConfig.store.irs_attempt_api_enabled &&
+              IdentityConfig.store.irs_attempt_api_bucket_name
+    return nil unless enabled
 
     events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: timestamp)
     event_values = events.values.join("\r\n")
 
-    decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
-    pub_key = OpenSSL::PKey::RSA.new(decoded_key_der)
+    public_key = IdentityConfig.store.irs_attempt_api_public_key
 
     result = IrsAttemptsApi::EnvelopeEncryptor.encrypt(
-      data: event_values, timestamp: timestamp, public_key: pub_key,
+      data: event_values, timestamp: timestamp, public_key_str: public_key,
     )
 
-    # write to a file and store on the disk until S3 is setup
-    FileUtils.mkdir_p(dir_path)
+    bucket_name = IdentityConfig.store.irs_attempt_api_bucket_name
+    bucket_url = "s3://#{bucket_name}/#{result.filename}"
 
-    file_path = "#{dir_path}/#{result.filename}"
+    create_and_upload_to_attempts_s3_resource(
+      bucket_name: bucket_name, filename: result.filename,
+      encrypted_data: result.encrypted_data
+    )
 
-    File.open(file_path, 'wb') do |file|
-      file.write(result.encrypted_data)
-    end
+    encoded_iv = Base64.strict_encode64(result.iv)
+    encoded_encrypted_key = Base64.strict_encode64(result.encrypted_key)
 
-    return { encryptor_result: result, file_path: file_path }
+    IrsAttemptApiLogFile.create(
+      filename: bucket_url, iv: encoded_iv,
+      encrypted_key: encoded_encrypted_key, requested_time: timestamp
+    )
+  end
 
-    # Write the file to S3 instead of whatever dir_path winds up being
+  def create_and_upload_to_attempts_s3_resource(bucket_name:, filename:, encrypted_data:)
+    aws_object = Aws::S3::Resource.new.bucket(bucket_name).object(filename)
+    aws_object.put(body: encrypted_data, acl: 'private', content_type: 'text/plain')
   end
 end

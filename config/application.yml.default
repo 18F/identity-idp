@@ -358,6 +358,7 @@ development:
   irs_attempt_api_public_key_id: key1
   irs_attempt_api_enabled: true
   irs_attempt_api_auth_tokens: 'abc123'
+  irs_attempt_api_bucket_name: please-change-me
   logins_per_ip_limit: 5
   logo_upload_enabled: true
   max_bad_passwords: 5
@@ -381,7 +382,6 @@ development:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   show_account_recovery_recovery_options: true
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
-  sps_over_quota_limit_notify_email_list: '[]'
   state_tracking_enabled: true
   telephony_adapter: test
   use_dashboard_service_providers: true
@@ -463,7 +463,6 @@ production:
   seed_agreements_data: false
   session_encryption_key:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
-  sps_over_quota_limit_notify_email_list: '[]'
   state_tracking_enabled: false
   telephony_adapter: pinpoint
   use_kms: true
@@ -511,6 +510,7 @@ test:
   irs_attempt_api_auth_tokens: 'test-token-1,test-token-2'
   irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
   irs_attempt_api_public_key_id: key1
+  irs_attempt_api_bucket_name: test-bucket-name
   kantara_2fa_phone_restricted: false
   kantara_2fa_phone_existing_user_restriction: false
   lexisnexis_trueid_account_id: 'test_account'
@@ -555,7 +555,6 @@ test:
   secret_key_base: test_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   skip_encryption_allowed_list: '[]'
-  sps_over_quota_limit_notify_email_list: '["test1@test.com"]'
   state_tracking_enabled: true
   telephony_adapter: test
   test_ssn_allowed_list: '999999999'

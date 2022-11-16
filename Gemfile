@@ -33,7 +33,7 @@ gem 'jsbundling-rails', '~> 1.0.0'
 gem 'jwe'
 gem 'jwt'
 gem 'lograge', '>= 0.11.2'
-gem 'lookbook', '~> 1.2.1', require: false
+gem 'lookbook', '~> 1.3.3', require: false
 gem 'lru_redux'
 gem 'maxminddb'
 gem 'multiset'

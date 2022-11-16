@@ -6,12 +6,13 @@ module IrsAttemptsApi
 
     # A new key is generated for each encryption.  This key is encrypted with the public_key
     # provided so that only the owner of the private key may decrypt this data.
-    def self.encrypt(data:, timestamp:, public_key:)
+    def self.encrypt(data:, timestamp:, public_key_str:)
       compressed_data = Zlib.gzip(data)
       cipher = OpenSSL::Cipher.new('aes-256-cbc')
       cipher.encrypt
       key = cipher.random_key
       iv = cipher.random_iv
+      public_key = OpenSSL::PKey::RSA.new(Base64.strict_decode64(public_key_str))
       encrypted_data = cipher.update(compressed_data) + cipher.final
       encoded_data = Base16.encode16(encrypted_data)
       digest = Digest::SHA256.hexdigest(encoded_data)

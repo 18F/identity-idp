@@ -7,7 +7,7 @@ fr:
       votre compte %{app_name} pour le annuler.
     authentication_otp:
       sms: |-
-        %{app_name}: Votre code de sécurité est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez jamais partager ce code avec personne.
+        %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.
 
         @%{domain} #%{code}
       voice: Bonjour! Votre code de sécurité à utilisation unique de %{app_name} est,
@@ -15,7 +15,7 @@ fr:
         expirera dans %{expiration} minutes.
     confirmation_otp:
       sms: |-
-        %{app_name}: Votre code de sécurité est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez jamais partager ce code avec personne.
+        %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.
 
         @%{domain} #%{code}
       voice: Bonjour! Votre code de sécurité à utilisation unique de %{app_name} est,
@@ -26,12 +26,12 @@ fr:
       émise par l'état"
     error:
       friendly_message:
-        daily_voice_limit_reached: L'envoi de votre code de sécurité a échoué, car vous
-          avez dépassé le nombre maximal d'appels téléphoniques en 24 heures
-          vers ce numéro de téléphone. Vous pouvez demander un code par SMS ou
+        daily_voice_limit_reached: L’envoi de votre code à usage unique a échoué car
+          vous avez dépassé le nombre maximal d’appels vers ce numéro de
+          téléphone en 24 heures. Vous pouvez demander un code par SMS ou
           utiliser un autre numéro pour recevoir un appel téléphonique.
         duplicate_endpoint: Le numéro de téléphone entré n’est pas valide.
-        generic: Échec de l’envoi de votre code de sécurité.
+        generic: Votre code à usage unique n'a pas été envoyé.
         invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris en
           charge. Veuillez essayer par SMS si vous possédez un téléphone
           disposant de cette fonction.

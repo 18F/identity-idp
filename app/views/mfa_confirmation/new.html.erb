@@ -4,8 +4,7 @@
 
 <p>
   <%# for follow up: translate factor_to_change (LG-5701) %>
-  <%= user_session[:no_factor_message] ||
-        t('help_text.change_factor', factor: user_session[:factor_to_change]) %>
+  <%= t('help_text.change_factor', factor: user_session[:factor_to_change]) %>
 </p>
 
 <%= simple_form_for(
