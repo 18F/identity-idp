@@ -18,7 +18,7 @@ feature 'idv phone step', :js do
       start_idv_from_sp
       complete_idv_steps_before_phone_step
       fill_out_phone_form_ok
-      click_idv_continue
+      click_idv_send_security_code
 
       expect(page).to have_content(t('idv.titles.otp_delivery_method'))
       expect(page).to have_current_path(idv_otp_delivery_method_path)
@@ -29,7 +29,7 @@ feature 'idv phone step', :js do
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
-      #click_idv_continue
+      #click_idv_send_security_code
       click_idv_send_security_code
 
       expect(page).to have_content(t('idv.titles.otp_delivery_method', app_name: APP_NAME))
@@ -44,7 +44,7 @@ feature 'idv phone step', :js do
       complete_idv_steps_before_phone_step(user)
 
       fill_out_phone_form_ok
-      click_idv_continue
+      click_idv_send_security_code
 
       expect(page).to have_content(t('idv.titles.otp_delivery_method'))
       expect(page).to have_current_path(idv_otp_delivery_method_path)
@@ -100,6 +100,8 @@ feature 'idv phone step', :js do
       click_idv_otp_delivery_method_sms
       click_idv_send_security_code
 
+      expect(page).to have_current_path(idv_otp_verification_path)
+      expect(page).to have_content(t('titles.idv.enter_security_code'))
       expect(page).to have_content('+1 703-789-7890')
     end
 
@@ -109,7 +111,7 @@ feature 'idv phone step', :js do
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
       fill_out_phone_form_ok
-      click_idv_continue
+      click_idv_send_security_code
       choose_idv_otp_delivery_method_sms
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -157,11 +159,11 @@ feature 'idv phone step', :js do
 
       allow(DocumentCaptureSession).to receive(:find_by).and_return(nil)
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
-      click_idv_continue
+      click_idv_send_security_code
       expect(page).to have_content(t('idv.failure.timeout'))
       expect(page).to have_current_path(idv_phone_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
-      click_idv_continue
+      click_idv_send_security_code
       expect(page).to have_current_path(idv_otp_delivery_method_path)
     end
   end
@@ -175,7 +177,7 @@ feature 'idv phone step', :js do
       start_idv_from_sp
       complete_idv_steps_before_phone_step
       fill_out_phone_form_fail
-      click_idv_continue
+      click_idv_send_security_code
 
       expect(page).to have_content(t('idv.failure.phone.warning'))
 
@@ -194,7 +196,7 @@ feature 'idv phone step', :js do
 
       4.times do
         fill_out_phone_form_fail
-        click_idv_continue
+        click_idv_send_security_code
 
         expect(page).to have_content(t('idv.failure.phone.warning'))
         expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
@@ -203,7 +205,7 @@ feature 'idv phone step', :js do
       end
 
       fill_out_phone_form_fail
-      click_idv_continue
+      click_idv_send_security_code
 
       expect(page).to have_content(t('idv.troubleshooting.headings.need_assistance'))
       expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
