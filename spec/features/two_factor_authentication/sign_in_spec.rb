@@ -550,8 +550,6 @@ feature 'Two Factor Authentication' do
           expect(page).
             to have_content t('two_factor_authentication.login_options.webauthn_platform')
           expect(page).
-            to have_content t('two_factor_authentication.login_options.backup_code')
-          expect(page).
             to_not have_content t('two_factor_authentication.login_options.auth_app')
         end
 
