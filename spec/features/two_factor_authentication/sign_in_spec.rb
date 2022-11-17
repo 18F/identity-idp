@@ -505,14 +505,38 @@ feature 'Two Factor Authentication' do
       end
     end
 
+    def submit_wrong_otp
+      fill_in t('forms.two_factor.code'), with: wrong_phone_otp
+      click_submit_default
+    end
+
     it 'locks the user from further attempts after exceeding the configured max' do
       sign_in_before_2fa(user)
-      max_attempts.times do
-        fill_in t('forms.two_factor.code'), with: wrong_phone_otp
-        click_submit_default
+      max_attempts.times { submit_wrong_otp }
+
+      expect(page).to have_content(t('titles.account_locked'))
+
+      # Users session should be terminated and they should still be locked out if they sign in again
+      within('.page-header') { click_on APP_NAME }
+      fill_in_credentials_and_submit(user.email_addresses.first.email, user.password)
+      expect(page).to have_content(t('titles.account_locked'))
+    end
+
+    context 'when the user is locked out' do
+      let(:max_attempts) { 1 }
+
+      before do
+        sign_in_before_2fa(user)
+        submit_wrong_otp
       end
 
-      expect(page).to have_content t('titles.account_locked')
+      it 'allows the user to sign in again after lockout has expired' do
+        travel_to Time.zone.now + IdentityConfig.store.lockout_period_in_minutes do
+          sign_in_before_2fa(user)
+
+          expect(page).to have_content(t('two_factor_authentication.header_text'))
+        end
+      end
     end
   end
 end
