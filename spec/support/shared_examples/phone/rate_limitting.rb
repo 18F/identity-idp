@@ -1,7 +1,14 @@
 shared_examples 'phone rate limitting' do |delivery_method|
+  let(:max_attempts) { 2 }
+
+  before do
+    allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts).
+      and_return(max_attempts)
+  end
+
   it 'limits the number of times the user can resend an OTP' do
     visit_otp_confirmation(delivery_method)
-    2.times do
+    (max_attempts - 1).times do
       click_on t('links.two_factor_authentication.send_another_code')
     end
 
@@ -12,7 +19,7 @@ shared_examples 'phone rate limitting' do |delivery_method|
 
   it 'limits the number of times a code can be sent to a phone across accounts' do
     visit_otp_confirmation(delivery_method)
-    2.times do
+    (max_attempts - 1).times do
       click_on t('links.two_factor_authentication.send_another_code')
     end
 
@@ -32,7 +39,7 @@ shared_examples 'phone rate limitting' do |delivery_method|
 
   it 'limits the number of times the user can enter an OTP' do
     visit_otp_confirmation(delivery_method)
-    2.times do
+    (max_attempts - 1).times do
       fill_in :code, with: '123456'
       click_submit_default
 
@@ -61,7 +68,7 @@ shared_examples 'phone rate limitting' do |delivery_method|
   end
 
   def expect_rate_limitting_to_expire
-    travel_to(6.minutes.from_now) do
+    travel (IdentityConfig.store.lockout_period_in_minutes + 1).minutes do
       visit root_path
 
       signin(
