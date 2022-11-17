@@ -33,7 +33,8 @@
   <%= t(
         'user_mailer.in_person_verified.warning_contact_us_html',
         contact_us_url: MarketingSite.contact_url,
-        sign_in_url: root_url,
+        reset_password_url: forgot_password_url,
+        app_name: APP_NAME,
       )
   %>
 </p>
