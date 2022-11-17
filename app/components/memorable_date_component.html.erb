@@ -1,7 +1,7 @@
-<label class="usa-label">     
+<label class="usa-label" for="doc_auth_dob">
     <%= label %>
 </label>
-<div class="usa-hint" id="validated-field-hint-<%= unique_id %>">
+<div id="validated-field-hint-<%= unique_id %>" class="usa-hint">
     <%= hint %>
 </div>
   <%= content_tag :'lg-memorable-date', min: min, max: max, **tag_options do -%>
