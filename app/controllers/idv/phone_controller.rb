@@ -175,5 +175,14 @@ module Idv
       @gpo_letter_available ||= FeatureManagement.enable_gpo_verification? &&
                                 !Idv::GpoMail.new(current_user).mail_spammed?
     end
+
+    # Migrated from otp_delivery_method_controller
+    def otp_sent_tracker_error(result)
+      if send_phone_confirmation_otp_rate_limited?
+        { rate_limited: true }
+      else
+        { telephony_error: result.extra[:telephony_response]&.error&.friendly_message }
+      end
+    end
   end
 end
