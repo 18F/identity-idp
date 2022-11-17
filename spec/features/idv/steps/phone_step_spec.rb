@@ -112,7 +112,6 @@ feature 'idv phone step', :js do
       complete_idv_steps_before_phone_step(user)
       fill_out_phone_form_ok
       click_idv_send_security_code
-      choose_idv_otp_delivery_method_sms
       fill_in_code_with_last_phone_otp
       click_submit_default
 
@@ -164,15 +163,13 @@ feature 'idv phone step', :js do
       expect(page).to have_current_path(idv_phone_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
       click_idv_send_security_code
-      expect(page).to have_current_path(idv_otp_delivery_method_path)
+      expect(page).to have_current_path(idv_otp_verification_path)
     end
   end
 
   it_behaves_like 'async timed out'
 
   context "when the user's information cannot be verified" do
-    it_behaves_like 'fail to verify idv info', :phone
-
     it 'links to verify by mail, from which user can return back to the warning screen' do
       start_idv_from_sp
       complete_idv_steps_before_phone_step
