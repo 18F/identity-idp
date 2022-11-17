@@ -214,9 +214,7 @@ describe UserDecorator do
     end
 
     context 'second factor locked out a while ago' do
-      let(:locked_at) do
-        Time.zone.now - IdentityConfig.store.lockout_period_in_minutes.minutes - 1.second
-      end
+      let(:locked_at) { IdentityConfig.store.lockout_period_in_minutes.minutes.ago - 1.second }
 
       it { expect(locked_out?).to eq(false) }
     end
@@ -243,9 +241,7 @@ describe UserDecorator do
     end
 
     context 'second factor locked out a while ago' do
-      let(:locked_at) do
-        Time.zone.now - IdentityConfig.store.lockout_period_in_minutes.minutes - 1.second
-      end
+      let(:locked_at) { IdentityConfig.store.lockout_period_in_minutes.minutes.ago - 1.second }
 
       it { expect(no_longer_locked_out?).to eq(true) }
     end
