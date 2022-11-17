@@ -53,7 +53,6 @@ feature 'Remembering a phone' do
       visit idv_path
       complete_all_doc_auth_steps
       fill_out_phone_form_ok('2022603829')
-      click_idv_continue
       choose_idv_otp_delivery_method_sms
     end
 

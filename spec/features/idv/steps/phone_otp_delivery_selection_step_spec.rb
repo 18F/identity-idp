@@ -10,7 +10,8 @@ feature 'IdV phone OTP delivery method selection', :js do
         and_call_original
 
       start_idv_from_sp
-      complete_idv_steps_before_phone_otp_delivery_selection_step
+      #complete_idv_steps_before_phone_otp_delivery_selection_step
+      complete_idv_steps_before_phone_step
       choose_idv_otp_delivery_method_sms
 
       expect(page).to have_content(t('two_factor_authentication.header_text'))
@@ -25,7 +26,8 @@ feature 'IdV phone OTP delivery method selection', :js do
         and_call_original
 
       start_idv_from_sp
-      complete_idv_steps_before_phone_otp_delivery_selection_step
+      complete_idv_steps_before_phone_step
+      fill_out_phone_form_ok
       choose_idv_otp_delivery_method_voice
 
       expect(page).to have_content(t('two_factor_authentication.header_text'))
@@ -80,7 +82,8 @@ feature 'IdV phone OTP delivery method selection', :js do
     user = user_with_2fa
 
     start_idv_from_sp
-    complete_idv_steps_before_phone_otp_delivery_selection_step(user)
+    complete_idv_steps_before_phone_step(user)
+    fill_out_phone_form_ok
 
     old_direct_otp = user.direct_otp
     choose_idv_otp_delivery_method_sms
@@ -95,15 +98,14 @@ feature 'IdV phone OTP delivery method selection', :js do
     start_idv_from_sp
     complete_idv_steps_before_phone_step(user)
     fill_out_phone_form_ok('2255551000')
-    click_idv_continue
 
+    binding.pry
     choose_idv_otp_delivery_method_sms
 
     expect(page).to have_content(I18n.t('telephony.error.friendly_message.generic'))
     expect(page).to have_current_path(idv_phone_path)
 
     fill_out_phone_form_ok('2255552000')
-    click_idv_continue
 
     choose_idv_otp_delivery_method_sms
 
