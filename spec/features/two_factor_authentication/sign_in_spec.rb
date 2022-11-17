@@ -489,15 +489,28 @@ feature 'Two Factor Authentication' do
     end
   end
 
-  describe 'second factor locked' do
+  describe 'rate limiting' do
+    let(:max_attempts) { 2 }
+    let(:user) { create(:user, :signed_up) }
+
     before do
-      allow_any_instance_of(UserDecorator).to receive(:locked_out?).and_return(true)
-      allow_any_instance_of(UserDecorator).to receive(:lockout_time_expiration).
-        and_return(Time.zone.now + 10.minutes)
+      allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts).
+        and_return(max_attempts)
     end
 
-    scenario 'presents the failure screen', :js do
-      sign_in_user(user_with_2fa)
+    def wrong_phone_otp
+      loop do
+        code = rand(100000...999999).to_s
+        return code if code != last_phone_otp
+      end
+    end
+
+    it 'locks the user from further attempts after exceeding the configured max' do
+      sign_in_before_2fa(user)
+      max_attempts.times do
+        fill_in t('forms.two_factor.code'), with: wrong_phone_otp
+        click_submit_default
+      end
 
       expect(page).to have_content t('titles.account_locked')
     end
