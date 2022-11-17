@@ -71,6 +71,10 @@ en:
       state_id:
         dob: Date of birth
         dob_hint: 'Example: 4 28 1986'
+        date_hint:
+          day: 'Example: 28'
+          month: 'Example: 4'
+          year: 'Example: 1986'
         first_name: First name
         last_name: Last name
         memorable_date:
