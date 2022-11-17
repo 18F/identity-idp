@@ -531,9 +531,13 @@ feature 'Two Factor Authentication' do
       end
 
       it 'allows the user to sign in again after lockout has expired' do
-        travel IdentityConfig.store.lockout_period_in_minutes do
-          sign_in_before_2fa(user)
+        travel (IdentityConfig.store.lockout_period_in_minutes - 1).minutes do
+          signin(user.email_addresses.first.email, user.password)
+          expect(page).to have_content(t('titles.account_locked'))
+        end
 
+        travel (IdentityConfig.store.lockout_period_in_minutes + 1).minutes do
+          signin(user.email_addresses.first.email, user.password)
           expect(page).to have_content(t('two_factor_authentication.header_text'))
         end
       end
