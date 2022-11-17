@@ -175,7 +175,7 @@ lexisnexis_threatmetrix_js_signing_cert: ''
 ###################################################################
 lockout_period_in_minutes: 10
 log_to_stdout: false
-login_otp_confirmation_max_attempts: 3
+login_otp_confirmation_max_attempts: 10
 logins_per_email_and_ip_bantime: 60
 logins_per_email_and_ip_limit: 5
 logins_per_email_and_ip_period: 60
