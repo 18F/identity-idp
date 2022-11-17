@@ -262,6 +262,20 @@ RSpec.describe Idv::ApiImageUploadForm do
             back_image: DocAuthImageFixtures.document_back_image_multipart.read,
           ).and_call_original
 
+          uuid_regex = /^[a-f0-9-]{36}$/
+          base64_regex = /^[a-z0-9+\/]+=*$/i
+
+          expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            hash_including(
+              front_image: match(uuid_regex),
+              front_image_content_type: DocAuthImageFixtures.document_front_image_multipart.content_type,
+              front_image_encryption_key: match(base64_regex),
+              back_image: match(uuid_regex),
+              back_image_content_type: DocAuthImageFixtures.document_back_image_multipart.content_type,
+              back_image_encryption_key: match(base64_regex),
+            ),
+          )
+
           form.submit
         end
       end

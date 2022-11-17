@@ -219,13 +219,19 @@ module Idv
         ).merge(native_camera_ab_test_data),
       )
       pii_from_doc = client_response.pii_from_doc || {}
-      store_encrypted_images_if_required
+      stored_image_result = store_encrypted_images_if_required
       irs_attempts_api_tracker.idv_document_upload_submitted(
         success: client_response.success?,
         document_state: pii_from_doc[:state],
         document_number: pii_from_doc[:state_id_number],
         document_issued: pii_from_doc[:state_id_issued],
         document_expiration: pii_from_doc[:state_id_expiration],
+        front_image: stored_image_result&.front_uuid,
+        front_image_content_type: front.content_type,
+        front_image_encryption_key: stored_image_result&.front_encryption_key,
+        back_image: stored_image_result&.back_uuid,
+        back_image_content_type: back.content_type,
+        back_image_encryption_key: stored_image_result&.back_encryption_key,
         first_name: pii_from_doc[:first_name],
         last_name: pii_from_doc[:last_name],
         date_of_birth: pii_from_doc[:dob],
