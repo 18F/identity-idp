@@ -96,6 +96,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
         second_factor_locked_at: nil,
       },
     ).call
+    user_session.delete(:mfa_codes_attempted)
   end
 
   def handle_valid_otp(next_url = nil)
@@ -130,8 +131,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   # Method will be renamed in the next refactor.
   # You can pass in any "type" with a corresponding I18n key in
   # two_factor_authentication.invalid_#{type}
-  def handle_invalid_otp(type:, context: nil)
-    update_invalid_user
+  def handle_invalid_otp(type:, context: nil, code: nil)
+    update_invalid_user(type: type, code: code)
 
     flash.now[:error] = invalid_otp_error(type)
 
@@ -162,8 +163,13 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     render :show
   end
 
-  def update_invalid_user
+  def update_invalid_user(type:, code:)
+    codes_attempted = user_session.dig(:mfa_codes_attempted, type) || []
+    return if codes_attempted.include?(code)
+
     current_user.second_factor_attempts_count += 1
+    user_session[:mfa_codes_attempted] ||= {}
+    user_session[:mfa_codes_attempted][type] = [*codes_attempted, code]
     attributes = {}
     attributes[:second_factor_locked_at] = Time.zone.now if current_user.max_login_attempts?
 

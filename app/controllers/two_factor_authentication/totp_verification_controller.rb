@@ -16,7 +16,7 @@ module TwoFactorAuthentication
     end
 
     def create
-      result = TotpVerificationForm.new(current_user, params.require(:code).strip).submit
+      result = TotpVerificationForm.new(current_user, normalized_code_param).submit
 
       analytics.track_mfa_submit_event(result.to_h)
       irs_attempts_api_tracker.mfa_login_totp(success: result.success?)
@@ -24,11 +24,15 @@ module TwoFactorAuthentication
       if result.success?
         handle_valid_otp
       else
-        handle_invalid_otp(context: context, type: 'totp')
+        handle_invalid_otp(context: context, type: 'totp', code: normalized_code_param)
       end
     end
 
     private
+
+    def normalized_code_param
+      params.require(:code).strip
+    end
 
     def confirm_totp_enabled
       return if current_user.auth_app_configurations.any?
