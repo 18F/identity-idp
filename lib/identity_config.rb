@@ -177,6 +177,8 @@ class IdentityConfig
     config.add(:enable_rate_limiting, type: :boolean)
     config.add(:enable_test_routes, type: :boolean)
     config.add(:enable_usps_verification, type: :boolean)
+    config.add(:encrypted_document_storage_enabled, type: :boolean)
+    config.add(:encrypted_document_storage_s3_bucket, type: :string)
     config.add(:event_disavowal_expiration_hours, type: :integer)
     config.add(:geo_data_file_path, type: :string)
     config.add(:good_job_max_threads, type: :integer)

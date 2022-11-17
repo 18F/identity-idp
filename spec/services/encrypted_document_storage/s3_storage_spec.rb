@@ -16,7 +16,7 @@ RSpec.describe EncryptedDocumentStorage::S3Storage do
         :put_object,
         ->(context) {
           params = context.params
-          expect(params[:bucket]).to eq('TODO-use-a-real-bucket')
+          expect(params[:bucket]).to eq(IdentityConfig.store.encrypted_document_storage_s3_bucket)
           expect(params[:key]).to eq(reference)
           expect(params[:body]).to eq(encrypted_image)
         },
