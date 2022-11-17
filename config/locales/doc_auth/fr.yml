@@ -91,8 +91,7 @@ fr:
           d’identité. Essayez de prendre une nouvelle photo.
         network_error: Nous avons des difficultés techniques de notre côté. Veuillez
           essayer de soumettre à nouveau vos images plus tard.
-        no_liveness: Nous n’avons pas pu vérifier votre pièce d’identité. Essayez de
-          prendre de nouvelles photos.
+        no_liveness: Essayez de prendre de nouvelles photos.
       glare:
         failed_short: L’image a des reflets, veuillez réessayer.
         top_msg: Nous n’avons pas pu lire votre pièce d’identité. Votre photo peut avoir

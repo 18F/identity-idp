@@ -21,19 +21,9 @@ class ReauthnRequiredController < ApplicationController
   def prompt_for_current_password
     store_location(request.url)
     user_session[:context] = 'reauthentication'
-    user_session[:factor_to_change], user_session[:no_factor_message] = factor_and_message
+    user_session[:factor_to_change] = factor_from_controller_name
     user_session[:current_password_required] = true
     redirect_to user_password_confirm_url
-  end
-
-  def factor_and_message
-    factor = factor_from_controller_name
-    message = nil
-    if factor == 'delete'
-      factor = nil
-      message = I18n.t('help_text.no_factor.delete_account')
-    end
-    [factor, message]
   end
 
   def factor_from_controller_name
@@ -42,7 +32,6 @@ class ReauthnRequiredController < ApplicationController
       'emails' => 'email',
       'passwords' => 'password',
       'phones' => 'phone',
-      'delete' => 'delete',
       'personal_keys' => 'personal key',
     }[controller_name]
   end

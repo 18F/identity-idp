@@ -48,6 +48,10 @@ module Flow
       obj.extra_view_variables
     end
 
+    def extra_analytics_properties
+      {}
+    end
+
     def flow_path
       'standard'
     end

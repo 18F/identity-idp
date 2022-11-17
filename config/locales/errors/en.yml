@@ -26,8 +26,6 @@ en:
       document_verification_timeout: The server took too long to respond. Please try again.
       phone_step_incomplete: You must go to your phone and upload photos of your ID
         before continuing. We sent you a link with instructions.
-      quota_reached: Sorry your service provider has reached its identity verification
-        limit.  Please contact your service provider for more information.
       send_link_throttle: You tried too many times, please try again in %{timeout}.
         You can also go back and choose to use your computer instead.
       throttled_heading: We could not verify your ID
@@ -65,7 +63,6 @@ en:
       missing_field: Please fill in this field.
       no_pending_profile: No profile is waiting for verification
       not_a_number: is not a number
-      otp_failed: Your security code failed to send.
       password_incorrect: Incorrect password
       personal_key_incorrect: Incorrect personal key
       phone_confirmation_throttled: You tried too many times, please try again in %{timeout}.

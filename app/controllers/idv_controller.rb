@@ -18,9 +18,6 @@ class IdvController < ApplicationController
         throttle_type: :idv_resolution,
       )
       redirect_to idv_session_errors_failure_url
-    elsif sp_over_quota_limit?
-      flash[:error] = t('errors.doc_auth.quota_reached')
-      redirect_to account_url
     else
       verify_identity
     end
@@ -32,10 +29,6 @@ class IdvController < ApplicationController
   end
 
   private
-
-  def sp_over_quota_limit?
-    Db::ServiceProviderQuotaLimit::IsSpOverQuota.call(sp_session[:issuer].to_s)
-  end
 
   def verify_identity
     analytics.idv_intro_visit
