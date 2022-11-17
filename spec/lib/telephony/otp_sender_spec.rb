@@ -139,13 +139,18 @@ RSpec.describe Telephony::OtpSender do
             <prosody rate='slow'>
               Hello! Your #{APP_NAME} one time passcode is,
               1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
-              4 <break time='0.5s' /> 5 <break time='0.5s' /> 6,
-              again, your passcode is,
+              4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
+
+              Your #{APP_NAME} one time passcode is,
               1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
-              4 <break time='0.5s' /> 5 <break time='0.5s' /> 6,
+              4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
+
+              Again, your passcode is,
+              1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
+              4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
               This code expires in 5 minutes.
             </prosody>
-          </speak>
+        </speak>
         XML
 
         adapter = instance_double(Telephony::Pinpoint::VoiceSender)
