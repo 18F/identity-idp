@@ -100,6 +100,8 @@ enable_partner_api: false
 enable_rate_limiting: true
 enable_test_routes: true
 enable_usps_verification: true
+encrypted_document_storage_enabled: true
+encrypted_document_storage_s3_bucket: 'test-bucket-changeme'
 event_disavowal_expiration_hours: 240
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 good_job_max_threads: 5
@@ -426,6 +428,8 @@ production:
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
+  encrypted_document_storage_enabled: false
+  encrypted_document_storage_s3_bucket: ''
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
