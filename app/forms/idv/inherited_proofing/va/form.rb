@@ -2,8 +2,6 @@ module Idv
   module InheritedProofing
     module Va
       class Form < Idv::InheritedProofing::BaseForm
-        include ActiveModel::Validations::Callbacks
-
         class << self
           def required_fields
             @required_fields ||= %i[first_name
@@ -24,8 +22,19 @@ module Idv
           end
         end
 
-        before_validation :add_service_error_if
+        validate :add_service_error, if: :service_error?
         validates(*required_fields, presence: true, unless: :service_error?)
+
+        def submit
+          extra = {}
+          extra = { service_error: service_error } if service_error?
+
+          FormResponse.new(
+            success: validate,
+            errors: errors,
+            extra: extra,
+          )
+        end
 
         def user_pii
           raise 'User PII is invalid' unless valid?
@@ -49,15 +58,7 @@ module Idv
 
         private
 
-        def extra
-          # Make sure the service-related error gets passed along
-          # to our FormResponse upon #submit.
-          { service_error: service_error } if service_error?
-        end
-
-        def add_service_error_if
-          return unless service_error?
-
+        def add_service_error
           errors.add(
             :service_provider,
             # Use a "safe" error message for the model in case it's displayed

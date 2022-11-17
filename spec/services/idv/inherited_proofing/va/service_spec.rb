@@ -80,7 +80,7 @@ RSpec.describe Idv::InheritedProofing::Va::Service do
             with(headers: request_headers).
             to_return(status: 200, body: 'xyz', headers: {})
 
-          expect(service.execute.to_s).to match(/unexpected token at 'xyz'/)
+          expect(service.execute[:service_error]).to match(/unexpected token at 'xyz'/)
         end
       end
     end
