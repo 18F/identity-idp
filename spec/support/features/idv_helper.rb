@@ -58,15 +58,20 @@ module IdvHelper
   
   def choose_idv_otp_delivery_method_sms
     click_idv_otp_delivery_method_sms
-    click_on t('idv.buttons.send_confirmation_code')
+    click_idv_send_security_code
   end
 
-  def choose_idv_otp_delivery_method_voice
+  def click_idv_otp_delivery_method_voice
     page.find(
       'label',
       text: t('two_factor_authentication.otp_delivery_preference.voice'),
+      wait: 5,
     ).click
-    click_on t('idv.buttons.send_confirmation_code')
+  end
+  
+  def choose_idv_otp_delivery_method_voice
+    click_idv_otp_delivery_method_voice
+    click_idv_send_security_code
   end
 
   def visit_idp_from_sp_with_ial2(sp, **extra)
