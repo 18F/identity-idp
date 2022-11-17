@@ -5,16 +5,17 @@ module EncryptedDocumentStorage
       encrypted_front_image = aes_cipher.encrypt(front_image, key)
       encrypted_back_image = aes_cipher.encrypt(back_image, key)
 
-      front_image_reference = SecureRandom.uuid
-      back_image_reference = SecureRandom.uuid
+      front_image_uuid = SecureRandom.uuid
+      back_image_uiid = SecureRandom.uuid
 
-      storage.write_image(encrypted_image: encrypted_front_image, reference: front_image_reference)
-      storage.write_image(encrypted_image: encrypted_back_image, reference: back_image_reference)
+      storage.write_image(encrypted_image: encrypted_front_image, name: front_image_uuid)
+      storage.write_image(encrypted_image: encrypted_back_image, name: back_image_uiid)
 
       WriteDocumentResult.new(
-        front_reference: front_image_reference,
-        back_reference: back_image_reference,
-        encryption_key: Base64.strict_encode64(key),
+        front_uuid: front_image_uuid,
+        back_uuid: back_image_uiid,
+        front_encryption_key: Base64.strict_encode64(key),
+        back_encryption_key: Base64.strict_encode64(key),
       )
     end
 

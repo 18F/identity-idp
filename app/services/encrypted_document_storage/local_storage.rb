@@ -1,8 +1,8 @@
 module EncryptedDocumentStorage
   class LocalStorage
-    def write_image(encrypted_image:, reference:)
+    def write_image(encrypted_image:, name:)
       FileUtils.mkdir_p(tmp_document_storage_dir)
-      filepath = tmp_document_storage_dir.join(reference)
+      filepath = tmp_document_storage_dir.join(name)
       File.write(filepath, encrypted_image)
     end
 
