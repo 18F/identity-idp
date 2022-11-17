@@ -30,10 +30,8 @@
                     maxLength: 2,
                     aria: {
                       invalid: false,
-                      describedby: [
-                        "validated-field-error-#{unique_id}",
-                        "validated-field-hint-#{unique_id}",
-                      ],
+                      describedby: "validated-field-error-#{unique_id}",
+                      labelledby: 'month_hint_id',
                     },
                     value: month,
                   },
@@ -41,6 +39,9 @@
                   required: required,
                 ) %>
           <% end %>
+          <span id="month_hint_id" class="usa-sr-only" aria-hidden="true">
+            <%= t('in_person_proofing.form.state_id.date_hint.month') %>
+          </span>
           </lg-validated-field>
           <lg-validated-field>
           <%= f.simple_fields_for name do |p| %>
@@ -57,10 +58,8 @@
                   maxLength: 2,
                   aria: {
                     invalid: false,
-                    describedby: [
-                      "validated-field-error-#{unique_id}",
-                      "validated-field-hint-#{unique_id}",
-                    ],
+                    describedby: "validated-field-error-#{unique_id}",
+                    labelledby: 'day_hint_id',
                   },
                   value: day,
                 },
@@ -68,6 +67,9 @@
                 required: required,
               ) %>
           <% end %>
+          <span id="day_hint_id" class="usa-sr-only" aria-hidden="true">
+            <%= t('in_person_proofing.form.state_id.date_hint.day') %>
+          </span>
           </lg-validated-field>
           <lg-validated-field>
           <%= f.simple_fields_for name do |p| %>
@@ -84,10 +86,8 @@
                   maxLength: 4,
                   aria: {
                     invalid: false,
-                    describedby: [
-                      "validated-field-error-#{unique_id}",
-                      "validated-field-hint-#{unique_id}",
-                    ],
+                    describedby: "validated-field-error-#{unique_id}",
+                    labelledby: 'year_hint_id',
                   },
                   value: year,
                 },
@@ -95,6 +95,9 @@
                 required: required,
               ) %>
           <% end %>
+          <span id="year_hint_id" class="usa-sr-only" aria-hidden="true">
+            <%= t('in_person_proofing.form.state_id.date_hint.year') %>
+          </span>
         </lg-validated-field>
     </div>
   <% end -%>
