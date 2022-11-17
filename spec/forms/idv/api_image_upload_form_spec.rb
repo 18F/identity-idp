@@ -280,14 +280,29 @@ RSpec.describe Idv::ApiImageUploadForm do
         end
       end
 
-      context 'when the attempts API is not enabled' do
+      context 'when encrypted image storage is disabled' do
         let(:store_encrypted_images) { false }
 
-        it 'when encrypted image storage is disabled' do
+        it 'does not write images' do
           document_writer = instance_double(EncryptedDocumentStorage::DocumentWriter)
           allow(form).to receive(:encrypted_document_storage_writer).and_return(document_writer)
 
           expect(document_writer).to_not receive(:encrypt_and_write_document)
+
+          form.submit
+        end
+
+        it 'does not send image info to attempts api' do
+          expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            hash_including(
+              front_image: nil,
+              front_image_content_type: nil,
+              front_image_encryption_key: nil,
+              back_image: nil,
+              back_image_content_type: nil,
+              back_image_encryption_key: nil,
+            ),
+          )
 
           form.submit
         end
