@@ -27,6 +27,14 @@ module IdvHelper
     fill_in :idv_phone_form_phone, with: '(703) 555-5555'
   end
 
+  def click_idv_continue_for_step(step)
+    if step == :phone
+      click_idv_send_security_code
+    else
+      click_idv_continue
+    end
+  end
+
   def click_idv_continue
     click_spinner_button_and_wait t('forms.buttons.continue')
   end
