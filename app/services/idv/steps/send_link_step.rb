@@ -61,11 +61,13 @@ module Idv
       end
 
       def form_submit
+        params = permit(:phone)
+        params[:otp_delivery_preference] = "sms"
         Idv::PhoneForm.new(
           previous_params: {},
           user: current_user,
           delivery_methods: [:sms],
-        ).submit(permit(:phone))
+        ).submit(params)
       end
 
       def formatted_destination_phone
