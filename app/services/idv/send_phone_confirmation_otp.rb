@@ -61,7 +61,6 @@ module Idv
         domain: IdentityConfig.store.domain_name,
         country_code: parsed_phone.country,
       )
-      add_cost
       otp_sent_response
     end
 
@@ -69,10 +68,6 @@ module Idv
       FormResponse.new(
         success: telephony_response.success?, extra: extra_analytics_attributes,
       )
-    end
-
-    def add_cost
-      Db::ProofingCost::AddUserProofingCost.call(user.id, :phone_otp)
     end
 
     def extra_analytics_attributes

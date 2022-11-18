@@ -370,7 +370,7 @@ GEM
     loofah (2.19.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
-    lookbook (1.2.1)
+    lookbook (1.3.3)
       actioncable
       activemodel
       css_parser
@@ -769,7 +769,7 @@ DEPENDENCIES
   jwt
   knapsack
   lograge (>= 0.11.2)
-  lookbook (~> 1.2.1)
+  lookbook (~> 1.3.3)
   lru_redux
   maxminddb
   multiset

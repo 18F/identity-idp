@@ -9,10 +9,10 @@ feature 'Inherited Proofing Analytics Regression', js: true do
   # rubocop:disable Layout/LineLength
   let(:happy_path_events) do
     {
-      'Idv: inherited proofing get started visited' => { flow_path: 'standard', step: 'get_started', step_count: 1, analytics_id: 'Inherited Proofing' },
-      'Idv: inherited proofing get started submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'get_started', step_count: 1, analytics_id: 'Inherited Proofing' },
-      'Idv: inherited proofing agreement visited' => { flow_path: 'standard', step: 'agreement', step_count: 1, analytics_id: 'Inherited Proofing' },
-      'Idv: inherited proofing agreement submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'agreement', step_count: 1, analytics_id: 'Inherited Proofing' },
+      'IdV: inherited proofing get started visited' => { flow_path: 'standard', step: 'get_started', step_count: 1, analytics_id: 'Inherited Proofing' },
+      'IdV: inherited proofing get started submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'get_started', step_count: 1, analytics_id: 'Inherited Proofing' },
+      'IdV: inherited proofing agreement visited' => { flow_path: 'standard', step: 'agreement', step_count: 1, analytics_id: 'Inherited Proofing' },
+      'IdV: inherited proofing agreement submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'agreement', step_count: 1, analytics_id: 'Inherited Proofing' },
       'IdV: doc auth verify_wait visited' => { flow_path: 'standard', step: 'verify_wait', step_count: 1, analytics_id: 'Inherited Proofing' },
       'IdV: doc auth optional verify_wait submitted' => { success: true, errors: {}, step: 'verify_wait_step_show', analytics_id: 'Inherited Proofing' },
       'IdV: doc auth verify visited' => { flow_path: 'standard', step: 'verify_info', step_count: 1, analytics_id: 'Inherited Proofing' },

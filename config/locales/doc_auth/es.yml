@@ -86,8 +86,7 @@ es:
           documento de identidad. Intente tomar una nueva foto.
         network_error: Estamos teniendo problemas técnicos por nuestra parte. Intente
           enviar sus imágenes de nuevo más tarde.
-        no_liveness: No pudimos verificar su documento de identidad. Intente tomar
-          nuevas fotografías.
+        no_liveness: Intente tomar nuevas fotografías.
       glare:
         failed_short: Hay reflejos en la imagen, por favor inténtelo de nuevo.
         top_msg: No pudimos leer su identificación. Es posible que su foto tenga

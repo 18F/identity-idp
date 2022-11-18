@@ -30,9 +30,6 @@ fr:
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
         photos de votre identifiant avant de continuer. Nous vous avons envoyé
         un lien avec des instructions.
-      quota_reached: Désolé, votre fournisseur de services a atteint sa limite de
-        vérification d’identité. Veuillez contacter votre fournisseur de
-        services pour plus d’informations.
       send_link_throttle: Vous avez essayé trop de fois, veuillez réessayer dans
         %{timeout}. Vous pouvez également revenir en arrière et choisir
         d’utiliser votre ordinateur à la place.
@@ -74,7 +71,6 @@ fr:
       missing_field: Veuillez remplir ce champ.
       no_pending_profile: Aucun profil en attente de vérification
       not_a_number: N’est pas un nombre
-      otp_failed: Échec de l’envoi de votre code de sécurité.
       password_incorrect: Mot de passe incorrect
       personal_key_incorrect: Clé personnelle incorrecte
       phone_confirmation_throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.

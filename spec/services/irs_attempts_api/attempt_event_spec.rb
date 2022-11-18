@@ -54,7 +54,7 @@ RSpec.describe IrsAttemptsApi::AttemptEvent do
         'subject_type' => 'session', 'session_id' => 'test-session-id',
       )
       expect(event_data['foo']).to eq('bar')
-      expect(event_data['occurred_at']).to eq(occurred_at.to_i)
+      expect(event_data['occurred_at']).to eq(occurred_at.to_f)
     end
   end
 
