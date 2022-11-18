@@ -30,9 +30,22 @@ interface FormattedLocation {
   weekdayHours: string;
 }
 
-export const LOCATIONS_URL = '/verify/in_person/usps_locations';
+const getCsrfToken = () => {
+  const meta: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
 
-const getResponse = () => window.fetch(LOCATIONS_URL).then((res) => res.json());
+  return meta?.content;
+};
+
+export const LOCATIONS_URL = '/verify/in_person/usps_locations';
+const getUspsLocations = () => {
+  const headers = { 'Content-Type': 'application/json' };
+  const csrf = getCsrfToken();
+  if (csrf) {
+    headers['X-CSRF-Token'] = csrf;
+  }
+
+  return window.fetch(LOCATIONS_URL, { method: 'POST', headers }).then((res) => res.json());
+};
 
 const formatLocation = (postOffices: PostOffice[]) => {
   const formattedLocations = [] as FormattedLocation[];
@@ -102,8 +115,7 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
       }
       const selected = prepToSend(selectedLocation);
       const headers = { 'Content-Type': 'application/json' };
-      const meta: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
-      const csrf = meta?.content;
+      const csrf = getCsrfToken();
       if (csrf) {
         headers['X-CSRF-Token'] = csrf;
       }
@@ -139,7 +151,7 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
     let mounted = true;
     (async () => {
       try {
-        const fetchedLocations = await getResponse();
+        const fetchedLocations = await getUspsLocations();
         if (mounted) {
           const formattedLocations = formatLocation(fetchedLocations);
           setLocationData(formattedLocations);
