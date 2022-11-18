@@ -78,6 +78,7 @@ module Idv
     end
 
     def send_phone_confirmation_otp_and_handle_result
+      save_delivery_preference
       result = send_phone_confirmation_otp
       analytics.idv_phone_confirmation_otp_sent(**result.to_h)
 
@@ -183,6 +184,17 @@ module Idv
       else
         { telephony_error: result.extra[:telephony_response]&.error&.friendly_message }
       end
+    end
+
+    # Migrated from otp_delivery_method_controller
+    def save_delivery_preference
+      original_session = idv_session.user_phone_confirmation_session
+      idv_session.user_phone_confirmation_session = PhoneConfirmation::ConfirmationSession.new(
+        code: original_session.code,
+        phone: original_session.phone,
+        sent_at: original_session.sent_at,
+        delivery_method: original_session.delivery_method,
+      )
     end
   end
 end
