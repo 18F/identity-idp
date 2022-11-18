@@ -330,7 +330,7 @@ describe 'dev rake tasks' do
       stub_request_token
       stub_request_enroll
 
-      expect(SampleDataCreator).to receive(:delay).exactly(10).times.with(0.2)
+      expect(Kernel).to receive(:sleep).exactly(10).times.with(0.2)
 
       Rake::Task['dev:random_in_person_users'].invoke
     end
@@ -436,7 +436,7 @@ describe 'dev rake tasks' do
         ).times(1)
       expect(UspsInPersonProofing::EnrollmentHelper).
         to receive(:schedule_in_person_enrollment).and_call_original.exactly(3).times
-      expect(SampleDataCreator).to receive(:delay).exactly(3).times.with(0.2)
+      expect(Kernel).to receive(:sleep).exactly(3).times.with(0.2)
 
       Rake::Task['dev:random_in_person_users'].invoke
     end
