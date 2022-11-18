@@ -292,3 +292,9 @@ If you are getting the error:
 LoadError: cannot load such file -- sassc
 ```
 Try `make run` for a short time, then use Ctrl+C to kill it
+
+##### No errors, but the tests are running very slowly!
+
+If you're experiencing absurdly long run times for the test suite locally, double check (in `config/application.yml`) that you don't have very large values specified for any `*_max_attempts` keys. There are several tests that repeat certain setup parameters based on the values of those keys--the larger the value, the longer the tests will take.
+
+For example, setting `password_max_attempts: 999` will result in the test suite needing to enter an incorrect password 999 times before it can verify that the limit is effective.
