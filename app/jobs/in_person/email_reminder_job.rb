@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module InPerson
   class EmailReminderJob < ApplicationJob
-    EMAIL_TYPE_EARLY = 'early'.freeze
-    EMAIL_TYPE_LATE = 'late'.freeze
+    EMAIL_TYPE_EARLY = 'early'
+    EMAIL_TYPE_LATE = 'late'
 
     queue_as :low
 
@@ -39,21 +41,24 @@ module InPerson
 
     def send_emails_for_enrollments(enrollments:, email_type:)
       enrollments.each do |enrollment|
-        begin
-          send_reminder_email(enrollment.user, enrollment)
-        rescue StandardError => err
-          NewRelic::Agent.notice_error(err)
-          analytics(user: enrollment.user).idv_in_person_email_reminder_job_exception(
-            enrollment_id: enrollment.id,
-            exception_class: err.class.to_s,
-            exception_message: err.message,
-          )
-        else
-          analytics(user: enrollment.user).idv_in_person_email_reminder_job_email_initiated(
-            email_type: email_type,
-            enrollment_id: enrollment.id,
-          )
-          enrollment.update!({ "#{email_type}_reminder_sent": true })
+        send_reminder_email(enrollment.user, enrollment)
+      rescue StandardError => err
+        puts "err: #{err}"
+        NewRelic::Agent.notice_error(err)
+        analytics(user: enrollment.user).idv_in_person_email_reminder_job_exception(
+          enrollment_id: enrollment.id,
+          exception_class: err.class.to_s,
+          exception_message: err.message,
+        )
+      else
+        analytics(user: enrollment.user).idv_in_person_email_reminder_job_email_initiated(
+          email_type: email_type,
+          enrollment_id: enrollment.id,
+        )
+        if email_type == EMAIL_TYPE_EARLY
+          enrollment.update!(early_reminder_sent: true)
+        elsif email_type == EMAIL_TYPE_LATE
+          enrollment.update!(late_reminder_sent: true)
         end
       end
     end
