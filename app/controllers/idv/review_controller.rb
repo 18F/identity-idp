@@ -67,6 +67,10 @@ module Idv
 
     private
 
+    def proofing_method
+      "#{user_session['idv']['address_verification_mechanism']} verification"
+    end
+
     def log_reproof_event
       irs_attempts_api_tracker.idv_reproof
     end
