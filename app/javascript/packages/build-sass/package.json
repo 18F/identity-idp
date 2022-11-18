@@ -1,6 +1,5 @@
 {
   "name": "@18f/identity-build-sass",
-  "private": true,
   "version": "1.0.0",
   "type": "module",
   "bin": {
@@ -9,7 +8,7 @@
   "dependencies": {
     "browserslist": "^4.21.4",
     "chokidar": "^3.5.3",
-    "lightningcss": "^1.16.0",
-    "sass-embedded": "^1.55.0"
+    "lightningcss": "^1.16.1",
+    "sass-embedded": "^1.56.1"
   }
 }
