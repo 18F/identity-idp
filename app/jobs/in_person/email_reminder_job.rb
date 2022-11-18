@@ -1,5 +1,8 @@
 module InPerson
   class EmailReminderJob < ApplicationJob
+    EMAIL_TYPE_EARLY = 'early'.freeze
+    EMAIL_TYPE_LATE = 'late'.freeze
+
     queue_as :low
 
     include GoodJob::ActiveJobExtensions::Concurrency
@@ -14,27 +17,46 @@ module InPerson
     def perform(_now)
       return true unless IdentityConfig.store.in_person_proofing_enabled
 
-      # final reminder job done first in case of job failure
-      second_set_enrollments = InPersonEnrollment.needs_late_email_reminder(
+      # send late emails first in case of job failure
+      late_enrollments = InPersonEnrollment.needs_late_email_reminder(
         late_benchmark,
         final_benchmark,
       )
-      second_set_enrollments.each do |enrollment|
-        send_reminder_email(enrollment.user, enrollment)
-        enrollment.update!(late_reminder_sent: true)
-      end
+      send_emails_for_enrollments(enrollments: late_enrollments, email_type: EMAIL_TYPE_LATE)
 
-      first_set_enrollments = InPersonEnrollment.needs_early_email_reminder(
+      early_enrollments = InPersonEnrollment.needs_early_email_reminder(
         early_benchmark,
         late_benchmark,
       )
-      first_set_enrollments.each do |enrollment|
-        send_reminder_email(enrollment.user, enrollment)
-        enrollment.update!(early_reminder_sent: true)
-      end
+      send_emails_for_enrollments(enrollments: early_enrollments, email_type: EMAIL_TYPE_EARLY)
     end
 
     private
+
+    def analytics(user: AnonymousUser.new)
+      Analytics.new(user: user, request: nil, session: {}, sp: nil)
+    end
+
+    def send_emails_for_enrollments(enrollments:, email_type:)
+      enrollments.each do |enrollment|
+        begin
+          send_reminder_email(enrollment.user, enrollment)
+        rescue StandardError => err
+          NewRelic::Agent.notice_error(err)
+          analytics(user: enrollment.user).idv_in_person_email_reminder_job_exception(
+            enrollment_id: enrollment.id,
+            exception_class: err.class.to_s,
+            exception_message: err.message,
+          )
+        else
+          analytics(user: enrollment.user).idv_in_person_email_reminder_job_email_initiated(
+            email_type: email_type,
+            enrollment_id: enrollment.id,
+          )
+          enrollment.update!({ "#{email_type}_reminder_sent": true })
+        end
+      end
+    end
 
     def calculate_interval(benchmark)
       days_until_expired = IdentityConfig.store.in_person_enrollment_validity_in_days.days
