@@ -348,6 +348,7 @@ Rails.application.routes.draw do
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
           as: :in_person_ready_to_verify
+      get '/in_person/usps_locations' => 'in_person/usps_locations#index'
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
       post '/in_person/addresses' => 'in_person/address_search#index'
