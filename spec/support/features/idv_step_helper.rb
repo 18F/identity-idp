@@ -44,14 +44,6 @@ module IdvStepHelper
     click_on t('idv.buttons.mail.send')
   end
 
-  def complete_idv_steps_before_phone_otp_delivery_selection_step(user = user_with_2fa)
-    # TODO: this method should now be remove / consolidated,
-    # since the selection step is no longer a separate step!
-    complete_idv_steps_before_phone_step(user)
-    fill_out_phone_form_ok('2342255432')
-    click_idv_send_security_code
-  end
-
   def complete_idv_steps_before_phone_otp_verification_step(user = user_with_2fa)
     complete_idv_steps_before_phone_step(user)
     fill_out_phone_form_ok
