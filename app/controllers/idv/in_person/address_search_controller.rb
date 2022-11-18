@@ -4,7 +4,7 @@ module Idv
       include ApplicationHelper # for liveness_checking_enabled?
 
       # include RenderConditionConcern
-
+      skip_before_action :verify_authenticity_token
       # check_or_render_not_found -> { IdentityConfig.store.arcgis_search_enabled }
 
       respond_to :json

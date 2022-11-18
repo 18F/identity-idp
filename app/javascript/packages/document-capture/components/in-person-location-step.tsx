@@ -32,7 +32,18 @@ interface FormattedLocation {
 }
 
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
-const getResponse = () => window.fetch(LOCATIONS_URL).then((res) => res.json());
+const queryUspsLocations = (address = {}) => {
+  const headers = { 'Content-Type': 'application/json' };
+  const meta: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
+  const csrf = meta?.content;
+  if (csrf) {
+    headers['X-CSRF-Token'] = csrf;
+  }
+
+  return window
+    .fetch(LOCATIONS_URL, { method: 'POST', headers, body: JSON.stringify(address) })
+    .then((res) => res.json());
+};
 
 const formatLocation = (postOffices: PostOffice[]) => {
   const formattedLocations = [] as FormattedLocation[];
@@ -135,8 +146,9 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
     [locationData, inProgress],
   );
 
-  const handleFoundAddress = useCallback(async () => {
-    console.log('issue req')
+  const handleFoundAddress = useCallback(async (address) => {
+    console.log(address);
+
     /* issue request for po locations */
   }, []);
 
@@ -144,7 +156,7 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
     let mounted = true;
     (async () => {
       try {
-        const fetchedLocations = await getResponse();
+        const fetchedLocations = await queryUspsLocations();
         if (mounted) {
           const formattedLocations = formatLocation(fetchedLocations);
           setLocationData(formattedLocations);

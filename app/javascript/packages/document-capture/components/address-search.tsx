@@ -27,14 +27,20 @@ const ADDRESS_SEARCH_URL = '/api/addresses';
 
 function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
+  const headers = { 'Content-Type': 'application/json' };
+  const meta: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
+  const csrf = meta?.content;
+  if (csrf) {
+    headers['X-CSRF-Token'] = csrf;
+  }
   const handleAddressSearch = useCallback(async (e) => {
     try {
       const response = await fetch(ADDRESS_SEARCH_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ address: '120 broadway' }),
+          headers: headers,
+          body: JSON.stringify({ address: unvalidatedAddressInput }),
       });
-      // console.log(await response.json())
+
       const addressCandidates = await response.json();
       const [bestMatchedAddress] = addressCandidates;
 
@@ -48,7 +54,7 @@ function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
   return <>
     <TextInput
       value={unvalidatedAddressInput}
-      onChange={(ev) => setUnvalidatedAddressInput(ev.target.value)}
+      onChange={(ev) => setUnvalidatedAddressInput(ev.target.value) }
       label="Search for an address"
     />
     <Button

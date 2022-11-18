@@ -121,29 +121,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
           },
         ].filter(Boolean) as FormStep[]);
 
-  const steps: FormStep[] = submissionError
-    ? (
-        [
-          {
-            name: 'review',
-            form:
-              submissionError instanceof UploadFormEntriesError
-                ? withProps({
-                    remainingAttempts: submissionError.remainingAttempts,
-                    isFailedResult: submissionError.isFailedResult,
-                    captureHints: submissionError.hints,
-                    pii: submissionError.pii,
-                  })(ReviewIssuesStep)
-                : ReviewIssuesStep,
-          },
-        ] as FormStep[]
-      ).concat(inPersonSteps)
-    : ([
-        {
-          name: 'documents',
-          form: DocumentsStep,
-        },
-      ].filter(Boolean) as FormStep[]);
+  const steps: FormStep[] = [{ name: 'location', form: InPersonLocationStep }];
 
   const stepIndicatorPath =
     stepName && ['location', 'prepare', 'switch_back'].includes(stepName)

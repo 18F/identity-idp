@@ -15,7 +15,7 @@ module Idv
       def index
         usps_response = []
         begin
-          usps_response = Proofer.new.request_pilot_facilities
+          usps_response = Proofer.new.request_facilities(search_params[:address])
         rescue Faraday::ConnectionFailed => _error
           nil
         end
@@ -26,7 +26,7 @@ module Idv
       # save the Post Office location the user selected to an enrollment
       def update
         enrollment.update!(
-          selected_location_details: permitted_params.as_json,
+          selected_location_details: update_params.as_json,
           issuer: current_sp&.issuer,
         )
 
@@ -47,7 +47,16 @@ module Idv
         )
       end
 
-      def permitted_params
+      def search_params
+        params.require(:address).permit(
+          :address,
+          :city,
+          :state,
+          :zip_code,
+        )
+      end
+
+      def update_params
         params.require(:usps_location).permit(
           :formatted_city_state_zip,
           :name,
