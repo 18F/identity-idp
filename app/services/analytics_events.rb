@@ -1259,32 +1259,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param ["sms", "voice"] otp_delivery_preference
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Hash] error_details
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  def idv_phone_otp_delivery_selection_submitted(
-    success:,
-    otp_delivery_preference:,
-    proofing_components: nil,
-    errors: nil,
-    error_details: nil,
-    **extra
-  )
-    track_event(
-      'IdV: Phone OTP Delivery Selection Submitted',
-      {
-        success: success,
-        errors: errors,
-        error_details: error_details,
-        otp_delivery_preference: otp_delivery_preference,
-        proofing_components: proofing_components,
-        **extra,
-      }.compact,
-    )
-  end
-
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # User visited idv phone of record
   def idv_phone_of_record_visited(proofing_components: nil, **extra)
