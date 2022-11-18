@@ -43,7 +43,6 @@ module InPerson
       enrollments.each do |enrollment|
         send_reminder_email(enrollment.user, enrollment)
       rescue StandardError => err
-        puts "err: #{err}"
         NewRelic::Agent.notice_error(err)
         analytics(user: enrollment.user).idv_in_person_email_reminder_job_exception(
           enrollment_id: enrollment.id,
