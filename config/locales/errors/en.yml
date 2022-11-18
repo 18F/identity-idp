@@ -65,6 +65,8 @@ en:
       not_a_number: is not a number
       password_incorrect: Incorrect password
       personal_key_incorrect: Incorrect personal key
+      phone_carrier: Sorry, we are unable to support that phone carrier at this time.
+        Please select a different number and try again.
       phone_confirmation_throttled: You tried too many times, please try again in %{timeout}.
       phone_duplicate: This account is already using the phone number you entered as
         an authenticator. Please use a different phone number.

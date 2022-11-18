@@ -299,6 +299,30 @@ describe NewPhoneForm do
       end
     end
 
+    context 'blocklisted carrier numbers' do
+      before do
+        allow(IdentityConfig.store).to receive(:phone_carrier_registration_blocklist).and_return(
+          ['Blocked Phone Carrier'],
+        )
+      end
+
+      context 'when phone number carrier is in blocklist' do
+        it 'is invalid' do
+          expect(Telephony).to receive(:phone_info).and_return(
+            Telephony::PhoneNumberInfo.new(
+              type: :mobile,
+              carrier: 'Blocked Phone Carrier',
+              error: nil,
+            ),
+          )
+
+          result = subject.submit(params)
+          expect(result.success?).to eq(false)
+          expect(result.errors[:phone]).to eq([I18n.t('errors.messages.phone_carrier')])
+        end
+      end
+    end
+
     context 'premium rate phone numbers like 1-900' do
       let(:premium_rate_phone_number) { '+1 900 867 5309' }
 
