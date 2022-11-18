@@ -1,3 +1,9 @@
+class SampleDataCreator
+  def self.delay(seconds)
+    sleep(seconds)
+  end
+end
+
 namespace :dev do
   desc 'Sample data for local development environment'
   task prime: :environment do
@@ -146,7 +152,7 @@ namespace :dev do
                 else
                   success = true
                 end
-                sleep(usps_request_delay_ms / 1000.0) if usps_request_delay_ms
+                SampleDataCreator.delay(usps_request_delay_ms / 1000.0) if usps_request_delay_ms
               end
             else
               enrollment = InPersonEnrollment.create!(
