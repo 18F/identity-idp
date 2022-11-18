@@ -3088,6 +3088,25 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks exceptions that are raised when running InPerson::EmailReminderJob
+  # @param [String] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  def idv_in_person_email_reminder_job_exception(
+    enrollment_id:,
+    exception_class: nil,
+    exception_message: nil,
+    **extra
+  )
+    track_event(
+      'InPerson::EmailReminderJob: Exception raised when attempting to send reminder email',
+      enrollment_id: enrollment_id,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      **extra,
+    )
+  end
+
   # Tracks individual enrollments that are updated during GetUspsProofingResultsJob
   # @param [String] enrollment_code
   # @param [String] enrollment_id
@@ -3122,6 +3141,21 @@ module AnalyticsEvents
     track_event(
       'GetUspsProofingResultsJob: Success or failure email initiated',
       email_type: email_type,
+      **extra,
+    )
+  end
+
+  # Tracks emails that are initiated during InPerson::EmailReminderJob
+  # @param [String] email_type early or late
+  def idv_in_person_email_reminder_job_email_initiated(
+    email_type:,
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      'InPerson::EmailReminderJob: Reminder email initiated',
+      email_type: email_type,
+      enrollment_id: enrollment_id,
       **extra,
     )
   end
