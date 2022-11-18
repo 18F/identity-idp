@@ -485,13 +485,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_15_181559) do
     t.index ["user_id"], name: "index_security_events_on_user_id"
   end
 
-  create_table "service_provider_quota_limits", force: :cascade do |t|
-    t.string "issuer", null: false
-    t.integer "ial", limit: 2, null: false
-    t.integer "percent_full"
-    t.index ["issuer", "ial"], name: "index_service_provider_quota_limits_on_issuer_and_ial", unique: true
-  end
-
   create_table "service_providers", id: :serial, force: :cascade do |t|
     t.string "issuer", null: false
     t.string "friendly_name"
@@ -520,7 +513,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_15_181559) do
     t.string "push_notification_url"
     t.jsonb "help_text", default: {"sign_in"=>{}, "sign_up"=>{}, "forgot_password"=>{}}
     t.boolean "allow_prompt_login", default: false
-    t.integer "ial2_quota"
     t.boolean "signed_response_message_requested", default: false
     t.string "remote_logo_key"
     t.date "launch_date"

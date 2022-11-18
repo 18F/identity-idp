@@ -11,13 +11,14 @@ module Idv
     validate :throttle_if_rate_limited
 
     def initialize(params, service_provider:, analytics: nil,
-                   uuid_prefix: nil, irs_attempts_api_tracker: nil)
+                   uuid_prefix: nil, irs_attempts_api_tracker: nil, store_encrypted_images: false)
       @params = params
       @service_provider = service_provider
       @analytics = analytics
       @readable = {}
       @uuid_prefix = uuid_prefix
       @irs_attempts_api_tracker = irs_attempts_api_tracker
+      @store_encrypted_images = store_encrypted_images
     end
 
     def submit
@@ -64,8 +65,8 @@ module Idv
 
     def post_images_to_client
       response = doc_auth_client.post_images(
-        front_image: front.read,
-        back_image: back.read,
+        front_image: front_image_bytes,
+        back_image: back_image_bytes,
         image_source: image_source,
         user_uuid: user_uuid,
         uuid_prefix: uuid_prefix,
@@ -77,6 +78,14 @@ module Idv
       update_analytics(response)
 
       response
+    end
+
+    def front_image_bytes
+      @front_image_bytes ||= front.read
+    end
+
+    def back_image_bytes
+      @back_image_bytes ||= back.read
     end
 
     def validate_pii_from_doc(client_response)
@@ -210,6 +219,7 @@ module Idv
         ).merge(native_camera_ab_test_data),
       )
       pii_from_doc = client_response.pii_from_doc || {}
+      store_encrypted_images_if_required
       irs_attempts_api_tracker.idv_document_upload_submitted(
         success: client_response.success?,
         document_state: pii_from_doc[:state],
@@ -222,6 +232,23 @@ module Idv
         address: pii_from_doc[:address1],
         failure_reason: client_response.errors&.except(:hints)&.presence,
       )
+    end
+
+    def store_encrypted_images_if_required
+      return unless store_encrypted_images?
+
+      encrypted_document_storage_writer.encrypt_and_write_document(
+        front_image: front_image_bytes,
+        back_image: back_image_bytes,
+      )
+    end
+
+    def store_encrypted_images?
+      @store_encrypted_images
+    end
+
+    def encrypted_document_storage_writer
+      @encrypted_document_storage_writer ||= EncryptedDocumentStorage::DocumentWriter.new
     end
 
     def native_camera_ab_test_data
