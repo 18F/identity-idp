@@ -10,17 +10,13 @@ en:
         %{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don't share this code with anyone.
 
         @%{domain} #%{code}
-      voice: Hello! Your %{app_name} one time passcode is, %{code}. Your one time
-        passcode is, %{code}. Again, your passcode is, %{code}. This code
-        expires in %{expiration} minutes.
+      voice: Hello! Your %{app_name} one-time code is, %{code}. Your one-time code is, %{code}. Again, your one-time code is %{code}. This code expires in %{expiration} minutes.
     confirmation_otp:
       sms: |-
         %{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don't share this code with anyone.
 
         @%{domain} #%{code}
-      voice: Hello! Your %{app_name} one time passcode is, %{code}. Your one time
-        passcode is, %{code}. Again, your passcode is, %{code}. This code
-        expires in %{expiration} minutes.
+      voice: Hello! Your %{app_name} one-time code is, %{code}. Your one-time code is, %{code}. Again, your one-time code is %{code}. This code expires in %{expiration} minutes.
     doc_auth_link: "%{link} You've requested to verify your identity on a mobile
       phone.  Please take a photo of your state issued ID."
     error:
