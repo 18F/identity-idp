@@ -2,10 +2,12 @@ require 'rails_helper'
 
 RSpec.describe InPerson::EmailReminderJob do
   let(:job) { InPerson::EmailReminderJob.new }
+  let(:job_analytics) { FakeAnalytics.new }
 
   before do
     ActiveJob::Base.queue_adapter = :test
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+    allow(job).to receive(:analytics).and_return(job_analytics)
   end
 
   describe '#perform' do
@@ -50,6 +52,11 @@ RSpec.describe InPerson::EmailReminderJob do
         )
         pending_enrollment_needing_late_reminder.reload
         expect(pending_enrollment_needing_late_reminder.late_reminder_sent).to be_truthy
+        expect(job_analytics).to have_logged_event(
+          'InPerson::EmailReminderJob: Reminder email initiated',
+          email_type: 'late',
+          enrollment_id: pending_enrollment_needing_late_reminder.id,
+        )
       end
 
       it 'does not queue emails for enrollments that had late email reminder sent' do
@@ -75,6 +82,11 @@ RSpec.describe InPerson::EmailReminderJob do
         )
         pending_enrollment_needing_early_reminder.reload
         expect(pending_enrollment_needing_early_reminder.early_reminder_sent).to be_truthy
+        expect(job_analytics).to have_logged_event(
+          'InPerson::EmailReminderJob: Reminder email initiated',
+          email_type: 'early',
+          enrollment_id: pending_enrollment_needing_early_reminder.id,
+        )
       end
 
       it 'does not queue emails for enrollments that had early email reminder sent' do
