@@ -30,10 +30,17 @@ interface FormattedLocation {
   weekdayHours: string;
 }
 
-const getCsrfToken = () => {
-  const meta: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
+const getCsrfToken = () =>
+  document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content;
 
-  return meta?.content;
+const fetchWithCSRF = (targetUrl: String, method: String) => {
+  const headers = { 'Content-Type': 'application/json' };
+  const csrf = getCsrfToken();
+  if (csrf) {
+    headers['X-CSRF-Token'] = csrf;
+  }
+
+  return window.fetch(targetUrl, { method, headers }).then((res) => res.json());
 };
 
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
