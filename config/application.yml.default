@@ -206,6 +206,7 @@ participate_in_dap: false
 partner_api_bucket_prefix: ''
 password_max_attempts: 3
 personal_key_retired: true
+phone_carrier_registration_blocklist: ''
 phone_confirmation_max_attempts: 20
 phone_confirmation_max_attempt_window_in_minutes: 1_440
 phone_setups_per_ip_limit: 25
