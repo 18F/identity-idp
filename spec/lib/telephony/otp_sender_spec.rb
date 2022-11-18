@@ -137,7 +137,7 @@ RSpec.describe Telephony::OtpSender do
         message = <<~XML.squish
           <speak>
             <prosody rate='slow'>
-              Hello! Your #{APP_NAME} one-time code is is,
+              Hello! Your #{APP_NAME} one-time code is,
               1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
               4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
         XML
@@ -158,7 +158,7 @@ RSpec.describe Telephony::OtpSender do
         message = <<~XML.squish
           <speak>
             <prosody rate='slow'>
-              Hello! Your #{APP_NAME} one-time code is is,
+              Hello! Your #{APP_NAME} one-time code is,
               1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
               4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
         XML
