@@ -12,14 +12,14 @@
   <%= render 'accounts/auth_apps' %>
 </div>
 
-<% if TwoFactorAuthentication::WebauthnPolicy.new(current_user).visible? %>
+<% if TwoFactorAuthentication::WebauthnPolicy.new(current_user).roaming_visible? %>
   <div class="margin-bottom-4 card profile-info-box">
     <%= render 'accounts/webauthn_platform' %>
   </div>
 <% end %>
 
 
-<% if TwoFactorAuthentication::WebauthnPolicy.new(current_user).visible? %>
+<% if TwoFactorAuthentication::WebauthnPolicy.new(current_user).platform_visible? %>
   <div class="margin-bottom-4 card profile-info-box">
     <%= render 'accounts/webauthn_roaming' %>
   </div>
