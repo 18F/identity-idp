@@ -146,7 +146,7 @@ namespace :dev do
                 else
                   success = true
                 end
-                sleep(usps_request_delay_ms / 1000.0) if usps_request_delay_ms
+                Kernel.sleep(usps_request_delay_ms / 1000.0) if usps_request_delay_ms
               end
             else
               enrollment = InPersonEnrollment.create!(
