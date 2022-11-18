@@ -1,5 +1,6 @@
 {
   "name": "@18f/identity-build-sass",
+  "private": false,
   "version": "1.0.0",
   "type": "module",
   "bin": {
