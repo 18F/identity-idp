@@ -3147,6 +3147,7 @@ module AnalyticsEvents
 
   # Tracks emails that are initiated during InPerson::EmailReminderJob
   # @param [String] email_type early or late
+  # @param [String] enrollment_id
   def idv_in_person_email_reminder_job_email_initiated(
     email_type:,
     enrollment_id:,
