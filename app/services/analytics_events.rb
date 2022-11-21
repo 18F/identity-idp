@@ -1097,10 +1097,12 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param ["sms", "voice"] otp_delivery_preference
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user submitted their phone on the phone confirmation page
   def idv_phone_confirmation_form_submitted(
     success:,
+    otp_delivery_preference:,
     errors:,
     proofing_components: nil,
     **extra
@@ -1109,6 +1111,7 @@ module AnalyticsEvents
       'IdV: phone confirmation form',
       success: success,
       errors: errors,
+      otp_delivery_preference: otp_delivery_preference,
       proofing_components: proofing_components,
       **extra,
     )
