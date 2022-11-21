@@ -56,26 +56,31 @@ const request = async (
   options: Partial<PostOptions> = {},
 ) => {
   const headers: HeadersInit = {};
+  const defaultOptions = {
+    csrf: true,
+    json: true,
+    ...options,
+  };
 
-  if (options.csrf !== false) {
+  if (defaultOptions.csrf) {
     const csrf = getCsrfToken();
     if (csrf) {
       headers['X-CSRF-Token'] = csrf;
     }
   }
 
-  if (options.json !== false) {
+  if (defaultOptions.json) {
     headers['Content-Type'] = 'application/json';
     body = JSON.stringify(body);
   }
 
   const response = await window.fetch(url, {
-    ...(options.method ? { method: options.method } : {}),
+    ...(defaultOptions.method ? { method: defaultOptions.method } : {}),
     headers,
     body: body as BodyInit,
   });
 
-  return options.json !== false ? response.json() : response.text();
+  return defaultOptions.json ? response.json() : response.text();
 };
 
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
