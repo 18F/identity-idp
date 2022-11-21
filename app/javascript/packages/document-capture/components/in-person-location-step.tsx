@@ -49,7 +49,7 @@ interface RequestOptions {
 
 const DEFAULT_FETCH_OPTIONS = { csrf: true, json: true };
 
-const getCsrfToken = () =>
+const getCSRFToken = () =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content;
 
 const request = async (
@@ -64,7 +64,7 @@ const request = async (
   };
 
   if (mergedOptions.csrf) {
-    const csrf = getCsrfToken();
+    const csrf = getCSRFToken();
     if (csrf) {
       headers['X-CSRF-Token'] = csrf;
     }
@@ -76,7 +76,7 @@ const request = async (
   }
 
   const response = await window.fetch(url, {
-    ...(mergedOptions.method ? { method: mergedOptions.method } : {}),
+    method: mergedOptions.method,
     headers,
     body: body as BodyInit,
   });
