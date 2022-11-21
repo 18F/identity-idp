@@ -58,7 +58,7 @@ shared_examples 'verification step max attempts' do |step, sp|
       fill_out_phone_form_ok
       click_idv_continue_for_step(step)
 
-      expect(page).to have_content(t('titles.idv.enter_security_code'))
+      expect(page).to have_content(t('titles.idv.enter_one_time_code'))
       expect(page).to have_current_path(idv_otp_verification_path)
     end
   end

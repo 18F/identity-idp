@@ -24,7 +24,7 @@ feature 'idv phone step', :js do
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
       click_idv_send_security_code
 
-      expect(page).to have_content(t('titles.idv.enter_security_code', app_name: APP_NAME))
+      expect(page).to have_content(t('titles.idv.enter_one_time_code', app_name: APP_NAME))
       expect(page).to have_current_path(idv_otp_verification_path)
     end
   end
@@ -72,7 +72,7 @@ feature 'idv phone step', :js do
       click_idv_send_security_code
 
       expect(page).to have_current_path(idv_otp_verification_path)
-      expect(page).to have_content(t('titles.idv.enter_security_code'))
+      expect(page).to have_content(t('titles.idv.enter_one_time_code'))
       expect(page).to have_content('+1 703-789-7890')
     end
 
