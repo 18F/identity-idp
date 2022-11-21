@@ -14,7 +14,9 @@ module Idv
       end
 
       def call
-        handle_stored_result if !FeatureManagement.document_capture_async_uploads_enabled?
+        # Async upload disabled because it does not work
+        raise NoMethodError if FeatureManagement.document_capture_async_uploads_enabled?
+        handle_stored_result
       end
 
       def extra_view_variables

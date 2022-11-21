@@ -51,6 +51,11 @@ describe Idv::Steps::DocumentCaptureStep do
       allow(step).to receive(:stored_result).and_return(nil)
       step.call
     end
+    it 'raises an exception when async uploads are enabled' do
+      allow(FeatureManagement).to receive(:document_capture_async_uploads_enabled?).
+        and_return(true)
+      expect { step.call }.to raise_error(NoMethodError)
+    end
   end
 
   describe '#extra_view_variables' do
