@@ -33,8 +33,6 @@ class ApplicationController < ActionController::Base
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
 
-  raise RuntimeError('======= this is bad =========')
-
   # Workaround that helps our JS fetch polyfill. See:
   # https://www.npmjs.com/package/whatwg-fetch#user-content-obtaining-the-response-url
   def set_x_request_url
