@@ -96,7 +96,6 @@ email_registrations_per_ip_limit: 20
 email_registrations_per_ip_period: 20
 email_registrations_per_ip_track_only_mode: false
 enable_load_testing_mode: false
-enable_partner_api: false
 enable_rate_limiting: true
 enable_test_routes: true
 enable_usps_verification: true
@@ -205,9 +204,9 @@ outbound_connection_check_retry_count: 2
 outbound_connection_check_timeout: 5
 outbound_connection_check_url: 'https://checkip.amazonaws.com'
 participate_in_dap: false
-partner_api_bucket_prefix: ''
 password_max_attempts: 3
 personal_key_retired: true
+phone_carrier_registration_blocklist: ''
 phone_confirmation_max_attempts: 20
 phone_confirmation_max_attempt_window_in_minutes: 1_440
 phone_setups_per_ip_limit: 25

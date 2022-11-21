@@ -13,6 +13,7 @@ class NewPhoneForm
   validate :validate_not_voip
   validate :validate_not_duplicate
   validate :validate_not_premium_rate
+  validate :validate_allowed_carrier
 
   attr_accessor :phone, :international_code, :otp_delivery_preference,
                 :otp_make_default_number
@@ -77,6 +78,14 @@ class NewPhoneForm
       errors.add(:phone, I18n.t('errors.messages.voip_phone'), type: :voip_phone)
     elsif phone_info.error
       errors.add(:phone, I18n.t('errors.messages.voip_check_error'), type: :voip_check_error)
+    end
+  end
+
+  def validate_allowed_carrier
+    return if phone.blank? || phone_info.blank?
+
+    if IdentityConfig.store.phone_carrier_registration_blocklist.include?(phone_info.carrier)
+      errors.add(:phone, I18n.t('errors.messages.phone_carrier'), type: :phone_carrier)
     end
   end
 
