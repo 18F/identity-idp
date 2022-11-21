@@ -79,6 +79,7 @@ namespace :dev do
 
   desc 'Create in-person enrollments for N random users'
   task random_in_person_users: [:environment, :random_users] do
+    usps_request_delay_ms = (ENV['USPS_REQUEST_DELAY_MS'] || 0).to_i
     num_users = (ENV['NUM_USERS'] || 100).to_i
     pw = 'salty pickles'
     unless ENV['PROGRESS'] == 'no'
@@ -93,6 +94,8 @@ namespace :dev do
     enrollment_status = InPersonEnrollment.statuses[raw_enrollment_status]
     is_established = ['pending', 'passed', 'failed', 'expired'].include?(raw_enrollment_status)
 
+    create_in_usps = !!ENV['CREATE_PENDING_ENROLLMENT_IN_USPS']
+
     InPersonEnrollment.transaction do
       (0...num_users).each do |n|
         email_addr = "testuser#{n}@example.com"
@@ -101,22 +104,62 @@ namespace :dev do
         if is_established
           unless raw_enrollment_status == 'pending' && !user.pending_in_person_enrollment.nil?
             profile = Profile.new(user: user)
+
+            # Convert index to a string of letters to be a valid last name for the USPS API
+            usps_compatible_number_alternative = n.to_s.chars.map do |c|
+              ('a'.ord + c.to_i).chr
+            end.join('')
+
             pii = Pii::Attributes.new_from_hash(
               first_name: 'Test',
-              last_name: "User #{n}",
+              last_name: "User #{usps_compatible_number_alternative}",
               dob: '1970-05-01',
               ssn: "666-#{n}", # doesn't need to be legit 9 digits, just unique
+              address1: '1200 FORESTVILLE DR',
+              city: 'GREAT FALLS',
+              state: 'VA',
+              zipcode: '22066',
             )
             personal_key = profile.encrypt_pii(pii, pw)
-            enrollment = InPersonEnrollment.create!(
-              user: user,
-              profile: profile,
-              status: enrollment_status,
-              enrollment_established_at: Time.zone.now - random.rand(0..5).days,
-              unique_id: SecureRandom.hex(9),
-              enrollment_code: SecureRandom.hex(16),
-            )
-            enrollment.profile.activate if raw_enrollment_status == 'passed'
+
+            if raw_enrollment_status === 'pending' && create_in_usps
+              enrollment = InPersonEnrollment.find_or_initialize_by(
+                user: user,
+                status: :establishing,
+                profile: profile,
+              )
+              enrollment.save!
+
+              success = false
+              num_attempts = 0
+              max_attempts = (ENV['MAX_NUM_ATTEMPTS'] || 3).to_i
+              until success || num_attempts >= max_attempts
+                num_attempts += 1
+                begin
+                  UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
+                    user,
+                    pii,
+                  )
+                rescue StandardError => e
+                  Rails.logger.error 'Exception raised while enrolling user: ' + e.message
+                  raise e if num_attempts == max_attempts
+                else
+                  success = true
+                end
+                Kernel.sleep(usps_request_delay_ms / 1000.0) if usps_request_delay_ms
+              end
+            else
+              enrollment = InPersonEnrollment.create!(
+                user: user,
+                profile: profile,
+                status: enrollment_status,
+                enrollment_established_at: Time.zone.now - random.rand(0..5).days,
+                unique_id: SecureRandom.hex(9),
+                enrollment_code: SecureRandom.hex(16),
+              )
+
+              enrollment.profile.activate if raw_enrollment_status == 'passed'
+            end
             Rails.logger.warn "email=#{email_addr} personal_key=#{personal_key}"
           end
         else

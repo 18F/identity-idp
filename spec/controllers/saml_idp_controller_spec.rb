@@ -225,7 +225,7 @@ describe SamlIdpController do
     it 'accepts requests with correct cert and correct session index and renders logout response' do
       REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
       session_accessor = OutOfBandSessionAccessor.new(session_id)
-      session_accessor.put(foo: 'bar')
+      session_accessor.put_pii(foo: 'bar')
       saml_request = OneLogin::RubySaml::Logoutrequest.new
       encoded_saml_request = UriService.params(
         saml_request.create(right_cert_settings),
@@ -255,7 +255,7 @@ describe SamlIdpController do
       post :remotelogout, params: payload.to_h.merge(Signature: Base64.encode64(signature))
 
       expect(response).to be_ok
-      expect(session_accessor.load).to be_empty
+      expect(session_accessor.load_pii).to be_nil
 
       logout_response = OneLogin::RubySaml::Logoutresponse.new(response.body)
       expect(logout_response.success?).to eq(true)

@@ -12,7 +12,7 @@ describe Proofing::LexisNexis::PhoneFinder::VerificationRequest do
       phone: '5551231234',
     }
   end
-  let(:response_body) { LexisNexisFixtures.phone_finder_success_response_json }
+  let(:response_body) { LexisNexisFixtures.phone_finder_rdp1_success_response_json }
   subject { described_class.new(applicant: applicant, config: LexisNexisFixtures.example_config) }
 
   it_behaves_like 'a lexisnexis request'

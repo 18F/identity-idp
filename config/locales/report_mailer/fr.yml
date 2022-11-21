@@ -5,7 +5,3 @@ fr:
       issuers: Émetteurs
       name: Nom
       subject: Rapport sur les comptes supprimés
-    sps_over_quota_limit:
-      help: ''
-      info: Certains SP ont dépassé leur limite de quota.
-      subject: Certains SP ont atteint leur limite de quota

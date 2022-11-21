@@ -170,9 +170,10 @@ fr:
       sign_in: Se connecter
       subject: Vous avez vérifié avec succès votre identité avec %{app_name}
       warning_contact_us_html: Si vous n’avez pas essayé de vérifier votre identité en
-        personne, veuillez <a href="%{contact_us_url}">nous contacter</a> et
-        vous <a href="%{sign_in_url}">connecter</a> pour changer votre mot de
-        passe.
+        personne, veuillez vous connecter pour <a
+        href="%{reset_password_url}">réinitialiser votre mot de passe</a>. Pour
+        signaler ce problème, <a href="%{contact_us_url}">contactez l’assistance
+        de %{app_name}</a>.
     letter_reminder:
       info_html: La lettre que vous êtes sur le point de recevoir contiendra un code
         de confirmation nous permettant de vérifier votre adresse. Vous pouvez

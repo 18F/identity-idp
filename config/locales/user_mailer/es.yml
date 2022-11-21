@@ -164,10 +164,10 @@ es:
           continuación para iniciar sesión en %{app_name}.
       sign_in: Iniciar sesión
       subject: Verificó correctamente su identidad con %{app_name}
-      warning_contact_us_html: Si usted no intentó verificar su identidad en persona,
-        por favor, póngase en <a href="%{contact_us_url}">contacto con
-        nosotros</a> e <a href="%{sign_in_url}">inicie sesión</a> para cambiar
-        su contraseña.
+      warning_contact_us_html: Si no ha intentado verificar su identidad en persona,
+        inicie sesión para <a href="%{reset_password_url}">restablecer su
+        contraseña</a>. Para informar de esto, póngase en <a
+        href="%{contact_us_url}">contacto con el soporte de %{app_name}</a>.
     letter_reminder:
       info_html: La carta que está a punto de recibir contendrá un código de
         confirmación que nos ayudará a verificar su dirección. Puede completar

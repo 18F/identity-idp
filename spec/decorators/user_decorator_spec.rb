@@ -214,7 +214,7 @@ describe UserDecorator do
     end
 
     context 'second factor locked out a while ago' do
-      let(:locked_at) { Time.zone.now - UserDecorator::DEFAULT_LOCKOUT_PERIOD - 1.second }
+      let(:locked_at) { IdentityConfig.store.lockout_period_in_minutes.minutes.ago - 1.second }
 
       it { expect(locked_out?).to eq(false) }
     end
@@ -241,7 +241,7 @@ describe UserDecorator do
     end
 
     context 'second factor locked out a while ago' do
-      let(:locked_at) { Time.zone.now - UserDecorator::DEFAULT_LOCKOUT_PERIOD - 1.second }
+      let(:locked_at) { IdentityConfig.store.lockout_period_in_minutes.minutes.ago - 1.second }
 
       it { expect(no_longer_locked_out?).to eq(true) }
     end
@@ -313,13 +313,13 @@ describe UserDecorator do
     it 'returns ial1 if identity is not verified' do
       allow(user_decorator).to receive(:identity_verified?).and_return(false)
       expect(user_decorator.delete_account_bullet_key).
-        to eq t('users.delete.bullet_2_loa1', app_name: APP_NAME)
+        to eq t('users.delete.bullet_2_basic', app_name: APP_NAME)
     end
 
     it 'returns ial2 if identity is verified' do
       allow(user_decorator).to receive(:identity_verified?).and_return(true)
       expect(user_decorator.delete_account_bullet_key).
-        to eq t('users.delete.bullet_2_loa3', app_name: APP_NAME)
+        to eq t('users.delete.bullet_2_verified', app_name: APP_NAME)
     end
   end
 

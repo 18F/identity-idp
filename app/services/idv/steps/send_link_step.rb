@@ -25,10 +25,18 @@ module Idv
           phone_number: formatted_destination_phone,
           failure_reason: failure_reason,
         )
-        return failure(telephony_result.error.friendly_message) unless telephony_result.success?
+        build_telephony_form_response(telephony_result)
       end
 
       private
+
+      def build_telephony_form_response(telephony_result)
+        FormResponse.new(
+          success: telephony_result.success?,
+          errors: { message: telephony_result.error&.friendly_message },
+          extra: { telephony_response: telephony_result.to_h },
+        )
+      end
 
       def throttled_failure
         @flow.analytics.throttler_rate_limit_triggered(

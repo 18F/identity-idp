@@ -1,5 +1,14 @@
 class PhoneNumberOptOutSyncJob < ApplicationJob
   queue_as :long_running
+  include GoodJob::ActiveJobExtensions::Concurrency
+
+  good_job_control_concurrency_with(
+    total_limit: 1,
+    key: -> do
+      rounded = TimeService.round_time(time: arguments.first, interval: 1.hour)
+      "phone-number-opt-out-sync-#{rounded.to_i}"
+    end,
+  )
 
   def perform(_now)
     all_phone_numbers = Set.new

@@ -156,8 +156,9 @@ en:
       sign_in: Sign in
       subject: You successfully verified your identity with %{app_name}
       warning_contact_us_html: If you did not attempt to verify your identity in
-        person, please <a href="%{contact_us_url}">contact us</a> and <a
-        href="%{sign_in_url}">sign in</a> to change your password.
+        person, please sign in to <a href="%{reset_password_url}">reset your
+        password</a>. To report this, <a href="%{contact_us_url}">contact
+        %{app_name} support</a>.
     letter_reminder:
       info_html: The letter you are about to receive will contain a confirmation code
         that helps us verify your address. You can complete the identity

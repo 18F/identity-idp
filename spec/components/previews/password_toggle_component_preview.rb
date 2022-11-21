@@ -7,13 +7,12 @@ class PasswordToggleComponentPreview < BaseComponentPreview
 
   # @param label text
   # @param toggle_label text
-  # @param toggle_position select [~,top,bottom]
-  def workbench(label: nil, toggle_label: nil, toggle_position: 'top')
+  def workbench(label: nil, toggle_label: nil)
     render(
       PasswordToggleComponent.new(
         form: form_builder,
-        **{ label: label, toggle_label: toggle_label }.compact,
-        toggle_position: toggle_position.to_sym,
+        **{ toggle_label: toggle_label }.compact,
+        field_options: { label: label }.compact,
       ),
     )
   end

@@ -70,7 +70,7 @@ module IrsAttemptsApi
           'subject_type' => 'session',
           'session_id' => session_id,
         },
-        'occurred_at' => occurred_at.to_i,
+        'occurred_at' => occurred_at.to_f,
       }.merge(event_metadata || {})
     end
 

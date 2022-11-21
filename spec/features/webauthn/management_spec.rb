@@ -154,20 +154,42 @@ describe 'webauthn management' do
       expect(page).to have_content webauthn_config2.name
     end
 
-    it 'allows the user to setup another key' do
-      mock_webauthn_setup_challenge
-      create(:webauthn_configuration, user: user, platform_authenticator: true)
+    context 'with webauthn platform set up enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
+      end
 
-      sign_in_and_2fa_user(user)
+      it 'allows the user to setup another key' do
+        mock_webauthn_setup_challenge
+        create(:webauthn_configuration, user: user, platform_authenticator: true)
 
-      visit_webauthn_platform_setup
+        sign_in_and_2fa_user(user)
 
-      expect(page).to have_current_path webauthn_setup_path(platform: true)
+        visit_webauthn_platform_setup
 
-      fill_in_nickname_and_click_continue
-      mock_press_button_on_hardware_key_on_setup
+        expect(page).to have_current_path webauthn_setup_path(platform: true)
 
-      expect_webauthn_platform_setup_success
+        fill_in_nickname_and_click_continue
+        mock_press_button_on_hardware_key_on_setup
+
+        expect_webauthn_platform_setup_success
+      end
+    end
+
+    context 'with platform auth set up disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(false)
+      end
+
+      it 'does not allows the user to setup another platform authenticator' do
+        mock_webauthn_setup_challenge
+        create(:webauthn_configuration, user: user, platform_authenticator: true)
+
+        sign_in_and_2fa_user(user)
+
+        expect(page).
+          to_not have_content t('account.index.webauthn_platform_add')
+      end
     end
 
     it 'allows user to delete a platform authenticator when another 2FA option is set up' do

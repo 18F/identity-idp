@@ -16,7 +16,7 @@ feature 'Two Factor Authentication' do
       expect(page).
         to have_content t('titles.phone_setup')
 
-      send_security_code_without_entering_phone_number
+      send_one_time_code_without_entering_phone_number
 
       expect(current_path).to eq phone_setup_path
 
@@ -45,7 +45,7 @@ feature 'Two Factor Authentication' do
         select_phone_delivery_option(:voice)
         select 'Bahamas', from: 'new_phone_form_international_code'
         fill_in 'new_phone_form_phone', with: unsupported_phone
-        click_send_security_code
+        click_send_one_time_code
 
         expect(current_path).to eq phone_setup_path
         expect(page).to have_content t(
@@ -66,7 +66,7 @@ feature 'Two Factor Authentication' do
 
         expect(page).to have_css('.phone-input__example', text: '(201) 555-0123')
 
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.phone_required'))
 
@@ -76,32 +76,32 @@ feature 'Two Factor Authentication' do
 
         fill_in 'new_phone_form_phone', with: '+81 54 354 364'
 
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.invalid_phone_number'))
 
         fill_in 'new_phone_form_phone', with: ''
 
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.phone_required'))
 
         fill_in 'new_phone_form_phone', with: '+212 5376'
         expect(page).to have_css('.phone-input__example', text: '0650-123456')
 
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.invalid_phone_number'))
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'MA'
 
         fill_in 'new_phone_form_phone', with: ''
 
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.phone_required'))
         fill_in 'new_phone_form_phone', with: '+81 54354'
 
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.invalid_phone_number'))
 
@@ -211,23 +211,23 @@ feature 'Two Factor Authentication' do
     visit account_path
   end
 
-  def send_security_code_without_entering_phone_number
-    click_send_security_code
+  def send_one_time_code_without_entering_phone_number
+    click_send_one_time_code
   end
 
   def submit_2fa_setup_form_with_empty_string_phone
     fill_in 'new_phone_form_phone', with: ''
-    click_send_security_code
+    click_send_one_time_code
   end
 
   def submit_2fa_setup_form_with_invalid_phone
     fill_in 'new_phone_form_phone', with: 'five one zero five five five four three two one'
-    click_send_security_code
+    click_send_one_time_code
   end
 
   def submit_2fa_setup_form_with_valid_phone
     fill_in 'new_phone_form_phone', with: '703-555-1212'
-    click_send_security_code
+    click_send_one_time_code
   end
 
   describe 'When the user has already set up 2FA' do
@@ -489,17 +489,134 @@ feature 'Two Factor Authentication' do
     end
   end
 
-  describe 'second factor locked' do
+  describe 'webauthn_platform' do
+    include WebAuthnHelper
+
     before do
-      allow_any_instance_of(UserDecorator).to receive(:locked_out?).and_return(true)
-      allow_any_instance_of(UserDecorator).to receive(:lockout_time_expiration).
-        and_return(Time.zone.now + 10.minutes)
+      allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
     end
 
-    scenario 'presents the failure screen', :js do
-      sign_in_user(user_with_2fa)
+    let!(:webauthn_configuration) do
+      create(
+        :webauthn_configuration,
+        credential_id: credential_id,
+        credential_public_key: credential_public_key,
+        platform_authenticator: true,
+        user: user,
+      )
+    end
+    let(:user) do
+      create(:user)
+    end
 
-      expect(page).to have_content t('titles.account_locked')
+    context 'sign in' do
+      context 'with platform auth sign up enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
+        end
+
+        it 'shows signed in user options with webauthn visible' do
+          sign_in_user(webauthn_configuration.user)
+
+          click_link t('two_factor_authentication.login_options_link_text')
+
+          expect(page).
+            to have_content t('two_factor_authentication.login_options.webauthn_platform')
+          expect(page).
+            to_not have_content t('two_factor_authentication.login_options.auth_app')
+        end
+
+        it 'allows user to be signed in without issue' do
+          mock_webauthn_verification_challenge
+
+          sign_in_user(webauthn_configuration.user)
+          mock_press_button_on_hardware_key_on_verification
+          click_button t('forms.buttons.continue')
+
+          expect(page).to have_current_path(account_path)
+        end
+      end
+
+      context 'with platform auth sign up disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(false)
+        end
+
+        it 'shows signed in user options with webauthn visible' do
+          sign_in_user(webauthn_configuration.user)
+
+          click_link t('two_factor_authentication.login_options_link_text')
+
+          expect(page).
+            to have_content t('two_factor_authentication.login_options.webauthn_platform')
+          expect(page).
+            to_not have_content t('two_factor_authentication.login_options.auth_app')
+        end
+
+        it 'allows user to be signed in without issue' do
+          mock_webauthn_verification_challenge
+
+          sign_in_user(webauthn_configuration.user)
+          mock_press_button_on_hardware_key_on_verification
+          click_button t('forms.buttons.continue')
+
+          expect(page).to have_current_path(account_path)
+        end
+      end
+    end
+  end
+
+  describe 'rate limiting' do
+    let(:max_attempts) { 2 }
+    let(:user) { create(:user, :signed_up) }
+    before do
+      allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts).
+        and_return(max_attempts)
+    end
+
+    def wrong_phone_otp
+      loop do
+        code = rand(100000...999999).to_s
+        return code if code != last_phone_otp
+      end
+    end
+
+    def submit_wrong_otp
+      fill_in t('forms.two_factor.code'), with: wrong_phone_otp
+      click_submit_default
+    end
+
+    it 'locks the user from further attempts after exceeding the configured max' do
+      sign_in_before_2fa(user)
+      max_attempts.times { submit_wrong_otp }
+
+      expect(page).to have_content(t('titles.account_locked'))
+
+      # Users session should be terminated and they should still be locked out if they sign in again
+      within('.page-header') { click_on APP_NAME }
+      fill_in_credentials_and_submit(user.email_addresses.first.email, user.password)
+      expect(page).to have_content(t('titles.account_locked'))
+    end
+
+    context 'when the user is locked out' do
+      let(:max_attempts) { 1 }
+
+      before do
+        sign_in_before_2fa(user)
+        submit_wrong_otp
+      end
+
+      it 'allows the user to sign in again after lockout has expired' do
+        travel (IdentityConfig.store.lockout_period_in_minutes - 1).minutes do
+          signin(user.email_addresses.first.email, user.password)
+          expect(page).to have_content(t('titles.account_locked'))
+        end
+
+        travel (IdentityConfig.store.lockout_period_in_minutes + 1).minutes do
+          signin(user.email_addresses.first.email, user.password)
+          expect(page).to have_content(t('two_factor_authentication.header_text'))
+        end
+      end
     end
   end
 end
