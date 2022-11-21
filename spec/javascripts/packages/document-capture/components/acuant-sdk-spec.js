@@ -3,10 +3,10 @@
  *
  */
 import { JSDOM } from 'jsdom';
-import AcuantJavascriptWebSdk from '../../../../../public/acuant/11.7.0/AcuantJavascriptWebSdk.min.js';
+import AcuantJavascriptWebSdk from '../../../../../public/acuant/11.7.1/AcuantJavascriptWebSdk.min.js';
 
 const sdkPaths = {
-  '11.7.0': '../../../../../public/acuant/11.7.0/AcuantJavascriptWebSdk.min.js',
+  '11.7.1': '../../../../../public/acuant/11.7.0/AcuantJavascriptWebSdk.min.js',
 };
 
 const TEST_URL = `file://${__dirname}/index.html`;
@@ -25,14 +25,14 @@ describe('Acuant SDK Loading Tests', () => {
   it('Can load something from the SDK file', () => {
     expect(AcuantJavascriptWebSdk).to.exist();
   });
-  describe('DOM Loading 11.7.0', () => {
+  describe('DOM Loading 11.7.1', () => {
     before((done) => {
       const scriptEl = document.createElement('script');
       scriptEl.id = 'test-acuant-sdk-script';
       scriptEl.onload = () => {
         done();
       };
-      scriptEl.src = sdkPaths['11.7.0'];
+      scriptEl.src = sdkPaths['11.7.1'];
       document.body.append(scriptEl);
     });
     it('There is a script element in the DOM', () => {
