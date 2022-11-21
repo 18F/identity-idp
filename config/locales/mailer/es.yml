@@ -5,6 +5,6 @@ es:
     email_reuse_notice:
       subject: Este email ya está asociado a una cuenta.
     help: Si necesita ayuda, visite %{link}
-    logo: "%{app_name} logo"
+    logo: '%{app_name} logo'
     no_reply: Por favor, no responda a este mensaje.
     privacy_policy: Póliza de privacidad

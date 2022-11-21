@@ -16,16 +16,14 @@ en:
           one: This password is too short (minimum is 1 character)
           other: This password is too short (minimum is %{count} characters)
     capture_doc:
-      invalid_link: This link is expired or not valid.  Please request another link
-        to verify your identity on a mobile phone.
+      invalid_link: This link is expired or not valid.  Please request another link to
+        verify your identity on a mobile phone.
     confirm_password_incorrect: Incorrect password.
     doc_auth:
       consent_form: Before you can continue, you must give us permission. Please check
         the box below and then click continue.
-      document_capture_cancelled: You have cancelled uploading photos of your ID on
-        your phone.
-      document_verification_timeout: The server took too long to respond. Please try
-        again.
+      document_capture_cancelled: You have cancelled uploading photos of your ID on your phone.
+      document_verification_timeout: The server took too long to respond. Please try again.
       phone_step_incomplete: You must go to your phone and upload photos of your ID
         before continuing. We sent you a link with instructions.
       quota_reached: Sorry your service provider has reached its identity verification
@@ -33,9 +31,9 @@ en:
       send_link_throttle: You tried too many times, please try again in %{timeout}.
         You can also go back and choose to use your computer instead.
       throttled_heading: We could not verify your ID
-      throttled_text_html: "<strong>Please try again in %{timeout}.</strong> For your
-        security, we limit the number of times you can attempt to verify a document
-        online."
+      throttled_text_html: '<strong>Please try again in %{timeout}.</strong> For your
+        security, we limit the number of times you can attempt to verify a
+        document online.'
     general: Oops, something went wrong. Please try again.
     inherited_proofing:
       consent_form: Before you can continue, you must give us permission. Please check
@@ -55,31 +53,29 @@ en:
       format_mismatch: Please match the requested format.
       gpo_otp_expired: Your confirmation code has expired. Please request another
         letter for a new code.
-      improbable_phone: Invalid phone number. Please make sure you enter a valid phone
-        number.
+      improbable_phone: Invalid phone number. Please make sure you enter a valid phone number.
       inclusion: is not included in the list
       invalid_calling_area: Calls to that phone number are not supported. Please try
         SMS if you have an SMS-capable phone.
       invalid_phone_number: Phone number is not valid
-      invalid_sms_number: The phone number entered doesn’t support text messaging.
-        Try the Phone call option.
-      invalid_voice_number: Invalid phone number. Check that you’ve entered the correct
-        country code or area code.
+      invalid_sms_number: The phone number entered doesn’t support text messaging. Try
+        the Phone call option.
+      invalid_voice_number: Invalid phone number. Check that you’ve entered the
+        correct country code or area code.
       missing_field: Please fill in this field.
       no_pending_profile: No profile is waiting for verification
       not_a_number: is not a number
       otp_failed: Your security code failed to send.
       password_incorrect: Incorrect password
       personal_key_incorrect: Incorrect personal key
-      phone_confirmation_throttled: You tried too many times, please try again in
-        %{timeout}.
-      phone_duplicate: This account is already using the phone number you entered
-        as an authenticator. Please use a different phone number.
+      phone_confirmation_throttled: You tried too many times, please try again in %{timeout}.
+      phone_duplicate: This account is already using the phone number you entered as
+        an authenticator. Please use a different phone number.
       phone_required: Phone number is required
-      phone_unsupported: Sorry, we are unable to send SMS at this time. Please try
-        the phone call option below, or use your personal key.
-      premium_rate_phone: This appears to be a premium rate phone number. Please select
-        a different number and try again.
+      phone_unsupported: Sorry, we are unable to send SMS at this time. Please try the
+        phone call option below, or use your personal key.
+      premium_rate_phone: This appears to be a premium rate phone number. Please
+        select a different number and try again.
       pwned_password: The password you entered is not safe. It’s in a list of known
         passwords exposed in data breaches.
       too_long:
@@ -116,25 +112,24 @@ en:
     webauthn_platform_setup:
       already_registered: Platform authenticator already registered. Please try a
         different platform authenticator.
-      attestation_error: Sorry, but your platform authenticator doesn’t appear to
-        be a FIDO platform authenticator. Please make sure your device is listed at
-        https://fidoalliance.org/certification/fido-certified-products/ and if you
-        believe this is our error, please contact at %{link}.
+      attestation_error: Sorry, but your platform authenticator doesn’t appear to be a
+        FIDO platform authenticator. Please make sure your device is listed at
+        https://fidoalliance.org/certification/fido-certified-products/ and if
+        you believe this is our error, please contact at %{link}.
       general_error: There was an error adding your hardware platform authenticator.
         Please try again.
-      not_supported: Sorry, your browser does not support FIDO platform authenticators.
-        The latest versions of Chrome, Firefox, Edge, and Safari support FIDO platform
-        authenticators. Internet Explorer does not.
+      not_supported: Sorry, your browser does not support FIDO platform
+        authenticators. The latest versions of Chrome, Firefox, Edge, and Safari
+        support FIDO platform authenticators. Internet Explorer does not.
       unique_name: That name is already taken. Please choose a different name.
     webauthn_setup:
-      already_registered: Security key already registered. Please try a different
-        security key.
+      already_registered: Security key already registered. Please try a different security key.
       attestation_error: Sorry, but your security key doesn’t appear to be a FIDO
-        security key. Please make sure your device is listed at https://fidoalliance.org/certification/fido-certified-products/
-        and if you believe this is our error, please contact at %{link}.
-      general_error: There was an error adding your hardware security key. Please
-        try again.
+        security key. Please make sure your device is listed at
+        https://fidoalliance.org/certification/fido-certified-products/ and if
+        you believe this is our error, please contact at %{link}.
+      general_error: There was an error adding your hardware security key. Please try again.
       not_supported: Sorry, your browser does not support FIDO security keys. The
-        latest versions of Chrome, Firefox, Edge, and Safari support FIDO security
-        keys.  Internet Explorer does not.
+        latest versions of Chrome, Firefox, Edge, and Safari support FIDO
+        security keys.  Internet Explorer does not.
       unique_name: That name is already taken. Please choose a different name.

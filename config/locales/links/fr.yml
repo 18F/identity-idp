@@ -7,14 +7,14 @@ fr:
         without_key: Je n’ai pas ma clé
     back_to_sp: Retour à %{sp}
     cancel: Annuler
-    cancel_account_creation: "‹ Annuler la création du compte"
+    cancel_account_creation: '‹ Annuler la création du compte'
     contact: Contact
     contact_support: Contactez %{app_name} le support
     continue_sign_in: Continuer la connexion
     create_account: Créer un compte
     go_back: Retourner
     help: Aide
-    new_window: "(ouvre une nouvelle fenêtre)"
+    new_window: '(ouvre une nouvelle fenêtre)'
     next: Suivant
     passwords:
       forgot: Vous avez oublié votre mot de passe?

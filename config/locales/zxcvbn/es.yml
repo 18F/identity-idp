@@ -3,50 +3,35 @@ es:
   zxcvbn:
     feedback:
       a_word_by_itself_is_easy_to_guess: Una sola palabra es fácil de adivinar.
-      add_another_word_or_two_uncommon_words_are_better: Añada otra palabra o dos.
-        Las palabras poco comunes son mejor opción.
-      all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: Todo en mayúsculas
-        es casi igual de fácil de adivinar como todo en minúsculas.
-      avoid_dates_and_years_that_are_associated_with_you: Evite las fechas y los años
-        que están asociados con usted
+      add_another_word_or_two_uncommon_words_are_better: Añada otra palabra o dos. Las palabras poco comunes son mejor opción.
+      all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: Todo en mayúsculas es
+        casi igual de fácil de adivinar como todo en minúsculas.
+      avoid_dates_and_years_that_are_associated_with_you: Evite las fechas y los años que están asociados con usted
       avoid_recent_years: Evite los años recientes
       avoid_repeated_words_and_characters: Evite palabras y caracteres repetidos
       avoid_sequences: Evite secuencias
-      avoid_years_that_are_associated_with_you: Evite los años que están asociados
-        con usted
+      avoid_years_that_are_associated_with_you: Evite los años que están asociados con usted
       capitalization_doesnt_help_very_much: Usar mayúsculas no ayuda mucho
-      common_names_and_surnames_are_easy_to_guess: Los nombres y apellidos comunes
-        son fáciles de adivinar
+      common_names_and_surnames_are_easy_to_guess: Los nombres y apellidos comunes son fáciles de adivinar
       dates_are_often_easy_to_guess: Las fechas suelen ser fáciles de adivinar
-      for_a_stronger_password_use_a_few_words_separated_by_spaces_but_avoid_common_phrases: Para
-        una contraseña más segura, use pocas palabras separadas por espacios, pero
-        evite frases comunes
-      names_and_surnames_by_themselves_are_easy_to_guess: Nombres y apellidos por
-        si solos son fáciles de adivinar
-      no_need_for_symbols_digits_or_uppercase_letters: No necesita usar símbolos,
-        cifras ni mayúsculas
-      predictable_substitutions_like__instead_of_a_dont_help_very_much: No hay necesidad
-        de símbolos, dígitos o letras mayúsculas
-      recent_years_are_easy_to_guess: Sustituciones predecibles como ‘@’ en lugar
-        de ‘a’ no ayudan mucho
+      for_a_stronger_password_use_a_few_words_separated_by_spaces_but_avoid_common_phrases:
+        Para una contraseña más segura, use pocas palabras separadas por
+        espacios, pero evite frases comunes
+      names_and_surnames_by_themselves_are_easy_to_guess: Nombres y apellidos por si solos son fáciles de adivinar
+      no_need_for_symbols_digits_or_uppercase_letters: No necesita usar símbolos, cifras ni mayúsculas
+      predictable_substitutions_like__instead_of_a_dont_help_very_much: No hay necesidad de símbolos, dígitos o letras mayúsculas
+      recent_years_are_easy_to_guess: Sustituciones predecibles como ‘@’ en lugar de ‘a’ no ayudan mucho
       repeats_like_aaa_are_easy_to_guess: Los años recientes son fáciles de adivinar
-      repeats_like_abcabcabc_are_only_slightly_harder_to_guess_than_abc: Las repeticiones
-        como “aaa” son fáciles de adivinar
-      reversed_words_arent_much_harder_to_guess: Las repeticiones como “abcabcabc”
-        son sólo un poco más difíciles de adivinar que “abc”
-      sequences_like_abc_or_6543_are_easy_to_guess: Las palabras invertidas no son
-        mucho más difíciles de adivinar
-      short_keyboard_patterns_are_easy_to_guess: Las secuencias como abc o 6543 son
-        fáciles de adivinar
-      straight_rows_of_keys_are_easy_to_guess: Las combinaciones cortas de teclas
-        son fáciles de adivinar
-      there_is_no_need_for_symbols_digits_or_uppercase_letters: Las líneas seguidas
-        de letras son fáciles de adivinar
-      this_is_a_top_100_common_password: Esta es una de las 10 contraseñas más comunes.
+      repeats_like_abcabcabc_are_only_slightly_harder_to_guess_than_abc: Las repeticiones como “aaa” son fáciles de adivinar
+      reversed_words_arent_much_harder_to_guess: Las repeticiones como “abcabcabc” son
+        sólo un poco más difíciles de adivinar que “abc”
+      sequences_like_abc_or_6543_are_easy_to_guess: Las palabras invertidas no son mucho más difíciles de adivinar
+      short_keyboard_patterns_are_easy_to_guess: Las secuencias como abc o 6543 son fáciles de adivinar
+      straight_rows_of_keys_are_easy_to_guess: Las combinaciones cortas de teclas son fáciles de adivinar
+      there_is_no_need_for_symbols_digits_or_uppercase_letters: Las líneas seguidas de letras son fáciles de adivinar
       this_is_a_top_10_common_password: Esta es una de las 100 contraseñas más comunes.
+      this_is_a_top_100_common_password: Esta es una de las 10 contraseñas más comunes.
       this_is_a_very_common_password: Esta es una contraseña muy común
-      this_is_similar_to_a_commonly_used_password: Esto es similar a una contraseña
-        comúnmente utilizada
+      this_is_similar_to_a_commonly_used_password: Esto es similar a una contraseña comúnmente utilizada
       use_a_few_words_avoid_common_phrases: Use pocas palabras, evite las frases comunes
-      use_a_longer_keyboard_pattern_with_more_turns: Use una combinación larga de
-        teclas con más configuraciones
+      use_a_longer_keyboard_pattern_with_more_turns: Use una combinación larga de teclas con más configuraciones

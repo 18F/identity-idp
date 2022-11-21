@@ -12,32 +12,33 @@ en:
       button: Yes, continue deleting
       cancel_link_text: please cancel
       help_html: If you don’t want to delete your account, %{cancel_account_reset}.
-      intro_html: Your 24 hour waiting period has ended. Please complete step 2 of
-        the process.<br><br> If you’ve been unable to locate your authentication methods,
-        select “confirm deletion” to delete your %{app_name} account.<br><br> In the
-        future, if you need to access participating government websites who use %{app_name},
-        you can create a new %{app_name} account using the same email address after
-        your account is deleted.<br><br>
+      intro_html: Your 24 hour waiting period has ended. Please complete step 2 of the
+        process.<br><br> If you’ve been unable to locate your authentication
+        methods, select “confirm deletion” to delete your %{app_name}
+        account.<br><br> In the future, if you need to access participating
+        government websites who use %{app_name}, you can create a new
+        %{app_name} account using the same email address after your account is
+        deleted.<br><br>
       subject: Delete your %{app_name} account
     account_reset_request:
       cancel: Don’t want to delete your account? Sign in to your %{app_name} account
         to cancel.
       header: Your account will be deleted in 24 hours
-      intro_html: 'As a security measure, %{app_name} requires a two-step process
-        to delete your account:<br><br> Step One: There is a 24 hour waiting period
-        if you have lost access to your authentication methods and need to delete
-        your account. If you locate your authentication methods, you can sign in to
-        your %{app_name} account to cancel this request.<br><br> Step Two: After your
-        24 hour waiting period, you will receive an email that will ask you to confirm
-        the deletion of your %{app_name} account. Your account will not be deleted
-        until you confirm.'
+      intro_html: 'As a security measure, %{app_name} requires a two-step process to
+        delete your account:<br><br> Step One: There is a 24 hour waiting period
+        if you have lost access to your authentication methods and need to
+        delete your account. If you locate your authentication methods, you can
+        sign in to your %{app_name} account to cancel this request.<br><br> Step
+        Two: After your 24 hour waiting period, you will receive an email that
+        will ask you to confirm the deletion of your %{app_name} account. Your
+        account will not be deleted until you confirm.'
       subject: How to delete your %{app_name} account
     account_verified:
       contact_link: contact us
       disavowal_link: change your password
       intro_html: You successfully verified your identity with %{sp_name} on %{date}
-        using %{app_name}. If you did not perform this action, please %{contact_link}
-        and sign in to %{disavowal_link}.
+        using %{app_name}. If you did not perform this action, please
+        %{contact_link} and sign in to %{disavowal_link}.
       subject: You verified your identity with %{sp_name}.
     add_email:
       footer: This link will expire in %{confirmation_period}.
@@ -48,13 +49,12 @@ en:
       help_html: If you did not request a new email or suspect an error, please visit
         the %{app_name} %{help_link} or %{contact_link}.
       intro_html: This email address is already associated with a %{app_name} account,
-        so we can’t add it to another account. You must first delete or remove it
-        from the account it is associated with. To do this, follow the link below
-        and sign in with this email address. If you are not trying to add this email
-        address to an account, you can ignore this message.
+        so we can’t add it to another account. You must first delete or remove
+        it from the account it is associated with. To do this, follow the link
+        below and sign in with this email address. If you are not trying to add
+        this email address to an account, you can ignore this message.
       link_text: Go to %{app_name}
-      reset_password_html: If you can’t remember your password, go to %{app_name}
-        to reset it.
+      reset_password_html: If you can’t remember your password, go to %{app_name} to reset it.
     contact_link_text: contact us
     doc_auth_link:
       message: You’ve requested to verify your identity on a desktop computer.  Please
@@ -70,12 +70,12 @@ en:
       email_not_found: Email not found
       first_sentence:
         confirmed: Trying to change your email address?
-        forgot_password: You tried to reset your %{app_name} password but we don’t
-          have an account linked to this email address.
+        forgot_password: You tried to reset your %{app_name} password but we don’t have
+          an account linked to this email address.
         unconfirmed: Thanks for submitting your email address.
       footer: This link will expire in %{confirmation_period}.
-      header: "%{intro} Please click the link below or copy and paste the entire link
-        into your browser."
+      header: '%{intro} Please click the link below or copy and paste the entire link
+        into your browser.'
       link_text: Confirm email address
       request_with_diff_email: You can request your password using a different email
         address that is connected to your %{app_name} account.
@@ -98,36 +98,37 @@ en:
           at the Post Office.
         privacy_html: Your answers to this survey will be protected according to the
           following <a href="%{url}">privacy and security standards</a>.
-        request_description: Fill out a short, anonymous survey and we’ll use your
-          input to help us get better at serving your needs.
+        request_description: Fill out a short, anonymous survey and we’ll use your input
+          to help us get better at serving your needs.
         thanks: Thanks for using %{app_name}.
       header: Take a minute to tell us how we did
       subject: Tell us about your recent experience with %{app_name}
     in_person_failed:
       body:
         with_cta: Click the button or copy the link below to try verifying your identity
-          online again through %{sp_or_app_name}. If you are still experiencing issues,
-          please contact the agency you are trying to access.
+          online again through %{sp_or_app_name}. If you are still experiencing
+          issues, please contact the agency you are trying to access.
         without_cta: Please try verifying your identity again from %{sp_name}’s website.
-          If you are still experiencing issues, please contact the agency you are
-          trying to access.
+          If you are still experiencing issues, please contact the agency you
+          are trying to access.
       intro: Your identity could not be verified at the %{location} Post Office on
         %{date}.
       subject: Your identity could not be verified in person
       verifying_identity: 'When verifying your identity:'
-      verifying_step_not_expired: Your state-issued ID or driver’s license must not
-        be expired. We do not currently accept any other forms of identification,
+      verifying_step_not_expired: Your state-issued ID or driver’s license must not be
+        expired. We do not currently accept any other forms of identification,
         such as passports and military IDs.
       verifying_step_proof_of_address: If you try to verify your identity in person
-        again, you need to bring a valid proof of address if your current address
-        is different than the address on your ID.
+        again, you need to bring a valid proof of address if your current
+        address is different than the address on your ID.
     in_person_failed_suspected_fraud:
       body:
-        help_center_html: If you need further help, you can <a href="%{help_center_url}">visit
-          our Help Center</a> or reach out to the agency you are trying to access.
+        help_center_html: If you need further help, you can <a
+          href="%{help_center_url}">visit our Help Center</a> or reach out to
+          the agency you are trying to access.
         intro: We understand that you were attempting to verify your identity through
-          %{app_name}, however your identity could not be verified at the %{location}
-          Post Office on %{date}.
+          %{app_name}, however your identity could not be verified at the
+          %{location} Post Office on %{date}.
       greeting: Hello,
       subject: Your identity could not be verified in person
     in_person_ready_to_verify:
@@ -140,34 +141,35 @@ en:
       heading: You have %{days_remaining} days left to verify your identity in person
       intro: Don’t miss the chance to verify your identity at your local Post Office.
         Complete this step to access %{sp_name}.
-      subject: Verify your identity at a Post Office in the next %{days_remaining}
-        days
+      subject: Verify your identity at a Post Office in the next %{days_remaining} days
     in_person_verified:
       greeting: Hello,
-      intro: You successfully verified your identity at the %{location} Post Office
-        on %{date}.
+      intro: You successfully verified your identity at the %{location} Post Office on
+        %{date}.
       next_sign_in:
         with_sp:
-          with_cta: Next, click the button or copy the link below to access %{sp_name}
-            and sign in.
+          with_cta: Next, click the button or copy the link below to access %{sp_name} and
+            sign in.
           without_cta: You can now sign in from %{sp_name}’s website.
-        without_sp: Next, click the button or copy the link below to sign in to %{app_name}.
+        without_sp: Next, click the button or copy the link below to sign in to
+          %{app_name}.
       sign_in: Sign in
       subject: You successfully verified your identity with %{app_name}
-      warning_contact_us_html: If you did not attempt to verify your identity in person,
-        please <a href="%{contact_us_url}">contact us</a> and <a href="%{sign_in_url}">sign
-        in</a> to change your password.
+      warning_contact_us_html: If you did not attempt to verify your identity in
+        person, please <a href="%{contact_us_url}">contact us</a> and <a
+        href="%{sign_in_url}">sign in</a> to change your password.
     letter_reminder:
       info_html: The letter you are about to receive will contain a confirmation code
-        that helps us verify your address. You can complete the identity verification
-        process by signing into %{link} and entering the confirmation code.
+        that helps us verify your address. You can complete the identity
+        verification process by signing into %{link} and entering the
+        confirmation code.
       subject: We mailed a letter to the address you have on file
     new_device_sign_in:
       disavowal_link: reset your password
       help_html: If you did not make this change, %{disavowal_link}. For more help,
         please visit the %{app_name} %{help_link} or %{contact_link}.
-      info_html: "<p>Your %{app_name} account was just used to sign in on a new device.</p><br/>
-        <p><strong>%{date}<br/>%{location}</strong></p>"
+      info_html: '<p>Your %{app_name} account was just used to sign in on a new
+        device.</p><br/> <p><strong>%{date}<br/>%{location}</strong></p>'
       subject: New sign-in with your %{app_name} account
     password_changed:
       disavowal_link: reset your password
@@ -175,36 +177,42 @@ en:
         please visit the %{app_name} %{help_link} or %{contact_link}.
       intro_html: You have a new password for your %{app_name} account.
     personal_key_regenerated:
-      help_html: <p>Your %{app_name} account was just issued a new 16-character personal
-        key. You’re getting this email to make sure it was you.</p><p>If you just
-        signed in and reset your personal key, great! There’s nothing you need to
-        do.</p><p>If you did not just reset your personal key, or if you’re not sure,
-        please immediately take these steps to secure your account:<ol><li><strong><a
-        href="%{reset_password_url}">Change your password</a>.</strong> Choose a password
-        that you haven’t already used with this account.</li><li><strong><a href="%{account_url}">Sign
-        in to your %{app_name} account</a></strong> and make sure you recognize all
-        of the information on your account page, including the methods you use for
-        two-factor authentication, such as phone number, authentication app, or security
-        key.</li><li><strong>On your <a href="%{account_url}">%{app_name} account
-        page</a>, request a new personal key.</strong> Remember, never share it unless
-        you are using it to sign into a trusted website that uses %{app_name}.</li></ol></p><br>Thanks,<br>The
-        %{app_name} team
+      help_html: <p>Your %{app_name} account was just issued a new 16-character
+        personal key. You’re getting this email to make sure it was
+        you.</p><p>If you just signed in and reset your personal key, great!
+        There’s nothing you need to do.</p><p>If you did not just reset your
+        personal key, or if you’re not sure, please immediately take these steps
+        to secure your account:<ol><li><strong><a
+        href="%{reset_password_url}">Change your password</a>.</strong> Choose a
+        password that you haven’t already used with this
+        account.</li><li><strong><a href="%{account_url}">Sign in to your
+        %{app_name} account</a></strong> and make sure you recognize all of the
+        information on your account page, including the methods you use for
+        two-factor authentication, such as phone number, authentication app, or
+        security key.</li><li><strong>On your <a
+        href="%{account_url}">%{app_name} account page</a>, request a new
+        personal key.</strong> Remember, never share it unless you are using it
+        to sign into a trusted website that uses
+        %{app_name}.</li></ol></p><br>Thanks,<br>The %{app_name} team
       intro: New personal key issued
       subject: Account Security Alert
     personal_key_sign_in:
-      help_html: <p>Your %{app_name} account was just signed into using your 16-character
-        personal key. You’re getting this email to make sure it was you.</p> <p>If
-        you just signed in using your personal key, great! There’s nothing you need
-        to do.</p><p>If you did not sign in with a personal key, or if you’re not
-        sure, please immediately take these steps to secure your account:<ol><li><strong><a
-        href="%{reset_password_url}">Change your password</a>.</strong> Choose a password
-        that you haven’t already used with this account.</li><li><strong><a href="%{account_url}">Sign
-        in to your %{app_name} account</a></strong> and make sure you recognize all
-        of the information on your account page, including the methods you use for
-        two-factor authentication, such as phone number, authentication app, or security
-        key.</li><li><strong>On your <a href="%{account_url}">%{app_name} account
-        page</a>, request a new personal key.</strong> Remember, never share it unless
-        you are using it to sign into a trusted website that uses %{app_name}.</li></ol></p>
+      help_html: <p>Your %{app_name} account was just signed into using your
+        16-character personal key. You’re getting this email to make sure it was
+        you.</p> <p>If you just signed in using your personal key, great!
+        There’s nothing you need to do.</p><p>If you did not sign in with a
+        personal key, or if you’re not sure, please immediately take these steps
+        to secure your account:<ol><li><strong><a
+        href="%{reset_password_url}">Change your password</a>.</strong> Choose a
+        password that you haven’t already used with this
+        account.</li><li><strong><a href="%{account_url}">Sign in to your
+        %{app_name} account</a></strong> and make sure you recognize all of the
+        information on your account page, including the methods you use for
+        two-factor authentication, such as phone number, authentication app, or
+        security key.</li><li><strong>On your <a
+        href="%{account_url}">%{app_name} account page</a>, request a new
+        personal key.</strong> Remember, never share it unless you are using it
+        to sign into a trusted website that uses %{app_name}.</li></ol></p>
         <br>Thanks,<br>The %{app_name} team
       intro: Personal key used to sign in
       subject: Account Security Alert
@@ -216,14 +224,15 @@ en:
       subject: New phone number added
     please_reset_password:
       call_to_action: 'As a precaution, we’ve disabled your password to keep your
-        information safe. Please follow the steps below to reset your password and
-        secure your account:'
-      intro: We’ve detected unusual activity on your %{app_name} account. We are concerned
-        someone other than you may be trying to access your information.
+        information safe. Please follow the steps below to reset your password
+        and secure your account:'
+      intro: We’ve detected unusual activity on your %{app_name} account. We are
+        concerned someone other than you may be trying to access your
+        information.
       learn_more_link_text: Learn more about your options
-      reminder_html: As a reminder, <b>%{app_name} will never ask for your login credentials
-        by phone or email</b>. You can take additional steps to secure your account
-        by enabling two-factor authentication.
+      reminder_html: As a reminder, <b>%{app_name} will never ask for your login
+        credentials by phone or email</b>. You can take additional steps to
+        secure your account by enabling two-factor authentication.
       step_1: Visit the %{app_name} website and select sign in
       step_2: Select “forgot your password?” at the bottom of the page
       step_3: Follow the instructions to reset your password
@@ -231,7 +240,8 @@ en:
     reset_password_instructions:
       footer: This link expires in %{expires} hours.
       gpo_letter_description: If you reset your password, the confirmation code in
-        your letter will no longer work and you’ll have to verify your identity again.
+        your letter will no longer work and you’ll have to verify your identity
+        again.
       gpo_letter_header: Your letter is on the way
       header: To finish resetting your password, please click the link below  or copy
         and paste the entire link into your browser.
@@ -241,9 +251,8 @@ en:
       help_html: If you did not request a new account or suspect an error, please
         visit the %{app_name} %{help_link} or %{contact_link}.
       intro_html: This email address is already associated with a %{app_name} account,
-        so we can’t use it to create a new account. To sign in with your existing
-        account, follow the link below.  If you are not trying to sign in with this
-        email address, you can ignore this message.
+        so we can’t use it to create a new account. To sign in with your
+        existing account, follow the link below.  If you are not trying to sign
+        in with this email address, you can ignore this message.
       link_text: Go to %{app_name}
-      reset_password_html: If you can’t remember your password, go to %{app_name}
-        to reset it.
+      reset_password_html: If you can’t remember your password, go to %{app_name} to reset it.

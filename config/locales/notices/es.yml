@@ -1,17 +1,17 @@
 ---
 es:
   notices:
-    account_reactivation: "¡Estupendo! Tiene su clave personal."
+    account_reactivation: '¡Estupendo! Tiene su clave personal.'
     authenticated_successfully: Autenticado con éxito.
     backup_codes_configured: Códigos de respaldo fueron agregados a tu cuenta.
     backup_codes_deleted: Tus códigos de respaldo fueron eliminados de tu cuenta.
     dap_participation: Participamos en el programa analítico del Gobierno de Estados
       Unidos. Vea los datos en analytics.usa.gov (en inglés).
     forgot_password:
-      first_paragraph_end: con un enlace para restablecer su contraseña. Siga el enlace
-        para continuar restableciendo su contraseña.
+      first_paragraph_end: con un enlace para restablecer su contraseña. Siga el
+        enlace para continuar restableciendo su contraseña.
       first_paragraph_start: Enviamos un email a
-      no_email_sent_explanation_start: "¿No recibió un email?"
+      no_email_sent_explanation_start: '¿No recibió un email?'
       resend_email_success: Enviamos otro email para restablecer la contraseña.
       use_diff_email:
         link: crear una cuenta nueva
@@ -20,7 +20,7 @@ es:
       contact_us: Contacta con nosotros
       currently_under_maintenance_html: Actualmente estamos <b>en mantenimiento hasta
         el %{finish}</b> para algunos de nuestros servicios.
-      need_assistance: "¿Necesita ayuda?"
+      need_assistance: '¿Necesita ayuda?'
     password_changed: Ha cambiado su contraseña.
     phone_confirmed: Un teléfono fue agregado a tu cuenta.
     piv_cac_configured: Una tarjeta PIV/CAC fue agregada a tu cuenta.
@@ -30,37 +30,38 @@ es:
       security_and_privacy_practices: Prácticas de seguridad y privacidad
     resend_confirmation_email:
       success: Enviamos otro email de confirmación.
-    session_cleared: Para su seguridad, borramos lo que ingresó si no pasa a una página
-      nueva dentro de %{minutes} minutos.
-    session_timedout: Hemos terminado su sesión. Para su seguridad, %{app_name} cierra
-      su sesión cuando usted no pasa a una nueva página durante %{minutes} minutos.
+    session_cleared: Para su seguridad, borramos lo que ingresó si no pasa a una
+      página nueva dentro de %{minutes} minutos.
+    session_timedout: Hemos terminado su sesión. Para su seguridad, %{app_name}
+      cierra su sesión cuando usted no pasa a una nueva página durante
+      %{minutes} minutos.
     signed_up_and_confirmed:
-      first_paragraph_end: con un enlace para confirmar su dirección de correo electrónico.
-        Siga el enlace para continuar agregando este correo electrónico a su cuenta.
+      first_paragraph_end: con un enlace para confirmar su dirección de correo
+        electrónico. Siga el enlace para continuar agregando este correo
+        electrónico a su cuenta.
       first_paragraph_start: Enviamos un correo electrónico a
-      no_email_sent_explanation_start: "¿No recibió un correo electrónico?"
+      no_email_sent_explanation_start: '¿No recibió un correo electrónico?'
     signed_up_but_unconfirmed:
       first_paragraph_end: con un enlace para confirmar su email. Siga el enlace para
         continuar creando su cuenta.
       first_paragraph_start: Enviamos un email a
-      no_email_sent_explanation_start: "¿No recibió un email?"
+      no_email_sent_explanation_start: '¿No recibió un email?'
     timeout_warning:
       partially_signed_in:
         continue: Continuar el inicio de sesión
-        message_html: Para su seguridad, en %{time_left_in_session} cancelaremos su
-          acceso.
+        message_html: Para su seguridad, en %{time_left_in_session} cancelaremos su acceso.
         sign_out: Cancelar el inicio de sesión
         sr_message_html: Tu sesión se cerrará en %{time_left_in_session}. Selecciona
-          “seguir conectado” para mantener tu sesión activa. Seleccione “desconécteme”
-          para cerrar la sesión.
+          “seguir conectado” para mantener tu sesión activa. Seleccione
+          “desconécteme” para cerrar la sesión.
       signed_in:
         continue: Manténgame conectado
-        message_html: Para su seguridad, terminaremos su sesión en %{time_left_in_session}
-          a menos que nos indique lo contrario.
+        message_html: Para su seguridad, terminaremos su sesión en
+          %{time_left_in_session} a menos que nos indique lo contrario.
         sign_out: Desconécteme
         sr_message_html: Tu sesión se cerrará en %{time_left_in_session}. Selecciona
-          “seguir conectado” para mantener tu sesión activa. Seleccione “desconécteme”
-          para cerrar la sesión.
+          “seguir conectado” para mantener tu sesión activa. Seleccione
+          “desconécteme” para cerrar la sesión.
     totp_configured: Una aplicación de autenticación fue agregada a tu cuenta.
     totp_disabled: Tu aplicación de autenticación fue eliminada de tu cuenta.
     use_diff_email:

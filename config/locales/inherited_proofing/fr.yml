@@ -9,12 +9,12 @@ fr:
         keep_going: Non, continuer
         start_over: Recommencer
       description:
-        start_over: Si vous recommencez, vous reprendrez ce processus depuis le début
-          et les informations que vous avez saisies ne seront pas enregistrées.
+        start_over: Si vous recommencez, vous reprendrez ce processus depuis le début et
+          les informations que vous avez saisies ne seront pas enregistrées.
       headings:
         confirmation:
-          hybrid: Vous avez annulé le téléchargement de vos photos d’identité sur
-            ce téléphone
+          hybrid: Vous avez annulé le téléchargement de vos photos d’identité sur ce
+            téléphone
         prompt:
           standard: Annuler la vérification de votre identité?
         start_over: Recommencez la vérification de votre identité
@@ -39,17 +39,17 @@ fr:
     info:
       lets_go: to be implemented
       no_sp_name: L’agence à laquelle vous essayez d’accéder
-      privacy_html: "%{app_name} est un site gouvernemental sécurisé qui respecte
-        les normes les plus strictes en matière de protection des données. Nous n’utilisons
-        vos données uniquement pour vérifier votre identité. %{link} sur nos mesures
-        de confidentialité et de sécurité."
+      privacy_html: '%{app_name} est un site gouvernemental sécurisé qui respecte les
+        normes les plus strictes en matière de protection des données. Nous
+        n’utilisons vos données uniquement pour vérifier votre identité. %{link}
+        sur nos mesures de confidentialité et de sécurité.'
       retrieval_thanks: Merci de votre patience!
       retrieval_time: Cette opération peut prendre jusqu’à une minute. Nous chargerons
         automatiquement l’étape suivante lorsque ce sera fait.
       secure_account: to be implemented
       verify_identity: to be implemented
-      welcome_html: "%{sp_name} doit s’assurer que vous êtes bien vous, et non quelqu’un
-        qui se fait passer pour vous."
+      welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
+        quelqu’un qui se fait passer pour vous.'
     instructions:
       consent: to be implemented for %{app_name}
       learn_more: En savoir plus

@@ -27,24 +27,24 @@ es:
           id_token_hint. Por favor, envíe client_id en su lugar.
         no_client_id_or_id_token_hint: Esta aplicación está mal configurada y debe
           enviar client_id o id_token_hint.
-      heading: "¿Quieres cerrar sesión en %{app_name}?"
-      heading_with_sp: "¿Quiere cerrar sesión en %{app_name} y regresar a %{service_provider_name}?"
+      heading: '¿Quieres cerrar sesión en %{app_name}?'
+      heading_with_sp: '¿Quiere cerrar sesión en %{app_name} y regresar a
+        %{service_provider_name}?'
     token:
       errors:
         expired_code: ha expirado
         invalid_aud: Solicitud de audiencia no válida, esperada %{url}
-        invalid_authentication: El cliente debe autenticarse a través de PKCE o private_key_jwt,
-          faltando code_challenge o client_assertion
+        invalid_authentication: El cliente debe autenticarse a través de PKCE o
+          private_key_jwt, faltando code_challenge o client_assertion
         invalid_code: no es válido porque no coincide con ningún usuario. Consulte
           nuestra documentación en https://developers.login.gov/oidc/#token
         invalid_code_verifier: code_verifier no coincide con code_challenge
         invalid_iat: iat debe ser una marca de tiempo Unix de punto flotante o entero
           que represente un tiempo en el pasado
-        invalid_signature: No se pudo validar la aserción contra ninguna clave pública
-          registrada
+        invalid_signature: No se pudo validar la aserción contra ninguna clave pública registrada
     user_info:
       errors:
         malformed_authorization: Título de autorización mal formado
         no_authorization: No se ha proporcionado título de autorización
-        not_found: No se pudo encontrar la autorización para el contenido del access_token
-          proporcionado o puede haber caducado
+        not_found: No se pudo encontrar la autorización para el contenido del
+          access_token proporcionado o puede haber caducado

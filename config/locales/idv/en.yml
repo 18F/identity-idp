@@ -23,15 +23,15 @@ en:
         account_page: account page
         exit:
           with_sp_html:
-          - If you exit %{app_name} and return to %{sp_name}, we will not save your
-            personal information.
-          - You will still have a %{app_name} account. You can manage or delete your
-            account on your %{account_page_link}.
+            - If you exit %{app_name} and return to %{sp_name}, we will not save
+              your personal information.
+            - You will still have a %{app_name} account. You can manage or
+              delete your account on your %{account_page_link}.
           without_sp:
-          - If you exit identity verification and go to your account page, we will
-            not save your personal information.
-          - You will still have a %{app_name} account. You can manage or delete your
-            account on your %{account_page_text}.
+            - If you exit identity verification and go to your account page, we
+              will not save your personal information.
+            - You will still have a %{app_name} account. You can manage or
+              delete your account on your %{account_page_text}.
         hybrid: If you cancel now, you will be prompted to switch back to your computer
           to continue verifying your identity.
         start_over: If you start over, you will restart this process from the beginning
@@ -60,14 +60,13 @@ en:
       button:
         warning: Try again
       exceptions:
-        internal_error: There was an internal error processing your request. Please
-          try again.
+        internal_error: There was an internal error processing your request. Please try again.
         link: please contact us
         text_html: Please try again. If you keep getting these errors, %{link}.
       phone:
-        fail_html: "<strong>Please try again in %{timeout}.</strong> For your security,
-          we limit the number of times you can attempt to verify your phone number
-          online."
+        fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,
+          we limit the number of times you can attempt to verify your phone
+          number online.'
         heading: We could not match this phone number to other records
         jobfail: Something went wrong and we cannot process your request at this time.
           Please try again.
@@ -75,9 +74,9 @@ en:
         warning: Please check the information you entered and try again.
       sessions:
         exception: There was an internal error processing your request.
-        fail_html: "<strong>Please try again in %{timeout}.</strong> For your security,
-          we limit the number of times you can attempt to verify personal information
-          online."
+        fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,
+          we limit the number of times you can attempt to verify personal
+          information online.'
         heading: We could not find records matching your personal information.
         warning: Please check the information you entered and try again. Common mistakes
           are an incorrect Social Security number or ZIP Code.
@@ -86,18 +85,18 @@ en:
           in the detail field.
         heading: There is an issue with your information
         link_text: fill out our contact form
-      timeout: We are experiencing higher than usual wait time processing your request.
-        Please try again.
+      timeout: We are experiencing higher than usual wait time processing your
+        request. Please try again.
     forgot_password:
       link_text: Forgot password?
       modal_header: Are you sure you can’t remember your password?
       reset_password: Reset password
       try_again: Try again
       warnings:
-      - If you forgot your password, you’ll need to reset it and fill out the form
-        again.
-      - You’ll have to re-enter your personal information, like your name, state-issued
-        ID, etc.
+        - If you forgot your password, you’ll need to reset it and fill out the
+          form again.
+        - You’ll have to re-enter your personal information, like your name,
+          state-issued ID, etc.
     form:
       address1: Address
       address2: Address line 2
@@ -114,44 +113,42 @@ en:
       zipcode: ZIP Code
     index:
       id:
-        need_html: If you’re creating an account, you’ll need a <strong>current state-issued
-          ID</strong>.
+        need_html: If you’re creating an account, you’ll need a <strong>current
+          state-issued ID</strong>.
         state_issue: State-issued ID
     messages:
       activated_html: Your identity has been verified. If you need to change your
         verified information, please %{link}.
       activated_link: contact us
       clear_and_start_over: Clear my information and start over
-      come_back_later: Once your letter arrives, sign into %{app_name}, and enter
-        your confirmation code when prompted.
-      come_back_later_no_sp_html: You can return to your <strong>%{app_name} account</strong>
-        for now.
+      come_back_later: Once your letter arrives, sign into %{app_name}, and enter your
+        confirmation code when prompted.
+      come_back_later_no_sp_html: You can return to your <strong>%{app_name} account</strong> for now.
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: You have encrypted your verified data
       gpo:
-        address_on_file_html: We will mail a letter with a <strong>confirmation code</strong>
-          to the address that you provided on the previous step.
+        address_on_file_html: We will mail a letter with a <strong>confirmation
+          code</strong> to the address that you provided on the previous step.
         resend: Send me another letter
-        timeframe_html: Letters are sent the next business day via USPS First Class
-          Mail and <strong>typically take 3 to 7 business days to arrive</strong>.
+        timeframe_html: Letters are sent the next business day via USPS First Class Mail
+          and <strong>typically take 3 to 7 business days to arrive</strong>.
       mail_sent: Your letter is on its way
-      otp_delivery_method_description: If you entered a landline above, please select
-        "Phone call" below.
-      personal_key: This is your new personal key. Write it down and keep it in a
-        safe place. You will need it if you ever lose your password.
+      otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
+      personal_key: This is your new personal key. Write it down and keep it in a safe
+        place. You will need it if you ever lose your password.
       phone:
-        alert_html: "<strong>This phone number:</strong>"
-        description: We’ll check this number with records and send you a one-time
-          code. This is to help verify your identity.
-        final_note_html: "<strong>If you set up a phone for multi-factor authentication</strong>,
-          this can be a different number."
+        alert_html: '<strong>This phone number:</strong>'
+        description: We’ll check this number with records and send you a one-time code.
+          This is to help verify your identity.
+        final_note_html: '<strong>If you set up a phone for multi-factor
+          authentication</strong>, this can be a different number.'
         phone_of_record: Phone of record
         rules:
-        - Must not be a virtual phone (such as Google Voice or Skype) or a premium
-          rate (toll) number
-        - Must be a U.S. number (which includes U.S. territories)
-        - Should be your primary number or the number that you use most often
-      return_to_profile: "‹ Return to your %{app_name} profile"
+          - Must not be a virtual phone (such as Google Voice or Skype) or a
+            premium rate (toll) number
+          - Must be a U.S. number (which includes U.S. territories)
+          - Should be your primary number or the number that you use most often
+      return_to_profile: '‹ Return to your %{app_name} profile'
       review:
         info_verified_html: We found records matching your %{phone_message}
         intro: Your verified information
@@ -160,12 +157,11 @@ en:
       select_verification_without_sp: To protect you from identity fraud, we will
         contact you to confirm that this account is legitimate.
       sessions:
-        no_pii: TEST SITE - Do not use real personal information (demo purposes only)
-          - TEST SITE
-        read_more_encrypt: Read more about how %{app_name} protects your personal
-          information
-        review_message: When you re-enter your password, %{app_name} will protect
-          the information you’ve given us, so that only you can access it.
+        no_pii: TEST SITE - Do not use real personal information (demo purposes only) -
+          TEST SITE
+        read_more_encrypt: Read more about how %{app_name} protects your personal information
+        review_message: When you re-enter your password, %{app_name} will protect the
+          information you’ve given us, so that only you can access it.
       verifying: Verifying…
     review:
       dob: Date of birth
@@ -193,8 +189,7 @@ en:
         contact_support: Contact %{app_name} Support
         doc_capture_tips: More tips for adding photos of your ID
         get_help_at_sp: Get help at %{sp_name}
-        learn_more_address_verification_options: Learn more about verifying by phone
-          or mail
+        learn_more_address_verification_options: Learn more about verifying by phone or mail
         learn_more_verify_by_mail: Learn more about verifying your address by mail
         learn_more_verify_by_phone: Learn more about verifying your phone number
         learn_more_verify_in_person: Learn more about verifying in person
@@ -202,5 +197,5 @@ en:
         verify_by_mail: Verify your address by mail instead
     welcome:
       no_js_header: You must enable JavaScript to verify your identity.
-      no_js_intro: "%{sp_name} needs you to verify your identity. You need to enable
-        JavaScript to continue this process."
+      no_js_intro: '%{sp_name} needs you to verify your identity. You need to enable
+        JavaScript to continue this process.'

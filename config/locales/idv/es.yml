@@ -2,7 +2,8 @@
 es:
   idv:
     accessible_labels:
-      masked_ssn: texto seguro, comenzando con %{first_number} y terminando con %{last_number}
+      masked_ssn: texto seguro, comenzando con %{first_number} y terminando con
+        %{last_number}
     buttons:
       cancel: Cancele y regrese a su perfil
       change_address_label: Actualizar su dirección actual
@@ -23,30 +24,29 @@ es:
         account_page: la página de su cuenta
         exit:
           with_sp_html:
-          - Si sale de %{app_name} y vuelve a %{sp_name}, su información personal
-            no se guardará.
-          - No obstante, continuará teniendo una cuenta en %{app_name}. Puede administrar
-            o eliminar su cuenta desde %{account_page_link}.
+            - Si sale de %{app_name} y vuelve a %{sp_name}, su información
+              personal no se guardará.
+            - No obstante, continuará teniendo una cuenta en %{app_name}. Puede
+              administrar o eliminar su cuenta desde %{account_page_link}.
           without_sp:
-          - Si sale de la verificación de identidad e ingresa en la página de su cuenta,
-            su información personal no se guardará.
-          - No obstante, continuará teniendo una cuenta en %{app_name}. Puede administrar
-            o eliminar su cuenta desde %{account_page_text}.
+            - Si sale de la verificación de identidad e ingresa en la página de
+              su cuenta, su información personal no se guardará.
+            - No obstante, continuará teniendo una cuenta en %{app_name}. Puede
+              administrar o eliminar su cuenta desde %{account_page_text}.
         hybrid: Si cancela ahora, se le pedirá regresar a su computadora para continuar
           con la verificación de su identidad.
-        start_over: Si empieza de nuevo, el proceso se reiniciará y la información
-          que haya ingresado se perderá.
+        start_over: Si empieza de nuevo, el proceso se reiniciará y la información que
+          haya ingresado se perderá.
       headings:
         confirmation:
           hybrid: Ha cancelado la carga de fotos de su identificación en este teléfono
         exit:
           with_sp: Salir de %{app_name} y volver a %{sp_name}
-          without_sp: Salir de la verificación de identidad e ir a la página de su
-            cuenta
+          without_sp: Salir de la verificación de identidad e ir a la página de su cuenta
         prompt:
-          hybrid: "¿Seguro que desea cancelar la carga de fotos de su identificación
-            en este teléfono?"
-          standard: "¿Cancelar la verificación de su identidad?"
+          hybrid: '¿Seguro que desea cancelar la carga de fotos de su identificación en
+            este teléfono?'
+          standard: '¿Cancelar la verificación de su identidad?'
         start_over: Empezar de nuevo a verificar su identidad
     errors:
       incorrect_password: La contraseña que ingresó no es correcta.
@@ -61,47 +61,47 @@ es:
       button:
         warning: Inténtelo de nuevo
       exceptions:
-        internal_error: Se produjo un error interno al procesar tu solicitud. Por
-          favor, inténtalo de nuevo.
+        internal_error: Se produjo un error interno al procesar tu solicitud. Por favor,
+          inténtalo de nuevo.
         link: contáctanos
         text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
       phone:
-        fail_html: "<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong>
-          Por su seguridad, limitamos el número de veces que puede intentar verificar
-          su número de teléfono en línea."
-        heading: No pudimos encontrar coincidencias entre este número de teléfono
-          y otros registros
+        fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong> Por su
+          seguridad, limitamos el número de veces que puede intentar verificar
+          su número de teléfono en línea.'
+        heading: No pudimos encontrar coincidencias entre este número de teléfono y
+          otros registros
         jobfail: Algo ha fallado y no podemos procesar tu solicitud en este momento.
           Vuelve a intentarlo.
-        timeout: Nuestra solicitud para verificar tu información ha caducado. Vuelve
-          a intentarlo.
+        timeout: Nuestra solicitud para verificar tu información ha caducado. Vuelve a
+          intentarlo.
         warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
       sessions:
         exception: Hubo un error interno al procesar su solicitud.
-        fail_html: "<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong>
-          Por su seguridad, limitamos el número de veces que puede intentar verificar
-          la información personal en línea."
+        fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong> Por su
+          seguridad, limitamos el número de veces que puede intentar verificar
+          la información personal en línea.'
         heading: No hemos podido encontrar registros que coincidan con su información
           personal.
         warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
-          Los errores más comunes suelen producirse al ingresar un Número de Seguridad
-          Social o un Código Postal incorrecto.
+          Los errores más comunes suelen producirse al ingresar un Número de
+          Seguridad Social o un Código Postal incorrecto.
       setup:
-        fail_html: Por favor, %{contact_form_link} e introduzca el código <b>%{support_code}</b>
-          en el campo de detalle.
+        fail_html: Por favor, %{contact_form_link} e introduzca el código
+          <b>%{support_code}</b> en el campo de detalle.
         heading: Hay un problema con tu información
         link_text: rellene nuestro formulario decontacto
       timeout: Estamos experimentando un tiempo de espera superior al habitual al
         procesar su solicitud. Inténtalo de nuevo.
     forgot_password:
-      link_text: "¿Se te olvidó tu contraseña?"
-      modal_header: "¿Estás seguro de que no puedes recordar tu contraseña?"
+      link_text: '¿Se te olvidó tu contraseña?'
+      modal_header: '¿Estás seguro de que no puedes recordar tu contraseña?'
       reset_password: Restablecer la contraseña
       try_again: Inténtalo de nuevo
       warnings:
-      - Si olvidó su contraseña, deberá restablecerla y completarla nuevamente.
-      - Tendrá que volver a ingresar su información personal, como su nombre, documento
-        de identidad emitido por el estado, etc.
+        - Si olvidó su contraseña, deberá restablecerla y completarla nuevamente.
+        - Tendrá que volver a ingresar su información personal, como su nombre,
+          documento de identidad emitido por el estado, etc.
     form:
       address1: Dirección
       address2: Línea de dirección 2
@@ -122,8 +122,8 @@ es:
           emitida por el estado actual</strong>.
         state_issue: Documento de identidad emitido por el Estado
     messages:
-      activated_html: Su identidad ha sido verificada. Si necesita cambiar la información
-        verificada, por favor, %{link}.
+      activated_html: Su identidad ha sido verificada. Si necesita cambiar la
+        información verificada, por favor, %{link}.
       activated_link: Contáctenos
       clear_and_start_over: Borrar mi información y empezar de nuevo
       come_back_later: Una vez llegue tu carta, regístrate en %{app_name} e introduce
@@ -132,44 +132,47 @@ es:
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
       confirm: Usted ha encriptado sus datos verificados.
       gpo:
-        address_on_file_html: Le enviaremos una carta con <strong>un código de confirmación</strong>
-          a la dirección que nos facilitó en el paso anterior.
+        address_on_file_html: Le enviaremos una carta con <strong>un código de
+          confirmación</strong> a la dirección que nos facilitó en el paso
+          anterior.
         resend: Envíeme otra carta
-        timeframe_html: Las cartas se envían al día siguiente por First Class Mail
-          de USPS y <strong>suelen tardar entre 3 y 7 días hábiles en llegar</strong>.
+        timeframe_html: Las cartas se envían al día siguiente por First Class Mail de
+          USPS y <strong>suelen tardar entre 3 y 7 días hábiles en
+          llegar</strong>.
       mail_sent: Su carta está en camino
       otp_delivery_method_description: Si ha introducido un teléfono fijo más arriba,
-        seleccione "Llamada telefónica" más abajo.
+        seleccione “Llamada telefónica” más abajo.
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
       phone:
-        alert_html: "<strong>Este número de teléfono:</strong>"
+        alert_html: '<strong>Este número de teléfono:</strong>'
         description: Comprobaremos este número con los registros y le enviaremos un
           código único. Esto es para ayudar a verificar su identidad.
-        final_note_html: "<strong>Si configura un teléfono para la autenticación multifactor</strong>,
-          este puede ser un número diferente."
+        final_note_html: '<strong>Si configura un teléfono para la autenticación
+          multifactor</strong>, este puede ser un número diferente.'
         phone_of_record: Teléfono del registro
         rules:
-        - No debe ser un teléfono virtual (como Google Voice o Skype) ni un número
-          de tarifa premium (de pago)
-        - Debe ser un número de Estados Unidos (incluidos los territorios de Estados
-          Unidos)
-        - Debe ser su número principal o el número que utilice con más frecuencia
-      return_to_profile: "‹ Volver a tu perfil de %{app_name}"
+          - No debe ser un teléfono virtual (como Google Voice o Skype) ni un
+            número de tarifa premium (de pago)
+          - Debe ser un número de Estados Unidos (incluidos los territorios de
+            Estados Unidos)
+          - Debe ser su número principal o el número que utilice con más
+            frecuencia
+      return_to_profile: '‹ Volver a tu perfil de %{app_name}'
       review:
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
-        utilizar su cuenta en %{sp_name} hasta que la active ingresando un código
-        de confirmación.
-      select_verification_without_sp: Para proteger su cuenta de robo de identidad,
-        su perfil no se activará hasta que ingrese un código de confirmación.
+        utilizar su cuenta en %{sp_name} hasta que la active ingresando un
+        código de confirmación.
+      select_verification_without_sp: Para proteger su cuenta de robo de identidad, su
+        perfil no se activará hasta que ingrese un código de confirmación.
       sessions:
         no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
           propósitos de demostración) - SITIO DE PRUEBA
         read_more_encrypt: Lea más sobre cómo %{app_name} protege su información personal
-        review_message: Cuando vuelva a ingresar su contraseña, %{app_name} cifrará
-          sus datos para asegurarse de que nadie más pueda acceder a ellos.
+        review_message: Cuando vuelva a ingresar su contraseña, %{app_name} cifrará sus
+          datos para asegurarse de que nadie más pueda acceder a ellos.
       verifying: Verificando…
     review:
       dob: Fecha de nacimiento
@@ -180,35 +183,32 @@ es:
       activated: Ya se verificó tu identidad.
       come_back_later: Vuelve pronto
       mail:
-        resend: "¿Desea otra carta?"
-        verify: "¿Desea una carta?"
-      otp_delivery_method: "¿Cómo debemos enviar un código?"
+        resend: '¿Desea otra carta?'
+        verify: '¿Desea una carta?'
+      otp_delivery_method: '¿Cómo debemos enviar un código?'
       review: Revise y envíe
       session:
         phone: Introduzca su número de teléfono
-        review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus
-          datos
+        review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
     troubleshooting:
       headings:
-        missing_required_items: "¿Le falta alguno de estos puntos?"
-        need_assistance: "¿Necesita ayuda inmediata? Así es como puede obtener ayuda:"
-        still_having_trouble: "¿Sigue teniendo dificultades?"
+        missing_required_items: '¿Le falta alguno de estos puntos?'
+        need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
+        still_having_trouble: '¿Sigue teniendo dificultades?'
       options:
         add_new_photos: Añada nuevas fotos de su ID emitido por el estado
         contact_support: Póngase en contacto con el servicio de asistencia de %{app_name}
         doc_capture_tips: Más consejos para agregar fotos de su identificación
         get_help_at_sp: Obtenga ayuda en %{sp_name}
-        learn_more_address_verification_options: Obtenga más información sobre la
-          verificación por teléfono o por correo
-        learn_more_verify_by_mail: Obtenga más información sobre la verificación de
-          su dirección por correo
-        learn_more_verify_by_phone: Obtenga más información sobre la verificación
-          de su número de teléfono
+        learn_more_address_verification_options: Obtenga más información sobre la verificación por teléfono o por correo
+        learn_more_verify_by_mail: Obtenga más información sobre la verificación de su
+          dirección por correo
+        learn_more_verify_by_phone: Obtenga más información sobre la verificación de su número de teléfono
         learn_more_verify_in_person: Más información sobre la verificación en persona
-        supported_documents: Vea la lista de documentos de identidad emitidos por
-          el estado que son aceptados
+        supported_documents: Vea la lista de documentos de identidad emitidos por el
+          estado que son aceptados
         verify_by_mail: Verifique su dirección por correo
     welcome:
       no_js_header: Debe habilitar JavaScript para verificar su identidad.
-      no_js_intro: "%{sp_name} requiere que usted verifique su identidad. Debe habilitar
-        JavaScript para continuar con este proceso."
+      no_js_intro: '%{sp_name} requiere que usted verifique su identidad. Debe
+        habilitar JavaScript para continuar con este proceso.'

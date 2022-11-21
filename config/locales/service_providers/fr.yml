@@ -5,10 +5,10 @@ fr:
       generic_sp_name: Cette agence
       inactive:
         button_text: Voir mon compte %{app_name}
-        heading: "%{sp_name} n’utilise plus %{app_name}"
-        instructions: "%{sp_name} n’utilise plus %{app_name} comme service de connexion
-          à son site Web. Si vous avez déjà créé un compte %{app_name}, sachez qu’il
-          est toujours actif et qu’il peut être utilisé pour accéder aux autres sites
-          Web gouvernementaux participants."
-        instructions2: Veuillez vous rendre sur le site de l’agence afin de les contacter
-          pour plus d’informations.
+        heading: '%{sp_name} n’utilise plus %{app_name}'
+        instructions: '%{sp_name} n’utilise plus %{app_name} comme service de connexion
+          à son site Web. Si vous avez déjà créé un compte %{app_name}, sachez
+          qu’il est toujours actif et qu’il peut être utilisé pour accéder aux
+          autres sites Web gouvernementaux participants.'
+        instructions2: Veuillez vous rendre sur le site de l’agence afin de les
+          contacter pour plus d’informations.

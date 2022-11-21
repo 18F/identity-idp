@@ -8,11 +8,10 @@ fr:
     download_button:
       label: Télécharger
     javascript_required:
-      browser_instructions: 'Suivez les instructions de votre navigateur pour activer
-        JavaScript:'
+      browser_instructions: 'Suivez les instructions de votre navigateur pour activer JavaScript:'
       enabled_alert: Vous avez activé JavaScript dans votre navigateur.
-      next_step: Veuillez rafraîchir cette page une fois que vous avez activé JavaScript
-        dans votre navigateur.
+      next_step: Veuillez rafraîchir cette page une fois que vous avez activé
+        JavaScript dans votre navigateur.
     memorable_date:
       day: Jour
       errors:

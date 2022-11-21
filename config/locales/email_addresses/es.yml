@@ -5,13 +5,13 @@ es:
       duplicate: Esta dirección de correo electrónico ya está registrada en su cuenta.
       limit: Has agregado la cantidad máxima de direcciones de correo electrónico.
     delete:
-      bullet1: No podrá iniciar sesión en %{app_name} (ni en ninguna de las aplicaciones
-        gubernamentales vinculadas a su cuenta) utilizando esta dirección de correo
-        electrónico
+      bullet1: No podrá iniciar sesión en %{app_name} (ni en ninguna de las
+        aplicaciones gubernamentales vinculadas a su cuenta) utilizando esta
+        dirección de correo electrónico
       bullet2: No recibirás notificaciones de la cuenta en esta dirección de correo
         electrónico
-      confirm: "¿Estas seguro que quieres borrarlo %{email}?"
+      confirm: '¿Estas seguro que quieres borrarlo %{email}?'
       failure: No se puede eliminar esta dirección de correo electrónico.
       success: La dirección de correo electrónico ha sido eliminada.
       warning: Si borras tu dirección de correo electrónico
-    unconfirmed: "(inconfirmado)"
+    unconfirmed: '(inconfirmado)'

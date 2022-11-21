@@ -8,8 +8,7 @@ es:
     download_button:
       label: Descargar
     javascript_required:
-      browser_instructions: 'Siga las instrucciones para habilitar JavaScript en su
-        navegador:'
+      browser_instructions: 'Siga las instrucciones para habilitar JavaScript en su navegador:'
       enabled_alert: YHabilitó el JavaScript en su navegador.
       next_step: Recargue esta página una vez que haya habilitado JavaScript en su
         navegador.
@@ -40,4 +39,4 @@ es:
     print_button:
       label: Imprima
     troubleshooting_options:
-      default_heading: "¿Tiene alguna dificultad? Esto es lo que puede hacer:"
+      default_heading: '¿Tiene alguna dificultad? Esto es lo que puede hacer:'

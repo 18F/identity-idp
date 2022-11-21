@@ -12,4 +12,4 @@ en:
       failure: Unable to delete this email address.
       success: The email address has been removed.
       warning: If you delete your email address
-    unconfirmed: "(unconfirmed)"
+    unconfirmed: '(unconfirmed)'

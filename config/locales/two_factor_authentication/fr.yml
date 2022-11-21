@@ -5,18 +5,19 @@ fr:
       cancel_link: Annuler votre demande
       link: réinitialiser votre compte
       pending_html: Vous avez actuellement une demande en attente pour supprimer votre
-        compte.  Il faut compter 24 heures à partir du moment où vous avez fait la
-        demande pour terminer le processus.  Veuillez vérifier plus tard. %{cancel_link}
-      successful_cancel: Je vous remercie. Votre demande de suppression de votre compte
-        %{app_name} a été annulée.
+        compte.  Il faut compter 24 heures à partir du moment où vous avez fait
+        la demande pour terminer le processus.  Veuillez vérifier plus tard.
+        %{cancel_link}
+      successful_cancel: Je vous remercie. Votre demande de suppression de votre
+        compte %{app_name} a été annulée.
       text_html: Si vous ne pouvez utiliser aucune des méthodes d’authentification
         ci-dessus, vous pouvez %{link}.
     backup_code_fallback:
       question: Vous n’avez pas vos codes de secours disponibles?
     backup_code_header_text: Entrez votre code de sécurité de secours
-    backup_code_prompt: Vous pouvez utiliser ce code de sécurité une fois. Après l’avoir
-      entré, vous devrez utiliser une nouvelle clé.
-    choose_another_option: "‹ Choisissez une autre option"
+    backup_code_prompt: Vous pouvez utiliser ce code de sécurité une fois. Après
+      l’avoir entré, vous devrez utiliser une nouvelle clé.
+    choose_another_option: '‹ Choisissez une autre option'
     header_text: Entrez votre code de sécurité
     important_alert_icon: Icône d’alerte importante
     invalid_backup_code: Ce code de sauvegarde est invalide.
@@ -24,9 +25,9 @@ fr:
       de nouveau ou demander un nouveau code de sécurité à utilisation unique.
     invalid_personal_key: Cette clé personnelle est non valide.
     invalid_piv_cac: Ce PIV/CAC n’a pas fonctionné. Assurez-vous que c’est le bon
-      PIV/CAC pour ce compte. Si c’est le cas, votre PIV/CAC, votre NIP ou un problème
-      survenu de notre côté pourrait bien poser problème. Réessayez ou choisissez
-      une autre méthode d’authentification.
+      PIV/CAC pour ce compte. Si c’est le cas, votre PIV/CAC, votre NIP ou un
+      problème survenu de notre côté pourrait bien poser problème. Réessayez ou
+      choisissez une autre méthode d’authentification.
     login_intro: Vous les avez configurés lorsque vous avez crée votre compte.
     login_options:
       auth_app: Application d’authentification
@@ -44,44 +45,45 @@ fr:
       sms_info_html: Obtenez votre code de sécurité par SMS à <strong>%{phone}</strong>.
       voice: Appel téléphonique
       voice_info_html: Obtenez votre code de sécurité Obtenez votre code de sécurité
-        par SMS à  à <strong>%{phone}</strong>. (Seulement les numéros de téléphone
-        en Amerique du Nord)
+        par SMS à  à <strong>%{phone}</strong>. (Seulement les numéros de
+        téléphone en Amerique du Nord)
       webauthn: Clé de sécurité
       webauthn_info: Utilisez votre clé de sécurité pour accéder à votre compte.
       webauthn_platform: Déverrouillage facial ou tactile
       webauthn_platform_info: Votre appareil numérise votre visage ou votre empreinte
-        digitale et confirme que les informations correspondent aux images que vous
-        avez déjà stockées sur votre appareil. Nous ne copions ni ne stockons ces
-        images.
+        digitale et confirme que les informations correspondent aux images que
+        vous avez déjà stockées sur votre appareil. Nous ne copions ni ne
+        stockons ces images.
     login_options_link_text: Choisissez une autre option de sécurité
     login_options_title: Sélectionnez votre option de sécurité
     max_backup_code_login_attempts_reached: Pour votre sécurité, votre compte est
-      temporairement verrouillé car vous avez saisi trop de fois le code de sauvegarde.
-    max_generic_login_attempts_reached: Pour votre sécurité, votre compte est temporairement
-      verrouillé.
-    max_otp_login_attempts_reached: Pour votre sécurité, votre compte est temporairement
-      verrouillé, car vous avez entré le code de sécurité à utilisation unique de
-      façon erronée à de trop nombreuses reprises.
+      temporairement verrouillé car vous avez saisi trop de fois le code de
+      sauvegarde.
+    max_generic_login_attempts_reached: Pour votre sécurité, votre compte est temporairement verrouillé.
+    max_otp_login_attempts_reached: Pour votre sécurité, votre compte est
+      temporairement verrouillé, car vous avez entré le code de sécurité à
+      utilisation unique de façon erronée à de trop nombreuses reprises.
     max_otp_requests_reached: Pour votre sécurité, votre compte est temporairement
       verrouillé car vous avez demandé un code de sécurité à trop de reprises.
     max_personal_key_login_attempts_reached: Pour votre sécurité, votre compte est
-      temporairement verrouillé, car vous avez entré le code de sécurité à utilisation
-      unique de façon erronée à de trop nombreuses reprises.
-    max_piv_cac_login_attempts_reached: Pour votre sécurité, votre compte a été temporairement
-      bloqué en raison de la saisie de mauvais identifiants PIV/CAC à de trop nombreuses
-      reprises.
+      temporairement verrouillé, car vous avez entré le code de sécurité à
+      utilisation unique de façon erronée à de trop nombreuses reprises.
+    max_piv_cac_login_attempts_reached: Pour votre sécurité, votre compte a été
+      temporairement bloqué en raison de la saisie de mauvais identifiants
+      PIV/CAC à de trop nombreuses reprises.
     mobile_terms_of_service: Conditions de service mobile
     no_auth_option: Aucune option d’authentification n’a été trouvée pour vous connecter
     opt_in:
       cant_use_phone: Vous ne pouvez pas utiliser votre téléphone?
       error_retry: Désolé, nous avons des difficultés à vous connecter. Veuillez réessayer.
       opted_out_html: Vous avez choisi de ne plus recevoir de SMS à %{phone_number}.
-        Vous pouvez vous inscrire et recevoir à nouveau un code de sécurité à ce numéro
-        de téléphone.
-      opted_out_last_30d_html: Vous avez choisi de ne plus recevoir de SMS au %{phone_number}
-        au cours des 30 derniers jours. Nous ne pouvons opter pour un numéro de téléphone
-        qu’une fois tous les 30 jours.
-      title: Nous n’avons pas pu envoyer un code de sécurité à votre numéro de téléphone
+        Vous pouvez vous inscrire et recevoir à nouveau un code de sécurité à ce
+        numéro de téléphone.
+      opted_out_last_30d_html: Vous avez choisi de ne plus recevoir de SMS au
+        %{phone_number} au cours des 30 derniers jours. Nous ne pouvons opter
+        pour un numéro de téléphone qu’une fois tous les 30 jours.
+      title: Nous n’avons pas pu envoyer un code de sécurité à votre numéro de
+        téléphone
       wait_30d_opt_in: Après 30 jours, vous pouvez vous inscrire et recevoir un code
         de sécurité à ce numéro de téléphone.
     otp_delivery_preference:
@@ -89,15 +91,15 @@ fr:
       no_supported_options: Nous ne sommes pas en mesure de vérifier les numéros de
         téléphone de %{location}
       sms: Message texte (SMS)
-      sms_unsupported: Il est impossible d’envoyer des messages texte à des numéros
-        de téléphone dans %{location}.
+      sms_unsupported: Il est impossible d’envoyer des messages texte à des numéros de
+        téléphone dans %{location}.
       title: Comment devrions-nous vous envoyer un code?
       voice: Appel téléphonique
       voice_unsupported: Il nous est impossible d’appeler des numéros de téléphone
         dans le %{location}.
     otp_make_default_number:
-      instruction: Faites de ce numéro de téléphone le numéro par défaut où vous recevez
-        des messages texte ou des appels téléphoniques.
+      instruction: Faites de ce numéro de téléphone le numéro par défaut où vous
+        recevez des messages texte ou des appels téléphoniques.
       label: Numéro de téléphone par défaut
       one_number_instruction: Vous devez avoir ajouté plus d’un numéro de téléphone
         pour pouvoir sélectionner un numéro de téléphone par défaut.
@@ -106,8 +108,8 @@ fr:
     personal_key_fallback:
       question: Vous n’avez pas votre clé personnelle?
     personal_key_header_text: Entrez votre clé personnelle
-    personal_key_prompt: Vous pouvez utiliser cette clé personnelle une fois seulement.
-      Une fois que vous l’entrez, vous recevrez une nouvelle clé.
+    personal_key_prompt: Vous pouvez utiliser cette clé personnelle une fois
+      seulement. Une fois que vous l’entrez, vous recevrez une nouvelle clé.
     phone:
       delete:
         failure: Impossible de supprimer votre numéro de téléphone.
@@ -115,24 +117,23 @@ fr:
     phone_fallback:
       question: Vous ne pouvez pas utiliser votre téléphone?
     phone_fee_disclosure: Des messages et débits de données peuvent être appliqués.
-    phone_info_html: Nous vous enverrons ou appellerons avec un code de sécurité <strong>chaque
-      fois que vous vous connectez</strong>.
+    phone_info_html: Nous vous enverrons ou appellerons avec un code de sécurité
+      <strong>chaque fois que vous vous connectez</strong>.
     phone_label: Numéro de téléphone
     piv_cac_fallback:
       question: Votre PIV ou CAC n’est pas disponible?
     piv_cac_header_text: Veuillez présenter votre carte PIV/CAC
     piv_cac_webauthn_available: Utilisez votre clé de sécurité
     please_try_again_html: Veuillez essayer de nouveau dans <strong>%{countdown}</strong>.
-    read_about_two_factor_authentication: En savoir plus sur l’authentification à
-      deux facteurs
+    read_about_two_factor_authentication: En savoir plus sur l’authentification à deux facteurs
     totp_fallback:
       question: Vous n’avez pas votre application d’authentification?
     totp_header_text: Entrez votre code d’application d’authentification
     two_factor_aal3_choice: Authentification supplémentaire requise
     two_factor_aal3_choice_intro: Cette application nécessite un niveau de sécurité
-      plus élevé. Vous devez vérifier votre identité à l’aide d’un dispositif physique
-      tel qu’une clé de sécurité ou un badge d’employé du gouvernement (PIV ou CAC)
-      pour accéder à vos informations.
+      plus élevé. Vous devez vérifier votre identité à l’aide d’un dispositif
+      physique tel qu’une clé de sécurité ou un badge d’employé du gouvernement
+      (PIV ou CAC) pour accéder à vos informations.
     two_factor_choice: Configuration de la méthode d’authentification
     two_factor_choice_intro: Ajoutez une autre étape de sécurité en utilisant l’une
       des options d’authentification multifactorielle ci-dessous.
@@ -142,48 +143,49 @@ fr:
         votre choix pour générer des codes sécurisés.
       backup_code: Codes de sauvegarde
       backup_code_info: Une liste de 10 codes que vous pouvez imprimer ou enregistrer
-        sur votre appareil. Lorsque vous utilisez le dernier code, nous générerons
-        une nouvelle liste. Gardez à l’esprit que les codes de sauvegarde sont faciles
-        à perdre.
+        sur votre appareil. Lorsque vous utilisez le dernier code, nous
+        générerons une nouvelle liste. Gardez à l’esprit que les codes de
+        sauvegarde sont faciles à perdre.
       configurations_added:
-        one: "(%{count} ajouté)"
-        other: "(%{count} ajoutés)"
+        one: '(%{count} ajouté)'
+        other: '(%{count} ajoutés)'
       phone: Message texte ou vocal
       phone_info: Recevoir un code de sécurité par texto (SMS) ou appel téléphonique.
-      phone_info_html: Recevoir un code de sécurité par texto (SMS) ou appel téléphonique.
-        <strong>Cette option nécessite que vous choisissiez une méthode d’authentification
-        supplémentaire.</strong>
-      phone_info_no_voip: N’utilisez pas de services téléphoniques basés sur le Web
-        ( Voix sur IP ) ou de numéros de téléphone à tarif majoré ( péage ).
+      phone_info_html: Recevoir un code de sécurité par texto (SMS) ou appel
+        téléphonique. <strong>Cette option nécessite que vous choisissiez une
+        méthode d’authentification supplémentaire.</strong>
+      phone_info_no_voip: N’utilisez pas de services téléphoniques basés sur le Web (
+        Voix sur IP ) ou de numéros de téléphone à tarif majoré ( péage ).
       piv_cac: Carte d’identification des employés du gouvernement
       piv_cac_info: Cartes PIV/CAC pour les fonctionnaires et les militaires. Bureau
         uniquement.
       sms: SMS
       sms_info: Obtenez votre code de sécurité par SMS.
       unused_backup_code:
-        one: "(%{count} code non utilisé)"
-        other: "(%{count} codes non utilisés)"
+        one: '(%{count} code non utilisé)'
+        other: '(%{count} codes non utilisés)'
       voice: Appel téléphonique
       voice_info: Obtenez votre code de sécurité par appel téléphonique.
       webauthn: Clef de sécurité
-      webauthn_info: Un appareil physique, souvent en forme de clé USB, que vous branchez
-        sur votre appareil.
+      webauthn_info: Un appareil physique, souvent en forme de clé USB, que vous
+        branchez sur votre appareil.
       webauthn_platform: Déverrouillage facial ou tactile
       webauthn_platform_info: Votre appareil numérise votre visage ou votre empreinte
-        digitale et confirme que les informations correspondent aux images que vous
-        avez déjà stockées sur votre appareil. Nous ne copions ni ne stockons ces
-        images.
+        digitale et confirme que les informations correspondent aux images que
+        vous avez déjà stockées sur votre appareil. Nous ne copions ni ne
+        stockons ces images.
     two_factor_hspd12_choice: Authentification supplémentaire requise
     two_factor_hspd12_choice_intro: Cette application nécessite un haut niveau de
-      sécurité. Vous devez vérifier votre identité à l’aide d’un appareil physique
-      tel qu’une clé de sécurité ou un identifiant d’employé du gouvernement (PIC/CAC)
-      pour accéder à vos informations.
+      sécurité. Vous devez vérifier votre identité à l’aide d’un appareil
+      physique tel qu’une clé de sécurité ou un identifiant d’employé du
+      gouvernement (PIC/CAC) pour accéder à vos informations.
     webauthn_error:
       additional_methods_link: choisir une autre méthode d’authentification
       error_page_text: Vous avez activé le déverrouillage facial ou tactile pour ce
-        compte. Utilisez le même appareil et le même profil de navigateur chaque fois.
-      multiple_methods: Le déverrouillage facial ou tactile n’a pas fonctionné. Veuillez
-        réessayer ou %{link}.
+        compte. Utilisez le même appareil et le même profil de navigateur chaque
+        fois.
+      multiple_methods: Le déverrouillage facial ou tactile n’a pas fonctionné.
+        Veuillez réessayer ou %{link}.
       title: Nous ne pouvons pas identifier votre appareil
     webauthn_fallback:
       question: Vous n’avez pas votre clé de sécurité avec vous?
@@ -195,7 +197,8 @@ fr:
     webauthn_platform_use_key: Utilisez le déverrouillage facial ou tactile
     webauthn_platform_verified:
       header: Appareil vérifié
-      info: Nous avons vérifié votre appareil. Cliquez sur continuer pour vous connecter.
+      info: Nous avons vérifié votre appareil. Cliquez sur continuer pour vous
+        connecter.
     webauthn_use_key: Utiliser la clé de sécurité
     webauthn_verified:
       header: Clé de sécurité vérifiée

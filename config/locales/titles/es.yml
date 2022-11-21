@@ -43,8 +43,8 @@ es:
       cancellation_prompt: Cancela la verificación de identidad
       cancelled: Se canceló la verificación de identidad
     mfa_setup:
-      suggest_second_mfa: "¡Has agregado tu primer método de autenticación! Agrega
-        un segundo método como respaldo."
+      suggest_second_mfa: '¡Has agregado tu primer método de autenticación! Agrega un
+        segundo método como respaldo.'
     no_auth_option: No se encontró mensaje de inicio de sesión
     openid_connect:
       authorization: Autorización de OpenID Connect
@@ -69,13 +69,13 @@ es:
     revoke_consent: Revocar consentimiento
     rules_of_use: Reglas de uso
     sign_up:
-      completion_consent_expired_ial1: Ya ha pasado un año desde que nos dio su consentimiento
-        para compartir su información.
-      completion_consent_expired_ial2: Ha pasado un año desde que nos dio su consentimiento
-        para compartir su identidad verificada.
+      completion_consent_expired_ial1: Ya ha pasado un año desde que nos dio su
+        consentimiento para compartir su información.
+      completion_consent_expired_ial2: Ha pasado un año desde que nos dio su
+        consentimiento para compartir su identidad verificada.
       completion_first_sign_in: Continúa con %{sp}
       completion_ial2: Conecte su información verificada a %{sp}
-      completion_new_attributes: "%{sp} está solicitando nueva información"
+      completion_new_attributes: '%{sp} está solicitando nueva información'
       completion_new_sp: Acabas de iniciar sesión por primera vez
       confirmation: Continuar para iniciar sesión
     totp_setup:

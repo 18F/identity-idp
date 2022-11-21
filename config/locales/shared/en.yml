@@ -11,9 +11,9 @@ en:
       lock: Lock
       lock_description: A locked padlock
       official_site: An official website of the United States government
-      secure_description_html: A <strong>lock</strong> (%{lock_icon}) or <strong>https://</strong>
-        means you’ve safely connected to the .gov website. Share sensitive information
-        only on official, secure websites.
+      secure_description_html: A <strong>lock</strong> (%{lock_icon}) or
+        <strong>https://</strong> means you’ve safely connected to the .gov
+        website. Share sensitive information only on official, secure websites.
       secure_heading: Secure .gov websites use HTTPS
     footer_lite:
       gsa: US General Services Administration

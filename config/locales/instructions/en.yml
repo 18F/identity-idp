@@ -9,89 +9,91 @@ en:
         intro: We take extra steps to keep your personal information secure and private,
           so resetting your password takes a little extra effort.
         modal:
-          copy: If you don’t have your personal key, you will need to verify your
-            identity again.
+          copy: If you don’t have your personal key, you will need to verify your identity
+            again.
           heading: Don’t have your personal key?
         with_key: Do you have your personal key?
     forgot_password:
       close_window: You can close this browser window once you have reset your password.
-    go_back_to_mobile_app: To continue, please go back to the %{friendly_name} app
-      and sign in.
+    go_back_to_mobile_app: To continue, please go back to the %{friendly_name} app and sign in.
     mfa:
       authenticator:
         confirm_code_html: Enter the code from your authenticator app. If you have
-          several accounts set up in your app, enter the code corresponding to %{email}
-          at %{app_name}.
+          several accounts set up in your app, enter the code corresponding to
+          %{email} at %{app_name}.
         manual_entry: Or enter this code manually into your authentication app
       piv_cac:
-        account_not_found_html: "<p><strong>%{sign_in}</strong> with your email address
-          and password. Then add your PIV/CAC to your account.</p> <p><strong>Don’t
-          have a %{app_name} account?</strong> %{create_account}</p>"
-        add_from_sign_in_html: "<strong>Instructions:</strong> Insert your PIV or
-          CAC on <strong>“ADD PIV/CAC”</strong>. You’ll need to <strong>choose a certificate</strong>
-          (the right one likely has your name of it) and <strong>enter your PIN</strong>
-          (your PIN was created when you set up your PIV/CAC)."
+        account_not_found_html: '<p><strong>%{sign_in}</strong> with your email address
+          and password. Then add your PIV/CAC to your account.</p>
+          <p><strong>Don’t have a %{app_name} account?</strong>
+          %{create_account}</p>'
+        add_from_sign_in_html: '<strong>Instructions:</strong> Insert your PIV or CAC on
+          <strong>“ADD PIV/CAC”</strong>. You’ll need to <strong>choose a
+          certificate</strong> (the right one likely has your name of it) and
+          <strong>enter your PIN</strong> (your PIN was created when you set up
+          your PIV/CAC).'
         already_associated_html: Please choose a certificate from a different PIV/CAC,
-          contact your administrator to ensure your PIV/CAC is up to date. If you
-          think this is an error, %{try_again}.
+          contact your administrator to ensure your PIV/CAC is up to date. If
+          you think this is an error, %{try_again}.
         back_to_sign_in: Go back to sign in
         confirm_piv_cac_html: Present the PIV/CAC that you associated with your account.
         confirm_piv_cac_only_html: This app requires a higher level of security. You
-          need to verify your identity using a government employee ID that you previously
-          set up to access your information.
-        confirm_piv_cac_or_aal3_html: This app requires a higher level of security.
-          You need to verify your identity using a physical device such as a security
-          key or government employee ID (PIV or CAC) to access your information.
+          need to verify your identity using a government employee ID that you
+          previously set up to access your information.
+        confirm_piv_cac_or_aal3_html: This app requires a higher level of security. You
+          need to verify your identity using a physical device such as a
+          security key or government employee ID (PIV or CAC) to access your
+          information.
         did_not_work_html: Please %{please_try_again}. If this problem continues,
           contact your agency administrator.
         http_failure: The server took too long to respond. Please try again.
-        no_certificate_html: Please make sure your PIV/CAC is connected and %{try_again}.
-          If this problem continues, contact your agency administrator.
+        no_certificate_html: Please make sure your PIV/CAC is connected and
+          %{try_again}. If this problem continues, contact your agency
+          administrator.
         not_auth_cert_html: The certificate you selected is invalid for this account.
-          Please %{please_try_again} with a different certificate. If this problem
-          continues, contact your agency administrator.
+          Please %{please_try_again} with a different certificate. If this
+          problem continues, contact your agency administrator.
         please_try_again: try again
-        sign_in: Make sure <strong>you have a %{app_name} account</strong> and <strong>you’ve
-          set up PIV/CAC</strong> as a two-factor authentication method.
+        sign_in: Make sure <strong>you have a %{app_name} account</strong> and
+          <strong>you’ve set up PIV/CAC</strong> as a two-factor authentication
+          method.
         step_1: Give it a nickname
         step_1_info: If you add more than one PIV/CAC, you’ll know which one’s which.
         step_2: Insert your PIV/CAC into your card reader
         step_3: Add your PIV/CAC
         step_3_info_html: You’ll need to <strong>choose a certificate</strong> (the
-          right one likely has your name in it) and <strong>enter your PIN</strong>
-          (your PIN was created when you set up your PIV/CAC).
+          right one likely has your name in it) and <strong>enter your
+          PIN</strong> (your PIN was created when you set up your PIV/CAC).
         try_again: try again
       sms:
-        confirm_code_html: Need another code? %{resend_code_link}. Message rates may
-          apply.
-        number_message_html: We sent a security code to %{number}. This code will
-          expire in %{expiration} minutes.
+        confirm_code_html: Need another code? %{resend_code_link}. Message rates may apply.
+        number_message_html: We sent a security code to %{number}. This code will expire
+          in %{expiration} minutes.
       voice:
         confirm_code_html: Want us to call you again? %{resend_code_link}
         number_message_html: We just called you at %{number}.
       webauthn:
-        confirm_webauthn_html: Present the security key that you associated with your
-          account.
-        confirm_webauthn_only_html: This app requires a higher level of security.
-          You need to verify your identity using a security key that you previously
+        confirm_webauthn_html: Present the security key that you associated with your account.
+        confirm_webauthn_only_html: This app requires a higher level of security. You
+          need to verify your identity using a security key that you previously
           set up to access your information.
-        confirm_webauthn_or_aal3_html: This app requires a higher level of security.
-          You need to verify your identity using a physical device such as a security
-          key or government employee ID (PIV or CAC) to access your information.
-        confirm_webauthn_platform_html: You have face or touch unlock enabled for
-          your %{app_name} account.
+        confirm_webauthn_or_aal3_html: This app requires a higher level of security. You
+          need to verify your identity using a physical device such as a
+          security key or government employee ID (PIV or CAC) to access your
+          information.
+        confirm_webauthn_platform_html: You have face or touch unlock enabled for your %{app_name} account.
       wrong_number: Entered the wrong phone number?
     password:
       forgot: Don’t know your password? Reset it after confirming your email address.
       help_text: The longer and more unusual the password, the harder it is to guess.
-        So avoid using common phrases. Also avoid repeating passwords from other online
-        accounts such as banks, email and social media.
+        So avoid using common phrases. Also avoid repeating passwords from other
+        online accounts such as banks, email and social media.
       help_text_header: Password safety tips
       info:
         lead: It must be at least %{min_length} characters long and not be a commonly
           used password. That’s it!
-      password_key: You need your 16-character personal key to reset your password
-        if you verified your identity with this account. If you don’t have it, you
+      password_key: You need your 16-character personal key to reset your password if
+        you verified your identity with this account. If you don’t have it, you
         can still reset your password and then reverify your identity.
       strength:
         i: Very weak
@@ -100,6 +102,6 @@ en:
         intro: 'Password strength: '
         iv: Good
         v: Great!
-    sp_handoff_bounced: Your sign in was successful, but %{sp_name} sent you back
-      to %{app_name}. Please contact %{sp_link} for help.
+    sp_handoff_bounced: Your sign in was successful, but %{sp_name} sent you back to
+      %{app_name}. Please contact %{sp_link} for help.
     sp_handoff_bounced_with_no_sp: your service provider

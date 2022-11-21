@@ -2,37 +2,37 @@
 fr:
   date:
     day_names:
-    - lundi
-    - mardi
-    - mercredi
-    - jeudi
-    - vendredi
-    - samedi
-    - dimanche
+      - lundi
+      - mardi
+      - mercredi
+      - jeudi
+      - vendredi
+      - samedi
+      - dimanche
     formats:
-      long: "%-d %B %Y"
+      long: '%-d %B %Y'
     month_names:
-    -
-    - janvier
-    - février
-    - mars
-    - avril
-    - mai
-    - juin
-    - juillet
-    - août
-    - septembre
-    - octobre
-    - novembre
-    - décembre
+      -
+      - janvier
+      - février
+      - mars
+      - avril
+      - mai
+      - juin
+      - juillet
+      - août
+      - septembre
+      - octobre
+      - novembre
+      - décembre
     range: Du %{from} au %{to}
   time:
     am: A.M.
     formats:
-      event_date: "%-d %B %Y"
-      event_time: "%H:%M"
-      event_timestamp: "%e %B %Y à %H:%M"
-      event_timestamp_js: "%{day} %{month} %{year} à %{hour}:%{minute}"
-      event_timestamp_utc: "%e %B %Y à %H:%M UTC"
-      event_timestamp_with_zone: "%e %B %Y à %H:%M %Z"
+      event_date: '%-d %B %Y'
+      event_time: '%H:%M'
+      event_timestamp: '%e %B %Y à %H:%M'
+      event_timestamp_js: '%{day} %{month} %{year} à %{hour}:%{minute}'
+      event_timestamp_utc: '%e %B %Y à %H:%M UTC'
+      event_timestamp_with_zone: '%e %B %Y à %H:%M %Z'
     pm: P.M.
