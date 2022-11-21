@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Analytics do
-  let(:expected_data_to_analytics) do
+  let(:analytics_attributes) do
     {
       user_id: current_user.uuid,
       new_event: true,
@@ -14,8 +14,7 @@ describe Analytics do
       git_sha: IdentityConfig::GIT_SHA,
       git_branch: IdentityConfig::GIT_BRANCH,
       event_properties: {},
-    }.
-      merge(request_attributes)
+    }.merge(request_attributes)
   end
 
   let(:request_attributes) do
@@ -59,31 +58,30 @@ describe Analytics do
         'my branch',
       )
 
-      expect(ahoy).to receive(:track).with('Trackable Event', expected_data_to_analytics)
+      expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
 
       analytics.track_event('Trackable Event')
     end
 
     it 'does not track unique events and paths when an event fails' do
-      expected_data_to_analytics.merge!(
-        {
+      expect(ahoy).to receive(:track).with(
+        'Trackable Event',
+        analytics_attributes.merge(
           new_event: nil,
           new_session_path: nil,
           new_session_success_state: nil,
           event_properties: { success: false },
-        },
+        ),
       )
-
-      expect(ahoy).to receive(:track).with('Trackable Event', expected_data_to_analytics)
 
       analytics.track_event('Trackable Event', { success: false })
     end
 
     it 'tracks the user passed in to the track_event method' do
       tracked_user = build_stubbed(:user, uuid: '456')
-      expected_data_to_analytics[:user_id] = tracked_user.uuid
+      analytics_attributes[:user_id] = tracked_user.uuid
 
-      expect(ahoy).to receive(:track).with('Trackable Event', expected_data_to_analytics)
+      expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
 
       analytics.track_event('Trackable Event', user_id: tracked_user.uuid)
     end
@@ -104,10 +102,10 @@ describe Analytics do
 
     it 'includes the locale of the current request' do
       locale = :fr
-      expected_data_to_analytics[:locale] = locale
+      analytics_attributes[:locale] = locale
       allow(I18n).to receive(:locale).and_return(locale)
 
-      expect(ahoy).to receive(:track).with('Trackable Event', expected_data_to_analytics)
+      expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
 
       analytics.track_event('Trackable Event')
     end
@@ -175,9 +173,9 @@ describe Analytics do
         ahoy: ahoy,
       )
 
-      expected_data_to_analytics[:session_duration] = 7.0
+      analytics_attributes[:session_duration] = 7.0
 
-      expect(ahoy).to receive(:track).with('Trackable Event', expected_data_to_analytics)
+      expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
 
       analytics.track_event('Trackable Event')
     end
