@@ -108,7 +108,7 @@ RSpec.describe InPerson::EmailReminderJob do
         create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 26.days)
       end
 
-      context 'an error is raised whne sending an email' do
+      context 'an error is raised when sending an email' do
         let(:error_message) { 'A standard error happened' }
         let!(:error) { StandardError.new(error_message) }
 
