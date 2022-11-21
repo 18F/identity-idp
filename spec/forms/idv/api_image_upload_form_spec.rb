@@ -260,19 +260,22 @@ RSpec.describe Idv::ApiImageUploadForm do
 
           document_writer = form.send(:encrypted_document_storage_writer)
 
+          front_image.rewind
+          back_image.rewind
+
           expect(
             aes_decrypt(
               ciphertext: document_writer.storage.read_image(name: upload_event[:front_image]),
               key: upload_event[:front_image_encryption_key],
             ),
-          ).to eq(DocAuthImageFixtures.document_front_image_multipart.read)
+          ).to eq(front_image.read)
 
           expect(
             aes_decrypt(
               ciphertext: document_writer.storage.read_image(name: upload_event[:back_image]),
               key: upload_event[:back_image_encryption_key],
             ),
-          ).to eq(DocAuthImageFixtures.document_back_image_multipart.read)
+          ).to eq(back_image.read)
         end
       end
 
