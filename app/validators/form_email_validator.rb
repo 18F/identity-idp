@@ -18,7 +18,7 @@ module FormEmailValidator
 
   def validate_domain
     return unless email.present?
-    domain = email&.split('@')&.last
+    domain = Mail::Address.new(email).domain
 
     if domain && !domain.ascii_only?
       errors.add(:email, t('valid_email.validations.email.invalid'), type: :domain)
