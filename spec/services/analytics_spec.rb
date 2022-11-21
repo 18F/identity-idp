@@ -79,9 +79,11 @@ describe Analytics do
 
     it 'tracks the user passed in to the track_event method' do
       tracked_user = build_stubbed(:user, uuid: '456')
-      analytics_attributes[:user_id] = tracked_user.uuid
 
-      expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
+      expect(ahoy).to receive(:track).with(
+        'Trackable Event',
+        analytics_attributes.merge(user_id: tracked_user.uuid),
+      )
 
       analytics.track_event('Trackable Event', user_id: tracked_user.uuid)
     end
@@ -102,10 +104,12 @@ describe Analytics do
 
     it 'includes the locale of the current request' do
       locale = :fr
-      analytics_attributes[:locale] = locale
       allow(I18n).to receive(:locale).and_return(locale)
 
-      expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
+      expect(ahoy).to receive(:track).with(
+        'Trackable Event',
+        analytics_attributes.merge(locale: locale),
+      )
 
       analytics.track_event('Trackable Event')
     end
@@ -173,9 +177,10 @@ describe Analytics do
         ahoy: ahoy,
       )
 
-      analytics_attributes[:session_duration] = 7.0
-
-      expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
+      expect(ahoy).to receive(:track).with(
+        'Trackable Event',
+        analytics_attributes.merge(session_duration: 7.0),
+      )
 
       analytics.track_event('Trackable Event')
     end
