@@ -155,7 +155,7 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
       }
       const selected = prepToSend(selectedLocation);
       setInProgress(true);
-      await request(LOCATIONS_URL, JSON.stringify(selected), {
+      await request(LOCATIONS_URL, selected, {
         method: 'PUT',
       })
         .then(() => {
