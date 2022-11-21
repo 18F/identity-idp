@@ -9,30 +9,31 @@ feature 'idv phone step', :js do
       user = user_with_2fa
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
-      expect(page).to have_checked_field(t('two_factor_authentication.otp_delivery_preference.sms'), visible: false)
+      expect(page).to have_checked_field(
+        t('two_factor_authentication.otp_delivery_preference.sms'), visible: false
+      )
     end
   end
 
   context 'with valid information' do
-
-    it 'redirects to the otp confirmation step when the phone matches the 2fa phone number', js: true do
+    it 'redirects to the otp confirmation step when the phone matches the 2fa phone number',
+       js: true do
       user = user_with_2fa
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
       click_idv_send_security_code
-      
+
       expect(page).to have_content(t('titles.idv.enter_security_code', app_name: APP_NAME))
       expect(page).to have_current_path(idv_otp_verification_path)
     end
   end
 
-
   context 'invalid form information' do
     it 'displays error message if no phone number is entered', js: true do
       start_idv_from_sp
       complete_idv_steps_before_phone_step
-      fill_in("idv_phone_form_phone", with: "") # clear the pre-populated phone number
+      fill_in('idv_phone_form_phone', with: '') # clear the pre-populated phone number
       click_idv_send_security_code
       expect(page).to have_current_path(idv_phone_path)
       expect(page).to have_content(t('errors.messages.phone_required'))
@@ -65,7 +66,7 @@ feature 'idv phone step', :js do
       expect(page).to have_content(t('idv.titles.session.phone'))
       expect(page).to have_current_path(idv_phone_path(step: 'phone_otp_verification'))
 
-      fill_out_phone_form_ok("") # clear field
+      fill_out_phone_form_ok('') # clear field
       fill_out_phone_form_ok(second_phone_number)
       click_idv_otp_delivery_method_sms
       click_idv_send_security_code
