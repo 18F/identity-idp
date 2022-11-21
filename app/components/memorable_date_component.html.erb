@@ -1,4 +1,4 @@
-<label class="usa-label" for="doc_auth_dob">
+<label class="usa-label">
     <%= label %>
 </label>
 <div id="validated-field-hint-<%= unique_id %>" class="usa-hint">
@@ -31,7 +31,7 @@
                     aria: {
                       invalid: false,
                       describedby: "validated-field-error-#{unique_id}",
-                      labelledby: 'month_hint_id',
+                      labelledby: "memorable-date-month-hint-#{unique_id}",
                     },
                     value: month,
                   },
@@ -39,7 +39,7 @@
                   required: required,
                 ) %>
           <% end %>
-          <span id="month_hint_id" class="usa-sr-only" aria-hidden="true">
+          <span id=<%="memorable-date-month-hint-#{unique_id}"%> class="display-none">
             <%= t('in_person_proofing.form.state_id.date_hint.month') %>
           </span>
           </lg-validated-field>
@@ -59,7 +59,7 @@
                   aria: {
                     invalid: false,
                     describedby: "validated-field-error-#{unique_id}",
-                    labelledby: 'day_hint_id',
+                    labelledby: "memorable-date-day-hint-#{unique_id}",
                   },
                   value: day,
                 },
@@ -67,7 +67,7 @@
                 required: required,
               ) %>
           <% end %>
-          <span id="day_hint_id" class="usa-sr-only" aria-hidden="true">
+          <span id=<%="memorable-date-day-hint-#{unique_id}"%> class="display-none">
             <%= t('in_person_proofing.form.state_id.date_hint.day') %>
           </span>
           </lg-validated-field>
@@ -87,7 +87,7 @@
                   aria: {
                     invalid: false,
                     describedby: "validated-field-error-#{unique_id}",
-                    labelledby: 'year_hint_id',
+                    labelledby: "memorable-date-year-hint-#{unique_id}",
                   },
                   value: year,
                 },
@@ -95,7 +95,7 @@
                 required: required,
               ) %>
           <% end %>
-          <span id="year_hint_id" class="usa-sr-only" aria-hidden="true">
+          <span id=<%="memorable-date-year-hint-#{unique_id}"%> class="display-none">
             <%= t('in_person_proofing.form.state_id.date_hint.year') %>
           </span>
         </lg-validated-field>
