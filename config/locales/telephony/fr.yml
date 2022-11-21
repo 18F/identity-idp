@@ -10,17 +10,17 @@ fr:
         %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.
 
         @%{domain} #%{code}
-      voice: Bonjour! Votre code de sécurité à utilisation unique de %{app_name} est,
-        %{code}, de nouveau, votre code de sécurité est, %{code}, Ce code
-        expirera dans %{expiration} minutes.
+      voice: Bonjour! Votre code %{app_name} à usage unique est %{code}, Votre code à
+        usage unique est %{code}, Une fois de plus, votre code à usage unique
+        est %{code}, Ce code expire dans %{expiration} minutes.
     confirmation_otp:
       sms: |-
         %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.
 
         @%{domain} #%{code}
-      voice: Bonjour! Votre code de sécurité à utilisation unique de %{app_name} est,
-        %{code}, de nouveau, votre code de sécurité est, %{code}, Ce code
-        expirera dans %{expiration} minutes.
+      voice: Bonjour! Votre code %{app_name} à usage unique est %{code}. Votre code à
+        usage unique est %{code}. Une fois de plus, votre code à usage unique
+        est %{code}. Ce code expire dans %{expiration} minutes.
     doc_auth_link: "%{link} Vous avez demandé à vérifier votre identité sur un
       téléphone mobile. S'il vous plaît prendre une photo de votre identité
       émise par l'état"

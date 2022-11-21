@@ -128,7 +128,7 @@ feature 'adding email address' do
     expect_delivered_email_count(1)
     expect_delivered_email(
       0, {
-        to: [user.reload.email_addresses[1].email],
+        to: [user.reload.email_addresses.order(:created_at).last.email],
         subject: t('user_mailer.add_email.subject'),
       }
     )

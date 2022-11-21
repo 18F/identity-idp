@@ -65,7 +65,12 @@ feature 'phone otp rate limiting', :js do
   end
 
   describe 'otp attempts' do
-    let(:max_attempts) { 3 }
+    let(:max_attempts) { 2 }
+
+    before do
+      allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts).
+        and_return(max_attempts)
+    end
 
     it 'rate limits otp attempts at the otp verification step' do
       start_idv_from_sp
