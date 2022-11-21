@@ -30,7 +30,7 @@ interface FormattedLocation {
   weekdayHours: string;
 }
 
-interface PostOptions {
+interface RequestOptions {
   /**
    * Whether to send the request as a JSON request. Defaults to inclusion.
    */
@@ -47,40 +47,41 @@ interface PostOptions {
   method: string;
 }
 
+const DEFAULT_FETCH_OPTIONS = { csrf: true, json: true };
+
 const getCsrfToken = () =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content;
 
 const request = async (
   url: string,
   body: BodyInit | object,
-  options: Partial<PostOptions> = {},
+  options: Partial<RequestOptions> = {},
 ) => {
   const headers: HeadersInit = {};
-  const defaultOptions = {
-    csrf: true,
-    json: true,
+  const mergedOptions: Partial<RequestOptions> = {
+    ...DEFAULT_FETCH_OPTIONS,
     ...options,
   };
 
-  if (defaultOptions.csrf) {
+  if (mergedOptions.csrf) {
     const csrf = getCsrfToken();
     if (csrf) {
       headers['X-CSRF-Token'] = csrf;
     }
   }
 
-  if (defaultOptions.json) {
+  if (mergedOptions.json) {
     headers['Content-Type'] = 'application/json';
     body = JSON.stringify(body);
   }
 
   const response = await window.fetch(url, {
-    ...(defaultOptions.method ? { method: defaultOptions.method } : {}),
+    ...(mergedOptions.method ? { method: mergedOptions.method } : {}),
     headers,
     body: body as BodyInit,
   });
 
-  return defaultOptions.json ? response.json() : response.text();
+  return mergedOptions.json ? response.json() : response.text();
 };
 
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
