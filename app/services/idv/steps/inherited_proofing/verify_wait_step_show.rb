@@ -14,18 +14,6 @@ module Idv
         end
 
         def call
-          # NOTE: The only way throttle.attempts will be > 0, is if our job to
-          # retrieve the user's PII failed on the first attempt (from the previous
-          # :agreement step), and the user subsequently clicks the "Retry" button on the
-          # Inherited Proofing (IP) Warning UI. The IP Warning UI "Retry" button
-          # routes to this step, allowing the user to retry PII retrieval from the Service
-          # Provider IdentityConfig.store.inherited_proofing_max_attempts times, before
-          # the IP Error UI is displayed, allowing no further retry attempts. #enqueue_job
-          # checks to make sure that a job is not already in progress before enqueuing a
-          # new job to retrieve the users PII, so there is no danger here of jobs being
-          # added to the queue while polling the async state is in progress.
-          enqueue_job if throttle.attempts > 0
-
           poll_with_meta_refresh(IdentityConfig.store.poll_rate_for_verify_in_seconds)
 
           process_async_state(async_state)

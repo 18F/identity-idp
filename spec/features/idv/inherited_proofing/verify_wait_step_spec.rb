@@ -34,6 +34,7 @@ feature 'inherited proofing verify wait', :js do
         expect(page).to have_current_path(
           idv_inherited_proofing_errors_no_information_path(flow: :inherited_proofing),
         )
+        expect(page).to have_selector(:link_or_button, t('inherited_proofing.buttons.try_again'))
       end
     end
 
@@ -41,14 +42,14 @@ feature 'inherited proofing verify wait', :js do
       let(:inherited_proofing_auth) { 'invalid-auth-code' }
 
       it 'redirects to the error page, prohibits retries and logs the event' do
-        click_link t('inherited_proofing.buttons.try_again')
+        click_button t('inherited_proofing.buttons.try_again')
         expect(page).to have_current_path(
           idv_inherited_proofing_errors_failure_url(flow: :inherited_proofing),
         )
         expect(fake_analytics).to have_logged_event(
           'Throttler Rate Limit Triggered',
           throttle_type: :inherited_proofing,
-          step_name: Idv::Steps::InheritedProofing::VerifyWaitStepShow,
+          step_name: Idv::Actions::InheritedProofing::RedoRetrieveUserInfoAction,
         )
       end
     end
