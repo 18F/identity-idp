@@ -40,7 +40,7 @@ module IdvHelper
   end
 
   def click_idv_send_security_code
-    click_spinner_button_and_wait t('forms.buttons.send_security_code')
+    click_spinner_button_and_wait t('forms.buttons.send_one_time_code')
   end
 
   def click_idv_select
