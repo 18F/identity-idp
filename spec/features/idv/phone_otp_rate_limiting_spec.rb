@@ -19,27 +19,6 @@ feature 'phone otp rate limiting', :js do
       expect_max_otp_request_rate_limiting
     end
 
-    it 'rate limits sends from the otp delivery methods and verification step in combination' do
-      send_attempts = max_attempts - 2
-
-      start_idv_from_sp
-      complete_idv_steps_before_phone_otp_delivery_selection_step(user)
-
-      # (n - 2)th attempt
-      send_attempts.times do
-        choose_idv_otp_delivery_method_sms
-        visit idv_otp_delivery_method_path
-      end
-
-      # (n - 1)th attempt
-      choose_idv_otp_delivery_method_sms
-
-      # nth attempt
-      click_on t('links.two_factor_authentication.send_another_code')
-
-      expect_max_otp_request_rate_limiting
-    end
-
     def expect_max_otp_request_rate_limiting
       expect(page).to have_content t('titles.account_locked')
       expect(page).to have_content t(

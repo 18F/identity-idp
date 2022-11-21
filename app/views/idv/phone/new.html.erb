@@ -63,30 +63,28 @@
         class: 'margin-bottom-4',
       ) %>
 
-  <div>
-    <h2><%= t('idv.titles.otp_delivery_method') %></h2>
-    <p><%= t('idv.messages.otp_delivery_method_description') %></p>
+  <h2><%= t('idv.titles.otp_delivery_method') %></h2>
+  <p><%= t('idv.messages.otp_delivery_method_description') %></p>
 
-    <div class="grid-row grid-gap-2">
-      <div class="grid-col-12 tablet:grid-col-6">
-        <%= f.radio_button(
-              :otp_delivery_preference,
-              :sms,
-              checked: true, # We want SMS to be default checked
-              disabled: VendorStatus.new.vendor_outage?(:sms),
-              class: 'usa-radio__input usa-radio__input--bordered',
-            ) %>
-          <%= f.label :otp_delivery_preference_sms, t('two_factor_authentication.otp_delivery_preference.sms'), class: 'usa-radio__label width-full' %>
-      </div>
-      <div class="grid-col-12 tablet:grid-col-6">
-        <%= f.radio_button(
-              :otp_delivery_preference,
-              :voice,
-              disabled: VendorStatus.new.vendor_outage?(:voice),
-              class: 'usa-radio__input usa-radio__input--bordered',
-            ) %>
-        <%= f.label :otp_delivery_preference_voice, t('two_factor_authentication.otp_delivery_preference.voice'), class: 'usa-radio__label width-full' %>
-      </div>
+  <div class="grid-row grid-gap-2">
+    <div class="grid-col-12 tablet:grid-col-6">
+      <%= f.radio_button(
+            :otp_delivery_preference,
+            :sms,
+            checked: true, # We want SMS to be default checked
+            disabled: VendorStatus.new.vendor_outage?(:sms),
+            class: 'usa-radio__input usa-radio__input--bordered',
+          ) %>
+        <%= f.label :otp_delivery_preference_sms, t('two_factor_authentication.otp_delivery_preference.sms'), class: 'usa-radio__label width-full' %>
+    </div>
+    <div class="grid-col-12 tablet:grid-col-6">
+      <%= f.radio_button(
+            :otp_delivery_preference,
+            :voice,
+            disabled: VendorStatus.new.vendor_outage?(:voice),
+            class: 'usa-radio__input usa-radio__input--bordered',
+          ) %>
+      <%= f.label :otp_delivery_preference_voice, t('two_factor_authentication.otp_delivery_preference.voice'), class: 'usa-radio__label width-full' %>
     </div>
   </div>
 
