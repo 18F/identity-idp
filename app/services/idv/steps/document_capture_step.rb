@@ -14,9 +14,11 @@ module Idv
       end
 
       def call
-        # Async upload disabled because it does not work
-        raise NoMethodError if FeatureManagement.document_capture_async_uploads_enabled?
-        handle_stored_result
+        if FeatureManagement.document_capture_async_uploads_enabled?
+          raise RuntimeError.new('Attempted to use non-working async upload')
+        else
+          handle_stored_result
+        end
       end
 
       def extra_view_variables
