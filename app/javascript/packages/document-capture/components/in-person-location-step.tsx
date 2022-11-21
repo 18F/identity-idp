@@ -32,19 +32,19 @@ interface FormattedLocation {
 
 interface RequestOptions {
   /**
-   * Whether to send the request as a JSON request. Defaults to inclusion.
+   * Whether to send the request as a JSON request. Defaults to true.
    */
-  json: boolean;
+  json?: boolean;
 
   /**
-   * Whether to include CSRF token in the request. Defaults to inclusion.
+   * Whether to include CSRF token in the request. Defaults to true.
    */
-  csrf: boolean;
+  csrf?: boolean;
 
   /**
-   * Optional. HTTP verb used. If excluded, will fetch as a GET.
+   * Optional. HTTP verb used. Defaults to GET.
    */
-  method: string;
+  method?: string;
 }
 
 const DEFAULT_FETCH_OPTIONS = { csrf: true, json: true };
