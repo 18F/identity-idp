@@ -252,31 +252,27 @@ RSpec.describe Idv::ApiImageUploadForm do
         let(:store_encrypted_images) { true }
 
         it 'writes encrypted documents' do
-          # This is not a _great_ way to test this. Once we start writing these events to the
-          # attempts API we should use the fake attempts API to grab the 'reference` value for the
-          # front and back image and check that those files are written.
+          form.submit
+
+          upload_events = irs_attempts_api_tracker.events[:idv_document_upload_submitted]
+          expect(upload_events).to have_attributes(length: 1)
+          upload_event = upload_events.first
+
           document_writer = form.send(:encrypted_document_storage_writer)
 
-          expect(document_writer).to receive(:encrypt_and_write_document).with(
-            front_image: DocAuthImageFixtures.document_front_image_multipart.read,
-            back_image: DocAuthImageFixtures.document_back_image_multipart.read,
-          ).and_call_original
-
-          uuid_regex = /^[a-f0-9-]{36}$/
-          base64_regex = /^[a-z0-9+\/]+=*$/i
-
-          expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
-            hash_including(
-              front_image: match(uuid_regex),
-              front_image_content_type: DocAuthImageFixtures.document_front_image_multipart.content_type,
-              front_image_encryption_key: match(base64_regex),
-              back_image: match(uuid_regex),
-              back_image_content_type: DocAuthImageFixtures.document_back_image_multipart.content_type,
-              back_image_encryption_key: match(base64_regex),
+          expect(
+            aes_decrypt(
+              ciphertext: document_writer.storage.read_image(name: upload_event[:front_image]),
+              key: upload_event[:front_image_encryption_key],
             ),
-          )
+          ).to eq(DocAuthImageFixtures.document_front_image_multipart.read)
 
-          form.submit
+          expect(
+            aes_decrypt(
+              ciphertext: document_writer.storage.read_image(name: upload_event[:back_image]),
+              key: upload_event[:back_image_encryption_key],
+            ),
+          ).to eq(DocAuthImageFixtures.document_back_image_multipart.read)
         end
       end
 
@@ -366,5 +362,11 @@ RSpec.describe Idv::ApiImageUploadForm do
         end
       end
     end
+  end
+
+  def aes_decrypt(ciphertext:, key:)
+    cipher = Encryption::AesCipher.new
+    key = Base64.decode64(key) if key.is_a?(String)
+    cipher.decrypt(ciphertext, key)
   end
 end
