@@ -6,6 +6,7 @@ module FormEmailValidator
 
     before_validation :downcase_and_strip
 
+    validate :validate_domain
     validates :email,
               email: {
                 mx_with_fallback: !ENV['RAILS_OFFLINE'],
@@ -14,6 +15,15 @@ module FormEmailValidator
   end
 
   private
+
+  def validate_domain
+    return unless email.present?
+    domain = email&.split('@')&.last
+
+    if domain && !domain.ascii_only?
+      errors.add(:email, t('valid_email.validations.email.invalid'), type: :domain)
+    end
+  end
 
   def downcase_and_strip
     self.email = email&.downcase&.strip
