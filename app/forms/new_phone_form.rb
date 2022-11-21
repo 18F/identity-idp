@@ -40,6 +40,25 @@ class NewPhoneForm
     VendorStatus.new.vendor_outage?(:sms)
   end
 
+  # TODO: Temporarily moved as experiment
+  # @return [Telephony::PhoneNumberInfo, nil]
+  def phone_info
+    return @phone_info if defined?(@phone_info)
+
+    if phone.blank? || !IdentityConfig.store.voip_check
+      @phone_info = nil
+    else
+      @phone_info = Telephony.phone_info(phone)
+    end
+  rescue Aws::Pinpoint::Errors::TooManyRequestsException
+    @warning_message = 'AWS pinpoint phone info rate limit'
+    @phone_info = Telephony::PhoneNumberInfo.new(type: :unknown)
+  rescue Aws::Pinpoint::Errors::BadRequestException
+    errors.add(:phone, :improbable_phone, type: :improbable_phone)
+    @redacted_phone = redact(phone)
+    @phone_info = Telephony::PhoneNumberInfo.new(type: :unknown)
+  end
+
   private
 
   attr_accessor :user, :submitted_phone
@@ -93,24 +112,6 @@ class NewPhoneForm
     if (parsed_phone.types & BLOCKED_PHONE_TYPES).present?
       errors.add(:phone, I18n.t('errors.messages.premium_rate_phone'), type: :premium_rate_phone)
     end
-  end
-
-  # @return [Telephony::PhoneNumberInfo, nil]
-  def phone_info
-    return @phone_info if defined?(@phone_info)
-
-    if phone.blank? || !IdentityConfig.store.voip_check
-      @phone_info = nil
-    else
-      @phone_info = Telephony.phone_info(phone)
-    end
-  rescue Aws::Pinpoint::Errors::TooManyRequestsException
-    @warning_message = 'AWS pinpoint phone info rate limit'
-    @phone_info = Telephony::PhoneNumberInfo.new(type: :unknown)
-  rescue Aws::Pinpoint::Errors::BadRequestException
-    errors.add(:phone, :improbable_phone, type: :improbable_phone)
-    @redacted_phone = redact(phone)
-    @phone_info = Telephony::PhoneNumberInfo.new(type: :unknown)
   end
 
   def parsed_phone

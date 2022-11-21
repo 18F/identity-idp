@@ -11,6 +11,9 @@ module TwoFactorAuthentication
     helper_method :in_multi_mfa_selection_flow?
 
     def show
+      # TODO: The following line is a quick draft
+      @landline = user_session[:phone_type] == 'landline'
+
       analytics.multi_factor_auth_enter_otp_visit(**analytics_properties)
 
       @presenter = presenter_for_two_factor_authentication_method
