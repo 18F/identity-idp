@@ -31,6 +31,7 @@ module Idv
     def submit(params)
       self.phone = PhoneFormatter.format(params[:phone])
       self.otp_delivery_preference = params[:otp_delivery_preference]
+      self.otp_delivery_preference = "sms" if self.otp_delivery_preference.nil?
       success = valid?
       self.phone = params[:phone] unless success
 

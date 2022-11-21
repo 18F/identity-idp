@@ -270,7 +270,7 @@ describe Idv::PhoneController do
 
           expect(response).to redirect_to idv_phone_path
           get :new
-          expect(response).to redirect_to idv_otp_delivery_method_path
+          expect(response).to redirect_to idv_otp_verification_path
 
           expect(subject.idv_session.applicant).to eq(
             original_applicant.merge(
@@ -313,7 +313,7 @@ describe Idv::PhoneController do
 
           expect(response).to redirect_to idv_phone_path
           get :new
-          expect(response).to redirect_to idv_otp_delivery_method_path
+          expect(response).to redirect_to idv_otp_verification_path
 
           expect(subject.idv_session.vendor_phone_confirmation).to eq true
           expect(subject.idv_session.user_phone_confirmation).to eq false
