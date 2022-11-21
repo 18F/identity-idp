@@ -14,46 +14,16 @@ feature 'idv phone step', :js do
   end
 
   context 'with valid information' do
-    xit 'allows the user to continue to the phone otp delivery selection step' do
-      start_idv_from_sp
-      complete_idv_steps_before_phone_step
-      fill_out_phone_form_ok
-      click_idv_send_security_code
 
-      expect(page).to have_content(t('idv.titles.otp_delivery_method'))
-      expect(page).to have_current_path(idv_otp_delivery_method_path)
-    end
-
-    xit 'redirects to the otp delivery step when the phone matches the 2fa phone number', js: true do
+    it 'redirects to the otp confirmation step when the phone matches the 2fa phone number', js: true do
       user = user_with_2fa
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
-      #click_idv_send_security_code
       click_idv_send_security_code
-
-      expect(page).to have_content(t('idv.titles.otp_delivery_method', app_name: APP_NAME))
-      expect(page).to have_current_path(idv_phone_path)
-    end
-
-
-    # I don't think we want to allow this behavior anymore
-    xit 'allows a user without a phone number to continue' do
-      user = create(:user, :with_authentication_app, :with_backup_code)
-      start_idv_from_sp
-      complete_idv_steps_before_phone_step(user)
-
-      fill_out_phone_form_ok
-      click_idv_send_security_code
-
-      expect(page).to have_content(t('idv.titles.otp_delivery_method'))
-      expect(page).to have_current_path(idv_otp_delivery_method_path)
-
-      choose_idv_otp_delivery_method_sms
-
-      expect(page).to have_content(t('two_factor_authentication.header_text'))
-      expect(page).to_not have_content(t('two_factor_authentication.totp_header_text'))
-      expect(page).to_not have_content(t('two_factor_authentication.login_options_link_text'))
+      
+      expect(page).to have_content(t('titles.idv.enter_security_code', app_name: APP_NAME))
+      expect(page).to have_current_path(idv_otp_verification_path)
     end
   end
 
