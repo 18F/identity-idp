@@ -8,19 +8,18 @@ es:
       button: Añadir un método de autenticación
       heading: Añadir otro método de autenticación.
       info: A partir del %{date},  deberá añadir otro método de autenticación en caso
-        de que pierda el acceso a su teléfono. Si añade otro método de
-        autenticación, evitará que se bloquee su cuenta. Más información sobre
-        las opciones de autenticación
+        de que pierda el acceso a su teléfono. Si añade otro método de autenticación,
+        evitará que se bloquee su cuenta. Más información sobre las opciones de autenticación
       learn_more: Obtenga más información sobre las opciones de autenticación
       non_restricted_required_info: Debe añadir otro método de autenticación como
         copia de seguridad en caso de que pierda el acceso a su teléfono.
       title: Añadir otro método de autenticación antes del %{date}
     info: Agregue otro nivel de seguridad seleccionando un método de autentificación
-      de varios factores. Le recomendamos seleccionar al menos dos opciones
-      diferentes en caso de que pierda uno de los métodos.
+      de varios factores. Le recomendamos seleccionar al menos dos opciones diferentes
+      en caso de que pierda uno de los métodos.
     second_method_warning:
       link: Agregue un segundo método de autenticación.
-      text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de
-        autenticación.
+      text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método
+        de autenticación.
     skip: Omitir por ahora
     skip_once: Omitir una vez

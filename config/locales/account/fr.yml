@@ -4,13 +4,13 @@ fr:
     connected_apps:
       associated: Lié %{timestamp}
       description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute
-        sécurité à plusieurs comptes gouvernementaux en ligne. Vous trouverez
-        ci-dessous une liste de tous les comptes actuellement connectés.
+        sécurité à plusieurs comptes gouvernementaux en ligne. Vous trouverez ci-dessous
+        une liste de tous les comptes actuellement connectés.
     email_language:
-      default: '%{language} (par défaut)'
+      default: "%{language} (par défaut)"
       edit_title: Modifier la préférence de langue des e-mails
-      languages_list: '%{app_name} vous permet de recevoir votre communication par
-        e-mail dans %{list}.'
+      languages_list: "%{app_name} vous permet de recevoir votre communication par
+        e-mail dans %{list}."
       name:
         en: Anglais
         es: l’Espagnol
@@ -18,12 +18,11 @@ fr:
       sentence_connector: ou
       updated: Votre préférence de langue pour les e-mails a été mise à jour.
     forget_all_browsers:
-      longer_description: Une fois que vous aurez choisi “d’oublier tous les
-        navigateurs”, nous aurons besoin d’informations supplémentaires pour
-        savoir qu’il s’agit bien de votre connexion à votre compte. Nous vous
-        demanderons une méthode d’authentification multifacteur (comme un code
-        texte / SMS ou une clé de sécurité) chaque fois que vous souhaitez
-        accéder à votre compte.
+      longer_description: Une fois que vous aurez choisi “d’oublier tous les navigateurs”,
+        nous aurons besoin d’informations supplémentaires pour savoir qu’il s’agit
+        bien de votre connexion à votre compte. Nous vous demanderons une méthode
+        d’authentification multifacteur (comme un code texte / SMS ou une clé de sécurité)
+        chaque fois que vous souhaitez accéder à votre compte.
     index:
       address: Adresse actuelle
       auth_app_add: Ajouter une application
@@ -35,7 +34,7 @@ fr:
       backup_codes_no_exist: Non généré
       continue_to_service_provider: Continuer à %{service_provider}
       default: défaut
-      device: '%{browser} sur %{os}'
+      device: "%{browser} sur %{os}"
       dob: Date de naissance
       email: Adresse e-mail
       email_add: Ajouter un nouvel e-mail
@@ -48,11 +47,11 @@ fr:
       piv_cac_add: Ajouter un identifiant
       piv_cac_confirm_delete: Oui, retirer la carte
       reactivation:
-        instructions: Votre profil a été récemment désactivé en raison d’une
-          réinitialisation de mot passe. Vous pouvez utiliser votre clé
-          personnelle pour réactiver votre profil.
+        instructions: Votre profil a été récemment désactivé en raison d’une réinitialisation
+          de mot passe. Vous pouvez utiliser votre clé personnelle pour réactiver
+          votre profil.
         link: Réactivez votre profil maintenant.
-      sign_in_location_and_ip: '%{ip} (adresse IP probablement située dans %{location})'
+      sign_in_location_and_ip: "%{ip} (adresse IP probablement située dans %{location})"
       ssn: Numéro d’assurance sociale
       totp_confirm_delete: Oui, supprimez l’application d’authentification
       unknown_location: lieu inconnu
@@ -65,7 +64,8 @@ fr:
       webauthn_confirm_delete: Oui, supprimer la clé
       webauthn_delete: Supprimer la clé
       webauthn_platform: Le déverouillage facial ou déverrouillage par empreinte digitale
-      webauthn_platform_add: Ajouter le déverouillage facial ou déverrouillage par empreinte digitale
+      webauthn_platform_add: Ajouter le déverouillage facial ou déverrouillage par
+        empreinte digitale
       webauthn_platform_confirm_delete: Oui, supprimer le déverouillage facial ou
         déverrouillage par empreinte digitale
       webauthn_platform_delete: Supprimer le déverouillage facial ou déverrouillage
@@ -86,7 +86,8 @@ fr:
       add_email: Ajouter une adresse e-mail
       add_federal_id: Ajouter un identifiant d’employé fédéral
       add_phone_number: Ajouter un numéro de téléphone
-      add_platform_authenticator: Ajouter déverouillage facial ou déverrouillage par empreinte digitale
+      add_platform_authenticator: Ajouter déverouillage facial ou déverrouillage par
+        empreinte digitale
       add_security_key: Ajouter une clé de sécurité
       connected_accounts: Vos comptes connectés
       customer_support: Service client
@@ -105,28 +106,26 @@ fr:
       get_new: Obtenir une nouvelle clé personnelle
       get_new_description: Lorsque vous recevez une nouvelle clé personnelle, votre
         ancienne clé personnelle ne fonctionnera plus.
-      last_generated: 'Dernière génération le %{timestamp}'
+      last_generated: Dernière génération le %{timestamp}
       needs_new: Votre compte a besoin d’une nouvelle clé personnelle. Votre ancienne
         clé personnelle ne fonctionnera pas si vous oubliez votre mot de passe.
-      old_key_will_not_work: Veuillez imprimer, copier ou télécharger la nouvelle clé
-        personnelle ci-dessous. Votre ancienne clé personnelle ne fonctionnera
+      old_key_will_not_work: Veuillez imprimer, copier ou télécharger la nouvelle
+        clé personnelle ci-dessous. Votre ancienne clé personnelle ne fonctionnera
         pas si vous oubliez votre mot de passe.
       reset_instructions: Réinitialisez votre clé personnelle si vous ne l’avez pas.
-        Vous aurez besoin de cette clé personnelle si vous oubliez votre mot de
-        passe.
+        Vous aurez besoin de cette clé personnelle si vous oubliez votre mot de passe.
       reset_success: Votre code personnel a été réinitialisé
     re_verify:
       banner: Nous avons masqué les informations de votre profil pour protéger votre
         vie privée.
-      footer: Veuillez vous authentifier à nouveau pour afficher les informations de
-        votre profil
+      footer: Veuillez vous authentifier à nouveau pour afficher les informations
+        de votre profil
     revoke_consent:
       link_title: Déconnecter
-      longer_description_html: Vos informations ne seront plus partagées avec
-        %{service_provider}. Pour accéder à %{service_provider} à l’avenir, vous
-        devez donner votre consentement pour partager vos informations. Vous
-        pouvez donner votre consentement en allant sur le site
-        %{service_provider} et en vous connectant.
+      longer_description_html: Vos informations ne seront plus partagées avec %{service_provider}.
+        Pour accéder à %{service_provider} à l’avenir, vous devez donner votre consentement
+        pour partager vos informations. Vous pouvez donner votre consentement en allant
+        sur le site %{service_provider} et en vous connectant.
     security:
       link: En apprendre davantage dans le Centre d’aide
       text: L’information de votre profil est verrouillée pour votre sécurité.

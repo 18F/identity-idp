@@ -2,7 +2,8 @@
 fr:
   account_reset:
     cancel_request:
-      are_you_sure: Êtes-vous sûr de vouloir annuler votre demande de suppression de compte?
+      are_you_sure: Êtes-vous sûr de vouloir annuler votre demande de suppression
+        de compte?
       cancel: Sortie
       cancel_button: Annuler supprimer un compte
       title: Annuler supprimer un compte
@@ -22,11 +23,10 @@ fr:
     delete_account:
       are_you_sure: Êtes-vous sûr de vouloir supprimer votre compte?
       info: La suppression de votre compte devrait être votre dernier recours si vous
-        êtes en lock-out de votre compte Vous ne pourrez pas récupérer les
-        informations liées à ton compte. Nous informerons les agences auxquelles
-        vous accédez avec %{app_name} que vous ne plus avoir un compte. Une fois
-        votre compte supprimé, vous pouvez en créer un nouveau en utilisant la
-        même adresse e-mail.
+        êtes en lock-out de votre compte Vous ne pourrez pas récupérer les informations
+        liées à ton compte. Nous informerons les agences auxquelles vous accédez avec
+        %{app_name} que vous ne plus avoir un compte. Une fois votre compte supprimé,
+        vous pouvez en créer un nouveau en utilisant la même adresse e-mail.
       title: La suppression de votre compte devrait être votre dernier recours
     pending:
       cancel_request: Demande d’annulation
@@ -35,15 +35,14 @@ fr:
         attendre encore 24 heures pour supprimer votre compte.
       header: Vous avez demandé de supprimer votre compte
       wait_html: Il y a un délai d’attente de 24 heures pour supprimer votre compte.
-        Dans <strong>%{interval}</strong>, vous recevrez un e-mail avec des
-        instructions pour terminer la suppression.
+        Dans <strong>%{interval}</strong>, vous recevrez un e-mail avec des instructions
+        pour terminer la suppression.
     recovery_options:
       check_webauthn_platform: Utilisez le même appareil que celui avec lequel vous
         avez configuré le déverrouillage facial ou tactile
-      check_webauthn_platform_info: Si vous avez configuré le déverrouillage facial ou
-        tactile lorsque vous avez créé votre compte, assurez-vous d’utiliser le
-        même appareil que celui avec lequel vous avez créé votre compte
-        %{app_name}.
+      check_webauthn_platform_info: Si vous avez configuré le déverrouillage facial
+        ou tactile lorsque vous avez créé votre compte, assurez-vous d’utiliser le
+        même appareil que celui avec lequel vous avez créé votre compte %{app_name}.
       header: Êtes-vous sûr de vouloir supprimer votre compte?
       help_text: Si vous êtes bloqué et que vous avez toujours besoin d’accéder à
         %{app_name}, essayez plutôt ces étapes.
@@ -55,22 +54,21 @@ fr:
       are_you_sure: Êtes-vous sûr de n’avoir accès à aucune de vos méthodes de sécurité?
       delete_account: Supprimer votre compte
       delete_account_info:
-        - Supprimer votre compte existant et en créer un nouveau vous permet
-          d’utiliser la même adresse e-mail et de définir de nouvelles options
-          de sécurité. cependant, la suppression supprimera toutes les
-          applications d’agence que vous avez liées à votre compte et vous
-          devrez restaurer chaque connexion.
-        - Si vous continuez, vous recevra d’abord un email de confirmation. Par
-          mesure de sécurité, vous devrez recevoir un autre e-mail avec le lien
-          pour continuer la suppression de votre compte 24 heures après l’email
-          de confirmation initial arrive.
+      - Supprimer votre compte existant et en créer un nouveau vous permet d’utiliser
+        la même adresse e-mail et de définir de nouvelles options de sécurité. cependant,
+        la suppression supprimera toutes les applications d’agence que vous avez liées
+        à votre compte et vous devrez restaurer chaque connexion.
+      - Si vous continuez, vous recevra d’abord un email de confirmation. Par mesure
+        de sécurité, vous devrez recevoir un autre e-mail avec le lien pour continuer
+        la suppression de votre compte 24 heures après l’email de confirmation initial
+        arrive.
       info:
-        - Si vous ne pouvez pas accéder à votre compte via les options de
-          sécurité que vous avez définies auparavant, la suppression de votre
-          compte et la création d’un nouveau compte est la seule option.
-        - Nous ne pouvons pas annuler un compte supprimer, alors s’il vous plaît
-          assurez-vous que vous n’avez pas une autre option de sécurité que vous
-          pouvez utiliser à la place.
+      - Si vous ne pouvez pas accéder à votre compte via les options de sécurité que
+        vous avez définies auparavant, la suppression de votre compte et la création
+        d’un nouveau compte est la seule option.
+      - Nous ne pouvons pas annuler un compte supprimer, alors s’il vous plaît assurez-vous
+        que vous n’avez pas une autre option de sécurité que vous pouvez utiliser
+        à la place.
       no_cancel: Annuler
       title: Suppression de compte et réinitialisation
       yes_continue: Oui, continuez la suppression

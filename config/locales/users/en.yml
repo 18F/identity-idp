@@ -9,9 +9,8 @@ en:
         delete: Delete account
       bullet_1: You won’t have a %{app_name} account
       bullet_2_loa1: We’ll delete your email address, password, and phone number
-      bullet_2_loa3: '%{app_name} will delete your email address, password, phone
-        number, name, address, date of birth and Social Security number from our
-        system.'
+      bullet_2_loa3: "%{app_name} will delete your email address, password, phone
+        number, name, address, date of birth and Social Security number from our system."
       bullet_3: You won’t be able to securely access your information using %{app_name}.
       bullet_4: We will notify the agencies you access with %{app_name} that you no
         longer have an account

@@ -7,109 +7,103 @@ es:
         explanation: 'Cuando creó su cuenta le dimos una lista de palabras y le pedimos
           que las guardara en un lugar seguro. Se parecía a esto:'
         intro: Tomamos medidas adicionales para mantener su información personal segura
-          y privada, por lo que restablecer su contraseña requiere un pequeño
-          esfuerzo adicional.
+          y privada, por lo que restablecer su contraseña requiere un pequeño esfuerzo
+          adicional.
         modal:
           copy: Si no tiene su clave personal, verifique su identidad nuevamente.
-          heading: '¿No tienes tu clave personal?'
-        with_key: '¿Tiene su clave personal?'
+          heading: "¿No tienes tu clave personal?"
+        with_key: "¿Tiene su clave personal?"
     forgot_password:
-      close_window: Puede cerrar esta ventana del navegador después que haya
-        restablecido su contraseña.
+      close_window: Puede cerrar esta ventana del navegador después que haya restablecido
+        su contraseña.
     go_back_to_mobile_app: Para continuar, por favor regrese a la %{friendly_name}
       app e inicie una sesión.
     mfa:
       authenticator:
-        confirm_code_html: Ingrese el código de su app de autenticación. Si tiene varias
-          cuentas configuradas en su app, ingrese el código correspondiente a
-          %{email} en %{app_name}.
+        confirm_code_html: Ingrese el código de su app de autenticación. Si tiene
+          varias cuentas configuradas en su app, ingrese el código correspondiente
+          a %{email} en %{app_name}.
         manual_entry: O ingrese este código manualmente en su aplicación de autenticación
       piv_cac:
-        account_not_found_html: '<p><strong>%{sign_in}</strong> con su dirección de
-          correo electrónico y contraseña. Luego agregue su PIV/CAC a su
-          cuenta.</p> <p><strong>¿No tiene una cuenta %{app_name}?</strong>
-          %{create_account}</p>'
-        add_from_sign_in_html: '<strong> Instrucciones: </strong> inserte su PIV o CAC
-          en <strong> “AGREGAR PIV / CAC” </strong>. Tendrá que <strong> elegir
-          un certificado </strong> (el correcto probablemente tenga su nombre) e
-          <strong> ingrese su PIN </strong> (su PIN se creó cuando configuró su
-          PIV / CAC )'
-        already_associated_html: Elige un certificado de una PIV/CAC distinta o ponte en
-          contacto con el administrador para confirmar que tu PIV/CAC está al
-          día. Si cree que se trata de un error, %{try_again}.
+        account_not_found_html: "<p><strong>%{sign_in}</strong> con su dirección de
+          correo electrónico y contraseña. Luego agregue su PIV/CAC a su cuenta.</p>
+          <p><strong>¿No tiene una cuenta %{app_name}?</strong> %{create_account}</p>"
+        add_from_sign_in_html: "<strong> Instrucciones: </strong> inserte su PIV o
+          CAC en <strong> “AGREGAR PIV / CAC” </strong>. Tendrá que <strong> elegir
+          un certificado </strong> (el correcto probablemente tenga su nombre) e <strong>
+          ingrese su PIN </strong> (su PIN se creó cuando configuró su PIV / CAC )"
+        already_associated_html: Elige un certificado de una PIV/CAC distinta o ponte
+          en contacto con el administrador para confirmar que tu PIV/CAC está al día.
+          Si cree que se trata de un error, %{try_again}.
         back_to_sign_in: Regrese para iniciar sesión
         confirm_piv_cac_html: Presenta la PIV/CAC que asociaste con tu cuenta.
         confirm_piv_cac_only_html: Esta aplicación requiere un mayor nivel de seguridad.
-          Debe verificar su identidad con una identificación de empleado del
-          Gobierno que haya configurado previamente para acceder a su
-          información.
-        confirm_piv_cac_or_aal3_html: Esta aplicación requiere un mayor nivel de
-          seguridad. Debe verificar su identidad con un dispositivo físico, como
-          una llave de seguridad o una identificación de empleado del Gobierno
-          (PIV o CAC) para acceder a su información.
-        did_not_work_html: '%{please_try_again}. Comuníquese con el encargado de su
-          organismo si persiste este problema.'
+          Debe verificar su identidad con una identificación de empleado del Gobierno
+          que haya configurado previamente para acceder a su información.
+        confirm_piv_cac_or_aal3_html: Esta aplicación requiere un mayor nivel de seguridad.
+          Debe verificar su identidad con un dispositivo físico, como una llave de
+          seguridad o una identificación de empleado del Gobierno (PIV o CAC) para
+          acceder a su información.
+        did_not_work_html: "%{please_try_again}. Comuníquese con el encargado de su
+          organismo si persiste este problema."
         http_failure: El servidor tardó demasiado en responder. Inténtalo de nuevo.
         no_certificate_html: Asegúrese de su PIV/CAC esté conectada e %{try_again}.
-          Comuníquese con el encargado de su organismo si persiste este
-          problema.
+          Comuníquese con el encargado de su organismo si persiste este problema.
         not_auth_cert_html: El certificado que seleccionó no es válido para esta cuenta.
-          %{please_try_again} con un certificado diferente. Comuníquese con el
-          encargado de su organismo si persiste este problema.
+          %{please_try_again} con un certificado diferente. Comuníquese con el encargado
+          de su organismo si persiste este problema.
         please_try_again: Vuelva a intentarlo
         sign_in: Asegúrese de que <strong>tenga una cuenta %{app_name}</strong> y
-          <strong>haya configurado PIV/CAC</strong> como método de autenticación
-          de dos factores.
+          <strong>haya configurado PIV/CAC</strong> como método de autenticación de
+          dos factores.
         step_1: Darle un apodo
         step_1_info: Si agrega más de un PIV / CAC, sabrá cuál es cuál.
         step_2: Inserte su PIV/CAC en su lector de tarjetas
         step_3: Agregue su PIV/CAC
         step_3_info_html: Tendrá que <strong> elegir un certificado </strong> (el
-          correcto probablemente tenga su nombre) e <strong> ingrese su PIN
-          </strong> (su PIN se creó cuando configuró su PIV/CAC)
+          correcto probablemente tenga su nombre) e <strong> ingrese su PIN </strong>
+          (su PIN se creó cuando configuró su PIV/CAC)
         try_again: inténtelo de nuevo
       sms:
-        confirm_code_html: '¿Necesita otro código? %{resend_code_link}. Puede estar
-          sujeto a cargos de mensajería y datos.'
+        confirm_code_html: "¿Necesita otro código? %{resend_code_link}. Puede estar
+          sujeto a cargos de mensajería y datos."
         number_message_html: Enviamos un código de seguridad al %{number}. Este código
           caducará en %{expiration} minutos.
       voice:
-        confirm_code_html: '¿Desea que le llamemos de nuevo? %{resend_code_link}'
+        confirm_code_html: "¿Desea que le llamemos de nuevo? %{resend_code_link}"
         number_message_html: Acabamos de llamarte en %{number}.
       webauthn:
         confirm_webauthn_html: Presente la clave de seguridad que asoció con su cuenta.
-        confirm_webauthn_only_html: Esta aplicación requiere un mayor nivel de
-          seguridad. Debe verificar su identidad con una llave de seguridad que
-          haya configurado previamente para acceder a su información.
+        confirm_webauthn_only_html: Esta aplicación requiere un mayor nivel de seguridad.
+          Debe verificar su identidad con una llave de seguridad que haya configurado
+          previamente para acceder a su información.
         confirm_webauthn_or_aal3_html: Esta aplicación requiere un mayor nivel de
-          seguridad. Debe verificar su identidad con un dispositivo físico, como
-          una llave de seguridad o una identificación de empleado del Gobierno
-          (PIV o CAC) para acceder a su información.
+          seguridad. Debe verificar su identidad con un dispositivo físico, como una
+          llave de seguridad o una identificación de empleado del Gobierno (PIV o
+          CAC) para acceder a su información.
         confirm_webauthn_platform_html: Tiene activado el desbloqueo facial o táctil
           para su cuenta de %{app_name}.
-      wrong_number: ¿Ingresó el número de teléfono equivocado?
+      wrong_number: "¿Ingresó el número de teléfono equivocado?"
     password:
-      forgot: '¿No sabe su contraseña? Restablézcala después de confirmar su email.'
-      help_text: Cuanto más larga y más inusual sea la contraseña, más difícil es de
-        adivinarla. Así que evite usar frases comunes. También evite repetir
-        contraseñas de otras cuentas en línea, por ejemplo de sus bancos, email
-        y medios sociales.
+      forgot: "¿No sabe su contraseña? Restablézcala después de confirmar su email."
+      help_text: Cuanto más larga y más inusual sea la contraseña, más difícil es
+        de adivinarla. Así que evite usar frases comunes. También evite repetir contraseñas
+        de otras cuentas en línea, por ejemplo de sus bancos, email y medios sociales.
       help_text_header: Consejos de seguridad de contraseña
       info:
-        lead: Su contraseña debe tener al menos %{min_length} caracteres y no ser una
-          contraseña común. ¡Eso es todo!
-      password_key: Si verificó su identidad con esta cuenta, necesita su clave
-        personal de 16 caracteres para restablecer su contraseña. Si no cuenta
-        con ella, de todos modos puede restablecer su contraseña y luego volver
-        a verificar su identidad.
+        lead: Su contraseña debe tener al menos %{min_length} caracteres y no ser
+          una contraseña común. ¡Eso es todo!
+      password_key: Si verificó su identidad con esta cuenta, necesita su clave personal
+        de 16 caracteres para restablecer su contraseña. Si no cuenta con ella, de
+        todos modos puede restablecer su contraseña y luego volver a verificar su
+        identidad.
       strength:
         i: Muy débil
         ii: Débil
         iii: Más o menos
         intro: 'Seguridad de la contraseña:'
         iv: Buena
-        v: '¡Muy buena!'
-    sp_handoff_bounced: Su inicio de sesión fue exitoso, pero %{sp_name} lo envió de
-      regreso a %{app_name}. Póngase en contacto con %{sp_link} para obtener
-      ayuda.
+        v: "¡Muy buena!"
+    sp_handoff_bounced: Su inicio de sesión fue exitoso, pero %{sp_name} lo envió
+      de regreso a %{app_name}. Póngase en contacto con %{sp_link} para obtener ayuda.
     sp_handoff_bounced_with_no_sp: su proveedor de servicios

@@ -4,12 +4,13 @@ en:
     connected_apps:
       associated: Connected %{timestamp}
       description: With your %{app_name} account, you can securely connect to multiple
-        government accounts online. Below is a list of all the accounts you
-        currently have connected.
+        government accounts online. Below is a list of all the accounts you currently
+        have connected.
     email_language:
-      default: '%{language} (default)'
+      default: "%{language} (default)"
       edit_title: Edit email language preference
-      languages_list: '%{app_name} allows you to receive your email communication in %{list}.'
+      languages_list: "%{app_name} allows you to receive your email communication
+        in %{list}."
       name:
         en: English
         es: Spanish
@@ -17,11 +18,10 @@ en:
       sentence_connector: or
       updated: Your email language preference has been updated.
     forget_all_browsers:
-      longer_description: Once you choose to ‘forget all browsers,’ we’ll need
-        additional information to know that it’s actually you signing in to your
-        account. We’ll ask for a multi-factor authentication method (such as
-        text/SMS code or a security key) each time you want to access your
-        account.
+      longer_description: Once you choose to ‘forget all browsers,’ we’ll need additional
+        information to know that it’s actually you signing in to your account. We’ll
+        ask for a multi-factor authentication method (such as text/SMS code or a security
+        key) each time you want to access your account.
     index:
       address: Current address
       auth_app_add: Add app
@@ -33,7 +33,7 @@ en:
       backup_codes_no_exist: Not generated
       continue_to_service_provider: Continue to %{service_provider}
       default: default
-      device: '%{browser} on %{os}'
+      device: "%{browser} on %{os}"
       dob: Date of birth
       email: Email address
       email_add: Add new email
@@ -74,8 +74,8 @@ en:
       ie_not_supported: Internet Explorer 11 will not be supported after %{date}
       piv_cac: Sign in with your government employee ID
     navigation:
-      access_services: Access your government benefits and services from your
-        %{app_name} account.
+      access_services: Access your government benefits and services from your %{app_name}
+        account.
       add_authentication_apps: Add authentication apps
       add_email: Add email address
       add_federal_id: Add federal employee ID
@@ -97,11 +97,11 @@ en:
       your_account: Your Account
     personal_key:
       get_new: Get a new personal key
-      get_new_description: When you receive a new personal key, your old personal key
-        will not work anymore.
-      last_generated: 'Last generated on %{timestamp}'
-      needs_new: Your account needs a new personal key. Your old personal key will not
-        work if you forget your password.
+      get_new_description: When you receive a new personal key, your old personal
+        key will not work anymore.
+      last_generated: Last generated on %{timestamp}
+      needs_new: Your account needs a new personal key. Your old personal key will
+        not work if you forget your password.
       old_key_will_not_work: Please print, copy, or download the new personal key
         below. Your old personal key will not work if you forget your password.
       reset_instructions: Reset your personal key if you don’t have it. You’ll need
@@ -112,10 +112,10 @@ en:
       footer: Authenticate to view your information.
     revoke_consent:
       link_title: Disconnect
-      longer_description_html: Your information will no longer be shared with
-        %{service_provider}. To access %{service_provider} in the future, you
-        must give your consent to share your information. You can give consent
-        by going to the %{service_provider} site and logging in.
+      longer_description_html: Your information will no longer be shared with %{service_provider}.
+        To access %{service_provider} in the future, you must give your consent to
+        share your information. You can give consent by going to the %{service_provider}
+        site and logging in.
     security:
       link: Learn more at the Help Center
       text: Your profile information is locked for your security.

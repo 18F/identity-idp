@@ -8,7 +8,7 @@ en:
     authenticator_disabled: Authenticator app removed
     authenticator_enabled: Authenticator app added
     backup_codes_added: Backup codes added
-    eastern_timestamp: '%{timestamp} (Eastern)'
+    eastern_timestamp: "%{timestamp} (Eastern)"
     email_changed: Email address changed
     email_deleted: Email address deleted
     gpo_mail_sent: Letter sent

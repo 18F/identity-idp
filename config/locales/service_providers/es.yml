@@ -5,10 +5,9 @@ es:
       generic_sp_name: Esta agencia
       inactive:
         button_text: Ver mi cuenta de %{app_name}
-        heading: '%{sp_name} ya no utiliza %{app_name}'
-        instructions: '%{sp_name} ya no utiliza %{app_name} como servicio de acceso a su
-          sitio web. Si ya ha creado una cuenta de %{app_name}, todavía está
-          activa y se puede usar para acceder a otros sitios web del gobierno
-          participante.'
+        heading: "%{sp_name} ya no utiliza %{app_name}"
+        instructions: "%{sp_name} ya no utiliza %{app_name} como servicio de acceso
+          a su sitio web. Si ya ha creado una cuenta de %{app_name}, todavía está
+          activa y se puede usar para acceder a otros sitios web del gobierno participante."
         instructions2: Por favor, visite la agencia para contactarlos y obtener más
           información.

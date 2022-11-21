@@ -10,9 +10,9 @@ fr:
       bullet_1: Vous n’aurez pas de compte %{app_name}.
       bullet_2_loa1: Nous effacerons votre adresse email, votre mot de passe et votre
         numéro de téléphone
-      bullet_2_loa3: '%{app_name} supprimera votre adresse e-mail, votre mot de passe
-        et votre numéro de téléphone, votre nom, votre adresse, votre date de
-        naissance et votre numéro de sécurité sociale de notre système.'
+      bullet_2_loa3: "%{app_name} supprimera votre adresse e-mail, votre mot de passe
+        et votre numéro de téléphone, votre nom, votre adresse, votre date de naissance
+        et votre numéro de sécurité sociale de notre système."
       bullet_3: Vous ne pourrez pas accéder en toute sécurité à vos informations en
         utilisant %{app_name}.
       bullet_4: Nous informerons les agences auxquelles vous accédez avec %{app_name}
@@ -28,7 +28,8 @@ fr:
     phones:
       error_message: Vous avez ajouté le nombre maximum de numéros de téléphone.
     rules_of_use:
-      check_box_to_accept: Cochez cette case pour accepter les règles d’utilisation de %{app_name}
+      check_box_to_accept: Cochez cette case pour accepter les règles d’utilisation
+        de %{app_name}
       details_html: |-
         <div class="bold margin-bottom-1">Règles d’utilisation:</div>
         <ul>

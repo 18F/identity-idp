@@ -1,57 +1,56 @@
 ---
 fr:
   telephony:
-    account_reset_cancellation_notice: Votre demande de suppression de votre compte %{app_name} a été annulée.
+    account_reset_cancellation_notice: Votre demande de suppression de votre compte
+      %{app_name} a été annulée.
     account_reset_notice: Comme demandé, votre compte %{app_name} sera supprimé dans
-      les 24 heures. Vous ne voulez pas supprimer votre compte? Connectez-vous à
-      votre compte %{app_name} pour le annuler.
+      les 24 heures. Vous ne voulez pas supprimer votre compte? Connectez-vous à votre
+      compte %{app_name} pour le annuler.
     authentication_otp:
       sms: |-
         %{app_name}: Votre code de sécurité est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez jamais partager ce code avec personne.
 
         @%{domain} #%{code}
       voice: Bonjour! Votre code de sécurité à utilisation unique de %{app_name} est,
-        %{code}, de nouveau, votre code de sécurité est, %{code}, Ce code
-        expirera dans %{expiration} minutes.
+        %{code}, de nouveau, votre code de sécurité est, %{code}, Ce code expirera
+        dans %{expiration} minutes.
     confirmation_otp:
       sms: |-
         %{app_name}: Votre code de sécurité est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez jamais partager ce code avec personne.
 
         @%{domain} #%{code}
       voice: Bonjour! Votre code de sécurité à utilisation unique de %{app_name} est,
-        %{code}, de nouveau, votre code de sécurité est, %{code}, Ce code
-        expirera dans %{expiration} minutes.
-    doc_auth_link: "%{link} Vous avez demandé à vérifier votre identité sur un
-      téléphone mobile. S'il vous plaît prendre une photo de votre identité
-      émise par l'état"
+        %{code}, de nouveau, votre code de sécurité est, %{code}, Ce code expirera
+        dans %{expiration} minutes.
+    doc_auth_link: "%{link} Vous avez demandé à vérifier votre identité sur un téléphone
+      mobile. S'il vous plaît prendre une photo de votre identité émise par l'état"
     error:
       friendly_message:
-        daily_voice_limit_reached: L'envoi de votre code de sécurité a échoué, car vous
-          avez dépassé le nombre maximal d'appels téléphoniques en 24 heures
-          vers ce numéro de téléphone. Vous pouvez demander un code par SMS ou
-          utiliser un autre numéro pour recevoir un appel téléphonique.
+        daily_voice_limit_reached: L'envoi de votre code de sécurité a échoué, car
+          vous avez dépassé le nombre maximal d'appels téléphoniques en 24 heures
+          vers ce numéro de téléphone. Vous pouvez demander un code par SMS ou utiliser
+          un autre numéro pour recevoir un appel téléphonique.
         duplicate_endpoint: Le numéro de téléphone entré n’est pas valide.
         generic: Échec de l’envoi de votre code de sécurité.
-        invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris en
-          charge. Veuillez essayer par SMS si vous possédez un téléphone
-          disposant de cette fonction.
+        invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris
+          en charge. Veuillez essayer par SMS si vous possédez un téléphone disposant
+          de cette fonction.
         invalid_phone_number: Le numéro de téléphone saisi n’est pas valide.
         opt_out: Le numéro de téléphone entré a désactivé les messages texte.
         permanent_failure: Le numéro de téléphone entré n’est pas valide.
-        sms_unsupported: Le numéro de téléphone saisi ne prend pas en charge les
-          messages textuels. Veuillez essayer l’option d’appel téléphonique.
-        temporary_failure: Nous rencontrons des difficultés techniques. Veuillez
-          réessayer plus tard.
+        sms_unsupported: Le numéro de téléphone saisi ne prend pas en charge les messages
+          textuels. Veuillez essayer l’option d’appel téléphonique.
+        temporary_failure: Nous rencontrons des difficultés techniques. Veuillez réessayer
+          plus tard.
         throttled: Ce nombre connaît un volume de messages élevé. Veuillez réessayer
           plus tard.
         timeout: Le serveur a pris trop de temps pour répondre. Veuillez réessayer.
         unknown_failure: Nous rencontrons des difficultés techniques. Veuillez réessayer
           plus tard.
-        voice_unsupported: Numéro de téléphone invalide. Vérifiez que vous avez entré le
-          bon indicatif international ou régional.
+        voice_unsupported: Numéro de téléphone invalide. Vérifiez que vous avez entré
+          le bon indicatif international ou régional.
     personal_key_regeneration_notice: Une nouvelle clé personnelle a été émise pour
-      votre compte %{app_name}. Si vous ne l'avez pas demandée, réinitialisez
-      votre mot de passe.
-    personal_key_sign_in_notice: Votre clé personnelle a été utilisée pour vous
-      connecter à votre compte %{app_name}. Si ce n'était pas vous, changez
-      votre mot de passe.
+      votre compte %{app_name}. Si vous ne l'avez pas demandée, réinitialisez votre
+      mot de passe.
+    personal_key_sign_in_notice: Votre clé personnelle a été utilisée pour vous connecter
+      à votre compte %{app_name}. Si ce n'était pas vous, changez votre mot de passe.

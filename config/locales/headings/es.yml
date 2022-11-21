@@ -18,11 +18,11 @@ es:
     add_info:
       phone: Agregar un número de teléfono
     cancellations:
-      prompt: '¿Estas seguro que quieres cancelar?'
+      prompt: "¿Estas seguro que quieres cancelar?"
     confirmations:
       new: Enviar otro email de confirmación
     create_account_with_sp:
-      cta: ¿Es la primera vez que utiliza %{app_name}?
+      cta: "¿Es la primera vez que utiliza %{app_name}?"
       sp_text: está utilizando %{app_name} para permitirle iniciar sesión en su cuenta
         de forma segura.
     create_account_without_sp: Establezca una cuenta de %{app_name}
@@ -32,8 +32,9 @@ es:
     passwords:
       change: Cambie su contraseña
       confirm: Confirme la contraseña actual para continuar
-      confirm_for_personal_key: Introduzca la contraseña y obtenga una nueva clave personal
-      forgot: '¿Olvidó su contraseña?'
+      confirm_for_personal_key: Introduzca la contraseña y obtenga una nueva clave
+        personal
+      forgot: "¿Olvidó su contraseña?"
     piv_cac:
       certificate:
         bad: El certificado PIV/CAC que seleccionaste no es válido.
@@ -50,14 +51,14 @@ es:
         missing: Error interno.
     piv_cac_login:
       account_not_found: Su PIV / CAC no está conectado a una cuenta
-      add: Configure su PIV o CAC como un método de autenticación de dos factores para
-        que pueda usarlo para iniciar sesión.
+      add: Configure su PIV o CAC como un método de autenticación de dos factores
+        para que pueda usarlo para iniciar sesión.
       new: Use su PIV / CAC para iniciar sesión en su cuenta
       success: Configuró correctamente PIV/CAC como método de autenticación.
     piv_cac_setup:
       already_associated: La PIV/CAC que has presentado está asociada a otro usuario.
       new: Use su tarjeta PIV/CAC para asegurar su cuenta
-    session_timeout_warning: '¿Necesita más tiempo?'
+    session_timeout_warning: "¿Necesita más tiempo?"
     sign_in_with_sp: Iniciar sesión para continuar con %{sp}
     sign_in_without_sp: Iniciar sesión
     sp_handoff_bounced: Hubo un problema al conectarse a %{sp_name}

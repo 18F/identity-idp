@@ -4,46 +4,42 @@ es:
     alerts:
       phone:
         default: No podemos verificar teléfonos en estos momentos. Por favor, utilice
-          otro método de auntentificación, si cuenta con uno, o inténtelo
-          nuevamente más tarde.
+          otro método de auntentificación, si cuenta con uno, o inténtelo nuevamente
+          más tarde.
         idv: No podemos verificar teléfonos en estos momentos. Por favor, inténtelo
-          nuevamente más tarde o, en lugar de ello, verifique su dirección por
-          correo.
+          nuevamente más tarde o, en lugar de ello, verifique su dirección por correo.
       sms:
         default: No podemos enviar mensajes de texto (SMS) en estos momentos. Puede
-          recibir un código por medio de una llamada telefónica o elegir otro
-          método de auntentificación, si cuenta con uno.
+          recibir un código por medio de una llamada telefónica o elegir otro método
+          de auntentificación, si cuenta con uno.
         idv: No podemos enviar mensajes de texto (SMS) en estos momentos. Puede recibir
-          un código por medio de una llamada telefónica o, en su lugar,
-          verificar su dirección por correo.
+          un código por medio de una llamada telefónica o, en su lugar, verificar
+          su dirección por correo.
       voice:
         default: No podemos enviar llamadas telefónicas en estos momentos. Puede recibir
-          un código por medio de un mensaje de texto (SMS) o elegir otro método
-          de auntentificación, si cuenta con uno.
-        idv: No podemos enviar llamadas telefónicas en estos momentos. Puede recibir un
-          código por medio de un mensaje de texto (SMS) o, en su lugar,
-          verificar su dirección por correo.
+          un código por medio de un mensaje de texto (SMS) o elegir otro método de
+          auntentificación, si cuenta con uno.
+        idv: No podemos enviar llamadas telefónicas en estos momentos. Puede recibir
+          un código por medio de un mensaje de texto (SMS) o, en su lugar, verificar
+          su dirección por correo.
     blocked:
       idv:
-        generic: Debido a problemas técnicos por nuestra parte, no podemos verificar su
-          identidad en estos momentos. Por favor, inténtelo nuevamente más
-          tarde.
-        with_sp: '%{service_provider} necesita asegurarse de que es usted realmente y no
-          alguien que se hace pasar por usted. Lamentablemente, debido a
-          problemas técnicos por nuestra parte, tal vez no podamos verificar su
-          identidad en estos momentos. Por favor, inténtelo nuevamente más
-          tarde.'
-        without_sp: La agencia a la que está intentando acceder debe asegurarse de que
-          usted sea quien dice ser, y no alguien que se hace pasar por usted.
-          Lamentablemente, debido a problemas técnicos por nuestra parte, tal
-          vez no podamos verificar su identidad en estos momentos. Por favor,
-          inténtelo nuevamente más tarde.
+        generic: Debido a problemas técnicos por nuestra parte, no podemos verificar
+          su identidad en estos momentos. Por favor, inténtelo nuevamente más tarde.
+        with_sp: "%{service_provider} necesita asegurarse de que es usted realmente
+          y no alguien que se hace pasar por usted. Lamentablemente, debido a problemas
+          técnicos por nuestra parte, tal vez no podamos verificar su identidad en
+          estos momentos. Por favor, inténtelo nuevamente más tarde."
+        without_sp: La agencia a la que está intentando acceder debe asegurarse de
+          que usted sea quien dice ser, y no alguien que se hace pasar por usted.
+          Lamentablemente, debido a problemas técnicos por nuestra parte, tal vez
+          no podamos verificar su identidad en estos momentos. Por favor, inténtelo
+          nuevamente más tarde.
       phone:
         default: No podemos verificar teléfonos en estos momentos. Por favor, inténtelo
           nuevamente más tarde.
         idv: No podemos verificar teléfonos en estos momentos. Por favor, inténtelo
-          nuevamente más tarde o, en lugar de ello, verifique su dirección por
-          correo.
+          nuevamente más tarde o, en lugar de ello, verifique su dirección por correo.
     get_updates: Obtenga actualizaciones
     get_updates_on_status_page: Reciba actualizaciones en nuestra página de estado
     working: Estamos trabajando para corregir un error

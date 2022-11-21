@@ -1,42 +1,41 @@
 ---
 es:
   telephony:
-    account_reset_cancellation_notice: Su solicitud para eliminar su cuenta de %{app_name} ha sido cancelada.
-    account_reset_notice: Según lo solicitado, su cuenta %{app_name} se eliminará en
-      24 horas. ¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta
-      %{app_name} para cancelar.
+    account_reset_cancellation_notice: Su solicitud para eliminar su cuenta de %{app_name}
+      ha sido cancelada.
+    account_reset_notice: Según lo solicitado, su cuenta %{app_name} se eliminará
+      en 24 horas. ¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta %{app_name}
+      para cancelar.
     authentication_otp:
       sms: |-
         %{app_name}: Su código de seguridad es %{code}. Este código se vence en %{expiration} minutos. No lo comparta con ninguna persona.
 
         @%{domain} #%{code}
-      voice: '¡Hola! Su código de acceso de %{app_name} es, %{code}, nuevamente, su
-        código de acceso es %{code}, Este código caducará en %{expiration}
-        minutos.'
+      voice: "¡Hola! Su código de acceso de %{app_name} es, %{code}, nuevamente, su
+        código de acceso es %{code}, Este código caducará en %{expiration} minutos."
     confirmation_otp:
       sms: |-
         %{app_name}: Su código de seguridad es %{code}. Este código se vence en %{expiration} minutos. No lo comparta con ninguna persona.
 
         @%{domain} #%{code}
-      voice: '¡Hola! Su código de acceso de %{app_name} es, %{code}, nuevamente, su
-        código de acceso es %{code}, Este código caducará en %{expiration}
-        minutos.'
-    doc_auth_link: '%{link} Has solicitado verificar tu identidad en un teléfono
-      móvil. Por favor, tome una foto de la identificación emitida por su
-      estado'
+      voice: "¡Hola! Su código de acceso de %{app_name} es, %{code}, nuevamente, su
+        código de acceso es %{code}, Este código caducará en %{expiration} minutos."
+    doc_auth_link: "%{link} Has solicitado verificar tu identidad en un teléfono móvil.
+      Por favor, tome una foto de la identificación emitida por su estado"
     error:
       friendly_message:
         daily_voice_limit_reached: No se pudo enviar tu código de seguridad porque
-          excediste el número máximo de llamadas telefónicas en 24 horas a este
-          número de teléfono. Puedes solicitar un código por mensaje de texto o
-          utilizar un número diferente para recibir una llamada telefónica.
+          excediste el número máximo de llamadas telefónicas en 24 horas a este número
+          de teléfono. Puedes solicitar un código por mensaje de texto o utilizar
+          un número diferente para recibir una llamada telefónica.
         duplicate_endpoint: El número de teléfono ingresado no es válido.
         generic: Se produjo un error al enviar el código de seguridad.
         invalid_calling_area: No se admiten llamadas a ese número de teléfono. Intenta
           enviar un SMS si tienes un teléfono que permita enviar SMS.
-        invalid_phone_number: El número de teléfono ingresado no está en el formato correcto.
-        opt_out: El número de teléfono ingresado ha sido excluido de los mensajes de
-          texto.
+        invalid_phone_number: El número de teléfono ingresado no está en el formato
+          correcto.
+        opt_out: El número de teléfono ingresado ha sido excluido de los mensajes
+          de texto.
         permanent_failure: El número de teléfono ingresado no es válido.
         sms_unsupported: El número de teléfono ingresado no admite mensajes de texto.
           Pruebe la opción de llamada telefónica.
@@ -47,9 +46,9 @@ es:
         timeout: El servidor tardó demasiado en responder. Inténtalo de nuevo.
         unknown_failure: Estamos experimentando dificultades técnicas. Por favor,
           inténtelo de nuevo más tarde.
-        voice_unsupported: Numero de telefono invalido. Verifique que haya ingresado el
-          código de país o de área correcto.
-    personal_key_regeneration_notice: Se ha emitido una nueva clave personal para tu
-      cuenta %{app_name}. Si no eres tú, restablece tu contraseña.
-    personal_key_sign_in_notice: Su clave personal solo se utilizó para iniciar
-      sesión en su cuenta %{app_name}. Si no fue así, reinicie su contraseña.
+        voice_unsupported: Numero de telefono invalido. Verifique que haya ingresado
+          el código de país o de área correcto.
+    personal_key_regeneration_notice: Se ha emitido una nueva clave personal para
+      tu cuenta %{app_name}. Si no eres tú, restablece tu contraseña.
+    personal_key_sign_in_notice: Su clave personal solo se utilizó para iniciar sesión
+      en su cuenta %{app_name}. Si no fue así, reinicie su contraseña.

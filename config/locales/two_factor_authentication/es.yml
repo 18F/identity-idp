@@ -5,32 +5,32 @@ es:
       cancel_link: Cancelar su solicitud
       link: restablecer su cuenta
       pending_html: Actualmente tiene una solicitud pendiente para eliminar su cuenta.
-        Se necesitan 24 horas desde el momento en que realizó la solicitud para
-        completar el proceso.  Por favor, vuelva más tarde. %{cancel_link}
+        Se necesitan 24 horas desde el momento en que realizó la solicitud para completar
+        el proceso.  Por favor, vuelva más tarde. %{cancel_link}
       successful_cancel: Gracias. Su solicitud para eliminar su cuenta de %{app_name}
         ha sido cancelada.
-      text_html: Si no puede utilizar ninguno de los métodos de autenticación
-        anteriores, puede %{link}.
+      text_html: Si no puede utilizar ninguno de los métodos de autenticación anteriores,
+        puede %{link}.
     backup_code_fallback:
-      question: '¿No tienes tus códigos de seguridad disponibles?'
+      question: "¿No tienes tus códigos de seguridad disponibles?"
     backup_code_header_text: Ingrese su código de seguridad de respaldo
     backup_code_prompt: Puede utilizar este código de seguridad una vez. Después de
       ingresarlo, deberá usar una nueva clave.
-    choose_another_option: '‹ Elige otra opción'
+    choose_another_option: "‹ Elige otra opción"
     header_text: Ingrese su código de seguridad
     important_alert_icon: ícono de aviso importante
     invalid_backup_code: Esa código de respaldo no es válida.
     invalid_otp: Ese código de seguridad no es válido. Puede intentar ingresarlo de
       nuevo o solicitar un nuevo código de seguridad de sólo un uso.
     invalid_personal_key: Esa clave personal no es válida.
-    invalid_piv_cac: Ese PIV/CAC no funcionó. Asegúrese de que sea el PIV/CAC
-      correcto para esta cuenta. Si es así, puede haber un problema con su
-      PIV/CAC, PIN o algo salió mal de nuestra parte. Intente nuevamente o elija
-      otro método de autenticación.
+    invalid_piv_cac: Ese PIV/CAC no funcionó. Asegúrese de que sea el PIV/CAC correcto
+      para esta cuenta. Si es así, puede haber un problema con su PIV/CAC, PIN o algo
+      salió mal de nuestra parte. Intente nuevamente o elija otro método de autenticación.
     login_intro: Usted configuró esto cuando creó su cuenta.
     login_options:
       auth_app: Aplicación de autenticación
-      auth_app_info: Use su aplicación de autenticación para obtener el código de seguridad.
+      auth_app_info: Use su aplicación de autenticación para obtener el código de
+        seguridad.
       backup_code: Códigos de respaldo
       backup_code_info: Use un código de respaldo de su lista de códigos de respaldo
         para iniciar sesión.
@@ -40,58 +40,57 @@ es:
       piv_cac: Empleados del Gobierno
       piv_cac_info: Use su tarjeta PIV / CAC para asegurar su cuenta.
       sms: Mensaje de texto / SMS
-      sms_info_html: Obtenga su código de seguridad a través de mensajes de texto /
-        SMS a <strong>%{phone}</strong>.
+      sms_info_html: Obtenga su código de seguridad a través de mensajes de texto
+        / SMS a <strong>%{phone}</strong>.
       voice: Llamada telefónica automatizada
-      voice_info_html: Obtenga su código de seguridad a través de una llamada
-        telefónica a <strong>%{phone}</strong>. (Solo números de teléfono de
-        América del Norte).
+      voice_info_html: Obtenga su código de seguridad a través de una llamada telefónica
+        a <strong>%{phone}</strong>. (Solo números de teléfono de América del Norte).
       webauthn: Llave de seguridad
       webauthn_info: Use su llave de seguridad para acceder a su cuenta.
       webauthn_platform: Desbloqueo facial o táctil
-      webauthn_platform_info: Su dispositivo escanea su cara o huella dactilar y
-        confirma que la información coincide con las imágenes que ya tiene
-        guardadas en su dispositivo. Nosotros no copiamos ni guardamos dichas
-        imágenes.
+      webauthn_platform_info: Su dispositivo escanea su cara o huella dactilar y confirma
+        que la información coincide con las imágenes que ya tiene guardadas en su
+        dispositivo. Nosotros no copiamos ni guardamos dichas imágenes.
     login_options_link_text: Elige otra opción de seguridad
     login_options_title: Seleccione su opción de seguridad
-    max_backup_code_login_attempts_reached: Para su seguridad, su cuenta está
-      bloqueada temporalmente porque ha ingresado el código de respaldo
-      incorrectamente muchas veces.
-    max_generic_login_attempts_reached: Para su seguridad, su cuenta está bloqueada temporalmente.
+    max_backup_code_login_attempts_reached: Para su seguridad, su cuenta está bloqueada
+      temporalmente porque ha ingresado el código de respaldo incorrectamente muchas
+      veces.
+    max_generic_login_attempts_reached: Para su seguridad, su cuenta está bloqueada
+      temporalmente.
     max_otp_login_attempts_reached: Para su seguridad, su cuenta ha sido bloqueada
-      temporalmente porque ha ingresado incorrectamente el código de seguridad
-      de sólo un uso demasiadas veces.
-    max_otp_requests_reached: Para su seguridad, su cuenta ha sido bloqueada
-      temporalmente porque ha solicitado un código de seguridad demasiadas veces
-      más de lo permitido.
+      temporalmente porque ha ingresado incorrectamente el código de seguridad de
+      sólo un uso demasiadas veces.
+    max_otp_requests_reached: Para su seguridad, su cuenta ha sido bloqueada temporalmente
+      porque ha solicitado un código de seguridad demasiadas veces más de lo permitido.
     max_personal_key_login_attempts_reached: Para su seguridad, su cuenta ha sido
-      bloqueada temporalmente porque ha ingresado incorrectamente la clave
-      personal demasiadas veces.
+      bloqueada temporalmente porque ha ingresado incorrectamente la clave personal
+      demasiadas veces.
     max_piv_cac_login_attempts_reached: Por tu seguridad, tu cuenta está bloqueada
-      temporalmente dado que has presentado las credenciales de tu piv/cac de
-      forma incorrecta demasiadas veces.
+      temporalmente dado que has presentado las credenciales de tu piv/cac de forma
+      incorrecta demasiadas veces.
     mobile_terms_of_service: Condiciones de servicio móvil
-    no_auth_option: No se pudo encontrar ninguna opción de autenticación para iniciar sesión
+    no_auth_option: No se pudo encontrar ninguna opción de autenticación para iniciar
+      sesión
     opt_in:
-      cant_use_phone: '¿No puede utilizar su teléfono?'
-      error_retry: 'Lo sentimos, estamos teniendo problemas para aceptarlo. Por favor,
-        inténtelo de nuevo.'
-      opted_out_html: 'Ha optado por no recibir mensajes de texto en el
-        %{phone_number}. Puede optar por recibir un código de seguridad de nuevo
-        a ese número de teléfono.'
-      opted_out_last_30d_html: 'Canceló su suscripción para recibir mensajes de texto
-        al %{phone_number} en los últimos 30 días. Solo podemos suscribir un
-        número telefónico una vez cada 30 días.'
-      title: 'No hemos podido enviar un código de seguridad a su número de teléfono'
-      wait_30d_opt_in: 'Después de 30 días, podrá inscribirse y recibir un código de
-        seguridad para ese número de teléfono.'
+      cant_use_phone: "¿No puede utilizar su teléfono?"
+      error_retry: Lo sentimos, estamos teniendo problemas para aceptarlo. Por favor,
+        inténtelo de nuevo.
+      opted_out_html: Ha optado por no recibir mensajes de texto en el %{phone_number}.
+        Puede optar por recibir un código de seguridad de nuevo a ese número de teléfono.
+      opted_out_last_30d_html: Canceló su suscripción para recibir mensajes de texto
+        al %{phone_number} en los últimos 30 días. Solo podemos suscribir un número
+        telefónico una vez cada 30 días.
+      title: No hemos podido enviar un código de seguridad a su número de teléfono
+      wait_30d_opt_in: Después de 30 días, podrá inscribirse y recibir un código de
+        seguridad para ese número de teléfono.
     otp_delivery_preference:
       instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
       no_supported_options: No podemos verificar los números de teléfono de %{location}
       sms: Mensaje de texto (SMS, sigla en inglés)
-      sms_unsupported: No podemos enviar mensajes de texto a números de teléfono de %{location}.
-      title: '¿Cómo deberíamos enviarle un código?'
+      sms_unsupported: No podemos enviar mensajes de texto a números de teléfono de
+        %{location}.
+      title: "¿Cómo deberíamos enviarle un código?"
       voice: Llamada telefónica
       voice_unsupported: No podemos llamar a números de teléfono en %{location}.
     otp_make_default_number:
@@ -101,36 +100,36 @@ es:
       one_number_instruction: Debes tener más de un número de teléfono agregado para
         seleccionar un número de teléfono predeterminado.
       one_number_title: Este es tu número predeterminado
-      title: '¿Es este tu número de teléfono predeterminado?'
+      title: "¿Es este tu número de teléfono predeterminado?"
     personal_key_fallback:
-      question: '¿No tiene su clave personal?'
+      question: "¿No tiene su clave personal?"
     personal_key_header_text: Ingrese su clave personal
-    personal_key_prompt: Puede usar esta clave personal una vez. Después de
-      ingresarlo, se le dará una nueva clave.
+    personal_key_prompt: Puede usar esta clave personal una vez. Después de ingresarlo,
+      se le dará una nueva clave.
     phone:
       delete:
         failure: No se puede eliminar el teléfono.
         success: Su teléfono ha sido eliminado.
     phone_fallback:
-      question: '¿No puede utilizar su teléfono?'
+      question: "¿No puede utilizar su teléfono?"
     phone_fee_disclosure: Se pueden aplicar tarifas por mensajes y datos.
-    phone_info_html: Le enviaremos o llamaremos con un código de seguridad
-      <strong>cada vez que inicie sesión</strong>.
+    phone_info_html: Le enviaremos o llamaremos con un código de seguridad <strong>cada
+      vez que inicie sesión</strong>.
     phone_label: Número de teléfono
     piv_cac_fallback:
-      question: '¿No tienes su PIV o CAC disponibles?'
+      question: "¿No tienes su PIV o CAC disponibles?"
     piv_cac_header_text: Presenta tu PIV/CAC
     piv_cac_webauthn_available: Utilice su llave de seguridad
     please_try_again_html: Inténtelo de nuevo en <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Conozca la autenticación de dos factores
     totp_fallback:
-      question: '¿No tiene su aplicación de autenticación?'
+      question: "¿No tiene su aplicación de autenticación?"
     totp_header_text: Ingrese su código de la app de autenticación
     two_factor_aal3_choice: Se requiere autenticación adicional
-    two_factor_aal3_choice_intro: Esta aplicación requiere un mayor nivel de
-      seguridad. Debe verificar su identidad con un dispositivo físico, como una
-      llave de seguridad o una identificación de empleado del Gobierno (PIV o
-      CAC) para acceder a su información.
+    two_factor_aal3_choice_intro: Esta aplicación requiere un mayor nivel de seguridad.
+      Debe verificar su identidad con un dispositivo físico, como una llave de seguridad
+      o una identificación de empleado del Gobierno (PIV o CAC) para acceder a su
+      información.
     two_factor_choice: Configuración del método de autenticación
     two_factor_choice_intro: Agregue un nivel adicional de seguridad usando una de
       las siguientes opciones de autenticación de múltiples factores.
@@ -140,64 +139,61 @@ es:
         para generar códigos seguros.
       backup_code: Códigos de respaldo
       backup_code_info: Una lista de 10 códigos que puede imprimir o guardar en su
-        dispositivo. Generaremos una nueva lista cuando haya usado el último
-        código. Tenga presente que los códigos de seguridad pueden perderse con
-        facilidad.
+        dispositivo. Generaremos una nueva lista cuando haya usado el último código.
+        Tenga presente que los códigos de seguridad pueden perderse con facilidad.
       configurations_added:
-        one: '(%{count} añadido)'
-        other: '(%{count} añadido)'
+        one: "(%{count} añadido)"
+        other: "(%{count} añadido)"
       phone: Mensaje de texto o de voz
-      phone_info: Recibir un código seguro por medio de un mensaje de texto (SMS) o
-        una llamada telefónica.
+      phone_info: Recibir un código seguro por medio de un mensaje de texto (SMS)
+        o una llamada telefónica.
       phone_info_html: Recibir un código seguro por medio de un mensaje de texto (SMS)
-        o una llamada telefónica. <strong>Para esta opción es necesario que
-        elija un método de autenticación adicional.</strong>
-      phone_info_no_voip: Se prohíbe el uso de servicios telefónicos basados en la web
-        (VOIP) o de números de teléfono de tarificación adicional (de pago).
+        o una llamada telefónica. <strong>Para esta opción es necesario que elija
+        un método de autenticación adicional.</strong>
+      phone_info_no_voip: Se prohíbe el uso de servicios telefónicos basados en la
+        web (VOIP) o de números de teléfono de tarificación adicional (de pago).
       piv_cac: Identificación de empleado gubernamental
-      piv_cac_info: Credenciales PIV/CAC para empleados gubernamentales y del
-        ejército. Únicamente versión de escritorio.
+      piv_cac_info: Credenciales PIV/CAC para empleados gubernamentales y del ejército.
+        Únicamente versión de escritorio.
       sms: Mensaje de texto / SMS
       sms_info: Obtenga su código de seguridad a través de mensajes de texto / SMS.
       unused_backup_code:
-        one: '(%{count} código sin usar)'
-        other: '(%{count} códigos sin usar)'
+        one: "(%{count} código sin usar)"
+        other: "(%{count} códigos sin usar)"
       voice: Llamada telefónica
       voice_info: Obtenga su código de seguridad a través de una llamada telefónica.
       webauthn: Clave de seguridad
-      webauthn_info: Un dispositivo físico que suele tener la forma de una unidad USB
-        y se conecta a su dispositivo.
+      webauthn_info: Un dispositivo físico que suele tener la forma de una unidad
+        USB y se conecta a su dispositivo.
       webauthn_platform: Desbloqueo facial o táctil
-      webauthn_platform_info: Su dispositivo escanea su cara o huella dactilar y
-        confirma que la información coincide con las imágenes que ya tiene
-        guardadas en su dispositivo. Nosotros no copiamos ni guardamos dichas
-        imágenes.
+      webauthn_platform_info: Su dispositivo escanea su cara o huella dactilar y confirma
+        que la información coincide con las imágenes que ya tiene guardadas en su
+        dispositivo. Nosotros no copiamos ni guardamos dichas imágenes.
     two_factor_hspd12_choice: Se requiere autenticación adicional
-    two_factor_hspd12_choice_intro: Esta aplicación requiere un mayor nivel de
-      seguridad. Para poder acceder a su información, deberá verificar su
-      identidad a través de un dispositivo físico como una clave de seguridad o
-      identificación de empleado gubernamental (PIV/CAC)
+    two_factor_hspd12_choice_intro: Esta aplicación requiere un mayor nivel de seguridad.
+      Para poder acceder a su información, deberá verificar su identidad a través
+      de un dispositivo físico como una clave de seguridad o identificación de empleado
+      gubernamental (PIV/CAC)
     webauthn_error:
       additional_methods_link: elija otro método de autenticación
-      error_page_text: Tiene habilitado el desbloqueo facial o táctil para esta
-        cuenta. Utilice cada vez el mismo dispositivo y perfil de navegador.
-      multiple_methods: El desbloqueo facial o táctil no fue exitoso. Por favor,
-        inténtelo de nuevo o %{link}.
+      error_page_text: Tiene habilitado el desbloqueo facial o táctil para esta cuenta.
+        Utilice cada vez el mismo dispositivo y perfil de navegador.
+      multiple_methods: El desbloqueo facial o táctil no fue exitoso. Por favor, inténtelo
+        de nuevo o %{link}.
       title: No podemos reconocer su dispositivo
     webauthn_fallback:
-      question: '¿No dispone de su llave de seguridad?'
+      question: "¿No dispone de su llave de seguridad?"
     webauthn_header_text: Conecte su llave de seguridad
     webauthn_piv_available: Utilice su PIV o CAC
     webauthn_platform_fallback:
-      question: '¿No dispone de tu dispositivo?'
+      question: "¿No dispone de tu dispositivo?"
     webauthn_platform_header_text: Usar desbloqueo facial o táctil
     webauthn_platform_use_key: Usar desbloqueo facial o táctil
     webauthn_platform_verified:
       header: Dispositivo verificado
-      info: Hemos verificado su dispositivo. Haga clic en continuar para iniciar
-        sesión.
+      info: Hemos verificado su dispositivo. Haga clic en continuar para iniciar sesión.
     webauthn_use_key: Usar llave de seguridad
     webauthn_verified:
       header: Llave de seguridad verificada
-      info: Hemos verificado su llave de seguridad. Haga clic en continuar para
-        iniciar sesión.
+      info: Hemos verificado su llave de seguridad. Haga clic en continuar para iniciar
+        sesión.

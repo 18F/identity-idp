@@ -5,10 +5,10 @@ fr:
       reactivate:
         begin: Démarrons.
         explanation: 'Lorsque vous avez créé votre compte, nous vous avons donné une
-          liste de mots et vous avons demandé de les placer en lieu sûr. La
-          liste était similaire à ceci:'
-        intro: Nous en faisons un peu plus pour garder votre information sécurisée et
-          confidentielle, alors réinitialiser votre mot de passe demande un peu
+          liste de mots et vous avons demandé de les placer en lieu sûr. La liste
+          était similaire à ceci:'
+        intro: Nous en faisons un peu plus pour garder votre information sécurisée
+          et confidentielle, alors réinitialiser votre mot de passe demande un peu
           plus d’effort.
         modal:
           copy: Si vous n’avez pas votre clé personnelle, vous devrez vérifier votre
@@ -18,100 +18,94 @@ fr:
     forgot_password:
       close_window: Vous pourrez fermer cette fenêtre de navigateur lorsque vous aurez
         réinitialisé votre mot de passe.
-    go_back_to_mobile_app: Pour continuer, veuillez retourner à l’application
-      %{friendly_name} et vous connecter.
+    go_back_to_mobile_app: Pour continuer, veuillez retourner à l’application %{friendly_name}
+      et vous connecter.
     mfa:
       authenticator:
-        confirm_code_html: Entrez le code à partir de votre application
-          d’authentification. Si vous avez plusieurs comptes configurés dans
-          votre application, entrez le code correspondant à %{email} à
-          %{app_name}.
-        manual_entry: Ou entrez ce code manuellement dans votre application
-          d’authentification
+        confirm_code_html: Entrez le code à partir de votre application d’authentification.
+          Si vous avez plusieurs comptes configurés dans votre application, entrez
+          le code correspondant à %{email} à %{app_name}.
+        manual_entry: Ou entrez ce code manuellement dans votre application d’authentification
       piv_cac:
-        account_not_found_html: '<p><strong>%{sign_in}</strong> votre adresse email et
-          votre mot de passe. Ajoutez ensuite votre PIV/CAC à votre compte.</p>
-          <p><strong>Vous n’avez pas de compte %{app_name}?</strong>
-          %{create_account}</p>'
-        add_from_sign_in_html: '<strong> Instructions: </ strong> insérez votre PIV ou
-          votre CAC dans <strong> “AJOUTER PIV / CAC” </ strong>. Vous devez
-          <strong> choisir un certificat </ strong> (le bon en a probablement
-          votre nom) et <strong> saisir votre code confidentiel </ strong>
-          (votre code confidentiel a été créé lors de la configuration de votre
-          PIV / CAC). ).'
+        account_not_found_html: "<p><strong>%{sign_in}</strong> votre adresse email
+          et votre mot de passe. Ajoutez ensuite votre PIV/CAC à votre compte.</p>
+          <p><strong>Vous n’avez pas de compte %{app_name}?</strong> %{create_account}</p>"
+        add_from_sign_in_html: "<strong> Instructions: </ strong> insérez votre PIV
+          ou votre CAC dans <strong> “AJOUTER PIV / CAC” </ strong>. Vous devez <strong>
+          choisir un certificat </ strong> (le bon en a probablement votre nom) et
+          <strong> saisir votre code confidentiel </ strong> (votre code confidentiel
+          a été créé lors de la configuration de votre PIV / CAC). )."
         already_associated_html: Veuillez choisir un certificat associé à une autre
-          carte PIV/CAC ou contactez votre administrateur afin de vérifier que
-          votre carte PIV/CAC est bien à jour. Si vous pensez que c’est une
-          erreur, %{try_again}.
+          carte PIV/CAC ou contactez votre administrateur afin de vérifier que votre
+          carte PIV/CAC est bien à jour. Si vous pensez que c’est une erreur, %{try_again}.
         back_to_sign_in: Retourner à vous connecter
         confirm_piv_cac_html: Veuillez présenter la carte PIV/CAC que vous avez associée
           à votre compte.
         confirm_piv_cac_only_html: Cette application nécessite un niveau de sécurité
-          plus élevé. Vous devez vérifier votre identité à l’aide d’un badge
-          d’employé du gouvernement que vous avez précédemment configuré pour
-          accéder à vos informations.
+          plus élevé. Vous devez vérifier votre identité à l’aide d’un badge d’employé
+          du gouvernement que vous avez précédemment configuré pour accéder à vos
+          informations.
         confirm_piv_cac_or_aal3_html: Cette application nécessite un niveau de sécurité
-          plus élevé. Vous devez vérifier votre identité à l’aide d’un
-          dispositif physique tel qu’une clé de sécurité ou un badge d’employé
-          du gouvernement (PIV ou CAC) pour accéder à vos informations.
+          plus élevé. Vous devez vérifier votre identité à l’aide d’un dispositif
+          physique tel qu’une clé de sécurité ou un badge d’employé du gouvernement
+          (PIV ou CAC) pour accéder à vos informations.
         did_not_work_html: Veuillez %{please_try_again}. Si ce problème persiste,
           contactez l’administrateur de votre agence.
         http_failure: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
-        no_certificate_html: Veuillez vous assurer que votre PIV/CAC est connecté et
-          %{try_again}. Si ce problème persiste, contactez l’administrateur de
+        no_certificate_html: Veuillez vous assurer que votre PIV/CAC est connecté
+          et %{try_again}. Si ce problème persiste, contactez l’administrateur de
           votre agence.
         not_auth_cert_html: Le certificat que vous avez sélectionné n’est pas valide
-          pour ce compte. Veuillez %{please_try_again} avec un autre certificat.
-          Si ce problème persiste, contactez l’administrateur de votre agence.
+          pour ce compte. Veuillez %{please_try_again} avec un autre certificat. Si
+          ce problème persiste, contactez l’administrateur de votre agence.
         please_try_again: réessayer
         sign_in: Assurez-vous que <strong>vous disposez d’un compte %{app_name}</strong>
-          et que <strong>vous avez configuré PIV/CAC</strong> en tant que
-          méthode d’authentification à deux facteurs.
+          et que <strong>vous avez configuré PIV/CAC</strong> en tant que méthode
+          d’authentification à deux facteurs.
         step_1: Donnez-lui un surnom
         step_1_info: Si vous ajoutez plus d’un PIV / CAC, vous saurez lequel.
         step_2: Insérez votre PIV/CAC dans votre lecteur de carte
         step_3: Ajoutez votre PIV/CAC
-        step_3_info_html: Vous devrez <strong> choisir un certificat </strong> (celui de
-          droite contient probablement votre nom) et <strong> entrer votre code
-          PIN </strong> (votre code PIN a été créé lors de la configuration de
-          votre PIV / CAC ).
+        step_3_info_html: Vous devrez <strong> choisir un certificat </strong> (celui
+          de droite contient probablement votre nom) et <strong> entrer votre code
+          PIN </strong> (votre code PIN a été créé lors de la configuration de votre
+          PIV / CAC ).
         try_again: réessayer
       sms:
-        confirm_code_html: Vous avez besoin d’un autre code? %{resend_code_link}. Les
-          frais liés aux messages texte peuvent s’appliquer.
-        number_message_html: Nous avons envoyé un code de sécurité au %{number}. Ce code
-          expirera dans %{expiration} minutes.
+        confirm_code_html: Vous avez besoin d’un autre code? %{resend_code_link}.
+          Les frais liés aux messages texte peuvent s’appliquer.
+        number_message_html: Nous avons envoyé un code de sécurité au %{number}. Ce
+          code expirera dans %{expiration} minutes.
       voice:
         confirm_code_html: Vous voulez que nous vous appelions de nouveau? %{resend_code_link}
         number_message_html: Nous venons de vous appeler à %{number}.
       webauthn:
         confirm_webauthn_html: Présentez la clé de sécurité associée à votre compte.
         confirm_webauthn_only_html: Cette application nécessite un niveau de sécurité
-          plus élevé. Vous devez vérifier votre identité à l’aide d’une clé de
-          sécurité que vous avez précédemment configurée pour accéder à vos
-          informations.
+          plus élevé. Vous devez vérifier votre identité à l’aide d’une clé de sécurité
+          que vous avez précédemment configurée pour accéder à vos informations.
         confirm_webauthn_or_aal3_html: Cette application nécessite un niveau de sécurité
-          plus élevé. Vous devez vérifier votre identité à l’aide d’un
-          dispositif physique tel qu’une clé de sécurité ou un badge d’employé
-          du gouvernement (PIV ou CAC) pour accéder à vos informations.
-        confirm_webauthn_platform_html: Vous avez activé le déverrouillage facial ou
-          tactile pour votre compte %{app_name}.
+          plus élevé. Vous devez vérifier votre identité à l’aide d’un dispositif
+          physique tel qu’une clé de sécurité ou un badge d’employé du gouvernement
+          (PIV ou CAC) pour accéder à vos informations.
+        confirm_webauthn_platform_html: Vous avez activé le déverrouillage facial
+          ou tactile pour votre compte %{app_name}.
       wrong_number: Vous avez entré un mauvais numéro de téléphone?
     password:
       forgot: Vous ne connaissez pas votre mot de passe? Réinitialisez-le après avoir
         confirmé votre adresse courriel.
-      help_text: Plus long et inhabituel est le mot de passe, plus difficile il sera à
-        trouver. Évitez donc d’utiliser des phrases communes. Évitez aussi de
-        répéter des mots de passe d’autres comptes en ligne comme les comptes
-        bancaires, les comptes courriel et les comptes de médias sociaux.
+      help_text: Plus long et inhabituel est le mot de passe, plus difficile il sera
+        à trouver. Évitez donc d’utiliser des phrases communes. Évitez aussi de répéter
+        des mots de passe d’autres comptes en ligne comme les comptes bancaires, les
+        comptes courriel et les comptes de médias sociaux.
       help_text_header: Conseils sur la sécurité du mot de passe
       info:
-        lead: Il doit avoir une longueur minimale de %{min_length} caractères et ne pas
-          être un mot de passe couramment utilisé. C’est tout!
+        lead: Il doit avoir une longueur minimale de %{min_length} caractères et ne
+          pas être un mot de passe couramment utilisé. C’est tout!
       password_key: Vous avez besoin de votre clé personnelle de 16 caractères pour
-        réinitialiser votre mot de passe si vous avez vérifié votre identité
-        avec ce compte. Si vous ne l’avez pas, vous pouvez toujours
-        réinitialiser votre mot de passe et ensuite revérifier votre identité.
+        réinitialiser votre mot de passe si vous avez vérifié votre identité avec
+        ce compte. Si vous ne l’avez pas, vous pouvez toujours réinitialiser votre
+        mot de passe et ensuite revérifier votre identité.
       strength:
         i: Très faible
         ii: Faible

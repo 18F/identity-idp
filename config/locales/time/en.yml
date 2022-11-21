@@ -2,37 +2,37 @@
 en:
   date:
     day_names:
-      - Monday
-      - Tuesday
-      - Wednesday
-      - Thursday
-      - Friday
-      - Saturday
-      - Sunday
+    - Monday
+    - Tuesday
+    - Wednesday
+    - Thursday
+    - Friday
+    - Saturday
+    - Sunday
     formats:
-      long: '%B %-d, %Y'
+      long: "%B %-d, %Y"
     month_names:
-      - null
-      - January
-      - February
-      - March
-      - April
-      - May
-      - June
-      - July
-      - August
-      - September
-      - October
-      - November
-      - December
-    range: '%{from} to %{to}'
+    -
+    - January
+    - February
+    - March
+    - April
+    - May
+    - June
+    - July
+    - August
+    - September
+    - October
+    - November
+    - December
+    range: "%{from} to %{to}"
   time:
     am: AM
     formats:
-      event_date: '%B %-d, %Y'
-      event_time: '%-l:%M %p'
-      event_timestamp: '%B %-d, %Y at %-l:%M %p'
-      event_timestamp_js: '%{month} %{day}, %{year} at %{hour}:%{minute} %{day_period}'
-      event_timestamp_utc: '%B %-d, %Y at %-l:%M %p UTC'
-      event_timestamp_with_zone: '%B %-d, %Y at %-l:%M %p %Z'
+      event_date: "%B %-d, %Y"
+      event_time: "%-l:%M %p"
+      event_timestamp: "%B %-d, %Y at %-l:%M %p"
+      event_timestamp_js: "%{month} %{day}, %{year} at %{hour}:%{minute} %{day_period}"
+      event_timestamp_utc: "%B %-d, %Y at %-l:%M %p UTC"
+      event_timestamp_with_zone: "%B %-d, %Y at %-l:%M %p %Z"
     pm: PM

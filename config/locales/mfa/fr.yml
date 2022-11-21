@@ -7,23 +7,20 @@ fr:
     additional_mfa_required:
       button: Ajoutez une méthode d’authentification
       heading: Ajoutez une autre méthode d’authentification.
-      info: À partir du %{date}, vous devrez ajouter une autre méthode
-        d’authentification au cas où vous perdriez l’accès à votre téléphone.
-        L’ajout d’une autre méthode d’authentification vous permet d’éviter le
-        verrouillage de votre compte. En savoir plus sur les options
-        d’authentification.
+      info: À partir du %{date}, vous devrez ajouter une autre méthode d’authentification
+        au cas où vous perdriez l’accès à votre téléphone. L’ajout d’une autre méthode
+        d’authentification vous permet d’éviter le verrouillage de votre compte. En
+        savoir plus sur les options d’authentification.
       learn_more: En savoir plus sur les options d’authentification
-      non_restricted_required_info: Vous êtes tenu d’ajouter une autre méthode
-        d’authentification comme moyen de secours au cas où vous n’auriez plus
-        accès à votre téléphone.
+      non_restricted_required_info: Vous êtes tenu d’ajouter une autre méthode d’authentification
+        comme moyen de secours au cas où vous n’auriez plus accès à votre téléphone.
       title: Ajouter une autre méthode d’authentification avant le %{date}
-    info: Ajoutez une autre couche de sécurité en sélectionnant une méthode
-      d’authentification multi-facteurs. Nous vous recommandons de sélectionner
-      au moins deux options différentes au cas où vous perdriez l’une de vos
-      méthodes.
+    info: Ajoutez une autre couche de sécurité en sélectionnant une méthode d’authentification
+      multi-facteurs. Nous vous recommandons de sélectionner au moins deux options
+      différentes au cas où vous perdriez l’une de vos méthodes.
     second_method_warning:
       link: Ajoutez une deuxième méthode d’authentification.
       text: Vous devrez supprimer votre compte et recommencer si vous perdez votre
         seule méthode d’authentification.
-    skip: ​​Ignorer pour le moment
+    skip: "​​Ignorer pour le moment"
     skip_once: Passer une fois

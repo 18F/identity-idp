@@ -5,8 +5,8 @@ en:
       cancel_link: Cancel your request
       link: reset your account
       pending_html: You currently have a pending request to delete your account. It
-        takes 24 hours from the time you made the request to complete the
-        process. Please check back later. %{cancel_link}
+        takes 24 hours from the time you made the request to complete the process.
+        Please check back later. %{cancel_link}
       successful_cancel: Thank you. Your request to delete your %{app_name} account
         has been cancelled.
       text_html: If you can’t use any of the authentication methods above, you can
@@ -14,19 +14,18 @@ en:
     backup_code_fallback:
       question: Don’t have your backup codes available?
     backup_code_header_text: Enter your backup security code
-    backup_code_prompt: You can use this security code once. After you enter it,
-      you’ll need to use a new key.
-    choose_another_option: '‹ Choose another option'
+    backup_code_prompt: You can use this security code once. After you enter it, you’ll
+      need to use a new key.
+    choose_another_option: "‹ Choose another option"
     header_text: Enter your security code
     important_alert_icon: important alert icon
     invalid_backup_code: That backup code is invalid.
-    invalid_otp: That security code is invalid. You can try entering it again or
-      request a new one-time security code.
+    invalid_otp: That security code is invalid. You can try entering it again or request
+      a new one-time security code.
     invalid_personal_key: That personal key is invalid.
     invalid_piv_cac: That PIV/CAC didn’t work. Make sure it’s the right PIV/CAC for
-      this account. If it is, there may be a problem with your PIV/CAC, PIN, or
-      something went wrong on our end. Try again or choose another
-      authentication method.
+      this account. If it is, there may be a problem with your PIV/CAC, PIN, or something
+      went wrong on our end. Try again or choose another authentication method.
     login_intro: You set these up when you created your account.
     login_options:
       auth_app: Authentication app
@@ -34,7 +33,8 @@ en:
       backup_code: Backup codes
       backup_code_info: Use a backup code from your list of backup codes to sign in.
       personal_key: Personal Key
-      personal_key_info: Use the 16 character personal key you received at account creation.
+      personal_key_info: Use the 16 character personal key you received at account
+        creation.
       piv_cac: Government employee ID
       piv_cac_info: Use your PIV/CAC card instead of a security code.
       sms: Text message
@@ -46,38 +46,36 @@ en:
       webauthn_info: Use your security key to access your account.
       webauthn_platform: Face or touch unlock
       webauthn_platform_info: Your device scans your face or fingerprint and confirms
-        the information is a match to the images you already have stored on your
-        device. We do not copy or store these images.
+        the information is a match to the images you already have stored on your device.
+        We do not copy or store these images.
     login_options_link_text: Choose another authentication method
     login_options_title: Select your authentication method
-    max_backup_code_login_attempts_reached: For your security, your account is
-      temporarily locked because you have entered the backup code incorrectly
-      too many times.
-    max_generic_login_attempts_reached: For your security, your account is temporarily locked.
+    max_backup_code_login_attempts_reached: For your security, your account is temporarily
+      locked because you have entered the backup code incorrectly too many times.
+    max_generic_login_attempts_reached: For your security, your account is temporarily
+      locked.
     max_otp_login_attempts_reached: For your security, your account is temporarily
-      locked because you have entered the one-time security code incorrectly too
-      many times.
+      locked because you have entered the one-time security code incorrectly too many
+      times.
     max_otp_requests_reached: For your security, your account is temporarily locked
       because you have requested a security code too many times.
-    max_personal_key_login_attempts_reached: For your security, your account is
-      temporarily locked because you have entered the personal key incorrectly
-      too many times.
-    max_piv_cac_login_attempts_reached: For your security, your account is
-      temporarily locked because you have presented your piv/cac credential
-      incorrectly too many times.
+    max_personal_key_login_attempts_reached: For your security, your account is temporarily
+      locked because you have entered the personal key incorrectly too many times.
+    max_piv_cac_login_attempts_reached: For your security, your account is temporarily
+      locked because you have presented your piv/cac credential incorrectly too many
+      times.
     mobile_terms_of_service: Mobile terms of service
     no_auth_option: No authentication option could be found for you to sign in.
     opt_in:
-      cant_use_phone: 'Can’t use your phone?'
-      error_retry: 'Sorry, we are having trouble opting you in. Please try again.'
-      opted_out_html: 'You’ve opted out of receiving text messages at %{phone_number}.
-        You can opt in and receive a security code again to that phone number.'
-      opted_out_last_30d_html: 'You’ve opted out of receiving text messages at
-        %{phone_number} within the last 30 days. We can only opt in a phone
-        number once every 30 days.'
+      cant_use_phone: Can’t use your phone?
+      error_retry: Sorry, we are having trouble opting you in. Please try again.
+      opted_out_html: You’ve opted out of receiving text messages at %{phone_number}.
+        You can opt in and receive a security code again to that phone number.
+      opted_out_last_30d_html: You’ve opted out of receiving text messages at %{phone_number}
+        within the last 30 days. We can only opt in a phone number once every 30 days.
       title: We could not send a security code to your phone number
-      wait_30d_opt_in: 'After 30 days, you can opt in and receive a security code to
-        that phone number.'
+      wait_30d_opt_in: After 30 days, you can opt in and receive a security code to
+        that phone number.
     otp_delivery_preference:
       instruction: You can change this selection the next time you sign in. If you
         entered a landline, please select “Phone call” below.
@@ -98,8 +96,8 @@ en:
     personal_key_fallback:
       question: Don’t have your personal key?
     personal_key_header_text: Enter your personal key
-    personal_key_prompt: You can use this personal key once. After you enter it,
-      you’ll be provided a new key.
+    personal_key_prompt: You can use this personal key once. After you enter it, you’ll
+      be provided a new key.
     phone:
       delete:
         failure: Unable to remove your phone.
@@ -120,27 +118,26 @@ en:
     totp_header_text: Enter your authentication app code
     two_factor_aal3_choice: Additional authentication required
     two_factor_aal3_choice_intro: This app requires a higher level of security. You
-      need to verify your identity using a physical device such as a security
-      key or government employee ID (PIV or CAC) to access your information.
+      need to verify your identity using a physical device such as a security key
+      or government employee ID (PIV or CAC) to access your information.
     two_factor_choice: Authentication method setup
-    two_factor_choice_intro: Add another layer of security by using one of the
-      multi-factor authentication options below.
+    two_factor_choice_intro: Add another layer of security by using one of the multi-factor
+      authentication options below.
     two_factor_choice_options:
       auth_app: Authentication application
       auth_app_info: Download or use an authentication app of your choice to generate
         secure codes.
       backup_code: Backup codes
       backup_code_info: A list of 10 codes you can print or save to your device. When
-        you use the last code, we will generate a new list. Keep in mind backup
-        codes are easy to lose.
+        you use the last code, we will generate a new list. Keep in mind backup codes
+        are easy to lose.
       configurations_added:
-        one: '(%{count} added)'
-        other: '(%{count} added)'
+        one: "(%{count} added)"
+        other: "(%{count} added)"
       phone: Text or voice message
       phone_info: Receive a secure code by (SMS) text or phone call.
       phone_info_html: Receive a secure code by (SMS) text or phone call. <strong>This
-        option requires you to choose an additional authentication
-        method.</strong>
+        option requires you to choose an additional authentication method.</strong>
       phone_info_no_voip: Do not use web-based (VOIP) phone services or premium rate
         (toll) phone numbers.
       piv_cac: Government employee ID
@@ -148,8 +145,8 @@ en:
       sms: Text message / SMS
       sms_info: Get your security code via text message / SMS.
       unused_backup_code:
-        one: '(%{count} unused code)'
-        other: '(%{count} unused codes)'
+        one: "(%{count} unused code)"
+        other: "(%{count} unused codes)"
       voice: Phone call
       voice_info: Get your security code via phone call.
       webauthn: Security key
@@ -157,17 +154,18 @@ en:
         in to your device.
       webauthn_platform: Face or touch unlock
       webauthn_platform_info: Your device scans your face or fingerprint and confirms
-        the information is a match to the images you already have stored on your
-        device. We do not copy or store these images.
+        the information is a match to the images you already have stored on your device.
+        We do not copy or store these images.
     two_factor_hspd12_choice: Additional authentication required
     two_factor_hspd12_choice_intro: This app requires a higher level of security.
-      You need to verify your identity using a government employee ID (PIV/CAC)
-      to access your information.
+      You need to verify your identity using a government employee ID (PIV/CAC) to
+      access your information.
     webauthn_error:
       additional_methods_link: choose another authentication method
-      error_page_text: You have face or touch unlock enabled for this account. Use the
-        same device and browser profile each time.
-      multiple_methods: Face or touch unlock was unsuccessful. Please try again or %{link}.
+      error_page_text: You have face or touch unlock enabled for this account. Use
+        the same device and browser profile each time.
+      multiple_methods: Face or touch unlock was unsuccessful. Please try again or
+        %{link}.
       title: We can’t identify your device
     webauthn_fallback:
       question: Don’t have your security key available?

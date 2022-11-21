@@ -13,7 +13,6 @@ fr:
       address: Mettez à jour votre adresse postale
       doc_capture: Ajoutez votre pièce d’identité
       link_sent: Lien envoyé
-      otp_delivery: Recevez un code de sécurité
       processing_images: Traitement de vos images
       ssn: Entrez votre numéro de sécurité sociale
       switch_back: Retournez sur votre ordinateur
@@ -44,8 +43,8 @@ fr:
       cancellation_prompt: Annulez la vérification d’identité
       cancelled: La vérification d’identité est annulée
     mfa_setup:
-      suggest_second_mfa: Vous avez ajouté votre première méthode d’authentification !
-        Ajoutez-en une deuxième  en guise de sauvegarde.
+      suggest_second_mfa: Vous avez ajouté votre première méthode d’authentification
+        ! Ajoutez-en une deuxième  en guise de sauvegarde.
     no_auth_option: Aucun message de connexion trouvé
     openid_connect:
       authorization: Autorisation OpenID Connect
@@ -75,7 +74,7 @@ fr:
         pour partager votre identité vérifiée.
       completion_first_sign_in: Continuer vers %{sp}
       completion_ial2: Connectez vos informations vérifiées à %{sp}
-      completion_new_attributes: '%{sp} demande de nouvelles informations'
+      completion_new_attributes: "%{sp} demande de nouvelles informations"
       completion_new_sp: Vous vous connectez pour la première fois
       confirmation: Continuer à vous connecter
     totp_setup:

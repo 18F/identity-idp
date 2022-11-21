@@ -21,11 +21,11 @@ en:
         phone number.
     delete_account:
       are_you_sure: Are you sure you want to delete your account?
-      info: Deleting your account should be your last resort if you are locked out of
-        your account. You will not be able to recover any information linked to
-        your account. We will notify the agencies you access with %{app_name}
-        that you no longer have an account. Once your account is deleted, you
-        can create a new one using the same email address.
+      info: Deleting your account should be your last resort if you are locked out
+        of your account. You will not be able to recover any information linked to
+        your account. We will notify the agencies you access with %{app_name} that
+        you no longer have an account. Once your account is deleted, you can create
+        a new one using the same email address.
       title: Deleting your account should be your last resort
     pending:
       cancel_request: Cancel request
@@ -33,39 +33,38 @@ en:
       confirm: If you cancel now, you must create a new request and wait another 24
         hours to delete your account.
       header: You requested to delete your account
-      wait_html: There is a 24-hour waiting period to delete your account. In
-        <strong>%{interval}</strong>, you will receive an email with
-        instructions to complete the deletion.
+      wait_html: There is a 24-hour waiting period to delete your account. In <strong>%{interval}</strong>,
+        you will receive an email with instructions to complete the deletion.
     recovery_options:
-      check_webauthn_platform: Use the same device you first set up face or touch unlock with
-      check_webauthn_platform_info: If you set up face or touch unlock when you
-        created your account make sure to use the same device you created your
-        %{app_name} account on.
+      check_webauthn_platform: Use the same device you first set up face or touch
+        unlock with
+      check_webauthn_platform_info: If you set up face or touch unlock when you created
+        your account make sure to use the same device you created your %{app_name}
+        account on.
       header: Are you sure you want to delete your account?
       help_text: If you’re locked out and still need access to %{app_name}, try these
         steps instead.
-      try_another_device: Try another device where you might have selected the
-        “remember device” option.
+      try_another_device: Try another device where you might have selected the “remember
+        device” option.
       try_method_again: Try your authentication method again
       use_device: Use another device
     request:
-      are_you_sure: Are you sure you don’t have access to any of your authentication methods?
+      are_you_sure: Are you sure you don’t have access to any of your authentication
+        methods?
       delete_account: Delete your account
       delete_account_info:
-        - Deleting your existing account and creating a new one will allow you
-          to use the same email address and set up new authentication methods.
-          However, deleting will remove any agency applications you have linked
-          to your account and you will need to restore each connection.
-        - If you continue, you will first receive an email confirmation.  As a
-          security measure, you will receive another email with the link to
-          continue deleting your account 24 hours after the initial confirmation
-          email arrives.
+      - Deleting your existing account and creating a new one will allow you to use
+        the same email address and set up new authentication methods. However, deleting
+        will remove any agency applications you have linked to your account and you
+        will need to restore each connection.
+      - If you continue, you will first receive an email confirmation.  As a security
+        measure, you will receive another email with the link to continue deleting
+        your account 24 hours after the initial confirmation email arrives.
       info:
-        - If you can’t access your account using the authentication methods you
-          set up previously, deleting your account and creating a new one is the
-          only option.
-        - We can’t undo an account delete, so please verify if you have another
-          authentication method you can use instead.
+      - If you can’t access your account using the authentication methods you set
+        up previously, deleting your account and creating a new one is the only option.
+      - We can’t undo an account delete, so please verify if you have another authentication
+        method you can use instead.
       no_cancel: Cancel
       title: Account deletion and reset
       yes_continue: Yes, continue deletion

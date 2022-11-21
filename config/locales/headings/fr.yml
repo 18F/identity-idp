@@ -23,8 +23,8 @@ fr:
       new: Envoyer un autre courriel de confirmation
     create_account_with_sp:
       cta: Première fois que vous utilisez %{app_name}?
-      sp_text: utilise %{app_name} pour vous permettre de vous connecter à votre
-        compte de façon sûre et sécurisée.
+      sp_text: utilise %{app_name} pour vous permettre de vous connecter à votre compte
+        de façon sûre et sécurisée.
     create_account_without_sp: Créer un compte %{app_name}
     edit_info:
       password: Changez votre mot de passe
@@ -32,7 +32,8 @@ fr:
     passwords:
       change: Changez votre mot de passe
       confirm: Confirmez votre mot de passe actuel pour continuer
-      confirm_for_personal_key: Entrez le mot de passe et obtenez une nouvelle clé personnelle
+      confirm_for_personal_key: Entrez le mot de passe et obtenez une nouvelle clé
+        personnelle
       forgot: Vous avez oublié votre mot de passe?
     piv_cac:
       certificate:
@@ -51,14 +52,13 @@ fr:
         missing: Erreur interne.
     piv_cac_login:
       account_not_found: Votre PIV / CAC n’est pas connecté à un compte
-      add: Configurez votre PIV ou votre CAC en tant que méthode d’authentification à
-        deux facteurs pour pouvoir l’utiliser pour vous connecter.
+      add: Configurez votre PIV ou votre CAC en tant que méthode d’authentification
+        à deux facteurs pour pouvoir l’utiliser pour vous connecter.
       new: Utilisez votre PIV / CAC pour vous connecter à votre compte
-      success: Vous avez correctement configuré PIV/CAC en tant que méthode
-        d’authentification.
+      success: Vous avez correctement configuré PIV/CAC en tant que méthode d’authentification.
     piv_cac_setup:
-      already_associated: La carte PIV/CAC que vous avez présentée est associée à un
-        autre utilisateur.
+      already_associated: La carte PIV/CAC que vous avez présentée est associée à
+        un autre utilisateur.
       new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
     session_timeout_warning: Vous avez besoin de plus de temps?
     sign_in_with_sp: Connectez-vous pour continuer à %{sp}

@@ -13,7 +13,6 @@ en:
       address: Update your mailing address
       doc_capture: Add your ID
       link_sent: Link sent
-      otp_delivery: Receive a security code
       processing_images: Processing your images
       ssn: Enter your Social Security number
       switch_back: Switch back to your computer
@@ -69,12 +68,13 @@ en:
     revoke_consent: Revoke Consent
     rules_of_use: Rules of Use
     sign_up:
-      completion_consent_expired_ial1: It’s been a year since you gave us consent to share your information
-      completion_consent_expired_ial2: It’s been a year since you gave us consent to
-        share your verified identity
+      completion_consent_expired_ial1: It’s been a year since you gave us consent
+        to share your information
+      completion_consent_expired_ial2: It’s been a year since you gave us consent
+        to share your verified identity
       completion_first_sign_in: Continue to %{sp}
       completion_ial2: Connect your verified information to %{sp}
-      completion_new_attributes: '%{sp} is requesting new information'
+      completion_new_attributes: "%{sp} is requesting new information"
       completion_new_sp: You are now signing in for the first time
       confirmation: Continue to sign in
     totp_setup:

@@ -2,15 +2,14 @@
 es:
   account_reset:
     cancel_request:
-      are_you_sure: '¿Seguro que quieres cancelar tu solicitud de eliminación de cuenta?'
+      are_you_sure: "¿Seguro que quieres cancelar tu solicitud de eliminación de cuenta?"
       cancel: Salida
       cancel_button: Cancelar la cuenta eliminada
       title: Cancelar la cuenta eliminada
     confirm_delete_account:
       cta_html: Puede %{link} o cierra esta ventana si ya terminaste.
       info_html: La cuenta para <strong>%{email}</strong> ha sido eliminada. Nosotros
-        enviamos una confirmación por correo electrónico de la eliminación de la
-        cuenta.
+        enviamos una confirmación por correo electrónico de la eliminación de la cuenta.
       link_text: crea una cuenta nueva
       title: Has eliminado tu cuenta
     confirm_request:
@@ -18,15 +17,15 @@ es:
       instructions_end: para comenzar el proceso de eliminación de cuenta. Siga las
         instrucciones en su correo electrónico para completar el proceso.
       instructions_start: Enviamos un correo electrónico a
-      security_note: Como medida de seguridad, también enviamos un mensaje de texto a
-        su registro número de teléfono.
+      security_note: Como medida de seguridad, también enviamos un mensaje de texto
+        a su registro número de teléfono.
     delete_account:
-      are_you_sure: '¿Seguro que quieres eliminar tu cuenta?'
+      are_you_sure: "¿Seguro que quieres eliminar tu cuenta?"
       info: Eliminar su cuenta debe ser su último recurso si su cuenta está bloqueada.
-        No podrá recuperar ninguna información vinculada a su cuenta.
-        Notificaremos a las agencias a las que acceda con %{app_name} que ya no
-        tiene una cuenta. Cuando su cuenta sea eliminada podrá crear una nueva
-        usando la misma dirección de correo electrónico.
+        No podrá recuperar ninguna información vinculada a su cuenta. Notificaremos
+        a las agencias a las que acceda con %{app_name} que ya no tiene una cuenta.
+        Cuando su cuenta sea eliminada podrá crear una nueva usando la misma dirección
+        de correo electrónico.
       title: Eliminar tu cuenta debería ser tu último recurso
     pending:
       cancel_request: Cancelar petición
@@ -35,41 +34,40 @@ es:
         horas para eliminar su cuenta.
       header: Solicitaste eliminar tu cuenta
       wait_html: Hay un período de espera de 24 horas para eliminar su cuenta. En
-        <strong>%{interval}</strong>, recibirá un correo electrónico con
-        instrucciones para completar la eliminación.
+        <strong>%{interval}</strong>, recibirá un correo electrónico con instrucciones
+        para completar la eliminación.
     recovery_options:
       check_webauthn_platform: Utilice el mismo dispositivo con el que configuró el
         desbloqueo facial o táctil por primera vez.
       check_webauthn_platform_info: Si configuró el desbloqueo facial o táctil cuando
-        creó su cuenta, asegúrese de utilizar el mismo dispositivo con el que
-        creó su cuenta de %{app_name}.
-      header: ¿Seguro que desea eliminar su cuenta?
-      help_text: Si sigue sin poder acceder a %{app_name}, pruebe con estos pasos en
-        su lugar.
+        creó su cuenta, asegúrese de utilizar el mismo dispositivo con el que creó
+        su cuenta de %{app_name}.
+      header: "¿Seguro que desea eliminar su cuenta?"
+      help_text: Si sigue sin poder acceder a %{app_name}, pruebe con estos pasos
+        en su lugar.
       try_another_device: Pruebe otro dispositivo donde pueda haber seleccionado la
         opción “Recordar dispositivo”.
       try_method_again: Pruebe nuevamente su método de autenticación.
       use_device: Utilice otro dispositivo.
     request:
-      are_you_sure: '¿Estás seguro de que no tienes acceso a ninguno de tus métodos de
-        seguridad?'
+      are_you_sure: "¿Estás seguro de que no tienes acceso a ninguno de tus métodos
+        de seguridad?"
       delete_account: Eliminar su cuenta
       delete_account_info:
-        - Eliminar su cuenta existente y crear una nueva le permite usar la
-          misma dirección de correo electrónico y configurar nuevas opciones de
-          seguridad. Sin embargo, eliminar eliminará cualquier aplicación de
-          agencia que haya vinculado a su cuenta y deberá restaurar cada
-          conexión.
-        - Si continúas, tú primero recibirá una confirmación por correo
-          electrónico. Como medida de seguridad, lo hará reciba otro correo
-          electrónico con el enlace para seguir eliminando su cuenta las 24
-          horas después del correo electrónico de confirmación inicial llega.
+      - Eliminar su cuenta existente y crear una nueva le permite usar la misma dirección
+        de correo electrónico y configurar nuevas opciones de seguridad. Sin embargo,
+        eliminar eliminará cualquier aplicación de agencia que haya vinculado a su
+        cuenta y deberá restaurar cada conexión.
+      - Si continúas, tú primero recibirá una confirmación por correo electrónico.
+        Como medida de seguridad, lo hará reciba otro correo electrónico con el enlace
+        para seguir eliminando su cuenta las 24 horas después del correo electrónico
+        de confirmación inicial llega.
       info:
-        - Si no puede acceder a su cuenta a través de las opciones de seguridad
-          que configuró anteriormente, eliminar la cuenta y crear una nueva es
-          la única opción.
-        - No podemos deshacer la eliminación de una cuenta, así que por favor
-          asegúrese de no tener otra opción de seguridad que puede usar.
+      - Si no puede acceder a su cuenta a través de las opciones de seguridad que
+        configuró anteriormente, eliminar la cuenta y crear una nueva es la única
+        opción.
+      - No podemos deshacer la eliminación de una cuenta, así que por favor asegúrese
+        de no tener otra opción de seguridad que puede usar.
       no_cancel: Cancelar
       title: Eliminación y restablecimiento de cuenta
       yes_continue: Sí, continúa la eliminación

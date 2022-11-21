@@ -8,85 +8,91 @@ en:
     buttons:
       add_new_photos: Add new photos
       continue: Continue
-      take_or_upload_picture: '<lg-take-photo>Take photo</lg-take-photo> or
-        <lg-upload>Upload photo</lg-upload>'
+      take_or_upload_picture: "<lg-take-photo>Take photo</lg-take-photo> or <lg-upload>Upload
+        photo</lg-upload>"
       take_picture: Take photo
       take_picture_retry: Retake photo
       upload_picture: Upload photo
       use_phone: Use your phone
     errors:
       alerts:
-        barcode_content_check: We couldn’t read the barcode on the back of your ID. It
-          could be because of a problem with the barcode, or the barcode is a
-          new type that we don’t recognize yet. Use another state-issued ID if
-          you have one.
+        barcode_content_check: We couldn’t read the barcode on the back of your ID.
+          It could be because of a problem with the barcode, or the barcode is a new
+          type that we don’t recognize yet. Use another state-issued ID if you have
+          one.
         barcode_read_check: We couldn’t read the barcode on the back of your ID. Try
           taking a new picture.
-        birth_date_checks: We couldn’t read the birth date on your ID. Try taking new pictures.
-        control_number_check: We couldn’t read the reference number on the back of your
-          ID. Try taking a new picture.
-        doc_crosscheck: We couldn’t recognize your ID. It may be worn or damaged, or the
-          front and the back of the ID don’t match. Try taking new pictures.
+        birth_date_checks: We couldn’t read the birth date on your ID. Try taking
+          new pictures.
+        control_number_check: We couldn’t read the reference number on the back of
+          your ID. Try taking a new picture.
+        doc_crosscheck: We couldn’t recognize your ID. It may be worn or damaged,
+          or the front and the back of the ID don’t match. Try taking new pictures.
         doc_number_checks: We couldn’t read the document number on your ID. Try taking
           new pictures.
         expiration_checks: The document has expired, or we couldn’t read the expiration
           date on your ID. If your ID is not expired, try taking new pictures.
-        full_name_check: We couldn’t read the full name on your ID. Try taking new pictures.
-        id_not_recognized: We couldn’t recognize your ID. It may be worn, damaged, or a
-          type of ID that we don’t recognize. Try taking new pictures.
-        id_not_verified: We couldn’t verify your ID. It might have moved when you took
-          the picture. Try taking new pictures.
-        issue_date_checks: We couldn’t read the issue date on your ID. Try taking new pictures.
-        ref_control_number_check: We couldn’t read the control number barcode. Try taking new pictures.
+        full_name_check: We couldn’t read the full name on your ID. Try taking new
+          pictures.
+        id_not_recognized: We couldn’t recognize your ID. It may be worn, damaged,
+          or a type of ID that we don’t recognize. Try taking new pictures.
+        id_not_verified: We couldn’t verify your ID. It might have moved when you
+          took the picture. Try taking new pictures.
+        issue_date_checks: We couldn’t read the issue date on your ID. Try taking
+          new pictures.
+        ref_control_number_check: We couldn’t read the control number barcode. Try
+          taking new pictures.
         sex_check: We couldn’t read the sex on your ID. Try taking new pictures.
-        visible_color_check: We couldn’t verify your ID. It might have moved when you
-          took the picture, or the picture is too dark. Try taking new pictures
+        visible_color_check: We couldn’t verify your ID. It might have moved when
+          you took the picture, or the picture is too dark. Try taking new pictures
           in brighter lighting.
-        visible_photo_check: We couldn’t verify the photo on your ID. Try taking new pictures.
+        visible_photo_check: We couldn’t verify the photo on your ID. Try taking new
+          pictures.
       barcode_attention:
-        confirm_info: If the information below is incorrect, please upload new photos of
-          your state-issued ID.
+        confirm_info: If the information below is incorrect, please upload new photos
+          of your state-issued ID.
         heading: We couldn’t read the barcode on your ID.
       camera:
         blocked: Your camera is blocked
-        blocked_detail: We don’t have permission to access the camera. Please check your
-          browser or system settings, reload this page, or upload a photo
-          instead.
+        blocked_detail: We don’t have permission to access the camera. Please check
+          your browser or system settings, reload this page, or upload a photo instead.
         failed: Camera failed to start, please try again.
       dpi:
         failed_short: Image is too small or blurry, please try again.
-        top_msg: We couldn’t read your ID. Your image size may be too small, or your ID
-          is too small or blurry in the photo. Make sure your ID is large within
+        top_msg: We couldn’t read your ID. Your image size may be too small, or your
+          ID is too small or blurry in the photo. Make sure your ID is large within
           the image frame and try taking a new picture.
-        top_msg_plural: We couldn’t read your ID. Your image sizes may be too small, or
-          your ID is too small or blurry in the photos. Make sure your ID is
-          large within the image frame and try taking new pictures.
+        top_msg_plural: We couldn’t read your ID. Your image sizes may be too small,
+          or your ID is too small or blurry in the photos. Make sure your ID is large
+          within the image frame and try taking new pictures.
       file_type:
         invalid: This file type is not accepted, please choose a JPG or PNG file.
       general:
         fallback_field_level: Please add a new image
-        multiple_back_id_failures: We couldn’t verify the back of your ID. Try taking a new picture.
-        multiple_front_id_failures: We couldn’t verify the front of your ID. Try taking a new picture.
-        network_error: We are having technical difficulties on our end. Please try to
-          submit your images again later.
+        multiple_back_id_failures: We couldn’t verify the back of your ID. Try taking
+          a new picture.
+        multiple_front_id_failures: We couldn’t verify the front of your ID. Try taking
+          a new picture.
+        network_error: We are having technical difficulties on our end. Please try
+          to submit your images again later.
         no_liveness: We couldn’t verify your ID. Try taking new pictures.
       glare:
         failed_short: Image has glare, please try again.
-        top_msg: We couldn’t read your ID. Your photo may have glare. Make sure that the
-          flash on your camera is off and try taking a new picture.
-        top_msg_plural: We couldn’t read your ID. Your photos may have glare. Make sure
-          that the flash on your camera is off and try taking new pictures.
+        top_msg: We couldn’t read your ID. Your photo may have glare. Make sure that
+          the flash on your camera is off and try taking a new picture.
+        top_msg_plural: We couldn’t read your ID. Your photos may have glare. Make
+          sure that the flash on your camera is off and try taking new pictures.
       http:
         image_load: The image file that you added is not supported. Please take new
           photos of your ID and try again.
-        image_size: You image size is too large or too small. Please add images of your
-          ID that are about 2025 x 1275 pixels.
+        image_size: You image size is too large or too small. Please add images of
+          your ID that are about 2025 x 1275 pixels.
         pixel_depth: The pixel depth of your image file is not supported. Please take
-          new photos of your ID and try again. Supported image pixel depth is
-          24-bit RGB.
+          new photos of your ID and try again. Supported image pixel depth is 24-bit
+          RGB.
       no_camera:
-        explanation: To continue, sign in to your %{app_name} account on any device that
-          has a camera, like a mobile phone, tablet or computer with a webcam.
+        explanation: To continue, sign in to your %{app_name} account on any device
+          that has a camera, like a mobile phone, tablet or computer with a webcam.
         heading: You need a camera to verify your identity
         title: Camera needed
       not_a_file: The selection was not a valid file.
@@ -96,8 +102,8 @@ en:
         failed_short: Image is blurry, please try again.
         top_msg: We couldn’t read your ID. Your photo may be too blurry or dark. Try
           taking a new picture in a bright area.
-        top_msg_plural: We couldn’t read your ID. Your photos may be too blurry or dark.
-          Try taking new pictures in a bright area.
+        top_msg_plural: We couldn’t read your ID. Your photos may be too blurry or
+          dark. Try taking new pictures in a bright area.
       upload_error: Sorry, something went wrong on our end.
     forms:
       captured_image: Captured Image
@@ -109,8 +115,8 @@ en:
       address: Update your mailing address
       back: Back
       capture_complete: We have verified your state-issued ID
-      capture_scan_warning_html: We couldn’t read the barcode on your ID. If the
-        information below is incorrect, please %{link} of your state-issued ID.
+      capture_scan_warning_html: We couldn’t read the barcode on your ID. If the information
+        below is incorrect, please %{link} of your state-issued ID.
       capture_scan_warning_link: upload new photos
       capture_troubleshooting_tips: Having trouble adding your state-issued ID?
       document_capture: Add your state-issued ID
@@ -137,33 +143,35 @@ en:
       capture_status_small_document: Move Closer
       capture_status_tap_to_capture: Tap to Capture
       document_capture_intro_acknowledgment: We’ll collect information about you by
-        reading your state-issued ID. We do not store images you upload. We only
-        verify your identity.
+        reading your state-issued ID. We do not store images you upload. We only verify
+        your identity.
       image_loaded: Image loaded
       image_loading: Image loading
       image_updated: Image updated
-      interstitial_eta: This might take up to a minute. We’ll load the next step
-        automatically when it’s done.
+      interstitial_eta: This might take up to a minute. We’ll load the next step automatically
+        when it’s done.
       interstitial_thanks: Thanks for your patience!
-      irs_reproofing_explanation: As an extra security measure, you must verify your identity again for IRS
+      irs_reproofing_explanation: As an extra security measure, you must verify your
+        identity again for IRS
       keep_window_open: Do not close this window.
       lets_go: 'Identity verification happens in two parts:'
       link_sent: Please check your phone and follow instructions to take a photo of
         your state issued ID.
-      link_sent_complete_no_polling: When you are done, click Continue here to finish verifying your identity.
-      link_sent_complete_polling: The next step will load automatically once you
-        verify your ID using your phone.
+      link_sent_complete_no_polling: When you are done, click Continue here to finish
+        verifying your identity.
+      link_sent_complete_polling: The next step will load automatically once you verify
+        your ID using your phone.
       no_sp_name: The agency that you are trying to access
-      privacy_html: '%{app_name} is a secure, government website that adheres to the
-        highest standards in data protection. We only use your data to verify
-        your identity. %{link} about our privacy and security measures.'
+      privacy_html: "%{app_name} is a secure, government website that adheres to the
+        highest standards in data protection. We only use your data to verify your
+        identity. %{link} about our privacy and security measures."
       secure_account: We’ll encrypt your account with your password. Encryption means
-        your data is protected and only you will be able to access or change
-        your information.
+        your data is protected and only you will be able to access or change your
+        information.
       ssn: We need your Social Security number to validate your name, date of birth
-        and address.  Your Social Security number is encrypted.  With your
-        consent, we share this information with the government agency you are
-        trying to access to verify your identity.
+        and address.  Your Social Security number is encrypted.  With your consent,
+        we share this information with the government agency you are trying to access
+        to verify your identity.
       tag: Recommended
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.
@@ -171,18 +179,18 @@ en:
       upload_computer_link: Upload from your computer
       upload_from_computer: Don’t have a phone?
       upload_from_phone: Upload pictures directly from your phone camera
-      upload_no_image_storage: We do not store images you upload. We only verify your identity.
+      upload_no_image_storage: We do not store images you upload. We only verify your
+        identity.
       verify_identity: We’ll ask for your personal information to verify your identity
         against public records.
-      welcome_html: '%{sp_name} needs to make sure you are you — not someone
-        pretending to be you.'
+      welcome_html: "%{sp_name} needs to make sure you are you — not someone pretending
+        to be you."
     instructions:
       bullet1: Your State-issued ID
       bullet2: Your Social Security number
       bullet3: A phone number on a phone plan associated with your name
       consent: By checking this box, you are letting %{app_name} ask for, use, keep,
-        and share your personal information. We will only use it to verify your
-        identity.
+        and share your personal information. We will only use it to verify your identity.
       email_sent: Link sent to %{email}. Please check your desktop email and follow
         instructions to verify your identity.
       learn_more: Learn more
@@ -191,11 +199,11 @@ en:
         link to your browser to take photos of the front and back of your ID.
       switch_back: Switch back to your computer to finish verifying your identity.
       switch_back_image: Arrow pointing from phone to computer
-      test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are
-        considered valid. Do not enter real PII in this field.
+      test_ssn: In the test environment only SSNs that begin with “900-” or “666-”
+        are considered valid. Do not enter real PII in this field.
       text2: You will not need the card with you.
-      text3: You do not need to be the primary account holder on your phone plan. If
-        your phone number doesn’t work, we can send you a verification code by
+      text3: You do not need to be the primary account holder on your phone plan.
+        If your phone number doesn’t work, we can send you a verification code by
         mail.
       welcome: 'To verify your identity, you will need:'
     tips:

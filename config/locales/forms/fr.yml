@@ -3,38 +3,37 @@ fr:
   forms:
     backup_code:
       are_you_sure_desc_html:
-        - <strong>Les codes de sauvegarde sont la méthode d’authentification la
-          moins recommandée,</strong> car les codes peuvent facilement être
-          perdus. Nous vous encourageons à explorer d’autres options
-          d’authentification telles que le déverrouillage facial ou tactile, une
-          application d’authentification ou une clé de sécurité.
-        - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer,
-          copier ou noter. Vous saisirez un code chaque fois que vous vous
-          connecterez.
+      - "<strong>Les codes de sauvegarde sont la méthode d’authentification la moins
+        recommandée,</strong> car les codes peuvent facilement être perdus. Nous vous
+        encourageons à explorer d’autres options d’authentification telles que le
+        déverrouillage facial ou tactile, une application d’authentification ou une
+        clé de sécurité."
+      - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer, copier
+        ou noter. Vous saisirez un code chaque fois que vous vous connecterez.
       are_you_sure_title: Êtes-vous sûr de vouloir utiliser des codes de sauvegarde?
       caution_delete: Si vous supprimez vos codes de sauvegarde, vous ne pourrez plus
         les utiliser pour vous connecter.
       confirm_delete: Êtes-vous sûr de vouloir supprimer vos codes de sauvegarde?
       generate: Obtenir des codes
-      last_code: Vous avez utilisé votre dernier code de sauvegarde. Veuillez
-        imprimer, copier ou télécharger les codes ci-dessous. Vous pourrez
-        utiliser ces nouveaux codes la prochaine fois que vous vous connecterez.
+      last_code: Vous avez utilisé votre dernier code de sauvegarde. Veuillez imprimer,
+        copier ou télécharger les codes ci-dessous. Vous pourrez utiliser ces nouveaux
+        codes la prochaine fois que vous vous connecterez.
       regenerate: Obtenir de nouveaux codes
-      subinfo_html: '<b>Ne pas perdre ces codes</b>. Téléchargez, imprimez ou
-        copiez-les. Chaque code ne peut être utilisé qu’une seule fois. Une fois
-        que vous avez utilisé les 10 codes, nous vous en donnons 10 nouveaux.
-        Gardez vos codes aussi sûr qu’un mot de passe.'
+      subinfo_html: "<b>Ne pas perdre ces codes</b>. Téléchargez, imprimez ou copiez-les.
+        Chaque code ne peut être utilisé qu’une seule fois. Une fois que vous avez
+        utilisé les 10 codes, nous vous en donnons 10 nouveaux. Gardez vos codes aussi
+        sûr qu’un mot de passe."
       subtitle: Vos codes de sauvegarde
       title: Codes de sauvegarde
     backup_code_regenerate:
       caution: Si vous régénérez vos codes de sauvegarde, vous recevrez un nouvel
-        ensemble de codes de sauvegarde. Vos codes de sauvegarde d’origine ne
-        seront plus valides.
+        ensemble de codes de sauvegarde. Vos codes de sauvegarde d’origine ne seront
+        plus valides.
       confirm: Êtes-vous sûr de vouloir régénérer vos codes de sauvegarde?
     backup_code_reminder:
       body_info: Si vous perdez l’accès à votre méthode d’authentification principale,
-        vous pouvez utiliser des codes de sauvegarde pour accéder à nouveau à
-        votre compte.
+        vous pouvez utiliser des codes de sauvegarde pour accéder à nouveau à votre
+        compte.
       have_codes: J’ai mes codes
       heading: Avez-vous toujours vos codes de sauvegarde?
       need_new_codes: J’ai besoin d’un nouvel ensemble de codes de sauvegarde
@@ -72,27 +71,27 @@ fr:
       alternative: Vous n’avez pas votre clé personnelle?
       confirmation_label: Clé personnelle
       download: Télécharger (fichier texte)
-      instructions: Veuillez confirmer que vous avez une copie de votre clé
-        personnelle en l’entrant ci-dessous.
+      instructions: Veuillez confirmer que vous avez une copie de votre clé personnelle
+        en l’entrant ci-dessous.
       required_checkbox: Veuillez cocher cette case pour continuer.
       title: Entrez votre clé personnelle
     personal_key_partial:
       acknowledgement:
         bullets:
-          - Vous perdrez l’accès à votre compte
-          - Vous allez devoir vérifier à nouveau votre identité
+        - Vous perdrez l’accès à votre compte
+        - Vous allez devoir vérifier à nouveau votre identité
         header: En cas d’oubli de votre mot de passe, vous aurez besoin de votre clé
           personnelle. Gardez-la en sécurité et ne la partagez avec personne.
         text: 'Si vous réinitialisez votre mot de passe sans votre clé personnelle:'
       explanation:
         header: Qu’est-ce qu’une clé personnelle?
         text:
-          - Une clé personnelle « verrouille » vos informations personnelles
-            avec votre compte. C’est le seul moyen de déverrouiller vos
-            informations si vous perdez ou oubliez votre mot de passe.
-          - Lors de la réinitialisation de votre mot de passe, Login.gov vous
-            demandera votre clé personnelle pour s’assurer que vous êtes bien
-            vous, et non quelqu’un qui se fait passer pour vous.
+        - Une clé personnelle « verrouille » vos informations personnelles avec votre
+          compte. C’est le seul moyen de déverrouiller vos informations si vous perdez
+          ou oubliez votre mot de passe.
+        - Lors de la réinitialisation de votre mot de passe, Login.gov vous demandera
+          votre clé personnelle pour s’assurer que vous êtes bien vous, et non quelqu’un
+          qui se fait passer pour vous.
       header: Sauvegardez votre clé personnelle
     phone:
       buttons:
@@ -108,11 +107,10 @@ fr:
     piv_cac_setup:
       nickname: Pseudo PIV/CAC
       no_thanks: Non merci
-      piv_cac_intro_html: Nous vous demanderons de présenter votre carte PIV/CAC
-        chaque <strong>fois que vous vous connecterez</strong> dans le cadre de
-        l’authentification à deux facteurs.<br><br>Après avoir cliqué sur
-        “Ajouter PIV/CAC”, votre navigateur vous demandera votre code PIN
-        PIV/CAC et vous choisirez un certificat.
+      piv_cac_intro_html: Nous vous demanderons de présenter votre carte PIV/CAC chaque
+        <strong>fois que vous vous connecterez</strong> dans le cadre de l’authentification
+        à deux facteurs.<br><br>Après avoir cliqué sur “Ajouter PIV/CAC”, votre navigateur
+        vous demandera votre code PIN PIV/CAC et vous choisirez un certificat.
       submit: Ajouter une carte PIV/CAC
     registration:
       labels:
@@ -125,8 +123,8 @@ fr:
         plus l’utiliser pour accéder à votre compte %{app_name}.
       confirm: Voulez-vous vraiment supprimer votre application d’authentification?
     totp_setup:
-      totp_intro_html: Configurez une application d’authentification pour vous
-        connecter à l’aide de codes de sécurité temporaires. %{link}
+      totp_intro_html: Configurez une application d’authentification pour vous connecter
+        à l’aide de codes de sécurité temporaires. %{link}
       totp_step_1: Donnez-lui un surnom
       totp_step_1a: Si vous ajoutez plusieurs applications, vous saurez lesquelles.
       totp_step_2: Démarrez votre application d’authentification
@@ -134,7 +132,6 @@ fr:
       totp_step_4: Entrez le code temporaire de votre application
     two_factor:
       backup_code: Code de sécurité
-      # removed "security code" form labels as they trigger ios credit card reader
       code: Code à usage unique
       personal_key: Clé personnelle
       try_again: Utilisez un autre numéro de téléphone
@@ -147,49 +144,46 @@ fr:
       submit: Confirmer le compte
       title: Confirmez votre compte
       welcome_back: Content de vous revoir
-      welcome_back_description: '<p>Si vous avez reçu votre lettre, veuillez entrer
-        votre code de confirmation ci-dessous. </p> <p>Si votre lettre n’est pas
-        encore arrivée, veuillez être patient car les <strong>lettres prennent
-        généralement entre trois à sept jours ouvrables pour arriver</strong>.
-        Nous vous remercions de votre patience.</p>'
+      welcome_back_description: "<p>Si vous avez reçu votre lettre, veuillez entrer
+        votre code de confirmation ci-dessous. </p> <p>Si votre lettre n’est pas encore
+        arrivée, veuillez être patient car les <strong>lettres prennent généralement
+        entre trois à sept jours ouvrables pour arriver</strong>. Nous vous remercions
+        de votre patience.</p>"
     webauthn_delete:
-      caution: Si vous supprimez votre clé de sécurité, vous ne pourrez plus
-        l’utiliser pour accéder à votre compte %{app_name}.
+      caution: Si vous supprimez votre clé de sécurité, vous ne pourrez plus l’utiliser
+        pour accéder à votre compte %{app_name}.
       confirm: Êtes-vous sûr de vouloir supprimer votre clé de sécurité?
     webauthn_platform_delete:
       caution: Si vous supprimez votre déverouillage facial ou déverrouillage par
-        empreinte digitale, vous ne pourrez plus l’utiliser pour accéder à votre
-        compte %{app_name}.
-      confirm: Êtes-vous sûr de vouloir supprimer votre déverouillage facial ou
-        déverrouillage par empreinte digitale?
+        empreinte digitale, vous ne pourrez plus l’utiliser pour accéder à votre compte
+        %{app_name}.
+      confirm: Êtes-vous sûr de vouloir supprimer votre déverouillage facial ou déverrouillage
+        par empreinte digitale?
     webauthn_platform_setup:
       continue: Continuer
-      instructions_text: Utilisez le déverrouillage par empreinte digitale ou le
-        déverouillage facial pour accéder à votre compte avec %{app_name}.
+      instructions_text: Utilisez le déverrouillage par empreinte digitale ou le déverouillage
+        facial pour accéder à votre compte avec %{app_name}.
       instructions_title: Utilisez le déverrouillage par empreinte digitale ou le
         déverouillage facial pour accéder à votre compte.
-      intro_html: '<p>Lorsque vous voulez accéder à votre compte %{app_name}, vous
-        utilisez votre appareil pour numériser votre visage ou votre empreinte
-        digitale. Votre appareil confirme si ces numérisations correspondent aux
-        images que vous avez déjà stockées sur votre appareil.</p><p>Nous ne
-        copions ni ne stockons ces images. Vous aurez besoin du même appareil
-        pour vous connecter en utilisant le déverrouillage facial ou tactile à
-        l’avenir. %{link}</p>'
+      intro_html: "<p>Lorsque vous voulez accéder à votre compte %{app_name}, vous
+        utilisez votre appareil pour numériser votre visage ou votre empreinte digitale.
+        Votre appareil confirme si ces numérisations correspondent aux images que
+        vous avez déjà stockées sur votre appareil.</p><p>Nous ne copions ni ne stockons
+        ces images. Vous aurez besoin du même appareil pour vous connecter en utilisant
+        le déverrouillage facial ou tactile à l’avenir. %{link}</p>"
       intro_link_text: En savoir plus sur le déverrouillage facial ou tactile.
       login_text: 'Lorsque vous êtes prêt, appuyez sur le bouton:'
       nickname: Pseudo dispositivo
-      warning_text: Si vous perdez ou changez votre appareil, vous devrez
-        réinitialiser votre compte. Nous vous conseillons de mettre en place
-        plusieurs méthodes d’authentification afin d’éviter que votre compte ne
-        se bloque.
+      warning_text: Si vous perdez ou changez votre appareil, vous devrez réinitialiser
+        votre compte. Nous vous conseillons de mettre en place plusieurs méthodes
+        d’authentification afin d’éviter que votre compte ne se bloque.
     webauthn_setup:
       continue: Continuer
-      instructions_text: Appuyez sur le bouton de votre clé de sécurité pour
-        l’enregistrer avec %{app_name}
+      instructions_text: Appuyez sur le bouton de votre clé de sécurité pour l’enregistrer
+        avec %{app_name}
       instructions_title: Connectez votre clé de sécurité
-      intro_html: '<p>Ajoutez une clé de sécurité conforme à la norme FIDO comme
-        méthode d’authentification. Vous pouvez ajouter autant de clés de
-        sécurité que vous le souhaitez. Pour commencer, donnez d’abord un surnom
-        à votre clé de sécurité.</p>'
+      intro_html: "<p>Ajoutez une clé de sécurité conforme à la norme FIDO comme méthode
+        d’authentification. Vous pouvez ajouter autant de clés de sécurité que vous
+        le souhaitez. Pour commencer, donnez d’abord un surnom à votre clé de sécurité.</p>"
       login_text: 'Lorsque vous êtes prêt à vous authentifier, appuyez sur le bouton:'
       nickname: Pseudo clé de sécurité

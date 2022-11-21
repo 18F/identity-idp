@@ -7,11 +7,9 @@ fr:
       granted_token_expired: Le lien pour supprimer votre compte %{app_name} a expiré.
         Veuillez créer une autre demande pour supprimer votre compte.
       granted_token_invalid: Le lien de suppression de votre compte %{app_name} n’est
-        pas valide. Veuillez réessayer en cliquant sur le lien dans votre
-        e-mail.
+        pas valide. Veuillez réessayer en cliquant sur le lien dans votre e-mail.
       granted_token_missing: Le lien de suppression de votre compte %{app_name} n’est
-        pas valide. Veuillez réessayer en cliquant sur le lien dans votre
-        e-mail.
+        pas valide. Veuillez réessayer en cliquant sur le lien dans votre e-mail.
     attributes:
       password:
         too_short:
@@ -26,26 +24,27 @@ fr:
         Veuillez cocher la case ci-dessous puis cliquez sur continuer.
       document_capture_cancelled: Vous avez annulé le téléchargement de vos photos
         d’identité sur votre téléphone.
-      document_verification_timeout: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
+      document_verification_timeout: Le serveur a mis trop de temps à répondre. Veuillez
+        réessayer.
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
-        photos de votre identifiant avant de continuer. Nous vous avons envoyé
-        un lien avec des instructions.
+        photos de votre identifiant avant de continuer. Nous vous avons envoyé un
+        lien avec des instructions.
       quota_reached: Désolé, votre fournisseur de services a atteint sa limite de
-        vérification d’identité. Veuillez contacter votre fournisseur de
-        services pour plus d’informations.
-      send_link_throttle: Vous avez essayé trop de fois, veuillez réessayer dans
-        %{timeout}. Vous pouvez également revenir en arrière et choisir
-        d’utiliser votre ordinateur à la place.
+        vérification d’identité. Veuillez contacter votre fournisseur de services
+        pour plus d’informations.
+      send_link_throttle: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}.
+        Vous pouvez également revenir en arrière et choisir d’utiliser votre ordinateur
+        à la place.
       throttled_heading: Nous n’avons pas pu vérifier votre identité
-      throttled_text_html: '<strong>Veuillez réessayer dans %{timeout}.</strong> Pour
-        votre sécurité, nous limitons le nombre de fois où vous pouvez tenter de
-        vérifier un document en ligne.'
+      throttled_text_html: "<strong>Veuillez réessayer dans %{timeout}.</strong> Pour
+        votre sécurité, nous limitons le nombre de fois où vous pouvez tenter de vérifier
+        un document en ligne."
     general: Oups, une erreur s’est produite. Veuillez essayer de nouveau.
     inherited_proofing:
       consent_form: to be implemented
     invalid_totp: Code non valide. Veuillez essayer de nouveau.
-    max_password_attempts_reached: Vous avez inscrit des mots de passe incorrects un
-      trop grand nombre de fois. Vous pouvez réinitialiser votre mot de passe en
+    max_password_attempts_reached: Vous avez inscrit des mots de passe incorrects
+      un trop grand nombre de fois. Vous pouvez réinitialiser votre mot de passe en
       utilisant le lien « Vous avez oublié votre mot de passe? ».
     messages:
       already_confirmed: a déjà été confirmé, veuillez essayer de vous connecter
@@ -54,17 +53,17 @@ fr:
       confirmation_invalid_token: Lien de confirmation non valide. Le lien est expiré
         ou vous avez déjà confirmé votre compte.
       confirmation_period_expired: Lien de confirmation expiré. Vous pouvez cliquer
-        sur « Envoyer les instructions de confirmation de nouveau » pour en
-        obtenir un autre.
+        sur « Envoyer les instructions de confirmation de nouveau » pour en obtenir
+        un autre.
       expired: est expiré, veuillez en demander un nouveau
       format_mismatch: Veuillez vous assurer de respecter le format requis.
       gpo_otp_expired: Votre code de confirmation a expiré. Veuillez solliciter une
         autre lettre afin d’obtenir un nouveau code.
-      improbable_phone: Numéro de téléphone non valide. Veillez à saisir un numéro de
-        téléphone valide.
+      improbable_phone: Numéro de téléphone non valide. Veillez à saisir un numéro
+        de téléphone valide.
       inclusion: N’est pas inclus dans la liste
-      invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris en
-        charge. Veuillez essayer par SMS si vous possédez un téléphone disposant
+      invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris
+        en charge. Veuillez essayer par SMS si vous possédez un téléphone disposant
         de cette fonction.
       invalid_phone_number: Le numéro de téléphone n’est pas valide
       invalid_sms_number: Le numéro de téléphone saisi ne prend pas en charge les
@@ -77,19 +76,19 @@ fr:
       otp_failed: Échec de l’envoi de votre code de sécurité.
       password_incorrect: Mot de passe incorrect
       personal_key_incorrect: Clé personnelle incorrecte
-      phone_confirmation_throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
+      phone_confirmation_throttled: Vous avez essayé plusieurs fois, essayez à nouveau
+        dans %{timeout}.
       phone_duplicate: Ce compte utilise déjà le numéro de téléphone que vous avez
-        entré en tant qu’authentificateur. Veuillez utiliser un numéro de
-        téléphone différent.
+        entré en tant qu’authentificateur. Veuillez utiliser un numéro de téléphone
+        différent.
       phone_required: Le numéro de téléphone est obligatoire
       phone_unsupported: Désolé, nous ne sommes pas en mesure d’envoyer des SMS pour
-        le moment. S’il vous plaît essayez l’option d’appel téléphonique
-        ci-dessous, ou utilisez votre clé personnelle.
+        le moment. S’il vous plaît essayez l’option d’appel téléphonique ci-dessous,
+        ou utilisez votre clé personnelle.
       premium_rate_phone: Il semble s’agir d’un numéro de téléphone surtaxé. Veuillez
         sélectionner un autre numéro et réessayer.
       pwned_password: Le mot de passe que vous avez entré n’est pas sécurisé. C’est
-        dans une liste de mots de passe connus exposés dans les violations de
-        données.
+        dans une liste de mots de passe connus exposés dans les violations de données.
       too_long:
         one: Est trop long (maximum de 1 caractère)
         other: est trop long (le maximum est de %{count} caractères)
@@ -100,10 +99,10 @@ fr:
       unauthorized_authn_context: Contexte d’authentification non autorisé
       unauthorized_nameid_format: Format non autorisé du nom d’identification
       unauthorized_service_provider: Fournisseur de service non autorisé
-      voip_check_error: Il y a eu une erreur lors de la vérification de votre
-        téléphone, veuillez réessayer
-      voip_phone: Ce numéro est un service téléphonique basé sur le Web (Voix sur IP).
-        Veuillez sélectionner un autre numéro et réessayer
+      voip_check_error: Il y a eu une erreur lors de la vérification de votre téléphone,
+        veuillez réessayer
+      voip_phone: Ce numéro est un service téléphonique basé sur le Web (Voix sur
+        IP). Veuillez sélectionner un autre numéro et réessayer
       weak_password: Votre mot de passe n’est pas assez fort. %{feedback}
       wrong_length:
         one: n’est pas de la bonne longueur (devrait être de 1 caractère)
@@ -111,8 +110,8 @@ fr:
     piv_cac_setup:
       unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.
     registration:
-      terms: Avant de pouvoir continuer, vous devez nous donner la permission.
-        Veuillez cocher la case ci-dessous puis cliquez sur continuer.
+      terms: Avant de pouvoir continuer, vous devez nous donner la permission. Veuillez
+        cocher la case ci-dessous puis cliquez sur continuer.
     sign_in:
       bad_password_limit: Vous avez dépassé le nombre maximal de tentatives de connexion.
     two_factor_auth_setup:
@@ -126,27 +125,26 @@ fr:
       already_registered: Le déverrouillage facial ou tactile est déjà enregistré.
         Veuillez essayer une autre méthode de plateforme pour vous connecter.
       attestation_error: Désolé, mais votre déverrouillage facial ou tactile ne semble
-        pas fonctionner. Veuillez vous assurer que votre appareil est répertorié
-        sur https://fidoalliance.org/certification/fido-certified-products/ et
-        si vous pensez qu’il s’agit d’une erreur de notre part, veuillez nous
-        contacter à %{link}.
-      general_error: Une erreur s’est produite lors de l’ajout de votre méthode
-        d’authentification. Veuillez réessayer.
+        pas fonctionner. Veuillez vous assurer que votre appareil est répertorié sur
+        https://fidoalliance.org/certification/fido-certified-products/ et si vous
+        pensez qu’il s’agit d’une erreur de notre part, veuillez nous contacter à
+        %{link}.
+      general_error: Une erreur s’est produite lors de l’ajout de votre méthode d’authentification.
+        Veuillez réessayer.
       not_supported: Nous sommes désolés, mais votre navigateur ne prend pas en charge
         le déverrouillage du visage ou du toucher.
-      unique_name: Ce nom d’appareil a été utilisé. Veuillez sélectionner un autre nom
-        d’appareil.
+      unique_name: Ce nom d’appareil a été utilisé. Veuillez sélectionner un autre
+        nom d’appareil.
     webauthn_setup:
       already_registered: Clé de sécurité déjà enregistrée. Veuillez essayer une clé
         de sécurité différente.
-      attestation_error: Désolé, votre clé de sécurité ne semble pas être une clé de
-        sécurité FIDO. Veuillez vérifier que votre appareil est répertorié sur
-        https://fidoalliance.org/certification/fido-certified-products/. Si vous
-        pensez qu’il s’agit d’une erreur de notre part, veuillez contacter
-        %{link}.
-      general_error: Une erreur s’est produite lors de l’ajout de votre clé de
-        sécurité physique. Veuillez réessayer.
+      attestation_error: Désolé, votre clé de sécurité ne semble pas être une clé
+        de sécurité FIDO. Veuillez vérifier que votre appareil est répertorié sur
+        https://fidoalliance.org/certification/fido-certified-products/. Si vous pensez
+        qu’il s’agit d’une erreur de notre part, veuillez contacter %{link}.
+      general_error: Une erreur s’est produite lors de l’ajout de votre clé de sécurité
+        physique. Veuillez réessayer.
       not_supported: Désolé, votre navigateur ne supporte pas les clés de sécurité
-        FIDO. Les dernières versions de Chrome, Firefox, Edge et Safari prennent
-        en charge les clés de sécurité FIDO. Internet Explorer ne le fait pas.
+        FIDO. Les dernières versions de Chrome, Firefox, Edge et Safari prennent en
+        charge les clés de sécurité FIDO. Internet Explorer ne le fait pas.
       unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.

@@ -4,8 +4,8 @@ es:
     account_reset:
       cancel_token_invalid: el token de cancelación no es válido
       cancel_token_missing: falta el token de cancelación
-      granted_token_expired: El enlace para eliminar su cuenta de %{app_name} ha
-        caducado. Crea otra solicitud para eliminar tu cuenta.
+      granted_token_expired: El enlace para eliminar su cuenta de %{app_name} ha caducado.
+        Crea otra solicitud para eliminar tu cuenta.
       granted_token_invalid: El enlace para eliminar tu cuenta de %{app_name} no es
         válido. Haz clic de nuevo en el enlace en tu correo electrónico.
       granted_token_missing: El enlace para eliminar tu cuenta de %{app_name} no es
@@ -20,23 +20,25 @@ es:
         verificar su identidad en un teléfono móvil.
     confirm_password_incorrect: La contraseña es incorrecta.
     doc_auth:
-      consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a
-        continuación y luego haga clic en continuar.
-      document_capture_cancelled: Ha cancelado la carga de fotos de su identificación en este teléfono.
-      document_verification_timeout: El servidor tardó demasiado en responder. Inténtalo de nuevo.
+      consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a continuación
+        y luego haga clic en continuar.
+      document_capture_cancelled: Ha cancelado la carga de fotos de su identificación
+        en este teléfono.
+      document_verification_timeout: El servidor tardó demasiado en responder. Inténtalo
+        de nuevo.
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
-      quota_reached: Lo sentimos, su proveedor de servicios ha alcanzado su límite de
-        verificación de identidad. Póngase en contacto con su proveedor de
-        servicios para obtener más información.
+      quota_reached: Lo sentimos, su proveedor de servicios ha alcanzado su límite
+        de verificación de identidad. Póngase en contacto con su proveedor de servicios
+        para obtener más información.
       send_link_throttle: Ha intentado demasiadas veces, por favor, inténtelo de nuevo
-        en %{timeout}. También puede retroceder y elegir utilizar su computadora
-        como alternativa.
+        en %{timeout}. También puede retroceder y elegir utilizar su computadora como
+        alternativa.
       throttled_heading: No pudimos verificar la identificación
-      throttled_text_html: '<strong>Por favor, inténtelo de nuevo en
-        %{timeout}.</strong> Por su seguridad, limitamos el número de veces que
-        puede intentar verificar un documento en línea.'
-    general: '¡Oops! Algo salió mal. Inténtelo de nuevo.'
+      throttled_text_html: "<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong>
+        Por su seguridad, limitamos el número de veces que puede intentar verificar
+        un documento en línea."
+    general: "¡Oops! Algo salió mal. Inténtelo de nuevo."
     inherited_proofing:
       consent_form: to be implemented
     invalid_totp: El código es inválido. Vuelva a intentarlo.
@@ -54,8 +56,8 @@ es:
       format_mismatch: Por favor, use el formato solicitado.
       gpo_otp_expired: Tu código de confirmación ha caducado. Vuelve a solicitar otra
         carta para recibir un nuevo código.
-      improbable_phone: Número de teléfono no válido. Asegúrate de introducir un
-        número de teléfono válido.
+      improbable_phone: Número de teléfono no válido. Asegúrate de introducir un número
+        de teléfono válido.
       inclusion: No se incluye en la lista.
       invalid_calling_area: No se admiten llamadas a ese número de teléfono. Intenta
         enviar un SMS si tienes un teléfono que permita enviar SMS.
@@ -70,17 +72,17 @@ es:
       otp_failed: Se produjo un error al enviar el código de seguridad.
       password_incorrect: La contraseña es incorrecta
       personal_key_incorrect: La clave personal es incorrecta
-      phone_confirmation_throttled: Lo intentaste muchas veces, vuelve a intentarlo en %{timeout}.
-      phone_duplicate: Esta cuenta ya está utilizando el número de teléfono que
-        ingresó como autenticador. Por favor, use un número de teléfono
-        diferente.
+      phone_confirmation_throttled: Lo intentaste muchas veces, vuelve a intentarlo
+        en %{timeout}.
+      phone_duplicate: Esta cuenta ya está utilizando el número de teléfono que ingresó
+        como autenticador. Por favor, use un número de teléfono diferente.
       phone_required: Número de teléfono requerido
-      phone_unsupported: Lo sentimos, no podemos enviar SMS en este momento. Pruebe la
-        opción de llamada telefónica a continuación o use su clave personal.
-      premium_rate_phone: Parece que se trata de un número de teléfono de tarifa
-        premium. Por favor, seleccione otro número e inténtelo de nuevo.
-      pwned_password: La contraseña que ingresaste no es segura. Está en una lista de
-        contraseñas conocidas expuestas en violaciones de datos.
+      phone_unsupported: Lo sentimos, no podemos enviar SMS en este momento. Pruebe
+        la opción de llamada telefónica a continuación o use su clave personal.
+      premium_rate_phone: Parece que se trata de un número de teléfono de tarifa premium.
+        Por favor, seleccione otro número e inténtelo de nuevo.
+      pwned_password: La contraseña que ingresaste no es segura. Está en una lista
+        de contraseñas conocidas expuestas en violaciones de datos.
       too_long:
         one: es demasiado largo (el máximo es 1 carácter)
         other: es demasiado largo (el máximo es %{count} caracteres)
@@ -93,8 +95,8 @@ es:
       unauthorized_service_provider: Proveedor de servicio no autorizado
       voip_check_error: Se ha producido un error al comprobar su teléfono, por favor,
         inténtelo de nuevo
-      voip_phone: Este número corresponde a un servicio de telefonía basado en la web
-        (VoIP). Por favor, seleccione un número diferente e inténtelo de nuevo.
+      voip_phone: Este número corresponde a un servicio de telefonía basado en la
+        web (VoIP). Por favor, seleccione un número diferente e inténtelo de nuevo.
       weak_password: Su contraseña no es suficientemente segura. %{feedback}
       wrong_length:
         one: es la longitud incorrecta (debería ser de 1 carácter)
@@ -117,9 +119,8 @@ es:
       already_registered: El desbloqueo facial o táctil ya está registrado. Por favor,
         intente un método de plataforma diferente para iniciar la sesión.
       attestation_error: Lo sentimos, pero su desbloqueo facial o táctil no parece
-        funcionar. Por favor, asegúrese de que su dispositivo está registrado en
-        https://fidoalliance.org/certification/fido-certified-products/ y si
-        cree que se trata de un error nuestro, póngase en contacto con nosotros
+        funcionar. Por favor, asegúrese de que su dispositivo está registrado en https://fidoalliance.org/certification/fido-certified-products/
+        y si cree que se trata de un error nuestro, póngase en contacto con nosotros
         en %{link}.
       general_error: Se ha producido un error al agregar su método de autenticación.
         Por favor, inténtelo de nuevo.
@@ -131,14 +132,12 @@ es:
       already_registered: Clave de seguridad ya registrada. Por favor, intente una
         clave de seguridad diferente.
       attestation_error: Lo sentimos, pero su clave de seguridad no parece ser una
-        clave de seguridad FIDO. Por favor, asegúrese de que su dispositivo
-        aparezca en
-        https://fidoalliance.org/certification/fido-certified-products/. Si
-        considera que se trata de un error nuestro, póngase en contacto con
-        %{link}.
-      general_error: Hubo un error al agregar su clave de seguridad de hardware.
-        Inténtalo de nuevo.
+        clave de seguridad FIDO. Por favor, asegúrese de que su dispositivo aparezca
+        en https://fidoalliance.org/certification/fido-certified-products/. Si considera
+        que se trata de un error nuestro, póngase en contacto con %{link}.
+      general_error: Hubo un error al agregar su clave de seguridad de hardware. Inténtalo
+        de nuevo.
       not_supported: Lo sentimos, su navegador no admite las claves de seguridad FIDO.
-        Las últimas versiones de Chrome, Firefox, Edge y Safari son compatibles
-        con las claves de seguridad FIDO. Internet Explorer no lo hace.
+        Las últimas versiones de Chrome, Firefox, Edge y Safari son compatibles con
+        las claves de seguridad FIDO. Internet Explorer no lo hace.
       unique_name: El nombre ya fue escogido. Por favor, elija un nombre diferente.

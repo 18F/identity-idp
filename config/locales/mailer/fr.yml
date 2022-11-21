@@ -5,6 +5,6 @@ fr:
     email_reuse_notice:
       subject: Cette adresse courriel est déjà associée à un compte.
     help: Si vous avez besoin d’aide, visitez le site %{link}
-    logo: '%{app_name} logo'
+    logo: "%{app_name} logo"
     no_reply: Veuillez ne pas répondre à ce message.
     privacy_policy: Politique de confidentialité

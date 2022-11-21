@@ -1,23 +1,23 @@
 ---
 en:
   mfa:
-    account_info: Adding another authentication method prevents you from getting
-      locked out of your account if you lose one of your methods.
+    account_info: Adding another authentication method prevents you from getting locked
+      out of your account if you lose one of your methods.
     add: Add another method
     additional_mfa_required:
       button: Add an authentication method
       heading: Add another authentication method.
       info: Beginning %{date}, you will be required to add another authentication
-        method in case you lose access to your phone. Adding another
-        authentication method helps you avoid getting locked out of your
-        account. Learn more about authentication options
+        method in case you lose access to your phone. Adding another authentication
+        method helps you avoid getting locked out of your account. Learn more about
+        authentication options
       learn_more: Learn more about authentication options
       non_restricted_required_info: You are required to add another authentication
         method as a backup in case you lose access to your phone.
       title: Add another authentication method before %{date}
     info: Add another layer of security by selecting a multi-factor authentication
-      method. We recommend you select at least (2) two different options in case
-      you lose one of your methods.
+      method. We recommend you select at least (2) two different options in case you
+      lose one of your methods.
     second_method_warning:
       link: Add a second authentication method.
       text: You will have to delete your account and start over if you lose your only
