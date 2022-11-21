@@ -2,8 +2,6 @@ require 'fingerprinter'
 require 'identity_validations'
 
 class ServiceProvider < ApplicationRecord
-  self.ignored_columns = %w[ial2_quota]
-
   belongs_to :agency
 
   # rubocop:disable Rails/HasManyOrHasOneDependent
