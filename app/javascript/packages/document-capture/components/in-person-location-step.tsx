@@ -30,29 +30,57 @@ interface FormattedLocation {
   weekdayHours: string;
 }
 
+interface PostOptions {
+  /**
+   * Whether to send the request as a JSON request. Defaults to inclusion.
+   */
+  json: boolean;
+
+  /**
+   * Whether to include CSRF token in the request. Defaults to inclusion.
+   */
+  csrf: boolean;
+
+  /**
+   * Optional. HTTP verb used. If excluded, will fetch as a GET.
+   */
+  method: string;
+}
+
 const getCsrfToken = () =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content;
 
-const fetchWithCSRF = (targetUrl: String, method: String) => {
-  const headers = { 'Content-Type': 'application/json' };
-  const csrf = getCsrfToken();
-  if (csrf) {
-    headers['X-CSRF-Token'] = csrf;
+const request = async (
+  url: string,
+  body: BodyInit | object,
+  options: Partial<PostOptions> = {},
+) => {
+  const headers: HeadersInit = {};
+
+  if (options.csrf !== false) {
+    const csrf = getCsrfToken();
+    if (csrf) {
+      headers['X-CSRF-Token'] = csrf;
+    }
   }
 
-  return window.fetch(targetUrl, { method, headers }).then((res) => res.json());
+  if (options.json !== false) {
+    headers['Content-Type'] = 'application/json';
+    body = JSON.stringify(body);
+  }
+
+  const response = await window.fetch(url, {
+    ...(options.method ? { method: options.method } : {}),
+    headers,
+    body: body as BodyInit,
+  });
+
+  return options.json !== false ? response.json() : response.text();
 };
 
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
-const getUspsLocations = () => {
-  const headers = { 'Content-Type': 'application/json' };
-  const csrf = getCsrfToken();
-  if (csrf) {
-    headers['X-CSRF-Token'] = csrf;
-  }
 
-  return window.fetch(LOCATIONS_URL, { method: 'POST', headers }).then((res) => res.json());
-};
+const getUspsLocations = () => request(LOCATIONS_URL, {}, { method: 'post' });
 
 const formatLocation = (postOffices: PostOffice[]) => {
   const formattedLocations = [] as FormattedLocation[];
@@ -121,16 +149,9 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
         return;
       }
       const selected = prepToSend(selectedLocation);
-      const headers = { 'Content-Type': 'application/json' };
-      const csrf = getCsrfToken();
-      if (csrf) {
-        headers['X-CSRF-Token'] = csrf;
-      }
       setInProgress(true);
-      await fetch(LOCATIONS_URL, {
+      await request(LOCATIONS_URL, JSON.stringify(selected), {
         method: 'PUT',
-        body: JSON.stringify(selected),
-        headers,
       })
         .then(() => {
           if (!mountedRef.current) {
@@ -159,6 +180,7 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
     (async () => {
       try {
         const fetchedLocations = await getUspsLocations();
+
         if (mounted) {
           const formattedLocations = formatLocation(fetchedLocations);
           setLocationData(formattedLocations);
