@@ -1,8 +1,13 @@
 require 'rails_helper'
 
+UUID_REGEX = /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}$/
+BASE64_REGEX = /^[a-z0-9+\/]+=*$/i
+
 describe Idv::ImageUploadsController do
   describe '#create' do
-    subject(:action) { post :create, params: params }
+    subject(:action) do
+      post :create, params: params
+    end
 
     let(:user) { create(:user) }
     let!(:document_capture_session) { user.document_capture_sessions.create!(user: user) }
@@ -17,6 +22,12 @@ describe Idv::ImageUploadsController do
       }
     end
     let(:json) { JSON.parse(response.body, symbolize_names: true) }
+
+    let(:store_encrypted_images) { false }
+
+    before do
+      allow(controller).to receive(:store_encrypted_images?).and_return(store_encrypted_images)
+    end
 
     before do
       Funnel::DocAuth::RegisterStep.new(user.id, '').call('welcome', :view, true)
@@ -294,12 +305,12 @@ describe Idv::ImageUploadsController do
           :idv_document_upload_submitted,
           success: true,
           failure_reason: nil,
-          back_image: match(/.+/),
-          back_image_content_type: DocAuthImageFixtures.document_front_image_multipart.content_type,
-          back_image_encryption_key: match(/.+/),
-          front_image: match(/.+/),
-          front_image_content_type: DocAuthImageFixtures.document_front_image_multipart.content_type,
-          front_image_encryption_key: match(/.+/),
+          back_image: nil,
+          back_image_content_type: nil,
+          back_image_encryption_key: nil,
+          front_image: nil,
+          front_image_content_type: nil,
+          front_image_encryption_key: nil,
           document_state: 'MT',
           document_number: '1111111111111',
           document_issued: '2019-12-31',
@@ -313,6 +324,30 @@ describe Idv::ImageUploadsController do
         action
 
         expect_funnel_update_counts(user, 1)
+      end
+
+      context 'encrypted document storage is enabled' do
+        let(:store_encrypted_images) { true }
+
+        it 'includes image fields in attempts api event' do
+          stub_attempts_tracker
+
+          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+            :idv_document_upload_submitted,
+            hash_including(
+              success: true,
+              failure_reason: nil,
+              back_image: match(UUID_REGEX),
+              back_image_content_type: params[:back].content_type,
+              back_image_encryption_key: match(BASE64_REGEX),
+              front_image: match(UUID_REGEX),
+              front_image_content_type: params[:front].content_type,
+              front_image_encryption_key: match(BASE64_REGEX),
+            ),
+          )
+
+          action
+        end
       end
 
       context 'but doc_pii validation fails' do
@@ -409,6 +444,12 @@ describe Idv::ImageUploadsController do
               last_name: 'MCFAKERSON',
               date_of_birth: '10/06/1938',
               address: nil,
+              back_image: nil,
+              back_image_content_type: nil,
+              back_image_encryption_key: nil,
+              front_image: nil,
+              front_image_content_type: nil,
+              front_image_encryption_key: nil,
             )
 
             action
@@ -484,6 +525,12 @@ describe Idv::ImageUploadsController do
               last_name: 'MCFAKERSON',
               date_of_birth: '10/06/1938',
               address: nil,
+              back_image: nil,
+              back_image_content_type: nil,
+              back_image_encryption_key: nil,
+              front_image: nil,
+              front_image_content_type: nil,
+              front_image_encryption_key: nil,
             )
 
             action
