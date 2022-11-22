@@ -3,7 +3,7 @@ require 'rails_helper'
 module LexisNexisFixtures
   class << self
     def example_config
-      Proofing::LexisNexis::Proofer::Config.new(
+      Proofing::LexisNexis::Ddp::Proofer::Config.new(
         base_url: 'https://example.com',
         request_mode: 'testing',
         account_id: 'test_account',
@@ -15,7 +15,7 @@ module LexisNexisFixtures
     end
 
     def example_ddp_config
-      Proofing::LexisNexis::Proofer::Config.new(
+      Proofing::LexisNexis::Ddp::Proofer::Config.new(
         api_key: 'test_api_key',
         base_url: 'https://example.com',
         org_id: 'test_org_id',

@@ -137,20 +137,14 @@ RSpec.describe Telephony::OtpSender do
         message = <<~XML.squish
           <speak>
             <prosody rate='slow'>
-              Hello! Your #{APP_NAME} one time passcode is,
+              Hello! Your #{APP_NAME} one-time code is,
               1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
-              4 <break time='0.5s' /> 5 <break time='0.5s' /> 6,
-              again, your passcode is,
-              1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
-              4 <break time='0.5s' /> 5 <break time='0.5s' /> 6,
-              This code expires in 5 minutes.
-            </prosody>
-          </speak>
+              4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
         XML
 
         adapter = instance_double(Telephony::Pinpoint::VoiceSender)
         expect(adapter).to receive(:send).with(
-          message: message,
+          message: start_with(message),
           to: to,
           otp: otp,
           country_code: country_code,
@@ -164,26 +158,19 @@ RSpec.describe Telephony::OtpSender do
         message = <<~XML.squish
           <speak>
             <prosody rate='slow'>
-              Hello! Your #{APP_NAME} one time passcode is,
+              Hello! Your #{APP_NAME} one-time code is,
               1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
-              4 <break time='0.5s' /> 5 <break time='0.5s' /> 6,
-              again, your passcode is,
-              1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
-              4 <break time='0.5s' /> 5 <break time='0.5s' /> 6,
-              This code expires in 5 minutes.
-            </prosody>
-          </speak>
+              4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
         XML
 
         adapter = instance_double(Telephony::Pinpoint::VoiceSender)
         expect(adapter).to receive(:send).with(
-          message: message,
+          message: start_with(message),
           to: to,
           otp: otp,
           country_code: country_code,
         )
         expect(Telephony::Pinpoint::VoiceSender).to receive(:new).and_return(adapter)
-
         subject.send_confirmation_otp
       end
 
