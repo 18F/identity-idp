@@ -60,7 +60,7 @@ const DEFAULT_FETCH_OPTIONS = { csrf: true, json: true };
 const getCSRFToken = () =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content;
 
-const request = async (
+export const request = async (
   url: string,
   body: BodyInit | object,
   options: Partial<RequestOptions> = {},
@@ -249,7 +249,7 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.location')}</PageHeading>
-      <AddressSearch onAddressFound={(address) => handleFoundAddress(address)} />
+      <AddressSearch onAddressFound={(address) => handleFoundAddress(address)} request={request} />
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
       {locationsContent}
       <BackButton onClick={toPreviousStep} />

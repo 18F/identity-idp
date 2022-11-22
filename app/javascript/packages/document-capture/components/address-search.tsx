@@ -1,5 +1,5 @@
 import { TextInput, Button } from '@18f/identity-components';
-import { useState, useEffect, useCallback, useRef, useContext } from 'react';
+import { useState, useCallback } from 'react';
 
 interface Location {
   street_address: string;
@@ -10,51 +10,38 @@ interface Location {
 
 interface AddressSearchProps {
   onAddressFound?: (location: Location) => void;
-}
-
-function toFormData(object: Record<string, any>): FormData {
-  return Object.keys(object).reduce((form, key) => {
-    const value = object[key];
-    if (value !== undefined) {
-      form.append(key, value);
-    }
-
-    return form;
-  }, new window.FormData());
+  request: Function;
 }
 
 const ADDRESS_SEARCH_URL = '/api/addresses';
 
-function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
+function AddressSearch({ onAddressFound = () => {}, request }: AddressSearchProps) {
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
-  const handleAddressSearch = useCallback(async (e) => {
-    try {
-      const response = await fetch(ADDRESS_SEARCH_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ address: '120 broadway' }),
-      });
-      // console.log(await response.json())
-      const addressCandidates = await response.json();
-      const [bestMatchedAddress] = addressCandidates;
+  const handleAddressSearch = useCallback(async () => {
+    const addressCandidates = await request(
+      ADDRESS_SEARCH_URL,
+      { address: '120 broadway' },
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
 
-      onAddressFound(bestMatchedAddress);
-    } catch (e) {
-      console.log(e);
-    }
+    const [bestMatchedAddress] = addressCandidates;
 
+    onAddressFound(bestMatchedAddress);
   }, [unvalidatedAddressInput]);
 
-  return <>
-    <TextInput
-      value={unvalidatedAddressInput}
-      onChange={(ev) => setUnvalidatedAddressInput(ev.target.value)}
-      label="Search for an address"
-    />
-    <Button
-      onClick={() => handleAddressSearch()}
-    >Search</Button>
-  </>;
+  return (
+    <>
+      <TextInput
+        value={unvalidatedAddressInput}
+        onChange={(ev) => setUnvalidatedAddressInput(ev.target.value)}
+        label="Search for an address"
+      />
+      <Button onClick={() => handleAddressSearch()}>Search</Button>
+    </>
+  );
 }
 
 export default AddressSearch;
