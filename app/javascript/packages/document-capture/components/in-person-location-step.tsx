@@ -5,6 +5,7 @@ import BackButton from './back-button';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
 import AnalyticsContext from '../context/analytics';
+import AddressSearch from './address-search';
 
 interface PostOffice {
   address: string;
@@ -47,6 +48,13 @@ interface RequestOptions {
   method?: string;
 }
 
+interface LocationQuery {
+  streetAddress: string;
+  city: string;
+  state: string;
+  zipCode: string;
+}
+
 const DEFAULT_FETCH_OPTIONS = { csrf: true, json: true };
 
 const getCSRFToken = () =>
@@ -86,7 +94,8 @@ const request = async (
 
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
 
-const getUspsLocations = () => request(LOCATIONS_URL, {}, { method: 'post' });
+const getUspsLocations = (location) =>
+  request(LOCATIONS_URL, { address: { ...location } }, { method: 'post' });
 
 const formatLocation = (postOffices: PostOffice[]) => {
   const formattedLocations = [] as FormattedLocation[];
@@ -124,6 +133,7 @@ const prepToSend = (location: object) => {
 function InPersonLocationStep({ onChange, toPreviousStep }) {
   const { t } = useI18n();
   const [locationData, setLocationData] = useState([] as FormattedLocation[]);
+  const [foundAddress, setFoundAddress] = useState({} as LocationQuery);
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
@@ -181,11 +191,20 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
     [locationData, inProgress],
   );
 
+  const handleFoundAddress = useCallback((address) => {
+    setFoundAddress({
+      streetAddress: address.street_address,
+      city: address.city,
+      state: address.state,
+      zipCode: address.zip_code,
+    });
+  }, []);
+
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const fetchedLocations = await getUspsLocations();
+        const fetchedLocations = await getUspsLocations(foundAddress);
 
         if (mounted) {
           const formattedLocations = formatLocation(fetchedLocations);
@@ -200,7 +219,7 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [foundAddress]);
 
   let locationsContent: React.ReactNode;
   if (!isLoadingComplete) {
@@ -230,6 +249,7 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.location')}</PageHeading>
+      <AddressSearch onAddressFound={(address) => handleFoundAddress(address)} />
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
       {locationsContent}
       <BackButton onClick={toPreviousStep} />
