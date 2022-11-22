@@ -14,8 +14,7 @@ module Idv
       end
 
       def call
-        raise 'Async upload prohibited' if FeatureManagement.document_capture_async_uploads_enabled?
-        handle_stored_result
+        handle_stored_result if !FeatureManagement.document_capture_async_uploads_enabled?
       end
 
       def extra_view_variables
