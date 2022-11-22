@@ -73,6 +73,9 @@ fr:
       not_a_number: N’est pas un nombre
       password_incorrect: Mot de passe incorrect
       personal_key_incorrect: Clé personnelle incorrecte
+      phone_carrier: Nous nous excusons, car nous ne pouvons pas prendre en charge cet
+        opérateur téléphonique pour le moment. Veuillez sélectionner un autre
+        numéro puis réessayer.
       phone_confirmation_throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
       phone_duplicate: Ce compte utilise déjà le numéro de téléphone que vous avez
         entré en tant qu’authentificateur. Veuillez utiliser un numéro de
