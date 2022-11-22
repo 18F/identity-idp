@@ -1,13 +1,9 @@
 module Idv
   module InPerson
     class AddressSearchController < ApplicationController
-      include ApplicationHelper # for liveness_checking_enabled?
+      include RenderConditionConcern
 
-      # include RenderConditionConcern
-
-      # check_or_render_not_found -> { IdentityConfig.store.arcgis_search_enabled }
-
-      respond_to :json
+      check_or_render_not_found -> { IdentityConfig.store.arcgis_search_enabled }
 
       def index
         render json: addresses(params[:address])
@@ -26,10 +22,6 @@ module Idv
       def geocoder
         @geocoder ||= ArcgisApi::Geocoder.new
       end
-
-      # def permitted_params
-      #   params.permit(:address)
-      # end
     end
   end
 end
