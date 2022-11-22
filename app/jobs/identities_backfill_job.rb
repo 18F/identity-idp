@@ -1,4 +1,4 @@
-class IdentitiesBackfillJob
+class IdentitiesBackfillJob < ApplicationJob
   # This is a short-term solution to backfill data requiring a table scan.
   # This job can be deleted once it's done.
 
@@ -6,36 +6,54 @@ class IdentitiesBackfillJob
 
   # Let's give us the option to fine-tune this on the fly
   BATCH_SIZE_KEY = 'IdentitiesBackfillJob.batch_size'.freeze
+  SLICE_SIZE_KEY = 'IdentitiesBackfillJob.slice_size'.freeze
   CACHE_KEY = 'IdentitiesBackfillJob.position'.freeze
 
   def perform
-    position = Rails.cache.read(CACHE_KEY).to_i || 0
-    batch_size = Rails.cache.read(BATCH_SIZE_KEY).to_i || 500_000
+    start_time = Time.now
 
-    # max id today is in the 184M range
-    return true if position >= 185_000_000
+    # We should also capture this and bail out of the loop below when we get there.
+    # We run this 50x when there are 3 rows, lulz
+    max_id = ServiceProviderIdentity.last.id
 
-    sp_query = <<~SQL
+    (batch_size / slice_size).times.each do |slice_num|
+      start_id = position + (slice_size * slice_num)
+      next if start_id > max_id
+      sp_query = <<~SQL
 UPDATE identities
 SET last_consented_at = created_at
-WHERE id > #{position}
+WHERE id > #{start_id}
+AND id <= #{start_id + slice_size}
+AND deleted_at IS NULL
 AND last_consented_at IS NULL
-AND deleted_at IS NOT NULL
-LIMIT #{batch_size}
-    SQL
+      SQL
 
-    ActiveRecord::Base.connection.execute(sp_query)
+      puts sp_query
 
-    agency_query = <<~SQL
-UPDATE agency_identities
-SET consented=true
-WHERE id > #{position}
-LIMIT #{batch_size}
-    SQL
+      ActiveRecord::Base.connection.execute(sp_query)
+      logger.info "Processed #{slice_size} rows starting at row #{start_id}"
+    end
 
-    ActiveRecord::Base.connection.execute(agency_query)
+    elapsed_time = Time.now - start_time
+    logger.info "Finished a full batch of #{batch_size} rows in #{elapsed_time} seconds"
 
     # If we made it here, nothing blew up; increment the counter for next time
-    Rails.cache.write(CACHE_KEY, position + batch_size)
+    REDIS_POOL.with { |redis| redis.set(CACHE_KEY, position + batch_size) }
+  end
+
+  def position
+    redis_get(CACHE_KEY, 0)
+  end
+
+  def batch_size
+    redis_get(BATCH_SIZE_KEY, 500_000)
+  end
+
+  def slice_size
+    redis_get(SLICE_SIZE_KEY, 10_000)
+  end
+
+  def redis_get(key, default)
+    (REDIS_POOL.with { |redis| redis.get(key) } || default).to_i
   end
 end
