@@ -1,9 +1,10 @@
 require 'rails_helper'
 
-UUID_REGEX = /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}$/
-BASE64_REGEX = /^[a-z0-9+\/]+=*$/i
-
 describe Idv::ImageUploadsController do
+
+  let (:uuid_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}$/ }
+  let (:base64_regex) { /^[a-z0-9+\/]+=*$/i }
+
   describe '#create' do
     subject(:action) do
       post :create, params: params
@@ -337,12 +338,12 @@ describe Idv::ImageUploadsController do
             hash_including(
               success: true,
               failure_reason: nil,
-              back_image_uuid: match(UUID_REGEX),
+              back_image_uuid: match(uuid_regex),
               back_image_content_type: params[:back].content_type,
-              back_image_encryption_key: match(BASE64_REGEX),
-              front_image_uuid: match(UUID_REGEX),
+              back_image_encryption_key: match(base64_regex),
+              front_image_uuid: match(uuid_regex),
               front_image_content_type: params[:front].content_type,
-              front_image_encryption_key: match(BASE64_REGEX),
+              front_image_encryption_key: match(base64_regex),
             ),
           )
 
@@ -394,12 +395,12 @@ describe Idv::ImageUploadsController do
               last_name: 'MCFAKERSON',
               date_of_birth: '10/06/1938',
               address: nil,
-              back_image_uuid: match(UUID_REGEX),
+              back_image_uuid: match(uuid_regex),
               back_image_content_type: params[:back].content_type,
-              back_image_encryption_key: match(BASE64_REGEX),
-              front_image_uuid: match(UUID_REGEX),
+              back_image_encryption_key: match(base64_regex),
+              front_image_uuid: match(uuid_regex),
               front_image_content_type: params[:front].content_type,
-              front_image_encryption_key: match(BASE64_REGEX),
+              front_image_encryption_key: match(base64_regex),
             )
 
             action
