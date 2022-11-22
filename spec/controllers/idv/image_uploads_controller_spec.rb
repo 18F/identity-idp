@@ -1,9 +1,8 @@
 require 'rails_helper'
 
 describe Idv::ImageUploadsController do
-
-  let (:uuid_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}$/ }
-  let (:base64_regex) { /^[a-z0-9+\/]+=*$/i }
+  let(:uuid_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}$/ }
+  let(:base64_regex) { /^[a-z0-9+\/]+=*$/i }
 
   describe '#create' do
     subject(:action) do
