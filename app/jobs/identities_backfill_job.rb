@@ -16,13 +16,17 @@ class IdentitiesBackfillJob < ApplicationJob
     (batch_size / slice_size).times.each do |slice_num|
       start_id = position + (slice_size * slice_num)
       next if start_id > max_id
-      sp_query = <<~SQL
-UPDATE identities
-SET last_consented_at = created_at
-WHERE id > #{start_id}
-AND id <= #{start_id + slice_size}
-AND deleted_at IS NULL
-AND last_consented_at IS NULL
+      params = {
+        min_id: start_id,
+        max_id: start_id + slice_size,
+      }.transform_values { |v| ActiveRecord::Base.connection.quote(v) }
+      sp_query = format(<<~SQL, params)
+        UPDATE identities
+        SET last_consented_at = created_at
+        WHERE id > %{min_id}
+        AND id <= %{max_id}
+        AND deleted_at IS NULL
+        AND last_consented_at IS NULL
       SQL
 
       ActiveRecord::Base.connection.execute(sp_query)
@@ -32,7 +36,7 @@ AND last_consented_at IS NULL
     elapsed_time = Time.now - start_time
     logger.info "Finished a full batch of #{batch_size} rows in #{elapsed_time} seconds"
 
-    # If we made it here, nothing blew up; increment the counter for next time
+    # If we made it here without error, increment the counter for next time:
     REDIS_POOL.with { |redis| redis.set(CACHE_KEY, position + batch_size) }
   end
 

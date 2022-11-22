@@ -4,7 +4,7 @@ RSpec.describe IdentitiesBackfillJob, type: :job do
   describe '#perform' do
     # create a few rows
     let!(:deleted) do
-      create(:service_provider_identity, :soft_deleted, :consented)
+      create(:service_provider_identity, :soft_deleted_5m_ago, :consented)
     end
 
     let!(:consented_at_set) do
@@ -19,15 +19,13 @@ RSpec.describe IdentitiesBackfillJob, type: :job do
 
     it 'does not update rows that have been soft-deleted' do
       expect(deleted.deleted_at).to_not be_nil
-      expect(deleted.last_consented_at).to be_nil
+      consent_time = deleted.last_consented_at
 
       subject
       deleted.reload
 
       expect(deleted.deleted_at).not_to be_nil
-
-      # Why is this failing?! The query should be straightforward!
-      expect(deleted.last_consented_at).to be_nil
+      expect(deleted.last_consented_at).to eq(consent_time)
     end
 
     it 'does not update rows that already have a date populated' do
