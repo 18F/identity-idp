@@ -13,9 +13,10 @@ module Idv
 
       # retrieve the list of nearby IPP Post Office locations with a POST request
       def index
+        address = params['address']
         candidate = UspsInPersonProofing::Applicant.new(
-          address: params['address'],
-          city: params['city'], state: params['state'], zip_code: params['zip_code']
+          address: address['street_address'],
+          city: address['city'], state: address['state'], zip_code: address['zip_code']
         )
 
         usps_response = []
