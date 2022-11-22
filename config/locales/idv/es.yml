@@ -54,6 +54,7 @@ es:
       pattern_mismatch:
         ssn: 'Su número de Seguro Social debe ser ingresado como ### - ## - ####'
         zipcode: Ingresa un código postal de 5 o 9 dígitos
+      unsupported_otp_delivery_method: Seleccione una manera de recibir un código.
     failure:
       attempts:
         one: Por razones de seguridad, le queda un intento.

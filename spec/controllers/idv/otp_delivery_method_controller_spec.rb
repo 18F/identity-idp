@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-xdescribe Idv::OtpDeliveryMethodController do
+describe Idv::OtpDeliveryMethodController do
   let(:user) { build(:user) }
   let(:valid_phone_number) { '+1 (225) 555-5000' }
 

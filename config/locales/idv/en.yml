@@ -53,6 +53,7 @@ en:
       pattern_mismatch:
         ssn: 'Your Social Security number must be entered in as ###-##-####'
         zipcode: Enter a 5 or 9 digit ZIP Code
+      unsupported_otp_delivery_method: Select a method to receive a code.
     failure:
       attempts:
         one: For security reasons, you have one attempt remaining.

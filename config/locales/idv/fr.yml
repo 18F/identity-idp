@@ -58,6 +58,7 @@ fr:
         ssn: 'Votre numéro de sécurité sociale doit être inscrit de cette façon :
           ###-##-####'
         zipcode: Entrez un code postal à 5 ou 9 chiffres
+      unsupported_otp_delivery_method: Sélectionnez une méthode pour recevoir un code.
     failure:
       attempts:
         one: Pour des raisons de sécurité, il vous reste une tentative.

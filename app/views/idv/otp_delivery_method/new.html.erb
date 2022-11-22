@@ -1,0 +1,79 @@
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: step_indicator_steps,
+        current_step: :verify_phone_or_address,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<% title t('titles.doc_auth.otp_delivery') %>
+
+<%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :idv)) %>
+
+<%= render PageHeadingComponent.new.with_content(t('idv.titles.otp_delivery_method')) %>
+<p class="margin-top-1">
+  <%= t('idv.messages.otp_delivery_method.phone_number_html', phone: @idv_phone) %>
+</p>
+
+
+<%= form_tag(
+      idv_otp_delivery_method_url,
+      autocomplete: 'off', class: 'margin-top-4',
+      method: :put
+    ) do |f| %>
+
+  <fieldset class="margin-bottom-4 padding-0 border-0">
+    <% if phone_number_capabilities.supports_sms? %>
+      <%= radio_button_tag(
+            'otp_delivery_preference',
+            :sms,
+            false,
+            disabled: VendorStatus.new.vendor_outage?(:sms),
+            class: 'usa-radio__input usa-radio__input--tile',
+          ) %>
+      <label for="otp_delivery_preference_sms" class="usa-radio__label">
+        <%= t('two_factor_authentication.otp_delivery_preference.sms') %>
+        <span class="usa-radio__label-description">
+          <%= t('two_factor_authentication.two_factor_choice_options.sms_info') %>
+        </span>
+      </label>
+    <% end %>
+
+    <% if phone_number_capabilities.supports_voice? %>
+      <%= radio_button_tag(
+            'otp_delivery_preference',
+            :voice,
+            false,
+            disabled: VendorStatus.new.vendor_outage?(:voice),
+            class: 'usa-radio__input usa-radio__input--tile',
+          ) %>
+      <label for="otp_delivery_preference_voice" class="usa-radio__label">
+        <%= t('two_factor_authentication.otp_delivery_preference.voice') %>
+        <span class="usa-radio__label-description">
+          <%= t('two_factor_authentication.two_factor_choice_options.voice_info') %>
+        </span>
+      </label>
+    <% end %>
+  </fieldset>
+  <div class="margin-y-5">
+    <%= submit_tag(t('idv.buttons.send_confirmation_code'), class: 'usa-button usa-button--big usa-button--wide') %>
+  </div>
+<% end %>
+
+<%= render(
+      'shared/troubleshooting_options',
+      heading: t('components.troubleshooting_options.default_heading'),
+      options: [
+        {
+          url: idv_phone_path(step: 'phone_otp_delivery_selection'),
+          text: t('idv.troubleshooting.options.change_phone_number'),
+        },
+        gpo_letter_available && {
+          url: idv_gpo_path,
+          text: t('idv.troubleshooting.options.verify_by_mail'),
+        },
+      ].select(&:present?),
+    ) %>
+
+<%= render 'idv/doc_auth/cancel', step: 'phone_otp_delivery_selection' %>
