@@ -15,21 +15,26 @@ RSpec.describe IdentitiesBackfillJob, type: :job do
       create(:service_provider_identity, :active)
     end
 
+    subject { described_class.perform_now }
+
     it 'does not update rows that have been soft-deleted' do
       expect(deleted.deleted_at).to_not be_nil
       expect(deleted.last_consented_at).to be_nil
 
-      IdentitiesBackfillJob.perform_now
+      subject
+      deleted.reload
+
+      expect(deleted.deleted_at).not_to be_nil
 
       # Why is this failing?! The query should be straightforward!
-      expect(deleted.reload.last_consented_at).to be_nil
+      expect(deleted.last_consented_at).to be_nil
     end
 
     it 'does not update rows that already have a date populated' do
       time = consented_at_set.last_consented_at
       expect(time).not_to be_nil
 
-      IdentitiesBackfillJob.perform_now
+      subject
 
       expect(consented_at_set.reload.last_consented_at).to eq time
     end
@@ -39,9 +44,17 @@ RSpec.describe IdentitiesBackfillJob, type: :job do
       expect(no_consented_at.created_at).to_not be_nil
       expect(no_consented_at.deleted_at).to be_nil
 
-      IdentitiesBackfillJob.perform_now
+      subject
 
       expect(no_consented_at.reload.last_consented_at).to_not be_nil
+    end
+
+    it 'updates the position in Redis' do
+      expect(described_class.new.position).to eq(0)
+
+      subject
+
+      expect(described_class.new.position).to eq(500_000)
     end
   end
 
@@ -57,7 +70,7 @@ RSpec.describe IdentitiesBackfillJob, type: :job do
     context 'when there is a cache key in redis' do
       before do
         REDIS_POOL.with do |redis|
-          redis.set(IdentitiesBackfillJob::BATCH_SIZE_KEY, 1000)
+          redis.set(described_class::BATCH_SIZE_KEY, 1000)
         end
       end
 

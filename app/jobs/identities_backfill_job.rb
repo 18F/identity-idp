@@ -11,9 +11,6 @@ class IdentitiesBackfillJob < ApplicationJob
 
   def perform
     start_time = Time.now
-
-    # We should also capture this and bail out of the loop below when we get there.
-    # We run this 50x when there are 3 rows, lulz
     max_id = ServiceProviderIdentity.last.id
 
     (batch_size / slice_size).times.each do |slice_num|
@@ -27,8 +24,6 @@ AND id <= #{start_id + slice_size}
 AND deleted_at IS NULL
 AND last_consented_at IS NULL
       SQL
-
-      puts sp_query
 
       ActiveRecord::Base.connection.execute(sp_query)
       logger.info "Processed #{slice_size} rows starting at row #{start_id}"
