@@ -199,15 +199,6 @@ module Idv
       end
     end
 
-    def track_event(event, attributes = {})
-      if analytics.present?
-        analytics.track_event(
-          event,
-          attributes,
-        )
-      end
-    end
-
     def update_analytics(client_response)
       add_costs(client_response)
       update_funnel(client_response)
