@@ -65,5 +65,5 @@ module Proofing
         success: success?,
       }
     end
-    end
-      end
+  end
+end
