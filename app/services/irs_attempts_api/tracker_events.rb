@@ -89,12 +89,12 @@ module IrsAttemptsApi
     # @param [String] document_number
     # @param [String] document_issued
     # @param [String] document_expiration
-    # @param [String] front_image_uuid UUID for the item in S3 containing the encrypted image data for the front of the user's identity document.
+    # @param [String] front_image_uuid ID of item in S3 w/ encrypted image data for the front image
     # @param [String] front_image_content_type MIME type of the front image, e.g. "image/jpeg".
-    # @param [String] front_image_encryption_key Base64-encoded key used to encrypt the data stored in S3 for the front image.
-    # @param [String] back_image_uuid UUID for the item in S3 containing the encrypted image data for the back of the user's identity document.
+    # @param [String] front_image_encryption_key Base64-encoded AES key used for front image.
+    # @param [String] back_image_uuid ID of item in S3 w/ encrypted image data for the back image
     # @param [String] back_image_content_type MIME type of the back image, e.g. "image/jpeg".
-    # @param [String] back_image_encryption_key Base64-encoded key used to encrypt the data stored in S3 for the back image.
+    # @param [String] back_image_encryption_key Base64-encoded AES key used for back image.
     # @param [String] first_name
     # @param [String] last_name
     # @param [String] date_of_birth
