@@ -57,7 +57,7 @@ describe Proofing::LexisNexis::Ddp::Proofer do
   end
 
   subject(:instance) do
-    Proofing::LexisNexis::Ddp::Proofer.new(**LexisNexisFixtures.example_config.to_h)
+    Proofing::LexisNexis::Ddp::Proofer.new(LexisNexisFixtures.example_config.to_h)
   end
 
   describe '#proof' do
