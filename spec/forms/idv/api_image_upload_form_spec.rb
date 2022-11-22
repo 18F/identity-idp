@@ -265,17 +265,22 @@ RSpec.describe Idv::ApiImageUploadForm do
 
           expect(
             aes_decrypt(
-              ciphertext: document_writer.storage.read_image(name: upload_event[:front_image]),
+              ciphertext: document_writer.storage.read_image(name: upload_event[:front_image_uuid]),
               key: upload_event[:front_image_encryption_key],
             ),
           ).to eq(front_image.read)
 
           expect(
             aes_decrypt(
-              ciphertext: document_writer.storage.read_image(name: upload_event[:back_image]),
+              ciphertext: document_writer.storage.read_image(name: upload_event[:back_image_uuid]),
               key: upload_event[:back_image_encryption_key],
             ),
           ).to eq(back_image.read)
+        end
+
+        context 'when form submission fails' do
+          it 'writes encrypted documents' do
+          end
         end
       end
 
@@ -294,10 +299,10 @@ RSpec.describe Idv::ApiImageUploadForm do
         it 'does not send image info to attempts api' do
           expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
             hash_including(
-              front_image: nil,
+              front_image_uuid: nil,
               front_image_content_type: nil,
               front_image_encryption_key: nil,
-              back_image: nil,
+              back_image_uuid: nil,
               back_image_content_type: nil,
               back_image_encryption_key: nil,
             ),

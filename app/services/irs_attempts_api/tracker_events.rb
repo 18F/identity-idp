@@ -89,10 +89,10 @@ module IrsAttemptsApi
     # @param [String] document_number
     # @param [String] document_issued
     # @param [String] document_expiration
-    # @param [String] front_image
+    # @param [String] front_image_uuid
     # @param [String] front_image_content_type
     # @param [String] front_image_encryption_key
-    # @param [String] back_image
+    # @param [String] back_image_uuid
     # @param [String] back_image_content_type
     # @param [String] back_image_encryption_key
     # @param [String] first_name
@@ -107,10 +107,10 @@ module IrsAttemptsApi
       document_number: nil,
       document_issued: nil,
       document_expiration: nil,
-      front_image: nil,
+      front_image_uuid: nil,
       front_image_content_type: nil,
       front_image_encryption_key: nil,
-      back_image: nil,
+      back_image_uuid: nil,
       back_image_content_type: nil,
       back_image_encryption_key: nil,
       first_name: nil,
@@ -126,10 +126,10 @@ module IrsAttemptsApi
         document_number: document_number,
         document_issued: document_issued,
         document_expiration: document_expiration,
-        front_image: front_image,
+        front_image_uuid: front_image_uuid,
         front_image_content_type: front_image_content_type,
         front_image_encryption_key: front_image_encryption_key,
-        back_image: back_image,
+        back_image_uuid: back_image_uuid,
         back_image_content_type: back_image_content_type,
         back_image_encryption_key: back_image_encryption_key,
         first_name: first_name,
