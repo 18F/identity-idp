@@ -375,6 +375,37 @@ describe Idv::ImageUploadsController do
           )
         end
 
+        context 'encrypted document storage is enabled' do
+          let(:store_encrypted_images) { true }
+          let(:first_name) { nil }
+
+          it 'includes image references in attempts api' do
+            stub_attempts_tracker
+
+            expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+              :idv_document_upload_submitted,
+              success: true,
+              failure_reason: nil,
+              document_state: 'ND',
+              document_number: nil,
+              document_issued: nil,
+              document_expiration: nil,
+              first_name: nil,
+              last_name: 'MCFAKERSON',
+              date_of_birth: '10/06/1938',
+              address: nil,
+              back_image: match(UUID_REGEX),
+              back_image_content_type: params[:back].content_type,
+              back_image_encryption_key: match(BASE64_REGEX),
+              front_image: match(UUID_REGEX),
+              front_image_content_type: params[:front].content_type,
+              front_image_encryption_key: match(BASE64_REGEX),
+            )
+
+            action
+          end
+        end
+
         context 'due to invalid Name' do
           let(:first_name) { nil }
 
