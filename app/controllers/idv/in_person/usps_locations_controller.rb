@@ -11,11 +11,17 @@ module Idv
 
       before_action :confirm_authenticated_for_api, only: [:update]
 
-      # get the list of all pilot Post Office locations
+      # retrieve the list of nearby IPP Post Office locations with a POST request
       def index
+        # binding.pry
+        candidate = UspsInPersonProofing::Applicant.new(
+          address: params['address'],
+          city: params['city'], state: params['state'], zip_code: params['zip_code']
+        )
+
         usps_response = []
         begin
-          usps_response = Proofer.new.request_pilot_facilities
+          usps_response = Proofer.new.request_facilities(candidate)
         rescue Faraday::ConnectionFailed => _error
           nil
         end

@@ -6,6 +6,18 @@ describe Idv::InPerson::UspsLocationsController do
   let(:user) { create(:user) }
   let(:sp) { nil }
   let(:in_person_proofing_enabled) { true }
+  let(:address) do
+    UspsInPersonProofing::Applicant.new(
+      address: '1600 Pennsylvania Ave',
+      city: 'Washington', state: 'DC', zip_code: '20500'
+    )
+  end
+  let(:fake_address) do
+    UspsInPersonProofing::Applicant.new(
+      address: '742 Evergreen Terrace',
+      city: 'Springfield', state: 'MO', zip_code: '89011'
+    )
+  end
   let(:selected_location) do
     {
       usps_location: {
@@ -38,7 +50,10 @@ describe Idv::InPerson::UspsLocationsController do
         { name: 'Location 4' },
       ]
     end
-    subject(:response) { get :index }
+    subject(:response) do
+      post :index, params: { address: '1600 Pennsylvania Ave', city: 'Washington',
+                             state: 'DC', zip_code: '20500' }
+    end
 
     before do
       allow(UspsInPersonProofing::Proofer).to receive(:new).and_return(proofer)
@@ -46,11 +61,10 @@ describe Idv::InPerson::UspsLocationsController do
 
     context 'with successful fetch' do
       before do
-        allow(proofer).to receive(:request_pilot_facilities).and_return(locations)
+        allow(proofer).to receive(:request_facilities).with(address).and_return(locations)
       end
 
-      it 'gets successful pilot response' do
-        response = get :index
+      it 'returns a successful response' do
         json = response.body
         facilities = JSON.parse(json)
         expect(facilities.length).to eq 4
@@ -60,11 +74,13 @@ describe Idv::InPerson::UspsLocationsController do
     context 'with unsuccessful fetch' do
       before do
         exception = Faraday::ConnectionFailed.new('error')
-        allow(proofer).to receive(:request_pilot_facilities).and_raise(exception)
+        allow(proofer).to receive(:request_facilities).with(fake_address).and_raise(exception)
       end
 
-      it 'gets an empty pilot response' do
-        response = get :index
+      it 'gets an empty response' do
+        response = post :index,
+                        params: { address: '742 Evergreen Terrace', city: 'Springfield',
+                                  state: 'MO', zip_code: '89011' }
         json = response.body
         facilities = JSON.parse(json)
         expect(facilities.length).to eq 0
