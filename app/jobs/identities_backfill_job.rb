@@ -10,7 +10,7 @@ class IdentitiesBackfillJob < ApplicationJob
   CACHE_KEY = 'IdentitiesBackfillJob.position'.freeze
 
   def perform
-    start_time = Time.now
+    start_time = Time.zone.now
     max_id = ServiceProviderIdentity.last.id
 
     (batch_size / slice_size).times.each do |slice_num|
@@ -33,7 +33,7 @@ class IdentitiesBackfillJob < ApplicationJob
       logger.info "Processed #{slice_size} rows starting at row #{start_id}"
     end
 
-    elapsed_time = Time.now - start_time
+    elapsed_time = Time.zone.now - start_time
     logger.info "Finished a full batch of #{batch_size} rows in #{elapsed_time} seconds"
 
     # If we made it here without error, increment the counter for next time:
