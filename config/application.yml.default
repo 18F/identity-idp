@@ -510,7 +510,6 @@ test:
   database_worker_jobs_username: ''
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
-  doc_auth_enable_presigned_s3_urls: true
   doc_auth_max_attempts: 4
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
