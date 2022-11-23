@@ -1,4 +1,4 @@
-# `@18f/request`
+# `@18f/identity-request`
 
 Wraps the native fetch API to include IDP-specific configuration.
 
