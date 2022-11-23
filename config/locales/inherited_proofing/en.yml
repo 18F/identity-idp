@@ -27,6 +27,8 @@ en:
         info: We are temporarily having trouble retrieving your information. Please try
           again.
         title: Couldn’t retrieve information
+      service_provider:
+        communication: 'communication was unsuccessful'
     headings:
       lets_go: How verifying your identity works
       retrieval: We are retrieving your information from My HealtheVet

@@ -127,6 +127,8 @@ in_person_completion_survey_url: 'https://login.gov'
 include_slo_in_saml_metadata: false
 inherited_proofing_enabled: false
 inherited_proofing_va_base_url: 'https://staging-api.va.gov'
+inherited_proofing_max_attempts: 2
+inherited_proofing_max_attempt_window_in_minutes: 1
 va_inherited_proofing_mock_enabled: false
 irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_auth_tokens: ''

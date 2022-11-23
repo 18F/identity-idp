@@ -36,7 +36,7 @@ module Idv
           }.freeze
 
           ERROR_HASH = {
-            errors: 'InheritedProofing::Errors::MHVIdentityDataNotFoundError',
+            service_error: 'the server responded with status 401',
           }.freeze
 
           def initialize(service_provider_data)
