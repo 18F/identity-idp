@@ -30,7 +30,7 @@ export const request = async (url: string, options: Partial<RequestOptions> = {}
   if (json) {
     headers.set('Content-Type', 'application/json');
 
-    if (isPOJO(json)) {
+    if (typeof json !== 'boolean') {
       body = JSON.stringify(json);
     }
   }
