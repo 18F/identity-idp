@@ -19,13 +19,13 @@ RSpec.describe IdentitiesBackfillJob, type: :job do
 
     it 'does not update rows that have been soft-deleted' do
       expect(deleted.deleted_at).to_not be_nil
-      consent_time = deleted.last_consented_at
+      consent_time = deleted.last_consented_at.to_i
 
       subject
       deleted.reload
 
       expect(deleted.deleted_at).not_to be_nil
-      expect(deleted.last_consented_at).to eq(consent_time)
+      expect(deleted.last_consented_at.to_i).to eq(consent_time)
     end
 
     it 'does not update rows that already have a date populated' do
@@ -34,7 +34,7 @@ RSpec.describe IdentitiesBackfillJob, type: :job do
 
       subject
 
-      expect(consented_at_set.reload.last_consented_at).to eq time
+      expect(consented_at_set.reload.last_consented_at.to_i).to eq time.to_i
     end
 
     it 'does update rows which are not deleted and have no last_consented_at date' do
