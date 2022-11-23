@@ -5,7 +5,7 @@ feature 'inherited proofing verify wait', :js do
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-    allow(IdentityConfig.store).to receive(:va_inherited_proofing_mock_enabled).and_return true
+    allow(IdentityConfig.store).to receive(:va_inherited_proofing_mock_enabled).and_return(true)
     send_user_from_service_provider_to_login_gov_openid_connect(user, inherited_proofing_auth)
   end
 
@@ -49,7 +49,7 @@ feature 'inherited proofing verify wait', :js do
         expect(fake_analytics).to have_logged_event(
           'Throttler Rate Limit Triggered',
           throttle_type: :inherited_proofing,
-          step_name: Idv::Actions::InheritedProofing::RedoRetrieveUserInfoAction,
+          step_name: Idv::Actions::InheritedProofing::RedoRetrieveUserInfoAction.name,
         )
       end
     end

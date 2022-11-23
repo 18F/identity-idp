@@ -21,9 +21,9 @@ module Idv
             response = request
             return payload_to_hash decrypt_payload(response) if response.status == 200
 
-            service_error not_200_service_error(response.status)
+            service_error(not_200_service_error(response.status))
           rescue => error
-            return service_error error.message
+            service_error(error.message)
           end
         end
 

@@ -2,28 +2,23 @@ module Idv
   module InheritedProofing
     module Va
       class Form < Idv::InheritedProofing::BaseForm
-        class << self
-          def required_fields
-            @required_fields ||= %i[first_name
-                                    last_name
-                                    birth_date
-                                    ssn
-                                    address_street
-                                    address_zip]
-          end
+        REQUIRED_FIELDS = %i[first_name
+                             last_name
+                             birth_date
+                             ssn
+                             address_street
+                             address_zip].freeze
+        OPTIONAL_FIELDS = %i[phone
+                             address_street2
+                             address_city
+                             address_state
+                             address_country
+                             service_error].freeze
+        FIELDS = (REQUIRED_FIELDS + OPTIONAL_FIELDS).freeze
 
-          def optional_fields
-            @optional_fields ||= %i[phone
-                                    address_street2
-                                    address_city
-                                    address_state
-                                    address_country
-                                    service_error]
-          end
-        end
-
+        attr_accessor(*FIELDS)
         validate :add_service_error, if: :service_error?
-        validates(*required_fields, presence: true, unless: :service_error?)
+        validates(*REQUIRED_FIELDS, presence: true, unless: :service_error?)
 
         def submit
           extra = {}

@@ -26,28 +26,30 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
     }
   end
 
+  describe 'constants' do
+    describe 'FIELDS' do
+      it 'returns all the fields' do
+        expect(described_class::FIELDS).to match_array required_fields + optional_fields
+      end
+    end
+
+    describe 'REQUIRED_FIELDS' do
+      it 'returns the required fields' do
+        expect(described_class::REQUIRED_FIELDS).to match_array required_fields
+      end
+    end
+
+    describe 'OPTIONAL_FIELDS' do
+      it 'returns the optional fields' do
+        expect(described_class::OPTIONAL_FIELDS).to match_array optional_fields
+      end
+    end
+  end
+
   describe 'class methods' do
     describe '.model_name' do
       it 'returns the right model name' do
         expect(described_class.model_name).to eq 'IdvInheritedProofingVaForm'
-      end
-    end
-
-    describe '.fields' do
-      it 'returns all the fields' do
-        expect(described_class.fields).to match_array required_fields + optional_fields
-      end
-    end
-
-    describe '.required_fields' do
-      it 'returns the required fields' do
-        expect(described_class.required_fields).to match_array required_fields
-      end
-    end
-
-    describe '.optional_fields' do
-      it 'returns the optional fields' do
-        expect(described_class.optional_fields).to match_array optional_fields
       end
     end
   end
