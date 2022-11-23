@@ -1,75 +1,41 @@
 module Proofing
   module LexisNexis
     module Ddp
-      class Proofer
-        class << self
-          def required_attributes
-            [:threatmetrix_session_id,
-             :state_id_number,
-             :first_name,
-             :last_name,
-             :dob,
-             :ssn,
-             :address1,
-             :city,
-             :state,
-             :zipcode,
-             :request_ip]
-          end
+      class Proofer < LexisNexis::Proofer
+        vendor_name 'lexisnexis:ddp'
 
-          def vendor_name
-            'lexisnexis'
-          end
+        required_attributes :threatmetrix_session_id,
+                            :state_id_number,
+                            :first_name,
+                            :last_name,
+                            :dob,
+                            :ssn,
+                            :address1,
+                            :city,
+                            :state,
+                            :zipcode,
+                            :request_ip
 
-          def optional_attributes
-            [:address2, :phone, :email, :uuid_prefix]
-          end
+        optional_attributes :address2, :phone, :email, :uuid_prefix
 
-          def stage
-            :resolution
-          end
-        end
+        stage :resolution
 
-        Config = RedactedStruct.new(
-          :instant_verify_workflow,
-          :phone_finder_workflow,
-          :account_id,
-          :base_url,
-          :username,
-          :password,
-          :request_mode,
-          :request_timeout,
-          :org_id,
-          :api_key,
-          keyword_init: true,
-          allowed_members: [
-            :instant_verify_workflow,
-            :phone_finder_workflow,
-            :base_url,
-            :request_mode,
-            :request_timeout,
-          ],
-        )
-
-        attr_reader :config
-
-        def initialize(attrs)
-          @config = Config.new(attrs)
+        proof do |applicant, result|
+          proof_applicant(applicant, result)
         end
 
         def send_verification_request(applicant)
           VerificationRequest.new(config: config, applicant: applicant).send
         end
 
-        def proof(applicant)
+        def proof_applicant(applicant, result)
           response = send_verification_request(applicant)
-          process_response(response)
+          process_response(response, result)
         end
 
         private
 
-        def process_response(response)
-          result = Proofing::Result.new
+        def process_response(response, result)
           body = response.response_body
           result.response_body = body
           result.transaction_id = body['request_id']
@@ -78,7 +44,6 @@ module Proofing
           result.review_status = review_status
           result.add_error(:request_result, request_result) unless request_result == 'success'
           result.add_error(:review_status, review_status) unless review_status == 'pass'
-          result
         end
       end
     end

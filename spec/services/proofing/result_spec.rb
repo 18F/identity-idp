@@ -46,9 +46,7 @@ describe Proofing::Result do
     subject { result.failed? }
 
     context 'when there is an error AND an exception' do
-      let(:result) do
-        Proofing::Result.new(exception: StandardError.new).add_error('foobar')
-      end
+      let(:result) { Proofing::Result.new(exception: StandardError.new).add_error('foobar') }
       it { is_expected.to eq(false) }
     end
 
@@ -67,9 +65,7 @@ describe Proofing::Result do
     subject { result.success? }
 
     context 'when there is an error AND an exception' do
-      let(:result) do
-        Proofing::Result.new(exception: StandardError.new).add_error('foobar')
-      end
+      let(:result) { Proofing::Result.new(exception: StandardError.new).add_error('foobar') }
       it { is_expected.to eq(false) }
     end
 

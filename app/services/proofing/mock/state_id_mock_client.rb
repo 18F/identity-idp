@@ -2,7 +2,7 @@
 
 module Proofing
   module Mock
-    class StateIdMockClient
+    class StateIdMockClient < Proofing::Base
       SUPPORTED_STATE_ID_TYPES = %w[
         drivers_license drivers_permit state_id_card
       ].to_set.freeze

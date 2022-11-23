@@ -4,13 +4,13 @@ module Proofing
     attr_accessor :context, :transaction_id, :reference, :review_status, :response_body
 
     def initialize(
-        errors: {},
-        context: {},
-        exception: nil,
-        transaction_id: nil,
-        reference: nil,
-        response_body: nil
-      )
+      errors: {},
+      context: {},
+      exception: nil,
+      transaction_id: nil,
+      reference: nil,
+      response_body: nil
+    )
       @errors = errors
       @context = context
       @exception = exception

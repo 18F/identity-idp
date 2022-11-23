@@ -1,38 +1,27 @@
 module Proofing
   module Mock
-    class DdpMockClient
-      class << self
-        def vendor_name
-          'DdpMock'
-        end
+    class DdpMockClient < Proofing::Base
+      vendor_name 'DdpMock'
 
-        def required_attributes
-          %I[threatmetrix_session_id
-             state_id_number
-             first_name
-             last_name
-             dob
-             ssn
-             address1
-             city
-             state
-             zipcode
-             request_ip]
-        end
+      required_attributes :threatmetrix_session_id,
+                          :state_id_number,
+                          :first_name,
+                          :last_name,
+                          :dob,
+                          :ssn,
+                          :address1,
+                          :city,
+                          :state,
+                          :zipcode,
+                          :request_ip
 
-        def optional_attributes
-          %I[address2 phone email uuid_prefix]
-        end
+      optional_attributes :address2, :phone, :email, :uuid_prefix
 
-        def stage
-          :resolution
-        end
-      end
+      stage :resolution
 
       TRANSACTION_ID = 'ddp-mock-transaction-id-123'
 
-      def proof(applicant)
-        result = Proofing::Result.new
+      proof do |applicant, result|
         result.transaction_id = TRANSACTION_ID
 
         response_body = File.read(
@@ -47,8 +36,6 @@ module Proofing
         result.response_body = JSON.parse(response_body).tap do |json_body|
           json_body['review_status'] = status
         end
-
-        result
       end
 
       def review_status(session_id:)
