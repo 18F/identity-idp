@@ -133,7 +133,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def handle_invalid_otp(type:, context: nil)
     update_invalid_user
 
-    flash.now[:error] = invalid_otp_error(type)
+    flash.now[:error] = invalid_otp_error(type) + add_throttle_warning
 
     if decorated_user.locked_out?
       handle_second_factor_locked_user(context: context, type: type)
