@@ -42,10 +42,10 @@ describe('Acuant SDK Loading Tests', () => {
     it('Has a global loadAcuantSdk object on the window', () => {
       expect(window.loadAcuantSdk).to.exist();
     });
-    it('Calling loadAcuantSdk gives us AcuantJavascriptWebSdk in the global scope, but not as a prop of the window', () => {
+    it('Calling loadAcuantSdk gives us AcuantJavascriptWebSdk in the global scope and as a prop of the window', () => {
       window.loadAcuantSdk();
       expect(AcuantJavascriptWebSdk).to.exist();
-      expect(window.AcuantJavascriptWebSdk).to.not.exist();
+      expect(window.AcuantJavascriptWebSdk).to.exist();
     });
   });
 });
