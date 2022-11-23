@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import useObjectMemo from '@18f/identity-react-hooks/use-object-memo';
 import DeviceContext from './device';
 import AnalyticsContext from './analytics';
+import { AcuantSdkUpgradeABTestContext } from './acuant-sdk-upgrade-a-b-test';
 
 /**
  * Global declarations
@@ -80,11 +81,13 @@ type AcuantWorkersInitialize = (callback: () => void) => void;
 
 interface AcuantContextProviderProps {
   /**
-   * SDK source URL.
+   * The relative url source for the
+   * main acuant sdk file
    */
   sdkSrc: string;
   /**
-   * Camera JavaScript source URL.
+   * The relative url source for the
+   * camera acuant sdk file
    */
   cameraSrc: string;
   /**
@@ -192,9 +195,24 @@ const getActualAcuantCamera = (): AcuantCameraInterface => {
   return AcuantCamera;
 };
 
+const getAcuantSdkSources = () => {
+  const { acuantSdkUpgradeABTestingEnabled, useNewerSdk } = useContext(
+    AcuantSdkUpgradeABTestContext,
+  );
+  let version = '11.7.0';
+  if (acuantSdkUpgradeABTestingEnabled && useNewerSdk) {
+    version = '11.7.1';
+  }
+
+  return {
+    sdkSrc: `/acuant/${version}/AcuantJavascriptWebSdk.min.js`,
+    cameraSrc: `/acuant/${version}/AcuantCamera.min.js`,
+  };
+};
+
 function AcuantContextProvider({
-  sdkSrc = '/acuant/11.7.1/AcuantJavascriptWebSdk.min.js',
-  cameraSrc = '/acuant/11.7.1/AcuantCamera.min.js',
+  sdkSrc = '/acuant/11.7.0/AcuantJavascriptWebSdk.min.js',
+  cameraSrc = '/acuant/11.7.0/AcuantCamera.min.js',
   credentials = null,
   endpoint = null,
   glareThreshold = DEFAULT_ACCEPTABLE_GLARE_SCORE,
@@ -203,6 +221,24 @@ function AcuantContextProvider({
 }: AcuantContextProviderProps) {
   const { isMobile } = useContext(DeviceContext);
   const { trackEvent } = useContext(AnalyticsContext);
+
+  // Set the appropriate SDK sources based on
+  // A/B Testing
+  const { acuantSdkUpgradeABTestingEnabled, useNewerSdk } = useContext(
+    AcuantSdkUpgradeABTestContext,
+  );
+  let sdkVersion = '11.7.0';
+  if (acuantSdkUpgradeABTestingEnabled && useNewerSdk) {
+    sdkSrc = '/acuant/11.7.1/AcuantJavascriptWebSdk.min.js';
+    cameraSrc = '/acuant/11.7.1/AcuantCamera.min.js';
+    sdkVersion = '11.7.1';
+  }
+
+  trackEvent('IdV: Acuant SDK Upgrade A/B Test', {
+    use_newer_sdk: useNewerSdk,
+    version: sdkVersion,
+  });
+
   // Only mobile devices should load the Acuant SDK. Consider immediately ready otherwise.
   const [isReady, setIsReady] = useState(!isMobile);
   const [isAcuantLoaded, setIsAcuantLoaded] = useState(false);

@@ -10,6 +10,7 @@ import {
   AnalyticsContextProvider,
   FailedCaptureAttemptsContextProvider,
   NativeCameraABTestContextProvider,
+  AcuantSdkUpgradeABTestContextProvider,
   MarketingSiteContextProvider,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
@@ -30,6 +31,8 @@ interface AppRootData {
   maxAttemptsBeforeNativeCamera: string;
   nativeCameraABTestingEnabled: string;
   nativeCameraOnly: string;
+  acuantSdkUpgradeABTestingEnabled: string;
+  useNewerSdk: string;
   flowPath: FlowPath;
   cancelUrl: string;
   idvInPersonUrl?: string;
@@ -110,6 +113,8 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     maxSubmissionAttemptsBeforeNativeCamera,
     nativeCameraABTestingEnabled,
     nativeCameraOnly,
+    acuantSdkUpgradeABTestingEnabled,
+    useNewerSdk,
     appName,
     flowPath,
     cancelUrl: cancelURL,
@@ -169,6 +174,13 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
       {
         nativeCameraABTestingEnabled: nativeCameraABTestingEnabled === 'true',
         nativeCameraOnly: nativeCameraOnly === 'true',
+      },
+    ],
+    [
+      AcuantSdkUpgradeABTestContextProvider,
+      {
+        acuantSdkUpgradeABTestingEnabled: acuantSdkUpgradeABTestingEnabled === 'true',
+        useNewerSdk: useNewerSdk === 'true',
       },
     ],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
