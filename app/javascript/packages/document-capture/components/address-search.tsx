@@ -1,4 +1,5 @@
 import { TextInput, Button } from '@18f/identity-components';
+import { request } from '@18f/identity-request';
 import { useState, useCallback } from 'react';
 
 interface Location {
@@ -10,22 +11,18 @@ interface Location {
 
 interface AddressSearchProps {
   onAddressFound?: (location: Location) => void;
-  request: Function;
 }
 
 const ADDRESS_SEARCH_URL = '/api/addresses';
 
-function AddressSearch({ onAddressFound = () => {}, request }: AddressSearchProps) {
+function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
   const handleAddressSearch = useCallback(async () => {
-    const addressCandidates = await request(
-      ADDRESS_SEARCH_URL,
-      { address: '120 broadway' },
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      },
-    );
+    const addressCandidates = await request(ADDRESS_SEARCH_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      json: { address: unvalidatedAddressInput },
+    });
 
     const [bestMatchedAddress] = addressCandidates;
 
