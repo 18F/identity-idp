@@ -209,6 +209,8 @@ class IdentityConfig
     config.add(:include_slo_in_saml_metadata, type: :boolean)
     config.add(:inherited_proofing_enabled, type: :boolean)
     config.add(:inherited_proofing_va_base_url, type: :string)
+    config.add(:inherited_proofing_max_attempts, type: :integer)
+    config.add(:inherited_proofing_max_attempt_window_in_minutes, type: :integer)
     config.add(:va_inherited_proofing_mock_enabled, type: :boolean)
     config.add(:irs_attempt_api_audience)
     config.add(:irs_attempt_api_auth_tokens, type: :comma_separated_string_list)

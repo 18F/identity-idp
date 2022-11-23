@@ -621,6 +621,12 @@ module AnalyticsEvents
     )
   end
 
+  # Retry retrieving the user PII in the case where the first attempt fails
+  # in the agreement step, and the user initiates a "retry".
+  def idv_inherited_proofing_redo_retrieve_user_info_submitted(**extra)
+    track_event('IdV: inherited proofing retry retrieve user information submitted', **extra)
+  end
+
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user visited the in person proofing location step
   def idv_in_person_location_visited(flow_path:, **extra)
