@@ -305,8 +305,8 @@ describe Idv::ImageUploadsController do
           :idv_document_upload_submitted,
           success: true,
           failure_reason: nil,
-          document_back_image: nil,
-          document_front_image: nil,
+          document_back_image_filename: nil,
+          document_front_image_filename: nil,
           document_image_encryption_key: nil,
           document_state: 'MT',
           document_number: '1111111111111',
@@ -334,8 +334,8 @@ describe Idv::ImageUploadsController do
             hash_including(
               success: true,
               failure_reason: nil,
-              document_back_image: match(document_filename_regex),
-              document_front_image: match(document_filename_regex),
+              document_back_image_filename: match(document_filename_regex),
+              document_front_image_filename: match(document_filename_regex),
               document_image_encryption_key: match(base64_regex),
             ),
           )
@@ -388,8 +388,8 @@ describe Idv::ImageUploadsController do
               last_name: 'MCFAKERSON',
               date_of_birth: '10/06/1938',
               address: nil,
-              document_back_image: match(document_filename_regex),
-              document_front_image: match(document_filename_regex),
+              document_back_image_filename: match(document_filename_regex),
+              document_front_image_filename: match(document_filename_regex),
               document_image_encryption_key: match(base64_regex),
             )
 
@@ -466,8 +466,8 @@ describe Idv::ImageUploadsController do
               last_name: 'MCFAKERSON',
               date_of_birth: '10/06/1938',
               address: nil,
-              document_back_image: nil,
-              document_front_image: nil,
+              document_back_image_filename: nil,
+              document_front_image_filename: nil,
               document_image_encryption_key: nil,
             )
 
@@ -544,8 +544,8 @@ describe Idv::ImageUploadsController do
               last_name: 'MCFAKERSON',
               date_of_birth: '10/06/1938',
               address: nil,
-              document_back_image: nil,
-              document_front_image: nil,
+              document_back_image_filename: nil,
+              document_front_image_filename: nil,
               document_image_encryption_key: nil,
             )
 
@@ -614,8 +614,8 @@ describe Idv::ImageUploadsController do
               :idv_document_upload_submitted,
               success: true,
               failure_reason: nil,
-              document_back_image: nil,
-              document_front_image: nil,
+              document_back_image_filename: nil,
+              document_front_image_filename: nil,
               document_image_encryption_key: nil,
               document_state: 'ND',
               document_number: nil,
@@ -703,8 +703,8 @@ describe Idv::ImageUploadsController do
           failure_reason: {
             front: [I18n.t('doc_auth.errors.general.multiple_front_id_failures')],
           },
-          document_back_image: nil,
-          document_front_image: nil,
+          document_back_image_filename: nil,
+          document_front_image_filename: nil,
           document_image_encryption_key: nil,
           document_state: nil,
           document_number: nil,
@@ -788,8 +788,8 @@ describe Idv::ImageUploadsController do
             general: [I18n.t('doc_auth.errors.alerts.barcode_content_check')],
             back: [I18n.t('doc_auth.errors.general.fallback_field_level')],
           },
-          document_back_image: nil,
-          document_front_image: nil,
+          document_back_image_filename: nil,
+          document_front_image_filename: nil,
           document_image_encryption_key: nil,
           document_state: nil,
           document_number: nil,
