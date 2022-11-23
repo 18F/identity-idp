@@ -86,11 +86,12 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
-  const [hasSearchedOnce, setHasSearchedOnce] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
+
+  const hasSearchedOnce = !!foundAddress;
 
   useEffect(() => {
     mountedRef.current = true;
@@ -143,8 +144,6 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   );
 
   const handleFoundAddress = useCallback((address) => {
-    setHasSearchedOnce(true);
-
     setFoundAddress({
       streetAddress: address.street_address,
       city: address.city,
