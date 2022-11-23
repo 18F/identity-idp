@@ -1,6 +1,22 @@
 require 'rails_helper'
 
 describe Analytics do
+  let(:analytics_attributes) do
+    {
+      user_id: current_user.uuid,
+      new_event: true,
+      new_session_path: true,
+      new_session_success_state: true,
+      success_state: success_state,
+      path: path,
+      session_duration: nil,
+      locale: I18n.locale,
+      git_sha: IdentityConfig::GIT_SHA,
+      git_branch: IdentityConfig::GIT_BRANCH,
+      event_properties: {},
+    }.merge(request_attributes)
+  end
+
   let(:request_attributes) do
     {
       user_ip: FakeRequest.new.remote_ip,
@@ -42,43 +58,21 @@ describe Analytics do
         'my branch',
       )
 
-      analytics_hash = {
-        event_properties: {},
-        user_id: current_user.uuid,
-        locale: I18n.locale,
-        git_sha: IdentityConfig::GIT_SHA,
-        git_branch: IdentityConfig::GIT_BRANCH,
-        new_session_path: true,
-        new_session_success_state: true,
-        success_state: success_state,
-        new_event: true,
-        path: path,
-        session_duration: nil,
-      }
-
-      expect(ahoy).to receive(:track).
-        with('Trackable Event', analytics_hash.merge(request_attributes))
+      expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
 
       analytics.track_event('Trackable Event')
     end
 
     it 'does not track unique events and paths when an event fails' do
-      analytics_hash = {
-        event_properties: { success: false },
-        user_id: current_user.uuid,
-        locale: I18n.locale,
-        git_sha: IdentityConfig::GIT_SHA,
-        git_branch: IdentityConfig::GIT_BRANCH,
-        new_session_path: nil,
-        new_session_success_state: nil,
-        success_state: success_state,
-        new_event: nil,
-        path: path,
-        session_duration: nil,
-      }
-
-      expect(ahoy).to receive(:track).
-        with('Trackable Event', analytics_hash.merge(request_attributes))
+      expect(ahoy).to receive(:track).with(
+        'Trackable Event',
+        analytics_attributes.merge(
+          new_event: nil,
+          new_session_path: nil,
+          new_session_success_state: nil,
+          event_properties: { success: false },
+        ),
+      )
 
       analytics.track_event('Trackable Event', { success: false })
     end
@@ -86,22 +80,10 @@ describe Analytics do
     it 'tracks the user passed in to the track_event method' do
       tracked_user = build_stubbed(:user, uuid: '456')
 
-      analytics_hash = {
-        event_properties: {},
-        user_id: tracked_user.uuid,
-        locale: I18n.locale,
-        git_sha: IdentityConfig::GIT_SHA,
-        git_branch: IdentityConfig::GIT_BRANCH,
-        new_session_success_state: true,
-        success_state: success_state,
-        new_session_path: true,
-        new_event: true,
-        path: path,
-        session_duration: nil,
-      }
-
-      expect(ahoy).to receive(:track).
-        with('Trackable Event', analytics_hash.merge(request_attributes))
+      expect(ahoy).to receive(:track).with(
+        'Trackable Event',
+        analytics_attributes.merge(user_id: tracked_user.uuid),
+      )
 
       analytics.track_event('Trackable Event', user_id: tracked_user.uuid)
     end
@@ -124,22 +106,10 @@ describe Analytics do
       locale = :fr
       allow(I18n).to receive(:locale).and_return(locale)
 
-      analytics_hash = {
-        event_properties: {},
-        user_id: current_user.uuid,
-        locale: locale,
-        git_sha: IdentityConfig::GIT_SHA,
-        git_branch: IdentityConfig::GIT_BRANCH,
-        new_session_path: true,
-        new_event: true,
-        path: path,
-        new_session_success_state: true,
-        success_state: success_state,
-        session_duration: nil,
-      }
-
-      expect(ahoy).to receive(:track).
-        with('Trackable Event', analytics_hash.merge(request_attributes))
+      expect(ahoy).to receive(:track).with(
+        'Trackable Event',
+        analytics_attributes.merge(locale: locale),
+      )
 
       analytics.track_event('Trackable Event')
     end
@@ -207,22 +177,10 @@ describe Analytics do
         ahoy: ahoy,
       )
 
-      analytics_hash = {
-        event_properties: {},
-        user_id: current_user.uuid,
-        locale: I18n.locale,
-        git_sha: IdentityConfig::GIT_SHA,
-        git_branch: IdentityConfig::GIT_BRANCH,
-        new_session_success_state: true,
-        success_state: success_state,
-        new_session_path: true,
-        new_event: true,
-        path: path,
-        session_duration: 7.0,
-      }
-
-      expect(ahoy).to receive(:track).
-        with('Trackable Event', analytics_hash.merge(request_attributes))
+      expect(ahoy).to receive(:track).with(
+        'Trackable Event',
+        analytics_attributes.merge(session_duration: 7.0),
+      )
 
       analytics.track_event('Trackable Event')
     end
