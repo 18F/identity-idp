@@ -6,7 +6,7 @@ import { JSDOM } from 'jsdom';
 import AcuantJavascriptWebSdk from '../../../../../public/acuant/11.7.1/AcuantJavascriptWebSdk.min.js';
 
 const sdkPaths = {
-  '11.7.1': '../../../../../public/acuant/11.7.0/AcuantJavascriptWebSdk.min.js',
+  '11.7.1': '../../../../../public/acuant/11.7.1/AcuantJavascriptWebSdk.min.js',
 };
 
 const TEST_URL = `file://${__dirname}/index.html`;
