@@ -86,6 +86,7 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+  const [hasSearchedOnce, setHasSearchedOnce] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
 
   // ref allows us to avoid a memory leak
@@ -142,6 +143,8 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   );
 
   const handleFoundAddress = useCallback((address) => {
+    setHasSearchedOnce(true);
+
     setFoundAddress({
       streetAddress: address.street_address,
       city: address.city,
@@ -152,33 +155,37 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
 
   useEffect(() => {
     let mounted = true;
-    (async () => {
-      try {
-        const fetchedLocations = await getUspsLocations(foundAddress);
+    hasSearchedOnce &&
+      (async () => {
+        try {
+          const fetchedLocations = await getUspsLocations(foundAddress);
 
-        if (mounted) {
-          const formattedLocations = formatLocation(fetchedLocations);
-          setLocationData(formattedLocations);
+          if (mounted) {
+            const formattedLocations = formatLocation(fetchedLocations);
+            setLocationData(formattedLocations);
+          }
+        } finally {
+          if (mounted) {
+            setIsLoadingComplete(true);
+          }
         }
-      } finally {
-        if (mounted) {
-          setIsLoadingComplete(true);
-        }
-      }
-    })();
+      })();
     return () => {
       mounted = false;
     };
   }, [foundAddress]);
 
   let locationsContent: React.ReactNode;
-  if (!isLoadingComplete) {
+  if (!hasSearchedOnce) {
+    locationsContent = <h4>Search above</h4>;
+  } else if (!isLoadingComplete) {
     locationsContent = <SpinnerDots />;
   } else if (locationData.length < 1) {
     locationsContent = <h4>{t('in_person_proofing.body.location.none_found')}</h4>;
   } else {
     locationsContent = (
       <LocationCollection>
+        <>{foundAddress.streetAddress}</>
         {locationData.map((item, index) => (
           <LocationCollectionItem
             key={`${index}-${item.name}`}
