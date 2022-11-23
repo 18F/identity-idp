@@ -40,24 +40,6 @@ RSpec.describe Idv::InheritedProofing::BaseForm do
   describe '#initialize' do
     subject { form_class }
 
-    context 'when .required_fields is not overridden' do
-      it 'raises an error' do
-        subject.singleton_class.send(:remove_method, :required_fields)
-        expected_error = 'Override this method and return ' \
-          'an Array of required field names as Symbols'
-        expect { subject.new(payload_hash: payload_hash) }.to raise_error(expected_error)
-      end
-    end
-
-    context 'when .optional_fields is not overridden' do
-      it 'raises an error' do
-        subject.singleton_class.send(:remove_method, :optional_fields)
-        expected_error = 'Override this method and return ' \
-          'an Array of optional field names as Symbols'
-        expect { subject.new(payload_hash: payload_hash) }.to raise_error(expected_error)
-      end
-    end
-
     context 'when .user_pii is not overridden' do
       subject do
         Class.new(Idv::InheritedProofing::BaseForm) do
@@ -80,31 +62,6 @@ RSpec.describe Idv::InheritedProofing::BaseForm do
     describe '.model_name' do
       it 'returns the right model name' do
         expect(described_class.model_name).to eq 'IdvInheritedProofingBaseForm'
-      end
-    end
-
-    describe '.fields' do
-      subject do
-        Class.new(Idv::InheritedProofing::BaseForm) do
-          class << self
-            def required_fields; %i[required] end
-
-            def optional_fields; %i[optional] end
-          end
-
-          def user_pii; {} end
-        end
-      end
-
-      let(:expected_field_names) do
-        [
-          :required,
-          :optional,
-        ].sort
-      end
-
-      it 'returns the right field names' do
-        expect(subject.fields).to match_array expected_field_names
       end
     end
   end
@@ -217,8 +174,8 @@ RSpec.describe Idv::InheritedProofing::BaseForm do
         subject.submit
       end
 
-      it 'calls #validate' do
-        expect(subject).to receive(:validate).once
+      it 'calls #valid?' do
+        expect(subject).to receive(:valid?).once
       end
     end
   end
