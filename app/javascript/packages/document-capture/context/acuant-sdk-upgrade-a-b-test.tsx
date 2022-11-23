@@ -20,7 +20,5 @@ export const AcuantSdkUpgradeABTestContext = createContext<AcuantSdkUpgradeABTes
 
 AcuantSdkUpgradeABTestContext.displayName = 'AcuantSdkUpgradeABTestContext';
 
-const AcuantSdkUpgradeABTestContextProvider = {};
-
 export default AcuantSdkUpgradeABTestContext;
-//export const AcuantSdkUpgradeABTestContextProvider = AcuantSdkUpgradeABTestContext.Provider;
+export const AcuantSdkUpgradeABTestContextProvider = AcuantSdkUpgradeABTestContext.Provider;

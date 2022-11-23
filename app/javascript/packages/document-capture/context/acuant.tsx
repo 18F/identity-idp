@@ -234,10 +234,12 @@ function AcuantContextProvider({
     sdkVersion = '11.7.1';
   }
 
-  trackEvent('IdV: Acuant SDK Upgrade A/B Test', {
-    use_newer_sdk: useNewerSdk,
-    version: sdkVersion,
-  });
+  if (acuantSdkUpgradeABTestingEnabled) {
+    trackEvent('IdV: Acuant SDK Upgrade A/B Test', {
+      use_newer_sdk: useNewerSdk,
+      version: sdkVersion,
+    });
+  }
 
   // Only mobile devices should load the Acuant SDK. Consider immediately ready otherwise.
   const [isReady, setIsReady] = useState(!isMobile);
