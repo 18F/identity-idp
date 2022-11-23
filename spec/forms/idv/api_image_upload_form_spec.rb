@@ -276,11 +276,6 @@ RSpec.describe Idv::ApiImageUploadForm do
           expect(cipher.decrypt(front_image_ciphertext, key)).to eq(front_image.read)
           expect(cipher.decrypt(back_image_ciphertext, key)).to eq(back_image.read)
         end
-
-        context 'when form submission fails' do
-          it 'writes encrypted documents' do
-          end
-        end
       end
 
       context 'when encrypted image storage is disabled' do
