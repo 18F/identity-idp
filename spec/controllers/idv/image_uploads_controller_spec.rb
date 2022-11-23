@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Idv::ImageUploadsController do
-  let(:uuid_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}$/ }
+  let(:document_filename_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}\.[a-z]+$/ }
   let(:base64_regex) { /^[a-z0-9+\/]+=*$/i }
 
   describe '#create' do
@@ -305,12 +305,9 @@ describe Idv::ImageUploadsController do
           :idv_document_upload_submitted,
           success: true,
           failure_reason: nil,
-          back_image_uuid: nil,
-          back_image_content_type: nil,
-          back_image_encryption_key: nil,
-          front_image_uuid: nil,
-          front_image_content_type: nil,
-          front_image_encryption_key: nil,
+          document_back_image: nil,
+          document_front_image: nil,
+          document_image_encryption_key: nil,
           document_state: 'MT',
           document_number: '1111111111111',
           document_issued: '2019-12-31',
@@ -337,12 +334,9 @@ describe Idv::ImageUploadsController do
             hash_including(
               success: true,
               failure_reason: nil,
-              back_image_uuid: match(uuid_regex),
-              back_image_content_type: params[:back].content_type,
-              back_image_encryption_key: match(base64_regex),
-              front_image_uuid: match(uuid_regex),
-              front_image_content_type: params[:front].content_type,
-              front_image_encryption_key: match(base64_regex),
+              document_back_image: match(document_filename_regex),
+              document_front_image: match(document_filename_regex),
+              document_image_encryption_key: match(base64_regex),
             ),
           )
 
@@ -394,12 +388,9 @@ describe Idv::ImageUploadsController do
               last_name: 'MCFAKERSON',
               date_of_birth: '10/06/1938',
               address: nil,
-              back_image_uuid: match(uuid_regex),
-              back_image_content_type: params[:back].content_type,
-              back_image_encryption_key: match(base64_regex),
-              front_image_uuid: match(uuid_regex),
-              front_image_content_type: params[:front].content_type,
-              front_image_encryption_key: match(base64_regex),
+              document_back_image: match(document_filename_regex),
+              document_front_image: match(document_filename_regex),
+              document_image_encryption_key: match(base64_regex),
             )
 
             action
@@ -475,12 +466,9 @@ describe Idv::ImageUploadsController do
               last_name: 'MCFAKERSON',
               date_of_birth: '10/06/1938',
               address: nil,
-              back_image_uuid: nil,
-              back_image_content_type: nil,
-              back_image_encryption_key: nil,
-              front_image_uuid: nil,
-              front_image_content_type: nil,
-              front_image_encryption_key: nil,
+              document_back_image: nil,
+              document_front_image: nil,
+              document_image_encryption_key: nil,
             )
 
             action
@@ -556,12 +544,9 @@ describe Idv::ImageUploadsController do
               last_name: 'MCFAKERSON',
               date_of_birth: '10/06/1938',
               address: nil,
-              back_image_uuid: nil,
-              back_image_content_type: nil,
-              back_image_encryption_key: nil,
-              front_image_uuid: nil,
-              front_image_content_type: nil,
-              front_image_encryption_key: nil,
+              document_back_image: nil,
+              document_front_image: nil,
+              document_image_encryption_key: nil,
             )
 
             action
@@ -629,12 +614,9 @@ describe Idv::ImageUploadsController do
               :idv_document_upload_submitted,
               success: true,
               failure_reason: nil,
-              back_image_uuid: nil,
-              back_image_content_type: nil,
-              back_image_encryption_key: nil,
-              front_image_uuid: nil,
-              front_image_content_type: nil,
-              front_image_encryption_key: nil,
+              document_back_image: nil,
+              document_front_image: nil,
+              document_image_encryption_key: nil,
               document_state: 'ND',
               document_number: nil,
               document_issued: nil,
@@ -721,12 +703,9 @@ describe Idv::ImageUploadsController do
           failure_reason: {
             front: [I18n.t('doc_auth.errors.general.multiple_front_id_failures')],
           },
-          back_image_uuid: nil,
-          back_image_content_type: nil,
-          back_image_encryption_key: nil,
-          front_image_uuid: nil,
-          front_image_content_type: nil,
-          front_image_encryption_key: nil,
+          document_back_image: nil,
+          document_front_image: nil,
+          document_image_encryption_key: nil,
           document_state: nil,
           document_number: nil,
           document_issued: nil,
@@ -809,12 +788,9 @@ describe Idv::ImageUploadsController do
             general: [I18n.t('doc_auth.errors.alerts.barcode_content_check')],
             back: [I18n.t('doc_auth.errors.general.fallback_field_level')],
           },
-          back_image_uuid: nil,
-          back_image_content_type: nil,
-          back_image_encryption_key: nil,
-          front_image_uuid: nil,
-          front_image_content_type: nil,
-          front_image_encryption_key: nil,
+          document_back_image: nil,
+          document_front_image: nil,
+          document_image_encryption_key: nil,
           document_state: nil,
           document_number: nil,
           document_issued: nil,

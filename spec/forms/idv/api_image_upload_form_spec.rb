@@ -263,17 +263,19 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image.rewind
           back_image.rewind
 
+          cipher = Encryption::AesCipher.new
+
           expect(
-            aes_decrypt(
-              ciphertext: document_writer.storage.read_image(name: upload_event[:front_image_uuid]),
-              key: upload_event[:front_image_encryption_key],
+            cipher.decrypt(
+              document_writer.storage.read_image(name: upload_event[:document_front_image]),
+              Base64.decode64(upload_event[:document_image_encryption_key]),
             ),
           ).to eq(front_image.read)
 
           expect(
-            aes_decrypt(
-              ciphertext: document_writer.storage.read_image(name: upload_event[:back_image_uuid]),
-              key: upload_event[:back_image_encryption_key],
+            cipher.decrypt(
+              document_writer.storage.read_image(name: upload_event[:document_back_image]),
+              Base64.decode64(upload_event[:document_image_encryption_key]),
             ),
           ).to eq(back_image.read)
         end
@@ -299,12 +301,9 @@ RSpec.describe Idv::ApiImageUploadForm do
         it 'does not send image info to attempts api' do
           expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
             hash_including(
-              front_image_uuid: nil,
-              front_image_content_type: nil,
-              front_image_encryption_key: nil,
-              back_image_uuid: nil,
-              back_image_content_type: nil,
-              back_image_encryption_key: nil,
+              document_front_image: nil,
+              document_back_image: nil,
+              document_image_encryption_key: nil,
             ),
           )
 
@@ -370,11 +369,5 @@ RSpec.describe Idv::ApiImageUploadForm do
         end
       end
     end
-  end
-
-  def aes_decrypt(ciphertext:, key:)
-    cipher = Encryption::AesCipher.new
-    key = Base64.decode64(key) if key.is_a?(String)
-    cipher.decrypt(ciphertext, key)
   end
 end

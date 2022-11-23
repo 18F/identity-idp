@@ -89,12 +89,9 @@ module IrsAttemptsApi
     # @param [String] document_number
     # @param [String] document_issued
     # @param [String] document_expiration
-    # @param [String] front_image_uuid ID of item in S3 w/ encrypted image data for the front image
-    # @param [String] front_image_content_type MIME type of the front image, e.g. "image/jpeg".
-    # @param [String] front_image_encryption_key Base64-encoded AES key used for front image.
-    # @param [String] back_image_uuid ID of item in S3 w/ encrypted image data for the back image
-    # @param [String] back_image_content_type MIME type of the back image, e.g. "image/jpeg".
-    # @param [String] back_image_encryption_key Base64-encoded AES key used for back image.
+    # @param [String] document_front_image Filename in S3 w/ encrypted data for the document front.
+    # @param [String] document_back_image Filename in S3 w/ encrypted data for the document back.
+    # @param [String] document_image_encryption_key Base64-encoded AES key used for images.
     # @param [String] first_name
     # @param [String] last_name
     # @param [String] date_of_birth
@@ -107,12 +104,9 @@ module IrsAttemptsApi
       document_number: nil,
       document_issued: nil,
       document_expiration: nil,
-      front_image_uuid: nil,
-      front_image_content_type: nil,
-      front_image_encryption_key: nil,
-      back_image_uuid: nil,
-      back_image_content_type: nil,
-      back_image_encryption_key: nil,
+      document_front_image: nil,
+      document_back_image: nil,
+      document_image_encryption_key: nil,
       first_name: nil,
       last_name: nil,
       date_of_birth: nil,
@@ -126,12 +120,9 @@ module IrsAttemptsApi
         document_number: document_number,
         document_issued: document_issued,
         document_expiration: document_expiration,
-        front_image_uuid: front_image_uuid,
-        front_image_content_type: front_image_content_type,
-        front_image_encryption_key: front_image_encryption_key,
-        back_image_uuid: back_image_uuid,
-        back_image_content_type: back_image_content_type,
-        back_image_encryption_key: back_image_encryption_key,
+        document_front_image: document_front_image,
+        document_back_image: document_back_image,
+        document_image_encryption_key: document_image_encryption_key,
         first_name: first_name,
         last_name: last_name,
         date_of_birth: date_of_birth,
