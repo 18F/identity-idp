@@ -2,6 +2,7 @@ module Idv
   module Steps
     module InheritedProofing
       class VerifyWaitStepShow < VerifyBaseStep
+        include UserPiiJobInitiator
         include UserPiiManagable
         include Idv::InheritedProofing::ServiceProviderForms
         delegate :controller, :idv_session, to: :@flow
@@ -21,17 +22,15 @@ module Idv
         private
 
         def process_async_state(current_async_state)
+          return if current_async_state.in_progress?
+
           if current_async_state.none?
             mark_step_incomplete(:agreement)
-          elsif current_async_state.in_progress?
-            nil
           elsif current_async_state.missing?
             flash[:error] = I18n.t('idv.failure.timeout')
-            # Need to add path to error pages once they exist
-            # LG-7257
-            # This method overrides VerifyBaseStep#process_async_state:
-            # See the VerifyBaseStep#process_async_state "elsif current_async_state.missing?"
-            # logic as to what is typically needed/performed when hitting this logic path.
+            delete_async
+            mark_step_incomplete(:agreement)
+            @flow.analytics.idv_proofing_resolution_result_missing
           elsif current_async_state.done?
             async_state_done(current_async_state)
           end
@@ -54,11 +53,16 @@ module Idv
           )
           form_response = form.submit
 
+          delete_async
+
           if form_response.success?
             inherited_proofing_save_user_pii_to_session!(form.user_pii)
             mark_step_complete(:verify_wait)
+          elsif throttle.throttled?
+            idv_failure(form_response)
           else
-            mark_step_incomplete(:agreement)
+            mark_step_complete(:agreement)
+            idv_failure(form_response)
           end
 
           form_response
@@ -75,6 +79,34 @@ module Idv
 
         def api_job_result
           document_capture_session.load_proofing_result
+        end
+
+        # Base class overrides
+
+        def throttle
+          @throttle ||= Throttle.new(
+            user: current_user,
+            throttle_type: :inherited_proofing,
+          )
+        end
+
+        def idv_failure_log_throttled
+          @flow.analytics.throttler_rate_limit_triggered(
+            throttle_type: throttle.throttle_type,
+            step_name: self.class.name,
+          )
+        end
+
+        def throttled_url
+          idv_inherited_proofing_errors_failure_url(flow: :inherited_proofing)
+        end
+
+        def exception_url
+          idv_inherited_proofing_errors_failure_url(flow: :inherited_proofing)
+        end
+
+        def warning_url
+          idv_inherited_proofing_errors_no_information_url(flow: :inherited_proofing)
         end
       end
     end

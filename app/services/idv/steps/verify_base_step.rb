@@ -78,26 +78,41 @@ module Idv
       def idv_failure(result)
         throttle.increment! if result.extra.dig(:proofing_results, :exception).blank?
         if throttle.throttled?
-          @flow.irs_attempts_api_tracker.idv_verification_rate_limited
-          @flow.analytics.throttler_rate_limit_triggered(
-            throttle_type: :idv_resolution,
-            step_name: self.class.name,
-          )
-          redirect_to idv_session_errors_failure_url
+          idv_failure_log_throttled
+          redirect_to throttled_url
         elsif result.extra.dig(:proofing_results, :exception).present?
-          @flow.analytics.idv_doc_auth_exception_visited(
-            step_name: self.class.name,
-            remaining_attempts: throttle.remaining_count,
-          )
+          idv_failure_log_error
           redirect_to exception_url
         else
-          @flow.analytics.idv_doc_auth_warning_visited(
-            step_name: self.class.name,
-            remaining_attempts: throttle.remaining_count,
-          )
+          idv_failure_log_warning
           redirect_to warning_url
         end
-        result
+      end
+
+      def idv_failure_log_throttled
+        @flow.irs_attempts_api_tracker.idv_verification_rate_limited
+        @flow.analytics.throttler_rate_limit_triggered(
+          throttle_type: :idv_resolution,
+          step_name: self.class.name,
+        )
+      end
+
+      def idv_failure_log_error
+        @flow.analytics.idv_doc_auth_exception_visited(
+          step_name: self.class.name,
+          remaining_attempts: throttle.remaining_count,
+        )
+      end
+
+      def idv_failure_log_warning
+        @flow.analytics.idv_doc_auth_warning_visited(
+          step_name: self.class.name,
+          remaining_attempts: throttle.remaining_count,
+        )
+      end
+
+      def throttled_url
+        idv_session_errors_failure_url
       end
 
       def exception_url
