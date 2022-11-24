@@ -24,8 +24,11 @@ module Api
         headers['X-Payload-Key'] = Base64.strict_encode64(result.encrypted_key)
         headers['X-Payload-IV'] = Base64.strict_encode64(result.iv)
 
-        send_data result.encrypted_data,
-                  disposition: "filename=#{result.filename}"
+        bucket_name = IdentityConfig.store.irs_attempt_api_bucket_name
+
+        requested_data = @s3_client.get_object(bucket: bucket_name, key: result.filename)
+
+        send_data requested_data, disposition: "filename=#{result.filename}"
       else
         render json: { status: :unprocessable_entity, description: 'Invalid timestamp parameter' },
                status: :unprocessable_entity
