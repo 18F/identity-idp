@@ -30,6 +30,7 @@ class Analytics
     }
 
     analytics_hash.merge!(request_attributes) if request
+    analytics_hash.merge!(select_analytics_id(attributes))
 
     ahoy.track(event, analytics_hash)
     register_doc_auth_step_from_analytics_event(event, attributes)
@@ -133,5 +134,23 @@ class Analytics
     value = @session[:session_started_at]
     return value unless value.is_a?(String)
     Time.zone.parse(value)
+  end
+
+  private
+
+  def select_analytics_id(attributes)
+    caller_analytics_id = attributes[:analytics_id]
+    session_analytics_id = @session[:analytics_id]
+    request_analytics_id =
+      (caller_analytics_id || session_analytics_id) ? nil : analytics_id_from_request
+    analytics_id = caller_analytics_id || session_analytics_id || request_analytics_id
+    @session[:analytics_id] = analytics_id
+    { analytics_id: analytics_id }.compact
+  end
+
+  def analytics_id_from_request
+    service_provider = @session[:sp]
+    request_url = service_provider && service_provider[:request_url]
+    'Inherited Proofing' if request_url&.match?(/inherited_proofing_auth/)
   end
 end
