@@ -68,11 +68,7 @@ module Idv
       save_delivery_preference
       result = send_phone_confirmation_otp
       analytics.idv_phone_confirmation_otp_sent(
-        **result.to_h.merge(
-          {
-            adapter: Telephony.config.adapter,
-          },
-        ),
+        **result.to_h.merge(adapter: Telephony.config.adapter),
       )
 
       irs_attempts_api_tracker.idv_phone_otp_sent(
