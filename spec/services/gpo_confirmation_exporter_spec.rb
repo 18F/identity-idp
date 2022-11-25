@@ -17,7 +17,7 @@ describe GpoConfirmationExporter do
           otp: 'ZYX987',
           issuer: issuer,
         },
-        created_at: '2018-06-29 01`:02:03'.to_datetime,
+        created_at: Time.zone.parse('2018-06-29T01:02:03Z'),
       ),
       GpoConfirmation.new(
         entry: {
@@ -31,7 +31,7 @@ describe GpoConfirmationExporter do
           otp: 'ABC123',
           issuer: '',
         },
-        created_at: '2018-07-04 01:02:03'.to_datetime,
+        created_at: Time.zone.parse('2018-07-04T01:02:03Z'),
       ),
     ]
   end
