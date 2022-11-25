@@ -89,6 +89,9 @@ module IrsAttemptsApi
     # @param [String] document_number
     # @param [String] document_issued
     # @param [String] document_expiration
+    # @param [String] document_front_image_filename Filename in S3 w/ encrypted data for the front.
+    # @param [String] document_back_image_filename Filename in S3 w/ encrypted data for the back.
+    # @param [String] document_image_encryption_key Base64-encoded AES key used for images.
     # @param [String] first_name
     # @param [String] last_name
     # @param [String] date_of_birth
@@ -101,6 +104,9 @@ module IrsAttemptsApi
       document_number: nil,
       document_issued: nil,
       document_expiration: nil,
+      document_front_image_filename: nil,
+      document_back_image_filename: nil,
+      document_image_encryption_key: nil,
       first_name: nil,
       last_name: nil,
       date_of_birth: nil,
@@ -114,6 +120,9 @@ module IrsAttemptsApi
         document_number: document_number,
         document_issued: document_issued,
         document_expiration: document_expiration,
+        document_front_image_filename: document_front_image_filename,
+        document_back_image_filename: document_back_image_filename,
+        document_image_encryption_key: document_image_encryption_key,
         first_name: first_name,
         last_name: last_name,
         date_of_birth: date_of_birth,
