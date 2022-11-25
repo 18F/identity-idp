@@ -37,7 +37,7 @@ module EncryptedDocumentStorage
       @aes_cipher ||= Encryption::AesCipher.new
     end
 
-    # @return {String} A new, unique S3 key for an image of the given content type.
+    # @return [String] A new, unique S3 key for an image of the given content type.
     def build_filename_for_content_type(content_type)
       ext = Rack::Mime::MIME_TYPES.rassoc(content_type)&.first
       "#{SecureRandom.uuid}#{ext}"
