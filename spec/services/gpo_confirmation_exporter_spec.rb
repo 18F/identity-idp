@@ -17,6 +17,7 @@ describe GpoConfirmationExporter do
           otp: 'ZYX987',
           issuer: issuer,
         },
+        created_at: Time.zone.parse('2018-06-29T01:02:03Z'),
       ),
       GpoConfirmation.new(
         entry: {
@@ -30,6 +31,7 @@ describe GpoConfirmationExporter do
           otp: 'ABC123',
           issuer: '',
         },
+        created_at: Time.zone.parse('2018-07-04T01:02:03Z'),
       ),
     ]
   end
@@ -45,8 +47,8 @@ describe GpoConfirmationExporter do
     it 'creates psv string' do
       result = <<~HEREDOC
         01|2\r
-        02|John Johnson|123 Sesame St|""|Anytown|WA|98021|ZYX987|July 6, 2018|July 16, 2018|#{service_provider.friendly_name}|#{IdentityConfig.store.domain_name}\r
-        02|Söme Öne|123 Añy St|Sté 123|Sömewhere|KS|66666-1234|ABC123|July 6, 2018|July 16, 2018|Login.gov|#{IdentityConfig.store.domain_name}\r
+        02|John Johnson|123 Sesame St|""|Anytown|WA|98021|ZYX987|July 6, 2018|July 9, 2018|#{service_provider.friendly_name}|#{IdentityConfig.store.domain_name}\r
+        02|Söme Öne|123 Añy St|Sté 123|Sömewhere|KS|66666-1234|ABC123|July 6, 2018|July 14, 2018|Login.gov|#{IdentityConfig.store.domain_name}\r
       HEREDOC
 
       psv_contents = subject.run
