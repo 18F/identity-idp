@@ -102,6 +102,54 @@ describe Analytics do
       end
     end
 
+    context 'analytics ID' do
+      let(:request_url) { 'http://localhost:3000/inherited_proofing_auth=Any-Auth-Key' }
+      let(:service_provider) { { request_url: request_url } }
+      let(:session) { { sp: service_provider } }
+
+      subject(:analytics) do
+        Analytics.new(
+          user: current_user,
+          request: request,
+          sp: 'http://localhost:3000',
+          session: session,
+          ahoy: ahoy,
+        )
+      end
+
+      it 'adds analytics ID for inherited proofing sessions' do
+        expect(ahoy).to receive(:track).with(
+          'Trackable Event',
+          analytics_attributes.merge({ analytics_id: 'Inherited Proofing' }),
+        )
+
+        analytics.track_event('Trackable Event')
+      end
+
+      it 'uses the analytics ID from the session variable, overriding request_url' do
+        session[:analytics_id] = 'Analytics ID From Session'
+
+        expect(ahoy).to receive(:track).with(
+          'Trackable Event',
+          analytics_attributes.merge({ analytics_id: 'Analytics ID From Session' }),
+        )
+
+        analytics.track_event('Trackable Event')
+      end
+
+      it 'allows the caller to set the analytics ID in event_properties (legacy usage)' do
+        analytics_attributes[:analytics_id] = 'Analytics ID From Caller'
+        analytics_attributes[:event_properties][:analytics_id] = 'Analytics ID From Caller'
+
+        expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
+
+        analytics.track_event(
+          'Trackable Event',
+          { analytics_id: 'Analytics ID From Caller' },
+        )
+      end
+    end
+
     it 'includes the locale of the current request' do
       locale = :fr
       allow(I18n).to receive(:locale).and_return(locale)
