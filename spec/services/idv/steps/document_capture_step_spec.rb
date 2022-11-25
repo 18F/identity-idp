@@ -75,5 +75,27 @@ describe Idv::Steps::DocumentCaptureStep do
         expect(subject.extra_view_variables[:native_camera_only]).to eq(true)
       end
     end
+
+    context 'with acuant sdk upgrade A/B testing enabled' do
+      let(:session_uuid) { SecureRandom.uuid }
+
+      before do
+        allow(IdentityConfig.store).
+          to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
+          and_return(true)
+
+        flow.flow_session[:document_capture_session_uuid] = session_uuid
+
+        stub_const(
+          'AbTests::ACUANT_SDK',
+          FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => :use_newer_sdk) },
+        )
+      end
+
+      it 'includes the A/B testing variable to be passed to the view' do
+        expect(subject.extra_view_variables[:acuant_sdk_upgrade_a_b_testing_enabled]).to eq(true)
+        expect(subject.extra_view_variables[:use_newer_sdk]).to eq(true)
+      end
+    end
   end
 end
