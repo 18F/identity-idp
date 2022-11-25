@@ -1193,6 +1193,7 @@ module AnalyticsEvents
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
   # @param [Hash] telephony_response response from Telephony gem
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [:test, :pinpoint] adapter which adapter the OTP was delivered with
   # The user requested an OTP to confirm their phone during the IDV phone step
   def idv_phone_confirmation_otp_sent(
     success:,
@@ -1203,6 +1204,7 @@ module AnalyticsEvents
     rate_limit_exceeded:,
     phone_fingerprint:,
     telephony_response:,
+    adapter:,
     proofing_components: nil,
     **extra
   )
@@ -1216,6 +1218,7 @@ module AnalyticsEvents
       rate_limit_exceeded: rate_limit_exceeded,
       phone_fingerprint: phone_fingerprint,
       telephony_response: telephony_response,
+      adapter: adapter,
       proofing_components: proofing_components,
       **extra,
     )
@@ -2650,6 +2653,7 @@ module AnalyticsEvents
   # @param ["sms","voice"] otp_delivery_preference the channel used to send the message
   # @param [Boolean] resend
   # @param [Hash] telephony_response
+  # @param [:test, :pinpoint] adapter which adapter the OTP was delivered with
   # @param [Boolean] success
   # A phone one-time password send was attempted
   def telephony_otp_sent(
@@ -2660,6 +2664,7 @@ module AnalyticsEvents
     otp_delivery_preference:,
     resend:,
     telephony_response:,
+    adapter:,
     success:,
     **extra
   )
@@ -2673,6 +2678,7 @@ module AnalyticsEvents
         otp_delivery_preference: otp_delivery_preference,
         resend: resend,
         telephony_response: telephony_response,
+        adapter: adapter,
         success: success,
         **extra,
       },
