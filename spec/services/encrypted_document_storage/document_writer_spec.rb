@@ -36,21 +36,21 @@ RSpec.describe EncryptedDocumentStorage::DocumentWriter do
 
       context 'jpeg' do
         let(:content_type) { 'image/jpeg' }
-        it { should eql('.jpeg') }
+        it { is_expected.to eql('.jpeg') }
       end
 
       context 'png' do
         let(:content_type) { 'image/png' }
-        it { should eql('.png') }
+        it { is_expected.to eql('.png') }
       end
 
       context 'nonsense' do
         let(:content_type) { 'yabba/dabbadoo' }
-        it { should eql('') }
+        it { is_expected.to eql('') }
       end
 
       context nil do
-        it { should eql('') }
+        it { is_expected.to eql('') }
       end
     end
   end
