@@ -47,7 +47,7 @@ module Idv
       def acuant_sdk_upgrade_a_b_testing_variables
         bucket = AbTests::ACUANT_SDK.bucket(flow_session[:document_capture_session_uuid])
         {
-          acuant_sdk_upgrade_a_b_testing_enabled: IdentityConfig.store.acuant_sdk_upgrade_a_b_testing_enabled,
+          acuant_sdk_upgrade_a_b_testing_enabled: IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled,
           use_newer_sdk: (bucket == :use_newer_sdk)
         }
       end
