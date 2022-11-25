@@ -195,21 +195,6 @@ const getActualAcuantCamera = (): AcuantCameraInterface => {
   return AcuantCamera;
 };
 
-const getAcuantSdkSources = () => {
-  const { acuantSdkUpgradeABTestingEnabled, useNewerSdk } = useContext(
-    AcuantSdkUpgradeABTestContext,
-  );
-  let version = '11.7.0';
-  if (acuantSdkUpgradeABTestingEnabled && useNewerSdk) {
-    version = '11.7.1';
-  }
-
-  return {
-    sdkSrc: `/acuant/${version}/AcuantJavascriptWebSdk.min.js`,
-    cameraSrc: `/acuant/${version}/AcuantCamera.min.js`,
-  };
-};
-
 function AcuantContextProvider({
   sdkSrc = '/acuant/11.7.0/AcuantJavascriptWebSdk.min.js',
   cameraSrc = '/acuant/11.7.0/AcuantCamera.min.js',

@@ -1,6 +1,5 @@
 import { useContext } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import userEvent from '@testing-library/user-event';
 import { DeviceContext, AnalyticsContext } from '@18f/identity-document-capture';
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
 import AcuantCapture from '@18f/identity-document-capture/components/acuant-capture';
@@ -60,7 +59,7 @@ describe('AcuantSdkUpgradeABTest logging tests', () => {
           </AnalyticsContext.Provider>
         );
       }
-      const result = render(<TestComponent />);
+      render(<TestComponent />);
       expect(trackEvent).to.have.been.calledWith('IdV: Acuant SDK Upgrade A/B Test', {
         use_newer_sdk: false,
         version: '11.7.0',
@@ -87,7 +86,7 @@ describe('AcuantSdkUpgradeABTest logging tests', () => {
           </AnalyticsContext.Provider>
         );
       }
-      const result = render(<TestComponent />);
+      render(<TestComponent />);
       expect(trackEvent).to.have.been.calledWith('IdV: Acuant SDK Upgrade A/B Test', {
         use_newer_sdk: true,
         version: '11.7.1',
@@ -114,7 +113,7 @@ describe('AcuantSdkUpgradeABTest logging tests', () => {
           </AnalyticsContext.Provider>
         );
       }
-      const result = render(<TestComponent />);
+      render(<TestComponent />);
       expect(trackEvent).to.not.have.been.calledWith('IdV: Acuant SDK Upgrade A/B Test');
     });
   });

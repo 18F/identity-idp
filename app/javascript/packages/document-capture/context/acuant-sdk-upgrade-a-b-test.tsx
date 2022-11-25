@@ -1,5 +1,4 @@
 import { createContext } from 'react';
-import type { ReactNode } from 'react';
 
 interface AcuantSdkUpgradeABTestContextValue {
   /**

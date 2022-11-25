@@ -521,7 +521,6 @@ module AnalyticsEvents
     )
   end
 
-
   # @param [Boolean] use_newer_sdk Whether not to load the newer Acuant SDK version
   # @param [String] version The version of the Acuant SDK that was loaded
   # An A/B test for loading the old vs new version of the Acuant SDK.
