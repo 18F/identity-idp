@@ -1152,7 +1152,7 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param ["sms","voice"] otp_delivery_preference which chaennel the OTP was delivered by
+  # @param ["sms","voice"] otp_delivery_preference which channel the OTP was delivered by
   # @param [String] country_code country code of phone number
   # @param [String] area_code area code of phone number
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
@@ -1186,7 +1186,7 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param ["sms","voice"] otp_delivery_preference which chaennel the OTP was delivered by
+  # @param ["sms","voice"] otp_delivery_preference which channel the OTP was delivered by
   # @param [String] country_code country code of phone number
   # @param [String] area_code area code of phone number
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
