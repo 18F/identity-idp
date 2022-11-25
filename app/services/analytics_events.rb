@@ -521,6 +521,24 @@ module AnalyticsEvents
     )
   end
 
+
+  # @param [Boolean] use_newer_sdk Whether not to load the newer Acuant SDK version
+  # @param [String] version The version of the Acuant SDK that was loaded
+  # An A/B test for loading the old vs new version of the Acuant SDK.
+  # If this analytics call is not made at all, then the test isn't enabled.
+  def idv_acuant_sdk_upgrade_a_b_test(
+    use_newer_sdk:,
+    version:,
+    **extra
+  )
+    track_event(
+      'IdV: Acuant SDK Upgrade A/B Test',
+      use_newer_sdk: use_newer_sdk,
+      version: version,
+      **extra,
+    )
+  end
+
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user confirmed their choice to cancel going through IDV
