@@ -6,8 +6,10 @@ import AcuantCapture from '@18f/identity-document-capture/components/acuant-capt
 import AcuantSdkUpgradeABTestContext, {
   AcuantSdkUpgradeABTestContextProvider,
 } from '@18f/identity-document-capture/context/acuant-sdk-upgrade-a-b-test';
+import type { ComponentType } from 'react';
 import sinon from 'sinon';
 import { render } from '../../../support/document-capture';
+import { expect } from 'chai';
 
 describe('document-capture/context/acuant-sdk-upgrade-a-b-test', () => {
   it('has expected default properties', () => {
