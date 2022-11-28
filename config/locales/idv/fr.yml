@@ -14,6 +14,7 @@ fr:
       mail:
         resend: Envoyer une autre lettre
         send: Envoyer une lettre
+      send_confirmation_code: Continuer
     cancel:
       actions:
         account_page: Accéder à la page de votre compte
@@ -148,6 +149,9 @@ fr:
           première classe de USPS et <strong>prennent généralement entre trois à
           sept jours ouvrables pour être reçues</strong>.
       mail_sent: Votre lettre est en route
+      otp_delivery_method:
+        phone_number_html: Nous enverrons un code à <strong>%{phone}</strong> pour
+          vérifier que le numéro de téléphone vous appartient.
       otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus,
         veuillez sélectionner « Appel téléphonique » ci-dessous.
       personal_key: Il s’agit de votre nouvelle clé personnelle. Notez-la et
@@ -212,6 +216,7 @@ fr:
       options:
         add_new_photos: Ajoutez de nouvelles photos de votre carte d’identité délivrée
           par l’État.
+        change_phone_number: Utiliser un autre numéro de téléphone
         contact_support: Contacter le service d’assistance de %{app_name}
         doc_capture_tips: Plus de conseils pour ajouter des photos de votre carte d’identité
         get_help_at_sp: Demandez de l’aide à %{sp_name}

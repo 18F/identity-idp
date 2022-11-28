@@ -13,6 +13,7 @@ en:
       mail:
         resend: Send another letter
         send: Send a letter
+      send_confirmation_code: Continue
     cancel:
       actions:
         account_page: Go to account page
@@ -134,6 +135,9 @@ en:
         timeframe_html: Letters are sent the next business day via USPS First Class Mail
           and <strong>typically take 3 to 7 business days to arrive</strong>.
       mail_sent: Your letter is on its way
+      otp_delivery_method:
+        phone_number_html: We’ll send a code to <strong>%{phone}</strong> to verify that
+          the phone number belongs to you.
       otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
       personal_key: This is your new personal key. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.
@@ -187,6 +191,7 @@ en:
         still_having_trouble: Still having trouble?
       options:
         add_new_photos: Add new photos of your state-issued ID
+        change_phone_number: Use a different phone number
         contact_support: Contact %{app_name} Support
         doc_capture_tips: More tips for adding photos of your ID
         get_help_at_sp: Get help at %{sp_name}

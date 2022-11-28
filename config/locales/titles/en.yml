@@ -13,6 +13,7 @@ en:
       address: Update your mailing address
       doc_capture: Add your ID
       link_sent: Link sent
+      otp_delivery: Receive a one-time code
       processing_images: Processing your images
       ssn: Enter your Social Security number
       switch_back: Switch back to your computer
