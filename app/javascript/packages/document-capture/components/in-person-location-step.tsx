@@ -7,7 +7,7 @@ import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
 import AnalyticsContext from '../context/analytics';
 import AddressSearch from './address-search';
-import { AppContext } from '../context';
+import AppContext from '../context/app';
 
 interface PostOffice {
   address: string;
