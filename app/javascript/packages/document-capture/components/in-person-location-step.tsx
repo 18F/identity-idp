@@ -153,24 +153,24 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   }, []);
 
   useEffect(() => {
-    let mounted = true;
+    let didCancel = false;
     hasSearchedOnce &&
       (async () => {
         try {
           const fetchedLocations = await getUspsLocations(foundAddress);
 
-          if (mounted) {
+          if (!didCancel) {
             const formattedLocations = formatLocation(fetchedLocations);
             setLocationData(formattedLocations);
           }
         } finally {
-          if (mounted) {
+          if (!didCancel) {
             setIsLoadingComplete(true);
           }
         }
       })();
     return () => {
-      mounted = false;
+      didCancel = true;
     };
   }, [foundAddress]);
 
