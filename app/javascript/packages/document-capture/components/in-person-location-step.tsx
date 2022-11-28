@@ -177,9 +177,7 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   }, [foundAddress]);
 
   let locationsContent: React.ReactNode;
-  if (!hasSearchedOnce) {
-    locationsContent = <h4>Search above</h4>;
-  } else if (!isLoadingComplete) {
+  if (!isLoadingComplete) {
     locationsContent = <SpinnerDots />;
   } else if (locationData.length < 1) {
     locationsContent = <h4>{t('in_person_proofing.body.location.none_found')}</h4>;

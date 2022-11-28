@@ -17,6 +17,7 @@ const ADDRESS_SEARCH_URL = '/api/addresses';
 
 function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
+  const [addressQuery, setAddressQuery] = useState({} as Location);
   const handleAddressSearch = useCallback(async () => {
     const addressCandidates = await request(ADDRESS_SEARCH_URL, {
       method: 'POST',
@@ -25,7 +26,7 @@ function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
     });
 
     const [bestMatchedAddress] = addressCandidates;
-
+    setAddressQuery(bestMatchedAddress);
     onAddressFound(bestMatchedAddress);
   }, [unvalidatedAddressInput]);
 
@@ -37,6 +38,10 @@ function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
         label="Search for an address"
       />
       <Button onClick={() => handleAddressSearch()}>Search</Button>
+      <>
+        {addressQuery.street_address} {addressQuery.city} {addressQuery.state}{' '}
+        {addressQuery.zip_code}
+      </>
     </>
   );
 }
