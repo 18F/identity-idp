@@ -165,7 +165,7 @@ feature 'Analytics Regression', js: true do
       acknowledge_and_confirm_personal_key
     end
 
-    it "records all the events" do
+    it 'records all of the events' do
       happy_path_events.each do |event, attributes|
         expect(fake_analytics).to have_logged_event(event, attributes)
       end
