@@ -30,7 +30,7 @@ class Analytics
     }
 
     analytics_hash.merge!(request_attributes) if request
-    analytics_hash.merge!(select_analytics_id(attributes))
+    analytics_hash.merge!(analytics_id(attributes))
 
     ahoy.track(event, analytics_hash)
     register_doc_auth_step_from_analytics_event(event, attributes)
@@ -138,19 +138,19 @@ class Analytics
 
   private
 
-  def select_analytics_id(attributes)
+  def analytics_id(attributes)
     caller_analytics_id = attributes[:analytics_id]
     session_analytics_id = @session[:analytics_id]
-    request_analytics_id =
-      (caller_analytics_id || session_analytics_id) ? nil : analytics_id_from_request
-    analytics_id = caller_analytics_id || session_analytics_id || request_analytics_id
-    @session[:analytics_id] = analytics_id
+    analytics_id = caller_analytics_id || session_analytics_id || analytics_id_from_request
+    @session[:analytics_id] = analytics_id unless analytics_id.nil?
     { analytics_id: analytics_id }.compact
   end
 
   def analytics_id_from_request
+    return @analytics_id_from_request if defined?(@analytics_id_from_request)
     service_provider = @session[:sp]
     request_url = service_provider && service_provider[:request_url]
-    'Inherited Proofing' if request_url&.match?(/inherited_proofing_auth/)
+    @analytics_id_from_request = 'Inherited Proofing' if
+      request_url && UriService.params(request_url)[:inherited_proofing_auth].present?
   end
 end

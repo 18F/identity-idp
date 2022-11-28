@@ -103,11 +103,11 @@ describe Analytics do
     end
 
     context 'analytics ID' do
-      let(:request_url) { 'http://localhost:3000/inherited_proofing_auth=Any-Auth-Key' }
+      let(:request_url) { 'http://localhost:3000/authorize?inherited_proofing_auth=key' }
       let(:service_provider) { { request_url: request_url } }
       let(:session) { { sp: service_provider } }
 
-      subject(:analytics) do
+      let(:analytics) do
         Analytics.new(
           user: current_user,
           request: request,
@@ -124,6 +124,8 @@ describe Analytics do
         )
 
         analytics.track_event('Trackable Event')
+
+        expect(session).to include({ analytics_id: 'Inherited Proofing' })
       end
 
       it 'uses the analytics ID from the session variable, overriding request_url' do
@@ -135,9 +137,12 @@ describe Analytics do
         )
 
         analytics.track_event('Trackable Event')
+
+        expect(session).to include({ analytics_id: 'Analytics ID From Session' })
       end
 
       it 'allows the caller to set the analytics ID in event_properties (legacy usage)' do
+        session[:analytics_id] = 'Analytics ID From Session'
         analytics_attributes[:analytics_id] = 'Analytics ID From Caller'
         analytics_attributes[:event_properties][:analytics_id] = 'Analytics ID From Caller'
 
@@ -147,6 +152,21 @@ describe Analytics do
           'Trackable Event',
           { analytics_id: 'Analytics ID From Caller' },
         )
+
+        expect(session).to include({ analytics_id: 'Analytics ID From Caller' })
+      end
+
+      it 'does not set the session analytics ID if analytics ID is not specified' do
+        request_url = 'http://localhost:3000/authorize?some_param'
+        service_provider = { request_url: request_url }
+        session = { sp: service_provider }
+        analytics.instance_variable_set(:@session, session)
+
+        expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
+
+        analytics.track_event('Trackable Event')
+
+        expect(session).not_to include(:analytics_id)
       end
     end
 
