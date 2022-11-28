@@ -85,16 +85,36 @@ describe Idv::Steps::DocumentCaptureStep do
           and_return(true)
 
         flow.flow_session[:document_capture_session_uuid] = session_uuid
-
-        stub_const(
-          'AbTests::ACUANT_SDK',
-          FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => :use_newer_sdk) },
-        )
       end
 
-      it 'includes the A/B testing variable to be passed to the view' do
-        expect(subject.extra_view_variables[:acuant_sdk_upgrade_a_b_testing_enabled]).to eq(true)
-        expect(subject.extra_view_variables[:use_newer_sdk]).to eq(true)
+      context 'and A/B test specifies the newer acuant version' do
+        before do
+          stub_const(
+            'AbTests::ACUANT_SDK',
+            FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => :use_newer_sdk) },
+          )
+        end
+
+        it 'passes correct variables and acuant version when newer is specified' do
+          expect(subject.extra_view_variables[:acuant_sdk_upgrade_a_b_testing_enabled]).to eq(true)
+          expect(subject.extra_view_variables[:use_newer_sdk]).to eq(true)
+          expect(subject.extra_view_variables[:acuant_version]).to eq('11.7.1')
+        end
+      end
+
+      context 'and A/B test specifies the older acuant version' do
+        before do
+          stub_const(
+            'AbTests::ACUANT_SDK',
+            FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => 0) },
+          )
+        end
+
+        it 'passes correct variables and acuant version when older is specified' do
+          expect(subject.extra_view_variables[:acuant_sdk_upgrade_a_b_testing_enabled]).to eq(true)
+          expect(subject.extra_view_variables[:use_newer_sdk]).to eq(false)
+          expect(subject.extra_view_variables[:acuant_version]).to eq('11.7.0')
+        end
       end
     end
   end

@@ -3,11 +3,6 @@ import type { ReactNode } from 'react';
 import useObjectMemo from '@18f/identity-react-hooks/use-object-memo';
 import DeviceContext from './device';
 import AnalyticsContext from './analytics';
-import {
-  AcuantSdkUpgradeABTestContext,
-  NEW_SDK_VERSION,
-  OLD_SDK_VERSION,
-} from './acuant-sdk-upgrade-a-b-test';
 
 /**
  * Global declarations
@@ -85,15 +80,13 @@ type AcuantWorkersInitialize = (callback: () => void) => void;
 
 interface AcuantContextProviderProps {
   /**
-   * The relative url source for the
-   * main acuant sdk file
+   * SDK source URL.
    */
-  sdkSrc: string | null;
+  sdkSrc: string;
   /**
-   * The relative url source for the
-   * camera acuant sdk file
+   * Camera JavaScript source URL.
    */
-  cameraSrc: string | null;
+  cameraSrc: string;
   /**
    * SDK credentials.
    */
@@ -199,53 +192,9 @@ const getActualAcuantCamera = (): AcuantCameraInterface => {
   return AcuantCamera;
 };
 
-/**
- * Returns a string for the relative URL for the
- * Acuant SDK source file.
- * If an initial src value is passed in, we use that
- * one as the priority. Otherwise, use the AB testing
- * values to determine which version to link to.
- */
-const getAcuantSdkSrc = (
-  initial: string | null,
-  useABTesting: boolean,
-  useNewerSdk: boolean,
-): string => {
-  if (initial) {
-    return initial;
-  }
-  if (useABTesting && useNewerSdk) {
-    return `/acuant/${NEW_SDK_VERSION}/AcuantJavascriptWebSdk.min.js`;
-  }
-
-  return `/acuant/${OLD_SDK_VERSION}/AcuantJavascriptWebSdk.min.js`;
-};
-
-/**
- * Returns a string for the relative URL for the
- * Acuant Camera source file.
- * If an initial src value is passed in, we use that
- * one as the priority. Otherwise, use the AB testing
- * values to determine which version to link to.
- */
-const getAcuantCameraSrc = (
-  initial: string | null,
-  useABTesting: boolean,
-  useNewerSdk: boolean,
-): string => {
-  if (initial) {
-    return initial;
-  }
-  if (useABTesting && useNewerSdk) {
-    return `/acuant/${NEW_SDK_VERSION}/AcuantCamera.min.js`;
-  }
-
-  return `/acuant/${OLD_SDK_VERSION}/AcuantCamera.min.js`;
-};
-
 function AcuantContextProvider({
-  sdkSrc = null,
-  cameraSrc = null,
+  sdkSrc = '/acuant/11.7.1/AcuantJavascriptWebSdk.min.js',
+  cameraSrc = '/acuant/11.7.1/AcuantCamera.min.js',
   credentials = null,
   endpoint = null,
   glareThreshold = DEFAULT_ACCEPTABLE_GLARE_SCORE,
@@ -254,22 +203,6 @@ function AcuantContextProvider({
 }: AcuantContextProviderProps) {
   const { isMobile } = useContext(DeviceContext);
   const { trackEvent } = useContext(AnalyticsContext);
-
-  // Set the appropriate SDK sources based on
-  // A/B Testing
-  const { acuantSdkUpgradeABTestingEnabled, useNewerSdk } = useContext(
-    AcuantSdkUpgradeABTestContext,
-  );
-  sdkSrc = getAcuantSdkSrc(sdkSrc, acuantSdkUpgradeABTestingEnabled, useNewerSdk);
-  cameraSrc = getAcuantCameraSrc(cameraSrc, acuantSdkUpgradeABTestingEnabled, useNewerSdk);
-
-  if (acuantSdkUpgradeABTestingEnabled) {
-    trackEvent('IdV: Acuant SDK Upgrade A/B Test', {
-      use_newer_sdk: useNewerSdk,
-      version: useNewerSdk ? NEW_SDK_VERSION : OLD_SDK_VERSION,
-    });
-  }
-
   // Only mobile devices should load the Acuant SDK. Consider immediately ready otherwise.
   const [isReady, setIsReady] = useState(!isMobile);
   const [isAcuantLoaded, setIsAcuantLoaded] = useState(false);
@@ -340,17 +273,17 @@ function AcuantContextProvider({
     }
 
     const originalAcuantConfig = window.acuantConfig;
-    window.acuantConfig = { path: dirname(sdkSrc as string) };
+    window.acuantConfig = { path: dirname(sdkSrc) };
 
     const sdkScript = document.createElement('script');
-    sdkScript.src = sdkSrc as string;
+    sdkScript.src = sdkSrc;
     sdkScript.onload = onAcuantSdkLoaded;
     sdkScript.onerror = () => setIsError(true);
     sdkScript.dataset.acuantSdk = '';
     document.body.appendChild(sdkScript);
     const cameraScript = document.createElement('script');
     cameraScript.async = true;
-    cameraScript.src = cameraSrc as string;
+    cameraScript.src = cameraSrc;
     cameraScript.onerror = () => setIsError(true);
     document.body.appendChild(cameraScript);
 

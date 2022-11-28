@@ -17,6 +17,7 @@ describe 'idv/shared/_document_capture.html.erb' do
   let(:native_camera_only) { false }
   let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
   let(:use_newer_sdk) { false }
+  let(:acuant_version) { '11.7.1' }
 
   before do
     decorated_session = instance_double(
@@ -52,6 +53,7 @@ describe 'idv/shared/_document_capture.html.erb' do
       native_camera_only: native_camera_only,
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
       use_newer_sdk: use_newer_sdk,
+      acuant_version: acuant_version,
     }
   end
 

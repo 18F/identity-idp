@@ -10,7 +10,6 @@ import {
   AnalyticsContextProvider,
   FailedCaptureAttemptsContextProvider,
   NativeCameraABTestContextProvider,
-  AcuantSdkUpgradeABTestContextProvider,
   MarketingSiteContextProvider,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
@@ -33,6 +32,7 @@ interface AppRootData {
   nativeCameraOnly: string;
   acuantSdkUpgradeABTestingEnabled: string;
   useNewerSdk: string;
+  acuantVersion: string;
   flowPath: FlowPath;
   cancelUrl: string;
   idvInPersonUrl?: string;
@@ -70,12 +70,14 @@ function getMetaContent(name): string | null {
 const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
-  const { flowPath, acuantSdkUpgradeABTestingEnabled, useNewerSdk } = appRoot.dataset;
+  const { flowPath, acuantSdkUpgradeABTestingEnabled, useNewerSdk, acuantVersion } =
+    appRoot.dataset;
   return baseTrackEvent(event, {
     ...payload,
     flow_path: flowPath,
     acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
     use_newer_sdk: useNewerSdk,
+    acuant_version: acuantVersion,
   });
 };
 
@@ -118,8 +120,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     maxSubmissionAttemptsBeforeNativeCamera,
     nativeCameraABTestingEnabled,
     nativeCameraOnly,
-    acuantSdkUpgradeABTestingEnabled,
-    useNewerSdk,
+    acuantVersion,
     appName,
     flowPath,
     cancelUrl: cancelURL,
@@ -135,6 +136,8 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     [
       AcuantContextProvider,
       {
+        sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
+        cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
         credentials: getMetaContent('acuant-sdk-initialization-creds'),
         endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
         glareThreshold,
@@ -179,13 +182,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
       {
         nativeCameraABTestingEnabled: nativeCameraABTestingEnabled === 'true',
         nativeCameraOnly: nativeCameraOnly === 'true',
-      },
-    ],
-    [
-      AcuantSdkUpgradeABTestContextProvider,
-      {
-        acuantSdkUpgradeABTestingEnabled: acuantSdkUpgradeABTestingEnabled === 'true',
-        useNewerSdk: useNewerSdk === 'true',
       },
     ],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
