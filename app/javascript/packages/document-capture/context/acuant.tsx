@@ -3,7 +3,11 @@ import type { ReactNode } from 'react';
 import useObjectMemo from '@18f/identity-react-hooks/use-object-memo';
 import DeviceContext from './device';
 import AnalyticsContext from './analytics';
-import { AcuantSdkUpgradeABTestContext } from './acuant-sdk-upgrade-a-b-test';
+import {
+  AcuantSdkUpgradeABTestContext,
+  NEW_SDK_VERSION,
+  OLD_SDK_VERSION,
+} from './acuant-sdk-upgrade-a-b-test';
 
 /**
  * Global declarations
@@ -84,12 +88,12 @@ interface AcuantContextProviderProps {
    * The relative url source for the
    * main acuant sdk file
    */
-  sdkSrc: string;
+  sdkSrc: string | null;
   /**
    * The relative url source for the
    * camera acuant sdk file
    */
-  cameraSrc: string;
+  cameraSrc: string | null;
   /**
    * SDK credentials.
    */
@@ -195,9 +199,53 @@ const getActualAcuantCamera = (): AcuantCameraInterface => {
   return AcuantCamera;
 };
 
+/**
+ * Returns a string for the relative URL for the
+ * Acuant SDK source file.
+ * If an initial src value is passed in, we use that
+ * one as the priority. Otherwise, use the AB testing
+ * values to determine which version to link to.
+ */
+const getAcuantSdkSrc = (
+  initial: string | null,
+  useABTesting: boolean,
+  useNewerSdk: boolean,
+): string => {
+  if (initial) {
+    return initial;
+  }
+  if (useABTesting && useNewerSdk) {
+    return `/acuant/${NEW_SDK_VERSION}/AcuantJavascriptWebSdk.min.js`;
+  }
+
+  return `/acuant/${OLD_SDK_VERSION}/AcuantJavascriptWebSdk.min.js`;
+};
+
+/**
+ * Returns a string for the relative URL for the
+ * Acuant Camera source file.
+ * If an initial src value is passed in, we use that
+ * one as the priority. Otherwise, use the AB testing
+ * values to determine which version to link to.
+ */
+const getAcuantCameraSrc = (
+  initial: string | null,
+  useABTesting: boolean,
+  useNewerSdk: boolean,
+): string => {
+  if (initial) {
+    return initial;
+  }
+  if (useABTesting && useNewerSdk) {
+    return `/acuant/${NEW_SDK_VERSION}/AcuantCamera.min.js`;
+  }
+
+  return `/acuant/${OLD_SDK_VERSION}/AcuantCamera.min.js`;
+};
+
 function AcuantContextProvider({
-  sdkSrc = '/acuant/11.7.0/AcuantJavascriptWebSdk.min.js',
-  cameraSrc = '/acuant/11.7.0/AcuantCamera.min.js',
+  sdkSrc = null,
+  cameraSrc = null,
   credentials = null,
   endpoint = null,
   glareThreshold = DEFAULT_ACCEPTABLE_GLARE_SCORE,
@@ -212,17 +260,13 @@ function AcuantContextProvider({
   const { acuantSdkUpgradeABTestingEnabled, useNewerSdk } = useContext(
     AcuantSdkUpgradeABTestContext,
   );
-  let sdkVersion = '11.7.0';
-  if (acuantSdkUpgradeABTestingEnabled && useNewerSdk) {
-    sdkSrc = '/acuant/11.7.1/AcuantJavascriptWebSdk.min.js';
-    cameraSrc = '/acuant/11.7.1/AcuantCamera.min.js';
-    sdkVersion = '11.7.1';
-  }
+  sdkSrc = getAcuantSdkSrc(sdkSrc, acuantSdkUpgradeABTestingEnabled, useNewerSdk);
+  cameraSrc = getAcuantCameraSrc(cameraSrc, acuantSdkUpgradeABTestingEnabled, useNewerSdk);
 
   if (acuantSdkUpgradeABTestingEnabled) {
     trackEvent('IdV: Acuant SDK Upgrade A/B Test', {
       use_newer_sdk: useNewerSdk,
-      version: sdkVersion,
+      version: useNewerSdk ? NEW_SDK_VERSION : OLD_SDK_VERSION,
     });
   }
 
@@ -296,17 +340,17 @@ function AcuantContextProvider({
     }
 
     const originalAcuantConfig = window.acuantConfig;
-    window.acuantConfig = { path: dirname(sdkSrc) };
+    window.acuantConfig = { path: dirname(sdkSrc as string) };
 
     const sdkScript = document.createElement('script');
-    sdkScript.src = sdkSrc;
+    sdkScript.src = sdkSrc as string;
     sdkScript.onload = onAcuantSdkLoaded;
     sdkScript.onerror = () => setIsError(true);
     sdkScript.dataset.acuantSdk = '';
     document.body.appendChild(sdkScript);
     const cameraScript = document.createElement('script');
     cameraScript.async = true;
-    cameraScript.src = cameraSrc;
+    cameraScript.src = cameraSrc as string;
     cameraScript.onerror = () => setIsError(true);
     document.body.appendChild(cameraScript);
 

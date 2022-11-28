@@ -12,6 +12,10 @@ interface AcuantSdkUpgradeABTestContextValue {
    */
   useNewerSdk: boolean;
 }
+
+export const NEW_SDK_VERSION = '11.7.1';
+export const OLD_SDK_VERSION = '11.7.0';
+
 export const AcuantSdkUpgradeABTestContext = createContext<AcuantSdkUpgradeABTestContextValue>({
   acuantSdkUpgradeABTestingEnabled: false,
   useNewerSdk: false,
