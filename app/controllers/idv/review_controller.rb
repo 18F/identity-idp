@@ -36,7 +36,7 @@ module Idv
 
     def new
       @applicant = idv_session.applicant
-      analytics.idv_review_info_visited(proofing_method: proofing_method)
+      analytics.idv_review_info_visited(address_verification_method: address_verification_method)
 
       gpo_mail_service = Idv::GpoMail.new(current_user)
       flash_now = flash.now
@@ -67,7 +67,7 @@ module Idv
 
     private
 
-    def proofing_method
+    def address_verification_method
       user_session.dig('idv', 'address_verification_mechanism')
     end
 
