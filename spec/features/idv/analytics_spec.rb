@@ -27,7 +27,7 @@ feature 'Analytics Regression', js: true do
       'IdV: doc auth document_capture submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'document_capture', step_count: 1, native_camera_a_b_testing_enabled: false, native_camera_only: false },
       'IdV: doc auth ssn visited' => { flow_path: 'standard', step: 'ssn', step_count: 1, native_camera_a_b_testing_enabled: false, native_camera_only: false },
       'IdV: doc auth ssn submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'ssn', step_count: 1, native_camera_a_b_testing_enabled: false, native_camera_only: false },
-      'IdV: doc auth verify visited' => { proofing_method: 'phone verification', flow_path: 'standard', step: 'verify', step_count: 1, native_camera_a_b_testing_enabled: false, native_camera_only: false },
+      'IdV: doc auth verify visited' => { flow_path: 'standard', step: 'verify', step_count: 1, native_camera_a_b_testing_enabled: false, native_camera_only: false },
       'IdV: doc auth verify submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'verify', step_count: 1, native_camera_a_b_testing_enabled: false, native_camera_only: false },
       'IdV: doc auth verify_wait visited' => { flow_path: 'standard', step: 'verify_wait', step_count: 1 },
       'IdV: doc auth optional verify_wait submitted' => { success: true, errors: {}, address_edited: false, proofing_results: { exception: nil, timed_out: false, context: { should_proof_state_id: true, adjudication_reason: 'pass_resolution_and_state_id', stages: { resolution: { vendor_name: 'ResolutionMock', errors: {}, exception: nil, success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [] }, state_id: { vendor_name: 'StateIdMock', errors: {}, success: true, timed_out: false, exception: nil, transaction_id: 'state-id-mock-transaction-id-456', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' } } } }, ssn_is_unique: true, step: 'verify_wait_step_show' },
@@ -39,7 +39,7 @@ feature 'Analytics Regression', js: true do
       'IdV: phone confirmation otp sent' => { success: true, otp_delivery_preference: :sms, country_code: 'US', area_code: '202', adapter: :test, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
       'IdV: phone confirmation otp visited' => { proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
       'IdV: phone confirmation otp submitted' => { success: true, code_expired: false, code_matches: true, second_factor_attempts_count: 0, second_factor_locked_at: nil, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
-      'IdV: review info visited' => { proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
+      'IdV: review info visited' => { proofing_method: 'phone verification', proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
       'IdV: review complete' => { success: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
       'IdV: final resolution' => { success: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
       'IdV: personal key visited' => { proofing_method: 'phone verification', proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
@@ -47,6 +47,7 @@ feature 'Analytics Regression', js: true do
       'IdV: personal key submitted' => { proofing_method: 'phone verification', proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
     }
   end
+
   let(:gpo_path_events) do
     {
       'IdV: intro visited' => {},
@@ -67,13 +68,13 @@ feature 'Analytics Regression', js: true do
       'IdV: doc auth document_capture submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'document_capture', step_count: 1, native_camera_a_b_testing_enabled: false, native_camera_only: false },
       'IdV: doc auth ssn visited' => { flow_path: 'standard', step: 'ssn', step_count: 1, native_camera_a_b_testing_enabled: false, native_camera_only: false },
       'IdV: doc auth ssn submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'ssn', step_count: 1, native_camera_a_b_testing_enabled: false, native_camera_only: false },
-      'IdV: doc auth verify visited' => { proofing_method: 'letter verification', flow_path: 'standard', step: 'verify', step_count: 1, native_camera_a_b_testing_enabled: false, native_camera_only: false },
+      'IdV: doc auth verify visited' => { flow_path: 'standard', step: 'verify', step_count: 1, native_camera_a_b_testing_enabled: false, native_camera_only: false },
       'IdV: doc auth verify submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'verify', step_count: 1, native_camera_a_b_testing_enabled: false, native_camera_only: false },
       'IdV: doc auth verify_wait visited' => { flow_path: 'standard', step: 'verify_wait', step_count: 1 },
       'IdV: doc auth optional verify_wait submitted' => { success: true, errors: {}, address_edited: false, proofing_results: { exception: nil, timed_out: false, context: { should_proof_state_id: true, adjudication_reason: 'pass_resolution_and_state_id', stages: { resolution: { vendor_name: 'ResolutionMock', errors: {}, exception: nil, success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [] }, state_id: { vendor_name: 'StateIdMock', errors: {}, success: true, timed_out: false, exception: nil, transaction_id: 'state-id-mock-transaction-id-456', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' } } } }, ssn_is_unique: true, step: 'verify_wait_step_show' },
       'IdV: phone of record visited' => { proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis' } },
       'IdV: USPS address letter requested' => { resend: false, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis' } },
-      'IdV: review info visited' => { proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
+      'IdV: review info visited' => { proofing_method: 'gpo verification', proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
       'IdV: USPS address letter enqueued' => { enqueued_at: Time.zone.now.utc, resend: false, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
       'IdV: review complete' => { success: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
       'IdV: final resolution' => { success: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
@@ -164,7 +165,7 @@ feature 'Analytics Regression', js: true do
       acknowledge_and_confirm_personal_key
     end
 
-    it 'records all of the events' do
+    it "records all the events" do
       happy_path_events.each do |event, attributes|
         expect(fake_analytics).to have_logged_event(event, attributes)
       end

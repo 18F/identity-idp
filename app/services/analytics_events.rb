@@ -1390,9 +1390,12 @@ module AnalyticsEvents
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # User visited IDV password confirm page
-  def idv_review_info_visited(proofing_components: nil, **extra)
+  def idv_review_info_visited(proofing_components: nil,
+                              proofing_method: nil,
+                              **extra)
     track_event(
       'IdV: review info visited',
+      proofing_method: proofing_method,
       proofing_components: proofing_components,
       **extra,
     )

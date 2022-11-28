@@ -36,7 +36,7 @@ module Idv
 
     def new
       @applicant = idv_session.applicant
-      analytics.idv_review_info_visited
+      analytics.idv_review_info_visited(proofing_method: proofing_method)
 
       gpo_mail_service = Idv::GpoMail.new(current_user)
       flash_now = flash.now
