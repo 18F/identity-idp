@@ -6,6 +6,7 @@ describe Idv::InPerson::UspsLocationsController do
   let(:user) { create(:user) }
   let(:sp) { nil }
   let(:in_person_proofing_enabled) { true }
+  let(:arcgis_search_enabled) { true }
   let(:address) do
     UspsInPersonProofing::Applicant.new(
       address: '1600 Pennsylvania Ave',
@@ -37,6 +38,8 @@ describe Idv::InPerson::UspsLocationsController do
     stub_sign_in(user) if user
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
       and_return(in_person_proofing_enabled)
+    allow(IdentityConfig.store).to receive(:arcgis_search_enabled).
+      and_return(arcgis_search_enabled)
     allow(controller).to receive(:current_sp).and_return(sp)
   end
 

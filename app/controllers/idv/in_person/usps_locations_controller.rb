@@ -21,7 +21,11 @@ module Idv
 
         usps_response = []
         begin
-          usps_response = Proofer.new.request_facilities(candidate)
+          if IdentityConfig.store.arcgis_search_enabled
+            usps_response = Proofer.new.request_facilities(candidate)
+          else
+            usps_response = Proofer.new.request_pilot_facilities
+          end
         rescue Faraday::ConnectionFailed => _error
           nil
         end
