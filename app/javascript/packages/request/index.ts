@@ -33,6 +33,6 @@ export const request = async (url: string, options: Partial<RequestOptions> = {}
     }
   }
 
-  const response = await fetch(url, { ...fetchOptions, headers, body });
+  const response = await window.fetch(url, { ...fetchOptions, headers, body });
   return json ? response.json() : response.text();
 };
