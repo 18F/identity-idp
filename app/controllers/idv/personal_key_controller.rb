@@ -26,7 +26,7 @@ module Idv
     private
 
     def proofing_method
-      "#{user_session['idv']['address_verification_mechanism']} verification"
+      user_session.dig('idv', 'address_verification_mechanism')
     end
 
     def next_step
