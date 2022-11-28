@@ -21,7 +21,7 @@ describe Idv::ImageUploadsController do
     before do
       Funnel::DocAuth::RegisterStep.new(user.id, '').call('welcome', :view, true)
       allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
-      and_return(false)
+        and_return(false)
     end
 
     context 'when fields are missing' do

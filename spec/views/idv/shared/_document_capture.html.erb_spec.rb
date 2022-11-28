@@ -16,7 +16,7 @@ describe 'idv/shared/_document_capture.html.erb' do
   let(:native_camera_a_b_testing_enabled) { false }
   let(:native_camera_only) { false }
   let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
-  let(:use_newer_sdk){ false }
+  let(:use_newer_sdk) { false }
 
   before do
     decorated_session = instance_double(
