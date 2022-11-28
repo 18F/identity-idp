@@ -20,7 +20,12 @@ en:
     header_text: Enter your one-time code
     important_alert_icon: important alert icon
     invalid_backup_code: That backup code is invalid.
-    invalid_otp: That one-time code is invalid. You can try entering it again or
+    invalid_otp: 
+      one: That one-time code is invalid. You can try entering it again or
+      request a new one-time code. You have %{count} attempt remaining.
+      other: That one-time code is invalid. You can try entering it again or
+      request a new one-time code.
+    invalid_totp: That one-time code is invalid. You can try entering it again or
       request a new one-time code.
     invalid_personal_key: That personal key is invalid.
     invalid_piv_cac: That PIV/CAC didn’t work. Make sure it’s the right PIV/CAC for

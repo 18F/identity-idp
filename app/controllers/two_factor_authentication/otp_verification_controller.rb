@@ -111,14 +111,6 @@ module TwoFactorAuthentication
       end
     end
 
-    def otp_rate_limiter
-      @otp_rate_limiter ||= OtpRateLimiter.new(
-        user: current_user,
-        phone: phone,
-        phone_confirmed: UserSessionContext.authentication_or_reauthentication_context?(context),
-      )
-    end
-
     def analytics_properties
       parsed_phone = Phonelib.parse(phone)
 
