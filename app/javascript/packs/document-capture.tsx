@@ -137,7 +137,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
       AcuantContextProvider,
       {
         sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
-        cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
+        cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`,
         credentials: getMetaContent('acuant-sdk-initialization-creds'),
         endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
         glareThreshold,
