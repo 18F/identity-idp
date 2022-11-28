@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe IdentitiesBackfillJob, type: :job do
   describe '#perform' do
-    # create a few rows
     let!(:deleted) do
       create(:service_provider_identity, :soft_deleted_5m_ago, :consented)
     end
@@ -47,12 +46,40 @@ RSpec.describe IdentitiesBackfillJob, type: :job do
       expect(no_consented_at.reload.last_consented_at).to_not be_nil
     end
 
-    it 'updates the position in Redis' do
-      expect(described_class.new.position).to eq(0)
+    context 'when the batch size is small' do
+      let(:batch_size) { 2 }
+      let(:slice_size) { 1 }
+      before do
+        REDIS_POOL.with do |redis|
+          redis.set(IdentitiesBackfillJob::BATCH_SIZE_KEY, batch_size)
+          redis.set(IdentitiesBackfillJob::SLICE_SIZE_KEY, slice_size)
+          redis.set(
+            IdentitiesBackfillJob::CACHE_KEY,
+            ServiceProviderIdentity.first.id - 1,
+          )
+        end
+      end
 
-      subject
+      it 'increments position by a bit (make this less vague)' do
+        # The first time around, the position should match the second row:
+        described_class.perform_now
+        position = described_class.new.position
+        expect(position).to eq(ServiceProviderIdentity.second.id)
 
-      expect(described_class.new.position).to eq(500_000)
+        # The second time, we finish the table, so position should point past the end:
+        described_class.perform_now
+        expect(described_class.new.position).to eq(position + batch_size)
+      end
+    end
+
+    context 'when done updating the database' do
+      it 'updates the position in Redis' do
+        expect(described_class.new.position).to eq(0)
+
+        subject
+
+        expect(described_class.new.position).to eq(ServiceProviderIdentity.last.id)
+      end
     end
   end
 
