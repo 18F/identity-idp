@@ -133,7 +133,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def handle_invalid_otp(type:, context: nil)
     update_invalid_user
 
-    flash.now[:error] = invalid_otp_error(type) 
+    flash.now[:error] = invalid_otp_error(type, context) 
 
     if decorated_user.locked_out?
       handle_second_factor_locked_user(context: context, type: type)
@@ -142,10 +142,10 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     end
   end
 
-  def invalid_otp_error(type)
+  def invalid_otp_error(type, context)
     case type
     when 'otp'
-      t('two_factor_authentication.invalid_otp', count: remaining_attempts)
+      t('two_factor_authentication.invalid_otp', count: otp_rate_limiter(context).attempts_count_remaining)
     when 'totp'
       t('two_factor_authentication.invalid_totp')
     when 'personal_key'
@@ -157,14 +157,11 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     end
   end
 
-  def remaining_attempts
-
-  end
-
-  def otp_rate_limiter
+  def otp_rate_limiter(context)
     @otp_rate_limiter ||= OtpRateLimiter.new(
       user: current_user,
-      phone: phone,
+      phone: phone_configuration&.phone ||
+              user_session[:unconfirmed_phone],
       phone_confirmed: UserSessionContext.authentication_or_reauthentication_context?(context),
     )
   end
