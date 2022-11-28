@@ -70,8 +70,13 @@ function getMetaContent(name): string | null {
 const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
-  const { flowPath } = appRoot.dataset;
-  return baseTrackEvent(event, { ...payload, flow_path: flowPath });
+  const { flowPath, acuantSdkUpgradeABTestingEnabled, useNewerSdk } = appRoot.dataset;
+  return baseTrackEvent(event, {
+    ...payload,
+    flow_path: flowPath,
+    acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
+    use_newer_sdk: useNewerSdk,
+  });
 };
 
 (async () => {
