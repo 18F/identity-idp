@@ -184,7 +184,6 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   } else {
     locationsContent = (
       <LocationCollection>
-        <>{foundAddress.streetAddress}</>
         {locationData.map((item, index) => (
           <LocationCollectionItem
             key={`${index}-${item.name}`}
