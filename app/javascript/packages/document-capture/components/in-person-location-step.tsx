@@ -7,6 +7,7 @@ import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
 import AnalyticsContext from '../context/analytics';
 import AddressSearch from './address-search';
+import { AppContext } from '../context';
 
 interface PostOffice {
   address: string;
@@ -87,6 +88,7 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   const [autoSubmit, setAutoSubmit] = useState(false);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
+  const { arcgisSearchEnabled } = useContext(AppContext);
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
@@ -205,7 +207,9 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.location')}</PageHeading>
-      <AddressSearch onAddressFound={(address) => handleFoundAddress(address)} />
+      {arcgisSearchEnabled && (
+        <AddressSearch onAddressFound={(address) => handleFoundAddress(address)} />
+      )}
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
       {locationsContent}
       <BackButton onClick={toPreviousStep} />
