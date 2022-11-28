@@ -8,7 +8,7 @@
      <%= t('inherited_proofing.errors.cannot_retrieve.info') %>
   </p>
 
-  <%= link_to t('inherited_proofing.buttons.try_again'), root_url, class: 'usa-button usa-button--big usa-button--wide' %>
+  <%= button_to t('inherited_proofing.buttons.try_again'), idv_inherited_proofing_step_path(step: :redo_retrieve_user_info), method: :put, class: 'usa-button usa-button--big usa-button--wide' %>
 
   <%= render(
         'shared/troubleshooting_options',

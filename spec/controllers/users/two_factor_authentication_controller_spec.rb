@@ -325,6 +325,7 @@ describe Users::TwoFactorAuthenticationController do
           ordered.
           with('Telephony: OTP sent', hash_including(
             resend: 'true', success: true, **otp_preference_sms,
+            adapter: :test
           ))
 
         get :send_code, params: {
@@ -472,6 +473,7 @@ describe Users::TwoFactorAuthenticationController do
           with('Telephony: OTP sent', hash_including(
             success: true,
             otp_delivery_preference: 'voice',
+            adapter: :test,
             country_code: 'US',
             telephony_response: hash_including(
               origination_phone_number: Telephony::Test::VoiceSender::ORIGINATION_PHONE_NUMBER,

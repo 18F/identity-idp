@@ -199,15 +199,6 @@ module Idv
       end
     end
 
-    def track_event(event, attributes = {})
-      if analytics.present?
-        analytics.track_event(
-          event,
-          attributes,
-        )
-      end
-    end
-
     def update_analytics(client_response)
       add_costs(client_response)
       update_funnel(client_response)
@@ -219,13 +210,16 @@ module Idv
         ).merge(native_camera_ab_test_data),
       )
       pii_from_doc = client_response.pii_from_doc || {}
-      store_encrypted_images_if_required
+      stored_image_result = store_encrypted_images_if_required
       irs_attempts_api_tracker.idv_document_upload_submitted(
         success: client_response.success?,
         document_state: pii_from_doc[:state],
         document_number: pii_from_doc[:state_id_number],
         document_issued: pii_from_doc[:state_id_issued],
         document_expiration: pii_from_doc[:state_id_expiration],
+        document_front_image_filename: stored_image_result&.front_filename,
+        document_back_image_filename: stored_image_result&.back_filename,
+        document_image_encryption_key: stored_image_result&.encryption_key,
         first_name: pii_from_doc[:first_name],
         last_name: pii_from_doc[:last_name],
         date_of_birth: pii_from_doc[:dob],
@@ -239,7 +233,9 @@ module Idv
 
       encrypted_document_storage_writer.encrypt_and_write_document(
         front_image: front_image_bytes,
+        front_image_content_type: front.content_type,
         back_image: back_image_bytes,
+        back_image_content_type: back.content_type,
       )
     end
 

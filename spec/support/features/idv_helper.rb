@@ -124,7 +124,8 @@ module IdvHelper
     client_id: sp_oidc_issuer,
     state: SecureRandom.hex,
     nonce: SecureRandom.hex,
-    verified_within: nil
+    verified_within: nil,
+    inherited_proofing_auth: Idv::InheritedProofing::Va::Mocks::Service::VALID_AUTH_CODE
   )
     @state = state
     @client_id = sp_oidc_issuer
@@ -139,7 +140,7 @@ module IdvHelper
       prompt: 'select_account',
       nonce: nonce,
       verified_within: verified_within,
-      inherited_proofing_auth: Idv::InheritedProofing::Va::Mocks::Service::VALID_AUTH_CODE,
+      inherited_proofing_auth: inherited_proofing_auth,
     )
   end
 

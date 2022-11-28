@@ -238,6 +238,7 @@ describe Idv::OtpDeliveryMethodController do
           'IdV: phone confirmation otp sent',
           hash_including(
             success: false,
+            adapter: :test,
             telephony_response: telephony_response,
           ),
         )

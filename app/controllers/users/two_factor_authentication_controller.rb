@@ -219,6 +219,7 @@ module Users
         context: context,
         otp_delivery_preference: otp_delivery_preference,
         resend: params.dig(:otp_delivery_selection_form, :resend),
+        adapter: Telephony.config.adapter,
         telephony_response: @telephony_result.to_h,
         success: @telephony_result.success?,
       )
