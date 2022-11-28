@@ -10,8 +10,6 @@ interface RequestOptions extends RequestInit {
   csrf?: boolean;
 }
 
-const isPOJO = (obj) => Object.prototype.toString.call(obj) === '[object Object]';
-
 const getCSRFToken = () =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content;
 
