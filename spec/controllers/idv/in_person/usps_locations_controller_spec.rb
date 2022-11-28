@@ -44,15 +44,45 @@ describe Idv::InPerson::UspsLocationsController do
     let(:proofer) { double('Proofer') }
     let(:locations) do
       [
-        { name: 'Location 1' },
-        { name: 'Location 2' },
-        { name: 'Location 3' },
-        { name: 'Location 4' },
+        { address: '3118 WASHINGTON BLVD',
+          city: 'ARLINGTON',
+          distance: '6.02 mi',
+          name: 'ARLINGTON',
+          phone: '703-993-0072',
+          saturday_hours: '9:00 AM - 1:00 PM',
+          state: 'VA',
+          sunday_hours: 'Closed',
+          weekday_hours: '9:00 AM - 5:00 PM',
+          zip_code_4: '9998',
+          zip_code_5: '22201' },
+        { address: '4005 WISCONSIN AVE NW',
+          city: 'WASHINGTON',
+          distance: '6.59 mi',
+          name: 'FRIENDSHIP',
+          phone: '202-842-3332',
+          saturday_hours: '8:00 AM - 4:00 PM',
+          state: 'DC',
+          sunday_hours: '10:00 AM - 4:00 PM',
+          weekday_hours: '8:00 AM - 6:00 PM',
+          zip_code_4: '9997',
+          zip_code_5: '20016' },
+        { address: '6900 WISCONSIN AVE STE 100',
+          city: 'CHEVY CHASE',
+          distance: '8.99 mi',
+          name: 'BETHESDA',
+          phone: '301-941-2670',
+          saturday_hours: '9:00 AM - 4:00 PM',
+          state: 'MD',
+          sunday_hours: 'Closed',
+          weekday_hours: '9:00 AM - 5:00 PM',
+          zip_code_4: '9996',
+          zip_code_5: '20815' },
       ]
     end
     subject(:response) do
-      post :index, params: { address: '1600 Pennsylvania Ave', city: 'Washington',
-                             state: 'DC', zip_code: '20500' }
+      post :index, params: { address: { street_address: '1600 Pennsylvania Ave',
+                                        city: 'Washington',
+                                        state: 'DC', zip_code: '20500' } }
     end
 
     before do
@@ -67,7 +97,7 @@ describe Idv::InPerson::UspsLocationsController do
       it 'returns a successful response' do
         json = response.body
         facilities = JSON.parse(json)
-        expect(facilities.length).to eq 4
+        expect(facilities.length).to eq 3
       end
     end
 
@@ -79,8 +109,9 @@ describe Idv::InPerson::UspsLocationsController do
 
       it 'gets an empty response' do
         response = post :index,
-                        params: { address: '742 Evergreen Terrace', city: 'Springfield',
-                                  state: 'MO', zip_code: '89011' }
+                        params: { address: { street_address: '742 Evergreen Terrace',
+                                             city: 'Springfield',
+                                             state: 'MO', zip_code: '89011' } }
         json = response.body
         facilities = JSON.parse(json)
         expect(facilities.length).to eq 0
