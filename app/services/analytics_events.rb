@@ -1388,8 +1388,10 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @param address_verification_method The method (phone or gpo) being used to verify the user's identity
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's
+  #        current proofing components
+  # @param address_verification_method The method (phone or gpo) being
+  #        used to verify the user's identity
   # User visited IDV password confirm page
   def idv_review_info_visited(proofing_components: nil,
                               address_verification_method: nil,
