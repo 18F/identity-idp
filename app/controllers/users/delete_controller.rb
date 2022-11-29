@@ -21,7 +21,7 @@ module Users
 
     def delete_user
       ActiveRecord::Base.transaction do
-        Db::DeletedUser::Create.call(current_user.id)
+        DeletedUser.create_from_user(current_user)
         current_user.destroy!
       end
     end
