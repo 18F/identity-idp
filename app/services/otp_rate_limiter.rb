@@ -16,10 +16,6 @@ class OtpRateLimiter
     max_requests_reached?
   end
 
-  def attempts_count_remaining 
-    otp_maxretry_times - entry_for_current_phone.otp_send_count
-  end
-
   def max_requests_reached?
     entry_for_current_phone.otp_send_count > otp_maxretry_times
   end
