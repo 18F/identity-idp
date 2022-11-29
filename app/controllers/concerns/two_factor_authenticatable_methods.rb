@@ -145,7 +145,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def invalid_otp_error(type)
     case type
     when 'otp'
-      t('two_factor_authentication.invalid_otp', count: attempts_count_remaining)
+      t('two_factor_authentication.invalid_otp_html', count: attempts_count_remaining)
     when 'totp'
       t('two_factor_authentication.invalid_totp')
     when 'personal_key'

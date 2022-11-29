@@ -20,8 +20,8 @@ en:
     header_text: Enter your one-time code
     important_alert_icon: important alert icon
     invalid_backup_code: That backup code is invalid.
-    invalid_otp: 
-      one_html: That one-time code is invalid. You can try entering it again or request a new one-time code. You have <strong>%{count} attempt</strong> remaining.
+    invalid_otp_html: 
+      one: That one-time code is invalid. You can try entering it again or request a new one-time code. You have <strong>%{count} attempt</strong> remaining.
       other: That one-time code is invalid. You can try entering it again or request a new one-time code.
     invalid_totp: That one-time code is invalid. You can try entering it again or
       request a new one-time code.
