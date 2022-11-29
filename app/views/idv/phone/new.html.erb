@@ -71,7 +71,7 @@
       <%= f.radio_button(
             :otp_delivery_preference,
             :sms,
-            checked: true, # We want SMS to be default checked
+            checked: !VendorStatus.new.vendor_outage?(:sms), # We want SMS to be default checked
             disabled: VendorStatus.new.vendor_outage?(:sms),
             class: 'usa-radio__input usa-radio__input--bordered',
           ) %>
