@@ -31,7 +31,10 @@ describe Telephony::Pinpoint::SmsSender do
       Pinpoint::MockClient.message_response_result_status_message = status_message
     end
 
-    after do
+    around do |ex|
+      ex.run
+
+    ensure
       Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
     end
 
@@ -175,6 +178,13 @@ describe Telephony::Pinpoint::SmsSender do
       }
     end
 
+    around do |ex|
+      ex.run
+
+    ensure
+      Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
+    end
+
     context 'in a country with sender_id' do
       let(:country_code) { 'PH' }
 
@@ -206,8 +216,6 @@ describe Telephony::Pinpoint::SmsSender do
         expect(response.success?).to eq(true)
         expect(response.error).to eq(nil)
         expect(response.extra[:request_id]).to eq('fake-message-request-id')
-      ensure
-        Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
       end
     end
 
@@ -240,8 +248,6 @@ describe Telephony::Pinpoint::SmsSender do
         expect(response.success?).to eq(true)
         expect(response.error).to eq(nil)
         expect(response.extra[:request_id]).to eq('fake-message-request-id')
-      ensure
-        Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
       end
     end
 
@@ -276,8 +282,6 @@ describe Telephony::Pinpoint::SmsSender do
         expect(response.success?).to eq(true)
         expect(response.error).to eq(nil)
         expect(response.extra[:request_id]).to eq('fake-message-request-id')
-      ensure
-        Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
       end
     end
 
@@ -294,7 +298,9 @@ describe Telephony::Pinpoint::SmsSender do
         mock_build_backup_client
       end
 
-      after do
+      around do |ex|
+        ex.run
+      ensure
         Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
       end
 
