@@ -31,6 +31,10 @@ describe Telephony::Pinpoint::SmsSender do
       Pinpoint::MockClient.message_response_result_status_message = status_message
     end
 
+    after do
+      Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
+    end
+
     context 'when endpoint is a duplicate' do
       let(:delivery_status) { 'DUPLICATE' }
 
@@ -202,6 +206,8 @@ describe Telephony::Pinpoint::SmsSender do
         expect(response.success?).to eq(true)
         expect(response.error).to eq(nil)
         expect(response.extra[:request_id]).to eq('fake-message-request-id')
+      ensure
+        Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
       end
     end
 
@@ -234,6 +240,8 @@ describe Telephony::Pinpoint::SmsSender do
         expect(response.success?).to eq(true)
         expect(response.error).to eq(nil)
         expect(response.extra[:request_id]).to eq('fake-message-request-id')
+      ensure
+        Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
       end
     end
 
@@ -268,6 +276,8 @@ describe Telephony::Pinpoint::SmsSender do
         expect(response.success?).to eq(true)
         expect(response.error).to eq(nil)
         expect(response.extra[:request_id]).to eq('fake-message-request-id')
+      ensure
+        Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
       end
     end
 
@@ -282,6 +292,10 @@ describe Telephony::Pinpoint::SmsSender do
 
         mock_build_client
         mock_build_backup_client
+      end
+
+      after do
+        Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
       end
 
       context 'when the first config succeeds' do
@@ -401,6 +415,10 @@ describe Telephony::Pinpoint::SmsSender do
 
         allow(mock_client).to receive(:send_messages).and_return(phone_numbers)
         allow(backup_mock_client).to receive(:send_messages).and_return(phone_numbers)
+      end
+
+      after do
+        Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
       end
 
       it 'does not include the phone number in the results' do
