@@ -10,7 +10,7 @@ RSpec.describe Telephony::OtpSender do
   shared_examples 'pinpoint valid SSML message' do
     it 'does not contain reserved SSML characters' do
       # See: https://docs.aws.amazon.com/polly/latest/dg/escapees.html
-      expect(Nokogiri::XML(message).text).not_to match(/["&'<>]/)
+      expect(Nokogiri::XML(message) { |config| config.strict }.text).not_to match(/["&'<>]/)
     end
   end
 
