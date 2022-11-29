@@ -1,7 +1,7 @@
 require 'csv'
 
 module Reports
-    class IrsWeeklySummaryReport < BaseReport
+  class IrsWeeklySummaryReport < BaseReport
       REPORT_NAME = 'irs-weekly-summary-report'
   
       include GoodJob::ActiveJobExtensions::Concurrency
