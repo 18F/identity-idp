@@ -116,6 +116,8 @@ idv_max_attempts: 5
 idv_min_age_years: 13
 idv_native_camera_a_b_testing_enabled: false
 idv_native_camera_a_b_testing_percent: 10
+idv_acuant_sdk_upgrade_a_b_testing_enabled: false
+idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 ie11_support_end_date: '2022-12-31'
