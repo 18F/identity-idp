@@ -2,19 +2,32 @@ require 'rails_helper'
 
 RSpec.describe Reports::IrsWeeklySummaryReport do
   subject(:report) { Reports::IrsWeeklySummaryReport.new }
-
-  let(:report_date) { Date.new(2021, 3, 7) } 
-  #let(:s3_public_reports_enabled) { true }
+  let(:report_name) {'irs-weekly-summary-report'}
+  let(:email) { 'foo@bar.com' }
 
   before do
     create_list(:user, 10)
   end
 
   describe '#perform' do
+    it 'sends out a report to the email listed with system demand' do
+      
+      allow(IdentityConfig.store).to receive(:system_demand_report_configs).and_return(
+        { 'email' => email },
+      )
+      allow(ReportMailer).to receive(:system_demand_report).and_call_original
+  
+      report = "Data Requested,Total Count\nSystem Demand,10\n"
+      expect(ReportMailer).to receive(:system_demand_report).with(
+        email: email, data: report, name: report_name
+      )
+
+      subject.perform(Time.now)
+    end
+
     it 'uploads a file to S3 based on the report date' do
-      csv_data = CSV.parse(Reports::IrsWeeklySummaryReport.new.perform(Time.now + 3.months), headers: true)
-      expect(csv_data[0]['total login.gov']).to eq('10') # for row 1, system demand 
-      expect(csv_data[1]['total login.gov']).to eq('3') # for row 2, credential tenure
+      csv_data = CSV.parse(subject.perform(Time.now), headers: true)
+      expect(csv_data[0]['Total Count']).to eq('10') 
 
     end
   end
