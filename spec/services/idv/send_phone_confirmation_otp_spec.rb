@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Idv::SendPhoneConfirmationOtp do
   let(:phone) { '+1 225-555-5000' }
+  let(:parsed_phone) { Phonelib.parse(phone) }
   let(:delivery_preference) { :sms }
   let(:otp_code) { '777777' }
   let(:user_phone_confirmation_session) do
@@ -62,6 +63,11 @@ describe Idv::SendPhoneConfirmationOtp do
           channel: :sms,
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
+          extra_metadata: {
+            area_code: parsed_phone.area_code,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            resend: nil,
+          },
         )
       end
     end
@@ -89,6 +95,11 @@ describe Idv::SendPhoneConfirmationOtp do
           channel: :voice,
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
+          extra_metadata: {
+            area_code: parsed_phone.area_code,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            resend: nil,
+          },
         )
       end
     end
