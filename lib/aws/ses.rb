@@ -9,14 +9,25 @@ module Aws
       def initialize(*); end
 
       def deliver(mail)
-        ses_client.send_raw_email(raw_message: { data: mail.to_s }).tap do |response|
-          mail.header[:ses_message_id] = response.message_id
-        end
+        response = send_raw_email(mail)
+        mail.header[:ses_message_id] = response.message_id
+        response
       end
 
       alias deliver! deliver
 
       private
+
+      def send_raw_email(mail)
+        if IdentityConfig.store.ses_configuration_set_name.present?
+          ses_client.send_raw_email(
+            raw_message: { data: mail.to_s },
+            configuration_set_name: IdentityConfig.store.ses_configuration_set_name,
+          )
+        else
+          ses_client.send_raw_email(raw_message: { data: mail.to_s })
+        end
+      end
 
       def ses_client
         @ses_client ||= Aws::SES::Client.new(ses_client_options)

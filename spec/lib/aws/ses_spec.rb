@@ -33,6 +33,20 @@ describe Aws::SES::Base do
       )
     end
 
+    it 'includes the configuration_set_name when it is configured' do
+      allow(IdentityConfig.store).to receive(:ses_configuration_set_name).and_return('abc')
+      raw_mail_data = mail.to_s
+
+      subject.deliver!(mail)
+
+      expect(ses_client).to have_received(:send_raw_email).with(
+        raw_message: {
+          data: raw_mail_data,
+        },
+        configuration_set_name: 'abc',
+      )
+    end
+
     it 'sets the message id on the mail argument' do
       subject.deliver!(mail)
       expect(mail.header['ses-message-id'].value).to eq('123abc')
