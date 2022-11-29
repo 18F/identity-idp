@@ -54,7 +54,7 @@ class GpoConfirmationExporter
   end
 
   def format_date(date)
-    date.utc.strftime('%-B %-e, %Y').to_s
+    date.in_time_zone('UTC').strftime('%-B %-e, %Y')
   end
 
   def current_date
