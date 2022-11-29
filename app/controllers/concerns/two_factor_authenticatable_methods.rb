@@ -133,7 +133,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def handle_invalid_otp(type:, context: nil)
     update_invalid_user
 
-    flash.now[:error] = invalid_otp_error(type) 
+    flash.now[:error] = invalid_otp_error(type)
 
     if decorated_user.locked_out?
       handle_second_factor_locked_user(context: context, type: type)
@@ -158,7 +158,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def attempts_count_remaining
-    IdentityConfig.store.login_otp_confirmation_max_attempts - current_user.second_factor_attempts_count
+    IdentityConfig.store.login_otp_confirmation_max_attempts -
+      current_user.second_factor_attempts_count
   end
 
   def render_show_after_invalid
