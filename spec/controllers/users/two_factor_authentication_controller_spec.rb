@@ -289,13 +289,21 @@ describe Users::TwoFactorAuthenticationController do
       it 'sends OTP via SMS for sign in' do
         get :send_code, params: otp_delivery_form_sms
 
+        phone = MfaContext.new(subject.current_user).phone_configurations.first.phone
+        parsed_phone = Phonelib.parse(phone)
+
         expect(Telephony).to have_received(:send_authentication_otp).with(
           otp: subject.current_user.direct_otp,
-          to: MfaContext.new(subject.current_user).phone_configurations.first.phone,
+          to: phone,
           expiration: 10,
           channel: :sms,
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
+          extra_metadata: {
+            area_code: parsed_phone.area_code,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            resend: nil,
+          },
         )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
@@ -435,14 +443,21 @@ describe Users::TwoFactorAuthenticationController do
         get :send_code, params: {
           otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
         }
+        phone = MfaContext.new(subject.current_user).phone_configurations.first.phone
+        parsed_phone = Phonelib.parse(phone)
 
         expect(Telephony).to have_received(:send_authentication_otp).with(
           otp: subject.current_user.direct_otp,
-          to: MfaContext.new(subject.current_user).phone_configurations.first.phone,
+          to: phone,
           expiration: 10,
           channel: :voice,
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
+          extra_metadata: {
+            area_code: parsed_phone.area_code,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            resend: nil,
+          },
         )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
@@ -514,6 +529,7 @@ describe Users::TwoFactorAuthenticationController do
         sign_in_before_2fa(@user)
         subject.user_session[:context] = 'confirmation'
         subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
+        parsed_phone = Phonelib.parse(@unconfirmed_phone)
 
         allow(Telephony).to receive(:send_confirmation_otp).and_call_original
 
@@ -526,6 +542,11 @@ describe Users::TwoFactorAuthenticationController do
           channel: :sms,
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
+          extra_metadata: {
+            area_code: parsed_phone.area_code,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            resend: nil,
+          },
         )
       end
 
