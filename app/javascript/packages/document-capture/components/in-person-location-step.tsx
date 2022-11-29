@@ -93,8 +93,6 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
 
-  const hasSearchedOnce = !!foundAddress;
-
   useEffect(() => {
     mountedRef.current = true;
     return () => {
@@ -156,21 +154,20 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
 
   useEffect(() => {
     let didCancel = false;
-    hasSearchedOnce &&
-      (async () => {
-        try {
-          const fetchedLocations = await getUspsLocations(foundAddress);
+    (async () => {
+      try {
+        const fetchedLocations = await getUspsLocations(foundAddress);
 
-          if (!didCancel) {
-            const formattedLocations = formatLocation(fetchedLocations);
-            setLocationData(formattedLocations);
-          }
-        } finally {
-          if (!didCancel) {
-            setIsLoadingComplete(true);
-          }
+        if (!didCancel) {
+          const formattedLocations = formatLocation(fetchedLocations);
+          setLocationData(formattedLocations);
         }
-      })();
+      } finally {
+        if (!didCancel) {
+          setIsLoadingComplete(true);
+        }
+      }
+    })();
     return () => {
       didCancel = true;
     };
