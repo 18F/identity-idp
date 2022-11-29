@@ -27,6 +27,7 @@ feature 'Changing authentication factor' do
         user = sign_in_and_2fa_user
         phone_configuration = MfaContext.new(user).phone_configurations.first
         old_phone = phone_configuration.phone
+        parsed_phone = Phonelib.parse(old_phone)
 
         travel(IdentityConfig.store.reauthn_window + 1)
         visit manage_phone_path(id: phone_configuration)
@@ -40,7 +41,12 @@ feature 'Changing authentication factor' do
           channel: :sms,
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
-        )
+          extra_metadata: {
+            area_code: parsed_phone.area_code,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            resend: 'true',
+          },
+        ).once
 
         expect(current_path).
           to eq login_two_factor_path(otp_delivery_preference: 'sms')
