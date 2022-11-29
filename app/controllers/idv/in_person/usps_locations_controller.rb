@@ -13,15 +13,16 @@ module Idv
 
       # retrieve the list of nearby IPP Post Office locations with a POST request
       def index
-        address = params['address']
-        candidate = UspsInPersonProofing::Applicant.new(
-          address: address['street_address'],
-          city: address['city'], state: address['state'], zip_code: address['zip_code']
-        )
+        if IdentityConfig.store.arcgis_search_enabled
+          address = params['address']
+          candidate = UspsInPersonProofing::Applicant.new(
+            address: address['street_address'],
+            city: address['city'], state: address['state'], zip_code: address['zip_code']
+          )
+        end
 
         usps_response = []
         begin
-          proofer = Proofer.new
           if IdentityConfig.store.arcgis_search_enabled
             usps_response = proofer.request_facilities(candidate)
           else
@@ -60,6 +61,7 @@ module Idv
 
       def permitted_params
         params.require(:usps_location).permit(
+          :address,
           :formatted_city_state_zip,
           :name,
           :phone,
