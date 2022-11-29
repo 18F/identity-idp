@@ -120,6 +120,9 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 ie11_support_end_date: '2022-12-31'
 idv_sp_required: false
+in_person_email_reminder_early_benchmark_in_days: 11
+in_person_email_reminder_final_benchmark_in_days: 1
+in_person_email_reminder_late_benchmark_in_days: 4
 in_person_proofing_enabled: false
 in_person_enrollment_validity_in_days: 30
 in_person_results_delay_in_hours: 1

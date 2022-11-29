@@ -295,6 +295,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_15_181559) do
     t.datetime "enrollment_established_at", comment: "When the enrollment was successfully established"
     t.string "issuer", comment: "Issuer associated with the enrollment at time of creation"
     t.boolean "follow_up_survey_sent", default: false
+    t.boolean "early_reminder_sent", default: false, comment: "early reminder to complete IPP before deadline sent"
+    t.boolean "late_reminder_sent", default: false, comment: "late reminder to complete IPP before deadline sent"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
     t.index ["unique_id"], name: "index_in_person_enrollments_on_unique_id", unique: true
     t.index ["user_id", "status"], name: "index_in_person_enrollments_on_user_id_and_status", unique: true, where: "(status = 1)"
