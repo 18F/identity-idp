@@ -87,7 +87,7 @@ module Idv
       irs_attempts_api_tracker.idv_phone_otp_sent(
         phone_number: @idv_phone,
         success: result.success?,
-        otp_delivery_method: params[:otp_delivery_preference],
+        otp_delivery_method: idv_session.previous_phone_step_params[:otp_delivery_preference],
         failure_reason: result.success? ? {} : otp_sent_tracker_error(result),
       )
       if result.success?
