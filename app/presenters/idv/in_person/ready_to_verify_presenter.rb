@@ -39,7 +39,7 @@ module Idv
       end
 
       def sp_name
-        service_provider ? service_provider.friendly_name : ''
+        service_provider ? service_provider.friendly_name : APP_NAME
       end
 
       private
