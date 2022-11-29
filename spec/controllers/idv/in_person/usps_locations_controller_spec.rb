@@ -101,6 +101,22 @@ describe Idv::InPerson::UspsLocationsController do
     end
 
     context 'with arcgis search enabled' do
+      context 'with a nil address in params' do
+        before do
+          allow(proofer).to receive(:request_pilot_facilities).and_return(pilot_locations)
+        end
+
+        subject(:response) do
+          post :index, params: { address: nil }
+        end
+
+        it 'returns the pilot locations' do
+          json = response.body
+          facilities = JSON.parse(json)
+          expect(facilities.length).to eq 4
+        end
+      end
+
       context 'with successful fetch' do
         before do
           allow(proofer).to receive(:request_facilities).with(address).and_return(locations)
