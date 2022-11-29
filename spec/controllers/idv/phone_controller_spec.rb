@@ -266,7 +266,12 @@ describe Idv::PhoneController do
         it 'redirects to otp delivery page' do
           original_applicant = subject.idv_session.applicant.dup
 
-          put :create, params: { idv_phone_form: { phone: good_phone } }
+          put :create, params: {
+            idv_phone_form: {
+              phone: good_phone,
+              otp_delivery_preference: 'sms',
+            },
+          }
 
           expect(response).to redirect_to idv_phone_path
           get :new
@@ -309,7 +314,12 @@ describe Idv::PhoneController do
         end
 
         it 'redirects to otp page and does not set phone_confirmed_at' do
-          put :create, params: { idv_phone_form: { phone: good_phone } }
+          put :create, params: {
+            idv_phone_form: {
+              phone: good_phone,
+              otp_delivery_preference: 'sms',
+            },
+          }
 
           expect(response).to redirect_to idv_phone_path
           get :new
