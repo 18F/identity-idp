@@ -59,10 +59,16 @@ module Idv
       if decorated_user.locked_out?
         handle_too_many_otp_attempts
       else
-        flash.now[:error] = t('two_factor_authentication.invalid_otp')
+        flash.now[:error] = t('two_factor_authentication.invalid_otp_html', count: attempts_count_remaining)
         render :show
       end
     end
+
+    def attempts_count_remaining
+      IdentityConfig.store.login_otp_confirmation_max_attempts -
+        current_user.second_factor_attempts_count
+    end
+  
 
     def phone_confirmation_otp_verification_form
       @phone_confirmation_otp_verification_form ||= PhoneConfirmationOtpVerificationForm.new(

@@ -17,7 +17,7 @@ feature 'phone otp verification step spec', :js do
     fill_in 'code', with: '000000'
     click_submit_default
 
-    expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
+    expect(page).to have_content(t('two_factor_authentication.invalid_otp_html', count: 2))
     expect(current_path).to eq(idv_otp_verification_path)
 
     # Enter the correct code
@@ -38,7 +38,7 @@ feature 'phone otp verification step spec', :js do
       fill_in_code_with_last_phone_otp
       click_button t('forms.buttons.submit.default')
 
-      expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
+      expect(page).to have_content(t('two_factor_authentication.invalid_otp_html', count: 2))
       expect(page).to have_current_path(idv_otp_verification_path)
     end
   end

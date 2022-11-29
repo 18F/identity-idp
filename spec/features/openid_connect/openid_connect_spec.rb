@@ -124,7 +124,7 @@ describe 'OpenID Connect' do
       fill_in :code, with: 'wrong otp'
       click_submit_default
 
-      expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
+      expect(page).to have_content(t('two_factor_authentication.invalid_otp_html', count: 2))
       expect(page.response_headers['Content-Security-Policy']).
         to(include('form-action \'self\' http://localhost:7654 https://example.com'))
 
