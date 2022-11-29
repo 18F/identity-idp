@@ -44,6 +44,11 @@ module Idv
       )
     end
 
+    def otp_delivery_preference_missing?
+      preference = idv_session.previous_phone_step_params[:otp_delivery_preference]
+      preference.nil? || preference.empty?
+    end
+
     private
 
     attr_accessor :idv_session, :step_params, :idv_result
