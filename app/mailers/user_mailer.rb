@@ -295,13 +295,13 @@ class UserMailer < ActionMailer::Base
       )
       @header = t(
         'user_mailer.in_person_ready_to_verify_reminder.heading',
-        days_remaining: @presenter.days_remaining,
+        count: @presenter.days_remaining,
       )
       mail(
         to: email_address.email,
         subject: t(
           'user_mailer.in_person_ready_to_verify_reminder.subject',
-          days_remaining: @presenter.days_remaining,
+          count: @presenter.days_remaining,
         ),
       )
     end

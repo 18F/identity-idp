@@ -23,6 +23,7 @@ RSpec.describe Telephony::OtpSender do
         channel: channel,
         domain: domain,
         country_code: country_code,
+        extra_metadata: { phone_fingerprint: 'abc123' },
       )
     end
 
@@ -49,6 +50,24 @@ RSpec.describe Telephony::OtpSender do
         subject.send_confirmation_otp
 
         expect(Telephony::Test::Message.last_otp).to eq(otp)
+      end
+
+      it 'logs a message being sent' do
+        expect(Telephony.config.logger).to receive(:info).with(
+          {
+            success: true,
+            errors: {},
+            request_id: 'fake-message-request-id',
+            message_id: 'fake-message-id',
+            phone_fingerprint: 'abc123',
+            adapter: :test,
+            channel: :sms,
+            context: :authentication,
+            country_code: 'US',
+          }.to_json,
+        )
+
+        subject.send_authentication_otp
       end
     end
 
@@ -78,6 +97,7 @@ RSpec.describe Telephony::OtpSender do
         channel: channel,
         domain: domain,
         country_code: country_code,
+        extra_metadata: {},
       )
     end
 
@@ -206,6 +226,7 @@ RSpec.describe Telephony::OtpSender do
         expiration: Time.zone.now,
         domain: 'login.gov',
         country_code: country_code,
+        extra_metadata: {},
       )
     end
 
@@ -260,6 +281,7 @@ RSpec.describe Telephony::OtpSender do
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         domain: 'secure.login.gov',
         country_code: 'US',
+        extra_metadata: {},
       )
     end
 
@@ -335,6 +357,7 @@ RSpec.describe Telephony::OtpSender do
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         domain: 'secure.login.gov',
         country_code: 'US',
+        extra_metadata: {},
       )
     end
 
