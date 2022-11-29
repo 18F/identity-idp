@@ -156,7 +156,7 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
     let didCancel = false;
     (async () => {
       try {
-        const fetchedLocations = await getUspsLocations(foundAddress);
+        const fetchedLocations = await getUspsLocations(prepToSend(foundAddress));
 
         if (!didCancel) {
           const formattedLocations = formatLocation(fetchedLocations);
@@ -201,9 +201,7 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.location')}</PageHeading>
-      {arcgisSearchEnabled && (
-        <AddressSearch onAddressFound={(address) => handleFoundAddress(address)} />
-      )}
+      {arcgisSearchEnabled && <AddressSearch onAddressFound={handleFoundAddress} />}
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
       {locationsContent}
       <BackButton onClick={toPreviousStep} />
