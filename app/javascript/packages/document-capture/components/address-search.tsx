@@ -7,13 +7,14 @@ interface Location {
   city: string;
   state: string;
   zip_code: string;
+  address: string;
 }
 
 interface AddressSearchProps {
   onAddressFound?: (location: Location) => void;
 }
 
-const ADDRESS_SEARCH_URL = '/api/addresses';
+export const ADDRESS_SEARCH_URL = '/api/addresses';
 
 function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
@@ -38,10 +39,7 @@ function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
         label="Search for an address"
       />
       <Button onClick={() => handleAddressSearch()}>Search</Button>
-      <>
-        {addressQuery.street_address} {addressQuery.city} {addressQuery.state}{' '}
-        {addressQuery.zip_code}
-      </>
+      <>{addressQuery.address}</>
     </>
   );
 }
