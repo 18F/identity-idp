@@ -10,6 +10,7 @@ describe Test::TelephonyController do
         channel: :sms,
         domain: IdentityConfig.store.domain_name,
         country_code: 'US',
+        extra_metadata: {},
       )
       Telephony.send_authentication_otp(
         to: '(555) 555-5000',
@@ -18,6 +19,7 @@ describe Test::TelephonyController do
         channel: :voice,
         domain: IdentityConfig.store.domain_name,
         country_code: 'US',
+        extra_metadata: {},
       )
 
       get :index
@@ -47,6 +49,7 @@ describe Test::TelephonyController do
         channel: :sms,
         domain: IdentityConfig.store.domain_name,
         country_code: 'US',
+        extra_metadata: {},
       )
       Telephony.send_authentication_otp(
         to: '(555) 555-5000',
@@ -55,6 +58,7 @@ describe Test::TelephonyController do
         channel: :voice,
         domain: IdentityConfig.store.domain_name,
         country_code: 'US',
+        extra_metadata: {},
       )
 
       delete :destroy
