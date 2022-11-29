@@ -13,6 +13,7 @@ module Idv
         end
 
         def call
+          save_proofing_components
         end
 
         def extra_view_variables
@@ -24,6 +25,18 @@ module Idv
 
         def pii
           flow_session[:pii_from_user]
+        end
+
+        private
+
+        def save_proofing_components
+          raise 'current_user is not present' unless current_user.present?
+
+          component_attributes = {
+            inherited_proofing_proofed: true,
+          }
+
+          ProofingComponent.create_or_find_by(user: current_user).update(component_attributes)
         end
       end
     end
