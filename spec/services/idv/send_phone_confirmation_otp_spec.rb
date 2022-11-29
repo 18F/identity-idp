@@ -26,9 +26,7 @@ describe Idv::SendPhoneConfirmationOtp do
     # Setup Idv::Session
     idv_session.user_phone_confirmation_session = user_phone_confirmation_session
 
-    # Mock PhoneConfirmation::CodeGenerator
-    allow(PhoneConfirmation::CodeGenerator).to receive(:call).
-      and_return(otp_code)
+    allow(PhoneConfirmation::ConfirmationSession).to receive(:generate_code).and_return(otp_code)
 
     # Mock OtpRateLimiter
     allow(OtpRateLimiter).to receive(:new).with(user: user, phone: phone, phone_confirmed: true).
