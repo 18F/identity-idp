@@ -22,7 +22,10 @@
                   pattern: '(1[0-2])|(0?[1-9])',
                   wrapper_html: { class: 'usa-form-group usa-form-group--month margin-bottom-0' },
                   label: t('components.memorable_date.month'),
-                  label_html: { class: 'usa-label' },
+                  label_html: {
+                    class: 'usa-label',
+                    id: "memorable-date-month-label-#{unique_id}",
+                  },
                   input_html: {
                     type: 'text',
                     class: 'validated-field__input memorable-date__month',
@@ -31,7 +34,10 @@
                     aria: {
                       invalid: false,
                       describedby: "validated-field-error-#{unique_id}",
-                      labelledby: "memorable-date-month-hint-#{unique_id}",
+                      labelledby: [
+                        "memorable-date-month-label-#{unique_id}",
+                        "memorable-date-month-hint-#{unique_id}",
+                      ],
                     },
                     value: month,
                   },
@@ -50,7 +56,10 @@
                 pattern: '(3[01])|([12][0-9])|(0?[1-9])',
                 wrapper_html: { class: 'usa-form-group usa-form-group--day margin-bottom-0' },
                 label: t('components.memorable_date.day'),
-                label_html: { class: 'usa-label' },
+                label_html: {
+                  class: 'usa-label',
+                  id: "memorable-date-day-label-#{unique_id}",
+                },
                 input_html: {
                   type: 'text',
                   class: 'validated-field__input memorable-date__day',
@@ -59,7 +68,10 @@
                   aria: {
                     invalid: false,
                     describedby: "validated-field-error-#{unique_id}",
-                    labelledby: "memorable-date-day-hint-#{unique_id}",
+                    labelledby: [
+                      "memorable-date-day-label-#{unique_id}",
+                      "memorable-date-day-hint-#{unique_id}",
+                    ],
                   },
                   value: day,
                 },
@@ -78,7 +90,10 @@
                 pattern: '\d{4}',
                 wrapper_html: { class: 'usa-form-group usa-form-group--year margin-bottom-0' },
                 label: t('components.memorable_date.year'),
-                label_html: { class: 'usa-label' },
+                label_html: {
+                  class: 'usa-label',
+                  id: "memorable-date-year-label-#{unique_id}",
+                },
                 input_html: {
                   type: 'text',
                   class: 'validated-field__input memorable-date__year',
@@ -87,7 +102,10 @@
                   aria: {
                     invalid: false,
                     describedby: "validated-field-error-#{unique_id}",
-                    labelledby: "memorable-date-year-hint-#{unique_id}",
+                    labelledby:[
+                      "memorable-date-year-label-#{unique_id}",
+                      "memorable-date-year-hint-#{unique_id}",
+                    ],
                   },
                   value: year,
                 },
