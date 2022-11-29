@@ -165,6 +165,24 @@ describe RegisterUserEmailForm do
           **extra,
         )
       end
+
+      it 'returns false and adds errors to the form object when domain is invalid' do
+        errors = { email: [t('valid_email.validations.email.invalid')] }
+
+        extra = {
+          email_already_exists: false,
+          throttled: false,
+          user_id: 'anonymous-uuid',
+          domain_name: 'çà.com',
+        }
+
+        expect(subject.submit(email: 'test@çà.com', terms_accepted: '1').to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
+      end
     end
 
     context 'when request_id is invalid' do

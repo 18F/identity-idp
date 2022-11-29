@@ -5,7 +5,7 @@ module Proofing
         attr_reader :config
 
         def initialize(config)
-          @config = LexisNexis::Proofer::Config.new(config)
+          @config = LexisNexis::Ddp::Proofer::Config.new(config)
         end
 
         def proof(applicant)
