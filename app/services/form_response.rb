@@ -14,7 +14,7 @@ class FormResponse
 
   def to_h
     { success: success, errors: errors }.merge!(extra).tap do |hash|
-      hash[:error_details] = flatten_details(error_details) if error_details.present?
+      hash[:error_details] = ErrorDetails.new(details).flatten if error_details.present?
     end
   end
 
@@ -48,10 +48,6 @@ class FormResponse
 
   def merge_arrays(_key, first, second)
     Array(first) + Array(second)
-  end
-
-  def flatten_details(details)
-    details.transform_values { |errors| errors.pluck(:error) }
   end
 
   attr_reader :success
