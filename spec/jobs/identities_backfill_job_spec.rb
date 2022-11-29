@@ -60,7 +60,7 @@ RSpec.describe IdentitiesBackfillJob, type: :job do
         end
       end
 
-      it 'increments position by a bit (make this less vague)' do
+      it 'increments the position properly' do
         # The first time around, the position should match the second row:
         described_class.perform_now
         position = described_class.new.position

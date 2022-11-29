@@ -38,11 +38,11 @@ class IdentitiesBackfillJob < ApplicationJob
         RETURNING id
       SQL
 
-      result = ActiveRecord::Base.connection.exec_query(sp_query)
+      result = ActiveRecord::Base.connection.execute(sp_query)
 
       last_id = result.to_a&.first ? result.to_a.first['id'] : start_id + slice_size
 
-      logger.info "Processed rows #{start_id} through #{last_id}"
+      logger.info "Processed rows #{start_id} through #{last_id} (updated=#{result.ntuples})"
     end
 
     elapsed_time = Time.zone.now - start_time
