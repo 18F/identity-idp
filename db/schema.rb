@@ -463,6 +463,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_163826) do
     t.string "threatmetrix_review_status"
     t.string "threatmetrix_risk_rating"
     t.string "threatmetrix_policy_score"
+    t.boolean "inherited_proofing_proofed", default: false, null: false, comment: "When the user is proofed via inherited proofing"
     t.index ["user_id"], name: "index_proofing_components_on_user_id", unique: true
     t.index ["verified_at"], name: "index_proofing_components_on_verified_at"
   end
