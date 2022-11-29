@@ -1,11 +1,6 @@
 module Telephony
   class OtpSender
-<<<<<<< Updated upstream
-    attr_reader :recipient_phone, :otp, :expiration, :channel, :domain, :country_code,
-                :extra_metadata
-=======
     attr_reader :recipient_phone, :otp, :expiration, :channel, :domain, :country_code, :resend
->>>>>>> Stashed changes
 
     def initialize(to:, otp:, expiration:, channel:, domain:, country_code:, extra_metadata:)
       @recipient_phone = to
@@ -14,11 +9,7 @@ module Telephony
       @channel = channel.to_sym
       @domain = domain
       @country_code = country_code
-<<<<<<< Updated upstream
-      @extra_metadata = extra_metadata
-=======
       @resend = resend
->>>>>>> Stashed changes
     end
 
     def send_authentication_otp
