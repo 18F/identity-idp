@@ -1,5 +1,5 @@
-module PhoneConfirmation
-  class ConfirmationSession
+module Idv
+  class PhoneConfirmationSession
     attr_reader :code, :phone, :sent_at, :delivery_method
 
     def self.generate_code
