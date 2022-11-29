@@ -43,8 +43,12 @@ module Telephony
     @config
   end
 
+<<<<<<< Updated upstream
   def self.send_authentication_otp(to:, otp:, expiration:, channel:, domain:, country_code:,
                                    extra_metadata:)
+=======
+  def self.send_authentication_otp(to:, otp:, expiration:, channel:, domain:, country_code:, resend:)
+>>>>>>> Stashed changes
     OtpSender.new(
       to: to,
       otp: otp,
@@ -52,12 +56,20 @@ module Telephony
       channel: channel,
       domain: domain,
       country_code: country_code,
+<<<<<<< Updated upstream
       extra_metadata: extra_metadata,
     ).send_authentication_otp
   end
 
   def self.send_confirmation_otp(to:, otp:, expiration:, channel:, domain:, country_code:,
                                  extra_metadata:)
+=======
+      resend: resend,
+    ).send_authentication_otp
+  end
+
+  def self.send_confirmation_otp(to:, otp:, expiration:, channel:, domain:, country_code:, resend:)
+>>>>>>> Stashed changes
     OtpSender.new(
       to: to,
       otp: otp,
@@ -65,7 +77,11 @@ module Telephony
       channel: channel,
       domain: domain,
       country_code: country_code,
+<<<<<<< Updated upstream
       extra_metadata: extra_metadata,
+=======
+      resend: resend
+>>>>>>> Stashed changes
     ).send_confirmation_otp
   end
 

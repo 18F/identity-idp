@@ -23,7 +23,11 @@ RSpec.describe Telephony::OtpSender do
         channel: channel,
         domain: domain,
         country_code: country_code,
+<<<<<<< Updated upstream
         extra_metadata: { phone_fingerprint: 'abc123' },
+=======
+        resend: resend
+>>>>>>> Stashed changes
       )
     end
 
@@ -32,6 +36,7 @@ RSpec.describe Telephony::OtpSender do
     let(:expiration) { 5 }
     let(:domain) { 'login.gov' }
     let(:country_code) { 'US' }
+    let(:resend) { true }
 
     before do
       allow(Telephony.config).to receive(:adapter).and_return(:test)
@@ -97,7 +102,11 @@ RSpec.describe Telephony::OtpSender do
         channel: channel,
         domain: domain,
         country_code: country_code,
+<<<<<<< Updated upstream
         extra_metadata: {},
+=======
+        resend: resend
+>>>>>>> Stashed changes
       )
     end
 
@@ -106,6 +115,7 @@ RSpec.describe Telephony::OtpSender do
     let(:expiration) { 5 }
     let(:domain) { 'login.gov' }
     let(:country_code) { 'US' }
+    let(:resend) { true }
 
     before do
       allow(Telephony.config).to receive(:adapter).and_return(:pinpoint)
@@ -121,6 +131,7 @@ RSpec.describe Telephony::OtpSender do
           code: otp,
           expiration: expiration,
           domain: domain,
+          resend: resend
         )
 
         adapter = instance_double(Telephony::Pinpoint::SmsSender)
@@ -245,28 +256,6 @@ RSpec.describe Telephony::OtpSender do
                   "<break time='0.5s' /> 5 <break time='0.5s' /> 6",
             )
         end
-      end
-
-      context 'with an alphanumeric code' do
-        let(:otp) { 'ABC123' }
-
-        it 'is the code separated by commas' do
-          expect(otp_transformed_for_channel).
-            to eq(
-              "A <break time='0.5s' /> B <break time='0.5s' /> C <break time='0.5s' /> 1 "\
-                  "<break time='0.5s' /> 2 <break time='0.5s' /> 3",
-            )
-        end
-      end
-    end
-
-    context 'for sms' do
-      let(:channel) { :sms }
-
-      let(:otp) { 'ABC123' }
-
-      it 'is the code' do
-        expect(otp_transformed_for_channel).to eq(otp)
       end
     end
   end
