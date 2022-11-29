@@ -82,6 +82,14 @@ describe Idv::InPerson::UspsLocationsController do
           zip_code_5: '20815' },
       ]
     end
+    let(:pilot_locations) do
+      [
+        { name: 'Location 1' },
+        { name: 'Location 2' },
+        { name: 'Location 3' },
+        { name: 'Location 4' },
+      ]
+    end
     subject(:response) do
       post :index, params: { address: { street_address: '1600 Pennsylvania Ave',
                                         city: 'Washington',
@@ -92,36 +100,53 @@ describe Idv::InPerson::UspsLocationsController do
       allow(UspsInPersonProofing::Proofer).to receive(:new).and_return(proofer)
     end
 
-    context 'with successful fetch' do
-      before do
-        allow(proofer).to receive(:request_facilities).with(address).and_return(locations)
+    context 'with arcgis search enabled' do
+      context 'with successful fetch' do
+        before do
+          allow(proofer).to receive(:request_facilities).with(address).and_return(locations)
+        end
+
+        it 'returns a successful response' do
+          json = response.body
+          facilities = JSON.parse(json)
+          expect(facilities.length).to eq 3
+        end
       end
 
-      it 'returns a successful response' do
-        json = response.body
-        facilities = JSON.parse(json)
-        expect(facilities.length).to eq 3
+      context 'with unsuccessful fetch' do
+        before do
+          exception = Faraday::ConnectionFailed.new('error')
+          allow(proofer).to receive(:request_facilities).with(fake_address).and_raise(exception)
+        end
+
+        it 'gets an empty response' do
+          response = post :index,
+                          params: { address: { street_address: '742 Evergreen Terrace',
+                                               city: 'Springfield',
+                                               state: 'MO', zip_code: '89011' } }
+          json = response.body
+          facilities = JSON.parse(json)
+          expect(facilities.length).to eq 0
+        end
       end
     end
 
-    context 'with unsuccessful fetch' do
-      before do
-        exception = Faraday::ConnectionFailed.new('error')
-        allow(proofer).to receive(:request_facilities).with(fake_address).and_raise(exception)
-      end
+    context 'with arcgis search disabled' do
+      let(:arcgis_search_enabled) { false }
+      context 'with successful fetch' do
+        before do
+          allow(proofer).to receive(:request_pilot_facilities).and_return(pilot_locations)
+        end
 
-      it 'gets an empty response' do
-        response = post :index,
-                        params: { address: { street_address: '742 Evergreen Terrace',
-                                             city: 'Springfield',
-                                             state: 'MO', zip_code: '89011' } }
-        json = response.body
-        facilities = JSON.parse(json)
-        expect(facilities.length).to eq 0
+        it 'returns a successful response' do
+          json = response.body
+          facilities = JSON.parse(json)
+          expect(facilities.length).to eq 4
+        end
       end
     end
 
-    context 'with feature disabled' do
+    context 'with in person proofing disabled' do
       let(:in_person_proofing_enabled) { false }
 
       it 'renders 404' do
