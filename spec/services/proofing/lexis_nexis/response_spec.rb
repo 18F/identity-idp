@@ -78,4 +78,17 @@ describe Proofing::LexisNexis::Response do
       end
     end
   end
+
+  describe '#response_body' do
+    context 'the result includes invalid JSON' do
+      let(:response_body) { '$":^&' }
+
+      it 'raises a JSON parse error with a generic error message' do
+        expect { subject.response_body }.to raise_error(
+          JSON::ParserError,
+          'An error occured parsing the response body JSON',
+        )
+      end
+    end
+  end
 end
