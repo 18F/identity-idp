@@ -42,7 +42,7 @@ function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
         }}
         label="Search for an address"
       />
-      <Button onClick={() => handleAddressSearch()}>Search</Button>
+      <Button onClick={handleAddressSearch}>Search</Button>
       <>{addressQuery.address}</>
     </>
   );
