@@ -1652,7 +1652,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success Whether authentication was success
+  # @param [Boolean] success Whether authentication was successful
   # @param [Hash] errors Authentication error reasons, if unsuccessful
   # @param [String] context
   # @param [String] multi_factor_auth_method
@@ -1925,7 +1925,7 @@ module AnalyticsEvents
   end
 
   # Tracks when a user sets up a multi factor auth method
-  # @param [Boolean] success Whether authenticator setup was success
+  # @param [Boolean] success Whether authenticator setup was successful
   # @param [Hash] errors Authenticator setup error reasons, if unsuccessful
   # @param [String] multi_factor_auth_method
   # @param [Boolean] in_multi_mfa_selection_flow
