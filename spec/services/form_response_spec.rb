@@ -178,7 +178,7 @@ describe FormResponse do
       end
 
       context 'with serialize_error_details_only' do
-        it 'is not included in the hash' do
+        it 'excludes errors from the hash' do
           errors = ActiveModel::Errors.new(build_stubbed(:user))
           errors.add(:email_language, :blank, message: 'Language cannot be blank')
           response = FormResponse.new(
