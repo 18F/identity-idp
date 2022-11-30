@@ -9,11 +9,11 @@ interface RequestOptions extends RequestInit {
    */
   csrf?: boolean;
 }
-
-const getCSRFToken = () =>
-  document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content;
-
-export const request = async (url: string, options: Partial<RequestOptions> = {}) => {
+export const request = async (
+  url: string,
+  options: Partial<RequestOptions> = {},
+  getCSRFToken = () => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content,
+) => {
   const { csrf = true, json = true, ...fetchOptions } = options;
   let { body, headers } = fetchOptions;
   headers = new Headers(headers);
