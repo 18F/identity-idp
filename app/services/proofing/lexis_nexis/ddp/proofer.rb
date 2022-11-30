@@ -64,6 +64,9 @@ module Proofing
         def proof(applicant)
           response = send_verification_request(applicant)
           process_response(response)
+        rescue => exception
+          NewRelic::Agent.notice_error(exception)
+          Proofing::Result.new(exception: exception)
         end
 
         private

@@ -17,11 +17,34 @@ module Idv
         def execute
           raise 'The provided auth_code is blank?' if auth_code.blank?
 
-          response = request
-          payload_to_hash decrypt_payload(response)
+          begin
+            response = request
+            return payload_to_hash decrypt_payload(response) if response.status == 200
+
+            service_error(not_200_service_error(response.status))
+          rescue => error
+            service_error(error.message)
+          end
         end
 
         private
+
+        def service_error(message)
+          { service_error: message }
+        end
+
+        def not_200_service_error(http_status)
+          # Under certain circumstances, Faraday may return a nil http status.
+          # https://lostisland.github.io/faraday/middleware/raise-error
+          if http_status.blank?
+            http_status = 'unavailable'
+            http_status_description = 'unavailable'
+          else
+            http_status_description = Rack::Utils::HTTP_STATUS_CODES[http_status]
+          end
+          "The service provider API returned an http status other than 200: " \
+            "#{http_status} (#{http_status_description})"
+        end
 
         def request
           connection.get(request_uri) { |req| req.headers = request_headers }

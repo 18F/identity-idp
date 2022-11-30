@@ -111,6 +111,12 @@ else
         cron: IdentityConfig.store.get_usps_proofing_results_job_cron,
         args: -> { [Time.zone.now] },
       },
+      # Queue daily in-person proofing reminder email job
+      email_reminder_job: {
+        class: 'InPerson::EmailReminderJob',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
       # Periodically verify signature on ThreatMetrix javascript
       verify_threat_metrix_js: {
         class: 'ThreatMetrixJsVerificationJob',
@@ -127,6 +133,11 @@ else
         class: 'IrsWeeklySummaryReport',
         cron: cron_1w,
         args: -> { [Time.zone.now] },
+      },
+      # Backfill service_provider_identities last_consented_at
+      identities_backfill_job: {
+        class: 'IdentitiesBackfillJob',
+        cron: cron_5m,
       },
     }
   end

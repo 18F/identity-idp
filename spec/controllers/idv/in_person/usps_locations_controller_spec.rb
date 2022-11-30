@@ -6,6 +6,19 @@ describe Idv::InPerson::UspsLocationsController do
   let(:user) { create(:user) }
   let(:sp) { nil }
   let(:in_person_proofing_enabled) { true }
+  let(:arcgis_search_enabled) { true }
+  let(:address) do
+    UspsInPersonProofing::Applicant.new(
+      address: '1600 Pennsylvania Ave',
+      city: 'Washington', state: 'DC', zip_code: '20500'
+    )
+  end
+  let(:fake_address) do
+    UspsInPersonProofing::Applicant.new(
+      address: '742 Evergreen Terrace',
+      city: 'Springfield', state: 'MO', zip_code: '89011'
+    )
+  end
   let(:selected_location) do
     {
       usps_location: {
@@ -25,6 +38,8 @@ describe Idv::InPerson::UspsLocationsController do
     stub_sign_in(user) if user
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
       and_return(in_person_proofing_enabled)
+    allow(IdentityConfig.store).to receive(:arcgis_search_enabled).
+      and_return(arcgis_search_enabled)
     allow(controller).to receive(:current_sp).and_return(sp)
   end
 
@@ -32,46 +47,122 @@ describe Idv::InPerson::UspsLocationsController do
     let(:proofer) { double('Proofer') }
     let(:locations) do
       [
+        { address: '3118 WASHINGTON BLVD',
+          city: 'ARLINGTON',
+          distance: '6.02 mi',
+          name: 'ARLINGTON',
+          phone: '703-993-0072',
+          saturday_hours: '9:00 AM - 1:00 PM',
+          state: 'VA',
+          sunday_hours: 'Closed',
+          weekday_hours: '9:00 AM - 5:00 PM',
+          zip_code_4: '9998',
+          zip_code_5: '22201' },
+        { address: '4005 WISCONSIN AVE NW',
+          city: 'WASHINGTON',
+          distance: '6.59 mi',
+          name: 'FRIENDSHIP',
+          phone: '202-842-3332',
+          saturday_hours: '8:00 AM - 4:00 PM',
+          state: 'DC',
+          sunday_hours: '10:00 AM - 4:00 PM',
+          weekday_hours: '8:00 AM - 6:00 PM',
+          zip_code_4: '9997',
+          zip_code_5: '20016' },
+        { address: '6900 WISCONSIN AVE STE 100',
+          city: 'CHEVY CHASE',
+          distance: '8.99 mi',
+          name: 'BETHESDA',
+          phone: '301-941-2670',
+          saturday_hours: '9:00 AM - 4:00 PM',
+          state: 'MD',
+          sunday_hours: 'Closed',
+          weekday_hours: '9:00 AM - 5:00 PM',
+          zip_code_4: '9996',
+          zip_code_5: '20815' },
+      ]
+    end
+    let(:pilot_locations) do
+      [
         { name: 'Location 1' },
         { name: 'Location 2' },
         { name: 'Location 3' },
         { name: 'Location 4' },
       ]
     end
-    subject(:response) { get :index }
+    subject(:response) do
+      post :index, params: { address: { street_address: '1600 Pennsylvania Ave',
+                                        city: 'Washington',
+                                        state: 'DC', zip_code: '20500' } }
+    end
 
     before do
       allow(UspsInPersonProofing::Proofer).to receive(:new).and_return(proofer)
     end
 
-    context 'with successful fetch' do
-      before do
-        allow(proofer).to receive(:request_pilot_facilities).and_return(locations)
+    context 'with arcgis search enabled' do
+      context 'with a nil address in params' do
+        before do
+          allow(proofer).to receive(:request_pilot_facilities).and_return(pilot_locations)
+        end
+
+        subject(:response) do
+          post :index, params: { address: nil }
+        end
+
+        it 'returns the pilot locations' do
+          json = response.body
+          facilities = JSON.parse(json)
+          expect(facilities.length).to eq 4
+        end
       end
 
-      it 'gets successful pilot response' do
-        response = get :index
-        json = response.body
-        facilities = JSON.parse(json)
-        expect(facilities.length).to eq 4
+      context 'with successful fetch' do
+        before do
+          allow(proofer).to receive(:request_facilities).with(address).and_return(locations)
+        end
+
+        it 'returns a successful response' do
+          json = response.body
+          facilities = JSON.parse(json)
+          expect(facilities.length).to eq 3
+        end
+      end
+
+      context 'with unsuccessful fetch' do
+        before do
+          exception = Faraday::ConnectionFailed.new('error')
+          allow(proofer).to receive(:request_facilities).with(fake_address).and_raise(exception)
+        end
+
+        it 'gets an empty response' do
+          response = post :index,
+                          params: { address: { street_address: '742 Evergreen Terrace',
+                                               city: 'Springfield',
+                                               state: 'MO', zip_code: '89011' } }
+          json = response.body
+          facilities = JSON.parse(json)
+          expect(facilities.length).to eq 0
+        end
       end
     end
 
-    context 'with unsuccessful fetch' do
-      before do
-        exception = Faraday::ConnectionFailed.new('error')
-        allow(proofer).to receive(:request_pilot_facilities).and_raise(exception)
-      end
+    context 'with arcgis search disabled' do
+      let(:arcgis_search_enabled) { false }
+      context 'with successful fetch' do
+        before do
+          allow(proofer).to receive(:request_pilot_facilities).and_return(pilot_locations)
+        end
 
-      it 'gets an empty pilot response' do
-        response = get :index
-        json = response.body
-        facilities = JSON.parse(json)
-        expect(facilities.length).to eq 0
+        it 'returns a successful response' do
+          json = response.body
+          facilities = JSON.parse(json)
+          expect(facilities.length).to eq 4
+        end
       end
     end
 
-    context 'with feature disabled' do
+    context 'with in person proofing disabled' do
       let(:in_person_proofing_enabled) { false }
 
       it 'renders 404' do
