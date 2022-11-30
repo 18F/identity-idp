@@ -6,8 +6,10 @@ RSpec.describe ServiceProviderIdentity do
     ServiceProviderIdentity.create(
       user_id: user.id,
       service_provider: 'externalapp',
+      last_consented_at: Time.zone.now,
     )
   end
+
   subject { identity }
 
   it { is_expected.to belong_to(:user) }
@@ -20,6 +22,23 @@ RSpec.describe ServiceProviderIdentity do
     it 'sets last_authenticated_at to nil' do
       active_identity.deactivate
       expect(identity.last_authenticated_at).to be_nil
+    end
+  end
+
+  # maw: It's not customary to test scopes and this should probably go away.
+  # Just using this while I work to prove that nothing silly is happening.
+  describe '.consented scope' do
+    let!(:consented_user) { create(:service_provider_identity) }
+    let!(:non_consented_user) { create(:service_provider_identity, :non_consented) }
+
+    subject { described_class.consented }
+
+    it 'includes users with last_consented_at set' do
+      expect(subject).to include(consented_user)
+    end
+
+    it 'excludes users without last_consented_at set' do
+      expect(subject).to_not include(non_consented_user)
     end
   end
 

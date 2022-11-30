@@ -15,6 +15,7 @@ class ServiceProviderIdentity < ApplicationRecord
   # rubocop:enable Rails/InverseOf
 
   scope :not_deleted, -> { where(deleted_at: nil) }
+  scope :consented, -> { where.not(last_consented_at: nil) }
 
   CONSENT_EXPIRATION = 1.year
 
