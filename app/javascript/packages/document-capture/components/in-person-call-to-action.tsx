@@ -2,7 +2,6 @@ import { useContext } from 'react';
 import { Button, Tag } from '@18f/identity-components';
 import { useInstanceId } from '@18f/identity-react-hooks';
 import { t } from '@18f/identity-i18n';
-import { formatHTML } from '@18f/identity-react-i18n';
 import AnalyticsContext from '../context/analytics';
 
 function InPersonCallToAction() {
