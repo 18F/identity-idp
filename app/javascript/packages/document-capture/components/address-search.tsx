@@ -1,6 +1,6 @@
 import { TextInput, Button } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, ChangeEvent } from 'react';
 
 interface Location {
   street_address: string;
@@ -35,7 +35,11 @@ function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
     <>
       <TextInput
         value={unvalidatedAddressInput}
-        onChange={(ev) => setUnvalidatedAddressInput(ev.target.value)}
+        onChange={(event: ChangeEvent) => {
+          const target = event.target as HTMLInputElement;
+
+          setUnvalidatedAddressInput(target.value);
+        }}
         label="Search for an address"
       />
       <Button onClick={() => handleAddressSearch()}>Search</Button>
