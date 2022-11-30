@@ -21,7 +21,7 @@ export const request = async (url: string, options: Partial<RequestOptions> = {}
   headers = new Headers(headers);
 
   if (csrf) {
-    const csrfToken = typeof csrf !== 'boolean' ? csrf() : getCSRFToken();
+    const csrfToken = typeof csrf === 'boolean' ? getCSRFToken() : csrf();
 
     if (csrfToken) {
       headers.set('X-CSRF-Token', csrfToken);
