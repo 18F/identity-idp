@@ -7,7 +7,7 @@ import { useSandbox } from '@18f/identity-test-helpers';
 import AnalyticsContext, { AnalyticsContextProvider } from '../context/analytics';
 import InPersonLocationStep, { LOCATIONS_URL } from './in-person-location-step';
 import { ADDRESS_SEARCH_URL } from './address-search';
-import AppContext from '../context/app';
+import InPersonContext from '../context/in-person';
 
 describe('InPersonLocationStep', () => {
   const DEFAULT_PROPS = { toPreviousStep() {}, onChange() {}, value: {} };
@@ -59,9 +59,9 @@ describe('InPersonLocationStep', () => {
 
   it('allows search by address when enabled', async () => {
     const { findByText, findByLabelText } = render(
-      <AppContext.Provider value={{ arcgisSearchEnabled: 'true', appName: '' }}>
+      <InPersonContext.Provider value={{ arcgisSearchEnabled: 'true' }}>
         <InPersonLocationStep {...DEFAULT_PROPS} />
-      </AppContext.Provider>,
+      </InPersonContext.Provider>,
     );
 
     await userEvent.type(await findByLabelText('Search for an address'), '100 main');

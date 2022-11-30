@@ -11,6 +11,7 @@ import {
   FailedCaptureAttemptsContextProvider,
   NativeCameraABTestContextProvider,
   MarketingSiteContextProvider,
+  InPersonContext,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -119,10 +120,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
   } = appRoot.dataset as DOMStringMap & AppRootData;
 
   const App = composeComponents(
-    [
-      AppContext.Provider,
-      { value: { appName, arcgisSearchEnabled: arcgisSearchEnabled === 'true' } },
-    ],
+    [AppContext.Provider, { value: { appName } }],
     [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
     [DeviceContext.Provider, { value: device }],
     [AnalyticsContextProvider, { trackEvent }],
@@ -176,6 +174,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
       },
     ],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
+    [InPersonContext.Provider, { value: { arcgisSearchEnabled: arcgisSearchEnabled === 'true' } }],
   );
 
   render(<App />, appRoot);
