@@ -20,6 +20,10 @@ function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
   const [addressQuery, setAddressQuery] = useState({} as Location);
   const handleAddressSearch = useCallback(async () => {
+    if (unvalidatedAddressInput === '') {
+      console.log('oh no, an empty address');
+      return null;
+    }
     const addressCandidates = await request(ADDRESS_SEARCH_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
