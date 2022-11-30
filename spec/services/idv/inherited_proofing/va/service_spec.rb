@@ -62,5 +62,63 @@ RSpec.describe Idv::InheritedProofing::Va::Service do
         it_behaves_like 'an invalid auth code error is raised'
       end
     end
+
+    context 'when a request error is raised' do
+      before do
+        allow(service).to receive(:request).and_raise('Boom!')
+      end
+
+      it 'rescues and returns the error' do
+        expect(service.execute).to eq({ service_error: 'Boom!' })
+      end
+    end
+
+    context 'when a decryption error is raised' do
+      it 'rescues and returns the error' do
+        freeze_time do
+          stub_request(:get, request_uri).
+            with(headers: request_headers).
+            to_return(status: 200, body: 'xyz', headers: {})
+
+          expect(service.execute[:service_error]).to match(/unexpected token at 'xyz'/)
+        end
+      end
+    end
+
+    context 'when a non-200 error is raised' do
+      it 'rescues and returns the error' do
+        freeze_time do
+          stub_request(:get, request_uri).
+            with(headers: request_headers).
+            to_return(status: 302, body: encrypted_user_attributes, headers: {})
+
+          expect(service.execute.to_s).to \
+            match(/The service provider API returned an http status other than 200/)
+        end
+      end
+
+      context 'when http status is unavailable (nil)' do
+        before do
+          allow_any_instance_of(Faraday::Response).to receive(:status).and_return(nil)
+        end
+
+        let(:expected_error) do
+          {
+            service_error: 'The service provider API returned an http status other than 200: ' \
+              'unavailable (unavailable)',
+          }
+        end
+
+        it 'rescues and returns the error' do
+          freeze_time do
+            stub_request(:get, request_uri).
+              with(headers: request_headers).
+              to_return(status: nil, body: encrypted_user_attributes, headers: {})
+
+            expect(service.execute).to eq expected_error
+          end
+        end
+      end
+    end
   end
 end

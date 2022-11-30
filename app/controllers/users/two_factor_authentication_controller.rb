@@ -219,6 +219,7 @@ module Users
         context: context,
         otp_delivery_preference: otp_delivery_preference,
         resend: params.dig(:otp_delivery_selection_form, :resend),
+        adapter: Telephony.config.adapter,
         telephony_response: @telephony_result.to_h,
         success: @telephony_result.success?,
       )
@@ -271,19 +272,24 @@ module Users
       end
 
       current_user.create_direct_otp
-      params = {
+      otp_params = {
         to: phone_to_deliver_to,
         otp: current_user.direct_otp,
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         channel: method.to_sym,
         domain: IdentityConfig.store.domain_name,
         country_code: parsed_phone.country,
+        extra_metadata: {
+          area_code: parsed_phone.area_code,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+          resend: params.dig(:otp_delivery_selection_form, :resend),
+        },
       }
 
       if UserSessionContext.authentication_or_reauthentication_context?(context)
-        Telephony.send_authentication_otp(**params)
+        Telephony.send_authentication_otp(**otp_params)
       else
-        Telephony.send_confirmation_otp(**params)
+        Telephony.send_confirmation_otp(**otp_params)
       end
     end
 
