@@ -2,6 +2,7 @@ class OtpVerificationForm
   include ActiveModel::Model
 
   validates :code, presence: true
+  validate :validate_code_length
   validate :validate_code_matches_format
   validate :validate_user_otp_presence
   validate :validate_user_otp_expiration
@@ -29,8 +30,13 @@ class OtpVerificationForm
 
   attr_reader :code, :user
 
+  def validate_code_length
+    return if code&.size == TwoFactorAuthenticatable::DIRECT_OTP_LENGTH
+    errors.add(:code, :code_incorrect_length, type: :code_incorrect_length)
+  end
+
   def validate_code_matches_format
-    return if code.match?(pattern_matching_otp_code_format)
+    return if code&.match?(/^[0-9]+/i)
     errors.add(:code, :code_pattern_mismatch, type: :code_pattern_mismatch)
   end
 
@@ -45,20 +51,14 @@ class OtpVerificationForm
   end
 
   def validate_code_equals_user_otp
-    return if user.direct_otp == Base32::Crockford.normalize(code)
-    errors.add(:code, :incorrect_code, type: :incorrect_code)
-  end
-
-  def pattern_matching_otp_code_format
-    /\A[0-9]{#{otp_code_length}}\z/i
-  end
-
-  def otp_code_length
-    TwoFactorAuthenticatable::DIRECT_OTP_LENGTH
+    return if user.direct_otp.present? &&
+              code.present? &&
+              ActiveSupport::SecurityUtils.secure_compare(user.direct_otp, code)
+    errors.add(:code, :code_incorrect, type: :code_incorrect)
   end
 
   def otp_expired?
-    return if user.direct_otp.blank?
+    return if user.direct_otp_sent_at.blank?
     Time.zone.now > user.direct_otp_sent_at + TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
   end
 
