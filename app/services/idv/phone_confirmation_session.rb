@@ -17,7 +17,7 @@ module Idv
 
     def self.start(phone:, delivery_method:)
       new(
-        code: self.class.generate_code,
+        code: generate_code,
         phone: phone,
         sent_at: Time.zone.now,
         delivery_method: delivery_method,
