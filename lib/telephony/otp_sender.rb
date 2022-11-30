@@ -1,14 +1,16 @@
 module Telephony
   class OtpSender
-    attr_reader :recipient_phone, :otp, :expiration, :channel, :domain, :country_code
+    attr_reader :recipient_phone, :otp, :expiration, :channel, :domain, :country_code,
+                :extra_metadata
 
-    def initialize(to:, otp:, expiration:, channel:, domain:, country_code:)
+    def initialize(to:, otp:, expiration:, channel:, domain:, country_code:, extra_metadata:)
       @recipient_phone = to
       @otp = otp
       @expiration = expiration
       @channel = channel.to_sym
       @domain = domain
       @country_code = country_code
+      @extra_metadata = extra_metadata
     end
 
     def send_authentication_otp
@@ -75,11 +77,14 @@ module Telephony
     end
 
     def log_response(response, context:)
-      extra = {
-        adapter: Telephony.config.adapter,
-        channel: channel,
-        context: context,
-      }
+      extra = extra_metadata.merge(
+        {
+          adapter: Telephony.config.adapter,
+          channel: channel,
+          context: context,
+          country_code: country_code,
+        },
+      )
       output = response.to_h.merge(extra).to_json
       Telephony.config.logger.info(output)
     end

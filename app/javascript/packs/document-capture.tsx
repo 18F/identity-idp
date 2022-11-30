@@ -31,6 +31,9 @@ interface AppRootData {
   maxAttemptsBeforeNativeCamera: string;
   nativeCameraABTestingEnabled: string;
   nativeCameraOnly: string;
+  acuantSdkUpgradeABTestingEnabled: string;
+  useNewerSdk: string;
+  acuantVersion: string;
   flowPath: FlowPath;
   cancelUrl: string;
   idvInPersonUrl?: string;
@@ -68,8 +71,15 @@ function getMetaContent(name): string | null {
 const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
-  const { flowPath } = appRoot.dataset;
-  return baseTrackEvent(event, { ...payload, flow_path: flowPath });
+  const { flowPath, acuantSdkUpgradeABTestingEnabled, useNewerSdk, acuantVersion } =
+    appRoot.dataset;
+  return baseTrackEvent(event, {
+    ...payload,
+    flow_path: flowPath,
+    acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
+    use_newer_sdk: useNewerSdk,
+    acuant_version: acuantVersion,
+  });
 };
 
 (async () => {
@@ -111,6 +121,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     maxSubmissionAttemptsBeforeNativeCamera,
     nativeCameraABTestingEnabled,
     nativeCameraOnly,
+    acuantVersion,
     appName,
     flowPath,
     cancelUrl: cancelURL,
@@ -127,6 +138,8 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     [
       AcuantContextProvider,
       {
+        sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
+        cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`,
         credentials: getMetaContent('acuant-sdk-initialization-creds'),
         endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
         glareThreshold,
