@@ -38,6 +38,22 @@ describe('request', () => {
       csrf: () => undefined,
     });
   });
+  it('does not try to send a csrf when csrf is false', async () => {
+    sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
+      const headers = init.headers as Headers;
+      expect(headers.get('X-CSRF-Token')).to.be.null();
+
+      return Promise.resolve(
+        new Response(new Blob([JSON.stringify({})]), {
+          status: 200,
+        }),
+      );
+    });
+
+    await request('https://example.com', {
+      csrf: false,
+    });
+  });
   it('prefers the json prop if both json and body props are provided', async () => {
     const preferredData = { prefered: 'data' };
     sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
