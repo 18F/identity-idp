@@ -36,7 +36,7 @@ module Idv
 
     def new
       @applicant = idv_session.applicant
-      analytics.idv_review_info_visited
+      analytics.idv_review_info_visited(address_verification_method: address_verification_method)
 
       gpo_mail_service = Idv::GpoMail.new(current_user)
       flash_now = flash.now
@@ -66,6 +66,10 @@ module Idv
     end
 
     private
+
+    def address_verification_method
+      user_session.dig('idv', 'address_verification_mechanism')
+    end
 
     def log_reproof_event
       irs_attempts_api_tracker.idv_reproof

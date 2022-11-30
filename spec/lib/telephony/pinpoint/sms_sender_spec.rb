@@ -31,6 +31,13 @@ describe Telephony::Pinpoint::SmsSender do
       Pinpoint::MockClient.message_response_result_status_message = status_message
     end
 
+    around do |ex|
+      ex.run
+
+    ensure
+      Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
+    end
+
     context 'when endpoint is a duplicate' do
       let(:delivery_status) { 'DUPLICATE' }
 
@@ -171,6 +178,13 @@ describe Telephony::Pinpoint::SmsSender do
       }
     end
 
+    around do |ex|
+      ex.run
+
+    ensure
+      Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
+    end
+
     context 'in a country with sender_id' do
       let(:country_code) { 'PH' }
 
@@ -282,6 +296,12 @@ describe Telephony::Pinpoint::SmsSender do
 
         mock_build_client
         mock_build_backup_client
+      end
+
+      around do |ex|
+        ex.run
+      ensure
+        Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
       end
 
       context 'when the first config succeeds' do
@@ -401,6 +421,10 @@ describe Telephony::Pinpoint::SmsSender do
 
         allow(mock_client).to receive(:send_messages).and_return(phone_numbers)
         allow(backup_mock_client).to receive(:send_messages).and_return(phone_numbers)
+      end
+
+      after do
+        Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
       end
 
       it 'does not include the phone number in the results' do
