@@ -11,6 +11,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     piv_cac: 'piv_cac',
   }.freeze
 
+  SHOW_ATTEMPTS_WARNING_COUNT = 3
+
   private
 
   def authenticate_user
@@ -145,15 +147,21 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def invalid_otp_error(type)
     case type
     when 'otp'
-      t('two_factor_authentication.invalid_otp_html', count: attempts_count_remaining)
+      t('two_factor_authentication.invalid_otp') + attempts_remaining_warning
     when 'totp'
-      t('two_factor_authentication.invalid_totp')
+      t('two_factor_authentication.invalid_otp')
     when 'personal_key'
       t('two_factor_authentication.invalid_personal_key')
     when 'piv_cac'
       t('two_factor_authentication.invalid_piv_cac')
     else
       raise "Unsupported otp method: #{type}"
+    end
+  end
+
+  def attempts_remaining_warning
+    if attempts_count_remaining < SHOW_ATTEMPTS_WARNING_COUNT
+      t('two_factor_authentication.attempt_remaining_warning_html', count: attempts_count_remaining)  
     end
   end
 
