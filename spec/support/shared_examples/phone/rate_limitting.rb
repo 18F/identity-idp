@@ -42,11 +42,16 @@ shared_examples 'phone rate limitting' do |delivery_method|
 
   it 'limits the number of times the user can enter an OTP' do
     visit_otp_confirmation(delivery_method)
-    (max_confirmation_attempts - 1).times do |number_of_times| 
+    (max_confirmation_attempts - 1).times do |number_of_times|
       fill_in :code, with: '123456'
       click_submit_default
-      current_count = max_confirmation_attempts - number_of_times 
-      expect(page).to have_content(t('two_factor_authentication.invalid_otp_html', count: current_count))
+      current_count = max_confirmation_attempts - number_of_times
+      expect(page).to have_content(
+        t(
+          'two_factor_authentication.invalid_otp_html',
+          count: current_count,
+        ),
+      )
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: delivery_method)
     end
     fill_in :code, with: '123456'
