@@ -176,6 +176,25 @@ describe FormResponse do
 
         expect(combined_response.to_h).to eq response_hash
       end
+
+      context 'with serialize_error_details_only' do
+        it 'is not included in the hash' do
+          errors = ActiveModel::Errors.new(build_stubbed(:user))
+          errors.add(:email_language, :blank, message: 'Language cannot be blank')
+          response = FormResponse.new(
+            success: false,
+            errors: errors,
+            serialize_error_details_only: true,
+          )
+
+          expect(response.to_h).to eq(
+            success: false,
+            error_details: {
+              email_language: [:blank],
+            },
+          )
+        end
+      end
     end
   end
 

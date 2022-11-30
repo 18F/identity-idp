@@ -19,8 +19,9 @@ class OtpVerificationForm
 
     FormResponse.new(
       success: success,
-      errors: ErrorDetails.new(errors.details).flatten,
+      errors: errors,
       extra: extra_analytics_attributes,
+      serialize_error_details_only: true,
     )
   end
 

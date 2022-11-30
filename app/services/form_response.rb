@@ -1,21 +1,24 @@
 class FormResponse
-  def initialize(success:, errors: {}, extra: {})
+  attr_reader :errors, :extra, :serialize_error_details_only
+
+  def initialize(success:, errors: {}, extra: {}, serialize_error_details_only: false)
     @success = success
     @errors = errors.is_a?(ActiveModel::Errors) ? errors.messages.to_hash : errors
     @error_details = errors.details if errors.is_a?(ActiveModel::Errors)
     @extra = extra
+    @serialize_error_details_only = serialize_error_details_only
   end
-
-  attr_reader :errors, :extra
 
   def success?
     @success
   end
 
   def to_h
-    { success: success, errors: errors }.merge!(extra).tap do |hash|
-      hash[:error_details] = ErrorDetails.new(details).flatten if error_details.present?
-    end
+    hash = { success: success }
+    hash[:errors] = errors if !serialize_error_details_only
+    hash[:error_details] = flatten_details(error_details) if error_details.present?
+    hash.merge!(extra)
+    hash
   end
 
   def merge(other)
@@ -48,6 +51,10 @@ class FormResponse
 
   def merge_arrays(_key, first, second)
     Array(first) + Array(second)
+  end
+
+  def flatten_details(details)
+    details.transform_values { |errors| errors.pluck(:error) }
   end
 
   attr_reader :success
