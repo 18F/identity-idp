@@ -3,7 +3,7 @@ class DeletedUser < ApplicationRecord
     return unless user
 
     ActiveRecord::Base.transaction(requires_new: true) do
-      ::DeletedUser.create!(
+      create!(
         user_id: user.id,
         uuid: user.uuid,
         user_created_at: user.created_at,
