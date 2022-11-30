@@ -22,6 +22,8 @@ describe('request', () => {
     await request('https://example.com', {
       csrf: mockGetCSRF,
     });
+
+    expect(window.fetch).to.have.been.calledOnce();
   });
   it('works even if the CSRF token is not found on the page', async () => {
     sandbox.stub(window, 'fetch').callsFake(() =>
