@@ -1,5 +1,5 @@
 module Idv
-  class ValidateDocumentCaptureSessionForm
+  class DocumentCaptureSessionForm
     include ActiveModel::Model
 
     validates :session_uuid, presence: { message: 'session missing' }

@@ -33,7 +33,7 @@ module Idv
                 token.blank? &&
                 document_capture_session_uuid.blank?
 
-      result = Idv::ValidateDocumentCaptureSessionForm.new(document_capture_session_uuid).submit
+      result = Idv::DocumentCaptureSessionForm.new(document_capture_session_uuid).submit
 
       analytics.track_event(FLOW_STATE_MACHINE_SETTINGS[:analytics_id], result.to_h)
       process_result(result)
