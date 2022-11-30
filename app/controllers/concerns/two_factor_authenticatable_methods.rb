@@ -160,7 +160,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def attempts_remaining_warning
-    if attempts_count_remaining < SHOW_ATTEMPTS_WARNING_COUNT
+    if attempts_count_remaining < IdentityConfig.store.minimum_attempts_remaining_warning_count
       t('two_factor_authentication.attempt_remaining_warning_html', count: attempts_count_remaining)  
     end
   end
