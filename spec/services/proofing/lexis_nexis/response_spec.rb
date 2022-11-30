@@ -86,7 +86,7 @@ describe Proofing::LexisNexis::Response do
       it 'raises a JSON parse error with a generic error message' do
         expect { subject.response_body }.to raise_error(
           JSON::ParserError,
-          error_message = 'An error occured parsing the response body JSON, status=200 content_type='
+          'An error occured parsing the response body JSON, status=200 content_type=',
         )
       end
     end
