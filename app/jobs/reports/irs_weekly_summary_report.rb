@@ -36,7 +36,7 @@ module Reports
 
     # The total number of users registered with Login.gov 
     def query_system_demand
-      User.where('created_at <= ?', report_date).count
+      User.where('created_at <= ?', report_date.beginning_of_day).count
     end
 
     def generate_csv
