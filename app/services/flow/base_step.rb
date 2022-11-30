@@ -1,6 +1,7 @@
 module Flow
   class BaseStep
     include Rails.application.routes.url_helpers
+    include Failure
 
     def initialize(flow, name)
       @flow = flow
@@ -49,13 +50,6 @@ module Flow
 
     def form_submit
       FormResponse.new(success: true)
-    end
-
-    def failure(message, extra = nil)
-      flow_session[:error_message] = message
-      form_response_params = { success: false, errors: { message: message } }
-      form_response_params[:extra] = extra unless extra.nil?
-      FormResponse.new(**form_response_params)
     end
 
     def flow_params

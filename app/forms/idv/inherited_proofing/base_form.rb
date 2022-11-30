@@ -11,23 +11,9 @@ module Idv
         def namespaced_model_name
           self.to_s.gsub('::', '')
         end
-
-        def fields
-          @fields ||= required_fields + optional_fields
-        end
-
-        def required_fields
-          raise NotImplementedError,
-                'Override this method and return an Array of required field names as Symbols'
-        end
-
-        def optional_fields
-          raise NotImplementedError,
-                'Override this method and return an Array of optional field names as Symbols'
-        end
       end
 
-      private_class_method :namespaced_model_name, :required_fields, :optional_fields
+      private_class_method :namespaced_model_name
 
       attr_reader :payload_hash
 
@@ -35,16 +21,12 @@ module Idv
         raise ArgumentError, 'payload_hash is blank?' if payload_hash.blank?
         raise ArgumentError, 'payload_hash is not a Hash' unless payload_hash.is_a? Hash
 
-        self.class.attr_accessor(*self.class.fields)
-
         @payload_hash = payload_hash.dup
 
         populate_field_data
       end
 
       def submit
-        validate
-
         FormResponse.new(
           success: valid?,
           errors: errors,

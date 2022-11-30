@@ -22,7 +22,7 @@ class GpoConfirmationExporter
   def make_psv(csv)
     csv << make_header_row(confirmations.size)
     confirmations.each do |confirmation|
-      csv << make_entry_row(confirmation.entry)
+      csv << make_entry_row(confirmation)
     end
   end
 
@@ -30,9 +30,11 @@ class GpoConfirmationExporter
     [HEADER_ROW_ID, num_entries]
   end
 
-  def make_entry_row(entry)
+  def make_entry_row(confirmation)
     now = current_date
-    due = now + OTP_MAX_VALID_DAYS.days
+    due = confirmation.created_at + OTP_MAX_VALID_DAYS.days
+
+    entry = confirmation.entry
     service_provider = ServiceProvider.find_by(issuer: entry[:issuer])
 
     [
@@ -52,7 +54,7 @@ class GpoConfirmationExporter
   end
 
   def format_date(date)
-    "#{date.strftime('%-B %-e')}, #{date.year}"
+    date.in_time_zone('UTC').strftime('%-B %-e, %Y')
   end
 
   def current_date
