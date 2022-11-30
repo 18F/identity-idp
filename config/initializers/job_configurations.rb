@@ -121,6 +121,12 @@ else
         cron: cron_1h,
         args: -> { [Time.zone.now - 1.hour] },
       },
+      # Weekly IRS report returning system demand
+      irs_weekly_summary_report: {
+        class: 'IrsWeeklySummaryReport',
+        cron: cron_24h,
+        args: -> { [Time.zone.now] },
+      },
     }
   end
   # rubocop:enable Metrics/BlockLength
