@@ -1,5 +1,6 @@
 import { useSandbox } from '@18f/identity-test-helpers';
 import { request } from '.';
+import '@18f/identity-polyfill';
 
 describe('request', () => {
   const sandbox = useSandbox();
