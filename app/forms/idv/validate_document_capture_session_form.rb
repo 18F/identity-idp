@@ -1,5 +1,5 @@
 module Idv
-  class ValidateDocumentCaptureSession
+  class ValidateDocumentCaptureSessionForm
     include ActiveModel::Model
 
     validates :session_uuid, presence: { message: 'session missing' }
@@ -10,7 +10,7 @@ module Idv
       @session_uuid = session_uuid
     end
 
-    def call
+    def submit
       @success = valid?
 
       FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
