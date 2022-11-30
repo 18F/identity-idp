@@ -285,7 +285,7 @@ set_remember_device_session_expiration: false
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
 show_account_recovery_recovery_options: false
-system_demand_report_configs: '{"email": "partners+data@login.gov"}'
+system_demand_report_email: 'foo@bar.com'
 test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false

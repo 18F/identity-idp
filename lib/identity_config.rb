@@ -382,7 +382,7 @@ class IdentityConfig
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:state_tracking_enabled, type: :boolean)
-    config.add(:system_demand_report_configs, type: :json)
+    config.add(:system_demand_report_email, type: :string)
     config.add(:telephony_adapter, type: :string)
     config.add(:test_ssn_allowed_list, type: :comma_separated_string_list)
     config.add(:totp_code_interval, type: :integer)
