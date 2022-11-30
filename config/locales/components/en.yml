@@ -39,4 +39,4 @@ en:
     print_button:
       label: Print
     troubleshooting_options:
-      default_heading: 'Having trouble? Here’s what you can do:'
+      default_heading: 'Additional troubleshooting options:'

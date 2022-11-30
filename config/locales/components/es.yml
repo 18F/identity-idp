@@ -39,4 +39,4 @@ es:
     print_button:
       label: Imprima
     troubleshooting_options:
-      default_heading: '¿Tiene alguna dificultad? Esto es lo que puede hacer:'
+      default_heading: 'Opciones adicionales para solución de problemas:'

@@ -21,14 +21,7 @@ function InPersonCallToAction() {
       <h2 id={`in-person-cta-heading-${instanceId}`} className="margin-y-2">
         {t('in_person_proofing.headings.cta')}
       </h2>
-      <p>
-        <strong>
-          {formatHTML(t('in_person_proofing.body.cta.prompt'), {
-            wbr: 'wbr',
-          })}
-        </strong>{' '}
-        {t('in_person_proofing.body.cta.prompt_detail')}
-      </p>
+      <p>{t('in_person_proofing.body.cta.prompt_detail')}</p>
       <Button
         isBig
         isOutline

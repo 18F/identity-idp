@@ -25,11 +25,10 @@ fr:
         speak_to_associate: Vous pouvez voir n’importe quel associé au guichet de vente
           au détail pour vérifier votre identité.
       cta:
-        button: Trouver un bureau de poste
+        button: Vérifiez votre identité en personne
         new_feature: Nouvelle fonctionnalité
-        prompt: 'Êtes-vous situé près de Washington, D.C. <wbr/>ou Baltimore, MD?'
-        prompt_detail: Vous pourriez être en mesure de vérifier votre identité en
-          personne dans un bureau de poste près de chez vous.
+        prompt_detail: Si vous êtes situé près de Washington D.C. ou de Baltimore (Maryland),
+         vous pourrez peut-être vérifier votre identité en personne dans certains bureaux de poste.
       location:
         location_button: Sélectionner
         location_step_about: Si vous ne parvenez pas à ajouter votre pièce d’identité,
@@ -96,7 +95,7 @@ fr:
     headings:
       address: Entrez votre adresse actuelle
       barcode: Vous êtes prêt à vérifier votre identité en personne
-      cta: Vérifiez votre identité en personne
+      cta: Vous avez des difficultés à vérifier votre identité en ligne?
       location: Sélectionnez un lieu pour vérifier votre identité
       prepare: Vérifiez votre identité en personne
       state_id: Saisissez les informations figurant sur votre document d’identité

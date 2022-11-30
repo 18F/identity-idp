@@ -39,4 +39,4 @@ fr:
     print_button:
       label: Imprimer
     troubleshooting_options:
-      default_heading: 'Des difficultés? Voici ce que vous pouvez faire:'
+      default_heading: 'Options de dépannage supplémentaires:'
