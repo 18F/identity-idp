@@ -1,7 +1,10 @@
 import { trackEvent } from '@18f/identity-analytics';
 import { tooltip } from 'identity-style-guide';
 
-interface PasswordToggleLabels {}
+interface PasswordToggleLabels {
+  shown: string;
+  hidden: string;
+}
 
 class PasswordToggleElement extends HTMLElement {
   #isVisible: boolean = false;
@@ -13,7 +16,10 @@ class PasswordToggleElement extends HTMLElement {
   }
 
   get labels(): PasswordToggleLabels {
-    return {};
+    return {
+      shown: this.getAttribute('toggle-label-shown')!,
+      hidden: this.getAttribute('toggle-label-hidden')!,
+    };
   }
 
   get input(): HTMLInputElement {
@@ -46,9 +52,14 @@ class PasswordToggleElement extends HTMLElement {
     this.toggle.setAttribute('aria-checked', this.isVisible ? 'true' : 'false');
   }
 
+  announce() {
+    this.announcer.textContent = this.isVisible ? this.labels.shown : this.labels.hidden;
+  }
+
   onToggleClick() {
     this.isVisible = !this.isVisible;
     this.setInputType();
+    this.announce();
     trackEvent('Show Password button clicked', { path: window.location.pathname });
   }
 }

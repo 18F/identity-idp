@@ -35,6 +35,8 @@ en:
       label: Password
       toggle_label:
         show: Show password
+        shown: The password field is now visible
+        hidden: The password field is now hidden
     phone_input:
       country_code_label: Country code
     print_button:
