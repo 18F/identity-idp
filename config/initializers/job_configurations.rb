@@ -132,6 +132,7 @@ else
         class: 'IrsWeeklySummaryReport',
         cron: cron_24h,
         args: -> { [Time.zone.now] },
+      },
       # Backfill service_provider_identities last_consented_at
       identities_backfill_job: {
         class: 'IdentitiesBackfillJob',
