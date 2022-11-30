@@ -20,7 +20,9 @@ describe('request', () => {
       );
     });
 
-    await request('https://example.com', {}, mockGetCSRF);
+    await request('https://example.com', {
+      csrf: mockGetCSRF,
+    });
   });
   it('works even if the CSRF token is not found on the page', async () => {
     sandbox.stub(window, 'fetch').callsFake(() =>
@@ -31,7 +33,9 @@ describe('request', () => {
       ),
     );
 
-    await request('https://example.com', {}, () => undefined);
+    await request('https://example.com', {
+      csrf: () => undefined,
+    });
   });
   it('prefers the json prop if both json and body props are provided', async () => {
     const preferredData = { prefered: 'data' };

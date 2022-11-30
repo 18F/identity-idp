@@ -1,3 +1,5 @@
+type CSRFGetter = () => string | undefined;
+
 interface RequestOptions extends RequestInit {
   /**
    * Either boolean or unstringified POJO to send with the request as JSON. Defaults to true.
@@ -7,19 +9,20 @@ interface RequestOptions extends RequestInit {
   /**
    * Whether to include CSRF token in the request. Defaults to true.
    */
-  csrf?: boolean;
+  csrf?: boolean | CSRFGetter;
 }
-export const request = async (
-  url: string,
-  options: Partial<RequestOptions> = {},
-  getCSRFToken = () => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content,
-) => {
+
+const getCSRFToken = () =>
+  document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content;
+
+export const request = async (url: string, options: Partial<RequestOptions> = {}) => {
   const { csrf = true, json = true, ...fetchOptions } = options;
   let { body, headers } = fetchOptions;
   headers = new Headers(headers);
 
   if (csrf) {
-    const csrfToken = getCSRFToken();
+    const csrfToken = typeof csrf !== 'boolean' ? csrf() : getCSRFToken();
+
     if (csrfToken) {
       headers.set('X-CSRF-Token', csrfToken);
     }
