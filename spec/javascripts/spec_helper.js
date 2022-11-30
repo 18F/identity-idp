@@ -35,6 +35,7 @@ Object.defineProperty(global.window.Image.prototype, 'src', {
     this.onload();
   },
 });
+global.window.Response = Response;
 
 useCleanDOM(dom);
 useConsoleLogSpy();
@@ -42,5 +43,3 @@ useConsoleLogSpy();
 // Remove after upgrading to React 18
 // See: https://github.com/facebook/react/issues/20756#issuecomment-780945678
 delete global.MessageChannel;
-
-global.window.Response = Response;

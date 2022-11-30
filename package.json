@@ -85,7 +85,7 @@
     "svgo": "^2.8.0",
     "typescript": "^4.8.4",
     "webpack-dev-server": "^4.11.1",
-    "whatwg-fetch": "^3.6.2"
+    "whatwg-fetch": "^3.4.0"
   },
   "resolutions": {
     "minimist": "1.2.6"
