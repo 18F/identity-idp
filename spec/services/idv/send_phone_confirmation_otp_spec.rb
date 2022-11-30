@@ -6,7 +6,7 @@ describe Idv::SendPhoneConfirmationOtp do
   let(:delivery_preference) { :sms }
   let(:otp_code) { '777777' }
   let(:user_phone_confirmation_session) do
-    PhoneConfirmation::ConfirmationSession.new(
+    Idv::PhoneConfirmationSession.new(
       code: '123456',
       phone: phone,
       sent_at: Time.zone.now,
@@ -26,9 +26,7 @@ describe Idv::SendPhoneConfirmationOtp do
     # Setup Idv::Session
     idv_session.user_phone_confirmation_session = user_phone_confirmation_session
 
-    # Mock PhoneConfirmation::CodeGenerator
-    allow(PhoneConfirmation::CodeGenerator).to receive(:call).
-      and_return(otp_code)
+    allow(Idv::PhoneConfirmationSession).to receive(:generate_code).and_return(otp_code)
 
     # Mock OtpRateLimiter
     allow(OtpRateLimiter).to receive(:new).with(user: user, phone: phone, phone_confirmed: true).
