@@ -34,6 +34,7 @@ RSpec.describe 'proofing components' do
         proofing_components = user.active_profile.proofing_components
         expect(proofing_components['document_check']).to eq('mock')
         expect(proofing_components['document_type']).to eq('state_id')
+        expect(proofing_components['inherited_proofing_proofed']).to eq(false)
       end
     end
 
@@ -45,6 +46,7 @@ RSpec.describe 'proofing components' do
         proofing_components = user.active_profile.proofing_components
         expect(proofing_components['document_check']).to eq('mock')
         expect(proofing_components['document_type']).to eq('state_id')
+        expect(proofing_components['inherited_proofing_proofed']).to eq(false)
       end
     end
   end

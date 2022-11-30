@@ -11,11 +11,12 @@ feature 'inherited proofing verify info' do
     allow_any_instance_of(Idv::InheritedProofingController).to \
       receive(:va_inherited_proofing_auth_code).and_return auth_code
 
-    sign_in_and_2fa_user
+    sign_in_and_2fa_user user
     complete_inherited_proofing_steps_before_verify_step
   end
 
   let(:auth_code) { Idv::InheritedProofing::Va::Mocks::Service::VALID_AUTH_CODE }
+  let(:user) { user_with_2fa }
 
   describe 'page content' do
     it 'renders the Continue button' do
@@ -49,6 +50,19 @@ feature 'inherited proofing verify info' do
     it "can display the user's ssn when selected" do
       check 'Show Social Security number'
       expect(page).to have_text '123-45-6789'
+    end
+  end
+
+  describe 'user proofing components' do
+    before do
+      click_on t('inherited_proofing.buttons.continue')
+      expect(page).to have_current_path(idv_phone_path)
+    end
+
+    context 'when the user verifies their PII' do
+      it 'indicates the user has been proofed using inherited proofing' do
+        expect(user.proofing_component['inherited_proofing_proofed']).to eq true
+      end
     end
   end
 end
