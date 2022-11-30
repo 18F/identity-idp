@@ -61,6 +61,7 @@ class DocumentProofingJob < ApplicationJob
 
     throttle = Throttle.new(user: user, throttle_type: :idv_doc_auth)
 
+    # ToDo: Update this with Lexis Nexis workflow
     analytics.idv_doc_auth_submitted_image_upload_vendor(
       **proofer_result.to_h.merge(
         state: proofer_result.pii_from_doc[:state],
@@ -70,6 +71,7 @@ class DocumentProofingJob < ApplicationJob
         remaining_attempts: throttle.remaining_count,
         client_image_metrics: image_metadata,
         flow_path: flow_path,
+        vendor_workflow: image_source.image_metadata.to_s,
       ).merge(analytics_data).
         merge(native_camera_ab_test_data(dcs)),
     )

@@ -1,5 +1,7 @@
 require 'rails_helper'
 
+# ToDo: review and update for logging Lexis Nexis workflow
+
 describe Idv::ImageUploadsController do
   let(:document_filename_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}\.[a-z]+$/ }
   let(:base64_regex) { /^[a-z0-9+\/]+=*$/i }
@@ -289,6 +291,7 @@ describe Idv::ImageUploadsController do
           },
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+          vendor_workflow: 'something',
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -437,6 +440,7 @@ describe Idv::ImageUploadsController do
               },
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
+              vendor_workflow: 'something',
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -515,6 +519,7 @@ describe Idv::ImageUploadsController do
               },
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
+              vendor_workflow: 'something',
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -593,6 +598,7 @@ describe Idv::ImageUploadsController do
               },
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
+              vendor_workflow: 'something',
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -697,6 +703,7 @@ describe Idv::ImageUploadsController do
           doc_auth_result: nil,
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+          vendor_workflow: 'something',
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -781,6 +788,7 @@ describe Idv::ImageUploadsController do
           },
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+          vendor_workflow: 'something',
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(

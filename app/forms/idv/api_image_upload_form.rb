@@ -202,11 +202,16 @@ module Idv
     def update_analytics(client_response)
       add_costs(client_response)
       update_funnel(client_response)
+
+      puts "@doc_auth_client: #{doc_auth_client}"
+
+      # ToDo: Update this with Lexis Nexis workflow
       analytics.idv_doc_auth_submitted_image_upload_vendor(
         **client_response.to_h.merge(
           client_image_metrics: image_metadata,
           async: false,
           flow_path: params[:flow_path],
+          vendor_workflow: image_source.to_s,
         ).merge(native_camera_ab_test_data, acuant_sdk_upgrade_ab_test_data),
       )
       pii_from_doc = client_response.pii_from_doc || {}

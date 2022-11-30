@@ -736,8 +736,10 @@ module AnalyticsEvents
     track_event('IdV: doc auth document_capture visited', **extra)
   end
 
-  def idv_doc_auth_document_capture_submitted(**extra)
-    track_event('IdV: doc auth document_capture submitted', **extra)
+  def idv_doc_auth_document_capture_submitted(workflow_cropping: nil, **extra)
+    track_event('IdV: doc auth document_capture submitted',
+                workflow_cropping: workflow_cropping,
+                **extra)
   end
 
   def idv_doc_auth_email_sent_visited(**extra)
@@ -853,6 +855,7 @@ module AnalyticsEvents
     flow_path:,
     billed: nil,
     doc_auth_result: nil,
+    vendor_workflow: nil,
     **extra
   )
     track_event(
@@ -869,6 +872,7 @@ module AnalyticsEvents
       remaining_attempts: remaining_attempts,
       client_image_metrics: client_image_metrics,
       flow_path: flow_path,
+      vendor_workflow: vendor_workflow,
       **extra,
     )
   end
