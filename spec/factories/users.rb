@@ -199,6 +199,15 @@ FactoryBot.define do
       end
     end
 
+    trait :proofed_with_gpo do
+      proofed
+      after :build do | user |
+        profile = user.active_profile
+        gpo_code = create(:gpo_confirmation_code)
+        profile.gpo_confirmation_codes << gpo_code
+      end
+    end
+
     trait :deactivated_password_reset_profile do
       signed_up
 
