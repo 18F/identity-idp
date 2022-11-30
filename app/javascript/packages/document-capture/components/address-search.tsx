@@ -26,7 +26,7 @@ function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
       json: { address: unvalidatedAddressInput },
     });
 
-    const [bestMatchedAddress] = addressCandidates;
+    const bestMatchedAddress = addressCandidates[0];
     setAddressQuery(bestMatchedAddress);
     onAddressFound(bestMatchedAddress);
   }, [unvalidatedAddressInput]);

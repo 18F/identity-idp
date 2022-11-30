@@ -59,7 +59,7 @@ describe('InPersonLocationStep', () => {
 
   it('allows search by address when enabled', async () => {
     const { findByText, findByLabelText } = render(
-      <InPersonContext.Provider value={{ arcgisSearchEnabled: 'true' }}>
+      <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
         <InPersonLocationStep {...DEFAULT_PROPS} />
       </InPersonContext.Provider>,
     );
