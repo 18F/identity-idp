@@ -27,7 +27,8 @@ es:
         button: Verifique su identificación en persona
         new_feature: Nuevo artículo
         prompt_detail: Si usted está ubicado cerca de Washington D.C. o Baltimore, MD,
-         puede verificar su identificación en persona en las oficinas de correos seleccionadas.
+          puede verificar su identificación en persona en las oficinas de
+          correos seleccionadas.
       location:
         location_button: Seleccionar
         location_step_about: Si tiene problemas para añadir su cédula de identidad, es

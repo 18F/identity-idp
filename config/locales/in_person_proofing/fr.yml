@@ -27,8 +27,9 @@ fr:
       cta:
         button: Vérifiez votre identité en personne
         new_feature: Nouvelle fonctionnalité
-        prompt_detail: Si vous êtes situé près de Washington D.C. ou de Baltimore (Maryland),
-         vous pourrez peut-être vérifier votre identité en personne dans certains bureaux de poste.
+        prompt_detail: Si vous êtes situé près de Washington D.C. ou de Baltimore
+          (Maryland), vous pourrez peut-être vérifier votre identité en personne
+          dans certains bureaux de poste.
       location:
         location_button: Sélectionner
         location_step_about: Si vous ne parvenez pas à ajouter votre pièce d’identité,
