@@ -35,7 +35,6 @@ en:
       label: Password
       toggle_label:
         show: Show password
-        hide: Hide password
     phone_input:
       country_code_label: Country code
     print_button:

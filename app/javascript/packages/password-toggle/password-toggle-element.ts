@@ -1,16 +1,7 @@
 import { trackEvent } from '@18f/identity-analytics';
 import { tooltip } from 'identity-style-guide';
 
-interface PasswordToggleLabels {
-  show: string;
-  hide: string;
-}
-
-function replaceHashFragment(url: string, nextHashFragment: string): string {
-  const parsedURL = new URL(url);
-  parsedURL.hash = nextHashFragment;
-  return parsedURL.toString();
-}
+interface PasswordToggleLabels {}
 
 class PasswordToggleElement extends HTMLElement {
   #isVisible: boolean = false;
@@ -22,10 +13,7 @@ class PasswordToggleElement extends HTMLElement {
   }
 
   get labels(): PasswordToggleLabels {
-    return {
-      show: this.getAttribute('toggle-label-show')!,
-      hide: this.getAttribute('toggle-label-hide')!,
-    };
+    return {};
   }
 
   get input(): HTMLInputElement {
@@ -36,8 +24,8 @@ class PasswordToggleElement extends HTMLElement {
     return this.querySelector('.password-toggle__toggle')!;
   }
 
-  get tooltip(): HTMLElement {
-    return this.querySelector('.usa-tooltip__body')!;
+  get announcer(): HTMLElement {
+    return this.querySelector('.password-toggle__announcer')!;
   }
 
   get icon(): SVGUseElement {
@@ -55,16 +43,12 @@ class PasswordToggleElement extends HTMLElement {
 
   setInputType() {
     this.input.type = this.isVisible ? 'text' : 'password';
-    this.tooltip.textContent = this.isVisible ? this.labels.hide : this.labels.show;
-    this.icon.href.baseVal = replaceHashFragment(
-      this.icon.href.baseVal,
-      this.isVisible ? 'visibility_off' : 'visibility',
-    );
+    this.toggle.setAttribute('aria-checked', this.isVisible ? 'true' : 'false');
   }
 
   onToggleClick() {
-    this.setInputType();
     this.isVisible = !this.isVisible;
+    this.setInputType();
     trackEvent('Show Password button clicked', { path: window.location.pathname });
   }
 }

@@ -16,10 +16,7 @@ class PasswordToggleComponent < BaseComponent
   end
 
   def visibility_label_attributes
-    {
-      'toggle-label-show': t('components.password_toggle.toggle_label.show'),
-      'toggle-label-hide': t('components.password_toggle.toggle_label.hide'),
-    }
+    {}
   end
 
   def toggle_id
