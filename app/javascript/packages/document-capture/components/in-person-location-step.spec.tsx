@@ -6,6 +6,8 @@ import userEvent from '@testing-library/user-event';
 import { useSandbox } from '@18f/identity-test-helpers';
 import AnalyticsContext, { AnalyticsContextProvider } from '../context/analytics';
 import InPersonLocationStep, { LOCATIONS_URL } from './in-person-location-step';
+import { ADDRESS_SEARCH_URL } from './address-search';
+import AppContext from '../context/app';
 
 describe('InPersonLocationStep', () => {
   const DEFAULT_PROPS = { toPreviousStep() {}, onChange() {}, value: {} };
@@ -18,6 +20,20 @@ describe('InPersonLocationStep', () => {
       .withArgs(LOCATIONS_URL)
       .resolves({
         json: () => Promise.resolve([{ name: 'Baltimore' }]),
+      } as Response)
+      .withArgs(ADDRESS_SEARCH_URL)
+      .resolves({
+        json: () =>
+          Promise.resolve([
+            {
+              address: '100 Main St, South Fulton, Tennessee, 38257',
+              location: { latitude: 36.501462000000004, longitude: -88.875981 },
+              street_address: '100 Main St',
+              city: 'South Fulton',
+              state: 'TN',
+              zip_code: '38257',
+            },
+          ]),
       } as Response);
   });
 
@@ -39,5 +55,24 @@ describe('InPersonLocationStep', () => {
     await userEvent.click(button);
 
     await findByText('{"selected_location":"Baltimore"}');
+  });
+
+  it('allows search by address when enabled', async () => {
+    const { findByText, findByLabelText } = render(
+      <AppContext.Provider value={{ arcgisSearchEnabled: 'true', appName: '' }}>
+        <InPersonLocationStep {...DEFAULT_PROPS} />
+      </AppContext.Provider>,
+    );
+
+    await userEvent.type(await findByLabelText('Search for an address'), '100 main');
+    await userEvent.click(await findByText('Search'));
+    await findByText('100 Main St, South Fulton, Tennessee, 38257');
+    expect(window.fetch).to.have.been.calledWith(
+      LOCATIONS_URL,
+      sandbox.match({
+        body: '{"address":{"street_address":"100 Main St","city":"South Fulton","state":"TN","zip_code":"38257"}}',
+        method: 'post',
+      }),
+    );
   });
 });

@@ -126,10 +126,14 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     cancelUrl: cancelURL,
     idvInPersonUrl: inPersonURL,
     securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
+    arcgisSearchEnabled,
   } = appRoot.dataset as DOMStringMap & AppRootData;
 
   const App = composeComponents(
-    [AppContext.Provider, { value: { appName } }],
+    [
+      AppContext.Provider,
+      { value: { appName, arcgisSearchEnabled: arcgisSearchEnabled === 'true' } },
+    ],
     [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
     [DeviceContext.Provider, { value: device }],
     [AnalyticsContextProvider, { trackEvent }],

@@ -1,10 +1,13 @@
 import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { PageHeading, SpinnerDots } from '@18f/identity-components';
+import { request } from '@18f/identity-request';
 import BackButton from './back-button';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
 import AnalyticsContext from '../context/analytics';
+import AddressSearch from './address-search';
+import AppContext from '../context/app';
 
 interface PostOffice {
   address: string;
@@ -29,64 +32,20 @@ interface FormattedLocation {
   sundayHours: string;
   weekdayHours: string;
 }
-
-interface RequestOptions {
-  /**
-   * Whether to send the request as a JSON request. Defaults to true.
-   */
-  json?: boolean;
-
-  /**
-   * Whether to include CSRF token in the request. Defaults to true.
-   */
-  csrf?: boolean;
-
-  /**
-   * Optional. HTTP verb used. Defaults to GET.
-   */
-  method?: string;
+interface LocationQuery {
+  streetAddress: string;
+  city: string;
+  state: string;
+  zipCode: string;
 }
-
-const DEFAULT_FETCH_OPTIONS = { csrf: true, json: true };
-
-const getCSRFToken = () =>
-  document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content;
-
-const request = async (
-  url: string,
-  body: BodyInit | object,
-  options: Partial<RequestOptions> = {},
-) => {
-  const headers: HeadersInit = {};
-  const mergedOptions: Partial<RequestOptions> = {
-    ...DEFAULT_FETCH_OPTIONS,
-    ...options,
-  };
-
-  if (mergedOptions.csrf) {
-    const csrf = getCSRFToken();
-    if (csrf) {
-      headers['X-CSRF-Token'] = csrf;
-    }
-  }
-
-  if (mergedOptions.json) {
-    headers['Content-Type'] = 'application/json';
-    body = JSON.stringify(body);
-  }
-
-  const response = await window.fetch(url, {
-    method: mergedOptions.method,
-    headers,
-    body: body as BodyInit,
-  });
-
-  return mergedOptions.json ? response.json() : response.text();
-};
 
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
 
-const getUspsLocations = () => request(LOCATIONS_URL, {}, { method: 'post' });
+const getUspsLocations = (address) =>
+  request(LOCATIONS_URL, {
+    method: 'post',
+    json: { address },
+  });
 
 const formatLocation = (postOffices: PostOffice[]) => {
   const formattedLocations = [] as FormattedLocation[];
@@ -124,10 +83,12 @@ const prepToSend = (location: object) => {
 function InPersonLocationStep({ onChange, toPreviousStep }) {
   const { t } = useI18n();
   const [locationData, setLocationData] = useState([] as FormattedLocation[]);
+  const [foundAddress, setFoundAddress] = useState({} as LocationQuery);
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
+  const { arcgisSearchEnabled } = useContext(AppContext);
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
@@ -156,7 +117,8 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
       }
       const selected = prepToSend(selectedLocation);
       setInProgress(true);
-      await request(LOCATIONS_URL, selected, {
+      await request(LOCATIONS_URL, {
+        json: selected,
         method: 'PUT',
       })
         .then(() => {
@@ -181,26 +143,35 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
     [locationData, inProgress],
   );
 
+  const handleFoundAddress = useCallback((address) => {
+    setFoundAddress({
+      streetAddress: address.street_address,
+      city: address.city,
+      state: address.state,
+      zipCode: address.zip_code,
+    });
+  }, []);
+
   useEffect(() => {
-    let mounted = true;
+    let didCancel = false;
     (async () => {
       try {
-        const fetchedLocations = await getUspsLocations();
+        const fetchedLocations = await getUspsLocations(prepToSend(foundAddress));
 
-        if (mounted) {
+        if (!didCancel) {
           const formattedLocations = formatLocation(fetchedLocations);
           setLocationData(formattedLocations);
         }
       } finally {
-        if (mounted) {
+        if (!didCancel) {
           setIsLoadingComplete(true);
         }
       }
     })();
     return () => {
-      mounted = false;
+      didCancel = true;
     };
-  }, []);
+  }, [foundAddress]);
 
   let locationsContent: React.ReactNode;
   if (!isLoadingComplete) {
@@ -230,6 +201,7 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.location')}</PageHeading>
+      {arcgisSearchEnabled && <AddressSearch onAddressFound={handleFoundAddress} />}
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
       {locationsContent}
       <BackButton onClick={toPreviousStep} />
