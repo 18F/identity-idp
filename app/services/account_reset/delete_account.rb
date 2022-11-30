@@ -43,7 +43,7 @@ module AccountReset
 
     def destroy_user
       ActiveRecord::Base.transaction do
-        Db::DeletedUser::Create.call(user.id)
+        DeletedUser.create_from_user(user)
         user.destroy!
       end
     end
