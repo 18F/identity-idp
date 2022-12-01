@@ -16,7 +16,7 @@ class OtpVerificationForm
   def submit
     success = valid?
 
-    user.clear_direct_otp
+    user.clear_direct_otp if success
 
     FormResponse.new(
       success: success,

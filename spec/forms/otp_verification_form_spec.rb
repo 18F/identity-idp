@@ -17,12 +17,6 @@ RSpec.describe OtpVerificationForm do
   describe '#submit' do
     subject(:result) { form.submit }
 
-    it 'clears user pending OTP' do
-      expect(user).to receive(:clear_direct_otp)
-
-      result
-    end
-
     context 'when the code is correct' do
       let(:code) { '123456' }
       let(:user_otp) { '123456' }
@@ -32,6 +26,12 @@ RSpec.describe OtpVerificationForm do
           success: true,
           multi_factor_auth_method: 'otp_code',
         )
+      end
+
+      it 'clears user pending OTP' do
+        expect(user).to receive(:clear_direct_otp)
+
+        result
       end
     end
 
@@ -48,6 +48,12 @@ RSpec.describe OtpVerificationForm do
           multi_factor_auth_method: 'otp_code',
         )
       end
+
+      it 'does not clear user pending OTP' do
+        expect(user).not_to receive(:clear_direct_otp)
+
+        result
+      end
     end
 
     context 'when the code is too short' do
@@ -63,6 +69,12 @@ RSpec.describe OtpVerificationForm do
           multi_factor_auth_method: 'otp_code',
         )
       end
+
+      it 'does not clear user pending OTP' do
+        expect(user).not_to receive(:clear_direct_otp)
+
+        result
+      end
     end
 
     context 'when the code is not numeric' do
@@ -77,6 +89,12 @@ RSpec.describe OtpVerificationForm do
           },
           multi_factor_auth_method: 'otp_code',
         )
+      end
+
+      it 'does not clear user pending OTP' do
+        expect(user).not_to receive(:clear_direct_otp)
+
+        result
       end
     end
 
@@ -95,6 +113,12 @@ RSpec.describe OtpVerificationForm do
           },
           multi_factor_auth_method: 'otp_code',
         )
+      end
+
+      it 'does not clear user pending OTP' do
+        expect(user).not_to receive(:clear_direct_otp)
+
+        result
       end
     end
   end
