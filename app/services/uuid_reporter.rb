@@ -100,6 +100,7 @@ class UuidReporter
     # Note that we use two separate queries since the inner joins don't take
     # advantage of the composite indexes and are highly non-performant.
     actual_user_ids = emails_to_user_ids.values.select(&:present?)
+    # mattw: We likely want to change this, but this breaks tests a lot.
     user_ids_with_identities = ServiceProviderIdentity.
       where(user_id: actual_user_ids, service_provider: issuers).
       pluck(:user_id)

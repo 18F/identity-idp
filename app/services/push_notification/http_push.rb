@@ -19,6 +19,8 @@ module PushNotification
     def deliver
       return unless IdentityConfig.store.push_notifications_enabled
 
+      # mattw: I think we should change this but this breaks tests, possibly because
+      # the test calls user.identities and we need to change that still?
       event.user.
         service_providers.
         merge(ServiceProviderIdentity.not_deleted).
@@ -91,7 +93,8 @@ module PushNotification
         user_id: event.user.id,
         agency_id: service_provider.agency_id,
       )&.uuid ||
-        ServiceProviderIdentity.find_by(
+        # This changes breaks nothing
+        ServiceProviderIdentity.consented.find_by(
           user_id: event.user.id,
           service_provider: service_provider.issuer,
         )&.uuid

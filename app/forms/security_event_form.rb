@@ -279,6 +279,7 @@ class SecurityEventForm
     )
   end
 
+  # Not changing; this is inbound RISC calls
   def identity_from_identity
     ServiceProviderIdentity.find_by(
       uuid: event.dig('subject', 'sub'),

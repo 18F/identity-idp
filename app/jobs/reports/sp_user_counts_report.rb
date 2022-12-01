@@ -57,7 +57,7 @@ module Reports
       transaction_with_timeout do
         track_report_data_event(
           event,
-          count: ServiceProviderIdentity.where(ial: ial).select(:user_id).distinct.count,
+          count: ServiceProviderIdentity.consented.where(ial: ial).select(:user_id).distinct.count,
         )
       end
     end

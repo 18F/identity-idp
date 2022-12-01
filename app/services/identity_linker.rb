@@ -42,6 +42,7 @@ class IdentityLinker
     @identity ||= find_or_create_identity_with_costing
   end
 
+  # mattw: What does this have to do with costing?
   def find_or_create_identity_with_costing
     user.identities.create_or_find_by(service_provider: service_provider.issuer)
   end

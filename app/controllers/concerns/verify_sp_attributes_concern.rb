@@ -27,6 +27,7 @@ module VerifySpAttributesConcern
     )
   end
 
+  # maw: come back and look at this some more.
   def consent_has_expired?(sp_session_identity)
     return false unless sp_session_identity
     return false if sp_session_identity.deleted_at.present?

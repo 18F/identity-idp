@@ -12,11 +12,22 @@ describe DataRequests::LookupUserByUuid do
     end
 
     context 'when an identity exists with the UUID' do
-      it 'returns the user for the identity' do
-        identity = create(:service_provider_identity)
-        uuid = identity.uuid
+      context 'when it has consented for the SP' do
+        it 'returns the user for the identity' do
+          identity = create(:service_provider_identity)
+          uuid = identity.uuid
 
-        expect(described_class.new(uuid).call).to eq(identity.user)
+          expect(described_class.new(uuid).call).to eq(identity.user)
+        end
+      end
+
+      context 'when it has not consented for the SP' do
+        it 'does not return the identity for the user' do
+          identity = create(:service_provider_identity, :non_consented)
+          uuid = identity.uuid
+
+          expect(described_class.new(uuid).call).to be_nil
+        end
       end
     end
 

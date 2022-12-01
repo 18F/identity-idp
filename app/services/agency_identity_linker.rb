@@ -17,6 +17,7 @@ class AgencyIdentityLinker
     ai = AgencyIdentity.where(user: user, agency: agency).take
     return ai if ai.present?
 
+    # mattw: Punting on this one for the moment, because this is where we're going to make our change I think.
     spi = ServiceProviderIdentity.where(
       user: user, service_provider: service_provider.issuer,
     ).take
@@ -32,6 +33,7 @@ class AgencyIdentityLinker
                else
                  { uuid: uuid, service_provider: service_provider }
                end
+    # mattw: Same, but I think we should change htis one
     ServiceProviderIdentity.where(criteria).take
   end
 

@@ -70,6 +70,7 @@ class OpenidConnectTokenForm
   def find_identity_with_code
     return if code.blank? || code.include?("\x00")
 
+    # mattw: I suspect we want to change this one
     @identity = ServiceProviderIdentity.where(session_uuid: code).
       order(updated_at: :desc).first
   end
