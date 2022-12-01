@@ -32,12 +32,12 @@ class OtpVerificationForm
 
   def validate_code_length
     return if code&.size == TwoFactorAuthenticatable::DIRECT_OTP_LENGTH
-    errors.add(:code, :code_incorrect_length, type: :code_incorrect_length)
+    errors.add(:code, :incorrect_length, type: :incorrect_length)
   end
 
   def validate_code_matches_format
     return if code&.match?(/^[0-9]+/i)
-    errors.add(:code, :code_pattern_mismatch, type: :code_pattern_mismatch)
+    errors.add(:code, :pattern_mismatch, type: :pattern_mismatch)
   end
 
   def validate_user_otp_presence
@@ -54,7 +54,7 @@ class OtpVerificationForm
     return if user.direct_otp.present? &&
               code.present? &&
               ActiveSupport::SecurityUtils.secure_compare(user.direct_otp, code)
-    errors.add(:code, :code_incorrect, type: :code_incorrect)
+    errors.add(:code, :incorrect, type: :incorrect)
   end
 
   def otp_expired?

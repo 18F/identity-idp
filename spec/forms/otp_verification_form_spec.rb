@@ -43,7 +43,7 @@ RSpec.describe OtpVerificationForm do
         expect(result.to_h).to eq(
           success: false,
           error_details: {
-            code: [:user_otp_missing, :code_incorrect],
+            code: [:user_otp_missing, :incorrect],
           },
           multi_factor_auth_method: 'otp_code',
         )
@@ -64,7 +64,7 @@ RSpec.describe OtpVerificationForm do
         expect(result.to_h).to eq(
           success: false,
           error_details: {
-            code: [:code_incorrect_length, :code_incorrect],
+            code: [:incorrect_length, :incorrect],
           },
           multi_factor_auth_method: 'otp_code',
         )
@@ -85,7 +85,7 @@ RSpec.describe OtpVerificationForm do
         expect(result.to_h).to eq(
           success: false,
           error_details: {
-            code: [:code_pattern_mismatch, :code_incorrect],
+            code: [:pattern_mismatch, :incorrect],
           },
           multi_factor_auth_method: 'otp_code',
         )
