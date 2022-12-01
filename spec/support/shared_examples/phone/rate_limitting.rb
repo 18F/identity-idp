@@ -48,7 +48,7 @@ shared_examples 'phone rate limitting' do |delivery_method|
       current_count = max_confirmation_attempts - number_of_times
       expect(page).to have_content(
         t(
-          'two_factor_authentication.invalid_otp_html',
+          'two_factor_authentication.invalid_otp',
           count: current_count,
         ),
       )

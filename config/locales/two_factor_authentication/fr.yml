@@ -21,8 +21,10 @@ fr:
     header_text: Entrez votre code à usage unique
     important_alert_icon: Icône d’alerte importante
     invalid_backup_code: Ce code de sauvegarde est invalide.
-    invalid_otp: Ce code à usage unique n’est pas valide. Vous pouvez essayer de le
-      saisir à nouveau ou demander un nouveau code à usage unique.
+    invalid_otp: Ce code à usage unique est invalide. Veuillez réessayer ou demander un nouveau code. 
+    attempt_remaining_warning_html:
+      one: " Il vous reste <strong>%{count} tentative</strong>."
+      other: " Il vous reste <strong>%{count} tentatives</strong>."
     invalid_personal_key: Cette clé personnelle est non valide.
     invalid_piv_cac: Ce PIV/CAC n’a pas fonctionné. Assurez-vous que c’est le bon
       PIV/CAC pour ce compte. Si c’est le cas, votre PIV/CAC, votre NIP ou un

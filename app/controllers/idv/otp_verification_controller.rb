@@ -59,8 +59,7 @@ module Idv
       if decorated_user.locked_out?
         handle_too_many_otp_attempts
       else
-        flash.now[:error] =
-          t('two_factor_authentication.invalid_otp_html', count: attempts_count_remaining)
+        flash.now[:error] = t('two_factor_authentication.invalid_otp')
         render :show
       end
     end

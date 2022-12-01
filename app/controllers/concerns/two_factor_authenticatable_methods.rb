@@ -11,8 +11,6 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     piv_cac: 'piv_cac',
   }.freeze
 
-  SHOW_ATTEMPTS_WARNING_COUNT = 3
-
   private
 
   def authenticate_user
@@ -165,6 +163,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
         'two_factor_authentication.attempt_remaining_warning_html',
         count: attempts_count_remaining,
       )
+    else
+      ''
     end
   end
 

@@ -131,12 +131,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
       end
 
       it 'displays flash error message' do
-        expected_count = IdentityConfig.store.login_otp_confirmation_max_attempts -
-                         subject.current_user.reload.second_factor_attempts_count
-        expect(flash[:error]).to eq t(
-          'two_factor_authentication.invalid_otp_html',
-          count: expected_count,
-        )
+        expect(flash[:error]).to eq t('two_factor_authentication.invalid_otp')
       end
     end
 
@@ -465,12 +460,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           end
 
           it 'displays error flash notice' do
-            expected_count = IdentityConfig.store.login_otp_confirmation_max_attempts -
-                             subject.current_user.reload.second_factor_attempts_count
-            expect(flash[:error]).to eq t(
-              'two_factor_authentication.invalid_otp_html',
-              count: expected_count,
-            )
+            expect(flash[:error]).to eq t('two_factor_authentication.invalid_otp')
           end
 
           it 'tracks an event' do

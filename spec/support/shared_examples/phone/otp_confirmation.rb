@@ -11,7 +11,7 @@ shared_examples 'phone otp confirmation' do |delivery_method|
     visit_otp_confirmation(delivery_method)
     fill_in :code, with: '123456'
     click_submit_default
-    expect(page).to have_content(t('two_factor_authentication.invalid_otp_html', count: 2))
+    expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
     expect_failed_otp_confirmation(delivery_method)
   end
 
@@ -19,7 +19,7 @@ shared_examples 'phone otp confirmation' do |delivery_method|
     visit_otp_confirmation(delivery_method)
     fill_in :code, with: ''
     click_submit_default
-    expect(page).to have_content(t('two_factor_authentication.invalid_otp_html', count: 2))
+    expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
     expect_failed_otp_confirmation(delivery_method)
   end
 
@@ -28,7 +28,7 @@ shared_examples 'phone otp confirmation' do |delivery_method|
     travel_to(11.minutes.from_now) do
       fill_in :code, with: last_otp(delivery_method)
       click_submit_default
-      expect(page).to have_content(t('two_factor_authentication.invalid_otp_html', count: 2))
+      expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
       expect_failed_otp_confirmation(delivery_method)
     end
   end
