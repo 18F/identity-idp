@@ -186,8 +186,8 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
         nativeCameraOnly: nativeCameraOnly === 'true',
       },
     ],
-    [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
     [InPersonContext.Provider, { value: { arcgisSearchEnabled: arcgisSearchEnabled === 'true' } }],
+    [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
   );
 
   render(<App />, appRoot);
