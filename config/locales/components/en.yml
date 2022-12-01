@@ -39,4 +39,5 @@ en:
     print_button:
       label: Print
     troubleshooting_options:
-      default_heading: 'Additional troubleshooting options:'
+      default_heading: 'Having trouble? Here’s what you can do:'
+      ipp_heading: 'Additional troubleshooting options:'

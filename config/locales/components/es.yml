@@ -39,4 +39,5 @@ es:
     print_button:
       label: Imprima
     troubleshooting_options:
-      default_heading: 'Opciones adicionales para solución de problemas:'
+      default_heading: '¿Tiene alguna dificultad? Esto es lo que puede hacer:'
+      ipp_heading: 'Opciones adicionales para solución de problemas:'

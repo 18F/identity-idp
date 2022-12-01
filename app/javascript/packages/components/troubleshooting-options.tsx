@@ -35,7 +35,7 @@ function TroubleshootingOptions({
   return (
     <section className="troubleshooting-options">
       <HeadingTag className="troubleshooting-options__heading">
-        {heading ?? t('components.troubleshooting_options.default_heading')}
+        {heading ?? t('components.troubleshooting_options.ipp_heading')}
       </HeadingTag>
       <ul className="troubleshooting-options__options">
         {options.map(({ url, text, ...extraProps }, index) => (
