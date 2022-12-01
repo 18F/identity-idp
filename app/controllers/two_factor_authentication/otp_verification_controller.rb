@@ -17,7 +17,7 @@ module TwoFactorAuthentication
     end
 
     def create
-      result = OtpVerificationForm.new(current_user, sanitized_otp_code).submit
+      result = otp_verification_form.submit
       post_analytics(result)
       if result.success?
         handle_valid_otp
@@ -27,6 +27,10 @@ module TwoFactorAuthentication
     end
 
     private
+
+    def otp_verification_form
+      OtpVerificationForm.new(current_user, sanitized_otp_code)
+    end
 
     def redirect_if_blank_phone
       return if phone.present?
