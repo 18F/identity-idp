@@ -18,23 +18,26 @@ module Api
     respond_to :json
 
     def create
-      if timestamp 
-        if IdentityConfig.store.irs_attempt_api_aws_s3_enabled 
-          if (IrsAttemptApiLogFile.find_by(requested_time: timestamp))
+      if timestamp
+        if IdentityConfig.store.irs_attempt_api_aws_s3_enabled
+          if IrsAttemptApiLogFile.find_by(requested_time: timestamp)
             log_file_record = IrsAttemptApiLogFile.find_by(requested_time: timestamp)
 
             headers['X-Payload-Key'] = log_file_record.encrypted_key
             headers['X-Payload-IV'] = log_file_record.iv
 
             bucket_name = IdentityConfig.store.irs_attempt_api_bucket_name
-            
+
             s3_client = s3_helper.s3_client
-            requested_data = s3_client.get_object(bucket: bucket_name, key: log_file_record.filename)
+            requested_data = s3_client.get_object(
+              bucket: bucket_name,
+              key: log_file_record.filename,
+            )
 
             send_data requested_data.body, disposition: "filename=#{log_file_record.filename}"
           else
             render json: { status: :not_found, description: 'File not found for Timestamp' },
-               status: :not_found # "404"
+                   status: :not_found # "404"
           end
         else
           result = encrypted_security_event_log_result
@@ -43,7 +46,7 @@ module Api
           headers['X-Payload-IV'] = Base64.strict_encode64(result.iv)
 
           send_data result.encrypted_data,
-                  disposition: "filename=#{result.filename}"
+                    disposition: "filename=#{result.filename}"
         end
       else
         render json: { status: :unprocessable_entity, description: 'Invalid timestamp parameter' },

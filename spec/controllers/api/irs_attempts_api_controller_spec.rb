@@ -10,7 +10,6 @@ RSpec.describe Api::IrsAttemptsApiController do
 
     request.headers['Authorization'] =
       "Bearer #{IdentityConfig.store.irs_attempt_api_csp_id} #{auth_token}"
-
   end
   let(:time) { Time.new(2022, 1, 1, 0, 0, 0, 'Z') }
 
@@ -44,11 +43,11 @@ RSpec.describe Api::IrsAttemptsApiController do
     before do
       Aws.config[:s3] = {
         stub_responses: {
-          get_object: { body: Base64.strict_encode64("{}") }
+          get_object: { body: Base64.strict_encode64('{}') },
         },
       }
     end
-    
+
     context 'with CSRF protection enabled' do
       around do |ex|
         ActionController::Base.allow_forgery_protection = true
@@ -60,7 +59,7 @@ RSpec.describe Api::IrsAttemptsApiController do
       it 'allows authentication without error' do
         request.headers['Authorization'] =
           "Bearer #{IdentityConfig.store.irs_attempt_api_csp_id} #{auth_token}"
-  
+
         post :create, params: { timestamp: time.iso8601 }
 
         expect(response.status).to eq(200)
@@ -71,7 +70,6 @@ RSpec.describe Api::IrsAttemptsApiController do
       let(:timestamp) { '2022-11-08T18:00:00.000Z' }
 
       it 'accepts the timestamp as valid' do
-
         post :create, params: { timestamp: timestamp }
         expect(response.status).to eq(200)
       end
@@ -124,7 +122,6 @@ RSpec.describe Api::IrsAttemptsApiController do
     end
 
     it 'renders encrypted events' do
-
       post :create, params: { timestamp: time.iso8601 }
 
       expect(response).to be_ok
