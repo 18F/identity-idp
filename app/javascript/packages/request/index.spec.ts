@@ -1,6 +1,5 @@
 import { useSandbox } from '@18f/identity-test-helpers';
 import { request } from '.';
-import '@18f/identity-polyfill';
 
 describe('request', () => {
   const sandbox = useSandbox();
@@ -14,7 +13,7 @@ describe('request', () => {
       expect(headers.get('X-CSRF-Token')).to.equal(csrf);
 
       return Promise.resolve(
-        new Response(new Blob([JSON.stringify({})]), {
+        new Response(JSON.stringify({}), {
           status: 200,
         }),
       );
@@ -29,7 +28,7 @@ describe('request', () => {
   it('works even if the CSRF token is not found on the page', async () => {
     sandbox.stub(window, 'fetch').callsFake(() =>
       Promise.resolve(
-        new Response(new Blob([JSON.stringify({})]), {
+        new Response(JSON.stringify({}), {
           status: 200,
         }),
       ),
@@ -45,7 +44,7 @@ describe('request', () => {
       expect(headers.get('X-CSRF-Token')).to.be.null();
 
       return Promise.resolve(
-        new Response(new Blob([JSON.stringify({})]), {
+        new Response(JSON.stringify({}), {
           status: 200,
         }),
       );
@@ -61,7 +60,7 @@ describe('request', () => {
       expect(init.body).to.equal(JSON.stringify(preferredData));
 
       return Promise.resolve(
-        new Response(new Blob([JSON.stringify({})]), {
+        new Response(JSON.stringify({}), {
           status: 200,
         }),
       );
@@ -78,7 +77,7 @@ describe('request', () => {
       expect(init.body).to.equal(JSON.stringify(preferredData));
 
       return Promise.resolve(
-        new Response(new Blob([JSON.stringify({})]), {
+        new Response(JSON.stringify({}), {
           status: 200,
         }),
       );
@@ -94,7 +93,7 @@ describe('request', () => {
       expect(headers.get('Some-Fancy')).to.equal('Header');
 
       return Promise.resolve(
-        new Response(new Blob([JSON.stringify({})]), {
+        new Response(JSON.stringify({}), {
           status: 200,
         }),
       );
@@ -112,7 +111,7 @@ describe('request', () => {
       expect(init.body).to.equal(JSON.stringify(preferredData));
 
       return Promise.resolve(
-        new Response(new Blob([JSON.stringify({})]), {
+        new Response(JSON.stringify({}), {
           status: 200,
         }),
       );
@@ -129,7 +128,7 @@ describe('request', () => {
       expect(init.body).to.equal(JSON.stringify(preferredData));
 
       return Promise.resolve(
-        new Response(new Blob([JSON.stringify({})]), {
+        new Response(JSON.stringify({}), {
           status: 200,
         }),
       );
