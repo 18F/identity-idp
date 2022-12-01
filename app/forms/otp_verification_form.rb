@@ -59,7 +59,7 @@ class OtpVerificationForm
 
   def otp_expired?
     return if user.direct_otp_sent_at.blank?
-    Time.zone.now > user.direct_otp_sent_at + TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
+    (user.direct_otp_sent_at + TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS).past?
   end
 
   def extra_analytics_attributes
