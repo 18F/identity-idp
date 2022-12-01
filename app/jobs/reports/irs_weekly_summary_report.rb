@@ -34,7 +34,7 @@ module Reports
 
     private
 
-    # The total number of users registered with Login.gov 
+    # The total number of users registered with Login.gov
     def query_system_demand
       User.where('created_at <= ?', report_date.beginning_of_day).count
     end
