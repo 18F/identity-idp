@@ -3,12 +3,6 @@ require 'rails_helper'
 feature 'phone otp verification step spec', :js do
   include IdvStepHelper
 
-  let(:max_attempts) { 5 }
-  before do
-    allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts).
-      and_return(max_attempts)
-  end
-
   it 'requires the user to enter the correct otp before continuing' do
     user = user_with_2fa
 
@@ -68,6 +62,8 @@ feature 'phone otp verification step spec', :js do
   end
 
   it 'redirects back to the step with an error if Telephony raises an error on resend' do
+    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(4)
+
     start_idv_from_sp
     complete_idv_steps_before_phone_otp_verification_step
 
