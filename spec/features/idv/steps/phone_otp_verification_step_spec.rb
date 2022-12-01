@@ -3,6 +3,12 @@ require 'rails_helper'
 feature 'phone otp verification step spec', :js do
   include IdvStepHelper
 
+  let(:max_attempts) { 5 }
+  before do
+    allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts).
+      and_return(max_attempts)
+  end
+
   it 'requires the user to enter the correct otp before continuing' do
     user = user_with_2fa
 
@@ -61,9 +67,7 @@ feature 'phone otp verification step spec', :js do
     expect(page).to have_current_path(idv_review_path)
   end
 
-  xit 'redirects back to the step with an error if Telephony raises an error on resend' do
-    # TODO
-    # This test currently results in an account lock. Unclear why that is happening.
+  it 'redirects back to the step with an error if Telephony raises an error on resend' do
     start_idv_from_sp
     complete_idv_steps_before_phone_otp_verification_step
 
@@ -82,6 +86,7 @@ feature 'phone otp verification step spec', :js do
 
     allow(Telephony).to receive(:send_confirmation_otp).and_call_original
 
+    fill_out_phone_form_ok('2342255432')
     choose_idv_otp_delivery_method_sms
 
     calling_area_error = Telephony::InvalidCallingAreaError.new('error message')
