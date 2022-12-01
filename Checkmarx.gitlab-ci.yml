@@ -68,8 +68,10 @@ checkmarx-scan-security-dashboard:
 
 checkmarx-scan:
   stage: test
-  rules:
-    - if: '$CX_FLOW_BUG_TRACKER != "GitLabDashboard" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  # rules:
+  #   - if: '$CX_FLOW_BUG_TRACKER != "GitLabDashboard" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  only:
+    - tspencer/testcheckmarx
   image:
     name: checkmarx/${CHECKMARX_DOCKER_IMAGE}
     entrypoint: ['']
