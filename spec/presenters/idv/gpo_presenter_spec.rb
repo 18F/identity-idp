@@ -25,6 +25,16 @@ RSpec.describe Idv::GpoPresenter do
         )
       end
     end
+
+    context 'the user has verified with GPO before, but is re-proofing' do
+      let(:user) { user_verified_with_gpo  }
+      it 'provides text to send' do
+        create_letter_send_event
+        expect(subject.title).to eq(
+          I18n.t('idv.titles.mail.verify')
+        )
+      end
+    end
   end
 
   describe '#button' do
@@ -64,5 +74,9 @@ RSpec.describe Idv::GpoPresenter do
   def create_letter_send_event
     device = create(:device, user: user)
     create(:event, user: user, device: device, event_type: :gpo_mail_sent)
+  end
+
+  def user_verified_with_gpo
+    create(:user, :proofed_with_gpo)
   end
 end
