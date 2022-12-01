@@ -1,6 +1,8 @@
 class FormResponse
   attr_reader :errors, :extra, :serialize_error_details_only
 
+  alias_method :serialize_error_details_only?, :serialize_error_details_only
+
   def initialize(success:, errors: {}, extra: {}, serialize_error_details_only: false)
     @success = success
     @errors = errors.is_a?(ActiveModel::Errors) ? errors.messages.to_hash : errors
@@ -15,7 +17,7 @@ class FormResponse
 
   def to_h
     hash = { success: success }
-    hash[:errors] = errors if !serialize_error_details_only
+    hash[:errors] = errors if !serialize_error_details_only?
     hash[:error_details] = flatten_details(error_details) if error_details.present?
     hash.merge!(extra)
     hash
