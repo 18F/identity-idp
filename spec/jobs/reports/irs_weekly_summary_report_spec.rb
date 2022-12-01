@@ -6,7 +6,7 @@ RSpec.describe Reports::IrsWeeklySummaryReport do
   let(:email) { 'foo@bar.com' }
 
   before do
-    create_list(:user, 10)
+    create_list(:user, 10, {:created_at => Date.yesterday })
   end
 
   describe '#perform' do
