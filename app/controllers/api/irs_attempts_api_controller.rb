@@ -19,7 +19,6 @@ module Api
 
     def create
       if timestamp 
-        
         if IdentityConfig.store.irs_attempt_api_aws_s3_enabled 
           if (IrsAttemptApiLogFile.find_by(requested_time: timestamp))
             log_file_record = IrsAttemptApiLogFile.find_by(requested_time: timestamp)
