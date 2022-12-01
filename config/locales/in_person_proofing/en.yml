@@ -21,11 +21,10 @@ en:
         retail_phone_label: Phone number
         speak_to_associate: You can see any associate at the retail window to verify your identity.
       cta:
-        button: Find a Post Office
+        button: Verify your ID in person
         new_feature: New Feature
-        prompt: 'Are you located near Washington, D.C. <wbr/>or Baltimore, MD?'
-        prompt_detail: You may be able to verify your identity in person at a Post
-          Office near you.
+        prompt_detail: If you are located near Washington D.C. or Baltimore, MD, you may
+          be able to verify your ID in person at limited post office locations.
       location:
         location_button: Select
         location_step_about: If you are having trouble adding your ID, you may be able
@@ -91,7 +90,7 @@ en:
     headings:
       address: Enter your current address
       barcode: You’re ready to verify your identity in person
-      cta: Verify your ID in person
+      cta: Having trouble verifying your ID online?
       location: Select a location to verify your ID
       prepare: Verify your identity in person
       state_id: Enter the information on your ID
