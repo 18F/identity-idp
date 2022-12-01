@@ -47,11 +47,11 @@ describe('CountdownElement', () => {
 
     clock.tick(1999);
 
-    expect(element.textContent).to.equal('0 minutes and 3 seconds');
+    expect(element.textContent).to.equal('3 seconds');
 
     clock.tick(1);
 
-    expect(element.textContent).to.equal('0 minutes and one second');
+    expect(element.textContent).to.equal('one second');
   });
 
   it('allows a delayed start', () => {
@@ -62,11 +62,11 @@ describe('CountdownElement', () => {
 
     clock.tick(1000);
 
-    expect(element.textContent).to.equal('0 minutes and one second');
+    expect(element.textContent).to.equal('one second');
 
     element.start();
 
-    expect(element.textContent).to.equal('0 minutes and 0 seconds');
+    expect(element.textContent).to.equal('0 seconds');
   });
 
   it('can be stopped and restarted', () => {
@@ -78,11 +78,11 @@ describe('CountdownElement', () => {
     element.stop();
     clock.tick(1000);
 
-    expect(element.textContent).to.equal('0 minutes and 2 seconds');
+    expect(element.textContent).to.equal('2 seconds');
 
     element.start();
 
-    expect(element.textContent).to.equal('0 minutes and one second');
+    expect(element.textContent).to.equal('one second');
   });
 
   it('updates in response to changed expiration', () => {
@@ -90,11 +90,11 @@ describe('CountdownElement', () => {
 
     element.expiration = new Date(new Date().getTime() + 1000);
 
-    expect(element.textContent).to.equal('0 minutes and one second');
+    expect(element.textContent).to.equal('one second');
 
     element.setAttribute('data-expiration', new Date(new Date().getTime() + 2000).toISOString());
 
-    expect(element.textContent).to.equal('0 minutes and 2 seconds');
+    expect(element.textContent).to.equal('2 seconds');
   });
 
   it('stops when the countdown is finished', () => {
@@ -107,7 +107,7 @@ describe('CountdownElement', () => {
 
     clock.tick(1000);
 
-    expect(element.textContent).to.equal('0 minutes and 0 seconds');
+    expect(element.textContent).to.equal('0 seconds');
     expect(element.stop).to.have.been.called();
   });
 

@@ -70,9 +70,14 @@ export class CountdownElement extends HTMLElement {
   setTimeRemaining(): void {
     const { timeRemaining } = this;
 
+    const minutes = Math.floor(timeRemaining / 60000);
+    const seconds = Math.floor(timeRemaining / 1000) % 60;
+
     this.#textNode.nodeValue = [
-      t('datetime.dotiw.minutes', { count: Math.floor(timeRemaining / 60000) }),
-      t('datetime.dotiw.seconds', { count: Math.floor(timeRemaining / 1000) % 60 }),
-    ].join(t('datetime.dotiw.two_words_connector'));
+      minutes && t('datetime.dotiw.minutes', { count: minutes }),
+      t('datetime.dotiw.seconds', { count: seconds }),
+    ]
+      .filter(Boolean)
+      .join(t('datetime.dotiw.two_words_connector'));
   }
 }
