@@ -214,6 +214,7 @@ class IdentityConfig
     config.add(:irs_attempt_api_bucket_name, type: :string, allow_nil: true)
     config.add(:irs_attempt_api_csp_id)
     config.add(:irs_attempt_api_enabled, type: :boolean)
+    config.add(:irs_attempt_api_aws_s3_enabled, type: :boolean)
     config.add(:irs_attempt_api_event_ttl_seconds, type: :integer)
     config.add(:irs_attempt_api_event_count_default, type: :integer)
     config.add(:irs_attempt_api_event_count_max, type: :integer)

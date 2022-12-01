@@ -3,6 +3,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
 
   def perform(timestamp = Time.zone.now - 1.hour)
     enabled = IdentityConfig.store.irs_attempt_api_enabled &&
+              IdentityConfig.store.irs_attempt_api_aws_s3_enabled &&
               IdentityConfig.store.irs_attempt_api_bucket_name
     return nil unless enabled
 
@@ -16,7 +17,6 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     )
 
     bucket_name = IdentityConfig.store.irs_attempt_api_bucket_name
-    bucket_url = "s3://#{bucket_name}/#{result.filename}"
 
     create_and_upload_to_attempts_s3_resource(
       bucket_name: bucket_name, filename: result.filename,
@@ -27,7 +27,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     encoded_encrypted_key = Base64.strict_encode64(result.encrypted_key)
 
     IrsAttemptApiLogFile.create(
-      filename: bucket_url, iv: encoded_iv,
+      filename: result.filename, iv: encoded_iv,
       encrypted_key: encoded_encrypted_key, requested_time: timestamp
     )
   end
