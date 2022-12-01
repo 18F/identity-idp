@@ -96,7 +96,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
         properties = {
           success: false,
-          errors: {},
+          error_details: { code: [:code_incorrect_length, :code_incorrect] },
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
@@ -153,7 +153,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
         properties = {
           success: false,
-          errors: {},
+          error_details: { code: [:code_incorrect_length, :code_incorrect] },
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
@@ -191,7 +191,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
     context 'when the user enters a valid OTP' do
       before do
         sign_in_before_2fa
-        expect(subject.current_user).to receive(:authenticate_direct_otp).and_return(true)
+        form = OtpVerificationForm.new(subject.current_user, nil)
+        result = FormResponse.new(success: true, serialize_error_details_only: {})
+        expect(form).to receive(:submit).and_return(result)
+        expect(subject).to receive(:otp_verification_form).and_return(form)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
       end
 
@@ -217,7 +220,6 @@ describe TwoFactorAuthentication::OtpVerificationController do
       it 'tracks the valid authentication event' do
         properties = {
           success: true,
-          errors: {},
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
@@ -380,7 +382,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
             properties = {
               success: true,
-              errors: {},
+              errors: nil,
               confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
@@ -466,7 +468,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
           it 'tracks an event' do
             properties = {
               success: false,
-              errors: {},
+              errors: nil,
+              error_details: { code: [:code_incorrect_length, :code_incorrect] },
               confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
@@ -529,7 +532,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             parsed_phone = Phonelib.parse('+1 (703) 555-5555')
             properties = {
               success: true,
-              errors: {},
+              errors: nil,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
               confirmation_for_add_phone: false,
