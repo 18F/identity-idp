@@ -24,8 +24,8 @@ module Api
           if (IrsAttemptApiLogFile.find_by(requested_time: timestamp))
             log_file_record = IrsAttemptApiLogFile.find_by(requested_time: timestamp)
 
-            headers['X-Payload-Key'] = Base64.strict_encode64(log_file_record.encrypted_key)
-            headers['X-Payload-IV'] = Base64.strict_encode64(log_file_record.iv)
+            headers['X-Payload-Key'] = log_file_record.encrypted_key
+            headers['X-Payload-IV'] = log_file_record.iv
 
             bucket_name = IdentityConfig.store.irs_attempt_api_bucket_name
             
