@@ -13,7 +13,7 @@ variables:
     CHECKMARX_DOCKER_IMAGE: "cx-flow"
     CX_FLOW_BUG_TRACKER: "GitLab"
     CX_FLOW_BUG_TRACKER_IMPL: ${CX_FLOW_BUG_TRACKER}
-    CX_FLOW_EXE: "java -jar /app/cx-flow.jar"
+    CX_FLOW_EXE: "java -Dhttp.proxyHost=obproxy-test-pool.login.gov.internal -Dhttp.proxyPort=3128 -jar /app/cx-flow.jar"
     CX_PROJECT: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
     CHECKMARX_VERSION: "9.0"
     CHECKMARX_SETTINGS_OVERRIDE: "false"
