@@ -57,6 +57,12 @@ RSpec.describe MemorableDateComponent, type: :component do
     expect(rendered).to have_css('lg-memorable-date lg-validated-field input.memorable-date__year')
   end
 
+  it 'renders memorable date input fields with hints' do
+    expect(rendered).to have_css('input[aria-labelledby*="memorable-date-month-hint"]')
+    expect(rendered).to have_css('input[aria-labelledby*="memorable-date-day-hint"]')
+    expect(rendered).to have_css('input[aria-labelledby*="memorable-date-year-hint"]')
+  end
+
   it 'sets the label' do
     expect(rendered).to have_css('.usa-label', text: label)
   end
