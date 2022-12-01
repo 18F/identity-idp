@@ -3,7 +3,6 @@ class AgencyIdentityLinker
     @sp_identity = sp_identity
     @agency_id = nil
   end
-
   def link_identity
     find_or_create_agency_identity ||
       AgencyIdentity.new(user_id: @sp_identity.user_id, uuid: @sp_identity.uuid)
@@ -17,7 +16,8 @@ class AgencyIdentityLinker
     ai = AgencyIdentity.where(user: user, agency: agency).take
     return ai if ai.present?
 
-    # mattw: Punting on this one for the moment, because this is where we're going to make our change I think.
+    # mattw: Punting on this one for the moment, because this is where we're
+    # going to make our change, I think.
     spi = ServiceProviderIdentity.where(
       user: user, service_provider: service_provider.issuer,
     ).take

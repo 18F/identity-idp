@@ -104,7 +104,7 @@ class UserDecorator
   end
 
   def identity_events
-    user.identities.includes(:service_provider_record).order('last_authenticated_at DESC')
+    user.identities.consented.includes(:service_provider_record).order('last_authenticated_at DESC')
   end
 
   def recent_devices
@@ -122,7 +122,7 @@ class UserDecorator
   end
 
   def connected_apps
-    user.identities.not_deleted.includes(:service_provider_record).order('created_at DESC')
+    user.identities.consented.not_deleted.includes(:service_provider_record).order('created_at DESC')
   end
 
   def delete_account_bullet_key

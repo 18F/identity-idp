@@ -25,6 +25,8 @@ module Users
     private
 
     def load_identity!(service_provider)
+      # mattw: The test for this calls the IdentityLinker and starts to become
+      # a catch 22. Inclined to leave this as-is for the moment and get it in the next wave.
       current_user.identities.where(service_provider: service_provider.issuer).first!
     end
   end

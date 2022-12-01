@@ -38,7 +38,7 @@ module Users
     end
 
     def user_has_not_visited_any_sp_yet?
-      current_user.identities.pluck(:last_authenticated_at).compact.empty?
+      current_user.identities.consented.pluck(:last_authenticated_at).compact.empty?
     end
   end
 end

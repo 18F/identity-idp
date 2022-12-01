@@ -36,6 +36,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
       context 'with valid params' do
         it 'redirects back to the client app with a code' do
           IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+          # mattw: I have updated tests when I change a file. There are some tests that aren't related.
+          # I am currently leaving them as-is.
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
 

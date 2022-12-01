@@ -23,9 +23,8 @@ module SamlIdpLogoutConcern
 
   def handle_valid_sp_remote_logout_request(user_id)
     # Remotely delete the user's current session
-    # mattw: Leaving this unchanged. If a user somehow tries to log out of a provider they aren't consented for
-    # (revoked?), we should still let them log out.
     session_id = ServiceProviderIdentity.
+      consented.
       find_by(user_id: user_id, service_provider: saml_request.issuer).
       rails_session_id
 

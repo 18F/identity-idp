@@ -107,7 +107,7 @@ class CompletionsPresenter
   private
 
   def first_time_signing_in?
-    current_user.identities.where.not(last_consented_at: nil).empty?
+    current_user.identities.consented.where.not(last_consented_at: nil).empty?
   end
 
   def displayable_pii
