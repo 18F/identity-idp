@@ -6,6 +6,7 @@
 # Please refer to https://checkmarx.com/gitlab for detailed instructions.
 #
 
+
 variables:
     GITLAB_URL: "${CI_SERVER_URL}"
     GITLAB_API_URL: "${CI_API_V4_URL}"
