@@ -57,7 +57,7 @@ describe Proofing::LexisNexis::Ddp::Proofer do
   end
 
   subject(:instance) do
-    Proofing::LexisNexis::Ddp::Proofer.new(**LexisNexisFixtures.example_config.to_h)
+    Proofing::LexisNexis::Ddp::Proofer.new(LexisNexisFixtures.example_config.to_h)
   end
 
   describe '#proof' do
@@ -80,6 +80,22 @@ describe Proofing::LexisNexis::Ddp::Proofer do
       it 'is a successful result' do
         expect(result.success?).to eq(true)
         expect(result.errors).to be_empty
+      end
+    end
+
+    context 'when the response raises an exception' do
+      let(:response_body) { '' }
+
+      it 'returns an exception result' do
+        error = RuntimeError.new('hi')
+
+        expect(NewRelic::Agent).to receive(:notice_error).with(error)
+
+        stub_request(:post, verification_request.url).to_raise(error)
+
+        expect(result.success?).to eq(false)
+        expect(result.errors).to be_empty
+        expect(result.exception).to eq(error)
       end
     end
   end

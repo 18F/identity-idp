@@ -41,7 +41,7 @@ describe GpoConfirmationExporter do
   describe '#run' do
     before do
       allow(IdentityConfig.store).to receive(:usps_confirmation_max_days).and_return(10)
-      allow(subject).to receive(:current_date).and_return(Time.zone.local(2018, 7, 6))
+      allow(subject).to receive(:current_date).and_return(Time.utc(2018, 7, 6))
     end
 
     it 'creates psv string' do

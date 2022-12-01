@@ -958,16 +958,16 @@ describe('document-capture/components/acuant-capture', () => {
     const upload = getByText('Upload');
     fireEvent.click(upload);
 
-    expect(trackEvent).to.have.been.calledThrice();
-    expect(trackEvent.getCall(0)).to.have.been.calledWith('IdV: test image clicked', {
+    expect(trackEvent.callCount).to.be.at.least(3);
+    expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'placeholder',
       isDrop: false,
     });
-    expect(trackEvent.getCall(1)).to.have.been.calledWith('IdV: test image clicked', {
+    expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'button',
       isDrop: false,
     });
-    expect(trackEvent.getCall(2)).to.have.been.calledWith('IdV: test image clicked', {
+    expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'upload',
       isDrop: false,
     });
@@ -986,7 +986,7 @@ describe('document-capture/components/acuant-capture', () => {
     const input = getByLabelText('Image');
     fireEvent.drop(input);
 
-    expect(trackEvent.getCall(0)).to.have.been.calledWith('IdV: test image clicked', {
+    expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'placeholder',
       isDrop: true,
     });

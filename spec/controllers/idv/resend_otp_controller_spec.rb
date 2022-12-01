@@ -7,7 +7,7 @@ describe Idv::ResendOtpController do
   let(:user_phone_confirmation) { false }
   let(:delivery_method) { 'sms' }
   let(:user_phone_confirmation_session) do
-    PhoneConfirmation::ConfirmationSession.start(
+    Idv::PhoneConfirmationSession.start(
       phone: phone,
       delivery_method: delivery_method,
     )

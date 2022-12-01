@@ -14,7 +14,7 @@ shared_examples 'a lexisnexis proofer' do
 
     allow(verification_request).to receive(:send).and_return(response)
     allow(verification_request.class).to receive(:new).
-      with(applicant: applicant, config: kind_of(Proofing::LexisNexis::Proofer::Config)).
+      with(applicant: applicant, config: kind_of(Proofing::LexisNexis::Ddp::Proofer::Config)).
       and_return(verification_request)
   end
 

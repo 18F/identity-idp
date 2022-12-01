@@ -1388,11 +1388,17 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's
+  #        current proofing components
+  # @param address_verification_method The method (phone or gpo) being
+  #        used to verify the user's identity
   # User visited IDV password confirm page
-  def idv_review_info_visited(proofing_components: nil, **extra)
+  def idv_review_info_visited(proofing_components: nil,
+                              address_verification_method: nil,
+                              **extra)
     track_event(
       'IdV: review info visited',
+      address_verification_method: address_verification_method,
       proofing_components: proofing_components,
       **extra,
     )
@@ -3100,6 +3106,25 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks exceptions that are raised when running InPerson::EmailReminderJob
+  # @param [String] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  def idv_in_person_email_reminder_job_exception(
+    enrollment_id:,
+    exception_class: nil,
+    exception_message: nil,
+    **extra
+  )
+    track_event(
+      'InPerson::EmailReminderJob: Exception raised when attempting to send reminder email',
+      enrollment_id: enrollment_id,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      **extra,
+    )
+  end
+
   # Tracks individual enrollments that are updated during GetUspsProofingResultsJob
   # @param [String] enrollment_code
   # @param [String] enrollment_id
@@ -3134,6 +3159,22 @@ module AnalyticsEvents
     track_event(
       'GetUspsProofingResultsJob: Success or failure email initiated',
       email_type: email_type,
+      **extra,
+    )
+  end
+
+  # Tracks emails that are initiated during InPerson::EmailReminderJob
+  # @param [String] email_type early or late
+  # @param [String] enrollment_id
+  def idv_in_person_email_reminder_job_email_initiated(
+    email_type:,
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      'InPerson::EmailReminderJob: Reminder email initiated',
+      email_type: email_type,
+      enrollment_id: enrollment_id,
       **extra,
     )
   end

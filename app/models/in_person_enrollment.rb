@@ -22,6 +22,28 @@ class InPersonEnrollment < ApplicationRecord
   before_save(:on_status_updated, if: :will_save_change_to_status?)
   before_create(:set_unique_id, unless: :unique_id)
 
+  def self.is_pending_and_established_between(early_benchmark, late_benchmark)
+    where(status: :pending).
+      and(
+        where(enrollment_established_at: late_benchmark...(early_benchmark.end_of_day)),
+      ).
+      order(enrollment_established_at: :asc)
+  end
+
+  def self.needs_early_email_reminder(early_benchmark, late_benchmark)
+    self.is_pending_and_established_between(
+      early_benchmark,
+      late_benchmark,
+    ).where(early_reminder_sent: false)
+  end
+
+  def self.needs_late_email_reminder(early_benchmark, late_benchmark)
+    self.is_pending_and_established_between(
+      early_benchmark,
+      late_benchmark,
+    ).where(late_reminder_sent: false)
+  end
+
   # Find enrollments that need a status check via the USPS API
   def self.needs_usps_status_check(check_interval)
     where(status: :pending).

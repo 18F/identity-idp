@@ -69,6 +69,10 @@ en:
         same_address_choice_yes: This address is on my state-issued ID
         state_prompt: '- Select -'
       state_id:
+        date_hint:
+          day: 'Example: 28'
+          month: 'Example: 4'
+          year: 'Example: 1986'
         dob: Date of birth
         dob_hint: 'Example: 4 28 1986'
         first_name: First name

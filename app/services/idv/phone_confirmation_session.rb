@@ -1,6 +1,12 @@
-module PhoneConfirmation
-  class ConfirmationSession
+module Idv
+  class PhoneConfirmationSession
     attr_reader :code, :phone, :sent_at, :delivery_method
+
+    def self.generate_code
+      OtpCodeGenerator.generate_alphanumeric_digits(
+        TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH,
+      )
+    end
 
     def initialize(code:, phone:, sent_at:, delivery_method:)
       @code = code
@@ -11,7 +17,7 @@ module PhoneConfirmation
 
     def self.start(phone:, delivery_method:)
       new(
-        code: CodeGenerator.call,
+        code: generate_code,
         phone: phone,
         sent_at: Time.zone.now,
         delivery_method: delivery_method,
@@ -20,7 +26,7 @@ module PhoneConfirmation
 
     def regenerate_otp
       self.class.new(
-        code: CodeGenerator.call,
+        code: self.class.generate_code,
         phone: phone,
         sent_at: Time.zone.now,
         delivery_method: delivery_method,
