@@ -35,6 +35,27 @@ RSpec.describe OtpVerificationForm do
       end
     end
 
+    context 'when the code is nil' do
+      let(:code) { nil }
+      let(:user_otp) { '123456' }
+
+      it 'returns a successful response' do
+        expect(result.to_h).to eq(
+          success: false,
+          error_details: {
+            code: [:blank],
+          },
+          multi_factor_auth_method: 'otp_code',
+        )
+      end
+
+      it 'does not clear user pending OTP' do
+        expect(user).not_to receive(:clear_direct_otp)
+
+        result
+      end
+    end
+
     context 'when the user does not have a pending OTP' do
       let(:code) { '123456' }
       let(:user_otp) { nil }
@@ -43,7 +64,7 @@ RSpec.describe OtpVerificationForm do
         expect(result.to_h).to eq(
           success: false,
           error_details: {
-            code: [:user_otp_missing, :incorrect],
+            code: [:user_otp_missing],
           },
           multi_factor_auth_method: 'otp_code',
         )
