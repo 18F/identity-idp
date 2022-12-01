@@ -48,6 +48,12 @@ module DataRequests
         thread_pool.post do
           warn "Downloading logs for #{date}"
           results.push(wait_for_query_result(start_query(date)))
+        rescue Aws::CloudWatchLogs::Errors::InvalidParameterException => e
+          if e.message.match?(/End time should not be before the service was generally available/)
+            next
+          else
+            errors.push(e)
+          end
         rescue => e
           errors.push(e)
         end
