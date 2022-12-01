@@ -97,6 +97,20 @@ describe('CountdownElement', () => {
     expect(element.textContent).to.equal('0 minutes and 2 seconds');
   });
 
+  it('stops when the countdown is finished', () => {
+    const element = createElement({
+      expiration: new Date(new Date().getTime() + 1000).toISOString(),
+      updateInterval: '1000',
+    });
+
+    sinon.spy(element, 'stop');
+
+    clock.tick(1000);
+
+    expect(element.textContent).to.equal('0 minutes and 0 seconds');
+    expect(element.stop).to.have.been.called();
+  });
+
   describe('#start', () => {
     it('is idempotent', () => {
       const element = createElement({ startImmediately: 'false' });

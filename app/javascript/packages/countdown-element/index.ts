@@ -52,11 +52,19 @@ export class CountdownElement extends HTMLElement {
   start(): void {
     this.stop();
     this.setTimeRemaining();
-    this.#pollIntervalId = window.setInterval(() => this.setTimeRemaining(), this.updateInterval);
+    this.#pollIntervalId = window.setInterval(() => this.tick(), this.updateInterval);
   }
 
   stop(): void {
     window.clearInterval(this.#pollIntervalId);
+  }
+
+  tick(): void {
+    this.setTimeRemaining();
+
+    if (this.timeRemaining <= 0) {
+      this.stop();
+    }
   }
 
   setTimeRemaining(): void {
