@@ -1,9 +1,9 @@
 <% title t('titles.enter_2fa_code.one_time_code') %>
 
 <%= render CountdownAlertComponent.new(
-      class: 'margin-bottom-4',
       show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds,
       countdown_options: { expiration: @presenter.otp_expiration },
+      class: 'margin-bottom-4',
     ) %>
 
 <%= render PageHeadingComponent.new.with_content(@presenter.header) %>
