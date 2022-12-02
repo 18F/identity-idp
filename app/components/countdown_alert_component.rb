@@ -13,7 +13,7 @@ class CountdownAlertComponent < AlertComponent
     content_tag(
       :'lg-countdown-alert',
       super,
-      'show-at-remaining-seconds': show_at_remaining&.seconds,
+      'show-at-remaining': show_at_remaining&.in_milliseconds,
     )
   end
 
