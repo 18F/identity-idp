@@ -15,13 +15,14 @@ class IdentityLinker
     scope: nil,
     verified_attributes: nil,
     last_consented_at: nil,
-    clear_deleted_at: nil
+    clear_deleted_at: nil,
+    include_identity_session_attributes: true
   )
     return unless user && service_provider.present?
-    process_ial(ial)
+    process_ial(ial, include_identity_session_attributes: include_identity_session_attributes)
 
     identity.update!(
-      identity_attributes.merge(
+      (include_identity_session_attributes ? identity_attributes : {}).merge(
         code_challenge: code_challenge,
         ial: ial,
         nonce: nonce,
@@ -40,10 +41,10 @@ class IdentityLinker
 
   private
 
-  def process_ial(ial)
+  def process_ial(ial, include_identity_session_attributes:)
     @ial = ial
     now = Time.zone.now
-    process_ial_at(now)
+    process_ial_at(now) if include_identity_session_attributes
     process_verified_at(now)
   end
 

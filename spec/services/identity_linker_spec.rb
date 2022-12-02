@@ -26,6 +26,20 @@ describe IdentityLinker do
       expect(identity_attributes).to include new_attributes
     end
 
+    it 'does not write last_authenticated_at when :include_identity_session_attributes is false' do
+      identity = IdentityLinker.new(user, service_provider).
+        link_identity(include_identity_session_attributes: false)
+
+      aggregate_failures do
+        expect(identity.last_authenticated_at).to be_nil
+        expect(identity.session_uuid).to be_nil
+        expect(identity.access_token).to be_nil
+        expect(identity.last_ial1_authenticated_at).to be_nil
+        expect(identity.last_ial2_authenticated_at).to be_nil
+        expect(identity.verified_at).to be_nil
+      end
+    end
+
     it 'can take an additional optional attributes' do
       rails_session_id = SecureRandom.hex
       nonce = SecureRandom.hex
