@@ -203,9 +203,6 @@ module Idv
       add_costs(client_response)
       update_funnel(client_response)
 
-      puts "@doc_auth_client: #{doc_auth_client}"
-
-      # ToDo: Update this with Lexis Nexis workflow
       analytics.idv_doc_auth_submitted_image_upload_vendor(
         **client_response.to_h.merge(
           client_image_metrics: image_metadata,

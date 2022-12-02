@@ -147,7 +147,8 @@ RSpec.describe DocumentProofingJob, type: :job do
             back: back_image_metadata,
           },
           tamper_result: nil,
-          vendor_workflow: 'something',
+
+          vendor_workflow: 'unknown',
         )
 
         expect(result.pii_from_doc).to eq(applicant_pii)

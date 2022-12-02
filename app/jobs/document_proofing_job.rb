@@ -71,7 +71,7 @@ class DocumentProofingJob < ApplicationJob
         remaining_attempts: throttle.remaining_count,
         client_image_metrics: image_metadata,
         flow_path: flow_path,
-        vendor_workflow: image_source.image_metadata.to_s,
+        vendor_workflow: image_source(image_metadata).to_s,
       ).merge(analytics_data).
         merge(native_camera_ab_test_data(dcs)),
     )

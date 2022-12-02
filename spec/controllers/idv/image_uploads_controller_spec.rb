@@ -1,7 +1,5 @@
 require 'rails_helper'
 
-# ToDo: review and update for logging Lexis Nexis workflow
-
 describe Idv::ImageUploadsController do
   let(:document_filename_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}\.[a-z]+$/ }
   let(:base64_regex) { /^[a-z0-9+\/]+=*$/i }
@@ -138,7 +136,6 @@ describe Idv::ImageUploadsController do
 
         expect(@analytics).not_to receive(:track_event).with(
           'IdV: doc auth image upload vendor submitted',
-          # Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
           any_args,
         )
 
@@ -291,7 +288,7 @@ describe Idv::ImageUploadsController do
           },
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
-          vendor_workflow: 'something',
+          vendor_workflow: 'unknown',
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -440,7 +437,7 @@ describe Idv::ImageUploadsController do
               },
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
-              vendor_workflow: 'something',
+              vendor_workflow: 'unknown',
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -519,7 +516,7 @@ describe Idv::ImageUploadsController do
               },
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
-              vendor_workflow: 'something',
+              vendor_workflow: 'unknown',
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -598,7 +595,7 @@ describe Idv::ImageUploadsController do
               },
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
-              vendor_workflow: 'something',
+              vendor_workflow: 'unknown',
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -703,7 +700,7 @@ describe Idv::ImageUploadsController do
           doc_auth_result: nil,
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
-          vendor_workflow: 'something',
+          vendor_workflow: 'unknown',
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -788,7 +785,7 @@ describe Idv::ImageUploadsController do
           },
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
-          vendor_workflow: 'something',
+          vendor_workflow: 'unknown',
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -813,6 +810,7 @@ describe Idv::ImageUploadsController do
 
         action
 
+
         expect_funnel_update_counts(user, 1)
       end
     end
@@ -832,6 +830,39 @@ describe Idv::ImageUploadsController do
             message: I18n.t('doc_auth.errors.alerts.birth_date_checks'),
           },
         ]
+      end
+    end
+
+    context 'when the image was collected with the Acuant SDK' do
+      before do
+        stub_analytics
+      end
+
+      it 'logs the vendor workflow as NOCROPPING' do
+        expect(@analytics).to receive(:track_event).with(
+          'IdV: doc auth image upload vendor submitted',
+          success: true,
+          errors: {},
+          attention_with_barcode: false,
+          async: false,
+          billed: true,
+          exception: nil,
+          doc_auth_result: 'Passed',
+          state: 'ND',
+          state_id_type: 'drivers_license',
+          user_id: user.uuid,
+          attempts: 1,
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          client_image_metrics: {
+            front: { glare: 99.99 },
+            back: { glare: 99.99 },
+          },
+          pii_like_keypaths: [[:pii]],
+          flow_path: 'standard',
+          vendor_workflow: 'unknown',
+        )
+
+        action
       end
     end
   end
