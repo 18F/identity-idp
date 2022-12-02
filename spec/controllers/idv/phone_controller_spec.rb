@@ -110,9 +110,9 @@ describe Idv::PhoneController do
       expect(@analytics).to have_received(:track_event).with('Proofing Address Result Missing')
       expect(flash[:error]).to include t('idv.failure.timeout')
       expect(response).to render_template :new
-      put :create, params: { idv_phone_form: { phone: good_phone } }
+      put :create, params: { idv_phone_form: { phone: good_phone, otp_delivery_preference: :sms } }
       get :new
-      expect(response).to redirect_to idv_otp_delivery_method_path
+      expect(response).to redirect_to idv_otp_verification_path
     end
 
     it 'shows waiting interstitial if async process is in progress' do
@@ -134,10 +134,24 @@ describe Idv::PhoneController do
 
   describe '#create' do
     context 'when form is invalid' do
-      let(:improbable_phone_error) { { phone: [:improbable_phone] } }
+      let(:improbable_phone_error) do
+        {
+          phone: [:improbable_phone],
+          otp_delivery_preference: [:inclusion],
+        }
+      end
       let(:improbable_phone_message) { t('errors.messages.improbable_phone') }
+      let(:improbable_otp_message) { 'is not included in the list' }
       let(:improbable_phone_number) { '703' }
-      let(:improbable_phone_form) { { idv_phone_form: { phone: improbable_phone_number } } }
+      let(:improbable_phone_form) do
+        {
+          idv_phone_form:
+            {
+              phone: improbable_phone_number,
+              otp_delivery_preference: :🎷,
+            },
+        }
+      end
       before do
         user = build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' })
         stub_verify_steps_one_and_two(user)
@@ -175,6 +189,7 @@ describe Idv::PhoneController do
           success: false,
           errors: {
             phone: [improbable_phone_message],
+            otp_delivery_preference: [improbable_otp_message],
           },
           error_details: improbable_phone_error,
           pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
@@ -182,6 +197,7 @@ describe Idv::PhoneController do
           area_code: nil,
           carrier: 'Test Mobile Carrier',
           phone_type: :mobile,
+          otp_delivery_preference: '🎷',
           types: [],
           proofing_components: nil,
         }
@@ -210,7 +226,14 @@ describe Idv::PhoneController do
           failure_reason: nil,
         )
 
-        put :create, params: { idv_phone_form: { phone: good_phone } }
+        phone_params = {
+          idv_phone_form: {
+            phone: good_phone,
+            otp_delivery_preference: :sms,
+          },
+        }
+
+        put :create, params: phone_params
 
         result = {
           success: true,
@@ -220,6 +243,7 @@ describe Idv::PhoneController do
           pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
           carrier: 'Test Mobile Carrier',
           phone_type: :mobile,
+          otp_delivery_preference: 'sms',
           types: [:fixed_or_mobile],
           proofing_components: nil,
         }
@@ -242,11 +266,16 @@ describe Idv::PhoneController do
         it 'redirects to otp delivery page' do
           original_applicant = subject.idv_session.applicant.dup
 
-          put :create, params: { idv_phone_form: { phone: good_phone } }
+          put :create, params: {
+            idv_phone_form: {
+              phone: good_phone,
+              otp_delivery_preference: 'sms',
+            },
+          }
 
           expect(response).to redirect_to idv_phone_path
           get :new
-          expect(response).to redirect_to idv_otp_delivery_method_path
+          expect(response).to redirect_to idv_otp_verification_path
 
           expect(subject.idv_session.applicant).to eq(
             original_applicant.merge(
@@ -285,11 +314,16 @@ describe Idv::PhoneController do
         end
 
         it 'redirects to otp page and does not set phone_confirmed_at' do
-          put :create, params: { idv_phone_form: { phone: good_phone } }
+          put :create, params: {
+            idv_phone_form: {
+              phone: good_phone,
+              otp_delivery_preference: 'sms',
+            },
+          }
 
           expect(response).to redirect_to idv_phone_path
           get :new
-          expect(response).to redirect_to idv_otp_delivery_method_path
+          expect(response).to redirect_to idv_otp_verification_path
 
           expect(subject.idv_session.vendor_phone_confirmation).to eq true
           expect(subject.idv_session.user_phone_confirmation).to eq false

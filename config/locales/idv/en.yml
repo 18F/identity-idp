@@ -83,8 +83,8 @@ en:
         warning: Please check the information you entered and try again. Common mistakes
           are an incorrect Social Security number or ZIP Code.
       setup:
-        fail_html: 'Please %{contact_form_link} and enter the code
-          <b>%{support_code}</b> in the detail field.'
+        fail_html: Please %{contact_form_link} and enter the code <b>%{support_code}</b>
+          in the detail field.
         heading: There is an issue with your information
         link_text: fill out our contact form
       timeout: We are experiencing higher than usual wait time processing your
@@ -138,21 +138,21 @@ en:
       otp_delivery_method:
         phone_number_html: We’ll send a code to <strong>%{phone}</strong> to verify that
           the phone number belongs to you.
+      otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
       personal_key: This is your new personal key. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.
       phone:
-        alert_html: '<strong>This phone number must…</strong>'
-        description: We’ll check this number with phone bill records.  This is to help
-          verify your identity; we won’t use it to call or text you.
-        final_note_html: '<strong>If you set up a phone for two-factor
+        alert_html: '<strong>This phone number:</strong>'
+        description: We’ll check this number with records and send you a one-time code.
+          This is to help verify your identity.
+        final_note_html: '<strong>If you set up a phone for multi-factor
           authentication</strong>, this can be a different number.'
         phone_of_record: Phone of record
         rules:
-          - be a phone plan associated with your name. You do not need to be the
-            primary account holder.
-          - not be a virtual phone (such as Google Voice or Skype) or a premium
-            rate (toll) number.
-          - be a U.S. number
+          - Must not be a virtual phone (such as Google Voice or Skype) or a
+            premium rate (toll) number
+          - Must be a U.S. number (which includes U.S. territories)
+          - Should be your primary number or the number that you use most often
       return_to_profile: '‹ Return to your %{app_name} profile'
       review:
         info_verified_html: We found records matching your %{phone_message}
@@ -179,14 +179,13 @@ en:
       mail:
         resend: Want another letter?
         verify: Want a letter?
-      otp_delivery_method: How would you like to receive a code?
+      otp_delivery_method: How should we send a code?
       review: Review and submit
       session:
-        phone: Enter a phone number with your name on the plan
+        phone: Enter your phone number
         review: Re-enter your %{app_name} password to protect your data
     troubleshooting:
       headings:
-        # Note: there are intentional irregular non-breaking whitespaces to ensure coupling of place names.
         missing_required_items: Are you missing one of these items?
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
         still_having_trouble: Still having trouble?

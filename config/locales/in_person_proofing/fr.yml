@@ -42,14 +42,14 @@ fr:
         retail_hours_sun: 'Dim:'
         retail_hours_weekday: 'Lundi à Vendredi:'
       prepare:
-        alert_selected_post_office: 'Vous avez sélectionné le bureau de poste de %{name}.'
+        alert_selected_post_office: Vous avez sélectionné le bureau de poste de %{name}.
         bring_barcode_header: Une copie de votre code-barres
-        bring_barcode_info: 'Nous vous donnerons un code unique qui expirera dans les 30 jours.'
-        bring_id_header: 'Votre document d’identité délivré par l’État'
+        bring_barcode_info: Nous vous donnerons un code unique qui expirera dans les 30 jours.
+        bring_id_header: Votre document d’identité délivré par l’État
         bring_id_info_acceptable: 'Votre pièce d’identité ne doit pas être expirée. Les
           formes d’identification acceptables sont:'
         bring_id_info_dl: Permis de conduire d’État
-        bring_id_info_id_card: 'Document d’identité de non-conducteur d’État'
+        bring_id_info_id_card: Document d’identité de non-conducteur d’État
         bring_id_info_no_other_forms: Nous n’acceptons actuellement aucune autre forme
           d’identification, comme les passeports et les documents d’identité
           militaires.
@@ -62,14 +62,14 @@ fr:
         verify_step_about: 'Suivez les étapes ci-dessous pour générer le code-barres que
           vous emporterez avec vous au bureau de poste:'
         verify_step_enter_phone: Entrez un numéro de téléphone avec votre nom sur le contrat.
-        verify_step_enter_pii: 'Saisissez votre nom, votre date de naissance, votre
+        verify_step_enter_pii: Saisissez votre nom, votre date de naissance, votre
           document d’identité délivré par l’État, votre adresse et votre numéro
-          de sécurité sociale.'
+          de sécurité sociale.
       state_id:
-        info_html: 'Saisissez les informations <strong>exactement comme elles figurent
+        info_html: Saisissez les informations <strong>exactement comme elles figurent
           sur votre document d’identité nationale.</strong> Nous utiliserons ces
           informations pour confirmer qu’elles correspondent à votre pièce
-          d’identité en personne.'
+          d’identité en personne.
     form:
       address:
         same_address: Cette adresse figure-t-elle sur la pièce d’identité délivrée par
@@ -89,9 +89,9 @@ fr:
         memorable_date:
           errors:
             date_of_birth:
-              missing_month_day_year: 'Entrez une date de naissance'
-              range_min_age: 'Vous devez avoir plus de 13 ans pour utiliser %{app_name}'
-              range_overflow: 'Entrez une date qui est dans le passé'
+              missing_month_day_year: Entrez une date de naissance
+              range_min_age: Vous devez avoir plus de 13 ans pour utiliser %{app_name}
+              range_overflow: Entrez une date qui est dans le passé
         state_id_jurisdiction: État
         state_id_jurisdiction_hint: Sélectionnez l’État figurant sur votre document d’identité
         state_id_jurisdiction_prompt: '- Sélectionnez -'

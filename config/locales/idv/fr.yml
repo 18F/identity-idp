@@ -93,8 +93,8 @@ fr:
           Les erreurs les plus courantes sont un numéro de sécurité sociale ou
           un code postal incorrect.
       setup:
-        fail_html: 'Veuillez %{contact_form_link} et entrer le code
-          <b>%{support_code}</b> dans le champ de détail.'
+        fail_html: Veuillez %{contact_form_link} et entrer le code
+          <b>%{support_code}</b> dans le champ de détail.
         heading: Il y a un problème avec vos informations
         link_text: remplir notre formulaire de contact
       timeout: Le temps d’attente pour le traitement de votre demande est plus long
@@ -152,23 +152,26 @@ fr:
       otp_delivery_method:
         phone_number_html: Nous enverrons un code à <strong>%{phone}</strong> pour
           vérifier que le numéro de téléphone vous appartient.
+      otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus,
+        veuillez sélectionner « Appel téléphonique » ci-dessous.
       personal_key: Il s’agit de votre nouvelle clé personnelle. Notez-la et
         conservez-la dans un endroit sécuritaire. Vous en aurez besoin si vous
         perdez votre mot de passe.
       phone:
-        alert_html: '<strong>Ce numéro de téléphone doit…</strong>'
-        description: Nous vérifions les dossiers pour vous assurer que vous êtes ce que
-          vous dites et que vous êtes propriétaire de votre compte.
+        alert_html: '<strong>Ce numéro de téléphone:</strong>'
+        description: Nous vérifierons ce numéro dans nos archives et vous enverrons un
+          code à usage unique. Ceci est pour aider à vérifier votre identité.
         final_note_html: '<strong>Si vous configurez un téléphone pour
-          l’authentification à deux facteurs</strong>, il peut s’agir d’un
+          l’authentification multifactorielle</strong>, il peut s’agir d’un
           numéro différent.'
         phone_of_record: numéro de téléphone enregistré
         rules:
-          - être un plan téléphonique associé à votre nom. Il n’est pas
-            nécessaire que vous soyez le titulaire principal du compte.
-          - ne pas être un téléphone virtuel (tel que Google Voice ou Skype) ou
-            un numéro à tarif majoré (péage).
-          - un numéro américain
+          - Ne doit pas être un téléphone virtuel (tel que Google Voice ou
+            Skype) ou un numéro surtaxé (péage)
+          - Doit être un numéro américain (ce qui inclut les territoires
+            américains)
+          - Doit être votre numéro principal ou le numéro que vous utilisez le
+            plus souvent
       return_to_profile: '‹ Revenir à votre profil %{app_name}'
       review:
         info_verified_html: Nous avons trouvé des données qui correspondent à votre
@@ -199,10 +202,10 @@ fr:
       mail:
         resend: Vous voulez une autre lettre?
         verify: Vous voulez une lettre?
-      otp_delivery_method: Comment souhaitez-vous recevoir le code ?
+      otp_delivery_method: Comment envoyer un code?
       review: Réviser et soumettre
       session:
-        phone: Entrez un numéro de téléphone pour vous aider à vérifier votre identité
+        phone: Entrez votre numéro de téléphone
         review: Entrez à nouveau votre mot de passe %{app_name} pour crypter vos données
     troubleshooting:
       headings:

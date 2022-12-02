@@ -46,8 +46,8 @@ es:
       cancellation_prompt: Cancela la verificación de identidad
       cancelled: Se canceló la verificación de identidad
     mfa_setup:
-      suggest_second_mfa: ¡Has agregado tu primer método de autenticación! Agrega un
-        segundo método como respaldo.
+      suggest_second_mfa: '¡Has agregado tu primer método de autenticación! Agrega un
+        segundo método como respaldo.'
     no_auth_option: No se encontró mensaje de inicio de sesión
     openid_connect:
       authorization: Autorización de OpenID Connect

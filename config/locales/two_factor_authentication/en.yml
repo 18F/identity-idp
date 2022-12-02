@@ -68,16 +68,16 @@ en:
     mobile_terms_of_service: Mobile terms of service
     no_auth_option: No authentication option could be found for you to sign in.
     opt_in:
-      cant_use_phone: 'Can’t use your phone?'
-      error_retry: 'Sorry, we are having trouble opting you in. Please try again.'
-      opted_out_html: 'You’ve opted out of receiving text messages at %{phone_number}.
-        You can opt in and receive a one-time code again to that phone number.'
-      opted_out_last_30d_html: 'You’ve opted out of receiving text messages at
+      cant_use_phone: Can’t use your phone?
+      error_retry: Sorry, we are having trouble opting you in. Please try again.
+      opted_out_html: You’ve opted out of receiving text messages at %{phone_number}.
+        You can opt in and receive a security code again to that phone number.
+      opted_out_last_30d_html: You’ve opted out of receiving text messages at
         %{phone_number} within the last 30 days. We can only opt in a phone
-        number once every 30 days.'
-      title: We could not send a one-time code to your phone number
-      wait_30d_opt_in: 'After 30 days, you can opt in and receive a one-time code to
-        that phone number.'
+        number once every 30 days.
+      title: We could not send a security code to your phone number
+      wait_30d_opt_in: After 30 days, you can opt in and receive a security code to
+        that phone number.
     otp_delivery_preference:
       instruction: You can change this selection the next time you sign in. If you
         entered a landline, please select “Phone call” below.

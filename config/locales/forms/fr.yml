@@ -3,11 +3,11 @@ fr:
   forms:
     backup_code:
       are_you_sure_desc_html:
-        - <strong>Les codes de sauvegarde sont la méthode d’authentification la
+        - '<strong>Les codes de sauvegarde sont la méthode d’authentification la
           moins recommandée,</strong> car les codes peuvent facilement être
           perdus. Nous vous encourageons à explorer d’autres options
           d’authentification telles que le déverrouillage facial ou tactile, une
-          application d’authentification ou une clé de sécurité.
+          application d’authentification ou une clé de sécurité.'
         - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer,
           copier ou noter. Vous saisirez un code chaque fois que vous vous
           connecterez.
@@ -58,7 +58,7 @@ fr:
     email:
       buttons:
         delete: Supprimer l’email
-    example: 'Exemple:'
+    example: 'exemple:'
     messages:
       remember_device: Enregistrer ce navigateur
     password: Mot de passe
@@ -134,7 +134,6 @@ fr:
       totp_step_4: Entrez le code temporaire de votre application
     two_factor:
       backup_code: Code de sécurité
-      # removed "security code" form labels as they trigger ios credit card reader
       code: Code à usage unique
       personal_key: Clé personnelle
       try_again: Utilisez un autre numéro de téléphone

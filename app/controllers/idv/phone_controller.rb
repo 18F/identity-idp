@@ -2,6 +2,8 @@ module Idv
   class PhoneController < ApplicationController
     include IdvStepConcern
     include StepIndicatorConcern
+    include PhoneOtpRateLimitable
+    include PhoneOtpSendable
 
     attr_reader :idv_form
 
@@ -59,8 +61,10 @@ module Idv
       if phone_confirmation_required?
         if VendorStatus.new.all_phone_vendor_outage?
           redirect_to vendor_outage_path(from: :idv_phone)
-        else
+        elsif step.otp_delivery_preference_missing?
           redirect_to idv_otp_delivery_method_url
+        else
+          send_phone_confirmation_otp_and_handle_result
         end
       else
         redirect_to idv_review_url
@@ -73,6 +77,34 @@ module Idv
 
     def submit_proofing_attempt
       step.submit(step_params.to_h)
+    end
+
+    def send_phone_confirmation_otp_and_handle_result
+      save_delivery_preference
+      result = send_phone_confirmation_otp
+      analytics.idv_phone_confirmation_otp_sent(
+        **result.to_h.merge(adapter: Telephony.config.adapter),
+      )
+
+      irs_attempts_api_tracker.idv_phone_otp_sent(
+        phone_number: @idv_phone,
+        success: result.success?,
+        otp_delivery_method: idv_session.previous_phone_step_params[:otp_delivery_preference],
+        failure_reason: result.success? ? {} : otp_sent_tracker_error(result),
+      )
+      if result.success?
+        redirect_to idv_otp_verification_url
+      else
+        handle_send_phone_confirmation_otp_failure(result)
+      end
+    end
+
+    def handle_send_phone_confirmation_otp_failure(result)
+      if send_phone_confirmation_otp_rate_limited?
+        handle_too_many_otp_sends
+      else
+        invalid_phone_number(result.extra[:telephony_response].error)
+      end
     end
 
     def handle_proofing_failure
@@ -89,7 +121,7 @@ module Idv
     end
 
     def step_params
-      params.require(:idv_phone_form).permit(:phone)
+      params.require(:idv_phone_form).permit(:phone, :otp_delivery_preference)
     end
 
     def confirm_step_needed
@@ -147,6 +179,26 @@ module Idv
       return @gpo_letter_available if defined?(@gpo_letter_available)
       @gpo_letter_available ||= FeatureManagement.enable_gpo_verification? &&
                                 !Idv::GpoMail.new(current_user).mail_spammed?
+    end
+
+    # Migrated from otp_delivery_method_controller
+    def otp_sent_tracker_error(result)
+      if send_phone_confirmation_otp_rate_limited?
+        { rate_limited: true }
+      else
+        { telephony_error: result.extra[:telephony_response]&.error&.friendly_message }
+      end
+    end
+
+    # Migrated from otp_delivery_method_controller
+    def save_delivery_preference
+      original_session = idv_session.user_phone_confirmation_session
+      idv_session.user_phone_confirmation_session = Idv::PhoneConfirmationSession.new(
+        code: original_session.code,
+        phone: original_session.phone,
+        sent_at: original_session.sent_at,
+        delivery_method: original_session.delivery_method,
+      )
     end
   end
 end
