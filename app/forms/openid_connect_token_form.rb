@@ -70,7 +70,8 @@ class OpenidConnectTokenForm
   def find_identity_with_code
     return if code.blank? || code.include?("\x00")
 
-    # mattw: I suspect we want to change this one
+    # mattw: Add .consented here but this breaks 27 test cases, and I want to look at that tomorrow with
+    # a fresher brain.
     @identity = ServiceProviderIdentity.where(session_uuid: code).
       order(updated_at: :desc).first
   end

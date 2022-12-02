@@ -50,6 +50,7 @@ RSpec.describe OpenidConnectTokenForm do
 
   let(:user) { create(:user) }
 
+  # I think this setup needs to be examined when we change the form.
   let!(:identity) do
     IdentityLinker.new(user, service_provider).
       link_identity(

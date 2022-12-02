@@ -3,6 +3,7 @@ class AgencyIdentityLinker
     @sp_identity = sp_identity
     @agency_id = nil
   end
+
   def link_identity
     find_or_create_agency_identity ||
       AgencyIdentity.new(user_id: @sp_identity.user_id, uuid: @sp_identity.uuid)
@@ -34,7 +35,7 @@ class AgencyIdentityLinker
                  { uuid: uuid, service_provider: service_provider }
                end
     # mattw: Same, but I think we should change htis one
-    ServiceProviderIdentity.where(criteria).take
+    ServiceProviderIdentity.consented.where(criteria).take
   end
 
   private

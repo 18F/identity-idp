@@ -24,6 +24,7 @@ RSpec.describe VerifySpAttributesConcern do
     end
 
     context 'when there is no last_consented_at' do
+      let(:sp_session_identity) { build(:service_provider_identity, :non_consented, user: user) }
       it 'is true' do
         expect(consent_has_expired?).to eq(true)
       end
@@ -47,13 +48,16 @@ RSpec.describe VerifySpAttributesConcern do
       end
     end
 
+    # mattw: This and the next case are now sorta redundant; if it's nil, created_at
+    # is irrelevant because we treat them as having not consented. We can probably condense
+    # these tests, but I'm leaving them for now to show all's well.
     context 'when last_consented_at is nil but created_at is within a year' do
       let(:sp_session_identity) do
         build(:service_provider_identity, last_consented_at: nil, created_at: 4.days.ago)
       end
 
-      it 'is false' do
-        expect(consent_has_expired?).to eq(false)
+      it 'is true' do
+        expect(consent_has_expired?).to eq(true)
       end
     end
 

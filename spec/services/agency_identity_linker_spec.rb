@@ -79,7 +79,7 @@ describe AgencyIdentityLinker do
         'UUID2',
         'http://localhost:3000',
       )
-      expect(sp_identity.uuid).to eq('UUID1')
+      expect(sp_identity.uuid).to eq('UUID1') # FIXME: now returns nil
       expect(sp_identity.service_provider).to eq('http://localhost:3000')
     end
 
