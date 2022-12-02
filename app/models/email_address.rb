@@ -1,3 +1,25 @@
+# == Schema Information
+#
+# Table name: email_addresses
+#
+#  id                   :bigint           not null, primary key
+#  confirmation_sent_at :datetime
+#  confirmation_token   :string(255)
+#  confirmed_at         :datetime
+#  email_fingerprint    :string           default(""), not null
+#  encrypted_email      :string           default(""), not null
+#  last_sign_in_at      :datetime
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  user_id              :bigint
+#
+# Indexes
+#
+#  index_email_addresses_on_confirmation_token             (confirmation_token) UNIQUE
+#  index_email_addresses_on_email_fingerprint              (email_fingerprint) UNIQUE WHERE (confirmed_at IS NOT NULL)
+#  index_email_addresses_on_email_fingerprint_and_user_id  (email_fingerprint,user_id) UNIQUE
+#  index_email_addresses_on_user_id                        (user_id)
+#
 class EmailAddress < ApplicationRecord
   include EncryptableAttribute
 

@@ -1,3 +1,28 @@
+# == Schema Information
+#
+# Table name: partner_accounts
+#
+#  id                        :bigint           not null, primary key
+#  became_partner            :date
+#  description               :text
+#  name                      :string           not null
+#  requesting_agency         :string           not null
+#  agency_id                 :bigint
+#  crm_id                    :bigint
+#  partner_account_status_id :bigint
+#
+# Indexes
+#
+#  index_partner_accounts_on_agency_id                  (agency_id)
+#  index_partner_accounts_on_name                       (name) UNIQUE
+#  index_partner_accounts_on_partner_account_status_id  (partner_account_status_id)
+#  index_partner_accounts_on_requesting_agency          (requesting_agency) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (agency_id => agencies.id)
+#  fk_rails_...  (partner_account_status_id => partner_account_statuses.id)
+#
 class Agreements::PartnerAccount < ApplicationRecord
   self.table_name = 'partner_accounts'
 

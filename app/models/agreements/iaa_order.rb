@@ -1,3 +1,25 @@
+# == Schema Information
+#
+# Table name: iaa_orders
+#
+#  id               :bigint           not null, primary key
+#  end_date         :date
+#  estimated_amount :decimal(12, 2)
+#  mod_number       :integer          default(0), not null
+#  order_number     :integer          not null
+#  pricing_model    :integer          default(2), not null
+#  start_date       :date
+#  iaa_gtc_id       :bigint
+#
+# Indexes
+#
+#  index_iaa_orders_on_iaa_gtc_id                   (iaa_gtc_id)
+#  index_iaa_orders_on_iaa_gtc_id_and_order_number  (iaa_gtc_id,order_number) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (iaa_gtc_id => iaa_gtcs.id)
+#
 class Agreements::IaaOrder < ApplicationRecord
   self.table_name = 'iaa_orders'
 

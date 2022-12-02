@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: events
+#
+#  id                          :integer          not null, primary key
+#  disavowal_token_fingerprint :string
+#  disavowed_at                :datetime
+#  event_type                  :integer          not null
+#  ip                          :string
+#  created_at                  :datetime         not null
+#  updated_at                  :datetime         not null
+#  device_id                   :integer
+#  user_id                     :integer          not null
+#
+# Indexes
+#
+#  index_events_on_device_id_and_created_at     (device_id,created_at)
+#  index_events_on_disavowal_token_fingerprint  (disavowal_token_fingerprint)
+#  index_events_on_user_id_and_created_at       (user_id,created_at)
+#
 class Event < ApplicationRecord
   belongs_to :user
   belongs_to :device

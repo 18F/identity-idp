@@ -1,3 +1,38 @@
+# == Schema Information
+#
+# Table name: in_person_enrollments
+#
+#  id                                                                                                                                                   :bigint           not null, primary key
+#  early_reminder_sent(early reminder to complete IPP before deadline sent)                                                                             :boolean          default(FALSE)
+#  enrollment_code(The code returned by the USPS service)                                                                                               :string
+#  enrollment_established_at(When the enrollment was successfully established)                                                                          :datetime
+#  follow_up_survey_sent                                                                                                                                :boolean          default(FALSE)
+#  issuer(Issuer associated with the enrollment at time of creation)                                                                                    :string
+#  late_reminder_sent(late reminder to complete IPP before deadline sent)                                                                               :boolean          default(FALSE)
+#  selected_location_details(The location details of the Post Office the user selected (including title, address, hours of operation))                  :jsonb
+#  status(The status of the enrollment)                                                                                                                 :integer          default("establishing")
+#  status_check_attempted_at(The last time a status check was attempted)                                                                                :datetime
+#  status_updated_at(The last time the status was successfully updated with a value from the USPS API)                                                  :datetime
+#  created_at                                                                                                                                           :datetime         not null
+#  updated_at                                                                                                                                           :datetime         not null
+#  current_address_matches_id(True if the user indicates that their current address matches the address on the ID they're bringing to the Post Office.) :boolean
+#  profile_id(Foreign key to the profile this enrollment belongs to)                                                                                    :bigint
+#  unique_id(Unique ID to use with the USPS service)                                                                                                    :string
+#  user_id(Foreign key to the user this enrollment belongs to)                                                                                          :bigint           not null
+#
+# Indexes
+#
+#  index_in_person_enrollments_on_profile_id          (profile_id)
+#  index_in_person_enrollments_on_unique_id           (unique_id) UNIQUE
+#  index_in_person_enrollments_on_user_id             (user_id)
+#  index_in_person_enrollments_on_user_id_and_status  (user_id,status) UNIQUE WHERE (status = 1)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (issuer => service_providers.issuer)
+#  fk_rails_...  (profile_id => profiles.id)
+#  fk_rails_...  (user_id => users.id)
+#
 require 'securerandom'
 
 class InPersonEnrollment < ApplicationRecord

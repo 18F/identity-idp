@@ -1,3 +1,29 @@
+# == Schema Information
+#
+# Table name: document_capture_sessions
+#
+#  id                       :bigint           not null, primary key
+#  cancelled_at             :datetime
+#  ial2_strict              :boolean
+#  issuer                   :string
+#  ocr_confirmation_pending :boolean          default(FALSE)
+#  requested_at             :datetime
+#  uuid                     :string
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
+#  result_id                :string
+#  user_id                  :bigint
+#
+# Indexes
+#
+#  index_document_capture_sessions_on_result_id  (result_id)
+#  index_document_capture_sessions_on_user_id    (user_id)
+#  index_document_capture_sessions_on_uuid       (uuid)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
+#
 class DocumentCaptureSession < ApplicationRecord
   include NonNullUuid
 

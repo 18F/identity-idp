@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: agencies
+#
+#  id           :bigint           not null, primary key
+#  abbreviation :string
+#  name         :string           not null
+#
+# Indexes
+#
+#  index_agencies_on_abbreviation  (abbreviation) UNIQUE
+#  index_agencies_on_name          (name) UNIQUE
+#
 class Agency < ApplicationRecord
   has_many :agency_identities, dependent: :destroy
   # rubocop:disable Rails/HasManyOrHasOneDependent

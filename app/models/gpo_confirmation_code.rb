@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: usps_confirmation_codes
+#
+#  id              :bigint           not null, primary key
+#  code_sent_at    :datetime         not null
+#  otp_fingerprint :string           not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  profile_id      :integer          not null
+#
+# Indexes
+#
+#  index_usps_confirmation_codes_on_otp_fingerprint  (otp_fingerprint)
+#  index_usps_confirmation_codes_on_profile_id       (profile_id)
+#
 class GpoConfirmationCode < ApplicationRecord
   self.ignored_columns = [:bounced_at]
 

@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: integration_statuses
+#
+#  id           :bigint           not null, primary key
+#  name         :string           not null
+#  order        :integer          not null
+#  partner_name :string
+#
+# Indexes
+#
+#  index_integration_statuses_on_name   (name) UNIQUE
+#  index_integration_statuses_on_order  (order) UNIQUE
+#
 class Agreements::IntegrationStatus < ApplicationRecord
   self.table_name = 'integration_statuses'
 

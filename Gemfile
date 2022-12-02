@@ -88,6 +88,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'annotate'
   gem 'aws-sdk-cloudwatchlogs', require: false
   gem 'brakeman', require: false
   gem 'bullet', '~> 7.0'

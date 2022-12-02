@@ -1,3 +1,24 @@
+# == Schema Information
+#
+# Table name: iaa_gtcs
+#
+#  id                 :bigint           not null, primary key
+#  end_date           :date
+#  estimated_amount   :decimal(12, 2)
+#  gtc_number         :string           not null
+#  mod_number         :integer          default(0), not null
+#  start_date         :date
+#  partner_account_id :bigint
+#
+# Indexes
+#
+#  index_iaa_gtcs_on_gtc_number          (gtc_number) UNIQUE
+#  index_iaa_gtcs_on_partner_account_id  (partner_account_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (partner_account_id => partner_accounts.id)
+#
 class Agreements::IaaGtc < ApplicationRecord
   self.table_name = 'iaa_gtcs'
 

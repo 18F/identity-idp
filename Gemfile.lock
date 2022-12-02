@@ -125,6 +125,9 @@ GEM
       geocoder (>= 1.4.5)
       safely_block (>= 0.2.1)
     android_key_attestation (0.3.0)
+    annotate (3.2.0)
+      activerecord (>= 3.2, < 8.0)
+      rake (>= 10.4, < 14.0)
     ast (2.4.2)
     awrence (1.2.1)
     aws-eventstream (1.2.0)
@@ -723,6 +726,7 @@ PLATFORMS
 
 DEPENDENCIES
   ahoy_matey (~> 3.0)
+  annotate
   aws-sdk-cloudwatchlogs
   aws-sdk-kms (~> 1.4)
   aws-sdk-pinpoint

@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: backup_code_configurations
+#
+#  id                      :bigint           not null, primary key
+#  code_cost               :string
+#  code_salt               :string
+#  salted_code_fingerprint :string
+#  used_at                 :datetime
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  user_id                 :integer          not null
+#
+# Indexes
+#
+#  index_backup_code_configurations_on_user_id_and_created_at  (user_id,created_at)
+#  index_backup_codes_on_user_id_and_salted_code_fingerprint   (user_id,salted_code_fingerprint)
+#
 class BackupCodeConfiguration < ApplicationRecord
   NUM_WORDS = 3
 
