@@ -28,6 +28,8 @@ fr:
           %{app_name}.
         manual_entry: Ou entrez ce code manuellement dans votre application
           d’authentification
+      otp:
+        time_remaining: '%{countdown} restantes'
       piv_cac:
         account_not_found_html: '<p><strong>%{sign_in}</strong> votre adresse email et
           votre mot de passe. Ajoutez ensuite votre PIV/CAC à votre compte.</p>

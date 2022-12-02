@@ -1,7 +1,10 @@
 <% title t('titles.enter_2fa_code.one_time_code') %>
 
 <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4 usa-alert--info-time') do %>
-  <%= render CountdownComponent.new(expiration: @presenter.otp_expiration) %> remaining
+  <%= t(
+        'instructions.mfa.otp.time_remaining',
+        countdown: CountdownComponent.new(expiration: @presenter.otp_expiration).render_in(self),
+      ).html_safe %>
 <% end %>
 
 <%= render PageHeadingComponent.new.with_content(@presenter.header) %>
