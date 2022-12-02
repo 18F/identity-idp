@@ -27,6 +27,8 @@ class CountdownAlertComponent < AlertComponent
   private
 
   def alert_css_class
-    [*alert_options[:class], 'usa-alert--info-time']
+    classes = [*alert_options[:class], 'usa-alert--info-time']
+    classes << 'display-none' if show_at_remaining.present?
+    classes
   end
 end
