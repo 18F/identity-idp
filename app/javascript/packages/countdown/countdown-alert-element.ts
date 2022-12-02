@@ -24,6 +24,7 @@ export class CountdownAlertElement extends HTMLElement {
 
   show() {
     this.classList.remove('display-none');
+    this.countdown.start();
   }
 }
 
