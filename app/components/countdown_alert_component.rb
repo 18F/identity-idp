@@ -19,9 +19,9 @@ class CountdownAlertComponent < AlertComponent
 
   def content
     t(
-      'components.countdown_alert.time_remaining',
+      'components.countdown_alert.time_remaining_html',
       countdown: CountdownComponent.new(**countdown_options).render_in(self),
-    ).html_safe
+    )
   end
 
   private
