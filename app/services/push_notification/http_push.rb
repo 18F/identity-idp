@@ -24,6 +24,7 @@ module PushNotification
       event.user.
         service_providers.
         merge(ServiceProviderIdentity.not_deleted).
+        merge(ServiceProviderIdentity.consented).
         with_push_notification_urls.each do |service_provider|
           deliver_one(service_provider)
         end

@@ -8,6 +8,7 @@ RSpec.describe PushNotification::HttpPush do
   let(:sp_with_push_url) { create(:service_provider, push_notification_url: 'http://foo.bar/push') }
   let(:sp_no_push_url) { create(:service_provider, push_notification_url: nil) }
 
+  # mattw: A number of calls into IdentityLinker.link_identity to work through in here.
   let!(:sp_with_push_url_identity) do
     IdentityLinker.new(user, sp_with_push_url).link_identity
   end
