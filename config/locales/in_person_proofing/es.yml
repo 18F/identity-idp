@@ -24,11 +24,11 @@ es:
         speak_to_associate: Para verificar su identidad, puede acudir a cualquier
           empleado en ventanilla.
       cta:
-        button: Buscar una oficina de correos
+        button: Verifique su identificación en persona
         new_feature: Nuevo artículo
-        prompt: '¿Reside cerca de Washington, D.C. <wbr/>o Baltimore, MD?'
-        prompt_detail: Es posible que pueda verificar su identidad en persona en una
-          oficina de correos cercana.
+        prompt_detail: Si usted está ubicado cerca de Washington D.C. o Baltimore, MD,
+          puede verificar su identificación en persona en las oficinas de
+          correos seleccionadas.
       location:
         location_button: Seleccionar
         location_step_about: Si tiene problemas para añadir su cédula de identidad, es
@@ -75,6 +75,10 @@ es:
         same_address_choice_yes: Esta dirección aparece en mi cédula de identidad emitida por el estado
         state_prompt: '- Seleccione -'
       state_id:
+        date_hint:
+          day: 'Ejemplo: 28'
+          month: 'Ejemplo: 4'
+          year: 'Ejemplo: 1986'
         dob: Fecha de nacimiento
         dob_hint: 'Ejemplo: 4 28 1986'
         first_name: Nombre
@@ -93,7 +97,7 @@ es:
     headings:
       address: Ingrese su dirección actual
       barcode: Está listo para verificar su identidad en persona
-      cta: Verificar su identidad de forma presencial
+      cta: ¿Tiene problemas para verificar su documento de identidad en línea?
       location: Seleccione un lugar para verificar su cédula
       prepare: Verifique su identidad en persona
       state_id: Ingrese la información de su cédula

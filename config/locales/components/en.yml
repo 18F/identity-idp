@@ -40,3 +40,4 @@ en:
       label: Print
     troubleshooting_options:
       default_heading: 'Having trouble? Here’s what you can do:'
+      ipp_heading: 'Additional troubleshooting options:'

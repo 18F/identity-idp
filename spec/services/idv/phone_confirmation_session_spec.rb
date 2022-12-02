@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe PhoneConfirmation::ConfirmationSession do
+RSpec.describe Idv::PhoneConfirmationSession do
   describe '.start' do
     it 'starts a session for voice' do
       result = described_class.start(
