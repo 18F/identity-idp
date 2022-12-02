@@ -111,6 +111,16 @@ fr:
         thanks: Merci d’utiliser %{app_name}.
       header: Prenez une minute pour nous faire part de vos impressions
       subject: Parlez-nous de votre expérience récente avec %{app_name}
+    in_person_deadline_passed:
+      body:
+        cta: Recommencer
+        greeting: Bonjour,
+        canceled: Le délai imparti pour vérifier votre identité en personne a expiré. Nous
+          avons automatiquement annulé votre demande afin de protéger vos données personnelles.
+        restart: Pour introduire une nouvelle demande de vérification de votre identité auprès
+          de %{partner_agency}, cliquez sur le bouton ci-dessous.
+      header: Le délai imparti pour vérifier votre identité en personne a expiré
+      subject: La demande de vérification de votre identité en personne a expiré
     in_person_failed:
       body:
         with_cta: Cliquez sur le bouton ou copiez le lien ci-dessous pour essayer de
