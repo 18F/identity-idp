@@ -204,6 +204,7 @@ new_sign_up_cancellation_url_enabled: true
 no_sp_device_profiling_enabled: false
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
+otp_expiration_warning_seconds: 150
 otps_per_ip_limit: 25
 otps_per_ip_period: 300
 otps_per_ip_track_only_mode: true

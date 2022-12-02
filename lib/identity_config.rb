@@ -284,6 +284,7 @@ class IdentityConfig
     config.add(:nonessential_email_banlist, type: :json)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
     config.add(:otp_delivery_blocklist_maxretry, type: :integer)
+    config.add(:otp_expiration_warning_seconds, type: :integer)
     config.add(:otp_valid_for, type: :integer)
     config.add(:otps_per_ip_limit, type: :integer)
     config.add(:otps_per_ip_period, type: :integer)
