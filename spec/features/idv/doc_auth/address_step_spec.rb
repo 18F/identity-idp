@@ -9,12 +9,6 @@ feature 'doc auth verify step', :js do
     complete_doc_auth_steps_before_address_step
   end
 
-  it 'is on the correct page' do
-    expect(page).to have_current_path(idv_address_path)
-    expect(page).to have_content(t('doc_auth.headings.address'))
-    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-  end
-
   it 'allows the user to enter in a new address' do
     fill_out_address_form_ok
 

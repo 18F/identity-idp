@@ -18,12 +18,6 @@ feature 'doc auth send link step' do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
-  it 'is on the correct page' do
-    expect(page).to have_current_path(idv_doc_auth_send_link_step)
-    expect(page).to have_content(t('doc_auth.headings.take_picture'))
-    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-  end
-
   it 'proceeds to the next page with valid info' do
     expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
       :idv_phone_upload_link_sent,
