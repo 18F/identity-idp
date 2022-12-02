@@ -201,7 +201,7 @@ FactoryBot.define do
 
     trait :proofed_with_gpo do
       proofed
-      after :build do | user |
+      after :build do |user|
         profile = user.active_profile
         gpo_code = create(:gpo_confirmation_code)
         profile.gpo_confirmation_codes << gpo_code
