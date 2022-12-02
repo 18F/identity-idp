@@ -193,7 +193,7 @@ module Idv
     # Migrated from otp_delivery_method_controller
     def save_delivery_preference
       original_session = idv_session.user_phone_confirmation_session
-      idv_session.user_phone_confirmation_session = Idv::PhoneConfirmation::ConfirmationSession.new(
+      idv_session.user_phone_confirmation_session = Idv::PhoneConfirmationSession.new(
         code: original_session.code,
         phone: original_session.phone,
         sent_at: original_session.sent_at,
