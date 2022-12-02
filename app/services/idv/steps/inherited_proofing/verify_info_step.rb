@@ -30,8 +30,6 @@ module Idv
         private
 
         def save_proofing_components
-          raise 'current_user is not present' unless current_user.present?
-
           component_attributes = {
             inherited_proofing_proofed: true,
           }
