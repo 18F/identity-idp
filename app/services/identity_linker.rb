@@ -7,10 +7,30 @@ class IdentityLinker
     @ial = nil
   end
 
-  def link_identity(**extra_attrs)
+  def link_identity(
+    code_challenge: nil,
+    ial: nil,
+    nonce: nil,
+    rails_session_id: nil,
+    scope: nil,
+    verified_attributes: nil,
+    last_consented_at: nil,
+    clear_deleted_at: nil
+  )
     return unless user && service_provider.present?
-    process_ial(extra_attrs)
-    attributes = merged_attributes(extra_attrs)
+    process_ial(ial)
+    attributes = identity_attributes.merge(
+      optional_attributes(
+        code_challenge: code_challenge,
+        ial: ial,
+        nonce: nonce,
+        rails_session_id: rails_session_id,
+        scope: scope,
+        verified_attributes: verified_attributes,
+        last_consented_at: last_consented_at,
+        clear_deleted_at: clear_deleted_at,
+      ),
+    )
     identity.update!(attributes)
     AgencyIdentityLinker.new(identity).link_identity
     identity
@@ -18,8 +38,8 @@ class IdentityLinker
 
   private
 
-  def process_ial(extra_attrs)
-    @ial = extra_attrs[:ial]
+  def process_ial(ial)
+    @ial = ial
     now = Time.zone.now
     process_ial_at(now)
     process_verified_at(now)
@@ -45,10 +65,6 @@ class IdentityLinker
   # mattw: What does this have to do with costing?
   def find_or_create_identity_with_costing
     user.identities.create_or_find_by(service_provider: service_provider.issuer)
-  end
-
-  def merged_attributes(extra_attrs)
-    identity_attributes.merge(optional_attributes(**extra_attrs))
   end
 
   def identity_attributes
