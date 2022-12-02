@@ -121,6 +121,12 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).in_person_completion_survey
   end
 
+  def in_person_deadline_passed
+    UserMailer.with(user: user, email_address: email_address_record).in_person_deadline_passed(
+      enrollment: in_person_enrollment,
+    )
+  end
+
   def in_person_ready_to_verify
     UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
       enrollment: in_person_enrollment,
