@@ -22,8 +22,6 @@ en:
           several accounts set up in your app, enter the code corresponding to
           %{email} at %{app_name}.
         manual_entry: Or enter this code manually into your authentication app
-      otp:
-        time_remaining: '%{countdown} remaining'
       piv_cac:
         account_not_found_html: '<p><strong>%{sign_in}</strong> with your email address
           and password. Then add your PIV/CAC to your account.</p>

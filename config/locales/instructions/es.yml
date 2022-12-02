@@ -24,8 +24,6 @@ es:
           cuentas configuradas en su app, ingrese el código correspondiente a
           %{email} en %{app_name}.
         manual_entry: O ingrese este código manualmente en su aplicación de autenticación
-      otp:
-        time_remaining: 'Quedan %{countdown}'
       piv_cac:
         account_not_found_html: '<p><strong>%{sign_in}</strong> con su dirección de
           correo electrónico y contraseña. Luego agregue su PIV/CAC a su

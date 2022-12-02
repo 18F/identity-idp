@@ -5,6 +5,8 @@ en:
       image_alt: Barcode
     clipboard_button:
       label: Copy
+    countdown_alert:
+      time_remaining: '%{countdown} remaining'
     download_button:
       label: Download
     javascript_required:

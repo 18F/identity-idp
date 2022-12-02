@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { i18n } from '@18f/identity-i18n';
 import { usePropertyValue, useSandbox } from '@18f/identity-test-helpers';
-import { CountdownElement } from './index';
+import { CountdownElement } from './countdown-element';
 
 const DEFAULT_DATASET = {
   updateInterval: '1000',
