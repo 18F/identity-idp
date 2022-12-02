@@ -12,13 +12,13 @@ describe Telephony::Pinpoint::VoiceSender do
   let(:backup_voice_config) { Telephony.config.pinpoint.voice_configs.last }
 
   def mock_build_client
-    allow(voice_sender).
-      to receive(:build_client).with(voice_config).and_return(pinpoint_client)
+    Telephony::Pinpoint::VoiceSender::CLIENT_POOL[voice_config] =
+      FakeConnectionPool.new { pinpoint_client }
   end
 
   def mock_build_backup_client
-    allow(voice_sender).
-      to receive(:build_client).with(backup_voice_config).and_return(backup_pinpoint_client)
+    Telephony::Pinpoint::VoiceSender::CLIENT_POOL[backup_voice_config] =
+      FakeConnectionPool.new { backup_pinpoint_client }
   end
 
   describe '#send' do
@@ -46,7 +46,12 @@ describe Telephony::Pinpoint::VoiceSender do
       # More deterministic sending phone
       Telephony.config.pinpoint.voice_configs.first.longcode_pool = [sending_phone]
 
+      Telephony::Pinpoint::VoiceSender::CLIENT_POOL.clear
       mock_build_client
+    end
+
+    after do
+      Telephony::Pinpoint::VoiceSender::CLIENT_POOL.clear
     end
 
     it 'initializes a pinpoint sms and voice client and uses that to send a message' do
@@ -242,24 +247,6 @@ describe Telephony::Pinpoint::VoiceSender do
           expect(response.success?).to eq(true)
           expect(response.extra[:message_id]).to eq('fake-message-id')
         end
-      end
-    end
-
-    context 'when all voice configs fail to build' do
-      let(:raised_error_message) { 'Failed to load AWS config' }
-      let(:pinpoint_client) { nil }
-      let(:backup_pinpoint_client) { nil }
-
-      it 'logs a warning and returns an error' do
-        expect(Telephony.config.logger).to receive(:warn)
-
-        response = subject.send(
-          message: 'This is a test!',
-          to: '+1 (123) 456-7890',
-          country_code: 'US',
-        )
-        expect(response.success?).to eq(false)
-        expect(response.error).to eq(Telephony::UnknownFailureError.new(raised_error_message))
       end
     end
   end

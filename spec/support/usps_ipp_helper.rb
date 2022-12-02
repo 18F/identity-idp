@@ -23,6 +23,13 @@ module UspsIppHelper
     )
   end
 
+  def stub_request_enroll_timeout_error
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
+    ).to_raise(Faraday::TimeoutError)
+  end
+
   def stub_request_enroll_bad_request_response
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant}).to_return(
       status: 400,

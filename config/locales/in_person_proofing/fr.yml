@@ -78,6 +78,10 @@ fr:
         same_address_choice_yes: Cette adresse figure sur mon document d’identité nationale
         state_prompt: '- Sélectionnez -'
       state_id:
+        date_hint:
+          day: 'Exemple: 28'
+          month: 'Exemple: 4'
+          year: 'Exemple: 1986'
         dob: Date de naissance
         dob_hint: 'Exemple: 4 28 1986'
         first_name: Prénom

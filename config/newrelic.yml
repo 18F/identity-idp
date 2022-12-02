@@ -1,4 +1,6 @@
 common: &default_settings
+  code_level_metrics:
+    enabled: false
   application_logging:
     forwarding:
       enabled: false

@@ -2,18 +2,34 @@ module Idv
   module InheritedProofing
     module Va
       class Form < Idv::InheritedProofing::BaseForm
-        class << self
-          def required_fields
-            @required_fields ||= %i[first_name last_name birth_date ssn address_street address_zip]
-          end
+        REQUIRED_FIELDS = %i[first_name
+                             last_name
+                             birth_date
+                             ssn
+                             address_street
+                             address_zip].freeze
+        OPTIONAL_FIELDS = %i[phone
+                             address_street2
+                             address_city
+                             address_state
+                             address_country
+                             service_error].freeze
+        FIELDS = (REQUIRED_FIELDS + OPTIONAL_FIELDS).freeze
 
-          def optional_fields
-            @optional_fields ||= %i[phone address_street2 address_city address_state
-                                    address_country]
-          end
+        attr_accessor(*FIELDS)
+        validate :add_service_error, if: :service_error?
+        validates(*REQUIRED_FIELDS, presence: true, unless: :service_error?)
+
+        def submit
+          extra = {}
+          extra = { service_error: service_error } if service_error?
+
+          FormResponse.new(
+            success: validate,
+            errors: errors,
+            extra: extra,
+          )
         end
-
-        validates(*required_fields, presence: true)
 
         def user_pii
           raise 'User PII is invalid' unless valid?
@@ -29,6 +45,22 @@ module Idv
           user_pii[:state] = address_state
           user_pii[:zipcode] = address_zip
           user_pii
+        end
+
+        def service_error?
+          service_error.present?
+        end
+
+        private
+
+        def add_service_error
+          errors.add(
+            :service_provider,
+            # Use a "safe" error message for the model in case it's displayed
+            # to the user at any point.
+            I18n.t('inherited_proofing.errors.service_provider.communication'),
+            type: :service_error,
+          )
         end
       end
     end

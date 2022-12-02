@@ -67,7 +67,9 @@ module Idv
     def send_phone_confirmation_otp_and_handle_result
       save_delivery_preference
       result = send_phone_confirmation_otp
-      analytics.idv_phone_confirmation_otp_sent(**result.to_h)
+      analytics.idv_phone_confirmation_otp_sent(
+        **result.to_h.merge(adapter: Telephony.config.adapter),
+      )
 
       irs_attempts_api_tracker.idv_phone_otp_sent(
         phone_number: @idv_phone,
@@ -92,7 +94,7 @@ module Idv
 
     def save_delivery_preference
       original_session = idv_session.user_phone_confirmation_session
-      idv_session.user_phone_confirmation_session = PhoneConfirmation::ConfirmationSession.new(
+      idv_session.user_phone_confirmation_session = Idv::PhoneConfirmationSession.new(
         code: original_session.code,
         phone: original_session.phone,
         sent_at: original_session.sent_at,

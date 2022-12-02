@@ -37,7 +37,11 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:state_id_proofer) do
     Proofing::Aamva::Proofer.new(AamvaFixtures.example_config.to_h)
   end
-  let(:ddp_proofer) { Proofing::Mock::DdpMockClient.new }
+  let(:ddp_proofer) do
+    Proofing::LexisNexis::Ddp::Proofer.new(
+      LexisNexisFixtures.example_ddp_config.to_h,
+    )
+  end
   let(:trace_id) { SecureRandom.uuid }
   let(:user) { create(:user, :signed_up) }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
@@ -498,6 +502,22 @@ RSpec.describe ResolutionProofingJob, type: :job do
           allow(instance).to receive(:lexisnexis_ddp_proofer).and_return(ddp_proofer)
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
             and_return(true)
+          stub_request(:post, 'https://example.com/api/session-query').
+            with(
+              body: hash_including('api_key' => 'test_api_key'),
+              headers: {
+                'Accept' => '*/*',
+                'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                'Authorization' => 'Basic Og==',
+                'Content-Type' => 'application/json',
+                'User-Agent' => 'Faraday v2.6.0',
+              },
+            ).
+            to_return(
+              status: 200,
+              body: LexisNexisFixtures.ddp_success_response_json,
+              headers: {},
+            )
         end
 
         context 'with a successful response from the proofer' do
@@ -516,9 +536,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
             expect(instance).to receive(:logger_info_hash).ordered.with(
               hash_including(
                 name: 'ThreatMetrix',
-                user_id: user.uuid,
-                threatmetrix_request_id: Proofing::Mock::DdpMockClient::TRANSACTION_ID,
+                threatmetrix_request_id: '1234',
                 threatmetrix_success: true,
+                user_id: user.uuid,
               ),
             )
 
@@ -616,7 +636,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
                 vendor_name: 'ResolutionMock',
               ),
             )
-            expect(state_id_proofer).to receive(:proof).and_return(Proofing::Result.new)
+            expect(state_id_proofer).to receive(:proof).and_return(
+              Proofing::Result.new,
+            )
           end
 
           it 'logs the trace_id and timing info for ProofResolution info' do

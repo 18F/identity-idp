@@ -146,11 +146,15 @@ es:
       subject: Está listo para verificar su identidad con %{app_name} en persona
     in_person_ready_to_verify_reminder:
       greeting: Hola,
-      heading: Tiene %{days_remaining} días para verificar su identidad en persona
+      heading:
+        one: Tiene %{count} día para verificar su identidad en persona
+        other: Tiene %{count} días para verificar su identidad en persona
       intro: No pierda la oportunidad de verificar su identidad en su oficina de
         correos local. Complete este paso para acceder %{sp_name}.
-      subject: Verifique su identidad en una oficina de correos en los próximos
-        %{days_remaining} días
+      subject:
+        one: Verifique su identidad en una oficina de correos en el próximo día
+        other: Verifique su identidad en una oficina de correos en los próximos %{count}
+          días
     in_person_verified:
       greeting: Hola,
       intro: El %{date}, verificó correctamente su identidad en la oficina de correos
@@ -164,10 +168,10 @@ es:
           continuación para iniciar sesión en %{app_name}.
       sign_in: Iniciar sesión
       subject: Verificó correctamente su identidad con %{app_name}
-      warning_contact_us_html: Si usted no intentó verificar su identidad en persona,
-        por favor, póngase en <a href="%{contact_us_url}">contacto con
-        nosotros</a> e <a href="%{sign_in_url}">inicie sesión</a> para cambiar
-        su contraseña.
+      warning_contact_us_html: Si no ha intentado verificar su identidad en persona,
+        inicie sesión para <a href="%{reset_password_url}">restablecer su
+        contraseña</a>. Para informar de esto, póngase en <a
+        href="%{contact_us_url}">contacto con el soporte de %{app_name}</a>.
     letter_reminder:
       info_html: La carta que está a punto de recibir contendrá un código de
         confirmación que nos ayudará a verificar su dirección. Puede completar

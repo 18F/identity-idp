@@ -60,8 +60,12 @@ module Idv
         channel: delivery_method,
         domain: IdentityConfig.store.domain_name,
         country_code: parsed_phone.country,
+        extra_metadata: {
+          area_code: parsed_phone.area_code,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+          resend: nil,
+        },
       )
-      add_cost
       otp_sent_response
     end
 
@@ -69,10 +73,6 @@ module Idv
       FormResponse.new(
         success: telephony_response.success?, extra: extra_analytics_attributes,
       )
-    end
-
-    def add_cost
-      Db::ProofingCost::AddUserProofingCost.call(user.id, :phone_otp)
     end
 
     def extra_analytics_attributes

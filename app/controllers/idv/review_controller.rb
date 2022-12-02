@@ -36,7 +36,7 @@ module Idv
 
     def new
       @applicant = idv_session.applicant
-      analytics.idv_review_info_visited
+      analytics.idv_review_info_visited(address_verification_method: address_verification_method)
 
       gpo_mail_service = Idv::GpoMail.new(current_user)
       flash_now = flash.now
@@ -67,6 +67,10 @@ module Idv
 
     private
 
+    def address_verification_method
+      user_session.dig('idv', 'address_verification_mechanism')
+    end
+
     def log_reproof_event
       irs_attempts_api_tracker.idv_reproof
     end
@@ -96,12 +100,12 @@ module Idv
       end
 
       if idv_session.profile.active?
-        event = create_user_event_with_disavowal(:account_verified)
+        event, disavowal_token = create_user_event_with_disavowal(:account_verified)
         UserAlerts::AlertUserAboutAccountVerified.call(
           user: current_user,
           date_time: event.created_at,
           sp_name: decorated_session.sp_name,
-          disavowal_token: event.disavowal_token,
+          disavowal_token: disavowal_token,
         )
       end
     end

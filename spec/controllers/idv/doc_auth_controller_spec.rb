@@ -94,7 +94,15 @@ describe Idv::DocAuthController do
     end
 
     it 'tracks analytics' do
-      result = { step: 'welcome', flow_path: 'standard', step_count: 1, analytics_id: 'Doc Auth' }
+      result = {
+        step: 'welcome',
+        flow_path: 'standard',
+        irs_reproofing: false,
+        step_count: 1,
+        analytics_id: 'Doc Auth',
+        native_camera_a_b_testing_enabled: false,
+        native_camera_only: false,
+      }
 
       get :show, params: { step: 'welcome' }
 
@@ -125,7 +133,12 @@ describe Idv::DocAuthController do
 
       expect(@analytics).to have_received(:track_event).ordered.with(
         'IdV: doc auth welcome visited',
-        hash_including(step: 'welcome', step_count: 1),
+        hash_including(
+          step: 'welcome',
+          step_count: 1,
+          native_camera_a_b_testing_enabled: false,
+          native_camera_only: false,
+        ),
       )
       expect(@analytics).to have_received(:track_event).ordered.with(
         'IdV: doc auth welcome visited',
@@ -164,7 +177,10 @@ describe Idv::DocAuthController do
         flow_path: 'standard',
         step_count: 1,
         pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]],
+        irs_reproofing: false,
         analytics_id: 'Doc Auth',
+        native_camera_a_b_testing_enabled: false,
+        native_camera_only: false,
       }
 
       put :update, params: { step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
@@ -184,7 +200,12 @@ describe Idv::DocAuthController do
 
       expect(@analytics).to have_received(:track_event).with(
         'IdV: doc auth ssn submitted',
-        hash_including(step: 'ssn', step_count: 1),
+        hash_including(
+          step: 'ssn',
+          step_count: 1,
+          native_camera_a_b_testing_enabled: false,
+          native_camera_only: false,
+        ),
       )
       expect(@analytics).to have_received(:track_event).with(
         'IdV: doc auth ssn submitted',
@@ -200,8 +221,11 @@ describe Idv::DocAuthController do
         },
         step: 'welcome',
         flow_path: 'standard',
+        irs_reproofing: false,
         step_count: 1,
         analytics_id: 'Doc Auth',
+        native_camera_a_b_testing_enabled: false,
+        native_camera_only: false,
       }
 
       put :update, params: {

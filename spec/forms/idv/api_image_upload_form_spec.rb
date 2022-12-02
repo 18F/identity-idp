@@ -15,6 +15,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
       irs_attempts_api_tracker: irs_attempts_api_tracker,
+      store_encrypted_images: store_encrypted_images,
     )
   end
 
@@ -30,6 +31,7 @@ RSpec.describe Idv::ApiImageUploadForm do
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:irs_attempts_api_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:store_encrypted_images) { false }
 
   describe '#valid?' do
     context 'with all valid images' do
@@ -242,6 +244,63 @@ RSpec.describe Idv::ApiImageUploadForm do
       it 'includes doc_pii errors' do
         response = form.submit
         expect(response.errors[:doc_pii]).to eq('bad')
+      end
+    end
+
+    describe 'encrypted document storage' do
+      context 'when encrypted image storage is enabled' do
+        let(:store_encrypted_images) { true }
+
+        it 'writes encrypted documents' do
+          form.submit
+
+          upload_events = irs_attempts_api_tracker.events[:idv_document_upload_submitted]
+          expect(upload_events).to have_attributes(length: 1)
+          upload_event = upload_events.first
+
+          document_writer = form.send(:encrypted_document_storage_writer)
+
+          front_image.rewind
+          back_image.rewind
+
+          cipher = Encryption::AesCipher.new
+
+          front_image_ciphertext =
+            document_writer.storage.read_image(name: upload_event[:document_front_image_filename])
+
+          back_image_ciphertext =
+            document_writer.storage.read_image(name: upload_event[:document_back_image_filename])
+
+          key = Base64.decode64(upload_event[:document_image_encryption_key])
+
+          expect(cipher.decrypt(front_image_ciphertext, key)).to eq(front_image.read)
+          expect(cipher.decrypt(back_image_ciphertext, key)).to eq(back_image.read)
+        end
+      end
+
+      context 'when encrypted image storage is disabled' do
+        let(:store_encrypted_images) { false }
+
+        it 'does not write images' do
+          document_writer = instance_double(EncryptedDocumentStorage::DocumentWriter)
+          allow(form).to receive(:encrypted_document_storage_writer).and_return(document_writer)
+
+          expect(document_writer).to_not receive(:encrypt_and_write_document)
+
+          form.submit
+        end
+
+        it 'does not send image info to attempts api' do
+          expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            hash_including(
+              document_front_image_filename: nil,
+              document_back_image_filename: nil,
+              document_image_encryption_key: nil,
+            ),
+          )
+
+          form.submit
+        end
       end
     end
 

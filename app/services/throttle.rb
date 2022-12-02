@@ -49,6 +49,10 @@ class Throttle
       max_attempts: IdentityConfig.store.phone_confirmation_max_attempts,
       attempt_window: IdentityConfig.store.phone_confirmation_max_attempt_window_in_minutes,
     },
+    inherited_proofing: {
+      max_attempts: IdentityConfig.store.inherited_proofing_max_attempts,
+      attempt_window: IdentityConfig.store.inherited_proofing_max_attempt_window_in_minutes,
+    },
   }.with_indifferent_access.freeze
 
   def initialize(throttle_type:, user: nil, target: nil)

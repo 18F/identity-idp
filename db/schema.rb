@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_04_204944) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_15_181559) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -210,7 +210,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_04_204944) do
     t.index ["confirmation_token"], name: "index_email_addresses_on_confirmation_token", unique: true
     t.index ["email_fingerprint", "user_id"], name: "index_email_addresses_on_email_fingerprint_and_user_id", unique: true
     t.index ["email_fingerprint"], name: "index_email_addresses_on_email_fingerprint", unique: true, where: "(confirmed_at IS NOT NULL)"
-    t.index ["user_id", "last_sign_in_at"], name: "index_email_addresses_on_user_id_and_last_sign_in_at", order: { last_sign_in_at: :desc }
     t.index ["user_id"], name: "index_email_addresses_on_user_id"
   end
 
@@ -296,6 +295,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_04_204944) do
     t.datetime "enrollment_established_at", comment: "When the enrollment was successfully established"
     t.string "issuer", comment: "Issuer associated with the enrollment at time of creation"
     t.boolean "follow_up_survey_sent", default: false
+    t.boolean "early_reminder_sent", default: false, comment: "early reminder to complete IPP before deadline sent"
+    t.boolean "late_reminder_sent", default: false, comment: "late reminder to complete IPP before deadline sent"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
     t.index ["unique_id"], name: "index_in_person_enrollments_on_unique_id", unique: true
     t.index ["user_id", "status"], name: "index_in_person_enrollments_on_user_id_and_status", unique: true, where: "(status = 1)"
@@ -332,6 +333,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_04_204944) do
     t.index ["service_provider_id"], name: "index_integrations_on_service_provider_id"
   end
 
+  create_table "irs_attempt_api_log_files", force: :cascade do |t|
+    t.string "filename"
+    t.string "iv"
+    t.text "encrypted_key"
+    t.datetime "requested_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["requested_time"], name: "index_irs_attempt_api_log_files_on_requested_time"
+  end
+
   create_table "letter_requests_to_usps_ftp_logs", force: :cascade do |t|
     t.datetime "ftp_at", precision: nil, null: false
     t.integer "letter_requests_count", null: false
@@ -344,15 +355,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_04_204944) do
     t.integer "user_id", null: false
     t.integer "auth_count", default: 1, null: false
     t.index ["issuer", "year_month", "user_id"], name: "index_monthly_auth_counts_on_issuer_and_year_month_and_user_id", unique: true
-  end
-
-  create_table "monthly_sp_auth_counts", force: :cascade do |t|
-    t.string "issuer", null: false
-    t.integer "ial", limit: 2, null: false
-    t.string "year_month", null: false
-    t.integer "user_id", null: false
-    t.integer "auth_count", default: 1, null: false
-    t.index ["issuer", "ial", "year_month", "user_id"], name: "index_monthly_sp_auth_counts_on_issuer_ial_month_user_id", unique: true
   end
 
   create_table "otp_requests_trackers", id: :serial, force: :cascade do |t|
@@ -466,23 +468,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_04_204944) do
     t.index ["verified_at"], name: "index_proofing_components_on_verified_at"
   end
 
-  create_table "proofing_costs", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "acuant_front_image_count", default: 0
-    t.integer "acuant_back_image_count", default: 0
-    t.integer "aamva_count", default: 0
-    t.integer "lexis_nexis_resolution_count", default: 0
-    t.integer "lexis_nexis_address_count", default: 0
-    t.integer "gpo_letter_count", default: 0
-    t.integer "phone_otp_count", default: 0
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.integer "acuant_result_count", default: 0
-    t.integer "acuant_selfie_count", default: 0
-    t.integer "threatmetrix_count", default: 0
-    t.index ["user_id"], name: "index_proofing_costs_on_user_id", unique: true
-  end
-
   create_table "registration_logs", force: :cascade do |t|
     t.integer "user_id", null: false
     t.datetime "registered_at", precision: nil
@@ -500,13 +485,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_04_204944) do
     t.datetime "occurred_at", precision: nil
     t.index ["jti", "user_id", "issuer"], name: "index_security_events_on_jti_and_user_id_and_issuer", unique: true
     t.index ["user_id"], name: "index_security_events_on_user_id"
-  end
-
-  create_table "service_provider_quota_limits", force: :cascade do |t|
-    t.string "issuer", null: false
-    t.integer "ial", limit: 2, null: false
-    t.integer "percent_full"
-    t.index ["issuer", "ial"], name: "index_service_provider_quota_limits_on_issuer_and_ial", unique: true
   end
 
   create_table "service_providers", id: :serial, force: :cascade do |t|
@@ -537,7 +515,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_04_204944) do
     t.string "push_notification_url"
     t.jsonb "help_text", default: {"sign_in"=>{}, "sign_up"=>{}, "forgot_password"=>{}}
     t.boolean "allow_prompt_login", default: false
-    t.integer "ial2_quota"
     t.boolean "signed_response_message_requested", default: false
     t.string "remote_logo_key"
     t.date "launch_date"

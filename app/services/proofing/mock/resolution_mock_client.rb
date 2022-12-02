@@ -1,6 +1,6 @@
 module Proofing
   module Mock
-    class ResolutionMockClient < Proofing::Base
+    class ResolutionMockClient
       UNVERIFIABLE_ZIP_CODE = '00000'
       NO_CONTACT_SSN = /000-?00-?0000/
       TRANSACTION_ID = 'resolution-mock-transaction-id-123'

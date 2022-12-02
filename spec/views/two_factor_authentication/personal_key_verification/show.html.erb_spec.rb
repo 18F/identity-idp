@@ -12,7 +12,7 @@ describe 'two_factor_authentication/personal_key_verification/show.html.erb' do
   it_behaves_like 'an otp form'
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('titles.enter_2fa_code'))
+    expect(view).to receive(:title).with(t('titles.enter_2fa_code.security_code'))
 
     render
   end

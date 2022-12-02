@@ -565,20 +565,66 @@ module AnalyticsEvents
     )
   end
 
-  def idv_inherited_proofing_agreement_submitted(**extra)
-    track_event('Idv: inherited proofing agreement submitted', **extra)
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [String] step Document step user is on
+  # The user agrees to allow us to access their data via api call
+  def idv_inherited_proofing_agreement_submitted(success:, errors:, flow_path:, step:, **extra)
+    track_event(
+      'IdV: inherited proofing agreement submitted',
+      success: success,
+      errors: errors,
+      flow_path: flow_path,
+      step: step,
+      **extra,
+    )
   end
 
-  def idv_inherited_proofing_agreement_visited(**extra)
-    track_event('Idv: inherited proofing agreement visited', **extra)
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [String] step Document step user is on
+  # The user visited the inherited proofing agreement page
+  def idv_inherited_proofing_agreement_visited(flow_path:, step:, **extra)
+    track_event(
+      'IdV: inherited proofing agreement visited',
+      flow_path: flow_path,
+      step: step,
+      **extra,
+    )
   end
 
-  def idv_inherited_proofing_get_started_submitted(**extra)
-    track_event('Idv: inherited proofing get_started submitted', **extra)
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [String] step Document step user is on
+  # The user chooses to begin the inherited proofing process
+  def idv_inherited_proofing_get_started_submitted(success:, errors:, flow_path:, step:, **extra)
+    track_event(
+      'IdV: inherited proofing get started submitted',
+      success: success,
+      errors: errors,
+      flow_path: flow_path,
+      step: step,
+      **extra,
+    )
   end
 
-  def idv_inherited_proofing_get_started_visited(**extra)
-    track_event('Idv: inherited proofing get_started visited', **extra)
+  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [String] step Document step user is on
+  # The user visited the inherited proofing get started step
+  def idv_inherited_proofing_get_started_visited(flow_path:, step:, **extra)
+    track_event(
+      'IdV: inherited proofing get started visited',
+      flow_path: flow_path,
+      step: step,
+      **extra,
+    )
+  end
+
+  # Retry retrieving the user PII in the case where the first attempt fails
+  # in the agreement step, and the user initiates a "retry".
+  def idv_inherited_proofing_redo_retrieve_user_info_submitted(**extra)
+    track_event('IdV: inherited proofing retry retrieve user information submitted', **extra)
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
@@ -1106,7 +1152,7 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param ["sms","voice"] otp_delivery_preference which chaennel the OTP was delivered by
+  # @param ["sms","voice"] otp_delivery_preference which channel the OTP was delivered by
   # @param [String] country_code country code of phone number
   # @param [String] area_code area code of phone number
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
@@ -1140,13 +1186,14 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param ["sms","voice"] otp_delivery_preference which chaennel the OTP was delivered by
+  # @param ["sms","voice"] otp_delivery_preference which channel the OTP was delivered by
   # @param [String] country_code country code of phone number
   # @param [String] area_code area code of phone number
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
   # @param [Hash] telephony_response response from Telephony gem
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [:test, :pinpoint] adapter which adapter the OTP was delivered with
   # The user requested an OTP to confirm their phone during the IDV phone step
   def idv_phone_confirmation_otp_sent(
     success:,
@@ -1157,6 +1204,7 @@ module AnalyticsEvents
     rate_limit_exceeded:,
     phone_fingerprint:,
     telephony_response:,
+    adapter:,
     proofing_components: nil,
     **extra
   )
@@ -1170,6 +1218,7 @@ module AnalyticsEvents
       rate_limit_exceeded: rate_limit_exceeded,
       phone_fingerprint: phone_fingerprint,
       telephony_response: telephony_response,
+      adapter: adapter,
       proofing_components: proofing_components,
       **extra,
     )
@@ -1339,11 +1388,17 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's
+  #        current proofing components
+  # @param address_verification_method The method (phone or gpo) being
+  #        used to verify the user's identity
   # User visited IDV password confirm page
-  def idv_review_info_visited(proofing_components: nil, **extra)
+  def idv_review_info_visited(proofing_components: nil,
+                              address_verification_method: nil,
+                              **extra)
     track_event(
       'IdV: review info visited',
+      address_verification_method: address_verification_method,
       proofing_components: proofing_components,
       **extra,
     )
@@ -2604,6 +2659,7 @@ module AnalyticsEvents
   # @param ["sms","voice"] otp_delivery_preference the channel used to send the message
   # @param [Boolean] resend
   # @param [Hash] telephony_response
+  # @param [:test, :pinpoint] adapter which adapter the OTP was delivered with
   # @param [Boolean] success
   # A phone one-time password send was attempted
   def telephony_otp_sent(
@@ -2614,6 +2670,7 @@ module AnalyticsEvents
     otp_delivery_preference:,
     resend:,
     telephony_response:,
+    adapter:,
     success:,
     **extra
   )
@@ -2627,6 +2684,7 @@ module AnalyticsEvents
         otp_delivery_preference: otp_delivery_preference,
         resend: resend,
         telephony_response: telephony_response,
+        adapter: adapter,
         success: success,
         **extra,
       },
@@ -3048,6 +3106,25 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks exceptions that are raised when running InPerson::EmailReminderJob
+  # @param [String] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  def idv_in_person_email_reminder_job_exception(
+    enrollment_id:,
+    exception_class: nil,
+    exception_message: nil,
+    **extra
+  )
+    track_event(
+      'InPerson::EmailReminderJob: Exception raised when attempting to send reminder email',
+      enrollment_id: enrollment_id,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      **extra,
+    )
+  end
+
   # Tracks individual enrollments that are updated during GetUspsProofingResultsJob
   # @param [String] enrollment_code
   # @param [String] enrollment_id
@@ -3082,6 +3159,22 @@ module AnalyticsEvents
     track_event(
       'GetUspsProofingResultsJob: Success or failure email initiated',
       email_type: email_type,
+      **extra,
+    )
+  end
+
+  # Tracks emails that are initiated during InPerson::EmailReminderJob
+  # @param [String] email_type early or late
+  # @param [String] enrollment_id
+  def idv_in_person_email_reminder_job_email_initiated(
+    email_type:,
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      'InPerson::EmailReminderJob: Reminder email initiated',
+      email_type: email_type,
+      enrollment_id: enrollment_id,
       **extra,
     )
   end

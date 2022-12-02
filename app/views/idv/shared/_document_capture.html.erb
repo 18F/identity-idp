@@ -33,6 +33,9 @@
       max_submission_attempts_before_native_camera: IdentityConfig.store.doc_auth_max_submission_attempts_before_native_camera,
       native_camera_a_b_testing_enabled: native_camera_a_b_testing_enabled,
       native_camera_only: native_camera_only,
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      use_newer_sdk: use_newer_sdk,
+      acuant_version: acuant_version,
       sp_name: sp_name,
       flow_path: flow_path,
       cancel_url: idv_cancel_path,
@@ -42,6 +45,7 @@
       keep_alive_endpoint: sessions_keepalive_url,
       idv_in_person_url: Idv::InPersonConfig.enabled_for_issuer?(decorated_session.sp_issuer) ? idv_in_person_url : nil,
       security_and_privacy_how_it_works_url: MarketingSite.security_and_privacy_how_it_works_url,
+      arcgis_search_enabled: IdentityConfig.store.arcgis_search_enabled,
     } %>
   <%= simple_form_for(
         :doc_auth,

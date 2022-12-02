@@ -44,6 +44,7 @@ address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US
 arcgis_api_root_url: 'https://gis.gsa.gov'
 arcgis_api_username: ''
 arcgis_api_password: ''
+arcgis_search_enabled: false
 asset_host: ''
 async_wait_timeout_seconds: 60
 async_stale_job_timeout_seconds: 300
@@ -95,10 +96,11 @@ email_registrations_per_ip_limit: 20
 email_registrations_per_ip_period: 20
 email_registrations_per_ip_track_only_mode: false
 enable_load_testing_mode: false
-enable_partner_api: false
 enable_rate_limiting: true
 enable_test_routes: true
 enable_usps_verification: true
+encrypted_document_storage_enabled: true
+encrypted_document_storage_s3_bucket: 'test-bucket-changeme'
 event_disavowal_expiration_hours: 240
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 good_job_max_threads: 5
@@ -114,10 +116,15 @@ idv_max_attempts: 5
 idv_min_age_years: 13
 idv_native_camera_a_b_testing_enabled: false
 idv_native_camera_a_b_testing_percent: 10
+idv_acuant_sdk_upgrade_a_b_testing_enabled: false
+idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 ie11_support_end_date: '2022-12-31'
 idv_sp_required: false
+in_person_email_reminder_early_benchmark_in_days: 11
+in_person_email_reminder_final_benchmark_in_days: 1
+in_person_email_reminder_late_benchmark_in_days: 4
 in_person_proofing_enabled: false
 in_person_enrollment_validity_in_days: 30
 in_person_results_delay_in_hours: 1
@@ -125,6 +132,8 @@ in_person_completion_survey_url: 'https://login.gov'
 include_slo_in_saml_metadata: false
 inherited_proofing_enabled: false
 inherited_proofing_va_base_url: 'https://staging-api.va.gov'
+inherited_proofing_max_attempts: 2
+inherited_proofing_max_attempt_window_in_minutes: 1
 va_inherited_proofing_mock_enabled: false
 irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_auth_tokens: ''
@@ -174,6 +183,7 @@ lexisnexis_threatmetrix_js_signing_cert: ''
 ###################################################################
 lockout_period_in_minutes: 10
 log_to_stdout: false
+login_otp_confirmation_max_attempts: 10
 logins_per_email_and_ip_bantime: 60
 logins_per_email_and_ip_limit: 5
 logins_per_email_and_ip_period: 60
@@ -201,9 +211,9 @@ outbound_connection_check_retry_count: 2
 outbound_connection_check_timeout: 5
 outbound_connection_check_url: 'https://checkip.amazonaws.com'
 participate_in_dap: false
-partner_api_bucket_prefix: ''
 password_max_attempts: 3
 personal_key_retired: true
+phone_carrier_registration_blocklist: ''
 phone_confirmation_max_attempts: 20
 phone_confirmation_max_attempt_window_in_minutes: 1_440
 phone_setups_per_ip_limit: 25
@@ -212,11 +222,13 @@ phone_setups_per_ip_track_only_mode: false
 pii_lock_timeout_in_minutes: 30
 pinpoint_sms_sender_id: 'aaa'
 pinpoint_sms_configs: '[]'
+pinpoint_sms_pool_size: 5
 pinpoint_voice_configs: '[]'
+pinpoint_voice_pool_size: 5
 piv_cac_service_url: https://localhost:8443/
 piv_cac_service_timeout: 5.0
 piv_cac_verify_token_url: https://localhost:8443/
-platform_authentication_enabled: true
+platform_auth_set_up_enabled: false
 poll_rate_for_verify_in_seconds: 3
 proofer_mock_fallback: true
 proofing_device_profiling_collecting_enabled: true
@@ -355,6 +367,7 @@ development:
   irs_attempt_api_public_key_id: key1
   irs_attempt_api_enabled: true
   irs_attempt_api_auth_tokens: 'abc123'
+  irs_attempt_api_bucket_name: please-change-me
   logins_per_ip_limit: 5
   logo_upload_enabled: true
   max_bad_passwords: 5
@@ -378,7 +391,6 @@ development:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   show_account_recovery_recovery_options: true
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
-  sps_over_quota_limit_notify_email_list: '[]'
   state_tracking_enabled: true
   telephony_adapter: test
   use_dashboard_service_providers: true
@@ -422,6 +434,8 @@ production:
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
+  encrypted_document_storage_enabled: false
+  encrypted_document_storage_s3_bucket: ''
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
@@ -442,7 +456,7 @@ production:
   participate_in_dap: true
   password_pepper:
   piv_cac_verify_token_secret:
-  platform_authentication_enabled: false
+  platform_auth_set_up_enabled: false
   session_encryptor_alert_enabled: true
   recurring_jobs_disabled_names: "[]"
   redis_irs_attempt_api_url: redis://redis.login.gov.internal:6379/2
@@ -460,7 +474,6 @@ production:
   seed_agreements_data: false
   session_encryption_key:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
-  sps_over_quota_limit_notify_email_list: '[]'
   state_tracking_enabled: false
   telephony_adapter: pinpoint
   use_kms: true
@@ -508,6 +521,7 @@ test:
   irs_attempt_api_auth_tokens: 'test-token-1,test-token-2'
   irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
   irs_attempt_api_public_key_id: key1
+  irs_attempt_api_bucket_name: test-bucket-name
   kantara_2fa_phone_restricted: false
   kantara_2fa_phone_existing_user_restriction: false
   lexisnexis_trueid_account_id: 'test_account'
@@ -552,7 +566,6 @@ test:
   secret_key_base: test_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   skip_encryption_allowed_list: '[]'
-  sps_over_quota_limit_notify_email_list: '["test1@test.com"]'
   state_tracking_enabled: true
   telephony_adapter: test
   test_ssn_allowed_list: '999999999'

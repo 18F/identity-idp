@@ -10,9 +10,7 @@ describe Encryption::MultiRegionKmsClient do
     stub_const(
       'Encryption::MultiRegionKmsClient::KMS_REGION_CLIENT_POOL',
       Hash.new do |h, region|
-        h[region] = AwsKmsClientHelper::FakeConnectionPool.new do
-          Aws::KMS::Client.new(region: region)
-        end
+        h[region] = FakeConnectionPool.new { Aws::KMS::Client.new(region: region) }
       end,
     )
 

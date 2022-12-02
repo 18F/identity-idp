@@ -17,7 +17,6 @@ module Db
 
     def add_cost(token)
       Db::SpCost::AddSpCost.call(service_provider, 2, token)
-      Db::ProofingCost::AddUserProofingCost.call(user_id, token)
     end
   end
 end

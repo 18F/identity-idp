@@ -13,13 +13,15 @@
   <%= f.error_notification %>
   <%= render PasswordToggleComponent.new(
         form: f,
-        name: :password,
-        label: t('forms.passwords.edit.labels.password'),
-        required: true,
-        input_html: { aria: { describedby: 'password-description' } },
+        field_options: {
+          name: :password,
+          label: t('forms.passwords.edit.labels.password'),
+          required: true,
+          input_html: { aria: { describedby: 'password-description' } },
+        },
       ) %>
   <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>
-  <%= f.submit t('forms.buttons.submit.update'), class: 'margin-top-2 margin-bottom-4' %>
+  <%= f.submit t('forms.buttons.submit.update'), class: 'display-block margin-top-5 margin-bottom-4' %>
 <% end %>
 
 <%= render 'shared/password_accordion' %>
