@@ -54,7 +54,7 @@ describe IdentityLinker do
       let(:now) { Time.zone.now }
       let(:six_months_ago) { 6.months.ago }
 
-      it 'does override a previous last_consented_at by default' do
+      it 'does not override a previous last_consented_at by default' do
         IdentityLinker.new(user, service_provider).
           link_identity(last_consented_at: six_months_ago)
         last_identity = user.reload.last_identity
@@ -74,7 +74,7 @@ describe IdentityLinker do
       end
     end
 
-    context 'clear_deleted_at' do
+    context ':clear_deleted_at' do
       let(:yesterday) { 1.day.ago }
 
       before do
@@ -88,7 +88,7 @@ describe IdentityLinker do
           link_identity(clear_deleted_at: clear_deleted_at)
       end
 
-      context 'clear_deleted_at is nil' do
+      context ':clear_deleted_at is nil' do
         let(:clear_deleted_at) { nil }
 
         it 'nulls out deleted_at' do
@@ -98,7 +98,7 @@ describe IdentityLinker do
         end
       end
 
-      context 'clear_deleted_at is true' do
+      context ':clear_deleted_at is true' do
         let(:clear_deleted_at) { true }
 
         it 'nulls out deleted_at' do
