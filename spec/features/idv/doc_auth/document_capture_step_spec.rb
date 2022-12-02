@@ -88,24 +88,6 @@ feature 'doc auth document capture step', :js do
     expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
   end
 
-  it 'is on the correct page and shows the document upload options' do
-    expect(current_path).to eq(idv_doc_auth_document_capture_step)
-    expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
-    expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-
-    # Document capture tips
-    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
-    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
-    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
-    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
-    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
-    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
-
-    # No selfie option, evidenced by "Submit" button instead of "Continue"
-    expect(page).to have_content(t('forms.buttons.submit.default'))
-  end
-
   it 'proceeds to the next page with valid info' do
     attach_and_submit_images
 
