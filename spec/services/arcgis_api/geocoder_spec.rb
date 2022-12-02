@@ -156,5 +156,21 @@ RSpec.describe ArcgisApi::Geocoder do
       expect(WebMock).to have_requested(:get, %r{/suggest}).
         with(headers: { 'Authorization' => 'Bearer token1' }).twice
     end
+
+    it 'retrieves a new token when receiving a 498 invalid token' do
+      stub_invalid_token_response
+      stub_generate_token_response(token: 'token1')
+
+      expect { subject.suggest('100 Main') }.to raise_error(
+        an_instance_of(Faraday::ClientError),
+      )
+
+      stub_request_suggestions
+
+      subject.suggest('100 Main')
+
+      expect(WebMock).to have_requested(:get, %r{/suggest}).
+        with(headers: { 'Authorization' => 'Bearer token1' }).twice
+    end
   end
 end
