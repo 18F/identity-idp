@@ -19,19 +19,21 @@ class IdentityLinker
   )
     return unless user && service_provider.present?
     process_ial(ial)
-    attributes = identity_attributes.merge(
-      optional_attributes(
+
+    identity.update!(
+      identity_attributes.merge(
         code_challenge: code_challenge,
         ial: ial,
         nonce: nonce,
         rails_session_id: rails_session_id,
         scope: scope,
-        verified_attributes: verified_attributes,
-        last_consented_at: last_consented_at,
-        clear_deleted_at: clear_deleted_at,
-      ),
+        verified_attributes: combined_verified_attributes(verified_attributes),
+      ).tap do |hash|
+        hash[:last_consented_at] = last_consented_at if last_consented_at
+        hash[:deleted_at] = nil if clear_deleted_at
+      end,
     )
-    identity.update!(attributes)
+
     AgencyIdentityLinker.new(identity).link_identity
     identity
   end
@@ -75,31 +77,7 @@ class IdentityLinker
     }
   end
 
-  def optional_attributes(
-    code_challenge: nil,
-    ial: nil,
-    nonce: nil,
-    rails_session_id: nil,
-    scope: nil,
-    verified_attributes: nil,
-    last_consented_at: nil,
-    clear_deleted_at: nil
-  )
-    {
-      code_challenge: code_challenge,
-      ial: ial,
-      nonce: nonce,
-      rails_session_id: rails_session_id,
-      scope: scope,
-      verified_attributes: merge_attributes(verified_attributes),
-    }.tap do |hash|
-      hash[:last_consented_at] = last_consented_at if last_consented_at
-      hash[:deleted_at] = nil if clear_deleted_at
-    end
-  end
-
-  def merge_attributes(verified_attributes)
-    verified_attributes = verified_attributes.to_a.map(&:to_s)
-    (identity.verified_attributes.to_a + verified_attributes).uniq.sort
+  def combined_verified_attributes(verified_attributes)
+    [*identity.verified_attributes, verified_attributes.to_a.map(&:to_s)].uniq.sort
   end
 end
