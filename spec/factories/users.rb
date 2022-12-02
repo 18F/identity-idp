@@ -205,6 +205,8 @@ FactoryBot.define do
         profile = user.active_profile
         gpo_code = create(:gpo_confirmation_code)
         profile.gpo_confirmation_codes << gpo_code
+        device = create(:device, user: user)
+        create(:event, user: user, device: device, event_type: :gpo_mail_sent)
       end
     end
 

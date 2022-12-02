@@ -71,14 +71,18 @@ feature 'idv gpo step', :js do
 
   context 'the user has completed GPO and verification previously, but has reset their password and needs to re-verify with GPO again' do
     let(:user) { user_verified_with_gpo }
-
-    it 'shows the user a GPO index screen asking to send a letter' do      
+    
+    it 'shows the user a GPO index screen asking to send a letter' do
       visit_idp_from_ial2_oidc_sp
       trigger_reset_password_and_click_email_link(user.email)
-      #reset_password_and_sign_back_in(user)
-      visit_idp_from_sp_with_ial2(:oidc)
-      sign_in_user(user)
-      binding.pry
+      reset_password_and_sign_back_in(user)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+      click_on(t('links.account.reactivate.without_key'))
+      click_continue
+      complete_all_doc_auth_steps
+      enter_gpo_flow
+      expect(page).to have_content(t('idv.titles.mail.verify'))
     end
   end
 end

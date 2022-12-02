@@ -12,7 +12,7 @@ module Idv
       @presenter = GpoPresenter.new(current_user, url_options)
       @step_indicator_current_step = step_indicator_current_step
       analytics.idv_gpo_address_visited(
-        letter_already_sent: @presenter.letter_already_sent?,
+        letter_already_sent: @presenter.resend_requested?,
       )
     end
 
