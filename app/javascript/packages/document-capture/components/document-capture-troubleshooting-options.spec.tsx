@@ -4,9 +4,9 @@ import {
   MarketingSiteContextProvider,
   ServiceProviderContextProvider,
 } from '@18f/identity-document-capture';
-import { FlowContext, FlowContextValue } from '@18f/identity-verify-flow';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 import type { ServiceProviderContext } from '../context/service-provider';
+import InPersonContext, { InPersonContextProps } from '../context/in-person';
 
 describe('DocumentCaptureTroubleshootingOptions', () => {
   const helpCenterRedirectURL = 'https://example.com/redirect/';
@@ -146,9 +146,9 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
 
     context('with inPersonURL', () => {
       const wrapper: ComponentType = ({ children }) => (
-        <FlowContext.Provider value={{ inPersonURL } as FlowContextValue}>
+        <InPersonContext.Provider value={{ inPersonURL } as InPersonContextProps}>
           {children}
-        </FlowContext.Provider>
+        </InPersonContext.Provider>
       );
 
       it('does not render in-person call to action', () => {

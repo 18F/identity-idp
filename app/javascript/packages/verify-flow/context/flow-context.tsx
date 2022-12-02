@@ -7,11 +7,6 @@ export interface FlowContextValue {
   cancelURL: string;
 
   /**
-   * URL to in-person proofing alternative flow, if enabled.
-   */
-  inPersonURL?: string;
-
-  /**
    * Current step name.
    */
   currentStep: string;

@@ -1,11 +1,11 @@
-import { useContext } from 'react';
-import { FlowContext } from '@18f/identity-verify-flow';
+import { useContext } from 'react'
 import { TroubleshootingOptions } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import type { TroubleshootingOption } from '@18f/identity-components/troubleshooting-options';
 import ServiceProviderContext from '../context/service-provider';
 import MarketingSiteContext from '../context/marketing-site';
 import InPersonCallToAction from './in-person-call-to-action';
+import { InPersonContext } from '../context';
 
 interface DocumentCaptureTroubleshootingOptionsProps {
   /**
@@ -36,7 +36,7 @@ function DocumentCaptureTroubleshootingOptions({
   showAlternativeProofingOptions,
 }: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
-  const { inPersonURL } = useContext(FlowContext);
+  const { inPersonURL } = useContext(InPersonContext);
   const { getHelpCenterURL } = useContext(MarketingSiteContext);
   const { name: spName, getFailureToProofURL } = useContext(ServiceProviderContext);
 
