@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext } from 'react';
 import { TroubleshootingOptions } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import type { TroubleshootingOption } from '@18f/identity-components/troubleshooting-options';
