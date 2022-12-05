@@ -111,6 +111,22 @@ describe('CountdownElement', () => {
     expect(element.stop).to.have.been.called();
   });
 
+  it('emits a tick event on each tick', () => {
+    const element = createElement({
+      expiration: new Date(new Date().getTime() + 2000).toISOString(),
+      updateInterval: '1000',
+    });
+
+    const onTick = sinon.stub();
+    document.body.addEventListener('lg:countdown-tick', onTick);
+
+    clock.tick(1000);
+
+    expect(onTick).to.have.been.calledOnce();
+    const event: CustomEvent = onTick.getCall(0).args[0];
+    expect(event.target).to.equal(element);
+  });
+
   describe('#start', () => {
     it('is idempotent', () => {
       const element = createElement({ startImmediately: 'false' });

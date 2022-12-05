@@ -61,6 +61,7 @@ export class CountdownElement extends HTMLElement {
 
   tick(): void {
     this.setTimeRemaining();
+    this.dispatchEvent(new window.CustomEvent('lg:countdown-tick', { bubbles: true }));
 
     if (this.timeRemaining <= 0) {
       this.stop();

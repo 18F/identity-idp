@@ -1,8 +1,10 @@
-import { CountdownElement } from './countdown-element';
+import type { CountdownElement } from './countdown-element';
 
 export class CountdownAlertElement extends HTMLElement {
   connectedCallback() {
-    this.setVisibilityTimeout();
+    if (this.showAtRemaining) {
+      this.addEventListener('lg:countdown-tick', this.handleCountdownTick);
+    }
   }
 
   get showAtRemaining(): number | null {
@@ -13,18 +15,15 @@ export class CountdownAlertElement extends HTMLElement {
     return this.querySelector('lg-countdown')!;
   }
 
-  setVisibilityTimeout() {
-    const { showAtRemaining } = this;
-    if (!showAtRemaining) {
-      return;
+  handleCountdownTick = () => {
+    if (this.countdown.timeRemaining <= this.showAtRemaining!) {
+      this.show();
+      this.removeEventListener('lg:countdown-tick', this.handleCountdownTick);
     }
-
-    setTimeout(() => this.show(), this.countdown.timeRemaining - showAtRemaining);
-  }
+  };
 
   show() {
     this.classList.remove('display-none');
-    this.countdown.start();
   }
 }
 
