@@ -17,7 +17,7 @@ RSpec.describe Reports::MonthHelper do
     it 'does not double-count when first and last are the same month' do
       expect(months(Date.new(2022, 1, 1)..Date.new(2022, 1, 31))).to eq(
         [
-          Date.new(2022, 1, 1)..Date.new(2022, 1, 31)
+          Date.new(2022, 1, 1)..Date.new(2022, 1, 31),
         ],
       )
     end
