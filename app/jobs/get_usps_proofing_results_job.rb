@@ -249,7 +249,10 @@ class GetUspsProofingResultsJob < ApplicationJob
       reason: 'Enrollment has expired',
     )
     enrollment.update(status: :expired)
-    send_deadline_passed_email(enrollment.user, enrollment)
+    if !enrollment.deadline_passed_sent
+      send_deadline_passed_email(enrollment.user, enrollment)
+      enrollment.update(deadline_passed_sent: true)
+    end
   end
 
   def handle_failed_status(enrollment, response)
@@ -328,11 +331,9 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def send_deadline_passed_email(user, enrollment)
     user.confirmed_email_addresses.each do |email_address|
-      # rubocop:disable IdentityIdp/MailLaterLinter
       UserMailer.with(user: user, email_address: email_address).in_person_deadline_passed(
         enrollment: enrollment,
-      ).deliver_later(**mail_delivery_params)
-      # rubocop:enable IdentityIdp/MailLaterLinter
+      ).deliver_now_or_later
     end
   end
 
