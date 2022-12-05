@@ -1,6 +1,7 @@
 import { TextInput, Button } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
 import { useState, useCallback, ChangeEvent } from 'react';
+import { getErrorMessages } from '@18f/identity-validated-field/validated-field';
 
 interface Location {
   street_address: string;
@@ -19,9 +20,11 @@ export const ADDRESS_SEARCH_URL = '/api/addresses';
 function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
   const [addressQuery, setAddressQuery] = useState({} as Location);
+  const [inputErrors, setInputErrors] = useState('');
   const handleAddressSearch = useCallback(async () => {
     if (unvalidatedAddressInput === '') {
-      console.log('oh no, an empty address');
+      const errorMessages = JSON.stringify(getErrorMessages(unvalidatedAddressInput));
+      setInputErrors(errorMessages);
       return null;
     }
     const addressCandidates = await request(ADDRESS_SEARCH_URL, {
@@ -47,6 +50,7 @@ function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
         label="Search for an address"
       />
       <Button onClick={() => handleAddressSearch()}>Search</Button>
+      <>{inputErrors}</>
       <>{addressQuery.address}</>
     </>
   );
