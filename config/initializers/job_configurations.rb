@@ -131,7 +131,7 @@ else
       # Weekly IRS report returning system demand
       irs_weekly_summary_report: {
         class: 'Reports::IrsWeeklySummaryReport',
-        cron: cron_1h,
+        cron: cron_1w,
         args: -> { [Time.zone.now] },
       },
       # Backfill service_provider_identities last_consented_at
