@@ -1,6 +1,7 @@
 import { TextInput, Button } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
 import { useState, useCallback, ChangeEvent } from 'react';
+import { useI18n } from '@18f/identity-react-i18n';
 
 interface Location {
   street_address: string;
@@ -17,6 +18,7 @@ interface AddressSearchProps {
 export const ADDRESS_SEARCH_URL = '/api/addresses';
 
 function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
+  const { t } = useI18n();
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
   const [addressQuery, setAddressQuery] = useState({} as Location);
   const handleAddressSearch = useCallback(async () => {
@@ -40,9 +42,11 @@ function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
 
           setUnvalidatedAddressInput(target.value);
         }}
-        label="Search for an address"
+        label={t('in_person_proofing.body.location.address_search_label')}
       />
-      <Button onClick={handleAddressSearch}>Search</Button>
+      <Button onClick={handleAddressSearch}>
+        {t('in_person_proofing.body.location.search_button')}
+      </Button>
       <>{addressQuery.address}</>
     </>
   );

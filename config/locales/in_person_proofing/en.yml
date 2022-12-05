@@ -36,6 +36,8 @@ en:
         retail_hours_sat: 'Sat:'
         retail_hours_sun: 'Sun:'
         retail_hours_weekday: 'Monday to Friday:'
+        search_button: 'Search'
+        address_search_label: 'Search for your address.'
       prepare:
         alert_selected_post_office: You’ve selected the %{name} Post Office.
         bring_barcode_header: A copy of your barcode
