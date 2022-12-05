@@ -18,12 +18,6 @@ describe('CountdownElement', () => {
     'datetime.dotiw.two_words_connector': ' and ',
   });
 
-  before(() => {
-    if (!customElements.get('lg-countdown')) {
-      customElements.define('lg-countdown', CountdownElement);
-    }
-  });
-
   function createElement(dataset = {}) {
     const element = document.createElement('lg-countdown') as CountdownElement;
     Object.assign(element.dataset, DEFAULT_DATASET, dataset);
