@@ -1,6 +1,7 @@
-import { TextInput, Button } from '@18f/identity-components';
+import { TextInput, Button, Alert } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
 import { useState, useCallback, ChangeEvent } from 'react';
+import { render } from 'react-dom';
 import { getErrorMessages } from '@18f/identity-validated-field/validated-field';
 
 interface Location {
@@ -21,6 +22,20 @@ function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
   const [addressQuery, setAddressQuery] = useState({} as Location);
   const [inputErrors, setInputErrors] = useState('');
+
+  const displayInputErrors = () => {
+    const errorMessage = 'Include a city, state, and ZIP code';
+    if (inputErrors) {
+      const errorRoot = document.querySelector('.error-container');
+      render(
+        <Alert type="error" className="margin-bottom-4">
+          {errorMessage}
+        </Alert>,
+        errorRoot,
+      );
+    }
+  };
+
   const handleAddressSearch = useCallback(async () => {
     if (unvalidatedAddressInput === '') {
       const errorMessages = JSON.stringify(getErrorMessages(unvalidatedAddressInput));
@@ -49,7 +64,8 @@ function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
         }}
         label="Search for an address"
       />
-      <Button onClick={() => handleAddressSearch()}>Search</Button>
+      <Button onClick={() => handleAddressSearch() && displayInputErrors()}>Search</Button>
+      <div className="error-container" />
       <>{inputErrors}</>
       <>{addressQuery.address}</>
     </>
