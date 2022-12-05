@@ -157,13 +157,23 @@ RSpec.describe ArcgisApi::Geocoder do
         with(headers: { 'Authorization' => 'Bearer token1' }).twice
     end
 
-    it 'manually sets the expiration if the cache store is redis' do
-      stub_generate_token_response
-      redis = double('Redis cache store')
-      expect(redis).to receive(:expire).once
-      expect(Rails.cache).to receive(:redis).and_return(redis)
-
-      subject.retrieve_token!
+    context 'when using redis as a backing store' do
+      around do |ex|
+        original = Rails.cache.store
+        Rails.cache.store = ActiveSupport::Cache::RedisCacheStore.new(
+          url: IdentityConfig.store.redis_throttle_url,
+        )
+        ex.run
+      ensure
+        Rails.cache.store = original
+      end
+      
+      it 'manually sets the expiration if the cache store is redis' do
+        stub_generate_token_response
+        subject.retrieve_token!
+        ttl = Rails.cache.store.redis.ttl(ArcGisApi::Geocoder::API_TOKEN_CACHE_KEY)
+        expect(ttl).to be > 0
+      end
     end
   end
 end
