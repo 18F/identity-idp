@@ -3,11 +3,11 @@ es:
   forms:
     backup_code:
       are_you_sure_desc_html:
-        - <strong>Los códigos de respaldo son el método de autenticación menos
+        - '<strong>Los códigos de respaldo son el método de autenticación menos
           utilizado,</strong> ya que se pueden perder con facilidad. Le
           recomendamos explorar otras opciones de autenticación, como el
           desbloqueo facial o táctil, una aplicación de autenticación o una
-          clave de seguridad.
+          clave de seguridad.'
         - Le otorgaremos 10 códigos que puede descargar, imprimir, copiar o
           escribir. Ingresará un código cada vez que inicie sesión.
       are_you_sure_title: '¿Está seguro de que desea usar códigos de respaldo?'
@@ -57,7 +57,7 @@ es:
     email:
       buttons:
         delete: Eliminar correo electrónico
-    example: 'Ejemplo:'
+    example: 'ejemplo:'
     messages:
       remember_device: Recuerde este navegador
     password: Contraseña
@@ -84,7 +84,7 @@ es:
           lugar seguro y no la compartas con nadie.
         text: 'Si restableces tu contraseña sin tu clave personal:'
       explanation:
-        header: ¿Qué es una clave personal?
+        header: '¿Qué es una clave personal?'
         text:
           - Una clave personal “bloquea” la información personal de tu cuenta.
             Es la única manera de desbloquear tu información si pierdes u
@@ -133,8 +133,7 @@ es:
       totp_step_4: Ingrese el código temporal de su aplicación
     two_factor:
       backup_code: Código de seguridad
-      # removed "security code" form labels as they trigger ios credit card reader
-      code: Código único
+      code: Código de un solo uso
       personal_key: Clave personal
       try_again: Use otro número de teléfono.
     validation:

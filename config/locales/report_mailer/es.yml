@@ -5,3 +5,6 @@ es:
       issuers: Emisores
       name: Nombre
       subject: Informe de cuentas eliminadas
+    system_demand_report:
+      name: Nombre
+      subject: Informe de demanda del sistema

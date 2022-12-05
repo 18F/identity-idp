@@ -24,3 +24,4 @@ export {
   default as AcuantSdkUpgradeABTestContext,
   Provider as AcuantSdkUpgradeABTestContextProvider,
 } from './native-camera-a-b-test';
+export { default as InPersonContext } from './in-person';

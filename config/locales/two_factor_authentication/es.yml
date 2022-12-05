@@ -74,17 +74,17 @@ es:
     no_auth_option: No se pudo encontrar ninguna opción de autenticación para iniciar sesión
     opt_in:
       cant_use_phone: '¿No puede utilizar su teléfono?'
-      error_retry: 'Lo sentimos, estamos teniendo problemas para aceptarlo. Por favor,
-        inténtelo de nuevo.'
-      opted_out_html: 'Ha optado por no recibir mensajes de texto en el
-        %{phone_number}. Puede optar por recibir de nuevo un código de un solo
-        uso a ese número de teléfono.'
-      opted_out_last_30d_html: 'Canceló su suscripción para recibir mensajes de texto
+      error_retry: Lo sentimos, estamos teniendo problemas para aceptarlo. Por favor,
+        inténtelo de nuevo.
+      opted_out_html: Ha optado por no recibir mensajes de texto en el
+        %{phone_number}. Puede optar por recibir un código de seguridad de nuevo
+        a ese número de teléfono.
+      opted_out_last_30d_html: Canceló su suscripción para recibir mensajes de texto
         al %{phone_number} en los últimos 30 días. Solo podemos suscribir un
-        número telefónico una vez cada 30 días.'
-      title: No hemos podido enviar el código de un solo uso a su número de teléfono
-      wait_30d_opt_in: 'Luego de 30 días, usted podrá recibir el código de un solo uso
-        a ese número de teléfono.'
+        número telefónico una vez cada 30 días.
+      title: No hemos podido enviar un código de seguridad a su número de teléfono
+      wait_30d_opt_in: Después de 30 días, podrá inscribirse y recibir un código de
+        seguridad para ese número de teléfono.
     otp_delivery_preference:
       instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
       no_supported_options: No podemos verificar los números de teléfono de %{location}

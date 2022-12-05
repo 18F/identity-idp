@@ -105,7 +105,7 @@ fr:
       get_new: Obtenir une nouvelle clé personnelle
       get_new_description: Lorsque vous recevez une nouvelle clé personnelle, votre
         ancienne clé personnelle ne fonctionnera plus.
-      last_generated: 'Dernière génération le %{timestamp}'
+      last_generated: Dernière génération le %{timestamp}
       needs_new: Votre compte a besoin d’une nouvelle clé personnelle. Votre ancienne
         clé personnelle ne fonctionnera pas si vous oubliez votre mot de passe.
       old_key_will_not_work: Veuillez imprimer, copier ou télécharger la nouvelle clé

@@ -87,7 +87,7 @@ es:
           (PIV o CAC) para acceder a su información.
         confirm_webauthn_platform_html: Tiene activado el desbloqueo facial o táctil
           para su cuenta de %{app_name}.
-      wrong_number: ¿Ingresó el número de teléfono equivocado?
+      wrong_number: '¿Ingresó el número de teléfono equivocado?'
     password:
       forgot: '¿No sabe su contraseña? Restablézcala después de confirmar su email.'
       help_text: Cuanto más larga y más inusual sea la contraseña, más difícil es de

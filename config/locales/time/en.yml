@@ -12,7 +12,7 @@ en:
     formats:
       long: '%B %-d, %Y'
     month_names:
-      - null
+      -
       - January
       - February
       - March
