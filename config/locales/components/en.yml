@@ -6,7 +6,7 @@ en:
     clipboard_button:
       label: Copy
     countdown_alert:
-      time_remaining_html: '%{countdown} remaining'
+      time_remaining_html: '%{countdown_html} remaining'
     download_button:
       label: Download
     javascript_required:
