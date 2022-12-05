@@ -146,7 +146,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     case type
     when 'otp'
       [t('two_factor_authentication.invalid_otp'),
-       attempts_remaining_warning].select(&:present?).join(' ')
+       otp_attempts_remaining_warning].select(&:present?).join(' ')
     when 'totp'
       t('two_factor_authentication.invalid_otp')
     when 'personal_key'
@@ -158,15 +158,16 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     end
   end
 
-  def attempts_remaining_warning
-    return if attempts_count_remaining >= IdentityConfig.store.min_attempts_remaining_warning_count
+  def otp_attempts_remaining_warning
+    return if otp_attempts_count_remaining >=
+              IdentityConfig.store.min_attempts_remaining_warning_count
     t(
       'two_factor_authentication.attempt_remaining_warning_html',
-      count: attempts_count_remaining,
+      count: otp_attempts_count_remaining,
     )
   end
 
-  def attempts_count_remaining
+  def otp_attempts_count_remaining
     IdentityConfig.store.login_otp_confirmation_max_attempts -
       current_user.second_factor_attempts_count
   end
