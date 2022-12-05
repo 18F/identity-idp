@@ -33,8 +33,8 @@ module Db
           WHERE
                 sp_return_logs.returned_at IS NOT NULL
             AND sp_return_logs.billable = true
-            AND %{month_start} <= sp_return_logs.requested_at
-            AND sp_return_logs.requested_at <= %{month_end}
+            AND %{month_start}::date <= sp_return_logs.requested_at::date
+            AND sp_return_logs.requested_at::date <= %{month_end}::date
           GROUP BY
               sp_return_logs.issuer
             , sp_return_logs.ial
