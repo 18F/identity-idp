@@ -1,12 +1,15 @@
 shared_examples 'phone rate limitting' do |delivery_method|
-  let(:max_confirmation_attempts) { 2 }
+  let(:max_confirmation_attempts) { 4 }
   let(:max_otp_sends) { 2 }
+  let(:min_attempts) { 2 }
 
   before do
     allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts).
       and_return(max_confirmation_attempts)
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).
       and_return(max_otp_sends)
+    allow(IdentityConfig.store).to receive(:min_attempts_remaining_warning_count).
+      and_return(min_attempts)
   end
 
   it 'limits the number of times the user can resend an OTP' do
@@ -45,10 +48,29 @@ shared_examples 'phone rate limitting' do |delivery_method|
     (max_confirmation_attempts - 1).times do |number_of_times|
       fill_in :code, with: '123456'
       click_submit_default
-      current_count = max_confirmation_attempts - number_of_times
+      count_remaining = max_confirmation_attempts - user.reload.second_factor_attempts_count
       expect(page).to have_content(
         t('two_factor_authentication.invalid_otp'),
       )
+      if count_remaining >= min_attempts
+        expect(page).to have_no_content(
+          strip_tags(
+            t(
+              'two_factor_authentication.attempt_remaining_warning_html',
+              count: count_remaining,
+            ).to_s,
+          ),
+        )
+      else
+        expect(page).to have_content(
+          strip_tags(
+            t(
+              'two_factor_authentication.attempt_remaining_warning_html',
+              count: count_remaining,
+            ),
+          ),
+        )
+      end
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: delivery_method)
     end
     fill_in :code, with: '123456'

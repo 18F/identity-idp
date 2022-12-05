@@ -13,8 +13,8 @@ fr:
       text_html: Si vous ne pouvez utiliser aucune des méthodes d’authentification
         ci-dessus, vous pouvez %{link}.
     attempt_remaining_warning_html:
-      one: ' Il vous reste <strong>%{count} tentative</strong>.'
-      other: ' Il vous reste <strong>%{count} tentatives</strong>.'
+      one: Il vous reste <strong>%{count} tentative</strong>.
+      other: Il vous reste <strong>%{count} tentatives</strong>.
     backup_code_fallback:
       question: Vous n’avez pas vos codes de secours disponibles?
     backup_code_header_text: Entrez votre code de sécurité de secours

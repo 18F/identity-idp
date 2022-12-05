@@ -12,8 +12,8 @@ en:
       text_html: If you can’t use any of the authentication methods above, you can
         %{link}.
     attempt_remaining_warning_html:
-      one: ' You have <strong>%{count} attempt</strong> remaining.'
-      other: ' You have <strong>%{count} attempts</strong> remaining.'
+      one: You have <strong>%{count} attempt</strong> remaining.
+      other: You have <strong>%{count} attempts</strong> remaining.
     backup_code_fallback:
       question: Don’t have your backup codes available?
     backup_code_header_text: Enter your backup security code

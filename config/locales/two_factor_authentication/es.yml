@@ -12,8 +12,8 @@ es:
       text_html: Si no puede utilizar ninguno de los métodos de autenticación
         anteriores, puede %{link}.
     attempt_remaining_warning_html:
-      one: ' Le quedan <strong>%{count} intento</strong>.'
-      other: ' Le quedan <strong>%{count} intentos</strong>.'
+      one: Le quedan <strong>%{count} intento</strong>.
+      other: Le quedan <strong>%{count} intentos</strong>.
     backup_code_fallback:
       question: '¿No tienes tus códigos de seguridad disponibles?'
     backup_code_header_text: Ingrese su código de seguridad de respaldo

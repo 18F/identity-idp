@@ -291,7 +291,7 @@ session_total_duration_timeout_in_minutes: 720
 set_remember_device_session_expiration: false
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
-minimum_attempts_remaining_warning_count: 3
+min_attempts_remaining_warning_count: 3
 show_account_recovery_recovery_options: false
 test_ssn_allowed_list: ''
 totp_code_interval: 30
@@ -532,7 +532,7 @@ test:
   email_registrations_per_ip_limit: 3
   max_bad_passwords: 5
   max_mail_events: 2
-  minimum_attempts_remaining_warning_count: 1
+  min_attempts_remaining_warning_count: 1
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
