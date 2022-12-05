@@ -126,7 +126,7 @@ module ArcgisApi
       if response_body['error']
         error_code = response_body.dig('error', 'code')
 
-        retrieve_token! if response_body['error']['code'] === 498
+        retrieve_token! if error_code === 498
 
         raise Faraday::ClientError.new(
           RuntimeError.new("received error code #{error_code}"),
