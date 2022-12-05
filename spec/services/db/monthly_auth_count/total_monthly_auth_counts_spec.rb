@@ -52,7 +52,7 @@ describe Db::MonthlySpAuthCount::TotalMonthlyAuthCounts do
       ial: 1,
       year_month: '201901',
       total: 10,
-      app_id: app_id
+      app_id: app_id,
     }.stringify_keys
 
     second_month_result = {
@@ -60,7 +60,7 @@ describe Db::MonthlySpAuthCount::TotalMonthlyAuthCounts do
       ial: 1,
       year_month: '201902',
       total: 2,
-      app_id: app_id
+      app_id: app_id,
     }.stringify_keys
 
     result = subject.call
