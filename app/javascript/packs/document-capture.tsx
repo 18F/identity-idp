@@ -165,7 +165,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
       {
         value: {
           cancelURL,
-          inPersonURL,
           currentStep: 'document_capture',
         },
       },
@@ -186,7 +185,10 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
         nativeCameraOnly: nativeCameraOnly === 'true',
       },
     ],
-    [InPersonContext.Provider, { value: { arcgisSearchEnabled: arcgisSearchEnabled === 'true' } }],
+    [
+      InPersonContext.Provider,
+      { value: { arcgisSearchEnabled: arcgisSearchEnabled === 'true', inPersonURL } },
+    ],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
   );
 
