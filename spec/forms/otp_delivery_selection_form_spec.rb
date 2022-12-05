@@ -48,7 +48,7 @@ describe OtpDeliverySelectionForm do
 
         extra = {
           otp_delivery_preference: 'foo',
-          resend: nil,
+          resend: false,
           country_code: nil,
           area_code: nil,
           context: 'authentication',
