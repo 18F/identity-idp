@@ -64,11 +64,6 @@ module Idv
       end
     end
 
-    def attempts_count_remaining
-      IdentityConfig.store.login_otp_confirmation_max_attempts -
-        current_user.second_factor_attempts_count
-    end
-
     def phone_confirmation_otp_verification_form
       @phone_confirmation_otp_verification_form ||= PhoneConfirmationOtpVerificationForm.new(
         user: current_user,

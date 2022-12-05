@@ -47,10 +47,7 @@ shared_examples 'phone rate limitting' do |delivery_method|
       click_submit_default
       current_count = max_confirmation_attempts - number_of_times
       expect(page).to have_content(
-        t(
-          'two_factor_authentication.invalid_otp',
-          count: current_count,
-        ),
+        t('two_factor_authentication.invalid_otp'),
       )
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: delivery_method)
     end
