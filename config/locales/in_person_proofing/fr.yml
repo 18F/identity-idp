@@ -101,7 +101,7 @@ fr:
       address: Entrez votre adresse actuelle
       barcode: Vous êtes prêt à vérifier votre identité en personne
       cta: Vous avez des difficultés à vérifier votre identité en ligne?
-      location: Sélectionnez un lieu pour vérifier votre identité
+      location: Trouver un bureau de poste participant
       prepare: Vérifiez votre identité en personne
       state_id: Saisissez les informations figurant sur votre document d’identité
       switch_back: Retournez sur votre ordinateur pour vous préparer à vérifier votre

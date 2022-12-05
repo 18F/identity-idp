@@ -98,7 +98,7 @@ es:
       address: Ingrese su dirección actual
       barcode: Está listo para verificar su identidad en persona
       cta: ¿Tiene problemas para verificar su documento de identidad en línea?
-      location: Seleccione un lugar para verificar su cédula
+      location: Encuentre una oficina de correos participante
       prepare: Verifique su identidad en persona
       state_id: Ingrese la información de su cédula
       switch_back: Vuelva a su computadora para prepararse para verificar su identidad
