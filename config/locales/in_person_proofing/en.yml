@@ -94,6 +94,7 @@ en:
       barcode: You’re ready to verify your identity in person
       cta: Having trouble verifying your ID online?
       location: Find a participating Post Office
+      location_subheader: If you are having trouble adding your ID, you may be able to verify your identity in person at a local United States Post Office.
       prepare: Verify your identity in person
       state_id: Enter the information on your ID
       switch_back: Switch back to your computer to prepare to verify your identity in person
