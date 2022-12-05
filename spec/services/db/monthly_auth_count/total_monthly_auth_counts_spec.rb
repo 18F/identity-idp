@@ -5,10 +5,9 @@ describe Db::MonthlySpAuthCount::TotalMonthlyAuthCounts do
 
   let(:issuer) { 'foo' }
   let(:app_id) { 'app_id' }
-  let(:year_month) { '201901' }
 
   it 'is empty' do
-    expect(subject.call.ntuples).to eq(0)
+    expect(subject.call.length).to eq(0)
   end
 
   it 'returns the total auth counts' do
@@ -35,9 +34,39 @@ describe Db::MonthlySpAuthCount::TotalMonthlyAuthCounts do
         billable: true,
       )
     end
-    result = { issuer: issuer, ial: 1, year_month: year_month, total: 10, app_id: app_id }.to_json
 
-    expect(subject.call.ntuples).to eq(1)
-    expect(subject.call[0].to_json).to eq(result)
+    2.times do
+      create(
+        :sp_return_log,
+        issuer: issuer,
+        ial: 1,
+        user_id: 3,
+        requested_at: Date.new(2019, 2, 10),
+        returned_at: Date.new(2019, 2, 10),
+        billable: true,
+      )
+    end
+
+    first_month_result = {
+      issuer: issuer,
+      ial: 1,
+      year_month: '201901',
+      total: 10,
+      app_id: app_id
+    }.stringify_keys
+
+    second_month_result = {
+      issuer: issuer,
+      ial: 1,
+      year_month: '201902',
+      total: 2,
+      app_id: app_id
+    }.stringify_keys
+
+    result = subject.call
+
+    expect(result.length).to eq(2)
+    expect(result.first).to eq(first_month_result)
+    expect(result.last).to eq(second_month_result)
   end
 end
