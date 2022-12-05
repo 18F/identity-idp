@@ -280,7 +280,18 @@ RSpec.describe ServiceProviderSessionDecorator do
       end
     end
 
-    context 'without a irs_attempts_api_session_id on the request url' do
+    context 'with a tid on the request url' do
+      let(:service_provider_request) do
+        url = 'https://example.com/auth?tid=123abc'
+        ServiceProviderRequest.new(url: url)
+      end
+
+      it 'returns the value of irs_attempts_api_session_id' do
+        expect(subject.irs_attempts_api_session_id).to eq('123abc')
+      end
+    end
+
+    context 'without a irs_attempts_api_session_id or tid on the request url' do
       let(:service_provider_request) { ServiceProviderRequest.new }
 
       it 'returns nil' do

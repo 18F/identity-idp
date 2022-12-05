@@ -118,7 +118,9 @@ class ServiceProviderSessionDecorator
   end
 
   def irs_attempts_api_session_id
-    @irs_attempts_api_session_id ||= request_url_params['irs_attempts_api_session_id']
+    @irs_attempts_api_session_id ||= begin
+      request_url_params['irs_attempts_api_session_id'] || request_url_params['tid']
+    end
   end
 
   def request_url_params
