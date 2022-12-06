@@ -111,12 +111,13 @@ es:
       subject: Cuéntenos su experiencia reciente con %{app_name}
     in_person_deadline_passed:
       body:
+        canceled: Se venció el plazo para verificar su identidad en persona. Cancelamos
+          automáticamente su solicitud con el fin de proteger su información
+          personal.
         cta: Empezar de nuevo
         greeting: Hola,
-        canceled: Se venció el plazo para verificar su identidad en persona. Cancelamos
-          automáticamente su solicitud con el fin de proteger su información personal.
-        restart: Haga clic en el botón de abajo si desea iniciar una nueva solicitud para
-          verificar su identidad con %{partner_agency}.
+        restart: Haga clic en el botón de abajo si desea iniciar una nueva solicitud
+          para verificar su identidad con %{partner_agency}.
       header: Se venció el plazo para verificar su identidad en persona
       subject: Expiró su solicitud para verificar su identidad en persona
     in_person_failed:

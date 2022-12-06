@@ -105,11 +105,13 @@ en:
       subject: Tell us about your recent experience with %{app_name}
     in_person_deadline_passed:
       body:
+        canceled: The deadline to verify your identity in person has passed and we
+          automatically canceled your request in order to protect your personal
+          data.
         cta: Start over
         greeting: Hello,
-        canceled: The deadline to verify your identity in person has passed and we automatically
-          canceled your request in order to protect your personal data.
-        restart: You can start a new request to verify your identity with %{partner_agency}.
+        restart: You can start a new request to verify your identity with
+          %{partner_agency}.
       header: The deadline to verify your identity in person has passed
       subject: Your request for to verify your identity in person has expired
     in_person_failed:
