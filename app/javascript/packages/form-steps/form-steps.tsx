@@ -155,9 +155,10 @@ interface FormStepsProps {
   onStepChange?: (stepName: string) => void;
 
   /**
-   * Callback triggered on step submit.
+   * Callback triggered on step submit, with step name as detail. If default behavior is prevented,
+   * the step will not be advanced.
    */
-  onStepSubmit?: (stepName: string) => void;
+  onStepSubmit?: (event: CustomEvent<string>) => void;
 
   /**
    * Whether to prompt the user about unsaved changes when navigating away from an in-progress form.
@@ -395,7 +396,15 @@ function FormSteps({
       }
     }
 
-    onStepSubmit(step?.name);
+    const stepSubmitEvent = new window.CustomEvent('lg:form-steps-submit', {
+      detail: step?.name,
+      cancelable: true,
+    });
+
+    onStepSubmit(stepSubmitEvent);
+    if (stepSubmitEvent.defaultPrevented) {
+      return;
+    }
 
     const nextStepIndex = stepIndex + 1;
     const isComplete =

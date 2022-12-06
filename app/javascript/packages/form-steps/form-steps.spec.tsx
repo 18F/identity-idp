@@ -220,6 +220,29 @@ describe('FormSteps', () => {
     expect(getByText('Second Title')).to.be.ok();
   });
 
+  it('calls onStepSubmit callback on step submission, with step name as event detail', async () => {
+    const onStepSubmit = sinon.spy();
+    const { getByText } = render(<FormSteps steps={STEPS} onStepSubmit={onStepSubmit} />);
+
+    await userEvent.click(getByText('forms.buttons.continue'));
+
+    expect(onStepSubmit).to.have.been.calledWith(
+      sinon.match(
+        (event: CustomEvent<string>) => event instanceof window.Event && event.detail === 'first',
+      ),
+    );
+  });
+
+  it('does not advance step if onStepSubmit callback prevents default', async () => {
+    const onStepSubmit = sinon.stub().callsFake((event: CustomEvent) => event.preventDefault());
+    const { getByText } = render(<FormSteps steps={STEPS} onStepSubmit={onStepSubmit} />);
+
+    await userEvent.click(getByText('forms.buttons.continue'));
+
+    expect(onStepSubmit).to.have.been.called();
+    expect(getByText('First Title')).to.exist();
+  });
+
   it('calls onStepChange callback on step change', async () => {
     const onStepChange = sinon.spy();
     const { getByText } = render(<FormSteps steps={STEPS} onStepChange={onStepChange} />);

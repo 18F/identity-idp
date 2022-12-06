@@ -31,8 +31,6 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
   const { selectedLocationName } = value;
 
   const onContinue: MouseEventHandler = async (event) => {
-    event.preventDefault();
-
     if (!isSubmitting) {
       setIsSubmitting(true);
       removeUnloadProtection();

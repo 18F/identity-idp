@@ -39,6 +39,11 @@ export const except = <T extends Record<string, any>>(object: T, ...keys: string
     return result;
   }, {});
 
+/**
+ * Array of step names for in-person proofing steps.
+ */
+const IN_PERSON_STEPS: string[] = ['location', 'prepare', 'switch_back'];
+
 interface DocumentCaptureProps {
   /**
    * Whether submission should poll for async response.
@@ -74,6 +79,14 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   function submitForm(nextFormValues: Record<string, any>) {
     setSubmissionError(undefined);
     setFormValues(nextFormValues);
+  }
+
+  function handleStepSubmit(event: CustomEvent<string>) {
+    const { detail: submittedStepName } = event;
+    trackSubmitEvent(submittedStepName);
+    if (IN_PERSON_STEPS.includes(submittedStepName)) {
+      event.preventDefault();
+    }
   }
 
   const submissionFormValues = useMemo(
@@ -147,7 +160,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
       ].filter(Boolean) as FormStep[]);
 
   const stepIndicatorPath =
-    stepName && ['location', 'prepare', 'switch_back'].includes(stepName)
+    stepName && IN_PERSON_STEPS.includes(stepName)
       ? VerifyFlowPath.IN_PERSON
       : VerifyFlowPath.DEFAULT;
 
@@ -183,7 +196,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
             initialActiveErrors={initialActiveErrors}
             onComplete={submitForm}
             onStepChange={setStepName}
-            onStepSubmit={trackSubmitEvent}
+            onStepSubmit={handleStepSubmit}
             autoFocus={!!submissionError}
           />
         </>
