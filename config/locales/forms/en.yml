@@ -52,7 +52,7 @@ en:
     email:
       buttons:
         delete: Delete email address
-    example: 'example:'
+    example: 'Example:'
     messages:
       remember_device: Remember this browser
     password: Password
