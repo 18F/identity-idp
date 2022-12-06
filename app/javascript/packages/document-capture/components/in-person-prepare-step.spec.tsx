@@ -2,12 +2,11 @@ import sinon from 'sinon';
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ComponentType } from 'react';
-import { FlowContext } from '@18f/identity-verify-flow';
-import type { FlowContextValue } from '@18f/identity-verify-flow';
 import { useSandbox } from '@18f/identity-test-helpers';
 import { Provider as MarketingSiteContextProvider } from '../context/marketing-site';
 import { AnalyticsContextProvider } from '../context/analytics';
 import InPersonPrepareStep from './in-person-prepare-step';
+import InPersonContext, { InPersonContextProps } from '../context/in-person';
 
 describe('InPersonPrepareStep', () => {
   const DEFAULT_PROPS = { toPreviousStep() {}, value: {} };
@@ -26,9 +25,9 @@ describe('InPersonPrepareStep', () => {
   context('with in person URL', () => {
     const inPersonURL = '#in_person';
     const wrapper: ComponentType = ({ children }) => (
-      <FlowContext.Provider value={{ inPersonURL } as FlowContextValue}>
+      <InPersonContext.Provider value={{ inPersonURL } as InPersonContextProps}>
         {children}
-      </FlowContext.Provider>
+      </InPersonContext.Provider>
     );
 
     it('logs prepare step submission when clicking continue', async () => {

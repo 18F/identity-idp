@@ -2,6 +2,7 @@ require 'rails_helper'
 
 feature 'idv gpo step', :js do
   include IdvStepHelper
+  include OidcAuthHelper
 
   it 'redirects to the review step when the user chooses to verify by letter' do
     start_idv_from_sp
@@ -65,6 +66,23 @@ feature 'idv gpo step', :js do
 
       expect(profile.active?).to eq false
       expect(profile.deactivation_reason).to eq 'gpo_verification_pending'
+    end
+  end
+
+  context 'GPO verified user has reset their password and needs to re-verify with GPO again' do
+    let(:user) { user_verified_with_gpo }
+
+    it 'shows the user a GPO index screen asking to send a letter' do
+      visit_idp_from_ial2_oidc_sp
+      trigger_reset_password_and_click_email_link(user.email)
+      reset_password_and_sign_back_in(user)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+      click_on(t('links.account.reactivate.without_key'))
+      click_continue
+      complete_all_doc_auth_steps
+      enter_gpo_flow
+      expect(page).to have_content(t('idv.titles.mail.verify'))
     end
   end
 end

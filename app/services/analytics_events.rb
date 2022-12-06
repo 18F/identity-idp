@@ -1103,10 +1103,12 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param ["sms", "voice"] otp_delivery_preference
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user submitted their phone on the phone confirmation page
   def idv_phone_confirmation_form_submitted(
     success:,
+    otp_delivery_preference:,
     errors:,
     proofing_components: nil,
     **extra
@@ -1115,6 +1117,7 @@ module AnalyticsEvents
       'IdV: phone confirmation form',
       success: success,
       errors: errors,
+      otp_delivery_preference: otp_delivery_preference,
       proofing_components: proofing_components,
       **extra,
     )
@@ -1652,8 +1655,8 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether authentication was successful
+  # @param [Hash] errors Authentication error reasons, if unsuccessful
   # @param [String] context
   # @param [String] multi_factor_auth_method
   # @param [Integer] auth_app_configuration_id
@@ -1925,14 +1928,23 @@ module AnalyticsEvents
   end
 
   # Tracks when a user sets up a multi factor auth method
+  # @param [Boolean] success Whether authenticator setup was successful
+  # @param [Hash] errors Authenticator setup error reasons, if unsuccessful
   # @param [String] multi_factor_auth_method
   # @param [Boolean] in_multi_mfa_selection_flow
   # @param [integer] enabled_mfa_methods_count
-  def multi_factor_auth_setup(multi_factor_auth_method:,
-                              enabled_mfa_methods_count:, in_multi_mfa_selection_flow:,
-                              **extra)
+  def multi_factor_auth_setup(
+    success:,
+    multi_factor_auth_method:,
+    enabled_mfa_methods_count:,
+    in_multi_mfa_selection_flow:,
+    errors: nil,
+    **extra
+  )
     track_event(
       'Multi-Factor Authentication Setup',
+      success: success,
+      errors: errors,
       multi_factor_auth_method: multi_factor_auth_method,
       in_multi_mfa_selection_flow: in_multi_mfa_selection_flow,
       enabled_mfa_methods_count: enabled_mfa_methods_count,

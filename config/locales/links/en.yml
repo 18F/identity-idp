@@ -9,7 +9,7 @@ en:
     cancel: Cancel
     cancel_account_creation: '‹ Cancel account creation'
     contact: Contact
-    contact_support: 'Contact %{app_name} Support'
+    contact_support: Contact %{app_name} Support
     continue_sign_in: Continue sign in
     create_account: Create an account
     go_back: Go back

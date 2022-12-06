@@ -12,9 +12,7 @@ module Reports
     )
 
     def perform(_date)
-      auth_counts = transaction_with_timeout do
-        Db::MonthlySpAuthCount::TotalMonthlyAuthCounts.call
-      end
+      auth_counts = Db::MonthlySpAuthCount::TotalMonthlyAuthCounts.call
       save_report(REPORT_NAME, auth_counts.to_json, extension: 'json')
     end
   end
