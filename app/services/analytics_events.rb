@@ -1248,7 +1248,7 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Boolean] code_expired if the confirmation code expired
+  # @param [Boolean] code_expired if the one-time code expired
   # @param [Boolean] code_matches
   # @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
   # @param [Time, nil] second_factor_locked_at timestamp when the phone was locked out

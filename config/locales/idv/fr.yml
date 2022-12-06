@@ -134,7 +134,7 @@ fr:
       activated_link: communiquer avec nous
       clear_and_start_over: Supprimer mes données et recommencer
       come_back_later: Une fois que votre lettre vous sera parvenue, veuillez vous
-        connecter à %{app_name}, puis saisissez votre code de confirmation
+        connecter à %{app_name}, puis saisissez votre code à usage unique
         lorsque vous y serez invité.
       come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte
         %{app_name}</strong> pour le moment.
@@ -179,10 +179,10 @@ fr:
         intro: Vos informations vérifiées
       select_verification_with_sp: Afin de vous protéger des fraudes d’identité, vous
         ne pouvez pas utiliser votre compte au %{sp_name} tant que vous ne
-        l’aurez pas activé en entrant votre code de confirmation.
+        l’aurez pas activé en entrant votre code à usage unique.
       select_verification_without_sp: Afin de protéger votre compte des fraudes liées
         à l’identité, votre profil ne sera pas activé tant que vous n’aurez pas
-        entré votre code de confirmation.
+        entré votre code à usage unique.
       sessions:
         no_pii: SITE DE TEST - N’utilisez pas de véritables données personnelles (il
           s’agit d’une démonstration seulement) - SITE DE TEST

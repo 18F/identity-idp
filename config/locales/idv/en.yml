@@ -124,7 +124,7 @@ en:
       activated_link: contact us
       clear_and_start_over: Clear my information and start over
       come_back_later: Once your letter arrives, sign into %{app_name}, and enter your
-        confirmation code when prompted.
+        one-time code when prompted.
       come_back_later_no_sp_html: You can return to your <strong>%{app_name} account</strong> for now.
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: You have encrypted your verified data
