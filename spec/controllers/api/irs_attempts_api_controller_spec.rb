@@ -121,6 +121,10 @@ RSpec.describe Api::IrsAttemptsApiController do
       expect(Base64.strict_decode64(response.body)).to be_present
 
       expect(@analytics).to have_logged_event(
+        'IRS Attempt API: Authentication',
+        success: true,
+      )
+      expect(@analytics).to have_logged_event(
         'IRS Attempt API: Events submitted',
         rendered_event_count: existing_events.count,
         success: true,

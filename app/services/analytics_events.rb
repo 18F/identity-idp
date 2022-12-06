@@ -1495,6 +1495,15 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success if the authentication was successful
+  def irs_attempts_api_authentication(success:, **extra)
+    track_event(
+      'IRS Attempt API: Authentication',
+      success: success,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success
   # @param [String] client_id
   # @param [Boolean] client_id_parameter_present

@@ -39,7 +39,10 @@ module Api
       bearer, csp_id, token = request.authorization&.split(' ', 3)
       if bearer != 'Bearer' || !valid_auth_tokens.include?(token) ||
          csp_id != IdentityConfig.store.irs_attempt_api_csp_id
+        analytics.irs_attempts_api_authentication(success: false)
         render json: { status: 401, description: 'Unauthorized' }, status: :unauthorized
+      else
+        analytics.irs_attempts_api_authentication(success: true)
       end
     end
 
