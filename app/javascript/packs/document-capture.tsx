@@ -11,6 +11,7 @@ import {
   FailedCaptureAttemptsContextProvider,
   NativeCameraABTestContextProvider,
   MarketingSiteContextProvider,
+  InPersonContext,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -30,6 +31,9 @@ interface AppRootData {
   maxAttemptsBeforeNativeCamera: string;
   nativeCameraABTestingEnabled: string;
   nativeCameraOnly: string;
+  acuantSdkUpgradeABTestingEnabled: string;
+  useNewerSdk: string;
+  acuantVersion: string;
   flowPath: FlowPath;
   cancelUrl: string;
   idvInPersonUrl?: string;
@@ -67,8 +71,15 @@ function getMetaContent(name): string | null {
 const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
-  const { flowPath } = appRoot.dataset;
-  return baseTrackEvent(event, { ...payload, flow_path: flowPath });
+  const { flowPath, acuantSdkUpgradeABTestingEnabled, useNewerSdk, acuantVersion } =
+    appRoot.dataset;
+  return baseTrackEvent(event, {
+    ...payload,
+    flow_path: flowPath,
+    acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
+    use_newer_sdk: useNewerSdk,
+    acuant_version: acuantVersion,
+  });
 };
 
 (async () => {
@@ -110,11 +121,13 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     maxSubmissionAttemptsBeforeNativeCamera,
     nativeCameraABTestingEnabled,
     nativeCameraOnly,
+    acuantVersion,
     appName,
     flowPath,
     cancelUrl: cancelURL,
     idvInPersonUrl: inPersonURL,
     securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
+    arcgisSearchEnabled,
   } = appRoot.dataset as DOMStringMap & AppRootData;
 
   const App = composeComponents(
@@ -125,6 +138,8 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     [
       AcuantContextProvider,
       {
+        sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
+        cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`,
         credentials: getMetaContent('acuant-sdk-initialization-creds'),
         endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
         glareThreshold,
@@ -150,7 +165,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
       {
         value: {
           cancelURL,
-          inPersonURL,
           currentStep: 'document_capture',
         },
       },
@@ -170,6 +184,10 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
         nativeCameraABTestingEnabled: nativeCameraABTestingEnabled === 'true',
         nativeCameraOnly: nativeCameraOnly === 'true',
       },
+    ],
+    [
+      InPersonContext.Provider,
+      { value: { arcgisSearchEnabled: arcgisSearchEnabled === 'true', inPersonURL } },
     ],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
   );

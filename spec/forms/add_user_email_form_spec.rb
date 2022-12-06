@@ -40,5 +40,16 @@ RSpec.describe AddUserEmailForm do
         expect(response.success?).to eq(true)
       end
     end
+
+    context 'when the domain is invalid' do
+      let(:new_email) { 'test@çà.com' }
+
+      it 'fails and does not send a confirmation email' do
+        expect(SendAddEmailConfirmation).to_not receive(:new)
+
+        response = submit
+        expect(response.success?).to eq(false)
+      end
+    end
   end
 end

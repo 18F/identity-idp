@@ -128,7 +128,7 @@ module Idv
     def user_phone_confirmation_session
       session_value = session[:user_phone_confirmation_session]
       return if session_value.blank?
-      PhoneConfirmation::ConfirmationSession.from_h(session_value)
+      Idv::PhoneConfirmationSession.from_h(session_value)
     end
 
     def user_phone_confirmation_session=(new_user_phone_confirmation_session)

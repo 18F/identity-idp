@@ -1,5 +1,7 @@
 module Flow
   class BaseFlow
+    include Failure
+
     attr_accessor :flow_session
     attr_reader :steps, :actions, :current_user, :current_sp, :params, :request, :json,
                 :http_status, :controller
@@ -46,6 +48,10 @@ module Flow
       return failure("Unhandled step #{step}") unless handler
       obj = handler.new(self)
       obj.extra_view_variables
+    end
+
+    def extra_analytics_properties
+      {}
     end
 
     def flow_path

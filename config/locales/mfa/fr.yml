@@ -25,5 +25,5 @@ fr:
       link: Ajoutez une deuxième méthode d’authentification.
       text: Vous devrez supprimer votre compte et recommencer si vous perdez votre
         seule méthode d’authentification.
-    skip: ​​Ignorer pour le moment
+    skip: '​​Ignorer pour le moment'
     skip_once: Passer une fois

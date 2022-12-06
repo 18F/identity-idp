@@ -3,8 +3,8 @@ en:
   in_person_proofing:
     body:
       address:
-        info: 'If your current address does not match the address on your ID, you will
-          need to bring proof of your current address to the Post Office.'
+        info: If your current address does not match the address on your ID, you will
+          need to bring proof of your current address to the Post Office.
         learn_more: Learn more
       barcode:
         deadline: Your deadline to verify your identity in person is %{deadline}.
@@ -21,30 +21,29 @@ en:
         retail_phone_label: Phone number
         speak_to_associate: You can see any associate at the retail window to verify your identity.
       cta:
-        button: Find a Post Office
+        button: Verify your ID in person
         new_feature: New Feature
-        prompt: 'Are you located near Washington, D.C. <wbr/>or Baltimore, MD?'
-        prompt_detail: You may be able to verify your identity in person at a Post
-          Office near you.
+        prompt_detail: If you are located near Washington D.C. or Baltimore, MD, you may
+          be able to verify your ID in person at limited post office locations.
       location:
         location_button: Select
         location_step_about: If you are having trouble adding your ID, you may be able
           to verify in person at a local United States Post Office in select
           locations.
         none_found: No locations found.
-        post_office: 'Post Office ™'
+        post_office: Post Office ™
         retail_hours_heading: Retail Hours
         retail_hours_sat: 'Sat:'
         retail_hours_sun: 'Sun:'
         retail_hours_weekday: 'Monday to Friday:'
       prepare:
-        alert_selected_post_office: 'You’ve selected the %{name} Post Office.'
+        alert_selected_post_office: You’ve selected the %{name} Post Office.
         bring_barcode_header: A copy of your barcode
-        bring_barcode_info: 'We will give you a unique code that expires within 30 days.'
-        bring_id_header: 'Your state-issued ID'
+        bring_barcode_info: We will give you a unique code that expires within 30 days.
+        bring_id_header: Your state-issued ID
         bring_id_info_acceptable: 'Your ID must not be expired. Acceptable forms of ID are:'
         bring_id_info_dl: State Driver’s License
-        bring_id_info_id_card: 'State Non-Driver’s Identification Card'
+        bring_id_info_id_card: State Non-Driver’s Identification Card
         bring_id_info_no_other_forms: We do not currently accept any other forms of
           Identification, such as passports and military IDs
         bring_title: 'When you go to the Post Office, please bring:'
@@ -55,20 +54,24 @@ en:
         verify_step_about: 'Complete the steps below to generate the barcode you’ll take
           with you to the Post Office:'
         verify_step_enter_phone: Enter a phone number with your name on the plan.
-        verify_step_enter_pii: 'Enter your name, date of birth, state-issued ID number,
-          address and Social Security number.'
+        verify_step_enter_pii: Enter your name, date of birth, state-issued ID number,
+          address and Social Security number.
       state_id:
-        info_html: 'Enter information <strong>exactly as it appears on your state-issued
+        info_html: Enter information <strong>exactly as it appears on your state-issued
           ID.</strong> We will use this information to confirm it matches your
-          ID in person.'
+          ID in person.
     form:
       address:
-        same_address: 'Is this address displayed on the state-issued ID that you are
-          bringing to the Post Office?'
+        same_address: Is this address displayed on the state-issued ID that you are
+          bringing to the Post Office?
         same_address_choice_no: I have a different address on my ID
         same_address_choice_yes: This address is on my state-issued ID
         state_prompt: '- Select -'
       state_id:
+        date_hint:
+          day: 'Example: 28'
+          month: 'Example: 4'
+          year: 'Example: 1986'
         dob: Date of birth
         dob_hint: 'Example: 4 28 1986'
         first_name: First name
@@ -76,9 +79,9 @@ en:
         memorable_date:
           errors:
             date_of_birth:
-              missing_month_day_year: 'Enter a date of birth'
-              range_min_age: 'You must be over 13 years of age to use %{app_name}'
-              range_overflow: 'Enter a date that is in the past'
+              missing_month_day_year: Enter a date of birth
+              range_min_age: You must be over 13 years of age to use %{app_name}
+              range_overflow: Enter a date that is in the past
         state_id_jurisdiction: State
         state_id_jurisdiction_hint: Select the state shown on your ID
         state_id_jurisdiction_prompt: '- Select -'
@@ -87,7 +90,7 @@ en:
     headings:
       address: Enter your current address
       barcode: You’re ready to verify your identity in person
-      cta: Verify your ID in person
+      cta: Having trouble verifying your ID online?
       location: Select a location to verify your ID
       prepare: Verify your identity in person
       state_id: Enter the information on your ID

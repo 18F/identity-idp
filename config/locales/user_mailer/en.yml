@@ -115,12 +115,12 @@ en:
         %{date}.
       subject: Your identity could not be verified in person
       verifying_identity: 'When verifying your identity:'
-      verifying_step_not_expired: 'Your state-issued ID or driver’s license must not
-        be expired. We do not currently accept any other forms of
-        identification, such as passports and military IDs.'
-      verifying_step_proof_of_address: 'If you try to verify your identity in person
+      verifying_step_not_expired: Your state-issued ID or driver’s license must not be
+        expired. We do not currently accept any other forms of identification,
+        such as passports and military IDs.
+      verifying_step_proof_of_address: If you try to verify your identity in person
         again, you need to bring a valid proof of address if your current
-        address is different than the address on your ID.'
+        address is different than the address on your ID.
     in_person_failed_suspected_fraud:
       body:
         help_center_html: If you need further help, you can <a
@@ -138,10 +138,14 @@ en:
       subject: You’re ready to verify your identity with %{app_name} in person
     in_person_ready_to_verify_reminder:
       greeting: Hello,
-      heading: You have %{days_remaining} days left to verify your identity in person
+      heading:
+        one: You have %{count} day left to verify your identity in person
+        other: You have %{count} days left to verify your identity in person
       intro: Don’t miss the chance to verify your identity at your local Post Office.
         Complete this step to access %{sp_name}.
-      subject: Verify your identity at a Post Office in the next %{days_remaining} days
+      subject:
+        one: Verify your identity at a Post Office in the next day
+        other: Verify your identity at a Post Office in the next %{count} days
     in_person_verified:
       greeting: Hello,
       intro: You successfully verified your identity at the %{location} Post Office on
@@ -156,8 +160,9 @@ en:
       sign_in: Sign in
       subject: You successfully verified your identity with %{app_name}
       warning_contact_us_html: If you did not attempt to verify your identity in
-        person, please <a href="%{contact_us_url}">contact us</a> and <a
-        href="%{sign_in_url}">sign in</a> to change your password.
+        person, please sign in to <a href="%{reset_password_url}">reset your
+        password</a>. To report this, <a href="%{contact_us_url}">contact
+        %{app_name} support</a>.
     letter_reminder:
       info_html: The letter you are about to receive will contain a confirmation code
         that helps us verify your address. You can complete the identity

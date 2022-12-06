@@ -15,7 +15,7 @@ es:
         confirmation:
           hybrid: Ha cancelado la carga de fotos de su identificación en este teléfono
         prompt:
-          standard: ¿Cancelar la verificación de su identidad?
+          standard: '¿Cancelar la verificación de su identidad?'
         start_over: Empezar de nuevo a verificar su identidad
       instructions:
         switch_back: Regrese a su computadora para continuar con la verificación de su
@@ -28,6 +28,8 @@ es:
         info: Estamos teniendo problemas temporalmente para obtener su información.
           Inténtelo de nuevo.
         title: to be implemented
+      service_provider:
+        communication: 'la comunicacion no tuvo exito'
     headings:
       lets_go: to be implemented
       retrieval: Estamos recuperando su información de My HealtheVet
@@ -42,7 +44,7 @@ es:
         las normas más estrictas de protección de datos. Solo utilizamos sus
         datos para verificar su identidad. %{link} sobre nuestras medidas de
         privacidad y seguridad.'
-      retrieval_thanks: ¡Gracias por su paciencia!
+      retrieval_thanks: '¡Gracias por su paciencia!'
       retrieval_time: Esto puede tardar hasta un minuto. Cargaremos el siguiente paso
         automáticamente cuando haya terminado.
       secure_account: to be implemented

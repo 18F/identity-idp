@@ -106,31 +106,54 @@ describe Idv::InheritedProofingCancellationsController do
     end
 
     context 'when there is a session' do
+      subject(:action) do
+        get :new, params: { step: step }
+      end
+
       before do
         stub_sign_in
       end
 
       it 'renders template' do
-        get :new, params: { step: step }
+        action
 
         expect(response).to render_template(:new)
       end
 
       it 'stores go back path' do
-        get :new, params: { step: step }
+        action
 
         expect(controller.user_session[:idv][:go_back_path]).to eq(go_back_path)
+      end
+
+      it 'tracks the event in analytics' do
+        stub_analytics
+        request.env['HTTP_REFERER'] = 'https://example.com/'
+
+        expect(@analytics).to receive(:track_event).with(
+          'IdV: cancellation visited',
+          request_came_from: 'users/sessions#new',
+          step: step.to_s,
+          proofing_components: nil,
+          analytics_id: nil,
+        )
+
+        action
       end
     end
   end
 
   describe '#update' do
+    subject(:action) do
+      put :update, params: { step: step, cancel: 'true' }
+    end
+
     before do
       stub_sign_in
     end
 
     it 'redirects to idv_inherited_proofing_path' do
-      put :update, params: { step: step, cancel: 'true' }
+      action
 
       expect(response).to redirect_to idv_inherited_proofing_url
     end
@@ -145,17 +168,36 @@ describe Idv::InheritedProofingCancellationsController do
       end
 
       it 'redirects to go back path' do
-        put :update, params: { step: step, cancel: 'true' }
+        action
 
         expect(response).to redirect_to go_back_path
       end
     end
+
+    it 'tracks the event in analytics' do
+      stub_analytics
+      request.env['HTTP_REFERER'] = 'https://example.com/'
+
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: cancellation go back',
+        request_came_from: 'users/sessions#new',
+        step: step.to_s,
+        proofing_components: nil,
+        analytics_id: nil,
+      )
+
+      action
+    end
   end
 
   describe '#destroy' do
+    subject(:action) do
+      delete :destroy, params: { step: step }
+    end
+
     context 'when there is no session' do
       it 'redirects to root' do
-        delete :destroy, params: { step: step }
+        action
 
         expect(response).to redirect_to(root_url)
       end
@@ -166,25 +208,37 @@ describe Idv::InheritedProofingCancellationsController do
 
       before do
         stub_sign_in user
-      end
-
-      before do
         allow(controller).to receive(:user_session).
           and_return(idv: { go_back_path: '/path/to/return' })
       end
 
       it 'destroys session' do
-        expect(subject).to receive(:cancel_session).once
+        expect(controller).to receive(:cancel_session).once
 
-        delete :destroy, params: { step: step }
+        action
       end
 
       it 'renders a json response with the redirect path set to account_path' do
-        delete :destroy, params: { step: step }
+        action
 
         parsed_body = JSON.parse(response.body, symbolize_names: true)
         expect(response).not_to render_template(:destroy)
         expect(parsed_body).to eq({ redirect_url: account_path })
+      end
+
+      it 'tracks the event in analytics' do
+        stub_analytics
+        request.env['HTTP_REFERER'] = 'https://example.com/'
+
+        expect(@analytics).to receive(:track_event).with(
+          'IdV: cancellation confirmed',
+          request_came_from: 'users/sessions#new',
+          step: step.to_s,
+          proofing_components: nil,
+          analytics_id: nil,
+        )
+
+        action
       end
     end
   end

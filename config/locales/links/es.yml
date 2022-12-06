@@ -9,7 +9,7 @@ es:
     cancel: Cancelar
     cancel_account_creation: '‹ Cancelar la creación de cuenta'
     contact: Contactar
-    contact_support: 'Póngase en contacto con el soporte técnico de %{app_name}'
+    contact_support: Póngase en contacto con el soporte técnico de %{app_name}
     continue_sign_in: Continuar el inicio de sesión
     create_account: Crear cuenta
     go_back: Regresa

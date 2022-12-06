@@ -87,7 +87,6 @@ class Analytics
       **attributes,
       pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
     )
-    attributes[:success] ? 'success' : 'fail'
   end
 
   def request_attributes

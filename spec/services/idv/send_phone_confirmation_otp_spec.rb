@@ -2,10 +2,11 @@ require 'rails_helper'
 
 describe Idv::SendPhoneConfirmationOtp do
   let(:phone) { '+1 225-555-5000' }
+  let(:parsed_phone) { Phonelib.parse(phone) }
   let(:delivery_preference) { :sms }
   let(:otp_code) { '777777' }
   let(:user_phone_confirmation_session) do
-    PhoneConfirmation::ConfirmationSession.new(
+    Idv::PhoneConfirmationSession.new(
       code: '123456',
       phone: phone,
       sent_at: Time.zone.now,
@@ -25,9 +26,7 @@ describe Idv::SendPhoneConfirmationOtp do
     # Setup Idv::Session
     idv_session.user_phone_confirmation_session = user_phone_confirmation_session
 
-    # Mock PhoneConfirmation::CodeGenerator
-    allow(PhoneConfirmation::CodeGenerator).to receive(:call).
-      and_return(otp_code)
+    allow(Idv::PhoneConfirmationSession).to receive(:generate_code).and_return(otp_code)
 
     # Mock OtpRateLimiter
     allow(OtpRateLimiter).to receive(:new).with(user: user, phone: phone, phone_confirmed: true).
@@ -62,6 +61,11 @@ describe Idv::SendPhoneConfirmationOtp do
           channel: :sms,
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
+          extra_metadata: {
+            area_code: parsed_phone.area_code,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            resend: nil,
+          },
         )
       end
     end
@@ -89,6 +93,11 @@ describe Idv::SendPhoneConfirmationOtp do
           channel: :voice,
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
+          extra_metadata: {
+            area_code: parsed_phone.area_code,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            resend: nil,
+          },
         )
       end
     end

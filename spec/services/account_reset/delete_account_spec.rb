@@ -9,7 +9,7 @@ describe AccountReset::DeleteAccount do
       create_account_reset_request_for(user)
       grant_request(user)
       token = AccountResetRequest.where(user_id: user.id).first.granted_token
-      Db::DeletedUser::Create.call(user.id)
+      DeletedUser.create_from_user(user)
       AccountReset::DeleteAccount.new(token).call
     end
 

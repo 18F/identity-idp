@@ -73,6 +73,7 @@ Dir.chdir APP_ROOT do
   puts "\n== Removing old logs and tempfiles =="
   run "rm -f log/*"
   run "rm -rf tmp/cache"
+  run "rm -rf tmp/encrypted_doc_storage"
 
   puts "\n== Restarting application server =="
   run "mkdir -p tmp"

@@ -15,20 +15,20 @@ fr:
     memorable_date:
       day: Jour
       errors:
-        invalid_date: 'L’entrée n’est pas une date valide'
-        invalid_day: 'Entrez un jour entre 1 et 31'
-        invalid_month: 'Entrez un mois entre 1 et 12'
-        invalid_year: 'Entrez une année avec 4 chiffres'
-        missing_day: 'Entrez un jour'
-        missing_day_year: 'Entrez un jour et une année'
-        missing_month: 'Entrez un mois'
-        missing_month_day: 'Entrez un mois et un jour'
-        missing_month_day_year: 'Entrez une %{label}'
-        missing_month_year: 'Entrez un mois et une année'
-        missing_year: 'Entrez une année'
-        outside_date_range: 'Entrez une %{label} entre le %{min} et le %{max}'
-        range_overflow: 'Entrez une date au plus tard le %{date}'
-        range_underflow: 'Entrez une date le ou après le %{date}'
+        invalid_date: L’entrée n’est pas une date valide
+        invalid_day: Entrez un jour entre 1 et 31
+        invalid_month: Entrez un mois entre 1 et 12
+        invalid_year: Entrez une année avec 4 chiffres
+        missing_day: Entrez un jour
+        missing_day_year: Entrez un jour et une année
+        missing_month: Entrez un mois
+        missing_month_day: Entrez un mois et un jour
+        missing_month_day_year: Entrez une %{label}
+        missing_month_year: Entrez un mois et une année
+        missing_year: Entrez une année
+        outside_date_range: Entrez une %{label} entre le %{min} et le %{max}
+        range_overflow: Entrez une date au plus tard le %{date}
+        range_underflow: Entrez une date le ou après le %{date}
       month: Mois
       year: An
     password_toggle:
@@ -40,3 +40,4 @@ fr:
       label: Imprimer
     troubleshooting_options:
       default_heading: 'Des difficultés? Voici ce que vous pouvez faire:'
+      ipp_heading: 'Options de dépannage supplémentaires:'

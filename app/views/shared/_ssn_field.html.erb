@@ -5,18 +5,19 @@ locals:
 
 <%# maxlength set and includes '-' delimiters to work around cleave bug %>
 <%= render PasswordToggleComponent.new(
-      name: :ssn,
       form: f,
-      as: :password,
-      label: t('idv.form.ssn_label_html'),
       toggle_label: t('forms.ssn.show'),
-      toggle_position: :bottom,
-      hint: t('forms.example') + ' 123-45-6789',
-      required: true,
-      pattern: '^\d{3}-?\d{2}-?\d{4}$',
-      maxlength: 11,
-      input_html: { aria: { invalid: false }, class: 'ssn-toggle usa-input', value: '' },
-      error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.ssn') },
+      field_options: {
+        name: :ssn,
+        as: :password,
+        label: t('idv.form.ssn_label_html'),
+        hint: t('forms.example') + ' 123-45-6789',
+        required: true,
+        pattern: '^\d{3}-?\d{2}-?\d{4}$',
+        maxlength: 11,
+        input_html: { aria: { invalid: false }, class: 'ssn-toggle usa-input', value: '' },
+        error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.ssn') },
+      },
     ) %>
 
 <%= javascript_packs_tag_once('ssn-field') %>

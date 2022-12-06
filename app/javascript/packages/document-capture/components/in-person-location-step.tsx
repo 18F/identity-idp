@@ -1,10 +1,13 @@
 import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { PageHeading, SpinnerDots } from '@18f/identity-components';
+import { request } from '@18f/identity-request';
 import BackButton from './back-button';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
 import AnalyticsContext from '../context/analytics';
+import AddressSearch from './address-search';
+import InPersonContext from '../context/in-person';
 
 interface PostOffice {
   address: string;
@@ -29,10 +32,20 @@ interface FormattedLocation {
   sundayHours: string;
   weekdayHours: string;
 }
+interface LocationQuery {
+  streetAddress: string;
+  city: string;
+  state: string;
+  zipCode: string;
+}
 
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
 
-const getResponse = () => window.fetch(LOCATIONS_URL).then((res) => res.json());
+const getUspsLocations = (address) =>
+  request(LOCATIONS_URL, {
+    method: 'post',
+    json: { address },
+  });
 
 const formatLocation = (postOffices: PostOffice[]) => {
   const formattedLocations = [] as FormattedLocation[];
@@ -70,10 +83,12 @@ const prepToSend = (location: object) => {
 function InPersonLocationStep({ onChange, toPreviousStep }) {
   const { t } = useI18n();
   const [locationData, setLocationData] = useState([] as FormattedLocation[]);
+  const [foundAddress, setFoundAddress] = useState({} as LocationQuery);
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
+  const { arcgisSearchEnabled } = useContext(InPersonContext);
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
@@ -101,17 +116,10 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
         return;
       }
       const selected = prepToSend(selectedLocation);
-      const headers = { 'Content-Type': 'application/json' };
-      const meta: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
-      const csrf = meta?.content;
-      if (csrf) {
-        headers['X-CSRF-Token'] = csrf;
-      }
       setInProgress(true);
-      await fetch(LOCATIONS_URL, {
+      await request(LOCATIONS_URL, {
+        json: selected,
         method: 'PUT',
-        body: JSON.stringify(selected),
-        headers,
       })
         .then(() => {
           if (!mountedRef.current) {
@@ -135,25 +143,35 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
     [locationData, inProgress],
   );
 
+  const handleFoundAddress = useCallback((address) => {
+    setFoundAddress({
+      streetAddress: address.street_address,
+      city: address.city,
+      state: address.state,
+      zipCode: address.zip_code,
+    });
+  }, []);
+
   useEffect(() => {
-    let mounted = true;
+    let didCancel = false;
     (async () => {
       try {
-        const fetchedLocations = await getResponse();
-        if (mounted) {
+        const fetchedLocations = await getUspsLocations(prepToSend(foundAddress));
+
+        if (!didCancel) {
           const formattedLocations = formatLocation(fetchedLocations);
           setLocationData(formattedLocations);
         }
       } finally {
-        if (mounted) {
+        if (!didCancel) {
           setIsLoadingComplete(true);
         }
       }
     })();
     return () => {
-      mounted = false;
+      didCancel = true;
     };
-  }, []);
+  }, [foundAddress]);
 
   let locationsContent: React.ReactNode;
   if (!isLoadingComplete) {
@@ -183,6 +201,7 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.location')}</PageHeading>
+      {arcgisSearchEnabled && <AddressSearch onAddressFound={handleFoundAddress} />}
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
       {locationsContent}
       <BackButton onClick={toPreviousStep} />

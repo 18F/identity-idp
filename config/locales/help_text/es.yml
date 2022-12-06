@@ -3,19 +3,16 @@ es:
   help_text:
     change_factor: Antes de que pueda restablecer su %{factor}, tendrá que confirmar
       su contraseña y utilizar su método de autenticación.
-    no_factor:
-      delete_account: Para eliminar su cuenta, confirme su contraseña y código de seguridad.
     requested_attributes:
       address: Dirección de correo postal
       all_emails: Direcciones de correo electrónico en su cuenta
       birthdate: Fecha de nacimiento
       email: Dirección de correo electrónico
       full_name: Nombre completo
-      ial1_consent_reminder_html: 'Usted debe dar cada año su consentimiento para
+      ial1_consent_reminder_html: Usted debe dar cada año su consentimiento para
         compartir su información con <b>%{sp}</b>. Compartiremos su información
-        con <b>%{sp}</b> para vincular su cuenta.'
-      ial1_intro_html: 'Le haremos llegar su información a <b>%{sp}</b> para conectar
-        su cuenta.'
+        con <b>%{sp}</b> para vincular su cuenta.
+      ial1_intro_html: Le haremos llegar su información a <b>%{sp}</b> para conectar su cuenta.
       ial2_consent_reminder_html: 'Para conectar su cuenta, <b>%{sp}</b> necesita
         saber quién usted. Debe dar su consentimiento cada año para compartir su
         información verificada con <b>%{sp}</b>. Compartiremos esta

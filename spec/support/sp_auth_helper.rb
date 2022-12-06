@@ -19,7 +19,6 @@ module SpAuthHelper
     click_submit_default
     complete_all_doc_auth_steps
     fill_out_phone_form_ok
-    click_idv_continue
     choose_idv_otp_delivery_method_sms
     fill_in_code_with_last_phone_otp
     click_submit_default

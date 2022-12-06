@@ -13,7 +13,7 @@ es:
       address: Actualice su dirección postal
       doc_capture: Agrega tu identificación
       link_sent: Enlace enviado
-      otp_delivery: Recibe un código de seguridad
+      otp_delivery: Reciba un código de un solo uso
       processing_images: Procesando tus imágenes
       ssn: Ingresa tu número del seguro social
       switch_back: Regresar a tu computadora
@@ -24,7 +24,9 @@ es:
       email_language: Editar la preferencia de idioma del correo electrónico
       password: Edite su contraseña
       phone: Edite su número de teléfono
-    enter_2fa_code: Ingese su código de seguridad de sólo un uso
+    enter_2fa_code:
+      one_time_code: Ingrese el código de seguridad de un solo uso
+      security_code: Ingese su código de seguridad de sólo un uso
     failure:
       information_not_verified: Información personal no verificada
       phone_verification: Número telefónico no verificado
@@ -44,8 +46,8 @@ es:
       cancellation_prompt: Cancela la verificación de identidad
       cancelled: Se canceló la verificación de identidad
     mfa_setup:
-      suggest_second_mfa: ¡Has agregado tu primer método de autenticación! Agrega un
-        segundo método como respaldo.
+      suggest_second_mfa: '¡Has agregado tu primer método de autenticación! Agrega un
+        segundo método como respaldo.'
     no_auth_option: No se encontró mensaje de inicio de sesión
     openid_connect:
       authorization: Autorización de OpenID Connect
@@ -55,8 +57,8 @@ es:
       confirm: Confirme la contraseña de su cuenta
       forgot: Restablecer la contraseña
     personal_key: Por si acaso
-    phone_setup: Envíe su código de seguridad a través de un mensaje de texto o de
-      una llamada telefónica
+    phone_setup: Envíe su código de un solo uso a través de un mensaje de texto
+      (SMS) o una llamada telefónica
     piv_cac_login:
       add: Agregue su PIV o CAC
       new: Use su PIV / CAC para iniciar sesión en su cuenta
