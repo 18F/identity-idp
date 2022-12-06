@@ -1,6 +1,6 @@
 import { TextInput, Button, Alert } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
-import { useState, useCallback, ChangeEvent } from 'react';
+import { useState, useCallback, ChangeEvent, useEffect } from 'react';
 import { render } from 'react-dom';
 import { getErrorMessages } from '@18f/identity-validated-field/validated-field';
 
@@ -33,8 +33,14 @@ function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
         </Alert>,
         errorRoot,
       );
+    } else {
+      // TODO: wipe the alert
     }
   };
+
+  useEffect(() => {
+    displayInputErrors();
+  }, [inputErrors]);
 
   const handleAddressSearch = useCallback(async () => {
     if (unvalidatedAddressInput === '') {
@@ -61,10 +67,11 @@ function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
           const target = event.target as HTMLInputElement;
 
           setUnvalidatedAddressInput(target.value);
+          setInputErrors('');
         }}
         label="Search for an address"
       />
-      <Button onClick={() => handleAddressSearch() && displayInputErrors()}>Search</Button>
+      <Button onClick={() => handleAddressSearch()}>Search</Button>
       <div className="error-container" />
       <>{inputErrors}</>
       <>{addressQuery.address}</>
