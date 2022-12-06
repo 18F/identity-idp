@@ -29,7 +29,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     IrsAttemptApiLogFile.create(
       filename: result.filename,
       iv: encoded_iv,
-      encrypted_key: encoded_encrypted_key, 
+      encrypted_key: encoded_encrypted_key,
       requested_time: Time.strptime(timestamp, '%Y-%m-%dT%H:%M:%S.%N%z'),
     )
   end

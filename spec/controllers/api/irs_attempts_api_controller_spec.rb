@@ -41,7 +41,7 @@ RSpec.describe Api::IrsAttemptsApiController do
   let(:existing_event_jtis) { existing_events.map(&:first) }
 
   describe '#create' do
-    let(:test_object) {'{test: "test"}'}
+    let(:test_object) { '{test: "test"}' }
     before do
       Aws.config[:s3] = {
         stub_responses: {
@@ -75,7 +75,6 @@ RSpec.describe Api::IrsAttemptsApiController do
         expect(Base64.strict_decode64(response.headers['X-Payload-IV'])).to be_present
         expect(Base64.strict_decode64(response.headers['X-Payload-Key'])).to be_present
         expect(Base64.strict_decode64(response.body)).to be_present
-
       end
     end
 
@@ -89,7 +88,7 @@ RSpec.describe Api::IrsAttemptsApiController do
         IrsAttemptApiLogFile.create(
           filename: 'test_filename',
           iv: Base64.strict_encode64('test_iv'),
-          encrypted_key: Base64.strict_encode64('test_encrypted_key'), 
+          encrypted_key: Base64.strict_encode64('test_encrypted_key'),
           requested_time: time.iso8601,
         )
       end
@@ -101,7 +100,6 @@ RSpec.describe Api::IrsAttemptsApiController do
       end
 
       it 'should render data from s3 correctly' do
-
         post :create, params: { timestamp: time.iso8601 }
 
         expect(response).to be_ok

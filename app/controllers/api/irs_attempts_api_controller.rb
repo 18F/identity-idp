@@ -36,7 +36,7 @@ module Api
             send_data requested_data.body.read, disposition: "filename=#{log_file_record.filename}"
           else
             render json: { status: :not_found, description: 'File not found for Timestamp' },
-                   status: :not_found 
+                   status: :not_found
           end
         else
           result = encrypted_security_event_log_result
@@ -49,7 +49,7 @@ module Api
         end
       else
         render json: { status: :unprocessable_entity, description: 'Invalid timestamp parameter' },
-               status: :unprocessable_entity 
+               status: :unprocessable_entity
       end
       analytics.irs_attempts_api_events(**analytics_properties)
     end
