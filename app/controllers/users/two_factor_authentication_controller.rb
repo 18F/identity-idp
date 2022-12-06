@@ -20,8 +20,9 @@ module Users
       analytics.otp_delivery_selection(**result.to_h)
       if result.success?
         handle_valid_otp_params(
-          result, user_select_delivery_preference,
-          user_selected_default_number
+          result,
+          user_select_delivery_preference,
+          user_selected_default_number,
         )
         update_otp_delivery_preference_if_needed
       else
