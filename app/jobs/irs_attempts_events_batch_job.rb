@@ -7,7 +7,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
               IdentityConfig.store.irs_attempt_api_bucket_name
     return nil unless enabled
 
-    events = redis_client.read_events(timestamp: timestamp)
+    events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: timestamp)
     event_values = events.values.join("\r\n")
 
     public_key = IdentityConfig.store.irs_attempt_api_public_key
@@ -30,7 +30,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
       filename: result.filename,
       iv: encoded_iv,
       encrypted_key: encoded_encrypted_key,
-      requested_time: redis_client.key(timestamp),
+      requested_time: IrsAttemptsApi::EnvelopeEncryptor.formatted_timestamp(timestamp),
     )
   end
 
