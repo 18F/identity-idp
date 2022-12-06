@@ -35,16 +35,16 @@ import '@18f/identity-countdown/countdown-alert-element';
 The custom element will implement the countdown alert behavior, but all markup must already exist.
 
 ```html
-<lg-countdown-alert show-at-remaining-seconds="150">
+<lg-countdown-alert show-at-remaining="150000">
   <div class="usa-alert usa-alert--info margin-bottom-4 usa-alert--info-time" role="status">
     <div class="usa-alert__body">
       <p class="usa-alert__text">
         <lg-countdown
-          data-expiration="2022-12-02T14:50:32Z"
+          data-expiration="2022-12-02T00:01:45Z"
           data-update-interval="1000"
           data-start-immediately="true"
         >
-          0 seconds
+          1 minute and 45 seconds
         </lg-countdown>
       </p>
     </div>
