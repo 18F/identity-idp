@@ -80,7 +80,9 @@ feature 'doc auth welcome step' do
         analytics_id: 'Doc Auth',
         flow_path: 'standard',
         step: 'upload', step_count: 1,
-        irs_reproofing: false
+        irs_reproofing: false,
+        native_camera_a_b_testing_enabled: false,
+        native_camera_only: false
       )
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth upload submitted',
