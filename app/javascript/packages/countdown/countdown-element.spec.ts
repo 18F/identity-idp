@@ -112,7 +112,7 @@ describe('CountdownElement', () => {
     });
 
     const onTick = sinon.stub();
-    document.body.addEventListener('lg:countdown-tick', onTick);
+    document.body.addEventListener('lg:countdown:tick', onTick);
 
     clock.tick(1000);
 

@@ -3,7 +3,7 @@ import type { CountdownElement } from './countdown-element';
 export class CountdownAlertElement extends HTMLElement {
   connectedCallback() {
     if (this.showAtRemaining) {
-      this.addEventListener('lg:countdown-tick', this.handleCountdownTick);
+      this.addEventListener('lg:countdown:tick', this.handleCountdownTick);
     }
   }
 
@@ -18,7 +18,7 @@ export class CountdownAlertElement extends HTMLElement {
   handleCountdownTick = () => {
     if (this.countdown.timeRemaining <= this.showAtRemaining!) {
       this.show();
-      this.removeEventListener('lg:countdown-tick', this.handleCountdownTick);
+      this.removeEventListener('lg:countdown:tick', this.handleCountdownTick);
     }
   };
 
