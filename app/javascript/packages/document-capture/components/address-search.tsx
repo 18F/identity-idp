@@ -13,7 +13,7 @@ interface Location {
 
 interface AddressSearchProps {
   onAddressFound?: (location: Location) => void;
-  registerField: () => {};
+  registerField: (field: string) => {};
 }
 
 export const ADDRESS_SEARCH_URL = '/api/addresses';
