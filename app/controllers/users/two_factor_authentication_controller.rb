@@ -195,8 +195,9 @@ module Users
 
       @telephony_result = send_user_otp(method)
       handle_telephony_result(
-        method: method, default: default,
-        otp_delivery_selection_result: otp_delivery_selection_result
+        method: method,
+        default: default,
+        otp_delivery_selection_result: otp_delivery_selection_result,
       )
     end
 
