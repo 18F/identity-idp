@@ -125,7 +125,7 @@ RSpec.describe ArcgisApi::Geocoder do
       allow(IdentityConfig.store).to receive(:arcgis_api_root_url).
         and_return(root_url)
 
-      stub_generate_token_response(expires_at: 1.hour.from_now.to_i, token: 'token1')
+      stub_generate_token_response(expires_at: 1.hour.from_now.to_i * 1000, token: 'token1')
       stub_request_suggestions
       subject.suggest('100 Main')
 

@@ -40,7 +40,9 @@ module ArcgisApiHelper
     )
   end
 
-  def stub_generate_token_response(expires_at: 1.hour.from_now.to_i, token: 'abc123')
+  # ESRI ArcGIS API's generateToken endpoint returns expiration in milliseconds
+  # See: https://developers.arcgis.com/rest/users-groups-and-items/generate-token.htm#:~:text=token%20in%20milliseconds
+  def stub_generate_token_response(expires_at: 1.hour.from_now.to_i * 1000, token: 'abc123')
     stub_request(:post, %r{/generateToken}).to_return(
       status: 200, body: {
         token: token,
