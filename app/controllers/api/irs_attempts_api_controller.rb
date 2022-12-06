@@ -30,7 +30,7 @@ module Api
         render json: { status: :unprocessable_entity, description: 'Invalid timestamp parameter' },
                status: :unprocessable_entity
       end
-      analytics.irs_attempts_api_events(**analytics_properties)
+      analytics.irs_attempts_api_events(**analytics_properties(authenticated: true))
     end
 
     private
@@ -39,6 +39,7 @@ module Api
       bearer, csp_id, token = request.authorization&.split(' ', 3)
       if bearer != 'Bearer' || !valid_auth_tokens.include?(token) ||
          csp_id != IdentityConfig.store.irs_attempt_api_csp_id
+        analytics.irs_attempts_api_events(**analytics_properties(authenticated: false))
         render json: { status: 401, description: 'Unauthorized' }, status: :unauthorized
       end
     end
@@ -67,11 +68,12 @@ module Api
       IdentityConfig.store.irs_attempt_api_auth_tokens
     end
 
-    def analytics_properties
+    def analytics_properties(authenticated:)
       {
         rendered_event_count: security_event_tokens.count,
         timestamp: timestamp&.iso8601,
-        success: timestamp.present?,
+        authenticated: authenticated,
+        success: authenticated && timestamp.present?,
       }
     end
 
