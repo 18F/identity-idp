@@ -30,6 +30,7 @@ describe Aws::SES::Base do
         raw_message: {
           data: raw_mail_data,
         },
+        configuration_set_name: '',
       )
     end
 
