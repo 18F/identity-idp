@@ -96,6 +96,13 @@ RSpec.describe Api::IrsAttemptsApiController do
       request.headers['Authorization'] = auth_token # Missing Bearer prefix
 
       post :create, params: { timestamp: time.iso8601 }
+      expect(@analytics).to have_logged_event(
+        'IRS Attempt API: Events submitted',
+        rendered_event_count: 3,
+        authenticated: false,
+        success: false,
+        timestamp: time.iso8601,
+      )
 
       expect(response.status).to eq(401)
 
@@ -123,6 +130,7 @@ RSpec.describe Api::IrsAttemptsApiController do
       expect(@analytics).to have_logged_event(
         'IRS Attempt API: Events submitted',
         rendered_event_count: existing_events.count,
+        authenticated: true,
         success: true,
         timestamp: time.iso8601,
       )
