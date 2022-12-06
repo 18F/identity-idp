@@ -49,8 +49,7 @@ es:
         automáticamente cuando haya terminado.
       secure_account: to be implemented
       verify_identity: to be implemented
-      welcome_html: '%{sp_name} necesita asegurarse de que sea usted y no alguien que
-        se haga pasar por usted.'
+      welcome_html: '%{sp_name} necesita asegurarse de que es usted y no es alguien que se hace pasar por usted.'
     instructions:
       consent: to be implemented for %{app_name}
       learn_more: Obtenga más información

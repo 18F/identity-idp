@@ -50,7 +50,7 @@ en:
         your information.
       verify_identity: We’ll ask for your personal information to verify your identity
         against public records.
-      welcome_html: '%{sp_name} - not someone pretending to be you.'
+      welcome_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you.'
     instructions:
       consent: By checking this box, you are letting %{app_name} ask for, use, keep,
         and share your personal information. We will only use it to verify your
@@ -60,7 +60,7 @@ en:
       verification_content: You do not need to be the primary account holder on your
         phone plan. If your phone number doesn’t work, we can send you a
         verification code by mail.
-      verify_requirements: you will need a phone number with a phone plan associated with your name.
+      verify_requirements: We'll call or text your phone number to verify your identity. If we can't verify your phone number, you can verify by mail instead..
       welcome: To verify your identity,
     troubleshooting:
       headings:

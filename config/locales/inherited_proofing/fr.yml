@@ -51,8 +51,7 @@ fr:
         automatiquement l’étape suivante lorsque ce sera fait.
       secure_account: to be implemented
       verify_identity: to be implemented
-      welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
-        quelqu’un qui se fait passer pour vous.'
+      welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non quelqu’un qui se fait passer pour vous'
     instructions:
       consent: to be implemented for %{app_name}
       learn_more: En savoir plus
