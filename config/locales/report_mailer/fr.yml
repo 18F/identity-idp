@@ -5,3 +5,6 @@ fr:
       issuers: Émetteurs
       name: Nom
       subject: Rapport sur les comptes supprimés
+    system_demand_report:
+      name: Nom
+      subject: Rapport de demande du système

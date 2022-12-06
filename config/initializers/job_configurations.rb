@@ -3,6 +3,7 @@ cron_5m = '0/5 * * * *'
 cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
+cron_1w = '0 0 * * 0'
 
 if defined?(Rails::Console)
   Rails.logger.info 'job_configurations: console detected, skipping schedule'
@@ -126,6 +127,17 @@ else
         class: 'IrsAttemptsEventsBatchJob',
         cron: cron_1h,
         args: -> { [Time.zone.now - 1.hour] },
+      },
+      # Weekly IRS report returning system demand
+      irs_weekly_summary_report: {
+        class: 'Reports::IrsWeeklySummaryReport',
+        cron: cron_1w,
+        args: -> { [Time.zone.now] },
+      },
+      # Backfill service_provider_identities last_consented_at
+      identities_backfill_job: {
+        class: 'IdentitiesBackfillJob',
+        cron: cron_5m,
       },
     }
   end

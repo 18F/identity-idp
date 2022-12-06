@@ -41,17 +41,29 @@ module DataRequests
 
     def start_queries
       results = Concurrent::Array.new
-      thread_pool = Concurrent::FixedThreadPool.new(5)
+      errors = Concurrent::Array.new
+      thread_pool = Concurrent::FixedThreadPool.new(1, fallback_policy: :abort)
 
       dates.each do |date|
         thread_pool.post do
           warn "Downloading logs for #{date}"
           results.push(wait_for_query_result(start_query(date)))
+        rescue Aws::CloudWatchLogs::Errors::InvalidParameterException => e
+          if !e.message.match?(/End time should not be before the service was generally available/)
+            errors.push(e)
+          end
+        rescue => e
+          errors.push(e)
         end
       end
 
       thread_pool.shutdown
       thread_pool.wait_for_termination
+
+      if errors.any?
+        warn "#{errors.count} errors"
+        raise errors.first
+      end
 
       results
     end

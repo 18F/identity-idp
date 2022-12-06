@@ -99,7 +99,7 @@ es:
     personal_key:
       get_new: Obtenga una nueva clave personal
       get_new_description: Su antigua clave personal dejará de funcionar en cuanto reciba una nueva.
-      last_generated: 'Generada por última vez en %{timestamp}'
+      last_generated: Generada por última vez en %{timestamp}
       needs_new: Se requiere una nueva clave personal para su cuenta. Su antigua clave
         personal no funcionará si se olvida de su contraseña.
       old_key_will_not_work: Por favor, imprima, copie o descargue la nueva clave

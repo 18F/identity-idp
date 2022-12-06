@@ -9,7 +9,7 @@ describe Idv::OtpDeliveryMethodController do
     subject.idv_session.address_verification_mechanism = 'phone'
     subject.idv_session.vendor_phone_confirmation = true
     subject.idv_session.user_phone_confirmation = false
-    user_phone_confirmation_session = PhoneConfirmation::ConfirmationSession.start(
+    user_phone_confirmation_session = Idv::PhoneConfirmationSession.start(
       phone: valid_phone_number,
       delivery_method: :sms,
     )

@@ -47,7 +47,7 @@ es:
         prompt:
           hybrid: '¿Seguro que desea cancelar la carga de fotos de su identificación en
             este teléfono?'
-          standard: ¿Cancelar la verificación de su identidad?
+          standard: '¿Cancelar la verificación de su identidad?'
         start_over: Empezar de nuevo a verificar su identidad
     errors:
       incorrect_password: La contraseña que ingresó no es correcta.
@@ -89,8 +89,8 @@ es:
           Los errores más comunes suelen producirse al ingresar un Número de
           Seguridad Social o un Código Postal incorrecto.
       setup:
-        fail_html: 'Por favor, %{contact_form_link} e introduzca el código
-          <b>%{support_code}</b> en el campo de detalle.'
+        fail_html: Por favor, %{contact_form_link} e introduzca el código
+          <b>%{support_code}</b> en el campo de detalle.
         heading: Hay un problema con tu información
         link_text: rellene nuestro formulario decontacto
       timeout: Estamos experimentando un tiempo de espera superior al habitual al
@@ -145,21 +145,24 @@ es:
       otp_delivery_method:
         phone_number_html: Enviaremos un código a <strong>%{phone}</strong> para
           verificar que el número de teléfono le pertenece.
+      otp_delivery_method_description: Si ha introducido un teléfono fijo más arriba,
+        seleccione “Llamada telefónica” más abajo.
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
       phone:
-        alert_html: '<strong>Este número de teléfono debe…</strong>'
-        description: Verificamos los registros para asegurarnos de que eres quien eres,
-          y de que eres el propietario de tu cuenta.
-        final_note_html: '<strong>Si configura un teléfono para la autenticación de dos
-          factores</strong>, este puede ser un número diferente.'
+        alert_html: '<strong>Este número de teléfono:</strong>'
+        description: Comprobaremos este número con los registros y le enviaremos un
+          código único. Esto es para ayudar a verificar su identidad.
+        final_note_html: '<strong>Si configura un teléfono para la autenticación
+          multifactor</strong>, este puede ser un número diferente.'
         phone_of_record: Teléfono del registro
         rules:
-          - ser un plan telefónico que esté asociado a su nombre. En este caso,
-            no es necesario que usted sea el titular principal de la cuenta.
-          - no ser un teléfono virtual (como Google Voice o Skype), como tampoco
-            un número de teléfono de tarificación adicional (pago).
-          - un número de EE. UU.
+          - No debe ser un teléfono virtual (como Google Voice o Skype) ni un
+            número de tarifa premium (de pago)
+          - Debe ser un número de Estados Unidos (incluidos los territorios de
+            Estados Unidos)
+          - Debe ser su número principal o el número que utilice con más
+            frecuencia
       return_to_profile: '‹ Volver a tu perfil de %{app_name}'
       review:
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
@@ -187,10 +190,10 @@ es:
       mail:
         resend: '¿Desea otra carta?'
         verify: '¿Desea una carta?'
-      otp_delivery_method: '¿Cómo te gustaría recibir el código?'
+      otp_delivery_method: '¿Cómo debemos enviar un código?'
       review: Revise y envíe
       session:
-        phone: Ingresa un número de teléfono para ayudar a verificar tu identidad
+        phone: Introduzca su número de teléfono
         review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
     troubleshooting:
       headings:

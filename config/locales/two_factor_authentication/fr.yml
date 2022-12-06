@@ -78,19 +78,18 @@ fr:
     mobile_terms_of_service: Conditions de service mobile
     no_auth_option: Aucune option d’authentification n’a été trouvée pour vous connecter
     opt_in:
-      cant_use_phone: 'Vous ne pouvez pas utiliser votre téléphone?'
-      error_retry: 'Désolé, nous avons des difficultés à vous connecter. Veuillez
-        réessayer.'
-      opted_out_html: 'Vous avez choisi de ne plus recevoir de SMS à %{phone_number}.
-        Vous pouvez choisir de vous inscrire et de recevoir à nouveau un code à
-        usage unique à ce numéro de téléphone.'
-      opted_out_last_30d_html: 'Vous avez choisi de ne plus recevoir de SMS au
+      cant_use_phone: Vous ne pouvez pas utiliser votre téléphone?
+      error_retry: Désolé, nous avons des difficultés à vous connecter. Veuillez réessayer.
+      opted_out_html: Vous avez choisi de ne plus recevoir de SMS à %{phone_number}.
+        Vous pouvez vous inscrire et recevoir à nouveau un code de sécurité à ce
+        numéro de téléphone.
+      opted_out_last_30d_html: Vous avez choisi de ne plus recevoir de SMS au
         %{phone_number} au cours des 30 derniers jours. Nous ne pouvons opter
-        pour un numéro de téléphone qu’une fois tous les 30 jours.'
-      title: Nous n’avons pas pu envoyer de code à usage unique à votre numéro de
-        téléphone.
-      wait_30d_opt_in: 'Après 30 jours, vous pouvez vous inscrire et recevoir un code
-        à usage unique pour ce numéro de téléphone.'
+        pour un numéro de téléphone qu’une fois tous les 30 jours.
+      title: Nous n’avons pas pu envoyer un code de sécurité à votre numéro de
+        téléphone
+      wait_30d_opt_in: Après 30 jours, vous pouvez vous inscrire et recevoir un code
+        de sécurité à ce numéro de téléphone.
     otp_delivery_preference:
       instruction: Vous pouvez modifier cette sélection lors de votre prochaine connexion.
       no_supported_options: Nous ne sommes pas en mesure de vérifier les numéros de

@@ -293,6 +293,7 @@ sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
 otp_min_attempts_remaining_warning_count: 3
 show_account_recovery_recovery_options: false
+system_demand_report_email: 'foo@bar.com'
 test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false
