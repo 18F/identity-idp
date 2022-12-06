@@ -116,20 +116,26 @@ class GetUspsProofingResultsJob < ApplicationJob
         response = proofer.request_proofing_results(
           enrollment.unique_id, enrollment.enrollment_code
         )
+        puts "response in check enrollment: #{response}"
       rescue Faraday::BadRequestError => err
+        puts "bad request error"
         # 400 status code. This is used for some status updates and some common client errors
         handle_bad_request_error(err, enrollment)
       rescue Faraday::ClientError, Faraday::ServerError => err
+        puts "server error"
         # 4xx or 5xx status code. These are unexpected but will have some sort of
         # response body that we can try to log data from
         handle_client_or_server_error(err, enrollment)
       rescue Faraday::Error => err
+        puts "faraday error"
         # Timeouts, failed connections, parsing errors, and other HTTP errors. These
         # generally won't have a response body
         handle_faraday_error(err, enrollment)
       rescue StandardError => err
+        puts "standard error"
         handle_standard_error(err, enrollment)
       else
+        puts "process enrollment repsonse"
         process_enrollment_response(enrollment, response)
       ensure
         # Record the attempt to update the enrollment
@@ -147,11 +153,13 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def handle_bad_request_error(err, enrollment)
     response = err.response_body
+    # puts "response: #{response}"
     case response&.[]('responseMessage')
     when IPP_INCOMPLETE_ERROR_MESSAGE
       # Customer has not been to post office for IPP
       enrollment_outcomes[:enrollments_in_progress] += 1
     when IPP_EXPIRED_ERROR_MESSAGE
+      puts "expired err msg; err.response: #{err.response}"
       handle_expired_status_update(enrollment, err.response)
     else
       NewRelic::Agent.notice_error(err)
@@ -249,7 +257,9 @@ class GetUspsProofingResultsJob < ApplicationJob
       reason: 'Enrollment has expired',
     )
     enrollment.update(status: :expired)
+    puts "updated enrollment: #{enrollment.pretty_inspect}"
     if !enrollment.deadline_passed_sent
+      puts "flag false"
       send_deadline_passed_email(enrollment.user, enrollment)
       enrollment.update(deadline_passed_sent: true)
     end
@@ -330,6 +340,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def send_deadline_passed_email(user, enrollment)
+    puts "send func user and enrollment: #{user.pretty_inspect}, #{enrollment.pretty_inspect}"
     user.confirmed_email_addresses.each do |email_address|
       UserMailer.with(user: user, email_address: email_address).in_person_deadline_passed(
         enrollment: enrollment,
