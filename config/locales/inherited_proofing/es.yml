@@ -49,13 +49,17 @@ es:
         automáticamente cuando haya terminado.
       secure_account: to be implemented
       verify_identity: to be implemented
-      welcome_html: '%{sp_name} necesita asegurarse de que es usted y no es alguien que se hace pasar por usted.'
+      welcome_html: '%{sp_name} necesita asegurarse de que es usted y no es alguien
+        que se hace pasar por usted.'
     instructions:
       consent: to be implemented for %{app_name}
       learn_more: Obtenga más información
       privacy: Nuestras normas de privacidad y seguridad
       verification_content: to be implemented
-      verify_requirements: Te llamaremos o te enviaremos un mensaje de texto a tu número de teléfono para verificar tu identidad. Si no podemos verificar tu número de teléfono, puedes realizar la verificación por correo postal.
+      verify_requirements: Te llamaremos o te enviaremos un mensaje de texto a tu
+        número de teléfono para verificar tu identidad. Si no podemos verificar
+        tu número de teléfono, puedes realizar la verificación por correo
+        postal.
     troubleshooting:
       headings:
         missing_required_items: ¿No tienes un número de teléfono? Así es como obtener ayuda
