@@ -130,7 +130,7 @@ else
       },
       # Weekly IRS report returning system demand
       irs_weekly_summary_report: {
-        class: 'IrsWeeklySummaryReport',
+        class: 'Reports::IrsWeeklySummaryReport',
         cron: cron_1w,
         args: -> { [Time.zone.now] },
       },
