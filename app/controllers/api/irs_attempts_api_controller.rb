@@ -20,8 +20,8 @@ module Api
     def create
       if timestamp
         if IdentityConfig.store.irs_attempt_api_aws_s3_enabled
-          if IrsAttemptApiLogFile.find_by(requested_time: timestamp.iso8601)
-            log_file_record = IrsAttemptApiLogFile.find_by(requested_time: timestamp.iso8601)
+          if IrsAttemptApiLogFile.find_by(requested_time: redis_client.key(timestamp))
+            log_file_record = IrsAttemptApiLogFile.find_by(requested_time: redis_client.key(timestamp))
 
             headers['X-Payload-Key'] = log_file_record.encrypted_key
             headers['X-Payload-IV'] = log_file_record.iv

@@ -7,7 +7,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
               IdentityConfig.store.irs_attempt_api_bucket_name
     return nil unless enabled
 
-    events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: timestamp)
+    events = redis_client.read_events(timestamp: timestamp)
     event_values = events.values.join("\r\n")
 
     public_key = IdentityConfig.store.irs_attempt_api_public_key
@@ -30,12 +30,16 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
       filename: result.filename,
       iv: encoded_iv,
       encrypted_key: encoded_encrypted_key,
-      requested_time: Time.strptime(timestamp, '%Y-%m-%dT%H:%M:%S.%N%z'),
+      requested_time: redis_client.key(timestamp),
     )
   end
 
   def create_and_upload_to_attempts_s3_resource(bucket_name:, filename:, encrypted_data:)
     aws_object = Aws::S3::Resource.new.bucket(bucket_name).object(filename)
     aws_object.put(body: encrypted_data, acl: 'private', content_type: 'text/plain')
+  end
+
+  def redis_client
+    @redis_client ||= IrsAttemptsApi::RedisClient.new
   end
 end
