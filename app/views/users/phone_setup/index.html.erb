@@ -25,6 +25,7 @@
 
   <%= render PhoneInputComponent.new(form: f, confirmed_phone: false, required: true, class: 'margin-bottom-4') %>
 
+  <!-- TODO: Remove this note. Relevant partial follows. -->
   <%= render 'users/shared/otp_delivery_preference_selection',
              form_obj: @new_phone_form %>
 

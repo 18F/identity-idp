@@ -2,17 +2,15 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.header) %>
 
-<!-- TODO: Placeholder !-->
-<% if @landline %>
-  <%= render AlertComponent.new(type: :warning, text_tag: 'div') do %>
-    Your number appears to be a landline...
-  <% end %>
-<% end %>
-
-
 <p>
   <%= @presenter.phone_number_message %>
 </p>
+
+<% if @landline %>
+  <%= render AlertComponent.new(type: :warning, text_tag: 'div') do %>
+    Your number appears to be a landline and may not be able to receive text messages. <%= link_to('Go back', phone_setup_path(otp_delivery_preference: 'voice')) %> to change your phone number or delivery method.
+  <% end %>
+<% end %>
 
 <%= simple_form_for('', method: :post) do |f| %>
   <% if @presenter.reauthn %>
