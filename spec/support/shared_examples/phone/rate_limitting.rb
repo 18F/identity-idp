@@ -8,7 +8,7 @@ shared_examples 'phone rate limitting' do |delivery_method|
       and_return(max_confirmation_attempts)
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).
       and_return(max_otp_sends)
-    allow(IdentityConfig.store).to receive(:min_attempts_remaining_warning_count).
+    allow(IdentityConfig.store).to receive(:otp_min_attempts_remaining_warning_count).
       and_return(min_attempts)
   end
 
@@ -52,13 +52,13 @@ shared_examples 'phone rate limitting' do |delivery_method|
       expect(page).to have_content(
         t('two_factor_authentication.invalid_otp'),
       )
-      if count_remaining >= min_attempts
+      if count_remaining > min_attempts
         expect(page).to have_no_content(
           strip_tags(
             t(
               'two_factor_authentication.attempt_remaining_warning_html',
               count: count_remaining,
-            ).to_s,
+            ),
           ),
         )
       else
