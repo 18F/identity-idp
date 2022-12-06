@@ -134,11 +134,6 @@ else
         cron: cron_1w,
         args: -> { [Time.zone.now] },
       },
-      # Backfill service_provider_identities last_consented_at
-      identities_backfill_job: {
-        class: 'IdentitiesBackfillJob',
-        cron: cron_5m,
-      },
     }
   end
   # rubocop:enable Metrics/BlockLength
