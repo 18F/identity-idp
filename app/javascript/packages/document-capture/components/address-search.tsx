@@ -38,7 +38,7 @@ function AddressSearch({ onAddressFound = () => {} }: AddressSearchProps) {
 
   return (
     <>
-      <ValidatedField messages={{ valueMissing: 'Include a city, state, and ZIP code' }}>
+      <ValidatedField>
         <TextInput
           required
           value={unvalidatedAddressInput}
