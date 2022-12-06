@@ -9,15 +9,14 @@
     <%= t('inherited_proofing.info.welcome_html', sp_name: decorated_session.sp_name || t('inherited_proofing.info.no_sp_name')) %>
   </p>
 
-  <%= t('inherited_proofing.instructions.welcome') %>
-  <b>
+  <p>
     <%= t('inherited_proofing.instructions.verify_requirements') %>
-  </b>
-  <br/>
-  <div>
-    <br/>
-    <%= t('inherited_proofing.instructions.verification_content') %>
-  </div>
+    <%= new_window_link_to(
+      t('inherited_proofing.troubleshooting.options.learn_more_phone_or_mail'),
+      'https://www.va.gov/resources/managing-your-vagov-profile/',
+    ) %>
+
+  </p>
 
   <%= render(
         'shared/troubleshooting_options',
@@ -35,11 +34,6 @@
               'inherited_proofing.troubleshooting.options.get_help',
               sp_name: decorated_session.sp_name,
             ),
-            new_tab: true,
-          },
-          decorated_session.sp_name && {
-            url: idv_inherited_proofing_return_to_sp_path(location: 'missing_items'),
-            text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
             new_tab: true,
           },
         ].select(&:present?),

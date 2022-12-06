@@ -55,13 +55,12 @@ es:
       learn_more: Obtenga más información
       privacy: Nuestras normas de privacidad y seguridad
       verification_content: to be implemented
-      verify_requirements: to be implemented
-      welcome: 'Deberá contar con lo siguiente para verificar su identidad:'
+      verify_requirements: Te llamaremos o te enviaremos un mensaje de texto a tu número de teléfono para verificar tu identidad. Si no podemos verificar tu número de teléfono, puedes realizar la verificación por correo postal.
     troubleshooting:
       headings:
-        missing_required_items: to be implemented
+        missing_required_items: ¿No tienes un número de teléfono? Así es como obtener ayuda
         need_assistance: to be implemented
         need_help_updating: to be implemented
       options:
-        get_help: to be implemented %{sp_name}
-        learn_more_phone_or_mail: to be implemented
+        get_va_help: Obtenga ayuda en %{sp_name}
+        learn_more_phone_or_mail: Más información sobre la verificación por teléfono o correo postal.
