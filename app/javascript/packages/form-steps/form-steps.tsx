@@ -396,7 +396,7 @@ function FormSteps({
       }
     }
 
-    const stepSubmitEvent = new window.CustomEvent('lg:form-steps-submit', {
+    const stepSubmitEvent = new window.CustomEvent('lg:form-steps:submit', {
       detail: step?.name,
       cancelable: true,
     });
