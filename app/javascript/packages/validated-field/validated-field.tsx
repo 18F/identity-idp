@@ -29,6 +29,11 @@ interface ValidatedFieldProps {
   validate?: ValidatedFieldValidator;
 
   /**
+   * Optional key and value that indicates the error and resulting error message
+   */
+  messages?: Object;
+
+  /**
    * Optional input to use in place of the default rendered input. The input will be cloned and
    * extended with behaviors for validation.
    */
