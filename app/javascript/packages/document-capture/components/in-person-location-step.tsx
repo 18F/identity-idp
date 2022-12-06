@@ -80,7 +80,7 @@ const prepToSend = (location: object) => {
   return sendObject;
 };
 
-function InPersonLocationStep({ onChange, toPreviousStep }) {
+function InPersonLocationStep({ onChange, toPreviousStep, registerField }) {
   const { t } = useI18n();
   const [locationData, setLocationData] = useState([] as FormattedLocation[]);
   const [foundAddress, setFoundAddress] = useState({} as LocationQuery);
@@ -201,7 +201,9 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.location')}</PageHeading>
-      {arcgisSearchEnabled && <AddressSearch onAddressFound={handleFoundAddress} />}
+      {arcgisSearchEnabled && (
+        <AddressSearch onAddressFound={handleFoundAddress} registerField={registerField} />
+      )}
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
       {locationsContent}
       <BackButton onClick={toPreviousStep} />
