@@ -20,8 +20,8 @@ module Api
     def create
       if timestamp
         if IdentityConfig.store.irs_attempt_api_aws_s3_enabled
-          if IrsAttemptApiLogFile.find_by(requested_time: timestamp)
-            log_file_record = IrsAttemptApiLogFile.find_by(requested_time: timestamp)
+          if IrsAttemptApiLogFile.find_by(requested_time: timestamp.iso8601)
+            log_file_record = IrsAttemptApiLogFile.find_by(requested_time: timestamp.iso8601)
 
             headers['X-Payload-Key'] = log_file_record.encrypted_key
             headers['X-Payload-IV'] = log_file_record.iv
@@ -34,10 +34,10 @@ module Api
               key: log_file_record.filename,
             )
 
-            send_data requested_data.body, disposition: "filename=#{log_file_record.filename}"
+            send_data requested_data.body.read, disposition: "filename=#{log_file_record.filename}"
           else
             render json: { status: :not_found, description: 'File not found for Timestamp' },
-                   status: :not_found # "404"
+                   status: :not_found 
           end
         else
           result = encrypted_security_event_log_result
@@ -50,7 +50,7 @@ module Api
         end
       else
         render json: { status: :unprocessable_entity, description: 'Invalid timestamp parameter' },
-               status: :unprocessable_entity # "422"
+               status: :unprocessable_entity 
       end
       analytics.irs_attempts_api_events(**analytics_properties)
     end
@@ -109,7 +109,7 @@ module Api
 
       Time.strptime(timestamp_param, date_fmt)
     rescue ArgumentError
-      nil # "422" Logic could go here
+      nil
     end
   end
 end
