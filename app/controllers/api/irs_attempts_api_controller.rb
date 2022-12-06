@@ -28,7 +28,6 @@ module Api
 
             bucket_name = IdentityConfig.store.irs_attempt_api_bucket_name
 
-            s3_client = s3_helper.s3_client
             requested_data = s3_client.get_object(
               bucket: bucket_name,
               key: log_file_record.filename,
@@ -85,8 +84,8 @@ module Api
       @redis_client ||= IrsAttemptsApi::RedisClient.new
     end
 
-    def s3_helper
-      @s3_helper ||= JobHelpers::S3Helper.new
+    def s3_client
+      @s3_client ||= JobHelpers::S3Helper.new.s3_client
     end
 
     def valid_auth_tokens
