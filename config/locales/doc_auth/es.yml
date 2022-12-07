@@ -164,8 +164,8 @@ es:
       capture_status_small_document: Muévete mas cerca
       capture_status_tap_to_capture: Toque para capturar
       document_capture_intro_acknowledgment: Recopilaremos información sobre usted
-        leyendo su identificación emitida por el estado. No almacenamos las
-        imágenes que subes. Solo verificamos su identidad.
+        leyendo su documento de identidad expedido por el Estado. Usamos esta
+        información para verificar su identidad.
       image_loaded: Imagen cargada
       image_loading: Cargando la imagen
       image_updated: Imagen actualizada

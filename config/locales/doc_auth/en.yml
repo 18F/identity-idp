@@ -137,8 +137,8 @@ en:
       capture_status_small_document: Move Closer
       capture_status_tap_to_capture: Tap to Capture
       document_capture_intro_acknowledgment: We’ll collect information about you by
-        reading your state-issued ID. We do not store images you upload. We only
-        verify your identity.
+        reading your state-issued ID. We use this information to verify your
+        identity.
       image_loaded: Image loaded
       image_loading: Image loading
       image_updated: Image updated

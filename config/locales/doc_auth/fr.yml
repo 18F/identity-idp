@@ -170,10 +170,9 @@ fr:
       capture_status_none: Alignez
       capture_status_small_document: Approchez-vous
       capture_status_tap_to_capture: Appuyez pour capturer
-      document_capture_intro_acknowledgment: Nous collecterons des informations sur
-        vous en lisant votre pièce d’identité officielle. Nous ne stockons pas
-        les images que vous téléchargez. Nous vérifions uniquement votre
-        identité.
+      document_capture_intro_acknowledgment: Nous recueillons des informations sur
+        vous en lisant votre pièce d’identité délivrée par l’État. Nous
+        utilisons ces informations pour vérifier votre identité.
       image_loaded: Image chargée
       image_loading: Chargement de l’image
       image_updated: Image mise à jour
