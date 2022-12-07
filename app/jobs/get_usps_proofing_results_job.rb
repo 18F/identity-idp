@@ -249,8 +249,22 @@ class GetUspsProofingResultsJob < ApplicationJob
       reason: 'Enrollment has expired',
     )
     enrollment.update(status: :expired)
-    if !enrollment.deadline_passed_sent
-      send_deadline_passed_email(enrollment.user, enrollment)
+
+    begin
+      send_deadline_passed_email(enrollment.user, enrollment) if !enrollment.deadline_passed_sent
+    rescue StandardError => err
+      NewRelic::Agent.notice_error(err)
+      analytics(user: enrollment.user).
+        idv_in_person_usps_proofing_results_job_deadline_passed_email_exception(
+          enrollment_id: enrollment.id,
+          exception_class: err.class.to_s,
+          exception_message: err.message,
+        )
+    else
+      analytics(user: enrollment.user).
+        idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(
+          enrollment_id: enrollment.id,
+        )
       enrollment.update(deadline_passed_sent: true)
     end
   end
