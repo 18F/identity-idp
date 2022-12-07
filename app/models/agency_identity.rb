@@ -4,6 +4,7 @@ class AgencyIdentity < ApplicationRecord
   validates :uuid, presence: true
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: agency_identities
@@ -18,3 +19,4 @@ end
 #  index_agency_identities_on_user_id_and_agency_id  (user_id,agency_id) UNIQUE
 #  index_agency_identities_on_uuid                   (uuid) UNIQUE
 #
+# rubocop:enable Layout/LineLength

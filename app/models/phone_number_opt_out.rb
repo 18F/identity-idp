@@ -52,6 +52,7 @@ class PhoneNumberOptOut < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: phone_number_opt_outs
@@ -68,3 +69,4 @@ end
 #  index_phone_number_opt_outs_on_phone_fingerprint  (phone_fingerprint) UNIQUE
 #  index_phone_number_opt_outs_on_uuid               (uuid) UNIQUE
 #
+# rubocop:enable Layout/LineLength

@@ -35,6 +35,7 @@ class Agreements::IaaGtc < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: iaa_gtcs
@@ -56,3 +57,4 @@ end
 #
 #  fk_rails_...  (partner_account_id => partner_accounts.id)
 #
+# rubocop:enable Layout/LineLength

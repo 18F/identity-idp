@@ -59,6 +59,7 @@ class BackupCodeConfiguration < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: backup_code_configurations
@@ -77,3 +78,4 @@ end
 #  index_backup_code_configurations_on_user_id_and_created_at  (user_id,created_at)
 #  index_backup_codes_on_user_id_and_salted_code_fingerprint   (user_id,salted_code_fingerprint)
 #
+# rubocop:enable Layout/LineLength

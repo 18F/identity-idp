@@ -44,6 +44,7 @@ class PhoneConfiguration < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: phone_configurations
@@ -63,3 +64,4 @@ end
 #
 #  index_phone_configurations_on_made_default_at  (user_id,made_default_at,created_at)
 #
+# rubocop:enable Layout/LineLength

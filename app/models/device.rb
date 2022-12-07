@@ -22,6 +22,7 @@ class Device < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: devices
@@ -40,3 +41,4 @@ end
 #  index_device_user_id_last_used_at  (user_id,last_used_at)
 #  index_devices_on_cookie_uuid       (cookie_uuid)
 #
+# rubocop:enable Layout/LineLength

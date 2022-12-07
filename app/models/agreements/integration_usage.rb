@@ -29,6 +29,7 @@ class Agreements::IntegrationUsage < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: integration_usages
@@ -48,3 +49,4 @@ end
 #  fk_rails_...  (iaa_order_id => iaa_orders.id)
 #  fk_rails_...  (integration_id => integrations.id)
 #
+# rubocop:enable Layout/LineLength

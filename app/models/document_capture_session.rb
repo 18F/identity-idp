@@ -90,6 +90,7 @@ class DocumentCaptureSession < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: document_capture_sessions
@@ -116,3 +117,4 @@ end
 #
 #  fk_rails_...  (user_id => users.id)
 #
+# rubocop:enable Layout/LineLength

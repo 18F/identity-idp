@@ -28,6 +28,7 @@ class PivCacConfiguration < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: piv_cac_configurations
@@ -46,3 +47,4 @@ end
 #  index_piv_cac_configurations_on_user_id_and_name        (user_id,name) UNIQUE
 #  index_piv_cac_configurations_on_x509_dn_uuid            (x509_dn_uuid) UNIQUE
 #
+# rubocop:enable Layout/LineLength

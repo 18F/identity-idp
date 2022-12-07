@@ -7,6 +7,7 @@ class SpReturnLog < ApplicationRecord
   # rubocop:enable Rails/InverseOf
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: sp_return_logs
@@ -25,3 +26,4 @@ end
 #  index_sp_return_logs_on_request_id                (request_id) UNIQUE
 #  index_sp_return_logs_on_requested_at_date_issuer  (((requested_at)::date), issuer) WHERE (returned_at IS NOT NULL)
 #
+# rubocop:enable Layout/LineLength

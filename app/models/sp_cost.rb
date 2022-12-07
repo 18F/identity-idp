@@ -1,6 +1,7 @@
 class SpCost < ApplicationRecord
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: sp_costs
@@ -18,3 +19,4 @@ end
 #
 #  index_sp_costs_on_created_at  (created_at)
 #
+# rubocop:enable Layout/LineLength

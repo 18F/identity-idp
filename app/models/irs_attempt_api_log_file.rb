@@ -1,6 +1,7 @@
 class IrsAttemptApiLogFile < ApplicationRecord
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: irs_attempt_api_log_files
@@ -17,3 +18,4 @@ end
 #
 #  index_irs_attempt_api_log_files_on_requested_time  (requested_time)
 #
+# rubocop:enable Layout/LineLength

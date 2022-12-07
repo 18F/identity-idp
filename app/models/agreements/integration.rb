@@ -16,6 +16,7 @@ class Agreements::Integration < ApplicationRecord
                                                    allow_nil: true }
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: integrations
@@ -42,3 +43,4 @@ end
 #  fk_rails_...  (partner_account_id => partner_accounts.id)
 #  fk_rails_...  (service_provider_id => service_providers.id)
 #
+# rubocop:enable Layout/LineLength

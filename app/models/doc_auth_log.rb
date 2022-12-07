@@ -8,6 +8,7 @@ class DocAuthLog < ApplicationRecord
   # rubocop:enable Rails/InverseOf
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: doc_auth_logs
@@ -103,3 +104,4 @@ end
 #  index_doc_auth_logs_on_user_id           (user_id) UNIQUE
 #  index_doc_auth_logs_on_verified_view_at  (verified_view_at)
 #
+# rubocop:enable Layout/LineLength

@@ -18,6 +18,7 @@ class GpoConfirmation < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: usps_confirmations
@@ -27,3 +28,4 @@ end
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
+# rubocop:enable Layout/LineLength

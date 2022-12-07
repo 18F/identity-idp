@@ -2,6 +2,7 @@ class ProofingComponent < ApplicationRecord
   belongs_to :user
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: proofing_components
@@ -28,3 +29,4 @@ end
 #  index_proofing_components_on_user_id      (user_id) UNIQUE
 #  index_proofing_components_on_verified_at  (verified_at)
 #
+# rubocop:enable Layout/LineLength

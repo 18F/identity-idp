@@ -2,6 +2,7 @@ class RegistrationLog < ApplicationRecord
   belongs_to :user
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: registration_logs
@@ -15,3 +16,4 @@ end
 #  index_registration_logs_on_registered_at  (registered_at)
 #  index_registration_logs_on_user_id        (user_id) UNIQUE
 #
+# rubocop:enable Layout/LineLength

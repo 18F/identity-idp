@@ -16,6 +16,7 @@ class Agreements::PartnerAccount < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: partner_accounts
@@ -41,3 +42,4 @@ end
 #  fk_rails_...  (agency_id => agencies.id)
 #  fk_rails_...  (partner_account_status_id => partner_account_statuses.id)
 #
+# rubocop:enable Layout/LineLength

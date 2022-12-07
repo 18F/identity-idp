@@ -34,6 +34,7 @@ class Event < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: events
@@ -54,3 +55,4 @@ end
 #  index_events_on_disavowal_token_fingerprint  (disavowal_token_fingerprint)
 #  index_events_on_user_id_and_created_at       (user_id,created_at)
 #
+# rubocop:enable Layout/LineLength

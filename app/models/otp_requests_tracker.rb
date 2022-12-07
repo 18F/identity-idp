@@ -20,6 +20,7 @@ class OtpRequestsTracker < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: otp_requests_trackers
@@ -37,3 +38,4 @@ end
 #
 #  index_on_phone_and_confirmed  (phone_fingerprint,phone_confirmed) UNIQUE
 #
+# rubocop:enable Layout/LineLength

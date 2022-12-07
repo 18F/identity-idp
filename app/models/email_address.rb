@@ -70,6 +70,7 @@ class EmailAddress < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: email_addresses
@@ -92,3 +93,4 @@ end
 #  index_email_addresses_on_email_fingerprint_and_user_id  (email_fingerprint,user_id) UNIQUE
 #  index_email_addresses_on_user_id                        (user_id)
 #
+# rubocop:enable Layout/LineLength

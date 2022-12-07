@@ -62,6 +62,7 @@ class ServiceProvider < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: service_providers
@@ -113,3 +114,4 @@ end
 #
 #  index_service_providers_on_issuer  (issuer) UNIQUE
 #
+# rubocop:enable Layout/LineLength

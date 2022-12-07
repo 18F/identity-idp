@@ -19,6 +19,7 @@ class GpoConfirmationCode < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: usps_confirmation_codes
@@ -35,3 +36,4 @@ end
 #  index_usps_confirmation_codes_on_otp_fingerprint  (otp_fingerprint)
 #  index_usps_confirmation_codes_on_profile_id       (profile_id)
 #
+# rubocop:enable Layout/LineLength

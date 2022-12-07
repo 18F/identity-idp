@@ -58,6 +58,7 @@ class ServiceProviderIdentity < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: identities
@@ -90,3 +91,4 @@ end
 #  index_identities_on_user_id_and_service_provider  (user_id,service_provider) UNIQUE
 #  index_identities_on_uuid                          (uuid) UNIQUE
 #
+# rubocop:enable Layout/LineLength

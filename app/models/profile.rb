@@ -124,6 +124,7 @@ class Profile < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: profiles
@@ -152,3 +153,4 @@ end
 #  index_profiles_on_user_id                        (user_id)
 #  index_profiles_on_user_id_and_active             (user_id,active) UNIQUE WHERE (active = true)
 #
+# rubocop:enable Layout/LineLength

@@ -10,6 +10,7 @@ class SecurityEvent < ApplicationRecord
   belongs_to :user
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: security_events
@@ -28,3 +29,4 @@ end
 #  index_security_events_on_jti_and_user_id_and_issuer  (jti,user_id,issuer) UNIQUE
 #  index_security_events_on_user_id                     (user_id)
 #
+# rubocop:enable Layout/LineLength

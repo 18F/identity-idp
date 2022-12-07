@@ -1,6 +1,7 @@
 class MonthlyAuthCount < ApplicationRecord
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: monthly_auth_counts
@@ -15,3 +16,4 @@ end
 #
 #  index_monthly_auth_counts_on_issuer_and_year_month_and_user_id  (issuer,year_month,user_id) UNIQUE
 #
+# rubocop:enable Layout/LineLength

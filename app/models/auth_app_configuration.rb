@@ -32,6 +32,7 @@ class AuthAppConfiguration < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: auth_app_configurations
@@ -49,3 +50,4 @@ end
 #  index_auth_app_configurations_on_user_id_and_created_at  (user_id,created_at) UNIQUE
 #  index_auth_app_configurations_on_user_id_and_name        (user_id,name) UNIQUE
 #
+# rubocop:enable Layout/LineLength

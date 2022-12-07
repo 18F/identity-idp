@@ -9,6 +9,7 @@ class Agency < ApplicationRecord
   validates :abbreviation, uniqueness: { case_sensitive: false }
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: agencies
@@ -22,3 +23,4 @@ end
 #  index_agencies_on_abbreviation  (abbreviation) UNIQUE
 #  index_agencies_on_name          (name) UNIQUE
 #
+# rubocop:enable Layout/LineLength

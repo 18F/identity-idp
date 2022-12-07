@@ -5,6 +5,7 @@ class LetterRequestsToGpoFtpLog < ApplicationRecord
   validates :letter_requests_count, presence: true
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: letter_requests_to_usps_ftp_logs
@@ -17,3 +18,4 @@ end
 #
 #  index_letter_requests_to_usps_ftp_logs_on_ftp_at  (ftp_at)
 #
+# rubocop:enable Layout/LineLength

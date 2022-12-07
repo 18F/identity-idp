@@ -54,6 +54,7 @@ class Agreements::IaaOrder < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: iaa_orders
@@ -76,3 +77,4 @@ end
 #
 #  fk_rails_...  (iaa_gtc_id => iaa_gtcs.id)
 #
+# rubocop:enable Layout/LineLength

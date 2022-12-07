@@ -41,6 +41,7 @@ class WebauthnConfiguration < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: webauthn_configurations
@@ -58,3 +59,4 @@ end
 #
 #  index_webauthn_configurations_on_user_id  (user_id)
 #
+# rubocop:enable Layout/LineLength

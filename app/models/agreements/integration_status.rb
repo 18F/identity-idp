@@ -9,6 +9,7 @@ class Agreements::IntegrationStatus < ApplicationRecord
                     numericality: { only_integer: true }
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: integration_statuses
@@ -23,3 +24,4 @@ end
 #  index_integration_statuses_on_name   (name) UNIQUE
 #  index_integration_statuses_on_order  (order) UNIQUE
 #
+# rubocop:enable Layout/LineLength

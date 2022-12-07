@@ -17,6 +17,7 @@ class DeletedUser < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: deleted_users
@@ -32,3 +33,4 @@ end
 #  index_deleted_users_on_user_id  (user_id) UNIQUE
 #  index_deleted_users_on_uuid     (uuid) UNIQUE
 #
+# rubocop:enable Layout/LineLength

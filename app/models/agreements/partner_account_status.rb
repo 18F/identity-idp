@@ -13,6 +13,7 @@ class Agreements::PartnerAccountStatus < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: partner_account_statuses
@@ -27,3 +28,4 @@ end
 #  index_partner_account_statuses_on_name   (name) UNIQUE
 #  index_partner_account_statuses_on_order  (order) UNIQUE
 #
+# rubocop:enable Layout/LineLength

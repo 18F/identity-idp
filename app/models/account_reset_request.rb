@@ -14,6 +14,7 @@ class AccountResetRequest < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: account_reset_requests
@@ -35,3 +36,4 @@ end
 #  index_account_reset_requests_on_timestamps     (cancelled_at,granted_at,requested_at)
 #  index_account_reset_requests_on_user_id        (user_id) UNIQUE
 #
+# rubocop:enable Layout/LineLength

@@ -117,6 +117,7 @@ class InPersonEnrollment < ApplicationRecord
   end
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: in_person_enrollments
@@ -152,3 +153,4 @@ end
 #  fk_rails_...  (profile_id => profiles.id)
 #  fk_rails_...  (user_id => users.id)
 #
+# rubocop:enable Layout/LineLength

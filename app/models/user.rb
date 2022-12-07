@@ -200,6 +200,7 @@ class User < ApplicationRecord
   add_method_tracer :send_devise_notification, "Custom/#{name}/send_devise_notification"
 end
 
+# rubocop:disable Layout/LineLength
 # == Schema Information
 #
 # Table name: users
@@ -232,3 +233,4 @@ end
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #  index_users_on_uuid                  (uuid) UNIQUE
 #
+# rubocop:enable Layout/LineLength
