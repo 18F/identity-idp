@@ -14,6 +14,13 @@
     <%= new_window_link_to(t('inherited_proofing.troubleshooting.options.learn_more_phone_or_mail'), 'https://www.va.gov/resources/managing-your-vagov-profile/') %>
   </p>
 
+  <%= simple_form_for :inherited_proofing,
+                      url: url_for,
+                      method: 'put',
+                      html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
+      <%= f.submit t('inherited_proofing.buttons.continue') %>
+    <% end %>
+
   <%= render(
         'shared/troubleshooting_options',
         heading_tag: :h3,
@@ -34,12 +41,6 @@
           },
         ].select(&:present?),
       ) %>
-  <%= simple_form_for :inherited_proofing,
-                      url: url_for,
-                      method: 'put',
-                      html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
-    <%= f.submit t('inherited_proofing.buttons.continue') %>
-  <% end %>
 
   <h3><%= t('inherited_proofing.instructions.privacy') %></h3>
   <p>
