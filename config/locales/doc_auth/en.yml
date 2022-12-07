@@ -181,7 +181,7 @@ en:
       bullet2: Social Security number
       bullet3: Phone number
       consent: By checking this box, you are letting %{app_name} ask for, use, keep,
-        and share your personal information. We will only use it to verify your
+        and share your personal information. We will use it to verify your
         identity.
       email_sent: Link sent to %{email}. Please check your desktop email and follow
         instructions to verify your identity.

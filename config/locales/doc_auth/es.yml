@@ -213,8 +213,8 @@ es:
       bullet2: Número de seguro social
       bullet3: Número de teléfono
       consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
-        utilice, conserve y comparta su información personal. Solo la
-        utilizaremos para verificar su identidad.
+        utilice, conserve y comparta su información personal. Los utilizamos
+        para verificar su identidad.
       email_sent: Enlace enviado a %{email}. Compruebe el correo electrónico de su
         escritorio y siga las instrucciones para verificar su identidad.
       learn_more: Obtenga más información
