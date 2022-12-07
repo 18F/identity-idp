@@ -89,7 +89,7 @@ RSpec.describe Api::IrsAttemptsApiController do
           filename: 'test_filename',
           iv: Base64.strict_encode64('test_iv'),
           encrypted_key: Base64.strict_encode64('test_encrypted_key'),
-          requested_time: time.iso8601,
+          requested_time: IrsAttemptsApi::EnvelopeEncryptor.formatted_timestamp(time),
         )
       end
 
