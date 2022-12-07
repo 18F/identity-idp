@@ -10,7 +10,6 @@ import {
   ProcessListItem,
 } from '@18f/identity-components';
 import { removeUnloadProtection } from '@18f/identity-url';
-import { FlowContext } from '@18f/identity-verify-flow';
 import { getConfigValue } from '@18f/identity-config';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
@@ -20,11 +19,12 @@ import MarketingSiteContext from '../context/marketing-site';
 import AnalyticsContext from '../context/analytics';
 import BackButton from './back-button';
 import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
+import { InPersonContext } from '../context';
 
 function InPersonPrepareStep({ toPreviousStep, value }) {
   const { t } = useI18n();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { inPersonURL } = useContext(FlowContext);
+  const { inPersonURL } = useContext(InPersonContext);
   const { flowPath } = useContext(UploadContext);
   const { trackEvent } = useContext(AnalyticsContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);

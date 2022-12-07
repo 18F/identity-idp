@@ -48,7 +48,6 @@ describe 'Hybrid Flow' do
       click_idv_continue
 
       fill_out_phone_form_ok
-      click_idv_continue
       verify_phone_otp
 
       fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD

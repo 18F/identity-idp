@@ -189,10 +189,10 @@ fr:
         signaler ce problème, <a href="%{contact_us_url}">contactez l’assistance
         de %{app_name}</a>.
     letter_reminder:
-      info_html: La lettre que vous êtes sur le point de recevoir contiendra un code
-        de confirmation nous permettant de vérifier votre adresse. Vous pouvez
+      info_html: La lettre que vous êtes sur le point de recevoir contiendra un code à
+        usage unique nous permettant de vérifier votre adresse. Vous pouvez
         terminer le processus de vérification d’identité en vous connectant à
-        %{link} et en entrant le code de confirmation.
+        %{link} et en entrant le code à usage unique.
       subject: Nous avons envoyé une lettre à l’adresse que vous avez en dossier
     new_device_sign_in:
       disavowal_link: réinitialiser votre mot de passe
@@ -279,8 +279,8 @@ fr:
       subject: Activité inhabituelle — réinitialisez votre mot de passe %{app_name}
     reset_password_instructions:
       footer: Ce lien expire dans %{expires} heures.
-      gpo_letter_description: Si vous réinitialisez votre mot de passe, le code de
-        confirmation contenu dans votre lettre ne correspondra plus et vous
+      gpo_letter_description: Si vous réinitialisez votre mot de passe, le code à
+        usage unique contenu dans votre lettre ne correspondra plus et vous
         devrez de vérifier à nouveau votre identité.
       gpo_letter_header: Votre lettre est en route
       header: Pour terminer la réinitialisation de votre mot de passe, veuillez

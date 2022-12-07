@@ -52,19 +52,37 @@ export class CountdownElement extends HTMLElement {
   start(): void {
     this.stop();
     this.setTimeRemaining();
-    this.#pollIntervalId = window.setInterval(() => this.setTimeRemaining(), this.updateInterval);
+    this.#pollIntervalId = window.setInterval(() => this.tick(), this.updateInterval);
   }
 
   stop(): void {
     window.clearInterval(this.#pollIntervalId);
   }
 
+  tick(): void {
+    this.setTimeRemaining();
+    this.dispatchEvent(new window.CustomEvent('lg:countdown:tick', { bubbles: true }));
+
+    if (this.timeRemaining <= 0) {
+      this.stop();
+    }
+  }
+
   setTimeRemaining(): void {
     const { timeRemaining } = this;
 
+    const minutes = Math.floor(timeRemaining / 60000);
+    const seconds = Math.floor(timeRemaining / 1000) % 60;
+
     this.#textNode.nodeValue = [
-      t('datetime.dotiw.minutes', { count: Math.floor(timeRemaining / 60000) }),
-      t('datetime.dotiw.seconds', { count: Math.floor(timeRemaining / 1000) % 60 }),
-    ].join(t('datetime.dotiw.two_words_connector'));
+      minutes && t('datetime.dotiw.minutes', { count: minutes }),
+      t('datetime.dotiw.seconds', { count: seconds }),
+    ]
+      .filter(Boolean)
+      .join(t('datetime.dotiw.two_words_connector'));
   }
+}
+
+if (!customElements.get('lg-countdown')) {
+  customElements.define('lg-countdown', CountdownElement);
 }

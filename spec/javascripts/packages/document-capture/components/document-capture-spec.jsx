@@ -11,6 +11,7 @@ import {
   UploadContextProvider,
   AcuantContextProvider,
   DeviceContext,
+  InPersonContext,
 } from '@18f/identity-document-capture';
 import DocumentCapture, {
   except,
@@ -494,11 +495,16 @@ describe('document-capture/components/document-capture', () => {
               <FlowContext.Provider
                 value={{
                   cancelURL: '/cancel',
-                  inPersonURL: '/in_person',
                   currentStep: 'document_capture',
                 }}
               >
-                <DocumentCapture />
+                <InPersonContext.Provider
+                  value={{
+                    inPersonURL: '/in_person',
+                  }}
+                >
+                  <DocumentCapture />
+                </InPersonContext.Provider>
               </FlowContext.Provider>
             </ServiceProviderContextProvider>
           </UploadContextProvider>,

@@ -5,6 +5,7 @@
 import { watch } from 'chokidar';
 import { fileURLToPath } from 'url';
 import { buildFile } from './index.js';
+import getErrorSassStackPaths from './get-error-sass-stack-paths.js';
 
 /** @typedef {import('sass-embedded').Options<'sync'>} SyncSassOptions */
 /** @typedef {import('sass-embedded').Exception} SassException */
@@ -62,9 +63,8 @@ function build(files) {
     /** @param {Error|SassException} error */ (error) => {
       console.error(error);
 
-      if (isWatching && isSassException(error) && error.span.url) {
-        const exceptionPath = fileURLToPath(error.span.url);
-        watchOnce(exceptionPath, () => build(files));
+      if (isWatching && isSassException(error)) {
+        watchOnce(getErrorSassStackPaths(error.sassStack), () => build(files));
       } else {
         throw error;
       }
