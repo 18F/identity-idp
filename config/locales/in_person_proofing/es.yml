@@ -31,6 +31,7 @@ es:
           correos seleccionadas.
       location:
         location_button: Seleccionar
+        inline_error: Incluye una ciudad, un estado y un código postal.
         location_step_about: Si tiene problemas para añadir su cédula de identidad, es
           posible que pueda realizar la verificación en persona en una oficina
           de correos local de los Estados Unidos en determinadas localidades.
