@@ -81,7 +81,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
       it 'assigns session variables' do
         subject.call
 
-        expect(session['idv/doc_auth']).to hash_including(
+        expect(session['idv/doc_auth']).to include(
           had_barcode_read_failure: false,
           pii_from_doc: pii.merge(uuid: user.uuid, uuid_prefix: sp.app_id, phone: nil),
         )
@@ -114,7 +114,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
         it 'assigns session variables' do
           subject.call
 
-          expect(session['idv/doc_auth']).to hash_including(
+          expect(session['idv/doc_auth']).to include(
             had_barcode_read_failure: true,
             pii_from_doc: pii.merge(uuid: user.uuid, uuid_prefix: sp.app_id, phone: nil),
           )
