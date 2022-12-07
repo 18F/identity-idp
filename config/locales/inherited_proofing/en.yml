@@ -48,13 +48,12 @@ en:
       secure_account: We’ll encrypt your account with your password. Encryption means
         your data is protected and only you will be able to access or change
         your information.
-      verify_identity: We’ll ask for your personal information to verify your identity
-        against public records.
-      welcome_html: '%{sp_name} needs to make sure you are you — not someone
-        pretending to be you.'
+      verify_identity: We’ll retrieve your personal information from My HealtheVet and
+        ask you to verify it.
+      welcome_html: '%{sp_name} - not someone pretending to be you.'
     instructions:
-      consent: By checking this box, you are letting %{app_name} ask for, use, keep,
-        and share your personal information. We will only use it to verify your
+      consent: By checking this box, you are letting login.gov ask for, use, keep, and
+        share your personal information. We will only use it to verify your
         identity.
       learn_more: Learn more
       privacy: Our privacy and security standards
