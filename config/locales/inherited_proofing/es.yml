@@ -55,7 +55,6 @@ es:
       consent: to be implemented for %{app_name}
       learn_more: Obtenga más información
       privacy: Nuestras normas de privacidad y seguridad
-      verification_content: to be implemented
       verify_requirements: Te llamaremos o te enviaremos un mensaje de texto a tu
         número de teléfono para verificar tu identidad. Si no podemos verificar
         tu número de teléfono, puedes realizar la verificación por correo

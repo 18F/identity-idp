@@ -57,7 +57,6 @@ fr:
       consent: to be implemented for %{app_name}
       learn_more: En savoir plus
       privacy: Nos normes de confidentialité et de sécurité
-      verification_content: to be implemented
       verify_requirements: Nous allons vous appeler ou vous envoyer un SMS à partir de
         votre contact pour vérifier votre identité. Si nous ne pouvons pas
         vérifier votre numéro de téléphone, vous pouvez le faire par courriel.
