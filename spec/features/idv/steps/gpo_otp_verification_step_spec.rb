@@ -20,7 +20,7 @@ feature 'idv gpo otp verification step', :js do
   end
   let(:user) { profile.user }
 
-  it 'prompts for confirmation code at sign in' do
+  it 'prompts for one-time code at sign in' do
     sign_in_live_with_2fa(user)
 
     expect(current_path).to eq idv_gpo_verify_path
