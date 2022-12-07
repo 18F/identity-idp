@@ -201,7 +201,6 @@ max_piv_cac_per_account: 2
 min_password_score: 3
 mx_timeout: 3
 new_sign_up_cancellation_url_enabled: true
-no_sp_device_profiling_enabled: false
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
 otp_expiration_warning_seconds: 150
@@ -377,7 +376,6 @@ development:
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
-  no_sp_device_profiling_enabled: true
   nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: 5
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
