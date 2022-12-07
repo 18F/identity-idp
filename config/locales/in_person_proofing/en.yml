@@ -27,6 +27,7 @@ en:
           be able to verify your ID in person at limited post office locations.
       location:
         location_button: Select
+        inline_error: Include a city, state, and ZIP code
         location_step_about: If you are having trouble adding your ID, you may be able
           to verify in person at a local United States Post Office in select
           locations.

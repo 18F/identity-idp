@@ -1,6 +1,7 @@
 import { TextInput, Button } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
 import { useState, useCallback, ChangeEvent, useRef, Ref } from 'react';
+import { useI18n } from '@18f/identity-react-i18n';
 import ValidatedField from '@18f/identity-validated-field/validated-field';
 
 interface Location {
@@ -22,6 +23,7 @@ function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSear
   const validatedFieldRef = useRef<HTMLFormElement | null>(null);
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
   const [addressQuery, setAddressQuery] = useState({} as Location);
+  const { t } = useI18n();
 
   const handleAddressSearch = useCallback(
     async (event) => {
@@ -47,7 +49,9 @@ function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSear
     <>
       <ValidatedField
         ref={validatedFieldRef}
-        messages={{ valueMissing: 'Include a city, state, and ZIP code' }}
+        messages={{
+          valueMissing: t('in_person_proofing.body.location.inline_error'),
+        }}
       >
         <TextInput
           required

@@ -14,7 +14,7 @@ describe('InPersonLocationStep', () => {
     toPreviousStep() {},
     onChange() {},
     value: {},
-    registerField(field: string) {},
+    registerField() {},
   };
 
   const sandbox = useSandbox();
