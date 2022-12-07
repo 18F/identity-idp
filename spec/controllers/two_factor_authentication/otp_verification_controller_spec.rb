@@ -315,7 +315,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
         end
 
-        it 'resets attempts count' do
+        it 'incriments attempts count' do
           expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
         end
 
@@ -483,6 +483,24 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
             expect(@analytics).to have_received(:track_event).
               with('Multi-Factor Authentication Setup', properties)
+          end
+
+          context 'user enters in valid code after invalid entry' do
+            before do
+              expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_submitted).
+                with(success: false)
+              expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
+              post(
+                :create,
+                params: {
+                  code: subject.current_user.direct_otp,
+                  otp_delivery_preference: 'sms',
+                },
+              )
+            end
+            it 'resets second_factor_attempts_count' do
+              expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
+            end
           end
 
           context 'user has exceeded the maximum number of attempts' do
