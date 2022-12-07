@@ -31,8 +31,8 @@ fr:
           (Maryland), vous pourrez peut-être vérifier votre identité en personne
           dans certains bureaux de poste.
       location:
-        location_button: Sélectionner
         inline_error: Indiquez la ville, l’État et le code postal.
+        location_button: Sélectionner
         location_step_about: Si vous ne parvenez pas à ajouter votre pièce d’identité,
           vous pourrez peut-être vérifier en personne dans un bureau de poste
           américain local dans certains endroits.
