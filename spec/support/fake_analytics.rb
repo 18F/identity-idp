@@ -108,8 +108,6 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
     if attributes_matcher.nil?
       expect(actual.events).to have_key(event)
     else
-      # binding.pry
-      # expect(actual.events[event]).to(be_any { |event| expect(event).to match(attributes_matcher) })
       expect(actual.events[event]).to include(match(attributes_matcher))
     end
   end
