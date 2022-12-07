@@ -1,31 +1,3 @@
-# == Schema Information
-#
-# Table name: profiles
-#
-#  id                                 :integer          not null, primary key
-#  activated_at                       :datetime
-#  active                             :boolean          default(FALSE), not null
-#  deactivation_reason                :integer
-#  encrypted_pii                      :text
-#  encrypted_pii_recovery             :text
-#  initiating_service_provider_issuer :string
-#  name_zip_birth_year_signature      :string
-#  proofing_components                :jsonb
-#  reproof_at                         :date
-#  ssn_signature                      :string(64)
-#  verified_at                        :datetime
-#  created_at                         :datetime         not null
-#  updated_at                         :datetime         not null
-#  user_id                            :integer          not null
-#
-# Indexes
-#
-#  index_profiles_on_name_zip_birth_year_signature  (name_zip_birth_year_signature)
-#  index_profiles_on_reproof_at                     (reproof_at)
-#  index_profiles_on_ssn_signature                  (ssn_signature)
-#  index_profiles_on_user_id                        (user_id)
-#  index_profiles_on_user_id_and_active             (user_id,active) UNIQUE WHERE (active = true)
-#
 class Profile < ApplicationRecord
   self.ignored_columns = %w[phone_confirmed]
 
@@ -151,3 +123,32 @@ class Profile < ApplicationRecord
     PushNotification::HttpPush.deliver(event)
   end
 end
+
+# == Schema Information
+#
+# Table name: profiles
+#
+#  id                                 :integer          not null, primary key
+#  activated_at                       :datetime
+#  active                             :boolean          default(FALSE), not null
+#  deactivation_reason                :integer
+#  encrypted_pii                      :text
+#  encrypted_pii_recovery             :text
+#  initiating_service_provider_issuer :string
+#  name_zip_birth_year_signature      :string
+#  proofing_components                :jsonb
+#  reproof_at                         :date
+#  ssn_signature                      :string(64)
+#  verified_at                        :datetime
+#  created_at                         :datetime         not null
+#  updated_at                         :datetime         not null
+#  user_id                            :integer          not null
+#
+# Indexes
+#
+#  index_profiles_on_name_zip_birth_year_signature  (name_zip_birth_year_signature)
+#  index_profiles_on_reproof_at                     (reproof_at)
+#  index_profiles_on_ssn_signature                  (ssn_signature)
+#  index_profiles_on_user_id                        (user_id)
+#  index_profiles_on_user_id_and_active             (user_id,active) UNIQUE WHERE (active = true)
+#

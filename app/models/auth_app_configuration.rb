@@ -1,20 +1,3 @@
-# == Schema Information
-#
-# Table name: auth_app_configurations
-#
-#  id                       :bigint           not null, primary key
-#  encrypted_otp_secret_key :string           not null
-#  name                     :string           not null
-#  totp_timestamp           :integer
-#  created_at               :datetime         not null
-#  updated_at               :datetime         not null
-#  user_id                  :integer          not null
-#
-# Indexes
-#
-#  index_auth_app_configurations_on_user_id_and_created_at  (user_id,created_at) UNIQUE
-#  index_auth_app_configurations_on_user_id_and_name        (user_id,name) UNIQUE
-#
 class AuthAppConfiguration < ApplicationRecord
   include EncryptableAttribute
 
@@ -48,3 +31,21 @@ class AuthAppConfiguration < ApplicationRecord
     end
   end
 end
+
+# == Schema Information
+#
+# Table name: auth_app_configurations
+#
+#  id                       :bigint           not null, primary key
+#  encrypted_otp_secret_key :string           not null
+#  name                     :string           not null
+#  totp_timestamp           :integer
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
+#  user_id                  :integer          not null
+#
+# Indexes
+#
+#  index_auth_app_configurations_on_user_id_and_created_at  (user_id,created_at) UNIQUE
+#  index_auth_app_configurations_on_user_id_and_name        (user_id,name) UNIQUE
+#

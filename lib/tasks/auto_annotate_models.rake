@@ -12,7 +12,7 @@ if Rails.env.development?
       'routes'                      => 'false',
       'models'                      => 'true',
       'position_in_routes'          => 'before',
-      'position_in_class'           => 'before',
+      'position_in_class'           => 'after',
       'position_in_test'            => 'before',
       'position_in_fixture'         => 'before',
       'position_in_factory'         => 'before',

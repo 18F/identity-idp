@@ -1,21 +1,3 @@
-# == Schema Information
-#
-# Table name: devices
-#
-#  id           :bigint           not null, primary key
-#  cookie_uuid  :string           not null
-#  last_ip      :string(255)      not null
-#  last_used_at :datetime         not null
-#  user_agent   :string           not null
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  user_id      :integer          not null
-#
-# Indexes
-#
-#  index_device_user_id_last_used_at  (user_id,last_used_at)
-#  index_devices_on_cookie_uuid       (cookie_uuid)
-#
 class Device < ApplicationRecord
   belongs_to :user
   # rubocop:disable Rails/HasManyOrHasOneDependent
@@ -39,3 +21,22 @@ class Device < ApplicationRecord
     self
   end
 end
+
+# == Schema Information
+#
+# Table name: devices
+#
+#  id           :bigint           not null, primary key
+#  cookie_uuid  :string           not null
+#  last_ip      :string(255)      not null
+#  last_used_at :datetime         not null
+#  user_agent   :string           not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  user_id      :integer          not null
+#
+# Indexes
+#
+#  index_device_user_id_last_used_at  (user_id,last_used_at)
+#  index_devices_on_cookie_uuid       (cookie_uuid)
+#

@@ -1,3 +1,6 @@
+class IrsAttemptApiLogFile < ApplicationRecord
+end
+
 # == Schema Information
 #
 # Table name: irs_attempt_api_log_files
@@ -14,5 +17,3 @@
 #
 #  index_irs_attempt_api_log_files_on_requested_time  (requested_time)
 #
-class IrsAttemptApiLogFile < ApplicationRecord
-end

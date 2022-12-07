@@ -1,3 +1,7 @@
+class RegistrationLog < ApplicationRecord
+  belongs_to :user
+end
+
 # == Schema Information
 #
 # Table name: registration_logs
@@ -11,6 +15,3 @@
 #  index_registration_logs_on_registered_at  (registered_at)
 #  index_registration_logs_on_user_id        (user_id) UNIQUE
 #
-class RegistrationLog < ApplicationRecord
-  belongs_to :user
-end

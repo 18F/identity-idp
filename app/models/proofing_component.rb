@@ -1,3 +1,7 @@
+class ProofingComponent < ApplicationRecord
+  belongs_to :user
+end
+
 # == Schema Information
 #
 # Table name: proofing_components
@@ -24,6 +28,3 @@
 #  index_proofing_components_on_user_id      (user_id) UNIQUE
 #  index_proofing_components_on_verified_at  (verified_at)
 #
-class ProofingComponent < ApplicationRecord
-  belongs_to :user
-end

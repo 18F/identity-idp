@@ -1,3 +1,6 @@
+class SpCost < ApplicationRecord
+end
+
 # == Schema Information
 #
 # Table name: sp_costs
@@ -15,5 +18,3 @@
 #
 #  index_sp_costs_on_created_at  (created_at)
 #
-class SpCost < ApplicationRecord
-end

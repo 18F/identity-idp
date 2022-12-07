@@ -1,20 +1,3 @@
-# == Schema Information
-#
-# Table name: webauthn_configurations
-#
-#  id                     :bigint           not null, primary key
-#  credential_public_key  :text             not null
-#  name                   :string           not null
-#  platform_authenticator :boolean
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
-#  credential_id          :text             not null
-#  user_id                :bigint           not null
-#
-# Indexes
-#
-#  index_webauthn_configurations_on_user_id  (user_id)
-#
 class WebauthnConfiguration < ApplicationRecord
   belongs_to :user
   validates :name, presence: true
@@ -57,3 +40,21 @@ class WebauthnConfiguration < ApplicationRecord
     end
   end
 end
+
+# == Schema Information
+#
+# Table name: webauthn_configurations
+#
+#  id                     :bigint           not null, primary key
+#  credential_public_key  :text             not null
+#  name                   :string           not null
+#  platform_authenticator :boolean
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  credential_id          :text             not null
+#  user_id                :bigint           not null
+#
+# Indexes
+#
+#  index_webauthn_configurations_on_user_id  (user_id)
+#

@@ -1,20 +1,3 @@
-# == Schema Information
-#
-# Table name: otp_requests_trackers
-#
-#  id                :integer          not null, primary key
-#  attribute_cost    :string
-#  otp_last_sent_at  :datetime
-#  otp_send_count    :integer          default(0)
-#  phone_confirmed   :boolean          default(FALSE)
-#  phone_fingerprint :string           default(""), not null
-#  created_at        :datetime
-#  updated_at        :datetime
-#
-# Indexes
-#
-#  index_on_phone_and_confirmed  (phone_fingerprint,phone_confirmed) UNIQUE
-#
 class OtpRequestsTracker < ApplicationRecord
   def self.find_or_create_with_phone_and_confirmed(phone, phone_confirmed)
     create_or_find_by(
@@ -36,3 +19,21 @@ class OtpRequestsTracker < ApplicationRecord
     OtpRequestsTracker.find(id)
   end
 end
+
+# == Schema Information
+#
+# Table name: otp_requests_trackers
+#
+#  id                :integer          not null, primary key
+#  attribute_cost    :string
+#  otp_last_sent_at  :datetime
+#  otp_send_count    :integer          default(0)
+#  phone_confirmed   :boolean          default(FALSE)
+#  phone_fingerprint :string           default(""), not null
+#  created_at        :datetime
+#  updated_at        :datetime
+#
+# Indexes
+#
+#  index_on_phone_and_confirmed  (phone_fingerprint,phone_confirmed) UNIQUE
+#

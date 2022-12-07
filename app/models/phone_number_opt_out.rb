@@ -1,19 +1,3 @@
-# == Schema Information
-#
-# Table name: phone_number_opt_outs
-#
-#  id                :bigint           not null, primary key
-#  encrypted_phone   :string
-#  phone_fingerprint :string           not null
-#  uuid              :string
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
-#
-# Indexes
-#
-#  index_phone_number_opt_outs_on_phone_fingerprint  (phone_fingerprint) UNIQUE
-#  index_phone_number_opt_outs_on_uuid               (uuid) UNIQUE
-#
 class PhoneNumberOptOut < ApplicationRecord
   include NonNullUuid
   include EncryptableAttribute
@@ -67,3 +51,20 @@ class PhoneNumberOptOut < ApplicationRecord
     Phonelib.parse(phone).international
   end
 end
+
+# == Schema Information
+#
+# Table name: phone_number_opt_outs
+#
+#  id                :bigint           not null, primary key
+#  encrypted_phone   :string
+#  phone_fingerprint :string           not null
+#  uuid              :string
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#
+# Indexes
+#
+#  index_phone_number_opt_outs_on_phone_fingerprint  (phone_fingerprint) UNIQUE
+#  index_phone_number_opt_outs_on_uuid               (uuid) UNIQUE
+#

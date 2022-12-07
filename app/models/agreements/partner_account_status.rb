@@ -1,17 +1,3 @@
-# == Schema Information
-#
-# Table name: partner_account_statuses
-#
-#  id           :bigint           not null, primary key
-#  name         :string           not null
-#  order        :integer          not null
-#  partner_name :string
-#
-# Indexes
-#
-#  index_partner_account_statuses_on_name   (name) UNIQUE
-#  index_partner_account_statuses_on_order  (order) UNIQUE
-#
 class Agreements::PartnerAccountStatus < ApplicationRecord
   self.table_name = 'partner_account_statuses'
 
@@ -26,3 +12,18 @@ class Agreements::PartnerAccountStatus < ApplicationRecord
     super || name
   end
 end
+
+# == Schema Information
+#
+# Table name: partner_account_statuses
+#
+#  id           :bigint           not null, primary key
+#  name         :string           not null
+#  order        :integer          not null
+#  partner_name :string
+#
+# Indexes
+#
+#  index_partner_account_statuses_on_name   (name) UNIQUE
+#  index_partner_account_statuses_on_order  (order) UNIQUE
+#

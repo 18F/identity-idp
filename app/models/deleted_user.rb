@@ -1,18 +1,3 @@
-# == Schema Information
-#
-# Table name: deleted_users
-#
-#  id              :bigint           not null, primary key
-#  deleted_at      :datetime         not null
-#  user_created_at :datetime         not null
-#  uuid            :string           not null
-#  user_id         :integer          not null
-#
-# Indexes
-#
-#  index_deleted_users_on_user_id  (user_id) UNIQUE
-#  index_deleted_users_on_uuid     (uuid) UNIQUE
-#
 class DeletedUser < ApplicationRecord
   def self.create_from_user(user)
     return unless user
@@ -31,3 +16,19 @@ class DeletedUser < ApplicationRecord
     nil
   end
 end
+
+# == Schema Information
+#
+# Table name: deleted_users
+#
+#  id              :bigint           not null, primary key
+#  deleted_at      :datetime         not null
+#  user_created_at :datetime         not null
+#  uuid            :string           not null
+#  user_id         :integer          not null
+#
+# Indexes
+#
+#  index_deleted_users_on_user_id  (user_id) UNIQUE
+#  index_deleted_users_on_uuid     (uuid) UNIQUE
+#

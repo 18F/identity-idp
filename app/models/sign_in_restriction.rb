@@ -1,3 +1,7 @@
+class SignInRestriction < ApplicationRecord
+  belongs_to :user
+end
+
 # == Schema Information
 #
 # Table name: sign_in_restrictions
@@ -12,6 +16,3 @@
 #
 #  index_sign_in_restrictions_on_user_id_and_service_provider  (user_id,service_provider) UNIQUE
 #
-class SignInRestriction < ApplicationRecord
-  belongs_to :user
-end

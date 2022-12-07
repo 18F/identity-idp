@@ -1,12 +1,3 @@
-# == Schema Information
-#
-# Table name: usps_confirmations
-#
-#  id         :integer          not null, primary key
-#  entry      :text             not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#
 class GpoConfirmation < ApplicationRecord
   self.table_name = 'usps_confirmations'
 
@@ -26,3 +17,13 @@ class GpoConfirmation < ApplicationRecord
     Encryption::Encryptors::BackgroundProofingArgEncryptor.new
   end
 end
+
+# == Schema Information
+#
+# Table name: usps_confirmations
+#
+#  id         :integer          not null, primary key
+#  entry      :text             not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#

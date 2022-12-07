@@ -1,3 +1,6 @@
+class MonthlyAuthCount < ApplicationRecord
+end
+
 # == Schema Information
 #
 # Table name: monthly_auth_counts
@@ -12,5 +15,3 @@
 #
 #  index_monthly_auth_counts_on_issuer_and_year_month_and_user_id  (issuer,year_month,user_id) UNIQUE
 #
-class MonthlyAuthCount < ApplicationRecord
-end

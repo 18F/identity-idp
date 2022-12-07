@@ -1,3 +1,19 @@
+class AccountResetRequest < ApplicationRecord
+  self.ignored_columns = %w[reported_fraud_at]
+
+  belongs_to :user
+
+  def granted_token_valid?
+    granted_token.present? && !granted_token_expired?
+  end
+
+  def granted_token_expired?
+    granted_at.present? &&
+      ((Time.zone.now - granted_at) >
+       IdentityConfig.store.account_reset_token_valid_for_days.days)
+  end
+end
+
 # == Schema Information
 #
 # Table name: account_reset_requests
@@ -19,18 +35,3 @@
 #  index_account_reset_requests_on_timestamps     (cancelled_at,granted_at,requested_at)
 #  index_account_reset_requests_on_user_id        (user_id) UNIQUE
 #
-class AccountResetRequest < ApplicationRecord
-  self.ignored_columns = %w[reported_fraud_at]
-
-  belongs_to :user
-
-  def granted_token_valid?
-    granted_token.present? && !granted_token_expired?
-  end
-
-  def granted_token_expired?
-    granted_at.present? &&
-      ((Time.zone.now - granted_at) >
-       IdentityConfig.store.account_reset_token_valid_for_days.days)
-  end
-end

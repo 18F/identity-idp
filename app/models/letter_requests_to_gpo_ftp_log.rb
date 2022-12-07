@@ -1,3 +1,10 @@
+class LetterRequestsToGpoFtpLog < ApplicationRecord
+  self.table_name = 'letter_requests_to_usps_ftp_logs'
+
+  validates :ftp_at, presence: true
+  validates :letter_requests_count, presence: true
+end
+
 # == Schema Information
 #
 # Table name: letter_requests_to_usps_ftp_logs
@@ -10,9 +17,3 @@
 #
 #  index_letter_requests_to_usps_ftp_logs_on_ftp_at  (ftp_at)
 #
-class LetterRequestsToGpoFtpLog < ApplicationRecord
-  self.table_name = 'letter_requests_to_usps_ftp_logs'
-
-  validates :ftp_at, presence: true
-  validates :letter_requests_count, presence: true
-end

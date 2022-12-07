@@ -1,22 +1,3 @@
-# == Schema Information
-#
-# Table name: phone_configurations
-#
-#  id                   :bigint           not null, primary key
-#  confirmation_sent_at :datetime
-#  confirmed_at         :datetime
-#  delivery_preference  :integer          default("sms"), not null
-#  encrypted_phone      :text             not null
-#  made_default_at      :datetime
-#  mfa_enabled          :boolean          default(TRUE), not null
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
-#  user_id              :bigint           not null
-#
-# Indexes
-#
-#  index_phone_configurations_on_made_default_at  (user_id,made_default_at,created_at)
-#
 class PhoneConfiguration < ApplicationRecord
   include EncryptableAttribute
 
@@ -62,3 +43,23 @@ class PhoneConfiguration < ApplicationRecord
     set.flat_map(&:selection_presenters)
   end
 end
+
+# == Schema Information
+#
+# Table name: phone_configurations
+#
+#  id                   :bigint           not null, primary key
+#  confirmation_sent_at :datetime
+#  confirmed_at         :datetime
+#  delivery_preference  :integer          default("sms"), not null
+#  encrypted_phone      :text             not null
+#  made_default_at      :datetime
+#  mfa_enabled          :boolean          default(TRUE), not null
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  user_id              :bigint           not null
+#
+# Indexes
+#
+#  index_phone_configurations_on_made_default_at  (user_id,made_default_at,created_at)
+#

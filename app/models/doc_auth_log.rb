@@ -1,3 +1,13 @@
+class DocAuthLog < ApplicationRecord
+  belongs_to :user
+
+  # rubocop:disable Rails/InverseOf
+  belongs_to :service_provider,
+             foreign_key: 'issuer',
+             primary_key: 'issuer'
+  # rubocop:enable Rails/InverseOf
+end
+
 # == Schema Information
 #
 # Table name: doc_auth_logs
@@ -93,12 +103,3 @@
 #  index_doc_auth_logs_on_user_id           (user_id) UNIQUE
 #  index_doc_auth_logs_on_verified_view_at  (verified_view_at)
 #
-class DocAuthLog < ApplicationRecord
-  belongs_to :user
-
-  # rubocop:disable Rails/InverseOf
-  belongs_to :service_provider,
-             foreign_key: 'issuer',
-             primary_key: 'issuer'
-  # rubocop:enable Rails/InverseOf
-end

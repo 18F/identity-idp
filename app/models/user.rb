@@ -1,35 +1,3 @@
-# == Schema Information
-#
-# Table name: users
-#
-#  id                                           :integer          not null, primary key
-#  accepted_terms_at                            :datetime
-#  confirmed_at                                 :datetime
-#  direct_otp                                   :string
-#  direct_otp_sent_at                           :datetime
-#  email_language                               :string(10)
-#  encrypted_password_digest                    :string           default("")
-#  encrypted_recovery_code_digest               :string           default("")
-#  encrypted_recovery_code_digest_generated_at  :datetime
-#  non_restricted_mfa_required_prompt_skip_date :date
-#  otp_delivery_preference                      :integer          default("sms"), not null
-#  phone_confirmed_at                           :datetime
-#  remember_created_at                          :datetime
-#  remember_device_revoked_at                   :datetime
-#  reset_password_sent_at                       :datetime
-#  reset_password_token                         :string(255)
-#  second_factor_attempts_count                 :integer          default(0)
-#  second_factor_locked_at                      :datetime
-#  uuid                                         :string(255)      not null
-#  created_at                                   :datetime
-#  updated_at                                   :datetime
-#  unique_session_id                            :string
-#
-# Indexes
-#
-#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
-#  index_users_on_uuid                  (uuid) UNIQUE
-#
 class User < ApplicationRecord
   include NonNullUuid
 
@@ -231,3 +199,36 @@ class User < ApplicationRecord
 
   add_method_tracer :send_devise_notification, "Custom/#{name}/send_devise_notification"
 end
+
+# == Schema Information
+#
+# Table name: users
+#
+#  id                                           :integer          not null, primary key
+#  accepted_terms_at                            :datetime
+#  confirmed_at                                 :datetime
+#  direct_otp                                   :string
+#  direct_otp_sent_at                           :datetime
+#  email_language                               :string(10)
+#  encrypted_password_digest                    :string           default("")
+#  encrypted_recovery_code_digest               :string           default("")
+#  encrypted_recovery_code_digest_generated_at  :datetime
+#  non_restricted_mfa_required_prompt_skip_date :date
+#  otp_delivery_preference                      :integer          default("sms"), not null
+#  phone_confirmed_at                           :datetime
+#  remember_created_at                          :datetime
+#  remember_device_revoked_at                   :datetime
+#  reset_password_sent_at                       :datetime
+#  reset_password_token                         :string(255)
+#  second_factor_attempts_count                 :integer          default(0)
+#  second_factor_locked_at                      :datetime
+#  uuid                                         :string(255)      not null
+#  created_at                                   :datetime
+#  updated_at                                   :datetime
+#  unique_session_id                            :string
+#
+# Indexes
+#
+#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_users_on_uuid                  (uuid) UNIQUE
+#
