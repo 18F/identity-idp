@@ -289,6 +289,7 @@ session_encryptor_v2_enabled: true
 session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
+ses_configuration_set_name: ''
 set_remember_device_session_expiration: false
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
