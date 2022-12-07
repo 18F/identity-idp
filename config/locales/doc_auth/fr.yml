@@ -214,7 +214,6 @@ fr:
       upload_from_computer: Vous n’avez pas de téléphone?
       upload_from_phone: Téléchargez des images directement depuis l’appareil photo de
         votre téléphone
-      upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
       verify_identity: Nous vous demanderons vos informations personnelles afin de
         vérifier votre identité par rapport aux registres publics.
       welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non

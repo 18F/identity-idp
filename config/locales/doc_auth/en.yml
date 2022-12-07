@@ -171,7 +171,6 @@ en:
       upload_computer_link: Upload from your computer
       upload_from_computer: Don’t have a phone?
       upload_from_phone: Upload pictures directly from your phone camera
-      upload_no_image_storage: We do not store images you upload. We only verify your identity.
       verify_identity: We’ll ask for your personal information to verify your identity
         against public records.
       welcome_html: '%{sp_name} needs to make sure you are you — not someone

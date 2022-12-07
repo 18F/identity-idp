@@ -203,7 +203,6 @@ es:
       upload_computer_link: Sube desde tu computadora
       upload_from_computer: '¿No tiene un teléfono?'
       upload_from_phone: Sube imágenes directamente desde la cámara de tu teléfono
-      upload_no_image_storage: No almacenamos imágenes que cargue. Solo verificamos su identidad.
       verify_identity: Le preguntaremos sus datos personales para verificar su
         identidad comparándola con los registros públicos.
       welcome_html: '%{sp_name} necesita asegurarse de que es usted y no es alguien
