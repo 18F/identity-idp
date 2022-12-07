@@ -332,6 +332,7 @@ RSpec.describe GetUspsProofingResultsJob do
           stub_request_expired_proofing_results
 
           user = pending_enrollment.user
+          expect(pending_enrollment.deadline_passed_sent).to be_falsy
           freeze_time do
             expect do
               job.perform(Time.zone.now)
@@ -339,6 +340,8 @@ RSpec.describe GetUspsProofingResultsJob do
               params: { user: user, email_address: user.email_addresses.first },
               args: [{ enrollment: pending_enrollment }],
             )
+            pending_enrollment.reload
+            expect(pending_enrollment.deadline_passed_sent).to be_truthy
           end
         end
 
