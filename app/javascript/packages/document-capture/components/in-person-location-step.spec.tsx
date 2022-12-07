@@ -10,7 +10,12 @@ import { ADDRESS_SEARCH_URL } from './address-search';
 import InPersonContext from '../context/in-person';
 
 describe('InPersonLocationStep', () => {
-  const DEFAULT_PROPS = { toPreviousStep() {}, onChange() {}, value: {} };
+  const DEFAULT_PROPS = {
+    toPreviousStep() {},
+    onChange() {},
+    value: {},
+    registerField(field: string) {},
+  };
 
   const sandbox = useSandbox();
 

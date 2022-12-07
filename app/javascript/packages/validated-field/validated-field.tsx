@@ -31,7 +31,7 @@ interface ValidatedFieldProps {
   /**
    * Optional key and value that indicates the error and resulting error message
    */
-  messages?: Object;
+  messages?: Record<string, string>;
 
   /**
    * Optional input to use in place of the default rendered input. The input will be cloned and
@@ -81,7 +81,7 @@ function ValidatedField(
   const fieldRef = useRef<ValidatedFieldElement>();
   const instanceId = useInstanceId();
   useImperativeHandle(forwardedRef, () => ({
-    reportValidity: () => fieldRef.current.input.reportValidity(),
+    reportValidity: () => fieldRef.current?.input?.reportValidity(),
   }));
   useEffect(() => {
     if (fieldRef.current && fieldRef.current.input) {
@@ -118,7 +118,7 @@ function ValidatedField(
   return (
     <lg-validated-field ref={fieldRef}>
       <script type="application/json" className="validated-field__error-strings">
-        {JSON.stringify({ ...getErrorMessages(messages, inputProps.type), ...messages })}
+        {JSON.stringify({ ...getErrorMessages(inputProps.type), ...messages })}
       </script>
       <div className="validated-field__input-wrapper">
         {cloneElement(input, {
