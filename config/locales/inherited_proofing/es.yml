@@ -61,7 +61,8 @@ es:
         postal.
     troubleshooting:
       headings:
-        missing_required_items: ¿No tienes un número de teléfono? Así es como obtener ayuda
+        missing_required_items: ¿No tienes número de teléfono? A continuación, te
+          indicamos cómo obtener ayuda
         need_assistance: to be implemented
         need_help_updating: to be implemented
       options:

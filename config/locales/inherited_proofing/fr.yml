@@ -62,8 +62,7 @@ fr:
         vérifier votre numéro de téléphone, vous pouvez le faire par courriel.
     troubleshooting:
       headings:
-        missing_required_items: Vous n’avez pas de numéro de téléphone ? Voici comment
-          obtenir de l’aide
+        missing_required_items: Vous n’avez pas de numéro de téléphone? Voici comment obtenir de l’aide
         need_assistance: to be implemented
         need_help_updating: to be implemented
       options:
