@@ -184,8 +184,8 @@ es:
         que verifiques tu identidad a través de tu teléfono.
       no_sp_name: La agencia a la que está intentando acceder
       privacy_html: '%{app_name} es un sitio web gubernamental seguro que cumple con
-        las normas más estrictas de protección de datos. Solo utilizamos sus
-        datos para verificar su identidad. %{link} sobre nuestras medidas de
+        las normas más estrictas de protección de datos. Utilizamos sus datos
+        para verificar su identidad. %{link} sobre nuestras medidas de
         privacidad y seguridad.'
       secure_account: Vamos a encriptar su cuenta con su contraseña. La encriptación
         significa que sus datos están protegidos y solo usted podrá acceder o

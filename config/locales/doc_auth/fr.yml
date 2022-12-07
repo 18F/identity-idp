@@ -194,8 +194,8 @@ fr:
       no_sp_name: L’agence à laquelle vous essayez d’accéder
       privacy_html: '%{app_name} est un site gouvernemental sécurisé qui respecte les
         normes les plus strictes en matière de protection des données. Nous
-        n’utilisons vos données uniquement pour vérifier votre identité. %{link}
-        sur nos mesures de confidentialité et de sécurité.'
+        utilisons vos données pour vérifier votre identité. %{link} sur nos
+        mesures de confidentialité et de sécurité.'
       secure_account: Nous chiffrerons votre compte avec votre mot de passe. Le
         chiffrage signifie que vos données sont protégées et que vous êtes le/la
         seul(e) à pouvoir accéder à vos informations ou les modifier.
