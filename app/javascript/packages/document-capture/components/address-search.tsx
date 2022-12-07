@@ -64,7 +64,7 @@ function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSear
           label="Search for an address"
         />
       </ValidatedField>
-      <Button type="submit" onClick={handleAddressSearch}>
+      <Button type="submit" className="margin-y-5" onClick={handleAddressSearch}>
         Search
       </Button>
       <>{addressQuery.address}</>
