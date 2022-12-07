@@ -37,8 +37,7 @@ fr:
               supprimer votre compte sur %{account_page_text}.
         hybrid: Si vous annulez maintenant, vous serez invité à retourner sur votre
           ordinateur pour continuer à vérifier votre identité.
-        start_over: Si vous recommencez, vous reprendrez ce processus depuis le début et
-          les informations que vous avez saisies ne seront pas enregistrées.
+        start_over: Si vous recommencez, vous reprendrez ce processus depuis le début.
       headings:
         confirmation:
           hybrid: Vous avez annulé le téléchargement de vos photos d’identité sur ce

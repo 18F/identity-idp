@@ -36,8 +36,7 @@ es:
               administrar o eliminar su cuenta desde %{account_page_text}.
         hybrid: Si cancela ahora, se le pedirá regresar a su computadora para continuar
           con la verificación de su identidad.
-        start_over: Si empieza de nuevo, el proceso se reiniciará y la información que
-          haya ingresado se perderá.
+        start_over: Si vuelve a empezar, reiniciará este proceso desde el principio.
       headings:
         confirmation:
           hybrid: Ha cancelado la carga de fotos de su identificación en este teléfono

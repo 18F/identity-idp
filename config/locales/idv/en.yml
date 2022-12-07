@@ -35,8 +35,7 @@ en:
               delete your account on your %{account_page_text}.
         hybrid: If you cancel now, you will be prompted to switch back to your computer
           to continue verifying your identity.
-        start_over: If you start over, you will restart this process from the beginning
-          and the information you entered will not be saved.
+        start_over: If you start over, you will restart this process from the beginning.
       headings:
         confirmation:
           hybrid: You have cancelled uploading photos of your ID on this phone
