@@ -141,8 +141,8 @@ fr:
       come_back_later_sp_html: Vous pouvez revenir à <strong>%{sp}</strong> pour le moment.
       confirm: Vous avez crypté vos données vérifiées
       gpo:
-        address_on_file_html: Nous enverrons une lettre avec <strong>un code de
-          confirmation</strong> à l’adresse que vous avez indiquée à l’étape
+        address_on_file_html: Nous enverrons une lettre avec <strong>un code à usage
+          unique </strong> à l’adresse que vous avez indiquée à l’étape
           précédente.
         resend: Envoyez-moi une autre lettre
         timeframe_html: Les lettres sont envoyées les jours ouvrables par courriel de

@@ -134,9 +134,8 @@ es:
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
       confirm: Usted ha encriptado sus datos verificados.
       gpo:
-        address_on_file_html: Le enviaremos una carta con <strong>un código de
-          confirmación</strong> a la dirección que nos facilitó en el paso
-          anterior.
+        address_on_file_html: Le enviaremos una carta con <strong>un código único
+          </strong> a la dirección que nos facilitó en el paso anterior.
         resend: Envíeme otra carta
         timeframe_html: Las cartas se envían al día siguiente por First Class Mail de
           USPS y <strong>suelen tardar entre 3 y 7 días hábiles en
