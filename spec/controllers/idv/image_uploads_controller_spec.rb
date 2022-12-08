@@ -11,12 +11,14 @@ describe Idv::ImageUploadsController do
 
     let(:user) { create(:user) }
     let!(:document_capture_session) { user.document_capture_sessions.create!(user: user) }
+    let(:front_image_metadata) { JSON.generate({ glare: 99.99 }) }
+    let(:back_image_metadata)  { JSON.generate({ glare: 99.99 }) }
     let(:params) do
       {
         front: DocAuthImageFixtures.document_front_image_multipart,
-        front_image_metadata: '{"glare":99.99}',
+        front_image_metadata: front_image_metadata,
         back: DocAuthImageFixtures.document_back_image_multipart,
-        back_image_metadata: '{"glare":99.99}',
+        back_image_metadata: back_image_metadata,
         document_capture_session_uuid: document_capture_session.uuid,
         flow_path: 'standard',
       }
@@ -288,7 +290,7 @@ describe Idv::ImageUploadsController do
           },
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
-          vendor_workflow: 'unknown',
+          vendor_workflow: 'NOLIVENESS.CROPPING.WORKFLOW',
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -437,7 +439,7 @@ describe Idv::ImageUploadsController do
               },
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
-              vendor_workflow: 'unknown',
+              vendor_workflow: 'NOLIVENESS.CROPPING.WORKFLOW',
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -516,7 +518,7 @@ describe Idv::ImageUploadsController do
               },
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
-              vendor_workflow: 'unknown',
+              vendor_workflow: 'NOLIVENESS.CROPPING.WORKFLOW',
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -595,7 +597,7 @@ describe Idv::ImageUploadsController do
               },
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
-              vendor_workflow: 'unknown',
+              vendor_workflow: 'NOLIVENESS.CROPPING.WORKFLOW',
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -700,7 +702,7 @@ describe Idv::ImageUploadsController do
           doc_auth_result: nil,
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
-          vendor_workflow: 'unknown',
+          vendor_workflow: 'NOLIVENESS.CROPPING.WORKFLOW',
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -785,7 +787,7 @@ describe Idv::ImageUploadsController do
           },
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
-          vendor_workflow: 'unknown',
+          vendor_workflow: 'NOLIVENESS.CROPPING.WORKFLOW',
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -834,8 +836,57 @@ describe Idv::ImageUploadsController do
     end
 
     context 'when the image was collected with the Acuant SDK' do
+      let(:front_image_metadata) { JSON.generate({ glare: 99.99, source: Idp::Constants::Vendors::ACUANT}) }
+      let(:back_image_metadata) { JSON.generate({glare: 99.99, source: Idp::Constants::Vendors::ACUANT}) }
+
       before do
         stub_analytics
+        # without this allow(), RSpec's mocking gets confused and
+        # incorrectly fails the spec on the call to
+        # idv_doc_auth_submitted_image_upload_form, before the call
+        # we're actually looking for even happens.
+        allow(@analytics).to receive(:track_event).and_call_original
+      end
+
+      it 'logs the vendor workflow as CROPPING' do
+        expect(@analytics).to receive(:track_event).with(
+          'IdV: doc auth image upload vendor submitted',
+          success: true,
+          errors: {},
+          attention_with_barcode: false,
+          async: false,
+          billed: true,
+          exception: nil,
+          doc_auth_result: 'Passed',
+          state: 'MT',
+          state_id_type: 'drivers_license',
+          user_id: user.uuid,
+          attempts: 1,
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          client_image_metrics: {
+            front: { glare: 99.99, source: 'acuant' },
+            back: { glare: 99.99, source: 'acuant' },
+          },
+          pii_like_keypaths: [[:pii]],
+          flow_path: 'standard',
+          vendor_workflow: 'NOLIVENESS.CROPPING.WORKFLOW',
+        )
+
+        action
+      end
+    end
+
+    context 'when the image was not collected with the Acuant SDK' do
+      let(:front_image_metadata) { JSON.generate({ glare: 99.99, source: Idp::Constants::Vendors::LEXIS_NEXIS}) }
+      let(:back_image_metadata) { JSON.generate({glare: 99.99, source: Idp::Constants::Vendors::LEXIS_NEXIS}) }
+
+      before do
+        stub_analytics
+        # without this allow(), RSpec's mocking gets confused and
+        # incorrectly fails the spec on the call to
+        # idv_doc_auth_submitted_image_upload_form, before the call
+        # we're actually looking for even happens.
+        allow(@analytics).to receive(:track_event).and_call_original
       end
 
       it 'logs the vendor workflow as NOCROPPING' do
@@ -848,18 +899,18 @@ describe Idv::ImageUploadsController do
           billed: true,
           exception: nil,
           doc_auth_result: 'Passed',
-          state: 'ND',
+          state: 'MT',
           state_id_type: 'drivers_license',
           user_id: user.uuid,
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           client_image_metrics: {
-            front: { glare: 99.99 },
-            back: { glare: 99.99 },
+            front: { glare: 99.99, source: 'lexis_nexis' },
+            back: { glare: 99.99, source: 'lexis_nexis'  },
           },
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
-          vendor_workflow: 'unknown',
+          vendor_workflow: 'NOLIVENESS.NOCROPPING.WORKFLOW',
         )
 
         action

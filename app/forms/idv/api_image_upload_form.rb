@@ -130,6 +130,15 @@ module Idv
       client_response
     end
 
+
+    def vendor_workflow
+      if image_source == DocAuth::ImageSources::ACUANT_SDK
+        'NOLIVENESS.NOCROPPING.WORKFLOW'
+      else
+        'NOLIVENESS.CROPPING.WORKFLOW'
+      end
+    end
+
     def image_source
       if acuant_sdk_capture?
         DocAuth::ImageSources::ACUANT_SDK
@@ -208,7 +217,7 @@ module Idv
           client_image_metrics: image_metadata,
           async: false,
           flow_path: params[:flow_path],
-          vendor_workflow: image_source.to_s,
+          vendor_workflow: vendor_workflow,
         ).merge(native_camera_ab_test_data, acuant_sdk_upgrade_ab_test_data),
       )
       pii_from_doc = client_response.pii_from_doc || {}
@@ -226,7 +235,7 @@ module Idv
         last_name: pii_from_doc[:last_name],
         date_of_birth: pii_from_doc[:dob],
         address: pii_from_doc[:address1],
-        failure_reason: client_response.errors&.except(:hints)&.presence,
+        failure_reason: client_response.errors&.except(:hints)&.presence
       )
     end
 
