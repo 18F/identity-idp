@@ -3,6 +3,53 @@ require 'rails_helper'
 RSpec.describe LinkHelper do
   include LinkHelper
 
+  describe '#new_window_link_to' do
+    let(:html_options) { {} }
+
+    subject(:link) { new_window_link_to('Link', '', **html_options) }
+
+    it 'opens in a new tab' do
+      expect(link).to have_css('[target=_blank]')
+    end
+
+    it 'includes an accessibility hint about opening in a new tab' do
+      expect(link).to have_content("Link #{t('links.new_window')}")
+      expect(link).to have_css('.usa-sr-only', text: t('links.new_window'))
+    end
+
+    it 'adds design system external link class' do
+      expect(link).to have_css('.usa-link--external')
+    end
+
+    context 'with custom classes' do
+      let(:html_options) { { class: 'example' } }
+
+      it 'adds design system external link class' do
+        expect(link).to have_css('.example.usa-link--external')
+      end
+
+      context 'with custom classes as array' do
+        let(:html_options) { { class: ['example'] } }
+
+        it 'adds design system external link class' do
+          expect(link).to have_css('.example.usa-link--external')
+        end
+      end
+    end
+
+    context 'content given as block' do
+      let(:html_options) { { data: { foo: 'bar' } } }
+      subject(:link) { new_window_link_to('/url', **html_options) { 'Link' } }
+
+      it 'renders a link with the expected attributes' do
+        expect(link).to have_css(
+          '.usa-link--external[href="/url"][target=_blank][data-foo="bar"]',
+          text: 'Link',
+        )
+      end
+    end
+  end
+
   describe '#button_or_link_to' do
     let(:method) { nil }
     let(:text) { 'Example' }
