@@ -11,7 +11,7 @@ module Users
     helper_method :in_multi_mfa_selection_flow?
 
     def index
-      @new_phone_form = NewPhoneForm.new(current_user, setup_voice_preference?)
+      @new_phone_form = NewPhoneForm.new(current_user, setup_voice_preference: setup_voice_preference?)
       track_phone_setup_visit
     end
 

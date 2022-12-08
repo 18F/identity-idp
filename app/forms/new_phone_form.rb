@@ -17,7 +17,7 @@ class NewPhoneForm
   attr_accessor :phone, :international_code, :otp_delivery_preference,
                 :otp_make_default_number, :setup_voice_preference
 
-  def initialize(user, setup_voice_preference = false)
+  def initialize(user, setup_voice_preference: false)
     self.user = user
     self.otp_delivery_preference = user.otp_delivery_preference
     self.otp_make_default_number = false
@@ -41,7 +41,6 @@ class NewPhoneForm
     VendorStatus.new.vendor_outage?(:sms) || setup_voice_preference
   end
 
-  # TODO: Temporarily moved as experiment
   # @return [Telephony::PhoneNumberInfo, nil]
   def phone_info
     return @phone_info if defined?(@phone_info)

@@ -6,9 +6,10 @@
   <%= @presenter.phone_number_message %>
 </p>
 
+<!-- TODO: The following content formatting will be changed when translations are available and after content approval. !-->
 <% if @landline %>
   <%= render AlertComponent.new(type: :warning, text_tag: 'div') do %>
-    Your number appears to be a landline and may not be able to receive text messages. <%= link_to('Go back', phone_setup_path(otp_delivery_preference: 'voice')) %> to change your phone number or delivery method.
+    The phone number entered appears to be a <b>landline phone</b>. Request a one-time code by <%= link_to('phone call', phone_setup_path(otp_delivery_preference: 'voice')) %> instead.
   <% end %>
 <% end %>
 

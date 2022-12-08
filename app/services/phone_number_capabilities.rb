@@ -54,9 +54,6 @@ class PhoneNumberCapabilities
   def supports_sms?
     return false if country_code_data.nil?
 
-    # TODO: Remove comment later
-    # country_code_data => {"country_code"=>"1", "name"=>"United States", "supports_sms"=>true, "supports_voice"=>true}
-
     supports_sms = country_code_data['supports_sms']
 
     supports_sms_unconfirmed = country_code_data.fetch(
