@@ -87,7 +87,7 @@ feature 'Internationalization' do
   end
 
   context 'visit homepage with host parameter' do
-    it 'maintain query parameters as query parameters' do
+    it 'maintains query parameters as query parameters' do
       visit '/fr?host=test.com'
 
       %w[en es fr].each do |locale|
