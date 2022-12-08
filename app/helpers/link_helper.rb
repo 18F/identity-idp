@@ -2,7 +2,7 @@ module LinkHelper
   EXTERNAL_LINK_CLASS = 'usa-link--external'.freeze
 
   def new_window_link_to(name = nil, options = nil, html_options = {}, &block)
-    html_options, options, name = options, name, yield(block) if block
+    html_options, options, name = options, name, capture(&block) if block
 
     html_options[:target] = '_blank'
     html_options[:class] = [*html_options[:class], EXTERNAL_LINK_CLASS]
