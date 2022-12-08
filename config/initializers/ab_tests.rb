@@ -6,14 +6,16 @@ module AbTests
     buckets: {
       alternate_vendor: IdentityConfig.store.doc_auth_vendor_randomize ?
         IdentityConfig.store.doc_auth_vendor_randomize_percent :
-        nil,
+        0,
     }.compact,
   )
 
   ACUANT_SDK = AbTestBucket.new(
     experiment_name: 'Acuant SDK Upgrade',
     buckets: {
-      use_newer_sdk: IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_percent,
+      use_newer_sdk: IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled ?
+        IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_percent :
+        0,
     },
   )
 end
