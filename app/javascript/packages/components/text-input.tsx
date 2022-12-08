@@ -9,6 +9,11 @@ export interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
 
   /**
+   * Muted explainer text sitting below the label.
+   */
+  hint?: string;
+
+  /**
    * Optional explicit ID to use in place of default behavior.
    */
   id?: string;
@@ -20,7 +25,7 @@ export interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 function TextInput(
-  { label, id, className, ...inputProps }: TextInputProps,
+  { label, hint, id, className, ...inputProps }: TextInputProps,
   ref: ForwardedRef<HTMLInputElement>,
 ) {
   const instanceId = useInstanceId();
@@ -32,6 +37,9 @@ function TextInput(
       <label className="usa-label" htmlFor={inputId}>
         {label}
       </label>
+      <div id="kvgx-hint" className="usa-hint">
+        {hint}
+      </div>
       <input ref={ref} className={classes} id={inputId} {...inputProps} />
     </>
   );

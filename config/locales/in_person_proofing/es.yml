@@ -36,6 +36,13 @@ es:
           posible que pueda realizar la verificación en persona en una oficina
           de correos local de los Estados Unidos en determinadas localidades.
         none_found: No se encontraron localidades.
+        po_search:
+          address_search_hint: 'Ejemplo: 1960 W Chelsea Ave Allentown PA 18104'
+          address_search_label: Introduzca una dirección para encontrar una Oficina de
+            Correos cercana a usted
+          po_search_about: Si tiene problemas para añadir su documento de identidad, es
+            posible que pueda verificar su identidad en persona en una oficina
+            de correos local de los Estados Unidos.
         post_office: Oficina de Correos
         retail_hours_heading: Horario de atención al público
         retail_hours_sat: 'Sáb:'
@@ -100,6 +107,8 @@ es:
       barcode: Está listo para verificar su identidad en persona
       cta: ¿Tiene problemas para verificar su documento de identidad en línea?
       location: Seleccione un lugar para verificar su cédula
+      po_search:
+        location: Encuentre una oficina de correos participante
       prepare: Verifique su identidad en persona
       state_id: Ingrese la información de su cédula
       switch_back: Vuelva a su computadora para prepararse para verificar su identidad
