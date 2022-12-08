@@ -38,9 +38,11 @@ function TextInput(
       <label className="usa-label" htmlFor={inputId}>
         {label}
       </label>
-      <div id={hintId} className="usa-hint">
-        {hint}
-      </div>
+      {hint && (
+        <div id={hintId} className="usa-hint">
+          {hint}
+        </div>
+      )}
       <input ref={ref} className={classes} id={inputId} {...inputProps} />
     </>
   );
