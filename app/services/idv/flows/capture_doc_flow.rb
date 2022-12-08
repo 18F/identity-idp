@@ -27,12 +27,9 @@ module Idv
       end
 
       def extra_analytics_properties
-        bucket = AbTests::NATIVE_CAMERA.bucket(session[:document_capture_session_uuid])
-
         {
-          native_camera_a_b_testing_enabled:
-            IdentityConfig.store.idv_native_camera_a_b_testing_enabled,
-          native_camera_only: (bucket == :native_camera_only),
+          acuant_sdk_upgrade_ab_test_bucket:
+            AbTests::ACUANT_SDK.bucket(flow_session[:document_capture_session_uuid]),
         }
       end
     end

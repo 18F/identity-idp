@@ -207,7 +207,7 @@ module Idv
           client_image_metrics: image_metadata,
           async: false,
           flow_path: params[:flow_path],
-        ).merge(native_camera_ab_test_data, acuant_sdk_upgrade_ab_test_data),
+        ).merge(acuant_sdk_upgrade_ab_test_data),
       )
       pii_from_doc = client_response.pii_from_doc || {}
       stored_image_result = store_encrypted_images_if_required
@@ -245,14 +245,6 @@ module Idv
 
     def encrypted_document_storage_writer
       @encrypted_document_storage_writer ||= EncryptedDocumentStorage::DocumentWriter.new
-    end
-
-    def native_camera_ab_test_data
-      return {} unless IdentityConfig.store.idv_native_camera_a_b_testing_enabled
-
-      {
-        native_camera_ab_test_bucket: AbTests::NATIVE_CAMERA.bucket(document_capture_session.uuid),
-      }
     end
 
     def acuant_sdk_upgrade_ab_test_data
