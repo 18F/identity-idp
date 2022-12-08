@@ -6,6 +6,8 @@ import BackButton from './back-button';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
 import AnalyticsContext from '../context/analytics';
+import AddressSearch from './address-search';
+import InPersonContext from '../context/in-person';
 
 interface PostOffice {
   address: string;
@@ -78,14 +80,15 @@ const prepToSend = (location: object) => {
   return sendObject;
 };
 
-function InPersonLocationStep({ onChange, toPreviousStep }) {
+function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
   const { t } = useI18n();
   const [locationData, setLocationData] = useState([] as FormattedLocation[]);
-  const [foundAddress] = useState({} as LocationQuery);
+  const [foundAddress, setFoundAddress] = useState({} as LocationQuery);
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
+  const { arcgisSearchEnabled } = useContext(InPersonContext);
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
@@ -140,6 +143,15 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
     [locationData, inProgress],
   );
 
+  const handleFoundAddress = useCallback((address) => {
+    setFoundAddress({
+      streetAddress: address.street_address,
+      city: address.city,
+      state: address.state,
+      zipCode: address.zip_code,
+    });
+  }, []);
+
   useEffect(() => {
     let didCancel = false;
     (async () => {
@@ -189,6 +201,9 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.location')}</PageHeading>
+      {arcgisSearchEnabled && (
+        <AddressSearch onAddressFound={handleFoundAddress} registerField={registerField} />
+      )}
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
       {locationsContent}
       <BackButton onClick={toPreviousStep} />
@@ -196,4 +211,4 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   );
 }
 
-export default InPersonLocationStep;
+export default InPersonLocationPostOfficeSearchStep;
