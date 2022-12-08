@@ -251,7 +251,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     enrollment.update(status: :expired)
 
     begin
-      send_deadline_passed_email(enrollment.user, enrollment) if !enrollment.deadline_passed_sent
+      send_deadline_passed_email(enrollment.user, enrollment) unless enrollment.deadline_passed_sent
     rescue StandardError => err
       NewRelic::Agent.notice_error(err)
       analytics(user: enrollment.user).

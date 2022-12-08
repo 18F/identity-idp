@@ -113,7 +113,7 @@ en:
         restart: You can start a new request to verify your identity with
           %{partner_agency}.
       header: The deadline to verify your identity in person has passed
-      subject: Your request for to verify your identity in person has expired
+      subject: Your request to verify your identity in person has expired
     in_person_failed:
       body:
         with_cta: Click the button or copy the link below to try verifying your identity
