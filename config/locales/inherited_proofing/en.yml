@@ -53,7 +53,7 @@ en:
       welcome_html: '%{sp_name} - not someone pretending to be you.'
     instructions:
       consent: By checking this box, you are letting %{app_name} ask for, use, keep,
-        and share your personal information. We will only use it to verify your
+        and share your personal information. We will use it to verify your
         identity.
       learn_more: Learn more
       privacy: Our privacy and security standards
