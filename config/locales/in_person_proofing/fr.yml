@@ -43,6 +43,7 @@ fr:
           po_search_about: Si vous avez des difficultés à ajouter votre pièce d’identité,
             vous pouvez vérifier votre identité en personne dans un bureau de
             poste américain proche.
+          search_button: Chercher
         post_office: Bureau de Poste
         retail_hours_heading: Heures de vente au détail
         retail_hours_sat: 'Sam:'
