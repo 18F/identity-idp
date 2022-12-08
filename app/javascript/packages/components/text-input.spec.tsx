@@ -45,4 +45,13 @@ describe('TextInput', () => {
 
     expect(ref.current).to.be.an.instanceOf(HTMLInputElement);
   });
+
+  it('renders with a hint', () => {
+    const { getByText } = render(<TextInput label="Input" hint="Something special" />);
+
+    const input = getByText('Something special');
+
+    expect(input).to.be.an.instanceOf(HTMLDivElement);
+    expect(input.classList.contains('usa-hint')).to.be.true();
+  });
 });
