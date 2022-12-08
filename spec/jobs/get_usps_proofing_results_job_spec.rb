@@ -345,7 +345,7 @@ RSpec.describe GetUspsProofingResultsJob do
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: deadline passed email initiated',
               enrollment_id: pending_enrollment.id,
-          )
+            )
           end
         end
 
