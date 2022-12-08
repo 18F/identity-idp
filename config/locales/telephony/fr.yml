@@ -21,9 +21,7 @@ fr:
       voice: Bonjour! Votre code %{app_name} à usage unique est %{code}. Votre code à
         usage unique est %{code}. Une fois de plus, votre code à usage unique
         est %{code}. Ce code expire dans %{expiration} minutes.
-    doc_auth_link: "%{link} Vous avez demandé à vérifier votre identité sur un
-      téléphone mobile. S'il vous plaît prendre une photo de votre identité
-      émise par l'état"
+    doc_auth_link: "%{link}: Vous vérifiez votre identité pour accéder à [SP]. Prenez une photo de votre pièce d'identité pour continuer."
     error:
       friendly_message:
         daily_voice_limit_reached: L’envoi de votre code à usage unique a échoué car

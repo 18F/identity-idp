@@ -21,9 +21,7 @@ es:
       voice: ¡Hola! Su código único de %{app_name} es %{code}, Su código único es
         %{code}, De nuevo, su código único es %{code}, Este código expira en
         %{expiration} minutos.
-    doc_auth_link: '%{link} Has solicitado verificar tu identidad en un teléfono
-      móvil. Por favor, tome una foto de la identificación emitida por su
-      estado'
+    doc_auth_link: '%{link}: Está verificando su identidad para acceder a [SP]. Tome una foto de su identificación para continuar.'
     error:
       friendly_message:
         daily_voice_limit_reached: Su código de un solo uso no se ha podido enviar, ya
