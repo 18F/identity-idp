@@ -62,7 +62,7 @@ RSpec.describe Idv::ImageUploadsController do
             front: ['Please fill in this field.'],
           },
           error_details: {
-            front: [:blank],
+            front: { blank: true },
           },
           user_id: user.uuid,
           attempts: 1,
@@ -123,7 +123,7 @@ RSpec.describe Idv::ImageUploadsController do
             front: [I18n.t('doc_auth.errors.not_a_file')],
           },
           error_details: {
-            front: [I18n.t('doc_auth.errors.not_a_file')],
+            front: { not_a_file: true },
           },
           user_id: user.uuid,
           attempts: 1,
@@ -261,7 +261,7 @@ RSpec.describe Idv::ImageUploadsController do
             limit: [I18n.t('errors.doc_auth.rate_limited_heading')],
           },
           error_details: {
-            limit: [I18n.t('errors.doc_auth.rate_limited_heading')],
+            limit: { rate_limited: true },
           },
           user_id: user.uuid,
           attempts: IdentityConfig.store.doc_auth_max_attempts,
@@ -603,7 +603,7 @@ RSpec.describe Idv::ImageUploadsController do
                 name: [I18n.t('doc_auth.errors.alerts.full_name_check')],
               },
               error_details: {
-                name: [I18n.t('doc_auth.errors.alerts.full_name_check')],
+                name: { name: true },
               },
               attention_with_barcode: false,
               user_id: user.uuid,
@@ -703,7 +703,7 @@ RSpec.describe Idv::ImageUploadsController do
                 state: [I18n.t('doc_auth.errors.general.no_liveness')],
               },
               error_details: {
-                state: [:wrong_length],
+                state: { wrong_length: true },
               },
               attention_with_barcode: false,
               user_id: user.uuid,
@@ -803,7 +803,7 @@ RSpec.describe Idv::ImageUploadsController do
                 dob: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
               },
               error_details: {
-                dob: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
+                dob: { dob: true },
               },
               attention_with_barcode: false,
               user_id: user.uuid,

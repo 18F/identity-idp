@@ -70,10 +70,10 @@ RSpec.describe Users::PhoneSetupController do
           ],
         },
         error_details: {
-          phone: [
-            :improbable_phone,
-            t('two_factor_authentication.otp_delivery_preference.voice_unsupported', location: ''),
-          ],
+          phone: {
+            improbable_phone: true,
+            voice_unsupported: true,
+          },
         },
         otp_delivery_preference: 'sms',
         area_code: nil,

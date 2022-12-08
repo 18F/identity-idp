@@ -239,12 +239,6 @@ RSpec.describe Idv::PhoneController do
       allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     end
     context 'when form is invalid' do
-      let(:improbable_phone_error) do
-        {
-          phone: [:improbable_phone],
-          otp_delivery_preference: [:inclusion],
-        }
-      end
       let(:improbable_phone_message) { t('errors.messages.improbable_phone') }
       let(:improbable_otp_message) { 'is not included in the list' }
       let(:improbable_phone_number) { '703' }
@@ -285,7 +279,10 @@ RSpec.describe Idv::PhoneController do
         expect(@irs_attempts_api_tracker).to receive(:idv_phone_submitted).with(
           success: false,
           phone_number: improbable_phone_number,
-          failure_reason: improbable_phone_error,
+          failure_reason: {
+            phone: [:improbable_phone],
+            otp_delivery_preference: [:inclusion],
+          },
         )
 
         put :create, params: improbable_phone_form
@@ -296,7 +293,10 @@ RSpec.describe Idv::PhoneController do
             phone: [improbable_phone_message],
             otp_delivery_preference: [improbable_otp_message],
           },
-          error_details: improbable_phone_error,
+          error_details: {
+            phone: { improbable_phone: true },
+            otp_delivery_preference: { inclusion: true },
+          },
           pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
           country_code: nil,
           area_code: nil,

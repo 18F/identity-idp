@@ -192,9 +192,14 @@ module Idv
         extra: {
           address_edited: !!idv_session.address_edited,
           address_line2_present: !pii[:address2].blank?,
-          pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name],
-                              [:same_address_as_id],
-                              [:state_id, :state_id_jurisdiction]],
+          pii_like_keypaths: [
+            [:errors, :ssn],
+            [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
+            [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
+            [:proofing_results, :context, :stages, :threatmetrix, :response_body, :first_name],
+            [:same_address_as_id],
+            [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
+          ],
         },
       )
       log_idv_verification_submitted_event(
