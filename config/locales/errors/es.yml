@@ -49,8 +49,8 @@ es:
         en “Reenviar instrucciones de confirmación” para obtener otro.
       expired: ha caducado, por favor solicite uno nuevo
       format_mismatch: Por favor, use el formato solicitado.
-      gpo_otp_expired: Tu código de confirmación ha caducado. Vuelve a solicitar otra
-        carta para recibir un nuevo código.
+      gpo_otp_expired: Tu código único ha caducado. Vuelve a solicitar otra carta para
+        recibir un nuevo código.
       improbable_phone: Número de teléfono no válido. Asegúrate de introducir un
         número de teléfono válido.
       inclusion: No se incluye en la lista.
