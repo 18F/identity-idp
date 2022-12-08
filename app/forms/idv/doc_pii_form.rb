@@ -83,7 +83,7 @@ module Idv
     end
 
     def zipcode_valid?
-      zipcode.nil? || zipcode.is_a?(String)
+      zipcode.is_a?(String) && zipcode.present?
     end
 
     def generic_error

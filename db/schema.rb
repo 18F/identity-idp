@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_15_181559) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_02_163826) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -337,10 +337,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_15_181559) do
     t.string "filename"
     t.string "iv"
     t.text "encrypted_key"
-    t.datetime "requested_time"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["requested_time"], name: "index_irs_attempt_api_log_files_on_requested_time"
+    t.string "requested_time"
   end
 
   create_table "letter_requests_to_usps_ftp_logs", force: :cascade do |t|

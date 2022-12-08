@@ -5,6 +5,8 @@ es:
       image_alt: Código de barras
     clipboard_button:
       label: Copiar
+    countdown_alert:
+      time_remaining_html: 'Quedan %{countdown_html}'
     download_button:
       label: Descargar
     javascript_required:

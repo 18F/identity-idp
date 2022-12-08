@@ -1248,7 +1248,7 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Boolean] code_expired if the confirmation code expired
+  # @param [Boolean] code_expired if the one-time code expired
   # @param [Boolean] code_matches
   # @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
   # @param [Time, nil] second_factor_locked_at timestamp when the phone was locked out
@@ -1462,16 +1462,19 @@ module AnalyticsEvents
   end
 
   # @param [Integer] rendered_event_count how many events were rendered in the API response
+  # @param [Boolean] authenticated whether the request was successfully authenticated
   # @param [Boolean] success
   # An IRS Attempt API client has requested events
   def irs_attempts_api_events(
     rendered_event_count:,
+    authenticated:,
     success:,
     **extra
   )
     track_event(
       'IRS Attempt API: Events submitted',
       rendered_event_count: rendered_event_count,
+      authenticated: authenticated,
       success: success,
       **extra,
     )

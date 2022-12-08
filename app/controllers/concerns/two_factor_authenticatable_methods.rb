@@ -266,6 +266,11 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     current_user.direct_otp if FeatureManagement.prefill_otp_codes?
   end
 
+  def otp_expiration
+    return if current_user.direct_otp_sent_at.blank?
+    current_user.direct_otp_sent_at + TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
+  end
+
   def personal_key_unavailable?
     current_user.encrypted_recovery_code_digest.blank?
   end
@@ -282,6 +287,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     { confirmation_for_add_phone: confirmation_for_add_phone?,
       phone_number: display_phone_to_deliver_to,
       code_value: direct_otp_code,
+      otp_expiration: otp_expiration,
       otp_delivery_preference: two_factor_authentication_method,
       otp_make_default_number: selected_otp_make_default_number,
       voice_otp_delivery_unsupported: voice_otp_delivery_unsupported?,

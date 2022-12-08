@@ -129,14 +129,13 @@ es:
       activated_link: Contáctenos
       clear_and_start_over: Borrar mi información y empezar de nuevo
       come_back_later: Una vez llegue tu carta, regístrate en %{app_name} e introduce
-        tu código de confirmación cuando se te solicite.
+        tu código único cuando se te solicite.
       come_back_later_no_sp_html: Ahora puedes volver a tu <strong>cuenta de %{app_name}</strong>.
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
       confirm: Usted ha encriptado sus datos verificados.
       gpo:
-        address_on_file_html: Le enviaremos una carta con <strong>un código de
-          confirmación</strong> a la dirección que nos facilitó en el paso
-          anterior.
+        address_on_file_html: Le enviaremos una carta con <strong>un código único
+          </strong> a la dirección que nos facilitó en el paso anterior.
         resend: Envíeme otra carta
         timeframe_html: Las cartas se envían al día siguiente por First Class Mail de
           USPS y <strong>suelen tardar entre 3 y 7 días hábiles en
@@ -169,9 +168,9 @@ es:
         intro: Su información verificada
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
         utilizar su cuenta en %{sp_name} hasta que la active ingresando un
-        código de confirmación.
+        código único.
       select_verification_without_sp: Para proteger su cuenta de robo de identidad, su
-        perfil no se activará hasta que ingrese un código de confirmación.
+        perfil no se activará hasta que ingrese un código único.
       sessions:
         no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
           propósitos de demostración) - SITIO DE PRUEBA

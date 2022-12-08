@@ -57,7 +57,7 @@ es:
     email:
       buttons:
         delete: Eliminar correo electrónico
-    example: 'ejemplo:'
+    example: 'Ejemplo:'
     messages:
       remember_device: Recuerde este navegador
     password: Contraseña
@@ -140,12 +140,12 @@ es:
       required_checkbox: Marque esta casilla para continuar
     verify_profile:
       instructions: Introduzca el código de 10 caracteres de la carta que ha recibido.
-      name: Código de confirmación
+      name: Código único
       submit: Confirmar cuenta
       title: Confirme su cuenta
       welcome_back: Bienvenido de nuevo
-      welcome_back_description: '<p>Si ha recibido su carta, introduzca su código de
-        confirmación a continuación.</p> <p>Si su carta aún no ha llegado, tenga
+      welcome_back_description: '<p>Si ha recibido su carta, introduzca su código
+        único a continuación.</p> <p>Si su carta aún no ha llegado, tenga
         paciencia, ya que las <strong>cartas suelen tardar de 3 a 7 días hábiles
         en llegar</strong>. Gracias por su paciencia.</p>'
     webauthn_delete:
