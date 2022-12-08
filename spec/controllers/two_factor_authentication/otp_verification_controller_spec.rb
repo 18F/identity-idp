@@ -488,7 +488,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           context 'user enters in valid code after invalid entry' do
             before do
               expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_submitted).
-                with(success: false)
+                with(success: true)
               expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
               post(
                 :create,
