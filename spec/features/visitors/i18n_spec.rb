@@ -93,7 +93,7 @@ feature 'Internationalization' do
       %w[en es fr].each do |locale|
         links = page.all(:link, t("i18n.locale.#{locale}"), visible: :all)
         expect(links).to be_present
-        links.each { |link| expect(link[:href]).to eq("/#{locale}?host=test.com") }
+        expect(links).to all satisfy { |link| link[:href] == "/#{locale}?host=test.com" }
       end
     end
   end
