@@ -206,7 +206,7 @@ function InPersonLocationStep({ onChange, toPreviousStep, registerField }) {
           <AddressSearch onAddressFound={handleFoundAddress} registerField={registerField} />
         )}
       </div>
-      <div aria-live="polite" aria-atomic="true">
+      <div role="status">
         <p>{t('in_person_proofing.body.location.location_step_about')}</p>
         {locationsContent}
         <BackButton onClick={toPreviousStep} />
