@@ -70,7 +70,8 @@ class DocumentProofingJob < ApplicationJob
         remaining_attempts: throttle.remaining_count,
         client_image_metrics: image_metadata,
         flow_path: flow_path,
-      ).merge(analytics_data))
+      ).merge(analytics_data),
+    )
   ensure
     logger.info(
       {
