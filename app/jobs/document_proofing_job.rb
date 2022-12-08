@@ -71,7 +71,7 @@ class DocumentProofingJob < ApplicationJob
         remaining_attempts: throttle.remaining_count,
         client_image_metrics: image_metadata,
         flow_path: flow_path,
-        vendor_workflow: image_source(image_metadata).to_s,
+        vendor_workflow: vendor_workflow(image_metadata),
       ).merge(analytics_data).
         merge(native_camera_ab_test_data(dcs)),
     )
@@ -94,6 +94,14 @@ class DocumentProofingJob < ApplicationJob
     {
       native_camera_ab_test_bucket: AbTests::NATIVE_CAMERA.bucket(document_capture_session.uuid),
     }
+  end
+
+  def vendor_workflow(image_metadata)
+    if image_source(image_metadata) == DocAuth::ImageSources::ACUANT_SDK
+      'NOLIVENESS.CROPPING.WORKFLOW'
+    else
+      'NOLIVENESS.NOCROPPING.WORKFLOW'
+    end
   end
 
   def build_analytics(document_capture_session)

@@ -147,8 +147,7 @@ RSpec.describe DocumentProofingJob, type: :job do
             back: back_image_metadata,
           },
           tamper_result: nil,
-
-          vendor_workflow: 'unknown',
+          vendor_workflow: 'NOLIVENESS.NOCROPPING.WORKFLOW',
         )
 
         expect(result.pii_from_doc).to eq(applicant_pii)
@@ -246,6 +245,69 @@ RSpec.describe DocumentProofingJob, type: :job do
         it 'sets image source to unknown' do
           perform
         end
+      end
+    end
+
+    context 'when using the Acuant SDK' do
+      let(:source) { 'acuant' }
+
+      it 'logs the workflow as CROPPING' do
+        perform
+
+        expect(job_analytics).to have_logged_event(
+          'IdV: doc auth image upload vendor submitted',
+          success: true,
+          errors: {},
+          attention_with_barcode: false,
+          async: true,
+          billed: true,
+          exception: nil,
+          doc_auth_result: 'Passed',
+          state: 'MT',
+          state_id_type: 'drivers_license',
+          attempts: 0,
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
+          client_image_metrics: {
+            front: { mimeType: 'image/png', source: 'acuant' },
+            back: { mimeType: 'image/png', source: 'acuant' },
+          },
+          flow_path: 'standard',
+          vendor_workflow: 'NOLIVENESS.CROPPING.WORKFLOW',
+        )
+      end
+    end
+
+    context 'when not using the Accuant SDK' do
+      let(:source) { 'upload' }
+
+      before do
+        allow(instance).to receive(:build_analytics).
+          with(document_capture_session).and_return(job_analytics)
+      end
+
+      it 'logs the workflow as NOT CROPPING' do
+        perform
+
+        expect(job_analytics).to have_logged_event(
+          'IdV: doc auth image upload vendor submitted',
+          success: true,
+          errors: {},
+          attention_with_barcode: false,
+          async: true,
+          billed: true,
+          exception: nil,
+          doc_auth_result: 'Passed',
+          state: 'MT',
+          state_id_type: 'drivers_license',
+          attempts: 0,
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
+          client_image_metrics: {
+            front: { mimeType: 'image/png', source: 'upload' },
+            back: { mimeType: 'image/png', source: 'upload' },
+          },
+          flow_path: 'standard',
+          vendor_workflow: 'NOLIVENESS.NOCROPPING.WORKFLOW',
+        )
       end
     end
 

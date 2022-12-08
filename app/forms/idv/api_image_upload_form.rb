@@ -133,9 +133,9 @@ module Idv
 
     def vendor_workflow
       if image_source == DocAuth::ImageSources::ACUANT_SDK
-        'NOLIVENESS.NOCROPPING.WORKFLOW'
-      else
         'NOLIVENESS.CROPPING.WORKFLOW'
+      else
+        'NOLIVENESS.NOCROPPING.WORKFLOW'
       end
     end
 
