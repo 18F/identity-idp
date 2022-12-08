@@ -87,14 +87,13 @@ feature 'Internationalization' do
   end
 
   context 'visit homepage with host parameter' do
-    it 'does not include the host parameter in the language link URLs' do
+    it 'maintain query parameters as query parameters' do
       visit '/fr?host=test.com'
 
       %w[en es fr].each do |locale|
-        expect(page).to_not have_link(
-          t("i18n.locale.#{locale}"),
-          href: "http://test.com/#{locale}",
-        )
+        links = page.all(:link, t("i18n.locale.#{locale}"), visible: :all)
+        expect(links).to be_present
+        links.each { |link| expect(link[:href]).to eq("/#{locale}?host=test.com") }
       end
     end
   end
