@@ -315,7 +315,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
         end
 
-        it 'incriments attempts count' do
+        it 'increments attempts count' do
           expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
         end
 
