@@ -30,6 +30,7 @@ function TextInput(
 ) {
   const instanceId = useInstanceId();
   const inputId = id ?? `text-input-${instanceId}`;
+  const hintId = id ?? `text-input-hint-${instanceId}`;
   const classes = ['usa-input', className].filter(Boolean).join(' ');
 
   return (
@@ -37,7 +38,7 @@ function TextInput(
       <label className="usa-label" htmlFor={inputId}>
         {label}
       </label>
-      <div id="kvgx-hint" className="usa-hint">
+      <div id={hintId} className="usa-hint">
         {hint}
       </div>
       <input ref={ref} className={classes} id={inputId} {...inputProps} />
