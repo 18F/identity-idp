@@ -44,7 +44,7 @@ RSpec.describe LinkHelper do
       it 'renders a link with the expected attributes' do
         expect(link).to have_css(
           '.usa-link--external[href="/url"][target=_blank][data-foo="bar"]',
-          text: 'Link',
+          text: "Link #{t('links.new_window')}",
         )
       end
     end
