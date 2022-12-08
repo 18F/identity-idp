@@ -28,7 +28,6 @@ interface AppRootData {
   appName: string;
   maxCaptureAttemptsBeforeTips: string;
   maxAttemptsBeforeNativeCamera: string;
-  nativeCameraABTestingEnabled: string;
   acuantSdkUpgradeABTestingEnabled: string;
   useNewerSdk: string;
   acuantVersion: string;
@@ -117,7 +116,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     maxCaptureAttemptsBeforeTips,
     maxCaptureAttemptsBeforeNativeCamera,
     maxSubmissionAttemptsBeforeNativeCamera,
-    nativeCameraABTestingEnabled,
     acuantVersion,
     appName,
     flowPath,
