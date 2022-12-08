@@ -42,17 +42,4 @@ RSpec.describe LanguagePickerComponent, type: :component do
       expect(rendered).to have_css('.language-picker.usa-accordion.example[data-foo="bar"]')
     end
   end
-
-  context 'with custom url generator' do
-    it 'uses url generator to generate locale links' do
-      rendered = render_inline LanguagePickerComponent.new(
-        url_generator: ->(params) { "/#{params[:locale]}" },
-      )
-
-      actual_hrefs = rendered.css('a').pluck(:href)
-      expected_hrefs = I18n.available_locales.map { |locale| "/#{locale}" }
-
-      expect(actual_hrefs).to match_array(expected_hrefs)
-    end
-  end
 end
