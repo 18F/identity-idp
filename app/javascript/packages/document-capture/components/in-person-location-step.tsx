@@ -199,7 +199,7 @@ function InPersonLocationStep({ onChange, toPreviousStep, registerField }) {
   }
 
   return (
-    <>
+    <div aria-live="polite">
       <PageHeading>{t('in_person_proofing.headings.location')}</PageHeading>
       {arcgisSearchEnabled && (
         <AddressSearch onAddressFound={handleFoundAddress} registerField={registerField} />
@@ -207,7 +207,7 @@ function InPersonLocationStep({ onChange, toPreviousStep, registerField }) {
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
       {locationsContent}
       <BackButton onClick={toPreviousStep} />
-    </>
+    </div>
   );
 }
 
