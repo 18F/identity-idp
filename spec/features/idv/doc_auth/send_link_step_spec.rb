@@ -29,6 +29,8 @@ feature 'doc auth send link step' do
       with(hash_including(to: '+1 415-555-0199')).
       and_call_original
 
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
     fill_in :doc_auth_phone, with: '415-555-0199'
     click_idv_continue
 

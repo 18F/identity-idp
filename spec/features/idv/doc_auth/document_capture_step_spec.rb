@@ -89,6 +89,8 @@ feature 'doc auth document capture step', :js do
   end
 
   it 'proceeds to the next page with valid info' do
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
     attach_and_submit_images
 
     expect(page).to have_current_path(next_step)

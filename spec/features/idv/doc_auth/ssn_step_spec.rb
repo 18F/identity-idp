@@ -14,6 +14,8 @@ feature 'doc auth ssn step', :js do
   end
 
   it 'proceeds to the next page with valid info' do
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+
     fill_out_ssn_form_ok
 
     match = page.body.match(/session_id=(?<session_id>[^"&]+)/)

@@ -26,6 +26,8 @@ feature 'doc auth upload step' do
         :idv_document_upload_method_selected,
       ).with({ upload_method: 'desktop' })
 
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
       click_on t('doc_auth.info.upload_computer_link')
 
       expect(page).to have_current_path(idv_doc_auth_email_sent_step)
@@ -59,6 +61,8 @@ feature 'doc auth upload step' do
       expect(fake_attempts_tracker).to receive(
         :idv_document_upload_method_selected,
       ).with({ upload_method: 'desktop' })
+
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
       click_on t('doc_auth.info.upload_computer_link')
 
