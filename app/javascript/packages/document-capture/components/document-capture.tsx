@@ -111,9 +111,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
       : ([
           {
             name: 'location',
-            form: arcgisSearchEnabled
-              ? InPersonLocationPostOfficeSearchStep
-              : InPersonLocationStep,
+            form: arcgisSearchEnabled ? InPersonLocationPostOfficeSearchStep : InPersonLocationStep,
           },
           {
             name: 'prepare',
