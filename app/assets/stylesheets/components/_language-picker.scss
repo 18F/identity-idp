@@ -1,6 +1,7 @@
 .language-picker {
   position: relative;
   width: auto;
+  font-size: 1rem;
 
   .usa-accordion__content {
     @include u-bg('primary');
@@ -14,11 +15,6 @@
     z-index: 10;
     bottom: 100%;
   }
-}
-
-.language-picker__label,
-.language-picker__list {
-  font-size: 1rem;
 }
 
 .language-picker__label {
