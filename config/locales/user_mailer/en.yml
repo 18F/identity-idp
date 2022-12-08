@@ -164,10 +164,9 @@ en:
         password</a>. To report this, <a href="%{contact_us_url}">contact
         %{app_name} support</a>.
     letter_reminder:
-      info_html: The letter you are about to receive will contain a confirmation code
-        that helps us verify your address. You can complete the identity
-        verification process by signing into %{link} and entering the
-        confirmation code.
+      info_html: The letter you are about to receive will contain a one-time code that
+        helps us verify your address. You can complete the identity verification
+        process by signing into %{link} and entering the one-time code.
       subject: We mailed a letter to the address you have on file
     new_device_sign_in:
       disavowal_link: reset your password
@@ -244,8 +243,8 @@ en:
       subject: Unusual activity — reset your %{app_name} password
     reset_password_instructions:
       footer: This link expires in %{expires} hours.
-      gpo_letter_description: If you reset your password, the confirmation code in
-        your letter will no longer work and you’ll have to verify your identity
+      gpo_letter_description: If you reset your password, the one-time code in your
+        letter will no longer work and you’ll have to verify your identity
         again.
       gpo_letter_header: Your letter is on the way
       header: To finish resetting your password, please click the link below  or copy

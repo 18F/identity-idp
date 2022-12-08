@@ -178,6 +178,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     assign_phone
     track_mfa_method_added
     @next_mfa_setup_path = next_setup_path
+    reset_second_factor_attempts_count
     flash[:success] = t('notices.phone_confirmed')
   end
 
@@ -194,7 +195,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     bypass_sign_in current_user
     create_user_event(:sign_in_after_2fa)
 
-    UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
+    reset_second_factor_attempts_count
   end
 
   def assign_phone
@@ -207,6 +208,10 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     end
 
     update_phone_attributes
+  end
+
+  def reset_second_factor_attempts_count
+    UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
   end
 
   def phone_changed

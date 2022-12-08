@@ -19,13 +19,9 @@
     class="usa-accordion__content language-picker__list"
     hidden
   >
-    <% I18n.available_locales.each do |locale| %>
+    <% locale_urls.each do |locale, url| %>
       <li>
-        <%= link_to(
-              t("i18n.locale.#{locale}"),
-              url_generator.call(sanitized_request_params.merge(locale: locale)),
-              lang: locale,
-            ) %>
+        <%= content_tag(:a, href: url, lang: locale) { t("i18n.locale.#{locale}") } %>
       </li>
     <% end %>
   </ul>
