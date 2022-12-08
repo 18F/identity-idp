@@ -6,11 +6,17 @@ import userEvent from '@testing-library/user-event';
 import { useSandbox } from '@18f/identity-test-helpers';
 import AnalyticsContext, { AnalyticsContextProvider } from '../context/analytics';
 import InPersonLocationStep, { LOCATIONS_URL } from './in-person-location-step';
+import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
 import { ADDRESS_SEARCH_URL } from './address-search';
 import InPersonContext from '../context/in-person';
 
 describe('InPersonLocationStep', () => {
-  const DEFAULT_PROPS = { toPreviousStep() {}, onChange() {}, value: {} };
+  const DEFAULT_PROPS = {
+    toPreviousStep() {},
+    onChange() {},
+    value: {},
+    registerField() {},
+  };
 
   const sandbox = useSandbox();
 
@@ -60,7 +66,7 @@ describe('InPersonLocationStep', () => {
   it('allows search by address when enabled', async () => {
     const { findByText, findByLabelText } = render(
       <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
-        <InPersonLocationStep {...DEFAULT_PROPS} />
+        <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
       </InPersonContext.Provider>,
     );
 

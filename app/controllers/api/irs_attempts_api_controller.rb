@@ -19,13 +19,36 @@ module Api
 
     def create
       if timestamp
-        result = encrypted_security_event_log_result
+        if IdentityConfig.store.irs_attempt_api_aws_s3_enabled
+          if IrsAttemptApiLogFile.find_by(requested_time: timestamp_key(key: timestamp))
+            log_file_record = IrsAttemptApiLogFile.find_by(
+              requested_time: timestamp_key(key: timestamp),
+            )
 
-        headers['X-Payload-Key'] = Base64.strict_encode64(result.encrypted_key)
-        headers['X-Payload-IV'] = Base64.strict_encode64(result.iv)
+            headers['X-Payload-Key'] = log_file_record.encrypted_key
+            headers['X-Payload-IV'] = log_file_record.iv
 
-        send_data result.encrypted_data,
-                  disposition: "filename=#{result.filename}"
+            bucket_name = IdentityConfig.store.irs_attempt_api_bucket_name
+
+            requested_data = s3_client.get_object(
+              bucket: bucket_name,
+              key: log_file_record.filename,
+            )
+
+            send_data requested_data.body.read, disposition: "filename=#{log_file_record.filename}"
+          else
+            render json: { status: :not_found, description: 'File not found for Timestamp' },
+                   status: :not_found
+          end
+        else
+          result = encrypted_security_event_log_result
+
+          headers['X-Payload-Key'] = Base64.strict_encode64(result.encrypted_key)
+          headers['X-Payload-IV'] = Base64.strict_encode64(result.iv)
+
+          send_data result.encrypted_data,
+                    disposition: "filename=#{result.filename}"
+        end
       else
         render json: { status: :unprocessable_entity, description: 'Invalid timestamp parameter' },
                status: :unprocessable_entity
@@ -60,8 +83,16 @@ module Api
       )
     end
 
+    def timestamp_key(key:)
+      IrsAttemptsApi::EnvelopeEncryptor.formatted_timestamp(key)
+    end
+
     def redis_client
       @redis_client ||= IrsAttemptsApi::RedisClient.new
+    end
+
+    def s3_client
+      @s3_client ||= JobHelpers::S3Helper.new.s3_client
     end
 
     def valid_auth_tokens

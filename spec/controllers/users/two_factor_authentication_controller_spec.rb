@@ -319,7 +319,7 @@ describe Users::TwoFactorAuthenticationController do
           success: true,
           errors: {},
           **otp_preference_sms,
-          resend: 'true',
+          resend: true,
           context: 'authentication',
           country_code: 'US',
           area_code: '202',
@@ -332,7 +332,7 @@ describe Users::TwoFactorAuthenticationController do
         expect(@analytics).to receive(:track_event).
           ordered.
           with('Telephony: OTP sent', hash_including(
-            resend: 'true', success: true, **otp_preference_sms,
+            resend: true, success: true, **otp_preference_sms,
             adapter: :test
           ))
 
@@ -473,7 +473,7 @@ describe Users::TwoFactorAuthenticationController do
           success: true,
           errors: {},
           otp_delivery_preference: 'voice',
-          resend: nil,
+          resend: false,
           context: 'authentication',
           country_code: 'US',
           area_code: '202',
