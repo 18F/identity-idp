@@ -96,7 +96,7 @@ group :development, :test do
   gem 'erb_lint', '~> 0.1.0', require: false
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
-  gem 'nokogiri', '~> 1.13.9'
+  gem 'nokogiri', '~> 1.13.10'
   gem 'parallel_tests'
   gem 'pg_query', require: false
   gem 'pry-byebug'
