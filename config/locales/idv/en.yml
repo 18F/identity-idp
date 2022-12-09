@@ -24,13 +24,13 @@ en:
         account_page: account page
         exit:
           with_sp_html:
-            - If you exit %{app_name} and return to %{sp_name}, we will not save
-              your personal information.
+            - If you exit %{app_name} and return to %{sp_name}, you will not
+              have verified your identity.
             - You will still have a %{app_name} account. You can manage or
               delete your account on your %{account_page_link}.
           without_sp:
-            - If you exit identity verification and go to your account page, we
-              will not save your personal information.
+            - If you exit identity verification and go to your account page, you
+              will not have verified your identity.
             - You will still have a %{app_name} account. You can manage or
               delete your account on your %{account_page_text}.
         hybrid: If you cancel now, you will be prompted to switch back to your computer
