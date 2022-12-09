@@ -33,9 +33,15 @@ es:
     headings:
       lets_go: Cómo funciona la verificación de su identidad
       retrieval: Estamos recuperando su información de su agencia colaboradora
+<<<<<<< HEAD
       secure_account: Asegure su cuenta
       verify_identity: Verifique su identidad
       verify_information: to be implemented
+=======
+      secure_account: to be implemented
+      verify_identity: to be implemented
+      verify_information: Verifique su información
+>>>>>>> 384762b16 (LG-7494 Add text and translations to Please Verify)
       welcome: Empiece con la verificación de su identidad
     info:
       lets_go: 'La verificación de la identidad se realiza en dos partes:'
@@ -69,7 +75,8 @@ es:
         missing_required_items: ¿No tienes número de teléfono? A continuación, te
           indicamos cómo obtener ayuda
         need_assistance: to be implemented
-        need_help_updating: to be implemented
+        need_help_updating: ¿Necesita actualizar su información? A continuación le
+          indicamos cómo obtener ayuda
       options:
         get_help: Obtenga ayuda en %{sp_name}
         learn_more_phone_or_mail: Más información sobre la verificación por teléfono o correo postal.
