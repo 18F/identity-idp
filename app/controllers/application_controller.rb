@@ -94,7 +94,7 @@ class ApplicationController < ActionController::Base
   end
 
   def irs_attempt_api_enabled_for_session?
-    current_sp&.irs_attempts_api_enabled? && irs_attempts_api_session_id.present?
+    current_sp&.irs_attempts_api_enabled?
   end
 
   def irs_attempts_api_session_id
