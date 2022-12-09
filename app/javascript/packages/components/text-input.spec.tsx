@@ -47,11 +47,11 @@ describe('TextInput', () => {
   });
 
   it('renders with a hint', () => {
-    const { getByText } = render(<TextInput label="Input" hint="Something special" />);
+    const { getByLabel } = render(<TextInput label="Input" hint="Something special" />);
 
-    const input = getByText('Something special');
+    const input = getByLabel('Input');
+    const description = computeAccessibleDescription(input);
 
-    expect(input).to.be.an.instanceOf(HTMLDivElement);
-    expect(input.classList.contains('usa-hint')).to.be.true();
+    expect(description).to.equal('Something special');
   });
 });
