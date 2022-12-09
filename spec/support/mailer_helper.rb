@@ -22,7 +22,7 @@ module MailerHelper
       if body.present?
         delivered_body = sent_mail.text_part.decoded.squish
         body.to_a.each do |expected_body|
-          next unless delivered_body.includes?(expected_body)
+          next unless delivered_body.include?(expected_body)
         end
       end
       true
