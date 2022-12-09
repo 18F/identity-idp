@@ -439,10 +439,8 @@ describe Idv::ReviewController do
 
             expect_delivered_email_count(1)
             expect_delivered_email(
-              0, {
-                to: [user.email_addresses.first.email],
-                subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
-              }
+              to: [user.email_addresses.first.email],
+              subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
             )
           end
 
