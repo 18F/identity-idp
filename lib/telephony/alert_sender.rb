@@ -17,7 +17,7 @@ module Telephony
     end
 
     def send_doc_auth_link(to:, link:, country_code:)
-      message = I18n.t('telephony.doc_auth_link', link: link)
+      message = I18n.t('telephony.doc_auth_link', app_name: APP_NAME, link: link)
       response = adapter.send(message: message, to: to, country_code: country_code)
       context = __method__.to_s.gsub(/^send_/, '')
       if link.length > SMS_MAX_LENGTH
