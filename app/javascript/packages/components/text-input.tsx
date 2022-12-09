@@ -43,7 +43,7 @@ function TextInput(
           {hint}
         </div>
       )}
-      <input ref={ref} className={classes} id={inputId} {...inputProps} />
+      <input aria-describedby={hintId} ref={ref} className={classes} id={inputId} {...inputProps} />
     </>
   );
 }
