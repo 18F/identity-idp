@@ -1,58 +1,15 @@
-<footer class='footer bg-primary-lighter tablet:bg-primary-darker'>
-  <%= render LanguagePickerComponent.new(class: 'tablet:display-none border-bottom border-primary-light') %>
-  <div class="padding-y-1 padding-x-2 tablet:padding-x-0 tablet:padding-y-0">
-    <div class="display-flex flex-align-center flex-justify-center">
-      <div class="display-flex flex-auto">
-        <div class="display-flex tablet:display-none">
-          <%= new_window_link_to 'https://gsa.gov', { class: 'text-no-underline h6 margin-right-2 tablet:display-none',
-                                                      'aria-label': t('shared.footer_lite.gsa') } do %>
-            <%= image_tag asset_url('sp-logos/square-gsa-dark.svg'),
-                          size: 20, alt: '' %>
-          <% end %>
-        </div>
-
-        <div class="display-none tablet:display-flex usa-dark-background bg-primary-darker">
-          <%= new_window_link_to 'https://gsa.gov', { class: 'text-no-underline h6 margin-right-2',
-                                                      'aria-label': t('shared.footer_lite.gsa') } do %>
-            <%= image_tag asset_url('sp-logos/square-gsa.svg'),
-                          size: 20, class: 'float-left margin-right-1', alt: '' %>
-            <%= t('shared.footer_lite.gsa') %>
-          <% end %>
-        </div>
-      </div>
-      <div class="display-flex flex-align-center flex-justify-center">
-        <%= render LanguagePickerComponent.new(class: 'display-none tablet:display-block margin-x-2 margin-y-05') %>
-
-        <div class="display-flex tablet:display-none">
-          <%= new_window_link_to(
-                t('links.help'), MarketingSite.help_url,
-                class: 'h6 text-primary text-no-underline margin-right-2'
-              ) %>
-          <%= new_window_link_to(
-                t('links.contact'), MarketingSite.contact_url,
-                class: 'h6 text-primary text-no-underline margin-right-2'
-              ) %>
-          <%= new_window_link_to(
-                t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url,
-                class: 'h6 text-primary text-no-underline'
-              ) %>
-        </div>
-
-        <div class="display-none tablet:display-flex usa-dark-background bg-primary-darker">
-          <%= new_window_link_to(
-                t('links.help'), MarketingSite.help_url,
-                class: 'h6 text-no-underline margin-right-2'
-              ) %>
-          <%= new_window_link_to(
-                t('links.contact'), MarketingSite.contact_url,
-                class: 'h6 text-no-underline margin-right-2'
-              ) %>
-          <%= new_window_link_to(
-                t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url,
-                class: 'h6 text-no-underline'
-              ) %>
-        </div>
-      </div>
-    </div>
+<footer class="footer">
+  <%= new_window_link_to('https://gsa.gov', class: 'display-none tablet:display-inline') do %>
+    <%= image_tag(asset_url('sp-logos/square-gsa.svg'), size: 20, alt: '', class: 'float-left margin-right-1') %>
+    <%= t('shared.footer_lite.gsa') %>
+  <% end %>
+  <%= render LanguagePickerComponent.new(class: 'footer__language-picker') %>
+  <div class="footer__links">
+    <%= new_window_link_to('https://gsa.gov', class: 'tablet:display-none margin-right-2') do %>
+      <%= image_tag asset_url('sp-logos/square-gsa-dark.svg'), size: 20, alt: t('shared.footer_lite.gsa') %>
+    <% end %>
+    <%= new_window_link_to(t('links.help'), MarketingSite.help_url, class: 'margin-right-2') %>
+    <%= new_window_link_to(t('links.contact'), MarketingSite.contact_url, class: 'margin-right-2') %>
+    <%= new_window_link_to(t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url) %>
   </div>
 </footer>
