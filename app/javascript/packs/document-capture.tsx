@@ -9,7 +9,6 @@ import {
   ServiceProviderContextProvider,
   AnalyticsContextProvider,
   FailedCaptureAttemptsContextProvider,
-  NativeCameraABTestContextProvider,
   MarketingSiteContextProvider,
   InPersonContext,
 } from '@18f/identity-document-capture';
@@ -29,8 +28,6 @@ interface AppRootData {
   appName: string;
   maxCaptureAttemptsBeforeTips: string;
   maxAttemptsBeforeNativeCamera: string;
-  nativeCameraABTestingEnabled: string;
-  nativeCameraOnly: string;
   acuantSdkUpgradeABTestingEnabled: string;
   useNewerSdk: string;
   acuantVersion: string;
@@ -119,8 +116,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     maxCaptureAttemptsBeforeTips,
     maxCaptureAttemptsBeforeNativeCamera,
     maxSubmissionAttemptsBeforeNativeCamera,
-    nativeCameraABTestingEnabled,
-    nativeCameraOnly,
     acuantVersion,
     appName,
     flowPath,
@@ -176,13 +171,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
         maxFailedAttemptsBeforeTips: Number(maxCaptureAttemptsBeforeTips),
         maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
         maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
-      },
-    ],
-    [
-      NativeCameraABTestContextProvider,
-      {
-        nativeCameraABTestingEnabled: nativeCameraABTestingEnabled === 'true',
-        nativeCameraOnly: nativeCameraOnly === 'true',
       },
     ],
     [

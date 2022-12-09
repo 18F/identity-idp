@@ -193,8 +193,6 @@ class IdentityConfig
     config.add(:idv_contact_url, type: :string)
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
-    config.add(:idv_native_camera_a_b_testing_enabled, type: :boolean)
-    config.add(:idv_native_camera_a_b_testing_percent, type: :integer)
     config.add(:idv_acuant_sdk_upgrade_a_b_testing_enabled, type: :boolean)
     config.add(:idv_acuant_sdk_upgrade_a_b_testing_percent, type: :integer)
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
