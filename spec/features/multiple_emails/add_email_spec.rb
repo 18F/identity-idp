@@ -40,6 +40,12 @@ feature 'adding email address' do
     original_email = user.email_addresses.first.email
     sign_in_user_and_add_email(user)
 
+    expect_delivered_email_count(1)
+    expect_delivered_email(
+      to: [email],
+      subject: t('user_mailer.add_email.subject'),
+    )
+
     Capybara.reset_session!
 
     click_on_link_in_confirmation_email
@@ -47,10 +53,6 @@ feature 'adding email address' do
     expect(page).to have_content(t('devise.confirmations.confirmed_but_sign_in'))
 
     expect_delivered_email_count(3)
-    expect_delivered_email(
-      to: [email],
-      subject: t('user_mailer.add_email.subject'),
-    )
     expect_delivered_email(
       to: [original_email],
       subject: t('user_mailer.email_added.subject'),
