@@ -66,5 +66,5 @@ es:
         need_assistance: to be implemented
         need_help_updating: to be implemented
       options:
-        get_va_help: Obtenga ayuda en %{sp_name}
+        get_help: Obtenga ayuda en %{sp_name}
         learn_more_phone_or_mail: Más información sobre la verificación por teléfono o correo postal.
