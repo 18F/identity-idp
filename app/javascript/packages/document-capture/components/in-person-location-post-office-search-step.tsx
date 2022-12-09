@@ -201,12 +201,14 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.location')}</PageHeading>
-      {arcgisSearchEnabled && (
+      <div aria-live="polite">
         <AddressSearch onAddressFound={handleFoundAddress} registerField={registerField} />
-      )}
-      <p>{t('in_person_proofing.body.location.location_step_about')}</p>
-      {locationsContent}
-      <BackButton onClick={toPreviousStep} />
+      </div>
+      <div role="status">
+        <p>{t('in_person_proofing.body.location.location_step_about')}</p>
+        {locationsContent}
+        <BackButton onClick={toPreviousStep} />
+      </div>
     </>
   );
 }
