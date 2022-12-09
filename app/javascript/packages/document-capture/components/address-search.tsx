@@ -3,6 +3,7 @@ import { request } from '@18f/identity-request';
 import { useState, useCallback, ChangeEvent, useRef, Ref } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import ValidatedField from '@18f/identity-validated-field/validated-field';
+import { SpinnerButton } from '@18f/identity-spinner-button';
 
 interface Location {
   street_address: string;
@@ -68,7 +69,10 @@ function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSear
       <Button type="submit" className="margin-y-5" onClick={handleAddressSearch}>
         {t('in_person_proofing.body.location.po_search.search_button')}
       </Button>
-      <>{addressQuery.address}</>
+      <>
+        <br />
+        {addressQuery.address}
+      </>
     </>
   );
 }
