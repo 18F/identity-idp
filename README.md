@@ -191,7 +191,7 @@ If you'd like to work with the previous implementation see the [Docker documenta
 
 ### Linting
 
-Run `make lint`
+Run `make lint` to look for errors; `make lintfix` can repair some linting errors.
 
 ### Running jobs
 
