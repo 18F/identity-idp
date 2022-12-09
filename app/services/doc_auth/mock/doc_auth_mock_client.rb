@@ -85,10 +85,6 @@ module DocAuth
       end
       # rubocop:enable Lint/UnusedMethodArgument
 
-      def workflow
-        'mock'
-      end
-
       private
 
       def method_mocked?(method_name)
