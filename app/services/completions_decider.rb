@@ -14,7 +14,7 @@ class CompletionsDecider
   attr_reader :user_agent, :request_url
 
   def desktop_and_app_redirect_uri?
-    !client.mobile? && !redirect_uri.start_with?('http')
+    !client.device_mobile? && !redirect_uri.start_with?('http')
   end
 
   def client

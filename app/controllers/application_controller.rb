@@ -496,7 +496,7 @@ class ApplicationController < ActionController::Base
   end
 
   def mobile?
-    BrowserCache.parse(request.user_agent).mobile?
+    BrowserCache.parse(request.user_agent).device_mobile?
   end
 
   def user_is_banned?

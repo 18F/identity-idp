@@ -39,6 +39,6 @@ module ApplicationHelper
   end
 
   def desktop_device?
-    !BrowserCache.parse(request.user_agent).mobile?
+    !BrowserCache.parse(request.user_agent).device_mobile?
   end
 end

@@ -118,10 +118,10 @@ class Analytics
       user_agent: request.user_agent,
       browser_name: browser.name,
       browser_version: browser.full_version,
-      browser_platform_name: browser.platform.name,
-      browser_platform_version: browser.platform.version,
-      browser_device_name: browser.device.name,
-      browser_mobile: browser.device.mobile?,
+      browser_platform_name: browser.platform_name,
+      browser_platform_version: browser.platform_version,
+      browser_device_name: browser.device_name,
+      browser_mobile: browser.device_mobile?,
       browser_bot: browser.bot?,
     }
   end

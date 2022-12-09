@@ -12,8 +12,8 @@ RSpec.describe BrowserCache do
     it 'parses a user agent using Browser gem' do
       browser = BrowserCache.parse(chrome_user_agent)
       expect(browser.name).to eq('Chrome')
-      expect(browser.platform.name).to eq('Chrome OS')
-      expect(browser.mobile?).to eq(false)
+      expect(browser.platform_name).to eq('Chrome OS')
+      expect(browser.device_mobile?).to eq(false)
     end
 
     it 'caches by user agent' do
