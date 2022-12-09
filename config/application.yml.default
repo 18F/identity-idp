@@ -157,7 +157,7 @@ lexisnexis_password: test_password
 lexisnexis_phone_finder_timeout: 1.0
 lexisnexis_phone_finder_workflow: customers.gsa.phonefinder.workflow
 lexisnexis_instant_verify_timeout: 1.0
-lexisnexis_instant_verify_workflow: customers.gsa.instant.verify.workflow
+lexisnexis_instant_verify_workflow: gsa.chk32.test.wf
 # TrueID DocAuth Integration
 lexisnexis_trueid_account_id: '12345'
 lexisnexis_trueid_username: test_username
