@@ -12,6 +12,12 @@ feature 'adding email address' do
     visit account_path
     expect(page).to have_content(unconfirmed_email_text)
 
+    expect_delivered_email_count(1)
+    expect_delivered_email(
+      to: [email],
+      subject: t('user_mailer.add_email.subject'),
+    )
+
     click_on_link_in_confirmation_email
 
     expect(page).to have_current_path(account_path)
@@ -19,10 +25,6 @@ feature 'adding email address' do
     expect(page).to_not have_content(unconfirmed_email_text)
 
     expect_delivered_email_count(3)
-    expect_delivered_email(
-      to: [email],
-      subject: t('user_mailer.add_email.subject'),
-    )
     expect_delivered_email(
       to: [original_email],
       subject: t('user_mailer.email_added.subject'),
