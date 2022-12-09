@@ -70,8 +70,13 @@ describe('InPersonLocationStep', () => {
       </InPersonContext.Provider>,
     );
 
-    await userEvent.type(await findByLabelText('Search for an address'), '100 main');
-    await userEvent.click(await findByText('Search'));
+    await userEvent.type(
+      await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
+      '100 main',
+    );
+    await userEvent.click(
+      await findByText('in_person_proofing.body.location.po_search.search_button'),
+    );
     await findByText('100 Main St, South Fulton, Tennessee, 38257');
     expect(window.fetch).to.have.been.calledWith(
       LOCATIONS_URL,

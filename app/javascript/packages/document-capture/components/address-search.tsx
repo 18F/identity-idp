@@ -61,11 +61,12 @@ function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSear
             const target = event.target as HTMLInputElement;
             setUnvalidatedAddressInput(target.value);
           }}
-          label="Search for an address"
+          label={t('in_person_proofing.body.location.po_search.address_search_label')}
+          hint={t('in_person_proofing.body.location.po_search.address_search_hint')}
         />
       </ValidatedField>
       <Button type="submit" className="margin-y-5" onClick={handleAddressSearch}>
-        Search
+        {t('in_person_proofing.body.location.po_search.search_button')}
       </Button>
       <>{addressQuery.address}</>
     </>

@@ -200,7 +200,8 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
 
   return (
     <>
-      <PageHeading>{t('in_person_proofing.headings.location')}</PageHeading>
+      <PageHeading>{t('in_person_proofing.headings.po_search.location')}</PageHeading>
+      <p>{t('in_person_proofing.body.location.po_search.po_search_about')}</p>
       {arcgisSearchEnabled && (
         <AddressSearch onAddressFound={handleFoundAddress} registerField={registerField} />
       )}

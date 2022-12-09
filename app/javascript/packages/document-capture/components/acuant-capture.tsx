@@ -16,7 +16,6 @@ import type { ReactNode, MouseEvent, Ref } from 'react';
 import AnalyticsContext from '../context/analytics';
 import AcuantContext from '../context/acuant';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
-import NativeCameraABTestContext from '../context/native-camera-a-b-test';
 import AcuantCamera from './acuant-camera';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
@@ -294,8 +293,6 @@ function AcuantCapture(
     forceNativeCamera,
   } = useContext(FailedCaptureAttemptsContext);
 
-  const { nativeCameraABTestingEnabled, nativeCameraOnly } = useContext(NativeCameraABTestContext);
-
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
   useEffect(() => {
     // If capture had started before Acuant was ready, stop capture if readiness reveals that no
@@ -410,7 +407,7 @@ function AcuantCapture(
   function startCaptureOrTriggerUpload(event: MouseEvent) {
     if (event.target === inputRef.current) {
       const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;
-      let shouldStartAcuantCapture =
+      const shouldStartAcuantCapture =
         isAcuantCaptureCapable && !isForceUploading.current && !forceNativeCamera;
 
       if (isAcuantCaptureCapable && forceNativeCamera) {
@@ -419,13 +416,6 @@ function AcuantCapture(
           failed_capture_attempts: failedCaptureAttempts,
           failed_submission_attempts: failedSubmissionAttempts,
         });
-      }
-
-      if (shouldStartAcuantCapture && nativeCameraABTestingEnabled) {
-        trackEvent('IdV: Native camera A/B Test', {
-          native_camera_only: nativeCameraOnly,
-        });
-        shouldStartAcuantCapture = !nativeCameraOnly;
       }
 
       if (!allowUpload || shouldStartAcuantCapture) {

@@ -60,10 +60,8 @@ describe AccountReset::Cancel do
 
       expect_delivered_email_count(1)
       expect_delivered_email(
-        0, {
-          to: [user.email_addresses.first.email],
-          subject: t('user_mailer.account_reset_cancel.subject'),
-        }
+        to: [user.email_addresses.first.email],
+        subject: t('user_mailer.account_reset_cancel.subject'),
       )
     end
 

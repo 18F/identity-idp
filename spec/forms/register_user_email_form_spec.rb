@@ -27,10 +27,8 @@ describe RegisterUserEmailForm do
         expect(subject.email).to eq 'taken@gmail.com'
         expect_delivered_email_count(1)
         expect_delivered_email(
-          0, {
-            to: [subject.email],
-            subject: t('mailer.email_reuse_notice.subject'),
-          }
+          to: [subject.email],
+          subject: t('mailer.email_reuse_notice.subject'),
         )
       end
 
