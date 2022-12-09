@@ -223,6 +223,7 @@ en:
       review_issues_id_text4: Are all details sharp and clearly visible?
     hybrid_flow_warning:
       explanation_html: You're using <b>%{appName}</b> to verify your identity for access to <b>%{serviceProviderName}</b> and its services.
+      explanation_non_sp_html: You're using <b>%{appName}</b> to verify your identity.
       only_add_if_text: "ONLY ADD YOUR ID IF:"
       only_add_own_account_html: You are using your own %{appName} account
       only_add_phone_verify_html: You asked %{appName} to verify your ID using your phone

@@ -270,3 +270,10 @@ fr:
       review_issues_id_text3: Le flash de votre caméra est-il éteint?
       review_issues_id_text4: Tous les détails sont-ils nets et clairement visibles?
         couvert par un chapeau ou des lunettes?
+    hybrid_flow_warning:
+      explanation_html: Vous utilisez <b>%{appName}</b> pour vérifier votre identité et accéder à <b>%{serviceProviderName}</b> et à ses services.
+      explanation_non_sp_html: Vous utilisez <b>%{appName}</b> pour vérifier votre identité.
+      only_add_if_text: "N’AJOUTEZ VOTRE IDENTIFIANT QUE SI :"
+      only_add_own_account_html: Vous utilisez votre propre compte %{appName}
+      only_add_phone_verify_html: Vous avez demandé à %{appName} de vérifier votre identité en utilisant votre téléphone
+      only_add_sp_services_html: Vous essayez d’accéder aux services de <b>%{serviceProviderName}</b>
