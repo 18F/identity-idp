@@ -23,7 +23,7 @@ feature 'Analytics Regression', js: true do
       'IdV: doc auth image upload vendor pii validation' => { success: true, errors: {}, user_id: user.uuid, attempts: 1, remaining_attempts: 3, flow_path: 'standard', attention_with_barcode: false },
       'IdV: doc auth document_capture submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'document_capture', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default },
       'IdV: doc auth ssn visited' => { flow_path: 'standard', step: 'ssn', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default },
-      'IdV: doc auth ssn submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'ssn', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default},
+      'IdV: doc auth ssn submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'ssn', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default },
       'IdV: doc auth verify visited' => { flow_path: 'standard', step: 'verify', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default },
       'IdV: doc auth verify submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'verify', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default },
       'IdV: doc auth verify_wait visited' => { flow_path: 'standard', step: 'verify_wait', step_count: 1 },
