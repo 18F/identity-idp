@@ -737,9 +737,7 @@ module AnalyticsEvents
   end
 
   def idv_doc_auth_document_capture_submitted(workflow_cropping: nil, **extra)
-    track_event('IdV: doc auth document_capture submitted',
-                workflow_cropping: workflow_cropping,
-                **extra)
+    track_event('IdV: doc auth document_capture submitted', **extra)
   end
 
   def idv_doc_auth_email_sent_visited(**extra)
