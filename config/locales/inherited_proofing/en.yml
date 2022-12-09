@@ -23,7 +23,7 @@ en:
     errors:
       cannot_retrieve:
         failure_info: Please check back later.
-        heading: We could not retrieve your information from My HealtheVet
+        heading: We could not retrieve your information from your Partner Agency
         info: We are temporarily having trouble retrieving your information. Please try
           again.
         title: Couldn’t retrieve information
@@ -31,7 +31,7 @@ en:
         communication: 'communication was unsuccessful'
     headings:
       lets_go: How verifying your identity works
-      retrieval: We are retrieving your information from My HealtheVet
+      retrieval: We are retrieving your information from your Partner Agency
       secure_account: Secure your account
       verify_identity: Verify your identity
       verify_information: Please verify your information
@@ -68,5 +68,5 @@ en:
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
         need_help_updating: Need to update your information? Here’s how to get help
       options:
-        get_va_help: Get help at VA.gov
+        get_help: Get help at the %{sp_name} web site
         learn_more_phone_or_mail: Learn more about verifying by phone or mail

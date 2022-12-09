@@ -25,7 +25,8 @@ fr:
     errors:
       cannot_retrieve:
         failure_info: to be implemented
-        heading: Nous n’avons pas pu récupérer vos informations dans My HealtheVet
+        heading: Nous n’avons pas pu récupérer vos informations dans votre agence
+          partenaire
         info: Nous avons temporairement des difficultés à récupérer vos informations.
           Veuillez réessayer.
         title: to be implemented
@@ -33,7 +34,7 @@ fr:
         communication: 'la communication a échoué'
     headings:
       lets_go: to be implemented
-      retrieval: Nous récupérons vos informations depuis My HealtheVet.
+      retrieval: Nous récupérons vos informations depuis votre agence partenaire.
       secure_account: to be implemented
       verify_identity: to be implemented
       verify_information: to be implemented
@@ -65,5 +66,5 @@ fr:
         need_assistance: to be implemented
         need_help_updating: to be implemented
       options:
-        get_va_help: to be implemented
+        get_help: to be implemented %{sp_name}
         learn_more_phone_or_mail: to be implemented

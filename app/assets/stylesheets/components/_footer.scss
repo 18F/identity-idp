@@ -14,10 +14,54 @@ html {
 }
 
 .footer {
-  flex: none; // 2
-  position: relative;
+  @include u-bg('primary-lighter');
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 0.75rem;
+
+  @include at-media('tablet') {
+    @include u-bg('primary-darker');
+    flex-direction: row;
+  }
+
+  a {
+    text-decoration: none;
+
+    @include at-media('tablet') {
+      &,
+      &:visited {
+        color: color($theme-link-reverse-color);
+      }
+
+      &:hover {
+        color: color($theme-link-reverse-hover-color);
+      }
+    }
+  }
 }
 
 .site-wrap {
   flex: 1 0 auto; // 2
+}
+
+.footer__language-picker {
+  @include at-media-max('tablet') {
+    @include u-border-bottom(1px, 'primary-light');
+
+    &.language-picker {
+      width: 100%;
+    }
+  }
+
+  @include at-media('tablet') {
+    @include u-margin-x(2);
+    @include u-margin-y(0.5);
+  }
+}
+
+.footer__links {
+  @include u-padding-y(1);
+  display: flex;
 }

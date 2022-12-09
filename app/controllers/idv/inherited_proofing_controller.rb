@@ -6,6 +6,7 @@ module Idv
     include IdvSession
     include InheritedProofing404Concern
     include InheritedProofingConcern
+    include InheritedProofingPresenterConcern
 
     FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_inherited_proofing_step_url,
