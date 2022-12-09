@@ -10,11 +10,16 @@ feature 'inherited proofing verify info' do
       receive(:va_inherited_proofing?).and_return true
     allow_any_instance_of(Idv::InheritedProofingController).to \
       receive(:va_inherited_proofing_auth_code).and_return auth_code
-
+    @decorated_session = instance_double(ServiceProviderSessionDecorator)
+    allow(@decorated_session).to receive(:sp_name).and_return(sp_name)
+    allow(@decorated_session).to receive(:sp_logo_url).and_return('')
+    allow_any_instance_of(Idv::InheritedProofingController).to \
+      receive(:decorated_session).and_return(@decorated_session)
     sign_in_and_2fa_user
     complete_inherited_proofing_steps_before_verify_step
   end
 
+  let(:sp_name) { 'VA.gov' }
   let(:auth_code) { Idv::InheritedProofing::Va::Mocks::Service::VALID_AUTH_CODE }
 
   describe 'page content' do
@@ -24,7 +29,12 @@ feature 'inherited proofing verify info' do
 
     it 'renders content' do
       expect(page).to have_content(t('titles.idv.verify_info'))
-      expect(page).to have_link(t('inherited_proofing.troubleshooting.options.get_va_help'))
+      expect(page).to have_link(
+        t(
+          'inherited_proofing.troubleshooting.options.get_help',
+          sp_name: sp_name,
+        ),
+      )
     end
   end
 

@@ -21,15 +21,12 @@ feature 'doc auth upload step' do
       allow(BrowserCache).to receive(:parse).and_return(mobile_device)
     end
 
-    it 'is on the correct page' do
-      expect(page).to have_current_path(idv_doc_auth_upload_step)
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-    end
-
     it 'proceeds to send link via email page when user chooses to upload from computer' do
       expect(fake_attempts_tracker).to receive(
         :idv_document_upload_method_selected,
       ).with({ upload_method: 'desktop' })
+
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
       click_on t('doc_auth.info.upload_computer_link')
 
@@ -60,15 +57,12 @@ feature 'doc auth upload step' do
       allow_any_instance_of(Idv::Steps::UploadStep).to receive(:mobile_device?).and_return(false)
     end
 
-    it 'is on the correct page' do
-      expect(page).to have_current_path(idv_doc_auth_upload_step)
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-    end
-
     it 'proceeds to document capture when user chooses to upload from computer' do
       expect(fake_attempts_tracker).to receive(
         :idv_document_upload_method_selected,
       ).with({ upload_method: 'desktop' })
+
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
       click_on t('doc_auth.info.upload_computer_link')
 

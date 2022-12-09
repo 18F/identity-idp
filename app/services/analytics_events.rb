@@ -3121,6 +3121,38 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks deadline email initiated during GetUspsProofingResultsJob
+  # @param [String] enrollment_id
+  def idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: deadline passed email initiated',
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Tracks exceptions that are raised when initiating deadline email in GetUspsproofingResultsJob
+  # @param [String] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  def idv_in_person_usps_proofing_results_job_deadline_passed_email_exception(
+    enrollment_id:,
+    exception_class: nil,
+    exception_message: nil,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Exception raised when attempting to send deadline passed email',
+      enrollment_id: enrollment_id,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      **extra,
+    )
+  end
+
   # Tracks exceptions that are raised when running InPerson::EmailReminderJob
   # @param [String] enrollment_id
   # @param [String] exception_class
