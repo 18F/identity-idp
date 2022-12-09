@@ -6,7 +6,11 @@ import { createContext } from 'react';
  * @prop {string} appName name of the application (probably Login.gov)
  */
 
-const AppContext = createContext(/** @type {AppContext} */ ({ appName: '' }));
+type AppContextType = {
+  appName: string;
+};
+
+const AppContext = createContext<AppContextType>({ appName: '' });
 
 AppContext.displayName = 'AppContext';
 

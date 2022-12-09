@@ -2,9 +2,13 @@ import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton, FormStepsContext } from '@18f/identity-form-steps';
 import { PageHeading } from '@18f/identity-components';
+import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import { Cancel } from '@18f/identity-verify-flow';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DeviceContext from '../context/device';
+import ServiceProviderContext from '../context/service-provider';
+import AppContext from '../context/app';
+import UploadContext from '../context/upload';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import CaptureTroubleshooting from './capture-troubleshooting';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
@@ -42,9 +46,26 @@ function DocumentsStep({
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
   const { isLastStep } = useContext(FormStepsContext);
+  const { flowPath } = useContext(UploadContext);
+
+  // Determine the Service Provider name to display,
+  // in some circumstances.
+  // If there is no SP, we default to the appName
+  const spContext = useContext(ServiceProviderContext);
+  const serviceProviderName = spContext.name;
+  const { appName } = useContext(AppContext);
 
   return (
     <CaptureTroubleshooting>
+      {flowPath !== 'hybrid' && (
+        <>
+          <HybridDocCaptureWarning
+            appName={appName}
+            serviceProviderName={serviceProviderName}
+          ></HybridDocCaptureWarning>
+          <br />
+        </>
+      )}
       <PageHeading>{t('doc_auth.headings.document_capture')}</PageHeading>
       <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>
       <p className="margin-bottom-0">{t('doc_auth.tips.document_capture_header_text')}</p>
