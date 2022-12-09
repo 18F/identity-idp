@@ -7,7 +7,6 @@ import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
 import AnalyticsContext from '../context/analytics';
 import AddressSearch from './address-search';
-import InPersonContext from '../context/in-person';
 
 interface PostOffice {
   address: string;
@@ -88,7 +87,6 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   const [autoSubmit, setAutoSubmit] = useState(false);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
-  const { arcgisSearchEnabled } = useContext(InPersonContext);
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
