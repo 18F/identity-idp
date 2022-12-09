@@ -1,5 +1,6 @@
 import { createRef } from 'react';
 import { render } from '@testing-library/react';
+import { computeAccessibleDescription } from 'dom-accessibility-api';
 import TextInput from './text-input';
 
 describe('TextInput', () => {
@@ -47,11 +48,15 @@ describe('TextInput', () => {
   });
 
   it('renders with a hint', () => {
-    const { getByLabel } = render(<TextInput label="Input" hint="Something special" />);
+    const { getByLabelText, getByText } = render(
+      <TextInput label="Input" hint="Something special" />,
+    );
 
-    const input = getByLabel('Input');
+    const input = getByLabelText('Input');
     const description = computeAccessibleDescription(input);
+    const hint = getByText('Something special');
 
     expect(description).to.equal('Something special');
+    expect(hint.classList.contains('usa-hint')).to.be.true();
   });
 });
