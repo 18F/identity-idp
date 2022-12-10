@@ -193,6 +193,12 @@ If you'd like to work with the previous implementation see the [Docker documenta
 
 Run `make lint` to look for errors; `make lintfix` can repair some linting errors.
 
+### Configuration variables
+
+Default configuration values &mdash; like feature flags, timeout settings, and third-party connection details &mdash; are found in [`config/application.yml.default`](config/application.yml/default). From these defaults the file `config/application.yml` is created during `make setup` for use during local development. [See the handbook](https://handbook.login.gov/articles/appdev-secrets-configuration.html).
+
+In deployed environments, configuration values are managed with the [app-s3-secret](https://github.com/18F/identity-devops/blob/main/bin/app-s3-secret) script. [See the handbook](https://handbook.login.gov/articles/devops-scripts.html#app-s3-secret).
+
 ### Running jobs
 
 We run background jobs / workers with ActiveJob and GoodJob. You shouldn't normally have to start it manually because `make run` runs [the `Procfile`](Procfile), which handles it. The manual command is: `bundle exec good_job start`
