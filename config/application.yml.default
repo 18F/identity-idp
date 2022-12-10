@@ -155,18 +155,18 @@ lexisnexis_account_id: test_account
 lexisnexis_username: test_username
 lexisnexis_password: test_password
 lexisnexis_phone_finder_timeout: 1.0
-lexisnexis_phone_finder_workflow: customers.gsa.phonefinder.workflow
+lexisnexis_phone_finder_workflow: customers.gsa2.phonefinder.workflow
 lexisnexis_instant_verify_timeout: 1.0
-lexisnexis_instant_verify_workflow: gsa.chk32.test.wf
+lexisnexis_instant_verify_workflow: gsa2.chk32.test.wf
 # TrueID DocAuth Integration
 lexisnexis_trueid_account_id: '12345'
 lexisnexis_trueid_username: test_username
 lexisnexis_trueid_password: test_password
 lexisnexis_trueid_timeout: 60.0
-lexisnexis_trueid_liveness_cropping_workflow: customers.gsa.trueid.workflow
-lexisnexis_trueid_liveness_nocropping_workflow: customers.gsa.trueid.workflow
-lexisnexis_trueid_noliveness_cropping_workflow: customers.gsa.trueid.workflow
-lexisnexis_trueid_noliveness_nocropping_workflow: customers.gsa.trueid.workflow
+lexisnexis_trueid_liveness_cropping_workflow: customers.gsa2.trueid.workflow
+lexisnexis_trueid_liveness_nocropping_workflow: customers.gsa2.trueid.workflow
+lexisnexis_trueid_noliveness_cropping_workflow: customers.gsa2.trueid.workflow
+lexisnexis_trueid_noliveness_nocropping_workflow: customers.gsa2.trueid.workflow
 ###################################################################
 # LexisNexis DDP/ThreatMetrix #####################################
 lexisnexis_threatmetrix_api_key: test_api_key
