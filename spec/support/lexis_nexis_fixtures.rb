@@ -9,8 +9,8 @@ module LexisNexisFixtures
         account_id: 'test_account',
         username: 'test_username',
         password: 'test_password',
-        instant_verify_workflow: 'gsa.chk32.test.wf',
-        phone_finder_workflow: 'customers.gsa.phonefinder.workflow',
+        instant_verify_workflow: 'gsa2.chk32.test.wf',
+        phone_finder_workflow: 'customers.gsa2.phonefinder.workflow',
       )
     end
 

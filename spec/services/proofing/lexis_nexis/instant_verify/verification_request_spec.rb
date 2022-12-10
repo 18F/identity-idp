@@ -15,6 +15,9 @@ describe Proofing::LexisNexis::InstantVerify::VerificationRequest do
       city: 'Baton Rouge',
       state: 'LA',
       zipcode: '70802-12345',
+      state_id_number: '132465879',
+      state_id_jurisdiction: 'LA',
+      state_id_type: 'drivers_license'
     }
   end
   let(:response_body) { LexisNexisFixtures.instant_verify_success_response_json }
@@ -65,7 +68,7 @@ describe Proofing::LexisNexis::InstantVerify::VerificationRequest do
 
   describe '#url' do
     it 'returns a url for the Instant Verify endpoint' do
-      expect(subject.url).to eq('https://example.com/restws/identity/v2/test_account/gsa.chk32.test.wf/conversation')
+      expect(subject.url).to eq('https://example.com/restws/identity/v2/test_account/gsa2.chk32.test.wf/conversation')
     end
   end
 end
