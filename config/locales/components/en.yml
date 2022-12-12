@@ -34,10 +34,10 @@ en:
       month: Month
       year: Year
     one_time_code_input:
-      label: One-time code
       hint:
-        numeric: 'Example: 123456'
         alphanumeric: 'Example: 123ABC'
+        numeric: 'Example: 123456'
+      label: One-time code
     password_toggle:
       label: Password
       toggle_label: Show password

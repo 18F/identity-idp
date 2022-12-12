@@ -34,10 +34,10 @@ es:
       month: Mes
       year: Año
     one_time_code_input:
-      label: Código de un solo uso
       hint:
-        numeric: 'Ejemplo: 123456'
         alphanumeric: 'Ejemplo: 123ABC'
+        numeric: 'Ejemplo: 123456'
+      label: Código de un solo uso
     password_toggle:
       label: Contraseña
       toggle_label: Mostrar contraseña
