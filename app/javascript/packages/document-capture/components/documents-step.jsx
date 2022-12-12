@@ -57,7 +57,7 @@ function DocumentsStep({
 
   return (
     <CaptureTroubleshooting>
-      {flowPath !== 'hybrid' && (
+      {flowPath === 'hybrid' && (
         <>
           <HybridDocCaptureWarning appName={appName} serviceProviderName={serviceProviderName} />
           <br />

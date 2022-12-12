@@ -122,7 +122,7 @@ describe('document-capture/components/documents-step', () => {
   it('renders the hybrid flow warning if the flow is hybrid', () => {
     const { getByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
-        <UploadContextProvider value={{ flowPath: 'hybrid' }}>
+        <UploadContextProvider flowPath="hybrid">
           <DocumentsStep />
         </UploadContextProvider>
       </DeviceContext.Provider>,
@@ -133,15 +133,15 @@ describe('document-capture/components/documents-step', () => {
   });
 
   it('does not render the hybrid flow warning if the flow is standard (default)', () => {
-    const { getByText } = render(
+    const { queryByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
-        <UploadContextProvider value={{ flowPath: 'standard' }}>
+        <UploadContextProvider flowPath="standard">
           <DocumentsStep />
         </UploadContextProvider>
       </DeviceContext.Provider>,
     );
     const notExpectedText = t('doc_auth.hybrid_flow_warning.explanation_non_sp_html');
 
-    expect(getByText(notExpectedText)).to.exist();
+    expect(queryByText(notExpectedText)).to.not.exist();
   });
 });
