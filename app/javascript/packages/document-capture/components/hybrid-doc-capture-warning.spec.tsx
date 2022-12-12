@@ -20,7 +20,7 @@ describe('HybridDocCaptureWarning', () => {
       const alertElement = getByRole('status');
       const notExpectedString = t('doc_auth.hybrid_flow_warning.only_add_sp_services_html').replace(
         '%{serviceProviderName}',
-        props.serviceProviderName,
+        '',
       );
 
       expect(alertElement.textContent).to.not.have.string(notExpectedString);

@@ -1,4 +1,4 @@
-import { useI18n } from '@18f/identity-react-i18n';
+import { useI18n, formatHTML } from '@18f/identity-react-i18n';
 
 type HybridDocCaptureWarningProps = {
   appName: string;
@@ -38,12 +38,11 @@ function HybridDocCaptureWarning({
   return (
     <div className="usa-alert usa-alert--warning" role="status">
       <div className="usa-alert__body">
-        <p
-          className="usa-alert__text"
-          dangerouslySetInnerHTML={{
-            __html: warningText,
-          }}
-        />
+        <p>
+          {formatHTML(warningText, {
+            b: ({ children }) => <b>{children}</b>,
+          })}
+        </p>
         <br />
         <p className="usa-alert__text">
           <b>{listHeadingText}</b>
@@ -51,17 +50,17 @@ function HybridDocCaptureWarning({
         <br />
         <ul>
           <li>{ownAccountItemText}</li>
-          <li
-            dangerouslySetInnerHTML={{
-              __html: phoneVerifyItemText,
-            }}
-          />
+          <li>
+            {formatHTML(phoneVerifyItemText, {
+              b: ({ children }) => <b>{children}</b>,
+            })}
+          </li>
           {serviceProviderName && (
-            <li
-              dangerouslySetInnerHTML={{
-                __html: spServicesItemText,
-              }}
-            />
+            <li>
+              {formatHTML(spServicesItemText, {
+                b: ({ children }) => <b>{children}</b>,
+              })}
+            </li>
           )}
         </ul>
       </div>
