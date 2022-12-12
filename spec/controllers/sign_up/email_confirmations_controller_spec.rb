@@ -2,8 +2,8 @@ require 'rails_helper'
 
 describe SignUp::EmailConfirmationsController do
   describe '#create' do
-    let(:token_not_found_error) { { confirmation_token: [:not_found] } }
-    let(:token_expired_error) { { confirmation_token: [:expired] } }
+    let(:token_not_found_error) { { confirmation_token: { not_found: true } } }
+    let(:token_expired_error) { { confirmation_token: { expired: true } } }
     let(:analytics_token_error_hash) do
       {
         success: false,

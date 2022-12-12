@@ -109,10 +109,7 @@ describe WebauthnSetupForm do
             'errors.webauthn_setup.attestation_error',
             link: MarketingSite.contact_url,
           )] },
-          error_details: { name: [I18n.t(
-            'errors.webauthn_setup.attestation_error',
-            link: MarketingSite.contact_url,
-          )] },
+          error_details: { name: { attestation_error: true } },
           **extra_attributes,
         )
       end

@@ -162,7 +162,7 @@ describe Users::VerifyPersonalKeyController do
         expect(@analytics).to receive(:track_event).with(
           'Personal key reactivation: Personal key form submitted',
           errors: { personal_key: ['Please fill in this field.', error_text] },
-          error_details: { personal_key: [:blank, :personal_key_incorrect] },
+          error_details: { personal_key: { blank: true, personal_key_incorrect: true } },
           success: false,
           pii_like_keypaths: pii_like_keypaths_errors,
         ).once

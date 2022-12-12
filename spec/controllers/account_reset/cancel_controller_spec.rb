@@ -30,7 +30,7 @@ describe AccountReset::CancelController do
         success: false,
         errors: { token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)] },
         error_details: {
-          token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)],
+          token: { cancel_token_invalid: true },
         },
         user_id: 'anonymous-uuid',
       }
@@ -46,7 +46,7 @@ describe AccountReset::CancelController do
       analytics_hash = {
         success: false,
         errors: { token: [t('errors.account_reset.cancel_token_missing', app_name: APP_NAME)] },
-        error_details: { token: [:blank] },
+        error_details: { token: { blank: true } },
         user_id: 'anonymous-uuid',
       }
 
@@ -91,7 +91,7 @@ describe AccountReset::CancelController do
         success: false,
         errors: { token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)] },
         error_details: {
-          token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)],
+          token: { cancel_token_invalid: true },
         },
       }
       expect(@analytics).to receive(:track_event).

@@ -60,7 +60,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
           expect(result.to_h).to eq(
             success: false,
             errors: { response_type: ['is not included in the list'] },
-            error_details: { response_type: [:inclusion] },
+            error_details: { response_type: { inclusion: true } },
             client_id: client_id,
             redirect_uri: "#{redirect_uri}?error=invalid_request&error_description=" \
                           "Response+type+is+not+included+in+the+list&state=#{state}",

@@ -86,7 +86,6 @@ RSpec.describe Idv::GpoVerifyController do
 
   describe '#create' do
     let(:otp_code_error_message) { { otp: [t('errors.messages.confirmation_code_incorrect')] } }
-    let(:otp_code_incorrect) { { otp: [:confirmation_code_incorrect] } }
     let(:success_properties) { { success: true, failure_reason: nil } }
 
     subject(:action) do
@@ -175,11 +174,11 @@ RSpec.describe Idv::GpoVerifyController do
           errors: otp_code_error_message,
           pending_in_person_enrollment: false,
           enqueued_at: nil,
-          error_details: otp_code_incorrect,
+          error_details: { otp: { confirmation_code_incorrect: true } },
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
         expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-          with(success: false, failure_reason: otp_code_incorrect)
+          with(success: false, failure_reason: { otp: { confirmation_code_incorrect: true } })
 
         action
 
@@ -205,7 +204,7 @@ RSpec.describe Idv::GpoVerifyController do
           errors: otp_code_error_message,
           pending_in_person_enrollment: false,
           enqueued_at: nil,
-          error_details: otp_code_incorrect,
+          error_details: { otp: { confirmation_code_incorrect: true } },
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         ).exactly(max_attempts).times
 

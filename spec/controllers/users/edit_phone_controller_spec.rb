@@ -38,7 +38,7 @@ describe Users::EditPhoneController do
         attributes = {
           success: false,
           errors: hash_including(:delivery_preference),
-          error_details: { delivery_preference: [:inclusion] },
+          error_details: { delivery_preference: { inclusion: true } },
           delivery_preference: 'noise',
           make_default_number: true,
           phone_configuration_id: phone_configuration.id,

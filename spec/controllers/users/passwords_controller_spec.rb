@@ -79,7 +79,7 @@ describe Users::PasswordsController do
 
     context 'form returns failure' do
       it 'renders edit' do
-        password_short_error = { password: [:too_short] }
+        password_short_error = { password: { too_short: true } }
         stub_sign_in
 
         stub_analytics

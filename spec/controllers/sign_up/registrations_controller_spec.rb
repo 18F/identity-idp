@@ -125,7 +125,7 @@ describe SignUp::RegistrationsController, devise: true do
         success: false,
         throttled: false,
         errors: { email: [t('valid_email.validations.email.invalid')] },
-        error_details: { email: [:invalid] },
+        error_details: { email: { invalid: true } },
         email_already_exists: false,
         user_id: 'anonymous-uuid',
         domain_name: 'invalid',

@@ -416,7 +416,7 @@ describe Idv::DocAuthController do
           errors: include(
             pii: [I18n.t('doc_auth.errors.general.no_liveness')],
           ),
-          error_details: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
+          error_details: { pii: { generic_error: true } },
           attention_with_barcode: false,
           success: false,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
@@ -431,7 +431,7 @@ describe Idv::DocAuthController do
           errors: include(
             pii: [I18n.t('doc_auth.errors.general.no_liveness')],
           ),
-          error_details: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
+          error_details: { pii: { generic_error: true } },
           attention_with_barcode: false,
           success: false,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,

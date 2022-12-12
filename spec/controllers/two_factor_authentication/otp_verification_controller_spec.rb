@@ -96,7 +96,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
         properties = {
           success: false,
-          error_details: { code: [:incorrect_length, :incorrect] },
+          error_details: { code: { incorrect_length: true, incorrect: true } },
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
@@ -153,7 +153,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
         properties = {
           success: false,
-          error_details: { code: [:incorrect_length, :incorrect] },
+          error_details: { code: { incorrect_length: true, incorrect: true } },
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
@@ -469,7 +469,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             properties = {
               success: false,
               errors: nil,
-              error_details: { code: [:incorrect_length, :incorrect] },
+              error_details: { code: { incorrect_length: true, incorrect: true } },
               confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',

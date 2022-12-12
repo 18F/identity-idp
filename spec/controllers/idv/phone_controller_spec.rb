@@ -136,8 +136,8 @@ describe Idv::PhoneController do
     context 'when form is invalid' do
       let(:improbable_phone_error) do
         {
-          phone: [:improbable_phone],
-          otp_delivery_preference: [:inclusion],
+          phone: { improbable_phone: true },
+          otp_delivery_preference: { inclusion: true },
         }
       end
       let(:improbable_phone_message) { t('errors.messages.improbable_phone') }

@@ -59,7 +59,7 @@ describe Idv::ImageUploadsController do
             front: ['Please fill in this field.'],
           },
           error_details: {
-            front: [:blank],
+            front: { blank: true },
           },
           user_id: user.uuid,
           attempts: 1,
@@ -120,7 +120,7 @@ describe Idv::ImageUploadsController do
             front: [I18n.t('doc_auth.errors.not_a_file')],
           },
           error_details: {
-            front: [I18n.t('doc_auth.errors.not_a_file')],
+            front: { not_a_file: true },
           },
           user_id: user.uuid,
           attempts: 1,
@@ -220,7 +220,7 @@ describe Idv::ImageUploadsController do
             limit: [I18n.t('errors.doc_auth.throttled_heading')],
           },
           error_details: {
-            limit: [I18n.t('errors.doc_auth.throttled_heading')],
+            limit: { throttled: true },
           },
           user_id: user.uuid,
           attempts: IdentityConfig.store.doc_auth_max_attempts,
@@ -446,7 +446,7 @@ describe Idv::ImageUploadsController do
                 pii: [I18n.t('doc_auth.errors.alerts.full_name_check')],
               },
               error_details: {
-                pii: [I18n.t('doc_auth.errors.alerts.full_name_check')],
+                pii: { name_error: true },
               },
               attention_with_barcode: false,
               user_id: user.uuid,
@@ -524,7 +524,7 @@ describe Idv::ImageUploadsController do
                 pii: [I18n.t('doc_auth.errors.general.no_liveness')],
               },
               error_details: {
-                pii: [I18n.t('doc_auth.errors.general.no_liveness')],
+                pii: { generic_error: true },
               },
               attention_with_barcode: false,
               user_id: user.uuid,
@@ -602,7 +602,7 @@ describe Idv::ImageUploadsController do
                 pii: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
               },
               error_details: {
-                pii: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
+                pii: { dob_error: true },
               },
               attention_with_barcode: false,
               user_id: user.uuid,

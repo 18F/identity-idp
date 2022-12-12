@@ -159,12 +159,12 @@ RSpec.describe IrsAttemptsApi::Tracker do
 
   describe '#parse_failure_reason' do
     let(:mock_error_message) { 'failure_reason_from_error' }
-    let(:mock_error_details) { [{ mock_error: 'failure_reason_from_error_details' }] }
+    let(:mock_error_details) { { mock_error: { failure_reason_from_error_details: true } } }
 
     it 'parses failure_reason from error_details' do
       test_failure_reason = subject.parse_failure_reason(
         { errors: mock_error_message,
-          error_details: mock_error_details },
+          error_details: { mock_error: { failure_reason_from_error_details: true } } },
       )
 
       expect(test_failure_reason).to eq(mock_error_details)

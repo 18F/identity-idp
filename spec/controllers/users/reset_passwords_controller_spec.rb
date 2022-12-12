@@ -5,7 +5,6 @@ describe Users::ResetPasswordsController, devise: true do
     "This password is too short (minimum is #{Devise.password_length.first} characters)"
   end
   let(:success_properties) { { success: true, failure_reason: nil } }
-  let(:token_expired_error) { 'token_expired' }
   describe '#edit' do
     before do
       stub_analytics
@@ -14,7 +13,7 @@ describe Users::ResetPasswordsController, devise: true do
     end
 
     context 'no user matches token' do
-      let(:user_blank_error) { { user: [:blank] } }
+      let(:user_blank_error) { { user: { blank: true } } }
       let(:analytics_hash) do
         {
           success: false,
@@ -40,11 +39,11 @@ describe Users::ResetPasswordsController, devise: true do
     end
 
     context 'token expired' do
-      let(:user_token_error) { { user: [token_expired_error] } }
+      let(:user_token_error) { { user: { token_expired: true } } }
       let(:analytics_hash) do
         {
           success: false,
-          errors: user_token_error,
+          errors: { user: ['token_expired'] },
           error_details: user_token_error,
           user_id: '123',
         }
@@ -104,8 +103,8 @@ describe Users::ResetPasswordsController, devise: true do
   end
 
   describe '#update' do
-    let(:password_short_error) { { password: [:too_short] } }
-    let(:password_token_error) { { reset_password_token: [token_expired_error] } }
+    let(:password_short_error) { { password: { too_short: true } } }
+    let(:password_token_error) { { reset_password_token: { token_expired: true } } }
     context 'user submits new password after token expires' do
       let(:reset_password_error_details) do
         {
@@ -142,9 +141,12 @@ describe Users::ResetPasswordsController, devise: true do
           success: false,
           errors: {
             password: [password_error_message],
-            **password_token_error,
+            reset_password_token: ['token_expired'],
           },
-          error_details: reset_password_error_details,
+          error_details: {
+            password: { too_short: true },
+            reset_password_token: { token_expired: true },
+          },
           user_id: user.uuid,
           profile_deactivated: false,
         }
@@ -512,7 +514,7 @@ describe Users::ResetPasswordsController, devise: true do
         analytics_hash = {
           success: false,
           errors: { email: [t('valid_email.validations.email.invalid')] },
-          error_details: { email: [:invalid] },
+          error_details: { email: { invalid: true } },
           user_id: 'nonexistent-uuid',
           confirmed: false,
           active_profile: false,

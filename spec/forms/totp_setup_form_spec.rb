@@ -80,7 +80,7 @@ describe TotpSetupForm do
 
         expect(form.submit.to_h).to include(
           success: false,
-          error_details: { name: [:blank] },
+          error_details: { name: { blank: true } },
           errors: { name: [t('errors.messages.blank')] },
         )
         expect(user.auth_app_configurations.any?).to eq false
@@ -95,7 +95,7 @@ describe TotpSetupForm do
 
         expect(form2.submit.to_h).to include(
           success: false,
-          error_details: { name: [t('errors.piv_cac_setup.unique_name')] },
+          error_details: { name: { unique_name: true } },
           errors: { name: [t('errors.piv_cac_setup.unique_name')] },
         )
       end
