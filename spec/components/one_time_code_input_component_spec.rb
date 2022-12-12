@@ -1,15 +1,14 @@
 require 'rails_helper'
 
-describe 'shared/_one_time_code_input.html.erb' do
+RSpec.describe OneTimeCodeInputComponent, type: :component do
   include SimpleForm::ActionViewExtensions::FormHelper
 
-  let(:params) { {} }
+  let(:lookup_context) { ActionView::LookupContext.new(ActionController::Base.view_paths) }
+  let(:view_context) { ActionView::Base.new(lookup_context, {}, controller) }
+  let(:form) { SimpleForm::FormBuilder.new('', {}, view_context, {}) }
+  let(:options) { {} }
 
-  before do
-    simple_form_for('', url: '/') do |f|
-      render('shared/one_time_code_input', form: f, **params)
-    end
-  end
+  subject(:rendered) { render_inline OneTimeCodeInputComponent.new(form: form, **options) }
 
   describe 'name' do
     context 'no name given' do
@@ -19,7 +18,7 @@ describe 'shared/_one_time_code_input.html.erb' do
     end
 
     context 'name given' do
-      let(:params) { { name: 'example' } }
+      let(:options) { { name: 'example' } }
 
       it 'renders given name' do
         expect(rendered).to have_selector('[name="example"]')
@@ -35,7 +34,7 @@ describe 'shared/_one_time_code_input.html.erb' do
     end
 
     context 'numeric is false' do
-      let(:params) { { numeric: false } }
+      let(:options) { { numeric: false } }
 
       it 'renders input mode "text"' do
         expect(rendered).to have_selector('[inputmode="text"]')
@@ -44,17 +43,17 @@ describe 'shared/_one_time_code_input.html.erb' do
   end
 
   describe 'classes' do
-    context 'without custom classes given' do
+    context 'without custom classes given on input' do
       it 'renders with default classes' do
-        expect(rendered).to have_selector('.one-time-code-input')
+        expect(rendered).to have_selector('.one-time-code-input__input')
       end
     end
 
-    context 'with custom classes' do
-      let(:params) { { class: 'my-custom-class' } }
+    context 'with custom classes on input' do
+      let(:options) { { field_options: { input_html: { class: 'my-custom-class' } } } }
 
       it 'renders with additional custom classes' do
-        expect(rendered).to have_selector('.one-time-code-input.my-custom-class')
+        expect(rendered).to have_selector('.one-time-code-input__input.my-custom-class')
       end
     end
   end
@@ -62,40 +61,32 @@ describe 'shared/_one_time_code_input.html.erb' do
   describe 'transport' do
     context 'omitted' do
       it 'renders default sms transport' do
-        expect(rendered).to have_selector('[data-transport="sms"]')
+        expect(rendered).to have_selector('lg-one-time-code-input[transport="sms"]')
       end
     end
 
     context 'given' do
-      let(:params) { { transport: 'example' } }
+      let(:options) { { transport: 'example' } }
 
       it 'renders given transport' do
-        expect(rendered).to have_selector('[data-transport="example"]')
+        expect(rendered).to have_selector('lg-one-time-code-input[transport="example"]')
       end
     end
 
     context 'explicitly nil' do
-      let(:params) { { transport: nil } }
+      let(:options) { { transport: nil } }
 
       it 'renders without transport' do
-        expect(rendered).not_to have_selector('[data-transport]')
+        expect(rendered).to have_selector('lg-one-time-code-input:not([transport])')
       end
     end
   end
 
-  describe 'aria attributes' do
-    let(:params) { { aria: { hidden: true } } }
+  describe 'extra attributes' do
+    let(:options) { { data: { foo: 'bar' } } }
 
-    it 'merges aria attributes' do
-      expect(rendered).to have_selector('[aria-invalid="false"][aria-hidden="true"]')
-    end
-  end
-
-  describe 'data attributes' do
-    let(:params) { { data: { foo: 'bar' } } }
-
-    it 'merges data attributes' do
-      expect(rendered).to have_selector('[data-transport][data-foo="bar"]')
+    it 'applies attributes to wrapper' do
+      expect(rendered).to have_selector('lg-one-time-code-input[data-foo="bar"]')
     end
   end
 
@@ -109,7 +100,7 @@ describe 'shared/_one_time_code_input.html.erb' do
     end
 
     context 'maxlength given' do
-      let(:params) { { maxlength: 10 } }
+      let(:options) { { maxlength: 10 } }
 
       it 'renders input given maxlength' do
         expect(rendered).to have_selector(
