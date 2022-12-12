@@ -92,7 +92,7 @@ feature 'IRS Attempts API Event Tracking' do
     end
   end
 
-  scenario 'signing in from an IRS SP without an attempts api session id or tid track events' do
+  scenario 'signing in from an IRS SP without an attempts api session id or tid tracks events' do
     freeze_time do
       user = create(:user, :signed_up)
 
