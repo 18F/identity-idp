@@ -33,15 +33,9 @@ es:
     headings:
       lets_go: Cómo funciona la verificación de su identidad
       retrieval: Estamos recuperando su información de su agencia colaboradora
-<<<<<<< HEAD
       secure_account: Asegure su cuenta
       verify_identity: Verifique su identidad
-      verify_information: to be implemented
-=======
-      secure_account: to be implemented
-      verify_identity: to be implemented
       verify_information: Verifique su información
->>>>>>> 384762b16 (LG-7494 Add text and translations to Please Verify)
       welcome: Empiece con la verificación de su identidad
     info:
       lets_go: 'La verificación de la identidad se realiza en dos partes:'

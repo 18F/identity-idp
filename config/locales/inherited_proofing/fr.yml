@@ -72,10 +72,5 @@ fr:
         need_help_updating: Vous devez mettre à jour vos informations? Voici comment
           obtenir de l’aide
       options:
-<<<<<<< HEAD
         get_help: Obtenez de l’aide sur %{sp_name}
         learn_more_phone_or_mail: En savoir plus sur la vérification par téléphone ou par courriel.
-=======
-        get_help: Obtenez de l’aide auprès de %{sp_name}
-        learn_more_phone_or_mail: to be implemented
->>>>>>> 384762b16 (LG-7494 Add text and translations to Please Verify)
