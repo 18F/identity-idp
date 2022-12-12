@@ -12,10 +12,7 @@ function HybridDocCaptureWarning({
   const { t } = useI18n();
 
   const listHeadingText = t('doc_auth.hybrid_flow_warning.only_add_if_text');
-  const ownAccountItemText = t('doc_auth.hybrid_flow_warning.only_add_own_account_html').replace(
-    '%{app_name}',
-    appName,
-  );
+  const ownAccountItemText = t('doc_auth.hybrid_flow_warning.only_add_own_account_html', { app_name: appName });
   const phoneVerifyItemText = t('doc_auth.hybrid_flow_warning.only_add_phone_verify_html').replace(
     '%{app_name}',
     appName,
