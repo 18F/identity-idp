@@ -156,6 +156,15 @@ es:
       upload_from_phone: Tome una foto con un teléfono móvil para cargar su identificación
       verify_identity: Verifique su identidad
       welcome: Comience a verificar su identidad
+    hybrid_flow_warning:
+      explanation_html: Usted está utilizando <b>%{app_name}</b> para verificar su
+        identidad y acceder a <b>%{service_provider_name}</b> y sus servicios.
+      explanation_non_sp_html: Usted está utilizando <b>%{app_name}</b> para verificar su identidad
+      only_add_if_text: 'SOLO AGREGUE SU IDENTIFICACIÓN SI:'
+      only_add_own_account_html: Está usando su propia cuenta de %{app_name}
+      only_add_phone_verify_html: Usted solicitó a %{app_name} que verificara su
+        identidad a través de su teléfono
+      only_add_sp_services_html: Está tratando de acceder a los servicios <b>%{service_provider_name}</b>
     info:
       camera_required: Su teléfono móvil debe tener una cámara y un navegador web.
       capture_status_big_document: Demasiado cerca
@@ -259,10 +268,3 @@ es:
       review_issues_id_text2: '¿Tomó la foto en una superficie plana?'
       review_issues_id_text3: '¿Tiene el flash de su cámara apagado?'
       review_issues_id_text4: '¿Todos los detalles están nítidos y claramente visibles?'
-    hybrid_flow_warning:
-      explanation_html: Usted está utilizando <b>%{appName}</b> para verificar su identidad y acceder a <b>%{serviceProviderName}</b> y sus servicios.
-      explanation_non_sp_html: Usted está utilizando <b>%{appName}</b> para verificar su identidad
-      only_add_if_text: "SOLO AGREGUE SU IDENTIFICACIÓN SI:"
-      only_add_own_account_html: Está usando su propia cuenta de %{appName}
-      only_add_phone_verify_html: Usted solicitó a %{appName} que verificara su identidad a través de su teléfono
-      only_add_sp_services_html: Está tratando de acceder a los servicios <b>%{serviceProviderName}</b>

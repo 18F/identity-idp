@@ -163,6 +163,15 @@ fr:
         votre pièce d’identité
       verify_identity: Vérifier votre identité
       welcome: Commencez à vérifier votre identité
+    hybrid_flow_warning:
+      explanation_html: Vous utilisez <b>%{app_name}</b> pour vérifier votre identité
+        et accéder à <b>%{service_provider_name}</b> et à ses services.
+      explanation_non_sp_html: Vous utilisez <b>%{app_name}</b> pour vérifier votre identité.
+      only_add_if_text: 'N’AJOUTEZ VOTRE IDENTIFIANT QUE SI :'
+      only_add_own_account_html: Vous utilisez votre propre compte %{app_name}
+      only_add_phone_verify_html: Vous avez demandé à %{app_name} de vérifier votre
+        identité en utilisant votre téléphone
+      only_add_sp_services_html: Vous essayez d’accéder aux services de <b>%{service_provider_name}</b>
     info:
       camera_required: Votre téléphone portable doit avoir une caméra et un navigateur Web.
       capture_status_big_document: Trop près
@@ -270,10 +279,3 @@ fr:
       review_issues_id_text3: Le flash de votre caméra est-il éteint?
       review_issues_id_text4: Tous les détails sont-ils nets et clairement visibles?
         couvert par un chapeau ou des lunettes?
-    hybrid_flow_warning:
-      explanation_html: Vous utilisez <b>%{appName}</b> pour vérifier votre identité et accéder à <b>%{serviceProviderName}</b> et à ses services.
-      explanation_non_sp_html: Vous utilisez <b>%{appName}</b> pour vérifier votre identité.
-      only_add_if_text: "N’AJOUTEZ VOTRE IDENTIFIANT QUE SI :"
-      only_add_own_account_html: Vous utilisez votre propre compte %{appName}
-      only_add_phone_verify_html: Vous avez demandé à %{appName} de vérifier votre identité en utilisant votre téléphone
-      only_add_sp_services_html: Vous essayez d’accéder aux services de <b>%{serviceProviderName}</b>

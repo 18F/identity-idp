@@ -13,24 +13,24 @@ function HybridDocCaptureWarning({
 
   const listHeadingText = t('doc_auth.hybrid_flow_warning.only_add_if_text');
   const ownAccountItemText = t('doc_auth.hybrid_flow_warning.only_add_own_account_html').replace(
-    '%{appName}',
+    '%{app_name}',
     appName,
   );
   const phoneVerifyItemText = t('doc_auth.hybrid_flow_warning.only_add_phone_verify_html').replace(
-    '%{appName}',
+    '%{app_name}',
     appName,
   );
   let spServicesItemText;
   let warningText = t('doc_auth.hybrid_flow_warning.explanation_non_sp_html').replace(
-    '%{appName}',
+    '%{app_name}',
     appName,
   );
   if (serviceProviderName) {
     warningText = t('doc_auth.hybrid_flow_warning.explanation_html')
-      .replace('%{appName}', appName)
-      .replace('%{serviceProviderName}', serviceProviderName);
+      .replace('%{app_name}', appName)
+      .replace('%{service_provider_name}', serviceProviderName);
     spServicesItemText = t('doc_auth.hybrid_flow_warning.only_add_sp_services_html').replace(
-      '%{serviceProviderName}',
+      '%{service_provider_name}',
       serviceProviderName,
     );
   }
