@@ -1,7 +1,7 @@
 import { useContext, ReactNode } from 'react';
 import { useI18n, formatHTML } from '@18f/identity-react-i18n';
 import ServiceProviderContext from '../context/service-provider';
-import AppContext from '../context/app';
+import { getConfigValue } from '@18f/identity-config';
 
 function formatWithStrong(text: string): ReactNode {
   return formatHTML(text, {
@@ -16,7 +16,7 @@ function HybridDocCaptureWarning() {
   // If there is no SP, we default to the appName
   const spContext = useContext(ServiceProviderContext);
   const serviceProviderName = spContext.name;
-  const { appName } = useContext(AppContext);
+  const appName = getConfigValue('appName');
 
   const listHeadingText = t('doc_auth.hybrid_flow_warning.only_add_if_text');
   const ownAccountItemText = t('doc_auth.hybrid_flow_warning.only_add_own_account_html', {
