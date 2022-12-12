@@ -1,4 +1,8 @@
 class Event < ApplicationRecord
+  self.abstract_class = true
+  
+  connects_to database: { writing: :events, reading: :events }
+
   belongs_to :user
   belongs_to :device
 

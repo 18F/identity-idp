@@ -79,6 +79,16 @@ production:
     sslmode: 'verify-full'
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     replica: true
+  events:
+    <<: *defaults
+    database: <%= IdentityConfig.store.database_events_name %>
+    username: <%= IdentityConfig.store.database_events_username %>
+    host: <%= IdentityConfig.store.database_events_host %>
+    password: <%= IdentityConfig.store.database_events_password %>
+    pool: <%= pool %>
+    sslmode: 'verify-full'
+    sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
+    migrations_paths: db/primary_migrate
   worker_jobs:
     <<: *defaults
     database: <%= IdentityConfig.store.database_worker_jobs_name %>
