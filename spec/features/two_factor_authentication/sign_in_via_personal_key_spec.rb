@@ -21,10 +21,8 @@ feature 'Signing in via one-time use personal key' do
 
     expect_delivered_email_count(1)
     expect_delivered_email(
-      0, {
-        to: [user.email_addresses.first.email],
-        subject: t('user_mailer.personal_key_sign_in.subject'),
-      }
+      to: [user.email_addresses.first.email],
+      subject: t('user_mailer.personal_key_sign_in.subject'),
     )
   end
 

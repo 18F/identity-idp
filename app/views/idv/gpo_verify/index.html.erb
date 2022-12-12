@@ -10,7 +10,7 @@
 <% title t('forms.verify_profile.title') %>
 
 <%= render PageHeadingComponent.new.with_content(t('forms.verify_profile.welcome_back')) %>
-<%= sanitize t('forms.verify_profile.welcome_back_description'), tags: %i[p strong] %>
+<%= sanitize t('forms.verify_profile.welcome_back_description'), tags: %w[p strong] %>
 <hr class="margin-y-4" />
 <h2><%= t('forms.verify_profile.title') %></h2>
 

@@ -1,4 +1,12 @@
-import { useRef, useEffect, Children, cloneElement, createElement } from 'react';
+import {
+  useRef,
+  useEffect,
+  Children,
+  cloneElement,
+  createElement,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
 import type {
   MutableRefObject,
   ReactNode,
@@ -19,6 +27,11 @@ interface ValidatedFieldProps {
    * if invalid.
    */
   validate?: ValidatedFieldValidator;
+
+  /**
+   * Optional key and value that indicates the error and resulting error message
+   */
+  messages?: Record<string, string>;
 
   /**
    * Optional input to use in place of the default rendered input. The input will be cloned and
@@ -56,13 +69,20 @@ export function getErrorMessages(inputType?: string) {
   return messages;
 }
 
-function ValidatedField({
-  validate = () => {},
-  children,
-  ...inputProps
-}: ValidatedFieldProps & InputHTMLAttributes<HTMLInputElement>) {
+function ValidatedField(
+  {
+    validate = () => {},
+    messages,
+    children,
+    ...inputProps
+  }: ValidatedFieldProps & InputHTMLAttributes<HTMLInputElement>,
+  forwardedRef,
+) {
   const fieldRef = useRef<ValidatedFieldElement>();
   const instanceId = useInstanceId();
+  useImperativeHandle(forwardedRef, () => ({
+    reportValidity: () => fieldRef.current?.input?.reportValidity(),
+  }));
   useEffect(() => {
     if (fieldRef.current && fieldRef.current.input) {
       const { input } = fieldRef.current;
@@ -98,7 +118,7 @@ function ValidatedField({
   return (
     <lg-validated-field ref={fieldRef}>
       <script type="application/json" className="validated-field__error-strings">
-        {JSON.stringify(getErrorMessages(inputProps.type))}
+        {JSON.stringify({ ...getErrorMessages(inputProps.type), ...messages })}
       </script>
       <div className="validated-field__input-wrapper">
         {cloneElement(input, {
@@ -112,4 +132,4 @@ function ValidatedField({
   );
 }
 
-export default ValidatedField;
+export default forwardRef(ValidatedField);

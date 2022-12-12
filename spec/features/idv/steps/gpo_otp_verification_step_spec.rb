@@ -20,7 +20,7 @@ feature 'idv gpo otp verification step', :js do
   end
   let(:user) { profile.user }
 
-  it 'prompts for confirmation code at sign in' do
+  it 'prompts for one-time code at sign in' do
     sign_in_live_with_2fa(user)
 
     expect(current_path).to eq idv_gpo_verify_path
@@ -57,12 +57,11 @@ feature 'idv gpo otp verification step', :js do
 
     expect(GpoConfirmation.count).to eq(0)
     expect(GpoConfirmationCode.count).to eq(0)
-
     click_on t('idv.messages.gpo.resend')
 
     expect_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
 
-    click_on t('idv.buttons.mail.send')
+    click_on t('idv.buttons.mail.resend')
 
     expect(GpoConfirmation.count).to eq(1)
     expect(GpoConfirmationCode.count).to eq(1)

@@ -33,6 +33,7 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
 
       before do
         allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_aws_s3_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:irs_attempt_api_public_key).
           and_return(encoded_public_key)
 
@@ -68,16 +69,16 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         expect_any_instance_of(described_class).to receive(
           :create_and_upload_to_attempts_s3_resource,
         ).with(
-          bucket_name: 'test-bucket-name',
-          filename: 'test-filename',
-          encrypted_data: 'test-encrypted-data',
+          bucket_name: bucket_name,
+          filename: envelope_encryptor_result[:filename],
+          encrypted_data: envelope_encryptor_result[:encrypted_data],
         )
 
         result = IrsAttemptsEventsBatchJob.perform_now(start_time)
 
         expect(result).not_to be_nil
         expect(result[:filename]).to eq(
-          "s3://#{bucket_name}/#{envelope_encryptor_result[:filename]}",
+          envelope_encryptor_result[:filename],
         )
 
         expect(result[:iv]).to eq(
@@ -88,7 +89,9 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
           Base64.strict_encode64(envelope_encryptor_result[:encrypted_key]),
         )
 
-        expect(result[:requested_time]).to eq(start_time)
+        expect(result[:requested_time]).to eq(
+          IrsAttemptsApi::EnvelopeEncryptor.formatted_timestamp(start_time),
+        )
       end
     end
 

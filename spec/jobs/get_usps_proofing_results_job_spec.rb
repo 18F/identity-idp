@@ -334,6 +334,27 @@ RSpec.describe GetUspsProofingResultsJob do
           end
         end
 
+        it 'sends deadline passed email on response with expired status' do
+          stub_request_expired_proofing_results
+
+          user = pending_enrollment.user
+          expect(pending_enrollment.deadline_passed_sent).to be false
+          freeze_time do
+            expect do
+              job.perform(Time.zone.now)
+            end.to have_enqueued_mail(UserMailer, :in_person_deadline_passed).with(
+              params: { user: user, email_address: user.email_addresses.first },
+              args: [{ enrollment: pending_enrollment }],
+            )
+            pending_enrollment.reload
+            expect(pending_enrollment.deadline_passed_sent).to be true
+            expect(job_analytics).to have_logged_event(
+              'GetUspsProofingResultsJob: deadline passed email initiated',
+              enrollment_id: pending_enrollment.id,
+            )
+          end
+        end
+
         it 'sends failed email when fraudSuspected is true' do
           stub_request_failed_suspected_fraud_proofing_results
 

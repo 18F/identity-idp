@@ -53,7 +53,7 @@ en:
       totp_confirm_delete: Yes, remove authentication app
       unknown_location: unknown location
       verification:
-        instructions: Your account requires a confirmation code to be verified.
+        instructions: Your account requires a one-time code to be verified.
         reactivate_button: Enter the code you received via US mail
         success: Your account has been verified.
       webauthn: Security key

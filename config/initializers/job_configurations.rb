@@ -130,14 +130,9 @@ else
       },
       # Weekly IRS report returning system demand
       irs_weekly_summary_report: {
-        class: 'IrsWeeklySummaryReport',
+        class: 'Reports::IrsWeeklySummaryReport',
         cron: cron_1w,
         args: -> { [Time.zone.now] },
-      },
-      # Backfill service_provider_identities last_consented_at
-      identities_backfill_job: {
-        class: 'IdentitiesBackfillJob',
-        cron: cron_5m,
       },
     }
   end

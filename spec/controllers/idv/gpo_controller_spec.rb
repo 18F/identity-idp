@@ -62,7 +62,7 @@ describe Idv::GpoController do
 
     context 'with letter already sent' do
       before do
-        allow_any_instance_of(Idv::GpoPresenter).to receive(:letter_already_sent?).and_return(true)
+        allow_any_instance_of(Idv::GpoPresenter).to receive(:resend_requested?).and_return(true)
       end
 
       it 'logs visited event' do

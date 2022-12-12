@@ -1248,7 +1248,7 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Boolean] code_expired if the confirmation code expired
+  # @param [Boolean] code_expired if the one-time code expired
   # @param [Boolean] code_matches
   # @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
   # @param [Time, nil] second_factor_locked_at timestamp when the phone was locked out
@@ -1462,16 +1462,19 @@ module AnalyticsEvents
   end
 
   # @param [Integer] rendered_event_count how many events were rendered in the API response
+  # @param [Boolean] authenticated whether the request was successfully authenticated
   # @param [Boolean] success
   # An IRS Attempt API client has requested events
   def irs_attempts_api_events(
     rendered_event_count:,
+    authenticated:,
     success:,
     **extra
   )
     track_event(
       'IRS Attempt API: Events submitted',
       rendered_event_count: rendered_event_count,
+      authenticated: authenticated,
       success: success,
       **extra,
     )
@@ -3114,6 +3117,38 @@ module AnalyticsEvents
       scan_count: scan_count,
       response_message: response_message,
       response_status_code: response_status_code,
+      **extra,
+    )
+  end
+
+  # Tracks deadline email initiated during GetUspsProofingResultsJob
+  # @param [String] enrollment_id
+  def idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: deadline passed email initiated',
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Tracks exceptions that are raised when initiating deadline email in GetUspsproofingResultsJob
+  # @param [String] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  def idv_in_person_usps_proofing_results_job_deadline_passed_email_exception(
+    enrollment_id:,
+    exception_class: nil,
+    exception_message: nil,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Exception raised when attempting to send deadline passed email',
+      enrollment_id: enrollment_id,
+      exception_class: exception_class,
+      exception_message: exception_message,
       **extra,
     )
   end

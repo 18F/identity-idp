@@ -114,8 +114,6 @@ idv_attempt_window_in_hours: 6
 idv_contact_url: https://www.example.com
 idv_max_attempts: 5
 idv_min_age_years: 13
-idv_native_camera_a_b_testing_enabled: false
-idv_native_camera_a_b_testing_percent: 10
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_send_link_attempt_window_in_minutes: 10
@@ -139,6 +137,7 @@ irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_auth_tokens: ''
 irs_attempt_api_csp_id: 'LOGIN.gov'
 irs_attempt_api_enabled: false
+irs_attempt_api_aws_s3_enabled: false
 irs_attempt_api_event_ttl_seconds: 86400
 irs_attempt_api_event_count_default: 1000
 irs_attempt_api_event_count_max: 10000
@@ -204,6 +203,7 @@ new_sign_up_cancellation_url_enabled: true
 no_sp_device_profiling_enabled: false
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
+otp_expiration_warning_seconds: 150
 otps_per_ip_limit: 25
 otps_per_ip_period: 300
 otps_per_ip_track_only_mode: true
@@ -288,9 +288,11 @@ session_encryptor_v2_enabled: true
 session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
+ses_configuration_set_name: ''
 set_remember_device_session_expiration: false
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
+otp_min_attempts_remaining_warning_count: 3
 show_account_recovery_recovery_options: false
 system_demand_report_email: 'foo@bar.com'
 test_ssn_allowed_list: ''
@@ -367,6 +369,7 @@ development:
   irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
   irs_attempt_api_public_key_id: key1
   irs_attempt_api_enabled: true
+  irs_attempt_api_aws_s3_enabled: false
   irs_attempt_api_auth_tokens: 'abc123'
   irs_attempt_api_bucket_name: please-change-me
   logins_per_ip_limit: 5
@@ -506,7 +509,6 @@ test:
   database_worker_jobs_username: ''
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
-  doc_auth_enable_presigned_s3_urls: true
   doc_auth_max_attempts: 4
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
@@ -532,6 +534,7 @@ test:
   email_registrations_per_ip_limit: 3
   max_bad_passwords: 5
   max_mail_events: 2
+  otp_min_attempts_remaining_warning_count: 1
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
