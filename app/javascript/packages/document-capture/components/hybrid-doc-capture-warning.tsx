@@ -1,4 +1,3 @@
-import { Alert } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 
 type HybridDocCaptureWarningProps = {
@@ -22,12 +21,12 @@ function HybridDocCaptureWarning({
     appName,
   );
   let spServicesItemText;
-  let warningText = t('doc_auth_hybrid_flow_warning.explanation_non_sp_html').replace(
+  let warningText = t('doc_auth.hybrid_flow_warning.explanation_non_sp_html').replace(
     '%{appName}',
     appName,
   );
   if (serviceProviderName) {
-    warningText = t('doc_auth_hybrid_flow_warning.explanation_html')
+    warningText = t('doc_auth.hybrid_flow_warning.explanation_html')
       .replace('%{appName}', appName)
       .replace('%{serviceProviderName}', serviceProviderName);
     spServicesItemText = t('doc_auth.hybrid_flow_warning.only_add_sp_services_html').replace(
@@ -44,10 +43,10 @@ function HybridDocCaptureWarning({
           dangerouslySetInnerHTML={{
             __html: warningText,
           }}
-        ></p>
+        />
         <br />
         <p className="usa-alert__text">
-          <b>{t('doc_auth.hybrid_flow_warning.only_add_if_text')}</b>
+          <b>{listHeadingText}</b>
         </p>
         <br />
         <ul>
@@ -56,13 +55,13 @@ function HybridDocCaptureWarning({
             dangerouslySetInnerHTML={{
               __html: phoneVerifyItemText,
             }}
-          ></li>
+          />
           {serviceProviderName && (
             <li
               dangerouslySetInnerHTML={{
                 __html: spServicesItemText,
               }}
-            ></li>
+            />
           )}
         </ul>
       </div>

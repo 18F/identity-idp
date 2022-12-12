@@ -2,8 +2,8 @@ import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton, FormStepsContext } from '@18f/identity-form-steps';
 import { PageHeading } from '@18f/identity-components';
-import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import { Cancel } from '@18f/identity-verify-flow';
+import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DeviceContext from '../context/device';
 import ServiceProviderContext from '../context/service-provider';
@@ -59,10 +59,7 @@ function DocumentsStep({
     <CaptureTroubleshooting>
       {flowPath !== 'hybrid' && (
         <>
-          <HybridDocCaptureWarning
-            appName={appName}
-            serviceProviderName={serviceProviderName}
-          ></HybridDocCaptureWarning>
+          <HybridDocCaptureWarning appName={appName} serviceProviderName={serviceProviderName} />
           <br />
         </>
       )}
