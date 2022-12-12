@@ -33,6 +33,8 @@ fr:
         range_underflow: Entrez une date le ou après le %{date}
       month: Mois
       year: An
+    one_time_code_input:
+      label: Code à usage unique
     password_toggle:
       label: Mot de passe
       toggle_label: Afficher le mot de passe

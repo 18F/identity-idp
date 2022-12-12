@@ -33,6 +33,8 @@ es:
         range_underflow: Ingrese una fecha a partir del %{date}
       month: Mes
       year: Año
+    one_time_code_input:
+      label: Código de un solo uso
     password_toggle:
       label: Contraseña
       toggle_label: Mostrar contraseña
