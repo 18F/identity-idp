@@ -277,7 +277,7 @@ describe Users::TwoFactorAuthenticationController do
     context 'when selecting SMS OTP delivery' do
       let(:valid_phone_number) { { phone_number: '+12025551212' } }
       let(:success_parameters) do
-        { success: true, **valid_phone_number, otp_delivery_method: 'sms' }
+        { success: true, **valid_phone_number, otp_delivery_method: 'sms', failure_reason: {} }
       end
       before do
         @user = create(:user, :with_phone)
