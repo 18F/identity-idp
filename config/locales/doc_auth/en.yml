@@ -137,8 +137,8 @@ en:
       capture_status_small_document: Move Closer
       capture_status_tap_to_capture: Tap to Capture
       document_capture_intro_acknowledgment: We’ll collect information about you by
-        reading your state-issued ID. We do not store images you upload. We only
-        verify your identity.
+        reading your state-issued ID. We use this information to verify your
+        identity.
       image_loaded: Image loaded
       image_loading: Image loading
       image_updated: Image updated
@@ -155,8 +155,8 @@ en:
         verify your ID using your phone.
       no_sp_name: The agency that you are trying to access
       privacy_html: '%{app_name} is a secure, government website that adheres to the
-        highest standards in data protection. We only use your data to verify
-        your identity. %{link} about our privacy and security measures.'
+        highest standards in data protection. We use your data to verify your
+        identity. %{link} about our privacy and security measures.'
       secure_account: We’ll encrypt your account with your password. Encryption means
         your data is protected and only you will be able to access or change
         your information.
@@ -171,7 +171,6 @@ en:
       upload_computer_link: Upload from your computer
       upload_from_computer: Don’t have a phone?
       upload_from_phone: Upload pictures directly from your phone camera
-      upload_no_image_storage: We do not store images you upload. We only verify your identity.
       verify_identity: We’ll ask for your personal information to verify your identity
         against public records.
       welcome_html: '%{sp_name} needs to make sure you are you — not someone
@@ -181,7 +180,7 @@ en:
       bullet2: Social Security number
       bullet3: Phone number
       consent: By checking this box, you are letting %{app_name} ask for, use, keep,
-        and share your personal information. We will only use it to verify your
+        and share your personal information. We will use it to verify your
         identity.
       email_sent: Link sent to %{email}. Please check your desktop email and follow
         instructions to verify your identity.

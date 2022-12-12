@@ -164,8 +164,8 @@ es:
       capture_status_small_document: Muévete mas cerca
       capture_status_tap_to_capture: Toque para capturar
       document_capture_intro_acknowledgment: Recopilaremos información sobre usted
-        leyendo su identificación emitida por el estado. No almacenamos las
-        imágenes que subes. Solo verificamos su identidad.
+        leyendo su documento de identidad expedido por el Estado. Usamos esta
+        información para verificar su identidad.
       image_loaded: Imagen cargada
       image_loading: Cargando la imagen
       image_updated: Imagen actualizada
@@ -184,8 +184,8 @@ es:
         que verifiques tu identidad a través de tu teléfono.
       no_sp_name: La agencia a la que está intentando acceder
       privacy_html: '%{app_name} es un sitio web gubernamental seguro que cumple con
-        las normas más estrictas de protección de datos. Solo utilizamos sus
-        datos para verificar su identidad. %{link} sobre nuestras medidas de
+        las normas más estrictas de protección de datos. Utilizamos sus datos
+        para verificar su identidad. %{link} sobre nuestras medidas de
         privacidad y seguridad.'
       secure_account: Vamos a encriptar su cuenta con su contraseña. La encriptación
         significa que sus datos están protegidos y solo usted podrá acceder o
@@ -203,7 +203,6 @@ es:
       upload_computer_link: Sube desde tu computadora
       upload_from_computer: '¿No tiene un teléfono?'
       upload_from_phone: Sube imágenes directamente desde la cámara de tu teléfono
-      upload_no_image_storage: No almacenamos imágenes que cargue. Solo verificamos su identidad.
       verify_identity: Le preguntaremos sus datos personales para verificar su
         identidad comparándola con los registros públicos.
       welcome_html: '%{sp_name} necesita asegurarse de que es usted y no es alguien
@@ -213,8 +212,8 @@ es:
       bullet2: Número de seguro social
       bullet3: Número de teléfono
       consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
-        utilice, conserve y comparta su información personal. Solo la
-        utilizaremos para verificar su identidad.
+        utilice, conserve y comparta su información personal. Los utilizamos
+        para verificar su identidad.
       email_sent: Enlace enviado a %{email}. Compruebe el correo electrónico de su
         escritorio y siga las instrucciones para verificar su identidad.
       learn_more: Obtenga más información
