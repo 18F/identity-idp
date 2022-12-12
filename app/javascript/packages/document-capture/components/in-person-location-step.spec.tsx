@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event';
 import { useSandbox } from '@18f/identity-test-helpers';
 import AnalyticsContext, { AnalyticsContextProvider } from '../context/analytics';
 import InPersonLocationStep, { LOCATIONS_URL } from './in-person-location-step';
+import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
 import { ADDRESS_SEARCH_URL } from './address-search';
 import InPersonContext from '../context/in-person';
 
@@ -65,12 +66,17 @@ describe('InPersonLocationStep', () => {
   it('allows search by address when enabled', async () => {
     const { findByText, findByLabelText } = render(
       <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
-        <InPersonLocationStep {...DEFAULT_PROPS} />
+        <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
       </InPersonContext.Provider>,
     );
 
-    await userEvent.type(await findByLabelText('Search for an address'), '100 main');
-    await userEvent.click(await findByText('Search'));
+    await userEvent.type(
+      await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
+      '100 main',
+    );
+    await userEvent.click(
+      await findByText('in_person_proofing.body.location.po_search.search_button'),
+    );
     await findByText('100 Main St, South Fulton, Tennessee, 38257');
     expect(window.fetch).to.have.been.calledWith(
       LOCATIONS_URL,

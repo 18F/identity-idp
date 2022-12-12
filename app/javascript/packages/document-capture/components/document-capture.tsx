@@ -9,6 +9,7 @@ import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep from './documents-step';
 import InPersonPrepareStep from './in-person-prepare-step';
 import InPersonLocationStep from './in-person-location-step';
+import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
 import InPersonSwitchBackStep from './in-person-switch-back-step';
 import ReviewIssuesStep from './review-issues-step';
 import UploadContext from '../context/upload';
@@ -58,7 +59,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const { t } = useI18n();
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
-  const { inPersonURL } = useContext(InPersonContext);
+  const { inPersonURL, arcgisSearchEnabled } = useContext(InPersonContext);
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
     if (stepName) {
@@ -110,7 +111,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
       : ([
           {
             name: 'location',
-            form: InPersonLocationStep,
+            form: arcgisSearchEnabled ? InPersonLocationPostOfficeSearchStep : InPersonLocationStep,
           },
           {
             name: 'prepare',

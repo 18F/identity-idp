@@ -21,25 +21,19 @@ describe UserAlerts::AlertUserAboutAccountVerified do
 
       expect_delivered_email_count(3)
       expect_delivered_email(
-        0, {
-          to: [confirmed_email_addresses[0].email],
-          subject: t('user_mailer.account_verified.subject', sp_name: ''),
-          body: [disavowal_token],
-        }
+        to: [confirmed_email_addresses[0].email],
+        subject: t('user_mailer.account_verified.subject', sp_name: ''),
+        body: [disavowal_token],
       )
       expect_delivered_email(
-        1, {
-          to: [confirmed_email_addresses[1].email],
-          subject: t('user_mailer.account_verified.subject', sp_name: ''),
-          body: [disavowal_token],
-        }
+        to: [confirmed_email_addresses[1].email],
+        subject: t('user_mailer.account_verified.subject', sp_name: ''),
+        body: [disavowal_token],
       )
       expect_delivered_email(
-        2, {
-          to: [confirmed_email_addresses[2].email],
-          subject: t('user_mailer.account_verified.subject', sp_name: ''),
-          body: [disavowal_token],
-        }
+        to: [confirmed_email_addresses[2].email],
+        subject: t('user_mailer.account_verified.subject', sp_name: ''),
+        body: [disavowal_token],
       )
     end
   end

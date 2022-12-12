@@ -11,6 +11,9 @@ es:
         ha sido cancelada.
       text_html: Si no puede utilizar ninguno de los métodos de autenticación
         anteriores, puede %{link}.
+    attempt_remaining_warning_html:
+      one: Le quedan <strong>%{count} intento</strong>.
+      other: Le quedan <strong>%{count} intentos</strong>.
     backup_code_fallback:
       question: '¿No tienes tus códigos de seguridad disponibles?'
     backup_code_header_text: Ingrese su código de seguridad de respaldo
@@ -20,8 +23,8 @@ es:
     header_text: Introduzca su código único
     important_alert_icon: ícono de aviso importante
     invalid_backup_code: Esa código de respaldo no es válida.
-    invalid_otp: El código de un solo uso no es válido. Puede intentar ingresarlo
-      nuevamente o solicitar uno nuevo.
+    invalid_otp: Ese código único no es válido. Inténtelo de nuevo o solicite un
+      nuevo código.
     invalid_personal_key: Esa clave personal no es válida.
     invalid_piv_cac: Ese PIV/CAC no funcionó. Asegúrese de que sea el PIV/CAC
       correcto para esta cuenta. Si es así, puede haber un problema con su

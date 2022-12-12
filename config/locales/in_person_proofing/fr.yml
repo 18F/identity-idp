@@ -37,6 +37,13 @@ fr:
           vous pourrez peut-être vérifier en personne dans un bureau de poste
           américain local dans certains endroits.
         none_found: Aucun endroit trouvé.
+        po_search:
+          address_search_hint: 'Exemple : 1960 W Chelsea Ave Allentown PA 18104'
+          address_search_label: Entrez une adresse pour trouver un bureau de poste près de chez vous.
+          po_search_about: Si vous avez des difficultés à ajouter votre pièce d’identité,
+            vous pouvez vérifier votre identité en personne dans un bureau de
+            poste américain proche.
+          search_button: Chercher
         post_office: Bureau de Poste
         retail_hours_heading: Heures de vente au détail
         retail_hours_sat: 'Sam:'
@@ -103,6 +110,8 @@ fr:
       barcode: Vous êtes prêt à vérifier votre identité en personne
       cta: Vous avez des difficultés à vérifier votre identité en ligne?
       location: Sélectionnez un lieu pour vérifier votre identité
+      po_search:
+        location: Trouver un bureau de poste participant
       prepare: Vérifiez votre identité en personne
       state_id: Saisissez les informations figurant sur votre document d’identité
       switch_back: Retournez sur votre ordinateur pour vous préparer à vérifier votre

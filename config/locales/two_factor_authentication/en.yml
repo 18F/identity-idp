@@ -11,6 +11,9 @@ en:
         has been cancelled.
       text_html: If you can’t use any of the authentication methods above, you can
         %{link}.
+    attempt_remaining_warning_html:
+      one: You have <strong>%{count} attempt</strong> remaining.
+      other: You have <strong>%{count} attempts</strong> remaining.
     backup_code_fallback:
       question: Don’t have your backup codes available?
     backup_code_header_text: Enter your backup security code
@@ -20,8 +23,7 @@ en:
     header_text: Enter your one-time code
     important_alert_icon: important alert icon
     invalid_backup_code: That backup code is invalid.
-    invalid_otp: That one-time code is invalid. You can try entering it again or
-      request a new one-time code.
+    invalid_otp: That one-time code is invalid. Try again or request a new code.
     invalid_personal_key: That personal key is invalid.
     invalid_piv_cac: That PIV/CAC didn’t work. Make sure it’s the right PIV/CAC for
       this account. If it is, there may be a problem with your PIV/CAC, PIN, or

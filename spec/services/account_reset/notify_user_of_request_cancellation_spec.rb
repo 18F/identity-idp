@@ -14,16 +14,12 @@ describe AccountReset::NotifyUserOfRequestCancellation do
 
       expect_delivered_email_count(2)
       expect_delivered_email(
-        0, {
-          to: [email_address1.email],
-          subject: t('user_mailer.account_reset_cancel.subject'),
-        }
+        to: [email_address1.email],
+        subject: t('user_mailer.account_reset_cancel.subject'),
       )
       expect_delivered_email(
-        1, {
-          to: [email_address2.email],
-          subject: t('user_mailer.account_reset_cancel.subject'),
-        }
+        to: [email_address2.email],
+        subject: t('user_mailer.account_reset_cancel.subject'),
       )
     end
 

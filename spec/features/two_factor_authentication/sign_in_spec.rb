@@ -434,7 +434,6 @@ feature 'Two Factor Authentication' do
         fill_in 'code', with: otp
         click_submit_default
 
-        # expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
         expect(current_path).to eq login_two_factor_authenticator_path
       end
     end
