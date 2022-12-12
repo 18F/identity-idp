@@ -157,14 +157,17 @@ es:
       verify_identity: Verifique su identidad
       welcome: Comience a verificar su identidad
     hybrid_flow_warning:
-      explanation_html: Usted está utilizando <b>%{app_name}</b> para verificar su
-        identidad y acceder a <b>%{service_provider_name}</b> y sus servicios.
-      explanation_non_sp_html: Usted está utilizando <b>%{app_name}</b> para verificar su identidad
+      explanation_html: Usted está utilizando <strong>%{app_name}</strong> para
+        verificar su identidad y acceder a
+        <strong>%{service_provider_name}</strong> y sus servicios.
+      explanation_non_sp_html: Usted está utilizando <strong>%{app_name}</strong> para
+        verificar su identidad
       only_add_if_text: 'SOLO AGREGUE SU IDENTIFICACIÓN SI:'
       only_add_own_account_html: Está usando su propia cuenta de %{app_name}
       only_add_phone_verify_html: Usted solicitó a %{app_name} que verificara su
         identidad a través de su teléfono
-      only_add_sp_services_html: Está tratando de acceder a los servicios <b>%{service_provider_name}</b>
+      only_add_sp_services_html: Está tratando de acceder a los servicios
+        <strong>%{service_provider_name}</strong>
     info:
       camera_required: Su teléfono móvil debe tener una cámara y un navegador web.
       capture_status_big_document: Demasiado cerca

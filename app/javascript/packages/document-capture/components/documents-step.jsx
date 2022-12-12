@@ -6,8 +6,6 @@ import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DeviceContext from '../context/device';
-import ServiceProviderContext from '../context/service-provider';
-import AppContext from '../context/app';
 import UploadContext from '../context/upload';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import CaptureTroubleshooting from './capture-troubleshooting';
@@ -48,18 +46,11 @@ function DocumentsStep({
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
 
-  // Determine the Service Provider name to display,
-  // in some circumstances.
-  // If there is no SP, we default to the appName
-  const spContext = useContext(ServiceProviderContext);
-  const serviceProviderName = spContext.name;
-  const { appName } = useContext(AppContext);
-
   return (
     <CaptureTroubleshooting>
       {flowPath === 'hybrid' && (
         <>
-          <HybridDocCaptureWarning appName={appName} serviceProviderName={serviceProviderName} />
+          <HybridDocCaptureWarning />
           <br />
         </>
       )}

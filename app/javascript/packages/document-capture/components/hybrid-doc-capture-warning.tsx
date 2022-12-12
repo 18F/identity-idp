@@ -1,45 +1,48 @@
+import { useContext, ReactNode } from 'react';
 import { useI18n, formatHTML } from '@18f/identity-react-i18n';
+import ServiceProviderContext from '../context/service-provider';
+import AppContext from '../context/app';
 
-type HybridDocCaptureWarningProps = {
-  appName: string;
-  serviceProviderName: string | null;
-};
+function formatWithStrong(text: string): ReactNode {
+  return formatHTML(text, {
+    strong: ({ children }) => <strong>{children}</strong>,
+  });
+}
 
-function HybridDocCaptureWarning({
-  appName = 'Login.gov',
-  serviceProviderName = null,
-}: HybridDocCaptureWarningProps) {
+function HybridDocCaptureWarning() {
   const { t } = useI18n();
+  // Determine the Service Provider name to display,
+  // in some circumstances.
+  // If there is no SP, we default to the appName
+  const spContext = useContext(ServiceProviderContext);
+  const serviceProviderName = spContext.name;
+  const { appName } = useContext(AppContext);
 
   const listHeadingText = t('doc_auth.hybrid_flow_warning.only_add_if_text');
-  const ownAccountItemText = t('doc_auth.hybrid_flow_warning.only_add_own_account_html', { app_name: appName });
-  const phoneVerifyItemText = t('doc_auth.hybrid_flow_warning.only_add_phone_verify_html').replace(
-    '%{app_name}',
-    appName,
-  );
+  const ownAccountItemText = t('doc_auth.hybrid_flow_warning.only_add_own_account_html', {
+    app_name: appName,
+  });
+  const phoneVerifyItemText = t('doc_auth.hybrid_flow_warning.only_add_phone_verify_html', {
+    app_name: appName,
+  });
   let spServicesItemText;
-  let warningText = t('doc_auth.hybrid_flow_warning.explanation_non_sp_html').replace(
-    '%{app_name}',
-    appName,
-  );
+  let warningText = t('doc_auth.hybrid_flow_warning.explanation_non_sp_html', {
+    app_name: appName,
+  });
   if (serviceProviderName) {
-    warningText = t('doc_auth.hybrid_flow_warning.explanation_html')
-      .replace('%{app_name}', appName)
-      .replace('%{service_provider_name}', serviceProviderName);
-    spServicesItemText = t('doc_auth.hybrid_flow_warning.only_add_sp_services_html').replace(
-      '%{service_provider_name}',
-      serviceProviderName,
-    );
+    warningText = t('doc_auth.hybrid_flow_warning.explanation_html', {
+      app_name: appName,
+      service_provider_name: serviceProviderName,
+    });
+    spServicesItemText = t('doc_auth.hybrid_flow_warning.only_add_sp_services_html', {
+      service_provider_name: serviceProviderName,
+    });
   }
 
   return (
     <div className="usa-alert usa-alert--warning" role="status">
       <div className="usa-alert__body">
-        <p>
-          {formatHTML(warningText, {
-            b: ({ children }) => <b>{children}</b>,
-          })}
-        </p>
+        <p>{formatWithStrong(warningText)}</p>
         <br />
         <p className="usa-alert__text">
           <b>{listHeadingText}</b>
@@ -47,18 +50,8 @@ function HybridDocCaptureWarning({
         <br />
         <ul>
           <li>{ownAccountItemText}</li>
-          <li>
-            {formatHTML(phoneVerifyItemText, {
-              b: ({ children }) => <b>{children}</b>,
-            })}
-          </li>
-          {serviceProviderName && (
-            <li>
-              {formatHTML(spServicesItemText, {
-                b: ({ children }) => <b>{children}</b>,
-              })}
-            </li>
-          )}
+          <li>{formatWithStrong(phoneVerifyItemText)}</li>
+          {serviceProviderName && <li>{formatWithStrong(spServicesItemText)}</li>}
         </ul>
       </div>
     </div>
