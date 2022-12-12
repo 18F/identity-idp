@@ -25,7 +25,6 @@ describe Idv::Agent do
         issuer: issuer,
         friendly_name: friendly_name,
         app_id: app_id,
-        device_profiling_enabled: true,
       )
     end
 
