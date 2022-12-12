@@ -2,7 +2,7 @@ import { createContext, useMemo } from 'react';
 import { addSearchParams } from '@18f/identity-url';
 import type { ReactNode } from 'react';
 
-interface ServiceProviderContextType {
+export interface ServiceProviderContextType {
   /**
    * Service provider name
    */
