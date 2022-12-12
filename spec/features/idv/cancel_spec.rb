@@ -23,12 +23,18 @@ describe 'cancel IdV', :js do
 
     expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
     expect(current_path).to eq(idv_cancel_path)
-    expect(fake_analytics).to have_logged_event('IdV: cancellation visited', step: 'agreement')
+    expect(fake_analytics).to have_logged_event(
+      'IdV: cancellation visited',
+      hash_including(step: 'agreement'),
+    )
 
     click_on t('idv.cancel.actions.keep_going')
 
     expect(current_path).to eq(original_path)
-    expect(fake_analytics).to have_logged_event('IdV: cancellation go back', step: 'agreement')
+    expect(fake_analytics).to have_logged_event(
+      'IdV: cancellation go back',
+      hash_including(step: 'agreement'),
+    )
   end
 
   it 'shows the user a cancellation message with the option to restart from the beginning' do
@@ -36,12 +42,18 @@ describe 'cancel IdV', :js do
 
     expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
     expect(current_path).to eq(idv_cancel_path)
-    expect(fake_analytics).to have_logged_event('IdV: cancellation visited', step: 'agreement')
+    expect(fake_analytics).to have_logged_event(
+      'IdV: cancellation visited',
+      hash_including(step: 'agreement'),
+    )
 
     click_on t('idv.cancel.actions.start_over')
 
     expect(current_path).to eq(idv_doc_auth_welcome_step)
-    expect(fake_analytics).to have_logged_event('IdV: start over', step: 'agreement')
+    expect(fake_analytics).to have_logged_event(
+      'IdV: start over',
+      hash_including(step: 'agreement'),
+    )
   end
 
   it 'shows a cancellation message with option to cancel and reset idv' do
@@ -49,12 +61,18 @@ describe 'cancel IdV', :js do
 
     expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
     expect(current_path).to eq(idv_cancel_path)
-    expect(fake_analytics).to have_logged_event('IdV: cancellation visited', step: 'agreement')
+    expect(fake_analytics).to have_logged_event(
+      'IdV: cancellation visited',
+      hash_including(step: 'agreement'),
+    )
 
     click_spinner_button_and_wait t('idv.cancel.actions.account_page')
 
     expect(current_path).to eq(account_path)
-    expect(fake_analytics).to have_logged_event('IdV: cancellation confirmed', step: 'agreement')
+    expect(fake_analytics).to have_logged_event(
+      'IdV: cancellation confirmed',
+      hash_including(step: 'agreement'),
+    )
 
     # After visiting /verify, expect to redirect to the first step in the IdV flow.
     visit idv_path
@@ -73,8 +91,9 @@ describe 'cancel IdV', :js do
 
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation visited',
-        step: 'ssn',
         proofing_components: { document_check: 'mock', document_type: 'state_id' },
+        request_came_from: 'idv/doc_auth#show',
+        step: 'ssn',
       )
 
       click_on t('idv.cancel.actions.keep_going')
@@ -90,8 +109,9 @@ describe 'cancel IdV', :js do
 
       expect(fake_analytics).to have_logged_event(
         'IdV: start over',
-        step: 'ssn',
+        location: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id' },
+        step: 'ssn',
       )
 
       complete_doc_auth_steps_before_ssn_step
@@ -119,12 +139,18 @@ describe 'cancel IdV', :js do
 
       expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
       expect(current_path).to eq(idv_cancel_path)
-      expect(fake_analytics).to have_logged_event('IdV: cancellation visited', step: 'agreement')
+      expect(fake_analytics).to have_logged_event(
+        'IdV: cancellation visited',
+        hash_including(step: 'agreement'),
+      )
 
       click_spinner_button_and_wait t('idv.cancel.actions.exit', app_name: APP_NAME)
 
       expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
-      expect(fake_analytics).to have_logged_event('IdV: cancellation confirmed', step: 'agreement')
+      expect(fake_analytics).to have_logged_event(
+        'IdV: cancellation confirmed',
+        hash_including(step: 'agreement'),
+      )
 
       start_idv_from_sp(sp)
       expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
