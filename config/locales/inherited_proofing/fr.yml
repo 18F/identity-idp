@@ -33,14 +33,14 @@ fr:
       service_provider:
         communication: 'la communication a échoué'
     headings:
-      lets_go: to be implemented
+      lets_go: Comment fonctionne la vérification de votre identité
       retrieval: Nous récupérons vos informations depuis votre agence partenaire.
-      secure_account: to be implemented
-      verify_identity: to be implemented
+      secure_account: Sécuriser votre compte
+      verify_identity: Vérifier votre identité
       verify_information: to be implemented
       welcome: Commencez à vérifier votre identité
     info:
-      lets_go: to be implemented
+      lets_go: 'La vérification de l’identité se fait en deux temps :'
       no_sp_name: L’agence à laquelle vous essayez d’accéder
       privacy_html: '%{app_name} est un site gouvernemental sécurisé qui respecte les
         normes les plus strictes en matière de protection des données. Nous
@@ -49,12 +49,17 @@ fr:
       retrieval_thanks: Merci de votre patience!
       retrieval_time: Cette opération peut prendre jusqu’à une minute. Nous chargerons
         automatiquement l’étape suivante lorsque ce sera fait.
-      secure_account: to be implemented
-      verify_identity: to be implemented
+      secure_account: Votre compte sera crypté avec votre mot de passe. Le cryptage
+        signifie que vos données sont protégées et que vous seul pourrez accéder
+        à vos informations ou les modifier.
+      verify_identity: Nous récupérerons vos informations personnelles sur %{sp_name}
+        et vous demanderons de les vérifier.
       welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
         quelqu’un qui se fait passer pour vous'
     instructions:
-      consent: to be implemented for %{app_name}
+      consent: En cochant cette case, vous autorisez login.gov à demander, utiliser,
+        conserver et partager vos renseignements personnels. Nous ne les
+        utiliserons que pour vérifier votre identité.
       learn_more: En savoir plus
       privacy: Nos normes de confidentialité et de sécurité
       verify_requirements: Nous allons vous appeler ou vous envoyer un SMS à partir de
