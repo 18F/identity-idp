@@ -9,7 +9,7 @@ function formatWithStrong(text: string): ReactNode {
   });
 }
 
-function HybridDocCaptureWarning() {
+function HybridDocCaptureWarning({}: React.HTMLAttributes<any>): JSX.Element {
   const { t } = useI18n();
   // Determine the Service Provider name to display,
   // in some circumstances.
@@ -29,6 +29,7 @@ function HybridDocCaptureWarning() {
   let warningText = t('doc_auth.hybrid_flow_warning.explanation_non_sp_html', {
     app_name: appName,
   });
+
   if (serviceProviderName) {
     warningText = t('doc_auth.hybrid_flow_warning.explanation_html', {
       app_name: appName,
@@ -42,12 +43,10 @@ function HybridDocCaptureWarning() {
   return (
     <div className="usa-alert usa-alert--warning" role="status">
       <div className="usa-alert__body">
-        <p>{formatWithStrong(warningText)}</p>
-        <br />
-        <p className="usa-alert__text">
-          <b>{listHeadingText}</b>
+        <p className="margin-bottom-4">{formatWithStrong(warningText)}</p>
+        <p className="usa-alert__text margin-bottom-4">
+          <strong>{listHeadingText}</strong>
         </p>
-        <br />
         <ul>
           <li>{ownAccountItemText}</li>
           <li>{formatWithStrong(phoneVerifyItemText)}</li>

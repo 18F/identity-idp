@@ -48,12 +48,7 @@ function DocumentsStep({
 
   return (
     <CaptureTroubleshooting>
-      {flowPath === 'hybrid' && (
-        <>
-          <HybridDocCaptureWarning />
-          <br />
-        </>
-      )}
+      {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
       <PageHeading>{t('doc_auth.headings.document_capture')}</PageHeading>
       <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>
       <p className="margin-bottom-0">{t('doc_auth.tips.document_capture_header_text')}</p>
