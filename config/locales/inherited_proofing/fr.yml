@@ -37,7 +37,7 @@ fr:
       retrieval: Nous récupérons vos informations depuis votre agence partenaire.
       secure_account: Sécuriser votre compte
       verify_identity: Vérifier votre identité
-      verify_information: to be implemented
+      verify_information: Vérifier votre information
       welcome: Commencez à vérifier votre identité
     info:
       lets_go: 'La vérification de l’identité se fait en deux temps :'
@@ -69,7 +69,8 @@ fr:
       headings:
         missing_required_items: Vous n’avez pas de numéro de téléphone? Voici comment obtenir de l’aide
         need_assistance: to be implemented
-        need_help_updating: to be implemented
+        need_help_updating: Vous devez mettre à jour vos informations? Voici comment
+          obtenir de l’aide
       options:
         get_help: Obtenez de l’aide sur %{sp_name}
         learn_more_phone_or_mail: En savoir plus sur la vérification par téléphone ou par courriel.

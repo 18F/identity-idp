@@ -34,7 +34,7 @@ en:
       retrieval: We are retrieving your information from your Partner Agency
       secure_account: Secure your account
       verify_identity: Verify your identity
-      verify_information: Please verify your information
+      verify_information: Verify your information
       welcome: Get started verifying your identity
     info:
       lets_go: 'Identity verification happens in two parts:'
