@@ -23,7 +23,6 @@ import type { FlowPath, DeviceContextValue } from '@18f/identity-document-captur
  */
 interface AppRootData {
   helpCenterRedirectUrl: string;
-  appName: string;
   maxCaptureAttemptsBeforeTips: string;
   maxAttemptsBeforeNativeCamera: string;
   acuantSdkUpgradeABTestingEnabled: string;
@@ -115,7 +114,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     maxCaptureAttemptsBeforeNativeCamera,
     maxSubmissionAttemptsBeforeNativeCamera,
     acuantVersion,
-    appName,
     flowPath,
     cancelUrl: cancelURL,
     idvInPersonUrl: inPersonURL,
