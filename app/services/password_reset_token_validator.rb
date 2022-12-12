@@ -17,6 +17,7 @@ class PasswordResetTokenValidator
   attr_accessor :user
 
   def valid_token
-    errors.add(:user, 'token_expired', type: :user) unless user.reset_password_period_valid?
+    return if user.reset_password_period_valid?
+    errors.add(:user, 'token_expired', type: :token_expired)
   end
 end
