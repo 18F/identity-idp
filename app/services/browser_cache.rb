@@ -1,4 +1,5 @@
 class BrowserCache
+  include ::NewRelic::Agent::MethodTracer
   class Result
     def initialize(browser)
       @browser = browser
@@ -71,4 +72,6 @@ class BrowserCache
   def self.clear
     @cache.clear
   end
+
+  add_method_tracer :parse, "Custom/#{name}/parse"
 end
