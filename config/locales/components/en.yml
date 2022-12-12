@@ -35,6 +35,9 @@ en:
       year: Year
     one_time_code_input:
       label: One-time code
+      hint:
+        numeric: 'Example: 123456'
+        alphanumeric: 'Example: 123ABC'
     password_toggle:
       label: Password
       toggle_label: Show password

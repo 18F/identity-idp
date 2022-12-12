@@ -45,6 +45,14 @@ class OneTimeCodeInputComponent < BaseComponent
     @tag_options = tag_options
   end
 
+  def hint
+    if numeric?
+      t('components.one_time_code_input.hint.numeric')
+    else
+      t('components.one_time_code_input.hint.alphanumeric')
+    end
+  end
+
   def input_pattern
     if numeric?
       '[0-9]*'
