@@ -1,7 +1,7 @@
 import { useContext, ReactNode } from 'react';
 import { useI18n, formatHTML } from '@18f/identity-react-i18n';
-import ServiceProviderContext from '../context/service-provider';
 import { getConfigValue } from '@18f/identity-config';
+import ServiceProviderContext from '../context/service-provider';
 
 function formatWithStrong(text: string): ReactNode {
   return formatHTML(text, {
@@ -9,7 +9,14 @@ function formatWithStrong(text: string): ReactNode {
   });
 }
 
-function HybridDocCaptureWarning({}: React.HTMLAttributes<any>): JSX.Element {
+interface HybridDocCaptureWarningProps {
+  /**
+   * A class string to append to root element
+   */
+  className?: string;
+}
+
+function HybridDocCaptureWarning({ className = '' }: HybridDocCaptureWarningProps): JSX.Element {
   const { t } = useI18n();
   // Determine the Service Provider name to display,
   // in some circumstances.
@@ -41,7 +48,7 @@ function HybridDocCaptureWarning({}: React.HTMLAttributes<any>): JSX.Element {
   }
 
   return (
-    <div className="usa-alert usa-alert--warning" role="status">
+    <div className={`usa-alert usa-alert--warning ${className}`} role="status">
       <div className="usa-alert__body">
         <p className="margin-bottom-4">{formatWithStrong(warningText)}</p>
         <p className="usa-alert__text margin-bottom-4">
