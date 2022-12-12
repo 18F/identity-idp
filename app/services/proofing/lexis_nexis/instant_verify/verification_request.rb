@@ -29,7 +29,7 @@ module Proofing
                   Number: applicant[:state_id_number],
                   Issuer: applicant[:state_id_jurisdiction],
                   Type: 'drivers',
-                }
+                },
               ],
             },
           }.to_json
