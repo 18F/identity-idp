@@ -155,6 +155,25 @@ describe FormResponse do
         expect(response.to_h).to eq response_hash
       end
 
+      context 'without error type' do
+        it 'falls back to message as key for details' do
+          errors = ActiveModel::Errors.new(build_stubbed(:user))
+          errors.add(:email_language, :blank)
+          response = FormResponse.new(success: false, errors: errors)
+          response_hash = {
+            success: false,
+            errors: {
+              email_language: [t('errors.messages.blank')],
+            },
+            error_details: {
+              email_language: { blank: true },
+            },
+          }
+
+          expect(response.to_h).to eq response_hash
+        end
+      end
+
       it 'omits details if errors are empty' do
         errors = ActiveModel::Errors.new(build_stubbed(:user))
         response = FormResponse.new(success: true, errors: errors)

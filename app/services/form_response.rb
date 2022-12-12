@@ -56,7 +56,9 @@ class FormResponse
   end
 
   def flatten_details(details)
-    details.transform_values { |errors| errors.pluck(:error).index_with(true) }
+    details.transform_values do |errors|
+      errors.map { |error| error[:type] || error[:error] }.index_with(true)
+    end
   end
 
   attr_reader :success
