@@ -50,7 +50,7 @@ es:
       secure_account: Cifraremos su cuenta con su contraseña. La encriptación
         significa que sus datos están protegidos y solo usted podrá acceder o
         modificar su información.
-      verify_identity: Obtendremos su información personal de My HealtheVet y le
+      verify_identity: Obtendremos su información personal de %{sp_name} y le
         pediremos que la verifique.
       welcome_html: '%{sp_name} necesita asegurarse de que sea usted y no alguien que
         se haga pasar por usted.'

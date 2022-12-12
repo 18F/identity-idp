@@ -52,8 +52,8 @@ fr:
       secure_account: Votre compte sera crypté avec votre mot de passe. Le cryptage
         signifie que vos données sont protégées et que vous seul pourrez accéder
         à vos informations ou les modifier.
-      verify_identity: Nous récupérerons vos informations personnelles sur My
-        HealtheVet et vous demanderons de les vérifier.
+      verify_identity: Nous récupérerons vos informations personnelles sur %{sp_name}
+        et vous demanderons de les vérifier.
       welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
         quelqu’un qui se fait passer pour vous'
     instructions:

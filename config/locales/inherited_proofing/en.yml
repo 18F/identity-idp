@@ -48,7 +48,7 @@ en:
       secure_account: We’ll encrypt your account with your password. Encryption means
         your data is protected and only you will be able to access or change
         your information.
-      verify_identity: We’ll retrieve your personal information from My HealtheVet and
+      verify_identity: We’ll retrieve your personal information from %{sp_name} and
         ask you to verify it.
       welcome_html: '%{sp_name} - not someone pretending to be you.'
     instructions:
