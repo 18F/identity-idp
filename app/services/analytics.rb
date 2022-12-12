@@ -2,6 +2,7 @@
 
 class Analytics
   include AnalyticsEvents
+  include ::NewRelic::Agent::MethodTracer
   prepend Idv::AnalyticsEventsEnhancer
 
   attr_reader :user, :request, :sp, :ahoy
@@ -134,4 +135,6 @@ class Analytics
     return value unless value.is_a?(String)
     Time.zone.parse(value)
   end
+
+  add_method_tracer :browser_attributes, "Custom/#{name}/browser_attributes"
 end
