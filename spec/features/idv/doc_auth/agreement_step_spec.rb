@@ -81,8 +81,7 @@ feature 'doc auth welcome step' do
         flow_path: 'standard',
         step: 'upload', step_count: 1,
         irs_reproofing: false,
-        native_camera_a_b_testing_enabled: false,
-        native_camera_only: false
+        acuant_sdk_upgrade_ab_test_bucket: :default
       )
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth upload submitted',
