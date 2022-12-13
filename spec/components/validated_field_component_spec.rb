@@ -25,13 +25,10 @@ RSpec.describe ValidatedFieldComponent, type: :component do
     render_inline(described_class.new(**options))
   end
 
-  it 'renders aria-describedby to establish connection between input and error message' do
+  it 'does not render aria-describedby when component is first rendered' do
     field = rendered.at_css('input')
 
-    expect(field.attr('aria-describedby').split(' ')).to include(
-      start_with('validated-field-hint-'),
-      start_with('validated-field-error-'),
-    )
+    expect(field.attributes).to_not include('aria-describedby')
   end
 
   describe 'error message strings' do
@@ -71,14 +68,25 @@ RSpec.describe ValidatedFieldComponent, type: :component do
 
   context 'with tag options' do
     context 'with aria tag option' do
-      let(:tag_options) { { input_html: { aria: { describedby: 'foo' } } } }
+      let(:tag_options) { { input_html: { aria: { describedby: 'foo', invalid: 'true' } }, hint: 'hint' } }
+      let(:input) {}
+      let(:error_messages) { { valueMissing: 'missing' } }
 
+      # want to ensure validated-field-error is present when input is invalid
       it 'merges aria-describedby with the one applied by the field' do
         field = rendered.at_css('input')
 
         expect(field.attr('aria-describedby')).to include('validated-field-error-')
         expect(field.attr('aria-describedby')).to include('foo')
       end
+
+      it 'includes hint in aria-describedby when hint is present in tag options' do
+        field = rendered.at_css('input')
+
+        expect(tag_options).to include(:hint)
+        expect(field.attr('aria-describedby')).to include('validated-field-hint-')
+      end
+
     end
   end
 end
