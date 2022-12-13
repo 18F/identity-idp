@@ -1,5 +1,5 @@
-import { useContext, forwardRef } from 'react';
-import type { ReactNode, ForwardedRef } from 'react';
+import { useContext } from 'react';
+import type { ReactNode } from 'react';
 import { useI18n, formatHTML } from '@18f/identity-react-i18n';
 import { getConfigValue } from '@18f/identity-config';
 import { Alert } from '@18f/identity-components';
@@ -18,10 +18,7 @@ interface HybridDocCaptureWarningProps {
   className?: string;
 }
 
-function HybridDocCaptureWarning(
-  { className = '' }: HybridDocCaptureWarningProps,
-  ref: ForwardedRef<any>,
-): JSX.Element {
+function HybridDocCaptureWarning({ className = '' }: HybridDocCaptureWarningProps): JSX.Element {
   const { t } = useI18n();
   // Determine the Service Provider name to display,
   // in some circumstances.
@@ -53,7 +50,7 @@ function HybridDocCaptureWarning(
   }
 
   return (
-    <Alert textTag="div" className={className} ref={ref}>
+    <Alert textTag="div" className={className} type="warning">
       <p className="margin-bottom-4">{formatWithStrong(warningText)}</p>
       <p className="margin-bottom-4">
         <strong>{listHeadingText}</strong>
@@ -67,4 +64,4 @@ function HybridDocCaptureWarning(
   );
 }
 
-export default forwardRef(HybridDocCaptureWarning);
+export default HybridDocCaptureWarning;

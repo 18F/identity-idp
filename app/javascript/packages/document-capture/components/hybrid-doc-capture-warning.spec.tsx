@@ -16,6 +16,21 @@ describe('HybridDocCaptureWarning', () => {
     document.body.append(config);
   });
 
+  describe('basic rendering', () => {
+    it('renders a warning alert', () => {
+      const { getByRole } = render(
+        <ServiceProviderContextProvider
+          value={{ name: null, failureToProofURL: '', getFailureToProofURL: () => '' }}
+        >
+          <HybridDocCaptureWarning />
+        </ServiceProviderContextProvider>,
+      );
+      const alertElement = getByRole('status');
+
+      expect(alertElement.classList.contains('usa-alert--warning'));
+    });
+  });
+
   describe('without SP', () => {
     it('renders correct warning title', () => {
       const { getByRole } = render(
