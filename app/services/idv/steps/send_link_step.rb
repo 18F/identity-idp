@@ -65,7 +65,16 @@ module Idv
           to: formatted_destination_phone,
           link: link(session_uuid),
           country_code: Phonelib.parse(formatted_destination_phone).country,
+          service_provider: sp_name,
         )
+      end
+
+      def service_provider
+        current_user&.identities&.order('created_at DESC')&.first
+      end
+
+      def sp_name
+        service_provider ? service_provider&.friendly_name : APP_NAME
       end
 
       def form_submit
