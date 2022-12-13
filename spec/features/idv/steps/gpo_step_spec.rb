@@ -1,5 +1,3 @@
-SHOULD_DO_PRY_THING = false
-
 require 'rails_helper'
 
 feature 'idv gpo step', :js do
@@ -115,10 +113,9 @@ feature 'idv gpo step', :js do
       visit_idp_from_ial2_oidc_sp
       signin(user.email, new_password)
       fill_in_code_with_last_phone_otp
-      SHOULD_DO_PRY_THING = true
       click_submit_default
-      binding.pry
-      expect(page).to have_content(t('forms.verify_profile.welcome_back_description'))
+
+      expect(page).to have_content(t('forms.verify_profile.instructions'))
     end
   end
 end
