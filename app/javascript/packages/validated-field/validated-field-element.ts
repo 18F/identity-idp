@@ -145,8 +145,15 @@ class ValidatedFieldElement extends HTMLElement {
 
       const errorId = this.getAttribute('error-id');
 
+      const descriptorId = (this.descriptorId?.split(' ') || []).find(
+        (id) => document.getElementById(id) === null,
+      );
+
       if (errorId) {
         this.errorMessage.id = errorId;
+      }
+      if (!errorId && descriptorId) {
+        this.errorMessage.id = descriptorId;
       }
 
       if (this.input && TEXT_LIKE_INPUT_TYPES.has(this.input.type)) {
