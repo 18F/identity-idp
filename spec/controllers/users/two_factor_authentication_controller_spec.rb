@@ -279,7 +279,7 @@ describe Users::TwoFactorAuthenticationController do
       let(:success_parameters) do
         { success: true, **default_parameters, failure_reason: nil }
       end
-      
+
       before do
         @user = create(:user, :with_phone)
         sign_in_before_2fa(@user)
