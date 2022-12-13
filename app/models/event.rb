@@ -1,5 +1,6 @@
 class Event < ApplicationRecord
   self.abstract_class = true
+  self.table_name = 'events'
   
   connects_to database: { writing: :events, reading: :events }
 
