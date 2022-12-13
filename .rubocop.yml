@@ -235,6 +235,9 @@ Layout/MultilineHashBraceLayout:
   Enabled: true
   EnforcedStyle: symmetrical
 
+Layout/MultilineHashKeyLineBreaks:
+  Enabled: true
+
 Layout/MultilineMethodCallBraceLayout:
   Enabled: true
 

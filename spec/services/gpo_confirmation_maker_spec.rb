@@ -7,10 +7,15 @@ describe GpoConfirmationMaker do
   let(:zipcode) { '12345' }
   let(:decrypted_attributes) do
     {
-      address1: '123 main st', address2: '',
-      city: 'Baton Rouge', state: 'Louisiana', zipcode: zipcode,
-      first_name: 'Robert', last_name: 'Robertson',
-      otp: otp, issuer: issuer
+      address1: '123 main st',
+      address2: '',
+      city: 'Baton Rouge',
+      state: 'Louisiana',
+      zipcode: zipcode,
+      first_name: 'Robert',
+      last_name: 'Robertson',
+      otp: otp,
+      issuer: issuer,
     }
   end
   let(:pii) do
