@@ -24,7 +24,7 @@
         maxlength: TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH,
         class: 'margin-bottom-5',
       ) %>
-  <%= f.submit t('forms.buttons.submit.default') %>
+  <%= f.submit t('forms.buttons.submit.default'), class: 'margin-bottom-5' %>
 <% end %>
 
 <%= render ButtonComponent.new(
