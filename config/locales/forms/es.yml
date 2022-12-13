@@ -133,7 +133,6 @@ es:
       totp_step_4: Ingrese el código temporal de su aplicación
     two_factor:
       backup_code: Código de seguridad
-      code: Código de un solo uso
       personal_key: Clave personal
       try_again: Use otro número de teléfono.
     validation:

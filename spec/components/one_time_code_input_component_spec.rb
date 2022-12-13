@@ -58,6 +58,24 @@ RSpec.describe OneTimeCodeInputComponent, type: :component do
     end
   end
 
+  describe 'hint' do
+    it 'includes hint text as a descriptor of the field' do
+      field = rendered.at_css('.one-time-code-input__input')
+
+      expect(field).to have_description t('components.one_time_code_input.hint.numeric')
+    end
+
+    context 'numeric is false' do
+      let(:options) { { numeric: false } }
+
+      it 'includes hint text as a descriptor of the field' do
+        field = rendered.at_css('.one-time-code-input__input')
+
+        expect(field).to have_description t('components.one_time_code_input.hint.alphanumeric')
+      end
+    end
+  end
+
   describe 'transport' do
     context 'omitted' do
       it 'renders default sms transport' do
