@@ -2,18 +2,13 @@ $radio-checkbox-space: 1.5rem;
 
 @include at-media('tablet') {
   input,
-  select,
-  textarea {
+  select {
     font-size: $form-field-font-size-sm;
   }
 }
 
 legend {
   font-weight: $heading-font-weight;
-}
-
-textarea {
-  resize: vertical;
 }
 
 .field {
@@ -64,8 +59,7 @@ input::-webkit-inner-spin-button {
 }
 
 // Upstream: https://github.com/18F/identity-style-guide/pull/325
-.usa-input,
-.usa-textarea {
+.usa-input {
   margin-top: units(0.5);
 }
 
