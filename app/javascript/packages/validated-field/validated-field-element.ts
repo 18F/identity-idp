@@ -69,11 +69,34 @@ class ValidatedFieldElement extends HTMLElement {
   setErrorMessage(message?: string | null) {
     if (message) {
       this.getOrCreateErrorMessageElement().textContent = message;
+      this.showAriaDescribedByError();
       if (this.errorMessage?.style.display === 'none') {
         this.errorMessage.style.display = '';
       }
     } else if (this.errorMessage) {
       this.errorMessage.style.display = 'none';
+      this.hideAriaDescribedByError();
+    }
+  }
+
+  private showAriaDescribedByError() {
+    const aria = this.input?.getAttribute('aria-describedby');
+    const errorId = this.getAttribute('error-id');
+    const ariaContents = aria?.split(/s+/) || [];
+    if (errorId && this.input && !ariaContents.includes(errorId)) {
+      this.input?.setAttribute('aria-describedby', [...ariaContents, errorId].join(' '));
+    }
+  }
+
+  private hideAriaDescribedByError() {
+    const aria = this.input?.getAttribute('aria-describedby');
+    const errorId = this.getAttribute('error-id');
+    const ariaContents = aria?.split(/s+/) || [];
+    if (errorId && this.input && ariaContents.includes(errorId)) {
+      this.input?.setAttribute(
+        'aria-describedby',
+        ariaContents.filter((e) => e !== errorId).join(' '),
+      );
     }
   }
 
@@ -120,13 +143,12 @@ class ValidatedFieldElement extends HTMLElement {
       this.errorMessage = this.ownerDocument.createElement('div');
       this.errorMessage.classList.add('usa-error-message');
 
-      const descriptorId = (this.descriptorId?.split(' ') || []).find(
-        (id) => document.getElementById(id) === null,
-      );
+      const errorId = this.getAttribute('error-id');
 
-      if (descriptorId) {
-        this.errorMessage.id = descriptorId;
+      if (errorId) {
+        this.errorMessage.id = errorId;
       }
+
       if (this.input && TEXT_LIKE_INPUT_TYPES.has(this.input.type)) {
         this.errorMessage.style.maxWidth = `${this.input.offsetWidth}px`;
       }
