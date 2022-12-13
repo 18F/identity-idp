@@ -55,20 +55,23 @@ describe('Alert', () => {
   });
 
   it('renders children in the p element by default', () => {
-    const { getByText } = render(<Alert>{'This is a test'}</Alert>);
+    const { getByText } = render(<Alert>This is a test</Alert>);
+    const element = getByText('This is a test');
 
-    expect(getByText('This is a test').classList.contains('usa-alert__text'));
+    expect(element.classList.contains('usa-alert__text'));
+    expect(element.tagName).to.equal('P');
   });
-  it('renders children directly in alert body when "body" prop is true', () => {
+
+  it('renders children in a custom tag when textTag specified', () => {
     const { getByText } = render(
-      <Alert body={true}>
-        <div className="test-class">{'This is a test'}</div>
+      <Alert textTag="div">
+        <div className="test-class">This is a test</div>
       </Alert>,
     );
     const containingEl = getByText('This is a test');
     const parentEl = containingEl.parentElement as HTMLElement;
 
-    expect(containingEl.classList.contains('test-class'));
-    expect(parentEl.classList.contains('usa-alert__body'));
+    expect(parentEl.classList.contains('usa-alert__text'));
+    expect(parentEl.tagName).to.equal('DIV');
   });
 });
