@@ -266,7 +266,7 @@ class ApplicationController < ActionController::Base
 
   def pending_profile_newer_than_password_reset_profile?
     return false if current_user.decorate.pending_profile.blank?
-    return false if current_user.password_reset_profile.blank?
+    return false if current_user.decorate.password_reset_profile.blank?
     current_user.decorate.pending_profile.created_at >
       current_user.decorate.password_reset_profile.updated_at
   end
