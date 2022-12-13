@@ -69,7 +69,7 @@ describe Users::TwoFactorAuthenticationController do
 
   describe '#show' do
     let(:reauthn_param) { { reauthn: 'true' } }
-    let(:with_default_phone) {{with:{ phone: '+1 (703) 555-1212' }}}
+    let(:with_default_phone) { { with: { phone: '+1 (703) 555-1212' } } }
     context 'when user is piv/cac enabled' do
       it 'renders the piv/cac entry screen' do
         allow_any_instance_of(Browser).to receive(:mobile?).and_return(true)
@@ -256,7 +256,6 @@ describe Users::TwoFactorAuthenticationController do
     end
 
     context 'when SP requires PIV/CAC' do
-
       before do
         stub_sign_in(user)
         controller.session[:sp] = { phishing_resistant_requeste: true, piv_cac_requested: true }
