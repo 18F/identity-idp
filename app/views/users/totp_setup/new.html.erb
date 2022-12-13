@@ -37,16 +37,16 @@
       <%= render ClipboardButtonComponent.new(clipboard_text: @code.upcase, outline: true) %>
     <% end %>
     <%= c.item(heading: t('forms.totp_setup.totp_step_4')) do %>
-      <%= render(
-            'shared/one_time_code_input',
+      <%= render OneTimeCodeInputComponent.new(
             form: f,
             transport: nil,
-            name: :code,
-            required: true,
-            aria: { label: t('forms.totp_setup.totp_step_4') },
-            size: 18,
-            class: 'width-auto',
             maxlength: TwoFactorAuthenticatable::OTP_LENGTH,
+            field_options: {
+              label: false,
+              input_html: {
+                aria: { label: t('forms.totp_setup.totp_step_4') },
+              },
+            },
           ) %>
     <% end %>
   <% end %>
