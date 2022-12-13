@@ -7,20 +7,13 @@ const APP_NAME = 'Login.gov';
 const SP_NAME = 'TEST SP';
 
 describe('HybridDocCaptureWarning', () => {
-  before(() => {
+  beforeEach(() => {
     const config = document.createElement('script');
     config.id = 'test-config';
     config.type = 'application/json';
     config.setAttribute('data-config', '');
     config.textContent = JSON.stringify({ appName: APP_NAME });
     document.body.append(config);
-  });
-
-  after(() => {
-    const config = document.getElementById('test-config');
-    if (config) {
-      config.remove();
-    }
   });
 
   describe('without SP', () => {
