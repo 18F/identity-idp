@@ -13,18 +13,21 @@ class NavigationPresenter
   def navigation_items
     [
       NavItem.new(
-        I18n.t('account.navigation.your_account'), account_path, [
+        I18n.t('account.navigation.your_account'),
+        account_path,
+        [
           NavItem.new(I18n.t('account.navigation.add_email'), add_email_path),
           NavItem.new(I18n.t('account.navigation.edit_password'), manage_password_path),
           NavItem.new(I18n.t('account.navigation.delete_account'), account_delete_path),
           user.encrypted_recovery_code_digest.present? && user.active_profile ? NavItem.new(
             I18n.t('account.navigation.reset_personal_key'), create_new_personal_key_path
           ) : nil,
-        ].compact
+        ].compact,
       ),
       NavItem.new(
         I18n.t('account.navigation.two_factor_authentication'),
-        account_two_factor_authentication_path, [
+        account_two_factor_authentication_path,
+        [
           NavItem.new(I18n.t('account.navigation.add_phone_number'), add_phone_path),
           NavItem.new(
             I18n.t('account.navigation.add_authentication_apps'),
@@ -40,19 +43,22 @@ class NavigationPresenter
             I18n.t('account.navigation.get_backup_codes'),
             backup_codes_path,
           ),
-        ].compact
+        ].compact,
       ),
       NavItem.new(
         I18n.t('account.navigation.connected_accounts'),
-        account_connected_accounts_path, []
+        account_connected_accounts_path,
+        [],
       ),
       NavItem.new(
-        I18n.t('account.navigation.history'), account_history_path, [
+        I18n.t('account.navigation.history'),
+        account_history_path,
+        [
           NavItem.new(
             I18n.t('account.navigation.forget_browsers'),
             forget_all_browsers_path,
           ),
-        ]
+        ],
       ),
       NavItem.new(I18n.t('account.navigation.customer_support'), MarketingSite.help_url, []),
     ]

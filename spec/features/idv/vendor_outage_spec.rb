@@ -27,7 +27,8 @@ feature 'vendor_outage_spec' do
       end
 
       it 'prevents a user who reset their password from reactivating profile with no personal key',
-         email: true, js: true do
+         email: true,
+         js: true do
         personal_key_from_pii(user, pii)
         trigger_reset_password_and_click_email_link(user.email)
         reset_password(user, new_password)

@@ -113,9 +113,11 @@ Rails.application.routes.draw do
       get 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#show'
       post 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#create'
       get  '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#show',
-           as: :login_two_factor, constraints: { otp_delivery_preference: /sms|voice/ }
+           as: :login_two_factor,
+           constraints: { otp_delivery_preference: /sms|voice/ }
       post '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#create',
-           as: :login_otp, constraints: { otp_delivery_preference: /sms|voice/ }
+           as: :login_otp,
+           constraints: { otp_delivery_preference: /sms|voice/ }
       get '/login/two_factor/sms/:opt_out_uuid/opt_in' => 'two_factor_authentication/sms_opt_in#new',
           as: :login_two_factor_sms_opt_in
       post '/login/two_factor/sms/:opt_out_uuid/opt_in' => 'two_factor_authentication/sms_opt_in#create'

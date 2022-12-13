@@ -156,8 +156,10 @@ describe ResetPasswordForm, type: :model do
         user.update(reset_password_sent_at: Time.zone.now)
         user2 = create(:user)
         create(
-          :email_address, email: user.email_addresses.first.email, user_id: user2.id,
-                          confirmed_at: Time.zone.now
+          :email_address,
+          email: user.email_addresses.first.email,
+          user_id: user2.id,
+          confirmed_at: Time.zone.now,
         )
 
         form = ResetPasswordForm.new(user)

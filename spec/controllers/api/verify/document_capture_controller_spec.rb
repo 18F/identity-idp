@@ -93,17 +93,18 @@ describe Api::Verify::DocumentCaptureController do
           flow_path: flow_path,
         )
 
-        post :create, params: {
-          encryption_key: encryption_key,
-          front_image_iv: front_image_iv,
-          back_image_iv: back_image_iv,
-          front_image_url: front_image_url,
-          back_image_url: back_image_url,
-          front_image_metadata: front_image_metadata.to_json,
-          back_image_metadata: back_image_metadata.to_json,
-          document_capture_session_uuid: document_capture_session_uuid,
-          flow_path: flow_path,
-        }
+        post :create,
+             params: {
+               encryption_key: encryption_key,
+               front_image_iv: front_image_iv,
+               back_image_iv: back_image_iv,
+               front_image_url: front_image_url,
+               back_image_url: back_image_url,
+               front_image_metadata: front_image_metadata.to_json,
+               back_image_metadata: back_image_metadata.to_json,
+               document_capture_session_uuid: document_capture_session_uuid,
+               flow_path: flow_path,
+             }
         expect(JSON.parse(response.body, symbolize_names: true)).to eq(
           success: true,
           status: 'in_progress',
@@ -117,14 +118,15 @@ describe Api::Verify::DocumentCaptureController do
           allow(Idv::Agent).to receive(:new).and_return(agent)
           expect(agent).to_not receive(:proof_document)
 
-          post :create, params: {
-            encryption_key: encryption_key,
-            front_image_iv: nil,
-            back_image_iv: back_image_iv,
-            front_image_url: front_image_url,
-            back_image_url: back_image_url,
-            document_capture_session_uuid: document_capture_session_uuid,
-          }
+          post :create,
+               params: {
+                 encryption_key: encryption_key,
+                 front_image_iv: nil,
+                 back_image_iv: back_image_iv,
+                 front_image_url: front_image_url,
+                 back_image_url: back_image_url,
+                 document_capture_session_uuid: document_capture_session_uuid,
+               }
 
           expect(JSON.parse(response.body)['errors'].keys.first).to eq('front_image_iv')
           expect(JSON.parse(response.body)['errors']['front_image_iv'][0]).

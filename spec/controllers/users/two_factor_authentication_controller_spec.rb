@@ -331,14 +331,18 @@ describe Users::TwoFactorAuthenticationController do
           with('OTP: Delivery Selection', analytics_hash)
         expect(@analytics).to receive(:track_event).
           ordered.
-          with('Telephony: OTP sent', hash_including(
-            resend: true, success: true, **otp_preference_sms,
-            adapter: :test
-          ))
+          with('Telephony: OTP sent',
+               hash_including(
+                 resend: true,
+                 success: true,
+                 **otp_preference_sms,
+                 adapter: :test,
+               ))
 
-        get :send_code, params: {
-          otp_delivery_selection_form: { **otp_preference_sms, resend: 'true' },
-        }
+        get :send_code,
+            params: {
+              otp_delivery_selection_form: { **otp_preference_sms, resend: 'true' },
+            }
       end
 
       it 'tracks the verification attempt event' do
@@ -363,7 +367,8 @@ describe Users::TwoFactorAuthenticationController do
         otp_rate_limiter = instance_double(OtpRateLimiter)
         allow(OtpRateLimiter).to receive(:new).
           with(phone: MfaContext.new(@user).phone_configurations.first.phone,
-               user: @user, phone_confirmed: true).
+               user: @user,
+               phone_confirmed: true).
           and_return(otp_rate_limiter)
 
         expect(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).twice
@@ -384,12 +389,13 @@ describe Users::TwoFactorAuthenticationController do
 
         freeze_time do
           (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do
-            get :send_code, params: {
-              otp_delivery_selection_form: {
-                **otp_preference_sms,
-                otp_make_default_number: nil,
-              },
-            }
+            get :send_code,
+                params: {
+                  otp_delivery_selection_form: {
+                    **otp_preference_sms,
+                    otp_make_default_number: nil,
+                  },
+                }
           end
 
           expect(@user.reload.second_factor_locked_at).to eq Time.zone.now
@@ -440,9 +446,10 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'sends OTP via voice' do
-        get :send_code, params: {
-          otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
-        }
+        get :send_code,
+            params: {
+              otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
+            }
         phone = MfaContext.new(subject.current_user).phone_configurations.first.phone
         parsed_phone = Phonelib.parse(phone)
 
@@ -485,20 +492,22 @@ describe Users::TwoFactorAuthenticationController do
           with('OTP: Delivery Selection', analytics_hash)
         expect(@analytics).to receive(:track_event).
           ordered.
-          with('Telephony: OTP sent', hash_including(
-            success: true,
-            otp_delivery_preference: 'voice',
-            adapter: :test,
-            country_code: 'US',
-            telephony_response: hash_including(
-              origination_phone_number: Telephony::Test::VoiceSender::ORIGINATION_PHONE_NUMBER,
-            ),
-          ))
+          with('Telephony: OTP sent',
+               hash_including(
+                 success: true,
+                 otp_delivery_preference: 'voice',
+                 adapter: :test,
+                 country_code: 'US',
+                 telephony_response: hash_including(
+                   origination_phone_number: Telephony::Test::VoiceSender::ORIGINATION_PHONE_NUMBER,
+                 ),
+               ))
 
-        get :send_code, params: {
-          otp_delivery_selection_form: { otp_delivery_preference: 'voice',
-                                         otp_make_default_number: nil },
-        }
+        get :send_code,
+            params: {
+              otp_delivery_selection_form: { otp_delivery_preference: 'voice',
+                                             otp_make_default_number: nil },
+            }
       end
 
       context 'when selecting specific phone configuration' do
@@ -511,9 +520,10 @@ describe Users::TwoFactorAuthenticationController do
       it 'redirects to two factor options path with invalid id' do
         controller.user_session[:phone_id] = 0
 
-        get :send_code, params: {
-          otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
-        }
+        get :send_code,
+            params: {
+              otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
+            }
 
         expect(response).to redirect_to(login_two_factor_options_path)
       end
@@ -603,12 +613,13 @@ describe Users::TwoFactorAuthenticationController do
 
         freeze_time do
           (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do
-            get :send_code, params: {
-              otp_delivery_selection_form: {
-                **otp_preference_sms,
-                otp_make_default_number: nil,
-              },
-            }
+            get :send_code,
+                params: {
+                  otp_delivery_selection_form: {
+                    **otp_preference_sms,
+                    otp_make_default_number: nil,
+                  },
+                }
           end
 
           expect(@user.reload.second_factor_locked_at).to eq Time.zone.now
@@ -658,9 +669,10 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'redirects user to choose a valid delivery method' do
-        get :send_code, params: {
-          otp_delivery_selection_form: { otp_delivery_preference: 'pigeon' },
-        }
+        get :send_code,
+            params: {
+              otp_delivery_selection_form: { otp_delivery_preference: 'pigeon' },
+            }
 
         expect(response).to redirect_to login_two_factor_url(**otp_preference_sms)
       end

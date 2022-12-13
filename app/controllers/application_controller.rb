@@ -480,7 +480,9 @@ class ApplicationController < ActionController::Base
       NewRelic::Agent.notice_error(exception)
     end
     render template: 'pages/page_took_too_long',
-           layout: false, status: :service_unavailable, formats: :html
+           layout: false,
+           status: :service_unavailable,
+           formats: :html
   end
 
   def render_full_width(template, **opts)

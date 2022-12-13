@@ -1,6 +1,11 @@
 module Proofing
   class ResolutionResult
-    attr_reader :success, :errors, :exception, :vendor_name, :transaction_id, :verified_attributes,
+    attr_reader :success,
+                :errors,
+                :exception,
+                :vendor_name,
+                :transaction_id,
+                :verified_attributes,
                 :failed_result_can_pass_with_additional_verification,
                 :attributes_requiring_additional_verification,
                 :reference

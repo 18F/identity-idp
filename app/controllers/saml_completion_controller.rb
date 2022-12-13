@@ -18,8 +18,9 @@ class SamlCompletionController < ApplicationController
       # already responded with a 400 status before reaching this point.
       form_params = UriService.params(request_url)
 
-      render 'shared/saml_post_form', locals: { action_url: action_url, form_params: form_params },
-                                      layout: false
+      render 'shared/saml_post_form',
+             locals: { action_url: action_url, form_params: form_params },
+             layout: false
     else
       render_not_found
     end

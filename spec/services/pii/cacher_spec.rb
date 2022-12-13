@@ -5,7 +5,9 @@ describe Pii::Cacher do
   let(:user) { create(:user, :with_phone, password: password) }
   let(:profile) do
     build(
-      :profile, :active, :verified,
+      :profile,
+      :active,
+      :verified,
       user: user,
       pii: {
         ssn: '1234',
@@ -13,7 +15,7 @@ describe Pii::Cacher do
         first_name: 'Test',
         last_name: 'McTesterson',
         zipcode: '20001',
-      }
+      },
     )
   end
   let(:diff_profile) { build(:profile, :verified, user: user, pii: { ssn: '5678' }) }

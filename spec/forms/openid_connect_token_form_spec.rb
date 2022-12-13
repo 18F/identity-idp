@@ -413,10 +413,14 @@ RSpec.describe OpenidConnectTokenForm do
         id_token = response[:id_token]
 
         payload, _head = JWT.decode(
-          id_token, server_public_key, true,
+          id_token,
+          server_public_key,
+          true,
           algorithm: 'RS256',
-          iss: root_url, verify_iss: true,
-          aud: client_id, verify_aud: true
+          iss: root_url,
+          verify_iss: true,
+          aud: client_id,
+          verify_aud: true,
         ).map(&:with_indifferent_access)
 
         expect(payload[:nonce]).to eq(nonce)

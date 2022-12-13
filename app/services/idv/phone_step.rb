@@ -39,8 +39,9 @@ module Idv
 
       delete_async
       FormResponse.new(
-        success: success, errors: idv_result[:errors],
-        extra: extra_analytics_attributes
+        success: success,
+        errors: idv_result[:errors],
+        extra: extra_analytics_attributes,
       )
     end
 

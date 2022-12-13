@@ -202,7 +202,9 @@ describe UserMailer, type: :mailer do
           strip_tags(
             t(
               'user_mailer.new_device_sign_in.info_html',
-              date: date, location: location, app_name: APP_NAME,
+              date: date,
+              location: location,
+              app_name: APP_NAME,
             ),
           ),
         )
@@ -529,8 +531,9 @@ describe UserMailer, type: :mailer do
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).
         account_verified(
-          date_time: date_time, sp_name: sp_name,
-          disavowal_token: disavowal_token
+          date_time: date_time,
+          sp_name: sp_name,
+          disavowal_token: disavowal_token,
         )
     end
 

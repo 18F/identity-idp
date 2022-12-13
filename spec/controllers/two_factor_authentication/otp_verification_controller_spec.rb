@@ -117,9 +117,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
           with({ reauthentication: false, success: false })
 
-        post :create, params:
-        { code: '12345',
-          otp_delivery_preference: 'sms' }
+        post :create,
+             params:
+                     { code: '12345',
+                       otp_delivery_preference: 'sms' }
       end
 
       it 'increments second_factor_attempts_count' do
@@ -182,9 +183,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
           with(mfa_device_type: 'otp')
 
-        post :create, params:
-        { code: '12345',
-          otp_delivery_preference: 'sms' }
+        post :create,
+             params:
+                     { code: '12345',
+                       otp_delivery_preference: 'sms' }
       end
     end
 
@@ -199,20 +201,22 @@ describe TwoFactorAuthentication::OtpVerificationController do
       end
 
       it 'redirects to the profile' do
-        post :create, params: {
-          code: subject.current_user.reload.direct_otp,
-          otp_delivery_preference: 'sms',
-        }
+        post :create,
+             params: {
+               code: subject.current_user.reload.direct_otp,
+               otp_delivery_preference: 'sms',
+             }
 
         expect(response).to redirect_to account_path
       end
 
       it 'resets the second_factor_attempts_count' do
         subject.current_user.update(second_factor_attempts_count: 1)
-        post :create, params: {
-          code: subject.current_user.reload.direct_otp,
-          otp_delivery_preference: 'sms',
-        }
+        post :create,
+             params: {
+               code: subject.current_user.reload.direct_otp,
+               otp_delivery_preference: 'sms',
+             }
 
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
       end
@@ -242,10 +246,11 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
           with(reauthentication: false, success: true)
 
-        post :create, params: {
-          code: subject.current_user.reload.direct_otp,
-          otp_delivery_preference: 'sms',
-        }
+        post :create,
+             params: {
+               code: subject.current_user.reload.direct_otp,
+               otp_delivery_preference: 'sms',
+             }
       end
 
       it 'tracks the attempt event with reauthentication parameter true' do
@@ -256,10 +261,11 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
           with(reauthentication: true, success: true)
 
-        post :create, params: {
-          code: subject.current_user.reload.direct_otp,
-          otp_delivery_preference: 'sms',
-        }
+        post :create,
+             params: {
+               code: subject.current_user.reload.direct_otp,
+               otp_delivery_preference: 'sms',
+             }
       end
 
       context 'with remember_device in the params' do
@@ -330,10 +336,11 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
           expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
             with({ reauthentication: false, success: true })
-          post :create, params: {
-            code: subject.current_user.direct_otp,
-            otp_delivery_preference: 'sms',
-          }
+          post :create,
+               params: {
+                 code: subject.current_user.direct_otp,
+                 otp_delivery_preference: 'sms',
+               }
         end
 
         it 'resets attempts count' do

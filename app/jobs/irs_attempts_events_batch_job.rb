@@ -19,8 +19,9 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     bucket_name = IdentityConfig.store.irs_attempt_api_bucket_name
 
     create_and_upload_to_attempts_s3_resource(
-      bucket_name: bucket_name, filename: result.filename,
-      encrypted_data: result.encrypted_data
+      bucket_name: bucket_name,
+      filename: result.filename,
+      encrypted_data: result.encrypted_data,
     )
 
     encoded_iv = Base64.strict_encode64(result.iv)

@@ -7,8 +7,10 @@ class UpdateUser
   def call
     result = user.update!(
       attributes.except(
-        :phone_id, :phone, :phone_confirmed_at,
-        :otp_make_default_number
+        :phone_id,
+        :phone,
+        :phone_confirmed_at,
+        :otp_make_default_number,
       ),
     )
     manage_phone_configuration

@@ -53,11 +53,12 @@ describe Users::MfaSelectionController do
         allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
         stub_sign_in_before_2fa
 
-        patch :update, params: {
-          two_factor_options_form: {
-            selection: 'phone',
-          },
-        }
+        patch :update,
+              params: {
+                two_factor_options_form: {
+                  selection: 'phone',
+                },
+              }
       end
 
       it 'the redirect to the form page with an anchor' do
@@ -73,19 +74,21 @@ describe Users::MfaSelectionController do
     context 'when the selection is phone' do
       let(:user) do
         create(
-          :user, :with_phone,
-          with: { phone: '7035550000', confirmed_at: Time.zone.now }
+          :user,
+          :with_phone,
+          with: { phone: '7035550000', confirmed_at: Time.zone.now },
         )
       end
 
       it 'redirects to phone setup page' do
         stub_sign_in(user)
 
-        patch :update, params: {
-          two_factor_options_form: {
-            selection: 'phone',
-          },
-        }
+        patch :update,
+              params: {
+                two_factor_options_form: {
+                  selection: 'phone',
+                },
+              }
 
         expect(response).to redirect_to phone_setup_url
       end
@@ -94,11 +97,12 @@ describe Users::MfaSelectionController do
     context 'when multi selection with phone first' do
       it 'redirects properly' do
         stub_sign_in_before_2fa
-        patch :update, params: {
-          two_factor_options_form: {
-            selection: ['phone', 'auth_app'],
-          },
-        }
+        patch :update,
+              params: {
+                two_factor_options_form: {
+                  selection: ['phone', 'auth_app'],
+                },
+              }
 
         expect(response).to redirect_to phone_setup_url
       end
@@ -107,11 +111,12 @@ describe Users::MfaSelectionController do
     context 'when multi selection with auth app first' do
       it 'redirects properly' do
         stub_sign_in
-        patch :update, params: {
-          two_factor_options_form: {
-            selection: ['auth_app', 'phone', 'webauthn'],
-          },
-        }
+        patch :update,
+              params: {
+                two_factor_options_form: {
+                  selection: ['auth_app', 'phone', 'webauthn'],
+                },
+              }
 
         expect(response).to redirect_to authenticator_setup_url
       end
@@ -121,11 +126,12 @@ describe Users::MfaSelectionController do
       it 'redirects to authentication app setup page' do
         stub_sign_in
 
-        patch :update, params: {
-          two_factor_options_form: {
-            selection: 'auth_app',
-          },
-        }
+        patch :update,
+              params: {
+                two_factor_options_form: {
+                  selection: 'auth_app',
+                },
+              }
 
         expect(response).to redirect_to authenticator_setup_url
       end
@@ -135,11 +141,12 @@ describe Users::MfaSelectionController do
       it 'redirects to webauthn setup page' do
         stub_sign_in
 
-        patch :update, params: {
-          two_factor_options_form: {
-            selection: 'webauthn',
-          },
-        }
+        patch :update,
+              params: {
+                two_factor_options_form: {
+                  selection: 'webauthn',
+                },
+              }
 
         expect(response).to redirect_to webauthn_setup_url
       end
@@ -149,11 +156,12 @@ describe Users::MfaSelectionController do
       it 'redirects to webauthn setup page with the platform param' do
         stub_sign_in
 
-        patch :update, params: {
-          two_factor_options_form: {
-            selection: 'webauthn_platform',
-          },
-        }
+        patch :update,
+              params: {
+                two_factor_options_form: {
+                  selection: 'webauthn_platform',
+                },
+              }
 
         expect(response).to redirect_to webauthn_setup_url(platform: true)
       end
@@ -163,11 +171,12 @@ describe Users::MfaSelectionController do
       it 'redirects to piv/cac setup page' do
         stub_sign_in
 
-        patch :update, params: {
-          two_factor_options_form: {
-            selection: 'piv_cac',
-          },
-        }
+        patch :update,
+              params: {
+                two_factor_options_form: {
+                  selection: 'piv_cac',
+                },
+              }
 
         expect(response).to redirect_to setup_piv_cac_url
       end
@@ -182,9 +191,10 @@ describe Users::MfaSelectionController do
 
       context 'with no active MFA' do
         it 'redirects to the index page with a flash error' do
-          patch :update, params: {
-            two_factor_options_form: {},
-          }
+          patch :update,
+                params: {
+                  two_factor_options_form: {},
+                }
 
           expect(response).to redirect_to two_factor_options_path
           expect(flash[:error]).to eq(
@@ -197,11 +207,12 @@ describe Users::MfaSelectionController do
         it 'redirects to after_mfa_setup_path' do
           create(:phone_configuration, user: user)
 
-          patch :update, params: {
-            two_factor_options_form: {
-              selection: [''],
-            },
-          }
+          patch :update,
+                params: {
+                  two_factor_options_form: {
+                    selection: [''],
+                  },
+                }
 
           expect(response).to redirect_to account_path
         end
@@ -212,11 +223,12 @@ describe Users::MfaSelectionController do
       it 'renders the index page' do
         stub_sign_in
 
-        patch :update, params: {
-          two_factor_options_form: {
-            selection: 'foo',
-          },
-        }
+        patch :update,
+              params: {
+                two_factor_options_form: {
+                  selection: 'foo',
+                },
+              }
 
         expect(response).to redirect_to second_mfa_setup_path
       end

@@ -32,8 +32,9 @@ class SamlRequestValidator
   def authorized_service_provider
     return if service_provider
     errors.add(
-      :service_provider, :unauthorized_service_provider,
-      type: :unauthorized_service_provider
+      :service_provider,
+      :unauthorized_service_provider,
+      type: :unauthorized_service_provider,
     )
   end
 

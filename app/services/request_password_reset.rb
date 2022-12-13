@@ -1,7 +1,10 @@
 RequestPasswordReset = RedactedStruct.new(
-  :email, :request_id, :analytics, :irs_attempts_api_tracker,
+  :email,
+  :request_id,
+  :analytics,
+  :irs_attempts_api_tracker,
   keyword_init: true,
-  allowed_members: [:request_id]
+  allowed_members: [:request_id],
 ) do
   def perform
     if user_should_receive_registration_email?

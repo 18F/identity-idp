@@ -151,9 +151,10 @@ class SessionEncryptor
       exception = SensitiveValueError.new
       if IdentityConfig.store.session_encryptor_alert_enabled
         NewRelic::Agent.notice_error(
-          exception, custom_params: {
+          exception,
+          custom_params: {
             session_structure: hash.deep_transform_values { |v| nil },
-          }
+          },
         )
       else
         raise exception
@@ -167,9 +168,10 @@ class SessionEncryptor
         exception = SensitiveKeyError.new("#{key} unexpectedly appeared in session")
         if IdentityConfig.store.session_encryptor_alert_enabled
           NewRelic::Agent.notice_error(
-            exception, custom_params: {
+            exception,
+            custom_params: {
               session_structure: hash.deep_transform_values { |_v| '' },
-            }
+            },
           )
         else
           raise exception

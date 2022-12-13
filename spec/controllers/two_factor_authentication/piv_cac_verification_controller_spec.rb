@@ -3,8 +3,10 @@ require 'rails_helper'
 describe TwoFactorAuthentication::PivCacVerificationController do
   let(:user) do
     create(
-      :user, :signed_up, :with_piv_or_cac,
-      with: { phone: '+1 (703) 555-0000' }
+      :user,
+      :signed_up,
+      :with_piv_or_cac,
+      with: { phone: '+1 (703) 555-0000' },
     )
   end
 
@@ -232,9 +234,11 @@ describe TwoFactorAuthentication::PivCacVerificationController do
 
       let(:user) do
         create(
-          :user, :signed_up, :with_piv_or_cac,
+          :user,
+          :signed_up,
+          :with_piv_or_cac,
           second_factor_locked_at: Time.zone.now - lockout_period - 1.second,
-          second_factor_attempts_count: 3
+          second_factor_attempts_count: 3,
         )
       end
 

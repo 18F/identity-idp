@@ -1,9 +1,11 @@
 class Agreements::IntegrationUsage < ApplicationRecord
   self.table_name = 'integration_usages'
 
-  belongs_to :iaa_order, -> { includes(iaa_gtc: :partner_account) },
+  belongs_to :iaa_order,
+             -> { includes(iaa_gtc: :partner_account) },
              inverse_of: :integration_usages
-  belongs_to :integration, -> { includes(:partner_account) },
+  belongs_to :integration,
+             -> { includes(:partner_account) },
              inverse_of: :integration_usages
 
   has_one :partner_account, through: :integration
@@ -23,8 +25,9 @@ class Agreements::IntegrationUsage < ApplicationRecord
     return if integration.partner_account == iaa_order.partner_account
 
     errors.add(
-      :iaa_order, 'must belong to same partner account as integration',
-      type: :partner_account_does_match_integration
+      :iaa_order,
+      'must belong to same partner account as integration',
+      type: :partner_account_does_match_integration,
     )
   end
 end

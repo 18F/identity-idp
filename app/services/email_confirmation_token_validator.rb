@@ -64,8 +64,9 @@ class EmailConfirmationTokenValidator
   def token_found
     unless email_address_found_with_token?
       errors.add(
-        :confirmation_token, :not_found,
-        type: :not_found
+        :confirmation_token,
+        :not_found,
+        type: :not_found,
       )
     end
   end
@@ -78,8 +79,9 @@ class EmailConfirmationTokenValidator
   def token_not_expired
     if confirmation_period_expired?
       errors.add(
-        :confirmation_token, :expired,
-        type: :expired
+        :confirmation_token,
+        :expired,
+        type: :expired,
       )
     end
   end

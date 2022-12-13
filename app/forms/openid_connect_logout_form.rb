@@ -84,9 +84,11 @@ class OpenidConnectLogoutForm
       identity_from_client_id
     else
       payload, _headers = JWT.decode(
-        id_token_hint, AppArtifacts.store.oidc_public_key, true,
+        id_token_hint,
+        AppArtifacts.store.oidc_public_key,
+        true,
         algorithm: 'RS256',
-        leeway: Float::INFINITY
+        leeway: Float::INFINITY,
       ).map(&:with_indifferent_access)
 
       identity_from_payload(payload) || identity_from_client_id
@@ -127,8 +129,9 @@ class OpenidConnectLogoutForm
 
     unless identity
       errors.add(
-        :id_token_hint, t('openid_connect.logout.errors.id_token_hint'),
-        type: :id_token_hint
+        :id_token_hint,
+        t('openid_connect.logout.errors.id_token_hint'),
+        type: :id_token_hint,
       )
     end
   end

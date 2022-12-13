@@ -21,9 +21,11 @@ feature 'Sign in to the IRS' do
 
   let(:user) do
     create(
-      :profile, :active, :verified,
+      :profile,
+      :active,
+      :verified,
       pii: { first_name: 'John', ssn: '111223333' },
-      initiating_service_provider_issuer: initiating_service_provider_issuer
+      initiating_service_provider_issuer: initiating_service_provider_issuer,
     ).user
   end
 

@@ -14,13 +14,16 @@ class UserEventCreator
     existing_device = Device.find_by(user_id: user.id, cookie_uuid: cookies[:device])
     if existing_device.present?
       create_event_for_existing_device(
-        event_type: event_type, user: user, device: existing_device,
-        disavowal_token: disavowal_token
+        event_type: event_type,
+        user: user,
+        device: existing_device,
+        disavowal_token: disavowal_token,
       )
     else
       create_event_for_new_device(
-        event_type: event_type, user: user,
-        disavowal_token: disavowal_token
+        event_type: event_type,
+        user: user,
+        disavowal_token: disavowal_token,
       )
     end
   end
@@ -36,8 +39,10 @@ class UserEventCreator
     disavowal_token = SecureRandom.urlsafe_base64(32)
     if device
       create_event_for_existing_device(
-        event_type: event_type, user: user, device: device,
-        disavowal_token: disavowal_token
+        event_type: event_type,
+        user: user,
+        device: device,
+        disavowal_token: disavowal_token,
       )
     else
       create_user_event(event_type, user, disavowal_token)

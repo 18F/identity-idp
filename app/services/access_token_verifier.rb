@@ -11,10 +11,12 @@ class AccessTokenVerifier
 
   def submit
     FormResponse.new(
-      success: valid?, errors: errors, extra: {
+      success: valid?,
+      errors: errors,
+      extra: {
         client_id: identity&.service_provider,
         ial: identity&.ial,
-      }
+      },
     )
   end
 
@@ -38,8 +40,9 @@ class AccessTokenVerifier
       @identity = identity
     else
       errors.add(
-        :access_token, t('openid_connect.user_info.errors.not_found'),
-        type: :not_found
+        :access_token,
+        t('openid_connect.user_info.errors.not_found'),
+        type: :not_found,
       )
     end
   end
@@ -47,8 +50,9 @@ class AccessTokenVerifier
   def extract_access_token(header)
     if header.blank?
       errors.add(
-        :access_token, t('openid_connect.user_info.errors.no_authorization'),
-        type: :no_authorization
+        :access_token,
+        t('openid_connect.user_info.errors.no_authorization'),
+        type: :no_authorization,
       )
       return
     end
@@ -56,8 +60,9 @@ class AccessTokenVerifier
     bearer, access_token = header.split(' ', 2)
     if bearer != 'Bearer'
       errors.add(
-        :access_token, t('openid_connect.user_info.errors.malformed_authorization'),
-        type: :malformed_authorization
+        :access_token,
+        t('openid_connect.user_info.errors.malformed_authorization'),
+        type: :malformed_authorization,
       )
       return
     end

@@ -227,9 +227,11 @@ module Features
 
     def user_with_piv_cac
       create(
-        :user, :signed_up, :with_piv_or_cac,
+        :user,
+        :signed_up,
+        :with_piv_or_cac,
         with: { phone: '+1 (703) 555-0000' },
-        password: VALID_PASSWORD
+        password: VALID_PASSWORD,
       )
     end
 

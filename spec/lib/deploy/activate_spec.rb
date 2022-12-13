@@ -47,7 +47,8 @@ describe Deploy::Activate do
         }.to_json)
 
       s3_client.stub_responses(
-        :get_object, proc do |context|
+        :get_object,
+        proc do |context|
           key = context.params[:key]
           body = s3_contents[key]
           if body.present?
@@ -55,7 +56,7 @@ describe Deploy::Activate do
           else
             raise Aws::S3::Errors::NoSuchKey.new(nil, nil)
           end
-        end
+        end,
       )
       allow(s3_client).to receive(:get_object).and_call_original
 

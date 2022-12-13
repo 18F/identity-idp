@@ -77,10 +77,11 @@ describe EventDisavowalController do
           build_analytics_hash,
         )
 
-        post :create, params: {
-          disavowal_token: disavowal_token,
-          event_disavowal_password_reset_from_disavowal_form: { password: 'salty pickles' },
-        }
+        post :create,
+             params: {
+               disavowal_token: disavowal_token,
+               event_disavowal_password_reset_from_disavowal_form: { password: 'salty pickles' },
+             }
       end
     end
 
@@ -159,10 +160,11 @@ describe EventDisavowalController do
           ),
         )
 
-        post :create, params: {
-          disavowal_token: disavowal_token,
-          event_disavowal_password_reset_from_disavowal_form: { password: 'salty pickles' },
-        }
+        post :create,
+             params: {
+               disavowal_token: disavowal_token,
+               event_disavowal_password_reset_from_disavowal_form: { password: 'salty pickles' },
+             }
       end
     end
   end

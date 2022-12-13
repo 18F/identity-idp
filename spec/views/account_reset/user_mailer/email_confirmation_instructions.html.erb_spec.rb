@@ -52,7 +52,8 @@ describe 'user_mailer/email_confirmation_instructions.html.erb' do
     expect(rendered).to have_content(
       I18n.t(
         'user_mailer.email_confirmation_instructions.first_sentence.confirmed',
-        app_name: APP_NAME, confirmation_period: presenter.confirmation_period,
+        app_name: APP_NAME,
+        confirmation_period: presenter.confirmation_period,
       ),
     )
   end
@@ -67,7 +68,8 @@ describe 'user_mailer/email_confirmation_instructions.html.erb' do
     expect(rendered).to have_content(
       I18n.t(
         'user_mailer.email_confirmation_instructions.first_sentence.unconfirmed',
-        app_name: APP_NAME, confirmation_period: presenter.confirmation_period,
+        app_name: APP_NAME,
+        confirmation_period: presenter.confirmation_period,
       ),
     )
   end

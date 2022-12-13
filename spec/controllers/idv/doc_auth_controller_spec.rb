@@ -223,11 +223,12 @@ describe Idv::DocAuthController do
         acuant_sdk_upgrade_ab_test_bucket: :default,
       }
 
-      put :update, params: {
-        step: 'welcome',
-        ial2_consent_given: true,
-        no_camera: true,
-      }
+      put :update,
+          params: {
+            step: 'welcome',
+            ial2_consent_given: true,
+            no_camera: true,
+          }
 
       expect(response).to redirect_to idv_doc_auth_errors_no_camera_url
       expect(@analytics).to have_received(:track_event).with(
@@ -407,7 +408,8 @@ describe Idv::DocAuthController do
       )
 
       expect(@analytics).to receive(:track_event).with(
-        'IdV: doc auth image upload vendor pii validation', include(
+        'IdV: doc auth image upload vendor pii validation',
+        include(
           errors: include(
             pii: [I18n.t('doc_auth.errors.general.no_liveness')],
           ),
@@ -418,11 +420,12 @@ describe Idv::DocAuthController do
           flow_path: 'standard',
           pii_like_keypaths: [[:pii]],
           user_id: nil,
-        )
+        ),
       )
 
       expect(@analytics).to receive(:track_event).with(
-        'IdV: doc auth verify_document_status submitted', include(
+        'IdV: doc auth verify_document_status submitted',
+        include(
           errors: include(
             pii: [I18n.t('doc_auth.errors.general.no_liveness')],
           ),
@@ -435,7 +438,7 @@ describe Idv::DocAuthController do
           step_count: 1,
           pii_like_keypaths: [[:pii]],
           doc_auth_result: nil,
-        )
+        ),
       )
 
       put :update,

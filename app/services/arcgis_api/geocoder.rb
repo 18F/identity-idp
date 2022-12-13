@@ -2,8 +2,13 @@ module ArcgisApi
   class Geocoder
     Suggestion = Struct.new(:text, :magic_key, keyword_init: true)
     AddressCandidate = Struct.new(
-      :address, :location, :street_address, :city, :state, :zip_code,
-      keyword_init: true
+      :address,
+      :location,
+      :street_address,
+      :city,
+      :state,
+      :zip_code,
+      keyword_init: true,
     )
     Location = Struct.new(:latitude, :longitude, keyword_init: true)
     API_TOKEN_CACHE_KEY = :arcgis_api_token

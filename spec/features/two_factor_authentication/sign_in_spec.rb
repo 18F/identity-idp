@@ -357,9 +357,10 @@ feature 'Two Factor Authentication' do
     context 'user with Voice preference sends SMS, causing a Telephony error' do
       let(:user) do
         create(
-          :user, :signed_up,
+          :user,
+          :signed_up,
           otp_delivery_preference: 'voice',
-          with: { phone: '+12255551000', delivery_preference: 'voice' }
+          with: { phone: '+12255551000', delivery_preference: 'voice' },
         )
       end
       let(:otp_rate_limiter) do

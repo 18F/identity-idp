@@ -1,7 +1,16 @@
 class DisplayablePiiFormatter
   FormattedPii = Struct.new(
-    :email, :all_emails, :verified_at, :x509_subject, :x509_issuer, :full_name,
-    :social_security_number, :address, :birthdate, :phone, keyword_init: true
+    :email,
+    :all_emails,
+    :verified_at,
+    :x509_subject,
+    :x509_issuer,
+    :full_name,
+    :social_security_number,
+    :address,
+    :birthdate,
+    :phone,
+    keyword_init: true,
   )
 
   attr_reader :current_user

@@ -63,11 +63,12 @@ describe Proofing::Aamva::VerificationClient do
         allow(Proofing::Aamva::AuthenticationClient).to receive(:new).and_return(auth_client)
 
         stub_request(:post, AamvaFixtures.example_config.verification_url).
-          to_return(status: 200, body: modify_xml_at_xpath(
-            AamvaFixtures.verification_response,
-            '//PersonBirthDateMatchIndicator',
-            'false',
-          ))
+          to_return(status: 200,
+                    body: modify_xml_at_xpath(
+                      AamvaFixtures.verification_response,
+                      '//PersonBirthDateMatchIndicator',
+                      'false',
+                    ))
 
         response = verification_client.send_verification_request(
           applicant: applicant,

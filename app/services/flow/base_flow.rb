@@ -3,8 +3,15 @@ module Flow
     include Failure
 
     attr_accessor :flow_session
-    attr_reader :steps, :actions, :current_user, :current_sp, :params, :request, :json,
-                :http_status, :controller
+    attr_reader :steps,
+                :actions,
+                :current_user,
+                :current_sp,
+                :params,
+                :request,
+                :json,
+                :http_status,
+                :controller
 
     def initialize(controller, steps, actions, session)
       @controller = controller
@@ -76,7 +83,15 @@ module Flow
       FormResponse.new(success: true)
     end
 
-    delegate :flash, :session, :current_user, :current_sp, :params, :request,
-             :poll_with_meta_refresh, :analytics, :irs_attempts_api_tracker, to: :@controller
+    delegate :flash,
+             :session,
+             :current_user,
+             :current_sp,
+             :params,
+             :request,
+             :poll_with_meta_refresh,
+             :analytics,
+             :irs_attempts_api_tracker,
+             to: :@controller
   end
 end

@@ -1,7 +1,13 @@
 module IrsAttemptsApi
   class Tracker
-    attr_reader :session_id, :enabled_for_session, :request, :user, :sp, :cookie_device_uuid,
-                :sp_request_uri, :analytics
+    attr_reader :session_id,
+                :enabled_for_session,
+                :request,
+                :user,
+                :sp,
+                :cookie_device_uuid,
+                :sp_request_uri,
+                :analytics
 
     def initialize(session_id:, request:, user:, sp:, cookie_device_uuid:,
                    sp_request_uri:, enabled_for_session:, analytics:)

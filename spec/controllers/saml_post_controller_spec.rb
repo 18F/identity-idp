@@ -12,12 +12,13 @@ describe SamlPostController do
     let(:signature) { 'xyz789' }
 
     it 'renders the appropriate form' do
-      post :auth, params: {
-        'SAMLRequest' => saml_request,
-        'RelayState' => relay_state,
-        'SigAlg' => sig_alg,
-        'Signature' => signature,
-      }
+      post :auth,
+           params: {
+             'SAMLRequest' => saml_request,
+             'RelayState' => relay_state,
+             'SigAlg' => sig_alg,
+             'Signature' => signature,
+           }
 
       expect(response.body).to match(form_action_regex)
       expect(response.body).to match(hidden_field_tag('SAMLRequest', saml_request))

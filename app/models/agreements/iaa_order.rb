@@ -8,19 +8,23 @@ class Agreements::IaaOrder < ApplicationRecord
   has_many :integration_usages, dependent: :restrict_with_exception
   has_many :integrations, through: :integration_usages
 
-  validates :order_number, presence: true,
-                           uniqueness: { scope: :iaa_gtc_id },
-                           numericality: { only_integer: true,
-                                           greater_than_or_equal_to: 0 }
-  validates :mod_number, presence: true,
-                         numericality: { only_integer: true,
-                                         greater_than_or_equal_to: 0 }
-  validates :pricing_model, presence: true,
-                            numericality: { only_integer: true,
-                                            greater_than_or_equal_to: 0 }
-  validates :estimated_amount, numericality: { less_than: 10_000_000_000,
-                                               greater_than_or_equal_to: 0,
-                                               allow_nil: true }
+  validates :order_number,
+            presence: true,
+            uniqueness: { scope: :iaa_gtc_id },
+            numericality: { only_integer: true,
+                            greater_than_or_equal_to: 0 }
+  validates :mod_number,
+            presence: true,
+            numericality: { only_integer: true,
+                            greater_than_or_equal_to: 0 }
+  validates :pricing_model,
+            presence: true,
+            numericality: { only_integer: true,
+                            greater_than_or_equal_to: 0 }
+  validates :estimated_amount,
+            numericality: { less_than: 10_000_000_000,
+                            greater_than_or_equal_to: 0,
+                            allow_nil: true }
   validates :start_date, presence: true
   validates :end_date, presence: true
   validate :end_date_after_start_date

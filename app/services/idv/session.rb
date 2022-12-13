@@ -109,8 +109,9 @@ module Idv
       move_pii_to_user_session
       self.pii = Pii::Cacher.new(current_user, user_session).fetch if pii.is_a?(String)
       confirmation_maker = GpoConfirmationMaker.new(
-        pii: pii, service_provider: service_provider,
-        profile: profile
+        pii: pii,
+        service_provider: service_provider,
+        profile: profile,
       )
       confirmation_maker.perform
 

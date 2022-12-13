@@ -8,10 +8,20 @@ module Agreements
 
     delegate :gtc_number, to: :gtc
     delegate :order_number, to: :order
-    delegate :mod_number, :start_date, :end_date, :estimated_amount, :status,
-             to: :gtc, prefix: true
-    delegate :mod_number, :start_date, :end_date, :estimated_amount, :status,
-             to: :order, prefix: true
+    delegate :mod_number,
+             :start_date,
+             :end_date,
+             :estimated_amount,
+             :status,
+             to: :gtc,
+             prefix: true
+    delegate :mod_number,
+             :start_date,
+             :end_date,
+             :estimated_amount,
+             :status,
+             to: :order,
+             prefix: true
 
     def ial2_users
       @ial2_users || 0

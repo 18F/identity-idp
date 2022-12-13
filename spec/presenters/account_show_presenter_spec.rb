@@ -9,13 +9,17 @@ describe AccountShowPresenter do
         last_name = 'Doe'
         birthday = Date.new(2000, 7, 27)
         decrypted_pii = Pii::Attributes.new_from_hash(
-          first_name: first_name, last_name: last_name,
-          dob: birthday
+          first_name: first_name,
+          last_name: last_name,
+          dob: birthday,
         )
         profile_index = AccountShowPresenter.new(
-          decrypted_pii: decrypted_pii, personal_key: '', decorated_user: user.decorate,
-          sp_session_request_url: nil, sp_name: nil,
-          locked_for_session: false
+          decrypted_pii: decrypted_pii,
+          personal_key: '',
+          decorated_user: user.decorate,
+          sp_session_request_url: nil,
+          sp_name: nil,
+          locked_for_session: false,
         )
 
         expect(profile_index.header_personalization).to eq first_name
@@ -28,9 +32,12 @@ describe AccountShowPresenter do
         email_address = decorated_user.user.reload.email_addresses.last
         email_address.update!(last_sign_in_at: 1.minute.from_now)
         profile_index = AccountShowPresenter.new(
-          decrypted_pii: {}, personal_key: '', decorated_user: decorated_user,
-          sp_session_request_url: nil, sp_name: nil,
-          locked_for_session: false
+          decrypted_pii: {},
+          personal_key: '',
+          decorated_user: decorated_user,
+          sp_session_request_url: nil,
+          sp_name: nil,
+          locked_for_session: false,
         )
 
         expect(profile_index.header_personalization).to eq email_address.email
@@ -47,9 +54,12 @@ describe AccountShowPresenter do
         ).to receive(:enabled?).and_return(true)
 
         profile_index = AccountShowPresenter.new(
-          decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
-          sp_session_request_url: nil, sp_name: nil,
-          locked_for_session: false
+          decrypted_pii: {},
+          personal_key: '',
+          decorated_user: user.decorate,
+          sp_session_request_url: nil,
+          sp_name: nil,
+          locked_for_session: false,
         )
 
         expect(profile_index.totp_content).to eq t('account.index.auth_app_enabled')
@@ -63,9 +73,12 @@ describe AccountShowPresenter do
           TwoFactorAuthentication::AuthAppPolicy,
         ).to receive(:enabled?).and_return(false)
         profile_index = AccountShowPresenter.new(
-          decrypted_pii: {}, personal_key: '', decorated_user: user,
-          sp_session_request_url: nil, sp_name: nil,
-          locked_for_session: false
+          decrypted_pii: {},
+          personal_key: '',
+          decorated_user: user,
+          sp_session_request_url: nil,
+          sp_name: nil,
+          locked_for_session: false,
         )
 
         expect(profile_index.totp_content).to eq t('account.index.auth_app_disabled')

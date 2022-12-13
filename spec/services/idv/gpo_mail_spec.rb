@@ -72,7 +72,8 @@ describe Idv::GpoMail do
       device_id: device.id,
       ip: remote_ip,
       event_type: event,
-      created_at: updated_at, updated_at: updated_at
+      created_at: updated_at,
+      updated_at: updated_at,
     )
   end
 end

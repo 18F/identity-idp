@@ -8,13 +8,14 @@ describe 'idv/doc_auth/_back.html.erb' do
   let(:fallback_path) { nil }
 
   subject do
-    render 'idv/shared/back', {
-      step_url: step_url,
-      action: action,
-      step: step,
-      class: classes,
-      fallback_path: fallback_path,
-    }
+    render 'idv/shared/back',
+           {
+             step_url: step_url,
+             action: action,
+             step: step,
+             class: classes,
+             fallback_path: fallback_path,
+           }
   end
 
   shared_examples 'back link with class' do

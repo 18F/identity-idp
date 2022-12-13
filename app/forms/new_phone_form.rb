@@ -15,7 +15,9 @@ class NewPhoneForm
   validate :validate_not_premium_rate
   validate :validate_allowed_carrier
 
-  attr_accessor :phone, :international_code, :otp_delivery_preference,
+  attr_accessor :phone,
+                :international_code,
+                :otp_delivery_preference,
                 :otp_make_default_number
 
   def initialize(user)

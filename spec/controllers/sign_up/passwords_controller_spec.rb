@@ -31,10 +31,11 @@ describe SignUp::PasswordsController do
 
       expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
 
-      post :create, params: {
-        password_form: { password: 'NewVal!dPassw0rd' },
-        confirmation_token: token,
-      }
+      post :create,
+           params: {
+             password_form: { password: 'NewVal!dPassw0rd' },
+             confirmation_token: token,
+           }
 
       user.reload
 
@@ -57,10 +58,11 @@ describe SignUp::PasswordsController do
       result = validator.submit
       expect(result.success?).to eq false
 
-      post :create, params: {
-        password_form: { password: 'NewVal!dPassw0rd' },
-        confirmation_token: token,
-      }
+      post :create,
+           params: {
+             password_form: { password: 'NewVal!dPassw0rd' },
+             confirmation_token: token,
+           }
 
       user.reload
       expect(user.valid_password?('NewVal!dPassw0rd')).to eq false

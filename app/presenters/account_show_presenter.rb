@@ -1,6 +1,11 @@
 class AccountShowPresenter
-  attr_reader :decorated_user, :decrypted_pii, :personal_key, :locked_for_session, :pii,
-              :sp_session_request_url, :sp_name
+  attr_reader :decorated_user,
+              :decrypted_pii,
+              :personal_key,
+              :locked_for_session,
+              :pii,
+              :sp_session_request_url,
+              :sp_name
 
   def initialize(decrypted_pii:, personal_key:, sp_session_request_url:, sp_name:, decorated_user:,
                  locked_for_session:)

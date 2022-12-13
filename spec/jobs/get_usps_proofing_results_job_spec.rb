@@ -158,17 +158,20 @@ RSpec.describe GetUspsProofingResultsJob do
       let!(:pending_enrollments) do
         [
           create(
-            :in_person_enrollment, :pending,
+            :in_person_enrollment,
+            :pending,
             selected_location_details: { name: 'BALTIMORE' },
-            issuer: 'http://localhost:3000'
+            issuer: 'http://localhost:3000',
           ),
           create(
-            :in_person_enrollment, :pending,
-            selected_location_details: { name: 'FRIENDSHIP' }
+            :in_person_enrollment,
+            :pending,
+            selected_location_details: { name: 'FRIENDSHIP' },
           ),
           create(
-            :in_person_enrollment, :pending,
-            selected_location_details: { name: 'WASHINGTON' }
+            :in_person_enrollment,
+            :pending,
+            selected_location_details: { name: 'WASHINGTON' },
           ),
           create(:in_person_enrollment, :pending, selected_location_details: { name: 'ARLINGTON' }),
           create(:in_person_enrollment, :pending, selected_location_details: { name: 'DEANWOOD' }),

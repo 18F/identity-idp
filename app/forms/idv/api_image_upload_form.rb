@@ -43,7 +43,11 @@ module Idv
 
     private
 
-    attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
+    attr_reader :params,
+                :analytics,
+                :service_provider,
+                :form_response,
+                :uuid_prefix,
                 :irs_attempts_api_tracker
 
     def throttled_else_increment
@@ -155,14 +159,16 @@ module Idv
     def validate_images
       if front.is_a? DataUrlImage::InvalidUrlFormatError
         errors.add(
-          :front, t('doc_auth.errors.not_a_file'),
-          type: :not_a_file
+          :front,
+          t('doc_auth.errors.not_a_file'),
+          type: :not_a_file,
         )
       end
       if back.is_a? DataUrlImage::InvalidUrlFormatError
         errors.add(
-          :back, t('doc_auth.errors.not_a_file'),
-          type: :not_a_file
+          :back,
+          t('doc_auth.errors.not_a_file'),
+          type: :not_a_file,
         )
       end
     end

@@ -4,7 +4,11 @@ module Idv
 
     ALL_DELIVERY_METHODS = [:sms, :voice].freeze
 
-    attr_reader :user, :phone, :allowed_countries, :delivery_methods, :international_code,
+    attr_reader :user,
+                :phone,
+                :allowed_countries,
+                :delivery_methods,
+                :international_code,
                 :otp_delivery_preference
 
     validate :validate_valid_phone_for_allowed_countries

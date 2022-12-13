@@ -10,9 +10,11 @@ RSpec.describe OpenidConnect::LogoutController do
 
   let(:service_provider) do
     create(
-      :service_provider, issuer: 'test', redirect_uris: [
+      :service_provider,
+      issuer: 'test',
+      redirect_uris: [
         valid_post_logout_redirect_uri,
-      ]
+      ],
     )
   end
   let(:identity) do

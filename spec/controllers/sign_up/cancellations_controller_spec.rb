@@ -56,13 +56,14 @@ describe SignUp::CancellationsController do
       confirmation_token = '1'
 
       create(
-        :user, email_addresses: [
+        :user,
+        email_addresses: [
           build(
             :email_address,
             confirmed_at: nil,
             confirmation_token: '2',
           ),
-        ]
+        ],
       )
       subject.session[:user_confirmation_token] = confirmation_token
       delete :destroy
@@ -77,14 +78,15 @@ describe SignUp::CancellationsController do
         Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
 
       create(
-        :user, email_addresses: [
+        :user,
+        email_addresses: [
           build(
             :email_address,
             confirmed_at: nil,
             confirmation_sent_at: invalid_confirmation_sent_at,
             confirmation_token: confirmation_token,
           ),
-        ]
+        ],
       )
       subject.session[:user_confirmation_token] = confirmation_token
 

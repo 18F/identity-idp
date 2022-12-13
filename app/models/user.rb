@@ -47,12 +47,16 @@ class User < ApplicationRecord
 
   has_one :pending_in_person_enrollment,
           -> { where(status: :pending).order(created_at: :desc) },
-          class_name: 'InPersonEnrollment', foreign_key: :user_id, inverse_of: :user,
+          class_name: 'InPersonEnrollment',
+          foreign_key: :user_id,
+          inverse_of: :user,
           dependent: :destroy
 
   has_one :establishing_in_person_enrollment,
           -> { where(status: :establishing).order(created_at: :desc) },
-          class_name: 'InPersonEnrollment', foreign_key: :user_id, inverse_of: :user,
+          class_name: 'InPersonEnrollment',
+          foreign_key: :user_id,
+          inverse_of: :user,
           dependent: :destroy
 
   attr_accessor :asserted_attributes, :email

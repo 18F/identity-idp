@@ -346,9 +346,11 @@ describe 'OpenID Connect' do
   it 'returns verified_at in an ial1 session if requested', driver: :mobile_rack_test do
     user = user_with_2fa
     profile = create(
-      :profile, :active, :verified,
+      :profile,
+      :active,
+      :verified,
       pii: { first_name: 'John', ssn: '111223333' },
-      user: user
+      user: user,
     )
 
     token_response = sign_in_get_token_response(
@@ -429,10 +431,11 @@ describe 'OpenID Connect' do
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     user = user_with_2fa
     _profile = create(
-      :profile, :active,
+      :profile,
+      :active,
       verified_at: 60.days.ago,
       pii: { first_name: 'John', ssn: '111223333', dob: '1970-01-01' },
-      user: user
+      user: user,
     )
 
     token_response = sign_in_get_token_response(
@@ -911,8 +914,10 @@ describe 'OpenID Connect' do
     expect(current_path).to eq('/')
 
     user ||= create(
-      :profile, :active, :verified,
-      pii: { first_name: 'John', ssn: '111223333' }
+      :profile,
+      :active,
+      :verified,
+      pii: { first_name: 'John', ssn: '111223333' },
     ).user
 
     sign_in_live_with_2fa(user)

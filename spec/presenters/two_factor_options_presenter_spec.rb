@@ -32,8 +32,9 @@ describe TwoFactorOptionsPresenter do
     context 'when a phishing-resistant only SP is being used' do
       let(:presenter) do
         described_class.new(
-          user_agent: user_agent, user: user_with_2fa,
-          phishing_resistant_required: true
+          user_agent: user_agent,
+          user: user_with_2fa,
+          phishing_resistant_required: true,
         )
       end
 

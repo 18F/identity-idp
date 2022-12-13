@@ -370,9 +370,10 @@ describe Users::ResetPasswordsController, devise: true do
         )
 
         expect do
-          put :create, params: {
-            password_reset_email_form: { email: email },
-          }
+          put :create,
+              params: {
+                password_reset_email_form: { email: email },
+              }
         end.to(change { ActionMailer::Base.deliveries.count }.by(1))
 
         analytics_hash = {

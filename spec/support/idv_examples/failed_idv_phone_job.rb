@@ -38,8 +38,9 @@ shared_examples 'failed idv phone job' do
   end
 
   def fill_out_phone_form_error
-    fill_in :idv_phone_form_phone, with:
-      Proofing::Mock::AddressMockClient::FAILED_TO_CONTACT_PHONE_NUMBER
+    fill_in :idv_phone_form_phone,
+            with:
+                  Proofing::Mock::AddressMockClient::FAILED_TO_CONTACT_PHONE_NUMBER
   end
 
   def fill_out_idv_form_timeout
@@ -48,8 +49,9 @@ shared_examples 'failed idv phone job' do
   end
 
   def fill_out_phone_form_timeout
-    fill_in :idv_phone_form_phone, with:
-      Proofing::Mock::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER
+    fill_in :idv_phone_form_phone,
+            with:
+                  Proofing::Mock::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER
   end
 
   def session_timeout_path

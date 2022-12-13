@@ -38,8 +38,10 @@ module TwoFactorAuthentication
         true
       else
         errors.add(
-          :configuration, :not_destroyed, message: 'cannot delete phone',
-                                          type: :two_factor
+          :configuration,
+          :not_destroyed,
+          message: 'cannot delete phone',
+          type: :two_factor,
         )
         false
       end

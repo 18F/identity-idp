@@ -14,8 +14,10 @@ module Proofing
         rescue => exception
           NewRelic::Agent.notice_error(exception)
           ResolutionResult.new(
-            success: false, errors: {}, exception: exception,
-            vendor_name: 'lexisnexis:instant_verify'
+            success: false,
+            errors: {},
+            exception: exception,
+            vendor_name: 'lexisnexis:instant_verify',
           )
         end
 

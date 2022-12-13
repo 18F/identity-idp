@@ -53,8 +53,10 @@ describe Db::AddDocumentVerificationAndSelfieCosts do
 
   def costing_for(cost_type)
     SpCost.where(
-      ial: 2, issuer: service_provider.issuer, agency_id: service_provider.agency_id,
-      cost_type: cost_type.to_s
+      ial: 2,
+      issuer: service_provider.issuer,
+      agency_id: service_provider.agency_id,
+      cost_type: cost_type.to_s,
     ).first
   end
 end

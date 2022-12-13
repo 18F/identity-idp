@@ -227,9 +227,11 @@ describe 'throttling requests' do
     context 'when the number of requests is lower or equal to the limit' do
       it 'does not throttle' do
         (logins_per_email_and_ip_limit - 1).times do
-          post '/', params: {
-            user: { email: 'test@example.com' },
-          }, headers: { REMOTE_ADDR: '1.2.3.4' }
+          post '/',
+               params: {
+                 user: { email: 'test@example.com' },
+               },
+               headers: { REMOTE_ADDR: '1.2.3.4' }
         end
 
         expect(response.status).to eq(200)
@@ -266,9 +268,11 @@ describe 'throttling requests' do
           expect(analytics).
             to receive(:track_event).with('Rate Limit Triggered', analytics_hash).once
           (logins_per_email_and_ip_limit + 1).times do |index|
-            post path, params: {
-              user: { email: index.even? ? 'test@example.com' : ' test@EXAMPLE.com   ' },
-            }, headers: { REMOTE_ADDR: '1.2.3.4' }
+            post path,
+                 params: {
+                   user: { email: index.even? ? 'test@example.com' : ' test@EXAMPLE.com   ' },
+                 },
+                 headers: { REMOTE_ADDR: '1.2.3.4' }
           end
 
           expect(response.status).to eq(429)
@@ -288,8 +292,9 @@ describe 'throttling requests' do
 
   describe 'email registrations per ip' do
     it 'reads the limit and period from configuration' do
-      post '/sign_up/enter_email', params: { user: { email: 'test@test.com' } },
-                                   headers: { REMOTE_ADDR: '1.2.3.4' }
+      post '/sign_up/enter_email',
+           params: { user: { email: 'test@test.com' } },
+           headers: { REMOTE_ADDR: '1.2.3.4' }
 
       throttle_data = request.env['rack.attack.throttle_data']['email_registrations/ip']
 
@@ -305,9 +310,11 @@ describe 'throttling requests' do
         headers = { REMOTE_ADDR: '1.2.3.4' }
 
         post '/sign_up/enter_email',
-             params: { user: { email: 'test@example.com', terms_accepted: '1' } }, headers: headers
+             params: { user: { email: 'test@example.com', terms_accepted: '1' } },
+             headers: headers
         post '/sign_up/enter_email',
-             params: { user: { email: 'test1@example.com', terms_accepted: '1' } }, headers: headers
+             params: { user: { email: 'test1@example.com', terms_accepted: '1' } },
+             headers: headers
 
         expect(response.status).to eq(302)
       end
@@ -337,11 +344,13 @@ describe 'throttling requests' do
             )
 
           post path, params: { user: { email: first_email, terms_accepted: '1' } }, headers: headers
-          post path, params: { user: { email: second_email, terms_accepted: '1' } },
-                     headers: headers
+          post path,
+               params: { user: { email: second_email, terms_accepted: '1' } },
+               headers: headers
           post path, params: { user: { email: third_email, terms_accepted: '1' } }, headers: headers
-          post path, params: { user: { email: fourth_email, terms_accepted: '1' } },
-                     headers: headers
+          post path,
+               params: { user: { email: fourth_email, terms_accepted: '1' } },
+               headers: headers
 
           expect(response.status).to eq(429)
           expect(response.body).

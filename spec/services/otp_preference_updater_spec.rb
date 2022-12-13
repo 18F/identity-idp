@@ -15,9 +15,10 @@ describe OtpPreferenceUpdater do
         it 'does not update the user' do
           user = create(:user, email: 'test1@test.com')
           phone = create(
-            :phone_configuration, user: user,
-                                  phone: '+1 111 111 1111',
-                                  delivery_preference: 'sms'
+            :phone_configuration,
+            user: user,
+            phone: '+1 111 111 1111',
+            delivery_preference: 'sms',
           )
           updater = OtpPreferenceUpdater.new(user: user, preference: 'sms', phone_id: phone.id)
           expect(UpdateUser).to_not receive(:new)

@@ -438,22 +438,25 @@ RSpec.describe User do
     before do
       @user = create(:user, email: 'test1@test.com')
       @phone_config1 = create(
-        :phone_configuration, user: @user,
-                              phone: '+1 111 111 1111',
-                              created_at: Time.zone.now - 3.days,
-                              made_default_at: nil
+        :phone_configuration,
+        user: @user,
+        phone: '+1 111 111 1111',
+        created_at: Time.zone.now - 3.days,
+        made_default_at: nil,
       )
       @phone_config2 = create(
-        :phone_configuration, user: @user,
-                              phone: '+1 222 222 2222',
-                              created_at: Time.zone.now - 2.days,
-                              made_default_at: nil
+        :phone_configuration,
+        user: @user,
+        phone: '+1 222 222 2222',
+        created_at: Time.zone.now - 2.days,
+        made_default_at: nil,
       )
       @phone_config3 = create(
-        :phone_configuration, user: @user,
-                              phone: '+1 333 333 3333',
-                              created_at: Time.zone.now - 1.day,
-                              made_default_at: nil
+        :phone_configuration,
+        user: @user,
+        phone: '+1 333 333 3333',
+        created_at: Time.zone.now - 1.day,
+        made_default_at: nil,
       )
     end
 
@@ -543,8 +546,10 @@ RSpec.describe User do
       let(:other_service_provider) { create(:service_provider, issuer: 'otherissuer') }
       let!(:enrollment) do
         create(
-          :in_person_enrollment, user: user, issuer: other_service_provider.issuer,
-                                 status: :passed
+          :in_person_enrollment,
+          user: user,
+          issuer: other_service_provider.issuer,
+          status: :passed,
         )
       end
       it 'should not send survey' do
@@ -558,8 +563,11 @@ RSpec.describe User do
       end
       let!(:enrollment2) do
         create(
-          :in_person_enrollment, user: user, issuer: other_service_provider.issuer,
-                                 status: :passed, follow_up_survey_sent: true
+          :in_person_enrollment,
+          user: user,
+          issuer: other_service_provider.issuer,
+          status: :passed,
+          follow_up_survey_sent: true,
         )
       end
       it 'should send survey' do
@@ -586,8 +594,11 @@ RSpec.describe User do
       end
       let!(:enrollment2) do
         create(
-          :in_person_enrollment, user: user, issuer: issuer, status: :passed,
-                                 follow_up_survey_sent: true
+          :in_person_enrollment,
+          user: user,
+          issuer: issuer,
+          status: :passed,
+          follow_up_survey_sent: true,
         )
       end
       it 'should not send survey' do
@@ -611,8 +622,11 @@ RSpec.describe User do
     context 'user has completed enrollment and survey' do
       let!(:enrollment) do
         create(
-          :in_person_enrollment, user: user, issuer: issuer, status: :passed,
-                                 follow_up_survey_sent: true
+          :in_person_enrollment,
+          user: user,
+          issuer: issuer,
+          status: :passed,
+          follow_up_survey_sent: true,
         )
       end
 

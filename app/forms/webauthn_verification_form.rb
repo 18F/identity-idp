@@ -68,8 +68,10 @@ class WebauthnVerificationForm
 
     begin
       assertion_response.valid?(
-        @challenge.pack('c*'), original_origin,
-        public_key: Base64.decode64(public_key), sign_count: 0
+        @challenge.pack('c*'),
+        original_origin,
+        public_key: Base64.decode64(public_key),
+        sign_count: 0,
       )
     rescue OpenSSL::PKey::PKeyError
       false

@@ -520,10 +520,11 @@ describe Telephony::Pinpoint::SmsSender do
 
       before do
         pinpoint_client.stub_responses(
-          :phone_number_validate, [
+          :phone_number_validate,
+          [
             Seahorse::Client::NetworkingError.new(Timeout::Error.new),
             { number_validate_response: { phone_type: phone_type } },
-          ]
+          ],
         )
       end
 

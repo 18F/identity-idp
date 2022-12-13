@@ -549,8 +549,10 @@ feature 'Sign in' do
   context 'user signs in with Voice OTP delivery preference to an unsupported country' do
     it 'falls back to SMS with an error message if SMS is supported' do
       user = create(
-        :user, :signed_up,
-        otp_delivery_preference: 'voice', with: { phone: '+61 02 1234 5678' }
+        :user,
+        :signed_up,
+        otp_delivery_preference: 'voice',
+        with: { phone: '+61 02 1234 5678' },
       )
       signin(user.email, user.password)
 
@@ -567,8 +569,10 @@ feature 'Sign in' do
 
     it 'shows error message if SMS and Voice are not supported' do
       user = create(
-        :user, :signed_up,
-        otp_delivery_preference: 'voice', with: { phone: '+213 09 1234 5678' }
+        :user,
+        :signed_up,
+        otp_delivery_preference: 'voice',
+        with: { phone: '+213 09 1234 5678' },
       )
       signin(user.email, user.password)
 
@@ -591,8 +595,10 @@ feature 'Sign in' do
   context 'user tries to visit /login/two_factor/voice with an unsupported phone' do
     it 'displays an error message but does not send another SMS' do
       user = create(
-        :user, :signed_up,
-        otp_delivery_preference: 'sms', with: { phone: unsupported_country_phone_number }
+        :user,
+        :signed_up,
+        otp_delivery_preference: 'sms',
+        with: { phone: unsupported_country_phone_number },
       )
       signin(user.email, user.password)
       visit login_two_factor_path(otp_delivery_preference: 'voice', reauthn: false)
@@ -612,8 +618,10 @@ feature 'Sign in' do
   context 'user tries to visit /otp/send with voice delivery to an unsupported phone' do
     it 'displays an error message but does not send another SMS' do
       user = create(
-        :user, :signed_up,
-        otp_delivery_preference: 'sms', with: { phone: unsupported_country_phone_number }
+        :user,
+        :signed_up,
+        otp_delivery_preference: 'sms',
+        with: { phone: unsupported_country_phone_number },
       )
       signin(user.email, user.password)
       visit otp_send_path(
@@ -635,8 +643,10 @@ feature 'Sign in' do
   context 'user with voice delivery preference visits /otp/send' do
     it 'displays an error message but does not send another SMS' do
       user = create(
-        :user, :signed_up,
-        otp_delivery_preference: 'voice', with: { phone: unsupported_country_phone_number }
+        :user,
+        :signed_up,
+        otp_delivery_preference: 'voice',
+        with: { phone: unsupported_country_phone_number },
       )
       signin(user.email, user.password)
       visit otp_send_path(
@@ -849,8 +859,10 @@ feature 'Sign in' do
 
     it 'returns ial2 info for a verified user' do
       user = create(
-        :profile, :active, :verified,
-        pii: { first_name: 'John', ssn: '111223333' }
+        :profile,
+        :active,
+        :verified,
+        pii: { first_name: 'John', ssn: '111223333' },
       ).user
       visit_idp_from_oidc_sp_with_ialmax
       fill_in_credentials_and_submit(user.email, user.password)
@@ -893,8 +905,10 @@ feature 'Sign in' do
 
     it 'returns ial2 info for a verified user' do
       user = create(
-        :profile, :active, :verified,
-        pii: { first_name: 'John', ssn: '111223333' }
+        :profile,
+        :active,
+        :verified,
+        pii: { first_name: 'John', ssn: '111223333' },
       ).user
       visit_saml_authn_request_url(
         overrides: {

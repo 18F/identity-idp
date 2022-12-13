@@ -8,9 +8,10 @@ class StatusPageComponent < BaseComponent
   VALID_STATUS = %i[info error warning].freeze
 
   renders_one :header, ::PageHeadingComponent
-  renders_many :action_buttons, ->(**button_options) do
-    ButtonComponent.new(**button_options, big: true, wide: true)
-  end
+  renders_many :action_buttons,
+               ->(**button_options) do
+                 ButtonComponent.new(**button_options, big: true, wide: true)
+               end
   renders_one :troubleshooting_options, TroubleshootingOptionsComponent
 
   attr_reader :status, :icon

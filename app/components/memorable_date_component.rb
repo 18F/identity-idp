@@ -144,16 +144,18 @@ class MemorableDateComponent < BaseComponent
     if label && min
       base_error_messages[:range_underflow] =
         t(
-          'components.memorable_date.errors.range_underflow', label: label,
-                                                              date: i18n_long_format(min)
+          'components.memorable_date.errors.range_underflow',
+          label: label,
+          date: i18n_long_format(min),
         )
     end
 
     if label && max
       base_error_messages[:range_overflow] =
         t(
-          'components.memorable_date.errors.range_overflow', label: label,
-                                                             date: i18n_long_format(max)
+          'components.memorable_date.errors.range_overflow',
+          label: label,
+          date: i18n_long_format(max),
         )
     end
 

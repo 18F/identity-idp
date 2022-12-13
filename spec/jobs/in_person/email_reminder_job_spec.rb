@@ -24,14 +24,18 @@ RSpec.describe InPerson::EmailReminderJob do
 
       let!(:pending_enrollment_received_late_reminder) do
         create(
-          :in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 26.days,
-                                           late_reminder_sent: true
+          :in_person_enrollment,
+          :pending,
+          enrollment_established_at: Time.zone.now - 26.days,
+          late_reminder_sent: true,
         )
       end
       let!(:pending_enrollment_received_early_reminder) do
         create(
-          :in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 19.days,
-                                           early_reminder_sent: true
+          :in_person_enrollment,
+          :pending,
+          enrollment_established_at: Time.zone.now - 19.days,
+          early_reminder_sent: true,
         )
       end
 

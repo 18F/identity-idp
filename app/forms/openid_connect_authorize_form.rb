@@ -133,13 +133,15 @@ class OpenidConnectAuthorizeForm
   def validate_acr_values
     if acr_values.empty?
       errors.add(
-        :acr_values, t('openid_connect.authorization.errors.no_valid_acr_values'),
-        type: :no_valid_acr_values
+        :acr_values,
+        t('openid_connect.authorization.errors.no_valid_acr_values'),
+        type: :no_valid_acr_values,
       )
     elsif ial_values.empty?
       errors.add(
-        :acr_values, t('openid_connect.authorization.errors.missing_ial'),
-        type: :missing_ial
+        :acr_values,
+        t('openid_connect.authorization.errors.missing_ial'),
+        type: :missing_ial,
       )
     end
   end
@@ -149,24 +151,27 @@ class OpenidConnectAuthorizeForm
   def validate_client_id
     return if service_provider
     errors.add(
-      :client_id, t('openid_connect.authorization.errors.bad_client_id'),
-      type: :bad_client_id
+      :client_id,
+      t('openid_connect.authorization.errors.bad_client_id'),
+      type: :bad_client_id,
     )
   end
 
   def validate_scope
     return if scope.present?
     errors.add(
-      :scope, t('openid_connect.authorization.errors.no_valid_scope'),
-      type: :no_valid_scope
+      :scope,
+      t('openid_connect.authorization.errors.no_valid_scope'),
+      type: :no_valid_scope,
     )
   end
 
   def validate_unauthorized_scope
     return unless @unauthorized_scope && IdentityConfig.store.unauthorized_scope_enabled
     errors.add(
-      :scope, t('openid_connect.authorization.errors.unauthorized_scope'),
-      type: :unauthorized_scope
+      :scope,
+      t('openid_connect.authorization.errors.unauthorized_scope'),
+      type: :unauthorized_scope,
     )
   end
 
@@ -174,8 +179,9 @@ class OpenidConnectAuthorizeForm
     return if prompt == 'select_account'
     return if prompt == 'login' && service_provider&.allow_prompt_login
     errors.add(
-      :prompt, t('openid_connect.authorization.errors.prompt_invalid'),
-      type: :prompt_invalid
+      :prompt,
+      t('openid_connect.authorization.errors.prompt_invalid'),
+      type: :prompt_invalid,
     )
   end
 
@@ -242,8 +248,9 @@ class OpenidConnectAuthorizeForm
     if (ial2_requested? && !ial_context.ial2_service_provider?) ||
        (ial_context.ialmax_requested? && !ial_context.ial2_service_provider?)
       errors.add(
-        :acr_values, t('openid_connect.authorization.errors.no_auth'),
-        type: :no_auth
+        :acr_values,
+        t('openid_connect.authorization.errors.no_auth'),
+        type: :no_auth,
       )
     end
   end

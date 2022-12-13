@@ -18,12 +18,16 @@ describe Db::Identity::SpUserCounts do
     ServiceProviderIdentity.create(user_id: 1, service_provider: issuer, uuid: 'foo1')
     ServiceProviderIdentity.create(user_id: 2, service_provider: issuer, uuid: 'foo2')
     ServiceProviderIdentity.create(
-      user_id: 3, service_provider: issuer, uuid: 'foo3',
-      verified_at: Time.zone.now
+      user_id: 3,
+      service_provider: issuer,
+      uuid: 'foo3',
+      verified_at: Time.zone.now,
     )
     ServiceProviderIdentity.create(
-      user_id: 4, service_provider: issuer2, uuid: 'foo4',
-      verified_at: Time.zone.now
+      user_id: 4,
+      service_provider: issuer2,
+      uuid: 'foo4',
+      verified_at: Time.zone.now,
     )
     result = { issuer: issuer, total: 3, ial1_total: 2, ial2_total: 1, app_id: app_id }.to_json
     result2 = { issuer: issuer2, total: 1, ial1_total: 0, ial2_total: 1, app_id: app_id2 }.to_json

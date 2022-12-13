@@ -65,12 +65,13 @@ describe Users::PhoneSetupController do
       expect(@analytics).to receive(:track_event).
         with('Multi-Factor Authentication: phone setup', result)
 
-      patch :create, params: {
-        new_phone_form: {
-          phone: '703-555-010',
-          international_code: 'US',
-        },
-      }
+      patch :create,
+            params: {
+              new_phone_form: {
+                phone: '703-555-010',
+                international_code: 'US',
+              },
+            }
 
       expect(response).to render_template(:index)
     end

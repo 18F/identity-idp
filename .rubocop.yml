@@ -238,6 +238,9 @@ Layout/MultilineHashBraceLayout:
 Layout/MultilineHashKeyLineBreaks:
   Enabled: true
 
+Layout/MultilineMethodArgumentLineBreaks:
+  Enabled: true
+
 Layout/MultilineMethodCallBraceLayout:
   Enabled: true
 

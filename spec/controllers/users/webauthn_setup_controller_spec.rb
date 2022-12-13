@@ -92,11 +92,12 @@ describe Users::WebauthnSetupController do
           with('Multi-Factor Authentication Setup', result)
 
         expect(@analytics).to receive(:track_event).
-          with('Multi-Factor Authentication: Added webauthn', {
-            enabled_mfa_methods_count: 3,
-            method_name: :webauthn,
-            platform_authenticator: false,
-          })
+          with('Multi-Factor Authentication: Added webauthn',
+               {
+                 enabled_mfa_methods_count: 3,
+                 method_name: :webauthn,
+                 platform_authenticator: false,
+               })
 
         patch :confirm, params: params
       end
@@ -114,7 +115,8 @@ describe Users::WebauthnSetupController do
         expect(
           Event.where(
             user_id: controller.current_user.id,
-            event_type: :webauthn_key_removed, ip: '0.0.0.0'
+            event_type: :webauthn_key_removed,
+            ip: '0.0.0.0',
           ).count,
         ).to eq 1
       end

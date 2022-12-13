@@ -3,9 +3,10 @@ class TwoFactorOptionsForm
 
   attr_accessor :selection, :user, :phishing_resistant_required, :piv_cac_required
 
-  validates :selection, inclusion: { in: %w[phone sms voice auth_app piv_cac
-                                            webauthn webauthn_platform
-                                            backup_code] }
+  validates :selection,
+            inclusion: { in: %w[phone sms voice auth_app piv_cac
+                                webauthn webauthn_platform
+                                backup_code] }
 
   validates :selection, length: { minimum: 1 }, if: :has_no_mfa_or_in_required_flow?
   validates :selection, length: { minimum: 2, message: 'phone' }, if: :phone_validations?

@@ -1,6 +1,11 @@
 module Telephony
   class OtpSender
-    attr_reader :recipient_phone, :otp, :expiration, :channel, :domain, :country_code,
+    attr_reader :recipient_phone,
+                :otp,
+                :expiration,
+                :channel,
+                :domain,
+                :country_code,
                 :extra_metadata
 
     def initialize(to:, otp:, expiration:, channel:, domain:, country_code:, extra_metadata:)

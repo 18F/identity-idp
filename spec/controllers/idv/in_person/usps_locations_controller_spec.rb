@@ -10,13 +10,17 @@ describe Idv::InPerson::UspsLocationsController do
   let(:address) do
     UspsInPersonProofing::Applicant.new(
       address: '1600 Pennsylvania Ave',
-      city: 'Washington', state: 'DC', zip_code: '20500'
+      city: 'Washington',
+      state: 'DC',
+      zip_code: '20500',
     )
   end
   let(:fake_address) do
     UspsInPersonProofing::Applicant.new(
       address: '742 Evergreen Terrace',
-      city: 'Springfield', state: 'MO', zip_code: '89011'
+      city: 'Springfield',
+      state: 'MO',
+      zip_code: '89011',
     )
   end
   let(:selected_location) do
@@ -91,10 +95,11 @@ describe Idv::InPerson::UspsLocationsController do
       ]
     end
     subject(:response) do
-      post :index, params: { address: { street_address: '1600 Pennsylvania Ave',
-                                        city: 'Washington',
-                                        state: 'DC',
-                                        zip_code: '20500' } }
+      post :index,
+           params: { address: { street_address: '1600 Pennsylvania Ave',
+                                city: 'Washington',
+                                state: 'DC',
+                                zip_code: '20500' } }
     end
 
     before do

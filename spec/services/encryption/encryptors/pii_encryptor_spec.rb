@@ -104,7 +104,8 @@ describe Encryption::Encryptors::PiiEncryptor do
           encrypted_data: Base64.strict_encode64('kms_ciphertext'),
           salt: salt,
           cost: '800$8$1$',
-        }.to_json, user_uuid: 'uuid-123-abc'
+        }.to_json,
+        user_uuid: 'uuid-123-abc',
       )
 
       expect(result).to eq(plaintext)

@@ -58,8 +58,9 @@ feature 'managing email address' do
       user = create(:user, :signed_up, email: 'test@example.com ')
       confirmed_email1 = user.confirmed_email_addresses.first
       confirmed_email2 = create(
-        :email_address, user: user,
-                        confirmed_at: Time.zone.now
+        :email_address,
+        user: user,
+        confirmed_at: Time.zone.now,
       )
       user.email_addresses.reload
 

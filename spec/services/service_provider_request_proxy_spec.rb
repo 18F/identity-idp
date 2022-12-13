@@ -11,7 +11,8 @@ describe ServiceProviderRequestProxy do
         sp_request = ServiceProviderRequestProxy.create(
           uuid: '123',
           issuer: 'foo',
-          url: 'http://bar.com', ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+          url: 'http://bar.com',
+          ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         )
         expect(ServiceProviderRequestProxy.from_uuid('123')).to eq sp_request
       end

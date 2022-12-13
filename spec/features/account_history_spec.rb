@@ -38,14 +38,18 @@ describe 'Account history' do
   end
   let(:new_personal_key_event) do
     create(
-      :event, event_type: :new_personal_key,
-              user: user, created_at: Time.zone.now - 40.days
+      :event,
+      event_type: :new_personal_key,
+      user: user,
+      created_at: Time.zone.now - 40.days,
     )
   end
   let(:password_changed_event) do
     create(
-      :event, event_type: :password_changed,
-              user: user, created_at: Time.zone.now - 30.days
+      :event,
+      event_type: :password_changed,
+      user: user,
+      created_at: Time.zone.now - 30.days,
     )
   end
 

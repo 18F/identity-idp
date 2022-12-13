@@ -343,7 +343,8 @@ describe Users::SessionsController, devise: true do
         create(
           :profile,
           deactivation_reason: :gpo_verification_pending,
-          user: user, pii: { ssn: '1234' }
+          user: user,
+          pii: { ssn: '1234' },
         )
 
         post :create, params: { user: { email: user.email.upcase, password: user.password } }

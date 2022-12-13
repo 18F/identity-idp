@@ -22,8 +22,10 @@ feature 'sp active users report' do
 
   it 'reports a user as ial2 active for an ial2 sign in' do
     user = create(
-      :profile, :active, :verified,
-      pii: { first_name: 'John', ssn: '111223333' }
+      :profile,
+      :active,
+      :verified,
+      pii: { first_name: 'John', ssn: '111223333' },
     ).user
     visit_idp_from_sp_with_ial2(:oidc)
     fill_in_credentials_and_submit(user.email, user.password)

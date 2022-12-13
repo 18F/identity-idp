@@ -9,12 +9,14 @@ class Agreements::IaaGtc < ApplicationRecord
   has_many :service_providers, through: :integrations
 
   validates :gtc_number, presence: true, uniqueness: true
-  validates :mod_number, presence: true,
-                         numericality: { only_integer: true,
-                                         greater_than_or_equal_to: 0 }
-  validates :estimated_amount, numericality: { less_than: 10_000_000_000,
-                                               greater_than_or_equal_to: 0,
-                                               allow_nil: true }
+  validates :mod_number,
+            presence: true,
+            numericality: { only_integer: true,
+                            greater_than_or_equal_to: 0 }
+  validates :estimated_amount,
+            numericality: { less_than: 10_000_000_000,
+                            greater_than_or_equal_to: 0,
+                            allow_nil: true }
   validates :start_date, presence: true
   validates :end_date, presence: true
   validate :end_date_after_start_date

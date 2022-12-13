@@ -1,5 +1,9 @@
 class PhoneInputComponent < BaseComponent
-  attr_reader :form, :confirmed_phone, :required, :allowed_countries, :delivery_methods,
+  attr_reader :form,
+              :confirmed_phone,
+              :required,
+              :allowed_countries,
+              :delivery_methods,
               :tag_options
 
   alias_method :f, :form

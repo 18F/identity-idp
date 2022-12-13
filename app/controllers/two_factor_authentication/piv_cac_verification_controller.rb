@@ -20,7 +20,8 @@ module TwoFactorAuthentication
       redirect_to PivCacService.piv_cac_service_link(
         nonce: piv_cac_nonce,
         redirect_uri: login_two_factor_piv_cac_url,
-      ), allow_other_host: true
+      ),
+                  allow_other_host: true
     end
 
     private

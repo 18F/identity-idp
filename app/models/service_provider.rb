@@ -5,10 +5,11 @@ class ServiceProvider < ApplicationRecord
   belongs_to :agency
 
   # rubocop:disable Rails/HasManyOrHasOneDependent
-  has_many :identities, inverse_of: :service_provider_record,
-                        foreign_key: 'service_provider',
-                        primary_key: 'issuer',
-                        class_name: 'ServiceProviderIdentity'
+  has_many :identities,
+           inverse_of: :service_provider_record,
+           foreign_key: 'service_provider',
+           primary_key: 'issuer',
+           class_name: 'ServiceProviderIdentity'
   # rubocop:enable Rails/HasManyOrHasOneDependent
   has_many :in_person_enrollments,
            inverse_of: :service_provider,

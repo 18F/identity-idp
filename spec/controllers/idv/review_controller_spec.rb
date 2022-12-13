@@ -292,8 +292,9 @@ describe Idv::ReviewController do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
         expect(@analytics).to have_logged_event(
-          'IdV: review complete', success: true,
-                                  proofing_components: nil
+          'IdV: review complete',
+          success: true,
+          proofing_components: nil,
         )
         expect(@analytics).to have_logged_event(
           'IdV: final resolution',

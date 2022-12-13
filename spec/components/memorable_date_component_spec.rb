@@ -148,13 +148,15 @@ RSpec.describe MemorableDateComponent, type: :component do
           'invalid_date' => t('components.memorable_date.errors.invalid_date'),
           'range_underflow' =>
             t(
-              'components.memorable_date.errors.range_underflow', label: label,
-                                                                  date: formatted_min
+              'components.memorable_date.errors.range_underflow',
+              label: label,
+              date: formatted_min,
             ),
           'range_overflow' =>
           t(
-            'components.memorable_date.errors.range_overflow', label: label,
-                                                               date: formatted_max
+            'components.memorable_date.errors.range_overflow',
+            label: label,
+            date: formatted_max,
           ),
           'outside_date_range' =>
           t(

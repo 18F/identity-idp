@@ -34,8 +34,9 @@ module Db
         interval: IdentityConfig.store.totp_code_interval,
       )
       totp.verify(
-        code, drift_ahead: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS,
-              drift_behind: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS
+        code,
+        drift_ahead: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS,
+        drift_behind: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS,
       )
     end
 

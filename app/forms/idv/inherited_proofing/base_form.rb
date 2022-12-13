@@ -98,7 +98,8 @@ module Idv
       def field_name_info_from(payload_hash:, namespace: [], field_name_info: {})
         payload_hash.each do |key, value|
           if value.is_a? Hash
-            field_name_info_from payload_hash: value, namespace: namespace << key,
+            field_name_info_from payload_hash: value,
+                                 namespace: namespace << key,
                                  field_name_info: field_name_info
             namespace.pop
             next

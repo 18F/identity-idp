@@ -43,7 +43,8 @@ module DataRequests
       output_file.puts('Auth app configurations:')
       write_rows_to_csv(
         user_report[:mfa_configurations][:auth_app_configurations],
-        :name, :created_at
+        :name,
+        :created_at,
       )
     end
 
@@ -51,7 +52,8 @@ module DataRequests
       output_file.puts('Backup code configurations:')
       write_rows_to_csv(
         user_report[:mfa_configurations][:backup_code_configurations],
-        :created_at, :used_at
+        :created_at,
+        :used_at,
       )
     end
 
@@ -64,7 +66,9 @@ module DataRequests
       output_file.puts('Phone configurations:')
       write_rows_to_csv(
         user_report[:mfa_configurations][:phone_configurations],
-        :phone, :created_at, :confirmed_at
+        :phone,
+        :created_at,
+        :confirmed_at,
       )
     end
 
@@ -72,7 +76,8 @@ module DataRequests
       output_file.puts('PIV/CAC configurations:')
       write_rows_to_csv(
         user_report[:mfa_configurations][:piv_cac_configurations],
-        :name, :created_at
+        :name,
+        :created_at,
       )
     end
 
@@ -80,7 +85,8 @@ module DataRequests
       output_file.puts('WebAuthn configurations:')
       write_rows_to_csv(
         user_report[:mfa_configurations][:webauthn_configurations],
-        :name, :created_at
+        :name,
+        :created_at,
       )
     end
   end

@@ -111,7 +111,8 @@ class InPersonEnrollment < ApplicationRecord
     return unless profile.present?
 
     unless profile.user == user
-      errors.add :profile, I18n.t('idv.failure.exceptions.internal_error'),
+      errors.add :profile,
+                 I18n.t('idv.failure.exceptions.internal_error'),
                  type: :in_person_enrollment_user_profile_mismatch
     end
   end

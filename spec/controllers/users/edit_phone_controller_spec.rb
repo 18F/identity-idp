@@ -23,10 +23,11 @@ describe Users::EditPhoneController do
         expect(@analytics).to receive(:track_event).
           with('Phone Number Change: Form submitted', attributes)
 
-        put :update, params: {
-          id: phone_configuration.id,
-          edit_phone_form: { delivery_preference: 'voice' },
-        }
+        put :update,
+            params: {
+              id: phone_configuration.id,
+              edit_phone_form: { delivery_preference: 'voice' },
+            }
         expect(response).to redirect_to(account_url)
         expect(phone_configuration.reload.delivery_preference).to eq('voice')
       end
@@ -46,10 +47,11 @@ describe Users::EditPhoneController do
 
         expect(@analytics).to receive(:track_event).
           with('Phone Number Change: Form submitted', attributes)
-        put :update, params: {
-          id: phone_configuration.id,
-          edit_phone_form: { delivery_preference: 'noise' },
-        }
+        put :update,
+            params: {
+              id: phone_configuration.id,
+              edit_phone_form: { delivery_preference: 'noise' },
+            }
 
         expect(response).to render_template(:edit)
         expect(phone_configuration.reload.delivery_preference).to eq('sms')

@@ -15,10 +15,11 @@ describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
 
   context 'before selecting options' do
     subject(:rendered) do
-      render partial: 'mfa_selection', locals: {
-        form: form_builder,
-        option: presenter.options[4],
-      }
+      render partial: 'mfa_selection',
+             locals: {
+               form: form_builder,
+               option: presenter.options[4],
+             }
     end
     it 'does not display any errors' do
       expect(rendered).to_not have_css('.checkbox__invalid')
@@ -37,12 +38,13 @@ describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
       SimpleForm::FormBuilder.new(form_object.model_name.param_key, form_object, view_context, {})
     end
     subject(:rendered) do
-      render partial: 'mfa_selection', locals: {
-        form: form_builder,
-        option: presenter.options.find do |option|
-                  option.is_a?(TwoFactorAuthentication::AuthAppSelectionPresenter)
-                end,
-      }
+      render partial: 'mfa_selection',
+             locals: {
+               form: form_builder,
+               option: presenter.options.find do |option|
+                         option.is_a?(TwoFactorAuthentication::AuthAppSelectionPresenter)
+                       end,
+             }
     end
 
     it 'shows a disabled checkbox for the configuration already created' do

@@ -40,17 +40,18 @@ describe 'idv/shared/_document_capture.html.erb' do
   end
 
   subject(:render_partial) do
-    render partial: 'idv/shared/document_capture', locals: {
-      flow_session: flow_session,
-      sp_name: sp_name,
-      flow_path: flow_path,
-      failure_to_proof_url: failure_to_proof_url,
-      front_image_upload_url: front_image_upload_url,
-      back_image_upload_url: back_image_upload_url,
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      use_newer_sdk: use_newer_sdk,
-      acuant_version: acuant_version,
-    }
+    render partial: 'idv/shared/document_capture',
+           locals: {
+             flow_session: flow_session,
+             sp_name: sp_name,
+             flow_path: flow_path,
+             failure_to_proof_url: failure_to_proof_url,
+             front_image_upload_url: front_image_upload_url,
+             back_image_upload_url: back_image_upload_url,
+             acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+             use_newer_sdk: use_newer_sdk,
+             acuant_version: acuant_version,
+           }
   end
 
   describe 'async upload urls' do

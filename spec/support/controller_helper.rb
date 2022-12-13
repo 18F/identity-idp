@@ -37,8 +37,9 @@ module ControllerHelper
     user_session = {}
     stub_sign_in(user)
     idv_session = Idv::Session.new(
-      user_session: user_session, current_user: user,
-      service_provider: nil
+      user_session: user_session,
+      current_user: user,
+      service_provider: nil,
     )
     idv_session.applicant = {
       first_name: 'Some',
@@ -57,8 +58,9 @@ module ControllerHelper
     user_session = {}
     stub_sign_in(user)
     idv_session = Idv::Session.new(
-      user_session: user_session, current_user: user,
-      service_provider: nil
+      user_session: user_session,
+      current_user: user,
+      service_provider: nil,
     )
     idv_session.applicant = applicant.with_indifferent_access
     idv_session.profile_confirmation = true

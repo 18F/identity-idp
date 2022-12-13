@@ -31,8 +31,9 @@ describe Idv::PhoneController do
   describe '#new' do
     let(:user) do
       create(
-        :user, :with_phone,
-        with: { phone: good_phone, confirmed_at: Time.zone.now }
+        :user,
+        :with_phone,
+        with: { phone: good_phone, confirmed_at: Time.zone.now },
       )
     end
 
@@ -256,9 +257,11 @@ describe Idv::PhoneController do
       context 'when same as user phone' do
         before do
           user = build(
-            :user, :with_phone, with: {
+            :user,
+            :with_phone,
+            with: {
               phone: good_phone, confirmed_at: Time.zone.now
-            }
+            },
           )
           stub_verify_steps_one_and_two(user)
         end
@@ -266,12 +269,13 @@ describe Idv::PhoneController do
         it 'redirects to otp delivery page' do
           original_applicant = subject.idv_session.applicant.dup
 
-          put :create, params: {
-            idv_phone_form: {
-              phone: good_phone,
-              otp_delivery_preference: 'sms',
-            },
-          }
+          put :create,
+              params: {
+                idv_phone_form: {
+                  phone: good_phone,
+                  otp_delivery_preference: 'sms',
+                },
+              }
 
           expect(response).to redirect_to idv_phone_path
           get :new
@@ -306,20 +310,23 @@ describe Idv::PhoneController do
       context 'when different phone from user phone' do
         before do
           user = build(
-            :user, :with_phone, with: {
+            :user,
+            :with_phone,
+            with: {
               phone: '+1 (415) 555-0130', confirmed_at: Time.zone.now
-            }
+            },
           )
           stub_verify_steps_one_and_two(user)
         end
 
         it 'redirects to otp page and does not set phone_confirmed_at' do
-          put :create, params: {
-            idv_phone_form: {
-              phone: good_phone,
-              otp_delivery_preference: 'sms',
-            },
-          }
+          put :create,
+              params: {
+                idv_phone_form: {
+                  phone: good_phone,
+                  otp_delivery_preference: 'sms',
+                },
+              }
 
           expect(response).to redirect_to idv_phone_path
           get :new

@@ -2,14 +2,16 @@ module EventDisavowal
   class ValidateDisavowedEvent
     include ActiveModel::Model
 
-    validates :event, presence: {
-      message: proc { I18n.t('event_disavowals.errors.event_not_found') },
-    }
+    validates :event,
+              presence: {
+                message: proc { I18n.t('event_disavowals.errors.event_not_found') },
+              }
     validate :event_is_not_already_disavowed
     validate :event_disavowment_is_not_expired
-    validates_presence_of :user, {
-      message: proc { I18n.t('event_disavowals.errors.no_account') },
-    }
+    validates_presence_of :user,
+                          {
+                            message: proc { I18n.t('event_disavowals.errors.no_account') },
+                          }
 
     attr_reader :event
 
@@ -33,8 +35,9 @@ module EventDisavowal
       return if event.nil?
       return if event.disavowed_at.blank?
       errors.add(
-        :event, I18n.t('event_disavowals.errors.event_already_disavowed'),
-        type: :event_already_disavowed
+        :event,
+        I18n.t('event_disavowals.errors.event_already_disavowed'),
+        type: :event_already_disavowed,
       )
     end
 
@@ -43,8 +46,9 @@ module EventDisavowal
       disavowal_expiration = IdentityConfig.store.event_disavowal_expiration_hours.hours.ago
       return if event.created_at > disavowal_expiration
       errors.add(
-        :event, I18n.t('event_disavowals.errors.event_disavowal_expired'),
-        type: :event_disavowal_expired
+        :event,
+        I18n.t('event_disavowals.errors.event_disavowal_expired'),
+        type: :event_disavowal_expired,
       )
     end
   end

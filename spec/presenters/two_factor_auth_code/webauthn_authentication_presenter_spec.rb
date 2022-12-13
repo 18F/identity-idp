@@ -7,8 +7,10 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
   let(:reauthn) {}
   let(:presenter) do
     TwoFactorAuthCode::WebauthnAuthenticationPresenter.
-      new(data: { reauthn: reauthn }, service_provider: nil,
-          view: view, platform_authenticator: platform_authenticator)
+      new(data: { reauthn: reauthn },
+          service_provider: nil,
+          view: view,
+          platform_authenticator: platform_authenticator)
   end
 
   let(:allow_user_to_switch_method) { false }

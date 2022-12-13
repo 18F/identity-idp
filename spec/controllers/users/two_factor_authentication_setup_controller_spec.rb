@@ -95,11 +95,12 @@ describe Users::TwoFactorAuthenticationSetupController do
       expect(@analytics).to receive(:track_event).
         with('User Registration: 2FA Setup', result)
 
-      patch :create, params: {
-        two_factor_options_form: {
-          selection: ['voice', 'auth_app'],
-        },
-      }
+      patch :create,
+            params: {
+              two_factor_options_form: {
+                selection: ['voice', 'auth_app'],
+              },
+            }
     end
 
     it 'tracks IRS attempts event' do
@@ -107,14 +108,16 @@ describe Users::TwoFactorAuthenticationSetupController do
       stub_attempts_tracker
 
       expect(@irs_attempts_api_tracker).to receive(:track_event).
-        with(:mfa_enroll_options_selected, success: true,
-                                           mfa_device_types: ['voice', 'auth_app'])
+        with(:mfa_enroll_options_selected,
+             success: true,
+             mfa_device_types: ['voice', 'auth_app'])
 
-      patch :create, params: {
-        two_factor_options_form: {
-          selection: ['voice', 'auth_app'],
-        },
-      }
+      patch :create,
+            params: {
+              two_factor_options_form: {
+                selection: ['voice', 'auth_app'],
+              },
+            }
     end
 
     context 'when the selection is only phone and multi mfa is enabled' do
@@ -123,11 +126,12 @@ describe Users::TwoFactorAuthenticationSetupController do
         allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
         stub_sign_in_before_2fa
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: 'phone',
-          },
-        }
+        patch :create,
+              params: {
+                two_factor_options_form: {
+                  selection: 'phone',
+                },
+              }
       end
 
       it 'the redirect to the form page with an anchor' do
@@ -143,11 +147,12 @@ describe Users::TwoFactorAuthenticationSetupController do
     context 'when multi selection with phone first' do
       it 'redirects properly' do
         stub_sign_in_before_2fa
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['phone', 'auth_app'],
-          },
-        }
+        patch :create,
+              params: {
+                two_factor_options_form: {
+                  selection: ['phone', 'auth_app'],
+                },
+              }
 
         expect(response).to redirect_to phone_setup_url
       end
@@ -156,11 +161,12 @@ describe Users::TwoFactorAuthenticationSetupController do
     context 'when multi selection with auth app first' do
       it 'redirects properly' do
         stub_sign_in_before_2fa
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['auth_app', 'phone', 'webauthn'],
-          },
-        }
+        patch :create,
+              params: {
+                two_factor_options_form: {
+                  selection: ['auth_app', 'phone', 'webauthn'],
+                },
+              }
 
         expect(response).to redirect_to authenticator_setup_url
       end
@@ -170,11 +176,12 @@ describe Users::TwoFactorAuthenticationSetupController do
       it 'redirects to authentication app setup page' do
         stub_sign_in_before_2fa
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: 'auth_app',
-          },
-        }
+        patch :create,
+              params: {
+                two_factor_options_form: {
+                  selection: 'auth_app',
+                },
+              }
 
         expect(response).to redirect_to authenticator_setup_url
       end
@@ -184,11 +191,12 @@ describe Users::TwoFactorAuthenticationSetupController do
       it 'redirects to webauthn setup page' do
         stub_sign_in_before_2fa
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: 'webauthn',
-          },
-        }
+        patch :create,
+              params: {
+                two_factor_options_form: {
+                  selection: 'webauthn',
+                },
+              }
 
         expect(response).to redirect_to webauthn_setup_url
       end
@@ -198,11 +206,12 @@ describe Users::TwoFactorAuthenticationSetupController do
       it 'redirects to webauthn setup page with the platform param' do
         stub_sign_in_before_2fa
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: 'webauthn_platform',
-          },
-        }
+        patch :create,
+              params: {
+                two_factor_options_form: {
+                  selection: 'webauthn_platform',
+                },
+              }
 
         expect(response).to redirect_to webauthn_setup_url(platform: true)
       end
@@ -212,11 +221,12 @@ describe Users::TwoFactorAuthenticationSetupController do
       it 'redirects to piv/cac setup page' do
         stub_sign_in_before_2fa
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: 'piv_cac',
-          },
-        }
+        patch :create,
+              params: {
+                two_factor_options_form: {
+                  selection: 'piv_cac',
+                },
+              }
 
         expect(response).to redirect_to setup_piv_cac_url
       end
@@ -226,11 +236,12 @@ describe Users::TwoFactorAuthenticationSetupController do
       it 'renders index page' do
         stub_sign_in_before_2fa
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: 'foo',
-          },
-        }
+        patch :create,
+              params: {
+                two_factor_options_form: {
+                  selection: 'foo',
+                },
+              }
 
         expect(response).to render_template(:index)
       end

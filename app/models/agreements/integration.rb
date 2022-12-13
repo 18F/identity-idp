@@ -10,8 +10,9 @@ class Agreements::Integration < ApplicationRecord
 
   validates :issuer, presence: true, uniqueness: true
   validates :name, presence: true
-  validates :dashboard_identifier, uniqueness: { allow_nil: true },
-                                   numericality: { only_integer: true,
-                                                   greater_than: 0,
-                                                   allow_nil: true }
+  validates :dashboard_identifier,
+            uniqueness: { allow_nil: true },
+            numericality: { only_integer: true,
+                            greater_than: 0,
+                            allow_nil: true }
 end

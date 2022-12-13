@@ -103,14 +103,16 @@ module Idv
     def validate_image_urls
       unless valid_url?(:front_image_url)
         errors.add(
-          :front_image_url, invalid_link,
-          type: :invalid_link
+          :front_image_url,
+          invalid_link,
+          type: :invalid_link,
         )
       end
       unless valid_url?(:back_image_url)
         errors.add(
-          :back_image_url, invalid_link,
-          type: :invalid_link
+          :back_image_url,
+          invalid_link,
+          type: :invalid_link,
         )
       end
     end

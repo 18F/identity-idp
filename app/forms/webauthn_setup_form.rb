@@ -44,8 +44,12 @@ class WebauthnSetupForm
   private
 
   attr_reader :success
-  attr_accessor :user, :challenge, :attestation_object, :client_data_json,
-                :name, :platform_authenticator
+  attr_accessor :user,
+                :challenge,
+                :attestation_object,
+                :client_data_json,
+                :name,
+                :platform_authenticator
 
   def consume_parameters(params)
     @attestation_object = params[:attestation_object]
@@ -76,15 +80,19 @@ class WebauthnSetupForm
     @attestation_response.valid?(@challenge.pack('c*'), original_origin)
   rescue StandardError
     if @platform_authenticator
-      errors.add :name, I18n.t(
-        'errors.webauthn_platform_setup.attestation_error',
-        link: MarketingSite.contact_url,
-      ), type: :attestation_error
+      errors.add :name,
+                 I18n.t(
+                   'errors.webauthn_platform_setup.attestation_error',
+                   link: MarketingSite.contact_url,
+                 ),
+                 type: :attestation_error
     else
-      errors.add :name, I18n.t(
-        'errors.webauthn_setup.attestation_error',
-        link: MarketingSite.contact_url,
-      ), type: :attestation_error
+      errors.add :name,
+                 I18n.t(
+                   'errors.webauthn_setup.attestation_error',
+                   link: MarketingSite.contact_url,
+                 ),
+                 type: :attestation_error
     end
     false
   end

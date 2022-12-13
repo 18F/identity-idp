@@ -4,9 +4,10 @@ describe 'default phone selection' do
   let(:user) { create(:user, :with_phone) }
   let(:phone_config2) do
     create(
-      :phone_configuration, user: user,
-                            phone: '+1 202-555-2323',
-                            created_at: Time.zone.now + 1.hour
+      :phone_configuration,
+      user: user,
+      phone: '+1 202-555-2323',
+      created_at: Time.zone.now + 1.hour,
     )
   end
 

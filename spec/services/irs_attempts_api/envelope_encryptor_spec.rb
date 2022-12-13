@@ -19,8 +19,9 @@ RSpec.describe IrsAttemptsApi::EnvelopeEncryptor do
       text = Idp::Constants::MOCK_IDV_APPLICANT[:first_name]
       time = Time.zone.now
       result = IrsAttemptsApi::EnvelopeEncryptor.encrypt(
-        data: text, timestamp: time,
-        public_key_str: public_key
+        data: text,
+        timestamp: time,
+        public_key_str: public_key,
       )
       digest = Digest::SHA256.hexdigest(result.encrypted_data)
 
@@ -36,8 +37,9 @@ RSpec.describe IrsAttemptsApi::EnvelopeEncryptor do
       text = Idp::Constants::MOCK_IDV_APPLICANT[:first_name]
       time = Time.zone.now
       result = IrsAttemptsApi::EnvelopeEncryptor.encrypt(
-        data: text, timestamp: time,
-        public_key_str: public_key
+        data: text,
+        timestamp: time,
+        public_key_str: public_key,
       )
       key = private_key.private_decrypt(result.encrypted_key)
 

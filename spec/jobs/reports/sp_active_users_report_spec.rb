@@ -16,20 +16,29 @@ describe Reports::SpActiveUsersReport do
     authenticated_time = job_date.noon
     ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: 'app')
     ServiceProviderIdentity.create(
-      user_id: 1, service_provider: issuer, uuid: 'foo1',
-      last_ial1_authenticated_at: authenticated_time, last_ial2_authenticated_at: authenticated_time
+      user_id: 1,
+      service_provider: issuer,
+      uuid: 'foo1',
+      last_ial1_authenticated_at: authenticated_time,
+      last_ial2_authenticated_at: authenticated_time,
     )
     ServiceProviderIdentity.create(
-      user_id: 2, service_provider: issuer, uuid: 'foo2',
-      last_ial1_authenticated_at: authenticated_time
+      user_id: 2,
+      service_provider: issuer,
+      uuid: 'foo2',
+      last_ial1_authenticated_at: authenticated_time,
     )
     ServiceProviderIdentity.create(
-      user_id: 3, service_provider: issuer, uuid: 'foo3',
-      last_ial2_authenticated_at: authenticated_time
+      user_id: 3,
+      service_provider: issuer,
+      uuid: 'foo3',
+      last_ial2_authenticated_at: authenticated_time,
     )
     ServiceProviderIdentity.create(
-      user_id: 4, service_provider: issuer, uuid: 'foo4',
-      last_ial2_authenticated_at: authenticated_time
+      user_id: 4,
+      service_provider: issuer,
+      uuid: 'foo4',
+      last_ial2_authenticated_at: authenticated_time,
     )
     result = [{ issuer: issuer,
                 app_id: app_id,
@@ -52,27 +61,37 @@ describe Reports::SpActiveUsersReport do
 
     ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: 'app')
     ServiceProviderIdentity.create(
-      user_id: 1, service_provider: issuer, uuid: 'foo1',
+      user_id: 1,
+      service_provider: issuer,
+      uuid: 'foo1',
       last_ial1_authenticated_at: beginning_of_last_fiscal_year,
-      last_ial2_authenticated_at: beginning_of_last_fiscal_year
+      last_ial2_authenticated_at: beginning_of_last_fiscal_year,
     )
     ServiceProviderIdentity.create(
-      user_id: 2, service_provider: issuer, uuid: 'foo2',
+      user_id: 2,
+      service_provider: issuer,
+      uuid: 'foo2',
       last_ial1_authenticated_at: end_of_last_fiscal_year,
-      last_ial2_authenticated_at: end_of_last_fiscal_year
+      last_ial2_authenticated_at: end_of_last_fiscal_year,
     )
     ServiceProviderIdentity.create(
-      user_id: 3, service_provider: issuer, uuid: 'foo3',
-      last_ial2_authenticated_at: middle_of_last_fiscal_year
+      user_id: 3,
+      service_provider: issuer,
+      uuid: 'foo3',
+      last_ial2_authenticated_at: middle_of_last_fiscal_year,
     )
     ServiceProviderIdentity.create(
-      user_id: 4, service_provider: issuer, uuid: 'foo4',
-      last_ial2_authenticated_at: beginning_of_current_fiscal_year
+      user_id: 4,
+      service_provider: issuer,
+      uuid: 'foo4',
+      last_ial2_authenticated_at: beginning_of_current_fiscal_year,
     )
 
     ServiceProviderIdentity.create(
-      user_id: 5, service_provider: issuer, uuid: 'foo5',
-      last_ial2_authenticated_at: current_fiscal_year
+      user_id: 5,
+      service_provider: issuer,
+      uuid: 'foo5',
+      last_ial2_authenticated_at: current_fiscal_year,
     )
 
     result = [{ issuer: issuer,

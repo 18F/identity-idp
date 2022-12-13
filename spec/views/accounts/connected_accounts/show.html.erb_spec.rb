@@ -9,9 +9,12 @@ describe 'accounts/connected_accounts/show.html.erb' do
     assign(
       :presenter,
       AccountShowPresenter.new(
-        decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
-        sp_session_request_url: nil, sp_name: nil,
-        locked_for_session: false
+        decrypted_pii: nil,
+        personal_key: nil,
+        decorated_user: decorated_user,
+        sp_session_request_url: nil,
+        sp_name: nil,
+        locked_for_session: false,
       ),
     )
   end

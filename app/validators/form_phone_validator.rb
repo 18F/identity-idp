@@ -8,8 +8,9 @@ module FormPhoneValidator
                 message: :improbable_phone,
                 country_specifier: ->(form) { form.international_code },
               }
-    validates :international_code, inclusion: {
-      in: PhoneNumberCapabilities::INTERNATIONAL_CODES.keys,
-    }
+    validates :international_code,
+              inclusion: {
+                in: PhoneNumberCapabilities::INTERNATIONAL_CODES.keys,
+              }
   end
 end

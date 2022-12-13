@@ -38,8 +38,12 @@ module Proofing
       rescue => exception
         NewRelic::Agent.notice_error(exception)
         Proofing::StateIdResult.new(
-          success: false, errors: {}, exception: exception, vendor_name: 'aamva:state_id',
-          transaction_id: nil, verified_attributes: []
+          success: false,
+          errors: {},
+          exception: exception,
+          vendor_name: 'aamva:state_id',
+          transaction_id: nil,
+          verified_attributes: [],
         )
       end
 

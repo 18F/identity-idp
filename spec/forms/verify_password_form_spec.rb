@@ -10,8 +10,9 @@ describe VerifyPasswordForm, type: :model do
         create(:profile, :password_reset, user: user, pii: pii)
 
         form = VerifyPasswordForm.new(
-          user: user, password: password,
-          decrypted_pii: Pii::Attributes.new_from_hash(pii)
+          user: user,
+          password: password,
+          decrypted_pii: Pii::Attributes.new_from_hash(pii),
         )
 
         result = form.submit
@@ -28,8 +29,9 @@ describe VerifyPasswordForm, type: :model do
         create(:profile, :password_reset, user: user, pii: pii)
 
         form = VerifyPasswordForm.new(
-          user: user, password: "#{password}a",
-          decrypted_pii: Pii::Attributes.new_from_hash(pii)
+          user: user,
+          password: "#{password}a",
+          decrypted_pii: Pii::Attributes.new_from_hash(pii),
         )
 
         result = form.submit

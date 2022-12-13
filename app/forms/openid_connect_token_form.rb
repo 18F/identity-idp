@@ -133,10 +133,14 @@ class OpenidConnectTokenForm
     matching_cert = service_provider&.ssl_certs&.find do |ssl_cert|
       err = nil
       payload, _headers = JWT.decode(
-        client_assertion, ssl_cert.public_key, true,
-        algorithm: 'RS256', iss: client_id,
-        verify_iss: true, sub: client_id,
-        verify_sub: true
+        client_assertion,
+        ssl_cert.public_key,
+        true,
+        algorithm: 'RS256',
+        iss: client_id,
+        verify_iss: true,
+        sub: client_id,
+        verify_sub: true,
       )
     rescue JWT::DecodeError => err
       next
@@ -173,8 +177,9 @@ class OpenidConnectTokenForm
     return true if iat.is_a?(Numeric) && (iat.to_i - ISSUED_AT_LEEWAY_SECONDS) < Time.zone.now.to_i
 
     errors.add(
-      :client_assertion, t('openid_connect.token.errors.invalid_iat'),
-      type: :invalid_iat
+      :client_assertion,
+      t('openid_connect.token.errors.invalid_iat'),
+      type: :invalid_iat,
     )
   end
 
