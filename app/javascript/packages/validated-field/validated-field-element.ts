@@ -16,6 +16,8 @@ const TEXT_LIKE_INPUT_TYPES = new Set([
   'url',
 ]);
 
+const getRandomId = (): string => Math.random().toString(36).slice(-7);
+
 class ValidatedFieldElement extends HTMLElement {
   errorStrings: Partial<ValidityState> = {};
 
@@ -25,12 +27,9 @@ class ValidatedFieldElement extends HTMLElement {
 
   errorMessage: HTMLElement | null;
 
-  descriptorId?: string | null;
-
   connectedCallback() {
     this.input = this.querySelector('.validated-field__input');
     this.inputWrapper = this.querySelector('.validated-field__input-wrapper');
-    this.descriptorId = this.input?.getAttribute('aria-describedby');
     this.errorMessage = this.getErrorElement();
     try {
       Object.assign(
@@ -69,11 +68,8 @@ class ValidatedFieldElement extends HTMLElement {
   setErrorMessage(message?: string | null) {
     if (message) {
       this.getOrCreateErrorMessageElement().textContent = message;
-      if (this.errorMessage?.style.display === 'none') {
-        this.errorMessage.style.display = '';
-      }
     } else if (this.errorMessage) {
-      this.errorMessage.style.display = 'none';
+      this.errorMessage!.textContent = '';
     }
   }
 
@@ -119,16 +115,17 @@ class ValidatedFieldElement extends HTMLElement {
     if (!this.errorMessage) {
       this.errorMessage = this.ownerDocument.createElement('div');
       this.errorMessage.classList.add('usa-error-message');
+      this.errorMessage.id = `validated-field-error-${getRandomId()}`;
 
-      const descriptorId = (this.descriptorId?.split(' ') || []).find(
-        (id) => document.getElementById(id) === null,
-      );
+      if (this.input) {
+        this.input.setAttribute(
+          'aria-describedby',
+          [this.input.getAttribute('aria-describedby'), this.errorMessage.id].join(' '),
+        );
 
-      if (descriptorId) {
-        this.errorMessage.id = descriptorId;
-      }
-      if (this.input && TEXT_LIKE_INPUT_TYPES.has(this.input.type)) {
-        this.errorMessage.style.maxWidth = `${this.input.offsetWidth}px`;
+        if (TEXT_LIKE_INPUT_TYPES.has(this.input.type)) {
+          this.errorMessage.style.maxWidth = `${this.input.offsetWidth}px`;
+        }
       }
 
       this.inputWrapper?.appendChild(this.errorMessage);
@@ -138,13 +135,12 @@ class ValidatedFieldElement extends HTMLElement {
   }
 
   private getErrorElement(): HTMLElement | null {
-    const describedByElementIds = this.descriptorId?.split(' ') || [];
+    const describedByElementIds = this.input?.getAttribute('aria-describedby')?.split(' ') || [];
 
     return (
       describedByElementIds
         .map((id) => document.getElementById(id))
-        .find((element) => element?.classList.contains('usa-error-message')) ||
-      this.querySelector('.usa-error-message')
+        .find((element) => element?.classList.contains('usa-error-message')) || null
     );
   }
 

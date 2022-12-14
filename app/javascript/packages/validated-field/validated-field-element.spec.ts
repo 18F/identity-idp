@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import { getByRole, getByText } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
+import { computeAccessibleDescription } from 'dom-accessibility-api';
 import './validated-field-element';
 
 describe('ValidatedFieldElement', () => {
@@ -22,7 +23,9 @@ describe('ValidatedFieldElement', () => {
         <label id="validated-field-label" class="usa-label">Required Field</label>
         <input
           aria-invalid="false"
-          aria-describedby="validated-field-label validated-field-error-${errorMessageId}"
+          aria-describedby="validated-field-label${
+            hasInitialError ? ` validated-field-error-${errorMessageId}` : ''
+          }"
           required="required"
           aria-required="true"
           class="validated-field__input${hasInitialError ? ' usa-input--error' : ''}"
@@ -43,6 +46,23 @@ describe('ValidatedFieldElement', () => {
     return element;
   }
 
+  it('does not have an error message by default', () => {
+    const element = createAndConnectElement();
+
+    expect(element.querySelector('.usa-error-message')).to.not.exist();
+  });
+
+  it('does not have an error message while the value is valid', async () => {
+    const element = createAndConnectElement();
+
+    const input = getByRole(element, 'textbox');
+    await userEvent.type(input, '5');
+
+    input.closest('form')!.checkValidity();
+
+    expect(element.querySelector('.usa-error-message')).to.not.exist();
+  });
+
   it('shows error state and focuses on form validation', () => {
     const element = createAndConnectElement();
 
@@ -54,9 +74,9 @@ describe('ValidatedFieldElement', () => {
     expect(input.classList.contains('usa-input--error')).to.be.true();
     expect(input.getAttribute('aria-invalid')).to.equal('true');
     expect(document.activeElement).to.equal(input);
-    const message = getByText(element, 'This field is required');
-    expect(message).to.be.ok();
-    expect(message.id).to.equal('validated-field-error-1');
+    expect(computeAccessibleDescription(document.activeElement!)).to.equal(
+      'Required Field This field is required',
+    );
   });
 
   it('shows custom validity as message content', () => {
@@ -84,7 +104,7 @@ describe('ValidatedFieldElement', () => {
 
     expect(input.classList.contains('usa-input--error')).to.be.false();
     expect(input.getAttribute('aria-invalid')).to.equal('false');
-    expect(getByText(element, 'This field is required').style.display).to.equal('none');
+    expect(computeAccessibleDescription(document.activeElement!)).to.equal('Required Field ');
   });
 
   it('focuses the first element with an error', () => {
@@ -142,6 +162,14 @@ describe('ValidatedFieldElement', () => {
 
       expect(() => getByText(form, 'Invalid value')).to.throw();
       expect(() => getByText(form, 'This field is required')).not.to.throw();
+    });
+
+    it('clears error message when field becomes valid', async () => {
+      const element = createAndConnectElement({ hasInitialError: true });
+      const input = getByRole(element, 'textbox');
+      await userEvent.type(input, '5');
+
+      expect(computeAccessibleDescription(input)).to.equal('Required Field ');
     });
   });
 
