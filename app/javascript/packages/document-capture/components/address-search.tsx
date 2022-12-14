@@ -68,10 +68,6 @@ function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSear
       <Button type="submit" className="margin-y-5" onClick={handleAddressSearch}>
         {t('in_person_proofing.body.location.po_search.search_button')}
       </Button>
-      <>
-        <br />
-        {addressQuery.address}
-      </>
     </>
   );
 }

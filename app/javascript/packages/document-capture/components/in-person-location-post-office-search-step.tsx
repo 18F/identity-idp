@@ -6,7 +6,6 @@ import useSWR from 'swr';
 import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
 import AddressSearch from './address-search';
-import InPersonContext from '../context/in-person';
 import InPersonLocations, { FormattedLocation } from './in-person-locations';
 
 interface PostOffice {
@@ -27,6 +26,7 @@ interface LocationQuery {
   city: string;
   state: string;
   zipCode: string;
+  address: string;
 }
 
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
@@ -79,7 +79,6 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
-  const { arcgisSearchEnabled } = useContext(InPersonContext);
   const { data: locationResults } = useSWR([LOCATIONS_URL, foundAddress], ([, address]) =>
     address ? requestUspsLocations(address) : null,
   );
@@ -143,6 +142,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       city: address.city,
       state: address.state,
       zipCode: address.zip_code,
+      address: address.address,
     });
   }, []);
 
@@ -151,8 +151,14 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       <PageHeading>{t('in_person_proofing.headings.po_search.location')}</PageHeading>
       <p>{t('in_person_proofing.body.location.po_search.po_search_about')}</p>
       <AddressSearch onAddressFound={handleFoundAddress} registerField={registerField} />
-      <p>{t('in_person_proofing.body.location.location_step_about')}</p>
-      <InPersonLocations locations={locationResults} didSelect={handleLocationSelect} />
+      {locationResults && (
+        <InPersonLocations
+          locations={locationResults}
+          didSelect={handleLocationSelect}
+          address={foundAddress?.address || ''}
+        />
+      )}
+      <br />
       <BackButton onClick={toPreviousStep} />
     </>
   );
