@@ -18,8 +18,9 @@ es:
         %{app_name}: El código de un solo uso es %{code}. Este código se vence en %{expiration} minutos. No lo comparta con ninguna persona.
 
         @%{domain} #%{code}
-      voice: ¡Hola! Su código único de %{app_name} es %{code}, Su código único es
-        %{code}, De nuevo, su código único es %{code}, Este código expira en
+      voice: ¡Hola! Su código único de seis %{format_type} de %{app_name} es %{code},
+        Su código único de seis %{format_type} es %{code}, De nuevo, Su código
+        único de seis %{format_type} es %{code}, Este código expira en
         %{expiration} minutos.
     doc_auth_link: '%{link} Has solicitado verificar tu identidad en un teléfono
       móvil. Por favor, tome una foto de la identificación emitida por su
@@ -49,6 +50,9 @@ es:
           inténtelo de nuevo más tarde.
         voice_unsupported: Numero de telefono invalido. Verifique que haya ingresado el
           código de país o de área correcto.
+    format_type:
+      char: carácter
+      digit: dígitos
     personal_key_regeneration_notice: Se ha emitido una nueva clave personal para tu
       cuenta %{app_name}. Si no eres tú, restablece tu contraseña.
     personal_key_sign_in_notice: Su clave personal solo se utilizó para iniciar
