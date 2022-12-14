@@ -147,5 +147,5 @@ fr:
         sécurité physique. Veuillez réessayer.
       not_supported: Désolé, votre navigateur ne supporte pas les clés de sécurité
         FIDO. Les dernières versions de Chrome, Firefox, Edge et Safari prennent
-        en charge les clés de sécurité FIDO. Internet Explorer ne le fait pas.
+        en charge les clés de sécurité FIDO.
       unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.

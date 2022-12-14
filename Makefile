@@ -80,8 +80,6 @@ endif
 	yarn run lint
 	@echo "--- typescript ---"
 	yarn run typecheck
-	@echo "--- es5-safe ---"
-	NODE_ENV=production yarn build && yarn es5-safe
 	# Other
 	@echo "--- lint yaml ---"
 	make lint_yaml

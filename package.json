@@ -13,7 +13,6 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:css": "stylelint 'app/assets/stylesheets/**/*.scss' 'app/javascript/**/*.scss'",
     "test": "mocha 'spec/javascripts/**/**spec.+(j|t)s?(x)' 'app/javascript/packages/**/*.spec.+(j|t)s?(x)'",
-    "es5-safe": "is-es5-safe 'public/packs?(-test)/js/*.js'",
     "normalize-yaml": "normalize-yaml",
     "clean": "rm -rf public/packs/*",
     "prebuild": "yarn run clean",

@@ -121,7 +121,6 @@ idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
-ie11_support_end_date: '2022-12-31'
 idv_sp_required: false
 in_person_email_reminder_early_benchmark_in_days: 11
 in_person_email_reminder_final_benchmark_in_days: 1
