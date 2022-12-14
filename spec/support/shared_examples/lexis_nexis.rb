@@ -79,7 +79,6 @@ shared_examples 'a lexisnexis request' do |basic_auth: true|
         to_return(status: 200, body: response_body)
 
       ln_response = subject.send
-
       expect(ln_response).to be_a(Proofing::LexisNexis::Response)
       expect(ln_response.response.status).to eq 200
       expect(ln_response.response.body).to eq response_body
