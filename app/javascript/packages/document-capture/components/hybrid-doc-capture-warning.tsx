@@ -51,8 +51,8 @@ function HybridDocCaptureWarning({ className = '' }: HybridDocCaptureWarningProp
 
   return (
     <Alert textTag="div" className={className} type="warning">
-      <p className="margin-bottom-4">{formatWithStrong(warningText)}</p>
-      <p className="margin-bottom-4">
+      <p>{formatWithStrong(warningText)}</p>
+      <p>
         <strong>{listHeadingText}</strong>
       </p>
       <ul>
