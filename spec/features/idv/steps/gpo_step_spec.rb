@@ -86,7 +86,7 @@ feature 'idv gpo step', :js do
     end
   end
 
-  context 'Verified user resets password, begins doc auth and requests GPO, then signs in using SP' do
+  context 'Verified resets password, requests GPO, then signs in using SP' do
     let(:user) { user_verified }
     let(:new_password) { 'a really long password' }
 
