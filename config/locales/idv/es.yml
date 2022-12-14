@@ -25,19 +25,18 @@ es:
         account_page: la página de su cuenta
         exit:
           with_sp_html:
-            - Si sale de %{app_name} y vuelve a %{sp_name}, su información
-              personal no se guardará.
+            - Si sale de %{app_name} ahora y regresa a %{sp_name}, no habrá
+              verificado su identidad.
             - No obstante, continuará teniendo una cuenta en %{app_name}. Puede
               administrar o eliminar su cuenta desde %{account_page_link}.
           without_sp:
-            - Si sale de la verificación de identidad e ingresa en la página de
-              su cuenta, su información personal no se guardará.
+            - Si sale de la verificación de identidad y se dirige a la página de
+              su cuenta, no habrá verificado su identidad.
             - No obstante, continuará teniendo una cuenta en %{app_name}. Puede
               administrar o eliminar su cuenta desde %{account_page_text}.
         hybrid: Si cancela ahora, se le pedirá regresar a su computadora para continuar
           con la verificación de su identidad.
-        start_over: Si empieza de nuevo, el proceso se reiniciará y la información que
-          haya ingresado se perderá.
+        start_over: Si vuelve a empezar, reiniciará este proceso desde el principio.
       headings:
         confirmation:
           hybrid: Ha cancelado la carga de fotos de su identificación en este teléfono

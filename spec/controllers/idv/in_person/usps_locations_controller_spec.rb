@@ -93,7 +93,8 @@ describe Idv::InPerson::UspsLocationsController do
     subject(:response) do
       post :index, params: { address: { street_address: '1600 Pennsylvania Ave',
                                         city: 'Washington',
-                                        state: 'DC', zip_code: '20500' } }
+                                        state: 'DC',
+                                        zip_code: '20500' } }
     end
 
     before do
@@ -139,7 +140,8 @@ describe Idv::InPerson::UspsLocationsController do
           response = post :index,
                           params: { address: { street_address: '742 Evergreen Terrace',
                                                city: 'Springfield',
-                                               state: 'MO', zip_code: '89011' } }
+                                               state: 'MO',
+                                               zip_code: '89011' } }
           json = response.body
           facilities = JSON.parse(json)
           expect(facilities.length).to eq 0

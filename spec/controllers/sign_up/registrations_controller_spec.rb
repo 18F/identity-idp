@@ -62,7 +62,8 @@ describe SignUp::RegistrationsController, devise: true do
       end
 
       it 'sets the users preferred email locale and sends an email in that locale' do
-        post :create, params: { user: { email: 'test@test.com', email_language: 'es',
+        post :create, params: { user: { email: 'test@test.com',
+                                        email_language: 'es',
                                         terms_accepted: '1' } }
 
         expect(User.find_with_email('test@test.com').email_language).to eq('es')

@@ -18,11 +18,15 @@ describe Idv::DocPiiForm do
     }
   end
   let(:name_errors_pii) do
-    { first_name: nil, last_name: nil, dob: valid_dob,
+    { first_name: nil,
+      last_name: nil,
+      dob: valid_dob,
       state: Faker::Address.state_abbr }
   end
   let(:name_and_dob_errors_pii) do
-    { first_name: nil, last_name: nil, dob: nil,
+    { first_name: nil,
+      last_name: nil,
+      dob: nil,
       state: Faker::Address.state_abbr }
   end
   let(:dob_min_age_error_pii) do

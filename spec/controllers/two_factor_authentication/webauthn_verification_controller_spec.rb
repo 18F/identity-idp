@@ -44,7 +44,8 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
         it 'tracks an analytics event' do
           get :show, params: { platform: true }
           result = { context: 'authentication',
-                     multi_factor_auth_method: 'webauthn_platform', webauthn_configuration_id: nil }
+                     multi_factor_auth_method: 'webauthn_platform',
+                     webauthn_configuration_id: nil }
           expect(@analytics).to have_received(:track_event).with(
             'Multi-Factor Authentication: enter webAuthn authentication visited',
             result,
@@ -75,8 +76,11 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
           credential_public_key: credential_public_key,
         )
         allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
-        result = { context: 'authentication', errors: {}, multi_factor_auth_method: 'webauthn',
-                   success: true, webauthn_configuration_id: webauthn_configuration.id }
+        result = { context: 'authentication',
+                   errors: {},
+                   multi_factor_auth_method: 'webauthn',
+                   success: true,
+                   webauthn_configuration_id: webauthn_configuration.id }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)
         expect(@analytics).to receive(:track_event).
@@ -99,9 +103,11 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
           platform_authenticator: true,
         )
         allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
-        result = { context: 'authentication', errors: {},
+        result = { context: 'authentication',
+                   errors: {},
                    multi_factor_auth_method: 'webauthn_platform',
-                   success: true, webauthn_configuration_id: WebauthnConfiguration.first.id }
+                   success: true,
+                   webauthn_configuration_id: WebauthnConfiguration.first.id }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)
         expect(@analytics).to receive(:track_event).
@@ -123,8 +129,11 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
           credential_public_key: credential_public_key,
         )
 
-        result = { context: 'authentication', errors: {}, multi_factor_auth_method: 'webauthn',
-                   success: false, webauthn_configuration_id: webauthn_configuration.id }
+        result = { context: 'authentication',
+                   errors: {},
+                   multi_factor_auth_method: 'webauthn',
+                   success: false,
+                   webauthn_configuration_id: webauthn_configuration.id }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)
 

@@ -118,6 +118,8 @@ RSpec.describe InPerson::EmailReminderJob do
           job.perform(Time.zone.now)
           expect(job_analytics).to have_logged_event(
             'InPerson::EmailReminderJob: Exception raised when attempting to send reminder email',
+            enrollment_id: pending_enrollment_needing_late_reminder.id,
+            exception_class: 'StandardError',
             exception_message: error_message,
           )
         end

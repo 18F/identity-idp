@@ -170,10 +170,9 @@ fr:
       capture_status_none: Alignez
       capture_status_small_document: Approchez-vous
       capture_status_tap_to_capture: Appuyez pour capturer
-      document_capture_intro_acknowledgment: Nous collecterons des informations sur
-        vous en lisant votre pièce d’identité officielle. Nous ne stockons pas
-        les images que vous téléchargez. Nous vérifions uniquement votre
-        identité.
+      document_capture_intro_acknowledgment: Nous recueillons des informations sur
+        vous en lisant votre pièce d’identité délivrée par l’État. Nous
+        utilisons ces informations pour vérifier votre identité.
       image_loaded: Image chargée
       image_loading: Chargement de l’image
       image_updated: Image mise à jour
@@ -194,8 +193,8 @@ fr:
       no_sp_name: L’agence à laquelle vous essayez d’accéder
       privacy_html: '%{app_name} est un site gouvernemental sécurisé qui respecte les
         normes les plus strictes en matière de protection des données. Nous
-        n’utilisons vos données uniquement pour vérifier votre identité. %{link}
-        sur nos mesures de confidentialité et de sécurité.'
+        utilisons vos données pour vérifier votre identité. %{link} sur nos
+        mesures de confidentialité et de sécurité.'
       secure_account: Nous chiffrerons votre compte avec votre mot de passe. Le
         chiffrage signifie que vos données sont protégées et que vous êtes le/la
         seul(e) à pouvoir accéder à vos informations ou les modifier.
@@ -214,7 +213,6 @@ fr:
       upload_from_computer: Vous n’avez pas de téléphone?
       upload_from_phone: Téléchargez des images directement depuis l’appareil photo de
         votre téléphone
-      upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
       verify_identity: Nous vous demanderons vos informations personnelles afin de
         vérifier votre identité par rapport aux registres publics.
       welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
@@ -224,8 +222,8 @@ fr:
       bullet2: Numéro de sécurité sociale
       bullet3: Numéro de téléphone
       consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
-        conserver et partager vos renseignements personnels. Nous ne les
-        utiliserons que pour vérifier votre identité.
+        conserver et partager vos renseignements personnels. Nous les utilisons
+        pour vérifier votre identité.
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau et
         suivez les instructions pour vérifier votre identité.
       learn_more: En savoir plus
