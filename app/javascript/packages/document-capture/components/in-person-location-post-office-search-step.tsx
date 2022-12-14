@@ -56,7 +56,7 @@ const snakeCase = (value: string) =>
     .toLowerCase();
 
 // snake case the keys of the location
-const transformKeys = (location: object, predicate = snakeCase) => {
+const transformKeys = (location: object, predicate: (key: string) => string) => {
   const sendObject = {};
   Object.keys(location).forEach((key) => {
     sendObject[predicate(key)] = location[key];
@@ -67,7 +67,7 @@ const transformKeys = (location: object, predicate = snakeCase) => {
 const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLocation[]> => {
   const response = await request<PostOffice[]>(LOCATIONS_URL, {
     method: 'post',
-    json: { address: transformKeys(address) },
+    json: { address: transformKeys(address, snakeCase) },
   });
 
   return formatLocation(response);
@@ -108,7 +108,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       if (inProgress) {
         return;
       }
-      const selected = transformKeys(selectedLocation);
+      const selected = transformKeys(selectedLocation, snakeCase);
       setInProgress(true);
       await request(LOCATIONS_URL, {
         json: selected,
