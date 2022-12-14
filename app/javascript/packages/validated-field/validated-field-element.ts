@@ -69,7 +69,7 @@ class ValidatedFieldElement extends HTMLElement {
     if (message) {
       this.getOrCreateErrorMessageElement().textContent = message;
     } else if (this.errorMessage) {
-      this.errorMessage!.textContent = '';
+      this.errorMessage.textContent = '';
     }
   }
 
