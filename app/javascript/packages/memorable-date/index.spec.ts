@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event';
+import { computeAccessibleDescription } from 'dom-accessibility-api';
 import '@18f/identity-validated-field/validated-field-element';
 import '.';
 import { findByDisplayValue } from '@testing-library/dom';
@@ -58,11 +59,7 @@ describe('MemorableDateElement', () => {
   let submitButton;
 
   function expectErrorToEqual(text: string) {
-    if (errorMessageElement.style.display !== 'none') {
-      expect(errorMessageElement.textContent).to.equal(text);
-    } else {
-      expect('').to.equal(text);
-    }
+    expect(computeAccessibleDescription(monthInput)).to.equal(text);
   }
 
   beforeEach(() => {
@@ -106,7 +103,7 @@ describe('MemorableDateElement', () => {
                         maxlength="4" />
                 </lg-validated-field>
             </lg-memorable-date>
-            <div id="test-md-error-message" class="usa-error-message" style="display:none;"></div>
+            <div id="test-md-error-message" class="usa-error-message"></div>
             <button id="test-md-submit">Submit</button>
         </form>
         `;
@@ -233,9 +230,7 @@ describe('MemorableDateElement', () => {
   function itHidesValidationErrorsOnTyping() {
     it('hides validation errors on typing', async () => {
       const expectNoVisibleError = () => {
-        expect(errorMessageElement).to.satisfy(
-          (element: HTMLDivElement) => element.style.display === 'none' || !element.textContent,
-        );
+        expect(errorMessageElement.textContent).to.be.empty();
         expect(Array.from(monthInput.classList)).not.to.contain('usa-input--error');
         expect(monthInput.getAttribute('aria-invalid')).to.equal('false');
         expect(Array.from(dayInput.classList)).not.to.contain('usa-input--error');
@@ -245,7 +240,6 @@ describe('MemorableDateElement', () => {
       };
 
       const expectVisibleError = () => {
-        expect(errorMessageElement.style.display).not.to.equal('none');
         expect(errorMessageElement.textContent).not.to.be.empty();
         expect(Array.from(monthInput.classList)).to.contain('usa-input--error');
         expect(monthInput.getAttribute('aria-invalid')).to.equal('true');
