@@ -75,10 +75,8 @@ RSpec.describe ValidatedFieldComponent, type: :component do
   context 'with tag options' do
     context 'with aria tag option' do
       let(:tag_options) do
-        { input_html: { aria: { describedby: 'foo', invalid: true } }, hint: 'hint' }
+        { input_html: { aria: { describedby: 'foo' } }, hint: 'hint' }
       end
-      let(:input) { { aria: { invalid: true } } }
-      let(:error_messages) { { valueMissing: 'missing' } }
 
       it 'merges aria-describedby with the one applied by the field' do
         field = rendered.at_css('input')
