@@ -15,11 +15,11 @@ export interface FormattedLocation {
 
 interface InPersonLocationsProps {
   locations: FormattedLocation[] | null | undefined;
-  didSelect;
+  onSelect;
   address: string;
 }
 
-function InPersonLocations({ locations, didSelect, address }: InPersonLocationsProps) {
+function InPersonLocations({ locations, onSelect, address }: InPersonLocationsProps) {
   const { t } = useI18n();
 
   if (locations?.length === 0) {
@@ -44,7 +44,7 @@ function InPersonLocations({ locations, didSelect, address }: InPersonLocationsP
         {(locations || []).map((item, index) => (
           <LocationCollectionItem
             key={`${index}-${item.name}`}
-            handleSelect={didSelect}
+            handleSelect={onSelect}
             name={`${item.name} — ${t('in_person_proofing.body.location.post_office')}`}
             streetAddress={item.streetAddress}
             selectId={item.id}

@@ -154,11 +154,10 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       {locationResults && (
         <InPersonLocations
           locations={locationResults}
-          didSelect={handleLocationSelect}
+          onSelect={handleLocationSelect}
           address={foundAddress?.address || ''}
         />
       )}
-      <br />
       <BackButton onClick={toPreviousStep} />
     </>
   );
