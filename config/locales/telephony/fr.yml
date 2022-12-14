@@ -11,18 +11,17 @@ fr:
 
         @%{domain} #%{code}
       voice: Bonjour! Votre code à usage unique de six %{format_type} pour %{app_name}
-        est %{code}. Votre code à usage unique de six %{format_type} est
-        %{code}. Une fois de plus, votre code à usage unique de six
-        %{format_type} est %{code}. Ce code expire dans %{expiration} minutes.
+        est %{code}. Votre code à usage unique est %{code}. Une fois de plus,
+        votre code à usage unique est %{code}. Ce code expire dans %{expiration}
+        minutes.
     confirmation_otp:
       sms: |-
         %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.
 
         @%{domain} #%{code}
       voice: Bonjour! Votre code à usage unique de six %{format_type} pour %{app_name}
-        est %{code}. Votre code à usage unique de six %{format_type} est
-        %{code}. Une fois de plus, votre code à usage unique de six
-        %{format_type} est %{code}. Ce code expire dans %{expiration} minutes.
+        est %{code}. Votre code à usage unique est %{code}. Une fois de plus,
+        votre code à usage unique est %{code}. Ce code expire dans %{expiration}
     doc_auth_link: "%{link} Vous avez demandé à vérifier votre identité sur un
       téléphone mobile. S'il vous plaît prendre une photo de votre identité
       émise par l'état"
