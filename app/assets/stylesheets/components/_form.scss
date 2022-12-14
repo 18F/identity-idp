@@ -63,3 +63,12 @@ input::-webkit-inner-spin-button {
 .usa-hint {
   margin: 0;
 }
+
+// Upstream: TBD
+.usa-error-message {
+  @include u-padding-y(0);
+
+  .usa-input--error ~ & {
+    @include u-padding-y(0.5);
+  }
+}
