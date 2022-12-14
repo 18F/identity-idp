@@ -57,7 +57,7 @@ module Idv
         otp: code,
         to: phone,
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
-        otp_format: TwoFactorAuthenticatable::OTP_FORMAT[:char],
+        otp_format: I18n.t('telephony.format_type.character'),
         channel: delivery_method,
         domain: IdentityConfig.store.domain_name,
         country_code: parsed_phone.country,

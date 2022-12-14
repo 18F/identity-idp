@@ -46,7 +46,7 @@ en:
         voice_unsupported: Invalid phone number. Check that you’ve entered the correct
           country code or area code.
     format_type:
-      char: character
+      character: character
       digit: digit
     personal_key_regeneration_notice: A new personal key has been issued for your
       %{app_name} account. If this wasn't you, reset your password.

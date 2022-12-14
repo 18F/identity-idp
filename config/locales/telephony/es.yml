@@ -52,7 +52,7 @@ es:
         voice_unsupported: Numero de telefono invalido. Verifique que haya ingresado el
           código de país o de área correcto.
     format_type:
-      char: carácter
+      character: carácter
       digit: dígitos
     personal_key_regeneration_notice: Se ha emitido una nueva clave personal para tu
       cuenta %{app_name}. Si no eres tú, restablece tu contraseña.
