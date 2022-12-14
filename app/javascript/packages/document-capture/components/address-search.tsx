@@ -32,7 +32,7 @@ function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSear
       if (unvalidatedAddressInput === '') {
         return;
       }
-      const addressCandidates = await request(ADDRESS_SEARCH_URL, {
+      const addressCandidates = await request<Location>(ADDRESS_SEARCH_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         json: { address: unvalidatedAddressInput },
