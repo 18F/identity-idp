@@ -22,7 +22,6 @@ export const ADDRESS_SEARCH_URL = '/api/addresses';
 function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSearchProps) {
   const validatedFieldRef = useRef<HTMLFormElement | null>(null);
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
-  const [addressQuery, setAddressQuery] = useState({} as Location);
   const { t } = useI18n();
 
   const handleAddressSearch = useCallback(
@@ -39,7 +38,6 @@ function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSear
       });
 
       const bestMatchedAddress = addressCandidates[0];
-      setAddressQuery(bestMatchedAddress);
       onAddressFound(bestMatchedAddress);
     },
     [unvalidatedAddressInput],

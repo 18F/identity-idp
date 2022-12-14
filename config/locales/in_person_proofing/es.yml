@@ -40,14 +40,21 @@ es:
           address_search_hint: 'Ejemplo: 1960 W Chelsea Ave Allentown PA 18104'
           address_search_label: Introduzca una dirección para encontrar una Oficina de
             Correos cercana a usted
+          none_found: Lo sentimos, no hay Oficinas de Correos participantes en un radio de
+            50 millas de la %{address}.
+          none_found_tip: Puede buscar utilizando una dirección diferente, o añadir fotos
+            de su documento de identidad para intentar verificar su identidad en
+            línea de nuevo.
           po_search_about: Si tiene problemas para añadir su documento de identidad, es
             posible que pueda verificar su identidad en persona en una oficina
             de correos local de los Estados Unidos.
+          results_description: Hay %{count} de oficinas de correos participantes en un
+            radio de 50 millas de la %{address}.
+          results_instructions: Seleccione una ubicación de la Oficina de Correos a
+            continuación, o busque de nuevo utilizando una dirección diferente.
+            Para la accesibilidad de las instalaciones, utilice la información
+            de contacto que aparece para la ubicación de la Oficina de Correos.
           search_button: Búsqueda
-          none_found: Lo sentimos, no hay Oficinas de Correos participantes en un radio de 50 millas de la %{address}.
-          none_found_tip: Puede buscar utilizando una dirección diferente, o añadir fotos de su documento de identidad para intentar verificar su identidad en línea de nuevo.
-          results_description: Hay %{count} de oficinas de correos participantes en un radio de 50 millas de la %{address}.
-          results_instructions: Seleccione una ubicación de la Oficina de Correos a continuación, o busque de nuevo utilizando una dirección diferente. Para la accesibilidad de las instalaciones, utilice la información de contacto que aparece para la ubicación de la Oficina de Correos.
         post_office: Oficina de Correos
         retail_hours_heading: Horario de atención al público
         retail_hours_sat: 'Sáb:'

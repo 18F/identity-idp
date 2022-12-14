@@ -35,13 +35,18 @@ en:
         po_search:
           address_search_hint: 'Example: 1960 W Chelsea Ave Allentown PA 18104'
           address_search_label: Enter an address to find a Post Office near you
+          none_found: Sorry, there are no participating Post Offices within 50 miles of
+            %{address}.
+          none_found_tip: You can search using a different address, or add photos of your
+            ID to try and verify your identity online again.
           po_search_about: If you are having trouble adding your ID, you may be able to
             verify your identity in person at a local United States Post Office.
+          results_description: There are %{count} participating Post Offices within 50
+            miles of %{address}.
+          results_instructions: Select a Post Office location below, or search again using
+            a different address. For facility accessibility, use the contact
+            information listed for the Post Office location.
           search_button: Search
-          none_found: Sorry, there are no participating Post Offices within 50 miles of %{address}.
-          none_found_tip: You can search using a different address, or add photos of your ID to try and verify your identity online again.
-          results_description: There are %{count} participating Post Offices within 50 miles of %{address}.
-          results_instructions: Select a Post Office location below, or search again using a different address. For facility accessibility, use the contact information listed for the Post Office location.
         post_office: Post Office ™
         retail_hours_heading: Retail Hours
         retail_hours_sat: 'Sat:'
