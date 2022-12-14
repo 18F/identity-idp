@@ -33,6 +33,11 @@ en:
         range_underflow: Enter a date on or after %{date}
       month: Month
       year: Year
+    one_time_code_input:
+      hint:
+        alphanumeric: 'Example: 123ABC'
+        numeric: 'Example: 123456'
+      label: One-time code
     password_toggle:
       label: Password
       toggle_label: Show password

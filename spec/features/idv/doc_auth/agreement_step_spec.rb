@@ -76,11 +76,16 @@ feature 'doc auth welcome step' do
       expect(log.upload_view_at).not_to be_nil
 
       expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth upload visited', step: 'upload', step_count: 1
+        'IdV: doc auth upload visited',
+        analytics_id: 'Doc Auth',
+        flow_path: 'standard',
+        step: 'upload', step_count: 1,
+        irs_reproofing: false,
+        acuant_sdk_upgrade_ab_test_bucket: :default
       )
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth upload submitted',
-        step: 'upload', step_count: 2, success: true,
+        hash_including(step: 'upload', step_count: 2, success: true),
       )
     end
   end

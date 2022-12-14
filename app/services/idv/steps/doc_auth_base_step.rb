@@ -124,11 +124,6 @@ module Idv
         :idv_verify_step_document_capture_session_uuid
       end
 
-      def service_provider_device_profiling_enabled?
-        return IdentityConfig.store.no_sp_device_profiling_enabled if sp_session[:issuer].blank?
-        ServiceProvider.find_by(issuer: sp_session[:issuer])&.device_profiling_enabled
-      end
-
       def track_document_state(state)
         return unless IdentityConfig.store.state_tracking_enabled && state
         doc_auth_log = DocAuthLog.find_by(user_id: user_id)

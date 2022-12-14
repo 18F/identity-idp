@@ -50,9 +50,6 @@ describe 'idv/inherited_proofing/get_started.html.erb' do
       expect(rendered).to have_link(
         t('inherited_proofing.troubleshooting.options.learn_more_phone_or_mail'),
       )
-      expect(rendered).to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-      )
     end
   end
 end

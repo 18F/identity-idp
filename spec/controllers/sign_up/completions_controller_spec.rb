@@ -26,8 +26,10 @@ describe SignUp::CompletionsController do
           user = create(:user)
           stub_sign_in(user)
           subject.session[:sp] = {
-            issuer: current_sp.issuer, ial2: false, requested_attributes: [:email],
-            request_url: 'http://localhost:3000'
+            issuer: current_sp.issuer,
+            ial2: false,
+            requested_attributes: [:email],
+            request_url: 'http://localhost:3000',
           }
           get :show
 
@@ -53,8 +55,10 @@ describe SignUp::CompletionsController do
         before do
           stub_sign_in(user)
           subject.session[:sp] = {
-            issuer: current_sp.issuer, ial2: true, requested_attributes: [:email],
-            request_url: 'http://localhost:3000'
+            issuer: current_sp.issuer,
+            ial2: true,
+            requested_attributes: [:email],
+            request_url: 'http://localhost:3000',
           }
           allow(controller).to receive(:user_session).and_return('decrypted_pii' => pii.to_json)
         end
@@ -114,7 +118,9 @@ describe SignUp::CompletionsController do
         user = create(:user)
         sp = create(:service_provider, issuer: 'https://awesome')
         stub_sign_in(user)
-        subject.session[:sp] = { issuer: sp.issuer, ial2: false, requested_attributes: [:email],
+        subject.session[:sp] = { issuer: sp.issuer,
+                                 ial2: false,
+                                 requested_attributes: [:email],
                                  request_url: 'http://localhost:3000' }
         get :show
 

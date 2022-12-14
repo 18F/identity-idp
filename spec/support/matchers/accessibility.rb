@@ -24,6 +24,23 @@ RSpec::Matchers.define :label_required_fields do
   end
 end
 
+RSpec::Matchers.define :have_description do |description|
+  def descriptors(element)
+    element['aria-describedby']&.
+      split(' ')&.
+      map { |descriptor_id| rendered.at_css("##{descriptor_id}")&.text }
+  end
+
+  match { |element| descriptors(element)&.include?(description) }
+
+  failure_message do |element|
+    <<-STR.squish
+      Expected element would have `aria-describedby` description "#{description}".
+      Found #{descriptors(element)}.
+    STR
+  end
+end
+
 RSpec::Matchers.define :be_uniquely_titled do
   # Attempts to validate conformance to WCAG Success Criteria 2.4.2: Page Titled
   #
