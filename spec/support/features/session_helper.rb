@@ -213,6 +213,10 @@ module Features
       create(:user, :signed_up, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
     end
 
+    def user_verified
+      create(:user, :proofed)
+    end
+
     def user_verified_with_gpo
       create(:user, :proofed_with_gpo)
     end
