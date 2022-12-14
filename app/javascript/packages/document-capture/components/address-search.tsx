@@ -3,7 +3,6 @@ import { request } from '@18f/identity-request';
 import { useState, useCallback, ChangeEvent, useRef, Ref } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import ValidatedField from '@18f/identity-validated-field/validated-field';
-import { SpinnerButton } from '@18f/identity-spinner-button';
 
 interface Location {
   street_address: string;

@@ -31,12 +31,6 @@ interface LocationQuery {
 
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
 
-// const getUspsLocations = (address) =>
-//   request(LOCATIONS_URL, {
-//     method: 'post',
-//     json: { address },
-//   });
-
 const formatLocation = (postOffices: PostOffice[]) => {
   const formattedLocations = [] as FormattedLocation[];
   postOffices.forEach((po: PostOffice, index) => {
@@ -81,16 +75,13 @@ const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLo
 
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
   const { t } = useI18n();
-  // const [locationData, setLocationData] = useState([] as FormattedLocation[]);
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
-  // const [isLoadingComplete, setIsLoadingComplete] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
   const { arcgisSearchEnabled } = useContext(InPersonContext);
-  const { data: locationResults, isLoading } = useSWR(
-    [LOCATIONS_URL, foundAddress],
-    ([, address]) => (address ? requestUspsLocations(address) : null),
+  const { data: locationResults } = useSWR([LOCATIONS_URL, foundAddress], ([, address]) =>
+    address ? requestUspsLocations(address) : null,
   );
 
   // ref allows us to avoid a memory leak
@@ -159,9 +150,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
     <>
       <PageHeading>{t('in_person_proofing.headings.po_search.location')}</PageHeading>
       <p>{t('in_person_proofing.body.location.po_search.po_search_about')}</p>
-      {arcgisSearchEnabled && (
-        <AddressSearch onAddressFound={handleFoundAddress} registerField={registerField} />
-      )}
+      <AddressSearch onAddressFound={handleFoundAddress} registerField={registerField} />
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
       <InPersonLocations locations={locationResults} didSelect={handleLocationSelect} />
       <BackButton onClick={toPreviousStep} />
