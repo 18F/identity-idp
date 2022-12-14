@@ -1,4 +1,4 @@
-<lg-validated-field>
+<%= content_tag(:'lg-validated-field', 'error-id': "validated-field-error-#{unique_id}") do %>
   <%= content_tag(
         :script,
         error_messages.to_json,
@@ -27,4 +27,4 @@
           error_html: { id: "validated-field-error-#{unique_id}" },
         ),
       ) %>
-</lg-validated-field>
+<% end %>

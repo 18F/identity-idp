@@ -16,8 +16,6 @@ const TEXT_LIKE_INPUT_TYPES = new Set([
   'url',
 ]);
 
-const getRandomId = (): string => Math.random().toString(36).slice(-7);
-
 class ValidatedFieldElement extends HTMLElement {
   errorStrings: Partial<ValidityState> = {};
 
@@ -41,6 +39,10 @@ class ValidatedFieldElement extends HTMLElement {
     this.input?.addEventListener('input', () => this.setErrorMessage());
     this.input?.addEventListener('input', () => this.setInputIsValid(true));
     this.input?.addEventListener('invalid', (event) => this.toggleErrorMessage(event));
+  }
+
+  get errorId(): string {
+    return this.getAttribute('error-id')!;
   }
 
   /**
@@ -115,7 +117,7 @@ class ValidatedFieldElement extends HTMLElement {
     if (!this.errorMessage) {
       this.errorMessage = this.ownerDocument.createElement('div');
       this.errorMessage.classList.add('usa-error-message');
-      this.errorMessage.id = `validated-field-error-${getRandomId()}`;
+      this.errorMessage.id = this.errorId;
 
       if (this.input) {
         this.input.setAttribute(

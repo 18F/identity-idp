@@ -9,9 +9,10 @@ describe('ValidatedFieldElement', () => {
 
   function createAndConnectElement({ hasInitialError = false, errorInsideField = true } = {}) {
     const element = document.createElement('lg-validated-field');
-    const errorMessageId = ++idCounter;
+    const errorMessageId = `validated-field-error-${++idCounter}`;
+    element.setAttribute('error-id', errorMessageId);
     const errorHtml = hasInitialError
-      ? `<div class="usa-error-message" id="validated-field-error-${errorMessageId}">Invalid value</div>`
+      ? `<div class="usa-error-message" id="${errorMessageId}">Invalid value</div>`
       : '';
     element.innerHTML = `
       <script type="application/json" class="validated-field__error-strings">
@@ -23,9 +24,7 @@ describe('ValidatedFieldElement', () => {
         <label id="validated-field-label" class="usa-label">Required Field</label>
         <input
           aria-invalid="false"
-          aria-describedby="validated-field-label${
-            hasInitialError ? ` validated-field-error-${errorMessageId}` : ''
-          }"
+          aria-describedby="validated-field-label${hasInitialError ? ` ${errorMessageId}` : ''}"
           required="required"
           aria-required="true"
           class="validated-field__input${hasInitialError ? ' usa-input--error' : ''}"
