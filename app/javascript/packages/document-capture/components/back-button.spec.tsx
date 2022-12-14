@@ -6,13 +6,13 @@ import { act } from 'react-dom/test-utils';
 import BackButton from './back-button';
 
 const getButtonHtml = () =>
-  `<button type="button" class="usa-button usa-button--unstyled">\u2039 ${t(
+  `<button type="button" class="usa-button usa-button--unstyled"><span aria-hidden="true">\u2039 </span><span>${t(
     'forms.buttons.back',
-  )}</button>`;
+  )}</span></button>`;
 const getBorderedButtonHtml = () =>
-  `<div class="margin-top-5 padding-top-2 border-top border-primary-light"><button type="button" class="usa-button usa-button--unstyled">\u2039 ${t(
+  `<div class="margin-top-5 padding-top-2 border-top border-primary-light"><button type="button" class="usa-button usa-button--unstyled"><span aria-hidden="true">\u2039 </span><span>${t(
     'forms.buttons.back',
-  )}</button></div>`;
+  )}</span></button></div>`;
 
 const useOnClickTest = () => {
   let wasClicked = false;
