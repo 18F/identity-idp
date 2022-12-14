@@ -517,14 +517,22 @@ module IrsAttemptsApi
     # @param [Boolean] reauthentication - True if the user was already logged in
     # @param [String] phone_number - The user's phone_number used for multi-factor authentication
     # @param [String] otp_delivery_method - Either SMS or Voice
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason - reason for failure if success is false
     # During a login attempt, an OTP code has been sent via SMS or Voice.
-    def mfa_login_phone_otp_sent(success:, reauthentication:, phone_number:, otp_delivery_method:)
+    def mfa_login_phone_otp_sent(
+      success:,
+      reauthentication:,
+      phone_number:,
+      otp_delivery_method:,
+      failure_reason:
+    )
       track_event(
         :mfa_login_phone_otp_sent,
         success: success,
         reauthentication: reauthentication,
         phone_number: phone_number,
         otp_delivery_method: otp_delivery_method,
+        failure_reason: failure_reason,
       )
     end
 

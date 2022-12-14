@@ -92,7 +92,7 @@ feature 'IRS Attempts API Event Tracking' do
     end
   end
 
-  scenario 'signing in from an IRS SP without an attempts api session id does not track events' do
+  scenario 'signing in from an IRS SP without an attempts api session id or tid tracks events' do
     freeze_time do
       user = create(:user, :signed_up)
 
@@ -104,7 +104,7 @@ feature 'IRS Attempts API Event Tracking' do
 
       events = irs_attempts_api_tracked_events(timestamp: Time.zone.now)
 
-      expect(events.count).to eq(0)
+      expect(events.count).to eq(2)
     end
   end
 

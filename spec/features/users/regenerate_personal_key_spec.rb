@@ -24,10 +24,8 @@ feature 'View personal key', js: true do
 
         expect_delivered_email_count(1)
         expect_delivered_email(
-          0, {
-            to: [user.email_addresses.first.email],
-            subject: t('user_mailer.personal_key_regenerated.subject'),
-          }
+          to: [user.email_addresses.first.email],
+          subject: t('user_mailer.personal_key_regenerated.subject'),
         )
       end
     end

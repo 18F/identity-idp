@@ -6,9 +6,6 @@ feature 'doc auth ssn step', :js do
   include DocCaptureHelper
 
   before do
-    allow(IdentityConfig.store).
-      to receive(:no_sp_device_profiling_enabled).and_return(true)
-
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
   end

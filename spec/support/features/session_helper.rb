@@ -270,12 +270,12 @@ module Features
 
     def fill_in_code_with_last_phone_otp
       accept_rules_of_use_and_continue_if_displayed
-      fill_in I18n.t('forms.two_factor.code'), with: last_phone_otp
+      fill_in I18n.t('components.one_time_code_input.label'), with: last_phone_otp
     end
 
     def fill_in_code_with_last_totp(user)
       accept_rules_of_use_and_continue_if_displayed
-      fill_in I18n.t('forms.two_factor.code'), with: last_totp(user)
+      fill_in I18n.t('components.one_time_code_input.label'), with: last_totp(user)
     end
 
     def accept_rules_of_use_and_continue_if_displayed

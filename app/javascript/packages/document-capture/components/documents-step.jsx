@@ -46,7 +46,7 @@ function DocumentsStep({
   return (
     <CaptureTroubleshooting>
       <PageHeading>{t('doc_auth.headings.document_capture')}</PageHeading>
-      {isMobile && <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>}
+      <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>
       <p className="margin-bottom-0">{t('doc_auth.tips.document_capture_header_text')}</p>
       <ul>
         <li>{t('doc_auth.tips.document_capture_id_text1')}</li>
