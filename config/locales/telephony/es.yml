@@ -10,8 +10,9 @@ es:
         %{app_name}: El código de un solo uso es %{code}. Este código se vence en %{expiration} minutos. No lo comparta con ninguna persona.
 
         @%{domain} #%{code}
-      voice: ¡Hola! Su código único de %{app_name} es %{code}, Su código único es
-        %{code}, De nuevo, su código único es %{code}, Este código expira en
+      voice: ¡Hola! Su código único de seis %{format_type} de %{app_name} es %{code},
+        Su código único de seis %{format_type} es %{code}, De nuevo, Su código
+        único de seis %{format_type} es %{code}, Este código expira en
         %{expiration} minutos.
     confirmation_otp:
       sms: |-
