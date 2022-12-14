@@ -163,6 +163,17 @@ fr:
         votre pièce d’identité
       verify_identity: Vérifier votre identité
       welcome: Commencez à vérifier votre identité
+    hybrid_flow_warning:
+      explanation_html: Vous utilisez <strong>%{app_name}</strong> pour vérifier votre
+        identité et accéder à <strong>%{service_provider_name}</strong> et à ses
+        services.
+      explanation_non_sp_html: Vous utilisez <strong>%{app_name}</strong> pour vérifier votre identité.
+      only_add_if_text: 'N’AJOUTEZ VOTRE IDENTIFIANT QUE SI :'
+      only_add_own_account_html: Vous utilisez votre propre compte %{app_name}
+      only_add_phone_verify_html: Vous avez demandé à %{app_name} de vérifier votre
+        identité en utilisant votre téléphone
+      only_add_sp_services_html: Vous essayez d’accéder aux services de
+        <strong>%{service_provider_name}</strong>
     info:
       camera_required: Votre téléphone portable doit avoir une caméra et un navigateur Web.
       capture_status_big_document: Trop près

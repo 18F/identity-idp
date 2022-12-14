@@ -1,10 +1,12 @@
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
+import { t } from '@18f/identity-i18n';
 import {
   DeviceContext,
   ServiceProviderContextProvider,
   FailedCaptureAttemptsContextProvider,
   AcuantContextProvider,
+  UploadContextProvider,
 } from '@18f/identity-document-capture';
 import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
 import { render, useAcuant } from '../../../support/document-capture';
@@ -115,5 +117,31 @@ describe('document-capture/components/documents-step', () => {
     ).to.equal(
       'https://example.com/?step=document_capture&location=document_capture_troubleshooting_options',
     );
+  });
+
+  it('renders the hybrid flow warning if the flow is hybrid', () => {
+    const { getByText } = render(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <UploadContextProvider flowPath="hybrid">
+          <DocumentsStep />
+        </UploadContextProvider>
+      </DeviceContext.Provider>,
+    );
+    const expectedText = t('doc_auth.hybrid_flow_warning.explanation_non_sp_html');
+
+    expect(getByText(expectedText)).to.exist();
+  });
+
+  it('does not render the hybrid flow warning if the flow is standard (default)', () => {
+    const { queryByText } = render(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <UploadContextProvider flowPath="standard">
+          <DocumentsStep />
+        </UploadContextProvider>
+      </DeviceContext.Provider>,
+    );
+    const notExpectedText = t('doc_auth.hybrid_flow_warning.explanation_non_sp_html');
+
+    expect(queryByText(notExpectedText)).to.not.exist();
   });
 });
