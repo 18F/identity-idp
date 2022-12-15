@@ -61,17 +61,6 @@ fr:
         retail_hours_weekday: 'Lundi à Vendredi:'
       prepare:
         alert_selected_post_office: Vous avez sélectionné le bureau de poste de %{name}.
-        bring_barcode_header: Une copie de votre code-barres
-        bring_barcode_info: Nous vous donnerons un code unique qui expirera dans les 30 jours.
-        bring_id_header: Votre document d’identité délivré par l’État
-        bring_id_info_acceptable: 'Votre pièce d’identité ne doit pas être expirée. Les
-          formes d’identification acceptables sont:'
-        bring_id_info_dl: Permis de conduire d’État
-        bring_id_info_id_card: Document d’identité de non-conducteur d’État
-        bring_id_info_no_other_forms: Nous n’acceptons actuellement aucune autre forme
-          d’identification, comme les passeports et les documents d’identité
-          militaires.
-        bring_title: 'Lorsque vous allez au bureau de poste, veuillez apporter:'
         privacy_disclaimer: '%{app_name} est un site gouvernemental sécurisé. Nous et le
           service postal américain utilisons vos données pour vérifier votre
           identité.'

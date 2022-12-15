@@ -54,15 +54,6 @@ en:
         retail_hours_weekday: 'Monday to Friday:'
       prepare:
         alert_selected_post_office: You’ve selected the %{name} Post Office.
-        bring_barcode_header: A copy of your barcode
-        bring_barcode_info: We will give you a unique code that expires within 30 days.
-        bring_id_header: Your state-issued ID
-        bring_id_info_acceptable: 'Your ID must not be expired. Acceptable forms of ID are:'
-        bring_id_info_dl: State Driver’s License
-        bring_id_info_id_card: State Non-Driver’s Identification Card
-        bring_id_info_no_other_forms: We do not currently accept any other forms of
-          Identification, such as passports and military IDs
-        bring_title: 'When you go to the Post Office, please bring:'
         privacy_disclaimer: '%{app_name} is a secure, government website. We and the
           U.S. Postal Service use your data to verify your identity.'
         privacy_disclaimer_link: Learn more about privacy and security.

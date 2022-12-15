@@ -62,16 +62,6 @@ es:
         retail_hours_weekday: 'De Lunes a Viernes:'
       prepare:
         alert_selected_post_office: Ha seleccionado la oficina de correos %{name}.
-        bring_barcode_header: Una copia de su código de barras
-        bring_barcode_info: Le daremos un código único que caducará en 30 días.
-        bring_id_header: Su cédula emitida por el estado
-        bring_id_info_acceptable: 'Su cédula de identidad no debe estar caducada. Las
-          formas de identificación aceptables son:'
-        bring_id_info_dl: Licencia de conducir estatal
-        bring_id_info_id_card: Tarjeta de identificación estatal para no conductores
-        bring_id_info_no_other_forms: Actualmente no aceptamos otras formas de
-          identificación, como pasaportes y cartillas militares.
-        bring_title: 'Cuando vaya a la oficina de correos, lleve:'
         privacy_disclaimer: '%{app_name} es un sitio web seguro del gobierno. Nosotros y
           el Servicio Postal de los Estados Unidos utilizamos sus datos para
           verificar su identidad.'
