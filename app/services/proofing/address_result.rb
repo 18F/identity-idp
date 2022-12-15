@@ -1,6 +1,7 @@
 module Proofing
   class AddressResult
-    attr_reader :success, :errors, :exception, :vendor_name, :transaction_id, :reference
+    attr :success, :errors, :exception, :vendor_name, :transaction_id, :reference,
+         :vendor_workflow
 
     def initialize(
       success:,
@@ -8,7 +9,8 @@ module Proofing
       exception:,
       vendor_name:,
       transaction_id: '',
-      reference: ''
+      reference: '',
+      vendor_workflow: nil
     )
       @success = success
       @errors = errors
@@ -16,6 +18,7 @@ module Proofing
       @vendor_name = vendor_name
       @transaction_id = transaction_id
       @reference = reference
+      @vendor_workflow = vendor_workflow
     end
 
     def success?
