@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_02_163826) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_14_161643) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -297,6 +297,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_163826) do
     t.boolean "follow_up_survey_sent", default: false
     t.boolean "early_reminder_sent", default: false, comment: "early reminder to complete IPP before deadline sent"
     t.boolean "late_reminder_sent", default: false, comment: "late reminder to complete IPP before deadline sent"
+    t.boolean "deadline_passed_sent", default: false, comment: "deadline passed email sent for expired enrollment"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
     t.index ["unique_id"], name: "index_in_person_enrollments_on_unique_id", unique: true
     t.index ["user_id", "status"], name: "index_in_person_enrollments_on_user_id_and_status", unique: true, where: "(status = 1)"
@@ -526,7 +527,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_163826) do
     t.boolean "email_nameid_format_allowed", default: false
     t.boolean "use_legacy_name_id_behavior", default: false
     t.boolean "irs_attempts_api_enabled"
-    t.boolean "device_profiling_enabled", default: false
     t.boolean "in_person_proofing_enabled", default: false
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end

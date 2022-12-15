@@ -9,7 +9,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     "State non-driver's identification card",
   ]
 
-  queue_as :default
+  queue_as :long_running
   include GoodJob::ActiveJobExtensions::Concurrency
 
   good_job_control_concurrency_with(
@@ -244,10 +244,29 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(response[:body]),
+      fraud_suspected: response['fraudSuspected'],
       passed: false,
       reason: 'Enrollment has expired',
     )
     enrollment.update(status: :expired)
+
+    begin
+      send_deadline_passed_email(enrollment.user, enrollment) unless enrollment.deadline_passed_sent
+    rescue StandardError => err
+      NewRelic::Agent.notice_error(err)
+      analytics(user: enrollment.user).
+        idv_in_person_usps_proofing_results_job_deadline_passed_email_exception(
+          enrollment_id: enrollment.id,
+          exception_class: err.class.to_s,
+          exception_message: err.message,
+        )
+    else
+      analytics(user: enrollment.user).
+        idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(
+          enrollment_id: enrollment.id,
+        )
+      enrollment.update(deadline_passed_sent: true)
+    end
   end
 
   def handle_failed_status(enrollment, response)
@@ -320,6 +339,16 @@ class GetUspsProofingResultsJob < ApplicationJob
       UserMailer.with(user: user, email_address: email_address).in_person_verified(
         enrollment: enrollment,
       ).deliver_later(**mail_delivery_params)
+      # rubocop:enable IdentityIdp/MailLaterLinter
+    end
+  end
+
+  def send_deadline_passed_email(user, enrollment)
+    # rubocop:disable IdentityIdp/MailLaterLinter
+    user.confirmed_email_addresses.each do |email_address|
+      UserMailer.with(user: user, email_address: email_address).in_person_deadline_passed(
+        enrollment: enrollment,
+      ).deliver_later
       # rubocop:enable IdentityIdp/MailLaterLinter
     end
   end

@@ -24,21 +24,21 @@ es:
     errors:
       cannot_retrieve:
         failure_info: to be implemented
-        heading: No hemos podido obtener su información de My HealtheVet
+        heading: No hemos podido obtener su información de su agencia colaboradora
         info: Estamos teniendo problemas temporalmente para obtener su información.
           Inténtelo de nuevo.
         title: to be implemented
       service_provider:
         communication: 'la comunicacion no tuvo exito'
     headings:
-      lets_go: to be implemented
-      retrieval: Estamos recuperando su información de My HealtheVet
-      secure_account: to be implemented
-      verify_identity: to be implemented
-      verify_information: to be implemented
+      lets_go: Cómo funciona la verificación de su identidad
+      retrieval: Estamos recuperando su información de su agencia colaboradora
+      secure_account: Asegure su cuenta
+      verify_identity: Verifique su identidad
+      verify_information: Verifique su información
       welcome: Empiece con la verificación de su identidad
     info:
-      lets_go: to be implemented
+      lets_go: 'La verificación de la identidad se realiza en dos partes:'
       no_sp_name: La agencia a la que está intentando acceder
       privacy_html: '%{app_name} es un sitio web gubernamental seguro que cumple con
         las normas más estrictas de protección de datos. Solo utilizamos sus
@@ -47,22 +47,30 @@ es:
       retrieval_thanks: '¡Gracias por su paciencia!'
       retrieval_time: Esto puede tardar hasta un minuto. Cargaremos el siguiente paso
         automáticamente cuando haya terminado.
-      secure_account: to be implemented
-      verify_identity: to be implemented
+      secure_account: Cifraremos su cuenta con su contraseña. La encriptación
+        significa que sus datos están protegidos y solo usted podrá acceder o
+        modificar su información.
+      verify_identity: Obtendremos su información personal de %{sp_name} y le
+        pediremos que la verifique.
       welcome_html: '%{sp_name} necesita asegurarse de que sea usted y no alguien que
         se haga pasar por usted.'
     instructions:
-      consent: to be implemented for %{app_name}
+      consent: Al marcar esta casilla, usted permite que login.gov solicite, utilice,
+        conserve y comparta su información personal. Solo la utilizaremos para
+        verificar su identidad.
       learn_more: Obtenga más información
       privacy: Nuestras normas de privacidad y seguridad
-      verification_content: to be implemented
-      verify_requirements: to be implemented
-      welcome: 'Deberá contar con lo siguiente para verificar su identidad:'
+      verify_requirements: Te llamaremos o te enviaremos un mensaje de texto a tu
+        número de teléfono para verificar tu identidad. Si no podemos verificar
+        tu número de teléfono, puedes realizar la verificación por correo
+        postal.
     troubleshooting:
       headings:
-        missing_required_items: to be implemented
+        missing_required_items: ¿No tienes número de teléfono? A continuación, te
+          indicamos cómo obtener ayuda
         need_assistance: to be implemented
-        need_help_updating: to be implemented
+        need_help_updating: ¿Necesita actualizar su información? A continuación le
+          indicamos cómo obtener ayuda
       options:
-        get_va_help: to be implemented
-        learn_more_phone_or_mail: to be implemented
+        get_help: Obtenga ayuda en %{sp_name}
+        learn_more_phone_or_mail: Más información sobre la verificación por teléfono o correo postal.

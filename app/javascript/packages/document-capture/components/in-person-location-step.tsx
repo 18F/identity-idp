@@ -6,8 +6,6 @@ import BackButton from './back-button';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
 import AnalyticsContext from '../context/analytics';
-import AddressSearch from './address-search';
-import InPersonContext from '../context/in-person';
 
 interface PostOffice {
   address: string;
@@ -42,7 +40,7 @@ interface LocationQuery {
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
 
 const getUspsLocations = (address) =>
-  request(LOCATIONS_URL, {
+  request<PostOffice[]>(LOCATIONS_URL, {
     method: 'post',
     json: { address },
   });
@@ -80,15 +78,14 @@ const prepToSend = (location: object) => {
   return sendObject;
 };
 
-function InPersonLocationStep({ onChange, toPreviousStep, registerField }) {
+function InPersonLocationStep({ onChange, toPreviousStep }) {
   const { t } = useI18n();
   const [locationData, setLocationData] = useState([] as FormattedLocation[]);
-  const [foundAddress, setFoundAddress] = useState({} as LocationQuery);
+  const [foundAddress] = useState({} as LocationQuery);
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
-  const { arcgisSearchEnabled } = useContext(InPersonContext);
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
@@ -143,15 +140,6 @@ function InPersonLocationStep({ onChange, toPreviousStep, registerField }) {
     [locationData, inProgress],
   );
 
-  const handleFoundAddress = useCallback((address) => {
-    setFoundAddress({
-      streetAddress: address.street_address,
-      city: address.city,
-      state: address.state,
-      zipCode: address.zip_code,
-    });
-  }, []);
-
   useEffect(() => {
     let didCancel = false;
     (async () => {
@@ -201,9 +189,6 @@ function InPersonLocationStep({ onChange, toPreviousStep, registerField }) {
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.location')}</PageHeading>
-      {arcgisSearchEnabled && (
-        <AddressSearch onAddressFound={handleFoundAddress} registerField={registerField} />
-      )}
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
       {locationsContent}
       <BackButton onClick={toPreviousStep} />

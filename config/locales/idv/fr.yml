@@ -25,20 +25,18 @@ fr:
         account_page: la page de votre compte
         exit:
           with_sp_html:
-            - Si vous quittez %{app_name} et retournez à %{sp_name}, nous
-              n’enregistrerons pas vos informations personnelles.
+            - Si vous quittez %{app_name} maintenant pour retourner sur
+              %{sp_name}, vous n’aurez pas vérifié votre identité.
             - Vous aurez toujours un compte %{app_name}. Vous pouvez gérer ou
               supprimer votre compte sur %{account_page_link}.
           without_sp:
             - Si vous quittez la vérification d’identité et accédez à la page de
-              votre compte, nous n’enregistrerons pas vos informations
-              personnelles.
+              votre compte, vous n’aurez pas vérifié votre identité.
             - Vous aurez toujours un compte %{app_name}. Vous pouvez gérer ou
               supprimer votre compte sur %{account_page_text}.
         hybrid: Si vous annulez maintenant, vous serez invité à retourner sur votre
           ordinateur pour continuer à vérifier votre identité.
-        start_over: Si vous recommencez, vous reprendrez ce processus depuis le début et
-          les informations que vous avez saisies ne seront pas enregistrées.
+        start_over: Si vous recommencez, vous reprendrez ce processus depuis le début.
       headings:
         confirmation:
           hybrid: Vous avez annulé le téléchargement de vos photos d’identité sur ce

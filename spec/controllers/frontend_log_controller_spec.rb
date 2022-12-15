@@ -64,6 +64,7 @@ describe FrontendLogController do
 
               expect(fake_analytics).to have_logged_event(
                 'IdV: in person proofing location submitted',
+                flow_path: nil,
                 selected_location: nil,
               )
             end

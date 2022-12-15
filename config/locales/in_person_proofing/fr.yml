@@ -37,6 +37,23 @@ fr:
           vous pourrez peut-être vérifier en personne dans un bureau de poste
           américain local dans certains endroits.
         none_found: Aucun endroit trouvé.
+        po_search:
+          address_search_hint: 'Exemple : 1960 W Chelsea Ave Allentown PA 18104'
+          address_search_label: Entrez une adresse pour trouver un bureau de poste près de chez vous.
+          none_found: Placeholder %{address}
+          none_found_tip: Vous pouvez effectuer une recherche en utilisant une autre
+            adresse, ou ajouter des photos de votre pièce d’identité pour
+            essayer de vérifier à nouveau votre identité en ligne.
+          po_search_about: Si vous avez des difficultés à ajouter votre pièce d’identité,
+            vous pouvez vérifier votre identité en personne dans un bureau de
+            poste américain proche.
+          results_description: Il y a %{count} de bureaux de poste participants dans un
+            rayon de 80 km autour de %{address}.
+          results_instructions: Sélectionnez un emplacement de bureau de poste ci-dessous,
+            ou effectuez une nouvelle recherche en utilisant une autre adresse.
+            Pour l’accessibilité des installations, utilisez les informations de
+            contact indiquées pour l’emplacement du bureau de poste.
+          search_button: Rechercher
         post_office: Bureau de Poste
         retail_hours_heading: Heures de vente au détail
         retail_hours_sat: 'Sam:'
@@ -62,7 +79,8 @@ fr:
         privacy_disclaimer_questions: Vous avez des questions?
         verify_step_about: 'Suivez les étapes ci-dessous pour générer le code-barres que
           vous emporterez avec vous au bureau de poste:'
-        verify_step_enter_phone: Entrez un numéro de téléphone avec votre nom sur le contrat.
+        verify_step_enter_phone: Entrez votre numéro de téléphone principal ou celui que
+          vous utilisez le plus souvent.
         verify_step_enter_pii: Saisissez votre nom, votre date de naissance, votre
           document d’identité délivré par l’État, votre adresse et votre numéro
           de sécurité sociale.
@@ -103,6 +121,8 @@ fr:
       barcode: Vous êtes prêt à vérifier votre identité en personne
       cta: Vous avez des difficultés à vérifier votre identité en ligne?
       location: Sélectionnez un lieu pour vérifier votre identité
+      po_search:
+        location: Trouver un bureau de poste participant
       prepare: Vérifiez votre identité en personne
       state_id: Saisissez les informations figurant sur votre document d’identité
       switch_back: Retournez sur votre ordinateur pour vous préparer à vérifier votre

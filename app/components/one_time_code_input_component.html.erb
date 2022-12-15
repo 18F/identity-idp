@@ -1,0 +1,20 @@
+<%= content_tag(:'lg-one-time-code-input', **tag_options, transport: transport) do %>
+  <%= render ValidatedFieldComponent.new(
+        form: form,
+        name: name,
+        label: t('components.one_time_code_input.label'),
+        hint: hint,
+        required: true,
+        **field_options,
+        input_html: {
+          **field_options[:input_html].to_h,
+          value: value,
+          maxlength: maxlength,
+          autofocus: autofocus?,
+          class: input_css_class,
+          pattern: input_pattern,
+          autocomplete: 'one-time-code',
+          inputmode: input_inputmode,
+        },
+      ) %>
+<% end %>

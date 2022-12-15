@@ -12,10 +12,8 @@ describe 'reset password with multiple emails' do
 
     expect_delivered_email_count(1)
     expect_delivered_email(
-      0, {
-        to: [email1],
-        subject: t('user_mailer.reset_password_instructions.subject'),
-      }
+      to: [email1],
+      subject: t('user_mailer.reset_password_instructions.subject'),
     )
 
     Capybara.reset_session!
@@ -27,10 +25,8 @@ describe 'reset password with multiple emails' do
 
     expect_delivered_email_count(2)
     expect_delivered_email(
-      1, {
-        to: [email2],
-        subject: t('user_mailer.reset_password_instructions.subject'),
-      }
+      to: [email2],
+      subject: t('user_mailer.reset_password_instructions.subject'),
     )
   end
 
@@ -51,11 +47,9 @@ describe 'reset password with multiple emails' do
 
     expect_delivered_email_count(1)
     expect_delivered_email(
-      0, {
-        to: [unconfirmed_email_address.email],
-        subject: t('user_mailer.email_confirmation_instructions.email_not_found'),
-        body: [create_account_instructions_text],
-      }
+      to: [unconfirmed_email_address.email],
+      subject: t('user_mailer.email_confirmation_instructions.email_not_found'),
+      body: [create_account_instructions_text],
     )
   end
 end

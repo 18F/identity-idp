@@ -14,7 +14,7 @@ module DocAuth
         return handle_invalid_response(http_response) unless http_response.success?
 
         handle_http_response(http_response)
-      rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
+      rescue Faraday::ConnectionFailed, Faraday::TimeoutError, Faraday::SSLError => e
         handle_connection_error(e)
       end
 

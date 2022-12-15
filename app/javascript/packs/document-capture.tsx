@@ -1,7 +1,6 @@
 import { render } from 'react-dom';
 import { composeComponents } from '@18f/identity-compose-components';
 import {
-  AppContext,
   DocumentCapture,
   DeviceContext,
   AcuantContextProvider,
@@ -9,7 +8,6 @@ import {
   ServiceProviderContextProvider,
   AnalyticsContextProvider,
   FailedCaptureAttemptsContextProvider,
-  NativeCameraABTestContextProvider,
   MarketingSiteContextProvider,
   InPersonContext,
 } from '@18f/identity-document-capture';
@@ -19,18 +17,14 @@ import { trackEvent as baseTrackEvent } from '@18f/identity-analytics';
 import type { FlowPath, DeviceContextValue } from '@18f/identity-document-capture';
 
 /**
- * @see AppContext
  * @see MarketingSiteContextProvider
  * @see FailedCaptureAttemptsContext
  * @see UploadContext
  */
 interface AppRootData {
   helpCenterRedirectUrl: string;
-  appName: string;
   maxCaptureAttemptsBeforeTips: string;
   maxAttemptsBeforeNativeCamera: string;
-  nativeCameraABTestingEnabled: string;
-  nativeCameraOnly: string;
   acuantSdkUpgradeABTestingEnabled: string;
   useNewerSdk: string;
   acuantVersion: string;
@@ -119,10 +113,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     maxCaptureAttemptsBeforeTips,
     maxCaptureAttemptsBeforeNativeCamera,
     maxSubmissionAttemptsBeforeNativeCamera,
-    nativeCameraABTestingEnabled,
-    nativeCameraOnly,
     acuantVersion,
-    appName,
     flowPath,
     cancelUrl: cancelURL,
     idvInPersonUrl: inPersonURL,
@@ -131,7 +122,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
   } = appRoot.dataset as DOMStringMap & AppRootData;
 
   const App = composeComponents(
-    [AppContext.Provider, { value: { appName } }],
     [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
     [DeviceContext.Provider, { value: device }],
     [AnalyticsContextProvider, { trackEvent }],
@@ -176,13 +166,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
         maxFailedAttemptsBeforeTips: Number(maxCaptureAttemptsBeforeTips),
         maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
         maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
-      },
-    ],
-    [
-      NativeCameraABTestContextProvider,
-      {
-        nativeCameraABTestingEnabled: nativeCameraABTestingEnabled === 'true',
-        nativeCameraOnly: nativeCameraOnly === 'true',
       },
     ],
     [

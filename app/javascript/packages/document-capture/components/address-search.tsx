@@ -22,7 +22,6 @@ export const ADDRESS_SEARCH_URL = '/api/addresses';
 function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSearchProps) {
   const validatedFieldRef = useRef<HTMLFormElement | null>(null);
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
-  const [addressQuery, setAddressQuery] = useState({} as Location);
   const { t } = useI18n();
 
   const handleAddressSearch = useCallback(
@@ -32,14 +31,13 @@ function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSear
       if (unvalidatedAddressInput === '') {
         return;
       }
-      const addressCandidates = await request(ADDRESS_SEARCH_URL, {
+      const addressCandidates = await request<Location>(ADDRESS_SEARCH_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         json: { address: unvalidatedAddressInput },
       });
 
       const bestMatchedAddress = addressCandidates[0];
-      setAddressQuery(bestMatchedAddress);
       onAddressFound(bestMatchedAddress);
     },
     [unvalidatedAddressInput],
@@ -61,13 +59,13 @@ function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSear
             const target = event.target as HTMLInputElement;
             setUnvalidatedAddressInput(target.value);
           }}
-          label="Search for an address"
+          label={t('in_person_proofing.body.location.po_search.address_search_label')}
+          hint={t('in_person_proofing.body.location.po_search.address_search_hint')}
         />
       </ValidatedField>
       <Button type="submit" className="margin-y-5" onClick={handleAddressSearch}>
-        Search
+        {t('in_person_proofing.body.location.po_search.search_button')}
       </Button>
-      <>{addressQuery.address}</>
     </>
   );
 }

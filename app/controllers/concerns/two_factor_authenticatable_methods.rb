@@ -145,7 +145,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def invalid_otp_error(type)
     case type
     when 'otp'
-      t('two_factor_authentication.invalid_otp')
+      [t('two_factor_authentication.invalid_otp'),
+       otp_attempts_remaining_warning].select(&:present?).join(' ')
     when 'totp'
       t('two_factor_authentication.invalid_otp')
     when 'personal_key'
@@ -155,6 +156,20 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     else
       raise "Unsupported otp method: #{type}"
     end
+  end
+
+  def otp_attempts_remaining_warning
+    return if otp_attempts_count_remaining >
+              IdentityConfig.store.otp_min_attempts_remaining_warning_count
+    t(
+      'two_factor_authentication.attempt_remaining_warning_html',
+      count: otp_attempts_count_remaining,
+    )
+  end
+
+  def otp_attempts_count_remaining
+    IdentityConfig.store.login_otp_confirmation_max_attempts -
+      current_user.second_factor_attempts_count
   end
 
   def render_show_after_invalid
@@ -178,6 +193,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     assign_phone
     track_mfa_method_added
     @next_mfa_setup_path = next_setup_path
+    reset_second_factor_attempts_count
     flash[:success] = t('notices.phone_confirmed')
   end
 
@@ -194,7 +210,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     bypass_sign_in current_user
     create_user_event(:sign_in_after_2fa)
 
-    UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
+    reset_second_factor_attempts_count
   end
 
   def assign_phone
@@ -207,6 +223,10 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     end
 
     update_phone_attributes
+  end
+
+  def reset_second_factor_attempts_count
+    UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
   end
 
   def phone_changed
@@ -233,7 +253,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def update_phone_attributes
     UpdateUser.new(
       user: current_user,
-      attributes: { phone_id: user_session[:phone_id], phone: user_session[:unconfirmed_phone],
+      attributes: { phone_id: user_session[:phone_id],
+                    phone: user_session[:unconfirmed_phone],
                     phone_confirmed_at: Time.zone.now,
                     otp_make_default_number: selected_otp_make_default_number },
     ).call

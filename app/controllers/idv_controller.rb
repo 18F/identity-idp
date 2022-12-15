@@ -2,8 +2,10 @@ class IdvController < ApplicationController
   include IdvSession
   include AccountReactivationConcern
   include InheritedProofingConcern
+  include ThreatmetrixReviewConcern
 
   before_action :confirm_two_factor_authenticated
+  before_action :handle_pending_threatmetrix_review
   before_action :profile_needs_reactivation?, only: [:index]
 
   def index

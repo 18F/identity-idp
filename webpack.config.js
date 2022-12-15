@@ -43,7 +43,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       devServerPort && isLocalhost ? `http://localhost:${devServerPort}/packs/` : '/packs/',
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.mts', '.cts'],
   },
   module: {
     rules: [
@@ -54,9 +54,9 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
         use: ['source-map-loader'],
       },
       {
-        test: /\.[jt]sx?$/,
+        test: /\.[cm]?[jt]sx?$/,
         exclude:
-          /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/,
+          /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset|swr)/,
         use: {
           loader: 'babel-loader',
         },

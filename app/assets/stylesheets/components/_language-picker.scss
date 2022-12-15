@@ -1,6 +1,7 @@
 .language-picker {
   position: relative;
   width: auto;
+  font-size: 1rem;
 
   .usa-accordion__content {
     @include u-bg('primary');

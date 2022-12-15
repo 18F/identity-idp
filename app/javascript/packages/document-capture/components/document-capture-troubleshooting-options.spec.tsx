@@ -5,13 +5,13 @@ import {
   ServiceProviderContextProvider,
 } from '@18f/identity-document-capture';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
-import type { ServiceProviderContext } from '../context/service-provider';
+import type { ServiceProviderContextType } from '../context/service-provider';
 import InPersonContext, { InPersonContextProps } from '../context/in-person';
 
 describe('DocumentCaptureTroubleshootingOptions', () => {
   const helpCenterRedirectURL = 'https://example.com/redirect/';
   const inPersonURL = 'https://example.com/some/idv/ipp/url';
-  const serviceProviderContext: ServiceProviderContext = {
+  const serviceProviderContext: ServiceProviderContextType = {
     name: 'Example SP',
     failureToProofURL: 'http://example.test/url/to/failure-to-proof',
     getFailureToProofURL: () => '',
@@ -40,14 +40,14 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
 
     expect(links).to.have.lengthOf(2);
     expect(links[0].textContent).to.equal(
-      'idv.troubleshooting.options.doc_capture_tips links.new_window',
+      'idv.troubleshooting.options.doc_capture_tipslinks.new_window',
     );
     expect(links[0].getAttribute('href')).to.equal(
       'https://example.com/redirect/?category=verify-your-identity&article=how-to-add-images-of-your-state-issued-id&location=document_capture_troubleshooting_options',
     );
     expect(links[0].target).to.equal('_blank');
     expect(links[1].textContent).to.equal(
-      'idv.troubleshooting.options.supported_documents links.new_window',
+      'idv.troubleshooting.options.supported_documentslinks.new_window',
     );
     expect(links[1].getAttribute('href')).to.equal(
       'https://example.com/redirect/?category=verify-your-identity&article=accepted-state-issued-identification&location=document_capture_troubleshooting_options',
@@ -65,21 +65,21 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
 
       expect(links).to.have.lengthOf(3);
       expect(links[0].textContent).to.equal(
-        'idv.troubleshooting.options.doc_capture_tips links.new_window',
+        'idv.troubleshooting.options.doc_capture_tipslinks.new_window',
       );
       expect(links[0].getAttribute('href')).to.equal(
         'https://example.com/redirect/?category=verify-your-identity&article=how-to-add-images-of-your-state-issued-id&location=document_capture_troubleshooting_options',
       );
       expect(links[0].target).to.equal('_blank');
       expect(links[1].textContent).to.equal(
-        'idv.troubleshooting.options.supported_documents links.new_window',
+        'idv.troubleshooting.options.supported_documentslinks.new_window',
       );
       expect(links[1].getAttribute('href')).to.equal(
         'https://example.com/redirect/?category=verify-your-identity&article=accepted-state-issued-identification&location=document_capture_troubleshooting_options',
       );
       expect(links[1].target).to.equal('_blank');
       expect(links[2].textContent).to.equal(
-        'idv.troubleshooting.options.get_help_at_sp links.new_window',
+        'idv.troubleshooting.options.get_help_at_splinks.new_window',
       );
       expect(links[2].href).to.equal(
         'http://example.test/url/to/failure-to-proof?location=document_capture_troubleshooting_options',
