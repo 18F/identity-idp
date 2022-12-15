@@ -307,6 +307,25 @@ describe UserDecorator do
     end
   end
 
+  describe '#threatmetrix_review_pending_profile' do
+    let(:user) { create(:user) }
+    subject(:decorated_user) { UserDecorator.new(user) }
+
+    context 'with a threatmetrix review pending profile' do
+      it 'returns the profile' do
+        profile = create(
+          :profile, user: user, active: false, deactivation_reason: :threatmetrix_review_pending
+        )
+
+        expect(decorated_user.threatmetrix_review_pending_profile).to eq(profile)
+      end
+    end
+
+    context 'without a threatmetrix review pending profile' do
+      it { expect(decorated_user.threatmetrix_review_pending_profile).to eq(nil) }
+    end
+  end
+
   describe '#delete_account_bullet_key' do
     let(:user_decorator) { UserDecorator.new(build_stubbed(:user)) }
 
