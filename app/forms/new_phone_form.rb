@@ -21,7 +21,7 @@ class NewPhoneForm
     self.user = user
     self.otp_delivery_preference = user.otp_delivery_preference
     self.otp_make_default_number = false
-    @setup_voice_preference = setup_voice_preference
+    self.setup_voice_preference = setup_voice_preference
   end
 
   def submit(params)
