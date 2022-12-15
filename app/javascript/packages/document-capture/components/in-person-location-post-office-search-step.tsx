@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import { PageFooter, PageHeading } from '@18f/identity-components';
+import { PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
 import useSWR from 'swr';
 import BackButton from './back-button';
@@ -158,9 +158,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
           address={foundAddress?.address || ''}
         />
       )}
-      <PageFooter>
-        <BackButton onClick={toPreviousStep} />
-      </PageFooter>
+      <BackButton includeBorder onClick={toPreviousStep} />
     </>
   );
 }
