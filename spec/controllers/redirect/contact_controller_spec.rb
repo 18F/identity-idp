@@ -15,8 +15,9 @@ describe Redirect::ContactController do
       expect(response).to redirect_to redirect_url
       expect(@analytics).to have_logged_event(
         'Contact Page Redirect',
-        redirect_url: redirect_url,
         flow: 'flow',
+        location: 'location',
+        redirect_url: redirect_url,
         step: 'step',
       )
     end

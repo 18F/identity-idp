@@ -213,6 +213,10 @@ module Features
       create(:user, :signed_up, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
     end
 
+    def user_verified
+      create(:user, :proofed)
+    end
+
     def user_verified_with_gpo
       create(:user, :proofed_with_gpo)
     end
@@ -270,12 +274,12 @@ module Features
 
     def fill_in_code_with_last_phone_otp
       accept_rules_of_use_and_continue_if_displayed
-      fill_in I18n.t('forms.two_factor.code'), with: last_phone_otp
+      fill_in I18n.t('components.one_time_code_input.label'), with: last_phone_otp
     end
 
     def fill_in_code_with_last_totp(user)
       accept_rules_of_use_and_continue_if_displayed
-      fill_in I18n.t('forms.two_factor.code'), with: last_totp(user)
+      fill_in I18n.t('components.one_time_code_input.label'), with: last_totp(user)
     end
 
     def accept_rules_of_use_and_continue_if_displayed

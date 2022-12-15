@@ -122,7 +122,7 @@ describe 'Add a new phone number' do
     expect(input.value).to eq('+81 543543643')
     expect(hidden_select.value).to eq('JP')
     click_continue
-    expect(page).to have_content(t('forms.two_factor.code'))
+    expect(page).to have_content(t('components.one_time_code_input.label'))
   end
 
   scenario 'Displays an error message when max phone numbers are reached' do

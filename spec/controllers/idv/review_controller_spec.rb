@@ -273,7 +273,11 @@ describe Idv::ReviewController do
 
         expect(response).to redirect_to idv_review_path
 
-        expect(@analytics).to have_logged_event('IdV: review complete', success: false)
+        expect(@analytics).to have_logged_event(
+          'IdV: review complete',
+          success: false,
+          proofing_components: nil,
+        )
       end
     end
 
@@ -287,8 +291,14 @@ describe Idv::ReviewController do
       it 'redirects to personal key path' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-        expect(@analytics).to have_logged_event('IdV: review complete', success: true)
-        expect(@analytics).to have_logged_event('IdV: final resolution', success: true)
+        expect(@analytics).to have_logged_event(
+          'IdV: review complete', success: true,
+                                  proofing_components: nil
+        )
+        expect(@analytics).to have_logged_event(
+          'IdV: final resolution',
+          hash_including(success: true),
+        )
         expect(response).to redirect_to idv_personal_key_path
       end
 
@@ -484,6 +494,7 @@ describe Idv::ReviewController do
 
               expect(@analytics).to have_logged_event(
                 'USPS IPPaaS enrollment failed',
+                context: 'authentication',
                 enrollment_id: enrollment.id,
                 exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
                 exception_message: 'the server responded with status 500',

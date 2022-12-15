@@ -33,8 +33,10 @@ feature 'doc auth document capture step', :js do
     within_window new_window do
       expect(fake_analytics).to have_logged_event(
         'Return to SP: Failed to proof',
-        step: 'document_capture',
+        flow: nil,
         location: 'document_capture_troubleshooting_options',
+        redirect_url: instance_of(String),
+        step: 'document_capture',
       )
     end
   end

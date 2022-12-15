@@ -16,26 +16,15 @@
 </p>
 
 <%= simple_form_for('', method: :put) do |f| %>
-  <div class="grid-row margin-bottom-5">
-    <div class="grid-col-12 tablet:grid-col-6">
-      <%= label_tag :code, t('forms.two_factor.code'), class: 'display-block text-bold' %>
-      <div class="margin-bottom-5">
-        <%= render(
-              'shared/one_time_code_input',
-              form: f,
-              name: :code,
-              value: @code,
-              required: true,
-              autofocus: true,
-              numeric: false,
-              class: 'width-full',
-              maxlength: TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH,
-            ) %>
-      </div>
-      <%= submit_tag t('forms.buttons.submit.default'),
-                     class: 'usa-button usa-button--big usa-button--full-width' %>
-    </div>
-  </div>
+  <%= render OneTimeCodeInputComponent.new(
+        form: f,
+        value: @code,
+        numeric: false,
+        autofocus: true,
+        maxlength: TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH,
+        class: 'margin-bottom-5',
+      ) %>
+  <%= f.submit t('forms.buttons.submit.default'), class: 'margin-bottom-5' %>
 <% end %>
 
 <%= render ButtonComponent.new(

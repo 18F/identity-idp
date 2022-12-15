@@ -172,7 +172,7 @@ feature 'Sign Up' do
       copied_text = page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
       expect(did_validate_name.call).to_not eq true
 
-      otp_input = page.find('.one-time-code-input')
+      otp_input = page.find('.one-time-code-input__input')
       otp_input.set(generate_totp_code(copied_text))
       click_button 'Submit'
       expect(did_validate_name.call).to eq true

@@ -5,13 +5,13 @@ import {
   ServiceProviderContextProvider,
 } from '@18f/identity-document-capture';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
-import type { ServiceProviderContext } from '../context/service-provider';
+import type { ServiceProviderContextType } from '../context/service-provider';
 import InPersonContext, { InPersonContextProps } from '../context/in-person';
 
 describe('DocumentCaptureTroubleshootingOptions', () => {
   const helpCenterRedirectURL = 'https://example.com/redirect/';
   const inPersonURL = 'https://example.com/some/idv/ipp/url';
-  const serviceProviderContext: ServiceProviderContext = {
+  const serviceProviderContext: ServiceProviderContextType = {
     name: 'Example SP',
     failureToProofURL: 'http://example.test/url/to/failure-to-proof',
     getFailureToProofURL: () => '',
