@@ -21,10 +21,11 @@ describe('ValidatedFieldElement', () => {
         }
       </script>
       <div class="validated-field__input-wrapper">
-        <label id="validated-field-label" class="usa-label">Required Field</label>
+        <label for="zipcode">ZIP code</label>
+        <span id="validated-field-hint">Required Field</span>
         <input
           aria-invalid="false"
-          aria-describedby="validated-field-label${hasInitialError ? ` ${errorMessageId}` : ''}"
+          aria-describedby="validated-field-hint${hasInitialError ? ` ${errorMessageId}` : ''}"
           required="required"
           aria-required="true"
           class="validated-field__input${hasInitialError ? ' usa-input--error' : ''}"
