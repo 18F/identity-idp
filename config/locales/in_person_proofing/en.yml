@@ -69,7 +69,7 @@ en:
         privacy_disclaimer_questions: Questions?
         verify_step_about: 'Complete the steps below to generate the barcode you’ll take
           with you to the Post Office:'
-        verify_step_enter_phone: Enter a phone number with your name on the plan.
+        verify_step_enter_phone: Enter your primary phone number or the number that you use most often.
         verify_step_enter_pii: Enter your name, date of birth, state-issued ID number,
           address and Social Security number.
       state_id:

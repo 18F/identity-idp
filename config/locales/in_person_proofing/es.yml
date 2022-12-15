@@ -79,7 +79,8 @@ es:
         privacy_disclaimer_questions: '¿Preguntas?'
         verify_step_about: 'Complete los siguientes pasos para generar el código de
           barras que llevará a la oficina de correos:'
-        verify_step_enter_phone: Ingrese un número de teléfono con su nombre en el plan.
+        verify_step_enter_phone: Introduzca su número de teléfono principal o el que use
+          con más frecuencia.
         verify_step_enter_pii: Ingrese su nombre, fecha de nacimiento, número de
           identificación emitido por el estado, dirección y número de la
           Seguridad Social.
