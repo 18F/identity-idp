@@ -28,7 +28,7 @@ class ValidatedFieldElement extends HTMLElement {
   connectedCallback() {
     this.input = this.querySelector('.validated-field__input');
     this.inputWrapper = this.querySelector('.validated-field__input-wrapper');
-    this.errorMessage = this.getErrorElement();
+    this.errorMessage = this.ownerDocument.getElementById(this.errorId);
     try {
       Object.assign(
         this.errorStrings,
@@ -134,16 +134,6 @@ class ValidatedFieldElement extends HTMLElement {
     }
 
     return this.errorMessage;
-  }
-
-  private getErrorElement(): HTMLElement | null {
-    const describedByElementIds = this.input?.getAttribute('aria-describedby')?.split(' ') || [];
-
-    return (
-      describedByElementIds
-        .map((id) => document.getElementById(id))
-        .find((element) => element?.classList.contains('usa-error-message')) || null
-    );
   }
 
   /**

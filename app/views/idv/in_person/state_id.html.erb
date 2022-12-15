@@ -10,11 +10,11 @@
   <%= t('in_person_proofing.body.state_id.info_html') %>
 </p>
 
-<%= simple_form_for :doc_auth,
+<%= simple_form_for InPersonEnrollment.new,
                     url: url_for,
                     method: 'put',
                     html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
-
+  <% f.object.errors.add(:dob, 'Foo wrong') %>
   <div class="margin-bottom-4">
     <%= render ValidatedFieldComponent.new(
           name: :first_name,
