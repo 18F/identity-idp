@@ -45,6 +45,10 @@ class ValidatedFieldElement extends HTMLElement {
     return this.getAttribute('error-id')!;
   }
 
+  get descriptorIdRefs(): string[] {
+    return this?.input?.getAttribute('aria-describedby')?.split(' ') || [];
+  }
+
   /**
    * Handles an invalid event, rendering or hiding an error message based on the input's current
    * validity.
@@ -86,6 +90,12 @@ class ValidatedFieldElement extends HTMLElement {
   setInputIsValid(isValid: boolean) {
     this.input?.classList.toggle('usa-input--error', !isValid);
     this.input?.setAttribute('aria-invalid', String(!isValid));
+
+    const idRefs = this.descriptorIdRefs.filter((idRef) => idRef !== this.errorId);
+    if (!isValid) {
+      idRefs.push(this.errorId);
+    }
+    this.input?.setAttribute('aria-describedby', idRefs.join(' '));
   }
 
   /**
@@ -122,15 +132,8 @@ class ValidatedFieldElement extends HTMLElement {
       this.errorMessage.classList.add('usa-error-message');
       this.errorMessage.id = this.errorId;
 
-      if (this.input) {
-        this.input.setAttribute(
-          'aria-describedby',
-          [this.input.getAttribute('aria-describedby'), this.errorMessage.id].join(' '),
-        );
-
-        if (TEXT_LIKE_INPUT_TYPES.has(this.input.type)) {
-          this.errorMessage.style.maxWidth = `${this.input.offsetWidth}px`;
-        }
+      if (this.input && TEXT_LIKE_INPUT_TYPES.has(this.input.type)) {
+        this.errorMessage.style.maxWidth = `${this.input.offsetWidth}px`;
       }
 
       this.inputWrapper?.appendChild(this.errorMessage);

@@ -70,41 +70,38 @@ describe('MemorableDateElement', () => {
             <div id="test-md-extra-text">This is an arbitrary element to click</div>
             <lg-memorable-date id="test-memorable-date">
                 <script id="test-md-error-mappings" type="application/json" class="memorable-date__error-strings"></script>
-                <lg-validated-field>
+                <lg-validated-field error-id="test-md-error-message">
                     <input type="text"
                         id="test-md-month"
                         required="required"
                         class="validated-field__input memorable-date__month"
                         aria-invalid="false"
-                        aria-describedby="test-md-error-message"
                         pattern="(1[0-2])|(0?[1-9])"
                         minlength="1"
                         maxlength="2" />
                 </lg-validated-field>
-                <lg-validated-field>
+                <lg-validated-field error-id="test-md-error-message">
                     <input type="text"
                         id="test-md-day"
                         required="required"
                         class="validated-field__input memorable-date__day"
                         aria-invalid="false"
-                        aria-describedby="test-md-error-message"
                         pattern="(3[01])|([12][0-9])|(0?[1-9])"
                         minlength="1"
                         maxlength="2" />
                 </lg-validated-field>
-                <lg-validated-field>
+                <lg-validated-field error-id="test-md-error-message">
                     <input type="text"
                         id="test-md-year"
                         required="required"
                         class="validated-field__input memorable-date__year"
                         aria-invalid="false"
-                        aria-describedby="test-md-error-message"
                         pattern="\\d{4}"
                         minlength="4"
                         maxlength="4" />
                 </lg-validated-field>
             </lg-memorable-date>
-            <div id="test-md-error-message" class="usa-error-message"></div>
+            <div id="test-md-error-message" class="usa-error-message display-none"></div>
             <button id="test-md-submit">Submit</button>
         </form>
         `;

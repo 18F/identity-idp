@@ -11,9 +11,12 @@ describe('ValidatedFieldElement', () => {
     const element = document.createElement('lg-validated-field');
     const errorMessageId = `validated-field-error-${++idCounter}`;
     element.setAttribute('error-id', errorMessageId);
-    const errorHtml = hasInitialError
-      ? `<div class="usa-error-message display-none" id="${errorMessageId}">Invalid value</div>`
-      : '';
+    const errorHtml =
+      hasInitialError || !errorInsideField
+        ? `<div class="usa-error-message display-none" id="${errorMessageId}">${
+            hasInitialError ? 'Invalid value' : ''
+          }</div>`
+        : '';
     element.innerHTML = `
       <script type="application/json" class="validated-field__error-strings">
         {
@@ -105,8 +108,8 @@ describe('ValidatedFieldElement', () => {
 
     expect(input.classList.contains('usa-input--error')).to.be.false();
     expect(input.getAttribute('aria-invalid')).to.equal('false');
-    expect(computeAccessibleDescription(document.activeElement!)).to.equal('Required Field ');
     expect(form.querySelector('.usa-error-message:not(.display-none)')).not.to.exist();
+    expect(computeAccessibleDescription(document.activeElement!)).to.equal('Required Field');
   });
 
   it('focuses the first element with an error', () => {
@@ -136,33 +139,47 @@ describe('ValidatedFieldElement', () => {
       expect(input.classList.contains('usa-input--error')).to.be.false();
       expect(input.getAttribute('aria-invalid')).to.equal('false');
       expect(() => getByText(element, 'Invalid value')).to.throw();
+      expect(form.querySelector('.usa-error-message:not(.display-none)')).not.to.exist();
     });
   });
 
   context('with error message element pre-rendered in the DOM', () => {
     it('reuses the error message element from inside the tag', () => {
       const element = createAndConnectElement({ hasInitialError: true, errorInsideField: true });
+      const input = getByRole(element, 'textbox');
 
-      expect(() => getByText(element, 'Invalid value')).not.to.throw();
-      expect(() => getByText(element, 'This field is required')).to.throw();
+      expect(computeAccessibleDescription(input)).to.equal('Required Field Invalid value');
 
       const form = element.parentNode as HTMLFormElement;
       form.checkValidity();
 
+      expect(computeAccessibleDescription(input)).to.equal('Required Field This field is required');
       expect(() => getByText(element, 'Invalid value')).to.throw();
       expect(form.querySelector('.usa-error-message:not(.display-none)')).to.exist();
     });
 
     it('reuses the error message element from outside the tag', () => {
       const element = createAndConnectElement({ hasInitialError: true, errorInsideField: false });
+      const input = getByRole(element, 'textbox');
       const form = element.parentNode as HTMLFormElement;
 
-      expect(() => getByText(form, 'Invalid value')).not.to.throw();
-      expect(() => getByText(form, 'This field is required')).to.throw();
+      expect(computeAccessibleDescription(input)).to.equal('Required Field Invalid value');
 
       form.checkValidity();
 
+      expect(computeAccessibleDescription(input)).to.equal('Required Field This field is required');
       expect(() => getByText(form, 'Invalid value')).to.throw();
+      expect(form.querySelector('.usa-error-message:not(.display-none)')).to.exist();
+    });
+
+    it('links input to external error message element when input is invalid', () => {
+      const element = createAndConnectElement({ hasInitialError: false, errorInsideField: false });
+      const form = element.parentNode as HTMLFormElement;
+
+      form.checkValidity();
+
+      const input = getByRole(element, 'textbox');
+      expect(computeAccessibleDescription(input)).to.equal('Required Field This field is required');
       expect(form.querySelector('.usa-error-message:not(.display-none)')).to.exist();
     });
 
@@ -171,7 +188,7 @@ describe('ValidatedFieldElement', () => {
       const input = getByRole(element, 'textbox');
       await userEvent.type(input, '5');
 
-      expect(computeAccessibleDescription(input)).to.equal('Required Field ');
+      expect(computeAccessibleDescription(input)).to.equal('Required Field');
       expect(element.querySelector('.usa-error-message:not(.display-none)')).not.to.exist();
     });
   });
