@@ -1,5 +1,4 @@
 import userEvent from '@testing-library/user-event';
-import { computeAccessibleDescription } from 'dom-accessibility-api';
 import '@18f/identity-validated-field/validated-field-element';
 import '.';
 import { findByDisplayValue } from '@testing-library/dom';
@@ -59,7 +58,8 @@ describe('MemorableDateElement', () => {
   let submitButton;
 
   function expectErrorToEqual(text: string) {
-    expect(computeAccessibleDescription(monthInput)).to.equal(text);
+    // Improvement idea: Assert that the computed accessible description of the input includes text.
+    expect(errorMessageElement.textContent).to.equal(text);
     expect(errorMessageElement.classList.contains('display-none')).to.equal(!text);
   }
 
