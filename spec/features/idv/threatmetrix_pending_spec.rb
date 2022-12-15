@@ -57,6 +57,4 @@ RSpec.feature 'Users pending threatmetrix review', :js do
 
     expect(current_path).to eq('/auth/result')
   end
-
-  scenario 'users pending threatmetrix can continue to sign in to IAL1 SPs'
 end
