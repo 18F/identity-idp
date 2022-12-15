@@ -16,8 +16,6 @@ class ServiceProvider < ApplicationRecord
            primary_key: 'issuer',
            dependent: :destroy
 
-  self.ignored_columns = [:device_profiling_enabled]
-
   # Do not define validations in this model.
   # See https://github.com/18F/identity_validations
   include IdentityValidations::ServiceProviderValidation
