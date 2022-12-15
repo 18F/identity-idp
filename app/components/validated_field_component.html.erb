@@ -1,4 +1,4 @@
-<%= content_tag(:'lg-validated-field', 'error-id': "validated-field-error-#{unique_id}") do %>
+<%= content_tag(:'lg-validated-field', 'error-id': error_id) do %>
   <%= content_tag(
         :script,
         error_messages.to_json,
@@ -21,10 +21,8 @@
               describedby: aria_describedby_idrefs,
             },
           },
-          hint_html: {
-            id: "validated-field-hint-#{unique_id}",
-          },
-          error_html: { id: "validated-field-error-#{unique_id}" },
+          hint_html: { id: hint_id },
+          error_html: { id: error_id },
         ),
       ) %>
 <% end %>

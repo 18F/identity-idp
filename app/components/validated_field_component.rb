@@ -21,8 +21,8 @@ class ValidatedFieldComponent < BaseComponent
 
   def aria_describedby_idrefs
     idrefs = [*tag_options.dig(:input_html, :aria, :describedby)]
-    idrefs << "validated-field-error-#{unique_id}" if has_errors?
-    idrefs << "validated-field-hint-#{unique_id}" if has_hint?
+    idrefs << error_id if has_errors?
+    idrefs << hint_id if has_hint?
     idrefs
   end
 
@@ -34,6 +34,14 @@ class ValidatedFieldComponent < BaseComponent
 
   def has_hint?
     tag_options.key?(:hint)
+  end
+
+  def error_id
+    "validated-field-error-#{unique_id}"
+  end
+
+  def hint_id
+    "validated-field-hint-#{unique_id}"
   end
 
   def value_missing_error_message
