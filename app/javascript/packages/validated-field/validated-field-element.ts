@@ -46,7 +46,7 @@ class ValidatedFieldElement extends HTMLElement {
   }
 
   get descriptorIdRefs(): string[] {
-    return this?.input?.getAttribute('aria-describedby')?.split(' ') || [];
+    return this?.input?.getAttribute('aria-describedby')?.split(' ').filter(Boolean) || [];
   }
 
   /**
