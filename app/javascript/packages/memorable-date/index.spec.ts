@@ -60,6 +60,7 @@ describe('MemorableDateElement', () => {
 
   function expectErrorToEqual(text: string) {
     expect(computeAccessibleDescription(monthInput)).to.equal(text);
+    expect(errorMessageElement.classList.contains('display-none')).to.equal(!text);
   }
 
   beforeEach(() => {
@@ -230,6 +231,7 @@ describe('MemorableDateElement', () => {
   function itHidesValidationErrorsOnTyping() {
     it('hides validation errors on typing', async () => {
       const expectNoVisibleError = () => {
+        expect(errorMessageElement.classList.contains('display-none')).to.be.true();
         expect(errorMessageElement.textContent).to.be.empty();
         expect(Array.from(monthInput.classList)).not.to.contain('usa-input--error');
         expect(monthInput.getAttribute('aria-invalid')).to.equal('false');
@@ -240,6 +242,7 @@ describe('MemorableDateElement', () => {
       };
 
       const expectVisibleError = () => {
+        expect(errorMessageElement.classList.contains('display-none')).to.be.false();
         expect(errorMessageElement.textContent).not.to.be.empty();
         expect(Array.from(monthInput.classList)).to.contain('usa-input--error');
         expect(monthInput.getAttribute('aria-invalid')).to.equal('true');

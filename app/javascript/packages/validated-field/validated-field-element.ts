@@ -69,9 +69,12 @@ class ValidatedFieldElement extends HTMLElement {
    */
   setErrorMessage(message?: string | null) {
     if (message) {
-      this.getOrCreateErrorMessageElement().textContent = message;
+      this.getOrCreateErrorMessageElement();
+      this.errorMessage!.textContent = message;
+      this.errorMessage!.classList.remove('display-none');
     } else if (this.errorMessage) {
       this.errorMessage.textContent = '';
+      this.errorMessage.classList.add('display-none');
     }
   }
 

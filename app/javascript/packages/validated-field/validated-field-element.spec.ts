@@ -12,7 +12,7 @@ describe('ValidatedFieldElement', () => {
     const errorMessageId = `validated-field-error-${++idCounter}`;
     element.setAttribute('error-id', errorMessageId);
     const errorHtml = hasInitialError
-      ? `<div class="usa-error-message" id="${errorMessageId}">Invalid value</div>`
+      ? `<div class="usa-error-message display-none" id="${errorMessageId}">Invalid value</div>`
       : '';
     element.innerHTML = `
       <script type="application/json" class="validated-field__error-strings">
@@ -74,6 +74,7 @@ describe('ValidatedFieldElement', () => {
     expect(input.classList.contains('usa-input--error')).to.be.true();
     expect(input.getAttribute('aria-invalid')).to.equal('true');
     expect(document.activeElement).to.equal(input);
+    expect(form.querySelector('.usa-error-message:not(.display-none)')).to.exist();
     expect(computeAccessibleDescription(document.activeElement!)).to.equal(
       'Required Field This field is required',
     );
@@ -105,6 +106,7 @@ describe('ValidatedFieldElement', () => {
     expect(input.classList.contains('usa-input--error')).to.be.false();
     expect(input.getAttribute('aria-invalid')).to.equal('false');
     expect(computeAccessibleDescription(document.activeElement!)).to.equal('Required Field ');
+    expect(form.querySelector('.usa-error-message:not(.display-none)')).not.to.exist();
   });
 
   it('focuses the first element with an error', () => {
@@ -148,7 +150,7 @@ describe('ValidatedFieldElement', () => {
       form.checkValidity();
 
       expect(() => getByText(element, 'Invalid value')).to.throw();
-      expect(() => getByText(element, 'This field is required')).not.to.throw();
+      expect(form.querySelector('.usa-error-message:not(.display-none)')).to.exist();
     });
 
     it('reuses the error message element from outside the tag', () => {
@@ -161,7 +163,7 @@ describe('ValidatedFieldElement', () => {
       form.checkValidity();
 
       expect(() => getByText(form, 'Invalid value')).to.throw();
-      expect(() => getByText(form, 'This field is required')).not.to.throw();
+      expect(form.querySelector('.usa-error-message:not(.display-none)')).to.exist();
     });
 
     it('clears error message when field becomes valid', async () => {
@@ -170,6 +172,7 @@ describe('ValidatedFieldElement', () => {
       await userEvent.type(input, '5');
 
       expect(computeAccessibleDescription(input)).to.equal('Required Field ');
+      expect(element.querySelector('.usa-error-message:not(.display-none)')).not.to.exist();
     });
   });
 
