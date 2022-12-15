@@ -49,8 +49,8 @@ en:
         confirmation instructions” to get another one.
       expired: has expired, please request a new one
       format_mismatch: Please match the requested format.
-      gpo_otp_expired: Your confirmation code has expired. Please request another
-        letter for a new code.
+      gpo_otp_expired: Your one-time code has expired. Please request another letter
+        for a new code.
       improbable_phone: Invalid phone number. Please make sure you enter a valid phone number.
       inclusion: is not included in the list
       invalid_calling_area: Calls to that phone number are not supported. Please try

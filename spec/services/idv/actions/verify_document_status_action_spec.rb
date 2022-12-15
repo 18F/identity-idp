@@ -59,8 +59,12 @@ describe Idv::Actions::VerifyDocumentStatusAction do
 
         expect(analytics).to have_logged_event(
           'IdV: doc auth image upload vendor pii validation',
-          success: true,
+          attention_with_barcode: false,
           errors: {},
+          flow_path: 'standard',
+          remaining_attempts: 4,
+          success: true,
+          user_id: nil,
         )
       end
 
@@ -128,6 +132,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
         expect(analytics).to have_logged_event(
           'Doc Auth Async',
           error: 'failed to load verify_document_capture_session',
+          result_id: nil,
           uuid: nil,
         )
       end

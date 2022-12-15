@@ -69,10 +69,8 @@ describe Users::PasswordsController do
 
         expect_delivered_email_count(1)
         expect_delivered_email(
-          0, {
-            to: [user.email_addresses.first.email],
-            subject: t('devise.mailer.password_updated.subject'),
-          }
+          to: [user.email_addresses.first.email],
+          subject: t('devise.mailer.password_updated.subject'),
         )
       end
     end

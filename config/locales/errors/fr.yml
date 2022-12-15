@@ -55,7 +55,7 @@ fr:
         obtenir un autre.
       expired: est expiré, veuillez en demander un nouveau
       format_mismatch: Veuillez vous assurer de respecter le format requis.
-      gpo_otp_expired: Votre code de confirmation a expiré. Veuillez solliciter une
+      gpo_otp_expired: Votre code à usage unique a expiré. Veuillez solliciter une
         autre lettre afin d’obtenir un nouveau code.
       improbable_phone: Numéro de téléphone non valide. Veillez à saisir un numéro de
         téléphone valide.

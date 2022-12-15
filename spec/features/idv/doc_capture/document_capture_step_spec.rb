@@ -25,28 +25,10 @@ feature 'doc capture document capture step', js: true do
     allow_any_instance_of(Browser).to receive(:mobile?).and_return(true)
   end
 
-  it 'is on the correct page and shows the document upload options' do
-    complete_doc_capture_steps_before_first_step(user)
-
-    expect(current_path).to eq(idv_capture_doc_document_capture_step)
-    expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
-    expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-
-    # Document capture tips
-    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
-    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
-    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
-    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
-    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
-    expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
-
-    # No selfie option, evidenced by "Submit" button instead of "Continue"
-    expect(page).to have_content(t('forms.buttons.submit.default'))
-  end
-
   it 'proceeds to the next page with valid info' do
     complete_doc_capture_steps_before_first_step(user)
+
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
     attach_and_submit_images
 
@@ -61,6 +43,8 @@ feature 'doc capture document capture step', js: true do
     expect(page).to have_text(t('idv.cancel.headings.prompt.hybrid'))
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation visited',
+      proofing_components: nil,
+      request_came_from: 'idv/capture_doc#show',
       step: 'document_capture',
     )
 
@@ -69,6 +53,7 @@ feature 'doc capture document capture step', js: true do
     expect(page).to have_text(t('idv.cancel.headings.confirmation.hybrid'))
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation confirmed',
+      proofing_components: nil,
       step: 'document_capture',
     )
   end
@@ -80,8 +65,10 @@ feature 'doc capture document capture step', js: true do
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth document_capture submitted',
-      step: 'document_capture',
-      flow_path: 'hybrid',
+      hash_including(
+        step: 'document_capture',
+        flow_path: 'hybrid',
+      ),
     )
   end
 
@@ -188,7 +175,13 @@ feature 'doc capture document capture step', js: true do
     it 'logs events as an anonymous user' do
       visit request_uri
 
-      expect(fake_analytics).to have_logged_event('Doc Auth', success: false)
+      expect(fake_analytics).to have_logged_event(
+        'Doc Auth',
+        hash_including(
+          success: false,
+          user_id: 'anonymous-uuid',
+        ),
+      )
     end
   end
 
@@ -197,8 +190,10 @@ feature 'doc capture document capture step', js: true do
       complete_doc_capture_steps_before_first_step(user)
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth document_capture visited',
-        step: 'document_capture',
-        flow_path: 'hybrid',
+        hash_including(
+          step: 'document_capture',
+          flow_path: 'hybrid',
+        ),
       )
     end
 
@@ -211,8 +206,10 @@ feature 'doc capture document capture step', js: true do
       within_window new_window do
         expect(fake_analytics).to have_logged_event(
           'Return to SP: Failed to proof',
-          step: 'document_capture',
-          location: 'document_capture_troubleshooting_options',
+          hash_including(
+            step: 'document_capture',
+            location: 'document_capture_troubleshooting_options',
+          ),
         )
       end
     end
@@ -234,7 +231,7 @@ feature 'doc capture document capture step', js: true do
     end
 
     expect(page).to have_content(t('errors.doc_auth.throttled_heading'), wait: 5)
-    expect(fake_analytics).to have_logged_event('Doc Auth Warning', {})
+    expect(fake_analytics).to have_logged_event('Doc Auth Warning')
   end
 
   def next_step

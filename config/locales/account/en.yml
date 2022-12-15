@@ -53,7 +53,7 @@ en:
       totp_confirm_delete: Yes, remove authentication app
       unknown_location: unknown location
       verification:
-        instructions: Your account requires a confirmation code to be verified.
+        instructions: Your account requires a one-time code to be verified.
         reactivate_button: Enter the code you received via US mail
         success: Your account has been verified.
       webauthn: Security key
@@ -99,7 +99,7 @@ en:
       get_new: Get a new personal key
       get_new_description: When you receive a new personal key, your old personal key
         will not work anymore.
-      last_generated: 'Last generated on %{timestamp}'
+      last_generated: Last generated on %{timestamp}
       needs_new: Your account needs a new personal key. Your old personal key will not
         work if you forget your password.
       old_key_will_not_work: Please print, copy, or download the new personal key

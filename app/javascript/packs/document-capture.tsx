@@ -1,7 +1,6 @@
 import { render } from 'react-dom';
 import { composeComponents } from '@18f/identity-compose-components';
 import {
-  AppContext,
   DocumentCapture,
   DeviceContext,
   AcuantContextProvider,
@@ -9,8 +8,8 @@ import {
   ServiceProviderContextProvider,
   AnalyticsContextProvider,
   FailedCaptureAttemptsContextProvider,
-  NativeCameraABTestContextProvider,
   MarketingSiteContextProvider,
+  InPersonContext,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -18,18 +17,14 @@ import { trackEvent as baseTrackEvent } from '@18f/identity-analytics';
 import type { FlowPath, DeviceContextValue } from '@18f/identity-document-capture';
 
 /**
- * @see AppContext
  * @see MarketingSiteContextProvider
  * @see FailedCaptureAttemptsContext
  * @see UploadContext
  */
 interface AppRootData {
   helpCenterRedirectUrl: string;
-  appName: string;
   maxCaptureAttemptsBeforeTips: string;
   maxAttemptsBeforeNativeCamera: string;
-  nativeCameraABTestingEnabled: string;
-  nativeCameraOnly: string;
   acuantSdkUpgradeABTestingEnabled: string;
   useNewerSdk: string;
   acuantVersion: string;
@@ -118,18 +113,15 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     maxCaptureAttemptsBeforeTips,
     maxCaptureAttemptsBeforeNativeCamera,
     maxSubmissionAttemptsBeforeNativeCamera,
-    nativeCameraABTestingEnabled,
-    nativeCameraOnly,
     acuantVersion,
-    appName,
     flowPath,
     cancelUrl: cancelURL,
     idvInPersonUrl: inPersonURL,
     securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
+    arcgisSearchEnabled,
   } = appRoot.dataset as DOMStringMap & AppRootData;
 
   const App = composeComponents(
-    [AppContext.Provider, { value: { appName } }],
     [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
     [DeviceContext.Provider, { value: device }],
     [AnalyticsContextProvider, { trackEvent }],
@@ -163,7 +155,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
       {
         value: {
           cancelURL,
-          inPersonURL,
           currentStep: 'document_capture',
         },
       },
@@ -178,11 +169,8 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
       },
     ],
     [
-      NativeCameraABTestContextProvider,
-      {
-        nativeCameraABTestingEnabled: nativeCameraABTestingEnabled === 'true',
-        nativeCameraOnly: nativeCameraOnly === 'true',
-      },
+      InPersonContext.Provider,
+      { value: { arcgisSearchEnabled: arcgisSearchEnabled === 'true', inPersonURL } },
     ],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
   );

@@ -3,11 +3,11 @@ fr:
   forms:
     backup_code:
       are_you_sure_desc_html:
-        - <strong>Les codes de sauvegarde sont la méthode d’authentification la
+        - '<strong>Les codes de sauvegarde sont la méthode d’authentification la
           moins recommandée,</strong> car les codes peuvent facilement être
           perdus. Nous vous encourageons à explorer d’autres options
           d’authentification telles que le déverrouillage facial ou tactile, une
-          application d’authentification ou une clé de sécurité.
+          application d’authentification ou une clé de sécurité.'
         - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer,
           copier ou noter. Vous saisirez un code chaque fois que vous vous
           connecterez.
@@ -134,8 +134,6 @@ fr:
       totp_step_4: Entrez le code temporaire de votre application
     two_factor:
       backup_code: Code de sécurité
-      # removed "security code" form labels as they trigger ios credit card reader
-      code: Code à usage unique
       personal_key: Clé personnelle
       try_again: Utilisez un autre numéro de téléphone
     validation:
@@ -143,12 +141,12 @@ fr:
     verify_profile:
       instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
         avez reçue.
-      name: Code de confirmation
+      name: Code à usage unique
       submit: Confirmer le compte
       title: Confirmez votre compte
       welcome_back: Content de vous revoir
       welcome_back_description: '<p>Si vous avez reçu votre lettre, veuillez entrer
-        votre code de confirmation ci-dessous. </p> <p>Si votre lettre n’est pas
+        votre code à usage unique ci-dessous. </p> <p>Si votre lettre n’est pas
         encore arrivée, veuillez être patient car les <strong>lettres prennent
         généralement entre trois à sept jours ouvrables pour arriver</strong>.
         Nous vous remercions de votre patience.</p>'

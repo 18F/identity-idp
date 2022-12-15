@@ -147,6 +147,8 @@ RSpec.describe DocumentProofingJob, type: :job do
             back: back_image_metadata,
           },
           tamper_result: nil,
+          flow_path: 'standard',
+          log_alert_results: {},
         )
 
         expect(result.pii_from_doc).to eq(applicant_pii)

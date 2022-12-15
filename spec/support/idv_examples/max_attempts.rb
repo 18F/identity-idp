@@ -19,7 +19,7 @@ shared_examples 'verification step max attempts' do |step, sp|
     end
 
     before do
-      perfom_maximum_allowed_idv_step_attempts { fill_out_phone_form_fail }
+      perfom_maximum_allowed_idv_step_attempts(step) { fill_out_phone_form_fail }
     end
 
     scenario 'more than 3 attempts in 24 hours prevents further attempts' do
@@ -51,26 +51,26 @@ shared_examples 'verification step max attempts' do |step, sp|
     it 'allows the user to continue if their last attempt is successful' do
       (Throttle.max_attempts(:proof_address) - 1).times do
         fill_out_phone_form_fail
-        click_idv_continue
+        click_idv_continue_for_step(step)
         click_on t('idv.failure.button.warning')
       end
 
       fill_out_phone_form_ok
-      click_idv_continue
+      click_idv_continue_for_step(step)
 
-      expect(page).to have_content(t('idv.titles.otp_delivery_method'))
-      expect(page).to have_current_path(idv_otp_delivery_method_path)
+      expect(page).to have_content(t('titles.idv.enter_one_time_code'))
+      expect(page).to have_current_path(idv_otp_verification_path)
     end
   end
 
-  def perfom_maximum_allowed_idv_step_attempts
+  def perfom_maximum_allowed_idv_step_attempts(step)
     (Throttle.max_attempts(:proof_address) - 1).times do
       yield
-      click_idv_continue
+      click_idv_continue_for_step(step)
       click_on t('idv.failure.button.warning')
     end
     yield
-    click_idv_continue
+    click_idv_continue_for_step(step)
   end
 
   def expect_user_to_fail_at_phone_step

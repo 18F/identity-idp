@@ -12,12 +12,15 @@
         heading: t('inherited_proofing.troubleshooting.headings.need_assistance'),
         options: [
           {
-            url: 'https://www.va.gov/resources/managing-your-vagov-profile/',
-            text: t('inherited_proofing.troubleshooting.options.get_va_help'),
+            url: @presenter.get_help_url,
+            text: t(
+              'inherited_proofing.troubleshooting.options.get_help',
+              sp_name: decorated_session.sp_name,
+            ),
             new_tab: true,
           },
           {
-            url: 'https://www.va.gov/resources/managing-your-vagov-profile/',
+            url: @presenter.contact_support_url,
             text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
             new_tab: true,
           },

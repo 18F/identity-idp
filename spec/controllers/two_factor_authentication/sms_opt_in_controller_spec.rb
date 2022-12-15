@@ -26,6 +26,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
         expect(@analytics).to have_logged_event(
           'SMS Opt-In: Visited',
           has_other_auth_methods: false,
+          new_user: false,
           phone_configuration_id: user.phone_configurations.first.id,
         )
       end
@@ -115,7 +116,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
 
           expect(@analytics).to have_logged_event(
             'SMS Opt-In: Submitted',
-            success: true,
+            hash_including(success: true),
           )
         end
 
@@ -145,7 +146,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
 
           expect(@analytics).to have_logged_event(
             'SMS Opt-In: Submitted',
-            success: false,
+            hash_including(success: false),
           )
         end
 
@@ -173,7 +174,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
 
           expect(@analytics).to have_logged_event(
             'SMS Opt-In: Submitted',
-            success: false,
+            hash_including(success: false),
           )
         end
 

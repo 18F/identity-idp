@@ -38,6 +38,11 @@ module InheritedProofingHelper
   end
 
   # get started > agreement > verify_wait > please verify
+  def complete_agreement_step
+    find('label', text: t('inherited_proofing.instructions.consent', app_name: APP_NAME)).click
+    click_on t('inherited_proofing.buttons.continue')
+  end
+
   def complete_inherited_proofing_steps_before_verify_step(expect_accessible: false)
     complete_inherited_proofing_steps_before_agreement_step(expect_accessible: expect_accessible)
     complete_agreement_step

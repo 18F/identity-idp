@@ -434,7 +434,6 @@ feature 'Two Factor Authentication' do
         fill_in 'code', with: otp
         click_submit_default
 
-        # expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
         expect(current_path).to eq login_two_factor_authenticator_path
       end
     end
@@ -582,7 +581,7 @@ feature 'Two Factor Authentication' do
     end
 
     def submit_wrong_otp
-      fill_in t('forms.two_factor.code'), with: wrong_phone_otp
+      fill_in t('components.one_time_code_input.label'), with: wrong_phone_otp
       click_submit_default
     end
 

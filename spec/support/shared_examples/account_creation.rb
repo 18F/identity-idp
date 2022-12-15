@@ -49,7 +49,6 @@ shared_examples 'creating an IAL2 account using authenticator app for 2FA' do |s
     expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
     complete_all_doc_auth_steps
     fill_out_phone_form_ok
-    click_idv_continue
     choose_idv_otp_delivery_method_sms
     fill_in_code_with_last_phone_otp
     click_submit_default
@@ -101,7 +100,6 @@ shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
     expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
     complete_all_doc_auth_steps
     fill_out_phone_form_ok
-    click_idv_continue
     choose_idv_otp_delivery_method_sms
     fill_in_code_with_last_phone_otp
     click_submit_default

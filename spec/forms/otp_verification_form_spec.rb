@@ -1,58 +1,145 @@
 require 'rails_helper'
 
 RSpec.describe OtpVerificationForm do
+  let(:user) { build_stubbed(:user) }
+  let(:code) { nil }
+  let(:user_otp) { nil }
+  let(:user_otp_sent_at) { nil }
+
+  subject(:form) { described_class.new(user, code) }
+
+  before do
+    allow(user).to receive(:direct_otp).and_return(user_otp)
+    allow(user).to receive(:direct_otp_sent_at).and_return(user_otp_sent_at)
+    allow(user).to receive(:clear_direct_otp)
+  end
+
   describe '#submit' do
-    context 'when the form is valid' do
-      it 'returns FormResponse with success: true' do
-        user = build_stubbed(:user)
-        code = '123456'
-        form = OtpVerificationForm.new(user, code)
+    subject(:result) { form.submit }
 
-        allow(user).to receive(:authenticate_direct_otp).with(code).and_return(true)
+    context 'when the code is correct' do
+      let(:code) { '123456' }
+      let(:user_otp) { '123456' }
 
-        expect(form.submit.to_h).to eq(
+      it 'returns a successful response' do
+        expect(result.to_h).to eq(
           success: true,
-          errors: {},
           multi_factor_auth_method: 'otp_code',
         )
       end
+
+      it 'clears user pending OTP' do
+        expect(user).to receive(:clear_direct_otp)
+
+        result
+      end
     end
 
-    context 'when the form is invalid' do
-      it 'returns FormResponse with success: false' do
-        user = build_stubbed(:user)
-        code = '123456'
-        form = OtpVerificationForm.new(user, code)
+    context 'when the code is nil' do
+      let(:code) { nil }
+      let(:user_otp) { '123456' }
 
-        expect(form.submit.to_h).to eq(
+      it 'returns a successful response' do
+        expect(result.to_h).to eq(
           success: false,
-          errors: {},
+          error_details: {
+            code: [:blank],
+          },
           multi_factor_auth_method: 'otp_code',
         )
       end
+
+      it 'does not clear user pending OTP' do
+        expect(user).not_to receive(:clear_direct_otp)
+
+        result
+      end
     end
 
-    context 'when numeric is enabled and the code is not exactly 6 digits' do
-      it 'returns FormResponse with success: false' do
-        user = build_stubbed(:user)
-        invalid_codes = [
-          'abcdef',
-          '12345a',
-          "aaaaa\n123456\naaaaaaaaa",
-        ]
+    context 'when the user does not have a pending OTP' do
+      let(:code) { '123456' }
+      let(:user_otp) { nil }
 
-        invalid_codes.each do |code|
-          form = OtpVerificationForm.new(user, code)
-          allow(user).to receive(:authenticate_direct_otp).with(code).and_return(true)
+      it 'returns an unsuccessful response' do
+        expect(result.to_h).to eq(
+          success: false,
+          error_details: {
+            code: [:user_otp_missing],
+          },
+          multi_factor_auth_method: 'otp_code',
+        )
+      end
 
-          result = FormResponse.new(
-            success: false,
-            errors: {},
-            extra: { multi_factor_auth_method: 'otp_code' },
-          )
+      it 'does not clear user pending OTP' do
+        expect(user).not_to receive(:clear_direct_otp)
 
-          expect(form.submit).to eq(result), "expected #{code.inspect} to not pass"
-        end
+        result
+      end
+    end
+
+    context 'when the code is too short' do
+      let(:code) { '12345' }
+      let(:user_otp) { '123456' }
+
+      it 'returns an unsuccessful response' do
+        expect(result.to_h).to eq(
+          success: false,
+          error_details: {
+            code: [:incorrect_length, :incorrect],
+          },
+          multi_factor_auth_method: 'otp_code',
+        )
+      end
+
+      it 'does not clear user pending OTP' do
+        expect(user).not_to receive(:clear_direct_otp)
+
+        result
+      end
+    end
+
+    context 'when the code is not numeric' do
+      let(:code) { 'l23456' }
+      let(:user_otp) { '123456' }
+
+      it 'returns an unsuccessful response' do
+        expect(result.to_h).to eq(
+          success: false,
+          error_details: {
+            code: [:pattern_mismatch, :incorrect],
+          },
+          multi_factor_auth_method: 'otp_code',
+        )
+      end
+
+      it 'does not clear user pending OTP' do
+        expect(user).not_to receive(:clear_direct_otp)
+
+        result
+      end
+    end
+
+    context 'when the user pending OTP is expired' do
+      let(:code) { '123456' }
+      let(:user_otp) { '123456' }
+      let(:user_otp_sent_at) do
+        (TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS + 1).seconds.ago
+      end
+
+      it 'returns an unsuccessful response' do
+        expect(result.to_h).to eq(
+          success: false,
+          error_details: {
+            code: [:user_otp_expired],
+          },
+          multi_factor_auth_method: 'otp_code',
+        )
+      end
+
+      it 'does not clear user pending OTP' do
+        expect(user).not_to receive(:clear_direct_otp)
+
+        result
       end
     end
   end

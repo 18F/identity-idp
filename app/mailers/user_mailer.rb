@@ -265,6 +265,20 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def in_person_deadline_passed(enrollment:)
+    with_user_locale(user) do
+      @header = t('user_mailer.in_person_deadline_passed.header')
+      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
+        enrollment: enrollment,
+        url_options: url_options,
+      )
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.in_person_deadline_passed.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
   def in_person_ready_to_verify(enrollment:)
     attachments.inline['barcode.png'] = BarcodeOutputter.new(
       code: enrollment.enrollment_code,

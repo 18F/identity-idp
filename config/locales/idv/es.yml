@@ -25,19 +25,18 @@ es:
         account_page: la página de su cuenta
         exit:
           with_sp_html:
-            - Si sale de %{app_name} y vuelve a %{sp_name}, su información
-              personal no se guardará.
+            - Si sale de %{app_name} ahora y regresa a %{sp_name}, no habrá
+              verificado su identidad.
             - No obstante, continuará teniendo una cuenta en %{app_name}. Puede
               administrar o eliminar su cuenta desde %{account_page_link}.
           without_sp:
-            - Si sale de la verificación de identidad e ingresa en la página de
-              su cuenta, su información personal no se guardará.
+            - Si sale de la verificación de identidad y se dirige a la página de
+              su cuenta, no habrá verificado su identidad.
             - No obstante, continuará teniendo una cuenta en %{app_name}. Puede
               administrar o eliminar su cuenta desde %{account_page_text}.
         hybrid: Si cancela ahora, se le pedirá regresar a su computadora para continuar
           con la verificación de su identidad.
-        start_over: Si empieza de nuevo, el proceso se reiniciará y la información que
-          haya ingresado se perderá.
+        start_over: Si vuelve a empezar, reiniciará este proceso desde el principio.
       headings:
         confirmation:
           hybrid: Ha cancelado la carga de fotos de su identificación en este teléfono
@@ -47,7 +46,7 @@ es:
         prompt:
           hybrid: '¿Seguro que desea cancelar la carga de fotos de su identificación en
             este teléfono?'
-          standard: ¿Cancelar la verificación de su identidad?
+          standard: '¿Cancelar la verificación de su identidad?'
         start_over: Empezar de nuevo a verificar su identidad
     errors:
       incorrect_password: La contraseña que ingresó no es correcta.
@@ -89,8 +88,8 @@ es:
           Los errores más comunes suelen producirse al ingresar un Número de
           Seguridad Social o un Código Postal incorrecto.
       setup:
-        fail_html: 'Por favor, %{contact_form_link} e introduzca el código
-          <b>%{support_code}</b> en el campo de detalle.'
+        fail_html: Por favor, %{contact_form_link} e introduzca el código
+          <b>%{support_code}</b> en el campo de detalle.
         heading: Hay un problema con tu información
         link_text: rellene nuestro formulario decontacto
       timeout: Estamos experimentando un tiempo de espera superior al habitual al
@@ -129,14 +128,13 @@ es:
       activated_link: Contáctenos
       clear_and_start_over: Borrar mi información y empezar de nuevo
       come_back_later: Una vez llegue tu carta, regístrate en %{app_name} e introduce
-        tu código de confirmación cuando se te solicite.
+        tu código único cuando se te solicite.
       come_back_later_no_sp_html: Ahora puedes volver a tu <strong>cuenta de %{app_name}</strong>.
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
       confirm: Usted ha encriptado sus datos verificados.
       gpo:
-        address_on_file_html: Le enviaremos una carta con <strong>un código de
-          confirmación</strong> a la dirección que nos facilitó en el paso
-          anterior.
+        address_on_file_html: Le enviaremos una carta con <strong>un código único
+          </strong> a la dirección que nos facilitó en el paso anterior.
         resend: Envíeme otra carta
         timeframe_html: Las cartas se envían al día siguiente por First Class Mail de
           USPS y <strong>suelen tardar entre 3 y 7 días hábiles en
@@ -145,30 +143,33 @@ es:
       otp_delivery_method:
         phone_number_html: Enviaremos un código a <strong>%{phone}</strong> para
           verificar que el número de teléfono le pertenece.
+      otp_delivery_method_description: Si ha introducido un teléfono fijo más arriba,
+        seleccione “Llamada telefónica” más abajo.
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
       phone:
-        alert_html: '<strong>Este número de teléfono debe…</strong>'
-        description: Verificamos los registros para asegurarnos de que eres quien eres,
-          y de que eres el propietario de tu cuenta.
-        final_note_html: '<strong>Si configura un teléfono para la autenticación de dos
-          factores</strong>, este puede ser un número diferente.'
+        alert_html: '<strong>Este número de teléfono:</strong>'
+        description: Comprobaremos este número con los registros y le enviaremos un
+          código único. Esto es para ayudar a verificar su identidad.
+        final_note_html: '<strong>Si configura un teléfono para la autenticación
+          multifactor</strong>, este puede ser un número diferente.'
         phone_of_record: Teléfono del registro
         rules:
-          - ser un plan telefónico que esté asociado a su nombre. En este caso,
-            no es necesario que usted sea el titular principal de la cuenta.
-          - no ser un teléfono virtual (como Google Voice o Skype), como tampoco
-            un número de teléfono de tarificación adicional (pago).
-          - un número de EE. UU.
+          - No debe ser un teléfono virtual (como Google Voice o Skype) ni un
+            número de tarifa premium (de pago)
+          - Debe ser un número de Estados Unidos (incluidos los territorios de
+            Estados Unidos)
+          - Debe ser su número principal o el número que utilice con más
+            frecuencia
       return_to_profile: '‹ Volver a tu perfil de %{app_name}'
       review:
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
         utilizar su cuenta en %{sp_name} hasta que la active ingresando un
-        código de confirmación.
+        código único.
       select_verification_without_sp: Para proteger su cuenta de robo de identidad, su
-        perfil no se activará hasta que ingrese un código de confirmación.
+        perfil no se activará hasta que ingrese un código único.
       sessions:
         no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
           propósitos de demostración) - SITIO DE PRUEBA
@@ -187,10 +188,10 @@ es:
       mail:
         resend: '¿Desea otra carta?'
         verify: '¿Desea una carta?'
-      otp_delivery_method: '¿Cómo te gustaría recibir el código?'
+      otp_delivery_method: '¿Cómo debemos enviar un código?'
       review: Revise y envíe
       session:
-        phone: Ingresa un número de teléfono para ayudar a verificar tu identidad
+        phone: Introduzca su número de teléfono
         review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
     troubleshooting:
       headings:

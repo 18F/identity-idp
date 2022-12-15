@@ -109,6 +109,17 @@ es:
         thanks: Gracias por utilizar %{app_name}.
       header: Tómese un minuto para decirnos cómo lo hicimos
       subject: Cuéntenos su experiencia reciente con %{app_name}
+    in_person_deadline_passed:
+      body:
+        canceled: Se venció el plazo para verificar su identidad en persona. Cancelamos
+          automáticamente su solicitud con el fin de proteger su información
+          personal.
+        cta: Empezar de nuevo
+        greeting: Hola,
+        restart: Haga clic en el botón de abajo si desea iniciar una nueva solicitud
+          para verificar su identidad con %{partner_agency}.
+      header: Se venció el plazo para verificar su identidad en persona
+      subject: Expiró su solicitud para verificar su identidad en persona
     in_person_failed:
       body:
         with_cta: Haga clic en el botón o copie el enlace siguiente para volver a
@@ -173,10 +184,10 @@ es:
         contraseña</a>. Para informar de esto, póngase en <a
         href="%{contact_us_url}">contacto con el soporte de %{app_name}</a>.
     letter_reminder:
-      info_html: La carta que está a punto de recibir contendrá un código de
-        confirmación que nos ayudará a verificar su dirección. Puede completar
-        el proceso de verificación de identidad iniciando sesión en %{link} e
-        ingresando el código de confirmación.
+      info_html: La carta que está a punto de recibir contendrá un código único que
+        nos ayudará a verificar su dirección. Puede completar el proceso de
+        verificación de identidad iniciando sesión en %{link} e ingresando el
+        código único.
       subject: Le enviamos una carta a la dirección que tiene archivada
     new_device_sign_in:
       disavowal_link: restablecer su contraseña
@@ -256,9 +267,9 @@ es:
       subject: Actividad inusual — restablezca su contraseña de %{app_name}
     reset_password_instructions:
       footer: Este enlace expira en %{expires} horas.
-      gpo_letter_description: Si restablece su contraseña, el código de confirmación
-        que figura en su carta dejará de funcionar y tendrá que volver a
-        verificar su identidad.
+      gpo_letter_description: Si restablece su contraseña, el código único que figura
+        en su carta dejará de funcionar y tendrá que volver a verificar su
+        identidad.
       gpo_letter_header: Su carta está en camino
       header: Para terminar de restablecer su contraseña, haga clic en el enlace de
         abajo o copie y pegue el enlace completo en su navegador.

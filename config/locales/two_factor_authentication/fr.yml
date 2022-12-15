@@ -12,6 +12,9 @@ fr:
         compte %{app_name} a été annulée.
       text_html: Si vous ne pouvez utiliser aucune des méthodes d’authentification
         ci-dessus, vous pouvez %{link}.
+    attempt_remaining_warning_html:
+      one: Il vous reste <strong>%{count} tentative</strong>.
+      other: Il vous reste <strong>%{count} tentatives</strong>.
     backup_code_fallback:
       question: Vous n’avez pas vos codes de secours disponibles?
     backup_code_header_text: Entrez votre code de sécurité de secours
@@ -21,8 +24,8 @@ fr:
     header_text: Entrez votre code à usage unique
     important_alert_icon: Icône d’alerte importante
     invalid_backup_code: Ce code de sauvegarde est invalide.
-    invalid_otp: Ce code à usage unique n’est pas valide. Vous pouvez essayer de le
-      saisir à nouveau ou demander un nouveau code à usage unique.
+    invalid_otp: Ce code à usage unique est invalide. Veuillez réessayer ou demander
+      un nouveau code.
     invalid_personal_key: Cette clé personnelle est non valide.
     invalid_piv_cac: Ce PIV/CAC n’a pas fonctionné. Assurez-vous que c’est le bon
       PIV/CAC pour ce compte. Si c’est le cas, votre PIV/CAC, votre NIP ou un
@@ -75,19 +78,18 @@ fr:
     mobile_terms_of_service: Conditions de service mobile
     no_auth_option: Aucune option d’authentification n’a été trouvée pour vous connecter
     opt_in:
-      cant_use_phone: 'Vous ne pouvez pas utiliser votre téléphone?'
-      error_retry: 'Désolé, nous avons des difficultés à vous connecter. Veuillez
-        réessayer.'
-      opted_out_html: 'Vous avez choisi de ne plus recevoir de SMS à %{phone_number}.
-        Vous pouvez choisir de vous inscrire et de recevoir à nouveau un code à
-        usage unique à ce numéro de téléphone.'
-      opted_out_last_30d_html: 'Vous avez choisi de ne plus recevoir de SMS au
+      cant_use_phone: Vous ne pouvez pas utiliser votre téléphone?
+      error_retry: Désolé, nous avons des difficultés à vous connecter. Veuillez réessayer.
+      opted_out_html: Vous avez choisi de ne plus recevoir de SMS à %{phone_number}.
+        Vous pouvez vous inscrire et recevoir à nouveau un code de sécurité à ce
+        numéro de téléphone.
+      opted_out_last_30d_html: Vous avez choisi de ne plus recevoir de SMS au
         %{phone_number} au cours des 30 derniers jours. Nous ne pouvons opter
-        pour un numéro de téléphone qu’une fois tous les 30 jours.'
-      title: Nous n’avons pas pu envoyer de code à usage unique à votre numéro de
-        téléphone.
-      wait_30d_opt_in: 'Après 30 jours, vous pouvez vous inscrire et recevoir un code
-        à usage unique pour ce numéro de téléphone.'
+        pour un numéro de téléphone qu’une fois tous les 30 jours.
+      title: Nous n’avons pas pu envoyer un code de sécurité à votre numéro de
+        téléphone
+      wait_30d_opt_in: Après 30 jours, vous pouvez vous inscrire et recevoir un code
+        de sécurité à ce numéro de téléphone.
     otp_delivery_preference:
       instruction: Vous pouvez modifier cette sélection lors de votre prochaine connexion.
       no_supported_options: Nous ne sommes pas en mesure de vérifier les numéros de

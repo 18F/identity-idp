@@ -29,6 +29,12 @@ locals:
         <dt class="display-inline"> <%= t('idv.form.address1') %>: </dt>
         <dd class="display-inline margin-left-0"> <%= pii[:address1] %> </dd>
       </div>
+      <% if pii[:address2].present? %>
+        <div>
+          <dt class="display-inline"> <%= t('idv.form.address2') %>: </dt>
+          <dd class="display-inline margin-left-0"> <%= pii[:address2] %> </dd>
+        </div>
+      <% end %>
       <div>
         <dt class="display-inline"> <%= t('idv.form.city') %>: </dt>
         <dd class="display-inline margin-left-0"> <%= pii[:city] %> </dd>

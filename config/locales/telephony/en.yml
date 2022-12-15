@@ -10,17 +10,17 @@ en:
         %{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don't share this code with anyone.
 
         @%{domain} #%{code}
-      voice: Hello! Your %{app_name} one-time code is, %{code}. Your one-time code is,
-        %{code}. Again, your one-time code is %{code}. This code expires in
-        %{expiration} minutes.
+      voice: Hello! Your 6-%{format_type} %{app_name} one-time code is, %{code}. Your
+        one-time code is, %{code}. Again, your one-time code is %{code}. This
+        code expires in %{expiration} minutes.
     confirmation_otp:
       sms: |-
         %{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don't share this code with anyone.
 
         @%{domain} #%{code}
-      voice: Hello! Your %{app_name} one-time code is, %{code}. Your one-time code is,
-        %{code}. Again, your one-time code is %{code}. This code expires in
-        %{expiration} minutes.
+      voice: Hello! Your 6-%{format_type} %{app_name} one-time code is, %{code}. Your
+        one-time code is, %{code}. Again, your one-time code is %{code}. This
+        code expires in %{expiration} minutes.
     doc_auth_link: "%{link} You've requested to verify your identity on a mobile
       phone.  Please take a photo of your state issued ID."
     error:
@@ -45,6 +45,9 @@ en:
         unknown_failure: We are experiencing technical difficulties.  Please try again later.
         voice_unsupported: Invalid phone number. Check that you’ve entered the correct
           country code or area code.
+    format_type:
+      character: character
+      digit: digit
     personal_key_regeneration_notice: A new personal key has been issued for your
       %{app_name} account. If this wasn't you, reset your password.
     personal_key_sign_in_notice: Your personal key was just used to sign into your
