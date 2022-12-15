@@ -1,7 +1,5 @@
 require 'rails_helper'
 
-PRY_TIME = false
-
 RSpec.feature 'Users pending threatmetrix review', :js do
   include IdvStepHelper
 
@@ -33,7 +31,6 @@ RSpec.feature 'Users pending threatmetrix review', :js do
     set_new_browser_session
     OtpRequestsTracker.destroy_all
     start_idv_from_sp(:oidc)
-    PRY_TIME = true
     sign_in_live_with_2fa(user)
 
     expect(page).to have_content(t('idv.failure.setup.heading'))

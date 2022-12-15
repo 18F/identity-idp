@@ -1,12 +1,10 @@
 module IdvSession
   extend ActiveSupport::Concern
   include EffectiveUser
-  include ThreatmetrixReviewConcern
 
   included do
     before_action :redirect_unless_effective_user
     before_action :redirect_if_sp_context_needed
-    before_action :handle_pending_threatmetrix_review
   end
 
   def confirm_idv_session_started

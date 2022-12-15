@@ -1,5 +1,7 @@
 require 'rails_helper'
 
+PREY_TIME = false
+
 feature 'vendor_outage_spec' do
   include PersonalKeyHelper
   include IdvStepHelper
