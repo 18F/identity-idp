@@ -9,7 +9,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     "State non-driver's identification card",
   ]
 
-  queue_as :default
+  queue_as :long_running
   include GoodJob::ActiveJobExtensions::Concurrency
 
   good_job_control_concurrency_with(
