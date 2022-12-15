@@ -35,8 +35,9 @@ en:
         po_search:
           address_search_hint: 'Example: 1960 W Chelsea Ave Allentown PA 18104'
           address_search_label: Enter an address to find a Post Office near you
-          po_search_about: If you are having trouble adding your ID, you may be able to
-            verify your identity in person at a local United States Post Office.
+          po_search_about: If you are located near Washington D.C. or Baltimore, MD, you may be able 
+            to verify your ID in person at limited Post Office locations. More locations across all 
+            50 states and some US territories will be coming soon.
           search_button: Search
         post_office: Post Office ™
         retail_hours_heading: Retail Hours
