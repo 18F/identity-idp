@@ -30,7 +30,7 @@ describe('AddressSearch', () => {
 
     await userEvent.type(
       await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
-      '100 main',
+      '300 main',
     );
     await userEvent.click(
       await findByText('in_person_proofing.body.location.po_search.search_button'),
@@ -49,7 +49,7 @@ describe('AddressSearch', () => {
 
     await userEvent.type(
       await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
-      '100 main',
+      '200 main',
     );
     await userEvent.click(
       await findByText('in_person_proofing.body.location.po_search.search_button'),
