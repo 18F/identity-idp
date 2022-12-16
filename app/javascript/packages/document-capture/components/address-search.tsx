@@ -1,6 +1,6 @@
 import { TextInput } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
-import { useState, useCallback, ChangeEvent, useRef, Ref, useEffect } from 'react';
+import { useState, useCallback, ChangeEvent, useRef, useEffect } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import ValidatedField from '@18f/identity-validated-field/validated-field';
 import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-button/spinner-button';

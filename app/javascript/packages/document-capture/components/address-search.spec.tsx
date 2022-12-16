@@ -2,6 +2,7 @@ import { render } from '@testing-library/react';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import type { SetupServerApi } from 'msw/node';
+import { fetch } from 'whatwg-fetch';
 import { useSandbox } from '@18f/identity-test-helpers';
 import userEvent from '@testing-library/user-event';
 import AddressSearch, { ADDRESS_SEARCH_URL } from './address-search';
@@ -25,6 +26,7 @@ describe('AddressSearch', () => {
 
   let server: SetupServerApi;
   before(() => {
+    global.window.fetch = fetch;
     server = setupServer(
       rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
     );
@@ -33,6 +35,7 @@ describe('AddressSearch', () => {
 
   after(() => {
     server.close();
+    global.window.fetch = () => Promise.reject(new Error('Fetch must be stubbed'));
   });
 
   it('fires the callback with correct input', async () => {
