@@ -16,20 +16,23 @@ interface Location {
 
 interface AddressSearchProps {
   onAddressFound?: (location: Location) => void;
-  registerField: (field: string) => Ref<HTMLInputElement>;
+  registerField?: (field: string) => Ref<HTMLInputElement> | undefined;
 }
 
 export const ADDRESS_SEARCH_URL = '/api/addresses';
 
-function requestAddressCandidates(unvalidatedAddressInput) {
-  return request<Location>(ADDRESS_SEARCH_URL, {
+function requestAddressCandidates(unvalidatedAddressInput: string): Promise<Location[]> {
+  return request<Location[]>(ADDRESS_SEARCH_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     json: { address: unvalidatedAddressInput },
   });
 }
 
-function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSearchProps) {
+function AddressSearch({
+  onAddressFound = () => {},
+  registerField = () => undefined,
+}: AddressSearchProps) {
   const validatedFieldRef = useRef<HTMLFormElement | null>(null);
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
   const [addressQuery, setAddressQuery] = useState('');
