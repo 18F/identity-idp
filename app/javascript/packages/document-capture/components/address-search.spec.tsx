@@ -38,7 +38,7 @@ describe('AddressSearch', () => {
   it('fires the callback with correct input', async () => {
     const handleAddressFound = sandbox.stub();
     const { findByText, findByLabelText } = render(
-      <AddressSearch registerField={() => undefined} onAddressFound={handleAddressFound} />,
+      <AddressSearch onAddressFound={handleAddressFound} />,
     );
 
     await userEvent.type(
@@ -53,7 +53,7 @@ describe('AddressSearch', () => {
   });
 
   it('validates input and shows inline error', async () => {
-    const { findByText } = render(<AddressSearch registerField={() => undefined} />);
+    const { findByText } = render(<AddressSearch />);
 
     await userEvent.click(
       await findByText('in_person_proofing.body.location.po_search.search_button'),
