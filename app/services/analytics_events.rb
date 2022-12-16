@@ -1463,6 +1463,7 @@ module AnalyticsEvents
 
   # @param [Integer] rendered_event_count how many events were rendered in the API response
   # @param [Boolean] authenticated whether the request was successfully authenticated
+  # @param [Float] elapsed_time the amount of time the function took to run
   # @param [Boolean] success
   # An IRS Attempt API client has requested events
   def irs_attempts_api_events(

@@ -208,17 +208,6 @@ RSpec.describe Api::IrsAttemptsApiController do
         success: true,
         timestamp: time.iso8601,
       )
-
-      #      expect(@analytics).to receive(:track_event).with(
-      #        'IRS Attempt API: Events submitted',
-      #        {
-      #          rendered_event_count: existing_events.count,
-      #          authenticated: true,
-      #          elapsed_time: 0.1234,
-      #          success: true,
-      #          timestamp: time.iso8601,
-      #        }
-      #      )
     end
   end
 end
