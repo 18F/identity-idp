@@ -17,11 +17,7 @@ feature 'mfa cta banner' do
     end
   end
 
-  context 'When the multiple factor authentication feature is enabled' do
-    before do
-      allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
-    end
-
+  describe 'multiple MFA handling' do
     it 'displays a banner after configuring a single MFA method' do
       visit_idp_from_sp_with_ial1(:oidc)
       user = sign_up_and_set_password

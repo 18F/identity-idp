@@ -285,7 +285,6 @@ describe Users::TotpSetupController, devise: true do
           allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
           subject.user_session[:mfa_selections] = mfa_selections
-          allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
 
           patch :confirm, params: { name: name, code: generate_totp_code(secret) }
         end
