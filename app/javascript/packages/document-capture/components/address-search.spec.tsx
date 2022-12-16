@@ -1,8 +1,10 @@
 import { render } from '@testing-library/react';
+import { setupServer } from 'msw/node';
+import { rest } from 'msw';
+import type { SetupServerApi } from 'msw/node';
 import { useSandbox } from '@18f/identity-test-helpers';
-import * as requester from '@18f/identity-request';
 import userEvent from '@testing-library/user-event';
-import AddressSearch from './address-search';
+import AddressSearch, { ADDRESS_SEARCH_URL } from './address-search';
 
 const DEFAULT_RESPONSE = [
   {
@@ -21,22 +23,16 @@ const DEFAULT_RESPONSE = [
 describe('AddressSearch', () => {
   const sandbox = useSandbox();
 
-  it('searches for an address', async () => {
-    const { findByText, findByLabelText } = render(
-      <AddressSearch registerField={() => undefined} />,
+  let server: SetupServerApi;
+  before(() => {
+    server = setupServer(
+      rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
     );
+    server.listen();
+  });
 
-    sandbox.stub(requester, 'request').callsFake(() => Promise.resolve(DEFAULT_RESPONSE));
-
-    await userEvent.type(
-      await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
-      '300 main',
-    );
-    await userEvent.click(
-      await findByText('in_person_proofing.body.location.po_search.search_button'),
-    );
-
-    expect(requester.request).to.have.been.called();
+  after(() => {
+    server.close();
   });
 
   it('fires the callback with correct input', async () => {
@@ -44,8 +40,6 @@ describe('AddressSearch', () => {
     const { findByText, findByLabelText } = render(
       <AddressSearch registerField={() => undefined} onAddressFound={handleAddressFound} />,
     );
-
-    sandbox.stub(requester, 'request').callsFake(() => Promise.resolve(DEFAULT_RESPONSE));
 
     await userEvent.type(
       await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
@@ -55,13 +49,11 @@ describe('AddressSearch', () => {
       await findByText('in_person_proofing.body.location.po_search.search_button'),
     );
 
-    expect(handleAddressFound).to.have.been.calledWith(DEFAULT_RESPONSE[0]);
+    await expect(handleAddressFound).to.eventually.be.calledWith(DEFAULT_RESPONSE[0]);
   });
 
   it('validates input and shows inline error', async () => {
     const { findByText } = render(<AddressSearch registerField={() => undefined} />);
-
-    sandbox.stub(requester, 'request').callsFake(() => Promise.resolve(DEFAULT_RESPONSE));
 
     await userEvent.click(
       await findByText('in_person_proofing.body.location.po_search.search_button'),
