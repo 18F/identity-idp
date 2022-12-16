@@ -79,6 +79,7 @@ en:
       completion_new_attributes: '%{sp} is requesting new information'
       completion_new_sp: You are now signing in for the first time
       confirmation: Continue to sign in
+    sms_expired: Your one-time code has expired
     totp_setup:
       new: Add authentication app
     two_factor_setup: Two-factor authentication setup
