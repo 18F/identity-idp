@@ -1468,6 +1468,7 @@ module AnalyticsEvents
   def irs_attempts_api_events(
     rendered_event_count:,
     authenticated:,
+    elapsed_time:,
     success:,
     **extra
   )
@@ -1475,6 +1476,7 @@ module AnalyticsEvents
       'IRS Attempt API: Events submitted',
       rendered_event_count: rendered_event_count,
       authenticated: authenticated,
+      elapsed_time: elapsed_time,
       success: success,
       **extra,
     )

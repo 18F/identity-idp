@@ -18,6 +18,7 @@ module Api
     respond_to :json
 
     def create
+      start_time = Time.now.to_i
       if timestamp
         if IdentityConfig.store.irs_attempt_api_aws_s3_enabled
           if IrsAttemptApiLogFile.find_by(requested_time: timestamp_key(key: timestamp))
@@ -53,7 +54,8 @@ module Api
         render json: { status: :unprocessable_entity, description: 'Invalid timestamp parameter' },
                status: :unprocessable_entity
       end
-      analytics.irs_attempts_api_events(**analytics_properties(authenticated: true))
+      elapsed_time = Time.now.to_i - start_time
+      analytics.irs_attempts_api_events(**analytics_properties(authenticated: true, elapsed_time: elapsed_time))
     end
 
     private
@@ -99,10 +101,11 @@ module Api
       IdentityConfig.store.irs_attempt_api_auth_tokens
     end
 
-    def analytics_properties(authenticated:)
+    def analytics_properties(authenticated:, elapsed_time:)
       {
         rendered_event_count: security_event_tokens.count,
         timestamp: timestamp&.iso8601,
+        elapsed_time: elapsed_time,
         authenticated: authenticated,
         success: authenticated && timestamp.present?,
       }
