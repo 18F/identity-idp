@@ -26,8 +26,6 @@ class ValidatedFieldComponent < BaseComponent
     idrefs
   end
 
-  private
-
   def has_errors?
     form.object.respond_to?(:errors) && form.object.errors.key?(name)
   end
@@ -43,6 +41,8 @@ class ValidatedFieldComponent < BaseComponent
   def hint_id
     "validated-field-hint-#{unique_id}"
   end
+
+  private
 
   def value_missing_error_message
     case input_type
