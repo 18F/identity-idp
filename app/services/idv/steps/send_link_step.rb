@@ -69,12 +69,8 @@ module Idv
         )
       end
 
-      def service_provider
-        current_user&.identities&.order('created_at DESC')&.first
-      end
-
       def sp_name
-        service_provider ? service_provider&.friendly_name : APP_NAME
+        current_sp&.friendly_name.presence || APP_NAME
       end
 
       def form_submit
