@@ -41,6 +41,8 @@ module Idv
         if result.success?
           if result.extra[:pending_in_person_enrollment]
             redirect_to idv_in_person_ready_to_verify_url
+          elsif result.extra[:threatmetrix_check_failed]
+            redirect_to idv_come_back_later_url
           else
             event, disavowal_token = create_user_event_with_disavowal(:account_verified)
             UserAlerts::AlertUserAboutAccountVerified.call(
@@ -50,6 +52,7 @@ module Idv
               disavowal_token: disavowal_token,
             )
             flash[:success] = t('account.index.verification.success')
+
             redirect_to sign_up_completed_url
           end
         else
