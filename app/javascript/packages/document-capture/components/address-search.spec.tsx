@@ -21,6 +21,10 @@ const DEFAULT_RESPONSE = [
 describe('AddressSearch', () => {
   const sandbox = useSandbox();
 
+  afterEach(() => {
+    sandbox.reset();
+  });
+
   it('searches for an address', async () => {
     const { findByText, findByLabelText } = render(
       <AddressSearch registerField={() => undefined} />,
