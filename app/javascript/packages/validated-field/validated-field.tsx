@@ -116,7 +116,7 @@ function ValidatedField(
     .join(' ');
 
   return (
-    <lg-validated-field ref={fieldRef}>
+    <lg-validated-field ref={fieldRef} error-id={errorId}>
       <script type="application/json" className="validated-field__error-strings">
         {JSON.stringify({ ...getErrorMessages(inputProps.type), ...messages })}
       </script>
@@ -124,7 +124,6 @@ function ValidatedField(
         {cloneElement(input, {
           ...inputProps,
           'aria-invalid': false,
-          'aria-describedby': errorId,
           className: inputClasses,
         })}
       </div>

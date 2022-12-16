@@ -25,13 +25,46 @@ RSpec.describe ValidatedFieldComponent, type: :component do
     render_inline(described_class.new(**options))
   end
 
-  it 'renders aria-describedby to establish connection between input and error message' do
+  it 'does not render aria-describedby by default' do
     field = rendered.at_css('input')
 
-    expect(field.attr('aria-describedby').split(' ')).to include(
-      start_with('validated-field-hint-'),
-      start_with('validated-field-error-'),
-    )
+    expect(field.attr('aria-describedby')).to be_blank
+  end
+
+  context 'when form has errors for field' do
+    let(:error_message) { 'Field is required' }
+
+    before do
+      form_object.errors.add(name, error_message, type: :blank)
+    end
+
+    it 'renders descriptive relationship to error message' do
+      field = rendered.at_css('input')
+
+      expect(field).to have_description error_message
+    end
+
+    context 'with aria tag option' do
+      let(:tag_options) { { input_html: { aria: { describedby: 'foo' } } } }
+
+      it 'merges aria-describedby with the one applied by the field' do
+        field = rendered.at_css('input')
+
+        expect(field.attr('aria-describedby')).to include('validated-field-error-')
+        expect(field.attr('aria-describedby')).to include('foo')
+      end
+    end
+  end
+
+  context 'when hint is assigned to field' do
+    let(:hint) { 'Example: 123456' }
+    let(:tag_options) { { hint: 'Example: 123456' } }
+
+    it 'renders descriptive relationship to hint' do
+      field = rendered.at_css('input')
+
+      expect(field).to have_description hint
+    end
   end
 
   describe 'error message strings' do
@@ -65,19 +98,6 @@ RSpec.describe ValidatedFieldComponent, type: :component do
 
       it 'renders with error message texts' do
         expect(strings).to include(valueMissing: 'missing', tooLong: 'too long')
-      end
-    end
-  end
-
-  context 'with tag options' do
-    context 'with aria tag option' do
-      let(:tag_options) { { input_html: { aria: { describedby: 'foo' } } } }
-
-      it 'merges aria-describedby with the one applied by the field' do
-        field = rendered.at_css('input')
-
-        expect(field.attr('aria-describedby')).to include('validated-field-error-')
-        expect(field.attr('aria-describedby')).to include('foo')
       end
     end
   end
