@@ -38,14 +38,14 @@ RSpec.describe Telephony::AlertSender do
       'https://idp.int.identitysandbox.com/verify/capture-doc/mobile-front-image?token=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
     end
     let(:app_name) { APP_NAME }
-    let(:service_provider) { 'Batman.gov' }
+    let(:sp_or_app_name) { 'Batman.gov' }
 
     it 'sends the correct message' do
       subject.send_doc_auth_link(
         to: recipient,
         link: link,
         country_code: 'US',
-        service_provider: service_provider,
+        sp_or_app_name: sp_or_app_name,
       )
 
       last_message = Telephony::Test::Message.messages.last
@@ -55,7 +55,7 @@ RSpec.describe Telephony::AlertSender do
           'telephony.doc_auth_link',
           app_name: app_name,
           link: link,
-          service_provider: service_provider,
+          sp_or_app_name: sp_or_app_name,
         ),
       )
     end
@@ -75,7 +75,7 @@ RSpec.describe Telephony::AlertSender do
             to: recipient,
             link: link,
             country_code: 'US',
-            service_provider: service_provider,
+            sp_or_app_name: sp_or_app_name,
           )
 
           last_message = Telephony::Test::Message.messages.last
@@ -94,7 +94,7 @@ RSpec.describe Telephony::AlertSender do
         to: recipient,
         link: long_link,
         country_code: 'US',
-        service_provider: service_provider,
+        sp_or_app_name: sp_or_app_name,
       )
     end
   end

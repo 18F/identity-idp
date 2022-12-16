@@ -22,7 +22,7 @@ fr:
         usage unique est %{code}. Une fois de plus, votre code à usage unique
         est %{code}. Ce code expire dans %{expiration} minutes.
     doc_auth_link: |-
-      %{app_name}: %{link} Vous vérifiez votre identité pour accéder à %{service_provider}. Prenez une photo de votre pièce d'identité pour continuer.
+      %{app_name}: %{link} Vous vérifiez votre identité pour accéder à %{sp_or_app_name}. Prenez une photo de votre pièce d'identité pour continuer.
     error:
       friendly_message:
         daily_voice_limit_reached: L’envoi de votre code à usage unique a échoué car

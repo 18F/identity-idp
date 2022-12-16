@@ -16,11 +16,11 @@ module Telephony
       response
     end
 
-    def send_doc_auth_link(to:, link:, country_code:, service_provider:)
+    def send_doc_auth_link(to:, link:, country_code:, sp_or_app_name:)
       message = I18n.t(
         'telephony.doc_auth_link',
         app_name: APP_NAME,
-        service_provider: service_provider,
+        sp_or_app_name: sp_or_app_name,
         link: link,
       )
       response = adapter.send(message: message, to: to, country_code: country_code)
