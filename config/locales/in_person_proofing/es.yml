@@ -26,7 +26,7 @@ es:
       cta:
         button: Verifique su identificación en persona
         new_feature: Nuevo artículo
-        prompt_detail: Si usted está ubicado cerca de Washington D.C. o Baltimore, MD,
+        prompt_detail: Si usted está ubicado cerca de Washington, D.C. o Baltimore, MD,
           puede verificar su identificación en persona en las oficinas de
           correos seleccionadas.
       location:
@@ -40,7 +40,7 @@ es:
           address_search_hint: 'Ejemplo: 1960 W Chelsea Ave Allentown PA 18104'
           address_search_label: Introduzca una dirección para encontrar una Oficina de
             Correos cercana a usted
-          po_search_about: Si vives cerca de Washington D.C. o Baltimore, MD, puedes
+          po_search_about: Si vives cerca de Washington, D.C. o Baltimore, MD, puedes
             verificar tu ID directamente en algunas oficinas de correos. Pronto
             habrá más oficinas en los 50 estados y en algunos otros territorios
             de los Estados Unidos.

@@ -27,7 +27,7 @@ fr:
       cta:
         button: Vérifiez votre identité en personne
         new_feature: Nouvelle fonctionnalité
-        prompt_detail: Si vous êtes situé près de Washington D.C. ou de Baltimore
+        prompt_detail: Si vous êtes situé près de Washington, D.C. ou de Baltimore
           (Maryland), vous pourrez peut-être vérifier votre identité en personne
           dans certains bureaux de poste.
       location:
@@ -40,7 +40,7 @@ fr:
         po_search:
           address_search_hint: 'Exemple : 1960 W Chelsea Ave Allentown PA 18104'
           address_search_label: Entrez une adresse pour trouver un bureau de poste près de chez vous.
-          po_search_about: Si vous êtes situé près de Washington D.C. ou de Baltimore, MD,
+          po_search_about: Si vous êtes situé près de Washington, D.C. ou de Baltimore, MD,
             vous pourrez peut-être vérifier votre pièce d’identité en personne
             dans certains bureaux de poste. D’autres bureaux dans les 50 États
             et certains territoires américains seront bientôt disponibles.
