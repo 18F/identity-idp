@@ -86,6 +86,7 @@ en:
       landline_warning_html: The phone number entered appears to be a <b>landline
         phone</b>. Request a one-time code by %{phone_setup_path} instead.
       no_supported_options: We are unable to verify phone numbers from %{location}
+      phone_call: phone call
       sms: Text message (SMS)
       sms_unsupported: We are unable to send text messages to phone numbers in %{location}.
       title: How should we send you a code?
