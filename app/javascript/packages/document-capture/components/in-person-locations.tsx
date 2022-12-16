@@ -25,7 +25,9 @@ function InPersonLocations({ locations, onSelect, address }: InPersonLocationsPr
   if (locations?.length === 0) {
     return (
       <>
-        <h3>{t('in_person_proofing.body.location.po_search.none_found', { address })}</h3>
+        <h3 role="status">
+          {t('in_person_proofing.body.location.po_search.none_found', { address })}
+        </h3>
         <p>{t('in_person_proofing.body.location.po_search.none_found_tip')}</p>
       </>
     );
@@ -33,7 +35,7 @@ function InPersonLocations({ locations, onSelect, address }: InPersonLocationsPr
 
   return (
     <>
-      <h3>
+      <h3 role="status">
         {t('in_person_proofing.body.location.po_search.results_description', {
           address,
           count: locations?.length,
