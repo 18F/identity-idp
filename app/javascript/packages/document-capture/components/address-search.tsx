@@ -4,6 +4,7 @@ import { useState, useCallback, ChangeEvent, useRef, Ref, useEffect } from 'reac
 import { useI18n } from '@18f/identity-react-i18n';
 import ValidatedField from '@18f/identity-validated-field/validated-field';
 import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-button/spinner-button';
+import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import useSWR from 'swr';
 
 interface Location {
@@ -16,7 +17,7 @@ interface Location {
 
 interface AddressSearchProps {
   onAddressFound?: (location: Location) => void;
-  registerField?: (field: string) => Ref<HTMLInputElement> | undefined;
+  registerField?: RegisterFieldCallback;
 }
 
 export const ADDRESS_SEARCH_URL = '/api/addresses';
