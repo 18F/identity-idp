@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import { getByRole, getByText } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
+import { computeAccessibleDescription } from 'dom-accessibility-api';
 import './validated-field-element';
 
 describe('ValidatedFieldElement', () => {
@@ -8,10 +9,14 @@ describe('ValidatedFieldElement', () => {
 
   function createAndConnectElement({ hasInitialError = false, errorInsideField = true } = {}) {
     const element = document.createElement('lg-validated-field');
-    const errorMessageId = ++idCounter;
-    const errorHtml = hasInitialError
-      ? `<div class="usa-error-message" id="validated-field-error-${errorMessageId}">Invalid value</div>`
-      : '';
+    const errorMessageId = `validated-field-error-${++idCounter}`;
+    element.setAttribute('error-id', errorMessageId);
+    const errorHtml =
+      hasInitialError || !errorInsideField
+        ? `<div class="usa-error-message display-none" id="${errorMessageId}">${
+            hasInitialError ? 'Invalid value' : ''
+          }</div>`
+        : '';
     element.innerHTML = `
       <script type="application/json" class="validated-field__error-strings">
         {
@@ -19,10 +24,11 @@ describe('ValidatedFieldElement', () => {
         }
       </script>
       <div class="validated-field__input-wrapper">
-        <label id="validated-field-label" class="usa-label">Required Field</label>
+        <label for="zipcode">ZIP code</label>
+        <span id="validated-field-hint">Required Field</span>
         <input
           aria-invalid="false"
-          aria-describedby="validated-field-label validated-field-error-${errorMessageId}"
+          aria-describedby="validated-field-hint${hasInitialError ? ` ${errorMessageId}` : ''}"
           required="required"
           aria-required="true"
           class="validated-field__input${hasInitialError ? ' usa-input--error' : ''}"
@@ -43,6 +49,23 @@ describe('ValidatedFieldElement', () => {
     return element;
   }
 
+  it('does not have an error message by default', () => {
+    const element = createAndConnectElement();
+
+    expect(element.querySelector('.usa-error-message')).to.not.exist();
+  });
+
+  it('does not have an error message while the value is valid', async () => {
+    const element = createAndConnectElement();
+
+    const input = getByRole(element, 'textbox');
+    await userEvent.type(input, '5');
+
+    input.closest('form')!.checkValidity();
+
+    expect(element.querySelector('.usa-error-message')).to.not.exist();
+  });
+
   it('shows error state and focuses on form validation', () => {
     const element = createAndConnectElement();
 
@@ -54,9 +77,10 @@ describe('ValidatedFieldElement', () => {
     expect(input.classList.contains('usa-input--error')).to.be.true();
     expect(input.getAttribute('aria-invalid')).to.equal('true');
     expect(document.activeElement).to.equal(input);
-    const message = getByText(element, 'This field is required');
-    expect(message).to.be.ok();
-    expect(message.id).to.equal('validated-field-error-1');
+    expect(form.querySelector('.usa-error-message:not(.display-none)')).to.exist();
+    expect(computeAccessibleDescription(document.activeElement!)).to.equal(
+      'Required Field This field is required',
+    );
   });
 
   it('shows custom validity as message content', () => {
@@ -84,7 +108,8 @@ describe('ValidatedFieldElement', () => {
 
     expect(input.classList.contains('usa-input--error')).to.be.false();
     expect(input.getAttribute('aria-invalid')).to.equal('false');
-    expect(getByText(element, 'This field is required').style.display).to.equal('none');
+    expect(form.querySelector('.usa-error-message:not(.display-none)')).not.to.exist();
+    expect(computeAccessibleDescription(document.activeElement!)).to.equal('Required Field');
   });
 
   it('focuses the first element with an error', () => {
@@ -114,34 +139,57 @@ describe('ValidatedFieldElement', () => {
       expect(input.classList.contains('usa-input--error')).to.be.false();
       expect(input.getAttribute('aria-invalid')).to.equal('false');
       expect(() => getByText(element, 'Invalid value')).to.throw();
+      expect(form.querySelector('.usa-error-message:not(.display-none)')).not.to.exist();
     });
   });
 
   context('with error message element pre-rendered in the DOM', () => {
     it('reuses the error message element from inside the tag', () => {
       const element = createAndConnectElement({ hasInitialError: true, errorInsideField: true });
+      const input = getByRole(element, 'textbox');
 
-      expect(() => getByText(element, 'Invalid value')).not.to.throw();
-      expect(() => getByText(element, 'This field is required')).to.throw();
+      expect(computeAccessibleDescription(input)).to.equal('Required Field Invalid value');
 
       const form = element.parentNode as HTMLFormElement;
       form.checkValidity();
 
+      expect(computeAccessibleDescription(input)).to.equal('Required Field This field is required');
       expect(() => getByText(element, 'Invalid value')).to.throw();
-      expect(() => getByText(element, 'This field is required')).not.to.throw();
+      expect(form.querySelector('.usa-error-message:not(.display-none)')).to.exist();
     });
 
     it('reuses the error message element from outside the tag', () => {
       const element = createAndConnectElement({ hasInitialError: true, errorInsideField: false });
+      const input = getByRole(element, 'textbox');
       const form = element.parentNode as HTMLFormElement;
 
-      expect(() => getByText(form, 'Invalid value')).not.to.throw();
-      expect(() => getByText(form, 'This field is required')).to.throw();
+      expect(computeAccessibleDescription(input)).to.equal('Required Field Invalid value');
 
       form.checkValidity();
 
+      expect(computeAccessibleDescription(input)).to.equal('Required Field This field is required');
       expect(() => getByText(form, 'Invalid value')).to.throw();
-      expect(() => getByText(form, 'This field is required')).not.to.throw();
+      expect(form.querySelector('.usa-error-message:not(.display-none)')).to.exist();
+    });
+
+    it('links input to external error message element when input is invalid', () => {
+      const element = createAndConnectElement({ hasInitialError: false, errorInsideField: false });
+      const form = element.parentNode as HTMLFormElement;
+
+      form.checkValidity();
+
+      const input = getByRole(element, 'textbox');
+      expect(computeAccessibleDescription(input)).to.equal('Required Field This field is required');
+      expect(form.querySelector('.usa-error-message:not(.display-none)')).to.exist();
+    });
+
+    it('clears error message when field becomes valid', async () => {
+      const element = createAndConnectElement({ hasInitialError: true });
+      const input = getByRole(element, 'textbox');
+      await userEvent.type(input, '5');
+
+      expect(computeAccessibleDescription(input)).to.equal('Required Field');
+      expect(element.querySelector('.usa-error-message:not(.display-none)')).not.to.exist();
     });
   });
 

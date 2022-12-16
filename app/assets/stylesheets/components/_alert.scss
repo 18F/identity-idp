@@ -7,3 +7,19 @@
     background-image: url('alert/info-white.svg');
   }
 }
+
+.usa-alert--info-time {
+  &::before {
+    @include add-color-icon(
+      (
+        name: 'timer',
+        color: 'info',
+        'svg-width': 24,
+        'svg-height': 24,
+        height: units(2),
+      )
+    );
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}

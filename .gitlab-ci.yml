@@ -246,3 +246,8 @@ trigger_devops:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
   trigger: lg/identity-devops
+
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+

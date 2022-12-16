@@ -5,11 +5,18 @@ feature 'adding email address' do
 
   it 'allows the user to add an email and confirm with an active session' do
     user = create(:user, :signed_up)
+    original_email = user.email_addresses.first.email
     sign_in_user_and_add_email(user)
     unconfirmed_email_text = "#{email}  #{t('email_addresses.unconfirmed')}"
 
     visit account_path
     expect(page).to have_content(unconfirmed_email_text)
+
+    expect_delivered_email_count(1)
+    expect_delivered_email(
+      to: [email],
+      subject: t('user_mailer.add_email.subject'),
+    )
 
     click_on_link_in_confirmation_email
 
@@ -19,28 +26,25 @@ feature 'adding email address' do
 
     expect_delivered_email_count(3)
     expect_delivered_email(
-      0, {
-        to: [user.confirmed_email_addresses[1].email],
-        subject: t('user_mailer.add_email.subject'),
-      }
+      to: [original_email],
+      subject: t('user_mailer.email_added.subject'),
     )
     expect_delivered_email(
-      1, {
-        to: [user.confirmed_email_addresses[0].email],
-        subject: t('user_mailer.email_added.subject'),
-      }
-    )
-    expect_delivered_email(
-      2, {
-        to: [user.confirmed_email_addresses[1].email],
-        subject: t('user_mailer.email_added.subject'),
-      }
+      to: [email],
+      subject: t('user_mailer.email_added.subject'),
     )
   end
 
   it 'allows the user to add an email and confirm without an active session' do
     user = create(:user, :signed_up)
+    original_email = user.email_addresses.first.email
     sign_in_user_and_add_email(user)
+
+    expect_delivered_email_count(1)
+    expect_delivered_email(
+      to: [email],
+      subject: t('user_mailer.add_email.subject'),
+    )
 
     Capybara.reset_session!
 
@@ -50,22 +54,12 @@ feature 'adding email address' do
 
     expect_delivered_email_count(3)
     expect_delivered_email(
-      0, {
-        to: [user.confirmed_email_addresses[1].email],
-        subject: t('user_mailer.add_email.subject'),
-      }
+      to: [original_email],
+      subject: t('user_mailer.email_added.subject'),
     )
     expect_delivered_email(
-      1, {
-        to: [user.confirmed_email_addresses[0].email],
-        subject: t('user_mailer.email_added.subject'),
-      }
-    )
-    expect_delivered_email(
-      2, {
-        to: [user.confirmed_email_addresses[1].email],
-        subject: t('user_mailer.email_added.subject'),
-      }
+      to: [email],
+      subject: t('user_mailer.email_added.subject'),
     )
   end
 
@@ -85,10 +79,8 @@ feature 'adding email address' do
 
     expect_delivered_email_count(3)
     expect_delivered_email(
-      0, {
-        to: [user.confirmed_email_addresses[1].email],
-        subject: t('user_mailer.add_email.subject'),
-      }
+      to: [email],
+      subject: t('user_mailer.add_email.subject'),
     )
   end
 
@@ -105,10 +97,8 @@ feature 'adding email address' do
 
     expect_delivered_email_count(3)
     expect_delivered_email(
-      0, {
-        to: [user.confirmed_email_addresses[1].email],
-        subject: t('user_mailer.add_email.subject'),
-      }
+      to: [email],
+      subject: t('user_mailer.add_email.subject'),
     )
   end
 
@@ -127,10 +117,8 @@ feature 'adding email address' do
 
     expect_delivered_email_count(1)
     expect_delivered_email(
-      0, {
-        to: [user.reload.email_addresses[1].email],
-        subject: t('user_mailer.add_email.subject'),
-      }
+      to: [email],
+      subject: t('user_mailer.add_email.subject'),
     )
   end
 
@@ -146,16 +134,12 @@ feature 'adding email address' do
 
     expect_delivered_email_count(1)
     expect_delivered_email(
-      0, {
-        to: [initial_user.email_addresses.first.email],
-        subject: t('mailer.email_reuse_notice.subject'),
-      }
+      to: [initial_user.email_addresses.first.email],
+      subject: t('mailer.email_reuse_notice.subject'),
     )
     expect_delivered_email(
-      0, {
-        to: [email],
-        subject: t('mailer.email_reuse_notice.subject'),
-      }
+      to: [email],
+      subject: t('mailer.email_reuse_notice.subject'),
     )
   end
 
@@ -239,18 +223,16 @@ feature 'adding email address' do
 
     click_button t('links.resend')
 
+    user.reload
+
     expect_delivered_email_count(2)
     expect_delivered_email(
-      0, {
-        to: [user.reload.email_addresses[1].email],
-        subject: t('user_mailer.add_email.subject'),
-      }
+      to: [email],
+      subject: t('user_mailer.add_email.subject'),
     )
     expect_delivered_email(
-      1, {
-        to: [user.email_addresses[1].email],
-        subject: t('user_mailer.add_email.subject'),
-      }
+      to: [email],
+      subject: t('user_mailer.add_email.subject'),
     )
   end
 
@@ -268,10 +250,8 @@ feature 'adding email address' do
 
     expect_delivered_email_count(1)
     expect_delivered_email(
-      0, {
-        to: [user.reload.email_addresses[1].email],
-        subject: t('user_mailer.add_email.subject'),
-      }
+      to: [email],
+      subject: t('user_mailer.add_email.subject'),
     )
   end
 

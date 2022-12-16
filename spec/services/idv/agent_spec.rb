@@ -25,7 +25,6 @@ describe Idv::Agent do
         issuer: issuer,
         friendly_name: friendly_name,
         app_id: app_id,
-        device_profiling_enabled: true,
       )
     end
 
@@ -44,7 +43,6 @@ describe Idv::Agent do
             user_id: user.id,
             threatmetrix_session_id: nil,
             request_ip: request_ip,
-            issuer: issuer,
           )
 
           result = document_capture_session.load_proofing_result.result
@@ -61,7 +59,6 @@ describe Idv::Agent do
             user_id: user.id,
             threatmetrix_session_id: nil,
             request_ip: request_ip,
-            issuer: issuer,
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages][:state_id]).to include(
@@ -87,7 +84,6 @@ describe Idv::Agent do
             user_id: user.id,
             threatmetrix_session_id: nil,
             request_ip: request_ip,
-            issuer: issuer,
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
@@ -103,7 +99,6 @@ describe Idv::Agent do
             user_id: user.id,
             threatmetrix_session_id: nil,
             request_ip: request_ip,
-            issuer: issuer,
           )
 
           result = document_capture_session.load_proofing_result.result
@@ -125,7 +120,6 @@ describe Idv::Agent do
             user_id: user.id,
             threatmetrix_session_id: nil,
             request_ip: request_ip,
-            issuer: issuer,
           )
           result = document_capture_session.load_proofing_result.result
 
@@ -150,7 +144,6 @@ describe Idv::Agent do
           user_id: user.id,
           threatmetrix_session_id: nil,
           request_ip: request_ip,
-          issuer: issuer,
         )
         result = document_capture_session.load_proofing_result.result
 

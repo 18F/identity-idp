@@ -5,7 +5,7 @@ module Proofing
         attr_reader :config
 
         def initialize(config)
-          @config = LexisNexis::Proofer::Config.new(config)
+          @config = LexisNexis::Ddp::Proofer::Config.new(config)
         end
 
         def proof(applicant)
@@ -33,6 +33,7 @@ module Proofing
               failed_result_can_pass_with_additional_verification?(verification_response),
             attributes_requiring_additional_verification:
               attributes_requiring_additional_verification(verification_response),
+            vendor_workflow: config.phone_finder_workflow,
           )
         end
 

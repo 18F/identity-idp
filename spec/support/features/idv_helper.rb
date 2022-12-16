@@ -27,29 +27,50 @@ module IdvHelper
     fill_in :idv_phone_form_phone, with: '(703) 555-5555'
   end
 
+  def click_idv_continue_for_step(step)
+    if step == :phone
+      click_idv_send_security_code
+    else
+      click_idv_continue
+    end
+  end
+
   def click_idv_continue
     click_spinner_button_and_wait t('forms.buttons.continue')
+  end
+
+  def click_idv_send_security_code
+    click_spinner_button_and_wait t('forms.buttons.send_one_time_code')
   end
 
   def click_idv_select
     click_select_button_and_wait t('in_person_proofing.body.location.location_button')
   end
 
-  def choose_idv_otp_delivery_method_sms
+  def click_idv_otp_delivery_method_sms
     page.find(
       'label',
       text: t('two_factor_authentication.otp_delivery_preference.sms'),
       wait: 5,
     ).click
-    click_on t('idv.buttons.send_confirmation_code')
   end
 
-  def choose_idv_otp_delivery_method_voice
+  def choose_idv_otp_delivery_method_sms
+    click_idv_otp_delivery_method_sms
+    click_idv_send_security_code
+  end
+
+  def click_idv_otp_delivery_method_voice
     page.find(
       'label',
       text: t('two_factor_authentication.otp_delivery_preference.voice'),
+      wait: 5,
     ).click
-    click_on t('idv.buttons.send_confirmation_code')
+  end
+
+  def choose_idv_otp_delivery_method_voice
+    click_idv_otp_delivery_method_voice
+    click_idv_send_security_code
   end
 
   def visit_idp_from_sp_with_ial2(sp, **extra)
@@ -124,7 +145,8 @@ module IdvHelper
     client_id: sp_oidc_issuer,
     state: SecureRandom.hex,
     nonce: SecureRandom.hex,
-    verified_within: nil
+    verified_within: nil,
+    inherited_proofing_auth: Idv::InheritedProofing::Va::Mocks::Service::VALID_AUTH_CODE
   )
     @state = state
     @client_id = sp_oidc_issuer
@@ -139,7 +161,7 @@ module IdvHelper
       prompt: 'select_account',
       nonce: nonce,
       verified_within: verified_within,
-      inherited_proofing_auth: Idv::InheritedProofing::Va::Mocks::Service::VALID_AUTH_CODE,
+      inherited_proofing_auth: inherited_proofing_auth,
     )
   end
 

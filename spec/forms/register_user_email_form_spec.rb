@@ -27,10 +27,8 @@ describe RegisterUserEmailForm do
         expect(subject.email).to eq 'taken@gmail.com'
         expect_delivered_email_count(1)
         expect_delivered_email(
-          0, {
-            to: [subject.email],
-            subject: t('mailer.email_reuse_notice.subject'),
-          }
+          to: [subject.email],
+          subject: t('mailer.email_reuse_notice.subject'),
         )
       end
 
@@ -159,6 +157,24 @@ describe RegisterUserEmailForm do
         }
 
         expect(subject.submit(email: 'invalid_email', terms_accepted: '1').to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
+      end
+
+      it 'returns false and adds errors to the form object when domain is invalid' do
+        errors = { email: [t('valid_email.validations.email.invalid')] }
+
+        extra = {
+          email_already_exists: false,
+          throttled: false,
+          user_id: 'anonymous-uuid',
+          domain_name: 'çà.com',
+        }
+
+        expect(subject.submit(email: 'test@çà.com', terms_accepted: '1').to_h).to include(
           success: false,
           errors: errors,
           error_details: hash_including(*errors.keys),

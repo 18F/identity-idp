@@ -9,7 +9,7 @@ describe Idv::OtpVerificationController do
   let(:phone_confirmation_otp_code) { '777777' }
   let(:phone_confirmation_otp_sent_at) { Time.zone.now }
   let(:user_phone_confirmation_session) do
-    PhoneConfirmation::ConfirmationSession.new(
+    Idv::PhoneConfirmationSession.new(
       code: phone_confirmation_otp_code,
       phone: phone,
       sent_at: phone_confirmation_otp_sent_at,

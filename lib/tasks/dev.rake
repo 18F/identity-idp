@@ -79,6 +79,7 @@ namespace :dev do
 
   desc 'Create in-person enrollments for N random users'
   task random_in_person_users: [:environment, :random_users] do
+    usps_request_delay_ms = (ENV['USPS_REQUEST_DELAY_MS'] || 0).to_i
     num_users = (ENV['NUM_USERS'] || 100).to_i
     pw = 'salty pickles'
     unless ENV['PROGRESS'] == 'no'
@@ -129,10 +130,24 @@ namespace :dev do
               )
               enrollment.save!
 
-              UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
-                user,
-                pii,
-              )
+              success = false
+              num_attempts = 0
+              max_attempts = (ENV['MAX_NUM_ATTEMPTS'] || 3).to_i
+              until success || num_attempts >= max_attempts
+                num_attempts += 1
+                begin
+                  UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
+                    user,
+                    pii,
+                  )
+                rescue StandardError => e
+                  Rails.logger.error 'Exception raised while enrolling user: ' + e.message
+                  raise e if num_attempts == max_attempts
+                else
+                  success = true
+                end
+                Kernel.sleep(usps_request_delay_ms / 1000.0) if usps_request_delay_ms
+              end
             else
               enrollment = InPersonEnrollment.create!(
                 user: user,

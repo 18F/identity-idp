@@ -1,5 +1,5 @@
 import { forceRedirect } from '@18f/identity-url';
-import type { CountdownElement } from '@18f/identity-countdown-element';
+import type { CountdownElement } from '@18f/identity-countdown/countdown-element';
 import type { ModalElement } from '@18f/identity-modal';
 
 interface NewRelicAgent {

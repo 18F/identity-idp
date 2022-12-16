@@ -8,10 +8,9 @@ fr:
       gov_heading: Les sites Web officiels utilisent .gov
       how: Voici comment vous savez
       landmark_label: Site officiel du gouvernement
-      lock: Serrure
       lock_description: Un cadenas fermé
       official_site: Un site web officiel du gouvernement des États-Unis
-      secure_description_html: Un <strong>verrou</strong> (%{lock_icon}) ou
+      secure_description_html: Un <strong>verrou</strong> ( %{lock_icon} ) ou
         <strong>https://</strong> signifie que vous êtes connecté en toute
         sécurité au site Web .gov. Partagez des informations sensibles
         uniquement sur des sites Web officiels et sécurisés.

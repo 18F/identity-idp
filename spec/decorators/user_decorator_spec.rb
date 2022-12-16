@@ -214,7 +214,7 @@ describe UserDecorator do
     end
 
     context 'second factor locked out a while ago' do
-      let(:locked_at) { Time.zone.now - UserDecorator::DEFAULT_LOCKOUT_PERIOD - 1.second }
+      let(:locked_at) { IdentityConfig.store.lockout_period_in_minutes.minutes.ago - 1.second }
 
       it { expect(locked_out?).to eq(false) }
     end
@@ -241,7 +241,7 @@ describe UserDecorator do
     end
 
     context 'second factor locked out a while ago' do
-      let(:locked_at) { Time.zone.now - UserDecorator::DEFAULT_LOCKOUT_PERIOD - 1.second }
+      let(:locked_at) { IdentityConfig.store.lockout_period_in_minutes.minutes.ago - 1.second }
 
       it { expect(no_longer_locked_out?).to eq(true) }
     end
@@ -304,6 +304,25 @@ describe UserDecorator do
           it { expect(decorated_user.password_reset_profile).to eq(active_profile) }
         end
       end
+    end
+  end
+
+  describe '#threatmetrix_review_pending_profile' do
+    let(:user) { create(:user) }
+    subject(:decorated_user) { UserDecorator.new(user) }
+
+    context 'with a threatmetrix review pending profile' do
+      it 'returns the profile' do
+        profile = create(
+          :profile, user: user, active: false, deactivation_reason: :threatmetrix_review_pending
+        )
+
+        expect(decorated_user.threatmetrix_review_pending_profile).to eq(profile)
+      end
+    end
+
+    context 'without a threatmetrix review pending profile' do
+      it { expect(decorated_user.threatmetrix_review_pending_profile).to eq(nil) }
     end
   end
 

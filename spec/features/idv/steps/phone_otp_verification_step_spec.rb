@@ -62,6 +62,8 @@ feature 'phone otp verification step spec', :js do
   end
 
   it 'redirects back to the step with an error if Telephony raises an error on resend' do
+    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(4)
+
     start_idv_from_sp
     complete_idv_steps_before_phone_otp_verification_step
 
@@ -80,8 +82,7 @@ feature 'phone otp verification step spec', :js do
 
     allow(Telephony).to receive(:send_confirmation_otp).and_call_original
 
-    fill_out_phone_form_ok
-    click_idv_continue
+    fill_out_phone_form_ok('2342255432')
     choose_idv_otp_delivery_method_sms
 
     calling_area_error = Telephony::InvalidCallingAreaError.new('error message')

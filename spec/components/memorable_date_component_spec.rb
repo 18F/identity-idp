@@ -57,6 +57,12 @@ RSpec.describe MemorableDateComponent, type: :component do
     expect(rendered).to have_css('lg-memorable-date lg-validated-field input.memorable-date__year')
   end
 
+  it 'renders memorable date input fields with hints' do
+    expect(rendered).to have_css('input[aria-labelledby*="memorable-date-month-hint"]')
+    expect(rendered).to have_css('input[aria-labelledby*="memorable-date-day-hint"]')
+    expect(rendered).to have_css('input[aria-labelledby*="memorable-date-year-hint"]')
+  end
+
   it 'sets the label' do
     expect(rendered).to have_css('.usa-label', text: label)
   end
@@ -208,15 +214,8 @@ RSpec.describe MemorableDateComponent, type: :component do
     end
   end
 
-  it 'renders aria-describedby to establish connection between input and error message' do
-    field = rendered.at_css('input')
-
-    expect(field.attr('aria-describedby')).to start_with('validated-field-error-')
-  end
-
   it 'renders a non-visible error message element' do
-    expect(rendered).to_not have_css('.usa-error-message', visible: true)
-    expect(rendered).to have_css('.usa-error-message', visible: false)
+    expect(rendered).to have_css('.usa-error-message.display-none')
   end
 
   context 'tag options are specified' do

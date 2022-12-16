@@ -4,6 +4,7 @@ describe Users::TwoFactorAuthenticationController do
   include ActionView::Helpers::DateHelper
 
   let(:otp_preference_sms) { { otp_delivery_preference: 'sms' } }
+  let(:user) { create(:user, :signed_up) }
 
   describe 'before_actions' do
     it 'includes the appropriate before_actions' do
@@ -28,8 +29,6 @@ describe Users::TwoFactorAuthenticationController do
     end
 
     context 'when the user is fully authenticated and the context is authentication' do
-      let(:user) { create(:user, :signed_up) }
-
       before do
         sign_in user
       end
@@ -42,8 +41,6 @@ describe Users::TwoFactorAuthenticationController do
     end
 
     context 'when the user is fully authenticated and the context is not authentication' do
-      let(:user) { create(:user, :signed_up) }
-
       before do
         sign_in user
         subject.user_session[:context] = 'confirmation'
@@ -71,6 +68,8 @@ describe Users::TwoFactorAuthenticationController do
   end
 
   describe '#show' do
+    let(:reauthn_param) { { reauthn: 'true' } }
+    let(:with_default_phone) { { with: { phone: '+1 (703) 555-1212' } } }
     context 'when user is piv/cac enabled' do
       it 'renders the piv/cac entry screen' do
         allow_any_instance_of(Browser).to receive(:mobile?).and_return(true)
@@ -102,15 +101,15 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'passes reauthn parameter on redirect' do
-        get :show, params: { reauthn: 'true' }
+        get :show, params: reauthn_param
 
-        expect(response).to redirect_to login_two_factor_authenticator_path(reauthn: 'true')
+        expect(response).to redirect_to login_two_factor_authenticator_path(**reauthn_param)
       end
     end
 
     context 'when user is authenticated with a remembered device via phone' do
       it 'does redirect to the profile' do
-        user = create(:user, :with_phone, with: { phone: '+1 (703) 555-1212' })
+        user = create(:user, :with_phone, **with_default_phone)
         stub_sign_in_before_2fa(user)
 
         cookies.encrypted[:remember_device] = {
@@ -126,7 +125,7 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'does redirect to sms if reauthn parameter is true' do
-        user = create(:user, :with_phone, with: { phone: '+1 (703) 555-1212' })
+        user = create(:user, :with_phone, **with_default_phone)
         stub_sign_in_before_2fa(user)
 
         cookies.encrypted[:remember_device] = {
@@ -134,12 +133,12 @@ describe Users::TwoFactorAuthenticationController do
           expires: 2.days.from_now,
         }
 
-        get :show, params: { reauthn: 'true' }
+        get :show, params: reauthn_param
 
         expect(Telephony::Test::Message.messages.length).to eq(1)
         expect(Telephony::Test::Call.calls.length).to eq(0)
         expect(response).to redirect_to(
-          login_two_factor_path(**otp_preference_sms, reauthn: 'true'),
+          login_two_factor_path(**otp_preference_sms, **reauthn_param),
         )
       end
     end
@@ -161,9 +160,9 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'passes reauthn parameter on redirect' do
-        get :show, params: { reauthn: 'true' }
+        get :show, params: reauthn_param
 
-        expect(response).to redirect_to login_two_factor_backup_code_url(reauthn: 'true')
+        expect(response).to redirect_to login_two_factor_backup_code_url(**reauthn_param)
       end
     end
 
@@ -179,10 +178,10 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'passes reauthn parameter on redirect' do
-        get :show, params: { reauthn: 'true' }
+        get :show, params: reauthn_param
 
         expect(response).to redirect_to login_two_factor_webauthn_path(
-          reauthn: 'true',
+          **reauthn_param,
           platform: false,
         )
       end
@@ -208,7 +207,7 @@ describe Users::TwoFactorAuthenticationController do
 
     context 'when the user has already set up 2FA' do
       it 'sends OTP via otp_delivery_preference and prompts for OTP' do
-        stub_sign_in_before_2fa(create(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
+        stub_sign_in_before_2fa(create(:user, :with_phone, **with_default_phone))
 
         get :show
 
@@ -224,7 +223,7 @@ describe Users::TwoFactorAuthenticationController do
         end
 
         it 'redirects to mfa options page' do
-          stub_sign_in_before_2fa(create(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
+          stub_sign_in_before_2fa(create(:user, :with_phone, **with_default_phone))
 
           get :show
 
@@ -248,7 +247,7 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'redirects to vendor outage page' do
-        stub_sign_in_before_2fa(create(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
+        stub_sign_in_before_2fa(create(:user, :with_phone, **with_default_phone))
 
         get :show
 
@@ -257,8 +256,6 @@ describe Users::TwoFactorAuthenticationController do
     end
 
     context 'when SP requires PIV/CAC' do
-      let(:user) { create(:user, :signed_up) }
-
       before do
         stub_sign_in(user)
         controller.session[:sp] = { phishing_resistant_requeste: true, piv_cac_requested: true }
@@ -276,9 +273,13 @@ describe Users::TwoFactorAuthenticationController do
     let(:otp_delivery_form_sms) { { otp_delivery_selection_form: otp_preference_sms } }
     context 'when selecting SMS OTP delivery' do
       let(:valid_phone_number) { { phone_number: '+12025551212' } }
-      let(:success_parameters) do
-        { success: true, **valid_phone_number, otp_delivery_method: 'sms' }
+      let(:default_parameters) do
+        { **valid_phone_number, otp_delivery_method: 'sms' }
       end
+      let(:success_parameters) do
+        { success: true, **default_parameters, failure_reason: nil }
+      end
+
       before do
         @user = create(:user, :with_phone)
         sign_in_before_2fa(@user)
@@ -289,13 +290,21 @@ describe Users::TwoFactorAuthenticationController do
       it 'sends OTP via SMS for sign in' do
         get :send_code, params: otp_delivery_form_sms
 
+        phone = MfaContext.new(subject.current_user).phone_configurations.first.phone
+        parsed_phone = Phonelib.parse(phone)
+
         expect(Telephony).to have_received(:send_authentication_otp).with(
           otp: subject.current_user.direct_otp,
-          to: MfaContext.new(subject.current_user).phone_configurations.first.phone,
+          to: phone,
           expiration: 10,
           channel: :sms,
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
+          extra_metadata: {
+            area_code: parsed_phone.area_code,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            resend: nil,
+          },
         )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
@@ -311,7 +320,7 @@ describe Users::TwoFactorAuthenticationController do
           success: true,
           errors: {},
           **otp_preference_sms,
-          resend: 'true',
+          resend: true,
           context: 'authentication',
           country_code: 'US',
           area_code: '202',
@@ -324,7 +333,8 @@ describe Users::TwoFactorAuthenticationController do
         expect(@analytics).to receive(:track_event).
           ordered.
           with('Telephony: OTP sent', hash_including(
-            resend: 'true', success: true, **otp_preference_sms,
+            resend: true, success: true, **otp_preference_sms,
+            adapter: :test
           ))
 
         get :send_code, params: {
@@ -398,6 +408,17 @@ describe Users::TwoFactorAuthenticationController do
 
           get :send_code, params: otp_delivery_form_sms
         end
+
+        it 'tracks the attempt event with failure reason' do
+          stub_attempts_tracker
+
+          expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).
+            with(reauthentication: false, **default_parameters, success: false, failure_reason: {
+              telephony: 'Telephony::OptOutError - Telephony::OptOutError',
+            })
+
+          get :send_code, params: otp_delivery_form_sms
+        end
       end
 
       context 'when Pinpoint throws an opt-out error' do
@@ -434,14 +455,21 @@ describe Users::TwoFactorAuthenticationController do
         get :send_code, params: {
           otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
         }
+        phone = MfaContext.new(subject.current_user).phone_configurations.first.phone
+        parsed_phone = Phonelib.parse(phone)
 
         expect(Telephony).to have_received(:send_authentication_otp).with(
           otp: subject.current_user.direct_otp,
-          to: MfaContext.new(subject.current_user).phone_configurations.first.phone,
+          to: phone,
           expiration: 10,
           channel: :voice,
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
+          extra_metadata: {
+            area_code: parsed_phone.area_code,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            resend: nil,
+          },
         )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
@@ -457,7 +485,7 @@ describe Users::TwoFactorAuthenticationController do
           success: true,
           errors: {},
           otp_delivery_preference: 'voice',
-          resend: nil,
+          resend: false,
           context: 'authentication',
           country_code: 'US',
           area_code: '202',
@@ -472,6 +500,7 @@ describe Users::TwoFactorAuthenticationController do
           with('Telephony: OTP sent', hash_including(
             success: true,
             otp_delivery_preference: 'voice',
+            adapter: :test,
             country_code: 'US',
             telephony_response: hash_including(
               origination_phone_number: Telephony::Test::VoiceSender::ORIGINATION_PHONE_NUMBER,
@@ -512,6 +541,7 @@ describe Users::TwoFactorAuthenticationController do
         sign_in_before_2fa(@user)
         subject.user_session[:context] = 'confirmation'
         subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
+        parsed_phone = Phonelib.parse(@unconfirmed_phone)
 
         allow(Telephony).to receive(:send_confirmation_otp).and_call_original
 
@@ -524,6 +554,11 @@ describe Users::TwoFactorAuthenticationController do
           channel: :sms,
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
+          extra_metadata: {
+            area_code: parsed_phone.area_code,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            resend: nil,
+          },
         )
       end
 

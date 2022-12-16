@@ -96,7 +96,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
         properties = {
           success: false,
-          errors: {},
+          error_details: { code: [:incorrect_length, :incorrect] },
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
@@ -153,7 +153,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
         properties = {
           success: false,
-          errors: {},
+          error_details: { code: [:incorrect_length, :incorrect] },
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
@@ -191,7 +191,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
     context 'when the user enters a valid OTP' do
       before do
         sign_in_before_2fa
-        expect(subject.current_user).to receive(:authenticate_direct_otp).and_return(true)
+        form = OtpVerificationForm.new(subject.current_user, nil)
+        result = FormResponse.new(success: true, serialize_error_details_only: {})
+        expect(form).to receive(:submit).and_return(result)
+        expect(subject).to receive(:otp_verification_form).and_return(form)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
       end
 
@@ -217,7 +220,6 @@ describe TwoFactorAuthentication::OtpVerificationController do
       it 'tracks the valid authentication event' do
         properties = {
           success: true,
-          errors: {},
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
@@ -313,7 +315,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
         end
 
-        it 'resets attempts count' do
+        it 'increments attempts count' do
           expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
         end
 
@@ -380,7 +382,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
             properties = {
               success: true,
-              errors: {},
+              errors: nil,
               confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
@@ -419,10 +421,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
             expect_delivered_email_count(1)
             expect_delivered_email(
-              0, {
-                to: [subject.current_user.email_addresses.first.email],
-                subject: t('user_mailer.phone_added.subject'),
-              }
+              to: [subject.current_user.email_addresses.first.email],
+              subject: t('user_mailer.phone_added.subject'),
             )
           end
         end
@@ -466,7 +466,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
           it 'tracks an event' do
             properties = {
               success: false,
-              errors: {},
+              errors: nil,
+              error_details: { code: [:incorrect_length, :incorrect] },
               confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
@@ -480,6 +481,24 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
             expect(@analytics).to have_received(:track_event).
               with('Multi-Factor Authentication Setup', properties)
+          end
+
+          context 'user enters in valid code after invalid entry' do
+            before do
+              expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_submitted).
+                with(success: true)
+              expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
+              post(
+                :create,
+                params: {
+                  code: subject.current_user.direct_otp,
+                  otp_delivery_preference: 'sms',
+                },
+              )
+            end
+            it 'resets second_factor_attempts_count' do
+              expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
+            end
           end
 
           context 'user has exceeded the maximum number of attempts' do
@@ -529,7 +548,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             parsed_phone = Phonelib.parse('+1 (703) 555-5555')
             properties = {
               success: true,
-              errors: {},
+              errors: nil,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
               confirmation_for_add_phone: false,

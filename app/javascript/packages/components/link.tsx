@@ -56,7 +56,7 @@ function Link({
   return (
     <a href={href} {...newTabProps} {...anchorProps} className={classes}>
       {children}
-      {isNewTab && <span className="usa-sr-only"> {t('links.new_window')}</span>}
+      {isNewTab && <span className="usa-sr-only">{t('links.new_window')}</span>}
     </a>
   );
 }

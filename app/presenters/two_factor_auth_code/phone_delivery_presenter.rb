@@ -5,7 +5,10 @@ module TwoFactorAuthCode
     include ActionView::Helpers::TagHelper
     include ActionView::Helpers::TranslationHelper
 
-    attr_reader :otp_delivery_preference, :otp_make_default_number, :unconfirmed_phone
+    attr_reader :otp_delivery_preference,
+                :otp_make_default_number,
+                :unconfirmed_phone,
+                :otp_expiration
 
     alias_method :unconfirmed_phone?, :unconfirmed_phone
 

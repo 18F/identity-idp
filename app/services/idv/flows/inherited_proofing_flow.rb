@@ -18,7 +18,9 @@ module Idv
         { name: :secure_account },
       ].freeze
 
-      ACTIONS = {}.freeze
+      ACTIONS = {
+        redo_retrieve_user_info: Idv::Actions::InheritedProofing::RedoRetrieveUserInfoAction,
+      }.freeze
 
       attr_reader :idv_session
 

@@ -31,7 +31,9 @@ describe Reports::SpActiveUsersReport do
       user_id: 4, service_provider: issuer, uuid: 'foo4',
       last_ial2_authenticated_at: authenticated_time
     )
-    result = [{ issuer: issuer, app_id: app_id, total_ial1_active: 2,
+    result = [{ issuer: issuer,
+                app_id: app_id,
+                total_ial1_active: 2,
                 total_ial2_active: 3 }].to_json
 
     expect(subject.perform(job_date)).to eq(result)
@@ -73,7 +75,9 @@ describe Reports::SpActiveUsersReport do
       last_ial2_authenticated_at: current_fiscal_year
     )
 
-    result = [{ issuer: issuer, app_id: app_id, total_ial1_active: 2,
+    result = [{ issuer: issuer,
+                app_id: app_id,
+                total_ial1_active: 2,
                 total_ial2_active: 3 }].to_json
 
     expect(subject.perform(job_date)).to eq(result)

@@ -7,7 +7,6 @@ class UserDecorator
 
   MAX_RECENT_EVENTS = 5
   MAX_RECENT_DEVICES = 5
-  DEFAULT_LOCKOUT_PERIOD = 10.minutes
 
   def initialize(user)
     @user = user
@@ -78,6 +77,14 @@ class UserDecorator
     profile if profile&.password_reset?
   end
 
+  def threatmetrix_review_pending?
+    @threatmetrix_review_pending ||= threatmetrix_review_pending_profile.present?
+  end
+
+  def threatmetrix_review_pending_profile
+    user.profiles.threatmetrix_review_pending.order(created_at: :desc).first
+  end
+
   def qrcode(otp_secret_key)
     options = {
       issuer: APP_NAME,
@@ -137,12 +144,7 @@ class UserDecorator
   private
 
   def lockout_period
-    return DEFAULT_LOCKOUT_PERIOD if lockout_period_config.blank?
-    lockout_period_config.minutes
-  end
-
-  def lockout_period_config
-    @lockout_period_config ||= IdentityConfig.store.lockout_period_in_minutes
+    IdentityConfig.store.lockout_period_in_minutes.minutes
   end
 
   def lockout_period_expired?

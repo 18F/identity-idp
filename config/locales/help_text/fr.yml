@@ -9,11 +9,11 @@ fr:
       birthdate: Date de naissance
       email: Adresse e-mail
       full_name: Nom complet
-      ial1_consent_reminder_html: 'Vous devez consentir chaque année au partage de vos
+      ial1_consent_reminder_html: Vous devez consentir chaque année au partage de vos
         informations avec <b>%{sp}</b>. Nous partagerons vos informations avec
-        <b>%{sp}</b> pour connecter votre compte.'
-      ial1_intro_html: 'Nous partagerons vos informations avec <b>%{sp}</b> pour
-        connecter votre compte.'
+        <b>%{sp}</b> pour connecter votre compte.
+      ial1_intro_html: Nous partagerons vos informations avec <b>%{sp}</b> pour
+        connecter votre compte.
       ial2_consent_reminder_html: '<b>%{sp}</b> doit savoir qui vous êtes pour se
         connecter à votre compte. Vous devez consentir chaque année à partager
         vos informations vérifiées avec <b>%{sp}</b>. Nous partagerons ces

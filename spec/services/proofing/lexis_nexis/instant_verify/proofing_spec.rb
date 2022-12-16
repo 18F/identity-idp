@@ -40,6 +40,9 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
 
         expect(result.success?).to eq(true)
         expect(result.errors).to eq({})
+        expect(result.vendor_workflow).to(
+          eq(LexisNexisFixtures.example_config.phone_finder_workflow),
+        )
       end
     end
 
@@ -61,6 +64,9 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
         )
         expect(result.transaction_id).to eq('123456')
         expect(result.reference).to eq('0987:1234-abcd')
+        expect(result.vendor_workflow).to(
+          eq(LexisNexisFixtures.example_config.phone_finder_workflow),
+        )
       end
     end
 
@@ -74,6 +80,7 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
         expect(result.errors).to eq({})
         expect(result.exception).to be_a(Proofing::TimeoutError)
         expect(result.timed_out?).to eq(true)
+        expect(result.vendor_workflow).to be(nil)
       end
     end
 
@@ -88,6 +95,7 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
         expect(result.exception).to be_a(RuntimeError)
         expect(result.exception.message).to eq('fancy test error')
         expect(result.timed_out?).to eq(false)
+        expect(result.vendor_workflow).to be(nil)
       end
     end
 
@@ -105,6 +113,9 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
 
           expect(result.failed_result_can_pass_with_additional_verification?)
           expect(result.attributes_requiring_additional_verification).to eq([:dob])
+          expect(result.vendor_workflow).to(
+            eq(LexisNexisFixtures.example_config.phone_finder_workflow),
+          )
         end
       end
 

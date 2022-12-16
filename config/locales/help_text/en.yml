@@ -9,10 +9,10 @@ en:
       birthdate: Date of birth
       email: Email address
       full_name: Full name
-      ial1_consent_reminder_html: 'You must consent each year to share your
-        information with <b>%{sp}</b>. We’ll share your information with
-        <b>%{sp}</b> to connect your account.'
-      ial1_intro_html: 'We’ll share your information with <b>%{sp}</b> to connect your account.'
+      ial1_consent_reminder_html: You must consent each year to share your information
+        with <b>%{sp}</b>. We’ll share your information with <b>%{sp}</b> to
+        connect your account.
+      ial1_intro_html: We’ll share your information with <b>%{sp}</b> to connect your account.
       ial2_consent_reminder_html: '<b>%{sp}</b> needs to know who you are to connect
         to your account. You must consent each year to share your verified
         information with <b>%{sp}</b>. We’ll share this information: '

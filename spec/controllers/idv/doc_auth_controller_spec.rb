@@ -100,8 +100,7 @@ describe Idv::DocAuthController do
         irs_reproofing: false,
         step_count: 1,
         analytics_id: 'Doc Auth',
-        native_camera_a_b_testing_enabled: false,
-        native_camera_only: false,
+        acuant_sdk_upgrade_ab_test_bucket: :default,
       }
 
       get :show, params: { step: 'welcome' }
@@ -136,8 +135,7 @@ describe Idv::DocAuthController do
         hash_including(
           step: 'welcome',
           step_count: 1,
-          native_camera_a_b_testing_enabled: false,
-          native_camera_only: false,
+          acuant_sdk_upgrade_ab_test_bucket: :default,
         ),
       )
       expect(@analytics).to have_received(:track_event).ordered.with(
@@ -179,8 +177,7 @@ describe Idv::DocAuthController do
         pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]],
         irs_reproofing: false,
         analytics_id: 'Doc Auth',
-        native_camera_a_b_testing_enabled: false,
-        native_camera_only: false,
+        acuant_sdk_upgrade_ab_test_bucket: :default,
       }
 
       put :update, params: { step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
@@ -203,8 +200,7 @@ describe Idv::DocAuthController do
         hash_including(
           step: 'ssn',
           step_count: 1,
-          native_camera_a_b_testing_enabled: false,
-          native_camera_only: false,
+          acuant_sdk_upgrade_ab_test_bucket: :default,
         ),
       )
       expect(@analytics).to have_received(:track_event).with(
@@ -224,8 +220,7 @@ describe Idv::DocAuthController do
         irs_reproofing: false,
         step_count: 1,
         analytics_id: 'Doc Auth',
-        native_camera_a_b_testing_enabled: false,
-        native_camera_only: false,
+        acuant_sdk_upgrade_ab_test_bucket: :default,
       }
 
       put :update, params: {

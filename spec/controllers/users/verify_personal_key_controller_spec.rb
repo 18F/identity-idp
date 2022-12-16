@@ -63,7 +63,7 @@ describe Users::VerifyPersonalKeyController do
           throttle_type: :verify_personal_key,
         ).once
 
-        expect(@irs_attempts_api_tracker).not_to receive(:personal_key_reactivation_rate_limited)
+        expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_rate_limited)
 
         get :new
 

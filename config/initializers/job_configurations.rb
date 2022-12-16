@@ -3,6 +3,7 @@ cron_5m = '0/5 * * * *'
 cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
+cron_1w = '0 0 * * 0'
 
 if defined?(Rails::Console)
   Rails.logger.info 'job_configurations: console detected, skipping schedule'
@@ -75,12 +76,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Send Partner API reports to S3
-      partner_api_reports: {
-        class: 'Agreements::Reports::PartnerApiReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Send daily auth report to S3
       daily_auths: {
         class: 'Reports::DailyAuthsReport',
@@ -116,6 +111,12 @@ else
         cron: IdentityConfig.store.get_usps_proofing_results_job_cron,
         args: -> { [Time.zone.now] },
       },
+      # Queue daily in-person proofing reminder email job
+      email_reminder_job: {
+        class: 'InPerson::EmailReminderJob',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
       # Periodically verify signature on ThreatMetrix javascript
       verify_threat_metrix_js: {
         class: 'ThreatMetrixJsVerificationJob',
@@ -126,6 +127,12 @@ else
         class: 'IrsAttemptsEventsBatchJob',
         cron: cron_1h,
         args: -> { [Time.zone.now - 1.hour] },
+      },
+      # Weekly IRS report returning system demand
+      irs_weekly_summary_report: {
+        class: 'Reports::IrsWeeklySummaryReport',
+        cron: cron_1w,
+        args: -> { [Time.zone.now] },
       },
     }
   end

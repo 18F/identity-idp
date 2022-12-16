@@ -1,7 +1,6 @@
 import { render } from 'react-dom';
 import { composeComponents } from '@18f/identity-compose-components';
 import {
-  AppContext,
   DocumentCapture,
   DeviceContext,
   AcuantContextProvider,
@@ -9,8 +8,8 @@ import {
   ServiceProviderContextProvider,
   AnalyticsContextProvider,
   FailedCaptureAttemptsContextProvider,
-  NativeCameraABTestContextProvider,
   MarketingSiteContextProvider,
+  InPersonContext,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -18,18 +17,17 @@ import { trackEvent as baseTrackEvent } from '@18f/identity-analytics';
 import type { FlowPath, DeviceContextValue } from '@18f/identity-document-capture';
 
 /**
- * @see AppContext
  * @see MarketingSiteContextProvider
  * @see FailedCaptureAttemptsContext
  * @see UploadContext
  */
 interface AppRootData {
   helpCenterRedirectUrl: string;
-  appName: string;
   maxCaptureAttemptsBeforeTips: string;
   maxAttemptsBeforeNativeCamera: string;
-  nativeCameraABTestingEnabled: string;
-  nativeCameraOnly: string;
+  acuantSdkUpgradeABTestingEnabled: string;
+  useNewerSdk: string;
+  acuantVersion: string;
   flowPath: FlowPath;
   cancelUrl: string;
   idvInPersonUrl?: string;
@@ -67,8 +65,15 @@ function getMetaContent(name): string | null {
 const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
-  const { flowPath } = appRoot.dataset;
-  return baseTrackEvent(event, { ...payload, flow_path: flowPath });
+  const { flowPath, acuantSdkUpgradeABTestingEnabled, useNewerSdk, acuantVersion } =
+    appRoot.dataset;
+  return baseTrackEvent(event, {
+    ...payload,
+    flow_path: flowPath,
+    acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
+    use_newer_sdk: useNewerSdk,
+    acuant_version: acuantVersion,
+  });
 };
 
 (async () => {
@@ -108,23 +113,23 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     maxCaptureAttemptsBeforeTips,
     maxCaptureAttemptsBeforeNativeCamera,
     maxSubmissionAttemptsBeforeNativeCamera,
-    nativeCameraABTestingEnabled,
-    nativeCameraOnly,
-    appName,
+    acuantVersion,
     flowPath,
     cancelUrl: cancelURL,
     idvInPersonUrl: inPersonURL,
     securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
+    arcgisSearchEnabled,
   } = appRoot.dataset as DOMStringMap & AppRootData;
 
   const App = composeComponents(
-    [AppContext.Provider, { value: { appName } }],
     [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
     [DeviceContext.Provider, { value: device }],
     [AnalyticsContextProvider, { trackEvent }],
     [
       AcuantContextProvider,
       {
+        sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
+        cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`,
         credentials: getMetaContent('acuant-sdk-initialization-creds'),
         endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
         glareThreshold,
@@ -150,7 +155,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
       {
         value: {
           cancelURL,
-          inPersonURL,
           currentStep: 'document_capture',
         },
       },
@@ -165,11 +169,8 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
       },
     ],
     [
-      NativeCameraABTestContextProvider,
-      {
-        nativeCameraABTestingEnabled: nativeCameraABTestingEnabled === 'true',
-        nativeCameraOnly: nativeCameraOnly === 'true',
-      },
+      InPersonContext.Provider,
+      { value: { arcgisSearchEnabled: arcgisSearchEnabled === 'true', inPersonURL } },
     ],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
   );

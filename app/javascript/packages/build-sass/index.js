@@ -37,7 +37,7 @@ export async function buildFile(file, options) {
 
   let outFile = basename(file, '.scss');
 
-  const parcelResult = lightningTransform({
+  const lightningResult = lightningTransform({
     filename: outFile,
     code: Buffer.from(sassResult.css),
     minify: optimize,
@@ -48,7 +48,7 @@ export async function buildFile(file, options) {
     outFile = join(outDir, outFile);
   }
 
-  await writeFile(outFile, parcelResult.code);
+  await writeFile(outFile, lightningResult.code);
 
   return sassResult;
 }

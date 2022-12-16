@@ -29,18 +29,26 @@ module Idv
             image_type: 'back',
             transaction_id: flow_session[:document_capture_session_uuid],
           ),
-        }.merge(native_camera_ab_testing_variables)
+        }.merge(native_camera_ab_testing_variables, acuant_sdk_upgrade_a_b_testing_variables)
       end
 
       private
 
       def native_camera_ab_testing_variables
-        bucket = AbTests::NATIVE_CAMERA.bucket(flow_session[:document_capture_session_uuid])
-
         {
-          native_camera_a_b_testing_enabled:
-            IdentityConfig.store.idv_native_camera_a_b_testing_enabled,
-          native_camera_only: (bucket == :native_camera_only),
+          acuant_sdk_upgrade_ab_test_bucket:
+            AbTests::ACUANT_SDK.bucket(flow_session[:document_capture_session_uuid]),
+        }
+      end
+
+      def acuant_sdk_upgrade_a_b_testing_variables
+        bucket = AbTests::ACUANT_SDK.bucket(flow_session[:document_capture_session_uuid])
+        acuant_version = (bucket == :use_newer_sdk) ? '11.7.1' : '11.7.0'
+        {
+          acuant_sdk_upgrade_a_b_testing_enabled:
+              IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled,
+          use_newer_sdk: (bucket == :use_newer_sdk),
+          acuant_version: acuant_version,
         }
       end
 

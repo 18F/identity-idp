@@ -125,7 +125,7 @@ RSpec.describe ArcgisApi::Geocoder do
       allow(IdentityConfig.store).to receive(:arcgis_api_root_url).
         and_return(root_url)
 
-      stub_generate_token_response(expires_at: 1.hour.from_now.to_i, token: 'token1')
+      stub_generate_token_response(expires_at: 1.hour.from_now.to_i * 1000, token: 'token1')
       stub_request_suggestions
       subject.suggest('100 Main')
 
@@ -155,6 +155,21 @@ RSpec.describe ArcgisApi::Geocoder do
 
       expect(WebMock).to have_requested(:get, %r{/suggest}).
         with(headers: { 'Authorization' => 'Bearer token1' }).twice
+    end
+
+    context 'when using redis as a backing store' do
+      before do |ex|
+        allow(Rails).to receive(:cache).and_return(
+          ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+        )
+      end
+
+      it 'manually sets the expiration if the cache store is redis' do
+        stub_generate_token_response
+        subject.retrieve_token!
+        ttl = Rails.cache.redis.ttl(ArcgisApi::Geocoder::API_TOKEN_CACHE_KEY)
+        expect(ttl).to be > 0
+      end
     end
   end
 end

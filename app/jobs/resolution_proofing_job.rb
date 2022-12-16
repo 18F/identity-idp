@@ -20,8 +20,7 @@ class ResolutionProofingJob < ApplicationJob
     user_id: nil,
     threatmetrix_session_id: nil,
     request_ip: nil,
-    issuer: nil,
-    dob_year_only: nil # rubocop:disable Lint:UnusedMethodArgument
+    issuer: nil # rubocop:disable Lint:UnusedMethodArgument
   )
     timer = JobHelpers::Timer.new
 
@@ -41,7 +40,6 @@ class ResolutionProofingJob < ApplicationJob
       user: user,
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
-      issuer: issuer,
       timer: timer,
     )
 
@@ -107,11 +105,9 @@ class ResolutionProofingJob < ApplicationJob
     user:,
     threatmetrix_session_id:,
     request_ip:,
-    issuer:,
     timer:
   )
     return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
-    return unless issuer_allows_threatmetrix?(issuer)
 
     # The API call will fail without a session ID, so do not attempt to make
     # it to avoid leaking data when not required.
@@ -213,10 +209,5 @@ class ResolutionProofingJob < ApplicationJob
       create_or_find_by(user_id: user_id).
       update(threatmetrix: true,
              threatmetrix_review_status: threatmetrix_result.review_status)
-  end
-
-  def issuer_allows_threatmetrix?(issuer)
-    return IdentityConfig.store.no_sp_device_profiling_enabled if issuer.blank?
-    ServiceProvider.find_by(issuer: issuer)&.device_profiling_enabled
   end
 end

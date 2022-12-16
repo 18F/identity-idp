@@ -18,7 +18,7 @@ module TwoFactorAuthentication
     end
 
     def create
-      result = OtpVerificationForm.new(current_user, sanitized_otp_code).submit
+      result = otp_verification_form.submit
       post_analytics(result)
       if result.success?
         handle_valid_otp
@@ -29,8 +29,8 @@ module TwoFactorAuthentication
 
     private
 
-    def landline_warning?
-      user_session[:phone_type] == 'landline' && two_factor_authentication_method == 'voice'
+    def otp_verification_form
+      OtpVerificationForm.new(current_user, sanitized_otp_code)
     end
 
     def redirect_if_blank_phone
@@ -55,6 +55,10 @@ module TwoFactorAuthentication
 
     def phone_enabled?
       TwoFactorAuthentication::PhonePolicy.new(current_user).enabled?
+    end
+
+    def landline_warning?
+      user_session[:phone_type] == 'landline' && two_factor_authentication_method == 'voice'
     end
 
     def confirm_voice_capability

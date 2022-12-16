@@ -193,8 +193,8 @@ const getActualAcuantCamera = (): AcuantCameraInterface => {
 };
 
 function AcuantContextProvider({
-  sdkSrc = '/acuant/11.7.0/AcuantJavascriptWebSdk.min.js',
-  cameraSrc = '/acuant/11.7.0/AcuantCamera.min.js',
+  sdkSrc = '/acuant/11.7.1/AcuantJavascriptWebSdk.min.js',
+  cameraSrc = '/acuant/11.7.1/AcuantCamera.min.js',
   credentials = null,
   endpoint = null,
   glareThreshold = DEFAULT_ACCEPTABLE_GLARE_SCORE,

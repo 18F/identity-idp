@@ -24,7 +24,13 @@ module Idv
         analytics: analytics,
         uuid_prefix: current_sp&.app_id,
         irs_attempts_api_tracker: irs_attempts_api_tracker,
+        store_encrypted_images: store_encrypted_images?,
       )
+    end
+
+    def store_encrypted_images?
+      IdentityConfig.store.encrypted_document_storage_enabled &&
+        irs_attempt_api_enabled_for_session?
     end
   end
 end

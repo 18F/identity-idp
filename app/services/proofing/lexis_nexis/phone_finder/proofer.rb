@@ -5,7 +5,7 @@ module Proofing
         attr_reader :config
 
         def initialize(config)
-          @config = LexisNexis::Proofer::Config.new(config)
+          @config = LexisNexis::Ddp::Proofer::Config.new(config)
         end
 
         def proof(applicant)
@@ -31,6 +31,7 @@ module Proofing
             vendor_name: 'lexisnexis:phone_finder',
             transaction_id: verification_response.conversation_id,
             reference: verification_response.reference,
+            vendor_workflow: config.phone_finder_workflow,
           )
         end
 

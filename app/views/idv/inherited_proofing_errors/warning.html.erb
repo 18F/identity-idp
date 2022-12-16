@@ -8,15 +8,18 @@
      <%= t('inherited_proofing.errors.cannot_retrieve.info') %>
   </p>
 
-  <%= link_to t('inherited_proofing.buttons.try_again'), root_url, class: 'usa-button usa-button--big usa-button--wide' %>
+  <%= button_to t('inherited_proofing.buttons.try_again'), idv_inherited_proofing_step_path(step: :redo_retrieve_user_info), method: :put, class: 'usa-button usa-button--big usa-button--wide' %>
 
   <%= render(
         'shared/troubleshooting_options',
         heading: t('components.troubleshooting_options.default_heading'),
         options: [
           {
-            url: 'https://www.va.gov/resources/managing-your-vagov-profile/',
-            text: t('inherited_proofing.troubleshooting.options.get_va_help'),
+            url: @presenter.get_help_url,
+            text: t(
+              'inherited_proofing.troubleshooting.options.get_help',
+              sp_name: decorated_session.sp_name,
+            ),
             new_tab: true,
           },
         ],

@@ -94,7 +94,7 @@ class ApplicationController < ActionController::Base
   end
 
   def irs_attempt_api_enabled_for_session?
-    current_sp&.irs_attempts_api_enabled? && irs_attempts_api_session_id.present?
+    current_sp&.irs_attempts_api_enabled?
   end
 
   def irs_attempts_api_session_id
@@ -260,7 +260,15 @@ class ApplicationController < ActionController::Base
 
   def user_needs_to_reactivate_account?
     return false if current_user.decorate.password_reset_profile.blank?
+    return false if pending_profile_newer_than_password_reset_profile?
     sp_session[:ial2] == true
+  end
+
+  def pending_profile_newer_than_password_reset_profile?
+    return false if current_user.decorate.pending_profile.blank?
+    return false if current_user.decorate.password_reset_profile.blank?
+    current_user.decorate.pending_profile.created_at >
+      current_user.decorate.password_reset_profile.updated_at
   end
 
   def reauthn_param
