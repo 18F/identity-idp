@@ -18,7 +18,7 @@ module Api
     respond_to :json
 
     def create
-      start_time = Time.now.to_i
+      start_time = Time.zone.now.to_f
       if timestamp
         if IdentityConfig.store.irs_attempt_api_aws_s3_enabled
           if IrsAttemptApiLogFile.find_by(requested_time: timestamp_key(key: timestamp))
@@ -54,8 +54,12 @@ module Api
         render json: { status: :unprocessable_entity, description: 'Invalid timestamp parameter' },
                status: :unprocessable_entity
       end
-      elapsed_time = Time.now.to_i - start_time
-      analytics.irs_attempts_api_events(**analytics_properties(authenticated: true, elapsed_time: elapsed_time))
+      analytics.irs_attempts_api_events(
+        **analytics_properties(
+          authenticated: true,
+          elapsed_time: elapsed_time(start_time),
+        ),
+      )
     end
 
     private
@@ -64,7 +68,12 @@ module Api
       bearer, csp_id, token = request.authorization&.split(' ', 3)
       if bearer != 'Bearer' || !valid_auth_tokens.include?(token) ||
          csp_id != IdentityConfig.store.irs_attempt_api_csp_id
-        analytics.irs_attempts_api_events(**analytics_properties(authenticated: false))
+        analytics.irs_attempts_api_events(
+          **analytics_properties(
+            authenticated: false,
+            elapsed_time: 0,
+          ),
+        )
         render json: { status: 401, description: 'Unauthorized' }, status: :unauthorized
       end
     end
@@ -120,6 +129,10 @@ module Api
       Time.strptime(timestamp_param, date_fmt)
     rescue ArgumentError
       nil
+    end
+
+    def elapsed_time(start_time)
+      Time.zone.now.to_f - start_time
     end
   end
 end
