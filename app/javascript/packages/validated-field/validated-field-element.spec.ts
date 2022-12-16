@@ -27,7 +27,7 @@ describe('ValidatedFieldElement', () => {
         <label for="zipcode">ZIP code</label>
         <span id="validated-field-hint">Required Field</span>
         <input
-          aria-invalid="false"
+          aria-invalid="${hasInitialError}"
           aria-describedby="validated-field-hint${hasInitialError ? ` ${errorMessageId}` : ''}"
           required="required"
           aria-required="true"
@@ -64,6 +64,16 @@ describe('ValidatedFieldElement', () => {
     input.closest('form')!.checkValidity();
 
     expect(element.querySelector('.usa-error-message')).to.not.exist();
+  });
+
+  it('does not needlessly update DOM state when validity does not change', async () => {
+    const element = createAndConnectElement();
+    const input = getByRole(element, 'textbox');
+    sinon.spy(input, 'setAttribute');
+
+    await userEvent.type(input, '5');
+
+    expect(input.setAttribute).not.to.have.been.called();
   });
 
   it('shows error state and focuses on form validation', () => {
@@ -221,6 +231,45 @@ describe('ValidatedFieldElement', () => {
 
       const message = getByText(element, 'This field is required');
       expect(message.style.maxWidth).to.equal('');
+    });
+  });
+
+  describe('#isValid', () => {
+    context('without initial error', () => {
+      it('is true', () => {
+        const element = createAndConnectElement({ hasInitialError: false });
+
+        expect(element.isValid).to.be.true();
+      });
+    });
+
+    context('with initial error', () => {
+      it('is false', () => {
+        const element = createAndConnectElement({ hasInitialError: true });
+
+        expect(element.isValid).to.be.false();
+      });
+    });
+
+    context('after becoming invalid', () => {
+      it('is false', () => {
+        const element = createAndConnectElement();
+        element.closest('form')!.checkValidity();
+
+        expect(element.isValid).to.be.false();
+      });
+    });
+
+    context('after becoming valid', () => {
+      it('is true', async () => {
+        const element = createAndConnectElement();
+        const input = getByRole(element, 'textbox');
+        element.closest('form')!.checkValidity();
+        await userEvent.type(input, '5');
+        element.closest('form')!.checkValidity();
+
+        expect(element.isValid).to.be.true();
+      });
     });
   });
 });
