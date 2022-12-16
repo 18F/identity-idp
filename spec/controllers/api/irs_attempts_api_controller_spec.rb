@@ -170,6 +170,7 @@ RSpec.describe Api::IrsAttemptsApiController do
         'IRS Attempt API: Events submitted',
         rendered_event_count: 3,
         authenticated: false,
+        elapsed_time: 0,
         success: false,
         timestamp: time.iso8601,
       )
@@ -190,6 +191,8 @@ RSpec.describe Api::IrsAttemptsApiController do
     end
 
     it 'renders encrypted events' do
+      allow_any_instance_of(described_class).to receive(:elapsed_time).and_return(0.1234)
+
       post :create, params: { timestamp: time.iso8601 }
 
       expect(response).to be_ok
@@ -201,6 +204,7 @@ RSpec.describe Api::IrsAttemptsApiController do
         'IRS Attempt API: Events submitted',
         rendered_event_count: existing_events.count,
         authenticated: true,
+        elapsed_time: 0.1234,
         success: true,
         timestamp: time.iso8601,
       )
