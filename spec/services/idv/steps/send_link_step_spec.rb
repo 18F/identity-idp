@@ -33,6 +33,7 @@ describe Idv::Steps::SendLinkStep do
       session: { sp: { issuer: service_provider.issuer } },
       params: params,
       current_user: user,
+      current_sp: service_provider,
       analytics: FakeAnalytics.new,
       url_options: {},
       request: request,
