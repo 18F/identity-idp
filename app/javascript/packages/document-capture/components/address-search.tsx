@@ -82,6 +82,7 @@ function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSear
       </ValidatedField>
       <SpinnerButton
         isWide
+        isBig
         ref={ref}
         type="submit"
         className="margin-y-5"
