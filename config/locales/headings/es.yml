@@ -60,6 +60,7 @@ es:
     session_timeout_warning: '¿Necesita más tiempo?'
     sign_in_with_sp: Iniciar sesión para continuar con %{sp}
     sign_in_without_sp: Iniciar sesión
+    sms_expird: Su código único ha expirado
     sp_handoff_bounced: Hubo un problema al conectarse a %{sp_name}
     totp_setup:
       new: Agregar una aplicación de autenticación

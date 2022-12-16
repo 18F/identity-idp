@@ -60,6 +60,7 @@ en:
     session_timeout_warning: Need more time?
     sign_in_with_sp: Sign in to continue to %{sp}
     sign_in_without_sp: Sign in
+    sms_expired: Your one-time code has expired
     sp_handoff_bounced: There was a problem connecting to %{sp_name}
     totp_setup:
       new: Add an authentication app
