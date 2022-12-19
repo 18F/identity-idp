@@ -1,3 +1,47 @@
 <% title t('titles.sms_expired') %>
 
+<%= render AlertIconComponent.new(icon_name: :error, class: 'display-block margin-bottom-4') %>
 <%= render PageHeadingComponent.new.with_content(t('titles.sms_expired')) %>
+<%= render ButtonComponent.new(
+      action: ->(**tag_options, &block) do
+        link_to(authenticator_setup_url, **tag_options, &block)
+      end,
+      class: 'usa-button margin-top-2 margin-bottom-2',
+    ).with_content(t('links.two_factor_authentication.send_another_code')) %>
+
+<%= render(
+          'shared/troubleshooting_options',
+          heading_tag: :h2,
+          heading: t('components.troubleshooting_options.default_heading'),
+          options: [
+            {
+              url: help_center_redirect_path(
+                category: 'verify-your-identity',
+                article: 'accepted-state-issued-identification',
+              ),
+              text: t('forms.two_factor.try_again'),
+              new_tab: true,
+            },
+            {
+              url: help_center_redirect_path(
+                category: 'verify-your-identity',
+                article: 'phone-number-and-phone-plan-in-your-name',
+              ),
+              text: t('two_factor_authentication.login_options_link_text'),
+              new_tab: true,
+            },
+            {
+              url: help_center_redirect_path(
+                category: 'verify-your-identity',
+                article: 'phone-number-and-phone-plan-in-your-name',
+              ),
+              text: t('links.contact_support', app_name: APP_NAME),
+              new_tab: true,
+            },
+            decorated_session.sp_name && {
+              url: idv_doc_auth_return_to_sp_path(location: 'missing_items'),
+              text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+              new_tab: true,
+            },
+          ].select(&:present?),
+        ) %>
