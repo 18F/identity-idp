@@ -17,7 +17,8 @@ feature 'sign up with backup code' do
     click_continue
 
     expect(page).to have_content(t('notices.backup_codes_configured'))
-    expect(current_path).to eq account_path
+
+    expect(current_path).to eq auth_method_confirmation_path
     expect(user.backup_code_configurations.count).to eq(10)
   end
 
@@ -66,6 +67,7 @@ feature 'sign up with backup code' do
     sign_up_and_set_password
     select_2fa_option('backup_code')
     click_continue
+    skip_second_mfa_prompt
 
     expect(page).to have_current_path(sign_up_completed_path)
 

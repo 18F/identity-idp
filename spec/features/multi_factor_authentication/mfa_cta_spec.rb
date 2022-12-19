@@ -4,19 +4,6 @@ feature 'mfa cta banner' do
   include DocAuthHelper
   include SamlAuthHelper
 
-  context 'When multiple factor authentication feature is disabled' do
-    it 'does not display a banner as the feature is disabled' do
-      visit_idp_from_sp_with_ial1(:oidc)
-      user = sign_up_and_set_password
-      select_2fa_option('backup_code')
-      click_continue
-
-      expect(MfaPolicy.new(user).multiple_factors_enabled?).to eq false
-      expect(page).to have_current_path(sign_up_completed_path)
-      expect(page).not_to have_content(t('mfa.second_method_warning.text'))
-    end
-  end
-
   describe 'multiple MFA handling' do
     it 'displays a banner after configuring a single MFA method' do
       visit_idp_from_sp_with_ial1(:oidc)

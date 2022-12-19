@@ -150,6 +150,7 @@ feature 'Sign in' do
     click_send_one_time_code
     fill_in_code_with_last_phone_otp
     click_submit_default
+    skip_second_mfa_prompt
     click_agree_and_continue
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
