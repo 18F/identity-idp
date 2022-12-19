@@ -21,13 +21,14 @@ export const ADDRESS_SEARCH_URL = '/api/addresses';
 
 function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSearchProps) {
   const validatedFieldRef = useRef<HTMLFormElement | null>(null);
-  const [noAddressErrors, setNoAddressErrors] = useState('');
+  const [noAddressFoundErrors, setNoAddressFoundErrors] = useState('');
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
   const { t } = useI18n();
 
   const handleAddressSearch = useCallback(
     async (event) => {
       event.preventDefault();
+      validatedFieldRef.current?.input?.setCustomValidity('custom validity message');
       validatedFieldRef.current?.reportValidity();
       if (unvalidatedAddressInput === '') {
         return;
@@ -38,9 +39,9 @@ function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSear
         json: { address: unvalidatedAddressInput },
       });
       if (addressCandidates.length === 0) {
-        setNoAddressErrors('ERROR, not a real address');
+        setNoAddressFoundErrors('ERROR, not a real address');
         validatedFieldRef.current?.input?.setCustomValidity('ERROR, not a real address');
-        validatedFieldRef.current?.input?.reportValidity();
+        validatedFieldRef.current?.reportValidity();
         return;
       }
       const bestMatchedAddress = addressCandidates[0];
@@ -69,7 +70,7 @@ function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSear
           hint={t('in_person_proofing.body.location.po_search.address_search_hint')}
         />
       </ValidatedField>
-      <>{noAddressErrors}</>
+      <>{noAddressFoundErrors}</>
       <Button type="submit" className="margin-y-5" onClick={handleAddressSearch}>
         {t('in_person_proofing.body.location.po_search.search_button')}
       </Button>
