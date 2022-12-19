@@ -76,7 +76,8 @@ feature 'idv gpo otp verification step', :js do
 
   context 'ThreatMetrix enabled' do
     before do
-      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).and_return(threatmetrix_enabled)
+      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
+        and_return(threatmetrix_enabled)
       allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
         and_return(threatmetrix_enabled)
       allow(IdentityConfig.store).to receive(:proofing_device_profiling_decisioning_enabled).
@@ -106,7 +107,6 @@ feature 'idv gpo otp verification step', :js do
     context 'ThreatMetrix evaluates as "reject"' do
       let(:threatmetrix_review_status) { 'reject' }
       it 'redirects to sad face after OTP' do
-        binding.pry
         sign_in_and_enter_otp
         expect(page).to have_current_path(idv_come_back_later_path)
       end

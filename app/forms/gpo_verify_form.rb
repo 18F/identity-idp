@@ -36,7 +36,7 @@ class GpoVerifyForm
         enqueued_at: gpo_confirmation_code&.code_sent_at,
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         pending_in_person_enrollment: pending_in_person_enrollment?,
-        threatmetrix_check_failed?: threatmetrix_check_failed?
+        threatmetrix_check_failed?: threatmetrix_check_failed?,
       },
     )
   end
