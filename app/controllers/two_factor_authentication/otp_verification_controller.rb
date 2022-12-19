@@ -58,7 +58,7 @@ module TwoFactorAuthentication
     end
 
     def landline_warning?
-      user_session[:phone_type] == 'landline' && two_factor_authentication_method == 'voice'
+      user_session[:phone_type] == 'landline' && two_factor_authentication_method == 'sms'
     end
 
     def confirm_voice_capability

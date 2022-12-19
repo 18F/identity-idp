@@ -49,7 +49,7 @@ module Users
     end
 
     def setup_voice_preference?
-      params[:otp_delivery_preference].to_s.strip == 'voice'
+      params[:otp_delivery_preference].to_s == 'voice'
     end
 
     def user_opted_remember_device_cookie
@@ -62,7 +62,7 @@ module Users
           id: nil,
           phone: @new_phone_form.phone,
           selected_delivery_method: @new_phone_form.otp_delivery_preference,
-          phone_type: @new_phone_form.phone_info.type,
+          phone_type: @new_phone_form.phone_info&.type,
         )
       else
         flash[:error] = t('errors.messages.phone_duplicate')

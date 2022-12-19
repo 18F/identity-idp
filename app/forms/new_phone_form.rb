@@ -18,6 +18,8 @@ class NewPhoneForm
   attr_accessor :phone, :international_code, :otp_delivery_preference,
                 :otp_make_default_number, :setup_voice_preference
 
+  alias_method :setup_voice_preference?, :setup_voice_preference
+
   def initialize(user, setup_voice_preference: false)
     self.user = user
     self.otp_delivery_preference = user.otp_delivery_preference
@@ -39,7 +41,7 @@ class NewPhoneForm
   end
 
   def delivery_preference_voice?
-    VendorStatus.new.vendor_outage?(:sms) || setup_voice_preference
+    VendorStatus.new.vendor_outage?(:sms) || setup_voice_preference?
   end
 
   # @return [Telephony::PhoneNumberInfo, nil]
