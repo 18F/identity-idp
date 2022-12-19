@@ -80,14 +80,12 @@ function ValidatedField(
 ) {
   const fieldRef = useRef<ValidatedFieldElement>();
   const instanceId = useInstanceId();
-  useImperativeHandle(forwardedRef, () => ({
-    reportValidity: () => fieldRef.current?.input?.reportValidity(),
-  }));
+  useImperativeHandle(forwardedRef, () => fieldRef.current?.input);
   useEffect(() => {
     if (fieldRef.current && fieldRef.current.input) {
       const { input } = fieldRef.current;
       input.checkValidity = () => {
-        let nextError: string = '';
+        let nextError: string = (input.validity.customError && input.validationMessage) || '';
         try {
           validate(input.value);
         } catch (error) {
