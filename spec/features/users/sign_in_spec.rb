@@ -278,7 +278,7 @@ feature 'Sign in' do
       pattern2 = Regexp.new(
         minutes_and + t(
           'datetime.dotiw.seconds.other',
-          count: (((seconds - 10) % 60)...seconds).to_a.join('|'),
+          count: (seconds - 10...seconds).to_a.join('|'),
         ),
       )
       expect(page).to have_content(pattern2, wait: 5)
