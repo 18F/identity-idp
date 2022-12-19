@@ -266,12 +266,22 @@ feature 'Sign in' do
     end
 
     scenario 'user sees warning before session times out' do
-      expect(page).to have_content(/14 minutes and 5[0-9] seconds/, wait: 5)
+      minutes_and = [
+        t('datetime.dotiw.minutes', count: IdentityConfig.store.session_timeout_in_minutes - 1),
+        t('datetime.dotiw.two_words_connector'),
+      ].join('')
 
-      time1 = page.text[/14 minutes and 5[0-9] seconds/]
-      sleep(1.5)
-      time2 = page.text[/14 minutes and 5[0-9] seconds/]
-      expect(time2).to be < time1
+      pattern1 = Regexp.new(minutes_and + t('datetime.dotiw.seconds.other', count: '\d+'))
+      expect(page).to have_content(pattern1, wait: 5)
+      time = page.text[pattern1]
+      seconds = time.split(t('datetime.dotiw.two_words_connector')).last[/\d+/].to_i
+      pattern2 = Regexp.new(
+        minutes_and + t(
+          'datetime.dotiw.seconds.other',
+          count: (seconds - 10...seconds).to_a.join('|'),
+        ),
+      )
+      expect(page).to have_content(pattern2, wait: 5)
     end
 
     scenario 'user can continue browsing' do
