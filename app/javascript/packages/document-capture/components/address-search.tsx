@@ -40,7 +40,7 @@ function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSear
       });
       if (addressCandidates.length === 0) {
         setNoAddressFoundErrors('ERROR, not a real address');
-        validatedFieldRef.current?.input?.setCustomValidity('ERROR, not a real address');
+        validatedFieldRef.current?.setCustomValidity('ERROR, not a real address');
         validatedFieldRef.current?.reportValidity();
         return;
       }
@@ -70,7 +70,6 @@ function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSear
           hint={t('in_person_proofing.body.location.po_search.address_search_hint')}
         />
       </ValidatedField>
-      <>{noAddressFoundErrors}</>
       <Button type="submit" className="margin-y-5" onClick={handleAddressSearch}>
         {t('in_person_proofing.body.location.po_search.search_button')}
       </Button>
