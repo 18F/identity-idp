@@ -19,7 +19,30 @@ class ValidatedFieldComponent < BaseComponent
     }.compact
   end
 
+  def aria_describedby_idrefs
+    idrefs = [*tag_options.dig(:input_html, :aria, :describedby)]
+    idrefs << error_id if has_errors?
+    idrefs << hint_id if has_hint?
+    idrefs
+  end
+
   private
+
+  def has_errors?
+    form.object.respond_to?(:errors) && form.object.errors.key?(name)
+  end
+
+  def has_hint?
+    tag_options.key?(:hint)
+  end
+
+  def error_id
+    "validated-field-error-#{unique_id}"
+  end
+
+  def hint_id
+    "validated-field-hint-#{unique_id}"
+  end
 
   def value_missing_error_message
     case input_type

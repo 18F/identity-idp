@@ -30,6 +30,13 @@
         "Country": "US",
         "Context": "primary"
       }
+    ],
+    "Licenses": [
+      {
+        "Number": "132465879",
+        "Issuer": "LA",
+        "Type": "drivers"
+      }
     ]
   }
 }

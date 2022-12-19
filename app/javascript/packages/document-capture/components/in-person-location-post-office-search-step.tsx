@@ -1,13 +1,12 @@
 import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import { PageHeading, SpinnerDots } from '@18f/identity-components';
+import { PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
+import useSWR from 'swr';
 import BackButton from './back-button';
-import LocationCollection from './location-collection';
-import LocationCollectionItem from './location-collection-item';
 import AnalyticsContext from '../context/analytics';
 import AddressSearch from './address-search';
-import InPersonContext from '../context/in-person';
+import InPersonLocations, { FormattedLocation } from './in-person-locations';
 
 interface PostOffice {
   address: string;
@@ -22,30 +21,15 @@ interface PostOffice {
   zip_code_5: string;
 }
 
-interface FormattedLocation {
-  formattedCityStateZip: string;
-  id: number;
-  name: string;
-  phone: string;
-  saturdayHours: string;
-  streetAddress: string;
-  sundayHours: string;
-  weekdayHours: string;
-}
 interface LocationQuery {
   streetAddress: string;
   city: string;
   state: string;
   zipCode: string;
+  address: string;
 }
 
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
-
-const getUspsLocations = (address) =>
-  request(LOCATIONS_URL, {
-    method: 'post',
-    json: { address },
-  });
 
 const formatLocation = (postOffices: PostOffice[]) => {
   const formattedLocations = [] as FormattedLocation[];
@@ -72,23 +56,32 @@ const snakeCase = (value: string) =>
     .toLowerCase();
 
 // snake case the keys of the location
-const prepToSend = (location: object) => {
+const transformKeys = (location: object, predicate: (key: string) => string) => {
   const sendObject = {};
   Object.keys(location).forEach((key) => {
-    sendObject[snakeCase(key)] = location[key];
+    sendObject[predicate(key)] = location[key];
   });
   return sendObject;
 };
 
+const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLocation[]> => {
+  const response = await request<PostOffice[]>(LOCATIONS_URL, {
+    method: 'post',
+    json: { address: transformKeys(address, snakeCase) },
+  });
+
+  return formatLocation(response);
+};
+
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
   const { t } = useI18n();
-  const [locationData, setLocationData] = useState([] as FormattedLocation[]);
-  const [foundAddress, setFoundAddress] = useState({} as LocationQuery);
+  const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
-  const [isLoadingComplete, setIsLoadingComplete] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
-  const { arcgisSearchEnabled } = useContext(InPersonContext);
+  const { data: locationResults } = useSWR([LOCATIONS_URL, foundAddress], ([, address]) =>
+    address ? requestUspsLocations(address) : null,
+  );
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
@@ -103,7 +96,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   // useCallBack here prevents unnecessary rerenders due to changing function identity
   const handleLocationSelect = useCallback(
     async (e: any, id: number) => {
-      const selectedLocation = locationData[id];
+      const selectedLocation = locationResults![id]!;
       const { name: selectedLocationName } = selectedLocation;
       setSubmitEventMetadata({ selected_location: selectedLocationName });
       onChange({ selectedLocationName });
@@ -115,7 +108,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       if (inProgress) {
         return;
       }
-      const selected = prepToSend(selectedLocation);
+      const selected = transformKeys(selectedLocation, snakeCase);
       setInProgress(true);
       await request(LOCATIONS_URL, {
         json: selected,
@@ -140,7 +133,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
           setInProgress(false);
         });
     },
-    [locationData, inProgress],
+    [locationResults, inProgress],
   );
 
   const handleFoundAddress = useCallback((address) => {
@@ -149,65 +142,23 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       city: address.city,
       state: address.state,
       zipCode: address.zip_code,
+      address: address.address,
     });
   }, []);
-
-  useEffect(() => {
-    let didCancel = false;
-    (async () => {
-      try {
-        const fetchedLocations = await getUspsLocations(prepToSend(foundAddress));
-
-        if (!didCancel) {
-          const formattedLocations = formatLocation(fetchedLocations);
-          setLocationData(formattedLocations);
-        }
-      } finally {
-        if (!didCancel) {
-          setIsLoadingComplete(true);
-        }
-      }
-    })();
-    return () => {
-      didCancel = true;
-    };
-  }, [foundAddress]);
-
-  let locationsContent: React.ReactNode;
-  if (!isLoadingComplete) {
-    locationsContent = <SpinnerDots />;
-  } else if (locationData.length < 1) {
-    locationsContent = <h4>{t('in_person_proofing.body.location.none_found')}</h4>;
-  } else {
-    locationsContent = (
-      <LocationCollection>
-        {locationData.map((item, index) => (
-          <LocationCollectionItem
-            key={`${index}-${item.name}`}
-            handleSelect={handleLocationSelect}
-            name={`${item.name} — ${t('in_person_proofing.body.location.post_office')}`}
-            streetAddress={item.streetAddress}
-            selectId={item.id}
-            formattedCityStateZip={item.formattedCityStateZip}
-            weekdayHours={item.weekdayHours}
-            saturdayHours={item.saturdayHours}
-            sundayHours={item.sundayHours}
-          />
-        ))}
-      </LocationCollection>
-    );
-  }
 
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.po_search.location')}</PageHeading>
       <p>{t('in_person_proofing.body.location.po_search.po_search_about')}</p>
-      {arcgisSearchEnabled && (
-        <AddressSearch onAddressFound={handleFoundAddress} registerField={registerField} />
+      <AddressSearch onAddressFound={handleFoundAddress} registerField={registerField} />
+      {locationResults && (
+        <InPersonLocations
+          locations={locationResults}
+          onSelect={handleLocationSelect}
+          address={foundAddress?.address || ''}
+        />
       )}
-      <p>{t('in_person_proofing.body.location.location_step_about')}</p>
-      {locationsContent}
-      <BackButton onClick={toPreviousStep} />
+      <BackButton includeBorder onClick={toPreviousStep} />
     </>
   );
 }

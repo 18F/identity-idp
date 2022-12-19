@@ -31,6 +31,7 @@ module Proofing
             vendor_name: 'lexisnexis:phone_finder',
             transaction_id: verification_response.conversation_id,
             reference: verification_response.reference,
+            vendor_workflow: config.phone_finder_workflow,
           )
         end
 

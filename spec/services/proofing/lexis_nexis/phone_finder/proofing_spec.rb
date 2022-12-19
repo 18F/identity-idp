@@ -36,6 +36,9 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
 
         expect(result.success?).to eq(true)
         expect(result.errors).to eq({})
+        expect(result.vendor_workflow).to(
+          eq(LexisNexisFixtures.example_config.phone_finder_workflow),
+        )
       end
 
       it 'is a successful rdp2 result' do
@@ -46,6 +49,9 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
 
         expect(result.success?).to eq(true)
         expect(result.errors).to eq({})
+        expect(result.vendor_workflow).to(
+          eq(LexisNexisFixtures.example_config.phone_finder_workflow),
+        )
       end
     end
 

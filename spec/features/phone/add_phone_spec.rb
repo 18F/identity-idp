@@ -111,7 +111,7 @@ describe 'Add a new phone number' do
       find('span', text: 'United States').click
     end
     expect(page).to have_content(t('two_factor_authentication.otp_delivery_preference.title'))
-    expect(page).to_not have_css('.usa-error-message')
+    expect(page).to have_css('.usa-error-message', text: '', visible: false)
     expect(hidden_select.value).to eq('US')
     click_continue
     expect(page.find(':focus')).to match_css('.phone-input__number')

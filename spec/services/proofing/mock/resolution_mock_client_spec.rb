@@ -27,6 +27,7 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           vendor_name: 'ResolutionMock',
           can_pass_with_additional_verification: false,
           attributes_requiring_additional_verification: [],
+          vendor_workflow: nil,
         )
       end
     end
@@ -49,6 +50,7 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           vendor_name: 'ResolutionMock',
           can_pass_with_additional_verification: false,
           attributes_requiring_additional_verification: [],
+          vendor_workflow: nil,
         )
       end
     end
@@ -71,6 +73,7 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           vendor_name: 'ResolutionMock',
           can_pass_with_additional_verification: false,
           attributes_requiring_additional_verification: [],
+          vendor_workflow: nil,
         )
       end
     end
@@ -93,6 +96,7 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           vendor_name: 'ResolutionMock',
           can_pass_with_additional_verification: false,
           attributes_requiring_additional_verification: [],
+          vendor_workflow: nil,
         )
       end
     end
@@ -115,6 +119,7 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           vendor_name: 'ResolutionMock',
           can_pass_with_additional_verification: false,
           attributes_requiring_additional_verification: [],
+          vendor_workflow: nil,
         )
       end
     end
@@ -137,6 +142,7 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           vendor_name: 'ResolutionMock',
           can_pass_with_additional_verification: false,
           attributes_requiring_additional_verification: [],
+          vendor_workflow: nil,
         )
       end
     end
@@ -159,6 +165,7 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           vendor_name: 'ResolutionMock',
           can_pass_with_additional_verification: false,
           attributes_requiring_additional_verification: [],
+          vendor_workflow: nil,
         )
       end
     end

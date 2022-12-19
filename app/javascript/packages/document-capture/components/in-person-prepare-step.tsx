@@ -1,14 +1,6 @@
 import { useContext, useState } from 'react';
 import type { MouseEventHandler } from 'react';
-import {
-  Alert,
-  Link,
-  IconList,
-  IconListItem,
-  PageHeading,
-  ProcessList,
-  ProcessListItem,
-} from '@18f/identity-components';
+import { Alert, Link, PageHeading, ProcessList, ProcessListItem } from '@18f/identity-components';
 import { removeUnloadProtection } from '@18f/identity-url';
 import { getConfigValue } from '@18f/identity-config';
 import { useI18n } from '@18f/identity-react-i18n';
@@ -64,44 +56,6 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
           headingUnstyled
         />
       </ProcessList>
-
-      <hr className="margin-bottom-4" />
-
-      <h2>{t('in_person_proofing.body.prepare.bring_title')}</h2>
-
-      <IconList>
-        <IconListItem
-          icon="check_circle"
-          title={t('in_person_proofing.body.prepare.bring_barcode_header')}
-        >
-          <p>{t('in_person_proofing.body.prepare.bring_barcode_info')}</p>
-        </IconListItem>
-
-        <IconListItem
-          icon="check_circle"
-          title={t('in_person_proofing.body.prepare.bring_id_header')}
-        >
-          <p>{t('in_person_proofing.body.prepare.bring_id_info_acceptable')}</p>
-          <ul>
-            <li>{t('in_person_proofing.body.prepare.bring_id_info_dl')}</li>
-            <li>{t('in_person_proofing.body.prepare.bring_id_info_id_card')}</li>
-          </ul>
-          <p>{t('in_person_proofing.body.prepare.bring_id_info_no_other_forms')}</p>
-        </IconListItem>
-
-        <IconListItem
-          icon="check_circle"
-          title={t('in_person_proofing.process.proof_of_address.heading')}
-        >
-          <p>{t('in_person_proofing.process.proof_of_address.info')}</p>
-          <ul>
-            {t(['in_person_proofing.process.proof_of_address.acceptable_proof']).map((proof) => (
-              <li key={proof}>{proof}</li>
-            ))}
-          </ul>
-          <p>{t('in_person_proofing.process.proof_of_address.physical_or_digital_copy')}</p>
-        </IconListItem>
-      </IconList>
       {flowPath === 'hybrid' && <FormStepsButton.Continue />}
       {inPersonURL && flowPath === 'standard' && (
         <div className="margin-y-5">

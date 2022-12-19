@@ -15,7 +15,7 @@
             },
             false,
           ) %>
-        <lg-validated-field>
+        <lg-validated-field error-id="validated-field-error-<%= unique_id %>">
           <%= f.simple_fields_for name do |p| %>
             <%= p.input(
                   :month,
@@ -33,7 +33,6 @@
                     maxLength: 2,
                     aria: {
                       invalid: false,
-                      describedby: "validated-field-error-#{unique_id}",
                       labelledby: [
                         "memorable-date-month-label-#{unique_id}",
                         "memorable-date-month-hint-#{unique_id}",
@@ -41,7 +40,7 @@
                     },
                     value: month,
                   },
-                  error: { id: "validated-field-error-#{unique_id}" },
+                  error: false,
                   required: required,
                 ) %>
           <% end %>
@@ -49,7 +48,7 @@
             <%= t('in_person_proofing.form.state_id.date_hint.month') %>
           </span>
           </lg-validated-field>
-          <lg-validated-field>
+          <lg-validated-field error-id="validated-field-error-<%= unique_id %>">
           <%= f.simple_fields_for name do |p| %>
           <%= p.input(
                 :day,
@@ -67,7 +66,6 @@
                   maxLength: 2,
                   aria: {
                     invalid: false,
-                    describedby: "validated-field-error-#{unique_id}",
                     labelledby: [
                       "memorable-date-day-label-#{unique_id}",
                       "memorable-date-day-hint-#{unique_id}",
@@ -75,7 +73,7 @@
                   },
                   value: day,
                 },
-                error: { id: "validated-field-error-#{unique_id}" },
+                error: false,
                 required: required,
               ) %>
           <% end %>
@@ -83,7 +81,7 @@
             <%= t('in_person_proofing.form.state_id.date_hint.day') %>
           </span>
           </lg-validated-field>
-          <lg-validated-field>
+          <lg-validated-field error-id="validated-field-error-<%= unique_id %>">
           <%= f.simple_fields_for name do |p| %>
           <%= p.input(
                 :year,
@@ -101,7 +99,6 @@
                   maxLength: 4,
                   aria: {
                     invalid: false,
-                    describedby: "validated-field-error-#{unique_id}",
                     labelledby: [
                       "memorable-date-year-label-#{unique_id}",
                       "memorable-date-year-hint-#{unique_id}",
@@ -109,7 +106,7 @@
                   },
                   value: year,
                 },
-                error: { id: "validated-field-error-#{unique_id}" },
+                error: false,
                 required: required,
               ) %>
           <% end %>
@@ -119,4 +116,4 @@
         </lg-validated-field>
     </div>
   <% end -%>
-  <div class="usa-error-message" id="validated-field-error-<%= unique_id %>" style="display:none;"></div>
+<div id="validated-field-error-<%= unique_id %>" class="usa-error-message display-none"></div>

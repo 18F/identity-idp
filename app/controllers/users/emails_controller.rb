@@ -111,9 +111,13 @@ module Users
     end
 
     def send_delete_email_notification
+      # These emails must be delivered now because the EmailAddress record will not exist
+      # when run asynchronously
       @current_confirmed_emails.each do |confirmed_email|
+        # rubocop:disable IdentityIdp/MailLaterLinter
         UserMailer.with(user: current_user, email_address: confirmed_email).
-          email_deleted.deliver_now_or_later
+          email_deleted.deliver_now
+        # rubocop:enable IdentityIdp/MailLaterLinter
       end
     end
   end
