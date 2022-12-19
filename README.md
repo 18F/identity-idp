@@ -191,7 +191,13 @@ If you'd like to work with the previous implementation see the [Docker documenta
 
 ### Linting
 
-Run `make lint`
+Run `make lint` to look for errors; `make lintfix` can repair some linting errors.
+
+### Configuration variables
+
+Default configuration values &mdash; like feature flags, timeout settings, and third-party connection details &mdash; are found in [`config/application.yml.default`](config/application.yml/default). From these defaults the file `config/application.yml` is created during `make setup` for use during local development. [See the handbook](https://handbook.login.gov/articles/appdev-secrets-configuration.html).
+
+In deployed environments, configuration values are managed with the [app-s3-secret](https://github.com/18F/identity-devops/blob/main/bin/app-s3-secret) script. [See the handbook](https://handbook.login.gov/articles/devops-scripts.html#app-s3-secret).
 
 ### Running jobs
 

@@ -7,6 +7,7 @@ module OpenidConnect
     include AuthorizationCountConcern
     include BillableEventTrackable
     include InheritedProofingConcern
+    include ThreatmetrixReviewConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :pre_validate_authorize_form, only: [:index]
@@ -20,6 +21,7 @@ module OpenidConnect
     before_action :bump_auth_count, only: [:index]
 
     def index
+      return redirect_to_threatmetrix_review if threatmetrix_review_pending_for_ial2_request?
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
       return redirect_to(sign_up_completed_url) if needs_completion_screen_reason
       link_identity_to_service_provider
@@ -82,6 +84,11 @@ module OpenidConnect
     def redirect_to_account_or_verify_profile_url
       return redirect_to(account_or_verify_profile_url) if profile_needs_verification?
       redirect_to(idv_url) if identity_needs_verification?
+    end
+
+    def threatmetrix_review_pending_for_ial2_request?
+      return false unless @authorize_form.ial2_or_greater?
+      threatmetrix_review_pending?
     end
 
     def profile_or_identity_needs_verification?

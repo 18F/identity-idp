@@ -40,7 +40,7 @@ interface LocationQuery {
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
 
 const getUspsLocations = (address) =>
-  request(LOCATIONS_URL, {
+  request<PostOffice[]>(LOCATIONS_URL, {
     method: 'post',
     json: { address },
   });

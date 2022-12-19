@@ -3,7 +3,7 @@ module Proofing
     attr_reader :success, :errors, :exception, :vendor_name, :transaction_id, :verified_attributes,
                 :failed_result_can_pass_with_additional_verification,
                 :attributes_requiring_additional_verification,
-                :reference
+                :reference, :vendor_workflow
 
     def initialize(
       success:,
@@ -13,7 +13,8 @@ module Proofing
       transaction_id: '',
       reference: '',
       failed_result_can_pass_with_additional_verification: false,
-      attributes_requiring_additional_verification: []
+      attributes_requiring_additional_verification: [],
+      vendor_workflow: nil
     )
       @success = success
       @errors = errors
@@ -25,6 +26,7 @@ module Proofing
         failed_result_can_pass_with_additional_verification
       @attributes_requiring_additional_verification =
         attributes_requiring_additional_verification
+      @vendor_workflow = vendor_workflow
     end
 
     def success?
@@ -50,6 +52,7 @@ module Proofing
         can_pass_with_additional_verification: failed_result_can_pass_with_additional_verification,
         attributes_requiring_additional_verification: attributes_requiring_additional_verification,
         vendor_name: vendor_name,
+        vendor_workflow: vendor_workflow,
       }
     end
   end

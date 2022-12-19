@@ -66,7 +66,6 @@ describe Idv::Steps::VerifyStep do
           threatmetrix_session_id: nil,
           user_id: user.id,
           request_ip: request.remote_ip,
-          issuer: anything,
         )
 
       step.call
