@@ -46,7 +46,11 @@ class ValidatedFieldElement extends HTMLElement {
   }
 
   get descriptorIdRefs(): string[] {
-    return this?.input?.getAttribute('aria-describedby')?.split(' ').filter(Boolean) || [];
+    return this.input?.getAttribute('aria-describedby')?.split(' ').filter(Boolean) || [];
+  }
+
+  get isValid(): boolean {
+    return this.input?.getAttribute('aria-invalid') !== 'true';
   }
 
   /**
@@ -88,6 +92,10 @@ class ValidatedFieldElement extends HTMLElement {
    * @param isValid Whether input is valid.
    */
   setInputIsValid(isValid: boolean) {
+    if (isValid === this.isValid) {
+      return;
+    }
+
     this.input?.classList.toggle('usa-input--error', !isValid);
     this.input?.setAttribute('aria-invalid', String(!isValid));
 
