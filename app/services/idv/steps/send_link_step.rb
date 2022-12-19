@@ -65,7 +65,12 @@ module Idv
           to: formatted_destination_phone,
           link: link(session_uuid),
           country_code: Phonelib.parse(formatted_destination_phone).country,
+          sp_or_app_name: sp_or_app_name,
         )
+      end
+
+      def sp_or_app_name
+        current_sp&.friendly_name.presence || APP_NAME
       end
 
       def form_submit

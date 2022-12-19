@@ -1,5 +1,6 @@
 import sinon from 'sinon';
 import { render } from '@testing-library/react';
+import { computeAccessibleDescription } from 'dom-accessibility-api';
 import ValidatedField, { getErrorMessages } from './validated-field';
 
 describe('getErrorMessages', () => {
@@ -77,20 +78,18 @@ describe('ValidatedField', () => {
 
   it('is described by associated error message', () => {
     const validate = sinon.stub().throws(new Error('oops'));
-    const { getByRole, baseElement, rerender } = render(<ValidatedField validate={validate} />);
+    const { getByRole, rerender } = render(<ValidatedField validate={validate} />);
 
     const input = getByRole('textbox') as HTMLInputElement;
     input.reportValidity();
 
-    const errorMessage = baseElement.querySelector(`#${input.getAttribute('aria-describedby')}`)!;
-    expect(errorMessage.classList.contains('usa-error-message')).to.be.true();
-    expect(errorMessage.textContent).to.equal('oops');
+    expect(computeAccessibleDescription(input)).to.equal('oops');
 
     validate.resetBehavior();
     rerender(<ValidatedField validate={validate} required />);
     input.reportValidity();
 
-    expect(errorMessage.textContent).to.equal('simple_form.required.text');
+    expect(computeAccessibleDescription(input)).to.equal('simple_form.required.text');
   });
 
   it('merges classNames', () => {

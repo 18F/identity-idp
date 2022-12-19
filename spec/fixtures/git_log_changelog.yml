@@ -41,7 +41,7 @@ squashed_commit_with_multiple_commits:
 
     * add alert
 
-    * changelog: Improvements, Webauthn, Provide better error flow for users who may not be able to leverage webauthn (LG-5515)
+    * changelog: User-Facing Improvements, Webauthn, Provide better error flow for users who may not be able to leverage webauthn (LG-5515)
 
     * fix linting, debug
     Co-authored-by: Jessica Dembe <jessica.dembe@gsa.gov>
@@ -51,11 +51,11 @@ squashed_commit_with_multiple_commits:
   commit_messages:
     - '* add check to see if platform is available'
     - '* add alert'
-    - '* changelog: Improvements, Webauthn, Provide better error flow for users who may not be able to leverage webauthn (LG-5515)'
+    - '* changelog: User-Facing Improvements, Webauthn, Provide better error flow for users who may not be able to leverage webauthn (LG-5515)'
     - '* fix linting, debug'
     - 'Co-authored-by: Jessica Dembe <jessica.dembe@gsa.gov>'
     - 'Co-authored-by: Zach Margolis <zachary.margolis@gsa.gov>'
-  category: 'Improvements'
+  category: 'User-Facing Improvements'
   subcategory: 'Webauthn'
   change: 'Provide better error flow for users who may not be able to leverage webauthn (LG-5515)'
   pr_number: '5976'

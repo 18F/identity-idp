@@ -21,8 +21,8 @@ en:
       voice: Hello! Your %{app_name} one-time code is, %{code}. Your one-time code is,
         %{code}. Again, your one-time code is %{code}. This code expires in
         %{expiration} minutes.
-    doc_auth_link: "%{link} You've requested to verify your identity on a mobile
-      phone.  Please take a photo of your state issued ID."
+    doc_auth_link: |-
+      %{app_name}: %{link} You're verifying your identity to access %{sp_or_app_name}. Take a photo of your ID to continue.
     error:
       friendly_message:
         daily_voice_limit_reached: Your one-time code failed to send because you
