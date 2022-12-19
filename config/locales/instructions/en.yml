@@ -71,7 +71,8 @@ en:
           in %{expiration} minutes.
       voice:
         confirm_code_html: Want us to call you again? %{resend_code_link}
-        number_message_html: We just called you at %{number}.
+        number_message_html: We made a call with a one-time code to %{number}. This code
+          will expire in 10 minutes.
       webauthn:
         confirm_webauthn_html: Present the security key that you associated with your account.
         confirm_webauthn_only_html: This app requires a higher level of security. You
