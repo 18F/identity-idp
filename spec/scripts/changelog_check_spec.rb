@@ -104,7 +104,7 @@ RSpec.describe 'scripts/changelog_check' do
       formatted_changelog = format_changelog(changelogs)
 
       expect(formatted_changelog).to eq <<~CHANGELOG.chomp
-        ## Improvements
+        ## User-Facing Improvements
         - Webauthn: Provide better error flow for users who may not be able to leverage webauthn (LG-5515) ([#5976](https://github.com/18F/identity-idp/pull/5976))
 
         ## Internal

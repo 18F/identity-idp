@@ -63,7 +63,7 @@ changelog: [Category], [Subcategory], [Description]
 Replace `[Category]`, `[Subcategory]`, and `[Description]` with text relevant for your changes:
 
 - **Category** must be one of the following:
-   - **Improvements** are user-facing improvements to the application experience, such as a new UI component or updated text.
+   - **User-Facing Improvements** are improvements to the application experience benefitting the end-user, such as a new UI component or updated text.
    - **Bug Fixes** are corrections to a broken behavior, such as preventing a raised exception.
    - **Internal** are changes which benefit the Login.gov team, such as analytics or code quality.
    - **Upcoming Features** are iterations contributing to a feature which has not yet been enabled for users in production.
