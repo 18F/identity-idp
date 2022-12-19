@@ -56,13 +56,14 @@ const snakeCase = (value: string) =>
     .toLowerCase();
 
 // snake case the keys of the location
-const transformKeys = (location: object, predicate: (key: string) => string) => {
-  const sendObject = {};
-  Object.keys(location).forEach((key) => {
-    sendObject[predicate(key)] = location[key];
-  });
-  return sendObject;
-};
+const transformKeys = (location: object, predicate: (key: string) => string) =>
+  Object.keys(location).reduce(
+    (acc, key) => ({
+      [predicate(key)]: location[key],
+      ...acc,
+    }),
+    {},
+  );
 
 const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLocation[]> => {
   const response = await request<PostOffice[]>(LOCATIONS_URL, {
@@ -73,15 +74,89 @@ const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLo
   return formatLocation(response);
 };
 
+const ADDRESS_SEARCH_URL = '/api/addresses';
+
+function requestAddressCandidates(unvalidatedAddressInput: string): Promise<Location[]> {
+  return request<Location[]>(ADDRESS_SEARCH_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    json: { address: unvalidatedAddressInput },
+  });
+}
+
+function useUspsLocations() {
+  const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
+  const { data: locationResults, isLoading: isLoadingLocations } = useSWR(
+    [LOCATIONS_URL, foundAddress],
+    ([, address]) => (address ? requestUspsLocations(address) : null),
+  );
+  const handleFoundAddress = useCallback((address) => {
+    setFoundAddress({
+      streetAddress: address.street_address,
+      city: address.city,
+      state: address.state,
+      zipCode: address.zip_code,
+      address: address.address,
+    });
+  }, []);
+
+  const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
+  function onAddressChanged(event) {
+    const target = event.target as HTMLInputElement;
+    setUnvalidatedAddressInput(target.value);
+  }
+
+  const validatedFieldRef = useRef<HTMLFormElement | null>(null);
+  const [addressQuery, setAddressQuery] = useState('');
+  const { data: addressCandidates, isLoading: isLoadingCandidates } = useSWR(
+    [ADDRESS_SEARCH_URL, addressQuery],
+    () => (addressQuery ? requestAddressCandidates(unvalidatedAddressInput) : null),
+  );
+  const handleAddressSearch = useCallback(
+    (event) => {
+      event.preventDefault();
+      validatedFieldRef.current?.reportValidity();
+      if (unvalidatedAddressInput === '') {
+        return;
+      }
+
+      setAddressQuery(unvalidatedAddressInput);
+    },
+    [unvalidatedAddressInput],
+  );
+
+  useEffect(() => {
+    if (addressCandidates) {
+      const bestMatchedAddress = addressCandidates[0];
+      handleFoundAddress(bestMatchedAddress);
+    }
+  }, [addressCandidates]);
+
+  return [
+    foundAddress,
+    locationResults,
+    unvalidatedAddressInput,
+    validatedFieldRef,
+    isLoadingLocations || isLoadingCandidates,
+    onAddressChanged,
+    handleAddressSearch,
+  ];
+}
+
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
   const { t } = useI18n();
-  const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
-  const { data: locationResults } = useSWR([LOCATIONS_URL, foundAddress], ([, address]) =>
-    address ? requestUspsLocations(address) : null,
-  );
+  const [
+    foundAddress,
+    locationResults,
+    unvalidatedAddressInput,
+    validatedFieldRef,
+    isLoading,
+    onAddressChanged,
+    handleAddressSearch,
+  ] = useUspsLocations();
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
@@ -136,21 +211,18 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
     [locationResults, inProgress],
   );
 
-  const handleFoundAddress = useCallback((address) => {
-    setFoundAddress({
-      streetAddress: address.street_address,
-      city: address.city,
-      state: address.state,
-      zipCode: address.zip_code,
-      address: address.address,
-    });
-  }, []);
-
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.po_search.location')}</PageHeading>
       <p>{t('in_person_proofing.body.location.po_search.po_search_about')}</p>
-      <AddressSearch onAddressFound={handleFoundAddress} registerField={registerField} />
+      <AddressSearch
+        registerField={registerField}
+        unvalidatedAddressInput={unvalidatedAddressInput}
+        onAddressChanged={onAddressChanged}
+        validatedFieldRef={validatedFieldRef}
+        onSearch={handleAddressSearch}
+        loading={isLoading}
+      />
       {locationResults && (
         <InPersonLocations
           locations={locationResults}
