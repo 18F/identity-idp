@@ -42,7 +42,7 @@ module Idv
           if result.extra[:pending_in_person_enrollment]
             redirect_to idv_in_person_ready_to_verify_url
           elsif result.extra[:threatmetrix_check_failed]
-            redirect_to idv_come_back_later_url
+            redirect_to idv_setup_errors_url
           else
             event, disavowal_token = create_user_event_with_disavowal(:account_verified)
             UserAlerts::AlertUserAboutAccountVerified.call(

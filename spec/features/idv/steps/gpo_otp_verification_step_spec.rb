@@ -108,7 +108,7 @@ feature 'idv gpo otp verification step', :js do
       let(:threatmetrix_review_status) { 'reject' }
       it 'redirects to sad face after OTP' do
         sign_in_and_enter_otp
-        expect(page).to have_current_path(idv_come_back_later_path)
+        expect(page).to have_current_path(idv_setup_errors_path)
       end
       it 'allows requesting a new letter' do
         resend_letter
