@@ -5,7 +5,7 @@ require 'uuid'
 class SamlIdpController < ApplicationController
   # This needs to precede sign_out_if_forceauthn_is_true_and_user_is_signed_in
   # which is added when SamlIdpAuthConcern is included
-  skip_before_action :verify_authenticity_token, except: [:auth]
+  skip_before_action :verify_authenticity_token, only: [:logout, :remotelogout]
 
   include SamlIdp::Controller
   include SamlIdpAuthConcern
