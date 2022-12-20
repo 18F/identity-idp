@@ -42,7 +42,7 @@ describe Idv::Steps::DocumentCaptureStep do
 
   let(:default_sdk_version) { IdentityConfig.store.idv_acuant_sdk_version_default }
   let(:alternate_sdk_version) { IdentityConfig.store.idv_acuant_sdk_version_alternate }
-  
+
   subject(:step) do
     Idv::Steps::DocumentCaptureStep.new(flow)
   end
