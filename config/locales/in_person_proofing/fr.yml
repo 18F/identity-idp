@@ -31,6 +31,7 @@ fr:
           (Maryland), vous pourrez peut-être vérifier votre identité en personne
           dans certains bureaux de poste.
       location:
+        contact_info_heading: Information de contact
         inline_error: Indiquez la ville, l’État et le code postal.
         location_button: Sélectionner
         location_step_about: Si vous ne parvenez pas à ajouter votre pièce d’identité,
@@ -54,11 +55,13 @@ fr:
             Pour l’accessibilité des installations, utilisez les informations de
             contact indiquées pour l’emplacement du bureau de poste.
           search_button: Rechercher
+        phone: 'Téléphone:'
         post_office: Bureau de Poste
         retail_hours_heading: Heures de vente au détail
         retail_hours_sat: 'Sam:'
         retail_hours_sun: 'Dim:'
         retail_hours_weekday: 'Lundi à Vendredi:'
+        tty: 'TTY:'
       prepare:
         alert_selected_post_office: Vous avez sélectionné le bureau de poste de %{name}.
         privacy_disclaimer: '%{app_name} est un site gouvernemental sécurisé. Nous et le

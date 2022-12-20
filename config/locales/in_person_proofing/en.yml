@@ -26,6 +26,7 @@ en:
         prompt_detail: If you are located near Washington D.C. or Baltimore, MD, you may
           be able to verify your ID in person at limited post office locations.
       location:
+        contact_info_heading: Contact Information
         inline_error: Include a city, state, and ZIP code
         location_button: Select
         location_step_about: If you are having trouble adding your ID, you may be able
@@ -47,11 +48,13 @@ en:
             a different address. For facility accessibility, use the contact
             information listed for the Post Office location.
           search_button: Search
+        phone: 'Phone:'
         post_office: Post Office ™
         retail_hours_heading: Retail Hours
         retail_hours_sat: 'Sat:'
         retail_hours_sun: 'Sun:'
         retail_hours_weekday: 'Monday to Friday:'
+        tty: 'TTY:'
       prepare:
         alert_selected_post_office: You’ve selected the %{name} Post Office.
         privacy_disclaimer: '%{app_name} is a secure, government website. We and the
