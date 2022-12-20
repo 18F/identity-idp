@@ -20,6 +20,7 @@ RSpec.describe Telephony::OtpSender do
         to: to,
         otp: otp,
         expiration: expiration,
+        otp_format: otp_format,
         channel: channel,
         domain: domain,
         country_code: country_code,
@@ -30,6 +31,7 @@ RSpec.describe Telephony::OtpSender do
     let(:to) { '+1 (202) 262-1234' }
     let(:otp) { '123456' }
     let(:expiration) { 5 }
+    let(:otp_format) { I18n.t('telephony.format_type.digit') }
     let(:domain) { 'login.gov' }
     let(:country_code) { 'US' }
 
@@ -94,6 +96,7 @@ RSpec.describe Telephony::OtpSender do
         to: to,
         otp: otp,
         expiration: expiration,
+        otp_format: otp_format,
         channel: channel,
         domain: domain,
         country_code: country_code,
@@ -104,6 +107,7 @@ RSpec.describe Telephony::OtpSender do
     let(:to) { '+1 (202) 262-1234' }
     let(:otp) { '123456' }
     let(:expiration) { 5 }
+    let(:otp_format) { I18n.t('telephony.format_type.digit') }
     let(:domain) { 'login.gov' }
     let(:country_code) { 'US' }
 
@@ -159,46 +163,71 @@ RSpec.describe Telephony::OtpSender do
 
     context 'for voice' do
       let(:channel) { :voice }
+      context 'for signin/signup' do
+        it 'sends an authentication OTP with Pinpoint Voice' do
+          message = <<~XML.squish
+            <speak>
+              <prosody rate='slow'>
+                Hello! Your 6-digit #{APP_NAME} one-time code is,
+                1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
+                4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
+          XML
 
-      it 'sends an authentication OTP with Pinpoint Voice' do
-        message = <<~XML.squish
-          <speak>
-            <prosody rate='slow'>
-              Hello! Your #{APP_NAME} one-time code is,
-              1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
-              4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
-        XML
+          adapter = instance_double(Telephony::Pinpoint::VoiceSender)
+          expect(adapter).to receive(:send).with(
+            message: start_with(message),
+            to: to,
+            otp: otp,
+            country_code: country_code,
+          )
+          expect(Telephony::Pinpoint::VoiceSender).to receive(:new).and_return(adapter)
 
-        adapter = instance_double(Telephony::Pinpoint::VoiceSender)
-        expect(adapter).to receive(:send).with(
-          message: start_with(message),
-          to: to,
-          otp: otp,
-          country_code: country_code,
-        )
-        expect(Telephony::Pinpoint::VoiceSender).to receive(:new).and_return(adapter)
+          subject.send_confirmation_otp
+        end
 
-        subject.send_confirmation_otp
+        it 'sends a confirmation OTP with Pinpoint Voice' do
+          message = <<~XML.squish
+            <speak>
+              <prosody rate='slow'>
+                Hello! Your 6-digit #{APP_NAME} one-time code is,
+                1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
+                4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
+          XML
+
+          adapter = instance_double(Telephony::Pinpoint::VoiceSender)
+          expect(adapter).to receive(:send).with(
+            message: start_with(message),
+            to: to,
+            otp: otp,
+            country_code: country_code,
+          )
+          expect(Telephony::Pinpoint::VoiceSender).to receive(:new).and_return(adapter)
+          subject.send_confirmation_otp
+        end
       end
 
-      it 'sends a confirmation OTP with Pinpoint Voice' do
-        message = <<~XML.squish
-          <speak>
-            <prosody rate='slow'>
-              Hello! Your #{APP_NAME} one-time code is,
-              1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
-              4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
-        XML
+      context 'for Idv phone confirmation' do
+        let(:otp_format) { I18n.t('telephony.format_type.character') }
 
-        adapter = instance_double(Telephony::Pinpoint::VoiceSender)
-        expect(adapter).to receive(:send).with(
-          message: start_with(message),
-          to: to,
-          otp: otp,
-          country_code: country_code,
-        )
-        expect(Telephony::Pinpoint::VoiceSender).to receive(:new).and_return(adapter)
-        subject.send_confirmation_otp
+        it 'sends a confirmation OTP with Pinpoint Voice for Idv' do
+          message = <<~XML.squish
+            <speak>
+              <prosody rate='slow'>
+                Hello! Your 6-character #{APP_NAME} one-time code is,
+                1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
+                4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
+          XML
+
+          adapter = instance_double(Telephony::Pinpoint::VoiceSender)
+          expect(adapter).to receive(:send).with(
+            message: start_with(message),
+            to: to,
+            otp: otp,
+            country_code: country_code,
+          )
+          expect(Telephony::Pinpoint::VoiceSender).to receive(:new).and_return(adapter)
+          subject.send_confirmation_otp
+        end
       end
 
       it 'sends valid XML' do
@@ -224,6 +253,7 @@ RSpec.describe Telephony::OtpSender do
         otp: otp,
         channel: channel,
         expiration: Time.zone.now,
+        otp_format: I18n.t('telephony.format_type.digit'),
         domain: 'login.gov',
         country_code: country_code,
         extra_metadata: {},
@@ -279,6 +309,7 @@ RSpec.describe Telephony::OtpSender do
         otp: 'ABC123',
         channel: channel,
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
+        otp_format: I18n.t('telephony.format_type.digit'),
         domain: 'secure.login.gov',
         country_code: 'US',
         extra_metadata: {},
@@ -349,12 +380,14 @@ RSpec.describe Telephony::OtpSender do
 
   describe '#confirmation_message' do
     let(:channel) { nil }
+    let(:otp_format) { I18n.t('telephony.format_type.digit') }
     let(:sender) do
       Telephony::OtpSender.new(
         to: '+18888675309',
         otp: 'ABC123',
         channel: channel,
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
+        otp_format: otp_format,
         domain: 'secure.login.gov',
         country_code: 'US',
         extra_metadata: {},
