@@ -54,26 +54,6 @@ feature 'idv gpo otp verification step', :js do
     resend_letter
   end
 
-  context 'with gpo feature disabled' do
-    before do
-      allow(IdentityConfig.store).to receive(:enable_gpo_verification?).and_return(true)
-    end
-
-    it 'allows a user to verify their account for an existing pending profile' do
-      sign_in_live_with_2fa(user)
-
-      expect(current_path).to eq idv_gpo_verify_path
-      expect(page).to have_content t('idv.messages.gpo.resend')
-
-      gpo_confirmation_code
-      fill_in t('forms.verify_profile.name'), with: otp
-      click_button t('forms.verify_profile.submit')
-
-      expect(user.events.account_verified.size).to eq 1
-      expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
-    end
-  end
-
   context 'ThreatMetrix enabled' do
     before do
       allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
@@ -159,5 +139,25 @@ feature 'idv gpo otp verification step', :js do
 
     expect(confirmation_code.otp_fingerprint).to eq(otp_fingerprint)
     expect(confirmation_code.profile).to eq(profile)
+  end
+
+  context 'with gpo feature disabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:enable_gpo_verification?).and_return(true)
+    end
+
+    it 'allows a user to verify their account for an existing pending profile' do
+      sign_in_live_with_2fa(user)
+
+      expect(current_path).to eq idv_gpo_verify_path
+      expect(page).to have_content t('idv.messages.gpo.resend')
+
+      gpo_confirmation_code
+      fill_in t('forms.verify_profile.name'), with: otp
+      click_button t('forms.verify_profile.submit')
+
+      expect(user.events.account_verified.size).to eq 1
+      expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
+    end
   end
 end
