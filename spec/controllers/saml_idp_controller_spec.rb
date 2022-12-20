@@ -873,42 +873,16 @@ describe SamlIdpController do
       end
     end
 
-    context 'saml_internal_post feature configuration is set to true with ForceAuthn' do
-      let(:user) { create(:user, :signed_up) }
-
-      it 'signs the user out if a session is active and request path is not "finalauthpost"' do
+    context 'ForceAuthn set to true' do
+      it 'signs the user out if a session is active' do
         user = create(:user, :signed_up)
         sign_in(user)
         generate_saml_response(user, saml_settings(overrides: { force_authn: true }))
+
         # would be 200 if the user's session persists
         expect(response.status).to eq(302)
         # implicit test of request storage since request_id would be missing otherwise
         expect(response.location).to match(%r{#{root_url}\?request_id=.+})
-      end
-
-      it 'skips signing out the user when request is from "finalauthpost"' do
-        link_user_to_identity(user, true, saml_settings(overrides: { force_authn: true }))
-        sign_in(user)
-        saml_final_post_auth(saml_request(saml_settings(overrides: { force_authn: true })))
-        expect(response).to_not be_redirect
-        expect(response.status).to eq(200)
-      end
-    end
-
-    context 'saml_internal_post feature configuration is set to false' do
-      let(:user) { create(:user, :signed_up) }
-
-      before { allow(IdentityConfig.store).to receive(:saml_internal_post).and_return(false) }
-
-      context 'ForceAuthn set to true' do
-        it 'signs the user out if a session is active' do
-          sign_in(user)
-          generate_saml_response(user, saml_settings(overrides: { force_authn: true }))
-          # would be 200 if the user's session persists
-          expect(response.status).to eq(302)
-          # implicit test of request storage since request_id would be missing otherwise
-          expect(response.location).to match(%r{#{root_url}\?request_id=.+})
-        end
       end
     end
 
@@ -2078,19 +2052,17 @@ describe SamlIdpController do
     end
   end
 
-  # temporarily commenting out this spec because it needs to be updated to work
-  # describe 'before_actions' do
-  #   it 'includes the appropriate before_actions' do
-  #     expect(subject).to have_actions(
-  #       :before,
-  #       :disable_caching,
-  #       :validate_saml_request,
-  #       :validate_service_provider_and_authn_context,
-  #       :store_saml_request,
-  #       [:verify_authenticity_token, only: [:logout, :remotelogout]]
-  #     )
-  #   end
-  # end
+  describe 'before_actions' do
+    it 'includes the appropriate before_actions' do
+      expect(subject).to have_actions(
+        :before,
+        :disable_caching,
+        :validate_saml_request,
+        :validate_service_provider_and_authn_context,
+        :store_saml_request,
+      )
+    end
+  end
 
   describe '#external_saml_request' do
     it 'returns false for malformed referer' do
