@@ -95,6 +95,10 @@ describe('FormStepsWait', () => {
     return form;
   }
 
+  beforeEach(() => {
+    sandbox.stub(window.fetch, 'polyfill').value(undefined);
+  });
+
   it('submits form via fetch', () => {
     const action = new URL('/', window.location).toString();
     const method = 'post';
