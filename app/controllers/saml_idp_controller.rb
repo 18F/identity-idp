@@ -3,10 +3,6 @@ require 'saml_idp'
 require 'uuid'
 
 class SamlIdpController < ApplicationController
-  # This needs to precede sign_out_if_forceauthn_is_true_and_user_is_signed_in
-  # which is added when SamlIdpAuthConcern is included
-  skip_before_action :verify_authenticity_token, only: [:logout, :remotelogout]
-
   include SamlIdp::Controller
   include SamlIdpAuthConcern
   include SamlIdpLogoutConcern
@@ -21,6 +17,7 @@ class SamlIdpController < ApplicationController
   prepend_before_action :skip_session_load, only: [:metadata, :remotelogout]
   prepend_before_action :skip_session_expiration, only: [:metadata, :remotelogout]
 
+  skip_before_action :verify_authenticity_token
   before_action :log_external_saml_auth_request, only: [:auth]
   before_action :handle_banned_user
   before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :auth
