@@ -114,6 +114,8 @@ idv_attempt_window_in_hours: 6
 idv_contact_url: https://www.example.com
 idv_max_attempts: 5
 idv_min_age_years: 13
+idv_acuant_sdk_version_default: '11.7.1'
+idv_acuant_sdk_version_alternate: '11.7.0'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_send_link_attempt_window_in_minutes: 10

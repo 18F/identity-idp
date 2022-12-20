@@ -44,12 +44,16 @@ module Idv
       def acuant_sdk_upgrade_a_b_testing_variables
         bucket = AbTests::ACUANT_SDK.bucket(flow_session[:document_capture_session_uuid])
         testing_enabled = IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled
-        use_newer_sdk = (bucket == :use_newer_sdk)
-        acuant_version = (testing_enabled && !use_newer_sdk) ? '11.7.0' : '11.7.1'
+        use_alternate_sdk = (bucket == :use_alternate_sdk)
+        if testing_enabled && use_alternate_sdk
+          acuant_version = IdentityConfig.store.idv_acuant_sdk_version_alternate
+        else
+          acuant_version = IdentityConfig.store.idv_acuant_sdk_version_default
+        end
         {
           acuant_sdk_upgrade_a_b_testing_enabled:
               testing_enabled,
-          use_newer_sdk: use_newer_sdk,
+          use_alternate_sdk: use_alternate_sdk,
           acuant_version: acuant_version,
         }
       end

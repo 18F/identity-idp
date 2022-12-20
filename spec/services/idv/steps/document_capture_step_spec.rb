@@ -40,6 +40,9 @@ describe Idv::Steps::DocumentCaptureStep do
     end
   end
 
+  let(:default_sdk_version) { IdentityConfig.store.idv_acuant_sdk_version_default }
+  let(:alternate_sdk_version) { IdentityConfig.store.idv_acuant_sdk_version_alternate }
+  
   subject(:step) do
     Idv::Steps::DocumentCaptureStep.new(flow)
   end
@@ -75,11 +78,12 @@ describe Idv::Steps::DocumentCaptureStep do
 
         it 'passes correct variables and acuant version when older is specified' do
           expect(subject.extra_view_variables[:acuant_sdk_upgrade_a_b_testing_enabled]).to eq(false)
-          expect(subject.extra_view_variables[:use_newer_sdk]).to eq(false)
-          expect(subject.extra_view_variables[:acuant_version]).to eq('11.7.1')
+          expect(subject.extra_view_variables[:use_alternate_sdk]).to eq(false)
+          expect(subject.extra_view_variables[:acuant_version]).to eq(default_sdk_version)
         end
       end
     end
+
     context 'with acuant sdk upgrade A/B testing enabled' do
       let(:session_uuid) { SecureRandom.uuid }
 
@@ -95,14 +99,14 @@ describe Idv::Steps::DocumentCaptureStep do
         before do
           stub_const(
             'AbTests::ACUANT_SDK',
-            FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => :use_newer_sdk) },
+            FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => :use_alternate_sdk) },
           )
         end
 
         it 'passes correct variables and acuant version when newer is specified' do
           expect(subject.extra_view_variables[:acuant_sdk_upgrade_a_b_testing_enabled]).to eq(true)
-          expect(subject.extra_view_variables[:use_newer_sdk]).to eq(true)
-          expect(subject.extra_view_variables[:acuant_version]).to eq('11.7.1')
+          expect(subject.extra_view_variables[:use_alternate_sdk]).to eq(true)
+          expect(subject.extra_view_variables[:acuant_version]).to eq(alternate_sdk_version)
         end
       end
 
@@ -116,8 +120,8 @@ describe Idv::Steps::DocumentCaptureStep do
 
         it 'passes correct variables and acuant version when older is specified' do
           expect(subject.extra_view_variables[:acuant_sdk_upgrade_a_b_testing_enabled]).to eq(true)
-          expect(subject.extra_view_variables[:use_newer_sdk]).to eq(false)
-          expect(subject.extra_view_variables[:acuant_version]).to eq('11.7.0')
+          expect(subject.extra_view_variables[:use_alternate_sdk]).to eq(false)
+          expect(subject.extra_view_variables[:acuant_version]).to eq(default_sdk_version)
         end
       end
     end
