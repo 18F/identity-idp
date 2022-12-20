@@ -14,7 +14,7 @@
   <%= render 'sign_up/completions/requested_attributes', pii: @presenter.pii %>
 </div>
 
-<% if !@multiple_factors_enabled && IdentityConfig.store.select_multiple_mfa_options %>
+<% if !@multiple_factors_enabled %>
   <%= render(AlertComponent.new(type: :warning, class: 'margin-bottom-4')) do %>
     <%= link_to(
           t('mfa.second_method_warning.link'),

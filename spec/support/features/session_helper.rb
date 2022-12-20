@@ -41,6 +41,7 @@ module Features
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
+      skip_second_mfa_prompt
       user
     end
 
@@ -442,7 +443,7 @@ module Features
       submit_form_with_valid_password
 
       set_up_2fa_with_valid_phone
-      # expect(page).to have_css('img[src*=sp-logos]')
+      skip_second_mfa_prompt
     end
 
     def click_sign_in_from_landing_page_then_click_create_account
@@ -529,6 +530,7 @@ module Features
     def register_user(email = 'test@test.com')
       confirm_email_and_password(email)
       set_up_2fa_with_valid_phone
+      skip_second_mfa_prompt
       User.find_with_email(email)
     end
 
@@ -548,6 +550,7 @@ module Features
     def register_user_with_authenticator_app(email = 'test@test.com')
       confirm_email_and_password(email)
       set_up_2fa_with_authenticator_app
+      skip_second_mfa_prompt
     end
 
     def set_up_2fa_with_authenticator_app
@@ -570,6 +573,7 @@ module Features
       )
 
       set_up_2fa_with_piv_cac
+      skip_second_mfa_prompt
     end
 
     def set_up_2fa_with_piv_cac
@@ -585,6 +589,10 @@ module Features
         uuid: SecureRandom.uuid,
         subject: 'SomeIgnoredSubject',
       )
+    end
+
+    def skip_second_mfa_prompt
+      click_on t('mfa.skip')
     end
 
     def sign_in_via_branded_page(user)
