@@ -63,7 +63,6 @@ module Proofing
         return true if product['Items']&.flat_map(&:keys)&.include?('ItemReason')
         return false
       end
-
     end
   end
 end
