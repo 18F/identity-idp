@@ -75,8 +75,10 @@ class SamlIdpController < ApplicationController
   end
 
   def external_saml_request?
+    return true if request.path.start_with?('/api/saml/authpost')
+
     begin
-      URI(request.referer).host != request.host || request.referer != complete_saml_url
+      URI(request.referer).host != request.host
     rescue ArgumentError, URI::Error
       false
     end
