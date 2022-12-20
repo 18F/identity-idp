@@ -29,12 +29,24 @@ function LocationCollectionItem({
   weekdayHours,
 }: LocationCollectionItemProps) {
   const { t } = useI18n();
+  const numericDistance = distance?.split(' ');
 
   return (
     <li className="location-collection-item">
       <div className="usa-collection__body">
         <div className="display-flex flex-justify">
-          <h3 className="usa-collection__heading">{distance || name}</h3>
+          {distance && numericDistance && (
+            <h3 className="usa-collection__heading">
+              {numericDistance[0] === '1.0'
+                ? t('in_person_proofing.body.location.distance_singular', {
+                    distance: 1,
+                  })
+                : t('in_person_proofing.body.location.distance_plural', {
+                    distance: numericDistance[0],
+                  })}
+            </h3>
+          )}
+          {!distance && <h3 className="usa-collection__heading">{name}</h3>}
           <Button
             id={`location_button_desktop_${selectId}`}
             className="display-none tablet:display-inline-block"
