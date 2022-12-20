@@ -7,19 +7,22 @@ en:
           need to bring proof of your current address to the Post Office.
         learn_more: Learn more
       barcode:
-        deadline: Your deadline to verify your identity in person is %{deadline}.
+        close_window: You may now close this window.
+        deadline: Visit the Post Office by %{deadline}.
         deadline_restart: If you go after the deadline, your information will not be
           saved and you will need to restart the process.
-        emailed_info: We have emailed this information to the email you used to log in.
-        items_to_bring: 'Bring these items with you to the Post Office:'
-        items_to_bring_questions: Questions about what to bring?
-        learn_more: Learn more
+        emailed_info: We have sent this information to the email you used to log in.
+        items_to_bring: 'Remember to bring these items with you to the Post Office:'
+        items_to_bring_questions: Question?
+        learn_more: Learn more about what to bring
         location_details: Location details
         no_appointment_required: No appointment is required.
         retail_hours: Retail hours
         retail_hours_closed: Closed
         retail_phone_label: Phone number
-        speak_to_associate: You can see any associate at the retail window to verify your identity.
+        return_to_partner: You may now close this window or return to %{link} to complete any next steps you can access until your identity has been verified.
+        return_to_partner_link: return to %{sp_name}
+        speak_to_associate: You can see any Post Office associate at the retail window to verify your identity. No appointment is required.
       cta:
         button: Verify your ID in person
         new_feature: New Feature
