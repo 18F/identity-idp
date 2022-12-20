@@ -120,7 +120,12 @@ module Users
     end
 
     def auth_params
-      params.require(:user).permit(:email, :password, :request_id)
+      return ActionController::Parameters.new if !user_param.is_a?(ActionController::Parameters)
+      user_param.permit(:email, :password, :request_id)
+    end
+
+    def user_param
+      params.require(:user)
     end
 
     def process_locked_out_user

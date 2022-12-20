@@ -544,6 +544,12 @@ describe Users::SessionsController, devise: true do
       post :create, params: { user: { email: user.email, password: user.password } }
       expect(response).to redirect_to account_reset_pending_url
     end
+
+    context 'with a invalid user value that is not a hash' do
+      it 'responds with invalid response' do
+        post :create, params: { user: 'invalid' }
+      end
+    end
   end
 
   describe '#new' do
