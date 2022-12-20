@@ -45,21 +45,28 @@ function AddressSearch({
   const ref = useRef<SpinnerButtonRefHandle>(null);
 
   useEffect(() => {
-    if (addressCandidates) {
+    if (addressCandidates && addressCandidates.length > 0) {
+      setNoAddressFoundErrors('');
+      validatedFieldRef.current?.setCustomValidity('');
+      validatedFieldRef.current?.reportValidity();
       const bestMatchedAddress = addressCandidates[0];
       onAddressFound(bestMatchedAddress);
       ref.current?.toggleSpinner(false);
     }
     if (addressCandidates?.length === 0) {
-      setNoAddressFoundErrors('ERROR, not a real address');
-      validatedFieldRef.current?.setCustomValidity('ERROR, not a real address');
+      setNoAddressFoundErrors('Not a real address');
+      ref.current?.toggleSpinner(false);
+      validatedFieldRef.current?.setCustomValidity(
+        t('in_person_proofing.body.location.inline_error'),
+      );
       validatedFieldRef.current?.reportValidity();
     }
-  }, [addressCandidates]);
+  }, [addressCandidates, noAddressFoundErrors]);
 
   const handleAddressSearch = useCallback(
     (event) => {
       event.preventDefault();
+      validatedFieldRef.current?.setCustomValidity('');
       validatedFieldRef.current?.reportValidity();
       if (unvalidatedAddressInput === '') {
         return;
