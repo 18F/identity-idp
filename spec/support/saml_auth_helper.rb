@@ -102,21 +102,18 @@ module SamlAuthHelper
   end
 
   def saml_get_auth(settings)
-    request.headers.merge!({ HTTP_REFERER: 'http://fake-sp.gov' })
     # GET redirect binding Authn Request
     get :auth, params: { SAMLRequest: CGI.unescape(saml_request(settings)) }
   end
 
   def saml_post_auth(saml_request)
     # POST redirect binding Authn Request
-    request.headers.merge!({ HTTP_REFERER: api_saml_authpost2022_url })
-    request.path = '/api/saml/authpost2021'
+    request.path = '/api/saml/authpost2022'
     post :auth, params: { SAMLRequest: CGI.unescape(saml_request) }
   end
 
   def saml_final_post_auth(saml_request)
-    request.headers.merge!({ HTTP_REFERER: complete_saml_url })
-    request.path = '/api/saml/finalauthpost2021'
+    request.path = '/api/saml/finalauthpost2022'
     post :auth, params: { SAMLRequest: CGI.unescape(saml_request) }
   end
 
