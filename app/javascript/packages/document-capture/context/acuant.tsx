@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import { getConfigValue } from '@18f/identity-config';
 import useObjectMemo from '@18f/identity-react-hooks/use-object-memo';
 import DeviceContext from './device';
 import AnalyticsContext from './analytics';
@@ -193,15 +192,9 @@ const getActualAcuantCamera = (): AcuantCameraInterface => {
   return AcuantCamera;
 };
 
-/**
- * The default version of the Acuant SDK to use,
- * as specified in the application config
- */
-const acuantVersion = getConfigValue('acuantVersion');
-
 function AcuantContextProvider({
-  sdkSrc = `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
-  cameraSrc = `/acuant/${acuantVersion}/AcuantCamera.min.js`,
+  sdkSrc = '/acuant/11.7.1/AcuantJavascriptWebSdk.min.js',
+  cameraSrc = '/acuant/11.7.1/AcuantCamera.min.js',
   credentials = null,
   endpoint = null,
   glareThreshold = DEFAULT_ACCEPTABLE_GLARE_SCORE,
