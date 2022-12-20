@@ -27,7 +27,7 @@ fr:
       cta:
         button: Vérifiez votre identité en personne
         new_feature: Nouvelle fonctionnalité
-        prompt_detail: Si vous êtes situé près de Washington D.C. ou de Baltimore
+        prompt_detail: Si vous êtes situé près de Washington, D.C. ou de Baltimore
           (Maryland), vous pourrez peut-être vérifier votre identité en personne
           dans certains bureaux de poste.
       location:
@@ -44,9 +44,11 @@ fr:
           none_found_tip: Vous pouvez effectuer une recherche en utilisant une autre
             adresse, ou ajouter des photos de votre pièce d’identité pour
             essayer de vérifier à nouveau votre identité en ligne.
-          po_search_about: Si vous avez des difficultés à ajouter votre pièce d’identité,
-            vous pouvez vérifier votre identité en personne dans un bureau de
-            poste américain proche.
+          po_search_about: Si vous êtes situé près de Washington, D.C. ou de Baltimore,
+            MD, vous pourrez peut-être vérifier votre pièce d’identité en
+            personne dans certains bureaux de poste. D’autres bureaux dans les
+            50 États et certains territoires américains seront bientôt
+            disponibles.
           results_description: Il y a %{count} de bureaux de poste participants dans un
             rayon de 80 km autour de %{address}.
           results_instructions: Sélectionnez un emplacement de bureau de poste ci-dessous,
