@@ -20,7 +20,7 @@ en:
         retail_hours: Retail hours
         retail_hours_closed: Closed
         retail_phone_label: Phone number
-        return_to_partner: You may now close this window or return to %{link} to complete any next steps you can access until your identity has been verified.
+        return_to_partner_html: You may now close this window or return to %{link} to complete any next steps you can access until your identity has been verified.
         return_to_partner_link: return to %{sp_name}
         speak_to_associate: You can see any Post Office associate at the retail window to verify your identity. No appointment is required.
       cta:

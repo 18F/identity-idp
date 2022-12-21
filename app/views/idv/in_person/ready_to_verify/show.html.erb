@@ -29,9 +29,9 @@
 <p><%= t('in_person_proofing.body.barcode.emailed_info') %></p>
 
 <p>
-  <% if @sp_name.present? %>
-    <%= t('in_person_proofing.body.barcode.return_to_partner',
-         link: link_to(t('in_person_proofing.body.barcode.return_to_partner_link', sp_name: @sp_name), @sp_link)) %>
+  <% if @presenter.service_provider_homepage_url.present? %>
+    <%= t('in_person_proofing.body.barcode.return_to_partner_html',
+         link: link_to(t('in_person_proofing.body.barcode.return_to_partner_link', sp_name: @presenter.sp_name), @presenter.service_provider_homepage_url)) %>
   <% else %>
     <%= t('in_person_proofing.body.barcode.close_window') %>
   <% end %>

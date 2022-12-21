@@ -42,6 +42,10 @@ module Idv
         service_provider ? service_provider.friendly_name : APP_NAME
       end
 
+      def service_provider_homepage_url
+        sp_return_url_resolver.homepage_url if service_provider
+      end
+
       private
 
       attr_reader :enrollment
@@ -56,6 +60,10 @@ module Idv
             map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }.
             join(' – ') # Endash
         end
+      end
+
+      def sp_return_url_resolver
+        SpReturnUrlResolver.new(service_provider: service_provider)
       end
     end
   end
