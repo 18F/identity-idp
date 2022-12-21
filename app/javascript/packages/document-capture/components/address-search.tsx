@@ -35,7 +35,6 @@ function AddressSearch({
   registerField = () => undefined,
 }: AddressSearchProps) {
   const validatedFieldRef = useRef<HTMLFormElement | null>(null);
-  const [noAddressFoundErrors, setNoAddressFoundErrors] = useState('');
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
   const [addressQuery, setAddressQuery] = useState('');
   const { t } = useI18n();
@@ -45,23 +44,16 @@ function AddressSearch({
   const ref = useRef<SpinnerButtonRefHandle>(null);
 
   useEffect(() => {
-    if (addressCandidates && addressCandidates.length > 0) {
-      setNoAddressFoundErrors('');
-      validatedFieldRef.current?.setCustomValidity('');
-      validatedFieldRef.current?.reportValidity();
-      const bestMatchedAddress = addressCandidates[0];
-      onAddressFound(bestMatchedAddress);
+    if (addressCandidates) {
+      const bestMatchedAddress = addressCandidates?.[0];
+      const validity = bestMatchedAddress ? '' : t('in_person_proofing.body.location.inline_error');
+
       ref.current?.toggleSpinner(false);
-    }
-    if (addressCandidates?.length === 0) {
-      setNoAddressFoundErrors('Not a real address');
-      ref.current?.toggleSpinner(false);
-      validatedFieldRef.current?.setCustomValidity(
-        t('in_person_proofing.body.location.inline_error'),
-      );
+      validatedFieldRef.current?.setCustomValidity(validity);
       validatedFieldRef.current?.reportValidity();
+      bestMatchedAddress && onAddressFound(bestMatchedAddress);
     }
-  }, [addressCandidates, noAddressFoundErrors]);
+  }, [addressCandidates]);
 
   const handleAddressSearch = useCallback(
     (event) => {
