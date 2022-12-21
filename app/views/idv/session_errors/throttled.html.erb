@@ -20,8 +20,11 @@
       <p>
         <%= t(
               'errors.doc_auth.throttled_text_html',
-              timeout: timeout(@expires_at),
-            ) %>
+              timeout: distance_of_time_in_words(
+                Time.zone.now,
+                [@expires_at, Time.zone.now].compact.max,
+                except: :seconds,
+              ),              ) %>
       </p>
     <% end %>
 
