@@ -65,6 +65,7 @@ es:
         retail_hours_sat: 'Sáb:'
         retail_hours_sun: 'Dom:'
         retail_hours_weekday: 'De Lunes a Viernes:'
+        tty: 'TTY:'
       prepare:
         alert_selected_post_office: Ha seleccionado la oficina de correos %{name}.
         privacy_disclaimer: '%{app_name} es un sitio web seguro del gobierno. Nosotros y
