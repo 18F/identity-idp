@@ -15,7 +15,10 @@ interface RequestOptions extends RequestInit {
 const getCSRFToken = () =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content;
 
-export const request = async (url: string, options: Partial<RequestOptions> = {}) => {
+export async function request<Response>(
+  url: string,
+  options: Partial<RequestOptions> = {},
+): Promise<Response> {
   const { csrf = true, json = true, ...fetchOptions } = options;
   let { body, headers } = fetchOptions;
   headers = new Headers(headers);
@@ -39,4 +42,4 @@ export const request = async (url: string, options: Partial<RequestOptions> = {}
 
   const response = await window.fetch(url, { ...fetchOptions, headers, body });
   return json ? response.json() : response.text();
-};
+}

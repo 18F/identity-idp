@@ -200,7 +200,6 @@ module Idv
           user_id: user_id,
           threatmetrix_session_id: flow_session[:threatmetrix_session_id],
           request_ip: request.remote_ip,
-          issuer: sp_session[:issuer],
         )
       end
 
@@ -242,7 +241,7 @@ module Idv
           # todo: add other edited fields?
           extra: {
             address_edited: !!flow_session['address_edited'],
-            pii_like_keypaths: [[:errors, :ssn]],
+            pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name]],
           },
         )
         pii_from_doc = pii || {}

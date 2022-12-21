@@ -572,11 +572,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
           end
         end
 
-        context 'Feature flag #select_multiple_mfa_options is true' do
+        describe 'multiple MFA handling' do
           let(:mfa_selections) { ['sms', 'backup_code'] }
           before do
             subject.user_session[:mfa_selections] = mfa_selections
-            allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
 
             post(
               :create,

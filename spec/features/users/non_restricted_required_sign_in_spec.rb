@@ -10,7 +10,6 @@ feature 'Existing USer Non Restricted Method Required' do
   let(:enforcement_date) { Time.zone.today - 6.days }
 
   before do
-    allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
     allow(IdentityConfig.store).to receive(:kantara_2fa_phone_existing_user_restriction).
       and_return(true)
     allow(IdentityConfig.store).to receive(:kantara_restriction_enforcement_date).

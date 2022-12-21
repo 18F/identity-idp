@@ -5,6 +5,8 @@ interface FormStepsWaitElements {
   form: HTMLFormElement;
 }
 
+type FetchOrFetchPolyfill = typeof window.fetch & { polyfill?: boolean };
+
 interface FormStepsWaitOptions {
   /**
    * Poll interval.
@@ -118,7 +120,7 @@ export class FormStepsWait {
       body: new window.FormData(form),
     });
 
-    if ('polyfill' in window.fetch) {
+    if ((window.fetch as FetchOrFetchPolyfill).polyfill) {
       // The fetch polyfill is implemented using XMLHttpRequest, which suffers from an issue where a
       // Content-Type header from a POST is carried into a redirected GET, which is exactly the flow
       // we are handling here. The current version of Rack neither handles nor provides easy insight

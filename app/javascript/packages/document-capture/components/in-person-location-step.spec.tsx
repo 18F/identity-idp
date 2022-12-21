@@ -77,11 +77,11 @@ describe('InPersonLocationStep', () => {
     await userEvent.click(
       await findByText('in_person_proofing.body.location.po_search.search_button'),
     );
-    await findByText('100 Main St, South Fulton, Tennessee, 38257');
+    await findByText('in_person_proofing.body.location.po_search.results_description');
     expect(window.fetch).to.have.been.calledWith(
       LOCATIONS_URL,
       sandbox.match({
-        body: '{"address":{"street_address":"100 Main St","city":"South Fulton","state":"TN","zip_code":"38257"}}',
+        body: '{"address":{"street_address":"100 Main St","city":"South Fulton","state":"TN","zip_code":"38257","address":"100 Main St, South Fulton, Tennessee, 38257"}}',
         method: 'post',
       }),
     );
