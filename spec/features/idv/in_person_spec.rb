@@ -54,25 +54,6 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
       expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state])
       expect(page).to have_text('9**-**-***4')
-
-      # click update state ID button
-      click_button t('idv.buttons.change_state_id_label')
-      expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
-      click_button t('forms.buttons.submit.update')
-      expect(page).to have_content(t('headings.verify'))
-
-      # click update address button
-      click_button t('idv.buttons.change_address_label')
-      expect(page).to have_content(t('in_person_proofing.headings.update_address'))
-      click_button t('forms.buttons.submit.update')
-      expect(page).to have_content(t('headings.verify'))
-
-      # click update ssn button
-      click_button t('idv.buttons.change_ssn_label')
-      expect(page).to have_content(t('doc_auth.headings.ssn_update'))
-      fill_out_ssn_form_ok
-      click_button t('forms.buttons.submit.update')
-      expect(page).to have_content(t('headings.verify'))
       complete_verify_step(user)
 
       # phone page
