@@ -82,10 +82,10 @@ en:
         warning: Please check the information you entered and try again. Common mistakes
           are an incorrect Social Security number or ZIP Code.
       setup:
-        fail_html: Please %{contact_form_link} and enter the code <b>%{support_code}</b>
-          in the detail field.
-        heading: There is an issue with your information
-        link_text: fill out our contact form
+        fail_html: 'Please call our contact center at <strong>(844) 875-6446</strong> to
+          continue verifying your identity. You will need to provide them with
+          the error code <strong>%{support_code}</strong>.'
+        heading: Please give us a call
       timeout: We are experiencing higher than usual wait time processing your
         request. Please try again.
     forgot_password:

@@ -17,7 +17,6 @@ describe 'idv/setup_errors/show.html.erb' do
       strip_tags(
         t(
           'idv.failure.setup.fail_html',
-          contact_form_link: t('idv.failure.setup.link_text'),
           support_code: 'ABCD',
         ),
       ),
