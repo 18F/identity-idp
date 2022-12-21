@@ -12,13 +12,13 @@ es:
         deadline: Visite la Oficina de correos antes del %{deadline}
         deadline_restart: Si supera la fecha límite, su información no se guardará y
           tendrá que reiniciar el proceso.
-        emailed_info: Hemos enviado esta información al correo electrónico que usó para
+        email_sent: Hemos enviado esta información al correo electrónico que usó para
           iniciar sesión.
         items_to_bring: 'Recuerde traer con usted estos elementos a la Oficina de correos:'
-        items_to_bring_questions: '¿Tiene alguna pregunta?'
         learn_more: Entérese más sobre qué debe traer.
         location_details: Detalles de la ubicación
         no_appointment_required: No es necesario pedir cita.
+        questions: '¿Tiene alguna pregunta?'
         retail_hours: Horario de atención al público
         retail_hours_closed: Cerrado
         retail_phone_label: Número de teléfono
