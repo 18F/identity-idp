@@ -12,6 +12,15 @@ describe 'Account Reset Request: Delete Account', email: true do
       signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
+      expect(page).
+        to have_content strip_tags(
+          t('account_reset.recovery_options.try_method_again'),
+        )
+      click_link t('account_reset.request.yes_continue')
+      expect(page).
+        to have_content strip_tags(
+          t('account_reset.request.delete_account'),
+        )
       click_button t('account_reset.request.yes_continue')
 
       expect(page).
@@ -69,6 +78,19 @@ describe 'Account Reset Request: Delete Account', email: true do
       signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
+
+      expect(page).
+        to have_content strip_tags(
+          t('account_reset.recovery_options.try_method_again'),
+        )
+
+      click_link t('account_reset.request.yes_continue')
+
+      expect(page).
+        to have_content strip_tags(
+          t('account_reset.request.delete_account'),
+        )
+
       click_button t('account_reset.request.yes_continue')
 
       expect(page).
@@ -121,6 +143,15 @@ describe 'Account Reset Request: Delete Account', email: true do
       signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
+      expect(page).
+        to have_content strip_tags(
+          t('account_reset.recovery_options.try_method_again'),
+        )
+      click_link t('account_reset.request.yes_continue')
+      expect(page).
+        to have_content strip_tags(
+          t('account_reset.request.delete_account'),
+        )
       click_button t('account_reset.request.yes_continue')
 
       expect(page).
