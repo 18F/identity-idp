@@ -1,7 +1,7 @@
 module SessionErrorsHelper
-  def timeout
+  def timeout(from_time)
     distance_of_time_in_words(
-      @expires_at,
+      from_time,
       Time.zone.now,
       except: :seconds,
     )

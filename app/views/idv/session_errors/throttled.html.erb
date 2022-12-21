@@ -20,7 +20,7 @@
       <p>
         <%= t(
               'errors.doc_auth.throttled_text_html',
-              timeout: timeout,
+              timeout: timeout(@expires_at),
             ) %>
       </p>
     <% end %>
