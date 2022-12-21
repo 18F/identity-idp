@@ -2,6 +2,7 @@ module Idv
   class GpoVerifyController < ApplicationController
     include IdvSession
     include StepIndicatorConcern
+    include ThreatmetrixReviewConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_verification_needed
@@ -52,7 +53,7 @@ module Idv
             flash[:success] = t('account.index.verification.success')
 
             if result.extra[:threatmetrix_check_failed]
-              redirect_to idv_setup_errors_url
+              redirect_to_threatmetrix_review
             else
               redirect_to sign_up_completed_url
             end
