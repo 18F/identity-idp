@@ -32,8 +32,9 @@ fr:
           dans certains bureaux de poste.
       location:
         contact_info_heading: Information de contact
-        distance_plural: 'à %{distance} milles'
-        distance_singular: 'à %{distance} mile'
+        distance:
+          one: 'à %{count} mile'
+          other: 'à %{count} milles'
         inline_error: Indiquez la ville, l’État et le code postal.
         location_button: Sélectionner
         location_step_about: Si vous ne parvenez pas à ajouter votre pièce d’identité,

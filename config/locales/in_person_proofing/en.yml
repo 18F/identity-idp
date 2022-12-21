@@ -27,8 +27,9 @@ en:
           be able to verify your ID in person at limited post office locations.
       location:
         contact_info_heading: Contact Information
-        distance_plural: '%{distance} miles away'
-        distance_singular: '%{distance} mile away'
+        distance:
+          one: '%{count} mile away'
+          other: '%{count} miles away'
         inline_error: Include a city, state, and ZIP code
         location_button: Select
         location_step_about: If you are having trouble adding your ID, you may be able

@@ -59,4 +59,30 @@ describe('LocationCollectionItem', () => {
       .parentElement!;
     expect(sunHours.textContent).to.contain('Closed');
   });
+
+  it('renders the component that includes contact information with expected data', () => {
+    const onClick = sinon.stub();
+    const { getByText } = render(
+      <LocationCollectionItem
+        distance="1.0 mi"
+        phone="555-123-4567"
+        tty="222-222-2222"
+        name=""
+        streetAddress="123 Test Address"
+        formattedCityStateZip=""
+        handleSelect={onClick}
+        weekdayHours=""
+        saturdayHours=""
+        selectId={0}
+        sundayHours=""
+      />,
+    );
+
+    const addressParent = getByText('123 Test Address').parentElement!;
+    expect(addressParent.textContent).to.contain(
+      'in_person_proofing.body.location.distance_singular',
+    );
+    expect(addressParent.textContent).to.contain('555-123-4567');
+    expect(addressParent.textContent).to.contain('222-222-2222');
+  });
 });

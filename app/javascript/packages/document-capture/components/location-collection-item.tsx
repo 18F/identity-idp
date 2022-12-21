@@ -37,13 +37,9 @@ function LocationCollectionItem({
         <div className="display-flex flex-justify">
           {distance && numericDistance && (
             <h3 className="usa-collection__heading">
-              {numericDistance[0] === '1.0'
-                ? t('in_person_proofing.body.location.distance_singular', {
-                    distance: 1,
-                  })
-                : t('in_person_proofing.body.location.distance_plural', {
-                    distance: numericDistance[0],
-                  })}
+              {t('in_person_proofing.body.location.distance', {
+                count: parseFloat(numericDistance[0]),
+              })}
             </h3>
           )}
           {!distance && <h3 className="usa-collection__heading">{name}</h3>}

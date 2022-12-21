@@ -31,8 +31,9 @@ es:
           correos seleccionadas.
       location:
         contact_info_heading: Información del contacto
-        distance_plural: '%{distance} millas de distancia'
-        distance_singular: '%{distance} milla de distancia'
+        distance:
+          one: '%{count} milla de distancia'
+          other: '%{count} millas de distancia'
         inline_error: Incluye una ciudad, un estado y un código postal.
         location_button: Seleccionar
         location_step_about: Si tiene problemas para añadir su cédula de identidad, es
