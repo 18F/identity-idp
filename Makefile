@@ -113,9 +113,11 @@ lint_yarn_lock: package.json yarn.lock
 
 lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles are in sync
 
-lintfix: ## Runs rubocop fix
+lintfix: ## Runs rubocop fix and erblint fix
 	@echo "--- rubocop fix ---"
 	bundle exec rubocop -a
+	@echo "--- erblint fix ---"
+	bundle exec erblint app/views app/components -a
 
 brakeman: ## Runs brakeman
 	bundle exec brakeman
