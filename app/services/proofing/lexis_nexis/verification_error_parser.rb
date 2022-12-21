@@ -47,7 +47,7 @@ module Proofing
         return {} if products.nil?
 
         products.each_with_object({}) do |product, error_messages|
-          next if product['ProductStatus'] == 'pass'
+          next unless should_log?(product)
 
           # don't log PhoneFinder reflected PII
           product.delete('ParameterDetails') if product['ProductType'] == 'PhoneFinder'
@@ -55,6 +55,13 @@ module Proofing
           key = product.fetch('ExecutedStepName').to_sym
           error_messages[key] = product
         end
+      end
+
+      def should_log?(product)
+        return true if product['ProductStatus'] != 'pass'
+        return true if product['ProductType'] == 'InstantVerify'
+        return true if product['Items']&.flat_map(&:keys)&.include?('ItemReason')
+        return false
       end
     end
   end
