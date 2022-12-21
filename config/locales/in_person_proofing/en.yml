@@ -35,6 +35,7 @@ en:
           to verify in person at a local United States Post Office in select
           locations.
         none_found: No locations found.
+        phone: 'Phone:'
         po_search:
           address_search_hint: 'Example: 1960 W Chelsea Ave Allentown PA 18104'
           address_search_label: Enter an address to find a Post Office near you
@@ -50,7 +51,6 @@ en:
             a different address. For facility accessibility, use the contact
             information listed for the Post Office location.
           search_button: Search
-        phone: 'Phone:'
         post_office: Post Office ™
         retail_hours_heading: Retail Hours
         retail_hours_sat: 'Sat:'
