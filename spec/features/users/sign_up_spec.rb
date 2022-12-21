@@ -172,13 +172,15 @@ feature 'Sign Up' do
       copied_text = page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
       expect(did_validate_name.call).to_not eq true
 
-      otp_input = page.find('.one-time-code-input')
+      otp_input = page.find('.one-time-code-input__input')
       otp_input.set(generate_totp_code(copied_text))
       click_button 'Submit'
       expect(did_validate_name.call).to eq true
 
       fill_in 'name', with: 'Authentication app'
       click_button 'Submit'
+      skip_second_mfa_prompt
+
       expect(page).to have_current_path account_path
     end
   end
@@ -231,6 +233,7 @@ feature 'Sign Up' do
   it 'allows a user to choose TOTP as 2FA method during sign up' do
     sign_in_user
     set_up_2fa_with_authenticator_app
+    skip_second_mfa_prompt
 
     expect(page).to have_current_path account_path
   end

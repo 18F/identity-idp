@@ -27,7 +27,7 @@ fr:
       cta:
         button: Vérifiez votre identité en personne
         new_feature: Nouvelle fonctionnalité
-        prompt_detail: Si vous êtes situé près de Washington D.C. ou de Baltimore
+        prompt_detail: Si vous êtes situé près de Washington, D.C. ou de Baltimore
           (Maryland), vous pourrez peut-être vérifier votre identité en personne
           dans certains bureaux de poste.
       location:
@@ -40,10 +40,22 @@ fr:
         po_search:
           address_search_hint: 'Exemple : 1960 W Chelsea Ave Allentown PA 18104'
           address_search_label: Entrez une adresse pour trouver un bureau de poste près de chez vous.
-          po_search_about: Si vous avez des difficultés à ajouter votre pièce d’identité,
-            vous pouvez vérifier votre identité en personne dans un bureau de
-            poste américain proche.
-          search_button: Chercher
+          none_found: Placeholder %{address}
+          none_found_tip: Vous pouvez effectuer une recherche en utilisant une autre
+            adresse, ou ajouter des photos de votre pièce d’identité pour
+            essayer de vérifier à nouveau votre identité en ligne.
+          po_search_about: Si vous êtes situé près de Washington, D.C. ou de Baltimore,
+            MD, vous pourrez peut-être vérifier votre pièce d’identité en
+            personne dans certains bureaux de poste. D’autres bureaux dans les
+            50 États et certains territoires américains seront bientôt
+            disponibles.
+          results_description: Il y a %{count} de bureaux de poste participants dans un
+            rayon de 80 km autour de %{address}.
+          results_instructions: Sélectionnez un emplacement de bureau de poste ci-dessous,
+            ou effectuez une nouvelle recherche en utilisant une autre adresse.
+            Pour l’accessibilité des installations, utilisez les informations de
+            contact indiquées pour l’emplacement du bureau de poste.
+          search_button: Rechercher
         post_office: Bureau de Poste
         retail_hours_heading: Heures de vente au détail
         retail_hours_sat: 'Sam:'
@@ -51,17 +63,6 @@ fr:
         retail_hours_weekday: 'Lundi à Vendredi:'
       prepare:
         alert_selected_post_office: Vous avez sélectionné le bureau de poste de %{name}.
-        bring_barcode_header: Une copie de votre code-barres
-        bring_barcode_info: Nous vous donnerons un code unique qui expirera dans les 30 jours.
-        bring_id_header: Votre document d’identité délivré par l’État
-        bring_id_info_acceptable: 'Votre pièce d’identité ne doit pas être expirée. Les
-          formes d’identification acceptables sont:'
-        bring_id_info_dl: Permis de conduire d’État
-        bring_id_info_id_card: Document d’identité de non-conducteur d’État
-        bring_id_info_no_other_forms: Nous n’acceptons actuellement aucune autre forme
-          d’identification, comme les passeports et les documents d’identité
-          militaires.
-        bring_title: 'Lorsque vous allez au bureau de poste, veuillez apporter:'
         privacy_disclaimer: '%{app_name} est un site gouvernemental sécurisé. Nous et le
           service postal américain utilisons vos données pour vérifier votre
           identité.'
@@ -69,7 +70,8 @@ fr:
         privacy_disclaimer_questions: Vous avez des questions?
         verify_step_about: 'Suivez les étapes ci-dessous pour générer le code-barres que
           vous emporterez avec vous au bureau de poste:'
-        verify_step_enter_phone: Entrez un numéro de téléphone avec votre nom sur le contrat.
+        verify_step_enter_phone: Entrez votre numéro de téléphone principal ou celui que
+          vous utilisez le plus souvent.
         verify_step_enter_pii: Saisissez votre nom, votre date de naissance, votre
           document d’identité délivré par l’État, votre adresse et votre numéro
           de sécurité sociale.

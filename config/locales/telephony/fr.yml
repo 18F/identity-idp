@@ -10,20 +10,20 @@ fr:
         %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.
 
         @%{domain} #%{code}
-      voice: Bonjour! Votre code %{app_name} à usage unique est %{code}, Votre code à
-        usage unique est %{code}, Une fois de plus, votre code à usage unique
-        est %{code}, Ce code expire dans %{expiration} minutes.
+      voice: Bonjour! Votre code à usage unique de six %{format_type} pour %{app_name}
+        est %{code}. Votre code à usage unique est %{code}. Une fois de plus,
+        votre code à usage unique est %{code}. Ce code expire dans %{expiration}
+        minutes.
     confirmation_otp:
       sms: |-
         %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.
 
         @%{domain} #%{code}
-      voice: Bonjour! Votre code %{app_name} à usage unique est %{code}. Votre code à
-        usage unique est %{code}. Une fois de plus, votre code à usage unique
-        est %{code}. Ce code expire dans %{expiration} minutes.
-    doc_auth_link: "%{link} Vous avez demandé à vérifier votre identité sur un
-      téléphone mobile. S'il vous plaît prendre une photo de votre identité
-      émise par l'état"
+      voice: Bonjour! Votre code à usage unique de six %{format_type} pour %{app_name}
+        est %{code}. Votre code à usage unique est %{code}. Une fois de plus,
+        votre code à usage unique est %{code}. Ce code expire dans %{expiration}
+    doc_auth_link: |-
+      %{app_name}: %{link} Vous vérifiez votre identité pour accéder à %{sp_or_app_name}. Prenez une photo de votre pièce d'identité pour continuer.
     error:
       friendly_message:
         daily_voice_limit_reached: L’envoi de votre code à usage unique a échoué car
@@ -49,6 +49,9 @@ fr:
           plus tard.
         voice_unsupported: Numéro de téléphone invalide. Vérifiez que vous avez entré le
           bon indicatif international ou régional.
+    format_type:
+      character: caractère
+      digit: chiffres
     personal_key_regeneration_notice: Une nouvelle clé personnelle a été émise pour
       votre compte %{app_name}. Si vous ne l'avez pas demandée, réinitialisez
       votre mot de passe.

@@ -241,6 +241,7 @@ module Users
           reauthentication: true,
           phone_number: parsed_phone.e164,
           otp_delivery_method: otp_delivery_preference,
+          failure_reason: irs_attempts_api_tracker.parse_failure_reason(@telephony_result),
         )
       elsif UserSessionContext.authentication_or_reauthentication_context?(context)
         irs_attempts_api_tracker.mfa_login_phone_otp_sent(
@@ -248,6 +249,7 @@ module Users
           reauthentication: false,
           phone_number: parsed_phone.e164,
           otp_delivery_method: otp_delivery_preference,
+          failure_reason: irs_attempts_api_tracker.parse_failure_reason(@telephony_result),
         )
       elsif UserSessionContext.confirmation_context?(context)
         irs_attempts_api_tracker.mfa_enroll_phone_otp_sent(
@@ -287,6 +289,7 @@ module Users
         to: phone_to_deliver_to,
         otp: current_user.direct_otp,
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
+        otp_format: t('telephony.format_type.digit'),
         channel: method.to_sym,
         domain: IdentityConfig.store.domain_name,
         country_code: parsed_phone.country,

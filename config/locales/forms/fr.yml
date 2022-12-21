@@ -134,7 +134,6 @@ fr:
       totp_step_4: Entrez le code temporaire de votre application
     two_factor:
       backup_code: Code de sécurité
-      code: Code à usage unique
       personal_key: Clé personnelle
       try_again: Utilisez un autre numéro de téléphone
     validation:

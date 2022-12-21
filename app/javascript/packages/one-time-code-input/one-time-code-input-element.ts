@@ -1,33 +1,36 @@
-class OneTimeCodeInput {
+class OneTimeCodeInputElement extends HTMLElement {
   static isWebOTPSupported = 'OTPCredential' in window;
 
-  /**
-   * @param {HTMLInputElement} input
-   */
-  constructor(input) {
-    this.elements = { input, form: input.closest('form') };
-    this.options = {
-      transport: /** @type {OTPCredentialTransportType=} */ (input.dataset.transport),
-    };
-  }
-
-  bind() {
+  connectedCallback() {
     this.createHiddenInput();
-    if (OneTimeCodeInput.isWebOTPSupported && this.options.transport) {
-      this.receive(this.options.transport);
+
+    if (OneTimeCodeInputElement.isWebOTPSupported && this.transport) {
+      this.receive(this.transport);
     }
   }
 
+  get input(): HTMLInputElement {
+    return this.querySelector<HTMLInputElement>('.one-time-code-input__input')!;
+  }
+
+  get form(): HTMLFormElement | null {
+    return this.input.closest('form');
+  }
+
+  get transport(): OTPCredentialTransportType {
+    return this.getAttribute('transport') as OTPCredentialTransportType;
+  }
+
   createHiddenInput() {
-    const { input } = this.elements;
-    const hiddenInput = /** @type {HTMLInputElement} */ (document.createElement('input'));
+    const { input } = this;
+
+    const hiddenInput = document.createElement('input');
     const label = input.ownerDocument.querySelector(`label[for="${input.id}"]`);
     const modifiedId = `${input.id}-${Math.floor(Math.random() * 1000000)}`;
     hiddenInput.name = input.name;
     hiddenInput.value = input.value;
     hiddenInput.type = 'hidden';
-    this.elements.hiddenInput = hiddenInput;
-    /** @type {HTMLElement} */ (input.parentNode).insertBefore(hiddenInput, input);
+    input.parentNode?.insertBefore(hiddenInput, input);
     input.removeAttribute('name');
     input.setAttribute('id', modifiedId);
     label?.setAttribute('for', modifiedId);
@@ -36,11 +39,8 @@ class OneTimeCodeInput {
     });
   }
 
-  /**
-   * @param {OTPCredentialTransportType} transport
-   */
-  async receive(transport) {
-    const { input, form } = this.elements;
+  async receive(transport: OTPCredentialTransportType) {
+    const { input, form } = this;
     const controller = new window.AbortController();
 
     if (form) {
@@ -48,7 +48,7 @@ class OneTimeCodeInput {
     }
 
     try {
-      const { code } = await /** @type {OTPCredentialsContainer} */ (navigator.credentials).get({
+      const { code } = await (navigator.credentials as OTPCredentialsContainer).get({
         otp: { transport: [transport] },
         signal: controller.signal,
       });
@@ -66,4 +66,14 @@ class OneTimeCodeInput {
   }
 }
 
-export default OneTimeCodeInput;
+declare global {
+  interface HTMLElementTagNameMap {
+    'lg-one-time-code-input': OneTimeCodeInputElement;
+  }
+}
+
+if (!customElements.get('lg-one-time-code-input')) {
+  customElements.define('lg-one-time-code-input', OneTimeCodeInputElement);
+}
+
+export default OneTimeCodeInputElement;

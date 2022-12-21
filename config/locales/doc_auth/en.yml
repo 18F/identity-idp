@@ -129,6 +129,16 @@ en:
       upload_from_phone: Take a photo with a mobile phone to upload your ID
       verify_identity: Verify your identity
       welcome: Get started verifying your identity
+    hybrid_flow_warning:
+      explanation_html: You’re using <strong>%{app_name}</strong> to verify your
+        identity for access to <strong>%{service_provider_name}</strong> and its
+        services.
+      explanation_non_sp_html: You’re using <strong>%{app_name}</strong> to verify your identity.
+      only_add_if_text: 'ONLY ADD YOUR ID IF:'
+      only_add_own_account_html: You are using your own %{app_name} account
+      only_add_phone_verify_html: You asked %{app_name} to verify your ID using your phone
+      only_add_sp_services_html: You are trying to access
+        <strong>%{service_provider_name}</strong> services
     info:
       camera_required: Your mobile phone must have a camera and a web browser.
       capture_status_big_document: Too Close

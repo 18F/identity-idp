@@ -13,7 +13,7 @@ feature 'webauthn sign up' do
 
   def expect_webauthn_setup_success
     expect(page).to have_content(t('notices.webauthn_configured'))
-    expect(page).to have_current_path(account_path)
+    expect(page).to have_current_path(auth_method_confirmation_path)
   end
 
   def expect_webauthn_setup_error
@@ -34,6 +34,7 @@ feature 'webauthn sign up' do
 
       fill_in_nickname_and_click_continue
       mock_press_button_on_hardware_key_on_setup
+      skip_second_mfa_prompt
 
       expect(current_path).to eq(sign_up_completed_path)
     end

@@ -1,7 +1,6 @@
 import { render } from 'react-dom';
 import { composeComponents } from '@18f/identity-compose-components';
 import {
-  AppContext,
   DocumentCapture,
   DeviceContext,
   AcuantContextProvider,
@@ -18,18 +17,16 @@ import { trackEvent as baseTrackEvent } from '@18f/identity-analytics';
 import type { FlowPath, DeviceContextValue } from '@18f/identity-document-capture';
 
 /**
- * @see AppContext
  * @see MarketingSiteContextProvider
  * @see FailedCaptureAttemptsContext
  * @see UploadContext
  */
 interface AppRootData {
   helpCenterRedirectUrl: string;
-  appName: string;
   maxCaptureAttemptsBeforeTips: string;
   maxAttemptsBeforeNativeCamera: string;
   acuantSdkUpgradeABTestingEnabled: string;
-  useNewerSdk: string;
+  useAlternateSdk: string;
   acuantVersion: string;
   flowPath: FlowPath;
   cancelUrl: string;
@@ -68,13 +65,13 @@ function getMetaContent(name): string | null {
 const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
-  const { flowPath, acuantSdkUpgradeABTestingEnabled, useNewerSdk, acuantVersion } =
+  const { flowPath, acuantSdkUpgradeABTestingEnabled, useAlternateSdk, acuantVersion } =
     appRoot.dataset;
   return baseTrackEvent(event, {
     ...payload,
     flow_path: flowPath,
     acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
-    use_newer_sdk: useNewerSdk,
+    use_alternate_sdk: useAlternateSdk,
     acuant_version: acuantVersion,
   });
 };
@@ -117,7 +114,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     maxCaptureAttemptsBeforeNativeCamera,
     maxSubmissionAttemptsBeforeNativeCamera,
     acuantVersion,
-    appName,
     flowPath,
     cancelUrl: cancelURL,
     idvInPersonUrl: inPersonURL,
@@ -126,7 +122,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
   } = appRoot.dataset as DOMStringMap & AppRootData;
 
   const App = composeComponents(
-    [AppContext.Provider, { value: { appName } }],
     [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
     [DeviceContext.Provider, { value: device }],
     [AnalyticsContextProvider, { trackEvent }],

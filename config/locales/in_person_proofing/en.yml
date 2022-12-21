@@ -26,8 +26,9 @@ en:
       cta:
         button: Verify your ID in person
         new_feature: New Feature
-        prompt_detail: If you are located near Washington D.C. or Baltimore, MD, you may
-          be able to verify your ID in person at limited post office locations.
+        prompt_detail: If you are located near Washington, D.C. or Baltimore, MD, you
+          may be able to verify your ID in person at limited post office
+          locations.
       location:
         inline_error: Include a city, state, and ZIP code
         location_button: Select
@@ -38,8 +39,19 @@ en:
         po_search:
           address_search_hint: 'Example: 1960 W Chelsea Ave Allentown PA 18104'
           address_search_label: Enter an address to find a Post Office near you
-          po_search_about: If you are having trouble adding your ID, you may be able to
-            verify your identity in person at a local United States Post Office.
+          none_found: Sorry, there are no participating Post Offices within 50 miles of
+            %{address}.
+          none_found_tip: You can search using a different address, or add photos of your
+            ID to try and verify your identity online again.
+          po_search_about: If you are located near Washington, D.C. or Baltimore, MD, you
+            may be able to verify your ID in person at limited Post Office
+            locations. More locations across all 50 states and some US
+            territories will be coming soon.
+          results_description: There are %{count} participating Post Offices within 50
+            miles of %{address}.
+          results_instructions: Select a Post Office location below, or search again using
+            a different address. For facility accessibility, use the contact
+            information listed for the Post Office location.
           search_button: Search
         post_office: Post Office ™
         retail_hours_heading: Retail Hours
@@ -48,22 +60,13 @@ en:
         retail_hours_weekday: 'Monday to Friday:'
       prepare:
         alert_selected_post_office: You’ve selected the %{name} Post Office.
-        bring_barcode_header: A copy of your barcode
-        bring_barcode_info: We will give you a unique code that expires within 30 days.
-        bring_id_header: Your state-issued ID
-        bring_id_info_acceptable: 'Your ID must not be expired. Acceptable forms of ID are:'
-        bring_id_info_dl: State Driver’s License
-        bring_id_info_id_card: State Non-Driver’s Identification Card
-        bring_id_info_no_other_forms: We do not currently accept any other forms of
-          Identification, such as passports and military IDs
-        bring_title: 'When you go to the Post Office, please bring:'
         privacy_disclaimer: '%{app_name} is a secure, government website. We and the
           U.S. Postal Service use your data to verify your identity.'
         privacy_disclaimer_link: Learn more about privacy and security.
         privacy_disclaimer_questions: Questions?
         verify_step_about: 'Complete the steps below to generate the barcode you’ll take
           with you to the Post Office:'
-        verify_step_enter_phone: Enter a phone number with your name on the plan.
+        verify_step_enter_phone: Enter your primary phone number or the number that you use most often.
         verify_step_enter_pii: Enter your name, date of birth, state-issued ID number,
           address and Social Security number.
       state_id:

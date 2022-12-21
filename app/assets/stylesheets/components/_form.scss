@@ -2,23 +2,9 @@ $radio-checkbox-space: 1.5rem;
 
 @include at-media('tablet') {
   input,
-  select,
-  textarea {
+  select {
     font-size: $form-field-font-size-sm;
   }
-}
-
-legend {
-  font-weight: $heading-font-weight;
-}
-
-label {
-  display: inline-block;
-  margin-bottom: units(0.5);
-}
-
-textarea {
-  resize: vertical;
 }
 
 .field {
@@ -29,6 +15,7 @@ textarea {
   border-radius: $border-radius;
   color: color('ink');
   font-weight: $bold-font-weight;
+  margin-top: units(0.5);
 
   &[type='number'],
   &.phone {
@@ -65,4 +52,14 @@ input::-webkit-inner-spin-button {
   @include at-media('desktop') {
     margin-left: 0;
   }
+}
+
+// Upstream: https://github.com/18F/identity-style-guide/pull/325
+.usa-input {
+  margin-top: units(0.5);
+}
+
+// Upstream: https://github.com/18F/identity-style-guide/pull/325
+.usa-hint {
+  margin: 0;
 }

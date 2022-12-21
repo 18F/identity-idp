@@ -41,6 +41,7 @@ module Features
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
+      skip_second_mfa_prompt
       user
     end
 
@@ -213,6 +214,10 @@ module Features
       create(:user, :signed_up, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
     end
 
+    def user_verified
+      create(:user, :proofed)
+    end
+
     def user_verified_with_gpo
       create(:user, :proofed_with_gpo)
     end
@@ -270,12 +275,12 @@ module Features
 
     def fill_in_code_with_last_phone_otp
       accept_rules_of_use_and_continue_if_displayed
-      fill_in I18n.t('forms.two_factor.code'), with: last_phone_otp
+      fill_in I18n.t('components.one_time_code_input.label'), with: last_phone_otp
     end
 
     def fill_in_code_with_last_totp(user)
       accept_rules_of_use_and_continue_if_displayed
-      fill_in I18n.t('forms.two_factor.code'), with: last_totp(user)
+      fill_in I18n.t('components.one_time_code_input.label'), with: last_totp(user)
     end
 
     def accept_rules_of_use_and_continue_if_displayed
@@ -438,7 +443,7 @@ module Features
       submit_form_with_valid_password
 
       set_up_2fa_with_valid_phone
-      # expect(page).to have_css('img[src*=sp-logos]')
+      skip_second_mfa_prompt
     end
 
     def click_sign_in_from_landing_page_then_click_create_account
@@ -525,6 +530,7 @@ module Features
     def register_user(email = 'test@test.com')
       confirm_email_and_password(email)
       set_up_2fa_with_valid_phone
+      skip_second_mfa_prompt
       User.find_with_email(email)
     end
 
@@ -544,6 +550,7 @@ module Features
     def register_user_with_authenticator_app(email = 'test@test.com')
       confirm_email_and_password(email)
       set_up_2fa_with_authenticator_app
+      skip_second_mfa_prompt
     end
 
     def set_up_2fa_with_authenticator_app
@@ -566,6 +573,7 @@ module Features
       )
 
       set_up_2fa_with_piv_cac
+      skip_second_mfa_prompt
     end
 
     def set_up_2fa_with_piv_cac
@@ -581,6 +589,10 @@ module Features
         uuid: SecureRandom.uuid,
         subject: 'SomeIgnoredSubject',
       )
+    end
+
+    def skip_second_mfa_prompt
+      click_on t('mfa.skip')
     end
 
     def sign_in_via_branded_page(user)

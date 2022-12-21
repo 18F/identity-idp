@@ -1,8 +1,11 @@
-import { TextInput, Button } from '@18f/identity-components';
+import { TextInput } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
-import { useState, useCallback, ChangeEvent, useRef, Ref } from 'react';
+import { useState, useCallback, ChangeEvent, useRef, useEffect } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import ValidatedField from '@18f/identity-validated-field/validated-field';
+import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-button/spinner-button';
+import type { RegisterFieldCallback } from '@18f/identity-form-steps';
+import useSWR from 'swr';
 
 interface Location {
   street_address: string;
@@ -14,33 +17,49 @@ interface Location {
 
 interface AddressSearchProps {
   onAddressFound?: (location: Location) => void;
-  registerField: (field: string) => Ref<HTMLInputElement>;
+  registerField?: RegisterFieldCallback;
 }
 
 export const ADDRESS_SEARCH_URL = '/api/addresses';
 
-function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSearchProps) {
+function requestAddressCandidates(unvalidatedAddressInput: string): Promise<Location[]> {
+  return request<Location[]>(ADDRESS_SEARCH_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    json: { address: unvalidatedAddressInput },
+  });
+}
+
+function AddressSearch({
+  onAddressFound = () => {},
+  registerField = () => undefined,
+}: AddressSearchProps) {
   const validatedFieldRef = useRef<HTMLFormElement | null>(null);
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
-  const [addressQuery, setAddressQuery] = useState({} as Location);
+  const [addressQuery, setAddressQuery] = useState('');
   const { t } = useI18n();
+  const { data: addressCandidates } = useSWR([ADDRESS_SEARCH_URL, addressQuery], () =>
+    addressQuery ? requestAddressCandidates(unvalidatedAddressInput) : null,
+  );
+  const ref = useRef<SpinnerButtonRefHandle>(null);
+
+  useEffect(() => {
+    if (addressCandidates) {
+      const bestMatchedAddress = addressCandidates[0];
+      onAddressFound(bestMatchedAddress);
+      ref.current?.toggleSpinner(false);
+    }
+  }, [addressCandidates]);
 
   const handleAddressSearch = useCallback(
-    async (event) => {
+    (event) => {
       event.preventDefault();
       validatedFieldRef.current?.reportValidity();
       if (unvalidatedAddressInput === '') {
         return;
       }
-      const addressCandidates = await request(ADDRESS_SEARCH_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        json: { address: unvalidatedAddressInput },
-      });
 
-      const bestMatchedAddress = addressCandidates[0];
-      setAddressQuery(bestMatchedAddress);
-      onAddressFound(bestMatchedAddress);
+      setAddressQuery(unvalidatedAddressInput);
     },
     [unvalidatedAddressInput],
   );
@@ -65,10 +84,16 @@ function AddressSearch({ onAddressFound = () => {}, registerField }: AddressSear
           hint={t('in_person_proofing.body.location.po_search.address_search_hint')}
         />
       </ValidatedField>
-      <Button type="submit" className="margin-y-5" onClick={handleAddressSearch}>
+      <SpinnerButton
+        isWide
+        isBig
+        ref={ref}
+        type="submit"
+        className="margin-y-5"
+        onClick={handleAddressSearch}
+      >
         {t('in_person_proofing.body.location.po_search.search_button')}
-      </Button>
-      <>{addressQuery.address}</>
+      </SpinnerButton>
     </>
   );
 }

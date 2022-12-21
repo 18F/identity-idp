@@ -77,6 +77,14 @@ class UserDecorator
     profile if profile&.password_reset?
   end
 
+  def threatmetrix_review_pending?
+    @threatmetrix_review_pending ||= threatmetrix_review_pending_profile.present?
+  end
+
+  def threatmetrix_review_pending_profile
+    user.profiles.threatmetrix_review_pending.order(created_at: :desc).first
+  end
+
   def qrcode(otp_secret_key)
     options = {
       issuer: APP_NAME,

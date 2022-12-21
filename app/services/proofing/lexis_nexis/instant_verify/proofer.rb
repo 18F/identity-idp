@@ -33,6 +33,7 @@ module Proofing
               failed_result_can_pass_with_additional_verification?(verification_response),
             attributes_requiring_additional_verification:
               attributes_requiring_additional_verification(verification_response),
+            vendor_workflow: config.phone_finder_workflow,
           )
         end
 
