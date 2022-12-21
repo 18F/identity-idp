@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import { render } from '@testing-library/react';
 import { computeAccessibleDescription } from 'dom-accessibility-api';
+import AddressSearch from '@18f/identity-document-capture/components/address-search';
 import ValidatedField, { getErrorMessages } from './validated-field';
 
 describe('getErrorMessages', () => {
@@ -99,6 +100,21 @@ describe('ValidatedField', () => {
 
     expect(input.classList.contains('validated-field__input')).to.be.true();
     expect(input.classList.contains('my-custom-class')).to.be.true();
+  });
+
+  it('returns an input element which exposes the reportValidity function to parent element', () => {
+    const validate = sinon.stub().throws(new Error('not an address, oh no'));
+    const { getByRole } = render(
+      <AddressSearch>
+        <ValidatedField validate={validate} />
+      </AddressSearch>,
+    );
+
+    const input = getByRole('textbox') as HTMLInputElement;
+    input.reportValidity();
+    expect(computeAccessibleDescription(input)).to.include(
+      'in_person_proofing.body.location.inline_error',
+    );
   });
 
   context('with children', () => {
