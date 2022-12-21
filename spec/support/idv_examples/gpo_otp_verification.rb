@@ -17,8 +17,6 @@ shared_examples 'gpo otp verification' do |options|
         options[:redirect_after_verification]
 
       expect(page).to have_current_path(expected_path)
-
-      user.reload
     end
 
     expect(user.events.account_verified.size).to eq 1
