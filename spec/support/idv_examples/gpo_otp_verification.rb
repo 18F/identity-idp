@@ -12,7 +12,12 @@ shared_examples 'gpo otp verification' do |options|
     click_button t('forms.verify_profile.submit')
 
     if options && options[:redirect_after_verification]
-      expected_path = send(options[:redirect_after_verification])
+      expected_path = if options[:redirect_after_verification].is_a?(Symbol);
+        send(options[:redirect_after_verification])
+      else
+        options[:redirect_after_verification]
+      end
+
       expect(page).to have_current_path(expected_path)
       user.reload
     end

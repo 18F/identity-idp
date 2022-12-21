@@ -23,7 +23,6 @@ feature 'idv gpo otp verification step', :js do
     )
   end
   let(:user) { profile.user }
-
   let(:threatmetrix_enabled) { false }
   let(:threatmetrix_review_status) { nil }
 
