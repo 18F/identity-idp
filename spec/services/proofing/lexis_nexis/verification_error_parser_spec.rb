@@ -26,14 +26,14 @@ RSpec.describe Proofing::LexisNexis::VerificationErrorParser do
     it 'should not log a passing response containing no important information' do
       response_body['Products'].first['ProductType'] = 'Fake Product'
       response_body['Products'].first['ProductStatus'] = 'pass'
-      response_body['Products'].first['Items'].map{|i| i.delete('ItemReason') }
+      response_body['Products'].first['Items'].map { |i| i.delete('ItemReason') }
 
       expect(errors[:'Execute Instant Verify']).to eq(nil)
     end
 
     it 'should log any Instant Verify response, including a pass' do
       response_body['Products'].first['ProductStatus'] = 'pass'
-      response_body['Products'].first['Items'].map{|i| i.delete('ItemReason') }
+      response_body['Products'].first['Items'].map { |i| i.delete('ItemReason') }
 
       expect(errors[:'Execute Instant Verify']).to be_a Hash
     end
@@ -44,6 +44,5 @@ RSpec.describe Proofing::LexisNexis::VerificationErrorParser do
 
       expect(errors[:'Execute Instant Verify']).to be_a Hash
     end
-
   end
 end
