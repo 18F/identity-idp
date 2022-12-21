@@ -158,9 +158,9 @@ describe 'Account Reset Request: Delete Account', email: true do
       click_link t('two_factor_authentication.login_options_link_text')
 
       # Visiting account reset directly should redirect to 2FA
-      visit account_reset_request_path
+      visit account_reset_recovery_options_path
 
-      expect(page.current_path).to eq(account_reset_request_path)
+      expect(page.current_path).to eq(account_reset_recovery_options_path)
     end
   end
 end
