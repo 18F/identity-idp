@@ -21,6 +21,12 @@ en:
         keep_going: No, keep going
         start_over: Start over
       description:
+
+
+def someFunc() {
+  return nonsense;
+}
+
         account_page: account page
         exit:
           with_sp_html:
