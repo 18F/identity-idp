@@ -1,25 +1,5 @@
-shared_examples 'gpo otp verification' do |options|
+shared_examples 'gpo otp verification' do
   include IdvStepHelper
-
-  let(:expected_redirect_after_gpo_otp_verification) do
-    if options && options[:redirect_after_verification]
-      options[:redirect_after_verification].is_a?(Symbol) ?
-        send(options[:redirect_after_verification]) :
-        options[:redirect_after_verification]
-    end
-  end
-
-  let(:account_should_be_verified) do
-    !options || options[:account_should_be_verified] || options[:account_should_be_verified].nil?
-  end
-
-  let(:profile_should_be_active) do
-    !options || options[:profile_should_be_active] || options[:profile_should_be_active].nil?
-  end
-
-  let(:expected_deactivation_reason) do
-    options && options[:expected_profile_deactivation_reason]
-  end
 
   it 'prompts for one-time code at sign in' do
     sign_in_live_with_2fa(user)
@@ -31,14 +11,13 @@ shared_examples 'gpo otp verification' do |options|
     fill_in t('forms.verify_profile.name'), with: otp
     click_button t('forms.verify_profile.submit')
 
-    if expected_redirect_after_gpo_otp_verification
-      expect(page).to have_current_path(expected_redirect_after_gpo_otp_verification)
-    end
+    expect(page).to have_current_path(redirect_after_verification) if redirect_after_verification
 
     profile.reload
 
     if profile_should_be_active
       expect(profile.active).to be(true)
+      expect(profile.deactivation_reason).to be(nil)
     else
       expect(profile.active).to be(false)
       if expected_deactivation_reason
@@ -46,12 +25,8 @@ shared_examples 'gpo otp verification' do |options|
       end
     end
 
-    if account_should_be_verified
-      expect(user.events.account_verified.size).to eq 1
-      expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
-    else
-      expect(user.events.account_verified.size).to eq 0
-    end
+    expect(user.events.account_verified.size).to eq 1
+    expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
   end
 
   it 'renders an error for an expired GPO OTP' do
