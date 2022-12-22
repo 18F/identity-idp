@@ -50,21 +50,9 @@ describe 'idv/in_person/ready_to_verify/show.html.erb' do
     end
   end
 
-  context 'with enrollment where selected_location_details is present' do
-    it 'renders a location' do
-      render
+  it 'renders a location' do
+    render
 
-      expect(rendered).to have_content(t('in_person_proofing.body.barcode.speak_to_associate'))
-    end
-  end
-
-  context 'with enrollment where selected_location_details is not present' do
-    let(:selected_location_details) { nil }
-
-    it 'does not render a location' do
-      render
-
-      expect(rendered).not_to have_content(t('in_person_proofing.body.barcode.speak_to_associate'))
-    end
+    expect(rendered).to have_content(t('in_person_proofing.body.barcode.retail_hours'))
   end
 end
