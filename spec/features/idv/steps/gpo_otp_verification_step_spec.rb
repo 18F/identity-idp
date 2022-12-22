@@ -40,22 +40,26 @@ feature 'idv gpo otp verification step', :js do
   context 'ThreatMetrix enabled' do
     let(:threatmetrix_enabled) { true }
 
-    context 'ThreatMetrix evaluates as "pass"' do
+    context 'ThreatMetrix says "pass"' do
       let(:threatmetrix_review_status) { 'pass' }
       it_behaves_like 'gpo otp verification'
     end
 
-    context 'ThreatMetrix evaluates as "review"' do
+    context 'ThreatMetrix says "review"' do
       let(:threatmetrix_review_status) { 'review' }
       it_behaves_like 'gpo otp verification'
     end
 
-    context 'ThreatMetrix evaluates as "reject"' do
+    context 'ThreatMetrix says "reject"' do
       let(:threatmetrix_review_status) { 'reject' }
-      it_behaves_like 'gpo otp verification', redirect_after_verification: :idv_setup_errors_path
+      it_behaves_like 'gpo otp verification', {
+        redirect_after_verification: :idv_setup_errors_path,
+        profile_should_be_active: false,
+        expected_deactivation_reason: 'threatmetrix_review_pending',
+      }
     end
 
-    context 'ThreatMetrix evaluates as nil' do
+    context 'No ThreatMetrix result on proofing component' do
       let(:threatmetrix_review_status) { nil }
       it_behaves_like 'gpo otp verification'
     end
