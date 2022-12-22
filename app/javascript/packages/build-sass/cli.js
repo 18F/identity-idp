@@ -20,9 +20,12 @@ const flags = args.filter((arg) => arg.startsWith('-'));
 
 const isWatching = flags.includes('--watch');
 const outDir = flags.find((flag) => flag.startsWith('--out-dir='))?.slice(10);
+const loadPaths = flags
+  .filter((flag) => flag.startsWith('--load-path='))
+  .map((flag) => flag.slice(12));
 
 /** @type {BuildOptions & SyncSassOptions} */
-const options = { outDir, optimize: isProduction };
+const options = { outDir, loadPaths, optimize: isProduction };
 
 /**
  * Watches given file path(s), triggering the callback on the first change.
