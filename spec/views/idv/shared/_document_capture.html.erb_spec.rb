@@ -14,7 +14,7 @@ describe 'idv/shared/_document_capture.html.erb' do
   let(:front_image_upload_url) { nil }
   let(:back_image_upload_url) { nil }
   let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
-  let(:use_newer_sdk) { false }
+  let(:use_alternate_sdk) { false }
   let(:acuant_version) { '11.7.1' }
 
   before do
@@ -48,7 +48,7 @@ describe 'idv/shared/_document_capture.html.erb' do
       front_image_upload_url: front_image_upload_url,
       back_image_upload_url: back_image_upload_url,
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      use_newer_sdk: use_newer_sdk,
+      use_alternate_sdk: use_alternate_sdk,
       acuant_version: acuant_version,
     }
   end

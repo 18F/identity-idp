@@ -81,10 +81,10 @@ describe 'accounts/two_factor_authentication/show.html.erb' do
     end
   end
 
-  context 'when multiple mfa is enabled' do
+  context 'when kantara phone restriction is enabled' do
     let(:user) { create(:user, :with_phone, :with_authentication_app) }
     before do
-      allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
+      allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
       assign(
         :presenter,
         AccountShowPresenter.new(

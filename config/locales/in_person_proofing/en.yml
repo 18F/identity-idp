@@ -23,8 +23,9 @@ en:
       cta:
         button: Verify your ID in person
         new_feature: New Feature
-        prompt_detail: If you are located near Washington D.C. or Baltimore, MD, you may
-          be able to verify your ID in person at limited post office locations.
+        prompt_detail: If you are located near Washington, D.C. or Baltimore, MD, you
+          may be able to verify your ID in person at limited post office
+          locations.
       location:
         inline_error: Include a city, state, and ZIP code
         location_button: Select
@@ -39,8 +40,10 @@ en:
             %{address}.
           none_found_tip: You can search using a different address, or add photos of your
             ID to try and verify your identity online again.
-          po_search_about: If you are having trouble adding your ID, you may be able to
-            verify your identity in person at a local United States Post Office.
+          po_search_about: If you are located near Washington, D.C. or Baltimore, MD, you
+            may be able to verify your ID in person at limited Post Office
+            locations. More locations across all 50 states and some US
+            territories will be coming soon.
           results_description: There are %{count} participating Post Offices within 50
             miles of %{address}.
           results_instructions: Select a Post Office location below, or search again using

@@ -125,8 +125,6 @@ en:
       need to verify your identity using a physical device such as a security
       key or government employee ID (PIV or CAC) to access your information.
     two_factor_choice: Authentication method setup
-    two_factor_choice_intro: Add another layer of security by using one of the
-      multi-factor authentication options below.
     two_factor_choice_options:
       auth_app: Authentication application
       auth_app_info: Download or use an authentication app of your choice to generate

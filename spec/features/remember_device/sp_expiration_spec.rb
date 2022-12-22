@@ -106,6 +106,7 @@ feature 'remember device sp expiration' do
     check t('forms.messages.remember_device')
     fill_in_code_with_last_phone_otp
     click_submit_default
+    skip_second_mfa_prompt
 
     first(:link, t('links.sign_out')).click
     user_record

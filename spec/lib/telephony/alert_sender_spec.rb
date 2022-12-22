@@ -37,13 +37,27 @@ RSpec.describe Telephony::AlertSender do
     let(:link) do
       'https://idp.int.identitysandbox.com/verify/capture-doc/mobile-front-image?token=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
     end
+    let(:app_name) { APP_NAME }
+    let(:sp_or_app_name) { 'Batman.gov' }
 
     it 'sends the correct message' do
-      subject.send_doc_auth_link(to: recipient, link: link, country_code: 'US')
+      subject.send_doc_auth_link(
+        to: recipient,
+        link: link,
+        country_code: 'US',
+        sp_or_app_name: sp_or_app_name,
+      )
 
       last_message = Telephony::Test::Message.messages.last
       expect(last_message.to).to eq(recipient)
-      expect(last_message.body).to eq(I18n.t('telephony.doc_auth_link', link: link))
+      expect(last_message.body).to eq(
+        I18n.t(
+          'telephony.doc_auth_link',
+          app_name: app_name,
+          link: link,
+          sp_or_app_name: sp_or_app_name,
+        ),
+      )
     end
 
     I18n.available_locales.each do |locale|
@@ -57,7 +71,12 @@ RSpec.describe Telephony::AlertSender do
         end
 
         it 'puts the URL in the first 160 characters, so it stays within a single SMS message' do
-          subject.send_doc_auth_link(to: recipient, link: link, country_code: 'US')
+          subject.send_doc_auth_link(
+            to: recipient,
+            link: link,
+            country_code: 'US',
+            sp_or_app_name: sp_or_app_name,
+          )
 
           last_message = Telephony::Test::Message.messages.last
           first160 = last_message.body[0...160]
@@ -71,7 +90,12 @@ RSpec.describe Telephony::AlertSender do
 
       expect(Telephony.config.logger).to receive(:warn)
 
-      subject.send_doc_auth_link(to: recipient, link: long_link, country_code: 'US')
+      subject.send_doc_auth_link(
+        to: recipient,
+        link: long_link,
+        country_code: 'US',
+        sp_or_app_name: sp_or_app_name,
+      )
     end
   end
 
