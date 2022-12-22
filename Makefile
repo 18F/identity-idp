@@ -118,9 +118,9 @@ lintfix: ## Try to automatically fix any ruby, ERB, javascript, or CSS lint erro
 	bundle exec rubocop -a
 	@echo "--- erblint fix ---"
 	bundle exec erblint app/views app/components -a
-	@echo "--- eslint ---"
+	@echo "--- eslint fix ---"
 	yarn lint --fix
-	@echo "--- stylelint ---"
+	@echo "--- stylelint fix ---"
 	yarn lint:css --fix
 
 brakeman: ## Runs brakeman
