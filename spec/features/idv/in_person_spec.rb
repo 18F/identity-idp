@@ -319,7 +319,11 @@ RSpec.describe 'In Person Proofing', js: true do
         complete_doc_auth_steps_before_send_link_step
         fill_in :doc_auth_phone, with: '415-555-0199'
         click_idv_continue
+
+        expect(page).to have_content(t('doc_auth.headings.text_message'))
       end
+
+      expect(@sms_link).to be_present
 
       perform_in_browser(:mobile) do
         visit @sms_link
