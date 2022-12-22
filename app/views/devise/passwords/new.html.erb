@@ -14,10 +14,14 @@
       url: user_password_path,
       html: { autocomplete: 'off', method: :post },
     ) do |f| %>
-  <%= f.input :email,
-              required: true,
-              input_html: { autocorrect: 'off',
-                            aria: { invalid: false, describedby: 'email-description' } } %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :email,
+        label: t('account.index.email'),
+        required: true,
+        input_html: { autocorrect: 'off',
+                      aria: { invalid: false, describedby: 'email-description' } }
+      ) %>
   <%= f.input :request_id, as: :hidden, input_html: { value: request_id } %>
   <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
 <% end %>
