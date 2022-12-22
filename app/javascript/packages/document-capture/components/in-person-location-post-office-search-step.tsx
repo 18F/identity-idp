@@ -132,15 +132,15 @@ function useUspsLocations() {
     }
   }, [addressCandidates]);
 
-  return [
+  return {
     foundAddress,
     locationResults,
     unvalidatedAddressInput,
     validatedFieldRef,
-    isLoadingLocations || isLoadingCandidates,
+    isLoading: isLoadingLocations || isLoadingCandidates,
     onAddressChanged,
     handleAddressSearch,
-  ];
+  };
 }
 
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
@@ -148,7 +148,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
-  const [
+  const {
     foundAddress,
     locationResults,
     unvalidatedAddressInput,
@@ -156,7 +156,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
     isLoading,
     onAddressChanged,
     handleAddressSearch,
-  ] = useUspsLocations();
+  } = useUspsLocations();
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
