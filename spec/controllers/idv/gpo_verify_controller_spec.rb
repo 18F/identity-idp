@@ -200,6 +200,16 @@ RSpec.describe Idv::GpoVerifyController do
 
             expect(response).to redirect_to(idv_setup_errors_url)
           end
+
+          it 'does not show a flash message' do
+            expect(flash[:success]).to be_nil
+            action
+          end
+
+          it 'does not dispatch account verified alert' do
+            expect(UserAlerts::AlertUserAboutAccountVerified).not_to receive(:call)
+            action
+          end
         end
 
         context 'with threatmetrix status of "review"' do
