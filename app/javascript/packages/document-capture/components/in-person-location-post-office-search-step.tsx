@@ -97,6 +97,7 @@ function useUspsLocations() {
   const [addressQuery, setAddressQuery] = useState('');
   const handleAddressSearch = useCallback((event, unvalidatedAddressInput, validatedFieldRef) => {
     event.preventDefault();
+    // this will be needed to validate results later
     validatedFieldRef.current?.reportValidity();
     if (unvalidatedAddressInput === '') {
       return;

@@ -25,11 +25,11 @@ function AddressSearch({
   const { t } = useI18n();
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
   const validatedFieldRef = useRef<HTMLFormElement>(null);
-  const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
+  const [textInput, setTextInput] = useState('');
 
-  function onAddressChanged(event) {
+  function onTextInputChange(event) {
     const target = event.target as HTMLInputElement;
-    setUnvalidatedAddressInput(target.value);
+    setTextInput(target.value);
   }
 
   useEffect(() => {
@@ -37,7 +37,7 @@ function AddressSearch({
   }, [loading]);
 
   function handleSearch(event) {
-    onSearch(event, unvalidatedAddressInput, validatedFieldRef);
+    onSearch(event, textInput, validatedFieldRef);
   }
 
   return (
@@ -51,8 +51,8 @@ function AddressSearch({
         <TextInput
           required
           ref={registerField('address')}
-          value={unvalidatedAddressInput}
-          onChange={onAddressChanged}
+          value={textInput}
+          onChange={onTextInputChange}
           label={t('in_person_proofing.body.location.po_search.address_search_label')}
           hint={t('in_person_proofing.body.location.po_search.address_search_hint')}
         />
