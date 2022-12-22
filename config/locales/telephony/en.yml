@@ -3,11 +3,11 @@ en:
   telephony:
     account_reset_cancellation_notice: Your request to delete your %{app_name} account has been cancelled.
     account_reset_notice: As requested, your %{app_name} account will be deleted in
-      24 hours. Don’t want to delete your account? Sign in to your %{app_name}
+      24 hours. Don't want to delete your account? Sign in to your %{app_name}
       account to cancel.
     authentication_otp:
       sms: |-
-        %{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don’t share this code with anyone.
+        %{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don't share this code with anyone.
 
         @%{domain} #%{code}
       voice: Hello! Your 6-%{format_type} %{app_name} one-time code is, %{code}. Your
@@ -15,14 +15,14 @@ en:
         code expires in %{expiration} minutes.
     confirmation_otp:
       sms: |-
-        %{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don’t share this code with anyone.
+        %{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don't share this code with anyone.
 
         @%{domain} #%{code}
       voice: Hello! Your 6-%{format_type} %{app_name} one-time code is, %{code}. Your
         one-time code is, %{code}. Again, your one-time code is %{code}. This
         code expires in %{expiration} minutes.
     doc_auth_link: |-
-      %{app_name}: %{link} You’re verifying your identity to access %{sp_or_app_name}. Take a photo of your ID to continue.
+      %{app_name}: %{link} You're verifying your identity to access %{sp_or_app_name}. Take a photo of your ID to continue.
     error:
       friendly_message:
         daily_voice_limit_reached: Your one-time code failed to send because you
@@ -49,6 +49,6 @@ en:
       character: character
       digit: digit
     personal_key_regeneration_notice: A new personal key has been issued for your
-      %{app_name} account. If this wasn’t you, reset your password.
+      %{app_name} account. If this wasn't you, reset your password.
     personal_key_sign_in_notice: Your personal key was just used to sign into your
-      %{app_name} account. If this wasn’t you, reset your password.
+      %{app_name} account. If this wasn't you, reset your password.
