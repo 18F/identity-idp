@@ -18,6 +18,7 @@ describe 'idv/setup_errors/show.html.erb' do
         t(
           'idv.failure.setup.fail_html',
           support_code: 'ABCD',
+          contact_number: '(844) 555-5555',
         ),
       ),
     )

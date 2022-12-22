@@ -91,9 +91,9 @@ fr:
           Les erreurs les plus courantes sont un numéro de sécurité sociale ou
           un code postal incorrect.
       setup:
-        fail_html: Veuillez appeler notre centre de contact au <strong>(844)
-          875-6446</strong> pour poursuivre la vérification de votre identité.
-          Vous devrez leur fournir le code d’erreur
+        fail_html: Veuillez appeler notre centre de contact au
+          <strong>%{contact_number}</strong> pour poursuivre la vérification de
+          votre identité. Vous devrez leur fournir le code d’erreur
           <strong>%{support_code}</strong>.
         heading: S’il vous plaît, appelez-nous
       timeout: Le temps d’attente pour le traitement de votre demande est plus long

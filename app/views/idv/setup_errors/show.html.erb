@@ -12,6 +12,6 @@
       heading: t('idv.failure.setup.heading'),
     ) do %>
     <p>
-        <%= t('idv.failure.setup.fail_html', support_code: IdentityConfig.store.lexisnexis_threatmetrix_support_code) %>
+        <%= t('idv.failure.setup.fail_html', support_code: IdentityConfig.store.lexisnexis_threatmetrix_support_code, contact_number: IdentityConfig.store.idv_contact_phone_number) %>
     </p>
 <% end %>
