@@ -3,7 +3,6 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
 
   def perform(timestamp = Time.zone.now - 1.hour)
     enabled = IdentityConfig.store.irs_attempt_api_enabled &&
-              IdentityConfig.store.irs_attempt_api_aws_s3_enabled &&
               IdentityConfig.store.irs_attempt_api_bucket_name
     return nil unless enabled
 
