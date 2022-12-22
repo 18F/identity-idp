@@ -96,7 +96,6 @@ fr:
           Vous devrez leur fournir le code d’erreur
           <strong>%{support_code}</strong>.
         heading: S’il vous plaît, appelez-nous
-        link_text: remplir notre formulaire de contact
       timeout: Le temps d’attente pour le traitement de votre demande est plus long
         que d’habitude Veuillez réessayer.
     forgot_password:

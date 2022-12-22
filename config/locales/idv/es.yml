@@ -92,7 +92,6 @@ es:
           para seguir verificando su identidad. Deberá proporcionarnos el código
           de error <strong>%{support_code}</strong>.
         heading: Llámenos
-        link_text: rellene nuestro formulario decontacto
       timeout: Estamos experimentando un tiempo de espera superior al habitual al
         procesar su solicitud. Inténtalo de nuevo.
     forgot_password:
