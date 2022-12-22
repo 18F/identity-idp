@@ -88,10 +88,11 @@ es:
           Los errores más comunes suelen producirse al ingresar un Número de
           Seguridad Social o un Código Postal incorrecto.
       setup:
-        fail_html: Por favor, %{contact_form_link} e introduzca el código
-          <b>%{support_code}</b> en el campo de detalle.
-        heading: Hay un problema con tu información
-        link_text: rellene nuestro formulario decontacto
+        fail_html: Llame a nuestro centro de contacto al
+          <strong>%{contact_number}</strong> para seguir verificando su
+          identidad. Deberá proporcionarnos el código de error
+          <strong>%{support_code}</strong>.
+        heading: Llámenos
       timeout: Estamos experimentando un tiempo de espera superior al habitual al
         procesar su solicitud. Inténtalo de nuevo.
     forgot_password:

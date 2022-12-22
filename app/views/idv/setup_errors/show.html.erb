@@ -11,7 +11,7 @@
       title: t('titles.failure.information_not_verified'),
       heading: t('idv.failure.setup.heading'),
     ) do %>
-  <p>
-    <%= t('idv.failure.setup.fail_html', contact_form_link: link_to(t('idv.failure.setup.link_text'), contact_redirect_url(flow: :idv, step: :secure_account)), support_code: IdentityConfig.store.lexisnexis_threatmetrix_support_code) %>
-  </p>
+    <p>
+        <%= t('idv.failure.setup.fail_html', support_code: IdentityConfig.store.lexisnexis_threatmetrix_support_code, contact_number: IdentityConfig.store.idv_contact_phone_number) %>
+    </p>
 <% end %>
