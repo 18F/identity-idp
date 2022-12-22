@@ -29,16 +29,16 @@ function LocationCollectionItem({
   weekdayHours,
 }: LocationCollectionItemProps) {
   const { t } = useI18n();
-  const numericDistance = distance?.split(' ');
+  const numericDistance = distance?.split(' ')[0];
 
   return (
     <li className="location-collection-item">
       <div className="usa-collection__body">
         <div className="display-flex flex-justify">
-          {distance && numericDistance && (
+          {numericDistance && (
             <h3 className="usa-collection__heading">
               {t('in_person_proofing.body.location.distance', {
-                count: parseFloat(numericDistance[0]),
+                count: parseFloat(numericDistance),
               })}
             </h3>
           )}
@@ -60,14 +60,12 @@ function LocationCollectionItem({
         <div>{`${t('in_person_proofing.body.location.retail_hours_weekday')} ${weekdayHours}`}</div>
         <div>{`${t('in_person_proofing.body.location.retail_hours_sat')} ${saturdayHours}`}</div>
         <div>{`${t('in_person_proofing.body.location.retail_hours_sun')} ${sundayHours}`}</div>
-        {phone || tty ? (
+        {(phone || tty) && (
           <div>
             <h4>{t('in_person_proofing.body.location.contact_info_heading')}</h4>
             <div>{`${t('in_person_proofing.body.location.phone')} ${phone}`}</div>
             <div>{`${t('in_person_proofing.body.location.tty')} ${tty}`}</div>
           </div>
-        ) : (
-          ''
         )}
         <Button
           id={`location_button_mobile_${selectId}`}
