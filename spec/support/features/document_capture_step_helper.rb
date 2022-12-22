@@ -3,9 +3,7 @@ module DocumentCaptureStepHelper
     click_on 'Submit'
 
     # Wait for the the loading interstitial to disappear before continuing
-    if page.has_content?(t('doc_auth.headings.interstitial'))
-      expect(page).not_to have_content(t('doc_auth.headings.interstitial'), wait: 10)
-    end
+    expect(page).not_to have_content(t('doc_auth.headings.interstitial'), wait: 10)
   end
 
   def attach_and_submit_images
