@@ -1,23 +1,18 @@
 import { TextInput } from '@18f/identity-components';
-import { request } from '@18f/identity-request';
-import { useState, useCallback, ChangeEvent, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, RefObject } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import ValidatedField from '@18f/identity-validated-field/validated-field';
 import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-button/spinner-button';
 import type { RegisterFieldCallback } from '@18f/identity-form-steps';
-import useSWR from 'swr';
-
-interface Location {
-  street_address: string;
-  city: string;
-  state: string;
-  zip_code: string;
-  address: string;
-}
 
 interface AddressSearchProps {
-  onAddressFound?: (location: Location) => void;
+  onSearch?: (
+    event: MouseEvent,
+    textInput: string,
+    fieldValidationRef: RefObject<HTMLFormElement> | undefined,
+  ) => void;
   registerField?: RegisterFieldCallback;
+  loading?: boolean;
 }
 
 export const ADDRESS_SEARCH_URL = '/api/addresses';
@@ -25,17 +20,25 @@ export const ADDRESS_SEARCH_URL = '/api/addresses';
 function AddressSearch({
   registerField = () => undefined,
   onSearch = () => {},
-  onAddressChanged = () => {},
-  unvalidatedAddressInput = '',
-  validatedFieldRef = null,
   loading = false,
 }: AddressSearchProps) {
   const { t } = useI18n();
-  const ref = useRef<SpinnerButtonRefHandle>(null);
+  const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
+  const validatedFieldRef = useRef<HTMLFormElement>(null);
+  const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
+
+  function onAddressChanged(event) {
+    const target = event.target as HTMLInputElement;
+    setUnvalidatedAddressInput(target.value);
+  }
 
   useEffect(() => {
-    ref.current?.toggleSpinner(loading);
+    spinnerButtonRef.current?.toggleSpinner(loading);
   }, [loading]);
+
+  function handleSearch(event) {
+    onSearch(event, unvalidatedAddressInput, validatedFieldRef);
+  }
 
   return (
     <>
@@ -54,7 +57,14 @@ function AddressSearch({
           hint={t('in_person_proofing.body.location.po_search.address_search_hint')}
         />
       </ValidatedField>
-      <SpinnerButton isWide isBig ref={ref} type="submit" className="margin-y-5" onClick={onSearch}>
+      <SpinnerButton
+        isWide
+        isBig
+        ref={spinnerButtonRef}
+        type="submit"
+        className="margin-y-5"
+        onClick={handleSearch}
+      >
         {t('in_person_proofing.body.location.po_search.search_button')}
       </SpinnerButton>
     </>

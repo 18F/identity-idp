@@ -21,6 +21,14 @@ interface PostOffice {
   zip_code_5: string;
 }
 
+interface Location {
+  street_address: string;
+  city: string;
+  state: string;
+  zip_code: string;
+  address: string;
+}
+
 interface LocationQuery {
   streetAddress: string;
   city: string;
@@ -85,28 +93,17 @@ function requestAddressCandidates(unvalidatedAddressInput: string): Promise<Loca
 }
 
 function useUspsLocations() {
-  // raw text input updated per keystroke
-  const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
-  function onAddressChanged(event) {
-    const target = event.target as HTMLInputElement;
-    setUnvalidatedAddressInput(target.value);
-  }
-
   // raw text input that is set when user clicks search
   const [addressQuery, setAddressQuery] = useState('');
-  const validatedFieldRef = useRef<HTMLFormElement | null>(null);
-  const handleAddressSearch = useCallback(
-    (event) => {
-      event.preventDefault();
-      validatedFieldRef.current?.reportValidity();
-      if (unvalidatedAddressInput === '') {
-        return;
-      }
+  const handleAddressSearch = useCallback((event, unvalidatedAddressInput, validatedFieldRef) => {
+    event.preventDefault();
+    validatedFieldRef.current?.reportValidity();
+    if (unvalidatedAddressInput === '') {
+      return;
+    }
 
-      setAddressQuery(unvalidatedAddressInput);
-    },
-    [unvalidatedAddressInput],
-  );
+    setAddressQuery(unvalidatedAddressInput);
+  }, []);
 
   // sends the raw text query to arcgis
   const { data: addressCandidates, isLoading: isLoadingCandidates } = useSWR(
@@ -139,12 +136,9 @@ function useUspsLocations() {
   );
 
   return {
-    unvalidatedAddressInput,
     foundAddress,
-    validatedFieldRef,
     locationResults,
     isLoading: isLoadingLocations || isLoadingCandidates,
-    onAddressChanged,
     handleAddressSearch,
   };
 }
@@ -154,15 +148,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
-  const {
-    foundAddress,
-    locationResults,
-    unvalidatedAddressInput,
-    validatedFieldRef,
-    isLoading,
-    onAddressChanged,
-    handleAddressSearch,
-  } = useUspsLocations();
+  const { foundAddress, locationResults, isLoading, handleAddressSearch } = useUspsLocations();
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
@@ -223,9 +209,6 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       <p>{t('in_person_proofing.body.location.po_search.po_search_about')}</p>
       <AddressSearch
         registerField={registerField}
-        unvalidatedAddressInput={unvalidatedAddressInput}
-        onAddressChanged={onAddressChanged}
-        validatedFieldRef={validatedFieldRef}
         onSearch={handleAddressSearch}
         loading={isLoading}
       />
