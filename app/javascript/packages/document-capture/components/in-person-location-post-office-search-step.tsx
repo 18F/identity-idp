@@ -85,33 +85,16 @@ function requestAddressCandidates(unvalidatedAddressInput: string): Promise<Loca
 }
 
 function useUspsLocations() {
-  const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
-  const { data: locationResults, isLoading: isLoadingLocations } = useSWR(
-    [LOCATIONS_URL, foundAddress],
-    ([, address]) => (address ? requestUspsLocations(address) : null),
-  );
-  const handleFoundAddress = useCallback((address) => {
-    setFoundAddress({
-      streetAddress: address.street_address,
-      city: address.city,
-      state: address.state,
-      zipCode: address.zip_code,
-      address: address.address,
-    });
-  }, []);
-
+  // raw text input updated per keystroke
   const [unvalidatedAddressInput, setUnvalidatedAddressInput] = useState('');
   function onAddressChanged(event) {
     const target = event.target as HTMLInputElement;
     setUnvalidatedAddressInput(target.value);
   }
 
-  const validatedFieldRef = useRef<HTMLFormElement | null>(null);
+  // raw text input that is set when user clicks search
   const [addressQuery, setAddressQuery] = useState('');
-  const { data: addressCandidates, isLoading: isLoadingCandidates } = useSWR(
-    [ADDRESS_SEARCH_URL, addressQuery],
-    () => (addressQuery ? requestAddressCandidates(unvalidatedAddressInput) : null),
-  );
+  const validatedFieldRef = useRef<HTMLFormElement | null>(null);
   const handleAddressSearch = useCallback(
     (event) => {
       event.preventDefault();
@@ -125,6 +108,24 @@ function useUspsLocations() {
     [unvalidatedAddressInput],
   );
 
+  // sends the raw text query to arcgis
+  const { data: addressCandidates, isLoading: isLoadingCandidates } = useSWR(
+    [ADDRESS_SEARCH_URL, addressQuery],
+    () => (addressQuery ? requestAddressCandidates(addressQuery) : null),
+  );
+
+  // sets the arcgis-validated address object
+  const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
+  const handleFoundAddress = useCallback((address) => {
+    setFoundAddress({
+      streetAddress: address.street_address,
+      city: address.city,
+      state: address.state,
+      zipCode: address.zip_code,
+      address: address.address,
+    });
+  }, []);
+
   useEffect(() => {
     if (addressCandidates) {
       const bestMatchedAddress = addressCandidates[0];
@@ -132,11 +133,16 @@ function useUspsLocations() {
     }
   }, [addressCandidates]);
 
+  const { data: locationResults, isLoading: isLoadingLocations } = useSWR(
+    [LOCATIONS_URL, foundAddress],
+    ([, address]) => (address ? requestUspsLocations(address) : null),
+  );
+
   return {
-    foundAddress,
-    locationResults,
     unvalidatedAddressInput,
+    foundAddress,
     validatedFieldRef,
+    locationResults,
     isLoading: isLoadingLocations || isLoadingCandidates,
     onAddressChanged,
     handleAddressSearch,
