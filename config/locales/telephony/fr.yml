@@ -23,7 +23,7 @@ fr:
         est %{code}. Votre code à usage unique est %{code}. Une fois de plus,
         votre code à usage unique est %{code}. Ce code expire dans %{expiration}
     doc_auth_link: |-
-      %{app_name}: %{link} Vous vérifiez votre identité pour accéder à %{sp_or_app_name}. Prenez une photo de votre pièce d'identité pour continuer.
+      %{app_name}: %{link} Vous vérifiez votre identité pour accéder à %{sp_or_app_name}. Prenez une photo de votre pièce d’identité pour continuer.
     error:
       friendly_message:
         daily_voice_limit_reached: L’envoi de votre code à usage unique a échoué car
@@ -31,7 +31,7 @@ fr:
           téléphone en 24 heures. Vous pouvez demander un code par SMS ou
           utiliser un autre numéro pour recevoir un appel téléphonique.
         duplicate_endpoint: Le numéro de téléphone entré n’est pas valide.
-        generic: Votre code à usage unique n'a pas été envoyé.
+        generic: Votre code à usage unique n’a pas été envoyé.
         invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris en
           charge. Veuillez essayer par SMS si vous possédez un téléphone
           disposant de cette fonction.
@@ -53,8 +53,8 @@ fr:
       character: caractère
       digit: chiffres
     personal_key_regeneration_notice: Une nouvelle clé personnelle a été émise pour
-      votre compte %{app_name}. Si vous ne l'avez pas demandée, réinitialisez
+      votre compte %{app_name}. Si vous ne l’avez pas demandée, réinitialisez
       votre mot de passe.
     personal_key_sign_in_notice: Votre clé personnelle a été utilisée pour vous
-      connecter à votre compte %{app_name}. Si ce n'était pas vous, changez
+      connecter à votre compte %{app_name}. Si ce n’était pas vous, changez
       votre mot de passe.
