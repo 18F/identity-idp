@@ -14,6 +14,9 @@ SimpleForm.setup do |config|
   }
 
   config.wrappers :base do |b|
+    b.optional :hint
+    b.optional :label
+    b.optional :placeholder
     b.use :html5
     b.use :input, class: 'field'
   end
@@ -22,13 +25,13 @@ SimpleForm.setup do |config|
                   tag: 'div',
                   class: 'margin-bottom-4' do |b|
     b.use :html5
-    b.use :placeholder
+    b.optional :placeholder
     b.optional :maxlength
     b.optional :pattern
     b.optional :min_max
     b.optional :readonly
-    b.use :label, class: 'usa-label'
-    b.use :hint,  wrap_with: { tag: 'div', class: 'usa-hint' }
+    b.optional :label, class: 'usa-label'
+    b.optional :hint,  wrap_with: { tag: 'div', class: 'usa-hint' }
     b.use :input, class: 'display-block width-full field', error_class: 'usa-input--error'
     b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
   end
@@ -39,9 +42,9 @@ SimpleForm.setup do |config|
 
   config.wrappers :uswds_checkbox do |b|
     b.use :html5
-    b.use :hint,  wrap_with: { tag: 'div', class: 'usa-hint' }
+    b.optional :hint, wrap_with: { tag: 'div', class: 'usa-hint' }
     b.use :input, class: 'usa-checkbox__input', error_class: 'usa-input--error'
-    b.use :label, class: 'usa-checkbox__label'
+    b.optional :label, class: 'usa-checkbox__label'
     b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
   end
 
@@ -61,7 +64,7 @@ SimpleForm.setup do |config|
       b.wrapper :legend, tag: 'legend', class: legend_class do |ba|
         ba.use :label_text
       end
-      b.use :hint, wrap_with: { tag: 'div', class: 'usa-hint margin-bottom-05' }
+      b.optional :hint, wrap_with: { tag: 'div', class: 'usa-hint margin-bottom-05' }
       b.wrapper :grid_row, tag: :div, class: 'grid-row margin-bottom-neg-1' do |gr|
         gr.wrapper :grid_column_radios, tag: :div, class: 'grid-col-fill' do |gc|
           gc.wrapper :column_wrapper, tag: :div, class: 'display-inline-block minw-full' do |cr|
