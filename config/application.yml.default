@@ -372,7 +372,7 @@ development:
   irs_attempt_api_enabled: true
   irs_attempt_api_aws_s3_enabled: false
   irs_attempt_api_auth_tokens: 'abc123'
-  irs_attempt_api_bucket_name: please-change-me
+  irs_attempt_api_bucket_name: default-placeholder
   logins_per_ip_limit: 5
   logo_upload_enabled: true
   max_bad_passwords: 5

@@ -3,7 +3,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
 
   def perform(timestamp = Time.zone.now - 1.hour)
     enabled = IdentityConfig.store.irs_attempt_api_enabled &&
-              IdentityConfig.store.irs_attempt_api_bucket_name
+              s3_helper.attempts_bucket_enabled
     return nil unless enabled
 
     events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: timestamp)
@@ -15,10 +15,8 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
       data: event_values, timestamp: timestamp, public_key_str: public_key,
     )
 
-    bucket_name = IdentityConfig.store.irs_attempt_api_bucket_name
-
     create_and_upload_to_attempts_s3_resource(
-      bucket_name: bucket_name, filename: result.filename,
+      bucket_name: s3_helper.attempts_bucket_name, filename: result.filename,
       encrypted_data: result.encrypted_data
     )
 
@@ -40,5 +38,9 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
 
   def redis_client
     @redis_client ||= IrsAttemptsApi::RedisClient.new
+  end
+
+  def s3_helper
+    @s3_helper ||= JobHelpers::S3Helper.new
   end
 end
