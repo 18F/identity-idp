@@ -12,6 +12,15 @@ describe 'Account Reset Request: Delete Account', email: true do
       signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
+      expect(page).
+        to have_content strip_tags(
+          t('account_reset.recovery_options.try_method_again'),
+        )
+      click_link t('account_reset.request.yes_continue')
+      expect(page).
+        to have_content strip_tags(
+          t('account_reset.request.delete_account'),
+        )
       click_button t('account_reset.request.yes_continue')
 
       expect(page).
@@ -69,6 +78,19 @@ describe 'Account Reset Request: Delete Account', email: true do
       signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
+
+      expect(page).
+        to have_content strip_tags(
+          t('account_reset.recovery_options.try_method_again'),
+        )
+
+      click_link t('account_reset.request.yes_continue')
+
+      expect(page).
+        to have_content strip_tags(
+          t('account_reset.request.delete_account'),
+        )
+
       click_button t('account_reset.request.yes_continue')
 
       expect(page).
@@ -121,6 +143,15 @@ describe 'Account Reset Request: Delete Account', email: true do
       signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
+      expect(page).
+        to have_content strip_tags(
+          t('account_reset.recovery_options.try_method_again'),
+        )
+      click_link t('account_reset.request.yes_continue')
+      expect(page).
+        to have_content strip_tags(
+          t('account_reset.request.delete_account'),
+        )
       click_button t('account_reset.request.yes_continue')
 
       expect(page).
@@ -140,27 +171,6 @@ describe 'Account Reset Request: Delete Account', email: true do
       visit account_path
 
       expect(page).to have_current_path(new_user_session_path)
-    end
-  end
-
-  context 'as an IAL2 user' do
-    let(:user) do
-      create(
-        :profile,
-        :active,
-        :verified,
-        pii: { first_name: 'John', ssn: '111223333' },
-      ).user
-    end
-
-    it 'does allow the user to delete their account from 2FA screen' do
-      signin(user_email, user.password)
-      click_link t('two_factor_authentication.login_options_link_text')
-
-      # Visiting account reset directly should redirect to 2FA
-      visit account_reset_request_path
-
-      expect(page.current_path).to eq(account_reset_request_path)
     end
   end
 end

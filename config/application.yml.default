@@ -112,8 +112,11 @@ identity_pki_disabled: false
 identity_pki_local_dev: false
 idv_attempt_window_in_hours: 6
 idv_contact_url: https://www.example.com
+idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13
+idv_acuant_sdk_version_default: '11.7.1'
+idv_acuant_sdk_version_alternate: '11.7.0'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_send_link_attempt_window_in_minutes: 10
@@ -278,7 +281,6 @@ s3_reports_enabled: false
 saml_internal_post: false
 saml_secret_rotation_enabled: false
 seed_agreements_data: true
-select_multiple_mfa_options: false
 service_provider_request_ttl_hours: 24
 session_check_delay: 30
 session_check_frequency: 30
@@ -292,7 +294,6 @@ set_remember_device_session_expiration: false
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
 otp_min_attempts_remaining_warning_count: 3
-show_account_recovery_recovery_options: false
 system_demand_report_email: 'foo@bar.com'
 test_ssn_allowed_list: ''
 totp_code_interval: 30
@@ -370,7 +371,7 @@ development:
   irs_attempt_api_enabled: true
   irs_attempt_api_aws_s3_enabled: false
   irs_attempt_api_auth_tokens: 'abc123'
-  irs_attempt_api_bucket_name: please-change-me
+  irs_attempt_api_bucket_name: default-placeholder
   logins_per_ip_limit: 5
   logo_upload_enabled: true
   max_bad_passwords: 5
@@ -389,9 +390,7 @@ development:
   saml_endpoint_configs: '[{"suffix":"2021","secret_key_passphrase":"trust-but-verify"},{"suffix":"2022","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 10000$8$1$
   secret_key_base: development_secret_key_base
-  select_multiple_mfa_options: true
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
-  show_account_recovery_recovery_options: true
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   state_tracking_enabled: true
   telephony_adapter: test
@@ -564,7 +563,6 @@ test:
   saml_endpoint_configs: '[{"suffix":"2022","secret_key_passphrase":"trust-but-verify"}]'
   saml_internal_post: true
   scrypt_cost: 800$8$1$
-  select_multiple_mfa_options: false
   secret_key_base: test_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   skip_encryption_allowed_list: '[]'

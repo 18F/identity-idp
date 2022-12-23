@@ -4,9 +4,11 @@ import LocationCollectionItem from './location-collection-item';
 
 export interface FormattedLocation {
   formattedCityStateZip: string;
+  distance: string;
   id: number;
   name: string;
   phone: string;
+  tty: string;
   saturdayHours: string;
   streetAddress: string;
   sundayHours: string;
@@ -47,10 +49,12 @@ function InPersonLocations({ locations, onSelect, address }: InPersonLocationsPr
           <LocationCollectionItem
             key={`${index}-${item.name}`}
             handleSelect={onSelect}
-            name={`${item.name} — ${t('in_person_proofing.body.location.post_office')}`}
+            distance={item.distance}
             streetAddress={item.streetAddress}
             selectId={item.id}
             formattedCityStateZip={item.formattedCityStateZip}
+            phone={item.phone}
+            tty={item.tty}
             weekdayHours={item.weekdayHours}
             saturdayHours={item.saturdayHours}
             sundayHours={item.sundayHours}

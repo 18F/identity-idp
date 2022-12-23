@@ -1,0 +1,1 @@
+t('forms.button.submit');
