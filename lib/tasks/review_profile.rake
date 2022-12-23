@@ -10,7 +10,10 @@ namespace :users do
       if user.decorate.threatmetrix_review_pending? && user.proofing_component.review_eligible?
         result = ProofingComponent.find_by(user: user)
         result.update(threatmetrix_review_status: 'pass')
-        user.profiles.first.activate
+        user.profiles.
+          where(deactivation_reason: 'threatmetrix_review_pending').
+          first.
+          activate
         puts "User's review state has been updated to #{result.threatmetrix_review_status}."
       elsif !user.proofing_component.review_eligible?
         puts 'User is past the 30 day review eligibility'
