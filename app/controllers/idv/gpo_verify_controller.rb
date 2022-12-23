@@ -45,7 +45,7 @@ module Idv
           else
             event, disavowal_token = create_user_event_with_disavowal(:account_verified)
 
-            if result.extra[:threatmetrix_check_failed]
+            if result.extra[:threatmetrix_check_failed] && threatmetrix_enabled?
               redirect_to_threatmetrix_review
             else
               UserAlerts::AlertUserAboutAccountVerified.call(
@@ -98,6 +98,10 @@ module Idv
     def confirm_verification_needed
       return if current_user.decorate.pending_profile_requires_verification?
       redirect_to account_url
+    end
+
+    def threatmetrix_enabled?
+      IdentityConfig.store.proofing_device_profiling_decisioning_enabled
     end
   end
 end

@@ -174,6 +174,38 @@ RSpec.describe Idv::GpoVerifyController do
         end
       end
 
+      context 'threatmetrix disabled' do
+        context 'with threatmetrix status of "reject"' do
+          let(:proofing_components) do
+            ProofingComponent.create(
+              user: user, threatmetrix: true,
+              threatmetrix_review_status: 'reject'
+            )
+          end
+
+          it 'redirects to the sign_up/completions page' do
+            expect(@analytics).to receive(:track_event).with(
+              'IdV: GPO verification submitted',
+              success: true,
+              errors: {},
+              pending_in_person_enrollment: false,
+              threatmetrix_check_failed: true,
+              enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
+              pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
+            )
+            expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
+              with(success_properties)
+
+            action
+
+            disavowal_event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
+              where.not(disavowal_token_fingerprint: nil).count
+            expect(disavowal_event_count).to eq 1
+            expect(response).to redirect_to(sign_up_completed_url)
+          end
+        end
+      end
+
       context 'threatmetrix enabled' do
         let(:threatmetrix_enabled) { true }
 
