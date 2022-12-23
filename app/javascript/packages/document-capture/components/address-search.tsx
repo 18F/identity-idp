@@ -1,5 +1,5 @@
 import { TextInput } from '@18f/identity-components';
-import { useState, useRef, useEffect, RefObject } from 'react';
+import { useState, useRef, useEffect, RefObject, useCallback } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import ValidatedField from '@18f/identity-validated-field/validated-field';
 import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-button/spinner-button';
@@ -27,18 +27,21 @@ function AddressSearch({
   const validatedFieldRef = useRef<HTMLFormElement>(null);
   const [textInput, setTextInput] = useState('');
 
-  function onTextInputChange(event) {
+  const onTextInputChange = useCallback((event) => {
     const target = event.target as HTMLInputElement;
     setTextInput(target.value);
-  }
+  }, []);
 
   useEffect(() => {
     spinnerButtonRef.current?.toggleSpinner(loading);
   }, [loading]);
 
-  function handleSearch(event) {
-    onSearch(event, textInput, validatedFieldRef);
-  }
+  const handleSearch = useCallback(
+    (event) => {
+      onSearch(event, textInput, validatedFieldRef);
+    },
+    [textInput],
+  );
 
   return (
     <>
@@ -64,6 +67,7 @@ function AddressSearch({
         type="submit"
         className="margin-y-5"
         onClick={handleSearch}
+        spinOnClick={false}
       >
         {t('in_person_proofing.body.location.po_search.search_button')}
       </SpinnerButton>

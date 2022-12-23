@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
-import useSWR from 'swr';
+import useSWR from 'swr/immutable';
 import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
 import AddressSearch from './address-search';
@@ -108,8 +108,9 @@ function useUspsLocations() {
 
   // sends the raw text query to arcgis
   const { data: addressCandidates, isLoading: isLoadingCandidates } = useSWR(
-    [ADDRESS_SEARCH_URL, addressQuery],
+    [addressQuery],
     () => (addressQuery ? requestAddressCandidates(addressQuery) : null),
+    { keepPreviousData: true },
   );
 
   // sets the arcgis-validated address object
@@ -132,8 +133,9 @@ function useUspsLocations() {
   }, [addressCandidates]);
 
   const { data: locationResults, isLoading: isLoadingLocations } = useSWR(
-    [LOCATIONS_URL, foundAddress],
-    ([, address]) => (address ? requestUspsLocations(address) : null),
+    [foundAddress],
+    ([address]) => (address ? requestUspsLocations(address) : null),
+    { keepPreviousData: true },
   );
 
   return {
