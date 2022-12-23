@@ -113,8 +113,8 @@ RSpec.describe JobHelpers::S3Helper do
     end
   end
 
-  describe '#attempts_s3_serve_enabled' do
-    subject(:attempts_s3_serve_enabled) { s3_helper.attempts_s3_serve_enabled }
+  describe '#attempts_serve_events_from_s3' do
+    subject(:attempts_serve_events_from_s3) { s3_helper.attempts_serve_events_from_s3 }
 
     context 'with s3 disabled and a valid s3 bucket' do
       it 'should return false' do

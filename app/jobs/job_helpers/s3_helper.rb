@@ -34,7 +34,7 @@ module JobHelpers
       (attempts_bucket_name && attempts_bucket_name != 'default-placeholder')
     end
 
-    def attempts_s3_serve_enabled
+    def attempts_serve_events_from_s3
       IdentityConfig.store.irs_attempt_api_aws_s3_enabled && attempts_s3_write_enabled
     end
   end
