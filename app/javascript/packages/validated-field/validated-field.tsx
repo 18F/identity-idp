@@ -80,17 +80,21 @@ function ValidatedField(
 ) {
   const fieldRef = useRef<ValidatedFieldElement>();
   const instanceId = useInstanceId();
+  // WILLFIX: we shouldn't be returning the HTML input child below as it could
+  //          result in a stale reference. This will be fixed with LG-8494
   useImperativeHandle(forwardedRef, () => fieldRef.current?.input);
   useEffect(() => {
     if (fieldRef.current && fieldRef.current.input) {
       const { input } = fieldRef.current;
       input.checkValidity = () => {
-        let nextError: string = (input.validity.customError && input.validationMessage) || '';
+        let nextError: string;
         try {
           validate(input.value);
         } catch (error) {
           nextError = error.message;
         }
+        // this is here in case the component validation state changes during the validate call
+        nextError = nextError || (input.validity.customError && input.validationMessage) || '';
 
         input.setCustomValidity(nextError);
         return !nextError && HTMLInputElement.prototype.checkValidity.call(input);
