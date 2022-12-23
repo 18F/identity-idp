@@ -35,11 +35,11 @@ feature 'Analytics Regression', js: true do
       'IdV: phone confirmation otp visited' => { proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
       'IdV: phone confirmation otp submitted' => { success: true, code_expired: false, code_matches: true, second_factor_attempts_count: 0, second_factor_locked_at: nil, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' }, errors: {} },
       'IdV: review info visited' => { address_verification_method: 'phone', proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
-      'IdV: review complete' => { success: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
-      'IdV: final resolution' => { success: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
+      'IdV: review complete' => { success: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address'}, deactivation_reason: nil },
+      'IdV: final resolution' => { success: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address'}, deactivation_reason: nil },
       'IdV: personal key visited' => { address_verification_method: 'phone', proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
       'IdV: personal key acknowledgment toggled' => { checked: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
-      'IdV: personal key submitted' => { address_verification_method: 'phone', proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
+      'IdV: personal key submitted' => { address_verification_method: 'phone', proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address'}, deactivation_reason: nil },
     }
   end
 
@@ -68,11 +68,11 @@ feature 'Analytics Regression', js: true do
       'IdV: USPS address letter requested' => { resend: false, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis' } },
       'IdV: review info visited' => { address_verification_method: 'gpo', proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
       'IdV: USPS address letter enqueued' => { enqueued_at: Time.zone.now.utc, resend: false, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
-      'IdV: review complete' => { success: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
-      'IdV: final resolution' => { success: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
+      'IdV: review complete' => { success: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter'}, deactivation_reason: nil },
+      'IdV: final resolution' => { success: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter'}, deactivation_reason: nil },
       'IdV: personal key visited' => { address_verification_method: 'gpo', proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
       'IdV: personal key acknowledgment toggled' => { checked: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
-      'IdV: personal key submitted' => { address_verification_method: 'gpo', proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
+      'IdV: personal key submitted' => { address_verification_method: 'gpo', proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter'}, deactivation_reason: nil },
       'IdV: come back later visited' => { proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
     }
   end
@@ -110,11 +110,11 @@ feature 'Analytics Regression', js: true do
       'IdV: phone confirmation otp visited' => { proofing_components: { address_check: 'lexis_nexis_address', document_check: 'usps', resolution_check: 'lexis_nexis', source_check: 'aamva' } },
       'IdV: phone confirmation otp submitted' => { success: true, code_expired: false, code_matches: true, second_factor_attempts_count: 0, second_factor_locked_at: nil, proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' }, errors: {} },
       'IdV: review info visited' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' }, address_verification_method: 'phone' },
-      'IdV: review complete' => { success: true, proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
-      'IdV: final resolution' => { success: true, proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
+      'IdV: review complete' => { success: true, proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address'}, deactivation_reason: nil  },
+      'IdV: final resolution' => { success: true, proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address'}, deactivation_reason: nil  },
       'IdV: personal key visited' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' }, address_verification_method: 'phone' },
       'IdV: personal key acknowledgment toggled' => { checked: true, proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
-      'IdV: personal key submitted' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' }, address_verification_method: 'phone' },
+      'IdV: personal key submitted' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' }, address_verification_method: 'phone', deactivation_reason: nil },
       'IdV: in person ready to verify visited' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
     }
   end
