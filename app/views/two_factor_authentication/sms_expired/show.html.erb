@@ -3,14 +3,23 @@
 <%= render AlertIconComponent.new(icon_name: :error, class: 'display-block margin-bottom-4') %>
 <%= render PageHeadingComponent.new.with_content(t('titles.sms_expired')) %>
 
-<%= simple_form_for(
-      :doc_auth,
-      url: url_for(type: :desktop),
-      method: 'POST',
-      html: { class: 'usa-button padding-0 margin-y-2' },
-    ) do |f| %>
-  <%= f.submit t('links.two_factor_authentication.send_another_code') %>
-<% end %>
+  <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+          link_to(
+            otp_send_path(
+              otp_delivery_selection_form: {
+                otp_delivery_preference: 'sms',
+                resend: true,
+              },
+            ),
+            **tag_options,
+            &block
+          )
+        end,
+        outline: true,
+        icon: :loop,
+        class: 'margin-bottom-neg-1',
+      ).with_content(t('links.two_factor_authentication.send_another_code')) %>
 
 <%= render(
           'shared/troubleshooting_options',
