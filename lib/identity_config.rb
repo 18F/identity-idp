@@ -388,7 +388,6 @@ class IdentityConfig
     config.add(:ses_configuration_set_name, type: :string)
     config.add(:set_remember_device_session_expiration, type: :boolean)
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
-    config.add(:show_account_recovery_recovery_options, type: :boolean)
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:state_tracking_enabled, type: :boolean)
