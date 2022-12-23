@@ -7,7 +7,7 @@ describe 'reset password with multiple emails' do
 
     visit root_path
     click_link t('links.passwords.forgot')
-    fill_in 'Email', with: email1
+    fill_in t('account.index.email'), with: email1
     click_button t('forms.buttons.continue')
 
     expect_delivered_email_count(1)
@@ -20,7 +20,7 @@ describe 'reset password with multiple emails' do
 
     visit root_path
     click_link t('links.passwords.forgot')
-    fill_in 'Email', with: email2
+    fill_in t('account.index.email'), with: email2
     click_button t('forms.buttons.continue')
 
     expect_delivered_email_count(2)
@@ -42,7 +42,7 @@ describe 'reset password with multiple emails' do
 
     visit root_path
     click_link t('links.passwords.forgot')
-    fill_in 'Email', with: unconfirmed_email_address.email
+    fill_in t('account.index.email'), with: unconfirmed_email_address.email
     click_button t('forms.buttons.continue')
 
     expect_delivered_email_count(1)
