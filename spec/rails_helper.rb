@@ -85,7 +85,8 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    I18n.locale = :en
+    # I18n.locale = I18n.available_locales.sample
+    I18n.locale = :es
   end
 
   config.before(:each, js: true) do
