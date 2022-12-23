@@ -2,8 +2,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
   queue_as :default
 
   def perform(timestamp = Time.zone.now - 1.hour)
-    enabled = IdentityConfig.store.irs_attempt_api_enabled &&
-              s3_helper.attempts_bucket_enabled
+    enabled = IdentityConfig.store.irs_attempt_api_enabled && s3_helper.attempts_s3_write_enabled
     return nil unless enabled
 
     events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: timestamp)

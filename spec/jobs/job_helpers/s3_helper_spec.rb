@@ -84,10 +84,10 @@ RSpec.describe JobHelpers::S3Helper do
     end
   end
 
-  let(:vaild_bucket_name) { 'valid-attempts-api-s3-bucket' }
+  let(:valid_bucket_name) { 'valid-attempts-api-s3-bucket' }
 
   describe '#attempts_bucket_methods' do
-    subject(:attempts_bucket_enabled) { s3_helper.attempts_bucket_enabled }
+    subject(:attempts_s3_write_enabled) { s3_helper.attempts_s3_write_enabled }
 
     context 'with no bucket name' do
       it 'should return nil' do
@@ -107,20 +107,20 @@ RSpec.describe JobHelpers::S3Helper do
     context 'with a valid bucket name' do
       it 'should return true' do
         allow(IdentityConfig.store).to receive(:irs_attempt_api_bucket_name).
-          and_return(vaild_bucket_name)
+          and_return(valid_bucket_name)
         is_expected.to eq(true)
       end
     end
   end
 
-  describe '#attempts_s3_enabled' do
-    subject(:attempts_s3_enabled) { s3_helper.attempts_s3_enabled }
+  describe '#attempts_s3_serve_enabled' do
+    subject(:attempts_s3_serve_enabled) { s3_helper.attempts_s3_serve_enabled }
 
     context 'with s3 disabled and a valid s3 bucket' do
       it 'should return false' do
         allow(IdentityConfig.store).to receive(:irs_attempt_api_aws_s3_enabled).and_return(false)
         allow(IdentityConfig.store).to receive(:irs_attempt_api_bucket_name).
-          and_return(vaild_bucket_name)
+          and_return(valid_bucket_name)
         is_expected.to eq(false)
       end
     end

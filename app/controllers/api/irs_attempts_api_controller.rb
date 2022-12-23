@@ -20,7 +20,7 @@ module Api
     def create
       start_time = Time.zone.now.to_f
       if timestamp
-        if s3_helper.attempts_s3_enabled
+        if s3_helper.attempts_s3_serve_enabled
           if IrsAttemptApiLogFile.find_by(requested_time: timestamp_key(key: timestamp))
             log_file_record = IrsAttemptApiLogFile.find_by(
               requested_time: timestamp_key(key: timestamp),
