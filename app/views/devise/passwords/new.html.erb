@@ -20,7 +20,7 @@
         label: t('account.index.email'),
         required: true,
         input_html: { autocorrect: 'off',
-                      aria: { invalid: false, describedby: 'email-description' } },
+                      aria: { describedby: 'email-description' } },
       ) %>
   <%= f.input :request_id, as: :hidden, input_html: { value: request_id } %>
   <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
