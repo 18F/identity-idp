@@ -101,13 +101,15 @@ describe('ValidatedField', () => {
     const overrideMessage = 'this is the override error message';
     function TestComponent() {
       const ref = useRef<HTMLInputElement>();
-      validate = useMemo(() =>
-        sinon
-          .stub()
-          .onFirstCall()
-          .throws(new Error(initialMessage))
-          .onSecondCall()
-          .callsFake(() => ref.current.setCustomValidity(overrideMessage)),
+      validate = useMemo(
+        () =>
+          sinon
+            .stub()
+            .onFirstCall()
+            .throws(new Error(initialMessage))
+            .onSecondCall()
+            .callsFake(() => ref?.current?.setCustomValidity(overrideMessage)),
+        [],
       );
       return <ValidatedField validate={validate} ref={ref} />;
     }

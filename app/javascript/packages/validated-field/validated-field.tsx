@@ -87,7 +87,7 @@ function ValidatedField(
     if (fieldRef.current && fieldRef.current.input) {
       const { input } = fieldRef.current;
       input.checkValidity = () => {
-        let nextError: string;
+        let nextError: string = '';
         try {
           validate(input.value);
         } catch (error) {
