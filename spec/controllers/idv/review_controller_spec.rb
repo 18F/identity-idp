@@ -293,7 +293,8 @@ describe Idv::ReviewController do
 
         expect(@analytics).to have_logged_event(
           'IdV: review complete', success: true,
-                                  proofing_components: nil
+                                  proofing_components: nil,
+                                  deactivation_reason: nil
         )
         expect(@analytics).to have_logged_event(
           'IdV: final resolution',
