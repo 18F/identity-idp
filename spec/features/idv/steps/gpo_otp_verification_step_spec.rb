@@ -50,6 +50,9 @@ feature 'idv gpo otp verification step', :js do
 
     context 'ThreatMetrix says "review"' do
       let(:threatmetrix_review_status) { 'review' }
+      let(:redirect_after_verification) { idv_setup_errors_path }
+      let(:profile_should_be_active) { false }
+      let(:expected_deactivation_reason) { 'threatmetrix_review_pending' }
       it_behaves_like 'gpo otp verification'
     end
 

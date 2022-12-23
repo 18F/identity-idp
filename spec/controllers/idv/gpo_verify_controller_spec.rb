@@ -219,20 +219,20 @@ RSpec.describe Idv::GpoVerifyController do
               threatmetrix_review_status: 'review'
             )
           end
-          it 'does not redirect to the sad face screen' do
+          it 'redirects to the sad face screen' do
             expect(@analytics).to receive(:track_event).with(
               'IdV: GPO verification submitted',
               success: true,
               errors: {},
               pending_in_person_enrollment: false,
-              threatmetrix_check_failed: false,
+              threatmetrix_check_failed: true,
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
               pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
             )
 
             action
 
-            expect(response).to redirect_to(sign_up_completed_url)
+            expect(response).to redirect_to(idv_setup_errors_url)
           end
         end
       end
