@@ -15,6 +15,7 @@ describe 'review_profile' do
 
       Rake::Task['users:review:pass'].invoke
       expect(user.reload.proofing_component.threatmetrix_review_status).to eq('pass')
+      expect(user.reload.profiles.first.active).to eq(true)
     end
   end
 
@@ -26,6 +27,7 @@ describe 'review_profile' do
 
       Rake::Task['users:review:reject'].invoke
       expect(user.reload.proofing_component.threatmetrix_review_status).to eq('reject')
+      expect(user.reload.profiles.first.deactivation_reason).to eq('threatmetrix_review_rejected')
     end
   end
 end
