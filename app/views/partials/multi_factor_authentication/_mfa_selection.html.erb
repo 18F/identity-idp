@@ -10,10 +10,7 @@
       ) %>
   <%= label_tag(
         "two_factor_options_form_selection_#{option.type}",
-        class: [
-          'usa-checkbox__label',
-          'usa-checkbox__label--illustrated',
-        ].select(&:present?).join(' '),
+        class: 'usa-checkbox__label usa-checkbox__label--illustrated',
       ) do %>
     <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-checkbox__image') %>
     <div class="usa-checkbox__label--text"><%= option.label %> <%= option.mfa_configuration_description %>

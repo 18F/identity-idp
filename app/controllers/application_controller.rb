@@ -307,13 +307,6 @@ class ApplicationController < ActionController::Base
       )
   end
 
-  def two_factor_kantara_enabled?
-    return false if controller_path == 'additional_mfa_required'
-    return false if user_session[:skip_kantara_req]
-    IdentityConfig.store.kantara_2fa_phone_existing_user_restriction &&
-      MfaContext.new(current_user).enabled_non_restricted_mfa_methods_count < 1
-  end
-
   def reauthn?
     reauthn = reauthn_param
     reauthn.present? && reauthn == 'true'
@@ -330,8 +323,6 @@ class ApplicationController < ActionController::Base
       return prompt_to_verify_mfa
     elsif service_provider_mfa_policy.user_needs_sp_auth_method_setup?
       return prompt_to_setup_mfa
-    elsif two_factor_kantara_enabled?
-      return prompt_to_setup_non_restricted_mfa
     elsif service_provider_mfa_policy.user_needs_sp_auth_method_verification?
       return prompt_to_verify_sp_required_mfa
     end
@@ -380,10 +371,6 @@ class ApplicationController < ActionController::Base
 
   def prompt_to_verify_sp_required_mfa
     redirect_to sp_required_mfa_verification_url
-  end
-
-  def prompt_to_setup_non_restricted_mfa
-    redirect_to login_additional_mfa_required_url
   end
 
   def sp_required_mfa_verification_url

@@ -8,7 +8,6 @@ class TwoFactorOptionsForm
                                             backup_code] }
 
   validates :selection, length: { minimum: 1 }, if: :has_no_mfa_or_in_required_flow?
-  validates :selection, length: { minimum: 2, message: 'phone' }, if: :phone_valid?
 
   def initialize(user:, phishing_resistant_required:, piv_cac_required:)
     self.user = user
