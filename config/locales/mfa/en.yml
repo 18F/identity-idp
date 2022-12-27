@@ -4,6 +4,8 @@ en:
     account_info: Adding another authentication method prevents you from getting
       locked out of your account if you lose one of your methods.
     add: Add another method
+    additional_mfa_required:
+      heading: Add another authentication method.
     info: Add another layer of security by selecting a multi-factor authentication
       method. We recommend you select at least (2) two different options in case
       you lose one of your methods.

@@ -4,6 +4,8 @@ es:
     account_info: Agregar otro método de autenticación evita que se le bloquee el
       acceso a su cuenta si pierde uno de sus métodos.
     add: Agregar otro método
+    additional_mfa_required:
+      heading: Añadir otro método de autenticación.
     info: Agregue otro nivel de seguridad seleccionando un método de autentificación
       de varios factores. Le recomendamos seleccionar al menos dos opciones
       diferentes en caso de que pierda uno de los métodos.

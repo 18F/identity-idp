@@ -4,6 +4,8 @@ fr:
     account_info: L’ajout d’une autre méthode d’authentification vous empêche d’être
       bloqué sur votre compte si vous perdez l’une de vos méthodes.
     add: Agregar otro método
+    additional_mfa_required:
+      heading: Ajoutez une autre méthode d’authentification.
     info: Ajoutez une autre couche de sécurité en sélectionnant une méthode
       d’authentification multi-facteurs. Nous vous recommandons de sélectionner
       au moins deux options différentes au cas où vous perdriez l’une de vos
