@@ -122,23 +122,21 @@ function useUspsLocations() {
 
   // sets the arcgis-validated address object
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
-  const handleFoundAddress = useCallback((address) => {
-    setFoundAddress({
-      streetAddress: address.street_address,
-      city: address.city,
-      state: address.state,
-      zipCode: address.zip_code,
-      address: address.address,
-    });
-  }, []);
-
   useEffect(() => {
-    if (addressCandidates) {
+    if (addressCandidates?.[0]) {
       const bestMatchedAddress = addressCandidates[0];
-      const validity = bestMatchedAddress ? '' : t('in_person_proofing.body.location.inline_error');
-      fieldValidation?.current?.setCustomValidity(validity);
-      fieldValidation?.current?.reportValidity();
-      bestMatchedAddress && handleFoundAddress(bestMatchedAddress);
+      setFoundAddress({
+        streetAddress: bestMatchedAddress.street_address,
+        city: bestMatchedAddress.city,
+        state: bestMatchedAddress.state,
+        zipCode: bestMatchedAddress.zip_code,
+        address: bestMatchedAddress.address,
+      });
+    } else if (addressCandidates) {
+      fieldValidation.current?.setCustomValidity(
+        t('in_person_proofing.body.location.inline_error')
+      )
+      fieldValidation.current?.reportValidity();
     }
   }, [addressCandidates]);
 
