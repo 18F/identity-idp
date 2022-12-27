@@ -45,20 +45,24 @@ function AddressSearch({
 
   useEffect(() => {
     if (addressCandidates) {
-      const bestMatchedAddress = addressCandidates[0];
-      onAddressFound(bestMatchedAddress);
+      const bestMatchedAddress = addressCandidates?.[0];
+      const validity = bestMatchedAddress ? '' : t('in_person_proofing.body.location.inline_error');
+
       ref.current?.toggleSpinner(false);
+      validatedFieldRef.current?.setCustomValidity(validity);
+      validatedFieldRef.current?.reportValidity();
+      bestMatchedAddress && onAddressFound(bestMatchedAddress);
     }
   }, [addressCandidates]);
 
   const handleAddressSearch = useCallback(
     (event) => {
       event.preventDefault();
+      validatedFieldRef.current?.setCustomValidity('');
       validatedFieldRef.current?.reportValidity();
       if (unvalidatedAddressInput === '') {
         return;
       }
-
       setAddressQuery(unvalidatedAddressInput);
     },
     [unvalidatedAddressInput],
