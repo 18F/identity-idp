@@ -133,10 +133,10 @@ function useUspsLocations() {
         address: bestMatchedAddress.address,
       });
     } else if (addressCandidates) {
-      fieldValidation.current?.setCustomValidity(
-        t('in_person_proofing.body.location.inline_error')
-      )
-      fieldValidation.current?.reportValidity();
+      fieldValidation?.current?.setCustomValidity(
+        t('in_person_proofing.body.location.inline_error'),
+      );
+      fieldValidation?.current?.reportValidity();
     }
   }, [addressCandidates]);
 
@@ -159,7 +159,9 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
-  const { foundAddress, locationResults, isLoading, handleAddressSearch } = useUspsLocations();
+  // const { foundAddress, locationResults, isLoading, handleAddressSearch } = useUspsLocations();
+  const [locationResults, setLocationResults] = useState(null);
+  const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
@@ -220,8 +222,8 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       <p>{t('in_person_proofing.body.location.po_search.po_search_about')}</p>
       <AddressSearch
         registerField={registerField}
-        onSearch={handleAddressSearch}
-        loading={isLoading}
+        onFoundAddress={setFoundAddress}
+        onFoundLocations={setLocationResults}
       />
       {locationResults && (
         <InPersonLocations
