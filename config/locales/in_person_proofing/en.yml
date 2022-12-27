@@ -23,15 +23,21 @@ en:
       cta:
         button: Verify your ID in person
         new_feature: New Feature
-        prompt_detail: If you are located near Washington D.C. or Baltimore, MD, you may
-          be able to verify your ID in person at limited post office locations.
+        prompt_detail: If you are located near Washington, D.C. or Baltimore, MD, you
+          may be able to verify your ID in person at limited post office
+          locations.
       location:
+        contact_info_heading: Contact Information
+        distance:
+          one: '%{count} mile away'
+          other: '%{count} miles away'
         inline_error: Enter a valid address with city, state, and ZIP code
         location_button: Select
         location_step_about: If you are having trouble adding your ID, you may be able
           to verify in person at a local United States Post Office in select
           locations.
         none_found: No locations found.
+        phone: 'Phone:'
         po_search:
           address_search_hint: 'Example: 1960 W Chelsea Ave Allentown PA 18104'
           address_search_label: Enter an address to find a Post Office near you
@@ -39,8 +45,10 @@ en:
             %{address}.
           none_found_tip: You can search using a different address, or add photos of your
             ID to try and verify your identity online again.
-          po_search_about: If you are having trouble adding your ID, you may be able to
-            verify your identity in person at a local United States Post Office.
+          po_search_about: If you are located near Washington, D.C. or Baltimore, MD, you
+            may be able to verify your ID in person at limited Post Office
+            locations. More locations across all 50 states and some US
+            territories will be coming soon.
           results_description: There are %{count} participating Post Offices within 50
             miles of %{address}.
           results_instructions: Select a Post Office location below, or search again using
@@ -52,6 +60,7 @@ en:
         retail_hours_sat: 'Sat:'
         retail_hours_sun: 'Sun:'
         retail_hours_weekday: 'Monday to Friday:'
+        tty: 'TTY:'
       prepare:
         alert_selected_post_office: You’ve selected the %{name} Post Office.
         privacy_disclaimer: '%{app_name} is a secure, government website. We and the

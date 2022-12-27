@@ -26,7 +26,7 @@ interface AppRootData {
   maxCaptureAttemptsBeforeTips: string;
   maxAttemptsBeforeNativeCamera: string;
   acuantSdkUpgradeABTestingEnabled: string;
-  useNewerSdk: string;
+  useAlternateSdk: string;
   acuantVersion: string;
   flowPath: FlowPath;
   cancelUrl: string;
@@ -65,13 +65,13 @@ function getMetaContent(name): string | null {
 const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
-  const { flowPath, acuantSdkUpgradeABTestingEnabled, useNewerSdk, acuantVersion } =
+  const { flowPath, acuantSdkUpgradeABTestingEnabled, useAlternateSdk, acuantVersion } =
     appRoot.dataset;
   return baseTrackEvent(event, {
     ...payload,
     flow_path: flowPath,
     acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
-    use_newer_sdk: useNewerSdk,
+    use_alternate_sdk: useAlternateSdk,
     acuant_version: acuantVersion,
   });
 };

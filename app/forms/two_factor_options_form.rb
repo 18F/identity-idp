@@ -8,7 +8,7 @@ class TwoFactorOptionsForm
                                             backup_code] }
 
   validates :selection, length: { minimum: 1 }, if: :has_no_mfa_or_in_required_flow?
-  validates :selection, length: { minimum: 2, message: 'phone' }, if: :phone_validations?
+  validates :selection, length: { minimum: 2, message: 'phone' }, if: :phone_valid?
 
   def initialize(user:, phishing_resistant_required:, piv_cac_required:)
     self.user = user
@@ -74,9 +74,10 @@ class TwoFactorOptionsForm
     count >= 2 || (count == 1 && MfaContext.new(user).phone_configurations.none?)
   end
 
-  def phone_validations?
-    IdentityConfig.store.select_multiple_mfa_options &&
-      phone_selected? && has_no_configured_mfa? &&
-      !phone_alternative_enabled? && kantara_2fa_phone_restricted?
+  def phone_valid?
+    phone_selected? &&
+      has_no_configured_mfa? &&
+      !phone_alternative_enabled? &&
+      kantara_2fa_phone_restricted?
   end
 end

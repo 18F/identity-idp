@@ -167,8 +167,8 @@ class Throttle
       @redis_attempted_at = nil
     else
       @redis_attempted_at =
-        Time.zone.now +
-        Throttle.attempt_window_in_minutes(throttle_type).minutes - ttl.seconds
+        Time.zone.now -
+        Throttle.attempt_window_in_minutes(throttle_type).minutes + ttl.seconds
     end
 
     self

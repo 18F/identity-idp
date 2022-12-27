@@ -172,12 +172,11 @@ describe Users::WebauthnSetupController do
       request.host = 'localhost:3000'
       controller.user_session[:webauthn_challenge] = webauthn_challenge
     end
-    context ' Multiple MFA options turned on' do
+    describe 'multiple MFA handling' do
       let(:mfa_selections) { ['webauthn', 'voice'] }
 
       before do
         controller.user_session[:mfa_selections] = mfa_selections
-        allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
       end
 
       context 'with multiple MFA methods chosen on account creation' do

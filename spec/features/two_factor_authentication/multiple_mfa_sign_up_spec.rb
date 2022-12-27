@@ -2,7 +2,6 @@ require 'rails_helper'
 
 feature 'Multi Two Factor Authentication' do
   before do
-    allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
     allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
   end
 

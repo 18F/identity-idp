@@ -26,16 +26,21 @@ es:
       cta:
         button: Verifique su identificación en persona
         new_feature: Nuevo artículo
-        prompt_detail: Si usted está ubicado cerca de Washington D.C. o Baltimore, MD,
+        prompt_detail: Si usted está ubicado cerca de Washington, D.C. o Baltimore, MD,
           puede verificar su identificación en persona en las oficinas de
           correos seleccionadas.
       location:
+        contact_info_heading: Información del contacto
+        distance:
+          one: '%{count} milla de distancia'
+          other: '%{count} millas de distancia'
         inline_error: Ingrese una dirección válida que incluya ciudad, estado y código postal
         location_button: Seleccionar
         location_step_about: Si tiene problemas para añadir su cédula de identidad, es
           posible que pueda realizar la verificación en persona en una oficina
           de correos local de los Estados Unidos en determinadas localidades.
         none_found: No se encontraron localidades.
+        phone: 'Telefono:'
         po_search:
           address_search_hint: 'Ejemplo: 1960 W Chelsea Ave Allentown PA 18104'
           address_search_label: Introduzca una dirección para encontrar una Oficina de
@@ -45,9 +50,10 @@ es:
           none_found_tip: Puede buscar utilizando una dirección diferente, o añadir fotos
             de su documento de identidad para intentar verificar su identidad en
             línea de nuevo.
-          po_search_about: Si tiene problemas para añadir su documento de identidad, es
-            posible que pueda verificar su identidad en persona en una oficina
-            de correos local de los Estados Unidos.
+          po_search_about: Si vives cerca de Washington, D.C. o Baltimore, MD, puedes
+            verificar tu ID directamente en algunas oficinas de correos. Pronto
+            habrá más oficinas en los 50 estados y en algunos otros territorios
+            de los Estados Unidos.
           results_description: Hay %{count} de oficinas de correos participantes en un
             radio de 50 millas de la %{address}.
           results_instructions: Seleccione una ubicación de la Oficina de Correos a
@@ -60,6 +66,7 @@ es:
         retail_hours_sat: 'Sáb:'
         retail_hours_sun: 'Dom:'
         retail_hours_weekday: 'De Lunes a Viernes:'
+        tty: 'TTY:'
       prepare:
         alert_selected_post_office: Ha seleccionado la oficina de correos %{name}.
         privacy_disclaimer: '%{app_name} es un sitio web seguro del gobierno. Nosotros y

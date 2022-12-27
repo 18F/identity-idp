@@ -9,7 +9,6 @@ shared_examples 'creating an account with the site in Spanish' do |sp|
         to(include('form-action \'self\' http://localhost:7654'))
     end
 
-    click_submit_default if sp == :saml
     click_agree_and_continue
     if :sp == :saml
       expect(current_url).to eq UriService.add_params(@saml_authn_request, locale: :es)
@@ -76,7 +75,6 @@ shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
       expect(page.response_headers['Content-Security-Policy']).
         to(include('form-action \'self\' http://localhost:7654'))
     end
-    click_submit_default if sp == :saml
 
     click_agree_and_continue
     expect(current_url).to eq complete_saml_url if sp == :saml
@@ -97,6 +95,7 @@ shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
     select_2fa_option('webauthn', visible: :all)
     fill_in_nickname_and_click_continue
     mock_press_button_on_hardware_key_on_setup
+    skip_second_mfa_prompt
     expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
     complete_all_doc_auth_steps
     fill_out_phone_form_ok
@@ -130,7 +129,6 @@ shared_examples 'creating two accounts during the same session' do |sp|
 
     perform_in_browser(:two) do
       confirm_email_in_a_different_browser(first_email)
-      click_submit_default if sp == :saml
       click_agree_and_continue
 
       continue_as(first_email)
@@ -152,7 +150,6 @@ shared_examples 'creating two accounts during the same session' do |sp|
     perform_in_browser(:two) do
       Capybara.reset_session!
       confirm_email_in_a_different_browser(second_email)
-      click_submit_default if sp == :saml
       click_agree_and_continue
 
       continue_as(second_email)

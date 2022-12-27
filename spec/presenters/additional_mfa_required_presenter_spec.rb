@@ -7,7 +7,6 @@ describe AdditionalMfaRequiredPresenter do
   let(:current_date) { Time.zone.today }
 
   before do
-    allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
     allow(IdentityConfig.store).to receive(:kantara_restriction_enforcement_date).
       and_return(enforcement_date.to_datetime)
   end

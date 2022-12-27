@@ -6,7 +6,6 @@ module Users
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
-    before_action :multiple_factors_enabled?
 
     def index
       two_factor_options_form
@@ -69,11 +68,6 @@ module Users
 
     def two_factor_options_form_params
       params.require(:two_factor_options_form).permit(:selection, selection: [])
-    end
-
-    def multiple_factors_enabled?
-      return if IdentityConfig.store.select_multiple_mfa_options
-      redirect_to after_mfa_setup_path
     end
   end
 end

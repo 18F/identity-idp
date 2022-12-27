@@ -27,16 +27,21 @@ fr:
       cta:
         button: Vérifiez votre identité en personne
         new_feature: Nouvelle fonctionnalité
-        prompt_detail: Si vous êtes situé près de Washington D.C. ou de Baltimore
+        prompt_detail: Si vous êtes situé près de Washington, D.C. ou de Baltimore
           (Maryland), vous pourrez peut-être vérifier votre identité en personne
           dans certains bureaux de poste.
       location:
+        contact_info_heading: Information de contact
+        distance:
+          one: 'à %{count} mile'
+          other: 'à %{count} milles'
         inline_error: Saisissez une adresse valide avec la ville, l’état et le code postal
         location_button: Sélectionner
         location_step_about: Si vous ne parvenez pas à ajouter votre pièce d’identité,
           vous pourrez peut-être vérifier en personne dans un bureau de poste
           américain local dans certains endroits.
         none_found: Aucun endroit trouvé.
+        phone: 'Téléphone:'
         po_search:
           address_search_hint: 'Exemple : 1960 W Chelsea Ave Allentown PA 18104'
           address_search_label: Entrez une adresse pour trouver un bureau de poste près de chez vous.
@@ -45,9 +50,11 @@ fr:
           none_found_tip: Vous pouvez effectuer une recherche en utilisant une autre
             adresse, ou ajouter des photos de votre pièce d’identité pour
             essayer de vérifier à nouveau votre identité en ligne.
-          po_search_about: Si vous avez des difficultés à ajouter votre pièce d’identité,
-            vous pouvez vérifier votre identité en personne dans un bureau de
-            poste américain proche.
+          po_search_about: Si vous êtes situé près de Washington, D.C. ou de Baltimore,
+            MD, vous pourrez peut-être vérifier votre pièce d’identité en
+            personne dans certains bureaux de poste. D’autres bureaux dans les
+            50 États et certains territoires américains seront bientôt
+            disponibles.
           results_description: Il y a %{count} de bureaux de poste participants dans un
             rayon de 80 km autour de %{address}.
           results_instructions: Sélectionnez un emplacement de bureau de poste ci-dessous,
@@ -60,6 +67,7 @@ fr:
         retail_hours_sat: 'Sam:'
         retail_hours_sun: 'Dim:'
         retail_hours_weekday: 'Lundi à Vendredi:'
+        tty: 'ATS:'
       prepare:
         alert_selected_post_office: Vous avez sélectionné le bureau de poste de %{name}.
         privacy_disclaimer: '%{app_name} est un site gouvernemental sécurisé. Nous et le

@@ -150,6 +150,7 @@ feature 'Sign in' do
     click_send_one_time_code
     fill_in_code_with_last_phone_otp
     click_submit_default
+    skip_second_mfa_prompt
     click_agree_and_continue
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
@@ -361,7 +362,7 @@ feature 'Sign in' do
       allow(Devise).to receive(:timeout_in).and_return(1)
       user = create(:user)
       visit root_path
-      fill_in 'Email', with: user.email
+      fill_in t('account.index.email'), with: user.email
       fill_in 'Password', with: user.password
 
       expect(page).to have_content(
