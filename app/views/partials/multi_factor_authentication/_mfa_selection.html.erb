@@ -2,7 +2,7 @@
   <%= check_box_tag(
         'two_factor_options_form[selection][]',
         option.type,
-        option.type == 'phone' && flash[:phone_error].present? && IdentityConfig.store.kantara_2fa_phone_restricted,
+        false,
         disabled: option.disabled?,
         checked: option.disabled?,
         class: 'usa-checkbox__input usa-checkbox__input--tile',
@@ -11,7 +11,6 @@
   <%= label_tag(
         "two_factor_options_form_selection_#{option.type}",
         class: [
-          option.type == 'phone' && flash[:phone_error] && 'checkbox__invalid' && IdentityConfig.store.kantara_2fa_phone_restricted,
           'usa-checkbox__label',
           'usa-checkbox__label--illustrated',
         ].select(&:present?).join(' '),
@@ -23,13 +22,4 @@
       </span>
     </div>
   <% end %>
-  <% if option.type == "phone" && flash[:phone_error] && IdentityConfig.store.kantara_2fa_phone_restricted %>
-    <div id="phone_error" class="usa-error-message margin-bottom-1 margin-top-neg-1" role="alert">
-        <%= flash[:phone_error] %>
-    </div>
-  <% end %>
 </div>
-
-<% if IdentityConfig.store.kantara_2fa_phone_restricted %>
-  <%= javascript_packs_tag_once('mfa_selection_component') %>
-<% end %>

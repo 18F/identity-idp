@@ -65,10 +65,6 @@ class TwoFactorOptionsForm
     has_no_configured_mfa? || in_phishing_resistant_or_piv_cac_required_flow?
   end
 
-  def kantara_2fa_phone_restricted?
-    IdentityConfig.store.kantara_2fa_phone_restricted
-  end
-
   def phone_alternative_enabled?
     count = mfa_user.enabled_mfa_methods_count
     count >= 2 || (count == 1 && MfaContext.new(user).phone_configurations.none?)
@@ -77,7 +73,6 @@ class TwoFactorOptionsForm
   def phone_valid?
     phone_selected? &&
       has_no_configured_mfa? &&
-      !phone_alternative_enabled? &&
-      kantara_2fa_phone_restricted?
+      !phone_alternative_enabled?
   end
 end

@@ -56,39 +56,5 @@ describe MfaPolicy do
         it { expect(subject.multiple_non_restricted_factors_enabled?).to eq true }
       end
     end
-
-    context 'with kantara phone restriction enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
-      end
-
-      context 'with single restricted mfa method' do
-        let(:user) { create(:user, :with_phone) }
-
-        it { expect(subject.multiple_non_restricted_factors_enabled?).to eq false }
-      end
-
-      context 'with multiple restricted mfa methods' do
-        let(:user) { create(:user, :with_phone) }
-
-        before do
-          user.phone_configurations << build(:phone_configuration, delivery_preference: :sms)
-        end
-
-        it { expect(subject.multiple_non_restricted_factors_enabled?).to eq false }
-      end
-
-      context 'with single restricted and single unrestricted mfa methods' do
-        let(:user) { create(:user, :with_phone, :with_piv_or_cac) }
-
-        it { expect(subject.multiple_non_restricted_factors_enabled?).to eq false }
-      end
-
-      context 'with multiple unrestricted mfa methods' do
-        let(:user) { create(:user, :with_webauthn, :with_piv_or_cac) }
-
-        it { expect(subject.multiple_non_restricted_factors_enabled?).to eq true }
-      end
-    end
   end
 end
