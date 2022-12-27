@@ -30,7 +30,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
       requested_time: IrsAttemptsApi::EnvelopeEncryptor.formatted_timestamp(timestamp),
     )
 
-    log_irs_attempts_events_job_metrix_info(result, events, start_time)
+    log_irs_attempts_events_job_info(result, events, start_time)
     irs_attempt_api_log_file
   end
 
@@ -47,9 +47,9 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     @s3_helper ||= JobHelpers::S3Helper.new
   end
 
-  def log_irs_attempts_events_job_metrix_info(result, events, start_time)
+  def log_irs_attempts_events_job_info(result, events, start_time)
     logger_info_hash(
-      name: 'IRSAttemptsEventJobMetrix',
+      name: 'IRSAttemptsEventJob',
       start_time: start_time,
       end_time: Time.zone.now,
       duration_ms: duration_ms(start_time),

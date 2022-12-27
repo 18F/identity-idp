@@ -77,7 +77,7 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         )
 
         expect_any_instance_of(described_class).to receive(:logger_info_hash).with(
-          name: 'IRSAttemptsEventJobMetrix',
+          name: 'IRSAttemptsEventJob',
           start_time: Time.zone.now,
           end_time: Time.zone.now,
           duration_ms: 0.1234,
