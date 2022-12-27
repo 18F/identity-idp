@@ -149,9 +149,6 @@ es:
       phone: Mensaje de texto o de voz
       phone_info: Recibir un código seguro por medio de un mensaje de texto (SMS) o
         una llamada telefónica.
-      phone_info_html: Recibir un código seguro por medio de un mensaje de texto (SMS)
-        o una llamada telefónica. <strong>Para esta opción es necesario que
-        elija un método de autenticación adicional.</strong>
       phone_info_no_voip: Se prohíbe el uso de servicios telefónicos basados en la web
         (VOIP) o de números de teléfono de tarificación adicional (de pago).
       piv_cac: Identificación de empleado gubernamental
