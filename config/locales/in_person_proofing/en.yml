@@ -26,7 +26,7 @@ en:
         prompt_detail: If you are located near Washington D.C. or Baltimore, MD, you may
           be able to verify your ID in person at limited post office locations.
       location:
-        inline_error: Include a city, state, and ZIP code
+        inline_error: Enter a valid address with city, state, and ZIP code
         location_button: Select
         location_step_about: If you are having trouble adding your ID, you may be able
           to verify in person at a local United States Post Office in select

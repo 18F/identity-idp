@@ -30,7 +30,7 @@ es:
           puede verificar su identificación en persona en las oficinas de
           correos seleccionadas.
       location:
-        inline_error: Incluye una ciudad, un estado y un código postal.
+        inline_error: Ingrese una dirección válida que incluya ciudad, estado y código postal
         location_button: Seleccionar
         location_step_about: Si tiene problemas para añadir su cédula de identidad, es
           posible que pueda realizar la verificación en persona en una oficina
