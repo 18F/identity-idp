@@ -8,22 +8,26 @@ fr:
           actuelle au bureau de poste.
         learn_more: Apprendre encore plus
       barcode:
-        deadline: La date limite pour vérifier votre identité en personne est le
-          %{deadline}.
+        close_window: Vous pouvez maintenant fermer cette fenêtre
+        deadline: Visitez le bureau de poste d’ici %{deadline}
         deadline_restart: Si vous partez après la date limite, vos informations ne
           seront pas sauvegardées et vous devrez recommencer le processus.
-        emailed_info: Nous avons envoyé ces informations à l’adresse électronique que
-          vous avez utilisée pour vous connecter.
-        items_to_bring: 'Apportez ces articles avec vous au bureau de poste:'
-        items_to_bring_questions: Des questions sur ce qu’il faut apporter?
-        learn_more: En savoir plus
+        email_sent: Nous avons envoyé ces informations à l’adresse électronique que vous
+          avez utilisée pour vous connecter.
+        items_to_bring: 'N’oubliez pas d’apporter les articles suivants avec vous au
+          bureau de poste:'
+        learn_more: En savoir davantage sur ce qu’il faut apporter.
         location_details: Détails de l’emplacement
-        no_appointment_required: Aucun rendez-vous n’est exigé.
+        questions: Des questions?
         retail_hours: Heures de vente au détail
         retail_hours_closed: Fermé
         retail_phone_label: Numéro de téléphone
+        return_to_partner_html: Vous pouvez maintenant fermer cette fenêtre ou %{link}
+          afin d’effectuer toutes les étapes suivantes auxquelles vous pouvez
+          accéder jusqu’à ce que votre identité ait été confitmée.
+        return_to_partner_link: retourner à %{sp_name}
         speak_to_associate: Vous pouvez voir n’importe quel associé au guichet de vente
-          au détail pour vérifier votre identité.
+          au détail pour vérifier votre identité. Aucun rendez-vous n’est exigé.
       cta:
         button: Vérifiez votre identité en personne
         new_feature: Nouvelle fonctionnalité
