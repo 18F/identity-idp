@@ -52,7 +52,7 @@ RSpec.describe JobHelpers::S3Helper do
         "https://s3.region-name.amazonaws.com/#{bucket_name}/#{prefix}?param=true&signature=123"
       end
 
-      it 'downloads by extracing prefix and bucket from s3 URLs' do
+      it 'downloads by extracting prefix and bucket from s3 URLs' do
         expect(s3_helper.download(url)).to eq(body)
       end
     end
@@ -62,7 +62,7 @@ RSpec.describe JobHelpers::S3Helper do
         "https://#{bucket_name}.s3.region-name.amazonaws.com/#{prefix}?param=true&signature=123"
       end
 
-      it 'downloads by extracing prefix and bucket from s3 URLs' do
+      it 'downloads by extracting prefix and bucket from s3 URLs' do
         expect(s3_helper.download(url)).to eq(body)
       end
     end
@@ -81,6 +81,65 @@ RSpec.describe JobHelpers::S3Helper do
       }
 
       expect(s3_helper.download(url).encoding.name).to eq('ASCII-8BIT')
+    end
+  end
+
+  let(:valid_bucket_name) { 'valid-attempts-api-s3-bucket' }
+
+  describe '#attempts_bucket_methods' do
+    subject(:attempts_s3_write_enabled) { s3_helper.attempts_s3_write_enabled }
+
+    context 'with no bucket name' do
+      it 'should return nil' do
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_bucket_name).and_return(nil)
+        is_expected.to eq(nil)
+      end
+    end
+
+    context 'with a default bucket name' do
+      it 'should return false' do
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_bucket_name).
+          and_return('default-placeholder')
+        is_expected.to eq(false)
+      end
+    end
+
+    context 'with a valid bucket name' do
+      it 'should return true' do
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_bucket_name).
+          and_return(valid_bucket_name)
+        is_expected.to eq(true)
+      end
+    end
+  end
+
+  describe '#attempts_serve_events_from_s3' do
+    subject(:attempts_serve_events_from_s3) { s3_helper.attempts_serve_events_from_s3 }
+
+    context 'with s3 disabled and a valid s3 bucket' do
+      it 'should return false' do
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_aws_s3_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_bucket_name).
+          and_return(valid_bucket_name)
+        is_expected.to eq(false)
+      end
+    end
+
+    context 'with s3 disabled and no s3 bucket' do
+      it 'should return false' do
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_aws_s3_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_bucket_name).and_return(nil)
+        is_expected.to eq(false)
+      end
+    end
+
+    context 'with s3 enabled and a valid s3 bucket' do
+      it 'should return true' do
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_aws_s3_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_bucket_name).
+          and_return('valid-attempts-api-s3-bucket')
+        is_expected.to eq(true)
+      end
     end
   end
 end

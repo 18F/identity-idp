@@ -56,22 +56,6 @@ describe TwoFactorLoginOptionsPresenter do
         'two_factor_authentication.account_reset.text_html',
         link: view.link_to(
           t('two_factor_authentication.account_reset.link'),
-          account_reset_request_path(locale: LinkLocaleResolver.locale),
-        ),
-      )
-  end
-
-  it 'supplies a recovery options link when feature toggle is on' do
-    allow(IdentityConfig.store).to \
-      receive(:show_account_recovery_recovery_options).and_return(true)
-    allow_any_instance_of(TwoFactorLoginOptionsPresenter).to \
-      receive(:account_reset_token_valid?).and_return(false)
-
-    expect(presenter.account_reset_or_cancel_link).to eq \
-      t(
-        'two_factor_authentication.account_reset.text_html',
-        link: view.link_to(
-          t('two_factor_authentication.account_reset.link'),
           account_reset_recovery_options_path(locale: LinkLocaleResolver.locale),
         ),
       )

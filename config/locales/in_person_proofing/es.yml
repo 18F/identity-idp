@@ -30,12 +30,17 @@ es:
           puede verificar su identificación en persona en las oficinas de
           correos seleccionadas.
       location:
+        contact_info_heading: Información del contacto
+        distance:
+          one: '%{count} milla de distancia'
+          other: '%{count} millas de distancia'
         inline_error: Incluye una ciudad, un estado y un código postal.
         location_button: Seleccionar
         location_step_about: Si tiene problemas para añadir su cédula de identidad, es
           posible que pueda realizar la verificación en persona en una oficina
           de correos local de los Estados Unidos en determinadas localidades.
         none_found: No se encontraron localidades.
+        phone: 'Telefono:'
         po_search:
           address_search_hint: 'Ejemplo: 1960 W Chelsea Ave Allentown PA 18104'
           address_search_label: Introduzca una dirección para encontrar una Oficina de
@@ -61,6 +66,7 @@ es:
         retail_hours_sat: 'Sáb:'
         retail_hours_sun: 'Dom:'
         retail_hours_weekday: 'De Lunes a Viernes:'
+        tty: 'TTY:'
       prepare:
         alert_selected_post_office: Ha seleccionado la oficina de correos %{name}.
         privacy_disclaimer: '%{app_name} es un sitio web seguro del gobierno. Nosotros y

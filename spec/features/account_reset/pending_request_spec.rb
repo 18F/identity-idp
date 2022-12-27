@@ -8,6 +8,15 @@ feature 'Pending account reset request sign in' do
     sign_in_user(user)
     click_link t('two_factor_authentication.login_options_link_text')
     click_link t('two_factor_authentication.account_reset.link')
+    expect(page).
+      to have_content strip_tags(
+        t('account_reset.recovery_options.try_method_again'),
+      )
+    click_link t('account_reset.request.yes_continue')
+    expect(page).
+      to have_content strip_tags(
+        t('account_reset.request.delete_account'),
+      )
     click_button t('account_reset.request.yes_continue')
 
     Capybara.reset_session!

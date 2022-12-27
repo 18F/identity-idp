@@ -20,7 +20,7 @@ module Api
     def create
       start_time = Time.zone.now.to_f
       if timestamp
-        if IdentityConfig.store.irs_attempt_api_aws_s3_enabled
+        if s3_helper.attempts_serve_events_from_s3
           if IrsAttemptApiLogFile.find_by(requested_time: timestamp_key(key: timestamp))
             log_file_record = IrsAttemptApiLogFile.find_by(
               requested_time: timestamp_key(key: timestamp),
@@ -29,10 +29,8 @@ module Api
             headers['X-Payload-Key'] = log_file_record.encrypted_key
             headers['X-Payload-IV'] = log_file_record.iv
 
-            bucket_name = IdentityConfig.store.irs_attempt_api_bucket_name
-
-            requested_data = s3_client.get_object(
-              bucket: bucket_name,
+            requested_data = s3_helper.s3_client.get_object(
+              bucket: s3_helper.attempts_bucket_name,
               key: log_file_record.filename,
             )
 
@@ -102,8 +100,8 @@ module Api
       @redis_client ||= IrsAttemptsApi::RedisClient.new
     end
 
-    def s3_client
-      @s3_client ||= JobHelpers::S3Helper.new.s3_client
+    def s3_helper
+      @s3_helper ||= JobHelpers::S3Helper.new
     end
 
     def valid_auth_tokens
