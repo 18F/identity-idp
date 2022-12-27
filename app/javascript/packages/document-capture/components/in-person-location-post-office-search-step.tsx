@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useContext } from 'react';
+import { useState, useEffect, useCallback, useRef, useContext, RefObject } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
@@ -99,10 +99,13 @@ function requestAddressCandidates(unvalidatedAddressInput: string): Promise<Loca
 function useUspsLocations() {
   // raw text input that is set when user clicks search
   const [addressQuery, setAddressQuery] = useState('');
+  const [fieldValidation, setFieldValidation] = useState<RefObject<HTMLFormElement>>();
+  const { t } = useI18n();
   const handleAddressSearch = useCallback((event, unvalidatedAddressInput, validatedFieldRef) => {
     event.preventDefault();
-    // this will be needed to validate results later
+    validatedFieldRef.current?.setCustomValidity('');
     validatedFieldRef.current?.reportValidity();
+    setFieldValidation(validatedFieldRef);
     if (unvalidatedAddressInput === '') {
       return;
     }
@@ -132,7 +135,10 @@ function useUspsLocations() {
   useEffect(() => {
     if (addressCandidates) {
       const bestMatchedAddress = addressCandidates[0];
-      handleFoundAddress(bestMatchedAddress);
+      const validity = bestMatchedAddress ? '' : t('in_person_proofing.body.location.inline_error');
+      fieldValidation?.current?.setCustomValidity(validity);
+      fieldValidation?.current?.reportValidity();
+      bestMatchedAddress && handleFoundAddress(bestMatchedAddress);
     }
   }, [addressCandidates]);
 
