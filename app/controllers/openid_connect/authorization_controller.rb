@@ -7,9 +7,10 @@ module OpenidConnect
     include AuthorizationCountConcern
     include BillableEventTrackable
     include InheritedProofingConcern
+    include ThreatmetrixReviewConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
-    before_action :validate_authorize_form, only: [:index]
+    before_action :pre_validate_authorize_form, only: [:index]
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
     before_action :store_request, only: [:index]
     before_action :check_sp_active, only: [:index]
@@ -20,9 +21,16 @@ module OpenidConnect
     before_action :bump_auth_count, only: [:index]
 
     def index
+      return redirect_to_threatmetrix_review if threatmetrix_review_pending_for_ial2_request?
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
       return redirect_to(sign_up_completed_url) if needs_completion_screen_reason
       link_identity_to_service_provider
+
+      result = @authorize_form.submit
+      # track successful forms, see pre_validate_authorize_form for unsuccessful
+      # this needs to be after link_identity_to_service_provider so that "code" is present
+      track_authorize_analytics(result)
+
       if auth_count == 1 && first_visit_for_sp?
         return redirect_to(user_authorization_confirmation_url)
       end
@@ -78,6 +86,11 @@ module OpenidConnect
       redirect_to(idv_url) if identity_needs_verification?
     end
 
+    def threatmetrix_review_pending_for_ial2_request?
+      return false unless @authorize_form.ial2_or_greater?
+      threatmetrix_review_pending?
+    end
+
     def profile_or_identity_needs_verification?
       return false unless @authorize_form.ial2_or_greater?
       profile_needs_verification? || identity_needs_verification?
@@ -91,14 +104,10 @@ module OpenidConnect
     end
 
     def identity_needs_verification?
-      ((@authorize_form.ial2_requested? || @authorize_form.ial2_strict_requested?) &&
+      (@authorize_form.ial2_requested? &&
         (current_user.decorate.identity_not_verified? ||
         decorated_session.requested_more_recent_verification?)) ||
-        identity_needs_strict_ial2_verification?
-    end
-
-    def identity_needs_strict_ial2_verification?
-      @authorize_form.ial2_strict_requested? && !current_user.active_profile&.strict_ial2_proofed?
+        current_user.decorate.reproof_for_irs?(service_provider: current_sp)
     end
 
     def build_authorize_form_from_params
@@ -109,11 +118,12 @@ module OpenidConnect
       params.permit(OpenidConnectAuthorizeForm::ATTRS)
     end
 
-    def validate_authorize_form
+    def pre_validate_authorize_form
       result = @authorize_form.submit
-      track_authorize_analytics(result)
-
       return if result.success?
+
+      # track forms with errors
+      track_authorize_analytics(result)
 
       if (redirect_uri = result.extra[:redirect_uri])
         redirect_to redirect_uri, allow_other_host: true

@@ -9,7 +9,6 @@ module VerifyProfileConcern
   end
 
   def user_needs_backup_code_reminder?
-    return false unless IdentityConfig.store.backup_code_reminder_redirect
     user_backup_codes_configured? && user_last_signed_in_more_than_5_months_ago?
   end
 
@@ -25,8 +24,6 @@ module VerifyProfileConcern
 
   def profile_needs_verification?
     return false if current_user.blank?
-    return false if sp_session[:ial2_strict] &&
-                    !IdentityConfig.store.gpo_allowed_for_strict_ial2
     current_user.decorate.pending_profile_requires_verification? ||
       user_needs_to_reactivate_account?
   end

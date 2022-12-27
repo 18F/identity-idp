@@ -2,6 +2,9 @@
 
 class Analytics
   include AnalyticsEvents
+  prepend Idv::AnalyticsEventsEnhancer
+
+  attr_reader :user, :request, :sp, :ahoy
 
   def initialize(user:, request:, sp:, session:, ahoy: nil)
     @user = user
@@ -84,10 +87,7 @@ class Analytics
       **attributes,
       pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
     )
-    attributes[:success] ? 'success' : 'fail'
   end
-
-  attr_reader :user, :request, :sp, :ahoy
 
   def request_attributes
     attributes = {
@@ -134,6 +134,4 @@ class Analytics
     return value unless value.is_a?(String)
     Time.zone.parse(value)
   end
-
-  DOC_AUTH = 'Doc Auth' # visited or submitted is appended
 end

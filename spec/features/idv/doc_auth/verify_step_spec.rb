@@ -7,8 +7,11 @@ feature 'doc auth verify step', :js do
   let(:skip_step_completion) { false }
   let(:max_attempts) { Throttle.max_attempts(:idv_resolution) }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
+      and_return(fake_attempts_tracker)
   end
 
   it 'displays the expected content' do
@@ -28,6 +31,19 @@ feature 'doc auth verify step', :js do
   end
 
   it 'proceeds to the next page upon confirmation' do
+    expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
+      success: true,
+      failure_reason: nil,
+      document_state: 'MT',
+      document_number: '1111111111111',
+      document_issued: '2019-12-31',
+      document_expiration: '2099-12-31',
+      first_name: 'FAKEY',
+      last_name: 'MCFAKERSON',
+      date_of_birth: '1938-10-06',
+      address: '1 FAKE RD',
+      ssn: '900-66-1234',
+    )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_verify_step
     click_idv_continue
@@ -40,7 +56,7 @@ feature 'doc auth verify step', :js do
     expect(DocAuthLog.find_by(user_id: user.id).aamva).to eq(true)
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth optional verify_wait submitted',
-      address_edited: false,
+      hash_including(address_edited: false),
     )
   end
 
@@ -67,7 +83,7 @@ feature 'doc auth verify step', :js do
 
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth optional verify_wait submitted',
-      address_edited: true,
+      hash_including(address_edited: true),
     )
   end
 
@@ -83,7 +99,7 @@ feature 'doc auth verify step', :js do
 
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth optional verify_wait submitted',
-      address_edited: false,
+      hash_including(address_edited: false),
     )
   end
 
@@ -101,6 +117,19 @@ feature 'doc auth verify step', :js do
   end
 
   it 'does not proceed to the next page if resolution fails' do
+    expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
+      success: false,
+      failure_reason: { ssn: ['Unverified SSN.'] },
+      document_state: 'MT',
+      document_number: '1111111111111',
+      document_issued: '2019-12-31',
+      document_expiration: '2099-12-31',
+      first_name: 'FAKEY',
+      last_name: 'MCFAKERSON',
+      date_of_birth: '1938-10-06',
+      address: '1 FAKE RD',
+      ssn: '123-45-6666',
+    )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_fails_resolution
@@ -120,6 +149,19 @@ feature 'doc auth verify step', :js do
   end
 
   it 'does not proceed to the next page if resolution raises an exception' do
+    expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
+      success: false,
+      failure_reason: nil,
+      document_state: 'MT',
+      document_number: '1111111111111',
+      document_issued: '2019-12-31',
+      document_expiration: '2099-12-31',
+      first_name: 'FAKEY',
+      last_name: 'MCFAKERSON',
+      date_of_birth: '1938-10-06',
+      address: '1 FAKE RD',
+      ssn: '000-00-0000',
+    )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_raises_exception
@@ -139,6 +181,7 @@ feature 'doc auth verify step', :js do
   end
 
   it 'throttles resolution and continues when it expires' do
+    expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited)
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_fails_resolution
@@ -177,7 +220,7 @@ feature 'doc auth verify step', :js do
           anything,
           should_proof_state_id: true,
           trace_id: anything,
-          threatmetrix_session_id: kind_of(String),
+          threatmetrix_session_id: anything,
           user_id: user.id,
           request_ip: kind_of(String),
         ).
@@ -204,7 +247,7 @@ feature 'doc auth verify step', :js do
           anything,
           should_proof_state_id: false,
           trace_id: anything,
-          threatmetrix_session_id: kind_of(String),
+          threatmetrix_session_id: anything,
           user_id: user.id,
           request_ip: kind_of(String),
         ).
@@ -229,7 +272,7 @@ feature 'doc auth verify step', :js do
           anything,
           should_proof_state_id: false,
           trace_id: anything,
-          threatmetrix_session_id: kind_of(String),
+          threatmetrix_session_id: anything,
           user_id: user.id,
           request_ip: kind_of(String),
         ).
@@ -253,7 +296,7 @@ feature 'doc auth verify step', :js do
         and_return(nil)
 
       click_idv_continue
-      expect(fake_analytics).to have_logged_event('Proofing Resolution Result Missing', {})
+      expect(fake_analytics).to have_logged_event('Proofing Resolution Result Missing')
       expect(page).to have_content(t('idv.failure.timeout'))
       expect(page).to have_current_path(idv_doc_auth_verify_step)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original

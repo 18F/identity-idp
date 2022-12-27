@@ -3,18 +3,17 @@ es:
   forms:
     backup_code:
       are_you_sure_desc_html:
-        - <strong>Los códigos de respaldo son el método de autenticación menos
+        - '<strong>Los códigos de respaldo son el método de autenticación menos
           utilizado,</strong> ya que se pueden perder con facilidad. Le
           recomendamos explorar otras opciones de autenticación, como el
           desbloqueo facial o táctil, una aplicación de autenticación o una
-          clave de seguridad.
+          clave de seguridad.'
         - Le otorgaremos 10 códigos que puede descargar, imprimir, copiar o
           escribir. Ingresará un código cada vez que inicie sesión.
       are_you_sure_title: '¿Está seguro de que desea usar códigos de respaldo?'
       caution_delete: Si elimina sus códigos de respaldo, ya no podrá usarlos para
         iniciar sesión.
       confirm_delete: '¿Estás seguro de que deseas eliminar tus códigos de respaldo?'
-      download: Descargar
       generate: Obtener códigos
       last_code: Usted utilizó el último código de seguridad. Imprima, copie o
         descargue los códigos que aparecen a continuación. Puede introducir
@@ -48,7 +47,7 @@ es:
       edit: Editar
       manage: Administrar
       resend_confirmation: Reenviar instrucciones de confirmación
-      send_security_code: Enviar código
+      send_one_time_code: Enviar código
       submit:
         confirm_change: Confirmar cambio
         default: Enviar
@@ -71,9 +70,29 @@ es:
     personal_key:
       alternative: '¿No tiene su clave personal?'
       confirmation_label: Clave personal
+      download: Descargar (archivo de texto)
       instructions: Confirme que tiene una copia de su clave personal ingresándola a
         continuación.
+      required_checkbox: Marque esta casilla para continuar.
       title: Ingrese su clave personal
+    personal_key_partial:
+      acknowledgement:
+        bullets:
+          - Perderás el acceso a tu cuenta
+          - Tendrás que verificar tu identidad nuevamente
+        header: Necesitarás tu clave personal si olvidas tu contraseña. Mantenla en un
+          lugar seguro y no la compartas con nadie.
+        text: 'Si restableces tu contraseña sin tu clave personal:'
+      explanation:
+        header: '¿Qué es una clave personal?'
+        text:
+          - Una clave personal “bloquea” la información personal de tu cuenta.
+            Es la única manera de desbloquear tu información si pierdes u
+            olvidas tu contraseña.
+          - Si restableces tu contraseña, Login.gov te pedirá tu clave personal
+            para asegurarse de que se trata de ti, y no de alguien que quiere
+            hacerse pasar por ti.
+      header: Guarda tu clave personal
     phone:
       buttons:
         delete: Eliminar el teléfono
@@ -114,20 +133,18 @@ es:
       totp_step_4: Ingrese el código temporal de su aplicación
     two_factor:
       backup_code: Código de seguridad
-      # removed "security code" form labels as they trigger ios credit card reader
-      code: Código de un solo uso
       personal_key: Clave personal
       try_again: Use otro número de teléfono.
     validation:
       required_checkbox: Marque esta casilla para continuar
     verify_profile:
       instructions: Introduzca el código de 10 caracteres de la carta que ha recibido.
-      name: Código de confirmación
+      name: Código único
       submit: Confirmar cuenta
       title: Confirme su cuenta
       welcome_back: Bienvenido de nuevo
-      welcome_back_description: '<p>Si ha recibido su carta, introduzca su código de
-        confirmación a continuación.</p> <p>Si su carta aún no ha llegado, tenga
+      welcome_back_description: '<p>Si ha recibido su carta, introduzca su código
+        único a continuación.</p> <p>Si su carta aún no ha llegado, tenga
         paciencia, ya que las <strong>cartas suelen tardar de 3 a 7 días hábiles
         en llegar</strong>. Gracias por su paciencia.</p>'
     webauthn_delete:
@@ -154,6 +171,9 @@ es:
       intro_link_text: Conozca más sobre el desbloqueo facial o táctil.
       login_text: 'Cuando esté listo, presione el botón:'
       nickname: Apodo de dispositivo.
+      warning_text: En caso de que pierdas o cambies tu dispositivo, tienes que
+        restablecer tu cuenta. Para evitar el bloqueo de la cuenta, te
+        recomendamos que configures diferentes métodos de autenticación.
     webauthn_setup:
       continue: Continuar
       instructions_text: Presione el botón en su clave de seguridad para registrarlo

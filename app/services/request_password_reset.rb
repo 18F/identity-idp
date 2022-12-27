@@ -26,12 +26,14 @@ RequestPasswordReset = RedactedStruct.new(
       irs_attempts_api_tracker.forgot_password_email_rate_limited(email: email)
     else
       token = user.set_reset_password_token
-      UserMailer.reset_password_instructions(user, email, token: token).deliver_now_or_later
+      UserMailer.with(user: user, email_address: email_address_record).reset_password_instructions(
+        token: token,
+      ).deliver_now_or_later
 
       event = PushNotification::RecoveryActivatedEvent.new(user: user)
       PushNotification::HttpPush.deliver(event)
 
-      irs_attempts_api_tracker.forgot_password_email_sent(email: email, success: true)
+      irs_attempts_api_tracker.forgot_password_email_sent(email: email)
     end
   end
 

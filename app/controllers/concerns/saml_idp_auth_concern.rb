@@ -40,7 +40,9 @@ module SamlIdpAuthConcern
 
     return if @result.success?
 
-    analytics.saml_auth(**@result.to_h)
+    analytics.saml_auth(
+      **@result.to_h.merge(request_signed: saml_request.signed?),
+    )
     render 'saml_idp/auth/error', status: :bad_request
   end
 
@@ -113,7 +115,9 @@ module SamlIdpAuthConcern
   end
 
   def identity_needs_verification?
-    ial2_requested? && current_user.decorate.identity_not_verified?
+    ial2_requested? &&
+      (current_user.decorate.identity_not_verified? ||
+       current_user.decorate.reproof_for_irs?(service_provider: current_sp))
   end
 
   def_delegators :ial_context, :ial2_requested?

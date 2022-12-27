@@ -64,7 +64,7 @@ module Idv
       elsif in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           current_user,
-          applicant,
+          pii,
         )
       end
     end
@@ -74,6 +74,8 @@ module Idv
         :gpo_verification_pending
       elsif in_person_enrollment?
         :in_person_verification_pending
+      elsif threatmetrix_failed_and_needs_review?
+        :threatmetrix_review_pending
       end
     end
 
@@ -126,7 +128,7 @@ module Idv
     def user_phone_confirmation_session
       session_value = session[:user_phone_confirmation_session]
       return if session_value.blank?
-      PhoneConfirmation::ConfirmationSession.from_h(session_value)
+      Idv::PhoneConfirmationSession.from_h(session_value)
     end
 
     def user_phone_confirmation_session=(new_user_phone_confirmation_session)
@@ -160,11 +162,20 @@ module Idv
         applicant: applicant,
         user: current_user,
         user_password: user_password,
+        initiating_service_provider: service_provider,
       )
     end
 
     def in_person_enrollment?
       ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
+    end
+
+    def threatmetrix_failed_and_needs_review?
+      return unless IdentityConfig.store.lexisnexis_threatmetrix_required_to_verify
+      return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
+      component = ProofingComponent.find_by(user: @current_user)
+      return true unless component
+      !(component.threatmetrix && component.threatmetrix_review_status == 'pass')
     end
   end
 end

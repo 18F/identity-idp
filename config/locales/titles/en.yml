@@ -13,7 +13,7 @@ en:
       address: Update your mailing address
       doc_capture: Add your ID
       link_sent: Link sent
-      otp_delivery: Receive a security code
+      otp_delivery: Receive a one-time code
       processing_images: Processing your images
       ssn: Enter your Social Security number
       switch_back: Switch back to your computer
@@ -24,7 +24,9 @@ en:
       email_language: Edit email language preference
       password: Edit your password
       phone: Edit your phone number
-    enter_2fa_code: Enter the secure one-time security code
+    enter_2fa_code:
+      one_time_code: Enter the secure one-time code
+      security_code: Enter the secure one-time security code
     failure:
       information_not_verified: Personal information not verified
       phone_verification: Phone number not verified
@@ -33,13 +35,16 @@ en:
       cancellation_prompt: Cancel identity verification
       cancelled: Identity verification is cancelled
       come_back_soon: Come back soon
-      enter_security_code: Enter your security code
+      enter_one_time_code: Enter your one-time code
       get_letter: Get a letter
       personal_key: Save your personal key
       phone: Verify your phone number
       reset_password: Reset Password
       review: Re-enter your password
       verify_info: Verify your information
+    inherited_proofing:
+      cancellation_prompt: Cancel identity verification
+      cancelled: Identity verification is cancelled
     mfa_setup:
       suggest_second_mfa: You’ve added your first authentication method! Add a second
         method as a backup.
@@ -52,7 +57,7 @@ en:
       confirm: Confirm the password for your account
       forgot: Reset password
     personal_key: Just in case
-    phone_setup: Send your security code via text message (SMS) or phone call
+    phone_setup: Send your one-time code via text message (SMS) or phone call
     piv_cac_login:
       add: Add your PIV or CAC
       new: Use your PIV/CAC to sign in to your account
@@ -66,9 +71,11 @@ en:
     revoke_consent: Revoke Consent
     rules_of_use: Rules of Use
     sign_up:
-      completion_consent_expired: It’s been a year since you gave us consent to share your information
-      completion_first_sign_in: You’ve created an account with %{app_name}
-      completion_ial2: You’ve verified your identity with %{app_name}
+      completion_consent_expired_ial1: It’s been a year since you gave us consent to share your information
+      completion_consent_expired_ial2: It’s been a year since you gave us consent to
+        share your verified identity
+      completion_first_sign_in: Continue to %{sp}
+      completion_ial2: Connect your verified information to %{sp}
       completion_new_attributes: '%{sp} is requesting new information'
       completion_new_sp: You are now signing in for the first time
       confirmation: Continue to sign in

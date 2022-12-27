@@ -5,6 +5,15 @@
 module InheritedProofingConcern
   extend ActiveSupport::Concern
 
+  # Returns true if Inherited Proofing is currently underway.
+  def inherited_proofing?
+    inherited_proofing_service_provider.present?
+  end
+
+  def inherited_proofing_service_provider
+    return :va if va_inherited_proofing?
+  end
+
   # Department of Veterans Affairs (VA) methods.
   # https://github.com/department-of-veterans-affairs/va.gov-team/blob/master/products/identity/Inherited%20Proofing/MHV%20Inherited%20Proofing/inherited-proofing-interface.md
 
@@ -26,5 +35,13 @@ module InheritedProofingConcern
 
   def va_inherited_proofing_auth_code_params_key
     'inherited_proofing_auth'
+  end
+
+  def inherited_proofing_service_provider_data
+    if inherited_proofing_service_provider == :va
+      { auth_code: va_inherited_proofing_auth_code }
+    else
+      {}
+    end
   end
 end

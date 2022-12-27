@@ -1,10 +1,10 @@
 <% content_for(:pre_flash_content) do %>
-  <%= render 'shared/step_indicator', {
+  <%= render StepIndicatorComponent.new(
         steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
         current_step: :verify_info,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      } %>
+      ) %>
 <% end %>
 
 <% title t('titles.doc_auth.address') %>
@@ -28,7 +28,7 @@
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :address2,
-        label: t('idv.form.address2'),
+        label: t('idv.form.address2_optional'),
         required: false,
         maxlength: 255,
         input_html: { value: @pii['address2'] },

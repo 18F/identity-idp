@@ -13,16 +13,10 @@ describe UserAlerts::AlertUserAboutPersonalKeySignIn do
         create(:phone_configuration, user: user, phone: '(202) 222-2222'),
       ]
 
-      allow(UserMailer).to receive(:personal_key_sign_in).and_call_original
       allow(Telephony).to receive(:send_personal_key_sign_in_notice)
 
       response = described_class.call(user, disavowal_token)
 
-      expect(UserMailer).to have_received(:personal_key_sign_in).twice
-      expect(UserMailer).to have_received(:personal_key_sign_in).
-        with(user, confirmed_email_addresses[0].email, disavowal_token: disavowal_token)
-      expect(UserMailer).to have_received(:personal_key_sign_in).
-        with(user, confirmed_email_addresses[1].email, disavowal_token: disavowal_token)
       expect(Telephony).to have_received(:send_personal_key_sign_in_notice).
         with(to: phone_configurations[0].phone, country_code: 'US')
       expect(Telephony).to have_received(:send_personal_key_sign_in_notice).
@@ -30,6 +24,18 @@ describe UserAlerts::AlertUserAboutPersonalKeySignIn do
 
       expect(response.to_h[:emails]).to eq(2)
       expect(response.to_h[:sms_message_ids].size).to eq(2)
+
+      expect_delivered_email_count(2)
+      expect_delivered_email(
+        to: [confirmed_email_addresses[0].email],
+        subject: t('user_mailer.personal_key_sign_in.subject'),
+        body: [disavowal_token],
+      )
+      expect_delivered_email(
+        to: [confirmed_email_addresses[1].email],
+        subject: t('user_mailer.personal_key_sign_in.subject'),
+        body: [disavowal_token],
+      )
     end
   end
 end

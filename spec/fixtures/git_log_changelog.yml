@@ -41,7 +41,7 @@ squashed_commit_with_multiple_commits:
 
     * add alert
 
-    * changelog: Improvements, Webauthn, Provide better error flow for users who may not be able to leverage webauthn (LG-5515)
+    * changelog: User-Facing Improvements, Webauthn, Provide better error flow for users who may not be able to leverage webauthn (LG-5515)
 
     * fix linting, debug
     Co-authored-by: Jessica Dembe <jessica.dembe@gsa.gov>
@@ -51,11 +51,11 @@ squashed_commit_with_multiple_commits:
   commit_messages:
     - '* add check to see if platform is available'
     - '* add alert'
-    - '* changelog: Improvements, Webauthn, Provide better error flow for users who may not be able to leverage webauthn (LG-5515)'
+    - '* changelog: User-Facing Improvements, Webauthn, Provide better error flow for users who may not be able to leverage webauthn (LG-5515)'
     - '* fix linting, debug'
     - 'Co-authored-by: Jessica Dembe <jessica.dembe@gsa.gov>'
     - 'Co-authored-by: Zach Margolis <zachary.margolis@gsa.gov>'
-  category: 'Improvements'
+  category: 'User-Facing Improvements'
   subcategory: 'Webauthn'
   change: 'Provide better error flow for users who may not be able to leverage webauthn (LG-5515)'
   pr_number: '5976'
@@ -79,3 +79,27 @@ squashed_commit_invalid:
     DELIMITER
   title: 'LG-5629 account buttons part 2 (#5945)'
   commit_messages: []
+commit_changelog_capitalized:
+  commit_log: |
+    title: Improve changelog tool flexibility for commit messages (#7000)
+    body:Changelog: Internal, Changelog, Improve changelog tool flexibility for commit messages
+    DELIMITER
+  title: Improve changelog tool flexibility for commit messages (#7000)
+  category: Internal
+  subcategory: Changelog
+  change: Improve changelog tool flexibility for commit messages
+  pr_number: '7000'
+  commit_messages:
+    - 'Changelog: Internal, Changelog, Improve changelog tool flexibility for commit messages'
+commit_changelog_whitespace:
+  commit_log: |
+    title: Improve changelog tool flexibility for commit messages (#7000)
+    body:changelog:Internal,Changelog,Improve changelog tool flexibility for commit messages
+    DELIMITER
+  title: Improve changelog tool flexibility for commit messages (#7000)
+  category: Internal
+  subcategory: Changelog
+  change: Improve changelog tool flexibility for commit messages
+  pr_number: '7000'
+  commit_messages:
+    - 'changelog:Internal,Changelog,Improve changelog tool flexibility for commit messages'

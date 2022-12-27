@@ -3,9 +3,21 @@ module Idv
     class UploadStep < DocAuthBaseStep
       STEP_INDICATOR_STEP = :verify_id
 
-      def call
-        @flow.irs_attempts_api_tracker.document_upload_method_selected(upload_method: params[:type])
+      def self.analytics_visited_event
+        :idv_doc_auth_upload_visited
+      end
 
+      def self.analytics_submitted_event
+        :idv_doc_auth_upload_submitted
+      end
+
+      def call
+        @flow.irs_attempts_api_tracker.idv_document_upload_method_selected(
+          upload_method: params[:type],
+        )
+
+        # See the simple_form_for in
+        # app/views/idv/doc_auth/upload.html.erb
         if params[:type] == 'desktop'
           handle_desktop_selection
         else
@@ -46,9 +58,9 @@ module Idv
       def send_user_to_email_sent_step
         mark_step_complete(:send_link)
         mark_step_complete(:link_sent)
-        UserMailer.doc_auth_desktop_link_to_sp(
-          current_user, current_user.confirmed_email_addresses.first.email, application, link
-        ).deliver_now_or_later
+        UserMailer.with(
+          user: current_user, email_address: current_user.confirmed_email_addresses.first,
+        ).doc_auth_desktop_link_to_sp(application, link).deliver_now_or_later
         form_response(destination: :email_sent)
       end
 
@@ -65,7 +77,9 @@ module Idv
       end
 
       def mobile_device?
-        BrowserCache.parse(request.user_agent).mobile?
+        # See app/javascript/packs/document-capture-welcome.js
+        # And app/services/idv/steps/agreement_step.rb
+        !!flow_session[:skip_upload_step]
       end
 
       def form_response(destination:)

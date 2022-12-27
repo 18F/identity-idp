@@ -1,7 +1,6 @@
 <% if local_assigns.dig(:step_indicator, :steps).presence %>
   <% content_for(:pre_flash_content) do %>
-    <%= render(
-          'shared/step_indicator',
+    <%= render StepIndicatorComponent.new(
           locale_scope: flow_namespace,
           steps: step_indicator[:steps],
           current_step: step_indicator[:current_step],

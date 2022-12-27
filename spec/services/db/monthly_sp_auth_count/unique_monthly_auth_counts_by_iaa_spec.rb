@@ -90,26 +90,32 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
 
         # 1 old user + 1 new user in whole month @ IAL 1
         [user1, user2].each do |user|
-          create(
-            :monthly_sp_auth_count,
-            user_id: user.id,
-            auth_count: 10,
-            ial: 1,
-            issuer: issuer1,
-            year_month: inside_whole_month.strftime('%Y%m'),
-          )
+          10.times do
+            create(
+              :sp_return_log,
+              user_id: user.id,
+              ial: 1,
+              issuer: issuer1,
+              requested_at: inside_whole_month,
+              returned_at: inside_whole_month,
+              billable: true,
+            )
+          end
         end
 
         # 2 old user + 1 new user in whole month @ IAL 2
         [user1, user2, user3].each do |user|
-          create(
-            :monthly_sp_auth_count,
-            user_id: user.id,
-            auth_count: 100,
-            ial: 2,
-            issuer: issuer2,
-            year_month: inside_whole_month.strftime('%Y%m'),
-          )
+          7.times do
+            create(
+              :sp_return_log,
+              user_id: user.id,
+              ial: 2,
+              issuer: issuer2,
+              requested_at: inside_whole_month,
+              returned_at: inside_whole_month,
+              billable: true,
+            )
+          end
         end
       end
 
@@ -151,7 +157,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             year_month: '202010',
             iaa_start_date: iaa_range.begin.to_s,
             iaa_end_date: iaa_range.end.to_s,
-            total_auth_count: 300,
+            total_auth_count: 21,
             unique_users: 3,
             new_unique_users: 1,
           },

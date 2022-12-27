@@ -3,16 +3,21 @@ en:
   help_text:
     change_factor: Before you’re able to reset your %{factor}, you will need to
       confirm your password and use your authentication method.
-    no_factor:
-      delete_account: To delete your account, please confirm your password and security code.
     requested_attributes:
       address: Mailing address
       all_emails: Email addresses on your account
       birthdate: Date of birth
       email: Email address
       full_name: Full name
-      intro_html: 'We’ll share this information with %{sp}:'
-      outro_html: '%{sp} will only use this information to connect to your account.'
+      ial1_consent_reminder_html: You must consent each year to share your information
+        with <b>%{sp}</b>. We’ll share your information with <b>%{sp}</b> to
+        connect your account.
+      ial1_intro_html: We’ll share your information with <b>%{sp}</b> to connect your account.
+      ial2_consent_reminder_html: '<b>%{sp}</b> needs to know who you are to connect
+        to your account. You must consent each year to share your verified
+        information with <b>%{sp}</b>. We’ll share this information: '
+      ial2_intro_html: '<b>%{sp}</b> needs to know who you are to connect your
+        account. We’ll share this information with %{sp}: '
       phone: Phone number
       social_security_number: Social Security number
       verified_at: Updated on

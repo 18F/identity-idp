@@ -35,10 +35,10 @@ const STATUS_ICONS: Record<Status, Record<Icon & 'default', string>> = {
  * Text to be used as text alternative for icon.
  */
 const STATUS_ALT: Record<Status & Icon, string> = {
-  error: t('components.status_page.icons.error'),
-  question: t('components.status_page.icons.question'),
-  warning: t('components.status_page.icons.warning'),
-  lock: t('components.status_page.icons.lock'),
+  error: t('image_description.error'),
+  question: t('image_description.info_question'),
+  warning: t('image_description.warning'),
+  lock: t('image_description.error_lock'),
 };
 
 interface StatusPageProps {
@@ -86,7 +86,13 @@ function StatusPage({
 
   return (
     <>
-      <img src={src} width={54} height={54} alt={alt} className="display-block margin-bottom-4" />
+      <img
+        src={src}
+        alt={alt}
+        width={88}
+        height={88}
+        className="display-block margin-bottom-4 alert-icon"
+      />
       <PageHeading>{header}</PageHeading>
       {children}
       {actionButtons.length > 0 && (

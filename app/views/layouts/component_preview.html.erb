@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Component Preview</title>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+  </head>
+  <body class="padding-2 <%= params.dig(:lookbook, :display, :body_class) %>">
+    <% if params.dig(:lookbook, :display, :form) == true %>
+      <form>
+        <%= yield %>
+        <%= render SubmitButtonComponent.new(class: 'margin-top-5') do %>
+          <%= t('forms.buttons.submit.default') %>
+        <% end %>
+      </form>
+    <% else %>
+      <%= yield %>
+    <% end %>
+    <%= javascript_packs_tag_once('application', prepend: true) %>
+    <%= render_javascript_pack_once_tags %>
+  </body>
+</html>

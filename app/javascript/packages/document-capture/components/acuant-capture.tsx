@@ -8,7 +8,7 @@ import {
   useImperativeHandle,
 } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import { useIfStillMounted, useDidUpdateEffect } from '@18f/identity-react-hooks';
+import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { Button, FullScreen } from '@18f/identity-components';
 import type { FullScreenRefHandle } from '@18f/identity-components';
 import type { FocusTrap } from 'focus-trap';
@@ -94,12 +94,6 @@ interface AcuantCaptureProps {
    * Camera permission declined callback
    */
   onCameraAccessDeclined?: () => void;
-  /**
-   * Facing mode of caopture. If capture is not
-   * specified and a camera is supported, defaults
-   * to the Acuant environment camera capture.
-   */
-  capture: 'user' | 'environment';
   /**
    * Optional additional class names
    */
@@ -260,7 +254,6 @@ function AcuantCapture(
     value,
     onChange = () => {},
     onCameraAccessDeclined = () => {},
-    capture,
     className,
     allowUpload = true,
     errorMessage,
@@ -271,7 +264,6 @@ function AcuantCapture(
   const {
     isReady,
     isActive: isAcuantInstanceActive,
-    isAcuantLoaded,
     isError,
     isCameraSupported,
     glareThreshold,
@@ -286,7 +278,6 @@ function AcuantCapture(
   const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(false);
   const [ownErrorMessage, setOwnErrorMessage] = useState<string | null>(null);
   const [hasStartedCropping, setHasStartedCropping] = useState(false);
-  const ifStillMounted = useIfStillMounted();
   useMemo(() => setOwnErrorMessage(null), [value]);
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
@@ -298,6 +289,7 @@ function AcuantCapture(
     failedCaptureAttempts,
     onFailedCaptureAttempt,
     onResetFailedCaptureAttempts,
+    failedSubmissionAttempts,
     forceNativeCamera,
   } = useContext(FailedCaptureAttemptsContext);
 
@@ -414,31 +406,23 @@ function AcuantCapture(
    */
   function startCaptureOrTriggerUpload(event: MouseEvent) {
     if (event.target === inputRef.current) {
-      if (forceNativeCamera) {
-        trackEvent('IdV: Native camera forced after failed attempts', {
-          field: name,
-          failed_attempts: failedCaptureAttempts,
-        });
-        return forceUpload();
-      }
       const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;
       const shouldStartAcuantCapture =
-        isAcuantCaptureCapable && capture !== 'user' && !isForceUploading.current;
-      const shouldStartSelfieCapture =
-        isAcuantLoaded && capture === 'user' && !isForceUploading.current;
+        isAcuantCaptureCapable && !isForceUploading.current && !forceNativeCamera;
 
-      if (!allowUpload || shouldStartSelfieCapture || shouldStartAcuantCapture) {
+      if (isAcuantCaptureCapable && forceNativeCamera) {
+        trackEvent('IdV: Native camera forced after failed attempts', {
+          field: name,
+          failed_capture_attempts: failedCaptureAttempts,
+          failed_submission_attempts: failedSubmissionAttempts,
+        });
+      }
+
+      if (!allowUpload || shouldStartAcuantCapture) {
         event.preventDefault();
       }
 
-      if (shouldStartSelfieCapture) {
-        window.AcuantPassiveLiveness.startSelfieCapture(
-          ifStillMounted((nextImageData) => {
-            const dataURI = `data:image/jpeg;base64,${nextImageData}`;
-            onChangeAndResetError(dataURI);
-          }),
-        );
-      } else if (shouldStartAcuantCapture && !isAcuantInstanceActive) {
+      if (shouldStartAcuantCapture && !isAcuantInstanceActive) {
         setIsCapturingEnvironment(true);
       }
 
@@ -555,7 +539,6 @@ function AcuantCapture(
         fileLoadingText={t('doc_auth.info.image_loading')}
         fileLoadedText={t('doc_auth.info.image_loaded')}
         accept={isMockClient ? undefined : ['image/jpeg', 'image/png']}
-        capture={capture}
         value={value}
         errorMessage={ownErrorMessage ?? errorMessage}
         isValuePending={hasStartedCropping}

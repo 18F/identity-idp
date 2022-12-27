@@ -78,14 +78,13 @@ describe('document-capture/components/review-issues-step', () => {
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
   });
 
-  it('renders with front, back, and selfie inputs', async () => {
+  it('renders with front and back inputs', async () => {
     const { getByLabelText, getByRole } = render(<ReviewIssuesStep {...DEFAULT_PROPS} />);
 
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
-    expect(getByLabelText('doc_auth.headings.document_capture_selfie')).to.be.ok();
   });
 
   it('calls onChange callback with uploaded image', async () => {
@@ -150,7 +149,6 @@ describe('document-capture/components/review-issues-step', () => {
         value={{
           name: 'Example App',
           failureToProofURL: 'https://example.com/?step=document_capture',
-          isLivenessRequired: false,
         }}
       >
         <ReviewIssuesStep {...DEFAULT_PROPS} />
@@ -178,7 +176,6 @@ describe('document-capture/components/review-issues-step', () => {
             value={{
               name: 'Example App',
               failureToProofURL: 'https://example.com',
-              isLivenessRequired: false,
             }}
           >
             <ReviewIssuesStep {...DEFAULT_PROPS} />
@@ -188,18 +185,16 @@ describe('document-capture/components/review-issues-step', () => {
 
         expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
         expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
-        expect(() => getByLabelText('doc_auth.headings.document_capture_selfie')).to.throw();
       });
     });
 
     context('ial2 strict', () => {
-      it('renders with front, back, and selfie inputs', async () => {
+      it('renders with front and back inputs', async () => {
         const { getByLabelText, getByRole } = render(
           <ServiceProviderContextProvider
             value={{
               name: 'Example App',
               failureToProofURL: 'https://example.com',
-              isLivenessRequired: true,
             }}
           >
             <ReviewIssuesStep {...DEFAULT_PROPS} />
@@ -209,7 +204,6 @@ describe('document-capture/components/review-issues-step', () => {
 
         expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
         expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
-        expect(getByLabelText('doc_auth.headings.document_capture_selfie')).to.be.ok();
       });
     });
   });

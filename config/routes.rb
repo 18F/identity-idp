@@ -31,9 +31,11 @@ Rails.application.routes.draw do
   post '/api/service_provider' => 'service_provider#update'
   post '/api/verify/images' => 'idv/image_uploads#create'
   post '/api/logger' => 'frontend_log#create'
+  post '/api/addresses' => 'idv/in_person/address_search#index'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
+  delete '/openid_connect/logout' => 'openid_connect/logout#delete'
 
   get '/no_js/detect.css' => 'no_js#index', as: :no_js_detect_css
 
@@ -153,6 +155,17 @@ Rails.application.routes.draw do
       end
     end
 
+    if IdentityConfig.store.component_previews_enabled
+      require 'lookbook'
+      mount Lookbook::Engine, at: '/components'
+    end
+
+    if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
+      get '/test/device_profiling' => 'test/device_profiling#index',
+          as: :test_device_profiling_iframe
+      post '/test/device_profiling' => 'test/device_profiling#create'
+    end
+
     get '/auth_method_confirmation' => 'mfa_confirmation#show'
     post '/auth_method_confirmation/skip' => 'mfa_confirmation#skip'
 
@@ -240,7 +253,6 @@ Rails.application.routes.draw do
     patch '/second_mfa_setup' => 'users/mfa_selection#update'
     get '/phone_setup' => 'users/phone_setup#index'
     patch '/phone_setup' => 'users/phone_setup#create'
-    get '/aal3_required' => 'users/aal3#show'
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
         as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
     get '/backup_code_refreshed' => 'users/backup_code_setup#refreshed'
@@ -279,6 +291,7 @@ Rails.application.routes.draw do
     get '/redirect/return_to_sp/cancel' => 'redirect/return_to_sp#cancel', as: :return_to_sp_cancel
     get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof', as: :return_to_sp_failure_to_proof
     get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
+    get '/redirect/contact/' => 'redirect/contact#show', as: :contact_redirect
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 
@@ -336,25 +349,34 @@ Rails.application.routes.draw do
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
           as: :in_person_ready_to_verify
-      get '/in_person/usps_locations' => 'in_person/usps_locations#index'
+      post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
+      post '/in_person/addresses' => 'in_person/address_search#index'
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
-
-      get '/inherited_proofing' => 'inherited_proofing#index'
-      get '/inherited_proofing/:step' => 'inherited_proofing#show', as: :inherited_proofing_step
 
       # deprecated routes
       get '/confirmations' => 'personal_key#show'
       post '/confirmations' => 'personal_key#update'
     end
 
-    get '/verify/v2(/:step)' => 'verify#show', as: :idv_app
-    get '/verify/v2/password_confirm/forgot_password' => 'verify#show', as: :idv_app_forgot_password
+    # Inherited Proofing (IP)-specific routes.
+    scope '/verify/inherited_proofing', module: 'idv', as: 'idv_inherited_proofing' do
+      # NOTE: cancellation routes need to be before any other IP
+      # routes in this scope.
+      delete '/session' => 'sessions#destroy'
+      get '/cancel' => 'inherited_proofing_cancellations#new', as: :cancel
+      put '/cancel' => 'inherited_proofing_cancellations#update'
+      delete '/cancel' => 'inherited_proofing_cancellations#destroy'
+      get '/' => 'inherited_proofing#index'
+      get '/:step' => 'inherited_proofing#show', as: :step
+      put '/:step' => 'inherited_proofing#update'
+      get '/return_to_sp' => 'inherited_proofing#return_to_sp'
+      get '/errors/no_information' => 'inherited_proofing_errors#warning'
+      get '/errors/failure' => 'inherited_proofing_errors#failure'
+    end
 
     namespace :api do
-      post '/verify/v2/password_confirm' => 'verify/password_confirm#create'
-      post '/verify/v2/password_reset' => 'verify/password_reset#create'
       post '/verify/v2/document_capture' => 'verify/document_capture#create'
       delete '/verify/v2/document_capture_errors' => 'verify/document_capture_errors#delete'
     end

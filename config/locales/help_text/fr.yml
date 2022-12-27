@@ -3,18 +3,24 @@ fr:
   help_text:
     change_factor: Avant de pouvoir réinitialiser votre %{factor}, vous devrez
       confirmer votre mot de passe et utiliser votre méthode d’authentification.
-    no_factor:
-      delete_account: Pour supprimer votre compte, veuillez confirmer votre mot de
-        passe et votre code de sécurité.
     requested_attributes:
       address: Adresse postale
       all_emails: Adresses e-mail sur votre compte
       birthdate: Date de naissance
       email: Adresse e-mail
       full_name: Nom complet
-      intro_html: 'Nous partagerons cette information avec %{sp}:'
-      outro_html: '%{sp} utilisera cette information uniquement pour se connecter à
-        votre compte.'
+      ial1_consent_reminder_html: Vous devez consentir chaque année au partage de vos
+        informations avec <b>%{sp}</b>. Nous partagerons vos informations avec
+        <b>%{sp}</b> pour connecter votre compte.
+      ial1_intro_html: Nous partagerons vos informations avec <b>%{sp}</b> pour
+        connecter votre compte.
+      ial2_consent_reminder_html: '<b>%{sp}</b> doit savoir qui vous êtes pour se
+        connecter à votre compte. Vous devez consentir chaque année à partager
+        vos informations vérifiées avec <b>%{sp}</b>. Nous partagerons ces
+        informations :'
+      ial2_intro_html: '<b>%{sp}</b> a besoin de savoir qui vous êtes pour connecter
+        votre compte. Nous partagerons ces informations avec l’agence
+        partenaire:'
       phone: Numéro de téléphone
       social_security_number: Numéro de sécurité sociale
       verified_at: Mis à jour le

@@ -3,10 +3,11 @@ class TwoFactorOptionsPresenter
 
   attr_reader :user
 
-  def initialize(user_agent:, user: nil, aal3_required: false, piv_cac_required: false)
+  def initialize(user_agent:, user: nil, phishing_resistant_required: false,
+                 piv_cac_required: false)
     @user_agent = user_agent
     @user = user
-    @aal3_required = aal3_required
+    @phishing_resistant_required = phishing_resistant_required
     @piv_cac_required = piv_cac_required
   end
 
@@ -16,8 +17,9 @@ class TwoFactorOptionsPresenter
   end
 
   def icon
-    return 'icon-lock-alert-important.svg' if piv_cac_required? ||
-                                              (aal3_only? && mfa_policy.two_factor_enabled?)
+    if piv_cac_required? || (phishing_resistant_only? && mfa_policy.two_factor_enabled?)
+      'icon-lock-alert-important.svg'
+    end
   end
 
   def icon_alt_text
@@ -27,7 +29,7 @@ class TwoFactorOptionsPresenter
   def heading
     if piv_cac_required?
       t('two_factor_authentication.two_factor_hspd12_choice')
-    elsif aal3_only? && mfa_policy.two_factor_enabled?
+    elsif phishing_resistant_only? && mfa_policy.two_factor_enabled?
       t('two_factor_authentication.two_factor_aal3_choice')
     else
       t('two_factor_authentication.two_factor_choice')
@@ -37,12 +39,10 @@ class TwoFactorOptionsPresenter
   def intro
     if piv_cac_required?
       t('two_factor_authentication.two_factor_hspd12_choice_intro')
-    elsif aal3_only?
+    elsif phishing_resistant_only?
       t('two_factor_authentication.two_factor_aal3_choice_intro')
-    elsif IdentityConfig.store.select_multiple_mfa_options
-      t('mfa.info')
     else
-      t('two_factor_authentication.two_factor_choice_intro')
+      t('mfa.info')
     end
   end
 
@@ -59,22 +59,25 @@ class TwoFactorOptionsPresenter
   end
 
   def webauthn_platform_option
-    return [] if piv_cac_required? || !IdentityConfig.store.platform_authentication_enabled
+    return [] if piv_cac_required? || !IdentityConfig.store.platform_auth_set_up_enabled
     [TwoFactorAuthentication::WebauthnPlatformSelectionPresenter.new(user: user)]
   end
 
   def phone_options
-    return [] if piv_cac_required? || aal3_only? || IdentityConfig.store.hide_phone_mfa_signup
-    [TwoFactorAuthentication::PhoneSelectionPresenter.new(user: user)]
+    if piv_cac_required? || phishing_resistant_only? || IdentityConfig.store.hide_phone_mfa_signup
+      return []
+    else
+      [TwoFactorAuthentication::PhoneSelectionPresenter.new(user: user)]
+    end
   end
 
   def totp_option
-    return [] if piv_cac_required? || aal3_only?
+    return [] if piv_cac_required? || phishing_resistant_only?
     [TwoFactorAuthentication::AuthAppSelectionPresenter.new(user: user)]
   end
 
   def backup_code_option
-    return [] if piv_cac_required? || aal3_only?
+    return [] if piv_cac_required? || phishing_resistant_only?
     [TwoFactorAuthentication::BackupCodeSelectionPresenter.new(user: user)]
   end
 
@@ -86,8 +89,8 @@ class TwoFactorOptionsPresenter
     @piv_cac_required
   end
 
-  def aal3_only?
-    @aal3_required && !mfa_policy.aal3_mfa_enabled?
+  def phishing_resistant_only?
+    @phishing_resistant_required && !mfa_policy.phishing_resistant_mfa_enabled?
   end
 
   def mfa_policy

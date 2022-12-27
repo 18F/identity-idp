@@ -5,29 +5,29 @@ describe 'reset password with multiple emails' do
     user = create(:user, :with_multiple_emails)
     email1, email2 = user.reload.email_addresses.map(&:email)
 
-    mail1 = double
-    expect(mail1).to receive(:deliver_now_or_later)
-    expect(UserMailer).to receive(:reset_password_instructions).
-      with(user, email1, hash_including(:token)).
-      and_return(mail1)
-
     visit root_path
     click_link t('links.passwords.forgot')
-    fill_in 'Email', with: email1
+    fill_in t('account.index.email'), with: email1
     click_button t('forms.buttons.continue')
+
+    expect_delivered_email_count(1)
+    expect_delivered_email(
+      to: [email1],
+      subject: t('user_mailer.reset_password_instructions.subject'),
+    )
 
     Capybara.reset_session!
 
-    mail2 = double
-    expect(mail2).to receive(:deliver_now_or_later)
-    expect(UserMailer).to receive(:reset_password_instructions).
-      with(user, email2, hash_including(:token)).
-      and_return(mail2)
-
     visit root_path
     click_link t('links.passwords.forgot')
-    fill_in 'Email', with: email2
+    fill_in t('account.index.email'), with: email2
     click_button t('forms.buttons.continue')
+
+    expect_delivered_email_count(2)
+    expect_delivered_email(
+      to: [email2],
+      subject: t('user_mailer.reset_password_instructions.subject'),
+    )
   end
 
   scenario 'it sends the unconfirmed address email if the requested email is not confirmed' do
@@ -40,18 +40,16 @@ describe 'reset password with multiple emails' do
       app_name: APP_NAME,
     )
 
-    mail = double
-    expect(mail).to receive(:deliver_now_or_later)
-    expect(UserMailer).to receive(:unconfirmed_email_instructions).with(
-      instance_of(User),
-      unconfirmed_email_address.email,
-      instance_of(String),
-      hash_including(instructions: create_account_instructions_text),
-    ).and_return(mail)
-
     visit root_path
     click_link t('links.passwords.forgot')
-    fill_in 'Email', with: unconfirmed_email_address.email
+    fill_in t('account.index.email'), with: unconfirmed_email_address.email
     click_button t('forms.buttons.continue')
+
+    expect_delivered_email_count(1)
+    expect_delivered_email(
+      to: [unconfirmed_email_address.email],
+      subject: t('user_mailer.email_confirmation_instructions.email_not_found'),
+      body: [create_account_instructions_text],
+    )
   end
 end

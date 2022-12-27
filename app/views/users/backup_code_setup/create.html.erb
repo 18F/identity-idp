@@ -15,7 +15,7 @@
 
 <div class="margin-top-4 margin-bottom-5">
   <div class="grid-row">
-    <% [ @codes.first(@codes.length / 2), @codes.last(@codes.length / 2)].each do |section| %>
+    <% [@codes.first(@codes.length / 2), @codes.last(@codes.length / 2)].each do |section| %>
       <div class="grid-col-12 tablet:grid-col-6">
         <% section.each do |code| %>
           <div class="margin-bottom-2">
@@ -29,18 +29,13 @@
   </div>
   <div class="margin-top-1">
     <% if desktop_device? %>
-      <%= render ButtonComponent.new(
-            action: ->(**tag_options, &block) do
-              link_to(
-                "data:text/plain;charset=utf-8,#{CGI.escape(@codes.join("\n"))}",
-                download: 'backup_codes.txt',
-                **tag_options,
-                &block
-              )
-            end,
-            outline: true,
-            icon: :file_download,
-          ).with_content(t('forms.backup_code.download')) %>
+      <%= render ClickObserverComponent.new(event_name: 'Multi-Factor Authentication: download backup code') do %>
+        <%= render DownloadButtonComponent.new(
+              file_data: @codes.join("\n"),
+              file_name: 'backup_codes.txt',
+              outline: true,
+            ) %>
+      <% end %>
     <% end %>
     <%= render PrintButtonComponent.new(
           icon: :print,
@@ -59,4 +54,3 @@
 <%= form_tag(backup_code_continue_path, method: :patch) do %>
   <%= button_tag t('forms.buttons.continue'), type: 'submit', class: 'usa-button usa-button--big usa-button--wide' %>
 <% end %>
-<%= javascript_packs_tag_once 'backup-code-analytics' %>

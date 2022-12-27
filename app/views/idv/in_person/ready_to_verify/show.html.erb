@@ -1,12 +1,12 @@
 <% title t('in_person_proofing.headings.barcode') %>
 
 <% content_for(:pre_flash_content) do %>
-  <%= render 'shared/step_indicator', {
-        steps: Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS,
+  <%= render StepIndicatorComponent.new(
+        steps: step_indicator_steps,
         current_step: :go_to_the_post_office,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      } %>
+      ) %>
 <% end %>
 
 <%= image_tag(
@@ -55,6 +55,7 @@
             <li><%= proof %></li>
           <% end %>
         </ul>
+        <p><%= t('in_person_proofing.process.proof_of_address.physical_or_digital_copy') %></p>
       <% end %>
     <% end %>
   <% end %>

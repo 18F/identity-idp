@@ -1,9 +1,11 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { PageHeading, SpinnerDots } from '@18f/identity-components';
+import { request } from '@18f/identity-request';
 import BackButton from './back-button';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
+import AnalyticsContext from '../context/analytics';
 
 interface PostOffice {
   address: string;
@@ -28,17 +30,20 @@ interface FormattedLocation {
   sundayHours: string;
   weekdayHours: string;
 }
+interface LocationQuery {
+  streetAddress: string;
+  city: string;
+  state: string;
+  zipCode: string;
+}
 
-const locationUrl = '/verify/in_person/usps_locations';
+export const LOCATIONS_URL = '/verify/in_person/usps_locations';
 
-const getResponse = async () => {
-  const response = await fetch(locationUrl).then((res) =>
-    res.json().catch((error) => {
-      throw error;
-    }),
-  );
-  return response;
-};
+const getUspsLocations = (address) =>
+  request<PostOffice[]>(LOCATIONS_URL, {
+    method: 'post',
+    json: { address },
+  });
 
 const formatLocation = (postOffices: PostOffice[]) => {
   const formattedLocations = [] as FormattedLocation[];
@@ -76,9 +81,11 @@ const prepToSend = (location: object) => {
 function InPersonLocationStep({ onChange, toPreviousStep }) {
   const { t } = useI18n();
   const [locationData, setLocationData] = useState([] as FormattedLocation[]);
+  const [foundAddress] = useState({} as LocationQuery);
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+  const { setSubmitEventMetadata } = useContext(AnalyticsContext);
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
@@ -93,7 +100,10 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   // useCallBack here prevents unnecessary rerenders due to changing function identity
   const handleLocationSelect = useCallback(
     async (e: any, id: number) => {
-      onChange({ selectedLocationName: locationData[id].name });
+      const selectedLocation = locationData[id];
+      const { name: selectedLocationName } = selectedLocation;
+      setSubmitEventMetadata({ selected_location: selectedLocationName });
+      onChange({ selectedLocationName });
       if (autoSubmit) {
         return;
       }
@@ -102,18 +112,11 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
       if (inProgress) {
         return;
       }
-      const selected = prepToSend(locationData[id]);
-      const headers = { 'Content-Type': 'application/json' };
-      const meta: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
-      const csrf = meta?.content;
-      if (csrf) {
-        headers['X-CSRF-Token'] = csrf;
-      }
+      const selected = prepToSend(selectedLocation);
       setInProgress(true);
-      await fetch(locationUrl, {
+      await request(LOCATIONS_URL, {
+        json: selected,
         method: 'PUT',
-        body: JSON.stringify(selected),
-        headers,
       })
         .then(() => {
           if (!mountedRef.current) {
@@ -138,24 +141,25 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   );
 
   useEffect(() => {
-    let mounted = true;
+    let didCancel = false;
     (async () => {
       try {
-        const fetchedLocations = await getResponse();
-        if (mounted) {
+        const fetchedLocations = await getUspsLocations(prepToSend(foundAddress));
+
+        if (!didCancel) {
           const formattedLocations = formatLocation(fetchedLocations);
           setLocationData(formattedLocations);
         }
       } finally {
-        if (mounted) {
+        if (!didCancel) {
           setIsLoadingComplete(true);
         }
       }
     })();
     return () => {
-      mounted = false;
+      didCancel = true;
     };
-  }, []);
+  }, [foundAddress]);
 
   let locationsContent: React.ReactNode;
   if (!isLoadingComplete) {

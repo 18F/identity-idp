@@ -4,7 +4,6 @@ module Rack
   class Timeout
     @excludes = [
       '/api/verify/images',
-      '/verify/doc_auth/selfie',
       '/verify/doc_auth/document_capture',
       '/verify/doc_auth/verify',
       '/verify/capture_doc/document_capture',

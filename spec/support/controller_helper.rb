@@ -73,6 +73,7 @@ module ControllerHelper
     allow(user).to receive(:pending_profile).and_return(pending_profile)
     allow(decorated_user).to receive(:pending_profile_requires_verification?).
       and_return(has_pending_profile)
+    allow(decorated_user).to receive(:threatmetrix_review_pending?).and_return(false)
     decorated_user
   end
 

@@ -9,9 +9,6 @@ body {
 .fs-12p {
   font-size: 12px;
 }
-.fs-13p {
-  font-size: 13px;
-}
 .fs-20p {
   font-size: 20px;
 }
@@ -98,4 +95,30 @@ h5,
 h6,
 .h6 {
   @extend %h6;
+}
+
+.separator-text {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  font-size: 1.125rem;
+  margin-top: 32px;
+  margin-bottom: 16px;
+
+  &::before,
+  &::after {
+    content: '';
+    display: block;
+    border-bottom: 1px solid color('primary-light');
+    flex-grow: 1;
+    min-width: 2rem;
+  }
+
+  &::before {
+    margin-right: 1rem;
+  }
+
+  &::after {
+    margin-left: 1rem;
+  }
 }

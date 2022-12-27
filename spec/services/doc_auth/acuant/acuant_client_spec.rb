@@ -72,7 +72,6 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
   end
 
   describe '#post_images' do
-    let(:liveness_enabled) { false }
     let(:instance_id) { 'this-is-a-test-instance-id' }
     let(:image_upload_url) do
       URI.join(
@@ -98,59 +97,11 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
       )
     end
 
-    context 'with liveness checking enabled' do
-      let(:get_face_image_url) do
-        URI.join(
-          assure_id_url,
-          "/AssureIDService/Document/#{instance_id}/Field/Image?key=Photo",
-        )
-      end
-      let(:full_facial_match_url) { URI.join(facial_match_url, '/api/v1/facematch') }
-      let(:liveness_url) { URI.join(passlive_url, '/api/v1/liveness') }
-      let(:liveness_enabled) { true }
-
-      it 'sends an upload image request for the front, back, and selfie images' do
-        # Selfie stubs
-        stub_request(:get, get_face_image_url).
-          to_return(body: AcuantFixtures.get_face_image_response)
-        stub_request(:post, full_facial_match_url).
-          to_return(body: AcuantFixtures.facial_match_response_success)
-        stub_request(:post, liveness_url).
-          to_return(body: AcuantFixtures.liveness_response_success)
-
-        result = subject.post_images(
-          front_image: DocAuthImageFixtures.document_front_image,
-          back_image: DocAuthImageFixtures.document_back_image,
-          selfie_image: DocAuthImageFixtures.selfie_image,
-          liveness_checking_enabled: liveness_enabled,
-          image_source: image_source,
-        )
-
-        extra_expected_hash = {
-          processed_alerts: a_hash_including(:failed, :passed),
-          alert_failure_count: 2,
-          image_metrics: a_hash_including(:back, :front),
-          face_match_results: a_hash_including(:match_score, :is_match),
-          selfie_liveness_results: a_hash_including(
-            :liveness_score,
-            :liveness_assessment,
-            :acuant_error,
-          ),
-        }
-
-        expect(result.success?).to eq(true)
-        expect(result.pii_from_doc).to_not be_empty
-        expect(result.extra).to include(extra_expected_hash)
-      end
-    end
-
-    context 'with liveness checking disabled' do
+    context 'when results pass' do
       it 'sends an upload image request for the front and back DL images' do
         result = subject.post_images(
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
-          selfie_image: DocAuthImageFixtures.selfie_image,
-          liveness_checking_enabled: liveness_enabled,
           image_source: image_source,
         )
 
@@ -174,8 +125,6 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
         result = subject.post_images(
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
-          selfie_image: DocAuthImageFixtures.selfie_image,
-          liveness_checking_enabled: liveness_enabled,
           image_source: image_source,
         )
 
@@ -241,95 +190,6 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
       expect(result.exception.message).to eq(
         'Connection failed',
       )
-    end
-  end
-
-  describe '#post_selfie' do
-    let(:instance_id) { 'this-is-a-test-instance-id' }
-    let(:get_face_image_url) do
-      URI.join(
-        assure_id_url,
-        "/AssureIDService/Document/#{instance_id}/Field/Image?key=Photo",
-      )
-    end
-    let(:full_facial_match_url) { URI.join(facial_match_url, '/api/v1/facematch') }
-    let(:full_liveness_url) { URI.join(passlive_url, '/api/v1/liveness') }
-
-    context 'when the result is a pass' do
-      it 'sends the requests and returns success' do
-        get_face_stub = stub_request(:get, get_face_image_url).
-          to_return(body: AcuantFixtures.get_face_image_response)
-        facial_match_stub = stub_request(:post, full_facial_match_url).
-          to_return(body: AcuantFixtures.facial_match_response_success)
-        liveness_stub = stub_request(:post, full_liveness_url).
-          to_return(body: AcuantFixtures.liveness_response_success)
-
-        result = subject.post_selfie(
-          instance_id: instance_id,
-          image: DocAuthImageFixtures.selfie_image,
-        )
-
-        expect(result.success?).to eq(true)
-        expect(result.errors).to eq({})
-        expect(result).to be_kind_of(DocAuth::Response)
-        expect(get_face_stub).to have_been_requested
-        expect(facial_match_stub).to have_been_requested
-        expect(liveness_stub).to have_been_requested
-      end
-    end
-
-    context 'when the get face image request fails' do
-      it 'returns a failure' do
-        stub_request(:get, get_face_image_url).to_return(status: 404)
-
-        expect(NewRelic::Agent).to receive(:notice_error).at_least(:once)
-
-        result = subject.post_selfie(
-          instance_id: instance_id,
-          image: DocAuthImageFixtures.selfie_image,
-        )
-
-        expect(result.success?).to eq(false)
-        expect(result.errors).to eq(network: true)
-      end
-    end
-
-    context 'when the facial match request fails' do
-      it 'returns a failure' do
-        stub_request(:get, get_face_image_url).
-          to_return(body: AcuantFixtures.get_face_image_response)
-        stub_request(:post, full_facial_match_url).
-          to_return(body: AcuantFixtures.facial_match_response_failure)
-        stub_request(:post, full_liveness_url).
-          to_return(body: AcuantFixtures.liveness_response_success)
-
-        result = subject.post_selfie(
-          instance_id: instance_id,
-          image: DocAuthImageFixtures.selfie_image,
-        )
-
-        expect(result.success?).to eq(false)
-        expect(result.errors).to eq(selfie: true)
-      end
-    end
-
-    context 'when the liveness request fails' do
-      it 'returns a failure' do
-        stub_request(:get, get_face_image_url).
-          to_return(body: AcuantFixtures.get_face_image_response)
-        stub_request(:post, full_facial_match_url).
-          to_return(body: AcuantFixtures.facial_match_response_success)
-        stub_request(:post, full_liveness_url).
-          to_return(body: AcuantFixtures.liveness_response_failure)
-
-        result = subject.post_selfie(
-          instance_id: instance_id,
-          image: DocAuthImageFixtures.selfie_image,
-        )
-
-        expect(result.success?).to eq(false)
-        expect(result.errors).to eq(selfie: true)
-      end
     end
   end
 end

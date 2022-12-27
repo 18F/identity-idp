@@ -8,6 +8,7 @@ module Users
     end
 
     def delete
+      irs_attempts_api_tracker.logged_in_account_purged(success: true)
       send_push_notifications
       delete_user
       sign_out
@@ -20,7 +21,7 @@ module Users
 
     def delete_user
       ActiveRecord::Base.transaction do
-        Db::DeletedUser::Create.call(current_user.id)
+        DeletedUser.create_from_user(current_user)
         current_user.destroy!
       end
     end
@@ -30,6 +31,7 @@ module Users
 
       flash[:error] = t('idv.errors.incorrect_password')
       analytics.account_delete_submitted(success: false)
+      irs_attempts_api_tracker.logged_in_account_purged(success: false)
       render :show
     end
 

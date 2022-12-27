@@ -2,7 +2,7 @@
 
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
 
-<%= image_tag asset_url('2FA-voice.svg'), alt: '', width: 200, class: 'margin-bottom-2' %>
+<%= image_tag asset_url('2FA-voice.svg'), alt: '', width: 200, height: 113, class: 'margin-bottom-2' %>
 
 <%= render PageHeadingComponent.new.with_content(t('titles.phone_setup')) %>
 
@@ -36,7 +36,7 @@
     <%= render 'users/shared/otp_make_default_number',
                form_obj: @new_phone_form %>
   <% end %>
-  <%= f.submit t('forms.buttons.send_security_code') %>
+  <%= f.submit t('forms.buttons.send_one_time_code') %>
 <% end %>
 
 <%= render 'shared/cancel_or_back_to_options' %>

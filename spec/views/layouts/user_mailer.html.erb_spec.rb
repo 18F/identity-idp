@@ -4,7 +4,7 @@ describe 'layouts/user_mailer.html.erb' do
   let(:user) { build_stubbed(:user) }
 
   before do
-    @mail = UserMailer.email_added(user, 'foo@example.com')
+    @mail = UserMailer.with(user: user, email_address: user.email_addresses.first).email_added
     allow(view).to receive(:message).and_return(@mail)
     allow(view).to receive(:attachments).and_return(@mail.attachments)
 
@@ -17,6 +17,10 @@ describe 'layouts/user_mailer.html.erb' do
 
   it 'includes the app logo' do
     expect(rendered).to have_css("img[src*='.mail']")
+  end
+
+  it 'includes alt text for app logo that reads Login.gov logo' do
+    expect(rendered).to have_css("img[alt='#{t('mailer.logo', app_name: APP_NAME)}']")
   end
 
   it 'includes the message subject in the body' do

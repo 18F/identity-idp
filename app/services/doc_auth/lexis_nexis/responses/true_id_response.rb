@@ -46,8 +46,7 @@ module DocAuth
         }.freeze
         attr_reader :config
 
-        def initialize(http_response, liveness_checking_enabled, config)
-          @liveness_checking_enabled = liveness_checking_enabled
+        def initialize(http_response, config)
           @config = config
 
           super http_response
@@ -63,7 +62,7 @@ module DocAuth
           if true_id_product&.dig(:AUTHENTICATION_RESULT).present?
             ErrorGenerator.new(config).generate_doc_auth_errors(response_info)
           elsif true_id_product.present?
-            ErrorGenerator.wrapped_general_error(@liveness_checking_enabled)
+            ErrorGenerator.wrapped_general_error
           else
             { network: true } # return a generic technical difficulties error to user
           end
@@ -126,6 +125,10 @@ module DocAuth
             parsed_alerts.dig(:failed, 0, :result) == 'Attention'
         end
 
+        def billed?
+          !!doc_auth_result
+        end
+
         private
 
         def response_info
@@ -137,7 +140,6 @@ module DocAuth
           log_alert_formatter = DocAuth::ProcessedAlertToLogAlertFormatter.new
 
           {
-            liveness_enabled: @liveness_checking_enabled,
             transaction_status: transaction_status,
             transaction_reason_code: transaction_reason_code,
             product_status: product_status,
@@ -157,10 +159,6 @@ module DocAuth
             vendor: 'TrueID',
             billed: billed?,
           }
-        end
-
-        def billed?
-          !!doc_auth_result && !doc_auth_result_unknown?
         end
 
         def all_passed?

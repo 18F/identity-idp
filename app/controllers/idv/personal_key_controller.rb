@@ -1,6 +1,7 @@
 module Idv
   class PersonalKeyController < ApplicationController
     include IdvSession
+    include StepIndicatorConcern
     include SecureHeadersConcern
 
     before_action :apply_secure_headers_override
@@ -9,29 +10,23 @@ module Idv
     before_action :confirm_profile_has_been_created
 
     def show
-      @step_indicator_steps = step_indicator_steps
-      analytics.idv_personal_key_visited
+      analytics.idv_personal_key_visited(address_verification_method: address_verification_method)
       add_proofing_component
 
       finish_idv_session
-
-      @confirm = FeatureManagement.idv_personal_key_confirmation_enabled? ? 'modal' : 'skip'
     end
 
     def update
       user_session[:need_personal_key_confirmation] = false
-      analytics.idv_personal_key_submitted
+
+      analytics.idv_personal_key_submitted(address_verification_method: address_verification_method)
       redirect_to next_step
     end
 
     private
 
-    def step_indicator_steps
-      steps = Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
-      return steps if idv_session.address_verification_mechanism != 'gpo'
-      steps.map do |step|
-        step[:name] == :verify_phone_or_address ? step.merge(status: :pending) : step
-      end
+    def address_verification_method
+      user_session.dig('idv', 'address_verification_mechanism')
     end
 
     def next_step
@@ -53,13 +48,15 @@ module Idv
     end
 
     def add_proofing_component
-      ProofingComponent.create_or_find_by(user: current_user).update(verified_at: Time.zone.now)
+      ProofingComponent.find_or_create_by(user: current_user).update(verified_at: Time.zone.now)
     end
 
     def finish_idv_session
       @code = personal_key
       user_session[:personal_key] = @code
       idv_session.personal_key = nil
+
+      irs_attempts_api_tracker.idv_personal_key_generated
 
       if idv_session.address_verification_mechanism == 'gpo'
         flash.now[:success] = t('idv.messages.mail_sent')

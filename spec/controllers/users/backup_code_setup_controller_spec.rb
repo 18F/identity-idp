@@ -2,11 +2,12 @@ require 'rails_helper'
 
 describe Users::BackupCodeSetupController do
   it 'creates backup codes and logs expected events' do
-    user = build(:user, :signed_up)
+    user = create(:user, :signed_up)
     stub_sign_in(user)
-    stub_analytics
+    analytics = stub_analytics
     stub_attempts_tracker
 
+    Funnel::Registration::AddMfa.call(user.id, 'phone', analytics)
     expect(PushNotification::HttpPush).to receive(:deliver).
       with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
     expect(@analytics).to receive(:track_event).
@@ -52,13 +53,12 @@ describe Users::BackupCodeSetupController do
     expect(user.backup_code_configurations.length).to eq 10
   end
 
-  context 'with multiple MFA selection on' do
+  describe 'multiple MFA handling' do
     let(:mfa_selections) { ['backup_code', 'voice'] }
     before do
       @user = build(:user)
       stub_sign_in(@user)
       controller.user_session[:mfa_selections] = mfa_selections
-      allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
     end
 
     context 'when user selects multiple mfas on account creation' do

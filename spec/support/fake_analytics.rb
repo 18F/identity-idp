@@ -1,7 +1,8 @@
-class FakeAnalytics
+class FakeAnalytics < Analytics
   PiiDetected = Class.new(StandardError)
 
   include AnalyticsEvents
+  prepend Idv::AnalyticsEventsEnhancer
 
   module PiiAlerter
     def track_event(event, original_attributes = {})
@@ -71,12 +72,17 @@ class FakeAnalytics
   prepend PiiAlerter
 
   attr_reader :events
+  attr_accessor :user
 
-  def initialize
+  def initialize(user: AnonymousUser.new)
     @events = Hash.new
+    @user = user
   end
 
   def track_event(event, attributes = {})
+    if attributes[:proofing_components].instance_of?(Idv::ProofingComponentsLogging)
+      attributes[:proofing_components] = attributes[:proofing_components].as_json.symbolize_keys
+    end
     events[event] ||= []
     events[event] << attributes
     nil
@@ -86,31 +92,71 @@ class FakeAnalytics
     # no-op
   end
 
+  # no-op this event in fake analytics, because it adds a lot of noise to tests
+  # expecting other events
+  def irs_attempts_api_event_metadata(**_attrs)
+    # no-op
+  end
+
   def browser_attributes
     {}
   end
 end
 
-RSpec::Matchers.define :have_logged_event do |event_name, attributes|
-  attributes ||= {}
-
+RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
   match do |actual|
-    expect(actual).to be_kind_of(FakeAnalytics)
-
-    if RSpec::Support.is_a_matcher?(attributes)
-      expect(actual.events[event_name]).to include(attributes)
+    if attributes_matcher.nil?
+      expect(actual.events).to have_key(event)
     else
-      expect(actual.events[event_name]).to(be_any { |event| attributes <= event })
+      expect(actual.events[event]).to include(match(attributes_matcher))
     end
   end
 
   failure_message do |actual|
-    <<~MESSAGE
-      Expected that FakeAnalytics would have received event #{event_name.inspect}
-      with #{attributes.inspect}.
+    matching_events = actual.events[event]
+    if matching_events&.length == 1 && attributes_matcher.instance_of?(Hash)
+      # We found one matching event. Let's show the user a diff of the actual and expected
+      # attributes
+      expected = attributes_matcher
+      actual = matching_events.first
+      message = "Expected that FakeAnalytics would have received matching event #{event}\n"
+      message += "expected: #{expected}\n"
+      message += "     got: #{actual}\n\n"
+      message += "Diff:#{differ.diff(actual, expected)}"
+      message
+    elsif matching_events&.length == 1 &&
+          attributes_matcher.instance_of?(RSpec::Matchers::BuiltIn::Include)
+      # We found one matching event and an `include` matcher. Let's show the user a diff of the
+      # actual and expected attributes
+      expected = attributes_matcher.expecteds.first
+      actual_attrs = matching_events.first
+      actual_compared = actual_attrs.slice(*expected.keys)
+      actual_ignored = actual_attrs.except(*expected.keys)
+      message = "Expected that FakeAnalytics would have received matching event #{event}"
+      message += "expected: include #{expected}\n"
+      message += "     got: #{actual_attrs}\n\n"
+      message += "Diff:#{differ.diff(actual_compared, expected)}\n"
+      message += "Attributes ignored by the include matcher:#{differ.diff(
+        actual_ignored, {}
+      )}"
+      message
+    else
+      <<~MESSAGE
+        Expected that FakeAnalytics would have received event #{event.inspect}
+        with #{attributes_matcher.inspect}.
 
-      Events received:
-      #{actual.events.pretty_inspect}
-    MESSAGE
+        Events received:
+        #{actual.events.pretty_inspect}
+      MESSAGE
+    end
+  end
+
+  def differ
+    RSpec::Support::Differ.new(
+      object_preparer: lambda do |object|
+                         RSpec::Matchers::Composable.surface_descriptions_in(object)
+                       end,
+      color: RSpec::Matchers.configuration.color?,
+    )
   end
 end

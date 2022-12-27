@@ -6,11 +6,6 @@ describe Idv::PersonalKeyController do
 
   def stub_idv_session
     stub_sign_in(user)
-    idv_session = Idv::Session.new(
-      user_session: subject.user_session,
-      current_user: user,
-      service_provider: nil,
-    )
     idv_session.applicant = applicant
     idv_session.resolution_successful = true
     profile_maker = Idv::ProfileMaker.new(
@@ -29,6 +24,13 @@ describe Idv::PersonalKeyController do
   let(:user) { create(:user, :signed_up, password: password) }
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:profile) { subject.idv_session.profile }
+  let(:idv_session) do
+    Idv::Session.new(
+      user_session: subject.user_session,
+      current_user: user,
+      service_provider: nil,
+    )
+  end
 
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
@@ -81,6 +83,7 @@ describe Idv::PersonalKeyController do
   describe '#show' do
     before do
       stub_idv_session
+      stub_attempts_tracker
     end
 
     it 'sets code instance variable' do
@@ -109,24 +112,14 @@ describe Idv::PersonalKeyController do
       expect(flash[:allow_confirmations_continue]).to eq true
     end
 
+    it 'logs when user generates personal key' do
+      expect(@irs_attempts_api_tracker).to receive(:idv_personal_key_generated)
+      get :show
+    end
+
     it 'sets flash.now[:success]' do
       get :show
       expect(flash[:success]).to eq t('idv.messages.confirm')
-    end
-
-    context 'user selected gpo verification' do
-      before do
-        subject.idv_session.address_verification_mechanism = 'gpo'
-      end
-
-      it 'assigns step indicator steps with pending status' do
-        get :show
-
-        expect(flash.now[:success]).to eq t('idv.messages.mail_sent')
-        expect(assigns(:step_indicator_steps)).to include(
-          hash_including(name: :verify_phone_or_address, status: :pending),
-        )
-      end
     end
   end
 

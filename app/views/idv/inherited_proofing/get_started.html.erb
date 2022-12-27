@@ -8,18 +8,39 @@
   <p>
     <%= t('inherited_proofing.info.welcome_html', sp_name: decorated_session.sp_name || t('inherited_proofing.info.no_sp_name')) %>
   </p>
-  <h2><%= t('inherited_proofing.instructions.welcome') %></h2>
 
-  <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
-    <%= c.item(heading: t('inherited_proofing.instructions.bullet1')) %>
-  <% end %>
+  <p>
+    <%= t('inherited_proofing.instructions.verify_requirements') %>
+    <%= new_window_link_to(t('inherited_proofing.troubleshooting.options.learn_more_phone_or_mail'), 'https://www.va.gov/resources/managing-your-vagov-profile/') %>
+  </p>
 
   <%= simple_form_for :inherited_proofing,
                       url: url_for,
                       method: 'put',
                       html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
-    <%= f.submit t('inherited_proofing.buttons.continue') %>
-  <% end %>
+      <%= f.submit t('inherited_proofing.buttons.continue') %>
+    <% end %>
+
+  <%= render(
+        'shared/troubleshooting_options',
+        heading_tag: :h3,
+        heading: t('inherited_proofing.troubleshooting.headings.missing_required_items'),
+        options: [
+          {
+            url: @presenter.learn_more_phone_or_mail_url,
+            text: t('inherited_proofing.troubleshooting.options.learn_more_phone_or_mail'),
+            new_tab: true,
+          },
+          {
+            url: @presenter.get_help_url,
+            text: t(
+              'inherited_proofing.troubleshooting.options.get_help',
+              sp_name: decorated_session.sp_name,
+            ),
+            new_tab: true,
+          },
+        ].select(&:present?),
+      ) %>
 
   <h3><%= t('inherited_proofing.instructions.privacy') %></h3>
   <p>
@@ -32,4 +53,6 @@
           ),
         ) %>
   </p>
+
+  <%= render 'shared/cancel', link: idv_inherited_proofing_cancel_path(step: 'get_started') %>
 <% end %>

@@ -3,11 +3,11 @@ module Idv
     before_action :personal_key_confirmed
 
     include IdvStepConcern
+    include StepIndicatorConcern
     include PhoneConfirmation
 
     before_action :confirm_idv_steps_complete
     before_action :confirm_idv_phone_confirmed
-    before_action :redirect_to_idv_app_if_enabled
     before_action :confirm_current_password, only: [:create]
 
     rescue_from UspsInPersonProofing::Exception::RequestEnrollException,
@@ -28,14 +28,15 @@ module Idv
       return if valid_password?
 
       analytics.idv_review_complete(success: false)
+      irs_attempts_api_tracker.idv_password_entered(success: false)
+
       flash[:error] = t('idv.errors.incorrect_password')
       redirect_to idv_review_url
     end
 
     def new
       @applicant = idv_session.applicant
-      @step_indicator_steps = step_indicator_steps
-      analytics.idv_review_info_visited
+      analytics.idv_review_info_visited(address_verification_method: address_verification_method)
 
       gpo_mail_service = Idv::GpoMail.new(current_user)
       flash_now = flash.now
@@ -47,9 +48,16 @@ module Idv
     end
 
     def create
+      irs_attempts_api_tracker.idv_password_entered(success: true)
+
       init_profile
+
+      log_reproof_event if idv_session.profile.has_proofed_before?
+
       user_session[:need_personal_key_confirmation] = true
+
       redirect_to next_step
+
       analytics.idv_review_complete(success: true)
       analytics.idv_final(success: true)
 
@@ -59,17 +67,12 @@ module Idv
 
     private
 
-    def redirect_to_idv_app_if_enabled
-      return if !IdentityConfig.store.idv_api_enabled_steps.include?('password_confirm')
-      redirect_to idv_app_path
+    def address_verification_method
+      user_session.dig('idv', 'address_verification_mechanism')
     end
 
-    def step_indicator_steps
-      steps = Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
-      return steps if idv_session.address_verification_mechanism != 'gpo'
-      steps.map do |step|
-        step[:name] == :verify_phone_or_address ? step.merge(status: :pending) : step
-      end
+    def log_reproof_event
+      irs_attempts_api_tracker.idv_reproof
     end
 
     def flash_message_content
@@ -97,12 +100,12 @@ module Idv
       end
 
       if idv_session.profile.active?
-        event = create_user_event_with_disavowal(:account_verified)
+        event, disavowal_token = create_user_event_with_disavowal(:account_verified)
         UserAlerts::AlertUserAboutAccountVerified.call(
           user: current_user,
           date_time: event.created_at,
           sp_name: decorated_session.sp_name,
-          disavowal_token: event.disavowal_token,
+          disavowal_token: disavowal_token,
         )
       end
     end

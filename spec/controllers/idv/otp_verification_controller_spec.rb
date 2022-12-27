@@ -9,7 +9,7 @@ describe Idv::OtpVerificationController do
   let(:phone_confirmation_otp_code) { '777777' }
   let(:phone_confirmation_otp_sent_at) { Time.zone.now }
   let(:user_phone_confirmation_session) do
-    PhoneConfirmation::ConfirmationSession.new(
+    Idv::PhoneConfirmationSession.new(
       code: phone_confirmation_otp_code,
       phone: phone,
       sent_at: phone_confirmation_otp_sent_at,
@@ -21,7 +21,6 @@ describe Idv::OtpVerificationController do
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
-    allow(@irs_attempts_api_tracker).to receive(:track_event)
 
     sign_in(user)
     stub_verify_steps_one_and_two(user)
@@ -59,7 +58,10 @@ describe Idv::OtpVerificationController do
     it 'tracks an analytics event' do
       get :show
 
-      expect(@analytics).to have_received(:track_event).with('IdV: phone confirmation otp visited')
+      expect(@analytics).to have_received(:track_event).with(
+        'IdV: phone confirmation otp visited',
+        proofing_components: nil,
+      )
     end
   end
 
@@ -92,6 +94,7 @@ describe Idv::OtpVerificationController do
         code_matches: true,
         second_factor_attempts_count: 0,
         second_factor_locked_at: nil,
+        proofing_components: nil,
       }
 
       expect(@analytics).to have_received(:track_event).with(
@@ -103,30 +106,28 @@ describe Idv::OtpVerificationController do
     describe 'track irs analytics event' do
       context 'when the phone otp code is valid' do
         it 'captures success event' do
-          put :update, params: { code: phone_confirmation_otp_code }
-
-          expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-            :idv_phone_otp_submitted,
-            phone_number: phone,
+          expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
             success: true,
+            phone_number: phone,
             failure_reason: {},
           )
+
+          put :update, params: { code: phone_confirmation_otp_code }
         end
       end
 
       context 'when the phone otp code is invalid' do
         it 'captures failure event' do
-          put :update, params: { code: '000' }
-
-          expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-            :idv_phone_otp_submitted,
-            phone_number: phone,
+          expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
             success: false,
+            phone_number: phone,
             failure_reason: {
               code_matches: false,
               code_expired: false,
             },
           )
+
+          put :update, params: { code: '000' }
         end
       end
     end

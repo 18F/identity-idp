@@ -32,7 +32,14 @@ RSpec.describe IrsAttemptsApi::AttemptEvent do
     it 'returns a JWE for the event' do
       jwe = subject.to_jwe
 
+      header_str, *_rest = JWE::Serialization::Compact.decode(jwe)
+      headers = JSON.parse(header_str)
+
+      expect(headers['alg']).to eq('RSA-OAEP')
+      expect(headers['kid']).to eq(JWT::JWK.new(irs_attempt_api_public_key).kid)
+
       decrypted_jwe_payload = JWE.decrypt(jwe, irs_attempt_api_private_key)
+
       token = JSON.parse(decrypted_jwe_payload)
 
       expect(token['iss']).to eq('http://www.example.com/')
@@ -47,7 +54,7 @@ RSpec.describe IrsAttemptsApi::AttemptEvent do
         'subject_type' => 'session', 'session_id' => 'test-session-id',
       )
       expect(event_data['foo']).to eq('bar')
-      expect(event_data['occurred_at']).to eq(occurred_at.to_i)
+      expect(event_data['occurred_at']).to eq(occurred_at.to_f)
     end
   end
 

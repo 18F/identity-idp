@@ -1,18 +1,25 @@
 <div class="border-y border-primary-light bg-primary-lightest padding-y-3 text-center">
-  <h2 class="margin-y-0">
-    <%= t('users.personal_key.header') %>
-  </h2>
   <div class="bg-personal-key padding-top-4 margin-y-2">
-    <div class="padding-x-0 tablet:padding-x-1 padding-y-2 separator-text bg-pk-box">
+    <div class="personal-key-block">
       <% code.split('-').each do |word| %>
-        <% concat(content_tag(:strong, word, class: 'separator-text__code', data: { personal_key: '' })) %>
+        <% concat(content_tag(:strong, word, class: 'personal-key-block__code', data: { personal_key: '' })) %>
       <% end %>
     </div>
   </div>
-  <p class="margin-y-0">
+  <p class="margin-bottom-105">
     <%= t(
           'users.personal_key.generated_on_html',
           date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')),
         ) %>
   </p>
+  <%= render ClipboardButtonComponent.new(clipboard_text: code, unstyled: true) %>
+  <%= render ClickObserverComponent.new(event_name: 'IdV: download personal key') do %>
+    <%= render DownloadButtonComponent.new(
+          file_data: code,
+          file_name: 'personal_key.txt',
+          unstyled: true,
+          class: 'margin-x-2 display-inline-block',
+        ).with_content(t('forms.personal_key.download')) %>
+  <% end %>
+  <%= render PrintButtonComponent.new(unstyled: true) %>
 </div>

@@ -37,10 +37,11 @@ module Features
       user = sign_up_and_set_password
       select_2fa_option('phone')
       fill_in 'new_phone_form_phone', with: '202-555-1212'
-      click_send_security_code
+      click_send_one_time_code
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
+      skip_second_mfa_prompt
       user
     end
 
@@ -129,7 +130,6 @@ module Features
 
     def sign_up
       user = create(:user, :unconfirmed)
-      Funnel::Registration::Create.call(user.id)
       confirm_last_user
       user
     end
@@ -214,11 +214,19 @@ module Features
       create(:user, :signed_up, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
     end
 
+    def user_verified
+      create(:user, :proofed)
+    end
+
+    def user_verified_with_gpo
+      create(:user, :proofed_with_gpo)
+    end
+
     def user_with_totp_2fa
       create(:user, :signed_up, :with_authentication_app, password: VALID_PASSWORD)
     end
 
-    def user_with_aal3_2fa
+    def user_with_phishing_resistant_2fa
       create(:user, :signed_up, :with_webauthn, password: VALID_PASSWORD)
     end
 
@@ -242,8 +250,8 @@ module Features
       )
     end
 
-    def click_send_security_code
-      click_button t('forms.buttons.send_security_code')
+    def click_send_one_time_code
+      click_button t('forms.buttons.send_one_time_code')
     end
 
     def sign_in_live_with_2fa(user = user_with_2fa)
@@ -267,12 +275,12 @@ module Features
 
     def fill_in_code_with_last_phone_otp
       accept_rules_of_use_and_continue_if_displayed
-      fill_in I18n.t('forms.two_factor.code'), with: last_phone_otp
+      fill_in I18n.t('components.one_time_code_input.label'), with: last_phone_otp
     end
 
     def fill_in_code_with_last_totp(user)
       accept_rules_of_use_and_continue_if_displayed
-      fill_in I18n.t('forms.two_factor.code'), with: last_totp(user)
+      fill_in I18n.t('components.one_time_code_input.label'), with: last_totp(user)
     end
 
     def accept_rules_of_use_and_continue_if_displayed
@@ -324,12 +332,11 @@ module Features
 
     def acknowledge_and_confirm_personal_key
       click_acknowledge_personal_key
-
-      page.find(':focus').fill_in with: scrape_personal_key
-      within('[role=dialog]') { click_continue }
     end
 
     def click_acknowledge_personal_key
+      checkbox_header = t('forms.validation.required_checkbox')
+      find('label', text: /#{checkbox_header}/).click
       click_continue
     end
 
@@ -436,7 +443,7 @@ module Features
       submit_form_with_valid_password
 
       set_up_2fa_with_valid_phone
-      # expect(page).to have_css('img[src*=sp-logos]')
+      skip_second_mfa_prompt
     end
 
     def click_sign_in_from_landing_page_then_click_create_account
@@ -503,14 +510,14 @@ module Features
     def set_up_2fa_with_valid_phone
       select_2fa_option('phone')
       fill_in 'new_phone_form[phone]', with: '202-555-1212'
-      click_send_security_code
+      click_send_one_time_code
       fill_in_code_with_last_phone_otp
       click_submit_default
     end
 
     def set_up_mfa_with_valid_phone
       fill_in 'new_phone_form[phone]', with: '202-555-1212'
-      click_send_security_code
+      click_send_one_time_code
       fill_in_code_with_last_phone_otp
       click_submit_default
     end
@@ -523,6 +530,7 @@ module Features
     def register_user(email = 'test@test.com')
       confirm_email_and_password(email)
       set_up_2fa_with_valid_phone
+      skip_second_mfa_prompt
       User.find_with_email(email)
     end
 
@@ -542,6 +550,7 @@ module Features
     def register_user_with_authenticator_app(email = 'test@test.com')
       confirm_email_and_password(email)
       set_up_2fa_with_authenticator_app
+      skip_second_mfa_prompt
     end
 
     def set_up_2fa_with_authenticator_app
@@ -564,6 +573,7 @@ module Features
       )
 
       set_up_2fa_with_piv_cac
+      skip_second_mfa_prompt
     end
 
     def set_up_2fa_with_piv_cac
@@ -579,6 +589,10 @@ module Features
         uuid: SecureRandom.uuid,
         subject: 'SomeIgnoredSubject',
       )
+    end
+
+    def skip_second_mfa_prompt
+      click_on t('mfa.skip')
     end
 
     def sign_in_via_branded_page(user)

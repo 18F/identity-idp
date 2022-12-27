@@ -5,24 +5,46 @@ es:
       image_alt: Código de barras
     clipboard_button:
       label: Copiar
+    countdown_alert:
+      time_remaining_html: 'Quedan %{countdown_html}'
+    download_button:
+      label: Descargar
     javascript_required:
       browser_instructions: 'Siga las instrucciones para habilitar JavaScript en su navegador:'
       enabled_alert: YHabilitó el JavaScript en su navegador.
       next_step: Recargue esta página una vez que haya habilitado JavaScript en su
         navegador.
+    memorable_date:
+      day: Día
+      errors:
+        invalid_date: La entrada no es una fecha válida
+        invalid_day: Introduzca un día entre el 1 y el 31
+        invalid_month: Introduce un mes entre el 1 y el 12
+        invalid_year: Introduzca un año con 4 números
+        missing_day: Introduce un día
+        missing_day_year: Introduce un día y un año
+        missing_month: Introduce un mes
+        missing_month_day: Introduce un mes y un día
+        missing_month_day_year: Introduce una %{label}
+        missing_month_year: Introduce un mes y un año
+        missing_year: Introduce un año
+        outside_date_range: Ingrese una %{label} entre %{min} y %{max}
+        range_overflow: Ingrese una fecha del %{date} o antes
+        range_underflow: Ingrese una fecha a partir del %{date}
+      month: Mes
+      year: Año
+    one_time_code_input:
+      hint:
+        alphanumeric: 'Ejemplo: 123ABC'
+        numeric: 'Ejemplo: 123456'
+      label: Código de un solo uso
     password_toggle:
       label: Contraseña
       toggle_label: Mostrar contraseña
     phone_input:
       country_code_label: Código del país
     print_button:
-      label: Imprima esta página
-    status_page:
-      icons:
-        error: Error
-        lock: Candado
-        question: Pregunta
-        warning: Advertencia
+      label: Imprima
     troubleshooting_options:
       default_heading: '¿Tiene alguna dificultad? Esto es lo que puede hacer:'
-      new_feature: Nueva función
+      ipp_heading: 'Opciones adicionales para solución de problemas:'

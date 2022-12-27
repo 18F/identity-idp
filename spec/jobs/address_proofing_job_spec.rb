@@ -7,7 +7,6 @@ RSpec.describe AddressProofingJob, type: :job do
       { applicant_pii: applicant_pii }.to_json,
     )
   end
-  let(:user_id) { SecureRandom.random_number(1000) }
   let(:service_provider) { create(:service_provider) }
   let(:applicant_pii) do
     {
@@ -27,7 +26,6 @@ RSpec.describe AddressProofingJob, type: :job do
         result_id: document_capture_session.result_id,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
-        user_id: user_id,
         issuer: service_provider.issuer,
       )
 
@@ -45,7 +43,6 @@ RSpec.describe AddressProofingJob, type: :job do
         result_id: document_capture_session.result_id,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
-        user_id: user_id,
         issuer: service_provider.issuer,
       )
     end
@@ -78,28 +75,19 @@ RSpec.describe AddressProofingJob, type: :job do
 
         result = document_capture_session.load_proofing_result[:result]
 
-        expect(result).to eq(
-          exception: nil,
-          errors: {},
-          success: true,
-          timed_out: false,
-          transaction_id: conversation_id,
-          context: { stages: [
-            { address: 'lexisnexis:phone_finder' },
-          ] },
-        )
+        expect(result[:exception]).to be_nil
+        expect(result[:errors]).to eq({})
+        expect(result[:success]).to be true
+        expect(result[:timed_out]).to be false
+        expect(result[:vendor_name]).to eq('lexisnexis:phone_finder')
       end
 
       it 'adds cost data' do
-        expect { perform }.
-          to(change { SpCost.count }.by(1).and(change { ProofingCost.count }.by(1)))
+        expect { perform }.to(change { SpCost.count }.by(1))
 
         sp_cost = SpCost.last
         expect(sp_cost.issuer).to eq(service_provider.issuer)
         expect(sp_cost.transaction_id).to eq(conversation_id)
-
-        proofing_cost = ProofingCost.last
-        expect(proofing_cost.user_id).to eq(user_id)
       end
     end
 

@@ -66,6 +66,82 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
   end
 
+  describe 'Triggers' do
+    it 'generates a unique ID if one is not provided' do
+      user = create(:user)
+      profile = create(:profile, :gpo_verification_pending, user: user)
+      expect(InPersonEnrollment).to receive(:generate_unique_id).and_call_original
+
+      enrollment = create(:in_person_enrollment, user: user, profile: profile)
+
+      expect(enrollment.unique_id).not_to be_nil
+    end
+
+    it 'does not generated a unique ID if one is provided' do
+      user = create(:user)
+      profile = create(:profile, :gpo_verification_pending, user: user)
+      expect(InPersonEnrollment).not_to receive(:generate_unique_id)
+
+      enrollment = create(:in_person_enrollment, user: user, profile: profile, unique_id: '1234')
+
+      expect(enrollment.unique_id).to eq('1234')
+    end
+  end
+
+  describe 'email_reminders' do
+    let(:early_benchmark) { Time.zone.now - 19.days }
+    let(:late_benchmark) { Time.zone.now - 26.days }
+    let(:final_benchmark) { Time.zone.now - 29.days }
+    let!(:passed_enrollment) { create(:in_person_enrollment, :passed) }
+    let!(:failing_enrollment) { create(:in_person_enrollment, :failed) }
+    let!(:expired_enrollment) { create(:in_person_enrollment, :expired) }
+
+    # send on days 11-5
+    let!(:pending_enrollment_needing_early_reminder) do
+      [
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 19.days),
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 25.days),
+      ]
+    end
+
+    # send on days 4 - 2
+    let!(:pending_enrollment_needing_late_reminder) do
+      [
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 26.days),
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 28.days),
+      ]
+    end
+
+    let!(:pending_enrollment) do
+      [
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now),
+        create(:in_person_enrollment, :pending, created_at: Time.zone.now),
+      ]
+    end
+
+    it 'returns pending enrollments that need early reminder' do
+      expect(InPersonEnrollment.count).to eq(9)
+      results = InPersonEnrollment.needs_early_email_reminder(early_benchmark, late_benchmark)
+      expect(results.length).to eq pending_enrollment_needing_early_reminder.length
+      expect(results.pluck(:id)).to match_array pending_enrollment_needing_early_reminder.pluck(:id)
+      results.each do |result|
+        expect(result.pending?).to be_truthy
+        expect(result.early_reminder_sent?).to be_falsey
+      end
+    end
+
+    it 'returns pending enrollments that need late reminder' do
+      expect(InPersonEnrollment.count).to eq(9)
+      results = InPersonEnrollment.needs_late_email_reminder(late_benchmark, final_benchmark)
+      expect(results.length).to eq(2)
+      expect(results.pluck(:id)).to match_array pending_enrollment_needing_late_reminder.pluck(:id)
+      results.each do |result|
+        expect(result.pending?).to be_truthy
+        expect(result.late_reminder_sent?).to be_falsey
+      end
+    end
+  end
+
   describe 'needs_usps_status_check' do
     let(:check_interval) { ...1.hour.ago }
     let!(:passed_enrollment) { create(:in_person_enrollment, :passed) }

@@ -24,8 +24,11 @@ module AccountReset
 
     attr_reader :success, :account_age, :mfa_method_counts
 
+    # @return [Integer, nil] number of days since the account was confirmed (rounded) or nil if
+    # the account was not confirmed
     def track_account_age
-      @account_age = ((Time.zone.now - user.confirmed_at) / 1.day).round
+      return if !user.confirmed_at
+      @account_age = (Time.zone.now - user.confirmed_at).seconds.in_days.round
     end
 
     def track_mfa_method_counts
@@ -40,7 +43,7 @@ module AccountReset
 
     def destroy_user
       ActiveRecord::Base.transaction do
-        Db::DeletedUser::Create.call(user.id)
+        DeletedUser.create_from_user(user)
         user.destroy!
       end
     end
@@ -52,7 +55,8 @@ module AccountReset
 
     def notify_user_via_email_of_deletion
       user.confirmed_email_addresses.each do |email_address|
-        UserMailer.account_reset_complete(user, email_address).deliver_now_or_later
+        UserMailer.with(user: user, email_address: email_address).
+          account_reset_complete.deliver_now_or_later
       end
     end
 

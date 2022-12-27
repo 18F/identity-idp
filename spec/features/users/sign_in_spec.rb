@@ -147,9 +147,10 @@ feature 'Sign in' do
 
     select_2fa_option('phone')
     fill_in :new_phone_form_phone, with: '2025551314'
-    click_send_security_code
+    click_send_one_time_code
     fill_in_code_with_last_phone_otp
     click_submit_default
+    skip_second_mfa_prompt
     click_agree_and_continue
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
@@ -216,11 +217,22 @@ feature 'Sign in' do
   end
 
   scenario 'user can see and use password visibility toggle', js: true do
+    fake_analytics = FakeAnalytics.new
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+
     visit new_user_session_path
 
     check t('components.password_toggle.toggle_label')
 
+    # Clicking the checkbox triggers a frontend event logging request. Wait for network requests to
+    # settle before continuing to avoid a race condition.
+    Capybara.current_session.server.wait_for_pending_requests
+
     expect(page).to have_css('input.password[type="text"]')
+    expect(fake_analytics).to have_logged_event(
+      'Show Password Button Clicked',
+      path: new_user_session_path,
+    )
   end
 
   scenario 'user session expires in amount of time specified by Devise config' do
@@ -255,12 +267,22 @@ feature 'Sign in' do
     end
 
     scenario 'user sees warning before session times out' do
-      expect(page).to have_css('#session-timeout-msg')
+      minutes_and = [
+        t('datetime.dotiw.minutes', count: IdentityConfig.store.session_timeout_in_minutes - 1),
+        t('datetime.dotiw.two_words_connector'),
+      ].join('')
 
-      time1 = page.text[/14 minutes and 5[0-9] seconds/]
-      sleep(1)
-      time2 = page.text[/14 minutes and 5[0-9] seconds/]
-      expect(time2).to be < time1
+      pattern1 = Regexp.new(minutes_and + t('datetime.dotiw.seconds.other', count: '\d+'))
+      expect(page).to have_content(pattern1, wait: 5)
+      time = page.text[pattern1]
+      seconds = time.split(t('datetime.dotiw.two_words_connector')).last[/\d+/].to_i
+      pattern2 = Regexp.new(
+        minutes_and + t(
+          'datetime.dotiw.seconds.other',
+          count: (seconds - 10...seconds).to_a.join('|'),
+        ),
+      )
+      expect(page).to have_content(pattern2, wait: 5)
     end
 
     scenario 'user can continue browsing' do
@@ -288,7 +310,6 @@ feature 'Sign in' do
       sign_in_user(user)
       visit user_two_factor_authentication_path
 
-      expect(page).to have_css('#session-timeout-msg')
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.continue'))
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.sign_out'))
     end
@@ -307,15 +328,6 @@ feature 'Sign in' do
       )
       expect(page).to have_field(t('forms.registration.labels.email'), with: '')
       expect(current_url).to match Regexp.escape(sign_up_email_path(request_id: '123abc'))
-    end
-
-    it 'does not refresh the page after the session expires', js: true do
-      allow(Devise).to receive(:timeout_in).and_return(60)
-
-      visit root_path
-      expect(page).to_not have_content(
-        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
-      )
     end
   end
 
@@ -350,11 +362,12 @@ feature 'Sign in' do
       allow(Devise).to receive(:timeout_in).and_return(1)
       user = create(:user)
       visit root_path
-      fill_in 'Email', with: user.email
+      fill_in t('account.index.email'), with: user.email
       fill_in 'Password', with: user.password
 
       expect(page).to have_content(
         t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
+        wait: 5,
       )
       expect(find_field('Email').value).to be_blank
       expect(find_field('Password').value).to be_blank

@@ -1,0 +1,54 @@
+<% title t('titles.inherited_proofing.cancellation_prompt') %>
+
+<%= render StatusPageComponent.new(status: :warning) do |c| %>
+  <% c.header { t('inherited_proofing.cancel.headings.prompt.standard') } %>
+
+  <h2 class="margin-top-4 margin-bottom-2"><%= t('inherited_proofing.cancel.headings.start_over') %></h2>
+
+  <p><%= t('inherited_proofing.cancel.description.start_over') %></p>
+
+  <div class="margin-top-4">
+    <%= render ButtonComponent.new(
+          action: ->(**tag_options, &block) do
+            button_to(idv_inherited_proofing_session_path(step: @flow_step), **tag_options, &block)
+          end,
+          method: :delete,
+          big: true,
+          wide: true,
+        ).with_content(t('inherited_proofing.cancel.actions.start_over')) %>
+    <div class="margin-top-2">
+      <%= render ButtonComponent.new(
+            action: ->(**tag_options, &block) do
+              button_to(idv_inherited_proofing_cancel_path(step: @flow_step), **tag_options, &block)
+            end,
+            method: :put,
+            big: true,
+            wide: true,
+            outline: true,
+          ).with_content(t('inherited_proofing.cancel.actions.keep_going')) %>
+    </div>
+  </div>
+
+  <hr class="margin-y-5" />
+
+  <h2 class="margin-top-4 margin-bottom-2"><%= @presenter.exit_heading %></h2>
+
+  <% @presenter.exit_description.each do |p_content| %>
+    <p><%= p_content %></p>
+  <% end %>
+
+  <div class="margin-top-4">
+    <%= render SpinnerButtonComponent.new(
+          action: ->(**tag_options, &block) do
+            button_to(idv_inherited_proofing_cancel_path(step: @flow_step, location: 'cancel'), **tag_options, &block)
+          end,
+          method: :delete,
+          big: true,
+          wide: true,
+          outline: true,
+          form: { data: { form_steps_wait: '' } },
+        ).with_content(@presenter.exit_action_text) %>
+  </div>
+<% end %>
+
+<% javascript_packs_tag_once 'form-steps-wait' %>

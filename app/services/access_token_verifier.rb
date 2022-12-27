@@ -10,7 +10,12 @@ class AccessTokenVerifier
   end
 
   def submit
-    FormResponse.new(success: valid?, errors: errors)
+    FormResponse.new(
+      success: valid?, errors: errors, extra: {
+        client_id: identity&.service_provider,
+        ial: identity&.ial,
+      }
+    )
   end
 
   def identity
@@ -29,7 +34,7 @@ class AccessTokenVerifier
   def load_identity(access_token)
     identity = ServiceProviderIdentity.where(access_token: access_token).take
 
-    if identity && Pii::SessionStore.new(identity.rails_session_id).ttl.positive?
+    if identity && OutOfBandSessionAccessor.new(identity.rails_session_id).ttl.positive?
       @identity = identity
     else
       errors.add(

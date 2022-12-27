@@ -14,7 +14,7 @@ describe FrontendLogController do
     context 'user is signed in' do
       before do
         sign_in user
-        allow(Analytics).to receive(:new).and_return(fake_analytics)
+        allow(controller).to receive(:analytics).and_return(fake_analytics)
       end
 
       it 'succeeds' do
@@ -28,27 +28,47 @@ describe FrontendLogController do
       end
 
       context 'allowlisted analytics event' do
-        let(:event) { 'IdV: personal key visited' }
+        let(:event) { 'IdV: download personal key' }
 
         it 'succeeds' do
           action
 
-          expect(fake_analytics).to have_logged_event('IdV: personal key visited')
+          expect(fake_analytics).to have_logged_event('IdV: personal key downloaded')
           expect(response).to have_http_status(:ok)
           expect(json[:success]).to eq(true)
         end
-      end
 
-      context 'allowlisted analytics event with compound proc' do
-        let(:event) { 'IdV: password confirm submitted' }
+        context 'with payload' do
+          let(:selected_location) { 'Bethesda' }
+          let(:flow_path) { 'standard' }
+          let(:event) { 'IdV: location submitted' }
+          let(:payload) { { 'selected_location' => selected_location, 'flow_path' => flow_path } }
 
-        it 'succeeds' do
-          action
+          it 'succeeds' do
+            action
 
-          expect(fake_analytics).to have_logged_event('IdV: review complete')
-          expect(fake_analytics).to have_logged_event('IdV: final resolution', success: true)
-          expect(response).to have_http_status(:ok)
-          expect(json[:success]).to eq(true)
+            expect(fake_analytics).to have_logged_event(
+              'IdV: in person proofing location submitted',
+              selected_location: selected_location,
+              flow_path: flow_path,
+            )
+            expect(response).to have_http_status(:ok)
+            expect(json[:success]).to eq(true)
+          end
+
+          context 'with missing keyword arguments' do
+            let(:payload) { {} }
+
+            it 'gracefully sets the missing values to nil' do
+              action
+
+              expect(fake_analytics).to have_logged_event(
+                'IdV: in person proofing location submitted',
+                flow_path: nil,
+                selected_location: nil,
+              )
+            end
+          end
         end
       end
 
@@ -111,17 +131,29 @@ describe FrontendLogController do
       end
 
       context 'for a named analytics method' do
-        let(:payload) { { 'field' => 'front', 'failed_attempts' => 0 } }
+        let(:field) { 'front' }
+        let(:failed_capture_attempts) { 0 }
+        let(:failed_submission_attempts) { 0 }
+        let(:flow_path) { 'standard' }
         let(:params) do
           {
             'event' => 'IdV: Native camera forced after failed attempts',
-            'payload' => payload,
+            'payload' => {
+              'field' => field,
+              'failed_capture_attempts' => failed_capture_attempts,
+              'failed_submission_attempts' => failed_submission_attempts,
+              'flow_path' => flow_path,
+            },
           }
         end
 
         it 'logs the analytics event without the prefix' do
           expect(fake_analytics).to receive(:track_event).with(
-            'IdV: Native camera forced after failed attempts', payload
+            'IdV: Native camera forced after failed attempts',
+            field: field,
+            failed_capture_attempts: failed_capture_attempts,
+            failed_submission_attempts: failed_submission_attempts,
+            flow_path: flow_path,
           )
 
           action
@@ -129,19 +161,6 @@ describe FrontendLogController do
           expect(response).to have_http_status(:ok)
           expect(json[:success]).to eq(true)
         end
-      end
-    end
-
-    context 'user is not signed in' do
-      it 'returns unauthorized' do
-        allow(Analytics).to receive(:new).and_return(fake_analytics)
-
-        expect(fake_analytics).not_to receive(:track_event)
-
-        action
-
-        expect(response).to have_http_status(:unauthorized)
-        expect(json[:success]).to eq(false)
       end
     end
 

@@ -102,7 +102,7 @@ feature 'Sign Up' do
     expect(page).to_not have_content t('two_factor_authentication.otp_make_default_number.title')
 
     fill_in 'new_phone_form_phone', with: '225-555-1000'
-    click_send_security_code
+    click_send_one_time_code
 
     expect(current_path).to eq(phone_setup_path)
     expect(page).to have_content(I18n.t('telephony.error.friendly_message.generic'))
@@ -117,7 +117,7 @@ feature 'Sign Up' do
       (IdentityConfig.store.phone_confirmation_max_attempts + 1).times do
         visit phone_setup_path
         fill_in 'new_phone_form_phone', with: '2025551313'
-        click_send_security_code
+        click_send_one_time_code
       end
 
       timeout = distance_of_time_in_words(
@@ -172,13 +172,15 @@ feature 'Sign Up' do
       copied_text = page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
       expect(did_validate_name.call).to_not eq true
 
-      otp_input = page.find('.one-time-code-input')
+      otp_input = page.find('.one-time-code-input__input')
       otp_input.set(generate_totp_code(copied_text))
       click_button 'Submit'
       expect(did_validate_name.call).to eq true
 
       fill_in 'name', with: 'Authentication app'
       click_button 'Submit'
+      skip_second_mfa_prompt
+
       expect(page).to have_current_path account_path
     end
   end
@@ -231,6 +233,7 @@ feature 'Sign Up' do
   it 'allows a user to choose TOTP as 2FA method during sign up' do
     sign_in_user
     set_up_2fa_with_authenticator_app
+    skip_second_mfa_prompt
 
     expect(page).to have_current_path account_path
   end
@@ -336,7 +339,7 @@ feature 'Sign Up' do
     sign_up_and_set_password
     select_2fa_option('phone')
     fill_in :new_phone_form_phone, with: '2025551313'
-    click_send_security_code
+    click_send_one_time_code
     expect(page).to_not have_checked_field t('forms.messages.remember_device')
   end
 

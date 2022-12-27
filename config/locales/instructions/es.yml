@@ -71,11 +71,12 @@ es:
       sms:
         confirm_code_html: '¿Necesita otro código? %{resend_code_link}. Puede estar
           sujeto a cargos de mensajería y datos.'
-        number_message_html: Enviamos un código de seguridad al %{number}. Este código
-          caducará en %{expiration} minutos.
+        number_message_html: Enviamos un mensaje de texto (SMS) con un código único al
+          %{number}. Este código caducará en %{expiration} minutos.
       voice:
         confirm_code_html: '¿Desea que le llamemos de nuevo? %{resend_code_link}'
-        number_message_html: Acabamos de llamarte en %{number}.
+        number_message_html: Realizamos una llamada con un código de un solo uso al
+          %{number}. Este código expirará en %{expiration} minutos.
       webauthn:
         confirm_webauthn_html: Presente la clave de seguridad que asoció con su cuenta.
         confirm_webauthn_only_html: Esta aplicación requiere un mayor nivel de
@@ -87,7 +88,7 @@ es:
           (PIV o CAC) para acceder a su información.
         confirm_webauthn_platform_html: Tiene activado el desbloqueo facial o táctil
           para su cuenta de %{app_name}.
-      wrong_number: ¿Ingresó el número de teléfono equivocado?
+      wrong_number: '¿Ingresó el número de teléfono equivocado?'
     password:
       forgot: '¿No sabe su contraseña? Restablézcala después de confirmar su email.'
       help_text: Cuanto más larga y más inusual sea la contraseña, más difícil es de
@@ -109,13 +110,6 @@ es:
         intro: 'Seguridad de la contraseña:'
         iv: Buena
         v: '¡Muy buena!'
-    personal_key:
-      email_body: No pierdas tu clave personal ni la compartas con otros. La pediremos
-        si restableces tu contraseña.
-      email_title: Guárdala. Manténla segura.
-      info: Necesitarás esta clave personal si olvidas tu contraseña. Si restableces
-        tu contraseña y no tienes esta clave, deberás verificar tu identidad
-        nuevamente.
     sp_handoff_bounced: Su inicio de sesión fue exitoso, pero %{sp_name} lo envió de
       regreso a %{app_name}. Póngase en contacto con %{sp_link} para obtener
       ayuda.

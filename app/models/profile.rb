@@ -2,6 +2,13 @@ class Profile < ApplicationRecord
   self.ignored_columns = %w[phone_confirmed]
 
   belongs_to :user
+  # rubocop:disable Rails/InverseOf
+  belongs_to :initiating_service_provider,
+             class_name: 'ServiceProvider',
+             foreign_key: 'initiating_service_provider_issuer',
+             primary_key: 'issuer',
+             optional: true
+  # rubocop:enable Rails/InverseOf
   has_many :gpo_confirmation_codes, dependent: :destroy
   has_one :in_person_enrollment, dependent: :destroy
 
@@ -17,6 +24,7 @@ class Profile < ApplicationRecord
     verification_cancelled: 4,
     in_person_verification_pending: 5,
     threatmetrix_review_pending: 6,
+    threatmetrix_review_rejected: 7,
   }
 
   attr_reader :personal_key
@@ -83,21 +91,13 @@ class Profile < ApplicationRecord
     values.join(':')
   end
 
-  def includes_liveness_check?
-    return false if proofing_components.blank?
-    proofing_components['liveness_check'].present?
-  end
-
   def includes_phone_check?
     return false if proofing_components.blank?
     proofing_components['address_check'] == 'lexis_nexis_address'
   end
 
-  def strict_ial2_proofed?
-    return false unless active
-    return false unless includes_liveness_check?
-    return true if IdentityConfig.store.gpo_allowed_for_strict_ial2
-    includes_phone_check?
+  def has_proofed_before?
+    Profile.where(user_id: user_id).where.not(activated_at: nil).where.not(id: self.id).exists?
   end
 
   private

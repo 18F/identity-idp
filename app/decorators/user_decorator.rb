@@ -7,7 +7,6 @@ class UserDecorator
 
   MAX_RECENT_EVENTS = 5
   MAX_RECENT_DEVICES = 5
-  DEFAULT_LOCKOUT_PERIOD = 10.minutes
 
   def initialize(user)
     @user = user
@@ -57,8 +56,14 @@ class UserDecorator
     !identity_verified?
   end
 
-  def identity_verified?
-    user.active_profile.present?
+  def identity_verified?(service_provider: nil)
+    user.active_profile.present? && !reproof_for_irs?(service_provider: service_provider)
+  end
+
+  def reproof_for_irs?(service_provider:)
+    return false unless service_provider&.irs_attempts_api_enabled
+    return false unless user.active_profile.present?
+    !user.active_profile.initiating_service_provider&.irs_attempts_api_enabled
   end
 
   def active_profile_newer_than_pending_profile?
@@ -70,6 +75,14 @@ class UserDecorator
   def password_reset_profile
     profile = user.profiles.where.not(activated_at: nil).order(activated_at: :desc).first
     profile if profile&.password_reset?
+  end
+
+  def threatmetrix_review_pending?
+    @threatmetrix_review_pending ||= threatmetrix_review_pending_profile.present?
+  end
+
+  def threatmetrix_review_pending_profile
+    user.profiles.threatmetrix_review_pending.order(created_at: :desc).first
   end
 
   def qrcode(otp_secret_key)
@@ -113,7 +126,7 @@ class UserDecorator
 
   def second_last_signed_in_at
     user.events.where(event_type: 'sign_in_after_2fa').
-      order(created_at: :desc).pluck(:created_at).second
+      order(created_at: :desc).limit(2).pluck(:created_at).second
   end
 
   def connected_apps
@@ -122,21 +135,16 @@ class UserDecorator
 
   def delete_account_bullet_key
     if identity_verified?
-      I18n.t('users.delete.bullet_2_loa3', app_name: APP_NAME)
+      I18n.t('users.delete.bullet_2_verified', app_name: APP_NAME)
     else
-      I18n.t('users.delete.bullet_2_loa1', app_name: APP_NAME)
+      I18n.t('users.delete.bullet_2_basic', app_name: APP_NAME)
     end
   end
 
   private
 
   def lockout_period
-    return DEFAULT_LOCKOUT_PERIOD if lockout_period_config.blank?
-    lockout_period_config.minutes
-  end
-
-  def lockout_period_config
-    @lockout_period_config ||= IdentityConfig.store.lockout_period_in_minutes
+    IdentityConfig.store.lockout_period_in_minutes.minutes
   end
 
   def lockout_period_expired?

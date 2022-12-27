@@ -23,6 +23,9 @@ describe IdvController do
     end
 
     it 'redirects to failure page if number of attempts has been exceeded' do
+      stub_attempts_tracker
+      expect(@irs_attempts_api_tracker).to receive(:track_event).
+        with(:idv_verification_rate_limited)
       user = create(:user)
       profile = create(
         :profile,
@@ -55,18 +58,15 @@ describe IdvController do
       expect(response).to redirect_to idv_doc_auth_path
     end
 
-    context 'sp has reached quota limit' do
-      let(:issuer) { 'foo' }
-
-      it 'does not allow user to be verified and redirects to account url with error message' do
+    context 'with a VA inherited proofing session' do
+      before do
         stub_sign_in
-        ServiceProviderQuotaLimit.create(issuer: issuer, ial: 2, percent_full: 100)
-        session[:sp] = { issuer: issuer, ial: 2 }
+        allow(controller).to receive(:va_inherited_proofing?).and_return(true)
+      end
 
+      it 'redirects to inherited proofing' do
         get :index
-
-        expect(flash[:error]).to eq t('errors.doc_auth.quota_reached')
-        expect(response).to redirect_to account_url
+        expect(response).to redirect_to idv_inherited_proofing_path
       end
     end
 

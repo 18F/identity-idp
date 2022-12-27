@@ -4,35 +4,39 @@ module Idv
       attr_reader :idv_session # this is used by DocAuthBaseStep
 
       STEPS = {
-        state_id: Idv::Steps::Ipp::StateIdStep, # info from state id
-        address: Idv::Steps::Ipp::AddressStep,  # entering the address
-        ssn: Idv::Steps::Ipp::SsnStep, # enter SSN
-        verify: Idv::Steps::Ipp::VerifyStep, # verify entered info
-        verify_wait: Idv::Steps::Ipp::VerifyWaitStep,
+        state_id: Idv::Steps::InPerson::StateIdStep, # info from state id
+        address: Idv::Steps::InPerson::AddressStep,  # entering the address
+        ssn: Idv::Steps::InPerson::SsnStep, # enter SSN
+        verify: Idv::Steps::InPerson::VerifyStep, # verify entered info
+        verify_wait: Idv::Steps::InPerson::VerifyWaitStep,
       }.freeze
 
       OPTIONAL_SHOW_STEPS = {
-        verify_wait: Idv::Steps::Ipp::VerifyWaitStepShow,
+        verify_wait: Idv::Steps::InPerson::VerifyWaitStepShow,
       }.freeze
 
       ACTIONS = {
-        cancel_update_address: Idv::Actions::Ipp::CancelUpdateAddressAction,
-        cancel_update_ssn: Idv::Actions::Ipp::CancelUpdateSsnAction,
-        cancel_update_state_id: Idv::Actions::Ipp::CancelUpdateStateIdAction,
-        redo_state_id: Idv::Actions::Ipp::RedoStateIdAction,
-        redo_address: Idv::Actions::Ipp::RedoAddressAction,
+        cancel_update_address: Idv::Actions::InPerson::CancelUpdateAddressAction,
+        cancel_update_ssn: Idv::Actions::InPerson::CancelUpdateSsnAction,
+        cancel_update_state_id: Idv::Actions::InPerson::CancelUpdateStateIdAction,
+        redo_state_id: Idv::Actions::InPerson::RedoStateIdAction,
+        redo_address: Idv::Actions::InPerson::RedoAddressAction,
         redo_ssn: Idv::Actions::RedoSsnAction,
       }.freeze
-
-      # WILLFIX: (LG-6308) move this to the barcode page when
-      #          we finish setting up IPP step indicators
-      # i18n-tasks-use t('step_indicator.flows.idv.go_to_the_post_office')
 
       STEP_INDICATOR_STEPS = [
         { name: :find_a_post_office },
         { name: :verify_info },
         { name: :verify_phone_or_address },
         { name: :secure_account },
+        { name: :go_to_the_post_office },
+      ].freeze
+
+      STEP_INDICATOR_STEPS_GPO = [
+        { name: :find_a_post_office },
+        { name: :verify_info },
+        { name: :secure_account },
+        { name: :get_a_letter },
         { name: :go_to_the_post_office },
       ].freeze
 

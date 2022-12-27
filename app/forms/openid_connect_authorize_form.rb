@@ -41,7 +41,6 @@ class OpenidConnectAuthorizeForm
   validate :validate_prompt
   validate :validate_verified_within_format
   validate :validate_verified_within_duration
-  validate :validate_liveness_checking_enabled_if_ial2_strict_requested
 
   def initialize(params)
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
@@ -64,6 +63,10 @@ class OpenidConnectAuthorizeForm
     scope.include?('profile:verified_at')
   end
 
+  def cannot_validate_redirect_uri?
+    errors.include?(:redirect_uri) || errors.include?(:client_id)
+  end
+
   def service_provider
     return @service_provider if defined?(@service_provider)
     @service_provider = ServiceProvider.find_by(issuer: client_id)
@@ -81,10 +84,10 @@ class OpenidConnectAuthorizeForm
   end
 
   def success_redirect_uri
-    uri = redirect_uri unless errors.include?(:redirect_uri)
+    return if cannot_validate_redirect_uri?
     code = identity&.session_uuid
 
-    UriService.add_params(uri, code: code, state: state) if code
+    UriService.add_params(redirect_uri, code: code, state: state) if code
   end
 
   def ial_values
@@ -105,12 +108,15 @@ class OpenidConnectAuthorizeForm
 
   def_delegators :ial_context,
                  :ial2_or_greater?,
-                 :ial2_requested?,
-                 :ial2_strict_requested?
+                 :ial2_requested?
 
   private
 
   attr_reader :identity, :success
+
+  def code
+    identity&.session_uuid
+  end
 
   def check_for_unauthorized_scope(params)
     param_value = params[:scope]
@@ -206,6 +212,7 @@ class OpenidConnectAuthorizeForm
       scope: scope&.sort&.join(' '),
       acr_values: acr_values&.sort&.join(' '),
       unauthorized_scope: @unauthorized_scope,
+      code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
     }
   end
 
@@ -214,10 +221,10 @@ class OpenidConnectAuthorizeForm
   end
 
   def error_redirect_uri
-    uri = redirect_uri unless errors.include?(:redirect_uri)
+    return if cannot_validate_redirect_uri?
 
     UriService.add_params(
-      uri,
+      redirect_uri,
       error: 'invalid_request',
       error_description: errors.full_messages.join(' '),
       state: state,
@@ -239,13 +246,5 @@ class OpenidConnectAuthorizeForm
         type: :no_auth
       )
     end
-  end
-
-  def validate_liveness_checking_enabled_if_ial2_strict_requested
-    return if !ial2_strict_requested? || FeatureManagement.liveness_checking_enabled?
-    errors.add(
-      :acr_values, t('openid_connect.authorization.errors.liveness_checking_disabled'),
-      type: :liveness_checking_disabled
-    )
   end
 end

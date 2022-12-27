@@ -26,8 +26,10 @@ describe SignUp::CompletionsController do
           user = create(:user)
           stub_sign_in(user)
           subject.session[:sp] = {
-            issuer: current_sp.issuer, ial2: false, requested_attributes: [:email],
-            request_url: 'http://localhost:3000'
+            issuer: current_sp.issuer,
+            ial2: false,
+            requested_attributes: [:email],
+            request_url: 'http://localhost:3000',
           }
           get :show
 
@@ -53,8 +55,10 @@ describe SignUp::CompletionsController do
         before do
           stub_sign_in(user)
           subject.session[:sp] = {
-            issuer: current_sp.issuer, ial2: true, requested_attributes: [:email],
-            request_url: 'http://localhost:3000'
+            issuer: current_sp.issuer,
+            ial2: true,
+            requested_attributes: [:email],
+            request_url: 'http://localhost:3000',
           }
           allow(controller).to receive(:user_session).and_return('decrypted_pii' => pii.to_json)
         end
@@ -114,7 +118,9 @@ describe SignUp::CompletionsController do
         user = create(:user)
         sp = create(:service_provider, issuer: 'https://awesome')
         stub_sign_in(user)
-        subject.session[:sp] = { issuer: sp.issuer, ial2: false, requested_attributes: [:email],
+        subject.session[:sp] = { issuer: sp.issuer,
+                                 ial2: false,
+                                 requested_attributes: [:email],
                                  request_url: 'http://localhost:3000' }
         get :show
 
@@ -232,6 +238,32 @@ describe SignUp::CompletionsController do
           last_consented_at: now,
           clear_deleted_at: true,
         )
+        allow(Idv::InPerson::CompletionSurveySender).to receive(:send_completion_survey).
+          with(user, sp.issuer)
+        freeze_time do
+          travel_to(now)
+          patch :update
+        end
+      end
+
+      it 'sends the in-person proofing completion survey' do
+        user = create(:user, profiles: [create(:profile, :verified, :active)])
+        stub_sign_in(user)
+        sp = create(:service_provider, issuer: 'https://awesome')
+        subject.session[:sp] = {
+          issuer: sp.issuer,
+          ial: 2,
+          request_url: 'http://example.com',
+          requested_attributes: %w[email first_name verified_at],
+        }
+        allow(@linker).to receive(:link_identity).with(
+          ial: 2,
+          verified_attributes: %w[email first_name verified_at],
+          last_consented_at: now,
+          clear_deleted_at: true,
+        )
+        expect(Idv::InPerson::CompletionSurveySender).to receive(:send_completion_survey).
+          with(user, sp.issuer)
         freeze_time do
           travel_to(now)
           patch :update

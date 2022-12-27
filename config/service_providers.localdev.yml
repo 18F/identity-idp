@@ -33,7 +33,6 @@ test:
       - 'saml_test_sp2'
     agency: 'Test Government Agency'
     agency_id: 1
-    uuid_priority: 10
     friendly_name: 'Your friendly Government Agency'
     logo: 'generic.svg'
     return_to_sp_url: 'http://localhost:3000'
@@ -175,7 +174,6 @@ test:
     friendly_name: 'Example iOS App'
     agency: '18F'
     agency_id: 1
-    uuid_priority: 20
     logo: 'generic.svg'
     ial: 2
     push_notification_url: http://localhost/push_notifications
@@ -190,7 +188,6 @@ test:
     friendly_name: 'Example app that disallows prompt=login'
     agency: '18F'
     agency_id: 1
-    uuid_priority: 20
     logo: 'generic.svg'
     ial: 1
     allow_prompt_login: false
@@ -204,7 +201,6 @@ test:
     friendly_name: 'Example iOS App'
     agency: '18F'
     agency_id: 1
-    uuid_priority: 20
     logo: 'generic.svg'
     allow_prompt_login: true
 
@@ -321,7 +317,6 @@ test:
       - 'saml_test_sp'
     agency: 'Test Government Agency'
     agency_id: 1
-    uuid_priority: 10
     friendly_name: 'Your friendly Government Agency (inactive)'
     logo: 'generic.svg'
     return_to_sp_url: 'http://localhost:3000'
@@ -342,7 +337,6 @@ test:
     friendly_name: 'Example iOS App (inactive)'
     agency: '18F'
     agency_id: 1
-    uuid_priority: 20
     logo: 'generic.svg'
     ial: 2
     push_notification_url: http://localhost/push_notifications
@@ -399,7 +393,6 @@ development:
       - 'sp_rails_demo'
     agency: '18F'
     agency_id: 1
-    uuid_priority: 10
     friendly_name: '18F Test Service Provider'
     logo: 'generic.svg'
     return_to_sp_url: 'http://localhost:3003'
@@ -411,7 +404,6 @@ development:
     friendly_name: 'Dashboard'
     agency: 'GSA'
     agency_id: 2
-    uuid_priority: 30
     logo: '18f.svg'
     certs:
       - 'identity_dashboard_cert'
@@ -427,7 +419,6 @@ development:
     friendly_name: 'Example iOS App'
     agency: '18F'
     agency_id: 1
-    uuid_priority: 20
     logo: 'generic.svg'
 
   'urn:gov:gsa:openidconnect:sp:sinatra':
@@ -441,6 +432,19 @@ development:
     certs:
       - 'sp_sinatra_demo'
     friendly_name: 'Example Sinatra App'
+
+  'urn:gov:gsa:openidconnect:sp:mock_irs':
+    agency_id: 1
+    ial: 2
+    irs_attempts_api_enabled: true
+    push_notification_url: http://localhost:9292/api/push_notifications
+    redirect_uris:
+      - 'http://localhost:9292/'
+      - 'http://localhost:9292/auth/result'
+      - 'http://localhost:9292/logout'
+    certs:
+      - 'sp_sinatra_demo'
+    friendly_name: 'Login Mock IRS'
 
   'urn:gov:gsa:openidconnect:sp:expressjs':
     agency: 'GSA'

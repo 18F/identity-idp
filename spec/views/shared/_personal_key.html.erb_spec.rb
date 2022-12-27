@@ -4,6 +4,8 @@ require 'data_uri'
 RSpec.describe 'shared/_personal_key.html.erb' do
   let(:personal_key) { RandomPhrase.new(num_words: 4).to_s }
 
+  subject(:rendered) { render 'shared/personal_key', code: personal_key, update_path: '/test' }
+
   describe 'download link' do
     around do |ex|
       # data_uri depends on URI.decode which was removed in Ruby 3.0 :sob:
@@ -19,8 +21,6 @@ RSpec.describe 'shared/_personal_key.html.erb' do
     end
 
     it 'has the download attribute and a data: url for the personal key' do
-      render 'shared/personal_key', code: personal_key, update_path: '/test'
-
       doc = Nokogiri::HTML(rendered)
       download_link = doc.at_css('a[download]')
       data_uri = URI::Data.new(download_link[:href])

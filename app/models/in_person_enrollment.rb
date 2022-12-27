@@ -20,6 +20,29 @@ class InPersonEnrollment < ApplicationRecord
   validate :profile_belongs_to_user
 
   before_save(:on_status_updated, if: :will_save_change_to_status?)
+  before_create(:set_unique_id, unless: :unique_id)
+
+  def self.is_pending_and_established_between(early_benchmark, late_benchmark)
+    where(status: :pending).
+      and(
+        where(enrollment_established_at: late_benchmark...(early_benchmark.end_of_day)),
+      ).
+      order(enrollment_established_at: :asc)
+  end
+
+  def self.needs_early_email_reminder(early_benchmark, late_benchmark)
+    self.is_pending_and_established_between(
+      early_benchmark,
+      late_benchmark,
+    ).where(early_reminder_sent: false)
+  end
+
+  def self.needs_late_email_reminder(early_benchmark, late_benchmark)
+    self.is_pending_and_established_between(
+      early_benchmark,
+      late_benchmark,
+    ).where(late_reminder_sent: false)
+  end
 
   # Find enrollments that need a status check via the USPS API
   def self.needs_usps_status_check(check_interval)
@@ -64,10 +87,24 @@ class InPersonEnrollment < ApplicationRecord
     SecureRandom.hex(9)
   end
 
+  def due_date
+    start_date = enrollment_established_at.presence || created_at
+    start_date + IdentityConfig.store.in_person_enrollment_validity_in_days.days
+  end
+
+  def days_to_due_date
+    today = DateTime.now
+    (today...due_date).count
+  end
+
   private
 
   def on_status_updated
     self.status_updated_at = Time.zone.now
+  end
+
+  def set_unique_id
+    self.unique_id = self.class.generate_unique_id
   end
 
   def profile_belongs_to_user

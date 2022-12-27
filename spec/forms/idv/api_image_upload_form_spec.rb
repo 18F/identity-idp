@@ -10,13 +10,12 @@ RSpec.describe Idv::ApiImageUploadForm do
         front_image_metadata: front_image_metadata,
         back: back_image,
         back_image_metadata: back_image_metadata,
-        selfie: selfie_image,
         document_capture_session_uuid: document_capture_session_uuid,
       ),
-      liveness_checking_enabled: liveness_checking_enabled?,
       service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
       irs_attempts_api_tracker: irs_attempts_api_tracker,
+      store_encrypted_images: store_encrypted_images,
     )
   end
 
@@ -28,40 +27,17 @@ RSpec.describe Idv::ApiImageUploadForm do
   let(:back_image_metadata) do
     { width: 20, height: 20, mimeType: 'image/png', source: 'upload' }.to_json
   end
-  let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
-  let(:liveness_checking_enabled?) { true }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:irs_attempts_api_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:store_encrypted_images) { false }
 
   describe '#valid?' do
     context 'with all valid images' do
       it 'is valid' do
         expect(form.valid?).to eq(true)
         expect(form.errors).to be_blank
-      end
-    end
-
-    context 'with valid front and back but no selfie' do
-      let(:selfie_image) { nil }
-
-      context 'with liveness required' do
-        let(:liveness_checking_enabled?) { true }
-
-        it 'is not valid' do
-          expect(form.valid?).to eq(false)
-          expect(form.errors[:selfie]).to eq(['Please fill in this field.'])
-        end
-      end
-
-      context 'without liveness require' do
-        let(:liveness_checking_enabled?) { false }
-
-        it 'is valid' do
-          expect(form.valid?).to eq(true)
-          expect(form.errors).to be_blank
-        end
       end
     end
 
@@ -93,7 +69,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
 
       it 'is not valid' do
-        expect(irs_attempts_api_tracker).to receive(:idv_document_upload_rate_limited)
+        expect(irs_attempts_api_tracker).to receive(:idv_document_upload_rate_limited).with(no_args)
         expect(form.valid?).to eq(false)
         expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.throttled_heading')])
       end
@@ -112,6 +88,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           attempts: 1,
           remaining_attempts: 3,
           user_id: document_capture_session.user.uuid,
+          flow_path: anything,
         )
       end
 
@@ -137,7 +114,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       it 'logs a doc auth warning' do
         form.submit
 
-        expect(fake_analytics).to have_logged_event('Doc Auth Warning', {})
+        expect(fake_analytics).to have_logged_event('Doc Auth Warning')
       end
 
       it 'returns the expected response' do
@@ -147,9 +124,10 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(response.success?).to eq(false)
         expect(response.errors).to eq(
           {
-            general: [t('doc_auth.errors.alerts.selfie_failure')],
-            hints: false,
-            selfie: [t('doc_auth.errors.general.fallback_field_level')],
+            general: [t('doc_auth.errors.general.no_liveness')],
+            hints: true,
+            front: [t('doc_auth.errors.general.fallback_field_level')],
+            back: [t('doc_auth.errors.general.fallback_field_level')],
           },
         )
         expect(response.attention_with_barcode?).to eq(false)
@@ -170,6 +148,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           attempts: 1,
           remaining_attempts: 3,
           user_id: document_capture_session.user.uuid,
+          flow_path: anything,
         )
       end
 
@@ -246,6 +225,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           },
         )
       end
+
       before do
         allow_any_instance_of(Idv::DocPiiForm).to receive(:submit).and_return(failed_response)
       end
@@ -266,6 +246,63 @@ RSpec.describe Idv::ApiImageUploadForm do
       it 'includes doc_pii errors' do
         response = form.submit
         expect(response.errors[:doc_pii]).to eq('bad')
+      end
+    end
+
+    describe 'encrypted document storage' do
+      context 'when encrypted image storage is enabled' do
+        let(:store_encrypted_images) { true }
+
+        it 'writes encrypted documents' do
+          form.submit
+
+          upload_events = irs_attempts_api_tracker.events[:idv_document_upload_submitted]
+          expect(upload_events).to have_attributes(length: 1)
+          upload_event = upload_events.first
+
+          document_writer = form.send(:encrypted_document_storage_writer)
+
+          front_image.rewind
+          back_image.rewind
+
+          cipher = Encryption::AesCipher.new
+
+          front_image_ciphertext =
+            document_writer.storage.read_image(name: upload_event[:document_front_image_filename])
+
+          back_image_ciphertext =
+            document_writer.storage.read_image(name: upload_event[:document_back_image_filename])
+
+          key = Base64.decode64(upload_event[:document_image_encryption_key])
+
+          expect(cipher.decrypt(front_image_ciphertext, key)).to eq(front_image.read)
+          expect(cipher.decrypt(back_image_ciphertext, key)).to eq(back_image.read)
+        end
+      end
+
+      context 'when encrypted image storage is disabled' do
+        let(:store_encrypted_images) { false }
+
+        it 'does not write images' do
+          document_writer = instance_double(EncryptedDocumentStorage::DocumentWriter)
+          allow(form).to receive(:encrypted_document_storage_writer).and_return(document_writer)
+
+          expect(document_writer).to_not receive(:encrypt_and_write_document)
+
+          form.submit
+        end
+
+        it 'does not send image info to attempts api' do
+          expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            hash_including(
+              document_front_image_filename: nil,
+              document_back_image_filename: nil,
+              document_image_encryption_key: nil,
+            ),
+          )
+
+          form.submit
+        end
       end
     end
 

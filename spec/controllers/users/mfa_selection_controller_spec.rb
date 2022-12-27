@@ -2,9 +2,6 @@ require 'rails_helper'
 
 describe Users::MfaSelectionController do
   let(:current_sp) { create(:service_provider) }
-  before do
-    allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
-  end
 
   describe '#index' do
     before do
@@ -36,7 +33,7 @@ describe Users::MfaSelectionController do
       params = ActionController::Parameters.new(voice_params)
       response = FormResponse.new(success: true, errors: {}, extra: { selection: ['voice'] })
 
-      form_params = { user: user, aal3_required: false, piv_cac_required: nil }
+      form_params = { user: user, phishing_resistant_required: false, piv_cac_required: nil }
       form = instance_double(TwoFactorOptionsForm)
       allow(TwoFactorOptionsForm).to receive(:new).with(form_params).and_return(form)
       expect(form).to receive(:submit).
@@ -47,9 +44,8 @@ describe Users::MfaSelectionController do
       patch :update, params: voice_params
     end
 
-    context 'when the selection is only phone and multi mfa is enabled' do
+    context 'when the selection is only phone and kantara phone restriction is enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
         allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
         stub_sign_in_before_2fa
 
@@ -183,8 +179,7 @@ describe Users::MfaSelectionController do
       context 'with no active MFA' do
         it 'redirects to the index page with a flash error' do
           patch :update, params: {
-            two_factor_options_form: {
-            },
+            two_factor_options_form: {},
           }
 
           expect(response).to redirect_to two_factor_options_path

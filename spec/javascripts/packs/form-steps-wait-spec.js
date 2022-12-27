@@ -95,6 +95,10 @@ describe('FormStepsWait', () => {
     return form;
   }
 
+  beforeEach(() => {
+    sandbox.stub(window.fetch, 'polyfill').value(undefined);
+  });
+
   it('submits form via fetch', () => {
     const action = new URL('/', window.location).toString();
     const method = 'post';
@@ -293,7 +297,6 @@ describe('FormStepsWait', () => {
                     </div>`,
                   ),
               });
-            sandbox.stub(global, 'setTimeout').callsArg(0);
           });
 
           it('shows message', async () => {
@@ -303,6 +306,7 @@ describe('FormStepsWait', () => {
               options: { waitStepPath, pollIntervalMs: 0 },
             });
             new FormStepsWait(form).bind();
+            sandbox.clock.restore(); // Disable fake clock since we'll poll instantly
 
             fireEvent.submit(form);
 

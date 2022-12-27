@@ -214,7 +214,7 @@ describe UserDecorator do
     end
 
     context 'second factor locked out a while ago' do
-      let(:locked_at) { Time.zone.now - UserDecorator::DEFAULT_LOCKOUT_PERIOD - 1.second }
+      let(:locked_at) { IdentityConfig.store.lockout_period_in_minutes.minutes.ago - 1.second }
 
       it { expect(locked_out?).to eq(false) }
     end
@@ -241,7 +241,7 @@ describe UserDecorator do
     end
 
     context 'second factor locked out a while ago' do
-      let(:locked_at) { Time.zone.now - UserDecorator::DEFAULT_LOCKOUT_PERIOD - 1.second }
+      let(:locked_at) { IdentityConfig.store.lockout_period_in_minutes.minutes.ago - 1.second }
 
       it { expect(no_longer_locked_out?).to eq(true) }
     end
@@ -307,19 +307,38 @@ describe UserDecorator do
     end
   end
 
+  describe '#threatmetrix_review_pending_profile' do
+    let(:user) { create(:user) }
+    subject(:decorated_user) { UserDecorator.new(user) }
+
+    context 'with a threatmetrix review pending profile' do
+      it 'returns the profile' do
+        profile = create(
+          :profile, user: user, active: false, deactivation_reason: :threatmetrix_review_pending
+        )
+
+        expect(decorated_user.threatmetrix_review_pending_profile).to eq(profile)
+      end
+    end
+
+    context 'without a threatmetrix review pending profile' do
+      it { expect(decorated_user.threatmetrix_review_pending_profile).to eq(nil) }
+    end
+  end
+
   describe '#delete_account_bullet_key' do
     let(:user_decorator) { UserDecorator.new(build_stubbed(:user)) }
 
     it 'returns ial1 if identity is not verified' do
       allow(user_decorator).to receive(:identity_verified?).and_return(false)
       expect(user_decorator.delete_account_bullet_key).
-        to eq t('users.delete.bullet_2_loa1', app_name: APP_NAME)
+        to eq t('users.delete.bullet_2_basic', app_name: APP_NAME)
     end
 
     it 'returns ial2 if identity is verified' do
       allow(user_decorator).to receive(:identity_verified?).and_return(true)
       expect(user_decorator.delete_account_bullet_key).
-        to eq t('users.delete.bullet_2_loa3', app_name: APP_NAME)
+        to eq t('users.delete.bullet_2_verified', app_name: APP_NAME)
     end
   end
 
@@ -336,6 +355,51 @@ describe UserDecorator do
 
     it 'omits deleted apps' do
       expect(user_decorator.connected_apps).to eq([app])
+    end
+  end
+
+  describe '#second_last_signed_in_at' do
+    it 'returns second most recent full authentication event' do
+      user = create(:user)
+      _event1 = create(:event, user: user, event_type: 'sign_in_after_2fa')
+      event2 = create(:event, user: user, event_type: 'sign_in_after_2fa')
+      _event3 = create(:event, user: user, event_type: 'sign_in_after_2fa')
+
+      expect(user.decorate.second_last_signed_in_at).to eq(event2.reload.created_at)
+    end
+  end
+
+  describe '#reproof_for_irs?' do
+    let(:service_provider) { create(:service_provider) }
+
+    it 'returns false if the service provider is not an attempts API service provider' do
+      user = create(:user, :proofed)
+
+      expect(user.decorate.reproof_for_irs?(service_provider: service_provider)).to be_falsy
+    end
+
+    context 'an attempts API service provider' do
+      let(:service_provider) { create(:service_provider, :irs) }
+
+      it 'returns false if the user has not proofed before' do
+        user = create(:user)
+
+        expect(user.decorate.reproof_for_irs?(service_provider: service_provider)).to be_falsy
+      end
+
+      it 'returns false if the active profile initiating SP was an attempts API SP' do
+        user = create(:user, :proofed)
+
+        user.active_profile.update!(initiating_service_provider: service_provider)
+
+        expect(user.decorate.reproof_for_irs?(service_provider: service_provider)).to be_falsy
+      end
+
+      it 'returns true if the active profile initiating SP was not an attempts API SP' do
+        user = create(:user, :proofed)
+
+        expect(user.decorate.reproof_for_irs?(service_provider: service_provider)).to be_truthy
+      end
     end
   end
 end

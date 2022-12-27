@@ -89,11 +89,12 @@ class ApplicationController < ActionController::Base
       cookie_device_uuid: cookies[:device],
       sp_request_uri: decorated_session.request_url_params[:redirect_uri],
       enabled_for_session: irs_attempt_api_enabled_for_session?,
+      analytics: analytics,
     )
   end
 
   def irs_attempt_api_enabled_for_session?
-    current_sp&.irs_attempts_api_enabled? && irs_attempts_api_session_id.present?
+    current_sp&.irs_attempts_api_enabled?
   end
 
   def irs_attempts_api_session_id
@@ -125,7 +126,7 @@ class ApplicationController < ActionController::Base
   end
 
   def context
-    user_session[:context] || UserSessionContext::DEFAULT_CONTEXT
+    user_session[:context] || UserSessionContext::AUTHENTICATION_CONTEXT
   end
 
   def current_sp
@@ -259,7 +260,15 @@ class ApplicationController < ActionController::Base
 
   def user_needs_to_reactivate_account?
     return false if current_user.decorate.password_reset_profile.blank?
+    return false if pending_profile_newer_than_password_reset_profile?
     sp_session[:ial2] == true
+  end
+
+  def pending_profile_newer_than_password_reset_profile?
+    return false if current_user.decorate.pending_profile.blank?
+    return false if current_user.decorate.password_reset_profile.blank?
+    current_user.decorate.pending_profile.created_at >
+      current_user.decorate.password_reset_profile.updated_at
   end
 
   def reauthn_param
@@ -273,12 +282,7 @@ class ApplicationController < ActionController::Base
       user_signed_in: user_signed_in?,
     )
     flash[:error] = t('errors.general')
-    begin
-      redirect_back fallback_location: new_user_session_url, allow_other_host: false
-    rescue ActionController::Redirecting::UnsafeRedirectError => err
-      # Exceptions raised inside exception handlers are not propagated up, so we manually rescue
-      unsafe_redirect_error(err)
-    end
+    redirect_back fallback_location: new_user_session_url, allow_other_host: false
   end
 
   def unsafe_redirect_error(_exception)
@@ -429,6 +433,7 @@ class ApplicationController < ActionController::Base
       auth_method: user_session[:auth_method],
       aal_level_requested: sp_session[:aal_level_requested],
       piv_cac_requested: sp_session[:piv_cac_requested],
+      phishing_resistant_requested: sp_session[:phishing_resistant_requested],
     )
   end
 
@@ -437,15 +442,21 @@ class ApplicationController < ActionController::Base
   end
 
   def sp_session_request_url_with_updated_params
-    return unless sp_session[:request_url].present?
-    request_url = URI(sp_session[:request_url])
-    url = if request_url.path.match?('saml')
-            complete_saml_url
+    # Temporarily place SAML route update behind a feature flag
+    if IdentityConfig.store.saml_internal_post
+      return unless sp_session[:request_url].present?
+      request_url = URI(sp_session[:request_url])
+      url = if request_url.path.match?('saml')
+              complete_saml_url
+            else
+              # Login.gov redirects to the orginal request_url after a user authenticates
+              # replace prompt=login with prompt=select_account to prevent sign_out
+              # which should only ever occur once when the user
+              # lands on Login.gov with prompt=login
+              sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
+            end
     else
-      # Login.gov redirects to the orginal request_url after a user authenticates
-      # replace prompt=login with prompt=select_account to prevent sign_out
-      # which should only every occur once when the user lands on Login.gov with prompt=login
-      sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
+      url = sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
     end
 
     # If the user has changed the locale, we should preserve that as well

@@ -13,7 +13,7 @@ describe 'phone rate limitting' do
       select_2fa_option(:phone)
       select_phone_delivery_option(delivery_method)
       fill_in :new_phone_form_phone, with: phone
-      click_send_security_code
+      click_send_one_time_code
     end
   end
 

@@ -232,7 +232,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       it 'only returns one copy of the each error' do
         expect(response.success?).to eq(false)
         expect(response.errors).to eq(
-          general: [DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS],
+          general: [DocAuth::Errors::GENERAL_ERROR],
           front: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
           back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
           hints: true,

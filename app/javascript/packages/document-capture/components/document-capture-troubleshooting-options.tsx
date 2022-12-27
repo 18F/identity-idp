@@ -1,10 +1,11 @@
 import { useContext } from 'react';
-import { FlowContext } from '@18f/identity-verify-flow';
 import { TroubleshootingOptions } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import type { TroubleshootingOption } from '@18f/identity-components/troubleshooting-options';
 import ServiceProviderContext from '../context/service-provider';
 import MarketingSiteContext from '../context/marketing-site';
+import InPersonCallToAction from './in-person-call-to-action';
+import { InPersonContext } from '../context';
 
 interface DocumentCaptureTroubleshootingOptionsProps {
   /**
@@ -23,30 +24,25 @@ interface DocumentCaptureTroubleshootingOptionsProps {
   showDocumentTips?: boolean;
 
   /**
-   * Whether to include option to verify in person.
+   * Whether to display alternative options for verifying.
    */
-  showInPersonOption?: boolean;
-
-  /**
-   * If there are any errors (toggles whether or not to show in person proofing option)
-   */
-  hasErrors?: boolean;
+  showAlternativeProofingOptions?: boolean;
 }
 
 function DocumentCaptureTroubleshootingOptions({
   heading,
   location = 'document_capture_troubleshooting_options',
   showDocumentTips = true,
-  showInPersonOption = true,
-  hasErrors,
+  showAlternativeProofingOptions,
 }: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
-  const { inPersonURL } = useContext(FlowContext);
+  const { inPersonURL } = useContext(InPersonContext);
   const { getHelpCenterURL } = useContext(MarketingSiteContext);
   const { name: spName, getFailureToProofURL } = useContext(ServiceProviderContext);
 
   return (
     <>
+      {showAlternativeProofingOptions && inPersonURL && <InPersonCallToAction />}
       <TroubleshootingOptions
         heading={heading}
         options={
@@ -77,13 +73,6 @@ function DocumentCaptureTroubleshootingOptions({
           ].filter(Boolean) as TroubleshootingOption[]
         }
       />
-      {hasErrors && inPersonURL && showInPersonOption && (
-        <TroubleshootingOptions
-          isNewFeatures
-          heading={t('idv.troubleshooting.headings.are_you_near')}
-          options={[{ text: t('idv.troubleshooting.options.verify_in_person') }]}
-        />
-      )}
     </>
   );
 }

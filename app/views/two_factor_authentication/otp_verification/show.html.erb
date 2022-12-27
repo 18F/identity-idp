@@ -1,4 +1,12 @@
-<% title t('titles.enter_2fa_code') %>
+<% title t('titles.enter_2fa_code.one_time_code') %>
+
+<% if @presenter.otp_expiration.present? %>
+  <%= render CountdownAlertComponent.new(
+        show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds,
+        alert_options: { class: 'margin-bottom-4' },
+        countdown_options: { expiration: @presenter.otp_expiration },
+      ) %>
+<% end %>
 
 <%= render PageHeadingComponent.new.with_content(@presenter.header) %>
 
@@ -10,19 +18,7 @@
   <% if @presenter.reauthn %>
     <%= render 'two_factor_authentication/totp_verification/reauthn' %>
   <% end %>
-  <div class="grid-col-12 tablet:grid-col-6 margin-bottom-2">
-    <%= label_tag :code, t('forms.two_factor.code'), class: 'display-block text-bold' %>
-    <%= render(
-          'shared/one_time_code_input',
-          form: f,
-          name: :code,
-          value: @presenter.code_value,
-          required: true,
-          autofocus: true,
-          numeric: true,
-          maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
-        ) %>
-  </div>
+  <%= render OneTimeCodeInputComponent.new(form: f, autofocus: true, value: @presenter.code_value) %>
   <%= f.input(
         :remember_device,
         as: :boolean,
@@ -51,7 +47,7 @@
         outline: true,
         icon: :loop,
         class: 'margin-bottom-neg-1',
-      ).with_content(t('links.two_factor_authentication.get_another_code')) %>
+      ).with_content(t('links.two_factor_authentication.send_another_code')) %>
 <% end %>
 
 <% if @presenter.unconfirmed_phone? %>

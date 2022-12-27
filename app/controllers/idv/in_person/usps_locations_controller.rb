@@ -11,11 +11,22 @@ module Idv
 
       before_action :confirm_authenticated_for_api, only: [:update]
 
-      # get the list of all pilot Post Office locations
+      # retrieve the list of nearby IPP Post Office locations with a POST request
       def index
         usps_response = []
         begin
-          usps_response = Proofer.new.request_pilot_facilities
+          if IdentityConfig.store.arcgis_search_enabled
+            candidate = UspsInPersonProofing::Applicant.new(
+              address: search_params['street_address'],
+              city: search_params['city'], state: search_params['state'],
+              zip_code: search_params['zip_code']
+            )
+            usps_response = proofer.request_facilities(candidate)
+          else
+            usps_response = proofer.request_pilot_facilities
+          end
+        rescue ActionController::ParameterMissing
+          usps_response = proofer.request_pilot_facilities
         rescue Faraday::ConnectionFailed => _error
           nil
         end
@@ -23,10 +34,14 @@ module Idv
         render json: usps_response.to_json
       end
 
+      def proofer
+        @proofer ||= Proofer.new
+      end
+
       # save the Post Office location the user selected to an enrollment
       def update
         enrollment.update!(
-          selected_location_details: permitted_params.as_json,
+          selected_location_details: update_params.as_json,
           issuer: current_sp&.issuer,
         )
 
@@ -47,7 +62,16 @@ module Idv
         )
       end
 
-      def permitted_params
+      def search_params
+        params.require(:address).permit(
+          :street_address,
+          :city,
+          :state,
+          :zip_code,
+        )
+      end
+
+      def update_params
         params.require(:usps_location).permit(
           :formatted_city_state_zip,
           :name,

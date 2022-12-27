@@ -42,9 +42,11 @@ describe 'sign_up/completions/show.html.erb' do
     expect(text).to include(service_provider.friendly_name)
     expect(text).to_not include(service_provider.agency.name)
     expect(text).to include(
-      I18n.t(
-        'help_text.requested_attributes.intro_html',
-        app_name: APP_NAME, sp: service_provider.friendly_name,
+      view_context.strip_tags(
+        I18n.t(
+          'help_text.requested_attributes.ial1_intro_html',
+          sp: service_provider.friendly_name,
+        ),
       ),
     )
   end
@@ -93,55 +95,26 @@ describe 'sign_up/completions/show.html.erb' do
 
   describe 'MFA CTA banner' do
     let(:multiple_factors_enabled) { nil }
-    let(:select_multiple_mfa_options) { nil }
 
     before do
-      allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).
-        and_return(select_multiple_mfa_options)
       @multiple_factors_enabled = multiple_factors_enabled
     end
 
     context 'with multiple factors disabled' do
       let(:multiple_factors_enabled) { false }
 
-      context 'with multiple MFA feature flag disabled' do
-        let(:select_multiple_mfa_options) { false }
-
-        it 'does not show a banner' do
-          render
-          expect(rendered).not_to have_content(t('mfa.second_method_warning.text'))
-        end
-      end
-
-      context 'with multiple MFA feature flag enabled' do
-        let(:select_multiple_mfa_options) { true }
-
-        it 'shows a banner if the user selects one MFA option' do
-          render
-          expect(rendered).to have_content(t('mfa.second_method_warning.text'))
-        end
+      it 'shows a banner if the user selects one MFA option' do
+        render
+        expect(rendered).to have_content(t('mfa.second_method_warning.text'))
       end
     end
 
     context 'with multiple factors enabled' do
       let(:multiple_factors_enabled) { true }
 
-      context 'with multiple MFA feature flag disabled' do
-        let(:select_multiple_mfa_options) { false }
-
-        it 'does not show a banner' do
-          render
-          expect(rendered).not_to have_content(t('mfa.second_method_warning.text'))
-        end
-      end
-
-      context 'with multiple MFA feature flag enabled' do
-        let(:select_multiple_mfa_options) { true }
-
-        it 'does not show a banner' do
-          render
-          expect(rendered).not_to have_content(t('mfa.second_method_warning.text'))
-        end
+      it 'does not show a banner' do
+        render
+        expect(rendered).not_to have_content(t('mfa.second_method_warning.text'))
       end
     end
   end

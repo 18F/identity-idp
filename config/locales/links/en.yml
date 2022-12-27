@@ -9,7 +9,7 @@ en:
     cancel: Cancel
     cancel_account_creation: '‹ Cancel account creation'
     contact: Contact
-    contact_support: 'Contact %{app_name} Support'
+    contact_support: Contact %{app_name} Support
     continue_sign_in: Continue sign in
     create_account: Create an account
     go_back: Go back
@@ -23,5 +23,5 @@ en:
     reverify: Please verify your identity again.
     sign_out: Sign out
     two_factor_authentication:
-      get_another_code: Get another code
+      send_another_code: Send another code
     what_is_totp: What is an authentication app?

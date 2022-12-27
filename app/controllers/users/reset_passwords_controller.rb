@@ -24,7 +24,7 @@ module Users
       analytics.password_reset_token(**result.to_h)
       irs_attempts_api_tracker.forgot_password_email_confirmed(
         success: result.success?,
-        failure_reason: result.errors,
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
 
       if result.success?
@@ -45,7 +45,7 @@ module Users
       analytics.password_reset_password(**result.to_h)
       irs_attempts_api_tracker.forgot_password_new_password_submitted(
         success: result.success?,
-        failure_reason: result.errors,
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
 
       if result.success?
@@ -98,7 +98,7 @@ module Users
       irs_attempts_api_tracker.user_registration_email_submitted(
         email: email,
         success: result.success?,
-        failure_reason: result.to_h[:error_details],
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
       create_user_event(:account_created, user)
     end
@@ -149,8 +149,8 @@ module Users
     end
 
     def create_reset_event_and_send_notification
-      event = create_user_event_with_disavowal(:password_changed, resource)
-      UserAlerts::AlertUserAboutPasswordChange.call(resource, event.disavowal_token)
+      _event, disavowal_token = create_user_event_with_disavowal(:password_changed, resource)
+      UserAlerts::AlertUserAboutPasswordChange.call(resource, disavowal_token)
     end
 
     def user_params

@@ -3,8 +3,9 @@ class OpenidConnectUserInfoPresenter
 
   attr_reader :identity
 
-  def initialize(identity)
+  def initialize(identity, session_accessor: nil)
     @identity = identity
+    @out_of_band_session_accessor = session_accessor
   end
 
   def user_info
@@ -14,9 +15,9 @@ class OpenidConnectUserInfoPresenter
       iss: root_url,
       email: email_from_sp_identity,
       email_verified: true,
-      all_emails: all_emails_from_sp_identity(identity),
     }
 
+    info[:all_emails] = all_emails_from_sp_identity(identity) if scoper.all_emails_requested?
     info.merge!(ial2_attributes) if scoper.ial2_scopes_requested?
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
@@ -110,8 +111,8 @@ class OpenidConnectUserInfoPresenter
 
   def ial2_data
     @ial2_data ||= begin
-      if ial2_session? || ialmax_session? || ial2_strict_session?
-        Pii::SessionStore.new(identity.rails_session_id).load
+      if ial2_session? || ialmax_session?
+        out_of_band_session_accessor.load_pii
       else
         Pii::Attributes.new_from_hash({})
       end
@@ -122,10 +123,6 @@ class OpenidConnectUserInfoPresenter
     identity.ial == Idp::Constants::IAL2
   end
 
-  def ial2_strict_session?
-    identity.ial == Idp::Constants::IAL2_STRICT
-  end
-
   def ialmax_session?
     identity.ial&.zero?
   end
@@ -133,7 +130,7 @@ class OpenidConnectUserInfoPresenter
   def x509_data
     @x509_data ||= begin
       if x509_session?
-        X509::SessionStore.new(identity.rails_session_id).load
+        out_of_band_session_accessor.load_x509
       else
         X509::Attributes.new_from_hash({})
       end
@@ -148,5 +145,9 @@ class OpenidConnectUserInfoPresenter
     return if identity&.service_provider_record&.ial.to_i < 2
 
     identity.user.active_profile&.verified_at&.to_i
+  end
+
+  def out_of_band_session_accessor
+    @out_of_band_session_accessor ||= OutOfBandSessionAccessor.new(identity.rails_session_id)
   end
 end

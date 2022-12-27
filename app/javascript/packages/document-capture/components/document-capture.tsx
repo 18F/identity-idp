@@ -1,19 +1,19 @@
-import { useState, useMemo, useContext } from 'react';
+import { useState, useMemo, useContext, useEffect } from 'react';
 import { Alert } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormSteps, PromptOnNavigate } from '@18f/identity-form-steps';
-import { FlowContext, VerifyFlowStepIndicator, VerifyFlowPath } from '@18f/identity-verify-flow';
+import { VerifyFlowStepIndicator, VerifyFlowPath } from '@18f/identity-verify-flow';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import type { FormStep } from '@18f/identity-form-steps';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep from './documents-step';
-import SelfieStep from './selfie-step';
 import InPersonPrepareStep from './in-person-prepare-step';
 import InPersonLocationStep from './in-person-location-step';
+import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
 import InPersonSwitchBackStep from './in-person-switch-back-step';
 import ReviewIssuesStep from './review-issues-step';
-import ServiceProviderContext from '../context/service-provider';
 import UploadContext from '../context/upload';
+import AnalyticsContext from '../context/analytics';
 import Submission from './submission';
 import SubmissionStatus from './submission-status';
 import { RetrySubmissionError } from './submission-complete';
@@ -21,6 +21,7 @@ import { BackgroundEncryptedUploadError } from '../higher-order/with-background-
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import withProps from '../higher-order/with-props';
+import { InPersonContext } from '../context';
 
 /**
  * Returns a new object with specified keys removed.
@@ -56,10 +57,15 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
   const [stepName, setStepName] = useState<string | undefined>(undefined);
   const { t } = useI18n();
-  const serviceProvider = useContext(ServiceProviderContext);
   const { flowPath } = useContext(UploadContext);
-  const { inPersonURL } = useContext(FlowContext);
+  const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
+  const { inPersonURL, arcgisSearchEnabled } = useContext(InPersonContext);
   useDidUpdateEffect(onStepChange, [stepName]);
+  useEffect(() => {
+    if (stepName) {
+      trackVisitEvent(stepName);
+    }
+  }, [stepName]);
 
   /**
    * Clears error state and sets form values for submission.
@@ -74,7 +80,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const submissionFormValues = useMemo(
     () =>
       formValues && {
-        ...(isAsyncForm ? except(formValues, 'front', 'back', 'selfie') : formValues),
+        ...(isAsyncForm ? except(formValues, 'front', 'back') : formValues),
         flow_path: flowPath,
       },
     [isAsyncForm, formValues, flowPath],
@@ -105,7 +111,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
       : ([
           {
             name: 'location',
-            form: InPersonLocationStep,
+            form: arcgisSearchEnabled ? InPersonLocationPostOfficeSearchStep : InPersonLocationStep,
           },
           {
             name: 'prepare',
@@ -138,10 +144,6 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
         {
           name: 'documents',
           form: DocumentsStep,
-        },
-        serviceProvider.isLivenessRequired && {
-          name: 'selfie',
-          form: SelfieStep,
         },
       ].filter(Boolean) as FormStep[]);
 
@@ -182,6 +184,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
             initialActiveErrors={initialActiveErrors}
             onComplete={submitForm}
             onStepChange={setStepName}
+            onStepSubmit={trackSubmitEvent}
             autoFocus={!!submissionError}
           />
         </>

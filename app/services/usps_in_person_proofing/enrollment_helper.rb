@@ -17,15 +17,12 @@ module UspsInPersonProofing
         enrollment.enrollment_established_at = Time.zone.now
         enrollment.save!
 
-        send_ready_to_verify_email(user, pii, enrollment)
+        send_ready_to_verify_email(user, enrollment)
       end
 
-      def send_ready_to_verify_email(user, pii, enrollment)
+      def send_ready_to_verify_email(user, enrollment)
         user.confirmed_email_addresses.each do |email_address|
-          UserMailer.in_person_ready_to_verify(
-            user,
-            email_address,
-            first_name: pii['first_name'],
+          UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
             enrollment: enrollment,
           ).deliver_now_or_later
         end
@@ -39,10 +36,14 @@ module UspsInPersonProofing
       end
 
       def create_usps_enrollment(enrollment, pii)
+        # Use the enrollment's unique_id value if it exists, otherwise use the deprecated
+        # #usps_unique_id value in order to remain backwards-compatible. LG-7024 will remove this
+        unique_id = enrollment.unique_id || enrollment.usps_unique_id
         address = [pii['address1'], pii['address2']].select(&:present?).join(' ')
+
         applicant = UspsInPersonProofing::Applicant.new(
           {
-            unique_id: enrollment.usps_unique_id,
+            unique_id: unique_id,
             first_name: pii['first_name'],
             last_name: pii['last_name'],
             address: address,

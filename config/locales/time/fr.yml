@@ -9,8 +9,10 @@ fr:
       - vendredi
       - samedi
       - dimanche
+    formats:
+      long: '%-d %B %Y'
     month_names:
-      - null
+      -
       - janvier
       - février
       - mars
@@ -23,7 +25,7 @@ fr:
       - octobre
       - novembre
       - décembre
-    range: 'Du %{from} au %{to}'
+    range: Du %{from} au %{to}
   time:
     am: A.M.
     formats:

@@ -58,6 +58,7 @@ RSpec.describe OpenidConnect::TokenController do
             client_id: client_id,
             user_id: user.uuid,
             errors: {},
+            code_digest: kind_of(String),
           })
         action
       end
@@ -83,6 +84,7 @@ RSpec.describe OpenidConnect::TokenController do
             client_id: client_id,
             user_id: user.uuid,
             errors: hash_including(:grant_type),
+            code_digest: kind_of(String),
             error_details: hash_including(:grant_type),
           })
 

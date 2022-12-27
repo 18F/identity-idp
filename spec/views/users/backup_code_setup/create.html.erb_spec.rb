@@ -29,7 +29,7 @@ describe 'users/backup_code_setup/create.html.erb' do
     download_link = doc.at_css('a[download]')
     data_uri = URI::Data.new(download_link[:href])
 
-    expect(rendered).to have_content((t('forms.backup_code.download')))
+    expect(rendered).to have_content((t('components.download_button.label')))
     expect(data_uri.content_type).to eq('text/plain')
     expect(data_uri.data).to eq(@codes.join("\n"))
   end

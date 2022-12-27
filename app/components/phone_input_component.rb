@@ -36,9 +36,10 @@ class PhoneInputComponent < BaseComponent
   end
 
   def international_phone_codes
+    translated_international_codes = PhoneNumberCapabilities.translated_international_codes
     supported_country_codes.
       map do |code_key|
-        code_data = PhoneNumberCapabilities.translated_international_codes[code_key]
+        code_data = translated_international_codes[code_key]
 
         [
           international_phone_code_label(code_data),
@@ -56,7 +57,6 @@ class PhoneInputComponent < BaseComponent
     {
       country_code_label: t('components.phone_input.country_code_label'),
       invalid_phone: t('errors.messages.invalid_phone_number'),
-      country_constraint_usa: t('errors.messages.phone_country_constraint_usa'),
       unsupported_country: unsupported_country_string,
     }
   end

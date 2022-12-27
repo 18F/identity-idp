@@ -28,7 +28,6 @@ module IdvStepHelper
 
   def complete_phone_step(user)
     fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
-    click_idv_continue
     verify_phone_otp
   end
 
@@ -45,32 +44,15 @@ module IdvStepHelper
     click_on t('idv.buttons.mail.send')
   end
 
-  def complete_idv_steps_before_phone_otp_delivery_selection_step(user = user_with_2fa)
+  def complete_idv_steps_before_phone_otp_verification_step(user = user_with_2fa)
     complete_idv_steps_before_phone_step(user)
     fill_out_phone_form_ok('2342255432')
-    click_idv_continue
-  end
-
-  def complete_idv_steps_before_phone_otp_verification_step(user = user_with_2fa)
-    complete_idv_steps_before_phone_otp_delivery_selection_step(user)
     choose_idv_otp_delivery_method_sms
   end
 
   def complete_idv_steps_with_phone_before_review_step(user = user_with_2fa)
-    if IdentityConfig.store.idv_api_enabled_steps.include?('password_confirm')
-      sign_in_and_2fa_user(user)
-      stub_idv_session(
-        applicant: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE,
-        resolution_successful: true,
-        address_verification_mechanism: 'phone',
-        user_phone_confirmation: true,
-        vendor_phone_confirmation: true,
-      )
-      visit idv_app_path(step: :password_confirm)
-    else
-      complete_idv_steps_before_phone_step(user)
-      complete_phone_step(user)
-    end
+    complete_idv_steps_before_phone_step(user)
+    complete_phone_step(user)
   end
 
   def complete_review_step(user = user_with_2fa)
@@ -87,18 +69,8 @@ module IdvStepHelper
   alias complete_idv_steps_before_review_step complete_idv_steps_with_phone_before_review_step
 
   def complete_idv_steps_with_gpo_before_review_step(user = user_with_2fa)
-    if IdentityConfig.store.idv_api_enabled_steps.include?('password_confirm')
-      sign_in_and_2fa_user(user)
-      stub_idv_session(
-        applicant: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
-        resolution_successful: 'phone',
-        address_verification_mechanism: 'gpo',
-      )
-      visit idv_app_path(step: :password_confirm)
-    else
-      complete_idv_steps_before_gpo_step(user)
-      gpo_step
-    end
+    complete_idv_steps_before_gpo_step(user)
+    gpo_step
   end
 
   def complete_idv_steps_with_gpo_before_confirmation_step(user = user_with_2fa)

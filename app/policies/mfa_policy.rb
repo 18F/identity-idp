@@ -8,7 +8,7 @@ class MfaPolicy
     mfa_user.two_factor_enabled?
   end
 
-  def aal3_mfa_enabled?
+  def phishing_resistant_mfa_enabled?
     mfa_user.piv_cac_configurations.present? ||
       mfa_user.webauthn_configurations.present?
   end
@@ -18,9 +18,11 @@ class MfaPolicy
   end
 
   def multiple_non_restricted_factors_enabled?
-    IdentityConfig.store.select_multiple_mfa_options ?
-      mfa_user.enabled_non_restricted_mfa_methods_count > 1 :
+    if IdentityConfig.store.kantara_2fa_phone_restricted
+      mfa_user.enabled_non_restricted_mfa_methods_count > 1
+    else
       multiple_factors_enabled?
+    end
   end
 
   def unphishable?

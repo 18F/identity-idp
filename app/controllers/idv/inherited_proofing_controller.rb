@@ -1,20 +1,22 @@
 module Idv
   class InheritedProofingController < ApplicationController
-    include Flow::FlowStateMachine
+    before_action :confirm_two_factor_authenticated
 
-    before_action :render_404_if_disabled
+    include Flow::FlowStateMachine
+    include IdvSession
+    include InheritedProofing404Concern
+    include InheritedProofingConcern
+    include InheritedProofingPresenterConcern
 
     FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_inherited_proofing_step_url,
-      final_url: nil,
+      final_url: :idv_phone_url,
       flow: Idv::Flows::InheritedProofingFlow,
-      analytics_id: nil,
+      analytics_id: 'Inherited Proofing',
     }.freeze
 
-    private
-
-    def render_404_if_disabled
-      render_not_found unless IdentityConfig.store.inherited_proofing_enabled
+    def return_to_sp
+      redirect_to return_to_sp_failure_to_proof_url(step: next_step, location: params[:location])
     end
   end
 end

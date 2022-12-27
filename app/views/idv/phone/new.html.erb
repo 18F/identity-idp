@@ -1,10 +1,10 @@
 <% content_for(:pre_flash_content) do %>
-  <%= render 'shared/step_indicator', {
-        steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
+  <%= render StepIndicatorComponent.new(
+        steps: step_indicator_steps,
         current_step: :verify_phone_or_address,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      } %>
+      ) %>
 <% end %>
 
 <div id="form-steps-wait-alert">
@@ -16,6 +16,8 @@
 </div>
 
 <% title t('titles.idv.phone') %>
+
+<%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :idv)) %>
 
 <%= render PageHeadingComponent.new.with_content(t('idv.titles.session.phone')) %>
 
@@ -56,19 +58,46 @@
     ) do |f| %>
   <%= render PhoneInputComponent.new(
         form: f,
-        allowed_countries: ['US'],
+        allowed_countries: @idv_form.allowed_countries,
         required: true,
         class: 'margin-bottom-4',
       ) %>
+
+  <h2><%= t('idv.titles.otp_delivery_method') %></h2>
+  <p><%= t('idv.messages.otp_delivery_method_description') %></p>
+
+  <div class="grid-row grid-gap-2">
+    <div class="grid-col-12 tablet:grid-col-6">
+      <%= f.radio_button(
+            :otp_delivery_preference,
+            :sms,
+            checked: !VendorStatus.new.vendor_outage?(:sms), # We want SMS to be default checked
+            disabled: VendorStatus.new.vendor_outage?(:sms),
+            class: 'usa-radio__input usa-radio__input--bordered',
+          ) %>
+        <%= f.label :otp_delivery_preference_sms, t('two_factor_authentication.otp_delivery_preference.sms'), class: 'usa-radio__label width-full' %>
+    </div>
+    <div class="grid-col-12 tablet:grid-col-6">
+      <%= f.radio_button(
+            :otp_delivery_preference,
+            :voice,
+            disabled: VendorStatus.new.vendor_outage?(:voice),
+            class: 'usa-radio__input usa-radio__input--bordered',
+          ) %>
+      <%= f.label :otp_delivery_preference_voice, t('two_factor_authentication.otp_delivery_preference.voice'), class: 'usa-radio__label width-full' %>
+    </div>
+  </div>
+
   <div class="margin-y-5">
     <%= render SpinnerButtonComponent.new(
           action_message: t('idv.messages.verifying'),
           type: :submit,
           big: true,
           wide: true,
-        ).with_content(t('forms.buttons.continue')) %>
+        ).with_content(t('forms.buttons.send_one_time_code')) %>
   </div>
 <% end %>
+
 
 <%= render(
       'shared/troubleshooting_options',

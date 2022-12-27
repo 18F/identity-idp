@@ -12,9 +12,6 @@ fr:
       granted_token_missing: Le lien de suppression de votre compte %{app_name} n’est
         pas valide. Veuillez réessayer en cliquant sur le lien dans votre
         e-mail.
-    alt:
-      error: Erreur
-      warning: Avertissement
     attributes:
       password:
         too_short:
@@ -33,18 +30,16 @@ fr:
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
         photos de votre identifiant avant de continuer. Nous vous avons envoyé
         un lien avec des instructions.
-      quota_reached: Désolé, votre fournisseur de services a atteint sa limite de
-        vérification d’identité. Veuillez contacter votre fournisseur de
-        services pour plus d’informations.
       send_link_throttle: Vous avez essayé trop de fois, veuillez réessayer dans
         %{timeout}. Vous pouvez également revenir en arrière et choisir
         d’utiliser votre ordinateur à la place.
       throttled_heading: Nous n’avons pas pu vérifier votre identité
-      throttled_heading_liveness: Nous n’avons pas pu vérifier votre identité et votre photo
       throttled_text_html: '<strong>Veuillez réessayer dans %{timeout}.</strong> Pour
         votre sécurité, nous limitons le nombre de fois où vous pouvez tenter de
         vérifier un document en ligne.'
     general: Oups, une erreur s’est produite. Veuillez essayer de nouveau.
+    inherited_proofing:
+      consent_form: to be implemented
     invalid_totp: Code non valide. Veuillez essayer de nouveau.
     max_password_attempts_reached: Vous avez inscrit des mots de passe incorrects un
       trop grand nombre de fois. Vous pouvez réinitialiser votre mot de passe en
@@ -60,7 +55,7 @@ fr:
         obtenir un autre.
       expired: est expiré, veuillez en demander un nouveau
       format_mismatch: Veuillez vous assurer de respecter le format requis.
-      gpo_otp_expired: Votre code de confirmation a expiré. Veuillez solliciter une
+      gpo_otp_expired: Votre code à usage unique a expiré. Veuillez solliciter une
         autre lettre afin d’obtenir un nouveau code.
       improbable_phone: Numéro de téléphone non valide. Veillez à saisir un numéro de
         téléphone valide.
@@ -74,15 +69,14 @@ fr:
       invalid_voice_number: Numéro de téléphone invalide. Vérifiez que vous avez entré
         le bon indicatif international ou régional.
       missing_field: Veuillez remplir ce champ.
-      must_have_us_country_code: Numéro de téléphone non valide. Veuillez vous assurer
-        de saisir un numéro de téléphone avec un code pays des États-Unis.
       no_pending_profile: Aucun profil en attente de vérification
       not_a_number: N’est pas un nombre
-      otp_failed: Échec de l’envoi de votre code de sécurité.
       password_incorrect: Mot de passe incorrect
       personal_key_incorrect: Clé personnelle incorrecte
+      phone_carrier: Nous nous excusons, car nous ne pouvons pas prendre en charge cet
+        opérateur téléphonique pour le moment. Veuillez sélectionner un autre
+        numéro puis réessayer.
       phone_confirmation_throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
-      phone_country_constraint_usa: Dois être un numéro de téléphone américain
       phone_duplicate: Ce compte utilise déjà le numéro de téléphone que vous avez
         entré en tant qu’authentificateur. Veuillez utiliser un numéro de
         téléphone différent.

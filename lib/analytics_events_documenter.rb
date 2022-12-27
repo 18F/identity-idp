@@ -4,6 +4,7 @@ require 'json'
 require 'optparse'
 require 'stringio'
 require 'active_support/core_ext/object/blank'
+require_relative './identity_config'
 
 # Parses YARD output for AnalyticsEvents methods
 class AnalyticsEventsDocumenter
@@ -70,7 +71,7 @@ class AnalyticsEventsDocumenter
       output.puts JSON.pretty_generate(documenter.as_json)
     end
 
-    [ output.string.presence, exit_status ]
+    [output.string.presence, exit_status]
   end
 
   def initialize(database_path:, class_name:, require_extra_params:)
@@ -87,19 +88,25 @@ class AnalyticsEventsDocumenter
   # @return [Array<String>]
   def missing_documentation
     analytics_methods.flat_map do |method_object|
-      param_names = method_object.parameters.map { |p| p.first.chomp(':') }
-      documented_params = method_object.tags('param').map(&:name)
-      missing_attributes = param_names - documented_params - DOCUMENTATION_OPTIONAL_PARAMS
-
       error_prefix = "#{method_object.file}:#{method_object.line} #{method_object.name}"
       errors = []
+
+      param_names = method_object.parameters.map { |p| p.first }
+      _splat_params, other_params = param_names.partition { |p| p.start_with?('**') }
+      keyword_params, other_params = other_params.partition { |p| p.end_with?(':') }
+      if other_params.present?
+        errors << "#{error_prefix} unexpected positional parameters #{other_params.inspect}"
+      end
+
+      keyword_param_names = keyword_params.map { |p| p.chomp(':') }
+      documented_params = method_object.tags('param').map(&:name)
+      missing_attributes = keyword_param_names - documented_params - DOCUMENTATION_OPTIONAL_PARAMS
 
       if !extract_event_name(method_object)
         errors << "#{error_prefix} event name not detected in track_event"
       end
 
       missing_attributes.each do |attribute|
-        next if attribute.start_with?('**')
         errors << "#{error_prefix} #{attribute} (undocumented)"
       end
 
@@ -131,6 +138,10 @@ class AnalyticsEventsDocumenter
         previous_event_names: method_object.tags(PREVIOUS_EVENT_NAME_TAG).map(&:text),
         description: method_object.docstring.presence,
         attributes: attributes,
+        method_name: method_object.name,
+        source_line: method_object.line,
+        source_file: method_object.file,
+        source_sha: IdentityConfig::GIT_SHA,
       }
     end
 

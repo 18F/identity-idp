@@ -35,12 +35,12 @@ module UnconfirmedUserConcern
   def stop_if_invalid_token
     result = email_confirmation_token_validator.submit
     analytics.user_registration_email_confirmation(**result.to_h)
+    return if result.success?
     irs_attempts_api_tracker.user_registration_email_confirmation(
       email: @email_address&.email,
-      success: result.success?,
-      failure_reason: result.to_h[:error_details],
+      success: false,
+      failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
     )
-    return if result.success?
     process_unsuccessful_confirmation
   end
 

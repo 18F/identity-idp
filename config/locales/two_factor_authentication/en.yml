@@ -11,17 +11,19 @@ en:
         has been cancelled.
       text_html: If you can’t use any of the authentication methods above, you can
         %{link}.
+    attempt_remaining_warning_html:
+      one: You have <strong>%{count} attempt</strong> remaining.
+      other: You have <strong>%{count} attempts</strong> remaining.
     backup_code_fallback:
       question: Don’t have your backup codes available?
     backup_code_header_text: Enter your backup security code
     backup_code_prompt: You can use this security code once. After you enter it,
       you’ll need to use a new key.
     choose_another_option: '‹ Choose another option'
-    header_text: Enter your security code
+    header_text: Enter your one-time code
     important_alert_icon: important alert icon
     invalid_backup_code: That backup code is invalid.
-    invalid_otp: That security code is invalid. You can try entering it again or
-      request a new one-time security code.
+    invalid_otp: That one-time code is invalid. Try again or request a new code.
     invalid_personal_key: That personal key is invalid.
     invalid_piv_cac: That PIV/CAC didn’t work. Make sure it’s the right PIV/CAC for
       this account. If it is, there may be a problem with your PIV/CAC, PIN, or
@@ -38,9 +40,9 @@ en:
       piv_cac: Government employee ID
       piv_cac_info: Use your PIV/CAC card instead of a security code.
       sms: Text message
-      sms_info_html: Get security code via text message to <strong>%{phone}</strong>.
+      sms_info_html: Get one-time code via text message to <strong>%{phone}</strong>.
       voice: Automated phone call
-      voice_info_html: Get security code via phone call to <strong>%{phone}</strong>
+      voice_info_html: Get one-time code via phone call to <strong>%{phone}</strong>
         (North America phone numbers only).
       webauthn: Security key
       webauthn_info: Use your security key to access your account.
@@ -55,10 +57,10 @@ en:
       too many times.
     max_generic_login_attempts_reached: For your security, your account is temporarily locked.
     max_otp_login_attempts_reached: For your security, your account is temporarily
-      locked because you have entered the one-time security code incorrectly too
-      many times.
+      locked because you have entered the one-time code incorrectly too many
+      times.
     max_otp_requests_reached: For your security, your account is temporarily locked
-      because you have requested a security code too many times.
+      because you have requested a one-time code too many times.
     max_personal_key_login_attempts_reached: For your security, your account is
       temporarily locked because you have entered the personal key incorrectly
       too many times.
@@ -68,16 +70,16 @@ en:
     mobile_terms_of_service: Mobile terms of service
     no_auth_option: No authentication option could be found for you to sign in.
     opt_in:
-      cant_use_phone: 'Can’t use your phone?'
-      error_retry: 'Sorry, we are having trouble opting you in. Please try again.'
-      opted_out_html: 'You’ve opted out of receiving text messages at %{phone_number}.
-        You can opt in and receive a security code again to that phone number.'
-      opted_out_last_30d_html: 'You’ve opted out of receiving text messages at
+      cant_use_phone: Can’t use your phone?
+      error_retry: Sorry, we are having trouble opting you in. Please try again.
+      opted_out_html: You’ve opted out of receiving text messages at %{phone_number}.
+        You can opt in and receive a security code again to that phone number.
+      opted_out_last_30d_html: You’ve opted out of receiving text messages at
         %{phone_number} within the last 30 days. We can only opt in a phone
-        number once every 30 days.'
+        number once every 30 days.
       title: We could not send a security code to your phone number
-      wait_30d_opt_in: 'After 30 days, you can opt in and receive a security code to
-        that phone number.'
+      wait_30d_opt_in: After 30 days, you can opt in and receive a security code to
+        that phone number.
     otp_delivery_preference:
       instruction: You can change this selection the next time you sign in. If you
         entered a landline, please select “Phone call” below.
@@ -88,9 +90,12 @@ en:
       voice: Phone call
       voice_unsupported: We are unable to call phone numbers in %{location}.
     otp_make_default_number:
-      instruction: Please check the box below if you want this to be the default phone
-        number you receive text messages or phone calls.
+      instruction: Make this phone number the default number where you receive text
+        message or phone calls.
       label: Default phone number
+      one_number_instruction: You must have more than one phone number added to select
+        a default phone number.
+      one_number_title: This is your default number
       title: Make this your default phone number?
     personal_key_fallback:
       question: Don’t have your personal key?
@@ -104,7 +109,7 @@ en:
     phone_fallback:
       question: Can’t use your phone?
     phone_fee_disclosure: Message and data rates may apply.
-    phone_info_html: We’ll send you a security code <strong>each time you sign in</strong>.
+    phone_info_html: We’ll send you a one-time code <strong>each time you sign in</strong>.
     phone_label: Phone number
     piv_cac_fallback:
       question: Don’t have your PIV or CAC available?
@@ -120,8 +125,6 @@ en:
       need to verify your identity using a physical device such as a security
       key or government employee ID (PIV or CAC) to access your information.
     two_factor_choice: Authentication method setup
-    two_factor_choice_intro: Add another layer of security by using one of the
-      multi-factor authentication options below.
     two_factor_choice_options:
       auth_app: Authentication application
       auth_app_info: Download or use an authentication app of your choice to generate
@@ -143,12 +146,12 @@ en:
       piv_cac: Government employee ID
       piv_cac_info: PIV/CAC cards for government and military employees. Desktop only.
       sms: Text message / SMS
-      sms_info: Get your security code via text message / SMS.
+      sms_info: Get your one-time code via text message / SMS.
       unused_backup_code:
         one: '(%{count} unused code)'
         other: '(%{count} unused codes)'
       voice: Phone call
-      voice_info: Get your security code via phone call.
+      voice_info: Get your one-time code via phone call.
       webauthn: Security key
       webauthn_info: A physical device, often shaped like a USB drive, that you plug
         in to your device.

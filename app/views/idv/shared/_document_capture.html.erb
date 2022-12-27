@@ -6,13 +6,13 @@
 <% end %>
 <% add_document_capture_image_urls_to_csp(
      request,
-     [front_image_upload_url, back_image_upload_url, selfie_image_upload_url],
+     [front_image_upload_url, back_image_upload_url],
    )
    session_id = flow_session[:document_capture_session_uuid]
 %>
 <%= tag.div id: 'document-capture-form', data: {
       app_name: APP_NAME,
-      liveness_required: liveness_checking_enabled?.presence,
+      liveness_required: nil,
       mock_client: (DocAuthRouter.doc_auth_vendor(discriminator: session_id) == 'mock').presence,
       help_center_redirect_url: help_center_redirect_url(
         flow: :idv,
@@ -29,17 +29,21 @@
       sharpness_threshold: IdentityConfig.store.doc_auth_client_sharpness_threshold,
       status_poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
       max_capture_attempts_before_tips: IdentityConfig.store.doc_auth_max_capture_attempts_before_tips,
-      max_attempts_before_native_camera: IdentityConfig.store.doc_auth_max_attempts_before_native_camera,
+      max_capture_attempts_before_native_camera: IdentityConfig.store.doc_auth_max_capture_attempts_before_native_camera,
+      max_submission_attempts_before_native_camera: IdentityConfig.store.doc_auth_max_submission_attempts_before_native_camera,
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      use_alternate_sdk: use_alternate_sdk,
+      acuant_version: acuant_version,
       sp_name: sp_name,
       flow_path: flow_path,
       cancel_url: idv_cancel_path,
       failure_to_proof_url: failure_to_proof_url,
       front_image_upload_url: front_image_upload_url,
       back_image_upload_url: back_image_upload_url,
-      selfie_image_upload_url: selfie_image_upload_url,
       keep_alive_endpoint: sessions_keepalive_url,
       idv_in_person_url: Idv::InPersonConfig.enabled_for_issuer?(decorated_session.sp_issuer) ? idv_in_person_url : nil,
       security_and_privacy_how_it_works_url: MarketingSite.security_and_privacy_how_it_works_url,
+      arcgis_search_enabled: IdentityConfig.store.arcgis_search_enabled,
     } %>
   <%= simple_form_for(
         :doc_auth,

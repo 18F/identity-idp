@@ -11,7 +11,6 @@ module DocAuth
         attr_reader :response_mocks
         attr_accessor :last_uploaded_front_image
         attr_accessor :last_uploaded_back_image
-        attr_accessor :last_uploaded_selfie_image
       end
 
       def self.mock_response!(method:, response:)
@@ -23,7 +22,6 @@ module DocAuth
         @response_mocks = {}
         @last_uploaded_front_image = nil
         @last_uploaded_back_image = nil
-        @last_uploaded_selfie_image = nil
       end
 
       def create_document
@@ -48,18 +46,9 @@ module DocAuth
         DocAuth::Response.new(success: true)
       end
 
-      def post_selfie(image:, instance_id:)
-        return mocked_response_for_method(__method__) if method_mocked?(__method__)
-
-        self.class.last_uploaded_selfie_image = image
-        DocAuth::Response.new(success: true)
-      end
-
       def post_images(
         front_image:,
         back_image:,
-        selfie_image:,
-        liveness_checking_enabled: nil,
         image_source: nil,
         user_uuid: nil,
         uuid_prefix: nil
@@ -77,10 +66,10 @@ module DocAuth
         back_image_response = post_back_image(image: back_image, instance_id: instance_id)
         return back_image_response unless back_image_response.success?
 
-        process_results(instance_id, liveness_checking_enabled, selfie_image)
+        get_results(instance_id: instance_id)
       end
 
-      def get_results(instance_id:, liveness_enabled:)
+      def get_results(instance_id:)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
         overriden_config = config.dup.tap do |c|
@@ -92,26 +81,11 @@ module DocAuth
         ResultResponse.new(
           self.class.last_uploaded_back_image,
           overriden_config,
-          liveness_enabled,
         )
       end
       # rubocop:enable Lint/UnusedMethodArgument
 
       private
-
-      def process_results(instance_id, liveness_checking_enabled, selfie_image)
-        results_response = get_results(
-          instance_id: instance_id,
-          liveness_enabled: liveness_checking_enabled,
-        )
-        return results_response unless results_response.success?
-
-        if liveness_checking_enabled
-          post_selfie(image: selfie_image, instance_id: instance_id).merge(results_response)
-        else
-          results_response
-        end
-      end
 
       def method_mocked?(method_name)
         mocked_response_for_method(method_name).present?

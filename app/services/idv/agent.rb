@@ -21,7 +21,6 @@ module Idv
       job_arguments = {
         encrypted_arguments: encrypted_arguments,
         should_proof_state_id: should_proof_state_id,
-        dob_year_only: false,
         trace_id: trace_id,
         result_id: document_capture_session.result_id,
         user_id: user_id,
@@ -59,7 +58,6 @@ module Idv
 
     def proof_document(
       document_capture_session,
-      liveness_checking_enabled:,
       trace_id:,
       image_metadata:,
       analytics_data:,
@@ -71,7 +69,6 @@ module Idv
 
       DocumentProofingJob.perform_later(
         encrypted_arguments: encrypted_arguments,
-        liveness_checking_enabled: liveness_checking_enabled,
         result_id: document_capture_session.result_id,
         trace_id: trace_id,
         image_metadata: image_metadata,

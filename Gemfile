@@ -13,15 +13,14 @@ gem 'aws-sdk-ses', '~> 1.6'
 gem 'aws-sdk-sns'
 gem 'barby', '~> 0.6.8'
 gem 'base32-crockford'
-gem 'blueprinter', '~> 0.25.3'
 gem 'bootsnap', '~> 1.9.0', require: false
 gem 'browser'
 gem 'connection_pool'
 gem 'cssbundling-rails'
 gem 'devise', '~> 4.8'
 gem 'dotiw', '>= 4.0.1'
-gem 'faraday'
-gem 'faraday_middleware'
+gem 'faraday', '~> 2'
+gem 'faraday-retry'
 gem 'foundation_emails'
 gem 'good_job', '~> 3.0'
 gem 'hashie', '~> 4.1'
@@ -33,6 +32,7 @@ gem 'jsbundling-rails', '~> 1.0.0'
 gem 'jwe'
 gem 'jwt'
 gem 'lograge', '>= 0.11.2'
+gem 'lookbook', '~> 1.3.3', require: false
 gem 'lru_redux'
 gem 'maxminddb'
 gem 'multiset'
@@ -57,7 +57,7 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', github: '18F/saml_idp', tag: '0.17.0-18f'
+gem 'saml_idp', github: '18F/saml_idp', tag: '0.18.0-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
 gem 'sprockets-rails'
@@ -96,7 +96,7 @@ group :development, :test do
   gem 'erb_lint', '~> 0.1.0', require: false
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
-  gem 'nokogiri', '~> 1.13.6'
+  gem 'nokogiri', '~> 1.13.10'
   gem 'parallel_tests'
   gem 'pg_query', require: false
   gem 'pry-byebug'
@@ -106,14 +106,13 @@ group :development, :test do
   gem 'puma'
   gem 'rspec-rails', '6.0.0.rc1'
   gem 'rubocop', '~> 1.29.1', require: false
-  gem 'rubocop-performance', '~> 1.12.0', require: false
+  gem 'rubocop-performance', '~> 1.14.0', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
 end
 
 group :test do
   gem 'axe-core-rspec', '~> 4.2'
   gem 'bundler-audit', require: false
-  gem 'capybara-selenium', '>= 0.0.6'
   gem 'simplecov', '~> 0.21.0', require: false
   gem 'simplecov-cobertura'
   gem 'simplecov_json_formatter'
@@ -124,8 +123,9 @@ group :test do
   gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
   gem 'rspec-retry'
+  gem 'rspec_junit_formatter'
   gem 'shoulda-matchers', '~> 4.0', require: false
-  gem 'webdrivers', '~> 4.0'
+  gem 'webdrivers', '~> 5.2.0'
   gem 'webmock'
   gem 'zonebie'
 end

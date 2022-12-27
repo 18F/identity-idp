@@ -64,7 +64,6 @@ describe Idv::Steps::SsnStep do
 
       it 'logs attempts api event' do
         expect(attempts_api).to receive(:idv_ssn_submitted).with(
-          success: true,
           ssn: ssn,
         )
         step.call
@@ -80,35 +79,16 @@ describe Idv::Steps::SsnStep do
         end
       end
 
-      context 'with proofing device profiling collecting enabled' do
-        it 'adds a session id to flow session' do
-          allow(IdentityConfig.store).
-            to receive(:proofing_device_profiling_collecting_enabled).
-            and_return(true)
-          step.extra_view_variables
-
-          expect(flow.flow_session[:threatmetrix_session_id]).to_not eq(nil)
-        end
-
-        it 'does not change threatmetrix_session_id when updating ssn' do
-          allow(IdentityConfig.store).
-            to receive(:proofing_device_profiling_collecting_enabled).
-            and_return(true)
-          step.call
-          session_id = flow.flow_session[:threatmetrix_session_id]
-          step.extra_view_variables
-          expect(flow.flow_session[:threatmetrix_session_id]).to eq(session_id)
-        end
+      it 'adds a threatmetrix session id to flow session' do
+        step.extra_view_variables
+        expect(flow.flow_session[:threatmetrix_session_id]).to_not eq(nil)
       end
 
-      context 'with proofing device profiling collecting disabled' do
-        it 'still adds a session id to flow session' do
-          allow(IdentityConfig.store).
-            to receive(:proofing_device_profiling_collecting_enabled).
-            and_return(false)
-          step.extra_view_variables
-          expect(flow.flow_session[:threatmetrix_session_id]).to_not eq(nil)
-        end
+      it 'does not change threatmetrix_session_id when updating ssn' do
+        step.call
+        session_id = flow.flow_session[:threatmetrix_session_id]
+        step.extra_view_variables
+        expect(flow.flow_session[:threatmetrix_session_id]).to eq(session_id)
       end
     end
 

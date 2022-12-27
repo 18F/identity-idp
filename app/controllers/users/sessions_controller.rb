@@ -23,6 +23,7 @@ module Users
 
       @request_id = request_id_if_valid
       @ial = sp_session_ial
+      @browser_is_ie11 = browser_is_ie11?
       super
     end
 
@@ -94,6 +95,10 @@ module Users
     end
 
     def process_locked_out_session
+      irs_attempts_api_tracker.login_rate_limited(
+        email: auth_params[:email],
+      )
+
       flash[:error] = t('errors.sign_in.bad_password_limit')
       redirect_to root_url(request_id: request_id)
     end
@@ -103,12 +108,7 @@ module Users
       analytics.invalid_authenticity_token(controller: controller_info)
       sign_out
       flash[:error] = t('errors.general')
-      begin
-        redirect_back fallback_location: new_user_session_url, allow_other_host: false
-      rescue ActionController::Redirecting::UnsafeRedirectError => err
-        # Exceptions raised inside exception handlers are not propagated up, so we manually rescue
-        unsafe_redirect_error(err)
-      end
+      redirect_back fallback_location: new_user_session_url, allow_other_host: false
     end
 
     def check_user_needs_redirect
@@ -155,6 +155,10 @@ module Users
       expires_at.to_i - Time.zone.now.to_i
     end
 
+    def browser_is_ie11?
+      BrowserCache.parse(request.user_agent).ie?(11)
+    end
+
     def alive?
       return false unless session && expires_at
       session_alive = expires_at > now
@@ -173,7 +177,7 @@ module Users
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
       )
-      irs_attempts_api_tracker.email_and_password_auth(
+      irs_attempts_api_tracker.login_email_and_password_auth(
         email: email,
         success: success,
       )
@@ -217,7 +221,7 @@ module Users
       ).call
     end
 
-    LETTERS_AND_DASHES = /\A[a-z0-9\-]+\Z/i.freeze
+    LETTERS_AND_DASHES = /\A[a-z0-9\-]+\Z/i
 
     def request_id_if_valid
       request_id = (params[:request_id] || sp_session[:request_id]).to_s

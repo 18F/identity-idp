@@ -13,7 +13,7 @@ fr:
       address: Mettez à jour votre adresse postale
       doc_capture: Ajoutez votre pièce d’identité
       link_sent: Lien envoyé
-      otp_delivery: Recevez un code de sécurité
+      otp_delivery: Recevez un code à usage unique
       processing_images: Traitement de vos images
       ssn: Entrez votre numéro de sécurité sociale
       switch_back: Retournez sur votre ordinateur
@@ -24,7 +24,9 @@ fr:
       email_language: Modifier la préférence de langue des e-mails
       password: Modifier votre mot de passe
       phone: Modifier votre numéro de téléphone
-    enter_2fa_code: Entrez le code de sécurité à utilisation unique
+    enter_2fa_code:
+      one_time_code: Entrez le code de sécurité à usage unique
+      security_code: Entrez le code de sécurité à utilisation unique
     failure:
       information_not_verified: Informations personnelles non vérifiées
       phone_verification: Numéro de téléphone non vérifié
@@ -33,13 +35,16 @@ fr:
       cancellation_prompt: Annulez la vérification d’identité
       cancelled: La vérification d’identité est annulée
       come_back_soon: Revenez bientôt
-      enter_security_code: Entrez votre code de sécurité
+      enter_one_time_code: Entrez votre code à usage unique
       get_letter: Obtenez une lettre
       personal_key: Enregistrez votre clé personnelle
       phone: Vérifiez votre numéro de téléphone
       reset_password: Réinitialisez le mot de passe
       review: Saisissez à nouveau votre mot de passe
       verify_info: Vérifiez vos informations
+    inherited_proofing:
+      cancellation_prompt: Annulez la vérification d’identité
+      cancelled: La vérification d’identité est annulée
     mfa_setup:
       suggest_second_mfa: Vous avez ajouté votre première méthode d’authentification !
         Ajoutez-en une deuxième  en guise de sauvegarde.
@@ -52,7 +57,8 @@ fr:
       confirm: Confirmez le mot de passe de votre compte
       forgot: Réinitialisez le mot de passe
     personal_key: Juste au cas
-    phone_setup: Envoyer votre code de sécurité par SMS ou par appel téléphonique
+    phone_setup: Envoyez votre code à usage unique par message texte (SMS) ou par
+      appel téléphonique.
     piv_cac_login:
       add: Ajoutez votre PIV ou CAC
       new: Utilisez votre PIV / CAC pour vous connecter à votre compte
@@ -66,10 +72,12 @@ fr:
     revoke_consent: Révoquer le consentement
     rules_of_use: Règles d’utilisation
     sign_up:
-      completion_consent_expired: Cela fait un an que vous nous avez donné votre
-        consentement pour partager vos informations
-      completion_first_sign_in: Vous avez créé un compte avec %{app_name}
-      completion_ial2: Vous avez verifié votre identité avec %{app_name}
+      completion_consent_expired_ial1: Cela fait un an que vous nous avez donné votre
+        accord pour partager vos informations.
+      completion_consent_expired_ial2: Il y a un an, vous nous avez donné votre accord
+        pour partager votre identité vérifiée.
+      completion_first_sign_in: Continuer vers %{sp}
+      completion_ial2: Connectez vos informations vérifiées à %{sp}
       completion_new_attributes: '%{sp} demande de nouvelles informations'
       completion_new_sp: Vous vous connectez pour la première fois
       confirmation: Continuer à vous connecter

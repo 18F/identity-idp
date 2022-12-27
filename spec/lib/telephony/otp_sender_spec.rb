@@ -7,21 +7,31 @@ RSpec.describe Telephony::OtpSender do
     Telephony::Test::Call.clear_calls
   end
 
+  shared_examples 'pinpoint valid SSML message' do
+    it 'does not contain reserved SSML characters' do
+      # See: https://docs.aws.amazon.com/polly/latest/dg/escapees.html
+      expect(Nokogiri::XML(message) { |config| config.strict }.text).not_to match(/["&'<>]/)
+    end
+  end
+
   context 'with the test adapter' do
     subject do
       described_class.new(
         to: to,
         otp: otp,
         expiration: expiration,
+        otp_format: otp_format,
         channel: channel,
         domain: domain,
         country_code: country_code,
+        extra_metadata: { phone_fingerprint: 'abc123' },
       )
     end
 
     let(:to) { '+1 (202) 262-1234' }
     let(:otp) { '123456' }
     let(:expiration) { 5 }
+    let(:otp_format) { I18n.t('telephony.format_type.digit') }
     let(:domain) { 'login.gov' }
     let(:country_code) { 'US' }
 
@@ -42,6 +52,24 @@ RSpec.describe Telephony::OtpSender do
         subject.send_confirmation_otp
 
         expect(Telephony::Test::Message.last_otp).to eq(otp)
+      end
+
+      it 'logs a message being sent' do
+        expect(Telephony.config.logger).to receive(:info).with(
+          {
+            success: true,
+            errors: {},
+            request_id: 'fake-message-request-id',
+            message_id: 'fake-message-id',
+            phone_fingerprint: 'abc123',
+            adapter: :test,
+            channel: :sms,
+            context: :authentication,
+            country_code: 'US',
+          }.to_json,
+        )
+
+        subject.send_authentication_otp
       end
     end
 
@@ -68,15 +96,18 @@ RSpec.describe Telephony::OtpSender do
         to: to,
         otp: otp,
         expiration: expiration,
+        otp_format: otp_format,
         channel: channel,
         domain: domain,
         country_code: country_code,
+        extra_metadata: {},
       )
     end
 
     let(:to) { '+1 (202) 262-1234' }
     let(:otp) { '123456' }
     let(:expiration) { 5 }
+    let(:otp_format) { I18n.t('telephony.format_type.digit') }
     let(:domain) { 'login.gov' }
     let(:country_code) { 'US' }
 
@@ -132,59 +163,71 @@ RSpec.describe Telephony::OtpSender do
 
     context 'for voice' do
       let(:channel) { :voice }
+      context 'for signin/signup' do
+        it 'sends an authentication OTP with Pinpoint Voice' do
+          message = <<~XML.squish
+            <speak>
+              <prosody rate='slow'>
+                Hello! Your 6-digit #{APP_NAME} one-time code is,
+                1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
+                4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
+          XML
 
-      it 'sends an authentication OTP with Pinpoint Voice' do
-        message = <<~XML.squish
-          <speak>
-            <prosody rate='slow'>
-              Hello! Your #{APP_NAME} one time passcode is,
-              1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
-              4 <break time='0.5s' /> 5 <break time='0.5s' /> 6,
-              again, your passcode is,
-              1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
-              4 <break time='0.5s' /> 5 <break time='0.5s' /> 6,
-              This code expires in 5 minutes.
-            </prosody>
-          </speak>
-        XML
+          adapter = instance_double(Telephony::Pinpoint::VoiceSender)
+          expect(adapter).to receive(:send).with(
+            message: start_with(message),
+            to: to,
+            otp: otp,
+            country_code: country_code,
+          )
+          expect(Telephony::Pinpoint::VoiceSender).to receive(:new).and_return(adapter)
 
-        adapter = instance_double(Telephony::Pinpoint::VoiceSender)
-        expect(adapter).to receive(:send).with(
-          message: message,
-          to: to,
-          otp: otp,
-          country_code: country_code,
-        )
-        expect(Telephony::Pinpoint::VoiceSender).to receive(:new).and_return(adapter)
+          subject.send_confirmation_otp
+        end
 
-        subject.send_confirmation_otp
+        it 'sends a confirmation OTP with Pinpoint Voice' do
+          message = <<~XML.squish
+            <speak>
+              <prosody rate='slow'>
+                Hello! Your 6-digit #{APP_NAME} one-time code is,
+                1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
+                4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
+          XML
+
+          adapter = instance_double(Telephony::Pinpoint::VoiceSender)
+          expect(adapter).to receive(:send).with(
+            message: start_with(message),
+            to: to,
+            otp: otp,
+            country_code: country_code,
+          )
+          expect(Telephony::Pinpoint::VoiceSender).to receive(:new).and_return(adapter)
+          subject.send_confirmation_otp
+        end
       end
 
-      it 'sends a confirmation OTP with Pinpoint Voice' do
-        message = <<~XML.squish
-          <speak>
-            <prosody rate='slow'>
-              Hello! Your #{APP_NAME} one time passcode is,
-              1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
-              4 <break time='0.5s' /> 5 <break time='0.5s' /> 6,
-              again, your passcode is,
-              1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
-              4 <break time='0.5s' /> 5 <break time='0.5s' /> 6,
-              This code expires in 5 minutes.
-            </prosody>
-          </speak>
-        XML
+      context 'for Idv phone confirmation' do
+        let(:otp_format) { I18n.t('telephony.format_type.character') }
 
-        adapter = instance_double(Telephony::Pinpoint::VoiceSender)
-        expect(adapter).to receive(:send).with(
-          message: message,
-          to: to,
-          otp: otp,
-          country_code: country_code,
-        )
-        expect(Telephony::Pinpoint::VoiceSender).to receive(:new).and_return(adapter)
+        it 'sends a confirmation OTP with Pinpoint Voice for Idv' do
+          message = <<~XML.squish
+            <speak>
+              <prosody rate='slow'>
+                Hello! Your 6-character #{APP_NAME} one-time code is,
+                1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
+                4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
+          XML
 
-        subject.send_confirmation_otp
+          adapter = instance_double(Telephony::Pinpoint::VoiceSender)
+          expect(adapter).to receive(:send).with(
+            message: start_with(message),
+            to: to,
+            otp: otp,
+            country_code: country_code,
+          )
+          expect(Telephony::Pinpoint::VoiceSender).to receive(:new).and_return(adapter)
+          subject.send_confirmation_otp
+        end
       end
 
       it 'sends valid XML' do
@@ -210,8 +253,10 @@ RSpec.describe Telephony::OtpSender do
         otp: otp,
         channel: channel,
         expiration: Time.zone.now,
+        otp_format: I18n.t('telephony.format_type.digit'),
         domain: 'login.gov',
         country_code: country_code,
+        extra_metadata: {},
       )
     end
 
@@ -257,21 +302,27 @@ RSpec.describe Telephony::OtpSender do
   end
 
   describe '#authentication_message' do
+    let(:channel) { nil }
     let(:sender) do
       Telephony::OtpSender.new(
         to: '+18888675309',
         otp: 'ABC123',
-        channel: 'sms',
+        channel: channel,
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
+        otp_format: I18n.t('telephony.format_type.digit'),
         domain: 'secure.login.gov',
         country_code: 'US',
+        extra_metadata: {},
       )
     end
 
+    subject(:message) { sender.authentication_message }
+
     context 'sms' do
+      let(:channel) { :sms }
+
       context 'English' do
         it 'does not contain any non-GSM characters and is less than or equal to 160 characters' do
-          message = sender.authentication_message
           expect(Telephony.sms_parts(message)).to eq 1
           expect(Telephony.gsm_chars_only?(message)).to eq true
         end
@@ -283,7 +334,6 @@ RSpec.describe Telephony::OtpSender do
         it 'is sent in three parts' do
           I18n.locale = :es
 
-          message = sender.authentication_message
           expect(Telephony.sms_parts(message)).to eq 3
         ensure
           I18n.locale = :en
@@ -294,32 +344,63 @@ RSpec.describe Telephony::OtpSender do
         it 'does not contain any non-GSM characters and is less than or equal to 160 characters' do
           I18n.locale = :fr
 
-          message = sender.authentication_message
           expect(Telephony.sms_parts(message)).to eq 1
           expect(Telephony.gsm_chars_only?(message)).to eq true
         ensure
           I18n.locale = :en
         end
+      end
+    end
+
+    context 'voice' do
+      let(:channel) { :voice }
+      let(:locale) { nil }
+
+      before { I18n.locale = locale }
+
+      context 'English' do
+        let(:locale) { :en }
+
+        it_behaves_like 'pinpoint valid SSML message'
+      end
+
+      context 'Spanish' do
+        let(:locale) { :es }
+
+        it_behaves_like 'pinpoint valid SSML message'
+      end
+
+      context 'French' do
+        let(:locale) { :fr }
+
+        it_behaves_like 'pinpoint valid SSML message'
       end
     end
   end
 
   describe '#confirmation_message' do
+    let(:channel) { nil }
+    let(:otp_format) { I18n.t('telephony.format_type.digit') }
     let(:sender) do
       Telephony::OtpSender.new(
         to: '+18888675309',
         otp: 'ABC123',
-        channel: 'sms',
+        channel: channel,
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
+        otp_format: otp_format,
         domain: 'secure.login.gov',
         country_code: 'US',
+        extra_metadata: {},
       )
     end
 
+    subject(:message) { sender.confirmation_message }
+
     context 'sms' do
+      let(:channel) { :sms }
+
       context 'English' do
         it 'does not contain any non-GSM characters and is sent in one part' do
-          message = sender.confirmation_message
           expect(Telephony.sms_parts(message)).to eq 1
           expect(Telephony.gsm_chars_only?(message)).to eq true
         end
@@ -331,7 +412,6 @@ RSpec.describe Telephony::OtpSender do
         it 'is sent in three parts' do
           I18n.locale = :es
 
-          message = sender.confirmation_message
           expect(Telephony.sms_parts(message)).to eq 3
         ensure
           I18n.locale = :en
@@ -342,12 +422,36 @@ RSpec.describe Telephony::OtpSender do
         it 'does not contain any non-GSM characters and is sent in one part' do
           I18n.locale = :fr
 
-          message = sender.confirmation_message
           expect(Telephony.sms_parts(message)).to eq 1
           expect(Telephony.gsm_chars_only?(message)).to eq true
         ensure
           I18n.locale = :en
         end
+      end
+    end
+
+    context 'voice' do
+      let(:channel) { :voice }
+      let(:locale) { nil }
+
+      before { I18n.locale = locale }
+
+      context 'English' do
+        let(:locale) { :en }
+
+        it_behaves_like 'pinpoint valid SSML message'
+      end
+
+      context 'Spanish' do
+        let(:locale) { :es }
+
+        it_behaves_like 'pinpoint valid SSML message'
+      end
+
+      context 'French' do
+        let(:locale) { :fr }
+
+        it_behaves_like 'pinpoint valid SSML message'
       end
     end
   end

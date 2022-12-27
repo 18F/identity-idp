@@ -57,7 +57,7 @@ fr:
       totp_confirm_delete: Oui, supprimez l’application d’authentification
       unknown_location: lieu inconnu
       verification:
-        instructions: Votre compte nécessite un code de confirmation pour être vérifié.
+        instructions: Votre compte nécessite un code à usage unique pour être vérifié.
         reactivate_button: Entrez le code que vous avez reçu par la poste
         success: Votre compte a été vérifié.
       webauthn: Clé de sécurité
@@ -77,6 +77,7 @@ fr:
       delete_account: Effacer
       regenerate_personal_key: Réinitialiser
     login:
+      ie_not_supported: Internet Explorer 11 ne sera pas pris en charge après le %{date}
       piv_cac: Connectez-vous avec votre ID d’employé du gouvernement
     navigation:
       access_services: Accédez à vos avantages et services gouvernementaux depuis
@@ -104,7 +105,7 @@ fr:
       get_new: Obtenir une nouvelle clé personnelle
       get_new_description: Lorsque vous recevez une nouvelle clé personnelle, votre
         ancienne clé personnelle ne fonctionnera plus.
-      last_generated: 'Dernière génération le %{timestamp}'
+      last_generated: Dernière génération le %{timestamp}
       needs_new: Votre compte a besoin d’une nouvelle clé personnelle. Votre ancienne
         clé personnelle ne fonctionnera pas si vous oubliez votre mot de passe.
       old_key_will_not_work: Veuillez imprimer, copier ou télécharger la nouvelle clé

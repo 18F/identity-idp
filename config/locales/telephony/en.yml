@@ -7,28 +7,30 @@ en:
       account to cancel.
     authentication_otp:
       sms: |-
-        %{app_name}: Your security code is %{code}. It expires in %{expiration} minutes. Don't share this code with anyone.
+        %{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don't share this code with anyone.
 
         @%{domain} #%{code}
-      voice: Hello! Your %{app_name} one time passcode is, %{code}, again, your
-        passcode is, %{code}, This code expires in %{expiration} minutes.
+      voice: Hello! Your 6-%{format_type} %{app_name} one-time code is, %{code}. Your
+        one-time code is, %{code}. Again, your one-time code is %{code}. This
+        code expires in %{expiration} minutes.
     confirmation_otp:
       sms: |-
-        %{app_name}: Your security code is %{code}. It expires in %{expiration} minutes. Don't share this code with anyone.
+        %{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don't share this code with anyone.
 
         @%{domain} #%{code}
-      voice: Hello! Your %{app_name} one time passcode is, %{code}, again, your
-        passcode is, %{code}, This code expires in %{expiration} minutes.
-    doc_auth_link: "%{link} You've requested to verify your identity on a mobile
-      phone.  Please take a photo of your state issued ID."
+      voice: Hello! Your 6-%{format_type} %{app_name} one-time code is, %{code}. Your
+        one-time code is, %{code}. Again, your one-time code is %{code}. This
+        code expires in %{expiration} minutes.
+    doc_auth_link: |-
+      %{app_name}: %{link} You're verifying your identity to access %{sp_or_app_name}. Take a photo of your ID to continue.
     error:
       friendly_message:
-        daily_voice_limit_reached: Your security code failed to send because you
+        daily_voice_limit_reached: Your one-time code failed to send because you
           exceeded the maximum number of phone calls in 24 hours to this phone
           number. You can either request a code by text message or use a
           different number to receive a phone call.
         duplicate_endpoint: The phone number entered is not valid.
-        generic: Your security code failed to send.
+        generic: Your one-time code failed to send.
         invalid_calling_area: Calls to that phone number are not supported. Please try
           SMS if you have an SMS-capable phone.
         invalid_phone_number: The phone number entered is not valid.
@@ -43,6 +45,9 @@ en:
         unknown_failure: We are experiencing technical difficulties.  Please try again later.
         voice_unsupported: Invalid phone number. Check that you’ve entered the correct
           country code or area code.
+    format_type:
+      character: character
+      digit: digit
     personal_key_regeneration_notice: A new personal key has been issued for your
       %{app_name} account. If this wasn't you, reset your password.
     personal_key_sign_in_notice: Your personal key was just used to sign into your

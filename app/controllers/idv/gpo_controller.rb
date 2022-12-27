@@ -1,17 +1,18 @@
 module Idv
   class GpoController < ApplicationController
     include IdvSession
+    include StepIndicatorConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_needed
     before_action :confirm_user_completed_idv_profile_step
     before_action :confirm_mail_not_spammed
-    before_action :confirm_gpo_allowed_if_strict_ial2
 
     def index
       @presenter = GpoPresenter.new(current_user, url_options)
+      @step_indicator_current_step = step_indicator_current_step
       analytics.idv_gpo_address_visited(
-        letter_already_sent: @presenter.letter_already_sent?,
+        letter_already_sent: @presenter.resend_requested?,
       )
     end
 
@@ -35,22 +36,24 @@ module Idv
 
     private
 
+    def step_indicator_current_step
+      if resend_requested?
+        :get_a_letter
+      else
+        :verify_phone_or_address
+      end
+    end
+
     def update_tracking
       analytics.idv_gpo_address_letter_requested(resend: resend_requested?)
-      irs_attempts_api_tracker.idv_letter_requested(success: true, resend: resend_requested?)
+      irs_attempts_api_tracker.idv_gpo_letter_requested(resend: resend_requested?)
       create_user_event(:gpo_mail_sent, current_user)
 
-      ProofingComponent.create_or_find_by(user: current_user).update(address_check: 'gpo_letter')
+      ProofingComponent.find_or_create_by(user: current_user).update(address_check: 'gpo_letter')
     end
 
     def resend_requested?
       current_user.decorate.pending_profile_requires_verification?
-    end
-
-    def confirm_gpo_allowed_if_strict_ial2
-      return unless sp_session[:ial2_strict]
-      return if IdentityConfig.store.gpo_allowed_for_strict_ial2
-      redirect_to idv_phone_url
     end
 
     def confirm_mail_not_spammed
@@ -87,7 +90,8 @@ module Idv
 
     def send_reminder
       current_user.confirmed_email_addresses.each do |email_address|
-        UserMailer.letter_reminder(current_user, email_address.email).deliver_now_or_later
+        UserMailer.with(user: current_user, email_address: email_address).
+          letter_reminder.deliver_now_or_later
       end
     end
 

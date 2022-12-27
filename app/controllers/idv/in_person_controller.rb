@@ -9,8 +9,10 @@ module Idv
 
     include IdvSession
     include Flow::FlowStateMachine
+    include Idv::ThreatMetrixConcern
 
     before_action :redirect_if_flow_completed
+    before_action :override_csp_for_threat_metrix
 
     FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_in_person_step_url,
@@ -20,10 +22,6 @@ module Idv
     }.freeze
 
     private
-
-    def render_404_if_disabled
-      render_not_found unless InPersonConfig.enabled_for_issuer?(current_sp&.issuer)
-    end
 
     def redirect_unless_enrollment
       redirect_to idv_url unless current_user.establishing_in_person_enrollment

@@ -3,11 +3,11 @@ fr:
   forms:
     backup_code:
       are_you_sure_desc_html:
-        - <strong>Les codes de sauvegarde sont la méthode d’authentification la
+        - '<strong>Les codes de sauvegarde sont la méthode d’authentification la
           moins recommandée,</strong> car les codes peuvent facilement être
           perdus. Nous vous encourageons à explorer d’autres options
           d’authentification telles que le déverrouillage facial ou tactile, une
-          application d’authentification ou une clé de sécurité.
+          application d’authentification ou une clé de sécurité.'
         - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer,
           copier ou noter. Vous saisirez un code chaque fois que vous vous
           connecterez.
@@ -15,7 +15,6 @@ fr:
       caution_delete: Si vous supprimez vos codes de sauvegarde, vous ne pourrez plus
         les utiliser pour vous connecter.
       confirm_delete: Êtes-vous sûr de vouloir supprimer vos codes de sauvegarde?
-      download: Télécharger
       generate: Obtenir des codes
       last_code: Vous avez utilisé votre dernier code de sauvegarde. Veuillez
         imprimer, copier ou télécharger les codes ci-dessous. Vous pourrez
@@ -49,7 +48,7 @@ fr:
       edit: Modifier
       manage: Administrer
       resend_confirmation: Envoyer les instructions de confirmation de nouveau
-      send_security_code: Envoyer le code
+      send_one_time_code: Envoyer le code
       submit:
         confirm_change: Confirmer le changement
         default: Soumettre
@@ -72,9 +71,29 @@ fr:
     personal_key:
       alternative: Vous n’avez pas votre clé personnelle?
       confirmation_label: Clé personnelle
+      download: Télécharger (fichier texte)
       instructions: Veuillez confirmer que vous avez une copie de votre clé
         personnelle en l’entrant ci-dessous.
+      required_checkbox: Veuillez cocher cette case pour continuer.
       title: Entrez votre clé personnelle
+    personal_key_partial:
+      acknowledgement:
+        bullets:
+          - Vous perdrez l’accès à votre compte
+          - Vous allez devoir vérifier à nouveau votre identité
+        header: En cas d’oubli de votre mot de passe, vous aurez besoin de votre clé
+          personnelle. Gardez-la en sécurité et ne la partagez avec personne.
+        text: 'Si vous réinitialisez votre mot de passe sans votre clé personnelle:'
+      explanation:
+        header: Qu’est-ce qu’une clé personnelle?
+        text:
+          - Une clé personnelle « verrouille » vos informations personnelles
+            avec votre compte. C’est le seul moyen de déverrouiller vos
+            informations si vous perdez ou oubliez votre mot de passe.
+          - Lors de la réinitialisation de votre mot de passe, Login.gov vous
+            demandera votre clé personnelle pour s’assurer que vous êtes bien
+            vous, et non quelqu’un qui se fait passer pour vous.
+      header: Sauvegardez votre clé personnelle
     phone:
       buttons:
         delete: Supprimer le numéro de teléfono
@@ -115,8 +134,6 @@ fr:
       totp_step_4: Entrez le code temporaire de votre application
     two_factor:
       backup_code: Code de sécurité
-      # removed "security code" form labels as they trigger ios credit card reader
-      code: Code à usage unique
       personal_key: Clé personnelle
       try_again: Utilisez un autre numéro de téléphone
     validation:
@@ -124,12 +141,12 @@ fr:
     verify_profile:
       instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
         avez reçue.
-      name: Code de confirmation
+      name: Code à usage unique
       submit: Confirmer le compte
       title: Confirmez votre compte
       welcome_back: Content de vous revoir
       welcome_back_description: '<p>Si vous avez reçu votre lettre, veuillez entrer
-        votre code de confirmation ci-dessous. </p> <p>Si votre lettre n’est pas
+        votre code à usage unique ci-dessous. </p> <p>Si votre lettre n’est pas
         encore arrivée, veuillez être patient car les <strong>lettres prennent
         généralement entre trois à sept jours ouvrables pour arriver</strong>.
         Nous vous remercions de votre patience.</p>'
@@ -159,6 +176,10 @@ fr:
       intro_link_text: En savoir plus sur le déverrouillage facial ou tactile.
       login_text: 'Lorsque vous êtes prêt, appuyez sur le bouton:'
       nickname: Pseudo dispositivo
+      warning_text: Si vous perdez ou changez votre appareil, vous devrez
+        réinitialiser votre compte. Nous vous conseillons de mettre en place
+        plusieurs méthodes d’authentification afin d’éviter que votre compte ne
+        se bloque.
     webauthn_setup:
       continue: Continuer
       instructions_text: Appuyez sur le bouton de votre clé de sécurité pour

@@ -4,7 +4,8 @@ module Idv
 
     validate :validate_pii
 
-    attr_reader :first_name, :last_name, :dob, :state, :zipcode, :attention_with_barcode
+    attr_reader :first_name, :last_name, :dob, :state, :zipcode, :attention_with_barcode,
+                :jurisdiction
     alias_method :attention_with_barcode?, :attention_with_barcode
 
     def initialize(pii:, attention_with_barcode: false)
@@ -14,6 +15,7 @@ module Idv
       @dob = pii[:dob]
       @state = pii[:state]
       @zipcode = pii[:zipcode]
+      @jurisdiction = pii[:state_id_jurisdiction]
       @attention_with_barcode = attention_with_barcode
     end
 
@@ -47,7 +49,13 @@ module Idv
         errors.add(:pii, generic_error, type: :generic_error)
       elsif !zipcode_valid?
         errors.add(:pii, generic_error, type: :generic_error)
+      elsif !jurisdiction_valid?
+        errors.add(:pii, generic_error, type: :generic_error)
       end
+    end
+
+    def jurisdiction_valid?
+      Idp::Constants::STATE_AND_TERRITORY_CODES.include? jurisdiction
     end
 
     def name_valid?
@@ -75,7 +83,7 @@ module Idv
     end
 
     def zipcode_valid?
-      zipcode.nil? || zipcode.is_a?(String)
+      zipcode.is_a?(String) && zipcode.present?
     end
 
     def generic_error

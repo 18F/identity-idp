@@ -1,13 +1,13 @@
 <% content_for(:pre_flash_content) do %>
-  <%= render 'shared/step_indicator', {
-        steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
+  <%= render StepIndicatorComponent.new(
+        steps: step_indicator_steps,
         current_step: :verify_phone_or_address,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      } %>
+      ) %>
 <% end %>
 
-<% title t('titles.idv.enter_security_code') %>
+<% title t('titles.idv.enter_one_time_code') %>
 
 <%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.header_text')) %>
 
@@ -16,26 +16,15 @@
 </p>
 
 <%= simple_form_for('', method: :put) do |f| %>
-  <div class="grid-row margin-bottom-5">
-    <div class="grid-col-12 tablet:grid-col-6">
-      <%= label_tag :code, t('forms.two_factor.code'), class: 'display-block text-bold' %>
-      <div class="margin-bottom-5">
-        <%= render(
-              'shared/one_time_code_input',
-              form: f,
-              name: :code,
-              value: @code,
-              required: true,
-              autofocus: true,
-              numeric: false,
-              class: 'width-full',
-              maxlength: TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH,
-            ) %>
-      </div>
-      <%= submit_tag t('forms.buttons.submit.default'),
-                     class: 'usa-button usa-button--big usa-button--full-width' %>
-    </div>
-  </div>
+  <%= render OneTimeCodeInputComponent.new(
+        form: f,
+        value: @code,
+        numeric: false,
+        autofocus: true,
+        maxlength: TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH,
+        class: 'margin-bottom-5',
+      ) %>
+  <%= f.submit t('forms.buttons.submit.default'), class: 'margin-bottom-5' %>
 <% end %>
 
 <%= render ButtonComponent.new(
@@ -45,7 +34,7 @@
       outline: true,
       icon: :loop,
       class: 'margin-bottom-4',
-    ).with_content(t('links.two_factor_authentication.get_another_code')) %>
+    ).with_content(t('links.two_factor_authentication.send_another_code')) %>
 
 <p>
   <%= t('instructions.mfa.wrong_number') %><br>

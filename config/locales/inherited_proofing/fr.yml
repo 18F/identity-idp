@@ -2,15 +2,75 @@
 fr:
   inherited_proofing:
     buttons:
-      continue: replaceme
+      continue: Continuer
+      try_again: Réessayez
+    cancel:
+      actions:
+        keep_going: Non, continuer
+        start_over: Recommencer
+      description:
+        start_over: Si vous recommencez, vous reprendrez ce processus depuis le début et
+          les informations que vous avez saisies ne seront pas enregistrées.
+      headings:
+        confirmation:
+          hybrid: Vous avez annulé le téléchargement de vos photos d’identité sur ce
+            téléphone
+        prompt:
+          standard: Annuler la vérification de votre identité?
+        start_over: Recommencez la vérification de votre identité
+      instructions:
+        switch_back: Retournez sur votre ordinateur pour continuer à vérifier votre
+          identité.
+        switch_back_image: Flèche pointant du téléphone vers l’ordinateur
+    errors:
+      cannot_retrieve:
+        failure_info: to be implemented
+        heading: Nous n’avons pas pu récupérer vos informations dans votre agence
+          partenaire
+        info: Nous avons temporairement des difficultés à récupérer vos informations.
+          Veuillez réessayer.
+        title: to be implemented
+      service_provider:
+        communication: 'la communication a échoué'
     headings:
-      welcome: replaceme
+      lets_go: Comment fonctionne la vérification de votre identité
+      retrieval: Nous récupérons vos informations depuis votre agence partenaire.
+      secure_account: Sécuriser votre compte
+      verify_identity: Vérifier votre identité
+      verify_information: Vérifier votre information
+      welcome: Commencez à vérifier votre identité
     info:
-      no_sp_name: replaceme
-      privacy_html: replaceme %{app_name} %{link}
-      welcome_html: replaceme %{sp_name}
+      lets_go: 'La vérification de l’identité se fait en deux temps :'
+      no_sp_name: L’agence à laquelle vous essayez d’accéder
+      privacy_html: '%{app_name} est un site gouvernemental sécurisé qui respecte les
+        normes les plus strictes en matière de protection des données. Nous
+        n’utilisons vos données uniquement pour vérifier votre identité. %{link}
+        sur nos mesures de confidentialité et de sécurité.'
+      retrieval_thanks: Merci de votre patience!
+      retrieval_time: Cette opération peut prendre jusqu’à une minute. Nous chargerons
+        automatiquement l’étape suivante lorsque ce sera fait.
+      secure_account: Votre compte sera crypté avec votre mot de passe. Le cryptage
+        signifie que vos données sont protégées et que vous seul pourrez accéder
+        à vos informations ou les modifier.
+      verify_identity: Nous récupérerons vos informations personnelles sur %{sp_name}
+        et vous demanderons de les vérifier.
+      welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
+        quelqu’un qui se fait passer pour vous'
     instructions:
-      bullet1: replaceme
-      learn_more: replaceme
-      privacy: replaceme
-      welcome: replaceme
+      consent: En cochant cette case, vous autorisez login.gov à demander, utiliser,
+        conserver et partager vos renseignements personnels. Nous ne les
+        utiliserons que pour vérifier votre identité.
+      learn_more: En savoir plus
+      privacy: Nos normes de confidentialité et de sécurité
+      verify_requirements: Nous allons vous appeler ou vous envoyer un SMS à partir de
+        votre contact pour vérifier votre identité. Si nous ne pouvons pas
+        vérifier votre numéro de téléphone, vous pouvez le faire par courriel.
+    troubleshooting:
+      headings:
+        missing_required_items: Vous n’avez pas de numéro de téléphone? Voici comment obtenir de l’aide
+        need_assistance: to be implemented
+        need_help_updating: Vous devez mettre à jour vos informations? Voici comment
+          obtenir de l’aide
+      options:
+        get_help: Obtenez de l’aide sur %{sp_name}
+        learn_more_phone_or_mail: En savoir plus sur la vérification par téléphone ou par courriel.

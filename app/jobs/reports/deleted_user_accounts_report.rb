@@ -20,12 +20,12 @@ module Reports
         issuers = report_hash['issuers']
         report = deleted_user_accounts_data_for_issuers(issuers)
         emails.each do |email|
-          UserMailer.deleted_user_accounts_report(
+          ReportMailer.deleted_user_accounts_report(
             email: email,
             name: name,
             issuers: issuers,
             data: report,
-          ).deliver_now_or_later
+          ).deliver_now
         end
       end
     end

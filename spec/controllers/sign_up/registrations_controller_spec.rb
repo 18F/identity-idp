@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe SignUp::RegistrationsController, devise: true do
-  include Features::MailerHelper
-
   describe '#new' do
     it 'allows user to visit the sign up page' do
       get :new
@@ -30,14 +28,19 @@ describe SignUp::RegistrationsController, devise: true do
   end
 
   describe '#create' do
+    let(:success_properties) { { success: true, failure_reason: nil } }
     context 'when registering with a new email' do
       it 'tracks successful user registration' do
         stub_analytics
         stub_attempts_tracker
 
         allow(@analytics).to receive(:track_event)
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
+
+        expect(@irs_attempts_api_tracker).to receive(:user_registration_email_submitted).with(
+          email: 'new@example.com',
+          **success_properties,
+        )
 
         post :create, params: { user: { email: 'new@example.com', terms_accepted: '1' } }
 
@@ -55,18 +58,12 @@ describe SignUp::RegistrationsController, devise: true do
         expect(@analytics).to have_received(:track_event).
           with('User Registration: Email Submitted', analytics_hash)
 
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :user_registration_email_submitted,
-          email: 'new@example.com',
-          success: true,
-          failure_reason: nil,
-        )
-
         expect(subject).to have_received(:create_user_event).with(:account_created, user)
       end
 
       it 'sets the users preferred email locale and sends an email in that locale' do
-        post :create, params: { user: { email: 'test@test.com', email_language: 'es',
+        post :create, params: { user: { email: 'test@test.com',
+                                        email_language: 'es',
                                         terms_accepted: '1' } }
 
         expect(User.find_with_email('test@test.com').email_language).to eq('es')
@@ -111,11 +108,9 @@ describe SignUp::RegistrationsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Submitted', analytics_hash)
 
-      expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-        :user_registration_email_submitted,
+      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_submitted).with(
         email: 'TEST@example.com ',
-        success: true,
-        failure_reason: nil,
+        **success_properties,
       )
 
       expect(subject).to_not receive(:create_user_event)

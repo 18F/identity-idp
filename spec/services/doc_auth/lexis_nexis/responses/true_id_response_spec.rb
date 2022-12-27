@@ -6,7 +6,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     instance_double(Faraday::Response, status: 200, body: success_response_body)
   end
   let(:failure_body_no_liveness) { LexisNexisFixtures.true_id_response_failure_no_liveness }
-  let(:failure_body_with_liveness) { LexisNexisFixtures.true_id_response_failure_with_liveness }
   let(:failure_body_with_all_failures) do
     LexisNexisFixtures.true_id_response_failure_with_all_failures
   end
@@ -17,9 +16,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   # rubocop:disable Layout/LineLength
   let(:failure_response_no_liveness) do
     instance_double(Faraday::Response, status: 200, body: failure_body_no_liveness)
-  end
-  let(:failure_response_with_liveness) do
-    instance_double(Faraday::Response, status: 200, body: failure_body_with_liveness)
   end
   let(:failure_response_with_all_failures) do
     instance_double(Faraday::Response, status: 200, body: failure_body_with_all_failures)
@@ -49,7 +45,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   context 'when the response is a success' do
-    let(:response) { described_class.new(success_response, false, config) }
+    let(:response) { described_class.new(success_response, config) }
 
     it 'is a successful result' do
       expect(response.successful_result?).to eq(true)
@@ -99,7 +95,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         reference: a_kind_of(String),
         vendor: 'TrueID',
         billed: true,
-        liveness_enabled: false,
         log_alert_results: a_hash_including('2d_barcode_content': { no_side: 'Passed' }),
         transaction_status: 'passed',
         transaction_reason_code: 'trueid_pass',
@@ -124,7 +119,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   context 'when the barcode can not be read' do
     let(:response) do
-      described_class.new(attention_barcode_read, false, config)
+      described_class.new(attention_barcode_read, config)
     end
 
     it 'is a successful result' do
@@ -159,7 +154,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   context 'when response is not a success' do
     it 'produces appropriate errors without liveness' do
-      output = described_class.new(failure_response_no_liveness, false, config).to_h
+      output = described_class.new(failure_response_no_liveness, config).to_h
       errors = output[:errors]
       expect(output.to_h[:log_alert_results]).to eq(
         '2d_barcode_read': { no_side: 'Passed' },
@@ -185,94 +180,26 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       )
       expect(output[:success]).to eq(false)
       expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
-      expect(errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS)
+      expect(errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
       expect(errors[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(errors[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(errors[:hints]).to eq(true)
     end
 
     it 'returns Failed for visible_pattern when it gets passed and failed value ' do
-      output = described_class.new(failure_response_no_liveness, false, config).to_h
+      output = described_class.new(failure_response_no_liveness, config).to_h
       expect(output.to_h[:log_alert_results]).
         to match(a_hash_including(visible_pattern: { no_side: 'Failed' }))
     end
 
-    it 'produces appropriate errors with liveness' do
-      output = described_class.new(failure_response_with_liveness, true, config).to_h
-      errors = output[:errors]
-
-      expect(output.to_h[:log_alert_results]).to eq(
-        '2d_barcode_read': { no_side: 'Passed' },
-        birth_date_crosscheck: { no_side: 'Passed' },
-        birth_date_valid: { no_side: 'Passed' },
-        document_classification: { no_side: 'Passed' },
-        document_crosscheck_aggregation: { no_side: 'Passed' },
-        document_number_crosscheck: { no_side: 'Passed' },
-        expiration_date_crosscheck: { no_side: 'Passed' },
-        expiration_date_valid: { no_side: 'Passed' },
-        full_name_crosscheck: { no_side: 'Passed' },
-        issue_date_crosscheck: { no_side: 'Passed' },
-        issue_date_valid: { no_side: 'Passed' },
-        layout_valid: { no_side: 'Passed' },
-        sex_crosscheck: { no_side: 'Passed' },
-        visible_color_response: { no_side: 'Passed' },
-        visible_pattern: { no_side: 'Failed' },
-        visible_photo_characteristics: { no_side: 'Passed' },
-        '1d_control_number_valid': { no_side: 'Failed' },
-        '2d_barcode_content': { no_side: 'Failed' },
-        control_number_crosscheck: { no_side: 'Caution' },
-        document_expired: { no_side: 'Attention' },
-      )
-      expect(output[:success]).to eq(false)
-      expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
-      expect(errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_LIVENESS)
-      expect(errors[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
-      expect(errors[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
-      expect(errors[:hints]).to eq(true)
-    end
-
-    it 'produces appropriate errors with liveness and everything failing' do
-      output = described_class.new(failure_response_with_all_failures, true, config).to_h
-      errors = output[:errors]
-
-      expect(output.to_h[:log_alert_results]).to eq(
-        visible_pattern: { no_side: 'Failed' },
-        '1d_control_number_valid': { no_side: 'Failed' },
-        '2d_barcode_content': { no_side: 'Failed' },
-        control_number_crosscheck: { no_side: 'Caution' },
-        document_expired: { no_side: 'Attention' },
-        '2d_barcode_read': { no_side: 'Attention' },
-        birth_date_crosscheck: { no_side: 'Failed' },
-        birth_date_valid: { no_side: 'Failed' },
-        document_classification: { no_side: 'Failed' },
-        document_crosscheck_aggregation: { no_side: 'Failed' },
-        document_number_crosscheck: { no_side: 'Failed' },
-        expiration_date_crosscheck: { no_side: 'Failed' },
-        expiration_date_valid: { no_side: 'Failed' },
-        full_name_crosscheck: { no_side: 'Failed' },
-        issue_date_crosscheck: { no_side: 'Failed' },
-        issue_date_valid: { no_side: 'Failed' },
-        layout_valid: { no_side: 'Failed' },
-        sex_crosscheck: { no_side: 'Failed' },
-        visible_color_response: { no_side: 'Failed' },
-        visible_photo_characteristics: { no_side: 'Failed' },
-      )
-      expect(output[:success]).to eq(false)
-      expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
-      expect(errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_LIVENESS)
-      expect(errors[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
-      expect(errors[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
-      expect(errors[:hints]).to eq(true)
-    end
-
     it 'produces expected hash output' do
-      output = described_class.new(failure_response_with_all_failures, true, config).to_h
+      output = described_class.new(failure_response_with_all_failures, config).to_h
 
       expect(output).to match(
         success: false,
         exception: nil,
         errors: {
-          general: [DocAuth::Errors::GENERAL_ERROR_LIVENESS],
+          general: [DocAuth::Errors::GENERAL_ERROR],
           front: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
           back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
           hints: true,
@@ -283,7 +210,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         vendor: 'TrueID',
         billed: true,
         log_alert_results: a_hash_including('2d_barcode_content': { no_side: 'Failed' }),
-        liveness_enabled: true,
         transaction_status: 'failed',
         transaction_reason_code: 'failed_true_id',
         product_status: 'pass',
@@ -311,7 +237,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   context 'when response is unexpected' do
     it 'produces reasonable output for communications error' do
-      output = described_class.new(communications_error_response, false, config).to_h
+      output = described_class.new(communications_error_response, config).to_h
 
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(network: true)
@@ -320,7 +246,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'produces reasonable output for internal application error' do
-      output = described_class.new(internal_application_error_response, false, config).to_h
+      output = described_class.new(internal_application_error_response, config).to_h
 
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(network: true)
@@ -328,11 +254,11 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'produces reasonable output for a TrueID failure without details' do
-      output = described_class.new(failure_response_empty, false, config).to_h
+      output = described_class.new(failure_response_empty, config).to_h
 
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(
-        general: [DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS],
+        general: [DocAuth::Errors::GENERAL_ERROR],
         hints: true,
       )
       expect(output).to include(:lexis_nexis_status, :lexis_nexis_info, :exception)
@@ -340,7 +266,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'produces reasonable output for a malformed TrueID response' do
-      output = described_class.new(failure_response_malformed, false, config).to_h
+      output = described_class.new(failure_response_malformed, config).to_h
 
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(network: true)
@@ -348,7 +274,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'is not billed' do
-      output = described_class.new(failure_response_empty, false, config).to_h
+      output = described_class.new(failure_response_empty, config).to_h
 
       expect(output[:billed]).to eq(false)
     end
@@ -356,7 +282,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   context 'when front image HDPI is too low' do
     it 'returns an unsuccessful response with front DPI error' do
-      output = described_class.new(failure_response_no_liveness_low_dpi, false, config).to_h
+      output = described_class.new(failure_response_no_liveness_low_dpi, config).to_h
 
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(
@@ -370,7 +296,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   context 'when the dob is incorrectly parsed' do
-    let(:response) { described_class.new(success_response, false, config) }
+    let(:response) { described_class.new(success_response, config) }
     let(:bad_pii) { { dob_year: 'OCR', dob_month: 'failed', dob_day: 'to parse' } }
 
     it 'does not throw an exception when getting pii from doc' do
@@ -380,7 +306,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   describe '#parse_date' do
-    let(:response) { described_class.new(success_response, false, config) }
+    let(:response) { described_class.new(success_response, config) }
 
     it 'handles an invalid month' do
       allow(Rails.logger).to receive(:info)
@@ -408,21 +334,59 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   describe '#attention_with_barcode?' do
-    let(:response) { described_class.new(success_response, false, config) }
+    let(:response) { described_class.new(success_response, config) }
     subject(:attention_with_barcode) { response.attention_with_barcode? }
 
     it { expect(attention_with_barcode).to eq(false) }
 
     context 'with multiple errors including barcode attention' do
-      let(:response) { described_class.new(failure_response_with_all_failures, false, config) }
+      let(:response) { described_class.new(failure_response_with_all_failures, config) }
 
       it { expect(attention_with_barcode).to eq(false) }
     end
 
     context 'with single barcode attention error' do
-      let(:response) { described_class.new(attention_barcode_read, false, config) }
+      let(:response) { described_class.new(attention_barcode_read, config) }
 
       it { expect(attention_with_barcode).to eq(true) }
+    end
+  end
+
+  describe '#billed?' do
+    subject(:billed?) do
+      described_class.new(success_response, config).billed?
+    end
+
+    let(:success_response_body) do
+      body = JSON.parse(super(), symbolize_names: true)
+
+      parameter = body[:Products].
+        first[:ParameterDetails].
+        find { |h| h[:Name] == 'DocAuthResult' }
+
+      parameter[:Values] = [{ Value: doc_auth_result }]
+
+      body.to_json
+    end
+
+    context 'with no doc auth result' do
+      let(:doc_auth_result) { nil }
+      it { is_expected.to eq(false) }
+    end
+
+    context 'with doc auth result of Passed' do
+      let(:doc_auth_result) { 'Passed' }
+      it { is_expected.to eq(true) }
+    end
+
+    context 'with doc auth result of Attention' do
+      let(:doc_auth_result) { 'Attention' }
+      it { is_expected.to eq(true) }
+    end
+
+    context 'with doc auth result of Unknown' do
+      let(:doc_auth_result) { 'Unknown' }
+      it { is_expected.to eq(true) }
     end
   end
 end

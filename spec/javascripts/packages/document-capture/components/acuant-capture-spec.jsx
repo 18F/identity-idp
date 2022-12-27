@@ -219,6 +219,7 @@ describe('document-capture/components/acuant-capture', () => {
           callbacks.onCaptured();
           onCropped = () => callbacks.onCropped(ACUANT_CAPTURE_SUCCESS_RESULT);
         }),
+        end: sinon.stub(),
       });
 
       const firstInput = getByLabelText('First Image');
@@ -232,6 +233,7 @@ describe('document-capture/components/acuant-capture', () => {
 
       onCropped();
       await waitFor(() => firstInput.getAttribute('aria-busy') === 'false');
+      await expect(window.window.AcuantCameraUI.end).to.eventually.be.called();
 
       fireEvent.click(secondInput);
 
@@ -493,11 +495,11 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('renders retry button when value and capture supported', async () => {
-      const selfie = await getFixtureFile('doc_auth_images/selfie.jpg');
+      const image = await getFixtureFile('doc_auth_images/id-front.jpg');
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" value={selfie} />
+            <AcuantCapture label="Image" value={image} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -782,37 +784,6 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.start.called).to.be.false();
     });
 
-    it('triggers forced upload with `capture` value', () => {
-      const { getByText, getByLabelText } = render(
-        <I18nContext.Provider
-          value={
-            new I18n({
-              strings: {
-                'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>',
-              },
-            })
-          }
-        >
-          <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-              <AcuantCapture label="Image" capture="user" />
-            </AcuantContextProvider>
-          </DeviceContext.Provider>
-        </I18nContext.Provider>,
-      );
-
-      initialize();
-
-      const button = getByText('Upload');
-      const input = getByLabelText('Image');
-      const defaultPrevented = !fireEvent.click(button);
-
-      expect(defaultPrevented).to.be.false();
-      expect(window.AcuantCameraUI.start.called).to.be.false();
-      expect(window.AcuantPassiveLiveness.startSelfieCapture.called).to.be.false();
-      expect(input.getAttribute('capture')).to.equal('user');
-    });
-
     it('optionally disallows upload', () => {
       const { getByText, getByLabelText } = render(
         <I18nContext.Provider
@@ -843,25 +814,6 @@ describe('document-capture/components/acuant-capture', () => {
       expect(() => getByText('doc_auth.tips.document_capture_hint')).to.throw();
     });
 
-    it('still captures selfie value when upload disallowed', () => {
-      const { getByLabelText } = render(
-        <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" capture="user" allowUpload={false} />
-          </AcuantContextProvider>
-        </DeviceContext.Provider>,
-      );
-
-      initialize();
-
-      const button = getByLabelText('Image');
-      const defaultPrevented = !fireEvent.click(button);
-
-      expect(defaultPrevented).to.be.true();
-      expect(window.AcuantCameraUI.start.called).to.be.false();
-      expect(window.AcuantPassiveLiveness.startSelfieCapture.called).to.be.true();
-    });
-
     it('does not show hint if capture is supported', () => {
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
@@ -890,29 +842,6 @@ describe('document-capture/components/acuant-capture', () => {
       const hint = getByText('doc_auth.tips.document_capture_hint');
 
       expect(hint).to.be.ok();
-    });
-
-    it('captures selfie', async () => {
-      const onChange = sinon.stub();
-      const { getByLabelText } = render(
-        <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" capture="user" onChange={onChange} />
-          </AcuantContextProvider>
-        </DeviceContext.Provider>,
-      );
-
-      initialize({
-        startSelfieCapture: sinon.stub().callsArgWithAsync(0, ''),
-      });
-
-      const button = getByLabelText('Image');
-      const defaultPrevented = !fireEvent.click(button);
-
-      expect(defaultPrevented).to.be.true();
-      expect(window.AcuantCameraUI.start.called).to.be.false();
-      expect(window.AcuantPassiveLiveness.startSelfieCapture.called).to.be.true();
-      await waitFor(() => expect(onChange.calledOnce).to.be.true());
     });
   });
 
@@ -1029,16 +958,16 @@ describe('document-capture/components/acuant-capture', () => {
     const upload = getByText('Upload');
     fireEvent.click(upload);
 
-    expect(trackEvent).to.have.been.calledThrice();
-    expect(trackEvent.getCall(0)).to.have.been.calledWith('IdV: test image clicked', {
+    expect(trackEvent.callCount).to.be.at.least(3);
+    expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'placeholder',
       isDrop: false,
     });
-    expect(trackEvent.getCall(1)).to.have.been.calledWith('IdV: test image clicked', {
+    expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'button',
       isDrop: false,
     });
-    expect(trackEvent.getCall(2)).to.have.been.calledWith('IdV: test image clicked', {
+    expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'upload',
       isDrop: false,
     });
@@ -1057,7 +986,7 @@ describe('document-capture/components/acuant-capture', () => {
     const input = getByLabelText('Image');
     fireEvent.drop(input);
 
-    expect(trackEvent.getCall(0)).to.have.been.calledWith('IdV: test image clicked', {
+    expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'placeholder',
       isDrop: true,
     });

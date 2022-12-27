@@ -5,7 +5,8 @@ class AddressProofingJob < ApplicationJob
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
-  def perform(user_id:, issuer:, result_id:, encrypted_arguments:, trace_id:)
+  # rubocop:disable Lint/UnusedMethodArgument
+  def perform(issuer:, result_id:, encrypted_arguments:, trace_id:, user_id: nil)
     timer = JobHelpers::Timer.new
 
     raise_stale_job! if stale_job?(enqueued_at)
@@ -25,17 +26,9 @@ class AddressProofingJob < ApplicationJob
     Db::SpCost::AddSpCost.call(
       service_provider, 2, :lexis_nexis_address, transaction_id: proofer_result.transaction_id
     )
-    Db::ProofingCost::AddUserProofingCost.call(user_id, :lexis_nexis_address)
-
-    result = proofer_result.to_h
-    result[:context] = { stages: [address: address_proofer.class.vendor_name] }
-    result[:transaction_id] = proofer_result.transaction_id
-
-    result[:timed_out] = proofer_result.timed_out?
-    result[:exception] = proofer_result.exception.inspect if proofer_result.exception
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
-    document_capture_session.store_proofing_result(result)
+    document_capture_session.store_proofing_result(proofer_result.to_h)
   ensure
     logger.info(
       {
@@ -46,6 +39,7 @@ class AddressProofingJob < ApplicationJob
       }.to_json,
     )
   end
+  # rubocop:enable Lint/UnusedMethodArgument
 
   private
 

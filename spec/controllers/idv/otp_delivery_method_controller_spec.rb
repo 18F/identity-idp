@@ -2,14 +2,15 @@ require 'rails_helper'
 
 describe Idv::OtpDeliveryMethodController do
   let(:user) { build(:user) }
+  let(:valid_phone_number) { '+1 (225) 555-5000' }
 
   before do
     stub_verify_steps_one_and_two(user)
     subject.idv_session.address_verification_mechanism = 'phone'
     subject.idv_session.vendor_phone_confirmation = true
     subject.idv_session.user_phone_confirmation = false
-    user_phone_confirmation_session = PhoneConfirmation::ConfirmationSession.start(
-      phone: '+1 (225) 555-5000',
+    user_phone_confirmation_session = Idv::PhoneConfirmationSession.start(
+      phone: valid_phone_number,
       delivery_method: :sms,
     )
     subject.idv_session.user_phone_confirmation_session = user_phone_confirmation_session
@@ -69,12 +70,15 @@ describe Idv::OtpDeliveryMethodController do
       get :new
 
       expect(@analytics).to have_received(:track_event).
-        with('IdV: Phone OTP delivery Selection Visited')
+        with('IdV: Phone OTP delivery Selection Visited', proofing_components: nil)
     end
   end
 
   describe '#create' do
     let(:params) { { otp_delivery_preference: :sms } }
+    let(:valid_phone_parameter) { { phone_number: valid_phone_number } }
+    let(:success_parameters) { { failure_reason: {}, success: true } }
+    let(:defalut_parameters) { { **valid_phone_parameter, otp_delivery_method: 'sms' } }
 
     context 'user has not selected phone verification method' do
       before do
@@ -116,9 +120,14 @@ describe Idv::OtpDeliveryMethodController do
         expect(response).to redirect_to idv_otp_verification_path
       end
 
-      it 'tracks an analytics event' do
+      it 'tracks appropriate events' do
         stub_analytics
+        stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
+
+        expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_sent).with(
+          { **success_parameters, **defalut_parameters },
+        )
 
         post :create, params: params
 
@@ -142,9 +151,16 @@ describe Idv::OtpDeliveryMethodController do
         expect(response).to redirect_to idv_otp_verification_path
       end
 
-      it 'tracks an analytics event' do
+      it 'tracks appropriate events' do
         stub_analytics
+        stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
+
+        expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_sent).with(
+          { **success_parameters,
+            **valid_phone_parameter,
+            otp_delivery_method: 'voice' },
+        )
 
         post :create, params: params
 
@@ -167,9 +183,12 @@ describe Idv::OtpDeliveryMethodController do
         expect(response).to render_template :new
       end
 
-      it 'tracks an analytics event' do
+      it 'tracks appropriate events' do
         stub_analytics
+        stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
+
+        expect(@irs_attempts_api_tracker).not_to receive(:idv_phone_otp_sent)
 
         post :create, params: params
 
@@ -207,6 +226,7 @@ describe Idv::OtpDeliveryMethodController do
 
       before do
         stub_analytics
+        stub_attempts_tracker
         allow(Telephony).to receive(:send_confirmation_otp).and_return(telephony_response)
       end
 
@@ -218,11 +238,18 @@ describe Idv::OtpDeliveryMethodController do
           'IdV: phone confirmation otp sent',
           hash_including(
             success: false,
+            adapter: :test,
             telephony_response: telephony_response,
           ),
         )
         expect(@analytics).to receive(:track_event).ordered.with(
           'Vendor Phone Validation failed', telephony_error_analytics_hash
+        )
+
+        expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_sent).with(
+          **defalut_parameters,
+          success: false,
+          failure_reason: { telephony_error: I18n.t('telephony.error.friendly_message.generic') },
         )
 
         post :create, params: params

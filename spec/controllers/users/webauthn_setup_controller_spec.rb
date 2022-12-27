@@ -76,6 +76,7 @@ describe Users::WebauthnSetupController do
       end
 
       it 'tracks the submission' do
+        Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics)
         result = {
           enabled_mfa_methods_count: 3,
           mfa_method_counts: {
@@ -105,17 +106,17 @@ describe Users::WebauthnSetupController do
       let(:webauthn_configuration) { create(:webauthn_configuration, user: user) }
 
       it 'creates a webauthn key removed event' do
-        expect(Event).to receive(:create).
-          with(hash_including(
-            user_id: controller.current_user.id,
-            event_type: :webauthn_key_removed, ip: '0.0.0.0'
-          ))
-
         delete :delete, params: { id: webauthn_configuration.id }
 
         expect(response).to redirect_to(account_two_factor_authentication_path)
         expect(flash.now[:success]).to eq t('notices.webauthn_deleted')
         expect(WebauthnConfiguration.count).to eq(0)
+        expect(
+          Event.where(
+            user_id: controller.current_user.id,
+            event_type: :webauthn_key_removed, ip: '0.0.0.0'
+          ).count,
+        ).to eq 1
       end
 
       it 'tracks the delete in analytics' do
@@ -171,12 +172,11 @@ describe Users::WebauthnSetupController do
       request.host = 'localhost:3000'
       controller.user_session[:webauthn_challenge] = webauthn_challenge
     end
-    context ' Multiple MFA options turned on' do
+    describe 'multiple MFA handling' do
       let(:mfa_selections) { ['webauthn', 'voice'] }
 
       before do
         controller.user_session[:mfa_selections] = mfa_selections
-        allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
       end
 
       context 'with multiple MFA methods chosen on account creation' do
@@ -196,6 +196,7 @@ describe Users::WebauthnSetupController do
           }
         end
         it 'should log expected events' do
+          Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics)
           expect(@analytics).to receive(:track_event).with(
             'Multi-Factor Authentication Setup',
             {
@@ -277,10 +278,7 @@ describe Users::WebauthnSetupController do
             :mfa_enroll_webauthn_platform, success: true
           )
 
-          registration_log = Funnel::Registration::Create.call(user.id)
           patch :confirm, params: params
-
-          expect(registration_log.reload.first_mfa).to eq 'webauthn_platform'
         end
       end
 

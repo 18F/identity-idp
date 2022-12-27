@@ -10,26 +10,22 @@ module Idv
     end
 
     def title
-      letter_already_sent? ? I18n.t('idv.titles.mail.resend') : I18n.t('idv.titles.mail.verify')
+      resend_requested? ? I18n.t('idv.titles.mail.resend') : I18n.t('idv.titles.mail.verify')
     end
 
     def button
-      letter_already_sent? ? I18n.t('idv.buttons.mail.resend') : I18n.t('idv.buttons.mail.send')
+      resend_requested? ? I18n.t('idv.buttons.mail.resend') : I18n.t('idv.buttons.mail.send')
     end
 
     def fallback_back_path
       user_needs_address_otp_verification? ? idv_gpo_verify_path : idv_phone_path
     end
 
-    def letter_already_sent?
-      gpo_mail_service.any_mail_sent?
+    def resend_requested?
+      current_user.decorate.pending_profile_requires_verification?
     end
 
     private
-
-    def gpo_mail_service
-      @gpo_mail_service ||= Idv::GpoMail.new(current_user)
-    end
 
     def user_needs_address_otp_verification?
       current_user.pending_profile?

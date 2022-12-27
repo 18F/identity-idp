@@ -21,8 +21,12 @@ module SignUp
 
     def process_successful_confirmation
       process_valid_confirmation_token
+      irs_attempts_api_tracker.user_registration_email_confirmation(
+        email: @email_address&.email,
+        success: true,
+        failure_reason: nil,
+      )
       request_id = params.fetch(:_request_id, '')
-      Funnel::Registration::ConfirmEmail.call(@user.id)
       redirect_to sign_up_enter_password_url(
         request_id: request_id, confirmation_token: @confirmation_token,
       )

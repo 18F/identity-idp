@@ -8,13 +8,20 @@ module Idv
 
       delegate :selected_location_details, :enrollment_code, to: :enrollment
 
-      def initialize(enrollment:, barcode_image_url: nil)
+      def initialize(enrollment:, barcode_image_url: nil, sp_name: nil)
         @enrollment = enrollment
         @barcode_image_url = barcode_image_url
+        @sp_name = sp_name
+      end
+
+      # Reminder is exclusive of the day the email is sent (1 less than days_to_due_date)
+      def days_remaining
+        enrollment.days_to_due_date - 1
       end
 
       def formatted_due_date
-        due_date.in_time_zone(USPS_SERVER_TIMEZONE).strftime(I18n.t('time.formats.event_date'))
+        enrollment.due_date.in_time_zone(USPS_SERVER_TIMEZONE).
+          strftime(I18n.t('time.formats.event_date'))
       end
 
       def selected_location_hours(prefix)
@@ -27,13 +34,17 @@ module Idv
         !enrollment.current_address_matches_id
       end
 
+      def service_provider
+        enrollment.service_provider
+      end
+
+      def sp_name
+        service_provider ? service_provider.friendly_name : APP_NAME
+      end
+
       private
 
       attr_reader :enrollment
-
-      def due_date
-        enrollment.created_at + IdentityConfig.store.in_person_enrollment_validity_in_days.days
-      end
 
       def localized_hours(hours)
         case hours

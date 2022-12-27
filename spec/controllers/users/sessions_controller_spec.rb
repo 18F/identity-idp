@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Users::SessionsController, devise: true do
   include ActionView::Helpers::DateHelper
+  let(:mock_valid_site) { 'http://example.com' }
 
   describe 'GET /users/sign_in' do
     it 'clears the session when user is not yet 2fa-ed' do
@@ -46,23 +47,23 @@ describe Users::SessionsController, devise: true do
         expect(json['live']).to eq true
       end
 
-      it 'includes the timeout key' do
-        timeout =  Time.zone.now + 10
+      it 'includes the timeout key', freeze_time: true do
+        timeout = Time.zone.now + 10
         controller.session[:session_expires_at] = timeout
         get :active
 
         json ||= JSON.parse(response.body)
 
-        expect(json['timeout'].to_datetime.to_i).to be_within(1).of(timeout.to_i)
+        expect(json['timeout'].to_datetime.to_i).to eq(timeout.to_i)
       end
 
-      it 'includes the remaining key' do
+      it 'includes the remaining key', freeze_time: true do
         controller.session[:session_expires_at] = Time.zone.now + 10
         get :active
 
         json ||= JSON.parse(response.body)
 
-        expect(json['remaining']).to be_within(1).of(10)
+        expect(json['remaining']).to eq(10)
       end
     end
 
@@ -75,15 +76,15 @@ describe Users::SessionsController, devise: true do
         expect(json['live']).to eq false
       end
 
-      it 'includes session_expires_at' do
+      it 'includes session_expires_at', freeze_time: true do
         get :active
 
         json ||= JSON.parse(response.body)
 
-        expect(json['timeout'].to_datetime.to_i).to be_within(1).of(Time.zone.now.to_i - 1)
+        expect(json['timeout'].to_datetime.to_i).to eq(Time.zone.now.to_i - 1)
       end
 
-      it 'includes the remaining time' do
+      it 'includes the remaining time', freeze_time: true do
         get :active
 
         json ||= JSON.parse(response.body)
@@ -97,11 +98,11 @@ describe Users::SessionsController, devise: true do
         expected_time = now + 10
         session[:pinged_at] = now
 
-        travel_to(Time.zone.now + 10) do
+        travel_to(expected_time) do
           get :active
         end
 
-        expect(session[:pinged_at].to_i).to be_within(1).of(expected_time.to_i)
+        expect(session[:pinged_at].to_i).to eq(expected_time.to_i)
       end
     end
 
@@ -200,7 +201,7 @@ describe Users::SessionsController, devise: true do
     include AccountResetHelper
     it 'tracks the successful authentication for existing user' do
       user = create(:user, :signed_up)
-      subject.session['user_return_to'] = 'http://example.com'
+      subject.session['user_return_to'] = mock_valid_site
 
       stub_analytics
       stub_attempts_tracker
@@ -208,7 +209,7 @@ describe Users::SessionsController, devise: true do
         success: true,
         user_id: user.uuid,
         user_locked_out: false,
-        stored_location: 'http://example.com',
+        stored_location: mock_valid_site,
         sp_request_url_present: false,
         remember_device: false,
       }
@@ -216,7 +217,7 @@ describe Users::SessionsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with('Email and Password Authentication', analytics_hash)
 
-      expect(@irs_attempts_api_tracker).to receive(:email_and_password_auth).
+      expect(@irs_attempts_api_tracker).to receive(:login_email_and_password_auth).
         with(email: user.email, success: true)
 
       post :create, params: { user: { email: user.email, password: user.password } }
@@ -258,6 +259,20 @@ describe Users::SessionsController, devise: true do
       post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
     end
 
+    it 'tracks unsuccessful authentication for too many auth failures' do
+      allow(subject).to receive(:session_bad_password_count_max_exceeded?).and_return(true)
+      mock_email_parameter = { email: 'bob@example.com' }
+
+      stub_attempts_tracker
+
+      expect(@irs_attempts_api_tracker).to receive(:login_email_and_password_auth).
+        with({ **mock_email_parameter, success: false })
+      expect(@irs_attempts_api_tracker).to receive(:login_rate_limited).
+        with(mock_email_parameter)
+
+      post :create, params: { user: { **mock_email_parameter, password: 'eatCake!' } }
+    end
+
     it 'tracks unsuccessful authentication for locked out user' do
       user = create(
         :user,
@@ -282,7 +297,7 @@ describe Users::SessionsController, devise: true do
     end
 
     it 'tracks the presence of SP request_url in session' do
-      subject.session[:sp] = { request_url: 'http://example.com' }
+      subject.session[:sp] = { request_url: mock_valid_site }
       stub_analytics
       analytics_hash = {
         success: false,
@@ -401,10 +416,6 @@ describe Users::SessionsController, devise: true do
 
       expect(@analytics).to receive(:track_event).
         with('Invalid Authenticity Token', analytics_hash)
-
-      expect(@analytics).to receive(:track_event).
-        with('Unsafe Redirect', { controller: 'users/sessions#create', referer: '@@@',
-                                  user_signed_in: false })
 
       request.env['HTTP_REFERER'] = '@@@'
       post :create, params: { user: { email: user.email, password: user.password } }
@@ -567,8 +578,8 @@ describe Users::SessionsController, devise: true do
       it 'tracks page visit, any alert flashes, and the Devise stored location' do
         stub_analytics
         allow(controller).to receive(:flash).and_return(alert: 'hello')
-        subject.session['user_return_to'] = 'http://example.com'
-        properties = { flash: 'hello', stored_location: 'http://example.com' }
+        subject.session['user_return_to'] = mock_valid_site
+        properties = { flash: 'hello', stored_location: mock_valid_site }
 
         expect(@analytics).to receive(:track_event).with('Sign in page visited', properties)
 

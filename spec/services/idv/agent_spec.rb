@@ -14,14 +14,25 @@ describe Idv::Agent do
     let(:applicant) { { foo: 'bar' } }
     let(:trace_id) { SecureRandom.uuid }
     let(:request_ip) { Faker::Internet.ip_v4_address }
+    let(:issuer) { 'fake-issuer' }
+    let(:friendly_name) { 'fake-name' }
+    let(:app_id) { 'fake-app-id' }
 
     let(:agent) { Idv::Agent.new(applicant) }
+
+    before do
+      ServiceProvider.create(
+        issuer: issuer,
+        friendly_name: friendly_name,
+        app_id: app_id,
+      )
+    end
 
     describe '#proof_resolution' do
       let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
 
       context 'proofing state_id enabled' do
-        it 'does not proof state_id if resolution fails' do
+        it 'still proofs state_id if resolution fails' do
           agent = Idv::Agent.new(
             Idp::Constants::MOCK_IDV_APPLICANT.merge(uuid: user.uuid, ssn: '444-55-6666'),
           )
@@ -36,7 +47,7 @@ describe Idv::Agent do
 
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
-          expect(result[:context][:stages].key?(:state_id)).to eq false
+          expect(result[:context][:stages][:state_id][:vendor_name]).to eq 'StateIdMock'
         end
 
         it 'does proof state_id if resolution succeeds' do
@@ -51,8 +62,12 @@ describe Idv::Agent do
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages][:state_id]).to include(
-            client: 'StateIdMock',
             transaction_id: Proofing::Mock::StateIdMockClient::TRANSACTION_ID,
+            errors: {},
+            exception: nil,
+            success: true,
+            timed_out: false,
+            vendor_name: 'StateIdMock',
           )
         end
       end
@@ -64,7 +79,7 @@ describe Idv::Agent do
           )
           agent.proof_resolution(
             document_capture_session,
-            should_proof_state_id: true,
+            should_proof_state_id: false,
             trace_id: trace_id,
             user_id: user.id,
             threatmetrix_session_id: nil,
@@ -72,7 +87,7 @@ describe Idv::Agent do
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
-          expect(result[:context][:stages].key?(:state_id)).to eq false
+          expect(result[:context][:stages][:state_id][:vendor_name]).to eq 'UnsupportedJurisdiction'
         end
 
         it 'does not proof state_id if resolution succeeds' do
@@ -132,7 +147,7 @@ describe Idv::Agent do
         )
         result = document_capture_session.load_proofing_result.result
 
-        expect(result[:exception]).to start_with('#<Proofing::TimeoutError: ')
+        expect(result[:exception].to_s).to include('address mock timeout')
         expect(result).to include(
           success: false,
           timed_out: true,
@@ -161,7 +176,7 @@ describe Idv::Agent do
           issuer: issuer,
         )
         result = document_capture_session.load_proofing_result[:result]
-        expect(result[:context][:stages]).to include({ address: 'AddressMock' })
+        expect(result[:vendor_name]).to eq('AddressMock')
         expect(result[:success]).to eq true
       end
 
@@ -171,7 +186,7 @@ describe Idv::Agent do
           document_capture_session, trace_id: trace_id, user_id: user_id, issuer: issuer
         )
         result = document_capture_session.load_proofing_result[:result]
-        expect(result[:context][:stages]).to include({ address: 'AddressMock' })
+        expect(result[:vendor_name]).to eq('AddressMock')
         expect(result[:success]).to eq false
       end
     end

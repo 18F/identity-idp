@@ -1,16 +1,15 @@
 module Api
   module Verify
     class DocumentCaptureController < BaseController
-      self.required_step = nil
       include ApplicationHelper
       include EffectiveUser
 
       def create
         result = Idv::ApiDocumentVerificationForm.new(
           verify_params,
-          liveness_checking_enabled: liveness_checking_enabled?,
           analytics: analytics,
           irs_attempts_api_tracker: irs_attempts_api_tracker,
+          flow_path: params[:flow_path],
         ).submit
 
         if result.success?
@@ -37,7 +36,6 @@ module Api
         }
         Idv::Agent.new(applicant).proof_document(
           verify_document_capture_session,
-          liveness_checking_enabled: liveness_checking_enabled?,
           trace_id: amzn_trace_id,
           image_metadata: image_metadata,
           analytics_data: {
@@ -53,10 +51,8 @@ module Api
           :encryption_key,
           :front_image_iv,
           :back_image_iv,
-          :selfie_image_iv,
           :front_image_url,
           :back_image_url,
-          :selfie_image_url,
         ).to_h
       end
 
@@ -65,10 +61,8 @@ module Api
           :encryption_key,
           :front_image_iv,
           :back_image_iv,
-          :selfie_image_iv,
           :front_image_url,
           :back_image_url,
-          :selfie_image_url,
           :document_capture_session_uuid,
           :flow_path,
         )

@@ -1,10 +1,12 @@
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
+import { t } from '@18f/identity-i18n';
 import {
   DeviceContext,
   ServiceProviderContextProvider,
   FailedCaptureAttemptsContextProvider,
   AcuantContextProvider,
+  UploadContextProvider,
 } from '@18f/identity-document-capture';
 import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
 import { render, useAcuant } from '../../../support/document-capture';
@@ -53,7 +55,7 @@ describe('document-capture/components/documents-step', () => {
   });
 
   it('renders additional tips after failed attempts', async () => {
-    const { getByLabelText, getByText, getByRole } = render(
+    const { getByLabelText, getByText, findByRole } = render(
       <FailedCaptureAttemptsContextProvider maxFailedAttemptsBeforeTips={2}>
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
@@ -82,7 +84,7 @@ describe('document-capture/components/documents-step', () => {
       'doc_auth.tips.capture_troubleshooting_glare doc_auth.tips.capture_troubleshooting_lead',
     );
 
-    await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
+    await userEvent.click(await findByRole('button', { name: 'idv.failure.button.warning' }));
 
     // Only show troubleshooting a single time, even after 2 more failed attempts.
     await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
@@ -100,7 +102,6 @@ describe('document-capture/components/documents-step', () => {
         value={{
           name: 'Example App',
           failureToProofURL: 'https://example.com/?step=document_capture',
-          isLivenessRequired: false,
         }}
       >
         <DocumentsStep />
@@ -116,5 +117,31 @@ describe('document-capture/components/documents-step', () => {
     ).to.equal(
       'https://example.com/?step=document_capture&location=document_capture_troubleshooting_options',
     );
+  });
+
+  it('renders the hybrid flow warning if the flow is hybrid', () => {
+    const { getByText } = render(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <UploadContextProvider flowPath="hybrid">
+          <DocumentsStep />
+        </UploadContextProvider>
+      </DeviceContext.Provider>,
+    );
+    const expectedText = t('doc_auth.hybrid_flow_warning.explanation_non_sp_html');
+
+    expect(getByText(expectedText)).to.exist();
+  });
+
+  it('does not render the hybrid flow warning if the flow is standard (default)', () => {
+    const { queryByText } = render(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <UploadContextProvider flowPath="standard">
+          <DocumentsStep />
+        </UploadContextProvider>
+      </DeviceContext.Provider>,
+    );
+    const notExpectedText = t('doc_auth.hybrid_flow_warning.explanation_non_sp_html');
+
+    expect(queryByText(notExpectedText)).to.not.exist();
   });
 });

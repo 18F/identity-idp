@@ -1,6 +1,7 @@
 module Idv
   class DocAuthController < ApplicationController
     before_action :confirm_two_factor_authenticated
+    before_action :handle_pending_threatmetrix_review
     before_action :redirect_if_pending_profile
     before_action :redirect_if_pending_in_person_enrollment
     before_action :extend_timeout_using_meta_refresh_for_select_paths
@@ -9,6 +10,7 @@ module Idv
     include Flow::FlowStateMachine
     include Idv::DocumentCaptureConcern
     include Idv::ThreatMetrixConcern
+    include ThreatmetrixReviewConcern
 
     before_action :redirect_if_flow_completed
     before_action :override_document_capture_step_csp
@@ -23,7 +25,7 @@ module Idv
       step_url: :idv_doc_auth_step_url,
       final_url: :idv_review_url,
       flow: Idv::Flows::DocAuthFlow,
-      analytics_id: Analytics::DOC_AUTH,
+      analytics_id: 'Doc Auth',
     }.freeze
 
     def return_to_sp
@@ -31,8 +33,6 @@ module Idv
     end
 
     def redirect_if_pending_profile
-      return if sp_session[:ial2_strict] &&
-                !IdentityConfig.store.gpo_allowed_for_strict_ial2
       redirect_to idv_gpo_verify_url if current_user.decorate.pending_profile_requires_verification?
     end
 

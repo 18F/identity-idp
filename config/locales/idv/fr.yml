@@ -25,20 +25,18 @@ fr:
         account_page: la page de votre compte
         exit:
           with_sp_html:
-            - Si vous quittez %{app_name} et retournez à %{sp_name}, nous
-              n’enregistrerons pas vos informations personnelles.
+            - Si vous quittez %{app_name} maintenant pour retourner sur
+              %{sp_name}, vous n’aurez pas vérifié votre identité.
             - Vous aurez toujours un compte %{app_name}. Vous pouvez gérer ou
               supprimer votre compte sur %{account_page_link}.
           without_sp:
             - Si vous quittez la vérification d’identité et accédez à la page de
-              votre compte, nous n’enregistrerons pas vos informations
-              personnelles.
+              votre compte, vous n’aurez pas vérifié votre identité.
             - Vous aurez toujours un compte %{app_name}. Vous pouvez gérer ou
               supprimer votre compte sur %{account_page_text}.
         hybrid: Si vous annulez maintenant, vous serez invité à retourner sur votre
           ordinateur pour continuer à vérifier votre identité.
-        start_over: Si vous recommencez, vous reprendrez ce processus depuis le début et
-          les informations que vous avez saisies ne seront pas enregistrées.
+        start_over: Si vous recommencez, vous reprendrez ce processus depuis le début.
       headings:
         confirmation:
           hybrid: Vous avez annulé le téléchargement de vos photos d’identité sur ce
@@ -93,10 +91,11 @@ fr:
           Les erreurs les plus courantes sont un numéro de sécurité sociale ou
           un code postal incorrect.
       setup:
-        fail_html: 'Veuillez %{contact_form_link} et entrer le code
-          <b>%{support_code}</b> dans le champ de détail.'
-        heading: Il y a un problème avec vos informations
-        link_text: remplir notre formulaire de contact
+        fail_html: Veuillez appeler notre centre de contact au
+          <strong>%{contact_number}</strong> pour poursuivre la vérification de
+          votre identité. Vous devrez leur fournir le code d’erreur
+          <strong>%{support_code}</strong>.
+        heading: S’il vous plaît, appelez-nous
       timeout: Le temps d’attente pour le traitement de votre demande est plus long
         que d’habitude Veuillez réessayer.
     forgot_password:
@@ -111,7 +110,8 @@ fr:
           pièce d’identité officielle, etc.
     form:
       address1: Adresse
-      address2: Adresse (optional)
+      address2: Adresse Ligne 2
+      address2_optional: Adresse Ligne 2 (optional)
       city: Ville
       dob: Date de naissance
       first_name: Prénom
@@ -133,15 +133,15 @@ fr:
       activated_link: communiquer avec nous
       clear_and_start_over: Supprimer mes données et recommencer
       come_back_later: Une fois que votre lettre vous sera parvenue, veuillez vous
-        connecter à %{app_name}, puis saisissez votre code de confirmation
+        connecter à %{app_name}, puis saisissez votre code à usage unique
         lorsque vous y serez invité.
       come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte
         %{app_name}</strong> pour le moment.
       come_back_later_sp_html: Vous pouvez revenir à <strong>%{sp}</strong> pour le moment.
       confirm: Vous avez crypté vos données vérifiées
       gpo:
-        address_on_file_html: Nous enverrons une lettre avec <strong>un code de
-          confirmation</strong> à l’adresse que vous avez indiquée à l’étape
+        address_on_file_html: Nous enverrons une lettre avec <strong>un code à usage
+          unique </strong> à l’adresse que vous avez indiquée à l’étape
           précédente.
         resend: Envoyez-moi une autre lettre
         timeframe_html: Les lettres sont envoyées les jours ouvrables par courriel de
@@ -151,23 +151,26 @@ fr:
       otp_delivery_method:
         phone_number_html: Nous enverrons un code à <strong>%{phone}</strong> pour
           vérifier que le numéro de téléphone vous appartient.
+      otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus,
+        veuillez sélectionner « Appel téléphonique » ci-dessous.
       personal_key: Il s’agit de votre nouvelle clé personnelle. Notez-la et
         conservez-la dans un endroit sécuritaire. Vous en aurez besoin si vous
         perdez votre mot de passe.
       phone:
-        alert_html: '<strong>Ce numéro de téléphone doit…</strong>'
-        description: Nous vérifions les dossiers pour vous assurer que vous êtes ce que
-          vous dites et que vous êtes propriétaire de votre compte.
+        alert_html: '<strong>Ce numéro de téléphone:</strong>'
+        description: Nous vérifierons ce numéro dans nos archives et vous enverrons un
+          code à usage unique. Ceci est pour aider à vérifier votre identité.
         final_note_html: '<strong>Si vous configurez un téléphone pour
-          l’authentification à deux facteurs</strong>, il peut s’agir d’un
+          l’authentification multifactorielle</strong>, il peut s’agir d’un
           numéro différent.'
         phone_of_record: numéro de téléphone enregistré
         rules:
-          - être un plan téléphonique associé à votre nom. Il n’est pas
-            nécessaire que vous soyez le titulaire principal du compte.
-          - ne pas être un téléphone virtuel (tel que Google Voice ou Skype) ou
-            un numéro à tarif majoré (péage).
-          - un numéro américain
+          - Ne doit pas être un téléphone virtuel (tel que Google Voice ou
+            Skype) ou un numéro surtaxé (péage)
+          - Doit être un numéro américain (ce qui inclut les territoires
+            américains)
+          - Doit être votre numéro principal ou le numéro que vous utilisez le
+            plus souvent
       return_to_profile: '‹ Revenir à votre profil %{app_name}'
       review:
         info_verified_html: Nous avons trouvé des données qui correspondent à votre
@@ -175,10 +178,10 @@ fr:
         intro: Vos informations vérifiées
       select_verification_with_sp: Afin de vous protéger des fraudes d’identité, vous
         ne pouvez pas utiliser votre compte au %{sp_name} tant que vous ne
-        l’aurez pas activé en entrant votre code de confirmation.
+        l’aurez pas activé en entrant votre code à usage unique.
       select_verification_without_sp: Afin de protéger votre compte des fraudes liées
         à l’identité, votre profil ne sera pas activé tant que vous n’aurez pas
-        entré votre code de confirmation.
+        entré votre code à usage unique.
       sessions:
         no_pii: SITE DE TEST - N’utilisez pas de véritables données personnelles (il
           s’agit d’une démonstration seulement) - SITE DE TEST
@@ -198,15 +201,13 @@ fr:
       mail:
         resend: Vous voulez une autre lettre?
         verify: Vous voulez une lettre?
-      otp_delivery_method: Comment souhaitez-vous recevoir le code ?
-      personal_key: Clé personnelle
+      otp_delivery_method: Comment envoyer un code?
       review: Réviser et soumettre
       session:
-        phone: Entrez un numéro de téléphone pour vous aider à vérifier votre identité
+        phone: Entrez votre numéro de téléphone
         review: Entrez à nouveau votre mot de passe %{app_name} pour crypter vos données
     troubleshooting:
       headings:
-        are_you_near: Êtes-vous situé près de Washington, D.C.?
         missing_required_items: Est-ce qu’il vous manque un de ces éléments?
         need_assistance: 'Avez-vous besoin d’une assistance immédiate? Voici comment
           obtenir de l’aide:'
@@ -224,7 +225,6 @@ fr:
         learn_more_verify_in_person: En savoir plus sur la vérification en personne
         supported_documents: Voir la liste des pièces d’identité acceptées et délivrées par l’État
         verify_by_mail: Vérifiez plutôt votre adresse par courrier
-        verify_in_person: Vérifier votre identité en personne dans un bureau de poste
     welcome:
       no_js_header: Vous devez activer JavaScript pour vérifier votre identité.
       no_js_intro: '%{sp_name} a besoin de vous pour vérifier votre identité. Vous

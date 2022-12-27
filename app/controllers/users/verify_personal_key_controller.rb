@@ -22,7 +22,6 @@ module Users
 
     def create
       if throttle.throttled_else_increment?
-        irs_attempts_api_tracker.personal_key_reactivation_throttled(success: false)
         render_throttled
       else
         result = personal_key_form.submit
@@ -33,7 +32,7 @@ module Users
         )
         irs_attempts_api_tracker.personal_key_reactivation_submitted(
           success: result.success?,
-          failure_reason: result.errors,
+          failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
         )
         if result.success?
           handle_success(decrypted_pii: personal_key_form.decrypted_pii)
@@ -56,6 +55,8 @@ module Users
       analytics.throttler_rate_limit_triggered(
         throttle_type: :verify_personal_key,
       )
+
+      irs_attempts_api_tracker.personal_key_reactivation_rate_limited
 
       @expires_at = throttle.expires_at
       render :throttled

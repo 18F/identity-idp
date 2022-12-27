@@ -10,10 +10,12 @@ describe 'idv/shared/_document_capture.html.erb' do
   let(:flow_path) { 'standard' }
   let(:failure_to_proof_url) { return_to_sp_failure_to_proof_path }
   let(:in_person_proofing_enabled) { false }
-  let(:in_person_proofing_enabled_issuers) { [] }
+  let(:in_person_proofing_enabled_issuer) { nil }
   let(:front_image_upload_url) { nil }
   let(:back_image_upload_url) { nil }
-  let(:selfie_image_upload_url) { nil }
+  let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
+  let(:use_alternate_sdk) { false }
+  let(:acuant_version) { '11.7.1' }
 
   before do
     decorated_session = instance_double(
@@ -26,10 +28,13 @@ describe 'idv/shared/_document_capture.html.erb' do
 
     allow(FeatureManagement).to receive(:document_capture_async_uploads_enabled?).
       and_return(async_uploads_enabled)
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
-      and_return(in_person_proofing_enabled)
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled_issuers).
-      and_return(in_person_proofing_enabled_issuers)
+    allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?) do |issuer|
+      if issuer.nil?
+        in_person_proofing_enabled
+      else
+        issuer == in_person_proofing_enabled_issuer
+      end
+    end
 
     assign(:step_url, :idv_doc_auth_step_url)
   end
@@ -42,7 +47,9 @@ describe 'idv/shared/_document_capture.html.erb' do
       failure_to_proof_url: failure_to_proof_url,
       front_image_upload_url: front_image_upload_url,
       back_image_upload_url: back_image_upload_url,
-      selfie_image_upload_url: selfie_image_upload_url,
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      use_alternate_sdk: use_alternate_sdk,
+      acuant_version: acuant_version,
     }
   end
 
@@ -64,7 +71,6 @@ describe 'idv/shared/_document_capture.html.erb' do
       let(:async_uploads_enabled) { true }
       let(:front_image_upload_url) { 'https://s3.example.com/bucket/a?X-Amz-Security-Token=UAOL2' }
       let(:back_image_upload_url) { 'https://s3.example.com/bucket/b?X-Amz-Security-Token=UAOL2' }
-      let(:selfie_image_upload_url) { 'https://s3.example.com/bucket/c?X-Amz-Security-Token=UAOL2' }
 
       it 'does modifies CSP connect_src headers to include upload urls' do
         render_partial
@@ -72,7 +78,6 @@ describe 'idv/shared/_document_capture.html.erb' do
         connect_src = controller.request.content_security_policy.connect_src
         expect(connect_src).to include('https://s3.example.com/bucket/a')
         expect(connect_src).to include('https://s3.example.com/bucket/b')
-        expect(connect_src).to include('https://s3.example.com/bucket/c')
       end
     end
   end
@@ -110,7 +115,7 @@ describe 'idv/shared/_document_capture.html.erb' do
         end
 
         context 'when in person proofing is enabled for issuer' do
-          let(:in_person_proofing_enabled_issuers) { [sp_issuer] }
+          let(:in_person_proofing_enabled_issuer) { sp_issuer }
 
           it 'initializes with in person url' do
             render_partial

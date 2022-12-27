@@ -1,6 +1,8 @@
 module Idv
   class GpoVerifyController < ApplicationController
     include IdvSession
+    include StepIndicatorConcern
+    include ThreatmetrixReviewConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_verification_needed
@@ -27,29 +29,34 @@ module Idv
       @gpo_verify_form = build_gpo_verify_form
 
       if throttle.throttled_else_increment?
-        irs_attempts_api_tracker.idv_gpo_verification_throttled
+        irs_attempts_api_tracker.idv_gpo_verification_rate_limited
         render_throttled
       else
         result = @gpo_verify_form.submit
         analytics.idv_gpo_verification_submitted(**result.to_h)
         irs_attempts_api_tracker.idv_gpo_verification_submitted(
           success: result.success?,
-          failure_reason: result.errors.presence,
+          failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
         )
 
         if result.success?
           if result.extra[:pending_in_person_enrollment]
             redirect_to idv_in_person_ready_to_verify_url
           else
-            event = create_user_event_with_disavowal(:account_verified)
-            UserAlerts::AlertUserAboutAccountVerified.call(
-              user: current_user,
-              date_time: event.created_at,
-              sp_name: decorated_session.sp_name,
-              disavowal_token: event.disavowal_token,
-            )
-            flash[:success] = t('account.index.verification.success')
-            redirect_to sign_up_completed_url
+            event, disavowal_token = create_user_event_with_disavowal(:account_verified)
+
+            if result.extra[:threatmetrix_check_failed] && threatmetrix_enabled?
+              redirect_to_threatmetrix_review
+            else
+              UserAlerts::AlertUserAboutAccountVerified.call(
+                user: current_user,
+                date_time: event.created_at,
+                sp_name: decorated_session.sp_name,
+                disavowal_token: disavowal_token,
+              )
+              flash[:success] = t('account.index.verification.success')
+              redirect_to sign_up_completed_url
+            end
           end
         else
           flash[:error] = @gpo_verify_form.errors.first.message
@@ -91,6 +98,10 @@ module Idv
     def confirm_verification_needed
       return if current_user.decorate.pending_profile_requires_verification?
       redirect_to account_url
+    end
+
+    def threatmetrix_enabled?
+      IdentityConfig.store.proofing_device_profiling_decisioning_enabled
     end
   end
 end

@@ -28,11 +28,8 @@ module DocAuthRouter
     # i18n-tasks-use t('doc_auth.errors.alerts.full_name_check')
     DocAuth::Errors::FULL_NAME_CHECK =>
       'doc_auth.errors.alerts.full_name_check',
-    # i18n-tasks-use t('doc_auth.errors.general.liveness')
-    DocAuth::Errors::GENERAL_ERROR_LIVENESS =>
-      'doc_auth.errors.general.liveness',
     # i18n-tasks-use t('doc_auth.errors.general.no_liveness')
-    DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS =>
+    DocAuth::Errors::GENERAL_ERROR =>
       'doc_auth.errors.general.no_liveness',
     # i18n-tasks-use t('doc_auth.errors.alerts.id_not_recognized')
     DocAuth::Errors::ID_NOT_RECOGNIZED =>
@@ -52,8 +49,6 @@ module DocAuthRouter
     # i18n-tasks-use t('doc_auth.errors.alerts.ref_control_number_check')
     DocAuth::Errors::REF_CONTROL_NUMBER_CHECK =>
       'doc_auth.errors.alerts.ref_control_number_check',
-    # i18n-tasks-use t('doc_auth.errors.alerts.selfie_failure')
-    DocAuth::Errors::SELFIE_FAILURE => 'doc_auth.errors.alerts.selfie_failure',
     # i18n-tasks-use t('doc_auth.errors.alerts.sex_check')
     DocAuth::Errors::SEX_CHECK => 'doc_auth.errors.alerts.sex_check',
     # i18n-tasks-use t('doc_auth.errors.alerts.visible_color_check')
@@ -119,9 +114,7 @@ module DocAuthRouter
     end
 
     def translate_doc_auth_errors!(response)
-      # acuant selfie errors are handled in translate_generic_errors!
       error_keys = DocAuth::ErrorGenerator::ERROR_KEYS.dup
-      error_keys.delete(:selfie) if @client.is_a?(DocAuth::Acuant::AcuantClient)
 
       error_keys.each do |category|
         response.errors[category]&.map! do |plain_error|
@@ -130,7 +123,6 @@ module DocAuthRouter
             I18n.t(error_key)
           else
             Rails.logger.warn("unknown DocAuth error=#{plain_error}")
-            # This isn't right, this should depend on the liveness setting
             I18n.t('doc_auth.errors.general.no_liveness')
           end
         end
@@ -140,11 +132,6 @@ module DocAuthRouter
     def translate_generic_errors!(response)
       if response.errors[:network] == true
         response.errors[:network] = I18n.t('doc_auth.errors.general.network_error')
-      end
-
-      # this is only relevant to acuant code path
-      if response.errors[:selfie] == true
-        response.errors[:selfie] = I18n.t('doc_auth.errors.general.liveness')
       end
     end
   end
@@ -175,8 +162,6 @@ module DocAuthRouter
           base_url: IdentityConfig.store.lexisnexis_base_url,
           request_mode: IdentityConfig.store.lexisnexis_request_mode,
           trueid_account_id: IdentityConfig.store.lexisnexis_trueid_account_id,
-          trueid_liveness_cropping_workflow: IdentityConfig.store.lexisnexis_trueid_liveness_cropping_workflow,
-          trueid_liveness_nocropping_workflow: IdentityConfig.store.lexisnexis_trueid_liveness_nocropping_workflow,
           trueid_noliveness_cropping_workflow: IdentityConfig.store.lexisnexis_trueid_noliveness_cropping_workflow,
           trueid_noliveness_nocropping_workflow: IdentityConfig.store.lexisnexis_trueid_noliveness_nocropping_workflow,
           trueid_password: IdentityConfig.store.lexisnexis_trueid_password,
@@ -201,26 +186,13 @@ module DocAuthRouter
   # rubocop:enable Layout/LineLength
 
   def self.doc_auth_vendor(discriminator: nil, analytics: nil)
-    if IdentityConfig.store.doc_auth_vendor_randomize
-      target_percent = IdentityConfig.store.doc_auth_vendor_randomize_percent
+    case AbTests::DOC_AUTH_VENDOR.bucket(discriminator)
+    when :alternate_vendor
+      IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
+    else
+      analytics&.idv_doc_auth_randomizer_defaulted if discriminator.blank?
 
-      if randomize?(target_percent, discriminator, analytics)
-        return IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
-      end
+      IdentityConfig.store.doc_auth_vendor
     end
-
-    IdentityConfig.store.doc_auth_vendor
-  end
-
-  def self.randomize?(target_percent, discriminator, analytics)
-    if discriminator.blank?
-      analytics&.idv_doc_auth_randomizer_defaulted
-      return false
-    end
-
-    max_sha = (16 ** 64) - 1
-    user_value = Digest::SHA256.hexdigest(discriminator).to_i(16).to_f / max_sha * 100
-
-    user_value < target_percent.clamp(0, 100)
   end
 end

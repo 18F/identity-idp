@@ -13,12 +13,6 @@ feature 'View personal key', js: true do
         sign_in_and_2fa_user(user)
         old_digest = user.encrypted_recovery_code_digest
 
-        # The user should receive an SMS and an email
-        personal_key_sign_in_mail = double
-        expect(personal_key_sign_in_mail).to receive(:deliver_now_or_later)
-        expect(UserMailer).to receive(:personal_key_regenerated).
-          with(user, user.email).
-          and_return(personal_key_sign_in_mail)
         expect(Telephony).to receive(:send_personal_key_regeneration_notice).
           with(to: user.phone_configurations.first.phone, country_code: 'US')
 
@@ -27,6 +21,12 @@ feature 'View personal key', js: true do
         click_continue
 
         expect(user.reload.encrypted_recovery_code_digest).to_not eq old_digest
+
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          to: [user.email_addresses.first.email],
+          subject: t('user_mailer.personal_key_regenerated.subject'),
+        )
       end
     end
 
@@ -52,22 +52,11 @@ feature 'View personal key', js: true do
         expect(page).to have_content(t('account.personal_key.get_new'))
         click_continue
 
-        expect(page).to have_content(t('headings.personal_key'))
+        expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
         acknowledge_and_confirm_personal_key
 
         expect(user.reload.encrypted_recovery_code_digest).to_not eq old_digest
       end
-    end
-
-    describe 'personal key actions and information' do
-      before do
-        sign_in_and_2fa_user(user)
-        visit account_two_factor_authentication_path
-        click_on(t('account.links.regenerate_personal_key'), match: :prefer_exact)
-        click_continue
-      end
-
-      it_behaves_like 'personal key page'
     end
   end
 end

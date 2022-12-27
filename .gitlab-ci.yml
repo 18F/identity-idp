@@ -5,8 +5,9 @@
 
 variables:
   GITLAB_CI: 'true'
+  JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:db00ce3b6c4b75e449d72e19329afdde94937547a75bfbfb6ef774ed3f5d77b6'
+  IDP_CI_SHA: 'sha256:cea459aea56802327075b873cc73a8859ecffa359a9311b359ea49b19b1ba934'
 
 default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
@@ -133,6 +134,9 @@ specs:
     when: always
     paths:
       - coverage/
+      - rspec.xml
+    reports:
+      junit: rspec.xml
   script:
     - *bundle_install
     - *yarn_install
@@ -152,7 +156,7 @@ specs:
     - "echo -e \"test:\n  redis_url: 'redis://redis:6379/0'\n  redis_throttle_url: 'redis://redis:6379/1'\n  redis_irs_attempt_api_url: 'redis://redis:6379/2'\" > config/application.yml"
     - bundle exec rake db:create db:migrate --trace
     - bundle exec rake db:seed
-    - bundle exec rake knapsack:rspec
+    - bundle exec rake knapsack:rspec["--format documentation --format RspecJunitFormatter --out rspec.xml"]
 
 lint:
   stage: test
@@ -164,6 +168,13 @@ lint:
     - *bundle_install
     - *yarn_install
     - make lint
+  artifacts:
+    expire_in: 31d
+    when: always
+    paths:
+      - rubocop.xml
+    reports:
+      junit: rubocop.xml
 
 js_build:
   stage: test
@@ -184,7 +195,6 @@ js_tests:
   script:
     - *yarn_install
     - yarn test
-
 
 pinpoint-check:
   stage: test
@@ -229,3 +239,15 @@ prepare_deploy:
     - ./deploy/build-post-config
     - make build_artifact ARTIFACT_DESTINATION_FILE='./tmp/idp.tar.gz'
     - bundle exec ./scripts/artifact-upload './tmp/idp.tar.gz'
+
+# Triggers devops CD to deploy to dev
+trigger_devops:
+  stage: after_test
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  trigger: lg/identity-devops
+
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+

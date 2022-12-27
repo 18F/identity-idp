@@ -1,4 +1,4 @@
-<% title t('titles.enter_2fa_code') %>
+<% title t('titles.enter_2fa_code.security_code') %>
 
 <%= render PageHeadingComponent.new.with_content(@presenter.header) %>
 
@@ -6,17 +6,11 @@
   <% if @presenter.reauthn %>
     <%= render 'two_factor_authentication/totp_verification/reauthn' %>
   <% end %>
-  <%= label_tag :code, t('forms.two_factor.code'), class: 'display-block text-bold' %>
-  <%= render(
-        'shared/one_time_code_input',
+  <%= render OneTimeCodeInputComponent.new(
         form: f,
-        transport: nil,
-        name: :code,
         value: @code,
-        required: true,
         autofocus: true,
-        size: 16,
-        class: 'width-auto',
+        transport: nil,
         maxlength: TwoFactorAuthenticatable::OTP_LENGTH,
       ) %>
   <%= f.input(

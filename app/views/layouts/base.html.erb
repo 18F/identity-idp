@@ -33,11 +33,31 @@
   <![endif]-->
   <%= csrf_meta_tags %>
 
-  <link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
-  <link href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
-  <link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png" />
+  <%= favicon_link_tag(
+        design_system_asset_path('img/favicons/apple-touch-icon.png'),
+        rel: 'apple-touch-icon',
+        sizes: '180x180',
+        type: 'image/png',
+      ) %>
+  <%= favicon_link_tag(
+        design_system_asset_path('img/favicons/favicon-40.png'),
+        rel: 'icon',
+        sizes: '40x40',
+        type: 'image/png',
+      ) %>
+  <%= favicon_link_tag(
+        design_system_asset_path('img/favicons/favicon-16.png'),
+        rel: 'icon',
+        sizes: '16x16',
+        type: 'image/png',
+      ) %>
   <link href="/manifest.json" rel="manifest" />
-  <link color="#e21c3d" href="/safari-pinned-tab.svg" rel="mask-icon" />
+  <%= favicon_link_tag(
+        design_system_asset_path('img/favicons/safari-pinned-tab.svg'),
+        rel: 'mask-icon',
+        color: '#e21c3d',
+        type: nil,
+      ) %>
   <meta content="#ffffff" name="theme-color" />
 
   <!--[if lt IE 9]>
@@ -46,7 +66,7 @@
   <![endif]-->
 
   <% if IdentityConfig.store.newrelic_browser_key.present? && IdentityConfig.store.newrelic_browser_app_id.present? %>
-  <%= render 'shared/newrelic/browser_instrumentation' %>
+    <%= render 'shared/newrelic/browser_instrumentation' %>
   <% end %>
 
   <%= yield(:head) if content_for?(:head) %>
@@ -57,17 +77,22 @@
   <div class="usa-overlay"></div>
   <%= yield(:mobile_nav) if content_for?(:mobile_nav) %>
   <%= render 'shared/banner' %>
-  <main class="site-wrap bg-primary-lighter" id="main-content">
+
+  <%= content_tag(
+        local_assigns[:user_main_tag] == false ? 'div' : 'main',
+        class: 'site-wrap bg-primary-lighter',
+        id: local_assigns[:user_main_tag] == false ? nil : 'main-content',
+      ) do %>
     <div class="grid-container padding-y-4 tablet:padding-y-8 <%= local_assigns[:disable_card].present? ? '' : 'card' %>">
       <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
       <%= render FlashComponent.new(flash: flash) %>
       <%= content_for?(:content) ? yield(:content) : yield %>
     </div>
-  </main>
+  <% end %>
 
   <%= render 'shared/footer_lite' %>
 
-  <% if current_user # Render the JS snipped that collects platform authenticator analytics %>
+  <% if current_user %>
     <%= render partial: 'session_timeout/ping',
                locals: {
                  timeout_url: timeout_url,

@@ -33,6 +33,7 @@ describe Idv::Steps::VerifyStep do
   let(:pii_from_doc) do
     {
       ssn: '123-45-6789',
+      first_name: 'bob',
     }
   end
 

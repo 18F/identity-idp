@@ -73,17 +73,23 @@ feature 'managing email address' do
     end
 
     it 'sends notification to all confirmed emails when email address is deleted' do
-      allow(UserMailer).to receive(:email_deleted).and_call_original
       user = create(:user, :signed_up, email: 'test@example.com ')
       confirmed_email1 = user.confirmed_email_addresses.first
-      create(:email_address, user: user, confirmed_at: Time.zone.now)
-      user.email_addresses.reload
+      confirmed_email2 = create(:email_address, user: user, confirmed_at: Time.zone.now)
 
       sign_in_and_2fa_user(user)
       expect(page).to have_current_path(account_path)
-
       delete_email_should_not_fail(confirmed_email1)
-      expect(UserMailer).to have_received(:email_deleted).twice
+
+      expect_delivered_email_count(2)
+      expect_delivered_email(
+        to: [confirmed_email1.email],
+        subject: t('user_mailer.email_deleted.subject'),
+      )
+      expect_delivered_email(
+        to: [confirmed_email2.email],
+        subject: t('user_mailer.email_deleted.subject'),
+      )
     end
 
     it 'allows a user to create an account with the old email address' do

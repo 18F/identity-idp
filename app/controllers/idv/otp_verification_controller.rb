@@ -1,6 +1,7 @@
 module Idv
   class OtpVerificationController < ApplicationController
     include IdvSession
+    include StepIndicatorConcern
     include PhoneOtpRateLimitable
 
     # confirm_two_factor_authenticated before action is in PhoneOtpRateLimitable
@@ -19,8 +20,8 @@ module Idv
       result = phone_confirmation_otp_verification_form.submit(code: params[:code])
       analytics.idv_phone_confirmation_otp_submitted(**result.to_h)
       irs_attempts_api_tracker.idv_phone_otp_submitted(
-        phone_number: idv_session.user_phone_confirmation_session.phone,
         success: result.success?,
+        phone_number: idv_session.user_phone_confirmation_session.phone,
         failure_reason: result.success? ? {} : result.extra.slice(:code_expired, :code_matches),
       )
 
@@ -67,6 +68,7 @@ module Idv
       @phone_confirmation_otp_verification_form ||= PhoneConfirmationOtpVerificationForm.new(
         user: current_user,
         user_phone_confirmation_session: idv_session.user_phone_confirmation_session,
+        irs_attempts_api_tracker: irs_attempts_api_tracker,
       )
     end
   end

@@ -1,6 +1,6 @@
 module UspsInPersonProofing
   class Proofer
-    attr_reader :token, :token_expires_at
+    mattr_reader :token, :token_expires_at
 
     # Makes HTTP request to get nearby in-person proofing facilities
     # Requires address, city, state and zip code.
@@ -18,13 +18,8 @@ module UspsInPersonProofing
         zipCode: location.zip_code,
       }.to_json
 
-      headers = request_headers.merge(
-        'Authorization' => @token,
-        'RequestID' => request_id,
-      )
-
       parse_facilities(
-        faraday.post(url, body, headers) do |req|
+        faraday.post(url, body, dynamic_headers) do |req|
           req.options.context = { service_name: 'usps_facilities' }
         end.body,
       )
@@ -112,12 +107,12 @@ module UspsInPersonProofing
     # @return [String] the token
     def retrieve_token!
       body = request_token
-      @token_expires_at = Time.zone.now + body['expires_in']
-      @token = "#{body['token_type']} #{body['access_token']}"
+      @@token_expires_at = Time.zone.now + body['expires_in']
+      @@token = "#{body['token_type']} #{body['access_token']}"
     end
 
     def token_valid?
-      @token.present? && @token_expires_at.present? && @token_expires_at.future?
+      token.present? && token_expires_at.present? && token_expires_at.future?
     end
 
     private
@@ -136,9 +131,6 @@ module UspsInPersonProofing
         # Note: The order of this matters for parsing the error response body.
         conn.response :raise_error
 
-        # Log request method and URL, excluding headers and body
-        conn.response :logger, nil, { headers: false, bodies: false }
-
         # Convert body to JSON
         conn.request :json
 
@@ -155,7 +147,7 @@ module UspsInPersonProofing
       retrieve_token! unless token_valid?
 
       {
-        'Authorization' => @token,
+        'Authorization' => token,
         'RequestID' => request_id,
       }
     end
@@ -170,7 +162,7 @@ module UspsInPersonProofing
         password: IdentityConfig.store.usps_ipp_password,
         grant_type: 'implicit',
         response_type: 'token',
-        client_id: '424ada78-62ae-4c53-8e3a-0b737708a9db',
+        client_id: IdentityConfig.store.usps_ipp_client_id,
         scope: 'ivs.ippaas.apis',
       }
 
@@ -213,6 +205,7 @@ module UspsInPersonProofing
           saturday_hours: hours['saturdayHours'],
           state: post_office['state'],
           sunday_hours: hours['sundayHours'],
+          tty: post_office['tty'],
           weekday_hours: hours['weekdayHours'],
           zip_code_4: post_office['zip4'],
           zip_code_5: post_office['zip5'],

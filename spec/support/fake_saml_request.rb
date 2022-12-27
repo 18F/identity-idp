@@ -3,6 +3,10 @@ class FakeSamlRequest
     self
   end
 
+  def matching_cert
+    nil
+  end
+
   def identifier
     'http://localhost:3000'
   end
@@ -36,6 +40,10 @@ class FakeSamlRequest
 
   def valid?
     true
+  end
+
+  def signed?
+    false
   end
 
   def name_id_format

@@ -14,7 +14,7 @@ shared_examples 'a lexisnexis proofer' do
 
     allow(verification_request).to receive(:send).and_return(response)
     allow(verification_request.class).to receive(:new).
-      with(applicant: applicant, config: kind_of(Proofing::LexisNexis::Proofer::Config)).
+      with(applicant: applicant, config: kind_of(Proofing::LexisNexis::Ddp::Proofer::Config)).
       and_return(verification_request)
   end
 
@@ -82,6 +82,10 @@ shared_examples 'a lexisnexis request' do |basic_auth: true|
       expect(ln_response).to be_a(Proofing::LexisNexis::Response)
       expect(ln_response.response.status).to eq 200
       expect(ln_response.response.body).to eq response_body
+      expect(ln_response.conversation_id).to be_a(String)
+      expect(ln_response.reference).to be_a(String)
+      expect(ln_response.verification_status).to be_a(String)
+      expect(ln_response.verification_errors).to be_a(Hash)
     end
   end
 end

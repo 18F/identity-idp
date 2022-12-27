@@ -46,6 +46,10 @@ module SamlAuthHelper
     @saml_test_sp_cert ||= File.read(Rails.root.join('certs', 'sp', 'saml_test_sp.crt'))
   end
 
+  def saml_test_sp_cert_serial
+    OpenSSL::X509::Certificate.new(saml_test_sp_cert).serial.to_s
+  end
+
   def idp_fingerprint
     @idp_fingerprint ||= Fingerprinter.fingerprint_cert(
       OpenSSL::X509::Certificate.new(saml_test_idp_cert),
@@ -214,7 +218,7 @@ module SamlAuthHelper
     protocol == :saml ? click_submit_default_twice : click_submit_default
 
     expect(current_url).to match new_user_session_path
-    expect(page).to have_content(t('titles.sign_up.completion_first_sign_in', app_name: APP_NAME))
+    expect(page).to have_content(t('titles.sign_up.completion_first_sign_in', sp: 'Test SP'))
 
     click_agree_and_continue
   end
@@ -301,7 +305,7 @@ module SamlAuthHelper
       client_id: client_id,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF + ' ' +
-        Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
+        Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email x509 x509:presented',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,

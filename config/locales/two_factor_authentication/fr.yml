@@ -12,17 +12,20 @@ fr:
         compte %{app_name} a été annulée.
       text_html: Si vous ne pouvez utiliser aucune des méthodes d’authentification
         ci-dessus, vous pouvez %{link}.
+    attempt_remaining_warning_html:
+      one: Il vous reste <strong>%{count} tentative</strong>.
+      other: Il vous reste <strong>%{count} tentatives</strong>.
     backup_code_fallback:
       question: Vous n’avez pas vos codes de secours disponibles?
     backup_code_header_text: Entrez votre code de sécurité de secours
     backup_code_prompt: Vous pouvez utiliser ce code de sécurité une fois. Après
       l’avoir entré, vous devrez utiliser une nouvelle clé.
     choose_another_option: '‹ Choisissez une autre option'
-    header_text: Entrez votre code de sécurité
+    header_text: Entrez votre code à usage unique
     important_alert_icon: Icône d’alerte importante
     invalid_backup_code: Ce code de sauvegarde est invalide.
-    invalid_otp: Ce code de sécurité est non valide. Vous pouvez essayer de l’entrer
-      de nouveau ou demander un nouveau code de sécurité à utilisation unique.
+    invalid_otp: Ce code à usage unique est invalide. Veuillez réessayer ou demander
+      un nouveau code.
     invalid_personal_key: Cette clé personnelle est non valide.
     invalid_piv_cac: Ce PIV/CAC n’a pas fonctionné. Assurez-vous que c’est le bon
       PIV/CAC pour ce compte. Si c’est le cas, votre PIV/CAC, votre NIP ou un
@@ -42,11 +45,11 @@ fr:
       piv_cac: Employés du gouvernement
       piv_cac_info: Utilisez votre carte PIV / CAC pour sécuriser votre compte.
       sms: SMS
-      sms_info_html: Obtenez votre code de sécurité par SMS à <strong>%{phone}</strong>.
+      sms_info_html: Obtenez un code à usage unique par SMS au <strong>%{phone}</strong>.
       voice: Appel téléphonique
-      voice_info_html: Obtenez votre code de sécurité Obtenez votre code de sécurité
-        par SMS à  à <strong>%{phone}</strong>. (Seulement les numéros de
-        téléphone en Amerique du Nord)
+      voice_info_html: Obtenez un code à usage unique par appel téléphonique au
+        <strong>%{phone}</strong> (Seulement les numéros de téléphone en
+        Amerique du Nord).
       webauthn: Clé de sécurité
       webauthn_info: Utilisez votre clé de sécurité pour accéder à votre compte.
       webauthn_platform: Déverrouillage facial ou tactile
@@ -61,10 +64,11 @@ fr:
       sauvegarde.
     max_generic_login_attempts_reached: Pour votre sécurité, votre compte est temporairement verrouillé.
     max_otp_login_attempts_reached: Pour votre sécurité, votre compte est
-      temporairement verrouillé, car vous avez entré le code de sécurité à
-      utilisation unique de façon erronée à de trop nombreuses reprises.
+      temporairement verrouillé car vous avez saisi le code à usage unique de
+      manière incorrecte un trop grand nombre de fois.
     max_otp_requests_reached: Pour votre sécurité, votre compte est temporairement
-      verrouillé car vous avez demandé un code de sécurité à trop de reprises.
+      verrouillé parce que vous avez demandé un code à usage unique trop
+      souvent.
     max_personal_key_login_attempts_reached: Pour votre sécurité, votre compte est
       temporairement verrouillé, car vous avez entré le code de sécurité à
       utilisation unique de façon erronée à de trop nombreuses reprises.
@@ -74,19 +78,18 @@ fr:
     mobile_terms_of_service: Conditions de service mobile
     no_auth_option: Aucune option d’authentification n’a été trouvée pour vous connecter
     opt_in:
-      cant_use_phone: 'Vous ne pouvez pas utiliser votre téléphone?'
-      error_retry: 'Désolé, nous avons des difficultés à vous connecter. Veuillez
-        réessayer.'
-      opted_out_html: 'Vous avez choisi de ne plus recevoir de SMS à %{phone_number}.
+      cant_use_phone: Vous ne pouvez pas utiliser votre téléphone?
+      error_retry: Désolé, nous avons des difficultés à vous connecter. Veuillez réessayer.
+      opted_out_html: Vous avez choisi de ne plus recevoir de SMS à %{phone_number}.
         Vous pouvez vous inscrire et recevoir à nouveau un code de sécurité à ce
-        numéro de téléphone.'
-      opted_out_last_30d_html: 'Vous avez choisi de ne plus recevoir de SMS au
+        numéro de téléphone.
+      opted_out_last_30d_html: Vous avez choisi de ne plus recevoir de SMS au
         %{phone_number} au cours des 30 derniers jours. Nous ne pouvons opter
-        pour un numéro de téléphone qu’une fois tous les 30 jours.'
-      title: 'Nous n’avons pas pu envoyer un code de sécurité à votre numéro de
-        téléphone'
-      wait_30d_opt_in: 'Après 30 jours, vous pouvez vous inscrire et recevoir un code
-        de sécurité à ce numéro de téléphone.'
+        pour un numéro de téléphone qu’une fois tous les 30 jours.
+      title: Nous n’avons pas pu envoyer un code de sécurité à votre numéro de
+        téléphone
+      wait_30d_opt_in: Après 30 jours, vous pouvez vous inscrire et recevoir un code
+        de sécurité à ce numéro de téléphone.
     otp_delivery_preference:
       instruction: Vous pouvez modifier cette sélection lors de votre prochaine connexion.
       no_supported_options: Nous ne sommes pas en mesure de vérifier les numéros de
@@ -99,10 +102,12 @@ fr:
       voice_unsupported: Il nous est impossible d’appeler des numéros de téléphone
         dans le %{location}.
     otp_make_default_number:
-      instruction: Veuillez cocher la case ci-dessous si vous voulez que ce soit le
-        téléphone par défaut. numéro que vous recevez des messages texte ou des
-        appels téléphoniques.
+      instruction: Faites de ce numéro de téléphone le numéro par défaut où vous
+        recevez des messages texte ou des appels téléphoniques.
       label: Numéro de téléphone par défaut
+      one_number_instruction: Vous devez avoir ajouté plus d’un numéro de téléphone
+        pour pouvoir sélectionner un numéro de téléphone par défaut.
+      one_number_title: Il s’agit de votre numéro par défaut
       title: Faites-en votre numéro de téléphone par défaut?
     personal_key_fallback:
       question: Vous n’avez pas votre clé personnelle?
@@ -116,8 +121,8 @@ fr:
     phone_fallback:
       question: Vous ne pouvez pas utiliser votre téléphone?
     phone_fee_disclosure: Des messages et débits de données peuvent être appliqués.
-    phone_info_html: Nous vous enverrons ou appellerons avec un code de sécurité
-      <strong>chaque fois que vous vous connectez</strong>.
+    phone_info_html: Nous vous enverrons un code à usage unique <strong>à chaque
+      fois que vous vous connecterez</strong>.
     phone_label: Numéro de téléphone
     piv_cac_fallback:
       question: Votre PIV ou CAC n’est pas disponible?
@@ -134,8 +139,6 @@ fr:
       physique tel qu’une clé de sécurité ou un badge d’employé du gouvernement
       (PIV ou CAC) pour accéder à vos informations.
     two_factor_choice: Configuration de la méthode d’authentification
-    two_factor_choice_intro: Ajoutez une autre étape de sécurité en utilisant l’une
-      des options d’authentification multifactorielle ci-dessous.
     two_factor_choice_options:
       auth_app: Demande d’authentification
       auth_app_info: Téléchargez ou utilisez une application d’authentification de
@@ -159,12 +162,12 @@ fr:
       piv_cac_info: Cartes PIV/CAC pour les fonctionnaires et les militaires. Bureau
         uniquement.
       sms: SMS
-      sms_info: Obtenez votre code de sécurité par SMS.
+      sms_info: Recevez votre code à usage unique par message texte/SMS.
       unused_backup_code:
         one: '(%{count} code non utilisé)'
         other: '(%{count} codes non utilisés)'
       voice: Appel téléphonique
-      voice_info: Obtenez votre code de sécurité par appel téléphonique.
+      voice_info: Obtenez votre code à usage unique par appel téléphonique.
       webauthn: Clef de sécurité
       webauthn_info: Un appareil physique, souvent en forme de clé USB, que vous
         branchez sur votre appareil.

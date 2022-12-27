@@ -4,46 +4,48 @@ describe Users::ResetPasswordsController, devise: true do
   let(:password_error_message) do
     "This password is too short (minimum is #{Devise.password_length.first} characters)"
   end
+  let(:success_properties) { { success: true, failure_reason: nil } }
+  let(:token_expired_error) { 'token_expired' }
   describe '#edit' do
     before do
       stub_analytics
       stub_attempts_tracker
       allow(@analytics).to receive(:track_event)
-      allow(@irs_attempts_api_tracker).to receive(:track_event)
     end
 
     context 'no user matches token' do
+      let(:user_blank_error) { { user: [:blank] } }
       let(:analytics_hash) do
         {
           success: false,
           errors: { user: ['invalid_token'] },
-          error_details: { user: [:blank] },
+          error_details: user_blank_error,
           user_id: nil,
         }
       end
 
       it 'redirects to page where user enters email for password reset token' do
+        expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
+          success: false,
+          failure_reason: user_blank_error,
+        )
+
         get :edit, params: { reset_password_token: 'foo' }
 
         expect(@analytics).to have_received(:track_event).
           with('Password Reset: Token Submitted', analytics_hash)
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :forgot_password_email_confirmed,
-          success: false,
-          failure_reason: { user: ['invalid_token'] },
-        )
-
         expect(response).to redirect_to new_user_password_path
         expect(flash[:error]).to eq t('devise.passwords.invalid_token')
       end
     end
 
     context 'token expired' do
+      let(:user_token_error) { { user: [token_expired_error] } }
       let(:analytics_hash) do
         {
           success: false,
-          errors: { user: ['token_expired'] },
-          error_details: { user: ['token_expired'] },
+          errors: user_token_error,
+          error_details: user_token_error,
           user_id: '123',
         }
       end
@@ -55,15 +57,15 @@ describe Users::ResetPasswordsController, devise: true do
       end
 
       it 'redirects to page where user enters email for password reset token' do
+        expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
+          success: false,
+          failure_reason: user_token_error,
+        )
+
         get :edit, params: { reset_password_token: 'foo' }
 
         expect(@analytics).to have_received(:track_event).
           with('Password Reset: Token Submitted', analytics_hash)
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :forgot_password_email_confirmed,
-          success: false,
-          failure_reason: { user: ['token_expired'] },
-        )
         expect(response).to redirect_to new_user_password_path
         expect(flash[:error]).to eq t('devise.passwords.token_expired')
       end
@@ -88,26 +90,27 @@ describe Users::ResetPasswordsController, devise: true do
         allow(ForbiddenPasswords).to receive(:new).with(email_address.email).and_return(forbidden)
         expect(forbidden).to receive(:call)
 
+        expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
+          success_properties,
+        )
+
         get :edit, params: { reset_password_token: 'foo' }
 
         expect(response).to render_template :edit
         expect(flash.keys).to be_empty
         expect(response.body).to match('<meta content="noindex,nofollow" name="robots" />')
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :forgot_password_email_confirmed,
-          success: true,
-          failure_reason: {},
-        )
       end
     end
   end
 
   describe '#update' do
+    let(:password_short_error) { { password: [:too_short] } }
+    let(:password_token_error) { { reset_password_token: [token_expired_error] } }
     context 'user submits new password after token expires' do
-      let(:irs_tracker_failure_reason) do
+      let(:reset_password_error_details) do
         {
-          password: [password_error_message],
-          reset_password_token: ['token_expired'],
+          **password_short_error,
+          **password_token_error,
         }
       end
 
@@ -115,7 +118,11 @@ describe Users::ResetPasswordsController, devise: true do
         stub_analytics
         stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
+
+        expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
+          success: false,
+          failure_reason: reset_password_error_details,
+        )
 
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
@@ -135,39 +142,24 @@ describe Users::ResetPasswordsController, devise: true do
           success: false,
           errors: {
             password: [password_error_message],
-            reset_password_token: ['token_expired'],
+            **password_token_error,
           },
-          error_details: {
-            password: [:too_short],
-            reset_password_token: ['token_expired'],
-          },
+          error_details: reset_password_error_details,
           user_id: user.uuid,
           profile_deactivated: false,
         }
 
         expect(@analytics).to have_received(:track_event).
           with('Password Reset: Password Submitted', analytics_hash)
-
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :forgot_password_new_password_submitted,
-          success: false,
-          failure_reason: irs_tracker_failure_reason,
-        )
-
         expect(response).to redirect_to new_user_password_path
         expect(flash[:error]).to eq t('devise.passwords.token_expired')
       end
     end
 
     context 'user submits invalid new password' do
-      let(:irs_tracker_failure_reason) do
-        { password: [password_error_message] }
-      end
-
       it 'renders edit' do
         stub_analytics
         stub_attempts_tracker
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
 
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
@@ -183,25 +175,22 @@ describe Users::ResetPasswordsController, devise: true do
           errors: {
             password: [password_error_message],
           },
-          error_details: {
-            password: [:too_short],
-          },
+          error_details: password_short_error,
           user_id: user.uuid,
           profile_deactivated: false,
         }
 
         expect(@analytics).to receive(:track_event).
           with('Password Reset: Password Submitted', analytics_hash)
+        expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
+          success: false,
+          failure_reason: password_short_error,
+        )
 
         put :update, params: { reset_password_form: form_params }
 
         expect(assigns(:forbidden_passwords)).to all(be_a(String))
         expect(response).to render_template(:edit)
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :forgot_password_new_password_submitted,
-          success: false,
-          failure_reason: irs_tracker_failure_reason,
-        )
       end
     end
 
@@ -230,7 +219,6 @@ describe Users::ResetPasswordsController, devise: true do
         stub_analytics
         stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
 
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
@@ -250,6 +238,10 @@ describe Users::ResetPasswordsController, devise: true do
 
           stub_user_mailer(user)
 
+          expect(@irs_attempts_api_tracker).to receive(
+            :forgot_password_new_password_submitted,
+          ).with(success_properties)
+
           password = 'a really long passw0rd'
           params = { password: password, reset_password_token: raw_reset_token }
 
@@ -265,11 +257,6 @@ describe Users::ResetPasswordsController, devise: true do
 
           expect(@analytics).to have_received(:track_event).
             with('Password Reset: Password Submitted', analytics_hash)
-          expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-            :forgot_password_new_password_submitted,
-            success: true,
-            failure_reason: {},
-          )
           expect(user.events.password_changed.size).to be 1
 
           expect(response).to redirect_to new_user_session_path
@@ -284,7 +271,6 @@ describe Users::ResetPasswordsController, devise: true do
         stub_analytics
         stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
 
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
@@ -299,6 +285,10 @@ describe Users::ResetPasswordsController, devise: true do
         expect(PushNotification::HttpPush).to receive(:deliver).with(security_event)
 
         stub_user_mailer(user)
+
+        expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
+          success_properties,
+        )
 
         get :edit, params: { reset_password_token: raw_reset_token }
         password = 'a really long passw0rd'
@@ -315,14 +305,7 @@ describe Users::ResetPasswordsController, devise: true do
 
         expect(@analytics).to have_received(:track_event).
           with('Password Reset: Password Submitted', analytics_hash)
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :forgot_password_new_password_submitted,
-          success: true,
-          failure_reason: {},
-        )
-
         expect(user.active_profile.present?).to eq false
-
         expect(response).to redirect_to new_user_session_path
       end
     end
@@ -332,7 +315,6 @@ describe Users::ResetPasswordsController, devise: true do
         stub_analytics
         stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
 
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
@@ -349,6 +331,10 @@ describe Users::ResetPasswordsController, devise: true do
 
         stub_user_mailer(user)
 
+        expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
+          success_properties,
+        )
+
         password = 'a really long passw0rd'
         params = { password: password, reset_password_token: raw_reset_token }
 
@@ -364,14 +350,7 @@ describe Users::ResetPasswordsController, devise: true do
 
         expect(@analytics).to have_received(:track_event).
           with('Password Reset: Password Submitted', analytics_hash)
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :forgot_password_new_password_submitted,
-          success: true,
-          failure_reason: {},
-        )
-
         expect(user.reload.confirmed?).to eq true
-
         expect(response).to redirect_to new_user_session_path
       end
     end
@@ -384,7 +363,11 @@ describe Users::ResetPasswordsController, devise: true do
       it 'send an email to tell the user they do not have an account yet' do
         stub_analytics
         stub_attempts_tracker
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
+
+        expect(@irs_attempts_api_tracker).to receive(:user_registration_email_submitted).with(
+          email: email,
+          **success_properties,
+        )
 
         expect do
           put :create, params: {
@@ -414,20 +397,14 @@ describe Users::ResetPasswordsController, devise: true do
           'User Registration: Email Submitted',
           analytics_hash,
         )
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :user_registration_email_submitted,
-          email: email,
-          success: true,
-          failure_reason: nil,
-        )
-
         expect(response).to redirect_to forgot_password_path
       end
     end
 
     context 'user exists' do
       let(:email) { 'test@example.com' }
-      let!(:user) { create(:user, :signed_up, email: email) }
+      let(:email_param) { { email: email } }
+      let!(:user) { create(:user, :signed_up, **email_param) }
       let(:analytics_hash) do
         {
           success: true,
@@ -442,23 +419,19 @@ describe Users::ResetPasswordsController, devise: true do
         stub_analytics
         stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
       end
 
       it 'sends password reset email to user and tracks event' do
+        expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_sent).with(
+          **email_param,
+        )
+
         expect do
-          put :create, params: { password_reset_email_form: { email: email } }
+          put :create, params: { password_reset_email_form: email_param }
         end.to change { ActionMailer::Base.deliveries.count }.by(1)
 
         expect(@analytics).to have_received(:track_event).
           with('Password Reset: Email Submitted', analytics_hash)
-
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :forgot_password_email_sent,
-          email: email,
-          success: true,
-        )
-
         expect(response).to redirect_to forgot_password_path
       end
     end
@@ -486,10 +459,13 @@ describe Users::ResetPasswordsController, devise: true do
         stub_analytics
         stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
       end
 
       it 'sends password reset email to user and tracks event' do
+        expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_sent).with(
+          email: user.email,
+        )
+
         expect { put :create, params: params }.
           to change { ActionMailer::Base.deliveries.count }.by(1)
 
@@ -498,13 +474,6 @@ describe Users::ResetPasswordsController, devise: true do
 
         expect(ActionMailer::Base.deliveries.last.subject).
           to eq t('user_mailer.reset_password_instructions.subject')
-
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :forgot_password_email_sent,
-          email: user.email,
-          success: true,
-        )
-
         expect(response).to redirect_to forgot_password_path
       end
     end
@@ -513,7 +482,6 @@ describe Users::ResetPasswordsController, devise: true do
       it 'captures in analytics that the user was verified' do
         stub_analytics
         stub_attempts_tracker
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
 
         user = create(:user, :signed_up)
         create(:profile, :active, :verified, user: user)
@@ -528,15 +496,12 @@ describe Users::ResetPasswordsController, devise: true do
 
         expect(@analytics).to receive(:track_event).
           with('Password Reset: Email Submitted', analytics_hash)
+        expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_sent).with(
+          email: user.email,
+        )
 
         params = { password_reset_email_form: { email: user.email } }
         put :create, params: params
-
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :forgot_password_email_sent,
-          email: user.email,
-          success: true,
-        )
       end
     end
 

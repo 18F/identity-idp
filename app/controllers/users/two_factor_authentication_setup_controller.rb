@@ -47,7 +47,7 @@ module Users
       TwoFactorOptionsPresenter.new(
         user_agent: request.user_agent,
         user: current_user,
-        aal3_required: service_provider_mfa_policy.aal3_required?,
+        phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
         piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
       )
     end
@@ -55,7 +55,7 @@ module Users
     def two_factor_options_form
       @two_factor_options_form ||= TwoFactorOptionsForm.new(
         user: current_user,
-        aal3_required: service_provider_mfa_policy.aal3_required?,
+        phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
         piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
       )
     end

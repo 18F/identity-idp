@@ -16,6 +16,10 @@ module Users
       result = @update_user_password_form.submit(user_params)
 
       analytics.password_changed(**result.to_h)
+      irs_attempts_api_tracker.logged_in_password_change(
+        success: result.success?,
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
+      )
 
       if result.success?
         handle_valid_password
@@ -52,8 +56,8 @@ module Users
     end
 
     def create_event_and_notify_user_about_password_change
-      event = create_user_event_with_disavowal(:password_changed)
-      UserAlerts::AlertUserAboutPasswordChange.call(current_user, event.disavowal_token)
+      _event, disavowal_token = create_user_event_with_disavowal(:password_changed)
+      UserAlerts::AlertUserAboutPasswordChange.call(current_user, disavowal_token)
     end
 
     def handle_invalid_password

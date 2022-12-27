@@ -19,7 +19,6 @@ module Idv
           document_check: doc_auth_vendor,
           document_type: 'state_id',
         }
-        component_attributes[:liveness_check] = doc_auth_vendor if liveness_checking_enabled?
         ProofingComponent.create_or_find_by(user: current_user).update(component_attributes)
       end
 
@@ -84,14 +83,12 @@ module Idv
 
       def add_cost(token, transaction_id: nil)
         Db::SpCost::AddSpCost.call(current_sp, 2, token, transaction_id: transaction_id)
-        Db::ProofingCost::AddUserProofingCost.call(user_id, token)
       end
 
       def add_costs(result)
         Db::AddDocumentVerificationAndSelfieCosts.
           new(user_id: user_id,
-              service_provider: current_sp,
-              liveness_checking_enabled: liveness_checking_enabled?).
+              service_provider: current_sp).
           call(result)
       end
 
@@ -99,17 +96,10 @@ module Idv
         session.fetch(:sp, {})
       end
 
-      def liveness_checking_enabled?
-        return false if !FeatureManagement.liveness_checking_enabled?
-        return sp_session[:ial2_strict] if sp_session.key?(:ial2_strict)
-        !!current_user.decorate.password_reset_profile&.strict_ial2_proofed?
-      end
-
       def create_document_capture_session(key)
         document_capture_session = DocumentCaptureSession.create(
           user_id: user_id,
           issuer: sp_session[:issuer],
-          ial2_strict: sp_session[:ial2_strict],
         )
         flow_session[key] = document_capture_session.uuid
 
@@ -124,6 +114,10 @@ module Idv
 
       def document_capture_session_uuid_key
         :document_capture_session_uuid
+      end
+
+      def inherited_proofing_verify_step_document_capture_session_uuid_key
+        :inherited_proofing_verify_step_document_capture_session_uuid
       end
 
       def verify_step_document_capture_session_uuid_key

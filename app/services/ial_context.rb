@@ -37,11 +37,7 @@ class IalContext
   end
 
   def ial2_or_greater?
-    ial2_requested? || ial2_strict_requested? || default_to_ial2?
-  end
-
-  def ial2_strict_requested?
-    ial == ::Idp::Constants::IAL2_STRICT
+    ial2_requested? || default_to_ial2?
   end
 
   private

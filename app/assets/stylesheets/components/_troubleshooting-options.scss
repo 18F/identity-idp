@@ -13,10 +13,6 @@
     height: 4px;
     width: 5rem;
   }
-
-  & + &::before {
-    content: none;
-  }
 }
 
 .troubleshooting-options__heading {

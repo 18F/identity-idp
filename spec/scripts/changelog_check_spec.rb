@@ -8,7 +8,7 @@ RSpec.describe 'scripts/changelog_check' do
     it 'builds a git log into structured changelog objects' do
       git_log = git_fixtures.values.pluck('commit_log').join("\n")
       changelog_entries = generate_changelog(git_log)
-      expect(changelog_entries.length).to eq 4
+      expect(changelog_entries.length).to eq 6
       fixture_and_changelog = git_fixtures.values.filter do |x|
         x['category'].present?
       end.zip(changelog_entries)
@@ -34,6 +34,32 @@ RSpec.describe 'scripts/changelog_check' do
       expect(commits.first['subcategory']).to eq changelog.first.subcategory
       expect(commits.first['pr_number']).to eq changelog.first.pr_number
       expect(commits.first['change']).to eq changelog.first.change
+    end
+
+    it 'detects changelog regardless of capitalization' do
+      commit = git_fixtures['commit_changelog_capitalized']
+      git_log = commit['commit_log']
+
+      changelog = generate_changelog(git_log)
+
+      expect(changelog).not_to be_empty
+      expect(commit['category']).to eq changelog.first.category
+      expect(commit['subcategory']).to eq changelog.first.subcategory
+      expect(commit['pr_number']).to eq changelog.first.pr_number
+      expect(commit['change']).to eq changelog.first.change
+    end
+
+    it 'detects changelog regardless of whitespace' do
+      commit = git_fixtures['commit_changelog_whitespace']
+      git_log = commit['commit_log']
+
+      changelog = generate_changelog(git_log)
+
+      expect(changelog).not_to be_empty
+      expect(commit['category']).to eq changelog.first.category
+      expect(commit['subcategory']).to eq changelog.first.subcategory
+      expect(commit['pr_number']).to eq changelog.first.pr_number
+      expect(commit['change']).to eq changelog.first.change
     end
   end
 
@@ -78,7 +104,7 @@ RSpec.describe 'scripts/changelog_check' do
       formatted_changelog = format_changelog(changelogs)
 
       expect(formatted_changelog).to eq <<~CHANGELOG.chomp
-        ## Improvements
+        ## User-Facing Improvements
         - Webauthn: Provide better error flow for users who may not be able to leverage webauthn (LG-5515) ([#5976](https://github.com/18F/identity-idp/pull/5976))
 
         ## Internal

@@ -164,7 +164,7 @@ feature 'SAML logout' do
       identity = ServiceProviderIdentity.
         find_by(user_id: user.id, service_provider: saml_settings.issuer)
       session_id = identity.rails_session_id
-      expect(OutOfBandSessionAccessor.new(session_id).load).to be_empty
+      expect(OutOfBandSessionAccessor.new(session_id).load_pii).to be_nil
 
       # should be logged out...
       visit account_path

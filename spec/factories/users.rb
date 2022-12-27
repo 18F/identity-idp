@@ -199,6 +199,26 @@ FactoryBot.define do
       end
     end
 
+    trait :proofed_with_gpo do
+      proofed
+      after :build do |user|
+        profile = user.active_profile
+        gpo_code = create(:gpo_confirmation_code)
+        profile.gpo_confirmation_codes << gpo_code
+        device = create(:device, user: user)
+        create(:event, user: user, device: device, event_type: :gpo_mail_sent)
+      end
+    end
+
+    trait :deactivated_threatmetrix_profile do
+      signed_up
+
+      after :build do |user|
+        create(:profile, :threatmetrix_review_pending, :with_pii, user: user)
+        create(:proofing_component, :eligible_for_review, user: user)
+      end
+    end
+
     trait :deactivated_password_reset_profile do
       signed_up
 

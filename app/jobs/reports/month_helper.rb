@@ -29,14 +29,9 @@ module Reports
         current = month_end + 1.day
       end
 
-      results << (date_range.end.beginning_of_month..date_range.end)
+      results << (date_range.end.beginning_of_month..date_range.end) if current < date_range.end
 
       results
-    end
-
-    def full_month?(date_range)
-      date_range.begin == date_range.begin.beginning_of_month &&
-        date_range.end == date_range.end.end_of_month
     end
   end
 end

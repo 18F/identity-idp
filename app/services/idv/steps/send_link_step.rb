@@ -5,6 +5,14 @@ module Idv
 
       STEP_INDICATOR_STEP = :verify_id
 
+      def self.analytics_visited_event
+        :idv_doc_auth_send_link_visited
+      end
+
+      def self.analytics_submitted_event
+        :idv_doc_auth_send_link_submitted
+      end
+
       def call
         return throttled_failure if throttle.throttled_else_increment?
         telephony_result = send_link
@@ -17,10 +25,18 @@ module Idv
           phone_number: formatted_destination_phone,
           failure_reason: failure_reason,
         )
-        return failure(telephony_result.error.friendly_message) unless telephony_result.success?
+        build_telephony_form_response(telephony_result)
       end
 
       private
+
+      def build_telephony_form_response(telephony_result)
+        FormResponse.new(
+          success: telephony_result.success?,
+          errors: { message: telephony_result.error&.friendly_message },
+          extra: { telephony_response: telephony_result.to_h },
+        )
+      end
 
       def throttled_failure
         @flow.analytics.throttler_rate_limit_triggered(
@@ -34,6 +50,11 @@ module Idv
             except: :seconds,
           ),
         )
+
+        @flow.irs_attempts_api_tracker.idv_phone_send_link_rate_limited(
+          phone_number: formatted_destination_phone,
+        )
+
         failure(message)
       end
 
@@ -44,15 +65,22 @@ module Idv
           to: formatted_destination_phone,
           link: link(session_uuid),
           country_code: Phonelib.parse(formatted_destination_phone).country,
+          sp_or_app_name: sp_or_app_name,
         )
       end
 
+      def sp_or_app_name
+        current_sp&.friendly_name.presence || APP_NAME
+      end
+
       def form_submit
+        params = permit(:phone)
+        params[:otp_delivery_preference] = 'sms'
         Idv::PhoneForm.new(
           previous_params: {},
           user: current_user,
           delivery_methods: [:sms],
-        ).submit(permit(:phone))
+        ).submit(params)
       end
 
       def formatted_destination_phone
@@ -67,7 +95,6 @@ module Idv
           requested_at: Time.zone.now,
           cancelled_at: nil,
           issuer: sp_session[:issuer],
-          ial2_strict: sp_session[:ial2_strict],
         )
       end
 

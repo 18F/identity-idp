@@ -3,13 +3,22 @@ module Idv
     class SsnStep < DocAuthBaseStep
       STEP_INDICATOR_STEP = :verify_info
 
+      include ThreatMetrixStepHelper
+
+      def self.analytics_visited_event
+        :idv_doc_auth_ssn_visited
+      end
+
+      def self.analytics_submitted_event
+        :idv_doc_auth_ssn_submitted
+      end
+
       def call
         return invalid_state_response if invalid_state?
 
         flow_session[:pii_from_doc][:ssn] = ssn
 
         @flow.irs_attempts_api_tracker.idv_ssn_submitted(
-          success: true,
           ssn: ssn,
         )
 
@@ -19,7 +28,7 @@ module Idv
       def extra_view_variables
         {
           updating_ssn: updating_ssn,
-          threatmetrix_session_id: generate_threatmetrix_session_id,
+          **threatmetrix_view_variables,
         }
       end
 
@@ -32,11 +41,6 @@ module Idv
       def invalid_state_response
         mark_step_incomplete(:document_capture)
         FormResponse.new(success: false)
-      end
-
-      def generate_threatmetrix_session_id
-        flow_session[:threatmetrix_session_id] = SecureRandom.uuid if !updating_ssn
-        flow_session[:threatmetrix_session_id]
       end
 
       def ssn

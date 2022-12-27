@@ -14,6 +14,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
   let(:x509_issuer) do
     '/C=US/O=Entrust/OU=Certification Authorities/OU=Entrust Managed Services SSP CA'
   end
+  let(:bad_dn) { 'bad-dn' }
 
   before(:each) do
     session_info = { piv_cac_nonce: nonce }
@@ -32,7 +33,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
     )
     allow(PivCacService).to receive(:decode_token).with('bad-token').and_return(
       'uuid' => 'bad-uuid',
-      'subject' => 'bad-dn',
+      'subject' => bad_dn,
       'issuer' => x509_issuer,
       'nonce' => nonce,
     )
@@ -111,8 +112,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(submit_attributes)
 
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :mfa_login_piv_cac,
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_piv_cac).with(
           success: true,
           subject_dn: x509_subject,
           failure_reason: nil,
@@ -195,9 +195,11 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
           with(mfa_device_type: 'piv_cac')
 
+        piv_cac_mismatch = { type: 'user.piv_cac_mismatch' }
+
         submit_attributes = {
           success: false,
-          errors: { type: 'user.piv_cac_mismatch' },
+          errors: piv_cac_mismatch,
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
           key_id: nil,
@@ -206,11 +208,10 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(submit_attributes)
 
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :mfa_login_piv_cac,
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_piv_cac).with(
           success: false,
-          subject_dn: 'bad-dn',
-          failure_reason: { type: 'user.piv_cac_mismatch' },
+          subject_dn: bad_dn,
+          failure_reason: piv_cac_mismatch,
         )
 
         expect(@analytics).to receive(:track_event).

@@ -5,6 +5,10 @@ module Idv
         process_async_state(async_state)
       end
 
+      def self.analytics_submitted_event
+        :idv_doc_auth_verify_document_status_submitted
+      end
+
       private
 
       def process_async_state(current_async_state)

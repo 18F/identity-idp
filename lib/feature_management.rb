@@ -100,24 +100,12 @@ class FeatureManagement
     IdentityConfig.store.doc_auth_enable_presigned_s3_urls
   end
 
-  def self.liveness_checking_enabled?
-    IdentityConfig.store.liveness_checking_enabled
-  end
-
   def self.logo_upload_enabled?
     IdentityConfig.store.logo_upload_enabled
   end
 
   def self.log_to_stdout?
     !Rails.env.test? && IdentityConfig.store.log_to_stdout
-  end
-
-  def self.idv_api_enabled?
-    IdentityConfig.store.idv_api_enabled_steps.present?
-  end
-
-  def self.idv_personal_key_confirmation_enabled?
-    IdentityConfig.store.idv_personal_key_confirmation_enabled
   end
 
   # Manual allowlist for VOIPs, should only include known VOIPs that we use for smoke tests

@@ -144,11 +144,13 @@ describe Idv::ReviewController do
 
     before(:each) do
       stub_sign_in(user)
+      stub_attempts_tracker
       routes.draw do
         post 'show' => 'idv/review#show'
       end
       allow(subject).to receive(:confirm_idv_steps_complete).and_return(true)
       allow(subject).to receive(:idv_session).and_return(idv_session)
+      allow(@irs_attempts_api_tracker).to receive(:track_event)
     end
 
     context 'user does not provide password' do
@@ -161,11 +163,20 @@ describe Idv::ReviewController do
     end
 
     context 'user provides wrong password' do
-      it 'redirects to new' do
+      before do
         post :show, params: { user: { password: 'wrong' } }
+      end
 
+      it 'redirects to new' do
         expect(flash[:error]).to eq t('idv.errors.incorrect_password')
         expect(response).to redirect_to idv_review_path
+      end
+
+      it 'tracks irs password entered event (idv_password_entered)' do
+        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
+          :idv_password_entered,
+          success: false,
+        )
       end
     end
 
@@ -206,41 +217,6 @@ describe Idv::ReviewController do
               t('idv.messages.phone.phone_of_record'),
             ),
           ),
-        )
-      end
-
-      it 'shows steps' do
-        get :new
-
-        expect(subject.view_assigns['step_indicator_steps']).not_to include(
-          hash_including(name: :verify_phone_or_address, status: :pending),
-        )
-      end
-
-      context 'idv app password confirm step is enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
-            and_return(['password_confirm'])
-        end
-
-        it 'redirects to idv app' do
-          get :new
-
-          expect(response).to redirect_to idv_app_path
-        end
-      end
-    end
-
-    context 'user chooses address verification' do
-      before do
-        idv_session.address_verification_mechanism = 'gpo'
-      end
-
-      it 'shows revises steps to show pending address verification' do
-        get :new
-
-        expect(subject.view_assigns['step_indicator_steps']).to include(
-          hash_including(name: :verify_phone_or_address, status: :pending),
         )
       end
     end
@@ -297,20 +273,32 @@ describe Idv::ReviewController do
 
         expect(response).to redirect_to idv_review_path
 
-        expect(@analytics).to have_logged_event('IdV: review complete', success: false)
+        expect(@analytics).to have_logged_event(
+          'IdV: review complete',
+          success: false,
+          proofing_components: nil,
+        )
       end
     end
 
     context 'user has completed all steps' do
       before do
         idv_session
+        stub_attempts_tracker
+        allow(@irs_attempts_api_tracker).to receive(:track_event)
       end
 
       it 'redirects to personal key path' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-        expect(@analytics).to have_logged_event('IdV: review complete', success: true)
-        expect(@analytics).to have_logged_event('IdV: final resolution', success: true)
+        expect(@analytics).to have_logged_event(
+          'IdV: review complete', success: true,
+                                  proofing_components: nil
+        )
+        expect(@analytics).to have_logged_event(
+          'IdV: final resolution',
+          hash_including(success: true),
+        )
         expect(response).to redirect_to idv_personal_key_path
       end
 
@@ -322,6 +310,15 @@ describe Idv::ReviewController do
         allow_any_instance_of(User).to receive(:active_profile).and_return(true)
         get :new
         expect(response).to redirect_to idv_personal_key_path
+      end
+
+      it 'tracks irs password entered event (idv_password_entered)' do
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
+          :idv_password_entered,
+          success: true,
+        )
       end
 
       it 'creates Profile with applicant attributes' do
@@ -364,16 +361,21 @@ describe Idv::ReviewController do
           expect(disavowal_event_count).to eq 1
         end
 
-        context 'with idv app personal key step enabled' do
-          before do
-            allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
-              and_return(['password_confirm', 'personal_key', 'personal_key_confirm'])
-          end
-
-          it 'redirects to idv app personal key path' do
+        context 'when the user goes through reproofing' do
+          it 'does not log a reproofing event during initial proofing' do
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-            expect(response).to redirect_to idv_app_url
+            expect(@irs_attempts_api_tracker).not_to receive(:idv_reproof)
+          end
+
+          it 'logs a reproofing event upon reproofing' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            idv_session.profile.update(verified_at: nil)
+
+            expect(@irs_attempts_api_tracker).to receive(:idv_reproof)
+
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
           end
         end
 
@@ -443,19 +445,13 @@ describe Idv::ReviewController do
           end
 
           it 'sends ready to verify email' do
-            mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
-            user.email_addresses.each do |email_address|
-              expect(UserMailer).to receive(:in_person_ready_to_verify).
-                with(
-                  user,
-                  email_address,
-                  enrollment: instance_of(InPersonEnrollment),
-                  first_name: kind_of(String),
-                ).
-                and_return(mailer)
-            end
-
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect_delivered_email_count(1)
+            expect_delivered_email(
+              to: [user.email_addresses.first.email],
+              subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
+            )
           end
 
           context 'when there is a 4xx error' do
@@ -490,7 +486,7 @@ describe Idv::ReviewController do
 
           context 'when there is 5xx error' do
             let(:stub_usps_response) do
-              stub_request_enroll_internal_failure_response
+              stub_request_enroll_internal_server_error_response
             end
 
             it 'logs the error message' do
@@ -498,6 +494,7 @@ describe Idv::ReviewController do
 
               expect(@analytics).to have_logged_event(
                 'USPS IPPaaS enrollment failed',
+                context: 'authentication',
                 enrollment_id: enrollment.id,
                 exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
                 exception_message: 'the server responded with status 500',
@@ -528,6 +525,7 @@ describe Idv::ReviewController do
               expect(response).to redirect_to idv_personal_key_path
 
               enrollment.reload
+
               expect(enrollment.status).to eq('pending')
               expect(enrollment.user_id).to eq(user.id)
               expect(enrollment.enrollment_code).to be_a(String)
@@ -582,6 +580,34 @@ describe Idv::ReviewController do
 
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
             end
+          end
+        end
+
+        context 'with threatmetrix required but review status did not pass' do
+          let(:applicant) do
+            Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
+          end
+          let(:stub_idv_session) do
+            stub_user_with_applicant_data(user, applicant)
+          end
+
+          before(:each) do
+            stub_request_token
+            ProofingComponent.create(
+              user: user,
+              threatmetrix: true,
+              threatmetrix_review_status: 'review',
+            )
+            allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
+              and_return(true)
+            allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
+              and_return(true)
+          end
+
+          it 'creates a disabled profile' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(user.profiles.last.deactivation_reason).to eq('threatmetrix_review_pending')
           end
         end
       end

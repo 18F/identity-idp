@@ -16,10 +16,32 @@ describe 'idv/doc_auth/welcome.html.erb' do
   end
 
   context 'in doc auth with an authenticated user' do
-    it 'renders a link to return to the SP' do
-      render template: 'idv/doc_auth/welcome'
+    let(:need_irs_reproofing) { false }
 
+    before do
+      user_decoration = instance_double('user decoration')
+      allow(user_decoration).to receive(:reproof_for_irs?).and_return(need_irs_reproofing)
+      fake_user = instance_double(User)
+      allow(fake_user).to receive(:decorate).and_return(user_decoration)
+      assign(:current_user, fake_user)
+
+      render template: 'idv/doc_auth/welcome'
+    end
+
+    it 'does not render the IRS reproofing explanation' do
+      expect(rendered).not_to have_text(t('doc_auth.info.irs_reproofing_explanation'))
+    end
+
+    it 'renders a link to return to the SP' do
       expect(rendered).to have_link(t('links.cancel'))
+    end
+
+    context 'when trying to log in to the IRS' do
+      let(:need_irs_reproofing) { true }
+
+      it 'renders the IRS reproofing explanation' do
+        expect(rendered).to have_text(t('doc_auth.info.irs_reproofing_explanation'))
+      end
     end
   end
 
@@ -30,30 +52,6 @@ describe 'idv/doc_auth/welcome.html.erb' do
       render template: 'idv/doc_auth/welcome'
 
       expect(rendered).to have_link(t('two_factor_authentication.choose_another_option'))
-    end
-  end
-
-  context 'when liveness checking enabled' do
-    before do
-      allow(view).to receive(:liveness_checking_enabled?).and_return(true)
-    end
-
-    it 'renders selfie instructions' do
-      render template: 'idv/doc_auth/welcome'
-
-      expect(rendered).to have_text(t('doc_auth.instructions.bullet1a'))
-    end
-  end
-
-  context 'when liveness checking is disabled' do
-    before do
-      allow(view).to receive(:liveness_checking_enabled?).and_return(false)
-    end
-
-    it 'renders selfie instructions' do
-      render template: 'idv/doc_auth/welcome'
-
-      expect(rendered).to_not have_text(t('doc_auth.instructions.bullet1a'))
     end
   end
 

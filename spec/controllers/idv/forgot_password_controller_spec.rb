@@ -18,7 +18,10 @@ describe Idv::ForgotPasswordController do
     it 'tracks the event in analytics when referer is nil' do
       get :new
 
-      expect(@analytics).to have_received(:track_event).with('IdV: forgot password visited')
+      expect(@analytics).to have_received(:track_event).with(
+        'IdV: forgot password visited',
+        proofing_components: nil,
+      )
     end
   end
 
@@ -30,17 +33,18 @@ describe Idv::ForgotPasswordController do
       stub_analytics
       stub_attempts_tracker
       allow(@analytics).to receive(:track_event)
-      allow(@irs_attempts_api_tracker).to receive(:track_event)
     end
 
-    it 'tracks analytics events' do
+    it 'tracks appropriate events' do
+      expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_sent).with(
+        email: user.email,
+      )
+
       post :update
 
-      expect(@analytics).to have_received(:track_event).with('IdV: forgot password confirmed')
-      expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-        :forgot_password_email_sent,
-        email: user.email,
-        success: true,
+      expect(@analytics).to have_received(:track_event).with(
+        'IdV: forgot password confirmed',
+        proofing_components: nil,
       )
     end
   end

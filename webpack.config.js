@@ -11,14 +11,15 @@ const isLocalhost = host === 'localhost';
 const isProductionEnv = env === 'production';
 const isTestEnv = env === 'test';
 const mode = isProductionEnv ? 'production' : 'development';
-const hashSuffix = isProductionEnv ? '-[contenthash:8]' : '';
+const hashSuffix = isProductionEnv ? '-[chunkhash:8]' : '';
 const devServerPort = process.env.WEBPACK_PORT;
+const devtool = process.env.WEBPACK_DEVTOOL || (isProductionEnv ? 'source-map' : 'eval-source-map');
 
 const entries = glob('app/{components,javascript/packs}/*.{ts,tsx,js,jsx}');
 
 module.exports = /** @type {import('webpack').Configuration} */ ({
   mode,
-  devtool: isProductionEnv ? false : 'eval-source-map',
+  devtool,
   target: ['web', 'es5'],
   devServer: {
     static: {
@@ -42,7 +43,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       devServerPort && isLocalhost ? `http://localhost:${devServerPort}/packs/` : '/packs/',
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.mts', '.cts'],
   },
   module: {
     rules: [
@@ -53,9 +54,9 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
         use: ['source-map-loader'],
       },
       {
-        test: /\.[jt]sx?$/,
+        test: /\.[cm]?[jt]sx?$/,
         exclude:
-          /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/,
+          /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset|swr)/,
         use: {
           loader: 'babel-loader',
         },

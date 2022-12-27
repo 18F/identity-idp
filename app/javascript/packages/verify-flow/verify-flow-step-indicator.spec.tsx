@@ -1,6 +1,5 @@
 import { render } from '@testing-library/react';
 import { StepStatus } from '@18f/identity-step-indicator';
-import { AddressVerificationMethodContextProvider } from './context/address-verification-method-context';
 import VerifyFlowStepIndicator, {
   getStepStatus,
   VerifyFlowPath,
@@ -35,19 +34,6 @@ describe('VerifyFlowStepIndicator', () => {
 
     const previous = getByText('step_indicator.flows.idv.verify_phone_or_address');
     expect(previous.closest('.step-indicator__step--complete')).to.exist();
-  });
-
-  context('with gpo as address verification method', () => {
-    it('renders address verification as pending', () => {
-      const { getByText } = render(
-        <AddressVerificationMethodContextProvider initialMethod="gpo">
-          <VerifyFlowStepIndicator currentStep="personal_key" />
-        </AddressVerificationMethodContextProvider>,
-      );
-
-      const previous = getByText('step_indicator.flows.idv.verify_phone_or_address');
-      expect(previous.closest('.step-indicator__step--pending')).to.exist();
-    });
   });
 
   context('with in-person flow path', () => {

@@ -1,0 +1,10 @@
+{
+  "error": {
+      "code": 400,
+      "extendedCode": -2147467259,
+      "message": "Unable to complete operation.",
+      "details": [
+          "Something went wrong"
+      ]
+  }
+}

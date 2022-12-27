@@ -1,6 +1,10 @@
 module UspsInPersonProofing
   module Mock
     class Fixtures
+      def self.internal_server_error_response
+        load_response_fixture('internal_server_error_response.json')
+      end
+
       def self.request_token_response
         load_response_fixture('request_token_response.json')
       end
@@ -25,16 +29,16 @@ module UspsInPersonProofing
         load_response_fixture('request_enroll_failed_response.json')
       end
 
-      def self.request_enroll_internal_failure_response
-        load_response_fixture('request_enroll_internal_failure_response.json')
-      end
-
       def self.request_enroll_invalid_response
         load_response_fixture('request_enroll_invalid_response.json')
       end
 
       def self.request_failed_proofing_results_response
         load_response_fixture('request_failed_proofing_results_response.json')
+      end
+
+      def self.request_failed_suspected_fraud_proofing_results_response
+        load_response_fixture('request_failed_suspected_fraud_proofing_results_response.json')
       end
 
       def self.request_passed_proofing_unsupported_id_results_response

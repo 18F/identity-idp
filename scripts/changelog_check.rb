@@ -3,9 +3,13 @@ require 'open3'
 require 'optparse'
 
 CHANGELOG_REGEX =
-  %r{^(?:\* )?changelog: (?<category>[\w -/]{2,}), (?<subcategory>[\w -]{2,}), (?<change>.+)$}
+  %r{^(?:\* )?[cC]hangelog: ?(?<category>[\w -/]{2,}), ?(?<subcategory>[\w -]{2,}), ?(?<change>.+)$}
 CATEGORIES = [
-  'Improvements', 'Accessibility', 'Bug Fixes', 'Internal', 'Upcoming Features'
+  'User-Facing Improvements',
+  'Improvements', # Temporary for transitional period
+  'Bug Fixes',
+  'Internal',
+  'Upcoming Features',
 ]
 MAX_CATEGORY_DISTANCE = 3
 SKIP_CHANGELOG_MESSAGE = '[skip changelog]'
@@ -90,7 +94,7 @@ def generate_invalid_changes(git_log)
 end
 
 def closest_change_category(change)
-  CATEGORIES.
+  category = CATEGORIES.
     map do |category|
       CategoryDistance.new(
         category,
@@ -100,6 +104,10 @@ def closest_change_category(change)
     filter { |category_distance| category_distance.distance <= MAX_CATEGORY_DISTANCE }.
     max { |category_distance| category_distance.distance }&.
     category
+
+  # Temporarily normalize legacy category in transitional period
+  category = 'User-Facing Improvements' if category == 'Improvements'
+  category
 end
 
 # Get the last valid changelog line for every Pull Request and tie it to the commit subject.
@@ -246,7 +254,7 @@ def main(args)
         changelog: CATEGORY, SUBCATEGORY, CHANGE_DESCRIPTION
 
         example:
-        changelog: Improvements, Authentication, Updating Authentication (LG-9998)
+        changelog: User-Facing Improvements, WebAuthn, Improve error flow for WebAuthn (LG-5515)
 
         categories:
         #{CATEGORIES.map { |category| "- #{category}" }.join("\n")}

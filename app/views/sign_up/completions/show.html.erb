@@ -8,23 +8,13 @@
 <% end %>
 
 <p class="tablet:margin-right-1 tablet:margin-left-1 margin-top-4 margin-bottom-4">
-  <%= t(
-        'help_text.requested_attributes.intro_html',
-        app_name: APP_NAME,
-        sp: content_tag(:strong, decorated_session.sp_name),
-      ) %>
+  <%= @presenter.intro.html_safe %>
 </p>
 <div class='tablet:margin-left-1 tablet:margin-right-1'>
   <%= render 'sign_up/completions/requested_attributes', pii: @presenter.pii %>
 </div>
-<p class="tablet:margin-right-1 tablet:margin-left-1 margin-top-4 margin-bottom-4">
-  <%= t(
-        'help_text.requested_attributes.outro_html',
-        app_name: APP_NAME,
-        sp: content_tag(:strong, decorated_session.sp_name),
-      ) %>
-</p>
-<% if !@multiple_factors_enabled && IdentityConfig.store.select_multiple_mfa_options %>
+
+<% if !@multiple_factors_enabled %>
   <%= render(AlertComponent.new(type: :warning, class: 'margin-bottom-4')) do %>
     <%= link_to(
           t('mfa.second_method_warning.link'),

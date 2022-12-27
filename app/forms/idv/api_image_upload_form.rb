@@ -5,21 +5,20 @@ module Idv
 
     validates_presence_of :front
     validates_presence_of :back
-    validates_presence_of :selfie, if: :liveness_checking_enabled?
     validates_presence_of :document_capture_session
 
     validate :validate_images
     validate :throttle_if_rate_limited
 
-    def initialize(params, liveness_checking_enabled:, service_provider:, analytics: nil,
-                   uuid_prefix: nil, irs_attempts_api_tracker: nil)
+    def initialize(params, service_provider:, analytics: nil,
+                   uuid_prefix: nil, irs_attempts_api_tracker: nil, store_encrypted_images: false)
       @params = params
-      @liveness_checking_enabled = liveness_checking_enabled
       @service_provider = service_provider
       @analytics = analytics
       @readable = {}
       @uuid_prefix = uuid_prefix
       @irs_attempts_api_tracker = irs_attempts_api_tracker
+      @store_encrypted_images = store_encrypted_images
     end
 
     def submit
@@ -66,10 +65,8 @@ module Idv
 
     def post_images_to_client
       response = doc_auth_client.post_images(
-        front_image: front.read,
-        back_image: back.read,
-        selfie_image: selfie&.read,
-        liveness_checking_enabled: liveness_checking_enabled?,
+        front_image: front_image_bytes,
+        back_image: back_image_bytes,
         image_source: image_source,
         user_uuid: user_uuid,
         uuid_prefix: uuid_prefix,
@@ -81,6 +78,14 @@ module Idv
       update_analytics(response)
 
       response
+    end
+
+    def front_image_bytes
+      @front_image_bytes ||= front.read
+    end
+
+    def back_image_bytes
+      @back_image_bytes ||= back.read
     end
 
     def validate_pii_from_doc(client_response)
@@ -125,10 +130,6 @@ module Idv
       client_response
     end
 
-    def liveness_checking_enabled?
-      @liveness_checking_enabled
-    end
-
     def image_source
       if acuant_sdk_capture?
         DocAuth::ImageSources::ACUANT_SDK
@@ -143,10 +144,6 @@ module Idv
 
     def back
       as_readable(:back)
-    end
-
-    def selfie
-      as_readable(:selfie)
     end
 
     def document_capture_session
@@ -165,12 +162,6 @@ module Idv
       if back.is_a? DataUrlImage::InvalidUrlFormatError
         errors.add(
           :back, t('doc_auth.errors.not_a_file'),
-          type: :not_a_file
-        )
-      end
-      if selfie.is_a? DataUrlImage::InvalidUrlFormatError
-        errors.add(
-          :selfie, t('doc_auth.errors.not_a_file'),
           type: :not_a_file
         )
       end
@@ -208,15 +199,6 @@ module Idv
       end
     end
 
-    def track_event(event, attributes = {})
-      if analytics.present?
-        analytics.track_event(
-          event,
-          attributes,
-        )
-      end
-    end
-
     def update_analytics(client_response)
       add_costs(client_response)
       update_funnel(client_response)
@@ -225,21 +207,52 @@ module Idv
           client_image_metrics: image_metadata,
           async: false,
           flow_path: params[:flow_path],
-        ),
+        ).merge(acuant_sdk_upgrade_ab_test_data),
       )
       pii_from_doc = client_response.pii_from_doc || {}
+      stored_image_result = store_encrypted_images_if_required
       irs_attempts_api_tracker.idv_document_upload_submitted(
         success: client_response.success?,
         document_state: pii_from_doc[:state],
         document_number: pii_from_doc[:state_id_number],
         document_issued: pii_from_doc[:state_id_issued],
         document_expiration: pii_from_doc[:state_id_expiration],
+        document_front_image_filename: stored_image_result&.front_filename,
+        document_back_image_filename: stored_image_result&.back_filename,
+        document_image_encryption_key: stored_image_result&.encryption_key,
         first_name: pii_from_doc[:first_name],
         last_name: pii_from_doc[:last_name],
         date_of_birth: pii_from_doc[:dob],
         address: pii_from_doc[:address1],
         failure_reason: client_response.errors&.except(:hints)&.presence,
       )
+    end
+
+    def store_encrypted_images_if_required
+      return unless store_encrypted_images?
+
+      encrypted_document_storage_writer.encrypt_and_write_document(
+        front_image: front_image_bytes,
+        front_image_content_type: front.content_type,
+        back_image: back_image_bytes,
+        back_image_content_type: back.content_type,
+      )
+    end
+
+    def store_encrypted_images?
+      @store_encrypted_images
+    end
+
+    def encrypted_document_storage_writer
+      @encrypted_document_storage_writer ||= EncryptedDocumentStorage::DocumentWriter.new
+    end
+
+    def acuant_sdk_upgrade_ab_test_data
+      return {} unless IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled
+      {
+        acuant_sdk_upgrade_ab_test_bucket:
+          AbTests::ACUANT_SDK.bucket(document_capture_session.uuid),
+      }
     end
 
     def acuant_sdk_capture?
@@ -263,14 +276,12 @@ module Idv
     def add_costs(response)
       Db::AddDocumentVerificationAndSelfieCosts.
         new(user_id: user_id,
-            service_provider: service_provider,
-            liveness_checking_enabled: liveness_checking_enabled?).
+            service_provider: service_provider).
         call(response)
     end
 
     def update_funnel(client_response)
       steps = %i[front_image back_image]
-      steps << :selfie if liveness_checking_enabled?
       steps.each do |step|
         Funnel::DocAuth::RegisterStep.new(user_id, service_provider&.issuer).
           call(step.to_s, :update, client_response.success?)

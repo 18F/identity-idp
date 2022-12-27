@@ -8,7 +8,6 @@ fr:
           one: la valeur doit être d’au moins %{count} jour ou plus
           other: la valeur doit être d’au moins %{count} jours ou plus
         invalid_verified_within_format: Format non reconnu pour verified_within
-        liveness_checking_disabled: La vérification de la vivacité est désactivée
         missing_ial: Manque un niveau IAL valide
         no_auth: Les acr_values ne sont pas autorisées
         no_valid_acr_values: Valeurs acr_values inacceptables trouvées
@@ -18,8 +17,19 @@ fr:
         redirect_uri_no_match: redirect_uri ne correspond pas au redirect_uri enregistré
         unauthorized_scope: Portée non autorisée
     logout:
+      confirm: Oui, déconnectez-vous de %{app_name}
+      deny: Non, allez sur la page de mon compte
       errors:
+        client_id_invalid: client_id n’a pas été reconnu
+        client_id_missing: client_id est manquant
         id_token_hint: id_token_hint n’a pas été reconnu
+        id_token_hint_present: Cette application est mal configurée et ne devrait pas
+          envoyer id_token_hint. Veuillez envoyer client_id à la place.
+        no_client_id_or_id_token_hint: Cette application est mal configurée et doit
+          envoyer client_id ou id_token_hint.
+      heading: Voulez-vous vous déconnecter de %{app_name}?
+      heading_with_sp: Souhaitez-vous vous déconnecter de %{app_name} et revenir à
+        %{service_provider_name}?
     token:
       errors:
         expired_code: est expiré

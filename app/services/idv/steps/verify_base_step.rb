@@ -49,10 +49,13 @@ module Idv
           if stage == :resolution
             # transaction_id comes from ConversationId
             add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
-            tmx_id = hash[:threatmetrix_request_id]
-            add_cost(:threatmetrix, transaction_id: tmx_id) if tmx_id
           elsif stage == :state_id
+            next if hash[:vendor_name] == 'UnsupportedJurisdiction'
             process_aamva(hash[:transaction_id])
+          elsif stage == :threatmetrix
+            # transaction_id comes from request_id
+            tmx_id = hash[:transaction_id]
+            add_cost(:threatmetrix, transaction_id: tmx_id) if tmx_id
           end
         end
       end
@@ -75,25 +78,41 @@ module Idv
       def idv_failure(result)
         throttle.increment! if result.extra.dig(:proofing_results, :exception).blank?
         if throttle.throttled?
-          @flow.analytics.throttler_rate_limit_triggered(
-            throttle_type: :idv_resolution,
-            step_name: self.class.name,
-          )
-          redirect_to idv_session_errors_failure_url
+          idv_failure_log_throttled
+          redirect_to throttled_url
         elsif result.extra.dig(:proofing_results, :exception).present?
-          @flow.analytics.idv_doc_auth_exception_visited(
-            step_name: self.class.name,
-            remaining_attempts: throttle.remaining_count,
-          )
+          idv_failure_log_error
           redirect_to exception_url
         else
-          @flow.analytics.idv_doc_auth_warning_visited(
-            step_name: self.class.name,
-            remaining_attempts: throttle.remaining_count,
-          )
+          idv_failure_log_warning
           redirect_to warning_url
         end
-        result
+      end
+
+      def idv_failure_log_throttled
+        @flow.irs_attempts_api_tracker.idv_verification_rate_limited
+        @flow.analytics.throttler_rate_limit_triggered(
+          throttle_type: :idv_resolution,
+          step_name: self.class.name,
+        )
+      end
+
+      def idv_failure_log_error
+        @flow.analytics.idv_doc_auth_exception_visited(
+          step_name: self.class.name,
+          remaining_attempts: throttle.remaining_count,
+        )
+      end
+
+      def idv_failure_log_warning
+        @flow.analytics.idv_doc_auth_warning_visited(
+          step_name: self.class.name,
+          remaining_attempts: throttle.remaining_count,
+        )
+      end
+
+      def throttled_url
+        idv_session_errors_failure_url
       end
 
       def exception_url
@@ -218,11 +237,26 @@ module Idv
           result: current_async_state.result,
           state: pii[:state],
           state_id_jurisdiction: pii[:state_id_jurisdiction],
+          state_id_number: pii[:state_id_number],
           # todo: add other edited fields?
           extra: {
             address_edited: !!flow_session['address_edited'],
-            pii_like_keypaths: [[:errors, :ssn]],
+            pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name]],
           },
+        )
+        pii_from_doc = pii || {}
+        @flow.irs_attempts_api_tracker.idv_verification_submitted(
+          success: form_response.success?,
+          document_state: pii_from_doc[:state],
+          document_number: pii_from_doc[:state_id_number],
+          document_issued: pii_from_doc[:state_id_issued],
+          document_expiration: pii_from_doc[:state_id_expiration],
+          first_name: pii_from_doc[:first_name],
+          last_name: pii_from_doc[:last_name],
+          date_of_birth: pii_from_doc[:dob],
+          address: pii_from_doc[:address1],
+          ssn: pii_from_doc[:ssn],
+          failure_reason: @flow.irs_attempts_api_tracker.parse_failure_reason(form_response),
         )
 
         if form_response.success?
@@ -257,17 +291,28 @@ module Idv
         flow_session.delete(verify_step_document_capture_session_uuid_key)
       end
 
-      def idv_result_to_form_response(result:, state: nil, state_id_jurisdiction: nil, extra: {})
+      def idv_result_to_form_response(
+        result:,
+        state: nil,
+        state_id_jurisdiction: nil,
+        state_id_number: nil,
+        extra: {}
+      )
         state_id = result.dig(:context, :stages, :state_id)
         if state_id
           state_id[:state] = state if state
           state_id[:state_id_jurisdiction] = state_id_jurisdiction if state_id_jurisdiction
+          state_id[:state_id_number] = redact(state_id_number) if state_id_number
         end
         FormResponse.new(
           success: idv_success(result),
           errors: idv_errors(result),
           extra: extra.merge(proofing_results: idv_extra(result)),
         )
+      end
+
+      def redact(text)
+        text.gsub(/[a-z]/i, 'X').gsub(/\d/i, '#')
       end
     end
   end

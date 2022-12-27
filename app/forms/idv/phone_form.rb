@@ -4,10 +4,12 @@ module Idv
 
     ALL_DELIVERY_METHODS = [:sms, :voice].freeze
 
-    attr_reader :user, :phone, :allowed_countries, :delivery_methods, :international_code
+    attr_reader :user, :phone, :allowed_countries, :delivery_methods, :international_code,
+                :otp_delivery_preference
 
     validate :validate_valid_phone_for_allowed_countries
     validate :validate_phone_delivery_methods
+    validates :otp_delivery_preference, inclusion: { in: %w[sms voice] }
 
     # @param [User] user
     # @param [Hash] previous_params
@@ -28,6 +30,8 @@ module Idv
 
     def submit(params)
       self.phone = PhoneFormatter.format(params[:phone])
+      self.otp_delivery_preference = params[:otp_delivery_preference]
+      self.otp_delivery_preference = 'sms' if self.otp_delivery_preference.nil?
       success = valid?
       self.phone = params[:phone] unless success
 
@@ -40,7 +44,7 @@ module Idv
 
     private
 
-    attr_writer :phone
+    attr_writer :phone, :otp_delivery_preference
 
     def initial_phone_value(input_phone)
       initial_phone = input_phone
@@ -54,19 +58,16 @@ module Idv
 
     def validate_valid_phone_for_allowed_countries
       return if valid_phone_for_allowed_countries?(phone)
-
-      if allowed_countries == ['US']
-        errors.add(:phone, :must_have_us_country_code, type: :must_have_us_country_code)
-      else
-        errors.add(:phone, :improbable_phone, type: :improbable_phone)
-      end
+      errors.add(:phone, :improbable_phone, type: :improbable_phone)
     end
 
     def validate_phone_delivery_methods
       return unless valid_phone_for_allowed_countries?(phone)
 
       capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: user_phone?(phone))
-      unsupported_delivery_methods(capabilities).each do |delivery_method|
+      unsupported_methods = unsupported_delivery_methods(capabilities)
+      return if unsupported_methods.count != delivery_methods.count
+      unsupported_methods.each do |delivery_method|
         errors.add(
           :phone,
           I18n.t(
@@ -80,7 +81,7 @@ module Idv
 
     def valid_phone_for_allowed_countries?(phone)
       if allowed_countries.present?
-        allowed_countries.all? { |country| Phonelib.valid_for_country?(phone, country) }
+        allowed_countries.any? { |country| Phonelib.valid_for_country?(phone, country) }
       else
         Phonelib.valid?(phone)
       end
@@ -124,6 +125,7 @@ module Idv
         country_code: parsed_phone.country,
         area_code: parsed_phone.area_code,
         pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]], # see errors.add(:phone)
+        otp_delivery_preference: otp_delivery_preference,
       }.tap do |extra|
         extra[:warn] = @warning_message if @warning_message
       end

@@ -9,9 +9,6 @@ feature 'Signing in via one-time use personal key' do
     raw_key = PersonalKeyGenerator.new(user).create
     old_key = user.reload.encrypted_recovery_code_digest
 
-    personal_key_sign_in_mail = double
-    expect(personal_key_sign_in_mail).to receive(:deliver_now_or_later)
-    expect(UserMailer).to receive(:personal_key_sign_in).and_return(personal_key_sign_in_mail)
     expect(Telephony).to receive(:send_personal_key_sign_in_notice).
       with(to: '+1 (202) 345-6789', country_code: 'US')
 
@@ -21,6 +18,12 @@ feature 'Signing in via one-time use personal key' do
     click_submit_default
     expect(user.reload.encrypted_recovery_code_digest).to_not eq old_key
     expect(current_path).to eq account_path
+
+    expect_delivered_email_count(1)
+    expect_delivered_email(
+      to: [user.email_addresses.first.email],
+      subject: t('user_mailer.personal_key_sign_in.subject'),
+    )
   end
 
   context 'user enters incorrect personal key' do

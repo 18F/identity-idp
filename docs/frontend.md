@@ -68,25 +68,6 @@ automatically by running `yarn run lint --fix`. You may also consider one of the
 [available editor integrations](https://prettier.io/docs/en/editors.html), which can simplify your
 workflow to apply formatting automatically on save.
 
-### Dependencies
-
-Since the IDP is not a Node.js application or library, the distinction between `dependencies` and
-`devDependencies` is largely one of communicating intent to other developers on the team based on
-whether they are brought in to benefit the user or the developer. It does not have a meaningful
-difference on how those dependencies are used by the application.
-
-In most situations, the following advice should apply:
-
-- `dependencies` include modules which are relevant for runtime (user-facing) features.
-  - Examples: Component libraries, input validation libraries
-- `devDependencies` include modules which largely support the developer.
-  - Examples: Build tools, testing libraries
-
-When installing a dependency, you can make this distinction by including or omitting the `--dev`
-(`-D`) flag when using `yarn add` or `yarn remove`. Refer to the
-[Yarn CLI documentation](https://classic.yarnpkg.com/en/docs/cli/) for more information about
-installing, removing, and upgrading packages.
-
 ### Yarn Workspaces
 
 [Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) allow a developer to create and
@@ -116,6 +97,42 @@ logic required to wire the package to the running Rails application. Because Yar
 workspace packages using symlinks, you can reference a package using the name you assigned using the
 guidelines above for `package.json` `name` field (for example,
 `import { Button } from '@18f/identity-components';`).
+
+### Dependencies
+
+While the project is not a Node.js application or library, the distinction between `dependencies`
+and `devDependencies` is important due to how assets are precompiled in deployed environments.
+During a deployment, dependencies are installed using [the `--production` flag](https://classic.yarnpkg.com/lang/en/docs/cli/install/#toc-yarn-install-production-true-false),
+meaning that all dependencies which are required to build the project must be defined as
+`dependencies`, not as `devDependencies`.
+
+`devDependencies` should be reserved for dependencies which are not required to compile application
+assets, such as testing-related libraries or [DefinitelyTyped](https://www.typescriptlang.org/dt/)
+TypeScript declaration packages. When possible, it is still useful to define `devDependencies` to
+improve the performance of application asset compilation.
+
+When installing new dependencies, consider whether the dependency is relevant for an individual
+workspace package, or for the entire project. By default, Yarn will warn when trying to install a
+dependency in the root package, since dependencies should typically be installed for a specific
+workspace.
+
+To install a dependency to a workspace:
+
+```bash
+yarn workspace @18f/identity-build-sass add sass-embedded
+```
+
+To install a dependency to the project:
+
+```bash
+# Note the `-W` flag
+yarn add -W webpack
+```
+
+As much as possible, try to use the same version of a dependency when it is used across multiple
+workspace packages. Otherwise, it can inflate the size of the compiled bundles and have a negative
+performance impact on users. Similarly, consider using a tool like [`yarn-deduplicate`](https://github.com/scinos/yarn-deduplicate)
+to deduplicate resolved package versions within the Yarn lockfile.
 
 ### Components
 
@@ -202,6 +219,24 @@ Many issues can be fixed automatically by appending a `--fix` flag to the comman
 ```
 yarn run lint --fix
 ```
+
+## Debugging
+
+### Production Errors
+
+JavaScript errors that occur in production environments are automatically logged to NewRelic.
+Because JavaScript is transpiled and minified in production, these files can be difficult to debug.
+Fortunately, [NewRelic supports source maps](https://docs.newrelic.com/docs/browser/browser-monitoring/browser-pro-features/upload-source-maps-un-minify-js-errors/)
+to produce a readable stack trace of the original code.
+
+When viewing an instance of a JavaScript error, NewRelic will prompt for a sourcemap corresponding
+to a specific JavaScript file URL.
+
+![NewRelic minified stack trace](https://user-images.githubusercontent.com/1779930/194325242-1e0cb00a-6ee1-4fb0-82b1-b017ced703b5.png)
+
+To retrieve the sourcemap for this URL, simply copy the URL into your browser URL bar and append
+`.map`. Navigating to this URL should download the `.map` file to your computer, which you can then
+drag-and-drop onto the NewRelic web interface to reveal the decompiled stack trace.
 
 ## Devices
 

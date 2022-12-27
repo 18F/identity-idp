@@ -22,6 +22,14 @@ module Idv
         { name: :secure_account },
       ].freeze
 
+      STEP_INDICATOR_STEPS_GPO = [
+        { name: :getting_started },
+        { name: :verify_id },
+        { name: :verify_info },
+        { name: :secure_account },
+        { name: :get_a_letter },
+      ].freeze
+
       OPTIONAL_SHOW_STEPS = {
         verify_wait: Idv::Steps::VerifyWaitStepShow,
       }.freeze
@@ -45,6 +53,13 @@ module Idv
 
       def self.session_idv(session)
         session[:idv] ||= {}
+      end
+
+      def extra_analytics_properties
+        {
+          acuant_sdk_upgrade_ab_test_bucket:
+            AbTests::ACUANT_SDK.bucket(flow_session[:document_capture_session_uuid]),
+        }
       end
     end
   end

@@ -1,4 +1,4 @@
-<header aria-label="banner">
+<header>
   <%= render 'shared/no_pii_banner' if FeatureManagement.show_no_pii_banner? %>
   <section class="usa-banner" aria-label="<%= t('shared.banner.landmark_label') %>">
     <div class="usa-accordion">
@@ -29,7 +29,10 @@
           <div class="usa-banner__guidance tablet:grid-col-6">
             <%= image_tag(
                   asset_url('icon-dot-gov.svg'),
-                  alt: 'Dot gov',
+                  size: 40,
+                  alt: '',
+                  role: 'img',
+                  aria: { hidden: true },
                   class: 'usa-banner__icon usa-media-block__img',
                 ) %>
             <div class="usa-media-block__body">
@@ -42,7 +45,10 @@
           <div class="usa-banner__guidance tablet:grid-col-6">
             <%= image_tag(
                   asset_url('icon-https.svg'),
-                  alt: 'Https',
+                  size: 40,
+                  alt: '',
+                  role: 'img',
+                  aria: { hidden: true },
                   class: 'usa-banner__icon usa-media-block__img',
                 ) %>
             <div class="usa-media-block__body">

@@ -12,11 +12,13 @@
     ) do |f| %>
   <%= render PasswordToggleComponent.new(
         form: f,
-        name: :password,
-        label: t('idv.form.password'),
-        required: true,
+        field_options: {
+          name: :password,
+          label: t('idv.form.password'),
+          required: true,
+        },
       ) %>
-  <%= f.submit t('forms.buttons.continue') %>
+  <%= f.submit t('forms.buttons.continue'), class: 'margin-top-5' %>
 <% end %>
 
 <div class='margin-top-6'>

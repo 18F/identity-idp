@@ -33,123 +33,88 @@ RSpec.describe DocAuthRouter do
     end
   end
 
-  describe '.client and .doc_auth_vendor' do
-    context 'with randomize vendor configuration on' do
-      let(:doc_auth_vendor) { 'test1' }
-      let(:doc_auth_vendor_randomize) { true }
-      let(:doc_auth_vendor_randomize_alternate_vendor) { 'test2' }
-      let(:iterations) { 1000 }
-      let(:percent_variance) { 0.05 }
+  describe '.doc_auth_vendor' do
+    def reload_ab_test_initializer!
+      # undefine the AB tests instances so we can re-initialize them with different config values
+      AbTests.constants.each do |const_name|
+        AbTests.class_eval { remove_const(const_name) }
+      end
+      load Rails.root.join('config', 'initializers', 'ab_tests.rb').to_s
+    end
 
-      before(:each) do
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize).
-          and_return(doc_auth_vendor_randomize)
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_alternate_vendor).
-          and_return(doc_auth_vendor_randomize_alternate_vendor)
+    let(:doc_auth_vendor) { 'test1' }
+    let(:doc_auth_vendor_randomize_alternate_vendor) { 'test2' }
+    let(:discriminator) { SecureRandom.uuid }
+    let(:analytics) { FakeAnalytics.new }
+    let(:doc_auth_vendor_randomize_percent) { 57 }
+    let(:doc_auth_vendor_randomize) { true }
+
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_alternate_vendor).
+        and_return(doc_auth_vendor_randomize_alternate_vendor)
+
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
+        and_return(doc_auth_vendor_randomize_percent)
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize).
+        and_return(doc_auth_vendor_randomize)
+
+      reload_ab_test_initializer!
+    end
+
+    after do
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
+        and_call_original
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize).
+        and_call_original
+
+      reload_ab_test_initializer!
+    end
+
+    context 'with a nil discriminator' do
+      let(:discriminator) { nil }
+
+      it 'is the default vendor, and logs analytics events' do
+        expect(analytics).to receive(:idv_doc_auth_randomizer_defaulted)
+
+        result = DocAuthRouter.doc_auth_vendor(discriminator: discriminator, analytics: analytics)
+
+        expect(result).to eq(doc_auth_vendor)
+      end
+    end
+
+    context 'with a discriminator that hashes inside the test group' do
+      before do
+        allow(AbTests::DOC_AUTH_VENDOR).
+          to receive(:percent).with(discriminator).
+          and_return(doc_auth_vendor_randomize_percent - 1)
       end
 
-      it 'doc_auth_vendor randomizes near configured level' do
-        doc_auth_vendor_randomize_percent = 57
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
-          and_return(doc_auth_vendor_randomize_percent)
-
-        results = []
-        iterations.times do |i|
-          results.push(DocAuthRouter.doc_auth_vendor(discriminator: i.to_s(16)))
-        end
-
-        target_value = iterations * (doc_auth_vendor_randomize_percent.to_f / 100)
-
-        expect(results.tally['test2']).to be_within(iterations * percent_variance).of(target_value)
+      it 'is the alternate vendor' do
+        expect(DocAuthRouter.doc_auth_vendor(discriminator: discriminator)).
+          to eq(doc_auth_vendor_randomize_alternate_vendor)
       end
 
-      it 'doc_auth_vendor randomizes at 100 when set above 100' do
-        doc_auth_vendor_randomize_percent = 105
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
-          and_return(doc_auth_vendor_randomize_percent)
+      context 'with randomize false' do
+        let(:doc_auth_vendor_randomize) { false }
 
-        results = []
-        iterations.times do |_i|
-          results.push(DocAuthRouter.doc_auth_vendor(discriminator: SecureRandom.uuid))
+        it 'is the original vendor' do
+          expect(DocAuthRouter.doc_auth_vendor(discriminator: discriminator)).
+            to eq(doc_auth_vendor)
         end
+      end
+    end
 
-        expect(results.tally['test1']).to be(nil)
-        expect(results.tally['test2']).to be(iterations)
+    context 'with a discriminator that hashes outside the test group' do
+      before do
+        allow(AbTests::DOC_AUTH_VENDOR).
+          to receive(:percent).with(discriminator).
+          and_return(doc_auth_vendor_randomize_percent + 1)
       end
 
-      it 'doc_auth_vendor randomizes at 0 when set below 0' do
-        doc_auth_vendor_randomize_percent = 0
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
-          and_return(doc_auth_vendor_randomize_percent)
-
-        results = []
-        iterations.times do |_i|
-          results.push(DocAuthRouter.doc_auth_vendor(discriminator: SecureRandom.uuid))
-        end
-
-        expect(results.tally['test1']).to be(iterations)
-        expect(results.tally['test2']).to be(nil)
-      end
-
-      it 'doc_auth_vendor is deterministic when presented with the same session id' do
-        doc_auth_vendor_randomize_percent = 50
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
-          and_return(doc_auth_vendor_randomize_percent)
-
-        single_id = SecureRandom.uuid
-
-        results = []
-        iterations.times do |_i|
-          results.push(DocAuthRouter.doc_auth_vendor(discriminator: single_id))
-        end
-
-        expect(results.tally).to match({ 'test1' => iterations }).
-          or match({ 'test2' => iterations })
-      end
-
-      it 'doc_auth_vendor returns the default when called without a session_id when randomized' do
-        doc_auth_vendor = 'acuant'
-        doc_auth_vendor_randomize_alternate_vendor = 'lexisnexis'
-        doc_auth_vendor_randomize_percent = 35
-
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_alternate_vendor).
-          and_return(doc_auth_vendor_randomize_alternate_vendor)
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
-          and_return(doc_auth_vendor_randomize_percent)
-
-        results = []
-        iterations.times do |i|
-          client = DocAuthRouter.client(vendor_discriminator: nil).client
-          results.push(client.class.to_s)
-        end
-
-        expect(results.tally['DocAuth::LexisNexis::LexisNexisClient'] || 0).
-          to be_within(iterations * percent_variance).of(0)
-      end
-
-      it 'client returns randomized vendors when configured' do
-        doc_auth_vendor = Idp::Constants::Vendors::ACUANT
-        doc_auth_vendor_randomize_alternate_vendor = Idp::Constants::Vendors::LEXIS_NEXIS
-        doc_auth_vendor_randomize_percent = 35
-
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_alternate_vendor).
-          and_return(doc_auth_vendor_randomize_alternate_vendor)
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
-          and_return(doc_auth_vendor_randomize_percent)
-
-        results = []
-        iterations.times do |i|
-          client = DocAuthRouter.client(vendor_discriminator: i.to_s(16)).client
-          results.push(client.class.to_s)
-        end
-
-        target_value = iterations * (doc_auth_vendor_randomize_percent.to_f / 100)
-
-        expect(results.tally['DocAuth::LexisNexis::LexisNexisClient']).
-          to be_within(iterations * percent_variance).of(target_value)
+      it 'is the original' do
+        expect(DocAuthRouter.doc_auth_vendor(discriminator: discriminator)).
+          to eq(doc_auth_vendor)
       end
     end
   end
@@ -175,7 +140,7 @@ RSpec.describe DocAuthRouter do
       )
 
       response = I18n.with_locale(:es) do
-        proxy.get_results(instance_id: 'abcdef', liveness_enabled: false)
+        proxy.get_results(instance_id: 'abcdef')
       end
 
       expect(response.errors[:some_other_key]).to eq(['will not be translated'])
@@ -198,25 +163,9 @@ RSpec.describe DocAuthRouter do
         ),
       )
 
-      response = proxy.get_results(instance_id: 'abcdef', liveness_enabled: false)
+      response = proxy.get_results(instance_id: 'abcdef')
 
       expect(response.errors[:network]).to eq(I18n.t('doc_auth.errors.general.network_error'))
-    end
-
-    it 'translates generic selfie errors' do
-      DocAuth::Mock::DocAuthMockClient.mock_response!(
-        method: :get_results,
-        response: DocAuth::Response.new(
-          success: false,
-          errors: {
-            selfie: [DocAuth::Errors::SELFIE_FAILURE],
-          },
-        ),
-      )
-
-      response = proxy.get_results(instance_id: 'abcdef', liveness_enabled: false)
-
-      expect(response.errors[:selfie]).to eq([I18n.t('doc_auth.errors.alerts.selfie_failure')])
     end
 
     it 'translates generic network errors' do
@@ -230,7 +179,7 @@ RSpec.describe DocAuthRouter do
         ),
       )
 
-      response = proxy.post_images(front_image: 'a', back_image: 'b', selfie_image: 'c')
+      response = proxy.post_images(front_image: 'a', back_image: 'b')
 
       expect(response.errors[:network]).to eq(I18n.t('doc_auth.errors.general.network_error'))
     end
@@ -244,21 +193,19 @@ RSpec.describe DocAuthRouter do
             id: [DocAuth::Errors::EXPIRATION_CHECKS],
             front: [DocAuth::Errors::VISIBLE_PHOTO_CHECK],
             back: [DocAuth::Errors::REF_CONTROL_NUMBER_CHECK],
-            selfie: [DocAuth::Errors::SELFIE_FAILURE],
-            general: [DocAuth::Errors::GENERAL_ERROR_LIVENESS],
+            general: [DocAuth::Errors::GENERAL_ERROR],
             not_translated: true,
           },
         ),
       )
 
-      response = proxy.post_images(front_image: 'a', back_image: 'b', selfie_image: 'c')
+      response = proxy.post_images(front_image: 'a', back_image: 'b')
 
       expect(response.errors).to eq(
         id: [I18n.t('doc_auth.errors.alerts.expiration_checks')],
         front: [I18n.t('doc_auth.errors.alerts.visible_photo_check')],
         back: [I18n.t('doc_auth.errors.alerts.ref_control_number_check')],
-        selfie: [I18n.t('doc_auth.errors.alerts.selfie_failure')],
-        general: [I18n.t('doc_auth.errors.general.liveness')],
+        general: [I18n.t('doc_auth.errors.general.no_liveness')],
         not_translated: true,
       )
     end
@@ -276,7 +223,7 @@ RSpec.describe DocAuthRouter do
 
       expect(Rails.logger).to receive(:warn).with('unknown DocAuth error=some_obscure_error')
 
-      response = proxy.post_images(front_image: 'a', back_image: 'b', selfie_image: 'c')
+      response = proxy.post_images(front_image: 'a', back_image: 'b')
 
       expect(response.errors).to eq(
         id: [I18n.t('doc_auth.errors.general.no_liveness')],
@@ -295,7 +242,7 @@ RSpec.describe DocAuthRouter do
         ),
       )
 
-      response = proxy.post_images(front_image: 'a', back_image: 'b', selfie_image: 'c')
+      response = proxy.post_images(front_image: 'a', back_image: 'b')
 
       expect(response.errors).to eq(general: [I18n.t('doc_auth.errors.http.image_load')])
       expect(response.exception.message).to eq('Test 438 HTTP failure')

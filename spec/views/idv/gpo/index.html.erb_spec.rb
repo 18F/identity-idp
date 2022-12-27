@@ -1,9 +1,10 @@
 require 'rails_helper'
 
 describe 'idv/gpo/index.html.erb' do
-  let(:letter_already_sent) { false }
+  let(:resend_requested) { false }
   let(:user_needs_address_otp_verification) { false }
   let(:go_back_path) { nil }
+  let(:step_indicator_steps) { Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS }
   let(:presenter) do
     user = build_stubbed(:user, :signed_up)
     Idv::GpoPresenter.new(user, {})
@@ -11,8 +12,9 @@ describe 'idv/gpo/index.html.erb' do
 
   before do
     allow(view).to receive(:go_back_path).and_return(go_back_path)
+    allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
 
-    allow(presenter).to receive(:letter_already_sent?).and_return(letter_already_sent)
+    allow(presenter).to receive(:resend_requested?).and_return(resend_requested)
     allow(presenter).to receive(:user_needs_address_otp_verification?).
       and_return(user_needs_address_otp_verification)
 
@@ -38,7 +40,7 @@ describe 'idv/gpo/index.html.erb' do
   end
 
   context 'letter already sent' do
-    let(:letter_already_sent) { true }
+    let(:resend_requested) { true }
 
     it 'prompts to send another letter' do
       expect(rendered).to have_content(I18n.t('idv.titles.mail.resend'))

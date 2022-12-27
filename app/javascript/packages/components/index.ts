@@ -1,7 +1,6 @@
 export { default as Accordion } from './accordion';
 export { default as Alert } from './alert';
 export { default as BlockLink } from './block-link';
-export { default as BlockSubmitButton } from './block-submit-button';
 export { default as Button } from './button';
 export { default as FullScreen } from './full-screen';
 export { default as Icon } from './icon';
@@ -19,6 +18,7 @@ export { default as ProcessListItem } from './process-list/process-list-item';
 export { default as ScrollIntoView } from './scroll-into-view';
 export { default as SpinnerDots } from './spinner-dots';
 export { default as StatusPage } from './status-page';
+export { default as Tag } from './tag';
 export { default as TextInput } from './text-input';
 export { default as TroubleshootingOptions } from './troubleshooting-options';
 

@@ -2,7 +2,6 @@ require 'rails_helper'
 
 feature 'Multi Two Factor Authentication' do
   before do
-    allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
     allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
   end
 
@@ -23,7 +22,7 @@ feature 'Multi Two Factor Authentication' do
       expect(current_path).to eq phone_setup_path
 
       fill_in 'new_phone_form_phone', with: '703-555-1212'
-      click_send_security_code
+      click_send_one_time_code
 
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -32,7 +31,7 @@ feature 'Multi Two Factor Authentication' do
 
       click_continue
 
-      expect(page).to have_link(t('forms.backup_code.download'))
+      expect(page).to have_link(t('components.download_button.label'))
 
       click_continue
 
@@ -56,7 +55,7 @@ feature 'Multi Two Factor Authentication' do
       expect(current_path).to eq phone_setup_path
 
       fill_in 'new_phone_form_phone', with: '703-555-1212'
-      click_send_security_code
+      click_send_one_time_code
 
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -93,7 +92,7 @@ feature 'Multi Two Factor Authentication' do
 
       click_continue
 
-      expect(page).to have_link(t('forms.backup_code.download'))
+      expect(page).to have_link(t('components.download_button.label'))
 
       click_continue
 
@@ -108,7 +107,7 @@ feature 'Multi Two Factor Authentication' do
       expect(current_path).to eq account_path
     end
 
-    scenario 'user can select 1 MFA methods and cancels selecting second mfa' do
+    scenario 'user can select 1 MFA methods and skips selecting second mfa' do
       sign_in_before_2fa
 
       expect(current_path).to eq authentication_methods_setup_path
@@ -121,7 +120,7 @@ feature 'Multi Two Factor Authentication' do
 
       click_continue
 
-      expect(page).to have_link(t('forms.backup_code.download'))
+      expect(page).to have_link(t('components.download_button.label'))
 
       click_continue
 
@@ -135,7 +134,7 @@ feature 'Multi Two Factor Authentication' do
 
       expect(page).to have_current_path(second_mfa_setup_path)
 
-      click_link t('links.cancel')
+      click_link t('mfa.skip')
 
       expect(page).to have_current_path(account_path)
     end

@@ -28,12 +28,12 @@ describe Proofing::LexisNexis::Response do
 
   describe '#verification_errors' do
     context 'with a failed verification' do
-      let(:response_body) { LexisNexisFixtures.instant_verify_failure_response_json }
+      let(:response_body) { LexisNexisFixtures.instant_verify_identity_not_found_response_json }
       it 'returns a hash of errors' do
         errors = subject.verification_errors
 
         expect(errors).to be_a(Hash)
-        expect(errors).to include(:base, :SomeOtherProduct, :InstantVerify)
+        expect(errors).to include(:base, :'Execute Instant Verify')
       end
     end
 
@@ -48,7 +48,7 @@ describe Proofing::LexisNexis::Response do
     end
 
     context 'failed' do
-      let(:response_body) { LexisNexisFixtures.instant_verify_failure_response_json }
+      let(:response_body) { LexisNexisFixtures.instant_verify_identity_not_found_response_json }
       it { expect(subject.verification_status).to eq('failed') }
 
       context 'with a transaction error' do
@@ -72,9 +72,22 @@ describe Proofing::LexisNexis::Response do
           errors = subject.verification_errors
 
           expect(errors).to be_a(Hash)
-          expect(errors).to include(:base, :SomeOtherProduct, :InstantVerify)
+          expect(errors).to include(:base, :'Execute Instant Verify')
           expect(errors[:base]).to eq("Invalid status in response body: 'fake_status'")
         end
+      end
+    end
+  end
+
+  describe '#response_body' do
+    context 'the result includes invalid JSON' do
+      let(:response_body) { '$":^&' }
+
+      it 'raises a JSON parse error with a generic error message' do
+        expect { subject.response_body }.to raise_error(
+          JSON::ParserError,
+          'An error occured parsing the response body JSON, status=200 content_type=',
+        )
       end
     end
   end

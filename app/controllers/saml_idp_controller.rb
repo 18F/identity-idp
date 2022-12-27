@@ -12,6 +12,7 @@ class SamlIdpController < ApplicationController
   include AuthorizationCountConcern
   include BillableEventTrackable
   include SecureHeadersConcern
+  include ThreatmetrixReviewConcern
 
   prepend_before_action :skip_session_load, only: [:metadata, :remotelogout]
   prepend_before_action :skip_session_expiration, only: [:metadata, :remotelogout]
@@ -24,6 +25,7 @@ class SamlIdpController < ApplicationController
 
   def auth
     capture_analytics
+    return redirect_to_threatmetrix_review if threatmetrix_review_pending? && ial2_requested?
     return redirect_to_verification_url if profile_or_identity_needs_verification_or_decryption?
     return redirect_to(sign_up_completed_url) if needs_completion_screen_reason
     if auth_count == 1 && first_visit_for_sp?
@@ -119,6 +121,8 @@ class SamlIdpController < ApplicationController
       idv: identity_needs_verification?,
       finish_profile: profile_needs_verification?,
       requested_ial: requested_ial,
+      request_signed: saml_request.signed?,
+      matching_cert_serial: saml_request.service_provider.matching_cert&.serial&.to_s,
     )
     analytics.saml_auth(**analytics_payload)
   end

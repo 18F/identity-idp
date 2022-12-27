@@ -1,0 +1,27 @@
+<%= render(
+      'idv/shared/error',
+      type: :warning,
+      title: t('inherited_proofing.errors.cannot_retrieve.title'),
+      heading: t('inherited_proofing.errors.cannot_retrieve.heading'),
+    ) do %>
+  <p>
+     <%= t('inherited_proofing.errors.cannot_retrieve.info') %>
+  </p>
+
+  <%= button_to t('inherited_proofing.buttons.try_again'), idv_inherited_proofing_step_path(step: :redo_retrieve_user_info), method: :put, class: 'usa-button usa-button--big usa-button--wide' %>
+
+  <%= render(
+        'shared/troubleshooting_options',
+        heading: t('components.troubleshooting_options.default_heading'),
+        options: [
+          {
+            url: @presenter.get_help_url,
+            text: t(
+              'inherited_proofing.troubleshooting.options.get_help',
+              sp_name: decorated_session.sp_name,
+            ),
+            new_tab: true,
+          },
+        ],
+      ) %>
+<% end %>

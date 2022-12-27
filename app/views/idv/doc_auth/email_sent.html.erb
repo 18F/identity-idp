@@ -1,6 +1,6 @@
 <% title t('titles.doc_auth.verify') %>
 
-<%= image_tag(asset_url('state-id-confirm@3x.png'), width: 210, class: 'margin-bottom-2') %>
+<%= image_tag(asset_url('state-id-confirm@3x.png'), width: 210, height: 127, class: 'margin-bottom-2') %>
 
 <%= render PageHeadingComponent.new do %>
   <%= t('doc_auth.instructions.email_sent', email: current_user.confirmed_email_addresses.first.email) %>

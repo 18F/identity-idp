@@ -15,6 +15,7 @@ describe 'Unchecking remember device' do
         uncheck 'remember_device'
 
         click_button 'Submit'
+        skip_second_mfa_prompt
 
         first(:link, t('links.sign_out')).click
         sign_in_user(user)
@@ -41,6 +42,7 @@ describe 'Unchecking remember device' do
 
         mock_press_button_on_hardware_key_on_setup
         click_continue
+        skip_second_mfa_prompt
 
         first(:link, t('links.sign_out')).click
         sign_in_user(user)
@@ -62,12 +64,13 @@ describe 'Unchecking remember device' do
 
         select_2fa_option('phone')
         fill_in 'new_phone_form[phone]', with: '202-555-1212'
-        click_send_security_code
+        click_send_one_time_code
         fill_in_code_with_last_phone_otp
 
         uncheck 'remember_device'
 
         click_submit_default
+        skip_second_mfa_prompt
 
         first(:link, t('links.sign_out')).click
         sign_in_user(user)

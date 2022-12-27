@@ -1,0 +1,70 @@
+{
+  "Status": {
+    "ConversationId": "123456",
+    "RequestId": "7890",
+    "TransactionStatus": "failed",
+    "TransactionReasonCode": {
+      "Code": "total.scoring.model.verification.fail"
+    },
+    "Reference": "0987:1234-abcd"
+  },
+  "Products": [
+    {
+      "ProductType": "InstantVerify",
+      "ExecutedStepName": "Execute Instant Verify",
+      "ProductConfigurationName": "REDACTED_CONFIGURATION",
+      "ProductStatus": "fail",
+      "ProductReason": {
+        "Code": "total.scoring.model.verification.fail"
+      },
+      "Items": [
+        {
+          "ItemName": "Addr1Zip_StateMatch",
+          "ItemStatus": "pass"
+        },
+        {
+          "ItemName": "SsnFullNameMatch",
+          "ItemStatus": "pass"
+        },
+        {
+          "ItemName": "SsnDeathMatchVerification",
+          "ItemStatus": "pass"
+        },
+        {
+          "ItemName": "SSNSSAValid",
+          "ItemStatus": "pass"
+        },
+        {
+          "ItemName": "IdentityOccupancyVerified",
+          "ItemStatus": "fail",
+          "ItemReason": {
+            "Code": "occupancy_not_verified_fail"
+          }
+        },
+        {
+          "ItemName": "AddrDeliverable",
+          "ItemStatus": "fail",
+          "ItemReason": {
+            "Code": "addr_not_deliverable_fail"
+          }
+        },
+        {
+          "ItemName": "AddrNotHighRisk",
+          "ItemStatus": "pass"
+        },
+        {
+          "ItemName": "DOBFullVerified",
+          "ItemStatus": "pass"
+        },
+        {
+          "ItemName": "DOBYearVerified",
+          "ItemStatus": "pass"
+        },
+        {
+          "ItemName": "LexIDDeathMatch",
+          "ItemStatus": "pass"
+        }
+      ]
+    }
+  ]
+}

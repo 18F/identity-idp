@@ -46,11 +46,13 @@ class OpenidConnectTokenForm
 
   def response
     if valid?
+      id_token_builder = IdTokenBuilder.new(identity: identity, code: code)
+
       {
         access_token: identity.access_token,
         token_type: 'Bearer',
-        expires_in: Pii::SessionStore.new(identity.rails_session_id).ttl,
-        id_token: IdTokenBuilder.new(identity: identity, code: code).id_token,
+        expires_in: id_token_builder.ttl,
+        id_token: id_token_builder.id_token,
       }
     else
       { error: errors.to_a.join(' ') }
@@ -195,6 +197,7 @@ class OpenidConnectTokenForm
     {
       client_id: client_id,
       user_id: identity&.user&.uuid,
+      code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
     }
   end
 

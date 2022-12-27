@@ -26,10 +26,8 @@ pull request is about.
 - If the pull request is in response to a Jira ticket, include the ticket ID in
 the commit title (e.g. "LG-1234 Add the stuff to the thing")
 
-- Include a changelog message which describes the changes in human-readable
-terms. These messages are included in release notes, so they should be easy to
-understand for our partners and users. In the rare case that a change should
-not be included in release notes, add `[skip changelog]` to the commit.
+- Include a changelog message which describes the changes in human-readable terms. Refer to the
+[_Changelog Messages_ section](#changelog-messages) below for specific changelog requirements.
 
 Example:
 
@@ -50,10 +48,32 @@ Database Cleaner to ignore those static tables.
 changelog: Internal, Automated Testing, Improve performance of test suite
 ```
 
-Refer to the [changelog check script] for a complete list of acceptable
-changelog categories.
+#### Changelog Messages
 
-[changelog check script]: https://github.com/18F/identity-idp/blob/main/scripts/changelog_check.rb
+You must include a changelog message in one commit of your pull request. The changelog message
+describes the changes in human-readable terms. These messages are included in release notes, so they
+should be easy to understand for our partners and users.
+
+A changelog message should be written in the following format:
+
+```
+changelog: [Category], [Subcategory], [Description]
+```
+
+Replace `[Category]`, `[Subcategory]`, and `[Description]` with text relevant for your changes:
+
+- **Category** must be one of the following:
+   - **User-Facing Improvements** are improvements to the application experience benefitting the end-user, such as a new UI component or updated text.
+   - **Bug Fixes** are corrections to a broken behavior, such as preventing a raised exception.
+   - **Internal** are changes which benefit the Login.gov team, such as analytics or code quality.
+   - **Upcoming Features** are iterations contributing to a feature which has not yet been enabled for users in production.
+- **Subcategory** does not have any restrictions, but you should try to maintain consistency with changesets affecting similar parts of the application (for example, "In-person proofing").
+- **Description** is a plain language description of the specific changes.
+
+If multiple pull requests iterate on the same feature, it's a good idea to use the same commit message, since identical messages will be combined into a single entry when the release notes are compiled.
+
+In the rare case that a change should not be included in release notes, add `[skip changelog]` to
+the commit.
 
 ### Additional notes on pull requests and code reviews
 
