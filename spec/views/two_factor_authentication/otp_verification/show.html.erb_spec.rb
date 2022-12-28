@@ -265,7 +265,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
     context 'with landline setup warning' do
       before do
-        assign(:landline, true)
+        assign(:landline_alert, true)
       end
 
       it 'shows landline warning' do

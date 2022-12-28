@@ -13,7 +13,7 @@ module TwoFactorAuthentication
     def show
       analytics.multi_factor_auth_enter_otp_visit(**analytics_properties)
 
-      @landline = landline_warning?
+      @landline_alert = landline_warning?
       @presenter = presenter_for_two_factor_authentication_method
     end
 

@@ -39,7 +39,7 @@ module Telephony
           )
         else
           type = phone_type(phone_number)
-          
+
           PhoneNumberInfo.new(
             type: type,
             carrier: "Test #{type.to_s.capitalize} Carrier",
@@ -53,7 +53,7 @@ module Telephony
         else
           :mobile
         end
-      end      
+      end
 
       def success_response
         Response.new(

@@ -1,6 +1,6 @@
 <% title t('titles.enter_2fa_code.one_time_code') %>
 
-<% if @landline %>
+<% if @landline_alert %>
   <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-2') do %>
     <%= @presenter.landline_warning %>
   <% end %>
