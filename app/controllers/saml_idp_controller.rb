@@ -6,6 +6,7 @@ class SamlIdpController < ApplicationController
   # This needs to precede sign_out_if_forceauthn_is_true_and_user_is_signed_in
   # which is added when SamlIdpAuthConcern is included
   skip_before_action :verify_authenticity_token, only: [:logout, :remotelogout]
+  before_action :verify_authenticity_token, only: [:auth], unless: :skipped_cookie_generation?
 
   include SamlIdp::Controller
   include SamlIdpAuthConcern
@@ -166,6 +167,13 @@ class SamlIdpController < ApplicationController
       locals: { action_url: action_url, message: message, type: type, csp_uris: csp_uris },
       layout: false,
     )
+  end
+
+  def skipped_cookie_generation?
+    url = Rails.application.routes.recognize_path(
+      request.referer, method: request.env['REQUEST_METHOD']
+    )
+    url[:controller] == 'saml_post'
   end
 
   def track_events
