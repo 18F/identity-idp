@@ -56,10 +56,20 @@ function LocationCollectionItem({
         </div>
         <div>{streetAddress}</div>
         <div>{formattedCityStateZip}</div>
-        <h4>{t('in_person_proofing.body.location.retail_hours_heading')}</h4>
-        <div>{`${t('in_person_proofing.body.location.retail_hours_weekday')} ${weekdayHours}`}</div>
-        <div>{`${t('in_person_proofing.body.location.retail_hours_sat')} ${saturdayHours}`}</div>
-        <div>{`${t('in_person_proofing.body.location.retail_hours_sun')} ${sundayHours}`}</div>
+        {(weekdayHours || saturdayHours || sundayHours) && (
+          <h4>{t('in_person_proofing.body.location.retail_hours_heading')}</h4>
+        )}
+        {weekdayHours && (
+          <div>
+            {`${t('in_person_proofing.body.location.retail_hours_weekday')} ${weekdayHours}`}
+          </div>
+        )}
+        {saturdayHours && (
+          <div>{`${t('in_person_proofing.body.location.retail_hours_sat')} ${saturdayHours}`}</div>
+        )}
+        {sundayHours && (
+          <div>{`${t('in_person_proofing.body.location.retail_hours_sun')} ${sundayHours}`}</div>
+        )}
         {(phone || tty) && (
           <div>
             <h4>{t('in_person_proofing.body.location.contact_info_heading')}</h4>

@@ -83,4 +83,70 @@ describe('LocationCollectionItem', () => {
     expect(addressParent.textContent).to.contain('555-123-4567');
     expect(addressParent.textContent).to.contain('222-222-2222');
   });
+
+  context('when no retail hours are known', () => {
+    it('does not display any retail hours', () => {
+      const onClick = sinon.stub();
+      const { queryByText } = render(
+        <LocationCollectionItem
+          name="test name"
+          streetAddress="123 Test Address"
+          formattedCityStateZip="City, State 12345-1234"
+          handleSelect={onClick}
+          selectId={0}
+          weekdayHours=""
+          saturdayHours=""
+          sundayHours=""
+        />,
+      );
+
+      const heading = queryByText('in_person_proofing.body.location.retail_hours_heading');
+      expect(heading).not.to.exist();
+      const wkDayHours = queryByText('in_person_proofing.body.location.retail_hours_weekday', {
+        exact: false,
+      });
+      expect(wkDayHours).not.to.exist();
+      const satHours = queryByText('in_person_proofing.body.location.retail_hours_sat', {
+        exact: false,
+      });
+      expect(satHours).not.to.exist();
+      const sunHours = queryByText('in_person_proofing.body.location.retail_hours_sun', {
+        exact: false,
+      });
+      expect(sunHours).not.to.exist();
+    });
+  });
+
+  context('when some retail hours are known', () => {
+    it('displays the known retail hours', () => {
+      const onClick = sinon.stub();
+      const { queryByText } = render(
+        <LocationCollectionItem
+          name="test name"
+          streetAddress="123 Test Address"
+          formattedCityStateZip="City, State 12345-1234"
+          handleSelect={onClick}
+          selectId={0}
+          weekdayHours="9 AM - 5 PM"
+          saturdayHours=""
+          sundayHours=""
+        />,
+      );
+
+      const heading = queryByText('in_person_proofing.body.location.retail_hours_heading');
+      expect(heading).to.exist();
+      const wkDayHours = queryByText(
+        'in_person_proofing.body.location.retail_hours_weekday 9 AM - 5 PM',
+      );
+      expect(wkDayHours).to.exist();
+      const satHours = queryByText('in_person_proofing.body.location.retail_hours_sat', {
+        exact: false,
+      });
+      expect(satHours).not.to.exist();
+      const sunHours = queryByText('in_person_proofing.body.location.retail_hours_sun', {
+        exact: false,
+      });
+      expect(sunHours).not.to.exist();
+    });
+  });
 });
