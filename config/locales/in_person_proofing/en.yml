@@ -59,6 +59,7 @@ en:
             a different address. For facility accessibility, use the contact
             information listed for the Post Office location.
           search_button: Search
+          is_searching_message: Searching for Post Office locations...
         post_office: Post Office ™
         retail_hours_heading: Retail Hours
         retail_hours_sat: 'Sat:'

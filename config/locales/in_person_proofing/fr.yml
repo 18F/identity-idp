@@ -66,6 +66,7 @@ fr:
             Pour l’accessibilité des installations, utilisez les informations de
             contact indiquées pour l’emplacement du bureau de poste.
           search_button: Rechercher
+          is_searching_message: Recherche des emplacements de bureau de poste...
         post_office: Bureau de Poste
         retail_hours_heading: Heures de vente au détail
         retail_hours_sat: 'Sam:'

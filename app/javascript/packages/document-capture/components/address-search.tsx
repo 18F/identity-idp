@@ -172,7 +172,7 @@ function AddressSearch({
   const [textInput, setTextInput] = useState('');
   const {
     locationResults,
-    isLoading: loading,
+    isLoading,
     handleAddressSearch: onSearch,
     foundAddress,
     validatedFieldRef,
@@ -184,8 +184,8 @@ function AddressSearch({
   };
 
   useEffect(() => {
-    spinnerButtonRef.current?.toggleSpinner(loading);
-  }, [loading]);
+    spinnerButtonRef.current?.toggleSpinner(isLoading);
+  }, [isLoading]);
 
   useEffect(() => {
     locationResults && onFoundLocations(locationResults);
@@ -216,17 +216,21 @@ function AddressSearch({
           hint={t('in_person_proofing.body.location.po_search.address_search_hint')}
         />
       </ValidatedField>
-      <SpinnerButton
-        isWide
-        isBig
-        ref={spinnerButtonRef}
-        type="submit"
-        className="margin-y-5"
-        onClick={handleSearch}
-        spinOnClick={false}
-      >
-        {t('in_person_proofing.body.location.po_search.search_button')}
-      </SpinnerButton>
+      <div className="margin-y-5">
+        <SpinnerButton
+          isWide
+          isBig
+          ref={spinnerButtonRef}
+          type="submit"
+          onClick={handleSearch}
+          spinOnClick={false}
+        >
+          {t('in_person_proofing.body.location.po_search.search_button')}
+        </SpinnerButton>
+        <p className="text-primary text-bold">
+          {isLoading && t('in_person_proofing.body.location.po_search.is_searching_message')}
+        </p>
+      </div>
     </>
   );
 }
