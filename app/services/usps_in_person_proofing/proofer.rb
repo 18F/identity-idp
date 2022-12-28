@@ -205,7 +205,6 @@ module UspsInPersonProofing
           saturday_hours: hours['saturdayHours'],
           state: post_office['state'],
           sunday_hours: hours['sundayHours'],
-          tty: post_office['tty'],
           weekday_hours: hours['weekdayHours'],
           zip_code_4: post_office['zip4'],
           zip_code_5: post_office['zip5'],
