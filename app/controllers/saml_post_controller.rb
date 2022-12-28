@@ -1,5 +1,5 @@
 class SamlPostController < ApplicationController
-  after_action -> { request.session_options[:skip] = true }, only: :auth
+  after_action :skip_session_regeneration, only: :auth, if: -> { user_session.present? }
   skip_before_action :verify_authenticity_token
 
   def auth
@@ -11,5 +11,9 @@ class SamlPostController < ApplicationController
 
     render 'shared/saml_post_form', locals: { action_url: action_url, form_params: form_params },
                                     layout: false
+  end
+
+  def skip_session_regeneration
+    request.session_options[:skip] = true
   end
 end
