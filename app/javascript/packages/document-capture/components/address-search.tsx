@@ -178,10 +178,10 @@ function AddressSearch({
     validatedFieldRef,
   } = useUspsLocations();
 
-  const onTextInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const onTextInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
     setTextInput(target.value);
-  }, []);
+  };
 
   useEffect(() => {
     spinnerButtonRef.current?.toggleSpinner(loading);
