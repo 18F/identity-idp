@@ -71,7 +71,6 @@ fr:
         retail_hours_sat: 'Sam:'
         retail_hours_sun: 'Dim:'
         retail_hours_weekday: 'Lundi à Vendredi:'
-        tty: 'ATS:'
       prepare:
         alert_selected_post_office: Vous avez sélectionné le bureau de poste de %{name}.
         privacy_disclaimer: '%{app_name} est un site gouvernemental sécurisé. Nous et le

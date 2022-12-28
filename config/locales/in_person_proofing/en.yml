@@ -64,7 +64,6 @@ en:
         retail_hours_sat: 'Sat:'
         retail_hours_sun: 'Sun:'
         retail_hours_weekday: 'Monday to Friday:'
-        tty: 'TTY:'
       prepare:
         alert_selected_post_office: You’ve selected the %{name} Post Office.
         privacy_disclaimer: '%{app_name} is a secure, government website. We and the

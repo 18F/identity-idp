@@ -8,7 +8,6 @@ export interface FormattedLocation {
   id: number;
   name: string;
   phone: string;
-  tty: string;
   saturdayHours: string;
   streetAddress: string;
   sundayHours: string;
@@ -54,7 +53,6 @@ function InPersonLocations({ locations, onSelect, address }: InPersonLocationsPr
             selectId={item.id}
             formattedCityStateZip={item.formattedCityStateZip}
             phone={item.phone}
-            tty={item.tty}
             weekdayHours={item.weekdayHours}
             saturdayHours={item.saturdayHours}
             sundayHours={item.sundayHours}

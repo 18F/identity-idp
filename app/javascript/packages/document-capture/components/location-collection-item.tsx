@@ -11,7 +11,6 @@ interface LocationCollectionItemProps {
   selectId: number;
   streetAddress: string;
   sundayHours: string;
-  tty?: string;
   weekdayHours: string;
 }
 
@@ -25,7 +24,6 @@ function LocationCollectionItem({
   selectId,
   streetAddress,
   sundayHours,
-  tty,
   weekdayHours,
 }: LocationCollectionItemProps) {
   const { t } = useI18n();
@@ -70,11 +68,10 @@ function LocationCollectionItem({
         {sundayHours && (
           <div>{`${t('in_person_proofing.body.location.retail_hours_sun')} ${sundayHours}`}</div>
         )}
-        {(phone || tty) && (
+        {phone && (
           <div>
             <h4>{t('in_person_proofing.body.location.contact_info_heading')}</h4>
             <div>{`${t('in_person_proofing.body.location.phone')} ${phone}`}</div>
-            <div>{`${t('in_person_proofing.body.location.tty')} ${tty}`}</div>
           </div>
         )}
         <Button

@@ -66,7 +66,6 @@ describe('LocationCollectionItem', () => {
       <LocationCollectionItem
         distance="1.0 mi"
         phone="555-123-4567"
-        tty="222-222-2222"
         name=""
         streetAddress="123 Test Address"
         formattedCityStateZip=""

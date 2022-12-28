@@ -17,7 +17,6 @@ interface PostOffice {
   saturday_hours: string;
   state: string;
   sunday_hours: string;
-  tty: string;
   weekday_hours: string;
   zip_code_4: string;
   zip_code_5: string;
@@ -45,7 +44,6 @@ const formatLocation = (postOffices: PostOffice[]) => {
       saturdayHours: po.saturday_hours,
       streetAddress: po.address,
       sundayHours: po.sunday_hours,
-      tty: po.tty,
       weekdayHours: po.weekday_hours,
     } as FormattedLocation;
     formattedLocations.push(location);
