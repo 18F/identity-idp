@@ -18,8 +18,6 @@ module SamlIdpAuthConcern
   private
 
   def sign_out_if_forceauthn_is_true_and_user_is_signed_in
-    # require 'pry'
-    # binding.pry
     return unless user_signed_in? && saml_request.force_authn?
 
     if IdentityConfig.store.saml_internal_post
