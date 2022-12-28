@@ -224,12 +224,11 @@ function AddressSearch({
           type="submit"
           onClick={handleSearch}
           spinOnClick={false}
+          actionMessage={t('in_person_proofing.body.location.po_search.is_searching_message')}
+          longWaitDurationMs={1}
         >
           {t('in_person_proofing.body.location.po_search.search_button')}
         </SpinnerButton>
-        <p className="text-primary text-bold">
-          {isLoading && t('in_person_proofing.body.location.po_search.is_searching_message')}
-        </p>
       </div>
     </>
   );
