@@ -80,7 +80,6 @@ describe('LocationCollectionItem', () => {
     const addressParent = getByText('123 Test Address').parentElement!;
     expect(addressParent.textContent).to.contain('in_person_proofing.body.location.distance');
     expect(addressParent.textContent).to.contain('555-123-4567');
-    expect(addressParent.textContent).to.contain('222-222-2222');
   });
 
   context('when no retail hours are known', () => {
