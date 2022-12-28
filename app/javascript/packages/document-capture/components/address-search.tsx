@@ -86,7 +86,7 @@ const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLo
   return formatLocation(response);
 };
 
-const ADDRESS_SEARCH_URL = '/api/addresses';
+export const ADDRESS_SEARCH_URL = '/api/addresses';
 
 function requestAddressCandidates(unvalidatedAddressInput: string): Promise<Location[]> {
   return request<Location[]>(ADDRESS_SEARCH_URL, {
