@@ -6,18 +6,40 @@ import ValidatedField from '@18f/identity-validated-field/validated-field';
 import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-button/spinner-button';
 import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import useSWR from 'swr/immutable';
-
-interface AddressSearchProps {
-  onSearch?: (
-    event: MouseEvent,
-    textInput: string,
-    fieldValidationRef: RefObject<HTMLFormElement> | undefined,
-  ) => void;
-  registerField?: RegisterFieldCallback;
-  loading?: boolean;
-}
+import { FormattedLocation } from './in-person-locations';
 
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
+
+export interface PostOffice {
+  address: string;
+  city: string;
+  distance: string;
+  name: string;
+  phone: string;
+  saturday_hours: string;
+  state: string;
+  sunday_hours: string;
+  tty: string;
+  weekday_hours: string;
+  zip_code_4: string;
+  zip_code_5: string;
+}
+
+export interface LocationQuery {
+  streetAddress: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  address: string;
+}
+
+interface Location {
+  street_address: string;
+  city: string;
+  state: string;
+  zip_code: string;
+  address: string;
+}
 
 const formatLocation = (postOffices: PostOffice[]) => {
   const formattedLocations = [] as FormattedLocation[];
@@ -39,14 +61,14 @@ const formatLocation = (postOffices: PostOffice[]) => {
   return formattedLocations;
 };
 
-const snakeCase = (value: string) =>
+export const snakeCase = (value: string) =>
   value
     .split(/(?=[A-Z])/)
     .join('_')
     .toLowerCase();
 
 // snake case the keys of the location
-const transformKeys = (location: object, predicate: (key: string) => string) =>
+export const transformKeys = (location: object, predicate: (key: string) => string) =>
   Object.keys(location).reduce(
     (acc, key) => ({
       [predicate(key)]: location[key],
@@ -101,6 +123,7 @@ function useUspsLocations() {
 
   // sets the arcgis-validated address object
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
+
   useEffect(() => {
     if (addressCandidates?.[0]) {
       const bestMatchedAddress = addressCandidates[0];
@@ -134,10 +157,14 @@ function useUspsLocations() {
   };
 }
 
+interface AddressSearchProps {
+  registerField?: RegisterFieldCallback;
+  onFoundAddress?: (address: LocationQuery) => void;
+  onFoundLocations?: (locations: FormattedLocation[]) => void;
+}
+
 function AddressSearch({
   registerField = () => undefined,
-  // onSearch = () => {},
-  // loading = false,
   onFoundAddress = () => undefined,
   onFoundLocations = () => undefined,
 }: AddressSearchProps) {

@@ -1,166 +1,23 @@
-import { useState, useEffect, useCallback, useRef, useContext, RefObject } from 'react';
+import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
-import useSWR from 'swr/immutable';
 import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
-import AddressSearch from './address-search';
+import AddressSearch, {
+  transformKeys,
+  snakeCase,
+  LocationQuery,
+  LOCATIONS_URL,
+} from './address-search';
 import InPersonLocations, { FormattedLocation } from './in-person-locations';
-
-interface PostOffice {
-  address: string;
-  city: string;
-  distance: string;
-  name: string;
-  phone: string;
-  saturday_hours: string;
-  state: string;
-  sunday_hours: string;
-  tty: string;
-  weekday_hours: string;
-  zip_code_4: string;
-  zip_code_5: string;
-}
-
-interface Location {
-  street_address: string;
-  city: string;
-  state: string;
-  zip_code: string;
-  address: string;
-}
-
-interface LocationQuery {
-  streetAddress: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  address: string;
-}
-
-export const LOCATIONS_URL = '/verify/in_person/usps_locations';
-
-const formatLocation = (postOffices: PostOffice[]) => {
-  const formattedLocations = [] as FormattedLocation[];
-  postOffices.forEach((po: PostOffice, index) => {
-    const location = {
-      formattedCityStateZip: `${po.city}, ${po.state}, ${po.zip_code_5}-${po.zip_code_4}`,
-      id: index,
-      distance: po.distance,
-      name: po.name,
-      phone: po.phone,
-      saturdayHours: po.saturday_hours,
-      streetAddress: po.address,
-      sundayHours: po.sunday_hours,
-      tty: po.tty,
-      weekdayHours: po.weekday_hours,
-    } as FormattedLocation;
-    formattedLocations.push(location);
-  });
-  return formattedLocations;
-};
-
-const snakeCase = (value: string) =>
-  value
-    .split(/(?=[A-Z])/)
-    .join('_')
-    .toLowerCase();
-
-// snake case the keys of the location
-const transformKeys = (location: object, predicate: (key: string) => string) =>
-  Object.keys(location).reduce(
-    (acc, key) => ({
-      [predicate(key)]: location[key],
-      ...acc,
-    }),
-    {},
-  );
-
-const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLocation[]> => {
-  const response = await request<PostOffice[]>(LOCATIONS_URL, {
-    method: 'post',
-    json: { address: transformKeys(address, snakeCase) },
-  });
-
-  return formatLocation(response);
-};
-
-const ADDRESS_SEARCH_URL = '/api/addresses';
-
-function requestAddressCandidates(unvalidatedAddressInput: string): Promise<Location[]> {
-  return request<Location[]>(ADDRESS_SEARCH_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    json: { address: unvalidatedAddressInput },
-  });
-}
-
-function useUspsLocations() {
-  // raw text input that is set when user clicks search
-  const [addressQuery, setAddressQuery] = useState('');
-  const [fieldValidation, setFieldValidation] = useState<RefObject<HTMLFormElement>>();
-  const { t } = useI18n();
-  const handleAddressSearch = useCallback((event, unvalidatedAddressInput, validatedFieldRef) => {
-    event.preventDefault();
-    validatedFieldRef.current?.setCustomValidity('');
-    validatedFieldRef.current?.reportValidity();
-    setFieldValidation(validatedFieldRef);
-    if (unvalidatedAddressInput === '') {
-      return;
-    }
-
-    setAddressQuery(unvalidatedAddressInput);
-  }, []);
-
-  // sends the raw text query to arcgis
-  const { data: addressCandidates, isLoading: isLoadingCandidates } = useSWR(
-    [addressQuery],
-    () => (addressQuery ? requestAddressCandidates(addressQuery) : null),
-    { keepPreviousData: true },
-  );
-
-  // sets the arcgis-validated address object
-  const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
-  useEffect(() => {
-    if (addressCandidates?.[0]) {
-      const bestMatchedAddress = addressCandidates[0];
-      setFoundAddress({
-        streetAddress: bestMatchedAddress.street_address,
-        city: bestMatchedAddress.city,
-        state: bestMatchedAddress.state,
-        zipCode: bestMatchedAddress.zip_code,
-        address: bestMatchedAddress.address,
-      });
-    } else if (addressCandidates) {
-      fieldValidation?.current?.setCustomValidity(
-        t('in_person_proofing.body.location.inline_error'),
-      );
-      fieldValidation?.current?.reportValidity();
-    }
-  }, [addressCandidates]);
-
-  const { data: locationResults, isLoading: isLoadingLocations } = useSWR(
-    [foundAddress],
-    ([address]) => (address ? requestUspsLocations(address) : null),
-    { keepPreviousData: true },
-  );
-
-  return {
-    foundAddress,
-    locationResults,
-    isLoading: isLoadingLocations || isLoadingCandidates,
-    handleAddressSearch,
-  };
-}
 
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
   const { t } = useI18n();
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
-  // const { foundAddress, locationResults, isLoading, handleAddressSearch } = useUspsLocations();
-  const [locationResults, setLocationResults] = useState(null);
+  const [locationResults, setLocationResults] = useState<FormattedLocation[] | null>(null);
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
 
   // ref allows us to avoid a memory leak
