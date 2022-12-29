@@ -25,7 +25,7 @@ gem 'foundation_emails'
 gem 'good_job', '~> 3.0'
 gem 'hashie', '~> 4.1'
 gem 'http_accept_language'
-gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v3.4.1'
+gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v3.4.2'
 gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
 gem 'identity_validations', github: '18F/identity-validations', tag: 'v0.7.2'
 gem 'jsbundling-rails', '~> 1.0.0'
@@ -96,7 +96,7 @@ group :development, :test do
   gem 'erb_lint', '~> 0.1.0', require: false
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
-  gem 'nokogiri', '~> 1.13.10'
+  gem 'nokogiri', '1.14.0.rc1'
   gem 'parallel_tests'
   gem 'pg_query', require: false
   gem 'pry-byebug'

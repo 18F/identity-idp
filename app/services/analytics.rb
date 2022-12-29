@@ -27,6 +27,7 @@ class Analytics
       session_duration: session_duration,
       user_id: attributes[:user_id] || user.uuid,
       locale: I18n.locale,
+      yjit: RubyVM::YJIT.enabled?,
     }
 
     analytics_hash.merge!(request_attributes) if request
