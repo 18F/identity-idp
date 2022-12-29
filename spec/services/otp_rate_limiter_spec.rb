@@ -29,6 +29,16 @@ RSpec.describe OtpRateLimiter do
       expect(otp_rate_limiter.exceeded_otp_send_limit?).to eq(true)
     end
 
+    it 'is is false after maxretry_times attemps in findtime minutes' do
+      expect(otp_rate_limiter.exceeded_otp_send_limit?).to eq(false)
+
+      IdentityConfig.store.otp_delivery_blocklist_maxretry.times do
+        otp_rate_limiter.increment
+      end
+
+      expect(otp_rate_limiter.exceeded_otp_send_limit?).to eq(false)
+    end
+
     it 'tracks verified phones separately. limiting one does not limit the other' do
       expect(otp_rate_limiter.exceeded_otp_send_limit?).to eq(false)
 
@@ -43,14 +53,10 @@ RSpec.describe OtpRateLimiter do
 
   describe '#increment' do
     it 'updates otp_last_sent_at' do
-      tracker = OtpRequestsTracker.find_or_create_with_phone_and_confirmed(
-        phone,
-        false,
-      )
       otp_rate_limiter.increment
-      old_otp_last_sent_at = tracker.reload.otp_last_sent_at
+      old_otp_last_sent_at = otp_rate_limiter.otp_last_sent_at
       otp_rate_limiter.increment
-      new_otp_last_sent_at = tracker.reload.otp_last_sent_at
+      new_otp_last_sent_at = otp_rate_limiter.otp_last_sent_at
 
       expect(new_otp_last_sent_at).to be > old_otp_last_sent_at
     end

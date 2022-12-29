@@ -53,6 +53,10 @@ class Throttle
       max_attempts: IdentityConfig.store.inherited_proofing_max_attempts,
       attempt_window: IdentityConfig.store.inherited_proofing_max_attempt_window_in_minutes,
     },
+    phone_otp: {
+      max_attempts: IdentityConfig.store.otp_delivery_blocklist_maxretry + 1,
+      attempt_window: IdentityConfig.store.otp_delivery_blocklist_findtime,
+    },
   }.with_indifferent_access.freeze
 
   def initialize(throttle_type:, user: nil, target: nil)
