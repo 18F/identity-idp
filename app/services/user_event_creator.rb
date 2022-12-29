@@ -36,7 +36,7 @@ class UserEventCreator
       event_type: event_type,
       user: current_user,
       device: nil,
-      disavowal_token: disavowal_token,
+      disavowal_token: build_disavowal_token,
     )
   end
 
@@ -45,10 +45,10 @@ class UserEventCreator
     if device
       create_event_for_existing_device(
         event_type: event_type, user: user, device: device,
-        disavowal_token: disavowal_token
+        disavowal_token: build_disavowal_token
       )
     else
-      create_user_event(event_type, user, disavowal_token)
+      create_user_event(event_type, user, build_disavowal_token)
     end
   end
 
@@ -65,7 +65,7 @@ class UserEventCreator
     )
   end
 
-  def disavowal_token
+  def build_disavowal_token
     SecureRandom.urlsafe_base64(32)
   end
 
