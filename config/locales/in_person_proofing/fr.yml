@@ -49,6 +49,7 @@ fr:
         po_search:
           address_search_hint: 'Exemple : 1960 W Chelsea Ave Allentown PA 18104'
           address_search_label: Entrez une adresse pour trouver un bureau de poste près de chez vous.
+          is_searching_message: Recherche des emplacements de bureau de poste…
           none_found: Désolé, il n’y a pas de bureaux de poste participants dans un rayon
             de 50 miles de la ville %{address}
           none_found_tip: Vous pouvez effectuer une recherche en utilisant une autre

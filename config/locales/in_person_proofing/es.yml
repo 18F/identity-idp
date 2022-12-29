@@ -49,6 +49,7 @@ es:
           address_search_hint: 'Ejemplo: 1960 W Chelsea Ave Allentown PA 18104'
           address_search_label: Introduzca una dirección para encontrar una Oficina de
             Correos cercana a usted
+          is_searching_message: Buscando oficinas de correos…
           none_found: Lo sentimos, no hay Oficinas de Correos participantes en un radio de
             50 millas de la %{address}.
           none_found_tip: Puede buscar utilizando una dirección diferente, o añadir fotos
