@@ -31,9 +31,17 @@ class UserEventCreator
     create_event_for_device(event_type: event_type, user: current_user, device: nil)
   end
 
+  def create_out_of_band_user_event_with_disavowal(event_type)
+    create_event_for_device(
+      event_type: event_type,
+      user: current_user,
+      device: nil,
+      disavowal_token: disavowal_token,
+    )
+  end
+
   # @return [Array(Event, String)] an (event, disavowal_token) tuple
   def create_user_event_with_disavowal(event_type, user = current_user, device = nil)
-    disavowal_token = SecureRandom.urlsafe_base64(32)
     if device
       create_event_for_existing_device(
         event_type: event_type, user: user, device: device,
@@ -55,6 +63,10 @@ class UserEventCreator
       device: device,
       disavowal_token: disavowal_token,
     )
+  end
+
+  def disavowal_token
+    SecureRandom.urlsafe_base64(32)
   end
 
   # @return [Array(Event, String)] an (event, disavowal_token) tuple
