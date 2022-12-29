@@ -7,19 +7,23 @@ en:
           need to bring proof of your current address to the Post Office.
         learn_more: Learn more
       barcode:
-        deadline: Your deadline to verify your identity in person is %{deadline}.
+        close_window: You may now close this window.
+        deadline: Visit the Post Office by %{deadline}.
         deadline_restart: If you go after the deadline, your information will not be
           saved and you will need to restart the process.
-        emailed_info: We have emailed this information to the email you used to log in.
-        items_to_bring: 'Bring these items with you to the Post Office:'
-        items_to_bring_questions: Questions about what to bring?
-        learn_more: Learn more
+        email_sent: We have sent this information to the email you used to log in.
+        items_to_bring: 'Remember to bring these items with you to the Post Office:'
+        learn_more: Learn more about what to bring
         location_details: Location details
-        no_appointment_required: No appointment is required.
+        questions: Question?
         retail_hours: Retail hours
         retail_hours_closed: Closed
         retail_phone_label: Phone number
-        speak_to_associate: You can see any associate at the retail window to verify your identity.
+        return_to_partner_html: You may now close this window or %{link} to complete any
+          next steps you can access until your identity has been verified.
+        return_to_partner_link: return to %{sp_name}
+        speak_to_associate: You can see any Post Office associate at the retail window
+          to verify your identity. No appointment is required.
       cta:
         button: Verify your ID in person
         new_feature: New Feature
@@ -31,7 +35,7 @@ en:
         distance:
           one: '%{count} mile away'
           other: '%{count} miles away'
-        inline_error: Include a city, state, and ZIP code
+        inline_error: Enter a valid address with city, state, and ZIP code
         location_button: Select
         location_step_about: If you are having trouble adding your ID, you may be able
           to verify in person at a local United States Post Office in select
@@ -41,6 +45,7 @@ en:
         po_search:
           address_search_hint: 'Example: 1960 W Chelsea Ave Allentown PA 18104'
           address_search_label: Enter an address to find a Post Office near you
+          is_searching_message: Searching for Post Office locations…
           none_found: Sorry, there are no participating Post Offices within 50 miles of
             %{address}.
           none_found_tip: You can search using a different address, or add photos of your
@@ -60,7 +65,6 @@ en:
         retail_hours_sat: 'Sat:'
         retail_hours_sun: 'Sun:'
         retail_hours_weekday: 'Monday to Friday:'
-        tty: 'TTY:'
       prepare:
         alert_selected_post_office: You’ve selected the %{name} Post Office.
         privacy_disclaimer: '%{app_name} is a secure, government website. We and the

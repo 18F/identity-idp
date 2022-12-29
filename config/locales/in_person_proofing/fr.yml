@@ -8,22 +8,26 @@ fr:
           actuelle au bureau de poste.
         learn_more: Apprendre encore plus
       barcode:
-        deadline: La date limite pour vérifier votre identité en personne est le
-          %{deadline}.
+        close_window: Vous pouvez maintenant fermer cette fenêtre
+        deadline: Visitez le bureau de poste d’ici %{deadline}
         deadline_restart: Si vous partez après la date limite, vos informations ne
           seront pas sauvegardées et vous devrez recommencer le processus.
-        emailed_info: Nous avons envoyé ces informations à l’adresse électronique que
-          vous avez utilisée pour vous connecter.
-        items_to_bring: 'Apportez ces articles avec vous au bureau de poste:'
-        items_to_bring_questions: Des questions sur ce qu’il faut apporter?
-        learn_more: En savoir plus
+        email_sent: Nous avons envoyé ces informations à l’adresse électronique que vous
+          avez utilisée pour vous connecter.
+        items_to_bring: 'N’oubliez pas d’apporter les articles suivants avec vous au
+          bureau de poste:'
+        learn_more: En savoir davantage sur ce qu’il faut apporter.
         location_details: Détails de l’emplacement
-        no_appointment_required: Aucun rendez-vous n’est exigé.
+        questions: Des questions?
         retail_hours: Heures de vente au détail
         retail_hours_closed: Fermé
         retail_phone_label: Numéro de téléphone
+        return_to_partner_html: Vous pouvez maintenant fermer cette fenêtre ou %{link}
+          afin d’effectuer toutes les étapes suivantes auxquelles vous pouvez
+          accéder jusqu’à ce que votre identité ait été confitmée.
+        return_to_partner_link: retourner à %{sp_name}
         speak_to_associate: Vous pouvez voir n’importe quel associé au guichet de vente
-          au détail pour vérifier votre identité.
+          au détail pour vérifier votre identité. Aucun rendez-vous n’est exigé.
       cta:
         button: Vérifiez votre identité en personne
         new_feature: Nouvelle fonctionnalité
@@ -35,7 +39,7 @@ fr:
         distance:
           one: 'à %{count} mile'
           other: 'à %{count} milles'
-        inline_error: Indiquez la ville, l’État et le code postal.
+        inline_error: Saisissez une adresse valide avec la ville, l’état et le code postal
         location_button: Sélectionner
         location_step_about: Si vous ne parvenez pas à ajouter votre pièce d’identité,
           vous pourrez peut-être vérifier en personne dans un bureau de poste
@@ -45,7 +49,9 @@ fr:
         po_search:
           address_search_hint: 'Exemple : 1960 W Chelsea Ave Allentown PA 18104'
           address_search_label: Entrez une adresse pour trouver un bureau de poste près de chez vous.
-          none_found: Placeholder %{address}
+          is_searching_message: Recherche des emplacements de bureau de poste…
+          none_found: Désolé, il n’y a pas de bureaux de poste participants dans un rayon
+            de 50 miles de la ville %{address}
           none_found_tip: Vous pouvez effectuer une recherche en utilisant une autre
             adresse, ou ajouter des photos de votre pièce d’identité pour
             essayer de vérifier à nouveau votre identité en ligne.
@@ -66,7 +72,6 @@ fr:
         retail_hours_sat: 'Sam:'
         retail_hours_sun: 'Dim:'
         retail_hours_weekday: 'Lundi à Vendredi:'
-        tty: 'ATS:'
       prepare:
         alert_selected_post_office: Vous avez sélectionné le bureau de poste de %{name}.
         privacy_disclaimer: '%{app_name} est un site gouvernemental sécurisé. Nous et le

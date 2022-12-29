@@ -1,7 +1,9 @@
 import sinon from 'sinon';
 import { render } from '@testing-library/react';
 import { computeAccessibleDescription } from 'dom-accessibility-api';
+import { createRef, useMemo, useRef } from 'react';
 import ValidatedField, { getErrorMessages } from './validated-field';
+import type ValidatedFieldElement from './validated-field-element';
 
 describe('getErrorMessages', () => {
   context('undefined type', () => {
@@ -92,6 +94,36 @@ describe('ValidatedField', () => {
     expect(computeAccessibleDescription(input)).to.equal('simple_form.required.text');
   });
 
+  // error changed on input during validate call
+  it('handles error changing on input during validate call', () => {
+    let validate;
+    const initialMessage = 'this is the initial error message';
+    const overrideMessage = 'this is the override error message';
+    function TestComponent() {
+      const ref = useRef<HTMLInputElement>();
+      validate = useMemo(
+        () =>
+          sinon
+            .stub()
+            .onFirstCall()
+            .throws(new Error(initialMessage))
+            .onSecondCall()
+            .callsFake(() => ref?.current?.setCustomValidity(overrideMessage)),
+        [],
+      );
+      return <ValidatedField validate={validate} ref={ref} />;
+    }
+    const { getByRole } = render(<TestComponent />);
+
+    const input = getByRole('textbox') as HTMLInputElement;
+
+    expect(input.validationMessage).to.equal('');
+    expect(input.checkValidity()).to.be.false();
+    expect(input.validationMessage).to.equal(initialMessage);
+    expect(input.checkValidity()).to.be.false();
+    expect(input.validationMessage).to.equal(overrideMessage);
+  });
+
   it('merges classNames', () => {
     const { getByRole } = render(<ValidatedField className="my-custom-class" />);
 
@@ -99,6 +131,20 @@ describe('ValidatedField', () => {
 
     expect(input.classList.contains('validated-field__input')).to.be.true();
     expect(input.classList.contains('my-custom-class')).to.be.true();
+  });
+
+  it('exposes the function reportValidity', () => {
+    const { getByRole } = render(<ValidatedField />);
+
+    const input = getByRole('textbox') as HTMLInputElement;
+
+    expect(input.reportValidity).to.be.a('function');
+  });
+
+  it('assigns text input to be the ref', () => {
+    const ref = createRef<ValidatedFieldElement>();
+    render(<ValidatedField ref={ref} />);
+    expect(ref.current).to.be.an.instanceOf(window.HTMLInputElement);
   });
 
   context('with children', () => {

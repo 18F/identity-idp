@@ -14,6 +14,7 @@
   <h2 class="margin-top-0 margin-bottom-2 font-heading-lg text-bold">
     <%= t('in_person_proofing.body.barcode.items_to_bring') %>
   </h2>
+  <p><%= t('in_person_proofing.body.barcode.speak_to_associate') %></p>
   <table class="process-list">
     <tr>
       <td><div class="process-list__circle">1</div></td>
@@ -58,7 +59,7 @@
     <% end %>
   </table>
   <p class="margin-bottom-0">
-    <%= t('in_person_proofing.body.barcode.items_to_bring_questions') %>
+    <%= t('in_person_proofing.body.barcode.questions') %>
     <%= link_to(
           t('in_person_proofing.body.barcode.learn_more'),
           MarketingSite.help_center_article_url(
@@ -87,10 +88,3 @@
     </div>
   </div>
 <% end %>
-
-<p><%= t('in_person_proofing.body.barcode.speak_to_associate') %></p>
-
-<p>
-  <strong><%= t('in_person_proofing.body.barcode.deadline', deadline: @presenter.formatted_due_date) %></strong>
-  <%= t('in_person_proofing.body.barcode.no_appointment_required') %>
-</p>
