@@ -13,7 +13,7 @@ module RedisSessionHealthChecker
   def health_write_and_read
     REDIS_POOL.with do |client|
       client.setex(health_record_key, health_record_ttl, "healthy at " + Time.now.iso8601)
-      client.get(health_record_key) or raise "Unable to read back #{health_record_key} from Redis"
+      client.get(health_record_key)
     end
   end
 
