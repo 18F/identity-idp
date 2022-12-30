@@ -12,7 +12,7 @@
           date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')),
         ) %>
   </p>
-  <%= if show_download_buttons %>
+  <% if show_download_buttons %>
     <%= render ClipboardButtonComponent.new(clipboard_text: code, unstyled: true) %>
     <%= render ClickObserverComponent.new(event_name: 'IdV: download personal key') do %>
       <%= render DownloadButtonComponent.new(
