@@ -25,7 +25,6 @@ class SamlIdpController < ApplicationController
 
   def auth
     capture_analytics
-    return redirect_to_threatmetrix_review if threatmetrix_review_pending? && ial2_requested?
     return redirect_to_verification_url if profile_or_identity_needs_verification_or_decryption?
     return redirect_to(sign_up_completed_url) if needs_completion_screen_reason
     if auth_count == 1 && first_visit_for_sp?
