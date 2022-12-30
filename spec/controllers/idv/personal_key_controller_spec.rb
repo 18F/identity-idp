@@ -161,12 +161,13 @@ describe Idv::PersonalKeyController do
       end
 
       it 'logs key submitted event' do
-        expect(@analytics).to receive(:idv_personal_key_submitted).with(
-          address_verification_method: nil,
-          deactivation_reason: nil,
-        )
-
         patch :update
+
+        expect(@analytics).to have_logged_event(
+          'IdV: personal key submitted', address_verification_method: nil,
+                                         deactivation_reason: nil,
+                                         proofing_components: nil
+        )
       end
     end
 
@@ -195,12 +196,13 @@ describe Idv::PersonalKeyController do
         end
       end
       it 'logs key submitted event' do
-        expect(@analytics).to receive(:idv_personal_key_submitted).with(
-          address_verification_method: nil,
-          deactivation_reason: 'gpo_verification_pending',
-        )
-
         patch :update
+
+        expect(@analytics).to have_logged_event(
+          'IdV: personal key submitted', address_verification_method: nil,
+                                         deactivation_reason: 'gpo_verification_pending',
+                                         proofing_components: nil
+        )
       end
     end
 
@@ -219,12 +221,13 @@ describe Idv::PersonalKeyController do
       end
 
       it 'logs key submitted event' do
-        expect(@analytics).to receive(:idv_personal_key_submitted).with(
-          address_verification_method: nil,
-          deactivation_reason: nil,
-        )
-
         patch :update
+
+        expect(@analytics).to have_logged_event(
+          'IdV: personal key submitted', address_verification_method: nil,
+                                         deactivation_reason: nil,
+                                         proofing_components: nil
+        )
       end
     end
 
@@ -242,12 +245,13 @@ describe Idv::PersonalKeyController do
           expect(response).to redirect_to account_path
         end
         it 'logs key submitted event' do
-          expect(@analytics).to receive(:idv_personal_key_submitted).with(
-            address_verification_method: nil,
-            deactivation_reason: nil,
-          )
-
           patch :update
+
+          expect(@analytics).to have_logged_event(
+            'IdV: personal key submitted', address_verification_method: nil,
+                                           deactivation_reason: nil,
+                                           proofing_components: nil
+          )
         end
       end
 
@@ -261,12 +265,13 @@ describe Idv::PersonalKeyController do
           expect(response).to redirect_to account_path
         end
         it 'logs key submitted event' do
-          expect(@analytics).to receive(:idv_personal_key_submitted).with(
-            address_verification_method: nil,
-            deactivation_reason: nil,
-          )
-
           patch :update
+
+          expect(@analytics).to have_logged_event(
+            'IdV: personal key submitted', address_verification_method: nil,
+                                           deactivation_reason: nil,
+                                           proofing_components: nil
+          )
         end
       end
 
@@ -282,12 +287,13 @@ describe Idv::PersonalKeyController do
         end
 
         it 'logs key submitted event' do
-          expect(@analytics).to receive(:idv_personal_key_submitted).with(
-            address_verification_method: nil,
-            deactivation_reason: 'threatmetrix_review_pending',
-          )
-
           patch :update
+
+          expect(@analytics).to have_logged_event(
+            'IdV: personal key submitted', address_verification_method: nil,
+                                           deactivation_reason: 'threatmetrix_review_pending',
+                                           proofing_components: nil
+          )
         end
       end
     end
