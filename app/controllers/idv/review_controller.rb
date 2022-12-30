@@ -60,11 +60,11 @@ module Idv
 
       analytics.idv_review_complete(
         success: true,
-        deactivation_reason: session[:deactivation_reason],
+        deactivation_reason: idv_session.profile.deactivation_reason,
       )
       analytics.idv_final(
         success: true,
-        deactivation_reason: session[:deactivation_reason],
+        deactivation_reason: idv_session.profile.deactivation_reason,
       )
 
       return unless FeatureManagement.reveal_gpo_code?
