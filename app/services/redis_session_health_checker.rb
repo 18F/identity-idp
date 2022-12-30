@@ -6,7 +6,7 @@ module RedisSessionHealthChecker
 
   # @return [HealthCheckSummary]
   def check
-    HealthCheckSummary.new(healthy: health_write_and_read, result: {
+    HealthCheckSummary.new(healthy: health_write_and_read.present?, result: {
       primary_redis: health_write_and_read
     })
   end
@@ -14,13 +14,10 @@ module RedisSessionHealthChecker
   # @api private
   def health_write_and_read
     MemoryCache.cache.fetch(CACHE_KEY, expires_in: 2.minutes, race_condition_ttl: 10.seconds) do
-      value = "healthy at #{Time.now.iso8601}"
-      read_value = REDIS_POOL.with do |client|
-        client.setex(health_record_key, 3.minutes, value)
+      REDIS_POOL.with do |client|
+        client.setex(health_record_key, 3.minutes, "healthy at #{Time.now.iso8601}")
         client.get(health_record_key)
       end
-
-      read_value == value
     end
   end
 
