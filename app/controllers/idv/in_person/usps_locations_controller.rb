@@ -13,7 +13,8 @@ module Idv
 
       # retrieve the list of nearby IPP Post Office locations with a POST request
       def index
-        usps_response = []
+        response = []
+
         begin
           if IdentityConfig.store.arcgis_search_enabled
             candidate = UspsInPersonProofing::Applicant.new(
@@ -21,17 +22,16 @@ module Idv
               city: search_params['city'], state: search_params['state'],
               zip_code: search_params['zip_code']
             )
-            usps_response = proofer.request_facilities(candidate)
+            response = proofer.request_facilities(candidate)
           else
-            usps_response = proofer.request_pilot_facilities
+            response = proofer.request_pilot_facilities
           end
-        rescue ActionController::ParameterMissing
-          usps_response = proofer.request_pilot_facilities
-        rescue Faraday::ConnectionFailed => _error
-          nil
+        rescue => err
+          NewRelic::Agent.notice_error(err)
+          response = proofer.request_pilot_facilities
         end
 
-        render json: usps_response.to_json
+        render json: response.to_json
       end
 
       def proofer

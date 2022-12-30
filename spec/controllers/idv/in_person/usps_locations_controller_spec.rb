@@ -131,12 +131,15 @@ describe Idv::InPerson::UspsLocationsController do
       end
 
       context 'with unsuccessful fetch' do
+        let(:exception) { Faraday::ConnectionFailed }
+
         before do
-          exception = Faraday::ConnectionFailed.new('error')
           allow(proofer).to receive(:request_facilities).with(fake_address).and_raise(exception)
+          allow(proofer).to receive(:request_pilot_facilities).and_return(pilot_locations)
         end
 
-        it 'gets an empty response' do
+        it 'returns all pilot locations' do
+          expect(NewRelic::Agent).to receive(:notice_error)
           response = post :index,
                           params: { address: { street_address: '742 Evergreen Terrace',
                                                city: 'Springfield',
@@ -144,7 +147,7 @@ describe Idv::InPerson::UspsLocationsController do
                                                zip_code: '89011' } }
           json = response.body
           facilities = JSON.parse(json)
-          expect(facilities.length).to eq 0
+          expect(facilities.length).to eq 4
         end
       end
     end
