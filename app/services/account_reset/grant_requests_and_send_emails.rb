@@ -1,6 +1,6 @@
 module AccountReset
   class GrantRequestsAndSendEmails < ApplicationJob
-    queue_as :low
+    queue_as :long_running
 
     def perform(now)
       notifications_sent = 0
