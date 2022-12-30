@@ -32,6 +32,10 @@ describe Idv::PersonalKeyController do
     )
   end
 
+  before do
+    stub_analytics
+  end
+
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
       expect(subject).to have_actions(
@@ -155,6 +159,15 @@ describe Idv::PersonalKeyController do
 
         expect(subject.user_session[:need_personal_key_confirmation]).to eq(false)
       end
+
+      it 'logs key submitted event' do
+        expect(@analytics).to receive(:idv_personal_key_submitted).with(
+          address_verification_method: nil,
+          deactivation_reason: nil,
+        )
+
+        patch :update
+      end
     end
 
     context 'user selected gpo verification' do
@@ -181,6 +194,14 @@ describe Idv::PersonalKeyController do
           expect(response).to redirect_to idv_come_back_later_path
         end
       end
+      it 'logs key submitted event' do
+        expect(@analytics).to receive(:idv_personal_key_submitted).with(
+          address_verification_method: nil,
+          deactivation_reason: 'gpo_verification_pending',
+        )
+
+        patch :update
+      end
     end
 
     context 'with in person profile' do
@@ -196,6 +217,15 @@ describe Idv::PersonalKeyController do
 
         expect(response).to redirect_to idv_in_person_ready_to_verify_url
       end
+
+      it 'logs key submitted event' do
+        expect(@analytics).to receive(:idv_personal_key_submitted).with(
+          address_verification_method: nil,
+          deactivation_reason: nil,
+        )
+
+        patch :update
+      end
     end
 
     context 'with device profiling decisioning enabled' do
@@ -205,24 +235,60 @@ describe Idv::PersonalKeyController do
           to receive(:lexisnexis_threatmetrix_required_to_verify).and_return(true)
       end
 
-      it 'redirects to account path when threatmetrix review status is nil' do
-        patch :update
+      context 'threatmetrix review status is nil' do
+        it 'redirects to account path' do
+          patch :update
 
-        expect(response).to redirect_to account_path
+          expect(response).to redirect_to account_path
+        end
+        it 'logs key submitted event' do
+          expect(@analytics).to receive(:idv_personal_key_submitted).with(
+            address_verification_method: nil,
+            deactivation_reason: nil,
+          )
+
+          patch :update
+        end
       end
 
-      it 'redirects to account path when device profiling passes' do
-        ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'pass')
-        patch :update
+      context 'device profiling passes' do
+        before do
+          ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'pass')
+        end
+        it 'redirects to account path' do
+          patch :update
 
-        expect(response).to redirect_to account_path
+          expect(response).to redirect_to account_path
+        end
+        it 'logs key submitted event' do
+          expect(@analytics).to receive(:idv_personal_key_submitted).with(
+            address_verification_method: nil,
+            deactivation_reason: nil,
+          )
+
+          patch :update
+        end
       end
 
-      it 'redirects to come back later path when device profiling fails' do
-        ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'fail')
-        patch :update
+      context 'device profiling fails' do
+        before do
+          ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'reject')
+          profile.deactivation_reason = :threatmetrix_review_pending
+        end
 
-        expect(response).to redirect_to idv_setup_errors_path
+        it 'redirects to come back later path' do
+          patch :update
+          expect(response).to redirect_to idv_setup_errors_path
+        end
+
+        it 'logs key submitted event' do
+          expect(@analytics).to receive(:idv_personal_key_submitted).with(
+            address_verification_method: nil,
+            deactivation_reason: 'threatmetrix_review_pending',
+          )
+
+          patch :update
+        end
       end
     end
   end
