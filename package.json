@@ -21,7 +21,7 @@
     "build:css": "build-sass app/assets/stylesheets/*.css.scss --out-dir=app/assets/builds"
   },
   "dependencies": {
-    "@babel/core": "^7.15.5",
+    "@babel/core": "^7.20.7",
     "@babel/plugin-proposal-decorators": "^7.17.2",
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-react": "^7.14.5",
@@ -75,6 +75,7 @@
     "jsdom": "^20.0.0",
     "mocha": "^10.0.0",
     "mq-polyfill": "^1.1.8",
+    "msw": "^0.49.2",
     "postcss": "^8.4.17",
     "prettier": "^2.7.1",
     "react-test-renderer": "^17.0.2",

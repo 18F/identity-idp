@@ -298,6 +298,7 @@ describe Users::TwoFactorAuthenticationController do
           to: phone,
           expiration: 10,
           channel: :sms,
+          otp_format: 'digit',
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
           extra_metadata: {
@@ -463,6 +464,7 @@ describe Users::TwoFactorAuthenticationController do
           to: phone,
           expiration: 10,
           channel: :voice,
+          otp_format: 'digit',
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
           extra_metadata: {
@@ -552,6 +554,7 @@ describe Users::TwoFactorAuthenticationController do
           to: @unconfirmed_phone,
           expiration: 10,
           channel: :sms,
+          otp_format: 'digit',
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
           extra_metadata: {

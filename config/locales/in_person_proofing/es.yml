@@ -8,46 +8,57 @@ es:
           dirección actual.
         learn_more: Aprende más
       barcode:
-        deadline: El plazo para verificar su identidad en persona es el %{deadline}.
+        close_window: Ya puede cerrar esta ventana
+        deadline: Visite la Oficina de correos antes del %{deadline}
         deadline_restart: Si supera la fecha límite, su información no se guardará y
           tendrá que reiniciar el proceso.
-        emailed_info: Hemos enviado esta información al correo electrónico que utilizó
-          para iniciar la sesión.
-        items_to_bring: 'Lleve estos artículos a la oficina de correos:'
-        items_to_bring_questions: '¿Preguntas sobre qué llevar?'
-        learn_more: Más información
+        email_sent: Hemos enviado esta información al correo electrónico que usó para
+          iniciar sesión.
+        items_to_bring: 'Recuerde traer con usted estos elementos a la Oficina de correos:'
+        learn_more: Entérese más sobre qué debe traer.
         location_details: Detalles de la ubicación
-        no_appointment_required: No es necesario pedir cita.
+        questions: '¿Tiene alguna pregunta?'
         retail_hours: Horario de atención al público
         retail_hours_closed: Cerrado
         retail_phone_label: Número de teléfono
+        return_to_partner_html: Ya puede cerrar esta ventana o %{link} para finalizar
+          los pasos a los que tenga acceso hasta que su identidad sea
+          verificada.
+        return_to_partner_link: regresar a %{sp_name}
         speak_to_associate: Para verificar su identidad, puede acudir a cualquier
-          empleado en ventanilla.
+          empleado en ventanilla. No es necesario pedir cita.
       cta:
         button: Verifique su identificación en persona
         new_feature: Nuevo artículo
-        prompt_detail: Si usted está ubicado cerca de Washington D.C. o Baltimore, MD,
+        prompt_detail: Si usted está ubicado cerca de Washington, D.C. o Baltimore, MD,
           puede verificar su identificación en persona en las oficinas de
           correos seleccionadas.
       location:
-        inline_error: Incluye una ciudad, un estado y un código postal.
+        contact_info_heading: Información del contacto
+        distance:
+          one: '%{count} milla de distancia'
+          other: '%{count} millas de distancia'
+        inline_error: Ingrese una dirección válida que incluya ciudad, estado y código postal
         location_button: Seleccionar
         location_step_about: Si tiene problemas para añadir su cédula de identidad, es
           posible que pueda realizar la verificación en persona en una oficina
           de correos local de los Estados Unidos en determinadas localidades.
         none_found: No se encontraron localidades.
+        phone: 'Telefono:'
         po_search:
           address_search_hint: 'Ejemplo: 1960 W Chelsea Ave Allentown PA 18104'
           address_search_label: Introduzca una dirección para encontrar una Oficina de
             Correos cercana a usted
+          is_searching_message: Buscando oficinas de correos…
           none_found: Lo sentimos, no hay Oficinas de Correos participantes en un radio de
             50 millas de la %{address}.
           none_found_tip: Puede buscar utilizando una dirección diferente, o añadir fotos
             de su documento de identidad para intentar verificar su identidad en
             línea de nuevo.
-          po_search_about: Si tiene problemas para añadir su documento de identidad, es
-            posible que pueda verificar su identidad en persona en una oficina
-            de correos local de los Estados Unidos.
+          po_search_about: Si vives cerca de Washington, D.C. o Baltimore, MD, puedes
+            verificar tu ID directamente en algunas oficinas de correos. Pronto
+            habrá más oficinas en los 50 estados y en algunos otros territorios
+            de los Estados Unidos.
           results_description: Hay %{count} de oficinas de correos participantes en un
             radio de 50 millas de la %{address}.
           results_instructions: Seleccione una ubicación de la Oficina de Correos a

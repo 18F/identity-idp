@@ -53,13 +53,12 @@ describe Users::BackupCodeSetupController do
     expect(user.backup_code_configurations.length).to eq 10
   end
 
-  context 'with multiple MFA selection on' do
+  describe 'multiple MFA handling' do
     let(:mfa_selections) { ['backup_code', 'voice'] }
     before do
       @user = build(:user)
       stub_sign_in(@user)
       controller.user_session[:mfa_selections] = mfa_selections
-      allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
     end
 
     context 'when user selects multiple mfas on account creation' do

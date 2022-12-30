@@ -69,7 +69,7 @@ module Identity
     config.good_job.enable_cron = true
     config.good_job.max_threads = IdentityConfig.store.good_job_max_threads
     config.good_job.queues = IdentityConfig.store.good_job_queues
-    config.good_job.preserve_job_records = true
+    config.good_job.preserve_job_records = false
     config.good_job.queue_select_limit = IdentityConfig.store.good_job_queue_select_limit
     # see config/initializers/job_configurations.rb for cron schedule
 

@@ -3,7 +3,6 @@ module DocumentCaptureStepHelper
     click_on 'Submit'
 
     # Wait for the the loading interstitial to disappear before continuing
-    expect(page).to have_content(t('doc_auth.headings.interstitial'))
     expect(page).not_to have_content(t('doc_auth.headings.interstitial'), wait: 10)
   end
 

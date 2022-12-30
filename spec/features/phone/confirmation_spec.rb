@@ -20,7 +20,7 @@ describe 'phone otp confirmation' do
     def expect_successful_otp_confirmation(delivery_method)
       expect(page).to have_content(t('notices.phone_confirmed'))
 
-      expect(page).to have_current_path(account_path)
+      expect(page).to have_current_path(auth_method_confirmation_path)
       expect(phone_configuration.confirmed_at).to_not be_nil
       expect(phone_configuration.delivery_preference).to eq(delivery_method.to_s)
     end

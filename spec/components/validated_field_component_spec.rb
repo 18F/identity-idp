@@ -31,6 +31,12 @@ RSpec.describe ValidatedFieldComponent, type: :component do
     expect(field.attr('aria-describedby')).to be_blank
   end
 
+  it 'is not rendered as invalid' do
+    field = rendered.at_css('input')
+
+    expect(field.attr('aria-invalid')).to eq('false')
+  end
+
   context 'when form has errors for field' do
     let(:error_message) { 'Field is required' }
 
@@ -42,6 +48,12 @@ RSpec.describe ValidatedFieldComponent, type: :component do
       field = rendered.at_css('input')
 
       expect(field).to have_description error_message
+    end
+
+    it 'is rendered as invalid' do
+      field = rendered.at_css('input')
+
+      expect(field.attr('aria-invalid')).to eq('true')
     end
 
     context 'with aria tag option' do

@@ -11,7 +11,7 @@ feature 'Password Recovery' do
 
       visit root_path
       click_link t('links.passwords.forgot')
-      fill_in 'Email', with: user.email
+      fill_in t('account.index.email'), with: user.email
 
       expect(PushNotification::HttpPush).to receive(:deliver).
         with(PushNotification::RecoveryActivatedEvent.new(user: user))
@@ -99,7 +99,7 @@ feature 'Password Recovery' do
     before do
       user = create(:user)
       visit new_user_password_path
-      fill_in 'Email', with: user.email
+      fill_in t('account.index.email'), with: user.email
       click_button t('forms.buttons.continue')
       visit edit_user_password_path(reset_password_token: 'invalid_token')
     end
@@ -143,7 +143,7 @@ feature 'Password Recovery' do
       @user = create(:user, :signed_up)
 
       visit new_user_password_path
-      fill_in 'Email', with: @user.email
+      fill_in t('account.index.email'), with: @user.email
       click_button t('forms.buttons.continue')
 
       raw_reset_token, db_confirmation_token =
@@ -226,7 +226,7 @@ feature 'Password Recovery' do
     user = create(:user, :signed_up)
 
     visit new_user_password_path
-    fill_in 'Email', with: user.email
+    fill_in t('account.index.email'), with: user.email
     click_button t('forms.buttons.continue')
 
     user.reset_password_sent_at =
@@ -261,7 +261,7 @@ feature 'Password Recovery' do
 
   def submit_email_for_password_reset(email)
     visit new_user_password_path
-    fill_in 'Email', with: email
+    fill_in t('account.index.email'), with: email
     click_button t('forms.buttons.continue')
   end
 end

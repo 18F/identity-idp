@@ -1,18 +1,6 @@
 module AccountReset
   class GrantRequestsAndSendEmails < ApplicationJob
-    queue_as :low
-
-    include GoodJob::ActiveJobExtensions::Concurrency
-
-    good_job_control_concurrency_with(
-      total_limit: 1,
-      key: -> do
-        rounded = TimeService.round_time(time: arguments.first, interval: 5.minutes)
-        "grant-requests-and-send-emails-#{rounded.to_i}"
-      end,
-    )
-
-    discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
+    queue_as :long_running
 
     def perform(now)
       notifications_sent = 0

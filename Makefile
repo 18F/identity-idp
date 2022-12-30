@@ -113,9 +113,15 @@ lint_yarn_lock: package.json yarn.lock
 
 lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles are in sync
 
-lintfix: ## Runs rubocop fix
+lintfix: ## Try to automatically fix any ruby, ERB, javascript, or CSS lint errors
 	@echo "--- rubocop fix ---"
 	bundle exec rubocop -a
+	@echo "--- erblint fix ---"
+	bundle exec erblint app/views app/components -a
+	@echo "--- eslint fix ---"
+	yarn lint --fix
+	@echo "--- stylelint fix ---"
+	yarn lint:css --fix
 
 brakeman: ## Runs brakeman
 	bundle exec brakeman
@@ -159,8 +165,8 @@ run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt ## Runs the developme
 
 normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, smart quotes)
 	yarn normalize-yaml .rubocop.yml --disable-sort-keys --disable-smart-punctuation
-	find ./config/locales/telephony "./config/locales/telephony*" -type f | xargs yarn normalize-yaml --disable-smart-punctuation
-	find ./config/locales -not -path "./config/locales/telephony*" -type f | xargs yarn normalize-yaml \
+	find ./config/locales/telephony -type f -name '*.yml' | xargs yarn normalize-yaml --disable-smart-punctuation
+	find ./config/locales -not -path "./config/locales/telephony*" -type f -name '*.yml' | xargs yarn normalize-yaml \
 		config/pinpoint_supported_countries.yml \
 		config/pinpoint_overrides.yml \
 		config/country_dialing_codes.yml
