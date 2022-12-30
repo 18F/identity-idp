@@ -39,6 +39,7 @@ class OtpRateLimiter
     # DO NOT MEMOIZE
     @entry = OtpRequestsTracker.atomic_increment(entry_for_current_phone.id)
     throttle.increment!
+    nil
   end
 
   def otp_last_sent_at
