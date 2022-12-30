@@ -56,7 +56,7 @@ module DocAuthHelper
   end
 
   def idv_doc_auth_verify_step
-    idv_doc_auth_step_path(step: :verify)
+    idv_doc_auth_verify_pii_path
   end
 
   def idv_doc_auth_send_link_step

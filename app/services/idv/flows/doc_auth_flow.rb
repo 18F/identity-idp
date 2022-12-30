@@ -10,6 +10,7 @@ module Idv
         email_sent: Idv::Steps::EmailSentStep,
         document_capture: Idv::Steps::DocumentCaptureStep,
         ssn: Idv::Steps::SsnStep,
+        verify_info: Idv::Steps::VerifyStep,
         verify: Idv::Steps::VerifyStep,
         verify_wait: Idv::Steps::VerifyWaitStep,
       }.freeze

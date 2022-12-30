@@ -334,7 +334,8 @@ Rails.application.routes.draw do
       post '/address' => 'address#update'
       get '/doc_auth' => 'doc_auth#index'
       get '/doc_auth/return_to_sp' => 'doc_auth#return_to_sp'
-      get '/doc_auth/verify' => 'verify_pii#show', as: :doc_auth_verify_pii # special case to remove show from FSM
+      get '/doc_auth/verify_info' => 'verify_pii#show', as: :doc_auth_verify_pii # special case to remove show from FSM
+      get '/doc_auth/verify' => 'verify_pii#show'
       get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
       put '/doc_auth/:step' => 'doc_auth#update'
       get '/doc_auth/link_sent/poll' => 'capture_doc_status#show', as: :capture_doc_status
