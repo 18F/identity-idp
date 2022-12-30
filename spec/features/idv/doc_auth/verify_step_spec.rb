@@ -18,7 +18,7 @@ feature 'doc auth verify step', :js do
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_verify_step
 
-    expect(page).to have_current_path(idv_doc_auth_verify_pii_path)
+    expect(page).to have_current_path(idv_doc_auth_verify_step)
     expect(page).to have_content(t('headings.verify'))
     expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
 
