@@ -1,30 +1,31 @@
+# frozen_string_literal: true
+
 module RedisSessionHealthChecker
+  CACHE_KEY = 'redis_health_check'
   module_function
 
   # @return [HealthCheckSummary]
   def check
-    HealthCheckSummary.new(healthy: true, result: health_write_and_read)
-  rescue StandardError => err
-    NewRelic::Agent.notice_error(err)
-    HealthCheckSummary.new(healthy: false, result: err.message)
+    HealthCheckSummary.new(healthy: health_write_and_read, result: {
+      primary_redis: health_write_and_read
+    })
   end
 
   # @api private
   def health_write_and_read
-    REDIS_POOL.with do |client|
-      client.setex(health_record_key, health_record_ttl, "healthy at " + Time.now.iso8601)
-      client.get(health_record_key) or raise "Unable to read back #{health_record_key} from Redis"
+    MemoryCache.cache.fetch(CACHE_KEY, expires_in: 2.minutes, race_condition_ttl: 10.seconds) do
+      value = "healthy at #{Time.now.iso8601}"
+      read_value = REDIS_POOL.with do |client|
+        client.setex(health_record_key, 3.minutes, value)
+        client.get(health_record_key)
+      end
+
+      read_value == value
     end
   end
 
   # @api private
   def health_record_key
-    "healthcheck_" + Socket.gethostname
-  end
-
-  # @api private
-  def health_record_ttl
-    # If we can't read back within a second that is just unacceptable
-    1
+    "healthcheck_#{Socket.gethostname}"
   end
 end
