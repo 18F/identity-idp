@@ -26,7 +26,8 @@ namespace :users do
           disavowal_token: disavowal_token,
         )
 
-        puts "User's review state has been updated to #{result.threatmetrix_review_status} and the user has been notified by email."
+        status = result.threatmetrix_review_status
+        puts "User's review state has been updated to #{status} and the user has been emailed."
       elsif !user.proofing_component.review_eligible?
         puts 'User is past the 30 day review eligibility'
       else
