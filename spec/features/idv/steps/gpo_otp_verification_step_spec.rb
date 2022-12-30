@@ -48,21 +48,21 @@ feature 'idv gpo otp verification step', :js do
       it_behaves_like 'gpo otp verification'
     end
 
-    context 'ThreatMetrix says "review"' do
-      let(:threatmetrix_review_status) { 'review' }
-      let(:redirect_after_verification) { idv_setup_errors_path }
-      let(:profile_should_be_active) { false }
-      let(:expected_deactivation_reason) { 'threatmetrix_review_pending' }
-      it_behaves_like 'gpo otp verification'
-    end
+    # context 'ThreatMetrix says "review"' do
+    #   let(:threatmetrix_review_status) { 'review' }
+    #   let(:redirect_after_verification) { idv_setup_errors_path }
+    #   let(:profile_should_be_active) { false }
+    #   let(:expected_deactivation_reason) { 'threatmetrix_review_pending' }
+    #   it_behaves_like 'gpo otp verification'
+    # end
 
-    context 'ThreatMetrix says "reject"' do
-      let(:threatmetrix_review_status) { 'reject' }
-      let(:redirect_after_verification) { idv_setup_errors_path }
-      let(:profile_should_be_active) { false }
-      let(:expected_deactivation_reason) { 'threatmetrix_review_pending' }
-      it_behaves_like 'gpo otp verification'
-    end
+    # context 'ThreatMetrix says "reject"' do
+    #   let(:threatmetrix_review_status) { 'reject' }
+    #   let(:redirect_after_verification) { idv_setup_errors_path }
+    #   let(:profile_should_be_active) { false }
+    #   let(:expected_deactivation_reason) { 'threatmetrix_review_pending' }
+    #   it_behaves_like 'gpo otp verification'
+    # end
 
     context 'No ThreatMetrix result on proofing component' do
       let(:threatmetrix_review_status) { nil }
