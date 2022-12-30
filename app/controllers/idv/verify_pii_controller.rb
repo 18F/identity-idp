@@ -2,6 +2,9 @@ module Idv
   class VerifyPiiController < ApplicationController
     include StepIndicatorConcern
 
+    before_action :confirm_two_factor_authenticated
+    before_action :confirm_pii_from_doc
+
     def show
       local_params = {
         pii: pii,
@@ -31,6 +34,13 @@ module Idv
         steps: Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
         current_step: :verify_info,
       }
+    end
+
+    # copied from address_controller
+    def confirm_pii_from_doc
+      @pii = user_session.dig('idv/doc_auth', 'pii_from_doc')
+      return if @pii.present?
+      redirect_to idv_doc_auth_url
     end
   end
 end
