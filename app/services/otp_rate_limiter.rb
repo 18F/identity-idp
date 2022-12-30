@@ -69,7 +69,7 @@ class OtpRateLimiter
   end
 
   def phone_fingerprint
-    @phone_fingerprint ||= Pii::Fingerprinter.fingerprint(phone)
+    @phone_fingerprint ||= Pii::Fingerprinter.fingerprint(PhoneFormatter.format(phone))
   end
 
   def throttle
