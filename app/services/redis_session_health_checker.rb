@@ -3,7 +3,7 @@ module RedisSessionHealthChecker
 
   # @return [HealthCheckSummary]
   def check
-    HealthCheckSummary.new(healthy: true, result: health_write_and_read)
+    HealthCheckSummary.new(healthy: health_write_and_read.present?, result: health_write_and_read)
   rescue StandardError => err
     NewRelic::Agent.notice_error(err)
     HealthCheckSummary.new(healthy: false, result: err.message)
