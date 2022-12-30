@@ -7,7 +7,7 @@ module Idv
         pii: pii,
         step_url: method(:idv_doc_auth_step_url),
         step_indicator: step_indicator_params,
-        step_template: "idv/doc_auth/verify",
+        step_template: 'idv/doc_auth/verify',
         flow_namespace: 'idv',
         flow_session: flow_session,
       }
@@ -32,6 +32,5 @@ module Idv
         current_step: :verify_info,
       }
     end
-
   end
 end
