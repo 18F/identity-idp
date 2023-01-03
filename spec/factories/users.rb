@@ -210,6 +210,15 @@ FactoryBot.define do
       end
     end
 
+    trait :deactivated_threatmetrix_profile do
+      signed_up
+
+      after :build do |user|
+        create(:profile, :threatmetrix_review_pending, :with_pii, user: user)
+        create(:proofing_component, :eligible_for_review, user: user)
+      end
+    end
+
     trait :deactivated_password_reset_profile do
       signed_up
 

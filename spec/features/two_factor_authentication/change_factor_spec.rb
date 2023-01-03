@@ -39,6 +39,7 @@ feature 'Changing authentication factor' do
           to: old_phone,
           expiration: 10,
           channel: :sms,
+          otp_format: 'digit',
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
           extra_metadata: {

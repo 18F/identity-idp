@@ -18,8 +18,9 @@ module Api
     respond_to :json
 
     def create
+      start_time = Time.zone.now.to_f
       if timestamp
-        if IdentityConfig.store.irs_attempt_api_aws_s3_enabled
+        if s3_helper.attempts_serve_events_from_s3
           if IrsAttemptApiLogFile.find_by(requested_time: timestamp_key(key: timestamp))
             log_file_record = IrsAttemptApiLogFile.find_by(
               requested_time: timestamp_key(key: timestamp),
@@ -28,10 +29,8 @@ module Api
             headers['X-Payload-Key'] = log_file_record.encrypted_key
             headers['X-Payload-IV'] = log_file_record.iv
 
-            bucket_name = IdentityConfig.store.irs_attempt_api_bucket_name
-
-            requested_data = s3_client.get_object(
-              bucket: bucket_name,
+            requested_data = s3_helper.s3_client.get_object(
+              bucket: s3_helper.attempts_bucket_name,
               key: log_file_record.filename,
             )
 
@@ -53,7 +52,12 @@ module Api
         render json: { status: :unprocessable_entity, description: 'Invalid timestamp parameter' },
                status: :unprocessable_entity
       end
-      analytics.irs_attempts_api_events(**analytics_properties(authenticated: true))
+      analytics.irs_attempts_api_events(
+        **analytics_properties(
+          authenticated: true,
+          elapsed_time: elapsed_time(start_time),
+        ),
+      )
     end
 
     private
@@ -62,7 +66,12 @@ module Api
       bearer, csp_id, token = request.authorization&.split(' ', 3)
       if bearer != 'Bearer' || !valid_auth_tokens.include?(token) ||
          csp_id != IdentityConfig.store.irs_attempt_api_csp_id
-        analytics.irs_attempts_api_events(**analytics_properties(authenticated: false))
+        analytics.irs_attempts_api_events(
+          **analytics_properties(
+            authenticated: false,
+            elapsed_time: 0,
+          ),
+        )
         render json: { status: 401, description: 'Unauthorized' }, status: :unauthorized
       end
     end
@@ -91,18 +100,19 @@ module Api
       @redis_client ||= IrsAttemptsApi::RedisClient.new
     end
 
-    def s3_client
-      @s3_client ||= JobHelpers::S3Helper.new.s3_client
+    def s3_helper
+      @s3_helper ||= JobHelpers::S3Helper.new
     end
 
     def valid_auth_tokens
       IdentityConfig.store.irs_attempt_api_auth_tokens
     end
 
-    def analytics_properties(authenticated:)
+    def analytics_properties(authenticated:, elapsed_time:)
       {
         rendered_event_count: security_event_tokens.count,
         timestamp: timestamp&.iso8601,
+        elapsed_time: elapsed_time,
         authenticated: authenticated,
         success: authenticated && timestamp.present?,
       }
@@ -117,6 +127,10 @@ module Api
       Time.strptime(timestamp_param, date_fmt)
     rescue ArgumentError
       nil
+    end
+
+    def elapsed_time(start_time)
+      Time.zone.now.to_f - start_time
     end
   end
 end

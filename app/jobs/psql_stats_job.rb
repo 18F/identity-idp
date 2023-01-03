@@ -1,16 +1,5 @@
 class PsqlStatsJob < ApplicationJob
   queue_as :default
-  include GoodJob::ActiveJobExtensions::Concurrency
-
-  good_job_control_concurrency_with(
-    total_limit: 1,
-    key: -> do
-      rounded = TimeService.round_time(time: arguments.first, interval: 1.minute)
-      "psql_bloat_statistics-#{rounded.to_i}"
-    end,
-  )
-
-  discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
 
   # gather data on bloat for each table
   # https://github.com/ioguix/pgsql-bloat-estimation/blob/master/table/table_bloat.sql

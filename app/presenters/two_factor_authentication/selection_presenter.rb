@@ -120,16 +120,8 @@ module TwoFactorAuthentication
         t('two_factor_authentication.two_factor_choice_options.auth_app_info')
       when 'backup_code'
         t('two_factor_authentication.two_factor_choice_options.backup_code_info')
-      when 'phone'
-        IdentityConfig.store.select_multiple_mfa_options ?
-          t('two_factor_authentication.two_factor_choice_options.phone_info_html') :
-          t('two_factor_authentication.two_factor_choice_options.phone_info')
       when 'piv_cac'
         t('two_factor_authentication.two_factor_choice_options.piv_cac_info')
-      when 'sms'
-        t('two_factor_authentication.two_factor_choice_options.sms_info')
-      when 'voice'
-        t('two_factor_authentication.two_factor_choice_options.voice_info')
       when 'webauthn'
         t('two_factor_authentication.two_factor_choice_options.webauthn_info')
       when 'webauthn_platform'

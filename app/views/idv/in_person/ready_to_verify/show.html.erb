@@ -26,9 +26,28 @@
   <p class="margin-bottom-0"><%= t('in_person_proofing.body.barcode.deadline_restart') %></p>
 <% end %>
 
+<p><%= t('in_person_proofing.body.barcode.email_sent') %></p>
+
+<p class="margin-top-3 margin-bottom-4">
+  <% if @presenter.service_provider_homepage_url.present? %>
+    <%= t(
+          'in_person_proofing.body.barcode.return_to_partner_html',
+          link: link_to(
+            t(
+              'in_person_proofing.body.barcode.return_to_partner_link',
+              sp_name: @presenter.sp_name,
+            ),
+            @presenter.service_provider_homepage_url,
+          ),
+        ) %>
+  <% else %>
+    <%= t('in_person_proofing.body.barcode.close_window') %>
+  <% end %>
+</p>
+
 <section class="border-1px border-primary-light radius-lg padding-4">
   <h2 class="margin-top-0 margin-bottom-2"><%= t('in_person_proofing.body.barcode.items_to_bring') %></h2>
-  <p><%= t('in_person_proofing.body.barcode.emailed_info') %></p>
+  <p><%= t('in_person_proofing.body.barcode.speak_to_associate') %></p>
   <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
     <% c.item(heading: t('in_person_proofing.process.barcode.heading')) do %>
       <p><%= t('in_person_proofing.process.barcode.info') %></p>
@@ -60,7 +79,7 @@
     <% end %>
   <% end %>
   <p class="margin-bottom-0">
-    <%= t('in_person_proofing.body.barcode.items_to_bring_questions') %>
+    <%= t('in_person_proofing.body.barcode.questions') %>
     <%= new_window_link_to(
           t('in_person_proofing.body.barcode.learn_more'),
           MarketingSite.help_center_article_url(
@@ -91,11 +110,4 @@
       </div>
     </address>
   </section>
-
-  <p><%= t('in_person_proofing.body.barcode.speak_to_associate') %></p>
 <% end %>
-
-<p>
-  <strong><%= t('in_person_proofing.body.barcode.deadline', deadline: @presenter.formatted_due_date) %></strong>
-  <%= t('in_person_proofing.body.barcode.no_appointment_required') %>
-</p>

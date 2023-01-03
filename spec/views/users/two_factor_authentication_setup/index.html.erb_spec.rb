@@ -7,7 +7,7 @@ describe 'users/two_factor_authentication_setup/index.html.erb' do
 
   before do
     user = build_stubbed(:user)
-    @presenter = TwoFactorOptionsPresenter.new(user_agent: '')
+    @presenter = TwoFactorOptionsPresenter.new(user_agent: '', user: user)
     @two_factor_options_form = TwoFactorLoginOptionsForm.new(user)
   end
 
@@ -23,7 +23,7 @@ describe 'users/two_factor_authentication_setup/index.html.erb' do
 
     it 'disables phone option' do
       expect(rendered).to have_field(
-        'two_factor_options_form[selection]',
+        'two_factor_options_form[selection][]',
         with: :phone,
         disabled: true,
       )
@@ -42,7 +42,7 @@ describe 'users/two_factor_authentication_setup/index.html.erb' do
 
     it 'does not disable phone option' do
       expect(rendered).to have_field(
-        'two_factor_options_form[selection]',
+        'two_factor_options_form[selection][]',
         with: :phone,
         disabled: false,
       )

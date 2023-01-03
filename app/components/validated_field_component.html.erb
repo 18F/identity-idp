@@ -17,7 +17,7 @@
           input_html: {
             class: [*tag_options.dig(:input_html, :class), 'validated-field__input'],
             aria: {
-              invalid: false,
+              invalid: has_errors?,
               describedby: aria_describedby_idrefs,
             },
           },

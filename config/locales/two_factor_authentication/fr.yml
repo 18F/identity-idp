@@ -139,8 +139,6 @@ fr:
       physique tel qu’une clé de sécurité ou un badge d’employé du gouvernement
       (PIV ou CAC) pour accéder à vos informations.
     two_factor_choice: Configuration de la méthode d’authentification
-    two_factor_choice_intro: Ajoutez une autre étape de sécurité en utilisant l’une
-      des options d’authentification multifactorielle ci-dessous.
     two_factor_choice_options:
       auth_app: Demande d’authentification
       auth_app_info: Téléchargez ou utilisez une application d’authentification de

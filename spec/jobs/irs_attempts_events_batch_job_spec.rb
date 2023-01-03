@@ -47,6 +47,8 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
           :create_and_upload_to_attempts_s3_resource,
         )
 
+        allow_any_instance_of(described_class).to receive(:duration_ms).and_return(0.1234)
+
         travel_to start_time + 1.hour
 
         redis_client = IrsAttemptsApi::RedisClient.new
@@ -72,6 +74,15 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
           bucket_name: bucket_name,
           filename: envelope_encryptor_result[:filename],
           encrypted_data: envelope_encryptor_result[:encrypted_data],
+        )
+
+        expect_any_instance_of(described_class).to receive(:logger_info_hash).with(
+          name: 'IRSAttemptsEventJob',
+          start_time: Time.zone.now,
+          end_time: Time.zone.now,
+          duration_ms: 0.1234,
+          events_count: 2,
+          file_bytes_size: 19,
         )
 
         result = IrsAttemptsEventsBatchJob.perform_now(start_time)

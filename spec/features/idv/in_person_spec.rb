@@ -10,6 +10,111 @@ RSpec.describe 'In Person Proofing', js: true do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
   end
 
+  context 'ThreatMetrix review pending' do
+    let(:user) { user_with_2fa }
+
+    before do
+      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
+        and_return(true)
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling_decisioning_enabled).
+        and_return(true)
+    end
+
+    it 'allows the user to continue down the happy path', allow_browser_log: true do
+      sign_in_and_2fa_user(user)
+      begin_in_person_proofing(user)
+
+      # location page
+      bethesda_location = page.find_all('.location-collection-item')[1]
+      bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
+
+      # prepare page
+      complete_prepare_step(user)
+
+      # state ID page
+      complete_state_id_step(user)
+
+      # address page
+      complete_address_step(user)
+
+      # ssn page
+      select 'Reject', from: :mock_profiling_result
+      complete_ssn_step(user)
+
+      # verify page
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+      expect(page).to have_content(t('headings.verify'))
+      expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
+      expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
+      expect(page).to have_text(InPersonHelper::GOOD_DOB)
+      expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
+      expect(page).to have_text(InPersonHelper::GOOD_ADDRESS1)
+      expect(page).to have_text(InPersonHelper::GOOD_CITY)
+      expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
+      expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state])
+      expect(page).to have_text('9**-**-***4')
+      complete_verify_step(user)
+
+      # phone page
+      expect_in_person_step_indicator_current_step(
+        t('step_indicator.flows.idv.verify_phone_or_address'),
+      )
+      expect(page).to have_content(t('idv.titles.session.phone'))
+      fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
+      click_idv_send_security_code
+      expect_in_person_step_indicator_current_step(
+        t('step_indicator.flows.idv.verify_phone_or_address'),
+      )
+
+      expect_in_person_step_indicator_current_step(
+        t('step_indicator.flows.idv.verify_phone_or_address'),
+      )
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      # password confirm page
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
+      expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
+      complete_review_step(user)
+
+      # personal key page
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
+      expect(page).to have_content(t('titles.idv.personal_key'))
+      deadline = nil
+      freeze_time do
+        acknowledge_and_confirm_personal_key
+        deadline = (Time.zone.now +
+          IdentityConfig.store.in_person_enrollment_validity_in_days.days).
+          in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE).
+          strftime(t('time.formats.event_date'))
+      end
+
+      # ready to verify page
+      expect_in_person_step_indicator_current_step(
+        t('step_indicator.flows.idv.go_to_the_post_office'),
+      )
+      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+      enrollment_code = JSON.parse(
+        UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
+      )['enrollmentCode']
+      expect(page).to have_content(t('in_person_proofing.headings.barcode'))
+      expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
+      expect(page).to have_content(
+        t('in_person_proofing.body.barcode.deadline', deadline: deadline),
+      )
+      expect(page).to have_content('BETHESDA')
+      expect(page).to have_content(
+        "#{t('date.day_names')[6]}: #{t('in_person_proofing.body.barcode.retail_hours_closed')}",
+      )
+
+      # signing in again before completing in-person proofing at a post office
+      sign_in_and_2fa_user(user)
+      complete_doc_auth_steps_before_welcome_step
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+    end
+  end
+
   it 'works for a happy path', allow_browser_log: true do
     user = user_with_2fa
 
@@ -214,7 +319,11 @@ RSpec.describe 'In Person Proofing', js: true do
         complete_doc_auth_steps_before_send_link_step
         fill_in :doc_auth_phone, with: '415-555-0199'
         click_idv_continue
+
+        expect(page).to have_content(t('doc_auth.headings.text_message'))
       end
+
+      expect(@sms_link).to be_present
 
       perform_in_browser(:mobile) do
         visit @sms_link

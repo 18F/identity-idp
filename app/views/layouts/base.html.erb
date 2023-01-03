@@ -33,11 +33,31 @@
   <![endif]-->
   <%= csrf_meta_tags %>
 
-  <link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
-  <link href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
-  <link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png" />
+  <%= favicon_link_tag(
+        design_system_asset_path('img/favicons/apple-touch-icon.png'),
+        rel: 'apple-touch-icon',
+        sizes: '180x180',
+        type: 'image/png',
+      ) %>
+  <%= favicon_link_tag(
+        design_system_asset_path('img/favicons/favicon-40.png'),
+        rel: 'icon',
+        sizes: '40x40',
+        type: 'image/png',
+      ) %>
+  <%= favicon_link_tag(
+        design_system_asset_path('img/favicons/favicon-16.png'),
+        rel: 'icon',
+        sizes: '16x16',
+        type: 'image/png',
+      ) %>
   <link href="/manifest.json" rel="manifest" />
-  <link color="#e21c3d" href="/safari-pinned-tab.svg" rel="mask-icon" />
+  <%= favicon_link_tag(
+        design_system_asset_path('img/favicons/safari-pinned-tab.svg'),
+        rel: 'mask-icon',
+        color: '#e21c3d',
+        type: nil,
+      ) %>
   <meta content="#ffffff" name="theme-color" />
 
   <!--[if lt IE 9]>

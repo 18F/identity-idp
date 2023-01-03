@@ -27,11 +27,11 @@ const TARGETS = browserslistToTargets(
  * @return {Promise<CompileResult>}
  */
 export async function buildFile(file, options) {
-  const { outDir, optimize, ...sassOptions } = options;
+  const { outDir, optimize, loadPaths = [], ...sassOptions } = options;
   const sassResult = sass.compile(file, {
     style: optimize ? 'compressed' : 'expanded',
     ...sassOptions,
-    loadPaths: ['node_modules'],
+    loadPaths: ['node_modules', ...loadPaths],
     quietDeps: true,
   });
 
