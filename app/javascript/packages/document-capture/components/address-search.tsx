@@ -42,26 +42,20 @@ interface Location {
   address: string;
 }
 
-const formatLocation = (postOffices: PostOffice[]) => {
-  const formattedLocations = [] as FormattedLocation[];
-  postOffices.forEach((po: PostOffice, index) => {
-    const location = {
-      formattedCityStateZip: `${po.city}, ${po.state}, ${po.zip_code_5}-${po.zip_code_4}`,
-      id: index,
-      distance: po.distance,
-      name: po.name,
-      phone: po.phone,
-      saturdayHours: po.saturday_hours,
-      streetAddress: po.address,
-      sundayHours: po.sunday_hours,
-      tty: po.tty,
-      weekdayHours: po.weekday_hours,
-      isPilot: !!po.is_pilot,
-    } as FormattedLocation;
-    formattedLocations.push(location);
-  });
-  return formattedLocations;
-};
+const formatLocations = (postOffices: PostOffice[]): FormattedLocation[] =>
+  postOffices.map((po: PostOffice, index) => ({
+    formattedCityStateZip: `${po.city}, ${po.state}, ${po.zip_code_5}-${po.zip_code_4}`,
+    id: index,
+    distance: po.distance,
+    name: po.name,
+    phone: po.phone,
+    saturdayHours: po.saturday_hours,
+    streetAddress: po.address,
+    sundayHours: po.sunday_hours,
+    tty: po.tty,
+    weekdayHours: po.weekday_hours,
+    isPilot: !!po.is_pilot,
+  }));
 
 export const snakeCase = (value: string) =>
   value
@@ -85,7 +79,7 @@ const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLo
     json: { address: transformKeys(address, snakeCase) },
   });
 
-  return formatLocation(response);
+  return formatLocations(response);
 };
 
 export const ADDRESS_SEARCH_URL = '/api/addresses';
