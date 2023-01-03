@@ -139,7 +139,7 @@ describe Idv::InPerson::UspsLocationsController do
         end
 
         it 'returns all pilot locations' do
-          expect(NewRelic::Agent).to receive(:notice_error)
+          expect(Rails.logger).to receive(:warn)
           response = post :index,
                           params: { address: { street_address: '742 Evergreen Terrace',
                                                city: 'Springfield',

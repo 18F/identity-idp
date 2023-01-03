@@ -27,7 +27,7 @@ module Idv
             response = proofer.request_pilot_facilities
           end
         rescue => err
-          NewRelic::Agent.notice_error(err)
+          Rails.logger.warn(err)
           response = proofer.request_pilot_facilities
         end
 

@@ -23,6 +23,7 @@ export interface PostOffice {
   weekday_hours: string;
   zip_code_4: string;
   zip_code_5: string;
+  is_pilot: boolean;
 }
 
 export interface LocationQuery {
@@ -55,6 +56,7 @@ const formatLocation = (postOffices: PostOffice[]) => {
       sundayHours: po.sunday_hours,
       tty: po.tty,
       weekdayHours: po.weekday_hours,
+      isPilot: !!po.is_pilot,
     } as FormattedLocation;
     formattedLocations.push(location);
   });
