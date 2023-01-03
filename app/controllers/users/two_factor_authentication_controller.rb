@@ -276,9 +276,35 @@ module Users
       phone_confirmation_throttle.throttled_else_increment?
     end
 
-    def send_user_otp(_method)
+    def send_user_otp(method)
+      if PhoneNumberOptOut.find_with_phone(phone_to_deliver_to)
+        return Telephony::Response.new(
+          success: false,
+          error: Telephony::OptOutError.new,
+        )
+      end
+
       current_user.create_direct_otp
-      Telephony::Response.new(success: true)
+      otp_params = {
+        to: phone_to_deliver_to,
+        otp: current_user.direct_otp,
+        expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
+        otp_format: t('telephony.format_type.digit'),
+        channel: method.to_sym,
+        domain: IdentityConfig.store.domain_name,
+        country_code: parsed_phone.country,
+        extra_metadata: {
+          area_code: parsed_phone.area_code,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+          resend: params.dig(:otp_delivery_selection_form, :resend),
+        },
+      }
+
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
+        Telephony::Response.new(success: true)
+      else
+        Telephony.send_confirmation_otp(**otp_params)
+      end
     end
 
     def user_selected_default_number
