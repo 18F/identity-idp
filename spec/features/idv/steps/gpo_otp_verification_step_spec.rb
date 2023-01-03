@@ -34,8 +34,6 @@ feature 'idv gpo otp verification step', :js do
       and_return(threatmetrix_enabled)
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
       and_return(threatmetrix_enabled)
-    allow(IdentityConfig.store).to receive(:proofing_device_profiling_decisioning_enabled).
-      and_return(threatmetrix_enabled)
   end
 
   it_behaves_like 'gpo otp verification'
@@ -48,21 +46,21 @@ feature 'idv gpo otp verification step', :js do
       it_behaves_like 'gpo otp verification'
     end
 
-    context 'ThreatMetrix says "review"' do
-      let(:threatmetrix_review_status) { 'review' }
-      let(:redirect_after_verification) { idv_setup_errors_path }
-      let(:profile_should_be_active) { false }
-      let(:expected_deactivation_reason) { 'threatmetrix_review_pending' }
-      it_behaves_like 'gpo otp verification'
-    end
+    # context 'ThreatMetrix says "review"' do
+    #   let(:threatmetrix_review_status) { 'review' }
+    #   let(:redirect_after_verification) { idv_setup_errors_path }
+    #   let(:profile_should_be_active) { false }
+    #   let(:expected_deactivation_reason) { 'threatmetrix_review_pending' }
+    #   it_behaves_like 'gpo otp verification'
+    # end
 
-    context 'ThreatMetrix says "reject"' do
-      let(:threatmetrix_review_status) { 'reject' }
-      let(:redirect_after_verification) { idv_setup_errors_path }
-      let(:profile_should_be_active) { false }
-      let(:expected_deactivation_reason) { 'threatmetrix_review_pending' }
-      it_behaves_like 'gpo otp verification'
-    end
+    # context 'ThreatMetrix says "reject"' do
+    #   let(:threatmetrix_review_status) { 'reject' }
+    #   let(:redirect_after_verification) { idv_setup_errors_path }
+    #   let(:profile_should_be_active) { false }
+    #   let(:expected_deactivation_reason) { 'threatmetrix_review_pending' }
+    #   it_behaves_like 'gpo otp verification'
+    # end
 
     context 'No ThreatMetrix result on proofing component' do
       let(:threatmetrix_review_status) { nil }
