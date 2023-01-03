@@ -61,11 +61,7 @@ class IdentityLinker
   end
 
   def identity
-    @identity ||= find_or_create_identity_with_costing
-  end
-
-  def find_or_create_identity_with_costing
-    user.identities.create_or_find_by(service_provider: service_provider.issuer)
+    @identity ||= user.identities.create_or_find_by(service_provider: service_provider.issuer)
   end
 
   def identity_attributes
