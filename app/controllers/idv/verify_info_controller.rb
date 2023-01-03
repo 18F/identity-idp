@@ -1,5 +1,5 @@
 module Idv
-  class VerifyPiiController < ApplicationController
+  class VerifyInfoController < ApplicationController
     include StepIndicatorConcern
 
     before_action :confirm_two_factor_authenticated
