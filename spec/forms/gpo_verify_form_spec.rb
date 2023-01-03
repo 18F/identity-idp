@@ -193,7 +193,7 @@ describe GpoVerifyForm do
             expect(result.success?).to eq true
           end
 
-          it 'does not activate the users profile' do
+          it 'does activate the users profile' do
             subject.submit
             profile = user.profiles.first
             expect(profile.active).to eq(true)
@@ -202,7 +202,7 @@ describe GpoVerifyForm do
 
           it 'notes that threatmetrix failed' do
             result = subject.submit
-            expect(result.extra).to include(threatmetrix_check_failed: false)
+            expect(result.extra).to include(threatmetrix_check_failed: true)
           end
         end
       end
