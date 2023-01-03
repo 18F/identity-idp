@@ -93,7 +93,7 @@ group :development, :test do
   gem 'bullet', '~> 7.0'
   gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: '63d790a0'
   gem 'data_uri', require: false
-  gem 'erb_lint', '~> 0.1.0', require: false
+  gem 'erb_lint', '~> 0.3.0', require: false
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
   gem 'nokogiri', '~> 1.13.10'

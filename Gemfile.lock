@@ -177,12 +177,11 @@ GEM
       coderay (>= 1.0.0)
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
-    better_html (1.0.16)
-      actionview (>= 4.0)
-      activesupport (>= 4.0)
+    better_html (2.0.1)
+      actionview (>= 6.0)
+      activesupport (>= 6.0)
       ast (~> 2.0)
       erubi (~> 1.4)
-      html_tokenizer (~> 0.0.6)
       parser (>= 2.4)
       smart_properties
     bindata (2.4.10)
@@ -260,10 +259,9 @@ GEM
       htmlentities (~> 4.3.3)
       launchy (~> 2.1)
       mail (~> 2.7)
-    erb_lint (0.1.1)
+    erb_lint (0.3.1)
       activesupport
-      better_html (~> 1.0.7)
-      html_tokenizer
+      better_html (>= 2.0.1)
       parser (>= 2.7.1.4)
       rainbow
       rubocop
@@ -328,7 +326,6 @@ GEM
     heapy (0.2.0)
       thor
     highline (2.0.3)
-    html_tokenizer (0.0.7)
     htmlbeautifier (1.4.2)
     htmlentities (4.3.4)
     http_accept_language (2.1.1)
@@ -749,7 +746,7 @@ DEPENDENCIES
   devise (~> 4.8)
   dotiw (>= 4.0.1)
   email_spec
-  erb_lint (~> 0.1.0)
+  erb_lint (~> 0.3.0)
   factory_bot_rails (>= 6.2.0)
   faker
   faraday (~> 2)
