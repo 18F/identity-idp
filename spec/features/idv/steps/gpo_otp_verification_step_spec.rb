@@ -34,8 +34,6 @@ feature 'idv gpo otp verification step', :js do
       and_return(threatmetrix_enabled)
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
       and_return(threatmetrix_enabled)
-    allow(IdentityConfig.store).to receive(:proofing_device_profiling_decisioning_enabled).
-      and_return(threatmetrix_enabled)
   end
 
   it_behaves_like 'gpo otp verification'
