@@ -32,6 +32,7 @@ describe IdentityLinker do
       ial = 3
       scope = 'openid profile email'
       code_challenge = SecureRandom.hex
+      verified_attributes = %w[address email]
 
       IdentityLinker.new(user, service_provider).link_identity(
         rails_session_id: rails_session_id,
@@ -39,6 +40,7 @@ describe IdentityLinker do
         ial: ial,
         scope: scope,
         code_challenge: code_challenge,
+        verified_attributes: verified_attributes.map(&:to_sym),
       )
       user.reload
 
@@ -48,6 +50,7 @@ describe IdentityLinker do
       expect(last_identity.ial).to eq(ial)
       expect(last_identity.scope).to eq(scope)
       expect(last_identity.code_challenge).to eq(code_challenge)
+      expect(last_identity.verified_attributes).to eq(verified_attributes)
     end
 
     context 'identity.last_consented_at' do
@@ -71,6 +74,25 @@ describe IdentityLinker do
 
         last_identity = user.reload.last_identity
         expect(last_identity.last_consented_at.to_i).to eq(now.to_i)
+      end
+    end
+
+    context 'identity.verified_attributes' do
+      before do
+        IdentityLinker.new(user, service_provider).link_identity(
+          verified_attributes: %i[address email],
+        )
+      end
+
+      it 'adds to verified_attributes' do
+        expect do
+          IdentityLinker.new(user, service_provider).link_identity(
+            verified_attributes: %i[all_emails verified_at],
+          )
+        end.to(
+          change { user.identities.last.verified_attributes }.
+            to(%w[address all_emails email verified_at]),
+        )
       end
     end
 

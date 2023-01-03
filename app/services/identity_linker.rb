@@ -77,6 +77,6 @@ class IdentityLinker
   end
 
   def combined_verified_attributes(verified_attributes)
-    [*identity.verified_attributes, verified_attributes.to_a.map(&:to_s)].uniq.sort
+    [*identity.verified_attributes, *verified_attributes.to_a.map(&:to_s)].uniq.sort
   end
 end
