@@ -208,6 +208,7 @@ module UspsInPersonProofing
           weekday_hours: hours['weekdayHours'],
           zip_code_4: post_office['zip4'],
           zip_code_5: post_office['zip5'],
+          is_pilot: post_office['isPilot'],
         )
       end
     end
