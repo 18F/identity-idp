@@ -192,7 +192,7 @@ GEM
     brakeman (5.4.0)
     browser (5.3.1)
     builder (3.2.4)
-    bullet (7.0.1)
+    bullet (7.0.7)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     bundler-audit (0.9.0.1)
@@ -664,7 +664,7 @@ GEM
       unf_ext
     unf_ext (0.0.8)
     unicode-display_width (2.4.0)
-    uniform_notifier (1.14.2)
+    uniform_notifier (1.16.0)
     uuid (2.3.9)
       macaddr (~> 1.0)
     valid_email (0.1.4)
