@@ -50,6 +50,20 @@ describe PasswordResetEmailForm do
           active_profile: false,
         )
       end
+
+      it 'returns false and adds errors to the form object when domain is invalid' do
+        subject = PasswordResetEmailForm.new('test@çà.com')
+        errors = { email: [t('valid_email.validations.email.invalid')] }
+
+        expect(subject.submit.to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          user_id: 'nonexistent-uuid',
+          confirmed: false,
+          active_profile: false,
+        )
+      end
     end
   end
 end
