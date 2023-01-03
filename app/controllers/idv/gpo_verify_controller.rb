@@ -101,7 +101,7 @@ module Idv
     end
 
     def threatmetrix_enabled?
-      IdentityConfig.store.proofing_device_profiling_decisioning_enabled
+      IdentityConfig.store.lexisnexis_threatmetrix_required_to_verify
     end
   end
 end
