@@ -85,7 +85,7 @@ module Idv
     end
 
     def blocked_by_device_profiling?
-      return false unless IdentityConfig.store.proofing_device_profiling_decisioning_enabled
+      return false unless IdentityConfig.store.lexisnexis_threatmetrix_required_to_verify
       proofing_component = ProofingComponent.find_by(user: current_user)
       # pass users who are inbetween feature flag being enabled and have not had a check run.
       return false if proofing_component.threatmetrix_review_status.nil?

@@ -202,7 +202,7 @@ describe Idv::PersonalKeyController do
       before do
         ProofingComponent.create(user: user, threatmetrix: true, threatmetrix_review_status: nil)
         allow(IdentityConfig.store).
-          to receive(:proofing_device_profiling_decisioning_enabled).and_return(true)
+          to receive(:lexisnexis_threatmetrix_required_to_verify).and_return(true)
       end
 
       it 'redirects to account path when threatmetrix review status is nil' do

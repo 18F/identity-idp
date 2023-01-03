@@ -5,13 +5,6 @@ module Reports
     attr_reader :report_date
     REPORT_NAME = 'irs-weekly-summary-report'
 
-    include GoodJob::ActiveJobExtensions::Concurrency
-
-    good_job_control_concurrency_with(
-      total_limit: 1,
-      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
-    )
-
     def perform(report_date)
       @name = REPORT_NAME
       @report_date = report_date

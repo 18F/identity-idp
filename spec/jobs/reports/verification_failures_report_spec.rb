@@ -195,16 +195,6 @@ describe Reports::VerificationFailuresReport do
     expect(csv[1]).to eq([uuid, now.to_time.utc.iso8601, 'ABANDON'])
   end
 
-  describe '#good_job_concurrency_key' do
-    let(:date) { Time.zone.today }
-
-    it 'is the job name and the date' do
-      job = described_class.new(date)
-      expect(job.good_job_concurrency_key).
-        to eq("#{described_class::REPORT_NAME}-#{date}")
-    end
-  end
-
   def run_reports
     ServiceProvider.create(issuer: issuer, agency_id: 1, friendly_name: issuer)
     AgencyIdentity.create(agency_id: 1, user_id: user.id, uuid: uuid)

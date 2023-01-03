@@ -29,7 +29,6 @@ module Idv
       @gpo_verify_form = build_gpo_verify_form
 
       if throttle.throttled_else_increment?
-        irs_attempts_api_tracker.idv_gpo_verification_rate_limited
         render_throttled
       else
         result = @gpo_verify_form.submit
@@ -75,6 +74,7 @@ module Idv
     end
 
     def render_throttled
+      irs_attempts_api_tracker.idv_gpo_verification_rate_limited
       analytics.throttler_rate_limit_triggered(
         throttle_type: :verify_gpo_key,
       )
@@ -101,7 +101,7 @@ module Idv
     end
 
     def threatmetrix_enabled?
-      IdentityConfig.store.proofing_device_profiling_decisioning_enabled
+      IdentityConfig.store.lexisnexis_threatmetrix_required_to_verify
     end
   end
 end
