@@ -21,6 +21,7 @@ module OpenidConnect
     before_action :bump_auth_count, only: [:index]
 
     def index
+      return redirect_to_threatmetrix_review if threatmetrix_review_pending_for_ial2_request?
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
       return redirect_to(sign_up_completed_url) if needs_completion_screen_reason
       link_identity_to_service_provider
