@@ -3,6 +3,7 @@
 <% if @presenter.otp_expiration.present? %>
   <%= render CountdownAlertComponent.new(
         show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds,
+        redirect_url: '/todo',
         alert_options: { class: 'margin-bottom-4' },
         countdown_options: { expiration: @presenter.otp_expiration },
       ) %>

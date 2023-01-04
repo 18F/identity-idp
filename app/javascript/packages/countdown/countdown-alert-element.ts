@@ -11,16 +11,31 @@ export class CountdownAlertElement extends HTMLElement {
     return Number(this.getAttribute('show-at-remaining')) || null;
   }
 
+  get redirectURL(): string | null {
+    return this.getAttribute('show-at-remaining');
+  }
+
   get countdown(): CountdownElement {
     return this.querySelector('lg-countdown')!;
   }
 
   handleCountdownTick = () => {
+    this.showAtTimeRemaining();
+    this.redirectOnTimeExpired();
+  };
+
+  showAtTimeRemaining() {
     if (this.countdown.timeRemaining <= this.showAtRemaining!) {
       this.show();
       this.removeEventListener('lg:countdown:tick', this.handleCountdownTick);
     }
-  };
+  }
+
+  redirectOnTimeExpired() {
+    if (this.countdown.timeRemaining <= 0 && this.redirectURL) {
+      // TODO: Redirect
+    }
+  }
 
   show() {
     this.classList.remove('display-none');
