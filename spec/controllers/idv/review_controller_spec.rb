@@ -277,6 +277,7 @@ describe Idv::ReviewController do
           'IdV: review complete',
           success: false,
           proofing_components: nil,
+          deactivation_reason: nil,
         )
       end
     end
@@ -293,7 +294,8 @@ describe Idv::ReviewController do
 
         expect(@analytics).to have_logged_event(
           'IdV: review complete', success: true,
-                                  proofing_components: nil
+                                  proofing_components: nil,
+                                  deactivation_reason: anything
         )
         expect(@analytics).to have_logged_event(
           'IdV: final resolution',
@@ -608,6 +610,20 @@ describe Idv::ReviewController do
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
             expect(user.profiles.last.deactivation_reason).to eq('threatmetrix_review_pending')
+          end
+
+          it 'logs events' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            expect(@analytics).to have_logged_event(
+              'IdV: review complete', success: true,
+                                      proofing_components: nil,
+                                      deactivation_reason: 'threatmetrix_review_pending'
+            )
+            expect(@analytics).to have_logged_event(
+              'IdV: final resolution', success: true,
+                                       proofing_components: nil,
+                                       deactivation_reason: 'threatmetrix_review_pending'
+            )
           end
         end
       end

@@ -58,8 +58,14 @@ module Idv
 
       redirect_to next_step
 
-      analytics.idv_review_complete(success: true)
-      analytics.idv_final(success: true)
+      analytics.idv_review_complete(
+        success: true,
+        deactivation_reason: idv_session.profile.deactivation_reason,
+      )
+      analytics.idv_final(
+        success: true,
+        deactivation_reason: idv_session.profile.deactivation_reason,
+      )
 
       return unless FeatureManagement.reveal_gpo_code?
       session[:last_gpo_confirmation_code] = idv_session.gpo_otp

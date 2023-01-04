@@ -1050,16 +1050,19 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success
+  # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # Tracks the last step of IDV, indicates the user successfully prooved
   def idv_final(
     success:,
+    deactivation_reason: nil,
     proofing_components: nil,
     **extra
   )
     track_event(
       'IdV: final resolution',
       success: success,
+      deactivation_reason: deactivation_reason,
       proofing_components: proofing_components,
       **extra,
     )
@@ -1076,10 +1079,12 @@ module AnalyticsEvents
   end
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String, nil] deactivation_reason Reason profile was deactivated.
   # User submitted IDV personal key page
-  def idv_personal_key_submitted(proofing_components: nil, **extra)
+  def idv_personal_key_submitted(proofing_components: nil, deactivation_reason: nil, **extra)
     track_event(
       'IdV: personal key submitted',
+      deactivation_reason: deactivation_reason,
       proofing_components: proofing_components,
       **extra,
     )
@@ -1382,10 +1387,12 @@ module AnalyticsEvents
   # User submitted IDV password confirm page
   # @param [Boolean] success
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  def idv_review_complete(success:, proofing_components: nil, **extra)
+  # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
+  def idv_review_complete(success:, deactivation_reason: nil, proofing_components: nil, **extra)
     track_event(
       'IdV: review complete',
       success: success,
+      deactivation_reason: deactivation_reason,
       proofing_components: proofing_components,
       **extra,
     )
