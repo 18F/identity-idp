@@ -17,6 +17,7 @@ module Idv
         return invalid_state_response if invalid_state?
 
         flow_session[:pii_from_doc][:ssn] = ssn
+        add_verify_info_variables
 
         @flow.irs_attempts_api_tracker.idv_ssn_submitted(
           ssn: ssn,
@@ -24,6 +25,11 @@ module Idv
 
         idv_session.delete('applicant')
       end
+
+      def add_verify_info_variables
+        flow_session[:flow_path] = @flow.flow_path
+      end
+
 
       def extra_view_variables
         {
