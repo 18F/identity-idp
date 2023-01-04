@@ -27,24 +27,17 @@ const options = {
   ),
 };
 
-/**
- * @type {Error[]}
- */
-const errors = [];
+let exitCode = 0;
 
-Promise.all(
-  files.map(async (relativePath) => {
-    const absolutePath = join(process.cwd(), relativePath);
-    const content = await readFile(absolutePath, 'utf8');
-    try {
-      await writeFile(absolutePath, normalize(content, options));
-    } catch (error) {
-      errors.push(new Error(`Error normalizing ${relativePath}: ${error.message}`));
-    }
-  }),
-).then(() => {
-  if (errors.length) {
-    errors.forEach((error) => console.error(error.message));
-    process.exit(1);
+for await (const relativePath of files) {
+  const absolutePath = join(process.cwd(), relativePath);
+  const content = await readFile(absolutePath, 'utf8');
+  try {
+    await writeFile(absolutePath, normalize(content, options));
+  } catch (error) {
+    console.error(`Error normalizing ${relativePath}: ${error.message}`);
+    exitCode = 1;
   }
-});
+}
+
+process.exit(exitCode);
