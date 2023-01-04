@@ -307,10 +307,7 @@ feature 'doc auth verify step', :js do
     it 'tracks attempts tracker event with failure reason' do
       expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
         success: false,
-        failure_reason: {
-          timeout:
-            ['We are experiencing higher than usual wait time processing your request.'],
-        },
+        failure_reason: { idv_verification: [:timeout] },
         document_state: 'MT',
         document_number: '1111111111111',
         document_issued: '2019-12-31',
@@ -323,9 +320,14 @@ feature 'doc auth verify step', :js do
       )
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
+
+      allow(DocumentCaptureSession).to receive(:find_by).
+        and_return(nil)
+
       click_idv_continue
       expect(page).to have_content(t('idv.failure.timeout'))
       expect(page).to have_current_path(idv_doc_auth_verify_step)
+      allow(DocumentCaptureSession).to receive(:find_by).and_call_original
     end
   end
 

@@ -228,10 +228,7 @@ module Idv
           @flow.analytics.idv_proofing_resolution_result_missing
           log_idv_verification_submitted_event(
             success: false,
-            failure_reason: {
-              timeout:
-                ['We are experiencing higher than usual wait time processing your request.'],
-            },
+            failure_reason: { idv_verification: [:timeout] },
           )
         elsif current_async_state.done?
           async_state_done(current_async_state)
