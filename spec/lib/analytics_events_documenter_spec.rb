@@ -159,7 +159,8 @@ RSpec.describe AnalyticsEventsDocumenter do
       RUBY
 
       it 'has an error documentation to be missing' do
-        expect(documenter.missing_documentation.first).to include('some_event success missing types')
+        expect(documenter.missing_documentation.first).
+          to include('some_event success missing types')
       end
     end
 
