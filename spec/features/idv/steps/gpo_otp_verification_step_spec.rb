@@ -24,6 +24,7 @@ feature 'idv gpo otp verification step', :js do
   end
   let(:user) { profile.user }
   let(:threatmetrix_enabled) { false }
+  let(:threatmetrix_required_to_verify) { false }
   let(:threatmetrix_review_status) { nil }
   let(:redirect_after_verification) { nil }
   let(:profile_should_be_active) { true }
@@ -33,15 +34,14 @@ feature 'idv gpo otp verification step', :js do
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
       and_return(threatmetrix_enabled)
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
-      and_return(threatmetrix_enabled)
-    allow(IdentityConfig.store).to receive(:proofing_device_profiling_decisioning_enabled).
-      and_return(threatmetrix_enabled)
+      and_return(threatmetrix_required_to_verify)
   end
 
   it_behaves_like 'gpo otp verification'
 
   context 'ThreatMetrix enabled' do
     let(:threatmetrix_enabled) { true }
+    let(:threatmetrix_required_to_verify) { true }
 
     context 'ThreatMetrix says "pass"' do
       let(:threatmetrix_review_status) { 'pass' }
@@ -66,6 +66,16 @@ feature 'idv gpo otp verification step', :js do
 
     context 'No ThreatMetrix result on proofing component' do
       let(:threatmetrix_review_status) { nil }
+      it_behaves_like 'gpo otp verification'
+    end
+
+    context 'without verification requirement enabled creates active profile' do
+      let(:threatmetrix_required_to_verify) { false }
+
+      let(:threatmetrix_review_status) { 'review' }
+      let(:redirect_after_verification) { account_path } # TODO
+      let(:profile_should_be_active) { true }
+      let(:expected_deactivation_reason) { nil }
       it_behaves_like 'gpo otp verification'
     end
   end
