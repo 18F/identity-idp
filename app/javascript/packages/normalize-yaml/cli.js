@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+
+/* eslint-disable no-console */
+
 import { promises as fsPromises } from 'fs';
 import { join } from 'path';
 import prettier from 'prettier';
@@ -24,10 +27,24 @@ const options = {
   ),
 };
 
+/**
+ * @type {Error[]}
+ */
+const errors = [];
+
 Promise.all(
   files.map(async (relativePath) => {
     const absolutePath = join(process.cwd(), relativePath);
     const content = await readFile(absolutePath, 'utf8');
-    await writeFile(absolutePath, normalize(content, options));
+    try {
+      await writeFile(absolutePath, normalize(content, options));
+    } catch (error) {
+      errors.push(new Error(`Error normalizing ${relativePath}: ${error.message}`));
+    }
   }),
-);
+).then(() => {
+  if (errors.length) {
+    errors.forEach((error) => console.error(error.message));
+    process.exit(1);
+  }
+});
