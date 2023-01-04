@@ -118,6 +118,10 @@ class AnalyticsEventsDocumenter
         errors << "#{error_prefix} don't use * as an argument, remove all args or name args"
       end
 
+      method_object.tags('param').each do |tag|
+        errors << "#{error_prefix} #{tag.name} missing types" if !tag.types
+      end
+
       errors
     end
   end
