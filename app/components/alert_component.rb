@@ -1,7 +1,7 @@
 class AlertComponent < BaseComponent
   VALID_TYPES = %i[info success warning error emergency other].freeze
 
-  attr_reader :type, :message, :tag_options, :text_tag, :countdown
+  attr_reader :type, :message, :tag_options, :text_tag
 
   def initialize(type: :info, text_tag: 'p', message: nil, **tag_options)
     if !VALID_TYPES.include?(type)

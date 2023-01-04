@@ -120,7 +120,6 @@ Rails.application.routes.draw do
           as: :login_two_factor_sms_opt_in
       post '/login/two_factor/sms/:opt_out_uuid/opt_in' => 'two_factor_authentication/sms_opt_in#create'
       get '/login/two_factor/sms_expired' => 'two_factor_authentication/sms_expired#show'
-      post '/login/two_factor/sms_expired' => 'two_factor_authentication/sms_expired#create'
 
       get 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#prompt'
       post 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#decline'
