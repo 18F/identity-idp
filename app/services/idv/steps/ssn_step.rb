@@ -30,7 +30,6 @@ module Idv
         flow_session[:flow_path] = @flow.flow_path
       end
 
-
       def extra_view_variables
         {
           updating_ssn: updating_ssn,

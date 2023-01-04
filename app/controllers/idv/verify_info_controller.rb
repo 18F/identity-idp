@@ -28,11 +28,11 @@ module Idv
 
     def analytics_arguments
       {
-        :flow_path => flow_path,
-        :step => "verify",
-        :step_count => 1,
-        :analytics_id => "Doc Auth",
-        :irs_reproofing => irs_reproofing,
+        flow_path: flow_path,
+        step: 'verify',
+        step_count: 1,
+        analytics_id: 'Doc Auth',
+        irs_reproofing: irs_reproofing,
       }.merge(**extra_analytics_properties)
     end
 
@@ -47,7 +47,7 @@ module Idv
 
     def irs_reproofing
       effective_user&.decorate&.reproof_for_irs?(
-      service_provider: current_sp,
+        service_provider: current_sp,
       ).present?
     end
 
