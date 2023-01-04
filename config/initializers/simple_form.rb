@@ -62,7 +62,7 @@ SimpleForm.setup do |config|
                     item_label_class: item_label_class do |b|
       b.use :html5
       b.wrapper :legend, tag: 'legend', class: legend_class do |ba|
-        ba.use :label_text
+        ba.optional :label_text
       end
       b.optional :hint, wrap_with: { tag: 'div', class: 'usa-hint margin-bottom-05' }
       b.wrapper :grid_row, tag: :div, class: 'grid-row margin-bottom-neg-1' do |gr|
