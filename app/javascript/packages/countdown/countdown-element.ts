@@ -58,7 +58,7 @@ export class CountdownElement extends HTMLElement {
 
   stop(): void {
     window.clearInterval(this.#pollIntervalId);
-    forceRedirect('/login/two_factor/sms_expired');
+    this.handleRedirect('/login/two_factor/sms_expired');
   }
 
   tick(): void {
@@ -82,6 +82,10 @@ export class CountdownElement extends HTMLElement {
     ]
       .filter(Boolean)
       .join(t('datetime.dotiw.two_words_connector'));
+  }
+
+  handleRedirect(url): void {
+    forceRedirect(url);
   }
 }
 
