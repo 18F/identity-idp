@@ -1,4 +1,5 @@
 import { t } from '@18f/identity-i18n';
+import { forceRedirect } from '@18f/identity-url';
 
 export class CountdownElement extends HTMLElement {
   #pollIntervalId?: number;
@@ -57,6 +58,7 @@ export class CountdownElement extends HTMLElement {
 
   stop(): void {
     window.clearInterval(this.#pollIntervalId);
+    forceRedirect('/login/two_factor/sms_expired');
   }
 
   tick(): void {
