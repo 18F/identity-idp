@@ -2,7 +2,6 @@ import sinon from 'sinon';
 import { i18n } from '@18f/identity-i18n';
 import { usePropertyValue, useSandbox } from '@18f/identity-test-helpers';
 import { CountdownElement } from './countdown-element';
-import { forceRedirect } from '@18f/identity-url';
 
 const DEFAULT_DATASET = {
   updateInterval: '1000',
@@ -104,15 +103,6 @@ describe('CountdownElement', () => {
 
     expect(element.textContent).to.equal('0 seconds');
     expect(element.stop).to.have.been.called();
-  });
-
-  it('redirects when the countdown is finished', () => {
-    const element = createElement({
-      expiration: new Date(new Date().getTime() + 1000).toISOString(),
-      updateInterval: '1000',
-    });
-
-    sinon.spy(element.stop);
   });
 
   it('emits a tick event on each tick', () => {
