@@ -84,6 +84,7 @@ class AnalyticsEventsDocumenter
     !!@require_extra_params
   end
 
+  # rubocop:disable Metrics/BlockLength
   # Checks for params that are missing documentation, and returns a list of
   # @return [Array<String>]
   def missing_documentation
@@ -125,6 +126,7 @@ class AnalyticsEventsDocumenter
       errors
     end
   end
+  # rubocop:enable Metrics/BlockLength
 
   # @return [{ events: Array<Hash>}]
   def as_json
