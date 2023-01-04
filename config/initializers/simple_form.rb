@@ -46,7 +46,7 @@ SimpleForm.setup do |config|
     b.use :input
   end
 
-  config.wrappers :uswds_text_input do |b|
+  config.wrappers :uswds_text_input, class: 'margin-bottom-4' do |b|
     b.use :html5
     b.optional :placeholder
     b.optional :maxlength
