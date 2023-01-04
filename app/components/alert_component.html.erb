@@ -3,3 +3,7 @@
     <%= content_tag(text_tag, content, class: 'usa-alert__text') %>
   </div>
 <% end %>
+
+<% if show_at_remaining.present? %>
+  <%= javascript_packs_tag_once('formatted-fields') %>
+<% end %>
