@@ -199,9 +199,10 @@ describe Idv::PersonalKeyController do
         patch :update
 
         expect(@analytics).to have_logged_event(
-          'IdV: personal key submitted', address_verification_method: nil,
-                                         deactivation_reason: 'gpo_verification_pending',
-                                         proofing_components: nil
+          'IdV: personal key submitted',
+          address_verification_method: nil,
+          deactivation_reason: 'gpo_verification_pending',
+          proofing_components: nil,
         )
       end
     end
@@ -224,9 +225,10 @@ describe Idv::PersonalKeyController do
         patch :update
 
         expect(@analytics).to have_logged_event(
-          'IdV: personal key submitted', address_verification_method: nil,
-                                         deactivation_reason: nil,
-                                         proofing_components: nil
+          'IdV: personal key submitted',
+          address_verification_method: nil,
+          deactivation_reason: nil,
+          proofing_components: nil,
         )
       end
     end
@@ -248,9 +250,10 @@ describe Idv::PersonalKeyController do
           patch :update
 
           expect(@analytics).to have_logged_event(
-            'IdV: personal key submitted', address_verification_method: nil,
-                                           deactivation_reason: nil,
-                                           proofing_components: nil
+            'IdV: personal key submitted',
+            address_verification_method: nil,
+            deactivation_reason: nil,
+            proofing_components: nil,
           )
         end
       end
@@ -268,9 +271,10 @@ describe Idv::PersonalKeyController do
           patch :update
 
           expect(@analytics).to have_logged_event(
-            'IdV: personal key submitted', address_verification_method: nil,
-                                           deactivation_reason: nil,
-                                           proofing_components: nil
+            'IdV: personal key submitted',
+            address_verification_method: nil,
+            deactivation_reason: nil,
+            proofing_components: nil,
           )
         end
       end
@@ -290,9 +294,10 @@ describe Idv::PersonalKeyController do
           patch :update
 
           expect(@analytics).to have_logged_event(
-            'IdV: personal key submitted', address_verification_method: nil,
-                                           deactivation_reason: 'threatmetrix_review_pending',
-                                           proofing_components: nil
+            'IdV: personal key submitted',
+            address_verification_method: nil,
+            deactivation_reason: 'threatmetrix_review_pending',
+            proofing_components: nil,
           )
         end
       end
