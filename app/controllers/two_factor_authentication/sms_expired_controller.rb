@@ -3,4 +3,3 @@ module TwoFactorAuthentication
     def show; end
   end
 end
-  

@@ -8,5 +8,4 @@ describe 'two_factor_authentication/sms_expired/show.html.erb' do
     @personal_key_form = PersonalKeyForm.new(user)
     allow(view).to receive(:current_user).and_return(user)
   end
-
 end

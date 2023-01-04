@@ -22,30 +22,30 @@
       ).with_content(t('links.two_factor_authentication.send_another_code')) %>
 
 <%= render(
-          'shared/troubleshooting_options',
-          heading_tag: :h2,
-          heading: t('components.troubleshooting_options.default_heading'),
-          options: [
-            {
-              url: login_two_factor_options_url,
-              text: t('forms.two_factor.try_again'),
-            },
-            {
-              url: login_two_factor_options_url,
-              text: t('two_factor_authentication.login_options_link_text'),
-            },
-            {
-              url: help_center_redirect_path(
-                category: 'verify-your-identity',
-                article: 'phone-number-and-phone-plan-in-your-name',
-              ),
-              text: t('links.contact_support', app_name: APP_NAME),
-              new_tab: true,
-            },
-            decorated_session.sp_name && {
-              url: idv_doc_auth_return_to_sp_path(location: 'missing_items'),
-              text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
-              new_tab: true,
-            },
-          ].select(&:present?),
-        ) %>
+      'shared/troubleshooting_options',
+      heading_tag: :h2,
+      heading: t('components.troubleshooting_options.default_heading'),
+      options: [
+        {
+          url: login_two_factor_options_url,
+          text: t('forms.two_factor.try_again'),
+        },
+        {
+          url: login_two_factor_options_url,
+          text: t('two_factor_authentication.login_options_link_text'),
+        },
+        {
+          url: help_center_redirect_path(
+            category: 'verify-your-identity',
+            article: 'phone-number-and-phone-plan-in-your-name',
+          ),
+          text: t('links.contact_support', app_name: APP_NAME),
+          new_tab: true,
+        },
+        decorated_session.sp_name && {
+          url: idv_doc_auth_return_to_sp_path(location: 'missing_items'),
+          text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+          new_tab: true,
+        },
+      ].select(&:present?),
+    ) %>
