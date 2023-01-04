@@ -303,6 +303,32 @@ feature 'doc auth verify step', :js do
       click_idv_continue
       expect(page).to have_current_path(idv_phone_path)
     end
+
+    it 'tracks attempts tracker event with failure reason' do
+      expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
+        success: false,
+        failure_reason: { idv_verification: [:timeout] },
+        document_state: 'MT',
+        document_number: '1111111111111',
+        document_issued: '2019-12-31',
+        document_expiration: '2099-12-31',
+        first_name: 'FAKEY',
+        last_name: 'MCFAKERSON',
+        date_of_birth: '1938-10-06',
+        address: '1 FAKE RD',
+        ssn: '900-66-1234',
+      )
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_verify_step
+
+      allow(DocumentCaptureSession).to receive(:find_by).
+        and_return(nil)
+
+      click_idv_continue
+      expect(page).to have_content(t('idv.failure.timeout'))
+      expect(page).to have_current_path(idv_doc_auth_verify_step)
+      allow(DocumentCaptureSession).to receive(:find_by).and_call_original
+    end
   end
 
   context 'async timed out' do
