@@ -148,6 +148,22 @@ RSpec.describe AnalyticsEventsDocumenter do
       end
     end
 
+    context 'when a method documents a param but leaves out types' do
+      let(:source_code) { <<~RUBY }
+        class AnalyticsEvents
+          # @param success
+          def some_event(success:, **extra)
+            track_event('Some Event')
+          end
+        end
+      RUBY
+
+      it 'has an error documentation to be missing' do
+        expect(documenter.missing_documentation.first).
+          to include('some_event success missing types')
+      end
+    end
+
     context 'when a method does not have a **extra param' do
       let(:require_extra_params) { true }
 

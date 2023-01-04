@@ -84,6 +84,7 @@ class AnalyticsEventsDocumenter
     !!@require_extra_params
   end
 
+  # rubocop:disable Metrics/BlockLength
   # Checks for params that are missing documentation, and returns a list of
   # @return [Array<String>]
   def missing_documentation
@@ -118,9 +119,14 @@ class AnalyticsEventsDocumenter
         errors << "#{error_prefix} don't use * as an argument, remove all args or name args"
       end
 
+      method_object.tags('param').each do |tag|
+        errors << "#{error_prefix} #{tag.name} missing types" if !tag.types
+      end
+
       errors
     end
   end
+  # rubocop:enable Metrics/BlockLength
 
   # @return [{ events: Array<Hash>}]
   def as_json
