@@ -3,7 +3,7 @@ class AlertComponent < BaseComponent
 
   attr_reader :type, :message, :tag_options, :text_tag, :countdown
 
-  def initialize(type: :info, text_tag: 'p', message: nil, **tag_options, countdown: false)
+  def initialize(type: :info, text_tag: 'p', message: nil, **tag_options)
     if !VALID_TYPES.include?(type)
       raise ArgumentError, "`type` #{type} is invalid, expected one of #{VALID_TYPES}"
     end
@@ -12,7 +12,6 @@ class AlertComponent < BaseComponent
     @message = message
     @tag_options = tag_options
     @text_tag = text_tag
-    @countdown = countdown
   end
 
   def role
