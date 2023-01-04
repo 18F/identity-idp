@@ -226,6 +226,13 @@ module Idv
           delete_async
           mark_step_incomplete(:verify)
           @flow.analytics.idv_proofing_resolution_result_missing
+          log_idv_verification_submitted_event(
+            success: false,
+            failure_reason: {
+              timeout:
+                ['We are experiencing higher than usual wait time processing your request.'],
+            },
+          )
         elsif current_async_state.done?
           async_state_done(current_async_state)
         end
@@ -244,18 +251,8 @@ module Idv
             pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name]],
           },
         )
-        pii_from_doc = pii || {}
-        @flow.irs_attempts_api_tracker.idv_verification_submitted(
+        log_idv_verification_submitted_event(
           success: form_response.success?,
-          document_state: pii_from_doc[:state],
-          document_number: pii_from_doc[:state_id_number],
-          document_issued: pii_from_doc[:state_id_issued],
-          document_expiration: pii_from_doc[:state_id_expiration],
-          first_name: pii_from_doc[:first_name],
-          last_name: pii_from_doc[:last_name],
-          date_of_birth: pii_from_doc[:dob],
-          address: pii_from_doc[:address1],
-          ssn: pii_from_doc[:ssn],
           failure_reason: @flow.irs_attempts_api_tracker.parse_failure_reason(form_response),
         )
 
@@ -313,6 +310,23 @@ module Idv
 
       def redact(text)
         text.gsub(/[a-z]/i, 'X').gsub(/\d/i, '#')
+      end
+
+      def log_idv_verification_submitted_event(success: false, failure_reason: nil)
+        pii_from_doc = pii || {}
+        @flow.irs_attempts_api_tracker.idv_verification_submitted(
+          success: success,
+          document_state: pii_from_doc[:state],
+          document_number: pii_from_doc[:state_id_number],
+          document_issued: pii_from_doc[:state_id_issued],
+          document_expiration: pii_from_doc[:state_id_expiration],
+          first_name: pii_from_doc[:first_name],
+          last_name: pii_from_doc[:last_name],
+          date_of_birth: pii_from_doc[:dob],
+          address: pii_from_doc[:address1],
+          ssn: pii_from_doc[:ssn],
+          failure_reason: failure_reason,
+        )
       end
     end
   end
