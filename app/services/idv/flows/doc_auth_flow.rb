@@ -11,7 +11,6 @@ module Idv
         document_capture: Idv::Steps::DocumentCaptureStep,
         ssn: Idv::Steps::SsnStep,
         verify: Idv::Steps::VerifyStep,
-        verify_info: Idv::Steps::VerifyStep,
         verify_wait: Idv::Steps::VerifyWaitStep,
       }.freeze
 
