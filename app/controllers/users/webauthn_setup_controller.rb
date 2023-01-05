@@ -65,7 +65,7 @@ module Users
     end
 
     def delete
-      if MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled?
+      if MfaPolicy.new(current_user).multiple_factors_enabled?
         handle_successful_delete
       else
         handle_failed_delete

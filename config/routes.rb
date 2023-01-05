@@ -124,8 +124,6 @@ Rails.application.routes.draw do
       post 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#decline'
       get 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#success'
       post 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#next'
-      get 'login/additional_mfa_required' => 'users/additional_mfa_required#show'
-      post 'login/additional_mfa_required/skip' => 'users/additional_mfa_required#skip'
 
       get '/reauthn' => 'mfa_confirmation#new', as: :user_password_confirm
       post '/reauthn' => 'mfa_confirmation#create', as: :reauthn_user_password

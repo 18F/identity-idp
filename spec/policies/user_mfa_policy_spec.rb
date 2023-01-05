@@ -37,24 +37,4 @@ describe MfaPolicy do
       it { expect(subject.unphishable?).to eq false }
     end
   end
-
-  describe '#multiple_non_restricted_factors_enabled?' do
-    context 'with kantara phone restriction disabled' do
-      context 'with single mfa method' do
-        let(:user) { create(:user, :with_phone) }
-
-        it { expect(subject.multiple_non_restricted_factors_enabled?).to eq false }
-      end
-
-      context 'with multiple mfa methods' do
-        let(:user) { create(:user, :with_phone) }
-
-        before do
-          user.phone_configurations << build(:phone_configuration, delivery_preference: :sms)
-        end
-
-        it { expect(subject.multiple_non_restricted_factors_enabled?).to eq true }
-      end
-    end
-  end
 end

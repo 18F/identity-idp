@@ -1957,16 +1957,7 @@ module AnalyticsEvents
       **extra,
     )
   end
-
-  # Track when users get directed to the prompt requiring multiple MFAs for Phone MFA
-  def non_restricted_mfa_required_prompt_visited
-    track_event('Non-Restricted MFA Required Prompt visited')
-  end
-
-  def non_restricted_mfa_required_prompt_skipped
-    track_event('Non-Restricted MFA Required Prompt skipped')
-  end
-
+  
   # Tracks when an openid connect bearer token authentication request is made
   # @param [Boolean] success
   # @param [Integer] ial
