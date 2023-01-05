@@ -170,6 +170,6 @@ class SamlIdpController < ApplicationController
       ial: ial_context.ial,
       billed_ial: ial_context.bill_for_ial_1_or_2,
     )
-    track_billing_events
+    track_billing_events(service_provider: saml_request_service_provider)
   end
 end

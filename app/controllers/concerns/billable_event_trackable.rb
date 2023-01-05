@@ -1,25 +1,25 @@
 module BillableEventTrackable
-  def track_billing_events
+  def track_billing_events(service_provider:)
     if current_session_has_been_billed?
-      create_sp_return_log(billable: false)
+      create_sp_return_log(billable: false, service_provider: service_provider)
     else
-      create_sp_return_log(billable: true)
+      create_sp_return_log(billable: true, service_provider: service_provider)
       mark_current_session_billed
     end
   end
 
   private
 
-  def create_sp_return_log(billable:)
+  def create_sp_return_log(service_provider:, billable:)
     user_ial_context = IalContext.new(
-      ial: ial_context.ial, service_provider: current_sp, user: current_user,
+      ial: ial_context.ial, service_provider: service_provider, user: current_user,
     )
     Db::SpReturnLog.create_return(
       request_id: request_id,
       user_id: current_user.id,
       billable: billable,
       ial: user_ial_context.bill_for_ial_1_or_2,
-      issuer: current_sp.issuer,
+      issuer: service_provider.issuer,
       requested_at: session[:session_started_at],
     )
   end

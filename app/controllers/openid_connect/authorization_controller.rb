@@ -169,7 +169,7 @@ module OpenidConnect
         ial: event_ial_context.ial,
         billed_ial: event_ial_context.bill_for_ial_1_or_2,
       )
-      track_billing_events
+      track_billing_events(service_provider: @authorize_form.service_provider)
     end
   end
 end
