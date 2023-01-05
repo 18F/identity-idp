@@ -201,6 +201,7 @@ class IdentityConfig
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
     config.add(:idv_send_link_max_attempts, type: :integer)
     config.add(:idv_sp_required, type: :boolean)
+    config.add(:ie11_support_end_date, type: :timestamp)
     config.add(:in_person_email_reminder_early_benchmark_in_days, type: :integer)
     config.add(:in_person_email_reminder_final_benchmark_in_days, type: :integer)
     config.add(:in_person_email_reminder_late_benchmark_in_days, type: :integer)

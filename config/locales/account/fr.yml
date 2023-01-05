@@ -77,6 +77,7 @@ fr:
       delete_account: Effacer
       regenerate_personal_key: Réinitialiser
     login:
+      ie_not_supported: Internet Explorer 11 ne sera pas pris en charge après le %{date}
       piv_cac: Connectez-vous avec votre ID d’employé du gouvernement
     navigation:
       access_services: Accédez à vos avantages et services gouvernementaux depuis

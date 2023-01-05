@@ -71,6 +71,7 @@ en:
       delete_account: Delete
       regenerate_personal_key: Reset
     login:
+      ie_not_supported: Internet Explorer 11 will not be supported after %{date}
       piv_cac: Sign in with your government employee ID
     navigation:
       access_services: Access your government benefits and services from your
