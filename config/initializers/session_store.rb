@@ -1,7 +1,6 @@
 require 'session_encryptor'
 require 'legacy_session_encryptor'
 require 'session_encryptor_error_handler'
-require 'session_redis_down_error_handler'
 
 Rails.application.config.session_store(
   :redis_session_store,
