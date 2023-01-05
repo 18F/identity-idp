@@ -3,7 +3,7 @@ module Idv
     include StepIndicatorConcern
 
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_pii_from_doc
+    before_action :confirm_ssn_step_complete
 
     def analytics_visited_event
       :idv_doc_auth_verify_visited
@@ -79,7 +79,7 @@ module Idv
     end
 
     # copied from address_controller
-    def confirm_pii_from_doc
+    def confirm_ssn_step_complete
       @pii = user_session.dig('idv/doc_auth', 'pii_from_doc')
       return if @pii.present?
       redirect_to idv_doc_auth_url
