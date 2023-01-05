@@ -60,7 +60,7 @@ class IdentityConfig
 
     converted_value = CONVERTERS.fetch(type).call(value, options: options) if !value.nil?
     raise "#{key} is required but is not present" if converted_value.nil? && !allow_nil
-    if enum && !enum.include?(converted_value)
+    if enum && !(enum.include?(converted_value) || (converted_value.nil? && allow_nil))
       raise "unexpected #{key}: #{value}, expected one of #{enum}"
     end
 
@@ -248,13 +248,13 @@ class IdentityConfig
     config.add(:lexisnexis_trueid_noliveness_cropping_workflow, type: :string)
     config.add(:lexisnexis_trueid_noliveness_nocropping_workflow, type: :string)
     config.add(:lexisnexis_trueid_timeout, type: :float)
-    config.add(:lexisnexis_threatmetrix_api_key, type: :string)
-    config.add(:lexisnexis_threatmetrix_base_url, type: :string)
-    config.add(:lexisnexis_threatmetrix_enabled, type: :boolean)
-    config.add(:lexisnexis_threatmetrix_mock_enabled, type: :boolean)
-    config.add(:lexisnexis_threatmetrix_org_id, type: :string)
-    config.add(:lexisnexis_threatmetrix_policy, type: :string)
-    config.add(:lexisnexis_threatmetrix_required_to_verify, type: :boolean)
+    config.add(:lexisnexis_threatmetrix_api_key, type: :string, allow_nil: true)
+    config.add(:lexisnexis_threatmetrix_base_url, type: :string, allow_nil: true)
+    config.add(:lexisnexis_threatmetrix_enabled, type: :boolean, allow_nil: true)
+    config.add(:lexisnexis_threatmetrix_mock_enabled, type: :boolean, allow_nil: true)
+    config.add(:lexisnexis_threatmetrix_org_id, type: :string,  allow_nil: true)
+    config.add(:lexisnexis_threatmetrix_policy, type: :string,  allow_nil: true)
+    config.add(:lexisnexis_threatmetrix_required_to_verify, type: :boolean, allow_nil: true)
     config.add(:lexisnexis_threatmetrix_support_code, type: :string)
     config.add(:lexisnexis_threatmetrix_timeout, type: :float)
     config.add(:lexisnexis_threatmetrix_js_signing_cert, type: :string)
@@ -323,7 +323,13 @@ class IdentityConfig
     config.add(:platform_auth_set_up_enabled, type: :boolean)
     config.add(:poll_rate_for_verify_in_seconds, type: :integer)
     config.add(:proofer_mock_fallback, type: :boolean)
-    config.add(:proofing_device_profiling_collecting_enabled, type: :boolean)
+    config.add(
+      :proofing_device_profiling,
+      type: :symbol,
+      enum: [:disabled, :collect_only, :enabled],
+      allow_nil: true,
+    )
+    config.add(:proofing_device_profiling_collecting_enabled, type: :boolean, allow_nil: true)
     config.add(:proof_address_max_attempts, type: :integer)
     config.add(:proof_address_max_attempt_window_in_minutes, type: :integer)
     config.add(:proof_ssn_max_attempts, type: :integer)

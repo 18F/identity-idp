@@ -5,6 +5,12 @@ class FeatureManagement
     idp.pt.identitysandbox.gov
   ].freeze
 
+  ENVS_WHERE_THREATMETRIX_MOCK_NOT_ALLOWED = %w[
+    secure.login.gov
+    idp.staging.login.gov
+    idp.int.login.gov
+  ].freeze
+
   def self.telephony_test_adapter?
     IdentityConfig.store.telephony_adapter == 'test'
   end
@@ -115,5 +121,57 @@ class FeatureManagement
       allowed_phones = IdentityConfig.store.voip_allowed_phones
       allowed_phones.map { |p| Phonelib.parse(p).e164 }.to_set
     end
+  end
+
+  # Whether we collect device profiling information as part of the proofing process.
+  def self.proofing_device_profiling_collecting_enabled?
+    case IdentityConfig.store.proofing_device_profiling
+    when :enabled, :collect_only then true
+    when :disabled then false
+    # BEGIN temporary transitional fallback
+    when nil
+      if IdentityConfig.store.proofing_device_profiling_collecting_enabled.nil?
+        false
+      else
+        IdentityConfig.store.proofing_device_profiling_collecting_enabled
+      end
+    # END temporary transitional fallback
+    else
+      raise 'Invalid value for proofing_device_profiling'
+    end
+  end
+
+  # Whether we prevent users from proceeding with identity verification based on the outcomes of
+  # device profiling.
+  def self.proofing_device_profiling_decisioning_enabled?
+    case IdentityConfig.store.proofing_device_profiling
+    when :enabled then true
+    when :collect_only, :disabled then false
+    # BEGIN temporary transitional fallback
+    when nil
+      if IdentityConfig.store.lexisnexis_threatmetrix_required_to_verify.nil?
+        false
+      else
+        IdentityConfig.store.lexisnexis_threatmetrix_required_to_verify
+      end
+    # END temporary transitional fallback
+    else
+      raise 'Invalid value for proofing_device_profiling'
+    end
+  end
+
+  def self.threatmetrix_mock_enabled?
+    domain_name = IdentityConfig.store.domain_name
+    is_not_allowed = ENVS_WHERE_THREATMETRIX_MOCK_NOT_ALLOWED.include? domain_name
+    return false if is_not_allowed
+
+    tm_config_present = [
+      :lexisnexis_threatmetrix_api_key,
+      :lexisnexis_threatmetrix_base_url,
+    ].any? { |key| IdentityConfig.store.send(key).present? }
+
+    return false if tm_config_present
+
+    true
   end
 end

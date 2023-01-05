@@ -366,4 +366,141 @@ describe 'FeatureManagement' do
       expect(FeatureManagement.voip_allowed_phones).to eq(Set['+18885551234', '+18888675309'])
     end
   end
+
+  describe '#proofing_device_profiling_collecting_enabled?' do
+    it 'returns false for disabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:disabled)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(false)
+    end
+    it 'returns true for collect_only' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:collect_only)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(true)
+    end
+    it 'returns true for enabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(true)
+    end
+    it 'falls back to legacy config if needed' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(nil)
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling_collecting_enabled).
+        twice.
+        and_return(true)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(true)
+    end
+    it 'defaults to false' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(nil)
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling_collecting_enabled).
+        and_return(nil)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(false)
+    end
+  end
+
+  describe '#proofing_device_profiling_decisioning_enabled?' do
+    it 'returns false for disabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:disabled)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(false)
+    end
+    it 'returns false for collect_only' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:collect_only)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(false)
+    end
+    it 'returns true for enabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(true)
+    end
+    it 'falls back to legacy config' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(nil)
+      expect(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
+        twice.
+        and_return(true)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(true)
+    end
+    it 'defaults to false' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(nil)
+      expect(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
+        and_return(nil)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(false)
+    end
+  end
+
+  describe '#threatmetrix_mock_enabled?' do
+    let(:domain_name) { nil }
+    let(:threatmetrix_api_key) { nil }
+    let(:threatmetrix_base_url) { nil }
+
+    before do
+      allow(IdentityConfig.store).to receive(:domain_name).
+        and_return(domain_name)
+      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_api_key).
+        and_return(threatmetrix_api_key)
+      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_base_url).
+        and_return(threatmetrix_base_url)
+    end
+
+    shared_examples 'a place where threatmetrix mock is not allowed' do
+      it 'returns false' do
+        expect(FeatureManagement.threatmetrix_mock_enabled?).to eq(false)
+      end
+
+      context 'when API key + base url are specified' do
+        let(:threatmetrix_api_key) { '133tk3y' }
+        let(:threatmetrix_base_url) { 'http://example.org' }
+        it 'still returns false' do
+          expect(FeatureManagement.threatmetrix_mock_enabled?).to eq(false)
+        end
+
+        context 'even when the lexisnexis_threatmetrix_mock_enabled is true' do
+          before do
+            allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
+              and_return(true)
+          end
+          it 'still returns false' do
+            expect(FeatureManagement.threatmetrix_mock_enabled?).to eq(false)
+          end
+        end
+      end
+    end
+
+    context 'on secure.login.gov' do
+      let(:domain_name) { 'secure.login.gov' }
+      it_behaves_like 'a place where threatmetrix mock is not allowed'
+    end
+
+    context 'on idp.staging.login.gov' do
+      let(:domain_name) { 'idp.staging.login.gov' }
+      it_behaves_like 'a place where threatmetrix mock is not allowed'
+    end
+
+    context 'on idp.int.login.gov' do
+      let(:domain_name) { 'idp.int.login.gov' }
+      it_behaves_like 'a place where threatmetrix mock is not allowed'
+    end
+
+    context 'on idp.dev.identitysandbox.gov' do
+      let(:domain_name) { 'idp.dev.identitysandbox.gov' }
+      context 'when API key + base URL are not specified' do
+        let(:threatmetrix_api_key) { nil }
+        let(:threatmetrix_base_url) { nil }
+        it 'returns true' do
+          expect(FeatureManagement.threatmetrix_mock_enabled?).to eq(true)
+        end
+      end
+
+      context 'when only API key is specified' do
+        let(:threatmetrix_api_key) { '133tk3y' }
+        let(:threatmetrix_base_url) { nil }
+        it 'returns false' do
+          expect(FeatureManagement.threatmetrix_mock_enabled?).to eq(false)
+        end
+      end
+
+      context 'when API key + base URL is specified' do
+        let(:threatmetrix_api_key) { '133tk3y' }
+        let(:threatmetrix_base_url) { 'http://example.org' }
+        it 'returns false' do
+          expect(FeatureManagement.threatmetrix_mock_enabled?).to eq(false)
+        end
+      end
+    end
+  end
 end
