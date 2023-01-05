@@ -86,7 +86,6 @@ export class CountdownElement extends HTMLElement {
 
   handleRedirect(url: string): void {
     forceRedirect(url);
-    console.log('ping!');
   }
 }
 
