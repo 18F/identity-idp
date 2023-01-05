@@ -281,6 +281,7 @@ describe Idv::PersonalKeyController do
       context 'device profiling fails' do
         before do
           ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'reject')
+          profile.active = false
           profile.deactivation_reason = :threatmetrix_review_pending
         end
 
