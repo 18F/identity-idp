@@ -106,7 +106,7 @@ class ResolutionProofingJob < ApplicationJob
     request_ip:,
     timer:
   )
-    return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
+    return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
 
     # The API call will fail without a session ID, so do not attempt to make
     # it to avoid leaking data when not required.
@@ -175,7 +175,7 @@ class ResolutionProofingJob < ApplicationJob
 
   def lexisnexis_ddp_proofer
     @lexisnexis_ddp_proofer ||=
-      if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
+      if FeatureManagement.threatmetrix_mock_enabled?
         Proofing::Mock::DdpMockClient.new
       else
         Proofing::LexisNexis::Ddp::Proofer.new(

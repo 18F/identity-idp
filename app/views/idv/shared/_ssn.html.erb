@@ -28,8 +28,8 @@ locals:
   <%= new_window_link_to(t('doc_auth.instructions.learn_more'), MarketingSite.security_and_privacy_practices_url) %>
 </p>
 
-<% if IdentityConfig.store.proofing_device_profiling_collecting_enabled %>
-  <% unless IdentityConfig.store.lexisnexis_threatmetrix_org_id.empty? %>
+<% if FeatureManagement.proofing_device_profiling_collecting_enabled? %>
+  <% if IdentityConfig.store.lexisnexis_threatmetrix_org_id.present? %>
     <% if threatmetrix_session_id.present? %>
       <% threatmetrix_javascript_urls.each do |threatmetrix_javascript_url| %>
         <%= javascript_include_tag threatmetrix_javascript_url, nonce: true %>

@@ -171,8 +171,7 @@ module Idv
     end
 
     def threatmetrix_failed_and_needs_review?
-      return unless IdentityConfig.store.lexisnexis_threatmetrix_required_to_verify
-      return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
+      return unless FeatureManagement.proofing_device_profiling_decisioning_enabled?
       component = ProofingComponent.find_by(user: @current_user)
       return true unless component
       !(component.threatmetrix && component.threatmetrix_review_status == 'pass')
