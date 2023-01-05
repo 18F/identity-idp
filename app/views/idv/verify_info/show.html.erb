@@ -1,8 +1,6 @@
 <%#
 locals:
   pii - user's information
-  remote_identity_proofing - true if we're doing RIDP, false if we're doing IPP
-  step_url - generator for step URLs
 %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
@@ -60,7 +58,7 @@ locals:
     </dl>
     <div class='grid-auto'>
       <%= button_to(
-            step_url.call(step: :redo_address),
+            idv_doc_auth_step_url(step: :redo_address),
             method: :put,
             class: 'usa-button usa-button--unstyled',
             'aria-label': t('idv.buttons.change_address_label'),

@@ -14,16 +14,7 @@ module Idv
         analytics_visited_event, **analytics_arguments
       )
 
-      local_params = {
-        pii: pii,
-        step_url: method(:idv_doc_auth_step_url),
-        step_indicator: step_indicator_params,
-        step_template: 'idv/doc_auth/verify',
-        flow_namespace: 'idv',
-        flow_session: flow_session,
-      }
-
-      render :show, locals: local_params
+      render :show, locals: { pii: pii }
     end
 
     def analytics_arguments
@@ -68,14 +59,6 @@ module Idv
     # copied from verify_step
     def pii
       flow_session[:pii_from_doc]
-    end
-
-    # modified from flow_state_machine
-    def step_indicator_params
-      {
-        steps: Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
-        current_step: :verify_info,
-      }
     end
 
     # copied from address_controller
