@@ -164,6 +164,7 @@ class IdentityConfig
     config.add(:doc_auth_vendor_randomize, type: :boolean)
     config.add(:doc_auth_vendor_randomize_percent, type: :integer)
     config.add(:doc_auth_vendor_randomize_alternate_vendor, type: :string)
+    config.add(:doc_auth_verify_info_controller_enabled, type: :boolean)
     config.add(:doc_capture_polling_enabled, type: :boolean)
     config.add(:doc_capture_request_valid_for_minutes, type: :integer)
     config.add(:domain_name, type: :string)
