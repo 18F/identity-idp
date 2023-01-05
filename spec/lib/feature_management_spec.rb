@@ -431,8 +431,16 @@ describe 'FeatureManagement' do
     before do
       allow(IdentityConfig.store).to receive(:domain_name).
         and_return(domain_name)
+
+      allow(IdentityConfig.store).to receive(:[]).
+        with(:lexisnexis_threatmetrix_api_key).
+        and_return(threatmetrix_api_key)
       allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_api_key).
         and_return(threatmetrix_api_key)
+
+      allow(IdentityConfig.store).to receive(:[]).
+        with(:lexisnexis_threatmetrix_base_url).
+        and_return(threatmetrix_base_url)
       allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_base_url).
         and_return(threatmetrix_base_url)
     end

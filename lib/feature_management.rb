@@ -168,7 +168,7 @@ class FeatureManagement
     tm_config_present = [
       :lexisnexis_threatmetrix_api_key,
       :lexisnexis_threatmetrix_base_url,
-    ].any? { |key| IdentityConfig.store.send(key).present? }
+    ].any? { |key| IdentityConfig.store[key].present? }
 
     return false if tm_config_present
 
