@@ -23,7 +23,7 @@ module Idv
         flow_session: flow_session,
       }
 
-      render template: 'layouts/flow_step', locals: local_params
+      render :show, locals: local_params
     end
 
     def analytics_arguments

@@ -1,0 +1,109 @@
+<%#
+locals:
+  pii - user's information
+  remote_identity_proofing - true if we're doing RIDP, false if we're doing IPP
+  step_url - generator for step URLs
+%>
+<% title t('titles.idv.verify_info') %>
+
+<%= render PageHeadingComponent.new.with_content(t('headings.verify')) %>
+<div class='margin-top-4 margin-bottom-2'>
+  <div class="grid-row grid-gap grid-gap-2 padding-bottom-1">
+    <dl class="grid-col-fill margin-bottom-0">
+      <div>
+        <dt class="display-inline"> <%= t('idv.form.first_name') %>: </dt>
+        <dd class="display-inline margin-left-0"> <%= pii[:first_name] %> </dd>
+      </div>
+      <div>
+        <dt class="display-inline"> <%= t('idv.form.last_name') %>: </dt>
+        <dd class="display-inline margin-left-0"> <%= pii[:last_name] %> </dd>
+      </div>
+      <div>
+        <dt class="display-inline"> <%= t('idv.form.dob') %>: </dt>
+        <dd class="display-inline margin-left-0"> <%= pii[:dob] %> </dd>
+      </div>
+    </dl>
+  </div>
+  <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 padding-top-1 border-y border-primary-light">
+    <dl class='grid-col-fill margin-bottom-0'>
+      <div>
+        <dt class="display-inline"> <%= t('idv.form.address1') %>: </dt>
+        <dd class="display-inline margin-left-0"> <%= pii[:address1] %> </dd>
+      </div>
+      <% if pii[:address2].present? %>
+        <div>
+          <dt class="display-inline"> <%= t('idv.form.address2') %>: </dt>
+          <dd class="display-inline margin-left-0"> <%= pii[:address2] %> </dd>
+        </div>
+      <% end %>
+      <div>
+        <dt class="display-inline"> <%= t('idv.form.city') %>: </dt>
+        <dd class="display-inline margin-left-0"> <%= pii[:city] %> </dd>
+      </div>
+      <div>
+        <dt class="display-inline"> <%= t('idv.form.state') %>: </dt>
+        <dd class="display-inline margin-left-0"> <%= pii[:state] %> </dd>
+      </div>
+      <div>
+        <dt class="display-inline"> <%= t('idv.form.zipcode') %>: </dt>
+        <dd class="display-inline margin-left-0"> <%= pii[:zipcode] %> </dd>
+      </div>
+    </dl>
+    <div class='grid-auto'>
+      <%= button_to(
+            step_url.call(step: :redo_address),
+            method: :put,
+            class: 'usa-button usa-button--unstyled',
+            'aria-label': t('idv.buttons.change_address_label'),
+          ) { t('idv.buttons.change_label') } %>
+    </div>
+  </div>
+  <div class="grid-row grid-gap grid-gap-2 padding-top-1">
+    <div class='grid-col-fill'>
+      <%= t('idv.form.ssn') %>:
+      <%= render(
+            'shared/masked_text',
+            text: SsnFormatter.format(pii[:ssn]),
+            masked_text: SsnFormatter.format_masked(pii[:ssn]),
+            accessible_masked_text: t(
+              'idv.accessible_labels.masked_ssn',
+              first_number: pii[:ssn][0],
+              last_number: pii[:ssn][-1],
+            ),
+            toggle_label: t('forms.ssn.show'),
+          ) %>
+    </div>
+    <div class='grid-auto'>
+      <%= button_to(
+            idv_doc_auth_step_url(step: :redo_ssn),
+            method: :put,
+            class: 'usa-button usa-button--unstyled',
+            'aria-label': t('idv.buttons.change_ssn_label'),
+          ) { t('idv.buttons.change_label') } %>
+    </div>
+  </div>
+  <div class="margin-top-5">
+    <%= render SpinnerButtonComponent.new(
+          action: ->(**tag_options, &block) do
+            button_to(url_for, **tag_options, &block)
+          end,
+          big: true,
+          wide: true,
+          action_message: t('idv.messages.verifying'),
+          method: :put,
+          form: {
+            class: 'button_to',
+            data: {
+              form_steps_wait: '',
+              error_message: t('idv.failure.exceptions.internal_error'),
+              alert_target: '#form-steps-wait-alert',
+              wait_step_path: idv_doc_auth_step_url(step: :verify_wait),
+              poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
+            },
+          },
+        ).with_content(t('forms.buttons.continue')) %>
+  </div>
+</div>
+
+<% javascript_packs_tag_once 'form-steps-wait' %>
+<%= render 'idv/doc_auth/cancel', step: 'verify' %>
