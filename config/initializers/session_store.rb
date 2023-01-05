@@ -17,6 +17,6 @@ Rails.application.config.session_store(
     client: REDIS_SESSION_POOL_WRAPPER,
   },
   on_session_load_error: SessionEncryptorErrorHandler,
-  on_redis_down: SessionRedisDownErrorHandler,
+  on_redis_down: proc { |error, _env, _sid| raise error },
   serializer: SessionEncryptor.new,
 )
