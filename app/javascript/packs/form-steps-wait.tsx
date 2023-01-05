@@ -5,8 +5,6 @@ interface FormStepsWaitElements {
   form: HTMLFormElement;
 }
 
-type FetchOrFetchPolyfill = typeof window.fetch & { polyfill?: boolean };
-
 interface FormStepsWaitOptions {
   /**
    * Poll interval.
