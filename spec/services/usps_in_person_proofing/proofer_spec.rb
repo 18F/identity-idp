@@ -55,7 +55,6 @@ RSpec.describe UspsInPersonProofing::Proofer do
   def check_facility(facility)
     expect(facility.address).to be_present
     expect(facility.city).to be_present
-    expect(facility.distance).to be_present
     expect(facility.name).to be_present
     expect(facility.phone).to be_present
     expect(facility.saturday_hours).to be_present

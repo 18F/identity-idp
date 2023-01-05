@@ -1,8 +1,10 @@
 module PhoneConfirmation
   def prompt_to_confirm_phone(id:, phone:, selected_delivery_method: nil,
-                              selected_default_number: nil)
+                              selected_default_number: nil, phone_type: nil)
+
     user_session[:unconfirmed_phone] = phone
     user_session[:context] = 'confirmation'
+    user_session[:phone_type] = phone_type.to_s
 
     redirect_to otp_send_url(
       otp_delivery_selection_form: {

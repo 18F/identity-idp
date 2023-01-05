@@ -92,8 +92,12 @@ fr:
         de sécurité à ce numéro de téléphone.
     otp_delivery_preference:
       instruction: Vous pouvez modifier cette sélection lors de votre prochaine connexion.
+      landline_warning_html: Le numéro de téléphone saisi semble être un <b>téléphone
+        fixe</b>. Demandez plutôt un code à usage unique par
+        %{phone_setup_path}.
       no_supported_options: Nous ne sommes pas en mesure de vérifier les numéros de
         téléphone de %{location}
+      phone_call: appel téléphonique
       sms: Message texte (SMS)
       sms_unsupported: Il est impossible d’envoyer des messages texte à des numéros de
         téléphone dans %{location}.

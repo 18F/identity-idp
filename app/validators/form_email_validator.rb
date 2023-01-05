@@ -1,5 +1,6 @@
 module FormEmailValidator
   extend ActiveSupport::Concern
+  include ActionView::Helpers::TranslationHelper
 
   included do
     include ActiveModel::Validations::Callbacks
