@@ -23,6 +23,7 @@ module.exports = (api) => {
         'polyfill-corejs3',
         {
           method: 'usage-global',
+          targets,
         },
       ],
       ['polyfill-regenerator', { method: 'usage-global', targets }],
