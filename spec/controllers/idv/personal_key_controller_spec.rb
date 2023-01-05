@@ -236,8 +236,7 @@ describe Idv::PersonalKeyController do
     context 'with device profiling decisioning enabled' do
       before do
         ProofingComponent.create(user: user, threatmetrix: true, threatmetrix_review_status: nil)
-        allow(IdentityConfig.store).
-          to receive(:lexisnexis_threatmetrix_required_to_verify).and_return(true)
+        allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
       end
 
       context 'threatmetrix review status is nil' do

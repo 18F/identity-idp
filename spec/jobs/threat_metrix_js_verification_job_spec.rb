@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
-  let(:proofing_device_profiling_collecting_enabled) { true }
+  let(:threatmetrix_enabled) { true }
   let(:threatmetrix_org_id) { 'ABCD1234' }
   let(:threatmetrix_session_id) { 'some-session-id' }
 
@@ -68,8 +68,8 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
         and_return(threatmetrix_org_id)
       allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_js_signing_cert).
         and_return(threatmetrix_signing_certificate)
-      allow(IdentityConfig.store).to receive(:proofing_device_profiling_collecting_enabled).
-        and_return(proofing_device_profiling_collecting_enabled)
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
+        and_return(threatmetrix_enabled ? :collect_only : :disabled)
 
       stub_request(:get, "https://h.online-metrix.net/fp/tags.js?org_id=#{threatmetrix_org_id}&session_id=#{threatmetrix_session_id}").
         to_return(
