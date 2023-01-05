@@ -113,7 +113,8 @@ const getKeyDomains = (keys) => uniq(keys.map(getKeyDomain));
 class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
   /** @type {RailsI18nWebpackPluginOptions} */
   static DEFAULT_OPTIONS = {
-    template: '!function(){window._locale_data=Object.assign({},window._locale_data,%j)}()',
+    template:
+      '!function(){var k,o=%j,l=window._locale_data=window._locale_data||{};for(k in o)l[k]=o[k]}()',
     configPath: path.resolve(process.cwd(), 'config/locales'),
     defaultLocale: 'en',
     onMissingString: () => {},
