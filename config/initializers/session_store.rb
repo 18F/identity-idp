@@ -1,6 +1,7 @@
 require 'session_encryptor'
 require 'legacy_session_encryptor'
 require 'session_encryptor_error_handler'
+require 'session_redis_down_error_handler'
 
 Rails.application.config.session_store(
   :redis_session_store,
@@ -16,5 +17,6 @@ Rails.application.config.session_store(
     client: REDIS_SESSION_POOL_WRAPPER,
   },
   on_session_load_error: SessionEncryptorErrorHandler,
+  on_redis_down: SessionRedisDownErrorHandler,
   serializer: SessionEncryptor.new,
 )
