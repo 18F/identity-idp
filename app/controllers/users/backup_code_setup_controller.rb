@@ -9,6 +9,7 @@ module Users
     before_action :ensure_backup_codes_in_session, only: %i[continue refreshed]
     before_action :set_backup_code_setup_presenter
     before_action :apply_secure_headers_override
+    before_action :authorize_backup_code_disable, only: [:delete]
 
     helper_method :in_multi_mfa_selection_flow?
 
@@ -111,6 +112,11 @@ module Users
 
     def generator
       @generator ||= BackupCodeGenerator.new(current_user)
+    end
+
+    def authorize_backup_code_disable
+      return if MfaPolicy.new(current_user).multiple_factors_enabled?
+      redirect_to account_two_factor_authentication_path
     end
 
     def analytics_properties
