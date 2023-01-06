@@ -1,5 +1,5 @@
 module TwoFactorAuthentication
-  class SmsExpiredController < ApplicationController
+  class OtpExpiredController < ApplicationController
     def show; end
   end
 end
