@@ -9,6 +9,7 @@ module Idv
     end
 
     def show
+      increment_step_counts
       analytics.public_send(
         analytics_visited_event, **analytics_arguments
       )
@@ -26,7 +27,7 @@ module Idv
       {
         flow_path: flow_path,
         step: 'verify',
-        step_count: 1,
+        step_count: current_flow_step_counts['verify'],
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing,
       }.merge(**extra_analytics_properties)
@@ -70,6 +71,16 @@ module Idv
     def confirm_ssn_step_complete
       return if pii.present?
       redirect_to idv_doc_auth_url
+    end
+
+    def current_flow_step_counts
+      user_session['doc_auth_flow_step_counts'] ||= {}
+      user_session['doc_auth_flow_step_counts'].default = 0
+      user_session['doc_auth_flow_step_counts']
+    end
+
+    def increment_step_counts
+      current_flow_step_counts['verify'] += 1
     end
   end
 end

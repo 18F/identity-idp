@@ -29,10 +29,20 @@ describe Idv::VerifyInfoController do
   describe '#show' do
     let(:flow_session) do
       { 'error_message' => nil,
-        'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-        :pii_from_doc => Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
-        'threatmetrix_session_id' => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
-        :flow_path => 'standard' }
+       'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
+       :pii_from_doc => Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
+       'threatmetrix_session_id' => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
+       :flow_path => 'standard' }
+    end
+    let(:analytics_name) { 'IdV: doc auth verify visited' }
+    let(:analytics_args) do
+      {
+        analytics_id: 'Doc Auth',
+        flow_path: 'standard',
+        irs_reproofing: false,
+        step: 'verify',
+        step_count: 1,
+      }
     end
 
     before do
@@ -59,16 +69,15 @@ describe Idv::VerifyInfoController do
       it 'sends analytics_visited event' do
         get :show
 
-        expected_name = 'IdV: doc auth verify visited'
-        expected_args = {
-          analytics_id: 'Doc Auth',
-          flow_path: 'standard',
-          irs_reproofing: false,
-          step: 'verify',
-          step_count: 1,
-        }
+        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      end
 
-        expect(@analytics).to have_received(:track_event).with(expected_name, expected_args)
+      it 'sends correct step count to analytics' do
+        get :show
+        get :show
+        analytics_args[:step_count] = 2
+
+        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end
     end
 
