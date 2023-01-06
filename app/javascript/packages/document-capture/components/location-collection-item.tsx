@@ -77,10 +77,10 @@ function LocationCollectionItem({
               {t('in_person_proofing.body.location.location_button')}
             </Button>
           </div>
-          <div className="grid-auto">
+          <div className="grid-col-auto">
             <Button
               id={`location_button_desktop_${selectId}`}
-              className="display-none tablet:display-inline-block order-three"
+              className="display-none tablet:display-inline-block"
               onClick={(event) => {
                 handleSelect(event, selectId);
               }}
