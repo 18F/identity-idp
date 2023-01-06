@@ -41,7 +41,7 @@ function LocationCollectionItem({
                 })}
               </h3>
             )}
-            {!distance && <h3 className="usa-collection__heading">{name}</h3>}
+            {!distance && <h3 className="usa-collection__heading margin-bottom-1">{name}</h3>}
             <div>{streetAddress}</div>
             <div>{formattedCityStateZip}</div>
             {(weekdayHours || saturdayHours || sundayHours) && (
