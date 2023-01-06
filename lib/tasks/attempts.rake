@@ -87,6 +87,29 @@ namespace :attempts do
     sp.update(irs_attempts_api_enabled: true)
   end
 
+  desc 'Bulk generate lots of test events'
+  task make_events: :environment do
+    raise 'This can only be used in dev!' unless Rails.env.development?
+    redis_client = IrsAttemptsApi::RedisClient.new
+
+    puts 'Creating events...'
+    250_000.times do
+      event = IrsAttemptsApi::AttemptEvent.new(
+        event_type: [:logout_initiated, :idv_verification_rate_limited, :mfa_login_webauthn_roaming].sample,
+        session_id: SecureRandom.uuid,
+        occurred_at: Time.zone.now,
+        event_metadata: {},
+      )
+
+      redis_client.write_event(
+        event_key: event.event_key,
+        jwe: event.to_jwe,
+        timestamp: event.occurred_at,
+      )
+    end
+    puts 'Done!'
+  end
+
   desc 'Clear all events from Redis'
   task purge_events: :environment do
     IrsAttemptsApi::RedisClient.clear_attempts!
