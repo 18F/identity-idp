@@ -1957,7 +1957,7 @@ module AnalyticsEvents
       **extra,
     )
   end
-  
+
   # Tracks when an openid connect bearer token authentication request is made
   # @param [Boolean] success
   # @param [Integer] ial
