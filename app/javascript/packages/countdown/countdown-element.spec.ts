@@ -1,4 +1,5 @@
 import sinon from 'sinon';
+import { waitFor } from '@testing-library/react';
 import { i18n } from '@18f/identity-i18n';
 import { usePropertyValue, useSandbox } from '@18f/identity-test-helpers';
 import { CountdownElement } from './countdown-element';
@@ -91,18 +92,24 @@ describe('CountdownElement', () => {
     expect(element.textContent).to.equal('2 seconds');
   });
 
-  it('stops when the countdown is finished', () => {
-    const element = createElement({
-      expiration: new Date(new Date().getTime() + 1000).toISOString(),
-      updateInterval: '1000',
+  context('timer stop', () => {
+    const smsExpiredUrl = '#sms-expired';
+    const delay = 5000;
+
+    it('stops when the countdown is finished', async () => {
+      const element = createElement({
+        expiration: new Date(new Date().getTime() + 1000).toISOString(),
+        updateInterval: delay.toString(),
+      });
+
+      sinon.stub(element, 'stop');
+
+      clock.tick(delay);
+      await waitFor(() => window.location.hash === smsExpiredUrl);
+
+      expect(element.textContent).to.equal('0 seconds');
+      expect(element.stop).to.have.been.called();
     });
-
-    sinon.spy(element, 'stop');
-
-    clock.tick(1000);
-
-    expect(element.textContent).to.equal('0 seconds');
-    expect(element.stop).to.have.been.called();
   });
 
   it('emits a tick event on each tick', () => {

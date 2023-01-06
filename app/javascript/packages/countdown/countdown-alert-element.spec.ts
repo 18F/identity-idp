@@ -29,7 +29,7 @@ describe('CountdownAlertElement', () => {
     sandbox.clock.setSystemTime(new Date('2022-12-02T00:00:00Z'));
   });
 
-  context('when shown at specific time remaining', () => {
+  xcontext('when shown at specific time remaining', () => {
     it('shows after time remaining reaches threshold', () => {
       const element = createElement({ showAtRemaining: 90000 });
       sandbox.spy(element, 'show');

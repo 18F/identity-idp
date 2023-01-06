@@ -12,7 +12,7 @@ export class CountdownAlertElement extends HTMLElement {
   }
 
   get redirectURL(): string | null {
-    return this.getAttribute('show-at-remaining');
+    return this.getAttribute('redirect-url');
   }
 
   get countdown(): CountdownElement {
@@ -33,7 +33,8 @@ export class CountdownAlertElement extends HTMLElement {
 
   redirectOnTimeExpired() {
     if (this.countdown.timeRemaining <= 0 && this.redirectURL) {
-      // TODO: Redirect
+      window.location.href = this.redirectURL;
+      // TODO: Redirect, but not using '`forceRedirect`
     }
   }
 
