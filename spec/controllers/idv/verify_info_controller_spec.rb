@@ -4,6 +4,13 @@ describe Idv::VerifyInfoController do
   include IdvHelper
 
   describe 'before_actions' do
+    it 'checks that feature flag is enabled' do
+      expect(subject).to have_actions(
+        :before,
+        :render_404_if_verify_info_controller_disabled,
+      )
+    end
+
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
         :before,
@@ -37,7 +44,12 @@ describe Idv::VerifyInfoController do
       allow(subject).to receive(:flow_session).and_return(flow_session)
     end
 
-    context 'when verify_info#show' do
+    context 'when doc_auth_verify_info_controller_enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_verify_info_controller_enabled).
+          and_return(true)
+      end
+
       it 'renders the show template' do
         get :show
 
@@ -57,6 +69,19 @@ describe Idv::VerifyInfoController do
         }
 
         expect(@analytics).to have_received(:track_event).with(expected_name, expected_args)
+      end
+    end
+
+    context 'when doc_auth_verify_info_controller_enabled is false' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_verify_info_controller_enabled).
+          and_return(false)
+      end
+
+      it 'returns 404' do
+        get :show
+
+        expect(response.status).to eq(404)
       end
     end
   end
