@@ -12,14 +12,15 @@ module BillableEventTrackable
 
   def create_sp_return_log(service_provider:, billable:)
     user_ial_context = IalContext.new(
-      ial: ial_context.ial, service_provider: service_provider, user: current_user,
+      ial: ial_context.ial, service_provider: current_sp, user: current_user,
     )
+    binding.pry
     Db::SpReturnLog.create_return(
       request_id: request_id,
       user_id: current_user.id,
       billable: billable,
       ial: user_ial_context.bill_for_ial_1_or_2,
-      issuer: service_provider.issuer,
+      issuer: current_sp.issuer,
       requested_at: session[:session_started_at],
     )
   end
