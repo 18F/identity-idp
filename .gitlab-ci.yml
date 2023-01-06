@@ -223,7 +223,7 @@ coverage:
     name: coverage
     expire_in: 31d
     paths:
-      - rspec.json
+      - rspec_json/rspec.json
       - coverage/index.html
       - coverage/assets/
       - coverage/coverage.xml

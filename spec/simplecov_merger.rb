@@ -10,6 +10,34 @@ module SimpleCov
       SimpleCov.collate Dir['coverage/**/.resultset.json'] do
         merge_timeout 365 * 24 * 3600
       end
+
+      merge_json_reports
+    end
+
+    def self.merge_json_reports
+      merged_hash = {
+        examples: [],
+        summary: {
+          example_count: 0,
+          failure_count: 0,
+          pending_count: 0,
+          errors_outside_of_examples_count: 0,
+        },
+        seed: nil,
+        version: nil,
+        summary_line: nil,
+      }
+      Dir['rspec_json/*.json'].each do |file|
+        file_json = JSON.parse(File.read(file))
+        merged_hash[:summary][:example_count] += file_json['summary']['example_count']
+        merged_hash[:summary][:failure_count] += file_json['summary']['failure_count']
+        merged_hash[:summary][:pending_count] += file_json['summary']['pending_count']
+        merged_hash[:summary][:errors_outside_of_examples_count] +=
+          file_json['summary']['errors_outside_of_examples_count']
+        merged_hash[:examples] += file_json['examples']
+      end
+
+      File.write('rspec_json/rspec.json', merged_hash.to_json)
     end
 
     # simple_cov has SimpleCov.collate to merge coverage results, but it uses absolute paths.
