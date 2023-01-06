@@ -19,15 +19,15 @@ locals:
     <dl class="grid-col-fill margin-bottom-0">
       <div>
         <dt class="display-inline"> <%= t('idv.form.first_name') %>: </dt>
-        <dd class="display-inline margin-left-0"> <%= pii[:first_name] %> </dd>
+        <dd class="display-inline margin-left-0"> <%= @pii[:first_name] %> </dd>
       </div>
       <div>
         <dt class="display-inline"> <%= t('idv.form.last_name') %>: </dt>
-        <dd class="display-inline margin-left-0"> <%= pii[:last_name] %> </dd>
+        <dd class="display-inline margin-left-0"> <%= @pii[:last_name] %> </dd>
       </div>
       <div>
         <dt class="display-inline"> <%= t('idv.form.dob') %>: </dt>
-        <dd class="display-inline margin-left-0"> <%= pii[:dob] %> </dd>
+        <dd class="display-inline margin-left-0"> <%= @pii[:dob] %> </dd>
       </div>
     </dl>
   </div>
@@ -35,25 +35,25 @@ locals:
     <dl class='grid-col-fill margin-bottom-0'>
       <div>
         <dt class="display-inline"> <%= t('idv.form.address1') %>: </dt>
-        <dd class="display-inline margin-left-0"> <%= pii[:address1] %> </dd>
+        <dd class="display-inline margin-left-0"> <%= @pii[:address1] %> </dd>
       </div>
-      <% if pii[:address2].present? %>
+      <% if @pii[:address2].present? %>
         <div>
           <dt class="display-inline"> <%= t('idv.form.address2') %>: </dt>
-          <dd class="display-inline margin-left-0"> <%= pii[:address2] %> </dd>
+          <dd class="display-inline margin-left-0"> <%= @pii[:address2] %> </dd>
         </div>
       <% end %>
       <div>
         <dt class="display-inline"> <%= t('idv.form.city') %>: </dt>
-        <dd class="display-inline margin-left-0"> <%= pii[:city] %> </dd>
+        <dd class="display-inline margin-left-0"> <%= @pii[:city] %> </dd>
       </div>
       <div>
         <dt class="display-inline"> <%= t('idv.form.state') %>: </dt>
-        <dd class="display-inline margin-left-0"> <%= pii[:state] %> </dd>
+        <dd class="display-inline margin-left-0"> <%= @pii[:state] %> </dd>
       </div>
       <div>
         <dt class="display-inline"> <%= t('idv.form.zipcode') %>: </dt>
-        <dd class="display-inline margin-left-0"> <%= pii[:zipcode] %> </dd>
+        <dd class="display-inline margin-left-0"> <%= @pii[:zipcode] %> </dd>
       </div>
     </dl>
     <div class='grid-auto'>
@@ -70,12 +70,12 @@ locals:
       <%= t('idv.form.ssn') %>:
       <%= render(
             'shared/masked_text',
-            text: SsnFormatter.format(pii[:ssn]),
-            masked_text: SsnFormatter.format_masked(pii[:ssn]),
+            text: SsnFormatter.format(@pii[:ssn]),
+            masked_text: SsnFormatter.format_masked(@pii[:ssn]),
             accessible_masked_text: t(
               'idv.accessible_labels.masked_ssn',
-              first_number: pii[:ssn][0],
-              last_number: pii[:ssn][-1],
+              first_number: @pii[:ssn][0],
+              last_number: @pii[:ssn][-1],
             ),
             toggle_label: t('forms.ssn.show'),
           ) %>

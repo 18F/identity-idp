@@ -13,8 +13,6 @@ module Idv
       analytics.public_send(
         analytics_visited_event, **analytics_arguments
       )
-
-      render :show, locals: { pii: pii }
     end
 
     private
@@ -64,7 +62,7 @@ module Idv
 
     # copied from verify_step
     def pii
-      flow_session[:pii_from_doc]
+      @pii = flow_session[:pii_from_doc]
     end
 
     # copied from address_controller
