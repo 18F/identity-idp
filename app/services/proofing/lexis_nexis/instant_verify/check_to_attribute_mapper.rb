@@ -17,6 +17,7 @@ module Proofing
           'DOBFullVerified' => :dob,
           'DOBYearVerified' => :dob,
           'LexIDDeathMatch' => :dead,
+          'DriversLicenseVerification' => :state_id_number,
         }.freeze
 
         def initialize(instant_verify_errors)
