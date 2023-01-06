@@ -1,25 +1,38 @@
 AE:
   supports_voice: true
   supports_voice_unconfirmed: false
+AF:
+  supports_sms_unconfirmed: false
 AO:
   country_code: '244'
   name: Angola
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 AR:
+  supports_sms_unconfirmed: false
   supports_voice: false
 AS:
   country_code: '1684'
   name: American Samoa
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: true
+  supports_voice_unconfirmed: false
 AT:
   supports_voice: false
 AU:
   supports_voice: false
+AZ:
+  supports_sms_unconfirmed: false
 BB:
   supports_voice: false
+BD:
+  supports_sms_unconfirmed: false
+BE:
+  supports_sms_unconfirmed: false
 BF:
+  supports_sms_unconfirmed: false
   supports_voice: false
 BG:
   supports_voice: false
@@ -35,13 +48,18 @@ BJ:
   name: Benin
   supports_sms: true
   supports_voice: false
+BO:
+  supports_sms_unconfirmed: false
 BR:
   supports_voice: false
 BY:
+  supports_sms_unconfirmed: false
   supports_voice: true
   supports_voice_unconfirmed: false
 CA:
   supports_voice: false
+CD:
+  supports_sms_unconfirmed: false
 CH:
   supports_voice: false
 CL:
@@ -57,18 +75,30 @@ DO:
 DZ:
   country_code: '213'
   name: Algeria
-  supports_sms: false # Temporarily disabled due to SMS fraud attack 2021-04-16
+  supports_sms: false
   supports_voice: false
 EC:
+  supports_sms_unconfirmed: false
   supports_voice: false
 EG:
+  supports_sms: false
   supports_voice: true
+  supports_voice_unconfirmed: false
+ER:
+  supports_sms_unconfirmed: false
 FI:
   supports_voice: false
+GA:
+  supports_sms_unconfirmed: false
 GB:
   supports_voice: false
 GD:
+  supports_sms_unconfirmed: false
   supports_voice: false
+GH:
+  supports_sms_unconfirmed: false
+GP:
+  supports_sms_unconfirmed: false
 GQ:
   name: Equatorial Guinea
 GR:
@@ -80,10 +110,12 @@ HR:
 HU:
   supports_voice: false
 ID:
+  supports_sms_unconfirmed: false
   supports_voice: false
 IE:
   supports_voice: false
 IL:
+  supports_sms_unconfirmed: false
   supports_voice: false
 IQ:
   supports_sms_unconfirmed: false
@@ -94,13 +126,17 @@ IT:
 JM:
   supports_voice: false
 JO:
+  supports_sms_unconfirmed: false
   supports_voice: true
   supports_voice_unconfirmed: false
 JP:
   supports_voice: false
 KE:
   supports_voice: false
+KG:
+  supports_sms_unconfirmed: false
 KH:
+  supports_sms_unconfirmed: false
   supports_voice: false
 KI:
   country_code: '686'
@@ -113,6 +149,7 @@ KW:
 KY:
   supports_voice: false
 KZ:
+  supports_sms_unconfirmed: false
   supports_voice: false
 LT:
   supports_voice: false
@@ -121,25 +158,42 @@ LU:
 LV:
   supports_sms: true
   supports_voice: false
+LY:
+  supports_sms_unconfirmed: false
+MA:
+  supports_sms_unconfirmed: false
 MD:
   supports_voice: false
 ML:
   supports_voice: false
+MM:
+  supports_sms_unconfirmed: false
 MP:
   country_code: '1'
   name: Northern Mariana Islands
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: true
+  supports_voice_unconfirmed: false
+MW:
+  supports_sms_unconfirmed: false
 MX:
   supports_voice: false
 MY:
+  supports_sms_unconfirmed: false
   supports_voice: false
+NG:
+  supports_sms_unconfirmed: false
 NI:
   supports_voice: false
 'NO':
   supports_voice: false
+NP:
+  supports_sms_unconfirmed: false
 NZ:
   supports_voice: false
+OM:
+  supports_sms_unconfirmed: false
 PA:
   supports_voice: false
 PE:
@@ -147,11 +201,14 @@ PE:
 PH:
   supports_voice_unconfirmed: false
 PK:
+  supports_sms_unconfirmed: false
   supports_voice: false
 PL:
   supports_voice: false
 PR:
   supports_voice: false
+PS:
+  supports_sms_unconfirmed: false
 PW:
   country_code: '680'
   name: Palau
@@ -161,10 +218,13 @@ QA:
   supports_voice: true
   supports_voice_unconfirmed: false
 RO:
+  supports_sms_unconfirmed: false
   supports_voice: false
 RU:
   supports_voice: true
   supports_voice_unconfirmed: false
+RW:
+  supports_sms_unconfirmed: false
 SA:
   supports_voice: true
   supports_voice_unconfirmed: false
@@ -172,25 +232,39 @@ SI:
   supports_voice: false
 SK:
   supports_voice: false
+SN:
+  supports_sms_unconfirmed: false
 SV:
   supports_voice: false
 TD:
   country_code: '235'
   name: Chad
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 TH:
   supports_voice_unconfirmed: false
 TJ:
+  supports_sms_unconfirmed: false
   supports_voice: false
 TL:
   supports_sms: false
+TM:
+  supports_sms_unconfirmed: false
+TN:
+  supports_sms_unconfirmed: false
 TT:
   supports_voice: false
 TW:
   supports_voice: false
+UA:
+  supports_sms_unconfirmed: false
+UG:
+  supports_sms_unconfirmed: false
 UY:
   supports_voice: false
+UZ:
+  supports_sms_unconfirmed: false
 VC:
   country_code: '1784'
   name: Saint Vincent and the Grenadines
@@ -200,5 +274,9 @@ VE:
   supports_voice: false
 VN:
   supports_voice_unconfirmed: false
+YE:
+  supports_sms_unconfirmed: false
 ZA:
   supports_voice: false
+ZM:
+  supports_sms_unconfirmed: false

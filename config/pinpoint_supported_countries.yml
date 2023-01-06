@@ -683,7 +683,7 @@ MY:
   country_code: '60'
   name: Malaysia
   supports_sms: true
-  supports_voice: true
+  supports_voice: false
 MZ:
   country_code: '258'
   name: Mozambique
@@ -773,7 +773,7 @@ PK:
   country_code: '92'
   name: Pakistan
   supports_sms: true
-  supports_voice: true
+  supports_voice: false
 PL:
   country_code: '48'
   name: Poland
