@@ -3,7 +3,7 @@
 <% if @presenter.otp_expiration.present? %>
   <%= render CountdownAlertComponent.new(
         show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds,
-        redirect_url: login_two_factor_otp_expired_path,
+        redirect_url: login_two_factor_otp_expired_url,
         alert_options: { class: 'margin-bottom-4' },
         countdown_options: { expiration: @presenter.otp_expiration },
       ) %>
