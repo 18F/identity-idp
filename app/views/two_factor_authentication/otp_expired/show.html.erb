@@ -1,7 +1,7 @@
-<% title t('titles.sms_expired') %>
+<% title t('titles.otp_expired') %>
 
 <%= render AlertIconComponent.new(icon_name: :error, class: 'display-block margin-bottom-4') %>
-<%= render PageHeadingComponent.new.with_content(t('titles.sms_expired')) %>
+<%= render PageHeadingComponent.new.with_content(t('titles.otp_expired')) %>
 
   <%= render ButtonComponent.new(
         action: ->(**tag_options, &block) do

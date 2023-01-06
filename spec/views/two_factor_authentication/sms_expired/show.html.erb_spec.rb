@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'two_factor_authentication/sms_expired/show.html.erb' do
+describe 'two_factor_authentication/otp_expired/show.html.erb' do
   let(:user) { create(:user, :signed_up) }
 
   before do
