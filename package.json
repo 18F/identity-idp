@@ -61,7 +61,7 @@
     "@typescript-eslint/parser": "^5.38.1",
     "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
-    "clipboard-polyfill": "^3.0.3",
+    "clipboard-polyfill": "^4.0.0-rc3",
     "dirty-chai": "^2.0.1",
     "dom-accessibility-api": "^0.5.14",
     "eslint": "^8.24.0",

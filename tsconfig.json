@@ -11,10 +11,7 @@
     "moduleResolution": "node",
     "module": "ESNext",
     "target": "ESNext",
-    "baseUrl": ".",
-    "paths": {
-      "*": ["typings/*"]
-    }
+    "baseUrl": "."
   },
   "include": [
     "app/components",
