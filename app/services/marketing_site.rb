@@ -49,7 +49,7 @@ class MarketingSite
   end
 
   def self.nice_help_url
-    URI.join(BASE_URL, locale_segment, 'help').to_s.gsub('https://', '')
+    self.help_url.to_s.gsub('https://', '')
   end
 
   def self.help_url
