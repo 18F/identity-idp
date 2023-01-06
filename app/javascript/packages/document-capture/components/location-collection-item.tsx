@@ -70,7 +70,7 @@ function LocationCollectionItem({
             )}
             <Button
               id={`location_button_mobile_${selectId}`}
-              className="tablet:display-none margin-top-2 width-full heey"
+              className="tablet:display-none margin-top-2 width-full"
               onClick={(event) => handleSelect(event, selectId)}
               type="submit"
             >
