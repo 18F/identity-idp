@@ -135,6 +135,7 @@ specs:
     paths:
       - coverage/
       - rspec.xml
+      - rspec.json
     reports:
       junit: rspec.xml
   script:
@@ -156,7 +157,7 @@ specs:
     - "echo -e \"test:\n  redis_url: 'redis://redis:6379/0'\n  redis_throttle_url: 'redis://redis:6379/1'\n  redis_irs_attempt_api_url: 'redis://redis:6379/2'\" > config/application.yml"
     - bundle exec rake db:create db:migrate --trace
     - bundle exec rake db:seed
-    - bundle exec rake knapsack:rspec["--format documentation --format RspecJunitFormatter --out rspec.xml"]
+    - bundle exec rake knapsack:rspec["--format documentation --format RspecJunitFormatter --out rspec.xml --format json --out rspec.json"]
 
 lint:
   stage: test
