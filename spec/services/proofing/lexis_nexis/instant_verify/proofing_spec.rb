@@ -111,7 +111,7 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
 
           result = instance.proof(applicant)
 
-          expect(result.failed_result_can_pass_with_additional_verification?)
+          expect(result.failed_result_can_pass_with_additional_verification?).to eq(true)
           expect(result.attributes_requiring_additional_verification).to eq([:dob])
           expect(result.vendor_workflow).to(
             eq(LexisNexisFixtures.example_config.phone_finder_workflow),
@@ -120,7 +120,34 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
       end
 
       context 'the result fails for a reason other than a failure to match attributes' do
-        it 'returns a result that cannot pass with additional verification'
+        it 'returns a result that cannot pass with additional verification' do
+          stub_request(
+            :post, verification_request.url
+          ).to_return(
+            body: LexisNexisFixtures.instant_verify_error_response_json,
+            status: 200,
+          )
+
+          result = instance.proof(applicant)
+
+          expect(result.failed_result_can_pass_with_additional_verification?).to eq(false)
+          expect(result.attributes_requiring_additional_verification).to be_empty
+          expect(result.vendor_workflow).to(
+            eq(LexisNexisFixtures.example_config.phone_finder_workflow),
+          )
+        end
+      end
+
+      it 'logs drivers license info that is present in the response' do
+        stub_request(:post, verification_request.url).
+          to_return(body: LexisNexisFixtures.instant_verify_success_response_json, status: 200)
+
+        result = instance.proof(applicant)
+
+        expect(result.to_h[:drivers_license_check_info]).to eq(
+          'ItemName' => 'DriversLicenseVerification',
+          'ItemStatus' => 'pass',
+        )
       end
     end
   end
