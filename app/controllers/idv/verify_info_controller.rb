@@ -1,7 +1,5 @@
 module Idv
   class VerifyInfoController < ApplicationController
-    include StepIndicatorConcern
-
     before_action :confirm_two_factor_authenticated
     before_action :confirm_ssn_step_complete
 
@@ -63,8 +61,7 @@ module Idv
 
     # copied from address_controller
     def confirm_ssn_step_complete
-      @pii = user_session.dig('idv/doc_auth', 'pii_from_doc')
-      return if @pii.present?
+      return if pii.present?
       redirect_to idv_doc_auth_url
     end
   end
