@@ -61,8 +61,7 @@ module Idv
       if phone_confirmation_required?
         if VendorStatus.new.all_phone_vendor_outage?
           redirect_to vendor_outage_path(from: :idv_phone)
-        elsif step.otp_delivery_preference_missing?
-          redirect_to idv_otp_delivery_method_url
+        #   redirect_to idv_otp_delivery_method_url
         else
           send_phone_confirmation_otp_and_handle_result
         end
