@@ -8,21 +8,31 @@
         },
         false,
       ) %>
-  <%= f.input(
-        name,
-        tag_options.deep_merge(
-          wrapper_html: {
-            class: [*tag_options.dig(:wrapper_html, :class), 'validated-field__input-wrapper'],
+  <div class="validated-field__input-wrapper margin-bottom-4">
+    <label for="<%= input_id %>" class="usa-label">
+      <%= label %>
+    </label>
+    <% if has_hint? %>
+      <div id="<%= hint_id %>"><%= hint %></div>
+    <% end %>
+    <%= f.text_field(
+          name,
+          **tag_options[:input_html],
+          id: input_id,
+          type: inferred_input_type,
+          class: [
+            'usa-input validated-field__input',
+            has_errors? && 'usa-input--error',
+          ].select(&:present?),
+          aria: {
+            invalid: has_errors?,
+            describedby: aria_describedby_idrefs,
           },
-          input_html: {
-            class: [*tag_options.dig(:input_html, :class), 'validated-field__input'],
-            aria: {
-              invalid: has_errors?,
-              describedby: aria_describedby_idrefs,
-            },
-          },
-          hint_html: { id: hint_id },
-          error_html: { id: error_id },
-        ),
-      ) %>
+        ) %>
+    <% if has_errors? %>
+      <div id="<%= error_id %>" class="usa-error-message">
+        <%= error_message %>
+      </div>
+    <% end %>
+  </div>
 <% end %>

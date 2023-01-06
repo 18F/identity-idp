@@ -19,16 +19,16 @@
 <% end %>
 <%= render 'shared/sp_alert' %>
 
-<%= simple_form_for(
+<%= form_for(
       resource,
       as: resource_name,
       url: session_path(resource_name),
       html: { autocomplete: 'off' },
-    ) do |f|
-%>
+    ) do |f| %>
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :email,
+        type: :email,
         label: t('account.index.email'),
         required: true,
         input_html: { autocorrect: 'off' },
@@ -38,9 +38,9 @@
         class: 'margin-bottom-4',
         field_options: { required: true },
       ) %>
-  <%= f.input :request_id, as: :hidden, input_html: { value: @request_id } %>
+  <%= f.hidden_field :request_id, value: @request_id %>
   <div class='margin-bottom-4'>
-    <%= f.submit t('links.next'), full_width: true, wide: false %>
+    <%= render SubmitButtonComponent.new(full_width: true).with_content(t('links.next')) %>
     <h2 class='separator-text'>
       <%= t('headings.create_account_with_sp.cta', app_name: APP_NAME) %>
     </h2>

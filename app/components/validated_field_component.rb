@@ -1,11 +1,14 @@
 class ValidatedFieldComponent < BaseComponent
-  attr_reader :form, :name, :tag_options, :input_type
+  attr_reader :form, :name, :label, :hint, :type, :tag_options, :input_type
 
   alias_method :f, :form
 
-  def initialize(form:, name:, error_messages: {}, **tag_options)
+  def initialize(form:, name:, label:, hint: nil, type: nil, error_messages: {}, **tag_options)
     @form = form
     @name = name
+    @label = label
+    @hint = hint
+    @type = type
     @error_messages = error_messages
     @tag_options = tag_options
     @input_type = inferred_input_type
@@ -26,12 +29,20 @@ class ValidatedFieldComponent < BaseComponent
     idrefs
   end
 
+  def error_message
+    form.object.errors[name].full_messages.first if has_errors?
+  end
+
   def has_errors?
     form.object.respond_to?(:errors) && form.object.errors.key?(name)
   end
 
   def has_hint?
     tag_options.key?(:hint)
+  end
+
+  def input_id
+    "validated-field-input-#{unique_id}"
   end
 
   def error_id
@@ -61,10 +72,12 @@ class ValidatedFieldComponent < BaseComponent
   end
 
   def inferred_input_type
-    if form.respond_to?(:default_input_type)
-      form.send(:default_input_type, name, form.send(:find_attribute_column, name), tag_options)
+    if type.present?
+      type
     elsif tag_options.key?(:as)
       tag_options[:as]
+    elsif form.respond_to?(:default_input_type)
+      form.send(:default_input_type, name, form.send(:find_attribute_column, name), tag_options)
     else
       :text
     end
