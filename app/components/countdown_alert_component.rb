@@ -17,7 +17,7 @@ class CountdownAlertComponent < BaseComponent
       class: css_class,
       'show-at-remaining': show_at_remaining&.in_milliseconds,
       # is there a redirect url? what happens if there's none? -> check if it is here || '' 
-      'redirect-url': redirect_url
+      'redirect-url': redirect_url,
     )
   end
 
