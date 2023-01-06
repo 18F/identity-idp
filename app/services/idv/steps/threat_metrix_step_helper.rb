@@ -18,7 +18,7 @@ module Idv
 
       # @return [Array<String>]
       def threatmetrix_javascript_urls(session_id)
-        sources = if FeatureManagement.threatmetrix_mock_enabled?
+        sources = if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
                     AssetSources.get_sources('mock-device-profiling')
                   else
                     ['https://h.online-metrix.net/fp/tags.js']
@@ -34,7 +34,7 @@ module Idv
       end
 
       def threatmetrix_iframe_url(session_id)
-        source = if FeatureManagement.threatmetrix_mock_enabled?
+        source = if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
                    Rails.application.routes.url_helpers.test_device_profiling_iframe_url
                  else
                    'https://h.online-metrix.net/fp/tags'

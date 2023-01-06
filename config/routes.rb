@@ -160,7 +160,7 @@ Rails.application.routes.draw do
       mount Lookbook::Engine, at: '/components'
     end
 
-    if FeatureManagement.threatmetrix_mock_enabled?
+    if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
       get '/test/device_profiling' => 'test/device_profiling#index',
           as: :test_device_profiling_iframe
       post '/test/device_profiling' => 'test/device_profiling#create'

@@ -173,6 +173,7 @@ lexisnexis_trueid_noliveness_cropping_workflow: customers.gsa2.trueid.workflow
 lexisnexis_trueid_noliveness_nocropping_workflow: customers.gsa2.trueid.workflow
 ###################################################################
 # LexisNexis DDP/ThreatMetrix #####################################
+lexisnexis_threatmetrix_mock_enabled: true
 lexisnexis_threatmetrix_support_code: ABCD
 lexisnexis_threatmetrix_timeout: 1.0
 lexisnexis_threatmetrix_js_signing_cert: ''
@@ -437,6 +438,7 @@ production:
   kantara_2fa_phone_restricted: false
   kantara_2fa_phone_existing_user_restriction: false
   kantara_restriction_enforcement_date: '2022-07-19'
+  lexisnexis_threatmetrix_mock_enabled: false
   logins_per_ip_limit: 20
   logins_per_ip_period: 20
   logins_per_ip_track_only_mode: true

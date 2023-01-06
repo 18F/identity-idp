@@ -5,12 +5,6 @@ class FeatureManagement
     idp.pt.identitysandbox.gov
   ].freeze
 
-  ENVS_WHERE_THREATMETRIX_MOCK_NOT_ALLOWED = %w[
-    secure.login.gov
-    idp.staging.login.gov
-    idp.int.login.gov
-  ].freeze
-
   def self.telephony_test_adapter?
     IdentityConfig.store.telephony_adapter == 'test'
   end
@@ -158,20 +152,5 @@ class FeatureManagement
     else
       raise 'Invalid value for proofing_device_profiling'
     end
-  end
-
-  def self.threatmetrix_mock_enabled?
-    domain_name = IdentityConfig.store.domain_name
-    is_not_allowed = ENVS_WHERE_THREATMETRIX_MOCK_NOT_ALLOWED.include? domain_name
-    return false if is_not_allowed
-
-    tm_config_present = [
-      :lexisnexis_threatmetrix_api_key,
-      :lexisnexis_threatmetrix_base_url,
-    ].any? { |key| IdentityConfig.store[key].present? }
-
-    return false if tm_config_present
-
-    true
   end
 end

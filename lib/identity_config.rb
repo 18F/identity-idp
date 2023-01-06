@@ -251,7 +251,7 @@ class IdentityConfig
     config.add(:lexisnexis_threatmetrix_api_key, type: :string, allow_nil: true)
     config.add(:lexisnexis_threatmetrix_base_url, type: :string, allow_nil: true)
     config.add(:lexisnexis_threatmetrix_enabled, type: :boolean, allow_nil: true)
-    config.add(:lexisnexis_threatmetrix_mock_enabled, type: :boolean, allow_nil: true)
+    config.add(:lexisnexis_threatmetrix_mock_enabled, type: :boolean)
     config.add(:lexisnexis_threatmetrix_org_id, type: :string,  allow_nil: true)
     config.add(:lexisnexis_threatmetrix_policy, type: :string,  allow_nil: true)
     config.add(:lexisnexis_threatmetrix_required_to_verify, type: :boolean, allow_nil: true)
