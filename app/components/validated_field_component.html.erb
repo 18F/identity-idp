@@ -13,7 +13,9 @@
       <%= label %>
     </label>
     <% if has_hint? %>
-      <div id="<%= hint_id %>"><%= hint %></div>
+      <div id="<%= hint_id %>" class="usa-hint">
+        <%= hint %>
+      </div>
     <% end %>
     <%= f.text_field(
           name,
