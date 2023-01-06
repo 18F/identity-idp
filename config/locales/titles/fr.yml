@@ -52,6 +52,7 @@ fr:
     openid_connect:
       authorization: Autorisation OpenID Connect
       logout: Déconnexion OpenID Connect
+    otp_expired: Votre code à usage unique a expiré
     passwords:
       change: Changez le mot de passe de votre compte
       confirm: Confirmez le mot de passe de votre compte
@@ -81,7 +82,6 @@ fr:
       completion_new_attributes: '%{sp} demande de nouvelles informations'
       completion_new_sp: Vous vous connectez pour la première fois
       confirmation: Continuer à vous connecter
-    sms_expired: Votre code à usage unique a expiré
     totp_setup:
       new: Ajouter une application d’authentification
     two_factor_setup: Configuration de l’authentification à deux facteurs

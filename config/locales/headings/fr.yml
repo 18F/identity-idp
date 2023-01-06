@@ -29,6 +29,7 @@ fr:
     edit_info:
       password: Changez votre mot de passe
       phone: Administrer les paramètres de votre téléphone
+    otp_expired: Votre code à usage unique a expiré
     passwords:
       change: Changez votre mot de passe
       confirm: Confirmez votre mot de passe actuel pour continuer
@@ -63,7 +64,6 @@ fr:
     session_timeout_warning: Vous avez besoin de plus de temps?
     sign_in_with_sp: Connectez-vous pour continuer à %{sp}
     sign_in_without_sp: Connexion
-    sms_expired: Votre code à usage unique a expiré
     sp_handoff_bounced: Un problème est survenu lors de la connexion à %{sp_name}
     totp_setup:
       new: Ajouter une application d’authentification

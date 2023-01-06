@@ -29,6 +29,7 @@ en:
     edit_info:
       password: Change your password
       phone: Manage your phone settings
+    otp_expired: Your one-time code has expired
     passwords:
       change: Change your password
       confirm: Confirm your current password to continue
@@ -60,7 +61,6 @@ en:
     session_timeout_warning: Need more time?
     sign_in_with_sp: Sign in to continue to %{sp}
     sign_in_without_sp: Sign in
-    sms_expired: Your one-time code has expired
     sp_handoff_bounced: There was a problem connecting to %{sp_name}
     totp_setup:
       new: Add an authentication app
