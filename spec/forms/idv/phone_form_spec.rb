@@ -89,7 +89,7 @@ describe Idv::PhoneForm do
     end
 
     context 'with specific allowed countries' do
-      let(:allowed_countries) { ['MP', 'US'] }
+      let(:allowed_countries) { ['PR', 'US'] }
 
       it 'validates to only allow numbers from permitted countries' do
         invalid_phones = ['+81 54 354 3643', '+12423270143']
@@ -99,7 +99,7 @@ describe Idv::PhoneForm do
           expect(result.success?).to eq(false)
           expect(result.errors[:phone]).to include(t('errors.messages.improbable_phone'))
         end
-        valid_phones = ['+1 (670) 555-0123']
+        valid_phones = ['+1 (939) 555-0123']
         valid_phones.each do |phone|
           result = subject.submit(phone: phone)
 
