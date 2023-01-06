@@ -138,5 +138,5 @@ es:
         Inténtalo de nuevo.
       not_supported: Lo sentimos, su navegador no admite las claves de seguridad FIDO.
         Las últimas versiones de Chrome, Firefox, Edge y Safari son compatibles
-        con las claves de seguridad FIDO. Internet Explorer no lo hace.
+        con las claves de seguridad FIDO.
       unique_name: El nombre ya fue escogido. Por favor, elija un nombre diferente.
