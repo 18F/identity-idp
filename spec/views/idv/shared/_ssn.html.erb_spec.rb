@@ -38,41 +38,28 @@ describe 'idv/shared/_ssn.html.erb' do
   context 'when threatmetrix collection enabled' do
     let(:threatmetrix_enabled) { true }
 
-    context 'and org id specified' do
-      context 'and entering ssn for the first time' do
-        describe '<script> tag' do
-          it 'is rendered' do
-            expect_script_tag_rendered
-          end
-        end
-
-        describe '<noscript> tag' do
-          it 'is rendered' do
-            expect_noscript_tag_rendered
-          end
-        end
-
-        context 'session id not specified' do
-          let(:session_id) { nil }
-
-          it 'does not render <script> tag' do
-            expect_script_tag_not_rendered
-          end
-          it 'does not render <noscript> tag' do
-            expect_noscript_tag_not_rendered
-          end
+    context 'and entering ssn for the first time' do
+      describe '<script> tag' do
+        it 'is rendered' do
+          expect_script_tag_rendered
         end
       end
-    end
 
-    context 'org id not specified' do
-      let(:lexisnexis_threatmetrix_org_id) { '' }
-
-      it 'does not render <script> tag' do
-        expect_script_tag_not_rendered
+      describe '<noscript> tag' do
+        it 'is rendered' do
+          expect_noscript_tag_rendered
+        end
       end
-      it 'does not render <noscript> tag' do
-        expect_noscript_tag_not_rendered
+
+      context 'session id not specified' do
+        let(:session_id) { nil }
+
+        it 'does not render <script> tag' do
+          expect_script_tag_not_rendered
+        end
+        it 'does not render <noscript> tag' do
+          expect_noscript_tag_not_rendered
+        end
       end
     end
   end
