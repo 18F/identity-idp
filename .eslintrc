@@ -12,10 +12,6 @@
     "no-restricted-syntax": [
       "error",
       {
-        "selector": "NewExpression[callee.name='Event']",
-        "message": "Use CustomEvent constructor with polyfill for Internet Explorer"
-      },
-      {
         "selector": "AssignmentExpression[left.property.name='href'][right.type=/(Template)?Literal/]",
         "message": "Do not assign window.location.href to a string or string template to avoid losing i18n parameters"
       },

@@ -22,7 +22,6 @@ module ScriptHelper
       safe_join(
         [
           javascript_assets_tag(*@scripts),
-          javascript_polyfill_pack_tag,
           *sources.map do |source|
             javascript_include_tag(
               source,
@@ -56,14 +55,6 @@ module ScriptHelper
         false,
       )
     end
-  end
-
-  def javascript_polyfill_pack_tag
-    javascript_include_tag_without_preload(
-      *AssetSources.get_sources('polyfill'),
-      nomodule: '',
-      crossorigin: local_crossorigin_sources? ? true : nil,
-    )
   end
 
   def without_preload_links_header

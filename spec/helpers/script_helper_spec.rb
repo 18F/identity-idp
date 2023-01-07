@@ -29,7 +29,6 @@ RSpec.describe ScriptHelper do
       before do
         javascript_packs_tag_once('document-capture', 'document-capture')
         javascript_packs_tag_once('application', prepend: true)
-        allow(AssetSources).to receive(:get_sources).with('polyfill').and_return(['/polyfill.js'])
         allow(AssetSources).to receive(:get_sources).with('application', 'document-capture').
           and_return(['/application.js', '/document-capture.js'])
         allow(AssetSources).to receive(:get_assets).with('application', 'document-capture').
@@ -78,8 +77,7 @@ RSpec.describe ScriptHelper do
         output = render_javascript_pack_once_tags
 
         expect(output).to have_css(
-          "script:not([crossorigin])[src^='/polyfill.js'][nomodule] ~ \
-          script:not([crossorigin])[src^='/application.js'] ~ \
+          "script:not([crossorigin])[src^='/application.js'] ~ \
           script:not([crossorigin])[src^='/document-capture.js']",
           count: 1,
           visible: :all,
@@ -97,8 +95,7 @@ RSpec.describe ScriptHelper do
           output = render_javascript_pack_once_tags
 
           expect(output).to have_css(
-            "script[src^='/polyfill.js']:not([integrity]) ~ \
-            script[src^='/application.js'][integrity^='sha256-']",
+            "script[src^='/application.js'][integrity^='sha256-']",
             count: 1,
             visible: :all,
           )
@@ -117,8 +114,7 @@ RSpec.describe ScriptHelper do
           output = render_javascript_pack_once_tags
 
           expect(output).to have_css(
-            "script[crossorigin][src^='/polyfill.js'][nomodule] ~ \
-            script[crossorigin][src^='/application.js'] ~ \
+            "script[crossorigin][src^='/application.js'] ~ \
             script[crossorigin][src^='/document-capture.js']",
             count: 1,
             visible: :all,
@@ -139,7 +135,6 @@ RSpec.describe ScriptHelper do
 
     context 'with named scripts argument' do
       before do
-        allow(AssetSources).to receive(:get_sources).with('polyfill').and_return(['/polyfill.js'])
         allow(AssetSources).to receive(:get_sources).with('application').
           and_return(['/application.js'])
       end
@@ -148,7 +143,7 @@ RSpec.describe ScriptHelper do
         output = render_javascript_pack_once_tags('application')
 
         expect(output).to have_css(
-          "script[src^='/polyfill.js'][nomodule] ~ script[src='/application.js']",
+          "script[src='/application.js']",
           visible: :all,
         )
       end

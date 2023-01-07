@@ -10,8 +10,12 @@
         html: { autocomplete: 'off' },
         url: add_email_path,
       ) do |f| %>
-    <%= f.input :email, label: t('forms.registration.labels.email'), required: true,
-                        input_html: { aria: { invalid: false } } %>
+    <%= render ValidatedFieldComponent.new(
+          form: f,
+          name: :email,
+          label: t('forms.registration.labels.email'),
+          required: true,
+        ) %>
     <%= f.submit t('forms.buttons.submit.default') %>
   <% end %>
 </div>
