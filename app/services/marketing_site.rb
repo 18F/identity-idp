@@ -49,7 +49,7 @@ class MarketingSite
   end
 
   def self.nice_help_url
-    self.help_url.to_s.gsub('https://www.', '')
+    help_url.to_s.gsub('https://www.', '')
   end
 
   def self.help_url
