@@ -86,13 +86,13 @@ feature 'Two Factor Authentication' do
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.phone_required'))
 
-        fill_in 'new_phone_form_phone', with: '+212 5376'
-        expect(page).to have_css('.phone-input__example', text: '0650-123456')
+        fill_in 'new_phone_form_phone', with: '+353 537'
+        expect(page).to have_css('.phone-input__example', text: '085 012 3456')
 
         click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.invalid_phone_number'))
-        expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'MA'
+        expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'IE'
 
         fill_in 'new_phone_form_phone', with: ''
 

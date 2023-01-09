@@ -18,6 +18,7 @@ AF:
   country_code: '93'
   name: Afghanistan
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 AG:
   country_code: '1268'
@@ -43,17 +44,21 @@ AO:
   country_code: '244'
   name: Angola
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 AR:
   country_code: '54'
   name: Argentina
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 AS:
   country_code: '1684'
   name: American Samoa
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: true
+  supports_voice_unconfirmed: false
 AT:
   country_code: '43'
   name: Austria
@@ -73,6 +78,7 @@ AZ:
   country_code: '994'
   name: Azerbaijan
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 BA:
   country_code: '387'
@@ -88,16 +94,19 @@ BD:
   country_code: '880'
   name: Bangladesh
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 BE:
   country_code: '32'
   name: Belgium
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 BF:
   country_code: '226'
   name: Burkina Faso
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 BG:
   country_code: '359'
@@ -138,6 +147,7 @@ BO:
   country_code: '591'
   name: Bolivia
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 BQ:
   country_code: '599'
@@ -168,6 +178,7 @@ BY:
   country_code: '375'
   name: Belarus
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: true
   supports_voice_unconfirmed: false
 BZ:
@@ -184,6 +195,7 @@ CD:
   country_code: '243'
   name: Democratic Republic of the Congo
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 CF:
   country_code: '236'
@@ -284,6 +296,7 @@ EC:
   country_code: '593'
   name: Ecuador
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 EE:
   country_code: '372'
@@ -293,12 +306,14 @@ EE:
 EG:
   country_code: '20'
   name: Egypt
-  supports_sms: true
+  supports_sms: false
   supports_voice: true
+  supports_voice_unconfirmed: false
 ER:
   country_code: '291'
   name: Eritrea
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 ES:
   country_code: '34'
@@ -339,6 +354,7 @@ GA:
   country_code: '241'
   name: Gabon
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 GB:
   country_code: '44'
@@ -349,6 +365,7 @@ GD:
   country_code: '1473'
   name: Grenada
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 GE:
   country_code: '995'
@@ -369,6 +386,7 @@ GH:
   country_code: '233'
   name: Ghana
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 GI:
   country_code: '350'
@@ -394,6 +412,7 @@ GP:
   country_code: '590'
   name: Guadeloupe
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 GQ:
   country_code: '240'
@@ -454,6 +473,7 @@ ID:
   country_code: '62'
   name: Indonesia
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 IE:
   country_code: '353'
@@ -464,6 +484,7 @@ IL:
   country_code: '972'
   name: Israel
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 IM:
   country_code: '44'
@@ -505,6 +526,7 @@ JO:
   country_code: '962'
   name: Jordan
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: true
   supports_voice_unconfirmed: false
 JP:
@@ -521,11 +543,13 @@ KG:
   country_code: '996'
   name: Kyrgyzstan
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 KH:
   country_code: '855'
   name: Cambodia
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 KI:
   country_code: '686'
@@ -562,6 +586,7 @@ KZ:
   country_code: '7'
   name: Kazakhstan
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 LA:
   country_code: '856'
@@ -617,11 +642,13 @@ LY:
   country_code: '218'
   name: Libya
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 MA:
   country_code: '212'
   name: Morocco
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 MC:
   country_code: '377'
@@ -662,6 +689,7 @@ MM:
   country_code: '95'
   name: Myanmar
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 MN:
   country_code: '976'
@@ -677,7 +705,9 @@ MP:
   country_code: '1'
   name: Northern Mariana Islands
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: true
+  supports_voice_unconfirmed: false
 MQ:
   country_code: '596'
   name: Martinique
@@ -712,6 +742,7 @@ MW:
   country_code: '265'
   name: Malawi
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 MX:
   country_code: '52'
@@ -722,6 +753,7 @@ MY:
   country_code: '60'
   name: Malaysia
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 MZ:
   country_code: '258'
@@ -747,6 +779,7 @@ NG:
   country_code: '234'
   name: Nigeria
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 NI:
   country_code: '505'
@@ -767,6 +800,7 @@ NP:
   country_code: '977'
   name: Nepal
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 NU:
   country_code: '683'
@@ -782,6 +816,7 @@ OM:
   country_code: '968'
   name: Oman
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 PA:
   country_code: '507'
@@ -813,6 +848,7 @@ PK:
   country_code: '92'
   name: Pakistan
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 PL:
   country_code: '48'
@@ -828,6 +864,7 @@ PS:
   country_code: '970'
   name: Palestine
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 PT:
   country_code: '351'
@@ -859,6 +896,7 @@ RO:
   country_code: '40'
   name: Romania
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 RS:
   country_code: '381'
@@ -875,6 +913,7 @@ RW:
   country_code: '250'
   name: Rwanda
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 SA:
   country_code: '966'
@@ -926,6 +965,7 @@ SN:
   country_code: '221'
   name: Senegal
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 SO:
   country_code: '252'
@@ -966,6 +1006,7 @@ TD:
   country_code: '235'
   name: Chad
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 TG:
   country_code: '228'
@@ -982,6 +1023,7 @@ TJ:
   country_code: '992'
   name: Tajikistan
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 TL:
   country_code: '670'
@@ -992,11 +1034,13 @@ TM:
   country_code: '993'
   name: Turkmenistan
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 TN:
   country_code: '216'
   name: Tunisia
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 TO:
   country_code: '676'
@@ -1032,11 +1076,13 @@ UA:
   country_code: '380'
   name: Ukraine
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 UG:
   country_code: '256'
   name: Uganda
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 US:
   country_code: '1'
@@ -1052,6 +1098,7 @@ UZ:
   country_code: '998'
   name: Uzbekistan
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 VC:
   country_code: '1784'
@@ -1098,6 +1145,7 @@ YE:
   country_code: '967'
   name: Yemen
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 YT:
   country_code: '262'
@@ -1113,6 +1161,7 @@ ZM:
   country_code: '260'
   name: Zambia
   supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 ZW:
   country_code: '263'
