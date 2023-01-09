@@ -91,7 +91,8 @@ group :development, :test do
   gem 'aws-sdk-cloudwatchlogs', require: false
   gem 'brakeman', require: false
   gem 'bullet', '~> 7.0'
-  gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: '63d790a0'
+  gem 'capybara-webmock', git: 'https://github.com/mitchellhenke/capybara-webmock.git',
+                          ref: 'c23b02f'
   gem 'data_uri', require: false
   gem 'erb_lint', '~> 0.3.0', require: false
   gem 'i18n-tasks', '>= 0.9.31'
