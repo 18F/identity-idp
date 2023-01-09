@@ -88,10 +88,14 @@ module Reports
       Identity::Hostdata.bucket_name(IdentityConfig.store.s3_report_bucket_prefix)
     end
 
+    def s3_client
+      @s3_client ||= JobHelpers::S3Helper.new.s3_client
+    end
+
     def upload_file_to_s3_bucket(path:, body:, content_type:, bucket: bucket_name)
       url = "s3://#{bucket}/#{path}"
       logger.info("#{class_name}: uploading to #{url}")
-      obj = Aws::S3::Resource.new.bucket(bucket).object(path)
+      obj = Aws::S3::Resource.new(client: s3_client).bucket(bucket).object(path)
       obj.put(body: body, acl: 'private', content_type: content_type)
       logger.debug("#{class_name}: upload completed to #{url}")
       url
