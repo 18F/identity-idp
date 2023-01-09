@@ -38,7 +38,7 @@ module UspsInPersonProofing
     # USPS sends an email to the email address with instructions and the enrollment code.
     # The API response also includes the enrollment code which should be
     # stored with the unique ID to be able to request the status of proofing.
-    # @param applicant [Object]
+    # @param applicant [Hash]
     # @return [Hash] API response
     def request_enroll(applicant)
       url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant"
@@ -150,7 +150,7 @@ module UspsInPersonProofing
     # Retrieve and return the set of dynamic headers that are used for most
     # requests to USPS. An auth token will be retrieved if a valid one isn't
     # already cached.
-    # @return [Object] Headers to add to USPS requests
+    # @return [Hash] Headers to add to USPS requests
     def dynamic_headers
       {
         'Authorization' => token,
