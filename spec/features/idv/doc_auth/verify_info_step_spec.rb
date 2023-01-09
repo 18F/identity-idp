@@ -34,34 +34,22 @@ feature 'doc auth verify_info step', :js do
       expect(page).to have_text(DocAuthHelper::GOOD_SSN)
     end
 
-    it 'allows the user to enter in a new address' do
-      click_button t('idv.buttons.change_address_label')
-      fill_out_address_form_ok
-      click_button t('forms.buttons.submit.update')
-
-      expect(page).to have_current_path(idv_verify_info_path)
-    end
-
-    it 'displays the correct updated address information' do
+    it 'allows the user to enter in a new address and displays updated info' do
       click_button t('idv.buttons.change_address_label')
       fill_in 'idv_form_zipcode', with: '12345'
       click_button t('forms.buttons.submit.update')
 
+      expect(page).to have_current_path(idv_verify_info_path)
+
       expect(page).to have_content('12345')
     end
 
-    it 'allows the user to enter in a new ssn' do
-      click_button t('idv.buttons.change_ssn_label')
-      fill_out_ssn_form_ok
-      click_button t('forms.buttons.submit.update')
-
-      expect(page).to have_current_path(idv_verify_info_path)
-    end
-
-    it 'displays the correct updated address information' do
+    it 'allows the user to enter in a new ssn and displays updated info' do
       click_button t('idv.buttons.change_ssn_label')
       fill_in t('idv.form.ssn_label_html'), with: '900456789'
       click_button t('forms.buttons.submit.update')
+
+      expect(page).to have_current_path(idv_verify_info_path)
 
       expect(page).to have_text('9**-**-***9')
       check t('forms.ssn.show')
