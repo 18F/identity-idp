@@ -1,6 +1,6 @@
 module UspsInPersonProofing
   class Proofer
-    AUTH_TOKEN_CACHE_KEY = :usps_auth_token
+    AUTH_TOKEN_CACHE_KEY = :usps_ippaas_api_auth_token
 
     # Makes HTTP request to get nearby in-person proofing facilities
     # Requires address, city, state and zip code.
