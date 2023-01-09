@@ -13,15 +13,15 @@
           "sundayHours": "Closed"
         }
       ],
-      "distance": "1.0 mi",
+      "distance": null,
       "streetAddress": "900 E FAYETTE ST RM 118",
       "city": "BALTIMORE",
       "phone": "410-347-4202",
-      "tty": "222-222-2222",
       "name": "BALTIMORE",
       "zip4": "9715",
       "state": "MD",
-      "zip5": "21233"
+      "zip5": "21233",
+      "isPilot": true
     },
     {
       "parking": "Street",
@@ -36,15 +36,15 @@
           "sundayHours": "Closed"
         }
       ],
-      "distance": "0.1 mi",
+      "distance": null,
       "streetAddress": "6900 WISCONSIN AVE STE 100",
       "city": "CHEVY CHASE",
       "phone": "301-941-2670",
-      "tty": "222-222-2222",
       "name": "BETHESDA",
       "zip4": "9996",
       "state": "MD",
-      "zip5": "20815"
+      "zip5": "20815",
+      "isPilot": true
     },
     {
       "parking": "Lot",
@@ -59,15 +59,15 @@
           "sundayHours": "10:00 AM - 4:00 PM"
         }
       ],
-      "distance": "0.0 mi",
+      "distance": null,
       "streetAddress": "4005 WISCONSIN AVE NW",
       "city": "WASHINGTON",
       "phone": "202-842-3332",
-      "tty": "222-222-2222",
       "name": "FRIENDSHIP",
       "zip4": "9997",
       "state": "DC",
-      "zip5": "20016"
+      "zip5": "20016",
+      "isPilot": true
     },
     {
       "parking": "Lot",
@@ -82,15 +82,15 @@
           "sundayHours": "Closed"
         }
       ],
-      "distance": "2.1 mi",
+      "distance": null,
       "streetAddress": "900 BRENTWOOD RD NE",
       "city": "WASHINGTON",
       "phone": "202-636-1259",
-      "tty": "222-222-2222",
       "name": "WASHINGTON",
       "zip4": "9998",
       "state": "DC",
-      "zip5": "20066"
+      "zip5": "20066",
+      "isPilot": true
     },
     {
       "parking": "Street",
@@ -105,15 +105,15 @@
           "sundayHours": "Closed"
         }
       ],
-      "distance": "0.0 mi",
+      "distance": null,
       "streetAddress": "3118 WASHINGTON BLVD",
       "city": "ARLINGTON",
       "phone": "703-993-0072",
-      "tty": "222-222-2222",
       "name": "ARLINGTON",
       "zip4": "9998",
       "state": "VA",
-      "zip5": "22201"
+      "zip5": "22201",
+      "isPilot": true
     },
     {
       "parking": "Lot",
@@ -128,15 +128,15 @@
           "sundayHours": "Closed"
         }
       ],
-      "distance": "0.0 mi",
+      "distance": null,
       "streetAddress": "44715 PRENTICE DR",
       "city": "DULLES",
       "phone": "703-406-6291",
-      "tty": "222-222-2222",
       "name": "ASHBURN",
       "zip4": "9996",
       "state": "VA",
-      "zip5": "20101"
+      "zip5": "20101",
+      "isPilot": true
     },
     {
       "parking": "Lot",
@@ -151,15 +151,15 @@
           "sundayHours": "9:00 AM - 5:00 PM"
         }
       ],
-      "distance": "0.0 mi",
+      "distance": null,
       "streetAddress": "8409 LEE HWY",
       "city": "MERRIFIELD",
       "phone": "703-698-6377",
-      "tty": "222-222-2222",
       "name": "MERRIFIELD",
       "zip4": "9998",
       "state": "VA",
-      "zip5": "22116"
+      "zip5": "22116",
+      "isPilot": true
     }
   ]
 }

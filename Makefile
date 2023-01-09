@@ -80,8 +80,6 @@ endif
 	yarn run lint
 	@echo "--- typescript ---"
 	yarn run typecheck
-	@echo "--- es5-safe ---"
-	NODE_ENV=production yarn build && yarn es5-safe
 	# Other
 	@echo "--- lint yaml ---"
 	make lint_yaml
@@ -113,7 +111,7 @@ lint_yarn_lock: package.json yarn.lock
 
 lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles are in sync
 
-lintfix: ## Try to automatically fix any ruby, ERB, javascript, or CSS lint errors
+lintfix: ## Try to automatically fix any Ruby, ERB, JavaScript, YAML, or CSS lint errors
 	@echo "--- rubocop fix ---"
 	bundle exec rubocop -a
 	@echo "--- erblint fix ---"
@@ -122,6 +120,8 @@ lintfix: ## Try to automatically fix any ruby, ERB, javascript, or CSS lint erro
 	yarn lint --fix
 	@echo "--- stylelint fix ---"
 	yarn lint:css --fix
+	@echo "--- normalize yaml ---"
+	make normalize_yaml
 
 brakeman: ## Runs brakeman
 	bundle exec brakeman

@@ -29,6 +29,9 @@
       },
       "user_input": "params[:step]",
       "confidence": "Weak",
+      "cwe_id": [
+        22
+      ],
       "note": ""
     },
     {
@@ -60,7 +63,33 @@
       },
       "user_input": "params[:step]",
       "confidence": "Weak",
+      "cwe_id": [
+        22
+      ],
       "note": ""
+    },
+    {
+      "warning_type": "Weak Cryptography",
+      "warning_code": 126,
+      "fingerprint": "62a8c37ff0f723d2ebbbbf64c443a21632a2dcdc87fd20e6f61c2cec323482d2",
+      "check_name": "WeakRSAKey",
+      "message": "Use of padding mode PKCS1 (default if not specified), which is known to be insecure. Use OAEP instead",
+      "file": "app/services/irs_attempts_api/envelope_encryptor.rb",
+      "line": 19,
+      "link": "https://brakemanscanner.org/docs/warning_types/weak_cryptography/",
+      "code": "OpenSSL::PKey::RSA.new(Base64.strict_decode64(public_key_str)).public_encrypt(OpenSSL::Cipher.new(\"aes-256-cbc\").random_key)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "IrsAttemptsApi::EnvelopeEncryptor",
+        "method": "s(:self).encrypt"
+      },
+      "user_input": null,
+      "confidence": "High",
+      "cwe_id": [
+        780
+      ],
+      "note": "This is necessary due to the parameters of the IRS systems that we integrate with."
     },
     {
       "warning_type": "Dynamic Render Path",
@@ -91,9 +120,12 @@
       },
       "user_input": "params[:step]",
       "confidence": "Weak",
+      "cwe_id": [
+        22
+      ],
       "note": ""
     }
   ],
-  "updated": "2022-07-05 11:19:47 -0400",
-  "brakeman_version": "5.2.0"
+  "updated": "2023-01-03 12:29:54 -0600",
+  "brakeman_version": "5.4.0"
 }

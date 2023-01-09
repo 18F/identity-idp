@@ -8,11 +8,11 @@ export interface FormattedLocation {
   id: number;
   name: string;
   phone: string;
-  tty: string;
   saturdayHours: string;
   streetAddress: string;
   sundayHours: string;
   weekdayHours: string;
+  isPilot: boolean;
 }
 
 interface InPersonLocationsProps {
@@ -23,6 +23,7 @@ interface InPersonLocationsProps {
 
 function InPersonLocations({ locations, onSelect, address }: InPersonLocationsProps) {
   const { t } = useI18n();
+  const isPilot = locations?.some((l) => l.isPilot);
 
   if (locations?.length === 0) {
     return (
@@ -38,10 +39,11 @@ function InPersonLocations({ locations, onSelect, address }: InPersonLocationsPr
   return (
     <>
       <h3 role="status">
-        {t('in_person_proofing.body.location.po_search.results_description', {
-          address,
-          count: locations?.length,
-        })}
+        {!isPilot &&
+          t('in_person_proofing.body.location.po_search.results_description', {
+            address,
+            count: locations?.length,
+          })}
       </h3>
       <p>{t('in_person_proofing.body.location.po_search.results_instructions')}</p>
       <LocationCollection>
@@ -54,7 +56,6 @@ function InPersonLocations({ locations, onSelect, address }: InPersonLocationsPr
             selectId={item.id}
             formattedCityStateZip={item.formattedCityStateZip}
             phone={item.phone}
-            tty={item.tty}
             weekdayHours={item.weekdayHours}
             saturdayHours={item.saturdayHours}
             sundayHours={item.sundayHours}

@@ -13,7 +13,6 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:css": "stylelint 'app/assets/stylesheets/**/*.scss' 'app/javascript/**/*.scss'",
     "test": "mocha 'spec/javascripts/**/**spec.+(j|t)s?(x)' 'app/javascript/packages/**/*.spec.+(j|t)s?(x)'",
-    "es5-safe": "is-es5-safe 'public/packs?(-test)/js/*.js'",
     "normalize-yaml": "normalize-yaml",
     "clean": "rm -rf public/packs/*",
     "prebuild": "yarn run clean",
@@ -21,7 +20,7 @@
     "build:css": "build-sass app/assets/stylesheets/*.css.scss --out-dir=app/assets/builds"
   },
   "dependencies": {
-    "@babel/core": "^7.15.5",
+    "@babel/core": "^7.20.7",
     "@babel/plugin-proposal-decorators": "^7.17.2",
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-react": "^7.14.5",

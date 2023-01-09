@@ -8,10 +8,10 @@ module UspsInPersonProofing
     :saturday_hours,
     :state,
     :sunday_hours,
-    :tty,
     :weekday_hours,
     :zip_code_4,
     :zip_code_5,
+    :is_pilot,
     keyword_init: true,
   )
 end

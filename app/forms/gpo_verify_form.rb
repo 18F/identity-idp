@@ -21,6 +21,8 @@ class GpoVerifyForm
       if pending_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
         pending_profile&.deactivate(:in_person_verification_pending)
+      elsif threatmetrix_check_failed? && threatmetrix_enabled?
+        pending_profile&.deactivate(:threatmetrix_review_pending)
       else
         activate_profile
       end
@@ -34,6 +36,7 @@ class GpoVerifyForm
         enqueued_at: gpo_confirmation_code&.code_sent_at,
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         pending_in_person_enrollment: pending_in_person_enrollment?,
+        threatmetrix_check_failed: threatmetrix_check_failed?,
       },
     )
   end
@@ -75,6 +78,15 @@ class GpoVerifyForm
 
   def pending_in_person_enrollment?
     pending_profile&.proofing_components&.[]('document_check') == Idp::Constants::Vendors::USPS
+  end
+
+  def threatmetrix_enabled?
+    IdentityConfig.store.lexisnexis_threatmetrix_required_to_verify
+  end
+
+  def threatmetrix_check_failed?
+    status = pending_profile&.proofing_components&.[]('threatmetrix_review_status')
+    !status.nil? && status != 'pass'
   end
 
   def activate_profile

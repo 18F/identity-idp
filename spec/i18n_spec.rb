@@ -17,8 +17,6 @@ module I18n
         { key: 'doc_auth.headings.photo', locales: %i[fr] }, # "Photo" is "Photo" in French
         { key: /^i18n\.locale\./ }, # Show locale options translated as that language
         { key: /^countries/ }, # Some countries have the same name across languages
-        { key: 'in_person_proofing.body.location.tty', locales: %i[es] },
-        # "TTY" is "TTY" in Spanish
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
         { key: 'simple_form.required.html' }, # No text content

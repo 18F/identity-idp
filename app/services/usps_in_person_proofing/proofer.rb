@@ -1,6 +1,6 @@
 module UspsInPersonProofing
   class Proofer
-    mattr_reader :token, :token_expires_at
+    AUTH_TOKEN_CACHE_KEY = :usps_ippaas_api_auth_token
 
     # Makes HTTP request to get nearby in-person proofing facilities
     # Requires address, city, state and zip code.
@@ -38,7 +38,7 @@ module UspsInPersonProofing
     # USPS sends an email to the email address with instructions and the enrollment code.
     # The API response also includes the enrollment code which should be
     # stored with the unique ID to be able to request the status of proofing.
-    # @param applicant [Object]
+    # @param applicant [Hash]
     # @return [Hash] API response
     def request_enroll(applicant)
       url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant"
@@ -101,18 +101,26 @@ module UspsInPersonProofing
       end.body
     end
 
-    # Makes a request to retrieve a new OAuth token
-    # and modifies self to store the token and when
-    # it expires (15 minutes).
+    # Makes a request to retrieve a new OAuth token, caches it, and returns it. Tokens have
+    # historically had 15 minute expirys
     # @return [String] the token
     def retrieve_token!
       body = request_token
-      @@token_expires_at = Time.zone.now + body['expires_in']
-      @@token = "#{body['token_type']} #{body['access_token']}"
+      expires_at = Time.zone.now + body['expires_in']
+      token = "#{body['token_type']} #{body['access_token']}"
+      Rails.cache.write(AUTH_TOKEN_CACHE_KEY, token, expires_at: expires_at)
+      # If using a redis cache we have to manually set the expires_at. This is because we aren't
+      # using a dedicated Redis cache and instead are just using our existing Redis server with
+      # mixed usage patterns. Without this cache entries don't expire.
+      # More at https://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html
+      Rails.cache.try(:redis)&.expireat(AUTH_TOKEN_CACHE_KEY, expires_at.to_i)
+      token
     end
 
-    def token_valid?
-      token.present? && token_expires_at.present? && token_expires_at.future?
+    # Returns an auth token. The token will be renewed first if it has expired.
+    # @return [String] Auth token
+    def token
+      Rails.cache.read(AUTH_TOKEN_CACHE_KEY) || retrieve_token!
     end
 
     private
@@ -139,13 +147,11 @@ module UspsInPersonProofing
       end
     end
 
-    # Retrieve the OAuth2 token (if needed) and then pass
-    # the headers to an arbitrary block of code as a Hash.
-    #
-    # Returns the same value returned by that block of code.
+    # Retrieve and return the set of dynamic headers that are used for most
+    # requests to USPS. An auth token will be retrieved if a valid one isn't
+    # already cached.
+    # @return [Hash] Headers to add to USPS requests
     def dynamic_headers
-      retrieve_token! unless token_valid?
-
       {
         'Authorization' => token,
         'RequestID' => request_id,
@@ -205,10 +211,10 @@ module UspsInPersonProofing
           saturday_hours: hours['saturdayHours'],
           state: post_office['state'],
           sunday_hours: hours['sundayHours'],
-          tty: post_office['tty'],
           weekday_hours: hours['weekdayHours'],
           zip_code_4: post_office['zip4'],
           zip_code_5: post_office['zip5'],
+          is_pilot: post_office['isPilot'],
         )
       end
     end

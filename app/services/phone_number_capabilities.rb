@@ -53,6 +53,7 @@ class PhoneNumberCapabilities
 
   def supports_sms?
     return false if country_code_data.nil?
+
     supports_sms = country_code_data['supports_sms']
 
     supports_sms_unconfirmed = country_code_data.fetch(

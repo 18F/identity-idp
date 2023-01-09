@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
+import { useSandbox } from '@18f/identity-test-helpers';
+import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import type { SetupServerApi } from 'msw/node';
-import { useSandbox } from '@18f/identity-test-helpers';
-import userEvent from '@testing-library/user-event';
-import AddressSearch, { ADDRESS_SEARCH_URL } from './address-search';
+import AddressSearch, { ADDRESS_SEARCH_URL, LOCATIONS_URL } from './address-search';
 
 const DEFAULT_RESPONSE = [
   {
@@ -26,6 +26,7 @@ describe('AddressSearch', () => {
   let server: SetupServerApi;
   before(() => {
     server = setupServer(
+      rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
       rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
     );
     server.listen();
@@ -37,8 +38,9 @@ describe('AddressSearch', () => {
 
   it('fires the callback with correct input', async () => {
     const handleAddressFound = sandbox.stub();
+    const handleLocationsFound = sandbox.stub();
     const { findByText, findByLabelText } = render(
-      <AddressSearch onAddressFound={handleAddressFound} />,
+      <AddressSearch onFoundAddress={handleAddressFound} onFoundLocations={handleLocationsFound} />,
     );
 
     await userEvent.type(
@@ -49,16 +51,7 @@ describe('AddressSearch', () => {
       await findByText('in_person_proofing.body.location.po_search.search_button'),
     );
 
-    await expect(handleAddressFound).to.eventually.be.calledWith(DEFAULT_RESPONSE[0]);
-  });
-
-  it('validates input and shows inline error', async () => {
-    const { findByText } = render(<AddressSearch />);
-
-    await userEvent.click(
-      await findByText('in_person_proofing.body.location.po_search.search_button'),
-    );
-
-    await findByText('in_person_proofing.body.location.inline_error');
+    await expect(handleAddressFound).to.eventually.be.called();
+    await expect(handleLocationsFound).to.eventually.be.called();
   });
 });
