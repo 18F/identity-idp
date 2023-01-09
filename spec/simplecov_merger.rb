@@ -15,6 +15,8 @@ module SimpleCov
     end
 
     def self.merge_json_reports
+
+# puts json["examples"].group_by { |x| x["file_path"] }.map { |filename, examples| [filename[1..], examples.map { |x| x['run_time'] }.sum] }.to_h.sort.to_h.to_json
       merged_hash = {
         examples: [],
         summary: {
