@@ -13,6 +13,14 @@ feature 'doc auth verify_info step', :js do
       complete_doc_auth_steps_before_verify_step
     end
 
+    it 'sends the user to start doc auth if there is no pii from the document in session' do
+      visit sign_out_url
+      sign_in_and_2fa_user
+      visit idv_doc_auth_verify_step
+
+      expect(page).to have_current_path(idv_doc_auth_welcome_step)
+    end
+
     it 'displays the expected content' do
       expect(page).to have_current_path(idv_verify_info_path)
       expect(page).to have_content(t('headings.verify'))

@@ -62,7 +62,9 @@ module Idv
 
     # copied from verify_step
     def pii
-      @pii = flow_session[:pii_from_doc]
+      if flow_session
+        @pii = flow_session[:pii_from_doc]
+      end
     end
 
     # copied from address_controller
