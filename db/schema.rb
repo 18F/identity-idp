@@ -302,6 +302,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_14_161643) do
     t.index ["unique_id"], name: "index_in_person_enrollments_on_unique_id", unique: true
     t.index ["user_id", "status"], name: "index_in_person_enrollments_on_user_id_and_status", unique: true, where: "(status = 1)"
     t.index ["user_id"], name: "index_in_person_enrollments_on_user_id"
+    t.index ["status_check_attempted_at"], name: "index_in_person_enrollments_on_status_check_attempted_at"
   end
 
   create_table "integration_statuses", force: :cascade do |t|
