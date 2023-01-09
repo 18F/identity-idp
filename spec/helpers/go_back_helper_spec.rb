@@ -30,7 +30,7 @@ RSpec.describe GoBackHelper do
     end
 
     context 'referer from different domain' do
-      let(:referer) { 'https://gsa.gov/' }
+      let(:referer) { 'https://www.gsa.gov/' }
 
       it 'is nil' do
         expect(subject).to be_nil
@@ -38,10 +38,10 @@ RSpec.describe GoBackHelper do
     end
 
     context 'referer from same domain' do
-      let(:referer) { 'https://gsa.gov/' }
+      let(:referer) { 'https://www.gsa.gov/' }
 
       before do
-        allow(IdentityConfig.store).to receive(:domain_name).and_return('gsa.gov')
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('www.gsa.gov')
       end
 
       it 'is path from referer' do
@@ -52,7 +52,7 @@ RSpec.describe GoBackHelper do
 
   describe '#extract_path_and_query_from_uri' do
     it 'preserves query parameter and path from uri' do
-      uri = URI.parse('https://gsa.gov/path/to/?with_params=true')
+      uri = URI.parse('https://www.gsa.gov/path/to/?with_params=true')
       extracted = extract_path_and_query_from_uri(uri)
 
       expect(extracted).to eq('/path/to/?with_params=true')
@@ -69,10 +69,10 @@ RSpec.describe GoBackHelper do
     subject { app_host }
 
     context 'without port' do
-      let(:domain_name) { 'gsa.gov' }
+      let(:domain_name) { 'www.gsa.gov' }
 
       it 'returns host' do
-        expect(subject).to eq('gsa.gov')
+        expect(subject).to eq('www.gsa.gov')
       end
     end
 
