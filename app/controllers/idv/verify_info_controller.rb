@@ -74,9 +74,9 @@ module Idv
     end
 
     def current_flow_step_counts
-      user_session['doc_auth_flow_step_counts'] ||= {}
-      user_session['doc_auth_flow_step_counts'].default = 0
-      user_session['doc_auth_flow_step_counts']
+      user_session['idv/doc_auth_flow_step_counts'] ||= {}
+      user_session['idv/doc_auth_flow_step_counts'].default = 0
+      user_session['idv/doc_auth_flow_step_counts']
     end
 
     def increment_step_counts
