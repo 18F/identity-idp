@@ -63,15 +63,4 @@ class TwoFactorOptionsForm
   def has_no_mfa_or_in_required_flow?
     has_no_configured_mfa? || in_phishing_resistant_or_piv_cac_required_flow?
   end
-
-  def phone_alternative_enabled?
-    count = mfa_user.enabled_mfa_methods_count
-    count >= 2 || (count == 1 && MfaContext.new(user).phone_configurations.none?)
-  end
-
-  def phone_valid?
-    phone_selected? &&
-      has_no_configured_mfa? &&
-      !phone_alternative_enabled?
-  end
 end
