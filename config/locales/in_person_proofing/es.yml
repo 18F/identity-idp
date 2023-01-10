@@ -9,6 +9,7 @@ es:
         learn_more: Aprende más
       barcode:
         close_window: Ya puede cerrar esta ventana
+        cancel_link_text: Cancelar su código de barras
         deadline: Visite la Oficina de correos antes del %{deadline}
         deadline_restart: Si supera la fecha límite, su información no se guardará y
           tendrá que reiniciar el proceso.

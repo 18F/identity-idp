@@ -8,6 +8,7 @@ en:
         learn_more: Learn more
       barcode:
         close_window: You may now close this window.
+        cancel_link_text: Cancel your barcode
         deadline: Visit the Post Office by %{deadline}.
         deadline_restart: If you go after the deadline, your information will not be
           saved and you will need to restart the process.
