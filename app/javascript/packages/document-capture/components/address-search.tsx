@@ -184,8 +184,8 @@ function AddressSearch({
   }, [isLoading]);
 
   useEffect(() => {
-    locationResults && onFoundLocations(locationResults);
-    foundAddress && onFoundAddress(foundAddress);
+    !isLoading && locationResults && onFoundLocations(locationResults);
+    !isLoading && foundAddress && onFoundAddress(foundAddress);
   }, [locationResults, foundAddress]);
 
   const handleSearch = useCallback(
