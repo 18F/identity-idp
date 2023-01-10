@@ -77,7 +77,6 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
         )
         allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
         result = { context: 'authentication',
-                   errors: {},
                    multi_factor_auth_method: 'webauthn',
                    success: true,
                    webauthn_configuration_id: webauthn_configuration.id }
@@ -104,7 +103,6 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
         )
         allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
         result = { context: 'authentication',
-                   errors: {},
                    multi_factor_auth_method: 'webauthn_platform',
                    success: true,
                    webauthn_configuration_id: WebauthnConfiguration.first.id }
@@ -130,9 +128,9 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
         )
 
         result = { context: 'authentication',
-                   errors: {},
                    multi_factor_auth_method: 'webauthn',
                    success: false,
+                   error_details: { authenticator_data: [:invalid_authenticator_data] },
                    webauthn_configuration_id: webauthn_configuration.id }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)

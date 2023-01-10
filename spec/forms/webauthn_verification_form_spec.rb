@@ -4,9 +4,22 @@ describe WebauthnVerificationForm do
   include WebAuthnHelper
 
   let(:user) { create(:user) }
-  let(:user_session) { { webauthn_challenge: webauthn_challenge } }
-  let(:subject) { WebauthnVerificationForm.new(user, user_session) }
-  let(:platform_authenticator) { nil }
+  let(:challenge) { webauthn_challenge }
+  let(:webauthn_error) { nil }
+  let(:platform_authenticator) { false }
+
+  subject(:form) do
+    WebauthnVerificationForm.new(
+      user: user,
+      challenge: challenge,
+      protocol: protocol,
+      authenticator_data: authenticator_data,
+      client_data_json: verification_client_data_json,
+      signature: signature,
+      credential_id: credential_id,
+      webauthn_error: webauthn_error,
+    )
+  end
 
   describe '#submit' do
     before do
@@ -17,73 +30,50 @@ describe WebauthnVerificationForm do
         credential_public_key: credential_public_key,
         platform_authenticator: platform_authenticator,
       )
+
+      allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
     end
 
-    context 'when the input is valid for non-platform authenticator' do
+    subject(:result) { form.submit }
+
+    context 'when the input is valid' do
       it 'returns FormResponse with success: true' do
-        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
-
-        result = subject.submit(
-          protocol,
-          authenticator_data: authenticator_data,
-          client_data_json: verification_client_data_json,
-          signature: signature,
-          credential_id: credential_id,
-        )
-
         expect(result.success?).to eq(true)
         expect(result.to_h[:multi_factor_auth_method]).to eq('webauthn')
       end
-    end
 
-    context 'when the input is valid for platform authenticator' do
-      let(:platform_authenticator) { true }
+      context 'for platform authenticator' do
+        let(:platform_authenticator) { true }
 
-      it 'returns FormResponse with success: true' do
-        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
-
-        result = subject.submit(
-          protocol,
-          authenticator_data: authenticator_data,
-          client_data_json: verification_client_data_json,
-          signature: signature,
-          credential_id: credential_id,
-        )
-
-        expect(result.success?).to eq(true)
-        expect(result.to_h[:multi_factor_auth_method]).to eq('webauthn_platform')
+        it 'returns FormResponse with success: true' do
+          expect(result.success?).to eq(true)
+          expect(result.to_h[:multi_factor_auth_method]).to eq('webauthn_platform')
+        end
       end
     end
 
     context 'when the input is invalid' do
-      it 'returns FormResponse with success: false' do
-        result = subject.submit(
-          protocol,
-          authenticator_data: authenticator_data,
-          client_data_json: verification_client_data_json,
-          signature: signature,
-          credential_id: credential_id,
-        )
+      context 'when origin is invalid' do
+        before do
+          allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:6666')
+        end
 
-        expect(result.success?).to eq(false)
-        expect(result.to_h[:multi_factor_auth_method]).to eq('webauthn')
+        it 'returns FormResponse with success: false' do
+          expect(result.success?).to eq(false)
+          expect(result.to_h[:multi_factor_auth_method]).to eq('webauthn')
+        end
       end
 
-      it 'returns FormResponses with success: false when verification raises OpenSSL exception' do
-        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
-        allow_any_instance_of(WebAuthn::AuthenticatorAssertionResponse).to receive(:verify).
-          and_raise(OpenSSL::PKey::PKeyError)
+      context 'when verification raises OpenSSL exception' do
+        before do
+          allow_any_instance_of(WebAuthn::AuthenticatorAssertionResponse).to receive(:verify).
+            and_raise(OpenSSL::PKey::PKeyError)
+        end
 
-        result = subject.submit(
-          protocol,
-          authenticator_data: authenticator_data,
-          client_data_json: verification_client_data_json,
-          signature: signature,
-          credential_id: credential_id,
-        )
-
-        expect(result.success?).to eq(false)
-        expect(result.to_h[:multi_factor_auth_method]).to eq('webauthn')
+        it 'returns FormResponses with success: false' do
+          expect(result.success?).to eq(false)
+          expect(result.to_h[:multi_factor_auth_method]).to eq('webauthn')
+        end
       end
     end
   end
