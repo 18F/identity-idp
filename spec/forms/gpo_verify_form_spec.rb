@@ -163,8 +163,6 @@ describe GpoVerifyForm do
             and_return(true)
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
             and_return(true)
-          allow(IdentityConfig.store).to receive(:proofing_device_profiling_decisioning_enabled).
-            and_return(true)
         end
 
         it 'returns true' do
@@ -172,9 +170,40 @@ describe GpoVerifyForm do
           expect(result.success?).to eq true
         end
 
+        it 'does not activate the users profile' do
+          subject.submit
+          profile = user.profiles.first
+          expect(profile.active).to eq(false)
+          expect(profile.deactivation_reason).to eq('threatmetrix_review_pending')
+        end
+
         it 'notes that threatmetrix failed' do
           result = subject.submit
           expect(result.extra).to include(threatmetrix_check_failed: true)
+        end
+
+        context 'threatmetrix is not required for verification' do
+          before do
+            allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
+              and_return(false)
+          end
+
+          it 'returns true' do
+            result = subject.submit
+            expect(result.success?).to eq true
+          end
+
+          it 'does activate the users profile' do
+            subject.submit
+            profile = user.profiles.first
+            expect(profile.active).to eq(true)
+            expect(profile.deactivation_reason).to eq(nil)
+          end
+
+          it 'notes that threatmetrix failed' do
+            result = subject.submit
+            expect(result.extra).to include(threatmetrix_check_failed: true)
+          end
         end
       end
     end

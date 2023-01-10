@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe TwoFactorAuthCode::PhoneDeliveryPresenter do
   include Rails.application.routes.url_helpers
+  include ActionView::Helpers::UrlHelper
 
   let(:view) { ActionController::Base.new.view_context }
   let(:data) do
@@ -54,6 +55,30 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
       )
       expect(presenter.phone_number_message).to eq text
+    end
+  end
+
+  describe '#landline_warning' do
+    let(:landline_html) do
+      t(
+        'two_factor_authentication.otp_delivery_preference.landline_warning_html',
+        phone_setup_path: link_to(
+          presenter.phone_call_text,
+          phone_setup_path(otp_delivery_preference: 'voice'),
+        ),
+      )
+    end
+
+    it 'returns translated landline warning html' do
+      expect(presenter.landline_warning).to eq landline_html
+    end
+  end
+
+  describe '#phone_call_text' do
+    let(:phone_call) { t('two_factor_authentication.otp_delivery_preference.phone_call') }
+
+    it 'returns translation for word phone call' do
+      expect(presenter.phone_call_text).to eq phone_call
     end
   end
 

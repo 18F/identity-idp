@@ -28,6 +28,7 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           can_pass_with_additional_verification: false,
           attributes_requiring_additional_verification: [],
           vendor_workflow: nil,
+          drivers_license_check_info: nil,
         )
       end
     end
@@ -51,6 +52,7 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           can_pass_with_additional_verification: false,
           attributes_requiring_additional_verification: [],
           vendor_workflow: nil,
+          drivers_license_check_info: nil,
         )
       end
     end
@@ -74,6 +76,7 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           can_pass_with_additional_verification: false,
           attributes_requiring_additional_verification: [],
           vendor_workflow: nil,
+          drivers_license_check_info: nil,
         )
       end
     end
@@ -97,6 +100,7 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           can_pass_with_additional_verification: false,
           attributes_requiring_additional_verification: [],
           vendor_workflow: nil,
+          drivers_license_check_info: nil,
         )
       end
     end
@@ -120,6 +124,7 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           can_pass_with_additional_verification: false,
           attributes_requiring_additional_verification: [],
           vendor_workflow: nil,
+          drivers_license_check_info: nil,
         )
       end
     end
@@ -143,6 +148,7 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           can_pass_with_additional_verification: false,
           attributes_requiring_additional_verification: [],
           vendor_workflow: nil,
+          drivers_license_check_info: nil,
         )
       end
     end
@@ -166,6 +172,7 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           can_pass_with_additional_verification: false,
           attributes_requiring_additional_verification: [],
           vendor_workflow: nil,
+          drivers_license_check_info: nil,
         )
       end
     end

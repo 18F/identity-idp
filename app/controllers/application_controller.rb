@@ -29,15 +29,8 @@ class ApplicationController < ActionController::Base
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
   prepend_before_action :set_locale
-  prepend_before_action :set_x_request_url
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
-
-  # Workaround that helps our JS fetch polyfill. See:
-  # https://www.npmjs.com/package/whatwg-fetch#user-content-obtaining-the-response-url
-  def set_x_request_url
-    response.headers['X-Request-URL'] = request.url
-  end
 
   def session_expires_at
     return if @skip_session_expiration || @skip_session_load

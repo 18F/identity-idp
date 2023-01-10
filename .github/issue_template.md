@@ -16,8 +16,7 @@ necessary to reproduce the bug, including:
 
 - A screenshot
 - Operating system (Windows 7, Mac OS X Yosemite 10.10.5, etc.)
-- Web browser and version (Internet Explorer 9,
-Chrome 52.0.2743.116 (64-bit), etc.)
+- Web browser and version (Chrome 52.0.2743.116 (64-bit), etc.)
 - Date, specific time and time zone when issue was found.
 Example: 4:24pm ET on September 8, 2016
 - URLs visited

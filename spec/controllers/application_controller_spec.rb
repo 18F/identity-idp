@@ -16,20 +16,6 @@ describe ApplicationController do
     end
   end
 
-  describe '#set_x_request_url' do
-    controller do
-      def index
-        render plain: 'Hello'
-      end
-    end
-
-    it 'sets the X-Request-URL header' do
-      get :index
-
-      expect(response.headers['X-Request-URL']).to eq('http://www.example.com/anonymous')
-    end
-  end
-
   describe '#cache_issuer_in_cookie' do
     controller do
       def index

@@ -7,7 +7,7 @@ RSpec.describe 'SVG files' do
     describe relative_path do
       let(:subject) { Nokogiri::XML(File.read(Rails.root.join(relative_path))) }
 
-      it 'does not contain inline style tags (that render poorly in IE due to CSP)' do
+      it 'does not contain inline style tags (which violate CSP)' do
         expect(subject.css('style')).to be_empty.or(
           have_attributes(text: match(%r{^\s*/\*!lint-ignore\*/})),
         )

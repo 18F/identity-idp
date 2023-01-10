@@ -4,8 +4,6 @@
 <head>
   <meta charset="utf-8" />
   <meta content="<%= APP_NAME %>" name="description" />
-  <meta content="IE=edge" http-equiv="X-UA-Compatible" />
-  <meta content="none" name="msapplication-config" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <meta content="telephone=no" name="format-detection" />
 
@@ -28,9 +26,6 @@
   <%= preload_link_tag font_url('public-sans/PublicSans-Bold.woff2') %>
   <%= preload_link_tag font_url('public-sans/PublicSans-Regular.woff2') %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
-  <!--[if IE 8]>
-  <%= javascript_include_tag_without_preload 'es5-shim.min' %>
-  <![endif]-->
   <%= csrf_meta_tags %>
 
   <%= favicon_link_tag(
@@ -59,11 +54,6 @@
         type: nil,
       ) %>
   <meta content="#ffffff" name="theme-color" />
-
-  <!--[if lt IE 9]>
-  <%= javascript_include_tag_without_preload 'html5shiv' %>
-  <%= javascript_include_tag_without_preload 'respond.min' %>
-  <![endif]-->
 
   <% if IdentityConfig.store.newrelic_browser_key.present? && IdentityConfig.store.newrelic_browser_app_id.present? %>
     <%= render 'shared/newrelic/browser_instrumentation' %>

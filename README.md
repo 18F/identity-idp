@@ -9,6 +9,8 @@ This repository contains the core code base and documentation for the identity m
 
 Thank you for your interest in contributing to the Login.gov IdP! For complete instructions on how to contribute code, please read through our [CONTRIBUTING.md](CONTRIBUTING.md) documentation.
 
+You may also want to read the [the Login.gov team Handbook](https://handbook.login.gov/).
+
 ## Creating your local development environment
 
 ### Installing on your local machine

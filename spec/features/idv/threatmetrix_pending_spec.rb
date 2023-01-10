@@ -7,8 +7,6 @@ RSpec.feature 'Users pending threatmetrix review', :js do
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
       and_return(true)
-    allow(IdentityConfig.store).to receive(:proofing_device_profiling_decisioning_enabled).
-      and_return(true)
   end
 
   scenario 'users pending threatmetrix see sad face screen and cannot perform idv' do

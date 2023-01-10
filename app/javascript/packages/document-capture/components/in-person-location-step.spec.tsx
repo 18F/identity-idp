@@ -3,7 +3,6 @@ import { useContext } from 'react';
 import { render } from '@testing-library/react';
 import { getAllByRole } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
-import { fetch } from 'whatwg-fetch';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import type { SetupServerApi } from 'msw/node';
@@ -37,7 +36,6 @@ const DEFAULT_PROPS = {
 describe('InPersonLocationStep', () => {
   let server: SetupServerApi;
   before(() => {
-    global.window.fetch = fetch;
     server = setupServer(
       rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
       rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
@@ -48,7 +46,6 @@ describe('InPersonLocationStep', () => {
 
   after(() => {
     server.close();
-    global.window.fetch = () => Promise.reject(new Error('Fetch must be stubbed'));
   });
 
   it('logs step submission with selected location', async () => {

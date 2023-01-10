@@ -3,14 +3,14 @@ es:
   two_factor_authentication:
     account_reset:
       cancel_link: Cancelar su solicitud
-      link: restablecer su cuenta
+      link: eliminando su cuenta
       pending_html: Actualmente tiene una solicitud pendiente para eliminar su cuenta.
         Se necesitan 24 horas desde el momento en que realizó la solicitud para
         completar el proceso.  Por favor, vuelva más tarde. %{cancel_link}
       successful_cancel: Gracias. Su solicitud para eliminar su cuenta de %{app_name}
         ha sido cancelada.
-      text_html: Si no puede utilizar ninguno de los métodos de autenticación
-        anteriores, puede %{link}.
+      text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,
+        puede restablecer tus preferencias por %{link}.
     attempt_remaining_warning_html:
       one: Le quedan <strong>%{count} intento</strong>.
       other: Le quedan <strong>%{count} intentos</strong>.
@@ -90,7 +90,11 @@ es:
         seguridad para ese número de teléfono.
     otp_delivery_preference:
       instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
+      landline_warning_html: Al parecer el número ingresado pertenece a un <b>teléfono
+        fijo</b>. Mejor solicita un código de un solo uso por
+        %{phone_setup_path}.
       no_supported_options: No podemos verificar los números de teléfono de %{location}
+      phone_call: llamada telefónica
       sms: Mensaje de texto (SMS, sigla en inglés)
       sms_unsupported: No podemos enviar mensajes de texto a números de teléfono de %{location}.
       title: '¿Cómo deberíamos enviarle un código?'

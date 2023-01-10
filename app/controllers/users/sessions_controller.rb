@@ -221,7 +221,7 @@ module Users
       ).call
     end
 
-    LETTERS_AND_DASHES = /\A[a-z0-9\-]+\Z/i
+    LETTERS_AND_DASHES = /\A[a-z0-9-]+\Z/i
 
     def request_id_if_valid
       request_id = (params[:request_id] || sp_session[:request_id]).to_s

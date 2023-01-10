@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_14_161643) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_09_171633) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -299,6 +299,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_14_161643) do
     t.boolean "late_reminder_sent", default: false, comment: "late reminder to complete IPP before deadline sent"
     t.boolean "deadline_passed_sent", default: false, comment: "deadline passed email sent for expired enrollment"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
+    t.index ["status_check_attempted_at"], name: "index_in_person_enrollments_on_status_check_attempted_at", where: "(status = 1)"
     t.index ["unique_id"], name: "index_in_person_enrollments_on_unique_id", unique: true
     t.index ["user_id", "status"], name: "index_in_person_enrollments_on_user_id_and_status", unique: true, where: "(status = 1)"
     t.index ["user_id"], name: "index_in_person_enrollments_on_user_id"

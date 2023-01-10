@@ -373,6 +373,14 @@ describe NewPhoneForm do
         expect(form.delivery_preference_voice?).to eq(true)
       end
     end
+
+    context 'with setup_voice_preference present' do
+      subject(:form) { NewPhoneForm.new(user, setup_voice_preference: true) }
+
+      it 'is true' do
+        expect(form.delivery_preference_voice?).to eq(true)
+      end
+    end
   end
 
   describe '#redact' do
