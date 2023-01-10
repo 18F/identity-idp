@@ -2,6 +2,18 @@
   "name": "@18f/identity-document-capture",
   "private": true,
   "version": "1.0.0",
+  "scripts": {
+    "prepublishOnly": "webpack"
+  },
+  "exports": {
+    ".": {
+      "source": "./index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
