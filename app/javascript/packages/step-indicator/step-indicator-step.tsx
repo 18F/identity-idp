@@ -20,7 +20,7 @@ export interface StepIndicatorStepProps {
 }
 
 function StepIndicatorStep({ title, status }: StepIndicatorStepProps) {
-  const { CURRENT, COMPLETE, PENDING } = StepStatus;
+  const { CURRENT, COMPLETE, PENDING, INCOMPLETE } = StepStatus;
 
   const classes = [
     'step-indicator__step',
@@ -34,6 +34,9 @@ function StepIndicatorStep({ title, status }: StepIndicatorStepProps) {
   switch (status) {
     case COMPLETE:
       statusText = t('step_indicator.status.complete');
+      break;
+    case INCOMPLETE:
+      statusText = t('step_indicator.status.not_complete');
       break;
     case PENDING:
       statusText = t('step_indicator.status.pending');
