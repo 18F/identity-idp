@@ -67,7 +67,7 @@ module Idv
 
     # copied from address_controller
     def confirm_ssn_step_complete
-      return if pii.present?
+      return if pii.present? && pii[:ssn].present?
       redirect_to idv_doc_auth_url
     end
 
