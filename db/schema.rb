@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_14_161643) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_09_165658) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -583,7 +583,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_14_161643) do
     t.string "email_language", limit: 10
     t.datetime "accepted_terms_at", precision: nil
     t.datetime "encrypted_recovery_code_digest_generated_at", precision: nil
-    t.date "non_restricted_mfa_required_prompt_skip_date"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
