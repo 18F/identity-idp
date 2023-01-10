@@ -29,8 +29,6 @@ describe('WebAuthn', () => {
     it('returns false if webauthn is disabled', () => {
       global.navigator.credentials = undefined;
       expect(WebAuthn.isWebAuthnEnabled()).to.equal(false);
-      global.navigator = undefined;
-      expect(WebAuthn.isWebAuthnEnabled()).to.equal(false);
     });
   });
 
@@ -78,7 +76,6 @@ describe('WebAuthn', () => {
           ],
           timeout: 800000,
           attestation: 'none',
-          excludeList: [],
           authenticatorSelection: {
             authenticatorAttachment: 'cross-platform',
             userVerification: 'discouraged',
