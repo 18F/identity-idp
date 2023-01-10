@@ -227,8 +227,8 @@ class Throttle
         max_attempts: IdentityConfig.store.otp_delivery_blocklist_maxretry + 1,
         attempt_window: IdentityConfig.store.otp_delivery_blocklist_findtime,
       },
-    }
+    }.with_indifferent_access
   end
 
-  CACHED_THROTTLE_CONFIG = self.load_throttle_config
+  CACHED_THROTTLE_CONFIG = self.load_throttle_config.with_indifferent_access.freeze
 end
