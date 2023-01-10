@@ -82,7 +82,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
         onFoundAddress={setFoundAddress}
         onFoundLocations={setLocationResults}
       />
-      {locationResults && (
+      {locationResults && foundAddress && (
         <InPersonLocations
           locations={locationResults}
           onSelect={handleLocationSelect}
