@@ -6,7 +6,12 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   entry: {
     'address-search': './components/address-search.tsx',
   },
+  experiments: {
+    outputModule: true,
+  },
   output: {
+    module: true,
+    chunkFormat: 'commonjs',
     filename: '[name].js',
   },
   resolve: {
