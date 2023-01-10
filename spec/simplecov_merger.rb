@@ -15,31 +15,35 @@ module SimpleCov
     end
 
     def self.merge_json_reports
-
-# puts json["examples"].group_by { |x| x["file_path"] }.map { |filename, examples| [filename[1..], examples.map { |x| x['run_time'] }.sum] }.to_h.sort.to_h.to_json
       merged_hash = {
-        examples: [],
-        summary: {
-          example_count: 0,
-          failure_count: 0,
-          pending_count: 0,
-          errors_outside_of_examples_count: 0,
+        'examples' => [],
+        'summary' => {
+          'example_count' => 0,
+          'failure_count' => 0,
+          'pending_count' => 0,
+          'errors_outside_of_examples_count' => 0,
         },
-        seed: nil,
-        version: nil,
-        summary_line: nil,
+        'seed' => nil,
+        'version' => nil,
+        'summary_line' => nil,
       }
       Dir['rspec_json/*.json'].each do |file|
         file_json = JSON.parse(File.read(file))
-        merged_hash[:summary][:example_count] += file_json['summary']['example_count']
-        merged_hash[:summary][:failure_count] += file_json['summary']['failure_count']
-        merged_hash[:summary][:pending_count] += file_json['summary']['pending_count']
-        merged_hash[:summary][:errors_outside_of_examples_count] +=
+        merged_hash['summary']['example_count'] += file_json['summary']['example_count']
+        merged_hash['summary']['failure_count'] += file_json['summary']['failure_count']
+        merged_hash['summary']['pending_count'] += file_json['summary']['pending_count']
+        merged_hash['summary']['errors_outside_of_examples_count'] +=
           file_json['summary']['errors_outside_of_examples_count']
-        merged_hash[:examples] += file_json['examples']
+        merged_hash['examples'] += file_json['examples']
       end
 
       File.write('rspec_json/rspec.json', merged_hash.to_json)
+
+      knapsack = merged_hash['examples'].group_by { |x| x['file_path'] }.map do |filename, examples|
+        [filename[1..], examples.map { |x| x['run_time'] }.sum]
+      end.sort.to_h
+
+      File.write('knapsack_rspec_report.json', JSON.pretty_generate(knapsack))
     end
 
     # simple_cov has SimpleCov.collate to merge coverage results, but it uses absolute paths.

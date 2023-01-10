@@ -224,6 +224,7 @@ coverage:
     expire_in: 31d
     paths:
       - rspec_json/rspec.json
+      - knapsack_rspec_report.json
       - coverage/index.html
       - coverage/assets/
       - coverage/coverage.xml
