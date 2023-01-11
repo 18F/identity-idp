@@ -43,7 +43,7 @@ describe('StepIndicatorStep', () => {
       );
 
       const title = getByText('Step');
-      const status = getByText('step_indicator.status.current');
+      const status = getByText('step_indicator.status.not_complete');
       const step = title.closest('.step-indicator__step')!;
 
       expect(title).to.be.ok();
