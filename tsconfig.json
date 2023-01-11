@@ -18,6 +18,7 @@
   },
   "include": [
     "app/components",
+    "app/javascript/app",
     "app/javascript/packages",
     "app/javascript/packs",
     "spec/javascripts/spec_helper.d.ts",
@@ -29,9 +30,6 @@
     "**/*.spec.js",
     "app/javascript/packs/pw-strength.js",
     "app/javascript/packs/saml-post.js",
-    "app/javascript/packs/ssn-field.js",
-    "app/javascript/packs/webauthn-authenticate.js",
-    "app/javascript/packs/webauthn-setup.js",
-    "app/javascript/packs/webauthn-unhide.js"
+    "app/javascript/packs/ssn-field.js"
   ]
 }
