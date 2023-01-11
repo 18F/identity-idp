@@ -3,7 +3,11 @@ import type { CountdownElement } from './countdown-element';
 export class CountdownAlertElement extends HTMLElement {
   connectedCallback() {
     if (this.showAtRemaining) {
-      this.addEventListener('lg:countdown:tick', this.handleCountdownTick);
+      this.addEventListener('lg:countdown:tick', this.handleShowAtRemainingTick);
+    }
+
+    if (this.redirectURL) {
+      this.addEventListener('lg:countdown:tick', this.handleRedirectTick);
     }
   }
 
@@ -12,31 +16,26 @@ export class CountdownAlertElement extends HTMLElement {
   }
 
   get redirectURL(): string | null {
-    return this.getAttribute('redirect-url');
+    return this.getAttribute('redirect-url') || null;
   }
 
   get countdown(): CountdownElement {
     return this.querySelector('lg-countdown')!;
   }
 
-  handleCountdownTick = () => {
-    this.showAtTimeRemaining();
-    this.redirectOnTimeExpired();
-  };
-
-  showAtTimeRemaining() {
+  handleShowAtRemainingTick = () => {
     if (this.countdown.timeRemaining <= this.showAtRemaining!) {
       this.show();
-      this.removeEventListener('lg:countdown:tick', this.handleCountdownTick);
+      this.removeEventListener('lg:countdown:tick', this.handleShowAtRemainingTick);
     }
-  }
+  };
 
-  redirectOnTimeExpired() {
-    if (this.countdown.timeRemaining <= 0 && this.redirectURL) {
-      window.location.href = this.redirectURL;
-      // TODO: Redirect, but not using '`forceRedirect`
+  handleRedirectTick = () => {
+    if (this.countdown.timeRemaining <= 0) {
+      window.location.href = this.redirectURL || '';
+      this.removeEventListener('lg:countdown:tick', this.handleRedirectTick);
     }
-  }
+  };
 
   show() {
     this.classList.remove('display-none');

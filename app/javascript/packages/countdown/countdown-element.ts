@@ -1,5 +1,4 @@
 import { t } from '@18f/identity-i18n';
-import { forceRedirect } from '@18f/identity-url';
 
 export class CountdownElement extends HTMLElement {
   #pollIntervalId?: number;
