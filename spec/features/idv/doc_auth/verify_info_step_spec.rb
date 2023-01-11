@@ -3,12 +3,17 @@ require 'rails_helper'
 feature 'doc auth verify_info step', :js do
   include IdvStepHelper
   include DocAuthHelper
-  include DocCaptureHelper
+
+  let(:fake_analytics) { FakeAnalytics.new }
+  let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
   context 'with verify_info_controller enabled' do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_verify_info_controller_enabled).
         and_return(true)
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+      allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
+        and_return(fake_attempts_tracker)
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
     end
@@ -54,6 +59,36 @@ feature 'doc auth verify_info step', :js do
       expect(page).to have_text('9**-**-***9')
       check t('forms.ssn.show')
       expect(page).to have_text('900-45-6789')
+    end
+
+    it 'proceeds to the next page upon confirmation' do
+      expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
+        success: true,
+        failure_reason: nil,
+        document_state: 'MT',
+        document_number: '1111111111111',
+        document_issued: '2019-12-31',
+        document_expiration: '2099-12-31',
+        first_name: 'FAKEY',
+        last_name: 'MCFAKERSON',
+        date_of_birth: '1938-10-06',
+        address: '1 FAKE RD',
+        ssn: '900-66-1234',
+      )
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_verify_step
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_phone_path)
+      expect(page).to have_content(t('doc_auth.forms.doc_success'))
+      user = User.first
+      expect(user.proofing_component.resolution_check).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
+      expect(user.proofing_component.source_check).to eq(Idp::Constants::Vendors::AAMVA)
+      expect(DocAuthLog.find_by(user_id: user.id).aamva).to eq(true)
+      expect(fake_analytics).to have_logged_event(
+        'IdV: doc auth optional verify_wait submitted',
+        hash_including(address_edited: false),
+      )
     end
   end
 end
