@@ -21,7 +21,8 @@ module SamlIdpAuthConcern
     return unless user_signed_in? && saml_request.force_authn?
 
     if IdentityConfig.store.saml_internal_post
-      sign_out unless request.path.start_with?('/api/saml/finalauthpost')
+      sign_out unless sp_session[:final_auth_request]
+      sp_session[:final_auth_request] = false
     else
       sign_out unless sp_session[:request_url] == request.original_url
     end

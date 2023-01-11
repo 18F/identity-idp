@@ -233,7 +233,7 @@ class ApplicationController < ActionController::Base
       add_piv_cac_setup_url ||
       fix_broken_personal_key_url ||
       user_session.delete(:stored_location) ||
-      sp_session_request_url_with_updated_params ||
+      sp_session_request_url_with_updated_params(true) ||
       signed_in_url
   end
 
@@ -434,12 +434,21 @@ class ApplicationController < ActionController::Base
     session.fetch(:sp, {})
   end
 
-  def sp_session_request_url_with_updated_params
+  # Retrieves the current service provider session hash's logged request URL, if present
+  # Conditionally sets the final_auth_request service provider session attribute
+  # when applicable (the original SP request is SAML and the SAMLRequest inludes ForceAuthn = true
+  #
+  # @param [Boolean] final Passing true will set the sp_session[:final_auth_request] attribute
+  #                        for a SAML service provider request to avoid a sign-out/sign-in loop
+  #                        when ForceAuthn = true in the SAMLRequest (as handled
+  #                        in saml_idp_auth_concern.rb#sign_out_if_forceauthn_is_true_and_user_is_signed_in)
+  def sp_session_request_url_with_updated_params(final = false)
     # Temporarily place SAML route update behind a feature flag
     if IdentityConfig.store.saml_internal_post
       return unless sp_session[:request_url].present?
       request_url = URI(sp_session[:request_url])
       url = if request_url.path.match?('saml')
+              sp_session[:final_auth_request] = true if final
               complete_saml_url
             else
               # Login.gov redirects to the orginal request_url after a user authenticates

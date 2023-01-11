@@ -16,7 +16,7 @@ module Users
 
     def create
       analytics.authentication_confirmation_continue
-      redirect_to sp_session_request_url_with_updated_params, allow_other_host: true
+      redirect_to sp_session_request_url_with_updated_params(true), allow_other_host: true
     end
 
     def destroy
