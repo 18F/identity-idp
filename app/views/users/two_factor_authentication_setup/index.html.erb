@@ -12,7 +12,9 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<p class="maxw-mobile-lg margin-bottom-0"><%= @presenter.intro %></p>
+<p class="maxw-mobile-lg"><%= @presenter.intro %></p>
+
+<%= render AlertComponent.new(type: :warning).with_content(t('mfa.multiple_mfa_recommendation')) %>
 
 <%= simple_form_for @two_factor_options_form,
                     html: { autocomplete: 'off' },

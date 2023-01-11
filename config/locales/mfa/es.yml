@@ -16,7 +16,8 @@ es:
         copia de seguridad en caso de que pierda el acceso a su teléfono.
       title: Añadir otro método de autenticación antes del %{date}
     info: Agregue otro nivel de seguridad seleccionando un método de autentificación
-      de varios factores. Le recomendamos seleccionar al menos dos opciones
+      de varios factores.
+    multiple_mfa_recommendation: Le recomendamos seleccionar al menos dos opciones
       diferentes en caso de que pierda uno de los métodos.
     second_method_warning:
       link: Agregue un segundo método de autenticación.
