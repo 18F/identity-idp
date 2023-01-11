@@ -6,9 +6,6 @@ class OtpRateLimiter
   end
 
   def exceeded_otp_send_limit?
-    return throttle.throttled? if IdentityConfig.store.redis_throttle_otp_rate_limiter_read_enabled
-    return false if entry_for_current_phone.blank?
-
     if rate_limit_period_expired?
       reset_count_and_otp_last_sent_at
       return false
@@ -18,6 +15,8 @@ class OtpRateLimiter
   end
 
   def max_requests_reached?
+    return throttle.throttled? if IdentityConfig.store.redis_throttle_otp_rate_limiter_read_enabled
+
     entry_for_current_phone.otp_send_count > otp_maxretry_times
   end
 
