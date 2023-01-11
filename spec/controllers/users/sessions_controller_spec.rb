@@ -633,6 +633,12 @@ describe Users::SessionsController, devise: true do
         expect(response.body).to_not include('my xss script')
       end
     end
+
+    it 'does not blow up with malformed params' do
+      expect do
+        get :new, params: { user: 'this_is_not_a_hash' }
+      end.to_not raise_error
+    end
   end
 
   describe 'POST /sessions/keepalive' do
