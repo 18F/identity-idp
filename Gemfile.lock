@@ -37,9 +37,9 @@ GIT
       uuid
 
 GIT
-  remote: https://github.com/mitchellhenke/capybara-webmock.git
-  revision: c23b02fa9fb77264bdfa1deefbdff2b6d3bf4105
-  ref: c23b02f
+  remote: https://github.com/hashrocket/capybara-webmock.git
+  revision: d3f3b7c8edbeca7b575e74b256ad22df80d2b420
+  ref: d3f3b7c
   specs:
     capybara-webmock (0.6.0)
       capybara (>= 2.4, < 4)
