@@ -123,15 +123,6 @@ module Users
       params.require(:user).permit(:email, :password, :request_id)
     end
 
-    # Overrides a method from Devise::SessionController to handle malformed params
-    def sign_in_params
-      if params[:user].is_a?(Hash)
-        super
-      else
-        {}
-      end
-    end
-
     def process_locked_out_user
       presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
         'generic_login_attempts',
