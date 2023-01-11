@@ -20,7 +20,7 @@ const DEFAULT_RESPONSE = [
   },
 ];
 
-describe('AddressSearch', () => {
+describe('AddressSearch finds an address', () => {
   const sandbox = useSandbox();
 
   let server: SetupServerApi;
@@ -53,5 +53,33 @@ describe('AddressSearch', () => {
 
     await expect(handleAddressFound).to.eventually.be.called();
     await expect(handleLocationsFound).to.eventually.be.called();
+  });
+});
+
+describe('AddressSearch does not find an address', () => {
+  const sandbox = useSandbox();
+
+  let server: SetupServerApi;
+  before(() => {
+    server = setupServer(rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json([]))));
+    server.listen();
+  });
+
+  after(() => {
+    server.close();
+  });
+
+  const handleAddressFound = sandbox.stub();
+  const handleLocationsFound = sandbox.stub();
+  render(
+    <AddressSearch onFoundAddress={handleAddressFound} onFoundLocations={handleLocationsFound} />,
+  );
+
+  it('sets found address to null', () => {
+    expect(handleAddressFound).to.have.been.calledWith(null);
+  });
+
+  it('never calls set location results', () => {
+    expect(handleLocationsFound).to.not.be.called();
   });
 });
