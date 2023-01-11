@@ -13,6 +13,9 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
     module: true,
     chunkFormat: 'commonjs',
     filename: '[name].js',
+    library: {
+      type: 'module',
+    },
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.mts', '.cts'],
