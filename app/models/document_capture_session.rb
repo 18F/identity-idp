@@ -3,7 +3,7 @@ class DocumentCaptureSession < ApplicationRecord
 
   belongs_to :user
 
-  self.ignored_columns = ["ial2_strict"]
+  self.ignored_columns = ['ial2_strict']
 
   def load_result
     EncryptedRedisStructStorage.load(result_id, type: DocumentCaptureSessionResult)

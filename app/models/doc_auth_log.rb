@@ -7,5 +7,5 @@ class DocAuthLog < ApplicationRecord
              primary_key: 'issuer'
   # rubocop:enable Rails/InverseOf
 
-  self.ignored_columns = ["selfie_view_at"]
+  self.ignored_columns = ['selfie_view_at']
 end
