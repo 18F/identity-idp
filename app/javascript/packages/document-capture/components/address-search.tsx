@@ -155,7 +155,7 @@ function useUspsLocations() {
 
 interface AddressSearchProps {
   registerField?: RegisterFieldCallback;
-  onFoundAddress?: (address: LocationQuery) => void;
+  onFoundAddress?: (address: LocationQuery | null) => void;
   onFoundLocations?: (locations: FormattedLocation[]) => void;
 }
 
