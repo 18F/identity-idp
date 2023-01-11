@@ -2983,6 +2983,28 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when USPS in-person proofing enrollment is created
+  # @param [String] enrollment_code
+  # @param [Integer] enrollment_id
+  # @param [String] user_id
+  # @param [String] service_provider
+  def usps_ippaas_enrollment_created(
+    enrollment_code:,
+    enrollment_id:,
+    user_id:,
+    service_provider:,
+    **extra
+  )
+    track_event(
+      'USPS IPPaaS enrollment created',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      user_id: user_id,
+      service_provider: service_provider,
+      **extra,
+    )
+  end
+
   # Tracks if USPS in-person proofing enrollment request fails
   # @param [String] context
   # @param [String] reason
