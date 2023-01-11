@@ -187,7 +187,7 @@ function AddressSearch({
   useEffect(() => {
     !isLoading && locationResults && onFoundLocations(locationResults);
     !isLoading && onFoundAddress(foundAddress);
-  }, [locationResults, foundAddress]);
+  }, [isLoading, locationResults, foundAddress]);
 
   const handleSearch = useCallback(
     (event) => {

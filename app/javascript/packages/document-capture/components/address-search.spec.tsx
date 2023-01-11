@@ -20,66 +20,74 @@ const DEFAULT_RESPONSE = [
   },
 ];
 
-describe('AddressSearch finds an address', () => {
+describe('AddressSearch', () => {
   const sandbox = useSandbox();
+  context('when an address is found', () => {
+    let server: SetupServerApi;
+    before(() => {
+      server = setupServer(
+        rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
+        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
+      );
+      server.listen();
+    });
 
-  let server: SetupServerApi;
-  before(() => {
-    server = setupServer(
-      rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
-      rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
-    );
-    server.listen();
+    after(() => {
+      server.close();
+    });
+
+    it('fires the callback with correct input', async () => {
+      const handleAddressFound = sandbox.stub();
+      const handleLocationsFound = sandbox.stub();
+      const { findByText, findByLabelText } = render(
+        <AddressSearch
+          onFoundAddress={handleAddressFound}
+          onFoundLocations={handleLocationsFound}
+        />,
+      );
+
+      await userEvent.type(
+        await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
+        '200 main',
+      );
+      await userEvent.click(
+        await findByText('in_person_proofing.body.location.po_search.search_button'),
+      );
+
+      await expect(handleAddressFound).to.eventually.be.called();
+      await expect(handleLocationsFound).to.eventually.be.called();
+    });
   });
 
-  after(() => {
-    server.close();
-  });
-
-  it('fires the callback with correct input', async () => {
+  context('when an address is not found', () => {
     const handleAddressFound = sandbox.stub();
     const handleLocationsFound = sandbox.stub();
-    const { findByText, findByLabelText } = render(
-      <AddressSearch onFoundAddress={handleAddressFound} onFoundLocations={handleLocationsFound} />,
-    );
 
-    await userEvent.type(
-      await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
-      '200 main',
-    );
-    await userEvent.click(
-      await findByText('in_person_proofing.body.location.po_search.search_button'),
-    );
+    let server: SetupServerApi;
+    before(() => {
+      server = setupServer(rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json([]))));
+      server.listen();
+    });
 
-    await expect(handleAddressFound).to.eventually.be.called();
-    await expect(handleLocationsFound).to.eventually.be.called();
-  });
-});
+    after(() => {
+      server.close();
+    });
 
-describe('AddressSearch does not find an address', () => {
-  const sandbox = useSandbox();
+    beforeEach(() => {
+      render(
+        <AddressSearch
+          onFoundAddress={handleAddressFound}
+          onFoundLocations={handleLocationsFound}
+        />,
+      );
+    });
 
-  let server: SetupServerApi;
-  before(() => {
-    server = setupServer(rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json([]))));
-    server.listen();
-  });
+    it('sets found address to null', () => {
+      expect(handleAddressFound).to.have.been.calledWith(null);
+    });
 
-  after(() => {
-    server.close();
-  });
-
-  const handleAddressFound = sandbox.stub();
-  const handleLocationsFound = sandbox.stub();
-  render(
-    <AddressSearch onFoundAddress={handleAddressFound} onFoundLocations={handleLocationsFound} />,
-  );
-
-  it('sets found address to null', () => {
-    expect(handleAddressFound).to.have.been.calledWith(null);
-  });
-
-  it('never calls set location results', () => {
-    expect(handleLocationsFound).to.not.be.called();
+    it('never calls set location results', () => {
+      expect(handleLocationsFound).to.not.be.called();
+    });
   });
 });
