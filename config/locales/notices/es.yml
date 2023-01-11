@@ -21,6 +21,8 @@ es:
       currently_under_maintenance_html: Actualmente estamos <b>en mantenimiento hasta
         el %{finish}</b> para algunos de nuestros servicios.
       need_assistance: '¿Necesita ayuda?'
+    mfa_setup:
+      first_added: 'Has agregado tu primer método de autenticación: %{method}.'
     password_changed: Ha cambiado su contraseña.
     phone_confirmed: Un teléfono fue agregado a tu cuenta.
     piv_cac_configured: Una tarjeta PIV/CAC fue agregada a tu cuenta.

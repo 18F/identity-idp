@@ -46,8 +46,7 @@ en:
       cancellation_prompt: Cancel identity verification
       cancelled: Identity verification is cancelled
     mfa_setup:
-      suggest_second_mfa: You’ve added your first authentication method! Add a second
-        method as a backup.
+      suggest_second_mfa: Add another authentication method.
     no_auth_option: No sign-in method found
     openid_connect:
       authorization: OpenID Connect Authorization
