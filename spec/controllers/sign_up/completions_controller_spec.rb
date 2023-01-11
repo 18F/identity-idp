@@ -141,13 +141,10 @@ describe SignUp::CompletionsController do
     end
 
     context 'IAL1' do
+      let(:sp_session) { { ial: 1, ial2: false, issuer: 'foo', requested_attributes: ['email'], request_url: 'http://example.com' } }
       it 'tracks analytics' do
         stub_sign_in
-        subject.session[:sp] = {
-          ial2: false,
-          issuer: 'foo',
-          request_url: 'http://example.com',
-        }
+        subject.session[:sp] = sp_session.merge({ requested_attributes: nil})
 
         patch :update
 
@@ -165,12 +162,7 @@ describe SignUp::CompletionsController do
 
       it 'updates verified attributes' do
         stub_sign_in
-        subject.session[:sp] = {
-          issuer: 'foo',
-          ial: 1,
-          request_url: 'http://example.com',
-          requested_attributes: ['email'],
-        }
+        subject.session[:sp] = sp_session
         expect(@linker).to receive(:link_identity).with(
           ial: 1,
           verified_attributes: ['email'],
@@ -185,14 +177,19 @@ describe SignUp::CompletionsController do
 
       it 'redirects to account page if the session request_url is removed' do
         stub_sign_in
-        subject.session[:sp] = {
-          ial2: false,
-          issuer: 'foo',
-          requested_attributes: ['email'],
-        }
+        subject.session[:sp] = sp_session.merge({ request_url: nil })
 
         patch :update
         expect(response).to redirect_to account_path
+      end
+
+      it 'redirects to SP session request url' do
+        stub_sign_in
+        subject.session[:sp] = sp_session
+        allow(subject).to receive(:sp_session_request_url_with_updated_params).and_call_original
+        expect(subject).to receive(:sp_session_request_url_with_updated_params).with(true)
+
+        patch :update
       end
     end
 

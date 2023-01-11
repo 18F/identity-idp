@@ -1,7 +1,5 @@
 require 'rails_helper'
 
-class MockSession; end
-
 feature 'saml api' do
   include SamlAuthHelper
   include IdvHelper
@@ -231,6 +229,115 @@ feature 'saml api' do
           visit api_saml_logout2022_url
           expect(page.current_path).to eq('/')
         end
+      end
+    end
+  end
+
+  context 'with an SP configured to receive verified attributes' do
+    context 'with a proofed user' do
+      let(:pii) { { phone: '+12025555555', ssn: '111111111', dob: '01/01/1941' } }
+      let(:user) { create(:profile, :active, :verified, pii: pii).user }
+
+      scenario 'sign in flow with user authorizing SP' do
+        visit_idp_from_saml_sp_with_ial2
+        sign_in_live_with_2fa(user)
+        click_submit_default
+        click_agree_and_continue
+        click_submit_default_twice
+
+        xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+        expect(xmldoc.attribute_value_for(:ial)).to eq(
+          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        )
+
+        expect { xmldoc.attribute_value_for(:ssn) }.not_to raise_exception
+        expect(xmldoc.attribute_value_for(:ssn)).to eq('111111111')
+
+        sp_return_logs = SpReturnLog.where(user_id: user.id)
+        expect(sp_return_logs.count).to eq(1)
+        expect(sp_return_logs.first.ial).to eq(2)
+      end
+
+      scenario 'enforces reauthentication when ForceAuthn = true in SAMLRequest' do
+        saml_request_overrides = {
+          issuer: sp1_issuer,
+          authn_context: [
+            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+            "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+          ],
+          force_authn: true,
+          security: {
+            embed_sign: false,
+          }
+        }
+        # start with an active user session
+        sign_in_live_with_2fa(user)
+
+        # visit from SP with force_authn: true
+        visit_saml_authn_request_url(overrides: saml_request_overrides)
+        expect(page.has_content?(
+          'Test SP is using Login.gov to allow you to sign in to your account safely and securely.'
+        )).to be true
+        expect(page.has_button?('Sign in')).to be true
+
+        # sign in again
+        fill_in_credentials_and_submit(user.email, user.password)
+        fill_in_code_with_last_phone_otp
+        click_submit_default_twice
+        click_agree_and_continue
+        click_submit_default_twice
+
+        xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+
+        expect(xmldoc.attribute_value_for(:ial)).to eq(
+          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        )
+        expect { xmldoc.attribute_value_for(:ssn) }.not_to raise_exception
+        expect(xmldoc.attribute_value_for(:ssn)).to eq('111111111')
+        expect(xmldoc.status_code.attribute('Value').value).to eq 'urn:oasis:names:tc:SAML:2.0:status:Success'
+
+        sp_return_logs = SpReturnLog.where(user_id: user.id)
+        expect(sp_return_logs.count).to eq(1)
+        expect(sp_return_logs.first.ial).to eq(2)
+      end
+    end
+
+    context 'with an IAL1 SP' do
+      scenario 'sign in flow with user already linked to SP' do
+        link_user_to_identity(user, true, saml_settings)
+        visit_idp_from_sp_with_ial1(:saml)
+        sign_in_live_with_2fa(user)
+        click_submit_default_twice
+        xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+        expect(xmldoc.attribute_value_for(:ial)).to eq(
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        )
+        expect(xmldoc.status_code.attribute('Value').value).to eq 'urn:oasis:names:tc:SAML:2.0:status:Success'
+      end
+
+      scenario 'enforces reauthentication when ForceAuthn = true in SAMLRequest' do
+        # start with an active user session
+        sign_in_live_with_2fa(user)
+
+        # visit from SP with force_authn: true
+        visit_saml_authn_request_url(overrides: { force_authn: true })
+        expect(page.has_content?(
+          'is using Login.gov to allow you to sign in to your account safely and securely.'
+        )).to be true
+        expect(page.has_button?('Sign in')).to be true
+
+        # sign in again
+        fill_in_credentials_and_submit(user.email, user.password)
+        fill_in_code_with_last_phone_otp
+        click_submit_default_twice
+        click_agree_and_continue
+        click_submit_default_twice
+        xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+        expect(xmldoc.attribute_value_for(:ial)).to eq(
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        )
+        expect(xmldoc.status_code.attribute('Value').value).to eq 'urn:oasis:names:tc:SAML:2.0:status:Success'
       end
     end
   end

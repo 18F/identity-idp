@@ -34,6 +34,9 @@ describe Users::AuthorizationConfirmationController do
 
   describe '#create' do
     it 'redirects to the sp request url' do
+      allow(subject).to receive(:sp_session_request_url_with_updated_params).and_call_original
+      expect(subject).to receive(:sp_session_request_url_with_updated_params).with(true)
+
       post :create
 
       expect(response).to redirect_to(sp_request_url)
