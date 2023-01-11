@@ -4,7 +4,6 @@ class WebauthnVerificationForm
 
   validates :user, presence: true
   validates :challenge, presence: true
-  validates :protocol, presence: true
   validates :authenticator_data, presence: true
   validates :client_data_json, presence: true
   validates :signature, presence: true
@@ -13,9 +12,9 @@ class WebauthnVerificationForm
   validate :validate_webauthn_error
 
   def initialize(
+    protocol:,
     user: nil,
     challenge: nil,
-    protocol: nil,
     authenticator_data: nil,
     client_data_json: nil,
     signature: nil,
@@ -44,7 +43,7 @@ class WebauthnVerificationForm
 
   def webauthn_configuration
     return @webauthn_configuration if defined?(@webauthn_configuration)
-    @webauthn_configuration = user.webauthn_configurations.find_by(credential_id: credential_id)
+    @webauthn_configuration = user&.webauthn_configurations&.find_by(credential_id: credential_id)
   end
 
   # this gives us a hook to override the domain embedded in the attestation test object
@@ -74,6 +73,10 @@ class WebauthnVerificationForm
   end
 
   def valid_assertion_response?
+    return false if authenticator_data.blank? ||
+                    client_data_json.blank? ||
+                    signature.blank? ||
+                    challenge.blank?
     WebAuthn::AuthenticatorAssertionResponse.new(
       authenticator_data: Base64.decode64(authenticator_data),
       client_data_json: Base64.decode64(client_data_json),
