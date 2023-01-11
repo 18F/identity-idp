@@ -2,10 +2,10 @@ class CountdownAlertComponent < BaseComponent
   attr_reader :show_at_remaining, :alert_options, :countdown_options, :redirect_url, :tag_options
 
   def initialize(
-    show_at_remaining: nil, 
-    alert_options: {}, 
-    countdown_options: {}, 
-    redirect_url: nil, 
+    show_at_remaining: nil,
+    alert_options: {},
+    countdown_options: {},
+    redirect_url: nil,
     **tag_options
   )
     @show_at_remaining = show_at_remaining
