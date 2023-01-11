@@ -8,8 +8,8 @@ fr:
           actuelle au bureau de poste.
         learn_more: Apprendre encore plus
       barcode:
-        close_window: Vous pouvez maintenant fermer cette fenêtre
         cancel_link_text: Annulez votre code-barres
+        close_window: Vous pouvez maintenant fermer cette fenêtre
         deadline: Visitez le bureau de poste d’ici %{deadline}
         deadline_restart: Si vous partez après la date limite, vos informations ne
           seront pas sauvegardées et vous devrez recommencer le processus.
