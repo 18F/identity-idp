@@ -18,7 +18,7 @@ class MfaConfirmationPresenter
   end
 
   def first_mfa_method
-    return if user_mfa_context.blank?
+    return if user_mfa_context.blank? || user_mfa_context.enabled_mfa_methods_count != 1
     return :phone if user_mfa_context.phone_configurations.any?
     return :piv_cac if user_mfa_context.piv_cac_configurations.any?
     return :auth_app if user_mfa_context.auth_app_configurations.any?
