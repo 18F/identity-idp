@@ -19,10 +19,6 @@ class DownloadButtonComponent < ButtonComponent
     @file_name = file_name
   end
 
-  def call
-    content_tag(:'lg-download-button', super)
-  end
-
   def content
     super || t('components.download_button.label')
   end
