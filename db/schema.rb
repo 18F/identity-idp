@@ -10,10 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_09_171633) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_11_013539) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
-  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "account_reset_requests", force: :cascade do |t|
@@ -155,7 +154,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_09_171633) do
     t.integer "enter_info_view_count", default: 0
     t.datetime "success_view_at", precision: nil
     t.integer "success_view_count", default: 0
-    t.datetime "selfie_view_at", precision: nil
     t.integer "selfie_view_count", default: 0
     t.integer "selfie_submit_count", default: 0
     t.integer "selfie_error_count", default: 0
@@ -188,7 +186,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_09_171633) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "requested_at", precision: nil
-    t.boolean "ial2_strict"
     t.string "issuer"
     t.datetime "cancelled_at", precision: nil
     t.boolean "ocr_confirmation_pending", default: false
