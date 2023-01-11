@@ -34,6 +34,7 @@ module Proofing
             attributes_requiring_additional_verification:
               attributes_requiring_additional_verification(verification_response),
             vendor_workflow: config.phone_finder_workflow,
+            drivers_license_check_info: drivers_license_check_info(verification_response),
           )
         end
 
@@ -59,6 +60,16 @@ module Proofing
           CheckToAttributeMapper.new(
             verification_response.verification_errors[:"Execute Instant Verify"],
           ).map_failed_checks_to_attributes
+        end
+
+        def drivers_license_check_info(verification_response)
+          instant_verify_product = verification_response.response_body['Products']&.first
+          return unless instant_verify_product.present?
+          return unless instant_verify_product['ExecutedStepName'] == 'Execute Instant Verify'
+
+          instant_verify_product['Items']&.find do |item|
+            item['ItemName'] == 'DriversLicenseVerification'
+          end
         end
       end
     end

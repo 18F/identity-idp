@@ -65,6 +65,7 @@ country_phone_number_overrides: '{}'
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_sharpness_threshold: 40
 doc_auth_error_glare_threshold: 40
+doc_auth_verify_info_controller_enabled: false
 database_pool_extra_connections_for_worker: 4
 database_pool_idp: 5
 database_statement_timeout: 2_500
