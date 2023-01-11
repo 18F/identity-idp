@@ -1,5 +1,3 @@
-const externals = Object.keys(require('./package.json').dependencies);
-
 module.exports = /** @type {import('webpack').Configuration} */ ({
   mode: 'production',
   target: ['node'],
@@ -20,7 +18,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.mts', '.cts'],
   },
-  externals,
+  externals: /^(?!(@18f\/identity-|\.))/,
   module: {
     rules: [
       {
