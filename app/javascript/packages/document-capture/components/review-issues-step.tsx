@@ -13,6 +13,7 @@ import Warning from './warning';
 import AnalyticsContext from '../context/analytics';
 import BarcodeAttentionWarning from './barcode-attention-warning';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
+import { InPersonContext } from '../context';
 
 type DocumentSide = 'front' | 'back';
 
@@ -74,6 +75,7 @@ function ReviewIssuesStep({
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
   const { onFailedSubmissionAttempt } = useContext(FailedCaptureAttemptsContext);
+  const { inPersonCtaVariantActive } = useContext(InPersonContext);
   useEffect(() => onFailedSubmissionAttempt(), []);
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed');

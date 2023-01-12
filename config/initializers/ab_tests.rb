@@ -18,4 +18,19 @@ module AbTests
         0,
     },
   )
+
+
+  in_person_cta_variant_testing_buckets = Hash.new
+  if (IdentityConfig.store.in_person_cta_variant_testing_enabled)
+    IdentityConfig.store.in_person_cta_variant_testing_percents.each do |variant, rate|
+      bucket_name = "in_person_variant_" + variant.to_s.downcase
+      in_person_cta_variant_testing_buckets[bucket_name.to_sym] = rate
+    end
+  else
+    in_person_cta_variant_testing_buckets["standard"] = 100
+  end
+  IN_PERSON_CTA = AbTestBucket.new(
+    experiment_name: 'In-Person Proofing CTA',
+    buckets: in_person_cta_variant_testing_buckets
+  )
 end
