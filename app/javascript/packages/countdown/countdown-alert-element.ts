@@ -32,7 +32,7 @@ export class CountdownAlertElement extends HTMLElement {
 
   handleRedirectTick = () => {
     if (this.countdown.timeRemaining <= 0) {
-      window.location.href = this.redirectURL || '#';
+      window.location.href = this.redirectURL!;
       this.removeEventListener('lg:countdown:tick', this.handleRedirectTick);
     }
   };

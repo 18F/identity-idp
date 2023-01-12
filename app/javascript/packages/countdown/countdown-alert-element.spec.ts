@@ -11,8 +11,8 @@ describe('CountdownAlertElement', () => {
   }: { showAtRemaining?: number; redirectURL?: string } = {}) {
     document.body.innerHTML = `
       <lg-countdown-alert
-        ${showAtRemaining ? ` show-at-remaining="${showAtRemaining}"` : ''}
-        ${redirectURL ? `redirect-url ="${redirectURL}"` : ''}>
+        ${showAtRemaining ? `show-at-remaining="${showAtRemaining}"` : ''}
+        ${redirectURL ? `redirect-url="${redirectURL}"` : ''}>
         <div class="usa-alert usa-alert--info margin-bottom-4 usa-alert--info-time" role="status">
           <div class="usa-alert__body">
             <p class="usa-alert__text">
@@ -50,7 +50,7 @@ describe('CountdownAlertElement', () => {
   context('when time remaining has expired', () => {
     it('redirects to the otp expired page', () => {
       const element = createElement({
-        redirectURL: 'http://www.teapot.com',
+        redirectURL: '#teapot',
         showAtRemaining: 60000,
       });
       sandbox.spy(element, 'handleRedirectTick');
