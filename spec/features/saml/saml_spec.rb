@@ -276,12 +276,10 @@ feature 'saml api' do
 
         # visit from SP with force_authn: true
         visit_saml_authn_request_url(overrides: saml_request_overrides)
-        expect(
-          page.has_content?(
-            'is using Login.gov to allow you to sign in to your account safely and securely.',
-          ),
-        ).to be true
-        expect(page.has_button?('Sign in')).to be true
+        expect(page).to have_content(
+          'is using Login.gov to allow you to sign in to your account safely and securely.',
+        )
+        expect(page).to have_button('Sign in')
 
         # sign in again
         fill_in_credentials_and_submit(user.email, user.password)
@@ -328,12 +326,10 @@ feature 'saml api' do
 
         # visit from SP with force_authn: true
         visit_saml_authn_request_url(overrides: { force_authn: true })
-        expect(
-          page.has_content?(
-            'is using Login.gov to allow you to sign in to your account safely and securely.',
-          ),
-        ).to be true
-        expect(page.has_button?('Sign in')).to be true
+        expect(page).to have_content(
+          'is using Login.gov to allow you to sign in to your account safely and securely.',
+        )
+        expect(page).to have_button('Sign in')
 
         # sign in again
         fill_in_credentials_and_submit(user.email, user.password)
