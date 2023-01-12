@@ -269,16 +269,18 @@ feature 'saml api' do
           force_authn: true,
           security: {
             embed_sign: false,
-          }
+          },
         }
         # start with an active user session
         sign_in_live_with_2fa(user)
 
         # visit from SP with force_authn: true
         visit_saml_authn_request_url(overrides: saml_request_overrides)
-        expect(page.has_content?(
-          'Test SP is using Login.gov to allow you to sign in to your account safely and securely.'
-        )).to be true
+        expect(
+          page.has_content?(
+            'is using Login.gov to allow you to sign in to your account safely and securely.',
+          ),
+        ).to be true
         expect(page.has_button?('Sign in')).to be true
 
         # sign in again
@@ -295,7 +297,9 @@ feature 'saml api' do
         )
         expect { xmldoc.attribute_value_for(:ssn) }.not_to raise_exception
         expect(xmldoc.attribute_value_for(:ssn)).to eq('111111111')
-        expect(xmldoc.status_code.attribute('Value').value).to eq 'urn:oasis:names:tc:SAML:2.0:status:Success'
+        expect(
+          xmldoc.status_code.attribute('Value').value,
+        ).to eq 'urn:oasis:names:tc:SAML:2.0:status:Success'
 
         sp_return_logs = SpReturnLog.where(user_id: user.id)
         expect(sp_return_logs.count).to eq(1)
@@ -313,7 +317,9 @@ feature 'saml api' do
         expect(xmldoc.attribute_value_for(:ial)).to eq(
           Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         )
-        expect(xmldoc.status_code.attribute('Value').value).to eq 'urn:oasis:names:tc:SAML:2.0:status:Success'
+        expect(
+          xmldoc.status_code.attribute('Value').value,
+        ).to eq 'urn:oasis:names:tc:SAML:2.0:status:Success'
       end
 
       scenario 'enforces reauthentication when ForceAuthn = true in SAMLRequest' do
@@ -322,9 +328,11 @@ feature 'saml api' do
 
         # visit from SP with force_authn: true
         visit_saml_authn_request_url(overrides: { force_authn: true })
-        expect(page.has_content?(
-          'is using Login.gov to allow you to sign in to your account safely and securely.'
-        )).to be true
+        expect(
+          page.has_content?(
+            'is using Login.gov to allow you to sign in to your account safely and securely.',
+          ),
+        ).to be true
         expect(page.has_button?('Sign in')).to be true
 
         # sign in again
@@ -337,7 +345,9 @@ feature 'saml api' do
         expect(xmldoc.attribute_value_for(:ial)).to eq(
           Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         )
-        expect(xmldoc.status_code.attribute('Value').value).to eq 'urn:oasis:names:tc:SAML:2.0:status:Success'
+        expect(
+          xmldoc.status_code.attribute('Value').value,
+        ).to eq 'urn:oasis:names:tc:SAML:2.0:status:Success'
       end
     end
   end

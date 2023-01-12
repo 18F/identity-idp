@@ -876,7 +876,7 @@ describe SamlIdpController do
     context 'saml_internal_post feature configuration is set to true with ForceAuthn' do
       let(:user) { create(:user, :signed_up) }
 
-      it 'signs the user out if a session is active and sp_session[:final_auth_request] is falsey' do
+      it 'signs user out if a session is active and sp_session[:final_auth_request] is falsey' do
         sign_in(user)
         generate_saml_response(user, saml_settings(overrides: { force_authn: true }))
         # would be 200 if the user's session persists
@@ -2085,7 +2085,6 @@ describe SamlIdpController do
     end
   end
 
-  # temporarily commenting out this spec because it needs to be updated to work
   describe 'before_actions' do
     it 'includes the appropriate before_actions' do
       expect(subject).to have_actions(
@@ -2093,7 +2092,7 @@ describe SamlIdpController do
         :disable_caching,
         :validate_saml_request,
         :validate_service_provider_and_authn_context,
-        :store_saml_request
+        :store_saml_request,
       )
     end
   end
