@@ -257,51 +257,96 @@ feature 'saml api' do
         expect(sp_return_logs.count).to eq(1)
         expect(sp_return_logs.first.ial).to eq(2)
       end
+      context 'when ForceAuthn = true in SAMLRequest' do
+        let(:saml_request_overrides) do
+          {
+            issuer: sp1_issuer,
+            authn_context: [
+              Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}\
+               first_name:last_name email, ssn",
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+            ],
+            force_authn: true,
+            security: {
+              embed_sign: false,
+            },
+          }
+        end
 
-      scenario 'enforces reauthentication when ForceAuthn = true in SAMLRequest' do
-        saml_request_overrides = {
-          issuer: sp1_issuer,
-          authn_context: [
+        scenario 'enforces reauthentication if already signed in' do
+          # start with an active user session
+          sign_in_live_with_2fa(user)
+
+          # visit from SP with force_authn: true
+          visit_saml_authn_request_url(overrides: saml_request_overrides)
+          expect(page).to have_content(
+            'is using Login.gov to allow you to sign in to your account safely and securely.',
+          )
+          expect(page).to have_button('Sign in')
+
+          # sign in again
+          fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_code_with_last_phone_otp
+          click_submit_default_twice
+          click_agree_and_continue
+          click_submit_default_twice
+
+          xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+
+          expect(xmldoc.attribute_value_for(:ial)).to eq(
             Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-            "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-            "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-          ],
-          force_authn: true,
-          security: {
-            embed_sign: false,
-          },
-        }
-        # start with an active user session
-        sign_in_live_with_2fa(user)
+          )
+          expect { xmldoc.attribute_value_for(:ssn) }.not_to raise_exception
+          expect(xmldoc.attribute_value_for(:ssn)).to eq('111111111')
+          expect(
+            xmldoc.status_code.attribute('Value').value,
+          ).to eq 'urn:oasis:names:tc:SAML:2.0:status:Success'
 
-        # visit from SP with force_authn: true
-        visit_saml_authn_request_url(overrides: saml_request_overrides)
-        expect(page).to have_content(
-          'is using Login.gov to allow you to sign in to your account safely and securely.',
-        )
-        expect(page).to have_button('Sign in')
+          sp_return_logs = SpReturnLog.where(user_id: user.id)
+          expect(sp_return_logs.count).to eq(1)
+          expect(sp_return_logs.first.ial).to eq(2)
+        end
 
-        # sign in again
-        fill_in_credentials_and_submit(user.email, user.password)
-        fill_in_code_with_last_phone_otp
-        click_submit_default_twice
-        click_agree_and_continue
-        click_submit_default_twice
+        scenario 'enforces reauthentication if already signed in from the same SP' do
+          # first visit from Test SP
+          visit_saml_authn_request_url(overrides: saml_request_overrides)
+          expect(page).to have_content(
+            'Test SP is using Login.gov to allow you to sign in' \
+            ' to your account safely and securely.',
+          )
+          expect(page).to have_button('Sign in')
+          # Log in with Test SP as the SP session
+          fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_code_with_last_phone_otp
+          click_submit_default_twice
+          click_agree_and_continue
+          click_submit_default_twice
 
-        xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+          xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+          expect(
+            xmldoc.status_code.attribute('Value').value,
+          ).to eq 'urn:oasis:names:tc:SAML:2.0:status:Success'
 
-        expect(xmldoc.attribute_value_for(:ial)).to eq(
-          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-        )
-        expect { xmldoc.attribute_value_for(:ssn) }.not_to raise_exception
-        expect(xmldoc.attribute_value_for(:ssn)).to eq('111111111')
-        expect(
-          xmldoc.status_code.attribute('Value').value,
-        ).to eq 'urn:oasis:names:tc:SAML:2.0:status:Success'
+          # second visit to log in from the same SP as before, should be signed out
+          # because ForceAuthn = true even though the user session would still be active
+          # for Test SP
+          visit_saml_authn_request_url(overrides: saml_request_overrides)
+          expect(page).to have_content(
+            'Test SP is using Login.gov to allow you to sign in' \
+            ' to your account safely and securely.',
+          )
+          expect(page).to have_button('Sign in')
 
-        sp_return_logs = SpReturnLog.where(user_id: user.id)
-        expect(sp_return_logs.count).to eq(1)
-        expect(sp_return_logs.first.ial).to eq(2)
+          # log in for second time
+          fill_in_credentials_and_submit(user.email, user.password)
+          click_submit_default_twice
+
+          xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+          expect(
+            xmldoc.status_code.attribute('Value').value,
+          ).to eq 'urn:oasis:names:tc:SAML:2.0:status:Success'
+        end
       end
     end
 
