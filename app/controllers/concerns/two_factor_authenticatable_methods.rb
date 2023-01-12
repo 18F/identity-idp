@@ -194,6 +194,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     track_mfa_method_added
     @next_mfa_setup_path = next_setup_path
     reset_second_factor_attempts_count
+    flash[:success] = t('notices.phone_confirmed')
   end
 
   def track_mfa_method_added

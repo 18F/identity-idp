@@ -1,17 +1,5 @@
 <% title t('titles.mfa_setup.suggest_second_mfa') %>
 
-<% if @content.first_mfa_method.present? %>
-  <%= render AlertComponent.new(type: :success, class: 'margin-bottom-4') do %>
-    <%= t(
-          'notices.mfa_setup.first_added',
-          method: t(
-            @content.first_mfa_method,
-            scope: [:two_factor_authentication, :two_factor_choice_options],
-          ).downcase,
-        ) %>
-  <% end %>
-<% end %>
-
 <%= image_tag asset_url('user-signup-ial1.svg'), width: 107, height: 119, alt: '', class: 'margin-bottom-4' %>
 
 <%= render PageHeadingComponent.new.with_content(@content.heading) %>

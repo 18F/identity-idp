@@ -5,6 +5,17 @@ class MfaConfirmationController < ApplicationController
   def show
     @content = MfaConfirmationPresenter.new(current_user)
     analytics.user_registration_suggest_another_mfa_notice_visited
+    if @content.first_mfa_method.present?
+      flash.now[:success] = t(
+        'notices.mfa_setup.first_added',
+        method: t(
+          @content.first_mfa_method,
+          scope: [:two_factor_authentication, :two_factor_choice_options],
+        ).downcase,
+      )
+    else
+      flash.clear
+    end
   end
 
   def skip
