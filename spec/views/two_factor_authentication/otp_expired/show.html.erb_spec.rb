@@ -6,6 +6,4 @@ describe 'two_factor_authentication/otp_expired/show.html.erb' do
 
     render
   end
-
-  end
 end
