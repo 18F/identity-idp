@@ -134,6 +134,7 @@ function useUspsLocations() {
         t('in_person_proofing.body.location.inline_error'),
       );
       validatedFieldRef?.current?.reportValidity();
+      setFoundAddress(null);
     }
   }, [addressCandidates]);
 
@@ -184,9 +185,10 @@ function AddressSearch({
   }, [isLoading]);
 
   useEffect(() => {
-    locationResults && onFoundLocations(locationResults);
+    onFoundLocations(locationResults);
+
     foundAddress && onFoundAddress(foundAddress);
-  }, [locationResults, foundAddress]);
+  }, [locationResults]);
 
   const handleSearch = useCallback(
     (event) => {
