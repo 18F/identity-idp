@@ -60,14 +60,8 @@ module Ahoy
     end
 
     def invalid_uuid?(token)
-      # The match? method does not exist for the Regexp class in Ruby < 2.4
-      # Here, it comes from Active Support. Once we upgrade to Ruby 2.5,
-      # we probably want to ignore the Rails definition and use Ruby's.
-      # To do that, we'll need to set `config.active_support.bare = true`,
-      # and then only require the extensions we use.
       token = Utf8Cleaner.new(token).remove_invalid_utf8_bytes
-      uuid_regex = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
-      !uuid_regex.match?(token)
+      !Idp::Constants::UUID_REGEX.match?(token)
     end
   end
 end
