@@ -42,7 +42,6 @@ section of the README.
   INST
 
   s.add_dependency('activesupport')
-  s.add_dependency('uuid')
   s.add_dependency('builder')
   s.add_dependency('faraday')
   s.add_dependency('nokogiri', '>= 1.10.2')

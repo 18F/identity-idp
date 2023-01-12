@@ -9,7 +9,7 @@ module SamlIdp
     end
 
     def reference_id
-      UUID.generate
+      SecureRandom.uuid
     end
 
     def digest
