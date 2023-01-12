@@ -92,7 +92,6 @@ describe('CountdownElement', () => {
   });
 
   context('timer stop', () => {
-    const smsExpiredUrl = '#sms-expired';
     const delay = 5000;
 
     it('stops when the countdown is finished', async () => {
@@ -104,7 +103,6 @@ describe('CountdownElement', () => {
       sinon.stub(element, 'stop');
 
       clock.tick(delay);
-      await waitFor(() => window.location.hash === smsExpiredUrl);
 
       expect(element.textContent).to.equal('0 seconds');
       expect(element.stop).to.have.been.called();

@@ -1,4 +1,5 @@
 import { useSandbox } from '@18f/identity-test-helpers';
+import { waitFor } from '@testing-library/dom';
 import './countdown-alert-element';
 import './countdown-element';
 
@@ -47,19 +48,20 @@ describe('CountdownAlertElement', () => {
     });
   });
 
-  context('when time remaining has expired', () => {
-    it('redirects to the otp expired page', () => {
-      const element = createElement({
-        redirectURL: '#teapot',
-        showAtRemaining: 60000,
-      });
-      sandbox.spy(element, 'handleRedirectTick');
-
-      sandbox.clock.tick(30000);
-      expect(element.handleRedirectTick).not.to.have.been.called();
-
-      sandbox.clock.tick(0);
-      expect(element.handleRedirectTick).to.have.been.called;
+  it('redirects when time has expired', async () => {
+    const element = createElement({
+      redirectURL: '#teapot',
+      showAtRemaining: 60000,
     });
+
+    sandbox.spy(element, 'handleRedirectTick');
+
+    sandbox.clock.tick(30000);
+    expect(element.handleRedirectTick).not.to.have.been.called();
+
+    sandbox.clock.tick(0);
+    expect(element.handleRedirectTick).to.have.been.called;
+
+    await waitFor(() => window.location.hash === '#teapot');
   });
 });
