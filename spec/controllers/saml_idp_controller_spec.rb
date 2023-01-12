@@ -1582,7 +1582,7 @@ describe SamlIdpController do
         end
 
         it 'includes an ID attribute with a valid UUID' do
-          expect(UUID.validate(assertion['ID'][1..-1])).to eq(true)
+          expect(Idp::Constants::UUID_REGEX.match?(assertion['ID'][1..-1])).to eq(true)
           expect(assertion['ID']).to eq "_#{user.last_identity.session_uuid}"
         end
 
@@ -1705,7 +1705,7 @@ describe SamlIdpController do
           end
 
           it 'includes a URI attribute' do
-            expect(UUID.validate(reference['URI'][2..-1])).to eq(true)
+            expect(Idp::Constants::UUID_REGEX.match?(reference['URI'][2..-1])).to eq(true)
           end
         end
       end
