@@ -35,7 +35,8 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
   end
 
   def create_and_upload_to_attempts_s3_resource(bucket_name:, filename:, encrypted_data:)
-    aws_object = Aws::S3::Resource.new.bucket(bucket_name).object(filename)
+    aws_object = Aws::S3::Resource.new(client: s3_helper.s3_client).
+      bucket(bucket_name).object(filename)
     aws_object.put(body: encrypted_data, acl: 'private', content_type: 'text/plain')
   end
 

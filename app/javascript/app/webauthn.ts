@@ -1,4 +1,24 @@
-const base64ToArrayBuffer = (base64) => {
+interface EnrollResult {
+  webauthnId: string;
+
+  webauthnPublicKey: string;
+
+  attestationObject: string;
+
+  clientDataJSON: string;
+}
+
+interface VerifyResult {
+  credentialId: string;
+
+  authenticatorData: string;
+
+  clientDataJSON: string;
+
+  signature: string;
+}
+
+const base64ToArrayBuffer = (base64: string): ArrayBuffer => {
   const bytes = Uint8Array.from(
     window
       .atob(base64)
@@ -8,7 +28,7 @@ const base64ToArrayBuffer = (base64) => {
   return bytes.buffer;
 };
 
-const arrayBufferToBase64 = (arrayBuffer) => {
+const arrayBufferToBase64 = (arrayBuffer: ArrayBuffer): string => {
   const buffer = new Uint8Array(arrayBuffer);
   const binaryString = Array.from(buffer)
     .map((byte) => String.fromCharCode(byte))
@@ -16,14 +36,14 @@ const arrayBufferToBase64 = (arrayBuffer) => {
   return window.btoa(binaryString);
 };
 
-const longToByteArray = (long) =>
+const longToByteArray = (long: number): Uint8Array =>
   new Uint8Array(8).map(() => {
     const byte = long & 0xff; // eslint-disable-line no-bitwise
     long = (long - byte) / 256;
     return byte;
   });
 
-const extractCredentials = (credentials) => {
+const extractCredentials = (credentials: string): PublicKeyCredentialDescriptor[] => {
   if (!credentials) {
     // empty string check
     return [];
@@ -34,26 +54,27 @@ const extractCredentials = (credentials) => {
   }));
 };
 
-const isWebAuthnEnabled = () => {
-  if (navigator && navigator.credentials && navigator.credentials.create) {
-    return true;
-  }
-  return false;
-};
+const isWebAuthnEnabled = (): boolean => !!navigator.credentials;
 
-const enrollWebauthnDevice = ({
+const enrollWebauthnDevice = async ({
   userId,
   userEmail,
   userChallenge,
   excludeCredentials,
   platformAuthenticator,
-}) => {
-  const createOptions = {
+}: {
+  userId: string;
+  userEmail: string;
+  userChallenge: string;
+  excludeCredentials: string;
+  platformAuthenticator: boolean;
+}): Promise<EnrollResult> => {
+  const newCred = (await navigator.credentials.create({
     publicKey: {
       challenge: new Uint8Array(JSON.parse(userChallenge)),
       rp: { name: window.location.hostname },
       user: {
-        id: longToByteArray(userId),
+        id: longToByteArray(Number(userId)),
         name: userEmail,
         displayName: userEmail,
       },
@@ -89,7 +110,6 @@ const enrollWebauthnDevice = ({
       ],
       timeout: 800000,
       attestation: 'none',
-      excludeList: [],
       authenticatorSelection: {
         // Prevents user from needing to use PIN with Security Key
         userVerification: 'discouraged',
@@ -97,17 +117,25 @@ const enrollWebauthnDevice = ({
       },
       excludeCredentials: extractCredentials(excludeCredentials),
     },
-  };
+  })) as PublicKeyCredential;
 
-  return navigator.credentials.create(createOptions).then((newCred) => ({
+  const response = newCred.response as AuthenticatorAttestationResponse;
+
+  return {
     webauthnId: arrayBufferToBase64(newCred.rawId),
     webauthnPublicKey: newCred.id,
-    attestationObject: arrayBufferToBase64(newCred.response.attestationObject),
-    clientDataJSON: arrayBufferToBase64(newCred.response.clientDataJSON),
-  }));
+    attestationObject: arrayBufferToBase64(response.attestationObject),
+    clientDataJSON: arrayBufferToBase64(response.clientDataJSON),
+  };
 };
 
-const verifyWebauthnDevice = ({ userChallenge, credentialIds }) => {
+async function verifyWebauthnDevice({
+  userChallenge,
+  credentialIds,
+}: {
+  userChallenge: string;
+  credentialIds: string;
+}): Promise<VerifyResult> {
   const getOptions = {
     publicKey: {
       challenge: new Uint8Array(JSON.parse(userChallenge)),
@@ -117,12 +145,16 @@ const verifyWebauthnDevice = ({ userChallenge, credentialIds }) => {
     },
   };
 
-  return navigator.credentials.get(getOptions).then((newCred) => ({
+  const newCred = (await navigator.credentials.get(getOptions)) as PublicKeyCredential;
+
+  const response = newCred.response as AuthenticatorAssertionResponse;
+
+  return {
     credentialId: arrayBufferToBase64(newCred.rawId),
-    authenticatorData: arrayBufferToBase64(newCred.response.authenticatorData),
-    clientDataJSON: arrayBufferToBase64(newCred.response.clientDataJSON),
-    signature: arrayBufferToBase64(newCred.response.signature),
-  }));
-};
+    authenticatorData: arrayBufferToBase64(response.authenticatorData),
+    clientDataJSON: arrayBufferToBase64(response.clientDataJSON),
+    signature: arrayBufferToBase64(response.signature),
+  };
+}
 
 export { extractCredentials, isWebAuthnEnabled, enrollWebauthnDevice, verifyWebauthnDevice };

@@ -116,6 +116,14 @@ feature 'doc auth verify step', :js do
     expect(page).to have_current_path(idv_doc_auth_verify_step)
   end
 
+  it 'sends the user to start doc auth if there is no pii from the document in session' do
+    visit sign_out_url
+    sign_in_and_2fa_user
+    visit idv_doc_auth_verify_step
+
+    expect(page).to have_current_path(idv_doc_auth_welcome_step)
+  end
+
   it 'does not proceed to the next page if resolution fails' do
     expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
       success: false,

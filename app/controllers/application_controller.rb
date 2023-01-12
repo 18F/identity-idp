@@ -1,7 +1,4 @@
-require 'core_extensions/string/permit'
-
 class ApplicationController < ActionController::Base
-  String.include CoreExtensions::String::Permit
   include VerifyProfileConcern
   include LocaleHelper
   include VerifySpAttributesConcern

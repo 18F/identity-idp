@@ -10,8 +10,9 @@ export async function unhideWebauthn() {
     element?.classList.toggle('display-none', !hasSupport);
   });
 
-  /** @type {NodeListOf<HTMLInputElement>} */
-  const checkboxes = document.querySelectorAll('input[name="two_factor_options_form[selection]"]');
+  const checkboxes = document.querySelectorAll<HTMLInputElement>(
+    'input[name="two_factor_options_form[selection]"]',
+  );
   for (let i = 0, len = checkboxes.length; i < len; i += 1) {
     const checkbox = checkboxes[i];
     if (!checkbox.checked || !checkbox.closest('.display-none') || i + 1 >= len) {

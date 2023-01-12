@@ -1,11 +1,11 @@
 <footer class="footer">
-  <%= new_window_link_to('https://gsa.gov', class: 'display-none tablet:display-inline') do %>
+  <%= new_window_link_to('https://www.gsa.gov', class: 'display-none tablet:display-inline') do %>
     <%= image_tag(asset_url('sp-logos/square-gsa.svg'), size: 20, alt: '', class: 'float-left margin-right-1') %>
     <%= t('shared.footer_lite.gsa') %>
   <% end %>
   <%= render LanguagePickerComponent.new(class: 'footer__language-picker') %>
   <div class="footer__links">
-    <%= new_window_link_to('https://gsa.gov', class: 'tablet:display-none margin-right-2') do %>
+    <%= new_window_link_to('https://www.gsa.gov', class: 'tablet:display-none margin-right-2') do %>
       <%= image_tag asset_url('sp-logos/square-gsa-dark.svg'), size: 20, alt: t('shared.footer_lite.gsa') %>
     <% end %>
     <%= new_window_link_to(t('links.help'), MarketingSite.help_url, class: 'margin-right-2') %>

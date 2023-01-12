@@ -309,6 +309,7 @@ Rails.application.routes.draw do
       post '/forgot_password' => 'forgot_password#update'
       get '/otp_delivery_method' => 'otp_delivery_method#new'
       put '/otp_delivery_method' => 'otp_delivery_method#create'
+      get '/verify_info' => 'verify_info#show'
       get '/phone' => 'phone#new'
       put '/phone' => 'phone#create'
       get '/phone/errors/warning' => 'phone_errors#warning'
