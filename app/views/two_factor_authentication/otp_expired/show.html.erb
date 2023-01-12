@@ -8,7 +8,7 @@
           link_to(
             otp_send_path(
               otp_delivery_selection_form: {
-                otp_delivery_preference: 'sms',
+                otp_delivery_preference: @presenter.otp_delivery_preference,
                 resend: true,
               },
             ),
