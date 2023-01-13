@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Rails/HelperInstanceVariable
 module ScriptHelper
   def javascript_include_tag_without_preload(...)
