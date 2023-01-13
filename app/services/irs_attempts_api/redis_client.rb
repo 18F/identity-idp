@@ -24,6 +24,30 @@ module IrsAttemptsApi
       end
     end
 
+    def read_in_batches(timestamp:, batch_size: 5000)
+      key = key(timestamp)
+      events = {}
+      redis_pool.with do |client|
+        client.hscan_each(key, count: batch_size) do |k, v|
+          events[k] = v
+        end
+      end
+      events
+    end
+
+    # def read_in_batches(timestamp:, batch_size: 1000)
+    #   key = key(timestamp)
+    #   redis_pool.with do |client|
+    #     cursor, events = client.hscan_each(key, 0, count: batch_size)
+    #     puts "Events: #{events.inspect}"
+    #     until cursor == '0'
+    #       cursor, new_events = client.hscan(key, cursor, count: batch_size)
+    #       events.merge(new_events)
+    #     end
+    #     events.map{ |e| { e.first => e.second } }
+    #   end
+    #end
+
     def key(timestamp)
       timestamp.in_time_zone('UTC').change(min: 0, sec: 0).iso8601
     end

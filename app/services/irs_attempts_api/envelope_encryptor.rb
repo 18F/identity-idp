@@ -10,7 +10,7 @@ module IrsAttemptsApi
       @timer[name] = Time.zone.now
       if @previous_timer
         elapsed = (@timer[name] - @timer[@previous_timer]).to_f
-        puts "#{elapsed} sec. from '#{@previous_timer}' to '#{name}'"
+        puts "#{elapsed} sec. -> '#{name}'"
       end
       @previous_timer = name
     end
@@ -23,14 +23,14 @@ module IrsAttemptsApi
       compressed_data = Zlib.gzip(data)
       timestamp(:ruby_compression)
 
-      timestamp(:file_write)
-      Dir.mktmpdir do |dir|
-        f = File.new('asdf.txt', 'w')
-        puts "File: #{f.path}"
-        f.write(data)
-        `gzip #{f.path}`
-        timestamp(:gzip_shell)
-      end
+      # timestamp(:file_write)
+      # Dir.mktmpdir do |dir|
+      #   f = File.new('asdf.txt', 'w')
+      #   puts "File: #{f.path}"
+      #   f.write(data)
+      #   `gzip #{f.path}`
+      #   timestamp(:gzip_shell)
+      # end
 
       cipher = OpenSSL::Cipher.new('aes-256-cbc')
       timestamp(:cipher_generation)
@@ -51,12 +51,12 @@ module IrsAttemptsApi
       encoded_data = Base16.encode16(encrypted_data)
       timestamp(:base16_encoding)
 
-      file = File.new('base16_me.txt', 'wb')
-      file.write(encrypted_data)
-      file.close
-      timestamp(:large_file_write)
-      `xxd -p -c 0 base16_me.txt > base16_done.txt`
-      timestamp(:xxd)
+      # file = File.new('base16_me.txt', 'wb')
+      # file.write(encrypted_data)
+      # file.close
+      # timestamp(:large_file_write)
+      # `xxd -p -c 0 base16_me.txt > base16_done.txt`
+      # timestamp(:xxd)
 
       digest = Digest::SHA256.hexdigest(encoded_data)
       timestamp(:sha256)

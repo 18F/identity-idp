@@ -93,7 +93,11 @@ namespace :attempts do
     redis_client = IrsAttemptsApi::RedisClient.new
 
     puts 'Creating events...'
-    250_000.times do
+    20.times do |i|
+      puts i if i % 1000 == 0
+
+      t = Time.zone.now
+
       event = IrsAttemptsApi::AttemptEvent.new(
         event_type: [:logout_initiated, :idv_verification_rate_limited, :mfa_login_webauthn_roaming].sample,
         session_id: SecureRandom.uuid,
@@ -104,7 +108,7 @@ namespace :attempts do
       redis_client.write_event(
         event_key: event.event_key,
         jwe: event.to_jwe,
-        timestamp: event.occurred_at,
+        timestamp: t,
       )
     end
     puts 'Done!'

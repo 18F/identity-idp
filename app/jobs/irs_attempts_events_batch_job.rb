@@ -1,13 +1,16 @@
 class IrsAttemptsEventsBatchJob < ApplicationJob
   queue_as :default
 
-  def perform(timestamp = Time.zone.now - 1.hour)
+  def perform(timestamp = Time.zone.now - 1.hour, batch_size: 5000)
     enabled = IdentityConfig.store.irs_attempt_api_enabled && s3_helper.attempts_s3_write_enabled
     return nil unless enabled
 
     start_time = Time.zone.now
-    events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: timestamp)
+    events = IrsAttemptsApi::RedisClient.new.read_in_batches(timestamp: timestamp, batch_size: batch_size)
+    puts "EE: #{events.inspect}"
+    #puts "Fetched #{events.count} events in #{(Time.zone.now - start_time).to_f} sec. (batch of #{batch_size})"
     event_values = events.values.join("\r\n")
+
 
     public_key = IdentityConfig.store.irs_attempt_api_public_key
 
