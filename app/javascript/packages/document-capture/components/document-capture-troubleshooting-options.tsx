@@ -27,6 +27,8 @@ interface DocumentCaptureTroubleshootingOptionsProps {
    * Whether to display alternative options for verifying.
    */
   showAlternativeProofingOptions?: boolean;
+
+  inPersonCtaOverride?: string;
 }
 
 function DocumentCaptureTroubleshootingOptions({
@@ -34,6 +36,7 @@ function DocumentCaptureTroubleshootingOptions({
   location = 'document_capture_troubleshooting_options',
   showDocumentTips = true,
   showAlternativeProofingOptions,
+  inPersonCtaOverride,
 }: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
   const { inPersonURL } = useContext(InPersonContext);
@@ -42,7 +45,9 @@ function DocumentCaptureTroubleshootingOptions({
 
   return (
     <>
-      {showAlternativeProofingOptions && inPersonURL && <InPersonCallToAction />}
+      {showAlternativeProofingOptions && inPersonURL && (
+        <InPersonCallToAction headingOverride={inPersonCtaOverride} />
+      )}
       <TroubleshootingOptions
         heading={heading}
         options={

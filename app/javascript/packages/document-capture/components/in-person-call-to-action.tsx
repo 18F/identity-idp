@@ -4,7 +4,11 @@ import { useInstanceId } from '@18f/identity-react-hooks';
 import { t } from '@18f/identity-i18n';
 import AnalyticsContext from '../context/analytics';
 
-function InPersonCallToAction() {
+interface InPersonCallToActionProps {
+  headingOverride?: string;
+}
+
+function InPersonCallToAction({ headingOverride }: InPersonCallToActionProps) {
   const instanceId = useInstanceId();
   const { trackEvent } = useContext(AnalyticsContext);
 
@@ -15,7 +19,7 @@ function InPersonCallToAction() {
     >
       <hr className="margin-y-5" />
       <h2 id={`in-person-cta-heading-${instanceId}`} className="margin-y-2">
-        {t('in_person_proofing.headings.cta')}
+        {headingOverride || t('in_person_proofing.headings.cta')}
       </h2>
       <p>{t('in_person_proofing.body.cta.prompt_detail')}</p>
       <Button

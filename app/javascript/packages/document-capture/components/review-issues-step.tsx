@@ -81,7 +81,8 @@ function ReviewIssuesStep({
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
   const { onFailedSubmissionAttempt } = useContext(FailedCaptureAttemptsContext);
-  const { inPersonCtaVariantTestingEnabled, inPersonCtaVariantActive } = useContext(InPersonContext);
+  const { inPersonCtaVariantTestingEnabled, inPersonCtaVariantActive } =
+    useContext(InPersonContext);
   useEffect(() => onFailedSubmissionAttempt(), []);
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed');
@@ -89,7 +90,7 @@ function ReviewIssuesStep({
     setHasDismissed(true);
   }
   function onInPersonSelected() {
-    trackEvent('IdV: verify in person troubleshooting option clicked')
+    trackEvent('IdV: verify in person troubleshooting option clicked');
   }
 
   // let FormSteps know, via FormStepsContext, whether this page
@@ -103,7 +104,7 @@ function ReviewIssuesStep({
       return <BarcodeAttentionWarning onDismiss={onWarningPageDismissed} pii={pii} />;
     }
 
-    if (!inPersonCtaVariantTestingEnabled) { 
+    if (!inPersonCtaVariantTestingEnabled) {
       // Behave as previously
       return (
         <Warning
@@ -135,9 +136,8 @@ function ReviewIssuesStep({
             </p>
           )}
         </Warning>
-      )
-    }
-    else if (isFailedResult || inPersonCtaVariantActive === "in_person_variant_c") {
+      );
+    } else if (isFailedResult || inPersonCtaVariantActive === 'in_person_variant_c') {
       // Behave as previously with the IPP CTA hidden
       return (
         <Warning
@@ -169,9 +169,8 @@ function ReviewIssuesStep({
             </p>
           )}
         </Warning>
-      )
-    }
-    else if (inPersonCtaVariantActive === "in_person_variant_a") {
+      );
+    } else if (inPersonCtaVariantActive === 'in_person_variant_a') {
       // TODO Change attempts remaining blurb to formatWithStrong interpolated emphasis
       // TODO Change button text to Try again online
       // TODO Change IPP CTA heading to Try verifying your ID in person
@@ -189,6 +188,7 @@ function ReviewIssuesStep({
               location="post_submission_warning"
               showAlternativeProofingOptions={!isFailedResult}
               heading={t('components.troubleshooting_options.ipp_heading')}
+              inPersonCtaOverride={t('in_person_proofing.headings.cta_variant')}
             />
           }
         >
@@ -200,15 +200,16 @@ function ReviewIssuesStep({
 
           {remainingAttempts <= DISPLAY_ATTEMPTS && (
             <p>
-                {remainingAttempts === 1
-                  ? formatWithStrong(t('idv.failure.attempts.one_variant_a_html'))
-                  : formatWithStrong(t('idv.failure.attempts.other_variant_a_html', { count: remainingAttempts }))}
+              {remainingAttempts === 1
+                ? formatWithStrong(t('idv.failure.attempts.one_variant_a_html'))
+                : formatWithStrong(
+                    t('idv.failure.attempts.other_variant_a_html', { count: remainingAttempts }),
+                  )}
             </p>
           )}
         </Warning>
-      )
-    }
-    else if (inPersonCtaVariantActive === "in_person_variant_b") {
+      );
+    } else if (inPersonCtaVariantActive === 'in_person_variant_b') {
       // TODO Change attempts remaining blurb to formatWithStrong interpolated emphasis
       return (
         <Warning
@@ -241,11 +242,9 @@ function ReviewIssuesStep({
           )}
           <p>{t('in_person_proofing.body.cta.prompt_detail_b')}</p>
         </Warning>
-      )
+      );
     }
   }
-
-
 
   return (
     <>
