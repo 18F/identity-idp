@@ -15,9 +15,9 @@ import BarcodeAttentionWarning from './barcode-attention-warning';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import { InPersonContext } from '../context';
 
-function formatWithStrong(text: string): ReactNode {
+function formatWithStrongNoWrap(text: string): ReactNode {
   return formatHTML(text, {
-    strong: ({ children }) => <strong>{children}</strong>,
+    strong: ({ children }) => <strong style={{whiteSpace: 'nowrap'}}>{children}</strong>,
   });
 }
 
@@ -172,7 +172,6 @@ function ReviewIssuesStep({
       );
     } else if (inPersonCtaVariantActive === 'in_person_variant_a') {
       // TODO Change applicable warning messages to exclude "Try taking new pictures"
-      // TODO Prevent count-attempts from breaking across lines
       return (
         <Warning
           heading={t('errors.doc_auth.throttled_heading')}
@@ -200,8 +199,8 @@ function ReviewIssuesStep({
           {remainingAttempts <= DISPLAY_ATTEMPTS && (
             <p>
               {remainingAttempts === 1
-                ? formatWithStrong(t('idv.failure.attempts.one_variant_a_html'))
-                : formatWithStrong(
+                ? formatWithStrongNoWrap(t('idv.failure.attempts.one_variant_a_html'))
+                : formatWithStrongNoWrap(
                     t('idv.failure.attempts.other_variant_a_html', { count: remainingAttempts }),
                   )}
             </p>
@@ -209,8 +208,7 @@ function ReviewIssuesStep({
         </Warning>
       );
     } else if (inPersonCtaVariantActive === 'in_person_variant_b') {
-      // TODO Change attempts remaining blurb to formatWithStrong interpolated emphasis
-      // TODO Prevent count-attempts from breaking across lines
+      // TODO Change applicable warning messages to exclude "Try taking new pictures"
       return (
         <Warning
           heading={t('errors.doc_auth.throttled_heading')}
@@ -236,8 +234,8 @@ function ReviewIssuesStep({
           {remainingAttempts <= DISPLAY_ATTEMPTS && (
             <p>
               {remainingAttempts === 1
-                ? t('idv.failure.attempts.one_variant_b_html')
-                : t('idv.failure.attempts.other_variant_b_html', { count: remainingAttempts })}
+                ? formatWithStrongNoWrap(t('idv.failure.attempts.one_variant_b_html'))
+                : formatWithStrongNoWrap(t('idv.failure.attempts.other_variant_b_html', { count: remainingAttempts }))}
             </p>
           )}
           <p>{t('in_person_proofing.body.cta.prompt_detail_b')}</p>
