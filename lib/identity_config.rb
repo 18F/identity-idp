@@ -143,6 +143,7 @@ class IdentityConfig
     config.add(:database_worker_jobs_password, type: :string)
     config.add(:deleted_user_accounts_report_configs, type: :json)
     config.add(:deliver_mail_async, type: :boolean)
+    config.add(:development_mailer_deliver_method, type: :symbol, enum: [:file, :letter_opener])
     config.add(:disable_csp_unsafe_inline, type: :boolean)
     config.add(:disable_email_sending, type: :boolean)
     config.add(:disallow_all_web_crawlers, type: :boolean)

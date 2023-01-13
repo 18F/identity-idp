@@ -352,6 +352,8 @@ GEM
       rake
     launchy (2.5.0)
       addressable (~> 2.7)
+    letter_opener (1.8.1)
+      launchy (>= 2.2, < 3)
     listen (3.5.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -757,6 +759,7 @@ DEPENDENCIES
   jwe
   jwt
   knapsack
+  letter_opener (~> 1.8)
   lograge (>= 0.11.2)
   lookbook (~> 1.4.5)
   lru_redux
