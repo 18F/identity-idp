@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'data_uri'
 
 describe 'users/backup_code_setup/reminder.html.erb' do
   it 'has a localized title' do

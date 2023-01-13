@@ -14,9 +14,8 @@ RSpec.describe 'In Person Proofing', js: true do
     let(:user) { user_with_2fa }
 
     before do
-      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).and_return(true)
-      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
-        and_return(true)
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('test_org')
     end
 
     it 'allows the user to continue down the happy path', allow_browser_log: true do

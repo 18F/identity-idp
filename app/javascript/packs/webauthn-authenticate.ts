@@ -37,7 +37,7 @@ function webauthn() {
         webauthnSuccessContainer.classList.remove('display-none');
       })
       .catch((error: Error) => {
-        (document.getElementById('errors') as HTMLInputElement).value = error.toString();
+        (document.getElementById('webauthn_error') as HTMLInputElement).value = error.name;
         (document.getElementById('platform') as HTMLInputElement).value =
           String(webauthnPlatformRequested);
         (document.getElementById('webauthn_form') as HTMLFormElement).submit();

@@ -406,6 +406,13 @@ describe ApplicationController do
       it 'returns the saml completion url' do
         expect(url_with_updated_params).to eq complete_saml_url
       end
+
+      context 'updates the sp_session to mark the final auth request' do
+        it 'updates the sp_session to mark the final auth request' do
+          url_with_updated_params
+          expect(controller.session[:sp][:final_auth_request]).to be true
+        end
+      end
     end
 
     context 'with an OIDC request' do

@@ -30,10 +30,8 @@ RSpec.describe Idv::GpoVerifyController do
     allow(decorated_user).to receive(:pending_profile_requires_verification?).
       and_return(has_pending_profile)
 
-    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
-      and_return(threatmetrix_enabled)
-    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
-      and_return(threatmetrix_enabled)
+    allow(IdentityConfig.store).to receive(:proofing_device_profiling).
+      and_return(threatmetrix_enabled ? :enabled : :disabled)
   end
 
   describe '#index' do

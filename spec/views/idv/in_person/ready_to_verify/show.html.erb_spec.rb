@@ -46,6 +46,15 @@ describe 'idv/in_person/ready_to_verify/show.html.erb' do
     end
   end
 
+  it 'renders a cancel link' do
+    render
+
+    expect(rendered).to have_link(
+      t('in_person_proofing.body.barcode.cancel_link_text'),
+      href: idv_cancel_path(step: 'verify'),
+    )
+  end
+
   context 'with enrollment where current address matches id' do
     let(:current_address_matches_id) { true }
 
