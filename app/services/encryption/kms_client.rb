@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'base64'
 
 module Encryption
@@ -9,6 +11,8 @@ module Encryption
       KMS: 'KMSc',
       LOCAL_KEY: 'LOCc',
     }.freeze
+    KMS_KEY_REGEX = /\A#{KEY_TYPE[:KMS]}/
+    LOCAL_KEY_REGEX = /\A#{KEY_TYPE[:LOCAL_KEY]}/
 
     def encrypt(plaintext, encryption_context)
       KmsLogger.log(:encrypt, encryption_context)
@@ -55,7 +59,7 @@ module Encryption
     end
 
     def decrypt_kms(ciphertext, encryption_context)
-      clipped_ciphertext = ciphertext.gsub(/\A#{KEY_TYPE[:KMS]}/, '')
+      clipped_ciphertext = ciphertext.gsub(KMS_KEY_REGEX, '')
       ciphertext_chunks = JSON.parse(clipped_ciphertext)
       ciphertext_chunks.map do |chunk|
         decrypt_raw_kms(
@@ -82,7 +86,7 @@ module Encryption
     end
 
     def decrypt_local(ciphertext, encryption_context)
-      clipped_ciphertext = ciphertext.gsub(/\A#{KEY_TYPE[:LOCAL_KEY]}/, '')
+      clipped_ciphertext = ciphertext.gsub(LOCAL_KEY_REGEX, '')
       ciphertext_chunks = JSON.parse(clipped_ciphertext)
       ciphertext_chunks.map do |chunk|
         encryptor.decrypt(

@@ -90,6 +90,8 @@ module Identity
     config.i18n.default_locale = :en
     config.action_controller.per_form_csrf_tokens = true
 
+    config.action_view.frozen_string_literal = true
+
     routes.default_url_options[:host] = IdentityConfig.store.domain_name
 
     config.action_mailer.default_options = {
