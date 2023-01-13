@@ -11,5 +11,7 @@ class NullServiceProviderRequest
 
   def ial; end
 
+  def aal; end
+
   def requested_attributes; end
 end

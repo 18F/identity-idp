@@ -1,13 +1,14 @@
 module SecureHeadersConcern
   extend ActiveSupport::Concern
 
-  def apply_secure_headers_override
+  def apply_secure_headers_override(oidc_authorize_form: nil)
     return if stored_url_for_user.blank?
 
-    authorize_form = OpenidConnectAuthorizeForm.new(authorize_params)
+    authorize_form = oidc_authorize_form || OpenidConnectAuthorizeForm.new(authorize_params)
     return unless authorize_form.valid?
 
-    override_form_action_csp(csp_uris)
+    redirect_uris = csp_uris(redirect_uris: authorize_form.service_provider.redirect_uris)
+    override_form_action_csp(redirect_uris)
   end
 
   def override_form_action_csp(uris)
@@ -16,12 +17,13 @@ module SecureHeadersConcern
     request.content_security_policy = policy
   end
 
-  def csp_uris
-    return ["'self'"] if stored_url_for_user.blank?
+  def csp_uris(redirect_uris: nil)
+    return ["'self'"] if stored_url_for_user.blank? && redirect_uris.nil?
+    redirect_uris ||= decorated_session.sp_redirect_uris
     # Returns fully formed CSP array w/"'self'" and redirect_uris
     SecureHeadersAllowList.csp_with_sp_redirect_uris(
       authorize_params[:redirect_uri],
-      decorated_session.sp_redirect_uris,
+      redirect_uris,
     )
   end
 
