@@ -16,6 +16,10 @@ module FederatedProtocols
       request.requested_aal_authn_context
     end
 
+    def service_provider
+      current_service_provider
+    end
+
     def requested_attributes
       @requested_attributes ||= SamlRequestPresenter.new(
         request: request, service_provider: current_service_provider,
@@ -35,7 +39,8 @@ module FederatedProtocols
     end
 
     def current_service_provider
-      ServiceProvider.find_by(issuer: issuer)
+      return @current_service_provider if defined?(@current_service_provider)
+      @current_service_provider = ServiceProvider.find_by(issuer: issuer)
     end
   end
 end

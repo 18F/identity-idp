@@ -16,6 +16,10 @@ module FederatedProtocols
       request.aal_values.sort.max
     end
 
+    def service_provider
+      request.service_provider
+    end
+
     def requested_attributes
       OpenidConnectAttributeScoper.new(request.scope).requested_attributes
     end

@@ -15,6 +15,7 @@ class ServiceProviderRequestHandler
 
     StoreSpMetadataInSession.new(session: session, request_id: request_id).call(
       service_provider_request: service_provider_request,
+      service_provider: protocol.service_provider,
     )
   end
 
