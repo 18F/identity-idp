@@ -759,7 +759,7 @@ DEPENDENCIES
   jwe
   jwt
   knapsack
-  letter_opener (~> 1.7)
+  letter_opener (~> 1.8)
   lograge (>= 0.11.2)
   lookbook (~> 1.4.5)
   lru_redux

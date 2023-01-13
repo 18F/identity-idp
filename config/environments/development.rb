@@ -27,6 +27,9 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.show_previews = IdentityConfig.store.rails_mailer_previews_enabled
   config.action_mailer.delivery_method = IdentityConfig.store.development_mailer_deliver_method
+  if IdentityConfig.store.development_mailer_deliver_method == :letter_opener
+    config.action_mailer.perform_deliveries = true
+  end
 
   routes.default_url_options[:protocol] = 'https' if ENV['HTTPS'] == 'on'
 
