@@ -45,23 +45,24 @@ class IalContext
   private
 
   def int_ial(input)
-    return 0 if saml_ialmax?(input)
+    int_ial_from_request = convert_ial_to_int(input)
+    return 0 if saml_ialmax?(int_ial_from_request)
 
-    convert_ial_to_int(input)
+    int_ial_from_request
   end
 
-  def saml_ialmax?(input)
-    int_ial_from_request = convert_ial_to_int(input)
+  def saml_ialmax?(int_ial_from_request)
     return false unless int_ial_from_request.present?
 
     service_provider&.ial == 2 && authn_context_comparison == 'minimum' && int_ial_from_request < 2
   end
 
   def convert_ial_to_int(input)
+    return nil unless input.present?
+    return input if input.is_a?(Integer)
+    ial = Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[input]
+    return ial unless ial.nil?
+
     Integer(input)
-  rescue TypeError # input was nil
-    nil
-  rescue ArgumentError # input was probably a string
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL.fetch(input)
   end
 end
