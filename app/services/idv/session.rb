@@ -4,7 +4,8 @@ module Idv
       address_verification_mechanism
       applicant
       go_back_path
-      idv_verify_info_step_document_capture_session_uuid
+      verify_info_step_document_capture_session_uuid
+      resolution_info_verified
       idv_phone_step_document_capture_session_uuid
       vendor_phone_confirmation
       user_phone_confirmation

@@ -99,6 +99,31 @@ locals:
           method: :put,
     ).with_content(t('forms.buttons.continue'))
     %>
+    <%# <%= button_to( t('forms.buttons.continue'),
+          idv_verify_info_url, 
+          method: :put, 
+          class: 'usa-button usa-button--big usa-button--wide',
+    )
+    %>
+    <%# <%= render SpinnerButtonComponent.new(
+          action: ->(**tag_options, &block) do
+            button_to(url_for, **tag_options, &block)
+          end,
+          big: true,
+          wide: true,
+          action_message: t('idv.messages.verifying'),
+          method: :put,
+          form: {
+            class: 'button_to',
+            data: {
+              form_steps_wait: '',
+              error_message: t('idv.failure.exceptions.internal_error'),
+              alert_target: '#form-steps-wait-alert',
+              wait_step_path: idv_doc_auth_step_url(step: :verify_wait),
+              poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
+            },
+          },
+        ).with_content(t('forms.buttons.continue')) %>
   </div>
 </div>
 
