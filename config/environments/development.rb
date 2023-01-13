@@ -25,8 +25,8 @@ Rails.application.configure do
   }
   config.action_mailer.asset_host = IdentityConfig.store.mailer_domain_name
   config.action_mailer.raise_delivery_errors = false
-  config.action_mailer.smtp_settings = { address: ENV['SMTP_HOST'] || 'localhost', port: 1025 }
   config.action_mailer.show_previews = IdentityConfig.store.rails_mailer_previews_enabled
+  config.action_mailer.delivery_method = IdentityConfig.store.development_mailer_deliver_method
 
   routes.default_url_options[:protocol] = 'https' if ENV['HTTPS'] == 'on'
 
