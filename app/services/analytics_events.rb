@@ -930,6 +930,10 @@ module AnalyticsEvents
     track_event('IdV: doc auth verify visited', **extra)
   end
 
+  def idv_doc_auth_verify_proofing_results(**extra)
+    track_event('IdV: doc auth verify proofing results', **extra)
+  end
+
   # @identity.idp.previous_event_name IdV: in person proofing verify_wait visited
   def idv_doc_auth_verify_wait_step_visited(**extra)
     track_event('IdV: doc auth verify_wait visited', **extra)
