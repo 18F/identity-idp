@@ -14,9 +14,6 @@ function InPersonCallToAction() {
       aria-describedby={`in-person-cta-tag-${instanceId}`}
     >
       <hr className="margin-y-5" />
-      <Tag id={`in-person-cta-tag-${instanceId}`} isInformative>
-        {t('in_person_proofing.body.cta.new_feature')}
-      </Tag>
       <h2 id={`in-person-cta-heading-${instanceId}`} className="margin-y-2">
         {t('in_person_proofing.headings.cta')}
       </h2>
