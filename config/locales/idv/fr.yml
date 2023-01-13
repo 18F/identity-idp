@@ -63,6 +63,7 @@ fr:
         other: Pour des raisons de sécurité, il vous reste %{count} tentatives.
       button:
         warning: Essayez à nouveau
+        warning_variant: Réessayer en ligne
       exceptions:
         internal_error: Une erreur interne s’est produite lors du traitement de votre
           demande. Veuillez réessayer.

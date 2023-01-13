@@ -60,6 +60,7 @@ es:
         other: Por razones de seguridad, le queda %{count} intentos.
       button:
         warning: Inténtelo de nuevo
+        warning_variant: Vuelva a intentarlo en línea
       exceptions:
         internal_error: Se produjo un error interno al procesar tu solicitud. Por favor,
           inténtalo de nuevo.

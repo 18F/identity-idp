@@ -59,6 +59,7 @@ en:
         other: For security reasons, you have %{count} attempts remaining.
       button:
         warning: Try again
+        warning_variant: Try again online
       exceptions:
         internal_error: There was an internal error processing your request. Please try again.
         link: please contact us
