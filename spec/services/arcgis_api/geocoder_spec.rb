@@ -164,7 +164,7 @@ RSpec.describe ArcgisApi::Geocoder do
         )
       end
 
-      it 'manually sets the expiration if the cache store is redis' do
+      it 'manually sets the expiration' do
         stub_generate_token_response
         subject.retrieve_token!
         ttl = Rails.cache.redis.ttl(ArcgisApi::Geocoder::API_TOKEN_CACHE_KEY)

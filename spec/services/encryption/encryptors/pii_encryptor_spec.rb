@@ -90,7 +90,7 @@ describe Encryption::Encryptors::PiiEncryptor do
       kms_client = instance_double(Encryption::KmsClient)
       expect(Encryption::KmsClient).to receive(:new).and_return(kms_client)
       expect(kms_client).to receive(:decrypt).
-        with('kms_ciphertext', 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc').
+        with('kms_ciphertext', { 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc' }).
         and_return('aes_ciphertext')
 
       cipher = instance_double(Encryption::AesCipher)

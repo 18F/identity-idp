@@ -1,7 +1,4 @@
-require 'core_extensions/string/permit'
-
 class ApplicationController < ActionController::Base
-  String.include CoreExtensions::String::Permit
   include VerifyProfileConcern
   include LocaleHelper
   include VerifySpAttributesConcern
@@ -29,15 +26,8 @@ class ApplicationController < ActionController::Base
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
   prepend_before_action :set_locale
-  prepend_before_action :set_x_request_url
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
-
-  # Workaround that helps our JS fetch polyfill. See:
-  # https://www.npmjs.com/package/whatwg-fetch#user-content-obtaining-the-response-url
-  def set_x_request_url
-    response.headers['X-Request-URL'] = request.url
-  end
 
   def session_expires_at
     return if @skip_session_expiration || @skip_session_load
@@ -441,12 +431,16 @@ class ApplicationController < ActionController::Base
     session.fetch(:sp, {})
   end
 
+  # Retrieves the current service provider session hash's logged request URL, if present
+  # Conditionally sets the final_auth_request service provider session attribute
+  # when applicable (the original SP request is SAML)
   def sp_session_request_url_with_updated_params
     # Temporarily place SAML route update behind a feature flag
     if IdentityConfig.store.saml_internal_post
       return unless sp_session[:request_url].present?
       request_url = URI(sp_session[:request_url])
       url = if request_url.path.match?('saml')
+              sp_session[:final_auth_request] = true
               complete_saml_url
             else
               # Login.gov redirects to the orginal request_url after a user authenticates

@@ -113,10 +113,6 @@ const getKeyDomains = (keys) => uniq(keys.map(getKeyDomain));
 class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
   /** @type {RailsI18nWebpackPluginOptions} */
   static DEFAULT_OPTIONS = {
-    // Note: Revisit this default for Webpack 5+, where `compiler.target` gives information about
-    // the availability of ES2015+ features. This is basically an `Object.assign` polyfill.
-    // Simpler version: `Object.assign(window._locale_data, %j);`
-    // See: https://webpack.js.org/configuration/target/
     template:
       '!function(){var k,o=%j,l=window._locale_data=window._locale_data||{};for(k in o)l[k]=o[k]}()',
     configPath: path.resolve(process.cwd(), 'config/locales'),

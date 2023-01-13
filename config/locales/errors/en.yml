@@ -119,7 +119,7 @@ en:
         Please try again.
       not_supported: Sorry, your browser does not support FIDO platform
         authenticators. The latest versions of Chrome, Firefox, Edge, and Safari
-        support FIDO platform authenticators. Internet Explorer does not.
+        support FIDO platform authenticators.
       unique_name: That name is already taken. Please choose a different name.
     webauthn_setup:
       already_registered: Security key already registered. Please try a different security key.
@@ -130,5 +130,5 @@ en:
       general_error: There was an error adding your hardware security key. Please try again.
       not_supported: Sorry, your browser does not support FIDO security keys. The
         latest versions of Chrome, Firefox, Edge, and Safari support FIDO
-        security keys.  Internet Explorer does not.
+        security keys.
       unique_name: That name is already taken. Please choose a different name.

@@ -23,10 +23,12 @@ describe('LocationCollectionItem', () => {
     const locationCollectionItem = wrapper.firstElementChild!;
     expect(locationCollectionItem.classList.contains('usa-collection__body')).to.be.true();
     const display = locationCollectionItem.firstElementChild!;
-    expect(display.classList.contains('display-flex')).to.be.true();
-    expect(display.classList.contains('flex-justify')).to.be.true();
-    const heading = display.firstElementChild!;
+    expect(display.classList.contains('grid-row')).to.be.true();
+    const column = display.firstElementChild!;
+    expect(column.classList.contains('grid-col-fill')).to.be.true();
+    const heading = column.firstElementChild!;
     expect(heading.classList.contains('usa-collection__heading')).to.be.true();
+    expect(heading.classList.contains('margin-bottom-1')).to.be.true();
   });
 
   it('renders the component with expected data', () => {

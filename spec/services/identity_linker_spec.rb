@@ -32,6 +32,7 @@ describe IdentityLinker do
       ial = 3
       scope = 'openid profile email'
       code_challenge = SecureRandom.hex
+      verified_attributes = %w[address email]
 
       IdentityLinker.new(user, service_provider).link_identity(
         rails_session_id: rails_session_id,
@@ -39,6 +40,7 @@ describe IdentityLinker do
         ial: ial,
         scope: scope,
         code_challenge: code_challenge,
+        verified_attributes: verified_attributes.map(&:to_sym),
       )
       user.reload
 
@@ -48,13 +50,14 @@ describe IdentityLinker do
       expect(last_identity.ial).to eq(ial)
       expect(last_identity.scope).to eq(scope)
       expect(last_identity.code_challenge).to eq(code_challenge)
+      expect(last_identity.verified_attributes).to eq(verified_attributes)
     end
 
     context 'identity.last_consented_at' do
       let(:now) { Time.zone.now }
       let(:six_months_ago) { 6.months.ago }
 
-      it 'does override a previous last_consented_at by default' do
+      it 'does not override a previous last_consented_at by default' do
         IdentityLinker.new(user, service_provider).
           link_identity(last_consented_at: six_months_ago)
         last_identity = user.reload.last_identity
@@ -74,7 +77,26 @@ describe IdentityLinker do
       end
     end
 
-    context 'clear_deleted_at' do
+    context 'identity.verified_attributes' do
+      before do
+        IdentityLinker.new(user, service_provider).link_identity(
+          verified_attributes: %i[address email],
+        )
+      end
+
+      it 'adds to verified_attributes' do
+        expect do
+          IdentityLinker.new(user, service_provider).link_identity(
+            verified_attributes: %i[all_emails verified_at],
+          )
+        end.to(
+          change { user.identities.last.verified_attributes }.
+            to(%w[address all_emails email verified_at]),
+        )
+      end
+    end
+
+    context ':clear_deleted_at' do
       let(:yesterday) { 1.day.ago }
 
       before do
@@ -88,7 +110,7 @@ describe IdentityLinker do
           link_identity(clear_deleted_at: clear_deleted_at)
       end
 
-      context 'clear_deleted_at is nil' do
+      context ':clear_deleted_at is nil' do
         let(:clear_deleted_at) { nil }
 
         it 'nulls out deleted_at' do
@@ -98,7 +120,7 @@ describe IdentityLinker do
         end
       end
 
-      context 'clear_deleted_at is true' do
+      context ':clear_deleted_at is true' do
         let(:clear_deleted_at) { true }
 
         it 'nulls out deleted_at' do

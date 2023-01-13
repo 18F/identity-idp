@@ -108,6 +108,12 @@ module SamlAuthHelper
 
   def saml_post_auth(saml_request)
     # POST redirect binding Authn Request
+    request.path = '/api/saml/authpost2022'
+    post :auth, params: { SAMLRequest: CGI.unescape(saml_request) }
+  end
+
+  def saml_final_post_auth(saml_request)
+    request.path = '/api/saml/finalauthpost2022'
     post :auth, params: { SAMLRequest: CGI.unescape(saml_request) }
   end
 

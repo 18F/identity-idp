@@ -1,5 +1,11 @@
 <% title t('titles.enter_2fa_code.one_time_code') %>
 
+<% if @landline_alert %>
+  <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-2') do %>
+    <%= @presenter.landline_warning %>
+  <% end %>
+<% end %>
+
 <% if @presenter.otp_expiration.present? %>
   <%= render CountdownAlertComponent.new(
         show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds,

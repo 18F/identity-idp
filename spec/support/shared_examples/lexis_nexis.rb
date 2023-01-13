@@ -11,6 +11,7 @@ shared_examples 'a lexisnexis proofer' do
     allow(response).to receive(:conversation_id).and_return(conversation_id)
     allow(response).to receive(:reference).and_return(reference)
     allow(response).to receive(:verification_errors).and_return(verification_errors)
+    allow(response).to receive(:response_body).and_return({})
 
     allow(verification_request).to receive(:send).and_return(response)
     allow(verification_request.class).to receive(:new).

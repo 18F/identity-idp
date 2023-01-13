@@ -636,7 +636,7 @@ Metrics/BlockLength:
   CountComments: false
   Enabled: true
   Max: 25
-  IgnoredMethods:
+  AllowedMethods:
     - Struct.new
     - RedactedStruct.new
   Exclude:
@@ -1080,7 +1080,7 @@ Style/LineEndConcatenation:
 
 Style/MethodCallWithoutArgsParentheses:
   Enabled: true
-  IgnoredMethods: []
+  AllowedMethods: []
 
 Style/MethodDefParentheses:
   Enabled: true

@@ -25,14 +25,14 @@ gem 'foundation_emails'
 gem 'good_job', '~> 3.0'
 gem 'hashie', '~> 4.1'
 gem 'http_accept_language'
-gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v3.4.1'
+gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v3.4.2'
 gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
 gem 'identity_validations', github: '18F/identity-validations', tag: 'v0.7.2'
 gem 'jsbundling-rails', '~> 1.0.0'
 gem 'jwe'
 gem 'jwt'
 gem 'lograge', '>= 0.11.2'
-gem 'lookbook', '~> 1.3.3', require: false
+gem 'lookbook', '~> 1.4.5', require: false
 gem 'lru_redux'
 gem 'maxminddb'
 gem 'multiset'
@@ -57,7 +57,7 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', github: '18F/saml_idp', tag: '0.18.0-18f'
+gem 'saml_idp', github: '18F/saml_idp', tag: '0.18.1-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
 gem 'sprockets-rails'
@@ -67,7 +67,7 @@ gem 'subprocess', require: false
 gem 'uglifier', '~> 4.2'
 gem 'valid_email', '>= 0.1.3'
 gem 'view_component', '~> 2.51.0'
-gem 'webauthn', '~> 2.1'
+gem 'webauthn', '~> 2.5.2'
 gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
 gem 'yard'
@@ -91,12 +91,11 @@ group :development, :test do
   gem 'aws-sdk-cloudwatchlogs', require: false
   gem 'brakeman', require: false
   gem 'bullet', '~> 7.0'
-  gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: '63d790a0'
-  gem 'data_uri', require: false
-  gem 'erb_lint', '~> 0.1.0', require: false
+  gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: 'd3f3b7c'
+  gem 'erb_lint', '~> 0.3.0', require: false
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
-  gem 'nokogiri', '~> 1.13.10'
+  gem 'nokogiri', '1.14.0.rc1'
   gem 'parallel_tests'
   gem 'pg_query', require: false
   gem 'pry-byebug'
@@ -104,9 +103,9 @@ group :development, :test do
   gem 'pry-rails'
   gem 'psych'
   gem 'puma'
-  gem 'rspec-rails', '6.0.0.rc1'
-  gem 'rubocop', '~> 1.29.1', require: false
-  gem 'rubocop-performance', '~> 1.14.0', require: false
+  gem 'rspec-rails', '~> 6.0'
+  gem 'rubocop', '~> 1.42.0', require: false
+  gem 'rubocop-performance', '~> 1.15.0', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
 end
 

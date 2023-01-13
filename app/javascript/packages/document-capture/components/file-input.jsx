@@ -122,7 +122,6 @@ function FileInput(props, ref) {
     onChange = () => {},
     onError = () => {},
   } = props;
-  const isResettingValue = useRef(false);
   const inputRef = useRef(/** @type {HTMLInputElement?} */ (null));
   const { t, formatHTML } = useI18n();
   const instanceId = useInstanceId();
@@ -151,9 +150,7 @@ function FileInput(props, ref) {
     //
     // See: https://reactjs.org/docs/uncontrolled-components.html#the-file-input-tag
     if (inputRef.current && inputRef.current.files?.length) {
-      isResettingValue.current = true;
       inputRef.current.value = '';
-      isResettingValue.current = false;
     }
   }, [value]);
   const inputId = `file-input-${instanceId}`;
@@ -168,18 +165,6 @@ function FileInput(props, ref) {
    * @param {import('react').ChangeEvent<HTMLInputElement>} event Change event.
    */
   function onChangeIfValid(event) {
-    // It should not be expected to need to consider the value reset, since the HTML specification
-    // dictates that programmatic updates to values are excluded from event emissions. Alas, IE11
-    // _does_ emit a change event when assigning or resetting the value of a file input.
-    //
-    // "These events are not fired in response to changes made to the values of form controls by
-    // scripts."
-    //
-    // See: https://html.spec.whatwg.org/multipage/input.html
-    if (isResettingValue.current) {
-      return;
-    }
-
     const file = /** @type {FileList} */ (event.target.files)[0];
     if (file) {
       if (isValidForAccepts(file.type, accept)) {

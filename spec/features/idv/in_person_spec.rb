@@ -17,8 +17,6 @@ RSpec.describe 'In Person Proofing', js: true do
       allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
         and_return(true)
-      allow(IdentityConfig.store).to receive(:proofing_device_profiling_decisioning_enabled).
-        and_return(true)
     end
 
     it 'allows the user to continue down the happy path', allow_browser_log: true do
@@ -140,6 +138,7 @@ RSpec.describe 'In Person Proofing', js: true do
     # address page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     expect(page).to have_content(t('in_person_proofing.headings.address'))
+    expect(page).to have_content(t('in_person_proofing.form.address.same_address'))
     complete_address_step(user)
 
     # ssn page

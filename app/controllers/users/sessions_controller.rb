@@ -13,6 +13,7 @@ module Users
     before_action :check_user_needs_redirect, only: [:new]
     before_action :apply_secure_headers_override, only: [:new, :create]
     before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
+    before_action :update_devise_params_sanitizer, only: [:new]
 
     def new
       analytics.sign_in_page_visit(
@@ -221,7 +222,7 @@ module Users
       ).call
     end
 
-    LETTERS_AND_DASHES = /\A[a-z0-9\-]+\Z/i
+    LETTERS_AND_DASHES = /\A[a-z0-9-]+\Z/i
 
     def request_id_if_valid
       request_id = (params[:request_id] || sp_session[:request_id]).to_s
@@ -235,6 +236,10 @@ module Users
       policy.script_src(*policy.script_src, 'dap.digitalgov.gov', 'www.google-analytics.com')
       policy.connect_src(*policy.connect_src, 'www.google-analytics.com')
       request.content_security_policy = policy
+    end
+
+    def update_devise_params_sanitizer
+      devise_parameter_sanitizer.permit(:sign_in, except: [:email, :password])
     end
   end
 

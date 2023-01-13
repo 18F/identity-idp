@@ -62,7 +62,7 @@ module ArcgisApi
       token, expires = request_token.fetch_values('token', 'expires')
       expires_at = Time.zone.at(expires / 1000)
       Rails.cache.write(API_TOKEN_CACHE_KEY, token, expires_at: expires_at)
-      # If using a redis cache we have to manually set the expires_in. This is because we aren't
+      # If using a redis cache we have to manually set the expires_at. This is because we aren't
       # using a dedicated Redis cache and instead are just using our existing Redis server with
       # mixed usage patterns. Without this cache entries don't expire.
       # More at https://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html

@@ -13,6 +13,7 @@ module TwoFactorAuthentication
     def show
       analytics.multi_factor_auth_enter_otp_visit(**analytics_properties)
 
+      @landline_alert = landline_warning?
       @presenter = presenter_for_two_factor_authentication_method
     end
 
@@ -54,6 +55,10 @@ module TwoFactorAuthentication
 
     def phone_enabled?
       TwoFactorAuthentication::PhonePolicy.new(current_user).enabled?
+    end
+
+    def landline_warning?
+      user_session[:phone_type] == 'landline' && two_factor_authentication_method == 'sms'
     end
 
     def confirm_voice_capability
