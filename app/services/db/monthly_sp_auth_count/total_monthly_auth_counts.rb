@@ -3,8 +3,10 @@ module Db
     class TotalMonthlyAuthCounts
       # @return [Array<Hash>]
       def self.call
-        oldest = ::SpReturnLog.first&.requested_at&.to_date&.beginning_of_month
-        newest = ::SpReturnLog.last&.requested_at&.to_date&.end_of_month
+        # rubocop:disable Metrics/LineLength
+        oldest = ::SpReturnLog.where.not(returned_at: nil).first&.returned_at&.to_date&.beginning_of_month
+        newest = ::SpReturnLog.where.not(returned_at: nil).last&.returned_at&.to_date&.end_of_month
+        # rubocop:enable Metrics/LineLength
 
         return [] if !oldest || !newest
 
@@ -25,16 +27,15 @@ module Db
           SELECT
               sp_return_logs.issuer
             , sp_return_logs.ial
-            , to_char(sp_return_logs.requested_at, 'YYYYMM') AS year_month
+            , to_char(sp_return_logs.returned_at, 'YYYYMM') AS year_month
             , COUNT(sp_return_logs.id) AS total
             , MAX(service_providers.app_id) AS app_id
           FROM sp_return_logs
           JOIN service_providers ON service_providers.issuer = sp_return_logs.issuer
           WHERE
-                sp_return_logs.returned_at IS NOT NULL
-            AND sp_return_logs.billable = true
-            AND %{month_start}::date <= sp_return_logs.requested_at::date
-            AND sp_return_logs.requested_at::date <= %{month_end}::date
+                sp_return_logs.billable = true
+            AND %{month_start}::date <= sp_return_logs.returned_at::date
+            AND sp_return_logs.returned_at::date <= %{month_end}::date
           GROUP BY
               sp_return_logs.issuer
             , sp_return_logs.ial

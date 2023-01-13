@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_09_171633) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_13_202809) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -559,7 +559,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_09_171633) do
     t.integer "user_id"
     t.datetime "returned_at", precision: nil
     t.boolean "billable"
-    t.index "((requested_at)::date), issuer", name: "index_sp_return_logs_on_requested_at_date_issuer", where: "(returned_at IS NOT NULL)"
+    t.index "((returned_at)::date), issuer", name: "index_sp_return_logs_on_returned_at_date_issuer", where: "(billable = true)"
     t.index ["request_id"], name: "index_sp_return_logs_on_request_id", unique: true
   end
 
