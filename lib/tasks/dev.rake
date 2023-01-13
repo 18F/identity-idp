@@ -220,4 +220,40 @@ namespace :dev do
       confirmed_at: Time.zone.now,
     }
   end
+
+  desc 'Perform load testing against USPS IPPGetFacilityList'
+  task load_test_usps_ipp_facility_list: :environment do
+
+    url = "#{ENV['BASE_URL']}/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList"
+    
+    (0...ENV['NUM_USERS'].to_i).each do
+      body = {
+        sponsorID: 4,
+        streetAddress: '2 Massachusetts ave NE',
+        city: 'Washington',
+        state: 'DC',
+        zipCode: '20002',
+      }.to_json
+      
+      print_response(
+        Faraday.post(url, body, dynamic_headers) do |req|
+          req.options.context = { service_name: 'usps_lt_facilities' }
+        end.body,
+      )
+    end
+  end
+
+  def print_response(response)
+    if STDOUT.tty?
+      STDOUT.printf("+")
+    end
+  end
+
+  def dynamic_headers
+    {
+      'Authorization' => UspsInPersonProofing::Proofer.new.retrieve_token!,
+      'RequestID' => SecureRandom.uuid,
+      'Content-Type' => 'application/json'
+    }
+  end
 end
