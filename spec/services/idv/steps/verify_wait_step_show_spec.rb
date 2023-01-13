@@ -1,13 +1,16 @@
 require 'rails_helper'
 
+
 describe Idv::Steps::VerifyWaitStepShow do
+  TRANSACTION_ID = 'ddp-mock-transaction-id-123'
+
   include Rails.application.routes.url_helpers
 
   let(:user) { build(:user) }
   let(:issuer) { 'test_issuer' }
   let(:service_provider) { build(:service_provider, issuer: issuer) }
-  let(:resolution_transaction_id) { Proofing::Mock::ResolutionMockClient::TRANSACTION_ID }
-  let(:threatmetrix_transaction_id) { Proofing::Mock::DdpMockClient::TRANSACTION_ID }
+  let(:resolution_transaction_id) { TRANSACTION_ID }
+  let(:threatmetrix_transaction_id) { TRANSACTION_ID }
 
   let(:request) { FakeRequest.new }
 

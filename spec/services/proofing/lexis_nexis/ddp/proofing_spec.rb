@@ -78,6 +78,9 @@ describe Proofing::LexisNexis::Ddp::Proofer do
 
       it 'is a successful result' do
         expect(result.success?).to eq(true)
+      end
+
+      it 'has no errors' do
         expect(result.errors).to be_empty
       end
     end
