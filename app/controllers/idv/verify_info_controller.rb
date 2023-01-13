@@ -196,7 +196,7 @@ module Idv
     # copied from verify_base_step. May want reconciliation with phone_step
     def process_async_state(current_async_state)
       if current_async_state.none?
-        idv_session.resolution_info_verified = false
+        idv_session.resolution_successful = false
         render :show
       elsif current_async_state.in_progress?
         render :wait
@@ -206,7 +206,7 @@ module Idv
         render :show
 
         delete_async
-        idv_session.resolution_info_verified = false
+        idv_session.resolution_successful = false
 
         log_idv_verification_submitted_event(
           success: false,
@@ -243,10 +243,10 @@ module Idv
       delete_async
 
       if form_response.success?
-        idv_session.resolution_info_verified = true
+        idv_session.resolution_successful = true
         redirect_to idv_phone_url
       else
-        idv_session.resolution_info_verified = false
+        idv_session.resolution_successful = false
       end
 
       analytics.idv_doc_auth_verify_proofing_results(**form_response.to_h)
