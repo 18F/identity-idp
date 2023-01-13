@@ -26,6 +26,7 @@ en:
           to verify your identity. No appointment is required.
       cta:
         button: Verify your ID in person
+        button_variant: Try in person
         new_feature: New Feature
         prompt_detail: If you are located near Washington, D.C. or Baltimore, MD, you
           may be able to verify your ID in person at limited post office

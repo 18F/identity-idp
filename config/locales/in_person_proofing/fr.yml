@@ -30,6 +30,7 @@ fr:
           au détail pour vérifier votre identité. Aucun rendez-vous n’est exigé.
       cta:
         button: Vérifiez votre identité en personne
+        button_variant: Essayer en personne
         new_feature: Nouvelle fonctionnalité
         prompt_detail: Si vous êtes situé près de Washington, D.C. ou de Baltimore
           (Maryland), vous pourrez peut-être vérifier votre identité en personne
