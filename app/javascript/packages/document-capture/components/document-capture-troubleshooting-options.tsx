@@ -28,7 +28,8 @@ interface DocumentCaptureTroubleshootingOptionsProps {
    */
   showAlternativeProofingOptions?: boolean;
 
-  inPersonCtaOverride?: string;
+  altInPersonCta?: string;
+  altInPersonCtaButtonText?: string;
 }
 
 function DocumentCaptureTroubleshootingOptions({
@@ -36,7 +37,8 @@ function DocumentCaptureTroubleshootingOptions({
   location = 'document_capture_troubleshooting_options',
   showDocumentTips = true,
   showAlternativeProofingOptions,
-  inPersonCtaOverride,
+  altInPersonCta,
+  altInPersonCtaButtonText,
 }: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
   const { inPersonURL } = useContext(InPersonContext);
@@ -46,7 +48,10 @@ function DocumentCaptureTroubleshootingOptions({
   return (
     <>
       {showAlternativeProofingOptions && inPersonURL && (
-        <InPersonCallToAction headingOverride={inPersonCtaOverride} />
+        <InPersonCallToAction
+          altHeading={altInPersonCta}
+          altButtonText={altInPersonCtaButtonText}
+        />
       )}
       <TroubleshootingOptions
         heading={heading}
