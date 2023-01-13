@@ -26,6 +26,20 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
       allow(@presenter).to receive(:reauthn).and_return(false)
     end
 
+    it 'allow user to return to two factor options screen' do
+      render
+      expect(rendered).to have_link(t('two_factor_authentication.choose_another_option'))
+    end
+
+    it 'does not show a landline setup warning' do
+      render
+
+      expect(rendered).not_to have_link(
+        'phone call',
+        href: phone_setup_path(otp_delivery_preference: 'voice'),
+      )
+    end
+
     context 'common OTP delivery screen behavior' do
       it 'has a localized title' do
         expect(view).to receive(:title).with(t('titles.enter_2fa_code.one_time_code'))
@@ -38,11 +52,6 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
         expect(rendered).to have_content t('two_factor_authentication.header_text')
       end
-    end
-
-    it 'allow user to return to two factor options screen' do
-      render
-      expect(rendered).to have_link(t('two_factor_authentication.choose_another_option'))
     end
 
     context 'OTP copy' do
@@ -251,6 +260,21 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
         render
 
         expect(rendered).to have_link(t('forms.two_factor.try_again'), href: phone_setup_path)
+      end
+    end
+
+    context 'with landline setup warning' do
+      before do
+        assign(:landline_alert, true)
+      end
+
+      it 'shows landline warning' do
+        render
+
+        expect(rendered).to have_link(
+          'phone call',
+          href: phone_setup_path(otp_delivery_preference: 'voice'),
+        )
       end
     end
   end

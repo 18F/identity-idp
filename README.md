@@ -9,6 +9,8 @@ This repository contains the core code base and documentation for the identity m
 
 Thank you for your interest in contributing to the Login.gov IdP! For complete instructions on how to contribute code, please read through our [CONTRIBUTING.md](CONTRIBUTING.md) documentation.
 
+You may also want to read the [the Login.gov team Handbook](https://handbook.login.gov/).
+
 ## Creating your local development environment
 
 ### Installing on your local machine
@@ -120,10 +122,25 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
 #### Viewing email messages
 
-  In local development, the application does not deliver real email messages. Instead, we use a tool called [Mailcatcher](https://github.com/sj26/mailcatcher) to capture all messages.
+  In local development, the application does not deliver real email messages. Instead, we use a tool
+  called [letter_opener](https://github.com/ryanb/letter_opener) to display messages.
 
-  - To view email messages which would have been sent, visit http://localhost:1080/ while the application is running.
-  - To view email templates with placeholder values, visit http://localhost:3000/rails/mailers/ to see a list of template previews.
+##### Disabling letter opener new window behavior
+
+  Letter opener will open each outgoing email in a new browser window or tab. In cases where this
+  will be annoying the application also supports writing outgoing emails to a file. To write emails
+  to a file add the following config to the `development` group in `config/application.yml`:
+
+  ```
+  development:
+    development_mailer_deliver_method: file
+  ```
+
+  After restarting the app emails will be written to the `tmp/mails` folder.
+
+##### Email template previews
+
+  To view email templates with placeholder values, visit http://localhost:3000/rails/mailers/ to see a list of template previews.
 
 #### Translations
 

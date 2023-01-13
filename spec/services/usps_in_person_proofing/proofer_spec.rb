@@ -11,7 +11,6 @@ RSpec.describe UspsInPersonProofing::Proofer do
       subject.retrieve_token!
 
       expect(subject.token).to be_present
-      expect(subject.token_expires_at).to be_present
     end
 
     it 'calls the endpoint with the expected params' do
@@ -22,13 +21,13 @@ RSpec.describe UspsInPersonProofing::Proofer do
       password = 'test password'
       client_id = 'test client id'
 
-      allow(IdentityConfig.store).to receive(:usps_ipp_root_url).
+      expect(IdentityConfig.store).to receive(:usps_ipp_root_url).
         and_return(root_url)
-      allow(IdentityConfig.store).to receive(:usps_ipp_username).
+      expect(IdentityConfig.store).to receive(:usps_ipp_username).
         and_return(username)
-      allow(IdentityConfig.store).to receive(:usps_ipp_password).
+      expect(IdentityConfig.store).to receive(:usps_ipp_password).
         and_return(password)
-      allow(IdentityConfig.store).to receive(:usps_ipp_client_id).
+      expect(IdentityConfig.store).to receive(:usps_ipp_client_id).
         and_return(client_id)
 
       subject.retrieve_token!
@@ -50,12 +49,52 @@ RSpec.describe UspsInPersonProofing::Proofer do
           },
         )
     end
+
+    it 'reuses the cached auth token on subsequent requests' do
+      applicant = double(
+        'applicant',
+        address: Faker::Address.street_address,
+        city: Faker::Address.city,
+        state: Faker::Address.state_abbr,
+        zip_code: Faker::Address.zip_code,
+        first_name: Faker::Name.first_name,
+        last_name: Faker::Name.last_name,
+        email: Faker::Internet.safe_email,
+        unique_id: '123456789',
+      )
+      stub_request_token
+      stub_request_enroll
+
+      subject.request_enroll(applicant)
+      subject.request_enroll(applicant)
+      subject.request_enroll(applicant)
+
+      expect(WebMock).to have_requested(:post, %r{/oauth/authenticate}).once
+      expect(WebMock).to have_requested(
+        :post,
+        %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
+      ).times(3)
+    end
+
+    context 'when using redis as a backing store' do
+      before do |ex|
+        allow(Rails).to receive(:cache).and_return(
+          ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+        )
+      end
+
+      it 'manually sets the expiration' do
+        stub_request_token
+        subject.retrieve_token!
+        ttl = Rails.cache.redis.ttl(UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY)
+        expect(ttl).to be > 0
+      end
+    end
   end
 
   def check_facility(facility)
     expect(facility.address).to be_present
     expect(facility.city).to be_present
-    expect(facility.distance).to be_present
     expect(facility.name).to be_present
     expect(facility.phone).to be_present
     expect(facility.saturday_hours).to be_present

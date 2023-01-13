@@ -19,8 +19,7 @@ class ResolutionProofingJob < ApplicationJob
     should_proof_state_id:,
     user_id: nil,
     threatmetrix_session_id: nil,
-    request_ip: nil,
-    issuer: nil # rubocop:disable Lint:UnusedMethodArgument
+    request_ip: nil
   )
     timer = JobHelpers::Timer.new
 
@@ -107,7 +106,7 @@ class ResolutionProofingJob < ApplicationJob
     request_ip:,
     timer:
   )
-    return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
+    return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
 
     # The API call will fail without a session ID, so do not attempt to make
     # it to avoid leaking data when not required.

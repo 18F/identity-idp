@@ -1,5 +1,9 @@
 module TwoFactorAuthCode
   class PhoneDeliveryPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
+    include ActionView::Helpers::UrlHelper
+    include ActionView::Helpers::TagHelper
+    include ActionView::Helpers::TranslationHelper
+
     attr_reader :otp_delivery_preference,
                 :otp_make_default_number,
                 :unconfirmed_phone,
@@ -17,6 +21,20 @@ module TwoFactorAuthCode
         number: content_tag(:strong, phone_number),
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
       )
+    end
+
+    def landline_warning
+      t(
+        'two_factor_authentication.otp_delivery_preference.landline_warning_html',
+        phone_setup_path: link_to(
+          phone_call_text,
+          phone_setup_path(otp_delivery_preference: 'voice'),
+        ),
+      )
+    end
+
+    def phone_call_text
+      t('two_factor_authentication.otp_delivery_preference.phone_call')
     end
 
     def fallback_question

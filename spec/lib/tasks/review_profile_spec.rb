@@ -19,9 +19,8 @@ describe 'review_profile' do
   describe 'users:review:pass' do
     let(:task_name) { 'users:review:pass' }
 
-    it 'sets threatmetrix_review_status to pass' do
+    it 'activates the users profile' do
       invoke_task
-      expect(user.reload.proofing_component.threatmetrix_review_status).to eq('pass')
       expect(user.reload.profiles.first.active).to eq(true)
     end
 
@@ -41,9 +40,8 @@ describe 'review_profile' do
   describe 'users:review:reject' do
     let(:task_name) { 'users:review:reject' }
 
-    it 'sets threatmetrix_review_status to reject' do
+    it 'deactivates the users profile with reason threatmetrix_review_rejected' do
       invoke_task
-      expect(user.reload.proofing_component.threatmetrix_review_status).to eq('reject')
       expect(user.reload.profiles.first.deactivation_reason).to eq('threatmetrix_review_rejected')
     end
   end

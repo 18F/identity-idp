@@ -12,7 +12,7 @@ class OneTimeCodeInputComponentPreview < BaseComponentPreview
 
   # @display form true
   # @param numeric toggle
-  def workbench(numeric: false)
+  def workbench(numeric: true)
     render(OneTimeCodeInputComponent.new(form: form_builder, numeric: numeric))
   end
 end

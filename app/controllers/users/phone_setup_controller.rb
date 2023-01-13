@@ -11,7 +11,10 @@ module Users
     helper_method :in_multi_mfa_selection_flow?
 
     def index
-      @new_phone_form = NewPhoneForm.new(current_user)
+      @new_phone_form = NewPhoneForm.new(
+        current_user,
+        setup_voice_preference: setup_voice_preference?,
+      )
       track_phone_setup_visit
     end
 
@@ -45,6 +48,10 @@ module Users
       )
     end
 
+    def setup_voice_preference?
+      params[:otp_delivery_preference].to_s == 'voice'
+    end
+
     def user_opted_remember_device_cookie
       cookies.encrypted[:user_opted_remember_device_preference]
     end
@@ -55,6 +62,7 @@ module Users
           id: nil,
           phone: @new_phone_form.phone,
           selected_delivery_method: @new_phone_form.otp_delivery_preference,
+          phone_type: @new_phone_form.phone_info&.type,
         )
       else
         flash[:error] = t('errors.messages.phone_duplicate')

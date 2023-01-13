@@ -16,20 +16,6 @@ describe ApplicationController do
     end
   end
 
-  describe '#set_x_request_url' do
-    controller do
-      def index
-        render plain: 'Hello'
-      end
-    end
-
-    it 'sets the X-Request-URL header' do
-      get :index
-
-      expect(response.headers['X-Request-URL']).to eq('http://www.example.com/anonymous')
-    end
-  end
-
   describe '#cache_issuer_in_cookie' do
     controller do
       def index
@@ -419,6 +405,13 @@ describe ApplicationController do
       let(:sp_session_request_url) { '/api/saml/auth2022' }
       it 'returns the saml completion url' do
         expect(url_with_updated_params).to eq complete_saml_url
+      end
+
+      context 'updates the sp_session to mark the final auth request' do
+        it 'updates the sp_session to mark the final auth request' do
+          url_with_updated_params
+          expect(controller.session[:sp][:final_auth_request]).to be true
+        end
       end
     end
 

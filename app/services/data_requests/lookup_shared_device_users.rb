@@ -11,7 +11,7 @@ module DataRequests
   class LookupSharedDeviceUsers
     attr_reader :initial_users, :depth
 
-    def initialize(initial_users, depth = 3)
+    def initialize(initial_users, depth = 1)
       @initial_users = initial_users
       @depth = depth
       @user_ids = initial_users.map(&:id).to_set

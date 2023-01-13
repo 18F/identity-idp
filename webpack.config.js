@@ -20,7 +20,7 @@ const entries = glob('app/{components,javascript/packs}/*.{ts,tsx,js,jsx}');
 module.exports = /** @type {import('webpack').Configuration} */ ({
   mode,
   devtool,
-  target: ['web', 'es5'],
+  target: ['web'],
   devServer: {
     static: {
       directory: './public',
@@ -55,8 +55,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       },
       {
         test: /\.[cm]?[jt]sx?$/,
-        exclude:
-          /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset|swr)/,
+        exclude: /node_modules\/(?!@18f\/identity-)/,
         use: {
           loader: 'babel-loader',
         },
@@ -65,7 +64,6 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   },
   optimization: {
     chunkIds: 'natural',
-    splitChunks: { chunks: (chunk) => chunk.name !== 'polyfill' },
   },
   plugins: [
     new WebpackAssetsManifest({

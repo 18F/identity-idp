@@ -185,7 +185,7 @@ describe NewPhoneForm do
       end
 
       before do
-        allow(IdentityConfig.store).to receive(:voip_check).and_return(true)
+        allow(IdentityConfig.store).to receive(:phone_service_check).and_return(true)
 
         expect(Telephony).to receive(:phone_info).with(phone).
           and_raise(Aws::Pinpoint::Errors::BadRequestException.new(nil, nil))
@@ -209,11 +209,11 @@ describe NewPhoneForm do
     context 'voip numbers' do
       let(:telephony_gem_voip_number) { '+12255552000' }
       let(:voip_block) { false }
-      let(:voip_check) { true }
+      let(:phone_service_check) { true }
 
       before do
         allow(IdentityConfig.store).to receive(:voip_block).and_return(voip_block)
-        allow(IdentityConfig.store).to receive(:voip_check).and_return(voip_check)
+        allow(IdentityConfig.store).to receive(:phone_service_check).and_return(phone_service_check)
       end
 
       subject(:result) do
@@ -262,7 +262,7 @@ describe NewPhoneForm do
         end
 
         context 'when voip checks are disabled' do
-          let(:voip_check) { false }
+          let(:phone_service_check) { false }
 
           it 'does not check the phone type' do
             expect(Telephony).to_not receive(:phone_info)
@@ -289,7 +289,7 @@ describe NewPhoneForm do
       end
 
       context 'when voip checks are disabled' do
-        let(:voip_check) { false }
+        let(:phone_service_check) { false }
 
         it 'does not check the phone type' do
           expect(Telephony).to_not receive(:phone_info)
@@ -368,6 +368,14 @@ describe NewPhoneForm do
       before do
         allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
       end
+
+      it 'is true' do
+        expect(form.delivery_preference_voice?).to eq(true)
+      end
+    end
+
+    context 'with setup_voice_preference present' do
+      subject(:form) { NewPhoneForm.new(user, setup_voice_preference: true) }
 
       it 'is true' do
         expect(form.delivery_preference_voice?).to eq(true)

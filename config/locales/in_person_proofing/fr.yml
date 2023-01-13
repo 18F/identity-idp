@@ -8,6 +8,7 @@ fr:
           actuelle au bureau de poste.
         learn_more: Apprendre encore plus
       barcode:
+        cancel_link_text: Annulez votre code-barres
         close_window: Vous pouvez maintenant fermer cette fenêtre
         deadline: Visitez le bureau de poste d’ici %{deadline}
         deadline_restart: Si vous partez après la date limite, vos informations ne
@@ -38,7 +39,7 @@ fr:
         contact_info_heading: Information de contact
         distance:
           one: 'à %{count} mile'
-          other: 'à %{count} milles'
+          other: 'à %{count} miles'
         inline_error: Saisissez une adresse valide avec la ville, l’état et le code postal
         location_button: Sélectionner
         location_step_about: Si vous ne parvenez pas à ajouter votre pièce d’identité,
@@ -61,7 +62,7 @@ fr:
             50 États et certains territoires américains seront bientôt
             disponibles.
           results_description: Il y a %{count} de bureaux de poste participants dans un
-            rayon de 80 km autour de %{address}.
+            rayon de 50 miles autour de %{address}.
           results_instructions: Sélectionnez un emplacement de bureau de poste ci-dessous,
             ou effectuez une nouvelle recherche en utilisant une autre adresse.
             Pour l’accessibilité des installations, utilisez les informations de
