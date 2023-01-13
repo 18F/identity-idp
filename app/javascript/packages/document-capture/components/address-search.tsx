@@ -6,6 +6,7 @@ import ValidatedField from '@18f/identity-validated-field/validated-field';
 import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-button/spinner-button';
 import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import useSWR from 'swr/immutable';
+import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { FormattedLocation } from './in-person-locations';
 
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
@@ -156,7 +157,7 @@ function useUspsLocations() {
 interface AddressSearchProps {
   registerField?: RegisterFieldCallback;
   onFoundAddress?: (address: LocationQuery | null) => void;
-  onFoundLocations?: (locations: FormattedLocation[]) => void;
+  onFoundLocations?: (locations: FormattedLocation[] | null | undefined) => void;
 }
 
 function AddressSearch({
@@ -184,13 +185,15 @@ function AddressSearch({
     spinnerButtonRef.current?.toggleSpinner(isLoading);
   }, [isLoading]);
 
-  useEffect(() => {
-    !isLoading && locationResults && onFoundLocations(locationResults);
-    !isLoading && onFoundAddress(foundAddress);
-  }, [isLoading, locationResults, foundAddress]);
+  useDidUpdateEffect(() => {
+    onFoundLocations(locationResults);
+
+    foundAddress && onFoundAddress(foundAddress);
+  }, [locationResults]);
 
   const handleSearch = useCallback(
     (event) => {
+      onFoundAddress(null);
       onSearch(event, textInput);
     },
     [textInput],

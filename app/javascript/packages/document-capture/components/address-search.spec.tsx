@@ -59,13 +59,17 @@ describe('AddressSearch', () => {
     });
   });
 
-  context('when an address is not found', () => {
+  context('when an address is not found after a previous search returned an address', () => {
     const handleAddressFound = sandbox.stub();
     const handleLocationsFound = sandbox.stub();
 
     let server: SetupServerApi;
     before(() => {
-      server = setupServer(rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json([]))));
+      server = setupServer(
+        rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
+        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
+        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json([]))),
+      );
       server.listen();
     });
 
@@ -73,20 +77,39 @@ describe('AddressSearch', () => {
       server.close();
     });
 
-    beforeEach(() => {
-      render(
+    it('sets found address to null after the second search', async () => {
+      const firstAddress = {
+        streetAddress: DEFAULT_RESPONSE[0].street_address,
+        city: DEFAULT_RESPONSE[0].city,
+        state: DEFAULT_RESPONSE[0].state,
+        zipCode: DEFAULT_RESPONSE[0].zip_code,
+        address: DEFAULT_RESPONSE[0].address,
+      };
+      const { findByText, findByLabelText } = render(
         <AddressSearch
           onFoundAddress={handleAddressFound}
           onFoundLocations={handleLocationsFound}
         />,
       );
-    });
 
-    it('sets found address to null', () => {
+      await userEvent.type(
+        await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
+        '200 main',
+      );
+      await userEvent.click(
+        await findByText('in_person_proofing.body.location.po_search.search_button'),
+      );
+
+      expect(handleAddressFound).to.have.been.calledWith(firstAddress);
+
+      await userEvent.type(
+        await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
+        'asdfjk',
+      );
+      await userEvent.click(
+        await findByText('in_person_proofing.body.location.po_search.search_button'),
+      );
       expect(handleAddressFound).to.have.been.calledWith(null);
-    });
-
-    it('never calls set location results', () => {
       expect(handleLocationsFound).to.not.be.called();
     });
   });
