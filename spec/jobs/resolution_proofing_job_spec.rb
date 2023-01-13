@@ -106,8 +106,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           to_return(body: AamvaFixtures.verification_response)
 
         allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
-        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
-          and_return(true)
+        allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
 
         allow(IdentityConfig.store).to receive(:lexisnexis_account_id).and_return('abc123')
         allow(IdentityConfig.store).to receive(:lexisnexis_request_mode).and_return('aaa')
@@ -299,8 +298,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         allow(instance).to receive(:resolution_proofer).and_return(resolution_proofer)
         allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
         allow(instance).to receive(:lexisnexis_ddp_proofer).and_return(ddp_proofer)
-        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
-          and_return(true)
+        allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
         stub_request(:post, 'https://example.com/api/session-query').
           with(
             body: hash_including('api_key' => 'test_api_key'),

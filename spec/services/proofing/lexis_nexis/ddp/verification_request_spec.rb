@@ -28,6 +28,11 @@ describe Proofing::LexisNexis::Ddp::VerificationRequest do
     described_class.new(applicant: applicant, config: LexisNexisFixtures.example_ddp_config)
   end
 
+  before do
+    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_policy).
+      and_return('test-policy')
+  end
+
   describe '#body' do
     it 'returns a properly formed request body' do
       expect(subject.body).to eq(LexisNexisFixtures.ddp_request_json)

@@ -174,15 +174,9 @@ lexisnexis_trueid_noliveness_cropping_workflow: customers.gsa2.trueid.workflow
 lexisnexis_trueid_noliveness_nocropping_workflow: customers.gsa2.trueid.workflow
 ###################################################################
 # LexisNexis DDP/ThreatMetrix #####################################
-lexisnexis_threatmetrix_api_key: test_api_key
-lexisnexis_threatmetrix_base_url: https://www.example.com
-lexisnexis_threatmetrix_org_id: test_account
-lexisnexis_threatmetrix_policy: test-policy
+lexisnexis_threatmetrix_mock_enabled: true
 lexisnexis_threatmetrix_support_code: ABCD
 lexisnexis_threatmetrix_timeout: 1.0
-lexisnexis_threatmetrix_enabled: false
-lexisnexis_threatmetrix_mock_enabled: true
-lexisnexis_threatmetrix_required_to_verify: false
 lexisnexis_threatmetrix_js_signing_cert: ''
 ###################################################################
 lockout_period_in_minutes: 10
@@ -235,7 +229,6 @@ piv_cac_verify_token_url: https://localhost:8443/
 platform_auth_set_up_enabled: false
 poll_rate_for_verify_in_seconds: 3
 proofer_mock_fallback: true
-proofing_device_profiling_collecting_enabled: true
 proof_address_max_attempts: 5
 proof_address_max_attempt_window_in_minutes: 360
 proof_ssn_max_attempts: 10
@@ -446,6 +439,7 @@ production:
   kantara_2fa_phone_restricted: false
   kantara_2fa_phone_existing_user_restriction: false
   kantara_restriction_enforcement_date: '2022-07-19'
+  lexisnexis_threatmetrix_mock_enabled: false
   logins_per_ip_limit: 20
   logins_per_ip_period: 20
   logins_per_ip_track_only_mode: true
