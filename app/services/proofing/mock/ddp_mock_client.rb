@@ -1,38 +1,41 @@
 module Proofing
   module Mock
     class DdpMockClient
-      class << self
-        def vendor_name
-          'DdpMock'
-        end
+      # class << self
+      #   def vendor_name
+      #     'DdpMock'
+      #   end
 
-        def required_attributes
-          %I[threatmetrix_session_id
-             state_id_number
-             first_name
-             last_name
-             dob
-             ssn
-             address1
-             city
-             state
-             zipcode
-             request_ip]
-        end
+      #   def required_attributes
+      #     %I[threatmetrix_session_id
+      #        state_id_number
+      #        first_name
+      #        last_name
+      #        dob
+      #        ssn
+      #        address1
+      #        city
+      #        state
+      #        zipcode
+      #        request_ip]
+      #   end
 
-        def optional_attributes
-          %I[address2 phone email uuid_prefix]
-        end
+      #   def optional_attributes
+      #     %I[address2 phone email uuid_prefix]
+      #   end
 
-        def stage
-          :resolution
-        end
-      end
+      #   def stage
+      #     :resolution
+      #   end
+      # end
 
       TRANSACTION_ID = 'ddp-mock-transaction-id-123'
 
       def proof(applicant)
-        result = Proofing::Result.new
+        result = Proofing::LexisNexis::Ddp::VerificationRequest.new(
+          config: Proofing::LexisNexis::Ddp::Proofer::Config.new,
+          applicant: applicant,
+        ).send
         result.transaction_id = TRANSACTION_ID
 
         response_body = File.read(

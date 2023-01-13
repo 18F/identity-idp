@@ -88,7 +88,8 @@ class ResolutionProofingJob < ApplicationJob
     response_h = Proofing::LexisNexis::Ddp::ResponseRedacter.
       redact(threatmetrix_result.response_body)
     callback_log_data.result[:context][:stages][:threatmetrix] = {
-      client: lexisnexis_ddp_proofer.class.vendor_name,
+      # ToDo: find the real vendor name and stick it in here
+      client: 'lexisnexis', #lexisnexis_ddp_proofer.class.vendor_name,
       errors: threatmetrix_result.errors,
       exception: exception,
       success: threatmetrix_result.success?,

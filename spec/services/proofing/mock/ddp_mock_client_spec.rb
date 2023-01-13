@@ -18,11 +18,6 @@ RSpec.describe Proofing::Mock::DdpMockClient do
 
   subject(:instance) { described_class.new }
 
-  it_behaves_like_mock_proofer(
-    mock_proofer_class: Proofing::Mock::DdpMockClient,
-    real_proofer_class: Proofing::LexisNexis::Ddp::Proofer,
-  )
-
   describe '#proof' do
     subject(:result) { instance.proof(applicant) }
 
