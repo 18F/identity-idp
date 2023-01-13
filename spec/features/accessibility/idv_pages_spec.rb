@@ -11,6 +11,7 @@ feature 'Accessibility on IDV pages', :js do
       visit idv_path
 
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+      expect(page).to have_valid_idrefs
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end
@@ -22,6 +23,7 @@ feature 'Accessibility on IDV pages', :js do
 
       expect(current_path).to eq idv_cancel_path
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+      expect(page).to have_valid_idrefs
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end
@@ -33,6 +35,7 @@ feature 'Accessibility on IDV pages', :js do
 
       expect(current_path).to eq idv_phone_path
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+      expect(page).to have_valid_idrefs
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end
@@ -44,6 +47,7 @@ feature 'Accessibility on IDV pages', :js do
 
       expect(page).to have_current_path(idv_review_path)
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+      expect(page).to have_valid_idrefs
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end
@@ -57,6 +61,7 @@ feature 'Accessibility on IDV pages', :js do
 
       expect(current_path).to eq idv_personal_key_path
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+      expect(page).to have_valid_idrefs
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end
@@ -70,6 +75,7 @@ feature 'Accessibility on IDV pages', :js do
 
       expect(current_path).to eq idv_personal_key_path
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+      expect(page).to have_valid_idrefs
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end
@@ -83,6 +89,7 @@ feature 'Accessibility on IDV pages', :js do
 
       expect(current_path).to eq idv_personal_key_path
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+      expect(page).to have_valid_idrefs
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end

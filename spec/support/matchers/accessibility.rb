@@ -1,3 +1,27 @@
+RSpec::Matchers.define :have_valid_idrefs do
+  invalid_idref_messages = []
+
+  match do |page|
+    ['aria-describedby', 'aria-labelledby'].each do |idref_attribute|
+      page.all(:css, "[#{idref_attribute}]").each do |element|
+        page.find_by_id(element[idref_attribute]) # rubocop:disable Rails/DynamicFindBy
+      rescue Capybara::ElementNotFound
+        invalid_idref_messages << "[#{idref_attribute}=\"#{element[idref_attribute]}\"]"
+      end
+    end
+
+    invalid_idref_messages.blank?
+  end
+
+  failure_message do |page|
+    <<-STR.strip_heredoc
+      Found #{invalid_idref_messages.count} elements with invalid ID reference links:
+
+      #{invalid_idref_messages.join("\n")}
+    STR
+  end
+end
+
 RSpec::Matchers.define :label_required_fields do
   elements = []
 

@@ -6,6 +6,7 @@ feature 'Accessibility on static pages', :js do
     visit '/non_existent_page'
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -14,6 +15,7 @@ feature 'Accessibility on static pages', :js do
     visit '/401'
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -22,6 +24,7 @@ feature 'Accessibility on static pages', :js do
     visit '/406'
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -30,6 +33,7 @@ feature 'Accessibility on static pages', :js do
     visit '/422'
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -38,6 +42,7 @@ feature 'Accessibility on static pages', :js do
     visit '/429'
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -46,6 +51,7 @@ feature 'Accessibility on static pages', :js do
     visit '/500'
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end

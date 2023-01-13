@@ -8,6 +8,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     expect(current_path).to eq(sign_up_verify_email_path)
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -19,6 +20,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
       expect(current_path).to eq(sign_up_enter_password_path)
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+      expect(page).to have_valid_idrefs
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end
@@ -28,6 +30,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
       expect(current_path).to eq(sign_up_email_resend_path)
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+      expect(page).to have_valid_idrefs
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end
@@ -39,6 +42,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
       expect(current_path).to eq(authentication_methods_setup_path)
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+      expect(page).to have_valid_idrefs
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end
@@ -50,6 +54,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
       expect(current_path).to eq(phone_setup_path)
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+      expect(page).to have_valid_idrefs
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end
@@ -60,6 +65,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
       expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+      expect(page).to have_valid_idrefs
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end
@@ -72,6 +78,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
         expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+        expect(page).to have_valid_idrefs
         expect(page).to label_required_fields
         expect(page).to be_uniquely_titled
       end
@@ -85,6 +92,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
         expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+        expect(page).to have_valid_idrefs
         expect(page).to label_required_fields
         expect(page).to be_uniquely_titled
       end
@@ -96,6 +104,7 @@ feature 'Accessibility on pages that require authentication', :js do
     visit manage_personal_key_path
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -106,6 +115,7 @@ feature 'Accessibility on pages that require authentication', :js do
     visit account_path
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -117,6 +127,7 @@ feature 'Accessibility on pages that require authentication', :js do
     visit manage_email_confirm_delete_path(id: user.email_addresses.take.id)
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -127,6 +138,7 @@ feature 'Accessibility on pages that require authentication', :js do
     visit manage_password_path
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -137,6 +149,7 @@ feature 'Accessibility on pages that require authentication', :js do
     visit account_email_language_path
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -147,6 +160,7 @@ feature 'Accessibility on pages that require authentication', :js do
     visit add_phone_path
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -157,6 +171,7 @@ feature 'Accessibility on pages that require authentication', :js do
     visit manage_phone_path(id: user.phone_configurations.first.id)
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -167,6 +182,7 @@ feature 'Accessibility on pages that require authentication', :js do
     visit manage_personal_key_path
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -177,6 +193,7 @@ feature 'Accessibility on pages that require authentication', :js do
     visit '/authenticator_setup'
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -189,6 +206,7 @@ feature 'Accessibility on pages that require authentication', :js do
     visit account_events_path(id: device.id)
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -199,6 +217,7 @@ feature 'Accessibility on pages that require authentication', :js do
     visit account_delete_path
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end

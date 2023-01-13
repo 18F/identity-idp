@@ -6,6 +6,7 @@ feature 'Accessibility on pages that do not require authentication', :js do
     visit root_path
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -14,6 +15,7 @@ feature 'Accessibility on pages that do not require authentication', :js do
     visit new_user_password_path
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -22,6 +24,7 @@ feature 'Accessibility on pages that do not require authentication', :js do
     visit new_user_session_path
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -30,6 +33,7 @@ feature 'Accessibility on pages that do not require authentication', :js do
     visit sign_up_email_path
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
@@ -38,6 +42,7 @@ feature 'Accessibility on pages that do not require authentication', :js do
     visit sign_up_cancel_path
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect(page).to have_valid_idrefs
     expect(page).to label_required_fields
     expect(page).to be_uniquely_titled
   end
