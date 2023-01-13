@@ -186,8 +186,8 @@ GEM
     bindata (2.4.10)
     binding_of_caller (1.0.0)
       debug_inspector (>= 0.0.1)
-    bootsnap (1.9.4)
-      msgpack (~> 1.0)
+    bootsnap (1.15.0)
+      msgpack (~> 1.2)
     brakeman (5.4.0)
     browser (5.3.1)
     builder (3.2.4)
@@ -221,7 +221,7 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
-    css_parser (1.11.0)
+    css_parser (1.14.0)
       addressable
     cssbundling-rails (1.0.0)
       railties (>= 6.0.0)
@@ -322,15 +322,16 @@ GEM
     hashie (4.1.0)
     heapy (0.2.0)
       thor
-    highline (2.0.3)
+    highline (2.1.0)
     htmlbeautifier (1.4.2)
     htmlentities (4.3.4)
     http_accept_language (2.1.1)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
-    i18n-tasks (0.9.37)
+    i18n-tasks (1.0.12)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
+      better_html (>= 1.0, < 3.0)
       erubi
       highline (>= 2.0.0)
       i18n
@@ -505,7 +506,7 @@ GEM
       ruby-graphviz (~> 1.2)
     rails-html-sanitizer (1.4.4)
       loofah (~> 2.19, >= 2.19.1)
-    rails-i18n (7.0.3)
+    rails-i18n (7.0.6)
       i18n (>= 0.7, < 2)
       railties (>= 6.0.0, < 8)
     railties (7.0.4)
@@ -522,12 +523,15 @@ GEM
       ffi (~> 1.0)
     redacted_struct (1.1.0)
     redcarpet (3.5.1)
-    redis (4.7.1)
+    redis (5.0.5)
+      redis-client (>= 0.9.0)
+    redis-client (0.12.0)
+      connection_pool
     redis-namespace (1.8.1)
       redis (>= 3.0.4)
-    redis-session-store (0.11.4)
-      actionpack (>= 3, < 8)
-      redis (>= 3, < 5)
+    redis-session-store (0.11.5)
+      actionpack (>= 6, < 8)
+      redis (>= 3, < 6)
     regexp_parser (2.6.1)
     reline (0.2.7)
       io-console (~> 0.5)
@@ -657,7 +661,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8)
-    unicode-display_width (2.4.0)
+    unicode-display_width (2.4.2)
     uniform_notifier (1.16.0)
     valid_email (0.1.4)
       activemodel
@@ -727,7 +731,7 @@ DEPENDENCIES
   base32-crockford
   better_errors (>= 2.5.1)
   binding_of_caller
-  bootsnap (~> 1.9.0)
+  bootsnap (~> 1.0)
   brakeman
   browser
   bullet (~> 7.0)
@@ -749,7 +753,7 @@ DEPENDENCIES
   guard-rspec
   hashie (~> 4.1)
   http_accept_language
-  i18n-tasks (>= 0.9.31)
+  i18n-tasks (~> 1.0)
   identity-hostdata!
   identity-logging!
   identity_validations!

@@ -13,7 +13,7 @@ gem 'aws-sdk-ses', '~> 1.6'
 gem 'aws-sdk-sns'
 gem 'barby', '~> 0.6.8'
 gem 'base32-crockford'
-gem 'bootsnap', '~> 1.9.0', require: false
+gem 'bootsnap', '~> 1.0', require: false
 gem 'browser'
 gem 'connection_pool'
 gem 'cssbundling-rails'
@@ -93,7 +93,7 @@ group :development, :test do
   gem 'bullet', '~> 7.0'
   gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: 'd3f3b7c'
   gem 'erb_lint', '~> 0.3.0', require: false
-  gem 'i18n-tasks', '>= 0.9.31'
+  gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'nokogiri', '~> 1.14.0'
   gem 'parallel_tests'
