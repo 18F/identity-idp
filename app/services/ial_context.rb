@@ -58,10 +58,11 @@ class IalContext
   end
 
   def convert_ial_to_int(input)
+    return nil unless input.present?
+    return input if input.is_a?(Integer)
+    ial = Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[input]
+    return ial unless ial.nil?
+
     Integer(input)
-  rescue TypeError # input was nil
-    nil
-  rescue ArgumentError # input was probably a string
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL.fetch(input)
   end
 end
