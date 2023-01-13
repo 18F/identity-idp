@@ -116,4 +116,41 @@ class FeatureManagement
       allowed_phones.map { |p| Phonelib.parse(p).e164 }.to_set
     end
   end
+
+  # Whether we collect device profiling information as part of the proofing process.
+  def self.proofing_device_profiling_collecting_enabled?
+    case IdentityConfig.store.proofing_device_profiling
+    when :enabled, :collect_only then true
+    when :disabled then false
+    # BEGIN temporary transitional fallback
+    when nil
+      if IdentityConfig.store.proofing_device_profiling_collecting_enabled.nil?
+        false
+      else
+        IdentityConfig.store.proofing_device_profiling_collecting_enabled
+      end
+    # END temporary transitional fallback
+    else
+      raise 'Invalid value for proofing_device_profiling'
+    end
+  end
+
+  # Whether we prevent users from proceeding with identity verification based on the outcomes of
+  # device profiling.
+  def self.proofing_device_profiling_decisioning_enabled?
+    case IdentityConfig.store.proofing_device_profiling
+    when :enabled then true
+    when :collect_only, :disabled then false
+    # BEGIN temporary transitional fallback
+    when nil
+      if IdentityConfig.store.lexisnexis_threatmetrix_required_to_verify.nil?
+        false
+      else
+        IdentityConfig.store.lexisnexis_threatmetrix_required_to_verify
+      end
+    # END temporary transitional fallback
+    else
+      raise 'Invalid value for proofing_device_profiling'
+    end
+  end
 end

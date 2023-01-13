@@ -8,6 +8,7 @@ es:
           dirección actual.
         learn_more: Aprende más
       barcode:
+        cancel_link_text: Cancelar su código de barras
         close_window: Ya puede cerrar esta ventana
         deadline: Visite la Oficina de correos antes del %{deadline}
         deadline_restart: Si supera la fecha límite, su información no se guardará y

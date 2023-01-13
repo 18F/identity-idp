@@ -75,9 +75,7 @@ describe Idv::Steps::VerifyWaitStepShow do
     end
 
     it 'adds costs' do
-      allow(IdentityConfig.store).to receive(:proofing_device_profiling_collecting_enabled).
-        and_return(true)
-      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
 
       step.call
 
