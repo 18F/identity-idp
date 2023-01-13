@@ -26,6 +26,7 @@
       html: { autocomplete: 'off' },
     ) do |f|
 %>
+  <input aria-describedby="not-exists" aria-label="example">
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :email,
