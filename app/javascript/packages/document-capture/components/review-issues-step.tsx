@@ -60,7 +60,7 @@ interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepV
  */
 const DOCUMENT_SIDES: DocumentSide[] = ['front', 'back'];
 
-const DISPLAY_ATTEMPTS = 99;
+const DISPLAY_ATTEMPTS = 3;
 
 function ReviewIssuesStep({
   value = {},
@@ -171,11 +171,8 @@ function ReviewIssuesStep({
         </Warning>
       );
     } else if (inPersonCtaVariantActive === 'in_person_variant_a') {
-      // TODO Change attempts remaining blurb to formatWithStrong interpolated emphasis
-      // TODO Change button text to Try again online
-      // TODO Change IPP CTA heading to Try verifying your ID in person
-      // TODO Update CTA prompt
-      // TODO Change CTA button to Try in person
+      // TODO Change applicable warning messages to exclude "Try taking new pictures"
+      // TODO Prevent count-attempts from breaking across lines
       return (
         <Warning
           heading={t('errors.doc_auth.throttled_heading')}
@@ -189,6 +186,7 @@ function ReviewIssuesStep({
               showAlternativeProofingOptions={!isFailedResult}
               heading={t('components.troubleshooting_options.ipp_heading')}
               altInPersonCta={t('in_person_proofing.headings.cta_variant')}
+              altInPersonPrompt={t('in_person_proofing.body.cta.prompt_detail_a')}
               altInPersonCtaButtonText={t('in_person_proofing.body.cta.button_variant')}
             />
           }
@@ -212,6 +210,7 @@ function ReviewIssuesStep({
       );
     } else if (inPersonCtaVariantActive === 'in_person_variant_b') {
       // TODO Change attempts remaining blurb to formatWithStrong interpolated emphasis
+      // TODO Prevent count-attempts from breaking across lines
       return (
         <Warning
           heading={t('errors.doc_auth.throttled_heading')}

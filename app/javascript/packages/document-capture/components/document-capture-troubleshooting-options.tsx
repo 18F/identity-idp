@@ -29,6 +29,7 @@ interface DocumentCaptureTroubleshootingOptionsProps {
   showAlternativeProofingOptions?: boolean;
 
   altInPersonCta?: string;
+  altInPersonPrompt?: string;
   altInPersonCtaButtonText?: string;
 }
 
@@ -38,6 +39,7 @@ function DocumentCaptureTroubleshootingOptions({
   showDocumentTips = true,
   showAlternativeProofingOptions,
   altInPersonCta,
+  altInPersonPrompt,
   altInPersonCtaButtonText,
 }: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
@@ -50,6 +52,7 @@ function DocumentCaptureTroubleshootingOptions({
       {showAlternativeProofingOptions && inPersonURL && (
         <InPersonCallToAction
           altHeading={altInPersonCta}
+          altPrompt={altInPersonPrompt}
           altButtonText={altInPersonCtaButtonText}
         />
       )}

@@ -6,10 +6,15 @@ import AnalyticsContext from '../context/analytics';
 
 interface InPersonCallToActionProps {
   altHeading?: string;
+  altPrompt?: string;
   altButtonText?: string;
 }
 
-function InPersonCallToAction({ altHeading, altButtonText }: InPersonCallToActionProps) {
+function InPersonCallToAction({ 
+  altHeading, 
+  altPrompt,
+  altButtonText,
+}: InPersonCallToActionProps) {
   const instanceId = useInstanceId();
   const { trackEvent } = useContext(AnalyticsContext);
 
@@ -22,7 +27,7 @@ function InPersonCallToAction({ altHeading, altButtonText }: InPersonCallToActio
       <h2 id={`in-person-cta-heading-${instanceId}`} className="margin-y-2">
         {altHeading || t('in_person_proofing.headings.cta')}
       </h2>
-      <p>{t('in_person_proofing.body.cta.prompt_detail')}</p>
+      <p>{altPrompt || t('in_person_proofing.body.cta.prompt_detail')}</p>
       <Button
         isBig
         isOutline

@@ -35,7 +35,8 @@ fr:
         prompt_detail: Si vous êtes situé près de Washington, D.C. ou de Baltimore
           (Maryland), vous pourrez peut-être vérifier votre identité en personne
           dans certains bureaux de poste.
-        prompt_detail_b: TODO
+        prompt_detail_a: Vous pourrez peut-être faire vérifier votre pièce d’identité en personne dans un bureau de poste participant près de chez vous.
+        prompt_detail_b: Ou, si vous rencontrez des difficultés pour ajouter votre pièce d’identité en ligne, vous pourrez peut-être essayer de le faire en personne dans certains bureaux de poste.
       location:
         contact_info_heading: Information de contact
         distance:
