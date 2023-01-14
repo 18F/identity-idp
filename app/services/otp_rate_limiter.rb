@@ -21,6 +21,7 @@ class OtpRateLimiter
   end
 
   def rate_limit_period_expired?
+    return throttle.expired? if IdentityConfig.store.redis_throttle_otp_rate_limiter_read_enabled
     otp_last_sent_at.present? && (otp_last_sent_at + otp_findtime) < Time.zone.now
   end
 
