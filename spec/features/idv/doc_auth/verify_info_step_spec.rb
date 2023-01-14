@@ -6,6 +6,7 @@ feature 'doc auth verify_info step', :js do
 
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:max_attempts) { Throttle.max_attempts(:idv_resolution) }
 
   context 'with verify_info_controller enabled' do
     before do
@@ -165,7 +166,7 @@ feature 'doc auth verify_info step', :js do
       expect(fake_analytics).to have_logged_event(
         'Throttler Rate Limit Triggered',
         throttle_type: :idv_resolution,
-        step_name: 'Idv::Steps::VerifyWaitStepShow',
+        step_name: 'Idv::VerifyInfoController',
       )
       travel_to(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now + 1) do
         sign_in_and_2fa_user
