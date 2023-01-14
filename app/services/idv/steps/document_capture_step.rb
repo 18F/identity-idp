@@ -30,7 +30,7 @@ module Idv
             transaction_id: flow_session[:document_capture_session_uuid],
           ),
         }.merge(
-          native_camera_ab_testing_variables, 
+          native_camera_ab_testing_variables,
           acuant_sdk_upgrade_a_b_testing_variables,
           in_person_cta_variant_testing_variables,
         )
@@ -65,7 +65,8 @@ module Idv
       def in_person_cta_variant_testing_variables
         bucket = AbTests::IN_PERSON_CTA.bucket(flow_session[:document_capture_session_uuid])
         {
-          in_person_cta_variant_testing_enabled: IdentityConfig.store.in_person_cta_variant_testing_enabled,
+          in_person_cta_variant_testing_enabled:
+          IdentityConfig.store.in_person_cta_variant_testing_enabled,
           in_person_cta_variant_active: bucket,
         }
       end
