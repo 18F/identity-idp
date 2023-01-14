@@ -34,7 +34,7 @@ RSpec.describe IalContext do
 
     context 'with a bad string input' do
       let(:ial) { '/aaaa' }
-      it { expect { ial_context.ial }.to raise_error(KeyError) }
+      it { expect { ial_context.ial }.to raise_error(ArgumentError) }
     end
 
     context 'with a nil input' do
