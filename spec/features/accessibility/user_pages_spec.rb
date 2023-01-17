@@ -19,20 +19,14 @@ feature 'Accessibility on pages that require authentication', :js do
       confirm_last_user
 
       expect(current_path).to eq(sign_up_enter_password_path)
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-      expect(page).to have_valid_idrefs
-      expect(page).to label_required_fields
-      expect(page).to be_uniquely_titled
+      expect_page_to_have_no_accessibility_violations(page)
     end
 
     scenario 'invalid confirmation token' do
       visit sign_up_create_email_confirmation_path(confirmation_token: '123456')
 
       expect(current_path).to eq(sign_up_email_resend_path)
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-      expect(page).to have_valid_idrefs
-      expect(page).to label_required_fields
-      expect(page).to be_uniquely_titled
+      expect_page_to_have_no_accessibility_violations(page)
     end
   end
 
@@ -41,10 +35,7 @@ feature 'Accessibility on pages that require authentication', :js do
       sign_up_and_set_password
 
       expect(current_path).to eq(authentication_methods_setup_path)
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-      expect(page).to have_valid_idrefs
-      expect(page).to label_required_fields
-      expect(page).to be_uniquely_titled
+      expect_page_to_have_no_accessibility_violations(page)
     end
 
     scenario 'phone setup page' do
@@ -53,10 +44,7 @@ feature 'Accessibility on pages that require authentication', :js do
       click_button t('forms.buttons.continue')
 
       expect(current_path).to eq(phone_setup_path)
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-      expect(page).to have_valid_idrefs
-      expect(page).to label_required_fields
-      expect(page).to be_uniquely_titled
+      expect_page_to_have_no_accessibility_violations(page)
     end
 
     scenario 'two factor auth page' do
@@ -64,10 +52,7 @@ feature 'Accessibility on pages that require authentication', :js do
       sign_in_before_2fa(user)
 
       expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: 'sms'))
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-      expect(page).to have_valid_idrefs
-      expect(page).to label_required_fields
-      expect(page).to be_uniquely_titled
+      expect_page_to_have_no_accessibility_violations(page)
     end
 
     describe 'SMS' do
@@ -205,10 +190,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit account_events_path(id: device.id)
 
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-    expect(page).to have_valid_idrefs
-    expect(page).to label_required_fields
-    expect(page).to be_uniquely_titled
+    expect_page_to_have_no_accessibility_violations(page)
   end
 
   scenario 'delete user page' do
@@ -216,9 +198,6 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit account_delete_path
 
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-    expect(page).to have_valid_idrefs
-    expect(page).to label_required_fields
-    expect(page).to be_uniquely_titled
+    expect_page_to_have_no_accessibility_violations(page)
   end
 end
