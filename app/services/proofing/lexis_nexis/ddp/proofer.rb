@@ -104,7 +104,6 @@ module Proofing
         #   result.add_error(:review_status, review_status) unless review_status == 'pass'
         #   result
         # end
-
       end
     end
   end

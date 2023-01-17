@@ -1,6 +1,5 @@
 require 'rails_helper'
 
-
 describe Idv::Steps::VerifyWaitStepShow do
   TRANSACTION_ID = 'ddp-mock-transaction-id-123'
 
