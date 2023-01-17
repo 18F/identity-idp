@@ -60,7 +60,7 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
         expect(result.success?).to eq(false)
         expect(result.errors).to include(
           base: include(a_kind_of(String)),
-          'Execute Instant Verify': include(a_kind_of(Hash)),
+          InstantVerify: include(a_kind_of(Hash)),
         )
         expect(result.transaction_id).to eq('123456')
         expect(result.reference).to eq('0987:1234-abcd')

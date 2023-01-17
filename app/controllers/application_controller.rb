@@ -1,7 +1,6 @@
-require 'core_extensions/string/permit'
+# frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  String.include CoreExtensions::String::Permit
   include VerifyProfileConcern
   include LocaleHelper
   include VerifySpAttributesConcern
@@ -421,12 +420,16 @@ class ApplicationController < ActionController::Base
     session.fetch(:sp, {})
   end
 
+  # Retrieves the current service provider session hash's logged request URL, if present
+  # Conditionally sets the final_auth_request service provider session attribute
+  # when applicable (the original SP request is SAML)
   def sp_session_request_url_with_updated_params
     # Temporarily place SAML route update behind a feature flag
     if IdentityConfig.store.saml_internal_post
       return unless sp_session[:request_url].present?
       request_url = URI(sp_session[:request_url])
       url = if request_url.path.match?('saml')
+              sp_session[:final_auth_request] = true
               complete_saml_url
             else
               # Login.gov redirects to the orginal request_url after a user authenticates

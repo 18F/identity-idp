@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OpenidConnectAttributeScoper
   X509_SCOPES = %w[
     x509

@@ -633,6 +633,28 @@ describe Users::SessionsController, devise: true do
         expect(response.body).to_not include('my xss script')
       end
     end
+
+    it 'does not blow up with malformed params' do
+      expect do
+        get :new, params: { user: 'this_is_not_a_hash' }
+      end.to_not raise_error
+    end
+
+    context 'with prefilled email/password via url params' do
+      render_views
+
+      it 'does not prefill the form' do
+        email = Faker::Internet.safe_email
+        password = SecureRandom.uuid
+
+        get :new, params: { user: { email: email, password: password } }
+
+        doc = Nokogiri::HTML(response.body)
+
+        expect(doc.at_css('input[name="user[email]"]')[:value]).to be_nil
+        expect(doc.at_css('input[name="user[password]"]')[:value]).to be_nil
+      end
+    end
   end
 
   describe 'POST /sessions/keepalive' do

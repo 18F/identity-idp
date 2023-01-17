@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SessionEncryptor
   class SensitiveKeyError < StandardError; end
 

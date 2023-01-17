@@ -13,7 +13,7 @@ module TwoFactorAuthentication
     end
 
     def confirm
-      result = form.submit(request.protocol, params)
+      result = form.submit
       analytics.track_mfa_submit_event(
         result.to_h.merge(analytics_properties),
       )
@@ -121,7 +121,16 @@ module TwoFactorAuthentication
     end
 
     def form
-      @form ||= WebauthnVerificationForm.new(current_user, user_session)
+      @form ||= WebauthnVerificationForm.new(
+        user: current_user,
+        challenge: user_session[:webauthn_challenge],
+        protocol: request.protocol,
+        authenticator_data: params[:authenticator_data],
+        client_data_json: params[:client_data_json],
+        signature: params[:signature],
+        credential_id: params[:credential_id],
+        webauthn_error: params[:webauthn_error],
+      )
     end
   end
 end

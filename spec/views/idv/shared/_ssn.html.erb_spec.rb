@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'idv/shared/_ssn.html.erb' do
   include Devise::Test::ControllerHelpers
 
-  let(:proofing_device_profiling_collecting_enabled) { nil }
+  let(:threatmetrix_enabled) { nil }
   let(:lexisnexis_threatmetrix_org_id) { 'test_org_id' }
   let(:session_id) { 'ABCD-1234' }
   let(:updating_ssn) { false }
@@ -20,9 +20,8 @@ describe 'idv/shared/_ssn.html.erb' do
   before :each do
     allow(view).to receive(:url_for).and_return('https://example.com/')
 
-    allow(IdentityConfig.store).
-      to receive(:proofing_device_profiling_collecting_enabled).
-      and_return(proofing_device_profiling_collecting_enabled)
+    allow(IdentityConfig.store).to receive(:proofing_device_profiling).
+      and_return(threatmetrix_enabled ? :enabled : :disabled)
     allow(IdentityConfig.store).
       to receive(:lexisnexis_threatmetrix_org_id).and_return(lexisnexis_threatmetrix_org_id)
 
@@ -37,49 +36,36 @@ describe 'idv/shared/_ssn.html.erb' do
   end
 
   context 'when threatmetrix collection enabled' do
-    let(:proofing_device_profiling_collecting_enabled) { true }
+    let(:threatmetrix_enabled) { true }
 
-    context 'and org id specified' do
-      context 'and entering ssn for the first time' do
-        describe '<script> tag' do
-          it 'is rendered' do
-            expect_script_tag_rendered
-          end
-        end
-
-        describe '<noscript> tag' do
-          it 'is rendered' do
-            expect_noscript_tag_rendered
-          end
-        end
-
-        context 'session id not specified' do
-          let(:session_id) { nil }
-
-          it 'does not render <script> tag' do
-            expect_script_tag_not_rendered
-          end
-          it 'does not render <noscript> tag' do
-            expect_noscript_tag_not_rendered
-          end
+    context 'and entering ssn for the first time' do
+      describe '<script> tag' do
+        it 'is rendered' do
+          expect_script_tag_rendered
         end
       end
-    end
 
-    context 'org id not specified' do
-      let(:lexisnexis_threatmetrix_org_id) { '' }
-
-      it 'does not render <script> tag' do
-        expect_script_tag_not_rendered
+      describe '<noscript> tag' do
+        it 'is rendered' do
+          expect_noscript_tag_rendered
+        end
       end
-      it 'does not render <noscript> tag' do
-        expect_noscript_tag_not_rendered
+
+      context 'session id not specified' do
+        let(:session_id) { nil }
+
+        it 'does not render <script> tag' do
+          expect_script_tag_not_rendered
+        end
+        it 'does not render <noscript> tag' do
+          expect_noscript_tag_not_rendered
+        end
       end
     end
   end
 
   context 'threatmetrix collection disabled' do
-    let(:proofing_device_profiling_collecting_enabled) { false }
+    let(:threatmetrix_enabled) { false }
 
     it 'does not render <script> tag' do
       expect_script_tag_not_rendered
