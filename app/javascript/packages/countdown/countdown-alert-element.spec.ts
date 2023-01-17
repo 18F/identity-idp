@@ -63,5 +63,6 @@ describe('CountdownAlertElement', () => {
     expect(element.handleRedirectTick).to.have.been.called;
 
     await waitFor(() => window.location.hash === '#teapot');
+    expect(window.location.hash).to.equal('');
   });
 });
