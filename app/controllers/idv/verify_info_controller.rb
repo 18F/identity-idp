@@ -10,7 +10,7 @@ module Idv
       increment_step_counts
       analytics.idv_doc_auth_verify_visited(**analytics_arguments)
 
-      redirect_to failure_url(:fail) and return if throttle.throttled?
+      redirect_to failure_url(:fail) and return if any_throttled?
 
       process_async_state(load_async_state)
     end
@@ -20,7 +20,7 @@ module Idv
 
       pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
 
-      if throttle.throttled_else_increment?
+      if ssn_throttle.throttled_else_increment?
         analytics.throttler_rate_limit_triggered(
           throttle_type: :proof_ssn,
           step_name: 'verify_info',
@@ -138,19 +138,30 @@ module Idv
       banlist.include?(sp_session[:issuer])
     end
 
-    def throttle
-      @throttle ||= Throttle.new(
+    def resolution_throttle
+      @resolution_throttle ||= Throttle.new(
+        user: current_user,
+        throttle_type: :idv_resolution,
+      )
+    end
+
+    def ssn_throttle
+      @ssn_throttle ||= Throttle.new(
         target: Pii::Fingerprinter.fingerprint(pii[:ssn]),
         throttle_type: :proof_ssn,
       )
     end
 
+    def any_throttled?
+      ssn_throttle.throttled? || resolution_throttle.throttled?
+    end
+
     def idv_failure(result)
-      throttle.increment! if result.extra.dig(:proofing_results, :exception).blank?
-      if throttle.throttled?
+      resolution_throttle.increment! if result.extra.dig(:proofing_results,  :stages, :resolution, :exception).blank?
+      if resolution_throttle.throttled?
         idv_failure_log_throttled
         redirect_to throttled_url
-      elsif result.extra.dig(:proofing_results, :exception).present?
+      elsif result.extra.dig(:proofing_results,  :stages, :resolution, :exception).present?
         idv_failure_log_error
         redirect_to exception_url
       else
@@ -170,14 +181,14 @@ module Idv
     def idv_failure_log_error
       analytics.idv_doc_auth_exception_visited(
         step_name: self.class.name,
-        remaining_attempts: throttle.remaining_count,
+        remaining_attempts: resolution_throttle.remaining_count,
       )
     end
 
     def idv_failure_log_warning
       analytics.idv_doc_auth_warning_visited(
         step_name: self.class.name,
-        remaining_attempts: throttle.remaining_count,
+        remaining_attempts: resolution_throttle.remaining_count,
       )
     end
 
@@ -297,10 +308,11 @@ module Idv
         state_id[:state_id_jurisdiction] = state_id_jurisdiction if state_id_jurisdiction
         state_id[:state_id_number] = redact(state_id_number) if state_id_number
       end
+
       FormResponse.new(
         success: result[:success],
         errors: result[:errors],
-        extra: extra.merge(proofing_results: result[:extra]),
+        extra: extra.merge(proofing_results: result[:context]),
       )
     end
 
