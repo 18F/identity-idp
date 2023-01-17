@@ -6,10 +6,6 @@ module DocAuth
       class TrueIdResponse < LexisNexisResponse
         PII_EXCLUDES = %w[
           Age
-          DocIssuerCode
-          DocIssuerName
-          DocIssue
-          DocumentName
           DocSize
           DOB_Day
           DOB_Month

@@ -1,7 +1,7 @@
 class ResolutionProofingJob < ApplicationJob
   include JobHelpers::StaleJobHelper
 
-  queue_as :default
+  queue_as :high_resolution_proofing
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 

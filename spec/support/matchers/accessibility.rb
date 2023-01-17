@@ -1,3 +1,27 @@
+RSpec::Matchers.define :have_valid_idrefs do
+  invalid_idref_messages = []
+
+  match do |page|
+    ['aria-describedby', 'aria-labelledby'].each do |idref_attribute|
+      page.all(:css, "[#{idref_attribute}]").each do |element|
+        page.find_by_id(element[idref_attribute]) # rubocop:disable Rails/DynamicFindBy
+      rescue Capybara::ElementNotFound
+        invalid_idref_messages << "[#{idref_attribute}=\"#{element[idref_attribute]}\"]"
+      end
+    end
+
+    invalid_idref_messages.blank?
+  end
+
+  failure_message do |page|
+    <<~STR
+      Found #{invalid_idref_messages.count} elements with invalid ID reference links:
+
+      #{invalid_idref_messages.join("\n")}
+    STR
+  end
+end
+
 RSpec::Matchers.define :label_required_fields do
   elements = []
 
@@ -56,4 +80,11 @@ RSpec::Matchers.define :be_uniquely_titled do
   failure_message do |page|
     "Page '#{page.current_path}' should have a unique and descriptive title. Found '#{page.title}'."
   end
+end
+
+def expect_page_to_have_no_accessibility_violations(page)
+  expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+  expect(page).to have_valid_idrefs
+  expect(page).to label_required_fields
+  expect(page).to be_uniquely_titled
 end

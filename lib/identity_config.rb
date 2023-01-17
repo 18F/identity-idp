@@ -229,9 +229,6 @@ class IdentityConfig
     config.add(:irs_attempt_api_payload_size_logging_enabled, type: :boolean)
     config.add(:irs_attempt_api_public_key)
     config.add(:irs_attempt_api_public_key_id)
-    config.add(:kantara_2fa_phone_restricted, type: :boolean)
-    config.add(:kantara_2fa_phone_existing_user_restriction, type: :boolean)
-    config.add(:kantara_restriction_enforcement_date, type: :timestamp)
     config.add(:lexisnexis_base_url, type: :string)
     config.add(:lexisnexis_request_mode, type: :string)
     config.add(:lexisnexis_account_id, type: :string)
@@ -320,6 +317,7 @@ class IdentityConfig
     config.add(:piv_cac_service_timeout, type: :float)
     config.add(:piv_cac_verify_token_secret)
     config.add(:piv_cac_verify_token_url)
+    config.add(:phone_service_check, type: :boolean)
     config.add(:phone_setups_per_ip_track_only_mode, type: :boolean)
     config.add(:platform_auth_set_up_enabled, type: :boolean)
     config.add(:poll_rate_for_verify_in_seconds, type: :integer)
@@ -432,7 +430,6 @@ class IdentityConfig
     config.add(:voice_otp_speech_rate)
     config.add(:voip_allowed_phones, type: :json)
     config.add(:voip_block, type: :boolean)
-    config.add(:voip_check, type: :boolean)
 
     @key_types = config.key_types
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).

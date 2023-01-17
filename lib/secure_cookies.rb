@@ -1,6 +1,11 @@
+# frozen_string_literal: true
+
 # Reimplements SecureHeaders secure cookie functionality to make sure all cookies are secure
 class SecureCookies
-  COOKIE_SEPARATOR = "\n".freeze
+  COOKIE_SEPARATOR = "\n"
+  SECURE_REGEX = /; Secure/i
+  HTTP_ONLY_REGEX = /; HttpOnly/i
+  SAME_SITE_REGEX = /; SameSite/i
 
   def initialize(app)
     @app = app
@@ -15,9 +20,9 @@ class SecureCookies
       cookies.each do |cookie|
         next if cookie.blank?
 
-        cookie << '; Secure' if env['HTTPS'] == 'on' && !cookie.match?(/; Secure/i)
-        cookie << '; HttpOnly' if !cookie.match?(/; HttpOnly/i)
-        cookie << '; SameSite=Lax' if !cookie.match?(/; SameSite/i)
+        cookie << '; Secure' if env['HTTPS'] == 'on' && !cookie.match?(SECURE_REGEX)
+        cookie << '; HttpOnly' if !cookie.match?(HTTP_ONLY_REGEX)
+        cookie << '; SameSite=Lax' if !cookie.match?(SAME_SITE_REGEX)
       end
 
       headers['Set-Cookie'] = cookies.join(COOKIE_SEPARATOR)

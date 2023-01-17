@@ -8,7 +8,7 @@
     </title>
   </head>
   <body>
-    <table class="body" data-made-with-foundation="">
+    <table class="body" data-made-with-foundation="" role="presentation">
       <tbody>
         <tr>
           <td align="center" class="float-center" valign="top">
@@ -22,7 +22,7 @@
                   </tr>
                 </tbody>
               </table>
-              <table class="container float-center">
+              <table class="container float-center" role="presentation">
                 <tbody>
                   <tr>
                     <td>
@@ -38,31 +38,31 @@
                       <table class="row">
                         <tbody>
                           <tr>
-                            <th class="small-12 large-12 columns first last">
-                              <table>
+                            <td class="small-12 large-12 columns first last">
+                              <table role="presentation">
                                 <tr>
-                                  <th>
+                                  <td>
                                     <%= image_tag(
                                           attachments['logo.png'].url,
                                           size: '142x19',
                                           style: 'width: 142px; height: 19px;',
                                           alt: t('mailer.logo', app_name: APP_NAME),
                                         ) %>
-                                  </th>
-                                  <th class="expander"></th>
+                                  </td>
+                                  <td class="expander"></td>
                                 </tr>
                               </table>
-                            </th>
+                            </td>
                           </tr>
                         </tbody>
                       </table>
                       <table class="row">
                         <tbody>
                           <tr>
-                            <th class="small-12 large-12 columns first last">
+                            <td class="small-12 large-12 columns first last">
                               <table>
                                 <tr>
-                                  <th>
+                                  <td>
                                     <table class="spacer">
                                       <tbody>
                                         <tr>
@@ -86,10 +86,10 @@
                                         </tr>
                                       </tbody>
                                     </table>
-                                  </th>
+                                  </td>
                                 </tr>
                               </table>
-                            </th>
+                            </td>
                           </tr>
                         </tbody>
                       </table>
@@ -99,10 +99,10 @@
                             <table class="row">
                               <tbody>
                                 <tr>
-                                  <th class="small-12 large-12 columns first last">
+                                  <td class="small-12 large-12 columns first last">
                                     <table>
                                       <tr>
-                                        <th>
+                                        <td>
                                           <p>
                                             <%= (t('mailer.no_reply') + ' ' + t(
                                                   'mailer.help',
@@ -112,10 +112,10 @@
                                                   ),
                                                 )).html_safe %>
                                           </p>
-                                        </th>
+                                        </td>
                                       </tr>
                                     </table>
-                                  </th>
+                                  </td>
                                 </tr>
                               </tbody>
                             </table>
@@ -128,7 +128,7 @@
                             <table class="row">
                               <tbody>
                                 <tr>
-                                  <th class="small-12 large-12 columns first last">
+                                  <td class="small-12 large-12 columns first last">
                                     <table class="hr">
                                       <tr>
                                         <th>
@@ -136,9 +136,9 @@
                                         </th>
                                       </tr>
                                     </table>
-                                    <table>
+                                    <table role="presentation">
                                       <tr>
-                                        <th>
+                                        <td>
                                           <p>
                                             <%= link_to(
                                                   t('mailer.about', app_name: APP_NAME),
@@ -152,11 +152,11 @@
                                                   style: 'text-decoration: underline;',
                                                 ).html_safe %>
                                           </p>
-                                        </th>
-                                        <th class="expander"></th>
+                                        </td>
+                                        <td class="expander"></td>
                                       </tr>
                                     </table>
-                                  </th>
+                                  </td>
                                 </tr>
                               </tbody>
                             </table>
