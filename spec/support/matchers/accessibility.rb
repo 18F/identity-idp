@@ -14,7 +14,7 @@ RSpec::Matchers.define :have_valid_idrefs do
   end
 
   failure_message do |page|
-    <<-STR.strip_heredoc
+    <<~STR
       Found #{invalid_idref_messages.count} elements with invalid ID reference links:
 
       #{invalid_idref_messages.join("\n")}
