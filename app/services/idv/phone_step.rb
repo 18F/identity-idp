@@ -1,8 +1,9 @@
 module Idv
   class PhoneStep
-    def initialize(idv_session:, trace_id:)
+    def initialize(idv_session:, trace_id:, attempts_tracker:)
       self.idv_session = idv_session
       @trace_id = trace_id
+      @attempts_tracker = attempts_tracker
     end
 
     def submit(step_params)
@@ -34,6 +35,9 @@ module Idv
       @idv_result = async_state.result
 
       throttle.increment! unless failed_due_to_timeout_or_exception?
+      if throttle.throttled?
+        @attempts_tracker.idv_phone_otp_sent_rate_limited
+      end
       success = idv_result[:success]
       handle_successful_proofing_attempt if success
 

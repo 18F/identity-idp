@@ -37,11 +37,16 @@ describe Idv::PhoneStep do
     Proofing::Mock::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER
   end
   let(:trace_id) { SecureRandom.uuid }
+  let(:attempts_tracker) do
+    stub_attempts_tracker
+    @irs_attempts_api_tracker
+  end
 
   subject do
     described_class.new(
       idv_session: idv_session,
       trace_id: trace_id,
+      attempts_tracker: attempts_tracker
     )
   end
 
