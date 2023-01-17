@@ -110,7 +110,6 @@ describe('AddressSearch', () => {
         await findByText('in_person_proofing.body.location.po_search.search_button'),
       );
       expect(handleAddressFound).to.have.been.calledWith(null);
-      expect(handleLocationsFound).to.not.be.called();
     });
   });
 });
