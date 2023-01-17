@@ -126,10 +126,10 @@ RSpec::Matchers.define :be_uniquely_titled do
   end
 end
 
-def expect_page_to_have_no_accessibility_violations(page)
+def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
   expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
   expect(page).to have_valid_idrefs
   expect(page).to label_required_fields
   expect(page).to be_uniquely_titled
-  expect(page).to have_valid_markup
+  expect(page).to have_valid_markup if validate_markup
 end
