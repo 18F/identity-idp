@@ -84,7 +84,7 @@ RSpec::Matchers.define :have_valid_markup do
   match { |_page| page_markup_syntax_errors.blank? }
 
   failure_message do |page|
-    <<-STR.strip_heredoc
+    <<~STR
       Expected page to have valid markup. Found syntax errors:
 
       #{page_markup_syntax_errors.map(&:inspect).join("\n")}
