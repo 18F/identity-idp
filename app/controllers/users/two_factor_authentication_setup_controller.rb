@@ -23,10 +23,6 @@ module Users
 
       if result.success?
         process_valid_form
-      elsif (result.errors[:selection].include? 'phone') &&
-            IdentityConfig.store.kantara_2fa_phone_restricted
-        flash[:phone_error] = t('errors.two_factor_auth_setup.must_select_additional_option')
-        redirect_to authentication_methods_setup_path(anchor: 'select_phone')
       else
         flash[:error] = t('errors.two_factor_auth_setup.must_select_option')
         @presenter = two_factor_options_presenter

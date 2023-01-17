@@ -25,15 +25,6 @@ describe TwoFactorOptionsForm do
       end
     end
 
-    it 'is unsuccessful if the selection is invalid for kantara phone restriction' do
-      allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
-      %w[phone sms voice !!!!].each do |selection|
-        result = subject.submit(selection: selection)
-
-        expect(result.success?).to eq false
-      end
-    end
-
     it 'is unsuccessful if the selection is invalid' do
       %w[!!!!].each do |selection|
         result = subject.submit(selection: selection)
@@ -96,16 +87,6 @@ describe TwoFactorOptionsForm do
       end
     end
 
-    context 'when phone is selected as their first authentication method' do
-      before do
-        allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
-      end
-
-      it 'does not submit the phone when selected as the first single option' do
-        expect(submit_phone.success?).to eq false
-      end
-    end
-
     context 'when a user wants to select phone as their second authentication method' do
       let(:user) { build(:user, :with_authentication_app) }
       let(:enabled_mfa_methods_count) { 1 }
@@ -143,19 +124,6 @@ describe TwoFactorOptionsForm do
           submission = subject.submit(selection: mfa_selection)
           expect(submission.success?).to be_truthy
         end
-      end
-    end
-
-    context 'when user doesnt select mfa selection with existing account' do
-    end
-
-    context 'when the feature flag toggle for 2FA phone restriction is off' do
-      before do
-        allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(false)
-      end
-
-      it 'proceeds with submission' do
-        expect(submit_phone.success?).to eq true
       end
     end
   end
