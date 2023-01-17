@@ -133,6 +133,18 @@ describe Idv::PhoneStep do
       expect { subject.submit(phone: fail_phone) }.to_not change { throttle.attempts }
     end
 
+    it 'logs a throttled attempts_tracker event' do
+      while throttle.attempts <= Throttle.max_attempts(:proof_address)-1
+        throttle.increment!
+      end
+      
+      subject.submit(phone: bad_phone)
+      expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_sent_rate_limited)
+      _result = subject.async_state_done(subject.async_state)
+
+      throttle.reset!
+    end
+
     it 'marks the phone as unconfirmed if it matches 2FA phone' do
       user.phone_configurations = [build(:phone_configuration, user: user, phone: good_phone)]
 
