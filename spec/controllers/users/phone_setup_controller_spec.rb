@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Users::PhoneSetupController do
   before do
-    allow(IdentityConfig.store).to receive(:voip_check).and_return(true)
+    allow(IdentityConfig.store).to receive(:phone_service_check).and_return(true)
     allow(IdentityConfig.store).to receive(:voip_block).and_return(true)
   end
 
