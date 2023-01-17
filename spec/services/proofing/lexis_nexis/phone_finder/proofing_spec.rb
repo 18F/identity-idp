@@ -65,7 +65,7 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
         expect(result.success?).to eq(false)
         expect(result.errors).to include(
           base: include(a_kind_of(String)),
-          'PhoneFinder Checks': include(a_kind_of(Hash)),
+          PhoneFinder: include(a_kind_of(Hash)),
         )
         expect(result.transaction_id).to eq('31000000000000')
         expect(result.reference).to eq('Reference1')
