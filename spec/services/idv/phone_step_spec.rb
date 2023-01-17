@@ -46,7 +46,7 @@ describe Idv::PhoneStep do
     described_class.new(
       idv_session: idv_session,
       trace_id: trace_id,
-      attempts_tracker: attempts_tracker
+      attempts_tracker: attempts_tracker,
     )
   end
 

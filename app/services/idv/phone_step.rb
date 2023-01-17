@@ -35,9 +35,7 @@ module Idv
       @idv_result = async_state.result
 
       throttle.increment! unless failed_due_to_timeout_or_exception?
-      if throttle.throttled?
-        @attempts_tracker.idv_phone_otp_sent_rate_limited
-      end
+      @attempts_tracker.idv_phone_otp_sent_rate_limited if throttle.throttled?
       success = idv_result[:success]
       handle_successful_proofing_attempt if success
 
