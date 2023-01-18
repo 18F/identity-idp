@@ -1,7 +1,7 @@
 class DocumentProofingJob < ApplicationJob
   include JobHelpers::StaleJobHelper
 
-  queue_as :default
+  queue_as :high_document_proofing
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 

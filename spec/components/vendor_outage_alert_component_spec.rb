@@ -7,9 +7,9 @@ RSpec.describe VendorOutageAlertComponent, type: :component do
 
   subject(:rendered) do
     render_inline VendorOutageAlertComponent.new(
-      vendors: vendors,
-      context: context,
-      only_if_all: only_if_all,
+      vendors:,
+      context:,
+      only_if_all:,
     )
   end
 

@@ -1,5 +1,3 @@
-require 'set'
-
 class IconComponent < BaseComponent
   include AssetHelper
 

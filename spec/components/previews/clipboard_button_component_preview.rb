@@ -7,6 +7,6 @@ class ClipboardButtonComponentPreview < BaseComponentPreview
 
   # @param clipboard_text text
   def workbench(clipboard_text: 'Copied Text')
-    render(ClipboardButtonComponent.new(clipboard_text: clipboard_text))
+    render(ClipboardButtonComponent.new(clipboard_text:))
   end
 end

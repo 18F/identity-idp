@@ -8,7 +8,7 @@ RSpec.describe OneTimeCodeInputComponent, type: :component do
   let(:form) { SimpleForm::FormBuilder.new('', {}, view_context, {}) }
   let(:options) { {} }
 
-  subject(:rendered) { render_inline OneTimeCodeInputComponent.new(form: form, **options) }
+  subject(:rendered) { render_inline OneTimeCodeInputComponent.new(form:, **options) }
 
   describe 'name' do
     context 'no name given' do

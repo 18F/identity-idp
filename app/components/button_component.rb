@@ -35,6 +35,6 @@ class ButtonComponent < BaseComponent
   end
 
   def icon_content
-    render IconComponent.new(icon: icon) if icon
+    render IconComponent.new(icon:) if icon
   end
 end
