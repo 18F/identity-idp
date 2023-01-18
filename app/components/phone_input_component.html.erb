@@ -2,8 +2,8 @@
       'lg-phone-input',
       class: tag_options[:class],
       data: {
-        delivery_methods: delivery_methods,
-        translated_country_code_names: translated_country_code_names,
+        delivery_methods:,
+        translated_country_code_names:,
       },
     ) do %>
   <%= content_tag(
@@ -48,7 +48,7 @@
           valueMissing: t('errors.messages.phone_required'),
         },
         as: :tel,
-        required: required,
+        required:,
         label: false,
         wrapper_html: {
           class: 'margin-bottom-0',

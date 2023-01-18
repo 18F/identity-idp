@@ -7,9 +7,20 @@ feature 'Accessibility on pages that require authentication', :js do
     sign_up_with(email)
 
     expect(current_path).to eq(sign_up_verify_email_path)
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-    expect(page).to label_required_fields
-    expect(page).to be_uniquely_titled
+    # We can't validate markup here, since markup validation requires a page reload when using the
+    # JS driver, but the sign up verify email path can only be visited once before redirecting to
+    # the account creation form. Instead, we validate markup separately with the non-JS driver.
+    expect_page_to_have_no_accessibility_violations(page, validate_markup: false)
+  end
+
+  context 'with javascript disabled', js: false do
+    scenario 'user registration page' do
+      email = 'test@example.com'
+      sign_up_with(email)
+
+      expect(current_path).to eq(sign_up_verify_email_path)
+      expect(page).to have_valid_markup
+    end
   end
 
   describe 'user confirmation page' do
@@ -18,18 +29,14 @@ feature 'Accessibility on pages that require authentication', :js do
       confirm_last_user
 
       expect(current_path).to eq(sign_up_enter_password_path)
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-      expect(page).to label_required_fields
-      expect(page).to be_uniquely_titled
+      expect_page_to_have_no_accessibility_violations(page)
     end
 
     scenario 'invalid confirmation token' do
       visit sign_up_create_email_confirmation_path(confirmation_token: '123456')
 
       expect(current_path).to eq(sign_up_email_resend_path)
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-      expect(page).to label_required_fields
-      expect(page).to be_uniquely_titled
+      expect_page_to_have_no_accessibility_violations(page)
     end
   end
 
@@ -38,9 +45,7 @@ feature 'Accessibility on pages that require authentication', :js do
       sign_up_and_set_password
 
       expect(current_path).to eq(authentication_methods_setup_path)
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-      expect(page).to label_required_fields
-      expect(page).to be_uniquely_titled
+      expect_page_to_have_no_accessibility_violations(page)
     end
 
     scenario 'phone setup page' do
@@ -49,9 +54,7 @@ feature 'Accessibility on pages that require authentication', :js do
       click_button t('forms.buttons.continue')
 
       expect(current_path).to eq(phone_setup_path)
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-      expect(page).to label_required_fields
-      expect(page).to be_uniquely_titled
+      expect_page_to_have_no_accessibility_violations(page)
     end
 
     scenario 'two factor auth page' do
@@ -59,9 +62,7 @@ feature 'Accessibility on pages that require authentication', :js do
       sign_in_before_2fa(user)
 
       expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: 'sms'))
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-      expect(page).to label_required_fields
-      expect(page).to be_uniquely_titled
+      expect_page_to_have_no_accessibility_violations(page)
     end
 
     describe 'SMS' do
@@ -71,9 +72,7 @@ feature 'Accessibility on pages that require authentication', :js do
         visit login_two_factor_path(otp_delivery_preference: 'sms')
 
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
-        expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-        expect(page).to label_required_fields
-        expect(page).to be_uniquely_titled
+        expect_page_to_have_no_accessibility_violations(page)
       end
     end
 
@@ -84,9 +83,7 @@ feature 'Accessibility on pages that require authentication', :js do
         visit login_two_factor_path(otp_delivery_preference: 'voice')
 
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
-        expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-        expect(page).to label_required_fields
-        expect(page).to be_uniquely_titled
+        expect_page_to_have_no_accessibility_violations(page)
       end
     end
   end
@@ -95,9 +92,7 @@ feature 'Accessibility on pages that require authentication', :js do
     sign_in_and_2fa_user
     visit manage_personal_key_path
 
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-    expect(page).to label_required_fields
-    expect(page).to be_uniquely_titled
+    expect_page_to_have_no_accessibility_violations(page)
   end
 
   scenario 'profile page' do
@@ -105,9 +100,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit account_path
 
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-    expect(page).to label_required_fields
-    expect(page).to be_uniquely_titled
+    expect_page_to_have_no_accessibility_violations(page)
   end
 
   scenario 'delete email page' do
@@ -116,9 +109,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit manage_email_confirm_delete_path(id: user.email_addresses.take.id)
 
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-    expect(page).to label_required_fields
-    expect(page).to be_uniquely_titled
+    expect_page_to_have_no_accessibility_violations(page)
   end
 
   scenario 'edit password page' do
@@ -126,9 +117,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit manage_password_path
 
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-    expect(page).to label_required_fields
-    expect(page).to be_uniquely_titled
+    expect_page_to_have_no_accessibility_violations(page)
   end
 
   scenario 'edit email language page' do
@@ -136,9 +125,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit account_email_language_path
 
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-    expect(page).to label_required_fields
-    expect(page).to be_uniquely_titled
+    expect_page_to_have_no_accessibility_violations(page)
   end
 
   scenario 'add phone page' do
@@ -146,9 +133,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit add_phone_path
 
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-    expect(page).to label_required_fields
-    expect(page).to be_uniquely_titled
+    expect_page_to_have_no_accessibility_violations(page)
   end
 
   scenario 'edit phone page' do
@@ -156,9 +141,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit manage_phone_path(id: user.phone_configurations.first.id)
 
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-    expect(page).to label_required_fields
-    expect(page).to be_uniquely_titled
+    expect_page_to_have_no_accessibility_violations(page)
   end
 
   scenario 'generate new personal key page' do
@@ -166,9 +149,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit manage_personal_key_path
 
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-    expect(page).to label_required_fields
-    expect(page).to be_uniquely_titled
+    expect_page_to_have_no_accessibility_violations(page)
   end
 
   scenario 'set up authenticator app page' do
@@ -176,9 +157,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit '/authenticator_setup'
 
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-    expect(page).to label_required_fields
-    expect(page).to be_uniquely_titled
+    expect_page_to_have_no_accessibility_violations(page)
   end
 
   scenario 'device events page' do
@@ -188,9 +167,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit account_events_path(id: device.id)
 
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-    expect(page).to label_required_fields
-    expect(page).to be_uniquely_titled
+    expect_page_to_have_no_accessibility_violations(page)
   end
 
   scenario 'delete user page' do
@@ -198,8 +175,6 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit account_delete_path
 
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-    expect(page).to label_required_fields
-    expect(page).to be_uniquely_titled
+    expect_page_to_have_no_accessibility_violations(page)
   end
 end

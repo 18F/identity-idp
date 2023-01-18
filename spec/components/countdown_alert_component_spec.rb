@@ -9,7 +9,7 @@ RSpec.describe CountdownAlertComponent, type: :component do
 
   it 'renders element with expected attributes and initial expiration time' do
     rendered = render_inline CountdownAlertComponent.new(
-      countdown_options: { expiration: expiration },
+      countdown_options: { expiration: },
     )
 
     expect(rendered).to have_css('lg-countdown-alert', text: '1 minute and 1 second remaining')
@@ -20,7 +20,7 @@ RSpec.describe CountdownAlertComponent, type: :component do
     it 'renders as hidden by default with expected attributes' do
       rendered = render_inline CountdownAlertComponent.new(
         show_at_remaining: 1.minute,
-        countdown_options: { expiration: expiration },
+        countdown_options: { expiration: },
       )
 
       expect(rendered).to have_css('lg-countdown-alert[show-at-remaining=60000].display-none')
@@ -30,7 +30,7 @@ RSpec.describe CountdownAlertComponent, type: :component do
       it 'renders with attributes' do
         rendered = render_inline CountdownAlertComponent.new(
           show_at_remaining: 1.minute,
-          countdown_options: { expiration: expiration },
+          countdown_options: { expiration: },
           class: 'example',
           data: { foo: 'bar' },
         )
@@ -43,7 +43,7 @@ RSpec.describe CountdownAlertComponent, type: :component do
   context 'with tag options' do
     it 'renders with attributes' do
       rendered = render_inline CountdownAlertComponent.new(
-        countdown_options: { expiration: expiration },
+        countdown_options: { expiration: },
         class: 'example',
         data: { foo: 'bar' },
       )
@@ -55,7 +55,7 @@ RSpec.describe CountdownAlertComponent, type: :component do
   context 'with countdown options' do
     it 'renders countdown with attributes' do
       rendered = render_inline CountdownAlertComponent.new(
-        countdown_options: { expiration: expiration, data: { foo: 'bar' } },
+        countdown_options: { expiration:, data: { foo: 'bar' } },
       )
 
       expect(rendered).to have_css('lg-countdown[data-expiration][data-foo="bar"]')
@@ -65,7 +65,7 @@ RSpec.describe CountdownAlertComponent, type: :component do
   context 'with alert options' do
     it 'renders alert with attributes' do
       rendered = render_inline CountdownAlertComponent.new(
-        countdown_options: { expiration: expiration },
+        countdown_options: { expiration: },
         alert_options: { data: { foo: 'bar' } },
       )
 

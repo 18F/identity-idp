@@ -8,7 +8,7 @@ class ClipboardButtonComponent < ButtonComponent
   end
 
   def call
-    content_tag(:'lg-clipboard-button', super, data: { clipboard_text: clipboard_text })
+    content_tag(:'lg-clipboard-button', super, data: { clipboard_text: })
   end
 
   def content
