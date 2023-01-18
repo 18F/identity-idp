@@ -48,7 +48,7 @@ class NewPhoneForm
   def phone_info
     return @phone_info if defined?(@phone_info)
 
-    if phone.blank? || !IdentityConfig.store.voip_check
+    if phone.blank? || !IdentityConfig.store.phone_service_check
       @phone_info = nil
     else
       @phone_info = Telephony.phone_info(phone)
@@ -91,7 +91,7 @@ class NewPhoneForm
   end
 
   def validate_not_voip
-    return if phone.blank? || !IdentityConfig.store.voip_check
+    return if phone.blank? || !IdentityConfig.store.phone_service_check
     return unless IdentityConfig.store.voip_block
 
     if phone_info.type == :voip &&

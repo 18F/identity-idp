@@ -20,7 +20,12 @@ module SamlIdpAuthConcern
   def sign_out_if_forceauthn_is_true_and_user_is_signed_in
     return unless user_signed_in? && saml_request.force_authn?
 
-    sign_out unless sp_session[:request_url] == request.original_url
+    if IdentityConfig.store.saml_internal_post
+      sign_out unless sp_session[:final_auth_request]
+      sp_session[:final_auth_request] = false
+    else
+      sign_out unless sp_session[:request_url] == request.original_url
+    end
   end
 
   def check_sp_active

@@ -52,7 +52,7 @@ module Proofing
           # don't log PhoneFinder reflected PII
           product.delete('ParameterDetails') if product['ProductType'] == 'PhoneFinder'
 
-          key = product.fetch('ExecutedStepName').to_sym
+          key = product.fetch('ProductType').to_sym
           error_messages[key] = product
         end
       end

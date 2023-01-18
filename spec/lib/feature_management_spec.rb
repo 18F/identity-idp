@@ -366,4 +366,60 @@ describe 'FeatureManagement' do
       expect(FeatureManagement.voip_allowed_phones).to eq(Set['+18885551234', '+18888675309'])
     end
   end
+
+  describe '#proofing_device_profiling_collecting_enabled?' do
+    it 'returns false for disabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:disabled)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(false)
+    end
+    it 'returns true for collect_only' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:collect_only)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(true)
+    end
+    it 'returns true for enabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(true)
+    end
+    it 'falls back to legacy config if needed' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(nil)
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling_collecting_enabled).
+        twice.
+        and_return(true)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(true)
+    end
+    it 'defaults to false' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(nil)
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling_collecting_enabled).
+        and_return(nil)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(false)
+    end
+  end
+
+  describe '#proofing_device_profiling_decisioning_enabled?' do
+    it 'returns false for disabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:disabled)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(false)
+    end
+    it 'returns false for collect_only' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:collect_only)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(false)
+    end
+    it 'returns true for enabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(true)
+    end
+    it 'falls back to legacy config' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(nil)
+      expect(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
+        twice.
+        and_return(true)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(true)
+    end
+    it 'defaults to false' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(nil)
+      expect(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
+        and_return(nil)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(false)
+    end
+  end
 end
