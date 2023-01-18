@@ -13,6 +13,7 @@ require_relative '../lib/identity_config'
 require_relative '../lib/fingerprinter'
 require_relative '../lib/identity_job_log_subscriber'
 require_relative '../lib/email_delivery_observer'
+require_relative '../lib/good_job_connection_pool_size'
 
 Bundler.require(*Rails.groups)
 

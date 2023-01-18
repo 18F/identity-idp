@@ -187,6 +187,9 @@ feature 'Sign in' do
 
     expect(page).
       to have_link t('devise.failure.invalid_link_text', href: link_url)
+
+    email_field = find_field(t('account.index.email'))
+    expect(email_field.value).to eq('invalid@email.com')
   end
 
   scenario 'user cannot sign in with empty email' do

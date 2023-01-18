@@ -23,10 +23,10 @@ class MemorableDateComponentPreview < BaseComponentPreview
       MemorableDateComponent.new(
         form: form_builder,
         name: :date,
-        label: label,
-        hint: hint,
-        min: min,
-        max: max,
+        label:,
+        hint:,
+        min:,
+        max:,
       ),
     )
   end
