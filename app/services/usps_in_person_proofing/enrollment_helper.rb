@@ -88,6 +88,13 @@ module UspsInPersonProofing
       def handle_standard_error(err, enrollment)
         raise Exception::RequestEnrollException.new(err.message, err, enrollment.id)
       end
+<<<<<<< Updated upstream
+=======
+
+      def analytics(user)
+        Analytics.new(user: user, request: nil, session: {}, sp: nil)
+      end
+>>>>>>> Stashed changes
     end
   end
 end

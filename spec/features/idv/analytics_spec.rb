@@ -115,6 +115,7 @@ feature 'Analytics Regression', js: true do
       'IdV: personal key visited' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' }, address_verification_method: 'phone' },
       'IdV: personal key acknowledgment toggled' => { checked: true, proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
       'IdV: personal key submitted' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' }, address_verification_method: 'phone', deactivation_reason: 'in_person_verification_pending' },
+      'USPS IPPaaS enrollment created' => { enrollment_code: '123', enrollment_id: '14', user_id: user.uuid, service_provider: 'service_provider' },
       'IdV: in person ready to verify visited' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
     }
   end
@@ -129,6 +130,7 @@ feature 'Analytics Regression', js: true do
     allow_any_instance_of(ApplicationController).to receive(:analytics) do |controller|
       fake_analytics.user = controller.analytics_user
       fake_analytics
+      # puts "fake analytics: #{fake_analytics.pretty_inspect}"
     end
     allow_any_instance_of(DocumentProofingJob).to receive(:build_analytics).
       and_return(fake_analytics)
@@ -190,10 +192,12 @@ feature 'Analytics Regression', js: true do
       complete_all_in_person_proofing_steps(user)
       complete_phone_step(user)
       complete_review_step(user)
+      complete_schedule_enrollment
       acknowledge_and_confirm_personal_key
     end
 
     it 'records all of the events', allow_browser_log: true do
+      puts "events: #{in_person_path_events}"
       in_person_path_events.each do |event, attributes|
         expect(fake_analytics).to have_logged_event(event, attributes)
       end
