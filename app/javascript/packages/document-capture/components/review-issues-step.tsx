@@ -17,7 +17,7 @@ import { InPersonContext } from '../context';
 
 function formatWithStrongNoWrap(text: string): ReactNode {
   return formatHTML(text, {
-    strong: ({ children }) => <strong style={{whiteSpace: 'nowrap'}}>{children}</strong>,
+    strong: ({ children }) => <strong style={{ whiteSpace: 'nowrap' }}>{children}</strong>,
   });
 }
 
@@ -81,11 +81,8 @@ function ReviewIssuesStep({
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
   const { onFailedSubmissionAttempt } = useContext(FailedCaptureAttemptsContext);
-  const { 
-    inPersonURL, 
-    inPersonCtaVariantTestingEnabled, 
-    inPersonCtaVariantActive 
-  } = useContext(InPersonContext);
+  const { inPersonURL, inPersonCtaVariantTestingEnabled, inPersonCtaVariantActive } =
+    useContext(InPersonContext);
   useEffect(() => onFailedSubmissionAttempt(), []);
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed');
@@ -205,7 +202,9 @@ function ReviewIssuesStep({
             <p>
               {remainingAttempts === 1
                 ? formatWithStrongNoWrap(t('idv.failure.attempts.one_variant_b_html'))
-                : formatWithStrongNoWrap(t('idv.failure.attempts.other_variant_b_html', { count: remainingAttempts }))}
+                : formatWithStrongNoWrap(
+                    t('idv.failure.attempts.other_variant_b_html', { count: remainingAttempts }),
+                  )}
             </p>
           )}
           <p>{t('in_person_proofing.body.cta.prompt_detail_b')}</p>
@@ -244,7 +243,7 @@ function ReviewIssuesStep({
           )}
         </Warning>
       );
-    } 
+    }
   }
 
   return (

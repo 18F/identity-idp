@@ -25,7 +25,7 @@ export interface InPersonContextProps {
 const InPersonContext = createContext<InPersonContextProps>({
   arcgisSearchEnabled: false,
   inPersonCtaVariantTestingEnabled: false,
-  inPersonCtaVariantActive: "",
+  inPersonCtaVariantActive: '',
 });
 
 InPersonContext.displayName = 'InPersonContext';

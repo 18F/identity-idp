@@ -10,11 +10,7 @@ interface InPersonCallToActionProps {
   altButtonText?: string;
 }
 
-function InPersonCallToAction({ 
-  altHeading, 
-  altPrompt,
-  altButtonText,
-}: InPersonCallToActionProps) {
+function InPersonCallToAction({ altHeading, altPrompt, altButtonText }: InPersonCallToActionProps) {
   const instanceId = useInstanceId();
   const { trackEvent } = useContext(AnalyticsContext);
 

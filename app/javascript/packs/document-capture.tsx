@@ -67,14 +67,14 @@ function getMetaContent(name): string | null {
 const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
-  const { 
-    flowPath, 
+  const {
+    flowPath,
     inPersonCtaVariantTestingEnabled,
     inPersonCtaVariantActive,
-    acuantSdkUpgradeABTestingEnabled, 
-    useAlternateSdk, 
+    acuantSdkUpgradeABTestingEnabled,
+    useAlternateSdk,
     acuantVersion,
-   } = appRoot.dataset;
+  } = appRoot.dataset;
   return baseTrackEvent(event, {
     ...payload,
     flow_path: flowPath,
@@ -180,13 +180,13 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     ],
     [
       InPersonContext.Provider,
-      { 
-        value: { 
-          arcgisSearchEnabled: arcgisSearchEnabled === 'true', 
+      {
+        value: {
+          arcgisSearchEnabled: arcgisSearchEnabled === 'true',
           inPersonCtaVariantTestingEnabled: inPersonCtaVariantTestingEnabled === 'true',
-          inPersonCtaVariantActive: inPersonCtaVariantActive,
+          inPersonCtaVariantActive,
           inPersonURL,
-        } 
+        },
       },
     ],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
