@@ -5,7 +5,6 @@
 class GoodJobConnectionPoolSize
   # Calculates the number of worker database connections the worker process needs.
   def self.calculate_worker_pool_size(queues:, cron_enabled:, max_threads:)
-    queues = queues.split(';')
     # LISTEN/NOTIFY requires 1 connection
     connections = 1
     connections += num_explicit_threads_from_queues(queues: queues, max_threads: max_threads)
