@@ -55,7 +55,6 @@ module Idv
         throttle_type: :proof_address,
         step_name: step_name,
       )
-      irs_attempts_api_tracker.idv_phone_otp_sent_rate_limited
     end
 
     def redirect_to_next_step
