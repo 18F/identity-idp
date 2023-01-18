@@ -81,8 +81,11 @@ function ReviewIssuesStep({
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
   const { onFailedSubmissionAttempt } = useContext(FailedCaptureAttemptsContext);
-  const { inPersonCtaVariantTestingEnabled, inPersonCtaVariantActive } =
-    useContext(InPersonContext);
+  const { 
+    inPersonURL, 
+    inPersonCtaVariantTestingEnabled, 
+    inPersonCtaVariantActive 
+  } = useContext(InPersonContext);
   useEffect(() => onFailedSubmissionAttempt(), []);
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed');
@@ -104,8 +107,7 @@ function ReviewIssuesStep({
       return <BarcodeAttentionWarning onDismiss={onWarningPageDismissed} pii={pii} />;
     }
 
-    if (!inPersonCtaVariantTestingEnabled) {
-      // Behave as previously
+    if (!inPersonCtaVariantTestingEnabled || !inPersonURL || isFailedResult) {
       return (
         <Warning
           heading={t('errors.doc_auth.throttled_heading')}
@@ -137,41 +139,8 @@ function ReviewIssuesStep({
           )}
         </Warning>
       );
-    } else if (isFailedResult || inPersonCtaVariantActive === 'in_person_variant_c') {
-      // Behave as previously with the IPP CTA hidden
-      return (
-        <Warning
-          heading={t('errors.doc_auth.throttled_heading')}
-          actionText={t('idv.failure.button.warning')}
-          actionOnClick={onWarningPageDismissed}
-          location="doc_auth_review_issues"
-          remainingAttempts={remainingAttempts}
-          troubleshootingOptions={
-            <DocumentCaptureTroubleshootingOptions
-              location="post_submission_warning"
-              showAlternativeProofingOptions={false}
-              heading={t('components.troubleshooting_options.ipp_heading')}
-            />
-          }
-        >
-          {!!unknownFieldErrors &&
-            unknownFieldErrors
-              .filter((error) => !['front', 'back'].includes(error.field!))
-              .map(({ error }) => <p key={error.message}>{error.message}</p>)}
-
-          {remainingAttempts <= DISPLAY_ATTEMPTS && (
-            <p>
-              <strong>
-                {remainingAttempts === 1
-                  ? t('idv.failure.attempts.one')
-                  : t('idv.failure.attempts.other', { count: remainingAttempts })}
-              </strong>
-            </p>
-          )}
-        </Warning>
-      );
     } else if (inPersonCtaVariantActive === 'in_person_variant_a') {
-      // TODO Change applicable warning messages to exclude "Try taking new pictures"
+      trackEvent('IdV: IPP CTA Variant A')
       return (
         <Warning
           heading={t('errors.doc_auth.throttled_heading')}
@@ -208,7 +177,7 @@ function ReviewIssuesStep({
         </Warning>
       );
     } else if (inPersonCtaVariantActive === 'in_person_variant_b') {
-      // TODO Change applicable warning messages to exclude "Try taking new pictures"
+      trackEvent('IdV: IPP CTA Variant B')
       return (
         <Warning
           heading={t('errors.doc_auth.throttled_heading')}
@@ -216,6 +185,7 @@ function ReviewIssuesStep({
           actionOnClick={onWarningPageDismissed}
           altActionText={t('in_person_proofing.body.cta.button_variant')}
           altActionOnClick={onInPersonSelected}
+          altHref="#location"
           location="doc_auth_review_issues"
           remainingAttempts={remainingAttempts}
           troubleshootingOptions={
@@ -241,7 +211,40 @@ function ReviewIssuesStep({
           <p>{t('in_person_proofing.body.cta.prompt_detail_b')}</p>
         </Warning>
       );
-    }
+    } else if (inPersonCtaVariantActive === 'in_person_variant_c') {
+      trackEvent('IdV: IPP CTA Variant C')
+      return (
+        <Warning
+          heading={t('errors.doc_auth.throttled_heading')}
+          actionText={t('idv.failure.button.warning')}
+          actionOnClick={onWarningPageDismissed}
+          location="doc_auth_review_issues"
+          remainingAttempts={remainingAttempts}
+          troubleshootingOptions={
+            <DocumentCaptureTroubleshootingOptions
+              location="post_submission_warning"
+              showAlternativeProofingOptions={false}
+              heading={t('components.troubleshooting_options.ipp_heading')}
+            />
+          }
+        >
+          {!!unknownFieldErrors &&
+            unknownFieldErrors
+              .filter((error) => !['front', 'back'].includes(error.field!))
+              .map(({ error }) => <p key={error.message}>{error.message}</p>)}
+
+          {remainingAttempts <= DISPLAY_ATTEMPTS && (
+            <p>
+              <strong>
+                {remainingAttempts === 1
+                  ? t('idv.failure.attempts.one')
+                  : t('idv.failure.attempts.other', { count: remainingAttempts })}
+              </strong>
+            </p>
+          )}
+        </Warning>
+      );
+    } 
   }
 
   return (
