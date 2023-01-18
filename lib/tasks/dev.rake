@@ -228,7 +228,7 @@ namespace :dev do
     
     (0...ENV['NUM_USERS'].to_i).each do
       body = {
-        sponsorID: 4,
+        sponsorID: ENV['SPONSOR_ID'],
         streetAddress: '2 Massachusetts ave NE',
         city: 'Washington',
         state: 'DC',
