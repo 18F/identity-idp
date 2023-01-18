@@ -584,6 +584,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_13_202809) do
     t.string "email_language", limit: 10
     t.datetime "accepted_terms_at", precision: nil
     t.datetime "encrypted_recovery_code_digest_generated_at", precision: nil
+    t.date "non_restricted_mfa_required_prompt_skip_date"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end

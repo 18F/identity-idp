@@ -1,0 +1,27 @@
+<% title @content.title %>
+
+<%= image_tag asset_url('user-signup-ial1.svg'), width: 107, height: 119, alt: '', class: 'margin-bottom-4' %>
+
+<%= render PageHeadingComponent.new.with_content(@content.title) %>
+
+<p class='margin-top-1 margin-bottom-4'>
+  <%= @content.info %>
+  <%= link_to(@content.learn_more_text, @content.learn_more_link) %>
+</p>
+
+<div class="col-12">
+  <%= link_to(
+        second_mfa_setup_path,
+        class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
+      ) { @content.button } %>
+</div>
+
+<% unless @content.cant_skip_anymore? %>
+  <%= button_to(
+        login_additional_mfa_required_skip_path,
+        method: :post,
+        class: 'usa-button usa-button--unstyled',
+      ) do %>
+    <%= @content.skip %>
+  <% end %>
+<% end %>
