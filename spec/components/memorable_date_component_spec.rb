@@ -23,18 +23,18 @@ RSpec.describe MemorableDateComponent, type: :component do
   let(:tag_options) { {} }
   let(:options) do
     {
-      name: name,
-      month: month,
-      day: day,
-      year: year,
+      name:,
+      month:,
+      day:,
+      year:,
       min: Date.parse(min),
       max: Date.parse(max),
-      hint: hint,
-      label: label,
+      hint:,
+      label:,
       form: form_builder,
-      required: required,
-      error_messages: error_messages,
-      range_errors: range_errors,
+      required:,
+      error_messages:,
+      range_errors:,
       **tag_options,
     }.compact
   end
@@ -134,7 +134,7 @@ RSpec.describe MemorableDateComponent, type: :component do
         'error_messages' => {
           'missing_month_day_year' => t(
             'components.memorable_date.errors.missing_month_day_year',
-            label: label,
+            label:,
           ),
           'missing_month_day' => t('components.memorable_date.errors.missing_month_day'),
           'missing_month_year' => t('components.memorable_date.errors.missing_month_year'),
@@ -148,18 +148,18 @@ RSpec.describe MemorableDateComponent, type: :component do
           'invalid_date' => t('components.memorable_date.errors.invalid_date'),
           'range_underflow' =>
             t(
-              'components.memorable_date.errors.range_underflow', label: label,
+              'components.memorable_date.errors.range_underflow', label:,
                                                                   date: formatted_min
             ),
           'range_overflow' =>
           t(
-            'components.memorable_date.errors.range_overflow', label: label,
+            'components.memorable_date.errors.range_overflow', label:,
                                                                date: formatted_max
           ),
           'outside_date_range' =>
           t(
             'components.memorable_date.errors.outside_date_range',
-            label: label,
+            label:,
             min: formatted_min,
             max: formatted_max,
           ),

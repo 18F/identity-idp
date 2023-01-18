@@ -25,7 +25,7 @@ class CountdownAlertComponentPreview < BaseComponentPreview
     render(
       CountdownAlertComponent.new(
         show_at_remaining: show_at_remaining_seconds&.seconds,
-        countdown_options: { expiration: expiration },
+        countdown_options: { expiration: },
       ),
     )
   end

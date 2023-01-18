@@ -21,7 +21,7 @@ class SpinnerButtonComponentPreview < BaseComponentPreview
       SpinnerButtonComponent.new(
         form: form_builder,
         big: true,
-        **{ action_message: action_message }.compact,
+        **{ action_message: }.compact,
       ).with_content('Submit'),
     )
   end

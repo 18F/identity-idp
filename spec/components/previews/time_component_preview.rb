@@ -7,6 +7,6 @@ class TimeComponentPreview < BaseComponentPreview
 
   # @param time datetime-local
   def workbench(time: Time.zone.now + 5.hours)
-    render TimeComponent.new(time: time)
+    render TimeComponent.new(time:)
   end
 end
