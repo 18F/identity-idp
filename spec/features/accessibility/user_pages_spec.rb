@@ -7,7 +7,20 @@ feature 'Accessibility on pages that require authentication', :js do
     sign_up_with(email)
 
     expect(current_path).to eq(sign_up_verify_email_path)
-    expect_page_to_have_no_accessibility_violations(page)
+    # We can't validate markup here, since markup validation requires a page reload when using the
+    # JS driver, but the sign up verify email path can only be visited once before redirecting to
+    # the account creation form. Instead, we validate markup separately with the non-JS driver.
+    expect_page_to_have_no_accessibility_violations(page, validate_markup: false)
+  end
+
+  context 'with javascript disabled', js: false do
+    scenario 'user registration page' do
+      email = 'test@example.com'
+      sign_up_with(email)
+
+      expect(current_path).to eq(sign_up_verify_email_path)
+      expect(page).to have_valid_markup
+    end
   end
 
   describe 'user confirmation page' do
