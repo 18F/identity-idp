@@ -157,11 +157,15 @@ module Idv
     end
 
     def idv_failure(result)
-      resolution_throttle.increment! if result.extra.dig(:proofing_results,  :stages, :resolution, :exception).blank?
+      proofing_results_exception = result.extra.dig(
+        :proofing_results, :stages, :resolution,
+        :exception
+      )
+      resolution_throttle.increment! if proofing_results_exception.blank?
       if resolution_throttle.throttled?
         idv_failure_log_throttled
         redirect_to throttled_url
-      elsif result.extra.dig(:proofing_results,  :stages, :resolution, :exception).present?
+      elsif proofing_results_exception.present?
         idv_failure_log_error
         redirect_to exception_url
       else
