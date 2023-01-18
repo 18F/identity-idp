@@ -257,6 +257,7 @@ module Users
           phone_number: parsed_phone.e164,
           otp_delivery_method: otp_delivery_preference,
         )
+      end
     end
 
     def exceeded_otp_send_limit?
