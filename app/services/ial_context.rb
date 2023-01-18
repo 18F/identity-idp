@@ -60,9 +60,6 @@ class IalContext
   def convert_ial_to_int(input)
     return nil unless input.present?
     return input if input.is_a?(Integer)
-    ial = Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[input]
-    return ial unless ial.nil?
-
-    Integer(input)
+    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[input]
   end
 end
