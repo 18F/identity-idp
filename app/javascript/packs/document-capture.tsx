@@ -69,8 +69,6 @@ const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
   const {
     flowPath,
-    inPersonCtaVariantTestingEnabled,
-    inPersonCtaVariantActive,
     acuantSdkUpgradeABTestingEnabled,
     useAlternateSdk,
     acuantVersion,

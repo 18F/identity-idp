@@ -2,7 +2,7 @@ import { useContext, useEffect, useState, ReactNode } from 'react';
 import { useI18n, formatHTML } from '@18f/identity-react-i18n';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { FormStepsContext, FormStepsButton } from '@18f/identity-form-steps';
-import { PageHeading, Button } from '@18f/identity-components';
+import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
@@ -137,7 +137,7 @@ function ReviewIssuesStep({
         </Warning>
       );
     } else if (inPersonCtaVariantActive === 'in_person_variant_a') {
-      trackEvent('IdV: IPP CTA Variant A')
+      trackEvent('IdV: IPP CTA Variant A');
       return (
         <Warning
           heading={t('errors.doc_auth.throttled_heading')}
@@ -174,7 +174,7 @@ function ReviewIssuesStep({
         </Warning>
       );
     } else if (inPersonCtaVariantActive === 'in_person_variant_b') {
-      trackEvent('IdV: IPP CTA Variant B')
+      trackEvent('IdV: IPP CTA Variant B');
       return (
         <Warning
           heading={t('errors.doc_auth.throttled_heading')}
@@ -211,7 +211,7 @@ function ReviewIssuesStep({
         </Warning>
       );
     } else if (inPersonCtaVariantActive === 'in_person_variant_c') {
-      trackEvent('IdV: IPP CTA Variant C')
+      trackEvent('IdV: IPP CTA Variant C');
       return (
         <Warning
           heading={t('errors.doc_auth.throttled_heading')}
