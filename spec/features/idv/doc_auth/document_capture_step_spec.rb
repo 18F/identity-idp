@@ -67,12 +67,10 @@ feature 'doc auth document capture step', :js do
     end
 
     expect(page).to have_current_path(idv_session_errors_throttled_path)
-    # Bug: Rate limit event is not always logged (LG-6543)
-    # expect(fake_analytics).to have_logged_event(
-    #   'Throttler Rate Limit Triggered',
-    #   throttle_type: :idv_doc_auth,
-    # )
-    # expect(fake_attempts_tracker).to receive(:idv_document_upload_rate_limited)
+    expect(fake_analytics).to have_logged_event(
+      'Throttler Rate Limit Triggered',
+      throttle_type: :idv_doc_auth,
+    )
   end
 
   it 'catches network connection errors on post_front_image', allow_browser_log: true do
