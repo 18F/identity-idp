@@ -57,6 +57,8 @@ class User < ApplicationRecord
 
   attr_accessor :asserted_attributes, :email
 
+  self.ignored_columns = ['non_restricted_mfa_required_prompt_skip_date']
+
   def confirmed_email_addresses
     email_addresses.where.not(confirmed_at: nil).order('last_sign_in_at DESC NULLS LAST')
   end
