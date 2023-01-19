@@ -22,36 +22,40 @@ const DEFAULT_RESPONSE = [
 
 describe('AddressSearch', () => {
   const sandbox = useSandbox();
+  context('when an address is found', () => {
+    let server: SetupServerApi;
+    before(() => {
+      server = setupServer(
+        rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
+        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
+      );
+      server.listen();
+    });
 
-  let server: SetupServerApi;
-  before(() => {
-    server = setupServer(
-      rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
-      rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
-    );
-    server.listen();
-  });
+    after(() => {
+      server.close();
+    });
 
-  after(() => {
-    server.close();
-  });
+    it('fires the callback with correct input', async () => {
+      const handleAddressFound = sandbox.stub();
+      const handleLocationsFound = sandbox.stub();
+      const { findByText, findByLabelText } = render(
+        <AddressSearch
+          onFoundAddress={handleAddressFound}
+          onFoundLocations={handleLocationsFound}
+        />,
+      );
 
-  it('fires the callback with correct input', async () => {
-    const handleAddressFound = sandbox.stub();
-    const handleLocationsFound = sandbox.stub();
-    const { findByText, findByLabelText } = render(
-      <AddressSearch onFoundAddress={handleAddressFound} onFoundLocations={handleLocationsFound} />,
-    );
+      await userEvent.type(
+        await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
+        '200 main',
+      );
+      await userEvent.click(
+        await findByText('in_person_proofing.body.location.po_search.search_button'),
+      );
 
-    await userEvent.type(
-      await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
-      '200 main',
-    );
-    await userEvent.click(
-      await findByText('in_person_proofing.body.location.po_search.search_button'),
-    );
-
-    await expect(handleAddressFound).to.eventually.be.called();
-    await expect(handleLocationsFound).to.eventually.be.called();
+      await expect(handleAddressFound).to.eventually.be.called();
+      await expect(handleLocationsFound).to.eventually.be.called();
+    });
   });
 });

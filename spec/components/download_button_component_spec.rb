@@ -6,8 +6,8 @@ RSpec.describe DownloadButtonComponent, type: :component do
   let(:tag_options) { {} }
   let(:instance) do
     DownloadButtonComponent.new(
-      file_data: file_data,
-      file_name: file_name,
+      file_data:,
+      file_name:,
       **tag_options,
     )
   end

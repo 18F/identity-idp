@@ -25,7 +25,7 @@ AllCops:
     - 'tmp/**/*'
     - 'vendor/**/*'
     - 'public/**/*'
-  TargetRubyVersion: 3.0.4
+  TargetRubyVersion: 3.2.0
   TargetRailsVersion: 7.0
   UseCache: true
   DisabledByDefault: true
@@ -1043,6 +1043,7 @@ Style/HashExcept:
 
 Style/HashSyntax:
   EnforcedStyle: ruby19
+  EnforcedShorthandSyntax: either
 
 Style/IdenticalConditionalBranches:
   Enabled: true

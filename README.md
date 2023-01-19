@@ -22,7 +22,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 #### Dependencies
 1. To start, make sure you have the following dependencies installed and a working development environment:
 
-- Ruby ~> 3.0.4
+- Ruby ~> 3.2.0
 - [PostgreSQL](http://www.postgresql.org/download/)
 - [Redis 5+](http://redis.io/)
 - [Node.js v16](https://nodejs.org)

@@ -11,8 +11,8 @@ class PasswordToggleComponentPreview < BaseComponentPreview
     render(
       PasswordToggleComponent.new(
         form: form_builder,
-        **{ toggle_label: toggle_label }.compact,
-        field_options: { label: label }.compact,
+        **{ toggle_label: }.compact,
+        field_options: { label: }.compact,
       ),
     )
   end

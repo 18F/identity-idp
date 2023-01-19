@@ -8,7 +8,7 @@ RSpec.describe JavascriptRequiredComponent, type: :component do
   let(:content) { 'JavaScript-required content' }
 
   subject(:rendered) do
-    render_inline described_class.new(header: header, intro: intro).with_content(content)
+    render_inline described_class.new(header:, intro:).with_content(content)
   end
 
   it 'renders instructions to enable JavaScript' do
@@ -51,7 +51,7 @@ RSpec.describe JavascriptRequiredComponent, type: :component do
     it 'only renders the alert once' do
       rendered
 
-      second_rendered = render_inline described_class.new(header: header)
+      second_rendered = render_inline described_class.new(header:)
 
       expect(second_rendered).not_to have_content(t('components.javascript_required.enabled_alert'))
     end
