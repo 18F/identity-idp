@@ -12,11 +12,13 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
       transform_keys(&:to_s)
   end
   let(:subject) { described_class }
+  let(:subject_analytics) { FakeAnalytics.new }
 
   before(:each) do
     stub_request_token
     stub_request_enroll
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(usps_mock_fallback)
+    allow(subject).to receive(:analytics).and_return(subject_analytics)
   end
 
   describe '#schedule_in_person_enrollment' do
@@ -91,6 +93,18 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         expect(user.in_person_enrollments.first.status).to eq('pending')
         expect(user.in_person_enrollments.first.enrollment_established_at).to_not be_nil
         expect(user.in_person_enrollments.first.unique_id).to_not be_nil
+      end
+
+      it 'logs event' do
+        subject.schedule_in_person_enrollment(user, pii)
+
+        expect(subject_analytics).to have_logged_event(
+          'USPS IPPaaS enrollment created',
+          enrollment_code: user.in_person_enrollments.first.enrollment_code,
+          enrollment_id: user.in_person_enrollments.first.id,
+          user_id: user.in_person_enrollments.first.user_id,
+          service_provider: user.in_person_enrollments.first.service_provider,
+        )
       end
 
       it 'sends verification emails' do
