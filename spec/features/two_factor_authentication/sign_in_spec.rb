@@ -269,6 +269,16 @@ feature 'Two Factor Authentication' do
       expect(page.evaluate_script('document.activeElement.id')).to start_with('code')
     end
 
+    scenario 'user enters incorrect OTP', js: true do
+      user = create(:user, :signed_up)
+      sign_in_before_2fa(user)
+
+      expect(page.evaluate_script('document.activeElement.id')).to start_with('code')
+      fill_in 'code', with: 'BADBAD'
+      click_submit_default
+      expect(page).to have_content(t('errors.messages.otp_format'))
+    end
+
     scenario 'the user changes delivery method' do
       user = create(:user, :signed_up, otp_delivery_preference: :sms)
       sign_in_before_2fa(user)
