@@ -5,6 +5,7 @@
         label: t('components.one_time_code_input.label'),
         hint:,
         required: true,
+        error_messages: { patternMismatch: t('errors.messages.otp_format') },
         **field_options,
         input_html: {
           **field_options[:input_html].to_h,

@@ -122,14 +122,6 @@ class FeatureManagement
     case IdentityConfig.store.proofing_device_profiling
     when :enabled, :collect_only then true
     when :disabled then false
-    # BEGIN temporary transitional fallback
-    when nil
-      if IdentityConfig.store.proofing_device_profiling_collecting_enabled.nil?
-        false
-      else
-        IdentityConfig.store.proofing_device_profiling_collecting_enabled
-      end
-    # END temporary transitional fallback
     else
       raise 'Invalid value for proofing_device_profiling'
     end
@@ -141,14 +133,6 @@ class FeatureManagement
     case IdentityConfig.store.proofing_device_profiling
     when :enabled then true
     when :collect_only, :disabled then false
-    # BEGIN temporary transitional fallback
-    when nil
-      if IdentityConfig.store.lexisnexis_threatmetrix_required_to_verify.nil?
-        false
-      else
-        IdentityConfig.store.lexisnexis_threatmetrix_required_to_verify
-      end
-    # END temporary transitional fallback
     else
       raise 'Invalid value for proofing_device_profiling'
     end

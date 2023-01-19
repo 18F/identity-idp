@@ -3,6 +3,8 @@ require 'rails_helper'
 describe Idv::PhoneStep do
   include IdvHelper
 
+  before { stub_attempts_tracker }
+
   let(:user) { create(:user) }
   let(:service_provider) do
     create(
@@ -37,16 +39,27 @@ describe Idv::PhoneStep do
     Proofing::Mock::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER
   end
   let(:trace_id) { SecureRandom.uuid }
+  let(:attempts_tracker) { @irs_attempts_api_tracker }
 
   subject do
     described_class.new(
       idv_session: idv_session,
       trace_id: trace_id,
+      attempts_tracker: attempts_tracker,
     )
   end
 
   describe '#submit' do
     let(:throttle) { Throttle.new(throttle_type: :proof_address, user: user) }
+    let(:mock_vendor) do
+      {
+        vendor_name: 'AddressMock',
+        exception: nil,
+        timed_out: false,
+        transaction_id: 'address-mock-transaction-id-123',
+        reference: '',
+      }
+    end
 
     it 'succeeds with good params' do
       proofing_phone = Phonelib.parse(good_phone)
@@ -54,13 +67,7 @@ describe Idv::PhoneStep do
         phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
         country_code: proofing_phone.country,
         area_code: proofing_phone.area_code,
-        vendor: {
-          vendor_name: 'AddressMock',
-          exception: nil,
-          timed_out: false,
-          transaction_id: 'address-mock-transaction-id-123',
-          reference: '',
-        },
+        vendor: mock_vendor,
       }
 
       original_applicant = idv_session.applicant.dup
@@ -88,13 +95,7 @@ describe Idv::PhoneStep do
         phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
         country_code: proofing_phone.country,
         area_code: proofing_phone.area_code,
-        vendor: {
-          vendor_name: 'AddressMock',
-          exception: nil,
-          timed_out: false,
-          transaction_id: 'address-mock-transaction-id-123',
-          reference: '',
-        },
+        vendor: mock_vendor,
       }
 
       original_applicant = idv_session.applicant.dup
@@ -116,7 +117,7 @@ describe Idv::PhoneStep do
       expect do
         subject.submit(phone: bad_phone)
         expect(subject.async_state.done?).to eq true
-        _result = subject.async_state_done(subject.async_state)
+        subject.async_state_done(subject.async_state)
       end.to(change { throttle.fetch_state!.attempts }.by(1))
     end
 
@@ -126,6 +127,16 @@ describe Idv::PhoneStep do
 
     it 'does not increment step attempts when the vendor raises an exception' do
       expect { subject.submit(phone: fail_phone) }.to_not change { throttle.attempts }
+    end
+
+    it 'logs a throttled attempts_tracker event' do
+      throttle.increment_to_throttled!
+
+      subject.submit(phone: bad_phone)
+      expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_sent_rate_limited)
+      subject.async_state_done(subject.async_state)
+
+      throttle.reset!
     end
 
     it 'marks the phone as unconfirmed if it matches 2FA phone' do
@@ -178,7 +189,7 @@ describe Idv::PhoneStep do
       it 'returns :warning' do
         subject.submit(phone: bad_phone)
         expect(subject.async_state.done?).to eq true
-        _result = subject.async_state_done(subject.async_state)
+        subject.async_state_done(subject.async_state)
 
         expect(subject.failure_reason).to eq(:warning)
       end
@@ -190,7 +201,7 @@ describe Idv::PhoneStep do
 
         subject.submit(phone: bad_phone)
         expect(subject.async_state.done?).to eq true
-        _result = subject.async_state_done(subject.async_state)
+        subject.async_state_done(subject.async_state)
 
         expect(subject.failure_reason).to eq(:fail)
       end
@@ -200,7 +211,7 @@ describe Idv::PhoneStep do
       it 'returns :timeout' do
         subject.submit(phone: timeout_phone)
         expect(subject.async_state.done?).to eq true
-        _result = subject.async_state_done(subject.async_state)
+        subject.async_state_done(subject.async_state)
 
         expect(subject.failure_reason).to eq(:timeout)
       end
@@ -210,7 +221,7 @@ describe Idv::PhoneStep do
       it 'returns :jobfail' do
         subject.submit(phone: fail_phone)
         expect(subject.async_state.done?).to eq true
-        _result = subject.async_state_done(subject.async_state)
+        subject.async_state_done(subject.async_state)
 
         expect(subject.failure_reason).to eq(:jobfail)
       end

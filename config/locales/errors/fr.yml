@@ -71,6 +71,8 @@ fr:
       missing_field: Veuillez remplir ce champ.
       no_pending_profile: Aucun profil en attente de vérification
       not_a_number: N’est pas un nombre
+      otp_format: Saisissez l’intégralité de votre code à usage unique sans espaces ni
+        caractères spéciaux
       password_incorrect: Mot de passe incorrect
       personal_key_incorrect: Clé personnelle incorrecte
       phone_carrier: Nous nous excusons, car nous ne pouvons pas prendre en charge cet

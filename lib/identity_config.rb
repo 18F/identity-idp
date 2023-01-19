@@ -248,11 +248,9 @@ class IdentityConfig
     config.add(:lexisnexis_trueid_timeout, type: :float)
     config.add(:lexisnexis_threatmetrix_api_key, type: :string, allow_nil: true)
     config.add(:lexisnexis_threatmetrix_base_url, type: :string, allow_nil: true)
-    config.add(:lexisnexis_threatmetrix_enabled, type: :boolean, allow_nil: true)
     config.add(:lexisnexis_threatmetrix_mock_enabled, type: :boolean)
     config.add(:lexisnexis_threatmetrix_org_id, type: :string,  allow_nil: true)
     config.add(:lexisnexis_threatmetrix_policy, type: :string,  allow_nil: true)
-    config.add(:lexisnexis_threatmetrix_required_to_verify, type: :boolean, allow_nil: true)
     config.add(:lexisnexis_threatmetrix_support_code, type: :string)
     config.add(:lexisnexis_threatmetrix_timeout, type: :float)
     config.add(:lexisnexis_threatmetrix_js_signing_cert, type: :string)
@@ -326,9 +324,7 @@ class IdentityConfig
       :proofing_device_profiling,
       type: :symbol,
       enum: [:disabled, :collect_only, :enabled],
-      allow_nil: true,
     )
-    config.add(:proofing_device_profiling_collecting_enabled, type: :boolean, allow_nil: true)
     config.add(:proof_address_max_attempts, type: :integer)
     config.add(:proof_address_max_attempt_window_in_minutes, type: :integer)
     config.add(:proof_ssn_max_attempts, type: :integer)
