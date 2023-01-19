@@ -63,8 +63,7 @@ module IrsAttemptsApi
     end
 
     def payload_json
-      return @payload_json if defined?(@payload_json)
-      @payload_json = payload.to_json
+      @payload_json ||= payload.to_json
     end
 
     private
