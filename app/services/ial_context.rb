@@ -62,7 +62,8 @@ class IalContext
     return input if input.is_a?(Integer)
     input_ial = Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[input]
     return input_ial unless input_ial.nil?
+    raise ArgumentError, "#{input} is invalid"
 
-    Integer(input)
+#     Integer(input)
   end
 end
