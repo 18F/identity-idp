@@ -44,7 +44,9 @@ feature 'doc auth document capture step', :js do
     let(:message) { '' }
     let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
     before do
-      allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).and_return(fake_attempts_tracker)
+      allow_any_instance_of(ApplicationController).to receive(
+        :irs_attempts_api_tracker,
+      ).and_return(fake_attempts_tracker)
       allow(fake_attempts_tracker).to receive(:idv_document_upload_rate_limited)
       allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
       DocAuth::Mock::DocAuthMockClient.mock_response!(
@@ -66,9 +68,12 @@ feature 'doc auth document capture step', :js do
         timeout = distance_of_time_in_words(
           Throttle.attempt_window_in_minutes(:idv_doc_auth).minutes,
         )
+        # rubocop:disable Lint/UselessAssignment
         message = strip_tags(t('errors.doc_auth.throttled_text_html', timeout: timeout))
+        # rubocop:enable Lint/UselessAssignment
       end
     end
+
     it 'redirects to the throttled error page' do
       expect(page).to have_current_path(idv_session_errors_throttled_path)
       expect(page).to have_content(message)
