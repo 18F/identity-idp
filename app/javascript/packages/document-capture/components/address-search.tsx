@@ -1,4 +1,4 @@
-import { TextInput } from '@18f/identity-components';
+import { TextInput, Alert } from '@18f/identity-components';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { request } from '@18f/identity-request';
@@ -139,15 +139,18 @@ function useUspsLocations() {
     }
   }, [addressCandidates]);
 
-  const { data: locationResults, isLoading: isLoadingLocations } = useSWR(
-    [foundAddress],
-    ([address]) => (address ? requestUspsLocations(address) : null),
-    { keepPreviousData: true },
-  );
+  const {
+    data: locationResults,
+    isLoading: isLoadingLocations,
+    error,
+  } = useSWR([foundAddress], ([address]) => (address ? requestUspsLocations(address) : null), {
+    keepPreviousData: true,
+  });
 
   return {
     foundAddress,
     locationResults,
+    error,
     isLoading: isLoadingLocations || isLoadingCandidates,
     handleAddressSearch,
     validatedFieldRef,
@@ -171,6 +174,7 @@ function AddressSearch({
   const {
     locationResults,
     isLoading,
+    error,
     handleAddressSearch: onSearch,
     foundAddress,
     validatedFieldRef,
@@ -201,6 +205,7 @@ function AddressSearch({
 
   return (
     <>
+      {error && <Alert type="error">Something went wrong</Alert>}
       <ValidatedField
         ref={validatedFieldRef}
         messages={{

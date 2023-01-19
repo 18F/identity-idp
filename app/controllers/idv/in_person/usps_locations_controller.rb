@@ -26,12 +26,13 @@ module Idv
           else
             response = proofer.request_pilot_facilities
           end
+          raise Faraday::TimeoutError.new
         rescue => err
           Rails.logger.warn(err)
           response = proofer.request_pilot_facilities
         end
 
-        render json: response.to_json
+        render json: response.to_json, status: :internal_server_error
       end
 
       def proofer
