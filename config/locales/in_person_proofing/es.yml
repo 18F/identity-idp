@@ -34,8 +34,10 @@ es:
         prompt_detail: Si usted está ubicado cerca de Washington, D.C. o Baltimore, MD,
           puede verificar su identificación en persona en las oficinas de
           correos seleccionadas.
-        prompt_detail_a: Es posible que pueda verificar su documento de identidad en persona en una oficina de correos participante cercana.
-        prompt_detail_b: TODO
+        prompt_detail_a: Es posible que pueda verificar su documento de identidad en
+          persona en una oficina de correos participante cercana.
+        prompt_detail_b: Si tiene problemas para añadir su documento de identidad en
+          línea, puede intentarlo en persona en algunas oficinas de correos.
       location:
         contact_info_heading: Información del contacto
         distance:

@@ -136,7 +136,8 @@ function ReviewIssuesStep({
           )}
         </Warning>
       );
-    } else if (inPersonCtaVariantActive === 'in_person_variant_a') {
+    }
+    if (inPersonCtaVariantActive === 'in_person_variant_a') {
       trackEvent('IdV: IPP CTA Variant A');
       return (
         <Warning
@@ -173,7 +174,8 @@ function ReviewIssuesStep({
           )}
         </Warning>
       );
-    } else if (inPersonCtaVariantActive === 'in_person_variant_b') {
+    }
+    if (inPersonCtaVariantActive === 'in_person_variant_b') {
       trackEvent('IdV: IPP CTA Variant B');
       return (
         <Warning
@@ -210,7 +212,8 @@ function ReviewIssuesStep({
           <p>{t('in_person_proofing.body.cta.prompt_detail_b')}</p>
         </Warning>
       );
-    } else if (inPersonCtaVariantActive === 'in_person_variant_c') {
+    }
+    if (inPersonCtaVariantActive === 'in_person_variant_c') {
       trackEvent('IdV: IPP CTA Variant C');
       return (
         <Warning
