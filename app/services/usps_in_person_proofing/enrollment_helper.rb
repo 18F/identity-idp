@@ -17,7 +17,7 @@ module UspsInPersonProofing
         enrollment.enrollment_established_at = Time.zone.now
         enrollment.save!
 
-        analytics.usps_ippaas_enrollment_created(
+        analytics(user: user).usps_ippaas_enrollment_created(
           enrollment_code: enrollment.enrollment_code,
           enrollment_id: enrollment.id,
           user_id: enrollment.user_id,
