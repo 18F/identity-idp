@@ -380,18 +380,10 @@ describe 'FeatureManagement' do
       expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
       expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(true)
     end
-    it 'falls back to legacy config if needed' do
-      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(nil)
-      expect(IdentityConfig.store).to receive(:proofing_device_profiling_collecting_enabled).
-        twice.
-        and_return(true)
-      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(true)
-    end
-    it 'defaults to false' do
-      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(nil)
-      expect(IdentityConfig.store).to receive(:proofing_device_profiling_collecting_enabled).
-        and_return(nil)
-      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(false)
+    it 'raises for invalid value' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:emnabled)
+      expect { FeatureManagement.proofing_device_profiling_collecting_enabled? }.
+        to raise_error
     end
   end
 
@@ -408,18 +400,10 @@ describe 'FeatureManagement' do
       expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
       expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(true)
     end
-    it 'falls back to legacy config' do
-      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(nil)
-      expect(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
-        twice.
-        and_return(true)
-      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(true)
-    end
-    it 'defaults to false' do
-      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(nil)
-      expect(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
-        and_return(nil)
-      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(false)
+    it 'raises for invalid value' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:dissabled)
+      expect { FeatureManagement.proofing_device_profiling_decisioning_enabled? }.
+        to raise_error
     end
   end
 end
