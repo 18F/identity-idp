@@ -1,5 +1,4 @@
 import { useSandbox } from '@18f/identity-test-helpers';
-import { waitFor } from '@testing-library/dom';
 import './countdown-alert-element';
 import './countdown-element';
 
