@@ -1,5 +1,6 @@
 module Idv
   class VerifyInfoController < ApplicationController
+    include StringRedacter
     include IdvSession
 
     before_action :render_404_if_verify_info_controller_disabled
@@ -310,7 +311,7 @@ module Idv
       if state_id
         state_id[:state] = state if state
         state_id[:state_id_jurisdiction] = state_id_jurisdiction if state_id_jurisdiction
-        state_id[:state_id_number] = redact(state_id_number) if state_id_number
+        state_id[:state_id_number] = redact_alphanumeric(state_id_number) if state_id_number
       end
 
       FormResponse.new(
@@ -335,10 +336,6 @@ module Idv
         ssn: pii_from_doc[:ssn],
         failure_reason: failure_reason,
       )
-    end
-
-    def redact(text)
-      text.gsub(/[a-z]/i, 'X').gsub(/\d/i, '#')
     end
 
     def check_ssn
