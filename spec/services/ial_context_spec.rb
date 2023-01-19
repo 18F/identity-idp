@@ -269,4 +269,32 @@ RSpec.describe IalContext do
       it { expect(ial_context.ial2_requested?).to eq(true) }
     end
   end
+
+  # Enumerate some representative scenarios here.
+  #
+  # It is very easy to make an optimization that improves performance for a
+  # specific scenario you care about but regresses on other common cases.
+  # Therefore, you should test your change against a list of representative
+  # scenarios. Ideally, they should be based on real-world scenarios extracted
+  # from production applications.
+  # SCENARIOS = {
+  #   "nil"      => nil,
+  #   "Integer String"        => "1",
+  #   "Integer" => 1,
+  #   "String" => "http://idmanagement.gov/ns/assurance/ial/1",
+  # }
+
+  # USER = AnonymousUser.new
+  # SERVICE_PROVIDER = ServiceProvider.first
+  # SCENARIOS.each_pair do |name, value|
+  #   puts
+  #   puts " #{name} ".center(80, "=")
+  #   puts
+
+  #   Benchmark.ips do |x|
+  #     x.report("original")      { IalContext.new(ial: value, user: USER, service_provider: SERVICE_PROVIDER, authn_context_comparison: nil, new: false) }
+  #     x.report("new")      { IalContext.new(ial: value, user: USER, service_provider: SERVICE_PROVIDER, authn_context_comparison: nil, new: true) }
+  #     x.compare!
+  #   end
+  # end
 end
