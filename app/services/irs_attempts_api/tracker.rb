@@ -44,6 +44,7 @@ module IrsAttemptsApi
       if enabled?
         analytics.irs_attempts_api_event_metadata(
           event_type: event_type,
+          unencrypted_payload_num_bytes: event.payload_json.bytesize,
           recorded: true,
         )
         redis_client.write_event(
