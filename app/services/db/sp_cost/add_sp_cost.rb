@@ -8,7 +8,6 @@ module Db
         acuant_front_image
         acuant_back_image
         acuant_result
-        acuant_selfie
         lexis_nexis_resolution
         lexis_nexis_address
         gpo_letter
