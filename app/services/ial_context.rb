@@ -7,15 +7,11 @@ class IalContext
   # @param ial [String, Integer] IAL level as either an integer (see ::Idp::Constants::IAL2, etc)
   #   or a string see Saml::Idp::Constants contexts
   # @param service_provider [ServiceProvider, nil]
-  def initialize(ial:, service_provider:, user: nil, authn_context_comparison: nil, new: false)
+  def initialize(ial:, service_provider:, user: nil, authn_context_comparison: nil)
     @authn_context_comparison = authn_context_comparison
     @service_provider = service_provider
     @user = user
-    if new
-      @ial = new_int_ial(ial)
-    else
-      @ial = int_ial(ial)
-    end
+    @ial = int_ial(ial)
   end
 
   def ial2_service_provider?
@@ -62,32 +58,10 @@ class IalContext
   end
 
   def convert_ial_to_int(input)
-    Integer(input)
-  rescue TypeError # input was nil
-    nil
-  rescue ArgumentError # input was probably a string
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL.fetch(input)
-  end
-
-  def new_int_ial(input)
-    int_ial_from_request = new_convert_ial_to_int(input)
-    return 0 if new_saml_ialmax?(int_ial_from_request)
-
-    int_ial_from_request
-  end
-
-  def new_saml_ialmax?(int_ial_from_request)
-    return false unless int_ial_from_request.present?
-
-    service_provider&.ial == 2 && authn_context_comparison == 'minimum' && int_ial_from_request < 2
-  end
-
-  def new_convert_ial_to_int(input)
     return nil if input.nil?
     return input if input.is_a?(Integer)
     input_ial = Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[input]
     return input_ial unless input_ial.nil?
-    binding.pry if input_ial.nil?
 
     Integer(input)
   end
