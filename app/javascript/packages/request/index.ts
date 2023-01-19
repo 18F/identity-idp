@@ -41,5 +41,9 @@ export async function request<Response>(
   }
 
   const response = await window.fetch(url, { ...fetchOptions, headers, body });
-  return json ? response.json() : response.text();
+  if (response.ok) {
+    return json ? response.json() : response.text();
+  }
+
+  throw new Error(response.json());
 }

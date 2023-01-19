@@ -23,12 +23,15 @@ module Idv
               zip_code: search_params['zip_code']
             )
             response = proofer.request_facilities(candidate)
+            # TODO: remove error
+            raise Faraday::TimeoutError.new
           else
             response = proofer.request_pilot_facilities
           end
         rescue => err
+          #  TODO: make logs more structured
           Rails.logger.warn(err)
-          response = proofer.request_pilot_facilities
+          render json: {}, status: :internal_server_error
         end
 
         render json: response.to_json
