@@ -48,21 +48,12 @@ describe('CountdownAlertElement', () => {
     });
   });
 
-  it('redirects when time has expired', async () => {
-    const element = createElement({
-      redirectURL: '#teapot',
-      showAtRemaining: 60000,
-    });
+  it('redirects when time has expired', () => {
+    createElement({ redirectURL: '#teapot' });
 
-    sandbox.spy(element, 'handleRedirectTick');
-
-    sandbox.clock.tick(30000);
-    expect(element.handleRedirectTick).not.to.have.been.called();
-
-    sandbox.clock.tick(0);
-    expect(element.handleRedirectTick).to.have.been.called;
-
-    await waitFor(() => window.location.hash === '#teapot');
+    sandbox.clock.tick(91000);
     expect(window.location.hash).to.equal('');
+    sandbox.clock.tick(1000);
+    expect(window.location.hash).to.equal('#teapot');
   });
 });
