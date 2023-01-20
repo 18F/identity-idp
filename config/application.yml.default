@@ -45,6 +45,7 @@ arcgis_api_root_url: 'https://gis.gsa.gov'
 arcgis_api_username: ''
 arcgis_api_password: ''
 arcgis_search_enabled: false
+arcgis_mock_fallback: true
 asset_host: ''
 async_wait_timeout_seconds: 60
 async_stale_job_timeout_seconds: 300

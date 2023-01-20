@@ -1,5 +1,9 @@
 module ArcgisApi
   class Geocoder
+    def initialize(&block)
+      @custom_connection_options = block || proc {}
+    end
+
     Suggestion = Struct.new(:text, :magic_key, keyword_init: true)
     AddressCandidate = Struct.new(
       :address, :location, :street_address, :city, :state, :zip_code,
@@ -16,6 +20,12 @@ module ArcgisApi
       category: 'address',
     }.freeze
 
+    ROOT_URL = IdentityConfig.store.arcgis_api_root_url
+    SUGGEST_ENDPOINT = "#{ROOT_URL}/servernh/rest/services/GSA/USA/GeocodeServer/suggest"
+    ADDRESS_CANDIDATES_ENDPOINT =
+      "#{ROOT_URL}/servernh/rest/services/GSA/USA/GeocodeServer/findAddressCandidates"
+    GENERATE_TOKEN_ENDPOINT = "#{ROOT_URL}/portal/sharing/rest/generateToken"
+
     # Makes an HTTP request to quickly find potential address matches. Each match that is found
     # will include an associated magic_key value which can later be used to get more details about
     # the address using the #find_address_candidates method
@@ -24,14 +34,13 @@ module ArcgisApi
     # @param text [String]
     # @return [Array<Suggestion>] Suggestions
     def suggest(text)
-      url = "#{root_url}/servernh/rest/services/GSA/USA/GeocodeServer/suggest"
       params = {
         text: text,
         **COMMON_DEFAULT_PARAMETERS,
       }
 
       parse_suggestions(
-        faraday.get(url, params, dynamic_headers) do |req|
+        faraday.get(SUGGEST_ENDPOINT, params, dynamic_headers) do |req|
           req.options.context = { service_name: 'arcgis_geocoder_suggest' }
         end.body,
       )
@@ -41,7 +50,6 @@ module ArcgisApi
     # @param magic_key [String] a magic key value from a previous call to the #suggest method
     # @return [Array<AddressCandidate>] AddressCandidates
     def find_address_candidates(magic_key)
-      url = "#{root_url}/servernh/rest/services/GSA/USA/GeocodeServer/findAddressCandidates"
       params = {
         magicKey: magic_key,
         outFields: 'StAddr,City,RegionAbbr,Postal',
@@ -49,7 +57,7 @@ module ArcgisApi
       }
 
       parse_address_candidates(
-        faraday.get(url, params, dynamic_headers) do |req|
+        faraday.get(ADDRESS_CANDIDATES_ENDPOINT, params, dynamic_headers) do |req|
           req.options.context = { service_name: 'arcgis_geocoder_find_address_candidates' }
         end.body,
       )
@@ -79,10 +87,6 @@ module ArcgisApi
 
     private
 
-    def root_url
-      IdentityConfig.store.arcgis_api_root_url
-    end
-
     def faraday
       Faraday.new do |conn|
         # Log request metrics
@@ -94,6 +98,8 @@ module ArcgisApi
 
         # Parse JSON responses
         conn.response :json, content_type: 'application/json'
+
+        @custom_connection_options.call(conn)
       end
     end
 
@@ -151,7 +157,6 @@ module ArcgisApi
     # returns the token and when it expires (1 hour).
     # @return [Hash] API response
     def request_token
-      url = "#{root_url}/portal/sharing/rest/generateToken"
       body = {
         username: IdentityConfig.store.arcgis_api_username,
         password: IdentityConfig.store.arcgis_api_password,
@@ -159,7 +164,7 @@ module ArcgisApi
         f: 'json',
       }
 
-      faraday.post(url, URI.encode_www_form(body)) do |req|
+      faraday.post(GENERATE_TOKEN_ENDPOINT, URI.encode_www_form(body)) do |req|
         req.options.context = { service_name: 'usps_token' }
       end.body
     end
