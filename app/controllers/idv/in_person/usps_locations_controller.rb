@@ -14,26 +14,23 @@ module Idv
       # retrieve the list of nearby IPP Post Office locations with a POST request
       def index
         response = []
-
-        begin
-          if IdentityConfig.store.arcgis_search_enabled
-            candidate = UspsInPersonProofing::Applicant.new(
-              address: search_params['street_address'],
-              city: search_params['city'], state: search_params['state'],
-              zip_code: search_params['zip_code']
-            )
+        if IdentityConfig.store.arcgis_search_enabled
+          candidate = UspsInPersonProofing::Applicant.new(
+            address: search_params['street_address'],
+            city: search_params['city'], state: search_params['state'],
+            zip_code: search_params['zip_code']
+          )
+          begin
             response = proofer.request_facilities(candidate)
             # TODO: remove error
-            raise Faraday::TimeoutError.new
-          else
-            response = proofer.request_pilot_facilities
+          rescue => err
+            #  TODO: make logs more structured
+            Rails.logger.warn(err)
+            render json: {}, status: :internal_server_error and return
           end
-        rescue => err
-          #  TODO: make logs more structured
-          Rails.logger.warn(err)
-          render json: {}, status: :internal_server_error
+        else
+          response = proofer.request_pilot_facilities
         end
-
         render json: response.to_json
       end
 

@@ -205,7 +205,7 @@ function AddressSearch({
 
   return (
     <>
-      {error && <Alert type="error">{error.toString()}</Alert>}
+      {error && <Alert type="error">{t('idv.failure.exceptions.internal_error')}</Alert>}
       <ValidatedField
         ref={validatedFieldRef}
         messages={{
