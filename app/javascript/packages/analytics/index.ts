@@ -15,7 +15,7 @@ interface NewRelicGlobals {
  *
  * @return Promise resolving once event has been logged.
  */
-export async function trackEvent(event: string, payload: object = {}): Promise<void> {
+export async function trackEvent(event: string, payload?: object): Promise<void> {
   const endpoint = getConfigValue('analyticsEndpoint');
   if (!endpoint) {
     return;

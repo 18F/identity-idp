@@ -33,7 +33,7 @@ describe('trackEvent', () => {
         expect(window.fetch).to.have.been.calledWith(
           endpoint,
           sandbox.match({
-            body: '{"event":"name","payload":{}}',
+            body: '{"event":"name"}',
             headers: { 'Content-Type': 'application/json' },
             method: 'POST',
           }),
