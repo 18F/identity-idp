@@ -82,10 +82,6 @@ module InPersonHelper
     click_idv_continue
   end
 
-  def complete_schedule_enrollment()
-    # get enrollment code
-  end
-
   def complete_all_in_person_proofing_steps(user = user_with_2fa)
     complete_location_step(user)
     complete_prepare_step(user)
