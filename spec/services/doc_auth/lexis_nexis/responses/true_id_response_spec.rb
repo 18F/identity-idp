@@ -115,6 +115,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         'DocIssue' => '2016',
         'DocIsGeneric' => 'false',
         'DocIssuerType' => 'StateProvince',
+        'DocIssueType' => "Driver's License - STAR",
         'OrientationChanged' => 'true',
         'PresentationChanged' => 'false',
       )
@@ -236,6 +237,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         'DocIssuerCode' => 'CT',
         'DocIssuerName' => 'Connecticut',
         'DocIssue' => '2009',
+        'DocIssueType' => 'Driver License',
         'DocIsGeneric' => 'false',
         'OrientationChanged' => 'false',
         'PresentationChanged' => 'false',
