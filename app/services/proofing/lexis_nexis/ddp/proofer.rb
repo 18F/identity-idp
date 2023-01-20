@@ -57,9 +57,15 @@ module Proofing
           @config = Config.new(attrs)
         end
 
+        def send_verification_request(applicant)
+          VerificationRequest.new(config: config, applicant: applicant).send
+        end
+
         def proof(applicant)
-          response = VerificationRequest.new(config: config, applicant: applicant).send
-          build_result_from_response(response)
+          response = send_verification_request(applicant)
+          process_response(response)
+          # response = VerificationRequest.new(config: config, applicant: applicant).send
+          # build_result_from_response(response)
         rescue => exception
           NewRelic::Agent.notice_error(exception)
           Proofing::Result.new(exception: exception)
@@ -92,18 +98,18 @@ module Proofing
           errors
         end
 
-        # def process_response(response)
-        #   result = Proofing::Result.new
-        #   body = response.response_body
-        #   result.response_body = body
-        #   result.transaction_id = body['request_id']
-        #   request_result = body['request_result']
-        #   review_status = body['review_status']
-        #   result.review_status = review_status
-        #   result.add_error(:request_result, request_result) unless request_result == 'success'
-        #   result.add_error(:review_status, review_status) unless review_status == 'pass'
-        #   result
-        # end
+        def process_response(response)
+          result = Proofing::Result.new
+          body = response.response_body
+          result.response_body = body
+          result.transaction_id = body['request_id']
+          request_result = body['request_result']
+          review_status = body['review_status']
+          result.review_status = review_status
+          result.add_error(:request_result, request_result) unless request_result == 'success'
+          result.add_error(:review_status, review_status) unless review_status == 'pass'
+          result
+        end
       end
     end
   end
