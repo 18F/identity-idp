@@ -132,14 +132,22 @@ describe Idv::InPerson::UspsLocationsController do
 
       context 'with unsuccessful fetch' do
         let(:exception) { Faraday::ConnectionFailed }
+        let(:message) { 'Something happened' }
 
         before do
-          allow(proofer).to receive(:request_facilities).with(fake_address).and_raise(exception)
+          allow(proofer).to receive(:request_facilities).with(fake_address).
+            and_raise(exception.new(message))
           allow(proofer).to receive(:request_pilot_facilities).and_return(pilot_locations)
         end
 
-        it 'returns all pilot locations' do
-          expect(Rails.logger).to receive(:warn)
+        it 'logs an informative error and returns all pilot locations' do
+          logged_error = {
+            error_name: exception.name,
+            message: message,
+            source: described_class.name,
+          }.to_json
+
+          expect(Rails.logger).to receive(:warn).with(logged_error)
           response = post :index,
                           params: { address: { street_address: '742 Evergreen Terrace',
                                                city: 'Springfield',

@@ -26,8 +26,14 @@ module Idv
           else
             response = proofer.request_pilot_facilities
           end
-        rescue => err
-          Rails.logger.warn(err)
+        rescue => error
+          Rails.logger.warn(
+            {
+              error_name: error.class.name,
+              message: error.message,
+              source: self.class.name,
+            }.to_json,
+          )
           response = proofer.request_pilot_facilities
         end
 
