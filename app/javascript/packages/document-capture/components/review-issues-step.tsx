@@ -114,11 +114,7 @@ function ReviewIssuesStep({
 
         {remainingAttempts <= DISPLAY_ATTEMPTS && (
           <p>
-            <strong>
-              {remainingAttempts === 1
-                ? t('idv.failure.attempts.one')
-                : t('idv.failure.attempts.other', { count: remainingAttempts })}
-            </strong>
+            <strong>{t('idv.failure.attempts', { count: remainingAttempts })}</strong>
           </p>
         )}
       </Warning>
