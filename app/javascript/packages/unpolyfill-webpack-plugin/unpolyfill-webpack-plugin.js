@@ -1,16 +1,15 @@
 const { NormalModuleReplacementPlugin } = require('webpack');
 const manifest = require('./package.json');
 
-const polyfills = new RegExp(
-  `^${Object.keys(manifest.exports)
-    .filter((exportKey) => exportKey !== '.')
-    .map((exportKey) => exportKey.replace(/^\.\//, ''))
-    .join('|')}$`,
-);
+const polyfillModules = Object.keys(manifest.exports)
+  .filter((exportKey) => exportKey !== '.')
+  .map((exportKey) => exportKey.replace(/^\.\//, ''));
+
+const polyfillPattern = new RegExp(`^${polyfillModules.join('|')}$`);
 
 class UnpolyfillWebpackPlugin extends NormalModuleReplacementPlugin {
   constructor() {
-    super(polyfills, (result) => {
+    super(polyfillPattern, (result) => {
       result.request = `@18f/identity-unpolyfill-webpack-plugin/${result.request}`;
     });
   }
