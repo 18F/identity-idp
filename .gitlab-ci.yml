@@ -7,7 +7,7 @@ variables:
   GITLAB_CI: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:cea459aea56802327075b873cc73a8859ecffa359a9311b359ea49b19b1ba934'
+  IDP_CI_SHA: 'sha256:f5bbf6917b20e559176962ddf499cf320a873b0099711ef4dae4fd7b5cb7f3eb'
 
 default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'

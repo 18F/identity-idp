@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rack_request_parser'
 require 'utf8_cleaner'
 

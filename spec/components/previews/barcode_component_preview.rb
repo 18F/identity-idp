@@ -8,6 +8,6 @@ class BarcodeComponentPreview < BaseComponentPreview
   # @param barcode_data text
   # @param label text
   def workbench(barcode_data: '1234567812345678', label: 'Barcode')
-    render(BarcodeComponent.new(barcode_data: barcode_data, label: label))
+    render(BarcodeComponent.new(barcode_data:, label:))
   end
 end

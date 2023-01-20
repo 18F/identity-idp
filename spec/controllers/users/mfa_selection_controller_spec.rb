@@ -44,28 +44,6 @@ describe Users::MfaSelectionController do
       patch :update, params: voice_params
     end
 
-    context 'when the selection is only phone and kantara phone restriction is enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
-        stub_sign_in_before_2fa
-
-        patch :update, params: {
-          two_factor_options_form: {
-            selection: 'phone',
-          },
-        }
-      end
-
-      it 'the redirect to the form page with an anchor' do
-        expect(response).to redirect_to(two_factor_options_path(anchor: 'select_phone'))
-      end
-      it 'contains a flash message' do
-        expect(flash[:phone_error]).to eq(
-          t('errors.two_factor_auth_setup.must_select_additional_option'),
-        )
-      end
-    end
-
     context 'when the selection is phone' do
       let(:user) do
         create(

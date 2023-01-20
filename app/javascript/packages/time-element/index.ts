@@ -41,19 +41,14 @@ export class TimeElement extends HTMLElement {
 
   setTime() {
     const { formatter } = this;
-    if (typeof formatter.formatToParts === 'function') {
-      const parts = Object.fromEntries(
-        formatter.formatToParts(this.date).map((part) => [part.type, part.value]),
-      ) as Partial<Record<Intl.DateTimeFormatPartTypes, string>>;
+    const parts = Object.fromEntries(
+      formatter.formatToParts(this.date).map((part) => [part.type, part.value]),
+    ) as Partial<Record<Intl.DateTimeFormatPartTypes, string>>;
 
-      this.textContent = replaceVariables(
-        this.#format,
-        mapKeys({ dayPeriod: '', ...parts }, snakeCase),
-      );
-    } else {
-      // Degrade gracefully for environments where formatToParts is unsupported (Internet Explorer)
-      this.textContent = formatter.format(this.date);
-    }
+    this.textContent = replaceVariables(
+      this.#format,
+      mapKeys({ dayPeriod: '', ...parts }, snakeCase),
+    );
   }
 }
 

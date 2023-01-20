@@ -4,7 +4,7 @@
 <div id="validated-field-hint-<%= unique_id %>" class="usa-hint">
     <%= hint %>
 </div>
-  <%= content_tag :'lg-memorable-date', min: min, max: max, **tag_options do -%>
+  <%= content_tag :'lg-memorable-date', min:, max:, **tag_options do -%>
     <div class="usa-memorable-date">
       <%= content_tag(
             :script,
@@ -41,7 +41,7 @@
                     value: month,
                   },
                   error: false,
-                  required: required,
+                  required:,
                 ) %>
           <% end %>
           <span id=<%= "memorable-date-month-hint-#{unique_id}" %> class="display-none">
@@ -74,7 +74,7 @@
                   value: day,
                 },
                 error: false,
-                required: required,
+                required:,
               ) %>
           <% end %>
           <span id=<%= "memorable-date-day-hint-#{unique_id}" %> class="display-none">
@@ -107,7 +107,7 @@
                   value: year,
                 },
                 error: false,
-                required: required,
+                required:,
               ) %>
           <% end %>
           <span id=<%= "memorable-date-year-hint-#{unique_id}" %> class="display-none">

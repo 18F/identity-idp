@@ -60,7 +60,7 @@ class IdentityConfig
 
     converted_value = CONVERTERS.fetch(type).call(value, options: options) if !value.nil?
     raise "#{key} is required but is not present" if converted_value.nil? && !allow_nil
-    if enum && !enum.include?(converted_value)
+    if enum && !(enum.include?(converted_value) || (converted_value.nil? && allow_nil))
       raise "unexpected #{key}: #{value}, expected one of #{enum}"
     end
 
@@ -143,6 +143,7 @@ class IdentityConfig
     config.add(:database_worker_jobs_password, type: :string)
     config.add(:deleted_user_accounts_report_configs, type: :json)
     config.add(:deliver_mail_async, type: :boolean)
+    config.add(:development_mailer_deliver_method, type: :symbol, enum: [:file, :letter_opener])
     config.add(:disable_csp_unsafe_inline, type: :boolean)
     config.add(:disable_email_sending, type: :boolean)
     config.add(:disallow_all_web_crawlers, type: :boolean)
@@ -230,9 +231,6 @@ class IdentityConfig
     config.add(:irs_attempt_api_payload_size_logging_enabled, type: :boolean)
     config.add(:irs_attempt_api_public_key)
     config.add(:irs_attempt_api_public_key_id)
-    config.add(:kantara_2fa_phone_restricted, type: :boolean)
-    config.add(:kantara_2fa_phone_existing_user_restriction, type: :boolean)
-    config.add(:kantara_restriction_enforcement_date, type: :timestamp)
     config.add(:lexisnexis_base_url, type: :string)
     config.add(:lexisnexis_request_mode, type: :string)
     config.add(:lexisnexis_account_id, type: :string)
@@ -250,13 +248,11 @@ class IdentityConfig
     config.add(:lexisnexis_trueid_noliveness_cropping_workflow, type: :string)
     config.add(:lexisnexis_trueid_noliveness_nocropping_workflow, type: :string)
     config.add(:lexisnexis_trueid_timeout, type: :float)
-    config.add(:lexisnexis_threatmetrix_api_key, type: :string)
-    config.add(:lexisnexis_threatmetrix_base_url, type: :string)
-    config.add(:lexisnexis_threatmetrix_enabled, type: :boolean)
+    config.add(:lexisnexis_threatmetrix_api_key, type: :string, allow_nil: true)
+    config.add(:lexisnexis_threatmetrix_base_url, type: :string, allow_nil: true)
     config.add(:lexisnexis_threatmetrix_mock_enabled, type: :boolean)
-    config.add(:lexisnexis_threatmetrix_org_id, type: :string)
-    config.add(:lexisnexis_threatmetrix_policy, type: :string)
-    config.add(:lexisnexis_threatmetrix_required_to_verify, type: :boolean)
+    config.add(:lexisnexis_threatmetrix_org_id, type: :string,  allow_nil: true)
+    config.add(:lexisnexis_threatmetrix_policy, type: :string,  allow_nil: true)
     config.add(:lexisnexis_threatmetrix_support_code, type: :string)
     config.add(:lexisnexis_threatmetrix_timeout, type: :float)
     config.add(:lexisnexis_threatmetrix_js_signing_cert, type: :string)
@@ -321,11 +317,16 @@ class IdentityConfig
     config.add(:piv_cac_service_timeout, type: :float)
     config.add(:piv_cac_verify_token_secret)
     config.add(:piv_cac_verify_token_url)
+    config.add(:phone_service_check, type: :boolean)
     config.add(:phone_setups_per_ip_track_only_mode, type: :boolean)
     config.add(:platform_auth_set_up_enabled, type: :boolean)
     config.add(:poll_rate_for_verify_in_seconds, type: :integer)
     config.add(:proofer_mock_fallback, type: :boolean)
-    config.add(:proofing_device_profiling_collecting_enabled, type: :boolean)
+    config.add(
+      :proofing_device_profiling,
+      type: :symbol,
+      enum: [:disabled, :collect_only, :enabled],
+    )
     config.add(:proof_address_max_attempts, type: :integer)
     config.add(:proof_address_max_attempt_window_in_minutes, type: :integer)
     config.add(:proof_ssn_max_attempts, type: :integer)
@@ -427,7 +428,6 @@ class IdentityConfig
     config.add(:voice_otp_speech_rate)
     config.add(:voip_allowed_phones, type: :json)
     config.add(:voip_block, type: :boolean)
-    config.add(:voip_check, type: :boolean)
 
     @key_types = config.key_types
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).

@@ -1965,15 +1965,6 @@ module AnalyticsEvents
     )
   end
 
-  # Track when users get directed to the prompt requiring multiple MFAs for Phone MFA
-  def non_restricted_mfa_required_prompt_visited
-    track_event('Non-Restricted MFA Required Prompt visited')
-  end
-
-  def non_restricted_mfa_required_prompt_skipped
-    track_event('Non-Restricted MFA Required Prompt skipped')
-  end
-
   # Tracks when an openid connect bearer token authentication request is made
   # @param [Boolean] success
   # @param [Integer] ial
@@ -2979,6 +2970,28 @@ module AnalyticsEvents
       errors: errors,
       error_details: error_details,
       user_id: user_id,
+      **extra,
+    )
+  end
+
+  # Tracks when USPS in-person proofing enrollment is created
+  # @param [String] enrollment_code
+  # @param [Integer] enrollment_id
+  # @param [String] user_id
+  # @param [String] service_provider
+  def usps_ippaas_enrollment_created(
+    enrollment_code:,
+    enrollment_id:,
+    user_id:,
+    service_provider:,
+    **extra
+  )
+    track_event(
+      'USPS IPPaaS enrollment created',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      user_id: user_id,
+      service_provider: service_provider,
       **extra,
     )
   end
