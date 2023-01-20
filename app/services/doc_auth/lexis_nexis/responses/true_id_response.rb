@@ -10,7 +10,6 @@ module DocAuth
           DOB_Day
           DOB_Month
           DOB_Year
-          DocIssueType
           ExpirationDate_Day
           ExpirationDate_Month
           ExpirationDate_Year

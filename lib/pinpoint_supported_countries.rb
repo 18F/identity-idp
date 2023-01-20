@@ -14,6 +14,7 @@ class PinpointSupportedCountries
     BY
     EG
     JO
+    MX
     PH
     TH
   ].to_set.freeze
