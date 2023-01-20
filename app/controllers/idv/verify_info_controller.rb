@@ -11,7 +11,7 @@ module Idv
       increment_step_counts
       analytics.idv_doc_auth_verify_visited(**analytics_arguments)
 
-      redirect_to failure_url(:fail) and return if any_throttled?
+      redirect_to throttled_url and return if any_throttled?
 
       process_async_state(load_async_state)
     end
