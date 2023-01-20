@@ -57,7 +57,6 @@ feature 'doc auth document capture step', :js do
         ),
       )
 
-      allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
       (max_attempts - 1).times do
         attach_and_submit_images
         click_on t('idv.failure.button.warning')
