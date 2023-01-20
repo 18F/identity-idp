@@ -82,7 +82,6 @@ module Reports
           registered_at::date
       SQL
 
-
       transaction_with_timeout do
         ActiveRecord::Base.connection.execute(sql)
       end
