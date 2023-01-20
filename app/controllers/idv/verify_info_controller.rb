@@ -158,10 +158,8 @@ module Idv
     end
 
     def idv_failure(result)
-      proofing_results_exception = result.extra.dig(
-        :proofing_results, :stages, :resolution,
-        :exception
-      )
+      proofing_results_exception = result.extra.dig(:proofing_results, :exception)
+
       resolution_throttle.increment! if proofing_results_exception.blank?
       if resolution_throttle.throttled?
         idv_failure_log_throttled
@@ -317,7 +315,7 @@ module Idv
       FormResponse.new(
         success: result[:success],
         errors: result[:errors],
-        extra: extra.merge(proofing_results: result[:context]),
+        extra: extra.merge(proofing_results: result.except(:errors, :success)),
       )
     end
 
