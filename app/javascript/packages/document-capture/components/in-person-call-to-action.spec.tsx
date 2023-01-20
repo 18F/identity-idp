@@ -6,13 +6,12 @@ import { AnalyticsContextProvider } from '../context/analytics';
 import InPersonCallToAction from './in-person-call-to-action';
 
 describe('InPersonCallToAction', () => {
-  it('renders a section with label and description', () => {
+  it('renders a section with a heading', () => {
     const { getByRole } = render(<InPersonCallToAction />);
 
-    const section = getByRole('region', { name: 'in_person_proofing.headings.cta' });
-    const description = computeAccessibleDescription(section);
-
-    expect(description).to.equal('in_person_proofing.body.cta.new_feature');
+    const heading = getByRole('heading');
+    
+    expect(heading.textContent).to.equals('in_person_proofing.headings.cta')
   });
 
   it('logs an event when clicking the call to action button', async () => {

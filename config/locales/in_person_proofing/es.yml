@@ -31,7 +31,6 @@ es:
       cta:
         button: Verifique su identificación en persona
         button_variant: Inténtelo en persona
-        new_feature: Nuevo artículo
         prompt_detail: Si usted está ubicado cerca de Washington, D.C. o Baltimore, MD,
           puede verificar su identificación en persona en las oficinas de
           correos seleccionadas.
