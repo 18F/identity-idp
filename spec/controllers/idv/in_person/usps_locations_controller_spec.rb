@@ -103,7 +103,10 @@ describe Idv::InPerson::UspsLocationsController do
 
     context 'with arcgis search enabled' do
       context 'with a nil address in params' do
+        let(:param_error) { ActionController::ParameterMissing }
+
         before do
+          allow(proofer).to receive(:request_facilities).with(address).and_raise(param_error)
           allow(proofer).to receive(:request_pilot_facilities).and_return(pilot_locations)
         end
 
@@ -130,7 +133,20 @@ describe Idv::InPerson::UspsLocationsController do
         end
       end
 
-      context 'with unsuccessful fetch' do
+      context 'with a timeout from Faraday' do
+        let(:timeout_error) { Faraday::TimeoutError }
+
+        before do
+          allow(proofer).to receive(:request_facilities).with(address).and_raise(timeout_error)
+        end
+
+        it 'returns an internal server error' do
+          status = response.status
+          expect(status).to eq 500
+        end
+      end
+
+      context 'with failed connection to Faraday' do
         let(:exception) { Faraday::ConnectionFailed }
 
         before do
