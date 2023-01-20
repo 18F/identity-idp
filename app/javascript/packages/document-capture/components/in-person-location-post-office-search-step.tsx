@@ -17,7 +17,9 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
-  const [locationResults, setLocationResults] = useState<FormattedLocation[] | null>(null);
+  const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
+    null,
+  );
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
 
   // ref allows us to avoid a memory leak
@@ -82,7 +84,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
         onFoundAddress={setFoundAddress}
         onFoundLocations={setLocationResults}
       />
-      {locationResults && (
+      {locationResults && foundAddress && (
         <InPersonLocations
           locations={locationResults}
           onSelect={handleLocationSelect}

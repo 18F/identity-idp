@@ -36,6 +36,6 @@ class AlertComponentPreview < BaseComponentPreview
   # @param message text
   # @param type select [info, success, warning, error, emergency, other]
   def workbench(message: 'An important message', type: :info)
-    render(AlertComponent.new(message: message, type: type))
+    render(AlertComponent.new(message:, type:))
   end
 end

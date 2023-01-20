@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AssetSources
   class << self
     attr_accessor :manifest_path

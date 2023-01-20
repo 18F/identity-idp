@@ -18,10 +18,10 @@ RSpec.describe PhoneInputComponent, type: :component do
   let(:options) do
     {
       form: form_builder,
-      allowed_countries: allowed_countries,
-      confirmed_phone: confirmed_phone,
-      required: required,
-      delivery_methods: delivery_methods,
+      allowed_countries:,
+      confirmed_phone:,
+      required:,
+      delivery_methods:,
       **tag_options,
     }.compact
   end

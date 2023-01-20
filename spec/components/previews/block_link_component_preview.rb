@@ -13,6 +13,6 @@ class BlockLinkComponentPreview < BaseComponentPreview
   # @param url text
   # @param new_tab toggle
   def workbench(content: 'Link text', url: '', new_tab: false)
-    render(BlockLinkComponent.new(url: url, new_tab: new_tab).with_content(content))
+    render(BlockLinkComponent.new(url:, new_tab:).with_content(content))
   end
 end

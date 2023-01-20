@@ -1,4 +1,4 @@
-require 'set'
+# frozen_string_literal: true
 
 class MarketingSite
   BASE_URL = URI('https://www.login.gov').freeze

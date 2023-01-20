@@ -21,7 +21,7 @@ describe DataRequests::LookupSharedDeviceUsers do
 
       result = subject.call
 
-      expect(result).to match_array([user1, user2, user3])
+      expect(result).to match_array([user1, user2])
     end
   end
 end

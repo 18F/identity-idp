@@ -56,8 +56,8 @@ class ValidatedFieldComponentPreview < BaseComponentPreview
       ValidatedFieldComponent.new(
         form: form_builder,
         name: :input,
-        label: label,
-        required: required,
+        label:,
+        required:,
         as: input_type.underscore.tr(' ', '_').to_sym,
       ),
     )

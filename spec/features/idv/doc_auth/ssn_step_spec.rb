@@ -6,6 +6,9 @@ feature 'doc auth ssn step', :js do
   include DocCaptureHelper
 
   before do
+    allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('test_org')
+
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
   end

@@ -90,7 +90,7 @@ module Idv
     def phone_info
       return @phone_info if defined?(@phone_info)
 
-      if phone.blank? || !IdentityConfig.store.voip_check
+      if phone.blank? || !IdentityConfig.store.phone_service_check
         @phone_info = nil
       else
         @phone_info = Telephony.phone_info(phone)

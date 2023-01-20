@@ -188,7 +188,9 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
 
     it 'returns number of minutes since enrollment was established' do
-      expect(enrollment.minutes_since_established).to be_within(0.01).of(120)
+      freeze_time do
+        expect(enrollment.minutes_since_established).to eq 120
+      end
     end
 
     it 'returns nil if enrollment has not been established' do

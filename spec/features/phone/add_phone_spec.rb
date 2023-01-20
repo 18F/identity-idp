@@ -157,7 +157,7 @@ describe 'Add a new phone number' do
 
   scenario 'adding a VOIP phone' do
     allow(IdentityConfig.store).to receive(:voip_block).and_return(true)
-    allow(IdentityConfig.store).to receive(:voip_check).and_return(true)
+    allow(IdentityConfig.store).to receive(:phone_service_check).and_return(true)
 
     user = create(:user, :signed_up)
 

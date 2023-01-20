@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class SessionsController < Devise::SessionsController
     include ::ActionView::Helpers::DateHelper
@@ -239,7 +241,7 @@ module Users
     end
 
     def update_devise_params_sanitizer
-      devise_parameter_sanitizer.permit(:sign_in, except: [:email, :password])
+      devise_parameter_sanitizer.permit(:sign_in, except: [:email, :password]) if !request.post?
     end
   end
 

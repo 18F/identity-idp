@@ -7,6 +7,7 @@ en:
           need to bring proof of your current address to the Post Office.
         learn_more: Learn more
       barcode:
+        cancel_link_text: Cancel your barcode
         close_window: You may now close this window.
         deadline: Visit the Post Office by %{deadline}.
         deadline_restart: If you go after the deadline, your information will not be
