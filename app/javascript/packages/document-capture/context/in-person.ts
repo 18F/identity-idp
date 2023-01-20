@@ -9,12 +9,12 @@ export interface InPersonContextProps {
   /**
    * Whether or not A/B testing of the in-person proofing CTA is enabled.
    */
-  inPersonCtaVariantTestingEnabled: boolean;
+  inPersonCtaVariantTestingEnabled?: boolean;
 
   /**
    * The specific A/B testing variant that was activated for the current user session.
    */
-  inPersonCtaVariantActive: string;
+  inPersonCtaVariantActive?: string;
 
   /**
    * URL to in-person proofing alternative flow, if enabled.
