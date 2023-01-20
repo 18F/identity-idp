@@ -22,7 +22,7 @@ export async function trackEvent(event: string, payload?: object): Promise<void>
   }
 
   try {
-    await window.fetch(endpoint, {
+    await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ event, payload }),
