@@ -57,14 +57,9 @@ module Proofing
           @config = Config.new(attrs)
         end
 
-        def send_verification_request(applicant)
-          VerificationRequest.new(config: config, applicant: applicant).send
-        end
-
         def proof(applicant)
-          response = send_verification_request(applicant)
+          response = VerificationRequest.new(config: config, applicant: applicant).send
           process_response(response)
-          # response = VerificationRequest.new(config: config, applicant: applicant).send
           # build_result_from_response(response)
         rescue => exception
           NewRelic::Agent.notice_error(exception)
