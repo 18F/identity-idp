@@ -1,6 +1,6 @@
 module UspsInPersonProofing
   class Proofer
-    AUTH_TOKEN_CACHE_KEY = :usps_ippaas_api_auth_token
+    AUTH_TOKEN_CACHE_KEY = :usps_auth_token
 
     # Makes HTTP request to get nearby in-person proofing facilities
     # Requires address, city, state and zip code.
@@ -150,7 +150,7 @@ module UspsInPersonProofing
     # Retrieve and return the set of dynamic headers that are used for most
     # requests to USPS. An auth token will be retrieved if a valid one isn't
     # already cached.
-    # @return [Hash] Headers to add to USPS requests
+    # @return [Object] Headers to add to USPS requests
     def dynamic_headers
       {
         'Authorization' => token,
