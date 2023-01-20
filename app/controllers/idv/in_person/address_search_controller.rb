@@ -13,8 +13,13 @@ module Idv
 
       def addresses(search_term)
         suggestion = geocoder.suggest(search_term).first
+        # this happens multiple times
+        if !suggestion
+          analytics.idv_in_person_location_searched(success: false, error: 'No address candidates found by arcgis')
+        end
         return [] unless suggestion
         geocoder.find_address_candidates(suggestion.magic_key).slice(0, 1)
+
       rescue Faraday::ConnectionFailed
         []
       end
