@@ -21,15 +21,19 @@ describe Proofing::LexisNexis::Ddp::Proofer do
       uuid_prefix: 'ABCD',
     }
   end
+
   let(:verification_request) do
     Proofing::LexisNexis::Ddp::VerificationRequest.new(
       applicant: applicant,
       config: LexisNexisFixtures.example_config,
     )
   end
+
   let(:issuer) { 'fake-issuer' }
   let(:friendly_name) { 'fake-name' }
   let(:app_id) { 'fake-app-id' }
+
+  # it_behaves_like 'a lexisnexis proofer'
 
   describe '#send' do
     context 'when the request times out' do
@@ -64,13 +68,11 @@ describe Proofing::LexisNexis::Ddp::Proofer do
     end
   end
 
-  subject(:instance) do
-    Proofing::LexisNexis::Ddp::Proofer.new(LexisNexisFixtures.example_config.to_h)
+  subject do
+    described_class.new(LexisNexisFixtures.example_config.to_h)
   end
 
   describe '#proof' do
-    subject(:result) { instance.proof(applicant) }
-
     before do
       ServiceProvider.create(
         issuer: issuer,
@@ -85,10 +87,14 @@ describe Proofing::LexisNexis::Ddp::Proofer do
       let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
 
       it 'is a successful result' do
+        result = subject.proof(applicant)
+
         expect(result.success?).to eq(true)
       end
 
       it 'has no errors' do
+        result = subject.proof(applicant)
+
         expect(result.errors).to be_empty
       end
     end
@@ -102,6 +108,8 @@ describe Proofing::LexisNexis::Ddp::Proofer do
         expect(NewRelic::Agent).to receive(:notice_error).with(error)
 
         stub_request(:post, verification_request.url).to_raise(error)
+
+        result = subject.proof(applicant)
 
         expect(result.success?).to eq(false)
         expect(result.errors).to be_empty

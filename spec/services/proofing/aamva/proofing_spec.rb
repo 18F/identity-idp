@@ -5,6 +5,7 @@ describe Proofing::Aamva::Proofer do
   let(:aamva_applicant) do
     Aamva::Applicant.from_proofer_applicant(OpenStruct.new(state_id_data))
   end
+
   let(:state_id_data) do
     {
       state_id_number: '1234567890',
@@ -12,6 +13,7 @@ describe Proofing::Aamva::Proofer do
       state_id_type: 'drivers_license',
     }
   end
+
   let(:verification_results) do
     {
       state_id_number: true,
@@ -25,7 +27,9 @@ describe Proofing::Aamva::Proofer do
     }
   end
 
-  subject { described_class.new(AamvaFixtures.example_config.to_h) }
+  subject do
+    described_class.new(AamvaFixtures.example_config.to_h)
+  end
 
   let(:verification_response) { AamvaFixtures.verification_response }
 
