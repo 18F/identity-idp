@@ -63,6 +63,7 @@ en:
       missing_field: Please fill in this field.
       no_pending_profile: No profile is waiting for verification
       not_a_number: is not a number
+      otp_format: Enter your entire one-time code without spaces or special characters
       password_incorrect: Incorrect password
       personal_key_incorrect: Incorrect personal key
       phone_carrier: Sorry, we are unable to support that phone carrier at this time.

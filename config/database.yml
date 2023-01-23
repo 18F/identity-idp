@@ -51,8 +51,23 @@ test:
     migrations_paths: db/worker_jobs_migrate
 
 <%
-  pool = if Identity::Hostdata.instance_role == 'worker'
-    IdentityConfig.store.good_job_max_threads + IdentityConfig.store.database_pool_idp + IdentityConfig.store.database_pool_extra_connections_for_worker
+  worker_pool = if Identity::Hostdata.instance_role == 'worker'
+    GoodJobConnectionPoolSize.calculate_worker_pool_size(
+      queues: IdentityConfig.store.good_job_queues,
+      cron_enabled: true,
+      max_threads: IdentityConfig.store.good_job_max_threads,
+    )
+  else
+    IdentityConfig.store.database_pool_idp
+  end
+%>
+
+<%
+  primary_pool = if Identity::Hostdata.instance_role == 'worker'
+    GoodJobConnectionPoolSize.calculate_primary_pool_size(
+      queues: IdentityConfig.store.good_job_queues,
+      max_threads: IdentityConfig.store.good_job_max_threads,
+    )
   else
     IdentityConfig.store.database_pool_idp
   end
@@ -65,7 +80,7 @@ production:
     username: <%= IdentityConfig.store.database_username %>
     host: <%= IdentityConfig.store.database_host %>
     password: <%= IdentityConfig.store.database_password %>
-    pool: <%= pool %>
+    pool: <%= primary_pool %>
     sslmode: 'verify-full'
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     migrations_paths: db/primary_migrate
@@ -75,7 +90,7 @@ production:
     username: <%= IdentityConfig.store.database_readonly_username %>
     host: <%= IdentityConfig.store.database_read_replica_host %>
     password: <%= IdentityConfig.store.database_readonly_password %>
-    pool: <%= pool %>
+    pool: <%= primary_pool %>
     sslmode: 'verify-full'
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     replica: true
@@ -85,7 +100,7 @@ production:
     username: <%= IdentityConfig.store.database_worker_jobs_username %>
     host: <%= IdentityConfig.store.database_worker_jobs_host %>
     password: <%= IdentityConfig.store.database_worker_jobs_password %>
-    pool: <%= pool %>
+    pool: <%= worker_pool %>
     sslmode: 'verify-full'
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     migrations_paths: db/worker_jobs_migrate

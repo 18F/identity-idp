@@ -10,9 +10,12 @@ class ServiceProviderRequestHandler
     pull_request_id_from_current_sp_session_id
 
     delete_sp_request_if_session_has_matching_request_id
-    ServiceProviderRequestProxy.create!(attributes)
 
-    StoreSpMetadataInSession.new(session: session, request_id: request_id).call
+    service_provider_request = ServiceProviderRequestProxy.create!(attributes)
+
+    StoreSpMetadataInSession.new(session: session, request_id: request_id).call(
+      service_provider_request: service_provider_request,
+    )
   end
 
   private

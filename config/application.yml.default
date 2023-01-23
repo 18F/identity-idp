@@ -45,6 +45,7 @@ arcgis_api_root_url: 'https://gis.gsa.gov'
 arcgis_api_username: ''
 arcgis_api_password: ''
 arcgis_search_enabled: false
+arcgis_mock_fallback: true
 asset_host: ''
 async_wait_timeout_seconds: 60
 async_stale_job_timeout_seconds: 300
@@ -231,6 +232,7 @@ proof_address_max_attempts: 5
 proof_address_max_attempt_window_in_minutes: 360
 proof_ssn_max_attempts: 10
 proof_ssn_max_attempt_window_in_minutes: 60
+proofing_device_profiling: disabled
 push_notifications_enabled: false
 pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'
 rack_mini_profiler: false
@@ -450,7 +452,6 @@ production:
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
   report_timeout: 1_000_000
-  ruby_workers_cron_enabled: 'false'
   ruby_workers_idv_enabled: false
   s3_report_bucket_prefix: login-gov.reports
   s3_report_public_bucket_prefix: login-gov-pubdata

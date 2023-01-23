@@ -98,4 +98,33 @@ describe('InPersonLocationStep', () => {
 
     await findByText('in_person_proofing.body.location.inline_error');
   });
+
+  it('displays no post office results if a successful search is followed by an unsuccessful search', async () => {
+    const { findByText, findByLabelText, queryByRole } = render(
+      <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
+        <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
+      </InPersonContext.Provider>,
+    );
+
+    await userEvent.type(
+      await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
+      '594 Broadway New York',
+    );
+    await userEvent.click(
+      await findByText('in_person_proofing.body.location.po_search.search_button'),
+    );
+
+    await userEvent.type(
+      await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
+      'asdfkf',
+    );
+    await userEvent.click(
+      await findByText('in_person_proofing.body.location.po_search.search_button'),
+    );
+
+    const results = queryByRole('status', {
+      name: 'in_person_proofing.body.location.po_search.results_description',
+    });
+    expect(results).not.to.exist();
+  });
 });

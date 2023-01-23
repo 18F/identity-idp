@@ -68,12 +68,12 @@ class ButtonComponentPreview < BaseComponentPreview
     render(
       ButtonComponent.new(
         icon: icon&.to_sym,
-        big: big,
-        wide: wide,
-        full_width: full_width,
-        outline: outline,
-        unstyled: unstyled,
-        danger: danger,
+        big:,
+        wide:,
+        full_width:,
+        outline:,
+        unstyled:,
+        danger:,
       ).with_content(content),
     )
   end
