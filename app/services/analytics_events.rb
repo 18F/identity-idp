@@ -2974,6 +2974,29 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks if request to get USPS in-person proofing locations fails
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [Boolean] response_body_present
+  # @param [Hash] response_body
+  # @param [Integer] response_status_code
+  def idv_in_person_locations_request_failure(
+    exception_class,
+    exception_message,
+    response_body_present,
+    response_body,
+    response_status_code
+  )
+    track_event(
+      'Request USPS IPP locations: request failed',
+      exception_class: exception_class,
+      exception_message: exception_message,
+      response_body_present: response_body_present,
+      response_body: response_body,
+      response_status_code: response_status_code,
+    )
+  end
+
   # Tracks if USPS in-person proofing enrollment request fails
   # @param [String] context
   # @param [String] reason

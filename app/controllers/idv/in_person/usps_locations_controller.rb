@@ -26,13 +26,22 @@ module Idv
             response = proofer.request_pilot_facilities
           end
         rescue Faraday::TimeoutError => timeout_err
-          Rails.logger.warn(
-            { exception_class: timeout_err.class,
-              exception_message: timeout_err.message }.to_json,
+          analytics.idv_in_person_locations_request_failure(
+            exception_class: timeout_err.class,
+            exception_message: timeout_err.message,
+            response_body_present: timeout_err.response_body.present?,
+            response_body: timeout_err.response_body,
+            response_status_code: timeout_err.response_status,
           )
           render json: {}, status: :internal_server_error and return
         rescue => err
-          Rails.logger.warn({ exception_class: err.class, exception_message: err.message }.to_json)
+          analytics.idv_in_person_locations_request_failure(
+            exception_class: err.class,
+            exception_message: err.message,
+            response_body_present: err.response_body.present?,
+            response_body: err.response_body,
+            response_status_code: err.response_status,
+          )
           response = proofer.request_pilot_facilities
         end
 
