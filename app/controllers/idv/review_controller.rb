@@ -1,6 +1,7 @@
 module Idv
   class ReviewController < ApplicationController
     before_action :personal_key_confirmed
+    before_action :confirm_verify_info_complete
 
     include IdvStepConcern
     include StepIndicatorConcern
@@ -122,6 +123,13 @@ module Idv
 
     def password
       params.fetch(:user, {})[:password].presence
+    end
+
+    def confirm_verify_info_complete
+      if IdentityConfig.store.doc_auth_verify_info_controller_enabled &&
+         !idv_session.resolution_successful
+        redirect_to idv_verify_info_url
+      end
     end
 
     def personal_key_confirmed
