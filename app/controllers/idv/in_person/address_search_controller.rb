@@ -15,7 +15,6 @@ module Idv
         suggestion = geocoder.suggest(search_term).first
         return [] unless suggestion
         geocoder.find_address_candidates(suggestion.magic_key).slice(0, 1)
-
       rescue Faraday::ConnectionFailed
         []
       end
