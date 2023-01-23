@@ -134,7 +134,7 @@ function useUspsLocations() {
     } else if (addressCandidates) {
       trackEvent('IdV: in person proofing location search submitted', {
         success: false,
-        error: 'No address candidates found by arcgis',
+        errors: 'No address candidates found by arcgis',
       });
 
       validatedFieldRef?.current?.setCustomValidity(

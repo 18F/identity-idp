@@ -634,10 +634,11 @@ module AnalyticsEvents
   end
 
   def idv_in_person_location_searched(success:, errors: nil, **extra)
-    track_event('IdV: in person proofing location search submitted',
-     success: success,
-     errors: errors,
-     **extra,
+    track_event(
+      'IdV: in person proofing location search submitted',
+      success: success,
+      errors: errors,
+      **extra,
     )
   end
 

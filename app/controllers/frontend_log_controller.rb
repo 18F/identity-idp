@@ -18,6 +18,7 @@ class FrontendLogController < ApplicationController
     'Multi-Factor Authentication: download backup code' => :multi_factor_auth_backup_code_download,
     'Show Password button clicked' => :show_password_button_clicked,
     'IdV: personal key acknowledgment toggled' => :idv_personal_key_acknowledgment_toggled,
+    'IdV: in person proofing location search submitted' => :idv_in_person_location_searched,
   }.transform_values { |method| AnalyticsEvents.instance_method(method) }.freeze
   # rubocop:enable Layout/LineLength
 
