@@ -83,7 +83,7 @@ module ArcgisApi
 
     private
 
-    def faraday(&custom_connection_options)
+    def faraday
       Faraday.new do |conn|
         # Log request metrics
         conn.request :instrumentation, name: 'request_metric.faraday'
@@ -95,7 +95,7 @@ module ArcgisApi
         # Parse JSON responses
         conn.response :json, content_type: 'application/json'
 
-        custom_connection_options&.call(conn)
+        yield conn if block_given?
       end
     end
 
