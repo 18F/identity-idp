@@ -17,7 +17,7 @@ import { InPersonContext } from '../context';
 
 function formatWithStrongNoWrap(text: string): ReactNode {
   return formatHTML(text, {
-    strong: ({ children }) => <strong style={{ whiteSpace: 'nowrap' }}>{children}</strong>,
+    strong: ({ children }) => <strong className="text-no-wrap">{children}</strong>,
   });
 }
 
