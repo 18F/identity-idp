@@ -223,7 +223,6 @@ namespace :dev do
 
   desc 'Perform load testing against USPS IPPGetFacilityList'
   task load_test_usps_ipp_facility_list: :environment do
-
     url = "#{ENV['BASE_URL']}/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList"
     
     (0...ENV['NUM_USERS'].to_i).each do
