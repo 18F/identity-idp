@@ -213,7 +213,7 @@ module Idv
         idv_session.resolution_successful = false
         render :show
       elsif current_async_state.in_progress?
-        render :wait
+        render 'shared/wait'
       elsif current_async_state.missing?
         analytics.idv_proofing_resolution_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
