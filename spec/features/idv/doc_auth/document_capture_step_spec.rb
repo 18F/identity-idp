@@ -41,7 +41,6 @@ feature 'doc auth document capture step', :js do
   end
 
   context 'throttles calls to acuant', allow_browser_log: true do
-    let(:message) { '' }
     let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
     before do
       allow_any_instance_of(ApplicationController).to receive(
@@ -67,15 +66,13 @@ feature 'doc auth document capture step', :js do
         timeout = distance_of_time_in_words(
           Throttle.attempt_window_in_minutes(:idv_doc_auth).minutes,
         )
-        # rubocop:disable Lint/UselessAssignment
         message = strip_tags(t('errors.doc_auth.throttled_text_html', timeout: timeout))
-        # rubocop:enable Lint/UselessAssignment
+        expect(page).to have_content(message)
       end
     end
 
     it 'redirects to the throttled error page' do
       expect(page).to have_current_path(idv_session_errors_throttled_path)
-      expect(page).to have_content(message)
     end
 
     it 'logs the throttled analytics event for doc_auth' do
