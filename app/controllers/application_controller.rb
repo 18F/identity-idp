@@ -204,6 +204,10 @@ class ApplicationController < ActionController::Base
       authentication_methods_setup_url : nil
   end
 
+  def confirm_phone_method_selected
+    mfa_policy.
+  end
+
   def fix_broken_personal_key_url
     return if !current_user.broken_personal_key?
 
