@@ -45,5 +45,5 @@ export async function request<Response>(
     return json ? response.json() : response.text();
   }
 
-  throw new Error(response.json());
+  throw new Error(await response.json());
 }

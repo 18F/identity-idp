@@ -1,4 +1,4 @@
-import { Alert, TextInput } from '@18f/identity-components';
+import { TextInput } from '@18f/identity-components';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { request } from '@18f/identity-request';
@@ -161,12 +161,14 @@ interface AddressSearchProps {
   registerField?: RegisterFieldCallback;
   onFoundAddress?: (address: LocationQuery | null) => void;
   onFoundLocations?: (locations: FormattedLocation[] | null | undefined) => void;
+  onError?: (error: Error | null) => void;
 }
 
 function AddressSearch({
   registerField = () => undefined,
   onFoundAddress = () => undefined,
   onFoundLocations = () => undefined,
+  onError = () => undefined,
 }: AddressSearchProps) {
   const { t } = useI18n();
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
@@ -189,6 +191,10 @@ function AddressSearch({
     spinnerButtonRef.current?.toggleSpinner(isLoading);
   }, [isLoading]);
 
+  useEffect(() => {
+    error && onError(error);
+  }, [error]);
+
   useDidUpdateEffect(() => {
     onFoundLocations(locationResults);
 
@@ -197,6 +203,7 @@ function AddressSearch({
 
   const handleSearch = useCallback(
     (event) => {
+      onError(null);
       onFoundAddress(null);
       onSearch(event, textInput);
     },
@@ -205,7 +212,6 @@ function AddressSearch({
 
   return (
     <>
-      {error && <Alert type="error">{t('idv.failure.exceptions.internal_error')}</Alert>}
       <ValidatedField
         ref={validatedFieldRef}
         messages={{
