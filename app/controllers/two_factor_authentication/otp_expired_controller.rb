@@ -12,7 +12,7 @@ module TwoFactorAuthentication
     end
 
     def show_try_again_option?
-      !check_if_fully_authenticated?
+      !user_fully_authenticated?
     end
   end
 end
