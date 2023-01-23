@@ -20,7 +20,8 @@ module Idv
       end
 
       def geocoder
-        @geocoder ||= ArcgisApi::Geocoder.new
+        @geocoder ||= IdentityConfig.store.arcgis_mock_fallback ?
+          ArcgisApi::Mock::Geocoder.new : ArcgisApi::Geocoder.new
       end
     end
   end
