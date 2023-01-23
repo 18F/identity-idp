@@ -25,7 +25,7 @@ module Idv
             response = proofer.request_facilities(candidate)
             response.length > 0 ? analytics.idv_in_person_location_searched(success: true) :
               analytics.idv_in_person_location_searched(
-                success: false, error: 'No USPS locations found',
+                success: false, errors: 'No USPS locations found',
               )
           else
             response = proofer.request_pilot_facilities
