@@ -1,5 +1,7 @@
 module TwoFactorAuthentication
   class OtpExpiredController < ApplicationController
+    before_action :phone_method_selected
+
     def show
       @otp_delivery_preference = otp_delivery_preference
       @show_try_again_option = show_try_again_option?
