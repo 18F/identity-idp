@@ -16,7 +16,7 @@ module IrsAttemptsApi
     end
 
     def track_event(event_type, metadata = {})
-      return if !enabled? && !IdentityConfig.store.irs_attempt_api_payload_size_logging_enabled
+      return if !enabled?
 
       if metadata.has_key?(:failure_reason) &&
          (metadata[:failure_reason].blank? ||
@@ -41,15 +41,15 @@ module IrsAttemptsApi
         event_metadata: event_metadata,
       )
 
-      if IdentityConfig.store.irs_attempt_api_payload_size_logging_enabled
-        analytics.irs_attempts_api_event_metadata(
-          event_type: event_type,
-          unencrypted_payload_num_bytes: event.payload.to_json.bytesize,
-          recorded: !!enabled?,
-        )
-      end
-
       if enabled?
+        if IdentityConfig.store.irs_attempt_api_payload_size_logging_enabled
+          analytics.irs_attempts_api_event_metadata(
+            event_type: event_type,
+            unencrypted_payload_num_bytes: event.payload_json.bytesize,
+            recorded: true,
+          )
+        end
+
         redis_client.write_event(
           event_key: event.event_key,
           jwe: event.to_jwe,

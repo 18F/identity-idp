@@ -20,7 +20,7 @@ module IrsAttemptsApi
 
     def to_jwe
       JWE.encrypt(
-        payload.to_json,
+        payload_json,
         event_data_encryption_key,
         typ: 'secevent+jwe',
         zip: 'DEF',
@@ -60,6 +60,10 @@ module IrsAttemptsApi
           long_event_type => event_data,
         },
       }
+    end
+
+    def payload_json
+      @payload_json ||= payload.to_json
     end
 
     private
