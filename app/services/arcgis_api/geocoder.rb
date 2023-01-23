@@ -1,7 +1,7 @@
 module ArcgisApi
   class Geocoder
     def initialize(&block)
-      @custom_connection_options = block || proc {}
+      @custom_connection_options = block
     end
 
     Suggestion = Struct.new(:text, :magic_key, keyword_init: true)
@@ -99,7 +99,7 @@ module ArcgisApi
         # Parse JSON responses
         conn.response :json, content_type: 'application/json'
 
-        @custom_connection_options.call(conn)
+        @custom_connection_options&.call(conn)
       end
     end
 
