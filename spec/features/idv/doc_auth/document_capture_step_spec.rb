@@ -60,7 +60,9 @@ feature 'doc auth document capture step', :js do
         attach_and_submit_images
         click_on t('idv.failure.button.warning')
       end
+    end
 
+    it 'redirects to the throttled error page' do
       freeze_time do
         attach_and_submit_images
         timeout = distance_of_time_in_words(
@@ -68,14 +70,12 @@ feature 'doc auth document capture step', :js do
         )
         message = strip_tags(t('errors.doc_auth.throttled_text_html', timeout: timeout))
         expect(page).to have_content(message)
+        expect(page).to have_current_path(idv_session_errors_throttled_path)
       end
     end
 
-    it 'redirects to the throttled error page' do
-      expect(page).to have_current_path(idv_session_errors_throttled_path)
-    end
-
     it 'logs the throttled analytics event for doc_auth' do
+      attach_and_submit_images
       expect(fake_analytics).to have_logged_event(
         'Throttler Rate Limit Triggered',
         throttle_type: :idv_doc_auth,
@@ -83,6 +83,7 @@ feature 'doc auth document capture step', :js do
     end
 
     it 'logs irs attempts event for rate limiting' do
+      attach_and_submit_images
       expect(fake_attempts_tracker).to have_received(:idv_document_upload_rate_limited)
     end
   end
