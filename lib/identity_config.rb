@@ -109,6 +109,7 @@ class IdentityConfig
     config.add(:arcgis_api_username, type: :string)
     config.add(:arcgis_api_password, type: :string)
     config.add(:arcgis_search_enabled, type: :boolean)
+    config.add(:arcgis_mock_fallback, type: :boolean)
     config.add(:aws_http_retry_limit, type: :integer)
     config.add(:aws_http_retry_max_delay, type: :integer)
     config.add(:aws_http_timeout, type: :integer)

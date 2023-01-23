@@ -26,12 +26,7 @@ module ArcgisApi
       end
 
       def self.load_response_fixture(filename)
-        path = File.join(
-          File.dirname(__FILE__),
-          '../fixtures/arcgis_api_responses',
-          filename,
-        )
-        File.read(path)
+        Rails.root.join('spec', 'fixtures', 'arcgis_responses', filename).read
       end
     end
   end

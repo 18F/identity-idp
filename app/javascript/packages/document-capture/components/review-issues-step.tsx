@@ -125,17 +125,13 @@ function ReviewIssuesStep({
               .filter((error) => !['front', 'back'].includes(error.field!))
               .map(({ error }) => <p key={error.message}>{error.message}</p>)}
 
-          {remainingAttempts <= DISPLAY_ATTEMPTS && (
-            <p>
-              <strong>
-                {remainingAttempts === 1
-                  ? t('idv.failure.attempts.one')
-                  : t('idv.failure.attempts.other', { count: remainingAttempts })}
-              </strong>
-            </p>
-          )}
-        </Warning>
-      );
+        {remainingAttempts <= DISPLAY_ATTEMPTS && (
+          <p>
+            <strong>{t('idv.failure.attempts', { count: remainingAttempts })}</strong>
+          </p>
+        )}
+      </Warning>
+    );
     }
     if (inPersonCtaVariantActive === 'in_person_variant_a') {
       trackEvent('IdV: IPP CTA Variant A');
