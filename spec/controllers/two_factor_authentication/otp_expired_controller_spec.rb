@@ -18,5 +18,13 @@ describe TwoFactorAuthentication::OtpExpiredController do
 
       expect(response).to render_template(:show)
     end
+
+    it 'gets the expected otp value' do
+      user = build(:user, otp_delivery_preference: 'voice')
+      stub_sign_in_before_2fa(user)
+
+      get :show
+      expect(assigns(:otp_delivery_preference)).to eq('voice')
+    end
   end
 end
