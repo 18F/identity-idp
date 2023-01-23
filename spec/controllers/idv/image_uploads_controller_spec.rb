@@ -381,7 +381,8 @@ describe Idv::ImageUploadsController do
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
               success: false,
-              failure_reason: {pii: ["We couldn’t read the full name on your ID. Try taking new pictures."]},
+              failure_reason: { pii:
+                ['We couldn’t read the full name on your ID. Try taking new pictures.'] },
               document_state: 'ND',
               document_number: nil,
               document_issued: nil,
@@ -459,7 +460,8 @@ describe Idv::ImageUploadsController do
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
               success: false,
-              failure_reason: {pii: ["We couldn’t read the full name on your ID. Try taking new pictures."]},
+              failure_reason: { pii:
+                ['We couldn’t read the full name on your ID. Try taking new pictures.'] },
               document_state: 'ND',
               document_number: nil,
               document_issued: nil,
@@ -537,7 +539,8 @@ describe Idv::ImageUploadsController do
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
               success: false,
-              failure_reason: {pii: ["Try taking new pictures."]},
+              failure_reason: { pii:
+                ['Try taking new pictures.'] },
               document_state: 'Maryland',
               document_number: nil,
               document_issued: nil,
@@ -615,7 +618,8 @@ describe Idv::ImageUploadsController do
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
               success: false,
-              failure_reason: {pii: ["We couldn’t read the birth date on your ID. Try taking new pictures."]},
+              failure_reason: { pii:
+                ['We couldn’t read the birth date on your ID. Try taking new pictures.'] },
               document_back_image_filename: nil,
               document_front_image_filename: nil,
               document_image_encryption_key: nil,
