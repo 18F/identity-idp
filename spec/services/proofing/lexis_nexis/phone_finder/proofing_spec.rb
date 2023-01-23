@@ -57,8 +57,13 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
 
     context 'when the rdp1 response is a failure' do
       it 'is a failure result' do
-        stub_request(:post, verification_request.url).
-          to_return(body: LexisNexisFixtures.phone_finder_rdp1_fail_response_json, status: 200)
+        stub_request(
+          :post,
+          verification_request.url
+        ).to_return(
+          body: LexisNexisFixtures.phone_finder_rdp1_fail_response_json,
+          status: 200
+        )
 
         result = subject.proof(applicant)
 
@@ -69,6 +74,9 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
         )
         expect(result.transaction_id).to eq('31000000000000')
         expect(result.reference).to eq('Reference1')
+        expect(result.vendor_workflow).to(
+          eq(LexisNexisFixtures.example_config.phone_finder_workflow),
+        )
       end
     end
 
