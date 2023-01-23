@@ -1,5 +1,5 @@
 import { TextInput } from '@18f/identity-components';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { request } from '@18f/identity-request';
 import ValidatedField from '@18f/identity-validated-field/validated-field';
@@ -7,6 +7,7 @@ import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-but
 import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import useSWR from 'swr/immutable';
 import { FormattedLocation } from './in-person-locations';
+import AnalyticsContext from '../context/analytics';
 
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
 
@@ -96,6 +97,7 @@ function useUspsLocations() {
   // raw text input that is set when user clicks search
   const [addressQuery, setAddressQuery] = useState('');
   const validatedFieldRef = useRef<HTMLFormElement>(null);
+  const { trackEvent } = useContext(AnalyticsContext);
   const { t } = useI18n();
   const handleAddressSearch = useCallback((event, unvalidatedAddressInput) => {
     event.preventDefault();
@@ -130,6 +132,11 @@ function useUspsLocations() {
         address: bestMatchedAddress.address,
       });
     } else if (addressCandidates) {
+      trackEvent('IdV: in person proofing location search submitted', {
+        success: false,
+        error: 'No address candidates found by arcgis',
+      });
+
       validatedFieldRef?.current?.setCustomValidity(
         t('in_person_proofing.body.location.inline_error'),
       );

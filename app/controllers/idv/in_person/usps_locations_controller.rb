@@ -23,11 +23,16 @@ module Idv
               zip_code: search_params['zip_code']
             )
             response = proofer.request_facilities(candidate)
+            response.length > 0 ? analytics.idv_in_person_location_searched(success: true) :
+              analytics.idv_in_person_location_searched(
+                success: false, error: 'No USPS locations found',
+              )
           else
             response = proofer.request_pilot_facilities
           end
         rescue => err
           Rails.logger.warn(err)
+          analytics.idv_in_person_location_searched(success: false, errors: err)
           response = proofer.request_pilot_facilities
         end
 
