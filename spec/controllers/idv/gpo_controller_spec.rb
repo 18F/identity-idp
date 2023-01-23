@@ -109,6 +109,16 @@ describe Idv::GpoController do
 
         put :create
       end
+
+      it 'updates the doc auth log for the user for the usps_letter_sent event' do
+        DocAuthLog.create(user_id: user.id)
+
+        expect { put :create }.to(
+          change do
+            DocAuthLog.find_by(user_id: user.id).usps_letter_sent_submit_count
+          end.from(0).to(1),
+        )
+      end
     end
 
     context 'resending a letter' do

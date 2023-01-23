@@ -253,6 +253,19 @@ describe Idv::PhoneController do
         )
       end
 
+      it 'updates the doc auth log for the user with verify_phone_submit step' do
+        user = create(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
+        stub_verify_steps_one_and_two(user)
+
+        DocAuthLog.create(user_id: user.id)
+
+        expect { put :create, params: { idv_phone_form: { phone: good_phone } } }.to(
+          change do
+            DocAuthLog.find_by(user_id: user.id).verify_phone_submit_count
+          end.from(0).to(1),
+        )
+      end
+
       context 'when same as user phone' do
         before do
           user = build(
