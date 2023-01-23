@@ -103,21 +103,21 @@ describe Idv::InPerson::UspsLocationsController do
 
     context 'with arcgis search enabled' do
       context 'with a nil address in params' do
-        let(:param_error) { ActionController::ParameterMissing }
+        let(:param_error) { ActionController::ParameterMissing.new(param: address) }
 
         before do
           allow(proofer).to receive(:request_facilities).with(address).and_raise(param_error)
-          allow(proofer).to receive(:request_pilot_facilities).and_return(pilot_locations)
         end
 
         subject(:response) do
           post :index, params: { address: nil }
         end
 
-        it 'returns the pilot locations' do
+        it 'returns no locations' do
+          subject
           json = response.body
           facilities = JSON.parse(json)
-          expect(facilities.length).to eq 4
+          expect(facilities.length).to eq 0
         end
       end
 
@@ -134,36 +134,57 @@ describe Idv::InPerson::UspsLocationsController do
       end
 
       context 'with a timeout from Faraday' do
-        let(:timeout_error) { Faraday::TimeoutError }
+        let(:timeout_error) { Faraday::TimeoutError.new }
 
         before do
           allow(proofer).to receive(:request_facilities).with(address).and_raise(timeout_error)
         end
 
         it 'returns an internal server error' do
+          subject
+          expect(@analytics).to have_logged_event(
+            'Request USPS IPP locations: request failed',
+            exception_class: timeout_error.class,
+            exception_message: timeout_error.message,
+            response_body_present:
+            timeout_error.response_body.present?,
+            response_body: timeout_error.response_body,
+            response_status_code: timeout_error.response_status,
+          )
+
           status = response.status
           expect(status).to eq 500
         end
       end
 
       context 'with failed connection to Faraday' do
-        let(:exception) { Faraday::ConnectionFailed }
+        let(:exception) { Faraday::ConnectionFailed.new }
+        subject(:response) do
+          post :index,
+               params: { address: { street_address: '742 Evergreen Terrace',
+                                    city: 'Springfield',
+                                    state: 'MO',
+                                    zip_code: '89011' } }
+        end
 
         before do
           allow(proofer).to receive(:request_facilities).with(fake_address).and_raise(exception)
-          allow(proofer).to receive(:request_pilot_facilities).and_return(pilot_locations)
         end
 
-        it 'returns all pilot locations' do
-          expect(Rails.logger).to receive(:warn)
-          response = post :index,
-                          params: { address: { street_address: '742 Evergreen Terrace',
-                                               city: 'Springfield',
-                                               state: 'MO',
-                                               zip_code: '89011' } }
-          json = response.body
-          facilities = JSON.parse(json)
-          expect(facilities.length).to eq 4
+        it 'returns no locations' do
+          subject
+          expect(@analytics).to have_logged_event(
+            'Request USPS IPP locations: request failed',
+            exception_class: exception.class,
+            exception_message: exception.message,
+            response_body_present:
+            exception.response_body.present?,
+            response_body: exception.response_body,
+            response_status_code: exception.response_status,
+          )
+
+          facilities = JSON.parse(response.body)
+          expect(facilities.length).to eq 0
         end
       end
     end

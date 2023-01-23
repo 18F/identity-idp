@@ -2981,11 +2981,12 @@ module AnalyticsEvents
   # @param [Hash] response_body
   # @param [Integer] response_status_code
   def idv_in_person_locations_request_failure(
-    exception_class,
-    exception_message,
-    response_body_present,
-    response_body,
-    response_status_code
+    exception_class:,
+    exception_message:,
+    response_body_present:,
+    response_body:,
+    response_status_code:,
+    **extra
   )
     track_event(
       'Request USPS IPP locations: request failed',
@@ -2994,6 +2995,7 @@ module AnalyticsEvents
       response_body_present: response_body_present,
       response_body: response_body,
       response_status_code: response_status_code,
+      **extra,
     )
   end
 
