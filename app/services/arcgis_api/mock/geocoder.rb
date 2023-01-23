@@ -1,7 +1,7 @@
 module ArcgisApi
   module Mock
     class Geocoder < ArcgisApi::Geocoder
-      def initialize
+      def faraday
         super do |conn|
           conn.adapter :test do |stub|
             stub_generate_token(stub)

@@ -1,9 +1,5 @@
 module ArcgisApi
   class Geocoder
-    def initialize(&block)
-      @custom_connection_options = block
-    end
-
     Suggestion = Struct.new(:text, :magic_key, keyword_init: true)
     AddressCandidate = Struct.new(
       :address, :location, :street_address, :city, :state, :zip_code,
@@ -87,7 +83,7 @@ module ArcgisApi
 
     private
 
-    def faraday
+    def faraday(&custom_connection_options)
       Faraday.new do |conn|
         # Log request metrics
         conn.request :instrumentation, name: 'request_metric.faraday'
@@ -99,7 +95,7 @@ module ArcgisApi
         # Parse JSON responses
         conn.response :json, content_type: 'application/json'
 
-        @custom_connection_options&.call(conn)
+        custom_connection_options&.call(conn)
       end
     end
 
