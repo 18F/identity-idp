@@ -36,6 +36,8 @@ module Idv
 
     def throttled
       @expires_at = Throttle.new(user: effective_user, throttle_type: :idv_doc_auth).expires_at
+      analytics.throttler_rate_limit_triggered(throttle_type: :idv_doc_auth)
+      irs_attempts_api_tracker.idv_document_upload_rate_limited
     end
 
     private
