@@ -11,7 +11,15 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   queue_as :long_running
 
+  rescue_from GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError do |exception|
+    analytics.idv_in_person_usps_proofing_results_job_terminated(
+      **enrollment_outcomes,
+      duration_seconds: (Time.zone.now - started_at).seconds.round(2),
+      error_class: exception.class.name,
+      error_message: exception.message,
+    )
 
+    raise exception
   end
 
   def perform(_now)
@@ -35,7 +43,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       ...reprocess_delay_minutes.minutes.ago,
     )
 
-    started_at = Time.zone.now
+    @started_at = Time.zone.now
     analytics.idv_in_person_usps_proofing_results_job_started(
       enrollments_count: enrollments.count,
       reprocess_delay_minutes: reprocess_delay_minutes,
@@ -56,6 +64,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   attr_accessor :enrollment_outcomes
   attr_accessor :proofer
   attr_accessor :request_delay_in_seconds
+  attr_accessor :started_at
 
   DEFAULT_EMAIL_DELAY_IN_HOURS = 1
 

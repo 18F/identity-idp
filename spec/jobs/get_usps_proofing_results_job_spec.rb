@@ -243,34 +243,88 @@ RSpec.describe GetUspsProofingResultsJob do
         )
       end
 
-      it 'logs a message with counts of various outcomes when the job completes' do
-        allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-          and_return(pending_enrollments)
-        stub_request_proofing_results_with_responses(
-          request_passed_proofing_results_args,
-          request_in_progress_proofing_results_args,
-          { status: 500 },
-          request_failed_proofing_results_args,
-          request_expired_proofing_results_args,
-        )
+      context 'with a set of outcomes to log' do
+        let(:responses) do
+          [
+            request_passed_proofing_results_args,
+            request_in_progress_proofing_results_args,
+            { status: 500 },
+            request_failed_proofing_results_args,
+            request_expired_proofing_results_args,
+          ]
+        end
 
-        job.perform(Time.zone.now)
+        before do
+          allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+            and_return(pending_enrollments)
+          stub_request_proofing_results_with_responses(*responses)
+        end
 
-        expect(job_analytics).to have_logged_event(
-          'GetUspsProofingResultsJob: Job completed',
-          duration_seconds: anything,
-          enrollments_checked: 5,
-          enrollments_errored: 1,
-          enrollments_expired: 1,
-          enrollments_failed: 1,
-          enrollments_in_progress: 1,
-          enrollments_passed: 1,
-        )
+        it 'logs a message with counts of various outcomes when the job completes' do
+          job.perform(Time.zone.now)
 
-        expect(
-          job_analytics.events['GetUspsProofingResultsJob: Job completed'].
-            first[:duration_seconds],
-        ).to be >= 0.0
+          expect(job_analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Job completed',
+            duration_seconds: anything,
+            enrollments_checked: 5,
+            enrollments_errored: 1,
+            enrollments_expired: 1,
+            enrollments_failed: 1,
+            enrollments_in_progress: 1,
+            enrollments_passed: 1,
+          )
+
+          expect(
+            job_analytics.events['GetUspsProofingResultsJob: Job completed'].
+              first[:duration_seconds],
+          ).to be >= 0.0
+        end
+
+        it 'logs a message with counts of various outcomes when the job is terminated' do
+          error_message = 'too many!'
+          analytics_title = 'GetUspsProofingResultsJob: Job terminated'
+          # make a subclass of GetUspsProofingResultsJob that raises a
+          # ConcurrencyExceededError on its last enrollment
+          class ErrorJob < GetUspsProofingResultsJob
+            private
+
+            def check_enrollment(enrollment, is_not_last_enrollment)
+              if is_not_last_enrollment
+                super(enrollment, is_not_last_enrollment)
+              else
+                raise GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError,
+                      'too many!'
+              end
+            end
+          end
+
+          allow_any_instance_of(ErrorJob).to receive(:analytics).and_return(job_analytics)
+
+          # rescue so we can test for the error being re-raised
+          begin
+            ErrorJob.perform_now(Time.zone.now)
+          rescue GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError => err
+            expect(err.message).to eq(error_message)
+          end
+
+          expect(job_analytics).to have_logged_event(
+            analytics_title,
+            duration_seconds: anything,
+            enrollments_checked: 4,
+            enrollments_errored: 1,
+            enrollments_expired: 0,
+            enrollments_failed: 1,
+            enrollments_in_progress: 1,
+            enrollments_passed: 1,
+            error_class: 'GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError',
+            error_message: error_message,
+          )
+
+          expect(
+            job_analytics.events[analytics_title].
+              first[:duration_seconds],
+          ).to be >= 0.0
+        end
       end
 
       context 'a standard error is raised when requesting proofing results' do

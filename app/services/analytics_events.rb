@@ -3041,6 +3041,43 @@ module AnalyticsEvents
     )
   end
 
+  # GetUspsProofingResultsJob has been terminated. Includes counts of various outcomes encountered
+  # @param [Float] duration_seconds number of minutes the job was running
+  # @param [Integer] enrollments_checked number of enrollments eligible for status check
+  # @param [Integer] enrollments_errored number of enrollments for which we encountered an error
+  # @param [Integer] enrollments_expired number of enrollments which expired
+  # @param [Integer] enrollments_failed number of enrollments which failed identity proofing
+  # @param [Integer] enrollments_in_progress number of enrollments which did not have any change
+  # @param [Integer] enrollments_passed number of enrollments which passed identity proofing
+  # @param [String] error_class the class of the exception that caused the job to terminate
+  # @param [String] error_message the message from the exception that caused the job to terminate
+  def idv_in_person_usps_proofing_results_job_terminated(
+    duration_seconds:,
+    enrollments_checked:,
+    enrollments_errored:,
+    enrollments_expired:,
+    enrollments_failed:,
+    enrollments_in_progress:,
+    enrollments_passed:,
+    error_class:,
+    error_message:,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Job terminated',
+      duration_seconds: duration_seconds,
+      enrollments_checked: enrollments_checked,
+      enrollments_errored: enrollments_errored,
+      enrollments_expired: enrollments_expired,
+      enrollments_failed: enrollments_failed,
+      enrollments_in_progress: enrollments_in_progress,
+      enrollments_passed: enrollments_passed,
+      error_class: error_class,
+      error_message: error_message,
+      **extra,
+    )
+  end
+
   # GetUspsProofingResultsJob has completed. Includes counts of various outcomes encountered
   # @param [Float] duration_seconds number of minutes the job was running
   # @param [Integer] enrollments_checked number of enrollments eligible for status check
