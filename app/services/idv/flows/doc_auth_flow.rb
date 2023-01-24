@@ -26,8 +26,8 @@ module Idv
         { name: :getting_started },
         { name: :verify_id },
         { name: :verify_info },
-        { name: :secure_account },
         { name: :get_a_letter },
+        { name: :secure_account },
       ].freeze
 
       OPTIONAL_SHOW_STEPS = {
