@@ -1,14 +1,15 @@
 import sinon from 'sinon';
+import { computeAccessibleName } from 'dom-accessibility-api';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AnalyticsContextProvider } from '../context/analytics';
 import InPersonCallToAction from './in-person-call-to-action';
 
 describe('InPersonCallToAction', () => {
-  it('renders a section with a heading', () => {
+  it('renders a section with an accessible heading', () => {
     const { getByRole } = render(<InPersonCallToAction />);
     const heading = getByRole('heading');
-    expect(heading.textContent).to.equals('in_person_proofing.headings.cta');
+    expect(computeAccessibleName(heading)).to.equals('in_person_proofing.headings.cta');
   });
 
   it('logs an event when clicking the call to action button', async () => {
