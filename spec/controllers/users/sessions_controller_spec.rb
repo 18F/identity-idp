@@ -235,6 +235,7 @@ describe Users::SessionsController, devise: true do
         sp_request_url_present: false,
         remember_device: false,
       }
+      expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
 
       expect(@analytics).to receive(:track_event).
         with('Email and Password Authentication', analytics_hash)
@@ -252,6 +253,7 @@ describe Users::SessionsController, devise: true do
         sp_request_url_present: false,
         remember_device: false,
       }
+      expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
 
       expect(@analytics).to receive(:track_event).
         with('Email and Password Authentication', analytics_hash)
