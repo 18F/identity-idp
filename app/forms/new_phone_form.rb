@@ -2,7 +2,6 @@ class NewPhoneForm
   include ActiveModel::Model
   include FormPhoneValidator
   include OtpDeliveryPreferenceValidator
-  include StringRedacter
 
   BLOCKED_PHONE_TYPES = [
     :premium_rate,
