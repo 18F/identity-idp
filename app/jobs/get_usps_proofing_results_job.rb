@@ -25,6 +25,10 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollments_in_progress: 0,
       enrollments_passed: 0,
     }
+    @request_delay_in_seconds = IdentityConfig.store.
+      get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND
+    @proofer = UspsInPersonProofing::Proofer.new
+
     reprocess_delay_minutes = IdentityConfig.store.
       get_usps_proofing_results_job_reprocess_delay_minutes
     enrollments = InPersonEnrollment.needs_usps_status_check(
@@ -50,14 +54,12 @@ class GetUspsProofingResultsJob < ApplicationJob
   private
 
   attr_accessor :enrollment_outcomes
+  attr_accessor :proofer
+  attr_accessor :request_delay_in_seconds
 
   DEFAULT_EMAIL_DELAY_IN_HOURS = 1
 
   def check_enrollments(enrollments)
-    request_delay_in_seconds = IdentityConfig.store.
-      get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND
-    proofer = UspsInPersonProofing::Proofer.new
-
     enrollments.each_with_index do |enrollment, idx|
       # Add a unique ID for enrollments that don't have one
       enrollment.update(unique_id: enrollment.usps_unique_id) if enrollment.unique_id.blank?
