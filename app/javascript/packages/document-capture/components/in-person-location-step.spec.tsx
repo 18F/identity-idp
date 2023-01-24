@@ -1,7 +1,6 @@
 import sinon from 'sinon';
 import { useContext } from 'react';
 import { render } from '@testing-library/react';
-import { useSandbox } from '@18f/identity-test-helpers';
 import { getAllByRole } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
@@ -9,9 +8,7 @@ import { rest } from 'msw';
 import type { SetupServerApi } from 'msw/node';
 import AnalyticsContext, { AnalyticsContextProvider } from '../context/analytics';
 import InPersonLocationStep, { LOCATIONS_URL } from './in-person-location-step';
-import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
-import AddressSearch, { ADDRESS_SEARCH_URL } from './address-search';
-import InPersonContext from '../context/in-person';
+import { ADDRESS_SEARCH_URL } from './address-search';
 
 const DEFAULT_RESPONSE = [
   {
@@ -35,7 +32,6 @@ const DEFAULT_PROPS = {
 };
 
 describe('InPersonLocationStep', () => {
-  const sandbox = useSandbox();
   let server: SetupServerApi;
   before(() => {
     server = setupServer(

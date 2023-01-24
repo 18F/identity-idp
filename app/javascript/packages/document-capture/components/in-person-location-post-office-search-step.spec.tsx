@@ -1,17 +1,13 @@
-import sinon from 'sinon';
-import { useContext } from 'react';
 import { render } from '@testing-library/react';
 import { useSandbox } from '@18f/identity-test-helpers';
-import { getAllByRole } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import type { SetupServerApi } from 'msw/node';
-import AnalyticsContext, { AnalyticsContextProvider } from '../context/analytics';
-import InPersonLocationStep, { LOCATIONS_URL } from './in-person-location-step';
-import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
+import { LOCATIONS_URL } from './in-person-location-step';
 import AddressSearch, { ADDRESS_SEARCH_URL } from './address-search';
 import InPersonContext from '../context/in-person';
+import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
 
 const DEFAULT_RESPONSE = [
   {
@@ -35,19 +31,66 @@ const DEFAULT_PROPS = {
 };
 
 describe('InPersonLocationStep', () => {
-  context('initial API request is successful', () => {
-    const sandbox = useSandbox();
+  context('initial API request throws an error', () => {
     let server: SetupServerApi;
-    before(() => {
+    beforeEach(() => {
       server = setupServer(
-        rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
         rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
-        rest.put(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ success: true }]))),
+        rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.status(500))),
       );
       server.listen();
     });
 
-    after(() => {
+    afterEach(() => {
+      server.close();
+    });
+
+    it('displays a 500 error if the request to the USPS API throws an error', async () => {
+      const sandbox = useSandbox();
+      const registerField = sandbox.stub();
+      const handleAddressFound = sandbox.stub();
+      const handleLocationsFound = sandbox.stub();
+      const handleError = (_: Error | null) => {};
+      const ADDRESS_SEARCH_PROPS = {
+        registerField,
+        onFoundAddress: handleAddressFound,
+        onFoundLocations: handleLocationsFound,
+        onError: handleError,
+      };
+
+      const { findByText, findByLabelText } = render(
+        <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
+          <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS}>
+            <AddressSearch {...ADDRESS_SEARCH_PROPS} />
+          </InPersonLocationPostOfficeSearchStep>
+        </InPersonContext.Provider>,
+      );
+
+      await userEvent.type(
+        await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
+        '222 Merchandise Mart Plaza',
+      );
+
+      await userEvent.click(
+        await findByText('in_person_proofing.body.location.po_search.search_button'),
+      );
+
+      const error = await findByText('idv.failure.exceptions.internal_error');
+      expect(error).to.exist();
+    });
+  });
+
+  context('initial API request is successful', () => {
+    let server: SetupServerApi;
+    beforeEach(() => {
+      server = setupServer(
+        rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
+        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
+      );
+      server.listen();
+    });
+
+    afterEach(() => {
       server.close();
     });
 
@@ -109,54 +152,6 @@ describe('InPersonLocationStep', () => {
         name: 'in_person_proofing.body.location.po_search.results_description',
       });
       expect(results).not.to.exist();
-    });
-  });
-
-  context('initial API request throws an error', () => {
-    const sandbox = useSandbox();
-    let server: SetupServerApi;
-    before(() => {
-      server = setupServer(
-        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
-        rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.status(500))),
-      );
-      server.listen();
-    });
-
-    after(() => {
-      server.close();
-    });
-
-    it('displays a 500 error if the request to the USPS API throws an error', async () => {
-      const registerField = sandbox.stub();
-      const handleAddressFound = sandbox.stub();
-      const handleLocationsFound = sandbox.stub();
-      const handleError = (_: Error | null) => {};
-      const ADDRESS_SEARCH_PROPS = {
-        registerField,
-        onFoundAddress: handleAddressFound,
-        onFoundLocations: handleLocationsFound,
-        onError: handleError,
-      };
-      const { findByText, findByLabelText } = render(
-        <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
-          <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS}>
-            <AddressSearch {...ADDRESS_SEARCH_PROPS} />
-          </InPersonLocationPostOfficeSearchStep>
-        </InPersonContext.Provider>,
-      );
-
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
-        '222 Merchandise Mart Plaza',
-      );
-
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
-
-      const error = await findByText('idv.failure.exceptions.internal_error');
-      expect(error).to.exist();
     });
   });
 });
