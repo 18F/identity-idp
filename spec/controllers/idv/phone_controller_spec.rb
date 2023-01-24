@@ -257,12 +257,10 @@ describe Idv::PhoneController do
         user = create(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
 
-        DocAuthLog.create(user_id: user.id)
+        doc_auth_log = DocAuthLog.create(user_id: user.id)
 
         expect { put :create, params: { idv_phone_form: { phone: good_phone } } }.to(
-          change do
-            DocAuthLog.find_by(user_id: user.id).verify_phone_submit_count
-          end.from(0).to(1),
+          change { doc_auth_log.reload.verify_phone_submit_count }.from(0).to(1),
         )
       end
 
