@@ -1,6 +1,5 @@
 module Idv
   class VerifyInfoController < ApplicationController
-    include StringRedacter
     include IdvSession
 
     before_action :render_404_if_verify_info_controller_disabled

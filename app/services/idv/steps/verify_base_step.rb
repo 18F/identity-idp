@@ -1,8 +1,6 @@
 module Idv
   module Steps
     class VerifyBaseStep < DocAuthBaseStep
-      include StringRedacter
-
       private
 
       def summarize_result_and_throttle_failures(summary_result)
@@ -298,7 +296,10 @@ module Idv
         if state_id
           state_id[:state] = state if state
           state_id[:state_id_jurisdiction] = state_id_jurisdiction if state_id_jurisdiction
-          state_id[:state_id_number] = redact_alphanumeric(state_id_number) if state_id_number
+          if state_id_number
+            state_id[:state_id_number] =
+              StringRedacter.redact_alphanumeric(state_id_number)
+          end
         end
         FormResponse.new(
           success: idv_success(result),
