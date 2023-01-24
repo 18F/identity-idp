@@ -139,7 +139,6 @@ const EXCEPTIONS = {
   checkHaveDocumentation: [
     'app/javascript/packages/assets/package.json',
     'app/javascript/packages/config/package.json',
-    'app/javascript/packages/decorators/package.json',
     'app/javascript/packages/device/package.json',
     'app/javascript/packages/document-capture/package.json',
     'app/javascript/packages/document-capture-polling/package.json',

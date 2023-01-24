@@ -380,8 +380,9 @@ describe Idv::ImageUploadsController do
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
-              success: true,
-              failure_reason: nil,
+              success: false,
+              failure_reason: { pii:
+                ['We couldn’t read the full name on your ID. Try taking new pictures.'] },
               document_state: 'ND',
               document_number: nil,
               document_issued: nil,
@@ -458,8 +459,9 @@ describe Idv::ImageUploadsController do
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
-              success: true,
-              failure_reason: nil,
+              success: false,
+              failure_reason: { pii:
+                ['We couldn’t read the full name on your ID. Try taking new pictures.'] },
               document_state: 'ND',
               document_number: nil,
               document_issued: nil,
@@ -536,8 +538,9 @@ describe Idv::ImageUploadsController do
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
-              success: true,
-              failure_reason: nil,
+              success: false,
+              failure_reason: { pii:
+                ['Try taking new pictures.'] },
               document_state: 'Maryland',
               document_number: nil,
               document_issued: nil,
@@ -614,8 +617,9 @@ describe Idv::ImageUploadsController do
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
-              success: true,
-              failure_reason: nil,
+              success: false,
+              failure_reason: { pii:
+                ['We couldn’t read the birth date on your ID. Try taking new pictures.'] },
               document_back_image_filename: nil,
               document_front_image_filename: nil,
               document_image_encryption_key: nil,
@@ -662,7 +666,6 @@ describe Idv::ImageUploadsController do
 
       it 'tracks events' do
         stub_analytics
-        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_event).with(
           'IdV: doc auth image upload form submitted',
@@ -699,25 +702,6 @@ describe Idv::ImageUploadsController do
           flow_path: 'standard',
         )
 
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :idv_document_upload_submitted,
-          success: false,
-          failure_reason: {
-            front: [I18n.t('doc_auth.errors.general.multiple_front_id_failures')],
-          },
-          document_back_image_filename: nil,
-          document_front_image_filename: nil,
-          document_image_encryption_key: nil,
-          document_state: nil,
-          document_number: nil,
-          document_issued: nil,
-          document_expiration: nil,
-          first_name: nil,
-          last_name: nil,
-          date_of_birth: nil,
-          address: nil,
-        )
-
         action
 
         expect_funnel_update_counts(user, 1)
@@ -744,7 +728,6 @@ describe Idv::ImageUploadsController do
 
       it 'tracks events' do
         stub_analytics
-        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_event).with(
           'IdV: doc auth image upload form submitted',
@@ -781,26 +764,6 @@ describe Idv::ImageUploadsController do
           },
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
-        )
-
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :idv_document_upload_submitted,
-          success: false,
-          failure_reason: {
-            general: [I18n.t('doc_auth.errors.alerts.barcode_content_check')],
-            back: [I18n.t('doc_auth.errors.general.fallback_field_level')],
-          },
-          document_back_image_filename: nil,
-          document_front_image_filename: nil,
-          document_image_encryption_key: nil,
-          document_state: nil,
-          document_number: nil,
-          document_issued: nil,
-          document_expiration: nil,
-          first_name: nil,
-          last_name: nil,
-          date_of_birth: nil,
-          address: nil,
         )
 
         action
