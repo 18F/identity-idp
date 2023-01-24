@@ -28,6 +28,7 @@ import type {
   AcuantDocumentType,
   AcuantCaptureFailureError,
 } from './acuant-camera';
+import type { InputChangeValue } from '../components/file-input';
 
 type AcuantDocumentTypeLabel = 'id' | 'passport' | 'none';
 type AcuantImageAssessment = 'success' | 'glare' | 'blurry';
@@ -308,10 +309,7 @@ function AcuantCapture(
   /**
    * Calls onChange with next value and resets any errors which may be present.
    */
-  function onChangeAndResetError(
-    nextValue: Blob | string | null,
-    metadata?: ImageAnalyticsPayload,
-  ) {
+  function onChangeAndResetError(nextValue: string | null, metadata?: ImageAnalyticsPayload) {
     setOwnErrorMessage(null);
     onChange(nextValue, metadata);
   }
@@ -330,7 +328,7 @@ function AcuantCapture(
   /**
    * Handler for file input change events.
    */
-  async function onUpload(nextValue: File | null) {
+  async function onUpload(nextValue?: InputChangeValue) {
     let analyticsPayload: ImageAnalyticsPayload | undefined;
     if (nextValue) {
       const { width, height } = await getImageDimensions(nextValue);
