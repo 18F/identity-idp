@@ -300,12 +300,11 @@ RSpec.describe GetUspsProofingResultsJob do
 
           allow_any_instance_of(ErrorJob).to receive(:analytics).and_return(job_analytics)
 
-          # rescue so we can test for the error being re-raised
-          begin
-            ErrorJob.perform_now(Time.zone.now)
-          rescue GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError => err
-            expect(err.message).to eq(error_message)
-          end
+          expect { ErrorJob.perform_now(Time.zone.now) }.
+            to raise_error(
+              GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError,
+              error_message,
+            )
 
           expect(job_analytics).to have_logged_event(
             analytics_title,
