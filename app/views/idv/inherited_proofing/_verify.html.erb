@@ -8,7 +8,7 @@ locals:
 <%= render PageHeadingComponent.new.with_content(t('titles.idv.verify_info')) %>
 <div class='margin-top-4 margin-bottom-2'>
   <div class="grid-row grid-gap grid-gap-2 padding-bottom-1">
-    <dl class="grid-col-fill margin-bottom-0">
+    <dl class="grid-col-fill margin-y-0">
       <div>
         <dt class="display-inline"> <%= t('idv.form.first_name') %>: </dt>
         <dd class="display-inline margin-left-0"> <%= pii[:first_name] %> </dd>
@@ -24,7 +24,7 @@ locals:
     </dl>
   </div>
   <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 padding-top-1 border-y border-primary-light">
-    <dl class='grid-col-fill margin-bottom-0'>
+    <dl class='grid-col-fill margin-y-0'>
       <div>
         <dt class="display-inline"> <%= t('idv.form.address1') %>: </dt>
         <dd class="display-inline margin-left-0"> <%= pii[:address1] %> </dd>
