@@ -61,40 +61,44 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def check_enrollments(enrollments)
     enrollments.each_with_index do |enrollment, idx|
-      # Add a unique ID for enrollments that don't have one
-      enrollment.update(unique_id: enrollment.usps_unique_id) if enrollment.unique_id.blank?
-
-      status_check_attempted_at = Time.zone.now
-      enrollment_outcomes[:enrollments_checked] += 1
-      response = nil
-
-      begin
-        response = proofer.request_proofing_results(
-          enrollment.unique_id, enrollment.enrollment_code
-        )
-      rescue Faraday::BadRequestError => err
-        # 400 status code. This is used for some status updates and some common client errors
-        handle_bad_request_error(err, enrollment)
-      rescue Faraday::ClientError, Faraday::ServerError => err
-        # 4xx or 5xx status code. These are unexpected but will have some sort of
-        # response body that we can try to log data from
-        handle_client_or_server_error(err, enrollment)
-      rescue Faraday::Error => err
-        # Timeouts, failed connections, parsing errors, and other HTTP errors. These
-        # generally won't have a response body
-        handle_faraday_error(err, enrollment)
-      rescue StandardError => err
-        handle_standard_error(err, enrollment)
-      else
-        process_enrollment_response(enrollment, response)
-      ensure
-        # Record the attempt to update the enrollment
-        enrollment.update(status_check_attempted_at: status_check_attempted_at)
-      end
-
-      # Sleep for a while before we attempt to make another call to USPS
-      sleep request_delay_in_seconds if idx < enrollments.length - 1
+      check_enrollment(enrollment, (idx < enrollments.length - 1))
     end
+  end
+
+  def check_enrollment(enrollment, is_not_last_enrollment)
+    # Add a unique ID for enrollments that don't have one
+    enrollment.update(unique_id: enrollment.usps_unique_id) if enrollment.unique_id.blank?
+
+    status_check_attempted_at = Time.zone.now
+    enrollment_outcomes[:enrollments_checked] += 1
+    response = nil
+
+    begin
+      response = proofer.request_proofing_results(
+        enrollment.unique_id, enrollment.enrollment_code
+      )
+    rescue Faraday::BadRequestError => err
+      # 400 status code. This is used for some status updates and some common client errors
+      handle_bad_request_error(err, enrollment)
+    rescue Faraday::ClientError, Faraday::ServerError => err
+      # 4xx or 5xx status code. These are unexpected but will have some sort of
+      # response body that we can try to log data from
+      handle_client_or_server_error(err, enrollment)
+    rescue Faraday::Error => err
+      # Timeouts, failed connections, parsing errors, and other HTTP errors. These
+      # generally won't have a response body
+      handle_faraday_error(err, enrollment)
+    rescue StandardError => err
+      handle_standard_error(err, enrollment)
+    else
+      process_enrollment_response(enrollment, response)
+    ensure
+      # Record the attempt to update the enrollment
+      enrollment.update(status_check_attempted_at: status_check_attempted_at)
+    end
+
+    # Sleep for a while before we attempt to make another call to USPS
+    sleep request_delay_in_seconds if is_not_last_enrollment
   end
 
   def analytics(user: AnonymousUser.new)
