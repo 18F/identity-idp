@@ -340,6 +340,7 @@ class IdentityConfig
     config.add(:recurring_jobs_disabled_names, type: :json)
     config.add(:redis_irs_attempt_api_url)
     config.add(:redis_throttle_url)
+    config.add(:redis_throttle_otp_rate_limiter_read_enabled, type: :boolean)
     config.add(:redis_url)
     config.add(:redis_pool_size, type: :integer)
     config.add(:redis_session_pool_size, type: :integer)
