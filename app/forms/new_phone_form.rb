@@ -59,7 +59,7 @@ class NewPhoneForm
     @phone_info = Telephony::PhoneNumberInfo.new(type: :unknown)
   rescue Aws::Pinpoint::Errors::BadRequestException
     errors.add(:phone, :improbable_phone, type: :improbable_phone)
-    @redacted_phone = redact_alphanumeric(phone)
+    @redacted_phone = StringRedacter.redact_alphanumeric(phone)
     @phone_info = Telephony::PhoneNumberInfo.new(type: :unknown)
   end
 
