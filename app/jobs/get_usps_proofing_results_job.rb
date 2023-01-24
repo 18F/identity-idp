@@ -35,7 +35,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     }
     @request_delay_in_seconds = IdentityConfig.store.
       get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND
-    @proofer = UspsInPersonProofing::Proofer.new
 
     reprocess_delay_minutes = IdentityConfig.store.
       get_usps_proofing_results_job_reprocess_delay_minutes
@@ -62,11 +61,14 @@ class GetUspsProofingResultsJob < ApplicationJob
   private
 
   attr_accessor :enrollment_outcomes
-  attr_accessor :proofer
   attr_accessor :request_delay_in_seconds
   attr_accessor :started_at
 
   DEFAULT_EMAIL_DELAY_IN_HOURS = 1
+
+  def proofer
+    @proofer ||= UspsInPersonProofing::Proofer.new
+  end
 
   def check_enrollments(enrollments)
     enrollments.each_with_index do |enrollment, idx|
