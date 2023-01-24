@@ -32,6 +32,10 @@ module Idv
 
     def create
       result = idv_form.submit(step_params)
+
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp).
+        call(:verify_phone, :update, result.success?)
+
       analytics.idv_phone_confirmation_form_submitted(**result.to_h)
       irs_attempts_api_tracker.idv_phone_submitted(
         success: result.success?,
