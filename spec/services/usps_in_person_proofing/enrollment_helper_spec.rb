@@ -103,7 +103,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
           enrollment_code: user.in_person_enrollments.first.enrollment_code,
           enrollment_id: user.in_person_enrollments.first.id,
           user_id: user.uuid,
-          service_provider: user.in_person_enrollments.first.service_provider,
+          service_provider: user.in_person_enrollments.first.issuer,
         )
       end
 
