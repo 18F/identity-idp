@@ -203,11 +203,7 @@ class ApplicationController < ActionController::Base
     service_provider_mfa_policy.user_needs_sp_auth_method_setup? ?
       authentication_methods_setup_url : nil
   end
-  
-  def phone_method_selected
-    current_user.phone_configurations.count <= 1
-  end
-  
+
   def fix_broken_personal_key_url
     return if !current_user.broken_personal_key?
 
