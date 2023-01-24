@@ -21,7 +21,7 @@ module UspsInPersonProofing
           enrollment_code: enrollment.enrollment_code,
           enrollment_id: enrollment.id,
           user_id: user.uuid,
-          service_provider: enrollment.service_provider,
+          service_provider: enrollment.issuer,
         )
 
         send_ready_to_verify_email(user, enrollment)
