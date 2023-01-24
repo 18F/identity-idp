@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AnonymousUser
   def uuid
     'anonymous-uuid'

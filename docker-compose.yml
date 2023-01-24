@@ -25,12 +25,10 @@ services:
       DOCKER_DB_USER: 'postgres'
       # '' == 1 thread for tests; performs better in a container
       TEST_ENV_NUMBER: ''
-      SMTP_HOST: 'mailcatcher'
       NODE_ENV: 'development'
     depends_on:
       - db
       - redis
-      - mailcatcher
     tty: true
     stdin_open: true
   db:
@@ -42,8 +40,3 @@ services:
       POSTGRES_HOST_AUTH_METHOD: 'trust'
   redis:
     image: redis:5-alpine
-  mailcatcher:
-    image: rordi/docker-mailcatcher
-    container_name: mailcatcher
-    ports:
-      - 1080:1080

@@ -29,7 +29,7 @@ RSpec.describe LanguagePickerComponent, type: :component do
 
     I18n.available_locales.each do |locale|
       expect(rendered).to have_xpath(
-        ".//a[text()='#{t("i18n.locale.#{locale}", locale: locale)}'][@lang='#{locale}']",
+        ".//a[text()='#{t("i18n.locale.#{locale}", locale:)}'][@lang='#{locale}']",
         visible: false,
       )
     end

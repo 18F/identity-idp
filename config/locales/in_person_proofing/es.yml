@@ -8,6 +8,7 @@ es:
           dirección actual.
         learn_more: Aprende más
       barcode:
+        cancel_link_text: Cancelar su código de barras
         close_window: Ya puede cerrar esta ventana
         deadline: Visite la Oficina de correos antes del %{deadline}
         deadline_restart: Si supera la fecha límite, su información no se guardará y
@@ -55,10 +56,9 @@ es:
           none_found_tip: Puede buscar utilizando una dirección diferente, o añadir fotos
             de su documento de identidad para intentar verificar su identidad en
             línea de nuevo.
-          po_search_about: Si vives cerca de Washington, D.C. o Baltimore, MD, puedes
-            verificar tu ID directamente en algunas oficinas de correos. Pronto
-            habrá más oficinas en los 50 estados y en algunos otros territorios
-            de los Estados Unidos.
+          po_search_about: Si tiene problemas para añadir su documento de identidad, es
+            posible que pueda verificar su identidad en persona en una oficina
+            de correos local de los Estados Unidos.
           results_description: Hay %{count} de oficinas de correos participantes en un
             radio de 50 millas de la %{address}.
           results_instructions: Seleccione una ubicación de la Oficina de Correos a

@@ -49,7 +49,7 @@ module Proofing
         # rubocop:disable Layout/LineLength
         def failed_result_can_pass_with_additional_verification?(verification_response)
           return false unless verification_response.verification_status == 'failed'
-          return false unless verification_response.verification_errors.keys.sort == [:"Execute Instant Verify", :base]
+          return false unless verification_response.verification_errors.keys.to_set == Set[:InstantVerify, :base]
           return false unless verification_response.verification_errors[:base].match?(/total\.scoring\.model\.verification\.fail/)
           return false unless attributes_requiring_additional_verification(verification_response).any?
           true
@@ -58,14 +58,14 @@ module Proofing
 
         def attributes_requiring_additional_verification(verification_response)
           CheckToAttributeMapper.new(
-            verification_response.verification_errors[:"Execute Instant Verify"],
+            verification_response.verification_errors[:InstantVerify],
           ).map_failed_checks_to_attributes
         end
 
         def drivers_license_check_info(verification_response)
           instant_verify_product = verification_response.response_body['Products']&.first
           return unless instant_verify_product.present?
-          return unless instant_verify_product['ExecutedStepName'] == 'Execute Instant Verify'
+          return unless instant_verify_product['ProductType'] == 'InstantVerify'
 
           instant_verify_product['Items']&.find do |item|
             item['ItemName'] == 'DriversLicenseVerification'

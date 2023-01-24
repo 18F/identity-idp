@@ -36,7 +36,11 @@ module Idv
       profile_params.each do |key, value|
         user_session['idv/doc_auth']['pii_from_doc'][key] = value
       end
-      redirect_to idv_doc_auth_url
+      if IdentityConfig.store.doc_auth_verify_info_controller_enabled
+        redirect_to idv_verify_info_url
+      else
+        redirect_to idv_doc_auth_url
+      end
     end
 
     def failure

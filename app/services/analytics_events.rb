@@ -930,6 +930,10 @@ module AnalyticsEvents
     track_event('IdV: doc auth verify visited', **extra)
   end
 
+  def idv_doc_auth_verify_proofing_results(**extra)
+    track_event('IdV: doc auth verify proofing results', **extra)
+  end
+
   # @identity.idp.previous_event_name IdV: in person proofing verify_wait visited
   def idv_doc_auth_verify_wait_step_visited(**extra)
     track_event('IdV: doc auth verify_wait visited', **extra)
@@ -1963,15 +1967,6 @@ module AnalyticsEvents
       enabled_mfa_methods_count: enabled_mfa_methods_count,
       **extra,
     )
-  end
-
-  # Track when users get directed to the prompt requiring multiple MFAs for Phone MFA
-  def non_restricted_mfa_required_prompt_visited
-    track_event('Non-Restricted MFA Required Prompt visited')
-  end
-
-  def non_restricted_mfa_required_prompt_skipped
-    track_event('Non-Restricted MFA Required Prompt skipped')
   end
 
   # Tracks when an openid connect bearer token authentication request is made

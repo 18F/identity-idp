@@ -159,10 +159,7 @@ describe GpoVerifyForm do
         let(:threatmetrix_review_status) { 'reject' }
 
         before do
-          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
-            and_return(true)
-          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
-            and_return(true)
+          allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
         end
 
         it 'returns true' do
@@ -184,8 +181,7 @@ describe GpoVerifyForm do
 
         context 'threatmetrix is not required for verification' do
           before do
-            allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
-              and_return(false)
+            allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:disabled)
           end
 
           it 'returns true' do

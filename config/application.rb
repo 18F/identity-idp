@@ -13,6 +13,7 @@ require_relative '../lib/identity_config'
 require_relative '../lib/fingerprinter'
 require_relative '../lib/identity_job_log_subscriber'
 require_relative '../lib/email_delivery_observer'
+require_relative '../lib/good_job_connection_pool_size'
 
 Bundler.require(*Rails.groups)
 
@@ -89,6 +90,8 @@ module Identity
     config.i18n.available_locales = %w[en es fr]
     config.i18n.default_locale = :en
     config.action_controller.per_form_csrf_tokens = true
+
+    config.action_view.frozen_string_literal = true
 
     routes.default_url_options[:host] = IdentityConfig.store.domain_name
 

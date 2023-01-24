@@ -23,6 +23,11 @@ module Idv
         )
 
         idv_session.delete('applicant')
+        # rubocop:disable Style/IfUnlessModifier
+        if IdentityConfig.store.doc_auth_verify_info_controller_enabled
+          exit_flow_state_machine
+        end
+        # rubocop:enable Style/IfUnlessModifier
       end
 
       def extra_view_variables
@@ -53,6 +58,13 @@ module Idv
 
       def updating_ssn
         flow_session.dig(:pii_from_doc, :ssn).present?
+      end
+
+      def exit_flow_state_machine
+        mark_step_complete(:verify)
+        mark_step_complete(:verify_wait)
+        flow_session[:flow_path] = @flow.flow_path
+        redirect_to idv_verify_info_url
       end
     end
   end

@@ -1,6 +1,5 @@
 require 'saml_idp_constants'
 require 'saml_idp'
-require 'uuid'
 
 class SamlIdpController < ApplicationController
   include SamlIdp::Controller

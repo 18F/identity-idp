@@ -32,6 +32,10 @@ module Idv
 
     def create
       result = idv_form.submit(step_params)
+
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp).
+        call(:verify_phone, :update, result.success?)
+
       analytics.idv_phone_confirmation_form_submitted(**result.to_h)
       irs_attempts_api_tracker.idv_phone_submitted(
         success: result.success?,
@@ -61,8 +65,6 @@ module Idv
       if phone_confirmation_required?
         if VendorStatus.new.all_phone_vendor_outage?
           redirect_to vendor_outage_path(from: :idv_phone)
-        elsif step.otp_delivery_preference_missing?
-          redirect_to idv_otp_delivery_method_url
         else
           send_phone_confirmation_otp_and_handle_result
         end
@@ -117,7 +119,11 @@ module Idv
     end
 
     def step
-      @step ||= Idv::PhoneStep.new(idv_session: idv_session, trace_id: amzn_trace_id)
+      @step ||= Idv::PhoneStep.new(
+        idv_session: idv_session,
+        trace_id: amzn_trace_id,
+        attempts_tracker: irs_attempts_api_tracker,
+      )
     end
 
     def step_params

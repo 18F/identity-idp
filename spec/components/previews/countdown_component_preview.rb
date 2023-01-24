@@ -15,9 +15,9 @@ class CountdownComponentPreview < BaseComponentPreview
   )
     render(
       CountdownComponent.new(
-        expiration: expiration,
+        expiration:,
         update_interval: update_interval.seconds,
-        start_immediately: start_immediately,
+        start_immediately:,
       ),
     )
   end

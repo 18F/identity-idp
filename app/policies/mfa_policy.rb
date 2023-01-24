@@ -17,14 +17,6 @@ class MfaPolicy
     mfa_user.enabled_mfa_methods_count > 1
   end
 
-  def multiple_non_restricted_factors_enabled?
-    if IdentityConfig.store.kantara_2fa_phone_restricted
-      mfa_user.enabled_non_restricted_mfa_methods_count > 1
-    else
-      multiple_factors_enabled?
-    end
-  end
-
   def unphishable?
     mfa_user.phishable_configuration_count.zero? &&
       mfa_user.unphishable_configuration_count.positive?

@@ -124,8 +124,6 @@ Rails.application.routes.draw do
       post 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#decline'
       get 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#success'
       post 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#next'
-      get 'login/additional_mfa_required' => 'users/additional_mfa_required#show'
-      post 'login/additional_mfa_required/skip' => 'users/additional_mfa_required#skip'
 
       get '/reauthn' => 'mfa_confirmation#new', as: :user_password_confirm
       post '/reauthn' => 'mfa_confirmation#create', as: :reauthn_user_password
@@ -309,6 +307,8 @@ Rails.application.routes.draw do
       post '/forgot_password' => 'forgot_password#update'
       get '/otp_delivery_method' => 'otp_delivery_method#new'
       put '/otp_delivery_method' => 'otp_delivery_method#create'
+      get '/verify_info' => 'verify_info#show'
+      put '/verify_info' => 'verify_info#update'
       get '/phone' => 'phone#new'
       put '/phone' => 'phone#create'
       get '/phone/errors/warning' => 'phone_errors#warning'

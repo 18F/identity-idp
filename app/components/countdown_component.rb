@@ -23,7 +23,7 @@ class CountdownComponent < BaseComponent
       data: {
         expiration: expiration.iso8601,
         update_interval: update_interval_in_ms,
-        start_immediately: start_immediately,
+        start_immediately:,
       }.merge(tag_options[:data].to_h),
     )
   end

@@ -19,7 +19,7 @@ class AccordionComponentPreview < BaseComponentPreview
   # @param content text
   # @param bordered toggle
   def workbench(header: 'Header', content: 'Content', bordered: true)
-    render(AccordionComponent.new(bordered: bordered)) do |c|
+    render(AccordionComponent.new(bordered:)) do |c|
       c.header { header }
       content
     end

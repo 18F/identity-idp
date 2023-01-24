@@ -8,7 +8,7 @@ RSpec.describe PasswordToggleComponent, type: :component do
   let(:form) { SimpleForm::FormBuilder.new('', {}, view_context, {}) }
   let(:options) { {} }
 
-  subject(:rendered) { render_inline PasswordToggleComponent.new(form: form, **options) }
+  subject(:rendered) { render_inline PasswordToggleComponent.new(form:, **options) }
 
   it 'renders default markup' do
     expect(rendered).to have_css('lg-password-toggle')
@@ -26,7 +26,7 @@ RSpec.describe PasswordToggleComponent, type: :component do
   describe '#toggle_label' do
     context 'with custom label' do
       let(:toggle_label) { 'Custom Toggle Label' }
-      let(:options) { { toggle_label: toggle_label } }
+      let(:options) { { toggle_label: } }
 
       it 'renders custom field label' do
         expect(rendered).to have_field(toggle_label, type: :checkbox)
@@ -36,8 +36,8 @@ RSpec.describe PasswordToggleComponent, type: :component do
 
   describe '#toggle_id' do
     it 'is unique across instances' do
-      toggle_one = PasswordToggleComponent.new(form: form)
-      toggle_two = PasswordToggleComponent.new(form: form)
+      toggle_one = PasswordToggleComponent.new(form:)
+      toggle_two = PasswordToggleComponent.new(form:)
 
       expect(toggle_one.toggle_id).to be_present
       expect(toggle_two.toggle_id).to be_present
@@ -47,8 +47,8 @@ RSpec.describe PasswordToggleComponent, type: :component do
 
   describe '#input_id' do
     it 'is unique across instances' do
-      toggle_one = PasswordToggleComponent.new(form: form)
-      toggle_two = PasswordToggleComponent.new(form: form)
+      toggle_one = PasswordToggleComponent.new(form:)
+      toggle_two = PasswordToggleComponent.new(form:)
 
       expect(toggle_one.input_id).to be_present
       expect(toggle_two.input_id).to be_present
@@ -69,7 +69,7 @@ RSpec.describe PasswordToggleComponent, type: :component do
   context 'with field options' do
     let(:label) { 'Custom Label' }
     let(:options) do
-      { field_options: { label: label, required: true } }
+      { field_options: { label:, required: true } }
     end
 
     it 'forwards options to rendered field' do

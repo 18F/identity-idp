@@ -19,7 +19,7 @@ class BlockLinkComponent < BaseComponent
   end
 
   def wrapper(&block)
-    wrapper = action.call(**tag_options, href: url, class: css_class, target: target, &block)
+    wrapper = action.call(**tag_options, href: url, class: css_class, target:, &block)
     if wrapper.respond_to?(:render_in)
       render wrapper, &block
     else
