@@ -63,6 +63,7 @@ module DocAuth
             log_alert_results: log_alert_formatter.log_alerts(alerts),
             image_metrics: processed_image_metrics,
             tamper_result: tamper_result_code&.name,
+            classification_info: classification_info,
           }
         end
 
@@ -100,6 +101,24 @@ module DocAuth
           @processed_image_metrics ||= raw_images_data.index_by do |image|
             image.delete('Uri')
             get_image_side_name(image['Side'])
+          end
+        end
+
+        def classification_info
+          classification_details = parsed_response_body.dig(
+            'Classification', 'ClassificationDetails'
+          )
+          return unless classification_details.present?
+
+          classification_details.transform_values do |classification_detail|
+            classification_detail.slice(
+              'ClassName',
+              'Issue',
+              'IssueType',
+              'Name',
+              'IssuerCode',
+              'IssuerName',
+            )
           end
         end
 

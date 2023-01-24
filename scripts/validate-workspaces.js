@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const { readFile } = require('fs/promises');
-const { dirname, basename } = require('path');
+const { readFile, stat } = require('fs/promises');
+const { dirname, basename, join } = require('path');
 const { sync: glob } = require('fast-glob');
 
 /** @typedef {[path: string, manifest: Record<string, any>]} ManifestPair */
@@ -94,6 +94,28 @@ function checkHaveNoSiblingDependencies(manifests) {
 }
 
 /**
+ * @param {ManifestPairs} manifests
+ */
+async function checkHaveDocumentation(manifests) {
+  await Promise.all(
+    manifests.map(async ([path]) => {
+      const readmePath = join(dirname(path), 'README.md');
+      try {
+        await stat(readmePath);
+      } catch (error) {
+        if (error.code === 'ENOENT') {
+          throw new Error(
+            `Missing documentation file ${readmePath}. Every package should be documented.`,
+          );
+        } else {
+          throw error;
+        }
+      }
+    }),
+  );
+}
+
+/**
  * @type {Record<string, (manifests: ManifestPairs) => void>}
  */
 const CHECKS = {
@@ -103,13 +125,34 @@ const CHECKS = {
   checkHaveCorrectPackageName,
   checkHaveCorrectVersion,
   checkHaveNoSiblingDependencies,
+  checkHaveDocumentation,
 };
 
 /**
  * @type {Record<string, string[]>}
  */
 const EXCEPTIONS = {
+  // Reason: ESLint plugins must follow a specific format for their package names, which conflicts
+  // with our standard "identity-" prefix.
   checkHaveCorrectPackageName: ['app/javascript/packages/eslint-plugin/package.json'],
+  // Reason: There is no reason aside from legacy prior to enforcement. Please write documentation!
+  checkHaveDocumentation: [
+    'app/javascript/packages/assets/package.json',
+    'app/javascript/packages/config/package.json',
+    'app/javascript/packages/device/package.json',
+    'app/javascript/packages/document-capture/package.json',
+    'app/javascript/packages/document-capture-polling/package.json',
+    'app/javascript/packages/form-steps/package.json',
+    'app/javascript/packages/masked-text-toggle/package.json',
+    'app/javascript/packages/memorable-date/package.json',
+    'app/javascript/packages/normalize-yaml/package.json',
+    'app/javascript/packages/password-toggle/package.json',
+    'app/javascript/packages/personal-key-input/package.json',
+    'app/javascript/packages/phone-input/package.json',
+    'app/javascript/packages/spinner-button/package.json',
+    'app/javascript/packages/time-element/package.json',
+    'app/javascript/packages/validated-field/package.json',
+  ],
 };
 
 const manifestPaths = glob('app/javascript/packages/*/package.json');
@@ -117,12 +160,16 @@ Promise.all(manifestPaths.map(async (path) => [path, await readFile(path, 'utf-8
   .then((contents) =>
     contents.map(([path, content]) => /** @type {ManifestPair} */ ([path, JSON.parse(content)])),
   )
-  .then((manifests) => {
-    for (const [checkName, check] of Object.entries(CHECKS)) {
-      const checkedManifests = manifests.filter(([path]) => !EXCEPTIONS[checkName]?.includes(path));
-      check(checkedManifests);
-    }
-  })
+  .then((manifests) =>
+    Promise.all(
+      Object.entries(CHECKS).map(async ([checkName, check]) => {
+        const checkedManifests = manifests.filter(
+          ([path]) => !EXCEPTIONS[checkName]?.includes(path),
+        );
+        await check(checkedManifests);
+      }),
+    ),
+  )
   .catch((error) => {
     process.stderr.write(`${error.message}\n`);
     process.exitCode = 1;

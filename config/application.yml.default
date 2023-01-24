@@ -45,6 +45,7 @@ arcgis_api_root_url: 'https://gis.gsa.gov'
 arcgis_api_username: ''
 arcgis_api_password: ''
 arcgis_search_enabled: false
+arcgis_mock_fallback: true
 asset_host: ''
 async_wait_timeout_seconds: 60
 async_stale_job_timeout_seconds: 300
@@ -231,6 +232,7 @@ proof_address_max_attempts: 5
 proof_address_max_attempt_window_in_minutes: 360
 proof_ssn_max_attempts: 10
 proof_ssn_max_attempt_window_in_minutes: 60
+proofing_device_profiling: disabled
 push_notifications_enabled: false
 pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'
 rack_mini_profiler: false

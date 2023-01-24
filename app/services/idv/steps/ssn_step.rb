@@ -17,7 +17,6 @@ module Idv
         return invalid_state_response if invalid_state?
 
         flow_session[:pii_from_doc][:ssn] = ssn
-        add_verify_info_variables
 
         @flow.irs_attempts_api_tracker.idv_ssn_submitted(
           ssn: ssn,
@@ -29,10 +28,6 @@ module Idv
           exit_flow_state_machine
         end
         # rubocop:enable Style/IfUnlessModifier
-      end
-
-      def add_verify_info_variables
-        flow_session[:flow_path] = @flow.flow_path
       end
 
       def extra_view_variables
@@ -68,6 +63,7 @@ module Idv
       def exit_flow_state_machine
         mark_step_complete(:verify)
         mark_step_complete(:verify_wait)
+        flow_session[:flow_path] = @flow.flow_path
         redirect_to idv_verify_info_url
       end
     end

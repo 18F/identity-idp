@@ -79,6 +79,24 @@ RSpec.describe Idv::ApiImageUploadForm do
   describe '#submit' do
     context 'with a valid form' do
       it 'logs analytics' do
+        expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+          {
+            address: '1 FAKE RD',
+            date_of_birth: '1938-10-06',
+            document_back_image_filename: nil,
+            document_expiration: '2099-12-31',
+            document_front_image_filename: nil,
+            document_image_encryption_key: nil,
+            document_issued: '2019-12-31',
+            document_number: '1111111111111',
+            document_state: 'MT',
+            failure_reason: nil,
+            first_name: 'FAKEY',
+            last_name: 'MCFAKERSON',
+            success: true,
+          },
+        )
+
         form.submit
 
         expect(fake_analytics).to have_logged_event(
@@ -244,6 +262,13 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
 
       it 'includes doc_pii errors' do
+        expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+          hash_including(
+            {
+              success: false,
+            },
+          ),
+        )
         response = form.submit
         expect(response.errors[:doc_pii]).to eq('bad')
       end

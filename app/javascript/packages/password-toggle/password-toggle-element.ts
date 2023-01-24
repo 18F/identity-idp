@@ -1,41 +1,32 @@
-import { once } from '@18f/identity-decorators';
 import { trackEvent } from '@18f/identity-analytics';
 
-interface PasswordToggleElements {
+class PasswordToggleElement extends HTMLElement {
+  connectedCallback() {
+    this.toggle.addEventListener('change', () => this.setInputType());
+    this.toggle.addEventListener('click', () => this.trackToggleEvent());
+    this.setInputType();
+  }
+
   /**
    * Checkbox toggle for visibility.
    */
-  toggle: HTMLInputElement;
+  get toggle(): HTMLInputElement {
+    return this.querySelector('.password-toggle__toggle')!;
+  }
 
   /**
    * Text or password input.
    */
-  input: HTMLInputElement;
-}
-
-class PasswordToggleElement extends HTMLElement {
-  connectedCallback() {
-    this.elements.toggle.addEventListener('change', () => this.setInputType());
-    this.setInputType();
-    this.showPasswordButtonClick();
-  }
-
-  @once()
-  get elements(): PasswordToggleElements {
-    return {
-      toggle: this.querySelector('.password-toggle__toggle')!,
-      input: this.querySelector('.password-toggle__input')!,
-    };
+  get input(): HTMLInputElement {
+    return this.querySelector('.password-toggle__input')!;
   }
 
   setInputType() {
-    this.elements.input.type = this.elements.toggle.checked ? 'text' : 'password';
+    this.input.type = this.toggle.checked ? 'text' : 'password';
   }
 
-  showPasswordButtonClick() {
-    this.elements.toggle.addEventListener('click', () => {
-      trackEvent('Show Password button clicked', { path: window.location.pathname });
-    });
+  trackToggleEvent() {
+    trackEvent('Show Password button clicked', { path: window.location.pathname });
   }
 }
 

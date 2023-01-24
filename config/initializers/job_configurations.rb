@@ -88,6 +88,12 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.yesterday] },
       },
+      # Send daily registrations report to S3
+      daily_registrations: {
+        class: 'Reports::DailyRegistrationsReport',
+        cron: cron_24h,
+        args: -> { [Time.zone.yesterday] },
+      },
       # Sync opted out phone numbers from AWS
       phone_number_opt_out_sync_job: {
         class: 'PhoneNumberOptOutSyncJob',
