@@ -102,8 +102,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
           'USPS IPPaaS enrollment created',
           enrollment_code: user.in_person_enrollments.first.enrollment_code,
           enrollment_id: user.in_person_enrollments.first.id,
-          user_id: user.uuid,
-          service_provider: user.in_person_enrollments.first.issuer,
+          service_provider: user.in_person_enrollments.first.service_provider&.issuer,
         )
       end
 

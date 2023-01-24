@@ -17,11 +17,10 @@ module UspsInPersonProofing
         enrollment.enrollment_established_at = Time.zone.now
         enrollment.save!
 
-        analytics(user: user, sp: enrollment.issuer).usps_ippaas_enrollment_created(
+        analytics(user: user).usps_ippaas_enrollment_created(
           enrollment_code: enrollment.enrollment_code,
           enrollment_id: enrollment.id,
-          user_id: user.uuid,
-          service_provider: enrollment.issuer,
+          service_provider: enrollment.service_provider&.issuer,
         )
 
         send_ready_to_verify_email(user, enrollment)
@@ -96,8 +95,8 @@ module UspsInPersonProofing
         raise Exception::RequestEnrollException.new(err.message, err, enrollment.id)
       end
 
-      def analytics(user: AnonymousUser.new, sp: nil)
-        Analytics.new(user: user, request: nil, session: {}, sp: sp)
+      def analytics(user: AnonymousUser.new)
+        Analytics.new(user: user, request: nil, session: {}, sp: nil)
       end
     end
   end
