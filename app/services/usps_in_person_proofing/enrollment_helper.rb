@@ -20,7 +20,7 @@ module UspsInPersonProofing
         analytics(user: user).usps_ippaas_enrollment_created(
           enrollment_code: enrollment.enrollment_code,
           enrollment_id: enrollment.id,
-          user_id: enrollment.user_id,
+          user_id: user.uuid,
           service_provider: enrollment.service_provider,
         )
 
