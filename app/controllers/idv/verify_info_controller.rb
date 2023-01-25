@@ -11,7 +11,7 @@ module Idv
       increment_step_counts
       analytics.idv_doc_auth_verify_visited(**analytics_arguments)
 
-      redirect_to failure_url(:fail) and return if any_throttled?
+      redirect_to throttled_url and return if any_throttled?
 
       process_async_state(load_async_state)
     end
@@ -213,7 +213,7 @@ module Idv
         idv_session.resolution_successful = false
         render :show
       elsif current_async_state.in_progress?
-        render :wait
+        render 'shared/wait'
       elsif current_async_state.missing?
         analytics.idv_proofing_resolution_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
