@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'acuant sdk versions' do
   default_version = IdentityConfig.store.idv_acuant_sdk_version_default
   alternate_version = IdentityConfig.store.idv_acuant_sdk_version_alternate
-  acuant_entries = Dir.entries(Rails.root.join("public", "acuant"))
+  acuant_entries = Dir.entries(Rails.root.join('public', 'acuant'))
 
   it 'has a public directory for the default version' do
     expect(acuant_entries).to include(default_version)
