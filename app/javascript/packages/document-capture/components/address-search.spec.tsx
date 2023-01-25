@@ -4,6 +4,8 @@ import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import type { SetupServerApi } from 'msw/node';
+import sinon from 'sinon';
+import { AnalyticsContextProvider } from '../context/analytics';
 import AddressSearch, { ADDRESS_SEARCH_URL, LOCATIONS_URL } from './address-search';
 
 const DEFAULT_RESPONSE = [
@@ -53,5 +55,42 @@ describe('AddressSearch', () => {
 
     await expect(handleAddressFound).to.eventually.be.called();
     await expect(handleLocationsFound).to.eventually.be.called();
+  });
+});
+
+describe('AddressSearch analytics', () => {
+  // wanted to reflect an empty response
+  // let server: SetupServerApi;
+  // before(() => {
+  //   server = setupServer(
+  //     rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
+  //     rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json([]))),
+  //   );
+  //   server.listen();
+  // });
+
+  // after(() => {
+  //   server.close();
+  // });
+
+  it('logs an event when clicking the call to action button', async () => {
+    const trackEvent = sinon.stub();
+    const { findByText } = render(
+      <AnalyticsContextProvider trackEvent={trackEvent}>
+        <AddressSearch />
+      </AnalyticsContextProvider>,
+    );
+
+    await userEvent.click(
+      await findByText('in_person_proofing.body.location.po_search.search_button'),
+    );
+
+    expect(trackEvent).to.eventually.be.calledWith(
+      'IdV: in person proofing location search submitted',
+      {
+        success: false,
+        errors: 'No address candidates found by arcgis',
+      },
+    );
   });
 });
