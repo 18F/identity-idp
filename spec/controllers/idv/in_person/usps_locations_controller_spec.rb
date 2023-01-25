@@ -7,6 +7,7 @@ describe Idv::InPerson::UspsLocationsController do
   let(:sp) { nil }
   let(:in_person_proofing_enabled) { true }
   let(:arcgis_search_enabled) { true }
+  let(:controller_analytics) { FakeAnalytics.new }
   let(:address) do
     UspsInPersonProofing::Applicant.new(
       address: '1600 Pennsylvania Ave',
@@ -90,6 +91,7 @@ describe Idv::InPerson::UspsLocationsController do
         { name: 'Location 4' },
       ]
     end
+    let(:empty_locations) {[]}
     subject(:response) do
       post :index, params: { address: { street_address: '1600 Pennsylvania Ave',
                                         city: 'Washington',
@@ -121,12 +123,34 @@ describe Idv::InPerson::UspsLocationsController do
       context 'with successful fetch' do
         before do
           allow(proofer).to receive(:request_facilities).with(address).and_return(locations)
+          allow(controller).to receive(:analytics).and_return(controller_analytics)
         end
 
         it 'returns a successful response' do
           json = response.body
           facilities = JSON.parse(json)
           expect(facilities.length).to eq 3
+          expect(controller_analytics).to have_logged_event(
+            'IdV: in person proofing location search submitted',
+            success: true,
+            errors: nil,
+          )
+        end
+      end
+
+      context 'no addresses found' do
+        before do
+          allow(proofer).to receive(:request_facilities).with(address).and_return(empty_locations)
+          allow(controller).to receive(:analytics).and_return(controller_analytics)
+        end
+
+        it 'logs analytics with error when successful response is empty' do
+          response
+          expect(controller_analytics).to have_logged_event(
+            'IdV: in person proofing location search submitted',
+            success: false,
+            errors: 'No USPS locations found',
+          )
         end
       end
 
@@ -136,6 +160,7 @@ describe Idv::InPerson::UspsLocationsController do
         before do
           allow(proofer).to receive(:request_facilities).with(fake_address).and_raise(exception)
           allow(proofer).to receive(:request_pilot_facilities).and_return(pilot_locations)
+          allow(controller).to receive(:analytics).and_return(controller_analytics)
         end
 
         it 'returns all pilot locations' do
@@ -148,6 +173,11 @@ describe Idv::InPerson::UspsLocationsController do
           json = response.body
           facilities = JSON.parse(json)
           expect(facilities.length).to eq 4
+          expect(controller_analytics).to have_logged_event(
+            'IdV: in person proofing location search submitted',
+            success: false,
+            errors: exception,
+          )
         end
       end
     end
