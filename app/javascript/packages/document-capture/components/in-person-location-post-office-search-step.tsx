@@ -15,6 +15,7 @@ import InPersonLocations, { FormattedLocation } from './in-person-locations';
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
   const { t } = useI18n();
   const [inProgress, setInProgress] = useState(false);
+  const [isLoadingLocations, setLoadingLocations] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
   const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
@@ -83,8 +84,9 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
         registerField={registerField}
         onFoundAddress={setFoundAddress}
         onFoundLocations={setLocationResults}
+        onLoadingLocations={setLoadingLocations}
       />
-      {locationResults && foundAddress && (
+      {locationResults && foundAddress && !isLoadingLocations && (
         <InPersonLocations
           locations={locationResults}
           onSelect={handleLocationSelect}

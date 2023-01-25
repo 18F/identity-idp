@@ -158,12 +158,14 @@ interface AddressSearchProps {
   registerField?: RegisterFieldCallback;
   onFoundAddress?: (address: LocationQuery | null) => void;
   onFoundLocations?: (locations: FormattedLocation[] | null | undefined) => void;
+  onLoadingLocations?: (isLoading: boolean) => void;
 }
 
 function AddressSearch({
   registerField = () => undefined,
   onFoundAddress = () => undefined,
   onFoundLocations = () => undefined,
+  onLoadingLocations = () => undefined,
 }: AddressSearchProps) {
   const { t } = useI18n();
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
@@ -183,6 +185,7 @@ function AddressSearch({
 
   useEffect(() => {
     spinnerButtonRef.current?.toggleSpinner(isLoading);
+    onLoadingLocations(isLoading);
   }, [isLoading]);
 
   useDidUpdateEffect(() => {
