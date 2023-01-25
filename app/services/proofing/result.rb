@@ -58,9 +58,9 @@ module Proofing
       !exception? && !errors?
     end
 
-    # def timed_out?
-    #   @exception.is_a?(Proofing::TimeoutError)
-    # end
+    def timed_out?
+      @exception.is_a?(Proofing::TimeoutError)
+    end
 
     # def to_h
     #   {
