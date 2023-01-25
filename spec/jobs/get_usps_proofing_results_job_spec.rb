@@ -280,49 +280,51 @@ RSpec.describe GetUspsProofingResultsJob do
           ).to be >= 0.0
         end
 
-        it 'logs a message with counts of various outcomes when the job is terminated' do
-          error_message = 'too many!'
-          analytics_title = 'GetUspsProofingResultsJob: Job terminated'
-          # make a subclass of GetUspsProofingResultsJob that raises a
-          # ConcurrencyExceededError on its last enrollment
-          class ErrorJob < GetUspsProofingResultsJob
-            private
+        context 'when the job is terminated with a ConcurrencyExceededError' do
+          let(:analytics_title) { 'GetUspsProofingResultsJob: Job terminated' }
+          let(:error_message) { 'too many!' }
+          let(:error_job_class) do
+            Class.new(GetUspsProofingResultsJob) do
+              private
 
-            def check_enrollment(enrollment, is_not_last_enrollment)
-              if is_not_last_enrollment
-                super(enrollment, is_not_last_enrollment)
-              else
-                raise GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError,
-                      'too many!'
+              def check_enrollment(enrollment, is_not_last_enrollment)
+                if is_not_last_enrollment
+                  super(enrollment, is_not_last_enrollment)
+                else
+                  raise GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError,
+                        'too many!'
+                end
               end
             end
           end
 
-          allow_any_instance_of(ErrorJob).to receive(:analytics).and_return(job_analytics)
+          it 'logs a message with counts of various outcomes when the job is terminated' do
+            allow_any_instance_of(error_job_class).to receive(:analytics).and_return(job_analytics)
 
-          expect { ErrorJob.perform_now(Time.zone.now) }.
-            to raise_error(
-              GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError,
-              error_message,
+            expect { error_job_class.perform_now(Time.zone.now) }.
+              to raise_error(
+                GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError,
+                error_message,
+              )
+
+            expect(job_analytics).to have_logged_event(
+              analytics_title,
+              duration_seconds: anything,
+              enrollments_checked: 4,
+              enrollments_errored: 1,
+              enrollments_expired: 0,
+              enrollments_failed: 1,
+              enrollments_in_progress: 1,
+              enrollments_passed: 1,
+              error_class: 'GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError',
+              error_message: error_message,
             )
 
-          expect(job_analytics).to have_logged_event(
-            analytics_title,
-            duration_seconds: anything,
-            enrollments_checked: 4,
-            enrollments_errored: 1,
-            enrollments_expired: 0,
-            enrollments_failed: 1,
-            enrollments_in_progress: 1,
-            enrollments_passed: 1,
-            error_class: 'GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError',
-            error_message: error_message,
-          )
-
-          expect(
-            job_analytics.events[analytics_title].
-              first[:duration_seconds],
-          ).to be >= 0.0
+            expect(
+              job_analytics.events[analytics_title].
+                first[:duration_seconds],
+            ).to be >= 0.0
+          end
         end
       end
 
