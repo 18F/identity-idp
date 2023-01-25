@@ -1,20 +1,7 @@
 import { forceRedirect } from '@18f/identity-url';
+import { request } from '@18f/identity-request';
 import type { CountdownElement } from '@18f/identity-countdown/countdown-element';
 import type { ModalElement } from '@18f/identity-modal';
-
-interface NewRelicAgent {
-  /**
-   * Log page action to New Relic.
-   */
-  addPageAction: (name: string, attributes: object) => void;
-}
-
-interface NewRelicGlobals {
-  /**
-   * New Relic agent
-   */
-  newrelic?: NewRelicAgent;
-}
 
 interface PingResponse {
   /**
@@ -33,8 +20,6 @@ interface PingResponse {
   timeout: string;
 }
 
-type LoginGovGlobal = typeof window & NewRelicGlobals;
-
 const warningEl = document.getElementById('session-timeout-cntnr');
 
 const defaultTime = '60';
@@ -43,26 +28,10 @@ const frequency = parseInt(warningEl?.dataset.frequency || defaultTime, 10) * 10
 const warning = parseInt(warningEl?.dataset.warning || defaultTime, 10) * 1000;
 const start = parseInt(warningEl?.dataset.start || defaultTime, 10) * 1000;
 const timeoutUrl = warningEl?.dataset.timeoutUrl;
-const initialTime = new Date();
 
 const modal = document.querySelector<ModalElement>('lg-modal.session-timeout-modal')!;
 const keepaliveEl = document.getElementById('session-keepalive-btn');
 const countdownEls: NodeListOf<CountdownElement> = modal.querySelectorAll('lg-countdown');
-const csrfEl: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
-
-let csrfToken = '';
-if (csrfEl) {
-  csrfToken = csrfEl.content;
-}
-
-function notifyNewRelic(request, error, actionName) {
-  (window as LoginGovGlobal).newrelic?.addPageAction('Session Ping Error', {
-    action_name: actionName,
-    request_status: request.status,
-    time_elapsed_ms: new Date().valueOf() - initialTime.valueOf(),
-    error: error.message,
-  });
-}
 
 function handleTimeout(redirectURL: string) {
   window.dispatchEvent(new window.CustomEvent('lg:session-timeout'));
@@ -70,7 +39,7 @@ function handleTimeout(redirectURL: string) {
 }
 
 function success(data: PingResponse) {
-  let timeRemaining = data.remaining * 1000;
+  const timeRemaining = data.remaining * 1000;
   const showWarning = timeRemaining < warning;
 
   if (!data.live) {
@@ -91,46 +60,16 @@ function success(data: PingResponse) {
     countdownEls.forEach((countdownEl) => countdownEl.stop());
   }
 
-  if (timeRemaining < frequency) {
-    timeRemaining = timeRemaining < 0 ? 0 : timeRemaining;
-    // Disable reason: circular dependency between ping and success
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    setTimeout(ping, timeRemaining);
-  }
+  const nextPing = Math.min(frequency, Math.max(timeRemaining, 0));
+  // Disable reason: circular dependency between ping and success
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  setTimeout(ping, nextPing);
 }
 
-function ping() {
-  const request = new XMLHttpRequest();
-  request.open('GET', '/active', true);
+const ping = () => request<PingResponse>('/active').then(success);
 
-  request.onload = function () {
-    try {
-      success(JSON.parse(request.responseText));
-    } catch (error) {
-      notifyNewRelic(request, error, 'ping');
-    }
-  };
+const keepalive = () =>
+  request<PingResponse>('/sessions/keepalive', { method: 'POST' }).then(success);
 
-  request.send();
-  setTimeout(ping, frequency);
-}
-
-function keepalive() {
-  const request = new XMLHttpRequest();
-  request.open('POST', '/sessions/keepalive', true);
-  request.setRequestHeader('X-CSRF-Token', csrfToken);
-
-  request.onload = function () {
-    try {
-      success(JSON.parse(request.responseText));
-      modal.hide();
-    } catch (error) {
-      notifyNewRelic(request, error, 'keepalive');
-    }
-  };
-
-  request.send();
-}
-
-keepaliveEl?.addEventListener('click', keepalive, false);
+keepaliveEl?.addEventListener('click', keepalive);
 setTimeout(ping, start);
