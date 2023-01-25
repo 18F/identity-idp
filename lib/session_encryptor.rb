@@ -57,8 +57,6 @@ class SessionEncryptor
   end
 
   def dump(value)
-    copied_value = value.deep_dup
-    old_size = LegacySessionEncryptor.new.dump(copied_value).bytesize
     return LegacySessionEncryptor.new.dump(value) if should_use_legacy_encryptor_for_write?
     value.deep_stringify_keys!
 
@@ -67,25 +65,11 @@ class SessionEncryptor
     alert_or_raise_if_contains_sensitive_keys!(value)
     plain = JSON.generate(value)
     alert_or_raise_if_contains_sensitive_value!(plain, value)
-    plain_compressed = Zlib.gzip(plain)
-    text = { v: CIPHERTEXT_HEADER, t: outer_encrypt(plain), c: 0 }.to_msgpack
-    text_compressed = { v: CIPHERTEXT_HEADER, t: outer_encrypt(plain_compressed), c: 1 }.to_msgpack
-    new_size = text.bytesize
-    new_compressed_size = text_compressed.bytesize
-
-    Rails.logger.info(
-      {
-        name: 'metrics.session_size',
-        old_size_bytes: old_size,
-        new_size_bytes: new_size,
-        new_compressed_size_bytes: new_compressed_size,
-      }.to_json,
-    )
 
     if should_compress?(plain)
-      text_compressed
+      { v: CIPHERTEXT_HEADER, t: outer_encrypt(Zlib.gzip(plain)), c: 1 }.to_msgpack
     else
-      text
+      { v: CIPHERTEXT_HEADER, t: outer_encrypt(plain), c: 0 }.to_msgpack
     end
   end
 
