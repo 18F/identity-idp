@@ -193,7 +193,6 @@ function AddressSearch({
 
   const handleSearch = useCallback(
     (event) => {
-      onFoundAddress(null);
       onSearch(event, textInput);
     },
     [textInput],
