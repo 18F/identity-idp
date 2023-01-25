@@ -26,7 +26,7 @@ module AbTests
       in_person_cta_variant_testing_buckets[bucket_name.to_sym] = rate
     end
   else
-    in_person_cta_variant_testing_buckets['standard'] = 100
+    in_person_cta_variant_testing_buckets['in_person_variant_a'] = 100
   end
   IN_PERSON_CTA = AbTestBucket.new(
     experiment_name: 'In-Person Proofing CTA',

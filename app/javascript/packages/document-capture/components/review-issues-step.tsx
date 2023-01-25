@@ -81,8 +81,7 @@ function ReviewIssuesStep({
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
   const { onFailedSubmissionAttempt } = useContext(FailedCaptureAttemptsContext);
-  const { inPersonURL, inPersonCtaVariantTestingEnabled, inPersonCtaVariantActive } =
-    useContext(InPersonContext);
+  const { inPersonURL, inPersonCtaVariantActive } = useContext(InPersonContext);
   useEffect(() => onFailedSubmissionAttempt(), []);
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed');
@@ -103,16 +102,12 @@ function ReviewIssuesStep({
     if (!inPersonURL || isFailedResult) {
       return;
     }
-    if (inPersonCtaVariantTestingEnabled) {
-      if (inPersonCtaVariantActive === 'in_person_variant_a') {
-        trackEvent('IdV: IPP CTA Variant A');
-      } else if (inPersonCtaVariantActive === 'in_person_variant_b') {
-        trackEvent('IdV: IPP CTA Variant B');
-      } else if (inPersonCtaVariantActive === 'in_person_variant_c') {
-        trackEvent('IdV: IPP CTA Variant C');
-      }
-    } else {
-      trackEvent('IdV: IPP CTA Variant Standard');
+    if (inPersonCtaVariantActive === 'in_person_variant_a') {
+      trackEvent('IdV: IPP CTA Variant A');
+    } else if (inPersonCtaVariantActive === 'in_person_variant_b') {
+      trackEvent('IdV: IPP CTA Variant B');
+    } else if (inPersonCtaVariantActive === 'in_person_variant_c') {
+      trackEvent('IdV: IPP CTA Variant C');
     }
   }, []);
 
@@ -121,7 +116,7 @@ function ReviewIssuesStep({
       return <BarcodeAttentionWarning onDismiss={onWarningPageDismissed} pii={pii} />;
     }
 
-    if (!inPersonCtaVariantTestingEnabled || !inPersonURL || isFailedResult) {
+    if (!inPersonURL || isFailedResult) {
       return (
         <Warning
           heading={t('errors.doc_auth.throttled_heading')}
