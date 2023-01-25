@@ -86,6 +86,19 @@ describe FrontendLogController do
         end
       end
 
+      context 'without payload' do
+        let(:params) { { 'event' => event } }
+
+        it 'succeeds' do
+          expect(fake_analytics).to receive(:track_event).with("Frontend: #{event}", {})
+
+          action
+
+          expect(response).to have_http_status(:ok)
+          expect(json[:success]).to eq(true)
+        end
+      end
+
       context 'invalid param' do
         it 'rejects a non-hash payload' do
           expect(fake_analytics).not_to receive(:track_event)
@@ -113,16 +126,6 @@ describe FrontendLogController do
           expect(fake_analytics).not_to receive(:track_event)
 
           params.delete('event')
-          action
-
-          expect(response).to have_http_status(:bad_request)
-          expect(json[:success]).to eq(false)
-        end
-
-        it 'rejects a request without specifying payload' do
-          expect(fake_analytics).not_to receive(:track_event)
-
-          params.delete('payload')
           action
 
           expect(response).to have_http_status(:bad_request)

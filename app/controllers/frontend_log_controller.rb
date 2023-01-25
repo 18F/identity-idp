@@ -50,6 +50,6 @@ class FrontendLogController < ApplicationController
   end
 
   def valid_payload?
-    !log_params[:payload].nil?
+    params[:payload].nil? || !log_params[:payload].nil?
   end
 end
