@@ -98,11 +98,6 @@ describe Proofing::LexisNexis::Ddp::Proofer do
         result = subject.proof(applicant)
 
         expect(result.success?).to eq(true)
-      end
-
-      it 'has no errors' do
-        result = subject.proof(applicant)
-
         expect(result.errors).to be_empty
       end
     end
