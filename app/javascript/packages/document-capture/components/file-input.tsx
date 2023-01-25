@@ -24,11 +24,6 @@ import type {
   ReactNode,
 } from 'react';
 
-type DataURIForImage = string;
-type InputUploadChangeValue = File | null | undefined;
-type InputAcuantChangeValue = DataURIForImage | null;
-export type InputChangeValue = InputAcuantChangeValue | InputUploadChangeValue;
-
 interface FileInputProps {
   /**
    * Input label
@@ -99,7 +94,7 @@ interface FileInputProps {
   /**
    * Input change handler
    */
-  onChange?: (nextValue?: InputChangeValue) => void;
+  onChange?: (nextValue: File | null) => void;
 
   /**
    * Callback to trigger if upload error occurs
