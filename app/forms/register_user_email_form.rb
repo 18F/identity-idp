@@ -42,10 +42,10 @@ class RegisterUserEmailForm
       email_language: params[:email_language],
     )
     self.request_id = params[:request_id]
-    if valid_form?
+    if valid?
       process_successful_submission(request_id, instructions)
     else
-      self.success = process_errors(request_id)
+      self.success = false
     end
 
     FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
@@ -89,13 +89,19 @@ class RegisterUserEmailForm
 
   def process_successful_submission(request_id, instructions)
     self.success = true
-    user.accepted_terms_at = Time.zone.now
-    user.save!
-    SendSignUpEmailConfirmation.new(user).call(
-      request_id: email_request_id(request_id),
-      instructions: instructions,
-      password_reset_requested: password_reset_requested?,
-    )
+    if email_taken? && user_unconfirmed?
+      send_sign_up_unconfirmed_email(request_id)
+    elsif email_taken?
+      send_sign_up_confirmed_email
+    else
+      user.accepted_terms_at = Time.zone.now
+      user.save!
+      SendSignUpEmailConfirmation.new(user).call(
+        request_id: email_request_id(request_id),
+        instructions: instructions,
+        password_reset_requested: password_reset_requested?,
+      )
+    end
   end
 
   def extra_analytics_attributes
@@ -105,20 +111,6 @@ class RegisterUserEmailForm
       domain_name: email&.split('@')&.last,
       throttled: @throttled,
     }
-  end
-
-  def process_errors(request_id)
-    # To prevent discovery of existing emails, we check to see if the email is
-    # already taken and if so, we act as if the user registration was successful.
-    if email_taken? && user_unconfirmed?
-      send_sign_up_unconfirmed_email(request_id)
-      true
-    elsif email_taken?
-      send_sign_up_confirmed_email
-      true
-    else
-      false
-    end
   end
 
   def send_sign_up_unconfirmed_email(request_id)
