@@ -5,11 +5,13 @@ class IdentityLinker
     @user = user
     @service_provider = service_provider
     @ial = nil
+    @aal = nil
   end
 
   def link_identity(
     code_challenge: nil,
     ial: nil,
+    aal: nil,
     nonce: nil,
     rails_session_id: nil,
     scope: nil,
@@ -18,12 +20,15 @@ class IdentityLinker
     clear_deleted_at: nil
   )
     return unless user && service_provider.present?
+
     process_ial(ial)
+    process_aal(aal)
 
     identity.update!(
       identity_attributes.merge(
         code_challenge: code_challenge,
         ial: ial,
+        aal: aal,
         nonce: nonce,
         rails_session_id: rails_session_id,
         scope: scope,
@@ -53,6 +58,13 @@ class IdentityLinker
     else
       identity.last_ial1_authenticated_at = now
     end
+  end
+
+  def process_aal(aal)
+Rails.logger.debug('aal******************')
+Rails.logger.debug(aal)
+Rails.logger.debug('******************')
+    @aal = aal
   end
 
   def process_verified_at(now)

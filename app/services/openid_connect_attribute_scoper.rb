@@ -22,6 +22,8 @@ class OpenidConnectAttributeScoper
     all_emails
     openid
     profile:verified_at
+    ial
+    aal
   ] + X509_SCOPES + IAL2_SCOPES
 
   VALID_IAL1_SCOPES = %w[
@@ -29,6 +31,8 @@ class OpenidConnectAttributeScoper
     all_emails
     openid
     profile:verified_at
+    ial
+    aal
   ] + X509_SCOPES
 
   ATTRIBUTE_SCOPES_MAP = {
