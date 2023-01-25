@@ -56,10 +56,10 @@ module TwoFactorAuthCode
           text: troubleshoot_change_phone_or_option_text
         },
         {
-          url: MarketingSite.help_center_article_url(
+          url: "#{MarketingSite.help_center_article_url(
             category: 'get-started',
             article: 'authentication-options',
-          ),
+          )}#text-message--phone-call",
           text: t('two_factor_authentication.phone_verification.troubleshooting.code_not_received'),
           new_tab: true,
         },
