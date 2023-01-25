@@ -1,6 +1,5 @@
 module Idv
   class VerifyInfoController < ApplicationController
-    include StringRedacter
     include IdvSession
 
     before_action :render_404_if_verify_info_controller_disabled
@@ -309,7 +308,10 @@ module Idv
       if state_id
         state_id[:state] = state if state
         state_id[:state_id_jurisdiction] = state_id_jurisdiction if state_id_jurisdiction
-        state_id[:state_id_number] = redact_alphanumeric(state_id_number) if state_id_number
+        if state_id_number
+          state_id[:state_id_number] =
+            StringRedacter.redact_alphanumeric(state_id_number)
+        end
       end
 
       FormResponse.new(
