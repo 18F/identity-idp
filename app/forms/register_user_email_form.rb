@@ -29,10 +29,6 @@ class RegisterUserEmailForm
     email_address&.email
   end
 
-  def resend
-    'true'
-  end
-
   def validate_terms_accepted
     return if @terms_accepted
 
