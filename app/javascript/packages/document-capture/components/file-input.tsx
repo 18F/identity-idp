@@ -8,6 +8,12 @@ import {
   useImperativeHandle,
   ForwardedRef,
 } from 'react';
+import type {
+  MouseEvent as ReactMouseEvent,
+  DragEvent as ReactDragEvent,
+  ChangeEvent as ReactChangeEvent,
+  ReactNode,
+} from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { SpinnerDots } from '@18f/identity-components';
 import { useInstanceId } from '@18f/identity-react-hooks';
@@ -15,14 +21,6 @@ import FileImage from './file-image';
 import StatusMessage, { Status } from './status-message';
 import DeviceContext from '../context/device';
 import usePrevious from '../hooks/use-previous';
-
-import type {
-  MouseEvent as ReactMouseEvent,
-  DragEvent as ReactDragEvent,
-  ChangeEvent as ReactChangeEvent,
-  RefAttributes as ReactRefAttributes,
-  ReactNode,
-} from 'react';
 
 interface FileInputProps {
   /**
