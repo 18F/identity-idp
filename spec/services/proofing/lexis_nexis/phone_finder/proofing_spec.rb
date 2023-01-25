@@ -59,10 +59,10 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
       it 'is a failure result' do
         stub_request(
           :post,
-          verification_request.url
+          verification_request.url,
         ).to_return(
           body: LexisNexisFixtures.phone_finder_rdp1_fail_response_json,
-          status: 200
+          status: 200,
         )
 
         result = subject.proof(applicant)

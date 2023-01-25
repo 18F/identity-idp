@@ -2,10 +2,10 @@ module Proofing
   class Result
     attr_reader :exception
     attr_accessor :context,
-      :transaction_id,
-      :reference,
-      :review_status,
-      :response_body
+                  :transaction_id,
+                  :reference,
+                  :review_status,
+                  :response_body
 
     def initialize(
         errors: {},

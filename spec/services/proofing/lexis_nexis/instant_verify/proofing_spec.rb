@@ -35,10 +35,10 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
       it 'is a successful result' do
         stub_request(
           :post,
-          verification_request.url
+          verification_request.url,
         ).to_return(
           body: LexisNexisFixtures.instant_verify_success_response_json,
-          status: 200
+          status: 200,
         )
 
         result = subject.proof(applicant)
@@ -79,7 +79,7 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
       it 'retuns a timeout result' do
         stub_request(
           :post,
-          verification_request.url
+          verification_request.url,
         ).to_timeout
 
         result = subject.proof(applicant)
@@ -96,7 +96,7 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
       it 'returns a result with an exception' do
         stub_request(
           :post,
-          verification_request.url
+          verification_request.url,
         ).to_raise(RuntimeError.new('fancy test error'))
 
         result = subject.proof(applicant)
@@ -152,10 +152,10 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
       it 'logs drivers license info that is present in the response' do
         stub_request(
           :post,
-          verification_request.url
+          verification_request.url,
         ).to_return(
           body: LexisNexisFixtures.instant_verify_success_response_json,
-          status: 200
+          status: 200,
         )
 
         result = subject.proof(applicant)

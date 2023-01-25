@@ -40,7 +40,7 @@ describe Proofing::LexisNexis::Ddp::Proofer do
       it 'raises a timeout error' do
         stub_request(
           :post,
-          verification_request.url
+          verification_request.url,
         ).to_timeout
 
         expect { verification_request.send }.to raise_error(
@@ -55,13 +55,13 @@ describe Proofing::LexisNexis::Ddp::Proofer do
         request =
           stub_request(
             :post,
-            verification_request.url
+            verification_request.url,
           ).with(
             body: verification_request.body,
-            headers: verification_request.headers
+            headers: verification_request.headers,
           ).to_return(
             body: LexisNexisFixtures.ddp_success_response_json,
-            status: 200
+            status: 200,
           )
 
         verification_request.send
@@ -84,10 +84,10 @@ describe Proofing::LexisNexis::Ddp::Proofer do
       )
       stub_request(
         :post,
-        verification_request.url
+        verification_request.url,
       ).to_return(
         body: response_body,
-        status: 200
+        status: 200,
       )
     end
 
@@ -112,7 +112,7 @@ describe Proofing::LexisNexis::Ddp::Proofer do
 
         stub_request(
           :post,
-          verification_request.url
+          verification_request.url,
         ).to_raise(error)
 
         result = subject.proof(applicant)
