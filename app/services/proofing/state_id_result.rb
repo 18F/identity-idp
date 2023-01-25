@@ -3,10 +3,10 @@ module Proofing
     attr_reader :success, :errors, :exception, :vendor_name, :transaction_id, :verified_attributes
 
     def initialize(
-      success:,
-      errors:,
-      exception:,
-      vendor_name:,
+      success: nil,
+      errors: {},
+      exception: nil,
+      vendor_name: nil,
       transaction_id: '',
       verified_attributes: []
     )

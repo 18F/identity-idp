@@ -62,12 +62,12 @@ module Proofing
       @exception.is_a?(Proofing::TimeoutError)
     end
 
-    # def to_h
-    #   {
-    #     errors: errors,
-    #     exception: exception,
-    #     success: success?,
-    #   }
-    # end
+    def to_h
+      {
+        errors: errors,
+        exception: exception,
+        success: success?,
+      }
+    end
   end
 end
