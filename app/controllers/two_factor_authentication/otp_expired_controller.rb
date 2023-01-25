@@ -1,5 +1,6 @@
 module TwoFactorAuthentication
   class OtpExpiredController < ApplicationController
+    before_action :confirm_two_factor_authenticated, unless: :user_signed_in?
     before_action :validate_otp_expiration
 
     def show
