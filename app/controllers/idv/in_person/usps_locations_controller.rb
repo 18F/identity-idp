@@ -25,6 +25,7 @@ module Idv
           else
             response = proofer.request_pilot_facilities
           end
+          render json: response.to_json
         rescue => err
           analytics.idv_in_person_locations_request_failure(
             exception_class: err.class,
@@ -33,10 +34,8 @@ module Idv
             response_body: err.respond_to?(:response_body) && err.response_body,
             response_status_code: err.respond_to?(:response_status) && err.response_status,
           )
-          render json: {}, status: :internal_server_error and return
+          render json: {}, status: :internal_server_error
         end
-
-        render json: response.to_json
       end
 
       def proofer

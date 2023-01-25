@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import type { SetupServerApi } from 'msw/node';
-import { SWRConfig } from 'swr/_internal';
+import { SWRConfig } from 'swr';
 import AddressSearch, { ADDRESS_SEARCH_URL, LOCATIONS_URL } from './address-search';
 
 const DEFAULT_RESPONSE = [
