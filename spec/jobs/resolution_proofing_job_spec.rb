@@ -322,7 +322,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(resolution_proofer).to receive(:proof).
             and_return(Proofing::Result.new)
           expect(state_id_proofer).to receive(:proof).
-            and_return(Proofing::Result.new)
+            and_return(Proofing::StateIdResult.new)
           Proofing::Mock::DeviceProfilingBackend.new.record_profiling_result(
             session_id: threatmetrix_session_id,
             result: 'pass',
@@ -383,7 +383,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(resolution_proofer).to receive(:proof).
             and_return(Proofing::Result.new(exception: 'error'))
           expect(state_id_proofer).to receive(:proof).
-            and_return(Proofing::Result.new)
+            and_return(Proofing::StateIdResult.new)
 
           perform
         end
