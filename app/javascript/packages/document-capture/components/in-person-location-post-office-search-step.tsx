@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import { PageHeading } from '@18f/identity-components';
+import { Alert, PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
 import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
@@ -22,6 +22,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
     null,
   );
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
+  const [uspsError, setUspsError] = useState<Error | null>(null);
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
@@ -78,6 +79,11 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
 
   return (
     <>
+      {uspsError && (
+        <Alert type="error" className="margin-bottom-4">
+          {t('idv.failure.exceptions.internal_error')}
+        </Alert>
+      )}
       <PageHeading>{t('in_person_proofing.headings.po_search.location')}</PageHeading>
       <p>{t('in_person_proofing.body.location.po_search.po_search_about')}</p>
       <AddressSearch
@@ -85,6 +91,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
         onFoundAddress={setFoundAddress}
         onFoundLocations={setLocationResults}
         onLoadingLocations={setLoadingLocations}
+        onError={setUspsError}
       />
       {locationResults && foundAddress && !isLoadingLocations && (
         <InPersonLocations

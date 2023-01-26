@@ -79,6 +79,38 @@ describe Idv::VerifyInfoController do
 
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end
+
+      context 'when the user is ssn throttled' do
+        before do
+          Throttle.new(
+            target: Pii::Fingerprinter.fingerprint(
+              Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
+            ),
+            throttle_type: :proof_ssn,
+          ).increment_to_throttled!
+        end
+
+        it 'redirects to throttled url' do
+          get :show
+
+          expect(response).to redirect_to idv_session_errors_failure_url
+        end
+      end
+
+      context 'when the user is proofing throttled' do
+        before do
+          Throttle.new(
+            user: subject.current_user,
+            throttle_type: :idv_resolution,
+          ).increment_to_throttled!
+        end
+
+        it 'redirects to throttled url' do
+          get :show
+
+          expect(response).to redirect_to idv_session_errors_failure_url
+        end
+      end
     end
 
     context 'when doc_auth_verify_info_controller_enabled is false' do
