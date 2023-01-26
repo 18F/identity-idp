@@ -8,9 +8,7 @@ import { rest } from 'msw';
 import type { SetupServerApi } from 'msw/node';
 import AnalyticsContext, { AnalyticsContextProvider } from '../context/analytics';
 import InPersonLocationStep, { LOCATIONS_URL } from './in-person-location-step';
-import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
 import { ADDRESS_SEARCH_URL } from './address-search';
-import InPersonContext from '../context/in-person';
 
 const DEFAULT_RESPONSE = [
   {
@@ -66,65 +64,5 @@ describe('InPersonLocationStep', () => {
     await userEvent.click(button);
 
     await findByText('{"selected_location":"Baltimore"}');
-  });
-
-  it('allows search by address when enabled', async () => {
-    const { findByText, findByLabelText } = render(
-      <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
-        <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
-      </InPersonContext.Provider>,
-    );
-
-    await userEvent.type(
-      await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
-      '100 main',
-    );
-    await userEvent.click(
-      await findByText('in_person_proofing.body.location.po_search.search_button'),
-    );
-    await findByText('in_person_proofing.body.location.po_search.results_description');
-  });
-
-  it('validates input and shows inline error', async () => {
-    const { findByText } = render(
-      <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
-        <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
-      </InPersonContext.Provider>,
-    );
-
-    await userEvent.click(
-      await findByText('in_person_proofing.body.location.po_search.search_button'),
-    );
-
-    await findByText('in_person_proofing.body.location.inline_error');
-  });
-
-  it('displays no post office results if a successful search is followed by an unsuccessful search', async () => {
-    const { findByText, findByLabelText, queryByRole } = render(
-      <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
-        <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
-      </InPersonContext.Provider>,
-    );
-
-    await userEvent.type(
-      await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
-      '594 Broadway New York',
-    );
-    await userEvent.click(
-      await findByText('in_person_proofing.body.location.po_search.search_button'),
-    );
-
-    await userEvent.type(
-      await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
-      'asdfkf',
-    );
-    await userEvent.click(
-      await findByText('in_person_proofing.body.location.po_search.search_button'),
-    );
-
-    const results = queryByRole('status', {
-      name: 'in_person_proofing.body.location.po_search.results_description',
-    });
-    expect(results).not.to.exist();
   });
 });

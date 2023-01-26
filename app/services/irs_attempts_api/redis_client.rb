@@ -17,11 +17,15 @@ module IrsAttemptsApi
       end
     end
 
-    def read_events(timestamp:)
+    def read_events(timestamp:, batch_size: 5000)
       key = key(timestamp)
+      events = {}
       redis_pool.with do |client|
-        client.hgetall(key)
+        client.hscan_each(key, count: batch_size) do |k, v|
+          events[k] = v
+        end
       end
+      events
     end
 
     def key(timestamp)
