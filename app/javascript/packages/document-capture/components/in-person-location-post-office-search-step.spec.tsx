@@ -1,11 +1,10 @@
 import { render } from '@testing-library/react';
-import { useSandbox } from '@18f/identity-test-helpers';
 import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import type { SetupServerApi } from 'msw/node';
 import { LOCATIONS_URL } from './in-person-location-step';
-import AddressSearch, { ADDRESS_SEARCH_URL } from './address-search';
+import { ADDRESS_SEARCH_URL } from './address-search';
 import InPersonContext from '../context/in-person';
 import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
 
@@ -46,23 +45,9 @@ describe('InPersonLocationStep', () => {
     });
 
     it('displays a 500 error if the request to the USPS API throws an error', async () => {
-      const sandbox = useSandbox();
-      const registerField = sandbox.stub();
-      const handleAddressFound = sandbox.stub();
-      const handleLocationsFound = sandbox.stub();
-      const handleError = (_: Error | null) => {};
-      const ADDRESS_SEARCH_PROPS = {
-        registerField,
-        onFoundAddress: handleAddressFound,
-        onFoundLocations: handleLocationsFound,
-        onError: handleError,
-      };
-
       const { findByText, findByLabelText } = render(
         <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
-          <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS}>
-            <AddressSearch {...ADDRESS_SEARCH_PROPS} />
-          </InPersonLocationPostOfficeSearchStep>
+          <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
         </InPersonContext.Provider>,
       );
 
