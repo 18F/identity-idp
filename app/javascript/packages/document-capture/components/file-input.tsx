@@ -100,6 +100,12 @@ interface FileInputProps {
   onError?: (message: ReactNode) => void;
 }
 
+type AriaLabelReturnType =
+  | {
+      'aria-labelledby': string;
+    }
+  | { 'aria-label': string };
+
 /**
  * Given a token of an file input accept attribute, returns an equivalent regular expression
  * pattern, or undefined if a pattern cannot be determined. This is an approximation, and not fully
@@ -243,16 +249,10 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
    * @param {Blob|string|null|undefined} fileValue File or string for which to generate label.
    * @return {{'aria-label': string} | {'aria-labelledby': string}}
    */
-
-  type ariaLabelReturnType = {
-    'aria-labelledby'?: string;
-    'aria-label'?: string;
-  };
-
   function getAriaLabelPropsFromValue(
     fileLabel: string,
     fileValue: Blob | string | null | undefined,
-  ): ariaLabelReturnType {
+  ): AriaLabelReturnType {
     if (fileValue instanceof window.File) {
       return {
         'aria-label': `${fileLabel} - ${fileValue.name}`,
