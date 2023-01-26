@@ -2,33 +2,33 @@ module Proofing
   module LexisNexis
     module Ddp
       class Proofer
-        # class << self
-        #   def required_attributes
-        #     [:threatmetrix_session_id,
-        #      :state_id_number,
-        #      :first_name,
-        #      :last_name,
-        #      :dob,
-        #      :ssn,
-        #      :address1,
-        #      :city,
-        #      :state,
-        #      :zipcode,
-        #      :request_ip]
-        #   end
+        class << self
+          def required_attributes
+            [:threatmetrix_session_id,
+             :state_id_number,
+             :first_name,
+             :last_name,
+             :dob,
+             :ssn,
+             :address1,
+             :city,
+             :state,
+             :zipcode,
+             :request_ip]
+          end
 
-        #   # def vendor_name
-        #   #   'lexisnexis'
-        #   # end
+          def vendor_name
+            'lexisnexis'
+          end
 
-        #   def optional_attributes
-        #     [:address2, :phone, :email, :uuid_prefix]
-        #   end
+          def optional_attributes
+            [:address2, :phone, :email, :uuid_prefix]
+          end
 
-        #   def stage
-        #     :resolution
-        #   end
-        # end
+          def stage
+            :resolution
+          end
+        end
 
         Config = RedactedStruct.new(
           :instant_verify_workflow,
