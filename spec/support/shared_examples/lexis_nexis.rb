@@ -3,7 +3,6 @@ shared_examples 'a lexisnexis proofer' do
   let(:conversation_id) { 'foo' }
   let(:reference) { SecureRandom.uuid }
   let(:verification_errors) { {} }
-  let(:result) { Proofing::Result.new }
 
   before do
     response = instance_double(Proofing::LexisNexis::Response)
