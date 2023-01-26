@@ -139,15 +139,18 @@ function useUspsLocations() {
     }
   }, [addressCandidates]);
 
-  const { data: locationResults, isLoading: isLoadingLocations } = useSWR(
-    [foundAddress],
-    ([address]) => (address ? requestUspsLocations(address) : null),
-    { keepPreviousData: true },
-  );
+  const {
+    data: locationResults,
+    isLoading: isLoadingLocations,
+    error,
+  } = useSWR([foundAddress], ([address]) => (address ? requestUspsLocations(address) : null), {
+    keepPreviousData: true,
+  });
 
   return {
     foundAddress,
     locationResults,
+    error,
     isLoading: isLoadingLocations || isLoadingCandidates,
     handleAddressSearch,
     validatedFieldRef,
@@ -158,18 +161,21 @@ interface AddressSearchProps {
   registerField?: RegisterFieldCallback;
   onFoundAddress?: (address: LocationQuery | null) => void;
   onFoundLocations?: (locations: FormattedLocation[] | null | undefined) => void;
+  onError?: (error: Error | null) => void;
 }
 
 function AddressSearch({
   registerField = () => undefined,
   onFoundAddress = () => undefined,
   onFoundLocations = () => undefined,
+  onError = () => undefined,
 }: AddressSearchProps) {
   const { t } = useI18n();
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
   const [textInput, setTextInput] = useState('');
   const {
     locationResults,
+    error,
     isLoading,
     handleAddressSearch: onSearch,
     foundAddress,
@@ -185,6 +191,10 @@ function AddressSearch({
     spinnerButtonRef.current?.toggleSpinner(isLoading);
   }, [isLoading]);
 
+  useEffect(() => {
+    error && onError(error);
+  }, [error]);
+
   useDidUpdateEffect(() => {
     onFoundLocations(locationResults);
 
@@ -193,6 +203,7 @@ function AddressSearch({
 
   const handleSearch = useCallback(
     (event) => {
+      onError(null);
       onFoundAddress(null);
       onSearch(event, textInput);
     },
