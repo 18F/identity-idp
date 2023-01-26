@@ -15,7 +15,6 @@ module Users
     before_action :check_user_needs_redirect, only: [:new]
     before_action :apply_secure_headers_override, only: [:new, :create]
     before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
-    before_action :update_devise_params_sanitizer, only: [:new]
 
     def new
       analytics.sign_in_page_visit(
@@ -240,8 +239,8 @@ module Users
       request.content_security_policy = policy
     end
 
-    def update_devise_params_sanitizer
-      devise_parameter_sanitizer.permit(:sign_in, except: [:email, :password]) if !request.post?
+    def sign_in_params
+      params[resource_name]&.permit(:email) if request.post?
     end
   end
 

@@ -8,8 +8,14 @@ SimpleForm.setup do |config|
   config.boolean_style = :inline
   config.default_form_class = 'margin-top-4'
   config.wrapper_mappings = {
+    text: :uswds_text_input,
+    string: :uswds_text_input,
+    password: :uswds_text_input,
+    tel: :uswds_text_input,
+    email: :uswds_text_input,
     boolean: :uswds_checkbox,
     radio_buttons: :uswds_bordered_radio_buttons,
+    select: :uswds_select,
     hidden: :unwrapped,
   }
 
@@ -18,7 +24,7 @@ SimpleForm.setup do |config|
     b.optional :label
     b.optional :placeholder
     b.use :html5
-    b.use :input, class: 'field'
+    b.use :input
   end
 
   config.wrappers :vertical_form,
@@ -32,12 +38,33 @@ SimpleForm.setup do |config|
     b.optional :readonly
     b.optional :label, class: 'usa-label'
     b.optional :hint,  wrap_with: { tag: 'div', class: 'usa-hint' }
-    b.use :input, class: 'display-block width-full field', error_class: 'usa-input--error'
+    b.use :input, error_class: 'usa-input--error'
     b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
   end
 
   config.wrappers :unwrapped, wrapper: false do |b|
     b.use :input
+  end
+
+  config.wrappers :uswds_text_input, class: 'margin-bottom-4' do |b|
+    b.use :html5
+    b.optional :placeholder
+    b.optional :maxlength
+    b.optional :pattern
+    b.optional :min_max
+    b.optional :readonly
+    b.optional :label, class: 'usa-label'
+    b.optional :hint,  wrap_with: { tag: 'div', class: 'usa-hint' }
+    b.use :input, class: 'usa-input usa-input--big', error_class: 'usa-input--error'
+    b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
+  end
+
+  config.wrappers :uswds_select do |b|
+    b.use :html5
+    b.optional :label, class: 'usa-label'
+    b.optional :hint,  wrap_with: { tag: 'div', class: 'usa-hint' }
+    b.use :input, class: 'usa-select usa-select--big', error_class: 'usa-input--error'
+    b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
   end
 
   config.wrappers :uswds_checkbox do |b|

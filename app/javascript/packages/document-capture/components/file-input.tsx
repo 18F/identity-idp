@@ -6,6 +6,13 @@ import {
   forwardRef,
   useRef,
   useImperativeHandle,
+  ForwardedRef,
+} from 'react';
+import type {
+  MouseEvent as ReactMouseEvent,
+  DragEvent as ReactDragEvent,
+  ChangeEvent as ReactChangeEvent,
+  ReactNode,
 } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { SpinnerDots } from '@18f/identity-components';
@@ -15,32 +22,83 @@ import StatusMessage, { Status } from './status-message';
 import DeviceContext from '../context/device';
 import usePrevious from '../hooks/use-previous';
 
-/** @typedef {import('react').MouseEvent} ReactMouseEvent */
-/** @typedef {import('react').DragEvent} ReactDragEvent */
-/** @typedef {import('react').ChangeEvent} ReactChangeEvent */
-/** @typedef {import('react').RefAttributes} ReactRefAttributes */
-/** @typedef {import('react').ReactNode} ReactNode */
+interface FileInputProps {
+  /**
+   * Input label
+   */
+  label: string;
 
-/**
- * @typedef FileInputProps
- *
- * @prop {string} label Input label.
- * @prop {string=} hint Optional hint text.
- * @prop {string=} bannerText Optional banner overlay text.
- * @prop {string} invalidTypeText Error message text to show on invalid file type selection.
- * @prop {string} fileUpdatedText Success message text to show when selected file is updated.
- * @prop {string} fileLoadingText Status message text to show when file is pending.
- * @prop {string} fileLoadedText Status message text to show once pending file is loaded.
- * @prop {string[]=} accept Optional array of file input accept patterns.
- * @prop {Blob|string|null|undefined} value Current value.
- * @prop {ReactNode=} errorMessage Error to show.
- * @prop {boolean=} isValuePending Whether to show the input in an indeterminate loading state,
- * pending an incoming value.
- * @prop {(event:ReactMouseEvent)=>void=} onClick Input click handler.
- * @prop {(event:ReactDragEvent)=>void=} onDrop Input drop handler.
- * @prop {(nextValue:File?)=>void=} onChange Input change handler.
- * @prop {(message:ReactNode)=>void=} onError Callback to trigger if upload error occurs.
- */
+  /**
+   * Optional hint text
+   */
+  hint?: string;
+
+  /**
+   * Optional banner overlay text
+   */
+  bannerText?: string;
+
+  /**
+   * Error message text to show on invalid file type selection
+   */
+  invalidTypeText: string;
+
+  /**
+   * Success message text to show when selected file is updated
+   */
+  fileUpdatedText: string;
+
+  /**
+   * Status message text to show when file is pending
+   */
+  fileLoadingText: string;
+
+  /**
+   * Status message text to show once pending file is loaded
+   */
+  fileLoadedText: string;
+
+  /**
+   * Optional array of file input accept patterns
+   */
+  accept?: string[];
+
+  /**
+   * Current value
+   */
+  value: Blob | string | null | undefined;
+
+  /**
+   * Error to show
+   */
+  errorMessage?: ReactNode;
+
+  /**
+   * Whether to show the input in an indeterminate loading state,
+   * pending an incoming value
+   */
+  isValuePending?: boolean;
+
+  /**
+   * Input click handler
+   */
+  onClick?: (event: ReactMouseEvent) => void;
+
+  /**
+   * Input drop handler
+   */
+  onDrop?: (event: ReactDragEvent) => void;
+
+  /**
+   * Input change handler
+   */
+  onChange?: (nextValue: File | null) => void;
+
+  /**
+   * Callback to trigger if upload error occurs
+   */
+  onError?: (message: ReactNode) => void;
+}
 
 /**
  * Given a token of an file input accept attribute, returns an equivalent regular expression
@@ -55,7 +113,7 @@ import usePrevious from '../hooks/use-previous';
  *
  * @return {RegExp=} Regular expression, or undefined if cannot be determined.
  */
-export function getAcceptPattern(accept) {
+export function getAcceptPattern(accept: string): RegExp | undefined {
   switch (accept) {
     case 'audio/*':
     case 'video/*':
@@ -76,10 +134,13 @@ export function getAcceptPattern(accept) {
  *
  * @return {boolean} Whether given file is an image.
  */
-export function isImage(value) {
+export function isImage(value: Blob | string): boolean {
   if (value instanceof window.Blob) {
-    const pattern = /** @type {RegExp} */ (getAcceptPattern('image/*'));
-    return pattern.test(value.type);
+    const pattern: RegExp | undefined = getAcceptPattern('image/*');
+    if (pattern) {
+      return pattern.test(value.type);
+    }
+    return false;
   }
 
   return /^data:image\//.test(value);
@@ -94,17 +155,13 @@ export function isImage(value) {
  *
  * @return {boolean} Whether file is valid.
  */
-export function isValidForAccepts(mimeType, accept) {
+export function isValidForAccepts(mimeType: string, accept?: string[]): boolean {
   return (
     !accept || accept.map(getAcceptPattern).some((pattern) => pattern && pattern.test(mimeType))
   );
 }
 
-/**
- * @param {FileInputProps} props Props object.
- * @param {import('react').ForwardedRef<any>} ref
- */
-function FileInput(props, ref) {
+function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
   const {
     label,
     hint,
@@ -122,7 +179,7 @@ function FileInput(props, ref) {
     onChange = () => {},
     onError = () => {},
   } = props;
-  const inputRef = useRef(/** @type {HTMLInputElement?} */ (null));
+  const inputRef = useRef<HTMLInputElement>(null);
   const { t, formatHTML } = useI18n();
   const instanceId = useInstanceId();
   const { isMobile } = useContext(DeviceContext);
@@ -137,7 +194,7 @@ function FileInput(props, ref) {
     () => previousIsValuePending && !isValuePending && !!value,
     [value, isValuePending, previousIsValuePending],
   );
-  const [ownErrorMessage, setOwnErrorMessage] = useState(/** @type {string?} */ (null));
+  const [ownErrorMessage, setOwnErrorMessage] = useState<string | null>(null);
   useMemo(() => setOwnErrorMessage(null), [value]);
   useImperativeHandle(ref, () => inputRef.current);
   useEffect(() => {
@@ -161,11 +218,13 @@ function FileInput(props, ref) {
   /**
    * In response to a file input change event, confirms that the file is valid before calling
    * `onChange`.
-   *
-   * @param {import('react').ChangeEvent<HTMLInputElement>} event Change event.
    */
-  function onChangeIfValid(event) {
-    const file = /** @type {FileList} */ (event.target.files)[0];
+  function onChangeIfValid(event: ReactChangeEvent<HTMLInputElement>) {
+    if (!event.target.files) {
+      return;
+    }
+
+    const file: File = event.target.files[0];
     if (file) {
       if (isValidForAccepts(file.type, accept)) {
         onChange(file);
@@ -184,7 +243,16 @@ function FileInput(props, ref) {
    * @param {Blob|string|null|undefined} fileValue File or string for which to generate label.
    * @return {{'aria-label': string} | {'aria-labelledby': string}}
    */
-  function getAriaLabelPropsFromValue(fileLabel, fileValue) {
+
+  type ariaLabelReturnType = {
+    'aria-labelledby'?: string;
+    'aria-label'?: string;
+  };
+
+  function getAriaLabelPropsFromValue(
+    fileLabel: string,
+    fileValue: Blob | string | null | undefined,
+  ): ariaLabelReturnType {
     if (fileValue instanceof window.File) {
       return {
         'aria-label': `${fileLabel} - ${fileValue.name}`,
@@ -207,8 +275,7 @@ function FileInput(props, ref) {
 
   const shownErrorMessage = errorMessage ?? ownErrorMessage;
 
-  /** @type {string=} */
-  let successMessage;
+  let successMessage: string | undefined;
   if (isUpdated) {
     successMessage = fileUpdatedText;
   } else if (isValuePending) {

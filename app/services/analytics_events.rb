@@ -930,6 +930,10 @@ module AnalyticsEvents
     track_event('IdV: doc auth verify visited', **extra)
   end
 
+  def idv_doc_auth_verify_proofing_results(**extra)
+    track_event('IdV: doc auth verify proofing results', **extra)
+  end
+
   # @identity.idp.previous_event_name IdV: in person proofing verify_wait visited
   def idv_doc_auth_verify_wait_step_visited(**extra)
     track_event('IdV: doc auth verify_wait visited', **extra)
@@ -2977,12 +2981,10 @@ module AnalyticsEvents
   # Tracks when USPS in-person proofing enrollment is created
   # @param [String] enrollment_code
   # @param [Integer] enrollment_id
-  # @param [String] user_id
   # @param [String] service_provider
   def usps_ippaas_enrollment_created(
     enrollment_code:,
     enrollment_id:,
-    user_id:,
     service_provider:,
     **extra
   )
@@ -2990,7 +2992,6 @@ module AnalyticsEvents
       'USPS IPPaaS enrollment created',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
-      user_id: user_id,
       service_provider: service_provider,
       **extra,
     )

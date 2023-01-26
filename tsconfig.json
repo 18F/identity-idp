@@ -7,7 +7,7 @@
     "strictNullChecks": true,
     "jsx": "react-jsx",
     "esModuleInterop": true,
-    "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "moduleResolution": "node",
     "module": "ESNext",
     "target": "ESNext",

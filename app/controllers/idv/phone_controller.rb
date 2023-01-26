@@ -20,7 +20,7 @@ module Idv
         analytics.idv_phone_of_record_visited
         render :new, locals: { gpo_letter_available: gpo_letter_available }
       elsif async_state.in_progress?
-        render :wait
+        render 'shared/wait'
       elsif async_state.missing?
         analytics.proofing_address_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
@@ -32,6 +32,10 @@ module Idv
 
     def create
       result = idv_form.submit(step_params)
+
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp).
+        call(:verify_phone, :update, result.success?)
+
       analytics.idv_phone_confirmation_form_submitted(**result.to_h)
       irs_attempts_api_tracker.idv_phone_submitted(
         success: result.success?,

@@ -9,6 +9,7 @@ RSpec.feature 'Users pending threatmetrix review', :js do
   end
 
   scenario 'users pending threatmetrix see sad face screen and cannot perform idv' do
+    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(300)
     user = create(:user, :signed_up)
 
     start_idv_from_sp
@@ -26,7 +27,6 @@ RSpec.feature 'Users pending threatmetrix review', :js do
 
     # User unable to sign into OIDC with IdV
     set_new_browser_session
-    OtpRequestsTracker.destroy_all
     start_idv_from_sp(:oidc)
     sign_in_live_with_2fa(user)
 
@@ -35,7 +35,6 @@ RSpec.feature 'Users pending threatmetrix review', :js do
 
     # User unable to sign into SAML with IdV
     set_new_browser_session
-    OtpRequestsTracker.destroy_all
     start_idv_from_sp(:saml)
     sign_in_live_with_2fa(user)
 
@@ -44,7 +43,6 @@ RSpec.feature 'Users pending threatmetrix review', :js do
 
     # User able to sign for IAL1
     set_new_browser_session
-    OtpRequestsTracker.destroy_all
     visit_idp_from_sp_with_ial1(:oidc)
     sign_in_live_with_2fa(user)
     click_agree_and_continue

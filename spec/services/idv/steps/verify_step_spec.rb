@@ -110,15 +110,9 @@ describe Idv::Steps::VerifyStep do
       end
 
       before do
-        stub_const(
-          'Throttle::THROTTLE_CONFIG',
-          {
-            proof_ssn: {
-              max_attempts: 2,
-              attempt_window: 10,
-            },
-          }.with_indifferent_access,
-        )
+        allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts).and_return(2)
+        allow(IdentityConfig.store).to receive(:proof_ssn_max_attempt_window_in_minutes).
+          and_return(10)
       end
 
       def redirect(step)

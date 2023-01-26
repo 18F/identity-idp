@@ -111,12 +111,8 @@ RSpec.describe IrsAttemptsApi::Tracker do
         end
       end
 
-      it 'still logs metadata about the event' do
-        expect(analytics).to receive(:irs_attempts_api_event_metadata).with(
-          event_type: :test_event,
-          unencrypted_payload_num_bytes: kind_of(Integer),
-          recorded: false,
-        )
+      it 'does not log metadata about the event' do
+        expect(analytics).to_not receive(:irs_attempts_api_event_metadata)
 
         subject.track_event(:test_event, foo: :bar)
       end
@@ -135,12 +131,8 @@ RSpec.describe IrsAttemptsApi::Tracker do
         end
       end
 
-      it 'still logs metadata about the event' do
-        expect(analytics).to receive(:irs_attempts_api_event_metadata).with(
-          event_type: :test_event,
-          unencrypted_payload_num_bytes: kind_of(Integer),
-          recorded: false,
-        )
+      it 'does not log metadata about the event' do
+        expect(analytics).to_not receive(:irs_attempts_api_event_metadata)
 
         subject.track_event(:test_event, foo: :bar)
       end
