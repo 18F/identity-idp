@@ -23,14 +23,24 @@ describe TwoFactorAuthentication::OtpExpiredController do
       expect(response).to render_template(:show)
     end
 
+    it 'shows when users navigate directly to link' do
+      user = build(:user, otp_delivery_preference: 'voice', direct_otp_sent_at: Time.zone.now)
 
-  context 'does not render' do
-    it 'when user is signed out' do
-      allow(controller).to receive(:user_signed_in?).and_return(false)
+      stub_sign_in_before_2fa(user)
 
       get :show
 
-      expect(response).to_not render_template(:show)
+      expect(response).to render_template(:show)
+    end
+
+    context 'does not render' do
+      it 'when user is signed out' do
+        allow(controller).to receive(:user_signed_in?).and_return(false)
+
+        get :show
+
+        expect(response).to_not render_template(:show)
+      end
     end
   end
 end

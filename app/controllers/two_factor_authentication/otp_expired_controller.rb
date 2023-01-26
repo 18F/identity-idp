@@ -1,7 +1,7 @@
 module TwoFactorAuthentication
   class OtpExpiredController < ApplicationController
     before_action :confirm_two_factor_authenticated, unless: :user_signed_in?
-    
+
     def show
       @otp_delivery_preference = otp_delivery_preference
     end
@@ -11,6 +11,5 @@ module TwoFactorAuthentication
     def otp_delivery_preference
       current_user.otp_delivery_preference
     end
-
   end
 end
