@@ -6,10 +6,10 @@ module Proofing
                 :reference, :vendor_workflow, :drivers_license_check_info
 
     def initialize(
-      success:,
-      errors:,
-      exception:,
-      vendor_name:,
+      success: nil,
+      errors: {},
+      exception: nil,
+      vendor_name: nil,
       transaction_id: '',
       reference: '',
       failed_result_can_pass_with_additional_verification: false,
