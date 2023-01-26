@@ -161,6 +161,7 @@ interface AddressSearchProps {
   registerField?: RegisterFieldCallback;
   onFoundAddress?: (address: LocationQuery | null) => void;
   onFoundLocations?: (locations: FormattedLocation[] | null | undefined) => void;
+  onLoadingLocations?: (isLoading: boolean) => void;
   onError?: (error: Error | null) => void;
 }
 
@@ -168,6 +169,7 @@ function AddressSearch({
   registerField = () => undefined,
   onFoundAddress = () => undefined,
   onFoundLocations = () => undefined,
+  onLoadingLocations = () => undefined,
   onError = () => undefined,
 }: AddressSearchProps) {
   const { t } = useI18n();
@@ -189,6 +191,7 @@ function AddressSearch({
 
   useEffect(() => {
     spinnerButtonRef.current?.toggleSpinner(isLoading);
+    onLoadingLocations(isLoading);
   }, [isLoading]);
 
   useEffect(() => {
@@ -204,7 +207,6 @@ function AddressSearch({
   const handleSearch = useCallback(
     (event) => {
       onError(null);
-      onFoundAddress(null);
       onSearch(event, textInput);
     },
     [textInput],
