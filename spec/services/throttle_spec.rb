@@ -4,14 +4,10 @@ RSpec.describe Throttle do
   let(:throttle_type) { :idv_doc_auth }
   let(:max_attempts) { 3 }
   let(:attempt_window) { 10 }
-
-  before do
-    stub_const(
-      'Throttle::THROTTLE_CONFIG',
-      {
-        throttle_type => { max_attempts: max_attempts, attempt_window: attempt_window },
-      }.with_indifferent_access.freeze,
-    )
+  before(:each) do
+    allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
+    allow(IdentityConfig.store).to receive(:doc_auth_attempt_window_in_minutes).
+      and_return(attempt_window)
   end
 
   describe '.new' do
@@ -83,8 +79,8 @@ RSpec.describe Throttle do
 
   describe '#throttled?' do
     let(:throttle_type) { :idv_doc_auth }
-    let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
-    let(:attempt_window_in_minutes) { IdentityConfig.store.doc_auth_attempt_window_in_minutes }
+    let(:max_attempts) { Throttle.max_attempts(throttle_type) }
+    let(:attempt_window_in_minutes) { Throttle.attempt_window_in_minutes(throttle_type) }
 
     subject(:throttle) { Throttle.new(target: '1', throttle_type: throttle_type) }
 
@@ -110,7 +106,7 @@ RSpec.describe Throttle do
         throttle.increment!
       end
 
-      travel(attempt_window_in_minutes.minutes) do
+      travel(attempt_window_in_minutes.minutes + 1) do
         expect(throttle.throttled?).to eq(false)
       end
     end

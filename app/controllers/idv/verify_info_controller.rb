@@ -1,6 +1,5 @@
 module Idv
   class VerifyInfoController < ApplicationController
-    include StringRedacter
     include IdvSession
 
     before_action :render_404_if_verify_info_controller_disabled
@@ -11,7 +10,15 @@ module Idv
       increment_step_counts
       analytics.idv_doc_auth_verify_visited(**analytics_arguments)
 
-      redirect_to failure_url(:fail) and return if any_throttled?
+      if ssn_throttle.throttled?
+        redirect_to idv_session_errors_ssn_failure_url
+        return
+      end
+
+      if resolution_throttle.throttled?
+        redirect_to throttled_url
+        return
+      end
 
       process_async_state(load_async_state)
     end
@@ -27,6 +34,11 @@ module Idv
           step_name: 'verify_info',
         )
         redirect_to idv_session_errors_ssn_failure_url
+        return
+      end
+
+      if resolution_throttle.throttled?
+        redirect_to throttled_url
         return
       end
 
@@ -153,10 +165,6 @@ module Idv
       )
     end
 
-    def any_throttled?
-      ssn_throttle.throttled? || resolution_throttle.throttled?
-    end
-
     def idv_failure(result)
       proofing_results_exception = result.extra.dig(:proofing_results, :exception)
 
@@ -213,7 +221,7 @@ module Idv
         idv_session.resolution_successful = false
         render :show
       elsif current_async_state.in_progress?
-        render :wait
+        render 'shared/wait'
       elsif current_async_state.missing?
         analytics.idv_proofing_resolution_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
@@ -309,7 +317,10 @@ module Idv
       if state_id
         state_id[:state] = state if state
         state_id[:state_id_jurisdiction] = state_id_jurisdiction if state_id_jurisdiction
-        state_id[:state_id_number] = redact_alphanumeric(state_id_number) if state_id_number
+        if state_id_number
+          state_id[:state_id_number] =
+            StringRedacter.redact_alphanumeric(state_id_number)
+        end
       end
 
       FormResponse.new(

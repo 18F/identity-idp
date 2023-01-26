@@ -13,6 +13,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   end
   let(:subject) { described_class }
   let(:subject_analytics) { FakeAnalytics.new }
+  let(:service_provider) { nil }
 
   before(:each) do
     stub_request_token
@@ -22,11 +23,18 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   end
 
   describe '#schedule_in_person_enrollment' do
+    let!(:enrollment) do
+      create(
+        :in_person_enrollment,
+        user: user,
+        service_provider: service_provider,
+        status: :establishing,
+        profile: nil,
+      )
+    end
+
     context 'when in-person mocking is enabled' do
       let(:usps_mock_fallback) { true }
-      let!(:enrollment) do
-        create(:in_person_enrollment, user: user, status: :establishing, profile: nil)
-      end
 
       it 'uses a mock proofer' do
         expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_call_original
@@ -36,10 +44,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
     end
 
     context 'an establishing enrollment record exists for the user' do
-      let!(:enrollment) do
-        create(:in_person_enrollment, user: user, status: :establishing, profile: nil)
-      end
-
       it 'updates the existing enrollment record' do
         expect(user.in_person_enrollments.length).to eq(1)
 
@@ -95,16 +99,35 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         expect(user.in_person_enrollments.first.unique_id).to_not be_nil
       end
 
-      it 'logs event' do
-        subject.schedule_in_person_enrollment(user, pii)
+      context 'event logging' do
+        context 'with no service provider' do
+          it 'logs event' do
+            subject.schedule_in_person_enrollment(user, pii)
 
-        expect(subject_analytics).to have_logged_event(
-          'USPS IPPaaS enrollment created',
-          enrollment_code: user.in_person_enrollments.first.enrollment_code,
-          enrollment_id: user.in_person_enrollments.first.id,
-          user_id: user.in_person_enrollments.first.user_id,
-          service_provider: user.in_person_enrollments.first.service_provider,
-        )
+            expect(subject_analytics).to have_logged_event(
+              'USPS IPPaaS enrollment created',
+              enrollment_code: user.in_person_enrollments.first.enrollment_code,
+              enrollment_id: user.in_person_enrollments.first.id,
+              service_provider: nil,
+            )
+          end
+        end
+
+        context 'with a service provider' do
+          let(:issuer) { 'this-is-an-issuer' }
+          let(:service_provider) { build(:service_provider, issuer: issuer) }
+
+          it 'logs event' do
+            subject.schedule_in_person_enrollment(user, pii)
+
+            expect(subject_analytics).to have_logged_event(
+              'USPS IPPaaS enrollment created',
+              enrollment_code: user.in_person_enrollments.first.enrollment_code,
+              enrollment_id: user.in_person_enrollments.first.id,
+              service_provider: issuer,
+            )
+          end
+        end
       end
 
       it 'sends verification emails' do
