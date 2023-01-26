@@ -14,7 +14,6 @@ module Idv
       # retrieve the list of nearby IPP Post Office locations with a POST request
       def index
         response = []
-
         begin
           if IdentityConfig.store.arcgis_search_enabled
             candidate = UspsInPersonProofing::Applicant.new(
@@ -26,12 +25,17 @@ module Idv
           else
             response = proofer.request_pilot_facilities
           end
+          render json: response.to_json
         rescue => err
-          Rails.logger.warn(err)
-          response = proofer.request_pilot_facilities
+          analytics.idv_in_person_locations_request_failure(
+            exception_class: err.class,
+            exception_message: err.message,
+            response_body_present: err.respond_to?(:response_body) && err.response_body.present?,
+            response_body: err.respond_to?(:response_body) && err.response_body,
+            response_status_code: err.respond_to?(:response_status) && err.response_status,
+          )
+          render json: {}, status: :internal_server_error
         end
-
-        render json: response.to_json
       end
 
       def proofer

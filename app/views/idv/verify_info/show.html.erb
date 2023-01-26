@@ -11,12 +11,16 @@ locals:
       ) %>
 <% end %>
 
+<div id="form-steps-wait-alert">
+  <!-- Needed by form steps wait javascript -->
+</div>
+
 <% title t('titles.idv.verify_info') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.verify')) %>
 <div class='margin-top-4 margin-bottom-2'>
   <div class="grid-row grid-gap grid-gap-2 padding-bottom-1">
-    <dl class="grid-col-fill margin-bottom-0">
+    <dl class="grid-col-fill margin-y-0">
       <div>
         <dt class="display-inline"> <%= t('idv.form.first_name') %>: </dt>
         <dd class="display-inline margin-left-0"> <%= @pii[:first_name] %> </dd>
@@ -32,7 +36,7 @@ locals:
     </dl>
   </div>
   <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 padding-top-1 border-y border-primary-light">
-    <dl class='grid-col-fill margin-bottom-0'>
+    <dl class='grid-col-fill margin-y-0'>
       <div>
         <dt class="display-inline"> <%= t('idv.form.address1') %>: </dt>
         <dd class="display-inline margin-left-0"> <%= @pii[:address1] %> </dd>
@@ -90,25 +94,25 @@ locals:
     </div>
   </div>
   <div class="margin-top-5">
-    <%= render SpinnerButtonComponent.new(
-          action: ->(**tag_options, &block) do
-            button_to(url_for, **tag_options, &block)
-          end,
-          big: true,
-          wide: true,
-          action_message: t('idv.messages.verifying'),
-          method: :put,
-          form: {
-            class: 'button_to',
-            data: {
-              form_steps_wait: '',
-              error_message: t('idv.failure.exceptions.internal_error'),
-              alert_target: '#form-steps-wait-alert',
-              wait_step_path: idv_doc_auth_step_url(step: :verify_wait),
-              poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
+      <%= render SpinnerButtonComponent.new(
+            action: ->(**tag_options, &block) do
+              button_to(idv_verify_info_path, **tag_options, &block)
+            end,
+            big: true,
+            wide: true,
+            action_message: t('idv.messages.verifying'),
+            method: :put,
+            form: {
+              class: 'button_to',
+              data: {
+                form_steps_wait: '',
+                error_message: t('idv.failure.exceptions.internal_error'),
+                alert_target: '#form-steps-wait-alert',
+                wait_step_path: idv_verify_info_path,
+                poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
+              },
             },
-          },
-        ).with_content(t('forms.buttons.continue')) %>
+          ).with_content(t('forms.buttons.continue')) %>
   </div>
 </div>
 

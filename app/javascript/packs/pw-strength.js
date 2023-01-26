@@ -111,7 +111,6 @@ export function getForbiddenPasswords(element) {
 }
 
 function analyzePw() {
-  const { userAgent } = window.navigator;
   const input = document.querySelector('.password-toggle__input');
   const pwCntnr = document.getElementById('pw-strength-cntnr');
   const pwStrength = document.getElementById('pw-strength-txt');
@@ -137,10 +136,6 @@ function analyzePw() {
 
     clearErrors();
     disableSubmit(submit, z.password.length, z.score);
-  }
-
-  if (/(msie 9)/i.test(userAgent)) {
-    input.addEventListener('keyup', checkPasswordStrength);
   }
 
   input.addEventListener('input', checkPasswordStrength);

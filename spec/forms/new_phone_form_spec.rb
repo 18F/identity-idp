@@ -382,10 +382,4 @@ describe NewPhoneForm do
       end
     end
   end
-
-  describe '#redact' do
-    it 'leaves in punctuation and spaces, but removes letters and numbers' do
-      expect(form.send(:redact, '+11 (555) DEF-1234')).to eq('+## (###) XXX-####')
-    end
-  end
 end
