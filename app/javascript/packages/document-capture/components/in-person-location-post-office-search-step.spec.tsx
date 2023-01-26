@@ -138,5 +138,25 @@ describe('InPersonLocationStep', () => {
       });
       expect(results).not.to.exist();
     });
+
+    it('clicking search again after first results do not clear results', async () => {
+      const { findByText, findByLabelText } = render(
+        <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
+          <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
+        </InPersonContext.Provider>,
+      );
+
+      await userEvent.type(
+        await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
+        '800 main',
+      );
+      await userEvent.click(
+        await findByText('in_person_proofing.body.location.po_search.search_button'),
+      );
+      await userEvent.click(
+        await findByText('in_person_proofing.body.location.po_search.search_button'),
+      );
+      await findByText('in_person_proofing.body.location.po_search.results_description');
+    });
   });
 });
