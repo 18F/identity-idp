@@ -128,6 +128,14 @@ RSpec.describe Idv::GpoVerifyController do
         expect(response).to redirect_to(sign_up_completed_url)
       end
 
+      it 'redirects to the personal key page if new gpo flow is enabled' do
+        allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).and_return(true)
+
+        action
+
+        expect(response).to redirect_to(idv_personal_key_url)
+      end
+
       it 'dispatches account verified alert' do
         expect(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
 
