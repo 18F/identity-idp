@@ -75,15 +75,10 @@ class RegisterUserEmailForm
     user.email_language = email_language
   end
 
-  def valid_form?
-    valid? && !email_taken?
-  end
-
   def lookup_email_taken
-    email_address = EmailAddress.find_with_email(email)
-    email_owner = email_address&.user
+    email_owner = email_address_record&.user
     return false if email_owner.blank?
-    return email_address.confirmed? if email_owner.confirmed?
+    return email_address_record.confirmed? if email_owner.confirmed?
     true
   end
 
