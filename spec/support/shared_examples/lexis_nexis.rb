@@ -18,7 +18,7 @@ shared_examples 'a lexisnexis proofer' do
       and_return(verification_request)
   end
 
-  describe '#proof_applicant' do
+  describe '#proof' do
     context 'when proofing succeeds' do
       it 'results in a successful result' do
         result = subject.proof(applicant)
