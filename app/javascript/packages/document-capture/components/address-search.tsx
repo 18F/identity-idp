@@ -122,8 +122,18 @@ function useUspsLocations() {
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log('addy cand:', addressCandidates);
+    // eslint-disable-next-line no-console
+    console.log('candidate: ', addressCandidates?.[0]);
     if (addressCandidates?.[0]) {
+      // eslint-disable-next-line no-console
+      console.log('reached if');
       const bestMatchedAddress = addressCandidates[0];
+      trackEvent('IdV: in person proofing location search submitted', {
+        success: false,
+        errors: 'No address candidates found by arcgis',
+      });
       setFoundAddress({
         streetAddress: bestMatchedAddress.street_address,
         city: bestMatchedAddress.city,
@@ -132,6 +142,8 @@ function useUspsLocations() {
         address: bestMatchedAddress.address,
       });
     } else if (addressCandidates) {
+      // eslint-disable-next-line no-console
+      console.log('reached else');
       trackEvent('IdV: in person proofing location search submitted', {
         success: false,
         errors: 'No address candidates found by arcgis',
