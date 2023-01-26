@@ -131,7 +131,7 @@ describe Idv::VerifyInfoController do
     end
   end
 
-  describe "#update" do
+  describe '#update' do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_verify_info_controller_enabled).
         and_return(true)
