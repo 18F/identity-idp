@@ -32,7 +32,7 @@ interface AppRootData {
   cancelUrl: string;
   idvInPersonUrl?: string;
   securityAndPrivacyHowItWorksUrl: string;
-  inPersonCtaVariantTestingEnabled: string;
+  inPersonCtaVariantTestingEnabled: boolean;
   inPersonCtaVariantActive: string;
 }
 
@@ -177,7 +177,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
       {
         value: {
           arcgisSearchEnabled: arcgisSearchEnabled === 'true',
-          inPersonCtaVariantTestingEnabled: inPersonCtaVariantTestingEnabled === 'true',
+          inPersonCtaVariantTestingEnabled: inPersonCtaVariantTestingEnabled === true,
           inPersonCtaVariantActive,
           inPersonURL,
         },
