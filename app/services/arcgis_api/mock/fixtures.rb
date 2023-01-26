@@ -31,7 +31,7 @@ module ArcgisApi
 
       private_class_method def self.generate_suggestions(count = 5)
         {
-          suggestions: Array.new(count) do |index|
+          suggestions: count.times do |index|
             {
               text: Faker::Address.full_address,
               magicKey: index,
