@@ -37,6 +37,9 @@ describe TwoFactorAuthentication::OtpExpiredController do
       end
 
       it 'when otp is still valid' do
+        user = build(:user, otp_delivery_preference: 'voice', direct_otp_sent_at: Time.zone.now)
+        stub_sign_in_before_2fa(user)
+
         get :show
 
         expect(response).to_not render_template(:show)
