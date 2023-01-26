@@ -100,11 +100,7 @@ interface FileInputProps {
   onError?: (message: ReactNode) => void;
 }
 
-type AriaLabelReturnType =
-  | {
-      'aria-labelledby': string;
-    }
-  | { 'aria-label': string };
+type AriaLabelReturnType = { 'aria-labelledby': string } | { 'aria-label': string };
 
 /**
  * Given a token of an file input accept attribute, returns an equivalent regular expression
