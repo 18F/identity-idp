@@ -33,7 +33,7 @@ module AbTests
 
     buckets
   end
-  
+
   IN_PERSON_CTA = AbTestBucket.new(
     experiment_name: 'In-Person Proofing CTA',
     buckets: in_person_cta_variant_testing_buckets,
