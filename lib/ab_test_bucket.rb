@@ -1,16 +1,17 @@
 class AbTestBucket
-  attr_reader :buckets, :experiment_name
+  attr_reader :buckets, :experiment_name, :default_bucket
 
-  def initialize(experiment_name:, buckets: {})
+  def initialize(experiment_name:, buckets: {}, default_bucket: :default)
     @buckets = buckets
     @experiment_name = experiment_name
+    @default_bucket = default_bucket
     raise 'invalid bucket data structure' unless valid_bucket_data_structure?
     ensure_numeric_percentages
     raise 'bucket percentages exceed 100' unless within_100_percent?
   end
 
   def bucket(discriminator = nil)
-    return :default if discriminator.blank?
+    return @default_bucket if discriminator.blank?
 
     user_value = percent(discriminator)
 
@@ -21,7 +22,7 @@ class AbTestBucket
       min = max
     end
 
-    :default
+    @default_bucket
   end
 
   private
