@@ -2,7 +2,6 @@ module Idv
   class VerifyInfoController < ApplicationController
     include IdvSession
 
-    before_action :render_404_if_verify_info_controller_disabled
     before_action :confirm_two_factor_authenticated
     before_action :confirm_ssn_step_complete
 
@@ -52,10 +51,6 @@ module Idv
     end
 
     private
-
-    def render_404_if_verify_info_controller_disabled
-      render_not_found unless IdentityConfig.store.doc_auth_verify_info_controller_enabled
-    end
 
     # copied from doc_auth_controller
     def flow_session
