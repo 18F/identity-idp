@@ -30,7 +30,7 @@ class RegisterUserEmailForm
   end
 
   def validate_terms_accepted
-    return if @terms_accepted
+    return if @terms_accepted || email_address_record&.user&.accepted_terms_at.present?
 
     errors.add(:terms_accepted, t('errors.registration.terms'), type: :terms)
   end
