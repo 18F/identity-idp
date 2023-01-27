@@ -61,7 +61,7 @@ module Idv
       if in_person_flow?
         @try_again_path = idv_in_person_path
       else
-        @try_again_path = idv_doc_auth_path
+        @try_again_path = doc_auth_try_again_path
       end
     end
 
