@@ -21,9 +21,20 @@ module RedirectUriValidator
 
   def any_registered_sp_redirect_uris_identical_to_the_requested_uri?
     service_provider.redirect_uris.any? do |sp_redirect_uri|
-      parsed_sp_redirect_uri = URI.parse(sp_redirect_uri)
-
-      parsed_sp_redirect_uri == parsed_redirect_uri
+      return true if requested_uri == sp_redirect_uri
+      parsed_sp_redirect_uri = URI(sp_redirect_uri)
+      if parsed_sp_redirect_uri == parsed_redirect_uri
+        Rails.logger.info(
+          {
+            name: 'Redirect URI mismatch',
+            sp_redirect_uri: sp_redirect_uri,
+            requested_uri: requested_uri,
+          },
+        )
+        true
+      else
+        false
+      end
     end
   rescue ArgumentError, URI::InvalidURIError
     errors.add(
@@ -33,7 +44,13 @@ module RedirectUriValidator
   end
 
   def parsed_redirect_uri
-    requested_uri = post_logout_redirect_uri || redirect_uri
-    URI.parse(requested_uri)
+    return @parsed_redirect_uri if defined?(@parsed_redirect_uri)
+    @parsed_redirect_uri = URI.parse(requested_uri)
+  end
+
+  def requested_uri
+    return @requested_uri if defined?(@requested_uri)
+
+    @requested_uri = post_logout_redirect_uri || redirect_uri
   end
 end
