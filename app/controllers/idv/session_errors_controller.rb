@@ -65,6 +65,14 @@ module Idv
       end
     end
 
+    def doc_auth_try_again_path
+      if IdentityConfig.store.doc_auth_verify_info_controller_enabled
+        idv_verify_info_url
+      else
+        idv_doc_auth_path
+      end
+    end
+
     def in_person_flow?
       params[:flow] == 'in_person'
     end
