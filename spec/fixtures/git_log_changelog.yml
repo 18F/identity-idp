@@ -82,7 +82,7 @@ squashed_commit_invalid:
 commit_changelog_capitalized:
   commit_log: |
     title: Improve changelog tool flexibility for commit messages (#7000)
-    body:Changelog: Internal, Changelog, Improve changelog tool flexibility for commit messages
+    body:ChAngElOg: Internal, Changelog, Improve changelog tool flexibility for commit messages
     DELIMITER
   title: Improve changelog tool flexibility for commit messages (#7000)
   category: Internal
@@ -90,7 +90,7 @@ commit_changelog_capitalized:
   change: Improve changelog tool flexibility for commit messages
   pr_number: '7000'
   commit_messages:
-    - 'Changelog: Internal, Changelog, Improve changelog tool flexibility for commit messages'
+    - 'ChAngElOg: Internal, Changelog, Improve changelog tool flexibility for commit messages'
 commit_changelog_whitespace:
   commit_log: |
     title: Improve changelog tool flexibility for commit messages (#7000)

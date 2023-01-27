@@ -32,6 +32,8 @@ interface AppRootData {
   cancelUrl: string;
   idvInPersonUrl?: string;
   securityAndPrivacyHowItWorksUrl: string;
+  inPersonCtaVariantTestingEnabled: boolean;
+  inPersonCtaVariantActive: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -119,6 +121,8 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     idvInPersonUrl: inPersonURL,
     securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
     arcgisSearchEnabled,
+    inPersonCtaVariantTestingEnabled,
+    inPersonCtaVariantActive,
   } = appRoot.dataset as DOMStringMap & AppRootData;
 
   const App = composeComponents(
@@ -170,7 +174,14 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     ],
     [
       InPersonContext.Provider,
-      { value: { arcgisSearchEnabled: arcgisSearchEnabled === 'true', inPersonURL } },
+      {
+        value: {
+          arcgisSearchEnabled: arcgisSearchEnabled === 'true',
+          inPersonCtaVariantTestingEnabled: inPersonCtaVariantTestingEnabled === true,
+          inPersonCtaVariantActive,
+          inPersonURL,
+        },
+      },
     ],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
   );
