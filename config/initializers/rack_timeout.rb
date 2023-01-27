@@ -27,6 +27,8 @@ module Rack
   end
 end
 
+Rack::Timeout::Logger.level = Logger::ERROR
+
 Rails.application.config.middleware.insert_before(
   Rack::Runtime,
   Rack::Timeout,
