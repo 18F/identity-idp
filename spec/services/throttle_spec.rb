@@ -138,6 +138,47 @@ RSpec.describe Throttle do
     end
   end
 
+  describe '#throttled_else_increment_and_check?' do
+    subject(:throttle) { Throttle.new(target: 'aaaa', throttle_type: :idv_doc_auth) }
+
+    context 'throttle has hit limit' do
+      before do
+        (IdentityConfig.store.doc_auth_max_attempts + 1).times do
+          throttle.increment!
+        end
+      end
+
+      it 'is true' do
+        expect(throttle.throttled_else_increment_and_check?).to eq(true)
+      end
+    end
+
+    context 'throttle has not hit limit' do
+      it 'is false' do
+        expect(throttle.throttled_else_increment_and_check?).to eq(false)
+      end
+
+      it 'increments the throttle' do
+        expect { throttle.throttled_else_increment_and_check? }.to change {
+                                                                     throttle.attempts
+                                                                   }.by(1)
+      end
+    end
+
+    context 'throttle reaches limit' do
+      before do
+        (IdentityConfig.store.doc_auth_max_attempts - 1).times do
+          throttle.increment!
+        end
+      end
+
+      it 'increments the throttle and returns true' do
+        expect(throttle.throttled?).to eq(false)
+        expect(throttle.throttled_else_increment_and_check?).to eq(true)
+      end
+    end
+  end
+
   describe '#expires_at' do
     let(:attempted_at) { nil }
     let(:throttle) { Throttle.new(target: '1', throttle_type: throttle_type) }
