@@ -1,12 +1,12 @@
 module Proofing
   class AddressResult
     attr_reader :success,
-      :errors,
-      :exception,
-      :vendor_name,
-      :transaction_id,
-      :reference,
-      :vendor_workflow
+                :errors,
+                :exception,
+                :vendor_name,
+                :transaction_id,
+                :reference,
+                :vendor_workflow
 
     def initialize(
       success:,

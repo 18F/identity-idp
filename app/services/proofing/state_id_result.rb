@@ -1,11 +1,11 @@
 module Proofing
   class StateIdResult
     attr_reader :errors,
-      :exception,
-      :success,
-      :vendor_name,
-      :transaction_id,
-      :verified_attributes
+                :exception,
+                :success,
+                :vendor_name,
+                :transaction_id,
+                :verified_attributes
 
     def initialize(
       success: nil,

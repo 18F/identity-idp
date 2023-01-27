@@ -1,16 +1,16 @@
 module Proofing
   class ResolutionResult
     attr_reader :errors,
-      :exception,
-      :success,
-      :vendor_name,
-      :transaction_id,
-      :verified_attributes,
-      :failed_result_can_pass_with_additional_verification,
-      :attributes_requiring_additional_verification,
-      :reference,
-      :vendor_workflow,
-      :drivers_license_check_info
+                :exception,
+                :success,
+                :vendor_name,
+                :transaction_id,
+                :verified_attributes,
+                :failed_result_can_pass_with_additional_verification,
+                :attributes_requiring_additional_verification,
+                :reference,
+                :vendor_workflow,
+                :drivers_license_check_info
 
     def initialize(
       success: nil,
