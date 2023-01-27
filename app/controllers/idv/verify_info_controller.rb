@@ -1,6 +1,7 @@
 module Idv
   class VerifyInfoController < ApplicationController
     include IdvSession
+    include VerifyInfoConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_ssn_step_complete
@@ -74,10 +75,6 @@ module Idv
     private
 
     # copied from doc_auth_controller
-    def flow_session
-      user_session['idv/doc_auth']
-    end
-
     def flow_path
       flow_session[:flow_path]
     end
