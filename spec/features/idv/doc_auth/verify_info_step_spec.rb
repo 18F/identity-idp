@@ -169,6 +169,10 @@ feature 'doc auth verify_info step', :js do
         throttle_type: :idv_resolution,
         step_name: 'Idv::VerifyInfoController',
       )
+
+      visit idv_verify_info_url
+      expect(page).to have_current_path(idv_session_errors_failure_path)
+
       travel_to(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now + 1) do
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_verify_step
