@@ -51,7 +51,7 @@ es:
         none_found: No se encontraron localidades.
         phone: 'Telefono:'
         po_search:
-          address_search_hint: 'Ejemplo: 1960 W Chelsea Ave Allentown PA 18104'
+          address_search_hint: 'Ejemplo: 1234 N Example St., Allentown, PA 12345'
           address_search_label: Introduzca una dirección para encontrar una Oficina de
             Correos cercana a usted
           is_searching_message: Buscando oficinas de correos…
