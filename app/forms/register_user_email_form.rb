@@ -42,11 +42,9 @@ class RegisterUserEmailForm
       email_language: params[:email_language],
     )
     self.request_id = params[:request_id]
-    if valid?
-      process_successful_submission(request_id, instructions)
-    else
-      self.success = false
-    end
+
+    self.success = valid?
+    process_successful_submission(request_id, instructions) if success
 
     FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
   end
@@ -85,7 +83,6 @@ class RegisterUserEmailForm
   def process_successful_submission(request_id, instructions)
     # To prevent discovery of existing emails, we check to see if the email is
     # already taken and if so, we act as if the user registration was successful.
-    self.success = true
     if email_taken? && user_unconfirmed?
       send_sign_up_unconfirmed_email(request_id)
     elsif email_taken?
