@@ -125,5 +125,78 @@ describe Idv::Steps::DocumentCaptureStep do
         end
       end
     end
+
+    context 'in-person CTA variant A/B testing' do
+      let(:session_uuid) { SecureRandom.uuid }
+      let(:testing_enabled) { nil }
+      let(:active_variant) { nil }
+
+      before do
+        allow(IdentityConfig.store).
+          to receive(:in_person_cta_variant_testing_enabled).
+          and_return(testing_enabled)
+
+        flow.flow_session[:document_capture_session_uuid] = session_uuid
+
+        stub_const(
+          'AbTests::IN_PERSON_CTA',
+          FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => active_variant) },
+        )
+      end
+
+      context 'with in-person CTA variant A/B testing disabled' do
+        let(:testing_enabled) { false }
+
+        context 'and A/B test specifies variant a' do
+          let(:active_variant) { :in_person_variant_a }
+
+          it 'passes the correct variables' do
+            expect(
+              subject.extra_view_variables[:in_person_cta_variant_testing_enabled],
+            ).to eq(false)
+            expect(
+              subject.extra_view_variables[:in_person_cta_variant_active],
+            ).to eq(:in_person_variant_a)
+          end
+        end
+      end
+
+      context 'with in-person CTA variant A/B testing enabled' do
+        let(:testing_enabled) { true }
+
+        context 'and A/B test specifies variant a' do
+          let(:active_variant) { :in_person_variant_a }
+
+          it 'passes the expected variables' do
+            expect(subject.extra_view_variables[:in_person_cta_variant_testing_enabled]).to eq(true)
+            expect(
+              subject.extra_view_variables[:in_person_cta_variant_active],
+            ).to eq(:in_person_variant_a)
+          end
+        end
+
+        context 'and A/B test specifies variant b' do
+          let(:active_variant) { :in_person_variant_b }
+
+          it 'passes the expected variables' do
+            expect(subject.extra_view_variables[:in_person_cta_variant_testing_enabled]).to eq(true)
+            expect(
+              subject.extra_view_variables[:in_person_cta_variant_active],
+            ).to eq(:in_person_variant_b)
+          end
+        end
+
+        context 'and A/B test specifies variant c' do
+          let(:active_variant) { :in_person_variant_c }
+
+          it 'passes the expected variables' do
+            expect(subject.extra_view_variables[:in_person_cta_variant_testing_enabled]).to eq(true)
+            expect(
+              subject.extra_view_variables[:in_person_cta_variant_active],
+            ).to eq(:in_person_variant_c)
+          end
+        end
+      end
+    end
   end
 end

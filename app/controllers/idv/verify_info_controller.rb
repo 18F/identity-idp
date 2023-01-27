@@ -9,7 +9,15 @@ module Idv
       increment_step_counts
       analytics.idv_doc_auth_verify_visited(**analytics_arguments)
 
-      redirect_to throttled_url and return if any_throttled?
+      if ssn_throttle.throttled?
+        redirect_to idv_session_errors_ssn_failure_url
+        return
+      end
+
+      if resolution_throttle.throttled?
+        redirect_to throttled_url
+        return
+      end
 
       process_async_state(load_async_state)
     end
@@ -25,6 +33,11 @@ module Idv
           step_name: 'verify_info',
         )
         redirect_to idv_session_errors_ssn_failure_url
+        return
+      end
+
+      if resolution_throttle.throttled?
+        redirect_to throttled_url
         return
       end
 
@@ -145,10 +158,6 @@ module Idv
         target: Pii::Fingerprinter.fingerprint(pii[:ssn]),
         throttle_type: :proof_ssn,
       )
-    end
-
-    def any_throttled?
-      ssn_throttle.throttled? || resolution_throttle.throttled?
     end
 
     def idv_failure(result)
