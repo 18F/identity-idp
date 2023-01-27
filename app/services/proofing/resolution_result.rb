@@ -1,9 +1,16 @@
 module Proofing
   class ResolutionResult
-    attr_reader :success, :errors, :exception, :vendor_name, :transaction_id, :verified_attributes,
-                :failed_result_can_pass_with_additional_verification,
-                :attributes_requiring_additional_verification,
-                :reference, :vendor_workflow, :drivers_license_check_info
+    attr_reader :errors,
+      :exception,
+      :success,
+      :vendor_name,
+      :transaction_id,
+      :verified_attributes,
+      :failed_result_can_pass_with_additional_verification,
+      :attributes_requiring_additional_verification,
+      :reference,
+      :vendor_workflow,
+      :drivers_license_check_info
 
     def initialize(
       success: nil,
@@ -39,10 +46,6 @@ module Proofing
       exception.is_a?(Proofing::TimeoutError)
     end
 
-    def failed_result_can_pass_with_additional_verification?
-      failed_result_can_pass_with_additional_verification
-    end
-
     def to_h
       {
         success: success?,
@@ -57,6 +60,10 @@ module Proofing
         vendor_workflow: vendor_workflow,
         drivers_license_check_info: drivers_license_check_info,
       }
+    end
+
+    def failed_result_can_pass_with_additional_verification?
+      failed_result_can_pass_with_additional_verification
     end
   end
 end
