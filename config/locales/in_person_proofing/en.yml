@@ -27,10 +27,14 @@ en:
           to verify your identity. No appointment is required.
       cta:
         button: Verify your ID in person
-        new_feature: New Feature
+        button_variant: Try in person
         prompt_detail: If you are located near Washington, D.C. or Baltimore, MD, you
           may be able to verify your ID in person at limited post office
           locations.
+        prompt_detail_a: You may be able to verify your ID in person at a participating
+          Post Office near you.
+        prompt_detail_b: Alternatively, if you are having trouble adding your ID online,
+          you may be able to try in person at limited post office locations.
       location:
         contact_info_heading: Contact Information
         distance:
@@ -110,6 +114,7 @@ en:
       address: Enter your current address
       barcode: You’re ready to verify your identity in person
       cta: Having trouble verifying your ID online?
+      cta_variant: Try verifying your ID in person
       location: Select a location to verify your ID
       po_search:
         location: Find a participating Post Office
