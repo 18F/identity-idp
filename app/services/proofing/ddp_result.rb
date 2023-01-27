@@ -1,5 +1,5 @@
 module Proofing
-  class Result
+  class DdpResult
     attr_reader :exception
     attr_accessor :context,
                   :transaction_id,

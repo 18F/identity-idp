@@ -355,7 +355,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         end
 
         context 'nil response body from ddp' do
-          let(:ddp_result) { Proofing::Result.new(response_body: nil) }
+          let(:ddp_result) { Proofing::DdpResult.new(response_body: nil) }
 
           before do
             expect(ddp_proofer).to receive(:proof).and_return(ddp_result)

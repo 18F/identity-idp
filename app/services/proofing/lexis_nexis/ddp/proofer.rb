@@ -42,7 +42,7 @@ module Proofing
           # build_result_from_response(response)
         rescue => exception
           NewRelic::Agent.notice_error(exception)
-          Proofing::Result.new(exception: exception)
+          Proofing::DdpResult.new(exception: exception)
         end
 
         private
@@ -73,7 +73,7 @@ module Proofing
         end
 
         def process_response(response)
-          result = Proofing::Result.new
+          result = Proofing::DdpResult.new
           body = response.response_body
 
           result.response_body = body
