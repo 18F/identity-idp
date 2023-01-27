@@ -31,8 +31,10 @@ const DEFAULT_PROPS = {
 };
 
 describe('InPersonLocationStep', () => {
-  const server: SetupServerApi = setupServer();
+  let server: SetupServerApi;
+
   before(() => {
+    server = setupServer();
     server.listen();
   });
 
