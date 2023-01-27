@@ -83,6 +83,8 @@ class RegisterUserEmailForm
   end
 
   def process_successful_submission(request_id, instructions)
+    # To prevent discovery of existing emails, we check to see if the email is
+    # already taken and if so, we act as if the user registration was successful.
     self.success = true
     if email_taken? && user_unconfirmed?
       send_sign_up_unconfirmed_email(request_id)
