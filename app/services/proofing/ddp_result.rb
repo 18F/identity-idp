@@ -42,6 +42,10 @@ module Proofing
       !@exception.nil?
     end
 
+    def failed?
+      !exception? && errors?
+    end
+
     def success?
       !exception? && !errors?
     end

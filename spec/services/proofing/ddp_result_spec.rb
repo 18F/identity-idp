@@ -49,17 +49,17 @@ describe Proofing::DdpResult do
       let(:result) do
         Proofing::DdpResult.new(exception: StandardError.new).add_error('foobar')
       end
-      # it { is_expected.to eq(false) }
+      it { is_expected.to eq(false) }
     end
 
     context 'when there is an error and no exception' do
       let(:result) { Proofing::DdpResult.new.add_error('foobar') }
-      # it { is_expected.to eq(true) }
+      it { is_expected.to eq(true) }
     end
 
     context 'when there is no error' do
       let(:result) { Proofing::DdpResult.new }
-      # it { is_expected.to eq(false) }
+      it { is_expected.to eq(false) }
     end
   end
 
@@ -89,17 +89,17 @@ describe Proofing::DdpResult do
 
     context 'when there is a timeout error' do
       let(:result) { Proofing::DdpResult.new(exception: Proofing::TimeoutError.new) }
-      # it { is_expected.to eq(true) }
+      it { is_expected.to eq(true) }
     end
 
     context 'when there is a generic error' do
       let(:result) { Proofing::DdpResult.new(exception: StandardError.new) }
-      # it { is_expected.to eq(false) }
+      it { is_expected.to eq(false) }
     end
 
     context 'when there is no error' do
       let(:result) { Proofing::DdpResult.new }
-      # it { is_expected.to eq(false) }
+      it { is_expected.to eq(false) }
     end
   end
 
