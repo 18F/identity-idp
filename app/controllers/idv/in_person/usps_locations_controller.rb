@@ -26,7 +26,6 @@ module Idv
             response = proofer.request_pilot_facilities
           end
           render json: response.to_json
-        # todo: consider which Faraday errors we actually want to catch here
         rescue Faraday::TimeoutError, Faraday::BadRequestError, Faraday::ForbiddenError => err
           analytics.idv_in_person_locations_request_failure(
             api_status_code: 422,
