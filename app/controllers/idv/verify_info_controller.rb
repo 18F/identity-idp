@@ -28,7 +28,7 @@ module Idv
 
       pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
 
-      if ssn_throttle.throttled_else_increment_and_check?
+      if ssn_throttle.throttled_else_increment?
         analytics.throttler_rate_limit_triggered(
           throttle_type: :proof_ssn,
           step_name: 'verify_info',

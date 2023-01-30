@@ -44,16 +44,6 @@ class Throttle
       true
     else
       increment!
-      false
-    end
-  end
-
-  # This is the expected behavior of throttled_else_increment? above
-  def throttled_else_increment_and_check?
-    if throttled?
-      true
-    else
-      increment!
       throttled?
     end
   end
