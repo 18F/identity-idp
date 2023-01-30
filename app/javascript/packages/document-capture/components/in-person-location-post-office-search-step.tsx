@@ -38,9 +38,9 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   const handleLocationSelect = useCallback(
     async (e: any, id: number) => {
       const selectedLocation = locationResults![id]!;
-      const { name: selectedLocationName } = selectedLocation;
-      setSubmitEventMetadata({ selected_location: selectedLocationName });
-      onChange({ selectedLocationName });
+      const { streetAddress } = selectedLocation;
+      setSubmitEventMetadata({ selected_location: streetAddress });
+      onChange({ streetAddress });
       if (autoSubmit) {
         return;
       }
