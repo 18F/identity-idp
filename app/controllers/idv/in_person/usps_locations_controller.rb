@@ -27,8 +27,19 @@ module Idv
             response = proofer.request_pilot_facilities
           end
           render json: response.to_json
+        rescue Faraday::TimeoutError, Faraday::BadRequestError, Faraday::ForbiddenError => err
+          analytics.idv_in_person_locations_request_failure(
+            api_status_code: 422,
+            exception_class: err.class,
+            exception_message: err.message,
+            response_body_present: err.respond_to?(:response_body) && err.response_body.present?,
+            response_body: err.respond_to?(:response_body) && err.response_body,
+            response_status_code: err.respond_to?(:response_status) && err.response_status,
+          )
+          render json: {}, status: :unprocessable_entity
         rescue => err
           analytics.idv_in_person_locations_request_failure(
+            api_status_code: 500,
             exception_class: err.class,
             exception_message: err.message,
             response_body_present: err.respond_to?(:response_body) && err.response_body.present?,
