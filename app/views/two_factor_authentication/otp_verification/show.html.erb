@@ -58,10 +58,10 @@
 
 
 <%= render(
-        'shared/troubleshooting_options',
-        heading: @presenter.troubleshooting_header,
-        options: @presenter.troubleshooting_options,
-      ) %>
+      'shared/troubleshooting_options',
+      heading: @presenter.troubleshooting_header,
+      options: @presenter.troubleshooting_options,
+    ) %>
 
 <% if MfaPolicy.new(current_user).two_factor_enabled? %>
   <%= render 'shared/cancel', link: @presenter.cancel_link %>
