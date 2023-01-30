@@ -116,9 +116,8 @@ en:
     phone_label: Phone number
     phone_verification:
       troubleshooting:
-        change_phone_number: Use another phone number
+        change_number: Use another phone number
         code_not_received: I didn’t receive my one-time code
-        header: 'Having trouble? Here’s what you can do:'
         learn_more: Learn more about authentication options
     piv_cac_fallback:
       question: Don’t have your PIV or CAC available?

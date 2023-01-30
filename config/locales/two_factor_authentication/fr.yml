@@ -130,9 +130,8 @@ fr:
     phone_label: Numéro de téléphone
     phone_verification:
       troubleshooting:
-        change_phone_number: Utilisez un autre numéro de téléphone
+        change_number: Utilisez un autre numéro de téléphone
         code_not_received: Je n’ai pas reçu mon code à usage unique
-        header: 'Des difficultés? Voici ce que vous pouvez faire:'
         learn_more: En savoir plus sur les options d’authentification
     piv_cac_fallback:
       question: Votre PIV ou CAC n’est pas disponible?
