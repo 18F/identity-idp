@@ -36,7 +36,18 @@ describe('InPersonLocationStep', () => {
   before(() => {
     server = setupServer(
       rest.post(LOCATIONS_URL, (_req, res, ctx) =>
-        res(ctx.json([{ name: 'Baltimore', address: '100 Main St E' }])),
+        res(
+          ctx.json([
+            {
+              name: 'Baltimore',
+              address: '100 Main St E',
+              city: 'Bronwood',
+              state: 'GA',
+              zip_code_5: '39826',
+              zip_code_4: '3982',
+            },
+          ]),
+        ),
       ),
       rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
       rest.put(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ success: true }]))),
@@ -65,6 +76,6 @@ describe('InPersonLocationStep', () => {
 
     await userEvent.click(button);
 
-    await findByText('{"selected_location":"100 Main St E"}');
+    await findByText('{"selected_location":"100 Main St E, Bronwood, GA, 39826-3982"}');
   });
 });

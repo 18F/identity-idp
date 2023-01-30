@@ -20,7 +20,7 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
   const { flowPath } = useContext(UploadContext);
   const { trackEvent } = useContext(AnalyticsContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
-  const { streetAddress } = value;
+  const { streetAddress, formattedCityStateZip } = value;
 
   const onContinue: MouseEventHandler = async (event) => {
     event.preventDefault();
@@ -35,10 +35,10 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
 
   return (
     <>
-      {streetAddress && (
+      {streetAddress && formattedCityStateZip && (
         <Alert type="success" className="margin-bottom-4">
           {t('in_person_proofing.body.prepare.alert_selected_post_office', {
-            address: streetAddress,
+            full_address: `${streetAddress}, ${formattedCityStateZip}`,
           })}
         </Alert>
       )}

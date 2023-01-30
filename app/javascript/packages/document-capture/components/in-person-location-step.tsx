@@ -101,9 +101,9 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   const handleLocationSelect = useCallback(
     async (e: any, id: number) => {
       const selectedLocation = locationData[id];
-      const { streetAddress } = selectedLocation;
-      setSubmitEventMetadata({ selected_location: streetAddress });
-      onChange({ streetAddress });
+      const { streetAddress, formattedCityStateZip } = selectedLocation;
+      setSubmitEventMetadata({ selected_location: `${streetAddress}, ${formattedCityStateZip}` });
+      onChange({ streetAddress, formattedCityStateZip });
       if (autoSubmit) {
         return;
       }
