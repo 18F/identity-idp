@@ -3,7 +3,11 @@ import type { CountdownElement } from './countdown-element';
 export class CountdownAlertElement extends HTMLElement {
   connectedCallback() {
     if (this.showAtRemaining) {
-      this.addEventListener('lg:countdown:tick', this.handleCountdownTick);
+      this.addEventListener('lg:countdown:tick', this.handleShowAtRemainingTick);
+    }
+
+    if (this.redirectURL) {
+      this.addEventListener('lg:countdown:tick', this.handleRedirectTick);
     }
   }
 
@@ -11,14 +15,25 @@ export class CountdownAlertElement extends HTMLElement {
     return Number(this.getAttribute('show-at-remaining')) || null;
   }
 
+  get redirectURL(): string | null {
+    return this.getAttribute('redirect-url') || null;
+  }
+
   get countdown(): CountdownElement {
     return this.querySelector('lg-countdown')!;
   }
 
-  handleCountdownTick = () => {
+  handleShowAtRemainingTick = () => {
     if (this.countdown.timeRemaining <= this.showAtRemaining!) {
       this.show();
-      this.removeEventListener('lg:countdown:tick', this.handleCountdownTick);
+      this.removeEventListener('lg:countdown:tick', this.handleShowAtRemainingTick);
+    }
+  };
+
+  handleRedirectTick = () => {
+    if (this.countdown.timeRemaining <= 0) {
+      window.location.href = this.redirectURL!;
+      this.removeEventListener('lg:countdown:tick', this.handleRedirectTick);
     }
   };
 

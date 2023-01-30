@@ -2,9 +2,9 @@ module Idv
   class VerifyInfoController < ApplicationController
     include IdvSession
 
-    before_action :render_404_if_verify_info_controller_disabled
     before_action :confirm_two_factor_authenticated
     before_action :confirm_ssn_step_complete
+    before_action :confirm_profile_not_already_confirmed
 
     def show
       increment_step_counts
@@ -66,10 +66,6 @@ module Idv
 
     private
 
-    def render_404_if_verify_info_controller_disabled
-      render_not_found unless IdentityConfig.store.doc_auth_verify_info_controller_enabled
-    end
-
     # copied from doc_auth_controller
     def flow_session
       user_session['idv/doc_auth']
@@ -122,6 +118,11 @@ module Idv
     def confirm_ssn_step_complete
       return if pii.present? && pii[:ssn].present?
       redirect_to idv_doc_auth_url
+    end
+
+    def confirm_profile_not_already_confirmed
+      return unless idv_session.profile_confirmation == true
+      redirect_to idv_review_url
     end
 
     def current_flow_step_counts
