@@ -27,8 +27,9 @@ module Idv
           end
           render json: response.to_json
         # todo: consider which Faraday errors we actually want to catch here
-        rescue Faraday::TimeoutError, Faraday::ClientError => err
+        rescue Faraday::TimeoutError, Faraday::BadRequestError, Faraday::ForbiddenError => err
           analytics.idv_in_person_locations_request_failure(
+            api_status_code: 422,
             exception_class: err.class,
             exception_message: err.message,
             response_body_present: err.respond_to?(:response_body) && err.response_body.present?,
@@ -38,6 +39,7 @@ module Idv
           render json: {}, status: :unprocessable_entity
         rescue => err
           analytics.idv_in_person_locations_request_failure(
+            api_status_code: 500,
             exception_class: err.class,
             exception_message: err.message,
             response_body_present: err.respond_to?(:response_body) && err.response_body.present?,

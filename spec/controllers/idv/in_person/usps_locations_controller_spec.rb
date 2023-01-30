@@ -144,6 +144,7 @@ describe Idv::InPerson::UspsLocationsController do
           subject
           expect(@analytics).to have_logged_event(
             'Request USPS IPP locations: request failed',
+            api_status_code: 422,
             exception_class: timeout_error.class,
             exception_message: timeout_error.message,
             response_body_present:
@@ -168,6 +169,7 @@ describe Idv::InPerson::UspsLocationsController do
           subject
           expect(@analytics).to have_logged_event(
             'Request USPS IPP locations: request failed',
+            api_status_code: 500,
             exception_class: server_error.class,
             exception_message: server_error.message,
             response_body_present:
@@ -199,6 +201,7 @@ describe Idv::InPerson::UspsLocationsController do
           subject
           expect(@analytics).to have_logged_event(
             'Request USPS IPP locations: request failed',
+            api_status_code: 500,
             exception_class: exception.class,
             exception_message: exception.message,
             response_body_present:
