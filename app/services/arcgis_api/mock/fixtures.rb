@@ -34,7 +34,7 @@ module ArcgisApi
           suggestions: Array.new(count) do |index|
             {
               text: Faker::Address.full_address,
-              magicKey: index,
+              magicKey: index.to_s,
               isCollection: false,
             }
           end,

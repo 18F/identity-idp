@@ -54,6 +54,8 @@ RSpec.describe ArcgisApi::Geocoder do
       expect(first_candidate.city).to be_present
       expect(first_candidate.state).to be_present
       expect(first_candidate.zip_code).to be_present
+      expect(first_candidate.location.latitude).to be_present
+      expect(first_candidate.location.longitude).to be_present
     end
 
     # https://developers.arcgis.com/rest/geocode/api-reference/geocoding-service-output.htm#ESRI_SECTION3_619341BEAA3A4F488FC66FAE8E479563
