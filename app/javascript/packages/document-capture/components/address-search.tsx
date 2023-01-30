@@ -111,10 +111,8 @@ function useUspsLocations() {
   }, []);
 
   // sends the raw text query to arcgis
-  const { data: addressCandidates, isLoading: isLoadingCandidates } = useSWR(
-    [addressQuery],
-    () => (addressQuery ? requestAddressCandidates(addressQuery) : null),
-    { keepPreviousData: true },
+  const { data: addressCandidates, isLoading: isLoadingCandidates } = useSWR([addressQuery], () =>
+    addressQuery ? requestAddressCandidates(addressQuery) : null,
   );
 
   // sets the arcgis-validated address object
@@ -139,15 +137,16 @@ function useUspsLocations() {
     }
   }, [addressCandidates]);
 
-  const { data: locationResults, isLoading: isLoadingLocations } = useSWR(
-    [foundAddress],
-    ([address]) => (address ? requestUspsLocations(address) : null),
-    { keepPreviousData: true },
-  );
+  const {
+    data: locationResults,
+    isLoading: isLoadingLocations,
+    error,
+  } = useSWR([foundAddress], ([address]) => (address ? requestUspsLocations(address) : null));
 
   return {
     foundAddress,
     locationResults,
+    error,
     isLoading: isLoadingLocations || isLoadingCandidates,
     handleAddressSearch,
     validatedFieldRef,
@@ -158,18 +157,23 @@ interface AddressSearchProps {
   registerField?: RegisterFieldCallback;
   onFoundAddress?: (address: LocationQuery | null) => void;
   onFoundLocations?: (locations: FormattedLocation[] | null | undefined) => void;
+  onLoadingLocations?: (isLoading: boolean) => void;
+  onError?: (error: Error | null) => void;
 }
 
 function AddressSearch({
   registerField = () => undefined,
   onFoundAddress = () => undefined,
   onFoundLocations = () => undefined,
+  onLoadingLocations = () => undefined,
+  onError = () => undefined,
 }: AddressSearchProps) {
   const { t } = useI18n();
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
   const [textInput, setTextInput] = useState('');
   const {
     locationResults,
+    error,
     isLoading,
     handleAddressSearch: onSearch,
     foundAddress,
@@ -183,7 +187,12 @@ function AddressSearch({
 
   useEffect(() => {
     spinnerButtonRef.current?.toggleSpinner(isLoading);
+    onLoadingLocations(isLoading);
   }, [isLoading]);
+
+  useEffect(() => {
+    error && onError(error);
+  }, [error]);
 
   useDidUpdateEffect(() => {
     onFoundLocations(locationResults);
@@ -193,7 +202,7 @@ function AddressSearch({
 
   const handleSearch = useCallback(
     (event) => {
-      onFoundAddress(null);
+      onError(null);
       onSearch(event, textInput);
     },
     [textInput],

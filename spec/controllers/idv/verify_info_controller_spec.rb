@@ -3,14 +3,19 @@ require 'rails_helper'
 describe Idv::VerifyInfoController do
   include IdvHelper
 
-  describe 'before_actions' do
-    it 'checks that feature flag is enabled' do
-      expect(subject).to have_actions(
-        :before,
-        :render_404_if_verify_info_controller_disabled,
-      )
-    end
+  let(:flow_session) do
+    { 'error_message' => nil,
+      'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
+      :pii_from_doc => Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup,
+      'threatmetrix_session_id' => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
+      :flow_path => 'standard' }
+  end
 
+  before do
+    allow(subject).to receive(:flow_session).and_return(flow_session)
+  end
+
+  describe 'before_actions' do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
         :before,
@@ -27,13 +32,6 @@ describe Idv::VerifyInfoController do
   end
 
   describe '#show' do
-    let(:flow_session) do
-      { 'error_message' => nil,
-        'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-        :pii_from_doc => Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
-        'threatmetrix_session_id' => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
-        :flow_path => 'standard' }
-    end
     let(:analytics_name) { 'IdV: doc auth verify visited' }
     let(:analytics_args) do
       {
@@ -51,7 +49,6 @@ describe Idv::VerifyInfoController do
       stub_analytics
       stub_attempts_tracker
       allow(@analytics).to receive(:track_event)
-      allow(subject).to receive(:flow_session).and_return(flow_session)
     end
 
     context 'when doc_auth_verify_info_controller_enabled' do
@@ -79,18 +76,78 @@ describe Idv::VerifyInfoController do
 
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end
-    end
 
-    context 'when doc_auth_verify_info_controller_enabled is false' do
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_verify_info_controller_enabled).
-          and_return(false)
+      context 'when the user is ssn throttled' do
+        before do
+          Throttle.new(
+            target: Pii::Fingerprinter.fingerprint(
+              Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
+            ),
+            throttle_type: :proof_ssn,
+          ).increment_to_throttled!
+        end
+
+        it 'redirects to ssn failure url' do
+          get :show
+
+          expect(response).to redirect_to idv_session_errors_ssn_failure_url
+        end
       end
 
-      it 'returns 404' do
-        get :show
+      context 'when the user is proofing throttled' do
+        before do
+          Throttle.new(
+            user: subject.current_user,
+            throttle_type: :idv_resolution,
+          ).increment_to_throttled!
+        end
 
-        expect(response.status).to eq(404)
+        it 'redirects to throttled url' do
+          get :show
+
+          expect(response).to redirect_to idv_session_errors_failure_url
+        end
+      end
+    end
+  end
+
+  describe '#update' do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_verify_info_controller_enabled).
+        and_return(true)
+      user = build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' })
+      stub_verify_steps_one_and_two(user)
+    end
+
+    context 'when the user is ssn throttled' do
+      before do
+        Throttle.new(
+          target: Pii::Fingerprinter.fingerprint(
+            Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
+          ),
+          throttle_type: :proof_ssn,
+        ).increment_to_throttled!
+      end
+
+      it 'redirects to ssn failure url' do
+        put :update
+
+        expect(response).to redirect_to idv_session_errors_ssn_failure_url
+      end
+    end
+
+    context 'when the user is proofing throttled' do
+      before do
+        Throttle.new(
+          user: subject.current_user,
+          throttle_type: :idv_resolution,
+        ).increment_to_throttled!
+      end
+
+      it 'redirects to throttled url' do
+        put :update
+
+        expect(response).to redirect_to idv_session_errors_failure_url
       end
     end
   end

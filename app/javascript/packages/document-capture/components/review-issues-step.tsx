@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
-import { useI18n } from '@18f/identity-react-i18n';
+import { useContext, useEffect, useState, ReactNode } from 'react';
+import { useI18n, formatHTML } from '@18f/identity-react-i18n';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { FormStepsContext, FormStepsButton } from '@18f/identity-form-steps';
 import { PageHeading } from '@18f/identity-components';
@@ -13,6 +13,13 @@ import Warning from './warning';
 import AnalyticsContext from '../context/analytics';
 import BarcodeAttentionWarning from './barcode-attention-warning';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
+import { InPersonContext } from '../context';
+
+function formatWithStrongNoWrap(text: string): ReactNode {
+  return formatHTML(text, {
+    strong: ({ children }) => <strong className="text-no-wrap">{children}</strong>,
+  });
+}
 
 type DocumentSide = 'front' | 'back';
 
@@ -74,11 +81,15 @@ function ReviewIssuesStep({
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
   const { onFailedSubmissionAttempt } = useContext(FailedCaptureAttemptsContext);
+  const { inPersonURL, inPersonCtaVariantActive } = useContext(InPersonContext);
   useEffect(() => onFailedSubmissionAttempt(), []);
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed');
 
     setHasDismissed(true);
+  }
+  function onInPersonSelected() {
+    trackEvent('IdV: verify in person troubleshooting option clicked');
   }
 
   // let FormSteps know, via FormStepsContext, whether this page
@@ -87,38 +98,160 @@ function ReviewIssuesStep({
     changeStepCanComplete(!!hasDismissed);
   }, [hasDismissed]);
 
+  useEffect(() => {
+    if (!inPersonURL || isFailedResult) {
+      return;
+    }
+    if (inPersonCtaVariantActive === 'in_person_variant_a') {
+      trackEvent('IdV: IPP CTA Variant A');
+    } else if (inPersonCtaVariantActive === 'in_person_variant_b') {
+      trackEvent('IdV: IPP CTA Variant B');
+    } else if (inPersonCtaVariantActive === 'in_person_variant_c') {
+      trackEvent('IdV: IPP CTA Variant C');
+    }
+  }, []);
+
   if (!hasDismissed) {
     if (pii) {
       return <BarcodeAttentionWarning onDismiss={onWarningPageDismissed} pii={pii} />;
     }
 
-    return (
-      <Warning
-        heading={t('errors.doc_auth.throttled_heading')}
-        actionText={t('idv.failure.button.warning')}
-        actionOnClick={onWarningPageDismissed}
-        location="doc_auth_review_issues"
-        remainingAttempts={remainingAttempts}
-        troubleshootingOptions={
-          <DocumentCaptureTroubleshootingOptions
-            location="post_submission_warning"
-            showAlternativeProofingOptions={!isFailedResult}
-            heading={t('components.troubleshooting_options.ipp_heading')}
-          />
-        }
-      >
-        {!!unknownFieldErrors &&
-          unknownFieldErrors
-            .filter((error) => !['front', 'back'].includes(error.field!))
-            .map(({ error }) => <p key={error.message}>{error.message}</p>)}
+    if (!inPersonURL || isFailedResult) {
+      return (
+        <Warning
+          heading={t('errors.doc_auth.throttled_heading')}
+          actionText={t('idv.failure.button.warning')}
+          actionOnClick={onWarningPageDismissed}
+          location="doc_auth_review_issues"
+          remainingAttempts={remainingAttempts}
+          troubleshootingOptions={
+            <DocumentCaptureTroubleshootingOptions
+              location="post_submission_warning"
+              showAlternativeProofingOptions={!isFailedResult}
+              heading={t('components.troubleshooting_options.ipp_heading')}
+            />
+          }
+        >
+          {!!unknownFieldErrors &&
+            unknownFieldErrors
+              .filter((error) => !['front', 'back'].includes(error.field!))
+              .map(({ error }) => <p key={error.message}>{error.message}</p>)}
 
-        {remainingAttempts <= DISPLAY_ATTEMPTS && (
-          <p>
-            <strong>{t('idv.failure.attempts', { count: remainingAttempts })}</strong>
-          </p>
-        )}
-      </Warning>
-    );
+          {remainingAttempts <= DISPLAY_ATTEMPTS && (
+            <p>
+              <strong>{t('idv.failure.attempts', { count: remainingAttempts })}</strong>
+            </p>
+          )}
+        </Warning>
+      );
+    }
+    if (inPersonCtaVariantActive === 'in_person_variant_a') {
+      return (
+        <Warning
+          heading={t('errors.doc_auth.throttled_heading')}
+          actionText={t('idv.failure.button.warning_variant')}
+          actionOnClick={onWarningPageDismissed}
+          location="doc_auth_review_issues"
+          remainingAttempts={remainingAttempts}
+          troubleshootingOptions={
+            <DocumentCaptureTroubleshootingOptions
+              location="post_submission_warning"
+              showAlternativeProofingOptions={!isFailedResult}
+              heading={t('components.troubleshooting_options.ipp_heading')}
+              altInPersonCta={t('in_person_proofing.headings.cta_variant')}
+              altInPersonPrompt={t('in_person_proofing.body.cta.prompt_detail_a')}
+              altInPersonCtaButtonText={t('in_person_proofing.body.cta.button_variant')}
+            />
+          }
+        >
+          <h2>{t('errors.doc_auth.throttled_subheading')}</h2>
+          {!!unknownFieldErrors &&
+            unknownFieldErrors
+              .filter((error) => !['front', 'back'].includes(error.field!))
+              .map(({ error }) => <p key={error.message}>{error.message}</p>)}
+
+          {remainingAttempts <= DISPLAY_ATTEMPTS && (
+            <p>
+              {remainingAttempts === 1
+                ? formatWithStrongNoWrap(t('idv.failure.attempts.one_variant_a_html'))
+                : formatWithStrongNoWrap(
+                    t('idv.failure.attempts.other_variant_a_html', { count: remainingAttempts }),
+                  )}
+            </p>
+          )}
+        </Warning>
+      );
+    }
+    if (inPersonCtaVariantActive === 'in_person_variant_b') {
+      return (
+        <Warning
+          heading={t('errors.doc_auth.throttled_heading')}
+          actionText={t('idv.failure.button.warning_variant')}
+          actionOnClick={onWarningPageDismissed}
+          altActionText={t('in_person_proofing.body.cta.button_variant')}
+          altActionOnClick={onInPersonSelected}
+          altHref="#location"
+          location="doc_auth_review_issues"
+          remainingAttempts={remainingAttempts}
+          troubleshootingOptions={
+            <DocumentCaptureTroubleshootingOptions
+              location="post_submission_warning"
+              showAlternativeProofingOptions={false}
+              heading={t('components.troubleshooting_options.ipp_heading')}
+            />
+          }
+        >
+          {!!unknownFieldErrors &&
+            unknownFieldErrors
+              .filter((error) => !['front', 'back'].includes(error.field!))
+              .map(({ error }) => <p key={error.message}>{error.message}</p>)}
+
+          {remainingAttempts <= DISPLAY_ATTEMPTS && (
+            <p>
+              {remainingAttempts === 1
+                ? formatWithStrongNoWrap(t('idv.failure.attempts.one_variant_b_html'))
+                : formatWithStrongNoWrap(
+                    t('idv.failure.attempts.other_variant_b_html', { count: remainingAttempts }),
+                  )}
+            </p>
+          )}
+          <p>{t('in_person_proofing.body.cta.prompt_detail_b')}</p>
+        </Warning>
+      );
+    }
+    if (inPersonCtaVariantActive === 'in_person_variant_c') {
+      return (
+        <Warning
+          heading={t('errors.doc_auth.throttled_heading')}
+          actionText={t('idv.failure.button.warning')}
+          actionOnClick={onWarningPageDismissed}
+          location="doc_auth_review_issues"
+          remainingAttempts={remainingAttempts}
+          troubleshootingOptions={
+            <DocumentCaptureTroubleshootingOptions
+              location="post_submission_warning"
+              showAlternativeProofingOptions={false}
+              heading={t('components.troubleshooting_options.ipp_heading')}
+            />
+          }
+        >
+          {!!unknownFieldErrors &&
+            unknownFieldErrors
+              .filter((error) => !['front', 'back'].includes(error.field!))
+              .map(({ error }) => <p key={error.message}>{error.message}</p>)}
+
+          {remainingAttempts <= DISPLAY_ATTEMPTS && (
+            <p>
+              <strong>
+                {remainingAttempts === 1
+                  ? t('idv.failure.attempts.one')
+                  : t('idv.failure.attempts.other', { count: remainingAttempts })}
+              </strong>
+            </p>
+          )}
+        </Warning>
+      );
+    }
   }
 
   return (

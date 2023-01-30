@@ -1,38 +1,3 @@
-$radio-checkbox-space: 1.5rem;
-
-@include at-media('tablet') {
-  input,
-  select {
-    font-size: $form-field-font-size-sm;
-  }
-}
-
-.field {
-  background-color: #f2f9ff;
-  border-style: solid;
-  border-width: $border-width;
-  border-color: $border-color;
-  border-radius: $border-radius;
-  color: color('ink');
-  font-weight: $bold-font-weight;
-  margin-top: units(0.5);
-
-  &[type='number'],
-  &.phone {
-    @include u-font-family('mono');
-  }
-
-  &:focus {
-    border-color: color('primary');
-    box-shadow: 0 0 0 2px rgba(color('primary'), 0.5);
-    outline: none;
-  }
-
-  &.usa-input--error {
-    @include u-border($theme-input-state-border-width, 'error');
-  }
-}
-
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   /* stylelint-disable-next-line property-no-vendor-prefix */
@@ -52,14 +17,4 @@ input::-webkit-inner-spin-button {
   @include at-media('desktop') {
     margin-left: 0;
   }
-}
-
-// Upstream: https://github.com/18F/identity-style-guide/pull/325
-.usa-input {
-  margin-top: units(0.5);
-}
-
-// Upstream: https://github.com/18F/identity-style-guide/pull/325
-.usa-hint {
-  margin: 0;
 }
