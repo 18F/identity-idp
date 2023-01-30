@@ -1,6 +1,6 @@
 module UspsInPersonProofing
   module Mock
-    class Proofer
+    class Proofer < UspsInPersonProofing::Proofer
       def request_enroll(applicant)
         case applicant['first_name']
         when 'usps waiting'
@@ -28,7 +28,7 @@ module UspsInPersonProofing
       end
 
       def request_facilities(_location)
-        JSON.parse(Fixtures.request_facilities_response)
+        parse_facilities(JSON.parse(Fixtures.request_facilities_response))
       end
 
       def request_pilot_facilities

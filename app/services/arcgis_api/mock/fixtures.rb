@@ -29,9 +29,9 @@ module ArcgisApi
         Rails.root.join('spec', 'fixtures', 'arcgis_responses', filename).read
       end
 
-      private_class_method def self.generate_suggestions(count = 5)
+      def self.generate_suggestions(count = 5)
         {
-          suggestions: count.times do |index|
+          suggestions: Array.new(count) do |index|
             {
               text: Faker::Address.full_address,
               magicKey: index,
@@ -41,7 +41,7 @@ module ArcgisApi
         }
       end
 
-      private_class_method def self.generate_address_candidates(count = 5)
+      def self.generate_address_candidates(count = 5)
         {
           candidates: Array.new(count) do
             {
@@ -60,6 +60,8 @@ module ArcgisApi
           end,
         }
       end
+
+      private_class_method :generate_suggestions, :generate_address_candidates
     end
   end
 end
