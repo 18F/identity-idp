@@ -4,6 +4,7 @@ module Idv
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_ssn_step_complete
+    before_action :confirm_profile_not_already_confirmed
 
     def show
       increment_step_counts
@@ -117,6 +118,11 @@ module Idv
     def confirm_ssn_step_complete
       return if pii.present? && pii[:ssn].present?
       redirect_to idv_doc_auth_url
+    end
+
+    def confirm_profile_not_already_confirmed
+      return unless idv_session.profile_confirmation == true
+      redirect_to idv_review_url
     end
 
     def current_flow_step_counts
