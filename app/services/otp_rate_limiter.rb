@@ -38,6 +38,10 @@ class OtpRateLimiter
     throttle.attempted_at
   end
 
+  def throttle
+    @throttle ||= Throttle.new(throttle_type: :phone_otp, target: throttle_key)
+  end
+
   private
 
   attr_reader :phone, :user, :phone_confirmed
@@ -52,10 +56,6 @@ class OtpRateLimiter
 
   def phone_fingerprint
     @phone_fingerprint ||= Pii::Fingerprinter.fingerprint(PhoneFormatter.format(phone))
-  end
-
-  def throttle
-    @throttle ||= Throttle.new(throttle_type: :phone_otp, target: throttle_key)
   end
 
   def throttle_key
