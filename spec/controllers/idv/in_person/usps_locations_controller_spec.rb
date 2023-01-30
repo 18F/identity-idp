@@ -140,7 +140,7 @@ describe Idv::InPerson::UspsLocationsController do
           allow(proofer).to receive(:request_facilities).with(address).and_raise(timeout_error)
         end
 
-        it 'returns an internal server error' do
+        it 'returns an unprocessible entity client error' do
           subject
           expect(@analytics).to have_logged_event(
             'Request USPS IPP locations: request failed',
@@ -150,6 +150,30 @@ describe Idv::InPerson::UspsLocationsController do
             timeout_error.response_body.present?,
             response_body: timeout_error.response_body,
             response_status_code: timeout_error.response_status,
+          )
+
+          status = response.status
+          expect(status).to eq 422
+        end
+      end
+
+      context 'with a 500 error from USPS' do
+        let(:server_error) { Faraday::ServerError.new }
+
+        before do
+          allow(proofer).to receive(:request_facilities).with(address).and_raise(server_error)
+        end
+
+        it 'returns an internal server error' do
+          subject
+          expect(@analytics).to have_logged_event(
+            'Request USPS IPP locations: request failed',
+            exception_class: server_error.class,
+            exception_message: server_error.message,
+            response_body_present:
+            server_error.response_body.present?,
+            response_body: server_error.response_body,
+            response_status_code: server_error.response_status,
           )
 
           status = response.status

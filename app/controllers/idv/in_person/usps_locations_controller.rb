@@ -26,6 +26,16 @@ module Idv
             response = proofer.request_pilot_facilities
           end
           render json: response.to_json
+        # todo: consider which Faraday errors we actually want to catch here
+        rescue Faraday::TimeoutError, Faraday::ClientError => err
+          analytics.idv_in_person_locations_request_failure(
+            exception_class: err.class,
+            exception_message: err.message,
+            response_body_present: err.respond_to?(:response_body) && err.response_body.present?,
+            response_body: err.respond_to?(:response_body) && err.response_body,
+            response_status_code: err.respond_to?(:response_status) && err.response_status,
+          )
+          render json: {}, status: :unprocessable_entity
         rescue => err
           analytics.idv_in_person_locations_request_failure(
             exception_class: err.class,
