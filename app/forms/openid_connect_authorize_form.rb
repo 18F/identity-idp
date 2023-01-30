@@ -134,10 +134,6 @@ class OpenidConnectAuthorizeForm
 
   def parse_to_values(param_value, possible_values)
     return [] if param_value.blank?
-    Rails.logger.debug('parsevalues******************')
-Rails.logger.debug(param_value)
-Rails.logger.debug(possible_values)
-Rails.logger.debug('******************')
     param_value.split(' ').compact & possible_values
   end
 

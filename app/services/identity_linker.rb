@@ -61,9 +61,6 @@ class IdentityLinker
   end
 
   def process_aal(aal)
-Rails.logger.debug('aal******************')
-Rails.logger.debug(aal)
-Rails.logger.debug('******************')
     @aal = aal
   end
 
