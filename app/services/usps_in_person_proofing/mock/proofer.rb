@@ -32,10 +32,12 @@ module UspsInPersonProofing
       end
 
       def request_pilot_facilities
-        JSON.load_file(
-          Rails.root.join(
-            'config',
-            'ipp_pilot_usps_facilities.json',
+        parse_facilities(
+          JSON.load_file(
+            Rails.root.join(
+              'config',
+              'ipp_pilot_usps_facilities.json',
+            ),
           ),
         )
       end
