@@ -501,6 +501,7 @@ describe('document-capture/components/document-capture', () => {
                 <InPersonContext.Provider
                   value={{
                     inPersonURL: '/in_person',
+                    inPersonCtaVariantActive: 'in_person_variant_a',
                   }}
                 >
                   <DocumentCapture />
@@ -532,7 +533,7 @@ describe('document-capture/components/document-capture', () => {
 
         await userEvent.click(getByText('forms.buttons.submit.default'));
 
-        const verifyInPersonButton = await findByText('in_person_proofing.body.cta.button');
+        const verifyInPersonButton = await findByText('in_person_proofing.body.cta.button_variant');
         await userEvent.click(verifyInPersonButton);
 
         expect(console).to.have.loggedError(/^Error: Uncaught/);

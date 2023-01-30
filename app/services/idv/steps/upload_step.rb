@@ -83,7 +83,14 @@ module Idv
       end
 
       def form_response(destination:)
-        FormResponse.new(success: true, errors: {}, extra: { destination: destination })
+        FormResponse.new(
+          success: true,
+          errors: {},
+          extra: {
+            destination: destination,
+            skip_upload_step: mobile_device?,
+          },
+        )
       end
     end
   end

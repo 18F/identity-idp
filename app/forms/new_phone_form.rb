@@ -58,7 +58,7 @@ class NewPhoneForm
     @phone_info = Telephony::PhoneNumberInfo.new(type: :unknown)
   rescue Aws::Pinpoint::Errors::BadRequestException
     errors.add(:phone, :improbable_phone, type: :improbable_phone)
-    @redacted_phone = redact(phone)
+    @redacted_phone = StringRedacter.redact_alphanumeric(phone)
     @phone_info = Telephony::PhoneNumberInfo.new(type: :unknown)
   end
 
@@ -137,10 +137,6 @@ class NewPhoneForm
 
     self.otp_delivery_preference = delivery_prefs if delivery_prefs
     self.otp_make_default_number = true if default_prefs
-  end
-
-  def redact(phone)
-    phone.gsub(/[a-z]/i, 'X').gsub(/\d/i, '#')
   end
 
   def confirmed_phone?

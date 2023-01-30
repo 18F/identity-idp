@@ -21,6 +21,21 @@ interface WarningProps {
   actionOnClick?: () => void;
 
   /**
+   * Secondary action button text.
+   */
+  altActionText?: string;
+
+  /**
+   * Secondary action button text.
+   */
+  altActionOnClick?: () => void;
+
+  /**
+   * Secondary action button location.
+   */
+  altHref?: string;
+
+  /**
    * Component children.
    */
   children: ReactNode;
@@ -45,6 +60,9 @@ function Warning({
   heading,
   actionText,
   actionOnClick,
+  altActionText,
+  altActionOnClick,
+  altHref,
   children,
   troubleshootingOptions,
   location,
@@ -69,6 +87,22 @@ function Warning({
         {actionText}
       </Button>,
     ];
+    if (altActionText && altActionOnClick) {
+      actionButtons.push(
+        <Button
+          isBig
+          isOutline
+          isWide
+          href={altHref}
+          onClick={() => {
+            trackEvent('IdV: warning action triggered', { location });
+            altActionOnClick();
+          }}
+        >
+          {altActionText}
+        </Button>,
+      );
+    }
   }
 
   return (
