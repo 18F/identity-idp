@@ -131,10 +131,10 @@ en:
         verified information, please %{link}.
       activated_link: contact us
       clear_and_start_over: Clear my information and start over
-      come_back_later: Once your letter arrives, sign into %{app_name}, and enter your
-        one-time code when prompted.
-      come_back_later_html: <strong>Letters typically take 3 to 7 business days to
-        arrive</strong><br /> through USPS First Class Mail.
+      come_back_later_html: <p>Once your letter arrives, sign into %{app_name}, 
+        and enter your one-time code when prompted.</p>
+        <p><strong>Letters typically take 3 to 7 business days to arrive</strong><br /> 
+        through USPS First Class Mail.</p>
       come_back_later_password_html: <strong>Don't forget your password.</strong><br />
         If you reset your password, the one-time code in your letter will no longer
         work and you'll have to verify your identity again.

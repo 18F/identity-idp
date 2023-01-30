@@ -140,10 +140,10 @@ es:
         información verificada, por favor, %{link}.
       activated_link: Contáctenos
       clear_and_start_over: Borrar mi información y empezar de nuevo
-      come_back_later: Una vez que reciba la carta, inicie sesión en %{app_name} e
-        introduzca el código único cuando se le solicite.
-      come_back_later_html: <strong>Las cartas suelen tardar de 3 a 7 días hábiles
-        en llegar</strong><br /> a través de USPS First Class Mail.
+      come_back_later_html: <p>Una vez que reciba la carta, inicie sesión en %{app_name} e
+        introduzca el código único cuando se le solicite.</p><p><strong>Las cartas suelen 
+        tardar de 3 a 7 días hábiles en llegar</strong><br /> 
+        a través de USPS First Class Mail.</p>
       come_back_later_password_html: <strong>No olvide su contraseña.</strong><br />
         Si restablece su contraseña, el código único de su carta ya no funcionará
         y tendrá que verificar su identidad de nuevo.
