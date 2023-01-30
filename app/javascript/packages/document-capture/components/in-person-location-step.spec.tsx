@@ -35,7 +35,9 @@ describe('InPersonLocationStep', () => {
   let server: SetupServerApi;
   before(() => {
     server = setupServer(
-      rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
+      rest.post(LOCATIONS_URL, (_req, res, ctx) =>
+        res(ctx.json([{ name: 'Baltimore', address: '100 Main St E' }])),
+      ),
       rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
       rest.put(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ success: true }]))),
     );
@@ -63,6 +65,6 @@ describe('InPersonLocationStep', () => {
 
     await userEvent.click(button);
 
-    await findByText('{"selected_location":"Baltimore"}');
+    await findByText('{"selected_location":"100 Main St E"}');
   });
 });
