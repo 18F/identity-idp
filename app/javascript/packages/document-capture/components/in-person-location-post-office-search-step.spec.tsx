@@ -204,7 +204,7 @@ describe('InPersonLocationStep', () => {
     });
 
     it('displays correct pluralization for a single location result', async () => {
-      const { findByLabelText, findByText } = render(
+      const { findByLabelText, findByText, getByText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
             <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
@@ -222,13 +222,13 @@ describe('InPersonLocationStep', () => {
         await findByText('in_person_proofing.body.location.po_search.search_button'),
       );
 
-      const searchResultAlert = document.querySelector('h3[role="status"]');
-      expect(searchResultAlert?.textContent).to.have.string(
+      const searchResultAlert = findByText(
         t('in_person_proofing.body.location.po_search.results_description', {
           address: '222 Merchandise Mart Plaza',
           count: DEFAULT_RESPONSE.length,
         }),
       );
+      expect(searchResultAlert).to.exist();
     });
 
     before(() => {
@@ -239,7 +239,7 @@ describe('InPersonLocationStep', () => {
     });
 
     it('displays correct pluralization for multiple location results', async () => {
-      const { findByLabelText, findByText } = render(
+      const { findByLabelText, findByText, getByText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
             <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
@@ -256,13 +256,13 @@ describe('InPersonLocationStep', () => {
       await userEvent.click(
         await findByText('in_person_proofing.body.location.po_search.search_button'),
       );
-      const searchResultAlert = document.querySelector('h3[role="status"]');
-      expect(searchResultAlert?.textContent).to.have.string(
+      const searchResultAlert = findByText(
         t('in_person_proofing.body.location.po_search.results_description', {
           address: '222 Merchandise Mart Plaza',
           count: MULTI_LOCATION_RESPONSE.length,
         }),
       );
+      expect(searchResultAlert).to.exist();
     });
   });
 
