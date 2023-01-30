@@ -19,7 +19,7 @@ class OtpRateLimiter
   end
 
   def rate_limit_period_expired?
-    return throttle.expired?
+    throttle.expired?
   end
 
   def reset_count_and_otp_last_sent_at
