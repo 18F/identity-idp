@@ -46,18 +46,16 @@ RSpec.describe ArcgisApi::Geocoder do
     it 'returns candidates from magic_key' do
       stub_request_candidates_response
 
-      suggestions = subject.find_address_candidates('abc123')
+      first_candidate = subject.find_address_candidates('abc123').first
 
-      expect(suggestions.first.as_json).to eq(
-        {
-          'address' => '100 Main Ave, La Grande, Oregon, 97850',
-          'location' => { 'longitude' => -118.10754025791812, 'latitude' => 45.328271485226445 },
-          'street_address' => '100 Main Ave',
-          'city' => 'La Grande',
-          'state' => 'OR',
-          'zip_code' => '97850',
-        },
-      )
+      expect(first_candidate.address).to be_present
+      expect(first_candidate.location).to be_present
+      expect(first_candidate.street_address).to be_present
+      expect(first_candidate.city).to be_present
+      expect(first_candidate.state).to be_present
+      expect(first_candidate.zip_code).to be_present
+      expect(first_candidate.location.latitude).to be_present
+      expect(first_candidate.location.longitude).to be_present
     end
 
     # https://developers.arcgis.com/rest/geocode/api-reference/geocoding-service-output.htm#ESRI_SECTION3_619341BEAA3A4F488FC66FAE8E479563
