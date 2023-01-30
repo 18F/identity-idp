@@ -6,6 +6,7 @@ module Idv
       include RenderConditionConcern
       include UspsInPersonProofing
       include EffectiveUser
+      include UspsInPersonProofing
 
       check_or_render_not_found -> { InPersonConfig.enabled? }
 
@@ -39,7 +40,7 @@ module Idv
       end
 
       def proofer
-        @proofer ||= Proofer.new
+        @proofer ||= EnrollmentHelper.usps_proofer
       end
 
       # save the Post Office location the user selected to an enrollment
