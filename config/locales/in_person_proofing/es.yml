@@ -63,8 +63,11 @@ es:
           po_search_about: Si tiene problemas para añadir su documento de identidad, es
             posible que pueda verificar su identidad en persona en una oficina
             de correos local de los Estados Unidos.
-          results_description: Hay %{count} de oficinas de correos participantes en un
-            radio de 50 millas de la %{address}.
+          results_description:
+            one: Hay 1 oficina de correos participante en un radio de 50 millas de la
+              %{address}.
+            other: Hay %{count} de oficinas de correos participantes en un radio de 50
+              millas de la %{address}.
           results_instructions: Seleccione una ubicación de la Oficina de Correos a
             continuación, o busque de nuevo utilizando una dirección diferente.
             Para la accesibilidad de las instalaciones, utilice la información
