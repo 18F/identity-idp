@@ -162,6 +162,7 @@ describe RegisterUserEmailForm do
           error_details: hash_including(*errors.keys),
           **extra,
         )
+        expect_delivered_email_count(0)
       end
 
       it 'returns false and adds errors to the form object when domain is invalid' do
@@ -180,6 +181,29 @@ describe RegisterUserEmailForm do
           error_details: hash_including(*errors.keys),
           **extra,
         )
+        expect_delivered_email_count(0)
+      end
+
+      it 'returns false and adds errors when domain is blocked and email exists' do
+        email = 'test@example.com'
+        email_address = create(:email_address, email: email)
+        errors = { email: [t('valid_email.validations.email.invalid')] }
+        allow(BanDisposableEmailValidator).to receive(:config).and_return(['example.com'])
+
+        extra = {
+          email_already_exists: true,
+          throttled: false,
+          user_id: email_address.user.uuid,
+          domain_name: 'example.com',
+        }
+
+        expect(subject.submit(email: email, terms_accepted: '1').to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
+        expect_delivered_email_count(0)
       end
     end
 
@@ -268,6 +292,29 @@ describe RegisterUserEmailForm do
         expect(submit_form.success?).to eq false
         expect(submit_form.extra).to eq extra
         expect(submit_form.errors).to eq errors
+        expect_delivered_email_count(0)
+      end
+
+      it 'returns failure with errors when email already exists' do
+        email = 'example@gmail.com'
+        email_address = create(
+          :email_address,
+          email: email,
+          user: build(:user, accepted_terms_at: nil),
+        )
+        errors = { terms_accepted: [t('errors.registration.terms')] }
+        extra = {
+          domain_name: 'gmail.com',
+          email_already_exists: true,
+          throttled: false,
+          user_id: email_address.user.uuid,
+        }
+
+        submit_form = subject.submit(email: email)
+        expect(submit_form.success?).to eq false
+        expect(submit_form.extra).to eq extra
+        expect(submit_form.errors).to eq errors
+        expect_delivered_email_count(0)
       end
     end
 
@@ -289,6 +336,7 @@ describe RegisterUserEmailForm do
         expect(submit_form.success?).to eq false
         expect(submit_form.extra).to eq extra
         expect(submit_form.errors).to eq errors
+        expect_delivered_email_count(0)
       end
     end
   end

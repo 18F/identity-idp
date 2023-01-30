@@ -2,15 +2,23 @@ module Idv
   class VerifyInfoController < ApplicationController
     include IdvSession
 
-    before_action :render_404_if_verify_info_controller_disabled
     before_action :confirm_two_factor_authenticated
     before_action :confirm_ssn_step_complete
+    before_action :confirm_profile_not_already_confirmed
 
     def show
       increment_step_counts
       analytics.idv_doc_auth_verify_visited(**analytics_arguments)
 
-      redirect_to throttled_url and return if any_throttled?
+      if ssn_throttle.throttled?
+        redirect_to idv_session_errors_ssn_failure_url
+        return
+      end
+
+      if resolution_throttle.throttled?
+        redirect_to throttled_url
+        return
+      end
 
       process_async_state(load_async_state)
     end
@@ -26,6 +34,11 @@ module Idv
           step_name: 'verify_info',
         )
         redirect_to idv_session_errors_ssn_failure_url
+        return
+      end
+
+      if resolution_throttle.throttled?
+        redirect_to throttled_url
         return
       end
 
@@ -52,10 +65,6 @@ module Idv
     end
 
     private
-
-    def render_404_if_verify_info_controller_disabled
-      render_not_found unless IdentityConfig.store.doc_auth_verify_info_controller_enabled
-    end
 
     # copied from doc_auth_controller
     def flow_session
@@ -111,6 +120,11 @@ module Idv
       redirect_to idv_doc_auth_url
     end
 
+    def confirm_profile_not_already_confirmed
+      return unless idv_session.profile_confirmation == true
+      redirect_to idv_review_url
+    end
+
     def current_flow_step_counts
       user_session['idv/doc_auth_flow_step_counts'] ||= {}
       user_session['idv/doc_auth_flow_step_counts'].default = 0
@@ -150,10 +164,6 @@ module Idv
         target: Pii::Fingerprinter.fingerprint(pii[:ssn]),
         throttle_type: :proof_ssn,
       )
-    end
-
-    def any_throttled?
-      ssn_throttle.throttled? || resolution_throttle.throttled?
     end
 
     def idv_failure(result)

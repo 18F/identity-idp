@@ -61,8 +61,6 @@ module Idv
       end
 
       def exit_flow_state_machine
-        mark_step_complete(:verify)
-        mark_step_complete(:verify_wait)
         flow_session[:flow_path] = @flow.flow_path
         redirect_to idv_verify_info_url
       end

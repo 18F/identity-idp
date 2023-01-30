@@ -75,7 +75,7 @@ gem 'yard'
 
 # This version of the zxcvbn gem matches the data and behavior of the zxcvbn NPM package.
 # It should not be updated without verifying that the behavior still matches JS version 4.4.2.
-gem 'zxcvbn', '0.1.7'
+gem 'zxcvbn', '0.1.9'
 
 group :development do
   gem 'better_errors', '>= 2.5.1'
