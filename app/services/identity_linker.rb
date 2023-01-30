@@ -22,7 +22,6 @@ class IdentityLinker
     return unless user && service_provider.present?
 
     process_ial(ial)
-    process_aal(aal)
 
     identity.update!(
       identity_attributes.merge(
@@ -58,10 +57,6 @@ class IdentityLinker
     else
       identity.last_ial1_authenticated_at = now
     end
-  end
-
-  def process_aal(aal)
-    @aal = aal
   end
 
   def process_verified_at(now)
