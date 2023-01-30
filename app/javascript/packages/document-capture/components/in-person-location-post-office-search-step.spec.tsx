@@ -204,7 +204,7 @@ describe('InPersonLocationStep', () => {
     });
 
     it('displays correct pluralization for a single location result', async () => {
-      const { findByLabelText, findByText, getByText } = render(
+      const { findByLabelText, findByText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
             <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
@@ -239,7 +239,7 @@ describe('InPersonLocationStep', () => {
     });
 
     it('displays correct pluralization for multiple location results', async () => {
-      const { findByLabelText, findByText, getByText } = render(
+      const { findByLabelText, findByText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
             <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
