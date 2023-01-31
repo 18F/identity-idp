@@ -561,6 +561,37 @@ RSpec.describe GetUspsProofingResultsJob do
         end
       end
 
+      context 'when an enrollment expires unexpectedly' do
+        before(:each) do
+          stub_request_unexpected_expired_proofing_results
+        end
+
+        it_behaves_like(
+          'enrollment_with_a_status_update',
+          passed: false,
+          status: 'expired',
+          response_json: UspsInPersonProofing::Mock::Fixtures.
+            request_unexpected_expired_proofing_results_response,
+        )
+
+        it 'logs that the enrollment expired unexpectedly' do
+          allow(IdentityConfig.store).to(
+            receive(:in_person_enrollment_validity_in_days).and_return(30),
+          )
+          job.perform(Time.zone.now)
+
+          expect(job_analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Enrollment status updated',
+            hash_including(reason: 'Enrollment has expired'),
+          )
+
+          expect(job_analytics).to have_logged_event(
+            'GetUspsproofingResultsJob: Unexpected response received',
+            hash_including(reason: 'Unexpected number of days before enrollment expired'),
+          )
+        end
+      end
+
       context 'when USPS returns a non-hash response' do
         before(:each) do
           stub_request_proofing_results_with_responses({})

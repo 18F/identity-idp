@@ -3275,6 +3275,28 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks unexpected responses from the USPS API
+  # @param [String] enrollment_code
+  # @param [String] enrollment_id
+  # @param [String] response_message
+  # @param [String] reason why was this error unexpected?
+  def idv_in_person_usps_proofing_results_job_unexpected_response(
+    enrollment_code:,
+    enrollment_id:,
+    response_message:,
+    reason:,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Unexpected response received',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      response_message: response_message,
+      reason: reason,
+      **extra,
+    )
+  end
+
   # Tracks users visiting the recovery options page
   def account_reset_recovery_options_visit
     track_event('Account Reset: Recovery Options Visited')
