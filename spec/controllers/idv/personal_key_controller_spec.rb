@@ -201,15 +201,6 @@ describe Idv::PersonalKeyController do
         expect(response).to redirect_to idv_come_back_later_path
       end
 
-      it 'redirects to sign up completed path with new GPO flow' do
-        allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).and_return(true)
-        user.pending_profile&.activate
-
-        patch :update
-
-        expect(response).to redirect_to sign_up_completed_url
-      end
-
       context 'with in person profile' do
         before do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)

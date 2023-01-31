@@ -35,8 +35,6 @@ module Idv
     def next_step
       if pending_profile? && idv_session.address_verification_mechanism == 'gpo'
         idv_come_back_later_url
-      elsif new_gpo_flow?
-        sign_up_completed_url
       elsif in_person_enrollment?
         idv_in_person_ready_to_verify_url
       elsif blocked_by_device_profiling?
@@ -89,12 +87,6 @@ module Idv
 
     def pending_profile?
       current_user.pending_profile?
-    end
-
-    def new_gpo_flow?
-      IdentityConfig.store.gpo_personal_key_after_otp == true &&
-        !pending_profile? &&
-        idv_session.address_verification_mechanism == 'gpo'
     end
 
     def blocked_by_device_profiling?
