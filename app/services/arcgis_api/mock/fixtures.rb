@@ -2,7 +2,7 @@ module ArcgisApi
   module Mock
     class Fixtures
       def self.request_suggestions_response
-        load_response_fixture('request_suggestions_response.json')
+        generate_suggestions.to_json
       end
 
       def self.request_suggestions_error
@@ -14,7 +14,7 @@ module ArcgisApi
       end
 
       def self.request_candidates_response
-        load_response_fixture('request_candidates_response.json')
+        generate_address_candidates.to_json
       end
 
       def self.request_candidates_empty_response
@@ -28,6 +28,40 @@ module ArcgisApi
       def self.load_response_fixture(filename)
         Rails.root.join('spec', 'fixtures', 'arcgis_responses', filename).read
       end
+
+      def self.generate_suggestions(count = 5)
+        {
+          suggestions: Array.new(count) do |index|
+            {
+              text: Faker::Address.full_address,
+              magicKey: index.to_s,
+              isCollection: false,
+            }
+          end,
+        }
+      end
+
+      def self.generate_address_candidates(count = 5)
+        {
+          candidates: Array.new(count) do
+            {
+              address: Faker::Address.full_address,
+              location: {
+                x: Faker::Address.latitude,
+                y: Faker::Address.longitude,
+              },
+              attributes: {
+                StAddr: Faker::Address.street_address,
+                City: Faker::Address.city,
+                RegionAbbr: Faker::Address.state_abbr,
+                Postal: Faker::Address.zip,
+              },
+            }
+          end,
+        }
+      end
+
+      private_class_method :generate_suggestions, :generate_address_candidates
     end
   end
 end
