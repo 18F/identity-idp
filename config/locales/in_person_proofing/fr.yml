@@ -64,8 +64,11 @@ fr:
           po_search_about: Si vous avez des difficultés à ajouter votre pièce d’identité,
             vous pouvez vérifier votre identité en personne dans un bureau de
             poste américain proche.
-          results_description: Il y a %{count} de bureaux de poste participants dans un
-            rayon de 50 miles autour de %{address}.
+          results_description:
+            one: Il y a 1 bureau de poste participant dans un rayon de 50 miles autour de
+              %{address}.
+            other: Il y a %{count} de bureaux de poste participants dans un rayon de 50
+              miles autour de %{address}.
           results_instructions: Sélectionnez un emplacement de bureau de poste ci-dessous,
             ou effectuez une nouvelle recherche en utilisant une autre adresse.
             Pour l’accessibilité des installations, utilisez les informations de
