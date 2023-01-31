@@ -76,6 +76,7 @@ class Throttle
   end
 
   def increment!
+    return if throttled?
     value = nil
     REDIS_THROTTLE_POOL.with do |client|
       value, _success = client.multi do |multi|
