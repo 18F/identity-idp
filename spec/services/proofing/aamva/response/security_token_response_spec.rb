@@ -34,9 +34,9 @@ describe Proofing::Aamva::Response::SecurityTokenResponse do
       let(:status_code) { 504 }
       let(:response_body) { '<h1>Oh no</h1><hr><p>This is not xml.' }
 
-      it 'raises a VerificationError' do
+      it 'raises a AuthenticationError' do
         expect { subject }.to raise_error(
-          Proofing::Aamva::VerificationError,
+          Proofing::Aamva::AuthenticationError,
           'Unexpected status code in response: 504',
         )
       end
