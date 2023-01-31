@@ -33,6 +33,25 @@ module ControllerHelper
     allow(controller).to receive(:signed_in_url).and_return(account_url)
   end
 
+  def stub_idv_steps_before_verify_step(user)
+    user_session = {}
+    stub_sign_in(user)
+    idv_session = Idv::Session.new(
+      user_session: user_session, current_user: user,
+      service_provider: nil
+    )
+    idv_session.applicant = {
+      first_name: 'Some',
+      last_name: 'One',
+      uuid: SecureRandom.uuid,
+      dob: 50.years.ago.to_date.to_s,
+      ssn: '666-12-1234',
+    }.with_indifferent_access
+    allow(subject).to receive(:confirm_idv_session_started).and_return(true)
+    allow(subject).to receive(:idv_session).and_return(idv_session)
+    allow(subject).to receive(:user_session).and_return(user_session)
+  end
+
   def stub_verify_steps_one_and_two(user)
     user_session = {}
     stub_sign_in(user)

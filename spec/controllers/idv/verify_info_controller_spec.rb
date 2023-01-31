@@ -13,16 +13,11 @@ describe Idv::VerifyInfoController do
 
   before do
     allow(subject).to receive(:flow_session).and_return(flow_session)
+    user = build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' })
+    stub_idv_steps_before_verify_step(user)
   end
 
   describe 'before_actions' do
-    it 'checks that feature flag is enabled' do
-      expect(subject).to have_actions(
-        :before,
-        :render_404_if_verify_info_controller_disabled,
-      )
-    end
-
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
         :before,
@@ -51,8 +46,6 @@ describe Idv::VerifyInfoController do
     end
 
     before do
-      user = build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' })
-      stub_verify_steps_one_and_two(user)
       stub_analytics
       stub_attempts_tracker
       allow(@analytics).to receive(:track_event)
@@ -82,6 +75,16 @@ describe Idv::VerifyInfoController do
         analytics_args[:step_count] = 2
 
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      end
+
+      context 'when the user has already verified their info' do
+        it 'redirects to the review controller' do
+          controller.idv_session.profile_confirmation = true
+
+          get :show
+
+          expect(response).to redirect_to(idv_review_url)
+        end
       end
 
       context 'when the user is ssn throttled' do
@@ -116,27 +119,12 @@ describe Idv::VerifyInfoController do
         end
       end
     end
-
-    context 'when doc_auth_verify_info_controller_enabled is false' do
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_verify_info_controller_enabled).
-          and_return(false)
-      end
-
-      it 'returns 404' do
-        get :show
-
-        expect(response.status).to eq(404)
-      end
-    end
   end
 
   describe '#update' do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_verify_info_controller_enabled).
         and_return(true)
-      user = build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' })
-      stub_verify_steps_one_and_two(user)
     end
 
     context 'when the user is ssn throttled' do

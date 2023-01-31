@@ -111,10 +111,8 @@ function useUspsLocations() {
   }, []);
 
   // sends the raw text query to arcgis
-  const { data: addressCandidates, isLoading: isLoadingCandidates } = useSWR(
-    [addressQuery],
-    () => (addressQuery ? requestAddressCandidates(addressQuery) : null),
-    { keepPreviousData: true },
+  const { data: addressCandidates, isLoading: isLoadingCandidates } = useSWR([addressQuery], () =>
+    addressQuery ? requestAddressCandidates(addressQuery) : null,
   );
 
   // sets the arcgis-validated address object
@@ -143,9 +141,7 @@ function useUspsLocations() {
     data: locationResults,
     isLoading: isLoadingLocations,
     error,
-  } = useSWR([foundAddress], ([address]) => (address ? requestUspsLocations(address) : null), {
-    keepPreviousData: true,
-  });
+  } = useSWR([foundAddress], ([address]) => (address ? requestUspsLocations(address) : null));
 
   return {
     foundAddress,
