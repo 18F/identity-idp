@@ -22,7 +22,7 @@ module Idv
     end
 
     def submit
-      throttled_else_increment
+      increment_throttle!
       form_response = validate_form
 
       client_response = nil
@@ -46,9 +46,10 @@ module Idv
     attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
                 :irs_attempts_api_tracker
 
-    def throttled_else_increment
+    def increment_throttle!
       return unless document_capture_session
-      @throttled = throttle.throttled_else_increment?
+      throttle.increment!
+      @throttled = throttle.throttled?
     end
 
     def validate_form
