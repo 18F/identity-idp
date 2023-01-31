@@ -1,2 +1,0 @@
-class OtpRequestsTracker < ApplicationRecord
-end
