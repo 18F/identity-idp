@@ -17,6 +17,7 @@ module AccountReset
       result = AccountReset::Cancel.new(session[:cancel_token]).call
 
       analytics.account_reset_cancel(**result.to_h)
+      irs_attempts_api_tracker.account_reset_cancel_request
 
       handle_success if result.success?
 

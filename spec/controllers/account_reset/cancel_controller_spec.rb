@@ -6,6 +6,15 @@ describe AccountReset::CancelController do
   let(:user) { create(:user, :signed_up) }
 
   describe '#create' do
+    it 'tracks IRS attempts event account_reset_cancel_request' do
+      stub_attempts_tracker
+
+      expect(@irs_attempts_api_tracker).to receive(:track_event).
+        with(:account_reset_cancel_request)
+
+      post :create
+    end
+
     it 'logs a good token to the analytics' do
       token = create_account_reset_request_for(user)
       session[:cancel_token] = token
