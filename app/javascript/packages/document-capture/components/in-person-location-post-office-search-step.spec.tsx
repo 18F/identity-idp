@@ -6,6 +6,7 @@ import { rest } from 'msw';
 import type { SetupServerApi } from 'msw/node';
 import { SWRConfig } from 'swr';
 import { I18nContext } from '@18f/identity-react-i18n';
+import { ComponentType } from 'react';
 import { LOCATIONS_URL } from './in-person-location-step';
 import { ADDRESS_SEARCH_URL } from './address-search';
 import InPersonContext from '../context/in-person';
@@ -58,6 +59,12 @@ const DEFAULT_PROPS = {
 };
 
 describe('InPersonLocationStep', () => {
+  const wrapper: ComponentType = ({ children }) => (
+    <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
+      <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
+    </InPersonContext.Provider>
+  );
+
   let server: SetupServerApi;
 
   before(() => {
@@ -83,11 +90,8 @@ describe('InPersonLocationStep', () => {
 
     it('displays a 500 error if the request to the USPS API throws an error', async () => {
       const { findByText, findByLabelText } = render(
-        <SWRConfig value={{ provider: () => new Map() }}>
-          <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
-            <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
-          </InPersonContext.Provider>
-        </SWRConfig>,
+        <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />,
+        { wrapper },
       );
 
       await userEvent.type(
@@ -114,11 +118,8 @@ describe('InPersonLocationStep', () => {
 
     it('allows search by address when enabled', async () => {
       const { findAllByText, findByText, findByLabelText, queryAllByText } = render(
-        <SWRConfig value={{ provider: () => new Map() }}>
-          <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
-            <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
-          </InPersonContext.Provider>
-        </SWRConfig>,
+        <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />,
+        { wrapper },
       );
 
       const results = queryAllByText('in_person_proofing.body.location.location_button');
@@ -136,13 +137,9 @@ describe('InPersonLocationStep', () => {
     });
 
     it('validates input and shows inline error', async () => {
-      const { findByText } = render(
-        <SWRConfig value={{ provider: () => new Map() }}>
-          <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
-            <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
-          </InPersonContext.Provider>
-        </SWRConfig>,
-      );
+      const { findByText } = render(<InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />, {
+        wrapper,
+      });
 
       await userEvent.click(
         await findByText('in_person_proofing.body.location.po_search.search_button'),
@@ -153,11 +150,8 @@ describe('InPersonLocationStep', () => {
 
     it('displays no post office results if a successful search is followed by an unsuccessful search', async () => {
       const { findByText, findByLabelText, queryByRole } = render(
-        <SWRConfig value={{ provider: () => new Map() }}>
-          <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
-            <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
-          </InPersonContext.Provider>
-        </SWRConfig>,
+        <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />,
+        { wrapper },
       );
 
       await userEvent.type(
@@ -184,11 +178,8 @@ describe('InPersonLocationStep', () => {
 
     it('clicking search again after first results do not clear results', async () => {
       const { findAllByText, findByText, findByLabelText } = render(
-        <SWRConfig value={{ provider: () => new Map() }}>
-          <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
-            <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
-          </InPersonContext.Provider>
-        </SWRConfig>,
+        <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />,
+        { wrapper },
       );
 
       await userEvent.type(
@@ -218,12 +209,9 @@ describe('InPersonLocationStep', () => {
             })
           }
         >
-          <SWRConfig value={{ provider: () => new Map() }}>
-            <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
-              <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
-            </InPersonContext.Provider>
-          </SWRConfig>
+          <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
         </I18nContext.Provider>,
+        { wrapper },
       );
       await userEvent.type(
         await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
@@ -259,12 +247,9 @@ describe('InPersonLocationStep', () => {
             })
           }
         >
-          <SWRConfig value={{ provider: () => new Map() }}>
-            <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
-              <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
-            </InPersonContext.Provider>
-          </SWRConfig>
+          <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
         </I18nContext.Provider>,
+        { wrapper },
       );
       await userEvent.type(
         await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
@@ -292,11 +277,8 @@ describe('InPersonLocationStep', () => {
 
     it('subsequent failure clears previous results', async () => {
       const { findAllByText, findByText, findByLabelText, queryAllByText } = render(
-        <SWRConfig value={{ provider: () => new Map() }}>
-          <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
-            <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
-          </InPersonContext.Provider>
-        </SWRConfig>,
+        <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />,
+        { wrapper },
       );
 
       await userEvent.type(
