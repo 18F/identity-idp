@@ -127,6 +127,24 @@ describe Idv::VerifyInfoController do
         and_return(true)
     end
 
+    it 'logs the correct analytics event' do
+      stub_analytics
+      stub_attempts_tracker
+
+      put :update
+
+      expect(@analytics).to have_logged_event(
+        'IdV: doc auth verify submitted',
+        {
+          analytics_id: 'Doc Auth',
+          flow_path: 'standard',
+          irs_reproofing: false,
+          step: 'verify',
+          step_count: 0,
+        },
+      )
+    end
+
     context 'when the user is ssn throttled' do
       before do
         Throttle.new(
