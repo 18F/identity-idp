@@ -73,15 +73,46 @@ describe('InPersonLocationStep', () => {
     server.resetHandlers();
   });
 
-  context('initial API request throws an error', () => {
+  context('initial ArcGIS API request throws an error', () => {
     beforeEach(() => {
       server.use(
-        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
+        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json([]), ctx.status(422))),
+      );
+    });
+
+    it('displays a try again error message', async () => {
+      const { findByText, findByLabelText } = render(
+        <SWRConfig value={{ provider: () => new Map() }}>
+          <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
+            <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
+          </InPersonContext.Provider>
+        </SWRConfig>,
+      );
+
+      await userEvent.type(
+        await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
+        '222 Merchandise Mart Plaza',
+      );
+
+      await userEvent.click(
+        await findByText('in_person_proofing.body.location.po_search.search_button'),
+      );
+
+      const error = await findByText('idv.failure.exceptions.internal_error');
+      expect(error).to.exist();
+    });
+  });
+  context('initial USPS API request throws an error', () => {
+    beforeEach(() => {
+      server.use(
+        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) =>
+          res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
+        ),
         rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.status(500))),
       );
     });
 
-    it('displays a 500 error if the request to the USPS API throws an error', async () => {
+    it('displays a try again error message', async () => {
       const { findByText, findByLabelText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
@@ -107,7 +138,9 @@ describe('InPersonLocationStep', () => {
   context('initial API request is successful', () => {
     beforeEach(() => {
       server.use(
-        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
+        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) =>
+          res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
+        ),
         rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
       );
     });
@@ -246,7 +279,9 @@ describe('InPersonLocationStep', () => {
     it('displays correct pluralization for multiple location results', async () => {
       server.resetHandlers();
       server.use(
-        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
+        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) =>
+          res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
+        ),
         rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json(MULTI_LOCATION_RESPONSE))),
       );
       const { findByLabelText, findByText } = render(
@@ -290,7 +325,9 @@ describe('InPersonLocationStep', () => {
   context('subsequent network failures clear results', () => {
     beforeEach(() => {
       server.use(
-        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
+        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) =>
+          res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
+        ),
         rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
       );
     });
@@ -331,6 +368,7 @@ describe('InPersonLocationStep', () => {
                 zip_code: '39826',
               },
             ]),
+            ctx.status(200),
           ),
         ),
         rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.status(500))),
