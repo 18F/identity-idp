@@ -76,6 +76,7 @@ es:
         retail_hours_sun: 'Dom:'
         retail_hours_weekday: 'De Lunes a Viernes:'
       prepare:
+        alert_selected_po_name: Ha seleccionado la oficina de correos %{name}.
         alert_selected_post_office: Ha seleccionado la oficina de correos a %{full_address}.
         privacy_disclaimer: '%{app_name} es un sitio web seguro del gobierno. Nosotros y
           el Servicio Postal de los Estados Unidos utilizamos sus datos para

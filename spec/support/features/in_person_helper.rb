@@ -46,12 +46,6 @@ module InPersonHelper
     click_link t('in_person_proofing.body.cta.button')
   end
 
-  def complete_location_search_step(_user = nil)
-    expect(page).to have_css('.spinner-button__content')
-    click_button(t('in_person_proofing.body.location.po_search.search_button'))
-      # need results on page for next portion to work
-  end
-
   def complete_location_step(_user = nil)
     # Wait for page to load before selecting location
     expect(page).to have_css('.location-collection-item')
@@ -89,7 +83,6 @@ module InPersonHelper
   end
 
   def complete_all_in_person_proofing_steps(user = user_with_2fa)
-    complete_location_search_step(user)
     complete_location_step(user)
     complete_prepare_step(user)
     complete_state_id_step(user)

@@ -69,6 +69,7 @@ en:
         retail_hours_sun: 'Sun:'
         retail_hours_weekday: 'Monday to Friday:'
       prepare:
+        alert_selected_po_name: You’ve selected the %{name} Post Office.
         alert_selected_post_office: You’ve selected the Post Office at %{full_address}.
         privacy_disclaimer: '%{app_name} is a secure, government website. We and the
           U.S. Postal Service use your data to verify your identity.'

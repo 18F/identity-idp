@@ -77,6 +77,7 @@ fr:
         retail_hours_sun: 'Dim:'
         retail_hours_weekday: 'Lundi à Vendredi:'
       prepare:
+        alert_selected_po_name: Vous avez sélectionné le bureau de poste de %{name}.
         alert_selected_post_office: Vous avez sélectionné le bureau de poste à %{full_address}.
         privacy_disclaimer: '%{app_name} est un site gouvernemental sécurisé. Nous et le
           service postal américain utilisons vos données pour vérifier votre
