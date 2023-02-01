@@ -140,14 +140,14 @@ es:
         información verificada, por favor, %{link}.
       activated_link: Contáctenos
       clear_and_start_over: Borrar mi información y empezar de nuevo
-      come_back_later_html: <p>Una vez que reciba la carta, inicie sesión en %{app_name} e
-        introduzca el código único cuando se le solicite.</p><p><strong>Las cartas suelen 
-        tardar de 3 a 7 días hábiles en llegar</strong><br /> 
-        a través de USPS First Class Mail.</p>
-      come_back_later_password_html: <strong>No olvide su contraseña.</strong><br />
-        Si restablece su contraseña, el código único de su carta ya no funcionará
-        y tendrá que verificar su identidad de nuevo.
+      come_back_later_html: <p>Una vez que reciba la carta, inicie sesión en
+        %{app_name} e introduzca el código único cuando se le
+        solicite.</p><p><strong>Las cartas suelen tardar de 3 a 7 días hábiles
+        en llegar</strong><br /> a través de USPS First Class Mail.</p>
       come_back_later_no_sp_html: Ahora puedes volver a tu <strong>cuenta de %{app_name}</strong>.
+      come_back_later_password_html: <strong>No olvide su contraseña.</strong><br />
+        Si restablece su contraseña, el código único de su carta ya no
+        funcionará y tendrá que verificar su identidad de nuevo.
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
       confirm: Usted ha encriptado sus datos verificados.
       gpo:

@@ -145,19 +145,18 @@ fr:
         information vérifiée, veuillez %{link}.
       activated_link: communiquer avec nous
       clear_and_start_over: Supprimer mes données et recommencer
-      come_back_later_html: <p>Une fois votre lettre arrivée, connectez-vous à %{app_name}
-        et entrez votre code à usage unique lorsque vous y êtes invité.</p>
-        <p><strong>Les lettres prennent généralement trois à sept
+      come_back_later_html: <p>Une fois votre lettre arrivée, connectez-vous à
+        %{app_name} et entrez votre code à usage unique lorsque vous y êtes
+        invité.</p> <p><strong>Les lettres prennent généralement trois à sept
         jours ouvrables pour arriver</strong>< br/> par le biais du courriel de
-        première classe de l'USPS.</p>
-      come_back_later_password_html: <strong>N'oubliez pas votre mot de passe.</strong>
-        <br /> Si vous réinitialisez votre mot de passe, le code à usage unique
-        figurant dans votre lettre ne correspondra plus et vous serez obligé de
-        vérifier à nouveau votre identité.
+        première classe de l’USPS.</p>
       come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte
         %{app_name}</strong> pour le moment.
-      come_back_later_sp_html: Vous pouvez retourner à l'agence <strong>%{sp}</strong>
-        pour le moment.
+      come_back_later_password_html: <strong>N’oubliez pas votre mot de
+        passe.</strong> <br /> Si vous réinitialisez votre mot de passe, le code
+        à usage unique figurant dans votre lettre ne correspondra plus et vous
+        serez obligé de vérifier à nouveau votre identité.
+      come_back_later_sp_html: Vous pouvez retourner à l’agence <strong>%{sp}</strong> pour le moment.
       confirm: Vous avez crypté vos données vérifiées
       gpo:
         address_on_file_html: Nous enverrons une lettre avec <strong>un code à usage
