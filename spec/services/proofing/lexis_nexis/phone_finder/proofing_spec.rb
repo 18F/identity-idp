@@ -20,7 +20,7 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
     )
   end
 
-  it_behaves_like 'a lexisnexis proofer'
+  it_behaves_like 'a lexisnexis rdp proofer'
 
   subject do
     described_class.new(**LexisNexisFixtures.example_config.to_h)

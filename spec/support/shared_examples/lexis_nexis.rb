@@ -1,4 +1,4 @@
-shared_examples 'a lexisnexis proofer' do
+shared_examples 'a lexisnexis rdp proofer' do
   let(:verification_status) { 'passed' }
   let(:conversation_id) { 'foo' }
   let(:reference) { SecureRandom.uuid }
