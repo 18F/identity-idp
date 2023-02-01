@@ -47,8 +47,10 @@ module ArcgisApi
       )
     end
 
-    # Makes HTTP request to find an exact address using magic_key
-    # @param magic_key [String] a magic key value from a previous call to the #suggest method
+    # Makes HTTP request to find a full address record using a magic key or single text line
+    # @param options [Hash] one of 'magicKey', which is an ID returned from /suggest,
+    #   or 'SingleLine', which should be a single string address that includes at least city,
+    #   state.
     # @return [Array<AddressCandidate>] AddressCandidates
     def find_address_candidates(**options)
       supported_params = options.slice(*KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS)
