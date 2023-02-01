@@ -9,7 +9,6 @@ en:
       change_label: Update
       change_ssn_label: Update Social Security number
       change_state_id_label: Update state ID
-      continue_plain: Continue
       mail:
         resend: Send another letter
         send: Send a letter
