@@ -3,7 +3,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   IPP_STATUS_PASSED = 'In-person passed'
   IPP_STATUS_FAILED = 'In-person failed'
   IPP_INCOMPLETE_ERROR_MESSAGE = 'Customer has not been to a post office to complete IPP'
-  IPP_EXPIRED_ERROR_MESSAGE = /More than (\d+) days have passed since opt-in to IPP/
+  IPP_EXPIRED_ERROR_MESSAGE = /More than (?<days>\d+) days have passed since opt-in to IPP/
   IPP_INVALID_ENROLLMENT_CODE_MESSAGE = 'Enrollment code %s does not exist'
   IPP_INVALID_APPLICANT_MESSAGE = 'Applicant %s does not exist'
   SUPPORTED_ID_TYPES = [
@@ -270,7 +270,8 @@ class GetUspsProofingResultsJob < ApplicationJob
     end
 
     # check for an unexpected number of days until expiration
-    expired_after_days = response_message&.match(IPP_EXPIRED_ERROR_MESSAGE)&.[](1)
+    match = response_message&.match(IPP_EXPIRED_ERROR_MESSAGE)
+    expired_after_days = match && match[:days]
     if expired_after_days.present? &&
        expired_after_days.to_i != IdentityConfig.store.in_person_enrollment_validity_in_days
       handle_unexpected_response(
