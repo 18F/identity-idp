@@ -22,6 +22,11 @@ module ArcgisApi
       "#{ROOT_URL}/servernh/rest/services/GSA/USA/GeocodeServer/findAddressCandidates"
     GENERATE_TOKEN_ENDPOINT = "#{ROOT_URL}/portal/sharing/rest/generateToken"
 
+    KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS = [
+      :magicKey, # Generated from /suggest; identifier used to retrieve full address record
+      :SingleLine, # Unvalidated address-like text string used to search for geocoded addresses
+    ]
+
     # Makes an HTTP request to quickly find potential address matches. Each match that is found
     # will include an associated magic_key value which can later be used to get more details about
     # the address using the #find_address_candidates method
@@ -42,14 +47,25 @@ module ArcgisApi
       )
     end
 
-    # Makes HTTP request to find an exact address using magic_key
-    # @param magic_key [String] a magic key value from a previous call to the #suggest method
+    # Makes HTTP request to find a full address record using a magic key or single text line
+    # @param options [Hash] one of 'magicKey', which is an ID returned from /suggest,
+    #   or 'SingleLine', which should be a single string address that includes at least city
+    #   and state.
     # @return [Array<AddressCandidate>] AddressCandidates
-    def find_address_candidates(magic_key)
+    def find_address_candidates(**options)
+      supported_params = options.slice(*KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS)
+
+      if supported_params.empty?
+        raise ArgumentError, <<~MSG
+          Unknown parameters: #{options.except(KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS)}.
+          See https://developers.arcgis.com/rest/geocode/api-reference/geocoding-find-address-candidates.htm
+        MSG
+      end
+
       params = {
-        magicKey: magic_key,
         outFields: 'StAddr,City,RegionAbbr,Postal',
         **COMMON_DEFAULT_PARAMETERS,
+        **supported_params,
       }
 
       parse_address_candidates(
