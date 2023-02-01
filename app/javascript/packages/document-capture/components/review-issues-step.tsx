@@ -102,7 +102,7 @@ function ReviewIssuesStep({
     if (!inPersonURL || isFailedResult) {
       return;
     }
-    trackEvent('IdV: IPP CTA Variant', {variant : inPersonCtaVariantActive})
+    trackEvent('IdV: IPP CTA Variant', { variant: inPersonCtaVariantActive });
   }, []);
 
   if (!hasDismissed) {
