@@ -56,10 +56,10 @@ module ArcgisApi
       supported_params = options.slice(*KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS)
 
       if supported_params.empty?
-        raise ArgumentError, "
+        raise ArgumentError, <<-MSG
           Unknown parameters: #{options.except(KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS)}.
           See https://developers.arcgis.com/rest/geocode/api-reference/geocoding-find-address-candidates.htm
-        "
+        MSG
       end
 
       params = {
