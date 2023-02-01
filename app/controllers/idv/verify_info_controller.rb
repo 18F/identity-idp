@@ -20,6 +20,7 @@ module Idv
         return
       end
 
+      @had_barcode_read_failure = flow_session[:had_barcode_read_failure]
       process_async_state(load_async_state)
     end
 
