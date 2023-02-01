@@ -39,15 +39,6 @@ class Throttle
     !expired? && maxed?
   end
 
-  def throttled_else_increment?
-    if throttled?
-      true
-    else
-      increment!
-      false
-    end
-  end
-
   def attempted_at
     return @redis_attempted_at if defined?(@redis_attempted_at)
 
