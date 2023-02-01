@@ -63,7 +63,7 @@ module ArcgisApi
       end
 
       params = {
-        outFields: '*',
+        outFields: 'StAddr,City,RegionAbbr,Postal',
         **COMMON_DEFAULT_PARAMETERS,
         **supported_params,
       }
