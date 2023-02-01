@@ -12,9 +12,7 @@ module Idv
       protected
 
       def addresses(search_term)
-        suggestion = geocoder.suggest(search_term).first
-        return [] unless suggestion
-        geocoder.find_address_candidates(suggestion.magic_key).slice(0, 1)
+        geocoder.find_address_candidates(SingleLine: search_term).slice(0, 1)
       rescue Faraday::ConnectionFailed
         []
       end
