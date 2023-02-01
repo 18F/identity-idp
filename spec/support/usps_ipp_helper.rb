@@ -68,6 +68,51 @@ module UspsIppHelper
     }
   end
 
+  def stub_request_unexpected_expired_proofing_results
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
+      **request_unexpected_expired_proofing_results_args,
+    )
+  end
+
+  def request_unexpected_expired_proofing_results_args
+    {
+      status: 400,
+      body: UspsInPersonProofing::Mock::Fixtures.
+        request_unexpected_expired_proofing_results_response,
+      headers: { 'content-type' => 'application/json' },
+    }
+  end
+
+  def stub_request_unexpected_invalid_applicant
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
+      **request_unexpected_invalid_applicant_args,
+    )
+  end
+
+  def request_unexpected_invalid_applicant_args
+    {
+      status: 400,
+      body: UspsInPersonProofing::Mock::Fixtures.
+        request_unexpected_invalid_applicant_response,
+      headers: { 'content-type' => 'application/json' },
+    }
+  end
+
+  def stub_request_unexpected_invalid_enrollment_code
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
+      **request_unexpected_invalid_enrollment_code_args,
+    )
+  end
+
+  def request_unexpected_invalid_enrollment_code_args
+    {
+      status: 400,
+      body: UspsInPersonProofing::Mock::Fixtures.
+        request_unexpected_invalid_enrollment_code_response,
+      headers: { 'content-type' => 'application/json' },
+    }
+  end
+
   def stub_request_failed_proofing_results
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
       **request_failed_proofing_results_args,

@@ -32,7 +32,7 @@ module Proofing
       TRANSACTION_ID = 'ddp-mock-transaction-id-123'
 
       def proof(applicant)
-        result = Proofing::Result.new
+        result = Proofing::DdpResult.new
         result.transaction_id = TRANSACTION_ID
 
         response_body = File.read(
