@@ -592,6 +592,50 @@ RSpec.describe GetUspsProofingResultsJob do
         end
       end
 
+      context 'when an enrollment is reported as invalid' do
+        context 'when an enrollment code is invalid' do
+          # this enrollment code is hardcoded into the fixture
+          # request_unexpected_invalid_enrollment_code_response.json
+          let(:pending_enrollment) do
+            create(:in_person_enrollment, :pending, enrollment_code: '1234567890123456')
+          end
+          before(:each) do
+            stub_request_unexpected_invalid_enrollment_code
+          end
+
+          it 'cancels the enrollment and logs that it was invalid' do
+            job.perform(Time.zone.now)
+
+            expect(pending_enrollment.reload.cancelled?).to be_truthy
+            expect(job_analytics).to have_logged_event(
+              'GetUspsproofingResultsJob: Unexpected response received',
+              hash_including(reason: 'Invalid enrollment code'),
+            )
+          end
+        end
+
+        context 'when a unique id is invalid' do
+          # this unique id is hardcoded into the fixture
+          # request_unexpected_invalid_applicant_response.json
+          let(:pending_enrollment) do
+            create(:in_person_enrollment, :pending, unique_id: '123456789abcdefghi')
+          end
+          before(:each) do
+            stub_request_unexpected_invalid_applicant
+          end
+
+          it 'cancels the enrollment and logs that it was invalid' do
+            job.perform(Time.zone.now)
+
+            expect(pending_enrollment.reload.cancelled?).to be_truthy
+            expect(job_analytics).to have_logged_event(
+              'GetUspsproofingResultsJob: Unexpected response received',
+              hash_including(reason: 'Invalid applicant unique id'),
+            )
+          end
+        end
+      end
+
       context 'when USPS returns a non-hash response' do
         before(:each) do
           stub_request_proofing_results_with_responses({})
