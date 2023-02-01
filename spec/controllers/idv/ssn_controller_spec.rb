@@ -11,8 +11,11 @@ describe Idv::SsnController do
       :flow_path => 'standard' }
   end
 
+  let(:user) { build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' }) }
+
   before do
     allow(subject).to receive(:flow_session).and_return(flow_session)
+    stub_sign_in(user)
   end
 
   describe 'before_actions' do
@@ -43,8 +46,6 @@ describe Idv::SsnController do
       end
 
       before do
-        user = build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' })
-        stub_verify_steps_one_and_two(user)
         stub_analytics
         stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
