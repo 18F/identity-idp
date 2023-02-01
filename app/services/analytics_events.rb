@@ -633,10 +633,11 @@ module AnalyticsEvents
     track_event('IdV: in person proofing location visited', flow_path: flow_path, **extra)
   end
 
-  def idv_in_person_location_searched(success:, errors: nil, **extra)
+  def idv_in_person_location_searched(success:, result_total: nil, errors: nil, **extra)
     track_event(
       'IdV: in person proofing location search submitted',
       success: success,
+      result_total: result_total,
       errors: errors,
       **extra,
     )
