@@ -120,7 +120,7 @@ module Encryption
     end
 
     def encryptor
-      @encryptor ||= Encryptors::LegacyAesEncryptor.new
+      @encryptor ||= Encryptors::AesEncryptor.new
     end
 
     def multi_aws_client

@@ -34,11 +34,11 @@ class LegacySessionEncryptor
   end
 
   def outer_encrypt(plaintext)
-    Encryption::Encryptors::LegacyAesEncryptor.new.encrypt(plaintext, session_encryption_key)
+    Encryption::Encryptors::AesEncryptor.new.encrypt(plaintext, session_encryption_key)
   end
 
   def outer_decrypt(ciphertext)
-    Encryption::Encryptors::LegacyAesEncryptor.new.decrypt(ciphertext, session_encryption_key)
+    Encryption::Encryptors::AesEncryptor.new.decrypt(ciphertext, session_encryption_key)
   end
 
   private

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Encryption
-  class LegacyAesCipher
+  class AesCipher
     include Encodable
 
     def encrypt(plaintext, cek)

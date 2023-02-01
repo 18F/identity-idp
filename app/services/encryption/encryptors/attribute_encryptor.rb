@@ -5,7 +5,7 @@ module Encryption
       include ::NewRelic::Agent::MethodTracer
 
       def initialize
-        @aes_cipher = LegacyAesCipher.new
+        @aes_cipher = AesCipher.new
         @stale = false
       end
 

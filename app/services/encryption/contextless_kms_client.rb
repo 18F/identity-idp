@@ -99,7 +99,7 @@ module Encryption
     end
 
     def encryptor
-      @encryptor ||= Encryptors::LegacyAesEncryptor.new
+      @encryptor ||= Encryptors::AesEncryptor.new
     end
 
     add_method_tracer :decrypt, "Custom/#{name}/decrypt"

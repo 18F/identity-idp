@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Encryption::LegacyAesCipher do
+describe Encryption::AesCipher do
   let(:plaintext) { 'some long secret' }
   let(:cek) { SecureRandom.random_bytes(32) }
 

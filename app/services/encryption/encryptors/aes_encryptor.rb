@@ -1,6 +1,6 @@
 module Encryption
   module Encryptors
-    class LegacyAesEncryptor
+    class AesEncryptor
       include Encodable
 
       DELIMITER = '.'.freeze
@@ -10,7 +10,7 @@ module Encryption
       #
 
       def initialize
-        self.cipher = LegacyAesCipher.new
+        self.cipher = AesCipher.new
       end
 
       def encrypt(plaintext, cek)
