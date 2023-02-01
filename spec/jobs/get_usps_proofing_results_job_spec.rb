@@ -330,7 +330,7 @@ RSpec.describe GetUspsProofingResultsJob do
             end.to have_enqueued_mail(UserMailer, :in_person_failed).with(
               params: { user: user, email_address: user.email_addresses.first },
               args: [{ enrollment: pending_enrollment }],
-            ).at(Time.zone.now + 1.hour)
+            ).at(Time.zone.now + 1.hour).on_queue(:intentionally_delayed)
           end
         end
 
@@ -345,7 +345,7 @@ RSpec.describe GetUspsProofingResultsJob do
             end.to have_enqueued_mail(UserMailer, :in_person_deadline_passed).with(
               params: { user: user, email_address: user.email_addresses.first },
               args: [{ enrollment: pending_enrollment }],
-            )
+            ).on_queue(:default)
             pending_enrollment.reload
             expect(pending_enrollment.deadline_passed_sent).to be true
             expect(job_analytics).to have_logged_event(
@@ -366,7 +366,7 @@ RSpec.describe GetUspsProofingResultsJob do
             end.to have_enqueued_mail(UserMailer, :in_person_failed_fraud).with(
               params: { user: user, email_address: user.email_addresses.first },
               args: [{ enrollment: pending_enrollment }],
-            ).at(Time.zone.now + 1.hour)
+            ).at(Time.zone.now + 1.hour).on_queue(:intentionally_delayed)
           end
         end
 
@@ -381,7 +381,7 @@ RSpec.describe GetUspsProofingResultsJob do
             end.to have_enqueued_mail(UserMailer, :in_person_verified).with(
               params: { user: user, email_address: user.email_addresses.first },
               args: [{ enrollment: pending_enrollment }],
-            ).at(Time.zone.now + 1.hour)
+            ).at(Time.zone.now + 1.hour).on_queue(:intentionally_delayed)
           end
         end
 
@@ -399,7 +399,7 @@ RSpec.describe GetUspsProofingResultsJob do
               end.to have_enqueued_mail(UserMailer, :in_person_verified).with(
                 params: { user: user, email_address: user.email_addresses.first },
                 args: [{ enrollment: pending_enrollment }],
-              ).at(Time.zone.now + 5.hours)
+              ).at(Time.zone.now + 5.hours).on_queue(:intentionally_delayed)
             end
           end
         end
@@ -418,7 +418,7 @@ RSpec.describe GetUspsProofingResultsJob do
               end.to have_enqueued_mail(UserMailer, :in_person_verified).with(
                 params: { user: user, email_address: user.email_addresses.first },
                 args: [{ enrollment: pending_enrollment }],
-              )
+              ).on_queue(:default)
             end
           end
         end
