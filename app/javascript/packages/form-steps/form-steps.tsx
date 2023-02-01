@@ -244,6 +244,19 @@ function FormSteps({
   const forceRender = useForceRender();
   const ifStillMounted = useIfStillMounted();
 
+  // currently wipes address error when didSubmitWithErrors is true - need to somehow
+  // a) resubmit in this hook and not retrigger the address error
+  // b) rewrite submit to not cause the missing address error
+  useDidUpdateEffect(() => {
+    if (activeErrors.length && didSubmitWithErrors.current) {
+      const addressErrIdx = activeErrors.findIndex((err) => err.field === 'address');
+      if (addressErrIdx !== -1) {
+        activeErrors.splice(addressErrIdx, 1);
+        setActiveErrors(activeErrors);
+      }
+    }
+  }, [activeErrors, didSubmitWithErrors]);
+
   useEffect(() => {
     if (activeErrors.length && didSubmitWithErrors.current) {
       const activeErrorFieldElement = getFieldActiveErrorFieldElement(activeErrors, fields.current);

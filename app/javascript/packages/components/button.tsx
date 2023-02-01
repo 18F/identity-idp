@@ -65,6 +65,11 @@ export interface ButtonProps {
    * Optional additional class names.
    */
   className?: string;
+
+  /**
+   * Whether to validate any associated form when clicking the button.
+   */
+  noValidate?: boolean;
 }
 
 function Button({

@@ -69,22 +69,24 @@ function LocationCollectionItem({
               </div>
             )}
             <Button
+              noValidate
               id={`location_button_mobile_${selectId}`}
               className="tablet:display-none margin-top-2 width-full"
               onClick={(event) => handleSelect(event, selectId)}
-              type="submit"
+              type="button"
             >
               {t('in_person_proofing.body.location.location_button')}
             </Button>
           </div>
           <div className="grid-col-auto">
             <Button
+              noValidate
               id={`location_button_desktop_${selectId}`}
               className="display-none tablet:display-inline-block"
               onClick={(event) => {
                 handleSelect(event, selectId);
               }}
-              type="submit"
+              type="button"
             >
               {t('in_person_proofing.body.location.location_button')}
             </Button>
