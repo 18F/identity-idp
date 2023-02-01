@@ -8,7 +8,7 @@ module IdvSession
   end
 
   def confirm_idv_session_started
-    redirect_to idv_doc_auth_url if idv_session.applicant.blank?
+    redirect_to idv_verify_info_url if idv_session.applicant.blank?
   end
 
   def confirm_idv_needed

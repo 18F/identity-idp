@@ -27,7 +27,7 @@ feature 'doc auth ssn step', :js do
     expect(page.find_field(t('idv.form.ssn_label_html'))['aria-invalid']).to eq('false')
     click_idv_continue
 
-    expect(page).to have_current_path(idv_doc_auth_verify_step)
+    expect(page).to have_current_path(idv_verify_info_path)
 
     profiling_result = Proofing::Mock::DeviceProfilingBackend.new.profiling_result(session_id)
     expect(profiling_result).to eq('review')
@@ -40,18 +40,5 @@ feature 'doc auth ssn step', :js do
     expect(page.find_field(t('idv.form.ssn_label_html'))['aria-invalid']).to eq('true')
 
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
-  end
-
-  context 'when verify_info controller is enabled' do
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_verify_info_controller_enabled).
-        and_return(true)
-    end
-    it 'redirects to verify_info controller' do
-      fill_out_ssn_form_ok
-      click_idv_continue
-
-      expect(page).to have_current_path(idv_verify_info_path)
-    end
   end
 end
