@@ -3208,7 +3208,7 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks exceptions that are raised when initiating deadline email in GetUspsproofingResultsJob
+  # Tracks exceptions that are raised when initiating deadline email in GetUspsProofingResultsJob
   # @param [String] enrollment_id
   # @param [String] exception_class
   # @param [String] exception_message
@@ -3296,6 +3296,28 @@ module AnalyticsEvents
       'InPerson::EmailReminderJob: Reminder email initiated',
       email_type: email_type,
       enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Tracks unexpected responses from the USPS API
+  # @param [String] enrollment_code
+  # @param [String] enrollment_id
+  # @param [String] response_message
+  # @param [String] reason why was this error unexpected?
+  def idv_in_person_usps_proofing_results_job_unexpected_response(
+    enrollment_code:,
+    enrollment_id:,
+    response_message:,
+    reason:,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Unexpected response received',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      response_message: response_message,
+      reason: reason,
       **extra,
     )
   end
