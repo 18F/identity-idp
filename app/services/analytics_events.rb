@@ -567,9 +567,9 @@ module AnalyticsEvents
 
   # The user was shown a variant of the IPP CTA
   def idv_ipp_cta_variant(variant:, **extra)
-    track_ipp_cta_testing_event(
-      variant,
-      'IdV: IPP CTA Variant Recorded',
+    preserve_testing_value({:ipp_cta_variant => variant})
+    track_event(
+      'IdV: IPP CTA Variant Displayed: ' + variant.to_s,
       **extra,
     )
   end
