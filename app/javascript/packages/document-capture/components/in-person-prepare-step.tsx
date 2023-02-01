@@ -21,7 +21,7 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
   const { trackEvent } = useContext(AnalyticsContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
   /* Remove selectedLocationName when request_pilot_facilities removed */
-  const { selectedLocationName, streetAddress, formattedCityStateZip } = value;
+  const { selectedLocationName, selectedLocationAddress } = value;
 
   const onContinue: MouseEventHandler = async (event) => {
     event.preventDefault();
@@ -44,10 +44,10 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
           })}
         </Alert>
       )}
-      {streetAddress && formattedCityStateZip && (
+      {selectedLocationAddress && (
         <Alert type="success" className="margin-bottom-4">
           {t('in_person_proofing.body.prepare.alert_selected_post_office', {
-            full_address: `${streetAddress}, ${formattedCityStateZip}`,
+            full_address: selectedLocationAddress,
           })}
         </Alert>
       )}

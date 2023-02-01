@@ -39,8 +39,9 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
     async (e: any, id: number) => {
       const selectedLocation = locationResults![id]!;
       const { streetAddress, formattedCityStateZip } = selectedLocation;
-      setSubmitEventMetadata({ selected_location: `${streetAddress}, ${formattedCityStateZip}` });
-      onChange({ streetAddress, formattedCityStateZip });
+      const selectedLocationAddress = `${streetAddress}, ${formattedCityStateZip}`;
+      setSubmitEventMetadata({ selected_location: selectedLocationAddress });
+      onChange({ selectedLocationAddress });
       if (autoSubmit) {
         return;
       }
