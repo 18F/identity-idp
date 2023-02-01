@@ -67,8 +67,7 @@ class LegacySessionEncryptor
     sensitive_data = {}
 
     sensitive_paths.each do |path|
-      all_but_last_key = path[0..-2]
-      last_key = path.last
+      *all_but_last_key, last_key = path
 
       if all_but_last_key.blank?
         value = session.delete(last_key)
