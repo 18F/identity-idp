@@ -2,7 +2,7 @@ module ArcgisApi
   class Geocoder
     Suggestion = Struct.new(:text, :magic_key, keyword_init: true)
     AddressCandidate = Struct.new(
-      :address, :location, :street_address, :city, :state, :zip_code, :addr_type
+      :address, :location, :street_address, :city, :state, :zip_code,
       keyword_init: true
     )
     Location = Struct.new(:latitude, :longitude, keyword_init: true)
@@ -128,7 +128,7 @@ module ArcgisApi
 
     def parse_address_candidates(response_body)
       handle_api_errors(response_body)
-      puts response_body
+
       response_body['candidates'].map do |candidate|
         AddressCandidate.new(
           address: candidate['address'],
@@ -140,7 +140,6 @@ module ArcgisApi
           city: candidate.dig('attributes', 'City'),
           state: candidate.dig('attributes', 'RegionAbbr'),
           zip_code: candidate.dig('attributes', 'Postal'),
-          addr_type: candidate.dig('attributes', 'Addr_type')
         )
       end
     end
