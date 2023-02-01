@@ -3183,7 +3183,7 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks exceptions that are raised when initiating deadline email in GetUspsproofingResultsJob
+  # Tracks exceptions that are raised when initiating deadline email in GetUspsProofingResultsJob
   # @param [String] enrollment_id
   # @param [String] exception_class
   # @param [String] exception_message
