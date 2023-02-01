@@ -41,7 +41,7 @@ describe RegisterUserEmailForm do
 
         create(:user, :signed_up, email: 'taken@example.com')
 
-        (IdentityConfig.store.reg_confirmed_email_max_attempts).times do
+        IdentityConfig.store.reg_confirmed_email_max_attempts.times do
           subject.submit(email: 'TAKEN@example.com', terms_accepted: '1')
         end
 
@@ -85,7 +85,7 @@ describe RegisterUserEmailForm do
         )
 
         create(:user, email: 'test@example.com', confirmed_at: nil, uuid: '123')
-        (IdentityConfig.store.reg_unconfirmed_email_max_attempts).times do
+        IdentityConfig.store.reg_unconfirmed_email_max_attempts.times do
           subject.submit(email: 'test@example.com', terms_accepted: '1')
         end
 

@@ -174,7 +174,7 @@ describe Users::VerifyPersonalKeyController do
         expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_rate_limited).once
 
         max_attempts = Throttle.max_attempts(:verify_personal_key)
-        (max_attempts).times { post :create, params: personal_key_bad_params }
+        max_attempts.times { post :create, params: personal_key_bad_params }
 
         expect(response).to render_template(:throttled)
       end
