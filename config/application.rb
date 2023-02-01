@@ -117,18 +117,20 @@ module Identity
           next if source == IdentityConfig.store.domain_name
 
           redirect_uris = Rails.cache.fetch(
-            'all_service_provider_redirect_uris',
+            'all_service_provider_redirect_uris_parsed',
             expires_in: IdentityConfig.store.all_redirect_uris_cache_duration_minutes.minutes,
           ) do
-            ServiceProvider.pluck(:redirect_uris).flatten.compact
+            ServiceProvider.pluck(:redirect_uris).flatten.compact.uniq.map do |uri|
+              split_uri = uri.split('//')
+              protocol = split_uri[0]
+              domain = split_uri[1].split('/')[0] if split_uri.size > 1
+              "#{protocol}//#{domain}"
+            end
           end
 
-          redirect_uris.find do |uri|
-            split_uri = uri.split('//')
-            protocol = split_uri[0]
-            domain = split_uri[1].split('/')[0] if split_uri.size > 1
-            source == "#{protocol}//#{domain}"
-          end.present?
+          redirect_uris.any? do |uri|
+            source == uri
+          end
         end
         resource '/.well-known/openid-configuration', headers: :any, methods: [:get]
         resource '/api/openid_connect/certs', headers: :any, methods: [:get]
