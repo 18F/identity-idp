@@ -2,7 +2,7 @@ module ArcgisApi
   class Geocoder
     Suggestion = Struct.new(:text, :magic_key, keyword_init: true)
     AddressCandidate = Struct.new(
-      :address, :location, :street_address, :city, :state, :zip_code,
+      :address, :location, :street_address, :city, :state, :zip_code, :addr_type
       keyword_init: true
     )
     Location = Struct.new(:latitude, :longitude, keyword_init: true)
@@ -49,8 +49,8 @@ module ArcgisApi
 
     # Makes HTTP request to find a full address record using a magic key or single text line
     # @param options [Hash] one of 'magicKey', which is an ID returned from /suggest,
-    #   or 'SingleLine', which should be a single string address that includes at least city,
-    #   state.
+    #   or 'SingleLine', which should be a single string address that includes at least city
+    #   and state.
     # @return [Array<AddressCandidate>] AddressCandidates
     def find_address_candidates(**options)
       supported_params = options.slice(*KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS)
@@ -63,7 +63,7 @@ module ArcgisApi
       end
 
       params = {
-        outFields: 'StAddr,City,RegionAbbr,Postal',
+        outFields: '*',
         **COMMON_DEFAULT_PARAMETERS,
         **supported_params,
       }
@@ -128,7 +128,7 @@ module ArcgisApi
 
     def parse_address_candidates(response_body)
       handle_api_errors(response_body)
-
+      puts response_body
       response_body['candidates'].map do |candidate|
         AddressCandidate.new(
           address: candidate['address'],
@@ -140,6 +140,7 @@ module ArcgisApi
           city: candidate.dig('attributes', 'City'),
           state: candidate.dig('attributes', 'RegionAbbr'),
           zip_code: candidate.dig('attributes', 'Postal'),
+          addr_type: candidate.dig('attributes', 'Addr_type')
         )
       end
     end
