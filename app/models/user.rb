@@ -2,7 +2,6 @@ class User < ApplicationRecord
   include NonNullUuid
 
   include ::NewRelic::Agent::MethodTracer
-  self.ignored_columns = %w[non_restricted_mfa_required_prompt_skip_date]
 
   devise(
     :database_authenticatable,
