@@ -22,7 +22,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
     null,
   );
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
-  const [uspsError, setUspsError] = useState<Error | null>(null);
+  const [apiError, setApiError] = useState<Error | null>(null);
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
@@ -79,7 +79,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
 
   return (
     <>
-      {uspsError && (
+      {apiError && (
         <Alert type="error" className="margin-bottom-4">
           {t('idv.failure.exceptions.internal_error')}
         </Alert>
@@ -91,7 +91,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
         onFoundAddress={setFoundAddress}
         onFoundLocations={setLocationResults}
         onLoadingLocations={setLoadingLocations}
-        onError={setUspsError}
+        onError={setApiError}
       />
       {locationResults && foundAddress && !isLoadingLocations && (
         <InPersonLocations

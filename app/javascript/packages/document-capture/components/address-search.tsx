@@ -111,11 +111,12 @@ function useUspsLocations() {
   }, []);
 
   // sends the raw text query to arcgis
-  const { data: addressCandidates, isLoading: isLoadingCandidates } = useSWR([addressQuery], () =>
-    addressQuery ? requestAddressCandidates(addressQuery) : null,
-  );
+  const {
+    data: addressCandidates,
+    isLoading: isLoadingCandidates,
+    error: addressError,
+  } = useSWR([addressQuery], () => (addressQuery ? requestAddressCandidates(addressQuery) : null));
 
-  // sets the arcgis-validated address object
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
 
   useEffect(() => {
@@ -140,13 +141,14 @@ function useUspsLocations() {
   const {
     data: locationResults,
     isLoading: isLoadingLocations,
-    error,
+    error: uspsError,
   } = useSWR([foundAddress], ([address]) => (address ? requestUspsLocations(address) : null));
 
   return {
     foundAddress,
     locationResults,
-    error,
+    uspsError,
+    addressError,
     isLoading: isLoadingLocations || isLoadingCandidates,
     handleAddressSearch,
     validatedFieldRef,
@@ -173,7 +175,8 @@ function AddressSearch({
   const [textInput, setTextInput] = useState('');
   const {
     locationResults,
-    error,
+    uspsError,
+    addressError,
     isLoading,
     handleAddressSearch: onSearch,
     foundAddress,
@@ -191,8 +194,9 @@ function AddressSearch({
   }, [isLoading]);
 
   useEffect(() => {
-    error && onError(error);
-  }, [error]);
+    addressError && onError(addressError);
+    uspsError && onError(uspsError);
+  }, [uspsError, addressError]);
 
   useDidUpdateEffect(() => {
     onFoundLocations(locationResults);

@@ -42,8 +42,8 @@ describe Idv::InPerson::AddressSearchController do
     context 'with successful fetch' do
       it 'gets successful response' do
         response = get :index
-        json = response.body
-        addresses = JSON.parse(json)
+        expect(response.status).to eq(200)
+        addresses = JSON.parse(response.body)
         expect(addresses.length).to eq 1
       end
 
@@ -54,8 +54,8 @@ describe Idv::InPerson::AddressSearchController do
 
         it 'returns empty array' do
           response = get :index
-          json = response.body
-          addresses = JSON.parse(json)
+          expect(response.status).to eq(200)
+          addresses = JSON.parse(response.body)
           expect(addresses.length).to eq 0
         end
       end
@@ -69,8 +69,22 @@ describe Idv::InPerson::AddressSearchController do
 
       it 'gets an empty pilot response' do
         response = get :index
-        json = response.body
-        addresses = JSON.parse(json)
+        expect(response.status).to eq(422)
+        addresses = JSON.parse(response.body)
+        expect(addresses.length).to eq 0
+      end
+    end
+
+    context 'with a timeout error' do
+      before do
+        exception = Faraday::TimeoutError.new
+        allow(geocoder).to receive(:suggest).and_raise(exception)
+      end
+
+      it 'returns an error code' do
+        response = get :index
+        expect(response.status).to eq(422)
+        addresses = JSON.parse(response.body)
         expect(addresses.length).to eq 0
       end
     end
