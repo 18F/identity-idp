@@ -29,12 +29,12 @@ module Proofing
       def proof(applicant)
         aamva_applicant =
           Aamva::Applicant.from_proofer_applicant(OpenStruct.new(applicant))
-        verification_response = Aamva::VerificationClient.new(
+        response = Aamva::VerificationClient.new(
           config,
         ).send_verification_request(
           applicant: aamva_applicant,
         )
-        build_result_from_response(verification_response)
+        build_result_from_response(response)
       rescue => exception
         NewRelic::Agent.notice_error(exception)
         Proofing::StateIdResult.new(

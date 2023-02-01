@@ -5,12 +5,12 @@ module Proofing
         attr_reader :config
 
         def initialize(config)
-          @config = LexisNexis::Ddp::Proofer::Config.new(config)
+          @config = LexisNexis::Config.new(config)
         end
 
         def proof(applicant)
           response = VerificationRequest.new(config: config, applicant: applicant).send
-          return build_result_from_response(response)
+          build_result_from_response(response)
         rescue => exception
           NewRelic::Agent.notice_error(exception)
           AddressResult.new(
