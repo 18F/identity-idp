@@ -1,8 +1,8 @@
 module Encryption
   module Encryptors
-    class SmallAesEncryptor
+    class AesEncryptorV2
       def initialize
-        self.cipher = SmallAesCipher.new
+        self.cipher = AesCipherV2.new
       end
 
       def encrypt(plaintext, cek)

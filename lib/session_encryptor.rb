@@ -84,11 +84,11 @@ class SessionEncryptor
   end
 
   def outer_encrypt(plaintext)
-    Encryption::Encryptors::SmallAesEncryptor.new.encrypt(plaintext, session_encryption_key)
+    Encryption::Encryptors::AesEncryptorV2.new.encrypt(plaintext, session_encryption_key)
   end
 
   def outer_decrypt(ciphertext)
-    Encryption::Encryptors::SmallAesEncryptor.new.decrypt(ciphertext, session_encryption_key)
+    Encryption::Encryptors::AesEncryptorV2.new.decrypt(ciphertext, session_encryption_key)
   end
 
   private

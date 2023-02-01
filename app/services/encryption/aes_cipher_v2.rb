@@ -1,5 +1,5 @@
 module Encryption
-  class SmallAesCipher
+  class AesCipherV2
     def encrypt(plaintext, cek)
       self.cipher = self.class.encryption_cipher
       # The key length for the AES-256-GCM cipher is fixed at 128 bits, or 32
