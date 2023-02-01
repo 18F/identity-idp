@@ -7,6 +7,7 @@ class FrontendLogController < ApplicationController
   # rubocop:disable Layout/LineLength
   EVENT_MAP = {
     'IdV: verify in person troubleshooting option clicked' => :idv_verify_in_person_troubleshooting_option_clicked,
+    'IdV: IPP CTA Variant' => :idv_ipp_cta_variant,
     'IdV: location visited' => :idv_in_person_location_visited,
     'IdV: location submitted' => :idv_in_person_location_submitted,
     'IdV: prepare visited' => :idv_in_person_prepare_visited,

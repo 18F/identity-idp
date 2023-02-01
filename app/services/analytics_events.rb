@@ -565,6 +565,15 @@ module AnalyticsEvents
     )
   end
 
+  # The user was shown a variant of the IPP CTA
+  def idv_ipp_cta_variant(variant:, **extra)
+    track_ipp_cta_testing_event(
+      variant,
+      'IdV: IPP CTA Variant Recorded',
+      **extra,
+    )
+  end
+
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] flow_path Document capture path ("hybrid" or "standard")

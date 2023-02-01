@@ -14,6 +14,11 @@ class Analytics
     @session = session
   end
 
+  def track_ipp_cta_testing_event(variant, event, attributes = {})
+    @session[:ipp_cta_variant] = variant
+    track_event(event, attributes)
+  end
+
   def track_event(event, attributes = {})
     attributes.delete(:pii_like_keypaths)
     update_session_events_and_paths_visited_for_analytics(event) if attributes[:success] != false
@@ -24,6 +29,7 @@ class Analytics
       new_session_success_state: first_success_state_this_session?,
       success_state: success_state_token(event),
       path: request&.path,
+      ipp_cta_variant: @session[:ipp_cta_variant],
       session_duration: session_duration,
       user_id: attributes[:user_id] || user.uuid,
       locale: I18n.locale,
