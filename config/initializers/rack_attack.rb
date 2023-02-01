@@ -1,4 +1,5 @@
 require 'ipaddr'
+require 'pp'
 
 module Rack
   class Attack
@@ -20,7 +21,6 @@ module Rack
       def remote_ip
         @remote_ip ||= (env['action_dispatch.remote_ip'] || ip).to_s
       end
-
       # This is needed because Ahoy (the gem our Analytics class calls) expects
       # the request to respond to `headers`, which Rack::Attack does not define.
       def headers
@@ -43,9 +43,10 @@ module Rack
     # Always allow requests from localhost
     # (blocklist & throttles are skipped)
     unless Rails.env.production?
-      safelist('allow from localhost') do |req|
-        req.remote_ip == '127.0.0.1' || req.remote_ip == '::1'
-      end
+      #puts "################### RACK ATTACK ALLOWING FROM LOCALHOST - SAFELIST ############################"
+      #safelist('allow from localhost') do |req|
+      #  req.remote_ip == '127.0.0.1' || req.remote_ip == '::1'
+      #end
     end
 
     ### Throttle Spammy Clients ###
@@ -256,4 +257,28 @@ ActiveSupport::Notifications.subscribe(
   user = req.env['warden'].user || AnonymousUser.new
   analytics = Analytics.new(user: user, request: req, session: {}, sp: nil)
   analytics.rate_limit_triggered(type: req.env['rack.attack.matched'])
+
+  pp payload
+
+  # How can we access Attempts Api Tracker from here?
+  # The user is not logged in yet.
+  # Can we "make" a new user from just their email address?
+
+  if req.env["rack.attack.matched"]
+    @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new(
+      session_id: "",
+      request: req,
+      user: nil,
+      sp: "",
+      cookie_device_uuid: "",
+      sp_request_uri: "",
+      enabled_for_session: "",
+      analytics: analytics,
+    )
+
+    @irs_attempts_api_tracker.login_rate_limited(
+      email: req[:user]["email"],
+    )
+  end
+
 end
