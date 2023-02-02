@@ -406,4 +406,40 @@ describe 'FeatureManagement' do
         to raise_error
     end
   end
+
+  describe '.phone_setup_recaptcha_enabled?' do
+    let(:recaptcha_site_key) { '' }
+    let(:recaptcha_secret_key) { '' }
+    let(:phone_setup_recaptcha_score_threshold) { 0.0 }
+
+    subject(:phone_setup_recaptcha_enabled) { FeatureManagement.phone_setup_recaptcha_enabled? }
+
+    before do
+      allow(IdentityConfig.store).to receive(:recaptcha_site_key).and_return(recaptcha_site_key)
+      allow(IdentityConfig.store).to receive(:recaptcha_secret_key).
+        and_return(recaptcha_secret_key)
+      allow(IdentityConfig.store).to receive(:phone_setup_recaptcha_score_threshold).
+        and_return(phone_setup_recaptcha_score_threshold)
+    end
+
+    it { expect(subject).to eq(false) }
+
+    context 'with configured recaptcha site key' do
+      let(:recaptcha_site_key) { 'key' }
+
+      it { expect(subject).to eq(false) }
+
+      context 'with configured recaptcha secret key' do
+        let(:recaptcha_secret_key) { 'key' }
+
+        it { expect(subject).to eq(false) }
+
+        context 'with configured default success rate threshold greater than 0' do
+          let(:phone_setup_recaptcha_score_threshold) { 1.0 }
+
+          it { expect(subject).to eq(true) }
+        end
+      end
+    end
+  end
 end

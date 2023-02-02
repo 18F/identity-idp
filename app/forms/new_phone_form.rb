@@ -13,13 +13,15 @@ class NewPhoneForm
   validate :validate_not_voip
   validate :validate_not_duplicate
   validate :validate_not_premium_rate
+  validate :validate_recaptcha_token
   validate :validate_allowed_carrier
 
   attr_reader :phone,
               :international_code,
               :otp_delivery_preference,
               :otp_make_default_number,
-              :setup_voice_preference
+              :setup_voice_preference,
+              :recaptcha_token
 
   alias_method :setup_voice_preference?, :setup_voice_preference
 
@@ -125,6 +127,16 @@ class NewPhoneForm
     end
   end
 
+  def validate_recaptcha_token
+    return if !FeatureManagement.phone_setup_recaptcha_enabled?
+    return if PhoneSetupRecaptchaValidator.new(parsed_phone:).valid?(recaptcha_token)
+    errors.add(
+      :recaptcha_token,
+      I18n.t('errors.messages.invalid_recaptcha_token'),
+      type: :invalid_recaptcha_token,
+    )
+  end
+
   def parsed_phone
     @parsed_phone ||= Phonelib.parse(phone)
   end
@@ -137,6 +149,7 @@ class NewPhoneForm
 
     @otp_delivery_preference = delivery_prefs if delivery_prefs
     @otp_make_default_number = true if default_prefs
+    @recaptcha_token = params[:recaptcha_token]
   end
 
   def confirmed_phone?

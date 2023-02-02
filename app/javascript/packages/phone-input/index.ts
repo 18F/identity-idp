@@ -4,6 +4,7 @@ import intlTelInput from 'intl-tel-input';
 import type { CountryCode } from 'libphonenumber-js';
 import type { Plugin as IntlTelInputPlugin, IntlTelInputGlobals, Options } from 'intl-tel-input';
 import { replaceVariables } from '@18f/identity-i18n';
+import type CaptchaSubmitButtonElement from '@18f/identity-captcha-submit-button/captcha-submit-button-element';
 
 interface PhoneInputStrings {
   country_code_label: string;
@@ -75,9 +76,11 @@ export class PhoneInputElement extends HTMLElement {
     this.codeInput.addEventListener('change', () => this.formatTextInput());
     this.codeInput.addEventListener('change', () => this.setExampleNumber());
     this.codeInput.addEventListener('change', () => this.validate());
+    this.codeInput.addEventListener('change', () => this.setCaptchaButtonExemption());
 
     this.setExampleNumber();
     this.validate();
+    this.setCaptchaButtonExemption();
   }
 
   get selectedOption() {
@@ -104,6 +107,21 @@ export class PhoneInputElement extends HTMLElement {
     }
 
     return this.#strings;
+  }
+
+  get captchaSubmitButton(): CaptchaSubmitButtonElement | null {
+    const buttonId = this.dataset.captchaSubmitButtonId;
+    return buttonId
+      ? (document.getElementById(buttonId) as CaptchaSubmitButtonElement | null)
+      : null;
+  }
+
+  get captchaExemptCountries(): string[] | boolean {
+    try {
+      return JSON.parse(this.dataset.captchaExemptCountries!);
+    } catch {
+      return true;
+    }
   }
 
   /**
@@ -229,6 +247,20 @@ export class PhoneInputElement extends HTMLElement {
       const { nationalMode } = iti.options;
       const numberType = intlTelInputUtils.numberType[iti.options.placeholderNumberType!];
       exampleText.textContent = intlTelInputUtils.getExampleNumber(iso2, nationalMode!, numberType);
+    }
+  }
+
+  setCaptchaButtonExemption() {
+    const { iso2 = 'us' } = this.iti.getSelectedCountryData();
+    const isExempt =
+      typeof this.captchaExemptCountries === 'boolean'
+        ? this.captchaExemptCountries
+        : this.captchaExemptCountries.includes(iso2.toUpperCase());
+
+    if (isExempt) {
+      this.captchaSubmitButton?.setAttribute('exempt', '');
+    } else {
+      this.captchaSubmitButton?.removeAttribute('exempt');
     }
   }
 }

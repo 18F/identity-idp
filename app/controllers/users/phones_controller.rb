@@ -1,6 +1,7 @@
 module Users
   class PhonesController < ReauthnRequiredController
     include PhoneConfirmation
+    include RecaptchaConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :redirect_if_phone_vendor_outage
@@ -30,10 +31,11 @@ module Users
 
     def user_params
       params.require(:new_phone_form).permit(
-        :phone, :international_code,
+        :phone,
+        :international_code,
         :otp_delivery_preference,
-        :otp_make_default_number
-      )
+        :otp_make_default_number,
+      ).merge(params.permit(:recaptcha_token))
     end
 
     def confirm_phone

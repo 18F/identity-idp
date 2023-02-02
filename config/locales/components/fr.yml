@@ -45,6 +45,8 @@ fr:
       country_code_label: Code pays
     print_button:
       label: Imprimer
+    spinner_button:
+      default_action_message: Vérification…
     troubleshooting_options:
       default_heading: 'Des difficultés? Voici ce que vous pouvez faire:'
       ipp_heading: 'Options de dépannage supplémentaires:'

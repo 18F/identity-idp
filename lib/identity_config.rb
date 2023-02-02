@@ -320,6 +320,12 @@ class IdentityConfig
     config.add(:piv_cac_service_timeout, type: :float)
     config.add(:piv_cac_verify_token_secret)
     config.add(:piv_cac_verify_token_url)
+    config.add(:phone_setup_recaptcha_score_threshold, type: :float)
+    config.add(
+      :phone_setup_recaptcha_country_score_overrides,
+      type: :json,
+      options: { symbolize_names: true },
+    )
     config.add(:phone_service_check, type: :boolean)
     config.add(:phone_setups_per_ip_track_only_mode, type: :boolean)
     config.add(:platform_auth_set_up_enabled, type: :boolean)
@@ -340,6 +346,8 @@ class IdentityConfig
     config.add(:rack_timeout_service_timeout_seconds, type: :integer)
     config.add(:rails_mailer_previews_enabled, type: :boolean)
     config.add(:reauthn_window, type: :integer)
+    config.add(:recaptcha_site_key, type: :string)
+    config.add(:recaptcha_secret_key, type: :string)
     config.add(:recovery_code_length, type: :integer)
     config.add(:recurring_jobs_disabled_names, type: :json)
     config.add(:redis_irs_attempt_api_url)
