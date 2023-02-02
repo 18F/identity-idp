@@ -93,7 +93,7 @@ RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class
     expect(job_analytics).to have_logged_event(
       'GetUspsProofingResultsJob: Exception raised',
       hash_including(
-        minutes_since_established: (3.days.in_minutes..(3.days.in_minutes + 5)),
+        minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
         enrollment_code: pending_enrollment.enrollment_code,
         enrollment_id: pending_enrollment.id,
         exception_class: exception_class,
@@ -129,7 +129,7 @@ RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response'
     expect(job_analytics).to have_logged_event(
       'GetUspsProofingResultsJob: Exception raised',
       hash_including(
-        minutes_since_established: (3.days.in_minutes..(3.days.in_minutes + 5)),
+        minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
         response_present: false,
         exception_class: error_type.to_s,
       ),
@@ -139,6 +139,7 @@ end
 
 RSpec.describe GetUspsProofingResultsJob do
   include UspsIppHelper
+  include ApproximatingHelper
 
   let(:reprocess_delay_minutes) { 2.0 }
   let(:request_delay_ms) { 0 }
@@ -294,7 +295,7 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Exception raised',
             hash_including(
-              minutes_since_established: (3.days.in_minutes..(3.days.in_minutes + 5)),
+              minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
               exception_message: error_message,
             ),
           )
@@ -452,7 +453,7 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
-              minutes_since_established: (3.days.in_minutes..(3.days.in_minutes + 5)),
+              minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
               reason: 'Successful status update',
             ),
           )
@@ -485,7 +486,9 @@ RSpec.describe GetUspsProofingResultsJob do
 
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
-            hash_including(minutes_since_established: (3.days.in_minutes..(3.days.in_minutes + 5))),
+            hash_including(
+              minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
+            ),
           )
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Success or failure email initiated',
@@ -516,7 +519,9 @@ RSpec.describe GetUspsProofingResultsJob do
 
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
-            hash_including(minutes_since_established: (3.days.in_minutes..(3.days.in_minutes + 5))),
+            hash_including(
+              minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
+            ),
           )
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Success or failure email initiated',
@@ -548,7 +553,7 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
-              minutes_since_established: (3.days.in_minutes..(3.days.in_minutes + 5)),
+              minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
               reason: 'Unsupported ID type',
             ),
           )
@@ -574,7 +579,7 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
-              minutes_since_established: (3.days.in_minutes..(3.days.in_minutes + 5)),
+              minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
               reason: 'Enrollment has expired',
             ),
           )
@@ -603,7 +608,7 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
-              minutes_since_established: (3.days.in_minutes..(3.days.in_minutes + 5)),
+              minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
               reason: 'Enrollment has expired',
             ),
           )
@@ -633,7 +638,7 @@ RSpec.describe GetUspsProofingResultsJob do
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Unexpected response received',
               hash_including(
-                minutes_since_established: (3.days.in_minutes..(3.days.in_minutes + 5)),
+                minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
                 reason: 'Invalid enrollment code',
               ),
             )
@@ -657,7 +662,7 @@ RSpec.describe GetUspsProofingResultsJob do
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Unexpected response received',
               hash_including(
-                minutes_since_established: (3.days.in_minutes..(3.days.in_minutes + 5)),
+                minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
                 reason: 'Invalid applicant unique id',
               ),
             )
@@ -694,7 +699,7 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Exception raised',
             hash_including(
-              minutes_since_established: (3.days.in_minutes..(3.days.in_minutes + 5)),
+              minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
               status: 'Not supported',
             ),
           )
