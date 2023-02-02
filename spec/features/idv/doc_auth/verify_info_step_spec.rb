@@ -19,7 +19,7 @@ feature 'doc auth verify_info step', :js do
   it 'sends the user to start doc auth if there is no pii from the document in session' do
     visit sign_out_url
     sign_in_and_2fa_user
-    visit idv_doc_auth_verify_step
+    visit idv_verify_info_path
 
     expect(page).to have_current_path(idv_doc_auth_welcome_step)
   end
@@ -112,7 +112,7 @@ feature 'doc auth verify_info step', :js do
     expect(page).to have_current_path(idv_session_errors_warning_path)
     click_on t('idv.failure.button.warning')
 
-    expect(page).to have_current_path(idv_doc_auth_verify_step)
+    expect(page).to have_current_path(idv_verify_info_path)
   end
 
   it 'does not proceed to the next page if resolution raises an exception' do
@@ -145,7 +145,7 @@ feature 'doc auth verify_info step', :js do
 
     click_on t('idv.failure.button.warning')
 
-    expect(page).to have_current_path(idv_doc_auth_verify_step)
+    expect(page).to have_current_path(idv_verify_info_path)
   end
 
   it 'throttles resolution and continues when it expires' do
@@ -157,7 +157,7 @@ feature 'doc auth verify_info step', :js do
     (max_attempts - 1).times do
       click_idv_continue
       expect(page).to have_current_path(idv_session_errors_warning_path)
-      visit idv_doc_auth_verify_step
+      visit idv_verify_info_path
     end
     click_idv_continue
     expect(page).to have_current_path(idv_session_errors_failure_path)
@@ -265,7 +265,7 @@ feature 'doc auth verify_info step', :js do
       click_idv_continue
       expect(fake_analytics).to have_logged_event('Proofing Resolution Result Missing')
       expect(page).to have_content(t('idv.failure.timeout'))
-      expect(page).to have_current_path(idv_doc_auth_verify_step)
+      expect(page).to have_current_path(idv_verify_info_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
       click_idv_continue
       expect(page).to have_current_path(idv_phone_path)
@@ -293,7 +293,7 @@ feature 'doc auth verify_info step', :js do
 
       click_idv_continue
       expect(page).to have_content(t('idv.failure.timeout'))
-      expect(page).to have_current_path(idv_doc_auth_verify_step)
+      expect(page).to have_current_path(idv_verify_info_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
     end
   end
@@ -308,7 +308,7 @@ feature 'doc auth verify_info step', :js do
 
       click_idv_continue
       expect(page).to have_content(t('idv.failure.timeout'))
-      expect(page).to have_current_path(idv_doc_auth_verify_step)
+      expect(page).to have_current_path(idv_verify_info_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
       click_idv_continue
       expect(page).to have_current_path(idv_phone_path)
