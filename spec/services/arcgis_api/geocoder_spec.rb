@@ -84,6 +84,25 @@ RSpec.describe ArcgisApi::Geocoder do
         expect(error).to be_instance_of(ArgumentError)
       end
     end
+
+    it 'returns candidates from SingleLine' do
+      stub_request_candidates_response
+
+      first_candidate = subject.find_address_candidates(SingleLine: 'abc123').first
+
+      expect(first_candidate.address).to be_present
+    end
+
+    it 'requests candidates with correct address category filters' do
+      stub_request_candidates_response
+
+      subject.find_address_candidates(SingleLine: 'abc123')
+
+      expect(WebMock).to have_requested(:get, %r{/findAddressCandidates}).
+        with(query: hash_including(
+          { category: 'Subaddress,Point Address,Street Address,Street Name' },
+        ))
+    end
   end
 
   describe '#retrieve_token!' do

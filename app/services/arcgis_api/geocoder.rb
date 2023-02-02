@@ -13,7 +13,26 @@ module ArcgisApi
     COMMON_DEFAULT_PARAMETERS = {
       f: 'json',
       countryCode: 'USA',
-      category: 'address',
+      # See https://developers.arcgis.com/rest/geocode/api-reference/geocoding-category-filtering.htm#ESRI_SECTION1_502B3FE2028145D7B189C25B1A00E17B
+      #   and https://developers.arcgis.com/rest/geocode/api-reference/geocoding-service-output.htm#GUID-D5C1A6E8-82DE-4900-8F8D-B390C2714A1F
+      category: [
+        # A subset of a PointAddress that represents a house or building subaddress location,
+        #   such as an apartment unit, floor, or individual building within a complex.
+        #   E.g. 3836 Emerald Ave, Suite C, La Verne, CA, 91750
+        'Subaddress',
+
+        # A street address based on points that represent house and building locations.
+        #   E.g. 380 New York St, Redlands, CA, 92373
+        'Point Address',
+
+        # A street address that differs from PointAddress because the house number is interpolated
+        #   from a range of numbers. E.g. 647 Haight St, San Francisco, CA, 94117
+        'Street Address',
+
+        # Similar to a street address but without the house number.
+        #   E.g. Olive Ave, Redlands, CA, 92373.
+        'Street Name',
+      ].join(','),
     }.freeze
 
     ROOT_URL = IdentityConfig.store.arcgis_api_root_url
@@ -57,7 +76,7 @@ module ArcgisApi
 
       if supported_params.empty?
         raise ArgumentError, <<~MSG
-          Unknown parameters: #{options.except(KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS)}.
+          Unknown parameters: #{options.except(*KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS)}.
           See https://developers.arcgis.com/rest/geocode/api-reference/geocoding-find-address-candidates.htm
         MSG
       end
