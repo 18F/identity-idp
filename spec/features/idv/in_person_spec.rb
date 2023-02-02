@@ -377,7 +377,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_content(t('idv.titles.come_back_later'))
       expect(page).to have_current_path(idv_come_back_later_path)
 
-      click_idv_continue
+      click_idv_exit
       expect(page).to have_current_path(account_path)
       expect(page).not_to have_content(t('headings.account.verified_account'))
       click_on t('account.index.verification.reactivate_button')
@@ -399,7 +399,7 @@ RSpec.describe 'In Person Proofing', js: true do
       click_on t('idv.buttons.mail.send')
       complete_review_step
       acknowledge_and_confirm_personal_key
-      click_idv_continue
+      click_idv_exit
       click_on t('account.index.verification.reactivate_button')
       click_on t('idv.messages.clear_and_start_over')
 
