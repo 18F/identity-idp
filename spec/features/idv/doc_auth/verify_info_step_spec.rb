@@ -151,9 +151,12 @@ feature 'doc auth verify_info step', :js do
     end
 
     context 'resolution throttling' do
-      let(:max_resolution_attempts) { Throttle.max_attempts(:idv_resolution) }
+      let(:max_resolution_attempts) { 3 }
       # proof_ssn_max_attempts is 10, vs 5 for resolution, so it doesn't get triggered
       it 'throttles resolution and continues when it expires' do
+        allow(IdentityConfig.store).to receive(:idv_max_attempts).
+        and_return(max_resolution_attempts)
+
         expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_ssn_step
@@ -188,8 +191,8 @@ feature 'doc auth verify_info step', :js do
 
     context 'ssn throttling' do
       # Simulates someone trying same SSN with second account
-      let(:max_resolution_attempts) { 5 }
-      let(:max_ssn_attempts) { 4 }
+      let(:max_resolution_attempts) { 4 }
+      let(:max_ssn_attempts) { 3 }
 
       it 'throttles ssn and continues when it expires' do
         allow(IdentityConfig.store).to receive(:idv_max_attempts).
