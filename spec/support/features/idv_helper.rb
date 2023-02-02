@@ -47,6 +47,13 @@ module IdvHelper
     click_select_button_and_wait t('in_person_proofing.body.location.location_button')
   end
 
+  def click_try_again
+    page.find(
+      'a',
+      text: t('idv.failure.button.warning'),
+    ).click
+  end
+
   def click_idv_otp_delivery_method_sms
     page.find(
       'label',

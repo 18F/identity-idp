@@ -155,18 +155,24 @@ feature 'doc auth verify_info step', :js do
       # proof_ssn_max_attempts is 10, vs 5 for resolution, so it doesn't get triggered
       it 'throttles resolution and continues when it expires' do
         allow(IdentityConfig.store).to receive(:idv_max_attempts).
-        and_return(max_resolution_attempts)
+          and_return(max_resolution_attempts)
 
         expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_ssn_step
         fill_out_ssn_form_with_ssn_that_fails_resolution
         click_idv_continue
-        (max_resolution_attempts - 1).times do
+        (max_resolution_attempts - 2).times do
           click_idv_continue
           expect(page).to have_current_path(idv_session_errors_warning_path)
-          visit idv_doc_auth_verify_step
+          click_try_again
         end
+
+        # Check that last attempt shows correct warning text
+        click_idv_continue
+        expect(page).to have_current_path(idv_session_errors_warning_path)
+        expect(page).to have_content(t('idv.failure.attempts.one'))
+        click_try_again
 
         click_idv_continue
         expect(page).to have_current_path(idv_session_errors_failure_path)
@@ -208,7 +214,7 @@ feature 'doc auth verify_info step', :js do
         (max_ssn_attempts - 1).times do
           click_idv_continue
           expect(page).to have_current_path(idv_session_errors_warning_path)
-          visit idv_doc_auth_verify_step
+          click_try_again
         end
 
         click_idv_continue
