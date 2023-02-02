@@ -14,7 +14,7 @@ module OpenidConnect
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
     before_action :store_request, only: [:index]
     before_action :check_sp_active, only: [:index]
-    before_action :apply_secure_headers_override, only: [:index]
+    before_action :secure_headers_override, only: [:index]
     before_action :handle_banned_user
     before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
@@ -111,6 +111,14 @@ module OpenidConnect
 
     def build_authorize_form_from_params
       @authorize_form = OpenidConnectAuthorizeForm.new(authorization_params)
+    end
+
+    def secure_headers_override
+      csp_uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
+        @authorize_form.redirect_uri,
+        @authorize_form.service_provider.redirect_uris,
+      )
+      override_form_action_csp(csp_uris)
     end
 
     def authorization_params

@@ -22,6 +22,10 @@ module FederatedProtocols
       ).requested_attributes
     end
 
+    def service_provider
+      current_service_provider
+    end
+
     private
 
     attr_reader :request
@@ -35,7 +39,8 @@ module FederatedProtocols
     end
 
     def current_service_provider
-      ServiceProvider.find_by(issuer: issuer)
+      return @current_service_provider if defined?(@current_service_provider)
+      @current_service_provider = ServiceProvider.find_by(issuer: issuer)
     end
   end
 end

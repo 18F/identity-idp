@@ -25,6 +25,7 @@ module Idv
 
     def update
       return if idv_session.verify_info_step_document_capture_session_uuid
+      analytics.idv_doc_auth_verify_submitted(**analytics_arguments)
 
       pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
 
