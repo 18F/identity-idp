@@ -21,6 +21,8 @@ class OpenidConnectUserInfoPresenter
     info.merge!(ial2_attributes) if scoper.ial2_scopes_requested?
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
+    info[:ial] = identity.ial if identity.ial.present?
+    info[:aal] = identity.aal if identity.aal.present?
 
     scoper.filter(info)
   end
