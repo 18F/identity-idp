@@ -73,7 +73,7 @@ function LocationCollectionItem({
               id={`location_button_mobile_${selectId}`}
               className="tablet:display-none margin-top-2 width-full"
               onClick={(event) => handleSelect(event, selectId)}
-              type="button"
+              type="submit"
             >
               {t('in_person_proofing.body.location.location_button')}
             </Button>
@@ -86,7 +86,7 @@ function LocationCollectionItem({
               onClick={(event) => {
                 handleSelect(event, selectId);
               }}
-              type="button"
+              type="submit"
             >
               {t('in_person_proofing.body.location.location_button')}
             </Button>
