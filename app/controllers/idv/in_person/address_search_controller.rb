@@ -14,6 +14,13 @@ module Idv
 
       def addresses(search_term)
         addresses = geocoder.find_address_candidates(SingleLine: search_term).slice(0, 1)
+        unless addresses
+          # multiple logs when no adresses exist
+          analytics.idv_in_person_location_searched(
+            success: false, errors: 'No address candidates found by arcgis',
+          )
+          addresses = []
+        end
         { json: addresses, status: :ok }
       rescue Faraday::ConnectionFailed => err
         analytics.idv_arcgis_request_failure(
@@ -35,6 +42,17 @@ module Idv
           response_status_code: err.respond_to?(:response_status) && err.response_status,
         )
         { json: [], status: :unprocessable_entity }
+      rescue StandardError => err
+        analytics.idv_in_person_location_searched(
+          success: false,
+          errors: 'Arcgis no addresses',
+          api_status_code: 500,
+          exception_class: err.class,
+          exception_message: err.message,
+          reason: 'Arcgis error performing operation',
+          response_status_code: err.respond_to?(:response_status) && err.response_status,
+        )
+        { json: [], status: :internal_server_error }
       end
 
       def geocoder
