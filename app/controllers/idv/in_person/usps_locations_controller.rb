@@ -23,6 +23,16 @@ module Idv
               zip_code: search_params['zip_code']
             )
             response = proofer.request_facilities(candidate)
+            if response.length > 0
+              analytics.idv_in_person_location_searched(
+                success: true,
+                result_total: response.length,
+              )
+            else
+              analytics.idv_in_person_location_searched(
+                success: false, errors: 'No USPS locations found',
+              )
+            end
           else
             response = proofer.request_pilot_facilities
           end
