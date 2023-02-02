@@ -69,11 +69,25 @@ RSpec.describe Throttle do
 
   describe '#increment!' do
     subject(:throttle) { Throttle.new(target: 'aaa', throttle_type: :idv_doc_auth) }
+    let(:max_attempts) { 1 } # Picked up by before block at top of test file
 
     it 'increments attempts' do
       expect(throttle.attempts).to eq 0
       throttle.increment!
       expect(throttle.attempts).to eq 1
+    end
+
+    it 'does nothing if already throttled' do
+      expect(throttle.attempts).to eq 0
+      throttle.increment!
+      expect(throttle.attempts).to eq 1
+      expect(throttle.throttled?).to eq(true)
+      current_expiration = throttle.expires_at
+      travel 5.minutes do # move within 10 minute expiration window
+        throttle.increment!
+        expect(throttle.attempts).to eq 1
+        expect(throttle.expires_at).to eq current_expiration
+      end
     end
   end
 
@@ -108,32 +122,6 @@ RSpec.describe Throttle do
 
       travel(attempt_window_in_minutes.minutes + 1) do
         expect(throttle.throttled?).to eq(false)
-      end
-    end
-  end
-
-  describe '#throttled_else_increment?' do
-    subject(:throttle) { Throttle.new(target: 'aaaa', throttle_type: :idv_doc_auth) }
-
-    context 'throttle has hit limit' do
-      before do
-        (IdentityConfig.store.doc_auth_max_attempts + 1).times do
-          throttle.increment!
-        end
-      end
-
-      it 'is true' do
-        expect(throttle.throttled_else_increment?).to eq(true)
-      end
-    end
-
-    context 'throttle has not hit limit' do
-      it 'is false' do
-        expect(throttle.throttled_else_increment?).to eq(false)
-      end
-
-      it 'increments the throttle' do
-        expect { throttle.throttled_else_increment? }.to change { throttle.attempts }.by(1)
       end
     end
   end
