@@ -69,7 +69,7 @@ RSpec.describe Throttle do
 
   describe '#increment!' do
     subject(:throttle) { Throttle.new(target: 'aaa', throttle_type: :idv_doc_auth) }
-    let(:max_attempts) { 1 }
+    let(:max_attempts) { 1 } # Picked up by before block at top of test file
 
     it 'increments attempts' do
       expect(throttle.attempts).to eq 0
@@ -82,8 +82,12 @@ RSpec.describe Throttle do
       throttle.increment!
       expect(throttle.attempts).to eq 1
       expect(throttle.throttled?).to eq(true)
-      throttle.increment!
-      expect(throttle.attempts).to eq 1
+      current_expiration = throttle.expires_at
+      travel 5.minutes do # move within 10 minute expiration window
+        throttle.increment!
+        expect(throttle.attempts).to eq 1
+        expect(throttle.expires_at).to eq current_expiration
+      end
     end
   end
 
