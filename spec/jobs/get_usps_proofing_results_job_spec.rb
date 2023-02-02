@@ -154,8 +154,8 @@ RSpec.describe GetUspsProofingResultsJob do
       to receive(:get_usps_proofing_results_job_request_delay_milliseconds).
       and_return(request_delay_ms)
     stub_request_token
-    if defined?(pending_enrollment)
-      pending_enrollment.update(enrollment_established_at: Time.zone.now - 3.days)
+    if respond_to?(:pending_enrollment)
+      pending_enrollment.update(enrollment_established_at: 3.days.ago)
     end
   end
 
