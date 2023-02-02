@@ -3146,7 +3146,8 @@ module AnalyticsEvents
   def idv_in_person_usps_proofing_results_job_exception(
     reason:,
     enrollment_id:,
-    minutes_since_established:, exception_class: nil,
+    minutes_since_established:,
+    exception_class: nil,
     exception_message: nil,
     enrollment_code: nil,
     minutes_since_last_status_check: nil,
