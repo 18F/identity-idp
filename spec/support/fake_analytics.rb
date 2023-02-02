@@ -77,6 +77,7 @@ class FakeAnalytics < Analytics
   def initialize(user: AnonymousUser.new)
     @events = Hash.new
     @user = user
+    @session = {}
   end
 
   def track_event(event, attributes = {})

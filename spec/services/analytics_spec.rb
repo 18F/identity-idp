@@ -9,6 +9,7 @@ describe Analytics do
       new_session_success_state: true,
       success_state: success_state,
       path: path,
+      test_data: nil,
       session_duration: nil,
       locale: I18n.locale,
       git_sha: IdentityConfig::GIT_SHA,
