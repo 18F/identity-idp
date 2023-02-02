@@ -253,7 +253,8 @@ RSpec.describe 'In Person Proofing', js: true do
     begin_in_person_proofing
 
     # location page
-    expect(page).to have_content(t('in_person_proofing.headings.location'))
+    expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
+    search_for_post_office
     bethesda_location = page.find_all('.location-collection-item')[1]
     bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
 
@@ -261,7 +262,9 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content(t('in_person_proofing.headings.prepare'))
     click_button t('forms.buttons.back')
 
-    expect(page).to have_content(t('in_person_proofing.headings.location'))
+    expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
+
+    search_for_post_office
     expect(page).to have_css('.location-collection-item', wait: 10)
     click_button t('forms.buttons.back')
 
