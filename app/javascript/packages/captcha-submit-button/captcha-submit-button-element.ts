@@ -6,7 +6,7 @@ class CaptchaSubmitButtonElement extends HTMLElement {
   }
 
   get isExempt(): boolean {
-    return this.hasAttribute('exempt');
+    return !this.recaptchaSiteKey || this.hasAttribute('exempt');
   }
 
   get button(): HTMLButtonElement {
@@ -25,8 +25,8 @@ class CaptchaSubmitButtonElement extends HTMLElement {
     return this.closest('form');
   }
 
-  get recaptchaSiteKey(): string {
-    return this.getAttribute('recaptcha-site-key')!;
+  get recaptchaSiteKey(): string | null {
+    return this.getAttribute('recaptcha-site-key');
   }
 
   get recaptchaAction(): string {
@@ -40,7 +40,7 @@ class CaptchaSubmitButtonElement extends HTMLElement {
   invokeChallenge() {
     grecaptcha.ready(async () => {
       const { recaptchaSiteKey: siteKey, recaptchaAction: action } = this;
-      const token = await grecaptcha.execute(siteKey, { action });
+      const token = await grecaptcha.execute(siteKey!, { action });
       this.tokenInput.value = token;
       this.submit();
     });
