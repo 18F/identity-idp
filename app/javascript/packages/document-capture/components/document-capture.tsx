@@ -21,7 +21,7 @@ import { BackgroundEncryptedUploadError } from '../higher-order/with-background-
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import withProps from '../higher-order/with-props';
-import { InPersonContext } from '../context';
+import { hijackSkipNav, InPersonContext } from '../context';
 
 /**
  * Returns a new object with specified keys removed.
@@ -62,6 +62,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const { inPersonURL, arcgisSearchEnabled } = useContext(InPersonContext);
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
+    hijackSkipNav();
     if (stepName) {
       trackVisitEvent(stepName);
     }
