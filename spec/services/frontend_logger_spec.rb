@@ -7,11 +7,11 @@ describe FrontendLogger do
     end
   end
 
-  class ExampleAnalytics < FakeAnalytics
+  class ExampleAnalyticsForFL < FakeAnalytics
     include ExampleAnalyticsEvents
   end
 
-  let(:analytics) { ExampleAnalytics.new }
+  let(:analytics) { ExampleAnalyticsForFL.new }
   let(:event_map) do
     {
       'method' => ExampleAnalyticsEvents.instance_method(:example_method_handler),

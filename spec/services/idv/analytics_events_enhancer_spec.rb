@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Idv::AnalyticsEventsEnhancer do
-  class ExampleAnalytics
+  class ExampleAnalyticsForAEE
     include AnalyticsEvents
     prepend Idv::AnalyticsEventsEnhancer
 
@@ -17,7 +17,7 @@ describe Idv::AnalyticsEventsEnhancer do
   end
 
   let(:user) { build(:user) }
-  let(:analytics) { ExampleAnalytics.new(user: user) }
+  let(:analytics) { ExampleAnalyticsForAEE.new(user: user) }
 
   it 'includes decorated methods' do
     expect(analytics.methods).to include(*described_class::DECORATED_METHODS)
