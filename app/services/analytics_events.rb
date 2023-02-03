@@ -633,6 +633,14 @@ module AnalyticsEvents
     track_event('IdV: in person proofing location visited', flow_path: flow_path, **extra)
   end
 
+  # @param [Boolean] success
+  # @param [Integer] result_total
+  # @param [String] errors
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [String] reason
+  # @param [Integer] response_status_code
+  # User submitted a search on the location search page and response received
   def idv_in_person_location_searched(
     success:,
     result_total: nil,
