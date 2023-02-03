@@ -52,7 +52,7 @@ describe NewPhoneForm do
 
       it 'does not update the user phone attribute' do
         user = create(:user)
-        subject = NewPhoneForm.new(user)
+        subject = NewPhoneForm.new(user:)
         params[:phone] = '+1 504 444 1643'
 
         subject.submit(params)
