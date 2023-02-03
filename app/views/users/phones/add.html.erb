@@ -25,7 +25,6 @@
         form: f,
         confirmed_phone: false,
         required: true,
-        captcha_submit_button_id: 'submit_phone_form_button',
         captcha_exempt_countries: FeatureManagement.phone_setup_recaptcha_enabled? ?
           PhoneSetupRecaptchaValidator.exempt_countries :
           nil,
@@ -40,7 +39,6 @@
   <% end %>
   <%= render CaptchaSubmitButtonComponent.new(
         form: f,
-        id: 'submit_phone_form_button',
         action: 'phone_setup',
       ).with_content(t('forms.buttons.continue')) %>
 <% end %>

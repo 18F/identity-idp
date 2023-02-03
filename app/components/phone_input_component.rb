@@ -4,7 +4,6 @@ class PhoneInputComponent < BaseComponent
               :required,
               :allowed_countries,
               :delivery_methods,
-              :captcha_submit_button_id,
               :captcha_exempt_countries,
               :tag_options
 
@@ -16,7 +15,6 @@ class PhoneInputComponent < BaseComponent
     allowed_countries: nil,
     delivery_methods: [:sms, :voice],
     required: false,
-    captcha_submit_button_id: nil,
     captcha_exempt_countries: nil,
     **tag_options
   )
@@ -25,7 +23,6 @@ class PhoneInputComponent < BaseComponent
     @form = form
     @required = required
     @delivery_methods = delivery_methods
-    @captcha_submit_button_id = captcha_submit_button_id
     @captcha_exempt_countries = captcha_exempt_countries
     @tag_options = tag_options
   end

@@ -110,10 +110,7 @@ export class PhoneInputElement extends HTMLElement {
   }
 
   get captchaSubmitButton(): CaptchaSubmitButtonElement | null {
-    const buttonId = this.dataset.captchaSubmitButtonId;
-    return buttonId
-      ? (document.getElementById(buttonId) as CaptchaSubmitButtonElement | null)
-      : null;
+    return this.closest('form')?.querySelector('lg-captcha-submit-button') || null;
   }
 
   get captchaExemptCountries(): string[] | boolean {
