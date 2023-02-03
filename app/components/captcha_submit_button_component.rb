@@ -1,4 +1,6 @@
 class CaptchaSubmitButtonComponent < SpinnerButtonComponent
+  RECAPTCHA_SCRIPT_SRC = 'https://www.google.com/recaptcha/api.js'.freeze
+
   attr_reader :form, :action, :tag_options
 
   alias_method :f, :form
@@ -29,8 +31,6 @@ class CaptchaSubmitButtonComponent < SpinnerButtonComponent
   end
 
   private
-
-  RECAPTCHA_SCRIPT_SRC = 'https://www.google.com/recaptcha/api.js'.freeze
 
   def input_errors_tag
     f.error(:recaptcha_token)
