@@ -5,7 +5,7 @@ class CaptchaSubmitButtonElement extends HTMLElement {
     this.button.addEventListener('click', (event) => this.handleButtonClick(event));
   }
 
-  get exempt(): boolean {
+  get isExempt(): boolean {
     return this.hasAttribute('exempt');
   }
 
@@ -53,7 +53,7 @@ class CaptchaSubmitButtonElement extends HTMLElement {
       return;
     }
 
-    if (this.exempt) {
+    if (this.isExempt) {
       this.submit();
     } else {
       this.invokeChallenge();
