@@ -1,1 +1,1 @@
-IRB.conf[:USE_AUTOCOMPLETE] = true
+IRB.conf[:USE_AUTOCOMPLETE] = false
