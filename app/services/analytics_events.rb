@@ -707,6 +707,22 @@ module AnalyticsEvents
     )
   end
 
+  # The user clicked the sp link on the "ready to verify" page
+  def idv_in_person_ready_to_verify_sp_link_clicked(**extra)
+    track_event(
+      'IdV: user clicked the sp link on the ready to verify page',
+      **extra,
+    )
+  end
+
+  # The user clicked the what to bring link on the "ready to verify" page
+  def idv_in_person_ready_to_verify_what_to_bring_link_clicked(**extra)
+    track_event(
+      'IdV: user clicked the what to bring link on the ready to verify page',
+      **extra,
+    )
+  end
+
   def idv_doc_auth_agreement_submitted(**extra)
     track_event('IdV: doc auth agreement submitted', **extra)
   end
