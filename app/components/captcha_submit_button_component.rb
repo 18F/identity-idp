@@ -3,7 +3,7 @@ class CaptchaSubmitButtonComponent < SpinnerButtonComponent
 
   # @param [String] action https://developers.google.com/recaptcha/docs/v3#actions
   def initialize(action:, **tag_options)
-    super(type: :button, big: true, wide: true)
+    super(big: true, wide: true)
 
     @action = action
     @tag_options = tag_options

@@ -2,7 +2,7 @@ import type SpinnerButtonElement from '@18f/identity-spinner-button/spinner-butt
 
 class CaptchaSubmitButtonElement extends HTMLElement {
   connectedCallback() {
-    this.button.addEventListener('click', () => this.handleButtonClick());
+    this.button.addEventListener('click', (event) => this.handleButtonClick(event));
   }
 
   get exempt(): boolean {
@@ -46,7 +46,9 @@ class CaptchaSubmitButtonElement extends HTMLElement {
     });
   }
 
-  handleButtonClick() {
+  handleButtonClick(event: MouseEvent) {
+    event.preventDefault();
+
     if (this.form && !this.form.reportValidity()) {
       return;
     }
