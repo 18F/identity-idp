@@ -5,6 +5,8 @@ fr:
       image_alt: Code-barres
     clipboard_button:
       label: Copier
+    captcha_submit_button:
+      action_message: Vérification…
     countdown_alert:
       time_remaining_html: '%{countdown_html} restantes'
     download_button:
@@ -45,8 +47,6 @@ fr:
       country_code_label: Code pays
     print_button:
       label: Imprimer
-    spinner_button:
-      default_action_message: Vérification…
     troubleshooting_options:
       default_heading: 'Des difficultés? Voici ce que vous pouvez faire:'
       ipp_heading: 'Options de dépannage supplémentaires:'

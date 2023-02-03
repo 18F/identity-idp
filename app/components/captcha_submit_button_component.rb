@@ -7,7 +7,11 @@ class CaptchaSubmitButtonComponent < SpinnerButtonComponent
 
   # @param [String] action https://developers.google.com/recaptcha/docs/v3#actions
   def initialize(form:, action:, **tag_options)
-    super(big: true, wide: true)
+    super(
+      action_message: t('components.captcha_submit_button.action_message'),
+      big: true,
+      wide: true
+    )
 
     @form = form
     @action = action

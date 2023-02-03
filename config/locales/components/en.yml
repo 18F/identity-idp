@@ -5,6 +5,8 @@ en:
       image_alt: Barcode
     clipboard_button:
       label: Copy
+    captcha_submit_button:
+      action_message: Verifying…
     countdown_alert:
       time_remaining_html: '%{countdown_html} remaining'
     download_button:
@@ -45,8 +47,6 @@ en:
       country_code_label: Country code
     print_button:
       label: Print
-    spinner_button:
-      default_action_message: Verifying…
     troubleshooting_options:
       default_heading: 'Having trouble? Here’s what you can do:'
       ipp_heading: 'Additional troubleshooting options:'
