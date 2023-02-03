@@ -13,6 +13,10 @@ class CaptchaSubmitButtonElement extends HTMLElement {
     return this.querySelector('button')!;
   }
 
+  get tokenInput(): HTMLInputElement {
+    return this.querySelector('[type=hidden]')!;
+  }
+
   get spinnerButton(): SpinnerButtonElement {
     return this.querySelector('lg-spinner-button')!;
   }
@@ -37,11 +41,7 @@ class CaptchaSubmitButtonElement extends HTMLElement {
     grecaptcha.ready(async () => {
       const { recaptchaSiteKey: siteKey, recaptchaAction: action } = this;
       const token = await grecaptcha.execute(siteKey, { action });
-      const input = document.createElement('input');
-      input.name = 'recaptcha_token';
-      input.type = 'hidden';
-      input.value = token;
-      this.appendChild(input);
+      this.tokenInput.value = token;
       this.submit();
     });
   }

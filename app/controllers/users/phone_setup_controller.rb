@@ -77,6 +77,7 @@ module Users
         :international_code,
         :otp_delivery_preference,
         :otp_make_default_number,
+        :recaptcha_token,
       )
     end
   end

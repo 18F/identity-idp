@@ -35,7 +35,8 @@ module Users
         :international_code,
         :otp_delivery_preference,
         :otp_make_default_number,
-      ).merge(params.permit(:recaptcha_token))
+        :recaptcha_token,
+      )
     end
 
     def confirm_phone

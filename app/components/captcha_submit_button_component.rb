@@ -1,10 +1,13 @@
 class CaptchaSubmitButtonComponent < SpinnerButtonComponent
-  attr_reader :action, :tag_options
+  attr_reader :form, :action, :tag_options
+
+  alias_method :f, :form
 
   # @param [String] action https://developers.google.com/recaptcha/docs/v3#actions
-  def initialize(action:, **tag_options)
+  def initialize(form:, action:, **tag_options)
     super(big: true, wide: true)
 
+    @form = form
     @action = action
     @tag_options = tag_options
   end
@@ -12,7 +15,13 @@ class CaptchaSubmitButtonComponent < SpinnerButtonComponent
   alias_method :spinner_button_tag, :call
 
   def call
-    button_tag + recaptcha_script_tag
+    content_tag(
+      :'lg-captcha-submit-button',
+      safe_join([input_errors_tag, input_tag, spinner_button_tag, recaptcha_script_tag]),
+      **tag_options,
+      'recaptcha-site-key': IdentityConfig.store.recaptcha_site_key,
+      'recaptcha-action': action,
+    )
   end
 
   def content
@@ -23,14 +32,12 @@ class CaptchaSubmitButtonComponent < SpinnerButtonComponent
 
   RECAPTCHA_SCRIPT_SRC = 'https://www.google.com/recaptcha/api.js'.freeze
 
-  def button_tag
-    content_tag(
-      :'lg-captcha-submit-button',
-      spinner_button_tag,
-      **tag_options,
-      'recaptcha-site-key': IdentityConfig.store.recaptcha_site_key,
-      'recaptcha-action': action,
-    )
+  def input_errors_tag
+    f.error(:recaptcha_token)
+  end
+
+  def input_tag
+    f.input(:recaptcha_token, as: :hidden)
   end
 
   def recaptcha_script_tag

@@ -46,6 +46,7 @@
                form_obj: @new_phone_form %>
   <% end %>
   <%= render CaptchaSubmitButtonComponent.new(
+        form: f,
         id: 'submit_phone_form_button',
         action: 'phone_setup',
       ).with_content(t('forms.buttons.send_one_time_code')) %>
