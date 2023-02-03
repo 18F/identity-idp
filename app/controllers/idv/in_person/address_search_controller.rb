@@ -14,7 +14,7 @@ module Idv
 
       def addresses(search_term)
         addresses = geocoder.find_address_candidates(SingleLine: search_term).slice(0, 1)
-        unless addresses
+        if addresses.length < 1
           # multiple logs when no adresses exist
           analytics.idv_in_person_location_searched(
             success: false, errors: 'No address candidates found by arcgis',

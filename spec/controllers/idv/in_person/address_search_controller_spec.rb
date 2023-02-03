@@ -51,6 +51,16 @@ describe Idv::InPerson::AddressSearchController do
           expect(response.status).to eq(200)
           addresses = JSON.parse(response.body)
           expect(addresses.length).to eq 0
+          expect(@analytics).to have_logged_event(
+            'IdV: in person proofing location search submitted',
+            success: false,
+            errors: 'No address candidates found by arcgis',
+            result_total: nil,
+            exception_class: nil,
+            exception_message: nil,
+            reason: nil,
+            response_status_code: nil,
+          )
         end
       end
     end
