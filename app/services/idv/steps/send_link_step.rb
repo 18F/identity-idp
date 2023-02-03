@@ -36,7 +36,7 @@ module Idv
 
       private
 
-      def create_form
+      def build_form
         Idv::PhoneForm.new(
           previous_params: {},
           user: current_user,
