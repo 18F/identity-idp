@@ -6,8 +6,12 @@ describe Idv::Steps::VerifyWaitStepShow do
   let(:user) { build(:user) }
   let(:issuer) { 'test_issuer' }
   let(:service_provider) { build(:service_provider, issuer: issuer) }
-  let(:resolution_transaction_id) { Proofing::Mock::ResolutionMockClient::TRANSACTION_ID }
-  let(:threatmetrix_transaction_id) { Proofing::Mock::DdpMockClient::TRANSACTION_ID }
+  let(:resolution_transaction_id) do
+    Proofing::Mock::ResolutionMockClient::TRANSACTION_ID
+  end
+  let(:threatmetrix_transaction_id) do
+    Proofing::Mock::DdpMockClient::TRANSACTION_ID
+  end
 
   let(:request) { FakeRequest.new }
 

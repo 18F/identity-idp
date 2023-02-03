@@ -20,6 +20,7 @@ module Idv
         return
       end
 
+      @had_barcode_read_failure = flow_session[:had_barcode_read_failure]
       process_async_state(load_async_state)
     end
 
@@ -29,7 +30,8 @@ module Idv
 
       pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
 
-      if ssn_throttle.throttled_else_increment?
+      ssn_throttle.increment!
+      if ssn_throttle.throttled?
         analytics.throttler_rate_limit_triggered(
           throttle_type: :proof_ssn,
           step_name: 'verify_info',

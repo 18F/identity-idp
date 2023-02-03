@@ -118,7 +118,7 @@ feature 'doc auth send link step' do
     ).with({ phone_number: '+1 415-555-0199' })
 
     freeze_time do
-      idv_send_link_max_attempts.times do
+      (idv_send_link_max_attempts - 1).times do
         expect(page).to_not have_content(
           I18n.t('errors.doc_auth.send_link_throttle', timeout: timeout),
         )

@@ -13,7 +13,26 @@ module ArcgisApi
     COMMON_DEFAULT_PARAMETERS = {
       f: 'json',
       countryCode: 'USA',
-      category: 'address',
+      # See https://developers.arcgis.com/rest/geocode/api-reference/geocoding-category-filtering.htm#ESRI_SECTION1_502B3FE2028145D7B189C25B1A00E17B
+      #   and https://developers.arcgis.com/rest/geocode/api-reference/geocoding-service-output.htm#GUID-D5C1A6E8-82DE-4900-8F8D-B390C2714A1F
+      category: [
+        # A subset of a PointAddress that represents a house or building subaddress location,
+        #   such as an apartment unit, floor, or individual building within a complex.
+        #   E.g. 3836 Emerald Ave, Suite C, La Verne, CA, 91750
+        'Subaddress',
+
+        # A street address based on points that represent house and building locations.
+        #   E.g. 380 New York St, Redlands, CA, 92373
+        'Point Address',
+
+        # A street address that differs from PointAddress because the house number is interpolated
+        #   from a range of numbers. E.g. 647 Haight St, San Francisco, CA, 94117
+        'Street Address',
+
+        # Similar to a street address but without the house number.
+        #   E.g. Olive Ave, Redlands, CA, 92373.
+        'Street Name',
+      ].join(','),
     }.freeze
 
     ROOT_URL = IdentityConfig.store.arcgis_api_root_url
@@ -21,6 +40,11 @@ module ArcgisApi
     ADDRESS_CANDIDATES_ENDPOINT =
       "#{ROOT_URL}/servernh/rest/services/GSA/USA/GeocodeServer/findAddressCandidates"
     GENERATE_TOKEN_ENDPOINT = "#{ROOT_URL}/portal/sharing/rest/generateToken"
+
+    KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS = [
+      :magicKey, # Generated from /suggest; identifier used to retrieve full address record
+      :SingleLine, # Unvalidated address-like text string used to search for geocoded addresses
+    ]
 
     # Makes an HTTP request to quickly find potential address matches. Each match that is found
     # will include an associated magic_key value which can later be used to get more details about
@@ -42,14 +66,25 @@ module ArcgisApi
       )
     end
 
-    # Makes HTTP request to find an exact address using magic_key
-    # @param magic_key [String] a magic key value from a previous call to the #suggest method
+    # Makes HTTP request to find a full address record using a magic key or single text line
+    # @param options [Hash] one of 'magicKey', which is an ID returned from /suggest,
+    #   or 'SingleLine', which should be a single string address that includes at least city
+    #   and state.
     # @return [Array<AddressCandidate>] AddressCandidates
-    def find_address_candidates(magic_key)
+    def find_address_candidates(**options)
+      supported_params = options.slice(*KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS)
+
+      if supported_params.empty?
+        raise ArgumentError, <<~MSG
+          Unknown parameters: #{options.except(*KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS)}.
+          See https://developers.arcgis.com/rest/geocode/api-reference/geocoding-find-address-candidates.htm
+        MSG
+      end
+
       params = {
-        magicKey: magic_key,
         outFields: 'StAddr,City,RegionAbbr,Postal',
         **COMMON_DEFAULT_PARAMETERS,
+        **supported_params,
       }
 
       parse_address_candidates(

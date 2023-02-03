@@ -28,7 +28,8 @@ module Idv
     def create
       @gpo_verify_form = build_gpo_verify_form
 
-      if throttle.throttled_else_increment?
+      throttle.increment!
+      if throttle.throttled?
         render_throttled
       else
         result = @gpo_verify_form.submit
