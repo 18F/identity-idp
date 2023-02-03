@@ -1,10 +1,11 @@
 class RecaptchaValidator
   class ValidationError < StandardError; end
 
-  attr_reader :score_threshold
+  attr_reader :score_threshold, :analytics
 
-  def initialize(score_threshold: 0.0)
+  def initialize(score_threshold: 0.0, analytics: nil)
     @score_threshold = score_threshold
+    @analytics = analytics
   end
 
   def exempt?
@@ -21,6 +22,8 @@ class RecaptchaValidator
         response: recaptcha_token,
       ),
     )
+
+    log_analytics(response.body)
 
     if !response.body['success']
       raise ValidationError.new("reCAPTCHA validation error: #{response.body['error-codes']}")
@@ -39,6 +42,10 @@ class RecaptchaValidator
       conn.request :instrumentation, name: 'request_log.faraday'
       conn.response :json
     end
+  end
+
+  def log_analytics(recaptcha_result)
+    analytics&.recaptcha_verify_result_received(recaptcha_result:, class_name: self.class.name)
   end
 
   VERIFICATION_ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify'.freeze

@@ -14,13 +14,14 @@ module Users
     def index
       @new_phone_form = NewPhoneForm.new(
         user: current_user,
+        analytics: analytics,
         setup_voice_preference: setup_voice_preference?,
       )
       track_phone_setup_visit
     end
 
     def create
-      @new_phone_form = NewPhoneForm.new(user: current_user)
+      @new_phone_form = NewPhoneForm.new(user: current_user, analytics: analytics)
       result = @new_phone_form.submit(new_phone_form_params)
       analytics.multi_factor_auth_phone_setup(**result.to_h)
 

@@ -9,11 +9,11 @@ module Users
 
     def add
       user_session[:phone_id] = nil
-      @new_phone_form = NewPhoneForm.new(user: current_user)
+      @new_phone_form = NewPhoneForm.new(user: current_user, analytics: analytics)
     end
 
     def create
-      @new_phone_form = NewPhoneForm.new(user: current_user)
+      @new_phone_form = NewPhoneForm.new(user: current_user, analytics: analytics)
       if @new_phone_form.submit(user_params).success?
         confirm_phone
         bypass_sign_in current_user

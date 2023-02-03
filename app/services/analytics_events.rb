@@ -2353,6 +2353,13 @@ module AnalyticsEvents
     track_event('Rate Limit Triggered', type: type, **extra)
   end
 
+  # The result of a reCAPTCHA verification request was received
+  # @param [Hash] recaptcha_result Full reCAPTCHA response body
+  # @param [String] class_name Name of reCAPTCHA validator class
+  def recaptcha_verify_result_received(recaptcha_result:, class_name:, **extra)
+    track_event('reCAPTCHA verify result received', recaptcha_result:, class_name:, **extra)
+  end
+
   # User authenticated by a remembered device
   def remembered_device_used_for_authentication
     track_event('Remembered device used for authentication')

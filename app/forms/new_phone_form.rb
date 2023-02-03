@@ -25,8 +25,9 @@ class NewPhoneForm
 
   alias_method :setup_voice_preference?, :setup_voice_preference
 
-  def initialize(user:, setup_voice_preference: false)
+  def initialize(user:, analytics: nil, setup_voice_preference: false)
     @user = user
+    @analytics = analytics
     @otp_delivery_preference = user.otp_delivery_preference
     @otp_make_default_number = false
     @setup_voice_preference = setup_voice_preference
@@ -69,7 +70,7 @@ class NewPhoneForm
 
   private
 
-  attr_reader :user, :submitted_phone
+  attr_reader :user, :submitted_phone, :analytics
 
   def ingest_phone_number(params)
     @international_code = params[:international_code]
@@ -129,7 +130,7 @@ class NewPhoneForm
 
   def validate_recaptcha_token
     return if !FeatureManagement.phone_setup_recaptcha_enabled?
-    return if PhoneSetupRecaptchaValidator.new(parsed_phone:).valid?(recaptcha_token)
+    return if PhoneSetupRecaptchaValidator.new(parsed_phone:, analytics:).valid?(recaptcha_token)
     errors.add(
       :recaptcha_token,
       I18n.t('errors.messages.invalid_recaptcha_token'),
