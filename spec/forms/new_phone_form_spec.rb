@@ -11,14 +11,31 @@ describe NewPhoneForm do
       otp_delivery_preference: 'sms',
     }
   end
-  subject(:form) { NewPhoneForm.new(user) }
+  subject(:form) { NewPhoneForm.new(user:) }
 
   it_behaves_like 'a phone form'
 
   describe 'phone validation' do
-    it do
-      should validate_inclusion_of(:international_code).
-        in_array(PhoneNumberCapabilities::INTERNATIONAL_CODES.keys)
+    context 'with valid international code' do
+      it 'is valid' do
+        PhoneNumberCapabilities::INTERNATIONAL_CODES.keys.each do |code|
+          result = subject.submit(params.clone.merge(international_code: code))
+
+          expect(result.to_h[:error_details]).not_to match(
+            hash_including(international_code: include(:inclusion)),
+          )
+        end
+      end
+    end
+
+    context 'with invalid international code' do
+      it 'is invalid' do
+        result = subject.submit(params.clone.merge(international_code: 'INVALID'))
+
+        expect(result.to_h[:error_details]).to match(
+          hash_including(international_code: include(:inclusion)),
+        )
+      end
     end
 
     it 'validates that the number matches the requested international code' do
@@ -52,7 +69,7 @@ describe NewPhoneForm do
 
       it 'does not update the user phone attribute' do
         user = create(:user)
-        subject = NewPhoneForm.new(user)
+        subject = NewPhoneForm.new(user:)
         params[:phone] = '+1 504 444 1643'
 
         subject.submit(params)
@@ -375,7 +392,7 @@ describe NewPhoneForm do
     end
 
     context 'with setup_voice_preference present' do
-      subject(:form) { NewPhoneForm.new(user, setup_voice_preference: true) }
+      subject(:form) { NewPhoneForm.new(user:, setup_voice_preference: true) }
 
       it 'is true' do
         expect(form.delivery_preference_voice?).to eq(true)
