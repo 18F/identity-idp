@@ -368,4 +368,38 @@ describe('InPersonLocationStep', () => {
       expect(moreResults).to.be.empty();
     });
   });
+
+  context('user deletes text from searchbox after location results load', () => {
+    beforeEach(() => {
+      server.use(
+        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) =>
+          res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
+        ),
+        rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
+      );
+    });
+
+    it('allows user to select a location', async () => {
+      const { findAllByText, findByLabelText, findByText, queryByText } = render(
+        <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />,
+        { wrapper },
+      );
+      await userEvent.type(
+        await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
+        'Evergreen Terrace Springfield',
+      );
+
+      await userEvent.click(
+        await findByText('in_person_proofing.body.location.po_search.search_button'),
+      );
+
+      await userEvent.clear(
+        await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
+      );
+
+      await userEvent.click(findAllByText('in_person_proofing.body.location.location_button')[0]);
+
+      expect(await queryByText('in_person_proofing.body.location.inline_error')).to.be.null();
+    });
+  });
 });
