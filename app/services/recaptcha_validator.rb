@@ -23,7 +23,9 @@ class RecaptchaValidator
         secret: IdentityConfig.store.recaptcha_secret_key,
         response: recaptcha_token,
       ),
-    )
+    ) do |request|
+      request.options.context = { service_name: 'recaptcha' }
+    end
 
     log_analytics(response.body)
 
