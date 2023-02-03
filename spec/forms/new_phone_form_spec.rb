@@ -11,7 +11,7 @@ describe NewPhoneForm do
       otp_delivery_preference: 'sms',
     }
   end
-  subject(:form) { NewPhoneForm.new(user) }
+  subject(:form) { NewPhoneForm.new(user:) }
 
   it_behaves_like 'a phone form'
 
@@ -375,7 +375,7 @@ describe NewPhoneForm do
     end
 
     context 'with setup_voice_preference present' do
-      subject(:form) { NewPhoneForm.new(user, setup_voice_preference: true) }
+      subject(:form) { NewPhoneForm.new(user:, setup_voice_preference: true) }
 
       it 'is true' do
         expect(form.delivery_preference_voice?).to eq(true)

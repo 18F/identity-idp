@@ -20,7 +20,7 @@ class NewPhoneForm
 
   alias_method :setup_voice_preference?, :setup_voice_preference
 
-  def initialize(user, setup_voice_preference: false)
+  def initialize(user:, setup_voice_preference: false)
     self.user = user
     self.otp_delivery_preference = user.otp_delivery_preference
     self.otp_make_default_number = false
