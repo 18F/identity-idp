@@ -67,9 +67,16 @@ feature 'idv gpo otp verification step', :js do
     end
 
     context 'No ThreatMetrix result on proofing component' do
+      let(:threatmetrix_review_status) { 'pass' }
       let(:threatmetrix_review_status) { nil }
       it_behaves_like 'gpo otp verification'
     end
+  end
+
+  context 'personal key screen after gpo verify' do
+    let(:personal_key_after_otp) { true }
+    let(:redirect_after_verification) { idv_personal_key_path }
+    it_behaves_like 'gpo otp verification'
   end
 
   context 'with gpo feature disabled' do

@@ -1,7 +1,11 @@
 shared_examples 'gpo otp verification' do
   include IdvStepHelper
 
+  let(:personal_key_after_otp) { false }
+
   it 'prompts for one-time code at sign in' do
+    allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).
+      and_return(personal_key_after_otp)
     sign_in_live_with_2fa(user)
 
     expect(current_path).to eq idv_gpo_verify_path
