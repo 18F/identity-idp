@@ -28,7 +28,21 @@ module Idv
         build_telephony_form_response(telephony_result)
       end
 
+      def extra_view_variables
+        {
+          idv_phone_form: create_form,
+        }
+      end
+
       private
+
+      def create_form
+        Idv::PhoneForm.new(
+          previous_params: {},
+          user: current_user,
+          delivery_methods: [:sms],
+        )
+      end
 
       def build_telephony_form_response(telephony_result)
         FormResponse.new(
@@ -76,11 +90,7 @@ module Idv
       def form_submit
         params = permit(:phone)
         params[:otp_delivery_preference] = 'sms'
-        Idv::PhoneForm.new(
-          previous_params: {},
-          user: current_user,
-          delivery_methods: [:sms],
-        ).submit(params)
+        create_form.submit(params)
       end
 
       def formatted_destination_phone
