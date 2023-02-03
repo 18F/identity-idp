@@ -26,10 +26,6 @@ class CaptchaSubmitButtonComponent < SpinnerButtonComponent
     )
   end
 
-  def content
-    t('forms.buttons.submit.default')
-  end
-
   private
 
   def input_errors_tag
