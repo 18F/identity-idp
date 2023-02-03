@@ -93,6 +93,20 @@ describe Idv::InPerson::AddressSearchController do
       end
     end
 
+    context 'with an error' do
+      before do
+        exception = StandardError.new('error')
+        allow(geocoder).to receive(:find_address_candidates).and_raise(exception)
+      end
+
+      it 'returns a 500 error code' do
+        response = get :index
+        expect(response.status).to eq(500)
+        addresses = JSON.parse(response.body)
+        expect(addresses.length).to eq 0
+      end
+    end
+
     context 'with feature disabled' do
       let(:arcgis_search_enabled) { false }
 
