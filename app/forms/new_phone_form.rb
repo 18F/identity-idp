@@ -15,8 +15,11 @@ class NewPhoneForm
   validate :validate_not_premium_rate
   validate :validate_allowed_carrier
 
-  attr_accessor :phone, :international_code, :otp_delivery_preference,
-                :otp_make_default_number, :setup_voice_preference
+  attr_reader :phone,
+              :international_code,
+              :otp_delivery_preference,
+              :otp_make_default_number,
+              :setup_voice_preference
 
   alias_method :setup_voice_preference?, :setup_voice_preference
 
@@ -64,7 +67,7 @@ class NewPhoneForm
 
   private
 
-  attr_accessor :user, :submitted_phone
+  attr_reader :user, :submitted_phone
 
   def ingest_phone_number(params)
     @international_code = params[:international_code]
