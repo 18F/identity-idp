@@ -1,4 +1,6 @@
 class RecaptchaValidator
+  VERIFICATION_ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify'.freeze
+
   class ValidationError < StandardError; end
 
   attr_reader :score_threshold, :analytics
@@ -47,6 +49,4 @@ class RecaptchaValidator
   def log_analytics(recaptcha_result)
     analytics&.recaptcha_verify_result_received(recaptcha_result:, class_name: self.class.name)
   end
-
-  VERIFICATION_ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify'.freeze
 end
