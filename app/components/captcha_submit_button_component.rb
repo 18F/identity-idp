@@ -9,6 +9,7 @@ class CaptchaSubmitButtonComponent < SpinnerButtonComponent
   def initialize(form:, action:, **tag_options)
     super(
       action_message: t('components.captcha_submit_button.action_message'),
+      type: :submit,
       big: true,
       wide: true
     )
