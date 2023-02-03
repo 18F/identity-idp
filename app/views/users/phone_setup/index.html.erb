@@ -28,7 +28,9 @@
         confirmed_phone: false,
         required: true,
         captcha_submit_button_id: 'submit_phone_form_button',
-        captcha_exempt_countries: PhoneSetupRecaptchaValidator.exempt_countries,
+        captcha_exempt_countries: FeatureManagement.phone_setup_recaptcha_enabled? ?
+          PhoneSetupRecaptchaValidator.exempt_countries :
+          nil,
         class: 'margin-bottom-4',
       ) %>
 
