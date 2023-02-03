@@ -30,7 +30,7 @@ module Idv
 
       def extra_view_variables
         {
-          idv_phone_form: create_form,
+          idv_phone_form: build_form,
         }
       end
 
@@ -90,7 +90,7 @@ module Idv
       def form_submit
         params = permit(:phone)
         params[:otp_delivery_preference] = 'sms'
-        create_form.submit(params)
+        build_form.submit(params)
       end
 
       def formatted_destination_phone
