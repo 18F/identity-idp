@@ -6,7 +6,7 @@ describe Idv::SsnController do
   let(:flow_session) do
     { 'error_message' => nil,
       'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      :pii_from_doc => Idp::Constants::MOCK_IDV_APPLICANT.dup,
+      'pii_from_doc' => Idp::Constants::MOCK_IDV_APPLICANT.dup,
       'threatmetrix_session_id' => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
       :flow_path => 'standard' }
   end
@@ -30,6 +30,13 @@ describe Idv::SsnController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
+      )
+    end
+
+    it 'checks that the previous step is complete' do
+      expect(subject).to have_actions(
+        :before,
+        :confirm_pii_from_doc,
       )
     end
 
