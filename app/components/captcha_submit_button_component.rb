@@ -42,6 +42,7 @@ class CaptchaSubmitButtonComponent < SpinnerButtonComponent
   end
 
   def recaptcha_script_tag
+    return if IdentityConfig.store.recaptcha_site_key.blank?
     content_tag(:script, '', src: recaptcha_script_src, async: true)
   end
 
