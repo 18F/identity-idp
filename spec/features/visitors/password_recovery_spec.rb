@@ -249,14 +249,14 @@ feature 'Password Recovery' do
     email = user.email
 
     max_attempts = IdentityConfig.store.reset_password_email_max_attempts
-    max_attempts.times do |i|
+    (max_attempts - 1).times do |i|
       submit_email_for_password_reset(email)
       expect(unread_emails_for(email).size).to eq(i + 1)
     end
 
-    expect(unread_emails_for(email).size).to eq(max_attempts)
+    expect(unread_emails_for(email).size).to eq(max_attempts - 1)
     submit_email_for_password_reset(email)
-    expect(unread_emails_for(email).size).to eq(max_attempts)
+    expect(unread_emails_for(email).size).to eq(max_attempts - 1)
   end
 
   def submit_email_for_password_reset(email)

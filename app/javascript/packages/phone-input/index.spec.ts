@@ -22,8 +22,7 @@ describe('PhoneInput', () => {
   before(async () => {
     await import('intl-tel-input/build/js/utils.js');
     window.intlTelInputUtils = global.intlTelInputUtils;
-    const { PhoneInput } = await import('./index.js');
-    customElements.define('lg-phone-input', PhoneInput);
+    await import('./index');
   });
 
   function createAndConnectElement({
@@ -81,8 +80,7 @@ describe('PhoneInput', () => {
   it('validates input', async () => {
     const input = createAndConnectElement();
 
-    /** @type {HTMLInputElement} */
-    const phoneNumber = getByLabelText(input, 'Phone number');
+    const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
 
     expect(phoneNumber.validity.valueMissing).to.be.true();
 
@@ -96,10 +94,10 @@ describe('PhoneInput', () => {
   it('validates supported delivery method', async () => {
     const input = createAndConnectElement();
 
-    /** @type {HTMLInputElement} */
-    const phoneNumber = getByLabelText(input, 'Phone number');
-    /** @type {HTMLSelectElement} */
-    const countryCode = getByLabelText(input, 'Country code', { selector: 'select' });
+    const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
+    const countryCode = getByLabelText(input, 'Country code', {
+      selector: 'select',
+    }) as HTMLSelectElement;
 
     await userEvent.selectOptions(countryCode, 'LK');
     expect(phoneNumber.validationMessage).to.equal(
@@ -110,10 +108,10 @@ describe('PhoneInput', () => {
   it('formats on country change', async () => {
     const input = createAndConnectElement();
 
-    /** @type {HTMLInputElement} */
-    const phoneNumber = getByLabelText(input, 'Phone number');
-    /** @type {HTMLSelectElement} */
-    const countryCode = getByLabelText(input, 'Country code', { selector: 'select' });
+    const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
+    const countryCode = getByLabelText(input, 'Country code', {
+      selector: 'select',
+    }) as HTMLSelectElement;
 
     await userEvent.type(phoneNumber, '071');
 
@@ -134,8 +132,7 @@ describe('PhoneInput', () => {
     it('validates phone from region', async () => {
       const input = createAndConnectElement({ isNonUSSingleOption: true });
 
-      /** @type {HTMLInputElement} */
-      const phoneNumber = getByLabelText(input, 'Phone number');
+      const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
 
       await userEvent.type(phoneNumber, '513-555-1234');
       expect(phoneNumber.validationMessage).to.equal('Phone number is not valid');
@@ -146,10 +143,10 @@ describe('PhoneInput', () => {
     it('validates supported delivery method', async () => {
       const input = createAndConnectElement({ deliveryMethods: ['voice'] });
 
-      /** @type {HTMLInputElement} */
-      const phoneNumber = getByLabelText(input, 'Phone number');
-      /** @type {HTMLSelectElement} */
-      const countryCode = getByLabelText(input, 'Country code', { selector: 'select' });
+      const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
+      const countryCode = getByLabelText(input, 'Country code', {
+        selector: 'select',
+      }) as HTMLSelectElement;
 
       await userEvent.selectOptions(countryCode, 'CA');
       expect(phoneNumber.validationMessage).to.equal(
@@ -162,7 +159,7 @@ describe('PhoneInput', () => {
     it('renders the translated label', () => {
       createAndConnectElement({ translatedCountryCodeNames: { us: 'Custom USA' } });
 
-      const itiOptionName = document.querySelector('[data-country-code="us"] .iti__country-name');
+      const itiOptionName = document.querySelector('[data-country-code="us"] .iti__country-name')!;
 
       expect(itiOptionName.textContent).to.equal('Custom USA');
     });

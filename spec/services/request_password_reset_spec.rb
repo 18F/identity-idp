@@ -167,7 +167,7 @@ RSpec.describe RequestPasswordReset do
       it 'throttles the email sending and logs a throttle event' do
         max_attempts = IdentityConfig.store.reset_password_email_max_attempts
 
-        max_attempts.times do
+        (max_attempts - 1).times do
           expect do
             RequestPasswordReset.new(
               email: email,
@@ -202,9 +202,9 @@ RSpec.describe RequestPasswordReset do
 
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::RecoveryActivatedEvent.new(user: user)).
-          exactly(max_attempts).times
+          exactly(max_attempts - 1).times
 
-        max_attempts.times do
+        (max_attempts - 1).times do
           expect do
             RequestPasswordReset.new(
               email: email,

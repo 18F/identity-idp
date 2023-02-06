@@ -46,7 +46,7 @@ RSpec.describe ArcgisApi::Geocoder do
     it 'returns candidates from magic_key' do
       stub_request_candidates_response
 
-      first_candidate = subject.find_address_candidates('abc123').first
+      first_candidate = subject.find_address_candidates(magicKey: 'abc123').first
 
       expect(first_candidate.address).to be_present
       expect(first_candidate.location).to be_present
@@ -62,7 +62,7 @@ RSpec.describe ArcgisApi::Geocoder do
     it 'handles no results' do
       stub_request_candidates_empty_response
 
-      suggestions = subject.find_address_candidates('abc123')
+      suggestions = subject.find_address_candidates(magicKey: 'abc123')
 
       expect(suggestions).to be_empty
     end
@@ -70,11 +70,38 @@ RSpec.describe ArcgisApi::Geocoder do
     it 'returns an error response body but with Status coded as 200' do
       stub_request_candidates_error
 
-      expect { subject.find_address_candidates('abc123') }.to raise_error do |error|
+      expect { subject.find_address_candidates(magicKey: 'abc123') }.to raise_error do |error|
         expect(error).to be_instance_of(Faraday::ClientError)
         expect(error.message).to eq('received error code 400')
         expect(error.response).to be_kind_of(Hash)
       end
+    end
+
+    it 'returns an error if using unknown parameter' do
+      stub_request_candidates_response
+
+      expect { subject.find_address_candidates(_unknownKey: 'abc123') }.to raise_error do |error|
+        expect(error).to be_instance_of(ArgumentError)
+      end
+    end
+
+    it 'returns candidates from SingleLine' do
+      stub_request_candidates_response
+
+      first_candidate = subject.find_address_candidates(SingleLine: 'abc123').first
+
+      expect(first_candidate.address).to be_present
+    end
+
+    it 'requests candidates with correct address category filters' do
+      stub_request_candidates_response
+
+      subject.find_address_candidates(SingleLine: 'abc123')
+
+      expect(WebMock).to have_requested(:get, %r{/findAddressCandidates}).
+        with(query: hash_including(
+          { category: 'Subaddress,Point Address,Street Address,Street Name' },
+        ))
     end
   end
 

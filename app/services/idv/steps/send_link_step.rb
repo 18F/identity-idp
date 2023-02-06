@@ -14,7 +14,8 @@ module Idv
       end
 
       def call
-        return throttled_failure if throttle.throttled_else_increment?
+        throttle.increment!
+        return throttled_failure if throttle.throttled?
         telephony_result = send_link
         failure_reason = nil
         if !telephony_result.success?

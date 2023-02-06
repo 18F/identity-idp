@@ -24,7 +24,7 @@ module Idv
     end
 
     def submit
-      throttled_else_increment
+      increment_throttle!
 
       response = FormResponse.new(
         success: valid?,
@@ -88,9 +88,10 @@ module Idv
       errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
     end
 
-    def throttled_else_increment
+    def increment_throttle!
       return unless document_capture_session
-      @throttled = throttle.throttled_else_increment?
+      throttle.increment!
+      @throttled = throttle.throttled?
     end
 
     def throttle

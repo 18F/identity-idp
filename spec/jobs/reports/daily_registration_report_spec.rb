@@ -73,6 +73,14 @@ RSpec.describe Reports::DailyRegistrationsReport do
         create_list(:user, 1, created_at: two_days_ago).each do |user|
           RegistrationLog.create(user: user, registered_at: user.created_at)
         end
+
+        # deleted, counts as total users
+        DeletedUser.create(
+          user_created_at: two_days_ago,
+          deleted_at: two_days_ago,
+          uuid: SecureRandom.uuid,
+          user_id: -1,
+        )
       end
 
       it 'calculates users and fully registered users by day' do
@@ -85,13 +93,15 @@ RSpec.describe Reports::DailyRegistrationsReport do
               [
                 {
                   date: two_days_ago.to_date.as_json,
-                  total_users: 2,
+                  total_users: 3,
                   fully_registered_users: 1,
+                  deleted_users: 1,
                 },
                 {
                   date: yesterday.to_date.as_json,
                   total_users: 4,
                   fully_registered_users: 2,
+                  deleted_users: 0,
                 },
               ],
             )

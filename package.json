@@ -50,6 +50,7 @@
     "@types/chai-as-promised": "^7.1.5",
     "@types/cleave.js": "^1.4.7",
     "@types/dirty-chai": "^2.0.2",
+    "@types/intl-tel-input": "^17.0.6",
     "@types/mocha": "^10.0.0",
     "@types/newrelic": "^7.0.3",
     "@types/react": "^17.0.39",
