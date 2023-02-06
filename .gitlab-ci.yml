@@ -128,7 +128,7 @@ specs:
   services:
     - name: postgres:13.4
       alias: db-postgres
-    - name: redis
+    - name: redis:7.0
       alias: db-redis
   artifacts:
     expire_in: 31d
