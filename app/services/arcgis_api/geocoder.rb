@@ -7,7 +7,7 @@ module ArcgisApi
     )
     Location = Struct.new(:latitude, :longitude, keyword_init: true)
     API_TOKEN_HOST = URI(IdentityConfig.store.arcgis_api_generate_token_url).host
-    API_TOKEN_CACHE_KEY = "arcgis_api_token_#{API_TOKEN_HOST}"
+    API_TOKEN_CACHE_KEY = "arcgis_api_token:#{API_TOKEN_HOST}"
 
     # These are option URL params that tend to apply to multiple endpoints
     # https://developers.arcgis.com/rest/geocode/api-reference/geocoding-find-address-candidates.htm#ESRI_SECTION2_38613C3FCB12462CAADD55B2905140BF
