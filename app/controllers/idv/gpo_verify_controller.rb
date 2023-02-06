@@ -68,6 +68,7 @@ module Idv
 
     def next_step
       if IdentityConfig.store.gpo_personal_key_after_otp
+        enable_personal_key_generation
         idv_personal_key_url
       else
         sign_up_completed_url
@@ -110,6 +111,11 @@ module Idv
 
     def threatmetrix_enabled?
       FeatureManagement.proofing_device_profiling_decisioning_enabled?
+    end
+
+    def enable_personal_key_generation
+      idv_session.resolution_successful = 'gpo'
+      idv_session.applicant = pii
     end
   end
 end

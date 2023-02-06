@@ -47,7 +47,7 @@ module Idv
     end
 
     def confirm_profile_has_been_created
-      redirect_to account_url if idv_session.profile.blank?
+      redirect_to account_url if profile.blank?
     end
 
     def add_proofing_component
@@ -75,9 +75,14 @@ module Idv
       idv_session.personal_key || generate_personal_key
     end
 
+    def profile
+      return idv_session.profile if idv_session.profile
+      current_user.active_profile
+    end
+
     def generate_personal_key
       cacher = Pii::Cacher.new(current_user, user_session)
-      idv_session.profile.encrypt_recovery_pii(cacher.fetch)
+      profile.encrypt_recovery_pii(cacher.fetch)
     end
 
     def in_person_enrollment?
@@ -90,8 +95,8 @@ module Idv
     end
 
     def blocked_by_device_profiling?
-      !idv_session.profile.active &&
-        idv_session.profile.deactivation_reason == 'threatmetrix_review_pending'
+      !profile.active &&
+        profile.deactivation_reason == 'threatmetrix_review_pending'
     end
   end
 end
