@@ -6,7 +6,7 @@ class CaptchaSubmitButtonElement extends HTMLElement {
   }
 
   get isExempt(): boolean {
-    return !this.recaptchaSiteKey || this.hasAttribute('exempt');
+    return this.hasAttribute('exempt');
   }
 
   get button(): HTMLButtonElement {
@@ -53,7 +53,7 @@ class CaptchaSubmitButtonElement extends HTMLElement {
       return;
     }
 
-    if (this.isExempt) {
+    if (!this.recaptchaSiteKey || this.isExempt) {
       this.submit();
     } else {
       this.invokeChallenge();
