@@ -3,10 +3,10 @@ es:
   components:
     barcode:
       image_alt: Código de barras
-    clipboard_button:
-      label: Copiar
     captcha_submit_button:
       action_message: Verificando…
+    clipboard_button:
+      label: Copiar
     countdown_alert:
       time_remaining_html: 'Quedan %{countdown_html}'
     download_button:
