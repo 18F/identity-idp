@@ -73,10 +73,28 @@ feature 'idv gpo otp verification step', :js do
     end
   end
 
-  context 'personal key screen after gpo verify' do
-    let(:personal_key_after_otp) { true }
-    let(:redirect_after_verification) { idv_personal_key_path }
-    it_behaves_like 'gpo otp verification'
+  context 'with gpo personal key after verification' do
+    it 'shows the user a personal key after verification' do
+      allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).
+        and_return(true)
+      sign_in_live_with_2fa(user)
+
+      expect(current_path).to eq idv_gpo_verify_path
+      expect(page).to have_content t('idv.messages.gpo.resend')
+
+      gpo_confirmation_code
+      fill_in t('forms.verify_profile.name'), with: otp
+      click_button t('forms.verify_profile.submit')
+
+      profile.reload
+
+      expect(page).to have_current_path(idv_personal_key_path)
+
+      expect(profile.active).to be(true)
+      expect(profile.deactivation_reason).to be(nil)
+
+      expect(user.events.account_verified.size).to eq 1
+    end
   end
 
   context 'with gpo feature disabled' do
