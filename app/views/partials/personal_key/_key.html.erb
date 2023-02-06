@@ -7,10 +7,10 @@
     </div>
   </div>
   <p class="margin-bottom-105">
-    <% if personal_key_generated_at %>
+    <% if defined? personal_key_generated_at %>
       <%= t(
             'users.personal_key.generated_on_html',
-            date: content_tag(:strong, I18n.l(personal_key_generated_at, format: :event_date)),
+            date: content_tag(:strong, I18n.l(personal_key_generated_at, format: '%B %d, %Y')),
           ) %>
     <% else %>
       <%= t(
