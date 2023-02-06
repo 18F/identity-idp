@@ -1,5 +1,3 @@
-import type SpinnerButtonElement from '@18f/identity-spinner-button/spinner-button-element';
-
 class CaptchaSubmitButtonElement extends HTMLElement {
   connectedCallback() {
     this.button.addEventListener('click', (event) => this.handleButtonClick(event));
@@ -15,10 +13,6 @@ class CaptchaSubmitButtonElement extends HTMLElement {
 
   get tokenInput(): HTMLInputElement {
     return this.querySelector('[type=hidden]')!;
-  }
-
-  get spinnerButton(): SpinnerButtonElement {
-    return this.querySelector('lg-spinner-button')!;
   }
 
   get form(): HTMLFormElement | null {
