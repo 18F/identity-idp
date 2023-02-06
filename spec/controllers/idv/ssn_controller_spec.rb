@@ -41,13 +41,13 @@ describe Idv::SsnController do
     end
 
     describe '#show' do
-      let(:analytics_name) { 'IdV: doc auth verify visited' }
+      let(:analytics_name) { 'IdV: doc auth ssn visited' }
       let(:analytics_args) do
         {
           analytics_id: 'Doc Auth',
           flow_path: 'standard',
           irs_reproofing: false,
-          step: 'verify',
+          step: 'ssn',
           step_count: 1,
         }
       end
@@ -68,6 +68,20 @@ describe Idv::SsnController do
           get :show
 
           expect(response).to render_template :show
+        end
+
+        it 'sends analytics_visited event' do
+          get :show
+
+          expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+        end
+
+        it 'sends correct step count to analytics' do
+          get :show
+          get :show
+          analytics_args[:step_count] = 2
+
+          expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
         end
       end
     end
