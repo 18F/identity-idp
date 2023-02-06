@@ -1,6 +1,9 @@
 ---
 en:
   user_mailer:
+    account_rejected:
+      intro_html: We couldn’t verify your identity with Login.gov. Please contact the agency whose service you are trying to access.
+      subject: We couldn’t verify your identity
     account_reset_cancel:
       intro_html: This email confirms you have cancelled your request to delete your
         %{app_name} account.
