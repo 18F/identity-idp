@@ -35,10 +35,6 @@ module ArcgisApi
       ].join(','),
     }.freeze
 
-    GENERATE_TOKEN_ENDPOINT = IdentityConfig.store.arcgis_api_generate_token_url
-    SUGGEST_ENDPOINT = IdentityConfig.store.arcgis_api_suggest_url
-    ADDRESS_CANDIDATES_ENDPOINT = IdentityConfig.store.arcgis_api_find_address_candidates_url
-
     KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS = [
       :magicKey, # Generated from /suggest; identifier used to retrieve full address record
       :SingleLine, # Unvalidated address-like text string used to search for geocoded addresses
@@ -58,7 +54,7 @@ module ArcgisApi
       }
 
       parse_suggestions(
-        faraday.get(SUGGEST_ENDPOINT, params, dynamic_headers) do |req|
+        faraday.get(IdentityConfig.store.arcgis_api_suggest_url, params, dynamic_headers) do |req|
           req.options.context = { service_name: 'arcgis_geocoder_suggest' }
         end.body,
       )
@@ -86,7 +82,10 @@ module ArcgisApi
       }
 
       parse_address_candidates(
-        faraday.get(ADDRESS_CANDIDATES_ENDPOINT, params, dynamic_headers) do |req|
+        faraday.get(
+          IdentityConfig.store.arcgis_api_find_address_candidates_url, params,
+          dynamic_headers
+        ) do |req|
           req.options.context = { service_name: 'arcgis_geocoder_find_address_candidates' }
         end.body,
       )
@@ -193,7 +192,10 @@ module ArcgisApi
         f: 'json',
       }
 
-      faraday.post(GENERATE_TOKEN_ENDPOINT, URI.encode_www_form(body)) do |req|
+      faraday.post(
+        IdentityConfig.store.arcgis_api_generate_token_url,
+        URI.encode_www_form(body),
+      ) do |req|
         req.options.context = { service_name: 'usps_token' }
       end.body
     end
