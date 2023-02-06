@@ -192,7 +192,7 @@ yarn test
 To run a single test file:
 
 ```
-npx mocha app/javascript/packages/analytics/index.spec.ts
+yarn mocha app/javascript/packages/analytics/index.spec.ts
 ```
 
 Using `npx`, you can also pass any
@@ -201,7 +201,7 @@ Using `npx`, you can also pass any
 For example, to watch a file and rerun tests after any change:
 
 ```
-npx mocha app/javascript/packages/analytics/index.spec.ts --watch
+yarn mocha app/javascript/packages/analytics/index.spec.ts --watch
 ```
 
 #### ESLint
