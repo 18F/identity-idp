@@ -201,6 +201,19 @@ describe Idv::PersonalKeyController do
         expect(response).to redirect_to idv_come_back_later_path
       end
 
+      context 'with gpo personal key after verification' do
+        it 'redirects to sign up completed_url for a sp' do
+          allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).
+            and_return(true)
+          allow(subject).to receive(:pending_profile?).and_return(false)
+          subject.session[:sp] = { ial2: true }
+
+          patch :update
+
+          expect(response).to redirect_to sign_up_completed_url
+        end
+      end
+
       context 'with in person profile' do
         before do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
