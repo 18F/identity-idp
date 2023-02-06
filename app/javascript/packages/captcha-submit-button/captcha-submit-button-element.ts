@@ -44,6 +44,8 @@ class CaptchaSubmitButtonElement extends HTMLElement {
     event.preventDefault();
 
     if (this.form && !this.form.reportValidity()) {
+      // Prevent any associated custom click handling, e.g. spinner button spinning
+      event.stopImmediatePropagation();
       return;
     }
 
