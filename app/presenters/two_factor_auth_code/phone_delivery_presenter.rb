@@ -41,6 +41,11 @@ module TwoFactorAuthCode
       t('two_factor_authentication.phone_fallback.question')
     end
 
+    def otp_expired_path
+      return unless IdentityConfig.store.session.allow_otp_countdown_expired_redirect
+      login_two_factor_otp_expired_path
+    end
+
     def help_text
       ''
     end
