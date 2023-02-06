@@ -113,12 +113,12 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
           {
             name: 'location',
             form: arcgisSearchEnabled ? InPersonLocationPostOfficeSearchStep : InPersonLocationStep,
-            title: 'Find a participating Post Office',
+            title: t('in_person_proofing.headings.po_search.location'),
           },
           {
             name: 'prepare',
             form: InPersonPrepareStep,
-            title: 'Verify your identity in person',
+            title: t('in_person_proofing.headings.prepare'),
           },
           flowPath === 'hybrid' && {
             name: 'switch_back',
@@ -140,7 +140,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
                     pii: submissionError.pii,
                   })(ReviewIssuesStep)
                 : ReviewIssuesStep,
-            title: 'We could not verify your ID',
+            title: t('errors.doc_auth.throttled_heading'),
           },
         ] as FormStep[]
       ).concat(inPersonSteps)
