@@ -87,30 +87,25 @@ class Throttle
   end
 
   # Retrieve the current state of the throttle from Redis
-  # We use TTL to calculate when the action was last attempted.
-  # This approach is introduces some skew since time passes
-  # between "now" and when we fetch the TTL, but it should be low
-  # relative to the overall length of the throttle window.
-  #
-  # When we upgrade to Redis 7, we can use the EXPIRETIME command instead.
+  # We use EXPIRETIME to calculate when the action was last attempted.
   def fetch_state!
     value = nil
-    ttl = nil
+    expiretime = nil
     REDIS_THROTTLE_POOL.with do |client|
-      value, ttl = client.multi do |multi|
+      value, expiretime = client.multi do |multi|
         multi.get(key)
-        multi.ttl(key)
+        multi.expiretime(key)
       end
     end
 
     @redis_attempts = value.to_i
 
-    if ttl < 0
+    if expiretime < 0
       @redis_attempted_at = nil
     else
       @redis_attempted_at =
-        Time.zone.now -
-        Throttle.attempt_window_in_minutes(throttle_type).minutes + ttl.seconds
+        ActiveSupport::TimeZone['UTC'].at(expiretime) -
+        Throttle.attempt_window_in_minutes(throttle_type).minutes
     end
 
     self

@@ -215,8 +215,7 @@ describe Idv::PhoneErrorsController do
     context 'while throttled' do
       let(:user) { create(:user) }
       let(:attempted_at) do
-        d = DateTime.now # microsecond precision failing on CI
-        Time.zone.parse(d.to_s)
+        Time.zone.now.utc
       end
 
       before do
