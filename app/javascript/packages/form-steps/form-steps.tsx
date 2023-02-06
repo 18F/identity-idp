@@ -184,7 +184,7 @@ interface PreviousStepErrorsLookup {
 function useStepTitle(step?: FormStep<any>, titleFormat?: string) {
   useEffect(() => {
     if (titleFormat && step?.title) {
-      document.title = step.title;
+      document.title = replaceVariables(titleFormat, { step: step.title });
     }
   }, [step]);
 }
