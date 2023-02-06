@@ -60,7 +60,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { inPersonURL, arcgisSearchEnabled } = useContext(InPersonContext);
-  const titleFormat = '%{step} - Login.gov';
+
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
     if (stepName) {
@@ -190,7 +190,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
             onStepChange={setStepName}
             onStepSubmit={trackSubmitEvent}
             autoFocus={!!submissionError}
-            titleFormat={titleFormat}
+            titleFormat="%{step} - Login.gov"
           />
         </>
       )}
