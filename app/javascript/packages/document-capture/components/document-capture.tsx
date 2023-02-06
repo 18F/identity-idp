@@ -60,6 +60,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { inPersonURL, arcgisSearchEnabled } = useContext(InPersonContext);
+  const titleFormat = new String('');
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
     if (stepName) {
@@ -112,10 +113,12 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
           {
             name: 'location',
             form: arcgisSearchEnabled ? InPersonLocationPostOfficeSearchStep : InPersonLocationStep,
+            title: 'Find a participating Post Office - Login.gov',
           },
           {
             name: 'prepare',
             form: InPersonPrepareStep,
+            title: 'Verify your identity in person - Login.gov',
           },
           flowPath === 'hybrid' && {
             name: 'switch_back',
@@ -137,6 +140,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
                     pii: submissionError.pii,
                   })(ReviewIssuesStep)
                 : ReviewIssuesStep,
+            title: 'We could not verify your ID - Login.gov',
           },
         ] as FormStep[]
       ).concat(inPersonSteps)
@@ -186,6 +190,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
             onStepChange={setStepName}
             onStepSubmit={trackSubmitEvent}
             autoFocus={!!submissionError}
+            titleFormat={titleFormat}
           />
         </>
       )}
