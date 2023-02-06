@@ -35,11 +35,9 @@ module ArcgisApi
       ].join(','),
     }.freeze
 
-    ROOT_URL = IdentityConfig.store.arcgis_api_root_url
-    SUGGEST_ENDPOINT = "#{ROOT_URL}/servernh/rest/services/GSA/USA/GeocodeServer/suggest"
-    ADDRESS_CANDIDATES_ENDPOINT =
-      "#{ROOT_URL}/servernh/rest/services/GSA/USA/GeocodeServer/findAddressCandidates"
-    GENERATE_TOKEN_ENDPOINT = "#{ROOT_URL}/portal/sharing/rest/generateToken"
+    GENERATE_TOKEN_ENDPOINT = IdentityConfig.store.arcgis_api_generate_token_url
+    SUGGEST_ENDPOINT = IdentityConfig.store.arcgis_api_suggest_url
+    ADDRESS_CANDIDATES_ENDPOINT = IdentityConfig.store.arcgis_api_find_address_candidates_url
 
     KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS = [
       :magicKey, # Generated from /suggest; identifier used to retrieve full address record
