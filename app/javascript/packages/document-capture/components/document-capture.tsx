@@ -123,6 +123,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
           flowPath === 'hybrid' && {
             name: 'switch_back',
             form: InPersonSwitchBackStep,
+            title: t('in_person_proofing.headings.switch_back'),
           },
         ].filter(Boolean) as FormStep[]);
 
