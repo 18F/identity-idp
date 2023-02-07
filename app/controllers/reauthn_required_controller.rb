@@ -1,12 +1,14 @@
 class ReauthnRequiredController < ApplicationController
+  include MfaSetupConcern
   before_action :confirm_recently_authenticated
 
   private
 
   def confirm_recently_authenticated
     @reauthn = reauthn?
-    return unless user_signed_in?
-    return if recently_authenticated?
+    return unless user_fully_authenticated?
+    return if recently_authenticated? && user_session[:auth_method] != 'remember_device'
+    return if in_multi_mfa_selection_flow?
 
     prompt_for_current_password
   end
@@ -22,8 +24,8 @@ class ReauthnRequiredController < ApplicationController
     store_location(request.url)
     user_session[:context] = 'reauthentication'
     user_session[:factor_to_change] = factor_from_controller_name
-    user_session[:current_password_required] = true
-    redirect_to user_password_confirm_url
+
+    redirect_to login_two_factor_options_path(reauthn: true)
   end
 
   def factor_from_controller_name

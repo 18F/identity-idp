@@ -1,5 +1,5 @@
 module Users
-  class TotpSetupController < ApplicationController
+  class TotpSetupController < ReauthnRequiredController
     include RememberDeviceConcern
     include MfaSetupConcern
     include RememberDeviceConcern

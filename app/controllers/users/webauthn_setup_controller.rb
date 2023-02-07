@@ -1,5 +1,5 @@
 module Users
-  class WebauthnSetupController < ApplicationController
+  class WebauthnSetupController < ReauthnRequiredController
     include MfaSetupConcern
     include RememberDeviceConcern
     include SecureHeadersConcern

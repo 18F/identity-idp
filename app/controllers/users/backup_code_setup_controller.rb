@@ -1,5 +1,5 @@
 module Users
-  class BackupCodeSetupController < ApplicationController
+  class BackupCodeSetupController < ReauthnRequiredController
     include MfaSetupConcern
     include RememberDeviceConcern
     include SecureHeadersConcern
