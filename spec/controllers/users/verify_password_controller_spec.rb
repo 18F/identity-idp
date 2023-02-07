@@ -55,25 +55,29 @@ describe Users::VerifyPasswordController do
 
       describe '#update' do
         let(:form) { instance_double(VerifyPasswordForm) }
-        let(:user_params) {{ user: { password: user.password } }}
+        let(:user_params) { { user: { password: user.password } } }
 
         before do
           stub_attempts_tracker
-          allow(@irs_attempts_api_tracker).to receive(:logged_in_profile_change_reauthentication_submitted)
+          allow(@irs_attempts_api_tracker).to receive(
+            :logged_in_profile_change_reauthentication_submitted,
+          )
           allow(@irs_attempts_api_tracker).to receive(:idv_personal_key_generated)
           expect(controller).to receive(:verify_password_form).and_return(form)
         end
 
         context 'with valid password' do
           let(:response_ok) { FormResponse.new(success: true, errors: {}, extra: recovery_hash) }
-      
+
           before do
             allow(form).to receive(:submit).and_return(response_ok)
             put :update, params: user_params
           end
 
           it 'tracks the appropriate attempts api events' do
-            expect(@irs_attempts_api_tracker).to have_received(:logged_in_profile_change_reauthentication_submitted).with({success: true})
+            expect(@irs_attempts_api_tracker).to have_received(
+              :logged_in_profile_change_reauthentication_submitted,
+            ).with({ success: true })
             expect(@irs_attempts_api_tracker).to have_received(:idv_personal_key_generated)
           end
 
@@ -100,7 +104,9 @@ describe Users::VerifyPasswordController do
           end
 
           it 'tracks the appropriate attempts api event' do
-            expect(@irs_attempts_api_tracker).to have_received(:logged_in_profile_change_reauthentication_submitted).with({success: false})
+            expect(@irs_attempts_api_tracker).to have_received(
+              :logged_in_profile_change_reauthentication_submitted,
+            ).with({ success: false })
             expect(@irs_attempts_api_tracker).not_to have_received(:idv_personal_key_generated)
           end
 

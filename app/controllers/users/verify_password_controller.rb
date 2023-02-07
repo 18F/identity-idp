@@ -14,7 +14,9 @@ module Users
       @decrypted_pii = decrypted_pii
       result = verify_password_form.submit
 
-      irs_attempts_api_tracker.logged_in_profile_change_reauthentication_submitted(success: result.success?)
+      irs_attempts_api_tracker.logged_in_profile_change_reauthentication_submitted(
+        success: result.success?,
+      )
       if result.success?
         handle_success(result)
       else
