@@ -59,5 +59,15 @@ module Idv
     def form_submit
       Idv::SsnFormatForm.new(current_user).submit(permit(:ssn))
     end
+
+    def ssn
+      flow_params[:ssn]
+    end
+
+    def flow_params
+      binding.pry
+      params['doc_auth']
+    end
+
   end
 end

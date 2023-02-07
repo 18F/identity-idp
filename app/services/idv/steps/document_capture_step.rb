@@ -15,6 +15,10 @@ module Idv
 
       def call
         handle_stored_result if !FeatureManagement.document_capture_async_uploads_enabled?
+
+        if IdentityConfig.store.doc_auth_ssn_controller_enabled
+          exit_flow_state_machine
+        end
       end
 
       def extra_view_variables
@@ -37,6 +41,11 @@ module Idv
       end
 
       private
+
+      def exit_flow_state_machine
+        flow_session[:flow_path] = @flow.flow_path
+        redirect_to idv_ssn_url
+      end
 
       def native_camera_ab_testing_variables
         {
