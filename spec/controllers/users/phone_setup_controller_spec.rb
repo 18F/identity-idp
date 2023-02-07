@@ -50,14 +50,12 @@ describe Users::PhoneSetupController do
             t('errors.messages.improbable_phone'),
             t('two_factor_authentication.otp_delivery_preference.voice_unsupported', location: ''),
           ],
-          recaptcha_token: [t('errors.messages.invalid_recaptcha_token')],
         },
         error_details: {
           phone: [
             :improbable_phone,
             t('two_factor_authentication.otp_delivery_preference.voice_unsupported', location: ''),
           ],
-          recaptcha_token: [t('errors.messages.invalid_recaptcha_token')],
         },
         otp_delivery_preference: 'sms',
         area_code: nil,
