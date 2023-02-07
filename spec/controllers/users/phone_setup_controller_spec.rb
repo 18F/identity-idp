@@ -23,7 +23,11 @@ describe Users::PhoneSetupController do
 
         expect(@analytics).to receive(:track_event).
           with('User Registration: phone setup visited', enabled_mfa_methods_count: 0)
-        expect(NewPhoneForm).to receive(:new).with(user:, setup_voice_preference: false)
+        expect(NewPhoneForm).to receive(:new).with(
+          user:,
+          analytics: kind_of(Analytics),
+          setup_voice_preference: false,
+        )
 
         get :index
 
@@ -46,12 +50,14 @@ describe Users::PhoneSetupController do
             t('errors.messages.improbable_phone'),
             t('two_factor_authentication.otp_delivery_preference.voice_unsupported', location: ''),
           ],
+          recaptcha_token: [t('errors.messages.invalid_recaptcha_token')],
         },
         error_details: {
           phone: [
             :improbable_phone,
             t('two_factor_authentication.otp_delivery_preference.voice_unsupported', location: ''),
           ],
+          recaptcha_token: [t('errors.messages.invalid_recaptcha_token')],
         },
         otp_delivery_preference: 'sms',
         area_code: nil,
