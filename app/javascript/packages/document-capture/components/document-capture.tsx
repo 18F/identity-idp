@@ -5,6 +5,7 @@ import { FormSteps, PromptOnNavigate } from '@18f/identity-form-steps';
 import { VerifyFlowStepIndicator, VerifyFlowPath } from '@18f/identity-verify-flow';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import type { FormStep } from '@18f/identity-form-steps';
+import { getConfigValue } from '@18f/identity-config';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep from './documents-step';
 import InPersonPrepareStep from './in-person-prepare-step';
@@ -60,8 +61,8 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { inPersonURL, arcgisSearchEnabled } = useContext(InPersonContext);
+  const appName = getConfigValue('appName');
 
-  const appName = document.querySelector('meta[name="description"]')?.getAttribute('content');
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
     if (stepName) {
