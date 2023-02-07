@@ -91,7 +91,7 @@ module Idv
     end
 
     def idv_profile_complete?
-      !!idv_session.resolution_successful
+      !!idv_session.profile_confirmation
     end
 
     def idv_address_complete?
