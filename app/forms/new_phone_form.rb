@@ -130,12 +130,16 @@ class NewPhoneForm
 
   def validate_recaptcha_token
     return if !FeatureManagement.phone_setup_recaptcha_enabled?
-    return if PhoneSetupRecaptchaValidator.new(parsed_phone:, analytics:).valid?(recaptcha_token)
+    return if recaptcha_validator.valid?(recaptcha_token)
     errors.add(
       :recaptcha_token,
       I18n.t('errors.messages.invalid_recaptcha_token'),
       type: :invalid_recaptcha_token,
     )
+  end
+
+  def recaptcha_validator
+    @recaptcha_validator ||= PhoneSetupRecaptchaValidator.new(parsed_phone:, analytics:)
   end
 
   def parsed_phone

@@ -358,6 +358,38 @@ describe NewPhoneForm do
         )
       end
     end
+
+    context 'with recaptcha enabled' do
+      let(:valid) { nil }
+      let(:validator) { PhoneSetupRecaptchaValidator.new(parsed_phone: nil) }
+      let(:recaptcha_token) { 'token' }
+      let(:params) { super().merge(recaptcha_token:) }
+      subject(:result) { form.submit(params) }
+
+      before do
+        allow(FeatureManagement).to receive(:phone_setup_recaptcha_enabled?).and_return(true)
+        allow(validator).to receive(:valid?).with(recaptcha_token).and_return(valid)
+        allow(form).to receive(:recaptcha_validator).and_return(validator)
+      end
+
+      context 'with valid recaptcha result' do
+        let(:valid) { true }
+
+        it 'is valid' do
+          expect(result.success?).to eq(true)
+          expect(result.errors).to be_blank
+        end
+      end
+
+      context 'with invalid recaptcha result' do
+        let(:valid) { false }
+
+        it 'is invalid' do
+          expect(result.success?).to eq(false)
+          expect(result.errors[:recaptcha_token]).to be_present
+        end
+      end
+    end
   end
 
   describe '#delivery_preference_sms?' do
