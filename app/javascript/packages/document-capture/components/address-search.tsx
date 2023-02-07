@@ -161,6 +161,7 @@ interface AddressSearchProps {
   onFoundLocations?: (locations: FormattedLocation[] | null | undefined) => void;
   onLoadingLocations?: (isLoading: boolean) => void;
   onError?: (error: Error | null) => void;
+  disabled?: boolean;
 }
 
 function AddressSearch({
@@ -169,6 +170,7 @@ function AddressSearch({
   onFoundLocations = () => undefined,
   onLoadingLocations = () => undefined,
   onError = () => undefined,
+  disabled = false,
 }: AddressSearchProps) {
   const { t } = useI18n();
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
@@ -227,6 +229,7 @@ function AddressSearch({
           onChange={onTextInputChange}
           label={t('in_person_proofing.body.location.po_search.address_search_label')}
           hint={t('in_person_proofing.body.location.po_search.address_search_hint')}
+          disabled={disabled}
         />
       </ValidatedField>
       <div className="margin-y-5">

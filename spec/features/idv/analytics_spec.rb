@@ -91,7 +91,7 @@ feature 'Analytics Regression', js: true do
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: true, doc_auth_result: 'Attention'),
       'IdV: verify in person troubleshooting option clicked' => { flow_path: 'standard' },
       'IdV: in person proofing location visited' => { flow_path: 'standard' },
-      'IdV: in person proofing location submitted' => { flow_path: 'standard', selected_location: 'BALTIMORE' },
+      'IdV: in person proofing location submitted' => { flow_path: 'standard', selected_location: '606 E JUNEAU AVE, MILWAUKEE, WI, 53202-9998' },
       'IdV: in person proofing prepare visited' => { flow_path: 'standard' },
       'IdV: in person proofing prepare submitted' => { flow_path: 'standard' },
       'IdV: in person proofing state_id visited' => { step: 'state_id', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false },

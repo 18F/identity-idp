@@ -126,10 +126,11 @@ module Idv
     end
 
     def confirm_verify_info_complete
-      if IdentityConfig.store.doc_auth_verify_info_controller_enabled &&
-         !idv_session.resolution_successful
-        redirect_to idv_verify_info_url
-      end
+      return unless IdentityConfig.store.doc_auth_verify_info_controller_enabled
+      return unless user_fully_authenticated?
+      return if idv_session.resolution_successful
+
+      redirect_to idv_verify_info_url
     end
 
     def personal_key_confirmed

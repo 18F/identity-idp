@@ -21,6 +21,7 @@ RSpec.describe 'In Person Proofing', js: true do
     it 'allows the user to continue down the happy path', allow_browser_log: true do
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
+      search_for_post_office
 
       # location page
       bethesda_location = page.find_all('.location-collection-item')[1]
@@ -100,7 +101,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_content(
         t('in_person_proofing.body.barcode.deadline', deadline: deadline),
       )
-      expect(page).to have_content('BETHESDA')
+      expect(page).to have_content('MILWAUKEE')
       expect(page).to have_content(
         "#{t('date.day_names')[6]}: #{t('in_person_proofing.body.barcode.retail_hours_closed')}",
       )
@@ -120,7 +121,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
     # location page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
-    expect(page).to have_content(t('in_person_proofing.headings.location'))
+    expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
+    search_for_post_office
     bethesda_location = page.find_all('.location-collection-item')[1]
     bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
 
@@ -222,7 +224,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content(t('in_person_proofing.headings.barcode'))
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
     expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
-    expect(page).to have_content('BETHESDA')
+    expect(page).to have_content('MILWAUKEE')
     expect(page).to have_content(
       "#{t('date.day_names')[6]}: #{t('in_person_proofing.body.barcode.retail_hours_closed')}",
     )
@@ -251,7 +253,8 @@ RSpec.describe 'In Person Proofing', js: true do
     begin_in_person_proofing
 
     # location page
-    expect(page).to have_content(t('in_person_proofing.headings.location'))
+    expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
+    search_for_post_office
     bethesda_location = page.find_all('.location-collection-item')[1]
     bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
 
@@ -259,7 +262,9 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content(t('in_person_proofing.headings.prepare'))
     click_button t('forms.buttons.back')
 
-    expect(page).to have_content(t('in_person_proofing.headings.location'))
+    expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
+
+    search_for_post_office
     expect(page).to have_css('.location-collection-item', wait: 10)
     click_button t('forms.buttons.back')
 
@@ -329,7 +334,7 @@ RSpec.describe 'In Person Proofing', js: true do
         attach_and_submit_images
 
         click_link t('in_person_proofing.body.cta.button')
-
+        search_for_post_office
         bethesda_location = page.find_all('.location-collection-item')[1]
         bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
 
@@ -349,7 +354,7 @@ RSpec.describe 'In Person Proofing', js: true do
         complete_review_step(user)
         acknowledge_and_confirm_personal_key
 
-        expect(page).to have_content('BETHESDA')
+        expect(page).to have_content('MILWAUKEE')
       end
     end
   end

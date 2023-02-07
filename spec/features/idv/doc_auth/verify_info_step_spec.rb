@@ -6,7 +6,6 @@ feature 'doc auth verify_info step', :js do
 
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
-  let(:max_attempts) { Throttle.max_attempts(:idv_resolution) }
 
   context 'with verify_info_controller enabled' do
     before do
@@ -151,30 +150,91 @@ feature 'doc auth verify_info step', :js do
       expect(page).to have_current_path(idv_doc_auth_verify_step)
     end
 
-    it 'throttles resolution and continues when it expires' do
-      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited)
-      sign_in_and_2fa_user
-      complete_doc_auth_steps_before_ssn_step
-      fill_out_ssn_form_with_ssn_that_fails_resolution
-      click_idv_continue
-      (max_attempts - 1).times do
+    context 'resolution throttling' do
+      let(:max_resolution_attempts) { 3 }
+      # proof_ssn_max_attempts is 10, vs 5 for resolution, so it doesn't get triggered
+      it 'throttles resolution and continues when it expires' do
+        allow(IdentityConfig.store).to receive(:idv_max_attempts).
+          and_return(max_resolution_attempts)
+
+        expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited)
+        sign_in_and_2fa_user
+        complete_doc_auth_steps_before_ssn_step
+        fill_out_ssn_form_with_ssn_that_fails_resolution
+        click_idv_continue
+        (max_resolution_attempts - 2).times do
+          click_idv_continue
+          expect(page).to have_current_path(idv_session_errors_warning_path)
+          click_try_again
+        end
+
+        # Check that last attempt shows correct warning text
         click_idv_continue
         expect(page).to have_current_path(idv_session_errors_warning_path)
-        visit idv_doc_auth_verify_step
-      end
-      click_idv_continue
-      expect(page).to have_current_path(idv_session_errors_failure_path)
-      expect(fake_analytics).to have_logged_event(
-        'Throttler Rate Limit Triggered',
-        throttle_type: :idv_resolution,
-        step_name: 'Idv::VerifyInfoController',
-      )
-      travel_to(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now + 1) do
-        sign_in_and_2fa_user
-        complete_doc_auth_steps_before_verify_step
-        click_idv_continue
+        expect(page).to have_content(t('idv.failure.attempts.one'))
+        click_try_again
 
-        expect(page).to have_current_path(idv_phone_path)
+        click_idv_continue
+        expect(page).to have_current_path(idv_session_errors_failure_path)
+        expect(fake_analytics).to have_logged_event(
+          'Throttler Rate Limit Triggered',
+          throttle_type: :idv_resolution,
+          step_name: 'Idv::VerifyInfoController',
+        )
+
+        visit idv_verify_info_url
+        expect(page).to have_current_path(idv_session_errors_failure_path)
+
+        travel_to(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now + 1) do
+          sign_in_and_2fa_user
+          complete_doc_auth_steps_before_verify_step
+          click_idv_continue
+
+          expect(page).to have_current_path(idv_phone_path)
+        end
+      end
+    end
+
+    context 'ssn throttling' do
+      # Simulates someone trying same SSN with second account
+      let(:max_resolution_attempts) { 4 }
+      let(:max_ssn_attempts) { 3 }
+
+      it 'throttles ssn and continues when it expires' do
+        allow(IdentityConfig.store).to receive(:idv_max_attempts).
+          and_return(max_resolution_attempts)
+
+        allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts).
+          and_return(max_ssn_attempts)
+
+        sign_in_and_2fa_user
+        complete_doc_auth_steps_before_ssn_step
+        fill_out_ssn_form_with_ssn_that_fails_resolution
+        click_idv_continue
+        (max_ssn_attempts - 1).times do
+          click_idv_continue
+          expect(page).to have_current_path(idv_session_errors_warning_path)
+          click_try_again
+        end
+
+        click_idv_continue
+        expect(page).to have_current_path(idv_session_errors_ssn_failure_path)
+        expect(fake_analytics).to have_logged_event(
+          'Throttler Rate Limit Triggered',
+          throttle_type: :proof_ssn,
+          step_name: 'verify_info',
+        )
+
+        visit idv_verify_info_url
+        expect(page).to have_current_path(idv_session_errors_ssn_failure_path)
+
+        travel_to(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now + 1) do
+          sign_in_and_2fa_user
+          complete_doc_auth_steps_before_verify_step
+          click_idv_continue
+
+          expect(page).to have_current_path(idv_phone_path)
+        end
       end
     end
 

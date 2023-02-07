@@ -251,6 +251,32 @@ describe Idv::ReviewController do
         expect(flash.now[:success]).to be_nil
       end
     end
+
+    context 'doc_auth_verify_info_controller_enabled is set to true' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_verify_info_controller_enabled).
+          and_return(true)
+      end
+
+      it 'redirects to the verify info controller if the user has not completed it' do
+        controller.idv_session.resolution_successful = nil
+
+        get :new
+
+        expect(response).to redirect_to(idv_verify_info_url)
+      end
+
+      it 'redirects to the root if the user is not authenticated' do
+        allow(controller).to receive(:user_fully_authenticated?).and_return(false)
+        allow(controller).to receive(:user_session).and_call_original
+        allow(controller).to receive(:confirm_two_factor_authenticated).and_call_original
+        allow(controller).to receive(:current_user).and_call_original
+
+        get :new
+
+        expect(response).to redirect_to(root_url)
+      end
+    end
   end
 
   describe '#create' do

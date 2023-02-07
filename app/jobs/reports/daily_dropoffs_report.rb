@@ -117,7 +117,9 @@ module Reports
             COALESCE(CASE WHEN doc_auth_logs.verify_submit_count > 0 THEN 1 else null END)
           ) AS verify_submit
         , COUNT(doc_auth_logs.verify_phone_view_at) AS phone
-        , COUNT(doc_auth_logs.verify_phone_submit_at) AS phone_submit
+        , COUNT(
+            COALESCE(CASE WHEN doc_auth_logs.verify_phone_submit_count > 0 THEN 1 else null END)
+          ) AS phone_submit
         , COUNT(doc_auth_logs.encrypt_view_at) AS encrypt
         , COUNT(doc_auth_logs.verified_view_at) AS personal_key
         , COUNT(profiles.id) AS verified

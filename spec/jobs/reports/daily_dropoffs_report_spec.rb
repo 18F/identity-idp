@@ -96,7 +96,7 @@ RSpec.describe Reports::DailyDropoffsReport do
             verify_view_at: timestamp,
             verify_submit_count: 1,
             verify_phone_view_at: timestamp,
-            verify_phone_submit_at: timestamp,
+            verify_phone_submit_count: 1,
             encrypt_view_at: timestamp,
             verified_view_at: timestamp,
           )
