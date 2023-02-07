@@ -10,6 +10,7 @@ es:
       change_label: Actualizar
       change_ssn_label: Actualizar su número de la Seguridad Social
       change_state_id_label: Actualizar la información de su cédula de identidad
+      continue_plain: Continuar
       mail:
         resend: Enviar otra carta
         send: Enviar una carta

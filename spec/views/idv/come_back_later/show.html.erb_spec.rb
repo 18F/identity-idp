@@ -39,7 +39,7 @@ describe 'idv/come_back_later/show.html.erb' do
     it 'renders a return to account button' do
       render
       expect(rendered).to have_link(
-        t('idv.cancel.actions.exit', app_name: APP_NAME),
+        t('idv.buttons.continue_plain'),
         href: account_path,
       )
     end
