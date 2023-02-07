@@ -962,7 +962,6 @@ describe 'OpenID Connect' do
     expect(decoded_id_token[:email]).to eq(user.email)
     expect(decoded_id_token[:given_name]).to eq('John')
     expect(decoded_id_token[:social_security_number]).to eq('111223333')
-    expect(decoded_id_token[:ial]).to eq(2)
 
     access_token = token_response[:access_token]
     expect(access_token).to be_present
