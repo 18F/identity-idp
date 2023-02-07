@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 describe Users::VerifyPasswordController do
-  let(:user) { create(:user, profiles: profiles, personal_key: personal_key) }
+  let(:key) { 'key' }
   let(:profiles) { [] }
-  let(:recovery_hash) { { personal_key: personal_key } }
-  let(:personal_key) { 'key' }
+  let(:recovery_hash) { { personal_key: key } }
+  let(:user) { create(:user, profiles: profiles, **recovery_hash) }
 
   before do
     stub_sign_in(user)
@@ -22,9 +22,6 @@ describe Users::VerifyPasswordController do
 
   context 'with password reset profile' do
     let(:profiles) { [create(:profile, :password_reset)] }
-    let(:response_ok) { FormResponse.new(success: true, errors: {}, extra: { personal_key: key }) }
-    let(:response_bad) { FormResponse.new(success: false, errors: {}) }
-    let(:key) { 'key' }
 
     context 'without personal key flag set' do
       describe '#new' do
@@ -45,7 +42,7 @@ describe Users::VerifyPasswordController do
     context 'with personal key flag set' do
       before do
         allow(subject.reactivate_account_session).to receive(:validated_personal_key?).
-          and_return(personal_key)
+          and_return(key)
       end
 
       describe '#new' do
@@ -58,16 +55,30 @@ describe Users::VerifyPasswordController do
 
       describe '#update' do
         let(:form) { instance_double(VerifyPasswordForm) }
-        let(:pii) { { dob: Time.zone.today } }
+        let(:user_params) { { user: { password: user.password } } }
 
         before do
+          stub_attempts_tracker
+          allow(@irs_attempts_api_tracker).to receive(
+            :logged_in_profile_change_reauthentication_submitted,
+          )
+          allow(@irs_attempts_api_tracker).to receive(:idv_personal_key_generated)
           expect(controller).to receive(:verify_password_form).and_return(form)
         end
 
         context 'with valid password' do
+          let(:response_ok) { FormResponse.new(success: true, errors: {}, extra: recovery_hash) }
+
           before do
             allow(form).to receive(:submit).and_return(response_ok)
-            put :update, params: { user: { password: user.password } }
+            put :update, params: user_params
+          end
+
+          it 'tracks the appropriate attempts api events' do
+            expect(@irs_attempts_api_tracker).to have_received(
+              :logged_in_profile_change_reauthentication_submitted,
+            ).with({ success: true })
+            expect(@irs_attempts_api_tracker).to have_received(:idv_personal_key_generated)
           end
 
           it 'redirects to the account page' do
@@ -80,14 +91,26 @@ describe Users::VerifyPasswordController do
         end
 
         context 'without valid password' do
+          let(:pii) { { dob: Time.zone.today } }
+          let(:response_bad) { FormResponse.new(success: false, errors: {}) }
+
           render_views
 
-          it 'renders the new template' do
+          before do
             allow(form).to receive(:submit).and_return(response_bad)
             allow(controller).to receive(:decrypted_pii).and_return(pii)
 
-            put :update, params: { user: { password: user.password } }
+            put :update, params: user_params
+          end
 
+          it 'tracks the appropriate attempts api event' do
+            expect(@irs_attempts_api_tracker).to have_received(
+              :logged_in_profile_change_reauthentication_submitted,
+            ).with({ success: false })
+            expect(@irs_attempts_api_tracker).not_to have_received(:idv_personal_key_generated)
+          end
+
+          it 'renders the new template' do
             expect(response).to render_template(:new)
           end
         end
