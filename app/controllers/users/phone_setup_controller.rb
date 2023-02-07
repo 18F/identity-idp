@@ -34,6 +34,10 @@ module Users
 
     private
 
+    def recaptcha_enabled?
+      FeatureManagement.phone_setup_recaptcha_enabled?
+    end
+
     def track_phone_setup_visit
       mfa_user = MfaContext.new(current_user)
       analytics.user_registration_phone_setup_visit(

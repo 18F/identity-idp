@@ -58,5 +58,9 @@ module Users
                         account_url(anchor: 'phones')
       redirect_to redirect_path
     end
+
+    def recaptcha_enabled?
+      FeatureManagement.phone_setup_recaptcha_enabled?
+    end
   end
 end
