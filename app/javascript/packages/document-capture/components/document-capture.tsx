@@ -151,6 +151,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
         {
           name: 'documents',
           form: DocumentsStep,
+          title: t('doc_auth.headings.document_capture'),
         },
       ].filter(Boolean) as FormStep[]);
 
