@@ -17,7 +17,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_07_025050) do
 
   create_table "usps_ipp_cached_locations", force: :cascade do |t|
     t.geometry "lonlat", limit: {:srid=>0, :type=>"st_point"}
-    t.json "attributes"
+    t.json "usps_attributes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -605,6 +605,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_07_025050) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
+# Could not dump table "usps_ipp_locations_cache_tables" because of following StandardError
+#   Unknown type 'geometry(Point)' for column 'lonlat'
 
   create_table "webauthn_configurations", force: :cascade do |t|
     t.bigint "user_id", null: false

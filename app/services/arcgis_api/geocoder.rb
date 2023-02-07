@@ -39,6 +39,10 @@ module ArcgisApi
     KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS = [
       :magicKey, # Generated from /suggest; identifier used to retrieve full address record
       :SingleLine, # Unvalidated address-like text string used to search for geocoded addresses
+      :Address,
+      :City,
+      :Region,
+      :Postal,
     ]
 
     # Makes an HTTP request to quickly find potential address matches. Each match that is found

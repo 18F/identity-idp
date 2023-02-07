@@ -6,7 +6,7 @@ module Idv
       include RenderConditionConcern
       include UspsInPersonProofing
       include EffectiveUser
-      include UspsInPersonProofing
+      include ::InPerson
 
       check_or_render_not_found -> { InPersonConfig.enabled? }
 
@@ -25,6 +25,7 @@ module Idv
               latitude: search_params['latitude']
             )
             response = proofer.request_facilities(candidate)
+            IppLocationsCacherJob.perform_now(response.map(&:to_h))
           else
             response = proofer.request_pilot_facilities
           end
@@ -38,7 +39,7 @@ module Idv
             response_body: err.respond_to?(:response_body) && err.response_body,
             response_status_code: err.respond_to?(:response_status) && err.response_status,
           )
-          render json: {}, status: :unprocessable_entity
+          render json: { error: err }, status: :unprocessable_entity
         rescue => err
           analytics.idv_in_person_locations_request_failure(
             api_status_code: 500,
@@ -48,7 +49,7 @@ module Idv
             response_body: err.respond_to?(:response_body) && err.response_body,
             response_status_code: err.respond_to?(:response_status) && err.response_status,
           )
-          render json: {}, status: :internal_server_error
+          render json: { error: err }, status: :internal_server_error
         end
       end
 
