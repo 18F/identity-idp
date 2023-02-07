@@ -121,9 +121,8 @@ module Identity
             expires_in: IdentityConfig.store.all_redirect_uris_cache_duration_minutes.minutes,
           ) do
             ServiceProvider.pluck(:redirect_uris).flatten.compact.map do |uri|
-              split_uri = uri.split('//')
-              protocol = split_uri[0]
-              domain = split_uri[1].split('/')[0] if split_uri.size > 1
+              protocol, domain_path = uri.split('//', 2)
+              domain, path = domain_path&.split('/')
               "#{protocol}//#{domain}"
             end.uniq
           end
