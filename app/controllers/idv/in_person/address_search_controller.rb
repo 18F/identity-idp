@@ -31,17 +31,17 @@ module Idv
         end
         { json: addresses, status: :ok }
       rescue StandardError => err
-        apiError = err.instance_of?(Faraday::ClientError) ? err.response['error'] : nil
+        api_error = err.instance_of?(Faraday::ClientError) ? err.response['error'] : nil
         # log search event for all errors
         analytics.idv_in_person_locations_searched(
           success: false,
-          errors: apiError ? apiError['details'] : 'Arcgis error performing operation',
+          errors: api_error ? api_error['details'] : 'Arcgis error performing operation',
           api_status_code: set_api_status_code(err),
           exception_class: err.class,
-          exception_message: apiError ? apiError['message'] : err.message,
+          exception_message: api_error ? api_error['message'] : err.message,
           response_status_code: err.respond_to?(:response_status) && err.response_status,
         )
-        api_status = apiError ? :bad_request : :internal_server_error
+        api_status = api_error ? :bad_request : :internal_server_error
         # log the request failure
         if err.instance_of?(Faraday::ConnectionFailed) || err.instance_of?(Faraday::TimeoutError)
           api_status = :unprocessable_entity

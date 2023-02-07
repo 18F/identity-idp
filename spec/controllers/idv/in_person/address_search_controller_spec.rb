@@ -111,7 +111,7 @@ describe Idv::InPerson::AddressSearchController do
       end
 
       it 'logs search analytics' do
-        response = get :index
+        response
         expect(@analytics).to have_logged_event(
           'IdV: in person proofing location search submitted',
           api_status_code: 422,
@@ -139,7 +139,7 @@ describe Idv::InPerson::AddressSearchController do
       end
 
       it 'logs search analytics' do
-        response = get :index
+        response
         expect(@analytics).to have_logged_event(
           'IdV: in person proofing location search submitted',
           api_status_code: 422,
@@ -167,7 +167,7 @@ describe Idv::InPerson::AddressSearchController do
       end
 
       it 'logs search analytics' do
-        response = get :index
+        response
         expect(@analytics).to have_logged_event(
           'IdV: in person proofing location search submitted',
           api_status_code: 500,
