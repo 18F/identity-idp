@@ -39,6 +39,13 @@ describe Idv::SsnController do
         :confirm_pii_from_doc,
       )
     end
+  end
+
+  context 'when doc_auth_ssn_controller_enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_ssn_controller_enabled).
+        and_return(true)
+    end
 
     describe '#show' do
       let(:analytics_name) { 'IdV: doc auth ssn visited' }
@@ -86,17 +93,69 @@ describe Idv::SsnController do
       end
     end
 
-    context 'when doc_auth_ssn_controller_enabled is false' do
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_ssn_controller_enabled).
-          and_return(false)
+    describe '#update' do
+      context 'with valid ssn' do
+        let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
+        let(:params) { { doc_auth: { ssn: ssn } } }
+
+        it 'merges ssn into pii session value' do
+          put :update
+
+          expect(flow_session[:pii_from_doc][:ssn]).to eq(ssn)
+        end
+
+        it 'logs attempts api event' do
+          expect(attempts_api).to receive(:idv_ssn_submitted).with(
+            ssn: ssn,
+          )
+          put :update
+        end
+
+        context 'with existing session applicant' do
+          let(:session) { super().merge(idv: { 'applicant' => {} }) }
+
+          it 'clears applicant' do
+            put :update
+
+            expect(session[:idv]['applicant']).to be_blank
+          end
+        end
+
+        it 'adds a threatmetrix session id to flow session' do
+          step.extra_view_variables
+          expect(flow.flow_session[:threatmetrix_session_id]).to_not eq(nil)
+        end
+
+        it 'does not change threatmetrix_session_id when updating ssn' do
+          step.call
+          session_id = flow.flow_session[:threatmetrix_session_id]
+          step.extra_view_variables
+          expect(flow.flow_session[:threatmetrix_session_id]).to eq(session_id)
+        end
       end
 
-      it 'returns 404' do
-        get :show
-
-        expect(response.status).to eq(404)
+      context 'when pii_from_doc is not present' do
+        it 'marks previous step as incomplete' do
+          flow_session.delete('pii_from_doc')
+          flow_session['Idv::Steps::DocumentCaptureStep'] = true
+          put :update
+          expect(flow_session['Idv::Steps::DocumentCaptureStep']).to eq nil
+          expect(response.status).to eq 302
+        end
       end
+    end
+  end
+
+  context 'when doc_auth_ssn_controller_enabled is false' do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_ssn_controller_enabled).
+        and_return(false)
+    end
+
+    it 'returns 404' do
+      get :show
+
+      expect(response.status).to eq(404)
     end
   end
 end

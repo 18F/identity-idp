@@ -13,6 +13,23 @@ module Idv
       analytics.idv_doc_auth_ssn_visited(**analytics_arguments)
     end
 
+    def update
+      flow_session[:pii_from_doc][:ssn] = ssn
+
+      @flow.irs_attempts_api_tracker.idv_ssn_submitted(
+        ssn: ssn,
+      )
+
+      idv_session.delete('applicant')
+    end
+
+    def extra_view_variables
+      {
+        updating_ssn: updating_ssn,
+        **threatmetrix_view_variables,
+      }
+    end
+
     private
 
     def render_404_if_ssn_controller_disabled
@@ -37,6 +54,10 @@ module Idv
 
     def increment_step_counts
       current_flow_step_counts['ssn'] += 1
+    end
+
+    def form_submit
+      Idv::SsnFormatForm.new(current_user).submit(permit(:ssn))
     end
   end
 end

@@ -308,6 +308,7 @@ Rails.application.routes.draw do
       get '/otp_delivery_method' => 'otp_delivery_method#new'
       put '/otp_delivery_method' => 'otp_delivery_method#create'
       get '/ssn' => 'ssn#show'
+      put '/ssn' => 'ssn#update'
       get '/verify_info' => 'verify_info#show'
       put '/verify_info' => 'verify_info#update'
       get '/phone' => 'phone#new'
