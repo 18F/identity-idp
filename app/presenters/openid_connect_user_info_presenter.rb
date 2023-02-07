@@ -21,8 +21,8 @@ class OpenidConnectUserInfoPresenter
     info.merge!(ial2_attributes) if scoper.ial2_scopes_requested?
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
-    info[:ial] = ial_value(identity.ial) if identity.ial.present?
-    info[:aal] = aal_value(identity.aal) if identity.aal.present?
+    info[:ial] = Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[identity.ial] if identity.ial.present?
+    info[:aal] = Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[identity.aal] if identity.aal.present?
 
     scoper.filter(info)
   end
@@ -151,27 +151,6 @@ class OpenidConnectUserInfoPresenter
 
   def out_of_band_session_accessor
     @out_of_band_session_accessor ||= OutOfBandSessionAccessor.new(identity.rails_session_id)
-  end
-
-  def ial_value(ial)
-    case ial
-    when Idp::Constants::IAL_MAX then Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
-    when Idp::Constants::IAL1 then Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-    when Idp::Constants::IAL2 then Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-    else
-      raise "Unknown ial #{ial}"
-    end
-  end
-
-  def aal_value(aal)
-    case aal
-    when Idp::Constants::DEFAULT_AAL then Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
-    when Idp::Constants::AAL1 then Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF
-    when Idp::Constants::AAL2 then Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
-    when Idp::Constants::AAL3 then Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
-    else
-      raise "Unknown aal #{aal}"
-    end
   end
 
 end
