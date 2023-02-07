@@ -16,6 +16,7 @@ class RecaptchaValidator
 
   def valid?(recaptcha_token)
     return true if exempt?
+    return false if recaptcha_token.blank?
 
     response = faraday.post(
       VERIFICATION_ENDPOINT,
