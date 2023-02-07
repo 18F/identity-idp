@@ -9,6 +9,14 @@ shared_examples_for 'an idv session errors controller action' do
 
       expect(response).to render_template(template)
     end
+
+    it 'logs an event' do
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: Session Errors visited',
+        action: action.to_s,
+      )
+      get action
+    end
   end
 
   context 'the user is authenticated and has confirmed their profile' do
@@ -20,16 +28,31 @@ shared_examples_for 'an idv session errors controller action' do
 
       expect(response).to redirect_to(idv_phone_url)
     end
+    it 'does not log an event' do
+      expect(@analytics).not_to receive(:track_event).with(
+        'IdV: Session Errors visited',
+        action: action.to_s,
+      )
+      get action
+    end
   end
 
   context 'the user is not authenticated and in doc capture flow' do
-    it 'renders the error' do
+    before do
       user = create(:user, :signed_up)
       controller.session[:doc_capture_user_id] = user.id
-
+    end
+    it 'renders the error' do
       get action
 
       expect(response).to render_template(template)
+    end
+    it 'logs an event' do
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: Session Errors visited',
+        action: action.to_s,
+      )
+      get action
     end
   end
 
@@ -38,6 +61,13 @@ shared_examples_for 'an idv session errors controller action' do
       get action
 
       expect(response).to redirect_to(new_user_session_url)
+    end
+    it 'does not log an event' do
+      expect(@analytics).not_to receive(:track_event).with(
+        'IdV: Session Errors visited',
+        action: action.to_s,
+      )
+      get action
     end
   end
 end
@@ -52,6 +82,7 @@ describe Idv::SessionErrorsController do
       and_return(idv_session_profile_confirmation)
     allow(controller).to receive(:idv_session).and_return(idv_session)
     stub_sign_in(user) if user
+    stub_analytics
   end
 
   describe 'before_actions' do

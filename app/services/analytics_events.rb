@@ -3003,6 +3003,17 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when the user visits one of the the session error pages.
+  # @param [String] action
+  def idv_session_errors_visited(
+    action:
+  )
+    track_event(
+      'IdV: Session Errors visited',
+      action: action,
+    )
+  end
+
   # Tracks if request to get USPS in-person proofing locations fails
   # @param [String] exception_class
   # @param [String] exception_message

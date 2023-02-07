@@ -6,6 +6,7 @@ module Idv
     before_action :confirm_two_factor_authenticated_or_user_id_in_session
     before_action :confirm_idv_session_step_needed
     before_action :set_try_again_path, only: [:warning, :exception]
+    before_action :log_event
 
     def exception; end
 
@@ -73,6 +74,12 @@ module Idv
 
     def in_person_flow?
       params[:flow] == 'in_person'
+    end
+
+    def log_event
+      @analytics.idv_session_errors_visited(
+        action: params[:action],
+      )
     end
   end
 end
