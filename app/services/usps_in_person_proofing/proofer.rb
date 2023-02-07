@@ -40,7 +40,7 @@ module UspsInPersonProofing
       {
         'postOffices' => UspsIppCachedLocations.
           query_by_point(longitude, latitude).
-          map(&:attributes),
+          map(&:usps_attributes),
       }
     end
 

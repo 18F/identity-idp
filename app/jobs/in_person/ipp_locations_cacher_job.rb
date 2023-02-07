@@ -1,11 +1,6 @@
 module InPerson
   class IppLocationsCacherJob < ApplicationJob
-    include JobHelpers::StaleJobHelper
     include ArcgisApi
-
-    queue_as :high_document_proofing
-
-    discard_on JobHelpers::StaleJobHelper::StaleJobError
 
     def perform(post_offices)
       post_offices.each do |location|
