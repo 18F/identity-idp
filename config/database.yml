@@ -1,5 +1,5 @@
 postgresql: &postgresql
-  adapter: postgis
+  adapter: postgresql
   encoding: utf8
   database: identity_idp_<%= Rails.env %>
   port: 5432
@@ -32,6 +32,11 @@ development:
     <<: *defaults
     database: identity_idp_worker_jobs_<%= Rails.env %>
     migrations_paths: db/worker_jobs_migrate
+  support_services:
+    <<: *defaults
+    adapter: postgis
+    database: identity_idp_support_services_<%= Rails.env %>
+    migrations_paths: db/support_services_migrate
 
 test:
   primary: &test
@@ -49,6 +54,11 @@ test:
     <<: *test
     database: <%= "identity_idp_worker_jobs_test#{ENV['TEST_ENV_NUMBER']}" %>
     migrations_paths: db/worker_jobs_migrate
+  support_services:
+    <<: *defaults
+    adapter: postgis
+    database: identity_idp_support_services_<%= Rails.env %>
+    migrations_paths: db/support_services_migrate
 
 <%
   worker_pool = if Identity::Hostdata.instance_role == 'worker'

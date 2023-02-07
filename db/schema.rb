@@ -605,12 +605,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_07_025050) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "usps_ipp_locations_cache_tables", force: :cascade do |t|
-    t.geometry "lonlat", limit: {:srid=>0, :type=>"st_point"}
-    t.json "attributes"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
 
   create_table "webauthn_configurations", force: :cascade do |t|
     t.bigint "user_id", null: false
