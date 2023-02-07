@@ -114,7 +114,7 @@ module Identity
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins do |source, _env|
-          next if source == IdentityConfig.store.domain_name
+          next if source == "https://#{IdentityConfig.store.domain_name}"
 
           redirect_uris = Rails.cache.fetch(
             'all_service_provider_redirect_uris',
