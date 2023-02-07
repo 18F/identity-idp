@@ -133,10 +133,9 @@ describe Idv::InPerson::UspsLocationsController do
             'IdV: in person proofing location search submitted',
             success: false,
             errors: 'No USPS locations found',
-            result_total: nil,
+            result_total: 0,
             exception_class: nil,
             exception_message: nil,
-            reason: nil,
             response_status_code: nil,
           )
         end
@@ -158,7 +157,6 @@ describe Idv::InPerson::UspsLocationsController do
             result_total: 3,
             exception_class: nil,
             exception_message: nil,
-            reason: nil,
             response_status_code: nil,
           )
         end
