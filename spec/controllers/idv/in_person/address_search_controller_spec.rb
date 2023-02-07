@@ -64,17 +64,16 @@ describe Idv::InPerson::AddressSearchController do
       end
 
       context 'with error code' do
-        let (:response_body) do
-          { "error"=> {
-              "code"=> 400,
-              "details"=>['request is too many characters'],
-              "message"=>'Unable to complete operation.',
-            }
-          }
+        let(:response_body) do
+          { 'error' => {
+            'code' => 400,
+            'details' => ['request is too many characters'],
+            'message' => 'Unable to complete operation.',
+          } }
         end
         before do
           exception = Faraday::ClientError.new(
-            RuntimeError.new(""),
+            RuntimeError.new(''),
             response_body,
           )
           allow(geocoder).to receive(:find_address_candidates).and_raise(exception)
@@ -88,10 +87,10 @@ describe Idv::InPerson::AddressSearchController do
             'IdV: in person proofing location search submitted',
             api_status_code: 400,
             success: false,
-            errors: ["request is too many characters"],
+            errors: ['request is too many characters'],
             result_total: 0,
             exception_class: Faraday::ClientError,
-            exception_message: "Unable to complete operation.",
+            exception_message: 'Unable to complete operation.',
             response_status_code: nil,
           )
         end
@@ -120,7 +119,7 @@ describe Idv::InPerson::AddressSearchController do
           errors: 'Arcgis error performing operation',
           result_total: 0,
           exception_class: Faraday::ConnectionFailed,
-          exception_message: "connection failed",
+          exception_message: 'connection failed',
           response_status_code: nil,
         )
       end
@@ -148,7 +147,7 @@ describe Idv::InPerson::AddressSearchController do
           errors: 'Arcgis error performing operation',
           result_total: 0,
           exception_class: Faraday::TimeoutError,
-          exception_message: "timeout",
+          exception_message: 'timeout',
           response_status_code: nil,
         )
       end
@@ -176,7 +175,7 @@ describe Idv::InPerson::AddressSearchController do
           errors: 'Arcgis error performing operation',
           result_total: 0,
           exception_class: StandardError,
-          exception_message: "error",
+          exception_message: 'error',
           response_status_code: false,
         )
       end

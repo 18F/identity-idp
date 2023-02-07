@@ -30,7 +30,6 @@ module Idv
           )
         end
         { json: addresses, status: :ok }
-
       rescue StandardError => err
         apiError = err.instance_of?(Faraday::ClientError) ? err.response['error'] : nil
         # log search event for all errors
@@ -42,7 +41,7 @@ module Idv
           exception_message: apiError ? apiError['message'] : err.message,
           response_status_code: err.respond_to?(:response_status) && err.response_status,
         )
-        api_status =  apiError ? :bad_request : :internal_server_error
+        api_status = apiError ? :bad_request : :internal_server_error
         # log the request failure
         if err.instance_of?(Faraday::ConnectionFailed) || err.instance_of?(Faraday::TimeoutError)
           api_status = :unprocessable_entity
