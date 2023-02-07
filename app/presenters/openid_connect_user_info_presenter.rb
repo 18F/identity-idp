@@ -23,7 +23,7 @@ class OpenidConnectUserInfoPresenter
     info[:verified_at] = verified_at if scoper.verified_at_requested?
     info[:ial] = Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[identity.ial] if identity.ial.present?
     info[:aal] = Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[identity.aal] if identity.aal.present?
-
+    
     scoper.filter(info)
   end
 

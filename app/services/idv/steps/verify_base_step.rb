@@ -177,7 +177,8 @@ module Idv
             throttle_type: :proof_ssn,
           )
 
-          if throttle.throttled_else_increment?
+          throttle.increment!
+          if throttle.throttled?
             @flow.analytics.throttler_rate_limit_triggered(
               throttle_type: :proof_ssn,
               step_name: self.class,

@@ -6,7 +6,7 @@ RSpec.describe PhoneInputComponent, type: :component do
   let(:lookup_context) { ActionView::LookupContext.new(ActionController::Base.view_paths) }
   let(:view_context) { ActionView::Base.new(lookup_context, {}, controller) }
   let(:user) { build_stubbed(:user) }
-  let(:form_object) { NewPhoneForm.new(user) }
+  let(:form_object) { NewPhoneForm.new(user:) }
   let(:form_builder) do
     SimpleForm::FormBuilder.new(form_object.model_name.param_key, form_object, view_context, {})
   end

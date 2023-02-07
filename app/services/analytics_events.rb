@@ -2978,6 +2978,31 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks if request to get address candidates from ArcGIS fails
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [Boolean] response_body_present
+  # @param [Hash] response_body
+  # @param [Integer] response_status_code
+  def idv_arcgis_request_failure(
+    exception_class:,
+    exception_message:,
+    response_body_present:,
+    response_body:,
+    response_status_code:,
+    **extra
+  )
+    track_event(
+      'Request ArcGIS Address Candidates: request failed',
+      exception_class: exception_class,
+      exception_message: exception_message,
+      response_body_present: response_body_present,
+      response_body: response_body,
+      response_status_code: response_status_code,
+      **extra,
+    )
+  end
+
   # Tracks if request to get USPS in-person proofing locations fails
   # @param [String] exception_class
   # @param [String] exception_message
@@ -3100,6 +3125,7 @@ module AnalyticsEvents
   # @param [String] exception_class
   # @param [String] exception_message
   # @param [String] enrollment_code
+  # @param [Float] minutes_since_established
   # @param [Float] minutes_since_last_status_check
   # @param [Float] minutes_since_last_status_update
   # @param [Float] minutes_to_completion
@@ -3120,6 +3146,7 @@ module AnalyticsEvents
   def idv_in_person_usps_proofing_results_job_exception(
     reason:,
     enrollment_id:,
+    minutes_since_established:,
     exception_class: nil,
     exception_message: nil,
     enrollment_code: nil,
@@ -3149,6 +3176,7 @@ module AnalyticsEvents
       exception_class: exception_class,
       exception_message: exception_message,
       enrollment_code: enrollment_code,
+      minutes_since_established: minutes_since_established,
       minutes_since_last_status_check: minutes_since_last_status_check,
       minutes_since_last_status_update: minutes_since_last_status_update,
       minutes_to_completion: minutes_to_completion,
@@ -3183,7 +3211,7 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks exceptions that are raised when initiating deadline email in GetUspsproofingResultsJob
+  # Tracks exceptions that are raised when initiating deadline email in GetUspsProofingResultsJob
   # @param [String] enrollment_id
   # @param [String] exception_class
   # @param [String] exception_message
@@ -3224,12 +3252,14 @@ module AnalyticsEvents
   # Tracks individual enrollments that are updated during GetUspsProofingResultsJob
   # @param [String] enrollment_code
   # @param [String] enrollment_id
+  # @param [Float] minutes_since_established
   # @param [Boolean] fraud_suspected
   # @param [Boolean] passed did this enrollment pass or fail?
   # @param [String] reason why did this enrollment pass or fail?
   def idv_in_person_usps_proofing_results_job_enrollment_updated(
     enrollment_code:,
     enrollment_id:,
+    minutes_since_established:,
     fraud_suspected:,
     passed:,
     reason:,
@@ -3239,6 +3269,7 @@ module AnalyticsEvents
       'GetUspsProofingResultsJob: Enrollment status updated',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
+      minutes_since_established: minutes_since_established,
       fraud_suspected: fraud_suspected,
       passed: passed,
       reason: reason,
@@ -3271,6 +3302,53 @@ module AnalyticsEvents
       'InPerson::EmailReminderJob: Reminder email initiated',
       email_type: email_type,
       enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Tracks incomplete enrollments checked via the USPS API
+  # @param [String] enrollment_code
+  # @param [String] enrollment_id
+  # @param [Float] minutes_since_established
+  # @param [String] response_message
+  def idv_in_person_usps_proofing_results_job_enrollment_incomplete(
+    enrollment_code:,
+    enrollment_id:,
+    minutes_since_established:,
+    response_message:,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Enrollment incomplete',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      minutes_since_established: minutes_since_established,
+      response_message: response_message,
+      **extra,
+    )
+  end
+
+  # Tracks unexpected responses from the USPS API
+  # @param [String] enrollment_code
+  # @param [String] enrollment_id
+  # @param [Float] minutes_since_established
+  # @param [String] response_message
+  # @param [String] reason why was this error unexpected?
+  def idv_in_person_usps_proofing_results_job_unexpected_response(
+    enrollment_code:,
+    enrollment_id:,
+    minutes_since_established:,
+    response_message:,
+    reason:,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Unexpected response received',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      minutes_since_established: minutes_since_established,
+      response_message: response_message,
+      reason: reason,
       **extra,
     )
   end

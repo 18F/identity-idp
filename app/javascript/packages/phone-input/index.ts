@@ -1,27 +1,27 @@
 import { isValidNumber, isValidNumberForRegion } from 'libphonenumber-js';
 import 'intl-tel-input/build/js/utils.js';
 import intlTelInput from 'intl-tel-input';
+import type { CountryCode } from 'libphonenumber-js';
+import type { Plugin as IntlTelInputPlugin, IntlTelInputGlobals, Options } from 'intl-tel-input';
 import { replaceVariables } from '@18f/identity-i18n';
 
-/** @typedef {import('libphonenumber-js').CountryCode} CountryCode */
+interface PhoneInputStrings {
+  country_code_label: string;
 
-/**
- * @typedef PhoneInputStrings
- *
- * @prop {string=} country_code_label
- * @prop {string=} invalid_phone
- * @prop {string=} unsupported_country
- */
+  invalid_phone: string;
 
-/**
- * @typedef IntlTelInputUtilsGlobal
- *
- * @prop {(iso2: string, nationalMode: boolean, numberType: string) => string} getExampleNumber
- * @prop {Record<string, string>} numberType
- */
+  unsupported_country: string;
+}
 
-const { intlTelInputUtils } =
-  /** @type {window & { intlTelInputUtils: IntlTelInputUtilsGlobal }} */ (window);
+interface IntlTelInput extends IntlTelInputPlugin {
+  flagsContainer: HTMLElement;
+
+  selectedFlag: HTMLElement;
+
+  options: Options;
+}
+
+const { intlTelInputUtils } = window as typeof window & IntlTelInputGlobals;
 
 const isPhoneValid = (phone, countryCode) => {
   let phoneValid = isValidNumber(phone, countryCode);
@@ -34,21 +34,26 @@ const isPhoneValid = (phone, countryCode) => {
 const updateInternationalCodeInPhone = (phone, newCode) =>
   phone.replace(new RegExp(`^\\+?(\\d+\\s+|${newCode})?`), `+${newCode} `);
 
-export class PhoneInput extends HTMLElement {
-  /** @type {PhoneInputStrings} */
-  #strings;
+export class PhoneInputElement extends HTMLElement {
+  #strings: PhoneInputStrings;
 
-  /** @type {string[]} */
-  deliveryMethods = [];
+  deliveryMethods: string[] = [];
 
-  /** @type {Object.<string,*>} */
-  countryCodePairs = {};
+  countryCodePairs: Record<string, any> = {};
+
+  textInput: HTMLInputElement;
+
+  codeInput: HTMLSelectElement;
+
+  codeWrapper: Element | null;
+
+  exampleText: Element | null;
+
+  iti: IntlTelInput;
 
   connectedCallback() {
-    /** @type {HTMLInputElement?} */
-    this.textInput = this.querySelector('.phone-input__number');
-    /** @type {HTMLSelectElement?} */
-    this.codeInput = this.querySelector('.phone-input__international-code');
+    const textInput = this.querySelector<HTMLInputElement>('.phone-input__number');
+    const codeInput = this.querySelector<HTMLSelectElement>('.phone-input__international-code');
     this.codeWrapper = this.querySelector('.phone-input__international-code-wrapper');
     this.exampleText = this.querySelector('.phone-input__example');
 
@@ -57,10 +62,12 @@ export class PhoneInput extends HTMLElement {
       this.countryCodePairs = JSON.parse(this.dataset.translatedCountryCodeNames || '');
     } catch {}
 
-    if (!this.textInput || !this.codeInput) {
+    if (!textInput || !codeInput) {
       return;
     }
 
+    this.textInput = textInput;
+    this.codeInput = codeInput;
     this.iti = this.initializeIntlTelInput();
 
     this.textInput.addEventListener('countrychange', () => this.syncCountryChangeToCodeInput());
@@ -79,10 +86,7 @@ export class PhoneInput extends HTMLElement {
     return codeInput && codeInput.options[codeInput.selectedIndex];
   }
 
-  /**
-   * @return {string[]|undefined}
-   */
-  get supportedCountryCodes() {
+  get supportedCountryCodes(): string[] | undefined {
     const { codeInput } = this;
 
     if (codeInput && codeInput.dataset.countries) {
@@ -94,16 +98,9 @@ export class PhoneInput extends HTMLElement {
     return undefined;
   }
 
-  /**
-   * @return {PhoneInputStrings}
-   */
-  get strings() {
+  get strings(): PhoneInputStrings {
     if (!this.#strings) {
-      try {
-        this.#strings = JSON.parse(this.querySelector('.phone-input__strings')?.textContent || '');
-      } catch {
-        this.#strings = {};
-      }
+      this.#strings = JSON.parse(this.querySelector('.phone-input__strings')?.textContent || '');
     }
 
     return this.#strings;
@@ -113,7 +110,6 @@ export class PhoneInput extends HTMLElement {
    * Mirrors country change to the hidden select field, which holds the value for form submission.
    */
   syncCountryChangeToCodeInput() {
-    /** @type {{iso2?:string}} */
     const country = this.iti.getSelectedCountryData();
     if (country.iso2 && this.codeInput) {
       this.codeInput.value = country.iso2.toUpperCase();
@@ -131,16 +127,15 @@ export class PhoneInput extends HTMLElement {
       onlyCountries: supportedCountryCodes,
       autoPlaceholder: 'off',
       allowDropdown,
-    });
+    }) as IntlTelInput;
 
     if (allowDropdown) {
       // Remove duplicate items in the country list
-      /** @type {NodeListOf<HTMLLIElement>} */
-      const preferred = iti.countryList.querySelectorAll('.iti__preferred');
+      const preferred: NodeListOf<HTMLLIElement> =
+        iti.countryList.querySelectorAll('.iti__preferred');
       preferred.forEach((listItem) => {
         const { countryCode } = listItem.dataset;
-        /** @type {NodeListOf<HTMLLIElement>} */
-        const duplicates = iti.countryList.querySelectorAll(
+        const duplicates: NodeListOf<HTMLLIElement> = iti.countryList.querySelectorAll(
           `.iti__standard[data-country-code="${countryCode}"]`,
         );
         duplicates.forEach((duplicateListItem) => {
@@ -165,7 +160,7 @@ export class PhoneInput extends HTMLElement {
     }
 
     const phoneNumber = textInput.value;
-    const countryCode = /** @type {CountryCode} */ (codeInput.value);
+    const countryCode = codeInput.value as CountryCode;
 
     textInput.setCustomValidity('');
     if (!phoneNumber) {
@@ -209,11 +204,8 @@ export class PhoneInput extends HTMLElement {
 
   /**
    * Returns true if the delivery option is valid for the selected option, or false otherwise.
-   *
-   * @param {string} delivery
-   * @return {boolean}
    */
-  isDeliveryOptionSupported(delivery) {
+  isDeliveryOptionSupported(delivery: string): boolean {
     const { selectedOption } = this;
 
     return !!selectedOption && selectedOption.getAttribute(`data-supports-${delivery}`) !== 'false';
@@ -223,20 +215,24 @@ export class PhoneInput extends HTMLElement {
    * Returns true if the currently selected country can receive a supported delivery options, or
    * false otherwise.
    *
-   * @return {boolean} Whether selected country is supported.
+   * @return Whether selected country is supported.
    */
-  isSupportedCountry() {
+  isSupportedCountry(): boolean {
     return this.deliveryMethods.some((delivery) => this.isDeliveryOptionSupported(delivery));
   }
 
   setExampleNumber() {
     const { exampleText, iti } = this;
-    const { iso2 = 'us' } = iti.selectedCountryData;
+    const { iso2 = 'us' } = iti.getSelectedCountryData();
 
     if (exampleText) {
       const { nationalMode } = iti.options;
-      const numberType = intlTelInputUtils.numberType[iti.options.placeholderNumberType];
-      exampleText.textContent = intlTelInputUtils.getExampleNumber(iso2, nationalMode, numberType);
+      const numberType = intlTelInputUtils.numberType[iti.options.placeholderNumberType!];
+      exampleText.textContent = intlTelInputUtils.getExampleNumber(iso2, nationalMode!, numberType);
     }
   }
+}
+
+if (!customElements.get('lg-phone-input')) {
+  customElements.define('lg-phone-input', PhoneInputElement);
 }
