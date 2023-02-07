@@ -122,7 +122,7 @@ module Identity
           ) do
             ServiceProvider.pluck(:redirect_uris).flatten.compact.map do |uri|
               protocol, domain_path = uri.split('//', 2)
-              domain, _path = domain_path&.split('/')
+              domain, _path = domain_path&.split('/', 2)
               "#{protocol}//#{domain}"
             end.uniq
           end
