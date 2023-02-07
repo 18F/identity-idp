@@ -21,20 +21,27 @@ describe Proofing::LexisNexis::Ddp::Proofer do
       uuid_prefix: 'ABCD',
     }
   end
+
   let(:verification_request) do
     Proofing::LexisNexis::Ddp::VerificationRequest.new(
       applicant: applicant,
       config: LexisNexisFixtures.example_config,
     )
   end
+
   let(:issuer) { 'fake-issuer' }
   let(:friendly_name) { 'fake-name' }
   let(:app_id) { 'fake-app-id' }
 
+  # it_behaves_like 'a lexisnexis proofer'
+
   describe '#send' do
     context 'when the request times out' do
       it 'raises a timeout error' do
-        stub_request(:post, verification_request.url).to_timeout
+        stub_request(
+          :post,
+          verification_request.url,
+        ).to_timeout
 
         expect { verification_request.send }.to raise_error(
           Proofing::TimeoutError,
@@ -45,9 +52,17 @@ describe Proofing::LexisNexis::Ddp::Proofer do
 
     context 'when the request is made' do
       it 'it looks like the right request' do
-        request = stub_request(:post, verification_request.url).
-          with(body: verification_request.body, headers: verification_request.headers).
-          to_return(body: LexisNexisFixtures.ddp_success_response_json, status: 200)
+        request =
+          stub_request(
+            :post,
+            verification_request.url,
+          ).with(
+            body: verification_request.body,
+            headers: verification_request.headers,
+          ).to_return(
+            body: LexisNexisFixtures.ddp_success_response_json,
+            status: 200,
+          )
 
         verification_request.send
 
@@ -56,27 +71,32 @@ describe Proofing::LexisNexis::Ddp::Proofer do
     end
   end
 
-  subject(:instance) do
-    Proofing::LexisNexis::Ddp::Proofer.new(LexisNexisFixtures.example_config.to_h)
+  subject do
+    described_class.new(LexisNexisFixtures.example_config.to_h)
   end
 
   describe '#proof' do
-    subject(:result) { instance.proof(applicant) }
-
     before do
       ServiceProvider.create(
         issuer: issuer,
         friendly_name: friendly_name,
         app_id: app_id,
       )
-      stub_request(:post, verification_request.url).
-        to_return(body: response_body, status: 200)
+      stub_request(
+        :post,
+        verification_request.url,
+      ).to_return(
+        body: response_body,
+        status: 200,
+      )
     end
 
     context 'when the response is a full match' do
       let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
 
       it 'is a successful result' do
+        result = subject.proof(applicant)
+
         expect(result.success?).to eq(true)
         expect(result.errors).to be_empty
       end
@@ -90,7 +110,12 @@ describe Proofing::LexisNexis::Ddp::Proofer do
 
         expect(NewRelic::Agent).to receive(:notice_error).with(error)
 
-        stub_request(:post, verification_request.url).to_raise(error)
+        stub_request(
+          :post,
+          verification_request.url,
+        ).to_raise(error)
+
+        result = subject.proof(applicant)
 
         expect(result.success?).to eq(false)
         expect(result.errors).to be_empty

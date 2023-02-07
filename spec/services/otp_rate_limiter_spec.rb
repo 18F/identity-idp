@@ -10,9 +10,6 @@ RSpec.describe OtpRateLimiter do
     OtpRateLimiter.new(phone: phone, user: current_user, phone_confirmed: true)
   end
   let(:phone_fingerprint) { Pii::Fingerprinter.fingerprint(phone) }
-  let(:rate_limited_phone) do
-    OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint, phone_confirmed: false)
-  end
 
   describe '#exceeded_otp_send_limit?' do
     it 'is false by default' do
@@ -65,17 +62,11 @@ RSpec.describe OtpRateLimiter do
       otp_rate_limiter.increment
 
       expect { otp_rate_limiter.increment }.
-        to change { rate_limited_phone.reload.otp_send_count }.from(1).to(2)
+        to change { otp_rate_limiter.throttle.attempts }.from(1).to(2)
     end
   end
 
   describe '#lock_out_user' do
-    before do
-      otp_rate_limiter.increment
-      rate_limited_phone.otp_last_sent_at = 5.minutes.ago
-      rate_limited_phone.otp_send_count = 0
-    end
-
     it 'sets the second_factor_locked_at' do
       expect(current_user.second_factor_locked_at).to be_nil
 

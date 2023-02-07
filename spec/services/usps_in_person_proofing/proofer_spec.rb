@@ -106,20 +106,36 @@ RSpec.describe UspsInPersonProofing::Proofer do
   end
 
   describe '#request_facilities' do
-    it 'returns facilities' do
+    before do
       stub_request_token
-      stub_request_facilities
-      location = double(
+    end
+    let(:location) do
+      double(
         'Location',
         address: Faker::Address.street_address,
         city: Faker::Address.city,
         state: Faker::Address.state_abbr,
         zip_code: Faker::Address.zip_code,
       )
+    end
 
+    it 'returns facilities' do
+      stub_request_facilities
       facilities = subject.request_facilities(location)
 
       check_facility(facilities[0])
+    end
+
+    it 'does not return duplicates' do
+      stub_request_facilities_with_duplicates
+      facilities = subject.request_facilities(location)
+
+      expect(facilities.length).to eq(9)
+      expect(
+        facilities.count do |post_office|
+          post_office.address == '3775 INDUSTRIAL BLVD'
+        end,
+      ).to eq(1)
     end
   end
 

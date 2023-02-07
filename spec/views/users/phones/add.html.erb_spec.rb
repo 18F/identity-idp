@@ -7,7 +7,7 @@ describe 'users/phones/add.html.erb' do
 
   before do
     user = build_stubbed(:user)
-    @new_phone_form = NewPhoneForm.new(user)
+    @new_phone_form = NewPhoneForm.new(user:)
   end
 
   context 'phone vendor outage' do

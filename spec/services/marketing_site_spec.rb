@@ -128,6 +128,7 @@ RSpec.describe MarketingSite do
   describe '.help_center_article_url' do
     let(:category) {}
     let(:article) {}
+    let(:anchor) {}
     let(:result) { MarketingSite.help_center_article_url(category: category, article: article) }
 
     context 'with invalid article' do
@@ -146,6 +147,21 @@ RSpec.describe MarketingSite do
       it 'returns article URL' do
         expect(result).to eq(
           'https://www.login.gov/help/verify-your-identity/accepted-state-issued-identification/',
+        )
+      end
+    end
+
+    context 'with anchor' do
+      let(:category) { 'verify-your-identity' }
+      let(:article) { 'accepted-state-issued-identification' }
+      let(:anchor) { 'test-anchor-url' }
+      let(:result) do
+        MarketingSite.help_center_article_url(category: category, article: article, anchor: anchor)
+      end
+
+      it 'returns article URL' do
+        expect(result).to eq(
+          'https://www.login.gov/help/verify-your-identity/accepted-state-issued-identification/#test-anchor-url',
         )
       end
     end

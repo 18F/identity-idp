@@ -13,9 +13,7 @@ module Idv
       protected
 
       def addresses(search_term)
-        suggestion = geocoder.suggest(search_term).first
-        return { json: [], status: :ok } unless suggestion
-        addresses = geocoder.find_address_candidates(suggestion.magic_key).slice(0, 1)
+        addresses = geocoder.find_address_candidates(SingleLine: search_term).slice(0, 1)
         { json: addresses, status: :ok }
       rescue Faraday::ConnectionFailed => err
         analytics.idv_arcgis_request_failure(

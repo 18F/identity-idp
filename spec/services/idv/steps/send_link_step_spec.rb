@@ -68,6 +68,16 @@ describe Idv::Steps::SendLinkStep do
       and_return(irs_attempts_api_tracker)
   end
 
+  describe '#extra_view_variables' do
+    it 'includes form' do
+      expect(step.extra_view_variables).to include(
+        {
+          idv_phone_form: be_an_instance_of(Idv::PhoneForm),
+        },
+      )
+    end
+  end
+
   describe 'the return value from #call' do
     let(:response) { step.call }
 

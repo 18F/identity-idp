@@ -7,7 +7,7 @@ class RedisRateLimiter
   # @param [String] key the item to throttle on
   # @param [Integer] max_requests the max number of requests allowed per interval
   # @param [Integer] interval number of seconds
-  def initialize(key:, max_requests:, interval:, redis_pool: REDIS_POOL)
+  def initialize(key:, max_requests:, interval:, redis_pool: REDIS_THROTTLE_POOL)
     @key = key
     @max_requests = max_requests
     @interval = interval.to_i

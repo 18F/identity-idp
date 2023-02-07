@@ -4,6 +4,8 @@ module Reports
 
     attr_reader :report_date
 
+    include QueryHelpers
+
     def perform(report_date)
       @report_date = report_date
 
@@ -29,13 +31,14 @@ module Reports
     end
 
     def report_body
-      results = (total_users.to_a + fully_registered_users.to_a).
+      results = [*total_users, *fully_registered_users, *deleted_users].
         group_by { |row| row['date'] }.
         map do |date, rows|
           {
             date: date,
             total_users: rows.map { |r| r['total_users'] }.compact.first || 0,
             fully_registered_users: rows.map { |r| r['fully_registered_users'] }.compact.first || 0,
+            deleted_users: rows.map { |r| r['deleted_users'] }.compact.first || 0,
           }
         end.sort_by { |elem| elem[:date] }
 
@@ -45,20 +48,32 @@ module Reports
       }
     end
 
+    # Queries for all the users that were ever created by date
+    # (includes users who were later deleted)
     def total_users
       params = {
         finish: finish,
-      }.transform_values { |v| ActiveRecord::Base.connection.quote(v) }
+      }.transform_values { |v| quote(v) }
 
       sql = format(<<-SQL, params)
         SELECT
           COUNT(*) AS total_users
-        , created_at::date AS date
-        FROM users
-        WHERE
-          created_at <= %{finish}
-        GROUP BY
-          created_at::date
+        , user_and_deleted_users.date AS date
+        FROM
+        (
+          SELECT created_at::date AS date
+          FROM users
+          WHERE users.created_at <= %{finish}
+
+          UNION ALL
+
+          SELECT deleted_users.user_created_at::date AS date
+          FROM deleted_users
+          WHERE
+              deleted_users.deleted_at <= %{finish}
+          AND deleted_users.user_created_at <= %{finish}
+        ) user_and_deleted_users
+        GROUP BY user_and_deleted_users.date
       SQL
 
       transaction_with_timeout do
@@ -69,7 +84,7 @@ module Reports
     def fully_registered_users
       params = {
         finish: finish,
-      }.transform_values { |v| ActiveRecord::Base.connection.quote(v) }
+      }.transform_values { |v| quote(v) }
 
       sql = format(<<-SQL, params)
         SELECT
@@ -80,6 +95,29 @@ module Reports
           registered_at <= %{finish}
         GROUP BY
           registered_at::date
+      SQL
+
+      transaction_with_timeout do
+        ActiveRecord::Base.connection.execute(sql)
+      end
+    end
+
+    # Queries for users who where deleted, groups by the date they were deleted at
+    def deleted_users
+      params = {
+        finish: finish,
+      }.transform_values { |v| quote(v) }
+
+      sql = format(<<-SQL, params)
+        SELECT
+          COUNT(*) AS deleted_users
+        , deleted_at::date AS date
+        FROM deleted_users
+        WHERE
+            deleted_at <= %{finish}
+        AND deleted_users.user_created_at <= %{finish}
+        GROUP BY
+          deleted_at::date
       SQL
 
       transaction_with_timeout do
