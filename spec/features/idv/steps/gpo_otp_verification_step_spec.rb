@@ -67,7 +67,6 @@ feature 'idv gpo otp verification step', :js do
     end
 
     context 'No ThreatMetrix result on proofing component' do
-      let(:threatmetrix_review_status) { 'pass' }
       let(:threatmetrix_review_status) { nil }
       it_behaves_like 'gpo otp verification'
     end
