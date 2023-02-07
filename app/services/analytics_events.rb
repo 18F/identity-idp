@@ -638,16 +638,14 @@ module AnalyticsEvents
   # @param [String] errors
   # @param [String] exception_class
   # @param [String] exception_message
-  # @param [String] reason
   # @param [Integer] response_status_code
   # User submitted a search on the location search page and response received
-  def idv_in_person_location_searched(
+  def idv_in_person_locations_searched(
     success:,
-    result_total: nil,
+    result_total: 0,
     errors: nil,
     exception_class: nil,
     exception_message: nil,
-    reason: nil,
     response_status_code: nil,
     **extra
   )
@@ -658,7 +656,6 @@ module AnalyticsEvents
       errors: errors,
       exception_class: exception_class,
       exception_message: exception_message,
-      reason: reason,
       response_status_code: response_status_code,
       **extra,
     )

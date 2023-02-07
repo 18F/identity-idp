@@ -15,43 +15,37 @@ module Idv
       def addresses(search_term)
         addresses = geocoder.find_address_candidates(SingleLine: search_term).slice(0, 1)
         if addresses.empty?
-          analytics.idv_in_person_location_searched(
+          analytics.idv_in_person_locations_searched(
             success: false, errors: 'No address candidates found by arcgis',
           )
-          addresses = []
         end
         { json: addresses, status: :ok }
-      rescue Faraday::ConnectionFailed => err
-        analytics.idv_arcgis_request_failure(
-          api_status_code: 422,
-          exception_class: err.class,
-          exception_message: err.message,
-          response_body_present: err.respond_to?(:response_body) && err.response_body.present?,
-          response_body: err.respond_to?(:response_body) && err.response_body,
-          response_status_code: err.respond_to?(:response_status) && err.response_status,
-        )
-        { json: [], status: :unprocessable_entity }
-      rescue Faraday::TimeoutError => err
-        analytics.idv_arcgis_request_failure(
-          api_status_code: 422,
-          exception_class: err.class,
-          exception_message: err.message,
-          response_body_present: err.respond_to?(:response_body) && err.response_body.present?,
-          response_body: err.respond_to?(:response_body) && err.response_body,
-          response_status_code: err.respond_to?(:response_status) && err.response_status,
-        )
-        { json: [], status: :unprocessable_entity }
+
       rescue StandardError => err
-        analytics.idv_in_person_location_searched(
+        apiError = err.instance_of?(Faraday::ClientError) ? err.response['error'] : nil
+        # log search event for all errors
+        analytics.idv_in_person_locations_searched(
           success: false,
-          errors: 'Arcgis no addresses',
-          api_status_code: 500,
+          errors: apiError ? apiError['details'] : 'Arcgis error performing operation',
+          api_status_code: apiError ? apiError['code'] : 500,
           exception_class: err.class,
-          exception_message: err.message,
-          reason: 'Arcgis error performing operation',
+          exception_message: apiError ? apiError['message'] : err.message,
           response_status_code: err.respond_to?(:response_status) && err.response_status,
         )
-        { json: [], status: :internal_server_error }
+        api_status =  apiError ? :bad_request : :internal_server_error
+        # log the request failure
+        if err.instance_of?(Faraday::ConnectionFailed) || err.instance_of?(Faraday::TimeoutError)
+          api_status = :unprocessable_entity
+          analytics.idv_arcgis_request_failure(
+            api_status_code: Rack::Utils::SYMBOL_TO_STATUS_CODE[api_status],
+            exception_class: err.class,
+            exception_message: err.message,
+            response_body_present: err.respond_to?(:response_body) && err.response_body.present?,
+            response_body: err.respond_to?(:response_body) && err.response_body,
+            response_status_code: err.respond_to?(:response_status) && err.response_status,
+          )
+        end
+        { json: [], status: api_status }
       end
 
       def geocoder
