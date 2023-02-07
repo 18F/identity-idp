@@ -55,10 +55,43 @@ describe Idv::InPerson::AddressSearchController do
             'IdV: in person proofing location search submitted',
             success: false,
             errors: 'No address candidates found by arcgis',
-            result_total: nil,
+            result_total: 0,
             exception_class: nil,
             exception_message: nil,
-            reason: nil,
+            response_status_code: nil,
+          )
+        end
+      end
+
+      context 'with error code' do
+        let (:response_body) do
+          { "error"=> {
+              "code"=> 400,
+              "details"=>['request is too many characters'],
+              "message"=>'Unable to complete operation.',
+            }
+          }
+        end
+        before do
+          exception = Faraday::ClientError.new(
+            RuntimeError.new(""),
+            response_body,
+          )
+          allow(geocoder).to receive(:find_address_candidates).and_raise(exception)
+        end
+
+        it 'logs analytics event' do
+          response = get :index
+          addresses = JSON.parse(response.body)
+          expect(addresses.length).to eq 0
+          expect(@analytics).to have_logged_event(
+            'IdV: in person proofing location search submitted',
+            api_status_code: 400,
+            success: false,
+            errors: ["request is too many characters"],
+            result_total: 0,
+            exception_class: Faraday::ClientError,
+            exception_message: "Unable to complete operation.",
             response_status_code: nil,
           )
         end
@@ -67,7 +100,7 @@ describe Idv::InPerson::AddressSearchController do
 
     context 'with unsuccessful fetch' do
       before do
-        exception = Faraday::ConnectionFailed.new('error')
+        exception = Faraday::ConnectionFailed.new('connection failed')
         allow(geocoder).to receive(:find_address_candidates).and_raise(exception)
       end
 
@@ -76,6 +109,20 @@ describe Idv::InPerson::AddressSearchController do
         expect(response.status).to eq(422)
         addresses = JSON.parse(response.body)
         expect(addresses.length).to eq 0
+      end
+
+      it 'logs search analytics' do
+        response = get :index
+        expect(@analytics).to have_logged_event(
+          'IdV: in person proofing location search submitted',
+          api_status_code: 422,
+          success: false,
+          errors: 'Arcgis error performing operation',
+          result_total: 0,
+          exception_class: Faraday::ConnectionFailed,
+          exception_message: "connection failed",
+          response_status_code: nil,
+        )
       end
     end
 
@@ -91,6 +138,20 @@ describe Idv::InPerson::AddressSearchController do
         addresses = JSON.parse(response.body)
         expect(addresses.length).to eq 0
       end
+
+      it 'logs search analytics' do
+        response = get :index
+        expect(@analytics).to have_logged_event(
+          'IdV: in person proofing location search submitted',
+          api_status_code: 422,
+          success: false,
+          errors: 'Arcgis error performing operation',
+          result_total: 0,
+          exception_class: Faraday::TimeoutError,
+          exception_message: "timeout",
+          response_status_code: nil,
+        )
+      end
     end
 
     context 'with an error' do
@@ -104,6 +165,20 @@ describe Idv::InPerson::AddressSearchController do
         expect(response.status).to eq(500)
         addresses = JSON.parse(response.body)
         expect(addresses.length).to eq 0
+      end
+
+      it 'logs search analytics' do
+        response = get :index
+        expect(@analytics).to have_logged_event(
+          'IdV: in person proofing location search submitted',
+          api_status_code: 500,
+          success: false,
+          errors: 'Arcgis error performing operation',
+          result_total: 0,
+          exception_class: StandardError,
+          exception_message: "error",
+          response_status_code: false,
+        )
       end
     end
 

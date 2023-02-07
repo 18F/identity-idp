@@ -12,6 +12,16 @@ module Idv
 
       protected
 
+      def set_api_status_code(err)
+        if err.instance_of?(Faraday::ClientError)
+          return err.response['error']['code']
+        elsif err.instance_of?(Faraday::ConnectionFailed) || err.instance_of?(Faraday::TimeoutError)
+          return Rack::Utils::SYMBOL_TO_STATUS_CODE[:unprocessable_entity]
+        else
+          return 500
+        end
+      end
+
       def addresses(search_term)
         addresses = geocoder.find_address_candidates(SingleLine: search_term).slice(0, 1)
         if addresses.empty?
@@ -27,7 +37,7 @@ module Idv
         analytics.idv_in_person_locations_searched(
           success: false,
           errors: apiError ? apiError['details'] : 'Arcgis error performing operation',
-          api_status_code: apiError ? apiError['code'] : 500,
+          api_status_code: set_api_status_code(err),
           exception_class: err.class,
           exception_message: apiError ? apiError['message'] : err.message,
           response_status_code: err.respond_to?(:response_status) && err.response_status,
@@ -37,7 +47,7 @@ module Idv
         if err.instance_of?(Faraday::ConnectionFailed) || err.instance_of?(Faraday::TimeoutError)
           api_status = :unprocessable_entity
           analytics.idv_arcgis_request_failure(
-            api_status_code: Rack::Utils::SYMBOL_TO_STATUS_CODE[api_status],
+            api_status_code: set_api_status_code(err),
             exception_class: err.class,
             exception_message: err.message,
             response_body_present: err.respond_to?(:response_body) && err.response_body.present?,
