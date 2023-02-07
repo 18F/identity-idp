@@ -23,7 +23,31 @@ module UspsInPersonProofing
           req.options.context = { service_name: 'usps_facilities' }
         end.body,
       )
+      upsert_facilities(facilities)
       dedupe_facilities(facilities)
+    rescue
+      # hit cache?
+      dedupe_facilities(
+        parse_facilities(
+          query_facilities_cache(
+            location.longitude,
+            location.latitude,
+          ),
+        ),
+      )
+    end
+
+    def query_facilities_cache(longitude, latitude)
+      {
+        'postOffices' => UspsIppLocationsCacheTable.
+          query_by_point(longitude, latitude).
+          map(&:attributes),
+      }
+    end
+
+    def upsert_facilities(facilities)
+      # SomeFancyJob should process post offices, geocode them, insert
+      # SomeFancyJob.run(facilities['postOffices'])
     end
 
     # Temporary function to return a static set of facilities

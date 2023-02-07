@@ -33,6 +33,8 @@ export interface LocationQuery {
   state: string;
   zipCode: string;
   address: string;
+  latitude: number;
+  longitude: number;
 }
 
 interface Location {
@@ -41,6 +43,10 @@ interface Location {
   state: string;
   zip_code: string;
   address: string;
+  location: {
+    latitude: number;
+    longitude: number;
+  };
 }
 
 const formatLocations = (postOffices: PostOffice[]): FormattedLocation[] =>
@@ -128,6 +134,8 @@ function useUspsLocations() {
         state: bestMatchedAddress.state,
         zipCode: bestMatchedAddress.zip_code,
         address: bestMatchedAddress.address,
+        latitude: bestMatchedAddress?.location.latitude,
+        longitude: bestMatchedAddress?.location.longitude,
       });
     } else if (addressCandidates) {
       validatedFieldRef?.current?.setCustomValidity(

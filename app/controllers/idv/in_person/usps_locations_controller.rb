@@ -20,7 +20,9 @@ module Idv
             candidate = UspsInPersonProofing::Applicant.new(
               address: search_params['street_address'],
               city: search_params['city'], state: search_params['state'],
-              zip_code: search_params['zip_code']
+              zip_code: search_params['zip_code'],
+              longitude: search_params['longitude'],
+              latitude: search_params['latitude']
             )
             response = proofer.request_facilities(candidate)
           else
@@ -84,6 +86,8 @@ module Idv
           :city,
           :state,
           :zip_code,
+          :longitude,
+          :latitude,
         )
       end
 
