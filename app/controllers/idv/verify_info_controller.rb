@@ -114,6 +114,7 @@ module Idv
     end
 
     def delete_pii
+      flow_session.delete(:pii_from_doc)
       flow_session.delete(:pii_from_user)
     end
 
