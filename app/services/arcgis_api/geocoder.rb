@@ -96,6 +96,35 @@ module ArcgisApi
       )
     end
 
+    def geocode_addresses(original_addresses, param_map:)
+      body = {
+        records: original_addresses.map.with_index do |address, index|
+          {
+            attributes: {
+              OBJECTID: index, # Used as the ResultID
+              **address.transform_keys(param_map.invert).slice(*KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS),
+            },
+          }
+        end,
+      }
+
+      geocoded_addresses = faraday.post(
+        'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/geocodeAddresses',
+        # Unfortunately form encoding encodes this line and ArcGIS Online doesn't accept encoded
+        "addresses=#{body.to_json}",
+        dynamic_headers,
+      ) do |req|
+        req.params = COMMON_DEFAULT_PARAMETERS
+        req.options.context = { service_name: 'arcgis_geocoder_batch_geocode' }
+      end.body
+
+      return geocoded_addresses unless block_given?
+
+      geocoded_addresses['locations'].map do |geocoded_address|
+        yield(geocoded_address, original_addresses[geocoded_address['attributes']['ResultID']])
+      end
+    end
+
     # Makes a request to retrieve a new token
     # it expires after 1 hour
     # @return [String] Auth token
