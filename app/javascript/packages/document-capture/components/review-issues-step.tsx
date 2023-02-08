@@ -159,7 +159,7 @@ function ReviewIssuesStep({
               showAlternativeProofingOptions={!isFailedResult}
               heading={t('components.troubleshooting_options.ipp_heading')}
               altInPersonCta={t('in_person_proofing.headings.cta_variant')}
-              altInPersonPrompt={t('in_person_proofing.body.cta.prompt_detail_a')}
+              altInPersonPrompt={t('in_person_proofing.body.cta.prompt_detail')}
               altInPersonCtaButtonText={t('in_person_proofing.body.cta.button_variant')}
             />
           }
