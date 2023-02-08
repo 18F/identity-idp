@@ -645,11 +645,12 @@ module AnalyticsEvents
   # @param [String] selected_location Selected in-person location
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user submitted the in person proofing location step
-  def idv_in_person_location_submitted(selected_location:, flow_path:, **extra)
+  def idv_in_person_location_submitted(selected_location:, in_person_cta_variant:, flow_path:, **extra)
     track_event(
       'IdV: in person proofing location submitted',
       selected_location: selected_location,
       flow_path: flow_path,
+      in_person_cta_variant: in_person_cta_variant,
       **extra,
     )
   end
@@ -708,9 +709,10 @@ module AnalyticsEvents
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user visited the "ready to verify" page for the in person proofing flow
-  def idv_in_person_ready_to_verify_visit(proofing_components: nil, **extra)
+  def idv_in_person_ready_to_verify_visit(in_person_cta_variant: nil, proofing_components: nil, **extra)
     track_event(
       'IdV: in person ready to verify visited',
+      in_person_cta_variant: in_person_cta_variant,
       proofing_components: proofing_components,
       **extra,
     )
