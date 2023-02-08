@@ -18,7 +18,7 @@ class IdentityCors
     allowed_origins
   end
 
-  def self.allowed_origins_api(source)
+  def self.allowed_redirect_uri?(source)
     return if source == "https://#{IdentityConfig.store.domain_name}"
 
     redirect_uris = Rails.cache.fetch(
