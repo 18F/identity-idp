@@ -23,23 +23,22 @@ module Idv
       form_response = form_submit
       unless form_response.success?
         error_message = form_response.first_error_message
-        redirect_to :show
+        redirect_to idv_ssn_url
       end
 
       flow_session[:pii_from_doc][:ssn] = params[:ssn]
 
-      @flow.irs_attempts_api_tracker.idv_ssn_submitted(
-        ssn: ssn,
+      irs_attempts_api_tracker.idv_ssn_submitted(
+        ssn: params[:ssn],
       )
 
-      idv_session.delete('applicant')
+      idv_session.applicant = nil
     end
 
     def extra_view_variables
       {
         updating_ssn: updating_ssn,
         success_alert_enabled: !updating_ssn,
-        error_message: error_message,
         **threatmetrix_view_variables,
       }
     end
@@ -67,11 +66,11 @@ module Idv
     end
 
     def increment_step_counts
-      current_flow_step_counts['ssn'] += 1
+      current_flow_step_counts['SsnStep'] += 1
     end
 
     def form_submit
-      Idv::SsnFormatForm.new(current_user).submit(permit(:ssn))
+      Idv::SsnFormatForm.new(current_user).submit(params.permit(:ssn))
     end
 
     def updating_ssn
