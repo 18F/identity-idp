@@ -18,16 +18,10 @@ module UspsInPersonProofing
         zipCode: location.zip_code,
       }.to_json
 
-      begin
-        response = faraday.post(url, body, dynamic_headers) do |req|
-          req.options.context = { service_name: 'usps_facilities' }
-        end.body
-      rescue Faraday::ForbiddenError
-        retrieve_token!
-        response = faraday.post(url, body, dynamic_headers) do |req|
-          req.options.context = { service_name: 'usps_facilities' }
-        end.body
-      end
+      response = faraday.post(url, body, dynamic_headers) do |req|
+        req.options.context = { service_name: 'usps_facilities' }
+      end.body
+
       facilities = parse_facilities(response)
       dedupe_facilities(facilities)
     end
@@ -62,15 +56,8 @@ module UspsInPersonProofing
         IPPAssuranceLevel: '1.5',
       }
 
-      begin
-        res = faraday.post(url, body, dynamic_headers) do |req|
-          req.options.context = { service_name: 'usps_enroll' }
-        end
-      rescue Faraday::ForbiddenError
-        retrieve_token!
-        res = faraday.post(url, body, dynamic_headers) do |req|
-          req.options.context = { service_name: 'usps_enroll' }
-        end
+      res = faraday.post(url, body, dynamic_headers) do |req|
+        req.options.context = { service_name: 'usps_enroll' }
       end
       Response::RequestEnrollResponse.new(res.body)
     end
@@ -91,15 +78,9 @@ module UspsInPersonProofing
         enrollmentCode: enrollment_code,
       }
 
-      begin
-        faraday.post(url, body, dynamic_headers) do |req|
-          req.options.context = { service_name: 'usps_proofing_results' }
-        end.body
-      rescue Faraday::TimeoutError
-        faraday.post(url, body, dynamic_headers) do |req|
-          req.options.context = { service_name: 'usps_proofing_results' }
-        end.body
-      end
+      faraday.post(url, body, dynamic_headers) do |req|
+        req.options.context = { service_name: 'usps_proofing_results' }
+      end.body
     end
 
     # Makes HTTP request to retrieve enrollment code
@@ -116,16 +97,9 @@ module UspsInPersonProofing
         uniqueID: unique_id,
       }
 
-      begin
-        faraday.post(url, body, dynamic_headers) do |req|
-          req.options.context = { service_name: 'usps_enrollment_code' }
-        end.body
-      rescue Faraday::ForbiddenError
-        retrieve_token!
-        faraday.post(url, body, dynamic_headers) do |req|
-          req.options.context = { service_name: 'usps_enrollment_code' }
-        end.body
-      end
+      faraday.post(url, body, dynamic_headers) do |req|
+        req.options.context = { service_name: 'usps_enrollment_code' }
+      end.body
     end
 
     # Makes a request to retrieve a new OAuth token, caches it, and returns it. Tokens have
