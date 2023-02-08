@@ -10,7 +10,7 @@ module TwoFactorAuthentication
     private
 
     def redirect_unless_otp_expired_feature_on
-      return if IdentityConfig.store.session.allow_otp_countdown_expired_redirect
+      return if IdentityConfig.store.allow_otp_countdown_expired_redirect
       redirect_to root_url
     end
 
