@@ -24,24 +24,6 @@ module UspsInPersonProofing
         end.body,
       )
       dedupe_facilities(facilities)
-    rescue
-      # hit cache?
-      dedupe_facilities(
-        parse_facilities(
-          query_facilities_cache(
-            location.longitude,
-            location.latitude,
-          ),
-        ),
-      )
-    end
-
-    def query_facilities_cache(longitude, latitude)
-      {
-        'postOffices' => UspsIppCachedLocations.
-          query_by_point(longitude, latitude).
-          map(&:usps_attributes),
-      }
     end
 
     # Temporary function to return a static set of facilities

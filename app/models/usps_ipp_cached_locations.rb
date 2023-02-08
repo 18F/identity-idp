@@ -1,4 +1,4 @@
-class UspsIppCachedLocations < SupportServiceApplicationRecord
+class UspsIppCachedLocations < PostgisDataApplicationRecord
   self.table_name = "usps_ipp_cached_locations"
 
   def self.query_by_point(longitude, latitude)

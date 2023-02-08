@@ -32,11 +32,11 @@ development:
     <<: *defaults
     database: identity_idp_worker_jobs_<%= Rails.env %>
     migrations_paths: db/worker_jobs_migrate
-  support_services:
+  postgis_data:
     <<: *defaults
     adapter: postgis
-    database: identity_idp_support_services_<%= Rails.env %>
-    migrations_paths: db/support_services_migrate
+    database: identity_idp_postgis_data_<%= Rails.env %>
+    migrations_paths: db/postgis_data_migrate
 
 test:
   primary: &test
@@ -54,11 +54,11 @@ test:
     <<: *test
     database: <%= "identity_idp_worker_jobs_test#{ENV['TEST_ENV_NUMBER']}" %>
     migrations_paths: db/worker_jobs_migrate
-  support_services:
+  postgis_data:
     <<: *defaults
     adapter: postgis
-    database: identity_idp_support_services_<%= Rails.env %>
-    migrations_paths: db/support_services_migrate
+    database: identity_idp_postgis_data_<%= Rails.env %>
+    migrations_paths: db/postgis_data_migrate
 
 <%
   worker_pool = if Identity::Hostdata.instance_role == 'worker'

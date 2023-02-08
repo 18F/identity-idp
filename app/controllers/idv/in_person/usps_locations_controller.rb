@@ -6,7 +6,6 @@ module Idv
       include RenderConditionConcern
       include UspsInPersonProofing
       include EffectiveUser
-      include ::InPerson
 
       check_or_render_not_found -> { InPersonConfig.enabled? }
 
@@ -25,7 +24,7 @@ module Idv
               latitude: search_params['latitude']
             )
             response = proofer.request_facilities(candidate)
-            IppLocationsCacherJob.perform_now(response.map(&:to_h))
+            ::InPerson::IppLocationsCacherJob.perform_now(response.map(&:to_h))
           else
             response = proofer.request_pilot_facilities
           end
