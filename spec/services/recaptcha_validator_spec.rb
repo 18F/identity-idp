@@ -65,6 +65,29 @@ describe RecaptchaValidator do
           },
           evaluated_as_valid: true,
           score_threshold: score_threshold,
+          exception_class: nil,
+        )
+      end
+    end
+
+    context 'with connection error' do
+      let(:token) { 'token' }
+
+      before do
+        stub_request(:post, RecaptchaValidator::VERIFICATION_ENDPOINT).to_timeout
+      end
+
+      it { expect(valid).to eq(true) }
+
+      it 'logs analytics of the body' do
+        valid
+
+        expect(analytics).to have_logged_event(
+          'reCAPTCHA verify result received',
+          recaptcha_result: nil,
+          evaluated_as_valid: true,
+          score_threshold: score_threshold,
+          exception_class: 'Faraday::ConnectionFailed',
         )
       end
     end
@@ -90,6 +113,7 @@ describe RecaptchaValidator do
           },
           evaluated_as_valid: false,
           score_threshold: score_threshold,
+          exception_class: nil,
         )
       end
     end
@@ -115,6 +139,7 @@ describe RecaptchaValidator do
           },
           evaluated_as_valid: true,
           score_threshold: score_threshold,
+          exception_class: nil,
         )
       end
     end

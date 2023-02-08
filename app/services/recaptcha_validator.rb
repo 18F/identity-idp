@@ -29,10 +29,10 @@ class RecaptchaValidator
     end
 
     recaptcha_result_valid?(response.body)
-  rescue Faraday::Error
+  rescue Faraday::Error => error
     true
   ensure
-    log_analytics(response&.body)
+    log_analytics(recaptcha_result: response&.body, error:)
   end
 
   private
@@ -50,11 +50,12 @@ class RecaptchaValidator
       recaptcha_result['score'] >= score_threshold
   end
 
-  def log_analytics(recaptcha_result = nil)
+  def log_analytics(recaptcha_result: nil, error: nil)
     analytics&.recaptcha_verify_result_received(
       recaptcha_result:,
       score_threshold:,
       evaluated_as_valid: recaptcha_result_valid?(recaptcha_result),
+      exception_class: error&.class&.name,
     )
   end
 end
