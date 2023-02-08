@@ -13,6 +13,7 @@ module Idv
 
     def timeout
       @remaining_step_attempts = throttle.remaining_count
+      track_event(type: :timeout)
     end
 
     def jobfail
