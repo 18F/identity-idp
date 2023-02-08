@@ -35,7 +35,7 @@ module Users
     private
 
     def recaptcha_enabled?
-      FeatureManagement.phone_setup_recaptcha_enabled?
+      FeatureManagement.phone_recaptcha_enabled?
     end
 
     def track_phone_setup_visit

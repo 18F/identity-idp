@@ -129,7 +129,7 @@ class NewPhoneForm
   end
 
   def validate_recaptcha_token
-    return if !FeatureManagement.phone_setup_recaptcha_enabled?
+    return if !FeatureManagement.phone_recaptcha_enabled?
     return if recaptcha_validator.valid?(recaptcha_token)
     errors.add(
       :recaptcha_token,
@@ -139,7 +139,7 @@ class NewPhoneForm
   end
 
   def recaptcha_validator
-    @recaptcha_validator ||= PhoneSetupRecaptchaValidator.new(parsed_phone:, analytics:)
+    @recaptcha_validator ||= PhoneRecaptchaValidator.new(parsed_phone:, analytics:)
   end
 
   def parsed_phone

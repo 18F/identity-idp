@@ -1,4 +1,4 @@
-class PhoneSetupRecaptchaValidator
+class PhoneRecaptchaValidator
   attr_reader :parsed_phone, :analytics
 
   delegate :valid?, :exempt?, to: :validator
@@ -13,11 +13,11 @@ class PhoneSetupRecaptchaValidator
   end
 
   def self.country_score_overrides
-    IdentityConfig.store.phone_setup_recaptcha_country_score_overrides
+    IdentityConfig.store.phone_recaptcha_country_score_overrides
   end
 
   def score_threshold
-    score_threshold_country_override || IdentityConfig.store.phone_setup_recaptcha_score_threshold
+    score_threshold_country_override || IdentityConfig.store.phone_recaptcha_score_threshold
   end
 
   private

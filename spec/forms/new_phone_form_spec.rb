@@ -361,13 +361,13 @@ describe NewPhoneForm do
 
     context 'with recaptcha enabled' do
       let(:valid) { nil }
-      let(:validator) { PhoneSetupRecaptchaValidator.new(parsed_phone: nil) }
+      let(:validator) { PhoneRecaptchaValidator.new(parsed_phone: nil) }
       let(:recaptcha_token) { 'token' }
       let(:params) { super().merge(recaptcha_token:) }
       subject(:result) { form.submit(params) }
 
       before do
-        allow(FeatureManagement).to receive(:phone_setup_recaptcha_enabled?).and_return(true)
+        allow(FeatureManagement).to receive(:phone_recaptcha_enabled?).and_return(true)
         allow(validator).to receive(:valid?).with(recaptcha_token).and_return(valid)
         allow(form).to receive(:recaptcha_validator).and_return(validator)
       end

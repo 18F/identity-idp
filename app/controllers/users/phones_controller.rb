@@ -60,7 +60,7 @@ module Users
     end
 
     def recaptcha_enabled?
-      FeatureManagement.phone_setup_recaptcha_enabled?
+      FeatureManagement.phone_recaptcha_enabled?
     end
   end
 end

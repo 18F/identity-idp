@@ -108,10 +108,10 @@ class FeatureManagement
     !Rails.env.test? && IdentityConfig.store.log_to_stdout
   end
 
-  def self.phone_setup_recaptcha_enabled?
+  def self.phone_recaptcha_enabled?
     IdentityConfig.store.recaptcha_site_key.present? &&
       IdentityConfig.store.recaptcha_secret_key.present? &&
-      IdentityConfig.store.phone_setup_recaptcha_score_threshold.positive?
+      IdentityConfig.store.phone_recaptcha_score_threshold.positive?
   end
 
   # Manual allowlist for VOIPs, should only include known VOIPs that we use for smoke tests

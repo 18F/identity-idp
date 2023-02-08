@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-describe PhoneSetupRecaptchaValidator do
+describe PhoneRecaptchaValidator do
   let(:country_score_overrides_config) { {} }
   let(:score_threshold_config) { 0.2 }
   let(:parsed_phone) { Phonelib.parse('+15135551234') }
   subject(:validator) { described_class.new(parsed_phone:) }
   before do
-    allow(IdentityConfig.store).to receive(:phone_setup_recaptcha_country_score_overrides).
+    allow(IdentityConfig.store).to receive(:phone_recaptcha_country_score_overrides).
       and_return(country_score_overrides_config)
-    allow(IdentityConfig.store).to receive(:phone_setup_recaptcha_score_threshold).
+    allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).
       and_return(score_threshold_config)
   end
 
