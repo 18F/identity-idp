@@ -285,14 +285,18 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
                              direct_otp_sent_at: Time.zone.now
         )
         allow(view).to receive(:current_user).and_return(user)
+        otp_expiration = user.direct_otp_sent_at +
+                         TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
+        allow(@presenter).to receive(:otp_expiration).and_return(otp_expiration)
         allow(IdentityConfig.store).to receive(:allow_otp_countdown_expired_redirect).
           and_return(false)
       end
 
       it 'should render countdown component without redirect-url' do
         render
-        expect(rendered).not_to
-        have_selector("lg-countdown[data-redirect-url=#{login_two_factor_otp_expired_path}]")
+        expect(rendered).not_to have_selector(
+          "lg-countdown-alert[redirect-url='#{login_two_factor_otp_expired_path}']",
+        )
       end
     end
 
@@ -303,14 +307,18 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
                              direct_otp_sent_at: Time.zone.now
         )
         allow(view).to receive(:current_user).and_return(user)
+        otp_expiration = user.direct_otp_sent_at +
+                         TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
+        allow(@presenter).to receive(:otp_expiration).and_return(otp_expiration)
         allow(IdentityConfig.store).to receive(:allow_otp_countdown_expired_redirect).
           and_return(true)
       end
 
       it 'should render countdown component with redirect-url' do
         render
-        expect(rendered).to
-        have_selector("lg-countdown[data-redirect-url=#{login_two_factor_otp_expired_path}]")
+        expect(rendered).to have_selector(
+          "lg-countdown-alert[redirect-url='#{login_two_factor_otp_expired_path}']",
+        )
       end
     end
 
