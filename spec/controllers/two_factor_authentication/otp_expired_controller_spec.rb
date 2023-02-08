@@ -3,6 +3,10 @@ require 'rails_helper'
 describe TwoFactorAuthentication::OtpExpiredController do
   let(:direct_otp_sent_at) { Time.zone.now }
   let(:delivery_preference) { 'voice' }
+  before do
+    allow(IdentityConfig.store).to receive(:allow_otp_countdown_expired_redirect).
+      and_return(true)
+  end
   describe '#show' do
     it 'global otp_delivery_preference variable properly defined' do
       user = create(
