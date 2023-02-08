@@ -376,7 +376,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
       complete_review_step
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
-      acknowledge_and_confirm_personal_key
+      acknowledge_and_confirm_personal_key unless IdentityConfig.store.gpo_personal_key_after_otp
 
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
       expect(page).to have_content(t('idv.titles.come_back_later'))
@@ -403,7 +403,7 @@ RSpec.describe 'In Person Proofing', js: true do
       click_on t('idv.troubleshooting.options.verify_by_mail')
       click_on t('idv.buttons.mail.send')
       complete_review_step
-      acknowledge_and_confirm_personal_key
+      acknowledge_and_confirm_personal_key unless IdentityConfig.store.gpo_personal_key_after_otp
       click_idv_continue
       click_on t('account.index.verification.reactivate_button')
       click_on t('idv.messages.clear_and_start_over')
