@@ -42,7 +42,7 @@ module TwoFactorAuthCode
     end
 
     def otp_expired_path
-      return unless IdentityConfig.store.allow_otp_countdown_expired_redirect
+      return unless FeatureManagement.otp_expired_redirect_enabled?
       login_two_factor_otp_expired_path
     end
 

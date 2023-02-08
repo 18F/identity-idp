@@ -100,6 +100,10 @@ class FeatureManagement
     IdentityConfig.store.doc_auth_enable_presigned_s3_urls
   end
 
+  def self.otp_expired_redirect_enabled?
+    IdentityConfig.store.allow_otp_countdown_expired_redirect
+  end
+
   def self.logo_upload_enabled?
     IdentityConfig.store.logo_upload_enabled
   end
