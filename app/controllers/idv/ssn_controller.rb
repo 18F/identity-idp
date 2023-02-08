@@ -3,18 +3,30 @@ module Idv
     include IdvSession
     include StepIndicatorConcern
     include VerifyInfoConcern
+    include Steps::ThreatMetrixStepHelper
 
     before_action :render_404_if_ssn_controller_disabled
     before_action :confirm_two_factor_authenticated
     before_action :confirm_pii_from_doc
 
+    attr_accessor :error_message
+
     def show
       increment_step_counts
       analytics.idv_doc_auth_ssn_visited(**analytics_arguments)
+
+      render :show, locals: extra_view_variables
     end
 
     def update
-      flow_session[:pii_from_doc][:ssn] = ssn
+      error_message = nil
+      form_response = form_submit
+      unless form_response.success?
+        error_message = form_response.first_error_message
+        redirect_to :show
+      end
+
+      flow_session[:pii_from_doc][:ssn] = params[:ssn]
 
       @flow.irs_attempts_api_tracker.idv_ssn_submitted(
         ssn: ssn,
@@ -26,6 +38,8 @@ module Idv
     def extra_view_variables
       {
         updating_ssn: updating_ssn,
+        success_alert_enabled: !updating_ssn,
+        error_message: error_message,
         **threatmetrix_view_variables,
       }
     end
@@ -60,14 +74,8 @@ module Idv
       Idv::SsnFormatForm.new(current_user).submit(permit(:ssn))
     end
 
-    def ssn
-      flow_params[:ssn]
+    def updating_ssn
+      flow_session.dig(:pii_from_doc, :ssn).present?
     end
-
-    def flow_params
-      binding.pry
-      params['doc_auth']
-    end
-
   end
 end

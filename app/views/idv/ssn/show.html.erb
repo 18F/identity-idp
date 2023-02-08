@@ -73,7 +73,7 @@ locals:
     <%= render 'shared/ssn_field', f: f %>
   </div>
 
-  <p><%= flow_session[:error_message] %></p>
+  <p><%= @error_message %></p>
 
   <%= f.submit class: 'display-block margin-y-5' do %>
     <% if updating_ssn %>
