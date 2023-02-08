@@ -95,7 +95,7 @@ module Idv
 
       options[:attempts_remaining] = based_on_throttle.remaining_count if based_on_throttle
 
-      @analytics.idv_session_errors_visited(**options)
+      analytics.idv_session_errors_visited(**options)
     end
   end
 end
