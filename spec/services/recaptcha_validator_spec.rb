@@ -142,6 +142,14 @@ describe RecaptchaValidator do
           exception_class: nil,
         )
       end
+
+      context 'without analytics' do
+        let(:analytics) { nil }
+
+        it 'validates gracefully without analytics logging' do
+          valid
+        end
+      end
     end
   end
 
