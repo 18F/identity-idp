@@ -49,20 +49,10 @@ describe RecaptchaValidator do
       let(:token) { 'token' }
 
       before do
-        allow(NewRelic::Agent).to receive(:notice_error)
         stub_recaptcha_response_body(success: false, 'error-codes': ['missing-input-secret'])
       end
 
       it { expect(valid).to eq(true) }
-
-      it 'logs the error to NewRelic' do
-        valid
-
-        expect(NewRelic::Agent).to have_received(:notice_error) do |error|
-          expect(error).to be_kind_of(RecaptchaValidator::ValidationError)
-          expect(error.message).to eq('reCAPTCHA validation error: ["missing-input-secret"]')
-        end
-      end
 
       it 'logs analytics of the body' do
         valid

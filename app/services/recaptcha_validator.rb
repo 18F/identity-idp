@@ -35,8 +35,7 @@ class RecaptchaValidator
     end
 
     response.body['score'] >= score_threshold
-  rescue Faraday::Error, ValidationError => error
-    NewRelic::Agent.notice_error(error)
+  rescue Faraday::Error, ValidationError
     true
   end
 
