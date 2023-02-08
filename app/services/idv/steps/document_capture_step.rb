@@ -16,9 +16,7 @@ module Idv
       def call
         handle_stored_result if !FeatureManagement.document_capture_async_uploads_enabled?
 
-        if IdentityConfig.store.doc_auth_ssn_controller_enabled
-          exit_flow_state_machine
-        end
+        exit_flow_state_machine if IdentityConfig.store.doc_auth_ssn_controller_enabled
       end
 
       def extra_view_variables

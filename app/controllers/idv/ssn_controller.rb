@@ -19,20 +19,23 @@ module Idv
     end
 
     def update
-      error_message = nil
+      @error_message = nil
       form_response = form_submit
+
       unless form_response.success?
-        error_message = form_response.first_error_message
+        @error_message = form_response.first_error_message
         redirect_to idv_ssn_url
       end
 
-      flow_session[:pii_from_doc][:ssn] = params[:ssn]
+      flow_session[:pii_from_doc][:ssn] = params['doc_auth']['ssn']
 
       irs_attempts_api_tracker.idv_ssn_submitted(
-        ssn: params[:ssn],
+        ssn: params['doc_auth']['ssn'],
       )
 
       idv_session.applicant = nil
+
+      redirect_to idv_verify_info_url
     end
 
     def extra_view_variables
@@ -53,7 +56,7 @@ module Idv
       {
         flow_path: flow_path,
         step: 'ssn',
-        step_count: current_flow_step_counts['ssn'],
+        step_count: current_flow_step_counts['Idv::Steps::SsnStep'],
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
       }.merge(**acuant_sdk_ab_test_analytics_args)
@@ -70,7 +73,7 @@ module Idv
     end
 
     def form_submit
-      Idv::SsnFormatForm.new(current_user).submit(params.permit(:ssn))
+      Idv::SsnFormatForm.new(current_user).submit(params.require('doc_auth').permit(:ssn))
     end
 
     def updating_ssn
