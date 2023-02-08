@@ -66,7 +66,7 @@ module Idv
     end
 
     def increment_step_counts
-      current_flow_step_counts['SsnStep'] += 1
+      current_flow_step_counts['Idv::Steps::SsnStep'] += 1
     end
 
     def form_submit
