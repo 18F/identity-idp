@@ -1,4 +1,4 @@
-class CaptchaSubmitButtonComponent < SpinnerButtonComponent
+class CaptchaSubmitButtonComponent < BaseComponent
   RECAPTCHA_SCRIPT_SRC = 'https://www.google.com/recaptcha/api.js'.freeze
 
   attr_reader :form, :action, :tag_options
@@ -7,19 +7,10 @@ class CaptchaSubmitButtonComponent < SpinnerButtonComponent
 
   # @param [String] action https://developers.google.com/recaptcha/docs/v3#actions
   def initialize(form:, action:, **tag_options)
-    super(
-      action_message: t('components.captcha_submit_button.action_message'),
-      type: :submit,
-      big: true,
-      wide: true
-    )
-
     @form = form
     @action = action
     @tag_options = tag_options
   end
-
-  alias_method :spinner_button_tag, :call
 
   def call
     content_tag(
@@ -32,6 +23,15 @@ class CaptchaSubmitButtonComponent < SpinnerButtonComponent
   end
 
   private
+
+  def spinner_button_tag
+    render SpinnerButtonComponent.new(
+      action_message: t('components.captcha_submit_button.action_message'),
+      type: :submit,
+      big: true,
+      wide: true,
+    ).with_content(content)
+  end
 
   def input_errors_tag
     f.error(:recaptcha_token)
