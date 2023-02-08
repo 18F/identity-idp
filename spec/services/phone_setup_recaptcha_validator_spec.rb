@@ -3,11 +3,33 @@ require 'rails_helper'
 describe PhoneSetupRecaptchaValidator do
   let(:country_score_overrides_config) { {} }
   let(:score_threshold_config) { 0.2 }
+  let(:parsed_phone) { Phonelib.parse('+15135551234') }
+  subject(:validator) { described_class.new(parsed_phone:) }
   before do
     allow(IdentityConfig.store).to receive(:phone_setup_recaptcha_country_score_overrides).
       and_return(country_score_overrides_config)
     allow(IdentityConfig.store).to receive(:phone_setup_recaptcha_score_threshold).
       and_return(score_threshold_config)
+  end
+
+  describe '#valid?' do
+    it 'is delegated to recaptcha validator' do
+      recaptcha_validator = RecaptchaValidator.new
+      expect(validator).to receive(:validator).and_return(recaptcha_validator)
+      expect(recaptcha_validator).to receive(:valid?)
+
+      validator.valid?
+    end
+  end
+
+  describe '#exempt?' do
+    it 'is delegated to recaptcha validator' do
+      recaptcha_validator = RecaptchaValidator.new
+      expect(validator).to receive(:validator).and_return(recaptcha_validator)
+      expect(recaptcha_validator).to receive(:exempt?)
+
+      validator.exempt?
+    end
   end
 
   describe '.exempt_countries' do
@@ -35,8 +57,6 @@ describe PhoneSetupRecaptchaValidator do
   end
 
   describe '#score_threshold' do
-    let(:parsed_phone) { Phonelib.parse('+15135551234') }
-    let(:validator) { described_class.new(parsed_phone:) }
     subject(:score_threshold) { validator.score_threshold }
 
     context 'without country override' do

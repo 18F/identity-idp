@@ -1,10 +1,11 @@
-class PhoneSetupRecaptchaValidator < RecaptchaValidator
-  attr_reader :parsed_phone
+class PhoneSetupRecaptchaValidator
+  attr_reader :parsed_phone, :analytics
 
-  def initialize(parsed_phone:, **recaptcha_validator_options)
-    super(**recaptcha_validator_options)
+  delegate :valid?, :exempt?, to: :validator
 
+  def initialize(parsed_phone:, analytics: nil)
     @parsed_phone = parsed_phone
+    @analytics = analytics
   end
 
   def self.exempt_countries
@@ -20,6 +21,10 @@ class PhoneSetupRecaptchaValidator < RecaptchaValidator
   end
 
   private
+
+  def validator
+    @validator ||= RecaptchaValidator.new(score_threshold:, analytics:)
+  end
 
   def score_threshold_country_override
     parsed_phone.valid_countries.
