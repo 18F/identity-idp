@@ -114,6 +114,11 @@ en:
     phone_fee_disclosure: Message and data rates may apply.
     phone_info_html: We’ll send you a one-time code <strong>each time you sign in</strong>.
     phone_label: Phone number
+    phone_verification:
+      troubleshooting:
+        change_number: Use another phone number
+        code_not_received: I didn’t receive my one-time code
+        learn_more: Learn more about authentication options
     piv_cac_fallback:
       question: Don’t have your PIV or CAC available?
     piv_cac_header_text: Present your PIV/CAC

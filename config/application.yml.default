@@ -41,11 +41,13 @@ acuant_get_results_timeout: 1.0
 acuant_create_document_timeout: 1.0
 add_email_link_valid_for_hours: 24
 address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US", "VI"]'
-arcgis_api_root_url: 'https://gis.gsa.gov'
 arcgis_api_username: ''
 arcgis_api_password: ''
 arcgis_search_enabled: true
 arcgis_mock_fallback: true
+arcgis_api_generate_token_url: 'https://gis.gsa.gov/portal/sharing/rest/generateToken'
+arcgis_api_suggest_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/suggest'
+arcgis_api_find_address_candidates_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/findAddressCandidates'
 asset_host: ''
 async_wait_timeout_seconds: 60
 async_stale_job_timeout_seconds: 300
@@ -189,7 +191,7 @@ logins_per_ip_period: 60
 logo_upload_enabled: false
 mailer_domain_name: http://localhost:3000
 max_auth_apps_per_account: 2
-max_bad_passwords: 100
+max_bad_passwords: 5
 max_bad_passwords_window_in_seconds: 60
 max_emails_per_account: 12
 max_mail_events: 4
