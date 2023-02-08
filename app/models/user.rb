@@ -102,8 +102,7 @@ class User < ApplicationRecord
   end
 
   def personal_key_generated_at
-    self.encrypted_recovery_code_digest_generated_at ||
-      active_profile&.verified_at
+    encrypted_recovery_code_digest_generated_at || active_profile&.verified_at
   end
 
   def default_phone_configuration
