@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class IdentityCors
-  FEDERALIST_REGEX = %r{^https://federalist-[0-9a-f-]+\.pages\.cloud\.gov$}
+  FEDERALIST_REGEX = %r{\Ahttps://federalist-[0-9a-f-]+\.pages\.cloud\.gov\z}
   STATIC_SITE_ALLOWED_ORIGINS = [
     'https://www.login.gov',
     'https://login.gov',
@@ -12,8 +12,8 @@ class IdentityCors
   def self.allowed_origins_static_sites
     return STATIC_SITE_ALLOWED_ORIGINS unless Rails.env.development? || Rails.env.test?
     allowed_origins = STATIC_SITE_ALLOWED_ORIGINS.dup
-    allowed_origins << %r{https?://localhost(:\d+)?$}
-    allowed_origins << %r{https?://127\.0\.0\.1(:\d+)?$}
+    allowed_origins << %r{https?://localhost(:\d+)?\z}
+    allowed_origins << %r{https?://127\.0\.0\.1(:\d+)?\z}
 
     allowed_origins
   end
