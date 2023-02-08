@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { screen, waitFor } from '@testing-library/dom';
 import { useSandbox, useDefineProperty } from '@18f/identity-test-helpers';
 import '@18f/identity-spinner-button/spinner-button-element';
-import './captcha-submit-button-element';
+import { CAPTCHA_EVENT_NAME } from './captcha-submit-button-element';
 
 describe('CaptchaSubmitButtonElement', () => {
   const sandbox = useSandbox();
@@ -135,20 +135,10 @@ describe('CaptchaSubmitButtonElement', () => {
         });
       });
 
-      context('with exemption', () => {
+      context('with cancellation of challenge event', () => {
         beforeEach(() => {
-          document.body.innerHTML = `
-            <form>
-              <lg-captcha-submit-button
-                recaptcha-site-key="${RECAPTCHA_SITE_KEY}"
-                recaptcha-action="${RECAPTCHA_ACTION_NAME}"
-                exempt
-              >
-                <input type="hidden" name="recaptcha_token">
-                <button>Submit</button>
-              </lg-captcha-submit-button>
-            </form>
-          `;
+          const form = document.querySelector('form')!;
+          form.addEventListener(CAPTCHA_EVENT_NAME, (event) => event.preventDefault());
         });
 
         it('submits the form without challenge', async () => {

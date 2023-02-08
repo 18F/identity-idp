@@ -1,10 +1,8 @@
+export const CAPTCHA_EVENT_NAME = 'captcha-challenge';
+
 class CaptchaSubmitButtonElement extends HTMLElement {
   connectedCallback() {
     this.button.addEventListener('click', (event) => this.handleButtonClick(event));
-  }
-
-  get isExempt(): boolean {
-    return this.hasAttribute('exempt');
   }
 
   get button(): HTMLButtonElement {
@@ -40,6 +38,16 @@ class CaptchaSubmitButtonElement extends HTMLElement {
     });
   }
 
+  shouldInvokeChallenge(): boolean {
+    if (!this.recaptchaSiteKey) {
+      return false;
+    }
+
+    const event = new CustomEvent(CAPTCHA_EVENT_NAME, { bubbles: true, cancelable: true });
+    this.dispatchEvent(event);
+    return !event.defaultPrevented;
+  }
+
   handleButtonClick(event: MouseEvent) {
     event.preventDefault();
 
@@ -49,10 +57,10 @@ class CaptchaSubmitButtonElement extends HTMLElement {
       return;
     }
 
-    if (!this.recaptchaSiteKey || this.isExempt) {
-      this.submit();
-    } else {
+    if (this.shouldInvokeChallenge()) {
       this.invokeChallenge();
+    } else {
+      this.submit();
     }
   }
 }

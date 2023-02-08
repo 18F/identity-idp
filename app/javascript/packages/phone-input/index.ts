@@ -4,7 +4,7 @@ import intlTelInput from 'intl-tel-input';
 import type { CountryCode } from 'libphonenumber-js';
 import type { Plugin as IntlTelInputPlugin, IntlTelInputGlobals, Options } from 'intl-tel-input';
 import { replaceVariables } from '@18f/identity-i18n';
-import type CaptchaSubmitButtonElement from '@18f/identity-captcha-submit-button/captcha-submit-button-element';
+import { CAPTCHA_EVENT_NAME } from '@18f/identity-captcha-submit-button/captcha-submit-button-element';
 
 interface PhoneInputStrings {
   country_code_label: string;
@@ -76,11 +76,14 @@ export class PhoneInputElement extends HTMLElement {
     this.codeInput.addEventListener('change', () => this.formatTextInput());
     this.codeInput.addEventListener('change', () => this.setExampleNumber());
     this.codeInput.addEventListener('change', () => this.validate());
-    this.codeInput.addEventListener('change', () => this.setCaptchaButtonExemption());
+    this.ownerDocument.addEventListener(CAPTCHA_EVENT_NAME, this.handleCaptchaChallenge);
 
     this.setExampleNumber();
     this.validate();
-    this.setCaptchaButtonExemption();
+  }
+
+  disconnectedCallback() {
+    this.ownerDocument.removeEventListener(CAPTCHA_EVENT_NAME, this.handleCaptchaChallenge);
   }
 
   get selectedOption() {
@@ -107,10 +110,6 @@ export class PhoneInputElement extends HTMLElement {
     }
 
     return this.#strings;
-  }
-
-  get captchaSubmitButton(): CaptchaSubmitButtonElement | null {
-    return this.closest('form')?.querySelector('lg-captcha-submit-button') || null;
   }
 
   get captchaExemptCountries(): string[] | boolean {
@@ -247,7 +246,7 @@ export class PhoneInputElement extends HTMLElement {
     }
   }
 
-  setCaptchaButtonExemption() {
+  handleCaptchaChallenge = (event: Event) => {
     const { iso2 = 'us' } = this.iti.getSelectedCountryData();
     const isExempt =
       typeof this.captchaExemptCountries === 'boolean'
@@ -255,10 +254,14 @@ export class PhoneInputElement extends HTMLElement {
         : this.captchaExemptCountries.includes(iso2.toUpperCase());
 
     if (isExempt) {
-      this.captchaSubmitButton?.setAttribute('exempt', '');
-    } else {
-      this.captchaSubmitButton?.removeAttribute('exempt');
+      event.preventDefault();
     }
+  };
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'lg-phone-input': PhoneInputElement;
   }
 }
 
