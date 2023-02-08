@@ -10,11 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_26_195401) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_07_025050) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+  enable_extension "postgis"
 
   create_table "account_reset_requests", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -603,6 +604,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_26_195401) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
   end
+
+# Could not dump table "usps_ipp_locations_cache_tables" because of following StandardError
+#   Unknown type 'geometry(Point)' for column 'lonlat'
 
   create_table "webauthn_configurations", force: :cascade do |t|
     t.bigint "user_id", null: false

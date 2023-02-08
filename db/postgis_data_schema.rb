@@ -17,8 +17,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_07_025050) do
 
   create_table 'usps_ipp_cached_locations', force: :cascade do |t|
     t.geometry 'lonlat', limit: { srid: 4326, type: 'st_point' }
-    t.json 'usps_attributes'
+    t.text 'address'
+    t.text 'city'
+    t.text 'state'
+    t.text 'zip'
+    t.jsonb 'usps_attributes'
     t.datetime 'created_at', null: false
     t.datetime 'updated_at', null: false
+    t.index ['address', 'city', 'state', 'zip'],
+            name: 'usps_ipp_cached_locations_uniqueness_index', unique: true
   end
 end
