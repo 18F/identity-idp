@@ -12,14 +12,13 @@
 
 ActiveRecord::Schema[7.0].define(version: 2023_02_07_025050) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-  enable_extension "postgis"
+  enable_extension 'plpgsql'
+  enable_extension 'postgis'
 
-  create_table "usps_ipp_cached_locations", force: :cascade do |t|
-    t.geometry "lonlat", limit: {:srid=>4326, :type=>"st_point"}
-    t.json "usps_attributes"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table 'usps_ipp_cached_locations', force: :cascade do |t|
+    t.geometry 'lonlat', limit: { srid: 4326, type: 'st_point' }
+    t.json 'usps_attributes'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
   end
-
 end
