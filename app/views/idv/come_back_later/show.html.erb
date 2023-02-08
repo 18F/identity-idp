@@ -18,7 +18,7 @@
 <%= render PageHeadingComponent.new(class: 'text-center').with_content(t('idv.titles.come_back_later')) %>
 
 <div class="text-center">
-  <%= sanitize t('idv.messages.come_back_later_html', app_name: APP_NAME), tags: %w[p strong br] %>
+  <%= t('idv.messages.come_back_later_html', app_name: APP_NAME) %>
 </div>
 
 <div class="padding-4 text-center border rounded-xl">
