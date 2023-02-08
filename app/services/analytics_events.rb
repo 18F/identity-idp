@@ -710,7 +710,7 @@ module AnalyticsEvents
   # The user clicked the sp link on the "ready to verify" page
   def idv_in_person_ready_to_verify_sp_link_clicked(**extra)
     track_event(
-      'IdV: user clicked the sp link on the ready to verify page',
+      'IdV: user clicked sp link on ready to verify page',
       **extra,
     )
   end
@@ -718,7 +718,7 @@ module AnalyticsEvents
   # The user clicked the what to bring link on the "ready to verify" page
   def idv_in_person_ready_to_verify_what_to_bring_link_clicked(**extra)
     track_event(
-      'IdV: user clicked the what to bring link on the ready to verify page',
+      'IdV: user clicked what to bring link on ready to verify page',
       **extra,
     )
   end
