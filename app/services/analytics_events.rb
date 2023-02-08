@@ -556,11 +556,14 @@ module AnalyticsEvents
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [String] in_person_cta_variant Variant testing bucket label
   # The user clicked the troubleshooting option to start in-person proofing
-  def idv_verify_in_person_troubleshooting_option_clicked(flow_path:, **extra)
+  def idv_verify_in_person_troubleshooting_option_clicked(flow_path:, in_person_cta_variant:,
+                                                          **extra)
     track_event(
       'IdV: verify in person troubleshooting option clicked',
       flow_path: flow_path,
+      in_person_cta_variant: in_person_cta_variant,
       **extra,
     )
   end
@@ -628,9 +631,15 @@ module AnalyticsEvents
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [String] in_person_cta_variant Variant testing bucket label
   # The user visited the in person proofing location step
-  def idv_in_person_location_visited(flow_path:, **extra)
-    track_event('IdV: in person proofing location visited', flow_path: flow_path, **extra)
+  def idv_in_person_location_visited(flow_path:, in_person_cta_variant:, **extra)
+    track_event(
+      'IdV: in person proofing location visited',
+      flow_path: flow_path,
+      in_person_cta_variant: in_person_cta_variant,
+      **extra,
+    )
   end
 
   # @param [String] selected_location Selected in-person location

@@ -89,7 +89,9 @@ function ReviewIssuesStep({
     setHasDismissed(true);
   }
   function onInPersonSelected() {
-    trackEvent('IdV: verify in person troubleshooting option clicked');
+    trackEvent('IdV: verify in person troubleshooting option clicked', {
+      in_person_cta_variant: inPersonCtaVariantActive,
+    });
   }
 
   // let FormSteps know, via FormStepsContext, whether this page
@@ -102,13 +104,9 @@ function ReviewIssuesStep({
     if (!inPersonURL || isFailedResult) {
       return;
     }
-    if (inPersonCtaVariantActive === 'in_person_variant_a') {
-      trackEvent('IdV: IPP CTA Variant A');
-    } else if (inPersonCtaVariantActive === 'in_person_variant_b') {
-      trackEvent('IdV: IPP CTA Variant B');
-    } else if (inPersonCtaVariantActive === 'in_person_variant_c') {
-      trackEvent('IdV: IPP CTA Variant C');
-    }
+    trackEvent('IdV: IPP CTA Variant Displayed', {
+      in_person_cta_variant: inPersonCtaVariantActive,
+    });
   }, []);
 
   if (!hasDismissed) {
