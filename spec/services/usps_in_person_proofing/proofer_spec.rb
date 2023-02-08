@@ -106,9 +106,6 @@ RSpec.describe UspsInPersonProofing::Proofer do
   end
 
   describe '#request_facilities' do
-    before do
-      stub_request_token
-    end
     let(:location) do
       double(
         'Location',
@@ -118,24 +115,44 @@ RSpec.describe UspsInPersonProofing::Proofer do
         zip_code: Faker::Address.zip_code,
       )
     end
+    context 'when the token is valid' do
+      before do
+        stub_request_token
+      end
 
-    it 'returns facilities' do
-      stub_request_facilities
-      facilities = subject.request_facilities(location)
+      it 'returns facilities' do
+        stub_request_facilities
+        facilities = subject.request_facilities(location)
 
-      check_facility(facilities[0])
+        check_facility(facilities[0])
+      end
+
+      it 'does not return duplicates' do
+        stub_request_facilities_with_duplicates
+        facilities = subject.request_facilities(location)
+
+        expect(facilities.length).to eq(9)
+        expect(
+          facilities.count do |post_office|
+            post_office.address == '3775 INDUSTRIAL BLVD'
+          end,
+        ).to eq(1)
+      end
     end
 
-    it 'does not return duplicates' do
-      stub_request_facilities_with_duplicates
-      facilities = subject.request_facilities(location)
+    context 'when the token is expired' do
+      before do
+        stub_expired_request_token
+        stub_request_facilities_with_expired_token
+        stub_request_facilities
+      end
 
-      expect(facilities.length).to eq(9)
-      expect(
-        facilities.count do |post_office|
-          post_office.address == '3775 INDUSTRIAL BLVD'
-        end,
-      ).to eq(1)
+      it 'fetches a new token and retries the attempt' do
+        facilities = subject.request_facilities(location)
+
+        expect(facilities.length).to eq(10)
+        check_facility(facilities[0])
+      end
     end
   end
 
@@ -149,10 +166,8 @@ RSpec.describe UspsInPersonProofing::Proofer do
   end
 
   describe '#request_enroll' do
-    it 'returns enrollment information' do
-      stub_request_token
-      stub_request_enroll
-      applicant = double(
+    let(:applicant) do
+      double(
         'applicant',
         address: Faker::Address.street_address,
         city: Faker::Address.city,
@@ -162,145 +177,173 @@ RSpec.describe UspsInPersonProofing::Proofer do
         last_name: Faker::Name.last_name,
         email: Faker::Internet.safe_email,
         unique_id: '123456789',
-      )
-
-      enrollment = subject.request_enroll(applicant)
-      expect(enrollment.enrollment_code).to be_present
-      expect(enrollment.response_message).to be_present
-    end
-
-    it 'returns 400 error' do
-      stub_request_token
-      stub_request_enroll_bad_request_response
-      applicant = double(
-        'applicant',
-        address: Faker::Address.street_address,
-        city: Faker::Address.city,
-        state: Faker::Address.state_abbr,
-        zip_code: Faker::Address.zip_code,
-        first_name: Faker::Name.first_name,
-        last_name: Faker::Name.last_name,
-        email: Faker::Internet.safe_email,
-        unique_id: '123456789',
-      )
-
-      expect { subject.request_enroll(applicant) }.to raise_error(
-        an_instance_of(Faraday::BadRequestError).
-        and(having_attributes(
-          response: include(
-            body: include(
-              'responseMessage' => 'Sponsor for sponsorID 5 not found',
-            ),
-          ),
-        )),
       )
     end
+    context 'when the token is valid' do
+      before do
+        stub_request_token
+      end
+      it 'returns enrollment information' do
+        stub_request_enroll
 
-    it 'returns 500 error' do
-      stub_request_token
-      stub_request_enroll_internal_server_error_response
-      applicant = double(
-        'applicant',
-        address: Faker::Address.street_address,
-        city: Faker::Address.city,
-        state: Faker::Address.state_abbr,
-        zip_code: Faker::Address.zip_code,
-        first_name: Faker::Name.first_name,
-        last_name: Faker::Name.last_name,
-        email: Faker::Internet.safe_email,
-        unique_id: '123456789',
-      )
+        enrollment = subject.request_enroll(applicant)
+        expect(enrollment.enrollment_code).to be_present
+        expect(enrollment.response_message).to be_present
+      end
 
-      expect { subject.request_enroll(applicant) }.to raise_error(
-        an_instance_of(Faraday::ServerError).
-        and(having_attributes(
-          response: include(
-            body: include(
-              'responseMessage' => 'An internal error occurred processing the request',
+      it 'returns 400 error' do
+        stub_request_enroll_bad_request_response
+
+        expect { subject.request_enroll(applicant) }.to raise_error(
+          an_instance_of(Faraday::BadRequestError).
+          and(having_attributes(
+            response: include(
+              body: include(
+                'responseMessage' => 'Sponsor for sponsorID 5 not found',
+              ),
             ),
-          ),
-        )),
-      )
+          )),
+        )
+      end
+
+      it 'returns 500 error' do
+        stub_request_enroll_internal_server_error_response
+
+        expect { subject.request_enroll(applicant) }.to raise_error(
+          an_instance_of(Faraday::ServerError).
+          and(having_attributes(
+            response: include(
+              body: include(
+                'responseMessage' => 'An internal error occurred processing the request',
+              ),
+            ),
+          )),
+        )
+      end
+    end
+
+    context 'when the token is expired' do
+      before do
+        stub_expired_request_token
+        stub_request_enroll_expired_token
+        stub_request_enroll
+      end
+
+      it 'fetches a new token and retries the attempt' do
+        enrollment = subject.request_enroll(applicant)
+        expect(enrollment.enrollment_code).to be_present
+        expect(enrollment.response_message).to be_present
+      end
     end
   end
 
   describe '#request_proofing_results' do
-    it 'returns failed enrollment information' do
-      stub_request_token
-      stub_request_failed_proofing_results
-
-      applicant = double(
+    let(:applicant) do
+      double(
         'applicant',
         unique_id: '123456789',
         enrollment_code: '123456789',
       )
-
-      proofing_results = subject.request_proofing_results(
-        applicant.unique_id,
-        applicant.enrollment_code,
-      )
-      expect(proofing_results['status']).to eq 'In-person failed'
-      expect(proofing_results['fraudSuspected']).to eq false
     end
+    context 'when the token is valid' do
+      before do
+        stub_request_token
+      end
+      it 'returns failed enrollment information' do
+        stub_request_failed_proofing_results
 
-    it 'returns passed enrollment information' do
-      stub_request_token
-      stub_request_passed_proofing_results
-
-      applicant = double(
-        'applicant',
-        unique_id: '123456789',
-        enrollment_code: '123456789',
-      )
-
-      proofing_results = subject.request_proofing_results(
-        applicant.unique_id,
-        applicant.enrollment_code,
-      )
-      expect(proofing_results['status']).to eq 'In-person passed'
-      expect(proofing_results['fraudSuspected']).to eq false
-    end
-
-    it 'returns in-progress enrollment information' do
-      stub_request_token
-      stub_request_in_progress_proofing_results
-
-      applicant = double(
-        'applicant',
-        unique_id: '123456789',
-        enrollment_code: '123456789',
-      )
-
-      expect do
-        subject.request_proofing_results(
+        proofing_results = subject.request_proofing_results(
           applicant.unique_id,
           applicant.enrollment_code,
         )
-      end.to raise_error(
-        an_instance_of(Faraday::BadRequestError).
-        and(having_attributes(
-          response: include(
-            body: include(
-              'responseMessage' => 'Customer has not been to a post office to complete IPP',
+        expect(proofing_results['status']).to eq 'In-person failed'
+        expect(proofing_results['fraudSuspected']).to eq false
+      end
+
+      it 'returns passed enrollment information' do
+        stub_request_passed_proofing_results
+
+        proofing_results = subject.request_proofing_results(
+          applicant.unique_id,
+          applicant.enrollment_code,
+        )
+        expect(proofing_results['status']).to eq 'In-person passed'
+        expect(proofing_results['fraudSuspected']).to eq false
+      end
+
+      it 'returns in-progress enrollment information' do
+        stub_request_in_progress_proofing_results
+
+        expect do
+          subject.request_proofing_results(
+            applicant.unique_id,
+            applicant.enrollment_code,
+          )
+        end.to raise_error(
+          an_instance_of(Faraday::BadRequestError).
+          and(having_attributes(
+            response: include(
+              body: include(
+                'responseMessage' => 'Customer has not been to a post office to complete IPP',
+              ),
             ),
-          ),
-        )),
-      )
+          )),
+        )
+      end
+    end
+    context 'when the token is expired' do
+      before do
+        stub_expired_request_token
+        stub_request_proofing_results_with_forbidden_error
+        stub_request_passed_proofing_results
+      end
+
+      it 'fetches a new token and retries the attempt' do
+        proofing_results = subject.request_proofing_results(
+          applicant.unique_id,
+          applicant.enrollment_code,
+        )
+
+        expect(proofing_results['status']).to eq 'In-person passed'
+        expect(proofing_results['fraudSuspected']).to eq false
+      end
     end
   end
 
   describe '#request_enrollment_code' do
-    it 'returns enrollment information' do
-      stub_request_token
-      stub_request_enrollment_code
-      applicant = double(
+    let(:applicant) do
+      double(
         'applicant',
         unique_id: '123456789',
       )
+    end
+    context 'when the token is valid' do
+      before do
+        stub_request_token
+      end
 
-      enrollment = subject.request_enrollment_code(applicant)
-      expect(enrollment['enrollmentCode']).to be_present
-      expect(enrollment['responseMessage']).to be_present
+      it 'returns enrollment information' do
+        stub_request_enrollment_code
+
+        enrollment = subject.request_enrollment_code(applicant)
+        expect(enrollment['enrollmentCode']).to be_present
+        expect(enrollment['responseMessage']).to be_present
+      end
+    end
+
+    context 'when the token is expired' do
+      before do
+        stub_expired_request_token
+      end
+
+      it 'fetches a new token and retries the attempt' do
+        stub_request_enrollment_code_with_forbidden_error
+        stub_request_enrollment_code
+
+        enrollment = subject.request_enrollment_code(applicant)
+        expect(enrollment['enrollmentCode']).to be_present
+        expect(enrollment['responseMessage']).to be_present
+      end
     end
   end
 end
