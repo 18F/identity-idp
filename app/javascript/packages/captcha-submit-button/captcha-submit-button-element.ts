@@ -1,4 +1,4 @@
-export const CAPTCHA_EVENT_NAME = 'captcha-challenge';
+export const CAPTCHA_EVENT_NAME = 'lg:captcha-submit-button:challenge';
 
 class CaptchaSubmitButtonElement extends HTMLElement {
   connectedCallback() {
