@@ -12,7 +12,7 @@ shared_examples_for 'an idv session errors controller action' do
 
     it 'logs an event' do
       expect(@analytics).to receive(:track_event).with(
-        'IdV: Session Errors visited',
+        'IdV: session error visited',
         hash_including(type: action.to_s),
       )
       get action
@@ -30,7 +30,7 @@ shared_examples_for 'an idv session errors controller action' do
     end
     it 'does not log an event' do
       expect(@analytics).not_to receive(:track_event).with(
-        'IdV: Session Errors visited',
+        'IdV: session error visited',
         hash_including(type: action.to_s),
       )
       get action
@@ -49,7 +49,7 @@ shared_examples_for 'an idv session errors controller action' do
     end
     it 'logs an event' do
       expect(@analytics).to receive(:track_event).with(
-        'IdV: Session Errors visited',
+        'IdV: session error visited',
         hash_including(type: action.to_s),
       )
       get action
@@ -64,7 +64,7 @@ shared_examples_for 'an idv session errors controller action' do
     end
     it 'does not log an event' do
       expect(@analytics).not_to receive(:track_event).with(
-        'IdV: Session Errors visited',
+        'IdV: session error visited',
         hash_including(type: action.to_s),
       )
       get action
@@ -131,7 +131,7 @@ describe Idv::SessionErrorsController do
 
       it 'logs an event with attempts remaining' do
         expect(@analytics).to receive(:track_event).with(
-          'IdV: Session Errors visited',
+          'IdV: session error visited',
           hash_including(
             type: action.to_s,
             attempts_remaining: 5,
@@ -173,7 +173,7 @@ describe Idv::SessionErrorsController do
 
       it 'logs an event with attempts remaining' do
         expect(@analytics).to receive(:track_event).with(
-          'IdV: Session Errors visited',
+          'IdV: session error visited',
           hash_including(
             type: action.to_s,
             attempts_remaining: 5,
@@ -214,7 +214,7 @@ describe Idv::SessionErrorsController do
 
       it 'logs an event with attempts remaining' do
         expect(@analytics).to receive(:track_event).with(
-          'IdV: Session Errors visited',
+          'IdV: session error visited',
           hash_including(
             type: 'ssn_failure',
             attempts_remaining: 0,
@@ -246,7 +246,7 @@ describe Idv::SessionErrorsController do
 
       it 'logs an event with attempts remaining' do
         expect(@analytics).to receive(:track_event).with(
-          'IdV: Session Errors visited',
+          'IdV: session error visited',
           hash_including(
             type: action.to_s,
             attempts_remaining: 0,

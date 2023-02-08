@@ -3006,13 +3006,13 @@ module AnalyticsEvents
   # Tracks when the user visits one of the the session error pages.
   # @param [String] type
   # @param [Integer,nil] attempts_remaining
-  def idv_session_errors_visited(
+  def idv_session_error_visited(
     type:,
     attempts_remaining: nil,
     **extra
   )
     track_event(
-      'IdV: Session Errors visited',
+      'IdV: session error visited',
       type: type,
       attempts_remaining: attempts_remaining,
       **extra,
