@@ -13,7 +13,7 @@ shared_examples_for 'an idv session errors controller action' do
     it 'logs an event' do
       expect(@analytics).to receive(:track_event).with(
         'IdV: Session Errors visited',
-        action: action.to_s,
+        hash_including(action: action.to_s),
       )
       get action
     end
@@ -31,7 +31,7 @@ shared_examples_for 'an idv session errors controller action' do
     it 'does not log an event' do
       expect(@analytics).not_to receive(:track_event).with(
         'IdV: Session Errors visited',
-        action: action.to_s,
+        hash_including(action: action.to_s),
       )
       get action
     end
@@ -50,7 +50,7 @@ shared_examples_for 'an idv session errors controller action' do
     it 'logs an event' do
       expect(@analytics).to receive(:track_event).with(
         'IdV: Session Errors visited',
-        action: action.to_s,
+        hash_including(action: action.to_s),
       )
       get action
     end
@@ -65,7 +65,7 @@ shared_examples_for 'an idv session errors controller action' do
     it 'does not log an event' do
       expect(@analytics).not_to receive(:track_event).with(
         'IdV: Session Errors visited',
-        action: action.to_s,
+        hash_including(action: action.to_s),
       )
       get action
     end
@@ -129,6 +129,17 @@ describe Idv::SessionErrorsController do
         expect(assigns(:try_again_path)).to eq(idv_doc_auth_path)
       end
 
+      it 'logs an event with attempts remaining' do
+        expect(@analytics).to receive(:track_event).with(
+          'IdV: Session Errors visited',
+          hash_including(
+            action: action.to_s,
+            attempts_remaining: 5,
+          ),
+        )
+        response
+      end
+
       context 'in in-person proofing flow' do
         let(:params) { { flow: 'in_person' } }
 
@@ -158,6 +169,17 @@ describe Idv::SessionErrorsController do
         get action
 
         expect(assigns(:expires_at)).to be_kind_of(Time)
+      end
+
+      it 'logs an event with attempts remaining' do
+        expect(@analytics).to receive(:track_event).with(
+          'IdV: Session Errors visited',
+          hash_including(
+            action: action.to_s,
+            attempts_remaining: 5,
+          ),
+        )
+        get action
       end
     end
   end
@@ -189,6 +211,17 @@ describe Idv::SessionErrorsController do
 
         expect(assigns(:expires_at)).not_to eq(Time.zone.now)
       end
+
+      it 'logs an event with attempts remaining' do
+        expect(@analytics).to receive(:track_event).with(
+          'IdV: Session Errors visited',
+          hash_including(
+            action: 'ssn_failure',
+            attempts_remaining: 0,
+          ),
+        )
+        get action
+      end
     end
   end
 
@@ -209,6 +242,18 @@ describe Idv::SessionErrorsController do
         get action
 
         expect(assigns(:expires_at)).to be_kind_of(Time)
+      end
+
+      it 'logs an event with attempts remaining' do
+        expect(@analytics).to receive(:track_event).with(
+          'IdV: Session Errors visited',
+          hash_including(
+            action: action.to_s,
+            attempts_remaining: 0,
+          ),
+        )
+
+        get action
       end
     end
   end

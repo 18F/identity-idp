@@ -6,37 +6,49 @@ module Idv
     before_action :confirm_two_factor_authenticated_or_user_id_in_session
     before_action :confirm_idv_session_step_needed
     before_action :set_try_again_path, only: [:warning, :exception]
-    before_action :log_event
 
-    def exception; end
+    def exception
+      log_event
+    end
 
     def warning
-      @remaining_attempts = Throttle.new(
+      throttle = Throttle.new(
         user: effective_user,
         throttle_type: :idv_resolution,
-      ).remaining_count
+      )
+
+      @remaining_attempts = throttle.remaining_count
+      log_event based_on_throttle: throttle
     end
 
     def failure
-      @expires_at = Throttle.new(
+      throttle = Throttle.new(
         user: effective_user,
         throttle_type: :idv_resolution,
-      ).expires_at
+      )
+      @expires_at = throttle.expires_at
+      log_event based_on_throttle: throttle
     end
 
     def ssn_failure
+      throttle = nil
+
       if ssn_from_doc
-        @expires_at = Throttle.new(
+        throttle = Throttle.new(
           target: Pii::Fingerprinter.fingerprint(ssn_from_doc),
           throttle_type: :proof_ssn,
-        ).expires_at
+        )
+        @expires_at = throttle.expires_at
       end
 
+      log_event based_on_throttle: throttle
       render 'idv/session_errors/failure'
     end
 
     def throttled
-      @expires_at = Throttle.new(user: effective_user, throttle_type: :idv_doc_auth).expires_at
+      throttle = Throttle.new(user: effective_user, throttle_type: :idv_doc_auth)
+      log_event based_on_throttle: throttle
+      @expires_at = throttle.expires_at
     end
 
     private
@@ -76,10 +88,14 @@ module Idv
       params[:flow] == 'in_person'
     end
 
-    def log_event
-      @analytics.idv_session_errors_visited(
+    def log_event(based_on_throttle: nil)
+      options = {
         action: params[:action],
-      )
+      }
+
+      options[:attempts_remaining] = based_on_throttle.remaining_count if based_on_throttle
+
+      @analytics.idv_session_errors_visited(**options)
     end
   end
 end
