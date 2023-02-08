@@ -49,10 +49,6 @@ class RecaptchaValidator
   end
 
   def log_analytics(recaptcha_result)
-    analytics&.recaptcha_verify_result_received(recaptcha_result:, score_threshold:, class_name:)
-  end
-
-  def class_name
-    self.class.name
+    analytics&.recaptcha_verify_result_received(recaptcha_result:, score_threshold:)
   end
 end
