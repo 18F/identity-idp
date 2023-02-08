@@ -1,5 +1,5 @@
-import type { CountdownElement } from './countdown-element';
 import { trackEvent } from '@18f/identity-analytics';
+import type { CountdownElement } from './countdown-element';
 
 export class CountdownAlertElement extends HTMLElement {
   connectedCallback() {
@@ -33,9 +33,8 @@ export class CountdownAlertElement extends HTMLElement {
 
   handleRedirectTick = () => {
     if (this.countdown.timeRemaining <= 0) {
-
       trackEvent('Countdown timeout redirect', {
-        path: this.redirectURL, 
+        path: this.redirectURL,
         expiration: this.countdown.expiration,
         timeRemaining: this.countdown.timeRemaining,
       });
