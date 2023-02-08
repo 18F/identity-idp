@@ -114,7 +114,7 @@ module Identity
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins do |source, _env|
-          IdentityCors.allowed_origins_api(source)
+          IdentityCors.allowed_redirect_uri?(source)
         end
         resource '/.well-known/openid-configuration', headers: :any, methods: [:get]
         resource '/api/openid_connect/certs', headers: :any, methods: [:get]

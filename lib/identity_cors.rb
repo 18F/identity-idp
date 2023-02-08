@@ -19,7 +19,7 @@ class IdentityCors
   end
 
   def self.allowed_redirect_uri?(source)
-    return if source == "https://#{IdentityConfig.store.domain_name}"
+    return false if source == "https://#{IdentityConfig.store.domain_name}"
 
     redirect_uris = Rails.cache.fetch(
       'all_service_provider_redirect_uris_cors',
