@@ -15,6 +15,16 @@ shared_examples_for 'an idv phone errors controller action' do
 
       expect(response).to render_template(template)
     end
+
+    it 'logs an event' do
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: phone error visited',
+        hash_including(
+          type: action,
+        ),
+      )
+      get action
+    end
   end
 
   context 'the user is authenticated and has confirmed their phone' do
@@ -26,6 +36,15 @@ shared_examples_for 'an idv phone errors controller action' do
 
       expect(response).to redirect_to(idv_review_url)
     end
+    it 'does not log an event' do
+      expect(@analytics).not_to receive(:track_event).with(
+        'IdV: phone error visited',
+        hash_including(
+          type: action,
+        ),
+      )
+      get action
+    end
   end
 
   context 'the user is not authenticated and not recovering their account' do
@@ -33,6 +52,15 @@ shared_examples_for 'an idv phone errors controller action' do
       get action
 
       expect(response).to redirect_to(new_user_session_url)
+    end
+    it 'does not log an event' do
+      expect(@analytics).not_to receive(:track_event).with(
+        'IdV: phone error visited',
+        hash_including(
+          type: action,
+        ),
+      )
+      get action
     end
   end
 end
