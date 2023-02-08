@@ -90,7 +90,7 @@ module Idv
 
     def log_event(based_on_throttle: nil)
       options = {
-        action: params[:action],
+        type: params[:action],
       }
 
       options[:attempts_remaining] = based_on_throttle.remaining_count if based_on_throttle
