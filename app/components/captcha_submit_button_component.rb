@@ -47,6 +47,6 @@ class CaptchaSubmitButtonComponent < SpinnerButtonComponent
   end
 
   def recaptcha_script_src
-    "#{RECAPTCHA_SCRIPT_SRC}?render=#{IdentityConfig.store.recaptcha_site_key}"
+    UriService.add_params(RECAPTCHA_SCRIPT_SRC, render: IdentityConfig.store.recaptcha_site_key)
   end
 end
