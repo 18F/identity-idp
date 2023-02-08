@@ -63,6 +63,7 @@ describe RecaptchaValidator do
             'success' => false,
             'error-codes' => ['missing-input-secret'],
           },
+          evaluated_as_valid: true,
           score_threshold: score_threshold,
         )
       end
@@ -87,6 +88,7 @@ describe RecaptchaValidator do
             'success' => true,
             'score' => score,
           },
+          evaluated_as_valid: false,
           score_threshold: score_threshold,
         )
       end
@@ -111,6 +113,7 @@ describe RecaptchaValidator do
             'success' => true,
             'score' => score,
           },
+          evaluated_as_valid: true,
           score_threshold: score_threshold,
         )
       end

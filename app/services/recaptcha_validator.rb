@@ -28,15 +28,11 @@ class RecaptchaValidator
       request.options.context = { service_name: 'recaptcha' }
     end
 
-    log_analytics(response.body)
-
-    if !response.body['success']
-      raise ValidationError.new("reCAPTCHA validation error: #{response.body['error-codes']}")
-    end
-
-    response.body['score'] >= score_threshold
-  rescue Faraday::Error, ValidationError
+    recaptcha_result_valid?(response.body)
+  rescue Faraday::Error
     true
+  ensure
+    log_analytics(response&.body)
   end
 
   private
@@ -48,7 +44,17 @@ class RecaptchaValidator
     end
   end
 
-  def log_analytics(recaptcha_result)
-    analytics&.recaptcha_verify_result_received(recaptcha_result:, score_threshold:)
+  def recaptcha_result_valid?(recaptcha_result)
+    !recaptcha_result ||
+      !recaptcha_result['success'] ||
+      recaptcha_result['score'] >= score_threshold
+  end
+
+  def log_analytics(recaptcha_result = nil)
+    analytics&.recaptcha_verify_result_received(
+      recaptcha_result:,
+      score_threshold:,
+      evaluated_as_valid: recaptcha_result_valid?(recaptcha_result),
+    )
   end
 end

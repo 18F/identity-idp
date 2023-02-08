@@ -2356,11 +2356,18 @@ module AnalyticsEvents
   # The result of a reCAPTCHA verification request was received
   # @param [Hash] recaptcha_result Full reCAPTCHA response body
   # @param [Float] score_threshold Minimum value for considering passing result
-  def recaptcha_verify_result_received(recaptcha_result:, score_threshold:, **extra)
+  # @param [Boolean] evaluated_as_valid Whether result was considered valid
+  def recaptcha_verify_result_received(
+    recaptcha_result:,
+    score_threshold:,
+    evaluated_as_valid:,
+    **extra
+  )
     track_event(
       'reCAPTCHA verify result received',
       recaptcha_result:,
       score_threshold:,
+      evaluated_as_valid:,
       **extra,
     )
   end
