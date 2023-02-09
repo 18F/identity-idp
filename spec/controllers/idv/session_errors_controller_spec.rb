@@ -14,7 +14,7 @@ shared_examples_for 'an idv session errors controller action' do
       expect(@analytics).to receive(:track_event).with(
         'IdV: session error visited',
         hash_including(type: action.to_s),
-      )
+      ).once
       get action
     end
   end
@@ -51,7 +51,7 @@ shared_examples_for 'an idv session errors controller action' do
       expect(@analytics).to receive(:track_event).with(
         'IdV: session error visited',
         hash_including(type: action.to_s),
-      )
+      ).once
       get action
     end
   end
