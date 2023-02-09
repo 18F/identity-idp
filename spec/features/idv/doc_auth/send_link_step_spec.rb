@@ -18,6 +18,11 @@ feature 'doc auth send link step' do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
+  it "defaults phone to user's 2fa phone numebr" do
+    field = page.find_field(t('two_factor_authentication.phone_label'))
+    expect(field.value).to eq('+1 202-555-1212')
+  end
+
   it 'proceeds to the next page with valid info' do
     expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
       :idv_phone_upload_link_sent,

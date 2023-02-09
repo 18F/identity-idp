@@ -18,11 +18,12 @@ module UspsInPersonProofing
         zipCode: location.zip_code,
       }.to_json
 
-      parse_facilities(
+      facilities = parse_facilities(
         faraday.post(url, body, dynamic_headers) do |req|
           req.options.context = { service_name: 'usps_facilities' }
         end.body,
       )
+      dedupe_facilities(facilities)
     end
 
     # Temporary function to return a static set of facilities
@@ -216,6 +217,12 @@ module UspsInPersonProofing
           zip_code_5: post_office['zip5'],
           is_pilot: post_office['isPilot'],
         )
+      end
+    end
+
+    def dedupe_facilities(facilities)
+      facilities.uniq do |facility|
+        [facility.address, facility.city, facility.state, facility.zip_code_5]
       end
     end
   end
