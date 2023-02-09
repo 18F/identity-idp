@@ -33,4 +33,13 @@ feature 'doc auth ssn step', :js do
     profiling_result = Proofing::Mock::DeviceProfilingBackend.new.profiling_result(session_id)
     expect(profiling_result).to eq('review')
   end
+
+  it 'does not proceed to the next page with invalid info' do
+    fill_out_ssn_form_fail
+    click_idv_continue
+
+    expect(page.find_field(t('idv.form.ssn_label_html'))['aria-invalid']).to eq('true')
+
+    expect(page).to have_current_path(idv_ssn_url)
+  end
 end
