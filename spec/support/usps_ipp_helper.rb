@@ -115,10 +115,23 @@ module UspsIppHelper
     )
   end
 
-  def stub_request_passed_proofing_results
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
-      **request_passed_proofing_results_args,
-    )
+  def stub_request_passed_proofing_results(overrides = {})
+    # todo: make a helper method that will merge attributes into json string
+    default_response = request_passed_proofing_results_args
+    response = {
+      **default_response,
+      body: JSON.generate(
+        {
+          **JSON.parse(default_response[:body]),
+          **overrides,
+        },
+      ),
+    }
+
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
+    ).to_return(response)
   end
 
   def request_passed_proofing_results_args
