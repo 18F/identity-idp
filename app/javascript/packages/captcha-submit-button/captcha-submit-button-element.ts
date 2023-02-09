@@ -2,7 +2,7 @@ export const CAPTCHA_EVENT_NAME = 'lg:captcha-submit-button:challenge';
 
 class CaptchaSubmitButtonElement extends HTMLElement {
   connectedCallback() {
-    this.button.addEventListener('click', (event) => this.handleButtonClick(event));
+    this.form?.addEventListener('submit', (event) => this.handleFormSubmit(event));
   }
 
   get button(): HTMLButtonElement {
@@ -48,19 +48,10 @@ class CaptchaSubmitButtonElement extends HTMLElement {
     return !event.defaultPrevented;
   }
 
-  handleButtonClick(event: MouseEvent) {
-    event.preventDefault();
-
-    if (this.form && !this.form.reportValidity()) {
-      // Prevent any associated custom click handling, e.g. spinner button spinning
-      event.stopImmediatePropagation();
-      return;
-    }
-
+  handleFormSubmit(event: SubmitEvent) {
     if (this.shouldInvokeChallenge()) {
+      event.preventDefault();
       this.invokeChallenge();
-    } else {
-      this.submit();
     }
   }
 }

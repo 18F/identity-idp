@@ -3,7 +3,6 @@ import { getByRole, fireEvent, screen } from '@testing-library/dom';
 import type { SinonStub } from 'sinon';
 import { useSandbox } from '@18f/identity-test-helpers';
 import './spinner-button-element';
-import type { SpinnerButtonElement } from './spinner-button-element';
 
 describe('SpinnerButtonElement', () => {
   const sandbox = useSandbox({ useFakeTimers: true });
@@ -14,14 +13,18 @@ describe('SpinnerButtonElement', () => {
 
   interface WrapperOptions {
     actionMessage?: string;
-
     tagName?: string;
-
     spinOnClick?: boolean;
+    inForm?: boolean;
   }
 
-  function createWrapper({ actionMessage, tagName = 'a', spinOnClick }: WrapperOptions = {}) {
-    document.body.innerHTML = `
+  function createWrapper({
+    actionMessage,
+    tagName = 'a',
+    spinOnClick,
+    inForm,
+  }: WrapperOptions = {}) {
+    let html = `
       <lg-spinner-button
         long-wait-duration-ms="${longWaitDurationMs}"
         ${spinOnClick === undefined ? '' : `spin-on-click="${spinOnClick}"`}
@@ -44,7 +47,13 @@ describe('SpinnerButtonElement', () => {
         }
       </lg-spinner-button>`;
 
-    return document.body.firstElementChild as SpinnerButtonElement;
+    if (inForm) {
+      html = `<form action="#">${html}</form>`;
+    }
+
+    document.body.innerHTML = html;
+
+    return document.querySelector('lg-spinner-button')!;
   }
 
   it('shows spinner on click', async () => {
@@ -57,16 +66,13 @@ describe('SpinnerButtonElement', () => {
   });
 
   it('disables button without preventing form handlers', async () => {
-    const wrapper = createWrapper({ tagName: 'button' });
+    const wrapper = createWrapper({ tagName: 'button', inForm: true });
     let submitted = false;
-    const form = document.createElement('form');
-    form.action = '#';
+    const form = wrapper.closest('form')!;
     form.addEventListener('submit', (event) => {
       submitted = true;
       event.preventDefault();
     });
-    document.body.appendChild(form);
-    form.appendChild(wrapper);
     const button = screen.getByRole('button', { name: 'Click Me' });
 
     await userEvent.type(button, '{Enter}');
@@ -74,6 +80,19 @@ describe('SpinnerButtonElement', () => {
 
     expect(submitted).to.be.true();
     expect(button.hasAttribute('disabled')).to.be.true();
+  });
+
+  it('does not show spinner if form is invalid', async () => {
+    const wrapper = createWrapper({ tagName: 'button', inForm: true });
+    const form = wrapper.closest('form')!;
+    const input = document.createElement('input');
+    input.required = true;
+    form.appendChild(input);
+    const button = screen.getByRole('button', { name: 'Click Me' });
+
+    await userEvent.type(button, '{Enter}');
+
+    expect(wrapper.classList.contains('spinner-button--spinner-active')).to.be.false();
   });
 
   it('announces action message', async () => {
