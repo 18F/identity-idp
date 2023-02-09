@@ -7,6 +7,8 @@ locals:
 <%= f.input(
       :email_language,
       as: :radio_buttons,
+      input_html: {  lang: I18n.available_locales.
+            map { |locale| t("simple_form.lang_attribute") } },
       label: t('forms.registration.labels.email_language'),
       hint: local_assigns.fetch(
         :hint,
@@ -27,4 +29,5 @@ locals:
           checked: selection ? selection.to_s == locale.to_s : I18n.locale.to_s == locale.to_s,
         ]
       end,
+      item_wrapper_tag: :span
     ) %>
