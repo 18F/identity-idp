@@ -28,11 +28,11 @@ class RecaptchaValidator
       request.options.context = { service_name: 'recaptcha' }
     end
 
+    log_analytics(recaptcha_result: response&.body)
     recaptcha_result_valid?(response.body)
   rescue Faraday::Error => error
+    log_analytics(error:)
     true
-  ensure
-    log_analytics(recaptcha_result: response&.body, error:)
   end
 
   private

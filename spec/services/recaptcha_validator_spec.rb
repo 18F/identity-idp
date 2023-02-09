@@ -31,18 +31,36 @@ describe RecaptchaValidator do
       end
 
       it { expect(valid).to eq(true) }
+
+      it 'does not log analytics' do
+        valid
+
+        expect(analytics).not_to have_logged_event('reCAPTCHA verify result received')
+      end
     end
 
     context 'with missing token' do
       let(:token) { nil }
 
       it { expect(valid).to eq(false) }
+
+      it 'does not log analytics' do
+        valid
+
+        expect(analytics).not_to have_logged_event('reCAPTCHA verify result received')
+      end
     end
 
     context 'with blank token' do
       let(:token) { '' }
 
       it { expect(valid).to eq(false) }
+
+      it 'does not log analytics' do
+        valid
+
+        expect(analytics).not_to have_logged_event('reCAPTCHA verify result received')
+      end
     end
 
     context 'with unsuccessful response from validation service' do
