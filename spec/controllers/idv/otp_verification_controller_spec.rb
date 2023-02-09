@@ -66,11 +66,12 @@ describe Idv::OtpVerificationController do
   end
 
   describe '#update' do
+    let(:otp_code_param) { { code: phone_confirmation_otp_code } }
     context 'the user has not been sent an otp' do
       let(:user_phone_confirmation_session) { nil }
 
       it 'redirects to otp delivery method selection' do
-        put :update, params: { code: phone_confirmation_otp_code }
+        put :update, params: otp_code_param
         expect(response).to redirect_to(idv_otp_delivery_method_path)
       end
     end
@@ -79,13 +80,13 @@ describe Idv::OtpVerificationController do
       let(:user_phone_confirmation) { true }
 
       it 'redirects to the review step' do
-        put :update, params: { code: phone_confirmation_otp_code }
+        put :update, params: otp_code_param
         expect(response).to redirect_to(idv_review_path)
       end
     end
 
     it 'tracks an analytics event' do
-      put :update, params: { code: phone_confirmation_otp_code }
+      put :update, params: otp_code_param
 
       expected_result = {
         success: true,
@@ -104,15 +105,16 @@ describe Idv::OtpVerificationController do
     end
 
     describe 'track irs analytics event' do
+      let(phone_hash) { { phone_number: phone } }
       context 'when the phone otp code is valid' do
         it 'captures success event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
             success: true,
-            phone_number: phone,
+            **phone_hash,
             failure_reason: {},
           )
 
-          put :update, params: { code: phone_confirmation_otp_code }
+          put :update, params: otp_code_param
         end
       end
 
@@ -120,14 +122,40 @@ describe Idv::OtpVerificationController do
         it 'captures failure event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
             success: false,
-            phone_number: phone,
+            **phone_hash,
             failure_reason: {
               code_matches: false,
-              code_expired: false,
             },
           )
 
           put :update, params: { code: '000' }
+        end
+      end
+
+      context 'when the phone opt code has expired' do
+        # a long time ago
+        let(:expired_phone_confirmation_otp_sent_at) do
+          phone_confirmation_otp_sent_at - 900000000
+        end
+        let(:user_phone_confirmation_session) do
+          Idv::PhoneConfirmationSession.new(
+            code: phone_confirmation_otp_code,
+            phone: phone,
+            sent_at: expired_phone_confirmation_otp_sent_at,
+            delivery_method: phone_confirmation_otp_delivery_method.to_sym,
+          )
+        end
+
+        it 'captures failure event' do
+          expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
+            success: false,
+            **phone_hash,
+            failure_reason: {
+              code_expired: true,
+            },
+          )
+
+          put :update, params: otp_code_param
         end
       end
     end
