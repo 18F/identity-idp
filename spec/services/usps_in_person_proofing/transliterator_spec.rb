@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe UspsInPersonProofing::Transliterator do
   describe '#transliterate' do
+    let(:sut) { UspsInPersonProofing::Transliterator.new }
     context 'baseline functionality' do
-      let(:sut) { UspsInPersonProofing::Transliterator.new }
       let(:inputValue) { "\t\n BobИy \t   TЉble?s\r\n" }
       let(:result) { sut.transliterate(inputValue) }
       let(:transliteratedResult) { 'Bob?y T?ble?s' }
@@ -75,7 +75,7 @@ RSpec.describe UspsInPersonProofing::Transliterator do
         )}\" to \"\\u#{value.ord.to_s(16).rjust(
           4, '0'
         )}\"" do
-          expect(sut.transliterate(key)).to eq(value)
+          expect(sut.transliterate(key).transliterated).to eq(value)
         end
       end
     end

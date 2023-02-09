@@ -12,6 +12,9 @@ module UspsInPersonProofing
   )
 
   class Transliterator
+    # This is the default. May not be able to override this in current version.
+    REPLACEMENT = "?".freeze
+
     # Transliterate values for usage in the USPS API. This will additionally strip/reduce
     # excess whitespace and check for special characters that are unsupported by transliteration.
     # Additional validation may be necessary depending on the specific field being transliterated.
@@ -23,9 +26,9 @@ module UspsInPersonProofing
       transliterated = I18n.transliterate(stripped, locale: :en)
 
       unsupported_chars = []
-      unless stripped.count('?') == transliterated.count('?')
+      unless stripped.count(REPLACEMENT) == transliterated.count(REPLACEMENT)
         transliterated.chars.each_with_index do |val, index|
-          unsupported_chars.append(stripped[index]) if val == '?' && stripped[index] != '?'
+          unsupported_chars.append(stripped[index]) if val == REPLACEMENT && stripped[index] != REPLACEMENT
         end
       end
 
