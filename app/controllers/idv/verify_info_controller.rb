@@ -9,6 +9,8 @@ module Idv
     def show
       increment_step_counts
       analytics.idv_doc_auth_verify_visited(**analytics_arguments)
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
+        call('verify', :view, true)
 
       if ssn_throttle.throttled?
         redirect_to idv_session_errors_ssn_failure_url
@@ -27,6 +29,8 @@ module Idv
     def update
       return if idv_session.verify_info_step_document_capture_session_uuid
       analytics.idv_doc_auth_verify_submitted(**analytics_arguments)
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
+        call('verify', :update, true)
 
       pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
 
@@ -114,6 +118,7 @@ module Idv
     end
 
     def delete_pii
+      flow_session.delete(:pii_from_doc)
       flow_session.delete(:pii_from_user)
     end
 
