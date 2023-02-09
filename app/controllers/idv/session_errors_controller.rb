@@ -6,6 +6,7 @@ module Idv
     before_action :confirm_two_factor_authenticated_or_user_id_in_session
     before_action :confirm_idv_session_step_needed
     before_action :set_try_again_path, only: [:warning, :exception]
+    before_action :ignore_form_step_wait_requests
 
     def exception
       log_event
@@ -66,6 +67,10 @@ module Idv
     def confirm_idv_session_step_needed
       return unless user_fully_authenticated?
       redirect_to idv_phone_url if idv_session.profile_confirmation == true
+    end
+
+    def ignore_form_step_wait_requests
+      head(:no_content) if request.headers['HTTP_X_FORM_STEPS_WAIT']
     end
 
     def set_try_again_path

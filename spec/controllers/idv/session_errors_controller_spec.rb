@@ -6,7 +6,6 @@ shared_examples_for 'an idv session errors controller action' do
 
     it 'renders the error' do
       get action
-
       expect(response).to render_template(template)
     end
 
@@ -16,6 +15,17 @@ shared_examples_for 'an idv session errors controller action' do
         hash_including(type: action.to_s),
       ).once
       get action
+    end
+
+    context 'fetch() request from form-steps-wait JS' do
+      before do
+        request.headers['X-Form-Steps-Wait'] = '1'
+      end
+
+      it 'returns an empty response' do
+        get action
+        expect(response).to have_http_status(204)
+      end
     end
   end
 
@@ -44,7 +54,6 @@ shared_examples_for 'an idv session errors controller action' do
     end
     it 'renders the error' do
       get action
-
       expect(response).to render_template(template)
     end
     it 'logs an event' do
@@ -53,6 +62,17 @@ shared_examples_for 'an idv session errors controller action' do
         hash_including(type: action.to_s),
       ).once
       get action
+    end
+
+    context 'fetch() request from form-steps-wait JS' do
+      before do
+        request.headers['X-Form-Steps-Wait'] = '1'
+      end
+
+      it 'returns an empty response' do
+        get action
+        expect(response).to have_http_status(204)
+      end
     end
   end
 
