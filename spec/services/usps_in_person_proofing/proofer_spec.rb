@@ -148,7 +148,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
       end
 
       it 'fetches a new token and retries the attempt' do
-        expect(subject).to receive(:token).exactly(2).times
+        expect(subject).to receive(:token).twice
 
         facilities = subject.request_facilities(location)
 
@@ -232,7 +232,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
       end
 
       it 'fetches a new token and retries the attempt' do
-        expect(subject).to receive(:token).exactly(2).times
+        expect(subject).to receive(:token).twice
         enrollment = subject.request_enroll(applicant)
 
         expect(enrollment.enrollment_code).to be_present
@@ -344,7 +344,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
         stub_request_enrollment_code_with_forbidden_error
         stub_request_enrollment_code
 
-        expect(subject).to receive(:token).exactly(2).times
+        expect(subject).to receive(:token).twice
         enrollment = subject.request_enrollment_code(applicant)
 
         expect(enrollment['enrollmentCode']).to be_present
