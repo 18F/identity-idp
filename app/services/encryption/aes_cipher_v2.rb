@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Encryption
   class AesCipherV2
     def encrypt(plaintext, cek)
