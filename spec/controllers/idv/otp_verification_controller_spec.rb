@@ -132,7 +132,7 @@ describe Idv::OtpVerificationController do
         end
       end
 
-      context 'when the phone opt code has expired' do
+      context 'when the phone otp code has expired' do
         let(:expired_phone_confirmation_otp_sent_at) do
           # Set time to a long time ago
           phone_confirmation_otp_sent_at - 900000000
