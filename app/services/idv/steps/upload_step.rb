@@ -25,6 +25,12 @@ module Idv
         end
       end
 
+      def extra_view_variables
+        {
+          idv_phone_form: build_form,
+        }
+      end
+
       private
 
       def handle_desktop_selection
@@ -35,12 +41,18 @@ module Idv
         end
       end
 
+      def build_form
+        Idv::PhoneForm.new(
+          previous_params: {},
+          user: current_user,
+          delivery_methods: [:sms],
+        )
+      end
+
       def handle_mobile_selection
-        if mobile_device?
-          bypass_send_link_steps
-        else
-          send_user_to_send_link_step
-        end
+        # TODO: Perform send_link step's
+        # `call` actions here
+        send_user_to_send_link_step
       end
 
       def identity
