@@ -116,6 +116,8 @@ feature 'Analytics Regression', js: true do
       'IdV: personal key acknowledgment toggled' => { checked: true, proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
       'IdV: personal key submitted' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' }, address_verification_method: 'phone', deactivation_reason: 'in_person_verification_pending' },
       'IdV: in person ready to verify visited' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
+      'IdV: user clicked what to bring link on ready to verify page' => {},
+      'IdV: user clicked sp link on ready to verify page' => {},
     }
   end
   # rubocop:enable Layout/LineLength
@@ -185,17 +187,38 @@ feature 'Analytics Regression', js: true do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
 
+      start_idv_from_sp
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
       complete_all_in_person_proofing_steps(user)
       complete_phone_step(user)
       complete_review_step(user)
       acknowledge_and_confirm_personal_key
+      visit_help_center
+      visit_sp
     end
 
     it 'records all of the events', allow_browser_log: true do
+      max_wait = Time.now + 5.seconds
+      wait_for_event("IdV: user clicked what to bring link on ready to verify page", max_wait)
+      # wait_for_event('IdV: user clicked sp link on ready to verify page')
       in_person_path_events.each do |event, attributes|
         expect(fake_analytics).to have_logged_event(event, attributes)
+      end
+    end
+
+    # wait for event to happen
+    def wait_for_event(event, wait)
+      frequency = 0.1.seconds
+      loop do
+        expect(fake_analytics).to have_logged_event(event)
+        return
+      rescue RSpec::Expectations::ExpectationNotMetError => err
+        if wait - Time.now  < frequency
+          raise err
+        end
+        sleep frequency
+        next
       end
     end
   end
