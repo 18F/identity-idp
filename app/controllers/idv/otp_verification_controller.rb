@@ -21,7 +21,7 @@ module Idv
       analytics.idv_phone_confirmation_otp_submitted(**result.to_h)
 
       parsed_failure_reason =
-        (result.extra.slice(:code_expired) if !result.success? && result.extra[:code_expired]) ||
+        (result.extra.slice(:code_expired) if result.extra[:code_expired]) ||
         (result.extra.slice(:code_matches) if !result.success? && !result.extra[:code_matches]) ||
         {}
       irs_attempts_api_tracker.idv_phone_otp_submitted(
