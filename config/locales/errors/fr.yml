@@ -65,6 +65,7 @@ fr:
         charge. Veuillez essayer par SMS si vous possédez un téléphone disposant
         de cette fonction.
       invalid_phone_number: Le numéro de téléphone n’est pas valide
+      invalid_recaptcha_token: Vous devez relever le défi de la prévention du pourriel.
       invalid_sms_number: Le numéro de téléphone saisi ne prend pas en charge les
         messages textuels. Veuillez essayer l’option d’appel téléphonique.
       invalid_voice_number: Numéro de téléphone invalide. Vérifiez que vous avez entré
