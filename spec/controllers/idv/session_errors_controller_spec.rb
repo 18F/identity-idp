@@ -26,6 +26,10 @@ shared_examples_for 'an idv session errors controller action' do
         get action
         expect(response).to have_http_status(204)
       end
+      it 'does not log an event' do
+        expect(@analytics).not_to receive(:track_event).with('IdV: session error visited', anything)
+        get action
+      end
     end
   end
 
@@ -72,6 +76,10 @@ shared_examples_for 'an idv session errors controller action' do
       it 'returns an empty response' do
         get action
         expect(response).to have_http_status(204)
+      end
+      it 'does not log an event' do
+        expect(@analytics).not_to receive(:track_event).with('IdV: session error visited', anything)
+        get action
       end
     end
   end
