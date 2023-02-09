@@ -12,6 +12,9 @@ class SessionEncryptor
     'prev_address2', 'prev_city', 'prev_state', 'prev_zipcode', 'pii', 'pii_from_doc',
     'pii_from_user', 'password', 'personal_key', 'email', 'email_address', 'unconfirmed_phone'
   ].to_set.freeze
+  CIPHERTEXT_KEY = 't'
+  COMPRESSED_KEY = 'c'
+  VERSION_KEY = 'v'
 
   # 'idv/doc_auth' and 'idv' are used during the proofing process and can contain PII
   # personal keys are generated and stored in the session between requests, but are used
@@ -41,8 +44,8 @@ class SessionEncryptor
     return LegacySessionEncryptor.new.load(value) if should_use_legacy_encryptor_for_read?(value)
 
     payload = MessagePack.unpack(value)
-    ciphertext = payload['t']
-    compressed = payload['c']
+    ciphertext = payload[CIPHERTEXT_KEY]
+    compressed = payload[COMPRESSED_KEY]
     decrypted = outer_decrypt(ciphertext)
     decrypted = if compressed == 1
                   Zlib.gunzip(decrypted)
@@ -67,9 +70,17 @@ class SessionEncryptor
     alert_or_raise_if_contains_sensitive_value!(plain, value)
 
     if should_compress?(plain)
-      { v: CIPHERTEXT_HEADER, t: outer_encrypt(Zlib.gzip(plain)), c: 1 }.to_msgpack
+      {
+        VERSION_KEY => CIPHERTEXT_HEADER,
+        CIPHERTEXT_KEY => outer_encrypt(Zlib.gzip(plain)),
+        COMPRESSED_KEY => 1,
+      }.to_msgpack
     else
-      { v: CIPHERTEXT_HEADER, t: outer_encrypt(plain), c: 0 }.to_msgpack
+      {
+        VERSION_KEY => CIPHERTEXT_HEADER,
+        CIPHERTEXT_KEY => outer_encrypt(plain),
+        COMPRESSED_KEY => 0,
+      }.to_msgpack
     end
   end
 

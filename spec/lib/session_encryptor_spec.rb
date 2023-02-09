@@ -100,7 +100,7 @@ RSpec.describe SessionEncryptor do
         ciphertext = subject.dump(session)
 
         partially_decrypted = Zlib.gunzip(
-          subject.outer_decrypt(MessagePack.unpack(ciphertext)['t']),
+          subject.outer_decrypt(MessagePack.unpack(ciphertext)[SessionEncryptor::CIPHERTEXT_KEY]),
         )
         partially_decrypted_json = JSON.parse(partially_decrypted)
 
@@ -120,8 +120,10 @@ RSpec.describe SessionEncryptor do
         ciphertext = subject.dump(session)
 
         session_payload = MessagePack.unpack(ciphertext)
-        expect(session_payload['c']).to eq 0
-        session_decrypted = JSON.parse(subject.outer_decrypt(session_payload['t']))
+        expect(session_payload[SessionEncryptor::COMPRESSED_KEY]).to eq 0
+        session_decrypted = JSON.parse(
+          subject.outer_decrypt(session_payload[SessionEncryptor::CIPHERTEXT_KEY]),
+        )
         expect(session_decrypted).to eq session
       end
 
