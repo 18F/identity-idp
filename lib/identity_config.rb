@@ -286,6 +286,7 @@ class IdentityConfig
     config.add(:otp_min_attempts_remaining_warning_count, type: :integer)
     config.add(:mx_timeout, type: :integer)
     config.add(:nonessential_email_banlist, type: :json)
+    config.add(:oidc_respnse_include_ial_aal, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
     config.add(:otp_delivery_blocklist_maxretry, type: :integer)
     config.add(:otp_expiration_warning_seconds, type: :integer)
