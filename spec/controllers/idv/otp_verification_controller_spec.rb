@@ -105,7 +105,7 @@ describe Idv::OtpVerificationController do
     end
 
     describe 'track irs analytics event' do
-      let(phone_hash) { { phone_number: phone } }
+      let(:phone_hash) { { phone_number: phone } }
       context 'when the phone otp code is valid' do
         it 'captures success event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
@@ -133,8 +133,8 @@ describe Idv::OtpVerificationController do
       end
 
       context 'when the phone opt code has expired' do
-        # a long time ago
         let(:expired_phone_confirmation_otp_sent_at) do
+          # Set time to a long time ago
           phone_confirmation_otp_sent_at - 900000000
         end
         let(:user_phone_confirmation_session) do

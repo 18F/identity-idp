@@ -18,7 +18,6 @@ module Idv
 
     def update
       result = phone_confirmation_otp_verification_form.submit(code: params[:code])
-
       analytics.idv_phone_confirmation_otp_submitted(**result.to_h)
 
       parsed_failure_reason =
