@@ -25,6 +25,20 @@ shared_examples_for 'an idv phone errors controller action' do
       )
       get action
     end
+
+    context 'fetch() request from form-steps-wait JS' do
+      before do
+        request.headers['X-Form-Steps-Wait'] = '1'
+      end
+      it 'returns an empty response' do
+        get action
+        expect(response).to have_http_status(204)
+      end
+      it 'does not log an event' do
+        expect(@analytics).not_to receive(:track_event).with('IdV: phone error visited', anything)
+        get action
+      end
+    end
   end
 
   context 'the user is authenticated and has confirmed their phone' do
