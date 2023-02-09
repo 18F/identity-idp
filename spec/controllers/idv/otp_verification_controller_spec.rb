@@ -5,15 +5,19 @@ describe Idv::OtpVerificationController do
 
   let(:phone) { '2255555000' }
   let(:user_phone_confirmation) { false }
-  let(:phone_confirmation_otp_delivery_method) { 'sms' }
   let(:phone_confirmation_otp_code) { '777777' }
   let(:phone_confirmation_otp_sent_at) { Time.zone.now }
-  let(:user_phone_confirmation_session) do
-    Idv::PhoneConfirmationSession.new(
+  let(:phone_confirmation_session_properties) do
+    {
       code: phone_confirmation_otp_code,
       phone: phone,
+      delivery_method: :sms,
+    }
+  end
+  let(:user_phone_confirmation_session) do
+    Idv::PhoneConfirmationSession.new(
+      **phone_confirmation_session_properties,
       sent_at: phone_confirmation_otp_sent_at,
-      delivery_method: phone_confirmation_otp_delivery_method.to_sym,
     )
   end
 
@@ -105,12 +109,12 @@ describe Idv::OtpVerificationController do
     end
 
     describe 'track irs analytics event' do
-      let(:phone_hash) { { phone_number: phone } }
+      let(:phone_property) { { phone_number: phone } }
       context 'when the phone otp code is valid' do
         it 'captures success event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
             success: true,
-            **phone_hash,
+            **phone_property,
             failure_reason: {},
           )
 
@@ -119,16 +123,17 @@ describe Idv::OtpVerificationController do
       end
 
       context 'when the phone otp code is invalid' do
+        let(:invalid_otp_code_param) { { code: '000' } }
         it 'captures failure event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
             success: false,
-            **phone_hash,
+            **phone_property,
             failure_reason: {
               code_matches: false,
             },
           )
 
-          put :update, params: { code: '000' }
+          put :update, params: invalid_otp_code_param
         end
       end
 
@@ -139,17 +144,15 @@ describe Idv::OtpVerificationController do
         end
         let(:user_phone_confirmation_session) do
           Idv::PhoneConfirmationSession.new(
-            code: phone_confirmation_otp_code,
-            phone: phone,
+            **phone_confirmation_session_properties,
             sent_at: expired_phone_confirmation_otp_sent_at,
-            delivery_method: phone_confirmation_otp_delivery_method.to_sym,
           )
         end
 
         it 'captures failure event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
             success: false,
-            **phone_hash,
+            **phone_property,
             failure_reason: {
               code_expired: true,
             },
