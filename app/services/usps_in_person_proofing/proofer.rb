@@ -133,6 +133,15 @@ module UspsInPersonProofing
         conn.options.open_timeout = IdentityConfig.store.usps_ipp_request_timeout
         conn.options.write_timeout = IdentityConfig.store.usps_ipp_request_timeout
 
+        # If the request fails because the token is expired, get a new token before retrying the request
+        retry_options = {
+          retry_statuses: [403],
+          retry_block: lambda do |env:, options:, retry_count:, exception:, will_retry_in:|
+            token
+          end,
+        }
+        conn.request :retry, retry_options
+
         # Log request metrics
         conn.request :instrumentation, name: 'request_metric.faraday'
 
