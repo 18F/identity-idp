@@ -21,14 +21,22 @@ module Idv
         if params[:type] == 'desktop'
           handle_desktop_selection
         else
-          handle_mobile_selection
+          if IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
+            handle_phone_submission
+          else
+            handle_mobile_selection
+          end
         end
       end
 
       def extra_view_variables
-        {
-          idv_phone_form: build_form,
-        }
+        if IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
+          {
+            idv_phone_form: build_form,
+          }
+        else
+          {}
+        end
       end
 
       private
@@ -49,12 +57,16 @@ module Idv
         )
       end
 
+      # To be removed after 50/50
       def handle_mobile_selection
-        binding.pry
-        # TODO: Perform send_link step's
-        # `call` actions here
-        #send_user_to_send_link_step
+        if mobile_device?
+          bypass_send_link_steps
+        else
+          send_user_to_send_link_step
+        end
+      end
 
+      def handle_phone_submission
         throttle.increment!
         return throttled_failure if throttle.throttled?
         telephony_result = send_link
@@ -149,7 +161,7 @@ module Idv
         current_sp&.friendly_name.presence || APP_NAME
       end
 
-      def link(session_uuid)
+      def link_for_send_link(session_uuid)
         idv_capture_doc_dashes_url(
           'document-capture-session': session_uuid,
           request_id: sp_session[:request_id],
@@ -161,7 +173,7 @@ module Idv
         update_document_capture_session_requested_at(session_uuid)
         Telephony.send_doc_auth_link(
           to: formatted_destination_phone,
-          link: link(session_uuid),
+          link: link_for_send_link(session_uuid),
           country_code: Phonelib.parse(formatted_destination_phone).country,
           sp_or_app_name: sp_or_app_name,
         )
