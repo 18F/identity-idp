@@ -23,7 +23,7 @@ function InPersonCallToAction({ altHeading, altPrompt, altButtonText }: InPerson
       <h2 id={`in-person-cta-heading-${instanceId}`} className="margin-y-2">
         {altHeading || t('in_person_proofing.headings.cta')}
       </h2>
-      <p>{altPrompt}</p>
+      <p>{altPrompt || t('in_person_proofing.body.cta.prompt_detail')}</p>
       <Button
         isBig
         isOutline
