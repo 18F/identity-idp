@@ -18,7 +18,7 @@ module Idv
       )
 
       @remaining_attempts = throttle.remaining_count
-      log_event based_on_throttle: throttle
+      log_event(based_on_throttle: throttle)
     end
 
     def failure
@@ -27,7 +27,7 @@ module Idv
         throttle_type: :idv_resolution,
       )
       @expires_at = throttle.expires_at
-      log_event based_on_throttle: throttle
+      log_event(based_on_throttle: throttle)
     end
 
     def ssn_failure
@@ -41,13 +41,13 @@ module Idv
         @expires_at = throttle.expires_at
       end
 
-      log_event based_on_throttle: throttle
+      log_event(based_on_throttle: throttle)
       render 'idv/session_errors/failure'
     end
 
     def throttled
       throttle = Throttle.new(user: effective_user, throttle_type: :idv_doc_auth)
-      log_event based_on_throttle: throttle
+      log_event(based_on_throttle: throttle)
       @expires_at = throttle.expires_at
     end
 
