@@ -25,7 +25,7 @@ class OpenidConnectUserInfoPresenter
       info[:ial] = Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[identity.ial]
       info[:aal] = Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[identity.aal]
     end
-    
+
     scoper.filter(info)
   end
 
