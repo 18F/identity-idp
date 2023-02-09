@@ -5,7 +5,7 @@ module Idv
         welcome: Idv::Steps::WelcomeStep,
         agreement: Idv::Steps::AgreementStep,
         upload: Idv::Steps::UploadStep,
-        send_link: Idv::Steps::SendLinkStep,
+        # send_link: Idv::Steps::SendLinkStep,
         link_sent: Idv::Steps::LinkSentStep,
         email_sent: Idv::Steps::EmailSentStep,
         document_capture: Idv::Steps::DocumentCaptureStep,
