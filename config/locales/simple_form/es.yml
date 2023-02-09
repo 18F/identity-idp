@@ -3,7 +3,7 @@ es:
   simple_form:
     error_notification:
       default_message: 'Por favor revise los siguientes problemas:'
-    lang_atrribute: 'en'
+    lang_atrr: 'en'
     'no': 'No'
     required:
       html: ''
