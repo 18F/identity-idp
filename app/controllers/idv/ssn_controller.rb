@@ -27,10 +27,10 @@ module Idv
         redirect_to idv_ssn_url
       end
 
-      flow_session[:pii_from_doc][:ssn] = params['doc_auth']['ssn']
+      flow_session['pii_from_doc'][:ssn] = params[:doc_auth][:ssn]
 
       irs_attempts_api_tracker.idv_ssn_submitted(
-        ssn: params['doc_auth']['ssn'],
+        ssn: params[:doc_auth][:ssn],
       )
 
       idv_session.applicant = nil
@@ -77,7 +77,7 @@ module Idv
     end
 
     def updating_ssn
-      flow_session.dig(:pii_from_doc, :ssn).present?
+      flow_session.dig('pii_from_doc', :ssn).present?
     end
   end
 end

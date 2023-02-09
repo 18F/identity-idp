@@ -4,10 +4,9 @@ describe Idv::SsnController do
   include IdvHelper
 
   let(:flow_session) do
-    { 'error_message' => nil,
-      'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
+    { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
       'pii_from_doc' => Idp::Constants::MOCK_IDV_APPLICANT.dup,
-      'threatmetrix_session_id' => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
+      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
       :flow_path => 'standard' }
   end
 
@@ -45,6 +44,9 @@ describe Idv::SsnController do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_ssn_controller_enabled).
         and_return(true)
+      stub_analytics
+      stub_attempts_tracker
+      allow(@analytics).to receive(:track_event)
     end
 
     describe '#show' do
@@ -57,12 +59,6 @@ describe Idv::SsnController do
           step: 'ssn',
           step_count: 1,
         }
-      end
-
-      before do
-        stub_analytics
-        stub_attempts_tracker
-        allow(@analytics).to receive(:track_event)
       end
 
       context 'when doc_auth_ssn_controller_enabled' do
@@ -99,38 +95,39 @@ describe Idv::SsnController do
         let(:params) { { doc_auth: { ssn: ssn } } }
 
         it 'merges ssn into pii session value' do
-          put :update
+          put :update, params: params
 
-          expect(flow_session[:pii_from_doc][:ssn]).to eq(ssn)
+          expect(flow_session['pii_from_doc'][:ssn]).to eq(ssn)
         end
 
         it 'logs attempts api event' do
-          expect(attempts_api).to receive(:idv_ssn_submitted).with(
+          expect(@irs_attempts_api_tracker).to receive(:idv_ssn_submitted).with(
             ssn: ssn,
           )
-          put :update
+          put :update, params: params
         end
 
         context 'with existing session applicant' do
-          let(:session) { super().merge(idv: { 'applicant' => {} }) }
-
           it 'clears applicant' do
-            put :update
+            subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT
 
-            expect(session[:idv]['applicant']).to be_blank
+            put :update, params: params
+
+            expect(subject.idv_session.applicant).to be_blank
           end
         end
 
         it 'adds a threatmetrix session id to flow session' do
-          step.extra_view_variables
-          expect(flow.flow_session[:threatmetrix_session_id]).to_not eq(nil)
+          subject.extra_view_variables
+          expect(flow_session[:threatmetrix_session_id]).to_not eq(nil)
         end
 
         it 'does not change threatmetrix_session_id when updating ssn' do
-          step.call
-          session_id = flow.flow_session[:threatmetrix_session_id]
-          step.extra_view_variables
-          expect(flow.flow_session[:threatmetrix_session_id]).to eq(session_id)
+          flow_session['pii_from_doc'][:ssn] = ssn
+          put :update, params: params
+          session_id = flow_session[:threatmetrix_session_id]
+          subject.extra_view_variables
+          expect(flow_session[:threatmetrix_session_id]).to eq(session_id)
         end
       end
 
