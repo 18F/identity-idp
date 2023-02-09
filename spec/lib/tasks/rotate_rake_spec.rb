@@ -66,4 +66,23 @@ describe 'rotate' do
       end.to output(/Error with user id:#{user.id}/).to_stdout
     end
   end
+
+  describe 'hmac_fingerprinter_key' do
+    it 'runs successfully' do
+      old_email = user.email_addresses.first.email
+      old_email_fingerprint = user.email_addresses.first.email_fingerprint
+
+      rotate_hmac_key
+
+      Rake::Task['rotate:hmac_fingerprinter_key'].execute
+      user.reload
+
+      expect(user.email_addresses.first.email).to eq old_email
+      expect(user.email_addresses.first.email_fingerprint).to_not eq(old_email_fingerprint)
+      expect(EmailAddress.find_by(email_fingerprint: old_email_fingerprint)).to eq nil
+      expect(
+        EmailAddress.find_by(email_fingerprint: user.email_addresses.first.email_fingerprint).id,
+      ).to eq user.email_addresses.first.id
+    end
+  end
 end

@@ -47,6 +47,23 @@ namespace :rotate do
     end
   end
 
+  desc 'hmac fingerprinter key'
+  task hmac_fingerprinter_key: :environment do
+    num_users = User.count
+    progress = new_progress_bar('Users', num_users)
+
+    User.find_in_batches.with_index do |users, _batch|
+      User.transaction do
+        users.each do |user|
+          KeyRotator::HmacFingerprinter.new.rotate(user: user)
+          progress&.increment
+        rescue StandardError => err # Don't use user.email in output...
+          Kernel.puts "Error with user id:#{user.id} #{err.message} #{err.backtrace}"
+        end
+      end
+    end
+  end
+
   def new_progress_bar(label, num)
     return if ENV['PROGRESS'] == 'no'
     ProgressBar.create(
