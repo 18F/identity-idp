@@ -97,7 +97,11 @@ module Idv
     # copied from address_controller
     def confirm_ssn_step_complete
       return if pii.present? && pii[:ssn].present?
-      redirect_to idv_doc_auth_url
+      if IdentityConfig.store.doc_auth_ssn_controller_enabled
+        redirect_to idv_ssn_url
+      else
+        redirect_to idv_doc_auth_url
+      end
     end
 
     def confirm_profile_not_already_confirmed
