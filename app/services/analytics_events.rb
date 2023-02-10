@@ -643,9 +643,11 @@ module AnalyticsEvents
   end
 
   # @param [String] selected_location Selected in-person location
+  # @param [String] in_person_cta_variant Variant testing bucket label
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user submitted the in person proofing location step
-  def idv_in_person_location_submitted(selected_location:, in_person_cta_variant:, flow_path:, **extra)
+  def idv_in_person_location_submitted(selected_location:, in_person_cta_variant:, flow_path:,
+                                       **extra)
     track_event(
       'IdV: in person proofing location submitted',
       selected_location: selected_location,
