@@ -146,13 +146,13 @@ RSpec.describe GetUspsProofingResultsJob do
     ActiveSupport::TimeZone['Central Time (US & Canada)'].strptime(
       '12/17/2020 033855',
       '%m/%d/%Y %H%M%S',
-    ).utc.to_datetime
+    ).in_time_zone('UTC')
   end
   let(:transaction_end_date_time) do
     ActiveSupport::TimeZone['Central Time (US & Canada)'].strptime(
       '12/17/2020 034055',
       '%m/%d/%Y %H%M%S',
-    ).utc.to_datetime
+    ).in_time_zone('UTC')
   end
 
   before do

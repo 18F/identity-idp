@@ -389,6 +389,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     ActiveSupport::TimeZone['Central Time (US & Canada)'].strptime(
       usps_timestamp,
       '%m/%d/%Y %H%M%S',
-    ).utc.to_datetime
+    ).in_time_zone('UTC')
   end
 end
