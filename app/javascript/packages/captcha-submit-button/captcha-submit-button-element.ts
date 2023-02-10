@@ -1,8 +1,16 @@
 export const CAPTCHA_EVENT_NAME = 'lg:captcha-submit-button:challenge';
 
 class CaptchaSubmitButtonElement extends HTMLElement {
+  form: HTMLFormElement | null;
+
   connectedCallback() {
-    this.form?.addEventListener('submit', (event) => this.handleFormSubmit(event));
+    this.form = this.closest('form');
+
+    this.form?.addEventListener('submit', this.handleFormSubmit);
+  }
+
+  disconnectedCallback() {
+    this.form?.removeEventListener('submit', this.handleFormSubmit);
   }
 
   get button(): HTMLButtonElement {
@@ -11,10 +19,6 @@ class CaptchaSubmitButtonElement extends HTMLElement {
 
   get tokenInput(): HTMLInputElement {
     return this.querySelector('[type=hidden]')!;
-  }
-
-  get form(): HTMLFormElement | null {
-    return this.closest('form');
   }
 
   get recaptchaSiteKey(): string | null {
@@ -48,12 +52,12 @@ class CaptchaSubmitButtonElement extends HTMLElement {
     return !event.defaultPrevented;
   }
 
-  handleFormSubmit(event: SubmitEvent) {
+  handleFormSubmit = (event: SubmitEvent) => {
     if (this.shouldInvokeChallenge()) {
       event.preventDefault();
       this.invokeChallenge();
     }
-  }
+  };
 }
 
 declare global {

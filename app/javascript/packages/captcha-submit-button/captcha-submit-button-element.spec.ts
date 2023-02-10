@@ -1,6 +1,6 @@
 import type { SinonStub } from 'sinon';
 import userEvent from '@testing-library/user-event';
-import { screen, waitFor } from '@testing-library/dom';
+import { screen, waitFor, fireEvent } from '@testing-library/dom';
 import { useSandbox, useDefineProperty } from '@18f/identity-test-helpers';
 import '@18f/identity-spinner-button/spinner-button-element';
 import { CAPTCHA_EVENT_NAME } from './captcha-submit-button-element';
@@ -35,18 +35,30 @@ describe('CaptchaSubmitButtonElement', () => {
       `;
     });
 
-    it('submits the form', async () => {
+    it('does not prevent default form submission', async () => {
       const button = screen.getByRole('button', { name: 'Submit' });
       const form = document.querySelector('form')!;
 
       let didSubmit = false;
       form.addEventListener('submit', (event) => {
+        expect(event.defaultPrevented).to.equal(false);
         event.preventDefault();
         didSubmit = true;
       });
 
       await userEvent.click(button);
       await waitFor(() => expect(didSubmit).to.be.true());
+    });
+
+    it('unbinds form events when disconnected', () => {
+      const submitButton = document.querySelector('lg-captcha-submit-button')!;
+      const form = submitButton.form!;
+      form.removeChild(submitButton);
+
+      sandbox.spy(submitButton, 'shouldInvokeChallenge');
+      fireEvent.submit(form);
+
+      expect(submitButton.shouldInvokeChallenge).not.to.have.been.called();
     });
 
     context('with configured recaptcha', () => {
@@ -90,7 +102,7 @@ describe('CaptchaSubmitButtonElement', () => {
         expect(grecaptcha.execute).to.have.been.calledWith(RECAPTCHA_SITE_KEY, {
           action: RECAPTCHA_ACTION_NAME,
         });
-        expect(Object.fromEntries(new FormData(form))).to.deep.equal({
+        expect(Object.fromEntries(new window.FormData(form))).to.deep.equal({
           recaptcha_token: RECAPTCHA_TOKEN_VALUE,
         });
       });
