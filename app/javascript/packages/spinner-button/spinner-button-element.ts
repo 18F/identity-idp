@@ -12,24 +12,37 @@ const DEFAULT_LONG_WAIT_DURATION_MS = 15000;
 export class SpinnerButtonElement extends HTMLElement {
   elements: SpinnerButtonElements;
 
+  form: HTMLFormElement | null;
+
   #longWaitTimeout?: number;
 
   connectedCallback() {
-    this.bindSpinOnClick();
+    this.form = this.querySelector('form') || this.closest('form');
+
     this.addEventListener('spinner.start', () => this.toggleSpinner(true));
     this.addEventListener('spinner.stop', () => this.toggleSpinner(false));
+
+    if (this.spinOnClick) {
+      if (this.form) {
+        this.form.addEventListener('submit', this.showSpinner);
+      } else {
+        this.button.addEventListener('click', this.showSpinner);
+      }
+    }
   }
 
   disconnectedCallback() {
     window.clearTimeout(this.#longWaitTimeout);
+
+    if (this.form) {
+      this.form.removeEventListener('submit', this.showSpinner);
+    } else {
+      this.button.removeEventListener('click', this.showSpinner);
+    }
   }
 
   get button(): HTMLElement {
     return this.querySelector('a,button:not([type]),[type="submit"],[type="button"]')!;
-  }
-
-  get form(): HTMLFormElement | null {
-    return this.querySelector('form') || this.closest('form');
   }
 
   get actionMessage(): HTMLElement {
@@ -47,17 +60,7 @@ export class SpinnerButtonElement extends HTMLElement {
     return Number(this.getAttribute('long-wait-duration-ms')) || DEFAULT_LONG_WAIT_DURATION_MS;
   }
 
-  bindSpinOnClick() {
-    if (!this.spinOnClick) {
-      return;
-    }
-
-    if (this.form) {
-      this.form.addEventListener('submit', () => this.toggleSpinner(true));
-    } else {
-      this.button.addEventListener('click', () => this.toggleSpinner(true));
-    }
-  }
+  showSpinner = () => this.toggleSpinner(true);
 
   toggleSpinner(isVisible: boolean) {
     this.classList.toggle('spinner-button--spinner-active', isVisible);

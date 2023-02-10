@@ -85,6 +85,17 @@ describe('SpinnerButtonElement', () => {
       expect(didSubmit).to.be.true();
       expect(button.hasAttribute('disabled')).to.be.true();
     });
+
+    it('unbinds events when disconnected', () => {
+      const wrapper = createWrapper({ tagName: 'button', inForm: true });
+      const form = wrapper.form!;
+      form.removeChild(wrapper);
+
+      sandbox.spy(wrapper, 'toggleSpinner');
+      fireEvent.submit(form);
+
+      expect(wrapper.toggleSpinner).not.to.have.been.called();
+    });
   });
 
   context('with form inside (button_to)', () => {
