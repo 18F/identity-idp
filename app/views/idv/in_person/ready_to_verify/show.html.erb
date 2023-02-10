@@ -82,7 +82,6 @@
   <% end %>
   <p class="margin-bottom-0">
     <%= t('in_person_proofing.body.barcode.questions') %>
-    <%# add param to new_window_link_to for id, can be added to html options %>
     <%= render ClickObserverComponent.new(event_name: 'IdV: user clicked what to bring link on ready to verify page') do %>
       <%= new_window_link_to(
             t('in_person_proofing.body.barcode.learn_more'),
@@ -90,7 +89,6 @@
               category: 'verify-your-identity',
               article: 'verify-your-identity-in-person',
             ),
-            id: 'help_center_from_ready_to_verify',
           ) %>
       <% end %>
   </p>
