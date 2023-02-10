@@ -13,7 +13,7 @@ module Idv
 
       def call
         @flow.irs_attempts_api_tracker.idv_document_upload_method_selected(
-          upload_method: params[:type],
+          {upload_method: params[:type]},
         )
 
         # See the simple_form_for in
@@ -79,7 +79,12 @@ module Idv
           phone_number: formatted_destination_phone,
           failure_reason: failure_reason,
         )
+
+        mark_step_complete(:send_link)
+        mark_step_complete(:email_sent)
+        
         build_telephony_form_response(telephony_result)
+        # TODO what do we show in the case of a phone submission error?
       end
 
       def identity
@@ -183,7 +188,10 @@ module Idv
         FormResponse.new(
           success: telephony_result.success?,
           errors: { message: telephony_result.error&.friendly_message },
-          extra: { telephony_response: telephony_result.to_h },
+          extra: {
+            telephony_response: telephony_result.to_h,
+            destination: :link_sent
+          },
         )
       end
 
