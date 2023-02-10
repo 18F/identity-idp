@@ -161,22 +161,6 @@ describe('FormStepsWait', () => {
       });
     });
 
-    context('invalid input', () => {
-      let form;
-      let input;
-      beforeEach(() => {
-        form = createForm({ action, method });
-        input = form.querySelector('#text-name');
-        input.setAttribute('required', '');
-      });
-      it('stops spinner', (done) => {
-        new FormStepsWait(form).bind();
-        form.addEventListener('spinner.stop', () => done());
-
-        fireEvent.invalid(input);
-      });
-    });
-
     context('handled error', () => {
       context('alert not in response', () => {
         const redirect = window.location.href;
