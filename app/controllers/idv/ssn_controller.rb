@@ -2,7 +2,7 @@ module Idv
   class SsnController < ApplicationController
     include IdvSession
     include StepIndicatorConcern
-    include VerifyInfoConcern
+    include StepUtilitiesConcern
     include Steps::ThreatMetrixStepHelper
 
     before_action :render_404_if_ssn_controller_disabled
@@ -14,9 +14,7 @@ module Idv
     def show
       increment_step_counts
 
-      if updating_ssn
-        analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments)
-      end
+      analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments) if updating_ssn
 
       analytics.idv_doc_auth_ssn_visited(**analytics_arguments)
 
@@ -40,7 +38,7 @@ module Idv
         ssn: params[:doc_auth][:ssn],
       )
 
-      idv_session.applicant = nil
+      idv_session.ssn_updated!
 
       redirect_to idv_verify_info_url
     end

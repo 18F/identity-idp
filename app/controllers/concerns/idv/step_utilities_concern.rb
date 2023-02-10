@@ -1,5 +1,5 @@
 module Idv
-  module VerifyInfoConcern
+  module StepUtilitiesConcern
     extend ActiveSupport::Concern
 
     def flow_session
@@ -12,7 +12,7 @@ module Idv
     end
 
     def confirm_pii_from_doc
-      @pii = flow_session['pii_from_doc']
+      @pii = flow_session['pii_from_doc'] # hash with indifferent access
       return if @pii.present?
       flow_session.delete('Idv::Steps::DocumentCaptureStep')
       redirect_to idv_doc_auth_url
