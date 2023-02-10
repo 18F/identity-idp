@@ -29,7 +29,7 @@ export class SpinnerButtonElement extends HTMLElement {
   }
 
   get form(): HTMLFormElement | null {
-    return this.closest('form');
+    return this.querySelector('form') || this.closest('form');
   }
 
   get actionMessage(): HTMLElement {
