@@ -111,16 +111,11 @@ function ReviewIssuesStep({
     }
   }, []);
 
-  // eslint-disable-next-line no-console
-  console.log('inPersonCtaVariantActive:', inPersonCtaVariantActive);
   if (!hasDismissed) {
     if (pii) {
       return <BarcodeAttentionWarning onDismiss={onWarningPageDismissed} pii={pii} />;
     }
 
-    // eslint-disable-next-line no-console
-    console.log('isFailedResult: ', isFailedResult);
-    // commenting out variants still fails test
     if (!inPersonURL || isFailedResult) {
       return (
         <Warning

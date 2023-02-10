@@ -69,8 +69,13 @@ module IdvStepHelper
   end
 
   def click_sp_link
-    expect(page).to have_content(t('in_person_proofing.body.barcode.return_to_partner_html'))
-    click_link t('in_person_proofing.body.barcode.return_to_partner_link')
+    expect(page).to have_content(sp_text)
+    click_link('return to Test SP')
+  end
+
+  def sp_text
+    'You may now close this window or return to Test SP to complete any next steps' + 
+    ' you can access until your identity has been verified.'
   end
 
   def complete_review_step(user = user_with_2fa)

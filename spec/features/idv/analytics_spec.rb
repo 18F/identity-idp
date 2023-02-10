@@ -184,10 +184,14 @@ feature 'Analytics Regression', js: true do
   end
 
   context 'in person path' do
+    let(:return_sp_url) { 'https://example.com/some/idv/ipp/url' }
+
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
+      ServiceProvider.find_by(issuer: sp1_issuer).update(return_to_sp_url: return_sp_url)
 
-      start_idv_from_sp
+      start_idv_from_sp(:saml)
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
       complete_all_in_person_proofing_steps(user)
@@ -200,8 +204,8 @@ feature 'Analytics Regression', js: true do
 
     it 'records all of the events', allow_browser_log: true do
       max_wait = Time.now + 5.seconds
-      wait_for_event("IdV: user clicked what to bring link on ready to verify page", max_wait)
-      # wait_for_event('IdV: user clicked sp link on ready to verify page')
+      wait_for_event('IdV: user clicked what to bring link on ready to verify page', max_wait)
+      wait_for_event('IdV: user clicked sp link on ready to verify page', max_wait)
       in_person_path_events.each do |event, attributes|
         expect(fake_analytics).to have_logged_event(event, attributes)
       end
@@ -214,9 +218,7 @@ feature 'Analytics Regression', js: true do
         expect(fake_analytics).to have_logged_event(event)
         return
       rescue RSpec::Expectations::ExpectationNotMetError => err
-        if wait - Time.now  < frequency
-          raise err
-        end
+        raise err if wait - Time.now < frequency
         sleep frequency
         next
       end
