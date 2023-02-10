@@ -1,9 +1,8 @@
-shared_examples 'a lexisnexis proofer' do
+shared_examples 'a lexisnexis rdp proofer' do
   let(:verification_status) { 'passed' }
   let(:conversation_id) { 'foo' }
   let(:reference) { SecureRandom.uuid }
   let(:verification_errors) { {} }
-  let(:result) { Proofing::Result.new }
 
   before do
     response = instance_double(Proofing::LexisNexis::Response)
@@ -15,11 +14,11 @@ shared_examples 'a lexisnexis proofer' do
 
     allow(verification_request).to receive(:send).and_return(response)
     allow(verification_request.class).to receive(:new).
-      with(applicant: applicant, config: kind_of(Proofing::LexisNexis::Ddp::Proofer::Config)).
+      with(applicant: applicant, config: kind_of(Proofing::LexisNexis::Config)).
       and_return(verification_request)
   end
 
-  describe '#proof_applicant' do
+  describe '#proof' do
     context 'when proofing succeeds' do
       it 'results in a successful result' do
         result = subject.proof(applicant)

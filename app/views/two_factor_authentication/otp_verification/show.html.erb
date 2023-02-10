@@ -9,7 +9,6 @@
 <% if @presenter.otp_expiration.present? %>
   <%= render CountdownAlertComponent.new(
         show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds,
-        redirect_url: login_two_factor_otp_expired_path,
         alert_options: { class: 'margin-bottom-4' },
         countdown_options: { expiration: @presenter.otp_expiration },
       ) %>
@@ -57,14 +56,12 @@
       ).with_content(t('links.two_factor_authentication.send_another_code')) %>
 <% end %>
 
-<% if @presenter.unconfirmed_phone? %>
-  <div class="margin-top-5">
-    <%= t('instructions.mfa.wrong_number') %><br>
-    <%= link_to(t('forms.two_factor.try_again'), phone_setup_path) %>
-  </div>
-<% else %>
-  <%= render 'shared/fallback_links', presenter: @presenter %>
-<% end %>
+
+<%= render(
+      'shared/troubleshooting_options',
+      heading: @presenter.troubleshooting_header,
+      options: @presenter.troubleshooting_options,
+    ) %>
 
 <% if MfaPolicy.new(current_user).two_factor_enabled? %>
   <%= render 'shared/cancel', link: @presenter.cancel_link %>

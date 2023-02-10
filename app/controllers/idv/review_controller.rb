@@ -126,10 +126,11 @@ module Idv
     end
 
     def confirm_verify_info_complete
-      if IdentityConfig.store.doc_auth_verify_info_controller_enabled &&
-         !idv_session.resolution_successful
-        redirect_to idv_verify_info_url
-      end
+      return unless IdentityConfig.store.doc_auth_verify_info_controller_enabled
+      return unless user_fully_authenticated?
+      return if idv_session.resolution_successful
+
+      redirect_to idv_verify_info_url
     end
 
     def personal_key_confirmed
@@ -143,7 +144,16 @@ module Idv
     end
 
     def next_step
-      idv_personal_key_url
+      if gpo_user_flow?
+        idv_come_back_later_url
+      else
+        idv_personal_key_url
+      end
+    end
+
+    def gpo_user_flow?
+      idv_session.address_verification_mechanism == 'gpo' &&
+        IdentityConfig.store.gpo_personal_key_after_otp
     end
 
     def handle_request_enroll_exception(err)

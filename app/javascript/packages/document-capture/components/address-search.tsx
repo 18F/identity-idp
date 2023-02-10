@@ -111,11 +111,12 @@ function useUspsLocations() {
   }, []);
 
   // sends the raw text query to arcgis
-  const { data: addressCandidates, isLoading: isLoadingCandidates } = useSWR([addressQuery], () =>
-    addressQuery ? requestAddressCandidates(addressQuery) : null,
-  );
+  const {
+    data: addressCandidates,
+    isLoading: isLoadingCandidates,
+    error: addressError,
+  } = useSWR([addressQuery], () => (addressQuery ? requestAddressCandidates(addressQuery) : null));
 
-  // sets the arcgis-validated address object
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
 
   useEffect(() => {
@@ -140,13 +141,14 @@ function useUspsLocations() {
   const {
     data: locationResults,
     isLoading: isLoadingLocations,
-    error,
+    error: uspsError,
   } = useSWR([foundAddress], ([address]) => (address ? requestUspsLocations(address) : null));
 
   return {
     foundAddress,
     locationResults,
-    error,
+    uspsError,
+    addressError,
     isLoading: isLoadingLocations || isLoadingCandidates,
     handleAddressSearch,
     validatedFieldRef,
@@ -159,6 +161,7 @@ interface AddressSearchProps {
   onFoundLocations?: (locations: FormattedLocation[] | null | undefined) => void;
   onLoadingLocations?: (isLoading: boolean) => void;
   onError?: (error: Error | null) => void;
+  disabled?: boolean;
 }
 
 function AddressSearch({
@@ -167,13 +170,15 @@ function AddressSearch({
   onFoundLocations = () => undefined,
   onLoadingLocations = () => undefined,
   onError = () => undefined,
+  disabled = false,
 }: AddressSearchProps) {
   const { t } = useI18n();
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
   const [textInput, setTextInput] = useState('');
   const {
     locationResults,
-    error,
+    uspsError,
+    addressError,
     isLoading,
     handleAddressSearch: onSearch,
     foundAddress,
@@ -191,8 +196,9 @@ function AddressSearch({
   }, [isLoading]);
 
   useEffect(() => {
-    error && onError(error);
-  }, [error]);
+    addressError && onError(addressError);
+    uspsError && onError(uspsError);
+  }, [uspsError, addressError]);
 
   useDidUpdateEffect(() => {
     onFoundLocations(locationResults);
@@ -223,6 +229,7 @@ function AddressSearch({
           onChange={onTextInputChange}
           label={t('in_person_proofing.body.location.po_search.address_search_label')}
           hint={t('in_person_proofing.body.location.po_search.address_search_hint')}
+          disabled={disabled}
         />
       </ValidatedField>
       <div className="margin-y-5">

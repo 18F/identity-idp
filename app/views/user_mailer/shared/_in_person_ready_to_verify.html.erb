@@ -1,4 +1,4 @@
-<table class="info-alert margin-y-4" role="presentation">
+<table class="info-alert margin-y-4">
   <tr>
     <td width="16">
       <%= image_tag('email/info.png', width: 16, height: 16, alt: '') %>
@@ -15,7 +15,7 @@
     <%= t('in_person_proofing.body.barcode.items_to_bring') %>
   </h2>
   <p><%= t('in_person_proofing.body.barcode.speak_to_associate') %></p>
-  <table class="process-list" role="presentation">
+  <table class="process-list">
     <tr>
       <td><div class="process-list__circle">1</div></td>
       <td>
@@ -84,7 +84,7 @@
       <%= t('date.day_names')[6] %>: <%= @presenter.selected_location_hours(:sunday) %>
     </div>
     <div>
-      <%= @presenter.selected_location_details[:phone] %>
+      <%= @presenter.selected_location_details['phone'] %>
     </div>
   </div>
 <% end %>

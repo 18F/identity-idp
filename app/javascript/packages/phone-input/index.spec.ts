@@ -1,5 +1,8 @@
 import { getByLabelText } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
+import type { SinonStub } from 'sinon';
+import { useSandbox } from '@18f/identity-test-helpers';
+import { CAPTCHA_EVENT_NAME } from '@18f/identity-captcha-submit-button/captcha-submit-button-element';
 
 const MULTIPLE_OPTIONS_HTML = `
   <select class="phone-input__international-code" data-countries="[&quot;CA&quot;,&quot;US&quot;]" id="phone_form_international_code">
@@ -19,11 +22,12 @@ const SINGLE_OPTION_SELECT_NON_US_HTML = `
   </select>`;
 
 describe('PhoneInput', () => {
+  const sandbox = useSandbox();
+
   before(async () => {
     await import('intl-tel-input/build/js/utils.js');
     window.intlTelInputUtils = global.intlTelInputUtils;
-    const { PhoneInput } = await import('./index.js');
-    customElements.define('lg-phone-input', PhoneInput);
+    await import('./index');
   });
 
   function createAndConnectElement({
@@ -31,6 +35,13 @@ describe('PhoneInput', () => {
     isNonUSSingleOption = false,
     deliveryMethods = ['sms', 'voice'],
     translatedCountryCodeNames = {},
+    captchaExemptCountries = undefined,
+  }: {
+    isSingleOption?: boolean;
+    isNonUSSingleOption?: Boolean;
+    deliveryMethods?: string[];
+    translatedCountryCodeNames?: Record<string, string>;
+    captchaExemptCountries?: string[];
   } = {}) {
     const element = document.createElement('lg-phone-input');
     element.setAttribute('data-delivery-methods', JSON.stringify(deliveryMethods));
@@ -38,6 +49,9 @@ describe('PhoneInput', () => {
       'data-translated-country-code-names',
       JSON.stringify(translatedCountryCodeNames),
     );
+    if (captchaExemptCountries) {
+      element.setAttribute('data-captcha-exempt-countries', JSON.stringify(captchaExemptCountries));
+    }
     element.innerHTML = `
       <script type="application/json" class="phone-input__strings">
         {
@@ -81,8 +95,7 @@ describe('PhoneInput', () => {
   it('validates input', async () => {
     const input = createAndConnectElement();
 
-    /** @type {HTMLInputElement} */
-    const phoneNumber = getByLabelText(input, 'Phone number');
+    const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
 
     expect(phoneNumber.validity.valueMissing).to.be.true();
 
@@ -96,10 +109,10 @@ describe('PhoneInput', () => {
   it('validates supported delivery method', async () => {
     const input = createAndConnectElement();
 
-    /** @type {HTMLInputElement} */
-    const phoneNumber = getByLabelText(input, 'Phone number');
-    /** @type {HTMLSelectElement} */
-    const countryCode = getByLabelText(input, 'Country code', { selector: 'select' });
+    const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
+    const countryCode = getByLabelText(input, 'Country code', {
+      selector: 'select',
+    }) as HTMLSelectElement;
 
     await userEvent.selectOptions(countryCode, 'LK');
     expect(phoneNumber.validationMessage).to.equal(
@@ -110,10 +123,10 @@ describe('PhoneInput', () => {
   it('formats on country change', async () => {
     const input = createAndConnectElement();
 
-    /** @type {HTMLInputElement} */
-    const phoneNumber = getByLabelText(input, 'Phone number');
-    /** @type {HTMLSelectElement} */
-    const countryCode = getByLabelText(input, 'Country code', { selector: 'select' });
+    const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
+    const countryCode = getByLabelText(input, 'Country code', {
+      selector: 'select',
+    }) as HTMLSelectElement;
 
     await userEvent.type(phoneNumber, '071');
 
@@ -134,8 +147,7 @@ describe('PhoneInput', () => {
     it('validates phone from region', async () => {
       const input = createAndConnectElement({ isNonUSSingleOption: true });
 
-      /** @type {HTMLInputElement} */
-      const phoneNumber = getByLabelText(input, 'Phone number');
+      const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
 
       await userEvent.type(phoneNumber, '513-555-1234');
       expect(phoneNumber.validationMessage).to.equal('Phone number is not valid');
@@ -146,10 +158,10 @@ describe('PhoneInput', () => {
     it('validates supported delivery method', async () => {
       const input = createAndConnectElement({ deliveryMethods: ['voice'] });
 
-      /** @type {HTMLInputElement} */
-      const phoneNumber = getByLabelText(input, 'Phone number');
-      /** @type {HTMLSelectElement} */
-      const countryCode = getByLabelText(input, 'Country code', { selector: 'select' });
+      const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
+      const countryCode = getByLabelText(input, 'Country code', {
+        selector: 'select',
+      }) as HTMLSelectElement;
 
       await userEvent.selectOptions(countryCode, 'CA');
       expect(phoneNumber.validationMessage).to.equal(
@@ -162,9 +174,67 @@ describe('PhoneInput', () => {
     it('renders the translated label', () => {
       createAndConnectElement({ translatedCountryCodeNames: { us: 'Custom USA' } });
 
-      const itiOptionName = document.querySelector('[data-country-code="us"] .iti__country-name');
+      const itiOptionName = document.querySelector('[data-country-code="us"] .iti__country-name')!;
 
       expect(itiOptionName.textContent).to.equal('Custom USA');
+    });
+  });
+
+  describe('captcha challenge event handling', () => {
+    it('cancels the event', () => {
+      createAndConnectElement();
+
+      const event = new CustomEvent(CAPTCHA_EVENT_NAME, { cancelable: true });
+      document.dispatchEvent(event);
+
+      expect(event.defaultPrevented).to.be.true();
+    });
+
+    it('unbinds event handlers when element is removed', () => {
+      sandbox.spy(document, 'addEventListener');
+      sandbox.spy(document, 'removeEventListener');
+      const element = createAndConnectElement();
+      element.parentNode?.removeChild(element);
+
+      const addEventCalls = (document.addEventListener as unknown as SinonStub).callCount;
+      const removeEventCalls = (document.removeEventListener as unknown as SinonStub).callCount;
+
+      expect(addEventCalls).to.equal(removeEventCalls);
+
+      const event = new CustomEvent(CAPTCHA_EVENT_NAME, { cancelable: true });
+      document.dispatchEvent(event);
+
+      expect(event.defaultPrevented).to.be.false();
+    });
+
+    context('without country exemption', () => {
+      it('does nothing', async () => {
+        const element = createAndConnectElement({ captchaExemptCountries: ['US'] });
+
+        const phoneNumber = getByLabelText(element, 'Phone number') as HTMLInputElement;
+
+        await userEvent.type(phoneNumber, '3065551234');
+
+        const event = new CustomEvent(CAPTCHA_EVENT_NAME, { cancelable: true });
+        document.dispatchEvent(event);
+
+        expect(event.defaultPrevented).to.be.false();
+      });
+    });
+
+    context('with country exemption', () => {
+      it('cancels the event', async () => {
+        const element = createAndConnectElement({ captchaExemptCountries: ['US'] });
+
+        const phoneNumber = getByLabelText(element, 'Phone number') as HTMLInputElement;
+
+        await userEvent.type(phoneNumber, '5135551234');
+
+        const event = new CustomEvent(CAPTCHA_EVENT_NAME, { cancelable: true });
+        document.dispatchEvent(event);
+
+        expect(event.defaultPrevented).to.be.true();
+      });
     });
   });
 });

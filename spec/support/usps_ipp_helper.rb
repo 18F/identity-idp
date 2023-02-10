@@ -15,6 +15,14 @@ module UspsIppHelper
     )
   end
 
+  def stub_request_facilities_with_duplicates
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList}).to_return(
+      status: 200,
+      body: UspsInPersonProofing::Mock::Fixtures.request_facilities_response_with_duplicates,
+      headers: { 'content-type' => 'application/json' },
+    )
+  end
+
   def stub_request_enroll
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant}).to_return(
       status: 200,
@@ -64,6 +72,51 @@ module UspsIppHelper
     {
       status: 400,
       body: UspsInPersonProofing::Mock::Fixtures.request_expired_proofing_results_response,
+      headers: { 'content-type' => 'application/json' },
+    }
+  end
+
+  def stub_request_unexpected_expired_proofing_results
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
+      **request_unexpected_expired_proofing_results_args,
+    )
+  end
+
+  def request_unexpected_expired_proofing_results_args
+    {
+      status: 400,
+      body: UspsInPersonProofing::Mock::Fixtures.
+        request_unexpected_expired_proofing_results_response,
+      headers: { 'content-type' => 'application/json' },
+    }
+  end
+
+  def stub_request_unexpected_invalid_applicant
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
+      **request_unexpected_invalid_applicant_args,
+    )
+  end
+
+  def request_unexpected_invalid_applicant_args
+    {
+      status: 400,
+      body: UspsInPersonProofing::Mock::Fixtures.
+        request_unexpected_invalid_applicant_response,
+      headers: { 'content-type' => 'application/json' },
+    }
+  end
+
+  def stub_request_unexpected_invalid_enrollment_code
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
+      **request_unexpected_invalid_enrollment_code_args,
+    )
+  end
+
+  def request_unexpected_invalid_enrollment_code_args
+    {
+      status: 400,
+      body: UspsInPersonProofing::Mock::Fixtures.
+        request_unexpected_invalid_enrollment_code_response,
       headers: { 'content-type' => 'application/json' },
     }
   end

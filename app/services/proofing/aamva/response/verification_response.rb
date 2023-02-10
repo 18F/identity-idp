@@ -33,8 +33,8 @@ module Proofing
           @missing_attributes = []
           @verification_results = {}
           @http_response = http_response
-          handle_soap_error
           handle_http_error
+          handle_soap_error
           parse_response
         end
 

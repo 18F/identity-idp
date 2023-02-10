@@ -31,10 +31,7 @@ es:
       cta:
         button: Verifique su identificación en persona
         button_variant: Inténtelo en persona
-        prompt_detail: Si usted está ubicado cerca de Washington, D.C. o Baltimore, MD,
-          puede verificar su identificación en persona en las oficinas de
-          correos seleccionadas.
-        prompt_detail_a: Es posible que pueda verificar su documento de identidad en
+        prompt_detail: Es posible que pueda verificar su documento de identidad en
           persona en una oficina de correos participante cercana.
         prompt_detail_b: Si tiene problemas para añadir su documento de identidad en
           línea, puede intentarlo en persona en algunas oficinas de correos.
@@ -63,8 +60,11 @@ es:
           po_search_about: Si tiene problemas para añadir su documento de identidad, es
             posible que pueda verificar su identidad en persona en una oficina
             de correos local de los Estados Unidos.
-          results_description: Hay %{count} de oficinas de correos participantes en un
-            radio de 50 millas de la %{address}.
+          results_description:
+            one: Hay 1 oficina de correos participante en un radio de 50 millas de la
+              %{address}.
+            other: Hay %{count} de oficinas de correos participantes en un radio de 50
+              millas de la %{address}.
           results_instructions: Seleccione una ubicación de la Oficina de Correos a
             continuación, o busque de nuevo utilizando una dirección diferente.
             Para la accesibilidad de las instalaciones, utilice la información
@@ -76,7 +76,8 @@ es:
         retail_hours_sun: 'Dom:'
         retail_hours_weekday: 'De Lunes a Viernes:'
       prepare:
-        alert_selected_post_office: Ha seleccionado la oficina de correos %{name}.
+        alert_selected_po_name: Ha seleccionado la oficina de correos %{name}.
+        alert_selected_post_office: Ha seleccionado la oficina de correos a %{full_address}.
         privacy_disclaimer: '%{app_name} es un sitio web seguro del gobierno. Nosotros y
           el Servicio Postal de los Estados Unidos utilizamos sus datos para
           verificar su identidad.'

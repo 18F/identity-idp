@@ -510,6 +510,46 @@ RSpec.describe User do
     end
   end
 
+  describe '#personal_key_generated_at' do
+    let(:user) do
+      build(:user, encrypted_recovery_code_digest_generated_at: digest_generated_at)
+    end
+    let(:digest_generated_at) { nil }
+
+    context 'the user has a encrypted_recovery_code_digest_generated_at date' do
+      let(:digest_generated_at) { 1.day.ago }
+
+      it 'returns the date in the digest' do
+        expect(
+          user.personal_key_generated_at,
+        ).to be_within(1.second).of(digest_generated_at)
+      end
+    end
+
+    context 'the user does not have a encrypted_recovery_code_digest_generated_at but is proofed' do
+      let!(:profile) do
+        create(
+          :profile,
+          :active,
+          :verified,
+          user: user,
+        )
+      end
+
+      it 'returns the date the user was proofed' do
+        expect(
+          user.personal_key_generated_at,
+        ).to be_within(1.second).of(profile.verified_at)
+      end
+    end
+
+    context 'the user has no encrypted_recovery_code_digest_generated_at and is not proofed' do
+      it 'returns nil' do
+        expect(user.personal_key_generated_at).to be_nil
+      end
+    end
+  end
+
   describe '#should_receive_in_person_completion_survey?' do
     let!(:user) { create(:user) }
     let(:service_provider) { create(:service_provider) }
