@@ -203,7 +203,7 @@ feature 'Analytics Regression', js: true do
     end
 
     it 'records all of the events', allow_browser_log: true do
-      max_wait = Time.now + 5.seconds
+      max_wait = Time.zone.now + 5.seconds
       wait_for_event('IdV: user clicked what to bring link on ready to verify page', max_wait)
       wait_for_event('IdV: user clicked sp link on ready to verify page', max_wait)
       in_person_path_events.each do |event, attributes|
@@ -218,7 +218,7 @@ feature 'Analytics Regression', js: true do
         expect(fake_analytics).to have_logged_event(event)
         return
       rescue RSpec::Expectations::ExpectationNotMetError => err
-        raise err if wait - Time.now < frequency
+        raise err if wait - Time.zone.now < frequency
         sleep frequency
         next
       end

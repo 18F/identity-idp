@@ -74,8 +74,8 @@ module IdvStepHelper
   end
 
   def sp_text
-    'You may now close this window or return to Test SP to complete any next steps' + 
-    ' you can access until your identity has been verified.'
+    'You may now close this window or return to Test SP to complete any next steps' \
+      ' you can access until your identity has been verified.'
   end
 
   def complete_review_step(user = user_with_2fa)
