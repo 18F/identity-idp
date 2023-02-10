@@ -7,11 +7,7 @@ locals:
 <%= f.input(
       :email_language,
       as: :radio_buttons,
-      input_html: { lang: I18n.available_locales.map do |locale|
-        [
-          locale 
-        ]
-       end,
+      input_html: { lang: I18n.available_locales.index_with { |locale| },
       },
       label: t('forms.registration.labels.email_language'),
       hint: local_assigns.fetch(
