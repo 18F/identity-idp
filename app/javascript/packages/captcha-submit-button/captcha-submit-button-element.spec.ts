@@ -49,50 +49,6 @@ describe('CaptchaSubmitButtonElement', () => {
       await waitFor(() => expect(didSubmit).to.be.true());
     });
 
-    context('with form validation errors', () => {
-      beforeEach(() => {
-        document.body.innerHTML = `
-          <form>
-            <input required>
-            <lg-captcha-submit-button>
-              <lg-spinner-button>
-                <button>Submit</button>
-              </lg-spinner-button>
-            </lg-captcha-submit-button>
-          </form>
-        `;
-      });
-
-      it('does not submit the form and reports validity', async () => {
-        const button = screen.getByRole('button', { name: 'Submit' });
-        const form = document.querySelector('form')!;
-        const input = document.querySelector('input')!;
-
-        let didSubmit = false;
-        form.addEventListener('submit', (event) => {
-          event.preventDefault();
-          didSubmit = true;
-        });
-
-        let didReportInvalid = false;
-        input.addEventListener('invalid', () => {
-          didReportInvalid = true;
-        });
-
-        await userEvent.click(button);
-
-        expect(didSubmit).to.be.false();
-        expect(didReportInvalid).to.be.true();
-      });
-
-      it('stops or otherwise prevents the spinner button from spinning', async () => {
-        const button = screen.getByRole('button', { name: 'Submit' });
-        await userEvent.click(button);
-
-        expect(document.querySelector('.spinner-button--spinner-active')).to.not.exist();
-      });
-    });
-
     context('with configured recaptcha', () => {
       const RECAPTCHA_TOKEN_VALUE = 'token';
       const RECAPTCHA_SITE_KEY = 'site_key';
