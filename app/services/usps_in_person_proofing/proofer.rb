@@ -129,8 +129,6 @@ module UspsInPersonProofing
     def faraday
       # If the request fails because the token is expired, get a new token before retrying request
       retry_options = {
-        exceptions: [Faraday::ForbiddenError],
-        retry_statuses: [403],
         retry_block: lambda do |env:, options:, retry_count:, exception:, will_retry_in:|
           token
         end,
