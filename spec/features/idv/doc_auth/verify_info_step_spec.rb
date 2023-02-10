@@ -378,4 +378,35 @@ feature 'doc auth verify_info step', :js do
       end
     end
   end
+
+  context 'with ssn_controller enabled' do
+    before do
+      # temporarily leave the verify_info flag in until delete verify step PR is merged
+      allow(IdentityConfig.store).to receive(:doc_auth_verify_info_controller_enabled).
+        and_return(true)
+      allow(IdentityConfig.store).to receive(:doc_auth_ssn_controller_enabled).
+        and_return(true)
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_verify_step
+    end
+
+    it 'uses ssn controller to enter a new ssn and displays updated info' do
+      click_button t('idv.buttons.change_ssn_label')
+      expect(page).to have_current_path(idv_ssn_path)
+
+      fill_in t('idv.form.ssn_label_html'), with: '900456789'
+      click_button t('forms.buttons.submit.update')
+
+      expect(fake_analytics).to have_logged_event(
+        'IdV: doc auth redo_ssn submitted',
+      )
+
+      expect(page).to have_current_path(idv_verify_info_path)
+
+      expect(page).to have_text('9**-**-***9')
+      check t('forms.ssn.show')
+      expect(page).to have_text('900-45-6789')
+    end
+  end
 end

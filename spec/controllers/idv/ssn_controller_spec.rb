@@ -93,11 +93,28 @@ describe Idv::SsnController do
       context 'with valid ssn' do
         let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
         let(:params) { { doc_auth: { ssn: ssn } } }
+        let(:analytics_name) { 'IdV: doc auth ssn submitted' }
+        let(:analytics_args) do
+          {
+            analytics_id: 'Doc Auth',
+            flow_path: 'standard',
+            irs_reproofing: false,
+            step: 'ssn',
+            step_count: 1,
+          }
+        end
 
         it 'merges ssn into pii session value' do
           put :update, params: params
 
           expect(flow_session['pii_from_doc'][:ssn]).to eq(ssn)
+        end
+
+        it 'sends analytics_submitted event with correct step count' do
+          get :show
+          put :update, params: params
+
+          expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
         end
 
         it 'logs attempts api event' do

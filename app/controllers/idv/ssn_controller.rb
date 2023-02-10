@@ -13,6 +13,11 @@ module Idv
 
     def show
       increment_step_counts
+
+      if updating_ssn
+        analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments)
+      end
+
       analytics.idv_doc_auth_ssn_visited(**analytics_arguments)
 
       render :show, locals: extra_view_variables
@@ -28,6 +33,8 @@ module Idv
       end
 
       flow_session['pii_from_doc'][:ssn] = params[:doc_auth][:ssn]
+
+      analytics.idv_doc_auth_ssn_submitted(**analytics_arguments)
 
       irs_attempts_api_tracker.idv_ssn_submitted(
         ssn: params[:doc_auth][:ssn],
