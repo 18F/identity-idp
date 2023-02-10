@@ -2027,8 +2027,7 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when user is redirected to OTP page,
-  # Tsracks when the OTP was sent and when it was supposed to expire
+  # Tracks when user is redirected to OTP expired page
   # @param [String] otp_sent_at
   # @param [String] otp_expiration
   def otp_expired_visited(otp_sent_at:, otp_expiration:, **extra)
