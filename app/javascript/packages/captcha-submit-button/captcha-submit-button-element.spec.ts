@@ -39,10 +39,14 @@ describe('CaptchaSubmitButtonElement', () => {
       const button = screen.getByRole('button', { name: 'Submit' });
       const form = document.querySelector('form')!;
 
-      sandbox.stub(form, 'submit');
+      let didSubmit = false;
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        didSubmit = true;
+      });
 
       await userEvent.click(button);
-      await waitFor(() => expect((form.submit as SinonStub).called).to.be.true());
+      await waitFor(() => expect(didSubmit).to.be.true());
     });
 
     context('with form validation errors', () => {
@@ -145,10 +149,14 @@ describe('CaptchaSubmitButtonElement', () => {
           const button = screen.getByRole('button', { name: 'Submit' });
           const form = document.querySelector('form')!;
 
-          sandbox.stub(form, 'submit');
+          let didSubmit = false;
+          form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            didSubmit = true;
+          });
 
           await userEvent.click(button);
-          await waitFor(() => expect((form.submit as SinonStub).called).to.be.true());
+          await waitFor(() => expect(didSubmit).to.be.true());
 
           expect(grecaptcha.ready).not.to.have.been.called();
         });
