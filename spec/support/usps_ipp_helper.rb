@@ -116,17 +116,7 @@ module UspsIppHelper
   end
 
   def stub_request_passed_proofing_results(overrides = {})
-    # todo: make a helper method that will merge attributes into json string
-    default_response = request_passed_proofing_results_args
-    response = {
-      **default_response,
-      body: JSON.generate(
-        {
-          **JSON.parse(default_response[:body]),
-          **overrides,
-        },
-      ),
-    }
+    response = merge_into_response_body(request_passed_proofing_results_args, overrides)
 
     stub_request(
       :post,
@@ -197,5 +187,19 @@ module UspsIppHelper
       body: UspsInPersonProofing::Mock::Fixtures.request_enrollment_code_response,
       headers: { 'content-type' => 'application/json' },
     )
+  end
+
+  private
+
+  def merge_into_response_body(response, body_overrides)
+    {
+      **response,
+      body: JSON.generate(
+        {
+          **JSON.parse(response[:body]),
+          **body_overrides,
+        },
+      ),
+    }
   end
 end
