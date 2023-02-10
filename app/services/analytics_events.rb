@@ -707,9 +707,11 @@ module AnalyticsEvents
     track_event('IdV: in person proofing switch_back submitted', flow_path: flow_path, **extra)
   end
 
+  # @param [String] in_person_cta_variant Variant testing bucket label
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user visited the "ready to verify" page for the in person proofing flow
-  def idv_in_person_ready_to_verify_visit(in_person_cta_variant: nil, proofing_components: nil, **extra)
+  def idv_in_person_ready_to_verify_visit(in_person_cta_variant: nil, proofing_components: nil,
+                                          **extra)
     track_event(
       'IdV: in person ready to verify visited',
       in_person_cta_variant: in_person_cta_variant,
