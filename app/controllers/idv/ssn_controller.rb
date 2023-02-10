@@ -80,7 +80,7 @@ module Idv
     end
 
     def form_submit
-      Idv::SsnFormatForm.new(current_user).submit(params.require('doc_auth').permit(:ssn))
+      Idv::SsnFormatForm.new(current_user).submit(params.require(:doc_auth).permit(:ssn))
     end
 
     def updating_ssn
