@@ -145,8 +145,8 @@ fr:
         information vérifiée, veuillez %{link}.
       activated_link: communiquer avec nous
       clear_and_start_over: Supprimer mes données et recommencer
-      come_back_later_html: <p><strong>Les lettres prennent généralement trois à sept
-        jours ouvrables pour arriver</strong><br /> par le biais du courriel de
+      come_back_later_html: <p>Les lettres prennent généralement <strong>trois à sept
+        jours ouvrables</strong> pour arriver par le biais du courriel de
         première classe de l’USPS.</p><p>Une fois votre lettre arrivée,
         connectez-vous à %{app_name} et entrez votre code à usage unique lorsque
         vous y êtes invité.</p>
