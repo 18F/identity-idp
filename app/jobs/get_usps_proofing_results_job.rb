@@ -424,8 +424,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   def normalize_usps_timestamp(usps_timestamp)
     return unless usps_timestamp
     # Parse timestamps eg 12/17/2020 033855 => Thu, 17 Dec 2020 03:38:55 -0600
-    # Note that the USPS timestamps are in Central Standard time
-    ActiveSupport::TimeZone['Central Time (US & Canada)'].strptime(
+    # Note that the USPS timestamps are in Central Standard time (UTC -6:00)
+    ActiveSupport::TimeZone[-6].strptime(
       usps_timestamp,
       '%m/%d/%Y %H%M%S',
     ).in_time_zone('UTC')
