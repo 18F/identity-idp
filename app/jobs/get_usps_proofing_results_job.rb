@@ -42,8 +42,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       primary_id_type: response['primaryIdType'],
       secondary_id_type: response['secondaryIdType'],
       failure_reason: response['failureReason'],
-      transaction_end_date_time: normalize_usps_timestamp(response['transactionEndDateTime']),
-      transaction_start_date_time: normalize_usps_timestamp(response['transactionStartDateTime']),
+      transaction_end_date_time: parse_usps_timestamp(response['transactionEndDateTime']),
+      transaction_start_date_time: parse_usps_timestamp(response['transactionStartDateTime']),
       status: response['status'],
       assurance_level: response['assuranceLevel'],
       proofing_post_office: response['proofingPostOffice'],
@@ -234,7 +234,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_unsupported_id_type(enrollment, response)
-    proofed_at = normalize_usps_timestamp(response['transactionEndDateTime'])
+    proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_failed] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
@@ -308,7 +308,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_failed_status(enrollment, response)
-    proofed_at = normalize_usps_timestamp(response['transactionEndDateTime'])
+    proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_failed] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
@@ -334,7 +334,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_successful_status_update(enrollment, response)
-    proofed_at = normalize_usps_timestamp(response['transactionEndDateTime'])
+    proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_passed] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
@@ -421,7 +421,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     return { wait_until: wait_until, queue: :intentionally_delayed }
   end
 
-  def normalize_usps_timestamp(usps_timestamp)
+  def parse_usps_timestamp(usps_timestamp)
     return unless usps_timestamp
     # Parse timestamps eg 12/17/2020 033855 => Thu, 17 Dec 2020 03:38:55 -0600
     # Note that the USPS timestamps are in Central Standard time (UTC -6:00)

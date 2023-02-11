@@ -244,6 +244,7 @@ module UspsIppHelper
 
   private
 
+  # Merges an object into the JSON string of a response's body and returns the updated response
   def merge_into_response_body(response, body_overrides)
     {
       **response,
