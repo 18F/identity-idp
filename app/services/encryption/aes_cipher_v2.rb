@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
-# This module is still needed by existing functionality, but any new AES encryption
-# should prefer using AesEncryptorV2 and AesCipherV2.
 module Encryption
-  class AesCipher
-    include Encodable
-
+  class AesCipherV2
     def encrypt(plaintext, cek)
       self.cipher = self.class.encryption_cipher
       # The key length for the AES-256-GCM cipher is fixed at 128 bits, or 32
@@ -36,7 +32,8 @@ module Encryption
       cipher.auth_data = 'PII'
       ciphertext = cipher.update(plaintext) << cipher.final
       tag = cipher.auth_tag
-      { iv: encode(iv), ciphertext: encode(ciphertext), tag: encode(tag) }.to_json
+
+      { iv: iv, ciphertext: ciphertext, tag: tag }.to_msgpack
     end
 
     def decipher(payload)
@@ -54,21 +51,21 @@ module Encryption
     end
 
     def unpack_payload(payload)
-      JSON.parse(payload, symbolize_names: true)
+      MessagePack.unpack(payload)
     rescue StandardError
       raise EncryptionError, 'Unable to parse encrypted payload'
     end
 
     def iv(unpacked_payload)
-      decode(unpacked_payload[:iv])
+      unpacked_payload['iv']
     end
 
     def tag(unpacked_payload)
-      decode(unpacked_payload[:tag])
+      unpacked_payload['tag']
     end
 
     def ciphertext(unpacked_payload)
-      decode(unpacked_payload[:ciphertext])
+      unpacked_payload['ciphertext']
     end
   end
 end
