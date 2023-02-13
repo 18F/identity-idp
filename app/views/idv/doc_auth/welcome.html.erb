@@ -96,9 +96,9 @@
     </p>
     <p>
       <%= new_window_link_to(
-        t('doc_auth.instructions.learn_more'),
-        MarketingSite.security_and_privacy_practices_url
-      ) %>
+            t('doc_auth.instructions.learn_more'),
+            MarketingSite.security_and_privacy_practices_url,
+          ) %>
     </p>
 
     <% if user_fully_authenticated? %>
