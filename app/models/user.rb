@@ -101,10 +101,6 @@ class User < ApplicationRecord
     profiles.gpo_verification_pending.order(created_at: :desc).first
   end
 
-  def personal_key_generated_at
-    encrypted_recovery_code_digest_generated_at || active_profile&.verified_at
-  end
-
   def default_phone_configuration
     phone_configurations.order('made_default_at DESC NULLS LAST, created_at').first
   end
