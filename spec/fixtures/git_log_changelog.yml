@@ -72,6 +72,19 @@ squashed_commit_with_skip:
     - '- Lets us set log level to minimize STDOUT output'
     - '  from Identity::Hostdata (downloading files from S3, etc)'
     - '[skip changelog]'
+squashed_commit_with_revert:
+  commit_log: |
+    title: Revert "LG-8653: Add personal key generation date" (#7816)
+    body:
+    This reverts commit d964871.
+    DELIMITER
+  title: 'Revert "LG-8653: Add personal key generation date" (#7816)'
+  commit_messages:
+    - 'This reverts commit d964871.'
+  category: 'Bug Fixes'
+  subcategory: 'Code Revert'
+  change: 'Revert changes introduced in d964871'
+  pr_number: '7816'
 squashed_commit_invalid:
   commit_log: |
     title: LG-5629 account buttons part 2 (#5945)

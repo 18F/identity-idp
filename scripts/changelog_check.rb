@@ -14,10 +14,16 @@ CATEGORIES = [
 MAX_CATEGORY_DISTANCE = 3
 SKIP_CHANGELOG_MESSAGE = '[skip changelog]'
 DEPENDABOT_COMMIT_MESSAGE = 'Signed-off-by: dependabot[bot] <support@github.com>'
+REVERT_COMMIT_MESSAGE = /This reverts commit ([a-z\d]+)./
 SECURITY_CHANGELOG = {
   category: 'Internal',
   subcategory: 'Dependencies',
   change: 'Update dependencies to resolve security advisories',
+}.freeze
+REVERT_CHANGELOG = {
+  category: 'Bug Fixes',
+  subcategory: 'Code Revert',
+  change: 'Revert changes introduced in %s',
 }.freeze
 
 SquashedCommit = Struct.new(:title, :commit_messages, keyword_init: true)
@@ -29,6 +35,8 @@ CategoryDistance = Struct.new(:category, :distance)
 def build_changelog(line)
   if line == DEPENDABOT_COMMIT_MESSAGE
     SECURITY_CHANGELOG
+  elsif (commit = REVERT_COMMIT_MESSAGE.match(line)&.[](1))
+    REVERT_CHANGELOG.dup.merge(change: REVERT_CHANGELOG[:change] % [commit])
   else
     CHANGELOG_REGEX.match(line)
   end
