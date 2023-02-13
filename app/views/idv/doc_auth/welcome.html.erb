@@ -92,14 +92,13 @@
 
     <h3><%= t('doc_auth.instructions.privacy') %></h3>
     <p>
-      <%= t(
-            'doc_auth.info.privacy_html',
-            app_name: APP_NAME,
-            link: new_window_link_to(
-              t('doc_auth.instructions.learn_more'),
-              MarketingSite.security_and_privacy_practices_url,
-            ),
-          ) %>
+      <%= t('doc_auth.info.privacy', app_name: APP_NAME) %>
+    </p>
+    <p>
+      <%= new_window_link_to(
+        t('doc_auth.instructions.learn_more'),
+        MarketingSite.security_and_privacy_practices_url
+      ) %>
     </p>
 
     <% if user_fully_authenticated? %>

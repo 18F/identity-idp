@@ -195,9 +195,9 @@ es:
       link_sent_complete_polling: El siguiente paso se cargará automáticamente una vez
         que verifiques tu identidad a través de tu teléfono.
       no_sp_name: La agencia a la que está intentando acceder
-      privacy_html: '%{app_name} es un sitio web gubernamental seguro que cumple con
-        las normas más estrictas de protección de datos. Utilizamos sus datos
-        para verificar su identidad. %{link}'
+      privacy: '%{app_name} es un sitio web gubernamental seguro que cumple con las
+        normas más estrictas de protección de datos. Utilizamos sus datos para
+        verificar su identidad.'
       secure_account: Vamos a encriptar su cuenta con su contraseña. La encriptación
         significa que sus datos están protegidos y solo usted podrá acceder o
         modificar su información.
