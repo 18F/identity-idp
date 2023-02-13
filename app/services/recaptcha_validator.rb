@@ -52,7 +52,7 @@ class RecaptchaValidator
     elsif recaptcha_result['success']
       recaptcha_result['score'] >= score_threshold
     else
-      EXEMPT_ERROR_CODES.any? { |error_code| recaptcha_result['error-codes'] == [error_code] }
+      (recaptcha_result['error-codes'] - EXEMPT_ERROR_CODES).blank?
     end
   end
 
