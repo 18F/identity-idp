@@ -24,8 +24,9 @@ module Idv
         { name: :getting_started },
         { name: :verify_id },
         { name: :verify_info },
-        { name: :secure_account },
+        *([name: :secure_account] if !IdentityConfig.store.gpo_personal_key_after_otp),
         { name: :get_a_letter },
+        *([name: :secure_account] if IdentityConfig.store.gpo_personal_key_after_otp),
       ].freeze
 
       OPTIONAL_SHOW_STEPS = {}.freeze

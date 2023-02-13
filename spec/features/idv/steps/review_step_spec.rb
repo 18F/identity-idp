@@ -81,6 +81,15 @@ feature 'idv review step', :js do
       expect(profile.active?).to eq false
     end
 
+    it 'sends you to the come_back_later page after review step' do
+      allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).and_return(true)
+      fill_in 'Password', with: user_password
+      click_continue
+
+      expect(page).to have_content(t('idv.titles.come_back_later'))
+      expect(current_path).to eq idv_come_back_later_path
+    end
+
     context 'with an sp' do
       it 'sends a letter with a reference the sp' do
         fill_in 'Password', with: user_password

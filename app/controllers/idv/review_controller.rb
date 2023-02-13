@@ -135,7 +135,16 @@ module Idv
     end
 
     def next_step
-      idv_personal_key_url
+      if gpo_user_flow?
+        idv_come_back_later_url
+      else
+        idv_personal_key_url
+      end
+    end
+
+    def gpo_user_flow?
+      idv_session.address_verification_mechanism == 'gpo' &&
+        IdentityConfig.store.gpo_personal_key_after_otp
     end
 
     def handle_request_enroll_exception(err)

@@ -55,7 +55,7 @@ module Idv
                 disavowal_token: disavowal_token,
               )
               flash[:success] = t('account.index.verification.success')
-              redirect_to sign_up_completed_url
+              redirect_to next_step
             end
           end
         else
@@ -66,6 +66,15 @@ module Idv
     end
 
     private
+
+    def next_step
+      if IdentityConfig.store.gpo_personal_key_after_otp
+        enable_personal_key_generation
+        idv_personal_key_url
+      else
+        sign_up_completed_url
+      end
+    end
 
     def throttle
       @throttle ||= Throttle.new(
@@ -103,6 +112,11 @@ module Idv
 
     def threatmetrix_enabled?
       FeatureManagement.proofing_device_profiling_decisioning_enabled?
+    end
+
+    def enable_personal_key_generation
+      idv_session.resolution_successful = 'gpo'
+      idv_session.applicant = pii
     end
   end
 end

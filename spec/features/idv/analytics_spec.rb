@@ -114,6 +114,8 @@ feature 'Analytics Regression', js: true do
       'IdV: personal key acknowledgment toggled' => { checked: true, proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
       'IdV: personal key submitted' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' }, address_verification_method: 'phone', deactivation_reason: 'in_person_verification_pending' },
       'IdV: in person ready to verify visited' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
+      'IdV: user clicked what to bring link on ready to verify page' => {},
+      'IdV: user clicked sp link on ready to verify page' => {},
     }
   end
   # rubocop:enable Layout/LineLength
@@ -180,20 +182,43 @@ feature 'Analytics Regression', js: true do
   end
 
   context 'in person path' do
+    let(:return_sp_url) { 'https://example.com/some/idv/ipp/url' }
+
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
+      ServiceProvider.find_by(issuer: sp1_issuer).update(return_to_sp_url: return_sp_url)
 
+      start_idv_from_sp(:saml)
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
       complete_all_in_person_proofing_steps(user)
       complete_phone_step(user)
       complete_review_step(user)
       acknowledge_and_confirm_personal_key
+      visit_help_center
+      visit_sp
     end
 
     it 'records all of the events', allow_browser_log: true do
+      max_wait = Time.zone.now + 5.seconds
+      wait_for_event('IdV: user clicked what to bring link on ready to verify page', max_wait)
+      wait_for_event('IdV: user clicked sp link on ready to verify page', max_wait)
       in_person_path_events.each do |event, attributes|
         expect(fake_analytics).to have_logged_event(event, attributes)
+      end
+    end
+
+    # wait for event to happen
+    def wait_for_event(event, wait)
+      frequency = 0.1.seconds
+      loop do
+        expect(fake_analytics).to have_logged_event(event)
+        return
+      rescue RSpec::Expectations::ExpectationNotMetError => err
+        raise err if wait - Time.zone.now < frequency
+        sleep frequency
+        next
       end
     end
   end

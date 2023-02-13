@@ -707,6 +707,24 @@ module AnalyticsEvents
     )
   end
 
+  # The user clicked the sp link on the "ready to verify" page
+  def idv_in_person_ready_to_verify_sp_link_clicked(**extra)
+    track_event(
+      'IdV: user clicked sp link on ready to verify page',
+      **extra,
+    )
+  end
+
+  # The user clicked the what to bring link on the "ready to verify" page
+  def idv_in_person_ready_to_verify_what_to_bring_link_clicked(**extra)
+    track_event(
+      'IdV: user clicked what to bring link on ready to verify page',
+      **extra,
+    )
+  end
+
+  # User has consented to share information with document upload and may
+  # view the "hybrid handoff" step next unless "skip_upload" param is true
   def idv_doc_auth_agreement_submitted(**extra)
     track_event('IdV: doc auth agreement submitted', **extra)
   end
@@ -908,10 +926,15 @@ module AnalyticsEvents
     )
   end
 
+  # The "hybrid handoff" step: Desktop user has submitted their choice to
+  # either continue via desktop ("document_capture" destination) or switch
+  # to mobile phone ("send_link" destination) to perform document upload.
+  # Mobile users sill log this event but with skip_upload_step = true
   def idv_doc_auth_upload_submitted(**extra)
     track_event('IdV: doc auth upload submitted', **extra)
   end
 
+  # Desktop user has reached the above "hybrid handoff" view
   def idv_doc_auth_upload_visited(**extra)
     track_event('IdV: doc auth upload visited', **extra)
   end
@@ -2352,6 +2375,28 @@ module AnalyticsEvents
   # @param [String] type
   def rate_limit_triggered(type:, **extra)
     track_event('Rate Limit Triggered', type: type, **extra)
+  end
+
+  # The result of a reCAPTCHA verification request was received
+  # @param [Hash] recaptcha_result Full reCAPTCHA response body
+  # @param [Float] score_threshold Minimum value for considering passing result
+  # @param [Boolean] evaluated_as_valid Whether result was considered valid
+  # @param [String, nil] exception_class Class name of exception, if error occurred
+  def recaptcha_verify_result_received(
+    recaptcha_result:,
+    score_threshold:,
+    evaluated_as_valid:,
+    exception_class:,
+    **extra
+  )
+    track_event(
+      'reCAPTCHA verify result received',
+      recaptcha_result:,
+      score_threshold:,
+      evaluated_as_valid:,
+      exception_class:,
+      **extra,
+    )
   end
 
   # User authenticated by a remembered device
