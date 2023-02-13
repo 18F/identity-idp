@@ -723,6 +723,8 @@ module AnalyticsEvents
     )
   end
 
+  # User has consented to share information with document upload and may
+  # view the "hybrid handoff" step next unless "skip_upload" param is true
   def idv_doc_auth_agreement_submitted(**extra)
     track_event('IdV: doc auth agreement submitted', **extra)
   end
@@ -924,10 +926,15 @@ module AnalyticsEvents
     )
   end
 
+  # The "hybrid handoff" step: Desktop user has submitted their choice to
+  # either continue via desktop ("document_capture" destination) or switch
+  # to mobile phone ("send_link" destination) to perform document upload.
+  # Mobile users sill log this event but with skip_upload_step = true
   def idv_doc_auth_upload_submitted(**extra)
     track_event('IdV: doc auth upload submitted', **extra)
   end
 
+  # Desktop user has reached the above "hybrid handoff" view
   def idv_doc_auth_upload_visited(**extra)
     track_event('IdV: doc auth upload visited', **extra)
   end
@@ -2369,6 +2376,28 @@ module AnalyticsEvents
     track_event('Rate Limit Triggered', type: type, **extra)
   end
 
+  # The result of a reCAPTCHA verification request was received
+  # @param [Hash] recaptcha_result Full reCAPTCHA response body
+  # @param [Float] score_threshold Minimum value for considering passing result
+  # @param [Boolean] evaluated_as_valid Whether result was considered valid
+  # @param [String, nil] exception_class Class name of exception, if error occurred
+  def recaptcha_verify_result_received(
+    recaptcha_result:,
+    score_threshold:,
+    evaluated_as_valid:,
+    exception_class:,
+    **extra
+  )
+    track_event(
+      'reCAPTCHA verify result received',
+      recaptcha_result:,
+      score_threshold:,
+      evaluated_as_valid:,
+      exception_class:,
+      **extra,
+    )
+  end
+
   # User authenticated by a remembered device
   def remembered_device_used_for_authentication
     track_event('Remembered device used for authentication')
@@ -3141,6 +3170,7 @@ module AnalyticsEvents
   # @param [String] exception_class
   # @param [String] exception_message
   # @param [String] enrollment_code
+  # @param [Float] minutes_since_established
   # @param [Float] minutes_since_last_status_check
   # @param [Float] minutes_since_last_status_update
   # @param [Float] minutes_to_completion
@@ -3161,6 +3191,7 @@ module AnalyticsEvents
   def idv_in_person_usps_proofing_results_job_exception(
     reason:,
     enrollment_id:,
+    minutes_since_established:,
     exception_class: nil,
     exception_message: nil,
     enrollment_code: nil,
@@ -3190,6 +3221,7 @@ module AnalyticsEvents
       exception_class: exception_class,
       exception_message: exception_message,
       enrollment_code: enrollment_code,
+      minutes_since_established: minutes_since_established,
       minutes_since_last_status_check: minutes_since_last_status_check,
       minutes_since_last_status_update: minutes_since_last_status_update,
       minutes_to_completion: minutes_to_completion,
@@ -3265,12 +3297,14 @@ module AnalyticsEvents
   # Tracks individual enrollments that are updated during GetUspsProofingResultsJob
   # @param [String] enrollment_code
   # @param [String] enrollment_id
+  # @param [Float] minutes_since_established
   # @param [Boolean] fraud_suspected
   # @param [Boolean] passed did this enrollment pass or fail?
   # @param [String] reason why did this enrollment pass or fail?
   def idv_in_person_usps_proofing_results_job_enrollment_updated(
     enrollment_code:,
     enrollment_id:,
+    minutes_since_established:,
     fraud_suspected:,
     passed:,
     reason:,
@@ -3280,6 +3314,7 @@ module AnalyticsEvents
       'GetUspsProofingResultsJob: Enrollment status updated',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
+      minutes_since_established: minutes_since_established,
       fraud_suspected: fraud_suspected,
       passed: passed,
       reason: reason,
@@ -3316,14 +3351,38 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks incomplete enrollments checked via the USPS API
+  # @param [String] enrollment_code
+  # @param [String] enrollment_id
+  # @param [Float] minutes_since_established
+  # @param [String] response_message
+  def idv_in_person_usps_proofing_results_job_enrollment_incomplete(
+    enrollment_code:,
+    enrollment_id:,
+    minutes_since_established:,
+    response_message:,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Enrollment incomplete',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      minutes_since_established: minutes_since_established,
+      response_message: response_message,
+      **extra,
+    )
+  end
+
   # Tracks unexpected responses from the USPS API
   # @param [String] enrollment_code
   # @param [String] enrollment_id
+  # @param [Float] minutes_since_established
   # @param [String] response_message
   # @param [String] reason why was this error unexpected?
   def idv_in_person_usps_proofing_results_job_unexpected_response(
     enrollment_code:,
     enrollment_id:,
+    minutes_since_established:,
     response_message:,
     reason:,
     **extra
@@ -3332,6 +3391,7 @@ module AnalyticsEvents
       'GetUspsProofingResultsJob: Unexpected response received',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
+      minutes_since_established: minutes_since_established,
       response_message: response_message,
       reason: reason,
       **extra,

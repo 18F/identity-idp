@@ -21,7 +21,8 @@ module Users
     end
 
     def create
-      if throttle.throttled_else_increment?
+      throttle.increment!
+      if throttle.throttled?
         render_throttled
       else
         result = personal_key_form.submit

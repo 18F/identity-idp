@@ -39,12 +39,23 @@ module IdvHelper
     click_spinner_button_and_wait t('forms.buttons.continue')
   end
 
+  def click_idv_exit
+    click_spinner_button_and_wait t('idv.cancel.actions.exit', app_name: APP_NAME)
+  end
+
   def click_idv_send_security_code
     click_spinner_button_and_wait t('forms.buttons.send_one_time_code')
   end
 
   def click_idv_select
     click_select_button_and_wait t('in_person_proofing.body.location.location_button')
+  end
+
+  def click_try_again
+    page.find(
+      'a',
+      text: t('idv.failure.button.warning'),
+    ).click
   end
 
   def click_idv_otp_delivery_method_sms

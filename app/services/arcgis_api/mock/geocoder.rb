@@ -14,7 +14,7 @@ module ArcgisApi
       private
 
       def stub_generate_token(stub)
-        stub.post(GENERATE_TOKEN_ENDPOINT) do |env|
+        stub.post(IdentityConfig.store.arcgis_api_generate_token_url) do |env|
           [
             200,
             { 'Content-Type': 'application/json' },
@@ -28,7 +28,7 @@ module ArcgisApi
       end
 
       def stub_suggestions(stub)
-        stub.get(SUGGEST_ENDPOINT) do |env|
+        stub.get(IdentityConfig.store.arcgis_api_suggest_url) do |env|
           [
             200,
             { 'Content-Type': 'application/json' },
@@ -38,7 +38,7 @@ module ArcgisApi
       end
 
       def stub_address_candidates(stub)
-        stub.get(ADDRESS_CANDIDATES_ENDPOINT) do |env|
+        stub.get(IdentityConfig.store.arcgis_api_find_address_candidates_url) do |env|
           [
             200,
             { 'Content-Type': 'application/json' },

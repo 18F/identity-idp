@@ -123,6 +123,11 @@ es:
     phone_info_html: Le enviaremos un código de un solo uso <strong>cada vez que
       ingrese</strong>.
     phone_label: Número de teléfono
+    phone_verification:
+      troubleshooting:
+        change_number: Utilice otro número de teléfono.
+        code_not_received: No recibí mi código de un solo uso.
+        learn_more: Más información sobre las opciones de autenticación.
     piv_cac_fallback:
       question: '¿No tienes su PIV o CAC disponibles?'
     piv_cac_header_text: Presenta tu PIV/CAC

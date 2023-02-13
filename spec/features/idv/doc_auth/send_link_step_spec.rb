@@ -18,6 +18,11 @@ feature 'doc auth send link step' do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
+  it "defaults phone to user's 2fa phone numebr" do
+    field = page.find_field(t('two_factor_authentication.phone_label'))
+    expect(field.value).to eq('+1 202-555-1212')
+  end
+
   it 'proceeds to the next page with valid info' do
     expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
       :idv_phone_upload_link_sent,
@@ -118,7 +123,7 @@ feature 'doc auth send link step' do
     ).with({ phone_number: '+1 415-555-0199' })
 
     freeze_time do
-      idv_send_link_max_attempts.times do
+      (idv_send_link_max_attempts - 1).times do
         expect(page).to_not have_content(
           I18n.t('errors.doc_auth.send_link_throttle', timeout: timeout),
         )

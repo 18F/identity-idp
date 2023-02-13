@@ -50,7 +50,7 @@ feature 'idv gpo step', :js do
       click_on t('idv.buttons.mail.send')
       fill_in 'Password', with: user_password
       click_continue
-      acknowledge_and_confirm_personal_key
+      acknowledge_and_confirm_personal_key unless IdentityConfig.store.gpo_personal_key_after_otp
       visit root_path
       click_on t('idv.buttons.cancel')
       first(:link, t('links.sign_out')).click

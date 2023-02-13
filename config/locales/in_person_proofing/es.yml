@@ -31,10 +31,7 @@ es:
       cta:
         button: Verifique su identificación en persona
         button_variant: Inténtelo en persona
-        prompt_detail: Si usted está ubicado cerca de Washington, D.C. o Baltimore, MD,
-          puede verificar su identificación en persona en las oficinas de
-          correos seleccionadas.
-        prompt_detail_a: Es posible que pueda verificar su documento de identidad en
+        prompt_detail: Es posible que pueda verificar su documento de identidad en
           persona en una oficina de correos participante cercana.
         prompt_detail_b: Si tiene problemas para añadir su documento de identidad en
           línea, puede intentarlo en persona en algunas oficinas de correos.
