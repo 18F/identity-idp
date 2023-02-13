@@ -11,14 +11,31 @@ describe NewPhoneForm do
       otp_delivery_preference: 'sms',
     }
   end
-  subject(:form) { NewPhoneForm.new(user) }
+  subject(:form) { NewPhoneForm.new(user:) }
 
   it_behaves_like 'a phone form'
 
   describe 'phone validation' do
-    it do
-      should validate_inclusion_of(:international_code).
-        in_array(PhoneNumberCapabilities::INTERNATIONAL_CODES.keys)
+    context 'with valid international code' do
+      it 'is valid' do
+        PhoneNumberCapabilities::INTERNATIONAL_CODES.keys.each do |code|
+          result = subject.submit(params.clone.merge(international_code: code))
+
+          expect(result.to_h[:error_details]).not_to match(
+            hash_including(international_code: include(:inclusion)),
+          )
+        end
+      end
+    end
+
+    context 'with invalid international code' do
+      it 'is invalid' do
+        result = subject.submit(params.clone.merge(international_code: 'INVALID'))
+
+        expect(result.to_h[:error_details]).to match(
+          hash_including(international_code: include(:inclusion)),
+        )
+      end
     end
 
     it 'validates that the number matches the requested international code' do
@@ -52,7 +69,7 @@ describe NewPhoneForm do
 
       it 'does not update the user phone attribute' do
         user = create(:user)
-        subject = NewPhoneForm.new(user)
+        subject = NewPhoneForm.new(user:)
         params[:phone] = '+1 504 444 1643'
 
         subject.submit(params)
@@ -341,6 +358,38 @@ describe NewPhoneForm do
         )
       end
     end
+
+    context 'with recaptcha enabled' do
+      let(:valid) { nil }
+      let(:validator) { PhoneRecaptchaValidator.new(parsed_phone: nil) }
+      let(:recaptcha_token) { 'token' }
+      let(:params) { super().merge(recaptcha_token:) }
+      subject(:result) { form.submit(params) }
+
+      before do
+        allow(FeatureManagement).to receive(:phone_recaptcha_enabled?).and_return(true)
+        allow(validator).to receive(:valid?).with(recaptcha_token).and_return(valid)
+        allow(form).to receive(:recaptcha_validator).and_return(validator)
+      end
+
+      context 'with valid recaptcha result' do
+        let(:valid) { true }
+
+        it 'is valid' do
+          expect(result.success?).to eq(true)
+          expect(result.errors).to be_blank
+        end
+      end
+
+      context 'with invalid recaptcha result' do
+        let(:valid) { false }
+
+        it 'is invalid' do
+          expect(result.success?).to eq(false)
+          expect(result.errors[:recaptcha_token]).to be_present
+        end
+      end
+    end
   end
 
   describe '#delivery_preference_sms?' do
@@ -375,7 +424,7 @@ describe NewPhoneForm do
     end
 
     context 'with setup_voice_preference present' do
-      subject(:form) { NewPhoneForm.new(user, setup_voice_preference: true) }
+      subject(:form) { NewPhoneForm.new(user:, setup_voice_preference: true) }
 
       it 'is true' do
         expect(form.delivery_preference_voice?).to eq(true)

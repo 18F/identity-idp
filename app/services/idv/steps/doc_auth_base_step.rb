@@ -64,13 +64,6 @@ module Idv
         idv_session_errors_throttled_url
       end
 
-      def throttled_else_increment
-        Throttle.new(
-          user: effective_user,
-          throttle_type: :idv_doc_auth,
-        ).throttled_else_increment?
-      end
-
       # Ideally we would not have to re-implement the EffectiveUser mixin
       # but flow_session sometimes != controller#session
       def effective_user

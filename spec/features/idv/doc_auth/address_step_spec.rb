@@ -15,7 +15,7 @@ feature 'doc auth verify step', :js do
     fill_out_address_form_ok
 
     click_button t('forms.buttons.submit.update')
-    expect(page).to have_current_path(idv_doc_auth_verify_step)
+    expect(page).to have_current_path(idv_verify_info_path)
   end
 
   it 'does not allows the user to enter bad address info' do
@@ -28,7 +28,7 @@ feature 'doc auth verify step', :js do
   it 'allows the user to click back to return to the verify step' do
     click_doc_auth_back_link
 
-    expect(page).to have_current_path(idv_doc_auth_verify_step)
+    expect(page).to have_current_path(idv_verify_info_path)
   end
 
   it 'sends the user to start doc auth if there is no pii from the document in session' do

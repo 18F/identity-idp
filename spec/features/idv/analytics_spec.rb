@@ -25,9 +25,8 @@ feature 'Analytics Regression', js: true do
       'IdV: doc auth ssn visited' => { flow_path: 'standard', step: 'ssn', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth ssn submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'ssn', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth verify visited' => { flow_path: 'standard', step: 'verify', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth verify submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'verify', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth verify_wait visited' => { flow_path: 'standard', step: 'verify_wait', step_count: 1, analytics_id: 'Doc Auth', irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default },
-      'IdV: doc auth optional verify_wait submitted' => { success: true, errors: {}, address_edited: false, proofing_results: { exception: nil, timed_out: false, context: { should_proof_state_id: true, adjudication_reason: 'pass_resolution_and_state_id', stages: { resolution: { vendor_name: 'ResolutionMock', vendor_workflow: nil, errors: {}, exception: nil, success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], drivers_license_check_info: nil }, state_id: { vendor_name: 'StateIdMock', errors: {}, success: true, timed_out: false, exception: nil, transaction_id: 'state-id-mock-transaction-id-456', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' } } } }, ssn_is_unique: true, step: 'verify_wait_step_show', analytics_id: 'Doc Auth' },
+      'IdV: doc auth verify submitted' => { flow_path: 'standard', step: 'verify', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
+      'IdV: doc auth verify proofing results' => { success: true, errors: {}, address_edited: false, ssn_is_unique: true, proofing_results: { exception: nil, timed_out: false, context: { adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil, drivers_license_check_info: nil }, state_id: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' } } } } },
       'IdV: phone of record visited' => { proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis' } },
       'IdV: phone confirmation form' => { success: true, errors: {}, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis' }, otp_delivery_preference: 'sms' },
       'IdV: phone confirmation vendor' => { success: true, errors: {}, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' }, area_code: '202', country_code: 'US', phone_fingerprint: anything },
@@ -61,9 +60,8 @@ feature 'Analytics Regression', js: true do
       'IdV: doc auth ssn visited' => { flow_path: 'standard', step: 'ssn', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth ssn submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'ssn', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth verify visited' => { flow_path: 'standard', step: 'verify', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth verify submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'verify', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth verify_wait visited' => { flow_path: 'standard', step: 'verify_wait', step_count: 1, analytics_id: 'Doc Auth', irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default },
-      'IdV: doc auth optional verify_wait submitted' => { success: true, errors: {}, address_edited: false, proofing_results: { exception: nil, timed_out: false, context: { should_proof_state_id: true, adjudication_reason: 'pass_resolution_and_state_id', stages: { resolution: { vendor_name: 'ResolutionMock', vendor_workflow: nil, errors: {}, exception: nil, success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], drivers_license_check_info: nil }, state_id: { vendor_name: 'StateIdMock', errors: {}, success: true, timed_out: false, exception: nil, transaction_id: 'state-id-mock-transaction-id-456', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' } } } }, ssn_is_unique: true, step: 'verify_wait_step_show', analytics_id: 'Doc Auth' },
+      'IdV: doc auth verify submitted' => { flow_path: 'standard', step: 'verify', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
+      'IdV: doc auth verify proofing results' => { success: true, errors: {}, address_edited: false, ssn_is_unique: true, proofing_results: { exception: nil, timed_out: false, context: { adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil, drivers_license_check_info: nil }, state_id: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' } } } } },
       'IdV: phone of record visited' => { proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis' } },
       'IdV: USPS address letter requested' => { resend: false, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis' } },
       'IdV: review info visited' => { address_verification_method: 'gpo', proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
@@ -91,7 +89,7 @@ feature 'Analytics Regression', js: true do
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: true, doc_auth_result: 'Attention'),
       'IdV: verify in person troubleshooting option clicked' => { flow_path: 'standard' },
       'IdV: in person proofing location visited' => { flow_path: 'standard' },
-      'IdV: in person proofing location submitted' => { flow_path: 'standard', selected_location: 'BALTIMORE' },
+      'IdV: in person proofing location submitted' => { flow_path: 'standard', selected_location: '606 E JUNEAU AVE, MILWAUKEE, WI, 53202-9998' },
       'IdV: in person proofing prepare visited' => { flow_path: 'standard' },
       'IdV: in person proofing prepare submitted' => { flow_path: 'standard' },
       'IdV: in person proofing state_id visited' => { step: 'state_id', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false },
@@ -116,6 +114,8 @@ feature 'Analytics Regression', js: true do
       'IdV: personal key acknowledgment toggled' => { checked: true, proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
       'IdV: personal key submitted' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' }, address_verification_method: 'phone', deactivation_reason: 'in_person_verification_pending' },
       'IdV: in person ready to verify visited' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'lexis_nexis_address' } },
+      'IdV: user clicked what to bring link on ready to verify page' => {},
+      'IdV: user clicked sp link on ready to verify page' => {},
     }
   end
   # rubocop:enable Layout/LineLength
@@ -182,20 +182,43 @@ feature 'Analytics Regression', js: true do
   end
 
   context 'in person path' do
+    let(:return_sp_url) { 'https://example.com/some/idv/ipp/url' }
+
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
+      ServiceProvider.find_by(issuer: sp1_issuer).update(return_to_sp_url: return_sp_url)
 
+      start_idv_from_sp(:saml)
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
       complete_all_in_person_proofing_steps(user)
       complete_phone_step(user)
       complete_review_step(user)
       acknowledge_and_confirm_personal_key
+      visit_help_center
+      visit_sp
     end
 
     it 'records all of the events', allow_browser_log: true do
+      max_wait = Time.zone.now + 5.seconds
+      wait_for_event('IdV: user clicked what to bring link on ready to verify page', max_wait)
+      wait_for_event('IdV: user clicked sp link on ready to verify page', max_wait)
       in_person_path_events.each do |event, attributes|
         expect(fake_analytics).to have_logged_event(event, attributes)
+      end
+    end
+
+    # wait for event to happen
+    def wait_for_event(event, wait)
+      frequency = 0.1.seconds
+      loop do
+        expect(fake_analytics).to have_logged_event(event)
+        return
+      rescue RSpec::Expectations::ExpectationNotMetError => err
+        raise err if wait - Time.zone.now < frequency
+        sleep frequency
+        next
       end
     end
   end

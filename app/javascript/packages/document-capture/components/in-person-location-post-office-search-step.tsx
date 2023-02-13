@@ -14,15 +14,16 @@ import InPersonLocations, { FormattedLocation } from './in-person-locations';
 
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
   const { t } = useI18n();
-  const [inProgress, setInProgress] = useState(false);
-  const [isLoadingLocations, setLoadingLocations] = useState(false);
-  const [autoSubmit, setAutoSubmit] = useState(false);
+  const [inProgress, setInProgress] = useState<boolean>(false);
+  const [isLoadingLocations, setLoadingLocations] = useState<boolean>(false);
+  const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
   const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
     null,
   );
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
   const [apiError, setApiError] = useState<Error | null>(null);
+  const [disabledAddressSearch, setDisabledAddressSearch] = useState<boolean>(false);
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
@@ -43,6 +44,12 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       setSubmitEventMetadata({ selected_location: selectedLocationAddress });
       onChange({ selectedLocationAddress });
       if (autoSubmit) {
+        setDisabledAddressSearch(true);
+        setTimeout(() => {
+          if (mountedRef.current) {
+            setDisabledAddressSearch(false);
+          }
+        }, 250);
         return;
       }
       // prevent navigation from continuing
@@ -52,14 +59,12 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       }
       const selected = transformKeys(selectedLocation, snakeCase);
       setInProgress(true);
-      await request(LOCATIONS_URL, {
-        json: selected,
-        method: 'PUT',
-      })
-        .then(() => {
-          if (!mountedRef.current) {
-            return;
-          }
+      try {
+        await request(LOCATIONS_URL, {
+          json: selected,
+          method: 'PUT',
+        });
+        if (mountedRef.current) {
           setAutoSubmit(true);
           setImmediate(() => {
             // continue with navigation
@@ -67,13 +72,12 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
             // allow process to be re-triggered in case submission did not work as expected
             setAutoSubmit(false);
           });
-        })
-        .finally(() => {
-          if (!mountedRef.current) {
-            return;
-          }
+        }
+      } finally {
+        if (mountedRef.current) {
           setInProgress(false);
-        });
+        }
+      }
     },
     [locationResults, inProgress],
   );
@@ -93,6 +97,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
         onFoundLocations={setLocationResults}
         onLoadingLocations={setLoadingLocations}
         onError={setApiError}
+        disabled={disabledAddressSearch}
       />
       {locationResults && foundAddress && !isLoadingLocations && (
         <InPersonLocations

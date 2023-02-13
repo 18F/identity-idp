@@ -16,8 +16,8 @@ describe 'Account Reset Request: Cancellation' do
         to have_content strip_tags(
           t('account_reset.request.delete_account'),
         )
-      click_button t('account_reset.request.yes_continue')
       reset_email
+      click_button t('account_reset.request.yes_continue')
 
       travel_to(Time.zone.now + 2.days + 1) do
         AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)

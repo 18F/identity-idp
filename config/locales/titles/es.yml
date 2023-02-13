@@ -52,6 +52,7 @@ es:
     openid_connect:
       authorization: Autorización de OpenID Connect
       logout: Cierre de sesión de OpenID Connect
+    otp_expired: Su código único ha expirado
     passwords:
       change: Cambie la contraseña de su cuenta
       confirm: Confirme la contraseña de su cuenta

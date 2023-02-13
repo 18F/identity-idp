@@ -52,6 +52,7 @@ fr:
     openid_connect:
       authorization: Autorisation OpenID Connect
       logout: Déconnexion OpenID Connect
+    otp_expired: Votre code à usage unique a expiré
     passwords:
       change: Changez le mot de passe de votre compte
       confirm: Confirmez le mot de passe de votre compte

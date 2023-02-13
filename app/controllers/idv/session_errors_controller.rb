@@ -36,8 +36,6 @@ module Idv
 
     def throttled
       @expires_at = Throttle.new(user: effective_user, throttle_type: :idv_doc_auth).expires_at
-      analytics.throttler_rate_limit_triggered(throttle_type: :idv_doc_auth)
-      irs_attempts_api_tracker.idv_document_upload_rate_limited
     end
 
     private
@@ -61,15 +59,7 @@ module Idv
       if in_person_flow?
         @try_again_path = idv_in_person_path
       else
-        @try_again_path = doc_auth_try_again_path
-      end
-    end
-
-    def doc_auth_try_again_path
-      if IdentityConfig.store.doc_auth_verify_info_controller_enabled
-        idv_verify_info_url
-      else
-        idv_doc_auth_path
+        @try_again_path = idv_verify_info_url
       end
     end
 

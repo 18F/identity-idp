@@ -3,6 +3,8 @@ fr:
   components:
     barcode:
       image_alt: Code-barres
+    captcha_submit_button:
+      action_message: Vérification…
     clipboard_button:
       label: Copier
     countdown_alert:

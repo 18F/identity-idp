@@ -100,12 +100,22 @@ class FeatureManagement
     IdentityConfig.store.doc_auth_enable_presigned_s3_urls
   end
 
+  def self.otp_expired_redirect_enabled?
+    IdentityConfig.store.allow_otp_countdown_expired_redirect
+  end
+
   def self.logo_upload_enabled?
     IdentityConfig.store.logo_upload_enabled
   end
 
   def self.log_to_stdout?
     !Rails.env.test? && IdentityConfig.store.log_to_stdout
+  end
+
+  def self.phone_recaptcha_enabled?
+    IdentityConfig.store.recaptcha_site_key.present? &&
+      IdentityConfig.store.recaptcha_secret_key.present? &&
+      IdentityConfig.store.phone_recaptcha_score_threshold.positive?
   end
 
   # Manual allowlist for VOIPs, should only include known VOIPs that we use for smoke tests

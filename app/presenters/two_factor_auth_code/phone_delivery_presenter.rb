@@ -41,8 +41,40 @@ module TwoFactorAuthCode
       t('two_factor_authentication.phone_fallback.question')
     end
 
+    def otp_expired_path
+      return unless FeatureManagement.otp_expired_redirect_enabled?
+      login_two_factor_otp_expired_path
+    end
+
     def help_text
       ''
+    end
+
+    def troubleshooting_header
+      t('components.troubleshooting_options.default_heading')
+    end
+
+    def troubleshooting_options
+      [
+        troubleshoot_change_phone_or_method_option,
+        {
+          url: MarketingSite.help_center_article_url(
+            category: 'get-started',
+            article: 'authentication-options',
+            anchor: 'didn-t-receive-your-one-time-code',
+          ),
+          text: t('two_factor_authentication.phone_verification.troubleshooting.code_not_received'),
+          new_tab: true,
+        },
+        {
+          url: MarketingSite.help_center_article_url(
+            category: 'get-started',
+            article: 'authentication-options',
+          ),
+          text: t('two_factor_authentication.phone_verification.troubleshooting.learn_more'),
+          new_tab: true,
+        },
+      ]
     end
 
     def cancel_link
@@ -55,6 +87,20 @@ module TwoFactorAuthCode
     end
 
     private
+
+    def troubleshoot_change_phone_or_method_option
+      if unconfirmed_phone
+        {
+          url: phone_setup_path,
+          text: t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
+        }
+      else
+        {
+          url: login_two_factor_options_path,
+          text: t('two_factor_authentication.login_options_link_text'),
+        }
+      end
+    end
 
     attr_reader(
       :phone_number,

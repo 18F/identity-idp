@@ -1,7 +1,6 @@
 module Idv
   class ReviewController < ApplicationController
     before_action :personal_key_confirmed
-    before_action :confirm_verify_info_complete
 
     include IdvStepConcern
     include StepIndicatorConcern
@@ -15,7 +14,7 @@ module Idv
                 with: :handle_request_enroll_exception
 
     def confirm_idv_steps_complete
-      return redirect_to(idv_doc_auth_url) unless idv_profile_complete?
+      return redirect_to(idv_verify_info_url) unless idv_profile_complete?
       return redirect_to(idv_phone_url) unless idv_address_complete?
     end
 
@@ -92,7 +91,7 @@ module Idv
     end
 
     def idv_profile_complete?
-      idv_session.profile_confirmation == true
+      !!idv_session.profile_confirmation
     end
 
     def idv_address_complete?
@@ -125,13 +124,6 @@ module Idv
       params.fetch(:user, {})[:password].presence
     end
 
-    def confirm_verify_info_complete
-      if IdentityConfig.store.doc_auth_verify_info_controller_enabled &&
-         !idv_session.resolution_successful
-        redirect_to idv_verify_info_url
-      end
-    end
-
     def personal_key_confirmed
       return unless current_user
       return unless current_user.active_profile.present? && need_personal_key_confirmation?
@@ -143,7 +135,16 @@ module Idv
     end
 
     def next_step
-      idv_personal_key_url
+      if gpo_user_flow?
+        idv_come_back_later_url
+      else
+        idv_personal_key_url
+      end
+    end
+
+    def gpo_user_flow?
+      idv_session.address_verification_mechanism == 'gpo' &&
+        IdentityConfig.store.gpo_personal_key_after_otp
     end
 
     def handle_request_enroll_exception(err)

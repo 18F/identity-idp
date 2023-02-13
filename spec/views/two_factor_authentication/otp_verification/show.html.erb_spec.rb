@@ -277,5 +277,81 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
         )
       end
     end
+
+    context 'when user has otp_expiration but the otp_expired redirect flag off' do
+      before do
+        user = create(
+          :user, :signed_up, otp_delivery_preference: 'voice',
+                             direct_otp_sent_at: Time.zone.now
+        )
+        allow(view).to receive(:current_user).and_return(user)
+        otp_expiration = user.direct_otp_sent_at +
+                         TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
+        allow(@presenter).to receive(:otp_expiration).and_return(otp_expiration)
+        allow(IdentityConfig.store).to receive(:allow_otp_countdown_expired_redirect).
+          and_return(false)
+      end
+
+      it 'should render countdown component without redirect-url' do
+        render
+        expect(rendered).not_to have_selector(
+          "lg-countdown-alert[redirect-url='#{login_two_factor_otp_expired_path}']",
+        )
+      end
+    end
+
+    context 'when user has otp_expiration but the otp_expired redirect flag on' do
+      before do
+        user = create(
+          :user, :signed_up, otp_delivery_preference: 'voice',
+                             direct_otp_sent_at: Time.zone.now
+        )
+        allow(view).to receive(:current_user).and_return(user)
+        otp_expiration = user.direct_otp_sent_at +
+                         TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
+        allow(@presenter).to receive(:otp_expiration).and_return(otp_expiration)
+        allow(IdentityConfig.store).to receive(:allow_otp_countdown_expired_redirect).
+          and_return(true)
+      end
+
+      it 'should render countdown component with redirect-url' do
+        render
+        expect(rendered).to have_selector(
+          "lg-countdown-alert[redirect-url='#{login_two_factor_otp_expired_path}']",
+        )
+      end
+    end
+
+    context 'troubleshooting options content' do
+      context 'when phone is unconfirmed' do
+        it 'has option to change phone number' do
+          data = presenter_data.merge(unconfirmed_phone: true)
+
+          @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+            data: data,
+            view: view,
+            service_provider: nil,
+          )
+
+          render
+
+          expect(rendered).to have_link(
+            t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
+            href: phone_setup_path,
+          )
+        end
+      end
+
+      context 'when phone is confirmed' do
+        it 'has option to select different authentication method' do
+          render
+
+          expect(rendered).to have_link(
+            t('two_factor_authentication.login_options_link_text'),
+            href: login_two_factor_options_path,
+          )
+        end
+      end
+    end
   end
 end
