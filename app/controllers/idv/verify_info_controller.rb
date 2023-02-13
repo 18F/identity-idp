@@ -8,6 +8,9 @@ module Idv
     before_action :confirm_profile_not_already_confirmed
 
     def show
+      @in_person_proofing = false
+      @which_verify_controller = idv_verify_info_path
+
       increment_step_counts
       analytics.idv_doc_auth_verify_visited(**analytics_arguments)
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
