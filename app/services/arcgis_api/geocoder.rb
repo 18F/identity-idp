@@ -167,11 +167,16 @@ module ArcgisApi
     # @param response_body [Hash]
     def handle_api_errors(response_body)
       if response_body['error']
-        error_code = response_body.dig('error', 'code')
+        # response_body is in this format:
+        # {"error"=>{"code"=>400, "message"=>"", "details"=>[""]}}
+        error_message = response_body.dig('error', 'message') || "Received error code #{error_code}"
 
         raise Faraday::ClientError.new(
-          RuntimeError.new("received error code #{error_code}"),
-          response_body,
+          RuntimeError.new(error_message),
+          {
+            status: response_body.dig('error', 'code'),
+            body: { details: response_body.dig('error', 'details')&.join(', ') },
+          },
         )
       end
     end
