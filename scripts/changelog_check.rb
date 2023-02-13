@@ -32,21 +32,23 @@ CategoryDistance = Struct.new(:category, :distance)
 
 # A valid entry has a line in a commit message in the form of:
 # changelog: CATEGORY, SUBCATEGORY, CHANGE_DESCRIPTION
-def build_changelog(line)
+def build_changelog(line, find_revert: false)
   if line == DEPENDABOT_COMMIT_MESSAGE
     SECURITY_CHANGELOG
-  elsif (commit = REVERT_COMMIT_MESSAGE.match(line)&.[](1))
+  elsif find_revert && (commit = REVERT_COMMIT_MESSAGE.match(line)&.[](1))
     REVERT_CHANGELOG.dup.merge(change: REVERT_CHANGELOG[:change] % [commit])
   else
     CHANGELOG_REGEX.match(line)
   end
 end
 
-def build_changelog_from_commit(commit)
-  [*commit.commit_messages, commit.title].
+def build_changelog_from_commit(commit, find_revert: false)
+  changelog = [*commit.commit_messages, commit.title].
     lazy.
-    map { |message| build_changelog(message) }.
+    map { |message| build_changelog(message, find_revert:) }.
     find(&:itself)
+  changelog = build_changelog_from_commit(commit, find_revert: true) if !changelog && !find_revert
+  changelog
 end
 
 def get_git_log(base_branch, source_branch)

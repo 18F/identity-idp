@@ -40,6 +40,7 @@ squashed_commit_with_multiple_commits:
     body:* add check to see if platform is available
 
     * add alert
+    This reverts commit d964871.
 
     * changelog: User-Facing Improvements, Webauthn, Provide better error flow for users who may not be able to leverage webauthn (LG-5515)
 
@@ -51,6 +52,7 @@ squashed_commit_with_multiple_commits:
   commit_messages:
     - '* add check to see if platform is available'
     - '* add alert'
+    - 'This reverts commit d964871.'
     - '* changelog: User-Facing Improvements, Webauthn, Provide better error flow for users who may not be able to leverage webauthn (LG-5515)'
     - '* fix linting, debug'
     - 'Co-authored-by: Jessica Dembe <jessica.dembe@gsa.gov>'
