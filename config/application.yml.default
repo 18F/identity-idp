@@ -202,7 +202,6 @@ max_piv_cac_per_account: 2
 min_password_score: 3
 mx_timeout: 3
 new_sign_up_cancellation_url_enabled: true
-oidc_respnse_include_ial_aal: false
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
 otp_expiration_warning_seconds: 150
