@@ -9,6 +9,7 @@ module Idv
 
       def index
         response = addresses(params[:address])
+
         render(**response)
       end
 
@@ -31,7 +32,7 @@ module Idv
           Faraday::TimeoutError => :unprocessable_entity,
         }[error.class] || :internal_server_error
 
-        analytics.idv_in_person_locations_request_failure(
+        analytics.idv_arcgis_request_failure(
           api_status_code: Rack::Utils.status_code(remapped_error),
           exception_class: error.class,
           exception_message: error.message,

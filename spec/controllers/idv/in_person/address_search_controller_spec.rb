@@ -70,7 +70,10 @@ describe Idv::InPerson::AddressSearchController do
     end
 
     context 'with a timeout error' do
+      let(:server_error) { Faraday::TimeoutError.new }
+
       before do
+        stub_analytics
         exception = Faraday::TimeoutError.new
         allow(geocoder).to receive(:find_address_candidates).and_raise(exception)
       end
@@ -80,6 +83,17 @@ describe Idv::InPerson::AddressSearchController do
         expect(response.status).to eq(422)
         addresses = JSON.parse(response.body)
         expect(addresses.length).to eq 0
+
+        expect(@analytics).to have_logged_event(
+          'Request ArcGIS Address Candidates: request failed',
+          api_status_code: 422,
+          exception_class: server_error.class,
+          exception_message: server_error.message,
+          response_body_present:
+          server_error.response_body.present?,
+          response_body: server_error.response_body,
+          response_status_code: server_error.response_status,
+        )
       end
     end
 
