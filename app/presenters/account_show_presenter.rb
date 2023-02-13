@@ -62,7 +62,8 @@ class AccountShowPresenter
   end
 
   def personal_key_generated_at
-    decorated_user.user.personal_key_generated_at
+    decorated_user.user.encrypted_recovery_code_digest_generated_at ||
+      decorated_user.user.active_profile&.verified_at
   end
 
   def header_personalization
