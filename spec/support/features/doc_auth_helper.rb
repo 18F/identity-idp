@@ -55,14 +55,6 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :document_capture)
   end
 
-  def idv_doc_auth_verify_step
-    if IdentityConfig.store.doc_auth_verify_info_controller_enabled
-      idv_verify_info_path
-    else
-      idv_doc_auth_step_path(step: :verify)
-    end
-  end
-
   def idv_doc_auth_send_link_step
     idv_doc_auth_step_path(step: :send_link)
   end

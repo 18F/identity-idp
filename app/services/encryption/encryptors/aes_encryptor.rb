@@ -1,3 +1,5 @@
+# This module is still needed by existing functionality, but any new AES encryption
+# should prefer using AesEncryptorV2 and AesCipherV2.
 module Encryption
   module Encryptors
     class AesEncryptor

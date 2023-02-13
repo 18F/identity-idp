@@ -10,8 +10,6 @@ module Idv
         email_sent: Idv::Steps::EmailSentStep,
         document_capture: Idv::Steps::DocumentCaptureStep,
         ssn: Idv::Steps::SsnStep,
-        verify: Idv::Steps::VerifyStep,
-        verify_wait: Idv::Steps::VerifyWaitStep,
       }.freeze
 
       STEP_INDICATOR_STEPS = [
@@ -31,9 +29,7 @@ module Idv
         *([name: :secure_account] if IdentityConfig.store.gpo_personal_key_after_otp),
       ].freeze
 
-      OPTIONAL_SHOW_STEPS = {
-        verify_wait: Idv::Steps::VerifyWaitStepShow,
-      }.freeze
+      OPTIONAL_SHOW_STEPS = {}.freeze
 
       ACTIONS = {
         cancel_send_link: Idv::Actions::CancelSendLinkAction,
