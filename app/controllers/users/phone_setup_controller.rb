@@ -3,6 +3,7 @@ module Users
     include UserAuthenticator
     include PhoneConfirmation
     include MfaSetupConcern
+    include RecaptchaConcern
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
@@ -13,13 +14,14 @@ module Users
     def index
       @new_phone_form = NewPhoneForm.new(
         user: current_user,
+        analytics: analytics,
         setup_voice_preference: setup_voice_preference?,
       )
       track_phone_setup_visit
     end
 
     def create
-      @new_phone_form = NewPhoneForm.new(user: current_user)
+      @new_phone_form = NewPhoneForm.new(user: current_user, analytics: analytics)
       result = @new_phone_form.submit(new_phone_form_params)
       analytics.multi_factor_auth_phone_setup(**result.to_h)
 
@@ -31,6 +33,10 @@ module Users
     end
 
     private
+
+    def recaptcha_enabled?
+      FeatureManagement.phone_recaptcha_enabled?
+    end
 
     def track_phone_setup_visit
       mfa_user = MfaContext.new(current_user)
@@ -76,6 +82,7 @@ module Users
         :international_code,
         :otp_delivery_preference,
         :otp_make_default_number,
+        :recaptcha_token,
       )
     end
   end

@@ -765,6 +765,7 @@ DEPENDENCIES
   lookbook (~> 1.4.5)
   lru_redux
   maxminddb
+  msgpack (~> 1.6)
   multiset
   net-sftp
   newrelic_rpm (~> 8.0)

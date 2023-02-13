@@ -23,7 +23,11 @@ describe Users::PhoneSetupController do
 
         expect(@analytics).to receive(:track_event).
           with('User Registration: phone setup visited', enabled_mfa_methods_count: 0)
-        expect(NewPhoneForm).to receive(:new).with(user:, setup_voice_preference: false)
+        expect(NewPhoneForm).to receive(:new).with(
+          user:,
+          analytics: kind_of(Analytics),
+          setup_voice_preference: false,
+        )
 
         get :index
 

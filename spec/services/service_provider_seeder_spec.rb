@@ -78,6 +78,21 @@ RSpec.describe ServiceProviderSeeder do
 
     context 'when running in a production environment' do
       let(:rails_env) { 'production' }
+      let(:sandbox_issuer) { 'urn:gov:login:test-providers:fake-sandbox-sp' }
+      let(:staging_issuer) { 'urn:gov:login:test-providers:fake-staging-sp' }
+      let(:prod_issuer) { 'urn:gov:login:test-providers:fake-prod-sp' }
+      let(:unrestricted_issuer) { 'urn:gov:login:test-providers:fake-unrestricted-sp' }
+
+      context 'when %{env} is present in the config file' do
+        let(:deploy_env) { 'dev' }
+
+        it 'is replaced with the deploy_env' do
+          run
+
+          sp = ServiceProvider.find_by(issuer: sandbox_issuer)
+          expect(sp.redirect_uris).to eq(%w[https://dev.example.com])
+        end
+      end
 
       context 'in prod' do
         let(:deploy_env) { 'prod' }
@@ -85,18 +100,10 @@ RSpec.describe ServiceProviderSeeder do
         it 'only writes configs with restrict_to_deploy_env for prod' do
           run
 
-          # restrict_to_deploy_env: prod
-          expect(ServiceProvider.find_by(issuer: 'urn:gov:login:test-providers:fake-prod-sp')).
-            to be_present
-
-          # restrict_to_deploy_env: staging
-          expect(ServiceProvider.find_by(issuer: 'urn:gov:login:test-providers:fake-staging-sp')).
-            to eq(nil)
-
-          # restrict_to_deploy_env: nil
-          expect(
-            ServiceProvider.find_by(issuer: 'urn:gov:login:test-providers:fake-unrestricted-sp'),
-          ).to eq(nil)
+          expect(ServiceProvider.find_by(issuer: prod_issuer)).to be_present
+          expect(ServiceProvider.find_by(issuer: sandbox_issuer)).not_to be_present
+          expect(ServiceProvider.find_by(issuer: staging_issuer)).not_to be_present
+          expect(ServiceProvider.find_by(issuer: unrestricted_issuer)).not_to be_present
         end
 
         it 'sends New Relic an error if the DB has an SP not in the config' do
@@ -114,20 +121,10 @@ RSpec.describe ServiceProviderSeeder do
         it 'only writes configs with restrict_to_deploy_env for that env, or no restrictions' do
           run
 
-          # restrict_to_deploy_env: prod
-          expect(ServiceProvider.find_by(issuer: 'urn:gov:login:test-providers:fake-prod-sp')).
-            to eq(nil)
-
-          # restrict_to_deploy_env: staging
-          expect(ServiceProvider.find_by(issuer: 'urn:gov:login:test-providers:fake-staging-sp')).
-            to be_present
-
-          # restrict_to_deploy_env: nil
-          expect(
-            ServiceProvider.find_by(
-              issuer: 'urn:gov:login:test-providers:fake-unrestricted-sp',
-            ),
-          ).to be_present
+          expect(ServiceProvider.find_by(issuer: staging_issuer)).to be_present
+          expect(ServiceProvider.find_by(issuer: unrestricted_issuer)).to be_present
+          expect(ServiceProvider.find_by(issuer: sandbox_issuer)).not_to be_present
+          expect(ServiceProvider.find_by(issuer: prod_issuer)).not_to be_present
         end
 
         it 'sends New Relic an error if the DB has an SP not in the config' do
@@ -141,6 +138,15 @@ RSpec.describe ServiceProviderSeeder do
 
       context 'in another environment' do
         let(:deploy_env) { 'int' }
+
+        it 'only writes configs with restrict_to_deploy_env for sandbox' do
+          run
+
+          expect(ServiceProvider.find_by(issuer: sandbox_issuer)).to be_present
+          expect(ServiceProvider.find_by(issuer: unrestricted_issuer)).to be_present
+          expect(ServiceProvider.find_by(issuer: staging_issuer)).not_to be_present
+          expect(ServiceProvider.find_by(issuer: prod_issuer)).not_to be_present
+        end
 
         it 'does not send New Relic an error if the DB has an SP not in the config' do
           allow(NewRelic::Agent).to receive(:notice_error)
