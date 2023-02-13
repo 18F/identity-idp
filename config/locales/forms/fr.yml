@@ -5,9 +5,8 @@ fr:
       are_you_sure_desc_html:
         - '<strong>Les codes de sauvegarde sont la méthode d’authentification la
           moins recommandée,</strong> car les codes peuvent facilement être
-          perdus. Nous vous encourageons à explorer d’autres options
-          d’authentification, telles qu’une application d’authentification ou
-          une clé de sécurité.'
+          perdus. Essayez une option plus sûre, comme une application
+          d’authentification ou une clé de sécurité.'
         - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer,
           copier ou noter. Vous saisirez un code chaque fois que vous vous
           connecterez.
