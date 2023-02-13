@@ -42,13 +42,15 @@ def build_changelog(line, find_revert: false)
   end
 end
 
-def build_changelog_from_commit(commit, find_revert: false)
-  changelog = [*commit.commit_messages, commit.title].
+def revert_commit?(commit)
+  commit.title.start_with?('Revert ')
+end
+
+def build_changelog_from_commit(commit)
+  [*commit.commit_messages, commit.title].
     lazy.
-    map { |message| build_changelog(message, find_revert:) }.
+    map { |message| build_changelog(message, find_revert: revert_commit?(commit)) }.
     find(&:itself)
-  changelog = build_changelog_from_commit(commit, find_revert: true) if !changelog && !find_revert
-  changelog
 end
 
 def get_git_log(base_branch, source_branch)
