@@ -5,7 +5,6 @@ feature 'doc auth upload step' do
   include DocAuthHelper
 
   context 'with combined hybrid handoff disabled' do
-    
     let(:fake_analytics) { FakeAnalytics.new }
     let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
@@ -18,7 +17,6 @@ feature 'doc auth upload step' do
       allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
         and_return(fake_attempts_tracker)
     end
-
 
     context 'on a desktop device' do
       before do
@@ -84,7 +82,7 @@ feature 'doc auth upload step' do
         expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
         click_on t('doc_auth.info.upload_computer_link')
-        
+
         expect(page).to have_current_path(idv_doc_auth_document_capture_step)
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth upload submitted',
@@ -110,6 +108,27 @@ feature 'doc auth upload step' do
           'IdV: doc auth upload submitted',
           hash_including(step: 'upload', destination: :link_sent),
         )
+      end
+
+      it 'proceeds to the next page with valid info' do
+        expect(fake_attempts_tracker).to receive(
+          :idv_phone_upload_link_sent,
+        ).with(
+          success: true,
+          phone_number: '+1 415-555-0199',
+          failure_reason: nil,
+        )
+
+        expect(Telephony).to receive(:send_doc_auth_link).
+          with(hash_including(to: '+1 415-555-0199')).
+          and_call_original
+
+        expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+        fill_in :doc_auth_phone, with: '415-555-0199'
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_doc_auth_link_sent_step)
       end
     end
   end
