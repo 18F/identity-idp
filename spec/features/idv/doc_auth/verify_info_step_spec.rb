@@ -377,9 +377,6 @@ feature 'doc auth verify_info step', :js do
 
   context 'with ssn_controller enabled' do
     before do
-      # temporarily leave the verify_info flag in until delete verify step PR is merged
-      allow(IdentityConfig.store).to receive(:doc_auth_verify_info_controller_enabled).
-        and_return(true)
       allow(IdentityConfig.store).to receive(:doc_auth_ssn_controller_enabled).
         and_return(true)
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
