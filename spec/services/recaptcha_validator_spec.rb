@@ -67,10 +67,10 @@ describe RecaptchaValidator do
       let(:token) { 'token' }
 
       before do
-        stub_recaptcha_response_body(success: false, 'error-codes': ['missing-input-secret'])
+        stub_recaptcha_response_body(success: false, 'error-codes': ['timeout-or-duplicate'])
       end
 
-      it { expect(valid).to eq(true) }
+      it { expect(valid).to eq(false) }
 
       it 'logs analytics of the body' do
         valid
@@ -79,12 +79,60 @@ describe RecaptchaValidator do
           'reCAPTCHA verify result received',
           recaptcha_result: {
             'success' => false,
-            'error-codes' => ['missing-input-secret'],
+            'error-codes' => ['timeout-or-duplicate'],
           },
-          evaluated_as_valid: true,
+          evaluated_as_valid: false,
           score_threshold: score_threshold,
           exception_class: nil,
         )
+      end
+
+      context 'with unsuccessful response due to misconfiguration' do
+        context 'with missing input secret' do
+          before do
+            stub_recaptcha_response_body(success: false, 'error-codes': ['missing-input-secret'])
+          end
+
+          it { expect(valid).to eq(true) }
+
+          it 'logs analytics of the body' do
+            valid
+
+            expect(analytics).to have_logged_event(
+              'reCAPTCHA verify result received',
+              recaptcha_result: {
+                'success' => false,
+                'error-codes' => ['missing-input-secret'],
+              },
+              evaluated_as_valid: true,
+              score_threshold: score_threshold,
+              exception_class: nil,
+            )
+          end
+        end
+
+        context 'with invalid input secret' do
+          before do
+            stub_recaptcha_response_body(success: false, 'error-codes': ['invalid-input-secret'])
+          end
+
+          it { expect(valid).to eq(true) }
+
+          it 'logs analytics of the body' do
+            valid
+
+            expect(analytics).to have_logged_event(
+              'reCAPTCHA verify result received',
+              recaptcha_result: {
+                'success' => false,
+                'error-codes' => ['invalid-input-secret'],
+              },
+              evaluated_as_valid: true,
+              score_threshold: score_threshold,
+              exception_class: nil,
+            )
+          end
+        end
       end
     end
 
