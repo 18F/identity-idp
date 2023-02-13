@@ -22,26 +22,26 @@ module Idv
       def index
         response = []
         if IdentityConfig.store.arcgis_search_enabled
-           candidate = UspsInPersonProofing::Applicant.new(
-             address: search_params['street_address'],
-             city: search_params['city'], state: search_params['state'],
-             zip_code: search_params['zip_code']
-           )
-           response = proofer.request_facilities(candidate)
-           if response.length > 0
-             analytics.idv_in_person_locations_searched(
-               success: true,
-               result_total: response.length,
-             )
-           else
-             analytics.idv_in_person_locations_searched(
-               success: false, errors: 'No USPS locations found',
-             )
-           end
+          candidate = UspsInPersonProofing::Applicant.new(
+            address: search_params['street_address'],
+            city: search_params['city'], state: search_params['state'],
+            zip_code: search_params['zip_code']
+          )
+          response = proofer.request_facilities(candidate)
+          if response.length > 0
+            analytics.idv_in_person_locations_searched(
+              success: true,
+              result_total: response.length,
+            )
+          else
+            analytics.idv_in_person_locations_searched(
+              success: false, errors: 'No USPS locations found',
+            )
+          end
           else
             response = proofer.request_pilot_facilities
           end
-          render json: response.to_json
+        render json: response.to_json
       end
 
       def proofer
