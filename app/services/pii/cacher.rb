@@ -15,7 +15,6 @@ module Pii
       decrypted_pii = profile.decrypt_pii(user_password) if profile
       save_decrypted_pii_json(decrypted_pii.to_json) if decrypted_pii
       rotate_fingerprints(profile) if stale_fingerprints?(profile)
-      rotate_encrypted_attributes if stale_attributes?
       user_session[:decrypted_pii]
     end
 
@@ -69,29 +68,9 @@ module Pii
       )
     end
 
-    def rotate_encrypted_attributes
-      user.email_addresses.each do |email_address|
-        KeyRotator::AttributeEncryption.new(email_address).rotate
-      end
-
-      user.phone_configurations.each do |phone_configuration|
-        KeyRotator::AttributeEncryption.new(phone_configuration).rotate
-      end
-    end
-
     def stale_fingerprints?(profile)
-      stale_email_fingerprint? ||
-        stale_ssn_signature?(profile) ||
+      stale_ssn_signature?(profile) ||
         stale_compound_pii_signature?(profile)
-    end
-
-    def stale_email_fingerprint?
-      user.email_addresses.any?(&:stale_email_fingerprint?)
-    end
-
-    def stale_attributes?
-      user.phone_configurations.any?(&:stale_encrypted_phone?) ||
-        user.email_addresses.any?(&:stale_encrypted_email?)
     end
 
     def stale_ssn_signature?(profile)
