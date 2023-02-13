@@ -4,7 +4,7 @@ class SessionEncryptor
   class SensitiveKeyError < StandardError; end
 
   class SensitiveValueError < StandardError; end
-  CIPHERTEXT_HEADER = 'v3'
+  CIPHERTEXT_HEADER = 'v4'
   MINIMUM_COMPRESS_LIMIT = 300
   SENSITIVE_KEYS = [
     'first_name', 'middle_name', 'last_name', 'address1', 'address2', 'city', 'state', 'zipcode',
@@ -41,9 +41,9 @@ class SessionEncryptor
   SENSITIVE_REGEX = %r{#{SENSITIVE_DEFAULT_FIELDS.join('|')}}i
 
   def load(value)
-    return LegacySessionEncryptor.new.load(value) if should_use_legacy_encryptor_for_read?(value)
-
     payload = MessagePack.unpack(value)
+    return LegacySessionEncryptor.new.load(value) if should_use_legacy_encryptor_for_read?(payload)
+
     ciphertext = payload[CIPHERTEXT_KEY]
     compressed = payload[COMPRESSED_KEY]
     decrypted = outer_decrypt(ciphertext)
@@ -85,12 +85,12 @@ class SessionEncryptor
   end
 
   def kms_encrypt(text)
-    Base64.encode64(Encryption::KmsClient.new.encrypt(text, 'context' => 'session-encryption'))
+    Encryption::KmsClientV2.new.encrypt(text, 'context' => 'session-encryption')
   end
 
   def kms_decrypt(text)
-    Encryption::KmsClient.new.decrypt(
-      Base64.decode64(text), 'context' => 'session-encryption'
+    Encryption::KmsClientV2.new.decrypt(
+      text, 'context' => 'session-encryption'
     )
   end
 
@@ -204,8 +204,8 @@ class SessionEncryptor
     end
   end
 
-  def should_use_legacy_encryptor_for_read?(value)
-    value.start_with?(LegacySessionEncryptor::CIPHERTEXT_HEADER)
+  def should_use_legacy_encryptor_for_read?(payload)
+    payload[VERSION_KEY] == LegacySessionEncryptor::CIPHERTEXT_HEADER
   end
 
   def should_compress?(value)
