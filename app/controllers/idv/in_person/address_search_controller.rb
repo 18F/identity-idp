@@ -5,6 +5,8 @@ module Idv
 
       check_or_render_not_found -> { IdentityConfig.store.arcgis_search_enabled }
 
+      rescue_from Faraday::ConnectionFailed, Faraday::TimeoutError, with: :report_errors
+
       def index
         response = addresses(params[:address])
         render(**response)
@@ -14,32 +16,30 @@ module Idv
 
       def addresses(search_term)
         addresses = geocoder.find_address_candidates(SingleLine: search_term).slice(0, 1)
+
         { json: addresses, status: :ok }
-      rescue Faraday::ConnectionFailed => err
-        analytics.idv_arcgis_request_failure(
-          api_status_code: 422,
-          exception_class: err.class,
-          exception_message: err.message,
-          response_body_present: err.respond_to?(:response_body) && err.response_body.present?,
-          response_body: err.respond_to?(:response_body) && err.response_body,
-          response_status_code: err.respond_to?(:response_status) && err.response_status,
-        )
-        { json: [], status: :unprocessable_entity }
-      rescue Faraday::TimeoutError => err
-        analytics.idv_arcgis_request_failure(
-          api_status_code: 422,
-          exception_class: err.class,
-          exception_message: err.message,
-          response_body_present: err.respond_to?(:response_body) && err.response_body.present?,
-          response_body: err.respond_to?(:response_body) && err.response_body,
-          response_status_code: err.respond_to?(:response_status) && err.response_status,
-        )
-        { json: [], status: :unprocessable_entity }
       end
 
       def geocoder
         @geocoder ||= IdentityConfig.store.arcgis_mock_fallback ?
           ArcgisApi::Mock::Geocoder.new : ArcgisApi::Geocoder.new
+      end
+
+      def report_errors(error)
+        remapped_error = {
+          Faraday::ConnectionFailed => :unprocessable_entity,
+          Faraday::TimeoutError => :unprocessable_entity,
+        }[error.class] || :internal_server_error
+
+        analytics.idv_in_person_locations_request_failure(
+          api_status_code: Rack::Utils.status_code(remapped_error),
+          exception_class: error.class,
+          exception_message: error.message,
+          response_body_present: error.respond_to?(:response_body) && error.response_body.present?,
+          response_body: error.respond_to?(:response_body) && error.response_body,
+          response_status_code: error.respond_to?(:response_status) && error.response_status,
+        )
+        render json: [], status: remapped_error
       end
     end
   end
