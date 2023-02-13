@@ -195,13 +195,6 @@ module Idv
         )
       end
 
-
-
-
-
-
-
-      # TODO Probably delete this stuff
       def mobile_device?
         # See app/javascript/packs/document-capture-welcome.js
         # And app/services/idv/steps/agreement_step.rb

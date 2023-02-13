@@ -92,6 +92,11 @@ feature 'doc auth upload step' do
         )
       end
 
+      it "defaults phone to user's 2fa phone number" do
+        field = page.find_field(t('two_factor_authentication.phone_label'))
+        expect(field.value).to eq('(202) 555-1212')
+      end
+
       it 'proceeds to link sent page when user chooses to use phone' do
         expect(fake_attempts_tracker).to receive(
           :idv_document_upload_method_selected,
