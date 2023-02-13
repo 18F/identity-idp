@@ -3,8 +3,6 @@ class RecaptchaValidator
 
   EXEMPT_ERROR_CODES = ['missing-input-secret', 'invalid-input-secret']
 
-  class ValidationError < StandardError; end
-
   attr_reader :score_threshold, :analytics
 
   def initialize(score_threshold: 0.0, analytics: nil)
