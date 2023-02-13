@@ -127,20 +127,11 @@ module UspsInPersonProofing
     private
 
     def faraday
-      # If the request fails because the token is expired, get a new token before retrying request
-      retry_options = {
-        retry_block: lambda do |env:, options:, retry_count:, exception:, will_retry_in:|
-          token
-        end,
-      }
-
       Faraday.new(headers: request_headers) do |conn|
         conn.options.timeout = IdentityConfig.store.usps_ipp_request_timeout
         conn.options.read_timeout = IdentityConfig.store.usps_ipp_request_timeout
         conn.options.open_timeout = IdentityConfig.store.usps_ipp_request_timeout
         conn.options.write_timeout = IdentityConfig.store.usps_ipp_request_timeout
-
-        conn.request :retry, retry_options
 
         # Log request metrics
         conn.request :instrumentation, name: 'request_metric.faraday'
@@ -162,6 +153,9 @@ module UspsInPersonProofing
     # already cached.
     # @return [Hash] Headers to add to USPS requests
     def dynamic_headers
+      if Rails.cache.redis.ttl(AUTH_TOKEN_CACHE_KEY) != -2 && Rails.cache.redis.ttl(AUTH_TOKEN_CACHE_KEY) <= 0
+        retrieve_token!
+      end
       {
         'Authorization' => token,
         'RequestID' => request_id,

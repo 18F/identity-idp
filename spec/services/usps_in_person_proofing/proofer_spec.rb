@@ -141,16 +141,34 @@ RSpec.describe UspsInPersonProofing::Proofer do
     end
 
     context 'when the token is expired' do
+      AUTH_TOKEN_CACHE_KEY = :usps_ippaas_api_auth_token
+      let!(:redis) do
+        ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url)
+      end
       before do
+        redis.write(
+          AUTH_TOKEN_CACHE_KEY,
+          UspsInPersonProofing::Mock::Fixtures.request_expired_token_response, expires_in: 0
+        )
+        allow(Rails).to receive(:cache).and_return(
+          redis,
+        )
         stub_expired_request_token
-        stub_request_facilities_with_expired_token
         stub_request_facilities
       end
 
-      it 'fetches a new token and retries the attempt' do
-        expect(subject).to receive(:token).twice
+      it 'fetches a new token' do
+        root_url = 'http://my.root.url'
+        usps_ipp_sponsor_id = 1
+
+        expect(IdentityConfig.store).to receive(:usps_ipp_root_url).
+          and_return(root_url)
+        expect(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).
+          and_return(usps_ipp_sponsor_id)
 
         facilities = subject.request_facilities(location)
+
+        expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate").twice
 
         expect(facilities.length).to eq(10)
         check_facility(facilities[0])
@@ -232,6 +250,14 @@ RSpec.describe UspsInPersonProofing::Proofer do
       end
 
       it 'fetches a new token and retries the attempt' do
+        root_url = 'http://my.root.url'
+        usps_ipp_sponsor_id = 1
+
+        expect(IdentityConfig.store).to receive(:usps_ipp_root_url).
+          and_return(root_url)
+        expect(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).
+          and_return(usps_ipp_sponsor_id)
+
         expect(subject).to receive(:token).twice
         enrollment = subject.request_enroll(applicant)
 
