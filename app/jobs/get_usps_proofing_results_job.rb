@@ -3,7 +3,9 @@ class GetUspsProofingResultsJob < ApplicationJob
   IPP_STATUS_PASSED = 'In-person passed'
   IPP_STATUS_FAILED = 'In-person failed'
   IPP_INCOMPLETE_ERROR_MESSAGE = 'Customer has not been to a post office to complete IPP'
-  IPP_EXPIRED_ERROR_MESSAGE = 'More than 30 days have passed since opt-in to IPP'
+  IPP_EXPIRED_ERROR_MESSAGE = /More than (?<days>\d+) days have passed since opt-in to IPP/
+  IPP_INVALID_ENROLLMENT_CODE_MESSAGE = 'Enrollment code %s does not exist'
+  IPP_INVALID_APPLICANT_MESSAGE = 'Applicant %s does not exist'
   SUPPORTED_ID_TYPES = [
     "State driver's license",
     "State non-driver's identification card",
@@ -131,6 +133,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollment_id: enrollment.id,
       minutes_since_last_status_check: enrollment.minutes_since_last_status_check,
       minutes_since_last_status_update: enrollment.minutes_since_last_status_update,
+      minutes_since_established: enrollment.minutes_since_established,
       minutes_to_completion: complete ? enrollment.minutes_since_established : nil,
       issuer: enrollment.issuer,
     }
@@ -158,18 +161,30 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_bad_request_error(err, enrollment)
-    response = err.response_body
-    case response&.[]('responseMessage')
-    when IPP_INCOMPLETE_ERROR_MESSAGE
+    response_body = err.response_body
+    response_message = response_body&.[]('responseMessage')
+
+    if response_message == IPP_INCOMPLETE_ERROR_MESSAGE
       # Customer has not been to post office for IPP
       enrollment_outcomes[:enrollments_in_progress] += 1
-    when IPP_EXPIRED_ERROR_MESSAGE
-      handle_expired_status_update(enrollment, err.response)
+      analytics(user: enrollment.user).
+        idv_in_person_usps_proofing_results_job_enrollment_incomplete(
+          **enrollment_analytics_attributes(enrollment, complete: false),
+          response_message: response_message,
+        )
+    elsif response_message&.match(IPP_EXPIRED_ERROR_MESSAGE)
+      handle_expired_status_update(enrollment, err.response, response_message)
+    elsif response_message == IPP_INVALID_ENROLLMENT_CODE_MESSAGE % enrollment.enrollment_code
+      handle_unexpected_response(enrollment, response_message, reason: 'Invalid enrollment code')
+    elsif response_message == IPP_INVALID_APPLICANT_MESSAGE % enrollment.unique_id
+      handle_unexpected_response(
+        enrollment, response_message, reason: 'Invalid applicant unique id'
+      )
     else
       NewRelic::Agent.notice_error(err)
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
         **enrollment_analytics_attributes(enrollment, complete: false),
-        **response_analytics_attributes(response),
+        **response_analytics_attributes(response_body),
         exception_class: err.class.to_s,
         exception_message: err.message,
         reason: 'Request exception',
@@ -251,7 +266,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     enrollment.update(status: :failed)
   end
 
-  def handle_expired_status_update(enrollment, response)
+  def handle_expired_status_update(enrollment, response, response_message)
     enrollment_outcomes[:enrollments_expired] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
@@ -279,6 +294,30 @@ class GetUspsProofingResultsJob < ApplicationJob
         )
       enrollment.update(deadline_passed_sent: true)
     end
+
+    # check for an unexpected number of days until expiration
+    match = response_message&.match(IPP_EXPIRED_ERROR_MESSAGE)
+    expired_after_days = match && match[:days]
+    if expired_after_days.present? &&
+       expired_after_days.to_i != IdentityConfig.store.in_person_enrollment_validity_in_days
+      handle_unexpected_response(
+        enrollment,
+        response_message,
+        reason: 'Unexpected number of days before enrollment expired',
+        cancel: false,
+      )
+    end
+  end
+
+  def handle_unexpected_response(enrollment, response_message, reason:, cancel: true)
+    enrollment.cancelled! if cancel
+
+    analytics(user: enrollment.user).
+      idv_in_person_usps_proofing_results_job_unexpected_response(
+        **enrollment_analytics_attributes(enrollment, complete: cancel),
+        response_message: response_message,
+        reason: reason,
+      )
   end
 
   def handle_failed_status(enrollment, response)
@@ -388,10 +427,10 @@ class GetUspsProofingResultsJob < ApplicationJob
   def mail_delivery_params
     config_delay = IdentityConfig.store.in_person_results_delay_in_hours
     if config_delay > 0
-      return { wait: config_delay.hours }
+      return { wait: config_delay.hours, queue: :intentionally_delayed }
     elsif (config_delay == 0)
       return {}
     end
-    { wait: DEFAULT_EMAIL_DELAY_IN_HOURS.hours }
+    { wait: DEFAULT_EMAIL_DELAY_IN_HOURS.hours, queue: :intentionally_delayed }
   end
 end

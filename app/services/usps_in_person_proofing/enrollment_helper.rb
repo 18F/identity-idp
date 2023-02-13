@@ -76,8 +76,6 @@ module UspsInPersonProofing
           each(&:cancelled!)
       end
 
-      private
-
       def usps_proofer
         if IdentityConfig.store.usps_mock_fallback
           UspsInPersonProofing::Mock::Proofer.new
@@ -85,6 +83,8 @@ module UspsInPersonProofing
           UspsInPersonProofing::Proofer.new
         end
       end
+
+      private
 
       def handle_bad_request_error(err, enrollment)
         message = err.response.dig(:body, 'responseMessage') || err.message

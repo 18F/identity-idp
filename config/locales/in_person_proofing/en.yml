@@ -28,10 +28,7 @@ en:
       cta:
         button: Verify your ID in person
         button_variant: Try in person
-        prompt_detail: If you are located near Washington, D.C. or Baltimore, MD, you
-          may be able to verify your ID in person at limited post office
-          locations.
-        prompt_detail_a: You may be able to verify your ID in person at a participating
+        prompt_detail: You may be able to verify your ID in person at a participating
           Post Office near you.
         prompt_detail_b: Alternatively, if you are having trouble adding your ID online,
           you may be able to try in person at limited post office locations.
@@ -57,8 +54,10 @@ en:
             ID to try and verify your identity online again.
           po_search_about: If you are having trouble adding your ID, you may be able to
             verify your identity in person at a local United States Post Office.
-          results_description: There are %{count} participating Post Offices within 50
-            miles of %{address}.
+          results_description:
+            one: There is one participating Post Office within 50 miles of %{address}.
+            other: There are %{count} participating Post Offices within 50 miles of
+              %{address}.
           results_instructions: Select a Post Office location below, or search again using
             a different address. For facility accessibility, use the contact
             information listed for the Post Office location.
@@ -69,7 +68,8 @@ en:
         retail_hours_sun: 'Sun:'
         retail_hours_weekday: 'Monday to Friday:'
       prepare:
-        alert_selected_post_office: You’ve selected the %{name} Post Office.
+        alert_selected_po_name: You’ve selected the %{name} Post Office.
+        alert_selected_post_office: You’ve selected the Post Office at %{full_address}.
         privacy_disclaimer: '%{app_name} is a secure, government website. We and the
           U.S. Postal Service use your data to verify your identity.'
         privacy_disclaimer_link: Learn more about privacy and security.

@@ -4,7 +4,7 @@ describe 'users/shared/_otp_delivery_preference_selection.html.erb' do
   let(:user) { build_stubbed(:user) }
 
   subject(:rendered) do
-    render 'users/shared/otp_delivery_preference_selection', form_obj: NewPhoneForm.new(user)
+    render 'users/shared/otp_delivery_preference_selection', form_obj: NewPhoneForm.new(user:)
   end
 
   it 'renders enabled sms option' do

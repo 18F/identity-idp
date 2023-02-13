@@ -11,9 +11,10 @@ describe Idv::VerifyInfoController do
       :flow_path => 'standard' }
   end
 
+  let(:user) { create(:user) }
+
   before do
     allow(subject).to receive(:flow_session).and_return(flow_session)
-    user = build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' })
     stub_idv_steps_before_verify_step(user)
   end
 
@@ -77,6 +78,14 @@ describe Idv::VerifyInfoController do
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end
 
+      it 'updates DocAuthLog verify_view_count' do
+        doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+        expect { get :show }.to(
+          change { doc_auth_log.reload.verify_view_count }.from(0).to(1),
+        )
+      end
+
       context 'when the user has already verified their info' do
         it 'redirects to the review controller' do
           controller.idv_session.profile_confirmation = true
@@ -125,6 +134,32 @@ describe Idv::VerifyInfoController do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_verify_info_controller_enabled).
         and_return(true)
+    end
+
+    it 'logs the correct analytics event' do
+      stub_analytics
+      stub_attempts_tracker
+
+      put :update
+
+      expect(@analytics).to have_logged_event(
+        'IdV: doc auth verify submitted',
+        {
+          analytics_id: 'Doc Auth',
+          flow_path: 'standard',
+          irs_reproofing: false,
+          step: 'verify',
+          step_count: 0,
+        },
+      )
+    end
+
+    it 'updates DocAuthLog verify_submit_count' do
+      doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+      expect { put :update }.to(
+        change { doc_auth_log.reload.verify_submit_count }.from(0).to(1),
+      )
     end
 
     context 'when the user is ssn throttled' do

@@ -277,5 +277,37 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
         )
       end
     end
+
+    context 'troubleshooting options content' do
+      context 'when phone is unconfirmed' do
+        it 'has option to change phone number' do
+          data = presenter_data.merge(unconfirmed_phone: true)
+
+          @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+            data: data,
+            view: view,
+            service_provider: nil,
+          )
+
+          render
+
+          expect(rendered).to have_link(
+            t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
+            href: phone_setup_path,
+          )
+        end
+      end
+
+      context 'when phone is confirmed' do
+        it 'has option to select different authentication method' do
+          render
+
+          expect(rendered).to have_link(
+            t('two_factor_authentication.login_options_link_text'),
+            href: login_two_factor_options_path,
+          )
+        end
+      end
+    end
   end
 end

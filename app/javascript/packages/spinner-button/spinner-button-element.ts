@@ -38,6 +38,10 @@ export class SpinnerButtonElement extends HTMLElement {
     this.addEventListener('spinner.stop', () => this.toggleSpinner(false));
   }
 
+  disconnectedCallback() {
+    window.clearTimeout(this.#longWaitTimeout);
+  }
+
   toggleSpinner(isVisible: boolean) {
     const { button, actionMessage } = this.elements;
     this.classList.toggle('spinner-button--spinner-active', isVisible);

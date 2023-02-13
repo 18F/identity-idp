@@ -273,7 +273,8 @@ module Users
 
     def exceeded_phone_confirmation_limit?
       return false unless UserSessionContext.confirmation_context?(context)
-      phone_confirmation_throttle.throttled_else_increment?
+      phone_confirmation_throttle.increment!
+      phone_confirmation_throttle.throttled?
     end
 
     def send_user_otp(method)

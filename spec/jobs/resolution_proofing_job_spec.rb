@@ -320,9 +320,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
       context 'with a successful response from the proofer' do
         before do
           expect(resolution_proofer).to receive(:proof).
-            and_return(Proofing::Result.new)
+            and_return(Proofing::ResolutionResult.new)
           expect(state_id_proofer).to receive(:proof).
-            and_return(Proofing::Result.new)
+            and_return(Proofing::StateIdResult.new)
           Proofing::Mock::DeviceProfilingBackend.new.record_profiling_result(
             session_id: threatmetrix_session_id,
             result: 'pass',
@@ -355,7 +355,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         end
 
         context 'nil response body from ddp' do
-          let(:ddp_result) { Proofing::Result.new(response_body: nil) }
+          let(:ddp_result) { Proofing::DdpResult.new(response_body: nil) }
 
           before do
             expect(ddp_proofer).to receive(:proof).and_return(ddp_result)
@@ -381,9 +381,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
       context 'does call state id with an unsuccessful response from the proofer' do
         it 'posts back to the callback url' do
           expect(resolution_proofer).to receive(:proof).
-            and_return(Proofing::Result.new(exception: 'error'))
+            and_return(Proofing::ResolutionResult.new(exception: 'error'))
           expect(state_id_proofer).to receive(:proof).
-            and_return(Proofing::Result.new)
+            and_return(Proofing::StateIdResult.new)
 
           perform
         end
@@ -394,7 +394,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
         it 'does not call state_id proof if resolution proof is successful' do
           expect(resolution_proofer).to receive(:proof).
-            and_return(Proofing::Result.new)
+            and_return(Proofing::ResolutionResult.new)
 
           expect(state_id_proofer).not_to receive(:proof)
           perform

@@ -140,16 +140,42 @@ describe Idv::InPerson::UspsLocationsController do
           allow(proofer).to receive(:request_facilities).with(address).and_raise(timeout_error)
         end
 
-        it 'returns an internal server error' do
+        it 'returns an unprocessible entity client error' do
           subject
           expect(@analytics).to have_logged_event(
             'Request USPS IPP locations: request failed',
+            api_status_code: 422,
             exception_class: timeout_error.class,
             exception_message: timeout_error.message,
             response_body_present:
             timeout_error.response_body.present?,
             response_body: timeout_error.response_body,
             response_status_code: timeout_error.response_status,
+          )
+
+          status = response.status
+          expect(status).to eq 422
+        end
+      end
+
+      context 'with a 500 error from USPS' do
+        let(:server_error) { Faraday::ServerError.new }
+
+        before do
+          allow(proofer).to receive(:request_facilities).with(address).and_raise(server_error)
+        end
+
+        it 'returns an internal server error' do
+          subject
+          expect(@analytics).to have_logged_event(
+            'Request USPS IPP locations: request failed',
+            api_status_code: 500,
+            exception_class: server_error.class,
+            exception_message: server_error.message,
+            response_body_present:
+            server_error.response_body.present?,
+            response_body: server_error.response_body,
+            response_status_code: server_error.response_status,
           )
 
           status = response.status
@@ -175,6 +201,7 @@ describe Idv::InPerson::UspsLocationsController do
           subject
           expect(@analytics).to have_logged_event(
             'Request USPS IPP locations: request failed',
+            api_status_code: 500,
             exception_class: exception.class,
             exception_message: exception.message,
             response_body_present:

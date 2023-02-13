@@ -110,7 +110,7 @@ describe Idv::Steps::VerifyStep do
       end
 
       before do
-        allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts).and_return(2)
+        allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts).and_return(3)
         allow(IdentityConfig.store).to receive(:proof_ssn_max_attempt_window_in_minutes).
           and_return(10)
       end

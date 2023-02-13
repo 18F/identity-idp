@@ -17,11 +17,6 @@ describe Idv::InPerson::AddressSearchController do
 
   describe '#index' do
     let(:geocoder) { double('Geocoder') }
-    let(:suggestions) do
-      [
-        OpenStruct.new({ magic_key: 'a' }),
-      ]
-    end
 
     let(:addresses) do
       [
@@ -36,26 +31,25 @@ describe Idv::InPerson::AddressSearchController do
     before do
       allow(controller).to receive(:geocoder).and_return(geocoder)
       allow(geocoder).to receive(:find_address_candidates).and_return(addresses)
-      allow(geocoder).to receive(:suggest).and_return(suggestions)
     end
 
     context 'with successful fetch' do
       it 'gets successful response' do
         response = get :index
-        json = response.body
-        addresses = JSON.parse(json)
+        expect(response.status).to eq(200)
+        addresses = JSON.parse(response.body)
         expect(addresses.length).to eq 1
       end
 
-      context 'with no suggestions' do
-        let(:suggestions) do
+      context 'with no address candidates' do
+        let(:addresses) do
           []
         end
 
         it 'returns empty array' do
           response = get :index
-          json = response.body
-          addresses = JSON.parse(json)
+          expect(response.status).to eq(200)
+          addresses = JSON.parse(response.body)
           expect(addresses.length).to eq 0
         end
       end
@@ -64,13 +58,27 @@ describe Idv::InPerson::AddressSearchController do
     context 'with unsuccessful fetch' do
       before do
         exception = Faraday::ConnectionFailed.new('error')
-        allow(geocoder).to receive(:suggest).and_raise(exception)
+        allow(geocoder).to receive(:find_address_candidates).and_raise(exception)
       end
 
       it 'gets an empty pilot response' do
         response = get :index
-        json = response.body
-        addresses = JSON.parse(json)
+        expect(response.status).to eq(422)
+        addresses = JSON.parse(response.body)
+        expect(addresses.length).to eq 0
+      end
+    end
+
+    context 'with a timeout error' do
+      before do
+        exception = Faraday::TimeoutError.new
+        allow(geocoder).to receive(:find_address_candidates).and_raise(exception)
+      end
+
+      it 'returns an error code' do
+        response = get :index
+        expect(response.status).to eq(422)
+        addresses = JSON.parse(response.body)
         expect(addresses.length).to eq 0
       end
     end

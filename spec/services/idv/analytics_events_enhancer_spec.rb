@@ -1,23 +1,24 @@
 require 'rails_helper'
 
 describe Idv::AnalyticsEventsEnhancer do
-  class ExampleAnalytics
-    include AnalyticsEvents
-    prepend Idv::AnalyticsEventsEnhancer
+  let(:user) { build(:user) }
+  let(:analytics_class) do
+    Class.new(FakeAnalytics) do
+      include AnalyticsEvents
+      prepend Idv::AnalyticsEventsEnhancer
 
-    def idv_final(**kwargs)
-      @called_kwargs = kwargs
-    end
+      def idv_final(**kwargs)
+        @called_kwargs = kwargs
+      end
 
-    attr_reader :user, :called_kwargs
+      attr_reader :user, :called_kwargs
 
-    def initialize(user:)
-      @user = user
+      def initialize(user:)
+        @user = user
+      end
     end
   end
-
-  let(:user) { build(:user) }
-  let(:analytics) { ExampleAnalytics.new(user: user) }
+  let(:analytics) { analytics_class.new(user: user) }
 
   it 'includes decorated methods' do
     expect(analytics.methods).to include(*described_class::DECORATED_METHODS)

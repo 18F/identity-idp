@@ -15,6 +15,7 @@
 .databag_secret
 .env
 .idea
+.irb_history
 .powrc
 .sass-cache
 .zeus.sock
