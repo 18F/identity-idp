@@ -102,11 +102,11 @@ describe Idv::InPerson::VerifyInfoController do
       end
 
       it 'passes the X-Amzn-Trace-Id to the proofer' do
-        expect(step.send(:idv_agent)).to receive(:proof_resolution).
+        expect_any_instance_of(Idv::Agent).to receive(:proof_resolution).
           with(
             kind_of(DocumentCaptureSession),
             should_proof_state_id: anything,
-            trace_id: amzn_trace_id,
+            trace_id: subject.send(:amzn_trace_id),
             threatmetrix_session_id: nil,
             user_id: anything,
             request_ip: request.remote_ip,
