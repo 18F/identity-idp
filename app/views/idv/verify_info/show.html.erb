@@ -55,14 +55,14 @@ locals:
         <dt class="display-inline"> <%= t('idv.form.dob') %>: </dt>
         <dd class="display-inline margin-left-0"> <%= @pii[:dob] %> </dd>
       </div>
-      <% if in_person_proofing %>
+      <% if @in_person_proofing %>
         <div>
           <dt class="display-inline"> <%= t('idv.form.id_number') %>: </dt>
           <dd class="display-inline margin-left-0"> <%= pii[:state_id_number] %> </dd>
         </div>
       <% end %>
     </dl>
-    <% if in_person_proofing %>
+    <% if @in_person_proofing %>
       <div class='grid-auto'>
         <%= button_to(
               step_url.call(step: :redo_state_id),
@@ -144,7 +144,7 @@ locals:
   <div class="margin-top-5">
       <%= render SpinnerButtonComponent.new(
             action: ->(**tag_options, &block) do
-              button_to(which_verify_controller, **tag_options, &block)
+              button_to(@which_verify_controller, **tag_options, &block)
             end,
             big: true,
             wide: true,
@@ -156,7 +156,7 @@ locals:
                 form_steps_wait: '',
                 error_message: t('idv.failure.exceptions.internal_error'),
                 alert_target: '#form-steps-wait-alert',
-                wait_step_path: which_verify_controller,
+                wait_step_path: @which_verify_controller,
                 poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
               },
             },
