@@ -3,11 +3,12 @@ class RecaptchaValidator
 
   EXEMPT_ERROR_CODES = ['missing-input-secret', 'invalid-input-secret']
 
-  attr_reader :score_threshold, :analytics
+  attr_reader :recaptcha_version, :score_threshold, :analytics
 
-  def initialize(score_threshold: 0.0, analytics: nil)
+  def initialize(recaptcha_version: 3, score_threshold: 0.0, analytics: nil)
     @score_threshold = score_threshold
     @analytics = analytics
+    @recaptcha_version = recaptcha_version
   end
 
   def exempt?
@@ -20,10 +21,7 @@ class RecaptchaValidator
 
     response = faraday.post(
       VERIFICATION_ENDPOINT,
-      URI.encode_www_form(
-        secret: IdentityConfig.store.recaptcha_secret_key,
-        response: recaptcha_token,
-      ),
+      URI.encode_www_form(secret: recaptcha_secret_key, response: recaptcha_token),
     ) do |request|
       request.options.context = { service_name: 'recaptcha' }
     end
@@ -48,7 +46,7 @@ class RecaptchaValidator
     if recaptcha_result.blank?
       true
     elsif recaptcha_result['success']
-      recaptcha_result['score'] >= score_threshold
+      recaptcha_result['score'].nil? || recaptcha_result['score'] >= score_threshold
     else
       (recaptcha_result['error-codes'] - EXEMPT_ERROR_CODES).blank?
     end
@@ -58,8 +56,18 @@ class RecaptchaValidator
     analytics&.recaptcha_verify_result_received(
       recaptcha_result:,
       score_threshold:,
+      recaptcha_version:,
       evaluated_as_valid: recaptcha_result_valid?(recaptcha_result),
       exception_class: error&.class&.name,
     )
+  end
+
+  def recaptcha_secret_key
+    case recaptcha_version
+    when 2
+      IdentityConfig.store.recaptcha_secret_key_v2
+    when 3
+      IdentityConfig.store.recaptcha_secret_key_v3
+    end
   end
 end

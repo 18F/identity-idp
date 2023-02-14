@@ -17,7 +17,7 @@ class CaptchaSubmitButtonComponent < BaseComponent
       :'lg-captcha-submit-button',
       safe_join([input_errors_tag, input_tag, spinner_button_tag, recaptcha_script_tag]),
       **tag_options,
-      'recaptcha-site-key': IdentityConfig.store.recaptcha_site_key,
+      'recaptcha-site-key': IdentityConfig.store.recaptcha_site_key_v3,
       'recaptcha-action': action,
     )
   end
@@ -42,11 +42,11 @@ class CaptchaSubmitButtonComponent < BaseComponent
   end
 
   def recaptcha_script_tag
-    return if IdentityConfig.store.recaptcha_site_key.blank?
+    return if IdentityConfig.store.recaptcha_site_key_v3.blank?
     content_tag(:script, '', src: recaptcha_script_src, async: true)
   end
 
   def recaptcha_script_src
-    UriService.add_params(RECAPTCHA_SCRIPT_SRC, render: IdentityConfig.store.recaptcha_site_key)
+    UriService.add_params(RECAPTCHA_SCRIPT_SRC, render: IdentityConfig.store.recaptcha_site_key_v3)
   end
 end

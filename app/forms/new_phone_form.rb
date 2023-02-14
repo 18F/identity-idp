@@ -21,7 +21,8 @@ class NewPhoneForm
               :otp_delivery_preference,
               :otp_make_default_number,
               :setup_voice_preference,
-              :recaptcha_token
+              :recaptcha_token,
+              :recaptcha_version
 
   alias_method :setup_voice_preference?, :setup_voice_preference
 
@@ -31,6 +32,7 @@ class NewPhoneForm
     @otp_delivery_preference = user.otp_delivery_preference
     @otp_make_default_number = false
     @setup_voice_preference = setup_voice_preference
+    @recaptcha_version = 3
   end
 
   def submit(params)
@@ -129,7 +131,7 @@ class NewPhoneForm
   end
 
   def validate_recaptcha_token
-    return if !FeatureManagement.phone_recaptcha_enabled?
+    return if !phone_recaptcha_enabled?
     return if recaptcha_validator.valid?(recaptcha_token)
     errors.add(
       :recaptcha_token,
@@ -139,7 +141,15 @@ class NewPhoneForm
   end
 
   def recaptcha_validator
-    @recaptcha_validator ||= PhoneRecaptchaValidator.new(parsed_phone:, analytics:)
+    @recaptcha_validator ||= PhoneRecaptchaValidator.new(
+      parsed_phone:,
+      recaptcha_version:,
+      analytics:,
+    )
+  end
+
+  def phone_recaptcha_enabled?
+    FeatureManagement.phone_recaptcha_enabled?
   end
 
   def parsed_phone
@@ -155,6 +165,7 @@ class NewPhoneForm
     @otp_delivery_preference = delivery_prefs if delivery_prefs
     @otp_make_default_number = true if default_prefs
     @recaptcha_token = params[:recaptcha_token]
+    @recaptcha_version = 2 if params[:recaptcha_version].to_i == 2
   end
 
   def confirmed_phone?
