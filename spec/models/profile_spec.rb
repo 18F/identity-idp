@@ -262,6 +262,13 @@ describe Profile do
 
       profile.activate
     end
+
+    it 'does not activate a profile if it is under fraud review' do
+      profile.update(fraud_review_pending: true)
+      profile.activate
+
+      expect(profile).to_not be_active
+    end
   end
 
   describe '#deactivate' do
