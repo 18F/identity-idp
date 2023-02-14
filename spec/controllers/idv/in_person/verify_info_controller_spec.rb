@@ -117,7 +117,7 @@ describe Idv::InPerson::VerifyInfoController do
 
       it 'only enqueues a job once' do
         put :update
-        expect(step.send(:idv_agent)).not_to receive(:proof_resolution)
+        expect_any_instance_of(Idv::Agent).to_not receive(:proof_resolution)
 
         put :update
       end
