@@ -48,7 +48,10 @@ describe Idv::VerifyInfoController do
     let(:analytics_name) { 'IdV: doc auth verify visited' }
     let(:analytics_args) do
       {
-        **analytics_hash,
+        analytics_id: 'In Person Proofing',
+        flow_path: 'standard',
+        irs_reproofing: false,
+        step: 'verify',
         step_count: 1,
       }
     end

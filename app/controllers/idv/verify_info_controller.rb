@@ -2,6 +2,7 @@ module Idv
   class VerifyInfoController < ApplicationController
     include IdvStepConcern
     include StepUtilitiesConcern
+    include StepIndicatorConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_ssn_step_complete
@@ -10,6 +11,7 @@ module Idv
     def show
       @in_person_proofing = false
       @which_verify_controller = idv_verify_info_path
+      @step_indicator_steps = step_indicator_steps
 
       increment_step_counts
       analytics.idv_doc_auth_verify_visited(**analytics_arguments)

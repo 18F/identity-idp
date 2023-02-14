@@ -1,6 +1,7 @@
 <%#
 locals:
   @which_verify_controller - either idv_verify_info_path or idv_in_person_verify_info_path
+  @step_indicator_steps - the correct Idv::Flows variable for this flow
   @pii - user's information
   @had_barcode_read_failure - show warning if there's a barcode read error
   @in_person_proofing - true for in person proofing
@@ -8,7 +9,7 @@ locals:
 
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
-        steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
+        steps: @step_indicator_steps,
         current_step: :verify_info,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',

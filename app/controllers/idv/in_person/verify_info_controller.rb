@@ -2,6 +2,7 @@ module Idv
   module InPerson
     class VerifyInfoController < ApplicationController
       include IdvSession
+      include StepIndicatorConcern
 
       before_action :renders_404_if_flag_not_set
       before_action :confirm_two_factor_authenticated
@@ -11,6 +12,7 @@ module Idv
       def show
         @in_person_proofing = true
         @which_verify_controller = idv_in_person_verify_info_path
+        @step_indicator_steps = step_indicator_steps
 
         increment_step_counts
         analytics.idv_doc_auth_verify_visited(**analytics_arguments)
@@ -120,7 +122,7 @@ module Idv
           flow_path: flow_path,
           step: 'verify',
           step_count: current_flow_step_counts['verify'],
-          analytics_id: 'Doc Auth',
+          analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
         }.merge(**acuant_sdk_ab_test_analytics_args)
       end
