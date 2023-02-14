@@ -633,6 +633,34 @@ module AnalyticsEvents
     track_event('IdV: in person proofing location visited', flow_path: flow_path, **extra)
   end
 
+  # @param [Boolean] success
+  # @param [Integer] result_total
+  # @param [String] errors
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [Integer] response_status_code
+  # User submitted a search on the location search page and response received
+  def idv_in_person_locations_searched(
+    success:,
+    result_total: 0,
+    errors: nil,
+    exception_class: nil,
+    exception_message: nil,
+    response_status_code: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing location search submitted',
+      success: success,
+      result_total: result_total,
+      errors: errors,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      response_status_code: response_status_code,
+      **extra,
+    )
+  end
+
   # @param [String] selected_location Selected in-person location
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user submitted the in person proofing location step
