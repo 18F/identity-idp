@@ -122,9 +122,6 @@ module ArcgisApi
         conn.request :instrumentation, name: 'request_metric.faraday'
 
         conn.options.timeout = IdentityConfig.store.arcgis_api_request_timeout_seconds
-        conn.options.read_timeout = IdentityConfig.store.arcgis_api_request_timeout_seconds
-        conn.options.open_timeout = IdentityConfig.store.arcgis_api_request_timeout_seconds
-        conn.options.write_timeout = IdentityConfig.store.arcgis_api_request_timeout_seconds
 
         # Raise an error subclassing Faraday::Error on 4xx, 5xx, and malformed responses
         # Note: The order of this matters for parsing the error response body.
