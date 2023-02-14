@@ -29,10 +29,10 @@ describe 'IdvStepConcern' do
     end
 
     context 'user has not started IdV session' do
-      it 'redirects to idv doc auth url' do
+      it 'redirects to a previous step url' do
         get :show
 
-        expect(response).to redirect_to(idv_doc_auth_url)
+        expect(response).to redirect_to(idv_verify_info_url)
       end
     end
 

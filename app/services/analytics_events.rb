@@ -707,6 +707,24 @@ module AnalyticsEvents
     )
   end
 
+  # The user clicked the sp link on the "ready to verify" page
+  def idv_in_person_ready_to_verify_sp_link_clicked(**extra)
+    track_event(
+      'IdV: user clicked sp link on ready to verify page',
+      **extra,
+    )
+  end
+
+  # The user clicked the what to bring link on the "ready to verify" page
+  def idv_in_person_ready_to_verify_what_to_bring_link_clicked(**extra)
+    track_event(
+      'IdV: user clicked what to bring link on ready to verify page',
+      **extra,
+    )
+  end
+
+  # User has consented to share information with document upload and may
+  # view the "hybrid handoff" step next unless "skip_upload" param is true
   def idv_doc_auth_agreement_submitted(**extra)
     track_event('IdV: doc auth agreement submitted', **extra)
   end
@@ -908,10 +926,15 @@ module AnalyticsEvents
     )
   end
 
+  # The "hybrid handoff" step: Desktop user has submitted their choice to
+  # either continue via desktop ("document_capture" destination) or switch
+  # to mobile phone ("send_link" destination) to perform document upload.
+  # Mobile users sill log this event but with skip_upload_step = true
   def idv_doc_auth_upload_submitted(**extra)
     track_event('IdV: doc auth upload submitted', **extra)
   end
 
+  # Desktop user has reached the above "hybrid handoff" view
   def idv_doc_auth_upload_visited(**extra)
     track_event('IdV: doc auth upload visited', **extra)
   end
@@ -930,6 +953,7 @@ module AnalyticsEvents
     track_event('IdV: doc auth verify visited', **extra)
   end
 
+  # @identity.idp.previous_event_name IdV: doc auth optional verify_wait submitted
   def idv_doc_auth_verify_proofing_results(**extra)
     track_event('IdV: doc auth verify proofing results', **extra)
   end

@@ -95,7 +95,7 @@ describe Idv::SessionErrorsController do
       it 'assigns URL to try again' do
         response
 
-        expect(assigns(:try_again_path)).to eq(idv_doc_auth_path)
+        expect(assigns(:try_again_path)).to eq(idv_verify_info_url)
       end
 
       context 'in in-person proofing flow' do
