@@ -100,7 +100,7 @@ describe Idv::InPerson::VerifyInfoController do
 
         expect(flow_session[:pii_from_user][:uuid_prefix]).to eq service_provider.app_id
       end
-  
+
       it 'passes the X-Amzn-Trace-Id to the proofer' do
         expect(step.send(:idv_agent)).to receive(:proof_resolution).
           with(
@@ -111,24 +111,24 @@ describe Idv::InPerson::VerifyInfoController do
             user_id: anything,
             request_ip: request.remote_ip,
           )
-  
+
         put :update
       end
-  
+
       it 'only enqueues a job once' do
         put :update
         expect(step.send(:idv_agent)).not_to receive(:proof_resolution)
-  
+
         put :update
       end
-  
+
       context 'when pii_from_user is blank' do
         let(:flow) do
           Idv::Flows::InPersonFlow.new(controller, {}, 'idv/in_person').tap do |flow|
             flow_session = { 'Idv::Steps::InPerson::SsnStep' => true, pii_from_user: {} }
           end
         end
-  
+
         it 'marks step as incomplete' do
           expect(flow_session['Idv::Steps::InPerson::SsnStep']).to eq true
           result = put :update
@@ -136,7 +136,7 @@ describe Idv::InPerson::VerifyInfoController do
           expect(result.success?).to eq false
         end
       end
-  
+
       context 'when different users use the same SSN within the same timeframe' do
         let(:user2) { create(:user) }
         let(:flow2) do
@@ -151,42 +151,42 @@ describe Idv::InPerson::VerifyInfoController do
             url_options: {},
           )
         end
-  
+
         def build_step(controller)
           flow = Idv::Flows::InPersonFlow.new(controller, {}, 'idv/in_person').tap do |flow|
             flow_session = { pii_from_user: pii }
           end
-  
+
           Idv::Steps::InPerson::VerifyStep.new(flow)
         end
-  
+
         before do
           allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts).and_return(3)
           allow(IdentityConfig.store).to receive(:proof_ssn_max_attempt_window_in_minutes).
             and_return(10)
         end
-  
+
         def redirect(step)
           step.instance_variable_get(:@flow).instance_variable_get(:@redirect)
         end
-  
+
         it 'throttles them all' do
           expect(build_step(controller).call).to be_kind_of(ApplicationJob)
           expect(build_step(controller2).call).to be_kind_of(ApplicationJob)
-  
+
           step = build_step(controller)
           expect(put :update).to be_nil, 'does not enqueue a job'
           expect(redirect(step)).to eq(idv_session_errors_ssn_failure_url)
-  
+
           step2 = build_step(controller2)
           expect(step2.call).to be_nil, 'does not enqueue a job'
           expect(redirect(step2)).to eq(idv_session_errors_ssn_failure_url)
         end
       end
-  
+
       it 'updates proofing component vendor' do
         put :update
-  
+
         expect(user.proofing_component.document_check).to eq Idp::Constants::Vendors::USPS
       end
     end
