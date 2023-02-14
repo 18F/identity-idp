@@ -1,10 +1,6 @@
 module RecaptchaConcern
   extend ActiveSupport::Concern
 
-  included do
-    before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?
-  end
-
   private
 
   RECAPTCHA_SCRIPT_SRC = [
@@ -22,9 +18,5 @@ module RecaptchaConcern
     policy.script_src(*policy.script_src, *RECAPTCHA_SCRIPT_SRC)
     policy.frame_src(*policy.frame_src, *RECAPTCHA_FRAME_SRC)
     request.content_security_policy = policy
-  end
-
-  def recaptcha_enabled?
-    false
   end
 end
