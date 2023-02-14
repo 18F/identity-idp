@@ -55,6 +55,16 @@ class IdTokenBuilder
   end
 
   def acr
+    if identity.ial.present? && identity.aal.present?
+      "#{ial_acr} #{aal_acr}"
+    elsif identity.ial.present?
+      ial_acr
+    elsif identity.aal.present?
+      aal_acr
+    end
+  end
+
+  def ial_acr 
     ial = identity.ial
     case ial
     when Idp::Constants::IAL_MAX then Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
@@ -62,6 +72,18 @@ class IdTokenBuilder
     when Idp::Constants::IAL2 then Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
     else
       raise "Unknown ial #{ial}"
+    end
+  end
+
+  def aal_acr
+    aal = identity.aal
+    case aal
+    when Idp::Constants::DEFAULT_AAL then Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+    when Idp::Constants::AAL1 then Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF
+    when Idp::Constants::AAL2 then Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+    when Idp::Constants::AAL3 then Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
+    else
+      raise "Unknown aal #{aal}"
     end
   end
 
