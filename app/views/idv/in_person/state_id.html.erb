@@ -6,6 +6,13 @@
   <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.state_id')) %>
 <% end %>
 
+<%= render AlertComponent.new(
+      type: :info,
+      class: 'margin-bottom-4',
+      message: t('in_person_proofing.body.state_id.alert_html'),
+      text_tag: 'div',
+    )%>
+
 <p>
   <%= t('in_person_proofing.body.state_id.info_html') %>
 </p>
