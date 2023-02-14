@@ -3,6 +3,7 @@ require 'rails_helper'
 feature 'doc auth upload step' do
   include IdvStepHelper
   include DocAuthHelper
+  include ActionView::Helpers::DateHelper
 
   context 'with combined hybrid handoff disabled' do
     let(:fake_analytics) { FakeAnalytics.new }
@@ -58,6 +59,10 @@ feature 'doc auth upload step' do
   context 'with combined hybrid handoff enabled' do
     let(:fake_analytics) { FakeAnalytics.new }
     let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+    let(:idv_send_link_max_attempts) { 3 }
+    let(:idv_send_link_attempt_window_in_minutes) do
+      IdentityConfig.store.idv_send_link_attempt_window_in_minutes
+    end
 
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_combined_hybrid_handoff_enabled).and_return(true)
@@ -136,6 +141,104 @@ feature 'doc auth upload step' do
         click_idv_continue
 
         expect(page).to have_current_path(idv_doc_auth_upload_step, ignore_query: true)
+      end
+
+      it 'sends a link that does not contain any underscores' do
+        # because URLs with underscores sometimes get messed up by carriers
+        expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
+          expect(config[:link]).to_not include('_')
+
+          impl.call(**config)
+        end
+
+        fill_in :doc_auth_phone, with: '415-555-0199'
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+      end
+
+      it 'does not proceed if Telephony raises an error', js: true do
+        expect(fake_attempts_tracker).to receive( :idv_phone_upload_link_sent).with(
+          success: false,
+          phone_number: '+1 225-555-1000',
+          failure_reason: { telephony: ['TelephonyError'] },
+        )
+        fill_in :doc_auth_phone, with: '225-555-1000'
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_doc_auth_upload_step, ignore_query: true)
+        expect(page).to have_content I18n.t('telephony.error.friendly_message.generic')
+      end
+
+      it 'displays error if user selects a country to which we cannot send SMS', js: true do
+        page.find('div[aria-label="Country code"]').click
+        within(page.find('.iti__flag-container', visible: :all)) do
+          find('span', text: 'Sri Lanka').click
+        end
+        focused_input = page.find('.phone-input__number:focus')
+
+        error_message_id = focused_input[:'aria-describedby']&.split(' ')&.find do |id|
+          page.has_css?(".usa-error-message##{id}")
+        end
+        expect(error_message_id).to_not be_empty
+
+        error_message = page.find_by_id(error_message_id)
+        expect(error_message).to have_content(
+          t(
+            'two_factor_authentication.otp_delivery_preference.sms_unsupported',
+            location: 'Sri Lanka',
+           ),
+        )
+        click_continue
+        expect(page.find(':focus')).to match_css('.phone-input__number')
+      end
+
+      it 'throttles sending the link', js: true do
+        user = user_with_2fa
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_upload_step
+        timeout = distance_of_time_in_words(
+          Throttle.attempt_window_in_minutes(:idv_send_link).minutes,
+        )
+        allow(IdentityConfig.store).to receive(:idv_send_link_max_attempts).
+          and_return(idv_send_link_max_attempts)
+
+        expect(fake_attempts_tracker).to receive(
+          :idv_phone_send_link_rate_limited,
+        ).with({ phone_number: '+1 415-555-0199' })
+
+        freeze_time do
+          (idv_send_link_max_attempts - 1).times do
+            expect(page).to_not have_content(
+              I18n.t('errors.doc_auth.send_link_throttle', timeout: timeout),
+            )
+
+            fill_in :doc_auth_phone, with: '415-555-0199'
+            click_idv_continue
+
+            expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+
+            click_doc_auth_back_link
+          end
+
+          fill_in :doc_auth_phone, with: '415-555-0199'
+
+          click_idv_continue
+          expect(page).to have_current_path(idv_doc_auth_upload_step, ignore_query: true)
+          expect(page).to have_content(I18n.t('errors.doc_auth.send_link_throttle', timeout: timeout))
+        end
+        expect(fake_analytics).to have_logged_event(
+          'Throttler Rate Limit Triggered',
+          throttle_type: :idv_send_link,
+        )
+
+        # Manual expiration is needed for now since the Throttle uses Redis ttl instead of expiretime
+        Throttle.new(throttle_type: :idv_send_link, user: user).reset!
+        travel_to(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes) do
+          fill_in :doc_auth_phone, with: '415-555-0199'
+          click_idv_continue
+          expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+        end
       end
     end
   end

@@ -1,6 +1,7 @@
 module Idv
   module Steps
     class UploadStep < DocAuthBaseStep
+      include ActionView::Helpers::DateHelper
       STEP_INDICATOR_STEP = :verify_id
 
       def self.analytics_visited_event
