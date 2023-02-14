@@ -123,12 +123,10 @@ describe Idv::InPerson::VerifyInfoController do
       end
 
       context 'when pii_from_user is blank' do
-        it 'marks step as incomplete' do
+        it 'redirects' do
           flow_session[:pii_from_user] = {}
-          flow_session['Idv::Steps::InPerson::SsnStep'] = true
           result = put :update
-          expect(flow_session['Idv::Steps::InPerson::SsnStep']).to eq nil
-          expect(result.success?).to eq false
+          expect(response.status).to eq 302
         end
       end
 
