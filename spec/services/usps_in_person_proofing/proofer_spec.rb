@@ -141,30 +141,44 @@ RSpec.describe UspsInPersonProofing::Proofer do
     end
 
     context 'when the token is expired' do
-      AUTH_TOKEN_CACHE_KEY = :usps_ippaas_api_auth_token
-      let!(:redis) do
-        ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url)
-      end
+      let(:cache) { double(ActiveSupport::Cache::MemoryStore) }
+      let(:redis) { double(Redis) }
       before do
-        redis.write(
-          AUTH_TOKEN_CACHE_KEY,
-          UspsInPersonProofing::Mock::Fixtures.request_expired_token_response, expires_in: 0
-        )
         allow(Rails).to receive(:cache).and_return(
-          redis,
+          cache,
         )
+        allow(cache).to receive(:redis).and_return(redis)
+        allow(redis).to receive(:ttl).and_return(0)
+
         stub_expired_request_token
+        stub_request_token
         stub_request_facilities
       end
 
+      # TODO
+      # 1. Need to make check for expires_at have some kind of a buffer.  Can't do it at zero.
+      # 2. We are making two calls to Redis.  If it fails before the first and two calls, then the expiry is not set.  That means we can't solely rely on the Redis expiry.  (Tim also mentioned this in our slack thread earlier.)  I will refactor make one call to Redis.
       it 'fetches a new token' do
         root_url = 'http://my.root.url'
         usps_ipp_sponsor_id = 1
 
         expect(IdentityConfig.store).to receive(:usps_ipp_root_url).
-          and_return(root_url)
+          and_return(root_url).exactly(3).times
         expect(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).
           and_return(usps_ipp_sponsor_id)
+
+        expect(cache).to receive(:write).with(
+          UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY,
+          an_instance_of(String),
+          hash_including(expires_at: an_instance_of(ActiveSupport::TimeWithZone)),
+        ).twice
+
+        expect(redis).to receive(:expireat).with(
+          UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY,
+          an_instance_of(Integer),
+        ).twice
+
+        expect(cache).to receive(:read).with(UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY)
 
         facilities = subject.request_facilities(location)
 
