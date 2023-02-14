@@ -40,7 +40,7 @@ describe Idv::InPerson::VerifyInfoController do
     end
 
     it 'renders 404 if feature flag not set' do
-      allow(IdentityConfig.store).to receive(:doc_auth_in_person_verify_info_controller_enabled).
+      allow(IdentityConfig.store).to receive(:in_person_verify_info_controller_enabled).
         and_return(false)
 
       get :show
@@ -49,9 +49,9 @@ describe Idv::InPerson::VerifyInfoController do
     end
   end
 
-  context 'when doc_auth_verify_info_controller_enabled' do
+  context 'when in_person_verify_info_controller_enabled' do
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_in_person_verify_info_controller_enabled).
+      allow(IdentityConfig.store).to receive(:in_person_verify_info_controller_enabled).
         and_return(true)
       stub_analytics
       stub_attempts_tracker
@@ -62,7 +62,7 @@ describe Idv::InPerson::VerifyInfoController do
       let(:analytics_name) { 'IdV: doc auth verify visited' }
       let(:analytics_args) do
         {
-          analytics_id: 'Doc Auth',
+          analytics_id: 'In Person Proofing',
           flow_path: 'standard',
           irs_reproofing: false,
           step: 'verify',
@@ -123,14 +123,9 @@ describe Idv::InPerson::VerifyInfoController do
       end
 
       context 'when pii_from_user is blank' do
-        let(:flow) do
-          Idv::Flows::InPersonFlow.new(controller, {}, 'idv/in_person').tap do |flow|
-            flow_session = { 'Idv::Steps::InPerson::SsnStep' => true, pii_from_user: {} }
-          end
-        end
-
         it 'marks step as incomplete' do
-          expect(flow_session['Idv::Steps::InPerson::SsnStep']).to eq true
+          flow_session[:pii_from_user] = {}
+          flow_session['Idv::Steps::InPerson::SsnStep'] = true
           result = put :update
           expect(flow_session['Idv::Steps::InPerson::SsnStep']).to eq nil
           expect(result.success?).to eq false

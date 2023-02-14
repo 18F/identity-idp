@@ -27,9 +27,11 @@ module Idv
         analytics.idv_doc_auth_verify_submitted(**analytics_arguments)
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('verify', :update, true)
-  
+
         pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
-  
+        pii[:state_id_type] = 'drivers_license' unless pii.blank?
+        add_proofing_component
+
         ssn_throttle.increment!
         if ssn_throttle.throttled?
           analytics.throttler_rate_limit_triggered(
@@ -39,22 +41,22 @@ module Idv
           redirect_to idv_session_errors_ssn_failure_url
           return
         end
-  
+
         if resolution_throttle.throttled?
           redirect_to throttled_url
           return
         end
-  
+
         document_capture_session = DocumentCaptureSession.create(
           user_id: current_user.id,
           issuer: sp_session[:issuer],
         )
         document_capture_session.requested_at = Time.zone.now
-  
+
         idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
         idv_session.vendor_phone_confirmation = false
         idv_session.user_phone_confirmation = false
-  
+
         Idv::Agent.new(pii).proof_resolution(
           document_capture_session,
           should_proof_state_id: should_use_aamva?(pii),
@@ -63,16 +65,22 @@ module Idv
           threatmetrix_session_id: flow_session[:threatmetrix_session_id],
           request_ip: request.remote_ip,
         )
-  
+
         redirect_to idv_in_person_verify_info_url
       end
 
       private
 
       def renders_404_if_flag_not_set
-        unless IdentityConfig.store.doc_auth_in_person_verify_info_controller_enabled
+        unless IdentityConfig.store.in_person_verify_info_controller_enabled
           render_not_found
         end
+      end
+
+      def add_proofing_component
+        ProofingComponent.
+          create_or_find_by(user: current_user).
+          update(document_check: Idp::Constants::Vendors::USPS)
       end
 
       ##### Move to VerifyInfoConcern
