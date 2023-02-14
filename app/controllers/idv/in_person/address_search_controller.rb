@@ -56,7 +56,7 @@ module Idv
         # log the request failure
         analytics.idv_arcgis_request_failure(
           exception_class: err.class,
-          exception_message: err.message,
+          exception_message: exception_message,
           response_body_present: err.respond_to?(:response_body) && err.response_body.present?,
           response_body: err.respond_to?(:response_body) && err.response_body,
           response_status_code: response_status_code,

@@ -38,9 +38,9 @@ module Idv
               success: false, errors: 'No USPS locations found',
             )
           end
-          else
-            response = proofer.request_pilot_facilities
-          end
+        else
+          response = proofer.request_pilot_facilities
+        end
         render json: response.to_json
       end
 
