@@ -130,6 +130,13 @@ feature 'doc auth upload step' do
 
         expect(page).to have_current_path(idv_doc_auth_link_sent_step)
       end
+
+      it 'does not proceed to the next page with invalid info' do
+        fill_in :doc_auth_phone, with: ''
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_doc_auth_upload_step, ignore_query: true)
+      end
     end
   end
 end

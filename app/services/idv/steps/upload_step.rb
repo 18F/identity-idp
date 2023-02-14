@@ -57,6 +57,14 @@ module Idv
         )
       end
 
+      def form_submit
+        return super if !IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
+        return super if params[:type] == 'desktop'
+        params = permit(:phone)
+        params[:otp_delivery_preference] = 'sms'
+        build_form.submit(params)
+      end
+
       # To be removed after 50/50
       def handle_mobile_selection
         if mobile_device?
