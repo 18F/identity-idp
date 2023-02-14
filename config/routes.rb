@@ -359,6 +359,7 @@ Rails.application.routes.draw do
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
       get '/in_person/verify_info' => 'in_person/verify_info#show'
+      put '/in_person/verify_info' => 'in_person/verify_info#update'
 
       # deprecated routes
       get '/confirmations' => 'personal_key#show'

@@ -20,6 +20,51 @@ module Idv
         render 'idv/verify_info/show'
       end
 
+      def update
+        return if idv_session.verify_info_step_document_capture_session_uuid
+        analytics.idv_doc_auth_verify_submitted(**analytics_arguments)
+        Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
+          call('verify', :update, true)
+  
+        pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
+  
+        ssn_throttle.increment!
+        if ssn_throttle.throttled?
+          analytics.throttler_rate_limit_triggered(
+            throttle_type: :proof_ssn,
+            step_name: 'verify_info',
+          )
+          redirect_to idv_session_errors_ssn_failure_url
+          return
+        end
+  
+        if resolution_throttle.throttled?
+          redirect_to throttled_url
+          return
+        end
+  
+        document_capture_session = DocumentCaptureSession.create(
+          user_id: current_user.id,
+          issuer: sp_session[:issuer],
+        )
+        document_capture_session.requested_at = Time.zone.now
+  
+        idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
+        idv_session.vendor_phone_confirmation = false
+        idv_session.user_phone_confirmation = false
+  
+        Idv::Agent.new(pii).proof_resolution(
+          document_capture_session,
+          should_proof_state_id: should_use_aamva?(pii),
+          trace_id: amzn_trace_id,
+          user_id: current_user.id,
+          threatmetrix_session_id: flow_session[:threatmetrix_session_id],
+          request_ip: request.remote_ip,
+        )
+  
+        redirect_to idv_in_person_verify_info_url
+      end
+
       private
 
       def renders_404_if_flag_not_set
@@ -42,7 +87,7 @@ module Idv
       end
 
       def pii
-        @pii = flow_session[:pii_from_doc] if flow_session
+        @pii = flow_session[:pii_from_user] if flow_session
       end
 
       def current_flow_step_counts
