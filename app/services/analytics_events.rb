@@ -497,6 +497,23 @@ module AnalyticsEvents
     )
   end
 
+  def idv_cancellation_visited_from_barcode_page(
+    cancels:,
+    enrollment_code:,
+    enrollment_id:,
+    service_provider:,
+    **extra
+  )
+    track_event(
+      'IdV: cancellation visited from barcode page',
+      cancels: cancels,
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      service_provider: service_provider,
+      **extra,
+    )
+  end
+
   # @param [Integer] failed_capture_attempts Number of failed Acuant SDK attempts
   # @param [Integer] failed_submission_attempts Number of failed Acuant doc submissions
   # @param [String] field Image form field
