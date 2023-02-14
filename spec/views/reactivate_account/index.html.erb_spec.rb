@@ -5,7 +5,7 @@ describe 'reactivate_account/index.html.erb' do
     render
   end
 
-  let(:personal_key_generated_at) { Time.zone.now }
+  let(:personal_key_generated_at) { Time.zone.parse('2022-02-9T03:29:43+10:00') }
 
   it 'displays a fallback warning alert when js is off' do
     assign(:personal_key_generated_at, personal_key_generated_at)
@@ -19,7 +19,7 @@ describe 'reactivate_account/index.html.erb' do
     expect(rendered).to have_content(
       t(
         'users.personal_key.generated_on_html',
-        date: I18n.l(Time.zone.today, format: '%B %d, %Y'),
+        date: I18n.l(personal_key_generated_at, format: '%B %-d, %Y'),
       ),
     )
   end
