@@ -37,6 +37,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
     click_button t('idv.buttons.change_state_id_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
     fill_in t('in_person_proofing.form.state_id.first_name'), with: 'bad first name'
+    binding.pry
     click_doc_auth_back_link
     expect(page).to have_content(t('headings.verify'))
     expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)

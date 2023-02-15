@@ -1,5 +1,6 @@
 <%= tag.div(**tag_options, class: css_class, role:) do %>
   <div class="usa-alert__body">
     <%= content_tag(text_tag, content, class: 'usa-alert__text') %>
+    <%= yield if block_given? %>
   </div>
 <% end %>

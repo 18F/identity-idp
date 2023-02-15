@@ -10,7 +10,12 @@
       type: :info,
       class: 'margin-bottom-4',
       text_tag: 'div',
-    ).with_content(t('in_person_proofing.body.state_id.alert_html'))%>
+    ) do %>
+  <strong><%= t('in_person_proofing.body.state_id.alert_message') %></strong>
+  <ul>
+    <%# Loop throgu hstuff %>
+  </ul>
+<% end %>
 
 <p>
   <%= t('in_person_proofing.body.state_id.info_html') %>
