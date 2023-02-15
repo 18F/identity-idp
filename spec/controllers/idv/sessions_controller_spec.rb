@@ -2,6 +2,14 @@ require 'rails_helper'
 
 describe Idv::SessionsController do
   let(:user) { build(:user) }
+  let(:go_back_path) { '/verify/in_person/ready_to_verify' }
+  let(:enrollment) do
+    create(
+      :in_person_enrollment,
+      enrollment_code: '123',
+      id: '1',
+    )
+  end
 
   before do
     stub_sign_in(user)
@@ -16,6 +24,7 @@ describe Idv::SessionsController do
       controller.user_session['idv/in_person'] = flow_session
       controller.user_session['idv/inherited_proofing'] = flow_session
       controller.user_session[:decrypted_pii] = pii
+      allow(controller).to receive(:enrollment).and_return(enrollment)
     end
 
     let(:idv_session) { double }
@@ -24,6 +33,8 @@ describe Idv::SessionsController do
 
     context 'when destroying the session' do
       before do
+        allow(controller).to receive(:user_session).
+          and_return(idv: { go_back_path: '/' })
         expect(idv_session).to receive(:clear)
         delete :destroy
       end
@@ -45,7 +56,7 @@ describe Idv::SessionsController do
       end
     end
 
-    it 'tracks the event in analytics' do
+    it 'tracks the idv_start_over event in analytics' do
       delete :destroy, params: { step: 'first', location: 'get_help' }
 
       expect(@analytics).to have_logged_event(
@@ -56,10 +67,62 @@ describe Idv::SessionsController do
       )
     end
 
+    it 'does not log cancellation event' do
+      expect(@analytics).to_not have_logged_event(
+        'IdV: cancellation visited from barcode page',
+      )
+    end
+
     it 'redirect occurs to the start of identity verification' do
       delete :destroy
 
       expect(response).to redirect_to(idv_url)
+    end
+
+    context 'when go back path is the barcode page and no sp' do
+      before do
+        allow(controller).to receive(:user_session).
+          and_return(idv: { go_back_path: go_back_path })
+        delete :destroy
+      end
+
+      it 'logs cancellation event with app name when no sp' do
+        expect(@analytics).to have_logged_event(
+          'IdV: cancellation visited from barcode page',
+          cancelled: true,
+          enrollment_code: '123',
+          enrollment_id: 1,
+          service_provider: 'Login.gov',
+        )
+      end
+    end
+
+    context 'when go back path is the barcode page and sp' do
+      let(:decorated_session) do
+        ServiceProviderSessionDecorator.new(
+          sp: ServiceProvider.create(friendly_name: 'saml'),
+          view_context: '',
+          sp_session: '',
+          service_provider_request: '',
+        )
+      end
+
+      before do
+        allow(controller).to receive(:user_session).
+          and_return(idv: { go_back_path: go_back_path })
+        allow(controller).to receive(:decorated_session).and_return(decorated_session)
+        delete :destroy
+      end
+
+      it 'logs cancellation event with sp when present' do
+        expect(@analytics).to have_logged_event(
+          'IdV: cancellation visited from barcode page',
+          cancelled: true,
+          enrollment_code: '123',
+          enrollment_id: 1,
+          service_provider: 'saml',
+        )
+      end
     end
 
     context 'pending profile' do

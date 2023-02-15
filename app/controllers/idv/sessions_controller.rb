@@ -19,7 +19,7 @@ module Idv
     end
 
     def request_came_from
-      return user_session.dig(:idv, 'go_back_path')
+      return user_session.dig(:idv, :go_back_path)
     end
 
     def location_params
@@ -54,7 +54,7 @@ module Idv
     def log_analytics(path)
       if path == '/verify/in_person/ready_to_verify'
         analytics.idv_cancellation_visited_from_barcode_page(
-          cancels: true,
+          cancelled: true,
           enrollment_code: enrollment.enrollment_code,
           enrollment_id: enrollment.id,
           service_provider: decorated_session.sp_name || APP_NAME,
