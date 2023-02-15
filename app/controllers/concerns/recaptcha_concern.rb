@@ -1,8 +1,4 @@
 module RecaptchaConcern
-  extend ActiveSupport::Concern
-
-  private
-
   RECAPTCHA_SCRIPT_SRC = [
     'https://www.google.com/recaptcha/',
     'https://www.gstatic.com/recaptcha/',
