@@ -356,10 +356,10 @@ Rails.application.routes.draw do
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
       post '/in_person/addresses' => 'in_person/address_search#index'
-      get '/in_person/:step' => 'in_person#show', as: :in_person_step
-      put '/in_person/:step' => 'in_person#update'
       get '/in_person/verify_info' => 'in_person/verify_info#show'
       put '/in_person/verify_info' => 'in_person/verify_info#update'
+      get '/in_person/:step' => 'in_person#show', as: :in_person_step
+      put '/in_person/:step' => 'in_person#update'
 
       # deprecated routes
       get '/confirmations' => 'personal_key#show'

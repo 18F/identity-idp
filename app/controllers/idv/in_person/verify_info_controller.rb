@@ -84,9 +84,7 @@ module Idv
       private
 
       def renders_404_if_flag_not_set
-        unless IdentityConfig.store.in_person_verify_info_controller_enabled
-          render_not_found
-        end
+        render_not_found unless IdentityConfig.store.in_person_verify_info_controller_enabled
       end
 
       def add_proofing_component
@@ -104,8 +102,10 @@ module Idv
       end
 
       def confirm_profile_not_already_confirmed
+        # todo: should this instead be like so?
+        # return unless idv_session.resolution_successful == true
         return unless idv_session.profile_confirmation == true
-        redirect_to idv_review_url
+        redirect_to idv_phone_url
       end
 
       def pii
@@ -305,6 +305,7 @@ module Idv
 
         analytics.idv_doc_auth_verify_proofing_results(**form_response.to_h)
       end
+
       def summarize_result_and_throttle_failures(summary_result)
         if summary_result.success?
           add_proofing_components
