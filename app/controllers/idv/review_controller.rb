@@ -6,6 +6,7 @@ module Idv
     include StepIndicatorConcern
     include PhoneConfirmation
 
+    before_action :confirm_idv_applicant_created
     before_action :confirm_idv_steps_complete
     before_action :confirm_idv_phone_confirmed
     before_action :confirm_current_password, only: [:create]
