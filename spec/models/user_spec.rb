@@ -548,6 +548,30 @@ RSpec.describe User do
         expect(user.personal_key_generated_at).to be_nil
       end
     end
+
+    context 'the user has no active profile but has a previously verified profile' do
+      let!(:password_reset_profile) do
+        create(
+          :profile,
+          :password_reset,
+          user: user,
+        )
+      end
+
+      let!(:verification_cancelled_profile) do
+        create(
+          :profile,
+          :verification_cancelled,
+          user: user,
+        )
+      end
+
+      it 'returns the date of the previously verified profile' do
+        expect(
+          user.personal_key_generated_at,
+        ).to be_within(1.second).of(password_reset_profile.verified_at)
+      end
+    end
   end
 
   describe '#should_receive_in_person_completion_survey?' do
