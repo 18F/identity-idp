@@ -1,17 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe RecaptchaConcern, type: :controller do
-  describe '#allow_csp_recaptcha_src' do
-    controller ApplicationController do
-      include RecaptchaConcern
+  controller ApplicationController do
+    include RecaptchaConcern
 
-      before_action :allow_csp_recaptcha_src
+    before_action :allow_csp_recaptcha_src
 
-      def index
-        render plain: ''
-      end
+    def index
+      render plain: ''
     end
+  end
 
+  describe '#allow_csp_recaptcha_src' do
     it 'overrides csp to add directives for recaptcha' do
       get :index
 
