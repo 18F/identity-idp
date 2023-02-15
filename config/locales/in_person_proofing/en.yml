@@ -84,7 +84,7 @@ en:
           ID.</strong> We will use this information to confirm it matches your
           ID in person.
         alert_html: <strong>Your state-issued ID must not be expired. Accepted forms of ID are:</strong>
-          <ul><li>State Driver’s License</li><li>State Non-Driver’s Identification Card</li></ul>
+          <ul class="margin-0"><li>State Driver’s License</li><li>State Non-Driver’s Identification Card</li></ul>
     form:
       address:
         same_address: Is this address displayed on the state-issued ID that you are
