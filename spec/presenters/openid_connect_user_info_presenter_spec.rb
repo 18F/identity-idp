@@ -17,6 +17,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       user: create(:user, profiles: [profile]),
       service_provider: service_provider.issuer,
       scope: scope,
+      aal: 2,
     )
   end
 
@@ -32,6 +33,8 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
         expect(user_info[:email_verified]).to eq(true)
         expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
+        expect(user_info[:ial]).to eq(Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[identity.ial])
+        expect(user_info[:aal]).to eq(Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[identity.aal])
       end
     end
 
