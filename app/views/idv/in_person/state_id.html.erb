@@ -12,8 +12,12 @@
       text_tag: 'div',
     ) do %>
   <strong><%= t('in_person_proofing.body.state_id.alert_message') %></strong>
-  <ul>
-    <%# Loop throgu hstuff %>
+  <ul class="margin-bottom-0">
+    <% t('in_person_proofing.body.state_id.id_types').each do | id_type | %>
+      <li>
+        <%= id_type %>
+      </li>
+    <% end %>
   </ul>
 <% end %>
 

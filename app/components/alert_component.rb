@@ -9,7 +9,7 @@ class AlertComponent < BaseComponent
     end
 
     @type = type
-    @message = block_given? ? yield : message
+    @message = message
     @tag_options = tag_options
     @text_tag = text_tag
   end

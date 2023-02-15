@@ -96,8 +96,10 @@ fr:
           sur votre document d’identité nationale.</strong> Nous utiliserons ces
           informations pour confirmer qu’elles correspondent à votre pièce
           d’identité en personne.
-        alert_html: <strong>Votre carte d'identité délivrée par l'État ne doit pas être périmée. Les pièces d'identité acceptées sont</strong>
-          <ul class="margin-0"><li>Permis de conduire national</li><li>Carte d'identité nationale de non-conducteur</li></ul>
+        alert_message: Votre carte d'identité délivrée par l'État ne doit pas être périmée. Les pièces d'identité acceptées sont
+        id_types:
+          - Permis de conduire national
+          - Carte d'identité nationale de non-conducteur
     form:
       address:
         same_address: Cette adresse figure-t-elle sur la pièce d’identité délivrée par

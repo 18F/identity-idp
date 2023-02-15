@@ -94,8 +94,10 @@ es:
         info_html: Ingrese la información <strong>exactamente como aparece en su cédula
           de identidad emitida por el estado.</strong> Utilizaremos esta
           información para confirmar que coincide con su cédula en persona.
-        alert_html: <strong>Su identificación emitida por el estado no debe estar vencida. Se aceptan las siguientes formas de identificación</strong>
-          <ul class="margin-0"><li>Licencia para conducir estatal</li><li>Identificación estatal que no sea la licencia para conducir</li></ul>
+        alert_message: 'Su identificación emitida por el estado no debe estar vencida. Se aceptan las siguientes formas de identificación:'
+        id_types:
+          - Licencia para conducir estatal
+          - Identificación estatal que no sea la licencia para conducir
     form:
       address:
         same_address: '¿Aparece esta dirección en la cédula de identidad emitido por el
