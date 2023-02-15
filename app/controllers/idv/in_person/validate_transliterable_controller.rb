@@ -1,6 +1,6 @@
 module Idv
   module InPerson
-    class StateIdVerifyController < ApplicationController
+    class ValidateTransliterableController < ApplicationController
       include RenderConditionConcern
       include UspsInPersonProofing
       include EffectiveUser
@@ -10,6 +10,8 @@ module Idv
 
       before_action :confirm_authenticated_for_api
 
+      # Accept a list of fields and return a mapping that indicates which
+      # supported fields have transliteration errors
       def index
         validator = EnrollmentValidator.new
         results = validator.validate(

@@ -1,4 +1,5 @@
 <% title t('titles.doc_auth.verify') %>
+<% javascript_packs_tag_once('transliterable-field') %>
 
 <% if updating_state_id %>
   <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.update_state_id')) %>
@@ -16,27 +17,31 @@
                     html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
 
   <div class="margin-bottom-4">
-    <%= render ValidatedFieldComponent.new(
-          name: :first_name,
-          form: f,
-          input_html: { value: pii[:first_name] },
-          label: t('in_person_proofing.form.state_id.first_name'),
-          label_html: { class: 'usa-label' },
-          maxlength: 255,
-          required: true,
-        ) %>
+    <%= content_tag :'lg-transliterable-field', :'field-name' => 'first_name' do %>
+      <%= render ValidatedFieldComponent.new(
+            name: :first_name,
+            form: f,
+            input_html: { value: pii[:first_name] },
+            label: t('in_person_proofing.form.state_id.first_name'),
+            label_html: { class: 'usa-label' },
+            maxlength: 255,
+            required: true,
+          ) %>
+    <% end %>
   </div>
 
   <div class="margin-bottom-4">
-    <%= render ValidatedFieldComponent.new(
-          name: :last_name,
-          form: f,
-          input_html: { value: pii[:last_name] },
-          label: t('in_person_proofing.form.state_id.last_name'),
-          label_html: { class: 'usa-label' },
-          maxlength: 255,
-          required: true,
-        ) %>
+    <%= content_tag :'lg-transliterable-field', :'field-name' => 'last_name' do %>
+      <%= render ValidatedFieldComponent.new(
+            name: :last_name,
+            form: f,
+            input_html: { value: pii[:last_name] },
+            label: t('in_person_proofing.form.state_id.last_name'),
+            label_html: { class: 'usa-label' },
+            maxlength: 255,
+            required: true,
+          ) %>
+    <% end %>
   </div>
 
   <div class="margin-bottom-4">
