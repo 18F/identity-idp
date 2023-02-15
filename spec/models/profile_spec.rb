@@ -288,6 +288,26 @@ describe Profile do
     end
   end
 
+  describe '#deactivate_for_fraud_review' do
+    it 'sets fraud_review_pending to true' do
+      profile = create(:profile, user: user)
+      profile.deactivate_for_fraud_review
+
+      expect(profile).to_not be_active
+      expect(profile.fraud_review_pending).to eq(true)
+    end
+  end
+
+  describe '#reject' do
+    it 'sets fraud_rejection to true' do
+      profile = create(:profile, user: user)
+      profile.reject
+
+      expect(profile).to_not be_active
+      expect(profile.fraud_rejection).to eq(true)
+    end
+  end
+
   describe 'scopes' do
     describe '#active' do
       it 'returns only active Profiles' do

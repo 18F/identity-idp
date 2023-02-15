@@ -46,6 +46,14 @@ class Profile < ApplicationRecord
     update!(active: false, deactivation_reason: reason)
   end
 
+  def deactivate_for_fraud_review
+    update!(active: false, fraud_review_pending: true)
+  end
+
+  def reject
+    update!(active: false, fraud_rejection: true)
+  end
+
   def decrypt_pii(password)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
     decrypted_json = encryptor.decrypt(encrypted_pii, user_uuid: user.uuid)
