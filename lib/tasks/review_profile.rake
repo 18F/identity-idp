@@ -7,10 +7,8 @@ namespace :users do
       user_uuid = STDIN.getpass('Enter the User UUID to pass (input will be hidden):')
       user = User.find_by(uuid: user_uuid)
 
-      if user.decorate.threatmetrix_review_pending? && user.proofing_component.review_eligible?
-        profile = user.profiles.
-          where(deactivation_reason: 'threatmetrix_review_pending').
-          first
+      if user.decorate.fraud_review_pending? && user.proofing_component.review_eligible?
+        profile = user.decorate.fraud_review_pending_profile
         profile.activate
 
         event, disavowal_token = UserEventCreator.new(current_user: user).
@@ -40,10 +38,8 @@ namespace :users do
       user_uuid = STDIN.getpass('Enter the User UUID to reject (input will be hidden):')
       user = User.find_by(uuid: user_uuid)
 
-      if user.decorate.threatmetrix_review_pending? && user.proofing_component.review_eligible?
-        profile = user.profiles.
-          where(deactivation_reason: 'threatmetrix_review_pending').
-          first
+      if user.decorate.fraud_review_pending? && user.proofing_component.review_eligible?
+        profile = user.decorate.fraud_review_pending_profile
 
         profile.deactivate(:threatmetrix_review_rejected)
 

@@ -307,22 +307,22 @@ describe UserDecorator do
     end
   end
 
-  describe '#threatmetrix_review_pending_profile' do
+  describe '#fraud_review_pending_profile' do
     let(:user) { create(:user) }
     subject(:decorated_user) { UserDecorator.new(user) }
 
-    context 'with a threatmetrix review pending profile' do
+    context 'with a fraud review pending profile' do
       it 'returns the profile' do
         profile = create(
-          :profile, user: user, active: false, deactivation_reason: :threatmetrix_review_pending
+          :profile, user: user, active: false, fraud_review_pending: true
         )
 
-        expect(decorated_user.threatmetrix_review_pending_profile).to eq(profile)
+        expect(decorated_user.fraud_review_pending_profile).to eq(profile)
       end
     end
 
-    context 'without a threatmetrix review pending profile' do
-      it { expect(decorated_user.threatmetrix_review_pending_profile).to eq(nil) }
+    context 'without a fraud review pending profile' do
+      it { expect(decorated_user.fraud_review_pending_profile).to eq(nil) }
     end
   end
 
