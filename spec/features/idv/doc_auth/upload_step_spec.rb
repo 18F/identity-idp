@@ -59,6 +59,7 @@ feature 'doc auth upload step' do
   context 'with combined hybrid handoff enabled' do
     let(:fake_analytics) { FakeAnalytics.new }
     let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+    let(:document_capture_session) { DocumentCaptureSession.create! }
     let(:idv_send_link_max_attempts) { 3 }
     let(:idv_send_link_attempt_window_in_minutes) do
       IdentityConfig.store.idv_send_link_attempt_window_in_minutes
@@ -239,6 +240,34 @@ feature 'doc auth upload step' do
           click_idv_continue
           expect(page).to have_current_path(idv_doc_auth_link_sent_step)
         end
+      end
+
+      it 'includes expected URL parameters' do
+        allow_any_instance_of(Flow::BaseFlow).to receive(:flow_session).and_return(
+          document_capture_session_uuid: document_capture_session.uuid,
+        )
+        
+        expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
+          params = Rack::Utils.parse_nested_query URI(config[:link]).query
+          expect(params).to eq('document-capture-session' => document_capture_session.uuid)
+
+          impl.call(**config)
+        end
+
+        fill_in :doc_auth_phone, with: '415-555-0199'
+        click_idv_continue
+      end
+
+      it 'sets requested_at on the capture session' do
+        allow_any_instance_of(Flow::BaseFlow).to receive(:flow_session).and_return(
+          document_capture_session_uuid: document_capture_session.uuid,
+        )
+
+        fill_in :doc_auth_phone, with: '415-555-0199'
+        click_idv_continue
+
+        document_capture_session.reload
+        expect(document_capture_session).to have_attributes(requested_at: a_kind_of(Time))
       end
     end
   end
