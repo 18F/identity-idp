@@ -282,6 +282,17 @@ describe Profile do
     end
 
     context 'when the user is deactivated because of a threatmetrix rejection' do
+      # This evil is necessary because UserMailer reaches into the
+      # controller's params. As this is a model spec, we have to fake
+      # the params object.
+      before do
+        fake_params = ActionController::Parameters.new(
+          user: OpenStruct.new(id: 'fake_user_id'),
+          email_address: OpenStruct.new(user_id: 'fake_user_id', email: 'fake_user@test.com'),
+        )
+        allow_any_instance_of(UserMailer).to receive(:params).and_return(fake_params)
+      end
+
       let(:deactivation_reason) { :threatmetrix_review_rejected }
 
       it 'sends an email' do

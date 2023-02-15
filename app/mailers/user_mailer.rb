@@ -39,7 +39,7 @@ class UserMailer < ActionMailer::Base
     @email_address = params.fetch(:email_address)
     if @user.id != @email_address.user_id
       raise UserEmailAddressMismatchError.new(
-        "User ID #{@user.id} does not match EmailAddress ID #{@email_address.id}",
+        "User ID #{@user.id.inspect} does not match EmailAddress ID #{@email_address.user_id.inspect}",
       )
     end
   end
@@ -363,10 +363,12 @@ class UserMailer < ActionMailer::Base
   end
 
   def account_rejected
-    mail(
-      to: email_address.email,
-      subject: t('user_mailer.account_rejected.subject'),
-    )
+    with_user_locale(user) do
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.account_rejected.subject'),
+      )
+    end
   end
 
   private
