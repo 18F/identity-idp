@@ -19,6 +19,18 @@ module Idv
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('verify', :view, true) # specify in_person?
 
+        if ssn_throttle.throttled?
+          redirect_to idv_session_errors_ssn_failure_url
+          return
+        end
+
+        if resolution_throttle.throttled?
+          redirect_to throttled_url
+          return
+        end
+
+        process_async_state(load_async_state)
+
         render 'idv/verify_info/show'
       end
 

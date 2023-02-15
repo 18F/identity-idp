@@ -132,26 +132,6 @@ describe Idv::InPerson::VerifyInfoController do
 
       context 'when different users use the same SSN within the same timeframe' do
         let(:user2) { create(:user) }
-        let(:flow2) do
-        end
-        let(:controller2) do
-          instance_double(
-            'controller',
-            analytics: FakeAnalytics.new,
-            current_user: user2,
-            request: request,
-            session: { sp: { issuer: service_provider.issuer } },
-            url_options: {},
-          )
-        end
-
-        def build_step(controller)
-          flow = Idv::Flows::InPersonFlow.new(controller, {}, 'idv/in_person').tap do |flow|
-            flow_session = { pii_from_user: pii }
-          end
-
-          Idv::Steps::InPerson::VerifyStep.new(flow)
-        end
 
         before do
           allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts).and_return(3)
@@ -159,21 +139,23 @@ describe Idv::InPerson::VerifyInfoController do
             and_return(10)
         end
 
-        def redirect(step)
-          step.instance_variable_get(:@flow).instance_variable_get(:@redirect)
-        end
-
         it 'throttles them all' do
-          expect(build_step(controller).call).to be_kind_of(ApplicationJob)
-          expect(build_step(controller2).call).to be_kind_of(ApplicationJob)
+          put :update
+#          expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
+          subject.idv_session.verify_info_step_document_capture_session_uuid = nil
+          put :update
+#          expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
+          subject.idv_session.verify_info_step_document_capture_session_uuid = nil
 
-          step = build_step(controller)
-          expect(put :update).to be_nil, 'does not enqueue a job'
-          expect(redirect(step)).to eq(idv_session_errors_ssn_failure_url)
+          put :update
+          expect_any_instance_of(Idv::Agent).to_not receive(:proof_resolution)
+          expect(response).to redirect_to(idv_session_errors_ssn_failure_url)
+          subject.idv_session.verify_info_step_document_capture_session_uuid = nil
 
-          step2 = build_step(controller2)
-          expect(step2.call).to be_nil, 'does not enqueue a job'
-          expect(redirect(step2)).to eq(idv_session_errors_ssn_failure_url)
+          stub_sign_in(user2)
+          put :update
+          expect_any_instance_of(Idv::Agent).to_not receive(:proof_resolution)
+          expect(response).to redirect_to(idv_session_errors_ssn_failure_url)
         end
       end
 
