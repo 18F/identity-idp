@@ -41,6 +41,7 @@ acuant_get_results_timeout: 1.0
 acuant_create_document_timeout: 1.0
 add_email_link_valid_for_hours: 24
 address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US", "VI"]'
+allow_otp_countdown_expired_redirect: false
 arcgis_api_username: ''
 arcgis_api_password: ''
 arcgis_search_enabled: true
@@ -48,6 +49,7 @@ arcgis_mock_fallback: true
 arcgis_api_generate_token_url: 'https://gis.gsa.gov/portal/sharing/rest/generateToken'
 arcgis_api_suggest_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/suggest'
 arcgis_api_find_address_candidates_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/findAddressCandidates'
+arcgis_api_request_timeout_seconds: 5
 asset_host: ''
 async_wait_timeout_seconds: 60
 async_stale_job_timeout_seconds: 300
@@ -68,7 +70,6 @@ country_phone_number_overrides: '{}'
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_sharpness_threshold: 40
 doc_auth_error_glare_threshold: 40
-doc_auth_verify_info_controller_enabled: false
 database_pool_extra_connections_for_worker: 4
 database_pool_idp: 5
 database_statement_timeout: 2_500
@@ -219,7 +220,7 @@ phone_confirmation_max_attempts: 20
 phone_confirmation_max_attempt_window_in_minutes: 1_440
 phone_service_check: true
 phone_recaptcha_score_threshold: 0.0
-phone_recaptcha_country_score_overrides: '{"US":0.0}'
+phone_recaptcha_country_score_overrides: '{"AS":0.0,"GU":0.0,"MP":0.0,"PR":0.0,"US":0.0,"VI":0.0}'
 phone_setups_per_ip_limit: 25
 phone_setups_per_ip_period: 300
 phone_setups_per_ip_track_only_mode: false
@@ -288,7 +289,7 @@ service_provider_request_ttl_hours: 24
 session_check_delay: 30
 session_check_frequency: 30
 session_encryptor_alert_enabled: false
-session_encryptor_v2_enabled: true
+session_encryptor_v3_enabled: false
 session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
@@ -335,6 +336,7 @@ voip_allowed_phones: '[]'
 development:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
+  allow_otp_countdown_expired_redirect: true
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   aws_logo_bucket: ''

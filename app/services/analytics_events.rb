@@ -633,6 +633,34 @@ module AnalyticsEvents
     track_event('IdV: in person proofing location visited', flow_path: flow_path, **extra)
   end
 
+  # @param [Boolean] success
+  # @param [Integer] result_total
+  # @param [String] errors
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [Integer] response_status_code
+  # User submitted a search on the location search page and response received
+  def idv_in_person_locations_searched(
+    success:,
+    result_total: 0,
+    errors: nil,
+    exception_class: nil,
+    exception_message: nil,
+    response_status_code: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing location search submitted',
+      success: success,
+      result_total: result_total,
+      errors: errors,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      response_status_code: response_status_code,
+      **extra,
+    )
+  end
+
   # @param [String] selected_location Selected in-person location
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user submitted the in person proofing location step
@@ -707,6 +735,24 @@ module AnalyticsEvents
     )
   end
 
+  # The user clicked the sp link on the "ready to verify" page
+  def idv_in_person_ready_to_verify_sp_link_clicked(**extra)
+    track_event(
+      'IdV: user clicked sp link on ready to verify page',
+      **extra,
+    )
+  end
+
+  # The user clicked the what to bring link on the "ready to verify" page
+  def idv_in_person_ready_to_verify_what_to_bring_link_clicked(**extra)
+    track_event(
+      'IdV: user clicked what to bring link on ready to verify page',
+      **extra,
+    )
+  end
+
+  # User has consented to share information with document upload and may
+  # view the "hybrid handoff" step next unless "skip_upload" param is true
   def idv_doc_auth_agreement_submitted(**extra)
     track_event('IdV: doc auth agreement submitted', **extra)
   end
@@ -908,10 +954,15 @@ module AnalyticsEvents
     )
   end
 
+  # The "hybrid handoff" step: Desktop user has submitted their choice to
+  # either continue via desktop ("document_capture" destination) or switch
+  # to mobile phone ("send_link" destination) to perform document upload.
+  # Mobile users sill log this event but with skip_upload_step = true
   def idv_doc_auth_upload_submitted(**extra)
     track_event('IdV: doc auth upload submitted', **extra)
   end
 
+  # Desktop user has reached the above "hybrid handoff" view
   def idv_doc_auth_upload_visited(**extra)
     track_event('IdV: doc auth upload visited', **extra)
   end
@@ -930,6 +981,7 @@ module AnalyticsEvents
     track_event('IdV: doc auth verify visited', **extra)
   end
 
+  # @identity.idp.previous_event_name IdV: doc auth optional verify_wait submitted
   def idv_doc_auth_verify_proofing_results(**extra)
     track_event('IdV: doc auth verify proofing results', **extra)
   end
@@ -2027,6 +2079,18 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when user is redirected to OTP expired page
+  # @param [String] otp_sent_at
+  # @param [String] otp_expiration
+  def otp_expired_visited(otp_sent_at:, otp_expiration:, **extra)
+    track_event(
+      'OTP Expired Page Visited',
+      otp_sent_at: otp_sent_at,
+      otp_expiration: otp_expiration,
+      **extra,
+    )
+  end
+
   # Tracks if otp phone validation failed
   # @identity.idp.previous_event_name Twilio Phone Validation Failed
   # @param [String] error
@@ -3021,6 +3085,22 @@ module AnalyticsEvents
       response_body_present: response_body_present,
       response_body: response_body,
       response_status_code: response_status_code,
+      **extra,
+    )
+  end
+
+  # Tracks when the user visits one of the the session error pages.
+  # @param [String] type
+  # @param [Integer,nil] attempts_remaining
+  def idv_session_error_visited(
+    type:,
+    attempts_remaining: nil,
+    **extra
+  )
+    track_event(
+      'IdV: session error visited',
+      type: type,
+      attempts_remaining: attempts_remaining,
       **extra,
     )
   end

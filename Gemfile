@@ -35,6 +35,7 @@ gem 'jwt'
 gem 'lograge', '>= 0.11.2'
 gem 'lookbook', '~> 1.4.5', require: false
 gem 'lru_redux'
+gem 'msgpack', '~> 1.6'
 gem 'maxminddb'
 gem 'multiset'
 gem 'net-sftp'
