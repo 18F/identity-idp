@@ -4,6 +4,8 @@ RSpec.describe UspsInPersonProofing::Proofer do
   include UspsIppHelper
 
   let(:subject) { UspsInPersonProofing::Proofer.new }
+  let(:root_url) { 'http://my.root.url' }
+  let(:usps_ipp_sponsor_id) { 1 }
 
   describe '#retrieve_token!' do
     it 'sets token and token_expires_at' do
@@ -16,7 +18,6 @@ RSpec.describe UspsInPersonProofing::Proofer do
     it 'calls the endpoint with the expected params' do
       stub_request_token
 
-      root_url = 'http://my.root.url'
       username = 'test username'
       password = 'test password'
       client_id = 'test client id'
@@ -105,6 +106,36 @@ RSpec.describe UspsInPersonProofing::Proofer do
     expect(facility.zip_code_5).to be_present
   end
 
+  def set_up_expired_token(cache, redis)
+    allow(Rails).to receive(:cache).and_return(
+      cache,
+    )
+    allow(cache).to receive(:redis).and_return(redis)
+    allow(redis).to receive(:ttl).and_return(0)
+
+    stub_expired_request_token
+  end
+
+  def check_for_token_refresh_and_method_call(cache, redis)
+    expect(IdentityConfig.store).to receive(:usps_ipp_root_url).
+      and_return(root_url).exactly(3).times
+    expect(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).
+      and_return(usps_ipp_sponsor_id)
+
+    expect(cache).to receive(:write).with(
+      UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY,
+      an_instance_of(String),
+      hash_including(expires_at: an_instance_of(ActiveSupport::TimeWithZone)),
+    ).twice
+
+    expect(redis).to receive(:expireat).with(
+      UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY,
+      an_instance_of(Integer),
+    ).twice
+
+    expect(cache).to receive(:read).with(UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY)
+  end
+
   describe '#request_facilities' do
     let(:location) do
       double(
@@ -147,13 +178,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
       let(:cache) { double(ActiveSupport::Cache::MemoryStore) }
       let(:redis) { double(Redis) }
       before do
-        allow(Rails).to receive(:cache).and_return(
-          cache,
-        )
-        allow(cache).to receive(:redis).and_return(redis)
-        allow(redis).to receive(:ttl).and_return(0)
-
-        stub_expired_request_token
+        set_up_expired_token(cache, redis)
         stub_request_token
         stub_request_facilities
       end
@@ -162,26 +187,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
       # 1. Need to make check for expires_at have some kind of a buffer.  Can't do it at zero.
       # 2. We are making two calls to Redis.  If it fails before the first and two calls, then the expiry is not set.  That means we can't solely rely on the Redis expiry.  (Tim also mentioned this in our slack thread earlier.)  I will refactor to make one call to Redis.
       it 'fetches a new token' do
-        root_url = 'http://my.root.url'
-        usps_ipp_sponsor_id = 1
-
-        expect(IdentityConfig.store).to receive(:usps_ipp_root_url).
-          and_return(root_url).exactly(3).times
-        expect(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).
-          and_return(usps_ipp_sponsor_id)
-
-        expect(cache).to receive(:write).with(
-          UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY,
-          an_instance_of(String),
-          hash_including(expires_at: an_instance_of(ActiveSupport::TimeWithZone)),
-        ).twice
-
-        expect(redis).to receive(:expireat).with(
-          UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY,
-          an_instance_of(Integer),
-        ).twice
-
-        expect(cache).to receive(:read).with(UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY)
+        check_for_token_refresh_and_method_call(cache, redis)
 
         facilities = subject.request_facilities(location)
 
@@ -266,38 +272,13 @@ RSpec.describe UspsInPersonProofing::Proofer do
 
     context 'when the token is expired' do
       before do
-        allow(Rails).to receive(:cache).and_return(
-          cache,
-        )
-        allow(cache).to receive(:redis).and_return(redis)
-        allow(redis).to receive(:ttl).and_return(0)
-
-        stub_expired_request_token
+        set_up_expired_token(cache, redis)
         stub_request_enroll_expired_token
         stub_request_enroll
       end
 
       it 'fetches a new token and retries the attempt' do
-        root_url = 'http://my.root.url'
-        usps_ipp_sponsor_id = 1
-
-        expect(IdentityConfig.store).to receive(:usps_ipp_root_url).
-          and_return(root_url).exactly(3).times
-        expect(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).
-          and_return(usps_ipp_sponsor_id)
-
-        expect(cache).to receive(:write).with(
-          UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY,
-          an_instance_of(String),
-          hash_including(expires_at: an_instance_of(ActiveSupport::TimeWithZone)),
-        ).twice
-
-        expect(redis).to receive(:expireat).with(
-          UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY,
-          an_instance_of(Integer),
-        ).twice
-
-        expect(cache).to receive(:read).with(UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY)
+        check_for_token_refresh_and_method_call(cache, redis)
         enrollment = subject.request_enroll(applicant)
 
         expect(enrollment.enrollment_code).to be_present
@@ -367,13 +348,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
       let(:cache) { double(ActiveSupport::Cache::MemoryStore) }
       let(:redis) { double(Redis) }
       before do
-        allow(Rails).to receive(:cache).and_return(
-          cache,
-        )
-        allow(cache).to receive(:redis).and_return(redis)
-        allow(redis).to receive(:ttl).and_return(0)
-
-        stub_expired_request_token
+        set_up_expired_token(cache, redis)
         stub_request_proofing_results_with_forbidden_error
         stub_request_passed_proofing_results
       end
@@ -431,18 +406,10 @@ RSpec.describe UspsInPersonProofing::Proofer do
       let(:cache) { double(ActiveSupport::Cache::MemoryStore) }
       let(:redis) { double(Redis) }
       before do
-        allow(Rails).to receive(:cache).and_return(
-          cache,
-        )
-        allow(cache).to receive(:redis).and_return(redis)
-        allow(redis).to receive(:ttl).and_return(0)
-
-        stub_expired_request_token
+        set_up_expired_token(cache, redis)
       end
 
       it 'fetches a new token and retries the attempt' do
-        usps_ipp_sponsor_id = 1
-        root_url = 'http://my.root.url'
         expect(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).
           and_return(usps_ipp_sponsor_id)
 
