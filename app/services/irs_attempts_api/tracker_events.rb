@@ -282,6 +282,18 @@ module IrsAttemptsApi
       )
     end
 
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # This event will capture the result of the TMX fraud check
+    # during Identity Verification
+    def idv_tmx_fraud_check(success:, failure_reason: nil)
+      track_event(
+        :idv_tmx_fraud_check,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
     # Track when idv verification is rate limited during idv flow
     def idv_verification_rate_limited
       track_event(

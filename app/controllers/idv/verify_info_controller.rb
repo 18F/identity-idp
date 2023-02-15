@@ -392,9 +392,21 @@ module Idv
         elsif stage == :threatmetrix
           # transaction_id comes from request_id
           tmx_id = hash[:transaction_id]
+          log_irs_tmx_fraud_check_event(hash) if tmx_id
           add_cost(:threatmetrix, transaction_id: tmx_id) if tmx_id
         end
       end
+    end
+
+    def log_irs_tmx_fraud_check_event(result)
+      return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
+      success = result[:review_status] == 'pass'
+      failure_reason = { deactivation_reason: [:threatmetrix_review_pending] } unless success
+
+      irs_attempts_api_tracker.idv_tmx_fraud_check(
+        success: success,
+        failure_reason: failure_reason,
+      )
     end
 
     def process_aamva(transaction_id)
