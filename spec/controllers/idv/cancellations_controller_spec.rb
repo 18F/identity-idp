@@ -103,9 +103,27 @@ describe Idv::CancellationsController do
   end
 
   describe '#update' do
+    let(:go_back_path) { '/verify/in_person/ready_to_verify' }
+    let(:enrollment) do
+      create(
+        :in_person_enrollment,
+        enrollment_code: '123',
+        id: '1',
+      )
+    end
+
     before do
       stub_sign_in
       stub_analytics
+      allow(controller).to receive(:enrollment).and_return(enrollment)
+    end
+
+    it 'does not log cancellation from barcode pg event when go back path is not barcode' do
+      put :update
+      go_back_path = '/'
+      expect(@analytics).to_not have_logged_event(
+        'IdV: cancellation visited from barcode page',
+      )
     end
 
     it 'logs cancellation go back' do
@@ -137,6 +155,55 @@ describe Idv::CancellationsController do
         put :update, params: { cancel: 'true' }
 
         expect(response).to redirect_to go_back_path
+      end
+    end
+
+    context 'with go back path from barcode page' do
+      before do
+        allow(controller).to receive(:user_session).and_return(
+          idv: { go_back_path: go_back_path },
+        )
+      end
+
+      it 'logs cancellation from barcode page with app name when no sp' do
+        put :update
+
+        expect(@analytics).to have_logged_event(
+          'IdV: cancellation visited from barcode page',
+          cancelled: false,
+          enrollment_code: '123',
+          enrollment_id: 1,
+          service_provider: 'Login.gov',
+        )
+      end
+    end
+
+    context 'logs cancellation from barcode page when sp present' do
+      let(:decorated_session) do
+        ServiceProviderSessionDecorator.new(
+          sp: ServiceProvider.create(friendly_name: 'saml'),
+          view_context: '',
+          sp_session: '',
+          service_provider_request: '',
+        )
+      end
+
+      before do
+        allow(controller).to receive(:user_session).
+          and_return(idv: { go_back_path: go_back_path })
+        allow(controller).to receive(:decorated_session).and_return(decorated_session)
+      end
+
+      it 'logs cancellation from barcode pg event with sp when present' do
+        put :update
+
+        expect(@analytics).to have_logged_event(
+          'IdV: cancellation visited from barcode page',
+          cancelled: false,
+          enrollment_code: '123',
+          enrollment_id: 1,
+          service_provider: 'saml',
+        )
       end
     end
   end
