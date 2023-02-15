@@ -152,5 +152,4 @@ class OpenidConnectUserInfoPresenter
   def out_of_band_session_accessor
     @out_of_band_session_accessor ||= OutOfBandSessionAccessor.new(identity.rails_session_id)
   end
-
 end
