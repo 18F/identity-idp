@@ -110,7 +110,8 @@ class OpenidConnectAuthorizeForm
   end
 
   def aal
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[aal_values.sort.max] || ::Idp::Constants::DEFAULT_AAL
+    aal_value = aal_values.sort.max || ::Idp::Constants::DEFAULT_AAL
+    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[aal_value]
   end
 
   def_delegators :ial_context,
