@@ -183,9 +183,6 @@ RSpec.describe UspsInPersonProofing::Proofer do
         stub_request_facilities
       end
 
-      # TODO
-      # 1. Need to make check for expires_at have some kind of a buffer.  Can't do it at zero.
-      # 2. We are making two calls to Redis.  If it fails before the first and two calls, then the expiry is not set.  That means we can't solely rely on the Redis expiry.  (Tim also mentioned this in our slack thread earlier.)  I will refactor to make one call to Redis.
       it 'fetches a new token' do
         check_for_token_refresh_and_method_call(cache, redis)
 

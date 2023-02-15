@@ -153,7 +153,7 @@ module UspsInPersonProofing
     # already cached.
     # @return [Hash] Headers to add to USPS requests
     def dynamic_headers
-      if Rails.cache.redis.ttl(AUTH_TOKEN_CACHE_KEY) != -2 && Rails.cache.redis.ttl(AUTH_TOKEN_CACHE_KEY) <= 0
+      if Rails.cache.redis.ttl(AUTH_TOKEN_CACHE_KEY) != -2 && Rails.cache.redis.ttl(AUTH_TOKEN_CACHE_KEY) <= 0.5 # rubocop:disable Layout/LineLength
         retrieve_token!
       end
       {
