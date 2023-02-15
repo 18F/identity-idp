@@ -130,6 +130,8 @@ es:
       ssn_label_html: Número de Seguro Social
       state: Estado
       zipcode: Código postal
+    images:
+      come_back_later: Carta con una marca de verificación
     index:
       id:
         need_html: Si está creando una cuenta, necesitará una <strong>identificación
