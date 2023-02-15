@@ -52,48 +52,52 @@ describe Idv::VerifyInfoController do
       allow(@analytics).to receive(:track_event)
     end
 
-    context 'when doc_auth_verify_info_controller_enabled' do
+    it 'renders the show template' do
+      get :show
+
+      expect(response).to render_template :show
+    end
+
+    it 'sends analytics_visited event' do
+      get :show
+
+      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+    end
+
+    it 'sends correct step count to analytics' do
+      get :show
+      get :show
+      analytics_args[:step_count] = 2
+
+      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+    end
+
+    it 'updates DocAuthLog verify_view_count' do
+      doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+      expect { get :show }.to(
+        change { doc_auth_log.reload.verify_view_count }.from(0).to(1),
+      )
+    end
+
+    context 'when the user has already verified their info' do
+      it 'redirects to the review controller' do
+        controller.idv_session.profile_confirmation = true
+
+        get :show
+
+        expect(response).to redirect_to(idv_review_url)
+      end
+    end
+
+    context 'when the user is ssn throttled' do
       before do
-        allow(IdentityConfig.store).to receive(:doc_auth_verify_info_controller_enabled).
-          and_return(true)
-      end
-
-      it 'renders the show template' do
-        get :show
-
-        expect(response).to render_template :show
-      end
-
-      it 'sends analytics_visited event' do
-        get :show
-
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
-      end
-
-      it 'sends correct step count to analytics' do
-        get :show
-        get :show
-        analytics_args[:step_count] = 2
-
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
-      end
-
-      it 'updates DocAuthLog verify_view_count' do
-        doc_auth_log = DocAuthLog.create(user_id: user.id)
-
-        expect { get :show }.to(
-          change { doc_auth_log.reload.verify_view_count }.from(0).to(1),
-        )
-      end
-
-      context 'when the user has already verified their info' do
-        it 'redirects to the review controller' do
-          controller.idv_session.profile_confirmation = true
-
-          get :show
-
-          expect(response).to redirect_to(idv_review_url)
-        end
+        Throttle.new(
+          target: Pii::Fingerprinter.fingerprint(
+            Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
+          ),
+          throttle_type: :proof_ssn,
+        ).increment_to_throttled!
       end
 
       context 'when using new ssn controller' do
@@ -127,30 +131,25 @@ describe Idv::VerifyInfoController do
           expect(response).to redirect_to idv_session_errors_ssn_failure_url
         end
       end
+    end
 
-      context 'when the user is proofing throttled' do
-        before do
-          Throttle.new(
-            user: subject.current_user,
-            throttle_type: :idv_resolution,
-          ).increment_to_throttled!
-        end
+    context 'when the user is proofing throttled' do
+      before do
+        Throttle.new(
+          user: subject.current_user,
+          throttle_type: :idv_resolution,
+        ).increment_to_throttled!
+      end
 
-        it 'redirects to throttled url' do
-          get :show
+      it 'redirects to throttled url' do
+        get :show
 
-          expect(response).to redirect_to idv_session_errors_failure_url
-        end
+        expect(response).to redirect_to idv_session_errors_failure_url
       end
     end
   end
 
   describe '#update' do
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_verify_info_controller_enabled).
-        and_return(true)
-    end
-
     it 'logs the correct analytics event' do
       stub_analytics
       stub_attempts_tracker
