@@ -116,11 +116,14 @@ describe Idv::CancellationsController do
       stub_sign_in
       stub_analytics
       allow(controller).to receive(:enrollment).and_return(enrollment)
+      allow(controller).to receive(:user_session).and_return(
+        idv: { go_back_path: idv_url },
+      )
     end
 
     it 'does not log cancellation from barcode pg event when go back path is not barcode' do
       put :update
-      go_back_path = '/'
+
       expect(@analytics).to_not have_logged_event(
         'IdV: cancellation visited from barcode page',
       )
