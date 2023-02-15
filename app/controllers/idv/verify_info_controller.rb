@@ -1,6 +1,6 @@
 module Idv
   class VerifyInfoController < ApplicationController
-    include IdvSession
+    include IdvStepConcern
     include StepUtilitiesConcern
 
     before_action :confirm_two_factor_authenticated
