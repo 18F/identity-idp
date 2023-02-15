@@ -140,9 +140,9 @@ fr:
     please_try_again_html: Veuillez essayer de nouveau dans <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: En savoir plus sur l’authentification à deux facteurs
     recaptcha:
-      disclosure_statement_html: Ce site est protégé par reCAPTCHA. Les %{policy_link} et
-        les %{google_tos_link} de Google s’appliquent. Lisez les
-        %{login_tos_link} de Login.gov pour les mobiles.
+      disclosure_statement_html: Ce site est protégé par reCAPTCHA. Les %{policy_link}
+        et les %{google_tos_link} de Google s’appliquent. Lisez les
+        %{login_tos_link} de %{app_name} pour les mobiles.
       google_tos_link: conditions de service
       login_tos_link: conditions d’utilisation
       policy_link: règles de confidentialité
