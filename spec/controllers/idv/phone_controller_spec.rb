@@ -66,6 +66,22 @@ describe Idv::PhoneController do
       end
     end
 
+    context 'when the user has not finished the verify step' do
+      before do
+        subject.idv_session.applicant = nil
+        subject.idv_session.profile_confirmation = nil
+        subject.idv_session.resolution_successful = nil
+
+        allow(controller).to receive(:confirm_idv_applicant_created).and_call_original
+      end
+
+      it 'redirects to the verify step' do
+        get :new
+
+        expect(response).to redirect_to idv_verify_info_url
+      end
+    end
+
     context 'when the user is throttled' do
       before do
         Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
