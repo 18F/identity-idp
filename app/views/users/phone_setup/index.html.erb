@@ -33,10 +33,11 @@
 
   <%= render 'users/shared/otp_delivery_preference_selection',
              form_obj: @new_phone_form %>
-
-  <%= link_to t('two_factor_authentication.mobile_terms_of_service'),
-              MarketingSite.messaging_practices_url,
-              class: 'display-block margin-bottom-4' %>
+  <% unless FeatureManagement.phone_recaptcha_enabled? %>
+    <%= link_to t('two_factor_authentication.mobile_terms_of_service'),
+                MarketingSite.messaging_practices_url,
+                class: 'display-block margin-bottom-4' %>
+  <% end %>
 
   <% if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled? %>
     <%= render 'users/shared/otp_make_default_number',
