@@ -265,12 +265,28 @@ describe Profile do
   end
 
   describe '#deactivate' do
-    it 'sets active flag to false' do
+    let(:deactivation_reason) { :password_reset }
+    let(:profile) do
       profile = create(:profile, :active, user: user)
-      profile.deactivate(:password_reset)
+      profile.deactivate(deactivation_reason)
+      profile
+    end
 
+    it 'sets active flag to false' do
       expect(profile).to_not be_active
       expect(profile).to be_password_reset
+    end
+
+    it 'does not send an email by default' do
+      expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(0)
+    end
+
+    context 'when the user is deactivated because of a threatmetrix rejection' do
+      let(:deactivation_reason) { :threatmetrix_review_rejected }
+
+      it 'sends an email' do
+        expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(1)
+      end
     end
   end
 

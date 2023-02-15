@@ -362,6 +362,13 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def account_rejected
+    mail(
+      to: email_address.email,
+      subject: t('user_mailer.account_rejected.subject'),
+    )
+  end
+
   private
 
   def email_should_receive_nonessential_notifications?(email)
