@@ -2,13 +2,6 @@ require 'rails_helper'
 
 describe Idv::SessionsController do
   let(:user) { build(:user) }
-  let(:enrollment) do
-    create(
-      :in_person_enrollment,
-      enrollment_code: '123',
-      id: '1',
-    )
-  end
 
   before do
     stub_sign_in(user)
@@ -16,6 +9,13 @@ describe Idv::SessionsController do
   end
 
   describe '#destroy' do
+    let(:enrollment) do
+      create(
+        :in_person_enrollment,
+        enrollment_code: '123',
+        id: 10,
+      )
+    end
     before do
       allow(idv_session).to receive(:clear)
       allow(subject).to receive(:idv_session).and_return(idv_session)
@@ -76,7 +76,7 @@ describe Idv::SessionsController do
         extra: {
           cancelled_enrollment: true,
           enrollment_code: '123',
-          enrollment_id: 1,
+          enrollment_id: 10,
           service_provider: 'Login.gov',
         },
       )
