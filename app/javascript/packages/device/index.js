@@ -38,7 +38,14 @@ export function hasMediaAccess() {
 export async function hasCamera() {
   if (hasMediaAccess()) {
     const devices = await navigator.mediaDevices.enumerateDevices();
-    return devices.some((device) => device.kind === 'videoinput');
+    const result = devices.some((device) => device.kind === 'videoinput');
+    try {
+      const delay = parseInt(localStorage.getItem('HAS_CAMERA_DELAY_MS') ?? '0', 10);
+      if (delay) {
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    } catch {}
+    return result;
   }
 }
 
