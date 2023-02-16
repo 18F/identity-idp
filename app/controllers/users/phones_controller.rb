@@ -6,6 +6,7 @@ module Users
     before_action :confirm_two_factor_authenticated
     before_action :redirect_if_phone_vendor_outage
     before_action :check_max_phone_numbers_per_account, only: %i[add create]
+    before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?
 
     def add
       user_session[:phone_id] = nil

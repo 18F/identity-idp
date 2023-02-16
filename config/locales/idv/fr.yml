@@ -135,6 +135,8 @@ fr:
       ssn_label_html: Numéro de sécurité sociale
       state: État
       zipcode: Code postal
+    images:
+      come_back_later: Lettre avec un crochet
     index:
       id:
         need_html: Si vous créez un compte, vous aurez besoin d’un <strong>identifiant
