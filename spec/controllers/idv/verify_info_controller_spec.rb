@@ -131,6 +131,14 @@ describe Idv::VerifyInfoController do
           expect(response).to redirect_to idv_session_errors_ssn_failure_url
         end
       end
+
+      it 'logs the correct attempts event' do
+        stub_attempts_tracker
+        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
+          with({ throttle_reason: 'multi-session' })
+
+        get :show
+      end
     end
 
     context 'when the user is proofing throttled' do
@@ -145,6 +153,14 @@ describe Idv::VerifyInfoController do
         get :show
 
         expect(response).to redirect_to idv_session_errors_failure_url
+      end
+
+      it 'logs the correct attempts event' do
+        stub_attempts_tracker
+        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
+          with({ throttle_reason: 'single-session' })
+
+        get :show
       end
     end
   end
@@ -191,6 +207,14 @@ describe Idv::VerifyInfoController do
 
         expect(response).to redirect_to idv_session_errors_ssn_failure_url
       end
+
+      it 'logs the correct attempts event' do
+        stub_attempts_tracker
+        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
+          with({ throttle_reason: 'multi-session' })
+
+        put :update
+      end
     end
 
     context 'when the user is proofing throttled' do
@@ -205,6 +229,14 @@ describe Idv::VerifyInfoController do
         put :update
 
         expect(response).to redirect_to idv_session_errors_failure_url
+      end
+
+      it 'logs the correct attempts event' do
+        stub_attempts_tracker
+        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
+          with({ throttle_reason: 'single-session' })
+
+        put :update
       end
     end
   end

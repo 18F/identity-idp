@@ -154,7 +154,9 @@ feature 'doc auth verify_info step', :js do
       allow(IdentityConfig.store).to receive(:idv_max_attempts).
         and_return(max_resolution_attempts)
 
-      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited)
+      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
+        with({ throttle_reason: 'single-session' })
+
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_ssn_step
       fill_out_ssn_form_with_ssn_that_fails_resolution
@@ -203,6 +205,9 @@ feature 'doc auth verify_info step', :js do
 
       allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts).
         and_return(max_ssn_attempts)
+
+      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
+        with({ throttle_reason: 'multi-session' })
 
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_ssn_step
