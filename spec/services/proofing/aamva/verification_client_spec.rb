@@ -19,11 +19,13 @@ describe Proofing::Aamva::VerificationClient do
   subject(:verification_client) { described_class.new(AamvaFixtures.example_config) }
 
   describe '#send_verification_request' do
-    it 'should get the auth token from the auth client' do
+    before do
       auth_client = instance_double(Proofing::Aamva::AuthenticationClient)
       allow(auth_client).to receive(:fetch_token).and_return('ThisIsTheToken')
       allow(Proofing::Aamva::AuthenticationClient).to receive(:new).and_return(auth_client)
+    end
 
+    it 'gets the auth token from the auth client' do
       verification_stub = stub_request(:post, AamvaFixtures.example_config.verification_url).
         to_return(body: AamvaFixtures.verification_response, status: 200).
         with do |request|
@@ -37,43 +39,44 @@ describe Proofing::Aamva::VerificationClient do
 
       expect(verification_stub).to have_been_requested
     end
+  end
+
+  describe '#send_verification_request' do
+    let(:response_body) { AamvaFixtures.verification_response }
+
+    before do
+      auth_client = instance_double(Proofing::Aamva::AuthenticationClient)
+      allow(auth_client).to receive(:fetch_token).and_return('ThisIsTheToken')
+      allow(Proofing::Aamva::AuthenticationClient).to receive(:new).and_return(auth_client)
+
+      stub_request(:post, AamvaFixtures.example_config.verification_url).
+        to_return(body: response_body, status: 200)
+    end
+
+    let(:response) do
+      verification_client.send_verification_request(
+        applicant: applicant,
+        session_id: '1234-abcd-efgh',
+      )
+    end
 
     context 'when verification is successful' do
-      it 'should return a successful response' do
-        auth_client = instance_double(Proofing::Aamva::AuthenticationClient)
-        allow(auth_client).to receive(:fetch_token).and_return('ThisIsTheToken')
-        allow(Proofing::Aamva::AuthenticationClient).to receive(:new).and_return(auth_client)
-        stub_request(:post, AamvaFixtures.example_config.verification_url).
-          to_return(body: AamvaFixtures.verification_response, status: 200)
-
-        response = verification_client.send_verification_request(
-          applicant: applicant,
-          session_id: '1234-abcd-efgh',
-        )
-
+      it 'returns a successful response' do
         expect(response).to be_a Proofing::Aamva::Response::VerificationResponse
         expect(response.success?).to eq(true)
       end
     end
 
     context 'when verification is not successful' do
-      it 'should return an unsuccessful response with errors' do
-        auth_client = instance_double(Proofing::Aamva::AuthenticationClient)
-        allow(auth_client).to receive(:fetch_token).and_return('ThisIsTheToken')
-        allow(Proofing::Aamva::AuthenticationClient).to receive(:new).and_return(auth_client)
-
-        stub_request(:post, AamvaFixtures.example_config.verification_url).
-          to_return(status: 200, body: modify_xml_at_xpath(
-            AamvaFixtures.verification_response,
-            '//PersonBirthDateMatchIndicator',
-            'false',
-          ))
-
-        response = verification_client.send_verification_request(
-          applicant: applicant,
-          session_id: '1234-abcd-efgh',
+      let(:response_body) do
+        modify_xml_at_xpath(
+          AamvaFixtures.verification_response,
+          '//PersonBirthDateMatchIndicator',
+          'false',
         )
+      end
 
+      it 'returns an unsuccessful response with errors' do
         expect(response).to be_a Proofing::Aamva::Response::VerificationResponse
         expect(response.success?).to eq(false)
       end
