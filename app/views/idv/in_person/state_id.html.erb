@@ -6,6 +6,10 @@
   <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.state_id')) %>
 <% end %>
 
+<p>
+  <%= t('in_person_proofing.body.state_id.info_html') %>
+</p>
+
 <%= render AlertComponent.new(
       type: :info,
       class: 'margin-bottom-4',
@@ -20,10 +24,6 @@
     <% end %>
   </ul>
 <% end %>
-
-<p>
-  <%= t('in_person_proofing.body.state_id.info_html') %>
-</p>
 
 <%= simple_form_for :doc_auth,
                     url: url_for,
