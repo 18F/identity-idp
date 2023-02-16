@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, response_json:|
+  before do
+    allow(Rails).to receive(:cache).and_return(
+      ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+    )
+  end
   it 'logs a message with common attributes' do
     freeze_time do
       pending_enrollment.update(
@@ -43,6 +48,9 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
 
   context 'email_analytics_attributes' do
     before(:each) do
+      allow(Rails).to receive(:cache).and_return(
+        ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+      )
       stub_request_passed_proofing_results
     end
     it 'logs message with email analytics attributes' do
@@ -85,6 +93,10 @@ RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class
                                                                 response_message: nil,
                                                                 response_status_code: nil|
   it 'logs an error message and leaves the enrollment and profile pending' do
+    allow(Rails).to receive(:cache).and_return(
+      ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+    )
+
     job.perform(Time.zone.now)
     pending_enrollment.reload
 
@@ -123,6 +135,9 @@ end
 RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response' do |error_type:|
   it 'logs that response is not present' do
     expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(error_type))
+    allow(Rails).to receive(:cache).and_return(
+      ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+    )
 
     job.perform(Time.zone.now)
 
@@ -251,6 +266,9 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       it 'logs a message with counts of various outcomes when the job completes' do
+        allow(Rails).to receive(:cache).and_return(
+          ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+        )
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
           and_return(pending_enrollments)
         stub_request_proofing_results_with_responses(
@@ -329,6 +347,11 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       describe 'sending emails' do
+        before do
+          allow(Rails).to receive(:cache).and_return(
+            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          )
+        end
         it 'sends proofing failed email on response with failed status' do
           stub_request_failed_proofing_results
 
@@ -448,6 +471,9 @@ RSpec.describe GetUspsProofingResultsJob do
         )
 
         it 'logs details about the success' do
+          allow(Rails).to receive(:cache).and_return(
+            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          )
           job.perform(Time.zone.now)
 
           expect(job_analytics).to have_logged_event(
@@ -470,6 +496,9 @@ RSpec.describe GetUspsProofingResultsJob do
 
       context 'when an enrollment fails' do
         before(:each) do
+          allow(Rails).to receive(:cache).and_return(
+            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          )
           stub_request_failed_proofing_results
         end
 
@@ -503,6 +532,9 @@ RSpec.describe GetUspsProofingResultsJob do
 
       context 'when an enrollment fails and fraud is suspected' do
         before(:each) do
+          allow(Rails).to receive(:cache).and_return(
+            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          )
           stub_request_failed_suspected_fraud_proofing_results
         end
 
@@ -548,6 +580,9 @@ RSpec.describe GetUspsProofingResultsJob do
         )
 
         it 'logs a message about the unsupported ID' do
+          allow(Rails).to receive(:cache).and_return(
+            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          )
           job.perform Time.zone.now
 
           expect(job_analytics).to have_logged_event(
@@ -562,6 +597,9 @@ RSpec.describe GetUspsProofingResultsJob do
 
       context 'when an enrollment expires' do
         before(:each) do
+          allow(Rails).to receive(:cache).and_return(
+            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          )
           stub_request_expired_proofing_results
         end
 
@@ -603,6 +641,9 @@ RSpec.describe GetUspsProofingResultsJob do
           allow(IdentityConfig.store).to(
             receive(:in_person_enrollment_validity_in_days).and_return(30),
           )
+          allow(Rails).to receive(:cache).and_return(
+            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          )
           job.perform(Time.zone.now)
 
           expect(job_analytics).to have_logged_event(
@@ -621,6 +662,11 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       context 'when an enrollment is reported as invalid' do
+        before do
+          allow(Rails).to receive(:cache).and_return(
+            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          )
+        end
         context 'when an enrollment code is invalid' do
           # this enrollment code is hardcoded into the fixture
           # request_unexpected_invalid_enrollment_code_response.json
@@ -692,6 +738,9 @@ RSpec.describe GetUspsProofingResultsJob do
         )
 
         it 'logs the status received' do
+          allow(Rails).to receive(:cache).and_return(
+            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          )
           job.perform(Time.zone.now)
           pending_enrollment.reload
 
@@ -719,6 +768,9 @@ RSpec.describe GetUspsProofingResultsJob do
 
       context 'when USPS returns an unexpected 400 status code' do
         before(:each) do
+          allow(Rails).to receive(:cache).and_return(
+            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          )
           stub_request_proofing_results_with_responses(
             {
               status: 400,
@@ -763,6 +815,9 @@ RSpec.describe GetUspsProofingResultsJob do
         )
 
         it 'logs the error to NewRelic' do
+          allow(Rails).to receive(:cache).and_return(
+            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          )
           expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(Faraday::ClientError))
           job.perform(Time.zone.now)
         end
@@ -770,6 +825,9 @@ RSpec.describe GetUspsProofingResultsJob do
 
       context 'when USPS returns a 5xx status code' do
         before(:each) do
+          allow(Rails).to receive(:cache).and_return(
+            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          )
           stub_request_proofing_results_internal_server_error
         end
 
@@ -789,6 +847,9 @@ RSpec.describe GetUspsProofingResultsJob do
 
       context 'when there is no status update' do
         before(:each) do
+          allow(Rails).to receive(:cache).and_return(
+            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          )
           stub_request_in_progress_proofing_results
         end
 
