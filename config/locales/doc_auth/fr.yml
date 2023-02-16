@@ -159,8 +159,11 @@ fr:
       text_message: Nous avons envoyé un message à votre téléphone
       upload: Comment souhaitez-vous télécharger votre carte d’identité délivrée par
         l’État?
+      combined_upload: Comment voulez-vous ajouter votre identifiant ?
       upload_from_phone: Prenez une photo avec un téléphone portable pour télécharger
         votre pièce d’identité
+      combined_upload_from_phone: Utilisez votre téléphone pour prendre des photos
+      combined_upload_from_computer: Continuer sur cet ordinateur
       verify_identity: Vérifier votre identité
       welcome: Commencez à vérifier votre identité
     hybrid_flow_warning:
@@ -218,12 +221,13 @@ fr:
       take_picture: Utilisez l’appareil photo sur votre téléphone portable et
         téléchargez des images de votre identifiant. Nous utilisons uniquement
         les images pour vérifier votre identité.
-      upload: Nous recueillons des informations vous concernant en lisant votre carte
-        d’identité délivrée par l’État.
+      upload: Nous recueillons des informations sur vous en lisant votre carte d'identité délivrée par l'État.
       upload_computer_link: Téléchargez depuis votre ordinateur
       upload_from_computer: Vous n’avez pas de téléphone?
       upload_from_phone: Téléchargez des images directement depuis l’appareil photo de
         votre téléphone
+      combined_upload_from_phone: Vous n'aurez pas à vous reconnecter. Vous reviendrez sur cet ordinateur après avoir pris des photos. Votre téléphone portable doit être équipé d'un appareil photo et d'un navigateur web.
+      combined_upload_from_computer: Vous n'avez pas de téléphone ? Téléchargez les photos de votre carte d'identité depuis cet ordinateur.
       verify_identity: Nous vous demanderons vos informations personnelles afin de
         vérifier votre identité par rapport aux registres publics.
       welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non

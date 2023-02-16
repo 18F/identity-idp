@@ -47,6 +47,8 @@ en:
         confirm_change: Confirm change
         default: Submit
         update: Update
+      send_link: Send link
+      upload_photos: Upload photos
     confirmation:
       show_hdr: Create a strong password
     email:

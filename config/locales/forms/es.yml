@@ -52,6 +52,8 @@ es:
         confirm_change: Confirmar cambio
         default: Enviar
         update: Actualización
+      send_link: Enviar enlace
+      upload_photos: Subir fotos
     confirmation:
       show_hdr: Crear una contraseña segura
     email:

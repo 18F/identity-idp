@@ -126,7 +126,10 @@ en:
       take_picture: Take a photo with a phone
       text_message: We sent a message to your phone
       upload: How would you like to upload your state-issued ID?
+      combined_upload: How would you like to add your ID?
       upload_from_phone: Take a photo with a mobile phone to upload your ID
+      combined_upload_from_phone: Use your phone to take photos
+      combined_upload_from_computer: Continue on this computer
       verify_identity: Verify your identity
       welcome: Get started verifying your identity
     hybrid_flow_warning:
@@ -178,9 +181,12 @@ en:
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.
       upload: We’ll collect information about you by reading your state-issued ID.
+      combined_upload: We’ll collect information about you by reading your state-issued ID.
       upload_computer_link: Upload from your computer
       upload_from_computer: Don’t have a phone?
       upload_from_phone: Upload pictures directly from your phone camera
+      combined_upload_from_phone: You won't have to sign in again, and you'll switch back to this computer after you take photos. Your mobile phone must have a camera and a web browser.
+      combined_upload_from_computer: Don’t have a phone? Upload photos of your ID from this computer.
       verify_identity: We’ll ask for your personal information to verify your identity
         against public records.
       welcome_html: '%{sp_name} needs to make sure you are you — not someone

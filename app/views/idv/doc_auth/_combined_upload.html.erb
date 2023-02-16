@@ -3,11 +3,11 @@
 <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
 
 <%= render PageHeadingComponent.new do %>
-    <%= t('doc_auth.headings.upload') %>
+    <%= t('doc_auth.headings.combined_upload') %>
 <% end %>
 
 <p>
-    <%= t('doc_auth.info.upload') %>
+    <%= t('doc_auth.info.combined_upload') %>
 </p>
 
 <hr class="margin-y-4" />
@@ -20,13 +20,13 @@
         ) %>
     </div>
     <div class="grid-col-12 tablet:grid-col-9">
-        <div class="usa-tag bg-accent-cool-darker margin-top-1">
+        <div class="usa-tag bg-primary-dark margin-top-1">
             <%= t('doc_auth.info.tag') %>
         </div>
         <h2 class="margin-y-105">
-            <%= t('doc_auth.headings.upload_from_phone') %>
+            <%= t('doc_auth.headings.combined_upload_from_phone') %>
         </h2>
-        <%= t('doc_auth.info.upload_from_phone') %>
+        <%= t('doc_auth.info.combined_upload_from_phone') %>
         <%= simple_form_for(
             idv_phone_form,
             as: :doc_auth,
@@ -40,7 +40,7 @@
                 delivery_methods: [:sms],
                 class: 'margin-bottom-4',
             ) %>
-            <%= f.submit t('forms.buttons.continue'), class: 'margin-top-4' %>
+            <%= f.submit t('forms.buttons.send_link'), wide: false %>
         <% end %>
     </div>
 </div>
@@ -50,18 +50,21 @@
     <div class="grid-col-12 tablet:grid-col-3">
         <%= image_tag(
             asset_url('idv/laptop-icon.svg'),
-            alt: t('image_description.camera_mobile_phone'),
+            alt: t('image_description.laptop'),
         ) %>
     </div>
     <div class="grid-col-12 tablet:grid-col-9">
-        <%= t('doc_auth.info.upload_from_computer') %>&nbsp;
+        <h2 class="margin-y-105">
+            <%= t('doc_auth.headings.combined_upload_from_computer') %>
+        </h2>
+        <%= t('doc_auth.info.combined_upload_from_computer') %>&nbsp;
         <%= simple_form_for(
             :doc_auth,
             url: url_for(type: :desktop),
             method: 'PUT',
             class: 'margin-bottom-4'
         ) do |f| %>
-            <%= f.submit t('doc_auth.info.upload_computer_link'), class: 'margin-top-4 usa-button--outline' %>
+            <%= f.submit t('forms.buttons.upload_photos'), class: 'usa-button--outline', wide: false %>
         <% end %>
     </div>
 </div>
