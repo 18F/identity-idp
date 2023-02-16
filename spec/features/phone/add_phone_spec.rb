@@ -139,9 +139,14 @@ describe 'Add a new phone number' do
     )
   end
 
-  scenario 'adding a phone that is already on the user account shows error message' do
+  scenario 'adding a phone that is already on the user account shows error message', js: true do
     user = create(:user, :signed_up)
     phone = user.phone_configurations.first.phone
+
+    # Regression handling: The fake phone number generator uses well-formatted numbers, which isn't
+    # how a user would likely enter their number, and would give detail to the phone initialization
+    # which wouldn't exist for typical user input. Emulate the user input by removing format hints.
+    phone = phone.sub(/^\+1\s*/, '').gsub(/\D/, '')
 
     sign_in_and_2fa_user(user)
     within('.sidenav') do
@@ -151,6 +156,7 @@ describe 'Add a new phone number' do
     click_continue
 
     expect(page).to have_content(I18n.t('errors.messages.phone_duplicate'))
+    expect(page).to have_css('.iti__selected-flag .iti__flag.iti__us', visible: :all)
   end
 
   let(:telephony_gem_voip_number) { '+12255551000' }
