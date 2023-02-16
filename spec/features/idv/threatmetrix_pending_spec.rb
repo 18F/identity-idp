@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.feature 'Users pending threatmetrix review', :js do
   include IdvStepHelper
+  include OidcAuthHelper
   include IrsAttemptsApiTrackingHelper
 
   before do
@@ -91,7 +92,10 @@ RSpec.feature 'Users pending threatmetrix review', :js do
   def complete_all_idv_steps_with(threatmetrix:)
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(300)
     user = create(:user, :signed_up)
-    start_idv_from_sp
+    visit_idp_from_ial1_oidc_sp(
+      client_id: service_provider.issuer,
+      irs_attempts_api_session_id: 'test-session-id',
+    )
     visit root_path
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_ssn_step
