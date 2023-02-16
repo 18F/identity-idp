@@ -34,7 +34,7 @@ describe Idv::ReviewController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_idv_session_started,
+        :confirm_idv_applicant_created,
         :confirm_idv_steps_complete,
       )
     end
@@ -192,7 +192,7 @@ describe Idv::ReviewController do
   describe '#new' do
     before do
       stub_sign_in(user)
-      allow(subject).to receive(:confirm_idv_session_started).and_return(true)
+      allow(subject).to receive(:confirm_idv_applicant_created).and_return(true)
     end
 
     context 'user has completed all steps' do
@@ -264,7 +264,7 @@ describe Idv::ReviewController do
   describe '#create' do
     before do
       stub_sign_in(user)
-      allow(subject).to receive(:confirm_idv_session_started).and_return(true)
+      allow(subject).to receive(:confirm_idv_applicant_created).and_return(true)
     end
 
     context 'user fails to supply correct password' do
