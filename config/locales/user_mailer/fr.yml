@@ -2,7 +2,8 @@
 fr:
   user_mailer:
     account_rejected:
-      intro_html: Nous n’avons pas pu vérifier votre identité avec %{app_name}. Veuillez contacter l’agence dont vous essayez d’accéder au service.
+      intro_html: Nous n’avons pas pu vérifier votre identité avec %{app_name}.
+        Veuillez contacter l’agence dont vous essayez d’accéder au service.
       subject: Nous n’avons pas pu vérifier votre identité
     account_reset_cancel:
       intro_html: Cet e-mail confirme que vous avez annulé votre demande de
