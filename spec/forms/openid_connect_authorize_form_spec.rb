@@ -357,6 +357,22 @@ RSpec.describe OpenidConnectAuthorizeForm do
   end
 
   describe '#aal' do
+    context 'when DEFAULT_AAL passed' do
+      before do
+        IdentityConfig.store.valid_authn_contexts.push(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
+      end
+
+      after do
+        IdentityConfig.store.valid_authn_contexts.pop
+      end
+      
+      let(:acr_values) { Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns 0' do
+        expect(form.aal).to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
+      end
+    end
+
     context 'when AAL1 passed' do
       before do
         IdentityConfig.store.valid_authn_contexts.push(Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF)
@@ -369,6 +385,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
 
       it 'returns 1' do
+      puts form.inspect
         expect(form.aal).to eq(1)
       end
     end
@@ -377,6 +394,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       let(:acr_values) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
 
       it 'returns 2' do
+      puts form.inspect
         expect(form.aal).to eq(2)
       end
     end
@@ -412,7 +430,17 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(form.aal).to eq(3)
       end
     end
+  end
 
+  describe '#aal' do
+    context 'when IAL and AAL passed' do
+      let(:acr_values) { "#{Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF} #{Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF}" }
+
+      it 'returns ial and aal' do
+        expect(form.aal).to eq(2)
+        expect(form.ial).to eq(2)
+      end
+    end
   end
 
   describe '#verified_within' do
