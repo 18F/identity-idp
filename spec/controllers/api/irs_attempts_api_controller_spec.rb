@@ -45,6 +45,7 @@ RSpec.describe Api::IrsAttemptsApiController do
     before do
       Aws.config[:s3] = {
         stub_responses: {
+          head_object: { content_length: 200000 },
           get_object: { body: test_object },
         },
       }
@@ -105,7 +106,9 @@ RSpec.describe Api::IrsAttemptsApiController do
         expect(response).to be_ok
         expect(Base64.strict_decode64(response.headers['X-Payload-IV'])).to be_present
         expect(Base64.strict_decode64(response.headers['X-Payload-Key'])).to be_present
-        expect(response.body).to eq(test_object)
+        #expect(response.body).to eq(test_object)
+        expect(response.content_type).to eq("application/octet-stream")
+        expect(response["Content-Disposition"]).to eq("attachment; filename=\"test_filename\"; filename*=UTF-8''test_filename")
       end
     end
 

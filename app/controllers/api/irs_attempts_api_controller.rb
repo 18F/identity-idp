@@ -7,6 +7,7 @@
 module Api
   class IrsAttemptsApiController < ApplicationController
     include RenderConditionConcern
+    include ActionController::Live
 
     check_or_render_not_found -> { IdentityConfig.store.irs_attempt_api_enabled }
 
@@ -29,12 +30,31 @@ module Api
             headers['X-Payload-Key'] = log_file_record.encrypted_key
             headers['X-Payload-IV'] = log_file_record.iv
 
-            requested_data = s3_helper.s3_client.get_object(
+            response = s3_helper.s3_client.head_object(
               bucket: s3_helper.attempts_bucket_name,
               key: log_file_record.filename,
             )
 
-            send_data requested_data.body.read, disposition: "filename=#{log_file_record.filename}"
+            requested_data_size = response.content_length
+
+            # Maybe this is variable based on the config?
+            buffer_index = 0
+            buffer_size = 100000
+
+            send_stream(type: response.content_type, filename: log_file_record.filename) do |stream|
+              while buffer_index < requested_data_size
+                requested_data = s3_helper.s3_client.get_object(
+                  bucket: s3_helper.attempts_bucket_name,
+                  key: log_file_record.filename,
+                  range: get_buffer_range(
+                    current_buffer_index: buffer_index,
+                    buffer_size: buffer_size, file_size: requested_data_size
+                  ),
+                )
+                buffer_index += buffer_size + 1
+                stream.write(requested_data.body.read)
+              end
+            end
           else
             render json: { status: :not_found, description: 'File not found for Timestamp' },
                    status: :not_found
@@ -61,6 +81,11 @@ module Api
     end
 
     private
+
+    def get_buffer_range(current_buffer_index:, buffer_size:, file_size:)
+      buffer_end = [current_buffer_index + buffer_size, file_size].min
+      return "bytes=#{current_buffer_index}-#{buffer_end}"
+    end
 
     def authenticate_client
       bearer, csp_id, token = request.authorization&.split(' ', 3)
