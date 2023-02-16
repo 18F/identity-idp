@@ -50,14 +50,7 @@
 <% end %>
 
 <%= render 'shared/cancel_or_back_to_options' %>
+
 <% if FeatureManagement.phone_recaptcha_enabled? %>
-  <p class="margin-top-4 margin-bottom-0">
-    <%= t(
-          'two_factor_authentication.recaptcha.disclosure_statement_html',
-          app_name: APP_NAME,
-          policy_link: link_to(t('two_factor_authentication.recaptcha.policy_link'), 'https://policies.google.com/privacy'),
-          google_tos_link: link_to(t('two_factor_authentication.recaptcha.google_tos_link'), 'https://policies.google.com/terms'),
-          login_tos_link: link_to(t('two_factor_authentication.recaptcha.login_tos_link'), MarketingSite.rules_of_use_url),
-        ) %>
-  </p>
+  <%= render 'shared/recaptcha_disclosure' %>
 <% end %>
