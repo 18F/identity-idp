@@ -1,6 +1,8 @@
+import { trackEvent } from '@18f/identity-analytics';
 import { hasCamera, isCameraCapableMobile } from '@18f/identity-device';
 
 const GRACE_TIME_FOR_CAMERA_CHECK_MS = 2000;
+const DEVICE_CHECK_EVENT = 'Idv: Mobile device and camera check';
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -14,12 +16,27 @@ function addFormInputsForMobileDeviceCapabilities() {
   }
 
   if (!isCameraCapableMobile()) {
+    trackEvent(DEVICE_CHECK_EVENT, {
+      is_camera_capable_mobile: false,
+      user_agent: navigator.userAgent,
+    });
     return;
   }
 
   // The check for a camera on the device is async -- kick it off here and intercept
   // submit() to ensure that it completes in time.
+  performance.measure(DEVICE_CHECK_EVENT);
   const cameraCheckPromise = hasCamera().then((cameraPresent: boolean) => {
+    const { duration } = performance.measure(DEVICE_CHECK_EVENT, {
+      end: performance.now(),
+    });
+    trackEvent(DEVICE_CHECK_EVENT, {
+      is_camera_capable_mobile: true,
+      camera_present: cameraPresent,
+      grace_time: GRACE_TIME_FOR_CAMERA_CHECK_MS,
+      duration,
+    });
+
     if (!cameraPresent) {
       // Signal to the backend that this is a mobile device, but no camera is present
       const ncInput = document.createElement('input');
