@@ -19,10 +19,7 @@ function addFormInputsForMobileDeviceCapabilities() {
 
   // The check for a camera on the device is async -- kick it off here and intercept
   // submit() to ensure that it completes in time.
-  let cameraPresent: boolean | undefined;
-  const cameraCheckPromise = hasCamera().then((result: boolean) => {
-    cameraPresent = !!result;
-
+  const cameraCheckPromise = hasCamera().then((cameraPresent: boolean) => {
     if (!cameraPresent) {
       // Signal to the backend that this is a mobile device, but no camera is present
       const ncInput = document.createElement('input');
@@ -37,19 +34,9 @@ function addFormInputsForMobileDeviceCapabilities() {
     input.type = 'hidden';
     input.name = 'skip_upload';
     form.appendChild(input);
-
-    return !!result;
   });
 
   form.addEventListener('submit', (event) => {
-    if (cameraPresent != null) {
-      // cameraCheckPromise has resolved. Form submission can continue...
-      return;
-    }
-
-    // We don't have a "camera present" determination.
-    // Give the computer a few seconds to return one, and proceed if it hasn't.
-
     event.preventDefault();
 
     Promise.race([delay(GRACE_TIME_FOR_CAMERA_CHECK_MS), cameraCheckPromise]).then(() =>
