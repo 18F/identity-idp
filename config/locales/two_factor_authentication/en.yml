@@ -128,7 +128,7 @@ en:
     recaptcha:
       disclosure_statement_html: This site is protected by reCAPTCHA and the Google
         %{policy_link} and %{google_tos_link} apply. Read %{app_name}’s
-        %{login_tos_link} .
+        %{login_tos_link}.
       google_tos_link: Terms of Service
       login_tos_link: Mobile Terms of Use
       policy_link: Privacy Policy
