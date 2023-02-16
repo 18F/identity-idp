@@ -64,11 +64,10 @@ export function AnalyticsContextProvider({ children, trackEvent }: AnalyticsCont
   const trackSubmitEvent: TrackSubmitEvent = (stepName) => {
     if (LOGGED_STEPS.includes(stepName)) {
       if (stepName === 'location') {
-        submitEventMetadata.in_person_cta_variant = inPersonCtaVariantActive;
+        setSubmitEventMetadata({in_person_cta_variant: inPersonCtaVariantActive})
       }
       trackEvent(`IdV: ${stepName} submitted`, submitEventMetadata);
     }
-
     setSubmitEventMetadataState(DEFAULT_EVENT_METADATA);
   };
   const trackVisitEvent: TrackVisitEvent = (stepName) => {

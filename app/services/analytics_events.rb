@@ -3047,10 +3047,12 @@ module AnalyticsEvents
   # @param [String] enrollment_code
   # @param [Integer] enrollment_id
   # @param [String] service_provider
+  # @param [String] in_person_cta_variant Variant testing bucket label
   def usps_ippaas_enrollment_created(
     enrollment_code:,
     enrollment_id:,
     service_provider:,
+    in_person_cta_variant: {},
     **extra
   )
     track_event(
@@ -3058,6 +3060,7 @@ module AnalyticsEvents
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       service_provider: service_provider,
+      in_person_cta_variant: in_person_cta_variant,
       **extra,
     )
   end
