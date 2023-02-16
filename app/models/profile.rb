@@ -51,7 +51,7 @@ class Profile < ApplicationRecord
   end
 
   def reject
-    update!(active: false, fraud_rejection: true)
+    update!(active: false, fraud_review_pending: false, fraud_rejection: true)
   end
 
   def decrypt_pii(password)

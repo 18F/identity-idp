@@ -304,6 +304,7 @@ describe Profile do
       profile.reject
 
       expect(profile).to_not be_active
+      expect(profile.fraud_review_pending).to eq(false)
       expect(profile.fraud_rejection).to eq(true)
     end
   end
