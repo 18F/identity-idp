@@ -50,7 +50,7 @@ class ValidatedFieldComponentPreview < BaseComponentPreview
   # @display form true
   # @param label text
   # @param required toggle
-  # @param input_type select [~,Text,Email Address,Boolean]
+  # @param input_type select [~,Text,Email,Boolean]
   def workbench(label: 'Input', required: true, input_type: 'Text')
     render(
       ValidatedFieldComponent.new(
