@@ -25,7 +25,7 @@ module Idv
       if capture_session_uuid
         {
           acuant_sdk_upgrade_ab_test_bucket:
-          AbTests::ACUANT_SDK.bucket(capture_session_uuid),
+            AbTests::ACUANT_SDK.bucket(capture_session_uuid),
         }
       else
         {}
