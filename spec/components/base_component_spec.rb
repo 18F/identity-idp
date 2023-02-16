@@ -26,7 +26,7 @@ RSpec.describe BaseComponent, type: :component do
         ''
       end
 
-      def self._sidecar_files(extensions)
+      def self.sidecar_files(extensions)
         files = []
         files << '/components/example_component_with_script_js.js' if extensions.include?('js')
         files << '/components/example_component_with_script_ts.ts' if extensions.include?('ts')
@@ -39,7 +39,7 @@ RSpec.describe BaseComponent, type: :component do
         render(ExampleComponentWithScript.new)
       end
 
-      def self._sidecar_files(extensions)
+      def self.sidecar_files(extensions)
         if extensions.include?('js')
           ['/components/example_component_with_script_rendering_other_component_with_script.js']
         else
@@ -49,7 +49,7 @@ RSpec.describe BaseComponent, type: :component do
     end
 
     class NestedExampleComponentWithScript < ExampleComponentWithScript
-      def self._sidecar_files(extensions)
+      def self.sidecar_files(extensions)
         if extensions.include?('js')
           ['/components/nested_example_component_with_script.js']
         else

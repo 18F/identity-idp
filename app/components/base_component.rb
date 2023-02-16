@@ -9,7 +9,7 @@ class BaseComponent < ViewComponent::Base
 
   def self.scripts
     @scripts ||= begin
-      scripts = _sidecar_files(['js', 'ts']).map { |file| File.basename(file, '.*') }
+      scripts = sidecar_files(['js', 'ts']).map { |file| File.basename(file, '.*') }
       scripts.concat superclass.scripts if superclass.respond_to?(:scripts)
       scripts
     end
