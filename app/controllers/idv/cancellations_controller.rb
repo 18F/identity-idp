@@ -16,15 +16,10 @@ module Idv
     end
 
     def update
-      if path == '/verify/in_person/ready_to_verify'
-        analytics.idv_cancellation_visited_from_barcode_page(
-          cancelled: false,
-          enrollment_code: enrollment.enrollment_code,
-          enrollment_id: enrollment.id,
-          service_provider: decorated_session.sp_name || APP_NAME,
-        )
-      end
-      analytics.idv_cancellation_go_back(step: params[:step])
+      analytics.idv_cancellation_go_back(
+        step: params[:step],
+        extra: barcode_step ? extra_analytics_attributes : nil,
+      )
       redirect_to session_go_back_path || idv_path
     end
 
@@ -40,12 +35,21 @@ module Idv
 
     private
 
-    def path
-      return user_session.dig(:idv, :go_back_path)
+    def barcode_step
+      return params[:step] == 'barcode'
     end
 
     def enrollment
       return InPersonEnrollment.where(user_id: current_user.id).first
+    end
+
+    def extra_analytics_attributes
+      {
+        cancelled_enrollment: false,
+        enrollment_code: enrollment.enrollment_code,
+        enrollment_id: enrollment.id,
+        service_provider: decorated_session.sp_name || APP_NAME,
+      }
     end
 
     def properties
