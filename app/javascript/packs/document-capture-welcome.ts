@@ -7,7 +7,7 @@ function delay(ms: number): Promise<void> {
 }
 
 function addFormInputsForMobileDeviceCapabilities() {
-  const form: HTMLFormElement | null = document.querySelector('.js-consent-continue-form');
+  const form = document.querySelector<HTMLFormElement>('.js-consent-continue-form');
 
   if (!form) {
     return;
