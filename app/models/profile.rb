@@ -43,7 +43,7 @@ class Profile < ApplicationRecord
 
   def deactivate(reason)
     update!(active: false, deactivation_reason: reason)
-    UserMailer.account_rejected.deliver_now_or_later if reason == :threatmetrix_review_rejected
+    UserAlerts::AlertUserAboutAccountRejected.call(user) if reason == :threatmetrix_review_rejected
   end
 
   def decrypt_pii(password)
