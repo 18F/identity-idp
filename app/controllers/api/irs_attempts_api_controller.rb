@@ -48,7 +48,8 @@ module Api
                   key: log_file_record.filename,
                   range: get_buffer_range(
                     current_buffer_index: buffer_index,
-                    buffer_size: buffer_size, file_size: requested_data_size
+                    buffer_size: buffer_size, 
+                    file_size: requested_data_size,
                   ),
                 )
                 buffer_index += buffer_size + 1
