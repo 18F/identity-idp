@@ -97,9 +97,17 @@ describe Idv::SessionsController do
           service_provider_request: '',
         )
       end
+      let(:enrollment) do
+        create(
+          :in_person_enrollment,
+          enrollment_code: '321',
+          id: 12,
+        )
+      end
 
       before do
         allow(controller).to receive(:decorated_session).and_return(decorated_session)
+        allow(controller).to receive(:enrollment).and_return(enrollment)
         delete :destroy, params: { step: 'barcode', location: '' }
       end
 
@@ -111,8 +119,8 @@ describe Idv::SessionsController do
           step: 'barcode',
           extra: {
             cancelled_enrollment: true,
-            enrollment_code: '123',
-            enrollment_id: 1,
+            enrollment_code: '321',
+            enrollment_id: 12,
             service_provider: 'saml',
           },
         )
