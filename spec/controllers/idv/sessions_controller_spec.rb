@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe Idv::SessionsController do
   let(:user) { build(:user) }
-  let(:go_back_path) { '/verify/in_person/ready_to_verify' }
   let(:enrollment) do
     create(
       :in_person_enrollment,
@@ -33,8 +32,6 @@ describe Idv::SessionsController do
 
     context 'when destroying the session' do
       before do
-        allow(controller).to receive(:user_session).
-          and_return(idv: { go_back_path: '/' })
         expect(idv_session).to receive(:clear)
         delete :destroy
       end
@@ -64,12 +61,24 @@ describe Idv::SessionsController do
         location: 'get_help',
         proofing_components: nil,
         step: 'first',
+        extra: nil,
       )
     end
 
-    it 'does not log cancellation event' do
-      expect(@analytics).to_not have_logged_event(
-        'IdV: cancellation visited from barcode page',
+    it 'logs idv_start_over event with extra analytics attributes for barcode step' do
+      delete :destroy, params: { step: 'barcode', location: '' }
+
+      expect(@analytics).to have_logged_event(
+        'IdV: start over',
+        location: '',
+        proofing_components: nil,
+        step: 'barcode',
+        extra: {
+          cancelled_enrollment: true,
+          enrollment_code: '123',
+          enrollment_id: 1,
+          service_provider: 'Login.gov',
+        },
       )
     end
 
@@ -77,24 +86,6 @@ describe Idv::SessionsController do
       delete :destroy
 
       expect(response).to redirect_to(idv_url)
-    end
-
-    context 'when go back path is the barcode page and no sp' do
-      before do
-        allow(controller).to receive(:user_session).
-          and_return(idv: { go_back_path: go_back_path })
-        delete :destroy
-      end
-
-      it 'logs cancellation event with app name when no sp' do
-        expect(@analytics).to have_logged_event(
-          'IdV: cancellation visited from barcode page',
-          cancelled: true,
-          enrollment_code: '123',
-          enrollment_id: 1,
-          service_provider: 'Login.gov',
-        )
-      end
     end
 
     context 'when go back path is the barcode page and sp' do
@@ -108,19 +99,22 @@ describe Idv::SessionsController do
       end
 
       before do
-        allow(controller).to receive(:user_session).
-          and_return(idv: { go_back_path: go_back_path })
         allow(controller).to receive(:decorated_session).and_return(decorated_session)
-        delete :destroy
+        delete :destroy, params: { step: 'barcode', location: '' }
       end
 
-      it 'logs cancellation event with sp when present' do
+      it 'logs idv_start_over with extra analytics attributes and sp' do
         expect(@analytics).to have_logged_event(
-          'IdV: cancellation visited from barcode page',
-          cancelled: true,
-          enrollment_code: '123',
-          enrollment_id: 1,
-          service_provider: 'saml',
+          'IdV: start over',
+          location: '',
+          proofing_components: nil,
+          step: 'barcode',
+          extra: {
+            cancelled_enrollment: true,
+            enrollment_code: '123',
+            enrollment_id: 1,
+            service_provider: 'saml',
+          },
         )
       end
     end
@@ -144,6 +138,7 @@ describe Idv::SessionsController do
           location: 'clear_and_start_over',
           proofing_components: nil,
           step: 'gpo_verify',
+          extra: nil,
         )
       end
     end

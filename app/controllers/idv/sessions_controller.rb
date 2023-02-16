@@ -6,20 +6,28 @@ module Idv
 
     def destroy
       cancel_processing
-      path = request_came_from
       clear_session
-      log_analytics(path)
+      log_analytics
       redirect_to idv_url
     end
 
     private
 
+    def barcode_step
+      return params[:step] == 'barcode'
+    end
+
     def enrollment
       return InPersonEnrollment.where(user_id: current_user.id).first
     end
 
-    def request_came_from
-      return user_session.dig(:idv, :go_back_path)
+    def extra_analytics_attributes
+      {
+        cancelled_enrollment: true,
+        enrollment_code: enrollment.enrollment_code,
+        enrollment_id: enrollment.id,
+        service_provider: decorated_session.sp_name || APP_NAME,
+      }
     end
 
     def location_params
@@ -51,18 +59,11 @@ module Idv
       Pii::Cacher.new(current_user, user_session).delete
     end
 
-    def log_analytics(path)
-      if path == '/verify/in_person/ready_to_verify'
-        analytics.idv_cancellation_visited_from_barcode_page(
-          cancelled: true,
-          enrollment_code: enrollment.enrollment_code,
-          enrollment_id: enrollment.id,
-          service_provider: decorated_session.sp_name || APP_NAME,
-        )
-      end
+    def log_analytics
       analytics.idv_start_over(
         step: location_params[:step],
         location: location_params[:location],
+        extra: barcode_step ? extra_analytics_attributes : nil,
       )
     end
   end

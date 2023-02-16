@@ -497,28 +497,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] cancelled tracks if the user completes cancellation
-  # @param [String] enrollment_code
-  # @param [Integer] enrollment_id
-  # @param [String] service_provider
-  # The user arrived at cancellation page from the barcode page and may cancel enrollment
-  def idv_cancellation_visited_from_barcode_page(
-    cancelled:,
-    enrollment_code:,
-    enrollment_id:,
-    service_provider:,
-    **extra
-  )
-    track_event(
-      'IdV: cancellation visited from barcode page',
-      cancelled: cancelled,
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      service_provider: service_provider,
-      **extra,
-    )
-  end
-
   # @param [Integer] failed_capture_attempts Number of failed Acuant SDK attempts
   # @param [Integer] failed_submission_attempts Number of failed Acuant doc submissions
   # @param [String] field Image form field
