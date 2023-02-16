@@ -1,0 +1,35 @@
+<% title t('titles.otp_expired') %>
+
+<%= render AlertIconComponent.new(icon_name: :error, class: 'display-block margin-bottom-4') %>
+<%= render PageHeadingComponent.new.with_content(t('headings.otp_expired')) %>
+
+  <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+          link_to(
+            otp_send_path(
+              otp_delivery_selection_form: {
+                otp_delivery_preference: @otp_delivery_preference,
+                resend: true,
+              },
+            ),
+            **tag_options,
+            &block
+          )
+        end,
+        big: true,
+        wide: true,
+        class: 'margin-top-3 margin-bottom-1',
+      ).with_content(t('links.two_factor_authentication.try_again')) %>
+
+<%= render(
+      'shared/troubleshooting_options',
+      heading_tag: :h2,
+      heading: t('components.troubleshooting_options.default_heading'),
+      options: [
+        {
+          url: MarketingSite.contact_url,
+          text: t('links.contact_support', app_name: APP_NAME),
+          new_tab: true,
+        },
+      ],
+    ) %>

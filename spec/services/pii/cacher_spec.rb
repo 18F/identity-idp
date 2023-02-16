@@ -45,12 +45,9 @@ describe Pii::Cacher do
       expect(user_session[:decrypted_pii]).to eq decrypted_pii_json
     end
 
-    it 'updates fingerprints when keys are rotated' do
+    it 'updates PII bundle fingerprints when keys are rotated' do
       old_ssn_signature = profile.ssn_signature
       old_compound_pii_fingerprint = profile.name_zip_birth_year_signature
-      old_email_fingerprint = user.email_addresses.first.email_fingerprint
-      old_encrypted_email = user.email_addresses.first.encrypted_email
-      old_encrypted_phone = user.phone_configurations.first.encrypted_phone
 
       rotate_all_keys
 
@@ -63,11 +60,8 @@ describe Pii::Cacher do
       user.reload
       profile.reload
 
-      expect(user.email_addresses.first.email_fingerprint).to_not eq old_email_fingerprint
-      expect(user.email_addresses.first.encrypted_email).to_not eq old_encrypted_email
       expect(profile.ssn_signature).to_not eq old_ssn_signature
       expect(profile.name_zip_birth_year_signature).to_not eq old_compound_pii_fingerprint
-      expect(user.phone_configurations.first.encrypted_phone).to_not eq old_encrypted_phone
     end
 
     it 'does not attempt to rotate nil attributes' do

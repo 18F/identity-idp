@@ -1,7 +1,7 @@
 class RecaptchaValidator
   VERIFICATION_ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify'.freeze
 
-  class ValidationError < StandardError; end
+  EXEMPT_ERROR_CODES = ['missing-input-secret', 'invalid-input-secret']
 
   attr_reader :score_threshold, :analytics
 
@@ -45,9 +45,13 @@ class RecaptchaValidator
   end
 
   def recaptcha_result_valid?(recaptcha_result)
-    !recaptcha_result ||
-      !recaptcha_result['success'] ||
+    if recaptcha_result.blank?
+      true
+    elsif recaptcha_result['success']
       recaptcha_result['score'] >= score_threshold
+    else
+      (recaptcha_result['error-codes'] - EXEMPT_ERROR_CODES).blank?
+    end
   end
 
   def log_analytics(recaptcha_result: nil, error: nil)
