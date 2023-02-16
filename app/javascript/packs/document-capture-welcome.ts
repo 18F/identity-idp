@@ -52,12 +52,6 @@ function addFormInputsForMobileDeviceCapabilities() {
 
     event.preventDefault();
 
-    for (const button of form.querySelectorAll(
-      'button[type=submit]',
-    ) as NodeListOf<HTMLButtonElement>) {
-      button.disabled = true;
-    }
-
     Promise.race([delay(GRACE_TIME_FOR_CAMERA_CHECK_MS), cameraCheckPromise]).then(() =>
       form.submit(),
     );
