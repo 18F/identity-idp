@@ -66,12 +66,12 @@ describe('AnalyticsContextProvider', () => {
 
     result.current.setSubmitEventMetadata({ ok: true });
     result.current.trackSubmitEvent(firstStepName);
-    //result.current.trackSubmitEvent(secondStepName);
+    result.current.trackSubmitEvent(secondStepName);
 
     expect(trackEvent).to.have.been.calledWith(`IdV: ${firstStepName} submitted`, {
       in_person_cta_variant: '',
       ok: true,
     });
-    //expect(trackEvent).to.have.been.calledWith(`IdV: ${secondStepName} submitted`, {});
+    expect(trackEvent).to.have.been.calledWith(`IdV: ${secondStepName} submitted`, {});
   });
 });
