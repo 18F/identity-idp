@@ -27,14 +27,17 @@ RSpec.describe OpenidConnectUserInfoPresenter do
     subject(:user_info) { presenter.user_info }
 
     it 'has basic attributes' do
+      ial = Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[identity.ial]
+      aal = Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[identity.aal]
+
       aggregate_failures do
         expect(user_info[:sub]).to eq(identity.uuid)
         expect(user_info[:iss]).to eq(root_url)
         expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
         expect(user_info[:email_verified]).to eq(true)
         expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
-        expect(user_info[:ial]).to eq(Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[identity.ial])
-        expect(user_info[:aal]).to eq(Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[identity.aal])
+        expect(user_info[:ial]).to eq(ial)
+        expect(user_info[:aal]).to eq(aal)
       end
     end
 
