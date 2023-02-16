@@ -41,9 +41,9 @@ namespace :users do
       if user.decorate.fraud_review_pending? && user.proofing_component.review_eligible?
         profile = user.decorate.fraud_review_pending_profile
 
-        profile.deactivate(:threatmetrix_review_rejected)
+        profile.reject
 
-        puts "User's profile has been deactivated with reason #{profile.deactivation_reason}"
+        puts "User's profile has been deactivated due to fraud rejection."
       elsif !user.proofing_component.review_eligible?
         puts 'User is past the 30 day review eligibility'
       else
