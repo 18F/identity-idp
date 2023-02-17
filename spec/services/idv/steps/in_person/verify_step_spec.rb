@@ -110,8 +110,8 @@ describe Idv::Steps::InPerson::VerifyStep do
         )
       end
 
-      def build_step(controller)
-        flow = Idv::Flows::InPersonFlow.new(controller, *flow_args).tap do |flow|
+      def build_step(controller_instance)
+        flow = Idv::Flows::InPersonFlow.new(controller_instance, *flow_args).tap do |flow|
           flow.flow_session = { **pii_hash }
         end
 
@@ -124,21 +124,21 @@ describe Idv::Steps::InPerson::VerifyStep do
           and_return(10)
       end
 
-      def redirect(step)
-        step.instance_variable_get(:@flow).instance_variable_get(:@redirect)
+      def redirect(step_instance)
+        step_instance.instance_variable_get(:@flow).instance_variable_get(:@redirect)
       end
 
       it 'throttles them all' do
         expect(build_step(controller).call).to be_kind_of(ApplicationJob)
         expect(build_step(controller2).call).to be_kind_of(ApplicationJob)
 
-        step = build_step(controller)
-        expect(step.call).to be_nil, 'does not enqueue a job'
-        expect(redirect(step)).to eq(idv_session_errors_ssn_failure_url)
+        user1_step = build_step(controller)
+        expect(user1_step.call).to be_nil, 'does not enqueue a job'
+        expect(redirect(user1_step)).to eq(idv_session_errors_ssn_failure_url)
 
-        step2 = build_step(controller2)
-        expect(step2.call).to be_nil, 'does not enqueue a job'
-        expect(redirect(step2)).to eq(idv_session_errors_ssn_failure_url)
+        user2_step = build_step(controller2)
+        expect(user2_step.call).to be_nil, 'does not enqueue a job'
+        expect(redirect(user2_step)).to eq(idv_session_errors_ssn_failure_url)
       end
     end
 
