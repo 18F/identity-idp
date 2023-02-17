@@ -37,13 +37,12 @@ describe Idv::Steps::InPerson::VerifyStep do
     Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup
   end
 
-
   let(:flow_args) do
-    [controller, {}, 'idv/in_person']
+    [{}, 'idv/in_person']
   end
-  let(:pii_hash) {{pii_from_user: pii}}
+  let(:pii_hash) { { pii_from_user: pii } }
   let(:flow) do
-    Idv::Flows::InPersonFlow.new(*flow_args).tap do |flow|
+    Idv::Flows::InPersonFlow.new(controller, *flow_args).tap do |flow|
       flow.flow_session = pii_hash
     end
   end
@@ -84,9 +83,9 @@ describe Idv::Steps::InPerson::VerifyStep do
     end
 
     context 'when pii_from_user is blank' do
-      let(:idv_in_person_step) {'Idv::Steps::InPerson::SsnStep'}
+      let(:idv_in_person_step) { 'Idv::Steps::InPerson::SsnStep' }
       let(:flow) do
-        Idv::Flows::InPersonFlow.new(*flow_args).tap do |flow|
+        Idv::Flows::InPersonFlow.new(controller, *flow_args).tap do |flow|
           flow.flow_session = { idv_in_person_step => true, pii_from_user: {} }
         end
       end
@@ -112,8 +111,8 @@ describe Idv::Steps::InPerson::VerifyStep do
       end
 
       def build_step(controller)
-        flow = Idv::Flows::InPersonFlow.new(*flow_args).tap do |flow|
-          flow.flow_session = pii_hash
+        flow = Idv::Flows::InPersonFlow.new(controller, *flow_args).tap do |flow|
+          flow.flow_session = { **pii_hash }
         end
 
         Idv::Steps::InPerson::VerifyStep.new(flow)
