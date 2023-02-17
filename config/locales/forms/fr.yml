@@ -48,12 +48,12 @@ fr:
       edit: Modifier
       manage: Administrer
       resend_confirmation: Envoyer les instructions de confirmation de nouveau
+      send_link: Envoyer le lien
       send_one_time_code: Envoyer le code
       submit:
         confirm_change: Confirmer le changement
         default: Soumettre
         update: Mettre à jour
-      send_link: Envoyer le lien
       upload_photos: Télécharger des photos
     confirmation:
       show_hdr: Créez un mot de passe fort
