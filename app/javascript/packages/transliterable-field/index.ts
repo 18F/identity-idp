@@ -7,7 +7,12 @@ interface CheckableTransliterableFieldElement extends TransliterableFieldElement
   input: HTMLInputElement;
 }
 
-const VALIDATION_URL_PATH = '//in_person/validate_transliterable';
+interface ValidationResponse {
+  success: boolean;
+  data: Record<string, string>;
+}
+
+const VALIDATION_URL_PATH = '/verify/in_person/validate_transliterable';
 const VALIDATION_FORM_ERROR_CLASS = 'transliterable-form-error';
 
 /**
@@ -57,7 +62,9 @@ class TransliterableFieldElement extends HTMLElement {
   connectedCallback() {
     // Attach event listener for form. Will not be attached redundantly
     // because function has same identity for multiple fields.
-    this.form?.addEventListener('submit', TransliterableFieldElement.handleSubmitEvent);
+    this.form?.addEventListener('submit', TransliterableFieldElement.handleSubmitEvent, true);
+
+    // TODO handle usability on slow Internet connections
 
     // Clear prior transliteration error when input gets updated
     this.input?.addEventListener('input', () => {
@@ -81,7 +88,7 @@ class TransliterableFieldElement extends HTMLElement {
   /**
    * This WeakMap tracks ongoing form submission attempts to prevent duplicate submissions.
    */
-  private static lastFormSubmit = new WeakMap<HTMLFormElement, Promise<void>>();
+  private static lastFormSubmit = new WeakMap<HTMLFormElement, Promise<any>>();
 
   /**
    * Intercept form submission attempts to ensure transliterable field validation
@@ -107,19 +114,30 @@ class TransliterableFieldElement extends HTMLElement {
     // Delay form submission
     e.preventDefault();
 
+    // Stop additional form submission-related behaviors
+    // E.g. submit button disablement
+    e.stopImmediatePropagation();
+
     // Prevent redundant calls
     const form = this;
     if (!lastFormSubmit.has(form)) {
+      let continueSubmit = true;
       try {
         const promise = handleAsyncValidation(form, checkTransliterable);
         lastFormSubmit.set(form, promise);
-        await promise;
+        continueSubmit = await promise;
       } finally {
+        // Always remove the promise, but only before the
+        // attempted re-submission of the same form
         lastFormSubmit.delete(form);
       }
 
       // Attempt to re-submit form. Infinite loop is prevented via the "previousValidatedValue" check.
-      form.submit();
+      if (continueSubmit) {
+        form.submit();
+      } else {
+        form.checkValidity();
+      }
     }
   }
 
@@ -128,11 +146,12 @@ class TransliterableFieldElement extends HTMLElement {
    * - Marshal fields to API values
    * - Set errors based on API response
    * - Prevent form interactions that could cause unintuitive behavior
+   * @return boolean Whether to continue with submission
    */
   private static async handleAsyncValidation(
     form: HTMLFormElement,
     checkTransliterable: CheckableTransliterableFieldElement[],
-  ): Promise<void> {
+  ): Promise<boolean> {
     const { sendValidationRequest, setFormErrorVisibility } = TransliterableFieldElement;
     const payload = checkTransliterable.reduce(
       (agg: Record<string, string>, field) => ({
@@ -154,14 +173,17 @@ class TransliterableFieldElement extends HTMLElement {
       checkTransliterable.forEach((field) => {
         const key = field.fieldName;
         const validationResult = result[key];
+        console.log(key, payload[key], result[key]);
         field.previousValidatedValue = payload[key];
         field.input?.setCustomValidity(validationResult || '');
       });
 
       setFormErrorVisibility(form, false);
+      return Object.keys(result).length < 1;
     } catch (err) {
       trackError(err);
       setFormErrorVisibility(form, true);
+      return false;
     } finally {
       checkTransliterable.forEach((field) => {
         // Allow user to change fields after validation has finished; useful for fixing
@@ -185,7 +207,7 @@ class TransliterableFieldElement extends HTMLElement {
 
     const isVisible = !formErrorElement?.classList.contains('display-none');
     if (visible && !isVisible) {
-      formErrorElement.textContent = t('in_person_proofing.form.errors.transliteration');
+      formErrorElement.textContent = t('in_person_proofing.form.state_id.errors.transliteration');
       formErrorElement.className = Array.from(formErrorElement.classList)
         .filter((c) => c !== 'display-none')
         .join(' ');
@@ -197,13 +219,18 @@ class TransliterableFieldElement extends HTMLElement {
   /**
    * Wrapper for transliteration API call
    */
-  private static sendValidationRequest(
+  private static async sendValidationRequest(
     fields: Record<string, string>,
   ): Promise<Record<string, string>> {
-    return request<Record<string, string>>(VALIDATION_URL_PATH, {
+    const response = await request<ValidationResponse>(VALIDATION_URL_PATH, {
       method: 'POST',
       body: JSON.stringify(fields),
     });
+
+    if (response.success) {
+      return response.data;
+    }
+    throw new Error('Failed to retrieve validation data');
   }
 }
 

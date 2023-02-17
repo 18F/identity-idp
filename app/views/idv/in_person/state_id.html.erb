@@ -1,5 +1,4 @@
 <% title t('titles.doc_auth.verify') %>
-<% javascript_packs_tag_once('transliterable-field') %>
 
 <% if updating_state_id %>
   <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.update_state_id')) %>
@@ -16,9 +15,11 @@
                     method: 'put',
                     html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
 
+  <div class="transliterable-form-error display-none"></div>
+
   <div class="margin-bottom-4">
-    <%= content_tag :'lg-transliterable-field', :'field-name' => 'first_name' do %>
-      <%= render ValidatedFieldComponent.new(
+    <%= render (TransliterableFieldComponent.new name: :first_name do %>
+      <% render ValidatedFieldComponent.new(
             name: :first_name,
             form: f,
             input_html: { value: pii[:first_name] },
@@ -27,12 +28,12 @@
             maxlength: 255,
             required: true,
           ) %>
-    <% end %>
+    <% end) %>
   </div>
 
   <div class="margin-bottom-4">
-    <%= content_tag :'lg-transliterable-field', :'field-name' => 'last_name' do %>
-      <%= render ValidatedFieldComponent.new(
+    <%= render (TransliterableFieldComponent.new name: :last_name do %>
+      <% render ValidatedFieldComponent.new(
             name: :last_name,
             form: f,
             input_html: { value: pii[:last_name] },
@@ -41,7 +42,7 @@
             maxlength: 255,
             required: true,
           ) %>
-    <% end %>
+    <% end) %>
   </div>
 
   <div class="margin-bottom-4">
