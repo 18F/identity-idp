@@ -91,7 +91,6 @@ module Idv
         mark_step_complete(:email_sent)
 
         build_telephony_form_response(telephony_result)
-        # TODO what do we show in the case of a phone submission error?
       end
 
       def identity
