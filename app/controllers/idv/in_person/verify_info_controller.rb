@@ -30,8 +30,6 @@ module Idv
         end
 
         process_async_state(load_async_state)
-
-        render 'idv/verify_info/show'
       end
 
       def update
@@ -251,13 +249,13 @@ module Idv
       def process_async_state(current_async_state)
         if current_async_state.none?
           idv_session.resolution_successful = false
-          render :show
+          render 'idv/verify_info/show'
         elsif current_async_state.in_progress?
           render 'shared/wait'
         elsif current_async_state.missing?
           analytics.idv_proofing_resolution_result_missing
           flash.now[:error] = I18n.t('idv.failure.timeout')
-          render :show
+          render 'idv/verify_info/show'
 
           delete_async
           idv_session.resolution_successful = false
