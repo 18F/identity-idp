@@ -171,7 +171,7 @@ describe GpoVerifyForm do
           subject.submit
           profile = user.profiles.first
           expect(profile.active).to eq(false)
-          expect(profile.deactivation_reason).to eq('threatmetrix_review_pending')
+          expect(profile.fraud_review_pending?).to eq(true)
         end
 
         it 'notes that threatmetrix failed' do
