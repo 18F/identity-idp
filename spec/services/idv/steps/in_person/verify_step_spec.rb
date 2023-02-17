@@ -19,6 +19,7 @@ describe Idv::Steps::InPerson::VerifyStep do
     instance_double(
       'controller',
       analytics: FakeAnalytics.new,
+      irs_attempts_api_tracker: IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new,
       current_user: user,
       request: request,
       session: { sp: { issuer: service_provider.issuer } },
@@ -94,6 +95,7 @@ describe Idv::Steps::InPerson::VerifyStep do
         instance_double(
           'controller',
           analytics: FakeAnalytics.new,
+          irs_attempts_api_tracker: IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new,
           current_user: user2,
           request: request,
           session: { sp: { issuer: service_provider.issuer } },
