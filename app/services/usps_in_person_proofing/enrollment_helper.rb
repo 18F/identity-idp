@@ -21,7 +21,6 @@ module UspsInPersonProofing
           enrollment_code: enrollment.enrollment_code,
           enrollment_id: enrollment.id,
           service_provider: enrollment.service_provider&.issuer,
-          in_person_cta_variant: session[:in_person_cta_variant],
         )
 
         send_ready_to_verify_email(user, enrollment)
