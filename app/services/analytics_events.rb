@@ -1136,11 +1136,21 @@ module AnalyticsEvents
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason profile was deactivated.
+  # @param [Boolean] fraud_review_pending Profile is under review for fraud
+  # @param [Boolean] fraud_rejection Profile is rejected due to fraud
   # User submitted IDV personal key page
-  def idv_personal_key_submitted(proofing_components: nil, deactivation_reason: nil, **extra)
+  def idv_personal_key_submitted(
+    fraud_review_pending:,
+    fraud_rejection:,
+    proofing_components: nil,
+    deactivation_reason: nil,
+    **extra
+  )
     track_event(
       'IdV: personal key submitted',
       deactivation_reason: deactivation_reason,
+      fraud_review_pending: fraud_review_pending,
+      fraud_rejection: fraud_rejection,
       proofing_components: proofing_components,
       **extra,
     )
