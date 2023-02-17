@@ -21,9 +21,15 @@ module Idv
         # app/views/idv/doc_auth/upload.html.erb
         if params[:type] == 'desktop'
           handle_desktop_selection
-        elsif IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
+        elsif params[:combined]
+          # The user was shown the new combined view and
+          # submitted a phone number to this step with feature flag on
+          # OR
+          # The user was originally shown the new combined view,
+          # but has submitted to a step with the feature flag off
+          # (50/50 from new to old)
           handle_phone_submission
-          else
+        else
             handle_mobile_selection
         end
       end
@@ -59,6 +65,10 @@ module Idv
       def form_submit
         return super if !IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
         return super if params[:type] == 'desktop'
+
+        # Remove after 50/50 deploy w/ flag
+        return super if params[:type] != 'combined'
+
         params = permit(:phone)
         params[:otp_delivery_preference] = 'sms'
         build_form.submit(params)
