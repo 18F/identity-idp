@@ -16,17 +16,21 @@ module Idv
       def call
         throttle.increment!
         return throttled_failure if throttle.throttled?
+
         telephony_result = send_link
         failure_reason = nil
+        phone = formatted_destination_phone
+
         if !telephony_result.success?
           failure_reason = { telephony: [telephony_result.error.class.name.demodulize] }
         end
+
         @flow.irs_attempts_api_tracker.idv_phone_upload_link_sent(
           success: telephony_result.success?,
-          phone_number: formatted_destination_phone,
+          phone_number: phone,
           failure_reason: failure_reason,
         )
-        build_telephony_form_response(telephony_result)
+        build_telephony_form_response(telephony_result, phone)
       end
 
       def extra_view_variables
@@ -45,11 +49,14 @@ module Idv
         )
       end
 
-      def build_telephony_form_response(telephony_result)
+      def build_telephony_form_response(telephony_result, phone)
         FormResponse.new(
           success: telephony_result.success?,
           errors: { message: telephony_result.error&.friendly_message },
-          extra: { telephony_response: telephony_result.to_h },
+          extra: {
+            telephony_response: telephony_result.to_h,
+            phone: phone
+          },
         )
       end
 
