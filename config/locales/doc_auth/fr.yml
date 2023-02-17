@@ -184,6 +184,8 @@ fr:
       capture_status_none: Alignez
       capture_status_small_document: Approchez-vous
       capture_status_tap_to_capture: Appuyez pour capturer
+      combined_upload: Nous recueillons des informations sur vous en lisant votre
+        carte d’identité délivrée par l’État.
       combined_upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les
         photos de votre carte d’identité depuis cet ordinateur.
       combined_upload_from_phone: Vous n’aurez pas à vous reconnecter. Vous reviendrez
