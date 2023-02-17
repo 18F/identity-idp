@@ -30,11 +30,11 @@
     </h2>
     <%= t('doc_auth.info.upload_from_phone') %>
     <%= simple_form_for(
-        :doc_auth,
-        url: url_for(type: :mobile),
-        method: 'PUT',
-        html: { autocomplete: 'off', class: 'margin-top-2' },
-    ) do |f| %>
+          :doc_auth,
+          url: url_for(type: :mobile),
+          method: 'PUT',
+          html: { autocomplete: 'off', class: 'margin-top-2' },
+        ) do |f| %>
         <%= f.submit t('doc_auth.buttons.use_phone'), wide: false, class: 'margin-top-05' %>
     <% end %>
   </div>
@@ -44,11 +44,11 @@
 
 <%= t('doc_auth.info.upload_from_computer') %>&nbsp;
 <%= simple_form_for(
-    :doc_auth,
-    url: url_for(type: :desktop),
-    method: 'PUT',
-    html: { class: 'display-inline' },
-) do |f| %>
+      :doc_auth,
+      url: url_for(type: :desktop),
+      method: 'PUT',
+      html: { class: 'display-inline' },
+    ) do |f| %>
     <%= f.submit t('doc_auth.info.upload_computer_link'), unstyled: true, big: false %>
 <% end %>
 

@@ -1,10 +1,10 @@
 <% if IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled %>
     <%= render partial: 'idv/doc_auth/combined_upload', locals: {
-        flow_session: flow_session,
-        idv_phone_form: idv_phone_form
-    }%>
+          flow_session: flow_session,
+          idv_phone_form: idv_phone_form,
+        } %>
 <% else %>
     <%= render partial: 'idv/doc_auth/upload', locals: {
-        flow_session: flow_session
-    } %>
+          flow_session: flow_session,
+        } %>
 <% end %>

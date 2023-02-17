@@ -15,9 +15,11 @@
 <div class="grid-row">
     <div class="grid-col-12 tablet:grid-col-3">
         <%= image_tag(
-            asset_url('idv/phone-icon.svg'),
-            alt: t('image_description.camera_mobile_phone'),
-        ) %>
+              asset_url('idv/phone-icon.svg'),
+              alt: t('image_description.camera_mobile_phone'),
+              width: 100,
+              height: 100,
+            ) %>
     </div>
     <div class="grid-col-12 tablet:grid-col-9">
         <div class="usa-tag bg-primary-dark margin-top-1">
@@ -28,18 +30,18 @@
         </h2>
         <%= t('doc_auth.info.combined_upload_from_phone') %>
         <%= simple_form_for(
-            idv_phone_form,
-            as: :doc_auth,
-            url: url_for(type: :mobile),
-            method: 'PUT',
-            html: { autocomplete: 'off' },
-        ) do |f| %>
+              idv_phone_form,
+              as: :doc_auth,
+              url: url_for(type: :mobile),
+              method: 'PUT',
+              html: { autocomplete: 'off' },
+            ) do |f| %>
             <%= render PhoneInputComponent.new(
-                form: f,
-                required: false,
-                delivery_methods: [:sms],
-                class: 'margin-bottom-4',
-            ) %>
+                  form: f,
+                  required: false,
+                  delivery_methods: [:sms],
+                  class: 'margin-bottom-4',
+                ) %>
             <%= f.submit t('forms.buttons.send_link'), wide: false %>
         <% end %>
     </div>
@@ -49,9 +51,11 @@
 <div class="grid-row">
     <div class="grid-col-12 tablet:grid-col-3">
         <%= image_tag(
-            asset_url('idv/laptop-icon.svg'),
-            alt: t('image_description.laptop'),
-        ) %>
+              asset_url('idv/laptop-icon.svg'),
+              alt: t('image_description.laptop'),
+              width: 100,
+              height: 100,
+            ) %>
     </div>
     <div class="grid-col-12 tablet:grid-col-9">
         <h2 class="margin-y-105">
@@ -59,11 +63,11 @@
         </h2>
         <%= t('doc_auth.info.combined_upload_from_computer') %>&nbsp;
         <%= simple_form_for(
-            :doc_auth,
-            url: url_for(type: :desktop),
-            method: 'PUT',
-            class: 'margin-bottom-4'
-        ) do |f| %>
+              :doc_auth,
+              url: url_for(type: :desktop),
+              method: 'PUT',
+              class: 'margin-bottom-4',
+            ) do |f| %>
             <%= f.submit t('forms.buttons.upload_photos'), class: 'usa-button--outline', wide: false %>
         <% end %>
     </div>

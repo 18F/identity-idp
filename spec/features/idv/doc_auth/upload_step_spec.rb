@@ -10,7 +10,9 @@ feature 'doc auth upload step' do
     let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_combined_hybrid_handoff_enabled).and_return(false)
+      allow(IdentityConfig.store).
+        to receive(:doc_auth_combined_hybrid_handoff_enabled).
+        and_return(false)
       sign_in_and_2fa_user
       allow_any_instance_of(Idv::Steps::UploadStep).to receive(:mobile_device?).and_return(true)
       complete_doc_auth_steps_before_upload_step
@@ -66,7 +68,9 @@ feature 'doc auth upload step' do
     end
 
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_combined_hybrid_handoff_enabled).and_return(true)
+      allow(IdentityConfig.store).
+        to receive(:doc_auth_combined_hybrid_handoff_enabled).
+        and_return(true)
       sign_in_and_2fa_user
       allow_any_instance_of(Idv::Steps::UploadStep).to receive(:mobile_device?).and_return(true)
       complete_doc_auth_steps_before_upload_step
@@ -158,7 +162,7 @@ feature 'doc auth upload step' do
       end
 
       it 'does not proceed if Telephony raises an error', js: true do
-        expect(fake_attempts_tracker).to receive( :idv_phone_upload_link_sent).with(
+        expect(fake_attempts_tracker).to receive(:idv_phone_upload_link_sent).with(
           success: false,
           phone_number: '+1 225-555-1000',
           failure_reason: { telephony: ['TelephonyError'] },
@@ -187,7 +191,7 @@ feature 'doc auth upload step' do
           t(
             'two_factor_authentication.otp_delivery_preference.sms_unsupported',
             location: 'Sri Lanka',
-           ),
+          ),
         )
         click_send_link
         expect(page.find(':focus')).to match_css('.phone-input__number')
@@ -225,14 +229,20 @@ feature 'doc auth upload step' do
 
           click_send_link
           expect(page).to have_current_path(idv_doc_auth_upload_step, ignore_query: true)
-          expect(page).to have_content(I18n.t('errors.doc_auth.send_link_throttle', timeout: timeout))
+          expect(page).to have_content(
+            I18n.t(
+              'errors.doc_auth.send_link_throttle',
+              timeout: timeout,
+            ),
+          )
         end
         expect(fake_analytics).to have_logged_event(
           'Throttler Rate Limit Triggered',
           throttle_type: :idv_send_link,
         )
 
-        # Manual expiration is needed for now since the Throttle uses Redis ttl instead of expiretime
+        # Manual expiration is needed for now since the Throttle uses
+        # Redis ttl instead of expiretime
         Throttle.new(throttle_type: :idv_send_link, user: user).reset!
         travel_to(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes) do
           fill_in :doc_auth_phone, with: '415-555-0199'
@@ -245,7 +255,7 @@ feature 'doc auth upload step' do
         allow_any_instance_of(Flow::BaseFlow).to receive(:flow_session).and_return(
           document_capture_session_uuid: document_capture_session.uuid,
         )
-        
+
         expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
           params = Rack::Utils.parse_nested_query URI(config[:link]).query
           expect(params).to eq('document-capture-session' => document_capture_session.uuid)

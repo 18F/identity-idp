@@ -21,12 +21,10 @@ module Idv
         # app/views/idv/doc_auth/upload.html.erb
         if params[:type] == 'desktop'
           handle_desktop_selection
-        else
-          if IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
-            handle_phone_submission
+        elsif IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
+          handle_phone_submission
           else
             handle_mobile_selection
-          end
         end
       end
 
@@ -91,7 +89,7 @@ module Idv
 
         mark_step_complete(:send_link)
         mark_step_complete(:email_sent)
-        
+
         build_telephony_form_response(telephony_result)
         # TODO what do we show in the case of a phone submission error?
       end
@@ -181,7 +179,7 @@ module Idv
           request_id: sp_session[:request_id],
         )
       end
-      
+
       def send_link
         session_uuid = flow_session[:document_capture_session_uuid]
         update_document_capture_session_requested_at(session_uuid)
@@ -199,7 +197,7 @@ module Idv
           errors: { message: telephony_result.error&.friendly_message },
           extra: {
             telephony_response: telephony_result.to_h,
-            destination: :link_sent
+            destination: :link_sent,
           },
         )
       end
