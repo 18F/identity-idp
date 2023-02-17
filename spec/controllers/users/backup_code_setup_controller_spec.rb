@@ -32,6 +32,17 @@ describe Users::BackupCodeSetupController do
     expect(user.backup_code_configurations.length).to eq BackupCodeGenerator::NUMBER_OF_CODES
   end
 
+  it 'creating backup codes revokes remember device cookies' do
+    user = create(:user, :signed_up)
+    stub_sign_in(user)
+    expect(user.remember_device_revoked_at).to eq nil
+
+    freeze_time do
+      post :create
+      expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
+    end
+  end
+
   it 'deletes backup codes' do
     user = build(:user, :signed_up, :with_authentication_app, :with_backup_code)
     stub_sign_in(user)
@@ -41,6 +52,17 @@ describe Users::BackupCodeSetupController do
 
     expect(response).to redirect_to(account_two_factor_authentication_path)
     expect(user.backup_code_configurations.length).to eq 0
+  end
+
+  it 'deleting backup codes revokes remember device cookies' do
+    user = build(:user, :signed_up, :with_authentication_app, :with_backup_code)
+    stub_sign_in(user)
+    expect(user.remember_device_revoked_at).to eq nil
+
+    freeze_time do
+      post :delete
+      expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
+    end
   end
 
   it 'does not deletes backup codes if they are the only mfa' do
