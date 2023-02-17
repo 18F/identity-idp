@@ -12,41 +12,19 @@ class CaptchaSubmitButtonComponent < BaseComponent
     @tag_options = tag_options
   end
 
-  def call
-    content_tag(
-      :'lg-captcha-submit-button',
-      safe_join([input_errors_tag, input_tag, spinner_button_tag, recaptcha_script_tag]),
-      **tag_options,
-      'recaptcha-site-key': IdentityConfig.store.recaptcha_site_key_v3,
-      'recaptcha-action': action,
-    )
-  end
-
-  private
-
-  def spinner_button_tag
-    render SpinnerButtonComponent.new(
-      action_message: t('components.captcha_submit_button.action_message'),
-      type: :submit,
-      big: true,
-      wide: true,
-    ).with_content(content)
-  end
-
-  def input_errors_tag
-    f.error(:recaptcha_token)
-  end
-
-  def input_tag
-    f.input(:recaptcha_token, as: :hidden)
-  end
-
-  def recaptcha_script_tag
-    return if IdentityConfig.store.recaptcha_site_key_v3.blank?
-    content_tag(:script, '', src: recaptcha_script_src, async: true)
+  def show_mock_score_field?
+    IdentityConfig.store.phone_recaptcha_mock_validator
   end
 
   def recaptcha_script_src
-    UriService.add_params(RECAPTCHA_SCRIPT_SRC, render: IdentityConfig.store.recaptcha_site_key_v3)
+    return @recaptcha_script_src if defined?(@recaptcha_script_src)
+    @recaptcha_script_src = begin
+      if IdentityConfig.store.recaptcha_site_key_v3.present?
+        UriService.add_params(
+          RECAPTCHA_SCRIPT_SRC,
+          render: IdentityConfig.store.recaptcha_site_key_v3,
+        )
+      end
+    end
   end
 end

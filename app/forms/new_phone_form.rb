@@ -22,7 +22,8 @@ class NewPhoneForm
               :otp_make_default_number,
               :setup_voice_preference,
               :recaptcha_token,
-              :recaptcha_version
+              :recaptcha_version,
+              :recaptcha_mock_score
 
   alias_method :setup_voice_preference?, :setup_voice_preference
 
@@ -141,11 +142,18 @@ class NewPhoneForm
   end
 
   def recaptcha_validator
-    @recaptcha_validator ||= PhoneRecaptchaValidator.new(
-      parsed_phone:,
-      recaptcha_version:,
-      analytics:,
-    )
+    @recaptcha_validator ||= begin
+      if IdentityConfig.store.phone_recaptcha_mock_validator
+        PhoneRecaptchaMockValidator.new(
+          parsed_phone:,
+          recaptcha_version:,
+          score: recaptcha_mock_score,
+          analytics:,
+        )
+      else
+        PhoneRecaptchaValidator.new(parsed_phone:, recaptcha_version:, analytics:)
+      end
+    end
   end
 
   def phone_recaptcha_enabled?
@@ -166,6 +174,7 @@ class NewPhoneForm
     @otp_make_default_number = true if default_prefs
     @recaptcha_token = params[:recaptcha_token]
     @recaptcha_version = 2 if params[:recaptcha_version].to_i == 2
+    @recaptcha_mock_score = params[:recaptcha_mock_score].to_f if params.key?(:recaptcha_mock_score)
   end
 
   def confirmed_phone?

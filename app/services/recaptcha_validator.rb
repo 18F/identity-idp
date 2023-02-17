@@ -23,14 +23,7 @@ class RecaptchaValidator
   def valid?(recaptcha_token)
     return true if exempt?
     return false if recaptcha_token.blank?
-
-    response = faraday.post(
-      VERIFICATION_ENDPOINT,
-      URI.encode_www_form(secret: recaptcha_secret_key, response: recaptcha_token),
-    ) do |request|
-      request.options.context = { service_name: 'recaptcha' }
-    end
-
+    response = recaptcha_response(recaptcha_token)
     log_analytics(recaptcha_result: response&.body)
     recaptcha_result_valid?(response.body)
   rescue Faraday::Error => error
@@ -39,6 +32,15 @@ class RecaptchaValidator
   end
 
   private
+
+  def recaptcha_response(recaptcha_token)
+    faraday.post(
+      VERIFICATION_ENDPOINT,
+      URI.encode_www_form(secret: recaptcha_secret_key, response: recaptcha_token),
+    ) do |request|
+      request.options.context = { service_name: 'recaptcha' }
+    end
+  end
 
   def faraday
     Faraday.new do |conn|
