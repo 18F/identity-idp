@@ -1,7 +1,6 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { trackEvent } from '@18f/identity-analytics';
-import InPersonContext from './in-person';
 
 type EventMetadata = Record<string, any>;
 
@@ -57,26 +56,19 @@ const AnalyticsContext = createContext<AnalyticsContextValue>({
 AnalyticsContext.displayName = 'AnalyticsContext';
 
 export function AnalyticsContextProvider({ children, trackEvent }: AnalyticsContextProviderProps) {
-  const { inPersonCtaVariantActive } = useContext(InPersonContext);
   const [submitEventMetadata, setSubmitEventMetadataState] = useState(DEFAULT_EVENT_METADATA);
   const setSubmitEventMetadata: SetSubmitEventMetadata = (metadata) =>
     setSubmitEventMetadataState((prevState) => ({ ...prevState, ...metadata }));
   const trackSubmitEvent: TrackSubmitEvent = (stepName) => {
     if (LOGGED_STEPS.includes(stepName)) {
-      if (stepName === 'location') {
-        setSubmitEventMetadata({in_person_cta_variant: inPersonCtaVariantActive})
-      }
       trackEvent(`IdV: ${stepName} submitted`, submitEventMetadata);
     }
+
     setSubmitEventMetadataState(DEFAULT_EVENT_METADATA);
   };
   const trackVisitEvent: TrackVisitEvent = (stepName) => {
     if (LOGGED_STEPS.includes(stepName)) {
-      if (stepName === 'location') {
-        trackEvent(`IdV: ${stepName} visited`, { in_person_cta_variant: inPersonCtaVariantActive });
-      } else {
-        trackEvent(`IdV: ${stepName} visited`);
-      }
+      trackEvent(`IdV: ${stepName} visited`);
     }
   };
 

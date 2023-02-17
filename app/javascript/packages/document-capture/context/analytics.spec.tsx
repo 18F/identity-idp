@@ -41,9 +41,7 @@ describe('AnalyticsContextProvider', () => {
 
     result.current.trackSubmitEvent(stepName);
 
-    expect(trackEvent).to.have.been.calledWith(`IdV: ${stepName} submitted`, {
-      in_person_cta_variant: '',
-    });
+    expect(trackEvent).to.have.been.calledWith(`IdV: ${stepName} submitted`, {});
   });
 
   it('includes metadata in the next submit event', () => {
@@ -53,10 +51,7 @@ describe('AnalyticsContextProvider', () => {
     result.current.setSubmitEventMetadata({ ok: true });
     result.current.trackSubmitEvent(stepName);
 
-    expect(trackEvent).to.have.been.calledWith(`IdV: ${stepName} submitted`, {
-      in_person_cta_variant: '',
-      ok: true,
-    });
+    expect(trackEvent).to.have.been.calledWith(`IdV: ${stepName} submitted`, { ok: true });
   });
 
   it('does not include metadata in subsequent submit events', () => {
@@ -68,10 +63,7 @@ describe('AnalyticsContextProvider', () => {
     result.current.trackSubmitEvent(firstStepName);
     result.current.trackSubmitEvent(secondStepName);
 
-    expect(trackEvent).to.have.been.calledWith(`IdV: ${firstStepName} submitted`, {
-      in_person_cta_variant: '',
-      ok: true,
-    });
+    expect(trackEvent).to.have.been.calledWith(`IdV: ${firstStepName} submitted`, { ok: true });
     expect(trackEvent).to.have.been.calledWith(`IdV: ${secondStepName} submitted`, {});
   });
 });

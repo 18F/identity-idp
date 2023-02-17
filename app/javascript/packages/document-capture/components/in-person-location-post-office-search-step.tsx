@@ -11,8 +11,10 @@ import AddressSearch, {
   LOCATIONS_URL,
 } from './address-search';
 import InPersonLocations, { FormattedLocation } from './in-person-locations';
+import { InPersonContext } from '../context';
 
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
+  const { inPersonCtaVariantActive } = useContext(InPersonContext);
   const { t } = useI18n();
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [isLoadingLocations, setLoadingLocations] = useState<boolean>(false);
@@ -42,6 +44,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       const { streetAddress, formattedCityStateZip } = selectedLocation;
       const selectedLocationAddress = `${streetAddress}, ${formattedCityStateZip}`;
       setSubmitEventMetadata({ selected_location: selectedLocationAddress });
+      setSubmitEventMetadata({ in_person_cta_variant: inPersonCtaVariantActive});
       onChange({ selectedLocationAddress });
       if (autoSubmit) {
         setDisabledAddressSearch(true);
