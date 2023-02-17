@@ -1107,10 +1107,14 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
+  # @param [Boolean] fraud_review_pending Profile is under review for fraud
+  # @param [Boolean] fraud_rejection Profile is rejected due to fraud
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # Tracks the last step of IDV, indicates the user successfully prooved
+  # Tracks the last step of IDV, indicates the user successfully proofed
   def idv_final(
     success:,
+    fraud_review_pending:,
+    fraud_rejection:,
     deactivation_reason: nil,
     proofing_components: nil,
     **extra
@@ -1118,6 +1122,8 @@ module AnalyticsEvents
     track_event(
       'IdV: final resolution',
       success: success,
+      fraud_review_pending: fraud_review_pending,
+      fraud_rejection: fraud_rejection,
       deactivation_reason: deactivation_reason,
       proofing_components: proofing_components,
       **extra,
@@ -1452,13 +1458,24 @@ module AnalyticsEvents
 
   # User submitted IDV password confirm page
   # @param [Boolean] success
+  # @param [Boolean] fraud_review_pending
+  # @param [Boolean] fraud_rejection
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
-  def idv_review_complete(success:, deactivation_reason: nil, proofing_components: nil, **extra)
+  def idv_review_complete(
+    success:,
+    fraud_review_pending: nil,
+    fraud_rejection: nil,
+    deactivation_reason: nil,
+    proofing_components: nil,
+    **extra
+  )
     track_event(
       'IdV: review complete',
       success: success,
       deactivation_reason: deactivation_reason,
+      fraud_review_pending: fraud_review_pending,
+      fraud_rejection: fraud_rejection,
       proofing_components: proofing_components,
       **extra,
     )
