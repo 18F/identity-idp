@@ -50,6 +50,7 @@ module Idv
       profile = profile_maker.save_profile(
         active: deactivation_reason.nil?,
         deactivation_reason: deactivation_reason,
+        fraud_review_needed: threatmetrix_failed_and_needs_review?,
       )
       self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
@@ -75,8 +76,6 @@ module Idv
         :gpo_verification_pending
       elsif in_person_enrollment?
         :in_person_verification_pending
-      elsif threatmetrix_failed_and_needs_review?
-        :threatmetrix_review_pending
       end
     end
 

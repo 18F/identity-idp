@@ -13,7 +13,7 @@ describe Idv::PersonalKeyController do
       user: user,
       user_password: password,
     )
-    profile = profile_maker.save_profile(active: false)
+    profile = profile_maker.save_profile(active: false, fraud_review_needed: false)
     idv_session.pii = profile_maker.pii_attributes
     idv_session.profile_id = profile.id
     idv_session.personal_key = profile.personal_key
