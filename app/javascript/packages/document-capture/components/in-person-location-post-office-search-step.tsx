@@ -44,7 +44,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       const { streetAddress, formattedCityStateZip } = selectedLocation;
       const selectedLocationAddress = `${streetAddress}, ${formattedCityStateZip}`;
       setSubmitEventMetadata({ selected_location: selectedLocationAddress });
-      setSubmitEventMetadata({ in_person_cta_variant: inPersonCtaVariantActive});
+      setSubmitEventMetadata({ in_person_cta_variant: inPersonCtaVariantActive });
       onChange({ selectedLocationAddress });
       if (autoSubmit) {
         setDisabledAddressSearch(true);
