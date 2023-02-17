@@ -59,14 +59,14 @@ locals:
       <% if @in_person_proofing %>
         <div>
           <dt class="display-inline"> <%= t('idv.form.id_number') %>: </dt>
-          <dd class="display-inline margin-left-0"> <%= pii[:state_id_number] %> </dd>
+          <dd class="display-inline margin-left-0"> <%= @pii[:state_id_number] %> </dd>
         </div>
       <% end %>
     </dl>
     <% if @in_person_proofing %>
       <div class='grid-auto'>
         <%= button_to(
-              step_url.call(step: :redo_state_id),
+              idv_in_person_step_url(step: :redo_state_id),
               method: :put,
               class: 'usa-button usa-button--unstyled',
               'aria-label': t('idv.buttons.change_state_id_label'),

@@ -51,7 +51,7 @@
 
           def exit_flow_state_machine
             flow_session[:flow_path] = @flow.flow_path
-            redirect_to idv_in_person_verify_info_path
+            redirect_to idv_in_person_verify_info_url
           end
         end
       end

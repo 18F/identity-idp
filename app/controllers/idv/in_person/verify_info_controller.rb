@@ -96,7 +96,7 @@ module Idv
       # copied from address_controller
       def confirm_ssn_step_complete
         return if pii.present? && pii[:ssn].present?
-        redirect_to idv_doc_auth_url
+        redirect_to idv_in_person_url
       end
 
       def confirm_profile_not_already_confirmed
@@ -116,18 +116,17 @@ module Idv
       end
 
       def current_flow_step_counts
-        user_session['idv/doc_auth_flow_step_counts'] ||= {}
-        user_session['idv/doc_auth_flow_step_counts'].default = 0
-        user_session['idv/doc_auth_flow_step_counts']
+        user_session['idv/in_person_flow_step_counts'] ||= {}
+        user_session['idv/in_person_flow_step_counts'].default = 0
+        user_session['idv/in_person_flow_step_counts']
       end
 
       def increment_step_counts
         current_flow_step_counts['verify'] += 1
       end
 
-      # copied from doc_auth_controller
       def flow_session
-        user_session['idv/doc_auth']
+        user_session['idv/in_person']
       end
 
       def flow_path
