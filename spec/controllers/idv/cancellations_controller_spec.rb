@@ -122,7 +122,6 @@ describe Idv::CancellationsController do
         'IdV: cancellation go back',
         step: 'first',
         proofing_components: nil,
-        extra: nil,
       )
 
       put :update, params: { step: 'first', cancel: 'true' }
@@ -133,12 +132,10 @@ describe Idv::CancellationsController do
         'IdV: cancellation go back',
         step: 'barcode',
         proofing_components: nil,
-        extra: {
-          cancelled_enrollment: false,
-          enrollment_code: '123',
-          enrollment_id: 1,
-          service_provider: 'Login.gov',
-        },
+        cancelled_enrollment: false,
+        enrollment_code: '123',
+        enrollment_id: 1,
+        service_provider: 'Login.gov',
       )
 
       put :update, params: { step: 'barcode', cancel: 'true' }
@@ -185,12 +182,10 @@ describe Idv::CancellationsController do
           'IdV: cancellation go back',
           step: 'barcode',
           proofing_components: nil,
-          extra: {
-            cancelled_enrollment: false,
-            enrollment_code: '123',
-            enrollment_id: 1,
-            service_provider: 'saml',
-          },
+          cancelled_enrollment: false,
+          enrollment_code: '123',
+          enrollment_id: 1,
+          service_provider: 'saml',
         )
 
         put :update, params: { step: 'barcode', cancel: 'true' }

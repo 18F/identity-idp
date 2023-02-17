@@ -102,7 +102,6 @@ describe 'cancel IdV', :js do
         'IdV: cancellation go back',
         step: 'ssn',
         proofing_components: { document_check: 'mock', document_type: 'state_id' },
-        extra: nil,
       )
 
       click_link t('links.cancel')
@@ -113,7 +112,6 @@ describe 'cancel IdV', :js do
         location: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id' },
         step: 'ssn',
-        extra: nil,
       )
 
       complete_doc_auth_steps_before_ssn_step

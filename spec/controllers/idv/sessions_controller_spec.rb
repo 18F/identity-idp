@@ -61,7 +61,6 @@ describe Idv::SessionsController do
         location: 'get_help',
         proofing_components: nil,
         step: 'first',
-        extra: nil,
       )
     end
 
@@ -73,12 +72,10 @@ describe Idv::SessionsController do
         location: '',
         proofing_components: nil,
         step: 'barcode',
-        extra: {
-          cancelled_enrollment: true,
-          enrollment_code: '123',
-          enrollment_id: 10,
-          service_provider: 'Login.gov',
-        },
+        cancelled_enrollment: true,
+        enrollment_code: '123',
+        enrollment_id: 10,
+        service_provider: 'Login.gov',
       )
     end
 
@@ -117,12 +114,10 @@ describe Idv::SessionsController do
           location: '',
           proofing_components: nil,
           step: 'barcode',
-          extra: {
-            cancelled_enrollment: true,
-            enrollment_code: '321',
-            enrollment_id: 12,
-            service_provider: 'saml',
-          },
+          cancelled_enrollment: true,
+          enrollment_code: '321',
+          enrollment_id: 12,
+          service_provider: 'saml',
         )
       end
     end
@@ -146,7 +141,6 @@ describe Idv::SessionsController do
           location: 'clear_and_start_over',
           proofing_components: nil,
           step: 'gpo_verify',
-          extra: nil,
         )
       end
     end

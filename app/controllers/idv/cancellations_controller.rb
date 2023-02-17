@@ -18,7 +18,7 @@ module Idv
     def update
       analytics.idv_cancellation_go_back(
         step: params[:step],
-        extra: barcode_step ? extra_analytics_attributes : nil,
+        **extra_analytics_attributes,
       )
       redirect_to session_go_back_path || idv_path
     end
@@ -35,21 +35,25 @@ module Idv
 
     private
 
-    def barcode_step
-      return params[:step] == 'barcode'
+    def barcode_step?
+      params[:step] == 'barcode'
     end
 
     def enrollment
-      return InPersonEnrollment.where(user_id: current_user.id).first
+      InPersonEnrollment.where(user_id: current_user.id).first
     end
 
     def extra_analytics_attributes
-      {
-        cancelled_enrollment: false,
-        enrollment_code: enrollment.enrollment_code,
-        enrollment_id: enrollment.id,
-        service_provider: decorated_session.sp_name || APP_NAME,
-      }
+      extra = {}
+      if barcode_step? && enrollment
+        extra.merge!(
+          cancelled_enrollment: false,
+          enrollment_code: enrollment.enrollment_code,
+          enrollment_id: enrollment.id,
+          service_provider: decorated_session.sp_name || APP_NAME,
+        )
+      end
+      extra
     end
 
     def properties
