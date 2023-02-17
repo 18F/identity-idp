@@ -3,6 +3,7 @@ module Idv
     class VerifyInfoController < ApplicationController
       include IdvSession
       include StepIndicatorConcern
+      include StepUtilitiesConcern
 
       before_action :renders_404_if_flag_not_set
       before_action :confirm_two_factor_authenticated
@@ -91,8 +92,6 @@ module Idv
           update(document_check: Idp::Constants::Vendors::USPS)
       end
 
-      ##### Move to VerifyInfoConcern
-
       # copied from address_controller
       def confirm_ssn_step_complete
         return if pii.present? && pii[:ssn].present?
@@ -125,18 +124,9 @@ module Idv
         current_flow_step_counts['verify'] += 1
       end
 
+      # override StepUtilitiesConcern
       def flow_session
         user_session['idv/in_person']
-      end
-
-      def flow_path
-        flow_session[:flow_path]
-      end
-
-      def irs_reproofing?
-        effective_user&.decorate&.reproof_for_irs?(
-          service_provider: current_sp,
-        ).present?
       end
 
       def analytics_arguments
@@ -147,20 +137,6 @@ module Idv
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
         }.merge(**acuant_sdk_ab_test_analytics_args)
-      end
-
-      # Copied from capture_doc_flow.rb
-      # and from doc_auth_flow.rb
-      def acuant_sdk_ab_test_analytics_args
-        capture_session_uuid = flow_session[:document_capture_session_uuid]
-        if capture_session_uuid
-          {
-            acuant_sdk_upgrade_ab_test_bucket:
-            AbTests::ACUANT_SDK.bucket(capture_session_uuid),
-          }
-        else
-          {}
-        end
       end
 
       # copied from verify_base_step
