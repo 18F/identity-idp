@@ -10,16 +10,17 @@
   <%= t('doc_auth.info.combined_upload') %>
 </p>
 
-<div class="grid-row">
-  <div class="grid-col-12 tablet:grid-col-3">
+<div class="grid-row tablet:grid-gap">
+  <div class="grid-col-12 tablet:grid-col-auto">
     <%= image_tag(
         asset_url('idv/phone-icon.svg'),
         alt: t('image_description.camera_mobile_phone'),
         width: 88,
         height: 88,
+        class: 'margin-right-1'
     ) %>
   </div>
-  <div class="grid-col-12 tablet:grid-col-9">
+  <div class="grid-col-12 tablet:grid-col-fill">
     <div class="usa-tag usa-tag--informative">
       <%= t('doc_auth.info.tag') %>
     </div>
@@ -46,16 +47,17 @@
 </div>
 
 <hr class="margin-y-4" />
-<div class="grid-row">
-  <div class="grid-col-12 tablet:grid-col-3">
+<div class="grid-row" tablet:grid-gap>
+  <div class="grid-col-12 tablet:grid-col-auto">
     <%= image_tag(
         asset_url('idv/laptop-icon.svg'),
         alt: t('image_description.laptop'),
         width: 88,
         height: 88,
+        class: 'margin-right-1'
     ) %>
   </div>
-  <div class="grid-col-12 tablet:grid-col-9">
+  <div class="grid-col-12 tablet:grid-col-fill">
     <h2 class="margin-y-105">
       <%= t('doc_auth.headings.combined_upload_from_computer') %>
     </h2>
