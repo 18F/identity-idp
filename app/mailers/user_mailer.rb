@@ -39,7 +39,7 @@ class UserMailer < ActionMailer::Base
     @email_address = params.fetch(:email_address)
     if @user.id != @email_address.user_id
       raise UserEmailAddressMismatchError.new(
-        "User ID #{@user.id} does not match EmailAddress ID #{@email_address.user_id}",
+        "User ID #{@user.id} does not match EmailAddress ID #{@email_address.id}",
       )
     end
   end
