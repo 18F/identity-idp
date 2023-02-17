@@ -5,7 +5,7 @@ feature 'doc auth upload step' do
   include DocAuthHelper
   include ActionView::Helpers::DateHelper
 
-  context 'with combined hybrid handoff disabled' do
+  context 'with combined hybrid handoff disabled', js: true do
     let(:fake_analytics) { FakeAnalytics.new }
     let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
@@ -87,7 +87,7 @@ feature 'doc auth upload step' do
 
         expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
-        click_on t('doc_auth.info.upload_computer_link')
+        click_upload_from_computer
 
         expect(page).to have_current_path(idv_doc_auth_document_capture_step)
         expect(fake_analytics).to have_logged_event(
@@ -106,8 +106,7 @@ feature 'doc auth upload step' do
           :idv_document_upload_method_selected,
         ).with({ upload_method: 'mobile' })
 
-        # click_on t('doc_auth.buttons.use_phone')
-        click_idv_continue
+        click_send_link
 
         expect(page).to have_current_path(idv_doc_auth_link_sent_step)
         expect(fake_analytics).to have_logged_event(
@@ -132,14 +131,14 @@ feature 'doc auth upload step' do
         expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
         fill_in :doc_auth_phone, with: '415-555-0199'
-        click_idv_continue
+        click_send_link
 
         expect(page).to have_current_path(idv_doc_auth_link_sent_step)
       end
 
       it 'does not proceed to the next page with invalid info' do
         fill_in :doc_auth_phone, with: ''
-        click_idv_continue
+        click_send_link
 
         expect(page).to have_current_path(idv_doc_auth_upload_step, ignore_query: true)
       end
@@ -153,7 +152,7 @@ feature 'doc auth upload step' do
         end
 
         fill_in :doc_auth_phone, with: '415-555-0199'
-        click_idv_continue
+        click_send_link
 
         expect(page).to have_current_path(idv_doc_auth_link_sent_step)
       end
@@ -165,7 +164,7 @@ feature 'doc auth upload step' do
           failure_reason: { telephony: ['TelephonyError'] },
         )
         fill_in :doc_auth_phone, with: '225-555-1000'
-        click_idv_continue
+        click_send_link
 
         expect(page).to have_current_path(idv_doc_auth_upload_step, ignore_query: true)
         expect(page).to have_content I18n.t('telephony.error.friendly_message.generic')
@@ -190,7 +189,7 @@ feature 'doc auth upload step' do
             location: 'Sri Lanka',
            ),
         )
-        click_continue
+        click_send_link
         expect(page.find(':focus')).to match_css('.phone-input__number')
       end
 
@@ -215,7 +214,7 @@ feature 'doc auth upload step' do
             )
 
             fill_in :doc_auth_phone, with: '415-555-0199'
-            click_idv_continue
+            click_send_link
 
             expect(page).to have_current_path(idv_doc_auth_link_sent_step)
 
@@ -224,7 +223,7 @@ feature 'doc auth upload step' do
 
           fill_in :doc_auth_phone, with: '415-555-0199'
 
-          click_idv_continue
+          click_send_link
           expect(page).to have_current_path(idv_doc_auth_upload_step, ignore_query: true)
           expect(page).to have_content(I18n.t('errors.doc_auth.send_link_throttle', timeout: timeout))
         end
@@ -237,7 +236,7 @@ feature 'doc auth upload step' do
         Throttle.new(throttle_type: :idv_send_link, user: user).reset!
         travel_to(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes) do
           fill_in :doc_auth_phone, with: '415-555-0199'
-          click_idv_continue
+          click_send_link
           expect(page).to have_current_path(idv_doc_auth_link_sent_step)
         end
       end
@@ -255,7 +254,7 @@ feature 'doc auth upload step' do
         end
 
         fill_in :doc_auth_phone, with: '415-555-0199'
-        click_idv_continue
+        click_send_link
       end
 
       it 'sets requested_at on the capture session' do
@@ -264,7 +263,7 @@ feature 'doc auth upload step' do
         )
 
         fill_in :doc_auth_phone, with: '415-555-0199'
-        click_idv_continue
+        click_send_link
 
         document_capture_session.reload
         expect(document_capture_session).to have_attributes(requested_at: a_kind_of(Time))
