@@ -66,6 +66,10 @@ function addFormInputsForMobileDeviceCapabilities() {
   form.addEventListener('submit', (event) => {
     event.preventDefault();
 
+    for (const spinner of form.querySelectorAll('lg-spinner-button')) {
+      spinner.toggleSpinner(true);
+    }
+
     Promise.race([delay(GRACE_TIME_FOR_CAMERA_CHECK_MS), cameraCheckPromise]).then(() =>
       form.submit(),
     );
