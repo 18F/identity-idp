@@ -38,14 +38,7 @@ function addFormInputsForMobileDeviceCapabilities() {
   // The check for a camera on the device is async -- kick it off here and intercept
   // submit() to ensure that it completes in time.
   const cameraCheckPromise = measure(DEVICE_CHECK_EVENT, hasCamera()).then(
-    ({ result: cameraPresent, duration }) => {
-      trackEvent(DEVICE_CHECK_EVENT, {
-        is_camera_capable_mobile: true,
-        camera_present: !!cameraPresent,
-        grace_time: GRACE_TIME_FOR_CAMERA_CHECK_MS,
-        duration,
-      });
-
+    async ({ result: cameraPresent, duration }) => {
       if (!cameraPresent) {
         // Signal to the backend that this is a mobile device, but no camera is present
         const ncInput = document.createElement('input');
@@ -60,6 +53,13 @@ function addFormInputsForMobileDeviceCapabilities() {
       input.type = 'hidden';
       input.name = 'skip_upload';
       form.appendChild(input);
+
+      await trackEvent(DEVICE_CHECK_EVENT, {
+        is_camera_capable_mobile: true,
+        camera_present: !!cameraPresent,
+        grace_time: GRACE_TIME_FOR_CAMERA_CHECK_MS,
+        duration,
+      });
     },
   );
 
