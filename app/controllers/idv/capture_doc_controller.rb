@@ -35,7 +35,11 @@ module Idv
 
       result = Idv::DocumentCaptureSessionForm.new(document_capture_session_uuid).submit
 
-      analytics.track_event(FLOW_STATE_MACHINE_SETTINGS[:analytics_id], result.to_h)
+      analytics.track_event(
+        FLOW_STATE_MACHINE_SETTINGS[:analytics_id],
+        doc_capture_session_result: result.to_h,
+        doc_capture_user_id: session[:doc_capture_user_id]
+      )
       process_result(result)
     end
 
