@@ -91,7 +91,7 @@ module Idv
 
       def idv_failure_log_throttled
         @flow.irs_attempts_api_tracker.idv_verification_rate_limited(
-          throttle_reason: 'single-session',
+          throttle_context: 'single-session',
         )
         @flow.analytics.throttler_rate_limit_triggered(
           throttle_type: :idv_resolution,
@@ -182,7 +182,7 @@ module Idv
           throttle.increment!
           if throttle.throttled?
             @flow.irs_attempts_api_tracker.idv_verification_rate_limited(
-              throttle_reason: 'multi-session',
+              throttle_context: 'multi-session',
             )
             @flow.analytics.throttler_rate_limit_triggered(
               throttle_type: :proof_ssn,

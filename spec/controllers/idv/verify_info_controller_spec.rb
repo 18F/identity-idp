@@ -20,8 +20,8 @@ describe Idv::VerifyInfoController do
       step: 'verify',
     }
   end
-  let(:ssn_throttle_hash) { { throttle_reason: 'multi-session' } }
-  let(:proofing_throttle_hash) { { throttle_reason: 'single-session' } }
+  let(:ssn_throttle_hash) { { throttle_context: 'multi-session' } }
+  let(:proofing_throttle_hash) { { throttle_context: 'single-session' } }
 
   before do
     allow(subject).to receive(:flow_session).and_return(flow_session)

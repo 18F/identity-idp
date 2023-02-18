@@ -170,7 +170,7 @@ feature 'doc auth verify_info step', :js do
         and_return(max_resolution_attempts)
 
       expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
-        with({ throttle_reason: 'single-session' })
+        with({ throttle_context: 'single-session' })
 
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_ssn_step
@@ -222,7 +222,7 @@ feature 'doc auth verify_info step', :js do
         and_return(max_ssn_attempts)
 
       expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
-        with({ throttle_reason: 'multi-session' })
+        with({ throttle_context: 'multi-session' })
 
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_ssn_step
