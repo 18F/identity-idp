@@ -11,7 +11,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
   end
 
   it 'provides back buttons for address, state ID, and SSN that discard changes',
-      allow_browser_log: true do
+     allow_browser_log: true do
     user = user_with_2fa
 
     sign_in_and_2fa_user(user)

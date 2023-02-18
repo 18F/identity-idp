@@ -152,7 +152,6 @@ module Idv
         }.merge(**acuant_sdk_ab_test_analytics_args)
       end
 
-
       # copied from verify_base_step. May want reconciliation with phone_step
       def process_async_state(current_async_state)
         if current_async_state.none?

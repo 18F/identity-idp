@@ -2,7 +2,6 @@ module Idv
   module VerifyInfoConcern
     extend ActiveSupport::Concern
 
-    # copied from verify_base_step
     def should_use_aamva?(pii)
       aamva_state?(pii) && !aamva_disallowed_for_service_provider?
     end

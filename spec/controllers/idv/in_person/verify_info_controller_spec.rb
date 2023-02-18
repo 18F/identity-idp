@@ -125,7 +125,7 @@ describe Idv::InPerson::VerifyInfoController do
       context 'when pii_from_user is blank' do
         it 'redirects' do
           flow_session[:pii_from_user] = {}
-          result = put :update
+          put :update
           expect(response.status).to eq 302
         end
       end
@@ -141,10 +141,10 @@ describe Idv::InPerson::VerifyInfoController do
 
         it 'throttles them all' do
           put :update
-#          expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
+          #          expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
           subject.idv_session.verify_info_step_document_capture_session_uuid = nil
           put :update
-#          expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
+          #          expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
           subject.idv_session.verify_info_step_document_capture_session_uuid = nil
 
           put :update
