@@ -1,0 +1,11 @@
+<%= content_tag :'lg-transliterable-field-group',
+  :'field-mapping' => field_mapping.to_json,
+  :'validation-url' => validation_url,
+  :'form-error-message' => form_error_message,
+  :'form-error-selector' => form_error_selector do %>
+    <%# todo: customize appearance %>
+    <% if form_error_message %>
+    <%= content_tag(:div, form_error_message, :class => "#{form_error_class} display-none") %>
+    <% end %>
+    <%= block.call %>
+<% end %>
