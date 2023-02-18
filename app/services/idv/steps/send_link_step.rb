@@ -30,7 +30,10 @@ module Idv
           phone_number: phone,
           failure_reason: failure_reason,
         )
-        build_telephony_form_response(telephony_result, phone)
+
+        idv_session[:phone] = phone
+
+        build_telephony_form_response(telephony_result)
       end
 
       def extra_view_variables
@@ -49,14 +52,11 @@ module Idv
         )
       end
 
-      def build_telephony_form_response(telephony_result, phone)
+      def build_telephony_form_response(telephony_result)
         FormResponse.new(
           success: telephony_result.success?,
           errors: { message: telephony_result.error&.friendly_message },
-          extra: {
-            telephony_response: telephony_result.to_h,
-            phone: phone
-          },
+          extra: { telephony_response: telephony_result.to_h },
         )
       end
 
