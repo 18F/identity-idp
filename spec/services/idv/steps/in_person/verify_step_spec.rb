@@ -100,7 +100,6 @@ describe Idv::Steps::InPerson::VerifyStep do
 
     context 'when different users use the same SSN within the same timeframe' do
       let(:user2) { create(:user) }
-      
       let(:controller2) do
         instance_double(
           'controller',
