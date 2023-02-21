@@ -99,7 +99,7 @@ group :development, :test do
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'nokogiri', '~> 1.14.0'
-  gem 'parallel_tests'
+  gem 'parallel_tests', '~> 3.8.0'
   gem 'pg_query', require: false
   gem 'pry-byebug'
   gem 'pry-doc'
