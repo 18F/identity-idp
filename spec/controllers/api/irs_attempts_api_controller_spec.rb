@@ -182,17 +182,17 @@ RSpec.describe Api::IrsAttemptsApiController do
       expect(response.status).to eq(404)
     end
 
-    it 'returns an error without required timestamp parameter' do
+    it 'returns an error when required timestamp parameter is missing' do
       post :create, params: {}
       expect(response.status).to eq 422
     end
 
-    it 'returns an error with empty timestamp parameter' do
+    it 'returns an error when timestamp parameter is empty' do
       post :create, params: { timestamp: '' }
       expect(response.status).to eq 422
     end
 
-    it 'returns an error with invalid timestamp parameter' do
+    it 'returns an error when timestamp parameter is invalid' do
       post :create, params: { timestamp: 'abc' }
       expect(response.status).to eq 422
 
