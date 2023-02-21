@@ -142,17 +142,15 @@ class NewPhoneForm
   end
 
   def recaptcha_validator
-    @recaptcha_validator ||= begin
-      if IdentityConfig.store.phone_recaptcha_mock_validator
-        PhoneRecaptchaMockValidator.new(
-          parsed_phone:,
-          recaptcha_version:,
-          score: recaptcha_mock_score,
-          analytics:,
-        )
-      else
-        PhoneRecaptchaValidator.new(parsed_phone:, recaptcha_version:, analytics:)
-      end
+    @recaptcha_validator ||= PhoneRecaptchaValidator.new(parsed_phone:, **recaptcha_validator_args)
+  end
+
+  def recaptcha_validator_args
+    args = { recaptcha_version:, analytics: }
+    if IdentityConfig.store.phone_recaptcha_mock_validator
+      args.merge(validator_class: RecaptchaMockValidator, score: recaptcha_mock_score)
+    else
+      args
     end
   end
 
