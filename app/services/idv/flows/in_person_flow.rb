@@ -53,6 +53,13 @@ module Idv
       def self.session_idv(session)
         session[:idv] ||= {}
       end
+
+      def extra_analytics_properties
+        {
+          same_address_as_id: @flow_session[:pii_from_user][:same_address_as_id],
+        }
+      end
+
     end
   end
 end
