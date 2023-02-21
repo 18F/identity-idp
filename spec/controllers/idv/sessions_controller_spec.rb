@@ -75,7 +75,6 @@ describe Idv::SessionsController do
         cancelled_enrollment: true,
         enrollment_code: '123',
         enrollment_id: 10,
-        service_provider: 'Login.gov',
       )
     end
 
@@ -83,43 +82,6 @@ describe Idv::SessionsController do
       delete :destroy
 
       expect(response).to redirect_to(idv_url)
-    end
-
-    context 'when go back path is the barcode page and sp' do
-      let(:decorated_session) do
-        ServiceProviderSessionDecorator.new(
-          sp: ServiceProvider.create(friendly_name: 'saml'),
-          view_context: '',
-          sp_session: '',
-          service_provider_request: '',
-        )
-      end
-      let(:enrollment) do
-        create(
-          :in_person_enrollment,
-          enrollment_code: '321',
-          id: 12,
-        )
-      end
-
-      before do
-        allow(controller).to receive(:decorated_session).and_return(decorated_session)
-        allow(controller).to receive(:enrollment).and_return(enrollment)
-        delete :destroy, params: { step: 'barcode', location: '' }
-      end
-
-      it 'logs idv_start_over with extra analytics attributes and sp' do
-        expect(@analytics).to have_logged_event(
-          'IdV: start over',
-          location: '',
-          proofing_components: nil,
-          step: 'barcode',
-          cancelled_enrollment: true,
-          enrollment_code: '321',
-          enrollment_id: 12,
-          service_provider: 'saml',
-        )
-      end
     end
 
     context 'pending profile' do

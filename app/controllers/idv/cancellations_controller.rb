@@ -40,7 +40,7 @@ module Idv
     end
 
     def enrollment
-      InPersonEnrollment.where(user_id: current_user.id).first
+      current_user.pending_in_person_enrollment
     end
 
     def extra_analytics_attributes
@@ -50,7 +50,6 @@ module Idv
           cancelled_enrollment: false,
           enrollment_code: enrollment.enrollment_code,
           enrollment_id: enrollment.id,
-          service_provider: decorated_session.sp_name || APP_NAME,
         )
       end
       extra

@@ -135,7 +135,6 @@ describe Idv::CancellationsController do
         cancelled_enrollment: false,
         enrollment_code: '123',
         enrollment_id: 1,
-        service_provider: 'Login.gov',
       )
 
       put :update, params: { step: 'barcode', cancel: 'true' }
@@ -160,35 +159,6 @@ describe Idv::CancellationsController do
         put :update, params: { cancel: 'true' }
 
         expect(response).to redirect_to go_back_path
-      end
-    end
-
-    context 'logs cancellation from barcode page when sp present' do
-      let(:decorated_session) do
-        ServiceProviderSessionDecorator.new(
-          sp: ServiceProvider.create(friendly_name: 'saml'),
-          view_context: '',
-          sp_session: '',
-          service_provider_request: '',
-        )
-      end
-
-      before do
-        allow(controller).to receive(:decorated_session).and_return(decorated_session)
-      end
-
-      it 'logs cancellation go back with extra analytics attributes and sp' do
-        expect(@analytics).to receive(:track_event).with(
-          'IdV: cancellation go back',
-          step: 'barcode',
-          proofing_components: nil,
-          cancelled_enrollment: false,
-          enrollment_code: '123',
-          enrollment_id: 1,
-          service_provider: 'saml',
-        )
-
-        put :update, params: { step: 'barcode', cancel: 'true' }
       end
     end
   end
