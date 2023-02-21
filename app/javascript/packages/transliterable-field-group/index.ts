@@ -1,25 +1,42 @@
-import { t } from '@18f/identity-i18n';
 import { trackError } from '@18f/identity-analytics';
 import { request } from '@18f/identity-request';
 
+/**
+ * Representation of the response from a transliteration API call
+ */
 interface ValidationResponse {
   success: boolean;
   data: Record<string, string>;
 }
 
+/**
+ * Internal cache structure for controlling when API call is made
+ * and reusing result
+ */
 interface ValidationResultCache {
   previousValues: Record<string, string>;
   result: Record<string, string>;
 }
-
-const VALIDATION_URL_PATH = '/verify/in_person/validate_transliterable';
-const VALIDATION_FORM_ERROR_CLASS = 'transliterable-form-error';
 
 /**
  * This adds an asynchronous transliteration check for certain form fields
  * that gets run between form validation and submission.
  */
 class TransliterableFieldGroupElement extends HTMLElement {
+  private static readonly DEFAULT_INPUT_TIMEOUT_MS = 1500;
+
+  /**
+   * Cache to moderate API calls and allow reuse of the previous result
+   */
+  private validationResultCache: ValidationResultCache = {
+    previousValues: {},
+    result: {},
+  };
+
+  private lastRevalidationRequest: Promise<void>;
+
+  private lastFormSubmit: Promise<any> | null = null;
+
   /**
    * Form associated with this element
    */
@@ -39,6 +56,17 @@ class TransliterableFieldGroupElement extends HTMLElement {
   }
 
   /**
+   * Time to wait for input to stop before validating for transliterability
+   */
+  get inputTimeoutMilliseconds(): number {
+    const attrNumber = Number(this.getAttribute('input-timeout-ms'));
+    if (Number.isNaN(attrNumber) || attrNumber < 0) {
+      return TransliterableFieldGroupElement.DEFAULT_INPUT_TIMEOUT_MS;
+    }
+    return attrNumber;
+  }
+
+  /**
    * Element that displays general form errors to the user
    */
   get formErrorElement(): Element | null {
@@ -51,7 +79,7 @@ class TransliterableFieldGroupElement extends HTMLElement {
   }
 
   /**
-   *
+   * Mapping of regular field names to transliteration API field names
    */
   get fieldMapping(): Record<string, string> {
     const rawFields = this.getAttribute('field-mapping');
@@ -65,15 +93,25 @@ class TransliterableFieldGroupElement extends HTMLElement {
     return {};
   }
 
-  private get inputs(): Record<string, HTMLFormElement> {
+  /**
+   * Input elements mapped by their transliteration API field names
+   */
+  private get inputs(): Record<string, HTMLInputElement> {
     // Extract transliterable fields
     const { fieldMapping, form } = this;
     return Object.entries(fieldMapping).reduce((agg, [key, value]) => {
-      agg[value] = form?.elements.namedItem(key) || null;
+      const element = form?.elements.namedItem(key);
+      if (element instanceof HTMLInputElement) {
+        agg[value] = element;
+      }
       return agg;
     }, {});
   }
 
+  /**
+   * Input elements that haven't been validated using the API,
+   * mapped by their transliteration API field names
+   */
   private get inputValuesNeedingValidation(): Record<string, string> {
     const {
       inputs,
@@ -88,6 +126,9 @@ class TransliterableFieldGroupElement extends HTMLElement {
     }, {});
   }
 
+  /**
+   * Submit button associated with the current form
+   */
   private get formSubmitButton() {
     return this.form?.querySelector('input[type=submit],button[type=submit]');
   }
@@ -96,42 +137,78 @@ class TransliterableFieldGroupElement extends HTMLElement {
    * Initializer for component
    */
   connectedCallback() {
-    this.formSubmitButton?.addEventListener('click', this.handleSubmitClickEvent);
-
-    // Attach event listener for form. Will not be attached redundantly
-    // because function has same identity for multiple fields.
-    // this.form?.addEventListener('submit', this.handleSubmitEvent, true);
-
-    // TODO handle usability on slow Internet connections
-
-    // Clear prior transliteration error when input gets updated
-    this.input?.addEventListener('input', () => {
-      const { input } = this;
-      if (input?.validity.customError) {
-        input.setCustomValidity('');
-      }
+    // Setup input validation triggers
+    Object.values(this.inputs).forEach((input) => {
+      input.addEventListener('input', this.revalidateInput);
     });
+
+    // Intercept form submission to allow validation to complete.
+    //
+    // Catching the "click" instead of "submit" helps in making the info available
+    // before native browser validation is triggered.
+    this.formSubmitButton?.addEventListener('click', this.handleSubmitClickEvent, true);
   }
 
-  private lastFormSubmit: Promise<any> | null = null;
+  /**
+   * Clear the input validation status, then trigger re-validation of the
+   * transliterable fields.
+   *
+   * @param input HTMLInputElement
+   */
+  private async revalidateInput({ currentTarget: input }: Partial<Event> = {}): Promise<void> {
+    if (input instanceof HTMLInputElement && input.validity.customError) {
+      // Remove current error text
+      input.setCustomValidity('');
+    }
+    try {
+      await this.revalidateAllInputs(this.inputTimeoutMilliseconds);
+    } catch (err) {
+      trackError(err);
+    }
+  }
 
-  private validationResultCache: ValidationResultCache = {
-    previousValues: {},
-    result: {},
-  };
+  /**
+   * Re-validate the transliterable fields. Uses a debouncing strategy
+   * to ensure that only the latest field values get validated.
+   */
+  private revalidateAllInputs(timeout: number = 0): Promise<void> {
+    // Debounce to prevent excessive API calls
+    const promise: Promise<void> = new Promise((resolve, reject) => {
+      setTimeout(async () => {
+        if (this.lastRevalidationRequest !== promise) {
+          // Defer to newest call for results
+          this.lastRevalidationRequest.then(resolve, reject);
+        } else if (Object.values(this.inputValuesNeedingValidation).length < 1) {
+          resolve();
+        }
+
+        let err: Error | undefined;
+        try {
+          await this.handleAsyncValidation();
+        } catch (e) {
+          err = e;
+        }
+
+        if (this.lastRevalidationRequest !== promise) {
+          // Defer to newest call for results (important to check this after async delay)
+          this.lastRevalidationRequest.then(resolve, reject);
+        } else if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      }, timeout);
+    });
+    this.lastRevalidationRequest = promise;
+    return promise;
+  }
 
   /**
    * Intercept form submission attempts to ensure transliterable field validation
    * occurs first.
    */
   private readonly handleSubmitClickEvent = async (e: Event): Promise<void> => {
-    const {
-      inputs,
-      inputValuesNeedingValidation,
-      lastFormSubmit,
-      handleAsyncValidation,
-      setFormErrorVisibility,
-    } = this;
+    const { inputValuesNeedingValidation, lastFormSubmit, setFormErrorVisibility } = this;
 
     if (Object.keys(inputValuesNeedingValidation).length < 1) {
       // None of the transliterable fields need to be checked
@@ -151,66 +228,49 @@ class TransliterableFieldGroupElement extends HTMLElement {
     }
 
     try {
-      Object.values(inputs).forEach((field) => {
-        // Prevent user from changing the fields between validation and submission
-        field.readOnly = true;
-      });
-      this.lastFormSubmit = handleAsyncValidation();
-      if (await this.lastFormSubmit) {
-        setFormErrorVisibility(true);
-      } else {
-        setFormErrorVisibility(false);
+      // Note: This will automatically wait for additional transliteration API calls if
+      // the user updates the fields before submission.
+      this.lastFormSubmit = this.revalidateAllInputs();
+      await this.lastFormSubmit;
 
-        // Attempt to re-submit form. Infinite loop is prevented via the "inputValuesNeedingValidation" check.
-        // Note: should not re-dispatch on network error
-        setImmediate(() => e.target?.dispatchEvent(e));
-      }
+      setFormErrorVisibility(false);
+
+      // Attempt to re-submit form. Infinite loop is prevented via the "inputValuesNeedingValidation" check.
+      // Note: should not re-dispatch on network error
+      setImmediate(() => e.target?.dispatchEvent(e));
+    } catch (err) {
+      trackError(err);
+      setFormErrorVisibility(true);
     } finally {
       // Always remove the promise, but only before the
       // attempted re-submission of the same form
       this.lastFormSubmit = null;
-
-      Object.values(inputs).forEach((field) => {
-        // Allow user to change fields after validation has finished; useful for fixing
-        // validation or other errors that prevent submission.
-        field.readOnly = false;
-      });
     }
   };
 
   /**
-   * Mediate interaction between the form and API:
-   * - Marshal fields to API values
-   * - Set errors based on API response
-   * - Prevent form interactions that could cause unintuitive behavior
+   * Query transliterable field validation API, then set
+   * validation on fields
    * @return boolean Whether to show a form error on submit attempts
    */
-  private readonly handleAsyncValidation = async (): Promise<boolean> => {
+  private readonly handleAsyncValidation = async (): Promise<void> => {
     const { inputs, inputValuesNeedingValidation: payload, sendValidationRequest } = this;
-    try {
-      const result = await sendValidationRequest(payload);
 
-      this.validationResultCache = {
-        previousValues: payload,
-        result,
-      };
+    const result = await sendValidationRequest(payload);
 
-      // Set custom validity on invalid fields; clear custom validity on valid fields
-      Object.entries(inputs).forEach(([name, field]) => {
-        const validationResult = result[name];
-        console.log(name, payload[name], result[name]);
-        field.previousValidatedValue = payload[name];
-        field.input?.setCustomValidity(validationResult || '');
-      });
-      return false;
-    } catch (err) {
-      trackError(err);
-      return true;
-    }
+    Object.assign(this.validationResultCache.previousValues, payload);
+    Object.assign(this.validationResultCache.result, result);
+
+    // Set custom validity on invalid fields; clear custom validity on valid fields
+    Object.entries(inputs).forEach(([name, field]) => {
+      const validationResult = result[name];
+      console.log(name, payload[name], result[name]);
+      field.setCustomValidity(validationResult || '');
+    });
   };
 
   /**
-   * Update the visibility and message for the form-level error
+   * Update the visibility for the form-level error
    */
   private setFormErrorVisibility(visible: boolean) {
     const { formErrorElement } = this;
@@ -221,7 +281,6 @@ class TransliterableFieldGroupElement extends HTMLElement {
 
     const isVisible = !formErrorElement?.classList.contains('display-none');
     if (visible && !isVisible) {
-      formErrorElement.textContent = t('in_person_proofing.form.state_id.errors.transliteration');
       formErrorElement.className = Array.from(formErrorElement.classList)
         .filter((c) => c !== 'display-none')
         .join(' ');
@@ -236,7 +295,12 @@ class TransliterableFieldGroupElement extends HTMLElement {
   private async sendValidationRequest(
     fields: Record<string, string>,
   ): Promise<Record<string, string>> {
-    const response = await request<ValidationResponse>(VALIDATION_URL_PATH, {
+    const { validationUrl } = this;
+    if (!validationUrl) {
+      // Component is not correctly configured
+      throw new Error('Validation URL not set');
+    }
+    const response = await request<ValidationResponse>(validationUrl, {
       method: 'POST',
       body: JSON.stringify(fields),
     });
