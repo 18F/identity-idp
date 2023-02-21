@@ -152,7 +152,7 @@ irs_attempt_api_csp_id: 'LOGIN.gov'
 irs_attempt_api_enabled: false
 irs_attempt_api_aws_s3_enabled: false
 irs_attempt_api_aws_s3_stream_enabled: false
-irs_attempt_api_aws_s3_stream_buffer_size: 100_000
+irs_attempt_api_aws_s3_stream_buffer_size: 16_777_216
 irs_attempt_api_event_ttl_seconds: 86400
 irs_attempt_api_event_count_default: 1000
 irs_attempt_api_event_count_max: 10000

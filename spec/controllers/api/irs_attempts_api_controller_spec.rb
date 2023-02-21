@@ -120,13 +120,13 @@ RSpec.describe Api::IrsAttemptsApiController do
     end
 
     context 'with timestamp problems' do
-      it 'returns unprocessable_entity with no timestamp' do
+      it 'returns unprocessable_entity when given no timestamp' do
         post :create, params: { timestamp: nil }
 
         expect(response.status).to eq(422)
       end
 
-      it 'returns unprocessable_entity with invalid timestamp' do
+      it 'returns unprocessable_entity when timestamp is invalid' do
         post :create, params: { timestamp: 'INVALID*TIME' }
 
         expect(response.status).to eq(422)
