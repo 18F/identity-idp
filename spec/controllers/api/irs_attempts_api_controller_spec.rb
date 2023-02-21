@@ -93,10 +93,10 @@ RSpec.describe Api::IrsAttemptsApiController do
               head_object: { content_length: test_object.bytesize },
               get_object: proc do |context|
                 range_string = context.params[:range]
-                byte_string = range_string.split('=')[1]
-                byte_range_array = byte_string.split('-')
+                _, byte_string = range_string.split('=')
+                start_byte, _ = byte_string.split('-')
                 { body: test_object.byteslice(
-                  byte_range_array[0].to_i,
+                  start_byte.to_i,
                   IdentityConfig.store.irs_attempt_api_aws_s3_stream_buffer_size + 1,
                 ) }
               end,
