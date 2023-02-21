@@ -1,7 +1,7 @@
 require 'app_artifacts'
 
 AppArtifacts.setup do |store|
-  years = IdentityConfig.store.saml_endpoint_configs.map { |s| s[:suffix].to_i }
+  years = IdentityConfig.store.saml_endpoint_configs.pluck(:suffix)
 
   years.each do |year|
     store.add_artifact(:"saml_{year}_cert", "/%<env>s/saml#{year}.crt")
