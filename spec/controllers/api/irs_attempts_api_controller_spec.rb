@@ -41,8 +41,6 @@ RSpec.describe Api::IrsAttemptsApiController do
   let(:existing_event_jtis) { existing_events.map(&:first) }
 
   describe '#create' do
-    # NEST inside AWS S3 Enabled Context! Stub different reponses for non-s3 context
-    # TODO
     let(:test_object) { '{test: "test"}' }
     before do
       Aws.config[:s3] = {
