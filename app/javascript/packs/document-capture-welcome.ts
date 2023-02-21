@@ -2,7 +2,7 @@ import { trackEvent } from '@18f/identity-analytics';
 import { hasCamera, isCameraCapableMobile } from '@18f/identity-device';
 
 const GRACE_TIME_FOR_CAMERA_CHECK_MS = 2000;
-const DEVICE_CHECK_EVENT = 'Idv: Mobile device and camera check';
+const DEVICE_CHECK_EVENT = 'IdV: Mobile device and camera check';
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -30,7 +30,6 @@ function addFormInputsForMobileDeviceCapabilities() {
   if (!isCameraCapableMobile()) {
     trackEvent(DEVICE_CHECK_EVENT, {
       is_camera_capable_mobile: false,
-      user_agent: navigator.userAgent,
     });
     return;
   }
@@ -58,7 +57,7 @@ function addFormInputsForMobileDeviceCapabilities() {
         is_camera_capable_mobile: true,
         camera_present: !!cameraPresent,
         grace_time: GRACE_TIME_FOR_CAMERA_CHECK_MS,
-        duration,
+        duration: Math.floor(duration),
       });
     },
   );
