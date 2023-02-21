@@ -8,15 +8,10 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function measure<T>(
-  measureName: string,
-  promise: Promise<T>,
-): Promise<{ result: T; duration: number }> {
-  performance.measure(measureName);
-  const result = await promise;
-  const { duration } = performance.measure(measureName, {
-    end: performance.now(),
-  });
+async function measure<T>(func: () => Promise<T>): Promise<{ result: T; duration: number }> {
+  const start = performance.now();
+  const result = await func();
+  const duration = performance.now() - start;
   return { result, duration };
 }
 
@@ -36,7 +31,7 @@ function addFormInputsForMobileDeviceCapabilities() {
 
   // The check for a camera on the device is async -- kick it off here and intercept
   // submit() to ensure that it completes in time.
-  const cameraCheckPromise = measure(DEVICE_CHECK_EVENT, hasCamera()).then(
+  const cameraCheckPromise = measure(hasCamera).then(
     async ({ result: cameraPresent, duration }) => {
       if (!cameraPresent) {
         // Signal to the backend that this is a mobile device, but no camera is present
