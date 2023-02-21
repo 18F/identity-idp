@@ -59,7 +59,6 @@ module Idv
           same_address_as_id: @flow_session[:pii_from_user][:same_address_as_id],
         }
       end
-
     end
   end
 end
