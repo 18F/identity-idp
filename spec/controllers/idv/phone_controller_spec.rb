@@ -235,10 +235,6 @@ describe Idv::PhoneController do
     end
 
     context 'when form is valid' do
-      let(:user) do
-        create(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
-      end
-
       before do
         stub_analytics
         stub_attempts_tracker
@@ -246,6 +242,7 @@ describe Idv::PhoneController do
       end
 
       it 'tracks events with valid phone' do
+        user = build(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
 
         expect(@irs_attempts_api_tracker).to receive(:idv_phone_submitted).with(
@@ -282,6 +279,7 @@ describe Idv::PhoneController do
       end
 
       it 'updates the doc auth log for the user with verify_phone_submit step' do
+        user = create(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
         unstub_analytics
         stub_verify_steps_one_and_two(user)
 
@@ -293,14 +291,12 @@ describe Idv::PhoneController do
       end
 
       context 'when same as user phone' do
-        let(:user) do
-          build(
+        before do
+          user = build(
             :user, :with_phone, with: {
               phone: good_phone, confirmed_at: Time.zone.now
             }
           )
-        end
-        before do
           stub_verify_steps_one_and_two(user)
         end
 
