@@ -12,8 +12,6 @@ FactoryBot.define do
       confirmation_sent_at { 5.minutes.ago }
     end
 
-
-
     accepted_terms_at { Time.zone.now if email }
 
     after(:build) do |user, evaluator|
