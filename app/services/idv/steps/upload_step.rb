@@ -30,7 +30,7 @@ module Idv
           # (50/50 from new to old)
           handle_phone_submission
         else
-            handle_mobile_selection
+          handle_mobile_selection
         end
       end
 
