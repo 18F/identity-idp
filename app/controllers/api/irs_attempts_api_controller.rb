@@ -26,35 +26,46 @@ module Api
             log_file_record = IrsAttemptApiLogFile.find_by(
               requested_time: timestamp_key(key: timestamp),
             )
-
             headers['X-Payload-Key'] = log_file_record.encrypted_key
             headers['X-Payload-IV'] = log_file_record.iv
 
-            response = s3_helper.s3_client.head_object(
-              bucket: s3_helper.attempts_bucket_name,
-              key: log_file_record.filename,
-            )
+            if IdentityConfig.store.irs_attempt_api_aws_s3_stream_enabled
+              response = s3_helper.s3_client.head_object(
+                bucket: s3_helper.attempts_bucket_name,
+                key: log_file_record.filename,
+              )
 
-            requested_data_size = response.content_length
+              requested_data_size = response.content_length
 
-            # Maybe this is variable based on the config?
-            buffer_index = 0
-            buffer_size = 100000
+              buffer_index = 0
+              buffer_size = IdentityConfig.store.irs_attempt_api_aws_s3_stream_buffer_size
 
-            send_stream(type: response.content_type, filename: log_file_record.filename) do |stream|
-              while buffer_index < requested_data_size
-                requested_data = s3_helper.s3_client.get_object(
-                  bucket: s3_helper.attempts_bucket_name,
-                  key: log_file_record.filename,
-                  range: get_buffer_range(
-                    current_buffer_index: buffer_index,
-                    buffer_size: buffer_size, 
-                    file_size: requested_data_size,
-                  ),
-                )
-                buffer_index += buffer_size + 1
-                stream.write(requested_data.body.read)
+              send_stream(
+                type: response.content_type,
+                filename: log_file_record.filename,
+              ) do |stream|
+                while buffer_index < requested_data_size
+                  requested_data = s3_helper.s3_client.get_object(
+                    bucket: s3_helper.attempts_bucket_name,
+                    key: log_file_record.filename,
+                    range: buffer_range(
+                      current_buffer_index: buffer_index,
+                      buffer_size: buffer_size,
+                      file_size: requested_data_size,
+                    ),
+                  )
+                  buffer_index += buffer_size + 1
+                  stream.write(requested_data.body.read)
+                end
               end
+            else
+              requested_data = s3_helper.s3_client.get_object(
+                bucket: s3_helper.attempts_bucket_name,
+                key: log_file_record.filename,
+              )
+
+              send_data requested_data.body.read,
+                        disposition: "filename=#{log_file_record.filename}"
             end
           else
             render json: { status: :not_found, description: 'File not found for Timestamp' },
@@ -83,9 +94,9 @@ module Api
 
     private
 
-    def get_buffer_range(current_buffer_index:, buffer_size:, file_size:)
+    def buffer_range(current_buffer_index:, buffer_size:, file_size:)
       buffer_end = [current_buffer_index + buffer_size, file_size].min
-      return "bytes=#{current_buffer_index}-#{buffer_end}"
+      "bytes=#{current_buffer_index}-#{buffer_end}"
     end
 
     def authenticate_client
