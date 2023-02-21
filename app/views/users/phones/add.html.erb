@@ -21,7 +21,13 @@
       url: add_phone_path,
     ) do |f| %>
 
-  <%= render PhoneInputComponent.new(form: f, confirmed_phone: false, required: true, class: 'margin-bottom-4') %>
+  <%= render PhoneInputComponent.new(
+        form: f,
+        confirmed_phone: false,
+        required: true,
+        captcha_exempt_countries: FeatureManagement.phone_recaptcha_enabled? ? PhoneRecaptchaValidator.exempt_countries : nil,
+        class: 'margin-bottom-4',
+      ) %>
 
   <%= render 'users/shared/otp_delivery_preference_selection',
              form_obj: @new_phone_form %>
@@ -29,7 +35,16 @@
     <%= render 'users/shared/otp_make_default_number',
                form_obj: @new_phone_form %>
   <% end %>
-  <%= f.submit t('forms.buttons.continue') %>
+  <%= render CaptchaSubmitButtonComponent.new(
+        form: f,
+        action: 'phone_setup',
+      ).with_content(t('forms.buttons.continue')) %>
 <% end %>
 
 <%= render 'shared/cancel', link: account_path %>
+
+
+<% if FeatureManagement.phone_recaptcha_enabled? %>
+  <%= render 'shared/recaptcha_disclosure' %>
+<% end %>
+

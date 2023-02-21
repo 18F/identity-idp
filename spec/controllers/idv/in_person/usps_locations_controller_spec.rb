@@ -7,6 +7,7 @@ describe Idv::InPerson::UspsLocationsController do
   let(:sp) { nil }
   let(:in_person_proofing_enabled) { true }
   let(:arcgis_search_enabled) { true }
+  let(:empty_locations) { [] }
   let(:address) do
     UspsInPersonProofing::Applicant.new(
       address: '1600 Pennsylvania Ave',
@@ -121,6 +122,25 @@ describe Idv::InPerson::UspsLocationsController do
         end
       end
 
+      context 'no addresses found by usps' do
+        before do
+          allow(proofer).to receive(:request_facilities).with(address).and_return(empty_locations)
+        end
+
+        it 'logs analytics with error when successful response is empty' do
+          response
+          expect(@analytics).to have_logged_event(
+            'IdV: in person proofing location search submitted',
+            success: false,
+            errors: 'No USPS locations found',
+            result_total: 0,
+            exception_class: nil,
+            exception_message: nil,
+            response_status_code: nil,
+          )
+        end
+      end
+
       context 'with successful fetch' do
         before do
           allow(proofer).to receive(:request_facilities).with(address).and_return(locations)
@@ -130,6 +150,15 @@ describe Idv::InPerson::UspsLocationsController do
           json = response.body
           facilities = JSON.parse(json)
           expect(facilities.length).to eq 3
+          expect(@analytics).to have_logged_event(
+            'IdV: in person proofing location search submitted',
+            success: true,
+            errors: nil,
+            result_total: 3,
+            exception_class: nil,
+            exception_message: nil,
+            response_status_code: nil,
+          )
         end
       end
 

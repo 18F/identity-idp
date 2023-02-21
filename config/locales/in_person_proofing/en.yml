@@ -28,10 +28,7 @@ en:
       cta:
         button: Verify your ID in person
         button_variant: Try in person
-        prompt_detail: If you are located near Washington, D.C. or Baltimore, MD, you
-          may be able to verify your ID in person at limited post office
-          locations.
-        prompt_detail_a: You may be able to verify your ID in person at a participating
+        prompt_detail: You may be able to verify your ID in person at a participating
           Post Office near you.
         prompt_detail_b: Alternatively, if you are having trouble adding your ID online,
           you may be able to try in person at limited post office locations.
@@ -83,6 +80,10 @@ en:
         verify_step_enter_pii: Enter your name, date of birth, state-issued ID number,
           address and Social Security number.
       state_id:
+        alert_message: 'Your state-issued ID must not be expired. Accepted forms of ID are:'
+        id_types:
+          - State Driver’s License
+          - State Non-Driver’s Identification Card
         info_html: Enter information <strong>exactly as it appears on your state-issued
           ID.</strong> We will use this information to confirm it matches your
           ID in person.

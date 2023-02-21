@@ -130,6 +130,8 @@ es:
       ssn_label_html: Número de Seguro Social
       state: Estado
       zipcode: Código postal
+    images:
+      come_back_later: Carta con una marca de verificación
     index:
       id:
         need_html: Si está creando una cuenta, necesitará una <strong>identificación
@@ -140,8 +142,8 @@ es:
         información verificada, por favor, %{link}.
       activated_link: Contáctenos
       clear_and_start_over: Borrar mi información y empezar de nuevo
-      come_back_later_html: <p><strong>Las cartas suelen tardar de 3 a 7 días hábiles
-        en llegar</strong><br /> a través de USPS First Class Mail.</p> <p>Una
+      come_back_later_html: <p>Las cartas suelen tardar de <strong>3 a 7 días
+        hábiles</strong> en llegar a través de USPS First Class Mail.</p> <p>Una
         vez que reciba la carta, inicie sesión en %{app_name} e introduzca el
         código único cuando se le solicite.</p>
       come_back_later_no_sp_html: Ahora puedes volver a tu <strong>cuenta de %{app_name}</strong>.

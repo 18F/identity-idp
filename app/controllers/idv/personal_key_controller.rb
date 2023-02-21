@@ -56,6 +56,8 @@ module Idv
 
     def finish_idv_session
       @code = personal_key
+      @personal_key_generated_at = current_user.personal_key_generated_at
+
       user_session[:personal_key] = @code
       idv_session.personal_key = nil
 

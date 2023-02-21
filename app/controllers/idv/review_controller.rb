@@ -1,12 +1,12 @@
 module Idv
   class ReviewController < ApplicationController
     before_action :personal_key_confirmed
-    before_action :confirm_verify_info_complete
 
     include IdvStepConcern
     include StepIndicatorConcern
     include PhoneConfirmation
 
+    before_action :confirm_idv_applicant_created
     before_action :confirm_idv_steps_complete
     before_action :confirm_idv_phone_confirmed
     before_action :confirm_current_password, only: [:create]
@@ -15,7 +15,7 @@ module Idv
                 with: :handle_request_enroll_exception
 
     def confirm_idv_steps_complete
-      return redirect_to(idv_doc_auth_url) unless idv_profile_complete?
+      return redirect_to(idv_verify_info_url) unless idv_profile_complete?
       return redirect_to(idv_phone_url) unless idv_address_complete?
     end
 
@@ -53,8 +53,6 @@ module Idv
 
       init_profile
 
-      log_reproof_event if idv_session.profile.has_proofed_before?
-
       user_session[:need_personal_key_confirmation] = true
 
       redirect_to next_step
@@ -78,10 +76,6 @@ module Idv
       user_session.dig('idv', 'address_verification_mechanism')
     end
 
-    def log_reproof_event
-      irs_attempts_api_tracker.idv_reproof
-    end
-
     def flash_message_content
       if idv_session.address_verification_mechanism != 'gpo'
         phone_of_record_msg = ActionController::Base.helpers.content_tag(
@@ -92,7 +86,7 @@ module Idv
     end
 
     def idv_profile_complete?
-      idv_session.profile_confirmation == true
+      !!idv_session.profile_confirmation
     end
 
     def idv_address_complete?
@@ -123,14 +117,6 @@ module Idv
 
     def password
       params.fetch(:user, {})[:password].presence
-    end
-
-    def confirm_verify_info_complete
-      return unless IdentityConfig.store.doc_auth_verify_info_controller_enabled
-      return unless user_fully_authenticated?
-      return if idv_session.resolution_successful
-
-      redirect_to idv_verify_info_url
     end
 
     def personal_key_confirmed

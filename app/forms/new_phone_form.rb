@@ -13,18 +13,21 @@ class NewPhoneForm
   validate :validate_not_voip
   validate :validate_not_duplicate
   validate :validate_not_premium_rate
+  validate :validate_recaptcha_token
   validate :validate_allowed_carrier
 
   attr_reader :phone,
               :international_code,
               :otp_delivery_preference,
               :otp_make_default_number,
-              :setup_voice_preference
+              :setup_voice_preference,
+              :recaptcha_token
 
   alias_method :setup_voice_preference?, :setup_voice_preference
 
-  def initialize(user:, setup_voice_preference: false)
+  def initialize(user:, analytics: nil, setup_voice_preference: false)
     @user = user
+    @analytics = analytics
     @otp_delivery_preference = user.otp_delivery_preference
     @otp_make_default_number = false
     @setup_voice_preference = setup_voice_preference
@@ -67,7 +70,7 @@ class NewPhoneForm
 
   private
 
-  attr_reader :user, :submitted_phone
+  attr_reader :user, :submitted_phone, :analytics
 
   def ingest_phone_number(params)
     @international_code = params[:international_code]
@@ -125,6 +128,20 @@ class NewPhoneForm
     end
   end
 
+  def validate_recaptcha_token
+    return if !FeatureManagement.phone_recaptcha_enabled?
+    return if recaptcha_validator.valid?(recaptcha_token)
+    errors.add(
+      :recaptcha_token,
+      I18n.t('errors.messages.invalid_recaptcha_token'),
+      type: :invalid_recaptcha_token,
+    )
+  end
+
+  def recaptcha_validator
+    @recaptcha_validator ||= PhoneRecaptchaValidator.new(parsed_phone:, analytics:)
+  end
+
   def parsed_phone
     @parsed_phone ||= Phonelib.parse(phone)
   end
@@ -137,6 +154,7 @@ class NewPhoneForm
 
     @otp_delivery_preference = delivery_prefs if delivery_prefs
     @otp_make_default_number = true if default_prefs
+    @recaptcha_token = params[:recaptcha_token]
   end
 
   def confirmed_phone?

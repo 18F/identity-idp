@@ -4,6 +4,7 @@ import intlTelInput from 'intl-tel-input';
 import type { CountryCode } from 'libphonenumber-js';
 import type { Plugin as IntlTelInputPlugin, IntlTelInputGlobals, Options } from 'intl-tel-input';
 import { replaceVariables } from '@18f/identity-i18n';
+import { CAPTCHA_EVENT_NAME } from '@18f/identity-captcha-submit-button/captcha-submit-button-element';
 
 interface PhoneInputStrings {
   country_code_label: string;
@@ -75,9 +76,14 @@ export class PhoneInputElement extends HTMLElement {
     this.codeInput.addEventListener('change', () => this.formatTextInput());
     this.codeInput.addEventListener('change', () => this.setExampleNumber());
     this.codeInput.addEventListener('change', () => this.validate());
+    this.ownerDocument.addEventListener(CAPTCHA_EVENT_NAME, this.handleCaptchaChallenge);
 
     this.setExampleNumber();
     this.validate();
+  }
+
+  disconnectedCallback() {
+    this.ownerDocument.removeEventListener(CAPTCHA_EVENT_NAME, this.handleCaptchaChallenge);
   }
 
   get selectedOption() {
@@ -106,6 +112,14 @@ export class PhoneInputElement extends HTMLElement {
     return this.#strings;
   }
 
+  get captchaExemptCountries(): string[] | boolean {
+    try {
+      return JSON.parse(this.dataset.captchaExemptCountries!);
+    } catch {
+      return true;
+    }
+  }
+
   /**
    * Mirrors country change to the hidden select field, which holds the value for form submission.
    */
@@ -123,6 +137,7 @@ export class PhoneInputElement extends HTMLElement {
 
     const iti = intlTelInput(this.textInput, {
       preferredCountries: ['US', 'CA'],
+      initialCountry: this.codeInput.value,
       localizedCountries: countryCodePairs,
       onlyCountries: supportedCountryCodes,
       autoPlaceholder: 'off',
@@ -230,6 +245,24 @@ export class PhoneInputElement extends HTMLElement {
       const numberType = intlTelInputUtils.numberType[iti.options.placeholderNumberType!];
       exampleText.textContent = intlTelInputUtils.getExampleNumber(iso2, nationalMode!, numberType);
     }
+  }
+
+  handleCaptchaChallenge = (event: Event) => {
+    const { iso2 = 'us' } = this.iti.getSelectedCountryData();
+    const isExempt =
+      typeof this.captchaExemptCountries === 'boolean'
+        ? this.captchaExemptCountries
+        : this.captchaExemptCountries.includes(iso2.toUpperCase());
+
+    if (isExempt) {
+      event.preventDefault();
+    }
+  };
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'lg-phone-input': PhoneInputElement;
   }
 }
 

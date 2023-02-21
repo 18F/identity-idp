@@ -23,20 +23,34 @@
       url: phone_setup_path,
     ) do |f| %>
 
-  <%= render PhoneInputComponent.new(form: f, confirmed_phone: false, required: true, class: 'margin-bottom-4') %>
+  <%= render PhoneInputComponent.new(
+        form: f,
+        confirmed_phone: false,
+        required: true,
+        captcha_exempt_countries: FeatureManagement.phone_recaptcha_enabled? ? PhoneRecaptchaValidator.exempt_countries : nil,
+        class: 'margin-bottom-4',
+      ) %>
 
   <%= render 'users/shared/otp_delivery_preference_selection',
              form_obj: @new_phone_form %>
-
-  <%= link_to t('two_factor_authentication.mobile_terms_of_service'),
-              MarketingSite.messaging_practices_url,
-              class: 'display-block margin-bottom-4' %>
+  <% unless FeatureManagement.phone_recaptcha_enabled? %>
+    <%= link_to t('two_factor_authentication.mobile_terms_of_service'),
+                MarketingSite.messaging_practices_url,
+                class: 'display-block margin-bottom-4' %>
+  <% end %>
 
   <% if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled? %>
     <%= render 'users/shared/otp_make_default_number',
                form_obj: @new_phone_form %>
   <% end %>
-  <%= f.submit t('forms.buttons.send_one_time_code') %>
+  <%= render CaptchaSubmitButtonComponent.new(
+        form: f,
+        action: 'phone_setup',
+      ).with_content(t('forms.buttons.send_one_time_code')) %>
 <% end %>
 
 <%= render 'shared/cancel_or_back_to_options' %>
+
+<% if FeatureManagement.phone_recaptcha_enabled? %>
+  <%= render 'shared/recaptcha_disclosure' %>
+<% end %>

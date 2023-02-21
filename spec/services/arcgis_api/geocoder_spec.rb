@@ -24,7 +24,7 @@ RSpec.describe ArcgisApi::Geocoder do
 
       expect { subject.suggest('100 Main') }.to raise_error do |error|
         expect(error).to be_instance_of(Faraday::ClientError)
-        expect(error.message).to eq('received error code 400')
+        expect(error.message).to eq('Unable to complete operation.')
         expect(error.response).to be_kind_of(Hash)
       end
     end
@@ -72,7 +72,7 @@ RSpec.describe ArcgisApi::Geocoder do
 
       expect { subject.find_address_candidates(magicKey: 'abc123') }.to raise_error do |error|
         expect(error).to be_instance_of(Faraday::ClientError)
-        expect(error.message).to eq('received error code 400')
+        expect(error.message).to eq('Unable to complete operation.')
         expect(error.response).to be_kind_of(Hash)
       end
     end

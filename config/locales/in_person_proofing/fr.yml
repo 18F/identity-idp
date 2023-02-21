@@ -32,10 +32,7 @@ fr:
       cta:
         button: Vérifiez votre identité en personne
         button_variant: Essayer en personne
-        prompt_detail: Si vous êtes situé près de Washington, D.C. ou de Baltimore
-          (Maryland), vous pourrez peut-être vérifier votre identité en personne
-          dans certains bureaux de poste.
-        prompt_detail_a: Vous pourrez peut-être faire vérifier votre pièce d’identité en
+        prompt_detail: Vous pourrez peut-être faire vérifier votre pièce d’identité en
           personne dans un bureau de poste participant près de chez vous.
         prompt_detail_b: Ou, si vous rencontrez des difficultés pour ajouter votre pièce
           d’identité en ligne, vous pourrez peut-être essayer de le faire en
@@ -95,6 +92,11 @@ fr:
           document d’identité délivré par l’État, votre adresse et votre numéro
           de sécurité sociale.
       state_id:
+        alert_message: 'Votre carte d’identité délivrée par l’État ne doit pas être
+          périmée. Les pièces d’identité acceptées sont:'
+        id_types:
+          - Permis de conduire national
+          - Carte d’identité nationale de non-conducteur
         info_html: Saisissez les informations <strong>exactement comme elles figurent
           sur votre document d’identité nationale.</strong> Nous utiliserons ces
           informations pour confirmer qu’elles correspondent à votre pièce
