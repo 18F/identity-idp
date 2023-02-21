@@ -40,6 +40,14 @@ describe Idv::PhoneController do
       stub_verify_steps_one_and_two(user)
     end
 
+    it 'updates the doc auth log for the user for the usps_letter_sent event' do
+      doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+      expect { get :new }.to(
+        change { doc_auth_log.reload.verify_phone_view_count }.from(0).to(1),
+      )
+    end
+
     context 'when the phone number has been confirmed as user 2FA phone' do
       before do
         subject.idv_session.user_phone_confirmation = true
