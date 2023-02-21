@@ -77,14 +77,6 @@ class UserDecorator
     profile if profile&.password_reset?
   end
 
-  def fraud_review_pending?
-    @fraud_review_pending ||= fraud_review_pending_profile.present?
-  end
-
-  def fraud_review_pending_profile
-    user.profiles.where(fraud_review_pending: true).order(created_at: :desc).first
-  end
-
   def qrcode(otp_secret_key)
     options = {
       issuer: APP_NAME,

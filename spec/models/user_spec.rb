@@ -510,6 +510,35 @@ RSpec.describe User do
     end
   end
 
+  describe '#fraud_review_pending?' do
+    it 'returns true if fraud review is pending' do
+      user = User.new
+      create(
+        :profile, user: user, active: false, fraud_review_pending: true
+      )
+
+      expect(user.fraud_review_pending?).to eq true
+    end
+  end
+
+  describe '#fraud_review_pending_profile' do
+    context 'with a fraud review pending profile' do
+      it 'returns the profile pending review' do
+        user = User.new
+        profile = create(
+          :profile, user: user, active: false, fraud_review_pending: true
+        )
+
+        expect(user.fraud_review_pending_profile).to eq(profile)
+      end
+    end
+
+    context 'without a fraud review pending profile' do
+      user = User.new
+      it { expect(user.fraud_review_pending_profile).to eq(nil) }
+    end
+  end
+
   describe '#should_receive_in_person_completion_survey?' do
     let!(:user) { create(:user) }
     let(:service_provider) { create(:service_provider) }

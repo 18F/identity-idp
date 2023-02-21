@@ -101,6 +101,14 @@ class User < ApplicationRecord
     profiles.gpo_verification_pending.order(created_at: :desc).first
   end
 
+  def fraud_review_pending?
+    @fraud_review_pending ||= fraud_review_pending_profile.present?
+  end
+
+  def fraud_review_pending_profile
+    profiles.where(fraud_review_pending: true).order(created_at: :desc).first
+  end
+
   def default_phone_configuration
     phone_configurations.order('made_default_at DESC NULLS LAST, created_at').first
   end

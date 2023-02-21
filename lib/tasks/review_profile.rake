@@ -7,8 +7,8 @@ namespace :users do
       user_uuid = STDIN.getpass('Enter the User UUID to pass (input will be hidden):')
       user = User.find_by(uuid: user_uuid)
 
-      if user.decorate.fraud_review_pending? && user.proofing_component.review_eligible?
-        profile = user.decorate.fraud_review_pending_profile
+      if user.fraud_review_pending? && user.proofing_component.review_eligible?
+        profile = user.fraud_review_pending_profile
         profile.activate_after_passing_review
 
         if profile.active?
@@ -38,8 +38,8 @@ namespace :users do
       user_uuid = STDIN.getpass('Enter the User UUID to reject (input will be hidden):')
       user = User.find_by(uuid: user_uuid)
 
-      if user.decorate.fraud_review_pending? && user.proofing_component.review_eligible?
-        profile = user.decorate.fraud_review_pending_profile
+      if user.fraud_review_pending? && user.proofing_component.review_eligible?
+        profile = user.fraud_review_pending_profile
 
         profile.reject
 

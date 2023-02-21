@@ -11,6 +11,6 @@ module ThreatmetrixReviewConcern
 
   def threatmetrix_review_pending?
     return false unless user_fully_authenticated?
-    current_user.decorate.fraud_review_pending?
+    current_user.fraud_review_pending?
   end
 end
