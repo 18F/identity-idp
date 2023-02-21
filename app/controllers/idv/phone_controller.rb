@@ -7,6 +7,7 @@ module Idv
 
     attr_reader :idv_form
 
+    before_action :confirm_idv_applicant_created
     before_action :confirm_step_needed
     before_action :set_idv_form
 

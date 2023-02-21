@@ -119,6 +119,14 @@ describe Users::WebauthnSetupController do
         ).to eq 1
       end
 
+      it 'revokes remember device cookies' do
+        expect(user.remember_device_revoked_at).to eq nil
+        freeze_time do
+          delete :delete, params: { id: webauthn_configuration.id }
+          expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
+        end
+      end
+
       it 'tracks the delete in analytics' do
         result = {
           success: true,

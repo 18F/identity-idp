@@ -1,3 +1,4 @@
+# @hidden
 class BaseComponentPreview < ViewComponent::Preview
   private
 

@@ -4026,10 +4026,10 @@ interpret@^2.2.0:
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-2.2.0.tgz#1a78a0b5965c40a5416d007ad6f50ad27c417df9"
   integrity sha512-Ju0Bz/cEia55xDwUWEa8+olFpCiQoypjnQySseKtmjNrnps3P+xfpUmGr90T7yjlVJmOtybRvPXhKMbHr+fWnw==
 
-intl-tel-input@^17.0.8:
-  version "17.0.12"
-  resolved "https://registry.yarnpkg.com/intl-tel-input/-/intl-tel-input-17.0.12.tgz#057c35b57871bd6d6932ac28428d086e63d6cc89"
-  integrity sha512-jl3DkDQg/aaIPK2hrvtgX2eYgtkz5LxCQW57Ru1Hpdt9MA9VE8PnGUllaMsAm6SeJODHBdMok7XFZR8/M1yytg==
+intl-tel-input@^17.0.19:
+  version "17.0.19"
+  resolved "https://registry.yarnpkg.com/intl-tel-input/-/intl-tel-input-17.0.19.tgz#4c277e3bf02069fac2ef3821a62a3d7e8b55740a"
+  integrity sha512-GBNoUT4JVgm2e1N+yFMaBQ24g5EQfZhDznGneCM9IEZwfKsMUAUa1dS+v0wOiKpRAZ5IPNLJMIEEFGgqlCI22A==
 
 ipaddr.js@1.9.1:
   version "1.9.1"
