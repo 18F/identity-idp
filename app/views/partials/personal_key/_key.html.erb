@@ -7,10 +7,17 @@
     </div>
   </div>
   <p class="margin-bottom-105">
-    <%= t(
-          'users.personal_key.generated_on_html',
-          date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')),
-        ) %>
+    <% if local_assigns[:personal_key_generated_at].present? %>
+      <%= t(
+            'users.personal_key.generated_on_html',
+            date: content_tag(:strong, render(TimeComponent.new(time: personal_key_generated_at))),
+          ) %>
+    <% else %>
+      <%= t(
+            'users.personal_key.generated_on_html',
+            date: content_tag(:strong, render(TimeComponent.new(time: Time.zone.today))),
+          ) %>
+    <% end %>
   </p>
   <% if show_save_buttons %>
     <%= render ClipboardButtonComponent.new(clipboard_text: code, unstyled: true) %>

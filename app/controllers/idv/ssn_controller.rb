@@ -38,7 +38,7 @@ module Idv
         ssn: params[:doc_auth][:ssn],
       )
 
-      idv_session.ssn_updated!
+      idv_session.invalidate_steps_after_ssn!
 
       redirect_to idv_verify_info_url
     end

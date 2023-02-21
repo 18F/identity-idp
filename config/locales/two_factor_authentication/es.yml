@@ -134,6 +134,13 @@ es:
     piv_cac_webauthn_available: Utilice su llave de seguridad
     please_try_again_html: Inténtelo de nuevo en <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Conozca la autenticación de dos factores
+    recaptcha:
+      disclosure_statement_html: Este sitio está protegido por reCAPTCHA y se
+        %{policy_link} y %{google_tos_link} de Google. Consulte
+        %{login_tos_link} de %{app_name} para dispositivos móviles.
+      google_tos_link: las condiciones de servicio
+      login_tos_link: las condiciones de uso
+      policy_link: aplican la política de privacidad
     totp_fallback:
       question: '¿No tiene su aplicación de autenticación?'
     totp_header_text: Ingrese su código de la app de autenticación
