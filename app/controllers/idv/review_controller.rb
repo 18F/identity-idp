@@ -53,8 +53,6 @@ module Idv
 
       init_profile
 
-      log_reproof_event if idv_session.profile.has_proofed_before?
-
       user_session[:need_personal_key_confirmation] = true
 
       redirect_to next_step
@@ -76,10 +74,6 @@ module Idv
 
     def address_verification_method
       user_session.dig('idv', 'address_verification_mechanism')
-    end
-
-    def log_reproof_event
-      irs_attempts_api_tracker.idv_reproof
     end
 
     def flash_message_content
