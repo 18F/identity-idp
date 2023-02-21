@@ -57,7 +57,7 @@ module Idv
           issuer: current_sp&.issuer,
           token: :verify_phone,
           action: :update,
-          success: true,
+          success: result.success?,
         }.to_json,
       )
 
