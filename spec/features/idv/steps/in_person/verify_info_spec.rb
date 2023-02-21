@@ -7,7 +7,8 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:in_person_verify_info_controller_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:in_person_verify_info_controller_enabled).
+      and_return(true)
   end
 
   it 'provides back buttons for address, state ID, and SSN that discard changes',
