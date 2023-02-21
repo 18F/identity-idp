@@ -29,44 +29,8 @@ module Api
             headers['X-Payload-Key'] = log_file_record.encrypted_key
             headers['X-Payload-IV'] = log_file_record.iv
 
-            if IdentityConfig.store.irs_attempt_api_aws_s3_stream_enabled
-              response = s3_helper.s3_client.head_object(
-                bucket: s3_helper.attempts_bucket_name,
-                key: log_file_record.filename,
-              )
+            serve_s3_response(log_file_record: log_file_record)
 
-              requested_data_size = response.content_length
-
-              buffer_index = 0
-              buffer_size = IdentityConfig.store.irs_attempt_api_aws_s3_stream_buffer_size
-
-              send_stream(
-                type: response.content_type,
-                filename: log_file_record.filename,
-              ) do |stream|
-                while buffer_index < requested_data_size
-                  requested_data = s3_helper.s3_client.get_object(
-                    bucket: s3_helper.attempts_bucket_name,
-                    key: log_file_record.filename,
-                    range: buffer_range(
-                      current_buffer_index: buffer_index,
-                      buffer_size: buffer_size,
-                      file_size: requested_data_size,
-                    ),
-                  )
-                  buffer_index += buffer_size + 1
-                  stream.write(requested_data.body.read)
-                end
-              end
-            else
-              requested_data = s3_helper.s3_client.get_object(
-                bucket: s3_helper.attempts_bucket_name,
-                key: log_file_record.filename,
-              )
-
-              send_data requested_data.body.read,
-                        disposition: "filename=#{log_file_record.filename}"
-            end
           else
             render json: { status: :not_found, description: 'File not found for Timestamp' },
                    status: :not_found
@@ -97,6 +61,47 @@ module Api
     def buffer_range(current_buffer_index:, buffer_size:, file_size:)
       buffer_end = [current_buffer_index + buffer_size, file_size].min
       "bytes=#{current_buffer_index}-#{buffer_end}"
+    end
+
+    def serve_s3_response(log_file_record:)
+      if IdentityConfig.store.irs_attempt_api_aws_s3_stream_enabled
+        response = s3_helper.s3_client.head_object(
+          bucket: s3_helper.attempts_bucket_name,
+          key: log_file_record.filename,
+        )
+
+        requested_data_size = response.content_length
+
+        buffer_index = 0
+        buffer_size = IdentityConfig.store.irs_attempt_api_aws_s3_stream_buffer_size
+
+        send_stream(
+          type: response.content_type,
+          filename: log_file_record.filename,
+        ) do |stream|
+          while buffer_index < requested_data_size
+            requested_data = s3_helper.s3_client.get_object(
+              bucket: s3_helper.attempts_bucket_name,
+              key: log_file_record.filename,
+              range: buffer_range(
+                current_buffer_index: buffer_index,
+                buffer_size: buffer_size,
+                file_size: requested_data_size,
+              ),
+            )
+            buffer_index += buffer_size + 1
+            stream.write(requested_data.body.read)
+          end
+        end
+      else
+        requested_data = s3_helper.s3_client.get_object(
+          bucket: s3_helper.attempts_bucket_name,
+          key: log_file_record.filename,
+        )
+
+        send_data requested_data.body.read,
+                  disposition: "filename=#{log_file_record.filename}"
+      end
     end
 
     def authenticate_client
