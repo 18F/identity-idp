@@ -14,7 +14,8 @@ interface ValidationResponse {
  * and reusing result
  */
 interface ValidationResultCache {
-  previousValues: Record<string, string>;
+  preValidationValues: Record<string, string>;
+  postValidationValues: Record<string, string>;
   result: Record<string, string>;
 }
 
@@ -29,7 +30,8 @@ class TransliterableFieldGroupElement extends HTMLElement {
    * Cache to moderate API calls and allow reuse of the previous result
    */
   private validationResultCache: ValidationResultCache = {
-    previousValues: {},
+    preValidationValues: {},
+    postValidationValues: {},
     result: {},
   };
 
@@ -115,11 +117,11 @@ class TransliterableFieldGroupElement extends HTMLElement {
   private get inputValuesNeedingValidation(): Record<string, string> {
     const {
       inputs,
-      validationResultCache: { previousValues },
+      validationResultCache: { postValidationValues },
     } = this;
     const inputEntries = Object.entries(inputs);
     return inputEntries.reduce((agg: Record<string, string>, [name, field]) => {
-      if (previousValues[name] !== field.value) {
+      if (postValidationValues[name] !== field.value) {
         agg[name] = field.value;
       }
       return agg;
@@ -172,8 +174,11 @@ class TransliterableFieldGroupElement extends HTMLElement {
    * to ensure that only the latest field values get validated.
    */
   private revalidateAllInputs(timeout: number = 0): Promise<void> {
-    // Debounce to prevent excessive API calls
-    const promise: Promise<void> = new Promise((resolve, reject) => {
+    let promise: Promise<void>;
+    const previousRequest = this.lastRevalidationRequest;
+
+    const promiseFn = (resolve, reject) => {
+      // Debounce to prevent excessive API calls
       setTimeout(async () => {
         if (this.lastRevalidationRequest !== promise) {
           // Defer to newest call for results
@@ -198,9 +203,30 @@ class TransliterableFieldGroupElement extends HTMLElement {
           resolve();
         }
       }, timeout);
-    });
-    this.lastRevalidationRequest = promise;
-    return promise;
+    };
+
+    if (
+      // If the inputs haven't changed and there's an outstanding request,
+      // then only trigger the request again if a retry is needed.
+      Object.entries(this.inputValuesNeedingValidation).every(
+        ([key, value]) => this.validationResultCache.preValidationValues[key] === value,
+      )
+    ) {
+      try {
+        return previousRequest;
+      } catch (e) {
+        if (this.lastRevalidationRequest === previousRequest) {
+          promise = new Promise(promiseFn);
+          this.lastRevalidationRequest = promise;
+          return promise;
+        }
+        throw e;
+      }
+    } else {
+      promise = new Promise(promiseFn);
+      this.lastRevalidationRequest = promise;
+      return promise;
+    }
   }
 
   /**
@@ -256,11 +282,17 @@ class TransliterableFieldGroupElement extends HTMLElement {
   private readonly handleAsyncValidation = async (): Promise<void> => {
     const { inputs, inputValuesNeedingValidation: payload, sendValidationRequest } = this;
 
+    const {
+      preValidationValues,
+      postValidationValues,
+      result: resultCache,
+    } = this.validationResultCache;
+
+    Object.assign(preValidationValues, payload);
+
     const result = await sendValidationRequest(payload);
 
-    const { previousValues, result: resultCache } = this.validationResultCache;
-
-    Object.assign(previousValues, payload);
+    Object.assign(postValidationValues, payload);
     Object.assign(resultCache, result);
 
     // Set custom validity on invalid fields; clear custom validity on valid fields
