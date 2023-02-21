@@ -14,6 +14,10 @@ lg-phone-input {
     }
   }
 
+  .iti__dial-code {
+    color: color('ink');
+  }
+
   .iti:not(.iti--allow-dropdown) input {
     padding-left: 36px;
     padding-right: 6px;
