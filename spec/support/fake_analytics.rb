@@ -80,6 +80,8 @@ class FakeAnalytics < Analytics
   end
 
   def track_event(event, attributes = {})
+    register_doc_auth_step_from_analytics_event(event, attributes) # to help verify doc auth tracking
+
     if attributes[:proofing_components].instance_of?(Idv::ProofingComponentsLogging)
       attributes[:proofing_components] = attributes[:proofing_components].as_json.symbolize_keys
     end

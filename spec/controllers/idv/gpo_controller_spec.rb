@@ -4,7 +4,7 @@ describe Idv::GpoController do
   let(:user) { create(:user) }
 
   before do
-    stub_analytics
+    stub_analytics(user: user)
     stub_attempts_tracker
   end
 
@@ -35,6 +35,14 @@ describe Idv::GpoController do
       expect(@analytics).to have_logged_event(
         'IdV: USPS address visited',
         letter_already_sent: false,
+      )
+    end
+
+    it 'updates the doc auth log for the user for the usps_address_view event' do
+      doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+      expect { get :index }.to(
+        change { doc_auth_log.reload.usps_address_view_count }.from(0).to(1),
       )
     end
 
@@ -108,6 +116,14 @@ describe Idv::GpoController do
           with(resend: false)
 
         put :create
+      end
+
+      it 'updates the doc auth log for the user for the usps_letter_sent event' do
+        doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+        expect { put :create }.to(
+          change { doc_auth_log.reload.usps_letter_sent_submit_count }.from(0).to(1),
+        )
       end
     end
 
