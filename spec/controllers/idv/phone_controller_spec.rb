@@ -41,6 +41,7 @@ describe Idv::PhoneController do
     end
 
     it 'updates the doc auth log for the user for the usps_letter_sent event' do
+      unstub_analytics
       doc_auth_log = DocAuthLog.create(user_id: user.id)
 
       expect { get :new }.to(
@@ -239,7 +240,7 @@ describe Idv::PhoneController do
       end
 
       before do
-        stub_analytics(user: user)
+        stub_analytics
         stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
       end
@@ -281,7 +282,7 @@ describe Idv::PhoneController do
       end
 
       it 'updates the doc auth log for the user with verify_phone_submit step' do
-        allow(@analytics).to receive(:track_event).and_call_original
+        unstub_analytics
         stub_verify_steps_one_and_two(user)
 
         doc_auth_log = DocAuthLog.create(user_id: user.id)
