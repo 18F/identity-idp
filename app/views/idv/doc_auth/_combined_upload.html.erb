@@ -36,7 +36,7 @@
         ) do |f| %>
       <%= render PhoneInputComponent.new(
             form: f,
-            required: false,
+            required: true,
             delivery_methods: [:sms],
             class: 'margin-bottom-4',
           ) %>
