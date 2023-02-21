@@ -258,14 +258,14 @@ class TransliterableFieldGroupElement extends HTMLElement {
 
     const result = await sendValidationRequest(payload);
 
-    Object.assign(this.validationResultCache.previousValues, payload);
-    Object.assign(this.validationResultCache.result, result);
+    const { previousValues, result: resultCache } = this.validationResultCache;
+
+    Object.assign(previousValues, payload);
+    Object.assign(resultCache, result);
 
     // Set custom validity on invalid fields; clear custom validity on valid fields
     Object.entries(inputs).forEach(([name, field]) => {
-      const validationResult = result[name];
-      console.log(name, payload[name], result[name]);
-      field.setCustomValidity(validationResult || '');
+      field.setCustomValidity(resultCache[name] || '');
     });
   };
 
