@@ -288,6 +288,15 @@ describe Profile do
     end
   end
 
+  describe '#activate_after_passing_review' do
+    it 'activates a profile if it passes fraud review' do
+      profile = create(:profile, user: user, active: false, fraud_review_pending: true)
+      profile.activate_after_passing_review
+
+      expect(profile).to be_active
+    end
+  end
+
   describe '#deactivate_for_fraud_review' do
     it 'sets fraud_review_pending to true' do
       profile = create(:profile, user: user)

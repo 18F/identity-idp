@@ -9,19 +9,19 @@ namespace :users do
 
       if user.decorate.fraud_review_pending? && user.proofing_component.review_eligible?
         profile = user.decorate.fraud_review_pending_profile
-        profile.activate
-
-        event, disavowal_token = UserEventCreator.new(current_user: user).
-          create_out_of_band_user_event_with_disavowal(:account_verified)
-
-        UserAlerts::AlertUserAboutAccountVerified.call(
-          user: user,
-          date_time: event.created_at,
-          sp_name: nil,
-          disavowal_token: disavowal_token,
-        )
+        profile.activate_after_passing_review
 
         if profile.active?
+          event, disavowal_token = UserEventCreator.new(current_user: user).
+            create_out_of_band_user_event_with_disavowal(:account_verified)
+
+          UserAlerts::AlertUserAboutAccountVerified.call(
+            user: user,
+            date_time: event.created_at,
+            sp_name: nil,
+            disavowal_token: disavowal_token,
+          )
+
           puts "User's profile has been activated and the user has been emailed."
         else
           puts "There was an error activating the user's profile please try again"

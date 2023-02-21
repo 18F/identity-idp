@@ -40,6 +40,11 @@ class Profile < ApplicationRecord
   end
   # rubocop:enable Rails/SkipsModelValidations
 
+  def activate_after_passing_review
+    update!(fraud_review_pending: false)
+    activate
+  end
+
   def deactivate(reason)
     update!(active: false, deactivation_reason: reason)
   end
