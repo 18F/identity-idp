@@ -4,6 +4,7 @@ module Idv
     include StepUtilitiesConcern
     include StepIndicatorConcern
     include VerifyInfoConcern
+    include ProofingConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_ssn_step_complete
