@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Idv::SessionsController do
   let(:user) { build(:user) }
+  let(:enrollment) { create(:in_person_enrollment, :pending, user: user) }
 
   before do
     stub_sign_in(user)
@@ -9,13 +10,6 @@ describe Idv::SessionsController do
   end
 
   describe '#destroy' do
-    let(:enrollment) do
-      create(
-        :in_person_enrollment,
-        enrollment_code: '123',
-        id: 10,
-      )
-    end
     before do
       allow(idv_session).to receive(:clear)
       allow(subject).to receive(:idv_session).and_return(idv_session)
@@ -23,7 +17,6 @@ describe Idv::SessionsController do
       controller.user_session['idv/in_person'] = flow_session
       controller.user_session['idv/inherited_proofing'] = flow_session
       controller.user_session[:decrypted_pii] = pii
-      allow(controller).to receive(:enrollment).and_return(enrollment)
     end
 
     let(:idv_session) { double }
@@ -65,17 +58,16 @@ describe Idv::SessionsController do
     end
 
     it 'logs idv_start_over event with extra analytics attributes for barcode step' do
-      delete :destroy, params: { step: 'barcode', location: '' }
-
-      expect(@analytics).to have_logged_event(
+      expect(@analytics).to receive(:track_event).with(
         'IdV: start over',
         location: '',
         proofing_components: nil,
         step: 'barcode',
         cancelled_enrollment: true,
-        enrollment_code: '123',
-        enrollment_id: 10,
+        enrollment_code: enrollment.enrollment_code,
+        enrollment_id: enrollment.id,
       )
+      delete :destroy, params: { step: 'barcode', location: '' }
     end
 
     it 'redirect occurs to the start of identity verification' do

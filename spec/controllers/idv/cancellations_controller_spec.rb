@@ -103,18 +103,12 @@ describe Idv::CancellationsController do
   end
 
   describe '#update' do
-    let(:enrollment) do
-      create(
-        :in_person_enrollment,
-        enrollment_code: '123',
-        id: '1',
-      )
-    end
+    let(:user) { create(:user) }
+    let(:enrollment) { create(:in_person_enrollment, :pending, user: user) }
 
     before do
-      stub_sign_in
+      stub_sign_in(user)
       stub_analytics
-      allow(controller).to receive(:enrollment).and_return(enrollment)
     end
 
     it 'logs cancellation go back' do
@@ -133,8 +127,8 @@ describe Idv::CancellationsController do
         step: 'barcode',
         proofing_components: nil,
         cancelled_enrollment: false,
-        enrollment_code: '123',
-        enrollment_id: 1,
+        enrollment_code: enrollment.enrollment_code,
+        enrollment_id: enrollment.id,
       )
 
       put :update, params: { step: 'barcode', cancel: 'true' }
