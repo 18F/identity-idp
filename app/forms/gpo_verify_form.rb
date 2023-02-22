@@ -20,9 +20,9 @@ class GpoVerifyForm
     if result
       if pending_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
-        pending_profile&.deactivate(:in_person_verification_pending)
+        pending_profile&.deactivate(:in_person_verification_pending, send_user_alert: false)
       elsif threatmetrix_check_failed? && threatmetrix_enabled?
-        pending_profile&.deactivate(:threatmetrix_review_pending)
+        pending_profile&.deactivate(:threatmetrix_review_pending, send_user_alert: false)
       else
         activate_profile
       end
