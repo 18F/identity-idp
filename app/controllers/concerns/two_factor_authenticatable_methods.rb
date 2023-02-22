@@ -4,13 +4,6 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   include SecureHeadersConcern
   include MfaSetupConcern
 
-  DELIVERY_METHOD_MAP = {
-    authenticator: 'authenticator',
-    sms: 'phone',
-    voice: 'phone',
-    piv_cac: 'piv_cac',
-  }.freeze
-
   private
 
   def authenticate_user
