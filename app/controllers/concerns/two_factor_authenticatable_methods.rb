@@ -380,15 +380,6 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
         service_provider: current_sp,
         remember_device_default: remember_device_default,
       )
-    when :piv_cac
-      # NOTE: this does not match, is this branch ever called?
-      TwoFactorAuthCode::PivCacAuthenticationPresenter.new(
-        data: piv_cac_view_data,
-        view: view_context,
-        service_provider: current_sp,
-        remember_device_default: remember_device_default,
-      )
-    end
   end
 
   def phone_configuration
