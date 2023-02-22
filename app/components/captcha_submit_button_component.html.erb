@@ -5,8 +5,8 @@
       'recaptcha-action': action,
     ) do %>
   <%= f.error(:recaptcha_token) %>
-  <%= f.input(:recaptcha_token, as: :hidden) %>
   <% if show_mock_score_field? %>
+    <%= f.input(:recaptcha_token, as: :hidden, input_html: { value: 'mock_token' }) %>
     <%= render AlertComponent.new(text_tag: :div, class: 'margin-top-0 margin-bottom-2') do %>
       <div class="display-flex flex-align-center">
         <%= f.label(
@@ -24,6 +24,8 @@
         </div>
       </div>
     <% end %>
+  <% else %>
+    <%= f.input(:recaptcha_token, as: :hidden) %>
   <% end %>
   <%= render SpinnerButtonComponent.new(
         action_message: t('components.captcha_submit_button.action_message'),
