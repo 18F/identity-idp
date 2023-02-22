@@ -409,14 +409,19 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         context 'a custom delay greater than zero is set' do
-          it 'uses the custom delay' do
+          let(:user) { pending_enrollment.user }
+          let(:proofed_at_string) do
             proofed_at = ActiveSupport::TimeZone['Central Time (US & Canada)'].now - 1.hour
-            proofed_at_string = proofed_at.strftime('%m/%d/%Y %H%M%S')
-            stub_request_passed_proofing_results(transactionEndDateTime: proofed_at_string)
+            proofed_at.strftime('%m/%d/%Y %H%M%S')
+          end
 
+          before do
             allow(IdentityConfig.store).
               to(receive(:in_person_results_delay_in_hours).and_return(5))
-            user = pending_enrollment.user
+          end
+
+          it 'uses the custom delay when proofing passes' do
+            stub_request_passed_proofing_results(transactionEndDateTime: proofed_at_string)
             wait_until = nil
 
             freeze_time do
@@ -432,6 +437,30 @@ RSpec.describe GetUspsProofingResultsJob do
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Success or failure email initiated',
               email_type: 'Success',
+              service_provider: anything,
+              timestamp: anything,
+              user_id: anything,
+              wait_until: wait_until,
+            )
+          end
+
+          it 'uses the custom delay when proofing fails' do
+            stub_request_failed_proofing_results(transactionEndDateTime: proofed_at_string)
+            wait_until = nil
+
+            freeze_time do
+              wait_until = Time.zone.now + 4.hours
+              expect do
+                job.perform(Time.zone.now)
+              end.to have_enqueued_mail(UserMailer, :in_person_failed).with(
+                params: { user: user, email_address: user.email_addresses.first },
+                args: [{ enrollment: pending_enrollment }],
+              ).at(wait_until).on_queue(:intentionally_delayed)
+            end
+
+            expect(job_analytics).to have_logged_event(
+              'GetUspsProofingResultsJob: Success or failure email initiated',
+              email_type: 'Failed',
               service_provider: anything,
               timestamp: anything,
               user_id: anything,

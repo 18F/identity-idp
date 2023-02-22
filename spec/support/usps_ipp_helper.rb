@@ -121,10 +121,13 @@ module UspsIppHelper
     }
   end
 
-  def stub_request_failed_proofing_results
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
-      **request_failed_proofing_results_args,
-    )
+  def stub_request_failed_proofing_results(overrides = {})
+    response = merge_into_response_body(request_failed_proofing_results_args, overrides)
+
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
+    ).to_return(response)
   end
 
   def request_failed_proofing_results_args
