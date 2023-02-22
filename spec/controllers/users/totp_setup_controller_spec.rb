@@ -398,6 +398,18 @@ describe Users::TotpSetupController, devise: true do
         expect(@analytics).to have_received(:track_event).with('TOTP: User Disabled')
         expect(subject).to have_received(:create_user_event).with(:authenticator_disabled)
       end
+
+      it 'revokes remember device cookies' do
+        user = create(:user, :signed_up, :with_phone)
+        totp_app = user.auth_app_configurations.create(otp_secret_key: 'foo', name: 'My Auth App')
+        user.save
+        stub_sign_in(user)
+        expect(user.remember_device_revoked_at).to eq nil
+        freeze_time do
+          delete :disable, params: { id: totp_app.id }
+          expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
+        end
+      end
     end
 
     context 'when totp is the last mfa method' do

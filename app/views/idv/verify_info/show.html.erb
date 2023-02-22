@@ -102,25 +102,24 @@ locals:
             toggle_label: t('forms.ssn.show'),
           ) %>
     </div>
-<% if IdentityConfig.store.doc_auth_ssn_controller_enabled %>
-    <div class='grid-auto'>
-      <%= button_to(
-            idv_ssn_url,
-            method: :get,
-            class: 'usa-button usa-button--unstyled',
-            'aria-label': t('idv.buttons.change_ssn_label'),
-          ) { t('idv.buttons.change_label') } %>
-    </div>
-<% else %>
-    <div class='grid-auto'>
-      <%= button_to(
-            idv_doc_auth_step_url(step: :redo_ssn),
-            method: :put,
-            class: 'usa-button usa-button--unstyled',
-            'aria-label': t('idv.buttons.change_ssn_label'),
-          ) { t('idv.buttons.change_label') } %>
-    </div>
-<% end %>
+    <% if IdentityConfig.store.doc_auth_ssn_controller_enabled %>
+      <div class='grid-auto'>
+        <%= link_to(
+              t('idv.buttons.change_label'),
+              idv_ssn_url,
+              'aria-label': t('idv.buttons.change_ssn_label'),
+            ) %>
+      </div>
+    <% else %>
+      <div class='grid-auto'>
+        <%= button_to(
+              idv_doc_auth_step_url(step: :redo_ssn),
+              method: :put,
+              class: 'usa-button usa-button--unstyled',
+              'aria-label': t('idv.buttons.change_ssn_label'),
+            ) { t('idv.buttons.change_label') } %>
+      </div>
+    <% end %>
   </div>
   <div class="margin-top-5">
       <%= render SpinnerButtonComponent.new(

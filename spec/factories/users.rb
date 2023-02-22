@@ -6,7 +6,7 @@ FactoryBot.define do
 
     transient do
       with { {} }
-      email { Faker::Internet.safe_email }
+      sequence(:email) { |n| "user#{n}@example.com" }
       confirmed_at { Time.zone.now }
       confirmation_token { nil }
       confirmation_sent_at { 5.minutes.ago }

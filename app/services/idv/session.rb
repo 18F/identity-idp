@@ -136,7 +136,7 @@ module Idv
       session[:user_phone_confirmation_session] = new_user_phone_confirmation_session.to_h
     end
 
-    def ssn_updated!
+    def invalidate_steps_after_ssn!
       # Guard against unvalidated attributes from in-person flow in review controller
       session[:applicant] = nil
 
