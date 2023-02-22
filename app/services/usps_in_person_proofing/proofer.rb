@@ -1,6 +1,7 @@
 module UspsInPersonProofing
   class Proofer
     AUTH_TOKEN_CACHE_KEY = :usps_ippaas_api_auth_token
+    AUTH_TOKEN_REFRESH_THRESHOLD = 5
 
     # Makes HTTP request to get nearby in-person proofing facilities
     # Requires address, city, state and zip code.
@@ -153,7 +154,8 @@ module UspsInPersonProofing
     # already cached.
     # @return [Hash] Headers to add to USPS requests
     def dynamic_headers
-      if Rails.cache.redis.ttl(AUTH_TOKEN_CACHE_KEY) != -2 && Rails.cache.redis.ttl(AUTH_TOKEN_CACHE_KEY) <= 0.5 # rubocop:disable Layout/LineLength
+      token_remaining_time = Rails.cache.redis.ttl(AUTH_TOKEN_CACHE_KEY)
+      if token_remaining_time != -2 && token_remaining_time <= AUTH_TOKEN_REFRESH_THRESHOLD
         retrieve_token!
       end
       {
