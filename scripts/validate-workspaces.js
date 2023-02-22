@@ -151,7 +151,6 @@ const EXCEPTIONS = {
     'app/javascript/packages/phone-input/package.json',
     'app/javascript/packages/spinner-button/package.json',
     'app/javascript/packages/time-element/package.json',
-    'app/javascript/packages/transliterable-field/package.json',
     'app/javascript/packages/validated-field/package.json',
   ],
 };
