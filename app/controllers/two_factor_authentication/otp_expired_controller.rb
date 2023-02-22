@@ -25,7 +25,7 @@ module TwoFactorAuthentication
     end
 
     def show_choose_another_method_option
-      mfa_context.enabled_mfa_methods_count > 1
+      mfa_context.enabled_mfa_methods_count > 1 || current_user.phone_configurations.any?
     end
   end
 end
