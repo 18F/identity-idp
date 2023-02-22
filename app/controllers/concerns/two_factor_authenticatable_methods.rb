@@ -365,18 +365,30 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def presenter_for_two_factor_authentication_method
-    type = DELIVERY_METHOD_MAP[two_factor_authentication_method.to_sym]
-
-    return unless type
-
-    data = send("#{type}_view_data".to_sym)
-
-    TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(
-      data: data,
-      view: view_context,
-      service_provider: current_sp,
-      remember_device_default: remember_device_default,
-    )
+    case two_factor_authentication_method.to_sym
+    when :authenticator
+      TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(
+        data: authenticator_view_data,
+        view: view_context,
+        service_provider: current_sp,
+        remember_device_default: remember_device_default,
+      )
+    when :sms, :voice
+      TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+        data: phone_view_data,
+        view: view_context,
+        service_provider: current_sp,
+        remember_device_default: remember_device_default,
+      )
+    when :piv_cac
+      # NOTE: this does not match, is this branch ever called?
+      TwoFactorAuthCode::PivCacAuthenticationPresenter.new(
+        data: piv_cac_view_data,
+        view: view_context,
+        service_provider: current_sp,
+        remember_device_default: remember_device_default,
+      )
+    end
   end
 
   def phone_configuration
