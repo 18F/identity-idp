@@ -12,42 +12,36 @@ module Idv
 
       before_action :confirm_authenticated_for_api, only: [:update]
 
+      rescue_from Faraday::TimeoutError,
+                  Faraday::BadRequestError,
+                  Faraday::ForbiddenError,
+                  StandardError,
+                  with: :handle_error
+
       # retrieve the list of nearby IPP Post Office locations with a POST request
       def index
         response = []
-        begin
-          if IdentityConfig.store.arcgis_search_enabled
-            candidate = UspsInPersonProofing::Applicant.new(
-              address: search_params['street_address'],
-              city: search_params['city'], state: search_params['state'],
-              zip_code: search_params['zip_code']
+        if IdentityConfig.store.arcgis_search_enabled
+          candidate = UspsInPersonProofing::Applicant.new(
+            address: search_params['street_address'],
+            city: search_params['city'], state: search_params['state'],
+            zip_code: search_params['zip_code']
+          )
+          response = proofer.request_facilities(candidate)
+          if response.length > 0
+            analytics.idv_in_person_locations_searched(
+              success: true,
+              result_total: response.length,
             )
-            response = proofer.request_facilities(candidate)
           else
-            response = proofer.request_pilot_facilities
+            analytics.idv_in_person_locations_searched(
+              success: false, errors: 'No USPS locations found',
+            )
           end
-          render json: response.to_json
-        rescue Faraday::TimeoutError, Faraday::BadRequestError, Faraday::ForbiddenError => err
-          analytics.idv_in_person_locations_request_failure(
-            api_status_code: 422,
-            exception_class: err.class,
-            exception_message: err.message,
-            response_body_present: err.respond_to?(:response_body) && err.response_body.present?,
-            response_body: err.respond_to?(:response_body) && err.response_body,
-            response_status_code: err.respond_to?(:response_status) && err.response_status,
-          )
-          render json: {}, status: :unprocessable_entity
-        rescue => err
-          analytics.idv_in_person_locations_request_failure(
-            api_status_code: 500,
-            exception_class: err.class,
-            exception_message: err.message,
-            response_body_present: err.respond_to?(:response_body) && err.response_body.present?,
-            response_body: err.respond_to?(:response_body) && err.response_body,
-            response_status_code: err.respond_to?(:response_status) && err.response_status,
-          )
-          render json: {}, status: :internal_server_error
+        else
+          response = proofer.request_pilot_facilities
         end
+        render json: response.to_json
       end
 
       def proofer
@@ -65,6 +59,24 @@ module Idv
       end
 
       protected
+
+      def handle_error(err)
+        remapped_error = {
+          Faraday::TimeoutError => :unprocessable_entity,
+          Faraday::BadRequestError => :unprocessable_entity,
+          Faraday::ForbiddenError => :unprocessable_entity,
+        }[err.class] || :internal_server_error
+
+        analytics.idv_in_person_locations_request_failure(
+          api_status_code: Rack::Utils.status_code(remapped_error),
+          exception_class: err.class,
+          exception_message: err.message,
+          response_body_present: err.respond_to?(:response_body) && err.response_body.present?,
+          response_body: err.respond_to?(:response_body) && err.response_body,
+          response_status_code: err.respond_to?(:response_status) && err.response_status,
+        )
+        render json: {}, status: remapped_error
+      end
 
       def confirm_authenticated_for_api
         render json: { success: false }, status: :unauthorized if !effective_user

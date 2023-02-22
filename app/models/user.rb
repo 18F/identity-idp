@@ -102,7 +102,9 @@ class User < ApplicationRecord
   end
 
   def personal_key_generated_at
-    encrypted_recovery_code_digest_generated_at || active_profile&.verified_at
+    encrypted_recovery_code_digest_generated_at ||
+      active_profile&.verified_at ||
+      profiles.verified.order(activated_at: :desc).first&.verified_at
   end
 
   def default_phone_configuration

@@ -92,6 +92,11 @@ fr:
           document d’identité délivré par l’État, votre adresse et votre numéro
           de sécurité sociale.
       state_id:
+        alert_message: 'Votre carte d’identité délivrée par l’État ne doit pas être
+          périmée. Les pièces d’identité acceptées sont:'
+        id_types:
+          - Permis de conduire national
+          - Carte d’identité nationale de non-conducteur
         info_html: Saisissez les informations <strong>exactement comme elles figurent
           sur votre document d’identité nationale.</strong> Nous utiliserons ces
           informations pour confirmer qu’elles correspondent à votre pièce

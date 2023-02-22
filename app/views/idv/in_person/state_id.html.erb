@@ -10,6 +10,21 @@
   <%= t('in_person_proofing.body.state_id.info_html') %>
 </p>
 
+<%= render AlertComponent.new(
+      type: :info,
+      class: 'margin-bottom-4',
+      text_tag: 'div',
+    ) do %>
+  <strong><%= t('in_person_proofing.body.state_id.alert_message') %></strong>
+  <ul class="margin-bottom-0">
+    <% t('in_person_proofing.body.state_id.id_types').each do | id_type | %>
+      <li>
+        <%= id_type %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
 <%= simple_form_for :doc_auth,
                     url: url_for,
                     method: 'put',

@@ -5,9 +5,6 @@ describe Analytics do
     {
       user_id: current_user.uuid,
       new_event: true,
-      new_session_path: true,
-      new_session_success_state: true,
-      success_state: success_state,
       path: path,
       session_duration: nil,
       locale: I18n.locale,
@@ -68,8 +65,6 @@ describe Analytics do
         'Trackable Event',
         analytics_attributes.merge(
           new_event: nil,
-          new_session_path: nil,
-          new_session_success_state: nil,
           event_properties: { success: false },
         ),
       )

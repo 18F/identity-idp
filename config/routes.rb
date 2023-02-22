@@ -119,6 +119,7 @@ Rails.application.routes.draw do
       get '/login/two_factor/sms/:opt_out_uuid/opt_in' => 'two_factor_authentication/sms_opt_in#new',
           as: :login_two_factor_sms_opt_in
       post '/login/two_factor/sms/:opt_out_uuid/opt_in' => 'two_factor_authentication/sms_opt_in#create'
+      get '/login/two_factor/otp_expired' => 'two_factor_authentication/otp_expired#show'
 
       get 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#prompt'
       post 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#decline'
@@ -307,6 +308,8 @@ Rails.application.routes.draw do
       post '/forgot_password' => 'forgot_password#update'
       get '/otp_delivery_method' => 'otp_delivery_method#new'
       put '/otp_delivery_method' => 'otp_delivery_method#create'
+      get '/ssn' => 'ssn#show'
+      put '/ssn' => 'ssn#update'
       get '/verify_info' => 'verify_info#show'
       put '/verify_info' => 'verify_info#update'
       get '/phone' => 'phone#new'
