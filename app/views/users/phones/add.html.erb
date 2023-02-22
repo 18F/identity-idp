@@ -42,3 +42,9 @@
 <% end %>
 
 <%= render 'shared/cancel', link: account_path %>
+
+
+<% if FeatureManagement.phone_recaptcha_enabled? %>
+  <%= render 'shared/recaptcha_disclosure' %>
+<% end %>
+

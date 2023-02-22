@@ -121,6 +121,8 @@ en:
       ssn_label_html: Social Security number
       state: State
       zipcode: ZIP Code
+    images:
+      come_back_later: Letter with a check mark
     index:
       id:
         need_html: If you’re creating an account, you’ll need a <strong>current

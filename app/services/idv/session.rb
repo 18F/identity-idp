@@ -135,6 +135,24 @@ module Idv
       session[:user_phone_confirmation_session] = new_user_phone_confirmation_session.to_h
     end
 
+    def invalidate_steps_after_ssn!
+      # Guard against unvalidated attributes from in-person flow in review controller
+      session[:applicant] = nil
+
+      invalidate_verify_info_step!
+      invalidate_phone_step!
+    end
+
+    def invalidate_verify_info_step!
+      session[:resolution_successful] = nil
+      session[:profile_confirmation] = nil
+    end
+
+    def invalidate_phone_step!
+      session[:vendor_phone_confirmation] = nil
+      session[:user_phone_confirmation] = nil
+    end
+
     private
 
     attr_accessor :user_session

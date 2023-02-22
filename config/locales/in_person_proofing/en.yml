@@ -80,6 +80,10 @@ en:
         verify_step_enter_pii: Enter your name, date of birth, state-issued ID number,
           address and Social Security number.
       state_id:
+        alert_message: 'Your state-issued ID must not be expired. Accepted forms of ID are:'
+        id_types:
+          - State Driver’s License
+          - State Non-Driver’s Identification Card
         info_html: Enter information <strong>exactly as it appears on your state-issued
           ID.</strong> We will use this information to confirm it matches your
           ID in person.

@@ -83,6 +83,7 @@ module SignUp
     end
 
     def track_completion_event(last_page)
+      irs_attempts_api_tracker.idv_reproof if current_user.profiles&.last&.has_proofed_before?
       analytics.user_registration_complete(**analytics_attributes(last_page))
     end
 

@@ -6,6 +6,7 @@ module Idv
     include StepIndicatorConcern
     include PhoneConfirmation
 
+    before_action :confirm_idv_applicant_created
     before_action :confirm_idv_steps_complete
     before_action :confirm_idv_phone_confirmed
     before_action :confirm_current_password, only: [:create]
@@ -36,6 +37,19 @@ module Idv
 
     def new
       @applicant = idv_session.applicant
+      # Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+      #   call(:encrypt, :view, true)
+      Rails.logger.info(
+        {
+          name: 'event_to_doc_auth_log_token',
+          source: 'proposed',
+          user_id: current_user.id,
+          issuer: current_sp&.issuer,
+          token: :encrypt,
+          action: :view,
+          success: true,
+        }.to_json,
+      )
       analytics.idv_review_info_visited(address_verification_method: address_verification_method)
 
       gpo_mail_service = Idv::GpoMail.new(current_user)
@@ -52,8 +66,6 @@ module Idv
 
       init_profile
 
-      log_reproof_event if idv_session.profile.has_proofed_before?
-
       user_session[:need_personal_key_confirmation] = true
 
       redirect_to next_step
@@ -63,6 +75,19 @@ module Idv
         fraud_review_pending: idv_session.profile.fraud_review_pending,
         fraud_rejection: idv_session.profile.fraud_rejection,
         deactivation_reason: idv_session.profile.deactivation_reason,
+      )
+      # Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+      #   call(:verified, :view, true)
+      Rails.logger.info(
+        {
+          name: 'event_to_doc_auth_log_token',
+          source: 'proposed',
+          user_id: current_user.id,
+          issuer: current_sp&.issuer,
+          token: :verified,
+          action: :view,
+          success: true,
+        }.to_json,
       )
       analytics.idv_final(
         success: true,
@@ -79,10 +104,6 @@ module Idv
 
     def address_verification_method
       user_session.dig('idv', 'address_verification_mechanism')
-    end
-
-    def log_reproof_event
-      irs_attempts_api_tracker.idv_reproof
     end
 
     def flash_message_content
