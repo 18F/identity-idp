@@ -623,8 +623,6 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       context 'when an enrollment is reported as invalid' do
-        before do
-        end
         context 'when an enrollment code is invalid' do
           # this enrollment code is hardcoded into the fixture
           # request_unexpected_invalid_enrollment_code_response.json
