@@ -292,10 +292,6 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     current_user.direct_otp_sent_at + TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
   end
 
-  def personal_key_unavailable?
-    current_user.encrypted_recovery_code_digest.blank?
-  end
-
   def user_opted_remember_device_cookie
     cookies.encrypted[:user_opted_remember_device_preference]
   end
