@@ -102,11 +102,12 @@ class User < ApplicationRecord
   end
 
   def fraud_review_pending?
-    @fraud_review_pending ||= fraud_review_pending_profile.present?
+    fraud_review_pending_profile.present?
   end
 
   def fraud_review_pending_profile
-    profiles.where(fraud_review_pending: true).order(created_at: :desc).first
+    @fraud_review_pending_profile ||=
+      profiles.where(fraud_review_pending: true).order(created_at: :desc).first
   end
 
   def personal_key_generated_at
