@@ -44,5 +44,9 @@ describe 'review_profile' do
       invoke_task
       expect(user.reload.profiles.first.deactivation_reason).to eq('threatmetrix_review_rejected')
     end
+
+    it 'sends the user an email about their account deactivation' do
+      expect { invoke_task }.to change(ActionMailer::Base.deliveries, :count).by(1)
+    end
   end
 end

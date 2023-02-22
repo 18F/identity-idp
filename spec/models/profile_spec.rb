@@ -266,9 +266,10 @@ describe Profile do
 
   describe '#deactivate' do
     let(:deactivation_reason) { :password_reset }
+    let(:send_user_alert) { false }
     let(:profile) do
       profile = create(:profile, :active, user: user)
-      profile.deactivate(deactivation_reason)
+      profile.deactivate(deactivation_reason, send_user_alert: send_user_alert)
       profile
     end
 
@@ -295,8 +296,18 @@ describe Profile do
 
       let(:deactivation_reason) { :threatmetrix_review_rejected }
 
-      it 'sends an email' do
-        expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(1)
+      context 'and we do not want to notify them' do
+        it 'does not send an email' do
+          expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(0)
+        end
+      end
+
+      context 'and we want to notify them' do
+        let(:send_user_alert) { true }
+
+        it 'sends an email' do
+          expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(1)
+        end
       end
     end
   end
