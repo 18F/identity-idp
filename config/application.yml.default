@@ -67,6 +67,7 @@ broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 component_previews_enabled: false
 country_phone_number_overrides: '{}'
+doc_auth_combined_hybrid_handoff_enabled: false
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_sharpness_threshold: 40
 doc_auth_error_glare_threshold: 40
