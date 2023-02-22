@@ -57,7 +57,7 @@ module ControllerHelper
     stub_sign_in(user)
     idv_session = Idv::Session.new(
       user_session: user_session, current_user: user,
-      service_provider: nil
+      service_provider: nil,
     )
     idv_session.applicant = {
       first_name: 'Some',
@@ -67,6 +67,7 @@ module ControllerHelper
       ssn: '666-12-1234',
     }.with_indifferent_access
     idv_session.profile_confirmation = true
+    idv_session.resolution_successful = 'phone'
     allow(subject).to receive(:confirm_idv_applicant_created).and_return(true)
     allow(subject).to receive(:idv_session).and_return(idv_session)
     allow(subject).to receive(:user_session).and_return(user_session)
