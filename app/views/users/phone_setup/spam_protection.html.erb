@@ -27,11 +27,11 @@
     <script src="https://www.google.com/recaptcha/api.js" async></script>
   <% elsif IdentityConfig.store.phone_recaptcha_mock_validator %>
     <%= f.input :recaptcha_mock_score, as: :hidden, input_html: { value: 1.0 } %>
-    <%= render ButtonComponent.new(id: :submit, big: true, wide: true, class: 'display-block margin-y-5') do %>
+    <%= render ButtonComponent.new(id: :submit_button, type: :button, big: true, wide: true, class: 'display-block margin-y-5') do %>
       <%= t('forms.buttons.continue') %>
     <% end %>
     <%= javascript_tag(nonce: true) do %>
-      document.getElementById('submit').addEventListener('click', () => onCaptchaResponse('mock_token'));
+      document.getElementById('submit_button').addEventListener('click', () => onCaptchaResponse('mock_token'));
     <% end %>
   <% end %>
 <% end %>
