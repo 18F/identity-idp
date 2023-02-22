@@ -11,7 +11,7 @@
       <div class="display-flex flex-align-center">
         <%= f.label(
               :recaptcha_mock_score,
-              'reCAPTCHA score:',
+              t('components.captcha_submit_button.mock_score_label'),
               class: 'usa-label float-left margin-y-0 margin-right-1',
             ) %>
         <%= f.text_field(
@@ -19,7 +19,9 @@
               value: '1.0',
               class: 'usa-input display-inline width-6 margin-0 padding-y-0 padding-x-05 height-auto',
             ) %>
-        <div class="usa-tag usa-tag--informative margin-left-1">Internal Only</div>
+        <div class="usa-tag usa-tag--informative margin-left-1">
+          <%= t('components.captcha_submit_button.mock_score_disclaimer') %>
+        </div>
       </div>
     <% end %>
   <% end %>

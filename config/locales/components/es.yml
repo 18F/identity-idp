@@ -5,6 +5,8 @@ es:
       image_alt: Código de barras
     captcha_submit_button:
       action_message: Verificando…
+      mock_score_label: 'Puntuación reCAPTCHA:'
+      mock_score_disclaimer: Solo para uso interno
     clipboard_button:
       label: Copiar
     countdown_alert:
