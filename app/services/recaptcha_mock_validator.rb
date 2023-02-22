@@ -2,7 +2,7 @@ class RecaptchaMockValidator < RecaptchaValidator
   RecaptchaResponse = Struct.new(:success, :score, keyword_init: true) do
     def body
       {
-        'success' => success,
+        'success' => true,
         'challenge_ts' => Time.zone.now.iso8601,
         'hostname' => Identity::Hostdata.domain,
         'error-codes' => [],
@@ -21,6 +21,6 @@ class RecaptchaMockValidator < RecaptchaValidator
   private
 
   def recaptcha_response(_recaptcha_token)
-    RecaptchaResponse.new(success: true, score:)
+    RecaptchaResponse.new(score:)
   end
 end
