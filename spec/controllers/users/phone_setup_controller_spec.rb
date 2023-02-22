@@ -207,5 +207,27 @@ describe Users::PhoneSetupController do
         :authenticate_user,
       )
     end
+
+    describe 'recaptcha csp' do
+      before { stub_sign_in }
+
+      it 'does not allow recaptcha in the csp' do
+        expect(subject).not_to receive(:allow_csp_recaptcha_src)
+
+        get :index
+      end
+
+      context 'recaptcha enabled' do
+        before do
+          allow(FeatureManagement).to receive(:phone_recaptcha_enabled?).and_return(true)
+        end
+
+        it 'allows recaptcha in the csp' do
+          expect(subject).to receive(:allow_csp_recaptcha_src)
+
+          get :index
+        end
+      end
+    end
   end
 end

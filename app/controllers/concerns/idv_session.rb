@@ -7,8 +7,8 @@ module IdvSession
     before_action :redirect_if_sp_context_needed
   end
 
-  def confirm_idv_session_started
-    redirect_to idv_doc_auth_url if idv_session.applicant.blank?
+  def confirm_idv_applicant_created
+    redirect_to idv_verify_info_url if idv_session.applicant.blank?
   end
 
   def confirm_idv_needed

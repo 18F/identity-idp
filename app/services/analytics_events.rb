@@ -633,6 +633,34 @@ module AnalyticsEvents
     track_event('IdV: in person proofing location visited', flow_path: flow_path, **extra)
   end
 
+  # @param [Boolean] success
+  # @param [Integer] result_total
+  # @param [String] errors
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [Integer] response_status_code
+  # User submitted a search on the location search page and response received
+  def idv_in_person_locations_searched(
+    success:,
+    result_total: 0,
+    errors: nil,
+    exception_class: nil,
+    exception_message: nil,
+    response_status_code: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing location search submitted',
+      success: success,
+      result_total: result_total,
+      errors: errors,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      response_status_code: response_status_code,
+      **extra,
+    )
+  end
+
   # @param [String] selected_location Selected in-person location
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user submitted the in person proofing location step
@@ -953,6 +981,7 @@ module AnalyticsEvents
     track_event('IdV: doc auth verify visited', **extra)
   end
 
+  # @identity.idp.previous_event_name IdV: doc auth optional verify_wait submitted
   def idv_doc_auth_verify_proofing_results(**extra)
     track_event('IdV: doc auth verify proofing results', **extra)
   end
@@ -2050,6 +2079,18 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when user is redirected to OTP expired page
+  # @param [String] otp_sent_at
+  # @param [String] otp_expiration
+  def otp_expired_visited(otp_sent_at:, otp_expiration:, **extra)
+    track_event(
+      'OTP Expired Page Visited',
+      otp_sent_at: otp_sent_at,
+      otp_expiration: otp_expiration,
+      **extra,
+    )
+  end
+
   # Tracks if otp phone validation failed
   # @identity.idp.previous_event_name Twilio Phone Validation Failed
   # @param [String] error
@@ -3044,6 +3085,44 @@ module AnalyticsEvents
       response_body_present: response_body_present,
       response_body: response_body,
       response_status_code: response_status_code,
+      **extra,
+    )
+  end
+
+  # Tracks whether the user's device appears to be mobile device with a camera attached.
+  # @param [Boolean] is_camera_capable_mobile Whether we think the device _could_ have a camera.
+  # @param [Boolean,nil] camera_present Whether the user's device _actually_ has a camera available.
+  # @param [Integer,nil] grace_time Extra time allowed for browser to report camera availability.
+  # @param [Integer,nil] duration Time taken for browser to report camera availability.
+  def idv_mobile_device_and_camera_check(
+    is_camera_capable_mobile:,
+    camera_present: nil,
+    grace_time: nil,
+    duration: nil,
+    **extra
+  )
+    track_event(
+      'IdV: Mobile device and camera check',
+      is_camera_capable_mobile: is_camera_capable_mobile,
+      camera_present: camera_present,
+      grace_time: grace_time,
+      duration: duration,
+      **extra,
+    )
+  end
+
+  # Tracks when the user visits one of the the session error pages.
+  # @param [String] type
+  # @param [Integer,nil] attempts_remaining
+  def idv_session_error_visited(
+    type:,
+    attempts_remaining: nil,
+    **extra
+  )
+    track_event(
+      'IdV: session error visited',
+      type: type,
+      attempts_remaining: attempts_remaining,
       **extra,
     )
   end

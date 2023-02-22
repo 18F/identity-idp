@@ -1,4 +1,4 @@
-version: "2" # required to adjust maintainability checks
+version: '2' # required to adjust maintainability checks
 checks:
   argument-count:
     config:
@@ -36,21 +36,10 @@ plugins:
         javascript:
           mass_threshold: 50
     exclude_patterns:
-    - 'spec/**/*'
-    - 'node_modules/**/*'
-    - 'db/schema.rb'
-    - 'app/forms/password_form.rb'
-  fixme:
-    enabled: true
-    exclude_patterns:
-    - 'public/build/bundle.js'
-    - '.codeclimate.yml'
-    config:
-      strings:
-      - TODO
-      - FIXME
-      - HACK
-      - BUG
+      - 'spec/**/*'
+      - 'node_modules/**/*'
+      - 'db/schema.rb'
+      - 'app/forms/password_form.rb'
 
 exclude_patterns:
   - 'db/schema.rb'

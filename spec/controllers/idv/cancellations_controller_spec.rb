@@ -103,8 +103,11 @@ describe Idv::CancellationsController do
   end
 
   describe '#update' do
+    let(:user) { create(:user) }
+    let(:enrollment) { create(:in_person_enrollment, :pending, user: user) }
+
     before do
-      stub_sign_in
+      stub_sign_in(user)
       stub_analytics
     end
 
@@ -116,6 +119,19 @@ describe Idv::CancellationsController do
       )
 
       put :update, params: { step: 'first', cancel: 'true' }
+    end
+
+    it 'logs cancellation go back with extra analytics attributes for barcode step' do
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: cancellation go back',
+        step: 'barcode',
+        proofing_components: nil,
+        cancelled_enrollment: false,
+        enrollment_code: enrollment.enrollment_code,
+        enrollment_id: enrollment.id,
+      )
+
+      put :update, params: { step: 'barcode', cancel: 'true' }
     end
 
     it 'redirects to idv_path' do

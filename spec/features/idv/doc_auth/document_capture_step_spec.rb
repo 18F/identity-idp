@@ -207,6 +207,20 @@ feature 'doc auth document capture step', :js do
     end
   end
 
+  context 'when new ssn controller is enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_ssn_controller_enabled).
+        and_return(true)
+    end
+    it 'redirects to ssn controller' do
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+      attach_and_submit_images
+
+      expect(page).to have_current_path(idv_ssn_url)
+    end
+  end
+
   def next_step
     idv_doc_auth_ssn_step
   end

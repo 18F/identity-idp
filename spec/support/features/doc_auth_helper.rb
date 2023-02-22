@@ -35,6 +35,14 @@ module DocAuthHelper
     click_on '‹ ' + t('forms.buttons.back')
   end
 
+  def click_send_link
+    click_on t('forms.buttons.send_link')
+  end
+
+  def click_upload_from_computer
+    click_on t('forms.buttons.upload_photos')
+  end
+
   def idv_doc_auth_welcome_step
     idv_doc_auth_step_path(step: :welcome)
   end
@@ -53,14 +61,6 @@ module DocAuthHelper
 
   def idv_doc_auth_document_capture_step
     idv_doc_auth_step_path(step: :document_capture)
-  end
-
-  def idv_doc_auth_verify_step
-    if IdentityConfig.store.doc_auth_verify_info_controller_enabled
-      idv_verify_info_path
-    else
-      idv_doc_auth_step_path(step: :verify)
-    end
   end
 
   def idv_doc_auth_send_link_step
