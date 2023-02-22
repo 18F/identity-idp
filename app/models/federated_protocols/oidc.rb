@@ -20,6 +20,10 @@ module FederatedProtocols
       OpenidConnectAttributeScoper.new(request.scope).requested_attributes
     end
 
+    def service_provider
+      request.service_provider
+    end
+
     private
 
     attr_reader :request

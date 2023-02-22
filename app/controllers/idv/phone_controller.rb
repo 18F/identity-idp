@@ -7,6 +7,7 @@ module Idv
 
     attr_reader :idv_form
 
+    before_action :confirm_idv_applicant_created
     before_action :confirm_step_needed
     before_action :set_idv_form
 
@@ -17,10 +18,24 @@ module Idv
 
       async_state = step.async_state
       if async_state.none?
+        # Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+        #   call(:verify_phone, :view, true)
+        Rails.logger.info(
+          {
+            name: 'event_to_doc_auth_log_token',
+            source: 'proposed',
+            user_id: current_user.id,
+            issuer: current_sp&.issuer,
+            token: :verify_phone,
+            action: :view,
+            success: true,
+          }.to_json,
+        )
+
         analytics.idv_phone_of_record_visited
         render :new, locals: { gpo_letter_available: gpo_letter_available }
       elsif async_state.in_progress?
-        render :wait
+        render 'shared/wait'
       elsif async_state.missing?
         analytics.proofing_address_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
@@ -32,6 +47,20 @@ module Idv
 
     def create
       result = idv_form.submit(step_params)
+      # Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+      #   call(:verify_phone, :update, result.success?)
+      Rails.logger.info(
+        {
+          name: 'event_to_doc_auth_log_token',
+          source: 'proposed',
+          user_id: current_user.id,
+          issuer: current_sp&.issuer,
+          token: :verify_phone,
+          action: :update,
+          success: result.success?,
+        }.to_json,
+      )
+
       analytics.idv_phone_confirmation_form_submitted(**result.to_h)
       irs_attempts_api_tracker.idv_phone_submitted(
         success: result.success?,
@@ -61,8 +90,6 @@ module Idv
       if phone_confirmation_required?
         if VendorStatus.new.all_phone_vendor_outage?
           redirect_to vendor_outage_path(from: :idv_phone)
-        elsif step.otp_delivery_preference_missing?
-          redirect_to idv_otp_delivery_method_url
         else
           send_phone_confirmation_otp_and_handle_result
         end
@@ -117,7 +144,11 @@ module Idv
     end
 
     def step
-      @step ||= Idv::PhoneStep.new(idv_session: idv_session, trace_id: amzn_trace_id)
+      @step ||= Idv::PhoneStep.new(
+        idv_session: idv_session,
+        trace_id: amzn_trace_id,
+        attempts_tracker: irs_attempts_api_tracker,
+      )
     end
 
     def step_params

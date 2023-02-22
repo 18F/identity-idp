@@ -10,9 +10,7 @@ feature 'Accessibility on IDV pages', :js do
 
       visit idv_path
 
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-      expect(page).to label_required_fields
-      expect(page).to be_uniquely_titled
+      expect_page_to_have_no_accessibility_violations(page)
     end
 
     scenario 'cancel idv' do
@@ -21,9 +19,7 @@ feature 'Accessibility on IDV pages', :js do
       visit idv_cancel_path
 
       expect(current_path).to eq idv_cancel_path
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-      expect(page).to label_required_fields
-      expect(page).to be_uniquely_titled
+      expect_page_to_have_no_accessibility_violations(page)
     end
 
     scenario 'phone info' do
@@ -32,9 +28,7 @@ feature 'Accessibility on IDV pages', :js do
       complete_all_doc_auth_steps
 
       expect(current_path).to eq idv_phone_path
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-      expect(page).to label_required_fields
-      expect(page).to be_uniquely_titled
+      expect_page_to_have_no_accessibility_violations(page)
     end
 
     scenario 'review page' do
@@ -43,9 +37,7 @@ feature 'Accessibility on IDV pages', :js do
       complete_all_doc_auth_steps_before_password_step
 
       expect(page).to have_current_path(idv_review_path)
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-      expect(page).to label_required_fields
-      expect(page).to be_uniquely_titled
+      expect_page_to_have_no_accessibility_violations(page)
     end
 
     scenario 'personal key / confirmation page' do
@@ -56,9 +48,7 @@ feature 'Accessibility on IDV pages', :js do
       click_continue
 
       expect(current_path).to eq idv_personal_key_path
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-      expect(page).to label_required_fields
-      expect(page).to be_uniquely_titled
+      expect_page_to_have_no_accessibility_violations(page)
     end
 
     scenario 'doc auth steps accessibility' do
@@ -69,9 +59,7 @@ feature 'Accessibility on IDV pages', :js do
       click_continue
 
       expect(current_path).to eq idv_personal_key_path
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-      expect(page).to label_required_fields
-      expect(page).to be_uniquely_titled
+      expect_page_to_have_no_accessibility_violations(page)
     end
 
     scenario 'doc auth steps accessibility on mobile', driver: :headless_chrome_mobile do
@@ -82,9 +70,7 @@ feature 'Accessibility on IDV pages', :js do
       click_continue
 
       expect(current_path).to eq idv_personal_key_path
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-      expect(page).to label_required_fields
-      expect(page).to be_uniquely_titled
+      expect_page_to_have_no_accessibility_violations(page)
     end
   end
 end

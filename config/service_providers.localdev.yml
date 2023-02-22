@@ -494,3 +494,9 @@ production:
 
   'urn:gov:login:test-providers:fake-unrestricted-sp':
     friendly_name: 'Fake/Test stub SP, env unrestricted'
+
+  'urn:gov:login:test-providers:fake-sandbox-sp':
+    friendly_name: 'Fake/Test stub SP, sandbox SP with env-specific hostname'
+    redirect_uris:
+      - 'https://%{env}.example.com'
+    restrict_to_deploy_env: 'sandbox'

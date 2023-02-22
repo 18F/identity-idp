@@ -5,6 +5,7 @@ import { FormSteps, PromptOnNavigate } from '@18f/identity-form-steps';
 import { VerifyFlowStepIndicator, VerifyFlowPath } from '@18f/identity-verify-flow';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import type { FormStep } from '@18f/identity-form-steps';
+import { getConfigValue } from '@18f/identity-config';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep from './documents-step';
 import InPersonPrepareStep from './in-person-prepare-step';
@@ -60,6 +61,8 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { inPersonURL, arcgisSearchEnabled } = useContext(InPersonContext);
+  const appName = getConfigValue('appName');
+
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
     if (stepName) {
@@ -112,14 +115,17 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
           {
             name: 'location',
             form: arcgisSearchEnabled ? InPersonLocationPostOfficeSearchStep : InPersonLocationStep,
+            title: t('in_person_proofing.headings.po_search.location'),
           },
           {
             name: 'prepare',
             form: InPersonPrepareStep,
+            title: t('in_person_proofing.headings.prepare'),
           },
           flowPath === 'hybrid' && {
             name: 'switch_back',
             form: InPersonSwitchBackStep,
+            title: t('in_person_proofing.headings.switch_back'),
           },
         ].filter(Boolean) as FormStep[]);
 
@@ -137,6 +143,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
                     pii: submissionError.pii,
                   })(ReviewIssuesStep)
                 : ReviewIssuesStep,
+            title: t('errors.doc_auth.throttled_heading'),
           },
         ] as FormStep[]
       ).concat(inPersonSteps)
@@ -144,6 +151,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
         {
           name: 'documents',
           form: DocumentsStep,
+          title: t('doc_auth.headings.document_capture'),
         },
       ].filter(Boolean) as FormStep[]);
 
@@ -186,6 +194,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
             onStepChange={setStepName}
             onStepSubmit={trackSubmitEvent}
             autoFocus={!!submissionError}
+            titleFormat={`%{step} - ${appName}`}
           />
         </>
       )}

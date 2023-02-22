@@ -8,6 +8,7 @@ es:
           dirección actual.
         learn_more: Aprende más
       barcode:
+        cancel_link_text: Cancelar su código de barras
         close_window: Ya puede cerrar esta ventana
         deadline: Visite la Oficina de correos antes del %{deadline}
         deadline_restart: Si supera la fecha límite, su información no se guardará y
@@ -29,10 +30,11 @@ es:
           empleado en ventanilla. No es necesario pedir cita.
       cta:
         button: Verifique su identificación en persona
-        new_feature: Nuevo artículo
-        prompt_detail: Si usted está ubicado cerca de Washington, D.C. o Baltimore, MD,
-          puede verificar su identificación en persona en las oficinas de
-          correos seleccionadas.
+        button_variant: Inténtelo en persona
+        prompt_detail: Es posible que pueda verificar su documento de identidad en
+          persona en una oficina de correos participante cercana.
+        prompt_detail_b: Si tiene problemas para añadir su documento de identidad en
+          línea, puede intentarlo en persona en algunas oficinas de correos.
       location:
         contact_info_heading: Información del contacto
         distance:
@@ -46,7 +48,7 @@ es:
         none_found: No se encontraron localidades.
         phone: 'Telefono:'
         po_search:
-          address_search_hint: 'Ejemplo: 1960 W Chelsea Ave Allentown PA 18104'
+          address_search_hint: 'Ejemplo: 1234 N Example St., Allentown, PA 12345'
           address_search_label: Introduzca una dirección para encontrar una Oficina de
             Correos cercana a usted
           is_searching_message: Buscando oficinas de correos…
@@ -55,12 +57,14 @@ es:
           none_found_tip: Puede buscar utilizando una dirección diferente, o añadir fotos
             de su documento de identidad para intentar verificar su identidad en
             línea de nuevo.
-          po_search_about: Si vives cerca de Washington, D.C. o Baltimore, MD, puedes
-            verificar tu ID directamente en algunas oficinas de correos. Pronto
-            habrá más oficinas en los 50 estados y en algunos otros territorios
-            de los Estados Unidos.
-          results_description: Hay %{count} de oficinas de correos participantes en un
-            radio de 50 millas de la %{address}.
+          po_search_about: Si tiene problemas para añadir su documento de identidad, es
+            posible que pueda verificar su identidad en persona en una oficina
+            de correos local de los Estados Unidos.
+          results_description:
+            one: Hay 1 oficina de correos participante en un radio de 50 millas de la
+              %{address}.
+            other: Hay %{count} de oficinas de correos participantes en un radio de 50
+              millas de la %{address}.
           results_instructions: Seleccione una ubicación de la Oficina de Correos a
             continuación, o busque de nuevo utilizando una dirección diferente.
             Para la accesibilidad de las instalaciones, utilice la información
@@ -72,7 +76,8 @@ es:
         retail_hours_sun: 'Dom:'
         retail_hours_weekday: 'De Lunes a Viernes:'
       prepare:
-        alert_selected_post_office: Ha seleccionado la oficina de correos %{name}.
+        alert_selected_po_name: Ha seleccionado la oficina de correos %{name}.
+        alert_selected_post_office: Ha seleccionado la oficina de correos a %{full_address}.
         privacy_disclaimer: '%{app_name} es un sitio web seguro del gobierno. Nosotros y
           el Servicio Postal de los Estados Unidos utilizamos sus datos para
           verificar su identidad.'
@@ -86,6 +91,11 @@ es:
           identificación emitido por el estado, dirección y número de la
           Seguridad Social.
       state_id:
+        alert_message: 'Su identificación emitida por el estado no debe estar vencida.
+          Se aceptan las siguientes formas de identificación:'
+        id_types:
+          - Licencia para conducir estatal
+          - Identificación estatal que no sea la licencia para conducir
         info_html: Ingrese la información <strong>exactamente como aparece en su cédula
           de identidad emitida por el estado.</strong> Utilizaremos esta
           información para confirmar que coincide con su cédula en persona.
@@ -120,6 +130,7 @@ es:
       address: Ingrese su dirección actual
       barcode: Está listo para verificar su identidad en persona
       cta: ¿Tiene problemas para verificar su documento de identidad en línea?
+      cta_variant: Intente verificar su ID en persona
       location: Seleccione un lugar para verificar su cédula
       po_search:
         location: Encuentre una oficina de correos participante

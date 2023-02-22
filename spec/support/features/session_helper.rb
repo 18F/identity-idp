@@ -657,5 +657,37 @@ module Features
       # For when we want to login from a new browser to avoid the default 'remember device' behavior
       Capybara.reset_session!
     end
+
+    def fill_forgot_password_form(user)
+      click_link t('links.passwords.forgot')
+      fill_in t('account.index.email'), with: user.email
+      click_button t('forms.buttons.continue')
+
+      expect(current_path).to eq forgot_password_path
+    end
+
+    def click_reset_password_link_from_email
+      expect(last_email.subject).to eq t('user_mailer.reset_password_instructions.subject')
+      expect(last_email.html_part.body).to include MarketingSite.help_url
+      expect(last_email.html_part.body).to have_content(
+        t(
+          'user_mailer.reset_password_instructions.footer',
+          expires: (Devise.reset_password_within / 3600),
+        ),
+      )
+      open_last_email
+      click_email_link_matching(/reset_password_token/)
+
+      expect(page.html).not_to include(t('notices.dap_participation'))
+      expect(current_path).to eq edit_user_password_path
+    end
+
+    def fill_reset_password_form(without_request_id: nil)
+      fill_in t('forms.passwords.edit.labels.password'), with: 'newVal!dPassw0rd'
+      find_field('request_id', type: :hidden).set(nil) if without_request_id
+      click_button t('forms.passwords.edit.buttons.submit')
+
+      expect(current_path).to eq new_user_session_path
+    end
   end
 end

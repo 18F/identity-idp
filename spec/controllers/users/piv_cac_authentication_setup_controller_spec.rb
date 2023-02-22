@@ -242,9 +242,11 @@ describe Users::PivCacAuthenticationSetupController do
         end
 
         it 'resets the remember device revocation date/time' do
-          delete :delete, params: { id: piv_cac_configuration_id }
-          expect(subject.current_user.reload.remember_device_revoked_at.to_i).to \
-            be_within(1).of(Time.zone.now.to_i)
+          expect(user.remember_device_revoked_at).to eq nil
+          freeze_time do
+            delete :delete, params: { id: piv_cac_configuration_id }
+            expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
+          end
         end
 
         it 'removes the piv/cac information from the user session' do

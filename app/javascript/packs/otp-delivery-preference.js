@@ -1,6 +1,6 @@
 import { t } from '@18f/identity-i18n';
 
-/** @typedef {import('@18f/identity-phone-input').PhoneInput} PhoneInput */
+/** @typedef {import('@18f/identity-phone-input').PhoneInputElement} PhoneInput */
 
 /**
  * Returns the OTP delivery preference element.

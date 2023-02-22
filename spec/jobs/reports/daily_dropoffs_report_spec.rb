@@ -96,6 +96,7 @@ RSpec.describe Reports::DailyDropoffsReport do
             verify_view_at: timestamp,
             verify_submit_count: 1,
             verify_phone_view_at: timestamp,
+            verify_phone_submit_count: 1,
             encrypt_view_at: timestamp,
             verified_view_at: timestamp,
           )
@@ -129,6 +130,7 @@ RSpec.describe Reports::DailyDropoffsReport do
             expect(row['verify_info'].to_i).to eq(2)
             expect(row['verify_submit'].to_i).to eq(2)
             expect(row['phone'].to_i).to eq(2)
+            expect(row['phone_submit'].to_i).to eq(2)
             expect(row['encrypt'].to_i).to eq(2)
             expect(row['personal_key'].to_i).to eq(2)
 

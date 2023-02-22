@@ -1,11 +1,13 @@
 import baseUserEvent from '@testing-library/user-event';
 import { getByRole, fireEvent, screen } from '@testing-library/dom';
+import type { SinonStub } from 'sinon';
 import { useSandbox } from '@18f/identity-test-helpers';
 import './spinner-button-element';
 import type { SpinnerButtonElement } from './spinner-button-element';
 
 describe('SpinnerButtonElement', () => {
-  const { clock } = useSandbox({ useFakeTimers: true });
+  const sandbox = useSandbox({ useFakeTimers: true });
+  const { clock } = sandbox;
   const userEvent = baseUserEvent.setup({ advanceTimers: clock.tick });
 
   const longWaitDurationMs = 1000;
@@ -117,5 +119,19 @@ describe('SpinnerButtonElement', () => {
     await userEvent.click(button);
 
     expect(wrapper.classList.contains('spinner-button--spinner-active')).to.be.false();
+  });
+
+  it('removes action message timeout when disconnected from the page', async () => {
+    const wrapper = createWrapper({ actionMessage: 'Verifying...' });
+    const button = screen.getByRole('link', { name: 'Click Me' });
+
+    sandbox.spy(window, 'setTimeout');
+    sandbox.spy(window, 'clearTimeout');
+
+    await userEvent.click(button);
+    wrapper.parentNode!.removeChild(wrapper);
+
+    const timeoutId = (window.setTimeout as unknown as SinonStub).getCall(0).returnValue;
+    expect(window.clearTimeout).to.have.been.calledWith(timeoutId);
   });
 });

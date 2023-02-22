@@ -125,6 +125,24 @@ describe Idv::PersonalKeyController do
       get :show
       expect(flash[:success]).to eq t('idv.messages.confirm')
     end
+
+    context 'user selected gpo verification' do
+      before do
+        subject.idv_session.address_verification_mechanism = 'gpo'
+      end
+
+      it 'sets flash.now[:success]' do
+        get :show
+        expect(flash[:success]).to eq t('idv.messages.mail_sent')
+      end
+
+      it 'does not show a flash in new gpo flow' do
+        allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).and_return(true)
+
+        get :show
+        expect(flash[:success]).to eq nil
+      end
+    end
   end
 
   describe '#update' do
@@ -183,6 +201,19 @@ describe Idv::PersonalKeyController do
         expect(response).to redirect_to idv_come_back_later_path
       end
 
+      context 'with gpo personal key after verification' do
+        it 'redirects to sign up completed_url for a sp' do
+          allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).
+            and_return(true)
+          allow(subject).to receive(:pending_profile?).and_return(false)
+          subject.session[:sp] = { ial2: true }
+
+          patch :update
+
+          expect(response).to redirect_to sign_up_completed_url
+        end
+      end
+
       context 'with in person profile' do
         before do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
@@ -236,8 +267,7 @@ describe Idv::PersonalKeyController do
     context 'with device profiling decisioning enabled' do
       before do
         ProofingComponent.create(user: user, threatmetrix: true, threatmetrix_review_status: nil)
-        allow(IdentityConfig.store).
-          to receive(:lexisnexis_threatmetrix_required_to_verify).and_return(true)
+        allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
       end
 
       context 'threatmetrix review status is nil' do
@@ -282,6 +312,7 @@ describe Idv::PersonalKeyController do
       context 'device profiling fails' do
         before do
           ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'reject')
+          profile.active = false
           profile.deactivation_reason = :threatmetrix_review_pending
         end
 

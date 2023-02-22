@@ -34,6 +34,7 @@ fr:
         %{timeout}. Vous pouvez également revenir en arrière et choisir
         d’utiliser votre ordinateur à la place.
       throttled_heading: Nous n’avons pas pu vérifier votre identité
+      throttled_subheading: Essayez de prendre de nouvelles photos.
       throttled_text_html: '<strong>Veuillez réessayer dans %{timeout}.</strong> Pour
         votre sécurité, nous limitons le nombre de fois où vous pouvez tenter de
         vérifier un document en ligne.'
@@ -64,6 +65,7 @@ fr:
         charge. Veuillez essayer par SMS si vous possédez un téléphone disposant
         de cette fonction.
       invalid_phone_number: Le numéro de téléphone n’est pas valide
+      invalid_recaptcha_token: Vous devez relever le défi de la prévention du pourriel.
       invalid_sms_number: Le numéro de téléphone saisi ne prend pas en charge les
         messages textuels. Veuillez essayer l’option d’appel téléphonique.
       invalid_voice_number: Numéro de téléphone invalide. Vérifiez que vous avez entré
@@ -71,6 +73,8 @@ fr:
       missing_field: Veuillez remplir ce champ.
       no_pending_profile: Aucun profil en attente de vérification
       not_a_number: N’est pas un nombre
+      otp_format: Saisissez l’intégralité de votre code à usage unique sans espaces ni
+        caractères spéciaux
       password_incorrect: Mot de passe incorrect
       personal_key_incorrect: Clé personnelle incorrecte
       phone_carrier: Nous nous excusons, car nous ne pouvons pas prendre en charge cet

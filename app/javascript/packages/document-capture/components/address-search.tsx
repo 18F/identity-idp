@@ -6,6 +6,7 @@ import ValidatedField from '@18f/identity-validated-field/validated-field';
 import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-button/spinner-button';
 import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import useSWR from 'swr/immutable';
+import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { FormattedLocation } from './in-person-locations';
 
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
@@ -110,13 +111,12 @@ function useUspsLocations() {
   }, []);
 
   // sends the raw text query to arcgis
-  const { data: addressCandidates, isLoading: isLoadingCandidates } = useSWR(
-    [addressQuery],
-    () => (addressQuery ? requestAddressCandidates(addressQuery) : null),
-    { keepPreviousData: true },
-  );
+  const {
+    data: addressCandidates,
+    isLoading: isLoadingCandidates,
+    error: addressError,
+  } = useSWR([addressQuery], () => (addressQuery ? requestAddressCandidates(addressQuery) : null));
 
-  // sets the arcgis-validated address object
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
 
   useEffect(() => {
@@ -134,18 +134,21 @@ function useUspsLocations() {
         t('in_person_proofing.body.location.inline_error'),
       );
       validatedFieldRef?.current?.reportValidity();
+      setFoundAddress(null);
     }
   }, [addressCandidates]);
 
-  const { data: locationResults, isLoading: isLoadingLocations } = useSWR(
-    [foundAddress],
-    ([address]) => (address ? requestUspsLocations(address) : null),
-    { keepPreviousData: true },
-  );
+  const {
+    data: locationResults,
+    isLoading: isLoadingLocations,
+    error: uspsError,
+  } = useSWR([foundAddress], ([address]) => (address ? requestUspsLocations(address) : null));
 
   return {
     foundAddress,
     locationResults,
+    uspsError,
+    addressError,
     isLoading: isLoadingLocations || isLoadingCandidates,
     handleAddressSearch,
     validatedFieldRef,
@@ -154,20 +157,28 @@ function useUspsLocations() {
 
 interface AddressSearchProps {
   registerField?: RegisterFieldCallback;
-  onFoundAddress?: (address: LocationQuery) => void;
-  onFoundLocations?: (locations: FormattedLocation[]) => void;
+  onFoundAddress?: (address: LocationQuery | null) => void;
+  onFoundLocations?: (locations: FormattedLocation[] | null | undefined) => void;
+  onLoadingLocations?: (isLoading: boolean) => void;
+  onError?: (error: Error | null) => void;
+  disabled?: boolean;
 }
 
 function AddressSearch({
   registerField = () => undefined,
   onFoundAddress = () => undefined,
   onFoundLocations = () => undefined,
+  onLoadingLocations = () => undefined,
+  onError = () => undefined,
+  disabled = false,
 }: AddressSearchProps) {
   const { t } = useI18n();
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
   const [textInput, setTextInput] = useState('');
   const {
     locationResults,
+    uspsError,
+    addressError,
     isLoading,
     handleAddressSearch: onSearch,
     foundAddress,
@@ -181,15 +192,23 @@ function AddressSearch({
 
   useEffect(() => {
     spinnerButtonRef.current?.toggleSpinner(isLoading);
+    onLoadingLocations(isLoading);
   }, [isLoading]);
 
   useEffect(() => {
-    locationResults && onFoundLocations(locationResults);
+    addressError && onError(addressError);
+    uspsError && onError(uspsError);
+  }, [uspsError, addressError]);
+
+  useDidUpdateEffect(() => {
+    onFoundLocations(locationResults);
+
     foundAddress && onFoundAddress(foundAddress);
-  }, [locationResults, foundAddress]);
+  }, [locationResults]);
 
   const handleSearch = useCallback(
     (event) => {
+      onError(null);
       onSearch(event, textInput);
     },
     [textInput],
@@ -210,6 +229,7 @@ function AddressSearch({
           onChange={onTextInputChange}
           label={t('in_person_proofing.body.location.po_search.address_search_label')}
           hint={t('in_person_proofing.body.location.po_search.address_search_hint')}
+          disabled={disabled}
         />
       </ValidatedField>
       <div className="margin-y-5">

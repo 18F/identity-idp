@@ -6,8 +6,30 @@ shared_examples_for 'an idv session errors controller action' do
 
     it 'renders the error' do
       get action
-
       expect(response).to render_template(template)
+    end
+
+    it 'logs an event' do
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: session error visited',
+        hash_including(type: action.to_s),
+      ).once
+      get action
+    end
+
+    context 'fetch() request from form-steps-wait JS' do
+      before do
+        request.headers['X-Form-Steps-Wait'] = '1'
+      end
+
+      it 'returns an empty response' do
+        get action
+        expect(response).to have_http_status(204)
+      end
+      it 'does not log an event' do
+        expect(@analytics).not_to receive(:track_event).with('IdV: session error visited', anything)
+        get action
+      end
     end
   end
 
@@ -20,16 +42,45 @@ shared_examples_for 'an idv session errors controller action' do
 
       expect(response).to redirect_to(idv_phone_url)
     end
+    it 'does not log an event' do
+      expect(@analytics).not_to receive(:track_event).with(
+        'IdV: session error visited',
+        hash_including(type: action.to_s),
+      )
+      get action
+    end
   end
 
   context 'the user is not authenticated and in doc capture flow' do
-    it 'renders the error' do
+    before do
       user = create(:user, :signed_up)
       controller.session[:doc_capture_user_id] = user.id
-
+    end
+    it 'renders the error' do
       get action
-
       expect(response).to render_template(template)
+    end
+    it 'logs an event' do
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: session error visited',
+        hash_including(type: action.to_s),
+      ).once
+      get action
+    end
+
+    context 'fetch() request from form-steps-wait JS' do
+      before do
+        request.headers['X-Form-Steps-Wait'] = '1'
+      end
+
+      it 'returns an empty response' do
+        get action
+        expect(response).to have_http_status(204)
+      end
+      it 'does not log an event' do
+        expect(@analytics).not_to receive(:track_event).with('IdV: session error visited', anything)
+        get action
+      end
     end
   end
 
@@ -38,6 +89,13 @@ shared_examples_for 'an idv session errors controller action' do
       get action
 
       expect(response).to redirect_to(new_user_session_url)
+    end
+    it 'does not log an event' do
+      expect(@analytics).not_to receive(:track_event).with(
+        'IdV: session error visited',
+        hash_including(type: action.to_s),
+      )
+      get action
     end
   end
 end
@@ -52,6 +110,7 @@ describe Idv::SessionErrorsController do
       and_return(idv_session_profile_confirmation)
     allow(controller).to receive(:idv_session).and_return(idv_session)
     stub_sign_in(user) if user
+    stub_analytics
   end
 
   describe 'before_actions' do
@@ -95,7 +154,18 @@ describe Idv::SessionErrorsController do
       it 'assigns URL to try again' do
         response
 
-        expect(assigns(:try_again_path)).to eq(idv_doc_auth_path)
+        expect(assigns(:try_again_path)).to eq(idv_verify_info_url)
+      end
+
+      it 'logs an event with attempts remaining' do
+        expect(@analytics).to receive(:track_event).with(
+          'IdV: session error visited',
+          hash_including(
+            type: action.to_s,
+            attempts_remaining: 5,
+          ),
+        )
+        response
       end
 
       context 'in in-person proofing flow' do
@@ -128,6 +198,17 @@ describe Idv::SessionErrorsController do
 
         expect(assigns(:expires_at)).to be_kind_of(Time)
       end
+
+      it 'logs an event with attempts remaining' do
+        expect(@analytics).to receive(:track_event).with(
+          'IdV: session error visited',
+          hash_including(
+            type: action.to_s,
+            attempts_remaining: 5,
+          ),
+        )
+        get action
+      end
     end
   end
 
@@ -158,6 +239,17 @@ describe Idv::SessionErrorsController do
 
         expect(assigns(:expires_at)).not_to eq(Time.zone.now)
       end
+
+      it 'logs an event with attempts remaining' do
+        expect(@analytics).to receive(:track_event).with(
+          'IdV: session error visited',
+          hash_including(
+            type: 'ssn_failure',
+            attempts_remaining: 0,
+          ),
+        )
+        get action
+      end
     end
   end
 
@@ -178,6 +270,18 @@ describe Idv::SessionErrorsController do
         get action
 
         expect(assigns(:expires_at)).to be_kind_of(Time)
+      end
+
+      it 'logs an event with attempts remaining' do
+        expect(@analytics).to receive(:track_event).with(
+          'IdV: session error visited',
+          hash_including(
+            type: action.to_s,
+            attempts_remaining: 0,
+          ),
+        )
+
+        get action
       end
     end
   end

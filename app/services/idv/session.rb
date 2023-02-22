@@ -4,6 +4,7 @@ module Idv
       address_verification_mechanism
       applicant
       go_back_path
+      verify_info_step_document_capture_session_uuid
       idv_phone_step_document_capture_session_uuid
       vendor_phone_confirmation
       user_phone_confirmation
@@ -135,6 +136,24 @@ module Idv
       session[:user_phone_confirmation_session] = new_user_phone_confirmation_session.to_h
     end
 
+    def invalidate_steps_after_ssn!
+      # Guard against unvalidated attributes from in-person flow in review controller
+      session[:applicant] = nil
+
+      invalidate_verify_info_step!
+      invalidate_phone_step!
+    end
+
+    def invalidate_verify_info_step!
+      session[:resolution_successful] = nil
+      session[:profile_confirmation] = nil
+    end
+
+    def invalidate_phone_step!
+      session[:vendor_phone_confirmation] = nil
+      session[:user_phone_confirmation] = nil
+    end
+
     private
 
     attr_accessor :user_session
@@ -171,11 +190,20 @@ module Idv
     end
 
     def threatmetrix_failed_and_needs_review?
-      return unless IdentityConfig.store.lexisnexis_threatmetrix_required_to_verify
-      return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
+      failed_and_needs_review = true
+      ok_no_review_needed = false
+
+      if !FeatureManagement.proofing_device_profiling_decisioning_enabled?
+        return ok_no_review_needed
+      end
+
       component = ProofingComponent.find_by(user: @current_user)
-      return true unless component
-      !(component.threatmetrix && component.threatmetrix_review_status == 'pass')
+
+      return ok_no_review_needed if !component.threatmetrix
+
+      return ok_no_review_needed if component.threatmetrix_review_status == 'pass'
+
+      return failed_and_needs_review
     end
   end
 end

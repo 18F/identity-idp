@@ -24,19 +24,24 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
     )
   end
 
-  it_behaves_like 'a lexisnexis proofer'
+  it_behaves_like 'a lexisnexis rdp proofer'
 
-  subject(:instance) do
-    Proofing::LexisNexis::InstantVerify::Proofer.new(**LexisNexisFixtures.example_config.to_h)
+  subject do
+    described_class.new(**LexisNexisFixtures.example_config.to_h)
   end
 
   describe '#proof' do
     context 'when the response is a full match' do
       it 'is a successful result' do
-        stub_request(:post, verification_request.url).
-          to_return(body: LexisNexisFixtures.instant_verify_success_response_json, status: 200)
+        stub_request(
+          :post,
+          verification_request.url,
+        ).to_return(
+          body: LexisNexisFixtures.instant_verify_success_response_json,
+          status: 200,
+        )
 
-        result = instance.proof(applicant)
+        result = subject.proof(applicant)
 
         expect(result.success?).to eq(true)
         expect(result.errors).to eq({})
@@ -55,12 +60,12 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
           status: 200,
         )
 
-        result = instance.proof(applicant)
+        result = subject.proof(applicant)
 
         expect(result.success?).to eq(false)
         expect(result.errors).to include(
           base: include(a_kind_of(String)),
-          'Execute Instant Verify': include(a_kind_of(Hash)),
+          InstantVerify: include(a_kind_of(Hash)),
         )
         expect(result.transaction_id).to eq('123456')
         expect(result.reference).to eq('0987:1234-abcd')
@@ -72,9 +77,12 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
 
     context 'when the request times out' do
       it 'retuns a timeout result' do
-        stub_request(:post, verification_request.url).to_timeout
+        stub_request(
+          :post,
+          verification_request.url,
+        ).to_timeout
 
-        result = instance.proof(applicant)
+        result = subject.proof(applicant)
 
         expect(result.success?).to eq(false)
         expect(result.errors).to eq({})
@@ -86,9 +94,12 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
 
     context 'when an error is raised' do
       it 'returns a result with an exception' do
-        stub_request(:post, verification_request.url).to_raise(RuntimeError.new('fancy test error'))
+        stub_request(
+          :post,
+          verification_request.url,
+        ).to_raise(RuntimeError.new('fancy test error'))
 
-        result = instance.proof(applicant)
+        result = subject.proof(applicant)
 
         expect(result.success?).to eq(false)
         expect(result.errors).to eq({})
@@ -109,7 +120,7 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
             status: 200,
           )
 
-          result = instance.proof(applicant)
+          result = subject.proof(applicant)
 
           expect(result.failed_result_can_pass_with_additional_verification?).to eq(true)
           expect(result.attributes_requiring_additional_verification).to eq([:dob])
@@ -128,7 +139,7 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
             status: 200,
           )
 
-          result = instance.proof(applicant)
+          result = subject.proof(applicant)
 
           expect(result.failed_result_can_pass_with_additional_verification?).to eq(false)
           expect(result.attributes_requiring_additional_verification).to be_empty
@@ -139,10 +150,15 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
       end
 
       it 'logs drivers license info that is present in the response' do
-        stub_request(:post, verification_request.url).
-          to_return(body: LexisNexisFixtures.instant_verify_success_response_json, status: 200)
+        stub_request(
+          :post,
+          verification_request.url,
+        ).to_return(
+          body: LexisNexisFixtures.instant_verify_success_response_json,
+          status: 200,
+        )
 
-        result = instance.proof(applicant)
+        result = subject.proof(applicant)
 
         expect(result.to_h[:drivers_license_check_info]).to eq(
           'ItemName' => 'DriversLicenseVerification',

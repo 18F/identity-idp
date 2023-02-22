@@ -7,7 +7,7 @@ RSpec.describe ClickObserverComponent, type: :component do
 
   subject(:rendered) do
     render_inline ClickObserverComponent.new(
-      event_name: event_name,
+      event_name:,
       **tag_options,
     ).with_content(content)
   end

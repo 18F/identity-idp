@@ -5,7 +5,7 @@ RSpec.describe ClipboardButtonComponent, type: :component do
   let(:tag_options) { {} }
 
   subject(:rendered) do
-    render_inline ClipboardButtonComponent.new(clipboard_text: clipboard_text, **tag_options)
+    render_inline ClipboardButtonComponent.new(clipboard_text:, **tag_options)
   end
 
   it 'renders with clipboard text as data-attribute' do

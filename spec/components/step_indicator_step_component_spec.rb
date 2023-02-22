@@ -5,7 +5,7 @@ RSpec.describe StepIndicatorStepComponent, type: :component do
   let(:status) { nil }
 
   subject(:rendered) do
-    render_inline StepIndicatorStepComponent.new(title: title, status: status)
+    render_inline StepIndicatorStepComponent.new(title:, status:)
   end
 
   it 'renders step title' do

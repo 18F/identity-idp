@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe AccordionComponent, type: :component do
   let(:bordered) { nil }
   let(:tag_options) { {} }
-  let(:options) { { bordered: bordered, **tag_options }.compact }
+  let(:options) { { bordered:, **tag_options }.compact }
 
   subject(:rendered) do
     render_inline(described_class.new(**options)) do |c|

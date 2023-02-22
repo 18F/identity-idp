@@ -4,6 +4,7 @@ const { sync: glob } = require('fast-glob');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('@18f/identity-rails-i18n-webpack-plugin');
 const RailsAssetsWebpackPlugin = require('@18f/identity-assets/webpack-plugin');
+const UnpolyfillWebpackPlugin = require('@18f/identity-unpolyfill-webpack-plugin');
 
 const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
 const host = process.env.HOST || 'localhost';
@@ -77,6 +78,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       },
       writeToDisk: true,
       integrity: isProductionEnv,
+      integrityHashes: ['sha512'],
       output: 'manifest.json',
       transform(manifest) {
         const srcIntegrity = {};
@@ -99,5 +101,6 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       },
     }),
     new RailsAssetsWebpackPlugin(),
+    new UnpolyfillWebpackPlugin(),
   ],
 });

@@ -53,13 +53,22 @@ en:
       pattern_mismatch:
         ssn: 'Your Social Security number must be entered in as ###-##-####'
         zipcode: Enter a 5 or 9 digit ZIP Code
-      unsupported_otp_delivery_method: Select a method to receive a code.
     failure:
       attempts:
-        one: For security reasons, you have one attempt remaining.
-        other: For security reasons, you have %{count} attempts remaining.
+        one: For security reasons, you have one attempt remaining to add your ID online.
+        one_variant_a_html: For security reasons, you have <strong>one attempt<strong>
+          remaining to add your ID online.
+        one_variant_b_html: Try taking new pictures. For security reasons, you have
+          <strong>one attempt<strong> remaining to add your ID online.
+        other: For security reasons, you have %{count} attempts remaining to add your ID
+          online.
+        other_variant_a_html: For security reasons, you have <strong>%{count}
+          attempts<strong> remaining to add your ID online.
+        other_variant_b_html: Try taking new pictures. For security reasons, you have
+          <strong>%{count} attempts<strong> remaining to add your ID online.
       button:
         warning: Try again
+        warning_variant: Try again online
       exceptions:
         internal_error: There was an internal error processing your request. Please try again.
         link: please contact us
@@ -112,6 +121,8 @@ en:
       ssn_label_html: Social Security number
       state: State
       zipcode: ZIP Code
+    images:
+      come_back_later: Letter with a check mark
     index:
       id:
         need_html: If you’re creating an account, you’ll need a <strong>current
@@ -122,9 +133,14 @@ en:
         verified information, please %{link}.
       activated_link: contact us
       clear_and_start_over: Clear my information and start over
-      come_back_later: Once your letter arrives, sign into %{app_name}, and enter your
-        one-time code when prompted.
+      come_back_later_html: <p>Letters typically take <strong>3 to 7 business
+        days</strong> to arrive through USPS First Class Mail.</p> <p>Once your
+        letter arrives, sign in to %{app_name}, and enter your one-time code
+        when prompted.</p>
       come_back_later_no_sp_html: You can return to your <strong>%{app_name} account</strong> for now.
+      come_back_later_password_html: <strong>Don’t forget your password.</strong><br
+        /> If you reset your password, the one-time code in your letter will no
+        longer work and you’ll have to verify your identity again.
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: You have encrypted your verified data
       gpo:
@@ -174,7 +190,7 @@ en:
       ssn: Social Security number (SSN)
     titles:
       activated: Your identity has already been verified
-      come_back_later: Come back soon
+      come_back_later: Your letter is on the way
       mail:
         resend: Want another letter?
         verify: Want a letter?

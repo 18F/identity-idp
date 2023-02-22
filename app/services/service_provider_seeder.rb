@@ -41,6 +41,7 @@ class ServiceProviderSeeder
 
   def service_providers
     file = Rails.root.join('config', 'service_providers.yml').read
+    file.gsub!('%{env}', deploy_env) if deploy_env
     content = ERB.new(file).result
     YAML.safe_load(content).fetch(rails_env)
   rescue Psych::SyntaxError => syntax_error
@@ -55,10 +56,16 @@ class ServiceProviderSeeder
     return true if rails_env != 'production'
 
     restrict_env = config['restrict_to_deploy_env']
+    in_prod = deploy_env == 'prod'
+    in_sandbox = !%w[prod staging].include?(deploy_env)
+    in_staging = deploy_env == 'staging'
 
-    is_production_or_has_a_restriction = (deploy_env == 'prod' || restrict_env.present?)
+    return true if restrict_env == 'prod' && in_prod
+    return true if restrict_env == 'staging' && in_staging
+    return true if restrict_env == 'sandbox' && in_sandbox
+    return true if restrict_env.blank? && !in_prod
 
-    !is_production_or_has_a_restriction || (restrict_env == deploy_env)
+    false
   end
 
   def check_for_missing_sps

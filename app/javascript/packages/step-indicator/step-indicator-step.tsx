@@ -3,7 +3,6 @@ import { t } from '@18f/identity-i18n';
 export enum StepStatus {
   CURRENT,
   COMPLETE,
-  PENDING,
   INCOMPLETE,
 }
 
@@ -20,7 +19,7 @@ export interface StepIndicatorStepProps {
 }
 
 function StepIndicatorStep({ title, status }: StepIndicatorStepProps) {
-  const { CURRENT, COMPLETE, PENDING } = StepStatus;
+  const { CURRENT, COMPLETE, INCOMPLETE } = StepStatus;
 
   const classes = [
     'step-indicator__step',
@@ -35,8 +34,8 @@ function StepIndicatorStep({ title, status }: StepIndicatorStepProps) {
     case COMPLETE:
       statusText = t('step_indicator.status.complete');
       break;
-    case PENDING:
-      statusText = t('step_indicator.status.pending');
+    case INCOMPLETE:
+      statusText = t('step_indicator.status.not_complete');
       break;
     default:
       statusText = t('step_indicator.status.current');
@@ -45,9 +44,7 @@ function StepIndicatorStep({ title, status }: StepIndicatorStepProps) {
   return (
     <li className={classes}>
       <span className="step-indicator__step-title">{title}</span>
-      <span className={status === PENDING ? 'step-indicator__step-subtitle' : 'usa-sr-only'}>
-        {statusText}
-      </span>
+      <span className="usa-sr-only">{statusText}</span>
     </li>
   );
 }

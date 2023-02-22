@@ -23,10 +23,10 @@ RSpec.describe BaseComponent, type: :component do
   context 'with sidecar script' do
     class ExampleComponentWithScript < BaseComponent
       def call
-        render(NestedExampleComponentWithScript.new)
+        ''
       end
 
-      def self._sidecar_files(extensions)
+      def self.sidecar_files(extensions)
         files = []
         files << '/components/example_component_with_script_js.js' if extensions.include?('js')
         files << '/components/example_component_with_script_ts.ts' if extensions.include?('ts')
@@ -34,17 +34,67 @@ RSpec.describe BaseComponent, type: :component do
       end
     end
 
-    class NestedExampleComponentWithScript < ExampleComponentWithScript
+    class ExampleComponentWithScriptRenderingOtherComponentWithScript < BaseComponent
       def call
-        ''
+        render(ExampleComponentWithScript.new)
+      end
+
+      def self.sidecar_files(extensions)
+        if extensions.include?('js')
+          ['/components/example_component_with_script_rendering_other_component_with_script.js']
+        else
+          super(extensions)
+        end
+      end
+    end
+
+    class NestedExampleComponentWithScript < ExampleComponentWithScript
+      def self.sidecar_files(extensions)
+        if extensions.include?('js')
+          ['/components/nested_example_component_with_script.js']
+        else
+          super(extensions)
+        end
       end
     end
 
     it 'adds script to class variable when rendered' do
-      expect(view_context).to receive(:enqueue_component_scripts).twice.
-        with('example_component_with_script_js', 'example_component_with_script_ts')
+      expect(view_context).to receive(:enqueue_component_scripts).with(
+        'example_component_with_script_js',
+        'example_component_with_script_ts',
+      )
 
       render_inline(ExampleComponentWithScript.new)
+    end
+
+    it 'adds own and parent scripts to class variable when rendered' do
+      expect(view_context).to receive(:enqueue_component_scripts).with(
+        'nested_example_component_with_script',
+        'example_component_with_script_js',
+        'example_component_with_script_ts',
+      )
+
+      render_inline(NestedExampleComponentWithScript.new)
+    end
+
+    it 'adds own and scripts of any other component it renders' do
+      call = 0
+      expect(view_context).to receive(:enqueue_component_scripts).twice do |*args|
+        call += 1
+        case call
+        when 1
+          expect(args).to eq [
+            'example_component_with_script_rendering_other_component_with_script',
+          ]
+        when 2
+          expect(args).to eq [
+            'example_component_with_script_js',
+            'example_component_with_script_ts',
+          ]
+        end
+      end
+
+      render_inline(ExampleComponentWithScriptRenderingOtherComponentWithScript.new)
     end
   end
 

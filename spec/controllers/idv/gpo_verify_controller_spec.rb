@@ -30,10 +30,8 @@ RSpec.describe Idv::GpoVerifyController do
     allow(decorated_user).to receive(:pending_profile_requires_verification?).
       and_return(has_pending_profile)
 
-    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
-      and_return(threatmetrix_enabled)
-    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
-      and_return(threatmetrix_enabled)
+    allow(IdentityConfig.store).to receive(:proofing_device_profiling).
+      and_return(threatmetrix_enabled ? :enabled : :disabled)
   end
 
   describe '#index' do
@@ -128,6 +126,14 @@ RSpec.describe Idv::GpoVerifyController do
           where.not(disavowal_token_fingerprint: nil).count
         expect(disavowal_event_count).to eq 1
         expect(response).to redirect_to(sign_up_completed_url)
+      end
+
+      it 'redirects to the personal key page if new gpo flow is enabled' do
+        allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).and_return(true)
+
+        action
+
+        expect(response).to redirect_to(idv_personal_key_url)
       end
 
       it 'dispatches account verified alert' do
@@ -312,7 +318,7 @@ RSpec.describe Idv::GpoVerifyController do
           enqueued_at: nil,
           error_details: otp_code_incorrect,
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
-        ).exactly(max_attempts).times
+        ).exactly(max_attempts - 1).times
 
         expect(@analytics).to receive(:track_event).with(
           'Throttler Rate Limit Triggered',
@@ -321,7 +327,7 @@ RSpec.describe Idv::GpoVerifyController do
 
         expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_rate_limited).once
 
-        (max_attempts + 1).times do |i|
+        max_attempts.times do |i|
           post(
             :create,
             params: {

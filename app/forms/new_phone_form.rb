@@ -13,25 +13,31 @@ class NewPhoneForm
   validate :validate_not_voip
   validate :validate_not_duplicate
   validate :validate_not_premium_rate
+  validate :validate_recaptcha_token
   validate :validate_allowed_carrier
 
-  attr_accessor :phone, :international_code, :otp_delivery_preference,
-                :otp_make_default_number, :setup_voice_preference
+  attr_reader :phone,
+              :international_code,
+              :otp_delivery_preference,
+              :otp_make_default_number,
+              :setup_voice_preference,
+              :recaptcha_token
 
   alias_method :setup_voice_preference?, :setup_voice_preference
 
-  def initialize(user, setup_voice_preference: false)
-    self.user = user
-    self.otp_delivery_preference = user.otp_delivery_preference
-    self.otp_make_default_number = false
-    self.setup_voice_preference = setup_voice_preference
+  def initialize(user:, analytics: nil, setup_voice_preference: false)
+    @user = user
+    @analytics = analytics
+    @otp_delivery_preference = user.otp_delivery_preference
+    @otp_make_default_number = false
+    @setup_voice_preference = setup_voice_preference
   end
 
   def submit(params)
     ingest_submitted_params(params)
 
     success = valid?
-    self.phone = submitted_phone unless success
+    @phone = submitted_phone unless success
 
     FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
   end
@@ -48,7 +54,7 @@ class NewPhoneForm
   def phone_info
     return @phone_info if defined?(@phone_info)
 
-    if phone.blank? || !IdentityConfig.store.voip_check
+    if phone.blank? || !IdentityConfig.store.phone_service_check
       @phone_info = nil
     else
       @phone_info = Telephony.phone_info(phone)
@@ -58,21 +64,18 @@ class NewPhoneForm
     @phone_info = Telephony::PhoneNumberInfo.new(type: :unknown)
   rescue Aws::Pinpoint::Errors::BadRequestException
     errors.add(:phone, :improbable_phone, type: :improbable_phone)
-    @redacted_phone = redact(phone)
+    @redacted_phone = StringRedacter.redact_alphanumeric(phone)
     @phone_info = Telephony::PhoneNumberInfo.new(type: :unknown)
   end
 
   private
 
-  attr_accessor :user, :submitted_phone
+  attr_reader :user, :submitted_phone, :analytics
 
   def ingest_phone_number(params)
-    self.international_code = params[:international_code]
-    self.submitted_phone = params[:phone]
-    self.phone = PhoneFormatter.format(
-      submitted_phone,
-      country_code: international_code,
-    )
+    @international_code = params[:international_code]
+    @submitted_phone = params[:phone]
+    @phone = PhoneFormatter.format(submitted_phone, country_code: international_code)
   end
 
   def extra_analytics_attributes
@@ -91,7 +94,7 @@ class NewPhoneForm
   end
 
   def validate_not_voip
-    return if phone.blank? || !IdentityConfig.store.voip_check
+    return if phone.blank? || !IdentityConfig.store.phone_service_check
     return unless IdentityConfig.store.voip_block
 
     if phone_info.type == :voip &&
@@ -125,6 +128,20 @@ class NewPhoneForm
     end
   end
 
+  def validate_recaptcha_token
+    return if !FeatureManagement.phone_recaptcha_enabled?
+    return if recaptcha_validator.valid?(recaptcha_token)
+    errors.add(
+      :recaptcha_token,
+      I18n.t('errors.messages.invalid_recaptcha_token'),
+      type: :invalid_recaptcha_token,
+    )
+  end
+
+  def recaptcha_validator
+    @recaptcha_validator ||= PhoneRecaptchaValidator.new(parsed_phone:, analytics:)
+  end
+
   def parsed_phone
     @parsed_phone ||= Phonelib.parse(phone)
   end
@@ -135,12 +152,9 @@ class NewPhoneForm
     delivery_prefs = params[:otp_delivery_preference]
     default_prefs = params[:otp_make_default_number]
 
-    self.otp_delivery_preference = delivery_prefs if delivery_prefs
-    self.otp_make_default_number = true if default_prefs
-  end
-
-  def redact(phone)
-    phone.gsub(/[a-z]/i, 'X').gsub(/\d/i, '#')
+    @otp_delivery_preference = delivery_prefs if delivery_prefs
+    @otp_make_default_number = true if default_prefs
+    @recaptcha_token = params[:recaptcha_token]
   end
 
   def confirmed_phone?

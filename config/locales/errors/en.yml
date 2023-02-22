@@ -29,6 +29,7 @@ en:
       send_link_throttle: You tried too many times, please try again in %{timeout}.
         You can also go back and choose to use your computer instead.
       throttled_heading: We could not verify your ID
+      throttled_subheading: Try taking new pictures
       throttled_text_html: '<strong>Please try again in %{timeout}.</strong> For your
         security, we limit the number of times you can attempt to verify a
         document online.'
@@ -56,6 +57,7 @@ en:
       invalid_calling_area: Calls to that phone number are not supported. Please try
         SMS if you have an SMS-capable phone.
       invalid_phone_number: Phone number is not valid
+      invalid_recaptcha_token: You must complete the spam prevention challenge.
       invalid_sms_number: The phone number entered doesn’t support text messaging. Try
         the Phone call option.
       invalid_voice_number: Invalid phone number. Check that you’ve entered the
@@ -63,6 +65,7 @@ en:
       missing_field: Please fill in this field.
       no_pending_profile: No profile is waiting for verification
       not_a_number: is not a number
+      otp_format: Enter your entire one-time code without spaces or special characters
       password_incorrect: Incorrect password
       personal_key_incorrect: Incorrect personal key
       phone_carrier: Sorry, we are unable to support that phone carrier at this time.

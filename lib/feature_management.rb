@@ -100,6 +100,10 @@ class FeatureManagement
     IdentityConfig.store.doc_auth_enable_presigned_s3_urls
   end
 
+  def self.otp_expired_redirect_enabled?
+    IdentityConfig.store.allow_otp_countdown_expired_redirect
+  end
+
   def self.logo_upload_enabled?
     IdentityConfig.store.logo_upload_enabled
   end
@@ -108,12 +112,39 @@ class FeatureManagement
     !Rails.env.test? && IdentityConfig.store.log_to_stdout
   end
 
+  def self.phone_recaptcha_enabled?
+    IdentityConfig.store.recaptcha_site_key.present? &&
+      IdentityConfig.store.recaptcha_secret_key.present? &&
+      IdentityConfig.store.phone_recaptcha_score_threshold.positive?
+  end
+
   # Manual allowlist for VOIPs, should only include known VOIPs that we use for smoke tests
   # @return [Set<String>] set of phone numbers normalized to e164
   def self.voip_allowed_phones
     @voip_allowed_phones ||= begin
       allowed_phones = IdentityConfig.store.voip_allowed_phones
       allowed_phones.map { |p| Phonelib.parse(p).e164 }.to_set
+    end
+  end
+
+  # Whether we collect device profiling information as part of the proofing process.
+  def self.proofing_device_profiling_collecting_enabled?
+    case IdentityConfig.store.proofing_device_profiling
+    when :enabled, :collect_only then true
+    when :disabled then false
+    else
+      raise 'Invalid value for proofing_device_profiling'
+    end
+  end
+
+  # Whether we prevent users from proceeding with identity verification based on the outcomes of
+  # device profiling.
+  def self.proofing_device_profiling_decisioning_enabled?
+    case IdentityConfig.store.proofing_device_profiling
+    when :enabled then true
+    when :collect_only, :disabled then false
+    else
+      raise 'Invalid value for proofing_device_profiling'
     end
   end
 end

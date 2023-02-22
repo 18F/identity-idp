@@ -4,8 +4,9 @@ class StoreSpMetadataInSession
     @request_id = request_id
   end
 
-  def call
-    Rails.logger.info(event_attributes)
+  def call(service_provider_request: nil, requested_service_provider: nil)
+    @sp_request = service_provider_request if service_provider_request
+    @service_provider = requested_service_provider
 
     return if sp_request.is_a?(NullServiceProviderRequest)
 
@@ -62,6 +63,7 @@ class StoreSpMetadataInSession
   end
 
   def service_provider
-    ServiceProvider.find_by(issuer: sp_request.issuer)
+    return @service_provider if defined?(@service_provider)
+    @service_provider = ServiceProvider.find_by(issuer: sp_request.issuer)
   end
 end

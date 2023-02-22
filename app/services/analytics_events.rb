@@ -633,6 +633,34 @@ module AnalyticsEvents
     track_event('IdV: in person proofing location visited', flow_path: flow_path, **extra)
   end
 
+  # @param [Boolean] success
+  # @param [Integer] result_total
+  # @param [String] errors
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [Integer] response_status_code
+  # User submitted a search on the location search page and response received
+  def idv_in_person_locations_searched(
+    success:,
+    result_total: 0,
+    errors: nil,
+    exception_class: nil,
+    exception_message: nil,
+    response_status_code: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing location search submitted',
+      success: success,
+      result_total: result_total,
+      errors: errors,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      response_status_code: response_status_code,
+      **extra,
+    )
+  end
+
   # @param [String] selected_location Selected in-person location
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user submitted the in person proofing location step
@@ -707,6 +735,24 @@ module AnalyticsEvents
     )
   end
 
+  # The user clicked the sp link on the "ready to verify" page
+  def idv_in_person_ready_to_verify_sp_link_clicked(**extra)
+    track_event(
+      'IdV: user clicked sp link on ready to verify page',
+      **extra,
+    )
+  end
+
+  # The user clicked the what to bring link on the "ready to verify" page
+  def idv_in_person_ready_to_verify_what_to_bring_link_clicked(**extra)
+    track_event(
+      'IdV: user clicked what to bring link on ready to verify page',
+      **extra,
+    )
+  end
+
+  # User has consented to share information with document upload and may
+  # view the "hybrid handoff" step next unless "skip_upload" param is true
   def idv_doc_auth_agreement_submitted(**extra)
     track_event('IdV: doc auth agreement submitted', **extra)
   end
@@ -908,10 +954,15 @@ module AnalyticsEvents
     )
   end
 
+  # The "hybrid handoff" step: Desktop user has submitted their choice to
+  # either continue via desktop ("document_capture" destination) or switch
+  # to mobile phone ("send_link" destination) to perform document upload.
+  # Mobile users sill log this event but with skip_upload_step = true
   def idv_doc_auth_upload_submitted(**extra)
     track_event('IdV: doc auth upload submitted', **extra)
   end
 
+  # Desktop user has reached the above "hybrid handoff" view
   def idv_doc_auth_upload_visited(**extra)
     track_event('IdV: doc auth upload visited', **extra)
   end
@@ -928,6 +979,11 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name IdV: in person proofing verify visited
   def idv_doc_auth_verify_visited(**extra)
     track_event('IdV: doc auth verify visited', **extra)
+  end
+
+  # @identity.idp.previous_event_name IdV: doc auth optional verify_wait submitted
+  def idv_doc_auth_verify_proofing_results(**extra)
+    track_event('IdV: doc auth verify proofing results', **extra)
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing verify_wait visited
@@ -1965,15 +2021,6 @@ module AnalyticsEvents
     )
   end
 
-  # Track when users get directed to the prompt requiring multiple MFAs for Phone MFA
-  def non_restricted_mfa_required_prompt_visited
-    track_event('Non-Restricted MFA Required Prompt visited')
-  end
-
-  def non_restricted_mfa_required_prompt_skipped
-    track_event('Non-Restricted MFA Required Prompt skipped')
-  end
-
   # Tracks when an openid connect bearer token authentication request is made
   # @param [Boolean] success
   # @param [Integer] ial
@@ -2028,6 +2075,18 @@ module AnalyticsEvents
       client_id: client_id,
       user_id: user_id,
       code_digest: code_digest,
+      **extra,
+    )
+  end
+
+  # Tracks when user is redirected to OTP expired page
+  # @param [String] otp_sent_at
+  # @param [String] otp_expiration
+  def otp_expired_visited(otp_sent_at:, otp_expiration:, **extra)
+    track_event(
+      'OTP Expired Page Visited',
+      otp_sent_at: otp_sent_at,
+      otp_expiration: otp_expiration,
       **extra,
     )
   end
@@ -2356,6 +2415,28 @@ module AnalyticsEvents
   # @param [String] type
   def rate_limit_triggered(type:, **extra)
     track_event('Rate Limit Triggered', type: type, **extra)
+  end
+
+  # The result of a reCAPTCHA verification request was received
+  # @param [Hash] recaptcha_result Full reCAPTCHA response body
+  # @param [Float] score_threshold Minimum value for considering passing result
+  # @param [Boolean] evaluated_as_valid Whether result was considered valid
+  # @param [String, nil] exception_class Class name of exception, if error occurred
+  def recaptcha_verify_result_received(
+    recaptcha_result:,
+    score_threshold:,
+    evaluated_as_valid:,
+    exception_class:,
+    **extra
+  )
+    track_event(
+      'reCAPTCHA verify result received',
+      recaptcha_result:,
+      score_threshold:,
+      evaluated_as_valid:,
+      exception_class:,
+      **extra,
+    )
   end
 
   # User authenticated by a remembered device
@@ -2983,6 +3064,91 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks if request to get address candidates from ArcGIS fails
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [Boolean] response_body_present
+  # @param [Hash] response_body
+  # @param [Integer] response_status_code
+  def idv_arcgis_request_failure(
+    exception_class:,
+    exception_message:,
+    response_body_present:,
+    response_body:,
+    response_status_code:,
+    **extra
+  )
+    track_event(
+      'Request ArcGIS Address Candidates: request failed',
+      exception_class: exception_class,
+      exception_message: exception_message,
+      response_body_present: response_body_present,
+      response_body: response_body,
+      response_status_code: response_status_code,
+      **extra,
+    )
+  end
+
+  # Tracks when the user visits one of the the session error pages.
+  # @param [String] type
+  # @param [Integer,nil] attempts_remaining
+  def idv_session_error_visited(
+    type:,
+    attempts_remaining: nil,
+    **extra
+  )
+    track_event(
+      'IdV: session error visited',
+      type: type,
+      attempts_remaining: attempts_remaining,
+      **extra,
+    )
+  end
+
+  # Tracks if request to get USPS in-person proofing locations fails
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [Boolean] response_body_present
+  # @param [Hash] response_body
+  # @param [Integer] response_status_code
+  def idv_in_person_locations_request_failure(
+    exception_class:,
+    exception_message:,
+    response_body_present:,
+    response_body:,
+    response_status_code:,
+    **extra
+  )
+    track_event(
+      'Request USPS IPP locations: request failed',
+      exception_class: exception_class,
+      exception_message: exception_message,
+      response_body_present: response_body_present,
+      response_body: response_body,
+      response_status_code: response_status_code,
+      **extra,
+    )
+  end
+
+  # Tracks when USPS in-person proofing enrollment is created
+  # @param [String] enrollment_code
+  # @param [Integer] enrollment_id
+  # @param [String] service_provider
+  def usps_ippaas_enrollment_created(
+    enrollment_code:,
+    enrollment_id:,
+    service_provider:,
+    **extra
+  )
+    track_event(
+      'USPS IPPaaS enrollment created',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      service_provider: service_provider,
+      **extra,
+    )
+  end
+
   # Tracks if USPS in-person proofing enrollment request fails
   # @param [String] context
   # @param [String] reason
@@ -3061,6 +3227,7 @@ module AnalyticsEvents
   # @param [String] exception_class
   # @param [String] exception_message
   # @param [String] enrollment_code
+  # @param [Float] minutes_since_established
   # @param [Float] minutes_since_last_status_check
   # @param [Float] minutes_since_last_status_update
   # @param [Float] minutes_to_completion
@@ -3081,6 +3248,7 @@ module AnalyticsEvents
   def idv_in_person_usps_proofing_results_job_exception(
     reason:,
     enrollment_id:,
+    minutes_since_established:,
     exception_class: nil,
     exception_message: nil,
     enrollment_code: nil,
@@ -3110,6 +3278,7 @@ module AnalyticsEvents
       exception_class: exception_class,
       exception_message: exception_message,
       enrollment_code: enrollment_code,
+      minutes_since_established: minutes_since_established,
       minutes_since_last_status_check: minutes_since_last_status_check,
       minutes_since_last_status_update: minutes_since_last_status_update,
       minutes_to_completion: minutes_to_completion,
@@ -3144,7 +3313,7 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks exceptions that are raised when initiating deadline email in GetUspsproofingResultsJob
+  # Tracks exceptions that are raised when initiating deadline email in GetUspsProofingResultsJob
   # @param [String] enrollment_id
   # @param [String] exception_class
   # @param [String] exception_message
@@ -3185,12 +3354,14 @@ module AnalyticsEvents
   # Tracks individual enrollments that are updated during GetUspsProofingResultsJob
   # @param [String] enrollment_code
   # @param [String] enrollment_id
+  # @param [Float] minutes_since_established
   # @param [Boolean] fraud_suspected
   # @param [Boolean] passed did this enrollment pass or fail?
   # @param [String] reason why did this enrollment pass or fail?
   def idv_in_person_usps_proofing_results_job_enrollment_updated(
     enrollment_code:,
     enrollment_id:,
+    minutes_since_established:,
     fraud_suspected:,
     passed:,
     reason:,
@@ -3200,6 +3371,7 @@ module AnalyticsEvents
       'GetUspsProofingResultsJob: Enrollment status updated',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
+      minutes_since_established: minutes_since_established,
       fraud_suspected: fraud_suspected,
       passed: passed,
       reason: reason,
@@ -3232,6 +3404,53 @@ module AnalyticsEvents
       'InPerson::EmailReminderJob: Reminder email initiated',
       email_type: email_type,
       enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Tracks incomplete enrollments checked via the USPS API
+  # @param [String] enrollment_code
+  # @param [String] enrollment_id
+  # @param [Float] minutes_since_established
+  # @param [String] response_message
+  def idv_in_person_usps_proofing_results_job_enrollment_incomplete(
+    enrollment_code:,
+    enrollment_id:,
+    minutes_since_established:,
+    response_message:,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Enrollment incomplete',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      minutes_since_established: minutes_since_established,
+      response_message: response_message,
+      **extra,
+    )
+  end
+
+  # Tracks unexpected responses from the USPS API
+  # @param [String] enrollment_code
+  # @param [String] enrollment_id
+  # @param [Float] minutes_since_established
+  # @param [String] response_message
+  # @param [String] reason why was this error unexpected?
+  def idv_in_person_usps_proofing_results_job_unexpected_response(
+    enrollment_code:,
+    enrollment_id:,
+    minutes_since_established:,
+    response_message:,
+    reason:,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Unexpected response received',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      minutes_since_established: minutes_since_established,
+      response_message: response_message,
+      reason: reason,
       **extra,
     )
   end

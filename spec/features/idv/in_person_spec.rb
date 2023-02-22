@@ -14,14 +14,14 @@ RSpec.describe 'In Person Proofing', js: true do
     let(:user) { user_with_2fa }
 
     before do
-      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).and_return(true)
-      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
-        and_return(true)
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('test_org')
     end
 
     it 'allows the user to continue down the happy path', allow_browser_log: true do
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
+      search_for_post_office
 
       # location page
       bethesda_location = page.find_all('.location-collection-item')[1]
@@ -101,7 +101,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_content(
         t('in_person_proofing.body.barcode.deadline', deadline: deadline),
       )
-      expect(page).to have_content('BETHESDA')
+      expect(page).to have_content('MILWAUKEE')
       expect(page).to have_content(
         "#{t('date.day_names')[6]}: #{t('in_person_proofing.body.barcode.retail_hours_closed')}",
       )
@@ -121,7 +121,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
     # location page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
-    expect(page).to have_content(t('in_person_proofing.headings.location'))
+    expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
+    search_for_post_office
     bethesda_location = page.find_all('.location-collection-item')[1]
     bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
 
@@ -223,7 +224,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content(t('in_person_proofing.headings.barcode'))
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
     expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
-    expect(page).to have_content('BETHESDA')
+    expect(page).to have_content('MILWAUKEE')
     expect(page).to have_content(
       "#{t('date.day_names')[6]}: #{t('in_person_proofing.body.barcode.retail_hours_closed')}",
     )
@@ -252,7 +253,8 @@ RSpec.describe 'In Person Proofing', js: true do
     begin_in_person_proofing
 
     # location page
-    expect(page).to have_content(t('in_person_proofing.headings.location'))
+    expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
+    search_for_post_office
     bethesda_location = page.find_all('.location-collection-item')[1]
     bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
 
@@ -260,7 +262,9 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content(t('in_person_proofing.headings.prepare'))
     click_button t('forms.buttons.back')
 
-    expect(page).to have_content(t('in_person_proofing.headings.location'))
+    expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
+
+    search_for_post_office
     expect(page).to have_css('.location-collection-item', wait: 10)
     click_button t('forms.buttons.back')
 
@@ -330,7 +334,7 @@ RSpec.describe 'In Person Proofing', js: true do
         attach_and_submit_images
 
         click_link t('in_person_proofing.body.cta.button')
-
+        search_for_post_office
         bethesda_location = page.find_all('.location-collection-item')[1]
         bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
 
@@ -350,7 +354,7 @@ RSpec.describe 'In Person Proofing', js: true do
         complete_review_step(user)
         acknowledge_and_confirm_personal_key
 
-        expect(page).to have_content('BETHESDA')
+        expect(page).to have_content('MILWAUKEE')
       end
     end
   end
@@ -372,7 +376,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
       complete_review_step
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
-      acknowledge_and_confirm_personal_key
+      acknowledge_and_confirm_personal_key unless IdentityConfig.store.gpo_personal_key_after_otp
 
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
       expect(page).to have_content(t('idv.titles.come_back_later'))
@@ -399,7 +403,7 @@ RSpec.describe 'In Person Proofing', js: true do
       click_on t('idv.troubleshooting.options.verify_by_mail')
       click_on t('idv.buttons.mail.send')
       complete_review_step
-      acknowledge_and_confirm_personal_key
+      acknowledge_and_confirm_personal_key unless IdentityConfig.store.gpo_personal_key_after_otp
       click_idv_continue
       click_on t('account.index.verification.reactivate_button')
       click_on t('idv.messages.clear_and_start_over')

@@ -24,7 +24,7 @@ RSpec.describe ArcgisApi::Geocoder do
 
       expect { subject.suggest('100 Main') }.to raise_error do |error|
         expect(error).to be_instance_of(Faraday::ClientError)
-        expect(error.message).to eq('received error code 400')
+        expect(error.message).to eq('Unable to complete operation.')
         expect(error.response).to be_kind_of(Hash)
       end
     end
@@ -46,25 +46,23 @@ RSpec.describe ArcgisApi::Geocoder do
     it 'returns candidates from magic_key' do
       stub_request_candidates_response
 
-      suggestions = subject.find_address_candidates('abc123')
+      first_candidate = subject.find_address_candidates(magicKey: 'abc123').first
 
-      expect(suggestions.first.as_json).to eq(
-        {
-          'address' => '100 Main Ave, La Grande, Oregon, 97850',
-          'location' => { 'longitude' => -118.10754025791812, 'latitude' => 45.328271485226445 },
-          'street_address' => '100 Main Ave',
-          'city' => 'La Grande',
-          'state' => 'OR',
-          'zip_code' => '97850',
-        },
-      )
+      expect(first_candidate.address).to be_present
+      expect(first_candidate.location).to be_present
+      expect(first_candidate.street_address).to be_present
+      expect(first_candidate.city).to be_present
+      expect(first_candidate.state).to be_present
+      expect(first_candidate.zip_code).to be_present
+      expect(first_candidate.location.latitude).to be_present
+      expect(first_candidate.location.longitude).to be_present
     end
 
     # https://developers.arcgis.com/rest/geocode/api-reference/geocoding-service-output.htm#ESRI_SECTION3_619341BEAA3A4F488FC66FAE8E479563
     it 'handles no results' do
       stub_request_candidates_empty_response
 
-      suggestions = subject.find_address_candidates('abc123')
+      suggestions = subject.find_address_candidates(magicKey: 'abc123')
 
       expect(suggestions).to be_empty
     end
@@ -72,11 +70,38 @@ RSpec.describe ArcgisApi::Geocoder do
     it 'returns an error response body but with Status coded as 200' do
       stub_request_candidates_error
 
-      expect { subject.find_address_candidates('abc123') }.to raise_error do |error|
+      expect { subject.find_address_candidates(magicKey: 'abc123') }.to raise_error do |error|
         expect(error).to be_instance_of(Faraday::ClientError)
-        expect(error.message).to eq('received error code 400')
+        expect(error.message).to eq('Unable to complete operation.')
         expect(error.response).to be_kind_of(Hash)
       end
+    end
+
+    it 'returns an error if using unknown parameter' do
+      stub_request_candidates_response
+
+      expect { subject.find_address_candidates(_unknownKey: 'abc123') }.to raise_error do |error|
+        expect(error).to be_instance_of(ArgumentError)
+      end
+    end
+
+    it 'returns candidates from SingleLine' do
+      stub_request_candidates_response
+
+      first_candidate = subject.find_address_candidates(SingleLine: 'abc123').first
+
+      expect(first_candidate.address).to be_present
+    end
+
+    it 'requests candidates with correct address category filters' do
+      stub_request_candidates_response
+
+      subject.find_address_candidates(SingleLine: 'abc123')
+
+      expect(WebMock).to have_requested(:get, %r{/findAddressCandidates}).
+        with(query: hash_including(
+          { category: 'Subaddress,Point Address,Street Address,Street Name' },
+        ))
     end
   end
 

@@ -22,7 +22,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 #### Dependencies
 1. To start, make sure you have the following dependencies installed and a working development environment:
 
-- Ruby ~> 3.0.4
+- Ruby ~> 3.2.0
 - [PostgreSQL](http://www.postgresql.org/download/)
 - [Redis 5+](http://redis.io/)
 - [Node.js v16](https://nodejs.org)
@@ -122,10 +122,25 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
 #### Viewing email messages
 
-  In local development, the application does not deliver real email messages. Instead, we use a tool called [Mailcatcher](https://github.com/sj26/mailcatcher) to capture all messages.
+  In local development, the application does not deliver real email messages. Instead, we use a tool
+  called [letter_opener](https://github.com/ryanb/letter_opener) to display messages.
 
-  - To view email messages which would have been sent, visit http://localhost:1080/ while the application is running.
-  - To view email templates with placeholder values, visit http://localhost:3000/rails/mailers/ to see a list of template previews.
+##### Disabling letter opener new window behavior
+
+  Letter opener will open each outgoing email in a new browser window or tab. In cases where this
+  will be annoying the application also supports writing outgoing emails to a file. To write emails
+  to a file add the following config to the `development` group in `config/application.yml`:
+
+  ```
+  development:
+    development_mailer_deliver_method: file
+  ```
+
+  After restarting the app emails will be written to the `tmp/mails` folder.
+
+##### Email template previews
+
+  To view email templates with placeholder values, visit http://localhost:3000/rails/mailers/ to see a list of template previews.
 
 #### Translations
 

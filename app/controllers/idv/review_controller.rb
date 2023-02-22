@@ -6,6 +6,7 @@ module Idv
     include StepIndicatorConcern
     include PhoneConfirmation
 
+    before_action :confirm_idv_applicant_created
     before_action :confirm_idv_steps_complete
     before_action :confirm_idv_phone_confirmed
     before_action :confirm_current_password, only: [:create]
@@ -14,7 +15,7 @@ module Idv
                 with: :handle_request_enroll_exception
 
     def confirm_idv_steps_complete
-      return redirect_to(idv_doc_auth_url) unless idv_profile_complete?
+      return redirect_to(idv_verify_info_url) unless idv_profile_complete?
       return redirect_to(idv_phone_url) unless idv_address_complete?
     end
 
@@ -36,6 +37,19 @@ module Idv
 
     def new
       @applicant = idv_session.applicant
+      # Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+      #   call(:encrypt, :view, true)
+      Rails.logger.info(
+        {
+          name: 'event_to_doc_auth_log_token',
+          source: 'proposed',
+          user_id: current_user.id,
+          issuer: current_sp&.issuer,
+          token: :encrypt,
+          action: :view,
+          success: true,
+        }.to_json,
+      )
       analytics.idv_review_info_visited(address_verification_method: address_verification_method)
 
       gpo_mail_service = Idv::GpoMail.new(current_user)
@@ -52,8 +66,6 @@ module Idv
 
       init_profile
 
-      log_reproof_event if idv_session.profile.has_proofed_before?
-
       user_session[:need_personal_key_confirmation] = true
 
       redirect_to next_step
@@ -61,6 +73,19 @@ module Idv
       analytics.idv_review_complete(
         success: true,
         deactivation_reason: idv_session.profile.deactivation_reason,
+      )
+      # Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+      #   call(:verified, :view, true)
+      Rails.logger.info(
+        {
+          name: 'event_to_doc_auth_log_token',
+          source: 'proposed',
+          user_id: current_user.id,
+          issuer: current_sp&.issuer,
+          token: :verified,
+          action: :view,
+          success: true,
+        }.to_json,
       )
       analytics.idv_final(
         success: true,
@@ -77,10 +102,6 @@ module Idv
       user_session.dig('idv', 'address_verification_mechanism')
     end
 
-    def log_reproof_event
-      irs_attempts_api_tracker.idv_reproof
-    end
-
     def flash_message_content
       if idv_session.address_verification_mechanism != 'gpo'
         phone_of_record_msg = ActionController::Base.helpers.content_tag(
@@ -91,7 +112,7 @@ module Idv
     end
 
     def idv_profile_complete?
-      idv_session.profile_confirmation == true
+      !!idv_session.profile_confirmation
     end
 
     def idv_address_complete?
@@ -135,7 +156,16 @@ module Idv
     end
 
     def next_step
-      idv_personal_key_url
+      if gpo_user_flow?
+        idv_come_back_later_url
+      else
+        idv_personal_key_url
+      end
+    end
+
+    def gpo_user_flow?
+      idv_session.address_verification_mechanism == 'gpo' &&
+        IdentityConfig.store.gpo_personal_key_after_otp
     end
 
     def handle_request_enroll_exception(err)

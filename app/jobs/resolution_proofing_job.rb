@@ -1,7 +1,7 @@
 class ResolutionProofingJob < ApplicationJob
   include JobHelpers::StaleJobHelper
 
-  queue_as :default
+  queue_as :high_resolution_proofing
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
@@ -106,7 +106,7 @@ class ResolutionProofingJob < ApplicationJob
     request_ip:,
     timer:
   )
-    return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
+    return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
 
     # The API call will fail without a session ID, so do not attempt to make
     # it to avoid leaking data when not required.

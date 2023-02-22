@@ -30,16 +30,17 @@
   <%= hidden_field_tag :attestation_object, '', id: 'attestation_object' %>
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
   <%= hidden_field_tag :platform_authenticator, @platform_authenticator, id: 'platform_authenticator' %>
-  <%= label_tag 'code', @presenter.nickname_label, class: 'display-block text-bold', for: 'nickname' %>
-  <%= text_field_tag(
-        :name,
-        '',
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :name,
         required: true,
-        aria: { invalid: false },
-        id: 'nickname',
-        class: 'display-block width-full field font-family-mono',
-        size: 16,
-        maxlength: 20,
+        label: @presenter.nickname_label,
+        input_html: {
+          id: 'nickname',
+          class: 'font-family-mono',
+          size: 16,
+          maxlength: 20,
+        },
       ) %>
   <%= f.input(
         :remember_device,

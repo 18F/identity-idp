@@ -27,6 +27,10 @@ interface DocumentCaptureTroubleshootingOptionsProps {
    * Whether to display alternative options for verifying.
    */
   showAlternativeProofingOptions?: boolean;
+
+  altInPersonCta?: string;
+  altInPersonPrompt?: string;
+  altInPersonCtaButtonText?: string;
 }
 
 function DocumentCaptureTroubleshootingOptions({
@@ -34,6 +38,9 @@ function DocumentCaptureTroubleshootingOptions({
   location = 'document_capture_troubleshooting_options',
   showDocumentTips = true,
   showAlternativeProofingOptions,
+  altInPersonCta,
+  altInPersonPrompt,
+  altInPersonCtaButtonText,
 }: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
   const { inPersonURL } = useContext(InPersonContext);
@@ -42,7 +49,13 @@ function DocumentCaptureTroubleshootingOptions({
 
   return (
     <>
-      {showAlternativeProofingOptions && inPersonURL && <InPersonCallToAction />}
+      {showAlternativeProofingOptions && inPersonURL && (
+        <InPersonCallToAction
+          altHeading={altInPersonCta}
+          altPrompt={altInPersonPrompt}
+          altButtonText={altInPersonCtaButtonText}
+        />
+      )}
       <TroubleshootingOptions
         heading={heading}
         options={

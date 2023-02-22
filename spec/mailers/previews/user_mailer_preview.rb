@@ -28,7 +28,7 @@ class UserMailerPreview < ActionMailer::Preview
 
   def reset_password_instructions
     UserMailer.with(user: user, email_address: email_address_record).reset_password_instructions(
-      token: SecureRandom.hex,
+      token: SecureRandom.hex, request_id: SecureRandom.hex,
     )
   end
 

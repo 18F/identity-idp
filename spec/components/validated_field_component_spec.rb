@@ -14,9 +14,9 @@ RSpec.describe ValidatedFieldComponent, type: :component do
   let(:tag_options) { {} }
   let(:options) do
     {
-      name: name,
+      name:,
       form: form_builder,
-      error_messages: error_messages,
+      error_messages:,
       **tag_options,
     }.compact
   end

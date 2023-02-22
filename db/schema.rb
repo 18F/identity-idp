@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_09_171633) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_06_183539) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -155,7 +155,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_09_171633) do
     t.integer "enter_info_view_count", default: 0
     t.datetime "success_view_at", precision: nil
     t.integer "success_view_count", default: 0
-    t.datetime "selfie_view_at", precision: nil
     t.integer "selfie_view_count", default: 0
     t.integer "selfie_submit_count", default: 0
     t.integer "selfie_error_count", default: 0
@@ -188,7 +187,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_09_171633) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "requested_at", precision: nil
-    t.boolean "ial2_strict"
     t.string "issuer"
     t.datetime "cancelled_at", precision: nil
     t.boolean "ocr_confirmation_pending", default: false
@@ -274,6 +272,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_09_171633) do
     t.datetime "last_ial1_authenticated_at", precision: nil
     t.datetime "last_ial2_authenticated_at", precision: nil
     t.datetime "deleted_at", precision: nil
+    t.integer "aal"
     t.index ["access_token"], name: "index_identities_on_access_token", unique: true
     t.index ["session_uuid"], name: "index_identities_on_session_uuid", unique: true
     t.index ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", unique: true
@@ -356,17 +355,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_09_171633) do
     t.integer "user_id", null: false
     t.integer "auth_count", default: 1, null: false
     t.index ["issuer", "year_month", "user_id"], name: "index_monthly_auth_counts_on_issuer_and_year_month_and_user_id", unique: true
-  end
-
-  create_table "otp_requests_trackers", id: :serial, force: :cascade do |t|
-    t.datetime "otp_last_sent_at", precision: nil
-    t.integer "otp_send_count", default: 0
-    t.string "attribute_cost"
-    t.string "phone_fingerprint", default: "", null: false
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
-    t.boolean "phone_confirmed", default: false
-    t.index ["phone_fingerprint", "phone_confirmed"], name: "index_on_phone_and_confirmed", unique: true
   end
 
   create_table "partner_account_statuses", force: :cascade do |t|
@@ -559,7 +547,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_09_171633) do
     t.integer "user_id"
     t.datetime "returned_at", precision: nil
     t.boolean "billable"
-    t.index "((requested_at)::date), issuer", name: "index_sp_return_logs_on_requested_at_date_issuer", where: "(returned_at IS NOT NULL)"
+    t.index "((returned_at)::date), issuer", name: "index_sp_return_logs_on_returned_at_date_issuer", where: "((billable = true) AND (returned_at IS NOT NULL))"
     t.index ["request_id"], name: "index_sp_return_logs_on_request_id", unique: true
   end
 
@@ -584,7 +572,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_09_171633) do
     t.string "email_language", limit: 10
     t.datetime "accepted_terms_at", precision: nil
     t.datetime "encrypted_recovery_code_digest_generated_at", precision: nil
-    t.date "non_restricted_mfa_required_prompt_skip_date"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end

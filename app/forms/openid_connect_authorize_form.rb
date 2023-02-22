@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OpenidConnectAuthorizeForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
@@ -78,6 +80,7 @@ class OpenidConnectAuthorizeForm
       nonce: nonce,
       rails_session_id: rails_session_id,
       ial: ial_context.ial,
+      aal: aal,
       scope: scope.join(' '),
       code_challenge: code_challenge,
     )
@@ -94,16 +97,21 @@ class OpenidConnectAuthorizeForm
     acr_values.filter { |acr| %r{/ial/}.match?(acr) || %r{/loa/}.match?(acr) }
   end
 
-  def aal_values
-    acr_values.filter { |acr| %r{/aal/}.match? acr }
-  end
-
   def ial_context
     @ial_context ||= IalContext.new(ial: ial, service_provider: service_provider)
   end
 
   def ial
     Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max]
+  end
+
+  def aal_values
+    acr_values.filter { |acr| %r{/aal/}.match? acr }
+  end
+
+  def aal
+    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[aal_values.sort.max] ||
+      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
   end
 
   def_delegators :ial_context,

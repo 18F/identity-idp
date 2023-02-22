@@ -47,7 +47,7 @@ module Idv
     end
 
     def confirm_profile_has_been_created
-      redirect_to account_url if idv_session.profile.blank?
+      redirect_to account_url if profile.blank?
     end
 
     def add_proofing_component
@@ -56,13 +56,17 @@ module Idv
 
     def finish_idv_session
       @code = personal_key
+      @personal_key_generated_at = current_user.personal_key_generated_at
+
       user_session[:personal_key] = @code
       idv_session.personal_key = nil
 
       irs_attempts_api_tracker.idv_personal_key_generated
 
       if idv_session.address_verification_mechanism == 'gpo'
-        flash.now[:success] = t('idv.messages.mail_sent')
+        if !IdentityConfig.store.gpo_personal_key_after_otp
+          flash.now[:success] = t('idv.messages.mail_sent')
+        end
       else
         flash.now[:success] = t('idv.messages.confirm')
       end
@@ -73,9 +77,14 @@ module Idv
       idv_session.personal_key || generate_personal_key
     end
 
+    def profile
+      return idv_session.profile if idv_session.profile
+      current_user.active_profile
+    end
+
     def generate_personal_key
       cacher = Pii::Cacher.new(current_user, user_session)
-      idv_session.profile.encrypt_recovery_pii(cacher.fetch)
+      profile.encrypt_recovery_pii(cacher.fetch)
     end
 
     def in_person_enrollment?
@@ -88,11 +97,8 @@ module Idv
     end
 
     def blocked_by_device_profiling?
-      return false unless IdentityConfig.store.lexisnexis_threatmetrix_required_to_verify
-      proofing_component = ProofingComponent.find_by(user: current_user)
-      # pass users who are inbetween feature flag being enabled and have not had a check run.
-      return false if proofing_component.threatmetrix_review_status.nil?
-      proofing_component.threatmetrix_review_status != 'pass'
+      !profile.active &&
+        profile.deactivation_reason == 'threatmetrix_review_pending'
     end
   end
 end

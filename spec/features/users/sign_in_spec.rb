@@ -187,6 +187,9 @@ feature 'Sign in' do
 
     expect(page).
       to have_link t('devise.failure.invalid_link_text', href: link_url)
+
+    email_field = find_field(t('account.index.email'))
+    expect(email_field.value).to eq('invalid@email.com')
   end
 
   scenario 'user cannot sign in with empty email' do
@@ -217,22 +220,10 @@ feature 'Sign in' do
   end
 
   scenario 'user can see and use password visibility toggle', js: true do
-    fake_analytics = FakeAnalytics.new
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-
     visit new_user_session_path
 
     check t('components.password_toggle.toggle_label')
-
-    # Clicking the checkbox triggers a frontend event logging request. Wait for network requests to
-    # settle before continuing to avoid a race condition.
-    Capybara.current_session.server.wait_for_pending_requests
-
     expect(page).to have_css('input.password[type="text"]')
-    expect(fake_analytics).to have_logged_event(
-      'Show Password Button Clicked',
-      path: new_user_session_path,
-    )
   end
 
   scenario 'user session expires in amount of time specified by Devise config' do

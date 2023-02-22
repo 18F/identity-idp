@@ -1,5 +1,4 @@
 require 'open3'
-require 'set'
 
 # Parses comment strings (## help) out of the Makefile
 # and also uses the `make --print-data-base` output to expand out targets based on variables

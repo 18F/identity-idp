@@ -67,4 +67,26 @@ describe Users::PhonesController do
       expect(response).to redirect_to vendor_outage_path(from: :users_phones)
     end
   end
+
+  describe 'recaptcha csp' do
+    before { stub_sign_in }
+
+    it 'does not allow recaptcha in the csp' do
+      expect(subject).not_to receive(:allow_csp_recaptcha_src)
+
+      get :add
+    end
+
+    context 'recaptcha enabled' do
+      before do
+        allow(FeatureManagement).to receive(:phone_recaptcha_enabled?).and_return(true)
+      end
+
+      it 'allows recaptcha in the csp' do
+        expect(subject).to receive(:allow_csp_recaptcha_src)
+
+        get :add
+      end
+    end
+  end
 end

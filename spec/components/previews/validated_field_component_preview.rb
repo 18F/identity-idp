@@ -50,14 +50,14 @@ class ValidatedFieldComponentPreview < BaseComponentPreview
   # @display form true
   # @param label text
   # @param required toggle
-  # @param input_type select [~,Text,Email Address,Boolean]
-  def workbench(label: 'Input', required: true, input_type: 'Text')
+  # @param input_type select [~,String,Email,Boolean]
+  def workbench(label: 'Input', required: true, input_type: 'String')
     render(
       ValidatedFieldComponent.new(
         form: form_builder,
         name: :input,
-        label: label,
-        required: required,
+        label:,
+        required:,
         as: input_type.underscore.tr(' ', '_').to_sym,
       ),
     )

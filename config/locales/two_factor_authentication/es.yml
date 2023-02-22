@@ -123,12 +123,24 @@ es:
     phone_info_html: Le enviaremos un código de un solo uso <strong>cada vez que
       ingrese</strong>.
     phone_label: Número de teléfono
+    phone_verification:
+      troubleshooting:
+        change_number: Utilice otro número de teléfono.
+        code_not_received: No recibí mi código de un solo uso.
+        learn_more: Más información sobre las opciones de autenticación.
     piv_cac_fallback:
       question: '¿No tienes su PIV o CAC disponibles?'
     piv_cac_header_text: Presenta tu PIV/CAC
     piv_cac_webauthn_available: Utilice su llave de seguridad
     please_try_again_html: Inténtelo de nuevo en <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Conozca la autenticación de dos factores
+    recaptcha:
+      disclosure_statement_html: Este sitio está protegido por reCAPTCHA y se
+        %{policy_link} y %{google_tos_link} de Google. Consulte
+        %{login_tos_link} de %{app_name} para dispositivos móviles.
+      google_tos_link: las condiciones de servicio
+      login_tos_link: las condiciones de uso
+      policy_link: aplican la política de privacidad
     totp_fallback:
       question: '¿No tiene su aplicación de autenticación?'
     totp_header_text: Ingrese su código de la app de autenticación
@@ -153,9 +165,6 @@ es:
       phone: Mensaje de texto o de voz
       phone_info: Recibir un código seguro por medio de un mensaje de texto (SMS) o
         una llamada telefónica.
-      phone_info_html: Recibir un código seguro por medio de un mensaje de texto (SMS)
-        o una llamada telefónica. <strong>Para esta opción es necesario que
-        elija un método de autenticación adicional.</strong>
       phone_info_no_voip: Se prohíbe el uso de servicios telefónicos basados en la web
         (VOIP) o de números de teléfono de tarificación adicional (de pago).
       piv_cac: Identificación de empleado gubernamental

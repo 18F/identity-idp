@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class SessionsController < Devise::SessionsController
     include ::ActionView::Helpers::DateHelper
@@ -235,6 +237,10 @@ module Users
       policy.script_src(*policy.script_src, 'dap.digitalgov.gov', 'www.google-analytics.com')
       policy.connect_src(*policy.connect_src, 'www.google-analytics.com')
       request.content_security_policy = policy
+    end
+
+    def sign_in_params
+      params[resource_name]&.permit(:email) if request.post?
     end
   end
 

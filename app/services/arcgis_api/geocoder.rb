@@ -6,15 +6,40 @@ module ArcgisApi
       keyword_init: true
     )
     Location = Struct.new(:latitude, :longitude, keyword_init: true)
-    API_TOKEN_CACHE_KEY = :arcgis_api_token
+    API_TOKEN_HOST = URI(IdentityConfig.store.arcgis_api_generate_token_url).host
+    API_TOKEN_CACHE_KEY = "arcgis_api_token:#{API_TOKEN_HOST}"
 
     # These are option URL params that tend to apply to multiple endpoints
     # https://developers.arcgis.com/rest/geocode/api-reference/geocoding-find-address-candidates.htm#ESRI_SECTION2_38613C3FCB12462CAADD55B2905140BF
     COMMON_DEFAULT_PARAMETERS = {
       f: 'json',
       countryCode: 'USA',
-      category: 'address',
+      # See https://developers.arcgis.com/rest/geocode/api-reference/geocoding-category-filtering.htm#ESRI_SECTION1_502B3FE2028145D7B189C25B1A00E17B
+      #   and https://developers.arcgis.com/rest/geocode/api-reference/geocoding-service-output.htm#GUID-D5C1A6E8-82DE-4900-8F8D-B390C2714A1F
+      category: [
+        # A subset of a PointAddress that represents a house or building subaddress location,
+        #   such as an apartment unit, floor, or individual building within a complex.
+        #   E.g. 3836 Emerald Ave, Suite C, La Verne, CA, 91750
+        'Subaddress',
+
+        # A street address based on points that represent house and building locations.
+        #   E.g. 380 New York St, Redlands, CA, 92373
+        'Point Address',
+
+        # A street address that differs from PointAddress because the house number is interpolated
+        #   from a range of numbers. E.g. 647 Haight St, San Francisco, CA, 94117
+        'Street Address',
+
+        # Similar to a street address but without the house number.
+        #   E.g. Olive Ave, Redlands, CA, 92373.
+        'Street Name',
+      ].join(','),
     }.freeze
+
+    KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS = [
+      :magicKey, # Generated from /suggest; identifier used to retrieve full address record
+      :SingleLine, # Unvalidated address-like text string used to search for geocoded addresses
+    ]
 
     # Makes an HTTP request to quickly find potential address matches. Each match that is found
     # will include an associated magic_key value which can later be used to get more details about
@@ -24,32 +49,44 @@ module ArcgisApi
     # @param text [String]
     # @return [Array<Suggestion>] Suggestions
     def suggest(text)
-      url = "#{root_url}/servernh/rest/services/GSA/USA/GeocodeServer/suggest"
       params = {
         text: text,
         **COMMON_DEFAULT_PARAMETERS,
       }
 
       parse_suggestions(
-        faraday.get(url, params, dynamic_headers) do |req|
+        faraday.get(IdentityConfig.store.arcgis_api_suggest_url, params, dynamic_headers) do |req|
           req.options.context = { service_name: 'arcgis_geocoder_suggest' }
         end.body,
       )
     end
 
-    # Makes HTTP request to find an exact address using magic_key
-    # @param magic_key [String] a magic key value from a previous call to the #suggest method
+    # Makes HTTP request to find a full address record using a magic key or single text line
+    # @param options [Hash] one of 'magicKey', which is an ID returned from /suggest,
+    #   or 'SingleLine', which should be a single string address that includes at least city
+    #   and state.
     # @return [Array<AddressCandidate>] AddressCandidates
-    def find_address_candidates(magic_key)
-      url = "#{root_url}/servernh/rest/services/GSA/USA/GeocodeServer/findAddressCandidates"
+    def find_address_candidates(**options)
+      supported_params = options.slice(*KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS)
+
+      if supported_params.empty?
+        raise ArgumentError, <<~MSG
+          Unknown parameters: #{options.except(*KNOWN_FIND_ADDRESS_CANDIDATES_PARAMETERS)}.
+          See https://developers.arcgis.com/rest/geocode/api-reference/geocoding-find-address-candidates.htm
+        MSG
+      end
+
       params = {
-        magicKey: magic_key,
         outFields: 'StAddr,City,RegionAbbr,Postal',
         **COMMON_DEFAULT_PARAMETERS,
+        **supported_params,
       }
 
       parse_address_candidates(
-        faraday.get(url, params, dynamic_headers) do |req|
+        faraday.get(
+          IdentityConfig.store.arcgis_api_find_address_candidates_url, params,
+          dynamic_headers
+        ) do |req|
           req.options.context = { service_name: 'arcgis_geocoder_find_address_candidates' }
         end.body,
       )
@@ -79,14 +116,12 @@ module ArcgisApi
 
     private
 
-    def root_url
-      IdentityConfig.store.arcgis_api_root_url
-    end
-
     def faraday
       Faraday.new do |conn|
         # Log request metrics
         conn.request :instrumentation, name: 'request_metric.faraday'
+
+        conn.options.timeout = IdentityConfig.store.arcgis_api_request_timeout_seconds
 
         # Raise an error subclassing Faraday::Error on 4xx, 5xx, and malformed responses
         # Note: The order of this matters for parsing the error response body.
@@ -94,6 +129,8 @@ module ArcgisApi
 
         # Parse JSON responses
         conn.response :json, content_type: 'application/json'
+
+        yield conn if block_given?
       end
     end
 
@@ -130,11 +167,17 @@ module ArcgisApi
     # @param response_body [Hash]
     def handle_api_errors(response_body)
       if response_body['error']
+        # response_body is in this format:
+        # {"error"=>{"code"=>400, "message"=>"", "details"=>[""]}}
         error_code = response_body.dig('error', 'code')
+        error_message = response_body.dig('error', 'message') || "Received error code #{error_code}"
 
         raise Faraday::ClientError.new(
-          RuntimeError.new("received error code #{error_code}"),
-          response_body,
+          RuntimeError.new(error_message),
+          {
+            status: error_code,
+            body: { details: response_body.dig('error', 'details')&.join(', ') },
+          },
         )
       end
     end
@@ -151,7 +194,6 @@ module ArcgisApi
     # returns the token and when it expires (1 hour).
     # @return [Hash] API response
     def request_token
-      url = "#{root_url}/portal/sharing/rest/generateToken"
       body = {
         username: IdentityConfig.store.arcgis_api_username,
         password: IdentityConfig.store.arcgis_api_password,
@@ -159,7 +201,10 @@ module ArcgisApi
         f: 'json',
       }
 
-      faraday.post(url, URI.encode_www_form(body)) do |req|
+      faraday.post(
+        IdentityConfig.store.arcgis_api_generate_token_url,
+        URI.encode_www_form(body),
+      ) do |req|
         req.options.context = { service_name: 'usps_token' }
       end.body
     end

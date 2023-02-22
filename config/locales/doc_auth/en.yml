@@ -79,7 +79,7 @@ en:
       http:
         image_load: The image file that you added is not supported. Please take new
           photos of your ID and try again.
-        image_size: You image size is too large or too small. Please add images of your
+        image_size: Your image size is too large or too small. Please add images of your
           ID that are about 2025 x 1275 pixels.
         pixel_depth: The pixel depth of your image file is not supported. Please take
           new photos of your ID and try again. Supported image pixel depth is
@@ -164,9 +164,9 @@ en:
       link_sent_complete_polling: The next step will load automatically once you
         verify your ID using your phone.
       no_sp_name: The agency that you are trying to access
-      privacy_html: '%{app_name} is a secure, government website that adheres to the
+      privacy: '%{app_name} is a secure, government website that adheres to the
         highest standards in data protection. We use your data to verify your
-        identity. %{link} about our privacy and security measures.'
+        identity.'
       secure_account: We’ll encrypt your account with your password. Encryption means
         your data is protected and only you will be able to access or change
         your information.
@@ -194,7 +194,7 @@ en:
         identity.
       email_sent: Link sent to %{email}. Please check your desktop email and follow
         instructions to verify your identity.
-      learn_more: Learn more
+      learn_more: Learn more about our privacy and security measures
       privacy: Our privacy and security standards
       send_sms: We’ll send a text message to your device with a link.  Follow that
         link to your browser to take photos of the front and back of your ID.

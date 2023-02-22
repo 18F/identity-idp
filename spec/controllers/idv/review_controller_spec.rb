@@ -34,7 +34,7 @@ describe Idv::ReviewController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_idv_session_started,
+        :confirm_idv_applicant_created,
         :confirm_idv_steps_complete,
       )
     end
@@ -192,7 +192,7 @@ describe Idv::ReviewController do
   describe '#new' do
     before do
       stub_sign_in(user)
-      allow(subject).to receive(:confirm_idv_session_started).and_return(true)
+      allow(subject).to receive(:confirm_idv_applicant_created).and_return(true)
     end
 
     context 'user has completed all steps' do
@@ -217,6 +217,15 @@ describe Idv::ReviewController do
               t('idv.messages.phone.phone_of_record'),
             ),
           ),
+        )
+      end
+
+      it 'updates the doc auth log for the user for the encrypt view event' do
+        unstub_analytics
+        doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+        expect { get :new }.to(
+          change { doc_auth_log.reload.encrypt_view_count }.from(0).to(1),
         )
       end
     end
@@ -251,12 +260,20 @@ describe Idv::ReviewController do
         expect(flash.now[:success]).to be_nil
       end
     end
+
+    it 'redirects to the verify info controller if the user has not completed it' do
+      controller.idv_session.resolution_successful = nil
+
+      get :new
+
+      expect(response).to redirect_to(idv_verify_info_url)
+    end
   end
 
   describe '#create' do
     before do
       stub_sign_in(user)
-      allow(subject).to receive(:confirm_idv_session_started).and_return(true)
+      allow(subject).to receive(:confirm_idv_applicant_created).and_return(true)
     end
 
     context 'user fails to supply correct password' do
@@ -361,24 +378,6 @@ describe Idv::ReviewController do
           disavowal_event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
             where.not(disavowal_token_fingerprint: nil).count
           expect(disavowal_event_count).to eq 1
-        end
-
-        context 'when the user goes through reproofing' do
-          it 'does not log a reproofing event during initial proofing' do
-            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-
-            expect(@irs_attempts_api_tracker).not_to receive(:idv_reproof)
-          end
-
-          it 'logs a reproofing event upon reproofing' do
-            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-
-            idv_session.profile.update(verified_at: nil)
-
-            expect(@irs_attempts_api_tracker).to receive(:idv_reproof)
-
-            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-          end
         end
 
         context 'with in person profile' do
@@ -600,10 +599,7 @@ describe Idv::ReviewController do
               threatmetrix: true,
               threatmetrix_review_status: 'review',
             )
-            allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
-              and_return(true)
-            allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
-              and_return(true)
+            allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
           end
 
           it 'creates a disabled profile' do
@@ -625,6 +621,17 @@ describe Idv::ReviewController do
                                        deactivation_reason: 'threatmetrix_review_pending'
             )
           end
+
+          it 'updates the doc auth log for the user for the verified view event' do
+            unstub_analytics
+            doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+            expect do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            end.to(
+              change { doc_auth_log.reload.verified_view_count }.from(0).to(1),
+            )
+          end
         end
       end
 
@@ -640,6 +647,13 @@ describe Idv::ReviewController do
           profile.reload
 
           expect(profile).to_not be_active
+        end
+
+        it 'redirects to come back later page' do
+          allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).and_return(true)
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+          expect(response).to redirect_to idv_come_back_later_url
         end
       end
     end

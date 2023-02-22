@@ -366,4 +366,79 @@ describe 'FeatureManagement' do
       expect(FeatureManagement.voip_allowed_phones).to eq(Set['+18885551234', '+18888675309'])
     end
   end
+
+  describe '#proofing_device_profiling_collecting_enabled?' do
+    it 'returns false for disabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:disabled)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(false)
+    end
+    it 'returns true for collect_only' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:collect_only)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(true)
+    end
+    it 'returns true for enabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(true)
+    end
+    it 'raises for invalid value' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:emnabled)
+      expect { FeatureManagement.proofing_device_profiling_collecting_enabled? }.
+        to raise_error
+    end
+  end
+
+  describe '#proofing_device_profiling_decisioning_enabled?' do
+    it 'returns false for disabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:disabled)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(false)
+    end
+    it 'returns false for collect_only' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:collect_only)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(false)
+    end
+    it 'returns true for enabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(true)
+    end
+    it 'raises for invalid value' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:dissabled)
+      expect { FeatureManagement.proofing_device_profiling_decisioning_enabled? }.
+        to raise_error
+    end
+  end
+
+  describe '.phone_recaptcha_enabled?' do
+    let(:recaptcha_site_key) { '' }
+    let(:recaptcha_secret_key) { '' }
+    let(:phone_recaptcha_score_threshold) { 0.0 }
+
+    subject(:phone_recaptcha_enabled) { FeatureManagement.phone_recaptcha_enabled? }
+
+    before do
+      allow(IdentityConfig.store).to receive(:recaptcha_site_key).and_return(recaptcha_site_key)
+      allow(IdentityConfig.store).to receive(:recaptcha_secret_key).and_return(recaptcha_secret_key)
+      allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).
+        and_return(phone_recaptcha_score_threshold)
+    end
+
+    it { expect(subject).to eq(false) }
+
+    context 'with configured recaptcha site key' do
+      let(:recaptcha_site_key) { 'key' }
+
+      it { expect(subject).to eq(false) }
+
+      context 'with configured recaptcha secret key' do
+        let(:recaptcha_secret_key) { 'key' }
+
+        it { expect(subject).to eq(false) }
+
+        context 'with configured default success rate threshold greater than 0' do
+          let(:phone_recaptcha_score_threshold) { 1.0 }
+
+          it { expect(subject).to eq(true) }
+        end
+      end
+    end
+  end
 end

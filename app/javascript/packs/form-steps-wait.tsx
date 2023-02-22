@@ -116,6 +116,10 @@ export class FormStepsWait {
     const response = await window.fetch(action, {
       method,
       body: new window.FormData(form),
+      headers: {
+        // Signal to backend that this request is coming from this JS.
+        'X-Form-Steps-Wait': '1',
+      },
     });
 
     this.handleResponse(response);
@@ -200,7 +204,12 @@ export class FormStepsWait {
 
   async poll() {
     const { waitStepPath } = this.options;
-    const response = await window.fetch(waitStepPath);
+    const response = await window.fetch(waitStepPath, {
+      headers: {
+        // Signal to backend that this request is coming from this JS.
+        'X-Form-Steps-Wait': '1',
+      },
+    });
     this.handleResponse(response);
   }
 }
