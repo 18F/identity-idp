@@ -106,6 +106,9 @@ describe 'dev rake tasks' do
   describe 'dev:random_in_person_users' do
     before(:each) do
       allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
+      allow(Rails).to receive(:cache).and_return(
+        ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+      )
       ENV['VERIFIED'] = nil
       Rake::Task['dev:random_in_person_users'].reenable
     end

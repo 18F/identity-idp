@@ -9,6 +9,7 @@ class FrontendLogController < ApplicationController
     'IdV: verify in person troubleshooting option clicked' => :idv_verify_in_person_troubleshooting_option_clicked,
     'IdV: location visited' => :idv_in_person_location_visited,
     'IdV: location submitted' => :idv_in_person_location_submitted,
+    'IdV: Mobile device and camera check' => :idv_mobile_device_and_camera_check,
     'IdV: prepare visited' => :idv_in_person_prepare_visited,
     'IdV: prepare submitted' => :idv_in_person_prepare_submitted,
     'IdV: switch_back visited' => :idv_in_person_switch_back_visited,

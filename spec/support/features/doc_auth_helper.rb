@@ -35,6 +35,14 @@ module DocAuthHelper
     click_on '‹ ' + t('forms.buttons.back')
   end
 
+  def click_send_link
+    click_on t('forms.buttons.send_link')
+  end
+
+  def click_upload_from_computer
+    click_on t('forms.buttons.upload_photos')
+  end
+
   def idv_doc_auth_welcome_step
     idv_doc_auth_step_path(step: :welcome)
   end
