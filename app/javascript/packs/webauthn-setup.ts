@@ -21,6 +21,11 @@ function webauthn() {
   }
   const continueButton = document.getElementById('continue-button')!;
   continueButton.addEventListener('click', () => {
+    // check if form is valid first
+    const form  = document.getElementById('webauthn_form') as HTMLFormElement;
+    if(!form.checkValidity()){
+      return;
+    }
     document.getElementById('spinner')!.classList.remove('display-none');
     document.getElementById('continue-button')!.className = 'display-none';
 

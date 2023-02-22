@@ -50,7 +50,7 @@ module Users
       )
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
-
+      
       if @platform_authenticator
         irs_attempts_api_tracker.mfa_enroll_webauthn_platform(success: result.success?)
       else
@@ -183,17 +183,14 @@ module Users
         else
           flash.now[:error] = t('errors.webauthn_setup.unique_name')
         end
-
-        render :new
       else
         if form.platform_authenticator?
           flash[:error] = t('errors.webauthn_platform_setup.general_error')
         else
           flash[:error] = t('errors.webauthn_setup.general_error')
         end
-
-        redirect_to account_two_factor_authentication_path
       end
+      render :new
     end
 
     def mark_user_as_fully_authenticated
