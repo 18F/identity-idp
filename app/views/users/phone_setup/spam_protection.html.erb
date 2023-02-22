@@ -10,15 +10,15 @@
   <%= f.input :otp_delivery_preference, as: :hidden %>
   <%= f.input :otp_make_default_number, as: :hidden %>
   <%= f.input :recaptcha_version, as: :hidden, input_html: { value: 2 } %>
+  <%= f.input :recaptcha_token, as: :hidden, input_html: { id: :recaptcha_token } %>
+  <%= javascript_tag(nonce: true) do %>
+    function onCaptchaResponse(token) {
+      const input = document.getElementById('recaptcha_token');
+      input.value = token;
+      input.closest('form').submit();
+    }
+  <% end %>
   <% if IdentityConfig.store.recaptcha_site_key_v2.present? %>
-    <%= f.input :recaptcha_token, as: :hidden, input_html: { id: :recaptcha_token } %>
-    <%= javascript_tag(nonce: true) do %>
-      function onCaptchaResponse(token) {
-        const input = document.getElementById('recaptcha_token');
-        input.value = token;
-        input.closest('form').submit();
-      }
-    <% end %>
     <div
       class="g-recaptcha"
       data-sitekey="<%= IdentityConfig.store.recaptcha_site_key_v2 %>"
@@ -26,9 +26,13 @@
     ></div>
     <script src="https://www.google.com/recaptcha/api.js" async></script>
   <% elsif IdentityConfig.store.phone_recaptcha_mock_validator %>
-    <%= f.input :recaptcha_token, as: :hidden, input_html: { value: 'mock_token' } %>
     <%= f.input :recaptcha_mock_score, as: :hidden, input_html: { value: 1.0 } %>
-    <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
+    <%= render ButtonComponent.new(id: :submit, big: true, wide: true, class: 'display-block margin-y-5') do %>
+      <%= t('forms.buttons.continue') %>
+    <% end %>
+    <%= javascript_tag(nonce: true) do %>
+      document.getElementById('submit').addEventListener('click', () => onCaptchaResponse('mock_token'));
+    <% end %>
   <% end %>
 <% end %>
 
