@@ -79,6 +79,7 @@ export class PhoneInputElement extends HTMLElement {
     this.ownerDocument.addEventListener(CAPTCHA_EVENT_NAME, this.handleCaptchaChallenge);
 
     this.setExampleNumber();
+    this.syncCountryChangeToCodeInput();
     this.validate();
   }
 
