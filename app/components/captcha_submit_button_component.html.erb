@@ -7,7 +7,7 @@
   <%= f.error(:recaptcha_token) %>
   <%= f.input(:recaptcha_token, as: :hidden) %>
   <% if show_mock_score_field? %>
-    <%= render AlertComponent.new(text_tag: :div, class: 'display-inline-block margin-top-0 margin-bottom-2') do %>
+    <%= render AlertComponent.new(text_tag: :div, class: 'margin-top-0 margin-bottom-2') do %>
       <div class="display-flex flex-align-center">
         <%= f.label(
               :recaptcha_mock_score,
