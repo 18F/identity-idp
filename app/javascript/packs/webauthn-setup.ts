@@ -20,7 +20,8 @@ function webauthn() {
     reloadWithError('NotSupportedError');
   }
   const form = document.getElementById('webauthn_form') as HTMLFormElement;
-  form.addEventListener('submit', () => {
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
     document.getElementById('spinner')!.classList.remove('display-none');
     document.getElementById('continue-button')!.className = 'display-none';
 

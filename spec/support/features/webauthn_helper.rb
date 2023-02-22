@@ -24,7 +24,7 @@ module WebAuthnHelper
   end
 
   def mock_submit_without_pressing_button_on_hardware_key_on_setup
-    first('#submit-button', visible: false).click
+    first('#continue-button').click
   end
 
   def mock_press_button_on_hardware_key_on_setup
@@ -37,7 +37,7 @@ module WebAuthnHelper
     set_hidden_field('attestation_object', attestation_object)
     set_hidden_field('client_data_json', setup_client_data_json)
 
-    button = first('#submit-button', visible: false)
+    button = first('#continue-button')
     if javascript_enabled?
       button.execute_script('this.click()')
     else
