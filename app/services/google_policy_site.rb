@@ -5,7 +5,7 @@ class GooglePolicySite
 
   def self.locale_segment
     active_locale = I18n.locale
-    active_locale == I18n.default_locale ? '/' : "/?hl=#{active_locale}/"
+    active_locale == I18n.default_locale ? '' : "?hl=#{active_locale}"
   end
 
   def self.base_url
@@ -13,10 +13,10 @@ class GooglePolicySite
   end
 
   def self.privacy_url
-    URI.join(BASE_URL, '/privacy', locale_segment).to_s
+    URI.join(BASE_URL, "/privacy#{locale_segment}").to_s
   end
 
   def self.terms_url
-    URI.join(BASE_URL, 'terms', locale_segment).to_s
+    URI.join(BASE_URL, "/terms#{locale_segment}").to_s
   end
-  end
+end
