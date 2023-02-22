@@ -305,15 +305,14 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def phone_view_data
-    { confirmation_for_add_phone: confirmation_for_add_phone?,
+    {
+      confirmation_for_add_phone: confirmation_for_add_phone?,
       phone_number: display_phone_to_deliver_to,
       code_value: direct_otp_code,
       otp_expiration: otp_expiration,
       otp_delivery_preference: two_factor_authentication_method,
       otp_make_default_number: selected_otp_make_default_number,
-      voice_otp_delivery_unsupported: voice_otp_delivery_unsupported?,
-      unconfirmed_phone: unconfirmed_phone?,
-      account_reset_token: account_reset_token }.merge(generic_data)
+    }.merge(generic_data)
   end
 
   def selected_otp_make_default_number
@@ -333,8 +332,6 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
 
   def generic_data
     {
-      personal_key_unavailable: personal_key_unavailable?,
-      reauthn: reauthn?,
       user_opted_remember_device_cookie: user_opted_remember_device_cookie,
     }
   end
