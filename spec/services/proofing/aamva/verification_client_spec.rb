@@ -43,6 +43,7 @@ describe Proofing::Aamva::VerificationClient do
 
   describe '#send_verification_request' do
     let(:response_body) { AamvaFixtures.verification_response }
+    let(:response_http_status) { 200 }
 
     before do
       auth_client = instance_double(Proofing::Aamva::AuthenticationClient)
@@ -50,7 +51,7 @@ describe Proofing::Aamva::VerificationClient do
       allow(Proofing::Aamva::AuthenticationClient).to receive(:new).and_return(auth_client)
 
       stub_request(:post, AamvaFixtures.example_config.verification_url).
-        to_return(body: response_body, status: 200)
+        to_return(body: response_body, status: response_http_status)
     end
 
     let(:response) do
@@ -68,17 +69,59 @@ describe Proofing::Aamva::VerificationClient do
     end
 
     context 'when verification is not successful' do
-      let(:response_body) do
-        modify_xml_at_xpath(
-          AamvaFixtures.verification_response,
-          '//PersonBirthDateMatchIndicator',
-          'false',
-        )
+      before { allow(REXML::Document).to receive(:new).and_call_original }
+
+      context 'because we have a valid response and a 200 status, but the response says "no"' do
+        let(:response_body) do
+          modify_xml_at_xpath(
+            AamvaFixtures.verification_response,
+            '//PersonBirthDateMatchIndicator',
+            'false',
+          )
+        end
+
+        it 'returns an unsuccessful response with errors' do
+          expect(response).to be_a Proofing::Aamva::Response::VerificationResponse
+          expect(response.success?).to eq(false)
+        end
       end
 
-      it 'returns an unsuccessful response with errors' do
-        expect(response).to be_a Proofing::Aamva::Response::VerificationResponse
-        expect(response.success?).to eq(false)
+      context 'because we have a valid response and a non-200 status, and the response says "no"' do
+        let(:response_body) do
+          modify_xml_at_xpath(
+            AamvaFixtures.verification_response,
+            '//PersonBirthDateMatchIndicator',
+            'false',
+          )
+        end
+        let(:response_http_status) { 500 }
+
+        it 'parses the raw response body and returns an unsuccessful response with errors' do
+          expect(response).to be_a Proofing::Aamva::Response::VerificationResponse
+          expect(response.success?).to eq(false)
+          expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
+        end
+      end
+
+      context 'because we have an invalid response and a 200 status' do
+        let(:response_body) { '<h1>error: computer has no brain.</h1>' }
+
+        it 'parses the raw response body and returns an unsuccessful response with errors' do
+          expect(response).to be_a Proofing::Aamva::Response::VerificationResponse
+          expect(response.success?).to eq(false)
+          expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
+        end
+      end
+
+      context 'because we have an invalid response and a non-200 status' do
+        let(:response_body) { '<h1>I\'m a teapot</h1>' }
+        let(:response_http_status) { 418 }
+
+        it 'parses the raw response body and returns an unsuccessful response with errors' do
+          expect(response).to be_a Proofing::Aamva::Response::VerificationResponse
+          expect(response.success?).to eq(false)
+          expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
+        end
       end
     end
   end

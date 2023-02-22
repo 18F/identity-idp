@@ -33,9 +33,13 @@ module Proofing
           @missing_attributes = []
           @verification_results = {}
           @http_response = http_response
-          handle_http_error
-          handle_soap_error
-          parse_response
+          http_error = handle_http_error
+          soap_error = handle_soap_error
+          begin
+            parse_response
+          end
+
+          raise soap_error if soap_error
         end
 
         def reasons
@@ -63,8 +67,8 @@ module Proofing
 
         def handle_http_error
           status = http_response.status
-          return if status == 200
-          raise VerificationError, "Unexpected status code in response: #{status}"
+          return nil if status == 200
+          return VerificationError.new("Unexpected status code in response: #{status}")
         end
 
         def handle_missing_attribute(attribute_name)
@@ -74,11 +78,11 @@ module Proofing
 
         def handle_soap_error
           error_handler = SoapErrorHandler.new(http_response)
-          return unless error_handler.error_present?
+          return nil unless error_handler.error_present?
 
           msg = error_handler.error_message
-          raise ::Proofing::TimeoutError, msg if mva_timeout?(msg)
-          raise VerificationError, msg
+          return ::Proofing::TimeoutError.new(msg) if mva_timeout?(msg)
+          return VerificationError.new(msg)
         end
 
         def node_for_match_indicator(match_indicator_name)
@@ -104,7 +108,8 @@ module Proofing
         end
 
         def rexml_document
-          @rexml_document ||= REXML::Document.new(http_response.body)
+          return @rexml_document if @rexml_document
+          @rexml_document = REXML::Document.new(http_response.body)
         end
 
         def mva_timeout?(error_message)
