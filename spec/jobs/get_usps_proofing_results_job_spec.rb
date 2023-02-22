@@ -417,15 +417,26 @@ RSpec.describe GetUspsProofingResultsJob do
             allow(IdentityConfig.store).
               to(receive(:in_person_results_delay_in_hours).and_return(5))
             user = pending_enrollment.user
+            wait_until = nil
 
             freeze_time do
+              wait_until = Time.zone.now + 4.hours
               expect do
                 job.perform(Time.zone.now)
               end.to have_enqueued_mail(UserMailer, :in_person_verified).with(
                 params: { user: user, email_address: user.email_addresses.first },
                 args: [{ enrollment: pending_enrollment }],
-              ).at(Time.zone.now + 4.hours).on_queue(:intentionally_delayed)
+              ).at(wait_until).on_queue(:intentionally_delayed)
             end
+
+            expect(job_analytics).to have_logged_event(
+              'GetUspsProofingResultsJob: Success or failure email initiated',
+              email_type: 'Success',
+              service_provider: anything,
+              timestamp: anything,
+              user_id: anything,
+              wait_until: wait_until,
+            )
           end
         end
 
