@@ -61,7 +61,12 @@ class TransliterableFieldGroupElement extends HTMLElement {
    * Time to wait for input to stop before validating for transliterability
    */
   get inputTimeoutMilliseconds(): number {
-    const attrNumber = Number(this.getAttribute('input-timeout-ms'));
+    const rawAttribute = this.getAttribute('input-timeout-ms');
+    if (rawAttribute === null) {
+      return TransliterableFieldGroupElement.DEFAULT_INPUT_TIMEOUT_MS;
+    }
+
+    const attrNumber = Number(rawAttribute);
     if (Number.isNaN(attrNumber) || attrNumber < 0) {
       return TransliterableFieldGroupElement.DEFAULT_INPUT_TIMEOUT_MS;
     }
@@ -157,7 +162,9 @@ class TransliterableFieldGroupElement extends HTMLElement {
    *
    * @param input HTMLInputElement
    */
-  private async revalidateInput({ currentTarget: input }: Partial<Event> = {}): Promise<void> {
+  private readonly revalidateInput = async ({
+    currentTarget: input,
+  }: Partial<Event> = {}): Promise<void> => {
     if (input instanceof HTMLInputElement && input.validity.customError) {
       // Remove current error text
       input.setCustomValidity('');
@@ -167,7 +174,7 @@ class TransliterableFieldGroupElement extends HTMLElement {
     } catch (err) {
       trackError(err);
     }
-  }
+  };
 
   /**
    * Re-validate the transliterable fields. Uses a debouncing strategy
@@ -183,8 +190,11 @@ class TransliterableFieldGroupElement extends HTMLElement {
         if (this.lastRevalidationRequest !== promise) {
           // Defer to newest call for results
           this.lastRevalidationRequest.then(resolve, reject);
-        } else if (Object.values(this.inputValuesNeedingValidation).length < 1) {
+          return;
+        }
+        if (Object.values(this.inputValuesNeedingValidation).length < 1) {
           resolve();
+          return;
         }
 
         let err: Error | undefined;
@@ -263,7 +273,12 @@ class TransliterableFieldGroupElement extends HTMLElement {
 
       // Attempt to re-submit form. Infinite loop is prevented via the "inputValuesNeedingValidation" check.
       // Note: should not re-dispatch on network error
-      setImmediate(() => e.target?.dispatchEvent(e));
+      setImmediate(() =>
+        e.target?.dispatchEvent(
+          // Circumvent incorrect constructable error
+          new (e.constructor as any)(e.type, e),
+        ),
+      );
     } catch (err) {
       trackError(err);
       setFormErrorVisibility(true);
@@ -277,7 +292,6 @@ class TransliterableFieldGroupElement extends HTMLElement {
   /**
    * Query transliterable field validation API, then set
    * validation on fields
-   * @return boolean Whether to show a form error on submit attempts
    */
   private readonly handleAsyncValidation = async (): Promise<void> => {
     const { inputs, inputValuesNeedingValidation: payload, sendValidationRequest } = this;
@@ -293,18 +307,24 @@ class TransliterableFieldGroupElement extends HTMLElement {
     const result = await sendValidationRequest(payload);
 
     Object.assign(postValidationValues, payload);
-    Object.assign(resultCache, result);
 
     // Set custom validity on invalid fields; clear custom validity on valid fields
-    Object.entries(inputs).forEach(([name, field]) => {
-      field.setCustomValidity(resultCache[name] || '');
+    Object.keys(payload).forEach((key) => {
+      if (!(key in result)) {
+        delete resultCache[key];
+        inputs[key].setCustomValidity('');
+      } else {
+        const value = result[key];
+        resultCache[key] = value;
+        inputs[key].setCustomValidity(value);
+      }
     });
   };
 
   /**
    * Update the visibility for the form-level error
    */
-  private setFormErrorVisibility(visible: boolean) {
+  private readonly setFormErrorVisibility = (visible: boolean) => {
     const { formErrorElement } = this;
 
     if (!formErrorElement) {
@@ -319,14 +339,14 @@ class TransliterableFieldGroupElement extends HTMLElement {
     } else if (!visible && isVisible) {
       formErrorElement.className += ' display-none';
     }
-  }
+  };
 
   /**
    * Wrapper for transliteration API call
    */
-  private async sendValidationRequest(
+  private readonly sendValidationRequest = async (
     fields: Record<string, string>,
-  ): Promise<Record<string, string>> {
+  ): Promise<Record<string, string>> => {
     const { validationUrl } = this;
     if (!validationUrl) {
       // Component is not correctly configured
@@ -341,7 +361,7 @@ class TransliterableFieldGroupElement extends HTMLElement {
       return response.data;
     }
     throw new Error('Failed to retrieve validation data');
-  }
+  };
 }
 
 declare global {
