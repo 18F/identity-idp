@@ -88,7 +88,7 @@ describe 'Hybrid Flow' do
       perform_in_browser(:desktop) do
         expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
         expect(page).to have_current_path(idv_ssn_path)
-        
+
         fill_out_ssn_form_ok
         click_idv_continue
 
