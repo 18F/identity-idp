@@ -10,6 +10,7 @@ module Idv
     before_action :confirm_idv_applicant_created
     before_action :confirm_step_needed
     before_action :set_idv_form
+    before_action :confirm_user_has_completed_verify_step
 
     def new
       analytics.idv_phone_use_different(step: params[:step]) if params[:step]
