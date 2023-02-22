@@ -6,7 +6,6 @@ module Idv
     before_action :confirm_idv_needed
 
     def new
-      properties = ParseControllerFromReferer.new(request.referer).call
       analytics.idv_cancellation_visited(step: params[:step], **properties)
       self.session_go_back_path = go_back_path || idv_path
       @hybrid_session = hybrid_session?
@@ -17,7 +16,10 @@ module Idv
     end
 
     def update
-      analytics.idv_cancellation_go_back(step: params[:step])
+      analytics.idv_cancellation_go_back(
+        step: params[:step],
+        **extra_analytics_attributes,
+      )
       redirect_to session_go_back_path || idv_path
     end
 
@@ -32,6 +34,30 @@ module Idv
     end
 
     private
+
+    def barcode_step?
+      params[:step] == 'barcode'
+    end
+
+    def enrollment
+      current_user.pending_in_person_enrollment
+    end
+
+    def extra_analytics_attributes
+      extra = {}
+      if barcode_step? && enrollment
+        extra.merge!(
+          cancelled_enrollment: false,
+          enrollment_code: enrollment.enrollment_code,
+          enrollment_id: enrollment.id,
+        )
+      end
+      extra
+    end
+
+    def properties
+      ParseControllerFromReferer.new(request.referer).call
+    end
 
     def cancel_session
       if hybrid_session?
