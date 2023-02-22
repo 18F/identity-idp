@@ -35,10 +35,9 @@ module Proofing
           @http_response = http_response
           http_error = handle_http_error
           soap_error = handle_soap_error
-          begin
-            parse_response
-          end
+          parse_response
 
+          raise http_error if http_error
           raise soap_error if soap_error
         end
 
