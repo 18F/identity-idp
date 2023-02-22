@@ -41,7 +41,7 @@ namespace :users do
       if user.fraud_review_pending? && user.proofing_component.review_eligible?
         profile = user.fraud_review_pending_profile
 
-        profile.reject
+        profile.reject_for_fraud
 
         puts "User's profile has been deactivated due to fraud rejection."
       elsif !user.proofing_component.review_eligible?

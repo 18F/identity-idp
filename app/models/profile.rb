@@ -53,7 +53,7 @@ class Profile < ApplicationRecord
     update!(active: false, fraud_review_pending: true)
   end
 
-  def reject
+  def reject_for_fraud
     update!(active: false, fraud_review_pending: false, fraud_rejection: true)
   end
 

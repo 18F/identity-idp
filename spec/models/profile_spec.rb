@@ -310,7 +310,7 @@ describe Profile do
   describe '#reject' do
     it 'sets fraud_rejection to true' do
       profile = create(:profile, user: user)
-      profile.reject
+      profile.reject_for_fraud
 
       expect(profile).to_not be_active
       expect(profile.fraud_review_pending).to eq(false)
