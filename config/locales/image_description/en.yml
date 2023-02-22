@@ -6,6 +6,7 @@ en:
     error: Red error x
     error_lock: Red error lock
     info_question: Blue question mark
+    laptop: Laptop computer
     personal_key: Personal key
     totp_qrcode: QR code for authenticator app
     us_flag: US flag

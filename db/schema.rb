@@ -358,17 +358,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_06_184647) do
     t.index ["issuer", "year_month", "user_id"], name: "index_monthly_auth_counts_on_issuer_and_year_month_and_user_id", unique: true
   end
 
-  create_table "otp_requests_trackers", id: :serial, force: :cascade do |t|
-    t.datetime "otp_last_sent_at", precision: nil
-    t.integer "otp_send_count", default: 0
-    t.string "attribute_cost"
-    t.string "phone_fingerprint", default: "", null: false
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
-    t.boolean "phone_confirmed", default: false
-    t.index ["phone_fingerprint", "phone_confirmed"], name: "index_on_phone_and_confirmed", unique: true
-  end
-
   create_table "partner_account_statuses", force: :cascade do |t|
     t.string "name", null: false
     t.integer "order", null: false

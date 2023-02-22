@@ -24,6 +24,8 @@ describe 'idv/in_person/ready_to_verify/show.html.erb' do
   end
   let(:presenter) { Idv::InPerson::ReadyToVerifyPresenter.new(enrollment: enrollment) }
   let(:step_indicator_steps) { Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS }
+  let(:sp_event_name) { 'IdV: user clicked sp link on ready to verify page' }
+  let(:help_event_name) { 'IdV: user clicked what to bring link on ready to verify page' }
 
   before do
     assign(:presenter, presenter)
@@ -34,6 +36,14 @@ describe 'idv/in_person/ready_to_verify/show.html.erb' do
     render
 
     expect(rendered).to have_content(service_provider.friendly_name)
+    expect(rendered).to have_css("lg-click-observer[event-name='#{sp_event_name}']")
+  end
+
+  it 'displays a link back to the help center' do
+    render
+
+    expect(rendered).to have_link(t('in_person_proofing.body.barcode.learn_more'))
+    expect(rendered).to have_css("lg-click-observer[event-name='#{help_event_name}']")
   end
 
   context 'when the user is not coming from a service provider' do
@@ -51,7 +61,7 @@ describe 'idv/in_person/ready_to_verify/show.html.erb' do
 
     expect(rendered).to have_link(
       t('in_person_proofing.body.barcode.cancel_link_text'),
-      href: idv_cancel_path(step: 'verify'),
+      href: idv_cancel_path(step: 'barcode'),
     )
   end
 

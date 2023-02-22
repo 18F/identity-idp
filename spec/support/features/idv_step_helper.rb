@@ -55,6 +55,29 @@ module IdvStepHelper
     complete_phone_step(user)
   end
 
+  def visit_help_center
+    click_what_to_bring_link
+  end
+
+  def click_what_to_bring_link
+    expect(page).to have_content(t('in_person_proofing.headings.barcode'))
+    click_link t('in_person_proofing.body.barcode.learn_more')
+  end
+
+  def visit_sp
+    click_sp_link
+  end
+
+  def click_sp_link
+    expect(page).to have_content(sp_text)
+    click_link('return to Test SP')
+  end
+
+  def sp_text
+    'You may now close this window or return to Test SP to complete any next steps' \
+      ' you can access until your identity has been verified.'
+  end
+
   def complete_review_step(user = user_with_2fa)
     password = user.password || user_password
     fill_in 'Password', with: password

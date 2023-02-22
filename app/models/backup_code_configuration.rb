@@ -1,10 +1,6 @@
 class BackupCodeConfiguration < ApplicationRecord
   NUM_WORDS = 3
 
-  include EncryptableAttribute
-
-  encrypted_attribute_without_setter(name: :code)
-
   include BackupCodeEncryptedAttributeOverrides
 
   belongs_to :user

@@ -145,6 +145,9 @@ fr:
         veuillez %{link} de votre carte d’identité délivrée par l’État.
       capture_scan_warning_link: télécharger de nouvelles photos
       capture_troubleshooting_tips: Vous rencontrez des difficultés pour ajouter votre pièce d’identité?
+      combined_upload: Comment voulez-vous ajouter votre identifiant ?
+      combined_upload_from_computer: Continuer sur cet ordinateur
+      combined_upload_from_phone: Utilisez votre téléphone pour prendre des photos
       document_capture: Ajoutez votre carte d’identité délivrée par l’État
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
@@ -181,6 +184,13 @@ fr:
       capture_status_none: Alignez
       capture_status_small_document: Approchez-vous
       capture_status_tap_to_capture: Appuyez pour capturer
+      combined_upload: Nous recueillons des informations sur vous en lisant votre
+        carte d’identité délivrée par l’État.
+      combined_upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les
+        photos de votre carte d’identité depuis cet ordinateur.
+      combined_upload_from_phone: Vous n’aurez pas à vous reconnecter. Vous reviendrez
+        sur cet ordinateur après avoir pris des photos. Votre téléphone portable
+        doit être équipé d’un appareil photo et d’un navigateur web.
       document_capture_intro_acknowledgment: Nous recueillons des informations sur
         vous en lisant votre pièce d’identité délivrée par l’État. Nous
         utilisons ces informations pour vérifier votre identité.
@@ -202,10 +212,9 @@ fr:
         fois que vous aurez confirmé votre identifiant à l’aide de votre
         téléphone.
       no_sp_name: L’agence à laquelle vous essayez d’accéder
-      privacy_html: '%{app_name} est un site gouvernemental sécurisé qui respecte les
+      privacy: '%{app_name} est un site gouvernemental sécurisé qui respecte les
         normes les plus strictes en matière de protection des données. Nous
-        utilisons vos données pour vérifier votre identité. %{link} sur nos
-        mesures de confidentialité et de sécurité.'
+        utilisons vos données pour vérifier votre identité.'
       secure_account: Nous chiffrerons votre compte avec votre mot de passe. Le
         chiffrage signifie que vos données sont protégées et que vous êtes le/la
         seul(e) à pouvoir accéder à vos informations ou les modifier.
@@ -218,7 +227,7 @@ fr:
       take_picture: Utilisez l’appareil photo sur votre téléphone portable et
         téléchargez des images de votre identifiant. Nous utilisons uniquement
         les images pour vérifier votre identité.
-      upload: Nous recueillons des informations vous concernant en lisant votre carte
+      upload: Nous recueillons des informations sur vous en lisant votre carte
         d’identité délivrée par l’État.
       upload_computer_link: Téléchargez depuis votre ordinateur
       upload_from_computer: Vous n’avez pas de téléphone?
@@ -237,7 +246,7 @@ fr:
         pour vérifier votre identité.
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau et
         suivez les instructions pour vérifier votre identité.
-      learn_more: En savoir plus
+      learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
       privacy: Nos normes de confidentialité et de sécurité
       send_sms: Nous enverrons un message texte à votre appareil avec un lien. Suivez
         ce lien vers votre navigateur pour prendre des photos du recto et du

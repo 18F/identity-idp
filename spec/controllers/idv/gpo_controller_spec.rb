@@ -38,6 +38,15 @@ describe Idv::GpoController do
       )
     end
 
+    it 'updates the doc auth log for the user for the usps_address_view event' do
+      unstub_analytics
+      doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+      expect { get :index }.to(
+        change { doc_auth_log.reload.usps_address_view_count }.from(0).to(1),
+      )
+    end
+
     it 'redirects if the user has sent too much mail' do
       allow(controller.gpo_mail_service).to receive(:mail_spammed?).and_return(true)
       allow(subject.idv_session).to receive(:address_mechanism_chosen?).
@@ -111,6 +120,7 @@ describe Idv::GpoController do
       end
 
       it 'updates the doc auth log for the user for the usps_letter_sent event' do
+        unstub_analytics
         doc_auth_log = DocAuthLog.create(user_id: user.id)
 
         expect { put :create }.to(
