@@ -21,33 +21,41 @@
       :doc_auth, url: url_for, method: 'PUT',
                  html: { autocomplete: 'off' }
     ) do |f| %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        input_html: { value: pii[:address1] },
-        label: t('idv.form.address1'),
-        label_html: { class: 'usa-label' },
-        maxlength: 255,
-        name: :address1,
-        required: true,
-      ) %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        input_html: { value: pii[:address2] },
-        label: t('idv.form.address2_optional'),
-        label_html: { class: 'usa-label' },
-        maxlength: 255,
-        name: :address2,
-        required: false,
-      ) %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        input_html: { value: pii[:city] },
-        label: t('idv.form.city'),
-        label_html: { class: 'usa-label' },
-        maxlength: 255,
-        name: :city,
-        required: true,
-      ) %>
+  <%= render (TransliterableFieldGroupComponent.new form: f,
+  fields: [:address1, :address2, :city],
+  form_error_message: t('in_person_proofing.form.state_id.errors.transliteration'),
+  validation_url: idv_in_person_validate_transliterable_path do
+    capture do
+    %>
+    <%= render ValidatedFieldComponent.new(
+          form: f,
+          input_html: { value: pii[:address1] },
+          label: t('idv.form.address1'),
+          label_html: { class: 'usa-label' },
+          maxlength: 255,
+          name: :address1,
+          required: true,
+        ) %>
+    <%= render ValidatedFieldComponent.new(
+          form: f,
+          input_html: { value: pii[:address2] },
+          label: t('idv.form.address2_optional'),
+          label_html: { class: 'usa-label' },
+          maxlength: 255,
+          name: :address2,
+          required: false,
+        ) %>
+    <%= render ValidatedFieldComponent.new(
+          form: f,
+          input_html: { value: pii[:city] },
+          label: t('idv.form.city'),
+          label_html: { class: 'usa-label' },
+          maxlength: 255,
+          name: :city,
+          required: true,
+        ) %>
+  <% end
+  end) %>
   <%= render ValidatedFieldComponent.new(
         collection: us_states_territories,
         form: f,
