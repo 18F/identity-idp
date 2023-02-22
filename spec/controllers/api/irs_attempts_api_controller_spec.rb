@@ -50,34 +50,6 @@ RSpec.describe Api::IrsAttemptsApiController do
       }
     end
 
-    context 'with timestamp problems' do
-      it 'returns unprocessable_entity with no timestamp' do
-        post :create, params: { timestamp: nil }
-
-        expect(response.status).to eq(422)
-      end
-
-      it 'returns unprocessable_entity with invalid timestamp' do
-        post :create, params: { timestamp: 'INVALID*TIME' }
-
-        expect(response.status).to eq(422)
-      end
-    end
-
-    context 'with aws_s3 disabled' do
-      let(:timestamp) { '2022-11-08T18:00:00.000Z' }
-      it 'should bypass s3 retrieval' do
-        expect_any_instance_of(Aws::S3::Client).not_to receive(:get_object)
-
-        post :create, params: { timestamp: timestamp }
-
-        expect(response).to be_ok
-        expect(Base64.strict_decode64(response.headers['X-Payload-IV'])).to be_present
-        expect(Base64.strict_decode64(response.headers['X-Payload-Key'])).to be_present
-        expect(Base64.strict_decode64(response.body)).to be_present
-      end
-    end
-
     context 'with aws_s3 enabled' do
       let(:wrong_time) { time - 1.year }
       let(:timestamp) { '2022-11-08T18:00:00.000Z' }
@@ -106,6 +78,72 @@ RSpec.describe Api::IrsAttemptsApiController do
         expect(Base64.strict_decode64(response.headers['X-Payload-IV'])).to be_present
         expect(Base64.strict_decode64(response.headers['X-Payload-Key'])).to be_present
         expect(response.body).to eq(test_object)
+      end
+
+      context 'with aws_s3_stream enabled' do
+        let(:test_object) { '{test: "1234567890 12345"}' }
+        before do
+          allow(IdentityConfig.store).to receive(:irs_attempt_api_aws_s3_stream_enabled).
+            and_return(true)
+          allow(IdentityConfig.store).to receive(:irs_attempt_api_aws_s3_stream_buffer_size).
+            and_return(10)
+
+          Aws.config[:s3] = {
+            stub_responses: {
+              head_object: { content_length: test_object.bytesize },
+              get_object: proc do |context|
+                range_string = context.params[:range]
+                _, byte_string = range_string.split('=')
+                start_byte, _ = byte_string.split('-')
+                { body: test_object.byteslice(
+                  start_byte.to_i,
+                  IdentityConfig.store.irs_attempt_api_aws_s3_stream_buffer_size + 1,
+                ) }
+              end,
+            },
+          }
+        end
+
+        it 'should render data streamed from s3 correctly' do
+          post :create, params: { timestamp: time.iso8601 }
+
+          expect(response).to be_ok
+          expect(Base64.strict_decode64(response.headers['X-Payload-IV'])).to be_present
+          expect(Base64.strict_decode64(response.headers['X-Payload-Key'])).to be_present
+          expect(response.content_type).to eq('application/octet-stream')
+          expect(response['Content-Disposition']).
+            to eq("attachment; filename=\"test_filename\"; filename*=UTF-8''test_filename")
+
+          expect(response.stream.body).to eq(test_object)
+        end
+      end
+    end
+
+    context 'with timestamp problems' do
+      it 'returns unprocessable_entity when given no timestamp' do
+        post :create, params: { timestamp: nil }
+
+        expect(response.status).to eq(422)
+      end
+
+      it 'returns unprocessable_entity when timestamp is invalid' do
+        post :create, params: { timestamp: 'INVALID*TIME' }
+
+        expect(response.status).to eq(422)
+      end
+    end
+
+    context 'with aws_s3 disabled' do
+      let(:timestamp) { '2022-11-08T18:00:00.000Z' }
+      it 'should bypass s3 retrieval' do
+        expect_any_instance_of(Aws::S3::Client).not_to receive(:get_object)
+
+        post :create, params: { timestamp: timestamp }
+
+        expect(response).to be_ok
+        expect(Base64.strict_decode64(response.headers['X-Payload-IV'])).to be_present
+        expect(Base64.strict_decode64(response.headers['X-Payload-Key'])).to be_present
+        expect(Base64.strict_decode64(response.body)).to be_present
       end
     end
 
@@ -144,17 +182,17 @@ RSpec.describe Api::IrsAttemptsApiController do
       expect(response.status).to eq(404)
     end
 
-    it 'returns an error without required timestamp parameter' do
+    it 'returns an error when required timestamp parameter is missing' do
       post :create, params: {}
       expect(response.status).to eq 422
     end
 
-    it 'returns an error with empty timestamp parameter' do
+    it 'returns an error when timestamp parameter is empty' do
       post :create, params: { timestamp: '' }
       expect(response.status).to eq 422
     end
 
-    it 'returns an error with invalid timestamp parameter' do
+    it 'returns an error when timestamp parameter is invalid' do
       post :create, params: { timestamp: 'abc' }
       expect(response.status).to eq 422
 
