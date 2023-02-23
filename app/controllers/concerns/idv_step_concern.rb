@@ -21,7 +21,7 @@ module IdvStepConcern
   def confirm_user_has_completed_address_step
     return if address_step_completed?
 
-    redirect_to idv_phone_url
+    redirect_to idv_otp_verification_path
   end
 
   def address_step_completed?
