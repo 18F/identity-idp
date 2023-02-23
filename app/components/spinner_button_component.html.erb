@@ -1,4 +1,4 @@
-<%= content_tag(:'lg-spinner-button', class: css_class) do %>
+<%= content_tag(:'lg-spinner-button', class: css_class, 'spin-on-click': spin_on_click) do %>
   <div class="spinner-button__content">
     <%= render ButtonComponent.new(type: :button, **button_options).with_content(content) %>
     <span class="spinner-dots spinner-dots--centered" aria-hidden="true">

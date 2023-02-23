@@ -124,7 +124,6 @@ end
 RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response' do |error_type:|
   it 'logs that response is not present' do
     expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(error_type))
-
     job.perform(Time.zone.now)
 
     expect(job_analytics).to have_logged_event(
@@ -160,6 +159,9 @@ RSpec.describe GetUspsProofingResultsJob do
   end
 
   before do
+    allow(Rails).to receive(:cache).and_return(
+      ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+    )
     ActiveJob::Base.queue_adapter = :test
     allow(job).to receive(:analytics).and_return(job_analytics)
     allow(IdentityConfig.store).to receive(:get_usps_proofing_results_job_reprocess_delay_minutes).

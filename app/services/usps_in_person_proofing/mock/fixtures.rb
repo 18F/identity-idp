@@ -5,6 +5,10 @@ module UspsInPersonProofing
         load_response_fixture('internal_server_error_response.json')
       end
 
+      def self.request_expired_token_response
+        load_response_fixture('request_expired_token_response.json')
+      end
+
       def self.request_token_response
         load_response_fixture('request_token_response.json')
       end

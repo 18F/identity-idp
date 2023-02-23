@@ -1,4 +1,12 @@
 module UspsIppHelper
+  def stub_expired_request_token
+    stub_request(:post, %r{/oauth/authenticate}).to_return(
+      status: 200,
+      body: UspsInPersonProofing::Mock::Fixtures.request_expired_token_response,
+      headers: { 'content-type' => 'application/json' },
+    )
+  end
+
   def stub_request_token
     stub_request(:post, %r{/oauth/authenticate}).to_return(
       status: 200,
@@ -23,12 +31,26 @@ module UspsIppHelper
     )
   end
 
+  def stub_request_facilities_with_expired_token
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList},
+    ).to_raise(Faraday::ForbiddenError)
+  end
+
   def stub_request_enroll
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant}).to_return(
       status: 200,
       body: UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
       headers: { 'content-type' => 'application/json' },
     )
+  end
+
+  def stub_request_enroll_expired_token
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
+    ).to_raise(Faraday::ForbiddenError)
   end
 
   def stub_request_enroll_timeout_error
@@ -202,6 +224,13 @@ module UspsIppHelper
     }
   end
 
+  def stub_request_proofing_results_with_forbidden_error
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
+    ).to_raise(Faraday::ForbiddenError)
+  end
+
   def stub_request_proofing_results_with_timeout_error
     stub_request(
       :post,
@@ -243,6 +272,13 @@ module UspsIppHelper
       body: UspsInPersonProofing::Mock::Fixtures.request_enrollment_code_response,
       headers: { 'content-type' => 'application/json' },
     )
+  end
+
+  def stub_request_enrollment_code_with_forbidden_error
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/requestEnrollmentCode},
+    ).to_raise(Faraday::ForbiddenError)
   end
 
   private
