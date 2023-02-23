@@ -1,4 +1,4 @@
-module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
+module TwoFactorAuthenticatableMethods
   extend ActiveSupport::Concern
   include RememberDeviceConcern
   include SecureHeadersConcern
