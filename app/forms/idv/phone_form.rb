@@ -25,7 +25,9 @@ module Idv
       @user = user
       @allowed_countries = allowed_countries
       @delivery_methods = delivery_methods
-      self.phone = initial_phone_value(previous_params[:phone]) unless user_has_multiple_phones?
+      unless user_has_multiple_phones?
+        @international_code, @phone = initial_value(previous_params[:phone])
+      end
     end
 
     def submit(params)
@@ -46,14 +48,20 @@ module Idv
 
     attr_writer :phone, :otp_delivery_preference
 
-    def initial_phone_value(input_phone)
-      initial_phone = input_phone
-      initial_phone ||= begin
+    def initial_value(input_phone)
+      initial_phone = input_phone || begin
         user_phone = MfaContext.new(user).phone_configurations.take&.phone
         user_phone if valid_phone?(user_phone, phone_confirmed: true)
       end
 
-      PhoneFormatter.format(initial_phone) if initial_phone
+      if initial_phone
+        country_code = country_code_for(initial_phone)
+        [country_code, PhoneFormatter.format(initial_phone, country_code: country_code)]
+      end
+    end
+
+    def country_code_for(phone)
+      Phonelib.parse(phone).country
     end
 
     def validate_valid_phone_for_allowed_countries

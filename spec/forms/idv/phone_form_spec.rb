@@ -194,4 +194,32 @@ describe Idv::PhoneForm do
       end
     end
   end
+
+  describe 'initialization' do
+    shared_examples 'a thing that knows about other countries' do
+      let(:user) { build_stubbed(:user, :signed_up, with: { phone: phone }) }
+      let(:optional_params) { { delivery_methods: [:sms] } }
+
+      it 'initializes international_code field properly' do
+        expect(subject.international_code).to eql(expected_country)
+      end
+      it 'initializes phone field properly' do
+        expect(subject.phone).to eql(expected_phone)
+      end
+    end
+
+    context 'US' do
+      let(:phone) { '3602345678' }
+      let(:expected_phone) { '(360) 234-5678' }
+      let(:expected_country) { 'US' }
+      it_behaves_like 'a thing that knows about other countries'
+    end
+
+    context 'PR' do
+      let(:phone) { '+17872345678' }
+      let(:expected_phone) { '+1 787 234 5678' }
+      let(:expected_country) { 'PR' }
+      it_behaves_like 'a thing that knows about other countries'
+    end
+  end
 end
