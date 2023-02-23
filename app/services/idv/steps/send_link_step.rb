@@ -31,8 +31,6 @@ module Idv
           failure_reason: failure_reason,
         )
 
-        idv_session[:phone] = phone
-
         build_telephony_form_response(telephony_result)
       end
 
@@ -104,6 +102,7 @@ module Idv
       def formatted_destination_phone
         raw_phone = permit(:phone)[:phone]
         PhoneFormatter.format(raw_phone, country_code: 'US')
+        idv_session[:phone] = raw_phone
       end
 
       def update_document_capture_session_requested_at(session_uuid)

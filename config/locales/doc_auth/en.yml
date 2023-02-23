@@ -192,6 +192,7 @@ en:
         against public records.
       welcome_html: '%{sp_name} needs to make sure you are you — not someone
         pretending to be you.'
+      you_entered: 'You entered:'
     instructions:
       bullet1: State-issued ID
       bullet2: Social Security number
