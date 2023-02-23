@@ -228,6 +228,7 @@ es:
         identidad comparándola con los registros públicos.
       welcome_html: '%{sp_name} necesita asegurarse de que es usted y no es alguien
         que se hace pasar por usted.'
+      you_entered: 'Ud. entrego:'
     instructions:
       bullet1: Documento de identidad emitido por el estado.
       bullet2: Número de seguro social
