@@ -186,8 +186,8 @@ feature 'Analytics Regression', js: true do
 
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-      allow(IdentityConfig.store).to receive(:in_person_cta_variant_testing_enabled)
-        .and_return(false)
+      allow(IdentityConfig.store).to receive(:in_person_cta_variant_testing_enabled).
+        and_return(false)
       allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
       ServiceProvider.find_by(issuer: sp1_issuer).update(return_to_sp_url: return_sp_url)
 
