@@ -12,7 +12,7 @@
       ) %>
 <% end %>
 
-<%= render AlertComponent.new(type: :warning) do %>
+<%= render AlertComponent.new(type: :warning, class: 'margin-bottom-32') do %>
   <strong class="display-block"><%= t('doc_auth.info.keep_window_open') %></strong>
   <% if FeatureManagement.doc_capture_polling_enabled? %>
     <%= t('doc_auth.info.link_sent_complete_polling') %>
