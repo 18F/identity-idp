@@ -55,13 +55,10 @@ class IdTokenBuilder
   end
 
   def acr
-    if identity.ial.present? && identity.aal.present?
-      "#{ial_acr} #{aal_acr}"
-    elsif identity.ial.present?
-      ial_acr
-    elsif identity.aal.present?
-      aal_acr
-    end
+    [
+      identity.ial.present? && ial_acr,
+      identity.aal.present? && aal_acr,
+    ].select(&:present).join(' ')
   end
 
   def ial_acr 
