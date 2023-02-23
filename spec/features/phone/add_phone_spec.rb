@@ -141,22 +141,29 @@ describe 'Add a new phone number' do
 
   scenario 'adding a phone that is already on the user account shows error message', js: true do
     user = create(:user, :signed_up)
-    phone = user.phone_configurations.first.phone
-
-    # Regression handling: The fake phone number generator uses well-formatted numbers, which isn't
-    # how a user would likely enter their number, and would give detail to the phone initialization
-    # which wouldn't exist for typical user input. Emulate the user input by removing format hints.
-    phone = phone.sub(/^\+1\s*/, '').gsub(/\D/, '')
+    # Regression handling: Previously, non-U.S. "+1" numbers were not correctly disambiguated, and
+    # would fail to check uniqueness.
+    user.phone_configurations.create(phone: '+1 3065550100')
 
     sign_in_and_2fa_user(user)
     within('.sidenav') do
       click_on t('account.navigation.add_phone_number')
     end
-    fill_in :new_phone_form_phone, with: phone
-    click_continue
 
-    expect(page).to have_content(I18n.t('errors.messages.phone_duplicate'))
-    expect(page).to have_css('.iti__selected-flag .iti__flag.iti__us', visible: :all)
+    user.phone_configurations.each do |phone_configuration|
+      # Regression handling: The fake phone number generator creates well-formatted numbers, which
+      # isn't how a user would likely enter their number, giving detail to the phone initialization
+      # which wouldn't exist for typical user input. Emulate user input by removing format hints.
+      phone = phone_configuration.phone.sub(/^\+1\s*/, '').gsub(/\D/, '')
+
+      fill_in :new_phone_form_phone, with: phone
+      click_continue
+
+      expect(page).to have_content(I18n.t('errors.messages.phone_duplicate'))
+
+      # Ensure that phone input initializes with the country flag maintained
+      expect(page).to have_css('.iti__selected-flag [class^="iti__flag iti__"]', visible: :all)
+    end
   end
 
   let(:telephony_gem_voip_number) { '+12255551000' }
