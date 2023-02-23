@@ -1,6 +1,6 @@
 <%#
 locals:
-  @which_verify_controller - either idv_verify_info_path or idv_in_person_verify_info_path
+  @verify_info_submit_path - either idv_verify_info_path or idv_in_person_verify_info_path
   @step_indicator_steps - the correct Idv::Flows variable for this flow
   @pii - user's information
   @had_barcode_read_failure - show warning if there's a barcode read error
@@ -145,7 +145,7 @@ locals:
   <div class="margin-top-5">
       <%= render SpinnerButtonComponent.new(
             action: ->(**tag_options, &block) do
-              button_to(@which_verify_controller, **tag_options, &block)
+              button_to(@verify_info_submit_path, **tag_options, &block)
             end,
             big: true,
             wide: true,
@@ -157,7 +157,7 @@ locals:
                 form_steps_wait: '',
                 error_message: t('idv.failure.exceptions.internal_error'),
                 alert_target: '#form-steps-wait-alert',
-                wait_step_path: @which_verify_controller,
+                wait_step_path: @verify_info_submit_path,
                 poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
               },
             },

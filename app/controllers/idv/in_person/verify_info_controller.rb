@@ -13,7 +13,7 @@ module Idv
 
       def show
         @in_person_proofing = true
-        @which_verify_controller = idv_in_person_verify_info_path
+        @verify_info_submit_path = idv_in_person_verify_info_path
         @step_indicator_steps = step_indicator_steps
 
         increment_step_counts
