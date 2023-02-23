@@ -2,7 +2,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   mode: 'production',
   target: ['node'],
   entry: {
-    'address-search': './components/address-search.tsx',
+    index: './',
   },
   experiments: {
     outputModule: true,

@@ -9,7 +9,7 @@
   },
   "exports": {
     ".": {
-      "source": "./index.js",
+      "source": "./index.ts",
       "default": "./dist/index.js"
     }
   },
@@ -18,8 +18,8 @@
   ],
   "dependencies": {
     "focus-trap": "^6.7.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "swr": "^2.0.0"
+    "swr": "^2.0.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   }
 }

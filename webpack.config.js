@@ -20,7 +20,7 @@ const entries = glob('app/{components,javascript/packs}/*.{ts,tsx,js,jsx}');
 
 module.exports = /** @type {import('webpack').Configuration} */ ({
   mode,
-  devtool,
+  devtool: false,
   target: ['web'],
   devServer: {
     static: {
@@ -45,6 +45,10 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.mts', '.cts'],
+    alias: {
+      'react/jsx-dev-runtime': 'react/jsx-dev-runtime.js',
+      'react/jsx-runtime': 'react/jsx-runtime.js',
+    },
   },
   module: {
     rules: [
