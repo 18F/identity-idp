@@ -7,6 +7,27 @@ module Idv
 
     attr_accessor(*ATTRIBUTES)
 
+    validate :transliterable_check
+
+    def transliterable_check
+      result = validator.validate({
+        first_name: first_name,
+        last_name: last_name,
+      })
+
+      unless result.nil? || result[:first_name].nil?
+        errors.add(:first_name, result[:first_name])
+      end
+
+      unless result.nil? || result[:last_name].nil?
+        errors.add(:last_name, result[:last_name])
+      end
+    end
+
+    def validator
+      @validator ||= UspsInPersonProofing::EnrollmentValidator.new
+    end
+
     def self.model_name
       ActiveModel::Name.new(self, nil, 'StateId')
     end

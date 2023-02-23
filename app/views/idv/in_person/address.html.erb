@@ -21,11 +21,12 @@
       :doc_auth, url: url_for, method: 'PUT',
                  html: { autocomplete: 'off' }
     ) do |f| %>
-  <%= render (TransliterableFieldGroupComponent.new form: f,
-  fields: [:address1, :address2, :city],
-  form_error_message: t('in_person_proofing.form.state_id.errors.transliteration'),
-  validation_url: idv_in_person_validate_transliterable_path do
-    capture do
+  <%
+  # render (TransliterableFieldGroupComponent.new form: f,
+  # fields: [:address1, :address2, :city],
+  # form_error_message: t('in_person_proofing.form.state_id.errors.transliteration'),
+  # validation_url: idv_in_person_validate_transliterable_path do
+  #   capture do
     %>
     <%= render ValidatedFieldComponent.new(
           form: f,
@@ -54,8 +55,10 @@
           name: :city,
           required: true,
         ) %>
-  <% end
-  end) %>
+  <%
+  # end
+  # end)
+  %>
   <%= render ValidatedFieldComponent.new(
         collection: us_states_territories,
         form: f,

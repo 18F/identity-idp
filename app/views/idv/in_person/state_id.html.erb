@@ -30,11 +30,12 @@
                     method: 'put',
                     html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
 
-  <%= render (TransliterableFieldGroupComponent.new form: f,
-  fields: [:first_name, :last_name],
-  form_error_message: t('in_person_proofing.form.state_id.errors.transliteration'),
-  validation_url: idv_in_person_validate_transliterable_path do
-    capture do
+  <%
+  # render (TransliterableFieldGroupComponent.new form: f,
+  # fields: [:first_name, :last_name],
+  # form_error_message: t('in_person_proofing.form.state_id.errors.transliteration'),
+  # validation_url: idv_in_person_validate_transliterable_path do
+  #   capture do
     %>
       <div class="margin-bottom-4">
         <%= render ValidatedFieldComponent.new(
@@ -59,8 +60,9 @@
               required: true,
             ) %>
       </div><%
-    end
-  end) %>
+    # end
+  # end)
+ %>
 
   <div class="margin-bottom-4">
   <%= render MemorableDateComponent.new(
