@@ -43,13 +43,27 @@ class RecaptchaValidator
   end
 
   def recaptcha_result_valid?(recaptcha_result)
-    if recaptcha_result.blank?
-      true
-    elsif recaptcha_result['success']
-      recaptcha_result['score'].nil? || recaptcha_result['score'] >= score_threshold
+    return true if recaptcha_result.blank?
+
+    success, score, error_codes = recaptcha_result.values_at('success', 'score', 'error-codes')
+    if success
+      recaptcha_score_meets_threshold?(score)
     else
-      (recaptcha_result['error-codes'] - EXEMPT_ERROR_CODES).blank?
+      recaptcha_errors_exempt?(error_codes)
     end
+  end
+
+  def recaptcha_score_meets_threshold?(score)
+    case recaptcha_version
+    when 2
+      true
+    when 3
+      score >= score_threshold
+    end
+  end
+
+  def recaptcha_errors_exempt?(error_codes)
+    (error_codes - EXEMPT_ERROR_CODES).blank?
   end
 
   def log_analytics(recaptcha_result: nil, error: nil)
