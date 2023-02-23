@@ -57,7 +57,7 @@ module Idv
       def extra_analytics_properties
         return {} if @flow_session[:pii_from_user][:same_address_as_id].nil?
         {
-          same_address_as_id: @flow_session[:pii_from_user][:same_address_as_id] == 'true' ? 1 : 0,
+          same_address_as_id: @flow_session[:pii_from_user][:same_address_as_id].to_s == 'true',
           pii_like_keypaths: [[:same_address_as_id]],
         }
       end
