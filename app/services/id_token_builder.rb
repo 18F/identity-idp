@@ -75,10 +75,14 @@ class IdTokenBuilder
   def aal_acr
     aal = identity.aal || ::Idp::Constants::DEFAULT_AAL
     case aal
-    when Idp::Constants::DEFAULT_AAL then Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
-    when Idp::Constants::AAL1 then Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF
-    when Idp::Constants::AAL2 then Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
-    when Idp::Constants::AAL3 then Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
+    when Idp::Constants::DEFAULT_AAL
+      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+    when Idp::Constants::AAL1
+      Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF
+    when Idp::Constants::AAL2
+      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+    when Idp::Constants::AAL3
+      Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
     else
       raise "Unknown aal #{aal}"
     end
