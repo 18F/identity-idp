@@ -55,7 +55,7 @@ describe 'users/phone_setup/index.html.erb' do
 
   context 'recaptcha enabled' do
     before do
-      allow(FeatureManagment).to receive(:phone_recaptcha_enabled?).and_return(true)
+      allow(FeatureManagement).to receive(:phone_recaptcha_enabled?).and_return(true)
     end
 
     it 'contains link to Google policy page' do
