@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Idv::SessionsController do
   let(:user) { build(:user) }
+  let(:enrollment) { create(:in_person_enrollment, :pending, user: user) }
 
   before do
     stub_sign_in(user)
@@ -45,7 +46,7 @@ describe Idv::SessionsController do
       end
     end
 
-    it 'tracks the event in analytics' do
+    it 'tracks the idv_start_over event in analytics' do
       delete :destroy, params: { step: 'first', location: 'get_help' }
 
       expect(@analytics).to have_logged_event(
@@ -54,6 +55,19 @@ describe Idv::SessionsController do
         proofing_components: nil,
         step: 'first',
       )
+    end
+
+    it 'logs idv_start_over event with extra analytics attributes for barcode step' do
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: start over',
+        location: '',
+        proofing_components: nil,
+        step: 'barcode',
+        cancelled_enrollment: true,
+        enrollment_code: enrollment.enrollment_code,
+        enrollment_id: enrollment.id,
+      )
+      delete :destroy, params: { step: 'barcode', location: '' }
     end
 
     it 'redirect occurs to the start of identity verification' do

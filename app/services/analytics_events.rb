@@ -3104,6 +3104,28 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks whether the user's device appears to be mobile device with a camera attached.
+  # @param [Boolean] is_camera_capable_mobile Whether we think the device _could_ have a camera.
+  # @param [Boolean,nil] camera_present Whether the user's device _actually_ has a camera available.
+  # @param [Integer,nil] grace_time Extra time allowed for browser to report camera availability.
+  # @param [Integer,nil] duration Time taken for browser to report camera availability.
+  def idv_mobile_device_and_camera_check(
+    is_camera_capable_mobile:,
+    camera_present: nil,
+    grace_time: nil,
+    duration: nil,
+    **extra
+  )
+    track_event(
+      'IdV: Mobile device and camera check',
+      is_camera_capable_mobile: is_camera_capable_mobile,
+      camera_present: camera_present,
+      grace_time: grace_time,
+      duration: duration,
+      **extra,
+    )
+  end
+
   # Tracks when the user visits one of the the session error pages.
   # @param [String] type
   # @param [Integer,nil] attempts_remaining

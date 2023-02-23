@@ -219,6 +219,15 @@ describe Idv::ReviewController do
           ),
         )
       end
+
+      it 'updates the doc auth log for the user for the encrypt view event' do
+        unstub_analytics
+        doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+        expect { get :new }.to(
+          change { doc_auth_log.reload.encrypt_view_count }.from(0).to(1),
+        )
+      end
     end
 
     context 'user has not requested too much mail' do
@@ -344,6 +353,9 @@ describe Idv::ReviewController do
 
       context 'user picked phone confirmation' do
         before do
+          allow(Rails).to receive(:cache).and_return(
+            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          )
           idv_session.address_verification_mechanism = 'phone'
           idv_session.vendor_phone_confirmation = true
           idv_session.user_phone_confirmation = true
@@ -610,6 +622,17 @@ describe Idv::ReviewController do
               'IdV: final resolution', success: true,
                                        proofing_components: nil,
                                        deactivation_reason: 'threatmetrix_review_pending'
+            )
+          end
+
+          it 'updates the doc auth log for the user for the verified view event' do
+            unstub_analytics
+            doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+            expect do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            end.to(
+              change { doc_auth_log.reload.verified_view_count }.from(0).to(1),
             )
           end
         end
