@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ModuleLength
 module IrsAttemptsApi
   module TrackerEvents
     # @param [Boolean] success True if Account Successfully Deleted
@@ -692,4 +691,3 @@ module IrsAttemptsApi
     end
   end
 end
-# rubocop:enable Metrics/ModuleLength
