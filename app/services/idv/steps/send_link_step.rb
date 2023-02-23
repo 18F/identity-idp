@@ -18,7 +18,6 @@ module Idv
         return throttled_failure if throttle.throttled?
         telephony_result = send_link
         failure_reason = nil
-
         if !telephony_result.success?
           failure_reason = { telephony: [telephony_result.error.class.name.demodulize] }
         end
