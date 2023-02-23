@@ -210,7 +210,7 @@ describe Idv::PhoneForm do
 
     context 'US' do
       let(:phone) { '3602345678' }
-      let(:expected_phone) { '(360) 234-5678' }
+      let(:expected_phone) { '+1 360-234-5678' }
       let(:expected_country) { 'US' }
       it_behaves_like 'a thing that knows about other countries'
     end
