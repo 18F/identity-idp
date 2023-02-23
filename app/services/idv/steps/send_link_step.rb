@@ -96,8 +96,8 @@ module Idv
 
       def formatted_destination_phone
         raw_phone = permit(:phone)[:phone]
-        PhoneFormatter.format(raw_phone, country_code: 'US')
         idv_session[:phone] = raw_phone
+        PhoneFormatter.format(raw_phone, country_code: 'US')
       end
 
       def update_document_capture_session_requested_at(session_uuid)
