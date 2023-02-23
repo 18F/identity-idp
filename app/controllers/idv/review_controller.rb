@@ -28,7 +28,11 @@ module Idv
     def confirm_current_password
       return if valid_password?
 
-      analytics.idv_review_complete(success: false)
+      analytics.idv_review_complete(
+        success: false,
+        fraud_review_pending: current_user.fraud_review_pending?,
+        fraud_rejection: current_user.fraud_rejection?,
+      )
       irs_attempts_api_tracker.idv_password_entered(success: false)
 
       flash[:error] = t('idv.errors.incorrect_password')

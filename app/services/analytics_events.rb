@@ -1464,8 +1464,8 @@ module AnalyticsEvents
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   def idv_review_complete(
     success:,
-    fraud_review_pending: nil,
-    fraud_rejection: nil,
+    fraud_review_pending:,
+    fraud_rejection:,
     deactivation_reason: nil,
     proofing_components: nil,
     **extra

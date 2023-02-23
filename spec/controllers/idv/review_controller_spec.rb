@@ -293,8 +293,8 @@ describe Idv::ReviewController do
         expect(@analytics).to have_logged_event(
           'IdV: review complete',
           success: false,
-          fraud_review_pending: nil,
-          fraud_rejection: nil,
+          fraud_review_pending: false,
+          fraud_rejection: false,
           proofing_components: nil,
           deactivation_reason: nil,
         )
