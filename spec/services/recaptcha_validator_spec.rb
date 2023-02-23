@@ -275,6 +275,16 @@ describe RecaptchaValidator do
     end
   end
 
+  context 'with invalid recaptcha_version' do
+    subject(:validator) do
+      RecaptchaValidator.new(recaptcha_version: 4, score_threshold:, analytics:)
+    end
+
+    it 'raises an error during initialization' do
+      expect { validator }.to raise_error(ArgumentError)
+    end
+  end
+
   def stub_recaptcha_response(body:, secret: recaptcha_secret_key_v3, token: nil)
     stub_request(:post, RecaptchaValidator::VERIFICATION_ENDPOINT).
       with { |req| req.body == URI.encode_www_form(secret:, response: token) }.

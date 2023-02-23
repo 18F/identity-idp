@@ -1,11 +1,16 @@
 class RecaptchaValidator
   VERIFICATION_ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify'.freeze
-
   EXEMPT_ERROR_CODES = ['missing-input-secret', 'invalid-input-secret']
+  VALID_RECAPTCHA_VERSIONS = [2, 3]
 
   attr_reader :recaptcha_version, :score_threshold, :analytics
 
   def initialize(recaptcha_version: 3, score_threshold: 0.0, analytics: nil)
+    if !VALID_RECAPTCHA_VERSIONS.include?(recaptcha_version)
+      raise ArgumentError, "Invalid reCAPTCHA version #{recaptcha_version}, expected one of " \
+                           "#{VALID_RECAPTCHA_VERSIONS}"
+    end
+
     @score_threshold = score_threshold
     @analytics = analytics
     @recaptcha_version = recaptcha_version
