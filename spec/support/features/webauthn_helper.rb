@@ -39,7 +39,7 @@ module WebAuthnHelper
 
     button = first('#continue-button')
     if javascript_enabled?
-      button.execute_script('this.click()')
+      page.evaluate_script('document.querySelector("form").submit()')
     else
       button.click
     end
