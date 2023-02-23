@@ -47,11 +47,13 @@ es:
       edit: Editar
       manage: Administrar
       resend_confirmation: Reenviar instrucciones de confirmación
+      send_link: Enviar enlace
       send_one_time_code: Enviar código
       submit:
         confirm_change: Confirmar cambio
         default: Enviar
         update: Actualización
+      upload_photos: Subir fotos
     confirmation:
       show_hdr: Crear una contraseña segura
     email:

@@ -61,6 +61,6 @@ module TwoFactorAuthCode
       )
     end
 
-    attr_reader :personal_key_unavailable, :view, :user_opted_remember_device_cookie
+    attr_reader :view, :user_opted_remember_device_cookie
   end
 end

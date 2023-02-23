@@ -52,7 +52,13 @@
                         url: url_for,
                         method: 'put',
                         html: { autocomplete: 'off', class: 'margin-y-5 js-consent-continue-form' } do |f| %>
-      <%= f.submit t('doc_auth.buttons.continue') %>
+      <%= render(
+            SpinnerButtonComponent.new(
+              type: :submit,
+              big: true,
+              wide: true,
+            ).with_content(t('doc_auth.buttons.continue')),
+          ) %>
     <% end %>
 
     <%= render(

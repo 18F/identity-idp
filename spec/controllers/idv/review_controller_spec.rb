@@ -353,6 +353,9 @@ describe Idv::ReviewController do
 
       context 'user picked phone confirmation' do
         before do
+          allow(Rails).to receive(:cache).and_return(
+            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          )
           idv_session.address_verification_mechanism = 'phone'
           idv_session.vendor_phone_confirmation = true
           idv_session.user_phone_confirmation = true

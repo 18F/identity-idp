@@ -1,0 +1,55 @@
+<% title t('titles.doc_auth.upload') %>
+
+<%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
+
+<%= render PageHeadingComponent.new do %>
+  <%= t('doc_auth.headings.upload') %>
+<% end %>
+
+<p>
+  <%= t('doc_auth.info.upload') %>
+</p>
+
+<hr class="margin-y-4" />
+
+<div class="grid-row">
+  <div class="grid-col-12 tablet:grid-col-3">
+    <%= image_tag(
+          asset_url('idv/phone.png'),
+          alt: t('image_description.camera_mobile_phone'),
+          width: 80,
+          height: 119,
+        ) %>
+  </div>
+  <div class="grid-col-12 tablet:grid-col-9">
+    <div class="usa-tag text-ink bg-primary-lighter margin-top-1">
+      <%= t('doc_auth.info.tag') %>
+    </div>
+    <h2 class="margin-y-105">
+        <%= t('doc_auth.headings.upload_from_phone') %>
+    </h2>
+    <%= t('doc_auth.info.upload_from_phone') %>
+    <%= simple_form_for(
+          :doc_auth,
+          url: url_for(type: :mobile),
+          method: 'PUT',
+          html: { autocomplete: 'off', class: 'margin-top-2' },
+        ) do |f| %>
+        <%= f.submit t('doc_auth.buttons.use_phone'), wide: false, class: 'margin-top-05' %>
+    <% end %>
+  </div>
+</div>
+
+<hr class="margin-y-4" />
+
+<%= t('doc_auth.info.upload_from_computer') %>&nbsp;
+<%= simple_form_for(
+      :doc_auth,
+      url: url_for(type: :desktop),
+      method: 'PUT',
+      html: { class: 'display-inline' },
+    ) do |f| %>
+    <%= f.submit t('doc_auth.info.upload_computer_link'), unstyled: true, big: false %>
+<% end %>
+
+<%= render 'idv/doc_auth/cancel', step: 'upload' %>
