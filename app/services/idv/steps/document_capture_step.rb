@@ -42,7 +42,7 @@ module Idv
 
       def exit_flow_state_machine
         flow_session[:flow_path] = @flow.flow_path
-        redirect_to idv_ssn_url if @flow.instance_of?('Idv::Flows::DocAuthFlow')
+        redirect_to idv_ssn_url if @flow.instance_of?(Idv::Flows::DocAuthFlow)
       end
 
       def native_camera_ab_testing_variables
