@@ -20,12 +20,10 @@
     <%= t('doc_auth.info.link_sent_complete_no_polling') %>
   <% end %>
 <% end %>
-<p>
-  <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.text_message')) %>
-</p>
+<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.text_message')) %>
 <div class="grid-row">
   <div class="grid-col-12 tablet:grid-col-3">
-    <%= image_tag asset_url('idv/phone-icon.svg'), width: 80, height: 119, alt: t('image_description.camera_mobile_phone') %>
+    <%= image_tag asset_url('idv/phone-icon.svg'), width: 88, height: 88, alt: t('image_description.camera_mobile_phone') %>
   </div>
   <div class="grid-col-12 tablet:grid-col-9">
     <p>
