@@ -167,7 +167,7 @@ en:
       keep_window_open: Do not close this window.
       lets_go: 'Identity verification happens in two parts:'
       link_sent: Please check your phone and follow instructions to take a photo of
-        your state issued ID.
+        your state-issued ID.
       link_sent_complete_no_polling: When you are done, click Continue here to finish verifying your identity.
       link_sent_complete_polling: The next step will load automatically.
       no_sp_name: The agency that you are trying to access
