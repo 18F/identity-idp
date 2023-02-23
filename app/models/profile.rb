@@ -34,7 +34,14 @@ class Profile < ApplicationRecord
     is_reproof = Profile.find_by(user_id: user_id, active: true)
     transaction do
       Profile.where(user_id: user_id).update_all(active: false)
-      update!(active: true, activated_at: now, deactivation_reason: nil, verified_at: now)
+      update!(
+        active: true,
+        activated_at: now,
+        deactivation_reason: nil,
+        fraud_review_pending: false,
+        fraud_rejection: false,
+        verified_at: now,
+      )
     end
     send_push_notifications if is_reproof
   end
