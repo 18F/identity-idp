@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ModuleLength
 module AnalyticsEvents
   # @identity.idp.previous_event_name Account Reset
   # @param [String] user_id
@@ -3545,4 +3544,3 @@ module AnalyticsEvents
     )
   end
 end
-# rubocop:enable Metrics/ModuleLength
