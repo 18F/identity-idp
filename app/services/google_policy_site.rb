@@ -7,10 +7,10 @@ class GooglePolicySite
   end
 
   def self.privacy_url
-    UriService.add_params(URI.join(BASE_URL, "/privacy"), locale_params)
+    UriService.add_params(URI.join(BASE_URL, '/privacy'), locale_params)
   end
-  
+
   def self.terms_url
-    UriService.add_params(URI.join(BASE_URL, "/terms"), locale_params)
+    UriService.add_params(URI.join(BASE_URL, '/terms'), locale_params)
   end
 end
