@@ -13,6 +13,26 @@ module Idv
 
     private
 
+    def barcode_step?
+      params[:step] == 'barcode'
+    end
+
+    def enrollment
+      current_user.pending_in_person_enrollment
+    end
+
+    def extra_analytics_attributes
+      extra = {}
+      if barcode_step? && enrollment
+        extra.merge!(
+          cancelled_enrollment: true,
+          enrollment_code: enrollment.enrollment_code,
+          enrollment_id: enrollment.id,
+        )
+      end
+      extra
+    end
+
     def location_params
       params.permit(:step, :location).to_h.symbolize_keys
     end
@@ -46,6 +66,7 @@ module Idv
       analytics.idv_start_over(
         step: location_params[:step],
         location: location_params[:location],
+        **extra_analytics_attributes,
       )
     end
   end

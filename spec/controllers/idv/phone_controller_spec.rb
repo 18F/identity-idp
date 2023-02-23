@@ -40,6 +40,15 @@ describe Idv::PhoneController do
       stub_verify_steps_one_and_two(user)
     end
 
+    it 'updates the doc auth log for the user for the usps_letter_sent event' do
+      unstub_analytics
+      doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+      expect { get :new }.to(
+        change { doc_auth_log.reload.verify_phone_view_count }.from(0).to(1),
+      )
+    end
+
     context 'when the phone number has been confirmed as user 2FA phone' do
       before do
         subject.idv_session.user_phone_confirmation = true
@@ -266,6 +275,18 @@ describe Idv::PhoneController do
 
         expect(@analytics).to have_received(:track_event).with(
           'IdV: phone confirmation form', result
+        )
+      end
+
+      it 'updates the doc auth log for the user with verify_phone_submit step' do
+        user = create(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
+        unstub_analytics
+        stub_verify_steps_one_and_two(user)
+
+        doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+        expect { put :create, params: { idv_phone_form: { phone: good_phone } } }.to(
+          change { doc_auth_log.reload.verify_phone_submit_count }.from(0).to(1),
         )
       end
 

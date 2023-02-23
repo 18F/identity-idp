@@ -11,10 +11,7 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
       phone_number: '5555559876',
       code_value: '999999',
       otp_delivery_preference: 'sms',
-      unconfirmed_phone: true,
       totp_enabled: false,
-      personal_key_unavailable: true,
-      reauthn: false,
     }
   end
   let(:presenter) do

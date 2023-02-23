@@ -1,11 +1,12 @@
 ---
 es:
   image_description:
-    camera_mobile_phone: Cámara parpadeando en un teléfono móvil
+    camera_mobile_phone: Cámara del teléfono móvil que parpadea
     delete: Bote de basura rojo
     error: x roja de error
     error_lock: candado rojo de error
     info_question: signo de interrogación azul
+    laptop: Computadora portátil
     personal_key: Clave personal
     totp_qrcode: Código QR para la aplicación de autenticación
     us_flag: Bandera de estados unidos
