@@ -12,10 +12,6 @@ class UserDecorator
     @user = user
   end
 
-  def email
-    user.email_addresses.take&.email
-  end
-
   def email_language_preference_description
     if I18n.locale_available?(user.email_language)
       # i18n-tasks-use t('account.email_language.name.en')
@@ -92,7 +88,9 @@ class UserDecorator
       digits: TwoFactorAuthenticatable::OTP_LENGTH,
       interval: IdentityConfig.store.totp_code_interval,
     }
-    url = ROTP::TOTP.new(otp_secret_key, options).provisioning_uri(email)
+    url = ROTP::TOTP.new(otp_secret_key, options).provisioning_uri(
+      user.confirmed_email_addresses.take&.email,
+    )
     qrcode = RQRCode::QRCode.new(url)
     qrcode.as_png(size: 240).to_data_url
   end
