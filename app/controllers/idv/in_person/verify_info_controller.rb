@@ -5,7 +5,6 @@ module Idv
       include StepIndicatorConcern
       include StepUtilitiesConcern
       include VerifyInfoConcern
-      include ProofingConcern
 
       before_action :renders_404_if_flag_not_set
       before_action :confirm_two_factor_authenticated
