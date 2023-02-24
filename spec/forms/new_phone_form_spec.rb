@@ -373,7 +373,7 @@ describe NewPhoneForm do
 
     context 'with recaptcha enabled' do
       let(:valid) { nil }
-      let(:validator) { PhoneRecaptchaValidator.new(parsed_phone: nil) }
+      let(:validator) { PhoneRecaptchaValidator.new(recaptcha_version: 3, parsed_phone: nil) }
       let(:recaptcha_token) { 'token' }
       let(:params) { super().merge(recaptcha_token:) }
       subject(:result) { form.submit(params) }
@@ -390,6 +390,36 @@ describe NewPhoneForm do
         it 'is valid' do
           expect(result.success?).to eq(true)
           expect(result.errors).to be_blank
+        end
+
+        it 'does not override default recaptcha version' do
+          result
+
+          expect(form.recaptcha_version).to eq(3)
+        end
+
+        context 'with recaptcha_version parameter' do
+          let(:params) { super().merge(recaptcha_version:) }
+
+          context 'with v2 parameter' do
+            let(:recaptcha_version) { '2' }
+
+            it 'overrides default recaptcha version' do
+              result
+
+              expect(form.recaptcha_version).to eq(2)
+            end
+          end
+
+          context 'with invalid parameter' do
+            let(:recaptcha_version) { '4' }
+
+            it 'does not override default recaptcha version' do
+              result
+
+              expect(form.recaptcha_version).to eq(3)
+            end
+          end
         end
       end
 
