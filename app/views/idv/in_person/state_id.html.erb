@@ -30,39 +30,29 @@
                     method: 'put',
                     html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
 
-  <%
-  # render (TransliterableFieldGroupComponent.new form: f,
-  # fields: [:first_name, :last_name],
-  # form_error_message: t('in_person_proofing.form.state_id.errors.transliteration'),
-  # validation_url: idv_in_person_validate_transliterable_path do
-  #   capture do
-    %>
-      <div class="margin-bottom-4">
-        <%= render ValidatedFieldComponent.new(
-              name: :first_name,
-              form: f,
-              input_html: { value: pii[:first_name] },
-              label: t('in_person_proofing.form.state_id.first_name'),
-              label_html: { class: 'usa-label' },
-              maxlength: 255,
-              required: true,
-            ) %>
-      </div>
+  <div class="margin-bottom-4">
+    <%= render ValidatedFieldComponent.new(
+          name: :first_name,
+          form: f,
+          input_html: { value: pii[:first_name] },
+          label: t('in_person_proofing.form.state_id.first_name'),
+          label_html: { class: 'usa-label' },
+          maxlength: 255,
+          required: true,
+        ) %>
+  </div>
 
-      <div class="margin-bottom-4">
-        <%= render ValidatedFieldComponent.new(
-              name: :last_name,
-              form: f,
-              input_html: { value: pii[:last_name] },
-              label: t('in_person_proofing.form.state_id.last_name'),
-              label_html: { class: 'usa-label' },
-              maxlength: 255,
-              required: true,
-            ) %>
-      </div><%
-    # end
-  # end)
- %>
+  <div class="margin-bottom-4">
+    <%= render ValidatedFieldComponent.new(
+          name: :last_name,
+          form: f,
+          input_html: { value: pii[:last_name] },
+          label: t('in_person_proofing.form.state_id.last_name'),
+          label_html: { class: 'usa-label' },
+          maxlength: 255,
+          required: true,
+        ) %>
+  </div>
 
   <div class="margin-bottom-4">
   <%= render MemorableDateComponent.new(
