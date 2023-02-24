@@ -219,26 +219,29 @@ describe 'Add a new phone number' do
     expect(page).to have_content(t('titles.spam_protection'), wait: 5)
     click_continue
     expect(page).to have_content(t('two_factor_authentication.header_text'))
-    click_on t('two_factor_authentication.phone_verification.troubleshooting.change_number')
+    visit account_path
+    within('.sidenav') { click_on t('account.navigation.add_phone_number') }
 
     # Passing international should display OTP confirmation
     fill_in t('two_factor_authentication.phone_label'), with: '3065550100'
     fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.7'
-    click_button t('forms.buttons.send_one_time_code')
+    click_continue
     expect(page).to have_content(t('two_factor_authentication.header_text'), wait: 25)
-    click_on t('two_factor_authentication.phone_verification.troubleshooting.change_number')
+    visit account_path
+    within('.sidenav') { click_on t('account.navigation.add_phone_number') }
 
     # Failing domestic should display OTP confirmation
     fill_in t('two_factor_authentication.phone_label'), with: '5135550100'
     fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.5'
-    click_button t('forms.buttons.send_one_time_code')
+    click_continue
     expect(page).to have_content(t('two_factor_authentication.header_text'), wait: 5)
-    click_on t('two_factor_authentication.phone_verification.troubleshooting.change_number')
+    visit account_path
+    within('.sidenav') { click_on t('account.navigation.add_phone_number') }
 
     # Passing domestic should display OTP confirmation
     fill_in t('two_factor_authentication.phone_label'), with: '5135550100'
     fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.7'
-    click_button t('forms.buttons.send_one_time_code')
+    click_continue
     expect(page).to have_content(t('two_factor_authentication.header_text'), wait: 5)
   end
 
