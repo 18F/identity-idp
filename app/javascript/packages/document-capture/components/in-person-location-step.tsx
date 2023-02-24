@@ -104,8 +104,10 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
     async (e: any, id: number) => {
       const selectedLocation = locationData[id];
       const { name: selectedLocationName } = selectedLocation;
-      setSubmitEventMetadata({ selected_location: selectedLocationName });
-      setSubmitEventMetadata({ in_person_cta_variant: inPersonCtaVariantActive });
+      setSubmitEventMetadata({
+        selected_location: selectedLocationName,
+        in_person_cta_variant: inPersonCtaVariantActive,
+      });
       onChange({ selectedLocationName });
       if (autoSubmit) {
         return;
