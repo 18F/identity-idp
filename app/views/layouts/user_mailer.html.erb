@@ -152,6 +152,9 @@
                                                   style: 'text-decoration: underline;',
                                                 ).html_safe %>
                                           </p>
+                                          <p>
+                                            <%= t('mailer.sent_at', formatted_timestamp: Time.zone.now.iso8601(6)) %>
+                                          </p>
                                         </th>
                                         <th class="expander"></th>
                                       </tr>
