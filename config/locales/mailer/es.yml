@@ -8,3 +8,4 @@ es:
     logo: '%{app_name} logo'
     no_reply: Por favor, no responda a este mensaje.
     privacy_policy: Póliza de privacidad
+    sent_at: Sent at %{formatted_timestamp}
