@@ -96,30 +96,36 @@ describe Proofing::Aamva::VerificationClient do
         end
         let(:response_http_status) { 500 }
 
-        it 'parses the raw response body and returns an unsuccessful response with errors' do
-          expect(response).to be_a Proofing::Aamva::Response::VerificationResponse
-          expect(response.success?).to eq(false)
+        it 'parses the raw response body and throws an HTTP exception' do
+          expect { response }.to raise_error(
+            Proofing::Aamva::VerificationError,
+            'Unexpected status code in response: 500',
+          )
           expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
         end
       end
 
       context 'because we have an invalid response and a 200 status' do
-        let(:response_body) { '<h1>error: computer has no brain.</h1>' }
+        let(:response_body) { 'error: computer has no brain.<br>' }
 
-        it 'parses the raw response body and returns an unsuccessful response with errors' do
-          expect(response).to be_a Proofing::Aamva::Response::VerificationResponse
-          expect(response.success?).to eq(false)
+        it 'parses the raw response body and throws a SOAP exception' do
+          expect { response }.to raise_error(
+            Proofing::Aamva::VerificationError,
+            /No close tag for \/br/,
+          )
           expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
         end
       end
 
       context 'because we have an invalid response and a non-200 status' do
-        let(:response_body) { '<h1>I\'m a teapot</h1>' }
+        let(:response_body) { '<h1>I\'m a teapot' }
         let(:response_http_status) { 418 }
 
         it 'parses the raw response body and returns an unsuccessful response with errors' do
-          expect(response).to be_a Proofing::Aamva::Response::VerificationResponse
-          expect(response.success?).to eq(false)
+          expect { response }.to raise_error(
+            Proofing::Aamva::VerificationError,
+            /No close tag for \/h1/,
+          )
           expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
         end
       end

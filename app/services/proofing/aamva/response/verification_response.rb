@@ -33,12 +33,14 @@ module Proofing
           @missing_attributes = []
           @verification_results = {}
           @http_response = http_response
+
           http_error = handle_http_error
           soap_error = handle_soap_error
+
           parse_response
 
-          raise http_error if http_error
           raise soap_error if soap_error
+          raise http_error if http_error
         end
 
         def reasons
@@ -85,7 +87,11 @@ module Proofing
         end
 
         def node_for_match_indicator(match_indicator_name)
-          REXML::XPath.first(rexml_document, "//#{match_indicator_name}")
+          begin
+            REXML::XPath.first(rexml_document, "//#{match_indicator_name}")
+          rescue REXML::ParseException
+            nil
+          end
         end
 
         def parse_response
