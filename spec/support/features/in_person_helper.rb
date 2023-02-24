@@ -29,13 +29,17 @@ module InPersonHelper
     fill_in t('in_person_proofing.form.state_id.state_id_number'), with: GOOD_STATE_ID_NUMBER
   end
 
-  def fill_out_address_form_ok
+  def fill_out_address_form_ok(same_address = true)
     fill_in t('idv.form.address1'), with: GOOD_ADDRESS1
     fill_in t('idv.form.address2_optional'), with: GOOD_ADDRESS2
     fill_in t('idv.form.city'), with: GOOD_CITY
     fill_in t('idv.form.zipcode'), with: GOOD_ZIPCODE
     select GOOD_STATE, from: t('idv.form.state')
-    choose t('in_person_proofing.form.address.same_address_choice_yes')
+    if same_address
+      choose t('in_person_proofing.form.address.same_address_choice_yes')
+    else
+      choose t('in_person_proofing.form.address.same_address_choice_no')
+    end
   end
 
   def begin_in_person_proofing(_user = nil)
@@ -74,8 +78,8 @@ module InPersonHelper
     click_idv_continue
   end
 
-  def complete_address_step(_user = nil)
-    fill_out_address_form_ok
+  def complete_address_step(same_address, _user = nil)
+    fill_out_address_form_ok(same_address)
     click_idv_continue
   end
 
@@ -88,11 +92,11 @@ module InPersonHelper
     click_idv_continue
   end
 
-  def complete_all_in_person_proofing_steps(user = user_with_2fa)
+  def complete_all_in_person_proofing_steps(same_address, user = user_with_2fa)
     complete_location_step(user)
     complete_prepare_step(user)
     complete_state_id_step(user)
-    complete_address_step(user)
+    complete_address_step(user, same_address)
     complete_ssn_step(user)
     complete_verify_step(user)
   end
