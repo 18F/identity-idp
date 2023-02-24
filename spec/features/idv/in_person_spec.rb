@@ -484,7 +484,7 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
-  # TODO: confirm test makes sense
+
   context 'validate_id_and_residential_addresses feature flag enabled', allow_browser_log: true do
     let(:user) { user_with_2fa }
 
