@@ -2,31 +2,13 @@ module Idv
   class StateIdForm
     include ActiveModel::Model
     include FormStateIdValidator
+    include Idv::InPerson::FormTransliterableValidator
+
+    transliterate :first_name, :last_name
 
     ATTRIBUTES = %i[first_name last_name dob state_id_jurisdiction state_id_number].freeze
 
     attr_accessor(*ATTRIBUTES)
-
-    validate :transliterable_check
-
-    def transliterable_check
-      result = validator.validate({
-        first_name: first_name,
-        last_name: last_name,
-      })
-
-      unless result.nil? || result[:first_name].nil?
-        errors.add(:first_name, result[:first_name])
-      end
-
-      unless result.nil? || result[:last_name].nil?
-        errors.add(:last_name, result[:last_name])
-      end
-    end
-
-    def validator
-      @validator ||= UspsInPersonProofing::EnrollmentValidator.new
-    end
 
     def self.model_name
       ActiveModel::Name.new(self, nil, 'StateId')

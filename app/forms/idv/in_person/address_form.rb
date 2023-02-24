@@ -3,6 +3,9 @@ module Idv
     class AddressForm
       include ActiveModel::Model
       include Idv::InPerson::FormAddressValidator
+      include Idv::InPerson::FormTransliterableValidator
+
+      transliterate :city, :address1, :address2
 
       ATTRIBUTES = %i[state zipcode city address1 address2 same_address_as_id].freeze
 
@@ -11,33 +14,6 @@ module Idv
       def self.model_name
         ActiveModel::Name.new(self, nil, 'InPersonAddress')
       end
-
-
-    validate :transliterable_check
-
-    def transliterable_check
-      result = validator.validate({
-        address1: address1,
-        address2: address2,
-        city: city,
-      })
-
-      unless result.nil? || result[:address1].nil?
-        errors.add(:address1, result[:address1])
-      end
-
-      unless result.nil? || result[:address2].nil?
-        errors.add(:address2, result[:address2])
-      end
-
-      unless result.nil? || result[:city].nil?
-        errors.add(:city, result[:city])
-      end
-    end
-
-    def validator
-      @validator ||= UspsInPersonProofing::EnrollmentValidator.new
-    end
 
       def submit(params)
         consume_params(params)

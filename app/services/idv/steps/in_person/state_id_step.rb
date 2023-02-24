@@ -23,31 +23,55 @@ module Idv
         end
 
         def extra_view_variables
-          parsed_dob = nil
-          if flow_session[:pii_from_user][:dob].instance_of? String
-            parsed_dob = Date.parse flow_session[:pii_from_user][:dob]
-          end
-
           {
-            pii: flow_session[:pii_from_user],
-            parsed_dob: parsed_dob,
-            updating_state_id: flow_session[:pii_from_user].has_key?(:first_name),
+            form:,
+            pii:,
+            parsed_dob:,
+            updating_state_id:,
           }
         end
 
         private
 
-        def form_submit
-          Idv::StateIdForm.new(current_user).submit(
-            permit(
-              *Idv::StateIdForm::ATTRIBUTES,
-              dob: [
-                :month,
-                :day,
-                :year,
-              ],
-            ),
+        def updating_state_id
+          flow_session[:pii_from_user].has_key?(:first_name)
+        end
+
+        def parsed_dob
+          form_dob = pii[:dob]
+          if form_dob.instance_of? String
+            dob_str = form_dob
+          elsif form_dob.instance_of? Hash
+            dob_str = MemorableDateComponent.extract_date_param form_dob
+          end
+          Date.parse dob_str unless dob_str.nil?
+        rescue StandardError
+          # Catch date parsing errors
+        end
+
+        def pii
+          data = flow_session[:pii_from_user]
+          data = data.merge(flow_params) if params.has_key?(:state_id)
+          data.deep_symbolize_keys
+        end
+
+        def flow_params
+          params.require(:state_id).permit(
+            *Idv::StateIdForm::ATTRIBUTES,
+            dob: [
+              :month,
+              :day,
+              :year,
+            ],
           )
+        end
+
+        def form
+          @form ||= Idv::StateIdForm.new(current_user)
+        end
+
+        def form_submit
+          form.submit(flow_params)
         end
       end
     end
