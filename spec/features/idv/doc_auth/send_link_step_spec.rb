@@ -191,7 +191,7 @@ feature 'doc auth send link step' do
   context 'when user is from Puerto Rico' do
     let(:area_code) {}
     let(:phone) { "+1 #{area_code}-555-1212" }
-    let(:formatted_phone) { "+1 (#{area_code}) 555-1212" }
+    let(:formatted_phone) { "(#{area_code}) 555-1212" }
     let(:user) do
       create(
         :user,
