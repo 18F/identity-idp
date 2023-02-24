@@ -47,6 +47,7 @@ module Idv
 
     def create
       result = idv_form.submit(step_params)
+
       # Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
       #   call(:verify_phone, :update, result.success?)
       Rails.logger.info(

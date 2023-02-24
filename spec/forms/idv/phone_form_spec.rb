@@ -59,6 +59,21 @@ describe Idv::PhoneForm do
         it 'uses the user phone number as the initial phone value' do
           expect(subject.phone).to eq(phone)
         end
+        it 'infers the country code from the user phone number' do
+          expect(subject.international_code).to eq('PH')
+        end
+      end
+
+      context 'in Puerto Rico' do
+        let(:phone) { '+17872345678' }
+        let(:optional_params) { { delivery_methods: [:sms] } }
+
+        it 'uses the user phone number as the initial phone value' do
+          expect(subject.phone).to eq('+1 787 234 5678')
+        end
+        it 'infers the country code from the user phone number' do
+          expect(subject.international_code).to eq('PR')
+        end
       end
 
       context 'with international user phone number in unsupported country' do
@@ -66,6 +81,9 @@ describe Idv::PhoneForm do
 
         it 'does not use the user phone number as the initial phone value' do
           expect(subject.phone).to eq(nil)
+        end
+        it 'does not infer the country code from the user phone number' do
+          expect(subject.international_code).to eq(nil)
         end
       end
 
@@ -76,6 +94,9 @@ describe Idv::PhoneForm do
         it 'does not use the user phone number as the initial phone value' do
           expect(subject.phone).to eq(nil)
         end
+        it 'does not infer the country code from the user phone number' do
+          expect(subject.international_code).to eq(nil)
+        end
       end
     end
 
@@ -85,6 +106,28 @@ describe Idv::PhoneForm do
 
       it 'uses the previously submitted value as the initial phone value' do
         expect(subject.phone).to eq('+1 225-555-5000')
+        expect(subject.international_code).to eq('US')
+      end
+
+      context 'including country' do
+        let(:previous_params) { { phone: '2255555000', international_code: 'IE' } }
+        it 'uses the previously submitted phone + country as the initial values' do
+          expect(subject.phone).to eq('+3532255555000')
+          expect(subject.international_code).to eq('IE')
+        end
+      end
+
+      context 'including other keys' do
+        let(:previous_params) do
+          {
+            'phone' => '+17872345678',
+            'otp_delivery_preference' => 'sms',
+          }
+        end
+        it 'uses the previously submitted phone + and infers country' do
+          expect(subject.phone).to eq('+1 787 234 5678')
+          expect(subject.international_code).to eq('PR')
+        end
       end
     end
 
@@ -192,34 +235,6 @@ describe Idv::PhoneForm do
           )
         end
       end
-    end
-  end
-
-  describe 'initialization' do
-    shared_examples 'a thing that knows about other countries' do
-      let(:user) { build_stubbed(:user, :signed_up, with: { phone: phone }) }
-      let(:optional_params) { { delivery_methods: [:sms] } }
-
-      it 'initializes international_code field properly' do
-        expect(subject.international_code).to eql(expected_country)
-      end
-      it 'initializes phone field properly' do
-        expect(subject.phone).to eql(expected_phone)
-      end
-    end
-
-    context 'US' do
-      let(:phone) { '3602345678' }
-      let(:expected_phone) { '+1 360-234-5678' }
-      let(:expected_country) { 'US' }
-      it_behaves_like 'a thing that knows about other countries'
-    end
-
-    context 'PR' do
-      let(:phone) { '+17872345678' }
-      let(:expected_phone) { '+1 787 234 5678' }
-      let(:expected_country) { 'PR' }
-      it_behaves_like 'a thing that knows about other countries'
     end
   end
 end
