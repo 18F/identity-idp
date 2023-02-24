@@ -578,3 +578,4 @@ test:
   usps_upload_sftp_host: example.com
   usps_upload_sftp_password: pass
   usps_upload_sftp_username: user
+  in_person_capture_secondary_id_enabled: false

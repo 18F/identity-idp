@@ -29,6 +29,23 @@ module InPersonHelper
     fill_in t('in_person_proofing.form.state_id.state_id_number'), with: GOOD_STATE_ID_NUMBER
   end
 
+  def fill_out_state_id_form_ok_include_address
+    fill_in t('in_person_proofing.form.state_id.first_name'), with: GOOD_FIRST_NAME
+    fill_in t('in_person_proofing.form.state_id.last_name'), with: GOOD_LAST_NAME
+    year, month, day = GOOD_DOB.split('-')
+    fill_in t('components.memorable_date.month'), with: month
+    fill_in t('components.memorable_date.day'), with: day
+    fill_in t('components.memorable_date.year'), with: year
+    fill_in t('in_person_proofing.form.state_id.state_id_number'), with: GOOD_STATE_ID_NUMBER
+    fill_in t('in_person_proofing.form.state_id.address'), with: GOOD_ADDRESS1
+    fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_ADDRESS2
+    fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_CITY
+    select GOOD_STATE_ID_JURISDICTION,
+           from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
+    fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_ZIPCODE
+    choose t('in_person_proofing.form.state_id.capture_secondary_id_no')
+  end
+
   def fill_out_address_form_ok
     fill_in t('idv.form.address1'), with: GOOD_ADDRESS1
     fill_in t('idv.form.address2_optional'), with: GOOD_ADDRESS2
@@ -71,6 +88,12 @@ module InPersonHelper
     # Wait for page to load before attempting to fill out form
     expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
     fill_out_state_id_form_ok
+    click_idv_continue
+  end
+
+  def complete_state_id_step_when_id_and_residential_address_differ(_user = nil)
+    expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+    fill_out_state_id_form_ok_include_address
     click_idv_continue
   end
 

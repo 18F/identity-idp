@@ -95,6 +95,12 @@ en:
         same_address_choice_yes: This address is on my state-issued ID
         state_prompt: '- Select -'
       state_id:
+        address: Address
+        address2: Address line 2 (optional)
+        capture_secondary_id_heading: Is your current residential address listed on your state-issued ID?
+        capture_secondary_id_no: No, my current residential address is not listed on my state-issued ID
+        capture_secondary_id_yes: Yes, my current residential address is listed on my state-issued ID
+        city: City
         date_hint:
           day: 'Example: 28'
           month: 'Example: 4'
@@ -114,6 +120,7 @@ en:
         state_id_jurisdiction_prompt: '- Select -'
         state_id_number: ID number
         state_id_number_hint: May include letters and numbers
+        zipcode: ZIP Code
     headings:
       address: Enter your current address
       barcode: You’re ready to verify your identity in person

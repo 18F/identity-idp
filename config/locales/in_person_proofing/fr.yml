@@ -109,6 +109,15 @@ fr:
         same_address_choice_yes: Cette adresse figure sur mon document d’identité nationale
         state_prompt: '- Sélectionnez -'
       state_id:
+        address: Adresse
+        address2: Adresse Ligne 2 (optional)
+        capture_secondary_id_heading: L’adresse de votre domicile actuel figure-t-elle
+          sur votre carte d’identité délivrée par l’État?
+        capture_secondary_id_no: Non, l’adresse de mon domicile actuel ne figure pas sur
+          ma carte d’identité délivrée par l’État
+        capture_secondary_id_yes: Oui, l’adresse de mon domicile actuel figure sur ma
+          carte d’identité délivrée par l’État
+        city: Ville
         date_hint:
           day: 'Exemple: 28'
           month: 'Exemple: 4'
@@ -128,6 +137,7 @@ fr:
         state_id_jurisdiction_prompt: '- Sélectionnez -'
         state_id_number: Numéro d’identification
         state_id_number_hint: Peut comprendre des lettres et des chiffres
+        zipcode: Code postal
     headings:
       address: Entrez votre adresse actuelle
       barcode: Vous êtes prêt à vérifier votre identité en personne
