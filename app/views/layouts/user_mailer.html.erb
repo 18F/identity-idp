@@ -152,6 +152,9 @@
                                                   style: 'text-decoration: underline;',
                                                 ).html_safe %>
                                           </p>
+                                          <p>
+                                            Sent at <%= Time.zone.now.iso8601(6) %>
+                                          </p>
                                         </th>
                                         <th class="expander"></th>
                                       </tr>
