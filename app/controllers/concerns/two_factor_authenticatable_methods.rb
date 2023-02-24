@@ -1,4 +1,4 @@
-module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
+module TwoFactorAuthenticatableMethods
   extend ActiveSupport::Concern
   include RememberDeviceConcern
   include SecureHeadersConcern
@@ -301,6 +301,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
       otp_expiration: otp_expiration,
       otp_delivery_preference: two_factor_authentication_method,
       otp_make_default_number: selected_otp_make_default_number,
+      unconfirmed_phone: unconfirmed_phone?,
     }.merge(generic_data)
   end
 

@@ -60,6 +60,55 @@ describe 'Hybrid Flow' do
     end
   end
 
+  context 'with ssn controller enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_ssn_controller_enabled).and_return(true)
+    end
+
+    it 'proofs and hands off to mobile', js: true do
+      user = nil
+
+      perform_in_browser(:desktop) do
+        user = sign_in_and_2fa_user
+        complete_doc_auth_steps_before_send_link_step
+        fill_in :doc_auth_phone, with: '415-555-0199'
+        click_idv_continue
+
+        expect(page).to have_content(t('doc_auth.headings.text_message'))
+      end
+
+      expect(@sms_link).to be_present
+
+      perform_in_browser(:mobile) do
+        visit @sms_link
+        attach_and_submit_images
+        expect(page).to have_text(t('doc_auth.instructions.switch_back'))
+      end
+
+      perform_in_browser(:desktop) do
+        expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
+        expect(page).to have_current_path(idv_ssn_path)
+
+        fill_out_ssn_form_ok
+        click_idv_continue
+
+        expect(page).to have_content(t('headings.verify'))
+        click_idv_continue
+
+        fill_out_phone_form_ok
+        verify_phone_otp
+
+        fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
+        click_idv_continue
+
+        acknowledge_and_confirm_personal_key
+
+        expect(page).to have_current_path(account_path)
+        expect(page).to have_content(t('headings.account.verified_account'))
+      end
+    end
+  end
+
   it 'shows the waiting screen correctly after cancelling from mobile and restarting', js: true do
     user = nil
 

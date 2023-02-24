@@ -251,7 +251,8 @@ Rails.application.routes.draw do
     get '/second_mfa_setup' => 'users/mfa_selection#index'
     patch '/second_mfa_setup' => 'users/mfa_selection#update'
     get '/phone_setup' => 'users/phone_setup#index'
-    patch '/phone_setup' => 'users/phone_setup#create'
+    patch '/phone_setup' => 'users/phone_setup#create' # TODO: Remove after next deploy
+    post '/phone_setup' => 'users/phone_setup#create'
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
         as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
     get '/backup_code_refreshed' => 'users/backup_code_setup#refreshed'

@@ -127,11 +127,11 @@ en:
     read_about_two_factor_authentication: Read about two-factor authentication
     recaptcha:
       disclosure_statement_html: This site is protected by reCAPTCHA and the Google
-        %{policy_link} and %{google_tos_link} apply. Read %{app_name}’s
+        %{google_policy_link} and %{google_tos_link} apply. Read %{app_name}’s
         %{login_tos_link}.
+      google_policy_link: Privacy Policy
       google_tos_link: Terms of Service
       login_tos_link: Mobile Terms of Use
-      policy_link: Privacy Policy
     totp_fallback:
       question: Don’t have your authenticator app?
     totp_header_text: Enter your authentication app code

@@ -89,4 +89,20 @@ describe Users::PhonesController do
       end
     end
   end
+
+  describe '#create' do
+    context 'with recoverable recaptcha error' do
+      it 'renders spam protection template' do
+        stub_sign_in
+
+        allow(controller).to receive(:recoverable_recaptcha_error?) do |result|
+          result.is_a?(FormResponse)
+        end
+
+        post :create, params: { new_phone_form: { international_code: 'CA' } }
+
+        expect(response).to render_template('users/phone_setup/spam_protection')
+      end
+    end
+  end
 end
