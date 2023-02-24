@@ -4,8 +4,6 @@ feature 'Analytics Regression', js: true do
   include IdvStepHelper
   include InPersonHelper
 
-  same_address = rand(2) == 1
-
   let(:user) { user_with_2fa }
   let(:fake_analytics) { FakeAnalytics.new }
   # rubocop:disable Layout/LineLength
@@ -97,12 +95,12 @@ feature 'Analytics Regression', js: true do
       'IdV: in person proofing state_id visited' => { step: 'state_id', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false },
       'IdV: in person proofing state_id submitted' => { success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {} },
       'IdV: in person proofing address visited' => { step: 'address', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false },
-      'IdV: in person proofing address submitted' => { success: true, step: 'address', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {}, same_address_as_id: same_address },
-      'IdV: doc auth ssn visited' => { analytics_id: 'In Person Proofing', step: 'ssn', flow_path: 'standard', step_count: 1, irs_reproofing: false, same_address_as_id: same_address },
-      'IdV: doc auth ssn submitted' => { analytics_id: 'In Person Proofing', success: true, step: 'ssn', flow_path: 'standard', step_count: 1, irs_reproofing: false, errors: {}, same_address_as_id: same_address },
-      'IdV: doc auth verify visited' => { analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', step_count: 1, irs_reproofing: false, same_address_as_id: same_address },
-      'IdV: doc auth verify submitted' => { analytics_id: 'In Person Proofing', success: true, step: 'verify', flow_path: 'standard', step_count: 1, irs_reproofing: false, errors: {}, same_address_as_id: same_address },
-      'IdV: doc auth verify_wait visited' => { analytics_id: 'In Person Proofing', flow_path: 'standard', step: 'verify_wait', step_count: 1, irs_reproofing: false, same_address_as_id: same_address },
+      'IdV: in person proofing address submitted' => { success: true, step: 'address', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {}, same_address_as_id: true },
+      'IdV: doc auth ssn visited' => { analytics_id: 'In Person Proofing', step: 'ssn', flow_path: 'standard', step_count: 1, irs_reproofing: false, same_address_as_id: true },
+      'IdV: doc auth ssn submitted' => { analytics_id: 'In Person Proofing', success: true, step: 'ssn', flow_path: 'standard', step_count: 1, irs_reproofing: false, errors: {}, same_address_as_id: true },
+      'IdV: doc auth verify visited' => { analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', step_count: 1, irs_reproofing: false, same_address_as_id: true },
+      'IdV: doc auth verify submitted' => { analytics_id: 'In Person Proofing', success: true, step: 'verify', flow_path: 'standard', step_count: 1, irs_reproofing: false, errors: {}, same_address_as_id: true },
+      'IdV: doc auth verify_wait visited' => { analytics_id: 'In Person Proofing', flow_path: 'standard', step: 'verify_wait', step_count: 1, irs_reproofing: false, same_address_as_id: true },
       'IdV: doc auth optional verify_wait submitted' => { analytics_id: 'In Person Proofing', success: true, step: 'verify_wait_step_show', address_edited: false, ssn_is_unique: true, proofing_results: anything, errors: {} },
       'IdV: phone confirmation form' => { success: true, errors: {}, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', proofing_components: { document_check: 'usps', resolution_check: 'lexis_nexis', source_check: 'aamva' }, otp_delivery_preference: 'sms' },
       'IdV: phone confirmation vendor' => { success: true, errors: {}, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, proofing_components: { address_check: 'lexis_nexis_address', document_check: 'usps', resolution_check: 'lexis_nexis', source_check: 'aamva' }, area_code: '202', country_code: 'US', phone_fingerprint: anything },
@@ -194,7 +192,7 @@ feature 'Analytics Regression', js: true do
       start_idv_from_sp(:saml)
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
-      complete_all_in_person_proofing_steps(user, same_address)
+      complete_all_in_person_proofing_steps(user)
       complete_phone_step(user)
       complete_review_step(user)
       acknowledge_and_confirm_personal_key
