@@ -326,6 +326,7 @@ class IdentityConfig
     config.add(:piv_cac_service_timeout, type: :float)
     config.add(:piv_cac_verify_token_secret)
     config.add(:piv_cac_verify_token_url)
+    config.add(:phone_recaptcha_mock_validator, type: :boolean)
     config.add(:phone_recaptcha_score_threshold, type: :float)
     config.add(
       :phone_recaptcha_country_score_overrides,

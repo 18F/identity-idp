@@ -87,6 +87,7 @@ module Users
         :otp_make_default_number,
         :recaptcha_token,
         :recaptcha_version,
+        :recaptcha_mock_score,
       )
     end
   end

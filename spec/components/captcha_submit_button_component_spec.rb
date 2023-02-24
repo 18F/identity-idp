@@ -71,4 +71,29 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
       expect(rendered).to have_css('lg-captcha-submit-button[data-foo="bar"]')
     end
   end
+
+  describe 'mock score field' do
+    let(:phone_recaptcha_mock_validator) { nil }
+
+    before do
+      allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).
+        and_return(phone_recaptcha_mock_validator)
+    end
+
+    context 'with mock validator disabled' do
+      let(:phone_recaptcha_mock_validator) { false }
+
+      it 'does not render mock score field' do
+        expect(rendered).not_to have_field(t('components.captcha_submit_button.mock_score_label'))
+      end
+    end
+
+    context 'with mock validator enabled' do
+      let(:phone_recaptcha_mock_validator) { true }
+
+      it 'renders mock score field' do
+        expect(rendered).to have_field(t('components.captcha_submit_button.mock_score_label'))
+      end
+    end
+  end
 end

@@ -4,13 +4,10 @@ describe NewPhoneForm do
   include Shoulda::Matchers::ActiveModel
 
   let(:user) { build(:user, :signed_up) }
-  let(:params) do
-    {
-      phone: '703-555-5000',
-      international_code: 'US',
-      otp_delivery_preference: 'sms',
-    }
-  end
+  let(:phone) { '703-555-5000' }
+  let(:international_code) { 'US' }
+  let(:params) { { phone:, international_code:, otp_delivery_preference: 'sms' } }
+
   subject(:form) { NewPhoneForm.new(user:) }
 
   it_behaves_like 'a phone form'
@@ -371,11 +368,49 @@ describe NewPhoneForm do
       end
     end
 
+    context 'with recaptcha mock validator' do
+      let(:recaptcha_mock_score) { nil }
+      let(:score_threshold) { 0.6 }
+      let(:recaptcha_token) { 'token' }
+      let(:phone) { '3065550100' }
+      let(:international_code) { 'CA' }
+      let(:params) { super().merge(recaptcha_token:, recaptcha_mock_score:) }
+
+      subject(:result) { form.submit(params) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).and_return(true)
+        allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).
+          and_return(score_threshold)
+      end
+
+      context 'with invalid captcha score' do
+        let(:recaptcha_mock_score) { score_threshold - 0.1 }
+
+        it 'is invalid' do
+          expect(result.success?).to eq(false)
+          expect(result.errors[:recaptcha_token]).to be_present
+        end
+      end
+
+      context 'with valid captcha score' do
+        let(:recaptcha_mock_score) { score_threshold + 0.1 }
+
+        it 'is valid' do
+          expect(result.success?).to eq(true)
+          expect(result.errors).to be_blank
+        end
+      end
+    end
+
     context 'with recaptcha enabled' do
       let(:valid) { nil }
       let(:validator) { PhoneRecaptchaValidator.new(recaptcha_version: 3, parsed_phone: nil) }
       let(:recaptcha_token) { 'token' }
+      let(:phone) { '3065550100' }
+      let(:international_code) { 'CA' }
       let(:params) { super().merge(recaptcha_token:) }
+
       subject(:result) { form.submit(params) }
 
       before do

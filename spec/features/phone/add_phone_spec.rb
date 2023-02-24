@@ -204,6 +204,47 @@ describe 'Add a new phone number' do
     expect(page.find('#otp_delivery_preference_instruction')).to have_content('Australia')
   end
 
+  scenario 'adding a phone with a reCAPTCHA challenge', js: true do
+    allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).and_return(true)
+    allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).and_return(0.6)
+
+    user = create(:user, :signed_up)
+    sign_in_and_2fa_user(user)
+    within('.sidenav') { click_on t('account.navigation.add_phone_number') }
+
+    # Failing international should display spam protection screen
+    fill_in t('two_factor_authentication.phone_label'), with: '3065550100'
+    fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.5'
+    click_continue
+    expect(page).to have_content(t('titles.spam_protection'), wait: 5)
+    click_continue
+    expect(page).to have_content(t('two_factor_authentication.header_text'))
+    visit account_path
+    within('.sidenav') { click_on t('account.navigation.add_phone_number') }
+
+    # Passing international should display OTP confirmation
+    fill_in t('two_factor_authentication.phone_label'), with: '3065550100'
+    fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.7'
+    click_continue
+    expect(page).to have_content(t('two_factor_authentication.header_text'), wait: 25)
+    visit account_path
+    within('.sidenav') { click_on t('account.navigation.add_phone_number') }
+
+    # Failing domestic should display OTP confirmation
+    fill_in t('two_factor_authentication.phone_label'), with: '5135550100'
+    fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.5'
+    click_continue
+    expect(page).to have_content(t('two_factor_authentication.header_text'), wait: 5)
+    visit account_path
+    within('.sidenav') { click_on t('account.navigation.add_phone_number') }
+
+    # Passing domestic should display OTP confirmation
+    fill_in t('two_factor_authentication.phone_label'), with: '5135550100'
+    fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.7'
+    click_continue
+    expect(page).to have_content(t('two_factor_authentication.header_text'), wait: 5)
+  end
+
   context 'when the user does not have a phone' do
     scenario 'cancelling add phone otp confirmation redirect to account' do
       user = create(:user, :with_authentication_app)

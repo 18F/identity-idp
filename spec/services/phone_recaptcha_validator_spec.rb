@@ -21,6 +21,25 @@ describe PhoneRecaptchaValidator do
     validator.valid?('token')
   end
 
+  context 'with custom recaptcha validator class' do
+    subject(:validator) do
+      described_class.new(
+        parsed_phone:,
+        recaptcha_version:,
+        analytics:,
+        validator_class: RecaptchaMockValidator,
+      )
+    end
+
+    it 'delegates to validator instance of the given class' do
+      recaptcha_validator = instance_double(RecaptchaMockValidator, valid?: true)
+      expect(RecaptchaMockValidator).to receive(:new).and_return(recaptcha_validator)
+      expect(recaptcha_validator).to receive(:valid?)
+
+      validator.valid?('token')
+    end
+  end
+
   describe '#valid?' do
     it 'is delegated to recaptcha validator' do
       recaptcha_validator = instance_double(RecaptchaValidator, valid?: true)
