@@ -17,6 +17,10 @@ module Idv
       resend_requested? ? I18n.t('idv.buttons.mail.resend') : I18n.t('idv.buttons.mail.send')
     end
 
+    def info_alert_message
+      I18n.t('idv.messages.gpo.info_alert')
+    end
+
     def fallback_back_path
       user_needs_address_otp_verification? ? idv_gpo_verify_path : idv_phone_path
     end
