@@ -85,8 +85,6 @@ module Proofing
           return unless error_handler.error_present?
 
           @errors.push(error_handler.error_message)
-          msg = error_handler.error_message
-          return VerificationError.new(msg)
         end
 
         def node_for_match_indicator(match_indicator_name)

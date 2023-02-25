@@ -96,19 +96,27 @@ describe Proofing::Aamva::VerificationClient do
         end
         let(:response_http_status) { 500 }
 
-        it 'parses the raw response body and throws an exception about the status code' do
+        it 'parses the raw response body' do
+          begin
+            subject
+          rescue Proofing::Aamva::VerificationError
+          end
+
+          expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
+        end
+
+        it 'throws an exception about the status code' do
           expect { response }.to raise_error(
             Proofing::Aamva::VerificationError,
             /Unexpected status code in response: 500/,
           )
-          expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
         end
       end
 
       context 'because we have an invalid response and a 200 status' do
         let(:response_body) { 'error: computer has no brain.<br>' }
 
-        it 'tries to parse the raw response body and throws a SOAP exception' do
+        it 'tries to parse the raw response body' do
           begin
             response
           rescue Proofing::Aamva::VerificationError
@@ -117,12 +125,11 @@ describe Proofing::Aamva::VerificationClient do
           expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
         end
 
-        it 'tries to parse the raw response body and throws a SOAP exception' do
+        it 'throws a SOAP exception' do
           expect { response }.to raise_error(
             Proofing::Aamva::VerificationError,
             /No close tag for \/br/,
           )
-          expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
         end
       end
 
