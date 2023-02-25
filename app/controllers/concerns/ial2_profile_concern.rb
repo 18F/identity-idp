@@ -8,7 +8,7 @@ module Ial2ProfileConcern
       cacher.save(raw_password, profile)
     rescue Encryption::EncryptionError => err
       if profile
-        profile.deactivate(:encryption_error, send_user_alert: false)
+        profile.deactivate(:encryption_error)
         analytics.profile_encryption_invalid(error: err.message)
       end
     end

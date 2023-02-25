@@ -37,7 +37,7 @@ describe AccountsController do
           :signed_up,
           profiles: [build(:profile, :active, :verified, pii: { first_name: 'Jane' })],
         )
-        user.active_profile.deactivate(:password_reset, send_user_alert: false)
+        user.active_profile.deactivate(:password_reset)
 
         sign_in user
 

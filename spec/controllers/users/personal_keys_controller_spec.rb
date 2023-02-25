@@ -76,7 +76,7 @@ RSpec.describe Users::PersonalKeysController do
 
         user = create(:user, :signed_up)
         create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
-        user.active_profile.deactivate(:password_reset, send_user_alert: false)
+        user.active_profile.deactivate(:password_reset)
         sign_in user
 
         patch :update
@@ -90,7 +90,7 @@ RSpec.describe Users::PersonalKeysController do
 
         user = create(:user, :signed_up)
         create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
-        user.active_profile.deactivate(:password_reset, send_user_alert: false)
+        user.active_profile.deactivate(:password_reset)
         sign_in user
 
         patch :update

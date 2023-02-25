@@ -266,10 +266,9 @@ describe Profile do
 
   describe '#deactivate' do
     let(:deactivation_reason) { :password_reset }
-    let(:send_user_alert) { false }
     let(:profile) do
       profile = create(:profile, :active, user: user)
-      profile.deactivate(deactivation_reason, send_user_alert: send_user_alert)
+      profile.deactivate(deactivation_reason)
       profile
     end
 
@@ -277,38 +276,30 @@ describe Profile do
       expect(profile).to_not be_active
       expect(profile).to be_password_reset
     end
+  end
 
-    it 'does not send an email by default' do
-      expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(0)
+  describe '#reject_for_fraud' do
+    let(:profile) do
+      profile = create(:profile, user: user)
+      profile.reject_for_fraud
+      profile
     end
 
-    context 'when the user is deactivated because of a threatmetrix rejection' do
-      # This evil is necessary because UserMailer reaches into the
+    it 'sets fraud_rejection to true' do
+      expect(profile).to_not be_active
+    end
+
+    it 'sends an email' do
+      # This is necessary because UserMailer reaches into the
       # controller's params. As this is a model spec, we have to fake
       # the params object.
-      before do
-        fake_params = ActionController::Parameters.new(
-          user: OpenStruct.new(id: 'fake_user_id'),
-          email_address: OpenStruct.new(user_id: 'fake_user_id', email: 'fake_user@test.com'),
-        )
-        allow_any_instance_of(UserMailer).to receive(:params).and_return(fake_params)
-      end
+      fake_params = ActionController::Parameters.new(
+        user: OpenStruct.new(id: 'fake_user_id'),
+        email_address: OpenStruct.new(user_id: 'fake_user_id', email: 'fake_user@test.com'),
+      )
+      allow_any_instance_of(UserMailer).to receive(:params).and_return(fake_params)
 
-      let(:deactivation_reason) { :threatmetrix_review_rejected }
-
-      context 'and we do not want to notify them' do
-        it 'does not send an email' do
-          expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(0)
-        end
-      end
-
-      context 'and we want to notify them' do
-        let(:send_user_alert) { true }
-
-        it 'sends an email' do
-          expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(1)
-        end
-      end
+      expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(1)
     end
   end
 

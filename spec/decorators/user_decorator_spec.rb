@@ -292,7 +292,7 @@ describe UserDecorator do
       it { expect(decorated_user.password_reset_profile).to be_nil }
 
       context 'when the active profile is deactivated due to password reset' do
-        before { active_profile.deactivate(:password_reset, send_user_alert: false) }
+        before { active_profile.deactivate(:password_reset) }
 
         it { expect(decorated_user.password_reset_profile).to eq(active_profile) }
 

@@ -41,11 +41,13 @@ class Profile < ApplicationRecord
   end
   # rubocop:enable Rails/SkipsModelValidations
 
-  def deactivate(reason, send_user_alert:)
+  def deactivate(reason)
     update!(active: false, deactivation_reason: reason)
-    if reason == :threatmetrix_review_rejected && send_user_alert
-      UserAlerts::AlertUserAboutAccountRejected.call(user)
-    end
+  end
+
+  def reject_for_fraud
+    update!(active: false)
+    UserAlerts::AlertUserAboutAccountRejected.call(user)
   end
 
   def decrypt_pii(password)
