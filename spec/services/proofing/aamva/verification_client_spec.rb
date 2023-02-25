@@ -96,7 +96,7 @@ describe Proofing::Aamva::VerificationClient do
         end
         let(:response_http_status) { 500 }
 
-        it 'parses the raw response body and throws an exception which complains about the status code' do
+        it 'parses the raw response body and throws an exception about the status code' do
           expect { response }.to raise_error(
             Proofing::Aamva::VerificationError,
             /Unexpected status code in response: 500/,
