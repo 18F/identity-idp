@@ -98,7 +98,8 @@ describe Proofing::Aamva::VerificationClient do
 
         it 'parses the raw response body' do
           begin
-            subject
+
+            response
           rescue Proofing::Aamva::VerificationError
           end
 
