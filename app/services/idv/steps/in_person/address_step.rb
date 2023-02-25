@@ -29,8 +29,8 @@ module Idv
         private
 
         def flow_params
-          # params.require(:address).permit(
-          params.permit(
+          params.require(:in_person_address).permit(
+            # params.permit(
             *Idv::InPerson::AddressForm::ATTRIBUTES,
           )
         end

@@ -19,7 +19,7 @@
 
 <%= simple_form_for(
       form, url: url_for, method: 'PUT',
-                 html: { autocomplete: 'off' }
+            html: { autocomplete: 'off' }
     ) do |f| %>
   <%= render ValidatedFieldComponent.new(
         form: f,

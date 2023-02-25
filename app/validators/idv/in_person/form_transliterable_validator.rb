@@ -2,43 +2,44 @@ module Idv
   module InPerson
     module FormTransliterableValidator
       extend ActiveSupport::Concern
-
-      included do
-        def self.transliterate(*fields)
-          supported_fields = UspsInPersonProofing::EnrollmentValidator::SUPPORTED_FIELDS
-          if (fields & supported_fields).size < fields.size
-            # Catch incorrect usage of the validator
-            raise StandardError.new("Unsupported transliteration fields: #{(fields - supported_fields).to_json}")
-          end
-          @@transliterable_fields ||= []
-          validate :transliterable_check if @@transliterable_fields.empty? && !fields.empty?
-          @@transliterable_fields.push(*fields)
-        end
-
-        private
-
-        def transliterable_check
-            FormTransliterableValidator.validator.validate(
-                @@transliterable_fields.map do |field|
-                    method = field.to_sym
-                    if respond_to?(method)
-                        [field, send(method)]
-                    else
-                        [field, nil]
-                    end
-                end.to_h
-            )&.each do |key, value|
-                unless value.nil?
-                    errors.add(key, value)
-                end
+      def self.included(base)
+        class << base
+          def transliterate(*fields)
+            if (fields & SUPPORTED_FIELDS).size < fields.size
+              # Catch incorrect usage of the validator
+              raise StandardError.new(
+                "Unsupported transliteration fields: #{(fields - SUPPORTED_FIELDS).to_json}",
+              )
             end
+
+            @transliterable_fields ||= []
+            if @transliterable_fields.empty? && !fields.empty?
+              check = self.method(:transliterable_check)
+              validate do
+                check.call(self)
+              end
+            end
+            @transliterable_fields.push(*fields)
+          end
+
+          private
+
+          SUPPORTED_FIELDS = UspsInPersonProofing::EnrollmentValidator::SUPPORTED_FIELDS
+
+          def transliterable_check(form)
+            validator.validate(
+              @transliterable_fields.index_with do |field|
+                (form.send(field) if form.respond_to?(field))
+              end,
+            )&.each do |key, value|
+              form.errors.add(key, value, type: :nontransliterable_field) unless value.nil?
+            end
+          end
+
+          def validator
+            @validator ||= UspsInPersonProofing::EnrollmentValidator.new
+          end
         end
-      end
-
-      private
-
-      def self.validator
-          @validator ||= UspsInPersonProofing::EnrollmentValidator.new
       end
     end
   end
