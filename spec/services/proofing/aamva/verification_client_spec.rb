@@ -96,10 +96,10 @@ describe Proofing::Aamva::VerificationClient do
         end
         let(:response_http_status) { 500 }
 
-        it 'parses the raw response body and throws an HTTP exception' do
+        it 'parses the raw response body and throws an exception which complains about the status code' do
           expect { response }.to raise_error(
             Proofing::Aamva::VerificationError,
-            'Unexpected status code in response: 500',
+            /Unexpected status code in response: 500/,
           )
           expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
         end
@@ -108,7 +108,16 @@ describe Proofing::Aamva::VerificationClient do
       context 'because we have an invalid response and a 200 status' do
         let(:response_body) { 'error: computer has no brain.<br>' }
 
-        it 'parses the raw response body and throws a SOAP exception' do
+        it 'tries to parse the raw response body and throws a SOAP exception' do
+          begin
+            response
+          rescue Proofing::Aamva::VerificationError
+          end
+
+          expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
+        end
+
+        it 'tries to parse the raw response body and throws a SOAP exception' do
           expect { response }.to raise_error(
             Proofing::Aamva::VerificationError,
             /No close tag for \/br/,
@@ -121,12 +130,27 @@ describe Proofing::Aamva::VerificationClient do
         let(:response_body) { '<h1>I\'m a teapot' }
         let(:response_http_status) { 418 }
 
-        it 'parses the raw response body and returns an unsuccessful response with errors' do
+        it 'tries to parse the raw response body' do
+          begin
+            response
+          rescue Proofing::Aamva::VerificationError
+          end
+
+          expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
+        end
+
+        it 'throws an error which complains about the invalid response' do
           expect { response }.to raise_error(
             Proofing::Aamva::VerificationError,
             /No close tag for \/h1/,
           )
-          expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
+        end
+
+        it 'throws an error which complains about the HTTP error code' do
+          expect { response }.to raise_error(
+            Proofing::Aamva::VerificationError,
+            /Unexpected status code in response: 418/,
+          )
         end
       end
     end

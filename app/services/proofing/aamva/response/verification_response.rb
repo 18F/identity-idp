@@ -33,14 +33,18 @@ module Proofing
           @missing_attributes = []
           @verification_results = {}
           @http_response = http_response
+          @errors = []
 
-          http_error = handle_http_error
-          soap_error = handle_soap_error
+          handle_http_error
+          handle_soap_error
 
           parse_response
 
-          raise soap_error if soap_error
-          raise http_error if http_error
+          return if @errors.empty?
+
+          error_message = @errors.join('; ')
+          raise ::Proofing::TimeoutError.new(msg) if mva_timeout?(error_message)
+          raise VerificationError.new(error_message)
         end
 
         def reasons
@@ -68,8 +72,7 @@ module Proofing
 
         def handle_http_error
           status = http_response.status
-          return nil if status == 200
-          return VerificationError.new("Unexpected status code in response: #{status}")
+          @errors.push("Unexpected status code in response: #{status}") if status != 200
         end
 
         def handle_missing_attribute(attribute_name)
@@ -79,10 +82,10 @@ module Proofing
 
         def handle_soap_error
           error_handler = SoapErrorHandler.new(http_response)
-          return nil unless error_handler.error_present?
+          return unless error_handler.error_present?
 
+          @errors.push(error_handler.error_message)
           msg = error_handler.error_message
-          return ::Proofing::TimeoutError.new(msg) if mva_timeout?(msg)
           return VerificationError.new(msg)
         end
 
