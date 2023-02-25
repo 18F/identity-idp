@@ -88,11 +88,9 @@ module Proofing
         end
 
         def node_for_match_indicator(match_indicator_name)
-          begin
-            REXML::XPath.first(rexml_document, "//#{match_indicator_name}")
-          rescue REXML::ParseException
-            nil
-          end
+          REXML::XPath.first(rexml_document, "//#{match_indicator_name}")
+        rescue REXML::ParseException
+          nil
         end
 
         def parse_response
@@ -114,8 +112,7 @@ module Proofing
         end
 
         def rexml_document
-          return @rexml_document if @rexml_document
-          @rexml_document = REXML::Document.new(http_response.body)
+          return @rexml_document ||= REXML::Document.new(http_response.body)
         end
 
         def mva_timeout?(error_message)
