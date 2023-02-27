@@ -34,7 +34,7 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
 
   context 'without configured recaptcha site key' do
     before do
-      allow(IdentityConfig.store).to receive(:recaptcha_site_key).and_return(nil)
+      allow(IdentityConfig.store).to receive(:recaptcha_site_key_v3).and_return(nil)
     end
 
     it 'renders without recaptcha site key attribute' do
@@ -49,7 +49,7 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
   context 'with configured recaptcha site key' do
     let(:recaptcha_site_key) { 'site_key' }
     before do
-      allow(IdentityConfig.store).to receive(:recaptcha_site_key).and_return(recaptcha_site_key)
+      allow(IdentityConfig.store).to receive(:recaptcha_site_key_v3).and_return(recaptcha_site_key)
     end
 
     it 'renders with recaptcha site key attribute' do
@@ -69,6 +69,31 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
 
     it 'renders tag options on root wrapper element' do
       expect(rendered).to have_css('lg-captcha-submit-button[data-foo="bar"]')
+    end
+  end
+
+  describe 'mock score field' do
+    let(:phone_recaptcha_mock_validator) { nil }
+
+    before do
+      allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).
+        and_return(phone_recaptcha_mock_validator)
+    end
+
+    context 'with mock validator disabled' do
+      let(:phone_recaptcha_mock_validator) { false }
+
+      it 'does not render mock score field' do
+        expect(rendered).not_to have_field(t('components.captcha_submit_button.mock_score_label'))
+      end
+    end
+
+    context 'with mock validator enabled' do
+      let(:phone_recaptcha_mock_validator) { true }
+
+      it 'renders mock score field' do
+        expect(rendered).to have_field(t('components.captcha_submit_button.mock_score_label'))
+      end
     end
   end
 end

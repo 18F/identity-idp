@@ -15,9 +15,12 @@ module Users
 
     def create
       @new_phone_form = NewPhoneForm.new(user: current_user, analytics: analytics)
-      if @new_phone_form.submit(user_params).success?
+      result = @new_phone_form.submit(user_params)
+      if result.success?
         confirm_phone
         bypass_sign_in current_user
+      elsif recoverable_recaptcha_error?(result)
+        render 'users/phone_setup/spam_protection'
       else
         render :add
       end
@@ -37,6 +40,8 @@ module Users
         :otp_delivery_preference,
         :otp_make_default_number,
         :recaptcha_token,
+        :recaptcha_version,
+        :recaptcha_mock_score,
       )
     end
 

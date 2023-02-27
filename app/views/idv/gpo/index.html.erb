@@ -9,6 +9,8 @@
       ) %>
 <% end %>
 
+<%= render AlertComponent.new(message: t('idv.messages.gpo.info_alert'), class: 'margin-bottom-4') %>
+
 <%= render PageHeadingComponent.new.with_content(@presenter.title) %>
 
 <p>
