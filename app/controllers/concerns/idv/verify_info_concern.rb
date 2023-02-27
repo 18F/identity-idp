@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ModuleLength
 module Idv
   module VerifyInfoConcern
     extend ActiveSupport::Concern
@@ -255,4 +254,3 @@ module Idv
     end
   end
 end
-# rubocop:enable Metrics/ModuleLength
