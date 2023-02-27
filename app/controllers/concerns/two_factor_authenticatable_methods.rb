@@ -312,7 +312,6 @@ module TwoFactorAuthenticatableMethods
   def authenticator_view_data
     {
       two_factor_authentication_method: two_factor_authentication_method,
-      user_email: current_user.email_addresses.take.email,
     }.merge(generic_data)
   end
 
