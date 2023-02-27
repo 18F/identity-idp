@@ -26,14 +26,18 @@
       heading_tag: :h2,
       heading: t('components.troubleshooting_options.default_heading'),
       options: [
-        @show_choose_another_method_option && {
-          url: login_two_factor_options_path,
-          text: t('two_factor_authentication.login_options_link_text'),
-        },
         {
           url: MarketingSite.contact_url,
           text: t('links.contact_support', app_name: APP_NAME),
           new_tab: true,
+        },
+        {
+          url: login_two_factor_options_path,
+          text: t('two_factor_authentication.login_options_link_text'),
+        },
+        {
+          url: add_phone_path,
+          text: t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
         },
       ].select(&:present?),
     ) %>
