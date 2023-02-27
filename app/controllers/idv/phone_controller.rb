@@ -13,14 +13,6 @@ module Idv
     before_action :confirm_step_needed
     before_action :set_idv_form
 
-    def confirm_verify_info_complete
-      return unless IdentityConfig.store.in_person_verify_info_controller_enabled
-      return unless user_fully_authenticated?
-      return if idv_session.resolution_successful
-
-      redirect_to idv_in_person_verify_info_url
-    end
-
     def new
       analytics.idv_phone_use_different(step: params[:step]) if params[:step]
 
@@ -84,6 +76,14 @@ module Idv
     end
 
     private
+
+    def confirm_verify_info_complete
+      return unless IdentityConfig.store.in_person_verify_info_controller_enabled
+      return unless user_fully_authenticated?
+      return if idv_session.resolution_successful
+
+      redirect_to idv_in_person_verify_info_url
+    end
 
     def throttle
       @throttle ||= Throttle.new(user: current_user, throttle_type: :proof_address)
