@@ -24,7 +24,8 @@ module UspsInPersonProofing
       end.body
 
       facilities = parse_facilities(response)
-      dedupe_facilities(facilities)
+      sorted_facilities = sort_by_ascending_distance(facilities)
+      dedupe_facilities(sorted_facilities)
     end
 
     # Temporary function to return a static set of facilities
@@ -229,6 +230,10 @@ module UspsInPersonProofing
       facilities.uniq do |facility|
         [facility.address, facility.city, facility.state, facility.zip_code_5]
       end
+    end
+
+    def sort_by_ascending_distance(facilities)
+      facilities.sort_by { |f | f[:distance].delete_suffix(' mi').to_f }
     end
   end
 end
