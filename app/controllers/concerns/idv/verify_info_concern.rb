@@ -114,7 +114,7 @@ module Idv
 
       if form_response.success?
         idv_session.resolution_successful = true
-        redirect_to next_url
+        redirect_to idv_phone_url
       else
         idv_session.resolution_successful = false
       end

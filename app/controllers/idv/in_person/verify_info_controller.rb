@@ -87,10 +87,6 @@ module Idv
 
       private
 
-      def next_url
-        idv_phone_url
-      end
-
       def prev_url
         idv_in_person_url
       end

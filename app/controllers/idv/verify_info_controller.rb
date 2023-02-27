@@ -84,10 +84,6 @@ module Idv
 
     private
 
-    def next_url
-      idv_review_url
-    end
-
     def prev_url
       if IdentityConfig.store.doc_auth_ssn_controller_enabled
         idv_ssn_url
@@ -124,7 +120,7 @@ module Idv
 
     def confirm_profile_not_already_confirmed
       return unless idv_session.profile_confirmation == true
-      redirect_to next_url
+      redirect_to idv_review_url
     end
 
     def current_flow_step_counts
