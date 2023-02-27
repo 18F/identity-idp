@@ -180,6 +180,7 @@ feature 'doc capture document capture step', js: true do
         hash_including(
           success: false,
           user_id: 'anonymous-uuid',
+          doc_capture_user_id?: false,
         ),
       )
     end

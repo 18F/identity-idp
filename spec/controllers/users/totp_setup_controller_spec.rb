@@ -15,7 +15,7 @@ describe Users::TotpSetupController, devise: true do
     context 'user is setting up authenticator app after account creation' do
       before do
         stub_analytics
-        user = build(:user, :signed_up, :with_phone, with: { phone: '703-555-1212' })
+        user = create(:user, :signed_up, :with_phone, with: { phone: '703-555-1212' })
         stub_sign_in(user)
         allow(@analytics).to receive(:track_event)
         get :new
@@ -49,8 +49,9 @@ describe Users::TotpSetupController, devise: true do
 
     context 'user is setting up authenticator app during account creation' do
       before do
+        user = create(:user)
         stub_analytics
-        stub_sign_in_before_2fa
+        stub_sign_in_before_2fa(user)
         allow(@analytics).to receive(:track_event)
         get :new
       end

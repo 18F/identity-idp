@@ -34,8 +34,11 @@ module Idv
                 document_capture_session_uuid.blank?
 
       result = Idv::DocumentCaptureSessionForm.new(document_capture_session_uuid).submit
+      to_log = result.to_h
+      # Log value used to determine session type ("hybrid flow" or not)
+      to_log[:doc_capture_user_id?] = session[:doc_capture_user_id].present?
 
-      analytics.track_event(FLOW_STATE_MACHINE_SETTINGS[:analytics_id], result.to_h)
+      analytics.track_event(FLOW_STATE_MACHINE_SETTINGS[:analytics_id], to_log)
       process_result(result)
     end
 

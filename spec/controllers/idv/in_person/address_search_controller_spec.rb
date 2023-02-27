@@ -109,7 +109,7 @@ describe Idv::InPerson::AddressSearchController do
 
       it 'gets an empty pilot response' do
         response = get :index
-        expect(response.status).to eq(502)
+        expect(response.status).to eq(400)
         addresses = JSON.parse(response.body)
         expect(addresses.length).to eq 0
       end
@@ -118,7 +118,7 @@ describe Idv::InPerson::AddressSearchController do
         response
         expect(@analytics).to have_logged_event(
           'IdV: in person proofing location search submitted',
-          api_status_code: 502,
+          api_status_code: 400,
           success: false,
           errors: 'ArcGIS error performing operation',
           result_total: 0,
@@ -137,7 +137,7 @@ describe Idv::InPerson::AddressSearchController do
 
       it 'returns an error code' do
         response = get :index
-        expect(response.status).to eq(504)
+        expect(response.status).to eq(400)
         addresses = JSON.parse(response.body)
         expect(addresses.length).to eq 0
       end
@@ -146,7 +146,7 @@ describe Idv::InPerson::AddressSearchController do
         response
         expect(@analytics).to have_logged_event(
           'IdV: in person proofing location search submitted',
-          api_status_code: 504,
+          api_status_code: 400,
           success: false,
           errors: 'ArcGIS error performing operation',
           result_total: 0,
