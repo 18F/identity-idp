@@ -161,10 +161,22 @@ RSpec.describe UspsInPersonProofing::Proofer do
         check_facility(facilities[0])
       end
 
+      it 'returns facilities sorted by ascending distance' do
+        stub_request_facilities_with_unorderd_distance
+        facilities = subject.request_facilities(location)
+
+        previous_post_office_distance = 0
+        facilities.count do |post_office|
+          current_distance = post_office.distance.delete_suffix(' mi').to_f
+          expect(previous_post_office_distance).to be <= current_distance
+          previous_post_office_distance = current_distance
+        end
+      end
+
       it 'does not return duplicates' do
         stub_request_facilities_with_duplicates
         facilities = subject.request_facilities(location)
-
+        
         expect(facilities.length).to eq(9)
         expect(
           facilities.count do |post_office|
