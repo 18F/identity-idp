@@ -27,7 +27,7 @@ module Idv
       def extra_analytics_attributes
         extra = {}
         bucket = session[:in_person_cta_variant]
-        extra.merge!(in_person_cta_variant: bucket) if bucket
+        extra[:in_person_cta_variant] = bucket if bucket
         extra
       end
     end
