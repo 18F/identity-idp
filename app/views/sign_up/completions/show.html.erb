@@ -28,3 +28,7 @@
     <%= f.submit t('sign_up.agree_and_continue') %>
   <% end %>
 </p>
+
+<%= render PageFooterComponent.new do %>
+  <%= link_to t('links.cancel'), return_to_sp_cancel_path%>
+<% end %>
