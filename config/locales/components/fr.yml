@@ -5,6 +5,8 @@ fr:
       image_alt: Code-barres
     captcha_submit_button:
       action_message: Vérification…
+      mock_score_disclaimer: Usage interne uniquement
+      mock_score_label: 'Score reCAPTCHA: (0.0 - 1.0)'
     clipboard_button:
       label: Copier
     countdown_alert:

@@ -82,6 +82,7 @@ es:
       completion_new_attributes: '%{sp} está solicitando nueva información'
       completion_new_sp: Acabas de iniciar sesión por primera vez
       confirmation: Continuar para iniciar sesión
+    spam_protection: Protección contra el correo no deseado
     totp_setup:
       new: Agregar aplicación de autenticación
     two_factor_setup: Configuración de autenticación de dos factores

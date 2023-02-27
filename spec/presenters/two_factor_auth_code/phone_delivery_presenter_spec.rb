@@ -5,16 +5,15 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
   include ActionView::Helpers::UrlHelper
 
   let(:view) { ActionController::Base.new.view_context }
+  let(:unconfirmed_phone) { false }
   let(:data) do
     {
       confirmation_for_add_phone: false,
       phone_number: '5555559876',
       code_value: '999999',
       otp_delivery_preference: 'sms',
-      unconfirmed_phone: true,
       totp_enabled: false,
-      personal_key_unavailable: true,
-      reauthn: false,
+      unconfirmed_phone: unconfirmed_phone,
     }
   end
   let(:presenter) do
@@ -58,6 +57,31 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
     end
   end
 
+  describe '#troubleshooting_options' do
+    context 'when phone is unconfirmed' do
+      let(:unconfirmed_phone) { true }
+      it 'should show an option to change phone number' do
+        expect(presenter.troubleshooting_options).to include(
+          {
+            url: phone_setup_path,
+            text: t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
+          },
+        )
+      end
+    end
+
+    context 'when phone is confirmed' do
+      it 'shpould show an option to show to mfa options list' do
+        expect(presenter.troubleshooting_options).to include(
+          {
+            url: login_two_factor_options_path,
+            text: t('two_factor_authentication.login_options_link_text'),
+          },
+        )
+      end
+    end
+  end
+
   describe '#landline_warning' do
     let(:landline_html) do
       t(
@@ -80,25 +104,5 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
     it 'returns translation for word phone call' do
       expect(presenter.phone_call_text).to eq phone_call
     end
-  end
-
-  def account_reset_cancel_link(account_reset_token)
-    I18n.t(
-      'two_factor_authentication.account_reset.pending_html', cancel_link:
-      view.link_to(
-        t('two_factor_authentication.account_reset.cancel_link'),
-        account_reset_cancel_url(token: account_reset_token),
-      )
-    )
-  end
-
-  def account_reset_delete_account_link
-    I18n.t(
-      'two_factor_authentication.account_reset.text_html', link:
-      view.link_to(
-        t('two_factor_authentication.account_reset.link'),
-        account_reset_recovery_options_path(locale: LinkLocaleResolver.locale),
-      )
-    )
   end
 end

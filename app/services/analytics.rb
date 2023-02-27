@@ -20,9 +20,6 @@ class Analytics
     analytics_hash = {
       event_properties: attributes.except(:user_id),
       new_event: first_event_this_session?,
-      new_session_path: first_path_visit_this_session?,
-      new_session_success_state: first_success_state_this_session?,
-      success_state: success_state_token(event),
       path: request&.path,
       session_duration: session_duration,
       user_id: attributes[:user_id] || user.uuid,
@@ -46,30 +43,9 @@ class Analytics
   end
 
   def update_session_events_and_paths_visited_for_analytics(event)
-    @session[:paths_visited] ||= {}
     @session[:events] ||= {}
-    @session[:success_states] ||= {}
-    if request
-      token = success_state_token(event)
-      @session[:first_success_state] = !@session[:success_states].key?(token)
-      @session[:success_states][token] = true
-      @session[:first_path_visit] = !@session[:paths_visited].key?(request.path)
-      @session[:paths_visited][request.path] = true
-    end
     @session[:first_event] = !@session[:events].key?(event)
     @session[:events][event] = true
-  end
-
-  def first_path_visit_this_session?
-    @session[:first_path_visit]
-  end
-
-  def first_success_state_this_session?
-    @session[:first_success_state]
-  end
-
-  def success_state_token(event)
-    "#{request&.env&.dig('REQUEST_METHOD')}|#{request&.path}|#{event}"
   end
 
   def first_event_this_session?

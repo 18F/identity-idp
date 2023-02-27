@@ -137,6 +137,7 @@ export class PhoneInputElement extends HTMLElement {
 
     const iti = intlTelInput(this.textInput, {
       preferredCountries: ['US', 'CA'],
+      initialCountry: this.codeInput.value,
       localizedCountries: countryCodePairs,
       onlyCountries: supportedCountryCodes,
       autoPlaceholder: 'off',

@@ -44,6 +44,11 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
     end
 
     context 'an establishing enrollment record exists for the user' do
+      before do
+        allow(Rails).to receive(:cache).and_return(
+          ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+        )
+      end
       it 'updates the existing enrollment record' do
         expect(user.in_person_enrollments.length).to eq(1)
 

@@ -61,7 +61,7 @@ describe 'idv/in_person/ready_to_verify/show.html.erb' do
 
     expect(rendered).to have_link(
       t('in_person_proofing.body.barcode.cancel_link_text'),
-      href: idv_cancel_path(step: 'verify'),
+      href: idv_cancel_path(step: 'barcode'),
     )
   end
 

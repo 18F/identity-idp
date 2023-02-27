@@ -12,10 +12,6 @@ class UserDecorator
     @user = user
   end
 
-  def email
-    user.email_addresses.take&.email
-  end
-
   def email_language_preference_description
     if I18n.locale_available?(user.email_language)
       # i18n-tasks-use t('account.email_language.name.en')
@@ -77,14 +73,6 @@ class UserDecorator
     profile if profile&.password_reset?
   end
 
-  def threatmetrix_review_pending?
-    @threatmetrix_review_pending ||= threatmetrix_review_pending_profile.present?
-  end
-
-  def threatmetrix_review_pending_profile
-    user.profiles.threatmetrix_review_pending.order(created_at: :desc).first
-  end
-
   def qrcode(otp_secret_key)
     options = {
       issuer: APP_NAME,
@@ -92,7 +80,9 @@ class UserDecorator
       digits: TwoFactorAuthenticatable::OTP_LENGTH,
       interval: IdentityConfig.store.totp_code_interval,
     }
-    url = ROTP::TOTP.new(otp_secret_key, options).provisioning_uri(email)
+    url = ROTP::TOTP.new(otp_secret_key, options).provisioning_uri(
+      EmailContext.new(user).last_sign_in_email_address.email,
+    )
     qrcode = RQRCode::QRCode.new(url)
     qrcode.as_png(size: 240).to_data_url
   end

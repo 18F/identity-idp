@@ -33,7 +33,7 @@ gem 'jsbundling-rails', '~> 1.0.0'
 gem 'jwe'
 gem 'jwt'
 gem 'lograge', '>= 0.11.2'
-gem 'lookbook', '~> 1.4.5', require: false
+gem 'lookbook', '~> 1.5.3', require: false
 gem 'lru_redux'
 gem 'msgpack', '~> 1.6'
 gem 'maxminddb'
@@ -68,7 +68,7 @@ gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
 gem 'uglifier', '~> 4.2'
 gem 'valid_email', '>= 0.1.3'
-gem 'view_component', '~> 2.51.0'
+gem 'view_component', '~> 2.82.0'
 gem 'webauthn', '~> 2.5.2'
 gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
@@ -99,7 +99,7 @@ group :development, :test do
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'nokogiri', '~> 1.14.0'
-  gem 'parallel_tests'
+  gem 'parallel_tests', '~> 3.8.0'
   gem 'pg_query', require: false
   gem 'pry-byebug'
   gem 'pry-doc'

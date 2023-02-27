@@ -12,6 +12,16 @@ describe Idv::VerifyInfoController do
   end
 
   let(:user) { create(:user) }
+  let(:analytics_hash) do
+    {
+      analytics_id: 'Doc Auth',
+      flow_path: 'standard',
+      irs_reproofing: false,
+      step: 'verify',
+    }
+  end
+  let(:ssn_throttle_hash) { { throttle_context: 'multi-session' } }
+  let(:proofing_throttle_hash) { { throttle_context: 'single-session' } }
 
   before do
     allow(subject).to receive(:flow_session).and_return(flow_session)
@@ -38,10 +48,7 @@ describe Idv::VerifyInfoController do
     let(:analytics_name) { 'IdV: doc auth verify visited' }
     let(:analytics_args) do
       {
-        analytics_id: 'Doc Auth',
-        flow_path: 'standard',
-        irs_reproofing: false,
-        step: 'verify',
+        **analytics_hash,
         step_count: 1,
       }
     end
@@ -100,10 +107,32 @@ describe Idv::VerifyInfoController do
         ).increment_to_throttled!
       end
 
+      context 'when using new ssn controller' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_ssn_controller_enabled).
+            and_return(true)
+        end
+
+        it 'redirects to ssn controller when ssn info is missing' do
+          flow_session[:pii_from_doc][:ssn] = nil
+
+          get :show
+
+          expect(response).to redirect_to(idv_ssn_url)
+        end
+      end
+
       it 'redirects to ssn failure url' do
         get :show
 
         expect(response).to redirect_to idv_session_errors_ssn_failure_url
+      end
+
+      it 'logs the correct attempts event' do
+        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
+          with(ssn_throttle_hash)
+
+        get :show
       end
     end
 
@@ -120,23 +149,30 @@ describe Idv::VerifyInfoController do
 
         expect(response).to redirect_to idv_session_errors_failure_url
       end
+
+      it 'logs the correct attempts event' do
+        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
+          with(proofing_throttle_hash)
+
+        get :show
+      end
     end
   end
 
   describe '#update' do
+    before do
+      stub_attempts_tracker
+    end
+
     it 'logs the correct analytics event' do
       stub_analytics
-      stub_attempts_tracker
 
       put :update
 
       expect(@analytics).to have_logged_event(
         'IdV: doc auth verify submitted',
         {
-          analytics_id: 'Doc Auth',
-          flow_path: 'standard',
-          irs_reproofing: false,
-          step: 'verify',
+          **analytics_hash,
           step_count: 0,
         },
       )
@@ -165,6 +201,13 @@ describe Idv::VerifyInfoController do
 
         expect(response).to redirect_to idv_session_errors_ssn_failure_url
       end
+
+      it 'logs the correct attempts event' do
+        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
+          with(ssn_throttle_hash)
+
+        put :update
+      end
     end
 
     context 'when the user is proofing throttled' do
@@ -179,6 +222,13 @@ describe Idv::VerifyInfoController do
         put :update
 
         expect(response).to redirect_to idv_session_errors_failure_url
+      end
+
+      it 'logs the correct attempts event' do
+        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
+          with(proofing_throttle_hash)
+
+        put :update
       end
     end
   end

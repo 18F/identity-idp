@@ -50,6 +50,7 @@ module Idv
       profile = profile_maker.save_profile(
         active: deactivation_reason.nil?,
         deactivation_reason: deactivation_reason,
+        fraud_review_needed: threatmetrix_failed_and_needs_review?,
       )
       self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
@@ -75,8 +76,6 @@ module Idv
         :gpo_verification_pending
       elsif in_person_enrollment?
         :in_person_verification_pending
-      elsif threatmetrix_failed_and_needs_review?
-        :threatmetrix_review_pending
       end
     end
 
@@ -134,6 +133,24 @@ module Idv
 
     def user_phone_confirmation_session=(new_user_phone_confirmation_session)
       session[:user_phone_confirmation_session] = new_user_phone_confirmation_session.to_h
+    end
+
+    def invalidate_steps_after_ssn!
+      # Guard against unvalidated attributes from in-person flow in review controller
+      session[:applicant] = nil
+
+      invalidate_verify_info_step!
+      invalidate_phone_step!
+    end
+
+    def invalidate_verify_info_step!
+      session[:resolution_successful] = nil
+      session[:profile_confirmation] = nil
+    end
+
+    def invalidate_phone_step!
+      session[:vendor_phone_confirmation] = nil
+      session[:user_phone_confirmation] = nil
     end
 
     private

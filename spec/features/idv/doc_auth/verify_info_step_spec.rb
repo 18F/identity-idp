@@ -7,6 +7,42 @@ feature 'doc auth verify_info step', :js do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
+  let(:mock_ssn_a) { DocAuthHelper::GOOD_SSN }
+  let(:masked_ssn_a) { '9**-**-***4' }
+  let(:mock_zip_code) { '12345' }
+  let(:mock_ssn_b) { '900456789' }
+  let(:masked_ssn_b) { '9**-**-***9' }
+  let(:unmasked_ssn_b) { '900-45-6789' }
+  let(:fake_pii_details) do
+    {
+      document_state: 'MT',
+      document_number: '1111111111111',
+      document_issued: '2019-12-31',
+      document_expiration: '2099-12-31',
+      first_name: 'FAKEY',
+      last_name: 'MCFAKERSON',
+      date_of_birth: '1938-10-06',
+      address: '1 FAKE RD',
+    }
+  end
+  let(:mock_state_id_jurisdiction) { [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]] }
+  let(:proof_resolution_args) do
+    {
+      trace_id: anything,
+      threatmetrix_session_id: anything,
+      request_ip: kind_of(String),
+    }
+  end
+
+  let(:forms_ssn_show) { 'forms.ssn.show' }
+  let(:forms_buttons_submit_update) { 'forms.buttons.submit.update' }
+  let(:idv_buttons_change_ssn_label) { 'idv.buttons.change_ssn_label' }
+  let(:idv_form_ssn_label_html) { 'idv.form.ssn_label_html' }
+  let(:idv_failure_button_warning) { 'idv.failure.button.warning' }
+  let(:step_verify_info_controller) { 'Idv::VerifyInfoController' }
+  let(:ananlyics_throttle_event) { 'Throttler Rate Limit Triggered' }
+  let(:idv_failure_timeout) { 'idv.failure.timeout' }
+
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
@@ -29,48 +65,41 @@ feature 'doc auth verify_info step', :js do
     expect(page).to have_content(t('step_indicator.flows.idv.verify_info'))
 
     # SSN is masked until revealed
-    expect(page).to have_text('9**-**-***4')
-    expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
-    check t('forms.ssn.show')
-    expect(page).not_to have_text('9**-**-***4')
-    expect(page).to have_text(DocAuthHelper::GOOD_SSN)
+    expect(page).to have_text(masked_ssn_a)
+    expect(page).not_to have_text(mock_ssn_a)
+    check t(forms_ssn_show)
+    expect(page).not_to have_text(masked_ssn_a)
+    expect(page).to have_text(mock_ssn_a)
   end
 
   it 'allows the user to enter in a new address and displays updated info' do
     click_button t('idv.buttons.change_address_label')
-    fill_in 'idv_form_zipcode', with: '12345'
-    click_button t('forms.buttons.submit.update')
+    fill_in 'idv_form_zipcode', with: mock_zip_code
+    click_button t(forms_buttons_submit_update)
 
     expect(page).to have_current_path(idv_verify_info_path)
 
-    expect(page).to have_content('12345')
+    expect(page).to have_content(mock_zip_code)
   end
 
   it 'allows the user to enter in a new ssn and displays updated info' do
-    click_button t('idv.buttons.change_ssn_label')
-    fill_in t('idv.form.ssn_label_html'), with: '900456789'
-    click_button t('forms.buttons.submit.update')
+    click_button t(idv_buttons_change_ssn_label)
+    fill_in t(idv_form_ssn_label_html), with: mock_ssn_b
+    click_button t(forms_buttons_submit_update)
 
     expect(page).to have_current_path(idv_verify_info_path)
 
-    expect(page).to have_text('9**-**-***9')
-    check t('forms.ssn.show')
-    expect(page).to have_text('900-45-6789')
+    expect(page).to have_text(masked_ssn_b)
+    check t(forms_ssn_show)
+    expect(page).to have_text(unmasked_ssn_b)
   end
 
   it 'proceeds to the next page upon confirmation' do
     expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
       success: true,
       failure_reason: nil,
-      document_state: 'MT',
-      document_number: '1111111111111',
-      document_issued: '2019-12-31',
-      document_expiration: '2099-12-31',
-      first_name: 'FAKEY',
-      last_name: 'MCFAKERSON',
-      date_of_birth: '1938-10-06',
-      address: '1 FAKE RD',
-      ssn: '900-66-1234',
+      **fake_pii_details,
+      ssn: mock_ssn_a,
     )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_verify_step
@@ -92,15 +121,8 @@ feature 'doc auth verify_info step', :js do
     expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
       success: false,
       failure_reason: { ssn: ['Unverified SSN.'] },
-      document_state: 'MT',
-      document_number: '1111111111111',
-      document_issued: '2019-12-31',
-      document_expiration: '2099-12-31',
-      first_name: 'FAKEY',
-      last_name: 'MCFAKERSON',
-      date_of_birth: '1938-10-06',
-      address: '1 FAKE RD',
-      ssn: '123-45-6666',
+      **fake_pii_details,
+      ssn: DocAuthHelper::SSN_THAT_FAILS_RESOLUTION,
     )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
@@ -109,7 +131,7 @@ feature 'doc auth verify_info step', :js do
     click_idv_continue
 
     expect(page).to have_current_path(idv_session_errors_warning_path)
-    click_on t('idv.failure.button.warning')
+    click_on t(idv_failure_button_warning)
 
     expect(page).to have_current_path(idv_verify_info_path)
   end
@@ -118,15 +140,8 @@ feature 'doc auth verify_info step', :js do
     expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
       success: false,
       failure_reason: nil,
-      document_state: 'MT',
-      document_number: '1111111111111',
-      document_issued: '2019-12-31',
-      document_expiration: '2099-12-31',
-      first_name: 'FAKEY',
-      last_name: 'MCFAKERSON',
-      date_of_birth: '1938-10-06',
-      address: '1 FAKE RD',
-      ssn: '000-00-0000',
+      **fake_pii_details,
+      ssn: DocAuthHelper::SSN_THAT_RAISES_EXCEPTION,
     )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
@@ -137,12 +152,12 @@ feature 'doc auth verify_info step', :js do
 
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth exception visited',
-      step_name: 'Idv::VerifyInfoController',
+      step_name: step_verify_info_controller,
       remaining_attempts: 5,
     )
     expect(page).to have_current_path(idv_session_errors_exception_path)
 
-    click_on t('idv.failure.button.warning')
+    click_on t(idv_failure_button_warning)
 
     expect(page).to have_current_path(idv_verify_info_path)
   end
@@ -154,7 +169,9 @@ feature 'doc auth verify_info step', :js do
       allow(IdentityConfig.store).to receive(:idv_max_attempts).
         and_return(max_resolution_attempts)
 
-      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited)
+      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
+        with({ throttle_context: 'single-session' })
+
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_ssn_step
       fill_out_ssn_form_with_ssn_that_fails_resolution
@@ -174,9 +191,9 @@ feature 'doc auth verify_info step', :js do
       click_idv_continue
       expect(page).to have_current_path(idv_session_errors_failure_path)
       expect(fake_analytics).to have_logged_event(
-        'Throttler Rate Limit Triggered',
+        ananlyics_throttle_event,
         throttle_type: :idv_resolution,
-        step_name: 'Idv::VerifyInfoController',
+        step_name: step_verify_info_controller,
       )
 
       visit idv_verify_info_url
@@ -204,6 +221,9 @@ feature 'doc auth verify_info step', :js do
       allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts).
         and_return(max_ssn_attempts)
 
+      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
+        with({ throttle_context: 'multi-session' })
+
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_ssn_step
       fill_out_ssn_form_with_ssn_that_fails_resolution
@@ -217,7 +237,7 @@ feature 'doc auth verify_info step', :js do
       click_idv_continue
       expect(page).to have_current_path(idv_session_errors_ssn_failure_path)
       expect(fake_analytics).to have_logged_event(
-        'Throttler Rate Limit Triggered',
+        ananlyics_throttle_event,
         throttle_type: :proof_ssn,
         step_name: 'verify_info',
       )
@@ -238,7 +258,7 @@ feature 'doc auth verify_info step', :js do
   context 'when the user lives in an AAMVA supported state' do
     it 'performs a resolution and state ID check' do
       allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
-        [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]],
+        mock_state_id_jurisdiction,
       )
       user = create(:user, :signed_up)
       expect_any_instance_of(Idv::Agent).
@@ -246,10 +266,8 @@ feature 'doc auth verify_info step', :js do
         with(
           anything,
           should_proof_state_id: true,
-          trace_id: anything,
-          threatmetrix_session_id: anything,
           user_id: user.id,
-          request_ip: kind_of(String),
+          **proof_resolution_args,
         ).
         and_call_original
 
@@ -265,7 +283,7 @@ feature 'doc auth verify_info step', :js do
     it 'does not perform the state ID check' do
       allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
         IdentityConfig.store.aamva_supported_jurisdictions -
-          [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]],
+          mock_state_id_jurisdiction,
       )
       user = create(:user, :signed_up)
       expect_any_instance_of(Idv::Agent).
@@ -273,10 +291,8 @@ feature 'doc auth verify_info step', :js do
         with(
           anything,
           should_proof_state_id: false,
-          trace_id: anything,
-          threatmetrix_session_id: anything,
           user_id: user.id,
-          request_ip: kind_of(String),
+          **proof_resolution_args,
         ).
         and_call_original
 
@@ -298,10 +314,8 @@ feature 'doc auth verify_info step', :js do
         with(
           anything,
           should_proof_state_id: false,
-          trace_id: anything,
-          threatmetrix_session_id: anything,
           user_id: user.id,
-          request_ip: kind_of(String),
+          **proof_resolution_args,
         ).
         and_call_original
 
@@ -324,7 +338,7 @@ feature 'doc auth verify_info step', :js do
 
       click_idv_continue
       expect(fake_analytics).to have_logged_event('Proofing Resolution Result Missing')
-      expect(page).to have_content(t('idv.failure.timeout'))
+      expect(page).to have_content(t(idv_failure_timeout))
       expect(page).to have_current_path(idv_verify_info_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
       click_idv_continue
@@ -335,15 +349,8 @@ feature 'doc auth verify_info step', :js do
       expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
         success: false,
         failure_reason: { idv_verification: [:timeout] },
-        document_state: 'MT',
-        document_number: '1111111111111',
-        document_issued: '2019-12-31',
-        document_expiration: '2099-12-31',
-        first_name: 'FAKEY',
-        last_name: 'MCFAKERSON',
-        date_of_birth: '1938-10-06',
-        address: '1 FAKE RD',
-        ssn: '900-66-1234',
+        **fake_pii_details,
+        ssn: mock_ssn_a,
       )
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
@@ -352,7 +359,7 @@ feature 'doc auth verify_info step', :js do
         and_return(nil)
 
       click_idv_continue
-      expect(page).to have_content(t('idv.failure.timeout'))
+      expect(page).to have_content(t(idv_failure_timeout))
       expect(page).to have_current_path(idv_verify_info_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
     end
@@ -367,11 +374,38 @@ feature 'doc auth verify_info step', :js do
         and_return(nil)
 
       click_idv_continue
-      expect(page).to have_content(t('idv.failure.timeout'))
+      expect(page).to have_content(t(idv_failure_timeout))
       expect(page).to have_current_path(idv_verify_info_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
       click_idv_continue
       expect(page).to have_current_path(idv_phone_path)
+    end
+  end
+
+  context 'with ssn_controller enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_ssn_controller_enabled).
+        and_return(true)
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_verify_step
+    end
+
+    it 'uses ssn controller to enter a new ssn and displays updated info' do
+      click_link t(idv_buttons_change_ssn_label)
+      expect(page).to have_current_path(idv_ssn_path)
+
+      fill_in t(idv_form_ssn_label_html), with: mock_ssn_b
+      click_button t(forms_buttons_submit_update)
+
+      expect(fake_analytics).to have_logged_event(
+        'IdV: doc auth redo_ssn submitted',
+      )
+
+      expect(page).to have_current_path(idv_verify_info_path)
+
+      expect(page).to have_text(masked_ssn_b)
+      check t(forms_ssn_show)
+      expect(page).to have_text(unmasked_ssn_b)
     end
   end
 end
