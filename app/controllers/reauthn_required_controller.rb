@@ -10,7 +10,7 @@ class ReauthnRequiredController < ApplicationController
     return if recently_authenticated? && user_session[:auth_method] != 'remember_device'
     return if in_multi_mfa_selection_flow?
 
-    prompt_for_current_password
+    prompt_for_second_factor
   end
 
   def recently_authenticated?
@@ -20,7 +20,7 @@ class ReauthnRequiredController < ApplicationController
     authn_at > Time.zone.now - IdentityConfig.store.reauthn_window
   end
 
-  def prompt_for_current_password
+  def prompt_for_second_factor
     store_location(request.url)
     user_session[:context] = 'reauthentication'
     user_session[:factor_to_change] = factor_from_controller_name
