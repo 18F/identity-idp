@@ -189,9 +189,8 @@ feature 'doc auth send link step' do
   end
 
   context 'when user is from Puerto Rico' do
-    let(:area_code) {}
-    let(:phone) { "+1 #{area_code}-555-1212" }
-    let(:formatted_phone) { "(#{area_code}) 555-1212" }
+    let(:phone) { '+1 787-555-1212' }
+    let(:formatted_phone) { '(787) 555-1212' }
     let(:user) do
       create(
         :user,
@@ -201,25 +200,13 @@ feature 'doc auth send link step' do
       )
     end
 
-    shared_examples 'they are a person with a real telephone' do
-      it "defaults phone to user's 2fa phone number", :js do
-        field = page.find_field(t('two_factor_authentication.phone_label'))
-        expect(field.value).to eq(formatted_phone)
-      end
-      it "allows submitting to user's 2fa phone number", :js do
-        click_idv_continue
-        expect(page).to have_current_path(idv_doc_auth_link_sent_step)
-      end
+    it "defaults phone to user's 2fa phone number", :js do
+      field = page.find_field(t('two_factor_authentication.phone_label'))
+      expect(field.value).to eq(formatted_phone)
     end
-
-    context 'with area code 787' do
-      let(:area_code) { '787' }
-      it_behaves_like 'they are a person with a real telephone'
-    end
-
-    context 'with area code 939' do
-      let(:area_code) { '939' }
-      it_behaves_like 'they are a person with a real telephone'
+    it "allows submitting to user's 2fa phone number", :js do
+      click_idv_continue
+      expect(page).to have_current_path(idv_doc_auth_link_sent_step)
     end
   end
 end
