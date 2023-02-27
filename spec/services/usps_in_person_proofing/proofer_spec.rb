@@ -176,7 +176,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
       it 'does not return duplicates' do
         stub_request_facilities_with_duplicates
         facilities = subject.request_facilities(location)
-        
+
         expect(facilities.length).to eq(9)
         expect(
           facilities.count do |post_office|

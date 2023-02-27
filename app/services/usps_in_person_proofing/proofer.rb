@@ -233,7 +233,7 @@ module UspsInPersonProofing
     end
 
     def sort_by_ascending_distance(facilities)
-      facilities.sort_by { |f | f[:distance].delete_suffix(' mi').to_f }
+      facilities.sort_by { |f| f[:distance].delete_suffix(' mi').to_f }
     end
   end
 end
