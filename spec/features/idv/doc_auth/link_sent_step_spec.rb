@@ -15,6 +15,23 @@ feature 'doc auth link sent step' do
     complete_doc_auth_steps_before_link_sent_step
   end
 
+  context 'with combined upload step enabled', js: true do
+    let(:user) { sign_in_and_2fa_user }
+    let(:doc_capture_polling_enabled) { false }
+    
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_combined_hybrid_handoff_enabled).and_return(true)
+      allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).
+        and_return(doc_capture_polling_enabled)
+      user
+      complete_doc_auth_steps_before_link_sent_step
+    end
+
+    it 'Correctly renders the link sent step page' do
+      expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+    end
+  end
+
   it 'proceeds to the next page with valid info' do
     expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
