@@ -58,10 +58,13 @@ en:
     piv_cac_setup:
       already_associated: The PIV/CAC you presented is associated with another user.
       new: Use your PIV/CAC card to secure your account
+    residential_address: Residential Address
     session_timeout_warning: Need more time?
     sign_in_with_sp: Sign in to continue to %{sp}
     sign_in_without_sp: Sign in
     sp_handoff_bounced: There was a problem connecting to %{sp_name}
+    ssn: Social Security Number
+    state_id: State-issued ID
     totp_setup:
       new: Add an authentication app
     verify: Verify your information
