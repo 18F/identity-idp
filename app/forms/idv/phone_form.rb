@@ -26,7 +26,11 @@ module Idv
       @allowed_countries = allowed_countries
       @delivery_methods = delivery_methods
 
-      @international_code, @phone = determine_initial_values(**previous_params.symbolize_keys)
+      @international_code, @phone = determine_initial_values(
+        **previous_params.
+        symbolize_keys.
+        slice(:international_code, :phone),
+      )
     end
 
     def submit(params)
@@ -44,7 +48,7 @@ module Idv
     attr_writer :phone, :otp_delivery_preference
 
     # @return [Array<string,string>] The international_code and phone values to use.
-    def determine_initial_values(international_code: nil, phone: nil, **_)
+    def determine_initial_values(international_code: nil, phone: nil)
       if phone.nil? && international_code.nil?
         default_phone = user.default_phone_configuration&.phone
         if valid_phone?(default_phone, phone_confirmed: true)
