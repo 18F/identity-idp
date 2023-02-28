@@ -45,14 +45,21 @@ describe 'two_factor_authentication/otp_expired/show.html.erb' do
     end
   end
 
-  context 'if a user is signed in' do
+  context 'if a user is signing in to an existing account' do
+  let(:user) { create(:user, :signed_up, :with_backup_code) }
+  let(:next_path) { '/test' }
+
+    before do
+      assign(:next_path, next_path)
+    end
+
     it 'shows the choose another method option' do
       render
 
-    expect(rendered).to have_link(
-      t('two_factor_authentication.login_options_link_text'),
-      href: login_two_factor_options_path,
-    )
+      expect(rendered).to have_link(
+        t('two_factor_authentication.login_options_link_text'),
+        href: next_path,
+      )
     end
   end
 end
