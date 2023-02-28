@@ -113,6 +113,55 @@ describe Proofing::Aamva::VerificationClient do
         end
       end
 
+      context 'because we have an MVA timeout and 500 status' do
+        let(:response_body) { AamvaFixtures.soap_fault_response }
+        let(:response_http_status) { 500 }
+
+        it 'parses the raw response body' do
+          begin
+            response
+          rescue Proofing::Aamva::VerificationError
+          end
+
+          expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
+        end
+
+        it 'throws an exception about the MVA timeout' do
+          expect { response }.to raise_error(
+            Proofing::Aamva::VerificationError,
+            /#{Proofing::Aamva::Response::VerificationResponse::MVA_TIMEOUT_EXCEPTION}/o,
+          )
+        end
+
+        it 'throws an exception about the status code' do
+          expect { response }.to raise_error(
+            Proofing::Aamva::VerificationError,
+            /Unexpected status code in response: 500/,
+          )
+        end
+      end
+
+      context 'because we have an MVA timeout and 200 status' do
+        let(:response_body) { AamvaFixtures.soap_fault_response }
+        let(:response_http_status) { 200 }
+
+        it 'parses the raw response body' do
+          begin
+            response
+          rescue Proofing::Aamva::VerificationError
+          end
+
+          expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
+        end
+
+        it 'throws an exception about the MVA timeout' do
+          expect { response }.to raise_error(
+            Proofing::Aamva::VerificationError,
+            /#{Proofing::Aamva::Response::VerificationResponse::MVA_TIMEOUT_EXCEPTION}/o,
+          )
+        end
+      end
+
       context 'because we have an invalid response and a 200 status' do
         let(:response_body) { 'error: computer has no brain.<br>' }
 

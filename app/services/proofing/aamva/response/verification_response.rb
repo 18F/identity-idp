@@ -43,7 +43,6 @@ module Proofing
           return if @errors.empty?
 
           error_message = @errors.join('; ')
-          raise ::Proofing::TimeoutError.new(msg) if mva_timeout?(error_message)
           raise VerificationError.new(error_message)
         end
 
