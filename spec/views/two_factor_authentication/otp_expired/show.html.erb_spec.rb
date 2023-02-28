@@ -46,19 +46,11 @@ describe 'two_factor_authentication/otp_expired/show.html.erb' do
   end
 
   context 'if a user is signing in to an existing account' do
-  let(:user) { create(:user, :signed_up, :with_backup_code) }
-  let(:next_path) { '/test' }
-
-    before do
-      assign(:next_path, next_path)
-    end
-
-    it 'shows the choose another method option' do
+    it 'does not prompt to use another phone number on otp expiration' do
       render
 
-      expect(rendered).to have_link(
-        t('two_factor_authentication.login_options_link_text'),
-        href: next_path,
+      expect(rendered).to_not have_link(
+        t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
       )
     end
   end
