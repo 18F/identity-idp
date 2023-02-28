@@ -23,7 +23,7 @@ module UspsIppHelper
     )
   end
 
-  def stub_request_facilities_with_unorderd_distance
+  def stub_request_facilities_with_unordered_distance
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList}).to_return(
       status: 200,
       body:

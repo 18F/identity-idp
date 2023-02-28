@@ -162,7 +162,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
       end
 
       it 'returns facilities sorted by ascending distance' do
-        stub_request_facilities_with_unorderd_distance
+        stub_request_facilities_with_unordered_distance
         facilities = subject.request_facilities(location)
 
         expect(facilities.count).to be > 1
