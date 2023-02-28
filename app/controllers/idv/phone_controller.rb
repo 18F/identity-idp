@@ -1,5 +1,7 @@
 module Idv
   class PhoneController < ApplicationController
+    before_action :confirm_verify_info_complete
+
     include IdvStepConcern
     include StepIndicatorConcern
     include PhoneOtpRateLimitable
@@ -74,6 +76,14 @@ module Idv
     end
 
     private
+
+    def confirm_verify_info_complete
+      return unless IdentityConfig.store.in_person_verify_info_controller_enabled
+      return unless user_fully_authenticated?
+      return if idv_session.resolution_successful
+
+      redirect_to idv_in_person_verify_info_url
+    end
 
     def throttle
       @throttle ||= Throttle.new(user: current_user, throttle_type: :proof_address)
