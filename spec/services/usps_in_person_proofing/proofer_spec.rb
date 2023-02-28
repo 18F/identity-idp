@@ -165,11 +165,9 @@ RSpec.describe UspsInPersonProofing::Proofer do
         stub_request_facilities_with_unorderd_distance
         facilities = subject.request_facilities(location)
 
-        previous_post_office_distance = 0
-        facilities.count do |post_office|
-          current_distance = post_office.distance.delete_suffix(' mi').to_f
-          expect(previous_post_office_distance).to be <= current_distance
-          previous_post_office_distance = current_distance
+        expect(facilities.count).to be > 1
+        facilities.each_cons(2) do |facility_a, facility_b|
+          expect(facility_a.distance).to be <= facility_b.distance
         end
       end
 
