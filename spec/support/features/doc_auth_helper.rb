@@ -56,10 +56,6 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :upload)
   end
 
-  def idv_doc_auth_ssn_step
-    idv_doc_auth_step_path(step: :ssn)
-  end
-
   def idv_doc_auth_document_capture_step
     idv_doc_auth_step_path(step: :document_capture)
   end
