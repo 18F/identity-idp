@@ -156,7 +156,7 @@ tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local H
 run: ## Runs the development server
 	foreman start -p $(PORT)
 
-urn: ## A little treat if you ever mistype "run" ⚱️
+urn:
 	@echo "⚱️"
 	make run
 
