@@ -48,7 +48,7 @@ module Idv
     def confirm_otp_sent
       return if idv_session.user_phone_confirmation_session.present?
 
-      redirect_to idv_otp_delivery_method_url
+      redirect_to idv_phone_url
     end
 
     def set_code
