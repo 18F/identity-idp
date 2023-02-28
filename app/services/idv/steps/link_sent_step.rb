@@ -26,7 +26,6 @@ module Idv
 
       def exit_flow_state_machine
         flow_session[:flow_path] = @flow.flow_path
-        redirect_to idv_ssn_url
       end
 
       def handle_document_verification_success(get_results_response)

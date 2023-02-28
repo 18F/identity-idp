@@ -97,6 +97,14 @@ describe Idv::VerifyInfoController do
       end
     end
 
+    it 'redirects to ssn controller when ssn info is missing' do
+      flow_session[:pii_from_doc][:ssn] = nil
+
+      get :show
+
+      expect(response).to redirect_to(idv_ssn_url)
+    end
+
     context 'when the user is ssn throttled' do
       before do
         Throttle.new(
@@ -105,21 +113,6 @@ describe Idv::VerifyInfoController do
           ),
           throttle_type: :proof_ssn,
         ).increment_to_throttled!
-      end
-
-      context 'when using new ssn controller' do
-        before do
-          allow(IdentityConfig.store).to receive(:doc_auth_ssn_controller_enabled).
-            and_return(true)
-        end
-
-        it 'redirects to ssn controller when ssn info is missing' do
-          flow_session[:pii_from_doc][:ssn] = nil
-
-          get :show
-
-          expect(response).to redirect_to(idv_ssn_url)
-        end
       end
 
       it 'redirects to ssn failure url' do
