@@ -152,6 +152,7 @@ module OpenidConnect
     end
 
     def store_request
+      return if user_fully_authenticated?
       ServiceProviderRequestHandler.new(
         url: request.original_url,
         session: session,
