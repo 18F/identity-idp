@@ -16,9 +16,9 @@ module Idv
         if err.instance_of?(Faraday::ClientError)
           :bad_request
         elsif err.instance_of?(Faraday::ConnectionFailed)
-          :bad_gateway
+          :bad_request
         elsif err.instance_of?(Faraday::TimeoutError)
-          :gateway_timeout
+          :bad_request
         else
           :internal_server_error
         end

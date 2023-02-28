@@ -7,23 +7,21 @@ namespace :users do
       user_uuid = STDIN.getpass('Enter the User UUID to pass (input will be hidden):')
       user = User.find_by(uuid: user_uuid)
 
-      if user.decorate.threatmetrix_review_pending? && user.proofing_component.review_eligible?
-        profile = user.profiles.
-          where(deactivation_reason: 'threatmetrix_review_pending').
-          first
-        profile.activate
-
-        event, disavowal_token = UserEventCreator.new(current_user: user).
-          create_out_of_band_user_event_with_disavowal(:account_verified)
-
-        UserAlerts::AlertUserAboutAccountVerified.call(
-          user: user,
-          date_time: event.created_at,
-          sp_name: nil,
-          disavowal_token: disavowal_token,
-        )
+      if user.fraud_review_pending? && user.proofing_component.review_eligible?
+        profile = user.fraud_review_pending_profile
+        profile.activate_after_passing_review
 
         if profile.active?
+          event, disavowal_token = UserEventCreator.new(current_user: user).
+            create_out_of_band_user_event_with_disavowal(:account_verified)
+
+          UserAlerts::AlertUserAboutAccountVerified.call(
+            user: user,
+            date_time: event.created_at,
+            sp_name: nil,
+            disavowal_token: disavowal_token,
+          )
+
           puts "User's profile has been activated and the user has been emailed."
         else
           puts "There was an error activating the user's profile please try again"
@@ -40,14 +38,12 @@ namespace :users do
       user_uuid = STDIN.getpass('Enter the User UUID to reject (input will be hidden):')
       user = User.find_by(uuid: user_uuid)
 
-      if user.decorate.threatmetrix_review_pending? && user.proofing_component.review_eligible?
-        profile = user.profiles.
-          where(deactivation_reason: 'threatmetrix_review_pending').
-          first
+      if user.fraud_review_pending? && user.proofing_component.review_eligible?
+        profile = user.fraud_review_pending_profile
 
-        profile.deactivate(:threatmetrix_review_rejected)
+        profile.reject_for_fraud
 
-        puts "User's profile has been deactivated with reason #{profile.deactivation_reason}"
+        puts "User's profile has been deactivated due to fraud rejection."
       elsif !user.proofing_component.review_eligible?
         puts 'User is past the 30 day review eligibility'
       else

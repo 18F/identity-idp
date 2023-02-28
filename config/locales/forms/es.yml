@@ -4,10 +4,9 @@ es:
     backup_code:
       are_you_sure_desc_html:
         - '<strong>Los códigos de respaldo son el método de autenticación menos
-          utilizado,</strong> ya que se pueden perder con facilidad. Le
-          recomendamos explorar otras opciones de autenticación, como el
-          desbloqueo facial o táctil, una aplicación de autenticación o una
-          clave de seguridad.'
+          utilizado,</strong> ya que se pueden perder con facilidad. Prueba una
+          opción más segura, como una aplicación de autenticación o una clave de
+          seguridad.'
         - Le otorgaremos 10 códigos que puede descargar, imprimir, copiar o
           escribir. Ingresará un código cada vez que inicie sesión.
       are_you_sure_title: '¿Está seguro de que desea usar códigos de respaldo?'
@@ -47,11 +46,13 @@ es:
       edit: Editar
       manage: Administrar
       resend_confirmation: Reenviar instrucciones de confirmación
+      send_link: Enviar enlace
       send_one_time_code: Enviar código
       submit:
         confirm_change: Confirmar cambio
         default: Enviar
         update: Actualización
+      upload_photos: Subir fotos
     confirmation:
       show_hdr: Crear una contraseña segura
     email:
@@ -117,6 +118,9 @@ es:
       labels:
         email: Ingrese su dirección de correo electrónico
         email_language: Seleccione su preferencia de idioma de correo electrónico
+    spam_protection:
+      description: Utilizamos reCAPTCHA como protección contra el correo no deseado
+        automatizado. Marque la casilla de abajo para continuar.
     ssn:
       show: Mostrar Número de Seguro Social
     totp_delete:

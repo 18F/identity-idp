@@ -79,10 +79,10 @@ function MockDeviceProfilingOptions() {
   const inputId = `select-input-${instanceId}`;
 
   const options = [
-    { value: 'no_result', title: 'No Result' },
     { value: 'pass', title: 'Pass' },
     { value: 'reject', title: 'Reject' },
     { value: 'review', title: 'Review' },
+    { value: 'no_result', title: 'No Result' },
     { value: 'chaotic', title: 'Do something chaotic' },
   ];
 
