@@ -57,7 +57,7 @@ module ControllerHelper
     stub_sign_in(user)
     idv_session = Idv::Session.new(
       user_session: user_session, current_user: user,
-      service_provider: nil,
+      service_provider: nil
     )
     idv_session.applicant = {
       first_name: 'Some',
