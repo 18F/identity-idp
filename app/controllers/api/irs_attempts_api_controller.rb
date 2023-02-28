@@ -119,20 +119,11 @@ module Api
     end
 
     def valid_auth_token?(token)
-      salt = SecureRandom.hex(32)
-      cost = IdentityConfig.store.backup_code_cost
+      hashed_token = OpenSSL::Digest::SHA256.hexdigest(token)
 
-      _digested_token = scrypt_digest(token: token, salt: salt, cost: cost)
-
-      valid_auth_tokens.any? do |valid_token|
-        ActiveSupport::SecurityUtils.secure_compare(token, valid_token)
+      hashed_valid_auth_tokens.any? do |hashed_valid_token|
+        ActiveSupport::SecurityUtils.secure_compare(hashed_valid_token, hashed_token)
       end
-    end
-
-    def scrypt_digest(token:, salt:, cost:)
-      scrypt_salt = cost + OpenSSL::Digest::SHA256.hexdigest(salt)
-      scrypted = SCrypt::Engine.hash_secret token, scrypt_salt, 32
-      SCrypt::Password.new(scrypted).digest
     end
 
     # @return [Array<String>] JWE strings
@@ -163,7 +154,7 @@ module Api
       @s3_helper ||= JobHelpers::S3Helper.new
     end
 
-    def valid_auth_tokens
+    def hashed_valid_auth_tokens
       IdentityConfig.store.irs_attempt_api_auth_tokens
     end
 
