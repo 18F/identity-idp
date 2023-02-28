@@ -67,6 +67,15 @@ describe Idv::SsnController do
 
       expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
     end
+
+    context 'without a flow session' do
+      let(:flow_session) { nil }
+      it 'redirects to doc_auth' do
+        get :show
+
+        expect(response).to redirect_to(idv_doc_auth_url)
+      end
+    end
   end
 
   describe '#update' do
