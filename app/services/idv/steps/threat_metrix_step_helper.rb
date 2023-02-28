@@ -50,7 +50,11 @@ module Idv
       def log_irs_tmx_fraud_check_event(result)
         return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
         success = result[:review_status] == 'pass'
-        failure_reason = { tmx_summary_reason_code: result[:response_body][:tmx_summary_reason_code] } unless success
+        unless success
+          failure_reason = {
+            tmx_summary_reason_code: result[:response_body][:tmx_summary_reason_code],
+          }
+        end
 
         irs_attempts_api_tracker.idv_tmx_fraud_check(
           success: success,

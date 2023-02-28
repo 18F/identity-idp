@@ -158,8 +158,8 @@ describe Idv::VerifyInfoController do
                 transaction_id: 1,
                 review_status: review_status,
                 response_body: {
-                  tmx_summary_reason_code: ['Identity_Negative_History']
-                }
+                  tmx_summary_reason_code: ['Identity_Negative_History'],
+                },
               },
             },
           },
