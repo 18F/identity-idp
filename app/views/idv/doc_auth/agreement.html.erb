@@ -36,7 +36,16 @@
           MarketingSite.security_and_privacy_practices_url,
         ) %>
   </p>
-  <%= f.submit t('doc_auth.buttons.continue'), class: 'margin-top-4' %>
+  <div class="margin-top-4">
+    <%= render(
+          SpinnerButtonComponent.new(
+            type: :submit,
+            big: true,
+            wide: true,
+            spin_on_click: false,
+          ).with_content(t('doc_auth.buttons.continue')),
+        ) %>
+  </div>
 <% end %>
 
 <%= render 'idv/doc_auth/cancel', step: 'agreement' %>

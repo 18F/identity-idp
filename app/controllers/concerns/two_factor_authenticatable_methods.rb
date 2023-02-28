@@ -1,15 +1,8 @@
-module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
+module TwoFactorAuthenticatableMethods
   extend ActiveSupport::Concern
   include RememberDeviceConcern
   include SecureHeadersConcern
   include MfaSetupConcern
-
-  DELIVERY_METHOD_MAP = {
-    authenticator: 'authenticator',
-    sms: 'phone',
-    voice: 'phone',
-    piv_cac: 'piv_cac',
-  }.freeze
 
   private
 
@@ -308,6 +301,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
       otp_expiration: otp_expiration,
       otp_delivery_preference: two_factor_authentication_method,
       otp_make_default_number: selected_otp_make_default_number,
+      unconfirmed_phone: unconfirmed_phone?,
     }.merge(generic_data)
   end
 
@@ -315,14 +309,9 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     params&.dig(:otp_make_default_number)
   end
 
-  def account_reset_token
-    current_user&.account_reset_request&.request_token
-  end
-
   def authenticator_view_data
     {
       two_factor_authentication_method: two_factor_authentication_method,
-      user_email: current_user.email_addresses.take.email,
     }.merge(generic_data)
   end
 
@@ -340,15 +329,6 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     end
   end
 
-  def voice_otp_delivery_unsupported?
-    if UserSessionContext.authentication_or_reauthentication_context?(context)
-      PhoneNumberCapabilities.new(phone_configuration&.phone, phone_confirmed: true).supports_voice?
-    else
-      phone = user_session[:unconfirmed_phone]
-      PhoneNumberCapabilities.new(phone, phone_confirmed: false).supports_voice?
-    end
-  end
-
   def decorated_user
     current_user.decorate
   end
@@ -358,18 +338,22 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def presenter_for_two_factor_authentication_method
-    type = DELIVERY_METHOD_MAP[two_factor_authentication_method.to_sym]
-
-    return unless type
-
-    data = send("#{type}_view_data".to_sym)
-
-    TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(
-      data: data,
-      view: view_context,
-      service_provider: current_sp,
-      remember_device_default: remember_device_default,
-    )
+    case two_factor_authentication_method.to_sym
+    when :authenticator
+      TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(
+        data: authenticator_view_data,
+        view: view_context,
+        service_provider: current_sp,
+        remember_device_default: remember_device_default,
+      )
+    when :sms, :voice
+      TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+        data: phone_view_data,
+        view: view_context,
+        service_provider: current_sp,
+        remember_device_default: remember_device_default,
+      )
+    end
   end
 
   def phone_configuration
