@@ -157,6 +157,9 @@ describe Idv::VerifyInfoController do
               threatmetrix: {
                 transaction_id: 1,
                 review_status: review_status,
+                response_body: {
+                  tmx_summary_reason_code: ['Identity_Negative_History']
+                }
               },
             },
           },
@@ -173,7 +176,7 @@ describe Idv::VerifyInfoController do
         document_capture_session
       end
 
-      let(:expected_failure_reason) { { deactivation_reason: [:threatmetrix_review_pending] } }
+      let(:expected_failure_reason) { { tmx_summary_reason_code: ['Identity_Negative_History'] } }
 
       before do
         controller.

@@ -108,7 +108,7 @@ RSpec.feature 'Users pending threatmetrix review', :js do
   end
 
   def expect_pending_failure_reason(threatmetrix:)
-    expected_failure_reason = { 'deactivation_reason' => ['threatmetrix_review_pending'] }
+    expected_failure_reason = { 'tmx_summary_reason_code' => ['Identity_Negative_History'] }
     complete_all_idv_steps_with(threatmetrix: threatmetrix)
     expect(page).to have_content(t('idv.failure.setup.heading'))
     expect(page).to have_current_path(idv_setup_errors_path)
