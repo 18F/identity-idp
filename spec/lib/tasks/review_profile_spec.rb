@@ -45,5 +45,9 @@ describe 'review_profile' do
       expect(user.reload.profiles.first.active).to eq(false)
       expect(user.reload.profiles.first.fraud_rejection).to eq(true)
     end
+
+    it 'sends the user an email about their account deactivation' do
+      expect { invoke_task }.to change(ActionMailer::Base.deliveries, :count).by(1)
+    end
   end
 end
