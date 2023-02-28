@@ -160,6 +160,10 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
+  def account_rejected
+    UserMailer.with(user: user, email_address: email_address_record).account_rejected
+  end
+
   private
 
   def user

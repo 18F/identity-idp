@@ -101,11 +101,11 @@ lint_yaml: normalize_yaml ## Lints YAML files
 lint_yarn_workspaces: ## Lints Yarn workspace packages
 	scripts/validate-workspaces.js
 
-lint_gemfile_lock: Gemfile Gemfile.lock
+lint_gemfile_lock: Gemfile Gemfile.lock ## Lints the Gemfile and its lockfile
 	@bundle check
 	@git diff-index --quiet HEAD Gemfile.lock || (echo "Error: There are uncommitted changes after running 'bundle install'"; exit 1)
 
-lint_yarn_lock: package.json yarn.lock
+lint_yarn_lock: package.json yarn.lock ## Lints the package.json and its lockfile
 	@yarn install --ignore-scripts
 	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are uncommitted changes after running 'yarn install'"; exit 1)
 
