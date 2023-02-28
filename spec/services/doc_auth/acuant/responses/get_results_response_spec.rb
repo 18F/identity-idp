@@ -56,6 +56,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
             'IssuerName' => 'North Dakota',
           },
         },
+        address_line2_present: true,
       }
 
       processed_alerts = response_hash[:processed_alerts]
