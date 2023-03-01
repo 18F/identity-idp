@@ -8,7 +8,7 @@ class BrowserSupport
       return false if user_agent.nil?
       return true if browser_support_config.nil?
 
-      @cache.getset(user_agent) do
+      cache.getset(user_agent) do
         matcher = BrowserslistUseragent::Match.new(browser_support_config, user_agent)
         matcher.browser? && matcher.version?(allow_higher: true)
       end
