@@ -26,11 +26,11 @@ module TwoFactorAuthentication
     end
 
     def use_another_phone_number
-      mfa_context.enabled_mfa_methods_count > 1 && current_user.phone_configurations.none?
+      mfa_context.enabled_mfa_methods_count < 1
     end
 
     def set_choose_another_method_path
-      if mfa_context.enabled_mfa_methods_count > 1
+      if mfa_context.enabled_mfa_methods_count < 1
         @next_path = authentication_methods_setup_url
       else
         @next_path = login_two_factor_options_url
