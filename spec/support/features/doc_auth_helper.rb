@@ -5,6 +5,7 @@ module DocAuthHelper
 
   GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
   SSN_THAT_FAILS_RESOLUTION = '123-45-6666'
+  SSN_THAT_RAISES_EXCEPTION = '000-00-0000'
 
   def session_from_completed_flow_steps(finished_step)
     session = { doc_auth: {} }
@@ -20,7 +21,7 @@ module DocAuthHelper
   end
 
   def fill_out_ssn_form_with_ssn_that_raises_exception
-    fill_in t('idv.form.ssn_label_html'), with: '000-00-0000'
+    fill_in t('idv.form.ssn_label_html'), with: SSN_THAT_RAISES_EXCEPTION
   end
 
   def fill_out_ssn_form_ok
