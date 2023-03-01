@@ -158,13 +158,10 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
         it 'notes that address line 2 was not present' do
           instance_id = 'this-is-a-test-instance-id'
           url = URI.join(assure_id_url, "/AssureIDService/Document/#{instance_id}")
-          stub_request(:get, url).to_return(
-            body: begin
-              json = JSON.parse(AcuantFixtures.get_results_response_success)
-              json['Fields'] = json['Fields'].select { |f| f['Name'] != 'Address Line 2' }
-              JSON.generate(json)
-            end,
-          )
+          body = JSON.parse(AcuantFixtures.get_results_response_success).tap do |json|
+            json['Fields'] = json['Fields'].select { |f| f['Name'] != 'Address Line 2' }
+          end.to_json
+          stub_request(:get, url).to_return(body: body)
 
           result = subject.get_results(instance_id: instance_id)
 
