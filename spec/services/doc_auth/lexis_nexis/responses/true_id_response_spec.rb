@@ -130,7 +130,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   context 'when there is no address line 2' do
     body_no_line2 = JSON.parse(LexisNexisFixtures.true_id_response_success_2).tap do |json|
       json['Products'].first['ParameterDetails'] = json['Products'].first['ParameterDetails'].
-      select { |f| f['Name'] != 'Fields_AddressLine2' }
+        select { |f| f['Name'] != 'Fields_AddressLine2' }
     end.to_json
     let(:success_response_no_line2) do
       instance_double(Faraday::Response, status: 200, body: body_no_line2)
@@ -142,7 +142,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(response.to_h).to include(address_line2_present: false)
     end
   end
-
 
   context 'when the barcode can not be read' do
     let(:response) do
