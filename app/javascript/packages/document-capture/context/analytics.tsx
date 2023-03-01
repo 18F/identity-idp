@@ -70,7 +70,7 @@ export function AnalyticsContextProvider({ children, trackEvent }: AnalyticsCont
   const { inPersonCtaVariantActive } = useContext(InPersonContext);
 
   const extraAnalyticsAttributes = (stepName) => {
-    const extra: EventMetadata = {...DEFAULT_EVENT_METADATA};
+    const extra: EventMetadata = { ...DEFAULT_EVENT_METADATA };
     if (stepName === 'location') {
       extra.in_person_cta_variant = inPersonCtaVariantActive;
     }

@@ -32,15 +32,17 @@ describe('AnalyticsContextProvider', () => {
 
     result.current.trackVisitEvent(stepName);
 
-    expect(trackEvent).to.have.been.calledWith(`IdV: ${stepName} visited`, {in_person_cta_variant: ''});
+    expect(trackEvent).to.have.been.calledWith(`IdV: ${stepName} visited`, {
+      in_person_cta_variant: '',
+    });
   });
 
   it('calls trackEvent with submit event', () => {
     const stepName = LOGGED_STEPS[0];
     const { result } = renderHook(() => useContext(AnalyticsContext), { wrapper });
-    
+
     result.current.trackSubmitEvent(stepName);
-    
+
     expect(trackEvent).to.have.been.calledWith(`IdV: ${stepName} submitted`, {});
   });
 
@@ -50,7 +52,7 @@ describe('AnalyticsContextProvider', () => {
 
     result.current.setSubmitEventMetadata({ ok: true });
     result.current.trackSubmitEvent(stepName);
-    
+
     expect(trackEvent).to.have.been.calledWith(`IdV: ${stepName} submitted`, { ok: true });
   });
 
@@ -58,11 +60,11 @@ describe('AnalyticsContextProvider', () => {
     const firstStepName = LOGGED_STEPS[0];
     const secondStepName = LOGGED_STEPS[1];
     const { result } = renderHook(() => useContext(AnalyticsContext), { wrapper });
-    
+
     result.current.setSubmitEventMetadata({ ok: true });
     result.current.trackSubmitEvent(firstStepName);
     result.current.trackSubmitEvent(secondStepName);
-    
+
     expect(trackEvent).to.have.been.calledWith(`IdV: ${firstStepName} submitted`, { ok: true });
     expect(trackEvent).to.have.been.calledWith(`IdV: ${secondStepName} submitted`, {});
   });
