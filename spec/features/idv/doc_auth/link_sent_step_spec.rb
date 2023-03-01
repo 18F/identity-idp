@@ -21,10 +21,9 @@ feature 'doc auth link sent step' do
 
     before do
       allow(IdentityConfig.store).
-        to(receive(:doc_auth_combined_hybrid_handoff_enabled).
-        and_return(true))
-      allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).
-        and_return(doc_capture_polling_enabled)
+        to(receive(:doc_auth_combined_hybrid_handoff_enabled).and_return(true))
+      allow(FeatureManagement).
+        to(receive(:doc_capture_polling_enabled?).and_return(doc_capture_polling_enabled))
       user
       complete_doc_auth_steps_before_link_sent_step
     end
