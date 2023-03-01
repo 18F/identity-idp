@@ -28,6 +28,7 @@ FactoryBot.define do
     trait :failed do
       enrollment_code { Faker::Number.number(digits: 16) }
       enrollment_established_at { Time.zone.now }
+      proofed_at { Time.zone.now }
       status { :failed }
       status_check_attempted_at { Time.zone.now }
       status_updated_at { Time.zone.now }

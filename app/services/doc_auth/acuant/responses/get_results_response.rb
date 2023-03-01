@@ -54,6 +54,7 @@ module DocAuth
           alerts = processed_alerts
 
           log_alert_formatter = DocAuth::ProcessedAlertToLogAlertFormatter.new
+
           {
             vendor: 'Acuant',
             billed: result_code.billed,
@@ -64,6 +65,7 @@ module DocAuth
             image_metrics: processed_image_metrics,
             tamper_result: tamper_result_code&.name,
             classification_info: classification_info,
+            address_line2_present: !pii_from_doc[:address2].blank?,
           }
         end
 

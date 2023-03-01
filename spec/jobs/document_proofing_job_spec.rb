@@ -124,6 +124,7 @@ RSpec.describe DocumentProofingJob, type: :job do
           exception: nil,
           tamper_result: nil,
           classification_info: nil,
+          address_line2_present: false,
         )
 
         expect(job_analytics).to have_logged_event(
@@ -151,6 +152,7 @@ RSpec.describe DocumentProofingJob, type: :job do
           flow_path: 'standard',
           log_alert_results: {},
           classification_info: nil,
+          address_line2_present: false,
         )
 
         expect(result.pii_from_doc).to eq(applicant_pii)
