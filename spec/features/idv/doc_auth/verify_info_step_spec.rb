@@ -233,8 +233,10 @@ feature 'doc auth verify_info step', :js do
     end
   end
 
-  context "AAMVA" do
-    let(:mock_state_id_jurisdiction) { [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]] }
+  context 'AAMVA' do
+    let(:mock_state_id_jurisdiction) do
+      [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]]
+    end
     let(:proof_resolution_args) do
       {
         trace_id: anything,
