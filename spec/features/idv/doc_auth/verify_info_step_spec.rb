@@ -7,6 +7,7 @@ feature 'doc auth verify_info step', :js do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
+  # values from Idp::Constants::MOCK_IDV_APPLICANT
   let(:fake_pii_details) do
     {
       document_state: 'MT',
@@ -19,23 +20,6 @@ feature 'doc auth verify_info step', :js do
       address: '1 FAKE RD',
     }
   end
-  let(:mock_state_id_jurisdiction) { [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]] }
-  let(:proof_resolution_args) do
-    {
-      trace_id: anything,
-      threatmetrix_session_id: anything,
-      request_ip: kind_of(String),
-    }
-  end
-
-  let(:forms_ssn_show) { 'forms.ssn.show' }
-  let(:forms_buttons_submit_update) { 'forms.buttons.submit.update' }
-  let(:idv_buttons_change_ssn_label) { 'idv.buttons.change_ssn_label' }
-  let(:idv_form_ssn_label_html) { 'idv.form.ssn_label_html' }
-  let(:idv_failure_button_warning) { 'idv.failure.button.warning' }
-  let(:step_verify_info_controller) { 'Idv::VerifyInfoController' }
-  let(:ananlyics_throttle_event) { 'Throttler Rate Limit Triggered' }
-  let(:idv_failure_timeout) { 'idv.failure.timeout' }
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
@@ -61,7 +45,7 @@ feature 'doc auth verify_info step', :js do
     # SSN is masked until revealed
     expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
     expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
-    check t(forms_ssn_show)
+    check t('forms.ssn.show')
     expect(page).not_to have_text(DocAuthHelper::GOOD_SSN_MASKED)
     expect(page).to have_text(DocAuthHelper::GOOD_SSN)
   end
@@ -69,7 +53,7 @@ feature 'doc auth verify_info step', :js do
   it 'allows the user to enter in a new address and displays updated info' do
     click_button t('idv.buttons.change_address_label')
     fill_in 'idv_form_zipcode', with: '12345'
-    click_button t(forms_buttons_submit_update)
+    click_button t('forms.buttons.submit.update')
 
     expect(page).to have_current_path(idv_verify_info_path)
 
@@ -77,14 +61,14 @@ feature 'doc auth verify_info step', :js do
   end
 
   it 'allows the user to enter in a new ssn and displays updated info' do
-    click_button t(idv_buttons_change_ssn_label)
-    fill_in t(idv_form_ssn_label_html), with: '900456789'
-    click_button t(forms_buttons_submit_update)
+    click_button t('idv.buttons.change_ssn_label')
+    fill_in t('idv.form.ssn_label_html'), with: '900456789'
+    click_button t('forms.buttons.submit.update')
 
     expect(page).to have_current_path(idv_verify_info_path)
 
     expect(page).to have_text('9**-**-***9')
-    check t(forms_ssn_show)
+    check t('forms.ssn.show')
     expect(page).to have_text('900-45-6789')
   end
 
@@ -125,7 +109,7 @@ feature 'doc auth verify_info step', :js do
     click_idv_continue
 
     expect(page).to have_current_path(idv_session_errors_warning_path)
-    click_on t(idv_failure_button_warning)
+    click_on t('idv.failure.button.warning')
 
     expect(page).to have_current_path(idv_verify_info_path)
   end
@@ -146,12 +130,12 @@ feature 'doc auth verify_info step', :js do
 
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth exception visited',
-      step_name: step_verify_info_controller,
+      step_name: 'Idv::VerifyInfoController',
       remaining_attempts: 5,
     )
     expect(page).to have_current_path(idv_session_errors_exception_path)
 
-    click_on t(idv_failure_button_warning)
+    click_on t('idv.failure.button.warning')
 
     expect(page).to have_current_path(idv_verify_info_path)
   end
@@ -185,9 +169,9 @@ feature 'doc auth verify_info step', :js do
       click_idv_continue
       expect(page).to have_current_path(idv_session_errors_failure_path)
       expect(fake_analytics).to have_logged_event(
-        ananlyics_throttle_event,
+        'Throttler Rate Limit Triggered',
         throttle_type: :idv_resolution,
-        step_name: step_verify_info_controller,
+        step_name: 'Idv::VerifyInfoController',
       )
 
       visit idv_verify_info_url
@@ -231,7 +215,7 @@ feature 'doc auth verify_info step', :js do
       click_idv_continue
       expect(page).to have_current_path(idv_session_errors_ssn_failure_path)
       expect(fake_analytics).to have_logged_event(
-        ananlyics_throttle_event,
+        'Throttler Rate Limit Triggered',
         throttle_type: :proof_ssn,
         step_name: 'verify_info',
       )
@@ -249,76 +233,87 @@ feature 'doc auth verify_info step', :js do
     end
   end
 
-  context 'when the user lives in an AAMVA supported state' do
-    it 'performs a resolution and state ID check' do
-      allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
-        mock_state_id_jurisdiction,
-      )
-      user = create(:user, :signed_up)
-      expect_any_instance_of(Idv::Agent).
-        to receive(:proof_resolution).
-        with(
-          anything,
-          should_proof_state_id: true,
-          user_id: user.id,
-          **proof_resolution_args,
-        ).
-        and_call_original
-
-      sign_in_and_2fa_user(user)
-      complete_doc_auth_steps_before_verify_step
-      click_idv_continue
-
-      expect(DocAuthLog.find_by(user_id: user.id).aamva).not_to be_nil
+  context "AAMVA" do
+    let(:mock_state_id_jurisdiction) { [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]] }
+    let(:proof_resolution_args) do
+      {
+        trace_id: anything,
+        threatmetrix_session_id: anything,
+        request_ip: kind_of(String),
+      }
     end
-  end
 
-  context 'when the user does not live in an AAMVA supported state' do
-    it 'does not perform the state ID check' do
-      allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
-        IdentityConfig.store.aamva_supported_jurisdictions -
+    context 'when the user lives in an AAMVA supported state' do
+      it 'performs a resolution and state ID check' do
+        allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
           mock_state_id_jurisdiction,
-      )
-      user = create(:user, :signed_up)
-      expect_any_instance_of(Idv::Agent).
-        to receive(:proof_resolution).
-        with(
-          anything,
-          should_proof_state_id: false,
-          user_id: user.id,
-          **proof_resolution_args,
-        ).
-        and_call_original
+        )
+        user = create(:user, :signed_up)
+        expect_any_instance_of(Idv::Agent).
+          to receive(:proof_resolution).
+          with(
+            anything,
+            should_proof_state_id: true,
+            user_id: user.id,
+            **proof_resolution_args,
+          ).
+          and_call_original
 
-      sign_in_and_2fa_user(user)
-      complete_doc_auth_steps_before_verify_step
-      click_idv_continue
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_verify_step
+        click_idv_continue
 
-      expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil
+        expect(DocAuthLog.find_by(user_id: user.id).aamva).not_to be_nil
+      end
     end
-  end
 
-  context 'when the SP is in the AAMVA banlist' do
-    it 'does not perform the state ID check' do
-      allow(IdentityConfig.store).to receive(:aamva_sp_banlist_issuers).
-        and_return('["urn:gov:gsa:openidconnect:sp:server"]')
-      user = create(:user, :signed_up)
-      expect_any_instance_of(Idv::Agent).
-        to receive(:proof_resolution).
-        with(
-          anything,
-          should_proof_state_id: false,
-          user_id: user.id,
-          **proof_resolution_args,
-        ).
-        and_call_original
+    context 'when the user does not live in an AAMVA supported state' do
+      it 'does not perform the state ID check' do
+        allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
+          IdentityConfig.store.aamva_supported_jurisdictions -
+            mock_state_id_jurisdiction,
+        )
+        user = create(:user, :signed_up)
+        expect_any_instance_of(Idv::Agent).
+          to receive(:proof_resolution).
+          with(
+            anything,
+            should_proof_state_id: false,
+            user_id: user.id,
+            **proof_resolution_args,
+          ).
+          and_call_original
 
-      visit_idp_from_sp_with_ial1(:oidc)
-      sign_in_and_2fa_user(user)
-      complete_doc_auth_steps_before_verify_step
-      click_idv_continue
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_verify_step
+        click_idv_continue
 
-      expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil
+        expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil
+      end
+    end
+
+    context 'when the SP is in the AAMVA banlist' do
+      it 'does not perform the state ID check' do
+        allow(IdentityConfig.store).to receive(:aamva_sp_banlist_issuers).
+          and_return('["urn:gov:gsa:openidconnect:sp:server"]')
+        user = create(:user, :signed_up)
+        expect_any_instance_of(Idv::Agent).
+          to receive(:proof_resolution).
+          with(
+            anything,
+            should_proof_state_id: false,
+            user_id: user.id,
+            **proof_resolution_args,
+          ).
+          and_call_original
+
+        visit_idp_from_sp_with_ial1(:oidc)
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_verify_step
+        click_idv_continue
+
+        expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil
+      end
     end
   end
 
@@ -332,7 +327,7 @@ feature 'doc auth verify_info step', :js do
 
       click_idv_continue
       expect(fake_analytics).to have_logged_event('Proofing Resolution Result Missing')
-      expect(page).to have_content(t(idv_failure_timeout))
+      expect(page).to have_content(t('idv.failure.timeout'))
       expect(page).to have_current_path(idv_verify_info_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
       click_idv_continue
@@ -353,7 +348,7 @@ feature 'doc auth verify_info step', :js do
         and_return(nil)
 
       click_idv_continue
-      expect(page).to have_content(t(idv_failure_timeout))
+      expect(page).to have_content(t('idv.failure.timeout'))
       expect(page).to have_current_path(idv_verify_info_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
     end
@@ -368,7 +363,7 @@ feature 'doc auth verify_info step', :js do
         and_return(nil)
 
       click_idv_continue
-      expect(page).to have_content(t(idv_failure_timeout))
+      expect(page).to have_content(t('idv.failure.timeout'))
       expect(page).to have_current_path(idv_verify_info_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
       click_idv_continue
@@ -385,11 +380,11 @@ feature 'doc auth verify_info step', :js do
     end
 
     it 'uses ssn controller to enter a new ssn and displays updated info' do
-      click_link t(idv_buttons_change_ssn_label)
+      click_link t('idv.buttons.change_ssn_label')
       expect(page).to have_current_path(idv_ssn_path)
 
-      fill_in t(idv_form_ssn_label_html), with: '900456789'
-      click_button t(forms_buttons_submit_update)
+      fill_in t('idv.form.ssn_label_html'), with: '900456789'
+      click_button t('forms.buttons.submit.update')
 
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth redo_ssn submitted',
@@ -398,7 +393,7 @@ feature 'doc auth verify_info step', :js do
       expect(page).to have_current_path(idv_verify_info_path)
 
       expect(page).to have_text('9**-**-***9')
-      check t(forms_ssn_show)
+      check t('forms.ssn.show')
       expect(page).to have_text('900-45-6789')
     end
   end
