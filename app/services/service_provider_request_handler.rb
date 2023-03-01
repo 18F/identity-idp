@@ -36,13 +36,11 @@ class ServiceProviderRequestHandler
   end
 
   def sp_stored_in_session
-    return if service_provider_request_proxy.blank?
-    service_provider_request_proxy.issuer
+    service_provider_request_proxy&.issuer
   end
 
   def sp_url_stored_in_session
-    return if service_provider_request_proxy.blank?
-    service_provider_request_proxy.url
+    service_provider_request_proxy&.url
   end
 
   def service_provider_request_proxy
