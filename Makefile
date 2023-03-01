@@ -129,6 +129,9 @@ brakeman: ## Runs brakeman
 public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Builds JavaScript assets
 	yarn build
 
+browsers.json: ## Generates browser.json browser support file
+	yarn generate-browsers-json
+
 test: export RAILS_ENV := test
 test: $(CONFIG) ## Runs RSpec and yarn tests in parallel
 	bundle exec rake parallel:spec && yarn build && yarn test
@@ -153,7 +156,7 @@ tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local H
 		-keyout tmp/$(HOST)-$(PORT).key \
 		-out tmp/$(HOST)-$(PORT).crt
 
-run: ## Runs the development server
+run: browsers.json ## Runs the development server
 	foreman start -p $(PORT)
 
 urn:
