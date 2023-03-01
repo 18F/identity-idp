@@ -68,13 +68,17 @@ export function AnalyticsContextProvider({ children, trackEvent }: AnalyticsCont
     setSubmitEventMetadataState(DEFAULT_EVENT_METADATA);
   };
   const { inPersonCtaVariantActive } = useContext(InPersonContext);
+
+  const extraAnalyticsAttributes = (stepName) => {
+    const extra = {};
+    if (stepName === 'location') {
+      extra['in_person_cta_variant'] = inPersonCtaVariantActive;
+    }
+    return extra;
+  };
   const trackVisitEvent: TrackVisitEvent = (stepName) => {
     if (LOGGED_STEPS.includes(stepName)) {
-      if (stepName === 'location') {
-        trackEvent(`IdV: ${stepName} visited`, { in_person_cta_variant: inPersonCtaVariantActive });
-      } else {
-        trackEvent(`IdV: ${stepName} visited`);
-      }
+      trackEvent(`IdV: ${stepName} visited`, extraAnalyticsAttributes(stepName));
     }
   };
 
