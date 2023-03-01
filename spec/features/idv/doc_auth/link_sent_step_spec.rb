@@ -132,7 +132,6 @@ feature 'doc auth link sent step' do
       user
       #complete_doc_auth_steps_before_link_sent_step
       complete_doc_auth_steps_before_upload_step
-      binding.pry
       fill_in :doc_auth_phone, with: ''
       fill_in :doc_auth_phone, with: phone_number
       click_send_link

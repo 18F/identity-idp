@@ -165,6 +165,7 @@ module Idv
 
       def formatted_destination_phone
         raw_phone = permit(:phone)[:phone]
+        idv_session[:phone] = raw_phone
         PhoneFormatter.format(raw_phone, country_code: 'US')
       end
 
