@@ -129,7 +129,7 @@ brakeman: ## Runs brakeman
 public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Builds JavaScript assets
 	yarn build
 
-browsers.json: ## Generates browsers.json browser support file
+browsers.json: yarn.lock .browserslistrc ## Generates browsers.json browser support file
 	yarn generate-browsers-json
 
 test: export RAILS_ENV := test
