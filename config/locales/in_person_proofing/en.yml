@@ -94,8 +94,16 @@ en:
         same_address_choice_no: I have a different address on my ID
         same_address_choice_yes: This address is on my state-issued ID
         state_prompt: '- Select -'
+      residential_address:
+        address1: Address
+        address2: Address line 2 (optional)
+        city: City
+        state: State
+        state_prompt: '- Select -'
+        zip: ZIP Code
+        continue: Continue
       state_id:
-        address: Address
+        address1: Address
         address2: Address line 2 (optional)
         capture_secondary_id_heading: Is your current residential address listed on your state-issued ID?
         capture_secondary_id_no: No, my current residential address is not listed on my state-issued ID
@@ -134,6 +142,7 @@ en:
       switch_back: Switch back to your computer to prepare to verify your identity in person
       update_address: Update your current address
       update_state_id: Update the information on your ID
+      residential_address: Enter your current residential address
     process:
       barcode:
         caption_label: Enrollment code

@@ -713,6 +713,14 @@ module AnalyticsEvents
     track_event('IdV: in person proofing state_id visited', **extra)
   end
 
+  def idv_in_person_proofing_residential_address_visited(**extra)
+    track_event('IdV: in person proofing residential address visited', **extra)
+  end
+
+  def idv_in_person_proofing_residential_address_submitted(**extra)
+    track_event('IdV: in person proofing residential address submitted', **extra)
+  end
+
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user visited the in person proofing switch_back step
   def idv_in_person_switch_back_visited(flow_path:, **extra)

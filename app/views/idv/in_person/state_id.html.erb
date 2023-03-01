@@ -100,10 +100,10 @@
   <% if IdentityConfig.store.in_person_capture_secondary_id_enabled %>
     <div class="tablet:grid-col-8 margin-bottom-5">
       <%= render ValidatedFieldComponent.new(
-            name: :address,
+            name: :address1,
             form: f,
-            input_html: { value: pii[:address] },
-            label: t('in_person_proofing.form.state_id.address'),
+            input_html: { value: pii[:address1] },
+            label: t('in_person_proofing.form.state_id.address1'),
             label_html: { class: 'usa-label' },
             maxlength: 255,
             required: true,
@@ -118,7 +118,7 @@
             label: t('in_person_proofing.form.state_id.address2'),
             label_html: { class: 'usa-label' },
             maxlength: 255,
-            required: true,
+            required: false,
           ) %>
     </div>
  

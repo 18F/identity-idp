@@ -20,6 +20,15 @@ module Idv
           # Accept Date of Birth from both memorable date and input date components
           formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
           flow_session[:pii_from_user][:dob] = formatted_dob if formatted_dob
+
+          if IdentityConfig.store.in_person_capture_secondary_id_enabled
+            if flow_session[:pii_from_user][:capture_secondary_id] == 'true'
+              mark_step_complete(:residential_address)
+              mark_step_complete(:address)
+            end
+          else
+            mark_step_complete(:residential_address)
+          end
         end
 
         def extra_view_variables

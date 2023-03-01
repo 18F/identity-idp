@@ -5,7 +5,8 @@ module Idv
 
       STEPS = {
         state_id: Idv::Steps::InPerson::StateIdStep, # info from state id
-        address: Idv::Steps::InPerson::AddressStep,  # entering the address
+        residential_address: Idv::Steps::InPerson::ResidentialAddressStep, # entering the residential address
+        address: Idv::Steps::InPerson::AddressStep, # entering the address
         ssn: Idv::Steps::InPerson::SsnStep, # enter SSN
         verify: Idv::Steps::InPerson::VerifyStep, # verify entered info
         verify_wait: Idv::Steps::InPerson::VerifyWaitStep,

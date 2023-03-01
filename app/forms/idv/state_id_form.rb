@@ -3,7 +3,8 @@ module Idv
     include ActiveModel::Model
     include FormStateIdValidator
 
-    ATTRIBUTES = %i[first_name last_name dob state_id_jurisdiction state_id_number].freeze
+    ATTRIBUTES = %i[first_name last_name dob state_id_number address1 address2 city
+                    state_id_jurisdiction zipcode capture_secondary_id].freeze
 
     attr_accessor(*ATTRIBUTES)
 

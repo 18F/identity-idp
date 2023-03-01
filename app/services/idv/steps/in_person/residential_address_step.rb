@@ -1,36 +1,38 @@
 module Idv
   module Steps
     module InPerson
-      class AddressStep < DocAuthBaseStep
+      class ResidentialAddressStep < DocAuthBaseStep
         STEP_INDICATOR_STEP = :verify_info
 
         def self.analytics_visited_event
-          :idv_in_person_proofing_address_visited
+          :idv_in_person_proofing_residential_address_visited
         end
 
         def self.analytics_submitted_event
-          :idv_in_person_proofing_address_submitted
+          :idv_in_person_proofing_residential_address_submitted
         end
 
         def call
-          Idv::InPerson::AddressForm::ATTRIBUTES.each do |attr|
+          Idv::InPerson::ResidentialAddressForm::ATTRIBUTES.each do |attr|
             flow_session[:pii_from_user][attr] = flow_params[attr]
+          end
+
+          if IdentityConfig.store.in_person_capture_secondary_id_enabled
+            mark_step_complete(:address)
           end
         end
 
         def extra_view_variables
           {
             pii: flow_session[:pii_from_user],
-            updating_address: flow_session[:pii_from_user].has_key?(:address1) &&
-              !flow_session[:pii_from_user][:address1].nil?,
           }
         end
 
         private
 
         def form_submit
-          Idv::InPerson::AddressForm.new.submit(
-            permit(*Idv::InPerson::AddressForm::ATTRIBUTES),
+          Idv::InPerson::ResidentialAddressForm.new.submit(
+            permit(*Idv::InPerson::ResidentialAddressForm::ATTRIBUTES),
           )
         end
       end
