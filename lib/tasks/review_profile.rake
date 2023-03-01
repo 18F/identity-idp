@@ -45,7 +45,7 @@ namespace :users do
           where(deactivation_reason: 'threatmetrix_review_pending').
           first
 
-        profile.deactivate(:threatmetrix_review_rejected, send_user_alert: true)
+        profile.reject_for_fraud
 
         puts "User's profile has been deactivated with reason #{profile.deactivation_reason}"
       elsif !user.proofing_component.review_eligible?

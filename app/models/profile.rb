@@ -46,7 +46,7 @@ class Profile < ApplicationRecord
   end
 
   def reject_for_fraud
-    update!(active: false)
+    deactivate(:threatmetrix_review_rejected)
     UserAlerts::AlertUserAboutAccountRejected.call(user)
   end
 
