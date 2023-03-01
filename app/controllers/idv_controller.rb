@@ -32,7 +32,24 @@ class IdvController < ApplicationController
 
   private
 
+  def clear_session
+    user_session['idv/doc_auth'] = {}
+    user_session['idv/in_person'] = {}
+    user_session['idv/inherited_proofing'] = {}
+    idv_session.clear
+    Pii::Cacher.new(current_user, user_session).delete
+  end
+
+  def enrollment
+    InPersonEnrollment.where(user_id: current_user.id).last
+  end
+
+  def enrollment_status
+    enrollment.present? ? enrollment.status : ''
+  end
+
   def verify_identity
+    clear_session if enrollment_status == 'expired'
     analytics.idv_intro_visit
     return redirect_to idv_inherited_proofing_url if inherited_proofing?
     redirect_to idv_doc_auth_url
