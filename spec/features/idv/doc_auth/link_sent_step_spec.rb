@@ -6,7 +6,6 @@ feature 'doc auth link sent step' do
   include DocCaptureHelper
 
   context 'with combined upload step disabled' do
-
     let(:user) { sign_in_and_2fa_user }
     let(:doc_capture_polling_enabled) { false }
 
@@ -126,11 +125,11 @@ feature 'doc auth link sent step' do
     let(:phone_number) { '415-555-0199' }
 
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_combined_hybrid_handoff_enabled).and_return(true)
+      allow(IdentityConfig.store).
+        to(receive(:doc_auth_combined_hybrid_handoff_enabled).and_return(true))
       allow(FeatureManagement).
-        to receive(:doc_capture_polling_enabled?).and_return(doc_capture_polling_enabled)
+        to(receive(:doc_capture_polling_enabled?).and_return(doc_capture_polling_enabled))
       user
-      #complete_doc_auth_steps_before_link_sent_step
       complete_doc_auth_steps_before_upload_step
       fill_in :doc_auth_phone, with: ''
       fill_in :doc_auth_phone, with: phone_number
