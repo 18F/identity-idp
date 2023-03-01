@@ -18,9 +18,11 @@ feature 'doc auth link sent step' do
   context 'with combined upload step enabled', js: true do
     let(:user) { sign_in_and_2fa_user }
     let(:doc_capture_polling_enabled) { false }
-    
+
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_combined_hybrid_handoff_enabled).and_return(true)
+      allow(IdentityConfig.store).
+        to(receive(:doc_auth_combined_hybrid_handoff_enabled).
+        and_return(true))
       allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).
         and_return(doc_capture_polling_enabled)
       user
