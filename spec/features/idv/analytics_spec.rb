@@ -185,7 +185,7 @@ feature 'Analytics Regression', js: true do
     let(:return_sp_url) { 'https://example.com/some/idv/ipp/url' }
 
     before do
-      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      allow(AbTests::IN_PERSON_CTA).to receive(:bucket).and_return(:in_person_variant_a)
       allow(IdentityConfig.store).to receive(:in_person_cta_variant_testing_enabled).
         and_return(false)
       allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
