@@ -86,6 +86,7 @@ module Idv
       def handle_phone_submission
         throttle.increment!
         return throttled_failure if throttle.throttled?
+        idv_session[:phone_for_mobile_flow] = permit(:phone)[:phone]
         telephony_result = send_link
         failure_reason = nil
         if !telephony_result.success?
@@ -165,7 +166,6 @@ module Idv
 
       def formatted_destination_phone
         raw_phone = permit(:phone)[:phone]
-        idv_session[:phone] = raw_phone
         PhoneFormatter.format(raw_phone, country_code: 'US')
       end
 

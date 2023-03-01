@@ -21,6 +21,7 @@ module Idv
         if !telephony_result.success?
           failure_reason = { telephony: [telephony_result.error.class.name.demodulize] }
         end
+        idv_session[:phone_for_mobile_flow] = permit(:phone)[:phone]
         @flow.irs_attempts_api_tracker.idv_phone_upload_link_sent(
           success: telephony_result.success?,
           phone_number: formatted_destination_phone,
@@ -96,7 +97,6 @@ module Idv
 
       def formatted_destination_phone
         raw_phone = permit(:phone)[:phone]
-        idv_session[:phone] = raw_phone
         PhoneFormatter.format(raw_phone, country_code: 'US')
       end
 
