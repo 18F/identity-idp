@@ -6,7 +6,7 @@ feature 'doc auth send link step' do
   include ActionView::Helpers::DateHelper
 
   before do
-    sign_in_and_2fa_user
+    sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_send_link_step
   end
 
@@ -17,6 +17,7 @@ feature 'doc auth send link step' do
   let(:document_capture_session) { DocumentCaptureSession.create! }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:user) { user_with_2fa }
 
   it "defaults phone to user's 2fa phone numebr" do
     field = page.find_field(t('two_factor_authentication.phone_label'))
@@ -185,5 +186,27 @@ feature 'doc auth send link step' do
 
     document_capture_session.reload
     expect(document_capture_session).to have_attributes(requested_at: a_kind_of(Time))
+  end
+
+  context 'when user is from Puerto Rico' do
+    let(:phone) { '+1 787-555-1212' }
+    let(:formatted_phone) { '(787) 555-1212' }
+    let(:user) do
+      create(
+        :user,
+        :signed_up,
+        with: { phone: phone },
+        password: Features::SessionHelper::VALID_PASSWORD,
+      )
+    end
+
+    it "defaults phone to user's 2fa phone number", :js do
+      field = page.find_field(t('two_factor_authentication.phone_label'))
+      expect(field.value).to eq(formatted_phone)
+    end
+    it "allows submitting to user's 2fa phone number", :js do
+      click_idv_continue
+      expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+    end
   end
 end

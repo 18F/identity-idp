@@ -18,7 +18,7 @@ describe Idv::ProfileMaker do
 
     it 'creates an inactive Profile with encrypted PII' do
       proofing_component = ProofingComponent.create(user_id: user.id, document_check: 'acuant')
-      profile = subject.save_profile(active: false)
+      profile = subject.save_profile(active: false, fraud_review_needed: false)
       pii = subject.pii_attributes
 
       expect(profile).to be_a Profile
@@ -38,6 +38,7 @@ describe Idv::ProfileMaker do
       it 'creates an inactive profile with deactivation reason' do
         profile = subject.save_profile(
           active: false,
+          fraud_review_needed: false,
           deactivation_reason: :gpo_verification_pending,
         )
 
@@ -46,9 +47,26 @@ describe Idv::ProfileMaker do
       end
     end
 
+    context 'with fraud review needed' do
+      it 'deactivates a profile for fraud review' do
+        profile = subject.save_profile(
+          active: false,
+          fraud_review_needed: true,
+          deactivation_reason: nil,
+        )
+
+        expect(profile.active).to eq false
+        expect(profile.fraud_review_pending).to eq true
+      end
+    end
+
     context 'as active' do
       it 'creates an active profile' do
-        profile = subject.save_profile(active: true, deactivation_reason: nil)
+        profile = subject.save_profile(
+          active: true,
+          fraud_review_needed: false,
+          deactivation_reason: nil,
+        )
 
         expect(profile.active).to eq true
         expect(profile.deactivation_reason).to be_nil
@@ -59,7 +77,11 @@ describe Idv::ProfileMaker do
       let(:initiating_service_provider) { create(:service_provider) }
 
       it 'creates a profile with the initiating sp recorded' do
-        profile = subject.save_profile(active: true, deactivation_reason: nil)
+        profile = subject.save_profile(
+          active: true,
+          fraud_review_needed: false,
+          deactivation_reason: nil,
+        )
 
         expect(profile.initiating_service_provider).to eq initiating_service_provider
       end

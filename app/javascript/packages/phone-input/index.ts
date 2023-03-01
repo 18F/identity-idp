@@ -165,6 +165,11 @@ export class PhoneInputElement extends HTMLElement {
       iti.selectedFlag.removeAttribute('aria-owns');
     }
 
+    const country = iti.getSelectedCountryData();
+    if (country.iso2 && this.codeInput) {
+      this.codeInput.value = country.iso2.toUpperCase();
+    }
+
     return iti;
   }
 

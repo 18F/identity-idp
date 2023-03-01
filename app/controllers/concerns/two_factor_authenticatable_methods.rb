@@ -1,4 +1,4 @@
-module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
+module TwoFactorAuthenticatableMethods
   extend ActiveSupport::Concern
   include RememberDeviceConcern
   include SecureHeadersConcern
@@ -301,6 +301,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
       otp_expiration: otp_expiration,
       otp_delivery_preference: two_factor_authentication_method,
       otp_make_default_number: selected_otp_make_default_number,
+      unconfirmed_phone: unconfirmed_phone?,
     }.merge(generic_data)
   end
 
@@ -308,14 +309,9 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     params&.dig(:otp_make_default_number)
   end
 
-  def account_reset_token
-    current_user&.account_reset_request&.request_token
-  end
-
   def authenticator_view_data
     {
       two_factor_authentication_method: two_factor_authentication_method,
-      user_email: current_user.email_addresses.take.email,
     }.merge(generic_data)
   end
 
@@ -330,15 +326,6 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
       phone_configuration.masked_phone
     else
       user_session[:unconfirmed_phone]
-    end
-  end
-
-  def voice_otp_delivery_unsupported?
-    if UserSessionContext.authentication_or_reauthentication_context?(context)
-      PhoneNumberCapabilities.new(phone_configuration&.phone, phone_confirmed: true).supports_voice?
-    else
-      phone = user_session[:unconfirmed_phone]
-      PhoneNumberCapabilities.new(phone, phone_confirmed: false).supports_voice?
     end
   end
 

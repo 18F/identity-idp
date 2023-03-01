@@ -647,14 +647,6 @@ Metrics/BlockLength:
     - spec/**/*.rb
     - scripts/**/*
 
-Metrics/ModuleLength:
-  CountComments: false
-  Max: 200
-  Description: Avoid modules longer than 200 lines of code.
-  Enabled: true
-  Exclude:
-    - spec/**/*
-
 Metrics/ParameterLists:
   CountKeywordArgs: false
 
