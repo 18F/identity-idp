@@ -167,12 +167,18 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def complete_doc_auth_steps_before_send_link_step
     complete_doc_auth_steps_before_upload_step
-    click_on t('doc_auth.buttons.use_phone')
+    if IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
+      click_on t('forms.buttons.send_link')
+    else
+      click_on t('doc_auth.buttons.use_phone')
+    end
   end
 
   def complete_doc_auth_steps_before_link_sent_step
     complete_doc_auth_steps_before_send_link_step
-    fill_out_doc_auth_phone_form_ok
+    if !IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
+      fill_out_doc_auth_phone_form_ok
+    end
     click_idv_continue
   end
 
