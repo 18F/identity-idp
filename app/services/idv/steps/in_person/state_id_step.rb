@@ -22,10 +22,10 @@ module Idv
           flow_session[:pii_from_user][:dob] = formatted_dob if formatted_dob
 
           if IdentityConfig.store.in_person_capture_secondary_id_enabled
-            if flow_session[:pii_from_user][:capture_secondary_id] == 'true'
+            if flow_session[:pii_from_user][:id_address_current] == 'true'
               mark_step_complete(:residential_address)
-              mark_step_complete(:address)
             end
+            mark_step_complete(:address)
           else
             mark_step_complete(:residential_address)
           end

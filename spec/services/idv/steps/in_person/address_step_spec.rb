@@ -58,4 +58,33 @@ describe Idv::Steps::InPerson::AddressStep do
       end
     end
   end
+
+  describe '#extra_view_variables' do
+    context 'with in_person_capture_secondary_id_enabled feature flag set to false' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+          and_return(false)
+        allow(step).to receive(:flow_session).and_return(
+          {
+            pii_from_user: { uuid: '13d130f8-03a9-46be-aa66-49a5afd6e14c',
+                             first_name: 'person',
+                             last_name: 'person',
+                             dob: '1986-04-29',
+                             state_id_number: '123456789',
+                             address1: nil,
+                             address2: nil,
+                             city: nil,
+                             state_id_jurisdiction: 'VA',
+                             zipcode: nil,
+                             capture_secondary_id: nil },
+          },
+        )
+      end
+
+      it 'returns false for updating_address when the user first visits the address page' do
+        extra_view_variables = step.extra_view_variables
+        expect(extra_view_variables[:updating_address]).to be false
+      end
+    end
+  end
 end

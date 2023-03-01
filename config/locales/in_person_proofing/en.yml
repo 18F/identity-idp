@@ -105,9 +105,9 @@ en:
       state_id:
         address1: Address
         address2: Address line 2 (optional)
-        capture_secondary_id_heading: Is your current residential address listed on your state-issued ID?
-        capture_secondary_id_no: No, my current residential address is not listed on my state-issued ID
-        capture_secondary_id_yes: Yes, my current residential address is listed on my state-issued ID
+        id_address_current_heading: Is your current residential address listed on your state-issued ID?
+        id_address_current_no: No, my current residential address is not listed on my state-issued ID
+        id_address_current_yes: Yes, my current residential address is listed on my state-issued ID
         city: City
         date_hint:
           day: 'Example: 28'

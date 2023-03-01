@@ -4,7 +4,7 @@ module Idv
     include FormStateIdValidator
 
     ATTRIBUTES = %i[first_name last_name dob state_id_number address1 address2 city
-                    state_id_jurisdiction zipcode capture_secondary_id].freeze
+                    state_id_jurisdiction zipcode id_address_current].freeze
 
     attr_accessor(*ATTRIBUTES)
 
