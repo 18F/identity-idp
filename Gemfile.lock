@@ -190,6 +190,9 @@ GEM
       msgpack (~> 1.2)
     brakeman (5.4.0)
     browser (5.3.1)
+    browserslist_useragent (0.2.0)
+      semantic
+      user_agent_parser
     builder (3.2.4)
     bullet (7.0.7)
       activesupport (>= 3.0.0)
@@ -614,6 +617,7 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    semantic (1.6.1)
     shellany (0.0.1)
     shoulda-matchers (4.5.1)
       activesupport (>= 4.2.0)
@@ -661,6 +665,7 @@ GEM
     unf_ext (0.0.8)
     unicode-display_width (2.4.2)
     uniform_notifier (1.16.0)
+    user_agent_parser (2.14.0)
     valid_email (0.1.4)
       activemodel
       mail (>= 2.6.1)
@@ -733,6 +738,7 @@ DEPENDENCIES
   bootsnap (~> 1.0)
   brakeman
   browser
+  browserslist_useragent
   bullet (~> 7.0)
   bundler-audit
   capybara-webmock!
