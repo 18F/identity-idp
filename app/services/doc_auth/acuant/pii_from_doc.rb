@@ -6,6 +6,7 @@ module DocAuth
         'Middle Name' => :middle_name,
         'Surname' => :last_name,
         'Address Line 1' => :address1,
+        'Address Line 2' => :address2,
         'Address City' => :city,
         'Address State' => :state,
         'Address Postal Code' => :zipcode,
