@@ -5,7 +5,6 @@ module Idv
     include StepUtilitiesConcern
     include Steps::ThreatMetrixStepHelper
 
-    before_action :render_404_if_ssn_controller_disabled
     before_action :confirm_two_factor_authenticated
     before_action :confirm_pii_from_doc
 
@@ -25,22 +24,21 @@ module Idv
       @error_message = nil
       form_response = form_submit
 
-      unless form_response.success?
-        @error_message = form_response.first_error_message
-        redirect_to idv_ssn_url
-      end
-
-      flow_session['pii_from_doc'][:ssn] = params[:doc_auth][:ssn]
-
-      analytics.idv_doc_auth_ssn_submitted(**analytics_arguments)
-
+      analytics.idv_doc_auth_ssn_submitted(
+        **analytics_arguments.merge(form_response.to_h),
+      )
       irs_attempts_api_tracker.idv_ssn_submitted(
         ssn: params[:doc_auth][:ssn],
       )
 
-      idv_session.invalidate_steps_after_ssn!
-
-      redirect_to idv_verify_info_url
+      if form_response.success?
+        flow_session['pii_from_doc'][:ssn] = params[:doc_auth][:ssn]
+        idv_session.invalidate_steps_after_ssn!
+        redirect_to idv_verify_info_url
+      else
+        @error_message = form_response.first_error_message
+        render :show, locals: extra_view_variables
+      end
     end
 
     def extra_view_variables
@@ -52,10 +50,6 @@ module Idv
     end
 
     private
-
-    def render_404_if_ssn_controller_disabled
-      render_not_found unless IdentityConfig.store.doc_auth_ssn_controller_enabled
-    end
 
     def analytics_arguments
       {

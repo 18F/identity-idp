@@ -1,6 +1,7 @@
 module UspsInPersonProofing
   class Proofer
     AUTH_TOKEN_CACHE_KEY = :usps_ippaas_api_auth_token
+    AUTH_TOKEN_REFRESH_THRESHOLD = 5
 
     # Makes HTTP request to get nearby in-person proofing facilities
     # Requires address, city, state and zip code.
@@ -18,12 +19,13 @@ module UspsInPersonProofing
         zipCode: location.zip_code,
       }.to_json
 
-      facilities = parse_facilities(
-        faraday.post(url, body, dynamic_headers) do |req|
-          req.options.context = { service_name: 'usps_facilities' }
-        end.body,
-      )
-      dedupe_facilities(facilities)
+      response = faraday.post(url, body, dynamic_headers) do |req|
+        req.options.context = { service_name: 'usps_facilities' }
+      end.body
+
+      facilities = parse_facilities(response)
+      dedupe_facilities = dedupe_facilities(facilities)
+      sort_by_ascending_distance(dedupe_facilities)
     end
 
     # Temporary function to return a static set of facilities
@@ -153,6 +155,10 @@ module UspsInPersonProofing
     # already cached.
     # @return [Hash] Headers to add to USPS requests
     def dynamic_headers
+      token_remaining_time = Rails.cache.redis.ttl(AUTH_TOKEN_CACHE_KEY)
+      if token_remaining_time != -2 && token_remaining_time <= AUTH_TOKEN_REFRESH_THRESHOLD
+        retrieve_token!
+      end
       {
         'Authorization' => token,
         'RequestID' => request_id,
@@ -224,6 +230,10 @@ module UspsInPersonProofing
       facilities.uniq do |facility|
         [facility.address, facility.city, facility.state, facility.zip_code_5]
       end
+    end
+
+    def sort_by_ascending_distance(facilities)
+      facilities.sort_by { |f| f[:distance].to_f }
     end
   end
 end

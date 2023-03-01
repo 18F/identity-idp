@@ -262,15 +262,78 @@ describe Profile do
 
       profile.activate
     end
+
+    it 'does not activate a profile if under fraud review' do
+      profile.update(fraud_review_pending: true)
+      profile.activate
+
+      expect(profile).to_not be_active
+    end
+
+    it 'does not activate a profile if rejected for fraud' do
+      profile.update(fraud_rejection: true)
+      profile.activate
+
+      expect(profile).to_not be_active
+    end
   end
 
   describe '#deactivate' do
-    it 'sets active flag to false' do
+    let(:deactivation_reason) { :password_reset }
+    let(:profile) do
       profile = create(:profile, :active, user: user)
-      profile.deactivate(:password_reset)
+      profile.deactivate(deactivation_reason)
+      profile
+    end
 
+    it 'sets active flag to false' do
       expect(profile).to_not be_active
       expect(profile).to be_password_reset
+    end
+  end
+
+  describe '#activate_after_passing_review' do
+    it 'activates a profile if it passes fraud review' do
+      profile = create(:profile, user: user, active: false, fraud_review_pending: true)
+      profile.activate_after_passing_review
+
+      expect(profile).to be_active
+    end
+  end
+
+  describe '#deactivate_for_fraud_review' do
+    it 'sets fraud_review_pending to true' do
+      profile = create(:profile, user: user)
+      profile.deactivate_for_fraud_review
+
+      expect(profile).to_not be_active
+      expect(profile.fraud_review_pending).to eq(true)
+      expect(profile.fraud_rejection).to eq(false)
+    end
+  end
+
+  describe '#reject_for_fraud' do
+    let(:profile) do
+      profile = create(:profile, user: user)
+      profile.reject_for_fraud
+      profile
+    end
+
+    it 'sets fraud_rejection to true' do
+      expect(profile).to_not be_active
+    end
+
+    it 'sends an email' do
+      # This is necessary because UserMailer reaches into the
+      # controller's params. As this is a model spec, we have to fake
+      # the params object.
+      fake_params = ActionController::Parameters.new(
+        user: OpenStruct.new(id: 'fake_user_id'),
+        email_address: OpenStruct.new(user_id: 'fake_user_id', email: 'fake_user@test.com'),
+      )
+      allow_any_instance_of(UserMailer).to receive(:params).and_return(fake_params)
+
+      expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(1)
     end
   end
 

@@ -293,6 +293,8 @@ describe Idv::ReviewController do
         expect(@analytics).to have_logged_event(
           'IdV: review complete',
           success: false,
+          fraud_review_pending: false,
+          fraud_rejection: false,
           proofing_components: nil,
           deactivation_reason: nil,
         )
@@ -310,9 +312,12 @@ describe Idv::ReviewController do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
         expect(@analytics).to have_logged_event(
-          'IdV: review complete', success: true,
-                                  proofing_components: nil,
-                                  deactivation_reason: anything
+          'IdV: review complete',
+          success: true,
+          fraud_review_pending: false,
+          fraud_rejection: false,
+          proofing_components: nil,
+          deactivation_reason: anything,
         )
         expect(@analytics).to have_logged_event(
           'IdV: final resolution',
@@ -353,6 +358,9 @@ describe Idv::ReviewController do
 
       context 'user picked phone confirmation' do
         before do
+          allow(Rails).to receive(:cache).and_return(
+            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          )
           idv_session.address_verification_mechanism = 'phone'
           idv_session.vendor_phone_confirmation = true
           idv_session.user_phone_confirmation = true
@@ -605,20 +613,26 @@ describe Idv::ReviewController do
           it 'creates a disabled profile' do
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-            expect(user.profiles.last.deactivation_reason).to eq('threatmetrix_review_pending')
+            expect(user.profiles.last.fraud_review_pending?).to eq(true)
           end
 
           it 'logs events' do
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
             expect(@analytics).to have_logged_event(
-              'IdV: review complete', success: true,
-                                      proofing_components: nil,
-                                      deactivation_reason: 'threatmetrix_review_pending'
+              'IdV: review complete',
+              success: true,
+              fraud_review_pending: true,
+              fraud_rejection: false,
+              proofing_components: nil,
+              deactivation_reason: nil,
             )
             expect(@analytics).to have_logged_event(
-              'IdV: final resolution', success: true,
-                                       proofing_components: nil,
-                                       deactivation_reason: 'threatmetrix_review_pending'
+              'IdV: final resolution',
+              success: true,
+              fraud_review_pending: true,
+              fraud_rejection: false,
+              proofing_components: nil,
+              deactivation_reason: nil,
             )
           end
 

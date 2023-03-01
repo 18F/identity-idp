@@ -5,9 +5,8 @@ fr:
       are_you_sure_desc_html:
         - '<strong>Les codes de sauvegarde sont la méthode d’authentification la
           moins recommandée,</strong> car les codes peuvent facilement être
-          perdus. Nous vous encourageons à explorer d’autres options
-          d’authentification telles que le déverrouillage facial ou tactile, une
-          application d’authentification ou une clé de sécurité.'
+          perdus. Essayez une option plus sûre, comme une application
+          d’authentification ou une clé de sécurité.'
         - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer,
           copier ou noter. Vous saisirez un code chaque fois que vous vous
           connecterez.
@@ -120,6 +119,9 @@ fr:
       labels:
         email: Entrez votre adresse email
         email_language: Sélectionnez votre préférence de langue pour les e-mails
+    spam_protection:
+      description: Nous utilisons reCAPTCHA pour nous protéger contre les pourriels
+        automatisés. Cochez la case ci-dessous pour continuer.
     ssn:
       show: Afficher le numéro de sécurité sociale
     totp_delete:

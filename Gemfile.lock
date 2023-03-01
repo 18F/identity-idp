@@ -426,7 +426,7 @@ GEM
       openssl (> 2.0, < 3.1)
     orm_adapter (0.5.0)
     parallel (1.22.1)
-    parallel_tests (3.7.3)
+    parallel_tests (3.8.1)
       parallel
     parser (3.2.0.0)
       ast (~> 2.4.1)
@@ -772,7 +772,7 @@ DEPENDENCIES
   newrelic_rpm (~> 8.0)
   nokogiri (~> 1.14.0)
   octokit (>= 4.25.0)
-  parallel_tests
+  parallel_tests (~> 3.8.0)
   pg
   pg_query
   phonelib
