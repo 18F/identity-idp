@@ -54,7 +54,7 @@ describe 'sign_up/completions/show.html.erb' do
   it 'shows cancel link on completion screen' do
     render
     expect(rendered).to have_link(
-      t('links.cancel'), 
+      t('links.cancel'),
       href: return_to_sp_cancel_path,
     )
   end
