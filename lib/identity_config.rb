@@ -64,8 +64,6 @@ class IdentityConfig
       raise "unexpected #{key}: #{value}, expected one of #{enum}"
     end
 
-    converted_value = yield converted_value if block_given?
-
     @written_env[key] = converted_value
     @written_env
   end
@@ -230,12 +228,7 @@ class IdentityConfig
     config.add(:inherited_proofing_max_attempt_window_in_minutes, type: :integer)
     config.add(:va_inherited_proofing_mock_enabled, type: :boolean)
     config.add(:irs_attempt_api_audience)
-    config.add(
-      :irs_attempt_api_auth_tokens,
-      type: :comma_separated_string_list,
-    ) do |list|
-      list.map { |value| OpenSSL::Digest::SHA256.hexdigest(value) }
-    end
+    config.add(:irs_attempt_api_auth_tokens, type: :comma_separated_string_list)
     config.add(:irs_attempt_api_bucket_name, type: :string, allow_nil: true)
     config.add(:irs_attempt_api_csp_id)
     config.add(:irs_attempt_api_enabled, type: :boolean)

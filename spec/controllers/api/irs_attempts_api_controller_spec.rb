@@ -6,8 +6,6 @@ RSpec.describe Api::IrsAttemptsApiController do
 
     allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:irs_attempt_api_aws_s3_enabled).and_return(false)
-    allow(IdentityConfig.store).to receive(:irs_attempt_api_auth_tokens).
-      and_return(valid_auth_tokens.map { |t| OpenSSL::Digest::SHA256.hexdigest(t) })
 
     existing_events
 
@@ -16,8 +14,7 @@ RSpec.describe Api::IrsAttemptsApiController do
   end
   let(:time) { Time.new(2022, 1, 1, 0, 0, 0, 'Z') }
 
-  let(:valid_auth_tokens) { 3.times.map { SecureRandom.hex } }
-  let(:auth_token) { valid_auth_tokens.first }
+  let(:auth_token) { IdentityConfig.store.irs_attempt_api_auth_tokens.first }
 
   let(:existing_events) do
     3.times.map do
