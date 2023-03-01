@@ -681,6 +681,11 @@
       },
       {
         "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_AddressLine2",
+        "Values": [{"Value": "APT 3E"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
         "Name": "Fields_City",
         "Values": [{"Value": "ANYTOWN"}]
       },

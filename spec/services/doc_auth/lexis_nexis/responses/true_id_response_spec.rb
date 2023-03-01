@@ -101,6 +101,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         product_status: 'pass',
         doc_auth_result: 'Passed',
         processed_alerts: a_hash_including(:failed),
+        address_line2_present: true,
         alert_failure_count: a_kind_of(Numeric),
         portrait_match_results: nil,
         image_metrics: a_hash_including(:front, :back),
@@ -120,7 +121,28 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         'PresentationChanged' => 'false',
       )
     end
+
+    it 'notes that address line 2 was present' do
+      expect(response.to_h).to include(address_line2_present: true)
+    end
   end
+
+  context 'when there is no address line 2' do
+    body_no_line2 = JSON.parse(LexisNexisFixtures.true_id_response_success_2).tap do |json|
+      json['Products'].first['ParameterDetails'] = json['Products'].first['ParameterDetails'].
+      select { |f| f['Name'] != 'Fields_AddressLine2' }
+    end.to_json
+    let(:success_response_no_line2) do
+      instance_double(Faraday::Response, status: 200, body: body_no_line2)
+    end
+
+    let(:response) { described_class.new(success_response_no_line2, config) }
+
+    it 'notes that address line 2 was not present' do
+      expect(response.to_h).to include(address_line2_present: false)
+    end
+  end
+
 
   context 'when the barcode can not be read' do
     let(:response) do
@@ -220,6 +242,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         product_status: 'pass',
         doc_auth_result: 'Failed',
         processed_alerts: a_hash_including(:passed, :failed),
+        address_line2_present: true,
         alert_failure_count: a_kind_of(Numeric),
         portrait_match_results: {
           'FaceMatchResult' => 'Fail',
