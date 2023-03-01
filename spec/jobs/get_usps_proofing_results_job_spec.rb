@@ -36,8 +36,8 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
       scan_count: response['scanCount'],
       secondary_id_type: response['secondaryIdType'],
       status: response['status'],
-      transaction_end_date_time: response['transactionEndDateTime'],
-      transaction_start_date_time: response['transactionStartDateTime'],
+      transaction_end_date_time: anything,
+      transaction_start_date_time: anything,
     )
   end
 
@@ -45,13 +45,14 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
     before(:each) do
       stub_request_passed_proofing_results
     end
+
     it 'logs message with email analytics attributes' do
       freeze_time do
         job.perform(Time.zone.now)
         expect(job_analytics).to have_logged_event(
           'GetUspsProofingResultsJob: Success or failure email initiated',
           email_type: anything,
-          delay_time_seconds: 3600,
+          wait_until: anything,
           service_provider: pending_enrollment.issuer,
           timestamp: Time.zone.now,
           user_id: pending_enrollment.user_id,
@@ -144,6 +145,18 @@ RSpec.describe GetUspsProofingResultsJob do
   let(:request_delay_ms) { 0 }
   let(:job) { GetUspsProofingResultsJob.new }
   let(:job_analytics) { FakeAnalytics.new }
+  let(:transaction_start_date_time) do
+    ActiveSupport::TimeZone['Central Time (US & Canada)'].strptime(
+      '12/17/2020 033855',
+      '%m/%d/%Y %H%M%S',
+    ).in_time_zone('UTC')
+  end
+  let(:transaction_end_date_time) do
+    ActiveSupport::TimeZone['Central Time (US & Canada)'].strptime(
+      '12/17/2020 034055',
+      '%m/%d/%Y %H%M%S',
+    ).in_time_zone('UTC')
+  end
 
   before do
     allow(Rails).to receive(:cache).and_return(
@@ -342,7 +355,7 @@ RSpec.describe GetUspsProofingResultsJob do
             end.to have_enqueued_mail(UserMailer, :in_person_failed).with(
               params: { user: user, email_address: user.email_addresses.first },
               args: [{ enrollment: pending_enrollment }],
-            ).at(Time.zone.now + 1.hour).on_queue(:intentionally_delayed)
+            )
           end
         end
 
@@ -378,7 +391,7 @@ RSpec.describe GetUspsProofingResultsJob do
             end.to have_enqueued_mail(UserMailer, :in_person_failed_fraud).with(
               params: { user: user, email_address: user.email_addresses.first },
               args: [{ enrollment: pending_enrollment }],
-            ).at(Time.zone.now + 1.hour).on_queue(:intentionally_delayed)
+            )
           end
         end
 
@@ -393,26 +406,68 @@ RSpec.describe GetUspsProofingResultsJob do
             end.to have_enqueued_mail(UserMailer, :in_person_verified).with(
               params: { user: user, email_address: user.email_addresses.first },
               args: [{ enrollment: pending_enrollment }],
-            ).at(Time.zone.now + 1.hour).on_queue(:intentionally_delayed)
+            )
           end
         end
 
         context 'a custom delay greater than zero is set' do
-          it 'uses the custom delay' do
-            stub_request_passed_proofing_results
+          let(:user) { pending_enrollment.user }
+          let(:proofed_at_string) do
+            proofed_at = ActiveSupport::TimeZone['Central Time (US & Canada)'].now - 1.hour
+            proofed_at.strftime('%m/%d/%Y %H%M%S')
+          end
 
+          before do
             allow(IdentityConfig.store).
               to(receive(:in_person_results_delay_in_hours).and_return(5))
-            user = pending_enrollment.user
+          end
+
+          it 'uses the custom delay when proofing passes' do
+            stub_request_passed_proofing_results(transactionEndDateTime: proofed_at_string)
+            wait_until = nil
 
             freeze_time do
+              wait_until = Time.zone.now + 4.hours
               expect do
                 job.perform(Time.zone.now)
               end.to have_enqueued_mail(UserMailer, :in_person_verified).with(
                 params: { user: user, email_address: user.email_addresses.first },
                 args: [{ enrollment: pending_enrollment }],
-              ).at(Time.zone.now + 5.hours).on_queue(:intentionally_delayed)
+              ).at(wait_until).on_queue(:intentionally_delayed)
             end
+
+            expect(job_analytics).to have_logged_event(
+              'GetUspsProofingResultsJob: Success or failure email initiated',
+              email_type: 'Success',
+              service_provider: anything,
+              timestamp: anything,
+              user_id: anything,
+              wait_until: wait_until,
+            )
+          end
+
+          it 'uses the custom delay when proofing fails' do
+            stub_request_failed_proofing_results(transactionEndDateTime: proofed_at_string)
+            wait_until = nil
+
+            freeze_time do
+              wait_until = Time.zone.now + 4.hours
+              expect do
+                job.perform(Time.zone.now)
+              end.to have_enqueued_mail(UserMailer, :in_person_failed).with(
+                params: { user: user, email_address: user.email_addresses.first },
+                args: [{ enrollment: pending_enrollment }],
+              ).at(wait_until).on_queue(:intentionally_delayed)
+            end
+
+            expect(job_analytics).to have_logged_event(
+              'GetUspsProofingResultsJob: Success or failure email initiated',
+              email_type: 'Failed',
+              service_provider: anything,
+              timestamp: anything,
+              user_id: anything,
+              wait_until: wait_until,
+            )
           end
         end
 
@@ -452,6 +507,7 @@ RSpec.describe GetUspsProofingResultsJob do
         it 'logs details about the success' do
           job.perform(Time.zone.now)
 
+          expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
@@ -461,11 +517,19 @@ RSpec.describe GetUspsProofingResultsJob do
           )
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Success or failure email initiated',
-            delay_time_seconds: 3600,
             email_type: 'Success',
             service_provider: anything,
             timestamp: anything,
             user_id: anything,
+            wait_until: nil,
+          )
+
+          expect(job_analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Enrollment status updated',
+            hash_including(
+              transaction_end_date_time: transaction_end_date_time,
+              transaction_start_date_time: transaction_start_date_time,
+            ),
           )
         end
       end
@@ -486,6 +550,7 @@ RSpec.describe GetUspsProofingResultsJob do
         it 'logs failure details' do
           job.perform(Time.zone.now)
 
+          expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
@@ -494,11 +559,19 @@ RSpec.describe GetUspsProofingResultsJob do
           )
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Success or failure email initiated',
-            delay_time_seconds: 3600,
             email_type: 'Failed',
             service_provider: anything,
             timestamp: anything,
             user_id: anything,
+            wait_until: nil,
+          )
+
+          expect(job_analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Enrollment status updated',
+            hash_including(
+              transaction_end_date_time: transaction_end_date_time,
+              transaction_start_date_time: transaction_start_date_time,
+            ),
           )
         end
       end
@@ -519,6 +592,7 @@ RSpec.describe GetUspsProofingResultsJob do
         it 'logs fraud failure details' do
           job.perform(Time.zone.now)
 
+          expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
@@ -527,11 +601,19 @@ RSpec.describe GetUspsProofingResultsJob do
           )
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Success or failure email initiated',
-            delay_time_seconds: 3600,
             email_type: 'Failed fraud suspected',
             service_provider: anything,
             timestamp: anything,
             user_id: anything,
+            wait_until: nil,
+          )
+
+          expect(job_analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Enrollment status updated',
+            hash_including(
+              transaction_end_date_time: transaction_end_date_time,
+              transaction_start_date_time: transaction_start_date_time,
+            ),
           )
         end
       end
@@ -552,12 +634,24 @@ RSpec.describe GetUspsProofingResultsJob do
         it 'logs a message about the unsupported ID' do
           job.perform Time.zone.now
 
+          expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
               minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
               reason: 'Unsupported ID type',
+              transaction_end_date_time: transaction_end_date_time,
+              transaction_start_date_time: transaction_start_date_time,
             ),
+          )
+
+          expect(job_analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Success or failure email initiated',
+            email_type: 'Failed unsupported ID type',
+            service_provider: anything,
+            timestamp: anything,
+            user_id: anything,
+            wait_until: nil,
           )
         end
       end
@@ -578,11 +672,14 @@ RSpec.describe GetUspsProofingResultsJob do
         it 'logs that the enrollment expired' do
           job.perform(Time.zone.now)
 
+          expect(pending_enrollment.proofed_at).to eq(nil)
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
               minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
               reason: 'Enrollment has expired',
+              transaction_end_date_time: nil,
+              transaction_start_date_time: nil,
             ),
           )
         end

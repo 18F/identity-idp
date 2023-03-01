@@ -143,10 +143,13 @@ module UspsIppHelper
     }
   end
 
-  def stub_request_failed_proofing_results
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
-      **request_failed_proofing_results_args,
-    )
+  def stub_request_failed_proofing_results(overrides = {})
+    response = merge_into_response_body(request_failed_proofing_results_args, overrides)
+
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
+    ).to_return(response)
   end
 
   def request_failed_proofing_results_args
@@ -190,10 +193,13 @@ module UspsIppHelper
     )
   end
 
-  def stub_request_passed_proofing_results
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
-      **request_passed_proofing_results_args,
-    )
+  def stub_request_passed_proofing_results(overrides = {})
+    response = merge_into_response_body(request_passed_proofing_results_args, overrides)
+
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
+    ).to_return(response)
   end
 
   def request_passed_proofing_results_args
@@ -273,5 +279,20 @@ module UspsIppHelper
       :post,
       %r{/ivs-ippaas-api/IPPRest/resources/rest/requestEnrollmentCode},
     ).to_raise(Faraday::ForbiddenError)
+  end
+
+  private
+
+  # Merges an object into the JSON string of a response's body and returns the updated response
+  def merge_into_response_body(response, body_overrides)
+    {
+      **response,
+      body: JSON.generate(
+        {
+          **JSON.parse(response[:body]),
+          **body_overrides,
+        },
+      ),
+    }
   end
 end
