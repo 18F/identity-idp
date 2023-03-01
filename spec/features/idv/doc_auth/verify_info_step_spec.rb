@@ -7,12 +7,6 @@ feature 'doc auth verify_info step', :js do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
-  let(:mock_ssn_a) { DocAuthHelper::GOOD_SSN }
-  let(:masked_ssn_a) { '9**-**-***4' }
-  let(:mock_zip_code) { '12345' }
-  let(:mock_ssn_b) { '900456789' }
-  let(:masked_ssn_b) { '9**-**-***9' }
-  let(:unmasked_ssn_b) { '900-45-6789' }
   let(:fake_pii_details) do
     {
       document_state: 'MT',
@@ -65,33 +59,33 @@ feature 'doc auth verify_info step', :js do
     expect(page).to have_content(t('step_indicator.flows.idv.verify_info'))
 
     # SSN is masked until revealed
-    expect(page).to have_text(masked_ssn_a)
-    expect(page).not_to have_text(mock_ssn_a)
+    expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
+    expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
     check t(forms_ssn_show)
-    expect(page).not_to have_text(masked_ssn_a)
-    expect(page).to have_text(mock_ssn_a)
+    expect(page).not_to have_text(DocAuthHelper::GOOD_SSN_MASKED)
+    expect(page).to have_text(DocAuthHelper::GOOD_SSN)
   end
 
   it 'allows the user to enter in a new address and displays updated info' do
     click_button t('idv.buttons.change_address_label')
-    fill_in 'idv_form_zipcode', with: mock_zip_code
+    fill_in 'idv_form_zipcode', with: '12345'
     click_button t(forms_buttons_submit_update)
 
     expect(page).to have_current_path(idv_verify_info_path)
 
-    expect(page).to have_content(mock_zip_code)
+    expect(page).to have_content('12345')
   end
 
   it 'allows the user to enter in a new ssn and displays updated info' do
     click_button t(idv_buttons_change_ssn_label)
-    fill_in t(idv_form_ssn_label_html), with: mock_ssn_b
+    fill_in t(idv_form_ssn_label_html), with: '900456789'
     click_button t(forms_buttons_submit_update)
 
     expect(page).to have_current_path(idv_verify_info_path)
 
-    expect(page).to have_text(masked_ssn_b)
+    expect(page).to have_text('9**-**-***9')
     check t(forms_ssn_show)
-    expect(page).to have_text(unmasked_ssn_b)
+    expect(page).to have_text('900-45-6789')
   end
 
   it 'proceeds to the next page upon confirmation' do
@@ -99,7 +93,7 @@ feature 'doc auth verify_info step', :js do
       success: true,
       failure_reason: nil,
       **fake_pii_details,
-      ssn: mock_ssn_a,
+      ssn: DocAuthHelper::GOOD_SSN,
     )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_verify_step
@@ -350,7 +344,7 @@ feature 'doc auth verify_info step', :js do
         success: false,
         failure_reason: { idv_verification: [:timeout] },
         **fake_pii_details,
-        ssn: mock_ssn_a,
+        ssn: DocAuthHelper::GOOD_SSN,
       )
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
@@ -394,7 +388,7 @@ feature 'doc auth verify_info step', :js do
       click_link t(idv_buttons_change_ssn_label)
       expect(page).to have_current_path(idv_ssn_path)
 
-      fill_in t(idv_form_ssn_label_html), with: mock_ssn_b
+      fill_in t(idv_form_ssn_label_html), with: '900456789'
       click_button t(forms_buttons_submit_update)
 
       expect(fake_analytics).to have_logged_event(
@@ -403,9 +397,9 @@ feature 'doc auth verify_info step', :js do
 
       expect(page).to have_current_path(idv_verify_info_path)
 
-      expect(page).to have_text(masked_ssn_b)
+      expect(page).to have_text('9**-**-***9')
       check t(forms_ssn_show)
-      expect(page).to have_text(unmasked_ssn_b)
+      expect(page).to have_text('900-45-6789')
     end
   end
 end
