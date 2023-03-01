@@ -4,6 +4,7 @@ module DocAuthHelper
   include DocumentCaptureStepHelper
 
   GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+  GOOD_SSN_MASKED = '9**-**-***4'
   SSN_THAT_FAILS_RESOLUTION = '123-45-6666'
   SSN_THAT_RAISES_EXCEPTION = '000-00-0000'
 
