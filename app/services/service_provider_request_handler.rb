@@ -7,6 +7,8 @@ class ServiceProviderRequestHandler
   end
 
   def call
+    return if sp_url_stored_in_session == url
+
     pull_request_id_from_current_sp_session_id
 
     delete_sp_request_if_session_has_matching_request_id
@@ -34,8 +36,19 @@ class ServiceProviderRequestHandler
   end
 
   def sp_stored_in_session
+    return if service_provider_request_proxy.blank?
+    service_provider_request_proxy.issuer
+  end
+
+  def sp_url_stored_in_session
+    return if service_provider_request_proxy.blank?
+    service_provider_request_proxy.url
+  end
+
+  def service_provider_request_proxy
     return if sp_request_id.blank?
-    ServiceProviderRequestProxy.from_uuid(sp_request_id).issuer
+    return @service_provider_request_proxy if defined?(@service_provider_request_proxy)
+    @service_provider_request_proxy = ServiceProviderRequestProxy.from_uuid(sp_request_id)
   end
 
   def pull_request_id_from_current_sp_session_id
