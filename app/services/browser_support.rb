@@ -14,6 +14,8 @@ class BrowserSupport
       end
     end
 
+    private
+
     def browser_support_config
       @browser_support_config = begin
         JSON.parse(File.read(Rails.root.join('browsers.json')))
