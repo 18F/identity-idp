@@ -30,8 +30,7 @@ RSpec.describe BrowserSupport do
 
     context 'with valid browser support config' do
       before do
-        allow(BrowserSupport).to receive(:browser_support_config).
-          and_return(['chrome 109', 'chrome 108'])
+        allow(BrowserSupport).to receive(:browser_support_config).and_return(['chrome 109'])
       end
 
       context 'with nil user agent' do
