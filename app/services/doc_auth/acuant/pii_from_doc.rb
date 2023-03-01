@@ -20,7 +20,7 @@ module DocAuth
 
       def initialize(id_data_fields)
         @name_to_value = {}
-        id_data_fields['Fields']&.each do |field|
+        id_data_fields['Fields'].each do |field|
           @name_to_value[field['Name']] = field['Value']
         end
       end

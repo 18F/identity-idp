@@ -102,6 +102,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         body: {
           Result: 5,
           Alerts: alerts,
+          Fields: [],
         }.to_json,
       )
     end
@@ -271,6 +272,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
               { Result: 1, Key: 'Birth Date Valid' },
               { Result: 2, Key: 'Document Classification' },
             ],
+            Fields: [],
           }.to_json,
         )
       end
@@ -317,7 +319,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
     let(:http_response) do
       instance_double(
         Faraday::Response,
-        body: { Result: result, Alerts: alerts }.to_json,
+        body: { Result: result, Alerts: alerts, Fields: [] }.to_json,
       )
     end
 
