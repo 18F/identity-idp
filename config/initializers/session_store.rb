@@ -11,8 +11,8 @@ Rails.application.config.session_store(
     # cookie expires with browser close
     expire_after: nil,
 
-    write_fallback: true,
     read_fallback: true,
+    write_fallback: true,
 
     # Redis expires session after N minutes
     ttl: IdentityConfig.store.session_timeout_in_minutes.minutes,
@@ -21,6 +21,6 @@ Rails.application.config.session_store(
     client_pool: REDIS_POOL,
   },
   on_session_load_error: SessionEncryptorErrorHandler,
-  on_redis_down: proc { |error, _env, _sid| raise error },
+  on_redis_down: proc { |error| raise error },
   serializer: SessionEncryptor.new,
 )

@@ -51,7 +51,7 @@ gem 'rack-headers_filter'
 gem 'rack-timeout', require: false
 gem 'redacted_struct'
 gem 'redis', '>= 3.2.0'
-gem 'redis-session-store', github: '18F/redis-session-store', tag: 'v0.12-18f'
+gem 'redis-session-store', github: '18F/redis-session-store', branch: 'exists-opt'
 gem 'retries'
 gem 'rotp', '~> 6.1'
 gem 'rqrcode'

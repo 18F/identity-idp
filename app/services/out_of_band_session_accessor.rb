@@ -10,9 +10,9 @@ class OutOfBandSessionAccessor
   end
 
   def ttl
-    uuid = session_uuid
+    uuid = Rack::Session::SessionId.new(session_uuid)
     session_store.instance_eval do
-      with_redis { |client| client.ttl(prefixed(uuid)) }
+      with_redis_connection { |client| client.ttl(prefixed_fallback(uuid)) }
     end
   end
 
@@ -77,9 +77,7 @@ class OutOfBandSessionAccessor
 
   # @return [Hash]
   def session_data
-    @session_data ||= session_store.send(
-      :find_session, {}, Rack::Session::SessionId.new(session_uuid)
-    ).last || {}
+    @session_data ||= session_store.send(:find_session, {}, Rack::Session::SessionId.new(session_uuid)).last || {}
   end
 
   def session_store
