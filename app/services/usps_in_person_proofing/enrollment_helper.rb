@@ -111,7 +111,7 @@ module UspsInPersonProofing
       end
 
       def transliterator
-        @transliterator ||= Transliterator.new
+        Transliterator.new
       end
     end
   end

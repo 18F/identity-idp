@@ -13,6 +13,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   end
   let(:subject) { described_class }
   let(:subject_analytics) { FakeAnalytics.new }
+  let(:transliterator) { UspsInPersonProofing::Transliterator.new }
   let(:service_provider) { nil }
   let(:usps_ipp_transliteration_enabled) { true }
 
@@ -20,7 +21,8 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
     stub_request_token
     stub_request_enroll
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(usps_mock_fallback)
-    allow_any_instance_of(UspsInPersonProofing::Transliterator).to receive(:transliterate).
+    allow(UspsInPersonProofing::Transliterator).to receive(:new).and_return(transliterator)
+    allow(transliterator).to receive(:transliterate).
       with(anything) do |val|
         transliterated_without_change(val)
       end
@@ -72,7 +74,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
           proofer = UspsInPersonProofing::Mock::Proofer.new
           mock = double
 
-          expect(UspsInPersonProofing::Transliterator).not_to receive(:transliterate)
+          expect(transliterator).not_to receive(:transliterate)
           expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
           expect(mock).to receive(:request_enroll) do |applicant|
             expect(applicant.first_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
@@ -103,13 +105,13 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
           address = Idp::Constants::MOCK_IDV_APPLICANT[:address1]
           city = Idp::Constants::MOCK_IDV_APPLICANT[:city]
 
-          expect_any_instance_of(UspsInPersonProofing::Transliterator).to receive(:transliterate).
+          expect(transliterator).to receive(:transliterate).
             with(first_name).and_return(transliterated_without_change(first_name))
-          expect_any_instance_of(UspsInPersonProofing::Transliterator).to receive(:transliterate).
+          expect(transliterator).to receive(:transliterate).
             with(last_name).and_return(transliterated(last_name))
-          expect_any_instance_of(UspsInPersonProofing::Transliterator).to receive(:transliterate).
+          expect(transliterator).to receive(:transliterate).
             with(address).and_return(transliterated_with_failure(address))
-          expect_any_instance_of(UspsInPersonProofing::Transliterator).to receive(:transliterate).
+          expect(transliterator).to receive(:transliterate).
             with(city).and_return(transliterated(city))
 
           expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
