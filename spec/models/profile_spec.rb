@@ -279,10 +279,14 @@ describe Profile do
   end
 
   describe '#deactivate' do
-    it 'sets active flag to false' do
+    let(:deactivation_reason) { :password_reset }
+    let(:profile) do
       profile = create(:profile, :active, user: user)
-      profile.deactivate(:password_reset)
+      profile.deactivate(deactivation_reason)
+      profile
+    end
 
+    it 'sets active flag to false' do
       expect(profile).to_not be_active
       expect(profile).to be_password_reset
     end
@@ -308,14 +312,28 @@ describe Profile do
     end
   end
 
-  describe '#reject' do
-    it 'sets fraud_rejection to true' do
+  describe '#reject_for_fraud' do
+    let(:profile) do
       profile = create(:profile, user: user)
       profile.reject_for_fraud
+      profile
+    end
 
+    it 'sets fraud_rejection to true' do
       expect(profile).to_not be_active
-      expect(profile.fraud_review_pending).to eq(false)
-      expect(profile.fraud_rejection).to eq(true)
+    end
+
+    it 'sends an email' do
+      # This is necessary because UserMailer reaches into the
+      # controller's params. As this is a model spec, we have to fake
+      # the params object.
+      fake_params = ActionController::Parameters.new(
+        user: OpenStruct.new(id: 'fake_user_id'),
+        email_address: OpenStruct.new(user_id: 'fake_user_id', email: 'fake_user@test.com'),
+      )
+      allow_any_instance_of(UserMailer).to receive(:params).and_return(fake_params)
+
+      expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(1)
     end
   end
 

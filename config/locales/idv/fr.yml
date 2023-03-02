@@ -164,6 +164,8 @@ fr:
         address_on_file_html: Nous enverrons une lettre avec <strong>un code à usage
           unique </strong> à l’adresse que vous avez indiquée à l’étape
           précédente.
+        info_alert: Vous devrez attendre la livraison de votre lettre pour compléter la
+          vérification de votre identité.
         resend: Envoyez-moi une autre lettre
         timeframe_html: Les lettres sont envoyées les jours ouvrables par courriel de
           première classe de USPS et <strong>prennent généralement entre trois à

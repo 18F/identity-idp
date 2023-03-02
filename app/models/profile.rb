@@ -62,6 +62,7 @@ class Profile < ApplicationRecord
 
   def reject_for_fraud
     update!(active: false, fraud_review_pending: false, fraud_rejection: true)
+    UserAlerts::AlertUserAboutAccountRejected.call(user)
   end
 
   def decrypt_pii(password)
