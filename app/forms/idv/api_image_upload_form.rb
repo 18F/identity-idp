@@ -296,7 +296,7 @@ module Idv
     end
 
     def track_event(response)
-      pii_from_doc        = response.pii_from_doc || {}
+      pii_from_doc = response.pii_from_doc || {}
       stored_image_result = store_encrypted_images_if_required
 
       irs_attempts_api_tracker.idv_document_upload_submitted(
