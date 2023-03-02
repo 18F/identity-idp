@@ -34,11 +34,33 @@ module Idv
         doc_pii_response = validate_pii_from_doc(client_response) if client_response.success?
       end
 
-      determine_response(
+      response = determine_response(
         form_response: form_response,
         client_response: client_response,
         doc_pii_response: doc_pii_response,
       )
+
+      # move this into a lil method
+      pii_from_doc = response.pii_from_doc || {}
+      stored_image_result = store_encrypted_images_if_required
+
+      irs_attempts_api_tracker.idv_document_upload_submitted(
+        success: response.success?,
+        document_state: pii_from_doc[:state],
+        document_number: pii_from_doc[:state_id_number],
+        document_issued: pii_from_doc[:state_id_issued],
+        document_expiration: pii_from_doc[:state_id_expiration],
+        document_front_image_filename: stored_image_result&.front_filename,
+        document_back_image_filename: stored_image_result&.back_filename,
+        document_image_encryption_key: stored_image_result&.encryption_key,
+        first_name: pii_from_doc[:first_name],
+        last_name: pii_from_doc[:last_name],
+        date_of_birth: pii_from_doc[:dob],
+        address: pii_from_doc[:address1],
+        failure_reason: response.errors&.except(:hints)&.presence,
+        )
+
+      response
     end
 
     private
@@ -97,25 +119,6 @@ module Idv
       response.extra.merge!(extra_attributes)
 
       analytics.idv_doc_auth_submitted_pii_validation(**response.to_h)
-
-      pii_from_doc = response.pii_from_doc || {}
-      stored_image_result = store_encrypted_images_if_required
-
-      irs_attempts_api_tracker.idv_document_upload_submitted(
-        success: response.success?,
-        document_state: pii_from_doc[:state],
-        document_number: pii_from_doc[:state_id_number],
-        document_issued: pii_from_doc[:state_id_issued],
-        document_expiration: pii_from_doc[:state_id_expiration],
-        document_front_image_filename: stored_image_result&.front_filename,
-        document_back_image_filename: stored_image_result&.back_filename,
-        document_image_encryption_key: stored_image_result&.encryption_key,
-        first_name: pii_from_doc[:first_name],
-        last_name: pii_from_doc[:last_name],
-        date_of_birth: pii_from_doc[:dob],
-        address: pii_from_doc[:address1],
-        failure_reason: response.errors&.except(:hints)&.presence,
-      )
 
       store_pii(client_response) if client_response.success? && response.success?
 
