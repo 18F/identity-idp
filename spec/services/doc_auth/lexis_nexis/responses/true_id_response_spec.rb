@@ -140,7 +140,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     let(:response) { described_class.new(success_response_no_line2, config) }
 
     it 'notes that address line 2 was not present' do
-      expect(response.pii_from_doc).not_to include(address2: 'APT 3E')
+      expect(response.pii_from_doc[:address2]).to be_nil
       expect(response.to_h).to include(address_line2_present: false)
     end
   end
