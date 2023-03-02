@@ -46,10 +46,12 @@ describe 'two_factor_authentication/otp_expired/show.html.erb' do
   end
 
   context 'if a user is signing in to an existing account' do
-    let(:user) { create(:user, :signed_up, :with_phone, :with_auth_app) }
+    let(:user) { create(:user, :signed_up, :with_phone) }
 
     it 'use another phone number option is not on screen' do
       render
+
+      binding.pry
 
       expect(rendered).to_not have_link(
         t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
@@ -57,10 +59,28 @@ describe 'two_factor_authentication/otp_expired/show.html.erb' do
     end
 
     it 'can redirect to choose another option' do
+      user = build_stubbed(:user, :signed_up)
+      assign(:next_path, 'foo')
+
       render
 
       expect(rendered).to have_link(
-        t('two_factor_authentication.login_options_link_text')
+        t('two_factor_authentication.login_options_link_text'),
+        href: 'foo'
+      )
+    end
+  end
+
+  context 'when a user creates a new account' do
+    it 'allows a user to select another phone' do
+      user = build_stubbed(:user, :signed_up)
+      assign(:use_another_phone_number, true)
+
+      render
+
+      expect(rendered).to have_link(
+        t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
+        href: add_phone_path,
       )
     end
   end
