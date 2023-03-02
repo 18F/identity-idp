@@ -300,20 +300,20 @@ module Idv
       stored_image_result = store_encrypted_images_if_required
 
       irs_attempts_api_tracker.idv_document_upload_submitted(
-        success:                       response.success?,
-        document_state:                pii_from_doc[:state],
-        document_number:               pii_from_doc[:state_id_number],
-        document_issued:               pii_from_doc[:state_id_issued],
-        document_expiration:           pii_from_doc[:state_id_expiration],
+        success: response.success?,
+        document_state: pii_from_doc[:state],
+        document_number: pii_from_doc[:state_id_number],
+        document_issued: pii_from_doc[:state_id_issued],
+        document_expiration: pii_from_doc[:state_id_expiration],
         document_front_image_filename: stored_image_result&.front_filename,
-        document_back_image_filename:  stored_image_result&.back_filename,
+        document_back_image_filename: stored_image_result&.back_filename,
         document_image_encryption_key: stored_image_result&.encryption_key,
-        first_name:                    pii_from_doc[:first_name],
-        last_name:                     pii_from_doc[:last_name],
-        date_of_birth:                 pii_from_doc[:dob],
-        address:                       pii_from_doc[:address1],
-        failure_reason:                response.errors&.except(:hints)&.presence,
-        )
+        first_name: pii_from_doc[:first_name],
+        last_name: pii_from_doc[:last_name],
+        date_of_birth: pii_from_doc[:dob],
+        address: pii_from_doc[:address1],
+        failure_reason: response.errors&.except(:hints)&.presence,
+      )
     end
   end
 end
