@@ -7,7 +7,7 @@ module TwoFactorAuthentication
     def show
       @otp_delivery_preference = otp_delivery_preference
       @use_another_phone_number = use_another_phone_number
-      @set_choose_another_method_path = set_choose_another_method_path
+      @next_path = choose_another_method_path
       analytics.otp_expired_visited(
         otp_sent_at: current_user.direct_otp_sent_at,
         otp_expiration: otp_expiration,
@@ -25,16 +25,16 @@ module TwoFactorAuthentication
       current_user.otp_delivery_preference
     end
 
-    def set_choose_another_method_path
+    def next_path
       if mfa_context.enabled_mfa_methods_count < 1
-        @next_path = authentication_methods_setup_url
+        authentication_methods_setup_url
       else
-        @next_path = login_two_factor_options_url
+        login_two_factor_options_url
       end
     end
 
     def use_another_phone_number
-      mfa_context.phone_configurations.none? 
+      mfa_context.phone_configurations.none? || mfa_context.enabled_mfa_methods_count <=1
     end
   end
 end
