@@ -6,6 +6,7 @@ module Idv
     include Steps::ThreatMetrixStepHelper
 
     before_action :confirm_two_factor_authenticated
+    before_action :confirm_profile_not_already_confirmed
     before_action :confirm_pii_from_doc
 
     attr_accessor :error_message
@@ -50,6 +51,11 @@ module Idv
     end
 
     private
+
+    def confirm_profile_not_already_confirmed
+      return unless idv_session.profile_confirmation == true
+      redirect_to idv_review_url
+    end
 
     def analytics_arguments
       {
