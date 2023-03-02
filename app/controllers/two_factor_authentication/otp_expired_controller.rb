@@ -34,7 +34,7 @@ module TwoFactorAuthentication
     end
 
     def use_another_phone_number
-      mfa_context.enabled_mfa_methods_count <= 1 || mfa_context.phone_configurations.none? 
+      mfa_context.phone_configurations.none? 
     end
   end
 end
