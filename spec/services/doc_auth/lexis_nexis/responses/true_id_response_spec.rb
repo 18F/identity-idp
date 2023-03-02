@@ -123,22 +123,24 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'notes that address line 2 was present' do
+      expect(response.pii_from_doc).to include(address2: "APT 3E")
       expect(response.to_h).to include(address_line2_present: true)
     end
   end
 
   context 'when there is no address line 2' do
-    body_no_line2 = JSON.parse(LexisNexisFixtures.true_id_response_success_2).tap do |json|
-      json['Products'].first['ParameterDetails'] = json['Products'].first['ParameterDetails'].
-        select { |f| f['Name'] != 'Fields_AddressLine2' }
-    end.to_json
     let(:success_response_no_line2) do
+      body_no_line2 = JSON.parse(LexisNexisFixtures.true_id_response_success_2).tap do |json|
+        json['Products'].first['ParameterDetails'] = json['Products'].first['ParameterDetails'].
+          select { |f| f['Name'] != 'Fields_AddressLine2' }
+      end.to_json
       instance_double(Faraday::Response, status: 200, body: body_no_line2)
     end
 
     let(:response) { described_class.new(success_response_no_line2, config) }
 
     it 'notes that address line 2 was not present' do
+      expect(response.pii_from_doc).not_to include(address2: "APT 3E")
       expect(response.to_h).to include(address_line2_present: false)
     end
   end
