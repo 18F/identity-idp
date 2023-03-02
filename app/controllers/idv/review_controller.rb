@@ -28,7 +28,11 @@ module Idv
     def confirm_current_password
       return if valid_password?
 
-      analytics.idv_review_complete(success: false)
+      analytics.idv_review_complete(
+        success: false,
+        fraud_review_pending: current_user.fraud_review_pending?,
+        fraud_rejection: current_user.fraud_rejection?,
+      )
       irs_attempts_api_tracker.idv_password_entered(success: false)
 
       flash[:error] = t('idv.errors.incorrect_password')
@@ -37,19 +41,8 @@ module Idv
 
     def new
       @applicant = idv_session.applicant
-      # Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-      #   call(:encrypt, :view, true)
-      Rails.logger.info(
-        {
-          name: 'event_to_doc_auth_log_token',
-          source: 'proposed',
-          user_id: current_user.id,
-          issuer: current_sp&.issuer,
-          token: :encrypt,
-          action: :view,
-          success: true,
-        }.to_json,
-      )
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+        call(:encrypt, :view, true)
       analytics.idv_review_info_visited(address_verification_method: address_verification_method)
 
       gpo_mail_service = Idv::GpoMail.new(current_user)
@@ -72,23 +65,16 @@ module Idv
 
       analytics.idv_review_complete(
         success: true,
+        fraud_review_pending: idv_session.profile.fraud_review_pending,
+        fraud_rejection: idv_session.profile.fraud_rejection,
         deactivation_reason: idv_session.profile.deactivation_reason,
       )
-      # Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-      #   call(:verified, :view, true)
-      Rails.logger.info(
-        {
-          name: 'event_to_doc_auth_log_token',
-          source: 'proposed',
-          user_id: current_user.id,
-          issuer: current_sp&.issuer,
-          token: :verified,
-          action: :view,
-          success: true,
-        }.to_json,
-      )
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+        call(:verified, :view, true)
       analytics.idv_final(
         success: true,
+        fraud_review_pending: idv_session.profile.fraud_review_pending,
+        fraud_rejection: idv_session.profile.fraud_rejection,
         deactivation_reason: idv_session.profile.deactivation_reason,
       )
 

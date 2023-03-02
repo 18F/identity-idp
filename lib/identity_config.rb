@@ -221,6 +221,7 @@ class IdentityConfig
     config.add(:in_person_enrollment_validity_in_days, type: :integer)
     config.add(:in_person_results_delay_in_hours, type: :integer)
     config.add(:in_person_completion_survey_url, type: :string)
+    config.add(:in_person_verify_info_controller_enabled, type: :boolean)
     config.add(:include_slo_in_saml_metadata, type: :boolean)
     config.add(:inherited_proofing_enabled, type: :boolean)
     config.add(:inherited_proofing_va_base_url, type: :string)
@@ -327,6 +328,7 @@ class IdentityConfig
     config.add(:piv_cac_service_timeout, type: :float)
     config.add(:piv_cac_verify_token_secret)
     config.add(:piv_cac_verify_token_url)
+    config.add(:phone_recaptcha_mock_validator, type: :boolean)
     config.add(:phone_recaptcha_score_threshold, type: :float)
     config.add(
       :phone_recaptcha_country_score_overrides,
@@ -353,8 +355,10 @@ class IdentityConfig
     config.add(:rack_timeout_service_timeout_seconds, type: :integer)
     config.add(:rails_mailer_previews_enabled, type: :boolean)
     config.add(:reauthn_window, type: :integer)
-    config.add(:recaptcha_site_key, type: :string)
-    config.add(:recaptcha_secret_key, type: :string)
+    config.add(:recaptcha_site_key_v2, type: :string)
+    config.add(:recaptcha_site_key_v3, type: :string)
+    config.add(:recaptcha_secret_key_v2, type: :string)
+    config.add(:recaptcha_secret_key_v3, type: :string)
     config.add(:recovery_code_length, type: :integer)
     config.add(:recurring_jobs_disabled_names, type: :json)
     config.add(:redis_irs_attempt_api_url)

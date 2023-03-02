@@ -1,5 +1,7 @@
 module Idv
   class PhoneController < ApplicationController
+    before_action :confirm_verify_info_complete
+
     include IdvStepConcern
     include StepIndicatorConcern
     include PhoneOtpRateLimitable
@@ -18,19 +20,8 @@ module Idv
 
       async_state = step.async_state
       if async_state.none?
-        # Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-        #   call(:verify_phone, :view, true)
-        Rails.logger.info(
-          {
-            name: 'event_to_doc_auth_log_token',
-            source: 'proposed',
-            user_id: current_user.id,
-            issuer: current_sp&.issuer,
-            token: :verify_phone,
-            action: :view,
-            success: true,
-          }.to_json,
-        )
+        Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+          call(:verify_phone, :view, true)
 
         analytics.idv_phone_of_record_visited
         render :new, locals: { gpo_letter_available: gpo_letter_available }
@@ -47,19 +38,8 @@ module Idv
 
     def create
       result = idv_form.submit(step_params)
-      # Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-      #   call(:verify_phone, :update, result.success?)
-      Rails.logger.info(
-        {
-          name: 'event_to_doc_auth_log_token',
-          source: 'proposed',
-          user_id: current_user.id,
-          issuer: current_sp&.issuer,
-          token: :verify_phone,
-          action: :update,
-          success: result.success?,
-        }.to_json,
-      )
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+        call(:verify_phone, :update, result.success?)
 
       analytics.idv_phone_confirmation_form_submitted(**result.to_h)
       irs_attempts_api_tracker.idv_phone_submitted(
@@ -74,6 +54,14 @@ module Idv
     end
 
     private
+
+    def confirm_verify_info_complete
+      return unless IdentityConfig.store.in_person_verify_info_controller_enabled
+      return unless user_fully_authenticated?
+      return if idv_session.resolution_successful
+
+      redirect_to idv_in_person_verify_info_url
+    end
 
     def throttle
       @throttle ||= Throttle.new(user: current_user, throttle_type: :proof_address)

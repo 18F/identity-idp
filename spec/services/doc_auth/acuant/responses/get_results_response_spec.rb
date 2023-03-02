@@ -56,6 +56,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
             'IssuerName' => 'North Dakota',
           },
         },
+        address_line2_present: true,
       }
 
       processed_alerts = response_hash[:processed_alerts]
@@ -80,6 +81,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         middle_name: nil,
         last_name: 'DOE',
         address1: '1000 E AVENUE E',
+        address2: 'APT E',
         city: 'BISMARCK',
         state: 'ND',
         zipcode: '58501',
@@ -100,6 +102,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         body: {
           Result: 5,
           Alerts: alerts,
+          Fields: [],
         }.to_json,
       )
     end
@@ -269,6 +272,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
               { Result: 1, Key: 'Birth Date Valid' },
               { Result: 2, Key: 'Document Classification' },
             ],
+            Fields: [],
           }.to_json,
         )
       end
@@ -315,7 +319,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
     let(:http_response) do
       instance_double(
         Faraday::Response,
-        body: { Result: result, Alerts: alerts }.to_json,
+        body: { Result: result, Alerts: alerts, Fields: [] }.to_json,
       )
     end
 

@@ -6,7 +6,7 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
 
   let(:user_email) { 'user@example.com' }
   let(:reauthn) {}
-  let(:presenter) { presenter_with(reauthn: reauthn, user_email: user_email) }
+  let(:presenter) { presenter_with(reauthn: reauthn) }
 
   let(:allow_user_to_switch_method) { false }
   let(:phishing_resistant_required) { true }

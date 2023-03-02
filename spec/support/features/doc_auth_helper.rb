@@ -4,7 +4,9 @@ module DocAuthHelper
   include DocumentCaptureStepHelper
 
   GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+  GOOD_SSN_MASKED = '9**-**-***4'
   SSN_THAT_FAILS_RESOLUTION = '123-45-6666'
+  SSN_THAT_RAISES_EXCEPTION = '000-00-0000'
 
   def session_from_completed_flow_steps(finished_step)
     session = { doc_auth: {} }
@@ -20,7 +22,7 @@ module DocAuthHelper
   end
 
   def fill_out_ssn_form_with_ssn_that_raises_exception
-    fill_in t('idv.form.ssn_label_html'), with: '000-00-0000'
+    fill_in t('idv.form.ssn_label_html'), with: SSN_THAT_RAISES_EXCEPTION
   end
 
   def fill_out_ssn_form_ok
@@ -166,12 +168,18 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def complete_doc_auth_steps_before_send_link_step
     complete_doc_auth_steps_before_upload_step
-    click_on t('doc_auth.buttons.use_phone')
+    if IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
+      click_on t('forms.buttons.send_link')
+    else
+      click_on t('doc_auth.buttons.use_phone')
+    end
   end
 
   def complete_doc_auth_steps_before_link_sent_step
     complete_doc_auth_steps_before_send_link_step
-    fill_out_doc_auth_phone_form_ok
+    if !IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
+      fill_out_doc_auth_phone_form_ok
+    end
     click_idv_continue
   end
 

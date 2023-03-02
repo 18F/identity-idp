@@ -7,6 +7,20 @@ feature 'doc auth verify_info step', :js do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
+  # values from Idp::Constants::MOCK_IDV_APPLICANT
+  let(:fake_pii_details) do
+    {
+      document_state: 'MT',
+      document_number: '1111111111111',
+      document_issued: '2019-12-31',
+      document_expiration: '2099-12-31',
+      first_name: 'FAKEY',
+      last_name: 'MCFAKERSON',
+      date_of_birth: '1938-10-06',
+      address: '1 FAKE RD',
+    }
+  end
+
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
@@ -29,10 +43,10 @@ feature 'doc auth verify_info step', :js do
     expect(page).to have_content(t('step_indicator.flows.idv.verify_info'))
 
     # SSN is masked until revealed
-    expect(page).to have_text('9**-**-***4')
+    expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
     expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
     check t('forms.ssn.show')
-    expect(page).not_to have_text('9**-**-***4')
+    expect(page).not_to have_text(DocAuthHelper::GOOD_SSN_MASKED)
     expect(page).to have_text(DocAuthHelper::GOOD_SSN)
   end
 
@@ -62,15 +76,8 @@ feature 'doc auth verify_info step', :js do
     expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
       success: true,
       failure_reason: nil,
-      document_state: 'MT',
-      document_number: '1111111111111',
-      document_issued: '2019-12-31',
-      document_expiration: '2099-12-31',
-      first_name: 'FAKEY',
-      last_name: 'MCFAKERSON',
-      date_of_birth: '1938-10-06',
-      address: '1 FAKE RD',
-      ssn: '900-66-1234',
+      **fake_pii_details,
+      ssn: DocAuthHelper::GOOD_SSN,
     )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_verify_step
@@ -92,15 +99,8 @@ feature 'doc auth verify_info step', :js do
     expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
       success: false,
       failure_reason: { ssn: ['Unverified SSN.'] },
-      document_state: 'MT',
-      document_number: '1111111111111',
-      document_issued: '2019-12-31',
-      document_expiration: '2099-12-31',
-      first_name: 'FAKEY',
-      last_name: 'MCFAKERSON',
-      date_of_birth: '1938-10-06',
-      address: '1 FAKE RD',
-      ssn: '123-45-6666',
+      **fake_pii_details,
+      ssn: DocAuthHelper::SSN_THAT_FAILS_RESOLUTION,
     )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
@@ -118,15 +118,8 @@ feature 'doc auth verify_info step', :js do
     expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
       success: false,
       failure_reason: nil,
-      document_state: 'MT',
-      document_number: '1111111111111',
-      document_issued: '2019-12-31',
-      document_expiration: '2099-12-31',
-      first_name: 'FAKEY',
-      last_name: 'MCFAKERSON',
-      date_of_birth: '1938-10-06',
-      address: '1 FAKE RD',
-      ssn: '000-00-0000',
+      **fake_pii_details,
+      ssn: DocAuthHelper::SSN_THAT_RAISES_EXCEPTION,
     )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
@@ -154,7 +147,9 @@ feature 'doc auth verify_info step', :js do
       allow(IdentityConfig.store).to receive(:idv_max_attempts).
         and_return(max_resolution_attempts)
 
-      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited)
+      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
+        with({ throttle_context: 'single-session' })
+
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_ssn_step
       fill_out_ssn_form_with_ssn_that_fails_resolution
@@ -204,6 +199,9 @@ feature 'doc auth verify_info step', :js do
       allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts).
         and_return(max_ssn_attempts)
 
+      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
+        with({ throttle_context: 'multi-session' })
+
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_ssn_step
       fill_out_ssn_form_with_ssn_that_fails_resolution
@@ -235,82 +233,89 @@ feature 'doc auth verify_info step', :js do
     end
   end
 
-  context 'when the user lives in an AAMVA supported state' do
-    it 'performs a resolution and state ID check' do
-      allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
-        [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]],
-      )
-      user = create(:user, :signed_up)
-      expect_any_instance_of(Idv::Agent).
-        to receive(:proof_resolution).
-        with(
-          anything,
-          should_proof_state_id: true,
-          trace_id: anything,
-          threatmetrix_session_id: anything,
-          user_id: user.id,
-          request_ip: kind_of(String),
-        ).
-        and_call_original
-
-      sign_in_and_2fa_user(user)
-      complete_doc_auth_steps_before_verify_step
-      click_idv_continue
-
-      expect(DocAuthLog.find_by(user_id: user.id).aamva).not_to be_nil
+  context 'AAMVA' do
+    let(:mock_state_id_jurisdiction) do
+      [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]]
     end
-  end
-
-  context 'when the user does not live in an AAMVA supported state' do
-    it 'does not perform the state ID check' do
-      allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
-        IdentityConfig.store.aamva_supported_jurisdictions -
-          [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]],
-      )
-      user = create(:user, :signed_up)
-      expect_any_instance_of(Idv::Agent).
-        to receive(:proof_resolution).
-        with(
-          anything,
-          should_proof_state_id: false,
-          trace_id: anything,
-          threatmetrix_session_id: anything,
-          user_id: user.id,
-          request_ip: kind_of(String),
-        ).
-        and_call_original
-
-      sign_in_and_2fa_user(user)
-      complete_doc_auth_steps_before_verify_step
-      click_idv_continue
-
-      expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil
+    let(:proof_resolution_args) do
+      {
+        trace_id: anything,
+        threatmetrix_session_id: anything,
+        request_ip: kind_of(String),
+      }
     end
-  end
 
-  context 'when the SP is in the AAMVA banlist' do
-    it 'does not perform the state ID check' do
-      allow(IdentityConfig.store).to receive(:aamva_sp_banlist_issuers).
-        and_return('["urn:gov:gsa:openidconnect:sp:server"]')
-      user = create(:user, :signed_up)
-      expect_any_instance_of(Idv::Agent).
-        to receive(:proof_resolution).
-        with(
-          anything,
-          should_proof_state_id: false,
-          trace_id: anything,
-          threatmetrix_session_id: anything,
-          user_id: user.id,
-          request_ip: kind_of(String),
-        ).
-        and_call_original
+    context 'when the user lives in an AAMVA supported state' do
+      it 'performs a resolution and state ID check' do
+        allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
+          mock_state_id_jurisdiction,
+        )
+        user = create(:user, :signed_up)
+        expect_any_instance_of(Idv::Agent).
+          to receive(:proof_resolution).
+          with(
+            anything,
+            should_proof_state_id: true,
+            user_id: user.id,
+            **proof_resolution_args,
+          ).
+          and_call_original
 
-      visit_idp_from_sp_with_ial1(:oidc)
-      sign_in_and_2fa_user(user)
-      complete_doc_auth_steps_before_verify_step
-      click_idv_continue
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_verify_step
+        click_idv_continue
 
-      expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil
+        expect(DocAuthLog.find_by(user_id: user.id).aamva).not_to be_nil
+      end
+    end
+
+    context 'when the user does not live in an AAMVA supported state' do
+      it 'does not perform the state ID check' do
+        allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
+          IdentityConfig.store.aamva_supported_jurisdictions -
+            mock_state_id_jurisdiction,
+        )
+        user = create(:user, :signed_up)
+        expect_any_instance_of(Idv::Agent).
+          to receive(:proof_resolution).
+          with(
+            anything,
+            should_proof_state_id: false,
+            user_id: user.id,
+            **proof_resolution_args,
+          ).
+          and_call_original
+
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_verify_step
+        click_idv_continue
+
+        expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil
+      end
+    end
+
+    context 'when the SP is in the AAMVA banlist' do
+      it 'does not perform the state ID check' do
+        allow(IdentityConfig.store).to receive(:aamva_sp_banlist_issuers).
+          and_return('["urn:gov:gsa:openidconnect:sp:server"]')
+        user = create(:user, :signed_up)
+        expect_any_instance_of(Idv::Agent).
+          to receive(:proof_resolution).
+          with(
+            anything,
+            should_proof_state_id: false,
+            user_id: user.id,
+            **proof_resolution_args,
+          ).
+          and_call_original
+
+        visit_idp_from_sp_with_ial1(:oidc)
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_verify_step
+        click_idv_continue
+
+        expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil
+      end
     end
   end
 
@@ -335,15 +340,8 @@ feature 'doc auth verify_info step', :js do
       expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
         success: false,
         failure_reason: { idv_verification: [:timeout] },
-        document_state: 'MT',
-        document_number: '1111111111111',
-        document_issued: '2019-12-31',
-        document_expiration: '2099-12-31',
-        first_name: 'FAKEY',
-        last_name: 'MCFAKERSON',
-        date_of_birth: '1938-10-06',
-        address: '1 FAKE RD',
-        ssn: '900-66-1234',
+        **fake_pii_details,
+        ssn: DocAuthHelper::GOOD_SSN,
       )
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
@@ -379,7 +377,6 @@ feature 'doc auth verify_info step', :js do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_ssn_controller_enabled).
         and_return(true)
-      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
     end
