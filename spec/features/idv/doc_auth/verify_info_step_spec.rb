@@ -61,7 +61,7 @@ feature 'doc auth verify_info step', :js do
   end
 
   it 'allows the user to enter in a new ssn and displays updated info' do
-    click_button t('idv.buttons.change_ssn_label')
+    click_link t('idv.buttons.change_ssn_label')
     expect(page).to have_current_path(idv_ssn_path)
     fill_in t('idv.form.ssn_label_html'), with: '900456789'
     click_button t('forms.buttons.submit.update')
