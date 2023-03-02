@@ -420,7 +420,6 @@ RSpec.describe 'In Person Proofing', js: true do
         and_return(true)
     end
 
-    # TODO: make below less repetitive
     it 'captures the address, address line 2, city, state and zip code' do
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
