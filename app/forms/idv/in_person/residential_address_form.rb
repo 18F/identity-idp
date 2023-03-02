@@ -2,9 +2,10 @@ module Idv
   module InPerson
     class ResidentialAddressForm
       include ActiveModel::Model
-      include Idv::FormAddressValidator
+      include Idv::InPerson::ResidentialAddressValidator
 
-      ATTRIBUTES = %i[state zipcode city address1 address2].freeze
+      ATTRIBUTES = %i[residential_state residential_zipcode residential_city residential_address1
+                      residential_address2].freeze
 
       attr_accessor(*ATTRIBUTES)
 

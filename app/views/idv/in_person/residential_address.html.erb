@@ -8,29 +8,29 @@
     ) do |f| %>
   <%= render ValidatedFieldComponent.new(
         form: f,
-        input_html: { value: pii[:address1] },
+        input_html: { value: pii[:residential_address1] },
         label: t('in_person_proofing.form.residential_address.address1'),
         label_html: { class: 'usa-label' },
         maxlength: 255,
-        name: :address1,
+        name: :residential_address1,
         required: true,
       ) %>
   <%= render ValidatedFieldComponent.new(
         form: f,
-        input_html: { value: pii[:address2] },
+        input_html: { value: pii[:residential_address2] },
         label: t('in_person_proofing.form.residential_address.address2'),
         label_html: { class: 'usa-label' },
         maxlength: 255,
-        name: :address2,
+        name: :residential_address2,
         required: false,
       ) %>
   <%= render ValidatedFieldComponent.new(
         form: f,
-        input_html: { value: pii[:city] },
+        input_html: { value: pii[:residential_city] },
         label: t('in_person_proofing.form.residential_address.city'),
         label_html: { class: 'usa-label' },
         maxlength: 255,
-        name: :city,
+        name: :residential_city,
         required: true,
       ) %>
   <%= render ValidatedFieldComponent.new(
@@ -38,10 +38,10 @@
         form: f,
         label: t('in_person_proofing.form.residential_address.state'),
         label_html: { class: 'usa-label' },
-        name: :state,
+        name: :residential_state,
         prompt: t('in_person_proofing.form.residential_address.state_prompt'),
         required: true,
-        selected: pii[:state],
+        selected: pii[:residential_state],
       ) %>
 
 <div class="tablet:grid-col-6">
@@ -50,10 +50,10 @@
       as: :tel,
       error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.zipcode') },
       form: f,
-      input_html: { value: pii[:zipcode], class: 'zipcode' },
+      input_html: { value: pii[:residential_zipcode], class: 'residential_zipcode' },
       label: t('idv.form.zipcode'),
       label_html: { class: 'usa-label' },
-      name: :zipcode,
+      name: :residential_zipcode,
       pattern: '\d{5}([\-]\d{4})?',
       required: true,
     ) %>
@@ -63,3 +63,5 @@
     <%= t('forms.buttons.continue') %>
   <% end %>
 <% end %>
+
+<%= render 'idv/doc_auth/cancel', step: 'residential_address' %>
