@@ -23,11 +23,10 @@
     <%= t('mfa.second_method_warning.text') %>
   <% end %>
 <% end %>
-<p>
-  <%= simple_form_for(:idv_form, url: sign_up_completed_path) do |f| %>
-    <%= f.submit t('sign_up.agree_and_continue') %>
-  <% end %>
-</p>
+
+<%= simple_form_for(:idv_form, url: sign_up_completed_path, html: { class: 'margin-y-5' }) do |f| %>
+  <%= f.submit t('sign_up.agree_and_continue') %>
+<% end %>
 
 <%= render PageFooterComponent.new do %>
   <%= link_to t('links.cancel'), return_to_sp_cancel_path %>
