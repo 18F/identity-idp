@@ -2,9 +2,6 @@ module Idv
   class StateIdForm
     include ActiveModel::Model
     include FormStateIdValidator
-    include Idv::InPerson::FormTransliterableValidator
-
-    transliterate :first_name, :last_name
 
     ATTRIBUTES = %i[first_name last_name dob state_id_jurisdiction state_id_number].freeze
 

@@ -21,12 +21,22 @@ module Idv
         def extra_view_variables
           {
             form:,
-            pii: flow_session[:pii_from_user],
-            updating_address: flow_session[:pii_from_user].has_key?(:address1),
+            pii:,
+            updating_address:,
           }
         end
 
         private
+
+        def updating_address
+          flow_session[:pii_from_user].has_key?(:address1)
+        end
+
+        def pii
+          data = flow_session[:pii_from_user]
+          data = data.merge(flow_params) if params.has_key?(:in_person_address)
+          data.deep_symbolize_keys
+        end
 
         def flow_params
           params.require(:in_person_address).permit(

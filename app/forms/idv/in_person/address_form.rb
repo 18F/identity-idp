@@ -3,9 +3,6 @@ module Idv
     class AddressForm
       include ActiveModel::Model
       include Idv::InPerson::FormAddressValidator
-      include Idv::InPerson::FormTransliterableValidator
-
-      transliterate :city, :address1, :address2
 
       ATTRIBUTES = %i[state zipcode city address1 address2 same_address_as_id].freeze
 
