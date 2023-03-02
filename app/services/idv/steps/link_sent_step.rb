@@ -22,6 +22,10 @@ module Idv
         handle_document_verification_success(document_capture_session_result)
       end
 
+      def extra_view_variables
+        { phone: idv_session[:phone_for_mobile_flow] }
+      end
+
       private
 
       def exit_flow_state_machine

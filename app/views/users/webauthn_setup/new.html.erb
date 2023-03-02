@@ -52,13 +52,12 @@
           checked: @presenter.remember_device_box_checked?,
         },
       ) %>
-  <%= submit_tag t('forms.buttons.submit.default'), id: 'submit-button', class: 'display-none' %>
+  <%= submit_tag(
+        @presenter.button_text,
+        id: 'continue-button',
+        class: 'display-block usa-button usa-button--big usa-button--wide margin-y-5',
+      ) %>
 <% end %>
-<%= button_tag(
-      @presenter.button_text,
-      class: 'display-block usa-button usa-button--big usa-button--wide margin-y-5',
-      id: 'continue-button',
-    ) %>
 
 <div class="spinner display-none margin-y-4" id='spinner'>
   <div class='text-center'>

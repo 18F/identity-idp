@@ -63,6 +63,6 @@ describe('InPersonLocationStep', () => {
 
     await userEvent.click(button);
 
-    await findByText('{"selected_location":"Baltimore"}');
+    await findByText('{"selected_location":"Baltimore","in_person_cta_variant":""}');
   });
 });
