@@ -21,6 +21,7 @@ class IdvController < ApplicationController
       )
       redirect_to idv_session_errors_failure_url
     else
+      clear_session if enrollment_status == 'expired'
       verify_identity
     end
   end
@@ -49,7 +50,6 @@ class IdvController < ApplicationController
   end
 
   def verify_identity
-    clear_session if enrollment_status == 'expired'
     analytics.idv_intro_visit
     return redirect_to idv_inherited_proofing_url if inherited_proofing?
     redirect_to idv_doc_auth_url

@@ -27,6 +27,35 @@ describe IdvController do
       get :index
     end
 
+    context 'user has expired enrollment' do
+      let(:user) { build(:user) }
+      let(:idv_session) do
+        Idv::Session.new(
+          user_session: subject.user_session,
+          current_user: user,
+          service_provider: nil,
+        )
+      end
+      let(:flow_session) { { x: {} } }
+
+      before do
+        stub_sign_in(user)
+        allow(subject).to receive(:idv_session).and_return(idv_session)
+        expired_enrollment = create(:in_person_enrollment, :expired, user: user)
+        controller.user_session['idv/doc_auth'] = flow_session
+        controller.user_session['idv/in_person'] = flow_session
+        controller.user_session['idv/inherited_proofing'] = flow_session
+      end
+
+      it 'clears session if enrollment status is expired' do
+        get :index
+
+        expect(controller.user_session['idv/doc_auth']).to be_blank
+        expect(controller.user_session['idv/in_person']).to be_blank
+        expect(controller.user_session['idv/inherited_proofing']).to be_blank
+      end
+    end
+
     context 'if number of attempts has been exceeded' do
       before do
         user = create(:user)
