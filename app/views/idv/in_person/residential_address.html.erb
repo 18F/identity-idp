@@ -47,16 +47,16 @@
 <div class="tablet:grid-col-6">
   <%# using :tel for mobile numeric keypad %>
   <%= render ValidatedFieldComponent.new(
-      as: :tel,
-      error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.zipcode') },
-      form: f,
-      input_html: { value: pii[:residential_zipcode], class: 'residential_zipcode' },
-      label: t('idv.form.zipcode'),
-      label_html: { class: 'usa-label' },
-      name: :residential_zipcode,
-      pattern: '\d{5}([\-]\d{4})?',
-      required: true,
-    ) %>
+        as: :tel,
+        error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.zipcode') },
+        form: f,
+        input_html: { value: pii[:residential_zipcode], class: 'residential_zipcode' },
+        label: t('idv.form.zipcode'),
+        label_html: { class: 'usa-label' },
+        name: :residential_zipcode,
+        pattern: '\d{5}([\-]\d{4})?',
+        required: true,
+      ) %>
 </div>
 
   <%= f.submit class: 'margin-top-1' do %>

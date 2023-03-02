@@ -98,16 +98,13 @@ en:
         address1: Address
         address2: Address line 2 (optional)
         city: City
+        continue: Continue
         state: State
         state_prompt: '- Select -'
         zip: ZIP Code
-        continue: Continue
       state_id:
         address1: Address
         address2: Address line 2 (optional)
-        id_address_current_heading: Is your current residential address listed on your state-issued ID?
-        id_address_current_no: No, my current residential address is not listed on my state-issued ID
-        id_address_current_yes: Yes, my current residential address is listed on my state-issued ID
         city: City
         date_hint:
           day: 'Example: 28'
@@ -116,6 +113,9 @@ en:
         dob: Date of birth
         dob_hint: 'Example: 4 28 1986'
         first_name: First name
+        id_address_current_heading: Is your current residential address listed on your state-issued ID?
+        id_address_current_no: No, my current residential address is not listed on my state-issued ID
+        id_address_current_yes: Yes, my current residential address is listed on my state-issued ID
         last_name: Last name
         memorable_date:
           errors:
@@ -138,11 +138,11 @@ en:
       po_search:
         location: Find a participating Post Office
       prepare: Verify your identity in person
+      residential_address: Enter your current residential address
       state_id: Enter the information on your ID
       switch_back: Switch back to your computer to prepare to verify your identity in person
       update_address: Update your current address
       update_state_id: Update the information on your ID
-      residential_address: Enter your current residential address
     process:
       barcode:
         caption_label: Enrollment code
