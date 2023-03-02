@@ -23,6 +23,7 @@ module DocAuth
           'Fields_MiddleName' => :middle_name,
           'Fields_Surname' => :last_name,
           'Fields_AddressLine1' => :address1,
+          'Fields_AddressLine2' => :address2,
           'Fields_City' => :city,
           'Fields_State' => :state,
           'Fields_PostalCode' => :zipcode,
@@ -144,6 +145,7 @@ module DocAuth
             log_alert_results: log_alert_formatter.log_alerts(alerts),
             portrait_match_results: true_id_product[:PORTRAIT_MATCH_RESULT],
             image_metrics: parse_image_metrics,
+            address_line2_present: !pii_from_doc[:address2].blank?,
           }
         end
 
