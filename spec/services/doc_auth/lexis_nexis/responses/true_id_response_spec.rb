@@ -241,7 +241,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         product_status: 'pass',
         doc_auth_result: 'Failed',
         processed_alerts: a_hash_including(:passed, :failed),
-        address_line2_present: true,
+        address_line2_present: false,
         alert_failure_count: a_kind_of(Numeric),
         portrait_match_results: {
           'FaceMatchResult' => 'Fail',
