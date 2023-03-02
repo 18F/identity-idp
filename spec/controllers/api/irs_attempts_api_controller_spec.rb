@@ -14,8 +14,9 @@ RSpec.describe Api::IrsAttemptsApiController do
   end
   let(:time) { Time.new(2022, 1, 1, 0, 0, 0, 'Z') }
 
-  let(:auth_token) { IdentityConfig.store.irs_attempt_api_auth_tokens.first }
-
+  let(:auth_token) do
+    IdentityConfig.store.irs_attempt_api_auth_tokens.first
+  end
   let(:existing_events) do
     3.times.map do
       event = IrsAttemptsApi::AttemptEvent.new(
