@@ -82,7 +82,7 @@ locals:
       </div>
       <div>
         <dt class="display-inline"> <%= t('idv.form.address2') %>: </dt>
-        <dd class="display-inline margin-left-0"> <%= @pii[:address2] if @pii[:address2].present? %> </dd>
+        <dd class="display-inline margin-left-0"> <%= @pii[:address2].presence %> </dd>
       </div>
       <div>
         <dt class="display-inline"> <%= t('idv.form.city') %>: </dt>
