@@ -41,13 +41,13 @@ describe IdvController do
       before do
         stub_sign_in(user)
         allow(subject).to receive(:idv_session).and_return(idv_session)
-        expired_enrollment = create(:in_person_enrollment, :expired, user: user)
         controller.user_session['idv/doc_auth'] = flow_session
         controller.user_session['idv/in_person'] = flow_session
         controller.user_session['idv/inherited_proofing'] = flow_session
       end
 
       it 'clears session if enrollment status is expired' do
+        create(:in_person_enrollment, :expired, user: user)
         get :index
 
         expect(controller.user_session['idv/doc_auth']).to be_blank
