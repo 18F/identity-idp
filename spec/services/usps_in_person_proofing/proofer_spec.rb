@@ -161,6 +161,16 @@ RSpec.describe UspsInPersonProofing::Proofer do
         check_facility(facilities[0])
       end
 
+      it 'returns facilities sorted by ascending distance' do
+        stub_request_facilities_with_unordered_distance
+        facilities = subject.request_facilities(location)
+
+        expect(facilities.count).to be > 1
+        facilities.each_cons(2) do |facility_a, facility_b|
+          expect(facility_a.distance).to be <= facility_b.distance
+        end
+      end
+
       it 'does not return duplicates' do
         stub_request_facilities_with_duplicates
         facilities = subject.request_facilities(location)

@@ -328,13 +328,12 @@ RSpec.describe Telephony::OtpSender do
         end
       end
 
-      # The Spanish-language translation currently includes the 'ó', character, which is not
-      # in the GSM 03.38 character set
       context 'Spanish' do
-        it 'is sent in three parts' do
+        it 'does not contain any non-GSM characters and is less than or equal to 160 characters' do
           I18n.locale = :es
 
-          expect(Telephony.sms_parts(message)).to eq 3
+          expect(Telephony.sms_parts(message)).to eq 1
+          expect(Telephony.gsm_chars_only?(message)).to eq true
         ensure
           I18n.locale = :en
         end
@@ -406,13 +405,12 @@ RSpec.describe Telephony::OtpSender do
         end
       end
 
-      # The Spanish-language translation currently includes the 'ó', character, which is not
-      # in the GSM 03.38 character set
       context 'Spanish' do
-        it 'is sent in three parts' do
+        it 'does not contain any non-GSM characters and is sent in one part' do
           I18n.locale = :es
 
-          expect(Telephony.sms_parts(message)).to eq 3
+          expect(Telephony.sms_parts(message)).to eq 1
+          expect(Telephony.gsm_chars_only?(message)).to eq true
         ensure
           I18n.locale = :en
         end

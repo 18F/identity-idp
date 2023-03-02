@@ -237,6 +237,7 @@ fr:
         vérifier votre identité par rapport aux registres publics.
       welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
         quelqu’un qui se fait passer pour vous.'
+      you_entered: 'Tu as soumis:'
     instructions:
       bullet1: Carte d’identité délivrée par l’État
       bullet2: Numéro de sécurité sociale
