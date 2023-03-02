@@ -1,0 +1,19 @@
+<%= render(AlertIconComponent.new) %>
+
+
+<%= render(
+    'shared/troubleshooting_options',
+    heading: t('components.troubleshooting_options.default_heading'),
+    options: [
+        {
+            url: help_center_redirect_url(
+                category: 'verify-your-identity',
+                article: 'verify-your-address-by-mail',
+                flow: :idv,
+                step: :gpo_send_letter,
+            ),
+            text: t('idv.troubleshooting.options.learn_more_verify_by_mail'),
+            new_tab: true,
+        },
+    ],
+) %>
