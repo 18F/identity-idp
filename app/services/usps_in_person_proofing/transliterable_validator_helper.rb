@@ -1,5 +1,5 @@
 module UspsInPersonProofing
-  class EnrollmentValidator
+  class TransliterableValidatorHelper
     SUPPORTED_FIELDS = [
       :first_name,
       :last_name,
@@ -55,21 +55,21 @@ module UspsInPersonProofing
 
     private
 
-    ADDITIONAL_UNSUPPORTED_CHARS = ActiveSupport::HashWithIndifferentAccess.new(
+    ADDITIONAL_UNSUPPORTED_CHARS = {
       first_name: /[^A-Za-z\-' ]/,
       last_name: /[^A-Za-z\-' ]/,
       address1: /[^A-Za-z0-9\-' .\/#]/,
       address2: /[^A-Za-z0-9\-' .\/#]/,
       city: /[^A-Za-z\-' ]/,
-    ).freeze
+    }.freeze
 
-    UNSUPPORTED_CHARS_TRANSLATION = ActiveSupport::HashWithIndifferentAccess.new(
+    UNSUPPORTED_CHARS_TRANSLATION = {
       first_name: :translate_name_chars_error,
       last_name: :translate_name_chars_error,
       address1: :translate_address_chars_error,
       address2: :translate_address_chars_error,
       city: :translate_address_chars_error,
-    ).freeze
+    }.freeze
 
     def translate_name_chars_error(chars)
       I18n.t(

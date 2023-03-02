@@ -12,6 +12,7 @@ module UspsInPersonProofing
     end
 
     def validate(record)
+      return unless IdentityConfig.store.usps_ipp_transliteration_enabled
       validator.validate(
         @fields.index_with do |field|
           (record.send(field) if record.respond_to?(field))
@@ -23,10 +24,10 @@ module UspsInPersonProofing
 
     private
 
-    SUPPORTED_FIELDS = UspsInPersonProofing::EnrollmentValidator::SUPPORTED_FIELDS
+    SUPPORTED_FIELDS = UspsInPersonProofing::TransliterableValidatorHelper::SUPPORTED_FIELDS
 
     def validator
-      @validator ||= UspsInPersonProofing::EnrollmentValidator.new
+      @validator ||= UspsInPersonProofing::TransliterableValidatorHelper.new
     end
   end
 end

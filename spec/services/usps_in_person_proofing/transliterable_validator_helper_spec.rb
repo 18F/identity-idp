@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe UspsInPersonProofing::EnrollmentValidator do
+RSpec.describe UspsInPersonProofing::TransliterableValidatorHelper do
   let(:transliterator) { UspsInPersonProofing::Transliterator.new }
-  let(:sut) { UspsInPersonProofing::EnrollmentValidator.new(transliterator) }
+  let(:sut) { UspsInPersonProofing::TransliterableValidatorHelper.new(transliterator) }
 
   describe '#validate' do
     context 'baseline functionality' do
