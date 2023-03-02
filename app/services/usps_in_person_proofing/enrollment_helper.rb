@@ -50,10 +50,10 @@ module UspsInPersonProofing
         applicant = UspsInPersonProofing::Applicant.new(
           {
             unique_id: unique_id,
-            first_name: pii['first_name'],
-            last_name: pii['last_name'],
-            address: address,
-            city: pii['city'],
+            first_name: transliterate(pii['first_name']),
+            last_name: transliterate(pii['last_name']),
+            address: transliterate(address),
+            city: transliterate(pii['city']),
             state: pii['state'],
             zip_code: pii['zipcode'],
             email: 'no-reply@login.gov',
@@ -97,6 +97,21 @@ module UspsInPersonProofing
 
       def analytics(user: AnonymousUser.new)
         Analytics.new(user: user, request: nil, session: {}, sp: nil)
+      end
+
+      def transliterate(value)
+        return value unless IdentityConfig.store.usps_ipp_transliteration_enabled
+
+        result = transliterator.transliterate(value)
+        if result.unsupported_chars.size > 0
+          result.original
+        else
+          result.transliterated
+        end
+      end
+
+      def transliterator
+        @transliterator ||= Transliterator.new
       end
     end
   end
