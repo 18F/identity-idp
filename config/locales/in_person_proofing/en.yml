@@ -140,6 +140,7 @@ en:
       prepare: Verify your identity in person
       residential_address: Enter your current residential address
       state_id: Enter the information on your ID
+      state_id_milestone_2: Enter the information on your state-issued ID
       switch_back: Switch back to your computer to prepare to verify your identity in person
       update_address: Update your current address
       update_state_id: Update the information on your ID

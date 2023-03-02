@@ -3,7 +3,11 @@
 <% if updating_state_id %>
   <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.update_state_id')) %>
 <% else %>
-  <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.state_id')) %>
+  <% if IdentityConfig.store.in_person_capture_secondary_id_enabled %>
+    <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.state_id_milestone_2')) %>
+  <% else %>
+    <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.state_id')) %>
+  <% end %>
 <% end %>
 
 <p>
@@ -159,7 +163,6 @@
             required: true,
           ) %>
     </div>
-    <div>
       <%= render ValidatedFieldComponent.new(
             as: :radio_buttons,
             checked: pii[:id_address_current],
@@ -173,7 +176,6 @@
             required: true,
             wrapper: :uswds_radio_buttons,
           ) %>
-    </div>
   <% end %>
 
   <%= f.submit do %>
