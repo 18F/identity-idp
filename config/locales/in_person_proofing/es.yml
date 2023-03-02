@@ -109,12 +109,6 @@ es:
       state_id:
         address: Dirección
         address2: Línea de dirección 2 (opcional)
-        capture_secondary_id_heading: ¿Tu domicilio actual aparece en tu identificación
-          emitida por el estado?
-        capture_secondary_id_no: No, mi domicilio actual no aparece en mi identificación
-          emitida por el estado.
-        capture_secondary_id_yes: Sí, mi domicilio actual aparece en mi identificación
-          emitida por el estado
         city:
         date_hint:
           day: 'Ejemplo: 28'
@@ -123,6 +117,12 @@ es:
         dob: Fecha de nacimiento
         dob_hint: 'Ejemplo: 4 28 1986'
         first_name: Nombre
+        id_address_current_heading: ¿Tu domicilio actual aparece en tu identificación
+          emitida por el estado?
+        id_address_current_no: No, mi domicilio actual no aparece en mi identificación
+          emitida por el estado.
+        id_address_current_yes: Sí, mi domicilio actual aparece en mi identificación
+          emitida por el estado
         last_name: Apellido
         memorable_date:
           errors:
