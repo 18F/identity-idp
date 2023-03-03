@@ -3,6 +3,7 @@ class FraudRejectionDailyJob < ApplicationJob
 
   def perform
     fraud_review_pending_profiles.find_each do |profile|
+      analytics.automatic_fraud_rejection(verified_at: profile.verified_at)
       profile.reject_for_fraud
     end
   end
