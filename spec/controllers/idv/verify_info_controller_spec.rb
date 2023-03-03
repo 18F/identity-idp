@@ -201,7 +201,7 @@ describe Idv::VerifyInfoController do
         document_capture_session
       end
 
-      let(:expected_failure_reason) { { tmx_summary_reason_code: ['Identity_Negative_History'] } }
+      let(:expected_failure_reason) { DocAuthHelper::SAMPLE_TMX_SUMMARY_REASON_CODE }
 
       before do
         controller.

@@ -4,6 +4,7 @@ RSpec.feature 'Users pending threatmetrix review', :js do
   include IdvStepHelper
   include OidcAuthHelper
   include IrsAttemptsApiTrackingHelper
+  include DocAuthHelper
 
   before do
     allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
@@ -89,30 +90,14 @@ RSpec.feature 'Users pending threatmetrix review', :js do
     end
   end
 
-  def complete_all_idv_steps_with(threatmetrix:)
-    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(300)
-    user = create(:user, :signed_up)
-    visit_idp_from_ial1_oidc_sp(
-      client_id: service_provider.issuer,
-      irs_attempts_api_session_id: 'test-session-id',
-    )
-    visit root_path
-    sign_in_and_2fa_user(user)
-    complete_doc_auth_steps_before_ssn_step
-    select threatmetrix, from: :mock_profiling_result
-    complete_ssn_step
-    click_idv_continue
-    complete_phone_step(user)
-    complete_review_step(user)
-    acknowledge_and_confirm_personal_key
-  end
-
   def expect_pending_failure_reason(threatmetrix:)
-    expected_failure_reason = { 'tmx_summary_reason_code' => ['Identity_Negative_History'] }
     complete_all_idv_steps_with(threatmetrix: threatmetrix)
     expect(page).to have_content(t('idv.failure.setup.heading'))
     expect(page).to have_current_path(idv_setup_errors_path)
-    expect_irs_event(expected_success: false, expected_failure_reason: expected_failure_reason)
+    expect_irs_event(
+      expected_success: false,
+      expected_failure_reason: DocAuthHelper::SAMPLE_TMX_SUMMARY_REASON_CODE,
+    )
   end
 
   def expect_irs_event(expected_success:, expected_failure_reason:)
@@ -125,7 +110,7 @@ RSpec.feature 'Users pending threatmetrix review', :js do
     success = idv_tmx_fraud_check_event.event_metadata[:success]
 
     expect(received_event_types).to include event_name
-    expect(failure_reason).to eq expected_failure_reason
+    expect(failure_reason).to eq expected_failure_reason.as_json
     expect(success).to eq expected_success
   end
 end
