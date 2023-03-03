@@ -15,7 +15,6 @@ gem 'barby', '~> 0.6.8'
 gem 'base32-crockford'
 gem 'bootsnap', '~> 1.0', require: false
 gem 'browser'
-gem 'browserslist_useragent'
 gem 'connection_pool'
 gem 'cssbundling-rails'
 gem 'devise', '~> 4.8'

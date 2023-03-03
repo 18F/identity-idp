@@ -30,7 +30,8 @@ RSpec.describe BrowserSupport do
 
     context 'with valid browser support config' do
       before do
-        allow(BrowserSupport).to receive(:browser_support_config).and_return(['chrome 109'])
+        allow(BrowserSupport).to receive(:browser_support_config).
+          and_return(['chrome 109', 'ios_saf 14.5-14.8', 'op_mini all'])
       end
 
       context 'with nil user agent' do
@@ -55,6 +56,43 @@ RSpec.describe BrowserSupport do
         end
 
         it { expect(supported).to eq(false) }
+      end
+
+      context 'with user agent for non-numeric version test' do
+        let(:user_agent) do
+          'Opera/9.80 (Android; Opera Mini/36.2.2254/119.132; U; id) Presto/2.12.423 Version/12.16)'
+        end
+
+        it { expect(supported).to eq(true) }
+      end
+
+      context 'with user agent for version range test' do
+        context 'below version range' do
+          let(:user_agent) do
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, ' \
+              'like Gecko) Version/11.2 Mobile/15E148 Safari/604.1'
+          end
+
+          it { expect(supported).to eq(false) }
+        end
+
+        context 'within version range' do
+          let(:user_agent) do
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, ' \
+              'like Gecko) Mobile/15E148 Version/14.6 Safari/605.1.15 AlohaBrowser/3.1.5'
+          end
+
+          it { expect(supported).to eq(true) }
+        end
+
+        context 'above version range' do
+          let(:user_agent) do
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 16_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML' \
+              ', like Gecko) Version/16.3 Mobile/15E148 Safari/604.1'
+          end
+
+          it { expect(supported).to eq(true) }
+        end
       end
     end
   end
