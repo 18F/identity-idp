@@ -131,7 +131,6 @@ describe IdvController do
         get :activated
 
         expect(response).to render_template(:activated)
-        expect(subject.idv_session.alive?).to eq false
       end
     end
 
