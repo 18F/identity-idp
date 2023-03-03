@@ -69,5 +69,14 @@ describe TwoFactorAuthentication::OtpExpiredController do
         expect(response).to_not render_template(:show)
       end
     end
+
+    context 'redirects' do
+      it 'sets next_path correctly' do
+        user = create(:user, :signed_up)
+        stub_sign_in_before_2fa(user)
+
+        get :show
+      end
+    end
   end
 end
