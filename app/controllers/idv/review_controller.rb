@@ -8,7 +8,7 @@ module Idv
 
     before_action :confirm_idv_applicant_created
     before_action :confirm_idv_steps_complete
-    before_action :confirm_idv_phone_confirmed
+    before_action :confirm_address_step_complete
     before_action :confirm_current_password, only: [:create]
 
     rescue_from UspsInPersonProofing::Exception::RequestEnrollException,
@@ -16,13 +16,6 @@ module Idv
 
     def confirm_idv_steps_complete
       return redirect_to(idv_verify_info_url) unless idv_profile_complete?
-      return redirect_to(idv_phone_url) unless idv_address_complete?
-    end
-
-    def confirm_idv_phone_confirmed
-      return unless idv_session.address_verification_mechanism == 'phone'
-      return if idv_session.phone_confirmed?
-      redirect_to idv_otp_verification_path
     end
 
     def confirm_current_password
