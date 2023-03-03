@@ -31,7 +31,7 @@ fr:
           Veuillez réessayer.
         title: to be implemented
       service_provider:
-        communication: la communication a échoué
+        communication: 'la communication a échoué'
     headings:
       lets_go: Comment fonctionne la vérification de votre identité
       retrieval: Nous récupérons vos informations depuis votre agence partenaire.

@@ -29,7 +29,7 @@ es:
           Inténtelo de nuevo.
         title: to be implemented
       service_provider:
-        communication: la comunicacion no tuvo exito
+        communication: 'la comunicacion no tuvo exito'
     headings:
       lets_go: Cómo funciona la verificación de su identidad
       retrieval: Estamos recuperando su información de su agencia colaboradora
@@ -66,11 +66,11 @@ es:
         postal.
     troubleshooting:
       headings:
-        missing_required_items: '¿No tienes número de teléfono? A continuación, te
-          indicamos cómo obtener ayuda'
+        missing_required_items: ¿No tienes número de teléfono? A continuación, te
+          indicamos cómo obtener ayuda
         need_assistance: to be implemented
-        need_help_updating: '¿Necesita actualizar su información? A continuación le
-          indicamos cómo obtener ayuda'
+        need_help_updating: ¿Necesita actualizar su información? A continuación le
+          indicamos cómo obtener ayuda
       options:
         get_help: Obtenga ayuda en %{sp_name}
         learn_more_phone_or_mail: Más información sobre la verificación por teléfono o correo postal.

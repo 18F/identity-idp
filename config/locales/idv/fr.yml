@@ -14,6 +14,7 @@ fr:
       mail:
         resend: Envoyer une autre lettre
         send: Envoyer une lettre
+      send_confirmation_code: Continuer
     cancel:
       actions:
         account_page: Accéder à la page de votre compte
@@ -146,17 +147,17 @@ fr:
         information vérifiée, veuillez %{link}.
       activated_link: communiquer avec nous
       clear_and_start_over: Supprimer mes données et recommencer
-      come_back_later_html: '<p>Les lettres prennent généralement <strong>trois à sept
+      come_back_later_html: <p>Les lettres prennent généralement <strong>trois à sept
         jours ouvrables</strong> pour arriver par le biais du courriel de
         première classe de l’USPS.</p><p>Une fois votre lettre arrivée,
         connectez-vous à %{app_name} et entrez votre code à usage unique lorsque
-        vous y êtes invité.</p>'
+        vous y êtes invité.</p>
       come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte
         %{app_name}</strong> pour le moment.
-      come_back_later_password_html: '<strong>N’oubliez pas votre mot de
+      come_back_later_password_html: <strong>N’oubliez pas votre mot de
         passe.</strong> <br /> Si vous réinitialisez votre mot de passe, le code
         à usage unique figurant dans votre lettre ne correspondra plus et vous
-        serez obligé de vérifier à nouveau votre identité.'
+        serez obligé de vérifier à nouveau votre identité.
       come_back_later_sp_html: Vous pouvez retourner à l’agence <strong>%{sp}</strong> pour le moment.
       confirm: Vous avez crypté vos données vérifiées
       gpo:

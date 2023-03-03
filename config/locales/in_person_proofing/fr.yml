@@ -40,8 +40,8 @@ fr:
       location:
         contact_info_heading: Information de contact
         distance:
-          one: à %{count} mile
-          other: à %{count} miles
+          one: 'à %{count} mile'
+          other: 'à %{count} miles'
         inline_error: Saisissez une adresse valide avec la ville, l’état et le code postal
         location_button: Sélectionner
         location_step_about: Si vous ne parvenez pas à ajouter votre pièce d’identité,

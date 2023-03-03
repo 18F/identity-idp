@@ -10,19 +10,19 @@ es:
         %{app_name}: La contraseña es %{code}. Esta contraseña puede usarse una vez y se vence en %{expiration} minutos. No la comparta con nadie.
 
         @%{domain} #%{code}
-      voice: '¡Hola! Su código único de seis %{format_type} de %{app_name} es %{code},
+      voice: ¡Hola! Su código único de seis %{format_type} de %{app_name} es %{code},
         Su código único es %{code}, De nuevo, Su código único de es %{code},
-        Este código expira en %{expiration} minutos.'
+        Este código expira en %{expiration} minutos.
     confirmation_otp:
       sms: |-
         %{app_name}: La contraseña es %{code}. Esta contraseña puede usarse una vez y se vence en %{expiration} minutos. No la comparta con nadie.
 
         @%{domain} #%{code}
-      voice: '¡Hola! Su código único de seis %{format_type} de %{app_name} es %{code},
+      voice: ¡Hola! Su código único de seis %{format_type} de %{app_name} es %{code},
         Su código único es %{code}, De nuevo, Su código único de es %{code},
-        Este código expira en %{expiration} minutos.'
-    doc_auth_link: '%{app_name}: %{link} Está verificando su identidad para acceder
-      a %{sp_or_app_name}. Tome una foto de su identificación para continuar.'
+        Este código expira en %{expiration} minutos.
+    doc_auth_link: |-
+      %{app_name}: %{link} Está verificando su identidad para acceder a %{sp_or_app_name}. Tome una foto de su identificación para continuar.
     error:
       friendly_message:
         daily_voice_limit_reached: Su código de un solo uso no se ha podido enviar, ya
