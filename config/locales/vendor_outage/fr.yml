@@ -4,37 +4,35 @@ fr:
     alerts:
       phone:
         default: Nous ne pouvons pas vérifier les téléphones pour le moment. Veuillez
-          utiliser une autre méthode d’authentification si vous en avez une, ou
-          réessayez plus tard.
+          utiliser une autre méthode d’authentification si vous en avez une, ou réessayez
+          plus tard.
         idv: Nous ne pouvons pas vérifier les téléphones pour le moment. Veuillez
           réessayer plus tard ou vérifier votre adresse par la poste.
       sms:
         default: Nous ne pouvons pas envoyer de messages texte (SMS) pour le moment.
-          Vous pouvez obtenir un code par appel téléphonique ou choisir une
-          autre méthode d’authentification si vous en avez un.
+          Vous pouvez obtenir un code par appel téléphonique ou choisir une autre
+          méthode d’authentification si vous en avez un.
         idv: Nous ne pouvons pas envoyer de messages texte (SMS) pour le moment. Vous
-          pouvez obtenir un code par téléphone ou vérifier votre adresse par la
-          poste.
+          pouvez obtenir un code par téléphone ou vérifier votre adresse par la poste.
       voice:
-        default: Nous ne pouvons pas envoyer d’appels téléphoniques pour le moment. Vous
-          pouvez obtenir un code par message texte (SMS) ou choisir une autre
+        default: Nous ne pouvons pas envoyer d’appels téléphoniques pour le moment.
+          Vous pouvez obtenir un code par message texte (SMS) ou choisir une autre
           méthode d’authentification si vous en avez une.
         idv: Nous ne pouvons pas envoyer d’appels téléphoniques pour le moment. Vous
-          pouvez obtenir un code par message texte (SMS), ou vérifier votre
-          adresse par la poste.
+          pouvez obtenir un code par message texte (SMS), ou vérifier votre adresse
+          par la poste.
     blocked:
       idv:
         generic: Nous rencontrons des difficultés techniques et ne pouvons pas vérifier
           votre identité pour le moment. Veuillez réessayer plus tard.
-        with_sp: '%{service_provider} doit s’assurer que c’est bien vous — et non
-          quelqu’un qui se fait passer pour vous. Malheureusement, nous
-          rencontrons des difficultés techniques et ne pouvons pas vérifier
-          votre identité pour le moment. Veuillez réessayer plus tard.'
+        with_sp: "%{service_provider} doit s’assurer que c’est bien vous — et non
+          quelqu’un qui se fait passer pour vous. Malheureusement, nous rencontrons
+          des difficultés techniques et ne pouvons pas vérifier votre identité pour
+          le moment. Veuillez réessayer plus tard."
         without_sp: L’agence à laquelle vous essayez d’accéder doit s’assurer qu’il
-          s’agit bien de vous, et non de quelqu’un qui se fait passer pour vous.
-          Malheureusement, nous rencontrons des difficultés techniques et ne
-          pouvons pas vérifier votre identité pour le moment. Veuillez réessayer
-          plus tard.
+          s’agit bien de vous, et non de quelqu’un qui se fait passer pour vous. Malheureusement,
+          nous rencontrons des difficultés techniques et ne pouvons pas vérifier votre
+          identité pour le moment. Veuillez réessayer plus tard.
       phone:
         default: Nous ne pouvons pas vérifier les téléphones pour le moment. Veuillez
           réessayer plus tard.

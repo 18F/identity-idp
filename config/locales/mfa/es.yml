@@ -7,10 +7,10 @@ es:
     additional_mfa_required:
       heading: Añadir otro método de autenticación.
     info: Agregue otro nivel de seguridad seleccionando un método de autentificación
-      de varios factores. Le recomendamos seleccionar al menos dos opciones
-      diferentes en caso de que pierda uno de los métodos.
+      de varios factores. Le recomendamos seleccionar al menos dos opciones diferentes
+      en caso de que pierda uno de los métodos.
     second_method_warning:
       link: Agregue un segundo método de autenticación.
-      text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de
-        autenticación.
+      text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método
+        de autenticación.
     skip: Omitir por ahora

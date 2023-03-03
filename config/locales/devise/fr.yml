@@ -6,10 +6,9 @@ fr:
       confirmed: Vous avez confirmé votre adresse courriel
       confirmed_but_must_set_password: Vous avez confirmé votre adresse courriel
       confirmed_but_remove_from_other_account: Cette adresse électronique est déjà
-        associée à un compte %{app_name}, nous ne pouvons donc pas l’ajouter à
-        un autre compte. Vous devez d’abord le supprimer ou le supprimer du
-        compte auquel il est associé. Pour ce faire, connectez-vous avec cette
-        adresse e-mail.
+        associée à un compte %{app_name}, nous ne pouvons donc pas l’ajouter à un
+        autre compte. Vous devez d’abord le supprimer ou le supprimer du compte auquel
+        il est associé. Pour ce faire, connectez-vous avec cette adresse e-mail.
       confirmed_but_sign_in: Vous avez confirmé votre adresse email. Veuillez vous
         connecter pour voir votre profil.
       sign_in: Veuillez vous connecter de nouveau.
@@ -38,10 +37,10 @@ fr:
       choose_new_password: Choisissez un nouveau mot de passe.
       invalid_token: Le jeton de réinitialisation de mot de passe n’est pas valide.
         Veuillez essayer de nouveau.
-      no_token: Vous ne pouvez accéder à cette page que depuis un courriel de
-        réinitialisation de mot de passe. Si vous avez été redirigé à partir
-        d’un courriel de réinitialisation de mot de passe, veuillez vous assurer
-        que vous avez utilisé le lien fourni complet.
+      no_token: Vous ne pouvez accéder à cette page que depuis un courriel de réinitialisation
+        de mot de passe. Si vous avez été redirigé à partir d’un courriel de réinitialisation
+        de mot de passe, veuillez vous assurer que vous avez utilisé le lien fourni
+        complet.
       send_instructions: Vous recevrez dans quelques instants un courriel avec des
         instructions pour réinitialiser votre mot de passe.
       send_paranoid_instructions: Vous recevrez dans quelques instants un courriel
@@ -54,11 +53,11 @@ fr:
     registrations:
       close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
       destroyed: Votre compte a bien été supprimé.
-      phone_update_needs_confirmation: Votre demande de mise à jour de votre numéro de
-        téléphone a été traitée, mais nous devons d’abord confirmer votre
-        nouveau numéro. Veuillez suivre les instructions ci-dessous. Si vous ne
-        confirmez pas votre nouveau numéro, nous continuerons d’utiliser votre
-        ancien numéro de téléphone.
+      phone_update_needs_confirmation: Votre demande de mise à jour de votre numéro
+        de téléphone a été traitée, mais nous devons d’abord confirmer votre nouveau
+        numéro. Veuillez suivre les instructions ci-dessous. Si vous ne confirmez
+        pas votre nouveau numéro, nous continuerons d’utiliser votre ancien numéro
+        de téléphone.
       start:
         accordion: Vous aurez aussi besoin
         bullet_1_html: Une <strong>adresse e-mail</strong>.
@@ -69,14 +68,13 @@ fr:
           que votre nom, adresse et numéro de téléphone.
         bullet_3_img: Profil informatif
         bullet_4_html: Votre <strong>numéro de Sécurité Sociale</strong>.
-        bullet_5_html: Pour vérifier votre adresse en fournissant un <strong>numéro de
-          téléphone ou adresse postale où vous recevez du courrier
-          électronique</strong>.
+        bullet_5_html: Pour vérifier votre adresse en fournissant un <strong>numéro
+          de téléphone ou adresse postale où vous recevez du courrier électronique</strong>.
         bullet_5_img: Vérifiez votre adresse
         bullet_6_html: Lorsque vous avez terminé ce processus, nous allons vous donner
-          un <strong>clé personnelle</strong>. Ecrivez-le et rangez-le dans un
-          endroit sûr. C’est important. La clé personnelle vous sera demandée
-          chaque fois que vous apportez des modifications à votre compte.
+          un <strong>clé personnelle</strong>. Ecrivez-le et rangez-le dans un endroit
+          sûr. C’est important. La clé personnelle vous sera demandée chaque fois
+          que vous apportez des modifications à votre compte.
         bullet_6_img: Clé personnelle
         learn_more: En savoir plus sur la vérification de votre identité
     sessions:

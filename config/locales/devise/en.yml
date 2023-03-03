@@ -5,12 +5,12 @@ en:
       already_confirmed: Your email address has already been confirmed. %{action}
       confirmed: You have confirmed your email address
       confirmed_but_must_set_password: You have confirmed your email address
-      confirmed_but_remove_from_other_account: This email address is already
-        associated with a %{app_name} account, so we can’t add it to another
-        account. You must first delete or remove it from the account it is
-        associated with. To do this, sign in with this email address.
-      confirmed_but_sign_in: You have confirmed your email address. Please sign in to
-        view your profile.
+      confirmed_but_remove_from_other_account: This email address is already associated
+        with a %{app_name} account, so we can’t add it to another account. You must
+        first delete or remove it from the account it is associated with. To do this,
+        sign in with this email address.
+      confirmed_but_sign_in: You have confirmed your email address. Please sign in
+        to view your profile.
       sign_in: Please sign in.
     failure:
       already_authenticated: ''
@@ -19,7 +19,8 @@ en:
       invalid_link_text: resetting your password
       last_attempt: You have one more attempt before your account is locked.
       locked: Your account has been locked.
-      not_found_in_database_html: The email or password you’ve entered is wrong. Try %{link}.
+      not_found_in_database_html: The email or password you’ve entered is wrong. Try
+        %{link}.
       not_found_in_database_link_text: resetting your password
       session_limited: Your login credentials were used in another browser. Please
         sign in again to continue in this browser.
@@ -33,38 +34,39 @@ en:
       choose_new_password: Choose a new password.
       invalid_token: The reset password token is invalid. Try again.
       no_token: To reset your password please use the link in the <strong>Password
-        Reset</strong> email you received. If you’re pasting the link into your
-        browser, please make sure you’ve pasted the entire link.
+        Reset</strong> email you received. If you’re pasting the link into your browser,
+        please make sure you’ve pasted the entire link.
       send_instructions: You will receive an email with instructions on how to reset
         your password in a few minutes.
       send_paranoid_instructions: You will receive an email with instructions on how
         to reset your password in a few minutes.
       token_expired: You took too long to reset your password. Try again.
       updated: Your password has been changed. You are now signed in.
-      updated_not_active: Your password has been changed. Please sign in with your new password.
+      updated_not_active: Your password has been changed. Please sign in with your
+        new password.
     registrations:
       close_window: You can close this window if you’re done.
       destroyed: Your account has been successfully deleted.
       phone_update_needs_confirmation: Your request to update your phone configuration
-        was processed, but we need to confirm your new number before you can use
-        it. Please follow the instructions below.
+        was processed, but we need to confirm your new number before you can use it.
+        Please follow the instructions below.
       start:
         accordion: You will also need
         bullet_1_html: An <strong>email address</strong>.
         bullet_1_img: Email
         bullet_2_html: Enable <strong>two-step authentication</strong>.
         bullet_2_img: Device
-        bullet_3_html: To provide <strong>basic information</strong>, such as your name,
-          address and phone number.
+        bullet_3_html: To provide <strong>basic information</strong>, such as your
+          name, address and phone number.
         bullet_3_img: Informational profile
         bullet_4_html: Your <strong>Social Security number</strong>.
-        bullet_5_html: To verify your address by providing a <strong>phone number or
-          mailing address where you receive mail</strong>.
+        bullet_5_html: To verify your address by providing a <strong>phone number
+          or mailing address where you receive mail</strong>.
         bullet_5_img: Verify your address
-        bullet_6_html: When you are finished with this process we’ll give you a
-          <strong>personal key</strong>. Write it down and store it in a safe
-          place; it’s important. You’ll be asked for the personal key every time
-          you make changes to your account.
+        bullet_6_html: When you are finished with this process we’ll give you a <strong>personal
+          key</strong>. Write it down and store it in a safe place; it’s important.
+          You’ll be asked for the personal key every time you make changes to your
+          account.
         bullet_6_img: Personal key
         learn_more: Learn more about verifying your identity
     sessions:
