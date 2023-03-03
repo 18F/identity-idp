@@ -2,10 +2,24 @@ require 'rails_helper'
 
 RSpec.feature 'Users pending threatmetrix review', :js do
   include IdvStepHelper
+  include OidcAuthHelper
+  include IrsAttemptsApiTrackingHelper
 
   before do
     allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('test_org')
+    allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
+    mock_irs_attempts_api_encryption_key
+  end
+
+  let(:service_provider) do
+    create(
+      :service_provider,
+      active: true,
+      redirect_uris: ['http://localhost:7654/auth/result'],
+      ial: 2,
+      irs_attempts_api_enabled: true,
+    )
   end
 
   scenario 'users pending threatmetrix see sad face screen and cannot perform idv' do
@@ -48,5 +62,70 @@ RSpec.feature 'Users pending threatmetrix review', :js do
     click_agree_and_continue
 
     expect(current_path).to eq('/auth/result')
+  end
+
+  scenario 'users threatmetrix Pass, it logs idv_tmx_fraud_check event', :js do
+    freeze_time do
+      complete_all_idv_steps_with(threatmetrix: 'Pass')
+      expect_irs_event(expected_success: true, expected_failure_reason: nil)
+    end
+  end
+
+  scenario 'users pending threatmetrix Reject, it logs idv_tmx_fraud_check event', :js do
+    freeze_time do
+      expect_pending_failure_reason(threatmetrix: 'Reject')
+    end
+  end
+
+  scenario 'users pending threatmetrix Review, it logs idv_tmx_fraud_check event', :js do
+    freeze_time do
+      expect_pending_failure_reason(threatmetrix: 'Review')
+    end
+  end
+
+  scenario 'users pending threatmetrix No Result, it logs idv_tmx_fraud_check event', :js do
+    freeze_time do
+      expect_pending_failure_reason(threatmetrix: 'No Result')
+    end
+  end
+
+  def complete_all_idv_steps_with(threatmetrix:)
+    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(300)
+    user = create(:user, :signed_up)
+    visit_idp_from_ial1_oidc_sp(
+      client_id: service_provider.issuer,
+      irs_attempts_api_session_id: 'test-session-id',
+    )
+    visit root_path
+    sign_in_and_2fa_user(user)
+    complete_doc_auth_steps_before_ssn_step
+    select threatmetrix, from: :mock_profiling_result
+    complete_ssn_step
+    click_idv_continue
+    complete_phone_step(user)
+    complete_review_step(user)
+    acknowledge_and_confirm_personal_key
+  end
+
+  def expect_pending_failure_reason(threatmetrix:)
+    expected_failure_reason = { 'tmx_summary_reason_code' => ['Identity_Negative_History'] }
+    complete_all_idv_steps_with(threatmetrix: threatmetrix)
+    expect(page).to have_content(t('idv.failure.setup.heading'))
+    expect(page).to have_current_path(idv_setup_errors_path)
+    expect_irs_event(expected_success: false, expected_failure_reason: expected_failure_reason)
+  end
+
+  def expect_irs_event(expected_success:, expected_failure_reason:)
+    event_name = 'idv-tmx-fraud-check'
+    events = irs_attempts_api_tracked_events(timestamp: Time.zone.now)
+    received_event_types = events.map(&:event_type)
+
+    idv_tmx_fraud_check_event = events.find { |x| x.event_type == event_name }
+    failure_reason = idv_tmx_fraud_check_event.event_metadata[:failure_reason]
+    success = idv_tmx_fraud_check_event.event_metadata[:success]
+
+    expect(received_event_types).to include event_name
+    expect(failure_reason).to eq expected_failure_reason
+    expect(success).to eq expected_success
   end
 end
