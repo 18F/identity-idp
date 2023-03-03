@@ -114,11 +114,6 @@ module Idv
       redirect_to prev_url
     end
 
-    def confirm_profile_not_already_confirmed
-      return unless idv_session.profile_confirmation == true
-      redirect_to idv_review_url
-    end
-
     def current_flow_step_counts
       user_session['idv/doc_auth_flow_step_counts'] ||= {}
       user_session['idv/doc_auth_flow_step_counts'].default = 0
