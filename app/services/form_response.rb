@@ -20,27 +20,23 @@ class FormResponse
     return to_h unless @original_errors.is_a?(ActiveModel::Errors)
     hash = { success: success }
     pii_like_keypaths = []
-    if !serialize_error_details_only?
-      hash[:errors] = @original_errors.errors.map do |err|
-        if HIDDEN_MESSAGE_ERROR_TYPES.include?(err.type)
-          pii_like_keypaths.append([:errors, err.attribute])
-          [err.attribute, err.type.to_s]
-        else
-          [err.attribute, err.message]
-        end
-      end.to_h
+    errors_hash = {}
+    @original_errors.errors.each do |err|
+      if HIDDEN_MESSAGE_ERROR_TYPES.include?(err.type)
+        (errors_hash[err.attribute] ||= []) << err.type
+      else
+        (errors_hash[err.attribute] ||= []) << err.message
+      end
     end
-    if error_details.present?
-      hash[:error_details] = @original_errors.errors.map do |err|
-        if HIDDEN_MESSAGE_ERROR_TYPES.include?(err.type)
-          pii_like_keypaths.append([:error_details, err.attribute])
-          [err.attribute, err.type.to_s]
-        else
-          [err.attribute, err.message]
-        end
-      end.to_h
+    errors_hash.each do |key, value|
+      if value.size < 2 && HIDDEN_MESSAGE_ERROR_TYPES.include?(value[0])
+        pii_like_keypaths.append([:errors, key])
+        pii_like_keypaths.append([:error_details, key])
+      end
     end
-    hash[:pii_like_keypaths] = pii_like_keypaths
+    hash[:pii_like_keypaths] = pii_like_keypaths.sort.uniq
+    hash[:errors] = errors_hash if !serialize_error_details_only?
+    hash[:error_details] = errors_hash.clone if error_details.present?
     hash.merge!(extra)
     hash
   end
