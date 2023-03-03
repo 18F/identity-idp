@@ -9,6 +9,8 @@ describe 'Hybrid Flow' do
     allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls).and_return(true)
     allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
+    # Avoid "Too many open files - socket(2)" error on some local machines
+    WebMock.allow_net_connect!(net_http_connect_on_start: true)
   end
 
   before do
