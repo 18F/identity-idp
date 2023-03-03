@@ -1,5 +1,18 @@
 module UspsInPersonProofing
+  # Validator that can be attached to a form or other model
+  # to verify that specific supported fields are transliterable
+  #
+  # == Example
+  #
+  #   validates_with UspsInPersonProofing::TransliterableValidator,
+  #     fields: [:first_name, :last_name]
+  #
   class TransliterableValidator < ActiveModel::Validator
+    # Initialize the validator with the given fields configured
+    # for transliteration validation
+    #
+    # @param [Hash] options
+    # @option options [Array<Symbol>] fields Fields for which to validate transliterability
     def initialize(options)
       super
       @fields = options[:fields]
@@ -11,9 +24,12 @@ module UspsInPersonProofing
       end
     end
 
+    # Check if the configured values on the record are transliterable
+    #
+    # @param [ActiveModel::Validations] record
     def validate(record)
       return unless IdentityConfig.store.usps_ipp_transliteration_enabled
-      validator.validate(
+      helper.validate(
         @fields.index_with do |field|
           (record.send(field) if record.respond_to?(field))
         end,
@@ -24,10 +40,11 @@ module UspsInPersonProofing
 
     private
 
+    # Fields supported by this validator
     SUPPORTED_FIELDS = UspsInPersonProofing::TransliterableValidatorHelper::SUPPORTED_FIELDS
 
-    def validator
-      @validator ||= UspsInPersonProofing::TransliterableValidatorHelper.new
+    def helper
+      @helper ||= UspsInPersonProofing::TransliterableValidatorHelper.new
     end
   end
 end
