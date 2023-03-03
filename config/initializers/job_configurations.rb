@@ -140,6 +140,11 @@ else
         cron: cron_1w,
         args: -> { [Time.zone.now] },
       },
+      # Reject profiles that have been in fraud_review_pending for 30 days
+      fraud_rejection: {
+        class: 'FraudRejectionDailyJob',
+        chron: cron_24h,
+      },
     }
   end
   # rubocop:enable Metrics/BlockLength
