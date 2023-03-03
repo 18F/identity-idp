@@ -2,10 +2,10 @@
 en:
   event_disavowals:
     errors:
-      event_already_disavowed: You have already used that link to change your password.
-        Sign in to change your password.
-      event_disavowal_expired: The link to change your password has expired. Sign
-        in to change your password.
+      event_already_disavowed: You have already used that link to change your
+        password. Sign in to change your password.
+      event_disavowal_expired: The link to change your password has expired. Sign in
+        to change your password.
       event_not_found: The link to change your password is invalid. Sign in to change
         your password.
       no_account: There is no account associated with this event.

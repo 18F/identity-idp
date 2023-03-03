@@ -23,8 +23,8 @@ fr:
         client_id_invalid: client_id n’a pas été reconnu
         client_id_missing: client_id est manquant
         id_token_hint: id_token_hint n’a pas été reconnu
-        id_token_hint_present: Cette application est mal configurée et ne devrait
-          pas envoyer id_token_hint. Veuillez envoyer client_id à la place.
+        id_token_hint_present: Cette application est mal configurée et ne devrait pas
+          envoyer id_token_hint. Veuillez envoyer client_id à la place.
         no_client_id_or_id_token_hint: Cette application est mal configurée et doit
           envoyer client_id ou id_token_hint.
       heading: Voulez-vous vous déconnecter de %{app_name}?
@@ -34,10 +34,11 @@ fr:
       errors:
         expired_code: est expiré
         invalid_aud: Affirmation liée à l’auditoire non valide, attendu %{url}
-        invalid_authentication: Le client doit s’authentifier par PKCE ou private_key_jwt,
-          code_challenge ou client_assertion manquant
+        invalid_authentication: Le client doit s’authentifier par PKCE ou
+          private_key_jwt, code_challenge ou client_assertion manquant
         invalid_code: n’est pas valide, car il ne correspond à aucun utilisateur.
-          Veuillez consulter notre documentation à https://developers.login.gov/oidc/#token
+          Veuillez consulter notre documentation à
+          https://developers.login.gov/oidc/#token
         invalid_code_verifier: code_verifier ne correspondait pas à code_challenge
         invalid_iat: iat doit être un horodatage Unix entier ou à virgule flottante
           représentant une heure dans le passé
@@ -47,5 +48,5 @@ fr:
       errors:
         malformed_authorization: Forme de l’en-tête d’autorisation non valide
         no_authorization: Aucune en-tête d’autorisation fournie
-        not_found: L’autorisation pour le contenu du access_token fourni introuvable
-          ou il peut être expiré
+        not_found: L’autorisation pour le contenu du access_token fourni introuvable ou
+          il peut être expiré

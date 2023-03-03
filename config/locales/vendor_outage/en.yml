@@ -5,33 +5,35 @@ en:
       phone:
         default: We cannot verify phones at this time. Please use another authentication
           method if you have one, or try again later.
-        idv: We cannot verify phones at this time. Please try again later or verify
-          your address by mail instead.
+        idv: We cannot verify phones at this time. Please try again later or verify your
+          address by mail instead.
       sms:
-        default: We cannot send text messages (SMS) at this time. You can get a code
-          by phone call, or choose another authentication method if you have one.
+        default: We cannot send text messages (SMS) at this time. You can get a code by
+          phone call, or choose another authentication method if you have one.
         idv: We cannot send text messages (SMS) at this time. You can get a code by
           phone call, or verify your address by mail instead.
       voice:
         default: We cannot send phone calls at this time. You can get a code by text
-          message (SMS), or choose another authentication method if you have one.
+          message (SMS), or choose another authentication method if you have
+          one.
         idv: We cannot send phone calls at this time. You can get a code by text message
           (SMS), or verify your address by mail instead.
     blocked:
       idv:
-        generic: We are having technical difficulties on our end and cannot verify
-          your identity at this time. Please try again later.
-        with_sp: "%{service_provider} needs to make sure you are you — not someone
-          pretending to be you. Unfortunately, we are having technical difficulties
-          and cannot verify your identity at this time. Please try again later."
-        without_sp: The agency that you are trying to access needs to make sure you
-          are you — not someone pretending to be you. Unfortunately, we are having
-          technical difficulties and cannot verify your identity at this time. Please
-          try again later.
+        generic: We are having technical difficulties on our end and cannot verify your
+          identity at this time. Please try again later.
+        with_sp: '%{service_provider} needs to make sure you are you — not someone
+          pretending to be you. Unfortunately, we are having technical
+          difficulties and cannot verify your identity at this time. Please try
+          again later.'
+        without_sp: The agency that you are trying to access needs to make sure you are
+          you — not someone pretending to be you. Unfortunately, we are having
+          technical difficulties and cannot verify your identity at this time.
+          Please try again later.
       phone:
         default: We cannot verify phones at this time. Please try again later.
-        idv: We cannot verify phones at this time. Please try again later or verify
-          your address by mail instead.
+        idv: We cannot verify phones at this time. Please try again later or verify your
+          address by mail instead.
     get_updates: Get updates
     get_updates_on_status_page: Get updates on our status page
     working: We are working to resolve an error

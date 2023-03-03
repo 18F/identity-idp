@@ -47,18 +47,18 @@ en:
     timeout_warning:
       partially_signed_in:
         continue: Continue sign in
-        message_html: For your security, in %{time_left_in_session} we will cancel
-          your sign in.
+        message_html: For your security, in %{time_left_in_session} we will cancel your
+          sign in.
         sign_out: Cancel sign in
-        sr_message_html: You will be signed out in %{time_left_in_session}. Select
-          “keep me signed in” to stay logged in. Select “sign me out” to sign out.
+        sr_message_html: You will be signed out in %{time_left_in_session}. Select “keep
+          me signed in” to stay logged in. Select “sign me out” to sign out.
       signed_in:
         continue: Keep me signed in
         message_html: For your security, we will sign you out in %{time_left_in_session}
           unless you tell us otherwise.
         sign_out: Sign me out
-        sr_message_html: You will be signed out in %{time_left_in_session}. Select
-          “keep me signed in” to stay logged in. Select “sign me out” to sign out.
+        sr_message_html: You will be signed out in %{time_left_in_session}. Select “keep
+          me signed in” to stay logged in. Select “sign me out” to sign out.
     totp_configured: An authentication app was added to your account.
     totp_disabled: Your authentication app was deleted from your account.
     use_diff_email:

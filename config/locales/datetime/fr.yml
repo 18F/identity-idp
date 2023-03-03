@@ -4,8 +4,8 @@ fr:
     dotiw:
       minutes:
         one: 1 minute
-        other: "%{count} minutes"
+        other: '%{count} minutes'
       seconds:
         one: 1 seconde
-        other: "%{count} secondes"
-      two_words_connector: " et "
+        other: '%{count} secondes'
+      two_words_connector: ' et '

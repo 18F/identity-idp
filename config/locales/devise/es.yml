@@ -5,23 +5,22 @@ es:
       already_confirmed: Su email ha sido confirmado. %{action}
       confirmed: Usted ha confirmado su email.
       confirmed_but_must_set_password: Usted ha confirmado su email.
-      confirmed_but_remove_from_other_account: Esta dirección de correo electrónico
-        ya está asociada con una cuenta %{app_name}, por lo que no podemos agregarla
-        a otra cuenta. Primero debe eliminarlo o eliminarlo de la cuenta con la que
-        está asociado. Para ello, inicie sesión con esta dirección de correo electrónico.
+      confirmed_but_remove_from_other_account: Esta dirección de correo electrónico ya
+        está asociada con una cuenta %{app_name}, por lo que no podemos
+        agregarla a otra cuenta. Primero debe eliminarlo o eliminarlo de la
+        cuenta con la que está asociado. Para ello, inicie sesión con esta
+        dirección de correo electrónico.
       confirmed_but_sign_in: Has confirmado tu dirección de correo electrónico. Por
         favor inicia sesión para ver tu perfil.
       sign_in: Inicie la sesión de nuevo.
     failure:
       already_authenticated: ''
       inactive: Su cuenta aún no está activada.
-      invalid_html: El email o la contraseña que ingresó son incorrectos. Intente
-        %{link}.
+      invalid_html: El email o la contraseña que ingresó son incorrectos. Intente %{link}.
       invalid_link_text: restablecer su contraseña
       last_attempt: Tiene un intento más antes de que su cuenta esté bloqueada.
       locked: Su cuenta está bloqueada.
-      not_found_in_database_html: El email o la contraseña que ingresó son incorrectos.
-        Intente %{link}.
+      not_found_in_database_html: El email o la contraseña que ingresó son incorrectos. Intente %{link}.
       not_found_in_database_link_text: restablecer su contraseña
       session_limited: Sus credenciales para iniciar una sesión se utilizaron en otro
         navegador. Inicie una sesión nueva para continuar en este navegador.
@@ -35,41 +34,40 @@ es:
       choose_new_password: Elija una contraseña nueva.
       invalid_token: El código para restablecer la contraseña no es válido. Inténtelo
         de nuevo.
-      no_token: Usted no puede acceder a esta página si no procede desde el email
-        para restablecer la contraseña. Asegúrese de utilizar el enlace completo que
+      no_token: Usted no puede acceder a esta página si no procede desde el email para
+        restablecer la contraseña. Asegúrese de utilizar el enlace completo que
         está en el email.
       send_instructions: En pocos minutos recibirá un email con instrucciones para
         restablecer su contraseña.
       send_paranoid_instructions: En pocos minutos recibirá un email con instrucciones
         para restablecer su contraseña.
-      token_expired: Ha tardado demasiado en restablecer su contraseña. Inténtelo
-        de nuevo.
+      token_expired: Ha tardado demasiado en restablecer su contraseña. Inténtelo de nuevo.
       updated: Su contraseña ha sido cambiada. Ahora ha iniciado una sesión.
-      updated_not_active: Su contraseña ha sido cambiada. Inicie sesión con su contraseña
-        nueva.
+      updated_not_active: Su contraseña ha sido cambiada. Inicie sesión con su contraseña nueva.
     registrations:
       close_window: Puedes cerrar esta ventana si terminaste.
       destroyed: Su cuenta se ha eliminado exitosamente.
-      phone_update_needs_confirmation: Su solicitud para actualizar su número de teléfono
-        fue procesada, pero necesitamos confirmar primero su número nuevo. Por favor,
-        siga las siguientes instrucciones. Si no confirma su nuevo número, seguiremos
-        usando su número de teléfono antiguo.
+      phone_update_needs_confirmation: Su solicitud para actualizar su número de
+        teléfono fue procesada, pero necesitamos confirmar primero su número
+        nuevo. Por favor, siga las siguientes instrucciones. Si no confirma su
+        nuevo número, seguiremos usando su número de teléfono antiguo.
       start:
         accordion: También necesitarás
         bullet_1_html: Una <strong>dirección de correo electrónico</strong>.
         bullet_1_img: Correo electrónico
         bullet_2_html: Permita <strong>la autenticación de dos factores</strong>.
         bullet_2_img: Dispositivo
-        bullet_3_html: Para proporcionar <strong>información básica</strong>, como
-          su nombre, dirección y número de teléfono.
+        bullet_3_html: Para proporcionar <strong>información básica</strong>, como su
+          nombre, dirección y número de teléfono.
         bullet_3_img: Perfil informativo
         bullet_4_html: Su <strong>número de Seguridad Social</strong>.
-        bullet_5_html: para verificar su dirección, proporcione un <strong>número
-          de teléfono o dirección postal donde recibe el correo</strong>.
+        bullet_5_html: para verificar su dirección, proporcione un <strong>número de
+          teléfono o dirección postal donde recibe el correo</strong>.
         bullet_5_img: Verifique su dirección
         bullet_6_html: Cuando haya terminado con este proceso, le daremos <strong>una
-          clave personal</strong>. Escríbala y guárdela en un lugar seguro; es importante.
-          Se le pedirá la clave personal cada vez que realice cambios en su cuenta.
+          clave personal</strong>. Escríbala y guárdela en un lugar seguro; es
+          importante. Se le pedirá la clave personal cada vez que realice
+          cambios en su cuenta.
         bullet_6_img: Clave personal
         learn_more: Obtenga más información sobre la verificación de su identidad.
     sessions:

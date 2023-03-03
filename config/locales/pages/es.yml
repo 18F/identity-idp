@@ -2,6 +2,6 @@
 es:
   pages:
     page_took_too_long:
-      body: Por favor, es posible que desee esperar unos minutos y vuelva a intentarlo.
-        (503)
+      body: Por favor, es posible que desee esperar unos minutos y vuelva a
+        intentarlo. (503)
       header: El sistema de información tomó demasiado tiempo procesar su solicitud.

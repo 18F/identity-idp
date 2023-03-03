@@ -3,8 +3,8 @@ fr:
   in_person_proofing:
     body:
       address:
-        info: Si votre adresse actuelle ne correspond pas à l’adresse figurant sur
-          votre document d’identité, vous devrez apporter une preuve de votre adresse
+        info: Si votre adresse actuelle ne correspond pas à l’adresse figurant sur votre
+          document d’identité, vous devrez apporter une preuve de votre adresse
           actuelle au bureau de poste.
         learn_more: Apprendre encore plus
       barcode:
@@ -13,10 +13,10 @@ fr:
         deadline: Visitez le bureau de poste d’ici %{deadline}
         deadline_restart: Si vous partez après la date limite, vos informations ne
           seront pas sauvegardées et vous devrez recommencer le processus.
-        email_sent: Nous avons envoyé ces informations à l’adresse électronique que
-          vous avez utilisée pour vous connecter.
-        items_to_bring: 'N’oubliez pas d’apporter les articles suivants avec vous
-          au bureau de poste:'
+        email_sent: Nous avons envoyé ces informations à l’adresse électronique que vous
+          avez utilisée pour vous connecter.
+        items_to_bring: 'N’oubliez pas d’apporter les articles suivants avec vous au
+          bureau de poste:'
         learn_more: En savoir davantage sur ce qu’il faut apporter.
         location_details: Détails de l’emplacement
         questions: Des questions?
@@ -24,54 +24,52 @@ fr:
         retail_hours_closed: Fermé
         retail_phone_label: Numéro de téléphone
         return_to_partner_html: Vous pouvez maintenant fermer cette fenêtre ou %{link}
-          afin d’effectuer toutes les étapes suivantes auxquelles vous pouvez accéder
-          jusqu’à ce que votre identité ait été confitmée.
+          afin d’effectuer toutes les étapes suivantes auxquelles vous pouvez
+          accéder jusqu’à ce que votre identité ait été confitmée.
         return_to_partner_link: retourner à %{sp_name}
-        speak_to_associate: Vous pouvez voir n’importe quel associé au guichet de
-          vente au détail pour vérifier votre identité. Aucun rendez-vous n’est exigé.
+        speak_to_associate: Vous pouvez voir n’importe quel associé au guichet de vente
+          au détail pour vérifier votre identité. Aucun rendez-vous n’est exigé.
       cta:
         button: Vérifiez votre identité en personne
         button_variant: Essayer en personne
-        prompt_detail: Vous pourrez peut-être faire vérifier votre pièce d’identité
-          en personne dans un bureau de poste participant près de chez vous.
-        prompt_detail_b: Ou, si vous rencontrez des difficultés pour ajouter votre
-          pièce d’identité en ligne, vous pourrez peut-être essayer de le faire en
+        prompt_detail: Vous pourrez peut-être faire vérifier votre pièce d’identité en
+          personne dans un bureau de poste participant près de chez vous.
+        prompt_detail_b: Ou, si vous rencontrez des difficultés pour ajouter votre pièce
+          d’identité en ligne, vous pourrez peut-être essayer de le faire en
           personne dans certains bureaux de poste.
       location:
         contact_info_heading: Information de contact
         distance:
           one: à %{count} mile
           other: à %{count} miles
-        inline_error: Saisissez une adresse valide avec la ville, l’état et le code
-          postal
+        inline_error: Saisissez une adresse valide avec la ville, l’état et le code postal
         location_button: Sélectionner
         location_step_about: Si vous ne parvenez pas à ajouter votre pièce d’identité,
-          vous pourrez peut-être vérifier en personne dans un bureau de poste américain
-          local dans certains endroits.
+          vous pourrez peut-être vérifier en personne dans un bureau de poste
+          américain local dans certains endroits.
         none_found: Aucun endroit trouvé.
         phone: 'Téléphone:'
         po_search:
           address_search_hint: 'Exemple : 1234 N Example St., Allentown, PA 12345'
-          address_search_label: Entrez une adresse pour trouver un bureau de poste
-            près de chez vous.
+          address_search_label: Entrez une adresse pour trouver un bureau de poste près de chez vous.
           is_searching_message: Recherche des emplacements de bureau de poste…
-          none_found: Désolé, il n’y a pas de bureaux de poste participants dans un
-            rayon de 50 miles de la ville %{address}
+          none_found: Désolé, il n’y a pas de bureaux de poste participants dans un rayon
+            de 50 miles de la ville %{address}
           none_found_tip: Vous pouvez effectuer une recherche en utilisant une autre
-            adresse, ou ajouter des photos de votre pièce d’identité pour essayer
-            de vérifier à nouveau votre identité en ligne.
+            adresse, ou ajouter des photos de votre pièce d’identité pour
+            essayer de vérifier à nouveau votre identité en ligne.
           po_search_about: Si vous avez des difficultés à ajouter votre pièce d’identité,
-            vous pouvez vérifier votre identité en personne dans un bureau de poste
-            américain proche.
+            vous pouvez vérifier votre identité en personne dans un bureau de
+            poste américain proche.
           results_description:
-            one: Il y a 1 bureau de poste participant dans un rayon de 50 miles autour
-              de %{address}.
-            other: Il y a %{count} de bureaux de poste participants dans un rayon
-              de 50 miles autour de %{address}.
+            one: Il y a 1 bureau de poste participant dans un rayon de 50 miles autour de
+              %{address}.
+            other: Il y a %{count} de bureaux de poste participants dans un rayon de 50
+              miles autour de %{address}.
           results_instructions: Sélectionnez un emplacement de bureau de poste ci-dessous,
-            ou effectuez une nouvelle recherche en utilisant une autre adresse. Pour
-            l’accessibilité des installations, utilisez les informations de contact
-            indiquées pour l’emplacement du bureau de poste.
+            ou effectuez une nouvelle recherche en utilisant une autre adresse.
+            Pour l’accessibilité des installations, utilisez les informations de
+            contact indiquées pour l’emplacement du bureau de poste.
           search_button: Rechercher
         post_office: Bureau de Poste
         retail_hours_heading: Heures de vente au détail
@@ -81,35 +79,35 @@ fr:
       prepare:
         alert_selected_po_name: Vous avez sélectionné le bureau de poste de %{name}.
         alert_selected_post_office: Vous avez sélectionné le bureau de poste à %{full_address}.
-        privacy_disclaimer: "%{app_name} est un site gouvernemental sécurisé. Nous
-          et le service postal américain utilisons vos données pour vérifier votre
-          identité."
+        privacy_disclaimer: '%{app_name} est un site gouvernemental sécurisé. Nous et le
+          service postal américain utilisons vos données pour vérifier votre
+          identité.'
         privacy_disclaimer_link: En savoir plus sur la confidentialité et la sécurité.
         privacy_disclaimer_questions: Vous avez des questions?
-        verify_step_about: 'Suivez les étapes ci-dessous pour générer le code-barres
-          que vous emporterez avec vous au bureau de poste:'
-        verify_step_enter_phone: Entrez votre numéro de téléphone principal ou celui
-          que vous utilisez le plus souvent.
+        verify_step_about: 'Suivez les étapes ci-dessous pour générer le code-barres que
+          vous emporterez avec vous au bureau de poste:'
+        verify_step_enter_phone: Entrez votre numéro de téléphone principal ou celui que
+          vous utilisez le plus souvent.
         verify_step_enter_pii: Saisissez votre nom, votre date de naissance, votre
-          document d’identité délivré par l’État, votre adresse et votre numéro de
-          sécurité sociale.
+          document d’identité délivré par l’État, votre adresse et votre numéro
+          de sécurité sociale.
       state_id:
         alert_message: 'Votre carte d’identité délivrée par l’État ne doit pas être
           périmée. Les pièces d’identité acceptées sont:'
         id_types:
-        - Permis de conduire national
-        - Carte d’identité nationale de non-conducteur
+          - Permis de conduire national
+          - Carte d’identité nationale de non-conducteur
         info_html: Saisissez les informations <strong>exactement comme elles figurent
-          sur votre document d’identité nationale.</strong> Nous utiliserons ces informations
-          pour confirmer qu’elles correspondent à votre pièce d’identité en personne.
+          sur votre document d’identité nationale.</strong> Nous utiliserons ces
+          informations pour confirmer qu’elles correspondent à votre pièce
+          d’identité en personne.
     form:
       address:
-        same_address: Cette adresse figure-t-elle sur la pièce d’identité délivrée
-          par l’État que vous apportez au bureau de poste?
+        same_address: Cette adresse figure-t-elle sur la pièce d’identité délivrée par
+          l’État que vous apportez au bureau de poste?
         same_address_choice_no: J’ai une adresse différente sur mon document d’identité
-        same_address_choice_yes: Cette adresse figure sur mon document d’identité
-          nationale
-        state_prompt: "- Sélectionnez -"
+        same_address_choice_yes: Cette adresse figure sur mon document d’identité nationale
+        state_prompt: '- Sélectionnez -'
       state_id:
         date_hint:
           day: 'Exemple: 28'
@@ -126,9 +124,8 @@ fr:
               range_min_age: Vous devez avoir plus de 13 ans pour utiliser %{app_name}
               range_overflow: Entrez une date qui est dans le passé
         state_id_jurisdiction: État
-        state_id_jurisdiction_hint: Sélectionnez l’État figurant sur votre document
-          d’identité
-        state_id_jurisdiction_prompt: "- Sélectionnez -"
+        state_id_jurisdiction_hint: Sélectionnez l’État figurant sur votre document d’identité
+        state_id_jurisdiction_prompt: '- Sélectionnez -'
         state_id_number: Numéro d’identification
         state_id_number_hint: Peut comprendre des lettres et des chiffres
     headings:
@@ -144,8 +141,7 @@ fr:
       switch_back: Retournez sur votre ordinateur pour vous préparer à vérifier votre
         identité en personne
       update_address: Mettre à jour votre adresse actuelle
-      update_state_id: Mettre à jour les informations figurant sur votre document
-        d’identité
+      update_state_id: Mettre à jour les informations figurant sur votre document d’identité
     process:
       barcode:
         caption_label: Code d’inscription
@@ -153,23 +149,24 @@ fr:
         info: Imprimez ou numérisez depuis votre appareil mobile.
       proof_of_address:
         acceptable_proof:
-        - Bail, hypothèque ou acte de fiducie
-        - Inscription sur les listes électorales
-        - Carte d’immatriculation du véhicule
-        - Police d’assurance habitation ou véhicule
+          - Bail, hypothèque ou acte de fiducie
+          - Inscription sur les listes électorales
+          - Carte d’immatriculation du véhicule
+          - Police d’assurance habitation ou véhicule
         heading: Preuve de votre adresse actuelle
         info: 'Vous avez besoin d’un justificatif de domicile si votre adresse actuelle
-          est différente de l’adresse figurant sur votre document d’identité. Les
-          justificatifs d’adresse acceptés sont les suivants:'
-        physical_or_digital_copy: Vous pouvez apporter une copie physique ou montrer
-          une copie numérique du document. Vous ne pouvez pas montrer une photo ou
+          est différente de l’adresse figurant sur votre document d’identité.
+          Les justificatifs d’adresse acceptés sont les suivants:'
+        physical_or_digital_copy: Vous pouvez apporter une copie physique ou montrer une
+          copie numérique du document. Vous ne pouvez pas montrer une photo ou
           une capture d’écran du document.
       state_id:
         acceptable_documents:
-        - Permis de conduire d’État
-        - Document d’identité de non-conducteur d’État
+          - Permis de conduire d’État
+          - Document d’identité de non-conducteur d’État
         heading: Votre document d’identité délivré par l’État
-        info: 'Votre pièce d’identité ne doit pas être expirée. Les formes d’identification
-          acceptables sont:'
-        no_other_documents: Nous n’acceptons actuellement aucune autre forme d’identification,
-          comme les passeports et les documents d’identité militaires.
+        info: 'Votre pièce d’identité ne doit pas être expirée. Les formes
+          d’identification acceptables sont:'
+        no_other_documents: Nous n’acceptons actuellement aucune autre forme
+          d’identification, comme les passeports et les documents d’identité
+          militaires.

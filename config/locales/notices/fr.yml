@@ -12,8 +12,7 @@ fr:
         le lien pour continuer à réinitialiser votre mot de passe.
       first_paragraph_start: Nous avons envoyé un courriel à
       no_email_sent_explanation_start: Vous n’avez pas reçu de courriel?
-      resend_email_success: Nous avons envoyé un autre courriel de réinitialisation
-        de mot de passe.
+      resend_email_success: Nous avons envoyé un autre courriel de réinitialisation de mot de passe.
       use_diff_email:
         link: Créer un nouveau compte
         text_html: Ou, %{link} en utilisant une adresse courriel différente.
@@ -31,15 +30,15 @@ fr:
       security_and_privacy_practices: Pratiques de sécurité et de confidentialité
     resend_confirmation_email:
       success: Nous avons envoyé un autre courriel de confirmation.
-    session_cleared: Pour votre sécurité, nous effacerons l’information que vous avez
-      entrée si vous ne vous déplacez pas vers une nouvelle page dans les %{minutes}
-      prochaines minutes.
+    session_cleared: Pour votre sécurité, nous effacerons l’information que vous
+      avez entrée si vous ne vous déplacez pas vers une nouvelle page dans les
+      %{minutes} prochaines minutes.
     session_timedout: Nous vous avons déconnecté. Pour votre sécurité, %{app_name}
-      désactive votre session lorsque vous demeurez sur une page sans vous déplacer
-      pendant %{minutes} minutes.
+      désactive votre session lorsque vous demeurez sur une page sans vous
+      déplacer pendant %{minutes} minutes.
     signed_up_and_confirmed:
-      first_paragraph_end: avec un lien pour confirmer votre adresse email. Suivez
-        le lien pour continuer à ajouter cet email à votre compte.
+      first_paragraph_end: avec un lien pour confirmer votre adresse email. Suivez le
+        lien pour continuer à ajouter cet email à votre compte.
       first_paragraph_start: Nous avons envoyé un email à
       no_email_sent_explanation_start: Vous n’avez pas reçu de courrier électronique?
     signed_up_but_unconfirmed:
@@ -50,19 +49,20 @@ fr:
     timeout_warning:
       partially_signed_in:
         continue: Continuer la connexion
-        message_html: Pour votre sécurité, nous annulerons votre connexion dans %{time_left_in_session}.
+        message_html: Pour votre sécurité, nous annulerons votre connexion dans
+          %{time_left_in_session}.
         sign_out: Annuler la connexion
-        sr_message_html: Vous serez déconnecté dans %{time_left_in_session}. Sélectionnez
-          « garder ma connexion » pour rester connecté. Sélectionnez « déconnectez-moi
-          » pour vous déconnecter.
+        sr_message_html: Vous serez déconnecté dans %{time_left_in_session}.
+          Sélectionnez « garder ma connexion » pour rester connecté.
+          Sélectionnez « déconnectez-moi » pour vous déconnecter.
       signed_in:
         continue: Gardez ma connexion active
-        message_html: Pour votre sécurité, nous vous déconnecterons dans %{time_left_in_session},
-          sauf en cas d’avis contraire de votre part.
+        message_html: Pour votre sécurité, nous vous déconnecterons dans
+          %{time_left_in_session}, sauf en cas d’avis contraire de votre part.
         sign_out: Déconnectez-moi
-        sr_message_html: Vous serez déconnecté dans %{time_left_in_session}. Sélectionnez
-          « garder ma connexion » pour rester connecté. Sélectionnez « déconnectez-moi »
-          pour vous déconnecter.
+        sr_message_html: Vous serez déconnecté dans %{time_left_in_session}.
+          Sélectionnez « garder ma connexion » pour rester connecté.
+          Sélectionnez « déconnectez-moi » pour vous déconnecter.
     totp_configured: Une application d’authentification a été ajoutée à votre compte.
     totp_disabled: Votre application d’authentification a été supprimée de votre compte.
     use_diff_email:
@@ -70,7 +70,7 @@ fr:
       text_html: Ou %{link}
     webauthn_configured: Une clé de sécurité a été ajoutée à votre compte.
     webauthn_deleted: Votre clé de sécurité a été supprimée de votre compte.
-    webauthn_platform_configured: Déverouillage facial ou déverrouillage par empreinte
-      digitale a été ajoutée à votre compte.
+    webauthn_platform_configured: Déverouillage facial ou déverrouillage par
+      empreinte digitale a été ajoutée à votre compte.
     webauthn_platform_deleted: Déverouillage facial ou déverrouillage par empreinte
       digitale a été ajoutée à votre compte.

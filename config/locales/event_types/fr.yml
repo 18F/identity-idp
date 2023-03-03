@@ -8,7 +8,7 @@ fr:
     authenticator_disabled: Application d’authentification supprimée
     authenticator_enabled: Application authenticator ajoutée
     backup_codes_added: Codes de sauvegarde ajoutés
-    eastern_timestamp: "%{timestamp} (est)"
+    eastern_timestamp: '%{timestamp} (est)'
     email_changed: Adresse courriel modifiée
     email_deleted: Adresse e-mail supprimée
     gpo_mail_sent: Lettre envoyée

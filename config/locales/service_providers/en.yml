@@ -5,9 +5,9 @@ en:
       generic_sp_name: This agency
       inactive:
         button_text: View my %{app_name} account
-        heading: "%{sp_name} no longer uses %{app_name}"
-        instructions: "%{sp_name} no longer uses %{app_name} as a sign-in service
-          for their website. If you already created a %{app_name} account, it is still
-          active and can be used to access other participating government websites."
-        instructions2: Please visit the agency’s website to contact them for more
-          information.
+        heading: '%{sp_name} no longer uses %{app_name}'
+        instructions: '%{sp_name} no longer uses %{app_name} as a sign-in service for
+          their website. If you already created a %{app_name} account, it is
+          still active and can be used to access other participating government
+          websites.'
+        instructions2: Please visit the agency’s website to contact them for more information.
