@@ -89,8 +89,7 @@ es:
       wait_30d_opt_in: Después de 30 días, podrá inscribirse y recibir un código de
         seguridad para ese número de teléfono.
     otp_delivery_preference:
-      instruction: Puede cambiar esto en cualquier momento. Si usa un número fijo,
-        seleccione “Llamada telefónica”.
+      instruction: Envíe mensajes de texto y llamadas a este número por defecto.
       landline_warning_html: Al parecer el número ingresado pertenece a un <b>teléfono
         fijo</b>. Mejor solicita un código de un solo uso por
         %{phone_setup_path}.

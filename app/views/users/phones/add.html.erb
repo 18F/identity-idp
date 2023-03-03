@@ -7,12 +7,6 @@
 <p>
   <%= t('two_factor_authentication.phone_info_html') %>
 </p>
-<p>
-  <%= t('two_factor_authentication.phone_fee_disclosure') %>
-  <% if IdentityConfig.store.voip_block %>
-    <%= t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip') %>
-  <% end %>
-</p>
 
 <%= simple_form_for(
       @new_phone_form,
@@ -40,6 +34,13 @@
         action: 'phone_setup',
       ).with_content(t('forms.buttons.continue')) %>
 <% end %>
+
+<p class="margin-top-4">
+  <%= t('two_factor_authentication.phone_fee_disclosure') %>
+  <% if IdentityConfig.store.voip_block %>
+    <%= t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip') %>
+  <% end %>
+</p>
 
 <%= render 'shared/cancel', link: account_path %>
 

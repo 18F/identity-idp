@@ -91,8 +91,7 @@ fr:
       wait_30d_opt_in: Après 30 jours, vous pouvez vous inscrire et recevoir un code
         de sécurité à ce numéro de téléphone.
     otp_delivery_preference:
-      instruction: Vous pouvez le changer à tout moment. Si vous utilisez un numéro de
-        téléphone fixe, sélectionnez « Appel téléphonique ».
+      instruction: Envoyez des messages texte ainsi que des appels par défaut à ce numéro
       landline_warning_html: Le numéro de téléphone saisi semble être un <b>téléphone
         fixe</b>. Demandez plutôt un code à usage unique par
         %{phone_setup_path}.
