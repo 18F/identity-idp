@@ -1,0 +1,203 @@
+{
+    "postOffices": [
+      {
+        "parking": "Lot",
+        "hours": [
+          {
+            "weekdayHours": "9:00 AM - 6:00 PM"
+          },
+          {
+            "saturdayHours": "9:00 AM - 3:00 PM"
+          },
+          {
+            "sundayHours": "Closed"
+          }
+        ],
+        "distance": "6.63 mi",
+        "streetAddress": "4750 J ST",
+        "city": "SACRAMENTO",
+        "phone": "916-227-6503",
+        "name": "CAMELLIA",
+        "zip4": "9998",
+        "state": "CA",
+        "zip5": "95819"
+      },
+      {
+        "parking": "Lot",
+        "hours": [
+          {
+            "weekdayHours": "9:00 AM - 6:00 PM"
+          },
+          {
+            "saturdayHours": "9:00 AM - 3:00 PM"
+          },
+          {
+            "sundayHours": "Closed"
+          }
+        ],
+        "distance": "3.87 mi",
+        "streetAddress": "660 J ST STE 170",
+        "city": "SACRAMENTO",
+        "phone": "916-498-9145",
+        "name": "DOWNTOWN PLAZA",
+        "zip4": "9996",
+        "state": "CA",
+        "zip5": "95814"
+      },
+      {
+        "parking": "Street",
+        "hours": [
+          {
+            "weekdayHours": "9:00 AM - 6:00 PM"
+          },
+          {
+            "saturdayHours": "9:00 AM - 3:00 PM"
+          },
+          {
+            "sundayHours": "Closed"
+          }
+        ],
+        "distance": "0.05 mi",
+        "streetAddress": "3775 INDUSTRIAL BLVD",
+        "city": "WEST SACRAMENTO",
+        "phone": "916-556-3406",
+        "name": "INDUSTRIAL WEST SACRAMENTO",
+        "zip4": "9998",
+        "state": "CA",
+        "zip5": "95799"
+      },
+      {
+        "parking": "Lot",
+        "hours": [
+          {
+            "weekdayHours": "9:00 AM - 6:00 PM"
+          },
+          {
+            "saturdayHours": "9:00 AM - 3:00 PM"
+          },
+          {
+            "sundayHours": "Closed"
+          }
+        ],
+        "distance": "4.53 mi",
+        "streetAddress": "2121 BROADWAY",
+        "city": "SACRAMENTO",
+        "name": "BROADWAY",
+        "phone": "916-227-6503",
+        "zip4": "9998",
+        "state": "CA",
+        "zip5": "95818"
+      },
+      {
+        "parking": "Street",
+        "hours": [
+          {
+            "weekdayHours": "9:00 AM - 6:00 PM"
+          },
+          {
+            "saturdayHours": "9:00 AM - 3:00 PM"
+          },
+          {
+            "sundayHours": "Closed"
+          }
+        ],
+        "distance": "2.77 mi",
+        "streetAddress": "900 SACRAMENTO AVE",
+        "city": "WEST SACRAMENTO",
+        "phone": "916-556-3406",
+        "name": "BRODERICK",
+        "zip4": "9998",
+        "state": "CA",
+        "zip5": "95605"
+      },
+      {
+        "parking": "Lot",
+        "hours": [
+          {
+            "weekdayHours": "9:00 AM - 6:00 PM"
+          },
+          {
+            "saturdayHours": "9:00 AM - 3:00 PM"
+          },
+          {
+            "sundayHours": "Closed"
+          }
+        ],
+        "distance": "5.33 mi",
+        "streetAddress": "1618 ALHAMBRA BLVD",
+        "city": "SACRAMENTO",
+        "phone": "916-227-6503",
+        "name": "FORT SUTTER",
+        "zip4": "9998",
+        "state": "CA",
+        "zip5": "95816"
+      },
+      {
+        "parking": "Lot",
+        "hours": [
+          {
+            "weekdayHours": "9:00 AM - 6:00 PM"
+          },
+          {
+            "saturdayHours": "9:00 AM - 3:00 PM"
+          },
+          {
+            "sundayHours": "Closed"
+          }
+        ],
+        "distance": "4.55 mi",
+        "streetAddress": "5930 S LAND PARK DR",
+        "city": "SACRAMENTO",
+        "phone": "916-262-3107",
+        "name": "LAND PARK",
+        "zip4": "9998",
+        "state": "CA",
+        "zip5": "95822"
+      },
+      {
+        "parking": "Lot",
+        "hours": [
+          {
+            "weekdayHours": "9:00 AM - 6:00 PM"
+          },
+          {
+            "saturdayHours": "9:00 AM - 3:00 PM"
+          },
+          {
+            "sundayHours": "Closed"
+          }
+        ],
+        "distance": "5.49 mi",
+        "streetAddress": "2929 35TH ST",
+        "city": "SACRAMENTO",
+        "phone": "916-227-6509",
+        "name": "OAK PARK",
+        "zip4": "9998",
+        "state": "CA",
+        "zip5": "95817"
+      },
+      {
+        "parking": "Lot",
+        "hours": [
+          {
+            "weekdayHours": "9:00 AM - 5:00 PM"
+          },
+          {
+            "saturdayHours": "9:00 AM - 5:00 PM"
+          },
+          {
+            "sundayHours": "Closed"
+          }
+        ],
+        "distance": "2.22 mi",
+        "streetAddress": "1601 MERKLEY AVE",
+        "city": "WEST SACRAMENTO",
+        "name": "WEST SACRAMENTO",
+        "phone": "916-556-3406",
+        "state": "CA",
+        "zip4": "9998",
+        "zip5": "95691"
+      }
+    ]
+  }
+  

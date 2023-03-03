@@ -67,6 +67,15 @@ describe Idv::SsnController do
 
       expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
     end
+
+    context 'without a flow session' do
+      let(:flow_session) { nil }
+      it 'redirects to doc_auth' do
+        get :show
+
+        expect(response).to redirect_to(idv_doc_auth_url)
+      end
+    end
   end
 
   describe '#update' do
@@ -81,6 +90,9 @@ describe Idv::SsnController do
           irs_reproofing: false,
           step: 'ssn',
           step_count: 1,
+          success: true,
+          errors: {},
+          pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]],
         }
       end
 
@@ -125,6 +137,37 @@ describe Idv::SsnController do
         session_id = flow_session[:threatmetrix_session_id]
         subject.extra_view_variables
         expect(flow_session[:threatmetrix_session_id]).to eq(session_id)
+      end
+    end
+
+    context 'with invalid ssn' do
+      let(:ssn) { 'i am not an ssn' }
+      let(:params) { { doc_auth: { ssn: ssn } } }
+      let(:analytics_name) { 'IdV: doc auth ssn submitted' }
+      let(:analytics_args) do
+        {
+          analytics_id: 'Doc Auth',
+          flow_path: 'standard',
+          irs_reproofing: false,
+          step: 'ssn',
+          step_count: 0,
+          success: false,
+          errors: {
+            ssn: [t('idv.errors.pattern_mismatch.ssn')],
+          },
+          error_details: { ssn: [:invalid] },
+          pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]],
+        }
+      end
+
+      render_views
+
+      it 'renders the show template with an error message' do
+        put :update, params: params
+
+        expect(response).to have_rendered(:show)
+        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+        expect(response.body).to include(t('idv.errors.pattern_mismatch.ssn'))
       end
     end
 

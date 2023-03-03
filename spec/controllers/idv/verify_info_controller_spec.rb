@@ -48,7 +48,10 @@ describe Idv::VerifyInfoController do
     let(:analytics_name) { 'IdV: doc auth verify visited' }
     let(:analytics_args) do
       {
-        **analytics_hash,
+        analytics_id: 'Doc Auth',
+        flow_path: 'standard',
+        irs_reproofing: false,
+        step: 'verify',
         step_count: 1,
       }
     end
@@ -87,6 +90,25 @@ describe Idv::VerifyInfoController do
       )
     end
 
+    context 'address line 2' do
+      render_views
+
+      it 'With address2 in PII, shows address line 2 input' do
+        flow_session[:pii_from_doc][:address2] = 'APT 3E'
+        get :show
+
+        expect(response.body).to have_content(t('idv.form.address2'))
+      end
+
+      it 'No address2 in PII, still shows address line 2 input' do
+        flow_session[:pii_from_doc][:address2] = nil
+
+        get :show
+
+        expect(response.body).to have_content(t('idv.form.address2'))
+      end
+    end
+
     context 'when the user has already verified their info' do
       it 'redirects to the review controller' do
         controller.idv_session.profile_confirmation = true
@@ -97,6 +119,14 @@ describe Idv::VerifyInfoController do
       end
     end
 
+    it 'redirects to ssn controller when ssn info is missing' do
+      flow_session[:pii_from_doc][:ssn] = nil
+
+      get :show
+
+      expect(response).to redirect_to(idv_ssn_url)
+    end
+
     context 'when the user is ssn throttled' do
       before do
         Throttle.new(
@@ -105,21 +135,6 @@ describe Idv::VerifyInfoController do
           ),
           throttle_type: :proof_ssn,
         ).increment_to_throttled!
-      end
-
-      context 'when using new ssn controller' do
-        before do
-          allow(IdentityConfig.store).to receive(:doc_auth_ssn_controller_enabled).
-            and_return(true)
-        end
-
-        it 'redirects to ssn controller when ssn info is missing' do
-          flow_session[:pii_from_doc][:ssn] = nil
-
-          get :show
-
-          expect(response).to redirect_to(idv_ssn_url)
-        end
       end
 
       it 'redirects to ssn failure url' do

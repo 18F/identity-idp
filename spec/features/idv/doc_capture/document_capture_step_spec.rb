@@ -62,7 +62,7 @@ feature 'doc capture document capture step', js: true do
     using_doc_capture_session { attach_and_submit_images }
 
     click_idv_continue
-    expect(page).to have_current_path(idv_doc_auth_ssn_step)
+    expect(page).to have_current_path(idv_ssn_path)
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth document_capture submitted',
       hash_including(
@@ -98,7 +98,7 @@ feature 'doc capture document capture step', js: true do
         click_button t('forms.buttons.continue')
       end
 
-      expect(page).to have_current_path(idv_doc_auth_ssn_step, wait: 10)
+      expect(page).to have_current_path(idv_ssn_path, wait: 10)
     end
   end
 
@@ -119,7 +119,7 @@ feature 'doc capture document capture step', js: true do
       end
 
       click_idv_continue
-      expect(page).to have_current_path(idv_doc_auth_ssn_step)
+      expect(page).to have_current_path(idv_ssn_path)
     end
 
     it 'does not advance original session with errors' do
@@ -156,7 +156,7 @@ feature 'doc capture document capture step', js: true do
           click_button t('forms.buttons.continue')
         end
 
-        expect(page).to have_current_path(idv_doc_auth_ssn_step, wait: 10)
+        expect(page).to have_current_path(idv_ssn_path, wait: 10)
       end
     end
   end

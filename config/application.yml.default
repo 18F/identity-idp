@@ -71,7 +71,6 @@ doc_auth_combined_hybrid_handoff_enabled: false
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_sharpness_threshold: 40
 doc_auth_error_glare_threshold: 40
-doc_auth_ssn_controller_enabled: false
 database_pool_extra_connections_for_worker: 4
 database_pool_idp: 5
 database_statement_timeout: 2_500
@@ -133,7 +132,7 @@ idv_send_link_max_attempts: 5
 ie11_support_end_date: '2022-12-31'
 idv_sp_required: false
 in_person_cta_variant_testing_enabled: true
-in_person_cta_variant_testing_percents: '{"A":50, "B":50}'
+in_person_cta_variant_testing_percents: '{"B":100}'
 in_person_email_reminder_early_benchmark_in_days: 11
 in_person_email_reminder_final_benchmark_in_days: 1
 in_person_email_reminder_late_benchmark_in_days: 4
@@ -141,6 +140,7 @@ in_person_proofing_enabled: false
 in_person_enrollment_validity_in_days: 30
 in_person_results_delay_in_hours: 1
 in_person_completion_survey_url: 'https://login.gov'
+in_person_verify_info_controller_enabled: false
 include_slo_in_saml_metadata: false
 inherited_proofing_enabled: false
 inherited_proofing_va_base_url: 'https://staging-api.va.gov'

@@ -301,6 +301,20 @@ describe SignUp::CompletionsController do
         expect(@irs_attempts_api_tracker).to receive(:idv_reproof)
         patch :update
       end
+
+      it 'does not log a reproofing event during account redirect' do
+        user.profiles.create(verified_at: Time.zone.now, active: true, activated_at: Time.zone.now)
+        stub_sign_in(user)
+        subject.session[:sp] = {
+          ial2: false,
+          request_url: 'http://example.com',
+        }
+        expect(@irs_attempts_api_tracker).not_to receive(:idv_reproof)
+
+        patch :update
+
+        expect(response).to redirect_to account_path
+      end
     end
   end
 end

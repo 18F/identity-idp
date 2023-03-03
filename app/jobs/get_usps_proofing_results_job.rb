@@ -18,7 +18,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       timestamp: Time.zone.now,
       user_id: enrollment.user_id,
       service_provider: enrollment.issuer,
-      delay_time_seconds: mail_delivery_params[:wait],
+      wait_until: mail_delivery_params(enrollment.proofed_at)[:wait_until],
     }
   end
 
@@ -42,8 +42,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       primary_id_type: response['primaryIdType'],
       secondary_id_type: response['secondaryIdType'],
       failure_reason: response['failureReason'],
-      transaction_end_date_time: response['transactionEndDateTime'],
-      transaction_start_date_time: response['transactionStartDateTime'],
+      transaction_end_date_time: parse_usps_timestamp(response['transactionEndDateTime']),
+      transaction_start_date_time: parse_usps_timestamp(response['transactionStartDateTime']),
       status: response['status'],
       assurance_level: response['assuranceLevel'],
       proofing_post_office: response['proofingPostOffice'],
@@ -234,6 +234,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_unsupported_id_type(enrollment, response)
+    proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_failed] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
@@ -243,7 +244,13 @@ class GetUspsProofingResultsJob < ApplicationJob
       primary_id_type: response['primaryIdType'],
       reason: 'Unsupported ID type',
     )
-    enrollment.update(status: :failed)
+    enrollment.update(status: :failed, proofed_at: proofed_at)
+
+    send_failed_email(enrollment.user, enrollment)
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
+      **email_analytics_attributes(enrollment),
+      email_type: 'Failed unsupported ID type',
+    )
   end
 
   def handle_expired_status_update(enrollment, response, response_message)
@@ -301,6 +308,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_failed_status(enrollment, response)
+    proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_failed] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
@@ -309,7 +317,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       reason: 'Failed status',
     )
 
-    enrollment.update(status: :failed)
+    enrollment.update(status: :failed, proofed_at: proofed_at)
     if response['fraudSuspected']
       send_failed_fraud_email(enrollment.user, enrollment)
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
@@ -326,6 +334,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_successful_status_update(enrollment, response)
+    proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_passed] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
@@ -334,12 +343,12 @@ class GetUspsProofingResultsJob < ApplicationJob
       passed: true,
       reason: 'Successful status update',
     )
+    enrollment.profile.activate
+    enrollment.update(status: :passed, proofed_at: proofed_at)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
       email_type: 'Success',
     )
-    enrollment.profile.activate
-    enrollment.update(status: :passed)
     send_verified_email(enrollment.user, enrollment)
   end
 
@@ -369,7 +378,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       # rubocop:disable IdentityIdp/MailLaterLinter
       UserMailer.with(user: user, email_address: email_address).in_person_verified(
         enrollment: enrollment,
-      ).deliver_later(**mail_delivery_params)
+      ).deliver_later(**mail_delivery_params(enrollment.proofed_at))
       # rubocop:enable IdentityIdp/MailLaterLinter
     end
   end
@@ -389,7 +398,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       # rubocop:disable IdentityIdp/MailLaterLinter
       UserMailer.with(user: user, email_address: email_address).in_person_failed(
         enrollment: enrollment,
-      ).deliver_later(**mail_delivery_params)
+      ).deliver_later(**mail_delivery_params(enrollment.proofed_at))
       # rubocop:enable IdentityIdp/MailLaterLinter
     end
   end
@@ -399,18 +408,26 @@ class GetUspsProofingResultsJob < ApplicationJob
       # rubocop:disable IdentityIdp/MailLaterLinter
       UserMailer.with(user: user, email_address: email_address).in_person_failed_fraud(
         enrollment: enrollment,
-      ).deliver_later(**mail_delivery_params)
+      ).deliver_later(**mail_delivery_params(enrollment.proofed_at))
       # rubocop:enable IdentityIdp/MailLaterLinter
     end
   end
 
-  def mail_delivery_params
-    config_delay = IdentityConfig.store.in_person_results_delay_in_hours
-    if config_delay > 0
-      return { wait: config_delay.hours, queue: :intentionally_delayed }
-    elsif (config_delay == 0)
-      return {}
-    end
-    { wait: DEFAULT_EMAIL_DELAY_IN_HOURS.hours, queue: :intentionally_delayed }
+  def mail_delivery_params(proofed_at)
+    mail_delay_hours = IdentityConfig.store.in_person_results_delay_in_hours ||
+                       DEFAULT_EMAIL_DELAY_IN_HOURS
+    wait_until = proofed_at + mail_delay_hours.hours
+    return {} if mail_delay_hours == 0 || wait_until < Time.zone.now
+    return { wait_until: wait_until, queue: :intentionally_delayed }
+  end
+
+  def parse_usps_timestamp(usps_timestamp)
+    return unless usps_timestamp
+    # Parse timestamps eg 12/17/2020 033855 => Thu, 17 Dec 2020 03:38:55 -0600
+    # Note that the USPS timestamps are in Central Standard time (UTC -6:00)
+    ActiveSupport::TimeZone[-6].strptime(
+      usps_timestamp,
+      '%m/%d/%Y %H%M%S',
+    ).in_time_zone('UTC')
   end
 end
