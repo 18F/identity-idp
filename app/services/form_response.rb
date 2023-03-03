@@ -5,6 +5,7 @@ class FormResponse
 
   def initialize(success:, errors: {}, extra: {}, serialize_error_details_only: false)
     @success = success
+    @original_errors = errors
     @errors = errors.is_a?(ActiveModel::Errors) ? errors.messages.to_hash : errors
     @error_details = errors.details if errors.is_a?(ActiveModel::Errors)
     @extra = extra
@@ -13,6 +14,35 @@ class FormResponse
 
   def success?
     @success
+  end
+
+  def analytics_hash
+    return to_h unless @original_errors.is_a?(ActiveModel::Errors)
+    hash = { success: success }
+    pii_like_keypaths = []
+    if !serialize_error_details_only?
+      hash[:errors] = @original_errors.errors.map do |err|
+        if HIDDEN_MESSAGE_ERROR_TYPES.include?(err.type)
+          pii_like_keypaths.append([:errors, err.attribute])
+          [err.attribute, err.type.to_s]
+        else
+          [err.attribute, err.message]
+        end
+      end.to_h
+    end
+    if error_details.present?
+      hash[:error_details] = @original_errors.errors.map do |err|
+        if HIDDEN_MESSAGE_ERROR_TYPES.include?(err.type)
+          pii_like_keypaths.append([:error_details, err.attribute])
+          [err.attribute, err.type.to_s]
+        else
+          [err.attribute, err.message]
+        end
+      end.to_h
+    end
+    hash[:pii_like_keypaths] = pii_like_keypaths
+    hash.merge!(extra)
+    hash
   end
 
   def to_h
@@ -50,6 +80,9 @@ class FormResponse
   end
 
   private
+
+  # Types of errors to hide from the logs (replace message with type)
+  HIDDEN_MESSAGE_ERROR_TYPES = %i[nontransliterable_field]
 
   def merge_arrays(_key, first, second)
     Array(first) + Array(second)
