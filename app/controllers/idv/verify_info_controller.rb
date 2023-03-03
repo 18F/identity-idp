@@ -85,11 +85,7 @@ module Idv
     private
 
     def prev_url
-      if IdentityConfig.store.doc_auth_ssn_controller_enabled
-        idv_ssn_url
-      else
-        idv_doc_auth_url
-      end
+      idv_ssn_url
     end
 
     def analytics_arguments
@@ -116,11 +112,6 @@ module Idv
     def confirm_ssn_step_complete
       return if pii.present? && pii[:ssn].present?
       redirect_to prev_url
-    end
-
-    def confirm_profile_not_already_confirmed
-      return unless idv_session.profile_confirmation == true
-      redirect_to idv_review_url
     end
 
     def current_flow_step_counts

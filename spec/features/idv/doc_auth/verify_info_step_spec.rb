@@ -61,9 +61,14 @@ feature 'doc auth verify_info step', :js do
   end
 
   it 'allows the user to enter in a new ssn and displays updated info' do
-    click_button t('idv.buttons.change_ssn_label')
+    click_link t('idv.buttons.change_ssn_label')
+    expect(page).to have_current_path(idv_ssn_path)
     fill_in t('idv.form.ssn_label_html'), with: '900456789'
     click_button t('forms.buttons.submit.update')
+
+    expect(fake_analytics).to have_logged_event(
+      'IdV: doc auth redo_ssn submitted',
+    )
 
     expect(page).to have_current_path(idv_verify_info_path)
 
@@ -370,33 +375,6 @@ feature 'doc auth verify_info step', :js do
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
       click_idv_continue
       expect(page).to have_current_path(idv_phone_path)
-    end
-  end
-
-  context 'with ssn_controller enabled' do
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_ssn_controller_enabled).
-        and_return(true)
-      sign_in_and_2fa_user
-      complete_doc_auth_steps_before_verify_step
-    end
-
-    it 'uses ssn controller to enter a new ssn and displays updated info' do
-      click_link t('idv.buttons.change_ssn_label')
-      expect(page).to have_current_path(idv_ssn_path)
-
-      fill_in t('idv.form.ssn_label_html'), with: '900456789'
-      click_button t('forms.buttons.submit.update')
-
-      expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth redo_ssn submitted',
-      )
-
-      expect(page).to have_current_path(idv_verify_info_path)
-
-      expect(page).to have_text('9**-**-***9')
-      check t('forms.ssn.show')
-      expect(page).to have_text('900-45-6789')
     end
   end
 end

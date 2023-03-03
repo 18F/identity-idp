@@ -22,7 +22,7 @@ feature 'doc auth link sent step' do
       mock_doc_captured(user.id)
       click_idv_continue
 
-      expect(page).to have_current_path(idv_doc_auth_ssn_step)
+      expect(page).to have_current_path(idv_ssn_path)
     end
 
     it 'proceeds to the next page if the user does not have a phone' do
@@ -32,7 +32,7 @@ feature 'doc auth link sent step' do
       mock_doc_captured(user.id)
       click_idv_continue
 
-      expect(page).to have_current_path(idv_doc_auth_ssn_step)
+      expect(page).to have_current_path(idv_ssn_path)
     end
 
     it 'does not proceed to the next page if the capture flow is incomplete' do
@@ -80,7 +80,7 @@ feature 'doc auth link sent step' do
         mock_doc_captured(user.id)
 
         expect(page).to have_content(t('doc_auth.headings.ssn'), wait: 6)
-        expect(page).to have_current_path(idv_doc_auth_ssn_step)
+        expect(page).to have_current_path(idv_ssn_path)
       end
     end
 
