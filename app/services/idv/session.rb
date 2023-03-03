@@ -117,10 +117,6 @@ module Idv
       @gpo_otp = confirmation_maker.otp
     end
 
-    def alive?
-      session.present?
-    end
-
     def address_mechanism_chosen?
       vendor_phone_confirmation == true || address_verification_mechanism == 'gpo'
     end
