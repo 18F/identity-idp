@@ -14,7 +14,6 @@ fr:
       mail:
         resend: Envoyer une autre lettre
         send: Envoyer une lettre
-      send_confirmation_code: Continuer
     cancel:
       actions:
         account_page: Accéder à la page de votre compte

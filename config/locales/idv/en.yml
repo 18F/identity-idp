@@ -13,7 +13,6 @@ en:
       mail:
         resend: Send another letter
         send: Send a letter
-      send_confirmation_code: Continue
     cancel:
       actions:
         account_page: Go to account page

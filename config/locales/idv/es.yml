@@ -14,7 +14,6 @@ es:
       mail:
         resend: Enviar otra carta
         send: Enviar una carta
-      send_confirmation_code: Continuar
     cancel:
       actions:
         account_page: Ir a la página de la cuenta
