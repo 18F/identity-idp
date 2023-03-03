@@ -34,7 +34,8 @@ module Idv
 
         flow_session[:had_barcode_read_failure] = response.attention_with_barcode?
         if store_in_session
-          flow_session[:pii_from_doc] = flow_session[:pii_from_doc].to_h.merge(pii_from_doc)
+          flow_session[:pii_from_doc] ||= {}
+          flow_session[:pii_from_doc].merge!(pii_from_doc)
           idv_session.delete('applicant')
         end
         track_document_state(pii_from_doc[:state])
