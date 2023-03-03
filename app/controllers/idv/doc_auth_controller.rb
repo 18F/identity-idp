@@ -70,10 +70,15 @@ module Idv
     end
 
     def check_for_outage
-      if VendorStatus.new.any_ial2_vendor_outage?
+      vendor_status = VendorStatus.new
+      if vendor_status.any_ial2_vendor_outage?
         session[:vendor_outage_redirect] = current_step
         session[:vendor_outage_redirect_from_idv] = true
         redirect_to vendor_outage_url
+      elsif vendor_status.any_phone_vendor_outage?
+        session[:vendor_outage_redirect] = current_step
+        session[:vendor_outage_redirect_from_idv] = true
+        redirect_to idv_vendor_outage_url unless session[:skip_vendor_outage]
       end
     end
   end

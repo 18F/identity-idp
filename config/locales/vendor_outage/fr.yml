@@ -22,6 +22,8 @@ fr:
         idv: Nous ne pouvons pas envoyer d’appels téléphoniques pour le moment. Vous
           pouvez obtenir un code par message texte (SMS), ou vérifier votre
           adresse par la poste.
+      pinpoint:
+        idv: Pour le moment, nous ne pouvons vérifier votre identité que par courrier
     blocked:
       idv:
         generic: Nous rencontrons des difficultés techniques et ne pouvons pas vérifier

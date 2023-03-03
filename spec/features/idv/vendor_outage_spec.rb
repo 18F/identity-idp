@@ -8,6 +8,29 @@ feature 'vendor_outage_spec' do
   let(:new_password) { 'some really awesome new password' }
   let(:pii) { { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' } }
 
+  context "phone outage", js: true do
+    let(:user) { user_with_totp_2fa }
+    before do
+      allow(IdentityConfig.store).to receive(:vendor_status_sms).
+        and_return(:full_outage)
+      allow(IdentityConfig.store).to receive(:vendor_status_phone).
+          and_return(:full_outage)
+    end
+
+    it 'shows vendor outage page before idv welcome page' do
+      visit_idp_from_sp_with_ial2(:oidc)
+      sign_in_user(user)
+      fill_in_code_with_last_totp(user)
+      click_submit_default
+      
+      expect(current_path).to eq idv_vendor_outage_path
+
+      click_idv_continue
+
+      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
+    end
+  end
+
   %w[acuant lexisnexis_instant_verify lexisnexis_trueid].each do |service|
     context "full outage on #{service}" do
       before do

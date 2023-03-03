@@ -1,5 +1,14 @@
 <%= render(AlertIconComponent.new) %>
+<%= render PageHeadingComponent.new.with_content(t('vendor_outage.alerts.pinpoint.idv')) %>
 
+<p>Some text here</p>
+
+<%= render ButtonComponent.new(
+    action: ->(**tag_options, &block) do
+    link_to(idv_doc_auth_step_path(step: :welcome), **tag_options, &block)
+    end,
+    class: 'usa-button',
+    ).with_content(t('doc_auth.buttons.continue')) %>
 
 <%= render(
     'shared/troubleshooting_options',

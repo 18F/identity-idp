@@ -18,6 +18,8 @@ en:
           one.
         idv: We cannot send phone calls at this time. You can get a code by text message
           (SMS), or verify your address by mail instead.
+      pinpoint:
+        idv: We can only verify your identity by mail right now
     blocked:
       idv:
         generic: We are having technical difficulties on our end and cannot verify your
