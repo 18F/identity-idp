@@ -35,7 +35,7 @@
       ).with_content(t('forms.buttons.continue')) %>
 <% end %>
 
-<p class="margin-top-4">
+<p class="margin-top-5">
   <%= t('two_factor_authentication.phone_fee_disclosure') %>
   <% if IdentityConfig.store.voip_block %>
     <%= t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip') %>
