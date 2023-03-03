@@ -42,9 +42,6 @@ es:
       reset_password: Restablecer la contraseña
       review: Vuelve a ingresar tu contraseña
       verify_info: Verifica tu información
-    inherited_proofing:
-      cancellation_prompt: Cancela la verificación de identidad
-      cancelled: Se canceló la verificación de identidad
     mfa_setup:
       suggest_second_mfa: '¡Has agregado tu primer método de autenticación! Agrega un
         segundo método como respaldo.'

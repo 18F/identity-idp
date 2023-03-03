@@ -109,10 +109,6 @@ module Idv
         :document_capture_session_uuid
       end
 
-      def inherited_proofing_verify_step_document_capture_session_uuid_key
-        :inherited_proofing_verify_step_document_capture_session_uuid
-      end
-
       def verify_step_document_capture_session_uuid_key
         :idv_verify_step_document_capture_session_uuid
       end
