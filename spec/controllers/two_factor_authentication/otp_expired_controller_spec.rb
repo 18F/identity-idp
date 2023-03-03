@@ -61,6 +61,13 @@ describe TwoFactorAuthentication::OtpExpiredController do
     end
 
     context 'otp expired redirect feature is turned off' do
+      it 'does not redirect' do
+        allow(IdentityConfig.store).to receive(:allow_otp_countdown_expired_redirect).and_return(false)
+
+        get :show
+  
+        expect(response).to_not render_template(:show)
+      end
     end
   end
 end
