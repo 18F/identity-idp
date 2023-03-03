@@ -81,15 +81,15 @@ en:
       wait_30d_opt_in: After 30 days, you can opt in and receive a security code to
         that phone number.
     otp_delivery_preference:
-      instruction: You can change this selection the next time you sign in. If you
-        entered a landline, please select “Phone call” below.
+      instruction: You can change this anytime. If you use a landline number, select
+        “Phone call.”
       landline_warning_html: The phone number entered appears to be a <b>landline
         phone</b>. Request a one-time code by %{phone_setup_path} instead.
       no_supported_options: We are unable to verify phone numbers from %{location}
       phone_call: phone call
       sms: Text message (SMS)
       sms_unsupported: We are unable to send text messages to phone numbers in %{location}.
-      title: How should we send you a code?
+      title: How you’ll get your code
       voice: Phone call
       voice_unsupported: We are unable to call phone numbers in %{location}.
     otp_make_default_number:

@@ -89,7 +89,8 @@ es:
       wait_30d_opt_in: Después de 30 días, podrá inscribirse y recibir un código de
         seguridad para ese número de teléfono.
     otp_delivery_preference:
-      instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
+      instruction: Puede cambiar esto en cualquier momento. Si usa un número fijo,
+        seleccione “Llamada telefónica”.
       landline_warning_html: Al parecer el número ingresado pertenece a un <b>teléfono
         fijo</b>. Mejor solicita un código de un solo uso por
         %{phone_setup_path}.
@@ -97,7 +98,7 @@ es:
       phone_call: llamada telefónica
       sms: Mensaje de texto (SMS, sigla en inglés)
       sms_unsupported: No podemos enviar mensajes de texto a números de teléfono de %{location}.
-      title: '¿Cómo deberíamos enviarle un código?'
+      title: Cómo obtendrá su código
       voice: Llamada telefónica
       voice_unsupported: No podemos llamar a números de teléfono en %{location}.
     otp_make_default_number:
