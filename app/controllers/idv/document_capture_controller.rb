@@ -19,6 +19,11 @@ module Idv
       url_builder = ImageUploadPresignedUrlGenerator.new
 
       {
+        flow_session: flow_session,
+        flow_path: 'standard',
+        sp_name: decorated_session.sp_name,
+        failure_to_proof_url: idv_doc_auth_return_to_sp_url,
+
         front_image_upload_url: url_builder.presigned_image_upload_url(
           image_type: 'front',
           transaction_id: flow_session[:document_capture_session_uuid],
