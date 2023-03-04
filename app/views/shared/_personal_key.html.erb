@@ -1,5 +1,6 @@
 <%= render PageHeadingComponent.new.with_content(t('forms.personal_key_partial.header')) %>
 <div class="full-width-box margin-y-5">
+  <!-- the following partial probably does not show the correct date !-->
   <%= render 'partials/personal_key/key', code: code, show_save_buttons: true %>
 </div>
 
