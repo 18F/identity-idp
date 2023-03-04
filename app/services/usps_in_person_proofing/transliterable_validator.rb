@@ -34,7 +34,12 @@ module UspsInPersonProofing
           (record.send(field) if record.respond_to?(field))
         end,
       )&.each do |key, value|
-        record.errors.add(key, :nontransliterable_field, message: value) unless value.nil?
+        unless value.nil?
+          record.errors.add(
+            key, :nontransliterable_field, message: value,
+                                           pii: true
+          )
+        end
       end
     end
 

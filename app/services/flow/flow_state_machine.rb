@@ -25,7 +25,7 @@ module Flow
       increment_step_name_counts
       analytics.public_send(
         flow.step_handler(step).analytics_submitted_event,
-        **result.analytics_hash.merge(analytics_properties),
+        **result.to_h.merge(analytics_properties),
       )
 
       register_update_step(step, result)

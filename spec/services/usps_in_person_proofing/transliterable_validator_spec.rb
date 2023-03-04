@@ -5,7 +5,9 @@ RSpec.describe UspsInPersonProofing::TransliterableValidator do
   let(:model) { double }
   let(:helper) { instance_double(UspsInPersonProofing::TransliterableValidatorHelper) }
   let(:sut) do
-    described_class.new(fields: [*UspsInPersonProofing::TransliterableValidatorHelper::SUPPORTED_FIELDS])
+    described_class.new(
+      fields: [*UspsInPersonProofing::TransliterableValidatorHelper::SUPPORTED_FIELDS],
+    )
   end
 
   describe '#initialize' do
@@ -81,9 +83,15 @@ RSpec.describe UspsInPersonProofing::TransliterableValidator do
             '1234': nil,
           })
         expect(model).to receive(:errors).and_return(errors).at_least(:once)
-        expect(errors).to receive(:add).with(:a, 'b', type: :nontransliterable_field)
-        expect(errors).to receive(:add).with(:def, '1234', type: :nontransliterable_field)
-        expect(errors).not_to receive(:add).with(:'1234', nil, type: :nontransliterable_field)
+        expect(errors).to receive(:add).with(:a, :nontransliterable_field, message: 'b', pii: true)
+        expect(errors).to receive(:add).with(
+          :def, :nontransliterable_field, message: '1234',
+                                          pii: true
+        )
+        expect(errors).not_to receive(:add).with(
+          :'1234', :nontransliterable_field, message: nil,
+                                             pii: true
+        )
         sut.validate(
           model,
         )

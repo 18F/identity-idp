@@ -1,13 +1,13 @@
 class FormResponse
-  attr_reader :errors, :extra, :serialize_error_details_only
+  attr_reader :errors, :extra, :serialize_error_details_only, :pii_keys
 
   alias_method :serialize_error_details_only?, :serialize_error_details_only
 
   def initialize(success:, errors: {}, extra: {}, serialize_error_details_only: false)
     @success = success
-    @original_errors = errors
     @errors = errors.is_a?(ActiveModel::Errors) ? errors.messages.to_hash : errors
     @error_details = errors.details if errors.is_a?(ActiveModel::Errors)
+    @pii_keys = errors.is_a?(ActiveModel::Errors) ? get_pii_keys(errors) : []
     @extra = extra
     @serialize_error_details_only = serialize_error_details_only
   end
@@ -16,35 +16,15 @@ class FormResponse
     @success
   end
 
-  def analytics_hash
-    return to_h unless @original_errors.is_a?(ActiveModel::Errors)
-    hash = { success: success }
-    pii_like_keypaths = []
-    errors_hash = {}
-    @original_errors.errors.each do |err|
-      if HIDDEN_MESSAGE_ERROR_TYPES.include?(err.type)
-        (errors_hash[err.attribute] ||= []) << err.type
-      else
-        (errors_hash[err.attribute] ||= []) << err.message
-      end
-    end
-    errors_hash.each do |key, value|
-      if value.size < 2 && HIDDEN_MESSAGE_ERROR_TYPES.include?(value[0])
-        pii_like_keypaths.append([:errors, key])
-        pii_like_keypaths.append([:error_details, key])
-      end
-    end
-    hash[:pii_like_keypaths] = pii_like_keypaths.sort.uniq
-    hash[:errors] = errors_hash if !serialize_error_details_only?
-    hash[:error_details] = errors_hash.clone if error_details.present?
-    hash.merge!(extra)
-    hash
-  end
-
   def to_h
     hash = { success: success }
     hash[:errors] = errors if !serialize_error_details_only?
     hash[:error_details] = flatten_details(error_details) if error_details.present?
+    pii_keys.each do |key|
+      hash[:pii_like_keypaths] ||= []
+      hash[:pii_like_keypaths].append([:error_details, key]) if error_details.has_key?(key)
+      hash[:errors] = hash[:errors].except(key) if hash[:errors].has_key?(key)
+    end
     hash.merge!(extra)
     hash
   end
@@ -77,15 +57,18 @@ class FormResponse
 
   private
 
-  # Types of errors to hide from the logs (replace message with type)
-  HIDDEN_MESSAGE_ERROR_TYPES = %i[nontransliterable_field]
-
   def merge_arrays(_key, first, second)
     Array(first) + Array(second)
   end
 
   def flatten_details(details)
     details.transform_values { |errors| errors.pluck(:error) }
+  end
+
+  def get_pii_keys(errors)
+    errors.select do |err|
+      err.options[:pii]
+    end.map(&:attribute)
   end
 
   attr_reader :success
