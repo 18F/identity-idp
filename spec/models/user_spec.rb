@@ -324,14 +324,14 @@ RSpec.describe User do
       user = build(:user)
       user.create_direct_otp
 
-      expect(user.direct_otp.length).to eq 10
+      expect(user.redis_direct_otp.length).to eq 10
     end
 
     it 'is set to 6' do
       user = build(:user)
       user.create_direct_otp
 
-      expect(user.direct_otp.length).to eq 6
+      expect(user.redis_direct_otp.length).to eq 6
     end
   end
 

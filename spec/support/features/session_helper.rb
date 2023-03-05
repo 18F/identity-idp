@@ -312,7 +312,7 @@ module Features
     end
 
     def enter_correct_otp_code_for_user(user)
-      fill_in 'code', with: user.reload.direct_otp
+      fill_in 'code', with: user.redis_direct_otp
       click_submit_default
     end
 

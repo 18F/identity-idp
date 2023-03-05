@@ -10,7 +10,7 @@ module RequestHelper
     get otp_send_path, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
     follow_redirect!
     post login_two_factor_path, params: {
-      otp_delivery_preference: 'sms', code: user.reload.direct_otp
+      otp_delivery_preference: 'sms', code: user.redis_direct_otp
     }
   end
 end

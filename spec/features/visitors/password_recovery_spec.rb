@@ -124,7 +124,7 @@ feature 'Password Recovery' do
       click_button t('forms.passwords.edit.buttons.submit')
       fill_in_credentials_and_submit(@user.email, 'a real secure password')
       click_button t('forms.buttons.submit.default')
-      fill_in 'code', with: @user.reload.direct_otp
+      fill_in 'code', with: @user.redis_direct_otp
       click_button t('forms.buttons.submit.default')
 
       expect(current_path).to eq account_path

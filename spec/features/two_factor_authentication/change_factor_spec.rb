@@ -35,7 +35,7 @@ feature 'Changing authentication factor' do
         click_link t('links.two_factor_authentication.send_another_code')
 
         expect(Telephony).to have_received(:send_authentication_otp).with(
-          otp: user.reload.direct_otp,
+          otp: user.redis_direct_otp,
           to: old_phone,
           expiration: 10,
           channel: :sms,

@@ -9,7 +9,7 @@ module TwoFactorAuthentication
       @use_another_phone_path = use_another_phone_path
       @authentication_options_path = authentication_options_path
       analytics.otp_expired_visited(
-        otp_sent_at: current_user.direct_otp_sent_at,
+        otp_sent_at: current_user.redis_direct_otp_sent_at,
         otp_expiration: otp_expiration,
       )
     end

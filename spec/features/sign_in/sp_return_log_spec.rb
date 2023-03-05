@@ -8,7 +8,7 @@ feature 'SP return logs' do
     visit_idp_from_sp_with_ial1(:oidc)
     fill_in_credentials_and_submit(user.email, user.password)
     click_button t('forms.buttons.submit.default')
-    fill_in 'code', with: user.reload.direct_otp
+    fill_in 'code', with: user.redis_direct_otp
     click_button t('forms.buttons.submit.default')
     click_agree_and_continue
 

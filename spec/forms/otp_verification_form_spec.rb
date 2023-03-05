@@ -5,12 +5,14 @@ RSpec.describe OtpVerificationForm do
   let(:code) { nil }
   let(:user_otp) { nil }
   let(:user_otp_sent_at) { nil }
+  let(:user_otp_expires_at) { 5.minutes.from_now }
 
   subject(:form) { described_class.new(user, code) }
 
   before do
-    allow(user).to receive(:direct_otp).and_return(user_otp)
-    allow(user).to receive(:direct_otp_sent_at).and_return(user_otp_sent_at)
+    allow(user).to receive(:redis_direct_otp).and_return(user_otp)
+    allow(user).to receive(:redis_direct_otp_sent_at).and_return(user_otp_sent_at)
+    allow(user).to receive(:redis_direct_otp_expires_at).and_return(user_otp_expires_at)
     allow(user).to receive(:clear_direct_otp)
   end
 
@@ -122,8 +124,8 @@ RSpec.describe OtpVerificationForm do
     context 'when the user pending OTP is expired' do
       let(:code) { '123456' }
       let(:user_otp) { '123456' }
-      let(:user_otp_sent_at) do
-        (TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS + 1).seconds.ago
+      let(:user_otp_expires_at) do
+        1.second.ago
       end
 
       it 'returns an unsuccessful response' do

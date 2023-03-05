@@ -131,7 +131,7 @@ describe 'default phone selection' do
   def submit_prefilled_otp_code(user, delivery_preference)
     expect(current_path).
       to eq login_two_factor_path(otp_delivery_preference: delivery_preference)
-    fill_in('code', with: user.reload.direct_otp)
+    fill_in('code', with: user.redis_direct_otp)
     click_button t('forms.buttons.submit.default')
   end
 
