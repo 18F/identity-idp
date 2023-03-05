@@ -41,7 +41,7 @@ class OtpVerificationForm
   end
 
   def validate_user_otp_presence
-    return if user.direct_otp.present?
+    return if user.redis_direct_otp.present?
     errors.add(:code, :user_otp_missing, type: :user_otp_missing)
   end
 
@@ -52,14 +52,13 @@ class OtpVerificationForm
 
   def validate_code_equals_user_otp
     return if code.blank? ||
-              user.direct_otp.blank? ||
-              ActiveSupport::SecurityUtils.secure_compare(user.direct_otp, code)
+              user.redis_direct_otp.blank? ||
+              ActiveSupport::SecurityUtils.secure_compare(user.redis_direct_otp, code)
     errors.add(:code, :incorrect, type: :incorrect)
   end
 
   def otp_expired?
-    return if user.direct_otp_sent_at.blank?
-    (user.direct_otp_sent_at + TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS).past?
+    user.redis_direct_otp.present? && Time.zone.now >= user.redis_direct_otp_expires_at
   end
 
   def extra_analytics_attributes

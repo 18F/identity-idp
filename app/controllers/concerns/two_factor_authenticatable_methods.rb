@@ -277,12 +277,11 @@ module TwoFactorAuthenticatableMethods
   end
 
   def direct_otp_code
-    current_user.direct_otp if FeatureManagement.prefill_otp_codes?
+    current_user.redis_direct_otp if FeatureManagement.prefill_otp_codes?
   end
 
   def otp_expiration
-    return if current_user.direct_otp_sent_at.blank?
-    current_user.direct_otp_sent_at + TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
+    current_user.redis_direct_otp_expires_at
   end
 
   def user_opted_remember_device_cookie

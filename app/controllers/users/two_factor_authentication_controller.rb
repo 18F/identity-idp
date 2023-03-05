@@ -285,10 +285,10 @@ module Users
         )
       end
 
-      current_user.create_direct_otp
+      direct_otp = current_user.create_direct_otp
       otp_params = {
         to: phone_to_deliver_to,
-        otp: current_user.direct_otp,
+        otp: direct_otp,
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         otp_format: t('telephony.format_type.digit'),
         channel: method.to_sym,

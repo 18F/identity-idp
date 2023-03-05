@@ -19,7 +19,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
           get :show, params: { otp_delivery_preference: 'sms' }
 
-          expect(assigns(:presenter).code_value).to eq(subject.current_user.direct_otp)
+          expect(assigns(:presenter).code_value).to eq(subject.current_user.redis_direct_otp)
         end
       end
 
@@ -200,7 +200,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
       it 'redirects to the profile' do
         post :create, params: {
-          code: subject.current_user.reload.direct_otp,
+          code: subject.current_user.redis_direct_otp,
           otp_delivery_preference: 'sms',
         }
 
@@ -210,7 +210,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
       it 'resets the second_factor_attempts_count' do
         subject.current_user.update(second_factor_attempts_count: 1)
         post :create, params: {
-          code: subject.current_user.reload.direct_otp,
+          code: subject.current_user.redis_direct_otp,
           otp_delivery_preference: 'sms',
         }
 
@@ -243,7 +243,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           with(reauthentication: false, success: true)
 
         post :create, params: {
-          code: subject.current_user.reload.direct_otp,
+          code: subject.current_user.redis_direct_otp,
           otp_delivery_preference: 'sms',
         }
       end
@@ -257,7 +257,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           with(reauthentication: true, success: true)
 
         post :create, params: {
-          code: subject.current_user.reload.direct_otp,
+          code: subject.current_user.redis_direct_otp,
           otp_delivery_preference: 'sms',
         }
       end
@@ -271,7 +271,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           post(
             :create,
             params: {
-              code: subject.current_user.direct_otp,
+              code: subject.current_user.redis_direct_otp,
               otp_delivery_preference: 'sms',
               remember_device: '1',
             },
@@ -286,7 +286,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           post(
             :create,
             params: {
-              code: subject.current_user.direct_otp,
+              code: subject.current_user.redis_direct_otp,
               otp_delivery_preference: 'sms',
             },
           )
@@ -331,7 +331,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
             with({ reauthentication: false, success: true })
           post :create, params: {
-            code: subject.current_user.direct_otp,
+            code: subject.current_user.redis_direct_otp,
             otp_delivery_preference: 'sms',
           }
         end
@@ -404,7 +404,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             post(
               :create,
               params: {
-                code: subject.current_user.direct_otp,
+                code: subject.current_user.redis_direct_otp,
                 otp_delivery_preference: 'sms',
               },
             )
@@ -491,7 +491,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
               post(
                 :create,
                 params: {
-                  code: subject.current_user.direct_otp,
+                  code: subject.current_user.redis_direct_otp,
                   otp_delivery_preference: 'sms',
                 },
               )
@@ -534,7 +534,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             post(
               :create,
               params: {
-                code: subject.current_user.direct_otp,
+                code: subject.current_user.redis_direct_otp,
                 otp_delivery_preference: 'sms',
               },
             )
@@ -580,7 +580,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             post(
               :create,
               params: {
-                code: subject.current_user.direct_otp,
+                code: subject.current_user.redis_direct_otp,
                 otp_delivery_preference: 'sms',
               },
             )
@@ -611,7 +611,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           post(
             :create,
             params: {
-              code: subject.current_user.direct_otp,
+              code: subject.current_user.redis_direct_otp,
               otp_delivery_preference: 'sms',
               remember_device: '1',
             },
@@ -626,7 +626,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           post(
             :create,
             params: {
-              code: subject.current_user.direct_otp,
+              code: subject.current_user.redis_direct_otp,
               otp_delivery_preference: 'sms',
             },
           )

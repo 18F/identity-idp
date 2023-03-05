@@ -283,7 +283,7 @@ describe Users::TwoFactorAuthenticationController do
       before do
         @user = create(:user, :with_phone)
         sign_in_before_2fa(@user)
-        @old_otp = subject.current_user.direct_otp
+        @old_otp = subject.current_user.redis_direct_otp
         allow(Telephony).to receive(:send_authentication_otp).and_call_original
       end
 
@@ -294,7 +294,7 @@ describe Users::TwoFactorAuthenticationController do
         parsed_phone = Phonelib.parse(phone)
 
         expect(Telephony).to have_received(:send_authentication_otp).with(
-          otp: subject.current_user.direct_otp,
+          otp: subject.current_user.redis_direct_otp,
           to: phone,
           expiration: 10,
           channel: :sms,
@@ -307,8 +307,8 @@ describe Users::TwoFactorAuthenticationController do
             resend: nil,
           },
         )
-        expect(subject.current_user.direct_otp).not_to eq(@old_otp)
-        expect(subject.current_user.direct_otp).not_to be_nil
+        expect(subject.current_user.redis_direct_otp).not_to eq(@old_otp)
+        expect(subject.current_user.redis_direct_otp).not_to be_nil
         expect(response).to redirect_to(
           login_two_factor_path(**otp_preference_sms, reauthn: false),
         )
@@ -448,7 +448,7 @@ describe Users::TwoFactorAuthenticationController do
       before do
         user = create(:user, :signed_up, otp_delivery_preference: 'voice')
         sign_in_before_2fa(user)
-        @old_otp = subject.current_user.direct_otp
+        @old_otp = subject.current_user.redis_direct_otp
         allow(Telephony).to receive(:send_authentication_otp).and_call_original
       end
 
@@ -460,7 +460,7 @@ describe Users::TwoFactorAuthenticationController do
         parsed_phone = Phonelib.parse(phone)
 
         expect(Telephony).to have_received(:send_authentication_otp).with(
-          otp: subject.current_user.direct_otp,
+          otp: subject.current_user.redis_direct_otp,
           to: phone,
           expiration: 10,
           channel: :voice,
@@ -473,8 +473,8 @@ describe Users::TwoFactorAuthenticationController do
             resend: nil,
           },
         )
-        expect(subject.current_user.direct_otp).not_to eq(@old_otp)
-        expect(subject.current_user.direct_otp).not_to be_nil
+        expect(subject.current_user.redis_direct_otp).not_to eq(@old_otp)
+        expect(subject.current_user.redis_direct_otp).not_to be_nil
         expect(response).to redirect_to(
           login_two_factor_path(otp_delivery_preference: 'voice', reauthn: false),
         )
@@ -550,7 +550,7 @@ describe Users::TwoFactorAuthenticationController do
         get :send_code, params: otp_delivery_form_sms
 
         expect(Telephony).to have_received(:send_confirmation_otp).with(
-          otp: subject.current_user.direct_otp,
+          otp: subject.current_user.redis_direct_otp,
           to: @unconfirmed_phone,
           expiration: 10,
           channel: :sms,

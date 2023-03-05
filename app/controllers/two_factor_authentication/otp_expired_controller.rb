@@ -7,7 +7,7 @@ module TwoFactorAuthentication
     def show
       @otp_delivery_preference = otp_delivery_preference
       analytics.otp_expired_visited(
-        otp_sent_at: current_user.direct_otp_sent_at,
+        otp_sent_at: current_user.redis_direct_otp_sent_at,
         otp_expiration: otp_expiration,
       )
     end
