@@ -15,8 +15,6 @@ class BrowserSupport
   }.with_indifferent_access.freeze
 
   class << self
-    attr_reader :cache
-
     def supported?(user_agent)
       return false if user_agent.nil?
       return true if browser_support_config.nil?
@@ -26,7 +24,15 @@ class BrowserSupport
       end
     end
 
+    def clear_cache!
+      cache.clear
+      @matchers = nil
+      remove_instance_variable(:@browser_support_config) if defined?(@browser_support_config)
+    end
+
     private
+
+    attr_reader :cache
 
     def matchers
       @matchers ||= browser_support_config.flat_map do |config_entry|
@@ -48,6 +54,7 @@ class BrowserSupport
     end
 
     def browser_support_config
+      return @browser_support_config if defined?(@browser_support_config)
       @browser_support_config = begin
         JSON.parse(File.read(Rails.root.join('browsers.json')))
       rescue JSON::ParserError, Errno::ENOENT

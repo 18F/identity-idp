@@ -1,11 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe BrowserSupport do
-  before do
-    BrowserSupport.cache.clear
-    BrowserSupport.instance_variable_set(:@browser_support_config, nil)
-    BrowserSupport.instance_variable_set(:@matchers, nil)
-  end
+  before { BrowserSupport.clear_cache! }
 
   describe '.supported?' do
     let(:user_agent) do
@@ -18,19 +14,30 @@ RSpec.describe BrowserSupport do
 
     context 'with browser support config file missing' do
       before do
-        expect(File).to receive(:read).with(Rails.root.join('browsers.json')).
+        expect(File).to receive(:read).once.with(Rails.root.join('browsers.json')).
           and_raise(Errno::ENOENT.new)
       end
 
       it { expect(supported).to eq(true) }
+
+      it 'memoizes result of parsing browser config' do
+        BrowserSupport.supported?('a')
+        BrowserSupport.supported?('b')
+      end
     end
 
     context 'with invalid support config' do
       before do
-        expect(File).to receive(:read).with(Rails.root.join('browsers.json')).and_return('invalid')
+        expect(File).to receive(:read).once.with(Rails.root.join('browsers.json')).
+          and_return('invalid')
       end
 
       it { expect(supported).to eq(true) }
+
+      it 'memoizes result of parsing browser config' do
+        BrowserSupport.supported?('a')
+        BrowserSupport.supported?('b')
+      end
     end
 
     context 'with valid browser support config' do
