@@ -106,13 +106,6 @@ describe Proofing::Aamva::VerificationClient do
         let(:response_body) { AamvaFixtures.soap_fault_response }
         let(:response_http_status) { 500 }
 
-        it 'parses the raw response body' do
-          begin
-            response
-          rescue Proofing::Aamva::VerificationError
-          end
-        end
-
         it 'throws an exception about the MVA timeout' do
           expect { response }.to raise_error(
             Proofing::Aamva::VerificationError,
