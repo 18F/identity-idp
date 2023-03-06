@@ -54,7 +54,9 @@ locals:
       </div>
       <div>
         <dt class="display-inline"> <%= t('idv.form.dob') %>: </dt>
-        <dd class="display-inline margin-left-0"> <%= @pii[:dob] %> </dd>
+        <dd class="display-inline margin-left-0">
+          <%= DateParser.parse_legacy(@pii[:dob]).to_formatted_s(:long) %>
+        </dd>
       </div>
       <% if @in_person_proofing %>
         <div>

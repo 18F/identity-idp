@@ -42,6 +42,9 @@ feature 'doc auth verify_info step', :js do
     expect(page).to have_content(t('headings.verify'))
     expect(page).to have_content(t('step_indicator.flows.idv.verify_info'))
 
+    # DOB is in full month format (October)
+    expect(page).to have_text(t('date.month_names')[10])
+
     # SSN is masked until revealed
     expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
     expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
