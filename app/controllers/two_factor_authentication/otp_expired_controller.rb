@@ -33,8 +33,8 @@ module TwoFactorAuthentication
       end
     end
 
-    def use_another_phone_number
-      mfa_context.phone_configurations.none? || mfa_context.enabled_mfa_methods_count <= 1
+    def unconfirmed_phone?
+      user_session[:unconfirmed_phone].present? && UserSessionContext.confirmation_context?(context)
     end
   end
 end
