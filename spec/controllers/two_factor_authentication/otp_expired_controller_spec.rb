@@ -71,12 +71,19 @@ describe TwoFactorAuthentication::OtpExpiredController do
       end
     end
 
-    context 'redirects' do
-      it 'sets next_path correctly' do
+    context 'for redirects' do
+      let(:enabled_mfa_methods_count) { 1 }
+
+      it 'sets authentication options path correctly' do
         user = create(:user, :signed_up)
         stub_sign_in_before_2fa(user)
 
         get :show
+        
+        expect(assigns(:authentication_options_path)).to eq(login_two_factor_options_url)
+      end
+
+      it 'sets unconfirmed phone correctly' do
       end
     end
   end
