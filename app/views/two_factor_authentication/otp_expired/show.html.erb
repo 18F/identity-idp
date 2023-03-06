@@ -32,10 +32,10 @@
           new_tab: true,
         },
         {
-          url: @next_path,
+          url: @authentication_options_path,
           text: t('two_factor_authentication.login_options_link_text'),
         },
-        @use_another_phone_number && {
+        @unconfirmed_phone && {
           url: add_phone_path,
           text: t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
         },
