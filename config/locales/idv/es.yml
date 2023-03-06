@@ -77,9 +77,7 @@ es:
           inténtalo de nuevo.
         link: contáctanos
         text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
-        try_again: En este momento, estamos teniendo problemas técnicos. Trate de buscar
-          de nuevo una oficina de correos. Si el problema continúa, regrese más
-          tarde.
+        post_office_search_error: En este momento, estamos teniendo problemas técnicos. Trate de buscar de nuevo una oficina de correos. Si el problema continúa, regrese más tarde.
       phone:
         fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong> Por su
           seguridad, limitamos el número de veces que puede intentar verificar

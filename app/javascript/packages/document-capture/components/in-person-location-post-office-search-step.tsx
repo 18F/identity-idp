@@ -91,7 +91,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
     <>
       {apiError && (
         <Alert type="error" className="margin-bottom-4">
-          {t('idv.failure.exceptions.try_again')}
+          {t('idv.failure.exceptions.post_office_search_error')}
         </Alert>
       )}
       <PageHeading>{t('in_person_proofing.headings.po_search.location')}</PageHeading>

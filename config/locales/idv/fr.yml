@@ -81,9 +81,7 @@ fr:
           demande. Veuillez réessayer.
         link: contactez-nous
         text_html: Veuillez réessayer. Si vous continuez à recevoir ces erreurs, %{link}
-        try_again: Nous connaissons des difficultés techniques en ce moment. Essayez de
-          chercher à nouveau un bureau de poste. Si le problème persiste,
-          revenez plus tard.
+        post_office_search_error: Nous connaissons des difficultés techniques en ce moment. Essayez de chercher à nouveau un bureau de poste. Si le problème persiste, revenez plus tard.
       phone:
         fail_html: '<strong>Veuillez réessayer dans %{timeout}.</strong> Pour votre
           sécurité, nous limitons le nombre de fois où vous pouvez tenter de
