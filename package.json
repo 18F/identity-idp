@@ -32,7 +32,7 @@
     "fast-glob": "^3.2.7",
     "foundation-emails": "^2.3.1",
     "identity-style-guide": "^6.7.0",
-    "intl-tel-input": "^17.0.8",
+    "intl-tel-input": "^17.0.19",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "source-map-loader": "^4.0.0",

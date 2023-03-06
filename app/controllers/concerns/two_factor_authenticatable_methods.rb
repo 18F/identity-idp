@@ -1,15 +1,8 @@
-module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
+module TwoFactorAuthenticatableMethods
   extend ActiveSupport::Concern
   include RememberDeviceConcern
   include SecureHeadersConcern
   include MfaSetupConcern
-
-  DELIVERY_METHOD_MAP = {
-    authenticator: 'authenticator',
-    sms: 'phone',
-    voice: 'phone',
-    piv_cac: 'piv_cac',
-  }.freeze
 
   private
 
@@ -292,10 +285,6 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     current_user.direct_otp_sent_at + TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
   end
 
-  def personal_key_unavailable?
-    current_user.encrypted_recovery_code_digest.blank?
-  end
-
   def user_opted_remember_device_cookie
     cookies.encrypted[:user_opted_remember_device_preference]
   end
@@ -305,36 +294,29 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def phone_view_data
-    { confirmation_for_add_phone: confirmation_for_add_phone?,
+    {
+      confirmation_for_add_phone: confirmation_for_add_phone?,
       phone_number: display_phone_to_deliver_to,
       code_value: direct_otp_code,
       otp_expiration: otp_expiration,
       otp_delivery_preference: two_factor_authentication_method,
       otp_make_default_number: selected_otp_make_default_number,
-      voice_otp_delivery_unsupported: voice_otp_delivery_unsupported?,
       unconfirmed_phone: unconfirmed_phone?,
-      account_reset_token: account_reset_token }.merge(generic_data)
+    }.merge(generic_data)
   end
 
   def selected_otp_make_default_number
     params&.dig(:otp_make_default_number)
   end
 
-  def account_reset_token
-    current_user&.account_reset_request&.request_token
-  end
-
   def authenticator_view_data
     {
       two_factor_authentication_method: two_factor_authentication_method,
-      user_email: current_user.email_addresses.take.email,
     }.merge(generic_data)
   end
 
   def generic_data
     {
-      personal_key_unavailable: personal_key_unavailable?,
-      reauthn: reauthn?,
       user_opted_remember_device_cookie: user_opted_remember_device_cookie,
     }
   end
@@ -347,15 +329,6 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     end
   end
 
-  def voice_otp_delivery_unsupported?
-    if UserSessionContext.authentication_or_reauthentication_context?(context)
-      PhoneNumberCapabilities.new(phone_configuration&.phone, phone_confirmed: true).supports_voice?
-    else
-      phone = user_session[:unconfirmed_phone]
-      PhoneNumberCapabilities.new(phone, phone_confirmed: false).supports_voice?
-    end
-  end
-
   def decorated_user
     current_user.decorate
   end
@@ -365,18 +338,22 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def presenter_for_two_factor_authentication_method
-    type = DELIVERY_METHOD_MAP[two_factor_authentication_method.to_sym]
-
-    return unless type
-
-    data = send("#{type}_view_data".to_sym)
-
-    TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(
-      data: data,
-      view: view_context,
-      service_provider: current_sp,
-      remember_device_default: remember_device_default,
-    )
+    case two_factor_authentication_method.to_sym
+    when :authenticator
+      TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(
+        data: authenticator_view_data,
+        view: view_context,
+        service_provider: current_sp,
+        remember_device_default: remember_device_default,
+      )
+    when :sms, :voice
+      TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+        data: phone_view_data,
+        view: view_context,
+        service_provider: current_sp,
+        remember_device_default: remember_device_default,
+      )
+    end
   end
 
   def phone_configuration

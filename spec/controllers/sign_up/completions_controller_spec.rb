@@ -270,5 +270,51 @@ describe SignUp::CompletionsController do
         end
       end
     end
+
+    context 'when the user goes through reproofing' do
+      let!(:user) { create(:user, profiles: [create(:profile, :active)]) }
+
+      before do
+        stub_attempts_tracker
+        allow(@irs_attempts_api_tracker).to receive(:track_event)
+      end
+
+      it 'does not log a reproofing event during initial proofing' do
+        stub_sign_in(user)
+        subject.session[:sp] = {
+          ial2: false,
+          issuer: 'foo',
+          request_url: 'http://example.com',
+        }
+        expect(@irs_attempts_api_tracker).not_to receive(:idv_reproof)
+        patch :update
+      end
+
+      it 'logs a reproofing event upon reproofing' do
+        user.profiles.create(verified_at: Time.zone.now, active: true, activated_at: Time.zone.now)
+        stub_sign_in(user)
+        subject.session[:sp] = {
+          ial2: false,
+          issuer: 'foo',
+          request_url: 'http://example.com',
+        }
+        expect(@irs_attempts_api_tracker).to receive(:idv_reproof)
+        patch :update
+      end
+
+      it 'does not log a reproofing event during account redirect' do
+        user.profiles.create(verified_at: Time.zone.now, active: true, activated_at: Time.zone.now)
+        stub_sign_in(user)
+        subject.session[:sp] = {
+          ial2: false,
+          request_url: 'http://example.com',
+        }
+        expect(@irs_attempts_api_tracker).not_to receive(:idv_reproof)
+
+        patch :update
+
+        expect(response).to redirect_to account_path
+      end
+    end
   end
 end

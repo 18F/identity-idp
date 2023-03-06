@@ -9,11 +9,25 @@ describe PhoneFormatter do
       expect(formatted_phone).to eq('+40 21 123 4567')
     end
 
+    it 'formats ambiguous numbers as US' do
+      phone = '2025005000'
+      formatted_phone = PhoneFormatter.format(phone)
+
+      expect(formatted_phone).to eq('+1 202-500-5000')
+    end
+
     it 'formats U.S. numbers correctly' do
       phone = '+12025005000'
       formatted_phone = PhoneFormatter.format(phone)
 
       expect(formatted_phone).to eq('+1 202-500-5000')
+    end
+
+    it 'formats Canadian numbers correctly' do
+      phone = '+13065550100'
+      formatted_phone = PhoneFormatter.format(phone)
+
+      expect(formatted_phone).to eq('+1 306 555 0100')
     end
 
     it 'uses +1 as the default international code' do

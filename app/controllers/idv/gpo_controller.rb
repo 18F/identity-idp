@@ -11,6 +11,8 @@ module Idv
     def index
       @presenter = GpoPresenter.new(current_user, url_options)
       @step_indicator_current_step = step_indicator_current_step
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+        call(:usps_address, :view, true)
       analytics.idv_gpo_address_visited(
         letter_already_sent: @presenter.resend_requested?,
       )
@@ -45,6 +47,8 @@ module Idv
     end
 
     def update_tracking
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+        call(:usps_letter_sent, :update, true)
       analytics.idv_gpo_address_letter_requested(resend: resend_requested?)
       irs_attempts_api_tracker.idv_gpo_letter_requested(resend: resend_requested?)
       create_user_event(:gpo_mail_sent, current_user)

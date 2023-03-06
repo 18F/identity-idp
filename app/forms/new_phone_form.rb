@@ -21,7 +21,9 @@ class NewPhoneForm
               :otp_delivery_preference,
               :otp_make_default_number,
               :setup_voice_preference,
-              :recaptcha_token
+              :recaptcha_token,
+              :recaptcha_version,
+              :recaptcha_mock_score
 
   alias_method :setup_voice_preference?, :setup_voice_preference
 
@@ -31,6 +33,7 @@ class NewPhoneForm
     @otp_delivery_preference = user.otp_delivery_preference
     @otp_make_default_number = false
     @setup_voice_preference = setup_voice_preference
+    @recaptcha_version = 3
   end
 
   def submit(params)
@@ -129,8 +132,7 @@ class NewPhoneForm
   end
 
   def validate_recaptcha_token
-    return if !FeatureManagement.phone_recaptcha_enabled?
-    return if recaptcha_validator.valid?(recaptcha_token)
+    return if !validate_recaptcha_token? || recaptcha_validator.valid?(recaptcha_token)
     errors.add(
       :recaptcha_token,
       I18n.t('errors.messages.invalid_recaptcha_token'),
@@ -139,7 +141,21 @@ class NewPhoneForm
   end
 
   def recaptcha_validator
-    @recaptcha_validator ||= PhoneRecaptchaValidator.new(parsed_phone:, analytics:)
+    @recaptcha_validator ||= PhoneRecaptchaValidator.new(parsed_phone:, **recaptcha_validator_args)
+  end
+
+  def recaptcha_validator_args
+    args = { recaptcha_version:, analytics: }
+    if IdentityConfig.store.phone_recaptcha_mock_validator
+      args.merge(validator_class: RecaptchaMockValidator, score: recaptcha_mock_score)
+    else
+      args
+    end
+  end
+
+  def validate_recaptcha_token?
+    FeatureManagement.phone_recaptcha_enabled? ||
+      IdentityConfig.store.phone_recaptcha_mock_validator
   end
 
   def parsed_phone
@@ -155,6 +171,8 @@ class NewPhoneForm
     @otp_delivery_preference = delivery_prefs if delivery_prefs
     @otp_make_default_number = true if default_prefs
     @recaptcha_token = params[:recaptcha_token]
+    @recaptcha_version = 2 if params[:recaptcha_version].to_i == 2
+    @recaptcha_mock_score = params[:recaptcha_mock_score].to_f if params.key?(:recaptcha_mock_score)
   end
 
   def confirmed_phone?

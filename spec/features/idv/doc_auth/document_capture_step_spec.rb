@@ -208,7 +208,7 @@ feature 'doc auth document capture step', :js do
   end
 
   def next_step
-    idv_doc_auth_ssn_step
+    idv_ssn_url
   end
 
   def expect_costing_for_document

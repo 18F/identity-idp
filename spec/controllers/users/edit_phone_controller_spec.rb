@@ -81,6 +81,15 @@ describe Users::EditPhoneController do
       expect(PhoneConfiguration.find_by(id: phone_configuration.id)).to eq(nil)
     end
 
+    it 'revokes remember device cookies' do
+      stub_sign_in(user.reload)
+      expect(user.remember_device_revoked_at).to eq nil
+      freeze_time do
+        delete :destroy, params: { id: phone_configuration.id }
+        expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
+      end
+    end
+
     context 'when the user will not have enough phone configurations after deleting' do
       let(:user) { create(:user, :with_phone) }
       let(:phone_configuration) { user.phone_configurations.first }

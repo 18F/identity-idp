@@ -356,6 +356,98 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
   end
 
+  describe '#aal' do
+    context 'when DEFAULT_AAL passed' do
+      before do
+        default = Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+        IdentityConfig.store.valid_authn_contexts.push(default)
+      end
+
+      after do
+        IdentityConfig.store.valid_authn_contexts.pop
+      end
+
+      let(:acr_values) { Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns 0' do
+        expect(form.aal).to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
+      end
+    end
+
+    context 'when AAL1 passed' do
+      before do
+        aal1 = Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF
+        IdentityConfig.store.valid_authn_contexts.push(aal1)
+      end
+
+      after do
+        IdentityConfig.store.valid_authn_contexts.pop
+      end
+
+      let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns 1' do
+        expect(form.aal).to eq(1)
+      end
+    end
+
+    context 'when AAL2 passed' do
+      let(:acr_values) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns 2' do
+        expect(form.aal).to eq(2)
+      end
+    end
+
+    context 'when AAL2_PHISHING_RESISTANT passed' do
+      let(:acr_values) { Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns 2' do
+        expect(form.aal).to eq(2)
+      end
+    end
+
+    context 'when AAL2_HSPD12 passed' do
+      let(:acr_values) { Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns 2' do
+        expect(form.aal).to eq(2)
+      end
+    end
+
+    context 'when AAL3 passed' do
+      let(:acr_values) { Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns 3' do
+        expect(form.aal).to eq(3)
+      end
+    end
+
+    context 'when AAL3_HSPD12 passed' do
+      let(:acr_values) { Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns 3' do
+        expect(form.aal).to eq(3)
+      end
+    end
+  end
+
+  describe '#aal' do
+    context 'when IAL and AAL passed' do
+      aal2 = Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+      ial2 = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+
+      let(:acr_values) do
+        "#{aal2} #{ial2}"
+      end
+
+      it 'returns ial and aal' do
+        expect(form.aal).to eq(2)
+        expect(form.ial).to eq(2)
+      end
+    end
+  end
+
   describe '#verified_within' do
     context 'without a verified_within' do
       let(:verified_within) { nil }

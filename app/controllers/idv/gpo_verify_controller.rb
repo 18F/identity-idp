@@ -2,7 +2,7 @@ module Idv
   class GpoVerifyController < ApplicationController
     include IdvSession
     include StepIndicatorConcern
-    include ThreatmetrixReviewConcern
+    include FraudReviewConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_verification_needed
@@ -46,7 +46,7 @@ module Idv
             event, disavowal_token = create_user_event_with_disavowal(:account_verified)
 
             if result.extra[:threatmetrix_check_failed] && threatmetrix_enabled?
-              redirect_to_threatmetrix_review
+              redirect_to_fraud_review
             else
               UserAlerts::AlertUserAboutAccountVerified.call(
                 user: current_user,

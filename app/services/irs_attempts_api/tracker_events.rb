@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ModuleLength
 module IrsAttemptsApi
   module TrackerEvents
     # @param [Boolean] success True if Account Successfully Deleted
@@ -282,10 +281,24 @@ module IrsAttemptsApi
       )
     end
 
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # This event will capture the result of the TMX fraud check
+    # during Identity Verification
+    def idv_tmx_fraud_check(success:, failure_reason: nil)
+      track_event(
+        :idv_tmx_fraud_check,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # @param [String] throttle_context - Either single-session or multi-session
     # Track when idv verification is rate limited during idv flow
-    def idv_verification_rate_limited
+    def idv_verification_rate_limited(throttle_context:)
       track_event(
         :idv_verification_rate_limited,
+        throttle_context: throttle_context,
       )
     end
 
@@ -692,4 +705,3 @@ module IrsAttemptsApi
     end
   end
 end
-# rubocop:enable Metrics/ModuleLength

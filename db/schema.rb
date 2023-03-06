@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_26_195401) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_14_213731) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -297,6 +297,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_26_195401) do
     t.boolean "early_reminder_sent", default: false, comment: "early reminder to complete IPP before deadline sent"
     t.boolean "late_reminder_sent", default: false, comment: "late reminder to complete IPP before deadline sent"
     t.boolean "deadline_passed_sent", default: false, comment: "deadline passed email sent for expired enrollment"
+    t.datetime "proofed_at", precision: nil, comment: "timestamp when user attempted to proof at a Post Office"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
     t.index ["status_check_attempted_at"], name: "index_in_person_enrollments_on_status_check_attempted_at", where: "(status = 1)"
     t.index ["unique_id"], name: "index_in_person_enrollments_on_unique_id", unique: true
@@ -355,17 +356,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_26_195401) do
     t.integer "user_id", null: false
     t.integer "auth_count", default: 1, null: false
     t.index ["issuer", "year_month", "user_id"], name: "index_monthly_auth_counts_on_issuer_and_year_month_and_user_id", unique: true
-  end
-
-  create_table "otp_requests_trackers", id: :serial, force: :cascade do |t|
-    t.datetime "otp_last_sent_at", precision: nil
-    t.integer "otp_send_count", default: 0
-    t.string "attribute_cost"
-    t.string "phone_fingerprint", default: "", null: false
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
-    t.boolean "phone_confirmed", default: false
-    t.index ["phone_fingerprint", "phone_confirmed"], name: "index_on_phone_and_confirmed", unique: true
   end
 
   create_table "partner_account_statuses", force: :cascade do |t|
@@ -441,6 +431,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_26_195401) do
     t.string "name_zip_birth_year_signature"
     t.date "reproof_at"
     t.string "initiating_service_provider_issuer"
+    t.boolean "fraud_review_pending", default: false
+    t.boolean "fraud_rejection", default: false
     t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
     t.index ["reproof_at"], name: "index_profiles_on_reproof_at"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"

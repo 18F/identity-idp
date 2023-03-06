@@ -9,4 +9,8 @@
 
 <% title t('titles.idv.personal_key') %>
 
-<%= render 'shared/personal_key', code: @code, update_path: idv_personal_key_path %>
+<%= render 'shared/personal_key',
+           code: @code,
+           personal_key_generated_at: @personal_key_generated_at,
+           update_path: idv_personal_key_path
+%>

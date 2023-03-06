@@ -155,4 +155,18 @@ RSpec.configure do |config|
     # Consider any browser console logging as a failure.
     raise BrowserConsoleLogError.new(javascript_errors) if javascript_errors.present?
   end
+
+  config.around(:each, allow_net_connect_on_start: true) do |example|
+    # Avoid "Too many open files - socket(2)" error on some local machines
+    WebMock.allow_net_connect!(net_http_connect_on_start: true)
+    example.run
+    WebMock.disable_net_connect!(
+      allow: [
+        /localhost/,
+        /127\.0\.0\.1/,
+        /codeclimate.com/, # For uploading coverage reports
+        /chromedriver\.storage\.googleapis\.com/, # For fetching a chromedriver binary
+      ],
+    )
+  end
 end

@@ -145,6 +145,9 @@ fr:
         veuillez %{link} de votre carte d’identité délivrée par l’État.
       capture_scan_warning_link: télécharger de nouvelles photos
       capture_troubleshooting_tips: Vous rencontrez des difficultés pour ajouter votre pièce d’identité?
+      combined_upload: Comment voulez-vous ajouter votre identifiant ?
+      combined_upload_from_computer: Continuer sur cet ordinateur
+      combined_upload_from_phone: Utilisez votre téléphone pour prendre des photos
       document_capture: Ajoutez votre carte d’identité délivrée par l’État
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
@@ -181,6 +184,13 @@ fr:
       capture_status_none: Alignez
       capture_status_small_document: Approchez-vous
       capture_status_tap_to_capture: Appuyez pour capturer
+      combined_upload: Nous recueillons des informations sur vous en lisant votre
+        carte d’identité délivrée par l’État.
+      combined_upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les
+        photos de votre carte d’identité depuis cet ordinateur.
+      combined_upload_from_phone: Vous n’aurez pas à vous reconnecter. Vous reviendrez
+        sur cet ordinateur après avoir pris des photos. Votre téléphone portable
+        doit être équipé d’un appareil photo et d’un navigateur web.
       document_capture_intro_acknowledgment: Nous recueillons des informations sur
         vous en lisant votre pièce d’identité délivrée par l’État. Nous
         utilisons ces informations pour vérifier votre identité.
@@ -217,7 +227,7 @@ fr:
       take_picture: Utilisez l’appareil photo sur votre téléphone portable et
         téléchargez des images de votre identifiant. Nous utilisons uniquement
         les images pour vérifier votre identité.
-      upload: Nous recueillons des informations vous concernant en lisant votre carte
+      upload: Nous recueillons des informations sur vous en lisant votre carte
         d’identité délivrée par l’État.
       upload_computer_link: Téléchargez depuis votre ordinateur
       upload_from_computer: Vous n’avez pas de téléphone?
@@ -227,6 +237,7 @@ fr:
         vérifier votre identité par rapport aux registres publics.
       welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
         quelqu’un qui se fait passer pour vous.'
+      you_entered: 'Tu as soumis:'
     instructions:
       bullet1: Carte d’identité délivrée par l’État
       bullet2: Numéro de sécurité sociale
