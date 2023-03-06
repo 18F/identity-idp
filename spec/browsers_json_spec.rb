@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'browsers.json' do
   before(:all) { system 'make browsers.json' }
 
-  let(:browsers_json) { JSON.parse(File.read(Rails.root.join('browsers.json'))) }
+  subject(:browsers_json) { JSON.parse(File.read(Rails.root.join('browsers.json'))) }
 
   it 'includes only keys known to BrowserSupport' do
     actual_keys = browsers_json.map { |entry| entry.split(' ', 2).first }
