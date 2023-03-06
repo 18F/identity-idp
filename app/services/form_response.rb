@@ -1,5 +1,5 @@
 class FormResponse
-  attr_reader :errors, :extra, :serialize_error_details_only
+  attr_reader :errors, :extra, :serialize_error_details_only, :pii_keys
 
   alias_method :serialize_error_details_only?, :serialize_error_details_only
 
@@ -7,6 +7,7 @@ class FormResponse
     @success = success
     @errors = errors.is_a?(ActiveModel::Errors) ? errors.messages.to_hash : errors
     @error_details = errors.details if errors.is_a?(ActiveModel::Errors)
+    @pii_keys = errors.is_a?(ActiveModel::Errors) ? get_pii_keys(errors) : []
     @extra = extra
     @serialize_error_details_only = serialize_error_details_only
   end
@@ -19,6 +20,11 @@ class FormResponse
     hash = { success: success }
     hash[:errors] = errors if !serialize_error_details_only?
     hash[:error_details] = flatten_details(error_details) if error_details.present?
+    pii_keys.each do |key|
+      hash[:pii_like_keypaths] ||= []
+      hash[:pii_like_keypaths].append([:error_details, key]) if error_details.has_key?(key)
+      hash[:errors] = hash[:errors].except(key) if hash[:errors].has_key?(key)
+    end
     hash.merge!(extra)
     hash
   end
@@ -57,6 +63,12 @@ class FormResponse
 
   def flatten_details(details)
     details.transform_values { |errors| errors.pluck(:error) }
+  end
+
+  def get_pii_keys(errors)
+    errors.select do |err|
+      err.options[:pii]
+    end.map(&:attribute)
   end
 
   attr_reader :success

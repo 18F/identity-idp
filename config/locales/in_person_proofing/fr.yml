@@ -115,6 +115,17 @@ fr:
           year: 'Exemple: 1986'
         dob: Date de naissance
         dob_hint: 'Exemple: 4 28 1986'
+        errors:
+          transliteration: Nous rencontrons des difficultés techniques de notre côté et ne
+            sommes pas en mesure de valider vos informations. Veuillez réessayer
+            ou revenir plus tard.
+          unsupported_chars:
+            address: 'Notre système ne parvient pas à lire les caractères suivants :
+              %{char_list}. Veuillez réessayer en utilisant d’autres caractères
+              alternatifs.'
+            name: 'Notre système ne parvient pas à lire les caractères suivants :
+              %{char_list}. Veuillez réessayer en utilisant les caractères de
+              votre carte d’identité.'
         first_name: Prénom
         last_name: Nom de famille
         memorable_date:

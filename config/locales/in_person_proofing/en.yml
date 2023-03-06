@@ -101,6 +101,14 @@ en:
           year: 'Example: 1986'
         dob: Date of birth
         dob_hint: 'Example: 4 28 1986'
+        errors:
+          transliteration: We are having technical difficulties on our end and cannot
+            validate your information. Please try again or come back later.
+          unsupported_chars:
+            address: 'Our system cannot read the following characters: %{char_list}. Please
+              try again using substitutes for those characters.'
+            name: 'Our system cannot read the following characters: %{char_list}. Please try
+              again using the characters on your ID.'
         first_name: First name
         last_name: Last name
         memorable_date:
