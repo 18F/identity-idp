@@ -57,7 +57,7 @@ describe 'two_factor_authentication/otp_expired/show.html.erb' do
     end
 
     it 'can redirect to choose another option' do
-      assign(:next_path, 'foo')
+      assign(:authentication_options_path, 'foo')
 
       render
 
@@ -70,7 +70,7 @@ describe 'two_factor_authentication/otp_expired/show.html.erb' do
 
   context 'when a user creates a new account' do
     it 'allows a user to select another phone' do
-      assign(:use_another_phone_number, true)
+      assign(:unconfirmed_phone, true)
 
       render
 
