@@ -76,8 +76,8 @@ es:
         internal_error: Se produjo un error interno al procesar tu solicitud. Por favor,
           inténtalo de nuevo.
         link: contáctanos
-        text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
         post_office_search_error: En este momento, estamos teniendo problemas técnicos. Trate de buscar de nuevo una oficina de correos. Si el problema continúa, regrese más tarde.
+        text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
       phone:
         fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong> Por su
           seguridad, limitamos el número de veces que puede intentar verificar

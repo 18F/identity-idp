@@ -71,8 +71,8 @@ en:
       exceptions:
         internal_error: There was an internal error processing your request. Please try again.
         link: please contact us
-        text_html: Please try again. If you keep getting these errors, %{link}.
         post_office_search_error: We are having technical difficulties at the moment.  Try searching for a Post Office again. If this issue continues, come back later.
+        text_html: Please try again. If you keep getting these errors, %{link}.
       phone:
         fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,
           we limit the number of times you can attempt to verify your phone
