@@ -12,7 +12,7 @@ class BrowserSupport
     opera: ->(browser, version) { browser.opera?(version) },
     safari: ->(browser, version) { browser.safari?(version) },
     samsung: ->(browser, version) { browser.samsung_browser?(version) },
-  }.transform_values(&:to_proc).with_indifferent_access.freeze
+  }.with_indifferent_access.freeze
 
   class << self
     attr_reader :cache
