@@ -13,48 +13,6 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   queue_as :long_running
 
-  def email_analytics_attributes(enrollment)
-    {
-      timestamp: Time.zone.now,
-      user_id: enrollment.user_id,
-      service_provider: enrollment.issuer,
-      wait_until: mail_delivery_params(enrollment.proofed_at)[:wait_until],
-    }
-  end
-
-  def enrollment_analytics_attributes(enrollment, complete:)
-    {
-      enrollment_code: enrollment.enrollment_code,
-      enrollment_id: enrollment.id,
-      minutes_since_last_status_check: enrollment.minutes_since_last_status_check,
-      minutes_since_last_status_update: enrollment.minutes_since_last_status_update,
-      minutes_since_established: enrollment.minutes_since_established,
-      minutes_to_completion: complete ? enrollment.minutes_since_established : nil,
-      issuer: enrollment.issuer,
-    }
-  end
-
-  def response_analytics_attributes(response)
-    return { response_present: false } unless response.present?
-
-    {
-      fraud_suspected: response['fraudSuspected'],
-      primary_id_type: response['primaryIdType'],
-      secondary_id_type: response['secondaryIdType'],
-      failure_reason: response['failureReason'],
-      transaction_end_date_time: parse_usps_timestamp(response['transactionEndDateTime']),
-      transaction_start_date_time: parse_usps_timestamp(response['transactionStartDateTime']),
-      status: response['status'],
-      assurance_level: response['assuranceLevel'],
-      proofing_post_office: response['proofingPostOffice'],
-      proofing_city: response['proofingCity'],
-      proofing_state: response['proofingState'],
-      scan_count: response['scanCount'],
-      response_message: response['responseMessage'],
-      response_present: true,
-    }
-  end
-
   def perform(_now)
     return true unless IdentityConfig.store.in_person_proofing_enabled
 
@@ -138,6 +96,48 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def analytics(user: AnonymousUser.new)
     Analytics.new(user: user, request: nil, session: {}, sp: nil)
+  end
+
+  def email_analytics_attributes(enrollment)
+    {
+      timestamp: Time.zone.now,
+      user_id: enrollment.user_id,
+      service_provider: enrollment.issuer,
+      wait_until: mail_delivery_params(enrollment.proofed_at)[:wait_until],
+    }
+  end
+
+  def enrollment_analytics_attributes(enrollment, complete:)
+    {
+      enrollment_code: enrollment.enrollment_code,
+      enrollment_id: enrollment.id,
+      minutes_since_last_status_check: enrollment.minutes_since_last_status_check,
+      minutes_since_last_status_update: enrollment.minutes_since_last_status_update,
+      minutes_since_established: enrollment.minutes_since_established,
+      minutes_to_completion: complete ? enrollment.minutes_since_established : nil,
+      issuer: enrollment.issuer,
+    }
+  end
+
+  def response_analytics_attributes(response)
+    return { response_present: false } unless response.present?
+
+    {
+      fraud_suspected: response['fraudSuspected'],
+      primary_id_type: response['primaryIdType'],
+      secondary_id_type: response['secondaryIdType'],
+      failure_reason: response['failureReason'],
+      transaction_end_date_time: parse_usps_timestamp(response['transactionEndDateTime']),
+      transaction_start_date_time: parse_usps_timestamp(response['transactionStartDateTime']),
+      status: response['status'],
+      assurance_level: response['assuranceLevel'],
+      proofing_post_office: response['proofingPostOffice'],
+      proofing_city: response['proofingCity'],
+      proofing_state: response['proofingState'],
+      scan_count: response['scanCount'],
+      response_message: response['responseMessage'],
+      response_present: true,
+    }
   end
 
   def handle_bad_request_error(err, enrollment)
