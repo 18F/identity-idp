@@ -1,7 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe BrowserSupport do
-  before { BrowserSupport.cache.clear }
+  before do
+    BrowserSupport.cache.clear
+    BrowserSupport.instance_variable_set(:@browser_support_config, nil)
+    BrowserSupport.instance_variable_set(:@matchers, nil)
+  end
 
   describe '.supported?' do
     let(:user_agent) do
