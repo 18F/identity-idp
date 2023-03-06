@@ -16,7 +16,7 @@ experience and any useful information to this document.
 
 # Details
 - These instructions assume you're on a Mac; if not, you will have to
-  work out the equivilent directions based on these.
+  work out the equivalent directions based on these.
 
 - As of this writing, the correct Ruby version for login.gov is 3.2.0.
   Use whatever the current version is.
@@ -27,7 +27,7 @@ experience and any useful information to this document.
 
 The problem looks like:
 ```
-1) OpenID Connect receives an ID token with a kid that matches the certs endpooint
+1) OpenID Connect receives an ID token with a kid that matches the certs endpoint
      Failure/Error: JWT::JWK.import(certs_response[:keys].first).public_key
      OpenSSL::PKey::PKeyError:
        rsa#set_key= is incompatible with OpenSSL 3.0
@@ -43,7 +43,7 @@ If not present, run `brew install openssl@1.1`
 Most version managers simply require that the correct version of Ruby
 be installed, usually using `ruby-build`.
 
-### Rebuilding Ruby using `asdf`f
+### Rebuilding Ruby using `asdf`
 `asdf` uses `ruby-build` under the covers, but supplies some
 configuration of its own, so we must use `asdf` to (re-)install Ruby.
 
