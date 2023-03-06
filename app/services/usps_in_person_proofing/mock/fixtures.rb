@@ -17,6 +17,10 @@ module UspsInPersonProofing
         load_response_fixture('request_facilities_response.json')
       end
 
+      def self.request_facilities_response_with_unordered_distance
+        load_response_fixture('request_facilities_response_with_unordered_distance.json')
+      end
+
       def self.request_facilities_response_with_duplicates
         load_response_fixture('request_facilities_response_with_duplicates.json')
       end

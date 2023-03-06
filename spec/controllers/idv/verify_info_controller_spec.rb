@@ -90,6 +90,25 @@ describe Idv::VerifyInfoController do
       )
     end
 
+    context 'address line 2' do
+      render_views
+
+      it 'With address2 in PII, shows address line 2 input' do
+        flow_session[:pii_from_doc][:address2] = 'APT 3E'
+        get :show
+
+        expect(response.body).to have_content(t('idv.form.address2'))
+      end
+
+      it 'No address2 in PII, still shows address line 2 input' do
+        flow_session[:pii_from_doc][:address2] = nil
+
+        get :show
+
+        expect(response.body).to have_content(t('idv.form.address2'))
+      end
+    end
+
     context 'when the user has already verified their info' do
       it 'redirects to the review controller' do
         controller.idv_session.profile_confirmation = true
