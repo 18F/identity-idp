@@ -72,7 +72,7 @@ en:
         internal_error: There was an internal error processing your request. Please try again.
         link: please contact us
         post_office_search_error: We are having technical difficulties at the
-          moment.  Try searching for a Post Office again. If this issue
+          moment. Try searching for a Post Office again. If this issue
           continues, come back later.
         text_html: Please try again. If you keep getting these errors, %{link}.
       phone:
