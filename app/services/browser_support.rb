@@ -36,7 +36,7 @@ class BrowserSupport
         browser_matcher = BROWSERSLIST_TO_BROWSER_MAP[key]
         next [] if !browser_matcher
 
-        low_version, = version.split('-', 2)
+        low_version, _high_version = version.split('-', 2)
         low_version = nil if !numeric?(low_version)
         Proc.new do |browser|
           browser_matcher.bind_call(browser, low_version && ">= #{low_version}")
