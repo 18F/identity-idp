@@ -1,4 +1,4 @@
-# This document describes a recurrent problem with OpenSSL and some of our tests
+# How to fix a recurrent problem with OpenSSL and some of our tests
 The problem appears to manifests when Ruby was built and linked against
 the wrong version of OpenSSL. In summary, the procedure we have found
 that fixes the problem is to rebuild Ruby, linked against the correct
@@ -25,11 +25,11 @@ The problem looks like:
 
 ## Finding out where you have openssl 1.1 installed
 
-Run the command `brew --prefix openssl@1.1`
+`brew --prefix openssl@1.1`
 
 If not present, run `brew install openssl@1.1`
 
-## Rebuilding Ruby using asdf
+## Rebuilding Ruby using asdf (if that's your version manager)
 
 Remove the existing Ruby version, if present:
 `asdf uninstall ruby 3.2.0`
