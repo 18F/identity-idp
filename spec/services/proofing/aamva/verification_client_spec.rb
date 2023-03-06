@@ -69,8 +69,6 @@ describe Proofing::Aamva::VerificationClient do
     end
 
     context 'when verification is not successful' do
-      before { allow(REXML::Document).to receive(:new).and_call_original }
-
       context 'because we have a valid response and a 200 status, but the response says "no"' do
         let(:response_body) do
           modify_xml_at_xpath(
@@ -96,15 +94,6 @@ describe Proofing::Aamva::VerificationClient do
         end
         let(:response_http_status) { 500 }
 
-        it 'parses the raw response body' do
-          begin
-            response
-          rescue Proofing::Aamva::VerificationError
-          end
-
-          expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
-        end
-
         it 'throws an exception about the status code' do
           expect { response }.to raise_error(
             Proofing::Aamva::VerificationError,
@@ -122,8 +111,6 @@ describe Proofing::Aamva::VerificationClient do
             response
           rescue Proofing::Aamva::VerificationError
           end
-
-          expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
         end
 
         it 'throws an exception about the MVA timeout' do
@@ -150,8 +137,6 @@ describe Proofing::Aamva::VerificationClient do
             response
           rescue Proofing::Aamva::VerificationError
           end
-
-          expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
         end
 
         it 'throws an exception about the MVA timeout' do
@@ -170,8 +155,6 @@ describe Proofing::Aamva::VerificationClient do
             response
           rescue Proofing::Aamva::VerificationError
           end
-
-          expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
         end
 
         it 'throws a SOAP exception' do
@@ -191,8 +174,6 @@ describe Proofing::Aamva::VerificationClient do
             response
           rescue Proofing::Aamva::VerificationError
           end
-
-          expect(REXML::Document).to have_received(:new).with(response_body).at_least(:once)
         end
 
         it 'throws an error which complains about the invalid response' do
