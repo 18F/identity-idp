@@ -8,6 +8,7 @@ class BarcodeComponent < BaseComponent
   def initialize(
     barcode_data:,
     label:,
+    logo_image_url:,
     label_formatter: nil,
     barcode_image_url: nil,
     **tag_options
@@ -15,12 +16,17 @@ class BarcodeComponent < BaseComponent
     @barcode_data = barcode_data
     @label = label
     @label_formatter = label_formatter
+    @logo_image_url = logo_image_url
     @barcode_image_url = barcode_image_url
     @tag_options = tag_options
   end
 
   def barcode_image_url
     @barcode_image_url.presence || barcode_data_url
+  end
+
+  def logo_image_url
+    @logo_image_url
   end
 
   def formatted_data
