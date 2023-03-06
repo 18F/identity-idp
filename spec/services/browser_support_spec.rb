@@ -36,7 +36,7 @@ RSpec.describe BrowserSupport do
     context 'with valid browser support config' do
       before do
         allow(BrowserSupport).to receive(:browser_support_config).
-          and_return(['chrome 109', 'ios_saf 14.5-14.8', 'op_mini all'])
+          and_return(['chrome 109', 'and_chr 108', 'ios_saf 14.5-14.8', 'op_mini all'])
       end
 
       context 'with nil user agent' do
@@ -57,9 +57,9 @@ RSpec.describe BrowserSupport do
 
       context 'with unsupported user agent' do
         let(:user_agent) do
-          # Chrome v51
-          'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) \
-            Chrome/51.0.2704.64 Safari/537.36'
+          # Chrome v108
+          'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) ' \
+            'Chrome/108.0.2704.64 Safari/537.36'
         end
 
         it { expect(supported).to eq(false) }
@@ -105,6 +105,16 @@ RSpec.describe BrowserSupport do
           it { expect(supported).to eq(true) }
         end
       end
+    end
+
+    context 'with user agent for platform-specific version support' do
+      let(:user_agent) do
+        # Android Chrome v108
+        'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) ' \
+          'Chrome/108.0.5481.153 Mobile Safari/537.36'
+      end
+
+      it { expect(supported).to eq(true) }
     end
   end
 end

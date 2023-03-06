@@ -2,19 +2,17 @@ class BrowserSupport
   @cache = LruRedux::Cache.new(1_000)
 
   BROWSERSLIST_TO_BROWSER_MAP = {
-    and_chr: :chrome?,
-    and_uc: :uc_browser?,
-    chrome: :chrome?,
-    edge: :edge?,
-    firefox: :firefox?,
-    ios_saf: :safari?,
-    op_mini: :opera_mini?,
-    opera: :opera?,
-    safari: :safari?,
-    samsung: :samsung_browser?,
-  }.transform_values { |method| Browser::Base.instance_method(method) }.
-    with_indifferent_access.
-    freeze
+    and_chr: ->(browser, version) { browser.android? && browser.chrome?(version) },
+    and_uc: ->(browser, version) { browser.android? && browser.uc_browser?(version) },
+    chrome: ->(browser, version) { browser.chrome?(version) },
+    edge: ->(browser, version) { browser.edge?(version) },
+    firefox: ->(browser, version) { browser.firefox?(version) },
+    ios_saf: ->(browser, version) { browser.ios? && browser.safari?(version) },
+    op_mini: ->(browser, version) { browser.opera_mini?(version) },
+    opera: ->(browser, version) { browser.opera?(version) },
+    safari: ->(browser, version) { browser.safari?(version) },
+    samsung: ->(browser, version) { browser.samsung_browser?(version) },
+  }.transform_values(&:to_proc).with_indifferent_access.freeze
 
   class << self
     attr_reader :cache
@@ -38,9 +36,7 @@ class BrowserSupport
 
         low_version, _high_version = version.split('-', 2)
         low_version = nil if !numeric?(low_version)
-        Proc.new do |browser|
-          browser_matcher.bind_call(browser, low_version && ">= #{low_version}")
-        end
+        proc { |browser| browser_matcher.call(browser, low_version && ">= #{low_version}") }
       end
     end
 
