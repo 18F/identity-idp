@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'browsers.json' do
-  before { system 'make browsers.json' }
+  before(:all) { system 'make browsers.json' }
 
   let(:browsers_json) { JSON.parse(File.read(Rails.root.join('browsers.json'))) }
 
