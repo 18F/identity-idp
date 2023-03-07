@@ -73,14 +73,14 @@ module UspsInPersonProofing
 
     def translate_name_chars_error(chars)
       I18n.t(
-        'in_person_proofing.form.state_id.errors.unsupported_chars.name',
+        'in_person_proofing.form.state_id.errors.unsupported_chars',
         char_list: chars.join(', '),
       )
     end
 
     def translate_address_chars_error(chars)
       I18n.t(
-        'in_person_proofing.form.state_id.errors.unsupported_chars.address',
+        'in_person_proofing.form.address.errors.unsupported_chars',
         char_list: chars.join(', '),
       )
     end
