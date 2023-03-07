@@ -13,6 +13,7 @@ module UspsInPersonProofing
       :transliterated,
       # Characters from the original that could not be transliterated
       :unsupported_chars,
+      keyword_init: true,
     )
 
     # Transliterate values for usage in the USPS API. This will additionally strip/reduce
