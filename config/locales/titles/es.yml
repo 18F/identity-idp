@@ -13,7 +13,6 @@ es:
       address: Actualice su dirección postal
       doc_capture: Agrega tu identificación
       link_sent: Enlace enviado
-      otp_delivery: Reciba un código de un solo uso
       processing_images: Procesando tus imágenes
       ssn: Ingresa tu número del seguro social
       switch_back: Regresar a tu computadora
@@ -42,9 +41,6 @@ es:
       reset_password: Restablecer la contraseña
       review: Vuelve a ingresar tu contraseña
       verify_info: Verifica tu información
-    inherited_proofing:
-      cancellation_prompt: Cancela la verificación de identidad
-      cancelled: Se canceló la verificación de identidad
     mfa_setup:
       suggest_second_mfa: '¡Has agregado tu primer método de autenticación! Agrega un
         segundo método como respaldo.'

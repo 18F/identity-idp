@@ -5,6 +5,7 @@ module DocAuthHelper
 
   GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
   GOOD_SSN_MASKED = '9**-**-***4'
+  SAMPLE_TMX_SUMMARY_REASON_CODE = { tmx_summary_reason_code: ['Identity_Negative_History'] }
   SSN_THAT_FAILS_RESOLUTION = '123-45-6666'
   SSN_THAT_RAISES_EXCEPTION = '000-00-0000'
 
@@ -298,5 +299,23 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def fill_out_doc_auth_phone_form_ok(phone = '415-555-0199')
     fill_in :doc_auth_phone, with: phone
+  end
+
+  def complete_all_idv_steps_with(threatmetrix:)
+    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(300)
+    user = create(:user, :signed_up)
+    visit_idp_from_ial1_oidc_sp(
+      client_id: service_provider.issuer,
+      irs_attempts_api_session_id: 'test-session-id',
+    )
+    visit root_path
+    sign_in_and_2fa_user(user)
+    complete_doc_auth_steps_before_ssn_step
+    select threatmetrix, from: :mock_profiling_result
+    complete_ssn_step
+    click_idv_continue
+    complete_phone_step(user)
+    complete_review_step(user)
+    acknowledge_and_confirm_personal_key
   end
 end

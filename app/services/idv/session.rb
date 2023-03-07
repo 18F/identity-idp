@@ -96,10 +96,6 @@ module Idv
       user_session.delete(:idv)
     end
 
-    def phone_confirmed?
-      vendor_phone_confirmation == true && user_phone_confirmation == true
-    end
-
     def associate_in_person_enrollment_with_profile
       return unless in_person_enrollment? && current_user.establishing_in_person_enrollment
       current_user.establishing_in_person_enrollment.update(profile: profile)
@@ -117,14 +113,6 @@ module Idv
       @gpo_otp = confirmation_maker.otp
     end
 
-    def alive?
-      session.present?
-    end
-
-    def address_mechanism_chosen?
-      vendor_phone_confirmation == true || address_verification_mechanism == 'gpo'
-    end
-
     def user_phone_confirmation_session
       session_value = session[:user_phone_confirmation_session]
       return if session_value.blank?
@@ -133,6 +121,22 @@ module Idv
 
     def user_phone_confirmation_session=(new_user_phone_confirmation_session)
       session[:user_phone_confirmation_session] = new_user_phone_confirmation_session.to_h
+    end
+
+    def address_step_complete?
+      if address_verification_mechanism == 'gpo'
+        true
+      else
+        phone_confirmed?
+      end
+    end
+
+    def address_mechanism_chosen?
+      vendor_phone_confirmation == true || address_verification_mechanism == 'gpo'
+    end
+
+    def phone_confirmed?
+      vendor_phone_confirmation == true && user_phone_confirmation == true
     end
 
     def invalidate_steps_after_ssn!

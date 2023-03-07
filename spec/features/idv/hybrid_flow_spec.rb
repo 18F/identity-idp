@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Hybrid Flow' do
+describe 'Hybrid Flow', :allow_net_connect_on_start do
   include IdvHelper
   include DocAuthHelper
 

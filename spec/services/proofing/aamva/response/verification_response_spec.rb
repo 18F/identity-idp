@@ -49,7 +49,7 @@ describe Proofing::Aamva::Response::VerificationResponse do
       it 'raises a VerificationError' do
         expect { subject }.to raise_error(
           Proofing::Aamva::VerificationError,
-          'Unexpected status code in response: 504',
+          /Unexpected status code in response: 504/,
         )
       end
     end
