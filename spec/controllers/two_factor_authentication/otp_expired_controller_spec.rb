@@ -79,7 +79,7 @@ describe TwoFactorAuthentication::OtpExpiredController do
         stub_sign_in_before_2fa(user)
 
         get :show
-        
+
         expect(assigns(:authentication_options_path)).to eq(login_two_factor_options_url)
       end
 
