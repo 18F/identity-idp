@@ -39,12 +39,12 @@ module Idv
 
         def parsed_dob
           form_dob = pii[:dob]
-          if form_dob.instance_of? String
+          if form_dob.instance_of?(String)
             dob_str = form_dob
-          elsif form_dob.instance_of? Hash
-            dob_str = MemorableDateComponent.extract_date_param form_dob
+          elsif form_dob.instance_of?(Hash)
+            dob_str = MemorableDateComponent.extract_date_param(form_dob)
           end
-          Date.parse dob_str unless dob_str.nil?
+          Date.parse(dob_str) unless dob_str.nil?
         rescue StandardError
           # Catch date parsing errors
         end
