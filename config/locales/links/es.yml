@@ -12,6 +12,7 @@ es:
     contact_support: Póngase en contacto con el soporte técnico de %{app_name}
     continue_sign_in: Continuar el inicio de sesión
     create_account: Crear cuenta
+    exit_login: Salga de Login.gov
     go_back: Regresa
     help: Ayuda
     new_window: '(abre nueva ventana)'

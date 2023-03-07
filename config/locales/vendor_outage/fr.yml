@@ -23,7 +23,13 @@ fr:
           pouvez obtenir un code par message texte (SMS), ou vérifier votre
           adresse par la poste.
       pinpoint:
-        idv: Pour le moment, nous ne pouvons vérifier votre identité que par courrier
+        idv:
+          header: Pour le moment, nous ne pouvons vérifier votre identité que par courrier
+          message_html: "Malheureusement, Login.gov rencontre des difficultés techniques. Nous travaillons à la résolution d'une erreur afin de pouvoir vérifier rapidement votre identité pour <strong>%{service_provider}</strong>."
+          options_prompt: "Vous pouvez :"
+          options_html:
+            - '<a href="%{status_page_url}" class="usa-link usa-link--external" target="_blank">Get updates on our status page</a> pour savoir quand l\'erreur est résolue.'
+            - "Continuer maintenant et effectuer la vérification par courrier, ce qui prend de <strong>3 à 7 jours ouvrables</strong>."
     blocked:
       idv:
         generic: Nous rencontrons des difficultés techniques et ne pouvons pas vérifier
@@ -45,3 +51,5 @@ fr:
     get_updates: Obtenir des mises à jour
     get_updates_on_status_page: Obtenez des mises à jour sur notre page de statut
     working: Nous travaillons à la résolution d’une erreur
+    get_help: Obtenez de l’aide sur %{sp_name}
+    get_updates_on_status_page: Obtenez des mises à jour sur notre page de statut

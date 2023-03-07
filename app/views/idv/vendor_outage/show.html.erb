@@ -1,14 +1,48 @@
+<%= render StepIndicatorComponent.new(
+    steps: step_indicator_steps,
+    current_step: :getting_started,
+    locale_scope: 'idv',
+    class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+) %>
+
 <%= render(AlertIconComponent.new) %>
-<%= render PageHeadingComponent.new.with_content(t('vendor_outage.alerts.pinpoint.idv')) %>
+<%= render PageHeadingComponent.new.with_content(t('vendor_outage.alerts.pinpoint.idv.header')) %>
 
-<p>Some text here</p>
+<p>
+  <%= t('vendor_outage.alerts.pinpoint.idv.message_html', service_provider: 'ACME') %>
+</p>
 
+<span><%= t('vendor_outage.alerts.pinpoint.idv.options_prompt') %></span>
+<ul class="margin-bottom-5">
+  <% t('vendor_outage.alerts.pinpoint.idv.options_html', status_page_url: StatusPage.base_url).each do | option | %>
+    <li>
+      <%= option %>
+    </li>
+  <% end %>
+</ul>
+
+<div class="grid-row margin-bottom-3">
 <%= render ButtonComponent.new(
     action: ->(**tag_options, &block) do
     link_to(idv_doc_auth_step_path(step: :welcome), **tag_options, &block)
     end,
+    big: true,
+    wide: true,
     class: 'usa-button',
-    ).with_content(t('doc_auth.buttons.continue')) %>
+).with_content(t('doc_auth.buttons.continue')) %>
+</div>
+
+<div class="grid-row">
+    <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+        link_to(idv_doc_auth_step_path(step: :welcome), **tag_options, &block)
+        end,
+        big: true,
+        wide: true,
+        outline: true,
+        class: 'usa-button',
+    ).with_content(t('links.exit_login')) %>
+</div>
 
 <%= render(
     'shared/troubleshooting_options',
@@ -21,8 +55,14 @@
                 flow: :idv,
                 step: :gpo_send_letter,
             ),
-            text: t('idv.troubleshooting.options.learn_more_verify_by_mail'),
+            text: t('vendor_outage.get_updates_on_status_page'),
             new_tab: true,
         },
     ],
 ) %>
+
+<pre><%= current_sp.friendly_name  %></pre>
+<pre><%= current_sp.return_to_sp_url  %></pre>
+<pre><%= current_sp.metadata_url  %></pre>
+<pre><%= current_sp.acs_url  %></pre>
+<pre><%= current_sp.failure_to_proof_url  %></pre>
