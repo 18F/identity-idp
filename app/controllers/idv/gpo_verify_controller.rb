@@ -68,12 +68,8 @@ module Idv
     private
 
     def next_step
-      if IdentityConfig.store.gpo_personal_key_after_otp
-        enable_personal_key_generation
-        idv_personal_key_url
-      else
-        sign_up_completed_url
-      end
+      enable_personal_key_generation
+      idv_personal_key_url
     end
 
     def throttle

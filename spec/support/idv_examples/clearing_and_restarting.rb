@@ -27,7 +27,6 @@ shared_examples 'clearing and restarting idv' do
     end
     fill_in 'Password', with: user.password
     click_idv_continue
-    acknowledge_and_confirm_personal_key unless IdentityConfig.store.gpo_personal_key_after_otp
 
     gpo_confirmation = GpoConfirmation.order(created_at: :desc).first
 

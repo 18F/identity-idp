@@ -115,7 +115,6 @@ good_job_max_threads: 5
 good_job_queues: 'default:5;low:1;*'
 good_job_queue_select_limit: 5_000
 gpo_designated_receiver_pii: '{}'
-gpo_personal_key_after_otp: false
 hide_phone_mfa_signup: false
 identity_pki_disabled: false
 identity_pki_local_dev: false
