@@ -24,8 +24,6 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollments_in_progress: 0,
       enrollments_passed: 0,
     }
-    @request_delay_in_seconds = IdentityConfig.store.
-      get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND
 
     reprocess_delay_minutes = IdentityConfig.store.
       get_usps_proofing_results_job_reprocess_delay_minutes
@@ -52,9 +50,10 @@ class GetUspsProofingResultsJob < ApplicationJob
   private
 
   attr_accessor :enrollment_outcomes
-  attr_accessor :request_delay_in_seconds
 
   DEFAULT_EMAIL_DELAY_IN_HOURS = 1
+  REQUEST_DELAY_IN_SECONDS = IdentityConfig.store.
+    get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND
 
   def proofer
     @proofer ||= UspsInPersonProofing::Proofer.new
@@ -64,8 +63,8 @@ class GetUspsProofingResultsJob < ApplicationJob
     last_enrollment_index = enrollments.length - 1
     enrollments.each_with_index do |enrollment, idx|
       check_enrollment(enrollment)
-      # Sleep for a while before we attempt to make another call to USPS
-      sleep request_delay_in_seconds if idx < last_enrollment_index
+      # Sleep briefly after each call to USPS
+      sleep REQUEST_DELAY_IN_SECONDS if idx < last_enrollment_index
     end
   end
 
