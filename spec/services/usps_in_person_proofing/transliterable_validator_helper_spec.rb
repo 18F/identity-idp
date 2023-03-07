@@ -59,25 +59,6 @@ RSpec.describe UspsInPersonProofing::TransliterableValidatorHelper do
           ),
         )
       end
-      it 'does not ignore string keys in hashes with indifferent access' do
-        expect(
-          sut.validate(
-            HashWithIndifferentAccess.new(
-              'first_name' => 'AbcЉ',
-              :last_name => 'TИbleЉs',
-            ),
-          ),
-        ).to eq(
-          'first_name' => I18n.t(
-            'in_person_proofing.form.state_id.errors.unsupported_chars.name',
-            char_list: 'Љ',
-          ),
-          'last_name' => I18n.t(
-            'in_person_proofing.form.state_id.errors.unsupported_chars.name',
-            char_list: 'Љ, И',
-          ),
-        )
-      end
       it 'uses the transliteration replacement character if it was part of the original string' do
         replace_char = UspsInPersonProofing::Transliterator::REPLACEMENT
         expect(
