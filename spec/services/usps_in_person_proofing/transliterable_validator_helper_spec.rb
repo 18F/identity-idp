@@ -39,7 +39,7 @@ RSpec.describe UspsInPersonProofing::TransliterableValidatorHelper do
           ),
         ).to eq(
           last_name: I18n.t(
-            'in_person_proofing.form.state_id.errors.unsupported_chars.name',
+            'in_person_proofing.form.state_id.errors.unsupported_chars',
             char_list: 'Љ, И',
           ),
         )
@@ -54,7 +54,7 @@ RSpec.describe UspsInPersonProofing::TransliterableValidatorHelper do
           ),
         ).to eq(
           last_name: I18n.t(
-            'in_person_proofing.form.state_id.errors.unsupported_chars.name',
+            'in_person_proofing.form.state_id.errors.unsupported_chars',
             char_list: 'Љ, И',
           ),
         )
@@ -69,7 +69,7 @@ RSpec.describe UspsInPersonProofing::TransliterableValidatorHelper do
           ),
         ).to eq(
           first_name: I18n.t(
-            'in_person_proofing.form.state_id.errors.unsupported_chars.name',
+            'in_person_proofing.form.state_id.errors.unsupported_chars',
             char_list: "#{replace_char}, Љ, И",
           ),
         )
@@ -83,7 +83,7 @@ RSpec.describe UspsInPersonProofing::TransliterableValidatorHelper do
           ),
         ).to eq(
           address1: I18n.t(
-            'in_person_proofing.form.state_id.errors.unsupported_chars.address',
+            'in_person_proofing.form.address.errors.unsupported_chars',
             char_list: 'Љ, И',
           ),
         )
@@ -116,23 +116,23 @@ RSpec.describe UspsInPersonProofing::TransliterableValidatorHelper do
           ),
         ).to eq(
           first_name: I18n.t(
-            'in_person_proofing.form.state_id.errors.unsupported_chars.name',
+            'in_person_proofing.form.state_id.errors.unsupported_chars',
             char_list: 'Љ, Д',
           ),
           last_name: I18n.t(
-            'in_person_proofing.form.state_id.errors.unsupported_chars.name',
+            'in_person_proofing.form.state_id.errors.unsupported_chars',
             char_list: 'Љ, Ѳ',
           ),
           address1: I18n.t(
-            'in_person_proofing.form.state_id.errors.unsupported_chars.address',
+            'in_person_proofing.form.address.errors.unsupported_chars',
             char_list: 'И, Ѯ',
           ),
           address2: I18n.t(
-            'in_person_proofing.form.state_id.errors.unsupported_chars.address',
+            'in_person_proofing.form.address.errors.unsupported_chars',
             char_list: 'Љ, Ѻ',
           ),
           city: I18n.t(
-            'in_person_proofing.form.state_id.errors.unsupported_chars.address',
+            'in_person_proofing.form.address.errors.unsupported_chars',
             char_list: 'И, Ч',
           ),
         )
@@ -150,23 +150,23 @@ RSpec.describe UspsInPersonProofing::TransliterableValidatorHelper do
           ),
         ).to eq(
           first_name: I18n.t(
-            'in_person_proofing.form.state_id.errors.unsupported_chars.name',
+            'in_person_proofing.form.state_id.errors.unsupported_chars',
             char_list: '#, ., /, 1',
           ),
           last_name: I18n.t(
-            'in_person_proofing.form.state_id.errors.unsupported_chars.name',
+            'in_person_proofing.form.state_id.errors.unsupported_chars',
             char_list: '#, ., /, 1',
           ),
           address1: I18n.t(
-            'in_person_proofing.form.state_id.errors.unsupported_chars.address',
+            'in_person_proofing.form.address.errors.unsupported_chars',
             char_list: '!, "',
           ),
           address2: I18n.t(
-            'in_person_proofing.form.state_id.errors.unsupported_chars.address',
+            'in_person_proofing.form.address.errors.unsupported_chars',
             char_list: '!, "',
           ),
           city: I18n.t(
-            'in_person_proofing.form.state_id.errors.unsupported_chars.address',
+            'in_person_proofing.form.address.errors.unsupported_chars',
             char_list: '#, ., /, 1',
           ),
         )
