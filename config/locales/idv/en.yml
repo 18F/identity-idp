@@ -183,6 +183,17 @@ en:
         review_message: When you re-enter your password, %{app_name} will protect the
           information you’ve given us, so that only you can access it.
       verifying: Verifying…
+    outage:
+      exit_button: 'Exit %{app_name}'
+      idv_explanation:
+        with_sp: '%{sp} needs to make sure you are you — not someone pretending to be
+          you.'
+        without_sp: 'The agency that you are trying to access needs to make sure you are
+          you — not someone pretending to be you.'
+      next_steps_html: 'Unfortunately, we are having technical difficulties and cannot
+        verify your identity at this time. %{status_page_link} or exit Login.gov
+        and try again later.'
+      status_page_link: 'Get updates on our status page'
     review:
       dob: Date of birth
       full_name: Full name
@@ -195,6 +206,7 @@ en:
         resend: Want another letter?
         verify: Want a letter?
       otp_delivery_method: How should we send a code?
+      outage: 'We are working to resolve an error'
       review: Review and submit
       session:
         phone: Enter your phone number

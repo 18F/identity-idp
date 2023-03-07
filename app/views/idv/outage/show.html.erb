@@ -1,0 +1,32 @@
+<% title t('idv.titles.outage') %>
+
+<%= render AlertIconComponent.new(icon_name: :error, class: 'display-block margin-bottom-4') %>
+
+<%= render PageHeadingComponent.new.with_content(t('idv.titles.outage')) %>
+
+<p>
+  <%= t(
+        @sp ?
+          'idv.outage.idv_explanation.with_sp' :
+          'idv.outage.idv_explanation.without_sp',
+        sp: @sp,
+      ) %>
+</p>
+
+<p class="margin-bottom-5">
+  <%= t(
+        'idv.outage.next_steps_html',
+        status_page_link: new_window_link_to(
+          t('idv.outage.status_page_link'),
+          StatusPage.base_url,
+        ),
+      ) %>
+</p>
+
+<%= render ButtonComponent.new(
+      action: ->(**tag_options, &block) do
+        link_to(@exit_url, **tag_options, &block)
+      end,
+      big: true,
+      wide: true,
+    ).with_content(t('idv.outage.exit_button', app_name: APP_NAME)) %>
