@@ -29,6 +29,18 @@ feature 'vendor_outage_spec' do
 
       expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
     end
+
+    it 'skips the hybrid handoff screen and proceeds to doc capture' do
+      visit_idp_from_sp_with_ial2(:oidc)
+      sign_in_user(user)
+      fill_in_code_with_last_totp(user)
+      click_submit_default
+      click_idv_continue
+      click_idv_continue
+      complete_agreement_step
+
+      expect(current_path).to eq idv_doc_auth_step_path(step: :document_capture)
+    end
   end
 
   %w[acuant lexisnexis_instant_verify lexisnexis_trueid].each do |service|
