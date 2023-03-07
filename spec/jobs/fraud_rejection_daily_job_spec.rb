@@ -17,7 +17,7 @@ RSpec.describe FraudRejectionDailyJob do
 
       expect { job.perform }.to change { rejected_profiles.count }.by(1)
       expect(job_analytics).to have_logged_event(
-        'Automatic Fraud Rejection',
+        'Fraud: Automatic Fraud Rejection',
         verified_at: rejected_profiles.first.verified_at,
       )
     end

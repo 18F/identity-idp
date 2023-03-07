@@ -167,7 +167,7 @@ module AnalyticsEvents
   # Tracks when a profile is automatically rejected due to being under review for 30 days
   def automatic_fraud_rejection(verified_at:, **extra)
     track_event(
-      'Automatic Fraud Rejection',
+      'Fraud: Automatic Fraud Rejection',
       verified_at: verified_at,
       **extra,
     )
