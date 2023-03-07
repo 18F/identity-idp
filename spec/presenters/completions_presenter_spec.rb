@@ -224,6 +224,27 @@ describe CompletionsPresenter do
         end
       end
 
+      context 'user has reverified since last consent for sp' do
+        let(:identities) do
+          [
+            build(
+              :service_provider_identity,
+              service_provider: current_sp.issuer,
+              last_consented_at: 2.months.ago,
+            ),
+          ]
+        end
+        let(:completion_context) { :reverified_after_consent }
+        it 'renders the reverified IAL2 consent intro message' do
+          expect(presenter.intro).to eq(
+            I18n.t(
+              'help_text.requested_attributes.ial2_reverified_consent_info',
+              sp: sp_name,
+            ),
+          )
+        end
+      end
+
       context 'when consent has not expired' do
         it 'renders the standard intro message' do
           expect(presenter.intro).to eq(

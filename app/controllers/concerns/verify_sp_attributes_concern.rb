@@ -42,15 +42,15 @@ module VerifySpAttributesConcern
     sp_session_identity.deleted_at.present?
   end
 
-  private
-
   def reverified_after_consent?(sp_session_identity)
     return false unless sp_session_identity
-    return false if sp_session_identity.deleted_at.present
+    return false if sp_session_identity.deleted_at.present?
     last_estimated_consent = last_estimated_consent_for(sp_session_identity)
     return false if last_estimated_consent.nil?
     verified_after_consent?(last_estimated_consent)
   end
+
+  private
 
   def last_estimated_consent_for(sp_session_identity)
     sp_session_identity.last_consented_at || sp_session_identity.created_at
