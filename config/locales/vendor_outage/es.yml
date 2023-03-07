@@ -9,6 +9,20 @@ es:
         idv: No podemos verificar teléfonos en estos momentos. Por favor, inténtelo
           nuevamente más tarde o, en lugar de ello, verifique su dirección por
           correo.
+      pinpoint:
+        idv:
+          header: Solo podemos verificar su identidad por correo en este momento
+          message_html: 'Desafortunadamente, Login.gov está teniendo dificultades
+            técnicas. Estamos trabajando para resolver un error y poder
+            verificar su identidad en <strong>%{sp_name}</strong> rápidamente.'
+          options_html:
+            - '<a href="%{status_page_url}" class="usa-link usa-link--external"
+              target="_blank">Get updates on our status page</a> para saber
+              cuándo se ha resuelto el error'
+            - 'Continuar ahora y verificar por correo, que tarda de <strong>3 a
+              7 días laborables</strong>'
+            - 'Salga de Login.gov e inténtelo de nuevo más tarde'
+          options_prompt: 'Usted puede:'
       sms:
         default: No podemos enviar mensajes de texto (SMS) en estos momentos. Puede
           recibir un código por medio de una llamada telefónica o elegir otro
@@ -23,15 +37,6 @@ es:
         idv: No podemos enviar llamadas telefónicas en estos momentos. Puede recibir un
           código por medio de un mensaje de texto (SMS) o, en su lugar,
           verificar su dirección por correo.
-      pinpoint:
-        idv:
-          header: Solo podemos verificar su identidad por correo en este momento
-          message_html: 'Desafortunadamente, Login.gov está teniendo dificultades técnicas. Estamos trabajando para resolver un error y poder verificar su identidad en <strong>%{sp_name}</strong> rápidamente.'
-          options_prompt: 'Usted puede:'
-          options_html:
-            - '<a href="%{status_page_url}" class="usa-link usa-link--external" target="_blank">Get updates on our status page</a> para saber cuándo se ha resuelto el error'
-            - 'Continuar ahora y verificar por correo, que tarda de <strong>3 a 7 días laborables</strong>'
-            - 'Salga de Login.gov e inténtelo de nuevo más tarde'
     blocked:
       idv:
         generic: Debido a problemas técnicos por nuestra parte, no podemos verificar su
@@ -53,8 +58,7 @@ es:
         idv: No podemos verificar teléfonos en estos momentos. Por favor, inténtelo
           nuevamente más tarde o, en lugar de ello, verifique su dirección por
           correo.
+    get_help: 'Obtenga ayuda en %{sp_name}'
     get_updates: Obtenga actualizaciones
     get_updates_on_status_page: Reciba actualizaciones en nuestra página de estado
     working: Estamos trabajando para corregir un error
-    get_help: 'Obtenga ayuda en %{sp_name}'
-    get_updates_on_status_page: Reciba actualizaciones en nuestra página de estado
