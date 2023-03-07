@@ -40,7 +40,6 @@ module Idv
 
         def flow_params
           params.require(:in_person_address).permit(
-            # params.permit(
             *Idv::InPerson::AddressForm::ATTRIBUTES,
           )
         end
