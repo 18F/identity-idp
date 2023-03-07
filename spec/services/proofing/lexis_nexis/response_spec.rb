@@ -41,8 +41,7 @@ describe Proofing::LexisNexis::Response do
       it 'returns a hash of error' do
         errors = subject.verification_errors
 
-        expect(errors).to be_a(Hash)
-        expect(errors).to include(:InstantVerify)
+        expect(errors).to have_key(:InstantVerify)
       end
     end
   end
