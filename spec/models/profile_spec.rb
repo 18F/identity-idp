@@ -313,17 +313,7 @@ describe Profile do
   end
 
   describe '#reject_for_fraud' do
-    let(:profile) do
-      profile = create(:profile, user: user)
-      profile.reject_for_fraud
-      profile
-    end
-
-    it 'sets fraud_rejection to true' do
-      expect(profile).to_not be_active
-    end
-
-    it 'sends an email' do
+    before do
       # This is necessary because UserMailer reaches into the
       # controller's params. As this is a model spec, we have to fake
       # the params object.
@@ -332,8 +322,36 @@ describe Profile do
         email_address: OpenStruct.new(user_id: 'fake_user_id', email: 'fake_user@test.com'),
       )
       allow_any_instance_of(UserMailer).to receive(:params).and_return(fake_params)
+    end
 
-      expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(1)
+    context 'it notifies the user' do
+      let(:profile) do
+        profile = create(:profile, user: user, fraud_review_pending: true)
+        profile.reject_for_fraud(notify_user: true)
+        profile
+      end
+
+      it 'sets fraud_rejection to true' do
+        expect(profile).to_not be_active
+      end
+
+      it 'sends an email' do
+        expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(1)
+      end
+    end
+
+    context 'it does not notify the user' do
+      let(:profile) do
+        profile = create(:profile, user: user, fraud_review_pending: true)
+        profile.reject_for_fraud(notify_user: false)
+        profile
+      end
+
+      it 'does not send an email' do
+        expect(profile).to_not be_active
+
+        expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(0)
+      end
     end
   end
 

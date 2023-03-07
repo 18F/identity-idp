@@ -2,15 +2,15 @@ class FraudRejectionDailyJob < ApplicationJob
   queue_as :default
 
   def perform
-    fraud_review_pending_profiles.find_each do |profile|
+    profiles_eligible_for_fraud_rejection.find_each do |profile|
       analytics.automatic_fraud_rejection(verified_at: profile.verified_at)
-      profile.reject_for_fraud
+      profile.reject_for_fraud(notifiy_user: false)
     end
   end
 
   private
 
-  def fraud_review_pending_profiles
+  def profiles_eligible_for_fraud_rejection
     Profile.where(
       fraud_review_pending: true,
       verified_at: ..30.days.ago,
