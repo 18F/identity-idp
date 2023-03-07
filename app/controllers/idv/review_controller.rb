@@ -6,17 +6,12 @@ module Idv
     include StepIndicatorConcern
     include PhoneConfirmation
 
-    before_action :confirm_idv_applicant_created
-    before_action :confirm_idv_steps_complete
+    before_action :confirm_verify_info_step_complete
     before_action :confirm_address_step_complete
     before_action :confirm_current_password, only: [:create]
 
     rescue_from UspsInPersonProofing::Exception::RequestEnrollException,
                 with: :handle_request_enroll_exception
-
-    def confirm_idv_steps_complete
-      return redirect_to(idv_verify_info_url) unless idv_profile_complete?
-    end
 
     def confirm_current_password
       return if valid_password?
@@ -88,14 +83,6 @@ module Idv
         )
         t('idv.messages.review.info_verified_html', phone_message: phone_of_record_msg)
       end
-    end
-
-    def idv_profile_complete?
-      !!idv_session.profile_confirmation
-    end
-
-    def idv_address_complete?
-      idv_session.address_mechanism_chosen?
     end
 
     def init_profile

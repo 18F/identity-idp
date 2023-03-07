@@ -7,10 +7,6 @@ module IdvSession
     before_action :redirect_if_sp_context_needed
   end
 
-  def confirm_idv_applicant_created
-    redirect_to idv_verify_info_url if idv_session.applicant.blank?
-  end
-
   def confirm_idv_needed
     return if effective_user.active_profile.blank? ||
               decorated_session.requested_more_recent_verification? ||
