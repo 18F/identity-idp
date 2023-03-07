@@ -239,7 +239,7 @@ describe CompletionsPresenter do
           expect(presenter.intro).to eq(
             I18n.t(
               'help_text.requested_attributes.ial2_reverified_consent_info',
-              sp: sp_name,
+              sp: current_sp.friendly_name,
             ),
           )
         end
