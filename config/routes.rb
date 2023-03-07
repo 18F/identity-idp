@@ -307,6 +307,7 @@ Rails.application.routes.draw do
       post '/personal_key' => 'personal_key#update'
       get '/forgot_password' => 'forgot_password#new'
       post '/forgot_password' => 'forgot_password#update'
+      get '/document_capture' => 'document_capture#show'
       get '/ssn' => 'ssn#show'
       put '/ssn' => 'ssn#update'
       get '/verify_info' => 'verify_info#show'
