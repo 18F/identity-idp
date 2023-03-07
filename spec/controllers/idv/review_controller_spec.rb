@@ -19,6 +19,7 @@ describe Idv::ReviewController do
       service_provider: nil,
     )
     idv_session.profile_confirmation = true
+    idv_session.resolution_successful = 'phone'
     idv_session.vendor_phone_confirmation = true
     idv_session.user_phone_confirmation = true
     idv_session.applicant = applicant.with_indifferent_access
@@ -35,8 +36,8 @@ describe Idv::ReviewController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_idv_applicant_created,
-        :confirm_idv_steps_complete,
+        :confirm_verify_info_step_complete,
+        :confirm_address_step_complete,
       )
     end
 
