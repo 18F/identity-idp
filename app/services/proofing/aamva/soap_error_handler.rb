@@ -9,6 +9,9 @@ module Proofing
       def initialize(http_response)
         @document = REXML::Document.new(http_response.body)
         parse_error_message
+      rescue REXML::ParseException => e
+        @error_present = true
+        @error_message = e.to_s
       end
 
       def error_present?

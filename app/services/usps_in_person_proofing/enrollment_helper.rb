@@ -103,7 +103,7 @@ module UspsInPersonProofing
         return value unless IdentityConfig.store.usps_ipp_transliteration_enabled
 
         result = transliterator.transliterate(value)
-        if result.unsupported_chars.size > 0
+        if result.unsupported_chars.present?
           result.original
         else
           result.transliterated

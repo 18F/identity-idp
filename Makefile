@@ -129,6 +129,9 @@ brakeman: ## Runs brakeman
 public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Builds JavaScript assets
 	yarn build
 
+browsers.json: yarn.lock .browserslistrc ## Generates browsers.json browser support file
+	yarn generate-browsers-json
+
 test: export RAILS_ENV := test
 test: $(CONFIG) ## Runs RSpec and yarn tests in parallel
 	bundle exec rake parallel:spec && yarn test
@@ -153,7 +156,7 @@ tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local H
 		-keyout tmp/$(HOST)-$(PORT).key \
 		-out tmp/$(HOST)-$(PORT).crt
 
-run: ## Runs the development server
+run: browsers.json ## Runs the development server
 	foreman start -p $(PORT)
 
 urn:
@@ -167,7 +170,7 @@ normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, 
 	yarn normalize-yaml .rubocop.yml --disable-sort-keys --disable-smart-punctuation
 	find ./config/locales/transliterate -type f -name '*.yml' -exec yarn normalize-yaml --disable-sort-keys --disable-smart-punctuation {} \;
 	find ./config/locales/telephony -type f -name '*.yml' | xargs yarn normalize-yaml --disable-smart-punctuation
-	find ./config/locales -not \( -path "./config/locales/telephony*" -o  -path "./config/locales/transliterate/*" \) -type f -name '*.yml' | \
+	find ./config/locales -not \( -path "./config/locales/telephony*" -o -path "./config/locales/transliterate/*" \) -type f -name '*.yml' | \
 	xargs yarn normalize-yaml \
 		config/pinpoint_supported_countries.yml \
 		config/pinpoint_overrides.yml \
