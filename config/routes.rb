@@ -301,6 +301,7 @@ Rails.application.routes.draw do
       get '/activated' => 'idv#activated'
     end
     scope '/verify', module: 'idv', as: 'idv' do
+      get '/unavailable' => 'outage#show'
       get '/come_back_later' => 'come_back_later#show'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'
