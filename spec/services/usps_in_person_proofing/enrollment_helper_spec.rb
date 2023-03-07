@@ -201,7 +201,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   end
 
   def transliterated_without_change(value)
-    UspsInPersonProofing::TransliterationResult.new(
+    UspsInPersonProofing::Transliterator::TransliterationResult.new(
       changed?: false,
       original: value,
       transliterated: value,
@@ -210,7 +210,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   end
 
   def transliterated(value)
-    UspsInPersonProofing::TransliterationResult.new(
+    UspsInPersonProofing::Transliterator::TransliterationResult.new(
       changed?: true,
       original: value,
       transliterated: "transliterated_#{value}",
@@ -219,7 +219,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   end
 
   def transliterated_with_failure(value)
-    UspsInPersonProofing::TransliterationResult.new(
+    UspsInPersonProofing::Transliterator::TransliterationResult.new(
       changed?: true,
       original: value,
       transliterated: "transliterated_failed_#{value}",
