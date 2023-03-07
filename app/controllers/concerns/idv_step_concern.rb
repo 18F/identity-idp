@@ -16,7 +16,6 @@ module IdvStepConcern
     else
       redirect_to idv_verify_info_url
     end
-
   end
 
   def confirm_address_step_complete
