@@ -430,14 +430,14 @@ RSpec.describe 'In Person Proofing', js: true do
       click_idv_continue
       expect(page).to have_content(
         I18n.t(
-          'in_person_proofing.form.state_id.errors.unsupported_chars.name',
+          'in_person_proofing.form.state_id.errors.unsupported_chars',
           char_list: '", 0',
         ),
       )
 
       expect(page).to have_content(
         I18n.t(
-          'in_person_proofing.form.state_id.errors.unsupported_chars.name',
+          'in_person_proofing.form.state_id.errors.unsupported_chars',
           char_list: 'Д, б, е, ж, й, к, о',
         ),
       )
@@ -457,21 +457,21 @@ RSpec.describe 'In Person Proofing', js: true do
 
       expect(page).to have_content(
         I18n.t(
-          'in_person_proofing.form.state_id.errors.unsupported_chars.address',
+          'in_person_proofing.form.address.errors.unsupported_chars',
           char_list: 'Д, д, ж, о, р',
         ),
       )
 
       expect(page).to have_content(
         I18n.t(
-          'in_person_proofing.form.state_id.errors.unsupported_chars.address',
+          'in_person_proofing.form.address.errors.unsupported_chars',
           char_list: '%, (, ), =',
         ),
       )
 
       expect(page).to have_content(
         I18n.t(
-          'in_person_proofing.form.state_id.errors.unsupported_chars.address',
+          'in_person_proofing.form.address.errors.unsupported_chars',
           char_list: 'Е, а, е, л, н',
         ),
       )
