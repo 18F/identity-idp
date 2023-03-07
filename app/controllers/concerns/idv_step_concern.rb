@@ -12,7 +12,7 @@ module IdvStepConcern
     return if idv_session.verify_info_step_complete?
 
     if idv_session.in_person_enrollment?
-      idv_in_person_verify_info_url
+      redirect_to idv_in_person_verify_info_url
     else
       redirect_to idv_verify_info_url
     end
