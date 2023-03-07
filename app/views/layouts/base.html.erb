@@ -54,7 +54,7 @@
       ) %>
   <meta content="#ffffff" name="theme-color" />
 
-  <% if IdentityConfig.store.newrelic_browser_key.present? && IdentityConfig.store.newrelic_browser_app_id.present? && BrowserSupport.supported?(request.user_agent) %>
+  <% if BrowserSupport.supported?(request.user_agent) && IdentityConfig.store.newrelic_browser_key.present? && IdentityConfig.store.newrelic_browser_app_id.present? %>
     <%= render 'shared/newrelic/browser_instrumentation' %>
   <% end %>
 
