@@ -106,7 +106,7 @@ module Api
 
     def authenticate_client
       bearer, csp_id, token = request.authorization&.split(' ', 3)
-      if bearer != 'Bearer' || !valid_auth_tokens.include?(token) ||
+      if bearer != 'Bearer' || !valid_auth_token?(token) ||
          csp_id != IdentityConfig.store.irs_attempt_api_csp_id
         analytics.irs_attempts_api_events(
           **analytics_properties(
@@ -116,6 +116,26 @@ module Api
         )
         render json: { status: 401, description: 'Unauthorized' }, status: :unauthorized
       end
+    end
+
+    def valid_auth_token?(token)
+      valid_auth_data = hashed_valid_auth_data
+      cost = valid_auth_data[:cost]
+      salt = valid_auth_data[:salt]
+      hashed_token = scrypt_digest(token: token, salt: salt, cost: cost)
+
+      valid_auth_data[:digested_tokens].any? do |valid_hashed_token|
+        ActiveSupport::SecurityUtils.secure_compare(
+          valid_hashed_token,
+          hashed_token,
+        )
+      end
+    end
+
+    def scrypt_digest(token:, salt:, cost:)
+      scrypt_salt = cost + OpenSSL::Digest::SHA256.hexdigest(salt)
+      scrypted = SCrypt::Engine.hash_secret token, scrypt_salt, 32
+      SCrypt::Password.new(scrypted).digest
     end
 
     # @return [Array<String>] JWE strings
@@ -146,8 +166,24 @@ module Api
       @s3_helper ||= JobHelpers::S3Helper.new
     end
 
-    def valid_auth_tokens
-      IdentityConfig.store.irs_attempt_api_auth_tokens
+    def hashed_valid_auth_data
+      key = IdentityConfig.store.irs_attempt_api_auth_tokens.map do |token|
+        OpenSSL::Digest::SHA256.hexdigest(token)
+      end.join(',')
+
+      Rails.cache.fetch("irs_hashed_tokens:#{key}", expires_in: 48.hours) do
+        salt = SecureRandom.hex(32)
+        cost = IdentityConfig.store.scrypt_cost
+        digested_tokens = IdentityConfig.store.irs_attempt_api_auth_tokens.map do |token|
+          scrypt_digest(token: token, salt: salt, cost: cost)
+        end
+
+        {
+          salt: salt,
+          cost: cost,
+          digested_tokens: digested_tokens,
+        }
+      end
     end
 
     def analytics_properties(authenticated:, elapsed_time:)
