@@ -13,6 +13,7 @@ module UspsInPersonProofing
       :transliterated,
       # Characters from the original that could not be transliterated
       :unsupported_chars,
+      keyword_init: true,
     )
 
     # Transliterate values for usage in the USPS API. This will additionally strip/reduce
@@ -27,9 +28,9 @@ module UspsInPersonProofing
 
       unsupported_chars = []
       unless stripped.count(REPLACEMENT) == transliterated.count(REPLACEMENT)
-        transliterated.chars.each_with_index do |val, index|
-          if val == REPLACEMENT && stripped[index] != REPLACEMENT
-            unsupported_chars.append(stripped[index])
+        transliterated.chars.zip(stripped.chars).each do |val, stripped|
+          if val == REPLACEMENT && stripped != REPLACEMENT
+            unsupported_chars.append(stripped)
           end
         end
       end
