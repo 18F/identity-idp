@@ -71,7 +71,7 @@ describe TwoFactorAuthentication::OtpExpiredController do
       end
     end
 
-    context 'for redirects' do
+    context 'authentication options redirect' do
       let(:enabled_mfa_methods_count) { 1 }
 
       it 'sets authentication options path correctly' do
@@ -83,7 +83,19 @@ describe TwoFactorAuthentication::OtpExpiredController do
         expect(assigns(:authentication_options_path)).to eq(login_two_factor_options_url)
       end
 
-      it 'sets unconfirmed phone correctly' do
+      context 'unconfirmed phone option' do
+        before do
+          @user = create(:user)
+          @unconfirmed_phone = '+1 (202) 555-1213'
+        end
+
+        it 'assigns the value correctly' do
+          stub_sign_in_before_2fa(@user)
+          subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
+
+          get :show
+          expect(assigns(:unconfirmed_phone)).to eq(false)
+        end
       end
     end
   end
