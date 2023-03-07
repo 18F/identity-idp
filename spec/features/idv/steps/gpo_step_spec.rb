@@ -102,12 +102,6 @@ feature 'idv gpo step', :js do
       click_on(t('idv.buttons.mail.send'))
       fill_in 'Password', with: new_password
       click_continue
-      page.find(
-        'label',
-        text: t('forms.personal_key.required_checkbox'),
-        wait: 5,
-      ).click
-      click_continue
       set_new_browser_session
       visit_idp_from_ial2_oidc_sp
       signin(user.email, new_password)

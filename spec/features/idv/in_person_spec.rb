@@ -375,7 +375,6 @@ RSpec.describe 'In Person Proofing', js: true do
       click_on t('idv.buttons.mail.send')
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
       complete_review_step
-      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
 
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
       expect(page).to have_content(t('idv.titles.come_back_later'))
