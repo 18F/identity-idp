@@ -71,7 +71,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         let(:usps_ipp_transliteration_enabled) { false }
 
         it 'creates usps enrollment without using transliteration' do
-          mock_proofer = double(UspsInPersonProofing::Mock::Proofer.class)
+          mock_proofer = double(UspsInPersonProofing::Mock::Proofer)
           expect(subject).to receive(:usps_proofer).and_return(mock_proofer)
 
           expect(transliterator).not_to receive(:transliterate)
