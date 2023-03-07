@@ -120,8 +120,7 @@ es:
     phone_fallback:
       question: '¿No puede utilizar su teléfono?'
     phone_fee_disclosure: Se pueden aplicar tarifas por mensajes y datos.
-    phone_info_html: Le enviaremos un código de un solo uso <strong>cada vez que
-      ingrese</strong>.
+    phone_info: Le enviaremos un código de un solo uso cada vez que ingrese.
     phone_label: Número de teléfono
     phone_verification:
       troubleshooting:

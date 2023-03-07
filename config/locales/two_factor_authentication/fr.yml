@@ -125,8 +125,8 @@ fr:
     phone_fallback:
       question: Vous ne pouvez pas utiliser votre téléphone?
     phone_fee_disclosure: Des messages et débits de données peuvent être appliqués.
-    phone_info_html: Nous vous enverrons un code à usage unique <strong>à chaque
-      fois que vous vous connecterez</strong>.
+    phone_info: Nous vous enverrons un code à usage unique à chaque fois que vous
+      vous connecterez.
     phone_label: Numéro de téléphone
     phone_verification:
       troubleshooting:

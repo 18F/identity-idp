@@ -111,7 +111,7 @@ en:
     phone_fallback:
       question: Can’t use your phone?
     phone_fee_disclosure: Message and data rates may apply.
-    phone_info_html: We’ll send you a one-time code <strong>each time you sign in</strong>.
+    phone_info: We’ll send you a one-time code each time you sign in.
     phone_label: Phone number
     phone_verification:
       troubleshooting:
