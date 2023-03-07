@@ -1,19 +1,19 @@
 module UspsInPersonProofing
-  # Container to hold the results of transliteration
-  TransliterationResult = Struct.new(
-    # Was the value different after transliteration?
-    :changed?,
-    # Original value submtted for transliteration
-    :original,
-    # Transliterated value
-    :transliterated,
-    # Characters from the original that could not be transliterated
-    :unsupported_chars,
-  )
-
   class Transliterator
     # This is the default. May not be able to override this in current version.
     REPLACEMENT = '?'.freeze
+
+    # Container to hold the results of transliteration
+    TransliterationResult = Struct.new(
+      # Was the value different after transliteration?
+      :changed?,
+      # Original value submtted for transliteration
+      :original,
+      # Transliterated value
+      :transliterated,
+      # Characters from the original that could not be transliterated
+      :unsupported_chars,
+    )
 
     # Transliterate values for usage in the USPS API. This will additionally strip/reduce
     # excess whitespace and check for special characters that are unsupported by transliteration.
