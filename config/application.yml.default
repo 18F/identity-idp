@@ -328,7 +328,7 @@ usps_ipp_request_timeout: 10
 usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
 usps_mock_fallback: true
-usps_ipp_transliteration_enabled: true
+usps_ipp_transliteration_enabled: false
 get_usps_proofing_results_job_cron: '0/10 * * * *'
 get_usps_proofing_results_job_reprocess_delay_minutes: 5
 get_usps_proofing_results_job_request_delay_milliseconds: 1000
@@ -398,6 +398,7 @@ development:
   state_tracking_enabled: true
   telephony_adapter: test
   use_dashboard_service_providers: true
+  usps_ipp_transliteration_enabled: true
   usps_upload_sftp_directory: "/gsa_order"
   usps_upload_sftp_host: localhost
   usps_upload_sftp_password: test
