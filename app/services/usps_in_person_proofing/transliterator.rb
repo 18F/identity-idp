@@ -29,9 +29,7 @@ module UspsInPersonProofing
       unsupported_chars = []
       unless stripped.count(REPLACEMENT) == transliterated.count(REPLACEMENT)
         transliterated.chars.zip(stripped.chars).each do |val, stripped|
-          if val == REPLACEMENT && stripped != REPLACEMENT
-            unsupported_chars.append(stripped)
-          end
+          unsupported_chars.append(stripped) if val == REPLACEMENT && stripped != REPLACEMENT
         end
       end
 
