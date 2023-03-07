@@ -18,6 +18,7 @@ module Idv
     end
 
     def fallback_back_path
+      return idv_verify_info_path if VendorStatus.new.any_phone_vendor_outage?
       user_needs_address_otp_verification? ? idv_gpo_verify_path : idv_phone_path
     end
 

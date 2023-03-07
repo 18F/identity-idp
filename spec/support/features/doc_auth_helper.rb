@@ -79,6 +79,9 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_welcome_step(expect_accessible: false)
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
+    if current_path == idv_vendor_outage_path
+      click_idv_continue
+    end
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
 
@@ -108,6 +111,11 @@ module DocAuthHelper
   end
 
   def complete_upload_step
+    # If there is a phone outage, the upload step is
+    # skipped and the user is taken straight to
+    # document capture.
+    return if VendorStatus.new.any_phone_vendor_outage?
+
     click_on t('forms.buttons.upload_photos')
   end
 

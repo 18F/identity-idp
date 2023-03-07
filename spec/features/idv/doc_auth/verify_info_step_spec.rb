@@ -38,6 +38,7 @@ feature 'doc auth verify_info step', :js do
   end
 
   it 'displays the expected content' do
+    binding.pry
     expect(page).to have_current_path(idv_verify_info_path)
     expect(page).to have_content(t('headings.verify'))
     expect(page).to have_content(t('step_indicator.flows.idv.verify_info'))
@@ -388,6 +389,74 @@ feature 'doc auth verify_info step', :js do
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
       click_idv_continue
       expect(page).to have_current_path(idv_phone_path)
+    end
+  end
+
+  context 'with ssn_controller enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_ssn_controller_enabled).
+        and_return(true)
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_verify_step
+    end
+
+    it 'uses ssn controller to enter a new ssn and displays updated info' do
+      click_link t('idv.buttons.change_ssn_label')
+      expect(page).to have_current_path(idv_ssn_path)
+
+      fill_in t('idv.form.ssn_label_html'), with: '900456789'
+      click_button t('forms.buttons.submit.update')
+
+      expect(fake_analytics).to have_logged_event(
+        'IdV: doc auth redo_ssn submitted',
+      )
+
+      expect(page).to have_current_path(idv_verify_info_path)
+
+      expect(page).to have_text('9**-**-***9')
+      check t('forms.ssn.show')
+      expect(page).to have_text('900-45-6789')
+    end
+  end
+
+  context 'phone vendor outage' do
+    let(:fake_analytics) { FakeAnalytics.new }
+    let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+
+    # values from Idp::Constants::MOCK_IDV_APPLICANT
+    let(:fake_pii_details) do
+      {
+        document_state: 'MT',
+        document_number: '1111111111111',
+        document_issued: '2019-12-31',
+        document_expiration: '2099-12-31',
+        first_name: 'FAKEY',
+        last_name: 'MCFAKERSON',
+        date_of_birth: '1938-10-06',
+        address: '1 FAKE RD',
+      }
+    end
+
+    before do
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+      allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
+        and_return(fake_attempts_tracker)
+      allow_any_instance_of(VendorStatus).to receive(:any_phone_vendor_outage?).and_return(true)
+      visit_idp_from_sp_with_ial2(:oidc)
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_verify_step
+    end
+
+    it 'should be at the verify step page' do
+      expect(page).to have_current_path(idv_verify_info_path)
+    end
+
+    it 'redirects to the gpo page when continuing from verify info page'do
+      click_idv_continue
+      expect(page).to have_current_path(idv_gpo_path)
+
+      click_on 'Back'
+      expect(page).to have_current_path(idv_verify_info_path)
     end
   end
 end
