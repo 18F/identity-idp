@@ -38,7 +38,12 @@ describe Proofing::LexisNexis::Response do
     end
 
     context 'with a passed verification' do
-      it { expect(subject.verification_errors).to eq({}) }
+      it 'returns a hash of error' do
+        errors = subject.verification_errors
+
+        expect(errors).to be_a(Hash)
+        expect(errors).to include(:InstantVerify)
+      end
     end
   end
 
