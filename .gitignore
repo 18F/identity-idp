@@ -75,6 +75,7 @@ Vagrantfile
 /doc/
 
 package-lock.json
+browsers.json
 
 saml_*.txt
 saml_*.shr

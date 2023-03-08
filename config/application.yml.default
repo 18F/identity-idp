@@ -87,6 +87,7 @@ doc_auth_extend_timeout_by_minutes: 40
 doc_capture_polling_enabled: true
 doc_auth_client_glare_threshold: 50
 doc_auth_client_sharpness_threshold: 50
+doc_auth_document_capture_controller_enabled: false
 doc_auth_enable_presigned_s3_urls: false
 doc_auth_s3_request_timeout: 5
 doc_auth_error_dpi_threshold: 290
@@ -153,6 +154,7 @@ irs_attempt_api_event_ttl_seconds: 86400
 irs_attempt_api_event_count_default: 1000
 irs_attempt_api_event_count_max: 10000
 irs_attempt_api_payload_size_logging_enabled: true
+irs_attempt_api_track_tmx_fraud_check_event: false
 key_pair_generation_percent: 0
 logins_per_ip_track_only_mode: false
 # LexisNexis #####################################################
@@ -327,6 +329,7 @@ usps_ipp_request_timeout: 10
 usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
 usps_mock_fallback: true
+usps_ipp_transliteration_enabled: false
 get_usps_proofing_results_job_cron: '0/10 * * * *'
 get_usps_proofing_results_job_reprocess_delay_minutes: 5
 get_usps_proofing_results_job_request_delay_milliseconds: 1000
@@ -396,6 +399,7 @@ development:
   state_tracking_enabled: true
   telephony_adapter: test
   use_dashboard_service_providers: true
+  usps_ipp_transliteration_enabled: true
   usps_upload_sftp_directory: "/gsa_order"
   usps_upload_sftp_host: localhost
   usps_upload_sftp_password: test
