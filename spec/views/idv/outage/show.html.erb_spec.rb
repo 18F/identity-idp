@@ -1,14 +1,13 @@
 require 'rails_helper'
 
 describe 'idv/outage/show.html.erb' do
-  let(:exit_url) { '/exit' }
-  let(:sp) { nil }
-
+  let(:sp_name) { nil }
   subject(:rendered) { render }
 
   before do
-    assign(:exit_url, exit_url)
-    assign(:sp, sp)
+    allow(view).to receive(:decorated_session).and_return(
+      instance_double(ServiceProviderSessionDecorator, sp_name: sp_name),
+    )
   end
 
   it 'sets a title' do
@@ -21,17 +20,27 @@ describe 'idv/outage/show.html.erb' do
   it 'links to the status page in a new window' do
     expect(rendered).to have_selector('a[target=_blank]', text: t('idv.outage.status_page_link'))
   end
-  it 'renders an exit button' do
-    expect(rendered).to have_selector('a', text: t('idv.outage.exit_button', app_name: APP_NAME))
+
+  describe('exit button') do
+    it 'is rendered' do
+      expect(rendered).to have_selector('a', text: t('idv.outage.exit_button', app_name: APP_NAME))
+    end
+    it 'links to the right place' do
+      expect(rendered).to have_link(
+        t('idv.outage.exit_button', app_name: APP_NAME),
+        href: return_to_sp_failure_to_proof_path(location: 'unavailable'),
+      )
+    end
   end
+
   it 'does not render any l13n markers' do
     expect(rendered).not_to include('%{')
   end
 
   context 'with sp' do
-    let(:sp) { 'Department of Ice Cream' }
+    let(:sp_name) { 'Department of Ice Cream' }
     it 'renders the explanation with the sp name' do
-      expect(rendered).to include(sp)
+      expect(rendered).to include(sp_name)
     end
   end
 end
