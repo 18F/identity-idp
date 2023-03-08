@@ -34,7 +34,8 @@ class IdvController < ApplicationController
   private
 
   def enrollment_status
-    InPersonEnrollment.where(user_id: current_user.id).order(enrollment_established_at: :desc).pick(:status)
+    InPersonEnrollment.where(user_id: current_user.id).
+      order(enrollment_established_at: :desc).pick(:status)
   end
 
   def verify_identity
