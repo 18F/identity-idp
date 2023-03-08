@@ -12,7 +12,7 @@ feature 'doc auth verify step', :js do
 
     it 'allows the user to enter in a new address' do
       expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-      expect(page).not_to have_content(t('doc_auth.info.address_guidance_puerto_rico'))
+      expect(page).not_to have_content(t('doc_auth.info.address_guidance_puerto_rico_html'))
       fill_out_address_form_ok
 
       click_button t('forms.buttons.submit.update')
@@ -51,7 +51,7 @@ feature 'doc auth verify step', :js do
     end
 
     it 'shows address guidance and hint text' do
-      expect(page).to have_content(t('doc_auth.info.address_guidance_puerto_rico'))
+      expect(page).to have_content(t('doc_auth.info.address_guidance_puerto_rico_html'))
     end
   end
 
@@ -65,7 +65,7 @@ feature 'doc auth verify step', :js do
     end
 
     it 'shows address guidance and hint text' do
-      expect(page).to have_content(t('doc_auth.info.address_guidance_puerto_rico'))
+      expect(page).to have_content(t('doc_auth.info.address_guidance_puerto_rico_html'))
     end
   end
 end
