@@ -1,0 +1,12 @@
+document:
+  first_name: Gabriela
+  last_name: Sanchez
+  middle_name: Espinoza
+  address1: 376 Urbanizacin San Jos
+  address2: Calle Calzada
+  city: San Juan
+  state: PR
+  zipcode: '00926'
+  dob: 01/06/1998
+  phone: +1 787-555-1212
+  state_id_jurisdiction: 'PR'

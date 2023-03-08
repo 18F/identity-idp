@@ -9,6 +9,15 @@
 
 <% title t('titles.doc_auth.address') %>
 
+<% if @puerto_rico_alert_enabled %>
+  <%= render AlertComponent.new(
+        type: :info,
+        class: 'margin-bottom-4',
+      ) do %>
+    <%= t('doc_auth.info.address_guidance_puerto_rico') %>
+  <% end %>
+<% end %>
+
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.address')) %>
 
 <%= simple_form_for(

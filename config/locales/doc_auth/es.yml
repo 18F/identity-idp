@@ -172,6 +172,7 @@ es:
       only_add_sp_services_html: Está tratando de acceder a los servicios
         <strong>%{service_provider_name}</strong>
     info:
+      address_guidance_puerto_rico: Para residentes de Puerto Rico:<br><br>Incluyan en su dirección la urbanización o departamento en la línea de dirección 2.
       camera_required: Su teléfono móvil debe tener una cámara y un navegador web.
       capture_status_big_document: Demasiado cerca
       capture_status_capturing: Capturando

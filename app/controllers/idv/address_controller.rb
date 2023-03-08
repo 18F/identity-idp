@@ -7,6 +7,8 @@ module Idv
 
     def new
       analytics.idv_address_visit
+
+      @puerto_rico_alert_enabled = puerto_rico_address?
     end
 
     def update
@@ -26,6 +28,10 @@ module Idv
       @pii = user_session.dig('idv/doc_auth', 'pii_from_doc')
       return if @pii.present?
       redirect_to idv_doc_auth_url
+    end
+
+    def puerto_rico_address?
+      return (@pii[:state] == "PR" || @pii[:state_id_jurisdiction] == "PR")
     end
 
     def idv_form
