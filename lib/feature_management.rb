@@ -15,6 +15,11 @@ class FeatureManagement
       !IdentityConfig.store.piv_cac_verify_token_url
   end
 
+  def self.idv_available?
+    return false if !IdentityConfig.store.idv_available
+    !VendorStatus.new.any_ial2_vendor_outage?
+  end
+
   def self.development_and_identity_pki_disabled?
     # This controls if we try to hop over to identity-pki or just throw up
     # a screen asking for a Subject or one of a list of error conditions.
