@@ -315,3 +315,14 @@ If you are getting the error:
 LoadError: cannot load such file -- sassc
 ```
 Try `make run` for a short time, then use Ctrl+C to kill it
+
+##### Errors relating to OpenSSL versions
+
+If you get this error during test runs:
+```
+     Failure/Error: JWT::JWK.import(certs_response[:keys].first).public_key
+     OpenSSL::PKey::PKeyError:
+       rsa#set_key= is incompatible with OpenSSL 3.0
+```
+See [this document](docs/FixingOpenSSLVersionProblem.md) for how to fix it.
+

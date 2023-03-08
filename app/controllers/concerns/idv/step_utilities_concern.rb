@@ -12,10 +12,16 @@ module Idv
     end
 
     def confirm_pii_from_doc
-      @pii = flow_session['pii_from_doc'] # hash with indifferent access
+      @pii = flow_session&.[]('pii_from_doc') # hash with indifferent access
       return if @pii.present?
-      flow_session.delete('Idv::Steps::DocumentCaptureStep')
+
+      flow_session&.delete('Idv::Steps::DocumentCaptureStep')
       redirect_to idv_doc_auth_url
+    end
+
+    def confirm_profile_not_already_confirmed
+      return unless idv_session.profile_confirmation == true
+      redirect_to idv_review_url
     end
 
     # Copied from capture_doc_flow.rb

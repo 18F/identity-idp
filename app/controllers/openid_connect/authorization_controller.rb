@@ -6,7 +6,6 @@ module OpenidConnect
     include SecureHeadersConcern
     include AuthorizationCountConcern
     include BillableEventTrackable
-    include InheritedProofingConcern
     include FraudReviewConcern
 
     before_action :build_authorize_form_from_params, only: [:index]

@@ -12,6 +12,7 @@ RSpec.describe DocAuth::Acuant::PiiFromDoc do
         middle_name: nil,
         last_name: 'DOE',
         address1: '1000 E AVENUE E',
+        address2: 'APT E',
         city: 'BISMARCK',
         state: 'ND',
         zipcode: '58501',

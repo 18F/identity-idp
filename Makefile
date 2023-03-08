@@ -101,11 +101,11 @@ lint_yaml: normalize_yaml ## Lints YAML files
 lint_yarn_workspaces: ## Lints Yarn workspace packages
 	scripts/validate-workspaces.js
 
-lint_gemfile_lock: Gemfile Gemfile.lock
+lint_gemfile_lock: Gemfile Gemfile.lock ## Lints the Gemfile and its lockfile
 	@bundle check
 	@git diff-index --quiet HEAD Gemfile.lock || (echo "Error: There are uncommitted changes after running 'bundle install'"; exit 1)
 
-lint_yarn_lock: package.json yarn.lock
+lint_yarn_lock: package.json yarn.lock ## Lints the package.json and its lockfile
 	@yarn install --ignore-scripts
 	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are uncommitted changes after running 'yarn install'"; exit 1)
 
@@ -129,13 +129,16 @@ brakeman: ## Runs brakeman
 public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Builds JavaScript assets
 	yarn build
 
+browsers.json: yarn.lock .browserslistrc ## Generates browsers.json browser support file
+	yarn generate-browsers-json
+
 test: export RAILS_ENV := test
 test: $(CONFIG) ## Runs RSpec and yarn tests in parallel
-	bundle exec rake parallel:spec && yarn build && yarn test
+	bundle exec rake parallel:spec && yarn test
 
 test_serial: export RAILS_ENV := test
 test_serial: $(CONFIG) ## Runs RSpec and yarn tests serially
-	bundle exec rake spec && yarn build && yarn test
+	bundle exec rake spec && yarn test
 
 fast_test: export RAILS_ENV := test
 fast_test: ## Abbreviated test run, runs RSpec tests without accessibility specs
@@ -153,7 +156,7 @@ tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local H
 		-keyout tmp/$(HOST)-$(PORT).key \
 		-out tmp/$(HOST)-$(PORT).crt
 
-run: ## Runs the development server
+run: browsers.json ## Runs the development server
 	foreman start -p $(PORT)
 
 urn:
@@ -165,8 +168,10 @@ run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt ## Runs the developme
 
 normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, smart quotes)
 	yarn normalize-yaml .rubocop.yml --disable-sort-keys --disable-smart-punctuation
+	find ./config/locales/transliterate -type f -name '*.yml' -exec yarn normalize-yaml --disable-sort-keys --disable-smart-punctuation {} \;
 	find ./config/locales/telephony -type f -name '*.yml' | xargs yarn normalize-yaml --disable-smart-punctuation
-	find ./config/locales -not -path "./config/locales/telephony*" -type f -name '*.yml' | xargs yarn normalize-yaml \
+	find ./config/locales -not \( -path "./config/locales/telephony*" -o -path "./config/locales/transliterate/*" \) -type f -name '*.yml' | \
+	xargs yarn normalize-yaml \
 		config/pinpoint_supported_countries.yml \
 		config/pinpoint_overrides.yml \
 		config/country_dialing_codes.yml

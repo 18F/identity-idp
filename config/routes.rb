@@ -307,8 +307,7 @@ Rails.application.routes.draw do
       post '/personal_key' => 'personal_key#update'
       get '/forgot_password' => 'forgot_password#new'
       post '/forgot_password' => 'forgot_password#update'
-      get '/otp_delivery_method' => 'otp_delivery_method#new'
-      put '/otp_delivery_method' => 'otp_delivery_method#create'
+      get '/document_capture' => 'document_capture#show'
       get '/ssn' => 'ssn#show'
       put '/ssn' => 'ssn#update'
       get '/verify_info' => 'verify_info#show'
@@ -356,28 +355,14 @@ Rails.application.routes.draw do
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
       post '/in_person/addresses' => 'in_person/address_search#index'
+      get '/in_person/verify_info' => 'in_person/verify_info#show'
+      put '/in_person/verify_info' => 'in_person/verify_info#update'
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
 
       # deprecated routes
       get '/confirmations' => 'personal_key#show'
       post '/confirmations' => 'personal_key#update'
-    end
-
-    # Inherited Proofing (IP)-specific routes.
-    scope '/verify/inherited_proofing', module: 'idv', as: 'idv_inherited_proofing' do
-      # NOTE: cancellation routes need to be before any other IP
-      # routes in this scope.
-      delete '/session' => 'sessions#destroy'
-      get '/cancel' => 'inherited_proofing_cancellations#new', as: :cancel
-      put '/cancel' => 'inherited_proofing_cancellations#update'
-      delete '/cancel' => 'inherited_proofing_cancellations#destroy'
-      get '/' => 'inherited_proofing#index'
-      get '/:step' => 'inherited_proofing#show', as: :step
-      put '/:step' => 'inherited_proofing#update'
-      get '/return_to_sp' => 'inherited_proofing#return_to_sp'
-      get '/errors/no_information' => 'inherited_proofing_errors#warning'
-      get '/errors/failure' => 'inherited_proofing_errors#failure'
     end
 
     namespace :api do

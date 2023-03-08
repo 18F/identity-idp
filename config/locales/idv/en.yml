@@ -13,7 +13,6 @@ en:
       mail:
         resend: Send another letter
         send: Send a letter
-      send_confirmation_code: Continue
     cancel:
       actions:
         account_page: Go to account page
@@ -72,6 +71,9 @@ en:
       exceptions:
         internal_error: There was an internal error processing your request. Please try again.
         link: please contact us
+        post_office_search_error: We are having technical difficulties at the moment.
+          Try searching for a Post Office again. If this issue continues, come
+          back later.
         text_html: Please try again. If you keep getting these errors, %{link}.
       phone:
         fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,
@@ -152,9 +154,6 @@ en:
         timeframe_html: Letters are sent the next business day via USPS First Class Mail
           and <strong>typically take 3 to 7 business days to arrive</strong>.
       mail_sent: Your letter is on its way
-      otp_delivery_method:
-        phone_number_html: We’ll send a code to <strong>%{phone}</strong> to verify that
-          the phone number belongs to you.
       otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
       personal_key: This is your new personal key. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.
@@ -208,7 +207,6 @@ en:
         still_having_trouble: Still having trouble?
       options:
         add_new_photos: Add new photos of your state-issued ID
-        change_phone_number: Use a different phone number
         contact_support: Contact %{app_name} Support
         doc_capture_tips: More tips for adding photos of your ID
         get_help_at_sp: Get help at %{sp_name}

@@ -44,7 +44,7 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
         result = subject.proof(applicant)
 
         expect(result.success?).to eq(true)
-        expect(result.errors).to eq({})
+        expect(result.errors).to include(InstantVerify: include(a_kind_of(Hash)))
         expect(result.vendor_workflow).to(
           eq(LexisNexisFixtures.example_config.phone_finder_workflow),
         )

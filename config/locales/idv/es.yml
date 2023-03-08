@@ -14,7 +14,6 @@ es:
       mail:
         resend: Enviar otra carta
         send: Enviar una carta
-      send_confirmation_code: Continuar
     cancel:
       actions:
         account_page: Ir a la página de la cuenta
@@ -77,6 +76,9 @@ es:
         internal_error: Se produjo un error interno al procesar tu solicitud. Por favor,
           inténtalo de nuevo.
         link: contáctanos
+        post_office_search_error: En este momento, estamos teniendo problemas técnicos.
+          Trate de buscar de nuevo una oficina de correos. Si el problema
+          continúa, regrese más tarde.
         text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
       phone:
         fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong> Por su
@@ -162,9 +164,6 @@ es:
           USPS y <strong>suelen tardar entre 3 y 7 días hábiles en
           llegar</strong>.
       mail_sent: Su carta está en camino
-      otp_delivery_method:
-        phone_number_html: Enviaremos un código a <strong>%{phone}</strong> para
-          verificar que el número de teléfono le pertenece.
       otp_delivery_method_description: Si ha introducido un teléfono fijo más arriba,
         seleccione “Llamada telefónica” más abajo.
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
@@ -222,7 +221,6 @@ es:
         still_having_trouble: '¿Sigue teniendo dificultades?'
       options:
         add_new_photos: Añada nuevas fotos de su ID emitido por el estado
-        change_phone_number: Utiliza un número de teléfono diferente
         contact_support: Póngase en contacto con el servicio de asistencia de %{app_name}
         doc_capture_tips: Más consejos para agregar fotos de su identificación
         get_help_at_sp: Obtenga ayuda en %{sp_name}

@@ -565,81 +565,28 @@ module AnalyticsEvents
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [String] in_person_cta_variant Variant testing bucket label
   # The user clicked the troubleshooting option to start in-person proofing
-  def idv_verify_in_person_troubleshooting_option_clicked(flow_path:, **extra)
+  def idv_verify_in_person_troubleshooting_option_clicked(flow_path:, in_person_cta_variant:,
+                                                          **extra)
     track_event(
       'IdV: verify in person troubleshooting option clicked',
       flow_path: flow_path,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] step Document step user is on
-  # The user agrees to allow us to access their data via api call
-  def idv_inherited_proofing_agreement_submitted(success:, errors:, flow_path:, step:, **extra)
-    track_event(
-      'IdV: inherited proofing agreement submitted',
-      success: success,
-      errors: errors,
-      flow_path: flow_path,
-      step: step,
+      in_person_cta_variant: in_person_cta_variant,
       **extra,
     )
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] step Document step user is on
-  # The user visited the inherited proofing agreement page
-  def idv_inherited_proofing_agreement_visited(flow_path:, step:, **extra)
-    track_event(
-      'IdV: inherited proofing agreement visited',
-      flow_path: flow_path,
-      step: step,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] step Document step user is on
-  # The user chooses to begin the inherited proofing process
-  def idv_inherited_proofing_get_started_submitted(success:, errors:, flow_path:, step:, **extra)
-    track_event(
-      'IdV: inherited proofing get started submitted',
-      success: success,
-      errors: errors,
-      flow_path: flow_path,
-      step: step,
-      **extra,
-    )
-  end
-
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] step Document step user is on
-  # The user visited the inherited proofing get started step
-  def idv_inherited_proofing_get_started_visited(flow_path:, step:, **extra)
-    track_event(
-      'IdV: inherited proofing get started visited',
-      flow_path: flow_path,
-      step: step,
-      **extra,
-    )
-  end
-
-  # Retry retrieving the user PII in the case where the first attempt fails
-  # in the agreement step, and the user initiates a "retry".
-  def idv_inherited_proofing_redo_retrieve_user_info_submitted(**extra)
-    track_event('IdV: inherited proofing retry retrieve user information submitted', **extra)
-  end
-
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [String] in_person_cta_variant Variant testing bucket label
   # The user visited the in person proofing location step
-  def idv_in_person_location_visited(flow_path:, **extra)
-    track_event('IdV: in person proofing location visited', flow_path: flow_path, **extra)
+  def idv_in_person_location_visited(flow_path:, in_person_cta_variant:, **extra)
+    track_event(
+      'IdV: in person proofing location visited',
+      flow_path: flow_path,
+      in_person_cta_variant: in_person_cta_variant,
+      **extra,
+    )
   end
 
   # @param [Boolean] success
@@ -671,13 +618,16 @@ module AnalyticsEvents
   end
 
   # @param [String] selected_location Selected in-person location
+  # @param [String] in_person_cta_variant Variant testing bucket label
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user submitted the in person proofing location step
-  def idv_in_person_location_submitted(selected_location:, flow_path:, **extra)
+  def idv_in_person_location_submitted(selected_location:, in_person_cta_variant:, flow_path:,
+                                       **extra)
     track_event(
       'IdV: in person proofing location submitted',
       selected_location: selected_location,
       flow_path: flow_path,
+      in_person_cta_variant: in_person_cta_variant,
       **extra,
     )
   end
@@ -734,11 +684,14 @@ module AnalyticsEvents
     track_event('IdV: in person proofing switch_back submitted', flow_path: flow_path, **extra)
   end
 
+  # @param [String] in_person_cta_variant Variant testing bucket label
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user visited the "ready to verify" page for the in person proofing flow
-  def idv_in_person_ready_to_verify_visit(proofing_components: nil, **extra)
+  def idv_in_person_ready_to_verify_visit(in_person_cta_variant: nil, proofing_components: nil,
+                                          **extra)
     track_event(
       'IdV: in person ready to verify visited',
+      in_person_cta_variant: in_person_cta_variant,
       proofing_components: proofing_components,
       **extra,
     )

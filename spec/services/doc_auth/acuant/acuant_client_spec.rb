@@ -144,6 +144,30 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
 
         expect(result.success?).to eq(true)
       end
+      it 'notes that address line 2 was present' do
+        instance_id = 'this-is-a-test-instance-id'
+        url = URI.join(assure_id_url, "/AssureIDService/Document/#{instance_id}")
+        stub_request(:get, url).to_return(body: AcuantFixtures.get_results_response_success)
+
+        result = subject.get_results(instance_id: instance_id)
+
+        expect(result.extra).to include(address_line2_present: true)
+      end
+
+      context 'when there is no address line 2' do
+        it 'notes that address line 2 was not present' do
+          instance_id = 'this-is-a-test-instance-id'
+          url = URI.join(assure_id_url, "/AssureIDService/Document/#{instance_id}")
+          body = JSON.parse(AcuantFixtures.get_results_response_success).tap do |json|
+            json['Fields'] = json['Fields'].select { |f| f['Name'] != 'Address Line 2' }
+          end.to_json
+          stub_request(:get, url).to_return(body: body)
+
+          result = subject.get_results(instance_id: instance_id)
+
+          expect(result.extra).to include(address_line2_present: false)
+        end
+      end
     end
 
     context 'when the result is a failure' do

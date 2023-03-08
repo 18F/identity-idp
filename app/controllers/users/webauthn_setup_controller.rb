@@ -183,17 +183,12 @@ module Users
         else
           flash.now[:error] = t('errors.webauthn_setup.unique_name')
         end
-
-        render :new
+      elsif form.platform_authenticator?
+        flash[:error] = t('errors.webauthn_platform_setup.general_error')
       else
-        if form.platform_authenticator?
-          flash[:error] = t('errors.webauthn_platform_setup.general_error')
-        else
-          flash[:error] = t('errors.webauthn_setup.general_error')
-        end
-
-        redirect_to account_two_factor_authentication_path
+        flash[:error] = t('errors.webauthn_setup.general_error')
       end
+      render :new
     end
 
     def mark_user_as_fully_authenticated

@@ -23,7 +23,7 @@ feature 'doc auth test credentials', :js do
     attach_file 'Back of your ID', File.expand_path('spec/fixtures/ial2_test_credential.yml')
     click_on 'Submit'
 
-    expect(page).to have_current_path(idv_doc_auth_ssn_step)
+    expect(page).to have_current_path(idv_ssn_path)
 
     fill_out_ssn_form_ok
     click_idv_continue
