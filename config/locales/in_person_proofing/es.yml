@@ -106,6 +106,15 @@ es:
         same_address_choice_yes: Esta dirección aparece en mi cédula de identidad emitida por el estado
         state_prompt: '- Seleccione -'
       state_id:
+        address: Dirección
+        address2: Línea de dirección 2 (opcional)
+        capture_secondary_id_heading: ¿Tu domicilio actual aparece en tu identificación
+          emitida por el estado?
+        capture_secondary_id_no: No, mi domicilio actual no aparece en mi identificación
+          emitida por el estado.
+        capture_secondary_id_yes: Sí, mi domicilio actual aparece en mi identificación
+          emitida por el estado
+        city:
         date_hint:
           day: 'Ejemplo: 28'
           month: 'Ejemplo: 4'
@@ -129,6 +138,7 @@ es:
         state_id_jurisdiction_prompt: '- Seleccione -'
         state_id_number: Número de cédula
         state_id_number_hint: Puede incluir letras y números
+        zipcode: Código postal
     headings:
       address: Ingrese su dirección actual
       barcode: Está listo para verificar su identidad en persona
