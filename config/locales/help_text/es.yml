@@ -19,6 +19,8 @@ es:
         información:'
       ial2_intro_html: '<b>%{sp}</b> necesita saber quién es para conectar su cuenta.
         Compartiremos esta información con el organismo asociado: '
+      ial2_reverified_consent_info: 'Como volvió a verificar su identidad, necesitamos
+        su permiso para compartir esta información con %{sp}: '
       phone: Teléfono
       social_security_number: Número de Seguro Social
       verified_at: Actualizado en
