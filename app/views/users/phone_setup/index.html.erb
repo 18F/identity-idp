@@ -10,8 +10,8 @@
 
 <%= simple_form_for(
       @new_phone_form,
-      html: { autocomplete: 'off', method: :patch },
-      data: { international_phone_form: true },
+      method: :post,
+      html: { autocomplete: 'off' },
       url: phone_setup_path,
     ) do |f| %>
 
