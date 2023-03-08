@@ -7,12 +7,12 @@ import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
 import AnalyticsContext from '../context/analytics';
 import { InPersonContext } from '../context';
+import { LOCATIONS_URL } from './address-search';
 
 interface PostOffice {
   address: string;
   city: string;
   name: string;
-  phone: string;
   saturday_hours: string;
   state: string;
   sunday_hours: string;
@@ -25,7 +25,6 @@ interface FormattedLocation {
   formattedCityStateZip: string;
   id: number;
   name: string;
-  phone: string;
   saturdayHours: string;
   streetAddress: string;
   sundayHours: string;
@@ -37,8 +36,6 @@ interface LocationQuery {
   state: string;
   zipCode: string;
 }
-
-export const LOCATIONS_URL = '/verify/in_person/usps_locations';
 
 const getUspsLocations = (address) =>
   request<PostOffice[]>(LOCATIONS_URL, {
@@ -53,7 +50,6 @@ const formatLocation = (postOffices: PostOffice[]) => {
       formattedCityStateZip: `${po.city}, ${po.state}, ${po.zip_code_5}-${po.zip_code_4}`,
       id: index,
       name: po.name,
-      phone: po.phone,
       saturdayHours: po.saturday_hours,
       streetAddress: po.address,
       sundayHours: po.sunday_hours,

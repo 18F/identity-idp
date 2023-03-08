@@ -36,7 +36,6 @@ es:
         prompt_detail_b: Si tiene problemas para añadir su documento de identidad en
           línea, puede intentarlo en persona en algunas oficinas de correos.
       location:
-        contact_info_heading: Información del contacto
         distance:
           one: '%{count} milla de distancia'
           other: '%{count} millas de distancia'
@@ -46,7 +45,6 @@ es:
           posible que pueda realizar la verificación en persona en una oficina
           de correos local de los Estados Unidos en determinadas localidades.
         none_found: No se encontraron localidades.
-        phone: 'Telefono:'
         po_search:
           address_search_hint: 'Ejemplo: 1234 N Example St., Allentown, PA 12345'
           address_search_label: Introduzca una dirección para encontrar una Oficina de
@@ -67,8 +65,6 @@ es:
               millas de la %{address}.
           results_instructions: Seleccione una ubicación de la Oficina de Correos a
             continuación, o busque de nuevo utilizando una dirección diferente.
-            Para la accesibilidad de las instalaciones, utilice la información
-            de contacto que aparece para la ubicación de la Oficina de Correos.
           search_button: Búsqueda
         post_office: Oficina de Correos
         retail_hours_heading: Horario de atención al público
