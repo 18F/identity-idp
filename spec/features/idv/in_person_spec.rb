@@ -129,6 +129,17 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
   end
 
+  it '', allow_browser_log: true do
+    user = user_with_2fa
+    sign_in_and_2fa_user(user)
+    enrollment_code = complete_in_person_proofing(user)
+
+    # expire enrollment while still signed in
+    InPersonEnrollment.find_by(enrollment_code: enrollment_code).update(status: :expired)
+    visit idv_path # /verify
+    expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome)) # /verify/doc_auth/welcome
+  end
+
   it 'allows the user to cancel and start over from the beginning', allow_browser_log: true do
     sign_in_and_2fa_user
     begin_in_person_proofing
