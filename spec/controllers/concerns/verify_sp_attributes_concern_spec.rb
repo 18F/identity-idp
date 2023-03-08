@@ -175,6 +175,23 @@ RSpec.describe VerifySpAttributesConcern do
             expect(needs_completion_screen_reason).to be_nil
           end
         end
+
+        context 'when user is reverified' do
+          let(:verified_at) { 5.days.ago }
+          let(:sp_session_identity) do
+            build(
+              :service_provider_identity,
+              user: user,
+              last_consented_at: 15.days.ago, 
+            )
+          end
+          before do
+            create(:profile, :active, verified_at: verified_at, user: user)
+          end
+          it 'is reverified_after_consent' do
+            expect(needs_completion_screen_reason).to eq(:reverified_after_consent)
+          end
+        end
       end
     end
 
