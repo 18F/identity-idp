@@ -1,7 +1,6 @@
 class IdvController < ApplicationController
   include IdvSession
   include AccountReactivationConcern
-  include InheritedProofingConcern
   include FraudReviewConcern
   include SessionHelper
 
@@ -40,7 +39,6 @@ class IdvController < ApplicationController
 
   def verify_identity
     analytics.idv_intro_visit
-    return redirect_to idv_inherited_proofing_url if inherited_proofing?
     redirect_to idv_doc_auth_url
   end
 

@@ -17,6 +17,7 @@ module SignUp
 
     def update
       track_completion_event('agency-page')
+      irs_attempts_api_tracker.idv_reproof if current_user.profiles&.last&.has_proofed_before?
       update_verified_attributes
       send_in_person_completion_survey
       if decider.go_back_to_mobile_app?
@@ -83,7 +84,6 @@ module SignUp
     end
 
     def track_completion_event(last_page)
-      irs_attempts_api_tracker.idv_reproof if current_user.profiles&.last&.has_proofed_before?
       analytics.user_registration_complete(**analytics_attributes(last_page))
     end
 

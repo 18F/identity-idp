@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Idv::Steps::InPerson::StateIdStep do
   let(:submitted_values) { {} }
-  let(:params) { { doc_auth: submitted_values } }
+  let(:params) { ActionController::Parameters.new({ state_id: submitted_values }) }
   let(:user) { build(:user) }
   let(:service_provider) { create(:service_provider) }
   let(:controller) do
@@ -78,6 +78,7 @@ describe Idv::Steps::InPerson::StateIdStep do
     let(:dob) { '1972-02-23' }
     let(:first_name) { 'First name' }
     let(:pii_from_user) { flow.flow_session[:pii_from_user] }
+    let(:params) { ActionController::Parameters.new }
 
     context 'first name and dob are set' do
       it 'returns extra view variables' do

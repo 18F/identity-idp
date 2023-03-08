@@ -6,6 +6,7 @@ import BackButton from './back-button';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
 import AnalyticsContext from '../context/analytics';
+import { InPersonContext } from '../context';
 
 interface PostOffice {
   address: string;
@@ -79,6 +80,7 @@ const prepToSend = (location: object) => {
 };
 
 function InPersonLocationStep({ onChange, toPreviousStep }) {
+  const { inPersonCtaVariantActive } = useContext(InPersonContext);
   const { t } = useI18n();
   const [locationData, setLocationData] = useState([] as FormattedLocation[]);
   const [foundAddress] = useState({} as LocationQuery);
@@ -102,7 +104,10 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
     async (e: any, id: number) => {
       const selectedLocation = locationData[id];
       const { name: selectedLocationName } = selectedLocation;
-      setSubmitEventMetadata({ selected_location: selectedLocationName });
+      setSubmitEventMetadata({
+        selected_location: selectedLocationName,
+        in_person_cta_variant: inPersonCtaVariantActive,
+      });
       onChange({ selectedLocationName });
       if (autoSubmit) {
         return;

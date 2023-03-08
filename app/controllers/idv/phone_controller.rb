@@ -7,7 +7,7 @@ module Idv
 
     attr_reader :idv_form
 
-    before_action :confirm_idv_applicant_created
+    before_action :confirm_verify_info_step_complete
     before_action :confirm_step_needed
     before_action :set_idv_form
 
@@ -18,19 +18,8 @@ module Idv
 
       async_state = step.async_state
       if async_state.none?
-        # Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-        #   call(:verify_phone, :view, true)
-        Rails.logger.info(
-          {
-            name: 'event_to_doc_auth_log_token',
-            source: 'proposed',
-            user_id: current_user.id,
-            issuer: current_sp&.issuer,
-            token: :verify_phone,
-            action: :view,
-            success: true,
-          }.to_json,
-        )
+        Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+          call(:verify_phone, :view, true)
 
         analytics.idv_phone_of_record_visited
         render :new, locals: { gpo_letter_available: gpo_letter_available }
@@ -47,19 +36,8 @@ module Idv
 
     def create
       result = idv_form.submit(step_params)
-      # Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-      #   call(:verify_phone, :update, result.success?)
-      Rails.logger.info(
-        {
-          name: 'event_to_doc_auth_log_token',
-          source: 'proposed',
-          user_id: current_user.id,
-          issuer: current_sp&.issuer,
-          token: :verify_phone,
-          action: :update,
-          success: result.success?,
-        }.to_json,
-      )
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+        call(:verify_phone, :update, result.success?)
 
       analytics.idv_phone_confirmation_form_submitted(**result.to_h)
       irs_attempts_api_tracker.idv_phone_submitted(

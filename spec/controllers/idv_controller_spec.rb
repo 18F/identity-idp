@@ -99,13 +99,6 @@ describe IdvController do
       expect(response).to redirect_to idv_doc_auth_path
     end
 
-    it 'redirects to inherited proofing with a VA inherited proofing session' do
-      allow(controller).to receive(:va_inherited_proofing?).and_return(true)
-
-      get :index
-      expect(response).to redirect_to idv_inherited_proofing_path
-    end
-
     context 'no SP context' do
       let(:user) { build(:user, password: ControllerHelper::VALID_PASSWORD) }
 
@@ -160,7 +153,6 @@ describe IdvController do
         get :activated
 
         expect(response).to render_template(:activated)
-        expect(subject.idv_session.alive?).to eq false
       end
     end
 

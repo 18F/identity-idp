@@ -6,24 +6,12 @@ module Idv
     include StepIndicatorConcern
     include PhoneConfirmation
 
-    before_action :confirm_idv_applicant_created
-    before_action :confirm_idv_steps_complete
-    before_action :confirm_idv_phone_confirmed
+    before_action :confirm_verify_info_step_complete
+    before_action :confirm_address_step_complete
     before_action :confirm_current_password, only: [:create]
 
     rescue_from UspsInPersonProofing::Exception::RequestEnrollException,
                 with: :handle_request_enroll_exception
-
-    def confirm_idv_steps_complete
-      return redirect_to(idv_verify_info_url) unless idv_profile_complete?
-      return redirect_to(idv_phone_url) unless idv_address_complete?
-    end
-
-    def confirm_idv_phone_confirmed
-      return unless idv_session.address_verification_mechanism == 'phone'
-      return if idv_session.phone_confirmed?
-      redirect_to idv_otp_verification_path
-    end
 
     def confirm_current_password
       return if valid_password?
@@ -41,19 +29,8 @@ module Idv
 
     def new
       @applicant = idv_session.applicant
-      # Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-      #   call(:encrypt, :view, true)
-      Rails.logger.info(
-        {
-          name: 'event_to_doc_auth_log_token',
-          source: 'proposed',
-          user_id: current_user.id,
-          issuer: current_sp&.issuer,
-          token: :encrypt,
-          action: :view,
-          success: true,
-        }.to_json,
-      )
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+        call(:encrypt, :view, true)
       analytics.idv_review_info_visited(address_verification_method: address_verification_method)
 
       gpo_mail_service = Idv::GpoMail.new(current_user)
@@ -80,19 +57,8 @@ module Idv
         fraud_rejection: idv_session.profile.fraud_rejection,
         deactivation_reason: idv_session.profile.deactivation_reason,
       )
-      # Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-      #   call(:verified, :view, true)
-      Rails.logger.info(
-        {
-          name: 'event_to_doc_auth_log_token',
-          source: 'proposed',
-          user_id: current_user.id,
-          issuer: current_sp&.issuer,
-          token: :verified,
-          action: :view,
-          success: true,
-        }.to_json,
-      )
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+        call(:verified, :view, true)
       analytics.idv_final(
         success: true,
         fraud_review_pending: idv_session.profile.fraud_review_pending,
@@ -117,14 +83,6 @@ module Idv
         )
         t('idv.messages.review.info_verified_html', phone_message: phone_of_record_msg)
       end
-    end
-
-    def idv_profile_complete?
-      !!idv_session.profile_confirmation
-    end
-
-    def idv_address_complete?
-      idv_session.address_mechanism_chosen?
     end
 
     def init_profile

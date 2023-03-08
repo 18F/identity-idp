@@ -67,6 +67,7 @@ module ControllerHelper
       ssn: '666-12-1234',
     }.with_indifferent_access
     idv_session.profile_confirmation = true
+    idv_session.resolution_successful = 'phone'
     allow(subject).to receive(:confirm_idv_applicant_created).and_return(true)
     allow(subject).to receive(:idv_session).and_return(idv_session)
     allow(subject).to receive(:user_session).and_return(user_session)

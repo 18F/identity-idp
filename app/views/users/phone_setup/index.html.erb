@@ -2,24 +2,16 @@
 
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
 
-<%= image_tag asset_url('2FA-voice.svg'), alt: '', width: 200, height: 113, class: 'margin-bottom-2' %>
-
 <%= render PageHeadingComponent.new.with_content(t('titles.phone_setup')) %>
 
 <p>
-  <%= t('two_factor_authentication.phone_info_html') %>
-</p>
-<p>
-  <%= t('two_factor_authentication.phone_fee_disclosure') %>
-  <% if IdentityConfig.store.voip_block %>
-    <%= t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip') %>
-  <% end %>
+  <%= t('two_factor_authentication.phone_info') %>
 </p>
 
 <%= simple_form_for(
       @new_phone_form,
-      html: { autocomplete: 'off', method: :patch },
-      data: { international_phone_form: true },
+      method: :post,
+      html: { autocomplete: 'off' },
       url: phone_setup_path,
     ) do |f| %>
 
@@ -33,20 +25,28 @@
 
   <%= render 'users/shared/otp_delivery_preference_selection',
              form_obj: @new_phone_form %>
-  <% unless FeatureManagement.phone_recaptcha_enabled? %>
-    <%= link_to t('two_factor_authentication.mobile_terms_of_service'),
-                MarketingSite.messaging_practices_url,
-                class: 'display-block margin-bottom-4' %>
-  <% end %>
 
   <% if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled? %>
     <%= render 'users/shared/otp_make_default_number',
                form_obj: @new_phone_form %>
   <% end %>
+
   <%= render CaptchaSubmitButtonComponent.new(
         form: f,
         action: 'phone_setup',
       ).with_content(t('forms.buttons.send_one_time_code')) %>
+<% end %>
+
+<p class="margin-top-5">
+  <%= t('two_factor_authentication.phone_fee_disclosure') %>
+  <% if IdentityConfig.store.voip_block %>
+    <%= t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip') %>
+  <% end %>
+</p>
+<% unless FeatureManagement.phone_recaptcha_enabled? %>
+  <%= link_to t('two_factor_authentication.mobile_terms_of_service'),
+              MarketingSite.messaging_practices_url,
+              class: 'display-block margin-bottom-4' %>
 <% end %>
 
 <%= render 'shared/cancel_or_back_to_options' %>
