@@ -182,7 +182,7 @@ RSpec.describe VerifySpAttributesConcern do
             build(
               :service_provider_identity,
               user: user,
-              last_consented_at: 15.days.ago, 
+              last_consented_at: 15.days.ago,
             )
           end
           before do
