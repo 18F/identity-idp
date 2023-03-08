@@ -119,6 +119,11 @@ RSpec.describe 'In Person Proofing', js: true do
     complete_in_person_proofing(user)
 
     # signing in again before completing in-person proofing at a post office
+    # visit the account page and sign out
+    visit account_path
+    first(:link, t('links.sign_out')).click
+
+    # sign back in
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_welcome_step
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
