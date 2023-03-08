@@ -91,7 +91,7 @@ fr:
       wait_30d_opt_in: Après 30 jours, vous pouvez vous inscrire et recevoir un code
         de sécurité à ce numéro de téléphone.
     otp_delivery_preference:
-      instruction: Vous pouvez modifier cette sélection lors de votre prochaine connexion.
+      instruction: Envoyez des messages texte ainsi que des appels par défaut à ce numéro
       landline_warning_html: Le numéro de téléphone saisi semble être un <b>téléphone
         fixe</b>. Demandez plutôt un code à usage unique par
         %{phone_setup_path}.
@@ -101,7 +101,7 @@ fr:
       sms: Message texte (SMS)
       sms_unsupported: Il est impossible d’envoyer des messages texte à des numéros de
         téléphone dans %{location}.
-      title: Comment devrions-nous vous envoyer un code?
+      title: Comment vous obtiendrez votre code
       voice: Appel téléphonique
       voice_unsupported: Il nous est impossible d’appeler des numéros de téléphone
         dans le %{location}.
@@ -125,8 +125,8 @@ fr:
     phone_fallback:
       question: Vous ne pouvez pas utiliser votre téléphone?
     phone_fee_disclosure: Des messages et débits de données peuvent être appliqués.
-    phone_info_html: Nous vous enverrons un code à usage unique <strong>à chaque
-      fois que vous vous connecterez</strong>.
+    phone_info: Nous vous enverrons un code à usage unique à chaque fois que vous
+      vous connecterez.
     phone_label: Numéro de téléphone
     phone_verification:
       troubleshooting:

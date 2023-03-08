@@ -54,8 +54,7 @@ es:
       confirm: Confirme la contraseña de su cuenta
       forgot: Restablecer la contraseña
     personal_key: Por si acaso
-    phone_setup: Envíe su código de un solo uso a través de un mensaje de texto
-      (SMS) o una llamada telefónica
+    phone_setup: Obtenga su código único
     piv_cac_login:
       add: Agregue su PIV o CAC
       new: Use su PIV / CAC para iniciar sesión en su cuenta
