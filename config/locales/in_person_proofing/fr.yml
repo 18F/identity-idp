@@ -110,12 +110,6 @@ fr:
       state_id:
         address: Adresse
         address2: Adresse Ligne 2 (optional)
-        capture_secondary_id_heading: L’adresse de votre domicile actuel figure-t-elle
-          sur votre carte d’identité délivrée par l’État?
-        capture_secondary_id_no: Non, l’adresse de mon domicile actuel ne figure pas sur
-          ma carte d’identité délivrée par l’État
-        capture_secondary_id_yes: Oui, l’adresse de mon domicile actuel figure sur ma
-          carte d’identité délivrée par l’État
         city: Ville
         date_hint:
           day: 'Exemple: 28'
@@ -128,6 +122,12 @@ fr:
             : %{char_list}. Veuillez réessayer en utilisant les caractères de
             votre carte d’identité.'
         first_name: Prénom
+        id_address_current_heading: L’adresse de votre domicile actuel figure-t-elle sur
+          votre carte d’identité délivrée par l’État?
+        id_address_current_no: Non, l’adresse de mon domicile actuel ne figure pas sur
+          ma carte d’identité délivrée par l’État
+        id_address_current_yes: Oui, l’adresse de mon domicile actuel figure sur ma
+          carte d’identité délivrée par l’État
         last_name: Nom de famille
         memorable_date:
           errors:
