@@ -17,7 +17,7 @@ describe Idv::PhoneController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_idv_applicant_created,
+        :confirm_verify_info_step_complete,
       )
     end
   end

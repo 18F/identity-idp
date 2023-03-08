@@ -123,6 +123,14 @@ module Idv
       session[:user_phone_confirmation_session] = new_user_phone_confirmation_session.to_h
     end
 
+    def in_person_enrollment?
+      ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
+    end
+
+    def verify_info_step_complete?
+      resolution_successful && profile_confirmation
+    end
+
     def address_step_complete?
       if address_verification_mechanism == 'gpo'
         true
@@ -186,10 +194,6 @@ module Idv
         user_password: user_password,
         initiating_service_provider: service_provider,
       )
-    end
-
-    def in_person_enrollment?
-      ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
     end
 
     def threatmetrix_failed_and_needs_review?

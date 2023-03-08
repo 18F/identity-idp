@@ -113,4 +113,57 @@ describe 'IdvStepConcern' do
       end
     end
   end
+
+  describe '#confirm_verify_info_step_complete' do
+    controller Idv::StepController do
+      before_action :confirm_verify_info_step_complete
+    end
+
+    before(:each) do
+      sign_in(user)
+      routes.draw do
+        get 'show' => 'idv/step#show'
+      end
+    end
+
+    context 'the user has completed the verify info step' do
+      it 'does not redirect and renders the view' do
+        idv_session.profile_confirmation = true
+        idv_session.resolution_successful = 'phone'
+
+        get :show
+
+        expect(response.body).to eq('Hello')
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context 'the user has not completed the verify info step' do
+      it 'redirects to the remote verify info step' do
+        idv_session.profile_confirmation = nil
+        idv_session.resolution_successful = nil
+
+        get :show
+
+        expect(response).to redirect_to(idv_verify_info_url)
+      end
+    end
+
+    context 'the user has not completed the verify info step with an in-person enrollment' do
+      it 'redirects to the in-person verify info step' do
+        idv_session.profile_confirmation = nil
+        idv_session.resolution_successful = nil
+
+        ProofingComponent.find_or_create_by(
+          user: user,
+        ).update!(
+          document_check: Idp::Constants::Vendors::USPS,
+        )
+
+        get :show
+
+        expect(response).to redirect_to(idv_in_person_verify_info_url)
+      end
+    end
+  end
 end
