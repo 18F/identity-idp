@@ -3,6 +3,7 @@ class IdvController < ApplicationController
   include AccountReactivationConcern
   include InheritedProofingConcern
   include FraudReviewConcern
+  include SessionHelper
 
   before_action :confirm_two_factor_authenticated
   before_action :handle_pending_fraud_review
@@ -33,20 +34,8 @@ class IdvController < ApplicationController
 
   private
 
-  def clear_session
-    user_session['idv/doc_auth'] = {}
-    user_session['idv/in_person'] = {}
-    user_session['idv/inherited_proofing'] = {}
-    idv_session.clear
-    Pii::Cacher.new(current_user, user_session).delete
-  end
-
-  def enrollment
-    InPersonEnrollment.where(user_id: current_user.id).last
-  end
-
   def enrollment_status
-    enrollment.present? ? enrollment.status : ''
+    InPersonEnrollment.where(user_id: current_user.id).order(enrollment_established_at: :desc).pick(:status)
   end
 
   def verify_identity

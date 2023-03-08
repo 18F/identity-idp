@@ -229,6 +229,11 @@ RSpec.describe 'In Person Proofing', js: true do
       "#{t('date.day_names')[6]}: #{t('in_person_proofing.body.barcode.retail_hours_closed')}",
     )
 
+    # expire enrollment while still signed in
+    InPersonEnrollment.where(enrollment_code: enrollment_code).last.update(status: :expired)
+    visit root_path
+    expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
+
     # signing in again before completing in-person proofing at a post office
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_welcome_step

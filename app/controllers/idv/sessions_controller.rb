@@ -1,6 +1,7 @@
 module Idv
   class SessionsController < ApplicationController
     include IdvSession
+    include SessionHelper
 
     before_action :confirm_two_factor_authenticated
 
@@ -52,14 +53,6 @@ module Idv
       current_user.pending_in_person_enrollment&.update(status: :cancelled)
       UspsInPersonProofing::EnrollmentHelper.
         cancel_stale_establishing_enrollments_for_user(current_user)
-    end
-
-    def clear_session
-      user_session['idv/doc_auth'] = {}
-      user_session['idv/in_person'] = {}
-      user_session['idv/inherited_proofing'] = {}
-      idv_session.clear
-      Pii::Cacher.new(current_user, user_session).delete
     end
 
     def log_analytics
