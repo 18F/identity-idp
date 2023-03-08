@@ -31,8 +31,8 @@ module UspsInPersonProofing
 
         # Remove question marks corresponding with unsupported chars
         # for transliteration
-        result.unsupported_chars.each do |chr|
-          transliterated = transliterated.sub(Transliterator::REPLACEMENT, '')
+        unless transliterated.count(Transliterator::REPLACEMENT) > result.unsupported_chars.length
+          transliterated = transliterated.gsub(Transliterator::REPLACEMENT, '')
         end
 
         # Scan for unsupported chars for the field
