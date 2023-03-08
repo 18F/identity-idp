@@ -337,6 +337,7 @@ voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
 voip_block: true
 voip_allowed_phones: '[]'
+in_person_capture_secondary_id_enabled: false
 
 development:
   aamva_private_key: 123abc
@@ -577,4 +578,3 @@ test:
   usps_upload_sftp_host: example.com
   usps_upload_sftp_password: pass
   usps_upload_sftp_username: user
-  in_person_capture_secondary_id_enabled: false
