@@ -13,6 +13,96 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   queue_as :long_running
 
+  def perform(_now)
+    return true unless IdentityConfig.store.in_person_proofing_enabled
+
+    @enrollment_outcomes = {
+      enrollments_checked: 0,
+      enrollments_errored: 0,
+      enrollments_expired: 0,
+      enrollments_failed: 0,
+      enrollments_in_progress: 0,
+      enrollments_passed: 0,
+    }
+
+    reprocess_delay_minutes = IdentityConfig.store.
+      get_usps_proofing_results_job_reprocess_delay_minutes
+    enrollments = InPersonEnrollment.needs_usps_status_check(
+      ...reprocess_delay_minutes.minutes.ago,
+    )
+
+    started_at = Time.zone.now
+    analytics.idv_in_person_usps_proofing_results_job_started(
+      enrollments_count: enrollments.count,
+      reprocess_delay_minutes: reprocess_delay_minutes,
+    )
+
+    check_enrollments(enrollments)
+
+    analytics.idv_in_person_usps_proofing_results_job_completed(
+      **enrollment_outcomes,
+      duration_seconds: (Time.zone.now - started_at).seconds.round(2),
+    )
+
+    true
+  end
+
+  private
+
+  attr_accessor :enrollment_outcomes
+
+  DEFAULT_EMAIL_DELAY_IN_HOURS = 1
+  REQUEST_DELAY_IN_SECONDS = IdentityConfig.store.
+    get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND
+
+  def proofer
+    @proofer ||= UspsInPersonProofing::Proofer.new
+  end
+
+  def check_enrollments(enrollments)
+    last_enrollment_index = enrollments.length - 1
+    enrollments.each_with_index do |enrollment, idx|
+      check_enrollment(enrollment)
+      # Sleep briefly after each call to USPS
+      sleep REQUEST_DELAY_IN_SECONDS if idx < last_enrollment_index
+    end
+  end
+
+  def check_enrollment(enrollment)
+    # Add a unique ID for enrollments that don't have one
+    enrollment.update(unique_id: enrollment.usps_unique_id) if enrollment.unique_id.blank?
+
+    status_check_attempted_at = Time.zone.now
+    enrollment_outcomes[:enrollments_checked] += 1
+    response = nil
+
+    response = proofer.request_proofing_results(
+      enrollment.unique_id, enrollment.enrollment_code
+    )
+  rescue Faraday::BadRequestError => err
+    # 400 status code. This is used for some status updates and some common client errors
+    handle_bad_request_error(err, enrollment)
+  rescue Faraday::ClientError, Faraday::ServerError => err
+    # 4xx or 5xx status code. These are unexpected but will have some sort of
+    # response body that we can try to log data from
+    handle_client_or_server_error(err, enrollment)
+  rescue Faraday::Error => err
+    # Timeouts, failed connections, parsing errors, and other HTTP errors. These
+    # generally won't have a response body
+    handle_faraday_error(err, enrollment)
+  rescue StandardError => err
+    handle_standard_error(err, enrollment)
+  else
+    process_enrollment_response(enrollment, response)
+  ensure
+    # Record the attempt to update the enrollment
+    enrollment.update(status_check_attempted_at: status_check_attempted_at)
+  end
+
+  def analytics(user: AnonymousUser.new)
+    Analytics.new(user: user, request: nil, session: {}, sp: nil)
+  end
+
   def email_analytics_attributes(enrollment)
     {
       timestamp: Time.zone.now,
@@ -53,91 +143,6 @@ class GetUspsProofingResultsJob < ApplicationJob
       response_message: response['responseMessage'],
       response_present: true,
     }
-  end
-
-  def perform(_now)
-    return true unless IdentityConfig.store.in_person_proofing_enabled
-
-    @enrollment_outcomes = {
-      enrollments_checked: 0,
-      enrollments_errored: 0,
-      enrollments_expired: 0,
-      enrollments_failed: 0,
-      enrollments_in_progress: 0,
-      enrollments_passed: 0,
-    }
-    reprocess_delay_minutes = IdentityConfig.store.
-      get_usps_proofing_results_job_reprocess_delay_minutes
-    enrollments = InPersonEnrollment.needs_usps_status_check(
-      ...reprocess_delay_minutes.minutes.ago,
-    )
-
-    started_at = Time.zone.now
-    analytics.idv_in_person_usps_proofing_results_job_started(
-      enrollments_count: enrollments.count,
-      reprocess_delay_minutes: reprocess_delay_minutes,
-    )
-
-    check_enrollments(enrollments)
-
-    analytics.idv_in_person_usps_proofing_results_job_completed(
-      **enrollment_outcomes,
-      duration_seconds: (Time.zone.now - started_at).seconds.round(2),
-    )
-
-    true
-  end
-
-  private
-
-  attr_accessor :enrollment_outcomes
-
-  DEFAULT_EMAIL_DELAY_IN_HOURS = 1
-
-  def check_enrollments(enrollments)
-    request_delay_in_seconds = IdentityConfig.store.
-      get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND
-    proofer = UspsInPersonProofing::Proofer.new
-
-    enrollments.each_with_index do |enrollment, idx|
-      # Add a unique ID for enrollments that don't have one
-      enrollment.update(unique_id: enrollment.usps_unique_id) if enrollment.unique_id.blank?
-
-      status_check_attempted_at = Time.zone.now
-      enrollment_outcomes[:enrollments_checked] += 1
-      response = nil
-
-      begin
-        response = proofer.request_proofing_results(
-          enrollment.unique_id, enrollment.enrollment_code
-        )
-      rescue Faraday::BadRequestError => err
-        # 400 status code. This is used for some status updates and some common client errors
-        handle_bad_request_error(err, enrollment)
-      rescue Faraday::ClientError, Faraday::ServerError => err
-        # 4xx or 5xx status code. These are unexpected but will have some sort of
-        # response body that we can try to log data from
-        handle_client_or_server_error(err, enrollment)
-      rescue Faraday::Error => err
-        # Timeouts, failed connections, parsing errors, and other HTTP errors. These
-        # generally won't have a response body
-        handle_faraday_error(err, enrollment)
-      rescue StandardError => err
-        handle_standard_error(err, enrollment)
-      else
-        process_enrollment_response(enrollment, response)
-      ensure
-        # Record the attempt to update the enrollment
-        enrollment.update(status_check_attempted_at: status_check_attempted_at)
-      end
-
-      # Sleep for a while before we attempt to make another call to USPS
-      sleep request_delay_in_seconds if idx < enrollments.length - 1
-    end
-  end
-
-  def analytics(user: AnonymousUser.new)
-    Analytics.new(user: user, request: nil, session: {}, sp: nil)
   end
 
   def handle_bad_request_error(err, enrollment)
