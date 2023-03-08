@@ -143,7 +143,8 @@ else
       # Reject profiles that have been in fraud_review_pending for 30 days
       fraud_rejection: {
         class: 'FraudRejectionDailyJob',
-        chron: cron_24h,
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
       },
     }
   end
