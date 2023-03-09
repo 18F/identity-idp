@@ -27,7 +27,7 @@ class PhoneRecaptchaValidator
     @validator ||= validator_class.new(
       score_threshold:,
       extra_analytics_properties: {
-        country_code: parsed_phone.country,
+        phone_country_code: parsed_phone.country,
       },
       **validator_args,
     )

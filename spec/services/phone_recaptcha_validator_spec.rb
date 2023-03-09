@@ -22,7 +22,7 @@ describe PhoneRecaptchaValidator do
         analytics:,
         recaptcha_version:,
         extra_analytics_properties: {
-          country_code: parsed_phone.country,
+          phone_country_code: parsed_phone.country,
         },
       ).
       and_return(recaptcha_validator)

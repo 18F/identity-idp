@@ -238,7 +238,7 @@ describe 'Add a new phone number' do
         score_threshold: 0.6,
         recaptcha_version: 3,
         exception_class: nil,
-        country_code: 'CA',
+        phone_country_code: 'CA',
       ),
     )
 
