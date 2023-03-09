@@ -8,7 +8,7 @@ module Idv
     def new
       analytics.idv_address_visit
 
-      @puerto_rico_alert_enabled = puerto_rico_address?
+      @presenter = AddressPresenter.new(puerto_rico_address: puerto_rico_address?)
     end
 
     def update
@@ -31,7 +31,7 @@ module Idv
     end
 
     def puerto_rico_address?
-      return @pii[:state] == "PR"
+      @pii[:state] == "PR"
     end
 
     def idv_form

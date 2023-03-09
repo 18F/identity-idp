@@ -9,7 +9,7 @@
 
 <% title t('titles.doc_auth.address') %>
 
-<% if @puerto_rico_alert_enabled %>
+<% if @presenter.puerto_rico_address? %>
   <%= render AlertComponent.new(
         type: :info,
         class: 'margin-bottom-4',
@@ -27,17 +27,19 @@
       html: { autocomplete: 'off', class: 'margin-top-5' },
     ) do |f| %>
   <%= render ValidatedFieldComponent.new(
-        form: f,
-        name: :address1,
-        label: t('idv.form.address1'),
-        required: true,
-        maxlength: 255,
-        input_html: { value: @pii['address1'] },
-      ) %>
+      form: f,
+      name: :address1,
+      label: t('idv.form.address1'),
+      hint: @presenter.address_line1_hint,
+      required: true,
+      maxlength: 255,
+      input_html: { value: @pii['address1'] },
+    ) %>
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :address2,
         label: t('idv.form.address2'),
+        hint: @presenter.address_line2_hint,
         required: false,
         maxlength: 255,
         input_html: { value: @pii['address2'] },
@@ -46,6 +48,7 @@
         form: f,
         name: :city,
         label: t('idv.form.city'),
+        hint: @presenter.city_hint,
         required: true,
         maxlength: 255,
         input_html: { value: @pii['city'] },
@@ -65,6 +68,7 @@
           name: :zipcode,
           as: :tel,
           label: t('idv.form.zipcode'),
+          hint: @presenter.zipcode_hint,
           required: true,
           pattern: '(\d{5}([\-]\d{4})?)',
           input_html: { value: @pii['zipcode'], class: 'zipcode' },
