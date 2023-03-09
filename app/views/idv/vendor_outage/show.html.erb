@@ -9,7 +9,7 @@
 <%= render PageHeadingComponent.new.with_content(t('vendor_outage.alerts.pinpoint.idv.header')) %>
 
 <p>
-  <%= t('vendor_outage.alerts.pinpoint.idv.message_html', service_provider: 'ACME') %>
+  <%= t('vendor_outage.alerts.pinpoint.idv.message_html', service_provider: current_sp&.friendly_name || APP_NAME) %>
 </p>
 
 <span><%= t('vendor_outage.alerts.pinpoint.idv.options_prompt') %></span>
@@ -60,9 +60,3 @@
         },
     ],
 ) %>
-
-<pre><%= current_sp.friendly_name  %></pre>
-<pre><%= current_sp.return_to_sp_url  %></pre>
-<pre><%= current_sp.metadata_url  %></pre>
-<pre><%= current_sp.acs_url  %></pre>
-<pre><%= current_sp.failure_to_proof_url  %></pre>
