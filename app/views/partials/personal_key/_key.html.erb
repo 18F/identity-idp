@@ -2,7 +2,7 @@
   <div class="bg-personal-key padding-top-4 margin-y-2">
     <div class="personal-key-block">
       <% code.split('-').each do |word| %>
-        <% concat(content_tag(:strong, word, class: 'personal-key-block__code', data: { personal_key: '' })) %>
+        <% concat(content_tag(:strong, word, class: 'personal-key-block__code')) %>
       <% end %>
     </div>
   </div>

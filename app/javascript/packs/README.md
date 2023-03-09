@@ -14,5 +14,5 @@ import { FormSteps } from '@18f/identity-form-steps';
 
 const appRoot = document.getElementById('app-root');
 
-render(<FormSteps initialValues={{ personalKey: appRoot.dataset.personalKey }} />, appRoot);
+render(<FormSteps initialValues={appRoot.dataset} />, appRoot);
 ```
