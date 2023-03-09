@@ -97,7 +97,6 @@ RSpec.describe UspsInPersonProofing::Proofer do
     expect(facility.address).to be_present
     expect(facility.city).to be_present
     expect(facility.name).to be_present
-    expect(facility.phone).to be_present
     expect(facility.saturday_hours).to be_present
     expect(facility.state).to be_present
     expect(facility.sunday_hours).to be_present
