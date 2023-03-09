@@ -247,7 +247,7 @@ fr:
         supported_documents: Voir la liste des pièces d’identité acceptées et délivrées par l’État
         verify_by_mail: Vérifiez plutôt votre adresse par courrier
     unavailable:
-      exit_button: 'Salir de %{app_name}'
+      exit_button: 'Quitter %{app_name}'
       idv_explanation:
         with_sp: '%{sp} doit s’assurer que c’est bien vous — et non quelqu’un qui se
           fait passer pour vous.'
