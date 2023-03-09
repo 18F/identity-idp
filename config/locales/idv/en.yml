@@ -224,8 +224,8 @@ en:
         without_sp: 'The agency that you are trying to access needs to make sure you are
           you — not someone pretending to be you.'
       next_steps_html: 'Unfortunately, we are having technical difficulties and cannot
-        verify your identity at this time. %{status_page_link} or exit Login.gov
-        and try again later.'
+        verify your identity at this time. %{status_page_link} or exit
+        %{app_name} and try again later.'
       status_page_link: 'Get updates on our status page'
     welcome:
       no_js_header: You must enable JavaScript to verify your identity.
