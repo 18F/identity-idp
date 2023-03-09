@@ -7,8 +7,8 @@ import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import type { SetupServerApi } from 'msw/node';
 import AnalyticsContext, { AnalyticsContextProvider } from '../context/analytics';
-import InPersonLocationStep from './in-person-location-step';
-import { ADDRESS_SEARCH_URL, LOCATIONS_URL } from './address-search';
+import InPersonLocationStep, { LOCATIONS_URL } from './in-person-location-step';
+import { ADDRESS_SEARCH_URL } from './address-search';
 
 const DEFAULT_RESPONSE = [
   {
