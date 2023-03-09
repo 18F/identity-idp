@@ -3,12 +3,12 @@ require 'barby/barcode/code_128'
 require 'barby/outputter/html_outputter'
 
 class BarcodeComponent < BaseComponent
-  attr_reader :barcode_data, :label, :label_formatter, :tag_options, :logo_image_url
+  attr_reader :barcode_data, :label, :label_formatter, :tag_options
 
   def initialize(
     barcode_data:,
     label:,
-    logo_image_url: asset_url('logo.svg'),
+    logo_image_url:,
     label_formatter: nil,
     barcode_image_url: nil,
     **tag_options
@@ -23,6 +23,10 @@ class BarcodeComponent < BaseComponent
 
   def barcode_image_url
     @barcode_image_url.presence || barcode_data_url
+  end
+
+  def logo_image_url
+    @logo_image_url
   end
 
   def formatted_data
