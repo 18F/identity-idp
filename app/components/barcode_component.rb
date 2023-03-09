@@ -39,10 +39,6 @@ class BarcodeComponent < BaseComponent
     "barcode-caption-#{unique_id}"
   end
 
-  def logo_caption_id
-    "logo-caption-#{unique_id}"
-  end
-
   def css_class
     [*tag_options[:class], 'display-inline-block']
   end

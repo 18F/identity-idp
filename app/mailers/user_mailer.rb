@@ -290,7 +290,6 @@ class UserMailer < ActionMailer::Base
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
-        logo_image_url: attachments['logo.png'].url,
       )
       mail(
         to: email_address.email,
