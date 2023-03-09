@@ -4,14 +4,15 @@ module Idv
       # WILLFIX: With LG-6881, confirm timezone or use deadline from enrollment response.
       USPS_SERVER_TIMEZONE = ActiveSupport::TimeZone['America/New_York']
 
-      attr_reader :barcode_image_url
+      attr_reader :barcode_image_url, :logo_image_url
 
       delegate :selected_location_details, :enrollment_code, to: :enrollment
 
-      def initialize(enrollment:, barcode_image_url: nil, sp_name: nil)
+      def initialize(enrollment:, barcode_image_url: nil, sp_name: nil, logo_image_url: nil)
         @enrollment = enrollment
         @barcode_image_url = barcode_image_url
         @sp_name = sp_name
+        @logo_image_url = logo_image_url
       end
 
       # Reminder is exclusive of the day the email is sent (1 less than days_to_due_date)
