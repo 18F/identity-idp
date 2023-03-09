@@ -1,34 +1,35 @@
 module DocAuth
   class ProcessedAlertToLogAlertFormatter
-    def get_alert_result(log_alert_results, side, alert_name_key, result)
-      if log_alert_results.dig(alert_name_key, side.to_sym).present?
-        alert_value = log_alert_results[alert_name_key][side.to_sym]
-        Rails.logger.
-          info("ALERT ALREADY HAS A VALUE: #{alert_value}, #{result}")
-      end
-      result
-    end
-
     def log_alerts(alerts)
       log_alert_results = {}
 
-      alerts.keys.each do |key|
-        alerts[key.to_sym].each do |alert|
+      alerts.each do |key, key_alerts|
+        key_alerts.each do |alert|
           alert_name_key = alert[:name].
             downcase.
-            parameterize(separator: '_').to_sym
+            parameterize(separator: '_').
+            to_sym
+
           side = alert[:side] || 'no_side'
 
-          log_alert_results[alert_name_key] =
-            { "#{side}": get_alert_result(
-              log_alert_results,
-              side,
-              alert_name_key,
-              alert[:result],
-            ) }
+          check_for_dupe!(log_alert_results, side, alert_name_key, alert[:result])
+
+          log_alert_results[alert_name_key] = {
+            "#{side}": alert[:result],
+          }
         end
       end
+
       log_alert_results
+    end
+
+    private
+
+    def check_for_dupe!(log_alert_results, side, alert_name_key, result)
+      alert_value = log_alert_results.dig(alert_name_key, side.to_sym)
+      if alert_value.present?
+        Rails.logger.info("ALERT ALREADY HAS A VALUE: #{alert_value}, #{result}")
+      end
     end
   end
 end
