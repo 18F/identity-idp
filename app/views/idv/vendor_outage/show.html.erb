@@ -9,7 +9,7 @@
 <%= render PageHeadingComponent.new.with_content(t('vendor_outage.alerts.pinpoint.idv.header')) %>
 
 <p>
-  <%= t('vendor_outage.alerts.pinpoint.idv.message_html', service_provider: current_sp&.friendly_name || APP_NAME) %>
+  <%= t('vendor_outage.alerts.pinpoint.idv.message_html', sp_name: current_sp&.friendly_name || APP_NAME) %>
 </p>
 
 <span><%= t('vendor_outage.alerts.pinpoint.idv.options_prompt') %></span>
@@ -48,10 +48,16 @@
     'shared/troubleshooting_options',
     heading: t('components.troubleshooting_options.default_heading'),
     options: [
-        {
-            url: StatusPage.base_url,
-            text: t('vendor_outage.get_updates_on_status_page'),
-            new_tab: true,
-        },
-    ],
+      {
+        url: StatusPage.base_url,
+        text: t('vendor_outage.get_updates_on_status_page'),
+        new_tab: true,
+      },
+      current_sp && {
+        url: current_sp.return_to_sp_url,
+        text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: current_sp.friendly_name),
+        isExternal: true,
+        new_tab: true,
+      },
+    ].compact,
 ) %>

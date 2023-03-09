@@ -12,7 +12,7 @@ en:
           header: We can only verify your identity by mail right now
           message_html: 'Unfortunately, Login.gov is having technical difficulties. We’re
             working to resolve an error so that we can verify your identity for
-            <strong>%{service_provider}</strong> quickly.'
+            <strong>%{sp_name}</strong> quickly.'
           options_html:
             - '<a href="%{status_page_url}" class="usa-link usa-link--external"
               target="_blank">Get updates on our status page</a> to learn when

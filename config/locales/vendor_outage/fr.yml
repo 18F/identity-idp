@@ -14,10 +14,10 @@ fr:
           message_html: 'Malheureusement, Login.gov rencontre des difficultés techniques.
             Nous travaillons à la résolution d’une erreur afin de pouvoir
             vérifier rapidement votre identité pour
-            <strong>%{service_provider}</strong>.'
+            <strong>%{sp_name}</strong>.'
           options_html:
             - '<a href="%{status_page_url}" class="usa-link usa-link--external"
-              target="_blank">Get updates on our status page</a> pour savoir
+              target="_blank">Obtenez des mises à jour sur notre page de statut</a> pour savoir
               quand l’erreur est résolue.'
             - 'Continuer maintenant et effectuer la vérification par courrier,
               ce qui prend de <strong>3 à 7 jours ouvrables</strong>.'
