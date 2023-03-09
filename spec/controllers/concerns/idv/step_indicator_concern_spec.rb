@@ -65,7 +65,7 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
       end
     end
 
-    context 'with in person proofing component via pending profile' do
+    context 'with in person proofing component' do
       let(:in_person_step_indicator_steps) do
         [
           { name: :find_a_post_office },
