@@ -54,18 +54,4 @@ feature 'doc auth verify step', :js do
       expect(page).to have_content(t('doc_auth.info.address_guidance_puerto_rico_html'))
     end
   end
-
-  context 'with Puerto Rico state id jurisdiction' do
-    before do
-      sign_in_and_2fa_user
-      complete_doc_auth_steps_before_document_capture_step
-      complete_document_capture_step_with_yml('spec/fixtures/puerto_rico_jurisdiction.yml')
-      complete_ssn_step
-      click_button t('idv.buttons.change_address_label')
-    end
-
-    it 'shows address guidance and hint text' do
-      expect(page).to have_content(t('doc_auth.info.address_guidance_puerto_rico_html'))
-    end
-  end
 end
