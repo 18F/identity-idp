@@ -3,9 +3,14 @@ class RecaptchaValidator
   EXEMPT_ERROR_CODES = ['missing-input-secret', 'invalid-input-secret']
   VALID_RECAPTCHA_VERSIONS = [2, 3]
 
-  attr_reader :recaptcha_version, :score_threshold, :analytics
+  attr_reader :recaptcha_version, :score_threshold, :analytics, :extra_analytics_properties
 
-  def initialize(recaptcha_version: 3, score_threshold: 0.0, analytics: nil)
+  def initialize(
+    recaptcha_version: 3,
+    score_threshold: 0.0,
+    analytics: nil,
+    extra_analytics_properties: nil
+  )
     if !VALID_RECAPTCHA_VERSIONS.include?(recaptcha_version)
       raise ArgumentError, "Invalid reCAPTCHA version #{recaptcha_version}, expected one of " \
                            "#{VALID_RECAPTCHA_VERSIONS}"
@@ -14,6 +19,7 @@ class RecaptchaValidator
     @score_threshold = score_threshold
     @analytics = analytics
     @recaptcha_version = recaptcha_version
+    @extra_analytics_properties = extra_analytics_properties
   end
 
   def exempt?
@@ -80,6 +86,7 @@ class RecaptchaValidator
       recaptcha_version:,
       evaluated_as_valid: recaptcha_result_valid?(recaptcha_result),
       exception_class: error&.class&.name,
+      **extra_analytics_properties,
     )
   end
 

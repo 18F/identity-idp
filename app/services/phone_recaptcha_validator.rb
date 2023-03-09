@@ -24,7 +24,13 @@ class PhoneRecaptchaValidator
   private
 
   def validator
-    @validator ||= validator_class.new(score_threshold:, **validator_args)
+    @validator ||= validator_class.new(
+      score_threshold:,
+      extra_analytics_properties: {
+        country_code: parsed_phone.country,
+      },
+      **validator_args,
+    )
   end
 
   def score_threshold_country_override

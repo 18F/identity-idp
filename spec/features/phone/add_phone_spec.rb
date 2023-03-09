@@ -205,10 +205,13 @@ describe 'Add a new phone number' do
   end
 
   scenario 'adding a phone with a reCAPTCHA challenge', js: true do
+    user = create(:user, :signed_up)
+
     allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).and_return(true)
     allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).and_return(0.6)
+    fake_analytics = FakeAnalytics.new(user:)
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
 
-    user = create(:user, :signed_up)
     sign_in_and_2fa_user(user)
     within('.sidenav') { click_on t('account.navigation.add_phone_number') }
 
@@ -221,6 +224,23 @@ describe 'Add a new phone number' do
     expect(page).to have_content(t('two_factor_authentication.header_text'))
     visit account_path
     within('.sidenav') { click_on t('account.navigation.add_phone_number') }
+    expect(fake_analytics).to have_logged_event(
+      'reCAPTCHA verify result received',
+      hash_including(
+        recaptcha_result: {
+          'success' => true,
+          'score' => 0.5,
+          'error-codes' => [],
+          'challenge_ts' => kind_of(String),
+          'hostname' => anything,
+        },
+        evaluated_as_valid: false,
+        score_threshold: 0.6,
+        recaptcha_version: 3,
+        exception_class: nil,
+        country_code: 'CA',
+      ),
+    )
 
     # Passing international should display OTP confirmation
     fill_in t('two_factor_authentication.phone_label'), with: '3065550100'
