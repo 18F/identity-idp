@@ -21,7 +21,6 @@ es:
         questions: '¿Tiene alguna pregunta?'
         retail_hours: Horario de atención al público
         retail_hours_closed: Cerrado
-        retail_phone_label: Número de teléfono
         return_to_partner_html: Ya puede cerrar esta ventana o %{link} para finalizar
           los pasos a los que tenga acceso hasta que su identidad sea
           verificada.

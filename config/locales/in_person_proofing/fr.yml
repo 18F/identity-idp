@@ -22,7 +22,6 @@ fr:
         questions: Des questions?
         retail_hours: Heures de vente au détail
         retail_hours_closed: Fermé
-        retail_phone_label: Numéro de téléphone
         return_to_partner_html: Vous pouvez maintenant fermer cette fenêtre ou %{link}
           afin d’effectuer toutes les étapes suivantes auxquelles vous pouvez
           accéder jusqu’à ce que votre identité ait été confitmée.
