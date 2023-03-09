@@ -72,7 +72,7 @@ describe TwoFactorAuthentication::OtpExpiredController do
     end
 
     context 'authentication options redirect' do
-      let(:enabled_mfa_methods_count) { 1 }
+      let(:mfa_selections) { nil }
 
       it 'sets authentication options path correctly' do
         user = create(:user, :signed_up)

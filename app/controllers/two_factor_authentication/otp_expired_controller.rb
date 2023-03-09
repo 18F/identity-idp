@@ -26,11 +26,17 @@ module TwoFactorAuthentication
     end
 
     def authentication_options_path
-      if mfa_context.enabled_mfa_methods_count < 1
+      if user_session.key?(:mfa_selections)
         authentication_methods_setup_url
+      elsif adding_phone?
+        account_url
       else
         login_two_factor_options_url
       end
+    end
+
+    def adding_phone?
+      unconfirmed_phone? && !user_session.key?(:mfa_selections)
     end
 
     def unconfirmed_phone?
