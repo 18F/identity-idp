@@ -9,7 +9,7 @@ class RecaptchaValidator
     recaptcha_version: 3,
     score_threshold: 0.0,
     analytics: nil,
-    extra_analytics_properties: nil
+    extra_analytics_properties: {}
   )
     if !VALID_RECAPTCHA_VERSIONS.include?(recaptcha_version)
       raise ArgumentError, "Invalid reCAPTCHA version #{recaptcha_version}, expected one of " \
