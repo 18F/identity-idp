@@ -8,9 +8,11 @@ class SessionEncryptor
   MINIMUM_COMPRESS_LIMIT = 300
   SENSITIVE_KEYS = [
     'first_name', 'middle_name', 'last_name', 'address1', 'address2', 'city', 'state', 'zipcode',
-    'zip_code', 'same_address_as_id', 'dob', 'phone_number', 'phone', 'ssn', 'prev_address1',
-    'prev_address2', 'prev_city', 'prev_state', 'prev_zipcode', 'pii', 'pii_from_doc',
-    'pii_from_user', 'password', 'personal_key', 'email', 'email_address', 'unconfirmed_phone'
+    'zip_code', 'state_id_address1', 'state_id_address2', 'state_id_city', 'state_id_state',
+    'state_id_zipcode', 'same_address_as_id', 'dob', 'phone_number', 'phone', 'ssn',
+    'prev_address1', 'prev_address2', 'prev_city', 'prev_state', 'prev_zipcode', 'pii',
+    'pii_from_doc', 'pii_from_user', 'password', 'personal_key', 'email', 'email_address',
+    'unconfirmed_phone'
   ].to_set.freeze
   CIPHERTEXT_KEY = 't'
   COMPRESSED_KEY = 'c'
