@@ -50,6 +50,10 @@ module UspsInPersonProofing
       end
     end
 
+    def transliterator
+      @transliterator ||= Transliterator.new
+    end
+
     private
 
     # Use unsupported character list to generate error message
@@ -82,10 +86,6 @@ module UspsInPersonProofing
 
       # Create sorted list of unique unsupported characters
       (result.unsupported_chars + additional_chars).sort.uniq
-    end
-
-    def transliterator
-      @transliterator ||= Transliterator.new
     end
   end
 end

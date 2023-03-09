@@ -1,9 +1,22 @@
 require 'rails_helper'
 
 RSpec.describe UspsInPersonProofing::TransliterableValidator do
-  let(:errors) { instance_double(ActiveModel::Errors) }
-  let(:model) { double }
-  let(:transliterator) { instance_double(UspsInPersonProofing::Transliterator) }
+  let(:errors) { ActiveModel::Errors.new(nil) }
+  let(:valid_field) { nil }
+  let(:invalid_field) { nil }
+  let(:extra_field) { nil }
+  let(:other_invalid_field) { nil }
+  let(:model) do
+    double(
+      'SomeModel',
+      errors:,
+      valid_field:,
+      invalid_field:,
+      extra_field:,
+      other_invalid_field:,
+    )
+  end
+
   let(:message) { 'Test message' }
   let(:fields) { [:valid_field] }
   let(:reject_chars) { /[^A-Za-z]/ }
@@ -14,21 +27,23 @@ RSpec.describe UspsInPersonProofing::TransliterableValidator do
       message:,
     }
   end
-  subject(:validator) do
-    subject = described_class.new(options)
-    allow(subject).to receive(:transliterator).and_return(transliterator)
-    subject
+
+  before do
+    allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
+      and_return(usps_ipp_transliteration_enabled)
   end
+
+  subject(:validator) { described_class.new(options) }
 
   describe '#validate' do
     context 'transliteration enabled' do
-      before(:each) do
-        allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
-          and_return(true)
-        allow(model).to receive(:errors).and_return(errors)
-        allow(model).to receive(:valid_field).and_return('abc')
-        allow(model).to receive(:extra_field).and_return('hello world')
-        allow(transliterator).to receive(:transliterate) do |param|
+      let(:usps_ipp_transliteration_enabled) { true }
+
+      let(:valid_field) { 'abc' }
+      let(:extra_field) { 'hello world' }
+
+      before do
+        allow(validator.transliterator).to receive(:transliterate) do |param|
           UspsInPersonProofing::Transliterator::TransliterationResult.new(
             changed?: true,
             original: param,
@@ -36,7 +51,6 @@ RSpec.describe UspsInPersonProofing::TransliterableValidator do
             unsupported_chars: [],
           )
         end
-        allow(errors).to receive(:add)
       end
 
       context 'no invalid fields' do
@@ -51,12 +65,14 @@ RSpec.describe UspsInPersonProofing::TransliterableValidator do
         end
 
         context 'with non-stringable field' do
+          let(:valid_field) { non_str_double }
+          let(:non_str_double) { double }
+
           it 'does not attempt to transliterate the field' do
-            non_str_double = double
             allow(non_str_double).to receive(:respond_to?).with(:to_s).and_return(false)
-            allow(model).to receive(:valid_field).and_return(non_str_double)
+
             validator.validate(model)
-            expect(validator).not_to have_received(:transliterator)
+            expect(validator.transliterator).not_to have_received(:transliterate)
           end
         end
 
@@ -72,7 +88,7 @@ RSpec.describe UspsInPersonProofing::TransliterableValidator do
 
         it 'does not set validation message' do
           validator.validate(model)
-          expect(errors).not_to have_received(:add)
+          expect(errors).to be_empty
         end
       end
 
@@ -80,24 +96,20 @@ RSpec.describe UspsInPersonProofing::TransliterableValidator do
         let(:fields) { [:valid_field, :invalid_field] }
 
         context 'failing regex check' do
-          before(:each) do
-            allow(model).to receive(:invalid_field).and_return('123')
-          end
+          let(:invalid_field) { '123' }
 
           it 'sets a validation message' do
             validator.validate(model)
-            expect(errors).to have_received(:add).with(
-              :invalid_field,
-              :nontransliterable_field,
-              message:,
-            )
+
+            expect(model.errors).to include(:invalid_field)
           end
         end
 
         context 'failing transliteration' do
-          before(:each) do
-            allow(model).to receive(:invalid_field).and_return('def')
-            allow(transliterator).to receive(:transliterate).with('def').
+          let(:invalid_field) { 'def' }
+
+          before do
+            allow(validator.transliterator).to receive(:transliterate).with('def').
               and_return(
                 UspsInPersonProofing::Transliterator::TransliterationResult.new(
                   changed?: true,
@@ -110,15 +122,15 @@ RSpec.describe UspsInPersonProofing::TransliterableValidator do
 
           it 'sets a validation message' do
             validator.validate(model)
-            expect(errors).to have_received(:add).with(
-              :invalid_field,
-              :nontransliterable_field,
-              message: message,
-            )
+
+            error = model.errors.group_by_attribute[:invalid_field].first
+
+            expect(error.type).to eq(:nontransliterable_field)
+            expect(error.options[:message]).to eq(message)
           end
         end
 
-        context 'with error message callable' do
+        context 'with callable error message' do
           let(:generated_message) { 'my_generated_message' }
           let(:chars_passed) { [] }
           let(:message) do
@@ -131,9 +143,9 @@ RSpec.describe UspsInPersonProofing::TransliterableValidator do
           context 'combined transliteration and regex issues' do
             let(:unsupported_chars_returned) { ['*', '3', 'C'] }
             let(:transliterated_value_returned) { '1234' }
-            before(:each) do
-              allow(model).to receive(:invalid_field).and_return('def')
-              allow(transliterator).to receive(:transliterate).with('def').
+            let(:invalid_field) { 'def' }
+            before do
+              allow(validator.transliterator).to receive(:transliterate).with('def').
                 and_return(
                   UspsInPersonProofing::Transliterator::TransliterationResult.new(
                     changed?: true,
@@ -185,11 +197,10 @@ RSpec.describe UspsInPersonProofing::TransliterableValidator do
 
             it 'sets the error from the message returned by the message generator' do
               validator.validate(model)
-              expect(errors).to have_received(:add).with(
-                :invalid_field,
-                :nontransliterable_field,
-                message: generated_message,
-              )
+
+              error = model.errors.group_by_attribute[:invalid_field].first
+              expect(error.type).to eq(:nontransliterable_field)
+              expect(error.options[:message]).to eq(generated_message)
             end
           end
         end
@@ -197,46 +208,25 @@ RSpec.describe UspsInPersonProofing::TransliterableValidator do
 
       context 'multiple invalid fields' do
         let(:fields) { [:other_invalid_field, :valid_field, :invalid_field] }
-        before(:each) do
-          allow(model).to receive(:invalid_field).and_return('123')
-          allow(model).to receive(:other_invalid_field).and_return("\#@$%")
-        end
-
-        it 'checks both invalid fields' do
-          validator.validate(model)
-          expect(model).to have_received(:invalid_field)
-          expect(model).to have_received(:other_invalid_field)
-        end
+        let(:invalid_field) { '123' }
+        let(:other_invalid_field) { "\#@$%" }
 
         it 'sets multiple validation messages' do
           validator.validate(model)
-          expect(errors).to have_received(:add).with(
-            :invalid_field,
-            :nontransliterable_field,
-            message:,
-          )
-          expect(errors).to have_received(:add).with(
-            :other_invalid_field,
-            :nontransliterable_field,
-            message:,
-          )
+
+          expect(errors).to include(:invalid_field)
+          expect(errors).to include(:other_invalid_field)
         end
       end
     end
 
     context 'transliteration disabled' do
-      before(:each) do
-        allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
-          and_return(false)
-        allow(model).to receive(:errors).and_return(errors)
-        allow(model).to receive(:valid_field).and_return('abc')
-      end
+      let(:usps_ipp_transliteration_enabled) { false }
 
       it 'does not validate fields' do
         validator.validate(model)
-        expect(model).not_to have_received(:errors)
-        expect(model).not_to have_received(:valid_field)
-        expect(validator).not_to have_received(:transliterator)
+
+        expect(errors).to be_empty
       end
     end
   end
