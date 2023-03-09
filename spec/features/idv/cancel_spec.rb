@@ -92,7 +92,7 @@ describe 'cancel IdV', :js do
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation visited',
         proofing_components: { document_check: 'mock', document_type: 'state_id' },
-        request_came_from: 'idv/doc_auth#show',
+        request_came_from: 'idv/ssn#show',
         step: 'ssn',
       )
 

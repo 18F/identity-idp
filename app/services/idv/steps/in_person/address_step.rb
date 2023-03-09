@@ -20,17 +20,36 @@ module Idv
 
         def extra_view_variables
           {
-            pii: flow_session[:pii_from_user],
-            updating_address: flow_session[:pii_from_user].has_key?(:address1),
+            form:,
+            pii:,
+            updating_address:,
           }
         end
 
         private
 
-        def form_submit
-          Idv::InPerson::AddressForm.new.submit(
-            permit(*Idv::InPerson::AddressForm::ATTRIBUTES),
+        def updating_address
+          flow_session[:pii_from_user].has_key?(:address1)
+        end
+
+        def pii
+          data = flow_session[:pii_from_user]
+          data = data.merge(flow_params) if params.has_key?(:in_person_address)
+          data.deep_symbolize_keys
+        end
+
+        def flow_params
+          params.require(:in_person_address).permit(
+            *Idv::InPerson::AddressForm::ATTRIBUTES,
           )
+        end
+
+        def form
+          @form ||= Idv::InPerson::AddressForm.new
+        end
+
+        def form_submit
+          form.submit(flow_params)
         end
       end
     end

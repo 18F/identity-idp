@@ -52,7 +52,7 @@ module Proofing
       end
 
       def review_status(session_id:)
-        device_status = DeviceProfilingBackend.new.profiling_result(session_id)
+        device_status = DeviceProfilingBackend.new.profiling_result(session_id) || 'pass'
 
         case device_status
         when 'no_result'

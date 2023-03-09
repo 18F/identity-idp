@@ -54,7 +54,9 @@ locals:
       </div>
       <div>
         <dt class="display-inline"> <%= t('idv.form.dob') %>: </dt>
-        <dd class="display-inline margin-left-0"> <%= @pii[:dob] %> </dd>
+        <dd class="display-inline margin-left-0">
+          <%= I18n.l(Date.parse(@pii[:dob]), format: I18n.t('time.formats.event_date')) %>
+        </dd>
       </div>
       <% if @in_person_proofing %>
         <div>
@@ -80,12 +82,10 @@ locals:
         <dt class="display-inline"> <%= t('idv.form.address1') %>: </dt>
         <dd class="display-inline margin-left-0"> <%= @pii[:address1] %> </dd>
       </div>
-      <% if @pii[:address2].present? %>
-        <div>
-          <dt class="display-inline"> <%= t('idv.form.address2') %>: </dt>
-          <dd class="display-inline margin-left-0"> <%= @pii[:address2] %> </dd>
-        </div>
-      <% end %>
+      <div>
+        <dt class="display-inline"> <%= t('idv.form.address2') %>: </dt>
+        <dd class="display-inline margin-left-0"> <%= @pii[:address2].presence %> </dd>
+      </div>
       <div>
         <dt class="display-inline"> <%= t('idv.form.city') %>: </dt>
         <dd class="display-inline margin-left-0"> <%= @pii[:city] %> </dd>
@@ -123,24 +123,13 @@ locals:
             toggle_label: t('forms.ssn.show'),
           ) %>
     </div>
-    <% if IdentityConfig.store.doc_auth_ssn_controller_enabled %>
-      <div class='grid-auto'>
-        <%= link_to(
-              t('idv.buttons.change_label'),
-              idv_ssn_url,
-              'aria-label': t('idv.buttons.change_ssn_label'),
-            ) %>
-      </div>
-    <% else %>
-      <div class='grid-auto'>
-        <%= button_to(
-              idv_doc_auth_step_url(step: :redo_ssn),
-              method: :put,
-              class: 'usa-button usa-button--unstyled',
-              'aria-label': t('idv.buttons.change_ssn_label'),
-            ) { t('idv.buttons.change_label') } %>
-      </div>
-    <% end %>
+    <div class='grid-auto'>
+      <%= link_to(
+            t('idv.buttons.change_label'),
+            idv_ssn_url,
+            'aria-label': t('idv.buttons.change_ssn_label'),
+          ) %>
+    </div>
   </div>
   <div class="margin-top-5">
       <%= render SpinnerButtonComponent.new(

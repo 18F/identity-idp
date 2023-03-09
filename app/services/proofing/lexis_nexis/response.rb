@@ -11,8 +11,6 @@ module Proofing
       end
 
       def verification_errors
-        return {} if verification_status == 'passed'
-
         verification_error_parser.parsed_errors
       end
 
