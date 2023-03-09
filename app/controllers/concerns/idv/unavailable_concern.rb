@@ -1,6 +1,14 @@
 module Idv
-  class OutageController < ApplicationController
-    def show
+  class UnavailableError < StandardError; end
+
+  module UnavailableConcern
+    extend ActiveSupport::Concern
+
+    included do
+      rescue_from Idv::UnavailableError, with: :render_idv_unavailable
+    end
+
+    def render_idv_unavailable
       analytics.vendor_outage(
         vendor_status: {
           acuant: IdentityConfig.store.vendor_status_acuant,
@@ -11,6 +19,8 @@ module Idv
         },
         redirect_from: nil,
       )
+
+      render 'idv/unavailable', status: :service_unavailable
     end
   end
 end

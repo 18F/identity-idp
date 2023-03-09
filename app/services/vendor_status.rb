@@ -77,6 +77,10 @@ class VendorStatus
     end
   end
 
+  def to_h
+    {}
+  end
+
   def track_event(analytics)
     raise ArgumentError, 'analytics instance required' if analytics.nil?
 

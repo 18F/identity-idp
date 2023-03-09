@@ -15,10 +15,6 @@ module Idv
     before_action :redirect_if_flow_completed
     before_action :override_document_capture_step_csp
     before_action :update_if_skipping_upload
-    # rubocop:disable Rails/LexicallyScopedActionFilter
-    before_action :check_for_outage, only: :show
-    # rubocop:enable Rails/LexicallyScopedActionFilter
-
     before_action :override_csp_for_threat_metrix
 
     FLOW_STATE_MACHINE_SETTINGS = {
@@ -67,14 +63,6 @@ module Idv
 
     def flow_session
       user_session['idv/doc_auth']
-    end
-
-    def check_for_outage
-      if VendorStatus.new.any_ial2_vendor_outage?
-        session[:vendor_outage_redirect] = current_step
-        session[:vendor_outage_redirect_from_idv] = true
-        redirect_to vendor_outage_url
-      end
     end
   end
 end

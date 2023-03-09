@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   include LocaleHelper
   include VerifySpAttributesConcern
   include EffectiveUser
+  include Idv::UnavailableConcern
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.

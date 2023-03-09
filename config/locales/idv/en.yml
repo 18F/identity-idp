@@ -183,17 +183,6 @@ en:
         review_message: When you re-enter your password, %{app_name} will protect the
           information you’ve given us, so that only you can access it.
       verifying: Verifying…
-    outage:
-      exit_button: 'Exit %{app_name}'
-      idv_explanation:
-        with_sp: '%{sp} needs to make sure you are you — not someone pretending to be
-          you.'
-        without_sp: 'The agency that you are trying to access needs to make sure you are
-          you — not someone pretending to be you.'
-      next_steps_html: 'Unfortunately, we are having technical difficulties and cannot
-        verify your identity at this time. %{status_page_link} or exit Login.gov
-        and try again later.'
-      status_page_link: 'Get updates on our status page'
     review:
       dob: Date of birth
       full_name: Full name
@@ -206,11 +195,11 @@ en:
         resend: Want another letter?
         verify: Want a letter?
       otp_delivery_method: How should we send a code?
-      outage: 'We are working to resolve an error'
       review: Review and submit
       session:
         phone: Enter your phone number
         review: Re-enter your %{app_name} password to protect your data
+      unavailable: 'We are working to resolve an error'
     troubleshooting:
       headings:
         missing_required_items: Are you missing one of these items?
@@ -227,6 +216,17 @@ en:
         learn_more_verify_in_person: Learn more about verifying in person
         supported_documents: See a list of accepted state-issued IDs
         verify_by_mail: Verify your address by mail instead
+    unavailable:
+      exit_button: 'Exit %{app_name}'
+      idv_explanation:
+        with_sp: '%{sp} needs to make sure you are you — not someone pretending to be
+          you.'
+        without_sp: 'The agency that you are trying to access needs to make sure you are
+          you — not someone pretending to be you.'
+      next_steps_html: 'Unfortunately, we are having technical difficulties and cannot
+        verify your identity at this time. %{status_page_link} or exit Login.gov
+        and try again later.'
+      status_page_link: 'Get updates on our status page'
     welcome:
       no_js_header: You must enable JavaScript to verify your identity.
       no_js_intro: '%{sp_name} needs you to verify your identity. You need to enable

@@ -29,6 +29,12 @@ class IdvController < ApplicationController
     idv_session.clear
   end
 
+  def unavailable
+    # This action is provided to have a place to route /verify/* paths to when idv is unavailable.
+    # Actual rendering / logging is handled by Idv::UnavailableConcern.
+    raise Idv::UnavailableError
+  end
+
   private
 
   def verify_identity
