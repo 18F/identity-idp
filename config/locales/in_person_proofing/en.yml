@@ -13,7 +13,7 @@ en:
         deadline_restart: If you go after the deadline, your information will not be
           saved and you will need to restart the process.
         email_sent: We have sent this information to the email you used to log in.
-        items_to_bring: 'Show the following items to any Post Office associate:'
+        items_to_bring: 'Remember to bring these items with you to the Post Office:'
         learn_more: Learn more about what to bring
         location_details: Location details
         questions: Question?
@@ -116,7 +116,7 @@ en:
         state_id_number_hint: May include letters and numbers
     headings:
       address: Enter your current address
-      barcode: You’re ready to verify your identity in person with Login.gov
+      barcode: You’re ready to verify your identity in person
       cta: Having trouble verifying your ID online?
       cta_variant: Try verifying your ID in person
       location: Select a location to verify your ID

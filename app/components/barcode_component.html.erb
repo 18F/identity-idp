@@ -2,25 +2,6 @@
 <%= content_tag(
       :div,
       role: 'figure',
-      'aria-labelledby': logo_caption_id,
-      class: css_class,
-      **tag_options,
-    ) do %>
-  <%= image_tag(
-        logo_image_url,
-        skip_pipeline: true,
-        alt: t('components.barcode.logo_alt'),
-        class: 'display-block',
-      ) %>
-  <div id="<%= logo_caption_id %>" class="text-center">
-    <% if label.present? %>
-      <span class="usa-sr-only"><%= label %>:</span>
-    <% end %>
-  </div>
-<% end %>
-<%= content_tag(
-      :div,
-      role: 'figure',
       'aria-labelledby': barcode_caption_id,
       class: css_class,
       **tag_options,

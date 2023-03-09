@@ -305,9 +305,8 @@ class UserMailer < ActionMailer::Base
 
     with_user_locale(user) do
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
-        barcode_image_url: attachments['barcode.png'].url,
         enrollment: enrollment,
-        logo_image_url: attachments['logo.png'].url,
+        barcode_image_url: attachments['barcode.png'].url,
       )
       @header = t(
         'user_mailer.in_person_ready_to_verify_reminder.heading',
