@@ -10,12 +10,12 @@ RSpec.describe DocAuth::ProcessedAlertToLogAlertFormatter do
         { alert: 'Alert_1', name: 'Visible Pattern', result: 'Passed' },
       ],
       failed: [
-         { alert: 'Alert_1', name: '2D Barcode Read', result: 'Failed' },
-         { alert: 'Alert_2', name: 'Layout Valid', result: 'Attention' },
-         { alert: 'Alert_3', name: '2D Barcode Read', result: 'Failed' },
-         { alert: 'Alert_4', name: 'Visible Pattern', result: 'Failed' },
-         { alert: 'Alert_5', name: 'Visible Photo Characteristics', result: 'Failed' },
-       ],
+        { alert: 'Alert_1', name: '2D Barcode Read', result: 'Failed' },
+        { alert: 'Alert_2', name: 'Layout Valid', result: 'Attention' },
+        { alert: 'Alert_3', name: '2D Barcode Read', result: 'Failed' },
+        { alert: 'Alert_4', name: 'Visible Pattern', result: 'Failed' },
+        { alert: 'Alert_5', name: 'Visible Photo Characteristics', result: 'Failed' },
+      ],
     }
   end
 
@@ -33,7 +33,7 @@ RSpec.describe DocAuth::ProcessedAlertToLogAlertFormatter do
         '2d_barcode_read': { no_side: 'Failed' },
         layout_valid: { no_side: 'Attention' },
         visible_pattern: { no_side: 'Failed' },
-        visible_photo_characteristics: { no_side: 'Failed' }
+        visible_photo_characteristics: { no_side: 'Failed' },
       )
     end
   end
