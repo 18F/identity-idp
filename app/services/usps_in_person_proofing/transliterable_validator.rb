@@ -8,9 +8,9 @@ module UspsInPersonProofing
   #   validates_with UspsInPersonProofing::TransliterableValidator,
   #     fields: [:first_name, :last_name],
   #     reject_chars: /[^A-Za-z\-' ]/,
-  #     message: (proc do |invalid_chars|
+  #     message: ->(invalid_chars)
   #       "Rejected chars: #{invalid_chars.join(', ')}"
-  #     end)
+  #     end
   #
   class TransliterableValidator < ActiveModel::Validator
     # Initialize the validator with the given fields configured
