@@ -49,12 +49,7 @@
     heading: t('components.troubleshooting_options.default_heading'),
     options: [
         {
-            url: help_center_redirect_url(
-                category: 'verify-your-identity',
-                article: 'verify-your-address-by-mail',
-                flow: :idv,
-                step: :gpo_send_letter,
-            ),
+            url: StatusPage.base_url,
             text: t('vendor_outage.get_updates_on_status_page'),
             new_tab: true,
         },
