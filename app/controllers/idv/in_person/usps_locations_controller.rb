@@ -65,6 +65,7 @@ module Idv
           Faraday::TimeoutError => :unprocessable_entity,
           Faraday::BadRequestError => :unprocessable_entity,
           Faraday::ForbiddenError => :unprocessable_entity,
+          ActionController::InvalidAuthenticityToken => :unprocessable_entity,
         }[err.class] || :internal_server_error
 
         analytics.idv_in_person_locations_request_failure(

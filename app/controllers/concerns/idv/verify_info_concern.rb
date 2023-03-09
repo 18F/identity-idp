@@ -96,6 +96,7 @@ module Idv
         # todo: add other edited fields?
         extra: {
           address_edited: !!flow_session['address_edited'],
+          address_line2_present: !pii[:address2].blank?,
           pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name]],
         },
       )
@@ -230,6 +231,7 @@ module Idv
         elsif stage == :threatmetrix
           # transaction_id comes from request_id
           tmx_id = hash[:transaction_id]
+          log_irs_tmx_fraud_check_event(hash) if tmx_id
           add_cost(:threatmetrix, transaction_id: tmx_id) if tmx_id
         end
       end

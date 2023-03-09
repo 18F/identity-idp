@@ -166,9 +166,10 @@ RSpec.describe GetUspsProofingResultsJob do
     allow(job).to receive(:analytics).and_return(job_analytics)
     allow(IdentityConfig.store).to receive(:get_usps_proofing_results_job_reprocess_delay_minutes).
       and_return(reprocess_delay_minutes)
-    allow(IdentityConfig.store).
-      to receive(:get_usps_proofing_results_job_request_delay_milliseconds).
-      and_return(request_delay_ms)
+    stub_const(
+      'GetUspsProofingResultsJob::REQUEST_DELAY_IN_SECONDS',
+      request_delay_ms / GetUspsProofingResultsJob::MILLISECONDS_PER_SECOND,
+    )
     stub_request_token
     if respond_to?(:pending_enrollment)
       pending_enrollment.update(enrollment_established_at: 3.days.ago)

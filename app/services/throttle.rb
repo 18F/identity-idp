@@ -211,10 +211,6 @@ class Throttle
         max_attempts: IdentityConfig.store.phone_confirmation_max_attempts,
         attempt_window: IdentityConfig.store.phone_confirmation_max_attempt_window_in_minutes,
       },
-      inherited_proofing: {
-        max_attempts: IdentityConfig.store.inherited_proofing_max_attempts,
-        attempt_window: IdentityConfig.store.inherited_proofing_max_attempt_window_in_minutes,
-      },
       phone_otp: {
         max_attempts: IdentityConfig.store.otp_delivery_blocklist_maxretry + 1,
         attempt_window: IdentityConfig.store.otp_delivery_blocklist_findtime,

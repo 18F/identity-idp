@@ -21,6 +21,9 @@ fr:
       ial2_intro_html: '<b>%{sp}</b> a besoin de savoir qui vous êtes pour connecter
         votre compte. Nous partagerons ces informations avec l’agence
         partenaire:'
+      ial2_reverified_consent_info: 'Puisque vous avez à nouveau vérifié votre
+        identité, nous avons besoin de votre autorisation pour partager ces
+        informations avec %{sp}:'
       phone: Numéro de téléphone
       social_security_number: Numéro de sécurité sociale
       verified_at: Mis à jour le

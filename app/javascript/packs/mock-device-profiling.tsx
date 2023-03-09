@@ -62,7 +62,7 @@ const CHAOS_OPTIONS: ChaosOption[] = [
 ];
 
 function MockDeviceProfilingOptions() {
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState('pass');
 
   useEffect(() => {
     if (selectedValue === 'chaotic') {

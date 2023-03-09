@@ -46,7 +46,7 @@ describe Idv::OtpVerificationController do
 
       it 'redirects to the delivery method path' do
         get :show
-        expect(response).to redirect_to(idv_otp_delivery_method_path)
+        expect(response).to redirect_to(idv_phone_url)
       end
     end
 
@@ -76,7 +76,7 @@ describe Idv::OtpVerificationController do
 
       it 'redirects to otp delivery method selection' do
         put :update, params: otp_code_param
-        expect(response).to redirect_to(idv_otp_delivery_method_path)
+        expect(response).to redirect_to(idv_phone_url)
       end
     end
 

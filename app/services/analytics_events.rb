@@ -567,68 +567,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] step Document step user is on
-  # The user agrees to allow us to access their data via api call
-  def idv_inherited_proofing_agreement_submitted(success:, errors:, flow_path:, step:, **extra)
-    track_event(
-      'IdV: inherited proofing agreement submitted',
-      success: success,
-      errors: errors,
-      flow_path: flow_path,
-      step: step,
-      **extra,
-    )
-  end
-
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] step Document step user is on
-  # The user visited the inherited proofing agreement page
-  def idv_inherited_proofing_agreement_visited(flow_path:, step:, **extra)
-    track_event(
-      'IdV: inherited proofing agreement visited',
-      flow_path: flow_path,
-      step: step,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] step Document step user is on
-  # The user chooses to begin the inherited proofing process
-  def idv_inherited_proofing_get_started_submitted(success:, errors:, flow_path:, step:, **extra)
-    track_event(
-      'IdV: inherited proofing get started submitted',
-      success: success,
-      errors: errors,
-      flow_path: flow_path,
-      step: step,
-      **extra,
-    )
-  end
-
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] step Document step user is on
-  # The user visited the inherited proofing get started step
-  def idv_inherited_proofing_get_started_visited(flow_path:, step:, **extra)
-    track_event(
-      'IdV: inherited proofing get started visited',
-      flow_path: flow_path,
-      step: step,
-      **extra,
-    )
-  end
-
-  # Retry retrieving the user PII in the case where the first attempt fails
-  # in the agreement step, and the user initiates a "retry".
-  def idv_inherited_proofing_redo_retrieve_user_info_submitted(**extra)
-    track_event('IdV: inherited proofing retry retrieve user information submitted', **extra)
-  end
-
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # @param [String] in_person_cta_variant Variant testing bucket label
   # The user visited the in person proofing location step

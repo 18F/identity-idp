@@ -19,7 +19,9 @@ describe Idv::ReviewController do
       service_provider: nil,
     )
     idv_session.profile_confirmation = true
+    idv_session.resolution_successful = 'phone'
     idv_session.vendor_phone_confirmation = true
+    idv_session.user_phone_confirmation = true
     idv_session.applicant = applicant.with_indifferent_access
     idv_session
   end
@@ -34,8 +36,8 @@ describe Idv::ReviewController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_idv_applicant_created,
-        :confirm_idv_steps_complete,
+        :confirm_verify_info_step_complete,
+        :confirm_address_step_complete,
       )
     end
 
@@ -68,63 +70,7 @@ describe Idv::ReviewController do
       it 'redirects to address step' do
         get :show
 
-        expect(response).to redirect_to idv_phone_path
-      end
-    end
-  end
-
-  describe '#confirm_idv_phone_confirmed' do
-    controller do
-      before_action :confirm_idv_phone_confirmed
-
-      def show
-        render plain: 'Hello'
-      end
-    end
-
-    before(:each) do
-      stub_sign_in(user)
-      allow(subject).to receive(:idv_session).and_return(idv_session)
-      routes.draw do
-        get 'show' => 'idv/review#show'
-      end
-    end
-
-    context 'user is verifying by mail' do
-      before do
-        allow(idv_session).to receive(:address_verification_mechanism).and_return('gpo')
-      end
-
-      it 'does not redirect' do
-        get :show
-
-        expect(response.body).to eq 'Hello'
-      end
-    end
-
-    context 'user phone is confirmed' do
-      before do
-        allow(idv_session).to receive(:address_verification_mechanism).and_return('phone')
-        allow(idv_session).to receive(:phone_confirmed?).and_return(true)
-      end
-
-      it 'does not redirect' do
-        get :show
-
-        expect(response.body).to eq 'Hello'
-      end
-    end
-
-    context 'user phone is not confirmed' do
-      before do
-        allow(idv_session).to receive(:address_verification_mechanism).and_return('phone')
-        allow(idv_session).to receive(:phone_confirmed?).and_return(false)
-      end
-
-      it 'redirects to phone confirmation' do
-        get :show
-
-        expect(response).to redirect_to idv_otp_verification_path
+        expect(response).to redirect_to idv_otp_verification_url
       end
     end
   end

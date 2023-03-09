@@ -28,16 +28,11 @@ module Idv
 
       private
 
-      def exit_flow_state_machine
-        flow_session[:flow_path] = @flow.flow_path
-        redirect_to idv_ssn_url
-      end
-
       def handle_document_verification_success(get_results_response)
         save_proofing_components
         extract_pii_from_doc(get_results_response, store_in_session: true)
         mark_steps_complete
-        exit_flow_state_machine if IdentityConfig.store.doc_auth_ssn_controller_enabled
+        flow_session[:flow_path] = @flow.flow_path
       end
 
       def render_document_capture_cancelled
