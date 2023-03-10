@@ -11,7 +11,9 @@ class OutOfBandSessionAccessor
 
   def ttl
     uuid = session_uuid
-    session_store.instance_eval { redis.ttl(prefixed(uuid)) }
+    session_store.instance_eval do
+      with_redis { |client| client.ttl(prefixed(uuid)) }
+    end
   end
 
   # @return [Pii::Attributes, nil]
