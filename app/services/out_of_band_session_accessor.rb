@@ -12,7 +12,7 @@ class OutOfBandSessionAccessor
   def ttl
     uuid = session_uuid
     session_store.instance_eval do
-      redis_pool.with { |client| client.ttl(prefixed(uuid)) }
+      with_redis { |client| client.ttl(prefixed(uuid)) }
     end
   end
 
