@@ -67,7 +67,6 @@ describe('LocationCollectionItem', () => {
     const { getByText } = render(
       <LocationCollectionItem
         distance="1.0 mi"
-        phone="555-123-4567"
         name=""
         streetAddress="123 Test Address"
         formattedCityStateZip=""
@@ -81,7 +80,6 @@ describe('LocationCollectionItem', () => {
 
     const addressParent = getByText('123 Test Address').parentElement!;
     expect(addressParent.textContent).to.contain('in_person_proofing.body.location.distance');
-    expect(addressParent.textContent).to.contain('555-123-4567');
   });
 
   context('when no retail hours are known', () => {
