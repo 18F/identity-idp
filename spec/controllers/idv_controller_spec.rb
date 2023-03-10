@@ -138,7 +138,7 @@ describe IdvController do
 
   describe '#unavailable' do
     it 'raises an error' do
-      expect { get :unavailable }.to raise_error(Idv::UnavailableError)
+      expect { controller.unavailable }.to raise_error(Idv::UnavailableError)
     end
   end
 end
