@@ -1,7 +1,7 @@
 class SubmitButtonElement extends HTMLElement {
-  connectedCallback() {
-    this.form?.addEventListener('submit', () => this.activate());
-  }
+  // connectedCallback() {
+  //   this.form?.addEventListener('submit', () => this.activate());
+  // }
 
   get form(): HTMLFormElement | null {
     return this.closest('form');
