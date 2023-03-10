@@ -119,7 +119,7 @@ es:
         - Tendrá que volver a ingresar su información personal, como su nombre,
           documento de identidad emitido por el estado, etc.
     form:
-      address1: Dirección
+      address1: Línea de dirección 1
       address2: Línea de dirección 2
       address2_optional: Línea de dirección 2 (opcional)
       city: Ciudad

@@ -110,7 +110,7 @@ en:
         - You’ll have to re-enter your personal information, like your name,
           state-issued ID, etc.
     form:
-      address1: Address
+      address1: Address line 1
       address2: Address line 2
       address2_optional: Address line 2 (optional)
       city: City
