@@ -96,6 +96,10 @@ es:
           información para confirmar que coincide con su cédula en persona.
     form:
       address:
+        errors:
+          unsupported_chars: 'Los siguientes caracteres no pueden ser leídos por nuestro
+            sistema: %{char_list}. Inténtelo nuevamente usando sustitutos para
+            estos caracteres.'
         same_address: '¿Aparece esta dirección en la cédula de identidad emitido por el
           Estado que va a llevar a la oficina de Correos?'
         same_address_choice_no: Tengo una dirección diferente en mi cédula de identidad
@@ -108,6 +112,10 @@ es:
           year: 'Ejemplo: 1986'
         dob: Fecha de nacimiento
         dob_hint: 'Ejemplo: 4 28 1986'
+        errors:
+          unsupported_chars: 'Los siguientes caracteres no pueden ser leídos por nuestro
+            sistema: %{char_list}. Inténtelo nuevamente usando los caracteres de
+            su documento de identidad.'
         first_name: Nombre
         last_name: Apellido
         memorable_date:

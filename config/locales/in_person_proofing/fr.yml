@@ -98,6 +98,10 @@ fr:
           d’identité en personne.
     form:
       address:
+        errors:
+          unsupported_chars: 'Notre système ne parvient pas à lire les caractères suivants
+            : %{char_list}. Veuillez réessayer en utilisant d’autres caractères
+            alternatifs.'
         same_address: Cette adresse figure-t-elle sur la pièce d’identité délivrée par
           l’État que vous apportez au bureau de poste?
         same_address_choice_no: J’ai une adresse différente sur mon document d’identité
@@ -110,6 +114,10 @@ fr:
           year: 'Exemple: 1986'
         dob: Date de naissance
         dob_hint: 'Exemple: 4 28 1986'
+        errors:
+          unsupported_chars: 'Notre système ne parvient pas à lire les caractères suivants
+            : %{char_list}. Veuillez réessayer en utilisant les caractères de
+            votre carte d’identité.'
         first_name: Prénom
         last_name: Nom de famille
         memorable_date:

@@ -411,4 +411,76 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_current_path(idv_doc_auth_welcome_step)
     end
   end
+
+  context 'transliteration' do
+    before(:each) do
+      allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
+        and_return(true)
+    end
+    it 'shows validation errors', allow_browser_log: true do
+      sign_in_and_2fa_user
+      begin_in_person_proofing
+      complete_location_step
+      complete_prepare_step
+      expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+
+      fill_out_state_id_form_ok
+      fill_in t('in_person_proofing.form.state_id.first_name'), with: 'T0mmy "Lee"'
+      fill_in t('in_person_proofing.form.state_id.last_name'), with: 'Джейкоб'
+      click_idv_continue
+      expect(page).to have_content(
+        I18n.t(
+          'in_person_proofing.form.state_id.errors.unsupported_chars',
+          char_list: '", 0',
+        ),
+      )
+
+      expect(page).to have_content(
+        I18n.t(
+          'in_person_proofing.form.state_id.errors.unsupported_chars',
+          char_list: 'Д, б, е, ж, й, к, о',
+        ),
+      )
+
+      fill_in t('in_person_proofing.form.state_id.first_name'),
+              with: InPersonHelper::GOOD_FIRST_NAME
+      fill_in t('in_person_proofing.form.state_id.last_name'), with: InPersonHelper::GOOD_LAST_NAME
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
+      fill_out_address_form_ok
+
+      fill_in t('idv.form.address1'), with: 'Джордж'
+      fill_in t('idv.form.address2_optional'), with: '(Nope) = %'
+      fill_in t('idv.form.city'), with: 'Елена'
+      click_idv_continue
+
+      expect(page).to have_content(
+        I18n.t(
+          'in_person_proofing.form.address.errors.unsupported_chars',
+          char_list: 'Д, д, ж, о, р',
+        ),
+      )
+
+      expect(page).to have_content(
+        I18n.t(
+          'in_person_proofing.form.address.errors.unsupported_chars',
+          char_list: '%, (, ), =',
+        ),
+      )
+
+      expect(page).to have_content(
+        I18n.t(
+          'in_person_proofing.form.address.errors.unsupported_chars',
+          char_list: 'Е, а, е, л, н',
+        ),
+      )
+
+      fill_in t('idv.form.address1'), with: InPersonHelper::GOOD_ADDRESS1
+      fill_in t('idv.form.address2_optional'), with: InPersonHelper::GOOD_ADDRESS2
+      fill_in t('idv.form.city'), with: InPersonHelper::GOOD_CITY
+      click_idv_continue
+      expect(page).to have_current_path(idv_in_person_step_path(step: :ssn), wait: 10)
+    end
+  end
 end

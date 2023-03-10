@@ -11,7 +11,8 @@ module UspsInPersonProofing
       :original,
       # Transliterated value
       :transliterated,
-      # Characters from the original that could not be transliterated
+      # Characters from the original that could not be transliterated,
+      # in the same order and quantity as in the original string
       :unsupported_chars,
       keyword_init: true,
     )
