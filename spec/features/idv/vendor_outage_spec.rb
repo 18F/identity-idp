@@ -8,13 +8,18 @@ feature 'vendor_outage_spec' do
   let(:new_password) { 'some really awesome new password' }
   let(:pii) { { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' } }
 
+  after(:all) do
+    # Reload routes now that config changes made in various contexts have been torn down
+    Rails.application.reload_routes!
+  end
+
   %w[acuant lexisnexis_instant_verify lexisnexis_trueid].each do |service|
     context "full outage on #{service}" do
       before do
         allow(IdentityConfig.store).to receive("vendor_status_#{service}".to_sym).
           and_return(:full_outage)
 
-        # Force route reload to pick up route changes implied by outages
+        # Force route reload to pick up route changes implied by above config change
         Rails.application.reload_routes!
       end
 
