@@ -1,11 +1,15 @@
 module Idv
   class AddressPresenter
-    def initialize(puerto_rico_address:)
-      @puerto_rico_address = puerto_rico_address
+    def initialize(pii:)
+      @pii = pii
     end
 
     def puerto_rico_address?
-      @puerto_rico_address
+      @pii[:state] == 'PR'
+    end
+
+    def pii
+      @pii
     end
 
     def address_line1_hint

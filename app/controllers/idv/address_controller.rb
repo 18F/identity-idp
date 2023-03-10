@@ -8,7 +8,7 @@ module Idv
     def new
       analytics.idv_address_visit
 
-      @presenter = AddressPresenter.new(puerto_rico_address: puerto_rico_address?)
+      @presenter = AddressPresenter.new(pii: @pii)
     end
 
     def update
@@ -28,10 +28,6 @@ module Idv
       @pii = user_session.dig('idv/doc_auth', 'pii_from_doc')
       return if @pii.present?
       redirect_to idv_doc_auth_url
-    end
-
-    def puerto_rico_address?
-      @pii[:state] == 'PR'
     end
 
     def idv_form
