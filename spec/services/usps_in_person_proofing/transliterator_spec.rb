@@ -26,10 +26,10 @@ RSpec.describe UspsInPersonProofing::Transliterator do
         it 'returns a list of the characters that transliteration does not support' do
           expect(result.unsupported_chars).to include('И', 'Љ')
         end
-        it 'transliterates using English locale when default does not match' do
+        it 'transliterates using English locale' do
           expect(I18n).to receive(:transliterate).
             with(duck_type(:to_s), locale: :en).
-            and_call_original
+            and_call_original.at_least(:once)
           result
         end
         it 'does not count question marks as unsupported characters by default' do
@@ -53,6 +53,65 @@ RSpec.describe UspsInPersonProofing::Transliterator do
 
         it 'transliterated value is identical to the original value' do
           expect(result.transliterated).to eq(input_value)
+        end
+      end
+    end
+
+    it 'correctly identifies invalid characters for multi-character transliteration' do
+      original = '123ßabẞcßßHelloИЉ'.freeze
+      result = transliterator.transliterate(original)
+      expect(result).to have_attributes(
+        changed?: true,
+        original: original,
+        transliterated: '123ssab?cssssHello??',
+        unsupported_chars: ['ẞ', 'И', 'Љ'],
+      )
+    end
+
+    it 'transliterates correctly when newlines are used' do
+      original = "123\rИa\nbẞcИИHelloИ\r\nЉ\n".freeze
+      result = transliterator.transliterate(original)
+      expect(result).to have_attributes(
+        changed?: true,
+        original: original,
+        transliterated: '123 ?a b?c??Hello? ?',
+        unsupported_chars: ['И', 'ẞ', 'И', 'И', 'И', 'Љ'],
+      )
+    end
+
+    context 'non-standard spacing characters' do
+      spaces = [
+        "\u2000", # En Quad
+        "\u2001", # Em Quad
+        "\u2002", # En Space
+        "\u2003", # Em Space
+        "\u2004", # Three-Per-Em Space
+        "\u2005", # Four-Per-Em Space
+        "\u2006", # Six-Per-Em Space
+        "\u2007", # Figure Space
+        "\u2008", # Punctuation Space
+        "\u2009", # Thin Space
+        "\u200A", # Hair Space
+        "\u200B", # Zero-Width Space
+        "\u200C", # Zero Width Non-Joiner
+        "\u200D", # Zero Width Joiner
+        "\u200E", # Left-To-Right Mark
+        "\u200F", # Right-To-Left Mark
+        "\u202F", # Narrow No-Break Space
+      ]
+      spaces.each do |space|
+        it "rejects \"\\u#{space.ord.to_s(16).rjust(
+          4,
+          '0',
+        )}\"" do
+          original = " #{space}Hello#{space}world".freeze
+          result = transliterator.transliterate(original)
+          expect(result).to have_attributes(
+            changed?: true,
+            original: original,
+            transliterated: '?Hello?world',
+            unsupported_chars: [space, space],
+          )
         end
       end
     end
