@@ -124,7 +124,7 @@ fr:
         - Vous devrez ressaisir vos informations personnelles, comme votre nom,
           pièce d’identité officielle, etc.
     form:
-      address1: Adresse
+      address1: Adresse Ligne 1
       address2: Adresse Ligne 2
       address2_optional: Adresse Ligne 2 (optional)
       city: Ville
