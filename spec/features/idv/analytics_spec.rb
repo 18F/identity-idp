@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'csv'
 
 feature 'Analytics Regression', js: true do
   include IdvStepHelper
@@ -149,8 +150,21 @@ feature 'Analytics Regression', js: true do
     end
 
     it 'records all of the events' do
-      happy_path_events.each do |event, attributes|
-        expect(fake_analytics).to have_logged_event(event, attributes)
+      aggregate_failures 'analytics events' do
+        happy_path_events.each do |event, attributes|
+          expect(fake_analytics).to have_logged_event(event, attributes)
+        end
+      end
+
+      aggregate_failures 'populates data for each step of the Daily Dropoff Report' do
+        row = CSV.parse(
+          Reports::DailyDropoffsReport.new(Time.zone.now).report_body,
+          headers: true,
+        ).first
+
+        Reports::DailyDropoffsReport::STEPS.each do |step|
+          expect(row[step].to_i).to(be > 0, "step #{step} was counted")
+        end
       end
     end
   end

@@ -65,6 +65,7 @@ module Idv
           Faraday::TimeoutError => :unprocessable_entity,
           Faraday::BadRequestError => :unprocessable_entity,
           Faraday::ForbiddenError => :unprocessable_entity,
+          ActionController::InvalidAuthenticityToken => :unprocessable_entity,
         }[err.class] || :internal_server_error
 
         analytics.idv_in_person_locations_request_failure(
@@ -103,7 +104,6 @@ module Idv
         params.require(:usps_location).permit(
           :formatted_city_state_zip,
           :name,
-          :phone,
           :saturday_hours,
           :street_address,
           :sunday_hours,

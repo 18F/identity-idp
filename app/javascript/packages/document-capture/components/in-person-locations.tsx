@@ -7,7 +7,6 @@ export interface FormattedLocation {
   distance: string;
   id: number;
   name: string;
-  phone: string;
   saturdayHours: string;
   streetAddress: string;
   sundayHours: string;
@@ -55,7 +54,6 @@ function InPersonLocations({ locations, onSelect, address }: InPersonLocationsPr
             streetAddress={item.streetAddress}
             selectId={item.id}
             formattedCityStateZip={item.formattedCityStateZip}
-            phone={item.phone}
             weekdayHours={item.weekdayHours}
             saturdayHours={item.saturdayHours}
             sundayHours={item.sundayHours}

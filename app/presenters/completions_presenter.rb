@@ -50,6 +50,11 @@ class CompletionsPresenter
     if ial2_requested?
       if consent_has_expired?
         I18n.t('titles.sign_up.completion_consent_expired_ial2')
+      elsif reverified_after_consent?
+        I18n.t(
+          'titles.sign_up.completion_reverified_consent',
+          sp: sp_name,
+        )
       else
         I18n.t('titles.sign_up.completion_ial2', sp: sp_name)
       end
@@ -69,6 +74,11 @@ class CompletionsPresenter
       if consent_has_expired?
         I18n.t(
           'help_text.requested_attributes.ial2_consent_reminder_html',
+          sp: sp_name,
+        )
+      elsif reverified_after_consent?
+        I18n.t(
+          'help_text.requested_attributes.ial2_reverified_consent_info',
           sp: sp_name,
         )
       else
@@ -119,6 +129,10 @@ class CompletionsPresenter
 
   def consent_has_expired?
     completion_context == :consent_expired
+  end
+
+  def reverified_after_consent?
+    completion_context == :reverified_after_consent
   end
 
   def displayable_attribute_keys

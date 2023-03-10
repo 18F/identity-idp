@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_14_213731) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_07_203559) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -433,6 +433,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_14_213731) do
     t.string "initiating_service_provider_issuer"
     t.boolean "fraud_review_pending", default: false
     t.boolean "fraud_rejection", default: false
+    t.index ["fraud_review_pending"], name: "index_profiles_on_fraud_review_pending"
     t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
     t.index ["reproof_at"], name: "index_profiles_on_reproof_at"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
