@@ -87,7 +87,6 @@
   <% if current_user %>
     <%= render partial: 'session_timeout/ping',
                locals: {
-                 timeout_url: timeout_url,
                  warning: session_timeout_warning,
                  start: session_timeout_start,
                  frequency: session_timeout_frequency,

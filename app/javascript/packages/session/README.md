@@ -23,3 +23,13 @@ import { extendSession } from '@18f/identity-session';
 
 const { isLive, timeout } = await extendSession();
 ```
+
+### `endSession`
+
+Request that the current session be destroyed.
+
+```ts
+import { endSession } from '@18f/identity-session';
+
+const { redirect } = await endSession();
+```

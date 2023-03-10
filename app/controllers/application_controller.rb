@@ -34,11 +34,7 @@ class ApplicationController < ActionController::Base
 
   def session_expires_at
     return if @skip_session_expiration || @skip_session_load
-    now = Time.zone.now
-    session[:session_started_at] = now if session[:session_started_at].nil?
-    session[:session_expires_at] = now + Devise.timeout_in
-    session[:pinged_at] ||= now
-    redirect_on_timeout
+    session[:session_started_at] = Time.zone.now if session[:session_started_at].nil?
   end
 
   # for lograge
@@ -154,26 +150,6 @@ class ApplicationController < ActionController::Base
                               expires: IdentityConfig.store.session_timeout_in_minutes.minutes,
                             }
                           end
-  end
-
-  def redirect_on_timeout
-    return unless params[:timeout]
-
-    unless current_user
-      flash[:info] = t(
-        'notices.session_cleared',
-        minutes: IdentityConfig.store.session_timeout_in_minutes,
-      )
-    end
-    begin
-      redirect_to url_for(permitted_timeout_params)
-    rescue ActionController::UrlGenerationError # binary data in params cause redirect to throw this
-      head :bad_request
-    end
-  end
-
-  def permitted_timeout_params
-    params.permit(:request_id)
   end
 
   def sp_from_sp_session

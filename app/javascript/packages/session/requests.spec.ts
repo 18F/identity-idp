@@ -1,13 +1,12 @@
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import type { SetupServer } from 'msw/node';
-import {
-  STATUS_API_ENDPOINT,
-  KEEP_ALIVE_API_ENDPOINT,
-  requestSessionStatus,
-  extendSession,
+import { SESSIONS_URL, requestSessionStatus, extendSession, endSession } from './requests';
+import type {
+  SessionLiveStatusResponse,
+  SessionTimedOutStatusResponse,
+  SessionDestroyResponse,
 } from './requests';
-import type { SessionLiveStatusResponse, SessionTimedOutStatusResponse } from './requests';
 
 describe('requestSessionStatus', () => {
   let server: SetupServer;
@@ -15,7 +14,7 @@ describe('requestSessionStatus', () => {
   context('session inactive', () => {
     before(() => {
       server = setupServer(
-        rest.get<{}, {}, SessionTimedOutStatusResponse>(STATUS_API_ENDPOINT, (_req, res, ctx) =>
+        rest.get<{}, {}, SessionTimedOutStatusResponse>(SESSIONS_URL, (_req, res, ctx) =>
           res(ctx.json({ live: false, timeout: null })),
         ),
       );
@@ -39,7 +38,7 @@ describe('requestSessionStatus', () => {
     before(() => {
       timeout = new Date(Date.now() + 1000).toISOString();
       server = setupServer(
-        rest.get<{}, {}, SessionLiveStatusResponse>(STATUS_API_ENDPOINT, (_req, res, ctx) =>
+        rest.get<{}, {}, SessionLiveStatusResponse>(SESSIONS_URL, (_req, res, ctx) =>
           res(ctx.json({ live: true, timeout })),
         ),
       );
@@ -60,7 +59,7 @@ describe('requestSessionStatus', () => {
   context('server responds with 401', () => {
     before(() => {
       server = setupServer(
-        rest.get<{}, {}>(STATUS_API_ENDPOINT, (_req, res, ctx) => res(ctx.status(401))),
+        rest.get<{}, {}>(SESSIONS_URL, (_req, res, ctx) => res(ctx.status(401))),
       );
       server.listen();
     });
@@ -79,7 +78,7 @@ describe('requestSessionStatus', () => {
   context('server responds with 500', () => {
     before(() => {
       server = setupServer(
-        rest.get<{}, {}>(STATUS_API_ENDPOINT, (_req, res, ctx) => res(ctx.status(500))),
+        rest.get<{}, {}>(SESSIONS_URL, (_req, res, ctx) => res(ctx.status(500))),
       );
       server.listen();
     });
@@ -102,7 +101,7 @@ describe('extendSession', () => {
 
     before(() => {
       server = setupServer(
-        rest.post<{}, {}, SessionLiveStatusResponse>(KEEP_ALIVE_API_ENDPOINT, (_req, res, ctx) =>
+        rest.put<{}, {}, SessionLiveStatusResponse>(SESSIONS_URL, (_req, res, ctx) =>
           res(ctx.json({ live: true, timeout })),
         ),
       );
@@ -123,7 +122,7 @@ describe('extendSession', () => {
   context('server responds with 401', () => {
     before(() => {
       server = setupServer(
-        rest.post<{}, {}>(KEEP_ALIVE_API_ENDPOINT, (_req, res, ctx) => res(ctx.status(401))),
+        rest.put<{}, {}>(SESSIONS_URL, (_req, res, ctx) => res(ctx.status(401))),
       );
       server.listen();
     });
@@ -142,7 +141,7 @@ describe('extendSession', () => {
   context('server responds with 500', () => {
     before(() => {
       server = setupServer(
-        rest.post<{}, {}>(KEEP_ALIVE_API_ENDPOINT, (_req, res, ctx) => res(ctx.status(500))),
+        rest.put<{}, {}>(SESSIONS_URL, (_req, res, ctx) => res(ctx.status(500))),
       );
       server.listen();
     });
@@ -154,5 +153,29 @@ describe('extendSession', () => {
     it('throws an error', async () => {
       await expect(extendSession()).to.be.rejected();
     });
+  });
+});
+
+describe('endSession', () => {
+  const redirect = 'http://example.com';
+
+  let server: SetupServer;
+  before(() => {
+    server = setupServer(
+      rest.delete<{}, {}, SessionDestroyResponse>(SESSIONS_URL, (_req, res, ctx) =>
+        res(ctx.json({ redirect })),
+      ),
+    );
+    server.listen();
+  });
+
+  after(() => {
+    server.close();
+  });
+
+  it('resolves to the status', async () => {
+    const result = await endSession();
+
+    expect(result).to.deep.equal({ redirect });
   });
 });

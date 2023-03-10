@@ -52,8 +52,14 @@ interface SessionTimedOutStatus {
 
 export type SessionStatus = SessionLiveStatus | SessionTimedOutStatus;
 
-export const STATUS_API_ENDPOINT = '/active';
-export const KEEP_ALIVE_API_ENDPOINT = '/sessions/keepalive';
+export interface SessionDestroyResponse {
+  /**
+   * Redirect destination.
+   */
+  redirect: string;
+}
+
+export const SESSIONS_URL = '/api/internal/sessions';
 
 function mapSessionStatusResponse<R extends SessionLiveStatusResponse>(
   response: R,
@@ -87,7 +93,7 @@ function handleUnauthorizedStatusResponse(error: ResponseError) {
  * @return A promise resolving to the current session status
  */
 export const requestSessionStatus = (): Promise<SessionStatus> =>
-  request<SessionStatusResponse>(STATUS_API_ENDPOINT)
+  request<SessionStatusResponse>(SESSIONS_URL)
     .catch(handleUnauthorizedStatusResponse)
     .then(mapSessionStatusResponse);
 
@@ -98,6 +104,13 @@ export const requestSessionStatus = (): Promise<SessionStatus> =>
  * @return A promise resolving to the updated session status.
  */
 export const extendSession = (): Promise<SessionStatus> =>
-  request<SessionStatusResponse>(KEEP_ALIVE_API_ENDPOINT, { method: 'POST' })
+  request<SessionStatusResponse>(SESSIONS_URL, { method: 'PUT' })
     .catch(handleUnauthorizedStatusResponse)
     .then(mapSessionStatusResponse);
+
+/**
+ * Request that the current session be destroyed.
+ *
+ * @return A promise resolving once the session has been destroyed.
+ */
+export const endSession = () => request<SessionDestroyResponse>(SESSIONS_URL, { method: 'DELETE' });
