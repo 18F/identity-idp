@@ -25,13 +25,15 @@ module UspsInPersonProofing
     # @return [TransliterationResult] The transliterated value
     def transliterate(value)
       stripped = value.to_s.gsub(/\s+/, ' ').strip
-      transliterated = I18n.transliterate(stripped, locale: :en)
-
       unsupported_chars = []
-      unless stripped.count(REPLACEMENT) == transliterated.count(REPLACEMENT)
-        transliterated.chars.zip(stripped.chars).each do |val, stripped|
-          unsupported_chars.append(stripped) if val == REPLACEMENT && stripped != REPLACEMENT
-        end
+      transliterated = ''
+
+      # Some transliterations result in more than one character, so length is
+      # not always guaranteed to match
+      stripped.chars.each do |char|
+        tl_char = I18n.transliterate(char, locale: :en)
+        unsupported_chars.append(char) if tl_char == REPLACEMENT && char != REPLACEMENT
+        transliterated += tl_char
       end
 
       # Using struct instead of exception here to reduce likelihood of logging PII
