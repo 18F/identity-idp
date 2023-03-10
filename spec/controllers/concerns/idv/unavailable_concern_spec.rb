@@ -8,31 +8,6 @@ describe Idv::UnavailableConcern, type: :controller do
     end
   end
 
-  describe '#check_idv_available' do
-    let(:idv_available) { true }
-    let(:required_vendors) { %i[acuant lexisnexis_instant_verify lexisnexis_trueid] }
-
-    before do
-      allow(IdentityConfig.store).to receive(:idv_available).and_return(idv_available)
-    end
-
-    it 'does not raise an error by default' do
-      expect { controller.check_idv_available }.not_to raise_error
-    end
-
-    context 'IdV has been disabled via config' do
-      let(:idv_available) { false }
-      it 'raises an UnavailableError' do
-        expect { controller.check_idv_available }.to raise_error(Idv::UnavailableError)
-      end
-    end
-
-    required_vendors.each do |vendor|
-      context "#{vendor} has a full outage" do
-      end
-    end
-  end
-
   describe '#render_idv_unavailable' do
     before do
       stub_analytics
