@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Proofing::Mock::DdpMockClient do
   around do |ex|
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_POOL.with { |client| client.flushdb }
     ex.run
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_POOL.with { |client| client.flushdb }
   end
 
   let(:threatmetrix_session_id) { SecureRandom.uuid }

@@ -24,6 +24,15 @@ GIT
     identity_validations (0.7.2)
 
 GIT
+  remote: https://github.com/18F/redis-session-store.git
+  revision: 01742e423bd1003423daaa38d5293fad27097df3
+  branch: margolis-use-connection-pool
+  specs:
+    redis-session-store (0.12.pre.18f)
+      actionpack (>= 6, < 8)
+      redis (>= 3, < 6)
+
+GIT
   remote: https://github.com/18F/saml_idp.git
   revision: d8e7deb7da3aa43bae0e5b0891c8de123d492484
   tag: 0.18.1-18f
@@ -527,9 +536,6 @@ GEM
       connection_pool
     redis-namespace (1.8.1)
       redis (>= 3.0.4)
-    redis-session-store (0.11.5)
-      actionpack (>= 6, < 8)
-      redis (>= 3, < 6)
     regexp_parser (2.6.1)
     reline (0.2.7)
       io-console (~> 0.5)
@@ -797,7 +803,7 @@ DEPENDENCIES
   redacted_struct
   redis (>= 3.2.0)
   redis-namespace
-  redis-session-store (>= 0.11.4)
+  redis-session-store!
   retries
   rotp (~> 6.1)
   rqrcode

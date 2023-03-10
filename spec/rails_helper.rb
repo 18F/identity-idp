@@ -60,7 +60,7 @@ RSpec.configure do |config|
     end
 
     begin
-      REDIS_POOL.with { |namespaced| namespaced.redis.info }
+      REDIS_POOL.with { |client| client.info }
     rescue RuntimeError => error
       # rubocop:disable Rails/Output
       puts error

@@ -52,7 +52,7 @@ gem 'rack-timeout', require: false
 gem 'redacted_struct'
 gem 'redis', '>= 3.2.0'
 gem 'redis-namespace'
-gem 'redis-session-store', '>= 0.11.4'
+gem 'redis-session-store', github: '18F/redis-session-store', branch: 'margolis-use-connection-pool'
 gem 'retries'
 gem 'rotp', '~> 6.1'
 gem 'rqrcode'
