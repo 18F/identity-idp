@@ -11,23 +11,29 @@ describe 'idv/unavailable.html.erb' do
   end
 
   it 'sets a title' do
-    expect(view).to receive(:title).with(t('idv.titles.outage'))
+    expect(view).to receive(:title).with(t('idv.titles.unavailable'))
     render
   end
   it 'has an h1' do
-    expect(rendered).to have_selector('h1', text: t('idv.titles.outage'))
+    expect(rendered).to have_selector('h1', text: t('idv.titles.unavailable'))
   end
   it 'links to the status page in a new window' do
-    expect(rendered).to have_selector('a[target=_blank]', text: t('idv.outage.status_page_link'))
+    expect(rendered).to have_selector(
+      'a[target=_blank]',
+      text: t('idv.unavailable.status_page_link'),
+    )
   end
 
   describe('exit button') do
     it 'is rendered' do
-      expect(rendered).to have_selector('a', text: t('idv.outage.exit_button', app_name: APP_NAME))
+      expect(rendered).to have_selector(
+        'a',
+        text: t('idv.unavailable.exit_button', app_name: APP_NAME),
+      )
     end
     it 'links to the right place' do
       expect(rendered).to have_link(
-        t('idv.outage.exit_button', app_name: APP_NAME),
+        t('idv.unavailable.exit_button', app_name: APP_NAME),
         href: return_to_sp_failure_to_proof_path(location: 'unavailable'),
       )
     end
