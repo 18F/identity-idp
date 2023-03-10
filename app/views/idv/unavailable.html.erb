@@ -5,12 +5,11 @@
 <%= render PageHeadingComponent.new.with_content(t('idv.titles.unavailable')) %>
 
 <p>
-  <%= t(
-        decorated_session.sp_name ?
-          'idv.unavailable.idv_explanation.with_sp' :
-          'idv.unavailable.idv_explanation.without_sp',
-        sp: decorated_session.sp_name,
-      ) %>
+  <% if decorated_session.sp_name.present? %>
+    <%= t('idv.unavailable.idv_explanation.with_sp', sp: decorated_session.sp_name) %>
+  <% else %>
+    <%= t('idv.unavailable.idv_explanation.without_sp') %>
+  <% end %>
 </p>
 
 <p class="margin-bottom-5">
