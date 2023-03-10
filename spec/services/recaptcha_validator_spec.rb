@@ -3,9 +3,13 @@ require 'rails_helper'
 describe RecaptchaValidator do
   let(:score_threshold) { 0.2 }
   let(:analytics) { FakeAnalytics.new }
+  let(:extra_analytics_properties) { {} }
   let(:recaptcha_secret_key_v2) { 'recaptcha_secret_key_v2' }
   let(:recaptcha_secret_key_v3) { 'recaptcha_secret_key_v3' }
-  subject(:validator) { RecaptchaValidator.new(score_threshold:, analytics:) }
+
+  subject(:validator) do
+    RecaptchaValidator.new(score_threshold:, analytics:, extra_analytics_properties:)
+  end
 
   before do
     allow(IdentityConfig.store).to receive(:recaptcha_secret_key_v2).
@@ -231,6 +235,27 @@ describe RecaptchaValidator do
           recaptcha_version: 3,
           exception_class: nil,
         )
+      end
+
+      context 'with extra analytics properties' do
+        let(:extra_analytics_properties) { { extra: true } }
+
+        it 'logs analytics of the body' do
+          valid
+
+          expect(analytics).to have_logged_event(
+            'reCAPTCHA verify result received',
+            recaptcha_result: {
+              'success' => true,
+              'score' => score,
+            },
+            evaluated_as_valid: true,
+            score_threshold: score_threshold,
+            recaptcha_version: 3,
+            exception_class: nil,
+            extra: true,
+          )
+        end
       end
 
       context 'without analytics' do
