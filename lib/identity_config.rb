@@ -139,6 +139,7 @@ class IdentityConfig
     config.add(:database_password, type: :string)
     config.add(:database_pool_extra_connections_for_worker, type: :integer)
     config.add(:database_pool_idp, type: :integer)
+    config.add(:database_socket, type: :string)
     config.add(:database_statement_timeout, type: :integer)
     config.add(:database_timeout, type: :integer)
     config.add(:database_username, type: :string)
