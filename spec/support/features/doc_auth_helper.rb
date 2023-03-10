@@ -117,10 +117,10 @@ module DocAuthHelper
   end
 
   # yml_file example: 'spec/fixtures/puerto_rico_resident.yml'
-  def complete_document_capture_step_with_yml(yml_file)
-    attach_file 'Front of your ID', File.expand_path(yml_file)
-    attach_file 'Back of your ID', File.expand_path(yml_file)
-    click_on 'Submit'
+  def complete_document_capture_step_with_yml(proofing_yml)
+    attach_file I18n.t('doc_auth.headings.document_capture_front'), File.expand_path(proofing_yml)
+    attach_file I18n.t('doc_auth.headings.document_capture_back'), File.expand_path(proofing_yml)
+    click_on I18n.t('forms.buttons.submit.default')
   end
 
   def complete_doc_auth_steps_before_email_sent_step
