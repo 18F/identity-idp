@@ -1,6 +1,6 @@
 <% title t('titles.otp_expired') %>
 
-<%= render AlertIconComponent.new(icon_name: :error, class: 'display-block margin-bottom-4') %>
+<%= render AlertIconComponent.new(icon_name: :warning, class: 'display-block margin-bottom-4') %>
 <%= render PageHeadingComponent.new.with_content(t('headings.otp_expired')) %>
 
   <%= render ButtonComponent.new(
@@ -35,7 +35,7 @@
           url: @authentication_options_path,
           text: t('two_factor_authentication.login_options_link_text'),
         },
-        @unconfirmed_phone && {
+        @show_use_another_phone_option && {
           url: add_phone_path,
           text: t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
         },
