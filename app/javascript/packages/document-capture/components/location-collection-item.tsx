@@ -6,7 +6,6 @@ interface LocationCollectionItemProps {
   formattedCityStateZip: string;
   handleSelect: (event: React.FormEvent<HTMLInputElement>, selection: number) => void;
   name?: string;
-  phone?: string;
   saturdayHours: string;
   selectId: number;
   streetAddress: string;
@@ -19,7 +18,6 @@ function LocationCollectionItem({
   formattedCityStateZip,
   handleSelect,
   name,
-  phone,
   saturdayHours,
   selectId,
   streetAddress,
@@ -60,12 +58,6 @@ function LocationCollectionItem({
             {sundayHours && (
               <div>
                 {`${t('in_person_proofing.body.location.retail_hours_sun')} ${sundayHours}`}
-              </div>
-            )}
-            {phone && (
-              <div>
-                <h4>{t('in_person_proofing.body.location.contact_info_heading')}</h4>
-                <div>{`${t('in_person_proofing.body.location.phone')} ${phone}`}</div>
               </div>
             )}
             <Button
