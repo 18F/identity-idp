@@ -6,9 +6,9 @@ RSpec.describe OutOfBandSessionAccessor do
   subject(:store) { described_class.new(session_uuid) }
 
   around do |ex|
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_POOL.with { |client| client.flushdb }
     ex.run
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_POOL.with { |client| client.flushdb }
   end
 
   describe '#ttl' do

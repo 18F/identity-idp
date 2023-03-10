@@ -223,7 +223,7 @@ describe SamlIdpController do
     end
 
     it 'accepts requests with correct cert and correct session index and renders logout response' do
-      REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+      REDIS_POOL.with { |client| client.flushdb }
       session_accessor = OutOfBandSessionAccessor.new(session_id)
       session_accessor.put_pii(foo: 'bar')
       saml_request = OneLogin::RubySaml::Logoutrequest.new
@@ -260,7 +260,7 @@ describe SamlIdpController do
       logout_response = OneLogin::RubySaml::Logoutresponse.new(response.body)
       expect(logout_response.success?).to eq(true)
       expect(logout_response.in_response_to).to eq(saml_request.uuid)
-      REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+      REDIS_POOL.with { |client| client.flushdb }
     end
 
     it 'rejects requests from a correct cert but no session index' do
