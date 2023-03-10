@@ -31,7 +31,7 @@ module Idv
     end
 
     def puerto_rico_address?
-      @pii[:state] == "PR"
+      @pii[:state] == 'PR'
     end
 
     def idv_form
