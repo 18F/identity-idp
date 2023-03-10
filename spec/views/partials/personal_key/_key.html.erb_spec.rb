@@ -1,21 +1,34 @@
 require 'rails_helper'
 
 describe 'partials/personal_key/_key.html.erb' do
+  let(:personal_key) { 'abcd-efgh-ijkl-mnop' }
+  let(:locals) do
+    {
+      code: personal_key,
+      show_save_buttons: false,
+    }
+  end
+
   subject(:rendered) do
     render partial: 'key', locals: locals
   end
 
-  let(:personal_key) { 'XXXX-XXXX-XXXX-XXXX' }
+  it 'renders the code without whitespace between segments' do
+    expect(rendered).to have_content('abcdefghijklmnop')
+  end
+
+  context 'with example code' do
+    let(:locals) { super().merge(code_example: true) }
+
+    it 'renders code example description' do
+      expect(rendered).to have_content(t('users.personal_key.accessible_labels.code_example'))
+      expect(rendered).to have_css('[aria-hidden]', text: 'abcdefghijklmnop')
+    end
+  end
 
   context 'with local personal_key_generated_at' do
     let(:personal_key_generated_at) { Time.zone.parse('2020-04-09T14:03:00Z').utc }
-    let(:locals) do
-      {
-        code: personal_key,
-        personal_key_generated_at: personal_key_generated_at,
-        show_save_buttons: false,
-      }
-    end
+    let(:locals) { super().merge(personal_key_generated_at: personal_key_generated_at) }
 
     it 'displays the specified date' do
       expect(rendered).to have_css(
