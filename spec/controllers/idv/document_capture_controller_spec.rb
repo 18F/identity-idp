@@ -64,26 +64,24 @@ describe Idv::DocumentCaptureController do
         }
       end
 
-      context '#show' do
-        it 'renders the show template' do
-          get :show
+      it 'renders the show template' do
+        get :show
 
-          expect(response).to render_template :show
-        end
+        expect(response).to render_template :show
+      end
 
-        it 'sends analytics_visited event' do
-          get :show
+      it 'sends analytics_visited event' do
+        get :show
 
-          expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
-        end
+        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      end
 
-        it 'sends correct step count to analytics' do
-          get :show
-          get :show
-          analytics_args[:step_count] = 2
+      it 'sends correct step count to analytics' do
+        get :show
+        get :show
+        analytics_args[:step_count] = 2
 
-          expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
-        end
+        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end
     end
   end
