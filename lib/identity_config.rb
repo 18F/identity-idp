@@ -360,6 +360,8 @@ class IdentityConfig
     config.add(:redis_irs_attempt_api_url)
     config.add(:redis_irs_attempt_api_pool_size, type: :integer)
     config.add(:redis_throttle_url)
+    config.add(:redis_throttle_alternate_url)
+    config.add(:redis_throttle_alternate_pool_write_enabled, type: :boolean)
     config.add(:redis_url)
     config.add(:redis_pool_size, type: :integer)
     config.add(:redis_session_pool_size, type: :integer)
