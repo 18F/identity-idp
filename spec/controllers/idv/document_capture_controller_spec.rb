@@ -84,6 +84,15 @@ describe Idv::DocumentCaptureController do
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end
     end
+
+    describe '#update' do
+      it 'does not raise an exception when stored_result is nil' do
+        allow(FeatureManagement).to receive(:document_capture_async_uploads_enabled?).
+          and_return(false)
+        allow(subject).to receive(:stored_result).and_return(nil)
+        put :update
+      end
+    end
   end
 
   context 'when doc_auth_document_capture_controller_enabled is false' do

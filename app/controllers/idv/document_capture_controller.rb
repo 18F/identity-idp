@@ -15,6 +15,9 @@ module Idv
       render :show, locals: extra_view_variables
     end
 
+    def update
+    end
+
     def extra_view_variables
       url_builder = ImageUploadPresignedUrlGenerator.new
 
