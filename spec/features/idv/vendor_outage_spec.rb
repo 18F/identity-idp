@@ -56,7 +56,6 @@ feature 'vendor_outage_spec' do
         visit_idp_from_sp_with_ial2(:oidc)
         click_link t('links.create_account')
 
-        expect(page).to have_http_status(503)
         expect(page).to have_content(t('idv.unavailable.idv_explanation.with_sp', sp: 'Test SP'))
       end
     end

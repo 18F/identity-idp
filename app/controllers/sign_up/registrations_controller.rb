@@ -70,7 +70,7 @@ module SignUp
     end
 
     def redirect_if_ial2_and_vendor_outage
-      raise Idv::UnavailableError if ial2_requested? && !FeatureManagement.idv_available?
+      redirect_to idv_unavailable_path if ial2_requested? && !FeatureManagement.idv_available?
     end
   end
 end

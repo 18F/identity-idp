@@ -1,14 +1,6 @@
 module Idv
-  class UnavailableError < StandardError; end
-
-  module UnavailableConcern
-    extend ActiveSupport::Concern
-
-    included do
-      rescue_from Idv::UnavailableError, with: :render_idv_unavailable
-    end
-
-    def render_idv_unavailable
+  class UnavailableController < ApplicationController
+    def index
       analytics.vendor_outage(
         vendor_status: {
           acuant: IdentityConfig.store.vendor_status_acuant,

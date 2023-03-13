@@ -1,14 +1,7 @@
 require 'rails_helper'
 
-describe Idv::UnavailableConcern, type: :controller do
-  controller ApplicationController do
-    include Idv::UnavailableConcern
-    def index
-      render_idv_unavailable
-    end
-  end
-
-  describe '#render_idv_unavailable' do
+describe Idv::UnavailableController, type: :controller do
+  describe '#index' do
     before do
       stub_analytics
       get :index
