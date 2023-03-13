@@ -146,13 +146,13 @@ RSpec.describe GetUspsProofingResultsJob do
   let(:job) { GetUspsProofingResultsJob.new }
   let(:job_analytics) { FakeAnalytics.new }
   let(:transaction_start_date_time) do
-    ActiveSupport::TimeZone['Central Time (US & Canada)'].strptime(
+    ActiveSupport::TimeZone[-6].strptime(
       '12/17/2020 033855',
       '%m/%d/%Y %H%M%S',
     ).in_time_zone('UTC')
   end
   let(:transaction_end_date_time) do
-    ActiveSupport::TimeZone['Central Time (US & Canada)'].strptime(
+    ActiveSupport::TimeZone[-6].strptime(
       '12/17/2020 034055',
       '%m/%d/%Y %H%M%S',
     ).in_time_zone('UTC')
@@ -414,7 +414,7 @@ RSpec.describe GetUspsProofingResultsJob do
         context 'a custom delay greater than zero is set' do
           let(:user) { pending_enrollment.user }
           let(:proofed_at_string) do
-            proofed_at = ActiveSupport::TimeZone['Central Time (US & Canada)'].now - 1.hour
+            proofed_at = ActiveSupport::TimeZone[-6].now
             proofed_at.strftime('%m/%d/%Y %H%M%S')
           end
 
@@ -424,11 +424,12 @@ RSpec.describe GetUspsProofingResultsJob do
           end
 
           it 'uses the custom delay when proofing passes' do
-            stub_request_passed_proofing_results(transactionEndDateTime: proofed_at_string)
             wait_until = nil
 
             freeze_time do
-              wait_until = Time.zone.now + 4.hours
+              stub_request_passed_proofing_results(transactionEndDateTime: proofed_at_string)
+              wait_until = Time.zone.now +
+                           IdentityConfig.store.in_person_results_delay_in_hours.hours
               expect do
                 job.perform(Time.zone.now)
               end.to have_enqueued_mail(UserMailer, :in_person_verified).with(
@@ -448,11 +449,12 @@ RSpec.describe GetUspsProofingResultsJob do
           end
 
           it 'uses the custom delay when proofing fails' do
-            stub_request_failed_proofing_results(transactionEndDateTime: proofed_at_string)
             wait_until = nil
 
             freeze_time do
-              wait_until = Time.zone.now + 4.hours
+              stub_request_failed_proofing_results(transactionEndDateTime: proofed_at_string)
+              wait_until = Time.zone.now +
+                           IdentityConfig.store.in_person_results_delay_in_hours.hours
               expect do
                 job.perform(Time.zone.now)
               end.to have_enqueued_mail(UserMailer, :in_person_failed).with(
