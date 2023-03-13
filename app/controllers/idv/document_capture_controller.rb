@@ -16,6 +16,7 @@ module Idv
     end
 
     def update
+      handle_stored_result
     end
 
     def extra_view_variables
@@ -91,6 +92,29 @@ module Idv
         IdentityConfig.store.in_person_cta_variant_testing_enabled,
         in_person_cta_variant_active: bucket,
       }
+    end
+
+    def handle_stored_result
+      if stored_result&.success?
+        save_proofing_components
+        extract_pii_from_doc(stored_result, store_in_session: !hybrid_flow_mobile?)
+      else
+        extra = { stored_result_present: stored_result.present? }
+        failure(I18n.t('doc_auth.errors.general.network_error'), extra)
+      end
+    end
+
+    def stored_result
+      return @stored_result if defined?(@stored_result)
+      @stored_result = document_capture_session&.load_result
+    end
+
+    # copied from Flow::Failure module
+    def failure(message, extra = nil)
+      flow_session[:error_message] = message
+      form_response_params = { success: false, errors: { message: message } }
+      form_response_params[:extra] = extra unless extra.nil?
+      FormResponse.new(**form_response_params)
     end
   end
 end
