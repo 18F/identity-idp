@@ -8,6 +8,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+      and_return(false)
   end
 
   context 'ThreatMetrix review pending' do
@@ -132,7 +134,9 @@ RSpec.describe 'In Person Proofing', js: true do
     complete_prepare_step(user)
 
     # state ID page
-    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+    expect_in_person_step_indicator_current_step(
+      t('step_indicator.flows.idv.verify_info'),
+    )
     expect(page).to have_content(t('in_person_proofing.headings.state_id'))
     complete_state_id_step(user)
 
@@ -169,6 +173,7 @@ RSpec.describe 'In Person Proofing', js: true do
     # click update address button
     click_button t('idv.buttons.change_address_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_address'))
+    choose t('in_person_proofing.form.address.same_address_choice_yes')
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
 

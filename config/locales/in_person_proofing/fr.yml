@@ -107,14 +107,6 @@ fr:
         same_address_choice_no: J’ai une adresse différente sur mon document d’identité
         same_address_choice_yes: Cette adresse figure sur mon document d’identité nationale
         state_prompt: '- Sélectionnez -'
-      residential_address:
-        address1: Adresse
-        address2: Adresse Ligne 2 (optional)
-        city: Ville
-        continue: Continuer
-        state: État
-        state_prompt: '- Sélectionnez -'
-        zip: Code postal
       state_id:
         address1: Adresse
         address2: Adresse Ligne 2 (optional)
@@ -158,7 +150,6 @@ fr:
       po_search:
         location: Trouver un bureau de poste participant
       prepare: Vérifiez votre identité en personne
-      residential_address: Indiquez votre adresse résidentielle actuelle
       state_id: Saisissez les informations figurant sur votre document d’identité
       state_id_milestone_2: Saisissez les informations figurant sur votre carte
         d’identité délivrée par l’État
