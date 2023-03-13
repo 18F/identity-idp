@@ -143,9 +143,9 @@ class Throttle
 
   def key
     if @user
-      "throttle:#{@user.id}:#{throttle_type}"
+      "throttle:throttle:#{@user.id}:#{throttle_type}"
     else
-      "throttle:#{@target}:#{throttle_type}"
+      "throttle:throttle:#{@target}:#{throttle_type}"
     end
   end
 
