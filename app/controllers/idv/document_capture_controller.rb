@@ -36,7 +36,6 @@ module Idv
           transaction_id: flow_session[:document_capture_session_uuid],
         ),
       }.merge(
-        native_camera_ab_testing_variables,
         acuant_sdk_upgrade_a_b_testing_variables,
         in_person_cta_variant_testing_variables,
       )
@@ -66,13 +65,6 @@ module Idv
 
     def increment_step_counts
       current_flow_step_counts['Idv::Steps::DocumentCaptureStep'] += 1
-    end
-
-    def native_camera_ab_testing_variables
-      {
-        acuant_sdk_upgrade_ab_test_bucket:
-          AbTests::ACUANT_SDK.bucket(flow_session[:document_capture_session_uuid]),
-      }
     end
 
     def acuant_sdk_upgrade_a_b_testing_variables
