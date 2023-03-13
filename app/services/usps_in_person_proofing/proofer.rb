@@ -148,9 +148,15 @@ module UspsInPersonProofing
     # already cached.
     # @return [Hash] Headers to add to USPS requests
     def dynamic_headers
-      token_remaining_time = Rails.cache.redis.ttl(AUTH_TOKEN_CACHE_KEY)
-      if token_remaining_time != -2 && token_remaining_time <= AUTH_TOKEN_REFRESH_THRESHOLD
-        retrieve_token!
+      if Rails.cache.try(:redis)
+        token_remaining_time = Rails.cache.redis.ttl(AUTH_TOKEN_CACHE_KEY)
+        if token_remaining_time != -2 && token_remaining_time <= AUTH_TOKEN_REFRESH_THRESHOLD
+          retrieve_token!
+        end
+      else
+        # TODO: implement a refresh for local tokens
+        # Might have to use send and a private method to check expiration time.  I couldn't find a non-private method to detect when an items in a Rails cache expires.
+        # https://stackoverflow.com/questions/39868775/get-expiration-time-of-rails-cached-item/69159992#69159992
       end
       {
         'Authorization' => token,

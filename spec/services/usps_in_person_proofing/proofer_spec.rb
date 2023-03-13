@@ -203,6 +203,21 @@ RSpec.describe UspsInPersonProofing::Proofer do
         check_facility(facilities[0])
       end
     end
+
+    context 'when the token is stored in an in-memory cache' do
+      before do
+        allow(Rails).to receive(:cache).and_return(
+          ActiveSupport::Cache::MemoryStore.new,
+        )
+        stub_request_token
+      end
+      it 'returns facilities' do
+        stub_request_facilities
+        facilities = subject.request_facilities(location)
+
+        check_facility(facilities[0])
+      end
+    end
   end
 
   describe '#request_enroll' do
