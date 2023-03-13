@@ -103,9 +103,9 @@
     
   <% if IdentityConfig.store.in_person_capture_secondary_id_enabled %>
       <%= render ValidatedFieldComponent.new(
-            name: :address1,
+            name: :state_id_address1,
             form: f,
-            input_html: { value: pii[:address1] },
+            input_html: { value: pii[:state_id_address1] },
             label: t('in_person_proofing.form.state_id.address1'),
             label_html: { class: 'usa-label' },
             maxlength: 255,
@@ -113,9 +113,9 @@
           ) %>
 
       <%= render ValidatedFieldComponent.new(
-            name: :address2,
+            name: :state_id_address2,
             form: f,
-            input_html: { value: pii[:address2] },
+            input_html: { value: pii[:state_id_address2] },
             label: t('in_person_proofing.form.state_id.address2'),
             label_html: { class: 'usa-label' },
             maxlength: 255,
@@ -123,9 +123,9 @@
           ) %>
  
       <%= render ValidatedFieldComponent.new(
-            name: :city,
+            name: :state_id_city,
             form: f,
-            input_html: { value: pii[:city] },
+            input_html: { value: pii[:state_id_city] },
             label: t('in_person_proofing.form.state_id.city'),
             label_html: { class: 'usa-label' },
             maxlength: 255,
@@ -148,9 +148,9 @@
   <% if IdentityConfig.store.in_person_capture_secondary_id_enabled %>
     <div class="tablet:grid-col-8 margin-bottom-5">
       <%= render ValidatedFieldComponent.new(
-            name: :zipcode,
+            name: :state_id_zipcode,
             form: f,
-            input_html: { value: pii[:zipcode] },
+          input_html: { value: pii[:state_id_zipcode] },
             label: t('in_person_proofing.form.state_id.zipcode'),
             label_html: { class: 'usa-label' },
             maxlength: 255,
