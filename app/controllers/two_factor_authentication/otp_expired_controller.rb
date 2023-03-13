@@ -43,6 +43,14 @@ module TwoFactorAuthentication
       unconfirmed_phone? && !new_account_mfa_registration?
     end
 
+    def next_phone_setup_path
+      if adding_phone_to_existing_account?
+        add_phone_path
+      elsif unconfirmed_phone?
+        phone_setup_path
+      end
+    end
+
     def unconfirmed_phone?
       user_session[:unconfirmed_phone].present? && UserSessionContext.confirmation_context?(context)
     end
