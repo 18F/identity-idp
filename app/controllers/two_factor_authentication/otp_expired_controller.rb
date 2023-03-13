@@ -26,20 +26,24 @@ module TwoFactorAuthentication
     end
 
     def authentication_options_path
-      if user_session.key?(:mfa_selections)
+      if new_account_mfa_registration?
         authentication_methods_setup_url
-      elsif adding_phone?
+      elsif adding_phone_to_existing_account?
         account_url
       else
         login_two_factor_options_url
       end
     end
 
-    def adding_phone?
-      show_use_another_phone_option? && !user_session.key?(:mfa_selections)
+    def new_account_mfa_registration?
+      user_session.key?(:mfa_selections)
     end
 
-    def show_use_another_phone_option?
+    def adding_phone_to_existing_account?
+      unconfirmed_phone? && !new_account_mfa_registration?
+    end
+
+    def unconfirmed_phone?
       user_session[:unconfirmed_phone].present? && UserSessionContext.confirmation_context?(context)
     end
   end
