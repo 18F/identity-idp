@@ -262,6 +262,7 @@ redis_url: redis://localhost:6379/0
 redis_pool_size: 10
 redis_session_pool_size: 10
 redis_throttle_pool_size: 5
+redis_irs_attempt_api_pool_size: 1
 reg_confirmed_email_max_attempts: 20
 reg_confirmed_email_window_in_minutes: 60
 reg_unconfirmed_email_max_attempts: 20
