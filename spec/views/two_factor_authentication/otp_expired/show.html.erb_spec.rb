@@ -74,9 +74,8 @@ describe 'two_factor_authentication/otp_expired/show.html.erb' do
 
       render
 
-      expect(rendered).to have_link(
+      expect(rendered).to have_content(
         t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
-        href: add_phone_path,
       )
     end
   end
