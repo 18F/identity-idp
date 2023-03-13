@@ -10,7 +10,7 @@ describe Idv::DocumentCaptureController do
       :flow_path => 'standard' }
   end
 
-  let(:user) { build(:user) }
+  let(:user) { create(:user) }
   let(:service_provider) do
     create(
       :service_provider,
@@ -83,14 +83,50 @@ describe Idv::DocumentCaptureController do
 
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end
+
+
+    it 'updates DocAuthLog document_capture_view_count' do
+      doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+      expect { get :show }.to(
+        change { doc_auth_log.reload.document_capture_view_count }.from(0).to(1),
+      )
+    end
     end
 
     describe '#update' do
+      let(:analytics_name) { 'IdV: doc auth document_capture submitted' }
+      let(:analytics_args) do
+        {
+          analytics_id: 'Doc Auth',
+          flow_path: 'standard',
+          irs_reproofing: false,
+          step: 'document capture',
+          step_count: 1,
+        }
+      end
+
       it 'does not raise an exception when stored_result is nil' do
         allow(FeatureManagement).to receive(:document_capture_async_uploads_enabled?).
           and_return(false)
         allow(subject).to receive(:stored_result).and_return(nil)
         put :update
+      end
+
+      it 'sends analytics_submitted event with correct step count' do
+        get :show
+        put :update
+
+        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      end
+
+
+      it 'updates DocAuthLog document_capture_submit_count' do
+        doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+        expect { put :update }.to(
+          change { doc_auth_log.reload.document_capture_submit_count }.from(0).to(1),
+        )
       end
     end
   end
