@@ -163,11 +163,13 @@ module AnalyticsEvents
     track_event('Authentication Confirmation: Reset selected')
   end
 
-  # @param [Date] verified_at
+  # @param [Date] rejection_date Date of the rejection
+  # @param [Date] verified_at Date when profile was verified
   # Tracks when a profile is automatically rejected due to being under review for 30 days
-  def automatic_fraud_rejection(verified_at:, **extra)
+  def automatic_fraud_rejection(rejection_date:, verified_at:, **extra)
     track_event(
       'Fraud: Automatic Fraud Rejection',
+      rejection_date: rejection_date,
       verified_at: verified_at,
       **extra,
     )
