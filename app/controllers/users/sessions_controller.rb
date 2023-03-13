@@ -13,7 +13,6 @@ module Users
     skip_before_action :require_no_authentication, only: [:new]
     before_action :store_sp_metadata_in_session, only: [:new]
     before_action :check_user_needs_redirect, only: [:new]
-    before_action :redirect_with_flash_if_timeout, only: [:new]
     before_action :apply_secure_headers_override, only: [:new, :create]
     before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
     after_action :add_csrf_token_header_to_response, only: [:keepalive]
@@ -51,29 +50,6 @@ module Users
     end
 
     private
-
-    def redirect_with_flash_if_timeout
-      return if !params[:timeout]
-      case params[:timeout]
-      when 'session'
-        flash[:info] = t(
-          'notices.session_timedout',
-          app_name: APP_NAME,
-          minutes: IdentityConfig.store.session_timeout_in_minutes,
-        )
-      when 'form'
-        flash[:info] = t(
-          'notices.session_cleared',
-          minutes: IdentityConfig.store.session_timeout_in_minutes,
-        )
-      end
-
-      begin
-        redirect_to url_for(params.permit(:request_id))
-      rescue ActionController::UrlGenerationError # Binary data in parameters throw on redirect
-        head :bad_request
-      end
-    end
 
     def clear_session_bad_password_count_if_window_expired
       locked_at = session[:max_bad_passwords_at]

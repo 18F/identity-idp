@@ -35,6 +35,7 @@ class ApplicationController < ActionController::Base
   def session_expires_at
     return if @skip_session_expiration || @skip_session_load
     session[:session_started_at] = Time.zone.now if session[:session_started_at].nil?
+    redirect_with_flash_if_timeout
   end
 
   # for lograge
@@ -150,6 +151,34 @@ class ApplicationController < ActionController::Base
                               expires: IdentityConfig.store.session_timeout_in_minutes.minutes,
                             }
                           end
+  end
+
+  def redirect_with_flash_if_timeout
+    return unless params[:timeout]
+
+    case params[:timeout]
+    when 'session'
+      flash[:info] = t(
+        'notices.session_timedout',
+        app_name: APP_NAME,
+        minutes: IdentityConfig.store.session_timeout_in_minutes,
+      )
+    when 'form'
+      flash[:info] = t(
+        'notices.session_cleared',
+        minutes: IdentityConfig.store.session_timeout_in_minutes,
+      )
+    end
+
+    begin
+      redirect_to url_for(permitted_timeout_params)
+    rescue ActionController::UrlGenerationError # Binary data in parameters throw on redirect
+      head :bad_request
+    end
+  end
+
+  def permitted_timeout_params
+    params.permit(:request_id)
   end
 
   def sp_from_sp_session
