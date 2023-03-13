@@ -6,7 +6,8 @@ module TwoFactorAuthentication
 
     def show
       @otp_delivery_preference = otp_delivery_preference
-      @show_use_another_phone_option = show_use_another_phone_option?
+      @use_another_phone_path = use_another_phone_path
+      @unconfirmed_phone = unconfirmed_phone?
       @authentication_options_path = authentication_options_path
       analytics.otp_expired_visited(
         otp_sent_at: current_user.direct_otp_sent_at,
@@ -43,7 +44,7 @@ module TwoFactorAuthentication
       unconfirmed_phone? && !new_account_mfa_registration?
     end
 
-    def next_phone_setup_path
+    def use_another_phone_path
       if adding_phone_to_existing_account?
         add_phone_path
       elsif unconfirmed_phone?
