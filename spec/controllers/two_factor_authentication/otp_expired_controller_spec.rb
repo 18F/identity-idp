@@ -86,15 +86,15 @@ describe TwoFactorAuthentication::OtpExpiredController do
       context 'unconfirmed phone option' do
         before do
           @user = create(:user)
-          @unconfirmed_phone = '+1 (202) 555-1213'
+          @show_use_another_phone_option = '+1 (202) 555-1213'
         end
 
         it 'assigns the value correctly' do
           stub_sign_in_before_2fa(@user)
-          subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
+          subject.user_session[:show_use_another_phone_option] = @show_use_another_phone_option
 
           get :show
-          expect(assigns(:unconfirmed_phone)).to eq(false)
+          expect(assigns(:show_use_another_phone_option)).to eq(false)
         end
       end
     end
