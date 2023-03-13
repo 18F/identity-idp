@@ -37,13 +37,13 @@ module InPersonHelper
     fill_in t('components.memorable_date.day'), with: day
     fill_in t('components.memorable_date.year'), with: year
     fill_in t('in_person_proofing.form.state_id.state_id_number'), with: GOOD_STATE_ID_NUMBER
-    fill_in t('in_person_proofing.form.state_id.address'), with: GOOD_ADDRESS1
+    fill_in t('in_person_proofing.form.state_id.address1'), with: GOOD_ADDRESS1
     fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_ADDRESS2
     fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_CITY
     select GOOD_STATE_ID_JURISDICTION,
            from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
     fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_ZIPCODE
-    choose t('in_person_proofing.form.state_id.capture_secondary_id_no')
+    choose t('in_person_proofing.form.state_id.same_address_as_id_no')
   end
 
   def fill_out_address_form_ok

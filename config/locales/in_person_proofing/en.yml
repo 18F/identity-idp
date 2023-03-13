@@ -108,9 +108,6 @@ en:
           unsupported_chars: 'Our system cannot read the following characters:
             %{char_list}. Please try again using the characters on your ID.'
         first_name: First name
-        same_address_as_id: Is your current residential address listed on your state-issued ID?
-        same_address_as_id_no: No, my current residential address is not listed on my state-issued ID
-        same_address_as_id_yes: Yes, my current residential address is listed on my state-issued ID
         last_name: Last name
         memorable_date:
           errors:
@@ -118,6 +115,9 @@ en:
               missing_month_day_year: Enter a date of birth
               range_min_age: You must be over 13 years of age to use %{app_name}
               range_overflow: Enter a date that is in the past
+        same_address_as_id: Is your current residential address listed on your state-issued ID?
+        same_address_as_id_no: No, my current residential address is not listed on my state-issued ID
+        same_address_as_id_yes: Yes, my current residential address is listed on my state-issued ID
         state_id_jurisdiction: State
         state_id_jurisdiction_hint: Select the state shown on your ID
         state_id_jurisdiction_prompt: '- Select -'
