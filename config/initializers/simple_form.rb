@@ -77,7 +77,7 @@ SimpleForm.setup do |config|
 
   # Helper proc to define different types of radio button wrappers
   radio_button_builder = proc do |name, bordered|
-    item_label_class = 'usa-radio__label width-full text-no-wrap' +
+    item_label_class = 'usa-radio__label width-full' +
                        (bordered ? '' : ' margin-top-0')
     legend_class = 'usa-label' + (bordered ? '' : ' margin-bottom-2')
     input_class = 'usa-radio__input' + (bordered ? ' usa-radio__input--bordered' : '')
@@ -98,7 +98,6 @@ SimpleForm.setup do |config|
             cr.use :input, class: input_class
           end
         end
-        gr.wrapper(:grid_column_gap, tag: :div, class: 'grid-col-4 tablet:grid-col-6') {}
       end
       b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
     end

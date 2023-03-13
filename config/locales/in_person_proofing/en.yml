@@ -95,7 +95,7 @@ en:
         same_address_choice_yes: This address is on my state-issued ID
         state_prompt: '- Select -'
       state_id:
-        address: Address
+        address1: Address
         address2: Address line 2 (optional)
         city: City
         date_hint:
@@ -108,9 +108,9 @@ en:
           unsupported_chars: 'Our system cannot read the following characters:
             %{char_list}. Please try again using the characters on your ID.'
         first_name: First name
-        id_address_current_heading: Is your current residential address listed on your state-issued ID?
-        id_address_current_no: No, my current residential address is not listed on my state-issued ID
-        id_address_current_yes: Yes, my current residential address is listed on my state-issued ID
+        same_address_as_id: Is your current residential address listed on your state-issued ID?
+        same_address_as_id_no: No, my current residential address is not listed on my state-issued ID
+        same_address_as_id_yes: Yes, my current residential address is listed on my state-issued ID
         last_name: Last name
         memorable_date:
           errors:

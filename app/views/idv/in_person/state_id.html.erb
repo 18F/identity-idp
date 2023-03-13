@@ -102,19 +102,16 @@
   </div>
     
   <% if IdentityConfig.store.in_person_capture_secondary_id_enabled %>
-    <div class="tablet:grid-col-8 margin-bottom-5">
       <%= render ValidatedFieldComponent.new(
-            name: :address,
+            name: :address1,
             form: f,
-            input_html: { value: pii[:address] },
-            label: t('in_person_proofing.form.state_id.address'),
+            input_html: { value: pii[:address1] },
+            label: t('in_person_proofing.form.state_id.address1'),
             label_html: { class: 'usa-label' },
             maxlength: 255,
             required: true,
           ) %>
-    </div> 
 
-    <div class="tablet:grid-col-8 margin-bottom-5">
       <%= render ValidatedFieldComponent.new(
             name: :address2,
             form: f,
@@ -122,11 +119,9 @@
             label: t('in_person_proofing.form.state_id.address2'),
             label_html: { class: 'usa-label' },
             maxlength: 255,
-            required: true,
+            required: false,
           ) %>
-    </div>
  
-    <div class="tablet:grid-col-8 margin-bottom-5">
       <%= render ValidatedFieldComponent.new(
             name: :city,
             form: f,
@@ -136,7 +131,6 @@
             maxlength: 255,
             required: true,
           ) %>
-    </div>  
   <% end %>
   <div class="margin-bottom-4">
     <%= render ValidatedFieldComponent.new(
@@ -165,14 +159,14 @@
     </div>
       <%= render ValidatedFieldComponent.new(
             as: :radio_buttons,
-            checked: pii[:id_address_current],
+            checked: pii[:same_address_as_id],
             collection: [
-              [t('in_person_proofing.form.state_id.id_address_current_yes'), true],
-              [t('in_person_proofing.form.state_id.id_address_current_no'), false],
+              [t('in_person_proofing.form.state_id.same_address_as_id_yes'), true],
+              [t('in_person_proofing.form.state_id.same_address_as_id_no'), false],
             ],
             form: f,
-            label: t('in_person_proofing.form.state_id.id_address_current_heading'),
-            name: :id_address_current,
+            label: t('in_person_proofing.form.state_id.same_address_as_id'),
+            name: :same_address_as_id,
             required: true,
             wrapper: :uswds_radio_buttons,
           ) %>
