@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe IrsAttemptsApi::Tracker do
   before do
     allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).
-      and_return(irs_attempt_api_enabled)
+      and_return(irs_attempts_api_enabled)
     allow(IdentityConfig.store).to receive(:irs_attempt_api_payload_size_logging_enabled).
-      and_return(irs_attempt_api_payload_size_logging_enabled)
+      and_return(irs_attempts_api_payload_size_logging_enabled)
     allow(request).to receive(:user_agent).and_return('example/1.0')
     allow(request).to receive(:remote_ip).and_return('192.0.2.1')
     allow(request).to receive(:headers).and_return(
@@ -13,8 +13,8 @@ RSpec.describe IrsAttemptsApi::Tracker do
     )
   end
 
-  let(:irs_attempt_api_enabled) { true }
-  let(:irs_attempt_api_payload_size_logging_enabled) { true }
+  let(:irs_attempts_api_enabled) { true }
+  let(:irs_attempts_api_payload_size_logging_enabled) { true }
   let(:session_id) { 'test-session-id' }
   let(:enabled_for_session) { true }
   let(:request) { instance_double(ActionDispatch::Request) }
@@ -119,7 +119,7 @@ RSpec.describe IrsAttemptsApi::Tracker do
     end
 
     context 'the IRS attempts API is not enabled' do
-      let(:irs_attempt_api_enabled) { false }
+      let(:irs_attempts_api_enabled) { false }
 
       it 'does not record any events in redis' do
         freeze_time do
@@ -139,7 +139,7 @@ RSpec.describe IrsAttemptsApi::Tracker do
     end
 
     context 'metadata logging is disabled' do
-      let(:irs_attempt_api_payload_size_logging_enabled) { false }
+      let(:irs_attempts_api_payload_size_logging_enabled) { false }
 
       it 'does not log metadata about the event' do
         expect(analytics).to_not receive(:irs_attempts_api_event_metadata)
