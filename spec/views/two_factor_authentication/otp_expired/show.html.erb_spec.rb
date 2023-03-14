@@ -70,7 +70,7 @@ describe 'two_factor_authentication/otp_expired/show.html.erb' do
 
   context 'when a user creates a new account' do
     it 'allows a user to select another phone' do
-      assign(:unconfirmed_phone, true)
+      assign(:use_another_phone_path, true)
 
       render
 
