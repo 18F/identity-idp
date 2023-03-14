@@ -95,6 +95,8 @@ module InPersonHelper
     expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
     fill_out_state_id_form_ok_include_address
     click_idv_continue
+    expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
   end
 
   def complete_address_step(_user = nil)
