@@ -12,7 +12,7 @@
             # i18n-tasks-use t('notices.timeout_warning.signed_in.message_html')
             # i18n-tasks-use t('notices.timeout_warning.partially_signed_in.message_html')
             'message_html',
-            scope: modal_presenter.locale_scope,
+            scope: modal_presenter.translation_scope,
             time_left_in_session: render(
               CountdownComponent.new(
                 expiration: Time.zone.now,
@@ -26,7 +26,7 @@
             # i18n-tasks-use t('notices.timeout_warning.signed_in.live_region_message_html')
             # i18n-tasks-use t('notices.timeout_warning.partially_signed_in.live_region_message_html')
             'live_region_message_html',
-            scope: modal_presenter.locale_scope,
+            scope: modal_presenter.translation_scope,
             time_left_in_session: render(
               CountdownComponent.new(
                 expiration: Time.zone.now,
@@ -46,7 +46,7 @@
       ).with_content(
         # i18n-tasks-use t('notices.timeout_warning.signed_in.continue')
         # i18n-tasks-use t('notices.timeout_warning.partially_signed_in.continue')
-        t('continue', scope: modal_presenter.locale_scope),
+        t('continue', scope: modal_presenter.translation_scope),
       ) %>
   <%= render ButtonComponent.new(
         action: ->(**tag_options, &block) { link_to(destroy_user_session_path, **tag_options, &block) },
@@ -56,6 +56,6 @@
       ).with_content(
         # i18n-tasks-use t('notices.timeout_warning.signed_in.sign_out')
         # i18n-tasks-use t('notices.timeout_warning.partially_signed_in.sign_out')
-        t('sign_out', scope: modal_presenter.locale_scope),
+        t('sign_out', scope: modal_presenter.translation_scope),
       ) %>
 <% end %>

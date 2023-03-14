@@ -3,7 +3,7 @@ class SessionTimeoutModalPresenter
     @user_fully_authenticated = user_fully_authenticated
   end
 
-  def locale_scope
+  def translation_scope
     if user_fully_authenticated?
       [:notices, :timeout_warning, :signed_in]
     else
