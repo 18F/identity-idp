@@ -49,6 +49,10 @@ class Profile < ApplicationRecord
 
   def activate_after_passing_review
     update!(fraud_review_pending: false, fraud_rejection: false)
+    irs_attempts_api_tracker&.fraud_review_adjudicated(
+      decision: 'pass',
+      fraud_fingerprint: Digest::SHA1.hexdigest(user.uuid),
+    )
     activate
   end
 
@@ -62,6 +66,10 @@ class Profile < ApplicationRecord
 
   def reject_for_fraud(notify_user:)
     update!(active: false, fraud_review_pending: false, fraud_rejection: true)
+    irs_attempts_api_tracker&.fraud_review_adjudicated(
+      decision: 'reject',
+      fraud_fingerprint: Digest::SHA1.hexdigest(user.uuid),
+    )
     UserAlerts::AlertUserAboutAccountRejected.call(user) if notify_user
   end
 
@@ -118,6 +126,22 @@ class Profile < ApplicationRecord
 
   def has_proofed_before?
     Profile.where(user_id: user_id).where.not(activated_at: nil).where.not(id: self.id).exists?
+  end
+
+  def irs_attempts_api_tracker
+    return @irs_attempts_api_tracker if defined?(@irs_attempts_api_tracker)
+    @irs_attempts_api_tracker = if initiating_service_provider&.irs_attempts_api_enabled?
+      IrsAttemptsApi::Tracker.new(
+        session_id: nil,
+        request: nil,
+        user: user,
+        sp: initiating_service_provider,
+        cookie_device_uuid: nil,
+        sp_request_uri: nil,
+        enabled_for_session: true,
+        analytics: nil, # FIXME, set this
+      )
+    end
   end
 
   private

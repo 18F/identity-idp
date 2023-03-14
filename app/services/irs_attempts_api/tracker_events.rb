@@ -67,6 +67,17 @@ module IrsAttemptsApi
       )
     end
 
+    # @param [String] decision One of 'reject' or 'pass'
+    # @param [String] fraud_fingerprint An opaque identifier to correlate with a TMX check
+    # A profile offlined for review has been approved or rejected.
+    def fraud_review_adjudicated(decision:, fraud_fingerprint:)
+      track_event(
+        :fraud_review_adjudicated,
+        decision: decision,
+        fraud_fingerprint: fraud_fingerprint,
+      )
+    end
+
     # @param ["mobile", "desktop"] upload_method method chosen for uploading id verification
     # A user has selected id document upload method
     def idv_document_upload_method_selected(upload_method:)
@@ -285,10 +296,11 @@ module IrsAttemptsApi
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # This event will capture the result of the TMX fraud check
     # during Identity Verification
-    def idv_tmx_fraud_check(success:, failure_reason: nil)
+    def idv_tmx_fraud_check(success:, fraud_fingerprint:, failure_reason: nil)
       track_event(
         :idv_tmx_fraud_check,
         success: success,
+        fraud_fingerprint: fraud_fingerprint,
         failure_reason: failure_reason,
       )
     end

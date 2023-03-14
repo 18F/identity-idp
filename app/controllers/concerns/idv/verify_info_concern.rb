@@ -231,7 +231,7 @@ module Idv
         elsif stage == :threatmetrix
           # transaction_id comes from request_id
           tmx_id = hash[:transaction_id]
-          log_irs_tmx_fraud_check_event(hash) if tmx_id
+          log_irs_tmx_fraud_check_event(hash, current_user) if tmx_id
           add_cost(:threatmetrix, transaction_id: tmx_id) if tmx_id
         end
       end

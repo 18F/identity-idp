@@ -201,6 +201,8 @@ describe Idv::VerifyInfoController do
         document_capture_session
       end
 
+      let(:user_hash_uuid) { Digest::SHA1.hexdigest(subject.current_user.uuid) }
+
       let(:expected_failure_reason) { DocAuthHelper::SAMPLE_TMX_SUMMARY_REASON_CODE }
 
       before do
@@ -217,6 +219,7 @@ describe Idv::VerifyInfoController do
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: true,
+            fraud_fingerprint: user_hash_uuid,
             failure_reason: nil,
           )
           get :show
@@ -229,6 +232,7 @@ describe Idv::VerifyInfoController do
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
+            fraud_fingerprint: user_hash_uuid,
             failure_reason: expected_failure_reason,
           )
           get :show
@@ -241,6 +245,7 @@ describe Idv::VerifyInfoController do
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
+            fraud_fingerprint: user_hash_uuid,
             failure_reason: expected_failure_reason,
           )
           get :show
@@ -253,6 +258,7 @@ describe Idv::VerifyInfoController do
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
+            fraud_fingerprint: user_hash_uuid,
             failure_reason: expected_failure_reason,
           )
           get :show

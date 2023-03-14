@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Profile do
   let(:user) { create(:user, :signed_up, password: 'a really long sekrit') }
+  let(:hashed_uuid) { Digest::SHA1.hexdigest(user.uuid) }
   let(:another_user) { create(:user, :signed_up) }
   let(:profile) { create(:profile, user: user) }
 
@@ -299,6 +300,42 @@ describe Profile do
 
       expect(profile).to be_active
     end
+
+    context 'when the initiating_sp is the IRS' do
+      it 'logs an attempt event' do
+        sp = create(:service_provider, :irs)
+        profile = create(
+          :profile,
+          user: user,
+          active: false,
+          fraud_review_pending: true,
+          initiating_service_provider: sp,
+        )
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
+        expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_truthy
+
+        expect(profile.irs_attempts_api_tracker).to receive(:fraud_review_adjudicated).
+          with(decision: 'pass', fraud_fingerprint: hashed_uuid)
+        profile.activate_after_passing_review
+      end
+    end
+
+    context 'when the initiating_sp is not the IRS' do
+      it 'does not log an attempt event' do
+        sp = create(:service_provider)
+        profile = create(
+          :profile,
+          user: user,
+          active: false,
+          fraud_review_pending: true,
+          initiating_service_provider: sp,
+        )
+        expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_falsey
+
+        expect(profile.irs_attempts_api_tracker).to be nil
+        profile.activate_after_passing_review
+      end
+    end
   end
 
   describe '#deactivate_for_fraud_review' do
@@ -351,6 +388,47 @@ describe Profile do
         expect(profile).to_not be_active
 
         expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(0)
+      end
+    end
+
+    context 'when the SP is the IRS' do
+      it 'logs an event' do
+        sp = create(:service_provider, :irs)
+        profile = create(
+          :profile,
+          user: user,
+          active: false,
+          fraud_review_pending: true,
+          initiating_service_provider: sp,
+        )
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
+
+        expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_truthy
+
+        expect(profile.irs_attempts_api_tracker).to receive(:fraud_review_adjudicated).
+          with(decision: 'reject', fraud_fingerprint: hashed_uuid)
+
+        profile.reject_for_fraud(notify_user: true)
+      end
+    end
+
+    context 'when the SP is not the IRS' do
+      it 'does not log an event' do
+        sp = create(:service_provider)
+        profile = create(
+          :profile,
+          user: user,
+          active: false,
+          fraud_review_pending: true,
+          initiating_service_provider: sp,
+        )
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
+
+        expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_falsey
+
+        expect(profile.irs_attempts_api_tracker).to be nil
+
+        profile.reject_for_fraud(notify_user: true)
       end
     end
   end

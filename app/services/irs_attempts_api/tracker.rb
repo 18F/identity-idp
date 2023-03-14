@@ -16,7 +16,7 @@ module IrsAttemptsApi
     end
 
     def track_event(event_type, metadata = {})
-      return if !enabled?
+      return unless enabled?
 
       if metadata.has_key?(:failure_reason) &&
          (metadata[:failure_reason].blank? ||
@@ -43,7 +43,8 @@ module IrsAttemptsApi
 
       if enabled?
         if IdentityConfig.store.irs_attempt_api_payload_size_logging_enabled
-          analytics.irs_attempts_api_event_metadata(
+          # analytics may be nil when called from outside ApplicationController
+          analytics&.irs_attempts_api_event_metadata(
             event_type: event_type,
             unencrypted_payload_num_bytes: event.payload_json.bytesize,
             recorded: true,
