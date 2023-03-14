@@ -17,7 +17,7 @@ module InPersonHelper
   GOOD_ZIPCODE = Idp::Constants::MOCK_IDV_APPLICANT[:zipcode]
   GOOD_STATE = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE
 
-  def fill_out_state_id_form_ok
+  def fill_out_state_id_form_ok(include_address: false)
     fill_in t('in_person_proofing.form.state_id.first_name'), with: GOOD_FIRST_NAME
     fill_in t('in_person_proofing.form.state_id.last_name'), with: GOOD_LAST_NAME
     year, month, day = GOOD_DOB.split('-')
@@ -27,23 +27,14 @@ module InPersonHelper
     select GOOD_STATE_ID_JURISDICTION,
            from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
     fill_in t('in_person_proofing.form.state_id.state_id_number'), with: GOOD_STATE_ID_NUMBER
-  end
 
-  def fill_out_state_id_form_ok_include_address
-    fill_in t('in_person_proofing.form.state_id.first_name'), with: GOOD_FIRST_NAME
-    fill_in t('in_person_proofing.form.state_id.last_name'), with: GOOD_LAST_NAME
-    year, month, day = GOOD_DOB.split('-')
-    fill_in t('components.memorable_date.month'), with: month
-    fill_in t('components.memorable_date.day'), with: day
-    fill_in t('components.memorable_date.year'), with: year
-    fill_in t('in_person_proofing.form.state_id.state_id_number'), with: GOOD_STATE_ID_NUMBER
-    fill_in t('in_person_proofing.form.state_id.address1'), with: GOOD_ADDRESS1
-    fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_ADDRESS2
-    fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_CITY
-    select GOOD_STATE_ID_JURISDICTION,
-           from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
-    fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_ZIPCODE
-    choose t('in_person_proofing.form.state_id.same_address_as_id_no')
+    if include_address
+      fill_in t('in_person_proofing.form.state_id.address1'), with: GOOD_ADDRESS1
+      fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_ADDRESS2
+      fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_CITY
+      fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_ZIPCODE
+      choose t('in_person_proofing.form.state_id.same_address_as_id_no')
+    end
   end
 
   def fill_out_address_form_ok
@@ -84,19 +75,15 @@ module InPersonHelper
     click_link t('forms.buttons.continue')
   end
 
-  def complete_state_id_step(_user = nil)
+  def complete_state_id_step(_user = nil, same_address_as_id: true, include_address: false)
     # Wait for page to load before attempting to fill out form
     expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
-    fill_out_state_id_form_ok
+    include_address ? fill_out_state_id_form_ok(include_address: true) : fill_out_state_id_form_ok
     click_idv_continue
-  end
-
-  def complete_state_id_step_when_id_and_residential_address_differ(_user = nil)
-    expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
-    fill_out_state_id_form_ok_include_address
-    click_idv_continue
-    expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
-    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+    unless include_address && same_address_as_id
+      expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+    end
   end
 
   def complete_address_step(_user = nil)

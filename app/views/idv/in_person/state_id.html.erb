@@ -3,11 +3,7 @@
 <% if updating_state_id %>
   <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.update_state_id')) %>
 <% else %>
-  <% if IdentityConfig.store.in_person_capture_secondary_id_enabled %>
     <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.state_id_milestone_2')) %>
-  <% else %>
-    <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.state_id')) %>
-  <% end %>
 <% end %>
 
 <p>

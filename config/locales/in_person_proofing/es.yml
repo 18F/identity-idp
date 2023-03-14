@@ -148,7 +148,6 @@ es:
       po_search:
         location: Encuentre una oficina de correos participante
       prepare: Verifique su identidad en persona
-      state_id: Ingrese la información de su cédula
       state_id_milestone_2: Ingresa la información de tu identificación emitida por el estado
       switch_back: Vuelva a su computadora para prepararse para verificar su identidad
         en persona
