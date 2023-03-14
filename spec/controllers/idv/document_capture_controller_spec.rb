@@ -7,7 +7,8 @@ describe Idv::DocumentCaptureController do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
       'pii_from_doc' => Idp::Constants::MOCK_IDV_APPLICANT.dup,
       :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
-      :flow_path => 'standard' }
+      :flow_path => 'standard',
+      'Idv::Steps::AgreementStep' => true, }
   end
 
   let(:user) { create(:user) }
@@ -39,6 +40,13 @@ describe Idv::DocumentCaptureController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
+      )
+    end
+
+    it 'checks that agreement step is complete' do
+      expect(subject).to have_actions(
+        :before,
+        :confirm_agreement_step_complete,
       )
     end
   end
@@ -85,13 +93,23 @@ describe Idv::DocumentCaptureController do
       end
 
 
-    it 'updates DocAuthLog document_capture_view_count' do
-      doc_auth_log = DocAuthLog.create(user_id: user.id)
+      it 'updates DocAuthLog document_capture_view_count' do
+        doc_auth_log = DocAuthLog.create(user_id: user.id)
 
-      expect { get :show }.to(
-        change { doc_auth_log.reload.document_capture_view_count }.from(0).to(1),
-      )
-    end
+        expect { get :show }.to(
+          change { doc_auth_log.reload.document_capture_view_count }.from(0).to(1),
+        )
+      end
+
+      context 'agreement step is not complete' do
+        it 'redirects to idv_doc_auth_url' do
+          flow_session['Idv::Steps::AgreementStep'] = nil
+
+          get :show
+
+          expect(response).to redirect_to(idv_doc_auth_url)
+        end
+      end
     end
 
     describe '#update' do
