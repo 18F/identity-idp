@@ -7,6 +7,8 @@ module SignUp
     before_action :require_no_authentication
     before_action :redirect_if_ial2_and_vendor_outage
 
+    CREATE_ACCOUNT = 'create_account'
+
     def new
       @register_user_email_form = RegisterUserEmailForm.new(
         analytics: analytics,
@@ -70,7 +72,9 @@ module SignUp
     end
 
     def redirect_if_ial2_and_vendor_outage
-      redirect_to idv_unavailable_path if ial2_requested? && !FeatureManagement.idv_available?
+      if ial2_requested? && !FeatureManagement.idv_available?
+        redirect_to idv_unavailable_path(from: CREATE_ACCOUNT)
+      end
     end
   end
 end
