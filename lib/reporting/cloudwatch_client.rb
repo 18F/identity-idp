@@ -48,8 +48,8 @@ module Reporting
             if ensure_complete_logs? && response.results.size == Reporting::CloudwatchQuery::MAX_LIMIT
               logger.info("exact limit reached, bisecting: start_time=#{start_time} end_time=#{end_time}")
               mid = midpoint(start_time:, end_time:)
-              queue << start_time..mid
-              queue << mid..end_time
+              queue << (start_time..mid)
+              queue << (mid..end_time)
             else
               results.concat(parse_results(response.results))
             end
