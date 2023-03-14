@@ -29,28 +29,40 @@ module Reporting
     # @return [Array<Array<Types::ResultField>>]
     def fetch(query:, from:, to:)
       results = Concurrent::Array.new
+      in_progress = Concurrent::Hash.new(0)
+
+      # Time slices to query, a tuple of range_to_query, original_range [Range<Time>, Range<Time]]
+      # we track the number of live threads by how many jobs connected to each original_range
+      # are still working
       queue = Queue.new
 
       slice_time_range(from:, to:).map do |range|
-        queue << range
+        in_progress[range] += 1
+        queue << [range, range]
       end
 
       logger.info("starting query, queue_size=#{queue.length} num_threads=#{num_threads}")
 
       threads = num_threads.times.map do |thread_idx|
         Thread.new do
-          while (range = queue.pop)
+          while (range, orig_range = queue.pop)
             start_time = range.begin.to_i
             end_time = range.end.to_i
 
             response = fetch_one(query:, start_time:, end_time:)
 
-            if ensure_complete_logs? && response.results.size == Reporting::CloudwatchQuery::MAX_LIMIT
+            if ensure_complete_logs? && has_more_results?(size: response.results.size, query:)
               logger.info("exact limit reached, bisecting: start_time=#{start_time} end_time=#{end_time}")
               mid = midpoint(start_time:, end_time:)
-              queue << (start_time..mid)
-              queue << (mid..end_time)
+
+              # -1 for current work finishing, +2 for new threads enqueued
+              in_progress[orig_range] += 1
+
+              queue << [(start_time..mid), orig_range]
+              queue << [(mid..end_time), orig_range]
             else
+              logger.info("worker finished, slice duration=#{end_time - start_time}")
+              in_progress[orig_range] -= 1
               results.concat(parse_results(response.results))
             end
           end
@@ -61,7 +73,8 @@ module Reporting
         end
       end
 
-      until queue.empty?
+      until (num_in_progress = in_progress.sum(&:last)).zero?
+        logger.info("waiting, num_in_progress=#{num_in_progress}, queue_size=#{queue.size}")
         sleep wait_duration
       end
       queue.close
@@ -92,6 +105,11 @@ module Reporting
     end
 
     private
+
+    # somehow sample responses returned 10,001 rows when we request 10,000
+    def has_more_results?(size:, query:)
+      size >= query.limit
+    end
 
     # Pulls out and parses the "@message" field as JSON
     # @param [Array<Array<Types::ResultField>>] results

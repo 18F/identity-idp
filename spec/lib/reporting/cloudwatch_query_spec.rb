@@ -7,7 +7,7 @@ RSpec.describe Reporting::CloudwatchQuery do
   describe '#to_query' do
     subject(:query) do
       Reporting::CloudwatchQuery.new(
-        events: ['Sign In', 'Sign Out'],
+        names: ['Sign In', 'Sign Out'],
         service_provider: 'example:sp:service',
         limit: 5555,
       )
