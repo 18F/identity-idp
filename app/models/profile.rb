@@ -130,17 +130,25 @@ class Profile < ApplicationRecord
 
   def irs_attempts_api_tracker
     return @irs_attempts_api_tracker if defined?(@irs_attempts_api_tracker)
-    @irs_attempts_api_tracker = if initiating_service_provider&.irs_attempts_api_enabled?
-      IrsAttemptsApi::Tracker.new(
-        session_id: nil,
-        request: nil,
-        user: user,
-        sp: initiating_service_provider,
-        cookie_device_uuid: nil,
-        sp_request_uri: nil,
-        enabled_for_session: true,
-        analytics: nil, # FIXME, set this
-      )
+    analytics = Analytics.new(
+      user: user,
+      request: nil,
+      sp: initiating_service_provider&.issuer,
+      session: {},
+      ahoy: nil
+    )
+    if initiating_service_provider&.irs_attempts_api_enabled?
+      @irs_attempts_api_tracker
+        IrsAttemptsApi::Tracker.new(
+          session_id: nil,
+          request: nil,
+          user: user,
+          sp: initiating_service_provider,
+          cookie_device_uuid: nil,
+          sp_request_uri: nil,
+          enabled_for_session: true,
+          analytics: analytics,
+        )
     end
   end
 
