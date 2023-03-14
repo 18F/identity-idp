@@ -71,18 +71,29 @@ module Idv
 
     def check_for_outage
       vendor_status = VendorStatus.new
-      if vendor_status.any_ial2_vendor_outage?
-        session[:vendor_outage_redirect] = current_step
-        session[:vendor_outage_redirect_from_idv] = true
-        redirect_to vendor_outage_url
-      elsif vendor_status.gpo_only?
-        session[:vendor_outage_redirect] = current_step
-        session[:vendor_outage_redirect_from_idv] = true
-        # During a phone outage, skip the hybrid handoff
-        # step and go straight to document upload
-        user_session['idv/doc_auth'][:skip_upload_step] = true if vendor_status.any_phone_vendor_outage?
-        redirect_to idv_vendor_outage_url unless session[:skip_vendor_outage]
+
+      redirect_to vendor_outage_url if any_proofing_vendor_outage?(vendor_status)
+      redirect_to idv_vendor_outage_url if gpo_only?(vendor_status)
+    end
+
+    def any_proofing_vendor_outage?(vendor_status)
+      return false unless vendor_status.any_ial2_vendor_outage?
+
+      session[:vendor_outage_redirect] = current_step
+      session[:vendor_outage_redirect_from_idv] = true
+    end
+
+    def gpo_only?(vendor_status)
+      return false unless vendor_status.gpo_only?
+
+      # During a phone outage, skip the hybrid handoff
+      # step and go straight to document upload
+      unless vendor_status.allow_hybrid_flow?
+        user_session['idv/doc_auth'][:skip_upload_step] = true
       end
+
+      session[:vendor_outage_redirect] = current_step
+      session[:vendor_outage_redirect_from_idv] = true
     end
   end
 end

@@ -50,7 +50,13 @@ class VendorStatus
   end
 
   def gpo_only?
-    any_phone_vendor_outage? || IdentityConfig.store.feature_idv_force_gpo_verification_enabled
+    IdentityConfig.store.feature_idv_force_gpo_verification_enabled ||
+      any_phone_vendor_outage?
+  end
+
+  def allow_hybrid_flow?
+    IdentityConfig.store.feature_idv_hybrid_flow_enabled &&
+      !any_phone_vendor_outage?
   end
 
   def from_idv?
