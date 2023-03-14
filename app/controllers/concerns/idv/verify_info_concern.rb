@@ -123,7 +123,7 @@ module Idv
     end
 
     def next_step_url
-      return idv_gpo_url if VendorStatus.new.any_phone_vendor_outage?
+      return idv_gpo_url if VendorStatus.new.gpo_only?
       idv_phone_url
     end
 

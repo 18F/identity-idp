@@ -49,6 +49,10 @@ class VendorStatus
     all_vendor_outage?(PHONE_VENDORS)
   end
 
+  def gpo_only?
+    any_phone_vendor_outage? || IdentityConfig.store.feature_idv_force_gpo_verification_enabled
+  end
+
   def from_idv?
     from_idv
   end
