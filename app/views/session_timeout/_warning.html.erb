@@ -8,16 +8,42 @@
   <hr class="margin-bottom-4 border-info border-width-05" />
   <div class="margin-bottom-6">
     <p>
-      <%= modal_presenter.message %>
+      <%= t(
+            'message_html',
+            scope: modal_presenter.locale_scope,
+            time_left_in_session: render(
+              CountdownComponent.new(
+                expiration: Time.zone.now,
+                start_immediately: false,
+              ),
+            ),
+          ) %>
     </p>
     <p class="usa-sr-only" id="<%= c.description_id %>" role="timer" aria-live="polite" aria-atomic="true">
-      <%= modal_presenter.sr_message %>
+      <%= t(
+            'live_region_message_html',
+            scope: modal_presenter.locale_scope,
+            time_left_in_session: render(
+              CountdownComponent.new(
+                expiration: Time.zone.now,
+                update_interval: 30.seconds,
+                start_immediately: false,
+              ),
+            ),
+          ) %>
     </p>
   </div>
-  <%= button_tag modal_presenter.continue,
-                 id: 'session-keepalive-btn',
-                 class: 'usa-button usa-button--big usa-button--full-width margin-bottom-2' %>
-  <%= link_to modal_presenter.sign_out,
-              destroy_user_session_path,
-              class: 'usa-button usa-button--big usa-button--full-width usa-button--outline' %>
+  <%= render ButtonComponent.new(
+        type: :button,
+        id: 'session-keepalive-btn',
+        big: true,
+        full_width: true,
+        class: 'margin-bottom-2',
+      ).with_content(t('continue', scope: modal_presenter.locale_scope)) %>
+  <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) { link_to(destroy_user_session_path, **tag_options, &block) },
+        big: true,
+        full_width: true,
+        outline: true,
+      ).with_content(t('sign_out', scope: modal_presenter.locale_scope)) %>
 <% end %>
