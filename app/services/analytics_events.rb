@@ -2905,13 +2905,11 @@ module AnalyticsEvents
   # @param [Hash] vendor_status
   # Tracks when vendor has outage
   def vendor_outage(
-    redirect_from:,
     vendor_status:,
     **extra
   )
     track_event(
       'Vendor Outage',
-      redirect_from: redirect_from,
       vendor_status: vendor_status,
       **extra,
     )

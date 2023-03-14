@@ -1,11 +1,9 @@
 require 'rails_helper'
 
 describe VendorStatus do
-  let(:from) { nil }
-  let(:from_idv) { nil }
   let(:sp) { nil }
   subject(:vendor_status) do
-    VendorStatus.new(from: from, from_idv: from_idv, sp: sp)
+    VendorStatus.new(sp: sp)
   end
 
   it 'raises an error if passed an unknown vendor' do
@@ -57,32 +55,6 @@ describe VendorStatus do
 
       it 'returns the correct message' do
         expect(subject.outage_message).to eq I18n.t('vendor_outage.blocked.idv.generic')
-      end
-    end
-
-    context 'user coming from idv flow' do
-      let(:from) { :welcome }
-      let(:from_idv) { true }
-
-      context 'no service_provider in session' do
-        it 'returns the correct message' do
-          expect(subject.outage_message).to eq(
-            I18n.t('vendor_outage.blocked.idv.without_sp'),
-          )
-        end
-      end
-
-      context 'with service_provider in session' do
-        let(:sp) { create(:service_provider) }
-
-        it 'returns the correct message tailored to the service provider' do
-          expect(subject.outage_message).to eq(
-            I18n.t(
-              'vendor_outage.blocked.idv.with_sp',
-              service_provider: sp.friendly_name,
-            ),
-          )
-        end
       end
     end
   end
@@ -171,14 +143,6 @@ describe VendorStatus do
       it 'returns default phone outage message' do
         expect(outage_message).to eq(t('vendor_outage.blocked.phone.default'))
       end
-
-      context 'from idv' do
-        let(:from_idv) { true }
-
-        it 'returns idv phone outage message' do
-          expect(outage_message).to eq(t('vendor_outage.blocked.phone.idv'))
-        end
-      end
     end
   end
 
@@ -187,7 +151,6 @@ describe VendorStatus do
       analytics = FakeAnalytics.new
       expect(analytics).to receive(:track_event).with(
         'Vendor Outage',
-        redirect_from: from,
         vendor_status: VendorStatus::ALL_VENDORS.index_with do |_vendor|
           satisfy { |status| IdentityConfig::VENDOR_STATUS_OPTIONS.include?(status) }
         end,
