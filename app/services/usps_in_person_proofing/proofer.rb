@@ -154,9 +154,11 @@ module UspsInPersonProofing
           retrieve_token!
         end
       else
-        # TODO: implement a refresh for local tokens
-        # Might have to use send and a private method to check expiration time.  I couldn't find a non-private method to detect when an items in a Rails cache expires.
-        # https://stackoverflow.com/questions/39868775/get-expiration-time-of-rails-cached-item/69159992#69159992
+        normalized_key = Rails.cache.send(:normalize_key, AUTH_TOKEN_CACHE_KEY)
+        token_expires_at = Rails.cache.send(:read_entry, normalized_key)&.expires_at
+        if !token_expires_at.nil? && (token_expires_at <= AUTH_TOKEN_REFRESH_THRESHOLD)
+          retrieve_token!
+        end
       end
       {
         'Authorization' => token,
