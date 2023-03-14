@@ -29,55 +29,45 @@ module Reporting
     # @return [Array<Array<Types::ResultField>>]
     def fetch(query:, from:, to:)
       results = Concurrent::Array.new
-      in_progress = Concurrent::Hash.new(0)
+      queue = Queue.new
 
-      thread_pool = Concurrent::FixedThreadPool.new(num_threads, fallback_policy: :abort)
-
-      slice_time_range(from:, to:).tap do |ranges|
-        logger.info("starting query, num_ranges=#{ranges.size} num_threads=#{num_threads}")
-      end.each do |range|
-        logger.info("enqueing range=#{range}")
-        in_progress[range] += 1
-        thread_pool.post { work_one(range:, thread_pool:, results:, orig_range: range) }
+      slice_time_range(from:, to:).map do |range|
+        queue << range
       end
 
-      while (num_in_progress = in_progress.count { |_k, v| v > 0 }).positive?
-        logger.info("waiting num_in_progress=#{num_in_progress}")
+      logger.info("starting query, queue_size=#{queue.length} num_threads=#{num_threads}")
+
+      threads = num_threads.times.map do |thread_idx|
+        Thread.new do
+          while (range = queue.pop)
+            start_time = range.begin.to_i
+            end_time = range.end.to_i
+
+            response = fetch_one(query:, start_time:, end_time:)
+
+            if ensure_complete_logs? && response.results.size == Reporting::CloudwatchQuery::MAX_LIMIT
+              logger.info("exact limit reached, bisecting: start_time=#{start_time} end_time=#{end_time}")
+              mid = midpoint(start_time:, end_time:)
+              queue << (start_time..mid)
+              queue << (mid..end_time)
+            else
+              results.concat(parse_results(response.results))
+            end
+          end
+
+          logger.info("thread done thread_idx=#{thread_idx}")
+
+          nil
+        end
+      end
+
+      until queue.empty?
         sleep wait_duration
       end
-
-      thread_pool.shutdown
-      thread_pool.wait_for_termination
+      queue.close
+      threads.map(&:value) # wait for all threads
 
       results
-    end
-
-    # @api private
-    def work_one(range:, thread_pool:, results:, orig_range:, in_progress:)
-      start_time = range.begin.to_i
-      end_time = range.end.to_i
-
-      response = fetch_one(query:, start_time:, end_time:)
-
-      logger.info("received results size=#{response.results.size}")
-
-      if ensure_complete_logs? && max_size?(response.results.size)
-        logger.info("exact limit reached, bisecting: start_time=#{start_time} end_time=#{end_time}")
-        mid = midpoint(start_time:, end_time:)
-
-        # -1 for the one that just finished, +2 for the two about to be enqueued
-        in_progress[orig_range] += 1
-
-        thread_pool.post do
-          work_one(range: (start_time..mid), thread_pool:, results:, orig_range:, in_progress:)
-        end
-        thread_pool.post do
-          work_one(range: (mid..end_time), thread_pool:, results:, orig_range:, in_progress:)
-        end
-      else
-        in_progress[orig_range] -= 1
-        results.concat(parse_results(response.results))
-      end
     end
 
     # @param [Reporting::CloudwatchQuery] query
@@ -102,12 +92,6 @@ module Reporting
     end
 
     private
-
-    # somehow sample responses returned 10,001 rows when we request 10000
-    def max_size?(size)
-      size == Reporting::CloudwatchQuery::MAX_LIMIT ||
-        size == (Reporting::CloudwatchQuery::MAX_LIMIT + 1)
-    end
 
     # Pulls out and parses the "@message" field as JSON
     # @param [Array<Array<Types::ResultField>>] results
