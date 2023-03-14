@@ -392,23 +392,41 @@ describe Profile do
     end
 
     context 'when the SP is the IRS' do
-      it 'logs an event' do
-        sp = create(:service_provider, :irs)
-        profile = create(
+      let(:sp) { create(:service_provider, :irs) }
+      let(:profile) do
+        create(
           :profile,
           user: user,
           active: false,
           fraud_review_pending: true,
           initiating_service_provider: sp,
         )
-        allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
+      end
 
-        expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_truthy
+      context 'and notify_user is true' do
+        it 'logs an event with manual_reject' do
+          allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
 
-        expect(profile.irs_attempts_api_tracker).to receive(:fraud_review_adjudicated).
-          with(decision: 'reject', fraud_fingerprint: hashed_uuid)
+          expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_truthy
 
-        profile.reject_for_fraud(notify_user: true)
+          expect(profile.irs_attempts_api_tracker).to receive(:fraud_review_adjudicated).
+            with(decision: 'manual_reject', fraud_fingerprint: hashed_uuid)
+
+          profile.reject_for_fraud(notify_user: true)
+        end
+      end
+
+      context 'and notify_user is false' do
+        it 'logs an event with automatic_reject' do
+          allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
+
+          expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_truthy
+
+          expect(profile.irs_attempts_api_tracker).to receive(:fraud_review_adjudicated).
+            with(decision: 'automatic_reject', fraud_fingerprint: hashed_uuid)
+
+          profile.reject_for_fraud(notify_user: false)
+        end
       end
     end
 

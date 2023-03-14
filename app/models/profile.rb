@@ -67,7 +67,7 @@ class Profile < ApplicationRecord
   def reject_for_fraud(notify_user:)
     update!(active: false, fraud_review_pending: false, fraud_rejection: true)
     irs_attempts_api_tracker&.fraud_review_adjudicated(
-      decision: 'reject',
+      decision: notify_user ? 'manual_reject' : 'automatic_reject',
       fraud_fingerprint: Digest::SHA1.hexdigest(user.uuid),
     )
     UserAlerts::AlertUserAboutAccountRejected.call(user) if notify_user
