@@ -78,7 +78,7 @@ production:
     <<: *defaults
     database: <%= IdentityConfig.store.database_name %>
     username: <%= IdentityConfig.store.database_username %>
-    host: <%= IdentityConfig.store.database_host %>
+    host: <%= IdentityConfig.store.database_socket.present? ?  IdentityConfig.store.database_socket : IdentityConfig.store.database_host %>
     password: <%= IdentityConfig.store.database_password %>
     pool: <%= primary_pool %>
     sslmode: 'verify-full'

@@ -1,8 +1,14 @@
 <div class="border-y border-primary-light bg-primary-lightest padding-y-3 text-center">
   <div class="bg-personal-key padding-top-4 margin-y-2">
     <div class="personal-key-block">
-      <% code.split('-').each do |word| %>
-        <% concat(content_tag(:strong, word, class: 'personal-key-block__code', data: { personal_key: '' })) %>
+      <% code_html = safe_join(
+           code.split('-').map { |word| content_tag(:strong, word, class: 'personal-key-block__code') },
+         ) %>
+      <% if local_assigns[:code_example] %>
+        <div class="usa-sr-only"><%= t('users.personal_key.accessible_labels.code_example') %></div>
+        <div aria-hidden="true"><%= code_html %></div>
+      <% else %>
+        <%= code_html %>
       <% end %>
     </div>
   </div>

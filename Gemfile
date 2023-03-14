@@ -52,7 +52,7 @@ gem 'rack-timeout', require: false
 gem 'redacted_struct'
 gem 'redis', '>= 3.2.0'
 gem 'redis-namespace'
-gem 'redis-session-store', '>= 0.11.4'
+gem 'redis-session-store', github: '18F/redis-session-store', tag: 'v0.12-18f'
 gem 'retries'
 gem 'rotp', '~> 6.1'
 gem 'rqrcode'
@@ -72,7 +72,7 @@ gem 'view_component', '~> 2.82.0'
 gem 'webauthn', '~> 2.5.2'
 gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
-gem 'yard'
+gem 'yard', require: false
 
 # This version of the zxcvbn gem matches the data and behavior of the zxcvbn NPM package.
 # It should not be updated without verifying that the behavior still matches JS version 4.4.2.

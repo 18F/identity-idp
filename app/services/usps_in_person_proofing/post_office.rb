@@ -4,7 +4,6 @@ module UspsInPersonProofing
     :city,
     :distance,
     :name,
-    :phone,
     :saturday_hours,
     :state,
     :sunday_hours,

@@ -1,7 +1,7 @@
 module IrsAttemptsApi
   class RedisClient
     cattr_accessor :redis_pool do
-      ConnectionPool.new(size: 10) do
+      ConnectionPool.new(size: IdentityConfig.store.redis_irs_attempt_api_pool_size) do
         Redis::Namespace.new(
           'irs-attempt-api',
           redis: Redis.new(url: IdentityConfig.store.redis_irs_attempt_api_url),

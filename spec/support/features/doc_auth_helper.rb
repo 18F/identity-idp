@@ -116,6 +116,13 @@ module DocAuthHelper
     attach_and_submit_images
   end
 
+  # yml_file example: 'spec/fixtures/puerto_rico_resident.yml'
+  def complete_document_capture_step_with_yml(proofing_yml)
+    attach_file I18n.t('doc_auth.headings.document_capture_front'), File.expand_path(proofing_yml)
+    attach_file I18n.t('doc_auth.headings.document_capture_back'), File.expand_path(proofing_yml)
+    click_on I18n.t('forms.buttons.submit.default')
+  end
+
   def complete_doc_auth_steps_before_email_sent_step
     allow(BrowserCache).to receive(:parse).and_return(mobile_device)
     complete_doc_auth_steps_before_upload_step

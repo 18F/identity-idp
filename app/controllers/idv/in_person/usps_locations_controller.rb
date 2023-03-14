@@ -104,7 +104,6 @@ module Idv
         params.require(:usps_location).permit(
           :formatted_city_state_zip,
           :name,
-          :phone,
           :saturday_hours,
           :street_address,
           :sunday_hours,
