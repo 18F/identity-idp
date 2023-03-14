@@ -38,7 +38,6 @@ feature 'doc auth verify_info step', :js do
   end
 
   it 'displays the expected content' do
-    binding.pry
     expect(page).to have_current_path(idv_verify_info_path)
     expect(page).to have_content(t('headings.verify'))
     expect(page).to have_content(t('step_indicator.flows.idv.verify_info'))
@@ -455,8 +454,8 @@ feature 'doc auth verify_info step', :js do
       click_idv_continue
       expect(page).to have_current_path(idv_gpo_path)
 
-      click_on 'Back'
-      expect(page).to have_current_path(idv_verify_info_path)
+      click_on 'Cancel'
+      expect(page).to have_current_path(idv_cancel_path(step: :gpo))
     end
   end
 end

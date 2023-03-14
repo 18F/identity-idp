@@ -70,6 +70,8 @@ module Idv
     end
 
     def check_for_outage
+      return if session[:skip_vendor_outage]
+
       vendor_status = VendorStatus.new
 
       redirect_to vendor_outage_url if any_proofing_vendor_outage?(vendor_status)

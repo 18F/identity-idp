@@ -26,6 +26,14 @@ module Idv
       current_user.decorate.pending_profile_requires_verification?
     end
 
+    def back_or_cancel_parameters
+      if VendorStatus.new.gpo_only?
+        { path: 'idv/doc_auth/cancel', step: 'gpo' }
+      else
+        { path: 'idv/shared/back', fallback_path: fallback_back_path }
+      end
+    end
+
     private
 
     def user_needs_address_otp_verification?

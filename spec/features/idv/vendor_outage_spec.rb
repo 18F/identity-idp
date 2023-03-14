@@ -14,7 +14,7 @@ feature 'vendor_outage_spec' do
       allow(IdentityConfig.store).to receive(:vendor_status_sms).
         and_return(:full_outage)
       allow(IdentityConfig.store).to receive(:vendor_status_phone).
-          and_return(:full_outage)
+        and_return(:full_outage)
     end
 
     it 'shows vendor outage page before idv welcome page' do

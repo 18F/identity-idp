@@ -42,4 +42,5 @@
       ],
     ) %>
 
-<%= render 'idv/shared/back', fallback_path: @presenter.fallback_back_path %>
+<% back_or_cancel_params = @presenter.back_or_cancel_parameters %>
+<%= render back_or_cancel_params.delete(:path), back_or_cancel_params %>
