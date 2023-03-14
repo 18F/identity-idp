@@ -35,7 +35,7 @@
           url: @authentication_options_path,
           text: t('two_factor_authentication.login_options_link_text'),
         },
-        @unconfirmed_phone && {
+        @use_another_phone_path && {
           url: @use_another_phone_path,
           text: t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
         },
