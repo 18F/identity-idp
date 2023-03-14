@@ -138,17 +138,16 @@ class Profile < ApplicationRecord
       ahoy: nil
     )
     if initiating_service_provider&.irs_attempts_api_enabled?
-      @irs_attempts_api_tracker
-        IrsAttemptsApi::Tracker.new(
-          session_id: nil,
-          request: nil,
-          user: user,
-          sp: initiating_service_provider,
-          cookie_device_uuid: nil,
-          sp_request_uri: nil,
-          enabled_for_session: true,
-          analytics: analytics,
-        )
+      @irs_attempts_api_tracker = IrsAttemptsApi::Tracker.new(
+        session_id: nil,
+        request: nil,
+        user: user,
+        sp: initiating_service_provider,
+        cookie_device_uuid: nil,
+        sp_request_uri: nil,
+        enabled_for_session: true,
+        analytics: analytics,
+      )
     end
   end
 
