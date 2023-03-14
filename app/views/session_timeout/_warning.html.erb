@@ -9,6 +9,8 @@
   <div class="margin-bottom-6">
     <p>
       <%= t(
+            # i18n-tasks-use t('notices.timeout_warning.signed_in.message_html')
+            # i18n-tasks-use t('notices.timeout_warning.partially_signed_in.message_html')
             'message_html',
             scope: modal_presenter.locale_scope,
             time_left_in_session: render(
@@ -21,6 +23,8 @@
     </p>
     <p class="usa-sr-only" id="<%= c.description_id %>" role="timer" aria-live="polite" aria-atomic="true">
       <%= t(
+            # i18n-tasks-use t('notices.timeout_warning.signed_in.live_region_message_html')
+            # i18n-tasks-use t('notices.timeout_warning.partially_signed_in.live_region_message_html')
             'live_region_message_html',
             scope: modal_presenter.locale_scope,
             time_left_in_session: render(
@@ -39,11 +43,19 @@
         big: true,
         full_width: true,
         class: 'margin-bottom-2',
-      ).with_content(t('continue', scope: modal_presenter.locale_scope)) %>
+      ).with_content(
+        # i18n-tasks-use t('notices.timeout_warning.signed_in.continue')
+        # i18n-tasks-use t('notices.timeout_warning.partially_signed_in.continue')
+        t('continue', scope: modal_presenter.locale_scope),
+      ) %>
   <%= render ButtonComponent.new(
         action: ->(**tag_options, &block) { link_to(destroy_user_session_path, **tag_options, &block) },
         big: true,
         full_width: true,
         outline: true,
-      ).with_content(t('sign_out', scope: modal_presenter.locale_scope)) %>
+      ).with_content(
+        # i18n-tasks-use t('notices.timeout_warning.signed_in.sign_out')
+        # i18n-tasks-use t('notices.timeout_warning.partially_signed_in.sign_out')
+        t('sign_out', scope: modal_presenter.locale_scope),
+      ) %>
 <% end %>
