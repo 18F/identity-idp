@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_07_203559) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_09_201053) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -26,6 +26,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_07_203559) do
     t.string "granted_token"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.string "sp_issuer"
     t.index ["cancelled_at", "granted_at", "requested_at"], name: "index_account_reset_requests_on_timestamps"
     t.index ["granted_token"], name: "index_account_reset_requests_on_granted_token", unique: true
     t.index ["request_token"], name: "index_account_reset_requests_on_request_token", unique: true
