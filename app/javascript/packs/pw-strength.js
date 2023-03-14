@@ -18,12 +18,12 @@ const snakeCase = (string) => string.replace(/[ -]/g, '_').replace(/\W/g, '').to
 // fallback if zxcvbn lookup fails / field is empty
 const fallback = ['pw-na', '...'];
 
-function clearErrors() {
-  const x = document.getElementsByClassName('error-message');
-  if (x.length > 0) {
-    x[0].innerHTML = '';
-  }
-}
+// function clearErrors() {
+//   const x = document.getElementsByClassName('error-message');
+//   if (x.length > 0) {
+//     x[0].innerHTML = '';
+//   }
+// }
 
 function getStrength(z) {
   // override the strength value to 2 if the password is < 12
@@ -125,7 +125,6 @@ export function getForbiddenPasswords(element) {
 
 function analyzePw() {
   const input = document.querySelector('.password-toggle__input');
-  const form = document.getElementById('new_password_form');
   const pwCntnr = document.getElementById('pw-strength-cntnr');
   const pwStrength = document.getElementById('pw-strength-txt');
   const pwFeedback = document.getElementById('pw-strength-feedback');
@@ -138,10 +137,18 @@ function analyzePw() {
   // thus, first step is unhiding it
   pwCntnr.className = '';
 
-  function updateUserFeedback(cls, strength, feedback) {
+  function updatePasswordFeedback(cls, strength, feedback) {
     pwCntnr.className = cls;
     pwStrength.innerHTML = strength;
     pwFeedback.innerHTML = feedback;
+  }
+
+  function validatePasswordField(score) {
+    if (score < 3) {
+      input.setCustomValidity(t('errors.messages.stronger_password'));
+    } else {
+      input.setCustomValidity('');
+    }
   }
 
   function checkPasswordStrength(password) {
@@ -149,19 +156,13 @@ function analyzePw() {
     const [cls, strength] = getStrength(z);
     const feedback = getFeedback(z);
 
-    updateUserFeedback(cls, strength, feedback);
+    validatePasswordField(z.score);
+    updatePasswordFeedback(cls, strength, feedback);
   }
 
   input.addEventListener('input', (e) => {
-    clearErrors();
+    // clearErrors();
     checkPasswordStrength(e.target.value);
-  });
-
-  form.addEventListener('submit', (e) => {
-    // TODO: Add additional check
-    e.preventDefault();
-    input.setCustomValidity(t('errors.messages.stronger_password'));
-    input.dispatchEvent(new CustomEvent('invalid'));
   });
 }
 
