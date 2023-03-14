@@ -4,6 +4,8 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
   include IdvHelper
   include DocAuthHelper
 
+  let(:phone_number) { '415-555-0199' }
+
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
     allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls).and_return(true)
@@ -23,9 +25,10 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
 
     perform_in_browser(:desktop) do
       user = sign_in_and_2fa_user
-      complete_doc_auth_steps_before_send_link_step
-      fill_in :doc_auth_phone, with: '415-555-0199'
-      click_idv_continue
+      complete_doc_auth_steps_before_upload_step
+      fill_in :doc_auth_phone, with: ''
+      fill_in :doc_auth_phone, with: phone_number
+      click_send_link
 
       expect(page).to have_content(t('doc_auth.headings.text_message'))
     end
@@ -66,9 +69,10 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
 
     perform_in_browser(:desktop) do
       user = sign_in_and_2fa_user
-      complete_doc_auth_steps_before_send_link_step
-      fill_in :doc_auth_phone, with: '415-555-0199'
-      click_idv_continue
+      complete_doc_auth_steps_before_upload_step
+      fill_in :doc_auth_phone, with: ''
+      fill_in :doc_auth_phone, with: phone_number
+      click_send_link
 
       expect(page).to have_content(t('doc_auth.headings.text_message'))
     end
@@ -83,9 +87,9 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
 
     perform_in_browser(:desktop) do
       expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
-      click_on t('doc_auth.buttons.use_phone')
-      fill_in :doc_auth_phone, with: '415-555-0199'
-      click_idv_continue
+      fill_in :doc_auth_phone, with: ''
+      fill_in :doc_auth_phone, with: phone_number
+      click_send_link
 
       expect(page).to have_content(t('doc_auth.headings.text_message'))
     end
