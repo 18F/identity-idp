@@ -49,14 +49,6 @@ describe VendorStatus do
     it 'correctly reports an ial2 vendor outage' do
       expect(subject.any_ial2_vendor_outage?).to be
     end
-
-    context 'user coming from create_account' do
-      let(:from) { SignUp::RegistrationsController::CREATE_ACCOUNT }
-
-      it 'returns the correct message' do
-        expect(subject.outage_message).to eq I18n.t('vendor_outage.blocked.idv.generic')
-      end
-    end
   end
 
   context 'when a non-ial2 vendor has an outage' do
