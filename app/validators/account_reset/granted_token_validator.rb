@@ -46,12 +46,12 @@ module AccountReset
       account_reset_request&.user || AnonymousUser.new
     end
 
-    def sp_issuer
-      account_reset_request&.sp_issuer
+    def requesting_issuer
+      account_reset_request&.requesting_issuer
     end
 
     def sp
-      @sp ||= ServiceProvider.find_by(issuer: sp_issuer)
+      @sp ||= ServiceProvider.find_by(issuer: requesting_issuer)
     end
   end
 end

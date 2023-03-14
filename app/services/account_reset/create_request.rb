@@ -1,8 +1,8 @@
 module AccountReset
   class CreateRequest
-    def initialize(user, sp_issuer)
+    def initialize(user, requesting_issuer)
       @user = user
-      @sp_issuer = sp_issuer
+      @requesting_issuer = requesting_issuer
     end
 
     def call
@@ -18,7 +18,7 @@ module AccountReset
 
     private
 
-    attr_reader :user, :sp_issuer
+    attr_reader :user, :requesting_issuer
 
     def create_request
       request = AccountResetRequest.create_or_find_by(user: user)
@@ -28,7 +28,7 @@ module AccountReset
         cancelled_at: nil,
         granted_at: nil,
         granted_token: nil,
-        sp_issuer: sp_issuer,
+        requesting_issuer: requesting_issuer,
       )
       request
     end

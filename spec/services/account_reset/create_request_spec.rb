@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe AccountReset::CreateRequest do
-  subject(:sp_issuer) { 'example-issuer' }
-  subject(:create_request) { described_class.new(user, sp_issuer) }
+  subject(:requesting_issuer) { 'example-issuer' }
+  subject(:create_request) { described_class.new(user, requesting_issuer) }
 
   describe '#call' do
     context 'when the user does not have a phone' do
@@ -25,14 +25,14 @@ RSpec.describe AccountReset::CreateRequest do
       end
     end
 
-    context 'when sp_issuer is passed' do
+    context 'when requesting_issuer is passed' do
       let(:user) { build(:user) }
 
-      it 'it stores sp_issuer' do
+      it 'it stores requesting_issuer' do
         create_request.call
         arr = AccountResetRequest.find_by(user_id: user.id)
 
-        expect(arr.sp_issuer).to eq sp_issuer
+        expect(arr.requesting_issuer).to eq requesting_issuer
       end
     end
   end

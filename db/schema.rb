@@ -26,7 +26,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_09_201053) do
     t.string "granted_token"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.string "sp_issuer"
+    t.string "requesting_issuer"
     t.index ["cancelled_at", "granted_at", "requested_at"], name: "index_account_reset_requests_on_timestamps"
     t.index ["granted_token"], name: "index_account_reset_requests_on_granted_token", unique: true
     t.index ["request_token"], name: "index_account_reset_requests_on_request_token", unique: true
