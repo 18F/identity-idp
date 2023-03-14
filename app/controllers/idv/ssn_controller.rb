@@ -38,7 +38,7 @@ module Idv
       if form_response.success?
         flow_session['pii_from_doc'][:ssn] = params[:doc_auth][:ssn]
         idv_session.invalidate_steps_after_ssn!
-        redirect_to idv_verify_info_url
+        redirect_to next_url
       else
         @error_message = form_response.first_error_message
         render :show, locals: extra_view_variables
@@ -54,6 +54,14 @@ module Idv
     end
 
     private
+
+    def next_url
+      if @pii[:state] == 'PR'
+        idv_address_url
+      else
+        idv_verify_info_url
+      end
+    end
 
     def analytics_arguments
       {

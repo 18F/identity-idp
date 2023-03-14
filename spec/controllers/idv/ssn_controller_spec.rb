@@ -110,6 +110,14 @@ describe Idv::SsnController do
         expect(flow_session['pii_from_doc'][:ssn]).to eq(ssn)
       end
 
+      it 'redirects to address controller for Puerto Rico addresses' do
+        flow_session['pii_from_doc'][:state] = 'PR'
+
+        put :update, params: params
+
+        expect(response).to redirect_to(idv_address_url)
+      end
+
       it 'sends analytics_submitted event with correct step count' do
         get :show
         put :update, params: params

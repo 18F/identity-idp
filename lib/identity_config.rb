@@ -359,6 +359,7 @@ class IdentityConfig
     config.add(:recovery_code_length, type: :integer)
     config.add(:recurring_jobs_disabled_names, type: :json)
     config.add(:redis_irs_attempt_api_url)
+    config.add(:redis_irs_attempt_api_pool_size, type: :integer)
     config.add(:redis_throttle_url)
     config.add(:redis_url)
     config.add(:redis_pool_size, type: :integer)
