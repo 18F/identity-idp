@@ -109,21 +109,22 @@ module UspsInPersonProofing
     # @return [String] the token
     def retrieve_token!
       body = request_token
-      expires_at = Time.zone.now + body['expires_in']
       token = "#{body['token_type']} #{body['access_token']}"
-      Rails.cache.write(AUTH_TOKEN_CACHE_KEY, token, expires_at: expires_at)
-      # If using a redis cache we have to manually set the expires_at. This is because we aren't
-      # using a dedicated Redis cache and instead are just using our existing Redis server with
-      # mixed usage patterns. Without this cache entries don't expire.
-      # More at https://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html
-      Rails.cache.try(:redis)&.expireat(AUTH_TOKEN_CACHE_KEY, expires_at.to_i)
+      # subtract a small amount of time to avoid bad timing with expiration?
+      Rails.cache.write(AUTH_TOKEN_CACHE_KEY, token, expires_in: body['expires_in'])
       token
     end
 
     # Returns an auth token. The token will be renewed first if it has expired.
     # @return [String] Auth token
     def token
-      Rails.cache.read(AUTH_TOKEN_CACHE_KEY) || retrieve_token!
+      cached_token = Rails.cache.read(AUTH_TOKEN_CACHE_KEY)
+
+      if cached_token.present?
+        cached_token
+      else
+        retrieve_token!
+      end
     end
 
     private
@@ -155,10 +156,6 @@ module UspsInPersonProofing
     # already cached.
     # @return [Hash] Headers to add to USPS requests
     def dynamic_headers
-      token_remaining_time = Rails.cache.redis.ttl(AUTH_TOKEN_CACHE_KEY)
-      if token_remaining_time != -2 && token_remaining_time <= AUTH_TOKEN_REFRESH_THRESHOLD
-        retrieve_token!
-      end
       {
         'Authorization' => token,
         'RequestID' => request_id,
