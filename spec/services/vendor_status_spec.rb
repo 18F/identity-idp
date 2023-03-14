@@ -143,6 +143,7 @@ describe VendorStatus do
       analytics = FakeAnalytics.new
       expect(analytics).to receive(:track_event).with(
         'Vendor Outage',
+        redirect_from: nil,
         vendor_status: VendorStatus::ALL_VENDORS.index_with do |_vendor|
           satisfy { |status| IdentityConfig::VENDOR_STATUS_OPTIONS.include?(status) }
         end,
