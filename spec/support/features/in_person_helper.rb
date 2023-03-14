@@ -7,7 +7,12 @@ module InPersonHelper
 
   GOOD_FIRST_NAME = Idp::Constants::MOCK_IDV_APPLICANT[:first_name]
   GOOD_LAST_NAME = Idp::Constants::MOCK_IDV_APPLICANT[:last_name]
+  # the date in the format '1938-10-06'
   GOOD_DOB = Idp::Constants::MOCK_IDV_APPLICANT[:dob]
+  # the date in the format 'October 6, 1938'
+  GOOD_DOB_FORMATTED_EVENT = I18n.l(
+    Date.parse(GOOD_DOB), format: I18n.t('time.formats.event_date')
+  )
   GOOD_STATE_ID_JURISDICTION = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION
   GOOD_STATE_ID_NUMBER = Idp::Constants::MOCK_IDV_APPLICANT[:state_id_number]
 
