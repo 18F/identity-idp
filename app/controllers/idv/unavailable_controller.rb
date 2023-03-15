@@ -1,5 +1,7 @@
 module Idv
   class UnavailableController < ApplicationController
+    ALLOWED_FROM_LOCATIONS = [SignUp::RegistrationsController::CREATE_ACCOUNT]
+
     def attempt_redirect
       if FeatureManagement.idv_available?
         if from_create_account?
@@ -23,14 +25,14 @@ module Idv
         },
         redirect_from: from,
       )
-      render 'idv/unavailable', status: :service_unavailable
+
+      render 'idv/unavailable/show', status: :service_unavailable
     end
 
     private
 
     def from
-      allowed = [SignUp::RegistrationsController::CREATE_ACCOUNT]
-      params[:from] if params[:from].present? && allowed.include?(params[:from])
+      params[:from] if ALLOWED_FROM_LOCATIONS.include?(params[:from])
     end
 
     def from_create_account?
