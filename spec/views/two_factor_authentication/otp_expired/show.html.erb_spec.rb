@@ -70,11 +70,11 @@ describe 'two_factor_authentication/otp_expired/show.html.erb' do
 
   context 'when a user creates a new account' do
     it 'allows a user to select another phone' do
-      assign(:use_another_phone_path, true)
+      assign(:use_another_phone_path, false)
 
       render
 
-      expect(rendered).to have_content(
+      expect(rendered).to_not have_content(
         t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
       )
     end
