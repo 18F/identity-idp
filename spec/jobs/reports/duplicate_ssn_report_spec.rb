@@ -86,6 +86,7 @@ RSpec.describe Reports::DuplicateSsnReport do
         expect(row['profile_active']).to eq(profile.active.to_s)
         expect(row['ssn_fingerprint']).to eq(ssn_fingerprint2)
         expect(row['count_ssn_fingerprint']).to eq('3')
+        expect(row['count_active_ssn_fingerprint']).to eq('1')
       end
     end
   end
