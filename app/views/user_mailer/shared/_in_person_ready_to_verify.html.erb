@@ -21,6 +21,13 @@
       <td>
         <h3 class="font-heading-md text-bold"><%= t('in_person_proofing.process.barcode.heading') %></h3>
         <p><%= t('in_person_proofing.process.barcode.info') %></p>
+        <%= image_tag(
+          asset_url('logo.svg'),
+          alt: APP_NAME,
+          class: 'display-block',
+          width: 155,
+          height: 21,
+        ) %>
         <%= render BarcodeComponent.new(
               barcode_data: @presenter.enrollment_code,
               barcode_image_url: @presenter.barcode_image_url,
