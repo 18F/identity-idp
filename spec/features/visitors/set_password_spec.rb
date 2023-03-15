@@ -97,6 +97,7 @@ feature 'Visitor sets password during signup' do
     scenario 'visitor gets enter a stronger password message', js: true do
       fill_in t('forms.password'), with: 'badpwd'
       click_button t('forms.buttons.continue')
+
       message = find('input.password-toggle__input').native.attribute('validationMessage')
       expect(message).to eq t('errors.messages.stronger_password')
     end
