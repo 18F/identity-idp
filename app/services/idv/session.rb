@@ -170,7 +170,7 @@ module Idv
     end
 
     def invalidate_steps_after_verify_info!
-      address_verification_mechanism = 'phone'
+      session[:address_verification_mechanism] = 'phone'
       invalidate_phone_step!
     end
 
