@@ -610,7 +610,6 @@ describe Idv::ReviewController do
         end
 
         it 'redirects to come back later page' do
-          allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).and_return(true)
           put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
           expect(response).to redirect_to idv_come_back_later_url
