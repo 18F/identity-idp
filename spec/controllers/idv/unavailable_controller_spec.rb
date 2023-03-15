@@ -34,7 +34,7 @@ describe Idv::UnavailableController, type: :controller do
     end
 
     it 'renders the view' do
-      expect(response).to render_template('idv/unavailable')
+      expect(response).to render_template('idv/unavailable/show')
     end
 
     context 'coming from the create account page' do
@@ -55,7 +55,7 @@ describe Idv::UnavailableController, type: :controller do
         )
       end
       it 'renders the view' do
-        expect(response).to render_template('idv/unavailable')
+        expect(response).to render_template('idv/unavailable/show')
       end
     end
 
