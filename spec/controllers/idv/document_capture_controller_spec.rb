@@ -8,7 +8,7 @@ describe Idv::DocumentCaptureController do
       'pii_from_doc' => Idp::Constants::MOCK_IDV_APPLICANT.dup,
       :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
       :flow_path => 'standard',
-      'Idv::Steps::AgreementStep' => true, }
+      'Idv::Steps::AgreementStep' => true }
   end
 
   let(:user) { create(:user) }
@@ -92,7 +92,6 @@ describe Idv::DocumentCaptureController do
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end
 
-
       it 'updates DocAuthLog document_capture_view_count' do
         doc_auth_log = DocAuthLog.create(user_id: user.id)
 
@@ -137,7 +136,6 @@ describe Idv::DocumentCaptureController do
 
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end
-
 
       it 'updates DocAuthLog document_capture_submit_count' do
         doc_auth_log = DocAuthLog.create(user_id: user.id)
