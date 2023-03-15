@@ -179,7 +179,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
       let(:should_proof_state_id) { false }
 
       it 'does not make an AAMVA request' do
-        stub_vendor_requests => { aamva_stub: }
+        stub_vendor_requests
 
         perform
 
@@ -196,7 +196,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_state_id[:vendor_name]).to eq('UnsupportedJurisdiction')
         expect(result_context_stages_state_id[:success]).to eq(true)
 
-        expect(aamva_stub).to_not have_been_requested
+        expect(@aamva_stub).to_not have_been_requested
       end
     end
 
@@ -204,7 +204,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
       let(:proofing_device_profiling) { :disabled }
 
       it 'does not make a request to threatmetrix' do
-        stub_vendor_requests => { threatmetrix_stub: }
+        stub_vendor_requests
 
         perform
 
@@ -220,7 +220,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         # result[:context][:stages][:threatmetrix]
         expect(result_context_stages_threatmetrix).to be_nil
 
-        expect(threatmetrix_stub).to_not have_been_requested
+        expect(@threatmetrix_stub).to_not have_been_requested
       end
     end
 
@@ -228,7 +228,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
       let(:threatmetrix_session_id) { nil }
 
       it 'does not make a request to threatmetrix' do
-        stub_vendor_requests => { threatmetrix_stub: }
+        stub_vendor_requests
 
         perform
 
@@ -244,19 +244,19 @@ RSpec.describe ResolutionProofingJob, type: :job do
         # result[:context][:stages][:threatmetrix]
         expect(result_context_stages_threatmetrix).to be_nil
 
-        expect(threatmetrix_stub).to_not have_been_requested
+        expect(@threatmetrix_stub).to_not have_been_requested
       end
     end
 
     context 'a stale job' do
       it 'bails and does not do any proofing' do
-        stub_vendor_requests => { aamva_stub:, instant_verify_stub:, threatmetrix_stub: }
+        stub_vendor_requests
 
         instance.enqueued_at = 10.minutes.ago
 
-        expect(aamva_stub).to_not have_been_requested
-        expect(instant_verify_stub).to_not have_been_requested
-        expect(threatmetrix_stub).to_not have_been_requested
+        expect(@aamva_stub).to_not have_been_requested
+        expect(@instant_verify_stub).to_not have_been_requested
+        expect(@threatmetrix_stub).to_not have_been_requested
 
         expect { perform }.to raise_error(JobHelpers::StaleJobHelper::StaleJobError)
       end
@@ -268,11 +268,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
       aamva_response: AamvaFixtures.verification_response
     )
       allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
-      {
-        instant_verify_stub: stub_instant_verify_request(instant_verify_response),
-        threatmetrix_stub: stub_threatmetrix_request(threatmetrix_response),
-        aamva_stub: stub_aamva_request(aamva_response),
-      }
+      @instant_verify_stub = stub_instant_verify_request(instant_verify_response)
+      @threatmetrix_stub = stub_threatmetrix_request(threatmetrix_response)
+      @aamva_stub = stub_aamva_request(aamva_response)
     end
 
     def stub_instant_verify_request(instant_verify_response)
