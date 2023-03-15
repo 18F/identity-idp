@@ -15,9 +15,9 @@ describe Idv::UnavailableController, type: :controller do
       get :show, params: params
     end
 
-    it 'returns 503 Service Unavailable status' do
-      # https://http.cat/503
-      expect(response.status).to eql(503)
+    it 'returns 200 OK' do
+      # https://http.cat/200
+      expect(response.status).to eql(200)
     end
 
     it 'logs an analytics event' do

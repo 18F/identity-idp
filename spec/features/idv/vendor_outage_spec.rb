@@ -28,7 +28,7 @@ feature 'vendor_outage_spec' do
         sign_in_user(user_with_2fa)
         fill_in_code_with_last_phone_otp
         click_submit_default
-        expect(page).to have_http_status(503)
+        expect(page).to have_http_status(200)
         expect(page).to have_content(
           t('idv.unavailable.idv_explanation.with_sp', sp: 'Test SP'),
         )

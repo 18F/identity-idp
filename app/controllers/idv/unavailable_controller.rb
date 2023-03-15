@@ -18,8 +18,6 @@ module Idv
         },
         redirect_from: from,
       )
-
-      render status: :service_unavailable
     end
 
     private
