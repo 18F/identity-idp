@@ -18,8 +18,7 @@ describe Idv::ReviewController do
       current_user: user,
       service_provider: nil,
     )
-    idv_session.profile_confirmation = true
-    idv_session.resolution_successful = 'phone'
+    idv_session.resolution_successful = true
     idv_session.vendor_phone_confirmation = true
     idv_session.user_phone_confirmation = true
     idv_session.applicant = applicant.with_indifferent_access

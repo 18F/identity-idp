@@ -110,7 +110,7 @@ module Idv
       def confirm_profile_not_already_confirmed
         # todo: should this instead be like so?
         # return unless idv_session.resolution_successful == true
-        return unless idv_session.profile_confirmation == true
+        return unless idv_session.verify_info_step_complete?
         redirect_to idv_phone_url
       end
 

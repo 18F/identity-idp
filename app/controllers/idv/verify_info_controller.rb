@@ -128,7 +128,7 @@ module Idv
     # copied from verify_base_step. May want reconciliation with phone_step
     def process_async_state(current_async_state)
       if current_async_state.none?
-        idv_session.resolution_successful = false
+        idv_session.invalidate_verify_info_step!
         render :show
       elsif current_async_state.in_progress?
         render 'shared/wait'
@@ -138,7 +138,7 @@ module Idv
         render :show
 
         delete_async
-        idv_session.resolution_successful = false
+        idv_session.invalidate_verify_info_step!
 
         log_idv_verification_submitted_event(
           success: false,
