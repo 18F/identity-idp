@@ -159,6 +159,9 @@ class ResolutionProofingJob < ApplicationJob
 
   def user_can_pass_after_state_id_check?(resolution_result)
     return true if resolution_result.success?
+    # For failed IV results, this method validates that the user is eligible to pass if the
+    # failed attributes are covered by the same attributes in a successful AAMVA response
+    # aka the Get-to-Yes w/ AAMVA feature.
     return false unless resolution_result.failed_result_can_pass_with_additional_verification?
 
     results_that_cannot_pass_aamva =
