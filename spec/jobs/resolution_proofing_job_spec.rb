@@ -143,6 +143,81 @@ RSpec.describe ResolutionProofingJob, type: :job do
       end
     end
 
+    context 'with a InstantVerify result with failed attributes covered by the AAMVA result' do
+      it 'stores a successful result' do
+        stub_vendor_requests(
+          instant_verify_response: LexisNexisFixtures.instant_verify_address_fail_response_json,
+          aamva_response: AamvaFixtures.verification_response,
+        )
+
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+        result_context = result[:context]
+        result_context_stages = result_context[:stages]
+        result_context_stages_resolution = result_context_stages[:resolution]
+        result_context_stages_state_id = result_context_stages[:state_id]
+
+        expect(result[:success]).to be true
+        expect(result[:errors].keys).to eq([:base, :InstantVerify])
+        expect(result[:exception]).to be_nil
+        expect(result[:timed_out]).to be false
+
+        # result[:context][:stages][:resolution]
+        expect(result_context_stages_resolution[:vendor_name]).
+          to eq('lexisnexis:instant_verify')
+        expect(result_context_stages_resolution[:success]).to eq(false)
+        expect(result_context_stages_resolution[:can_pass_with_additional_verification]).
+          to eq(true)
+        expect(result_context_stages_resolution[:attributes_requiring_additional_verification]).
+          to eq(['address'])
+
+        # result[:context][:stages][:state_id]
+        expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
+        expect(result_context_stages_state_id[:success]).to eq(true)
+        expect(result_context_stages_state_id[:verified_attributes]).to eq(
+          %w[address state_id_number state_id_type dob last_name first_name],
+        )
+      end
+    end
+
+    context 'with a InstantVerify result with failed attributes that cannot be covered by AAMVA' do
+      it 'stores an unsuccessful result and does not make an AAMVA request' do
+        stub_vendor_requests(
+          instant_verify_response:
+            LexisNexisFixtures.instant_verify_identity_not_found_response_json,
+        )
+
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+        result_context = result[:context]
+        result_context_stages = result_context[:stages]
+        result_context_stages_resolution = result_context_stages[:resolution]
+        result_context_stages_state_id = result_context_stages[:state_id]
+
+        expect(result[:success]).to be false
+        expect(result[:errors].keys).to eq([:base, :InstantVerify])
+        expect(result[:exception]).to be_nil
+        expect(result[:timed_out]).to be false
+
+        # result[:context][:stages][:resolution]
+        expect(result_context_stages_resolution[:vendor_name]).
+          to eq('lexisnexis:instant_verify')
+        expect(result_context_stages_resolution[:success]).to eq(false)
+        expect(result_context_stages_resolution[:can_pass_with_additional_verification]).
+          to eq(true)
+        expect(result_context_stages_resolution[:attributes_requiring_additional_verification]).
+          to match(['address', 'dead', 'dob', 'ssn'])
+
+        # result[:context][:stages][:state_id]
+        expect(result_context_stages_state_id[:vendor_name]).to eq('UnsupportedJurisdiction')
+        expect(result_context_stages_state_id[:success]).to eq(true)
+
+        expect(@aamva_stub).to_not have_been_requested
+      end
+    end
+
     context 'with a failed AAMVA result' do
       it 'stores an unsuccessful result' do
         stub_vendor_requests(aamva_response: AamvaFixtures.verification_response_namespaced_failure)
