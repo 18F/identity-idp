@@ -165,7 +165,7 @@ class ResolutionProofingJob < ApplicationJob
     return false unless resolution_result.failed_result_can_pass_with_additional_verification?
 
     results_that_cannot_pass_aamva =
-      resolution_result.attributes_requiring_additional_verification - [:address, :dob]
+      resolution_result.attributes_requiring_additional_verification - [:address, :dob, :state_id_number]
 
     results_that_cannot_pass_aamva.blank?
   end
