@@ -96,5 +96,18 @@ describe TwoFactorAuthentication::OtpExpiredController do
         expect(assigns(:use_another_phone_path)).to eq(add_phone_path)
       end
     end
+
+    context 'with an existing account' do
+      before { allow(controller).to receive(:unconfirmed_path?).and_return(false) }
+
+      it 'user_another_path is nil' do
+        user = create(:user, :with_phone)
+        stub_sign_in_before_2fa(user)
+
+        get :show
+        
+        expect(assigns(:use_another_phone_path)).to be_nil
+      end
+    end
   end
 end
