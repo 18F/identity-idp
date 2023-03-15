@@ -72,30 +72,28 @@ describe TwoFactorAuthentication::OtpExpiredController do
     end
 
     context 'authentication options redirect' do
-      let(:mfa_selections) { nil }
+      before { allow(controller).to receive(:new_account_mfa_registration?).and_return(true) }
 
       it 'sets authentication options path correctly' do
-        user = create(:user, :signed_up)
+        user = create(:user)
         stub_sign_in_before_2fa(user)
 
         get :show
 
-        expect(assigns(:authentication_options_path)).to eq(login_two_factor_options_url)
+        expect(assigns(:authentication_options_path)).to eq(authentication_methods_setup_url)
       end
     end
 
-    context 'unconfirmed phone option' do
-      before do
-        @user = create(:user)
-        @show_use_another_phone_option = '+1 (202) 555-1213'
-      end
+    context 'choose another phone option' do
+      before { allow(controller).to receive(:adding_phone_to_existing_account?).and_return(true) }
 
       it 'assigns the value correctly' do
-        stub_sign_in_before_2fa(@user)
-        subject.user_session[:show_use_another_phone_option] = @show_use_another_phone_option
+        user = create(:user, :with_phone)
+        stub_sign_in_before_2fa(user)
 
         get :show
-        expect(assigns(:show_use_another_phone_option)).to eq(false)
+
+        expect(assigns(:use_another_phone_path)).to eq(add_phone_path)
       end
     end
   end
