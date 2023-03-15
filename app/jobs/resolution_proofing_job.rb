@@ -138,7 +138,7 @@ class ResolutionProofingJob < ApplicationJob
     state_id_result = Proofing::StateIdResult.new(
       success: true, errors: {}, exception: nil, vendor_name: 'UnsupportedJurisdiction',
     )
-    if should_proof_state_id
+    if should_proof_state_id && user_can_pass_after_state_id_check?(resolution_result)
       timer.time('state_id') do
         state_id_result = state_id_proofer.proof(applicant_pii)
       end
@@ -155,6 +155,17 @@ class ResolutionProofingJob < ApplicationJob
       resolution_success: resolution_result.success?,
       state_id_success: state_id_result.success?,
     )
+  end
+
+  def user_can_pass_after_state_id_check?(resolution_result)
+    return true if resolution_result.success?
+    return false unless resolution_result.failed_result_can_pass_with_additional_verification?
+
+    results_that_cannot_pass_aamva =
+      resolution_result.attributes_requiring_additional_verification - [:address, :dob]
+    return if results_that_cannot_pass_aamva.any?
+
+    true
   end
 
   def resolution_proofer
