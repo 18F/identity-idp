@@ -214,8 +214,8 @@ es:
       secure_account: Vamos a encriptar su cuenta con su contraseña. La encriptación
         significa que sus datos están protegidos y solo usted podrá acceder o
         modificar su información.
-      ssn: Necesitamos su número de Seguro Social para verificar su nombre, fecha de
-       nacimiento y habla a.
+      ssn: Necesitamos tu número de Seguro Social para validar tu nombre, fecha de
+       nacimiento y dirección.
       learn_more: Obtenga más información sobre cómo protegemos sus datos confidenciales
       tag: Recomendado
       take_picture: Use la cámara en su teléfono móvil y cargue imágenes de su
