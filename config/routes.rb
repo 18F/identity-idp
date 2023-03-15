@@ -301,7 +301,7 @@ Rails.application.routes.draw do
 
     get '/restricted' => 'banned_user#show', as: :banned_user
 
-    get '/errors/idv_unavilable' => 'idv/unavailable#attempt_redirect', as: :idv_unavailable
+    get '/errors/idv_unavilable' => 'idv/unavailable#show', as: :idv_unavailable
 
     scope '/verify', as: 'idv' do
       get '/' => 'idv#index'
