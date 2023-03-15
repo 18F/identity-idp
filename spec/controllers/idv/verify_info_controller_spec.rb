@@ -112,7 +112,7 @@ describe Idv::VerifyInfoController do
 
     context 'when the user has already verified their info' do
       it 'redirects to the review controller' do
-        controller.idv_session.profile_confirmation = true
+        controller.idv_session.resolution_successful = true
 
         get :show
 
