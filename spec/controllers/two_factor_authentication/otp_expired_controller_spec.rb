@@ -93,7 +93,6 @@ describe TwoFactorAuthentication::OtpExpiredController do
         get :show
         expect(assigns(:use_another_phone_path)).to eq(phone_setup_path)
       end
-
     end
 
     context 'with an existing account' do
@@ -108,7 +107,7 @@ describe TwoFactorAuthentication::OtpExpiredController do
         stub_sign_in_before_2fa(user)
 
         get :show
-        
+
         expect(assigns(:use_another_phone_path)).to be_nil
       end
     end
