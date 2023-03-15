@@ -52,6 +52,7 @@ module Reports
           uuid
           account_created_at
           identity_verified_at
+          profile_active
           ssn_fingerprint
           count_ssn_fingerprint
         ]
@@ -65,6 +66,7 @@ module Reports
             profile.user.uuid,
             profile.user.created_at.in_time_zone('UTC').iso8601,
             profile.activated_at.in_time_zone('UTC').iso8601,
+            profile.active,
             profile.ssn_signature,
             ssn_count,
           ]

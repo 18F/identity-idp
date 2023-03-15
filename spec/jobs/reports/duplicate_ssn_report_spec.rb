@@ -51,7 +51,6 @@ RSpec.describe Reports::DuplicateSsnReport do
         2.times.map do
           create(
             :profile,
-            :active,
             ssn_signature: ssn_fingerprint2,
             activated_at: report_date - 10.days,
           ).tap(&:reload)
@@ -84,6 +83,7 @@ RSpec.describe Reports::DuplicateSsnReport do
         expect(row['uuid']).to eq(profile.user.uuid)
         expect(Time.zone.parse(row['account_created_at']).to_i).to eq(profile.user.created_at.to_i)
         expect(Time.zone.parse(row['identity_verified_at']).to_i).to eq(profile.activated_at.to_i)
+        expect(row['profile_active']).to eq(profile.active.to_s)
         expect(row['ssn_fingerprint']).to eq(ssn_fingerprint2)
         expect(row['count_ssn_fingerprint']).to eq('3')
       end
