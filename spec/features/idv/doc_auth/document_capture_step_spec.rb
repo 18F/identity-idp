@@ -150,8 +150,8 @@ feature 'doc auth document capture step', :js do
         },
       )
 
-      attach_file 'Front of your ID', 'app/assets/images/logo.png'
-      attach_file 'Back of your ID', 'app/assets/images/logo.png'
+      attach_file I18n.t('doc_auth.headings.document_capture_front'), 'app/assets/images/logo.png'
+      attach_file I18n.t('doc_auth.headings.document_capture_back'), 'app/assets/images/logo.png'
 
       form = page.find('#document-capture-form')
       front_url = form['data-front-image-upload-url']
@@ -208,7 +208,7 @@ feature 'doc auth document capture step', :js do
   end
 
   def next_step
-    idv_doc_auth_ssn_step
+    idv_ssn_url
   end
 
   def expect_costing_for_document

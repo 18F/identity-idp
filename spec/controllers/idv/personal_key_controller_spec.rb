@@ -13,7 +13,7 @@ describe Idv::PersonalKeyController do
       user: user,
       user_password: password,
     )
-    profile = profile_maker.save_profile(active: false)
+    profile = profile_maker.save_profile(active: false, fraud_review_needed: false)
     idv_session.pii = profile_maker.pii_attributes
     idv_session.profile_id = profile.id
     idv_session.personal_key = profile.personal_key
@@ -131,14 +131,7 @@ describe Idv::PersonalKeyController do
         subject.idv_session.address_verification_mechanism = 'gpo'
       end
 
-      it 'sets flash.now[:success]' do
-        get :show
-        expect(flash[:success]).to eq t('idv.messages.mail_sent')
-      end
-
       it 'does not show a flash in new gpo flow' do
-        allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).and_return(true)
-
         get :show
         expect(flash[:success]).to eq nil
       end
@@ -182,9 +175,12 @@ describe Idv::PersonalKeyController do
         patch :update
 
         expect(@analytics).to have_logged_event(
-          'IdV: personal key submitted', address_verification_method: nil,
-                                         deactivation_reason: nil,
-                                         proofing_components: nil
+          'IdV: personal key submitted',
+          address_verification_method: nil,
+          fraud_review_pending: false,
+          fraud_rejection: false,
+          deactivation_reason: nil,
+          proofing_components: nil,
         )
       end
     end
@@ -203,8 +199,6 @@ describe Idv::PersonalKeyController do
 
       context 'with gpo personal key after verification' do
         it 'redirects to sign up completed_url for a sp' do
-          allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).
-            and_return(true)
           allow(subject).to receive(:pending_profile?).and_return(false)
           subject.session[:sp] = { ial2: true }
 
@@ -232,6 +226,8 @@ describe Idv::PersonalKeyController do
         expect(@analytics).to have_logged_event(
           'IdV: personal key submitted',
           address_verification_method: nil,
+          fraud_review_pending: false,
+          fraud_rejection: false,
           deactivation_reason: 'gpo_verification_pending',
           proofing_components: nil,
         )
@@ -258,6 +254,8 @@ describe Idv::PersonalKeyController do
         expect(@analytics).to have_logged_event(
           'IdV: personal key submitted',
           address_verification_method: nil,
+          fraud_review_pending: false,
+          fraud_rejection: false,
           deactivation_reason: nil,
           proofing_components: nil,
         )
@@ -282,6 +280,8 @@ describe Idv::PersonalKeyController do
           expect(@analytics).to have_logged_event(
             'IdV: personal key submitted',
             address_verification_method: nil,
+            fraud_review_pending: false,
+            fraud_rejection: false,
             deactivation_reason: nil,
             proofing_components: nil,
           )
@@ -303,20 +303,21 @@ describe Idv::PersonalKeyController do
           expect(@analytics).to have_logged_event(
             'IdV: personal key submitted',
             address_verification_method: nil,
+            fraud_review_pending: false,
+            fraud_rejection: false,
             deactivation_reason: nil,
             proofing_components: nil,
           )
         end
       end
 
-      context 'device profiling fails' do
+      context 'device profiling gets sent to review' do
         before do
-          ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'reject')
-          profile.active = false
-          profile.deactivation_reason = :threatmetrix_review_pending
+          ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'review')
+          profile.deactivate_for_fraud_review
         end
 
-        it 'redirects to come back later path' do
+        it 'redirects to idv setup errors path' do
           patch :update
           expect(response).to redirect_to idv_setup_errors_path
         end
@@ -326,8 +327,35 @@ describe Idv::PersonalKeyController do
 
           expect(@analytics).to have_logged_event(
             'IdV: personal key submitted',
+            fraud_review_pending: true,
+            fraud_rejection: false,
             address_verification_method: nil,
-            deactivation_reason: 'threatmetrix_review_pending',
+            deactivation_reason: nil,
+            proofing_components: nil,
+          )
+        end
+      end
+
+      context 'device profiling fails' do
+        before do
+          ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'reject')
+          profile.deactivate_for_fraud_review
+        end
+
+        it 'redirects to idv setup errors path' do
+          patch :update
+          expect(response).to redirect_to idv_setup_errors_path
+        end
+
+        it 'logs key submitted event' do
+          patch :update
+
+          expect(@analytics).to have_logged_event(
+            'IdV: personal key submitted',
+            fraud_review_pending: true,
+            fraud_rejection: false,
+            address_verification_method: nil,
+            deactivation_reason: nil,
             proofing_components: nil,
           )
         end

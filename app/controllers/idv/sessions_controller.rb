@@ -13,6 +13,26 @@ module Idv
 
     private
 
+    def barcode_step?
+      params[:step] == 'barcode'
+    end
+
+    def enrollment
+      current_user.pending_in_person_enrollment
+    end
+
+    def extra_analytics_attributes
+      extra = {}
+      if barcode_step? && enrollment
+        extra.merge!(
+          cancelled_enrollment: true,
+          enrollment_code: enrollment.enrollment_code,
+          enrollment_id: enrollment.id,
+        )
+      end
+      extra
+    end
+
     def location_params
       params.permit(:step, :location).to_h.symbolize_keys
     end
@@ -37,7 +57,6 @@ module Idv
     def clear_session
       user_session['idv/doc_auth'] = {}
       user_session['idv/in_person'] = {}
-      user_session['idv/inherited_proofing'] = {}
       idv_session.clear
       Pii::Cacher.new(current_user, user_session).delete
     end
@@ -46,6 +65,7 @@ module Idv
       analytics.idv_start_over(
         step: location_params[:step],
         location: location_params[:location],
+        **extra_analytics_attributes,
       )
     end
   end

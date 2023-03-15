@@ -22,6 +22,8 @@ module Idv
       analytics.idv_personal_key_submitted(
         address_verification_method: address_verification_method,
         deactivation_reason: idv_session.profile&.deactivation_reason,
+        fraud_review_pending: idv_session.profile&.fraud_review_pending,
+        fraud_rejection: idv_session.profile&.fraud_rejection,
       )
       redirect_to next_step
     end
@@ -56,16 +58,14 @@ module Idv
 
     def finish_idv_session
       @code = personal_key
+      @personal_key_generated_at = current_user.personal_key_generated_at
+
       user_session[:personal_key] = @code
       idv_session.personal_key = nil
 
       irs_attempts_api_tracker.idv_personal_key_generated
 
-      if idv_session.address_verification_mechanism == 'gpo'
-        if !IdentityConfig.store.gpo_personal_key_after_otp
-          flash.now[:success] = t('idv.messages.mail_sent')
-        end
-      else
+      if idv_session.address_verification_mechanism != 'gpo'
         flash.now[:success] = t('idv.messages.confirm')
       end
       flash[:allow_confirmations_continue] = true
@@ -96,7 +96,7 @@ module Idv
 
     def blocked_by_device_profiling?
       !profile.active &&
-        profile.deactivation_reason == 'threatmetrix_review_pending'
+        profile.fraud_review_pending? || profile.fraud_rejection
     end
   end
 end

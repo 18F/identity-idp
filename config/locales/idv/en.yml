@@ -13,7 +13,6 @@ en:
       mail:
         resend: Send another letter
         send: Send a letter
-      send_confirmation_code: Continue
     cancel:
       actions:
         account_page: Go to account page
@@ -72,6 +71,9 @@ en:
       exceptions:
         internal_error: There was an internal error processing your request. Please try again.
         link: please contact us
+        post_office_search_error: We are having technical difficulties at the moment.
+          Try searching for a Post Office again. If this issue continues, come
+          back later.
         text_html: Please try again. If you keep getting these errors, %{link}.
       phone:
         fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,
@@ -108,7 +110,7 @@ en:
         - You’ll have to re-enter your personal information, like your name,
           state-issued ID, etc.
     form:
-      address1: Address
+      address1: Address line 1
       address2: Address line 2
       address2_optional: Address line 2 (optional)
       city: City
@@ -121,6 +123,8 @@ en:
       ssn_label_html: Social Security number
       state: State
       zipcode: ZIP Code
+    images:
+      come_back_later: Letter with a check mark
     index:
       id:
         need_html: If you’re creating an account, you’ll need a <strong>current
@@ -131,10 +135,10 @@ en:
         verified information, please %{link}.
       activated_link: contact us
       clear_and_start_over: Clear my information and start over
-      come_back_later_html: <p><strong>Letters typically take 3 to 7 business days to
-        arrive</strong><br /> through USPS First Class Mail.</p> <p>Once your
-        letter arrives, sign into %{app_name}, and enter your one-time code when
-        prompted.</p>
+      come_back_later_html: <p>Letters typically take <strong>3 to 7 business
+        days</strong> to arrive through USPS First Class Mail.</p> <p>Once your
+        letter arrives, sign in to %{app_name}, and enter your one-time code
+        when prompted.</p>
       come_back_later_no_sp_html: You can return to your <strong>%{app_name} account</strong> for now.
       come_back_later_password_html: <strong>Don’t forget your password.</strong><br
         /> If you reset your password, the one-time code in your letter will no
@@ -144,13 +148,11 @@ en:
       gpo:
         address_on_file_html: We will mail a letter with a <strong>one-time
           code</strong> to the address that you provided on the previous step.
+        info_alert: You’ll need to wait until your letter is delivered to finish
+          verifying your identity.
         resend: Send me another letter
         timeframe_html: Letters are sent the next business day via USPS First Class Mail
           and <strong>typically take 3 to 7 business days to arrive</strong>.
-      mail_sent: Your letter is on its way
-      otp_delivery_method:
-        phone_number_html: We’ll send a code to <strong>%{phone}</strong> to verify that
-          the phone number belongs to you.
       otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
       personal_key: This is your new personal key. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.
@@ -204,7 +206,6 @@ en:
         still_having_trouble: Still having trouble?
       options:
         add_new_photos: Add new photos of your state-issued ID
-        change_phone_number: Use a different phone number
         contact_support: Contact %{app_name} Support
         doc_capture_tips: More tips for adding photos of your ID
         get_help_at_sp: Get help at %{sp_name}

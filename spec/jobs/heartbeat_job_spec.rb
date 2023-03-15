@@ -13,10 +13,6 @@ RSpec.describe HeartbeatJob, type: :job do
         msg = JSON.parse(str, symbolize_names: true)
         expect(msg).to eq(
           name: 'queue_metric.good_job',
-          num_finished: 0,
-          num_unfinished: 0,
-          num_running: 0,
-          num_errors: 0,
         )
       end
 

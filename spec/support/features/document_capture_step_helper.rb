@@ -11,9 +11,9 @@ module DocumentCaptureStepHelper
     submit_images
   end
 
-  def attach_images(file = 'app/assets/images/logo.png')
-    attach_file t('doc_auth.headings.document_capture_front'), file
-    attach_file t('doc_auth.headings.document_capture_back'), file
+  def attach_images(file = Rails.root.join('app', 'assets', 'images', 'logo.png'))
+    attach_file t('doc_auth.headings.document_capture_front'), file, make_visible: true
+    attach_file t('doc_auth.headings.document_capture_back'), file, make_visible: true
   end
 
   def document_capture_form

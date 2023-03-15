@@ -4,7 +4,9 @@ describe PhoneRecaptchaValidator do
   let(:country_score_overrides_config) { {} }
   let(:score_threshold_config) { 0.2 }
   let(:parsed_phone) { Phonelib.parse('+15135551234') }
-  subject(:validator) { described_class.new(parsed_phone:) }
+  let(:recaptcha_version) { 3 }
+  let(:analytics) { FakeAnalytics.new }
+  subject(:validator) { described_class.new(parsed_phone:, recaptcha_version:, analytics:) }
   before do
     allow(IdentityConfig.store).to receive(:phone_recaptcha_country_score_overrides).
       and_return(country_score_overrides_config)
@@ -12,19 +14,54 @@ describe PhoneRecaptchaValidator do
       and_return(score_threshold_config)
   end
 
+  it 'passes instance variables to validator' do
+    recaptcha_validator = instance_double(RecaptchaValidator, valid?: true)
+    expect(RecaptchaValidator).to receive(:new).
+      with(
+        score_threshold: score_threshold_config,
+        analytics:,
+        recaptcha_version:,
+        extra_analytics_properties: {
+          phone_country_code: parsed_phone.country,
+        },
+      ).
+      and_return(recaptcha_validator)
+
+    validator.valid?('token')
+  end
+
+  context 'with custom recaptcha validator class' do
+    subject(:validator) do
+      described_class.new(
+        parsed_phone:,
+        recaptcha_version:,
+        analytics:,
+        validator_class: RecaptchaMockValidator,
+      )
+    end
+
+    it 'delegates to validator instance of the given class' do
+      recaptcha_validator = instance_double(RecaptchaMockValidator, valid?: true)
+      expect(RecaptchaMockValidator).to receive(:new).and_return(recaptcha_validator)
+      expect(recaptcha_validator).to receive(:valid?)
+
+      validator.valid?('token')
+    end
+  end
+
   describe '#valid?' do
     it 'is delegated to recaptcha validator' do
-      recaptcha_validator = RecaptchaValidator.new
+      recaptcha_validator = instance_double(RecaptchaValidator, valid?: true)
       expect(validator).to receive(:validator).and_return(recaptcha_validator)
       expect(recaptcha_validator).to receive(:valid?)
 
-      validator.valid?
+      validator.valid?('token')
     end
   end
 
   describe '#exempt?' do
     it 'is delegated to recaptcha validator' do
-      recaptcha_validator = RecaptchaValidator.new
+      recaptcha_validator = instance_double(RecaptchaValidator, exempt?: true)
       expect(validator).to receive(:validator).and_return(recaptcha_validator)
       expect(recaptcha_validator).to receive(:exempt?)
 

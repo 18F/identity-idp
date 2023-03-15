@@ -41,6 +41,11 @@ module TwoFactorAuthCode
       t('two_factor_authentication.phone_fallback.question')
     end
 
+    def otp_expired_path
+      return unless FeatureManagement.otp_expired_redirect_enabled?
+      login_two_factor_otp_expired_path
+    end
+
     def help_text
       ''
     end
@@ -99,9 +104,7 @@ module TwoFactorAuthCode
 
     attr_reader(
       :phone_number,
-      :account_reset_token,
       :confirmation_for_add_phone,
-      :voice_otp_delivery_unsupported,
     )
   end
 end

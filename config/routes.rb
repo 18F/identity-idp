@@ -119,6 +119,7 @@ Rails.application.routes.draw do
       get '/login/two_factor/sms/:opt_out_uuid/opt_in' => 'two_factor_authentication/sms_opt_in#new',
           as: :login_two_factor_sms_opt_in
       post '/login/two_factor/sms/:opt_out_uuid/opt_in' => 'two_factor_authentication/sms_opt_in#create'
+      get '/login/two_factor/otp_expired' => 'two_factor_authentication/otp_expired#show'
 
       get 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#prompt'
       post 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#decline'
@@ -250,7 +251,7 @@ Rails.application.routes.draw do
     get '/second_mfa_setup' => 'users/mfa_selection#index'
     patch '/second_mfa_setup' => 'users/mfa_selection#update'
     get '/phone_setup' => 'users/phone_setup#index'
-    patch '/phone_setup' => 'users/phone_setup#create'
+    post '/phone_setup' => 'users/phone_setup#create'
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
         as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
     get '/backup_code_refreshed' => 'users/backup_code_setup#refreshed'
@@ -305,8 +306,9 @@ Rails.application.routes.draw do
       post '/personal_key' => 'personal_key#update'
       get '/forgot_password' => 'forgot_password#new'
       post '/forgot_password' => 'forgot_password#update'
-      get '/otp_delivery_method' => 'otp_delivery_method#new'
-      put '/otp_delivery_method' => 'otp_delivery_method#create'
+      get '/document_capture' => 'document_capture#show'
+      get '/ssn' => 'ssn#show'
+      put '/ssn' => 'ssn#update'
       get '/verify_info' => 'verify_info#show'
       put '/verify_info' => 'verify_info#update'
       get '/phone' => 'phone#new'
@@ -352,28 +354,14 @@ Rails.application.routes.draw do
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
       post '/in_person/addresses' => 'in_person/address_search#index'
+      get '/in_person/verify_info' => 'in_person/verify_info#show'
+      put '/in_person/verify_info' => 'in_person/verify_info#update'
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
 
       # deprecated routes
       get '/confirmations' => 'personal_key#show'
       post '/confirmations' => 'personal_key#update'
-    end
-
-    # Inherited Proofing (IP)-specific routes.
-    scope '/verify/inherited_proofing', module: 'idv', as: 'idv_inherited_proofing' do
-      # NOTE: cancellation routes need to be before any other IP
-      # routes in this scope.
-      delete '/session' => 'sessions#destroy'
-      get '/cancel' => 'inherited_proofing_cancellations#new', as: :cancel
-      put '/cancel' => 'inherited_proofing_cancellations#update'
-      delete '/cancel' => 'inherited_proofing_cancellations#destroy'
-      get '/' => 'inherited_proofing#index'
-      get '/:step' => 'inherited_proofing#show', as: :step
-      put '/:step' => 'inherited_proofing#update'
-      get '/return_to_sp' => 'inherited_proofing#return_to_sp'
-      get '/errors/no_information' => 'inherited_proofing_errors#warning'
-      get '/errors/failure' => 'inherited_proofing_errors#failure'
     end
 
     namespace :api do

@@ -143,9 +143,9 @@ class Throttle
 
   def key
     if @user
-      "throttle:#{@user.id}:#{throttle_type}"
+      "throttle:throttle:#{@user.id}:#{throttle_type}"
     else
-      "throttle:#{@target}:#{throttle_type}"
+      "throttle:throttle:#{@target}:#{throttle_type}"
     end
   end
 
@@ -210,10 +210,6 @@ class Throttle
       phone_confirmation: {
         max_attempts: IdentityConfig.store.phone_confirmation_max_attempts,
         attempt_window: IdentityConfig.store.phone_confirmation_max_attempt_window_in_minutes,
-      },
-      inherited_proofing: {
-        max_attempts: IdentityConfig.store.inherited_proofing_max_attempts,
-        attempt_window: IdentityConfig.store.inherited_proofing_max_attempt_window_in_minutes,
       },
       phone_otp: {
         max_attempts: IdentityConfig.store.otp_delivery_blocklist_maxretry + 1,

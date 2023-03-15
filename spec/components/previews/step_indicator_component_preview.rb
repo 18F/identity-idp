@@ -8,7 +8,7 @@ class StepIndicatorComponentPreview < BaseComponentPreview
         { name: :third_step, title: 'Third Step' },
         { name: :fourth_step, title: 'Fourth Step' },
       ],
-      current_step: :second,
+      current_step: :second_step,
     )
   end
   # @!endgroup

@@ -4,9 +4,8 @@ en:
     backup_code:
       are_you_sure_desc_html:
         - '<strong>Backup codes are the least preferred authentication
-          method</strong> because the codes can easily be lost. We encourage you
-          to explore other authentication options such as face or touch unlock,
-          an authentication application, or a security key.'
+          method</strong> because the codes can easily be lost. Try a safer
+          option, like an authentication application or a security key.'
         - We’ll give you 10 codes that you can download, print, copy or write
           down. You’ll enter one code every time you sign in.
       are_you_sure_title: Are you sure you want to use backup codes?
@@ -42,11 +41,13 @@ en:
       edit: Edit
       manage: Manage
       resend_confirmation: Resend confirmation instructions
+      send_link: Send link
       send_one_time_code: Send code
       submit:
         confirm_change: Confirm change
         default: Submit
         update: Update
+      upload_photos: Upload photos
     confirmation:
       show_hdr: Create a strong password
     email:
@@ -109,6 +110,9 @@ en:
       labels:
         email: Enter your email address
         email_language: Select your email language preference
+    spam_protection:
+      description: We use reCAPTCHA to protect against automated spam. Check the box
+        below to continue.
     ssn:
       show: Show Social Security number
     totp_delete:

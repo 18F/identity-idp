@@ -7,6 +7,7 @@ describe Idv::InPerson::UspsLocationsController do
   let(:sp) { nil }
   let(:in_person_proofing_enabled) { true }
   let(:arcgis_search_enabled) { true }
+  let(:empty_locations) { [] }
   let(:address) do
     UspsInPersonProofing::Applicant.new(
       address: '1600 Pennsylvania Ave',
@@ -24,7 +25,6 @@ describe Idv::InPerson::UspsLocationsController do
       usps_location: {
         formatted_city_state_zip: 'BALTIMORE, MD, 21233-9715',
         name: 'BALTIMORE',
-        phone: '410-555-1212',
         saturday_hours: '8:30 AM - 5:00 PM',
         street_address: '123 Fake St.',
         sunday_hours: 'Closed',
@@ -51,7 +51,6 @@ describe Idv::InPerson::UspsLocationsController do
           city: 'ARLINGTON',
           distance: '6.02 mi',
           name: 'ARLINGTON',
-          phone: '703-993-0072',
           saturday_hours: '9:00 AM - 1:00 PM',
           state: 'VA',
           sunday_hours: 'Closed',
@@ -62,7 +61,6 @@ describe Idv::InPerson::UspsLocationsController do
           city: 'WASHINGTON',
           distance: '6.59 mi',
           name: 'FRIENDSHIP',
-          phone: '202-842-3332',
           saturday_hours: '8:00 AM - 4:00 PM',
           state: 'DC',
           sunday_hours: '10:00 AM - 4:00 PM',
@@ -73,7 +71,6 @@ describe Idv::InPerson::UspsLocationsController do
           city: 'CHEVY CHASE',
           distance: '8.99 mi',
           name: 'BETHESDA',
-          phone: '301-941-2670',
           saturday_hours: '9:00 AM - 4:00 PM',
           state: 'MD',
           sunday_hours: 'Closed',
@@ -121,6 +118,25 @@ describe Idv::InPerson::UspsLocationsController do
         end
       end
 
+      context 'no addresses found by usps' do
+        before do
+          allow(proofer).to receive(:request_facilities).with(address).and_return(empty_locations)
+        end
+
+        it 'logs analytics with error when successful response is empty' do
+          response
+          expect(@analytics).to have_logged_event(
+            'IdV: in person proofing location search submitted',
+            success: false,
+            errors: 'No USPS locations found',
+            result_total: 0,
+            exception_class: nil,
+            exception_message: nil,
+            response_status_code: nil,
+          )
+        end
+      end
+
       context 'with successful fetch' do
         before do
           allow(proofer).to receive(:request_facilities).with(address).and_return(locations)
@@ -130,6 +146,15 @@ describe Idv::InPerson::UspsLocationsController do
           json = response.body
           facilities = JSON.parse(json)
           expect(facilities.length).to eq 3
+          expect(@analytics).to have_logged_event(
+            'IdV: in person proofing location search submitted',
+            success: true,
+            errors: nil,
+            result_total: 3,
+            exception_class: nil,
+            exception_message: nil,
+            response_status_code: nil,
+          )
         end
       end
 

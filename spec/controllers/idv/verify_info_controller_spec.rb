@@ -12,6 +12,16 @@ describe Idv::VerifyInfoController do
   end
 
   let(:user) { create(:user) }
+  let(:analytics_hash) do
+    {
+      analytics_id: 'Doc Auth',
+      flow_path: 'standard',
+      irs_reproofing: false,
+      step: 'verify',
+    }
+  end
+  let(:ssn_throttle_hash) { { throttle_context: 'multi-session' } }
+  let(:proofing_throttle_hash) { { throttle_context: 'single-session' } }
 
   before do
     allow(subject).to receive(:flow_session).and_return(flow_session)
@@ -50,81 +60,202 @@ describe Idv::VerifyInfoController do
       stub_analytics
       stub_attempts_tracker
       allow(@analytics).to receive(:track_event)
+      allow(@irs_attempts_api_tracker).to receive(:track_event)
     end
 
-    context 'when doc_auth_verify_info_controller_enabled' do
+    it 'renders the show template' do
+      get :show
+
+      expect(response).to render_template :show
+    end
+
+    it 'sends analytics_visited event' do
+      get :show
+
+      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+    end
+
+    it 'sends correct step count to analytics' do
+      get :show
+      get :show
+      analytics_args[:step_count] = 2
+
+      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+    end
+
+    it 'updates DocAuthLog verify_view_count' do
+      doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+      expect { get :show }.to(
+        change { doc_auth_log.reload.verify_view_count }.from(0).to(1),
+      )
+    end
+
+    context 'address line 2' do
+      render_views
+
+      it 'With address2 in PII, shows address line 2 input' do
+        flow_session[:pii_from_doc][:address2] = 'APT 3E'
+        get :show
+
+        expect(response.body).to have_content(t('idv.form.address2'))
+      end
+
+      it 'No address2 in PII, still shows address line 2 input' do
+        flow_session[:pii_from_doc][:address2] = nil
+
+        get :show
+
+        expect(response.body).to have_content(t('idv.form.address2'))
+      end
+    end
+
+    context 'when the user has already verified their info' do
+      it 'redirects to the review controller' do
+        controller.idv_session.resolution_successful = true
+
+        get :show
+
+        expect(response).to redirect_to(idv_review_url)
+      end
+    end
+
+    it 'redirects to ssn controller when ssn info is missing' do
+      flow_session[:pii_from_doc][:ssn] = nil
+
+      get :show
+
+      expect(response).to redirect_to(idv_ssn_url)
+    end
+
+    context 'when the user is ssn throttled' do
       before do
-        allow(IdentityConfig.store).to receive(:doc_auth_verify_info_controller_enabled).
+        Throttle.new(
+          target: Pii::Fingerprinter.fingerprint(
+            Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
+          ),
+          throttle_type: :proof_ssn,
+        ).increment_to_throttled!
+      end
+
+      it 'redirects to ssn failure url' do
+        get :show
+
+        expect(response).to redirect_to idv_session_errors_ssn_failure_url
+      end
+
+      it 'logs the correct attempts event' do
+        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
+          with(ssn_throttle_hash)
+
+        get :show
+      end
+    end
+
+    context 'when the user is proofing throttled' do
+      before do
+        Throttle.new(
+          user: subject.current_user,
+          throttle_type: :idv_resolution,
+        ).increment_to_throttled!
+      end
+
+      it 'redirects to throttled url' do
+        get :show
+
+        expect(response).to redirect_to idv_session_errors_failure_url
+      end
+
+      it 'logs the correct attempts event' do
+        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
+          with(proofing_throttle_hash)
+
+        get :show
+      end
+    end
+
+    context 'when proofing_device_profiling is enabled' do
+      let(:idv_result) do
+        {
+          context: {
+            stages: {
+              threatmetrix: {
+                transaction_id: 1,
+                review_status: review_status,
+                response_body: {
+                  tmx_summary_reason_code: ['Identity_Negative_History'],
+                },
+              },
+            },
+          },
+          errors: {},
+          exception: nil,
+          success: true,
+        }
+      end
+
+      let(:document_capture_session) do
+        document_capture_session = DocumentCaptureSession.create!(user: user)
+        document_capture_session.create_proofing_session
+        document_capture_session.store_proofing_result(idv_result)
+        document_capture_session
+      end
+
+      let(:expected_failure_reason) { DocAuthHelper::SAMPLE_TMX_SUMMARY_REASON_CODE }
+
+      before do
+        controller.
+          idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
+        allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_track_tmx_fraud_check_event).
           and_return(true)
       end
 
-      it 'renders the show template' do
-        get :show
+      context 'when threatmetrix response is Pass' do
+        let(:review_status) { 'pass' }
 
-        expect(response).to render_template :show
-      end
-
-      it 'sends analytics_visited event' do
-        get :show
-
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
-      end
-
-      it 'sends correct step count to analytics' do
-        get :show
-        get :show
-        analytics_args[:step_count] = 2
-
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
-      end
-
-      it 'updates DocAuthLog verify_view_count' do
-        doc_auth_log = DocAuthLog.create(user_id: user.id)
-
-        expect { get :show }.to(
-          change { doc_auth_log.reload.verify_view_count }.from(0).to(1),
-        )
-      end
-
-      context 'when the user has already verified their info' do
-        it 'redirects to the review controller' do
-          controller.idv_session.profile_confirmation = true
-
+        it 'it logs IRS idv_tmx_fraud_check event' do
+          expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: true,
+            failure_reason: nil,
+          )
           get :show
-
-          expect(response).to redirect_to(idv_review_url)
         end
       end
 
-      context 'when the user is ssn throttled' do
-        before do
-          Throttle.new(
-            target: Pii::Fingerprinter.fingerprint(
-              Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
-            ),
-            throttle_type: :proof_ssn,
-          ).increment_to_throttled!
-        end
+      context 'when threatmetrix response is No Result' do
+        let(:review_status) { 'no_result' }
 
-        it 'redirects to ssn failure url' do
+        it 'it logs IRS idv_tmx_fraud_check event' do
+          expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: false,
+            failure_reason: expected_failure_reason,
+          )
           get :show
-
-          expect(response).to redirect_to idv_session_errors_ssn_failure_url
         end
       end
 
-      context 'when the user is proofing throttled' do
-        before do
-          Throttle.new(
-            user: subject.current_user,
-            throttle_type: :idv_resolution,
-          ).increment_to_throttled!
-        end
+      context 'when threatmetrix response is Reject' do
+        let(:review_status) { 'reject' }
 
-        it 'redirects to throttled url' do
+        it 'it logs IRS idv_tmx_fraud_check event' do
+          expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: false,
+            failure_reason: expected_failure_reason,
+          )
           get :show
+        end
+      end
 
-          expect(response).to redirect_to idv_session_errors_failure_url
+      context 'when threatmetrix response is Review' do
+        let(:review_status) { 'review' }
+
+        it 'it logs IRS idv_tmx_fraud_check event' do
+          expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: false,
+            failure_reason: expected_failure_reason,
+          )
+          get :show
         end
       end
     end
@@ -132,23 +263,18 @@ describe Idv::VerifyInfoController do
 
   describe '#update' do
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_verify_info_controller_enabled).
-        and_return(true)
+      stub_attempts_tracker
     end
 
     it 'logs the correct analytics event' do
       stub_analytics
-      stub_attempts_tracker
 
       put :update
 
       expect(@analytics).to have_logged_event(
         'IdV: doc auth verify submitted',
         {
-          analytics_id: 'Doc Auth',
-          flow_path: 'standard',
-          irs_reproofing: false,
-          step: 'verify',
+          **analytics_hash,
           step_count: 0,
         },
       )
@@ -177,6 +303,13 @@ describe Idv::VerifyInfoController do
 
         expect(response).to redirect_to idv_session_errors_ssn_failure_url
       end
+
+      it 'logs the correct attempts event' do
+        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
+          with(ssn_throttle_hash)
+
+        put :update
+      end
     end
 
     context 'when the user is proofing throttled' do
@@ -191,6 +324,13 @@ describe Idv::VerifyInfoController do
         put :update
 
         expect(response).to redirect_to idv_session_errors_failure_url
+      end
+
+      it 'logs the correct attempts event' do
+        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
+          with(proofing_throttle_hash)
+
+        put :update
       end
     end
   end

@@ -21,7 +21,7 @@ describe 'webauthn management' do
 
   def expect_webauthn_setup_error
     expect(page).to have_content t('errors.webauthn_setup.general_error')
-    expect(current_path).to eq account_two_factor_authentication_path
+    expect(current_path).to eq webauthn_setup_path
   end
 
   def visit_webauthn_platform_setup
@@ -41,7 +41,7 @@ describe 'webauthn management' do
 
   def expect_webauthn_platform_setup_error
     expect(page).to have_content t('errors.webauthn_platform_setup.general_error')
-    expect(current_path).to eq account_two_factor_authentication_path
+    expect(current_path).to eq webauthn_setup_path
   end
 
   context 'with webauthn roaming associations' do

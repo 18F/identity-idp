@@ -6,7 +6,7 @@ FactoryBot.define do
 
     transient do
       with { {} }
-      email { Faker::Internet.safe_email }
+      sequence(:email) { |n| "user#{n}@example.com" }
       confirmed_at { Time.zone.now }
       confirmation_token { nil }
       confirmation_sent_at { 5.minutes.ago }
@@ -214,7 +214,7 @@ FactoryBot.define do
       signed_up
 
       after :build do |user|
-        create(:profile, :threatmetrix_review_pending, :with_pii, user: user)
+        create(:profile, :fraud_review_pending, :with_pii, user: user)
         create(:proofing_component, :eligible_for_review, user: user)
       end
     end

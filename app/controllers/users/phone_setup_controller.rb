@@ -8,6 +8,7 @@ module Users
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :set_setup_presenter
+    before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?
 
     helper_method :in_multi_mfa_selection_flow?
 
@@ -27,6 +28,8 @@ module Users
 
       if result.success?
         handle_create_success(@new_phone_form.phone)
+      elsif recoverable_recaptcha_error?(result)
+        render :spam_protection, locals: { two_factor_options_path: two_factor_options_path }
       else
         render :index
       end
@@ -83,6 +86,8 @@ module Users
         :otp_delivery_preference,
         :otp_make_default_number,
         :recaptcha_token,
+        :recaptcha_version,
+        :recaptcha_mock_score,
       )
     end
   end

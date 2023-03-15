@@ -100,6 +100,10 @@ class FeatureManagement
     IdentityConfig.store.doc_auth_enable_presigned_s3_urls
   end
 
+  def self.otp_expired_redirect_enabled?
+    IdentityConfig.store.allow_otp_countdown_expired_redirect
+  end
+
   def self.logo_upload_enabled?
     IdentityConfig.store.logo_upload_enabled
   end
@@ -109,8 +113,10 @@ class FeatureManagement
   end
 
   def self.phone_recaptcha_enabled?
-    IdentityConfig.store.recaptcha_site_key.present? &&
-      IdentityConfig.store.recaptcha_secret_key.present? &&
+    IdentityConfig.store.recaptcha_site_key_v2.present? &&
+      IdentityConfig.store.recaptcha_site_key_v3.present? &&
+      IdentityConfig.store.recaptcha_secret_key_v2.present? &&
+      IdentityConfig.store.recaptcha_secret_key_v3.present? &&
       IdentityConfig.store.phone_recaptcha_score_threshold.positive?
   end
 

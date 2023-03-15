@@ -50,7 +50,6 @@ feature 'idv gpo step', :js do
       click_on t('idv.buttons.mail.send')
       fill_in 'Password', with: user_password
       click_continue
-      acknowledge_and_confirm_personal_key unless IdentityConfig.store.gpo_personal_key_after_otp
       visit root_path
       click_on t('idv.buttons.cancel')
       first(:link, t('links.sign_out')).click
@@ -102,12 +101,6 @@ feature 'idv gpo step', :js do
       enter_gpo_flow
       click_on(t('idv.buttons.mail.send'))
       fill_in 'Password', with: new_password
-      click_continue
-      page.find(
-        'label',
-        text: t('forms.personal_key.required_checkbox'),
-        wait: 5,
-      ).click
       click_continue
       set_new_browser_session
       visit_idp_from_ial2_oidc_sp

@@ -19,7 +19,6 @@ en:
         questions: Question?
         retail_hours: Retail hours
         retail_hours_closed: Closed
-        retail_phone_label: Phone number
         return_to_partner_html: You may now close this window or %{link} to complete any
           next steps you can access until your identity has been verified.
         return_to_partner_link: return to %{sp_name}
@@ -33,7 +32,6 @@ en:
         prompt_detail_b: Alternatively, if you are having trouble adding your ID online,
           you may be able to try in person at limited post office locations.
       location:
-        contact_info_heading: Contact Information
         distance:
           one: '%{count} mile away'
           other: '%{count} miles away'
@@ -43,7 +41,6 @@ en:
           to verify in person at a local United States Post Office in select
           locations.
         none_found: No locations found.
-        phone: 'Phone:'
         po_search:
           address_search_hint: 'Example: 1234 N Example St., Allentown, PA 12345'
           address_search_label: Enter an address to find a Post Office near you
@@ -59,8 +56,7 @@ en:
             other: There are %{count} participating Post Offices within 50 miles of
               %{address}.
           results_instructions: Select a Post Office location below, or search again using
-            a different address. For facility accessibility, use the contact
-            information listed for the Post Office location.
+            a different address.
           search_button: Search
         post_office: Post Office ™
         retail_hours_heading: Retail Hours
@@ -80,23 +76,37 @@ en:
         verify_step_enter_pii: Enter your name, date of birth, state-issued ID number,
           address and Social Security number.
       state_id:
+        alert_message: 'Your state-issued ID must not be expired. Accepted forms of ID are:'
+        id_types:
+          - State Driver’s License
+          - State Non-Driver’s Identification Card
         info_html: Enter information <strong>exactly as it appears on your state-issued
           ID.</strong> We will use this information to confirm it matches your
           ID in person.
     form:
       address:
+        errors:
+          unsupported_chars: 'Our system cannot read the following characters:
+            %{char_list}. Please try again using substitutes for those
+            characters.'
         same_address: Is this address displayed on the state-issued ID that you are
           bringing to the Post Office?
         same_address_choice_no: I have a different address on my ID
         same_address_choice_yes: This address is on my state-issued ID
         state_prompt: '- Select -'
       state_id:
+        address1: Address
+        address2: Address line 2 (optional)
+        city: City
         date_hint:
           day: 'Example: 28'
           month: 'Example: 4'
           year: 'Example: 1986'
         dob: Date of birth
         dob_hint: 'Example: 4 28 1986'
+        errors:
+          unsupported_chars: 'Our system cannot read the following characters:
+            %{char_list}. Please try again using the characters on your ID.'
         first_name: First name
         last_name: Last name
         memorable_date:
@@ -105,11 +115,15 @@ en:
               missing_month_day_year: Enter a date of birth
               range_min_age: You must be over 13 years of age to use %{app_name}
               range_overflow: Enter a date that is in the past
+        same_address_as_id: Is your current residential address listed on your state-issued ID?
+        same_address_as_id_no: No, my current residential address is not listed on my state-issued ID
+        same_address_as_id_yes: Yes, my current residential address is listed on my state-issued ID
         state_id_jurisdiction: State
         state_id_jurisdiction_hint: Select the state shown on your ID
         state_id_jurisdiction_prompt: '- Select -'
         state_id_number: ID number
         state_id_number_hint: May include letters and numbers
+        zipcode: ZIP Code
     headings:
       address: Enter your current address
       barcode: You’re ready to verify your identity in person
@@ -119,7 +133,7 @@ en:
       po_search:
         location: Find a participating Post Office
       prepare: Verify your identity in person
-      state_id: Enter the information on your ID
+      state_id_milestone_2: Enter the information on your state-issued ID
       switch_back: Switch back to your computer to prepare to verify your identity in person
       update_address: Update your current address
       update_state_id: Update the information on your ID

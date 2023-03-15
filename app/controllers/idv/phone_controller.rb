@@ -7,6 +7,7 @@ module Idv
 
     attr_reader :idv_form
 
+    before_action :confirm_verify_info_step_complete
     before_action :confirm_step_needed
     before_action :set_idv_form
 
@@ -17,6 +18,9 @@ module Idv
 
       async_state = step.async_state
       if async_state.none?
+        Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+          call(:verify_phone, :view, true)
+
         analytics.idv_phone_of_record_visited
         render :new, locals: { gpo_letter_available: gpo_letter_available }
       elsif async_state.in_progress?
@@ -32,8 +36,7 @@ module Idv
 
     def create
       result = idv_form.submit(step_params)
-
-      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp).
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:verify_phone, :update, result.success?)
 
       analytics.idv_phone_confirmation_form_submitted(**result.to_h)

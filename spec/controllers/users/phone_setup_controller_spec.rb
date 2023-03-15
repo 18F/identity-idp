@@ -69,7 +69,7 @@ describe Users::PhoneSetupController do
       expect(@analytics).to receive(:track_event).
         with('Multi-Factor Authentication: phone setup', result)
 
-      patch :create, params: {
+      post :create, params: {
         new_phone_form: {
           phone: '703-555-010',
           international_code: 'US',
@@ -77,6 +77,20 @@ describe Users::PhoneSetupController do
       }
 
       expect(response).to render_template(:index)
+    end
+
+    context 'with recoverable recaptcha error' do
+      it 'renders spam protection template' do
+        stub_sign_in
+
+        allow(controller).to receive(:recoverable_recaptcha_error?) do |result|
+          result.is_a?(FormResponse)
+        end
+
+        post :create, params: { new_phone_form: { international_code: 'CA' } }
+
+        expect(response).to render_template(:spam_protection)
+      end
     end
 
     context 'with voice' do
@@ -101,7 +115,7 @@ describe Users::PhoneSetupController do
         expect(@analytics).to receive(:track_event).
           with('Multi-Factor Authentication: phone setup', result)
 
-        patch(
+        post(
           :create,
           params: {
             new_phone_form: { phone: '703-555-0100',
@@ -141,7 +155,7 @@ describe Users::PhoneSetupController do
         expect(@analytics).to receive(:track_event).
           with('Multi-Factor Authentication: phone setup', result)
 
-        patch(
+        post(
           :create,
           params: {
             new_phone_form: { phone: '703-555-0100',
@@ -206,6 +220,28 @@ describe Users::PhoneSetupController do
         :before,
         :authenticate_user,
       )
+    end
+
+    describe 'recaptcha csp' do
+      before { stub_sign_in }
+
+      it 'does not allow recaptcha in the csp' do
+        expect(subject).not_to receive(:allow_csp_recaptcha_src)
+
+        get :index
+      end
+
+      context 'recaptcha enabled' do
+        before do
+          allow(FeatureManagement).to receive(:phone_recaptcha_enabled?).and_return(true)
+        end
+
+        it 'allows recaptcha in the csp' do
+          expect(subject).to receive(:allow_csp_recaptcha_src)
+
+          get :index
+        end
+      end
     end
   end
 end

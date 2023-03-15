@@ -1,16 +1,16 @@
 module Idv
   class DocAuthController < ApplicationController
     before_action :confirm_two_factor_authenticated
-    before_action :handle_pending_threatmetrix_review
-    before_action :redirect_if_pending_profile
     before_action :redirect_if_pending_in_person_enrollment
+    before_action :handle_pending_fraud_review
+    before_action :redirect_if_pending_profile
     before_action :extend_timeout_using_meta_refresh_for_select_paths
 
     include IdvSession
     include Flow::FlowStateMachine
     include Idv::DocumentCaptureConcern
     include Idv::ThreatMetrixConcern
-    include ThreatmetrixReviewConcern
+    include FraudReviewConcern
 
     before_action :redirect_if_flow_completed
     before_action :override_document_capture_step_csp
@@ -23,7 +23,7 @@ module Idv
 
     FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_doc_auth_step_url,
-      final_url: :idv_review_url,
+      final_url: :idv_ssn_url,
       flow: Idv::Flows::DocAuthFlow,
       analytics_id: 'Doc Auth',
     }.freeze

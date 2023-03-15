@@ -50,6 +50,7 @@ module Idv
       profile = profile_maker.save_profile(
         active: deactivation_reason.nil?,
         deactivation_reason: deactivation_reason,
+        fraud_review_needed: threatmetrix_failed_and_needs_review?,
       )
       self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
@@ -75,8 +76,6 @@ module Idv
         :gpo_verification_pending
       elsif in_person_enrollment?
         :in_person_verification_pending
-      elsif threatmetrix_failed_and_needs_review?
-        :threatmetrix_review_pending
       end
     end
 
@@ -97,10 +96,6 @@ module Idv
       user_session.delete(:idv)
     end
 
-    def phone_confirmed?
-      vendor_phone_confirmation == true && user_phone_confirmation == true
-    end
-
     def associate_in_person_enrollment_with_profile
       return unless in_person_enrollment? && current_user.establishing_in_person_enrollment
       current_user.establishing_in_person_enrollment.update(profile: profile)
@@ -118,14 +113,6 @@ module Idv
       @gpo_otp = confirmation_maker.otp
     end
 
-    def alive?
-      session.present?
-    end
-
-    def address_mechanism_chosen?
-      vendor_phone_confirmation == true || address_verification_mechanism == 'gpo'
-    end
-
     def user_phone_confirmation_session
       session_value = session[:user_phone_confirmation_session]
       return if session_value.blank?
@@ -134,6 +121,57 @@ module Idv
 
     def user_phone_confirmation_session=(new_user_phone_confirmation_session)
       session[:user_phone_confirmation_session] = new_user_phone_confirmation_session.to_h
+    end
+
+    def in_person_enrollment?
+      ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
+    end
+
+    def verify_info_step_complete?
+      resolution_successful
+    end
+
+    def address_step_complete?
+      if address_verification_mechanism == 'gpo'
+        true
+      else
+        phone_confirmed?
+      end
+    end
+
+    def address_mechanism_chosen?
+      vendor_phone_confirmation == true || address_verification_mechanism == 'gpo'
+    end
+
+    def phone_confirmed?
+      vendor_phone_confirmation == true && user_phone_confirmation == true
+    end
+
+    def invalidate_steps_after_ssn!
+      # Guard against unvalidated attributes from in-person flow in review controller
+      session[:applicant] = nil
+
+      invalidate_verify_info_step!
+      invalidate_phone_step!
+    end
+
+    def mark_verify_info_step_complete!
+      session[:resolution_successful] = true
+      # This is here to maintain backwards compadibility with old code.
+      # Once the code that checks `profile_confirmation` is removed from prod
+      # this setter and eventually the value in the Idv::Session struct itself
+      # can be removed.
+      session[:profile_confirmation] = true
+    end
+
+    def invalidate_verify_info_step!
+      session[:resolution_successful] = nil
+      session[:profile_confirmation] = nil
+    end
+
+    def invalidate_phone_step!
+      session[:vendor_phone_confirmation] = nil
+      session[:user_phone_confirmation] = nil
     end
 
     private
@@ -165,10 +203,6 @@ module Idv
         user_password: user_password,
         initiating_service_provider: service_provider,
       )
-    end
-
-    def in_person_enrollment?
-      ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
     end
 
     def threatmetrix_failed_and_needs_review?

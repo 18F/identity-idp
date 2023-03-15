@@ -80,30 +80,6 @@ RSpec.describe VerifySpAttributesConcern do
         expect(consent_has_expired?).to eq(false)
       end
     end
-
-    context 'when there is an active profile' do
-      let(:sp_session_identity) do
-        create(:service_provider_identity, last_consented_at: 15.days.ago, user: user)
-      end
-
-      before do
-        create(:profile, :active, verified_at: verified_at, user: user)
-      end
-
-      context 'when the active profile was verified after last_consented_at' do
-        let(:verified_at) { 5.days.ago }
-        it 'is true because the new verified data needs to be consented to sharing' do
-          expect(consent_has_expired?).to eq(true)
-        end
-      end
-
-      context 'when the active profile was verified before last_consented_at' do
-        let(:verified_at) { 20.days.ago }
-        it 'is false' do
-          expect(consent_has_expired?).to eq(false)
-        end
-      end
-    end
   end
 
   describe '#consent_was_revoked?' do
@@ -199,12 +175,132 @@ RSpec.describe VerifySpAttributesConcern do
             expect(needs_completion_screen_reason).to be_nil
           end
         end
+
+        context 'when user is reverified' do
+          let(:verified_at) { 5.days.ago }
+          let(:sp_session_identity) do
+            build(
+              :service_provider_identity,
+              user: user,
+              last_consented_at: 15.days.ago,
+            )
+          end
+          before do
+            create(:profile, :active, verified_at: verified_at, user: user)
+          end
+          it 'is reverified_after_consent' do
+            expect(needs_completion_screen_reason).to eq(:reverified_after_consent)
+          end
+        end
       end
     end
 
     context 'without an issuer' do
       it 'is nil' do
         expect(needs_completion_screen_reason).to be_nil
+      end
+    end
+  end
+
+  describe '#reverified_after_consent?' do
+    let(:sp_session_identity) { build(:service_provider_identity, user: user) }
+    let(:user) { build(:user) }
+
+    before do
+      allow(controller).to receive(:current_user).and_return(user)
+      allow(controller).to receive(:sp_session_identity).and_return(sp_session_identity)
+    end
+
+    subject(:reverified_after_consent?) do
+      controller.reverified_after_consent?(sp_session_identity)
+    end
+
+    context 'when there is no sp_session_identity' do
+      let(:sp_session_identity) { nil }
+      it 'is false' do
+        expect(reverified_after_consent?).to eq(false)
+      end
+    end
+
+    context 'when there is no last_consented_at' do
+      it 'is false' do
+        expect(reverified_after_consent?).to eq(false)
+      end
+    end
+
+    context 'when last_consented_at within one year' do
+      let(:sp_session_identity) { build(:service_provider_identity, last_consented_at: 5.days.ago) }
+
+      it 'is false' do
+        expect(reverified_after_consent?).to eq(false)
+      end
+    end
+
+    context 'when the last_consented_at is older than a year ago' do
+      let(:sp_session_identity) do
+        build(:service_provider_identity, last_consented_at: 2.years.ago)
+      end
+
+      it 'is false' do
+        expect(reverified_after_consent?).to eq(false)
+      end
+    end
+
+    context 'when last_consented_at is nil but created_at is within a year' do
+      let(:sp_session_identity) do
+        build(:service_provider_identity, last_consented_at: nil, created_at: 4.days.ago)
+      end
+
+      it 'is false' do
+        expect(reverified_after_consent?).to eq(false)
+      end
+    end
+
+    context 'when last_consented_at is nil and created_at is older than a year' do
+      let(:sp_session_identity) do
+        build(:service_provider_identity, last_consented_at: nil, created_at: 4.years.ago)
+      end
+
+      it 'is false' do
+        expect(reverified_after_consent?).to eq(false)
+      end
+    end
+
+    context 'when the identity has been soft-deleted (consent has been revoked)' do
+      let(:sp_session_identity) do
+        build(
+          :service_provider_identity,
+          deleted_at: 1.day.ago,
+          last_consented_at: 2.years.ago,
+        )
+      end
+
+      it 'is false' do
+        expect(reverified_after_consent?).to eq(false)
+      end
+    end
+
+    context 'when there is an active profile' do
+      let(:sp_session_identity) do
+        create(:service_provider_identity, last_consented_at: 15.days.ago, user: user)
+      end
+
+      before do
+        create(:profile, :active, verified_at: verified_at, user: user)
+      end
+
+      context 'when the active profile was verified after last_consented_at' do
+        let(:verified_at) { 5.days.ago }
+        it 'is true because the new verified data needs to be consented to sharing' do
+          expect(reverified_after_consent?).to eq(true)
+        end
+      end
+
+      context 'when the active profile was verified before last_consented_at' do
+        let(:verified_at) { 20.days.ago }
+        it 'is false' do
+          expect(reverified_after_consent?).to eq(false)
+        end
       end
     end
   end

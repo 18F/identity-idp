@@ -19,8 +19,9 @@ function webauthn() {
   if (!isWebAuthnEnabled()) {
     reloadWithError('NotSupportedError');
   }
-  const continueButton = document.getElementById('continue-button')!;
-  continueButton.addEventListener('click', () => {
+  const form = document.getElementById('webauthn_form') as HTMLFormElement;
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
     document.getElementById('spinner')!.classList.remove('display-none');
     document.getElementById('continue-button')!.className = 'display-none';
 
@@ -46,19 +47,6 @@ function webauthn() {
         (document.getElementById('webauthn_form') as HTMLFormElement).submit();
       })
       .catch((err) => reloadWithError(err.name, { force: true }));
-  });
-  const input = document.getElementById('nickname') as HTMLInputElement;
-  input.addEventListener('keypress', function (event) {
-    if (event.keyCode === 13) {
-      // prevent form submit
-      event.preventDefault();
-    }
-  });
-  input.addEventListener('keyup', function (event) {
-    event.preventDefault();
-    if (event.keyCode === 13 && input.value) {
-      continueButton.click();
-    }
   });
 }
 

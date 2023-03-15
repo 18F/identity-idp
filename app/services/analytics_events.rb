@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ModuleLength
 module AnalyticsEvents
   # @identity.idp.previous_event_name Account Reset
   # @param [String] user_id
@@ -162,6 +161,18 @@ module AnalyticsEvents
   # signs out of their current logged in email to choose a different email
   def authentication_confirmation_reset
     track_event('Authentication Confirmation: Reset selected')
+  end
+
+  # @param [Date] rejection_date Date of the rejection
+  # @param [Date] verified_at Date when profile was verified
+  # Tracks when a profile is automatically rejected due to being under review for 30 days
+  def automatic_fraud_rejection(rejection_date:, verified_at:, **extra)
+    track_event(
+      'Fraud: Automatic Fraud Rejection',
+      rejection_date: rejection_date,
+      verified_at: verified_at,
+      **extra,
+    )
   end
 
   # Tracks when the user creates a set of backup mfa codes.
@@ -556,91 +567,69 @@ module AnalyticsEvents
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [String] in_person_cta_variant Variant testing bucket label
   # The user clicked the troubleshooting option to start in-person proofing
-  def idv_verify_in_person_troubleshooting_option_clicked(flow_path:, **extra)
+  def idv_verify_in_person_troubleshooting_option_clicked(flow_path:, in_person_cta_variant:,
+                                                          **extra)
     track_event(
       'IdV: verify in person troubleshooting option clicked',
       flow_path: flow_path,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] step Document step user is on
-  # The user agrees to allow us to access their data via api call
-  def idv_inherited_proofing_agreement_submitted(success:, errors:, flow_path:, step:, **extra)
-    track_event(
-      'IdV: inherited proofing agreement submitted',
-      success: success,
-      errors: errors,
-      flow_path: flow_path,
-      step: step,
+      in_person_cta_variant: in_person_cta_variant,
       **extra,
     )
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] step Document step user is on
-  # The user visited the inherited proofing agreement page
-  def idv_inherited_proofing_agreement_visited(flow_path:, step:, **extra)
-    track_event(
-      'IdV: inherited proofing agreement visited',
-      flow_path: flow_path,
-      step: step,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] step Document step user is on
-  # The user chooses to begin the inherited proofing process
-  def idv_inherited_proofing_get_started_submitted(success:, errors:, flow_path:, step:, **extra)
-    track_event(
-      'IdV: inherited proofing get started submitted',
-      success: success,
-      errors: errors,
-      flow_path: flow_path,
-      step: step,
-      **extra,
-    )
-  end
-
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] step Document step user is on
-  # The user visited the inherited proofing get started step
-  def idv_inherited_proofing_get_started_visited(flow_path:, step:, **extra)
-    track_event(
-      'IdV: inherited proofing get started visited',
-      flow_path: flow_path,
-      step: step,
-      **extra,
-    )
-  end
-
-  # Retry retrieving the user PII in the case where the first attempt fails
-  # in the agreement step, and the user initiates a "retry".
-  def idv_inherited_proofing_redo_retrieve_user_info_submitted(**extra)
-    track_event('IdV: inherited proofing retry retrieve user information submitted', **extra)
-  end
-
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [String] in_person_cta_variant Variant testing bucket label
   # The user visited the in person proofing location step
-  def idv_in_person_location_visited(flow_path:, **extra)
-    track_event('IdV: in person proofing location visited', flow_path: flow_path, **extra)
+  def idv_in_person_location_visited(flow_path:, in_person_cta_variant:, **extra)
+    track_event(
+      'IdV: in person proofing location visited',
+      flow_path: flow_path,
+      in_person_cta_variant: in_person_cta_variant,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Integer] result_total
+  # @param [String] errors
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [Integer] response_status_code
+  # User submitted a search on the location search page and response received
+  def idv_in_person_locations_searched(
+    success:,
+    result_total: 0,
+    errors: nil,
+    exception_class: nil,
+    exception_message: nil,
+    response_status_code: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing location search submitted',
+      success: success,
+      result_total: result_total,
+      errors: errors,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      response_status_code: response_status_code,
+      **extra,
+    )
   end
 
   # @param [String] selected_location Selected in-person location
+  # @param [String] in_person_cta_variant Variant testing bucket label
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user submitted the in person proofing location step
-  def idv_in_person_location_submitted(selected_location:, flow_path:, **extra)
+  def idv_in_person_location_submitted(selected_location:, in_person_cta_variant:, flow_path:,
+                                       **extra)
     track_event(
       'IdV: in person proofing location submitted',
       selected_location: selected_location,
       flow_path: flow_path,
+      in_person_cta_variant: in_person_cta_variant,
       **extra,
     )
   end
@@ -697,11 +686,14 @@ module AnalyticsEvents
     track_event('IdV: in person proofing switch_back submitted', flow_path: flow_path, **extra)
   end
 
+  # @param [String] in_person_cta_variant Variant testing bucket label
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user visited the "ready to verify" page for the in person proofing flow
-  def idv_in_person_ready_to_verify_visit(proofing_components: nil, **extra)
+  def idv_in_person_ready_to_verify_visit(in_person_cta_variant: nil, proofing_components: nil,
+                                          **extra)
     track_event(
       'IdV: in person ready to verify visited',
+      in_person_cta_variant: in_person_cta_variant,
       proofing_components: proofing_components,
       **extra,
     )
@@ -953,6 +945,7 @@ module AnalyticsEvents
     track_event('IdV: doc auth verify visited', **extra)
   end
 
+  # @identity.idp.previous_event_name IdV: doc auth optional verify_wait submitted
   def idv_doc_auth_verify_proofing_results(**extra)
     track_event('IdV: doc auth verify proofing results', **extra)
   end
@@ -1078,10 +1071,14 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
+  # @param [Boolean] fraud_review_pending Profile is under review for fraud
+  # @param [Boolean] fraud_rejection Profile is rejected due to fraud
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # Tracks the last step of IDV, indicates the user successfully prooved
+  # Tracks the last step of IDV, indicates the user successfully proofed
   def idv_final(
     success:,
+    fraud_review_pending:,
+    fraud_rejection:,
     deactivation_reason: nil,
     proofing_components: nil,
     **extra
@@ -1089,6 +1086,8 @@ module AnalyticsEvents
     track_event(
       'IdV: final resolution',
       success: success,
+      fraud_review_pending: fraud_review_pending,
+      fraud_rejection: fraud_rejection,
       deactivation_reason: deactivation_reason,
       proofing_components: proofing_components,
       **extra,
@@ -1107,11 +1106,21 @@ module AnalyticsEvents
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason profile was deactivated.
+  # @param [Boolean] fraud_review_pending Profile is under review for fraud
+  # @param [Boolean] fraud_rejection Profile is rejected due to fraud
   # User submitted IDV personal key page
-  def idv_personal_key_submitted(proofing_components: nil, deactivation_reason: nil, **extra)
+  def idv_personal_key_submitted(
+    fraud_review_pending:,
+    fraud_rejection:,
+    proofing_components: nil,
+    deactivation_reason: nil,
+    **extra
+  )
     track_event(
       'IdV: personal key submitted',
       deactivation_reason: deactivation_reason,
+      fraud_review_pending: fraud_review_pending,
+      fraud_rejection: fraud_rejection,
       proofing_components: proofing_components,
       **extra,
     )
@@ -1413,13 +1422,24 @@ module AnalyticsEvents
 
   # User submitted IDV password confirm page
   # @param [Boolean] success
+  # @param [Boolean] fraud_review_pending
+  # @param [Boolean] fraud_rejection
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
-  def idv_review_complete(success:, deactivation_reason: nil, proofing_components: nil, **extra)
+  def idv_review_complete(
+    success:,
+    fraud_review_pending:,
+    fraud_rejection:,
+    deactivation_reason: nil,
+    proofing_components: nil,
+    **extra
+  )
     track_event(
       'IdV: review complete',
       success: success,
       deactivation_reason: deactivation_reason,
+      fraud_review_pending: fraud_review_pending,
+      fraud_rejection: fraud_rejection,
       proofing_components: proofing_components,
       **extra,
     )
@@ -2046,6 +2066,18 @@ module AnalyticsEvents
       client_id: client_id,
       user_id: user_id,
       code_digest: code_digest,
+      **extra,
+    )
+  end
+
+  # Tracks when user is redirected to OTP expired page
+  # @param [String] otp_sent_at
+  # @param [String] otp_expiration
+  def otp_expired_visited(otp_sent_at:, otp_expiration:, **extra)
+    track_event(
+      'OTP Expired Page Visited',
+      otp_sent_at: otp_sent_at,
+      otp_expiration: otp_expiration,
       **extra,
     )
   end
@@ -3048,6 +3080,44 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks whether the user's device appears to be mobile device with a camera attached.
+  # @param [Boolean] is_camera_capable_mobile Whether we think the device _could_ have a camera.
+  # @param [Boolean,nil] camera_present Whether the user's device _actually_ has a camera available.
+  # @param [Integer,nil] grace_time Extra time allowed for browser to report camera availability.
+  # @param [Integer,nil] duration Time taken for browser to report camera availability.
+  def idv_mobile_device_and_camera_check(
+    is_camera_capable_mobile:,
+    camera_present: nil,
+    grace_time: nil,
+    duration: nil,
+    **extra
+  )
+    track_event(
+      'IdV: Mobile device and camera check',
+      is_camera_capable_mobile: is_camera_capable_mobile,
+      camera_present: camera_present,
+      grace_time: grace_time,
+      duration: duration,
+      **extra,
+    )
+  end
+
+  # Tracks when the user visits one of the the session error pages.
+  # @param [String] type
+  # @param [Integer,nil] attempts_remaining
+  def idv_session_error_visited(
+    type:,
+    attempts_remaining: nil,
+    **extra
+  )
+    track_event(
+      'IdV: session error visited',
+      type: type,
+      attempts_remaining: attempts_remaining,
+      **extra,
+    )
+  end
+
   # Tracks if request to get USPS in-person proofing locations fails
   # @param [String] exception_class
   # @param [String] exception_message
@@ -3466,4 +3536,3 @@ module AnalyticsEvents
     )
   end
 end
-# rubocop:enable Metrics/ModuleLength

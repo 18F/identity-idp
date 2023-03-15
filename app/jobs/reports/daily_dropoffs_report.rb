@@ -21,6 +21,10 @@ module Reports
 
     attr_reader :report_date
 
+    def initialize(report_date = nil)
+      @report_date = report_date
+    end
+
     def perform(report_date)
       @report_date = report_date
 

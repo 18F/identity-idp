@@ -137,6 +137,7 @@ export class PhoneInputElement extends HTMLElement {
 
     const iti = intlTelInput(this.textInput, {
       preferredCountries: ['US', 'CA'],
+      initialCountry: this.codeInput.value,
       localizedCountries: countryCodePairs,
       onlyCountries: supportedCountryCodes,
       autoPlaceholder: 'off',
@@ -162,6 +163,11 @@ export class PhoneInputElement extends HTMLElement {
       iti.selectedFlag.setAttribute('aria-haspopup', 'true');
       iti.selectedFlag.setAttribute('role', 'button');
       iti.selectedFlag.removeAttribute('aria-owns');
+    }
+
+    const country = iti.getSelectedCountryData();
+    if (country.iso2 && this.codeInput) {
+      this.codeInput.value = country.iso2.toUpperCase();
     }
 
     return iti;

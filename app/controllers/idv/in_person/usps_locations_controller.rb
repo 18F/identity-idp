@@ -28,10 +28,19 @@ module Idv
             zip_code: search_params['zip_code']
           )
           response = proofer.request_facilities(candidate)
+          if response.length > 0
+            analytics.idv_in_person_locations_searched(
+              success: true,
+              result_total: response.length,
+            )
+          else
+            analytics.idv_in_person_locations_searched(
+              success: false, errors: 'No USPS locations found',
+            )
+          end
         else
           response = proofer.request_pilot_facilities
         end
-
         render json: response.to_json
       end
 
@@ -56,6 +65,7 @@ module Idv
           Faraday::TimeoutError => :unprocessable_entity,
           Faraday::BadRequestError => :unprocessable_entity,
           Faraday::ForbiddenError => :unprocessable_entity,
+          ActionController::InvalidAuthenticityToken => :unprocessable_entity,
         }[err.class] || :internal_server_error
 
         analytics.idv_in_person_locations_request_failure(
@@ -94,7 +104,6 @@ module Idv
         params.require(:usps_location).permit(
           :formatted_city_state_zip,
           :name,
-          :phone,
           :saturday_hours,
           :street_address,
           :sunday_hours,

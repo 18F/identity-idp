@@ -408,35 +408,55 @@ describe 'FeatureManagement' do
   end
 
   describe '.phone_recaptcha_enabled?' do
-    let(:recaptcha_site_key) { '' }
-    let(:recaptcha_secret_key) { '' }
+    let(:recaptcha_site_key_v2) { '' }
+    let(:recaptcha_site_key_v3) { '' }
+    let(:recaptcha_secret_key_v2) { '' }
+    let(:recaptcha_secret_key_v3) { '' }
     let(:phone_recaptcha_score_threshold) { 0.0 }
 
     subject(:phone_recaptcha_enabled) { FeatureManagement.phone_recaptcha_enabled? }
 
     before do
-      allow(IdentityConfig.store).to receive(:recaptcha_site_key).and_return(recaptcha_site_key)
-      allow(IdentityConfig.store).to receive(:recaptcha_secret_key).and_return(recaptcha_secret_key)
+      allow(IdentityConfig.store).to receive(:recaptcha_site_key_v2).
+        and_return(recaptcha_site_key_v2)
+      allow(IdentityConfig.store).to receive(:recaptcha_site_key_v3).
+        and_return(recaptcha_site_key_v3)
+      allow(IdentityConfig.store).to receive(:recaptcha_secret_key_v2).
+        and_return(recaptcha_secret_key_v2)
+      allow(IdentityConfig.store).to receive(:recaptcha_secret_key_v3).
+        and_return(recaptcha_secret_key_v3)
       allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).
         and_return(phone_recaptcha_score_threshold)
     end
 
-    it { expect(subject).to eq(false) }
+    it { expect(phone_recaptcha_enabled).to eq(false) }
 
-    context 'with configured recaptcha site key' do
-      let(:recaptcha_site_key) { 'key' }
+    context 'with configured recaptcha v2 site key' do
+      let(:recaptcha_site_key_v2) { 'key' }
 
-      it { expect(subject).to eq(false) }
+      it { expect(phone_recaptcha_enabled).to eq(false) }
 
-      context 'with configured recaptcha secret key' do
-        let(:recaptcha_secret_key) { 'key' }
+      context 'with configured recaptcha v2 secret key' do
+        let(:recaptcha_secret_key_v2) { 'key' }
 
-        it { expect(subject).to eq(false) }
+        it { expect(phone_recaptcha_enabled).to eq(false) }
 
-        context 'with configured default success rate threshold greater than 0' do
-          let(:phone_recaptcha_score_threshold) { 1.0 }
+        context 'with configured recaptcha v3 site key' do
+          let(:recaptcha_site_key_v3) { 'key' }
 
-          it { expect(subject).to eq(true) }
+          it { expect(phone_recaptcha_enabled).to eq(false) }
+
+          context 'with configured recaptcha v2 secret key' do
+            let(:recaptcha_secret_key_v3) { 'key' }
+
+            it { expect(phone_recaptcha_enabled).to eq(false) }
+
+            context 'with configured default success rate threshold greater than 0' do
+              let(:phone_recaptcha_score_threshold) { 1.0 }
+
+              it { expect(phone_recaptcha_enabled).to eq(true) }
+            end
+          end
         end
       end
     end

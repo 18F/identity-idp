@@ -71,6 +71,8 @@ Dir.chdir APP_ROOT do
   run "rm -f log/*"
   run "rm -rf tmp/cache"
   run "rm -rf tmp/encrypted_doc_storage"
+  run "rm -rf tmp/letter_opener"
+  run "rm -rf tmp/mails"
 
   puts "\n== Restarting application server =="
   run "mkdir -p tmp"

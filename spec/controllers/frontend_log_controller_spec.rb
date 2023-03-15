@@ -51,6 +51,7 @@ describe FrontendLogController do
               'IdV: in person proofing location submitted',
               selected_location: selected_location,
               flow_path: flow_path,
+              in_person_cta_variant: nil,
             )
             expect(response).to have_http_status(:ok)
             expect(json[:success]).to eq(true)
@@ -66,6 +67,7 @@ describe FrontendLogController do
                 'IdV: in person proofing location submitted',
                 flow_path: nil,
                 selected_location: nil,
+                in_person_cta_variant: nil,
               )
             end
           end

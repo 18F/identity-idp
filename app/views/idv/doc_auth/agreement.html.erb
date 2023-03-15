@@ -27,16 +27,25 @@
         form: f,
         name: :ial2_consent_given,
         as: :boolean,
-        label: capture do %>
-          <%= t('doc_auth.instructions.consent', app_name: APP_NAME) %>
-          <%= new_window_link_to(
-                t('doc_auth.instructions.learn_more'),
-                MarketingSite.security_and_privacy_practices_url,
-              ) %>
-        <% end,
+        label: t('doc_auth.instructions.consent', app_name: APP_NAME),
         required: true,
       ) %>
-  <%= f.submit t('doc_auth.buttons.continue'), class: 'margin-top-4' %>
+  <p class="margin-top-2">
+    <%= new_window_link_to(
+          t('doc_auth.instructions.learn_more'),
+          MarketingSite.security_and_privacy_practices_url,
+        ) %>
+  </p>
+  <div class="margin-top-4">
+    <%= render(
+          SpinnerButtonComponent.new(
+            type: :submit,
+            big: true,
+            wide: true,
+            spin_on_click: false,
+          ).with_content(t('doc_auth.buttons.continue')),
+        ) %>
+  </div>
 <% end %>
 
 <%= render 'idv/doc_auth/cancel', step: 'agreement' %>

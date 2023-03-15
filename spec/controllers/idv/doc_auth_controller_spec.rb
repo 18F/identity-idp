@@ -110,22 +110,6 @@ describe Idv::DocAuthController do
       )
     end
 
-    it 'tracks analytics for the optional step' do
-      mock_next_step(:verify_wait)
-      result = {
-        errors: {},
-        step: 'verify_wait_step_show',
-        success: true,
-        analytics_id: 'Doc Auth',
-      }
-
-      get :show, params: { step: 'verify_wait' }
-
-      expect(@analytics).to have_received(:track_event).with(
-        'IdV: doc auth optional verify_wait submitted', result
-      )
-    end
-
     it 'increments the analytics step counts on subsequent submissions' do
       get :show, params: { step: 'welcome' }
       get :show, params: { step: 'welcome' }
@@ -158,7 +142,7 @@ describe Idv::DocAuthController do
       it 'finishes the flow' do
         get :show, params: { step: 'welcome' }
 
-        expect(response).to redirect_to idv_review_url
+        expect(response).to redirect_to idv_ssn_url
       end
     end
   end
@@ -171,19 +155,18 @@ describe Idv::DocAuthController do
       result = {
         success: true,
         errors: {},
-        step: 'ssn',
+        step: 'agreement',
         flow_path: 'standard',
         step_count: 1,
-        pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]],
         irs_reproofing: false,
         analytics_id: 'Doc Auth',
         acuant_sdk_upgrade_ab_test_bucket: :default,
       }
 
-      put :update, params: { step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
+      put :update, params: { step: 'agreement', doc_auth: { ial2_consent_given: '1' } }
 
       expect(@analytics).to have_received(:track_event).with(
-        'IdV: doc auth ssn submitted', result
+        'IdV: doc auth agreement submitted', result
       )
     end
 
@@ -192,20 +175,20 @@ describe Idv::DocAuthController do
       allow_any_instance_of(Flow::BaseFlow).to \
         receive(:flow_session).and_return(pii_from_doc: {})
 
-      put :update, params: { step: 'ssn', doc_auth: { step: 'ssn', ssn: '666-66-6666' } }
-      put :update, params: { step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
+      put :update, params: { step: 'agreement', doc_auth: { ial2_consent_given: '1' } }
+      put :update, params: { step: 'agreement', doc_auth: { ial2_consent_given: '1' } }
 
       expect(@analytics).to have_received(:track_event).with(
-        'IdV: doc auth ssn submitted',
+        'IdV: doc auth agreement submitted',
         hash_including(
-          step: 'ssn',
+          step: 'agreement',
           step_count: 1,
           acuant_sdk_upgrade_ab_test_bucket: :default,
         ),
       )
       expect(@analytics).to have_received(:track_event).with(
-        'IdV: doc auth ssn submitted',
-        hash_including(step: 'ssn', step_count: 2),
+        'IdV: doc auth agreement submitted',
+        hash_including(step: 'agreement', step_count: 2),
       )
     end
 
@@ -249,7 +232,7 @@ describe Idv::DocAuthController do
       it 'finishes the flow' do
         put :update, params: { step: 'ssn' }
 
-        expect(response).to redirect_to idv_review_url
+        expect(response).to redirect_to idv_ssn_url
       end
     end
   end

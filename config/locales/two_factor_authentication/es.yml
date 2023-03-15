@@ -89,7 +89,7 @@ es:
       wait_30d_opt_in: Después de 30 días, podrá inscribirse y recibir un código de
         seguridad para ese número de teléfono.
     otp_delivery_preference:
-      instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
+      instruction: Envíe mensajes de texto y llamadas a este número por defecto.
       landline_warning_html: Al parecer el número ingresado pertenece a un <b>teléfono
         fijo</b>. Mejor solicita un código de un solo uso por
         %{phone_setup_path}.
@@ -97,7 +97,7 @@ es:
       phone_call: llamada telefónica
       sms: Mensaje de texto (SMS, sigla en inglés)
       sms_unsupported: No podemos enviar mensajes de texto a números de teléfono de %{location}.
-      title: '¿Cómo deberíamos enviarle un código?'
+      title: Cómo obtendrá su código
       voice: Llamada telefónica
       voice_unsupported: No podemos llamar a números de teléfono en %{location}.
     otp_make_default_number:
@@ -120,8 +120,7 @@ es:
     phone_fallback:
       question: '¿No puede utilizar su teléfono?'
     phone_fee_disclosure: Se pueden aplicar tarifas por mensajes y datos.
-    phone_info_html: Le enviaremos un código de un solo uso <strong>cada vez que
-      ingrese</strong>.
+    phone_info: Le enviaremos un código de un solo uso cada vez que ingrese.
     phone_label: Número de teléfono
     phone_verification:
       troubleshooting:
@@ -134,6 +133,13 @@ es:
     piv_cac_webauthn_available: Utilice su llave de seguridad
     please_try_again_html: Inténtelo de nuevo en <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Conozca la autenticación de dos factores
+    recaptcha:
+      disclosure_statement_html: Este sitio está protegido por reCAPTCHA y se
+        %{google_policy_link} y %{google_tos_link} de Google. Consulte
+        %{login_tos_link} de %{app_name} para dispositivos móviles.
+      google_policy_link: aplican la política de privacidad
+      google_tos_link: las condiciones de servicio
+      login_tos_link: las condiciones de uso
     totp_fallback:
       question: '¿No tiene su aplicación de autenticación?'
     totp_header_text: Ingrese su código de la app de autenticación
@@ -164,12 +170,10 @@ es:
       piv_cac_info: Credenciales PIV/CAC para empleados gubernamentales y del
         ejército. Únicamente versión de escritorio.
       sms: Mensaje de texto / SMS
-      sms_info: Obtenga su código de un solo uso a través de un mensaje de texto/SMS.
       unused_backup_code:
         one: '(%{count} código sin usar)'
         other: '(%{count} códigos sin usar)'
       voice: Llamada telefónica
-      voice_info: Obtenga su código de un solo uso a través de una llamada telefónica.
       webauthn: Clave de seguridad
       webauthn_info: Un dispositivo físico que suele tener la forma de una unidad USB
         y se conecta a su dispositivo.
