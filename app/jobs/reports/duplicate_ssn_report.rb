@@ -73,7 +73,7 @@ module Reports
             todays_profile_ids.include?(profile.id),
             profile.user.uuid,
             profile.user.created_at.in_time_zone('UTC').iso8601,
-            profile.activated_at.in_time_zone('UTC').iso8601,
+            profile.activated_at&.in_time_zone('UTC')&.iso8601,
             profile.active,
             profile.ssn_signature,
             ssn_count,

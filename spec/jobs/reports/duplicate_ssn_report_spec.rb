@@ -48,13 +48,20 @@ RSpec.describe Reports::DuplicateSsnReport do
       end
 
       let!(:fingerprint2_previous_profiles) do
-        2.times.map do
+        [
           create(
             :profile,
+            active: false,
             ssn_signature: ssn_fingerprint2,
             activated_at: report_date - 10.days,
-          ).tap(&:reload)
-        end
+          ),
+          create(
+            :profile,
+            active: false,
+            ssn_signature: ssn_fingerprint2,
+            activated_at: nil,
+          ),
+        ].map(&:reload)
       end
 
       it 'creates csv with corresponding data', aggregate_failures: true do
@@ -82,7 +89,9 @@ RSpec.describe Reports::DuplicateSsnReport do
         expect(row).to be
         expect(row['uuid']).to eq(profile.user.uuid)
         expect(Time.zone.parse(row['account_created_at']).to_i).to eq(profile.user.created_at.to_i)
-        expect(Time.zone.parse(row['identity_verified_at']).to_i).to eq(profile.activated_at.to_i)
+        if profile.activated_at
+          expect(Time.zone.parse(row['identity_verified_at']).to_i).to eq(profile.activated_at.to_i)
+        end
         expect(row['profile_active']).to eq(profile.active.to_s)
         expect(row['ssn_fingerprint']).to eq(ssn_fingerprint2)
         expect(row['count_ssn_fingerprint']).to eq('3')
