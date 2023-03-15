@@ -105,9 +105,7 @@ module Idv
         failure_reason: irs_attempts_api_tracker.parse_failure_reason(form_response),
       )
 
-      if form_response.success?
-        form_response = form_response.merge(check_ssn)
-      end
+      form_response = form_response.merge(check_ssn) if form_response.success?
       summarize_result_and_throttle_failures(form_response)
       delete_async
 
