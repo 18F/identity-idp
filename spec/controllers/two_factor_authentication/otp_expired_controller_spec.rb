@@ -71,10 +71,13 @@ describe TwoFactorAuthentication::OtpExpiredController do
       end
     end
 
-    context 'authentication options redirect' do
-      before { allow(controller).to receive(:new_account_mfa_registration?).and_return(true) }
+    context 'with a new account' do
+      before do
+        allow(controller).to receive(:new_account_mfa_registration?).and_return(true)
+        allow(controller).to receive(:unconfirmed_phone?).and_return(true)
+      end
 
-      it 'sets authentication options path correctly' do
+      it 'redirects to authentication methods setup' do
         user = create(:user)
         stub_sign_in_before_2fa(user)
 
@@ -82,25 +85,21 @@ describe TwoFactorAuthentication::OtpExpiredController do
 
         expect(assigns(:authentication_options_path)).to eq(authentication_methods_setup_url)
       end
-    end
 
-    context 'choose another phone option' do
-      before { allow(controller).to receive(:adding_phone_to_existing_account?).and_return(true) }
-
-      it 'assigns the value correctly' do
-        user = create(:user, :with_phone)
+      it 'provides an option to choose another phone number' do
+        user = create(:user)
         stub_sign_in_before_2fa(user)
 
         get :show
-
-        expect(assigns(:use_another_phone_path)).to eq(add_phone_path)
+        expect(assigns(:use_another_phone_path)).to eq(phone_setup_path)
       end
+
     end
 
     context 'with an existing account' do
       before { allow(controller).to receive(:unconfirmed_path?).and_return(false) }
 
-      it 'user_another_path is nil' do
+      it 'does not provide option to use another phone number on sign in' do
         user = create(:user, :with_phone)
         stub_sign_in_before_2fa(user)
 
