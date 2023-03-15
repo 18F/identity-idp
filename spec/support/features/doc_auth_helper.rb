@@ -18,6 +18,11 @@ module DocAuthHelper
     session
   end
 
+  def clear_and_fill_in(field_name, text)
+    fill_in field_name, with: ''
+    fill_in field_name, with: text
+  end
+
   def fill_out_ssn_form_with_ssn_that_fails_resolution
     fill_in t('idv.form.ssn_label_html'), with: SSN_THAT_FAILS_RESOLUTION
   end

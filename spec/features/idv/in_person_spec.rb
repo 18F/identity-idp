@@ -6,8 +6,6 @@ RSpec.describe 'In Person Proofing', js: true do
   include SpAuthHelper
   include InPersonHelper
 
-  let(:phone_number) { '415-555-0199' }
-
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
   end
@@ -318,12 +316,11 @@ RSpec.describe 'In Person Proofing', js: true do
 
     it 'resumes desktop session with in-person proofing', allow_browser_log: true do
       user = nil
-
+      phone_number = '415-555-0199'
       perform_in_browser(:desktop) do
         user = sign_in_and_2fa_user
         complete_doc_auth_steps_before_upload_step
-        fill_in :doc_auth_phone, with: ''
-        fill_in :doc_auth_phone, with: phone_number
+        clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
 
         expect(page).to have_content(t('doc_auth.headings.text_message'))

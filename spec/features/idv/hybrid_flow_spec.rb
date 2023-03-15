@@ -26,8 +26,7 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
     perform_in_browser(:desktop) do
       user = sign_in_and_2fa_user
       complete_doc_auth_steps_before_upload_step
-      fill_in :doc_auth_phone, with: ''
-      fill_in :doc_auth_phone, with: phone_number
+      clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
 
       expect(page).to have_content(t('doc_auth.headings.text_message'))
@@ -70,8 +69,7 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
     perform_in_browser(:desktop) do
       user = sign_in_and_2fa_user
       complete_doc_auth_steps_before_upload_step
-      fill_in :doc_auth_phone, with: ''
-      fill_in :doc_auth_phone, with: phone_number
+      clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
 
       expect(page).to have_content(t('doc_auth.headings.text_message'))
@@ -87,8 +85,7 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
 
     perform_in_browser(:desktop) do
       expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
-      fill_in :doc_auth_phone, with: ''
-      fill_in :doc_auth_phone, with: phone_number
+      clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
 
       expect(page).to have_content(t('doc_auth.headings.text_message'))
