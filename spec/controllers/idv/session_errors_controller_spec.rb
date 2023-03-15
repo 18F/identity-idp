@@ -34,7 +34,7 @@ shared_examples_for 'an idv session errors controller action' do
   end
 
   context 'the user is authenticated and has confirmed their profile' do
-    let(:idv_session_profile_confirmation) { true }
+    let(:verify_info_step_complete) { true }
     let(:user) { build(:user) }
 
     it 'redirects to the phone url' do
@@ -102,12 +102,12 @@ end
 
 describe Idv::SessionErrorsController do
   let(:idv_session) { double }
-  let(:idv_session_profile_confirmation) { false }
+  let(:verify_info_step_complete) { false }
   let(:user) { nil }
 
   before do
-    allow(idv_session).to receive(:profile_confirmation).
-      and_return(idv_session_profile_confirmation)
+    allow(idv_session).to receive(:verify_info_step_complete?).
+      and_return(verify_info_step_complete)
     allow(controller).to receive(:idv_session).and_return(idv_session)
     stub_sign_in(user) if user
     stub_analytics

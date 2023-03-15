@@ -18,8 +18,7 @@ describe Idv::ReviewController do
       current_user: user,
       service_provider: nil,
     )
-    idv_session.profile_confirmation = true
-    idv_session.resolution_successful = 'phone'
+    idv_session.resolution_successful = true
     idv_session.vendor_phone_confirmation = true
     idv_session.user_phone_confirmation = true
     idv_session.applicant = applicant.with_indifferent_access
@@ -610,7 +609,6 @@ describe Idv::ReviewController do
         end
 
         it 'redirects to come back later page' do
-          allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).and_return(true)
           put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
           expect(response).to redirect_to idv_come_back_later_url

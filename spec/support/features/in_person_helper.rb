@@ -7,7 +7,12 @@ module InPersonHelper
 
   GOOD_FIRST_NAME = Idp::Constants::MOCK_IDV_APPLICANT[:first_name]
   GOOD_LAST_NAME = Idp::Constants::MOCK_IDV_APPLICANT[:last_name]
+  # the date in the format '1938-10-06'
   GOOD_DOB = Idp::Constants::MOCK_IDV_APPLICANT[:dob]
+  # the date in the format 'October 6, 1938'
+  GOOD_DOB_FORMATTED_EVENT = I18n.l(
+    Date.parse(GOOD_DOB), format: I18n.t('time.formats.event_date')
+  )
   GOOD_STATE_ID_JURISDICTION = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION
   GOOD_STATE_ID_NUMBER = Idp::Constants::MOCK_IDV_APPLICANT[:state_id_number]
 
@@ -17,7 +22,7 @@ module InPersonHelper
   GOOD_ZIPCODE = Idp::Constants::MOCK_IDV_APPLICANT[:zipcode]
   GOOD_STATE = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE
 
-  def fill_out_state_id_form_ok
+  def fill_out_state_id_form_ok(include_address: false)
     fill_in t('in_person_proofing.form.state_id.first_name'), with: GOOD_FIRST_NAME
     fill_in t('in_person_proofing.form.state_id.last_name'), with: GOOD_LAST_NAME
     year, month, day = GOOD_DOB.split('-')
@@ -27,6 +32,14 @@ module InPersonHelper
     select GOOD_STATE_ID_JURISDICTION,
            from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
     fill_in t('in_person_proofing.form.state_id.state_id_number'), with: GOOD_STATE_ID_NUMBER
+
+    if include_address
+      fill_in t('in_person_proofing.form.state_id.address1'), with: GOOD_ADDRESS1
+      fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_ADDRESS2
+      fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_CITY
+      fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_ZIPCODE
+      choose t('in_person_proofing.form.state_id.same_address_as_id_no')
+    end
   end
 
   def fill_out_address_form_ok
@@ -67,11 +80,15 @@ module InPersonHelper
     click_link t('forms.buttons.continue')
   end
 
-  def complete_state_id_step(_user = nil)
+  def complete_state_id_step(_user = nil, same_address_as_id: true, include_address: false)
     # Wait for page to load before attempting to fill out form
     expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
-    fill_out_state_id_form_ok
+    include_address ? fill_out_state_id_form_ok(include_address: true) : fill_out_state_id_form_ok
     click_idv_continue
+    unless include_address && same_address_as_id
+      expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+    end
   end
 
   def complete_address_step(_user = nil)
