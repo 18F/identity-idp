@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/unavailable.html.erb' do
+describe 'idv/unavailable/show.html.erb' do
   let(:sp_name) { nil }
   subject(:rendered) { render }
 

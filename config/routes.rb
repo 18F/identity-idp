@@ -301,7 +301,7 @@ Rails.application.routes.draw do
 
     get '/restricted' => 'banned_user#show', as: :banned_user
 
-    get '/errors/idv_unavilable' => 'idv/unavailable#show', as: :idv_unavailable
+    get '/errors/idv_unavilable' => 'idv/unavailable#attempt_redirect', as: :idv_unavailable
 
     scope '/verify', as: 'idv' do
       get '/' => 'idv#index'
@@ -310,7 +310,7 @@ Rails.application.routes.draw do
     scope '/verify', module: 'idv', as: 'idv' do
       if !FeatureManagement.idv_available?
         # IdV has been disabled.
-        match '/*path' => 'unavailable#show_without_redirect', via: %i[get post]
+        match '/*path' => 'unavailable#show', via: %i[get post]
       end
       get '/come_back_later' => 'come_back_later#show'
       get '/personal_key' => 'personal_key#show'

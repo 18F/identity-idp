@@ -1,6 +1,6 @@
 module Idv
   class UnavailableController < ApplicationController
-    def show
+    def attempt_redirect
       if FeatureManagement.idv_available?
         if from_create_account?
           return redirect_to sign_up_email_url
@@ -9,10 +9,10 @@ module Idv
         end
       end
 
-      show_without_redirect
+      show
     end
 
-    def show_without_redirect
+    def show
       analytics.vendor_outage(
         vendor_status: {
           acuant: IdentityConfig.store.vendor_status_acuant,
