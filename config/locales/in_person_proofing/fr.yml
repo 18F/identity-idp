@@ -108,6 +108,9 @@ fr:
         same_address_choice_yes: Cette adresse figure sur mon document d’identité nationale
         state_prompt: '- Sélectionnez -'
       state_id:
+        address1: Adresse
+        address2: Adresse Ligne 2 (optional)
+        city: Ville
         date_hint:
           day: 'Exemple: 28'
           month: 'Exemple: 4'
@@ -126,11 +129,18 @@ fr:
               missing_month_day_year: Entrez une date de naissance
               range_min_age: Vous devez avoir plus de 13 ans pour utiliser %{app_name}
               range_overflow: Entrez une date qui est dans le passé
+        same_address_as_id: L’adresse de votre domicile actuel figure-t-elle sur votre
+          carte d’identité délivrée par l’État?
+        same_address_as_id_no: Non, l’adresse de mon domicile actuel ne figure pas sur
+          ma carte d’identité délivrée par l’État
+        same_address_as_id_yes: Oui, l’adresse de mon domicile actuel figure sur ma
+          carte d’identité délivrée par l’État
         state_id_jurisdiction: État
         state_id_jurisdiction_hint: Sélectionnez l’État figurant sur votre document d’identité
         state_id_jurisdiction_prompt: '- Sélectionnez -'
         state_id_number: Numéro d’identification
         state_id_number_hint: Peut comprendre des lettres et des chiffres
+        zipcode: Code postal
     headings:
       address: Entrez votre adresse actuelle
       barcode: Vous êtes prêt à vérifier votre identité en personne
@@ -140,7 +150,8 @@ fr:
       po_search:
         location: Trouver un bureau de poste participant
       prepare: Vérifiez votre identité en personne
-      state_id: Saisissez les informations figurant sur votre document d’identité
+      state_id_milestone_2: Saisissez les informations figurant sur votre carte
+        d’identité délivrée par l’État
       switch_back: Retournez sur votre ordinateur pour vous préparer à vérifier votre
         identité en personne
       update_address: Mettre à jour votre adresse actuelle
