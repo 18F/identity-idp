@@ -24,10 +24,10 @@ feature 'doc auth document capture step', :js do
 
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_document_capture_step
+    visit(idv_document_capture_url)
   end
 
   it 'shows the new DocumentCapture page for desktop standard flow' do
-    visit(idv_document_capture_url)
     expect(page).to have_current_path(idv_document_capture_url)
 
     expect(page).to have_content(t('doc_auth.headings.document_capture'))
@@ -106,5 +106,37 @@ feature 'doc auth document capture step', :js do
       attach_and_submit_images
       expect(fake_attempts_tracker).to have_received(:idv_document_upload_rate_limited)
     end
+  end
+
+  it 'proceeds to the next page with valid info' do
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+    attach_and_submit_images
+
+    expect(page).to have_current_path(idv_ssn_url)
+    expect_costing_for_document
+    expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
+  end
+
+  it 'catches network connection errors on post_front_image', allow_browser_log: true do
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :post_front_image,
+      response: DocAuth::Response.new(
+        success: false,
+        errors: { network: I18n.t('doc_auth.errors.general.network_error') },
+      ),
+    )
+
+    attach_and_submit_images
+
+    expect(page).to have_current_path(idv_document_capture_url)
+    expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
+  end
+
+  it 'does not track state if state tracking is disabled' do
+    allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
+    attach_and_submit_images
+
+    expect(DocAuthLog.find_by(user_id: user.id).state).to be_nil
   end
 end
