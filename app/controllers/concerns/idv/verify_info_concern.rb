@@ -97,7 +97,8 @@ module Idv
         extra: {
           address_edited: !!flow_session['address_edited'],
           address_line2_present: !pii[:address2].blank?,
-          pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name]],
+          pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name],
+                              [:state_id, :state_id_jurisdiction]],
         },
       )
       log_idv_verification_submitted_event(
