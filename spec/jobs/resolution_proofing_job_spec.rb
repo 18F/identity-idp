@@ -186,7 +186,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         stub_vendor_requests(
           instant_verify_response:
             LexisNexisFixtures.instant_verify_identity_not_found_response_json,
-        ) => { aamva_stub: }
+        )
 
         perform
 
@@ -214,7 +214,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_state_id[:vendor_name]).to eq('UnsupportedJurisdiction')
         expect(result_context_stages_state_id[:success]).to eq(true)
 
-        expect(aamva_stub).to_not have_been_requested
+        expect(@aamva_stub).to_not have_been_requested
       end
     end
 
