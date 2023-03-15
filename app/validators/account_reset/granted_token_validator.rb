@@ -46,12 +46,9 @@ module AccountReset
       account_reset_request&.user || AnonymousUser.new
     end
 
-    def requesting_issuer
-      account_reset_request&.requesting_issuer
-    end
-
     def sp
-      @sp ||= ServiceProvider.find_by(issuer: requesting_issuer)
+      return @sp if defined?(@sp)
+      @sp = account_reset_request&.requesting_service_provider
     end
   end
 end

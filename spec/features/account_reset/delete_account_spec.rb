@@ -234,7 +234,7 @@ describe 'Account Reset Request: Delete Account', email: true do
       expect(events.count).to eq received_event_types.count
       expect(received_event_types).to match_array(expected_event_types)
 
-      travel_to(Time.zone.now + 2.days + 1) do
+      travel_to(Time.zone.now + 2.days + 1.second) do
         AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
         open_last_email
         click_email_link_matching(/delete_account\?token/)

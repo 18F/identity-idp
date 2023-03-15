@@ -30,9 +30,9 @@ RSpec.describe AccountReset::CreateRequest do
 
       it 'it stores requesting_issuer' do
         create_request.call
-        arr = AccountResetRequest.find_by(user_id: user.id)
+        reset_request = AccountResetRequest.find_by(user_id: user.id)
 
-        expect(arr.requesting_issuer).to eq requesting_issuer
+        expect(reset_request.requesting_issuer).to eq requesting_issuer
       end
     end
   end

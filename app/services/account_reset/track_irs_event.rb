@@ -1,7 +1,7 @@
 # Mixin for account reset event tracking
 # Assumes these methods exist on the including class:
 # - sp
-# - success?
+# - success
 # - errors
 # - request
 # - analytics
