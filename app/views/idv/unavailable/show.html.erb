@@ -1,36 +1,38 @@
 <% title t('idv.titles.unavailable') %>
 
-<%= render AlertIconComponent.new(icon_name: :error, class: 'display-block margin-bottom-4') %>
+<%= render StatusPageComponent.new(status: :error) do |c| %>
 
-<%= render PageHeadingComponent.new.with_content(t('idv.titles.unavailable')) %>
+  <% c.header { t('idv.titles.unavailable') } %>
 
-<p>
-  <% if decorated_session.sp_name.present? %>
-    <%= t('idv.unavailable.idv_explanation.with_sp', sp: decorated_session.sp_name) %>
-  <% else %>
-    <%= t('idv.unavailable.idv_explanation.without_sp') %>
-  <% end %>
-</p>
+  <p>
+    <% if decorated_session.sp_name.present? %>
+      <%= t('idv.unavailable.idv_explanation.with_sp', sp: decorated_session.sp_name) %>
+    <% else %>
+      <%= t('idv.unavailable.idv_explanation.without_sp') %>
+    <% end %>
+  </p>
 
-<p class="margin-bottom-5">
-  <%= t(
-        'idv.unavailable.next_steps_html',
-        app_name: APP_NAME,
-        status_page_link: new_window_link_to(
-          t('idv.unavailable.status_page_link'),
-          StatusPage.base_url,
-        ),
-      ) %>
-</p>
+  <p class="margin-bottom-5">
+    <%= t(
+          'idv.unavailable.next_steps_html',
+          app_name: APP_NAME,
+          status_page_link: new_window_link_to(
+            t('idv.unavailable.status_page_link'),
+            StatusPage.base_url,
+          ),
+        ) %>
+  </p>
 
-<%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        link_to(
-          return_to_sp_failure_to_proof_path(location: :unavailable),
-          **tag_options,
-          &block
-        )
-      end,
-      big: true,
-      wide: true,
-    ).with_content(t('idv.unavailable.exit_button', app_name: APP_NAME)) %>
+  <% c.action_button(
+       action: ->(**tag_options, &block) do
+         link_to(
+           return_to_sp_failure_to_proof_path(location: :unavailable),
+           **tag_options,
+           &block
+         )
+       end,
+       big: true,
+       wide: true,
+     ).with_content(t('idv.unavailable.exit_button', app_name: APP_NAME)) %>
+
+<% end %>
