@@ -166,9 +166,8 @@ class ResolutionProofingJob < ApplicationJob
 
     results_that_cannot_pass_aamva =
       resolution_result.attributes_requiring_additional_verification - [:address, :dob]
-    return if results_that_cannot_pass_aamva.any?
 
-    true
+    results_that_cannot_pass_aamva.blank?
   end
 
   def resolution_proofer
