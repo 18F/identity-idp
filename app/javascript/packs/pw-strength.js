@@ -18,13 +18,6 @@ const snakeCase = (string) => string.replace(/[ -]/g, '_').replace(/\W/g, '').to
 // fallback if zxcvbn lookup fails / field is empty
 const fallback = ['pw-na', '...'];
 
-// function clearErrors() {
-//   const x = document.getElementsByClassName('error-message');
-//   if (x.length > 0) {
-//     x[0].innerHTML = '';
-//   }
-// }
-
 function getStrength(z) {
   // override the strength value to 2 if the password is < 12
   if (!(z && z.password.length && z.password.length >= 12)) {
@@ -84,18 +77,6 @@ export function getFeedback(z) {
 
   return `${suggestions.map((s) => lookup(s)).join('. ')}`;
 }
-
-// function disableSubmit(submitEl, length = 0, score = 0) {
-//   if (!submitEl) {
-//     return;
-//   }
-
-//   if (score < 3 || length < 12) {
-//     submitEl.setAttribute('disabled', true);
-//   } else {
-//     submitEl.removeAttribute('disabled');
-//   }
-// }
 
 function zScoreFeedback(password, forbiddenPasswords) {
   const z = zxcvbn(password, forbiddenPasswords);
@@ -161,7 +142,6 @@ function analyzePw() {
   }
 
   input.addEventListener('input', (e) => {
-    // clearErrors();
     checkPasswordStrength(e.target.value);
   });
 }
