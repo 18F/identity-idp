@@ -66,7 +66,7 @@ module Idv
 
     def confirm_idv_session_step_needed
       return unless user_fully_authenticated?
-      redirect_to idv_phone_url if idv_session.profile_confirmation == true
+      redirect_to idv_phone_url if idv_session.verify_info_step_complete?
     end
 
     def ignore_form_step_wait_requests

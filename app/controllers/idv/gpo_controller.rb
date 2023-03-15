@@ -69,7 +69,7 @@ module Idv
       # If the user has a pending profile, they may have completed idv in a
       # different session and need a letter resent now
       return if current_user.decorate.pending_profile_requires_verification?
-      return if idv_session.profile_confirmation == true
+      return if idv_session.verify_info_step_complete?
 
       redirect_to idv_doc_auth_url
     end
