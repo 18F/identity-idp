@@ -135,7 +135,7 @@ class Profile < ApplicationRecord
       request: nil,
       sp: initiating_service_provider&.issuer,
       session: {},
-      ahoy: nil
+      ahoy: nil,
     )
     if initiating_service_provider&.irs_attempts_api_enabled?
       @irs_attempts_api_tracker = IrsAttemptsApi::Tracker.new(
