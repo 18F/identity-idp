@@ -20,7 +20,7 @@ module Idv
     end
 
     def confirm_profile_not_already_confirmed
-      return unless idv_session.profile_confirmation == true
+      return unless idv_session.verify_info_step_complete?
       redirect_to idv_review_url
     end
 
