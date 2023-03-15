@@ -43,4 +43,68 @@ feature 'doc auth document capture step', :js do
       acuant_sdk_upgrade_ab_test_bucket: :default,
     )
   end
+
+  it 'logs return to sp link click' do
+    new_window = window_opened_by do
+      click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name)
+    end
+
+    within_window new_window do
+      expect(fake_analytics).to have_logged_event(
+        'Return to SP: Failed to proof',
+        flow: nil,
+        location: 'document_capture_troubleshooting_options',
+        redirect_url: instance_of(String),
+        step: 'document_capture',
+      )
+    end
+  end
+
+  context 'throttles calls to acuant', allow_browser_log: true do
+    let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+    before do
+      allow_any_instance_of(ApplicationController).to receive(
+        :irs_attempts_api_tracker,
+      ).and_return(fake_attempts_tracker)
+      allow(fake_attempts_tracker).to receive(:idv_document_upload_rate_limited)
+      allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
+      DocAuth::Mock::DocAuthMockClient.mock_response!(
+        method: :post_front_image,
+        response: DocAuth::Response.new(
+          success: false,
+          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
+        ),
+      )
+
+      (max_attempts - 1).times do
+        attach_and_submit_images
+        click_on t('idv.failure.button.warning')
+      end
+    end
+
+    it 'redirects to the throttled error page' do
+      freeze_time do
+        attach_and_submit_images
+        timeout = distance_of_time_in_words(
+          Throttle.attempt_window_in_minutes(:idv_doc_auth).minutes,
+        )
+        message = strip_tags(t('errors.doc_auth.throttled_text_html', timeout: timeout))
+        expect(page).to have_content(message)
+        expect(page).to have_current_path(idv_session_errors_throttled_path)
+      end
+    end
+
+    it 'logs the throttled analytics event for doc_auth' do
+      attach_and_submit_images
+      expect(fake_analytics).to have_logged_event(
+        'Throttler Rate Limit Triggered',
+        throttle_type: :idv_doc_auth,
+      )
+    end
+
+    it 'logs irs attempts event for rate limiting' do
+      attach_and_submit_images
+      expect(fake_attempts_tracker).to have_received(:idv_document_upload_rate_limited)
+    end
+  end
 end
