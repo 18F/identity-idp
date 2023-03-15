@@ -10,7 +10,7 @@ describe Idv::SsnController do
       :flow_path => 'standard' }
   end
 
-  let(:user) { build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' }) }
+  let(:user) { create(:user) }
 
   before do
     allow(subject).to receive(:flow_session).and_return(flow_session)
@@ -68,6 +68,14 @@ describe Idv::SsnController do
       expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
     end
 
+    it 'updates DocAuthLog ssn_view_count' do
+      doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+      expect { get :show }.to(
+        change { doc_auth_log.reload.ssn_view_count }.from(0).to(1),
+      )
+    end
+
     context 'without a flow session' do
       let(:flow_session) { nil }
       it 'redirects to doc_auth' do
@@ -100,6 +108,14 @@ describe Idv::SsnController do
         put :update, params: params
 
         expect(flow_session['pii_from_doc'][:ssn]).to eq(ssn)
+      end
+
+      it 'redirects to address controller for Puerto Rico addresses' do
+        flow_session['pii_from_doc'][:state] = 'PR'
+
+        put :update, params: params
+
+        expect(response).to redirect_to(idv_address_url)
       end
 
       it 'sends analytics_submitted event with correct step count' do

@@ -178,6 +178,9 @@ fr:
       only_add_sp_services_html: Vous essayez d’accéder aux services de
         <strong>%{service_provider_name}</strong>
     info:
+      address_guidance_puerto_rico_html: Pour les résidents de Porto
+        Rico:<br><br>Veuillez indiquer l’urbanisation ou la copropriété à la
+        ligne 2 de votre adresse.
       camera_required: Votre téléphone portable doit avoir une caméra et un navigateur Web.
       capture_status_big_document: Trop près
       capture_status_capturing: Prendre la photo

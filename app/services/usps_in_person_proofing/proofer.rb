@@ -214,7 +214,6 @@ module UspsInPersonProofing
           city: post_office['city'],
           distance: post_office['distance'],
           name: post_office['name'],
-          phone: post_office['phone'],
           saturday_hours: hours['saturdayHours'],
           state: post_office['state'],
           sunday_hours: hours['sundayHours'],

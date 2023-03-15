@@ -163,6 +163,18 @@ module AnalyticsEvents
     track_event('Authentication Confirmation: Reset selected')
   end
 
+  # @param [Date] rejection_date Date of the rejection
+  # @param [Date] verified_at Date when profile was verified
+  # Tracks when a profile is automatically rejected due to being under review for 30 days
+  def automatic_fraud_rejection(rejection_date:, verified_at:, **extra)
+    track_event(
+      'Fraud: Automatic Fraud Rejection',
+      rejection_date: rejection_date,
+      verified_at: verified_at,
+      **extra,
+    )
+  end
+
   # Tracks when the user creates a set of backup mfa codes.
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   def backup_code_created(enabled_mfa_methods_count:, **extra)

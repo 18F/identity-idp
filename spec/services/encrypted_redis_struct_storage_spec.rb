@@ -16,7 +16,7 @@ RSpec.describe EncryptedRedisStructStorage do
 
     context 'with a struct that has a redis_key_prefix' do
       it 'prefixes the id' do
-        expect(key).to eq("example:prefix:#{id}")
+        expect(key).to eq("redis-pool:example:prefix:#{id}")
       end
     end
 

@@ -60,7 +60,7 @@ RSpec.configure do |config|
     end
 
     begin
-      REDIS_POOL.with { |namespaced| namespaced.redis.info }
+      REDIS_POOL.with { |client| client.info }
     rescue RuntimeError => error
       # rubocop:disable Rails/Output
       puts error
@@ -110,7 +110,7 @@ RSpec.configure do |config|
     Telephony::Test::Message.clear_messages
     Telephony::Test::Call.clear_calls
     PushNotification::LocalEventQueue.clear!
-    REDIS_THROTTLE_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_THROTTLE_POOL.with { |client| client.flushdb }
   end
 
   config.before(:each) do

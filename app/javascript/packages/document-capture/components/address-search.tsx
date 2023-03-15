@@ -16,11 +16,9 @@ export interface PostOffice {
   city: string;
   distance: string;
   name: string;
-  phone: string;
   saturday_hours: string;
   state: string;
   sunday_hours: string;
-  tty: string;
   weekday_hours: string;
   zip_code_4: string;
   zip_code_5: string;
@@ -49,11 +47,9 @@ const formatLocations = (postOffices: PostOffice[]): FormattedLocation[] =>
     id: index,
     distance: po.distance,
     name: po.name,
-    phone: po.phone,
     saturdayHours: po.saturday_hours,
     streetAddress: po.address,
     sundayHours: po.sunday_hours,
-    tty: po.tty,
     weekdayHours: po.weekday_hours,
     isPilot: !!po.is_pilot,
   }));
