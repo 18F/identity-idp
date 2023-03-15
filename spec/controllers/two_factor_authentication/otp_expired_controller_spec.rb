@@ -98,6 +98,10 @@ describe TwoFactorAuthentication::OtpExpiredController do
 
     context 'with an existing account' do
       before { allow(controller).to receive(:unconfirmed_path?).and_return(false) }
+      before { allow(controller).to receive(:new_account_mfa_registration?).and_return(false) }
+
+      it 'redirects to use existing mfa method on sign in' do
+      end
 
       it 'does not provide option to use another phone number on sign in' do
         user = create(:user, :with_phone)
