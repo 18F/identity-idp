@@ -194,6 +194,7 @@ es:
       irs_reproofing_explanation: Como medida adicional de seguridad, tiene que
         verificar su identidad de nuevo para el Servicio Interno de Impuestos.
       keep_window_open: No cierres esta ventana.
+      learn_more: Obtenga más información sobre cómo protegemos sus datos confidenciales
       lets_go: 'La verificación de la identidad se realiza en dos partes:'
       link_sent: Verifique su teléfono y siga las instrucciones para tomar una
         fotografía de la identificación emitida por su estado.
@@ -208,11 +209,8 @@ es:
       secure_account: Vamos a encriptar su cuenta con su contraseña. La encriptación
         significa que sus datos están protegidos y solo usted podrá acceder o
         modificar su información.
-      ssn: Necesitamos su número de Seguro Social para validar su nombre, fecha de
-        nacimiento y habla a. Su número de Seguro Social está encriptado. Con su
-        consentimiento, compartimos este información con la agencia
-        gubernamental a la que está intentando acceder para verificar su
-        identidad.
+      ssn: Necesitamos tu número de Seguro Social para validar tu nombre, fecha de
+        nacimiento y dirección.
       tag: Recomendado
       upload: Recopilaremos información sobre usted leyendo su documento de identidad
         expedido por el estado.
