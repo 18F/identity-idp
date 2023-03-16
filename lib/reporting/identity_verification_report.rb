@@ -1,12 +1,12 @@
 # frozen_string_literal: true
-require 'active_support'
-require 'active_support/core_ext/date/calculations'
-require 'active_support/core_ext/date/conversions'
-require 'active_support/core_ext/time/calculations'
-require 'active_support/core_ext/time/conversions'
 require 'csv'
-require 'reporting/cloudwatch_client'
-require 'reporting/cloudwatch_query'
+begin
+  require 'reporting/cloudwatch_client'
+  require 'reporting/cloudwatch_query'
+rescue LoadError => e
+  STDERR.puts 'could not load paths, try running with "bundle exec rails runner"'
+  raise e
+end
 
 module Reporting
   class IdentityVerificationReport
@@ -140,12 +140,15 @@ if __FILE__ == $PROGRAM_NAME
   issuer = nil
   silent = false
 
+  program_name = Pathname.new($PROGRAM_NAME).relative_path_from(__dir__)
+
   parser = OptionParser.new do |opts|
     opts.banner = <<~TXT
-      Usage
-      =======================
+      Usage:
 
-        #{$PROGRAM_NAME} --date YYYY-MM-DD --issuer ISSUER
+      #{program_name} --date YYYY-MM-DD --issuer ISSUER
+
+      Options:
     TXT
 
     opts.on('--date=DATE', 'date to run the report in YYYY-MM-DD format') do |date_v|
