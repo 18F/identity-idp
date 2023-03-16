@@ -147,6 +147,19 @@ feature 'Sign Up' do
       page.driver.browser.execute_cdp('Browser.resetPermissions')
     end
 
+    def clipboard_text
+      # `evaluate_async_script` is expected to be asynchronous, but internally it sets the browser
+      # script timeout based on Capybara's configured default wait time. Allow for delay in this
+      # asynchronous result while avoiding modifying the default otherwise.
+      #
+      # See: https://github.com/teamcapybara/capybara/blob/3.38.0/lib/capybara/selenium/driver.rb#L146
+      original_default_max_wait_time = Capybara.default_max_wait_time
+      Capybara.default_max_wait_time = 5
+      result = page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
+      Capybara.default_max_wait_time = original_default_max_wait_time
+      result
+    end
+
     context 'user enters their email as their password', email: true do
       it 'treats it as a weak password' do
         email = 'test@test.com'
@@ -169,11 +182,10 @@ feature 'Sign Up' do
       did_validate_name = -> { name.evaluate_script('this.didValidate') }
 
       click_on t('components.clipboard_button.label')
-      copied_text = page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
       expect(did_validate_name.call).to_not eq true
 
       otp_input = page.find('.one-time-code-input__input')
-      otp_input.set(generate_totp_code(copied_text))
+      otp_input.set(generate_totp_code(clipboard_text))
       click_button 'Submit'
       expect(did_validate_name.call).to eq true
 

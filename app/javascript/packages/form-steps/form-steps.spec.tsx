@@ -40,11 +40,14 @@ describe('FormSteps', () => {
     {
       name: 'first',
       title: 'First Title',
-      form: ({ errors }) => (
+      form: ({ errors, toNextStep }) => (
         <>
           <PageHeading>First Title</PageHeading>
           <span>First</span>
           <FormStepsButton.Continue />
+          <button type="button" onClick={toNextStep}>
+            Next
+          </button>
           <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
           <span>Errors: {errors.map(({ error }) => error.message).join(',')}</span>
         </>
@@ -679,12 +682,13 @@ describe('FormSteps', () => {
     expect(window.history.pushState).not.to.have.been.called();
   });
 
-  it('provides the step implementation the option to navigate to the previous step', async () => {
+  it('provides the step implementation the option to navigate to the previous or next step', async () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
-    await userEvent.click(getByText('forms.buttons.continue'));
-    await userEvent.click(getByText('Back'));
+    await userEvent.click(getByText('Next'));
+    expect(getByText('Second Title')).to.be.ok();
 
+    await userEvent.click(getByText('Back'));
     expect(getByText('First Title')).to.be.ok();
   });
 

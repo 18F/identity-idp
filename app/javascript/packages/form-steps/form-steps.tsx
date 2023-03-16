@@ -72,6 +72,11 @@ export interface FormStepComponentProps<V> {
    * Callback to navigate to the previous step.
    */
   toPreviousStep: () => void;
+
+  /**
+   * Callback to navigate to the next step.
+   */
+  toNextStep: () => void;
 }
 
 export interface FormStep<V extends FormValues = {}> {
@@ -359,9 +364,7 @@ function FormSteps({
    * Increments state to the next step, or calls onComplete callback
    * if the current step is the last step.
    */
-  const toNextStep: FormEventHandler = async (event) => {
-    event.preventDefault();
-
+  async function toNextStep() {
     // Don't proceed if field errors have yet to be resolved.
     if (hasUnresolvedFieldErrors) {
       setActiveErrors(Array.from(activeErrors));
@@ -395,7 +398,7 @@ function FormSteps({
       }
     }
 
-    onStepSubmit(step?.name);
+    onStepSubmit(step!.name);
 
     const nextStepIndex = stepIndex + 1;
     const isComplete =
@@ -408,6 +411,11 @@ function FormSteps({
     }
     // unset stepCanComplete so the next step that needs to can set it
     setStepCanComplete(undefined);
+  }
+
+  const handleSubmit: FormEventHandler = (event) => {
+    event.preventDefault();
+    toNextStep();
   };
 
   const toPreviousStep = () => {
@@ -424,7 +432,7 @@ function FormSteps({
   const isLastStep = stepIndex + 1 === steps.length;
 
   return (
-    <form ref={formRef} onSubmit={toNextStep} noValidate>
+    <form ref={formRef} onSubmit={handleSubmit} noValidate>
       {promptOnNavigate && Object.keys(values).length > 0 && <PromptOnNavigate />}
       {stepErrors.map((error) => (
         <Alert key={error.message} type="error" className="margin-bottom-4">
@@ -439,6 +447,7 @@ function FormSteps({
           value={values}
           errors={activeErrors}
           unknownFieldErrors={unknownFieldErrors}
+          toNextStep={toNextStep}
           onChange={ifStillMounted((nextValues, { patch } = { patch: true }) => {
             setActiveErrors((prevActiveErrors) =>
               prevActiveErrors.filter(({ field }) => !field || !(field in nextValues)),
