@@ -450,49 +450,49 @@ development:
         en: <p>
               This is a U.S. government service. You consent to the monitoring, recording, 
               and reviewing of your activity using this service. 
-              <a href="https://login.gov/policy/" target="_blank">Learn more about our privacy policies</a>.
+              <a href="/redirect/policy/?location=irs_sp_alert">Learn more about our privacy policies</a>.
             </p>
         es: <p>
               Este es un servicio del gobierno de EE. UU. Usted acepta que su actividad sea monitoreada, 
               registrada y revisada al utilizar este servicio. 
-              <a href="https://login.gov/es/policy/" target="_blank">Obtenga más información sobre nuestras políticas de privacidad</a>.
+              <a href="/redirect/policy/?location=irs_sp_alert" target="_blank">Obtenga más información sobre nuestras políticas de privacidad</a>.
             </p>
         fr: <p>
               Il s’agit d’un service du gouvernement américain. Vous consentez à la surveillance, 
               à l’enregistrement et à l’examen de votre activité en utilisant ce service. 
-              <a href="https://login.gov/fr/policy/" target="_blank">En savoir plus sur nos politiques de confidentialité</a>.
+              <a href="/redirect/policy/?location=irs_sp_alert" target="_blank">En savoir plus sur nos politiques de confidentialité</a>.
             </p>
       sign_up:
         en: <p>
               This is a U.S. government service. You consent to the monitoring, recording, 
               and reviewing of your activity using this service. 
-              <a href="https://login.gov/policy/" target="_blank">Learn more about our privacy policies</a>.
+              <a href="/redirect/policy/?location=irs_sp_alert" target="_blank">Learn more about our privacy policies</a>.
             </p>
         es: <p>
               Este es un servicio del gobierno de EE. UU. Usted acepta que su actividad sea monitoreada, 
               registrada y revisada al utilizar este servicio. 
-              <a href="https://login.gov/es/policy/" target="_blank">Obtenga más información sobre nuestras políticas de privacidad</a>.
+              <a href="/redirect/policy/?location=irs_sp_alert" target="_blank">Obtenga más información sobre nuestras políticas de privacidad</a>.
             </p>
         fr: <p>
               Il s’agit d’un service du gouvernement américain. Vous consentez à la surveillance, 
               à l’enregistrement et à l’examen de votre activité en utilisant ce service. 
-              <a href="https://login.gov/fr/policy/" target="_blank">En savoir plus sur nos politiques de confidentialité</a>.
+              <a href="/redirect/policy/?location=irs_sp_alert" target="_blank">En savoir plus sur nos politiques de confidentialité</a>.
             </p>
       forgot_password:
         en: <p>
               This is a U.S. government service. You consent to the monitoring, recording, 
               and reviewing of your activity using this service. 
-              <a href="https://login.gov/policy/" target="_blank">Learn more about our privacy policies</a>.
+              <a href="/redirect/policy/?location=irs_sp_alert" target="_blank">Learn more about our privacy policies</a>.
             </p>
         es: <p>
               Este es un servicio del gobierno de EE. UU. Usted acepta que su actividad sea monitoreada, 
               registrada y revisada al utilizar este servicio. 
-              <a href="https://login.gov/es/policy/" target="_blank">Obtenga más información sobre nuestras políticas de privacidad</a>.
+              <a href="/redirect/policy/?location=irs_sp_alert" target="_blank">Obtenga más información sobre nuestras políticas de privacidad</a>.
             </p>
         fr: <p>
               Il s’agit d’un service du gouvernement américain. Vous consentez à la surveillance, 
               à l’enregistrement et à l’examen de votre activité en utilisant ce service. 
-              <a href="https://login.gov/fr/policy/" target="_blank">En savoir plus sur nos politiques de confidentialité</a>.
+              <a href="/redirect/policy/?location=irs_sp_alert" target="_blank">En savoir plus sur nos politiques de confidentialité</a>.
             </p>
 
   'urn:gov:gsa:openidconnect:sp:expressjs':
