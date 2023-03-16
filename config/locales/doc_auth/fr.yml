@@ -206,6 +206,8 @@ fr:
       irs_reproofing_explanation: Comme mesure de sécurité supplémentaire, vous devez
         vérifier à nouveau votre identité pour l’IRS.
       keep_window_open: Ne fermez pas cette fenêtre.
+      learn_more: En savoir plus sur la façon dont nous protégeons vos informations
+        confidentielles
       lets_go: La vérification de l’identité se fait en deux temps
       link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour
         prendre une photo de votre identité émise par l’État.
@@ -221,9 +223,8 @@ fr:
       secure_account: Nous chiffrerons votre compte avec votre mot de passe. Le
         chiffrage signifie que vos données sont protégées et que vous êtes le/la
         seul(e) à pouvoir accéder à vos informations ou les modifier.
-      ssn: Nous avons besoin de votre numéro de sécurité sociale pour vérifier votre nom,
-       date de naissance et adresse.
-      learn_more: En savoir plus sur la façon dont nous protégeons vos informations confidentielles
+      ssn: Nous avons besoin de votre numéro de sécurité sociale pour vérifier votre
+        nom, date de naissance et adresse.
       tag: Recommandation
       take_picture: Utilisez l’appareil photo sur votre téléphone portable et
         téléchargez des images de votre identifiant. Nous utilisons uniquement

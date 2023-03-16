@@ -167,6 +167,7 @@ en:
       interstitial_thanks: Thanks for your patience!
       irs_reproofing_explanation: As an extra security measure, you must verify your identity again for IRS
       keep_window_open: Do not close this window.
+      learn_more: Learn more about how we protect your sensitive information
       lets_go: 'Identity verification happens in two parts:'
       link_sent: Please check your phone and follow instructions to take a photo of
         your state-issued ID.
@@ -179,8 +180,8 @@ en:
       secure_account: We’ll encrypt your account with your password. Encryption means
         your data is protected and only you will be able to access or change
         your information.
-      ssn: We need your Social Security number to verify your name, date of birth and address.
-      learn_more: Learn more about how we protect your sensitive information
+      ssn: We need your Social Security number to verify your name, date of birth and
+        address.
       tag: Recommended
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.

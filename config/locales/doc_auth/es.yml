@@ -200,6 +200,7 @@ es:
       irs_reproofing_explanation: Como medida adicional de seguridad, tiene que
         verificar su identidad de nuevo para el Servicio Interno de Impuestos.
       keep_window_open: No cierres esta ventana.
+      learn_more: Obtenga más información sobre cómo protegemos sus datos confidenciales
       lets_go: 'La verificación de la identidad se realiza en dos partes:'
       link_sent: Verifique su teléfono y siga las instrucciones para tomar una
         fotografía de la identificación emitida por su estado.
@@ -215,8 +216,7 @@ es:
         significa que sus datos están protegidos y solo usted podrá acceder o
         modificar su información.
       ssn: Necesitamos tu número de Seguro Social para validar tu nombre, fecha de
-       nacimiento y dirección.
-      learn_more: Obtenga más información sobre cómo protegemos sus datos confidenciales
+        nacimiento y dirección.
       tag: Recomendado
       take_picture: Use la cámara en su teléfono móvil y cargue imágenes de su
         identificación. Solo usamos las imágenes para verificar su identidad.
