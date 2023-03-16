@@ -5,8 +5,6 @@ feature 'doc auth link sent step' do
   include DocAuthHelper
   include DocCaptureHelper
 
-  let(:phone_number) { '415-555-0199' }
-
   context 'with combined upload step enabled', js: true do
     let(:user) { sign_in_and_2fa_user }
     let(:doc_capture_polling_enabled) { false }
