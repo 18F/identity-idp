@@ -65,6 +65,7 @@ class ApplicationController < ActionController::Base
         sp: current_sp&.issuer,
         session: session,
         ahoy: ahoy,
+        irs_session_id: irs_attempts_api_session_id,
       )
   end
 

@@ -37,6 +37,7 @@ describe Analytics do
   let(:request) { FakeRequest.new }
   let(:path) { 'fake_path' }
   let(:success_state) { 'GET|fake_path|Trackable Event' }
+  let(:irs_session_id) { nil }
 
   subject(:analytics) do
     Analytics.new(
@@ -45,6 +46,7 @@ describe Analytics do
       sp: 'http://localhost:3000',
       session: {},
       ahoy: ahoy,
+      irs_session_id: irs_session_id,
     )
   end
 
@@ -81,6 +83,19 @@ describe Analytics do
       )
 
       analytics.track_event('Trackable Event', user_id: tracked_user.uuid)
+    end
+
+    context 'irs_session_id' do
+      let(:irs_session_id) { 'abc123' }
+
+      it 'includes irs_session_id when present' do
+        expect(ahoy).to receive(:track).with(
+          'Trackable Event',
+          analytics_attributes.merge(irs_session_id: irs_session_id)
+        )
+
+        analytics.track_event('Trackable Event')
+      end
     end
 
     context 'tracing headers' do
