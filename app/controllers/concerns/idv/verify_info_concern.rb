@@ -113,10 +113,10 @@ module Idv
       delete_async
 
       if form_response.success?
-        idv_session.resolution_successful = true
+        idv_session.mark_verify_info_step_complete!
         redirect_to idv_phone_url
       else
-        idv_session.resolution_successful = false
+        idv_session.invalidate_verify_info_step!
       end
 
       analytics.idv_doc_auth_verify_proofing_results(**form_response.to_h)
@@ -213,11 +213,10 @@ module Idv
     end
 
     def skip_legacy_steps
-      idv_session.profile_confirmation = true
+      idv_session.mark_verify_info_step_complete!
       idv_session.vendor_phone_confirmation = false
       idv_session.user_phone_confirmation = false
       idv_session.address_verification_mechanism = 'phone'
-      idv_session.resolution_successful = 'phone'
     end
 
     def add_proofing_costs(results)

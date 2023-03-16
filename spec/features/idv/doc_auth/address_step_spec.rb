@@ -48,12 +48,16 @@ feature 'doc auth verify step', :js do
       complete_doc_auth_steps_before_document_capture_step
       complete_document_capture_step_with_yml('spec/fixtures/puerto_rico_resident.yml')
       complete_ssn_step
-      click_button t('idv.buttons.change_address_label')
     end
 
     it 'shows address guidance and hint text' do
+      expect(page).to have_current_path(idv_address_url)
       expect(page.body).to include(t('doc_auth.info.address_guidance_puerto_rico_html'))
       expect(page).to have_content(t('forms.example'))
+      fill_in 'idv_form_address1', with: '123 Calle Carlos'
+      fill_in 'idv_form_address2', with: 'URB Las Gladiolas'
+      click_button t('forms.buttons.submit.update')
+      expect(page).to have_current_path(idv_verify_info_path)
     end
   end
 end

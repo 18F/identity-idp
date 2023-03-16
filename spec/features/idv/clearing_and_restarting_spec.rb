@@ -9,7 +9,6 @@ describe 'clearing IdV and restarting' do
     before do
       start_idv_from_sp
       complete_idv_steps_with_gpo_before_confirmation_step(user)
-      acknowledge_and_confirm_personal_key unless IdentityConfig.store.gpo_personal_key_after_otp
     end
 
     context 'before signing out' do

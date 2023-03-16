@@ -394,7 +394,7 @@ describe 'throttling requests' do
     context 'when the number of requests is under the limit' do
       it 'does not throttle the request' do
         (phone_setups_per_ip_limit - 1).times do
-          patch '/phone_setup', headers: { REMOTE_ADDR: '1.2.3.4' }
+          post '/phone_setup', headers: { REMOTE_ADDR: '1.2.3.4' }
         end
 
         expect(response.status).to eq(302)
@@ -404,7 +404,7 @@ describe 'throttling requests' do
     context 'when the number of requests is over the limit' do
       it 'throttles the request' do
         (phone_setups_per_ip_limit + 1).times do
-          patch '/phone_setup', headers: { REMOTE_ADDR: '1.2.3.4' }
+          post '/phone_setup', headers: { REMOTE_ADDR: '1.2.3.4' }
         end
 
         expect(response.status).to eq(429)

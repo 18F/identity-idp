@@ -2,9 +2,12 @@ module AccountReset
   class DeleteAccount
     include ActiveModel::Model
     include GrantedTokenValidator
+    include TrackIrsEvent
 
-    def initialize(token)
+    def initialize(token, request, analytics)
       @token = token
+      @request = request
+      @analytics = analytics
     end
 
     def call
@@ -12,6 +15,7 @@ module AccountReset
 
       track_account_age
       track_mfa_method_counts
+      track_irs_event if sp
 
       extra = extra_analytics_attributes
 
@@ -22,7 +26,7 @@ module AccountReset
 
     private
 
-    attr_reader :success, :account_age, :mfa_method_counts
+    attr_reader :success, :account_age, :mfa_method_counts, :request, :analytics
 
     # @return [Integer, nil] number of days since the account was confirmed (rounded) or nil if
     # the account was not confirmed
