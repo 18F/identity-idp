@@ -215,6 +215,14 @@ h4 {
   @include u-margin-top(5);
 }
 
+.margin-left-auto {
+  @include u-margin-left('auto');
+}
+
+.margin-right-auto {
+  @include u-margin-right('auto');
+}
+
 .margin-y-105 {
   @include u-margin-y(1.5);
 }
