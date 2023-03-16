@@ -211,6 +211,10 @@ h4 {
   @include u-margin-top(0);
 }
 
+.margin-top-1 {
+  @include u-margin-top(1);
+}
+
 .margin-top-5 {
   @include u-margin-top(5);
 }
