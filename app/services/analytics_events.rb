@@ -3492,6 +3492,22 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] redirect_url URL user was directed to
+  # @param [String, nil] step which step
+  # @param [String, nil] location which part of a step, if applicable
+  # @param ["idv", String, nil] flow which flow
+  # User was redirected to the login.gov policy page
+  def policy_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
+    track_event(
+      'Policy Page Redirect',
+      redirect_url: redirect_url,
+      step: step,
+      location: location,
+      flow: flow,
+      **extra,
+    )
+  end
+
   # Tracks if a user clicks the "Show Password button"
   # @param [String] path URL path where the click occurred
   def show_password_button_clicked(path:, **extra)
