@@ -42,7 +42,6 @@ module Reporting
         queue << [range, range]
       end
 
-
       logger.info("starting query, queue_size=#{queue.length} num_threads=#{num_threads}")
       logger.info("=== query ===\n#{query}\n=== query ===")
 
@@ -55,7 +54,7 @@ module Reporting
             response = fetch_one(query:, start_time:, end_time:)
 
             if ensure_complete_logs? && has_more_results?(response.results.size)
-              logger.info("exact limit reached, bisecting: start_time=#{start_time} end_time=#{end_time}")
+              logger.info("more results, bisecting: start_time=#{start_time} end_time=#{end_time}")
               mid = midpoint(start_time:, end_time:)
 
               # -1 for current work finishing, +2 for new threads enqueued
@@ -120,8 +119,8 @@ module Reporting
     # @return [Array<Hash>]
     def parse_results(results)
       results.map do |row|
-        Hash[row.map { |cell| [cell[:field], cell[:value]]}].tap do |h|
-          h.delete("@ptr") # just noise
+        row.map { |cell| [cell[:field], cell[:value]] }.to_h.tap do |h|
+          h.delete('@ptr') # just noise
         end
       end
     end
@@ -148,6 +147,7 @@ module Reporting
       start_time.to_i + ((end_time.to_i - start_time.to_i) / 2)
     end
 
+    # rubocop:disable Rails/TimeZone
     def wait_for_query_result(query_id)
       start = Time.now.to_f
 
@@ -158,13 +158,16 @@ module Reporting
         case response.status
         when 'Complete', 'Failed', 'Cancelled'
           duration = Time.now.to_f - start
-          logger.info("finished query_id=#{query_id}, status=#{response.status}, duration=#{duration}")
+          logger.info(
+            "finished query_id=#{query_id}, status=#{response.status}, duration=#{duration}",
+          )
           return response
         else
           next
         end
       end
     end
+    # rubocop:enable Rails/TimeZone
 
     def cloudwatch_client
       require 'aws-sdk-cloudwatchlogs'

@@ -1,10 +1,12 @@
 # frozen_string_literal: true
+
+# rubocop:disable Rails/Output
 require 'csv'
 begin
   require 'reporting/cloudwatch_client'
   require 'reporting/cloudwatch_query'
 rescue LoadError => e
-  STDERR.puts 'could not load paths, try running with "bundle exec rails runner"'
+  warn 'could not load paths, try running with "bundle exec rails runner"'
   raise e
 end
 
@@ -123,7 +125,7 @@ module Reporting
     end
 
     def cloudwatch_client
-      @cloudwatch_template ||= Reporting::CloudwatchClient.new(
+      @cloudwatch_client ||= Reporting::CloudwatchClient.new(
         ensure_complete_logs: false,
         num_threads: 1,
         logger: logger,
@@ -133,6 +135,7 @@ module Reporting
   end
 end
 
+# rubocop:disable Rails/Exit
 if __FILE__ == $PROGRAM_NAME
   require 'optparse'
 
@@ -188,3 +191,5 @@ if __FILE__ == $PROGRAM_NAME
 
   puts csv
 end
+# rubocop:enable Rails/Exit
+# rubocop:enable Rails/Output

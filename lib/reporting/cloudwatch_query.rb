@@ -31,7 +31,7 @@ module Reporting
         if str_or_ary.is_a?(Array)
           '[' + str_or_ary.map { |str| quote(str) }.join(',') + ']'
         else
-          %|"#{str_or_ary.gsub('"', '\"')}"|
+          %("#{str_or_ary.gsub('"', '\"')}")
         end
       end
 
@@ -47,9 +47,7 @@ module Reporting
     end
 
     def names_filter
-      if names.present?
-        "| filter name in #{q(names)}"
-      end
+      "| filter name in #{q(names)}" if names.present?
     end
 
     def limit_filter
