@@ -94,7 +94,7 @@ module DocAuthHelper
     find(
       'label',
       text: t('doc_auth.instructions.consent', app_name: APP_NAME),
-      wait: 20,
+      wait: 5,
     ).click
     click_on t('doc_auth.buttons.continue')
   end
