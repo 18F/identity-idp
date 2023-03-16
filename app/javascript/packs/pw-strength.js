@@ -123,7 +123,7 @@ function analyzePw() {
   }
 
   function checkPasswordStrength(password) {
-    const z = zScoreFeedback(password, forbiddenPasswords);
+    const z = zxcvbn(password, forbiddenPasswords);
     const [cls, strength] = getStrength(z);
     const feedback = getFeedback(z);
 
