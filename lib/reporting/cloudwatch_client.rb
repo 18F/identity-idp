@@ -8,7 +8,8 @@ module Reporting
     # @param [Boolean] ensure_complete_logs when true, will detect when queries return exactly
     #  10,000 rows (Cloudwatch Insights max limit) and then recursively split the query window into
     #  two queries until we're certain we've queried all rows
-    # @param [ActiveSupport::Duration] slice_interval starting interval to split up and query across
+    # @param [ActiveSupport::Duration,Boolean,nil] slice_interval starting interval to split up and
+    #  query across, or something falsy to indicate not to slice the query
     def initialize(
       ensure_complete_logs: true,
       num_threads: DEFAULT_NUM_THREADS,
@@ -26,7 +27,7 @@ module Reporting
     # @param [#to_s] query
     # @param [Time] from
     # @param [Time] to
-    # @return [Array<Array<Types::ResultField>>]
+    # @return [Array<Hash>]
     def fetch(query:, from:, to:)
       results = Concurrent::Array.new
       in_progress = Concurrent::Hash.new(0)
@@ -41,7 +42,9 @@ module Reporting
         queue << [range, range]
       end
 
+
       logger.info("starting query, queue_size=#{queue.length} num_threads=#{num_threads}")
+      logger.info("=== query ===\n#{query}\n=== query ===")
 
       threads = num_threads.times.map do |thread_idx|
         Thread.new do
@@ -63,7 +66,7 @@ module Reporting
             else
               logger.info("worker finished, slice duration=#{end_time - start_time}")
               in_progress[orig_range] -= 1
-              results.concat(response.results)
+              results.concat(parse_results(response.results))
             end
           end
 
@@ -112,27 +115,32 @@ module Reporting
       size >= Reporting::CloudwatchQuery::MAX_LIMIT
     end
 
-    # Pulls out and parses the "@message" field as JSON
+    # Turns the key-value array from Cloudwatch into hashes
     # @param [Array<Array<Types::ResultField>>] results
     # @return [Array<Hash>]
     def parse_results(results)
-      results.map do |result_fields|
-        json_str = result_fields.find { |result_field| result_field.field == '@message' }.value
-        JSON.parse(json_str)
+      results.map do |row|
+        Hash[row.map { |cell| [cell[:field], cell[:value]]}].tap do |h|
+          h.delete("@ptr") # just noise
+        end
       end
     end
 
     # @return [Array<Range<Time>>]
     def slice_time_range(from:, to:)
-      slices = []
-      low = from
-      high = to
-      while low < high
-        slice_end = [low + slice_interval, high].min
-        slices << (low..slice_end)
-        low += slice_interval
+      if slice_interval
+        slices = []
+        low = from
+        high = to
+        while low < high
+          slice_end = [low + slice_interval, high].min
+          slices << (low..slice_end)
+          low += slice_interval
+        end
+        slices
+      else
+        [from..to]
       end
-      slices
     end
 
     # @return [Integer]

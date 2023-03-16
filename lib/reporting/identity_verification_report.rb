@@ -1,46 +1,187 @@
-require 'reporting/cloudwatch_query'
+# frozen_string_literal: true
+require 'active_support'
+require 'active_support/core_ext/date/calculations'
+require 'active_support/core_ext/date/conversions'
+require 'active_support/core_ext/time/calculations'
+require 'active_support/core_ext/time/conversions'
+require 'csv'
 require 'reporting/cloudwatch_client'
+require 'reporting/cloudwatch_query'
 
 module Reporting
   class IdentityVerificationReport
     include CloudwatchQuery::Quoting
 
-    attr_reader :issuer
+    attr_reader :issuer, :date, :logger
 
-    def initialize(issuer:)
-      @issuer = issuer
+    module Events
+      IDV_DOC_AUTH_IMAGE_UPLOAD = 'IdV: doc auth image upload vendor submitted'
+      IDV_GPO_ADDRESS_LETTER_REQUESTED = 'IdV: USPS address letter requested'
+      USPS_IPP_ENROLLMENT_CREATED = 'USPS IPPaaS enrollment created'
+      IDV_FINAL_RESOLUTION = 'IdV: final resolution'
+      GPO_VERIFICATION_SUBMITTED = 'GPO verification submitted'
+      USPS_ENROLLMENT_STATUS_UPDATED = 'GetUspsProofingResultsJob: Enrollment status updated'
+
+      def self.all_events
+        constants.map { |c| const_get(c) }
+      end
     end
 
+    # @param [String] isssuer
+    # @param [Date] date
+    def initialize(issuer:, date:, logger: Logger.new(STDERR))
+      @issuer = issuer
+      @date = date
+      @logger = logger
+    end
+
+    def to_csv
+      CSV.generate do |csv|
+        csv << ['Report date', date.to_s]
+        csv << ['Issuer', issuer]
+        csv << ['Started IdV Verification', idv_doc_auth_image_vendor_submitted]
+        csv << ['Incomplete Users', incomplete_users]
+        csv << ['Address Confirmation Letters Requested']
+        csv << ['Started In-Person Verification']
+        csv << ['Alternative Process Users', alternative_process_users]
+        csv << ['Success through Online Verification', idv_final_resolution]
+        csv << ['Success through Address Confirmation Letters', gpo_verification_submitted]
+        csv << ['Success through In-Person Verification', usps_enrollment_status_updated]
+        csv << ['Successfully Verified Users', successfully_verified_users]
+      end
+    end
+
+    def incomplete_users
+      idv_doc_auth_image_vendor_submitted - successfully_verified_users - alternative_process_users
+    end
+
+    def idv_gpo_address_letter_requested
+      data[Events::IDV_GPO_ADDRESS_LETTER_REQUESTED].to_i
+    end
+
+    def usps_ipp_enrollment_created
+      data[Events::USPS_IPP_ENROLLMENT_CREATED].to_i
+    end
+
+    def alternative_process_users
+      [
+        idv_gpo_address_letter_requested,
+        usps_ipp_enrollment_created,
+        -gpo_verification_submitted,
+        -usps_enrollment_status_updated,
+      ].sum
+    end
+
+    def idv_final_resolution
+      data[Events::IDV_FINAL_RESOLUTION].to_i
+    end
+
+    def gpo_verification_submitted
+      data[Events::GPO_VERIFICATION_SUBMITTED].to_i
+    end
+
+    def usps_enrollment_status_updated
+      data[Events::USPS_ENROLLMENT_STATUS_UPDATED].to_i
+    end
+
+    def successfully_verified_users
+      idv_final_resolution + gpo_verification_submitted + usps_enrollment_status_updated
+    end
+
+    def idv_doc_auth_image_vendor_submitted
+      data[Events::IDV_DOC_AUTH_IMAGE_UPLOAD].to_i
+    end
+
+    # Turn array of results into a hash
+    def data
+      @data ||= fetch_results.map { |row| [row['name'], row['count(*)']] }.to_h
+    end
 
     def fetch_results
-
+      cloudwatch_client.fetch(
+        query: query,
+        from: date.in_time_zone('UTC').beginning_of_day,
+        to: date.in_time_zone('UTC').end_of_day,
+      )
     end
 
     def query
       params = {
         issuer: quote(issuer),
-        event_names: quote(
-          [
-            'IdV: doc auth image upload vendor submitted',
-            'IdV: USPS address letter requested',
-            'USPS IPPaaS enrollment created',
-            'IdV: final resolution',
-            'GPO verification submitted',
-            'GetUspsProofingResultsJob: Enrollment status updated',
-          ],
-        )
+        event_names: quote(Events.all_events),
+        usps_enrollment_status_updated: quote(Events::USPS_ENROLLMENT_STATUS_UPDATED),
       }
 
-      format(<<-QUERY, params)
+      format(<<~QUERY, params)
         fields @message, @timestamp
         | filter properties.service_provider = %{issuer}
         | filter name in %{event_names}
+        | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1)
+                 or (name != %{usps_enrollment_status_updated})
         | stats count(*) by name
       QUERY
     end
 
     def cloudwatch_client
-      @cloudwatch_template ||= 
+      @cloudwatch_template ||= Reporting::CloudwatchClient.new(
+        ensure_complete_logs: false,
+        num_threads: 1,
+        logger: logger,
+        slice_interval: false,
+      )
     end
   end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  require 'optparse'
+
+  date = nil
+  issuer = nil
+  silent = false
+
+  parser = OptionParser.new do |opts|
+    opts.banner = <<~TXT
+      Usage
+      =======================
+
+        #{$PROGRAM_NAME} --date YYYY-MM-DD --issuer ISSUER
+    TXT
+
+    opts.on('--date=DATE', 'date to run the report in YYYY-MM-DD format') do |date_v|
+      date = Date.parse(date_v)
+    end
+
+    opts.on('--issuer=ISSUER') do |issuer_v|
+      issuer = issuer_v
+    end
+
+    opts.on('--silent', 'silences logging to STDERR') do
+      silent = true
+    end
+
+    opts.on('--verboase', 'includes verbose logging to STDERR') do
+      silent = false
+    end
+
+    opts.on('-h', '--help') do
+      puts opts
+      exit 0
+    end
+  end
+
+  parser.parse!(ARGV)
+
+  if !date || !issuer
+    puts parser
+    exit 0
+  end
+
+  csv = Reporting::IdentityVerificationReport.new(
+    date: date,
+    issuer: issuer,
+    logger: silent ? Logger.new('/dev/null') : Logger.new(STDERR),
+  ).to_csv
+
+  puts csv
 end
