@@ -85,15 +85,27 @@ describe Analytics do
       analytics.track_event('Trackable Event', user_id: tracked_user.uuid)
     end
 
-    context 'irs_session_id' do
+    context 'with an irs_session_id' do
       let(:irs_session_id) { 'abc123' }
 
-      it 'includes irs_session_id when present' do
+      it 'includes irs_session_id' do
         expect(ahoy).to receive(:track).with(
           'Trackable Event',
-          analytics_attributes.merge(irs_session_id: irs_session_id)
+          analytics_attributes.merge(irs_session_id: irs_session_id),
         )
 
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'without an irs_session_id' do
+      let(:irs_session_id) { nil }
+
+      it 'omits the irs_session_id key entirely' do
+        expect(ahoy).to receive(:track).with(
+          'Trackable Event',
+          hash_excluding(irs_session_id: irs_session_id),
+        )
         analytics.track_event('Trackable Event')
       end
     end

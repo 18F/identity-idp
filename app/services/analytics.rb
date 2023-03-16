@@ -27,7 +27,7 @@ class Analytics
       locale: I18n.locale,
     }
 
-    analytics_hash.merge!(irs_session_id: irs_session_id) if irs_session_id
+    analytics_hash[:irs_session_id] = irs_session_id if irs_session_id
     analytics_hash.merge!(request_attributes) if request
 
     ahoy.track(event, analytics_hash)
