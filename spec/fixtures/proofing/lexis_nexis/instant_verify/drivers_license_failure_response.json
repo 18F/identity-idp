@@ -42,7 +42,10 @@
         },
         {
           "ItemName": "DriversLicense",
-          "ItemStatus": "pass"
+          "ItemStatus": "fail",
+          "ItemReason": {
+            "Code": "drivers_license_expired_fail"
+          }
         },
         {
           "ItemName": "DriversLicenseVerification",
