@@ -40,10 +40,6 @@ es:
           other: '%{count} millas de distancia'
         inline_error: Ingrese una dirección válida que incluya ciudad, estado y código postal
         location_button: Seleccionar
-        location_step_about: Si tiene problemas para añadir su cédula de identidad, es
-          posible que pueda realizar la verificación en persona en una oficina
-          de correos local de los Estados Unidos en determinadas localidades.
-        none_found: No se encontraron localidades.
         po_search:
           address_search_hint: 'Ejemplo: 1234 N Example St., Allentown, PA 12345'
           address_search_label: Introduzca una dirección para encontrar una Oficina de
@@ -65,13 +61,11 @@ es:
           results_instructions: Seleccione una ubicación de la Oficina de Correos a
             continuación, o busque de nuevo utilizando una dirección diferente.
           search_button: Búsqueda
-        post_office: Oficina de Correos
         retail_hours_heading: Horario de atención al público
         retail_hours_sat: 'Sáb:'
         retail_hours_sun: 'Dom:'
         retail_hours_weekday: 'De Lunes a Viernes:'
       prepare:
-        alert_selected_po_name: Ha seleccionado la oficina de correos %{name}.
         alert_selected_post_office: Ha seleccionado la oficina de correos a %{full_address}.
         privacy_disclaimer: '%{app_name} es un sitio web seguro del gobierno. Nosotros y
           el Servicio Postal de los Estados Unidos utilizamos sus datos para
@@ -144,7 +138,6 @@ es:
       barcode: Está listo para verificar su identidad en persona
       cta: ¿Tiene problemas para verificar su documento de identidad en línea?
       cta_variant: Intente verificar su ID en persona
-      location: Seleccione un lugar para verificar su cédula
       po_search:
         location: Encuentre una oficina de correos participante
       prepare: Verifique su identidad en persona
