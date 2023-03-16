@@ -430,9 +430,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(form.aal).to eq(3)
       end
     end
-  end
 
-  describe '#aal' do
     context 'when IAL and AAL passed' do
       aal2 = Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
       ial2 = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
@@ -444,6 +442,138 @@ RSpec.describe OpenidConnectAuthorizeForm do
       it 'returns ial and aal' do
         expect(form.aal).to eq(2)
         expect(form.ial).to eq(2)
+      end
+    end
+  end
+
+  describe '#requested_aal_value' do
+    context 'when default AAL passed' do
+      before do
+        default = Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+        IdentityConfig.store.valid_authn_contexts.push(default)
+      end
+
+      after do
+        IdentityConfig.store.valid_authn_contexts.pop
+      end
+
+      let(:acr_values) { Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns AAL1' do
+        requested_aal_value = form.requested_aal_value
+        expect(requested_aal_value).to eq(Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF)
+      end
+    end
+
+    context 'when AAL1 passed' do
+      before do
+        aal1 = Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF
+        IdentityConfig.store.valid_authn_contexts.push(aal1)
+      end
+
+      after do
+        IdentityConfig.store.valid_authn_contexts.pop
+      end
+
+      let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns AAL1' do
+        requested_aal_value = form.requested_aal_value
+        expect(requested_aal_value).to eq(Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF)
+      end
+    end
+
+    context 'when AAL2 passed' do
+      let(:acr_values) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns AAl2' do
+        requested_aal_value = form.requested_aal_value
+        expect(requested_aal_value).to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
+      end
+    end
+
+    context 'when AAL2_PHISHING_RESISTANT passed' do
+      let(:phishing_resistant) do
+        Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF
+      end
+      let(:acr_values) { phishing_resistant }
+
+      it 'returns AAL2+Phishing Resistant' do
+        requested_aal_value = form.requested_aal_value
+        expect(requested_aal_value).to eq(phishing_resistant)
+      end
+    end
+
+    context 'when AAL2_HSPD12 passed' do
+      let(:acr_values) { Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns AAL2+HSPD12' do
+        requested_aal_value = form.requested_aal_value
+        expect(requested_aal_value).to eq(Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF)
+      end
+    end
+
+    context 'when AAL3 passed' do
+      let(:acr_values) { Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns AAL3' do
+        requested_aal_value = form.requested_aal_value
+        expect(requested_aal_value).to eq(Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF)
+      end
+    end
+
+    context 'when AAL3_HSPD12 passed' do
+      let(:acr_values) { Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns AAL3+HSPD12' do
+        requested_aal_value = form.requested_aal_value
+        expect(requested_aal_value).to eq(Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF)
+      end
+    end
+
+    context 'when AAL3_HSPD12 and AAL2_HSPD12 passed' do
+      let(:acr_values) do
+        [Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
+         Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF].join(' ')
+      end
+
+      it 'returns AAL3+HSPD12' do
+        requested_aal_value = form.requested_aal_value
+        expect(requested_aal_value).to eq(Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF)
+      end
+    end
+
+    context 'when AAL2 and AAL2_PHISHING_RESISTANT passed' do
+      let(:phishing_resistant) do
+        Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF
+      end
+
+      let(:acr_values) do
+        "#{Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF}
+         #{phishing_resistant}"
+      end
+
+      it 'returns AAL3+HSPD12' do
+        requested_aal_value = form.requested_aal_value
+        expect(requested_aal_value).to eq(phishing_resistant)
+      end
+    end
+
+    context 'when AAL2_PHISHING_RESISTANT and AAL2 passed' do
+      # this is the same as the previous test, just reverse ordered
+      # AAL values, to ensure it doesn't just take the 2nd AAL.
+      let(:phishing_resistant) do
+        Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF
+      end
+
+      let(:acr_values) do
+        "#{phishing_resistant}
+         #{Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF}"
+      end
+
+      it 'returns AAL3+HSPD12' do
+        requested_aal_value = form.requested_aal_value
+        expect(requested_aal_value).to eq(phishing_resistant)
       end
     end
   end
