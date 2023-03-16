@@ -10,7 +10,7 @@ describe Redirect::ContactController do
     it 'redirects to contact page' do
       redirect_url = IdentityConfig.store.idv_contact_url
 
-      get :show, params: { **location_params }
+      get :show, params: location_params
 
       expect(response).to redirect_to redirect_url
       expect(@analytics).to have_logged_event(

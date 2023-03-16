@@ -10,7 +10,7 @@ describe Redirect::PolicyController do
     it 'redirects to policy page' do
       redirect_url = MarketingSite.security_and_privacy_practices_url
 
-      get :show, params: { **location_params }
+      get :show, params: location_params
 
       expect(response).to redirect_to redirect_url
       expect(@analytics).to have_logged_event(
