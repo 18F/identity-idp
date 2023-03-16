@@ -93,6 +93,7 @@ module Reporting
       logger.info("starting query: #{start_time}..#{end_time}")
 
       query_id = cloudwatch_client.start_query(
+        # NOTE: this should be configurable as well
         log_group_name: 'prod_/srv/idp/shared/log/events.log',
         start_time:,
         end_time:,

@@ -21,7 +21,7 @@ module Reporting
       IDV_GPO_ADDRESS_LETTER_REQUESTED = 'IdV: USPS address letter requested'
       USPS_IPP_ENROLLMENT_CREATED = 'USPS IPPaaS enrollment created'
       IDV_FINAL_RESOLUTION = 'IdV: final resolution'
-      GPO_VERIFICATION_SUBMITTED = 'GPO verification submitted'
+      GPO_VERIFICATION_SUBMITTED = 'IdV: GPO verification submitted'
       USPS_ENROLLMENT_STATUS_UPDATED = 'GetUspsProofingResultsJob: Enrollment status updated'
 
       def self.all_events
@@ -112,6 +112,7 @@ module Reporting
         issuer: quote(issuer),
         event_names: quote(Events.all_events),
         usps_enrollment_status_updated: quote(Events::USPS_ENROLLMENT_STATUS_UPDATED),
+        gpo_verification_submitted: quote(Events::GPO_VERIFICATION_SUBMITTED),
       }
 
       format(<<~QUERY, params)
@@ -120,6 +121,8 @@ module Reporting
         | filter name in %{event_names}
         | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1)
                  or (name != %{usps_enrollment_status_updated})
+        | filter (name = %{gpo_verification_submitted} and properties.event_properties.success = 1)
+                 or (name != %{gpo_verification_submitted})
         | stats count(*) by name
       QUERY
     end
