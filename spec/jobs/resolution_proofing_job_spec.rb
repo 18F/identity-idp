@@ -250,6 +250,80 @@ RSpec.describe ResolutionProofingJob, type: :job do
       end
     end
 
+    context 'with an AAMVA rate limit' do
+      context 'in a state where AAMVA is supported' do
+        let(:should_proof_state_id) { true }
+        it 'stores an unsuccessful result if AAMVA rate limit is reached' do
+          stub_vendor_requests
+
+          result = instance.perform(
+            result_id: document_capture_session.result_id,
+            should_proof_state_id: should_proof_state_id,
+            encrypted_arguments: encrypted_arguments,
+            trace_id: trace_id,
+            user_id: user.id,
+            threatmetrix_session_id: threatmetrix_session_id,
+            request_ip: request_ip,
+          )
+
+          result = document_capture_session.load_proofing_result[:result]
+
+          expect(result[:success]).to be true
+
+          result2 = instance.perform(
+            result_id: document_capture_session.result_id,
+            should_proof_state_id: should_proof_state_id,
+            encrypted_arguments: encrypted_arguments,
+            trace_id: trace_id,
+            user_id: user.id,
+            threatmetrix_session_id: threatmetrix_session_id,
+            request_ip: request_ip,
+          )
+
+          result2 = document_capture_session.load_proofing_result[:result]
+
+          expect(result2[:success]).to be false
+          expect(result2[:exception]).to eq 'State ID Proofing Rate Limit'
+        end
+      end
+
+      context 'in a state where AAMVA is not supported' do
+        let(:should_proof_state_id) { false }
+        it 'does not rate limit AAMVA' do
+          stub_vendor_requests
+
+          result = instance.perform(
+            result_id: document_capture_session.result_id,
+            should_proof_state_id: should_proof_state_id,
+            encrypted_arguments: encrypted_arguments,
+            trace_id: trace_id,
+            user_id: user.id,
+            threatmetrix_session_id: threatmetrix_session_id,
+            request_ip: request_ip,
+          )
+
+          result = document_capture_session.load_proofing_result[:result]
+
+          expect(result[:success]).to be true
+
+          result2 = instance.perform(
+            result_id: document_capture_session.result_id,
+            should_proof_state_id: should_proof_state_id,
+            encrypted_arguments: encrypted_arguments,
+            trace_id: trace_id,
+            user_id: user.id,
+            threatmetrix_session_id: threatmetrix_session_id,
+            request_ip: request_ip,
+          )
+
+          result2 = document_capture_session.load_proofing_result[:result]
+
+          expect(result[:success]).to be true
+          expect(result2[:success]).to be true
+        end
+      end
+    end
+
     context 'in a state where AAMVA is not supported' do
       let(:should_proof_state_id) { false }
 
