@@ -1,3 +1,7 @@
+require 'aws-sdk-cloudwatchlogs'
+require 'concurrent-ruby'
+require 'reporting/cloudwatch_query'
+
 module Reporting
   class CloudwatchClient
     DEFAULT_NUM_THREADS = 5
@@ -72,6 +76,8 @@ module Reporting
           logger.info("thread done thread_idx=#{thread_idx}")
 
           nil
+        end.tap do |thread|
+          thread.abort_on_exception = true
         end
       end
 
@@ -80,9 +86,11 @@ module Reporting
         sleep wait_duration
       end
       queue.close
-      threads.map(&:value) # wait for all threads
+      threads.each(&:value) # wait for all threads
 
       results
+    ensure
+      threads.each(&:kill)
     end
 
     # @param [#to_s] query
@@ -116,11 +124,11 @@ module Reporting
     end
 
     # Turns the key-value array from Cloudwatch into hashes
-    # @param [Array<Array<Types::ResultField>>] results
+    # @param [Array<Array<Aws::CloudWatchLogs::Types::ResultField>>] results
     # @return [Array<Hash>]
     def parse_results(results)
       results.map do |row|
-        row.map { |cell| [cell[:field], cell[:value]] }.to_h.tap do |h|
+        row.map { |cell| [cell.field, cell.value] }.to_h.tap do |h|
           h.delete('@ptr') # just noise
         end
       end
@@ -171,7 +179,6 @@ module Reporting
     # rubocop:enable Rails/TimeZone
 
     def cloudwatch_client
-      require 'aws-sdk-cloudwatchlogs'
       @cloudwatch_client ||= Aws::CloudWatchLogs::Client.new(region: 'us-west-2')
     end
   end

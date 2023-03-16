@@ -107,6 +107,7 @@ module Reporting
         end
 
         # IDEA: maybe there's a block form if this we can do that yields results as it loads them
+        # to go slightly faster
         fetch_results.each do |row|
           event_users[row['name']] << row['user_id']
         end
