@@ -28,8 +28,8 @@ feature 'verify profile with OTP' do
       sign_in_live_with_2fa(user)
       fill_in t('forms.verify_profile.name'), with: otp
       click_button t('forms.verify_profile.submit')
+      acknowledge_and_confirm_personal_key
 
-      expect(page).to have_content(t('account.index.verification.success'))
       expect(page).to have_current_path(account_path)
     end
 

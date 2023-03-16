@@ -20,7 +20,9 @@ locals:
       </div>
       <div>
         <dt class="display-inline"> <%= t('idv.form.dob') %>: </dt>
-        <dd class="display-inline margin-left-0"> <%= pii[:dob] %> </dd>
+        <dd class="display-inline margin-left-0">
+          <%= I18n.l(Date.parse(pii[:dob]), format: I18n.t('time.formats.event_date')) %>
+        </dd>
       </div>
       <% if !remote_identity_proofing %>
         <div>
