@@ -1,7 +1,8 @@
 module UspsInPersonProofing
   class Proofer
     AUTH_TOKEN_CACHE_KEY = :usps_ippaas_api_auth_token
-    AUTH_TOKEN_REFRESH_THRESHOLD = 5
+    # Automatically refresh our auth token if it is within this many minutes of expiring
+    AUTH_TOKEN_PREMATURE_EXPIRY_MINUTES = 1
 
     # Makes HTTP request to get nearby in-person proofing facilities
     # Requires address, city, state and zip code.
@@ -103,6 +104,11 @@ module UspsInPersonProofing
     def retrieve_token!
       body = request_token
       expires_at = Time.zone.now + body['expires_in']
+      # Refresh our token early so that it won't expire while a request is in-flight. We expect 15m
+      # expirys for tokens but are careful not to trim the expiry by too much, just in case
+      if expires_at - AUTH_TOKEN_PREMATURE_EXPIRY_MINUTES > Time.zone.now
+        expires_at -= AUTH_TOKEN_PREMATURE_EXPIRY_MINUTES
+      end
       token = "#{body['token_type']} #{body['access_token']}"
       Rails.cache.write(AUTH_TOKEN_CACHE_KEY, token, expires_at: expires_at)
       # If using a redis cache we have to manually set the expires_at. This is because we aren't
@@ -148,18 +154,6 @@ module UspsInPersonProofing
     # already cached.
     # @return [Hash] Headers to add to USPS requests
     def dynamic_headers
-      if Rails.cache.try(:redis)
-        token_remaining_time = Rails.cache.redis.ttl(AUTH_TOKEN_CACHE_KEY)
-        if token_remaining_time != -2 && token_remaining_time <= AUTH_TOKEN_REFRESH_THRESHOLD
-          retrieve_token!
-        end
-      else
-        normalized_key = Rails.cache.send(:normalize_key, AUTH_TOKEN_CACHE_KEY)
-        token_expires_at = Rails.cache.send(:read_entry, normalized_key)&.expires_at
-        if !token_expires_at.nil? && (token_expires_at <= AUTH_TOKEN_REFRESH_THRESHOLD)
-          retrieve_token!
-        end
-      end
       {
         'Authorization' => token,
         'RequestID' => request_id,
