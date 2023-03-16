@@ -41,9 +41,11 @@ module Reporting
       CSV.generate do |csv|
         csv << ['Report date', date.to_s]
         csv << ['Issuer', issuer]
+        csv << []
+        csv << ['Metric', '# of Users']
         csv << ['Started IdV Verification', idv_doc_auth_image_vendor_submitted]
         csv << ['Incomplete Users', incomplete_users]
-        csv << ['Address Confirmation Letters Requested']
+        csv << ['Address Confirmation Letters Requested', idv_gpo_address_letter_requested]
         csv << ['Started In-Person Verification']
         csv << ['Alternative Process Users', alternative_process_users]
         csv << ['Success through Online Verification', idv_final_resolution]
@@ -94,9 +96,23 @@ module Reporting
       data[Events::IDV_DOC_AUTH_IMAGE_UPLOAD].to_i
     end
 
-    # Turn array of results into a hash
+
+    # Turns query results into a hash keyed by event name, values are a count of unique users
+    # for that event
+    # @return [Hash<String,Integer>]
     def data
-      @data ||= fetch_results.map { |row| [row['name'], row['count(*)']] }.to_h
+      @data ||= begin
+        event_users = Hash.new do |h, uuid|
+          h[uuid] = Set.new
+        end
+
+        # IDEA: maybe there's a block form if this we can do that yields results as it loads them
+        fetch_results.each do |row|
+          event_users[row['name']] << row['user_id']
+        end
+
+        event_users.transform_values(&:count)
+      end
     end
 
     def fetch_results
@@ -116,23 +132,25 @@ module Reporting
       }
 
       format(<<~QUERY, params)
-        fields @message, @timestamp
+        fields
+            name
+          , properties.user_id AS user_id
         | filter properties.service_provider = %{issuer}
         | filter name in %{event_names}
         | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1)
                  or (name != %{usps_enrollment_status_updated})
         | filter (name = %{gpo_verification_submitted} and properties.event_properties.success = 1)
                  or (name != %{gpo_verification_submitted})
-        | stats count(*) by name
+        | limit 10000
       QUERY
     end
 
     def cloudwatch_client
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
-        ensure_complete_logs: false,
-        num_threads: 1,
+        ensure_complete_logs: true,
+        num_threads: 5,
         logger: logger,
-        slice_interval: false,
+        slice_interval: 3.hours,
       )
     end
   end
