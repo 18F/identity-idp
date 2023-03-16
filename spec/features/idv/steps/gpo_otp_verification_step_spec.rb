@@ -27,7 +27,7 @@ feature 'idv gpo otp verification step', :js do
   let(:threatmetrix_review_status) { nil }
   let(:redirect_after_verification) { nil }
   let(:profile_should_be_active) { true }
-  let(:expected_deactivation_reason) { nil }
+  let(:fraud_review_pending) { false }
 
   before do
     allow(IdentityConfig.store).to receive(:proofing_device_profiling).
@@ -54,7 +54,7 @@ feature 'idv gpo otp verification step', :js do
       let(:threatmetrix_review_status) { 'review' }
       let(:redirect_after_verification) { idv_setup_errors_path }
       let(:profile_should_be_active) { false }
-      let(:expected_deactivation_reason) { 'threatmetrix_review_pending' }
+      let(:fraud_review_pending) { true }
       it_behaves_like 'gpo otp verification'
     end
 
@@ -62,7 +62,7 @@ feature 'idv gpo otp verification step', :js do
       let(:threatmetrix_review_status) { 'reject' }
       let(:redirect_after_verification) { idv_setup_errors_path }
       let(:profile_should_be_active) { false }
-      let(:expected_deactivation_reason) { 'threatmetrix_review_pending' }
+      let(:fraud_review_pending) { true }
       it_behaves_like 'gpo otp verification'
     end
 
@@ -74,8 +74,6 @@ feature 'idv gpo otp verification step', :js do
 
   context 'with gpo personal key after verification' do
     it 'shows the user a personal key after verification' do
-      allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).
-        and_return(true)
       sign_in_live_with_2fa(user)
 
       expect(current_path).to eq idv_gpo_verify_path

@@ -139,6 +139,9 @@ es:
         de su ID emitido por el estado.
       capture_scan_warning_link: suba nuevas fotos
       capture_troubleshooting_tips: '¿Tiene problemas para agregar su identificación emitida por el estado?'
+      combined_upload: '¿Cómo desea añadir su documento de identidad?'
+      combined_upload_from_computer: Continuar en esta computadora
+      combined_upload_from_phone: Utilice su teléfono para tomar las fotos
       document_capture: Añada su documento de identidad expedido por el estado
       document_capture_back: Parte trasera de su documento de identidad
       document_capture_front: Parte delantera de su documento de identidad
@@ -169,12 +172,22 @@ es:
       only_add_sp_services_html: Está tratando de acceder a los servicios
         <strong>%{service_provider_name}</strong>
     info:
+      address_guidance_puerto_rico_html: Para residentes de Puerto
+        Rico:<br><br>Incluyan en su dirección la urbanización o departamento en
+        la línea de dirección 2.
       camera_required: Su teléfono móvil debe tener una cámara y un navegador web.
       capture_status_big_document: Demasiado cerca
       capture_status_capturing: Capturando
       capture_status_none: Alinea
       capture_status_small_document: Muévete mas cerca
       capture_status_tap_to_capture: Toque para capturar
+      combined_upload: Recopilaremos información sobre usted leyendo su documento de
+        identidad expedido por el estado.
+      combined_upload_from_computer: ¿No tiene teléfono? Suba fotos de su documento de
+        identidad desde esta computadora.
+      combined_upload_from_phone: No tendrá que volver a iniciar sesión y volverá a
+        cambiar a esta computadora después de tomar las fotos. Su teléfono móvil
+        debe tener una cámara y un navegador web.
       document_capture_intro_acknowledgment: Recopilaremos información sobre usted
         leyendo su documento de identidad expedido por el Estado. Usamos esta
         información para verificar su identidad.
@@ -218,6 +231,7 @@ es:
         identidad comparándola con los registros públicos.
       welcome_html: '%{sp_name} necesita asegurarse de que es usted y no es alguien
         que se hace pasar por usted.'
+      you_entered: 'Ud. entregó:'
     instructions:
       bullet1: Documento de identidad emitido por el estado.
       bullet2: Número de seguro social

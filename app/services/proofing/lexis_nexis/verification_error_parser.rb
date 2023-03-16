@@ -10,7 +10,7 @@ module Proofing
       end
 
       def parsed_errors
-        { base: base_error_message }.merge(product_error_messages)
+        { base: base_error_message }.merge(product_error_messages).compact
       end
 
       def verification_status
@@ -27,9 +27,7 @@ module Proofing
         if verification_status == 'error'
           error_information = body.fetch('Information', {}).to_json
           "Response error with code '#{error_code}': #{error_information}"
-        elsif error_code.nil?
-          'Verification failed without a reason code'
-        else
+        elsif error_code.present?
           "Verification failed with code: '#{error_code}'"
         end
       end

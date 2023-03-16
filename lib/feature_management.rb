@@ -113,8 +113,10 @@ class FeatureManagement
   end
 
   def self.phone_recaptcha_enabled?
-    IdentityConfig.store.recaptcha_site_key.present? &&
-      IdentityConfig.store.recaptcha_secret_key.present? &&
+    IdentityConfig.store.recaptcha_site_key_v2.present? &&
+      IdentityConfig.store.recaptcha_site_key_v3.present? &&
+      IdentityConfig.store.recaptcha_secret_key_v2.present? &&
+      IdentityConfig.store.recaptcha_secret_key_v3.present? &&
       IdentityConfig.store.phone_recaptcha_score_threshold.positive?
   end
 

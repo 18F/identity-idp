@@ -104,9 +104,7 @@ module TwoFactorAuthCode
 
     attr_reader(
       :phone_number,
-      :account_reset_token,
       :confirmation_for_add_phone,
-      :voice_otp_delivery_unsupported,
     )
   end
 end

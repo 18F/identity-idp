@@ -66,7 +66,7 @@ module ControllerHelper
       dob: 50.years.ago.to_date.to_s,
       ssn: '666-12-1234',
     }.with_indifferent_access
-    idv_session.profile_confirmation = true
+    idv_session.resolution_successful = true
     allow(subject).to receive(:confirm_idv_applicant_created).and_return(true)
     allow(subject).to receive(:idv_session).and_return(idv_session)
     allow(subject).to receive(:user_session).and_return(user_session)
@@ -80,7 +80,7 @@ module ControllerHelper
       service_provider: nil
     )
     idv_session.applicant = applicant.with_indifferent_access
-    idv_session.profile_confirmation = true
+    idv_session.resolution_successful = true
     allow(subject).to receive(:confirm_idv_applicant_created).and_return(true)
     allow(subject).to receive(:idv_session).and_return(idv_session)
     allow(subject).to receive(:user_session).and_return(user_session)
@@ -92,7 +92,7 @@ module ControllerHelper
     allow(user).to receive(:pending_profile).and_return(pending_profile)
     allow(decorated_user).to receive(:pending_profile_requires_verification?).
       and_return(has_pending_profile)
-    allow(decorated_user).to receive(:threatmetrix_review_pending?).and_return(false)
+    allow(user).to receive(:fraud_review_pending?).and_return(false)
     decorated_user
   end
 

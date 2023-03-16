@@ -59,13 +59,15 @@ class UserEventCreator
 
   # @return [Array(Event, String)] an (event, disavowal_token) tuple
   def create_event_for_existing_device(event_type:, user:, device:, disavowal_token:)
-    device.update_last_used_ip(request.remote_ip)
-    create_event_for_device(
-      event_type: event_type,
-      user: user,
-      device: device,
-      disavowal_token: disavowal_token,
-    )
+    Device.transaction do
+      device.update_last_used_ip(request.remote_ip)
+      create_event_for_device(
+        event_type: event_type,
+        user: user,
+        device: device,
+        disavowal_token: disavowal_token,
+      )
+    end
   end
 
   def build_disavowal_token
@@ -76,11 +78,14 @@ class UserEventCreator
   def create_event_for_new_device(event_type:, user:, disavowal_token:)
     user_has_multiple_devices = UserDecorator.new(user).devices?
 
-    device = create_device_for_user(user)
     if user_has_multiple_devices && disavowal_token.nil?
-      event, disavowal_token = create_user_event_with_disavowal(
-        event_type, user, device
-      )
+      device, event, disavowal_token = Device.transaction do
+        device = create_device_for_user(user)
+        event, disavowal_token = create_user_event_with_disavowal(
+          event_type, user, device
+        )
+        [device, event, disavowal_token]
+      end
       send_new_device_notification(
         user: user,
         device: device,
@@ -88,12 +93,15 @@ class UserEventCreator
       )
       [event, disavowal_token]
     else
-      create_event_for_device(
-        device: device,
-        event_type: event_type,
-        user: user,
-        disavowal_token: disavowal_token,
-      )
+      Device.transaction do
+        device = create_device_for_user(user)
+        create_event_for_device(
+          device: device,
+          event_type: event_type,
+          user: user,
+          disavowal_token: disavowal_token,
+        )
+      end
     end
   end
 

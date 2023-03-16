@@ -17,7 +17,7 @@ describe Idv::PhoneController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_idv_applicant_created,
+        :confirm_verify_info_step_complete,
       )
     end
   end
@@ -78,7 +78,6 @@ describe Idv::PhoneController do
     context 'when the user has not finished the verify step' do
       before do
         subject.idv_session.applicant = nil
-        subject.idv_session.profile_confirmation = nil
         subject.idv_session.resolution_successful = nil
 
         allow(controller).to receive(:confirm_idv_applicant_created).and_call_original

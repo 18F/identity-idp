@@ -14,7 +14,6 @@ fr:
       mail:
         resend: Envoyer une autre lettre
         send: Envoyer une lettre
-      send_confirmation_code: Continuer
     cancel:
       actions:
         account_page: Accéder à la page de votre compte
@@ -81,6 +80,9 @@ fr:
         internal_error: Une erreur interne s’est produite lors du traitement de votre
           demande. Veuillez réessayer.
         link: contactez-nous
+        post_office_search_error: Nous connaissons des difficultés techniques en ce
+          moment. Essayez de chercher à nouveau un bureau de poste. Si le
+          problème persiste, revenez plus tard.
         text_html: Veuillez réessayer. Si vous continuez à recevoir ces erreurs, %{link}
       phone:
         fail_html: '<strong>Veuillez réessayer dans %{timeout}.</strong> Pour votre
@@ -122,7 +124,7 @@ fr:
         - Vous devrez ressaisir vos informations personnelles, comme votre nom,
           pièce d’identité officielle, etc.
     form:
-      address1: Adresse
+      address1: Adresse Ligne 1
       address2: Adresse Ligne 2
       address2_optional: Adresse Ligne 2 (optional)
       city: Ville
@@ -164,14 +166,12 @@ fr:
         address_on_file_html: Nous enverrons une lettre avec <strong>un code à usage
           unique </strong> à l’adresse que vous avez indiquée à l’étape
           précédente.
+        info_alert: Vous devrez attendre la livraison de votre lettre pour compléter la
+          vérification de votre identité.
         resend: Envoyez-moi une autre lettre
         timeframe_html: Les lettres sont envoyées les jours ouvrables par courriel de
           première classe de USPS et <strong>prennent généralement entre trois à
           sept jours ouvrables pour être reçues</strong>.
-      mail_sent: Votre lettre est en route
-      otp_delivery_method:
-        phone_number_html: Nous enverrons un code à <strong>%{phone}</strong> pour
-          vérifier que le numéro de téléphone vous appartient.
       otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus,
         veuillez sélectionner « Appel téléphonique » ci-dessous.
       personal_key: Il s’agit de votre nouvelle clé personnelle. Notez-la et
@@ -236,7 +236,6 @@ fr:
       options:
         add_new_photos: Ajoutez de nouvelles photos de votre carte d’identité délivrée
           par l’État.
-        change_phone_number: Utiliser un autre numéro de téléphone
         contact_support: Contacter le service d’assistance de %{app_name}
         doc_capture_tips: Plus de conseils pour ajouter des photos de votre carte d’identité
         get_help_at_sp: Demandez de l’aide à %{sp_name}

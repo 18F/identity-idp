@@ -18,8 +18,8 @@
 </p>
 
 <%= simple_form_for(
-      :doc_auth, url: url_for, method: 'PUT',
-                 html: { autocomplete: 'off' }
+      form, url: url_for, method: 'PUT',
+            html: { autocomplete: 'off' }
     ) do |f| %>
   <%= render ValidatedFieldComponent.new(
         form: f,

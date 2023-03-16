@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Idv::Steps::InPerson::AddressStep do
   let(:submitted_values) { {} }
-  let(:params) { { doc_auth: submitted_values } }
+  let(:params) { ActionController::Parameters.new({ in_person_address: submitted_values }) }
   let(:user) { build(:user) }
   let(:service_provider) { create(:service_provider) }
   let(:controller) do

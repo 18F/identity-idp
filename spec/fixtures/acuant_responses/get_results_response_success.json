@@ -607,6 +607,24 @@
     },
     {
       "DataSource": 2,
+      "Description": "Second address line of the person's legal, residence, or mailing address",
+      "Id": "645d1c0a-eac9-4d21-a308-430205a7a49a",
+      "IsImage": false,
+      "Key": "2D Address Line 2",
+      "Name": "Address Line 2",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "APT E"
+    },
+    {
+      "DataSource": 2,
       "Description": "Postal code of the person's address",
       "Id": "208d17a8-6056-4ccf-b89d-b904c27e50c1",
       "IsImage": false,
@@ -1171,7 +1189,7 @@
       "Name": "Address",
       "RegionReference": "00000000-0000-0000-0000-000000000000",
       "Type": "string",
-      "Value": "1000 E AVENUE EBISMARCK, ND 58501"
+      "Value": "1000 E AVENUE E APT E BISMARCK, ND 58501"
     },
     {
       "DataFieldReferences": [
@@ -1200,6 +1218,20 @@
       "RegionReference": "00000000-0000-0000-0000-000000000000",
       "Type": "string",
       "Value": "1000 E AVENUE E"
+    },
+    {
+      "DataFieldReferences": [
+        "645d1c0a-eac9-4d21-a308-430205a7a49a"
+      ],
+      "DataSource": 2,
+      "Description": "Second address line of the person's legal, residence, or mailing address",
+      "Id": "f541c1cc-9f98-4131-a92b-0049b6126acd",
+      "IsImage": false,
+      "Key": "Address Line 2",
+      "Name": "Address Line 2",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "APT E"
     },
     {
       "DataFieldReferences": [

@@ -9,7 +9,6 @@ module Idv
         link_sent: Idv::Steps::LinkSentStep,
         email_sent: Idv::Steps::EmailSentStep,
         document_capture: Idv::Steps::DocumentCaptureStep,
-        ssn: Idv::Steps::SsnStep,
       }.freeze
 
       STEP_INDICATOR_STEPS = [
@@ -24,9 +23,8 @@ module Idv
         { name: :getting_started },
         { name: :verify_id },
         { name: :verify_info },
-        *([name: :secure_account] if !IdentityConfig.store.gpo_personal_key_after_otp),
         { name: :get_a_letter },
-        *([name: :secure_account] if IdentityConfig.store.gpo_personal_key_after_otp),
+        { name: :secure_account },
       ].freeze
 
       OPTIONAL_SHOW_STEPS = {}.freeze
@@ -34,9 +32,7 @@ module Idv
       ACTIONS = {
         cancel_send_link: Idv::Actions::CancelSendLinkAction,
         cancel_link_sent: Idv::Actions::CancelLinkSentAction,
-        cancel_update_ssn: Idv::Actions::CancelUpdateSsnAction,
         redo_address: Idv::Actions::RedoAddressAction,
-        redo_ssn: Idv::Actions::RedoSsnAction,
         redo_document_capture: Idv::Actions::RedoDocumentCaptureAction,
         verify_document_status: Idv::Actions::VerifyDocumentStatusAction,
       }.freeze

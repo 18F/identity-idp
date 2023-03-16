@@ -50,7 +50,6 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       expect(selected_location_details).to include(
         'formatted_city_state_zip' => kind_of(String),
         'name' => kind_of(String),
-        'phone' => kind_of(String),
         'saturday_hours' => kind_of(String),
         'street_address' => kind_of(String),
         'sunday_hours' => kind_of(String),

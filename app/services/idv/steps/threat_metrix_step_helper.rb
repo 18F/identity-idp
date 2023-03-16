@@ -46,6 +46,26 @@ module Idv
           session_id: session_id,
         )
       end
+
+      def log_irs_tmx_fraud_check_event(result)
+        return unless IdentityConfig.store.irs_attempt_api_track_tmx_fraud_check_event
+        return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
+        success = result[:review_status] == 'pass'
+
+        if !success && (tmx_summary_reason_code = result.dig(
+          :response_body,
+          :tmx_summary_reason_code,
+        ))
+          failure_reason = {
+            tmx_summary_reason_code: tmx_summary_reason_code,
+          }
+        end
+
+        irs_attempts_api_tracker.idv_tmx_fraud_check(
+          success: success,
+          failure_reason: failure_reason,
+        )
+      end
     end
   end
 end

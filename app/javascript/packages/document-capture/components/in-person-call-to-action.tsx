@@ -3,6 +3,7 @@ import { Button } from '@18f/identity-components';
 import { useInstanceId } from '@18f/identity-react-hooks';
 import { t } from '@18f/identity-i18n';
 import AnalyticsContext from '../context/analytics';
+import { InPersonContext } from '../context';
 
 interface InPersonCallToActionProps {
   altHeading?: string;
@@ -13,6 +14,7 @@ interface InPersonCallToActionProps {
 function InPersonCallToAction({ altHeading, altPrompt, altButtonText }: InPersonCallToActionProps) {
   const instanceId = useInstanceId();
   const { trackEvent } = useContext(AnalyticsContext);
+  const { inPersonCtaVariantActive } = useContext(InPersonContext);
 
   return (
     <section
@@ -30,7 +32,11 @@ function InPersonCallToAction({ altHeading, altPrompt, altButtonText }: InPerson
         isWide
         href="#location"
         className="margin-top-3 margin-bottom-1"
-        onClick={() => trackEvent('IdV: verify in person troubleshooting option clicked')}
+        onClick={() =>
+          trackEvent('IdV: verify in person troubleshooting option clicked', {
+            in_person_cta_variant: inPersonCtaVariantActive,
+          })
+        }
       >
         {altButtonText || t('in_person_proofing.body.cta.button')}
       </Button>

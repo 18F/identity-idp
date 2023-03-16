@@ -128,6 +128,17 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
   const App = composeComponents(
     [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
     [DeviceContext.Provider, { value: device }],
+    [
+      InPersonContext.Provider,
+      {
+        value: {
+          arcgisSearchEnabled: arcgisSearchEnabled === 'true',
+          inPersonCtaVariantTestingEnabled: inPersonCtaVariantTestingEnabled === true,
+          inPersonCtaVariantActive,
+          inPersonURL,
+        },
+      },
+    ],
     [AnalyticsContextProvider, { trackEvent }],
     [
       AcuantContextProvider,
@@ -170,17 +181,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
         maxFailedAttemptsBeforeTips: Number(maxCaptureAttemptsBeforeTips),
         maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
         maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
-      },
-    ],
-    [
-      InPersonContext.Provider,
-      {
-        value: {
-          arcgisSearchEnabled: arcgisSearchEnabled === 'true',
-          inPersonCtaVariantTestingEnabled: inPersonCtaVariantTestingEnabled === true,
-          inPersonCtaVariantActive,
-          inPersonURL,
-        },
       },
     ],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],

@@ -105,7 +105,7 @@ describe('InPersonLocationStep', () => {
         await findByText('in_person_proofing.body.location.po_search.search_button'),
       );
 
-      const error = await findByText('idv.failure.exceptions.internal_error');
+      const error = await findByText('idv.failure.exceptions.post_office_search_error');
       expect(error).to.exist();
     });
   });
@@ -134,7 +134,7 @@ describe('InPersonLocationStep', () => {
         await findByText('in_person_proofing.body.location.po_search.search_button'),
       );
 
-      const error = await findByText('idv.failure.exceptions.internal_error');
+      const error = await findByText('idv.failure.exceptions.post_office_search_error');
       expect(error).to.exist();
     });
   });

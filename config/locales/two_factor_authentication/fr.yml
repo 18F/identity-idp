@@ -91,7 +91,7 @@ fr:
       wait_30d_opt_in: Après 30 jours, vous pouvez vous inscrire et recevoir un code
         de sécurité à ce numéro de téléphone.
     otp_delivery_preference:
-      instruction: Vous pouvez modifier cette sélection lors de votre prochaine connexion.
+      instruction: Envoyez des messages texte ainsi que des appels par défaut à ce numéro
       landline_warning_html: Le numéro de téléphone saisi semble être un <b>téléphone
         fixe</b>. Demandez plutôt un code à usage unique par
         %{phone_setup_path}.
@@ -101,7 +101,7 @@ fr:
       sms: Message texte (SMS)
       sms_unsupported: Il est impossible d’envoyer des messages texte à des numéros de
         téléphone dans %{location}.
-      title: Comment devrions-nous vous envoyer un code?
+      title: Comment vous obtiendrez votre code
       voice: Appel téléphonique
       voice_unsupported: Il nous est impossible d’appeler des numéros de téléphone
         dans le %{location}.
@@ -125,8 +125,8 @@ fr:
     phone_fallback:
       question: Vous ne pouvez pas utiliser votre téléphone?
     phone_fee_disclosure: Des messages et débits de données peuvent être appliqués.
-    phone_info_html: Nous vous enverrons un code à usage unique <strong>à chaque
-      fois que vous vous connecterez</strong>.
+    phone_info: Nous vous enverrons un code à usage unique à chaque fois que vous
+      vous connecterez.
     phone_label: Numéro de téléphone
     phone_verification:
       troubleshooting:
@@ -140,12 +140,12 @@ fr:
     please_try_again_html: Veuillez essayer de nouveau dans <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: En savoir plus sur l’authentification à deux facteurs
     recaptcha:
-      disclosure_statement_html: Ce site est protégé par reCAPTCHA. Les %{policy_link}
-        et les %{google_tos_link} de Google s’appliquent. Lisez les
-        %{login_tos_link} de %{app_name} pour les mobiles.
+      disclosure_statement_html: Ce site est protégé par reCAPTCHA. Les
+        %{google_policy_link} et les %{google_tos_link} de Google s’appliquent.
+        Lisez les %{login_tos_link} de %{app_name} pour les mobiles.
+      google_policy_link: règles de confidentialité
       google_tos_link: conditions de service
       login_tos_link: conditions d’utilisation
-      policy_link: règles de confidentialité
     totp_fallback:
       question: Vous n’avez pas votre application d’authentification?
     totp_header_text: Entrez votre code d’application d’authentification
@@ -175,12 +175,10 @@ fr:
       piv_cac_info: Cartes PIV/CAC pour les fonctionnaires et les militaires. Bureau
         uniquement.
       sms: SMS
-      sms_info: Recevez votre code à usage unique par message texte/SMS.
       unused_backup_code:
         one: '(%{count} code non utilisé)'
         other: '(%{count} codes non utilisés)'
       voice: Appel téléphonique
-      voice_info: Obtenez votre code à usage unique par appel téléphonique.
       webauthn: Clef de sécurité
       webauthn_info: Un appareil physique, souvent en forme de clé USB, que vous
         branchez sur votre appareil.

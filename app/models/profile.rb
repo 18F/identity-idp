@@ -23,26 +23,46 @@ class Profile < ApplicationRecord
     gpo_verification_pending: 3,
     verification_cancelled: 4,
     in_person_verification_pending: 5,
-    threatmetrix_review_pending: 6,
-    threatmetrix_review_rejected: 7,
   }
 
   attr_reader :personal_key
 
   # rubocop:disable Rails/SkipsModelValidations
   def activate
+    return if fraud_review_pending? || fraud_rejection?
     now = Time.zone.now
     is_reproof = Profile.find_by(user_id: user_id, active: true)
     transaction do
       Profile.where(user_id: user_id).update_all(active: false)
-      update!(active: true, activated_at: now, deactivation_reason: nil, verified_at: now)
+      update!(
+        active: true,
+        activated_at: now,
+        deactivation_reason: nil,
+        fraud_review_pending: false,
+        fraud_rejection: false,
+        verified_at: now,
+      )
     end
     send_push_notifications if is_reproof
   end
   # rubocop:enable Rails/SkipsModelValidations
 
+  def activate_after_passing_review
+    update!(fraud_review_pending: false, fraud_rejection: false)
+    activate
+  end
+
   def deactivate(reason)
     update!(active: false, deactivation_reason: reason)
+  end
+
+  def deactivate_for_fraud_review
+    update!(active: false, fraud_review_pending: true, fraud_rejection: false)
+  end
+
+  def reject_for_fraud(notify_user:)
+    update!(active: false, fraud_review_pending: false, fraud_rejection: true)
+    UserAlerts::AlertUserAboutAccountRejected.call(user) if notify_user
   end
 
   def decrypt_pii(password)

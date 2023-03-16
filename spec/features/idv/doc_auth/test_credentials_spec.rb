@@ -18,12 +18,9 @@ feature 'doc auth test credentials', :js do
 
   it 'allows proofing with test credentials' do
     complete_doc_auth_steps_before_document_capture_step
+    complete_document_capture_step_with_yml('spec/fixtures/ial2_test_credential.yml')
 
-    attach_file 'Front of your ID', File.expand_path('spec/fixtures/ial2_test_credential.yml')
-    attach_file 'Back of your ID', File.expand_path('spec/fixtures/ial2_test_credential.yml')
-    click_on 'Submit'
-
-    expect(page).to have_current_path(idv_doc_auth_ssn_step)
+    expect(page).to have_current_path(idv_ssn_path)
 
     fill_out_ssn_form_ok
     click_idv_continue
@@ -42,7 +39,7 @@ feature 'doc auth test credentials', :js do
       'Back of your ID',
       File.expand_path('spec/fixtures/ial2_test_credential_forces_error.yml'),
     )
-    click_on 'Submit'
+    click_on I18n.t('forms.buttons.submit.default')
 
     expect(page).to have_content(I18n.t('doc_auth.errors.alerts.barcode_content_check'))
     expect(page).to have_current_path(idv_doc_auth_document_capture_step)

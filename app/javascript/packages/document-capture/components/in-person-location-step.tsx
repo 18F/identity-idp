@@ -6,12 +6,12 @@ import BackButton from './back-button';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
 import AnalyticsContext from '../context/analytics';
+import { InPersonContext } from '../context';
 
 interface PostOffice {
   address: string;
   city: string;
   name: string;
-  phone: string;
   saturday_hours: string;
   state: string;
   sunday_hours: string;
@@ -24,7 +24,6 @@ interface FormattedLocation {
   formattedCityStateZip: string;
   id: number;
   name: string;
-  phone: string;
   saturdayHours: string;
   streetAddress: string;
   sundayHours: string;
@@ -52,7 +51,6 @@ const formatLocation = (postOffices: PostOffice[]) => {
       formattedCityStateZip: `${po.city}, ${po.state}, ${po.zip_code_5}-${po.zip_code_4}`,
       id: index,
       name: po.name,
-      phone: po.phone,
       saturdayHours: po.saturday_hours,
       streetAddress: po.address,
       sundayHours: po.sunday_hours,
@@ -79,6 +77,7 @@ const prepToSend = (location: object) => {
 };
 
 function InPersonLocationStep({ onChange, toPreviousStep }) {
+  const { inPersonCtaVariantActive } = useContext(InPersonContext);
   const { t } = useI18n();
   const [locationData, setLocationData] = useState([] as FormattedLocation[]);
   const [foundAddress] = useState({} as LocationQuery);
@@ -102,7 +101,10 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
     async (e: any, id: number) => {
       const selectedLocation = locationData[id];
       const { name: selectedLocationName } = selectedLocation;
-      setSubmitEventMetadata({ selected_location: selectedLocationName });
+      setSubmitEventMetadata({
+        selected_location: selectedLocationName,
+        in_person_cta_variant: inPersonCtaVariantActive,
+      });
       onChange({ selectedLocationName });
       if (autoSubmit) {
         return;

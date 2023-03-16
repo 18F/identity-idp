@@ -73,7 +73,7 @@ describe Idv::ImageUploadsController do
           any_args,
         )
 
-        expect(@irs_attempts_api_tracker).not_to receive(:track_event).with(
+        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
           :idv_document_upload_submitted,
           any_args,
         )
@@ -129,9 +129,21 @@ describe Idv::ImageUploadsController do
           flow_path: 'standard',
         )
 
-        expect(@irs_attempts_api_tracker).not_to receive(:track_event).with(
+        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
           :idv_document_upload_submitted,
-          any_args,
+          { address: nil,
+            date_of_birth: nil,
+            document_back_image_filename: nil,
+            document_expiration: nil,
+            document_front_image_filename: nil,
+            document_image_encryption_key: nil,
+            document_issued: nil,
+            document_number: nil,
+            document_state: nil,
+            failure_reason: { front: ['The selection was not a valid file.'] },
+            first_name: nil,
+            last_name: nil,
+            success: false },
         )
 
         expect(@analytics).not_to receive(:track_event).with(
@@ -229,9 +241,27 @@ describe Idv::ImageUploadsController do
           flow_path: 'standard',
         )
 
-        expect(@irs_attempts_api_tracker).not_to receive(:track_event).with(
+        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+          :idv_document_upload_rate_limited,
+        )
+
+        # This is the last upload which triggers the rate limit, apparently.
+        # I do find this moderately confusing.
+        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
           :idv_document_upload_submitted,
-          any_args,
+          { address: nil,
+            date_of_birth: nil,
+            document_back_image_filename: nil,
+            document_expiration: nil,
+            document_front_image_filename: nil,
+            document_image_encryption_key: nil,
+            document_issued: nil,
+            document_number: nil,
+            document_state: nil,
+            failure_reason: { limit: ['We could not verify your ID'] },
+            first_name: nil,
+            last_name: nil,
+            success: false },
         )
 
         expect(@analytics).not_to receive(:track_event).with(
@@ -659,7 +689,7 @@ describe Idv::ImageUploadsController do
         expect(json[:errors]).to eq [
           {
             field: 'front',
-            message: 'We couldn’t verify the front of your ID. Try taking a new picture.',
+            message: I18n.t('doc_auth.errors.general.multiple_front_id_failures'),
           },
         ]
       end

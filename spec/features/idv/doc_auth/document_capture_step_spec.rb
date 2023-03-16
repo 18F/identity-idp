@@ -150,8 +150,8 @@ feature 'doc auth document capture step', :js do
         },
       )
 
-      attach_file 'Front of your ID', 'app/assets/images/logo.png'
-      attach_file 'Back of your ID', 'app/assets/images/logo.png'
+      attach_file I18n.t('doc_auth.headings.document_capture_front'), 'app/assets/images/logo.png'
+      attach_file I18n.t('doc_auth.headings.document_capture_back'), 'app/assets/images/logo.png'
 
       form = page.find('#document-capture-form')
       front_url = form['data-front-image-upload-url']
@@ -207,22 +207,8 @@ feature 'doc auth document capture step', :js do
     end
   end
 
-  context 'when new ssn controller is enabled' do
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_ssn_controller_enabled).
-        and_return(true)
-    end
-    it 'redirects to ssn controller' do
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-
-      attach_and_submit_images
-
-      expect(page).to have_current_path(idv_ssn_url)
-    end
-  end
-
   def next_step
-    idv_doc_auth_ssn_step
+    idv_ssn_url
   end
 
   def expect_costing_for_document

@@ -18,8 +18,9 @@ describe Idv::ReviewController do
       current_user: user,
       service_provider: nil,
     )
-    idv_session.profile_confirmation = true
+    idv_session.resolution_successful = true
     idv_session.vendor_phone_confirmation = true
+    idv_session.user_phone_confirmation = true
     idv_session.applicant = applicant.with_indifferent_access
     idv_session
   end
@@ -34,8 +35,8 @@ describe Idv::ReviewController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_idv_applicant_created,
-        :confirm_idv_steps_complete,
+        :confirm_verify_info_step_complete,
+        :confirm_address_step_complete,
       )
     end
 
@@ -68,63 +69,7 @@ describe Idv::ReviewController do
       it 'redirects to address step' do
         get :show
 
-        expect(response).to redirect_to idv_phone_path
-      end
-    end
-  end
-
-  describe '#confirm_idv_phone_confirmed' do
-    controller do
-      before_action :confirm_idv_phone_confirmed
-
-      def show
-        render plain: 'Hello'
-      end
-    end
-
-    before(:each) do
-      stub_sign_in(user)
-      allow(subject).to receive(:idv_session).and_return(idv_session)
-      routes.draw do
-        get 'show' => 'idv/review#show'
-      end
-    end
-
-    context 'user is verifying by mail' do
-      before do
-        allow(idv_session).to receive(:address_verification_mechanism).and_return('gpo')
-      end
-
-      it 'does not redirect' do
-        get :show
-
-        expect(response.body).to eq 'Hello'
-      end
-    end
-
-    context 'user phone is confirmed' do
-      before do
-        allow(idv_session).to receive(:address_verification_mechanism).and_return('phone')
-        allow(idv_session).to receive(:phone_confirmed?).and_return(true)
-      end
-
-      it 'does not redirect' do
-        get :show
-
-        expect(response.body).to eq 'Hello'
-      end
-    end
-
-    context 'user phone is not confirmed' do
-      before do
-        allow(idv_session).to receive(:address_verification_mechanism).and_return('phone')
-        allow(idv_session).to receive(:phone_confirmed?).and_return(false)
-      end
-
-      it 'redirects to phone confirmation' do
-        get :show
-
-        expect(response).to redirect_to idv_otp_verification_path
+        expect(response).to redirect_to idv_otp_verification_url
       end
     end
   end
@@ -293,6 +238,8 @@ describe Idv::ReviewController do
         expect(@analytics).to have_logged_event(
           'IdV: review complete',
           success: false,
+          fraud_review_pending: false,
+          fraud_rejection: false,
           proofing_components: nil,
           deactivation_reason: nil,
         )
@@ -310,9 +257,12 @@ describe Idv::ReviewController do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
         expect(@analytics).to have_logged_event(
-          'IdV: review complete', success: true,
-                                  proofing_components: nil,
-                                  deactivation_reason: anything
+          'IdV: review complete',
+          success: true,
+          fraud_review_pending: false,
+          fraud_rejection: false,
+          proofing_components: nil,
+          deactivation_reason: anything,
         )
         expect(@analytics).to have_logged_event(
           'IdV: final resolution',
@@ -353,6 +303,9 @@ describe Idv::ReviewController do
 
       context 'user picked phone confirmation' do
         before do
+          allow(Rails).to receive(:cache).and_return(
+            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          )
           idv_session.address_verification_mechanism = 'phone'
           idv_session.vendor_phone_confirmation = true
           idv_session.user_phone_confirmation = true
@@ -605,20 +558,26 @@ describe Idv::ReviewController do
           it 'creates a disabled profile' do
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-            expect(user.profiles.last.deactivation_reason).to eq('threatmetrix_review_pending')
+            expect(user.profiles.last.fraud_review_pending?).to eq(true)
           end
 
           it 'logs events' do
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
             expect(@analytics).to have_logged_event(
-              'IdV: review complete', success: true,
-                                      proofing_components: nil,
-                                      deactivation_reason: 'threatmetrix_review_pending'
+              'IdV: review complete',
+              success: true,
+              fraud_review_pending: true,
+              fraud_rejection: false,
+              proofing_components: nil,
+              deactivation_reason: nil,
             )
             expect(@analytics).to have_logged_event(
-              'IdV: final resolution', success: true,
-                                       proofing_components: nil,
-                                       deactivation_reason: 'threatmetrix_review_pending'
+              'IdV: final resolution',
+              success: true,
+              fraud_review_pending: true,
+              fraud_rejection: false,
+              proofing_components: nil,
+              deactivation_reason: nil,
             )
           end
 
@@ -650,7 +609,6 @@ describe Idv::ReviewController do
         end
 
         it 'redirects to come back later page' do
-          allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).and_return(true)
           put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
           expect(response).to redirect_to idv_come_back_later_url

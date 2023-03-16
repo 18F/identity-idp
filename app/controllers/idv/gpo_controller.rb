@@ -11,19 +11,8 @@ module Idv
     def index
       @presenter = GpoPresenter.new(current_user, url_options)
       @step_indicator_current_step = step_indicator_current_step
-      # Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-      #   call(:usps_address, :view, true)
-      Rails.logger.info(
-        {
-          name: 'event_to_doc_auth_log_token',
-          source: 'proposed',
-          user_id: current_user.id,
-          issuer: current_sp&.issuer,
-          token: :usps_address,
-          action: :view,
-          success: true,
-        }.to_json,
-      )
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+        call(:usps_address, :view, true)
       analytics.idv_gpo_address_visited(
         letter_already_sent: @presenter.resend_requested?,
       )
@@ -58,19 +47,8 @@ module Idv
     end
 
     def update_tracking
-      # Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-      #   call(:usps_letter_sent, :update, true)
-      Rails.logger.info(
-        {
-          name: 'event_to_doc_auth_log_token',
-          source: 'proposed',
-          user_id: current_user.id,
-          issuer: current_sp&.issuer,
-          token: :usps_letter_sent,
-          action: :update,
-          success: true,
-        }.to_json,
-      )
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+        call(:usps_letter_sent, :update, true)
       analytics.idv_gpo_address_letter_requested(resend: resend_requested?)
       irs_attempts_api_tracker.idv_gpo_letter_requested(resend: resend_requested?)
       create_user_event(:gpo_mail_sent, current_user)
@@ -91,7 +69,7 @@ module Idv
       # If the user has a pending profile, they may have completed idv in a
       # different session and need a letter resent now
       return if current_user.decorate.pending_profile_requires_verification?
-      return if idv_session.profile_confirmation == true
+      return if idv_session.verify_info_step_complete?
 
       redirect_to idv_doc_auth_url
     end

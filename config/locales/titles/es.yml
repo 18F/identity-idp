@@ -13,7 +13,6 @@ es:
       address: Actualice su dirección postal
       doc_capture: Agrega tu identificación
       link_sent: Enlace enviado
-      otp_delivery: Reciba un código de un solo uso
       processing_images: Procesando tus imágenes
       ssn: Ingresa tu número del seguro social
       switch_back: Regresar a tu computadora
@@ -42,9 +41,6 @@ es:
       reset_password: Restablecer la contraseña
       review: Vuelve a ingresar tu contraseña
       verify_info: Verifica tu información
-    inherited_proofing:
-      cancellation_prompt: Cancela la verificación de identidad
-      cancelled: Se canceló la verificación de identidad
     mfa_setup:
       suggest_second_mfa: '¡Has agregado tu primer método de autenticación! Agrega un
         segundo método como respaldo.'
@@ -58,8 +54,7 @@ es:
       confirm: Confirme la contraseña de su cuenta
       forgot: Restablecer la contraseña
     personal_key: Por si acaso
-    phone_setup: Envíe su código de un solo uso a través de un mensaje de texto
-      (SMS) o una llamada telefónica
+    phone_setup: Obtenga su código único
     piv_cac_login:
       add: Agregue su PIV o CAC
       new: Use su PIV / CAC para iniciar sesión en su cuenta
@@ -81,7 +76,9 @@ es:
       completion_ial2: Conecte su información verificada a %{sp}
       completion_new_attributes: '%{sp} está solicitando nueva información'
       completion_new_sp: Acabas de iniciar sesión por primera vez
+      completion_reverified_consent: Actualice su información verificados con %{sp}
       confirmation: Continuar para iniciar sesión
+    spam_protection: Protección contra el correo no deseado
     totp_setup:
       new: Agregar aplicación de autenticación
     two_factor_setup: Configuración de autenticación de dos factores

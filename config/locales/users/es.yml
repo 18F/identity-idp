@@ -20,6 +20,9 @@ es:
       instructions: Ingrese su contraseña para confirmar que desea eliminar su cuenta.
       subheading: 'Si elimina su cuenta:'
     personal_key:
+      accessible_labels:
+        code_example: Un ejemplo de clave personal con 16 caracteres
+        preview: Vista previa de la clave personal
       close: Cerrar
       confirmation_error: Ha ingresado una clave personal incorrecta.
       generated_on_html: Tu clave personal fue generada el %{date}

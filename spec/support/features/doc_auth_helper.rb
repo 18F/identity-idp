@@ -4,7 +4,10 @@ module DocAuthHelper
   include DocumentCaptureStepHelper
 
   GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+  GOOD_SSN_MASKED = '9**-**-***4'
+  SAMPLE_TMX_SUMMARY_REASON_CODE = { tmx_summary_reason_code: ['Identity_Negative_History'] }
   SSN_THAT_FAILS_RESOLUTION = '123-45-6666'
+  SSN_THAT_RAISES_EXCEPTION = '000-00-0000'
 
   def session_from_completed_flow_steps(finished_step)
     session = { doc_auth: {} }
@@ -20,7 +23,7 @@ module DocAuthHelper
   end
 
   def fill_out_ssn_form_with_ssn_that_raises_exception
-    fill_in t('idv.form.ssn_label_html'), with: '000-00-0000'
+    fill_in t('idv.form.ssn_label_html'), with: SSN_THAT_RAISES_EXCEPTION
   end
 
   def fill_out_ssn_form_ok
@@ -35,6 +38,14 @@ module DocAuthHelper
     click_on '‹ ' + t('forms.buttons.back')
   end
 
+  def click_send_link
+    click_on t('forms.buttons.send_link')
+  end
+
+  def click_upload_from_computer
+    click_on t('forms.buttons.upload_photos')
+  end
+
   def idv_doc_auth_welcome_step
     idv_doc_auth_step_path(step: :welcome)
   end
@@ -45,10 +56,6 @@ module DocAuthHelper
 
   def idv_doc_auth_upload_step
     idv_doc_auth_step_path(step: :upload)
-  end
-
-  def idv_doc_auth_ssn_step
-    idv_doc_auth_step_path(step: :ssn)
   end
 
   def idv_doc_auth_document_capture_step
@@ -109,6 +116,13 @@ module DocAuthHelper
     attach_and_submit_images
   end
 
+  # yml_file example: 'spec/fixtures/puerto_rico_resident.yml'
+  def complete_document_capture_step_with_yml(proofing_yml)
+    attach_file I18n.t('doc_auth.headings.document_capture_front'), File.expand_path(proofing_yml)
+    attach_file I18n.t('doc_auth.headings.document_capture_back'), File.expand_path(proofing_yml)
+    click_on I18n.t('forms.buttons.submit.default')
+  end
+
   def complete_doc_auth_steps_before_email_sent_step
     allow(BrowserCache).to receive(:parse).and_return(mobile_device)
     complete_doc_auth_steps_before_upload_step
@@ -158,12 +172,18 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def complete_doc_auth_steps_before_send_link_step
     complete_doc_auth_steps_before_upload_step
-    click_on t('doc_auth.buttons.use_phone')
+    if IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
+      click_on t('forms.buttons.send_link')
+    else
+      click_on t('doc_auth.buttons.use_phone')
+    end
   end
 
   def complete_doc_auth_steps_before_link_sent_step
     complete_doc_auth_steps_before_send_link_step
-    fill_out_doc_auth_phone_form_ok
+    if !IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
+      fill_out_doc_auth_phone_form_ok
+    end
     click_idv_continue
   end
 
@@ -286,5 +306,23 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def fill_out_doc_auth_phone_form_ok(phone = '415-555-0199')
     fill_in :doc_auth_phone, with: phone
+  end
+
+  def complete_all_idv_steps_with(threatmetrix:)
+    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(300)
+    user = create(:user, :signed_up)
+    visit_idp_from_ial1_oidc_sp(
+      client_id: service_provider.issuer,
+      irs_attempts_api_session_id: 'test-session-id',
+    )
+    visit root_path
+    sign_in_and_2fa_user(user)
+    complete_doc_auth_steps_before_ssn_step
+    select threatmetrix, from: :mock_profiling_result
+    complete_ssn_step
+    click_idv_continue
+    complete_phone_step(user)
+    complete_review_step(user)
+    acknowledge_and_confirm_personal_key
   end
 end

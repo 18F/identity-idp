@@ -47,6 +47,6 @@ class RedisRateLimiter
   # @return [String]
   def build_key(now)
     rounded_seconds = (now.to_i / interval) * interval
-    "redis-rate-limiter:#{key}:#{rounded_seconds}"
+    "throttle:redis-rate-limiter:#{key}:#{rounded_seconds}"
   end
 end

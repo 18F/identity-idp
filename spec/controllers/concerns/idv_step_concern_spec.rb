@@ -9,16 +9,16 @@ describe 'IdvStepConcern' do
   module Idv
     class StepController < ApplicationController
       include IdvStepConcern
+
+      def show
+        render plain: 'Hello'
+      end
     end
   end
 
   describe '#confirm_idv_needed' do
     controller Idv::StepController do
       before_action :confirm_idv_needed
-
-      def show
-        render plain: 'Hello'
-      end
     end
 
     before(:each) do
@@ -52,6 +52,114 @@ describe 'IdvStepConcern' do
         expect(response.body).to eq 'Hello'
         expect(response).to_not redirect_to idv_activated_url
         expect(response.status).to eq 200
+      end
+    end
+  end
+
+  describe '#confirm_address_step_complete' do
+    controller Idv::StepController do
+      before_action :confirm_address_step_complete
+    end
+
+    before(:each) do
+      sign_in(user)
+      routes.draw do
+        get 'show' => 'idv/step#show'
+      end
+    end
+
+    context 'the user has completed phone confirmation' do
+      it 'does not redirect' do
+        idv_session.vendor_phone_confirmation = true
+        idv_session.user_phone_confirmation = true
+
+        get :show
+
+        expect(response.body).to eq('Hello')
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context 'the user has not confirmed their phone OTP' do
+      it 'redirects to OTP confirmation' do
+        idv_session.vendor_phone_confirmation = true
+        idv_session.user_phone_confirmation = false
+
+        get :show
+
+        expect(response).to redirect_to(idv_otp_verification_url)
+      end
+    end
+
+    context 'the user has not confirmed their phone with the vendor' do
+      it 'redirects to phone confirmation' do
+        idv_session.vendor_phone_confirmation = false
+        idv_session.user_phone_confirmation = false
+
+        get :show
+
+        expect(response).to redirect_to(idv_otp_verification_url)
+      end
+    end
+
+    context 'the user has selected GPO for address confirmation' do
+      it 'does not redirect' do
+        idv_session.address_verification_mechanism = 'gpo'
+
+        get :show
+
+        expect(response.body).to eq('Hello')
+        expect(response.status).to eq(200)
+      end
+    end
+  end
+
+  describe '#confirm_verify_info_step_complete' do
+    controller Idv::StepController do
+      before_action :confirm_verify_info_step_complete
+    end
+
+    before(:each) do
+      sign_in(user)
+      routes.draw do
+        get 'show' => 'idv/step#show'
+      end
+    end
+
+    context 'the user has completed the verify info step' do
+      it 'does not redirect and renders the view' do
+        idv_session.resolution_successful = true
+
+        get :show
+
+        expect(response.body).to eq('Hello')
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context 'the user has not completed the verify info step' do
+      it 'redirects to the remote verify info step' do
+        idv_session.resolution_successful = nil
+
+        get :show
+
+        expect(response).to redirect_to(idv_verify_info_url)
+      end
+    end
+
+    context 'the user has not completed the verify info step with an in-person enrollment' do
+      it 'redirects to the in-person verify info step' do
+        idv_session.resolution_successful = nil
+
+        ProofingComponent.find_or_create_by(
+          user: user,
+        ).update!(
+          document_check: Idp::Constants::Vendors::USPS,
+        )
+
+        get :show
+
+        expect(response).to redirect_to(idv_in_person_verify_info_url)
       end
     end
   end

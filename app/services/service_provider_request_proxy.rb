@@ -3,7 +3,7 @@
 # to checking the db if no redis object is available. Following release can remove db dependence.
 # To migrate code simply replace ServiceProviderRequest with ServiceProviderRequestProxy
 class ServiceProviderRequestProxy
-  REDIS_KEY_PREFIX = 'spr:'.freeze
+  REDIS_KEY_PREFIX = 'redis-pool:spr:'.freeze
 
   # This is used to support the .last method. That method is only used in the
   # test environment
@@ -78,7 +78,7 @@ class ServiceProviderRequestProxy
   end
 
   def self.flush
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb } if Rails.env.test?
+    REDIS_POOL.with { |client| client.flushdb } if Rails.env.test?
   end
 
   def self.hash_to_spr(hash, uuid)

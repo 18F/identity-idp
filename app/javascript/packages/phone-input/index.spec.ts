@@ -36,12 +36,14 @@ describe('PhoneInput', () => {
     deliveryMethods = ['sms', 'voice'],
     translatedCountryCodeNames = {},
     captchaExemptCountries = undefined,
+    phoneInputValue = undefined,
   }: {
     isSingleOption?: boolean;
     isNonUSSingleOption?: Boolean;
     deliveryMethods?: string[];
     translatedCountryCodeNames?: Record<string, string>;
     captchaExemptCountries?: string[];
+    phoneInputValue?: string;
   } = {}) {
     const element = document.createElement('lg-phone-input');
     element.setAttribute('data-delivery-methods', JSON.stringify(deliveryMethods));
@@ -52,6 +54,17 @@ describe('PhoneInput', () => {
     if (captchaExemptCountries) {
       element.setAttribute('data-captcha-exempt-countries', JSON.stringify(captchaExemptCountries));
     }
+
+    const phoneInput = document.createElement('input');
+    phoneInput.type = 'tel';
+    phoneInput.id = 'phone_form_phone';
+    phoneInput.className = 'phone-input__number validated-field__input';
+    phoneInput.setAttribute('value', phoneInputValue ?? '');
+    phoneInput.setAttribute('aria-invalid', 'false');
+    phoneInput.setAttribute('aria-describedby', 'validated-field-error-298658fb');
+    phoneInput.setAttribute('required', 'required');
+    phoneInput.setAttribute('aria-required', 'true');
+
     element.innerHTML = `
       <script type="application/json" class="phone-input__strings">
         {
@@ -77,7 +90,7 @@ describe('PhoneInput', () => {
             "valueMissing": "This field is required"
           }
         </script>
-        <input class="phone-input__number validated-field__input" aria-invalid="false" aria-describedby="validated-field-error-298658fb" required="required" aria-required="true" type="tel" id="phone_form_phone" />
+        ${phoneInput.outerHTML}
       </lg-validated-field>
     `;
 
@@ -118,6 +131,16 @@ describe('PhoneInput', () => {
     expect(phoneNumber.validationMessage).to.equal(
       'We are unable to verify phone numbers from Sri Lanka',
     );
+  });
+
+  it('sets country on initialization', () => {
+    const input = createAndConnectElement({
+      phoneInputValue: '+12502345678',
+    });
+    const countryCode = getByLabelText(input, 'Country code', {
+      selector: 'select',
+    }) as HTMLSelectElement;
+    expect(countryCode.value).to.eql('CA');
   });
 
   it('formats on country change', async () => {

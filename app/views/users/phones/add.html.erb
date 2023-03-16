@@ -5,19 +5,13 @@
 <%= render PageHeadingComponent.new.with_content(t('headings.add_info.phone')) %>
 
 <p>
-  <%= t('two_factor_authentication.phone_info_html') %>
-</p>
-<p>
-  <%= t('two_factor_authentication.phone_fee_disclosure') %>
-  <% if IdentityConfig.store.voip_block %>
-    <%= t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip') %>
-  <% end %>
+  <%= t('two_factor_authentication.phone_info') %>
 </p>
 
 <%= simple_form_for(
       @new_phone_form,
-      html: { autocomplete: 'off', method: :post },
-      data: { international_phone_form: true },
+      method: :post,
+      html: { autocomplete: 'off' },
       url: add_phone_path,
     ) do |f| %>
 
@@ -40,6 +34,13 @@
         action: 'phone_setup',
       ).with_content(t('forms.buttons.continue')) %>
 <% end %>
+
+<p class="margin-top-5">
+  <%= t('two_factor_authentication.phone_fee_disclosure') %>
+  <% if IdentityConfig.store.voip_block %>
+    <%= t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip') %>
+  <% end %>
+</p>
 
 <%= render 'shared/cancel', link: account_path %>
 

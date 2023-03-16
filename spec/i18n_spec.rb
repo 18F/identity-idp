@@ -16,6 +16,7 @@ module I18n
         { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
         { key: 'doc_auth.headings.photo', locales: %i[fr] }, # "Photo" is "Photo" in French
         { key: /^i18n\.locale\./ }, # Show locale options translated as that language
+        { key: /^i18n\.transliterate\./ }, # Approximate non-ASCII characters in ASCII
         { key: /^countries/ }, # Some countries have the same name across languages
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
@@ -89,7 +90,9 @@ RSpec.describe 'I18n' do
     missing_interpolation_argument_keys = []
 
     i18n.data[i18n.base_locale].select_keys do |key, _node|
-      next if i18n.t(key).is_a?(Array) || i18n.t(key).nil?
+      if key.start_with?('i18n.transliterate.rule.') || i18n.t(key).is_a?(Array) || i18n.t(key).nil?
+        next
+      end
 
       interpolation_arguments = i18n.locales.map do |locale|
         extract_interpolation_arguments i18n.t(key, locale)
@@ -109,20 +112,23 @@ RSpec.describe 'I18n' do
     i18n_file = full_path.sub("#{root_dir}/", '')
 
     describe i18n_file do
-      it 'has only lower_snake_case keys' do
-        keys = flatten_hash(YAML.load_file(full_path)).keys
+      # Transliteration includes special characters by definition, so it could fail the below checks
+      if !full_path.match?(%(/config/locales/transliterate/))
+        it 'has only lower_snake_case keys' do
+          keys = flatten_hash(YAML.load_file(full_path)).keys
 
-        bad_keys = keys.reject { |key| key =~ /^[a-z0-9_.]+$/ }
+          bad_keys = keys.reject { |key| key =~ /^[a-z0-9_.]+$/ }
 
-        expect(bad_keys).to be_empty
-      end
+          expect(bad_keys).to be_empty
+        end
 
-      it 'has only has XML-safe identifiers (keys start with a letter)' do
-        keys = flatten_hash(YAML.load_file(full_path)).keys
+        it 'has only has XML-safe identifiers (keys start with a letter)' do
+          keys = flatten_hash(YAML.load_file(full_path)).keys
 
-        bad_keys = keys.select { |key| key.split('.').any? { |part| part =~ /^[0-9]/ } }
+          bad_keys = keys.select { |key| key.split('.').any? { |part| part =~ /^[0-9]/ } }
 
-        expect(bad_keys).to be_empty
+          expect(bad_keys).to be_empty
+        end
       end
 
       it 'has correctly-formatted interpolation values' do

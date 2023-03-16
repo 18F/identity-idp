@@ -101,6 +101,24 @@ class User < ApplicationRecord
     profiles.gpo_verification_pending.order(created_at: :desc).first
   end
 
+  def fraud_review_pending?
+    fraud_review_pending_profile.present?
+  end
+
+  def fraud_rejection?
+    fraud_rejection_profile.present?
+  end
+
+  def fraud_review_pending_profile
+    @fraud_review_pending_profile ||=
+      profiles.where(fraud_review_pending: true).order(created_at: :desc).first
+  end
+
+  def fraud_rejection_profile
+    @fraud_rejection_profile ||=
+      profiles.where(fraud_rejection: true).order(created_at: :desc).first
+  end
+
   def personal_key_generated_at
     encrypted_recovery_code_digest_generated_at ||
       active_profile&.verified_at ||

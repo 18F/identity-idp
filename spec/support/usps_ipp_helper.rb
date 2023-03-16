@@ -1,4 +1,12 @@
 module UspsIppHelper
+  def stub_expired_request_token
+    stub_request(:post, %r{/oauth/authenticate}).to_return(
+      status: 200,
+      body: UspsInPersonProofing::Mock::Fixtures.request_expired_token_response,
+      headers: { 'content-type' => 'application/json' },
+    )
+  end
+
   def stub_request_token
     stub_request(:post, %r{/oauth/authenticate}).to_return(
       status: 200,
@@ -15,6 +23,15 @@ module UspsIppHelper
     )
   end
 
+  def stub_request_facilities_with_unordered_distance
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList}).to_return(
+      status: 200,
+      body:
+        UspsInPersonProofing::Mock::Fixtures.request_facilities_response_with_unordered_distance,
+      headers: { 'content-type' => 'application/json' },
+    )
+  end
+
   def stub_request_facilities_with_duplicates
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList}).to_return(
       status: 200,
@@ -23,12 +40,26 @@ module UspsIppHelper
     )
   end
 
+  def stub_request_facilities_with_expired_token
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList},
+    ).to_raise(Faraday::ForbiddenError)
+  end
+
   def stub_request_enroll
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant}).to_return(
       status: 200,
       body: UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
       headers: { 'content-type' => 'application/json' },
     )
+  end
+
+  def stub_request_enroll_expired_token
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
+    ).to_raise(Faraday::ForbiddenError)
   end
 
   def stub_request_enroll_timeout_error
@@ -121,10 +152,13 @@ module UspsIppHelper
     }
   end
 
-  def stub_request_failed_proofing_results
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
-      **request_failed_proofing_results_args,
-    )
+  def stub_request_failed_proofing_results(overrides = {})
+    response = merge_into_response_body(request_failed_proofing_results_args, overrides)
+
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
+    ).to_return(response)
   end
 
   def request_failed_proofing_results_args
@@ -168,10 +202,13 @@ module UspsIppHelper
     )
   end
 
-  def stub_request_passed_proofing_results
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
-      **request_passed_proofing_results_args,
-    )
+  def stub_request_passed_proofing_results(overrides = {})
+    response = merge_into_response_body(request_passed_proofing_results_args, overrides)
+
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
+    ).to_return(response)
   end
 
   def request_passed_proofing_results_args
@@ -194,6 +231,13 @@ module UspsIppHelper
       body: UspsInPersonProofing::Mock::Fixtures.request_in_progress_proofing_results_response,
       headers: { 'content-type' => 'application/json' },
     }
+  end
+
+  def stub_request_proofing_results_with_forbidden_error
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
+    ).to_raise(Faraday::ForbiddenError)
   end
 
   def stub_request_proofing_results_with_timeout_error
@@ -237,5 +281,27 @@ module UspsIppHelper
       body: UspsInPersonProofing::Mock::Fixtures.request_enrollment_code_response,
       headers: { 'content-type' => 'application/json' },
     )
+  end
+
+  def stub_request_enrollment_code_with_forbidden_error
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/requestEnrollmentCode},
+    ).to_raise(Faraday::ForbiddenError)
+  end
+
+  private
+
+  # Merges an object into the JSON string of a response's body and returns the updated response
+  def merge_into_response_body(response, body_overrides)
+    {
+      **response,
+      body: JSON.generate(
+        {
+          **JSON.parse(response[:body]),
+          **body_overrides,
+        },
+      ),
+    }
   end
 end

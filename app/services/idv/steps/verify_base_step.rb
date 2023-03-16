@@ -90,7 +90,9 @@ module Idv
       end
 
       def idv_failure_log_throttled
-        @flow.irs_attempts_api_tracker.idv_verification_rate_limited
+        @flow.irs_attempts_api_tracker.idv_verification_rate_limited(
+          throttle_context: 'single-session',
+        )
         @flow.analytics.throttler_rate_limit_triggered(
           throttle_type: :idv_resolution,
           step_name: self.class.name,
@@ -179,6 +181,9 @@ module Idv
 
           throttle.increment!
           if throttle.throttled?
+            @flow.irs_attempts_api_tracker.idv_verification_rate_limited(
+              throttle_context: 'multi-session',
+            )
             @flow.analytics.throttler_rate_limit_triggered(
               throttle_type: :proof_ssn,
               step_name: self.class,
@@ -246,7 +251,8 @@ module Idv
           # todo: add other edited fields?
           extra: {
             address_edited: !!flow_session['address_edited'],
-            pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name]],
+            pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name],
+                                [:state_id, :state_id_jurisdiction]],
           },
         )
         log_idv_verification_submitted_event(
