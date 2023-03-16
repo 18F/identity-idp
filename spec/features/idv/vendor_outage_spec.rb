@@ -1,5 +1,17 @@
 require 'rails_helper'
 
+def sign_in_with_idv_required(user:, sms_or_totp: :sms)
+  visit_idp_from_sp_with_ial2(:oidc)
+  sign_in_user(user)
+  case sms_or_totp
+  when :sms
+    fill_in_code_with_last_phone_otp
+  when :totp
+    fill_in_code_with_last_totp(user)
+  end
+  click_submit_default
+end
+
 feature 'vendor_outage_spec' do
   include PersonalKeyHelper
   include IdvStepHelper
@@ -8,21 +20,49 @@ feature 'vendor_outage_spec' do
   let(:new_password) { 'some really awesome new password' }
   let(:pii) { { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' } }
 
-  context "phone outage", js: true do
+  context 'phone outage', js: true do
     let(:user) { user_with_totp_2fa }
+
+    %i[vendor_status_sms vendor_status_voice].each do |flag|
+      context "#{flag} set to full_outage" do
+        before do
+          allow(IdentityConfig.store).to receive(flag).
+            and_return(:full_outage)
+        end
+
+        it 'shows vendor outage page before idv welcome page' do
+          sign_in_with_idv_required(user: user, sms_or_totp: :totp)
+
+          expect(current_path).to eq idv_vendor_outage_path
+
+          click_idv_continue
+
+          expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
+        end
+
+        it 'skips the hybrid handoff screen and proceeds to doc capture' do
+          sign_in_with_idv_required(user: user, sms_or_totp: :totp)
+          click_idv_continue
+          click_idv_continue
+          complete_agreement_step
+
+          expect(current_path).to eq idv_doc_auth_step_path(step: :document_capture)
+        end
+      end
+    end
+  end
+
+  context 'feature_idv_force_gpo_verification_enabled set to true', js: true do
+    let(:user) { user_with_2fa }
+
     before do
-      allow(IdentityConfig.store).to receive(:vendor_status_sms).
-        and_return(:full_outage)
-      allow(IdentityConfig.store).to receive(:vendor_status_phone).
-        and_return(:full_outage)
+      allow(IdentityConfig.store).to receive(:feature_idv_force_gpo_verification_enabled).
+        and_return(true)
     end
 
     it 'shows vendor outage page before idv welcome page' do
-      visit_idp_from_sp_with_ial2(:oidc)
-      sign_in_user(user)
-      fill_in_code_with_last_totp(user)
-      click_submit_default
-      
+      sign_in_with_idv_required(user: user, sms_or_totp: :sms)
+
       expect(current_path).to eq idv_vendor_outage_path
 
       click_idv_continue
@@ -30,11 +70,32 @@ feature 'vendor_outage_spec' do
       expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
     end
 
-    it 'skips the hybrid handoff screen and proceeds to doc capture' do
-      visit_idp_from_sp_with_ial2(:oidc)
-      sign_in_user(user)
-      fill_in_code_with_last_totp(user)
-      click_submit_default
+    it 'still allows the hybrid handoff screen' do
+      sign_in_with_idv_required(user: user, sms_or_totp: :sms)
+      click_idv_continue
+      click_idv_continue
+      complete_agreement_step
+
+      expect(current_path).to eq idv_doc_auth_step_path(step: :upload)
+    end
+  end
+
+  context 'feature_idv_hybrid_flow_enabled set to false', js: true do
+    let(:user) { user_with_2fa }
+
+    before do
+      allow(IdentityConfig.store).to receive(:feature_idv_hybrid_flow_enabled).
+        and_return(false)
+    end
+
+    it 'does not show the vendor outage page before idv welcome page' do
+      sign_in_with_idv_required(user: user, sms_or_totp: :sms)
+
+      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
+    end
+
+    it 'does not show the hybrid handoff screen' do
+      sign_in_with_idv_required(user: user, sms_or_totp: :sms)
       click_idv_continue
       click_idv_continue
       complete_agreement_step
@@ -44,17 +105,15 @@ feature 'vendor_outage_spec' do
   end
 
   %w[acuant lexisnexis_instant_verify lexisnexis_trueid].each do |service|
-    context "full outage on #{service}" do
+    context "vendor_status_#{service} set to full_outage" do
+      let(:user) { user_with_2fa }
       before do
         allow(IdentityConfig.store).to receive("vendor_status_#{service}".to_sym).
           and_return(:full_outage)
       end
 
       it 'prevents an existing ial1 user from verifying their identity' do
-        visit_idp_from_sp_with_ial2(:oidc)
-        sign_in_user(user_with_2fa)
-        fill_in_code_with_last_phone_otp
-        click_submit_default
+        sign_in_with_idv_required(user: user, sms_or_totp: :sms)
         expect(current_path).to eq vendor_outage_path
         expect(page).to have_content(
           t('vendor_outage.blocked.idv.with_sp', service_provider: 'Test SP'),

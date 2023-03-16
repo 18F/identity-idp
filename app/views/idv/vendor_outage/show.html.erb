@@ -1,9 +1,9 @@
 <%= render StepIndicatorComponent.new(
-    steps: step_indicator_steps,
-    current_step: :getting_started,
-    locale_scope: 'idv',
-    class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-) %>
+      steps: step_indicator_steps,
+      current_step: :getting_started,
+      locale_scope: 'idv',
+      class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+    ) %>
 
 <%= render(AlertIconComponent.new) %>
 <%= render PageHeadingComponent.new.with_content(t('vendor_outage.alerts.pinpoint.idv.header')) %>
@@ -23,41 +23,41 @@
 
 <div class="grid-row margin-bottom-3">
 <%= render ButtonComponent.new(
-    action: ->(**tag_options, &block) do
-    link_to(idv_doc_auth_step_path(step: :welcome), **tag_options, &block)
-    end,
-    big: true,
-    wide: true,
-    class: 'usa-button',
-).with_content(t('doc_auth.buttons.continue')) %>
+      action: ->(**tag_options, &block) do
+        link_to(idv_doc_auth_step_path(step: :welcome), **tag_options, &block)
+      end,
+      big: true,
+      wide: true,
+      class: 'usa-button',
+    ).with_content(t('doc_auth.buttons.continue')) %>
 </div>
 
 <div class="grid-row">
     <%= render ButtonComponent.new(
-        action: ->(**tag_options, &block) do
-        link_to(idv_doc_auth_step_path(step: :welcome), **tag_options, &block)
-        end,
-        big: true,
-        wide: true,
-        outline: true,
-        class: 'usa-button',
-    ).with_content(t('links.exit_login')) %>
+          action: ->(**tag_options, &block) do
+            link_to(idv_doc_auth_step_path(step: :welcome), **tag_options, &block)
+          end,
+          big: true,
+          wide: true,
+          outline: true,
+          class: 'usa-button',
+        ).with_content(t('links.exit_login')) %>
 </div>
 
 <%= render(
-    'shared/troubleshooting_options',
-    heading: t('components.troubleshooting_options.default_heading'),
-    options: [
-      {
-        url: StatusPage.base_url,
-        text: t('vendor_outage.get_updates_on_status_page'),
-        new_tab: true,
-      },
-      current_sp && {
-        url: current_sp.return_to_sp_url,
-        text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: current_sp.friendly_name),
-        isExternal: true,
-        new_tab: true,
-      },
-    ].compact,
-) %>
+      'shared/troubleshooting_options',
+      heading: t('components.troubleshooting_options.default_heading'),
+      options: [
+        {
+          url: StatusPage.base_url,
+          text: t('vendor_outage.get_updates_on_status_page'),
+          new_tab: true,
+        },
+        current_sp && {
+          url: current_sp.return_to_sp_url,
+          text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: current_sp.friendly_name),
+          isExternal: true,
+          new_tab: true,
+        },
+      ].compact,
+    ) %>

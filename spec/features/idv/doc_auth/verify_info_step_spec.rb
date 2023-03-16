@@ -450,7 +450,7 @@ feature 'doc auth verify_info step', :js do
       expect(page).to have_current_path(idv_verify_info_path)
     end
 
-    it 'redirects to the gpo page when continuing from verify info page'do
+    it 'redirects to the gpo page when continuing from verify info page' do
       click_idv_continue
       expect(page).to have_current_path(idv_gpo_path)
 

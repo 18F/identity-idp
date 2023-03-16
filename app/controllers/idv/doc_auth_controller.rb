@@ -90,9 +90,7 @@ module Idv
 
       # During a phone outage, skip the hybrid handoff
       # step and go straight to document upload
-      unless vendor_status.allow_hybrid_flow?
-        user_session['idv/doc_auth'][:skip_upload_step] = true
-      end
+      flow_session[:skip_upload_step] = true unless vendor_status.allow_hybrid_flow?
 
       session[:vendor_outage_redirect] = current_step
       session[:vendor_outage_redirect_from_idv] = true
