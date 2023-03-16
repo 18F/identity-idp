@@ -131,6 +131,15 @@ class ResolutionProofingJob < ApplicationJob
 
   # @return [CallbackLogData]
   def proof_lexisnexis_then_aamva(timer:, applicant_pii:, should_proof_state_id:)
+    if should_proof_state_id && redis_rate_limiter.maxed?
+      result = rate_limit_result(should_proof_state_id: should_proof_state_id)
+      return CallbackLogData.new(
+        result: result,
+        resolution_success: false,
+        state_id_success: false,
+      )
+    end
+
     resolution_result = timer.time('resolution') do
       resolution_proofer.proof(applicant_pii)
     end
@@ -140,6 +149,7 @@ class ResolutionProofingJob < ApplicationJob
     )
     if should_proof_state_id && user_can_pass_after_state_id_check?(resolution_result)
       timer.time('state_id') do
+        redis_rate_limiter.increment
         state_id_result = state_id_proofer.proof(applicant_pii)
       end
     end
@@ -222,5 +232,37 @@ class ResolutionProofingJob < ApplicationJob
       create_or_find_by(user_id: user_id).
       update(threatmetrix: true,
              threatmetrix_review_status: threatmetrix_result.review_status)
+  end
+
+  def redis_rate_limiter
+    @redis_rate_limiter ||= RedisRateLimiter.new(
+      key: 'proof_state_id',
+      max_requests: 1,
+      interval: 14,
+    )
+  end
+
+  def rate_limit_result(should_proof_state_id:)
+    # analytics
+    exception = RedisRateLimiter::LimitError.new('State ID Proofing Rate Limit')
+
+
+    resolution_result = Proofing::ResolutionResult.new(
+      success: false,
+      errors: {},
+      exception: exception,
+      transaction_id: nil,
+      reference: nil,
+      vendor_name: nil,
+    )
+    state_id_result = Proofing::StateIdResult.new(
+      success: false, errors: {}, exception: exception, vendor_name: nil,
+    )
+
+    Proofing::ResolutionResultAdjudicator.new(
+      resolution_result: resolution_result,
+      state_id_result: state_id_result,
+      should_proof_state_id: should_proof_state_id,
+    ).adjudicated_result.to_h
   end
 end
