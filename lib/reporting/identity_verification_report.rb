@@ -39,14 +39,15 @@ module Reporting
 
     def to_csv
       CSV.generate do |csv|
-        csv << ['Report date', date.to_s]
+        csv << ['Report Timeframe', "#{from} to #{to}"]
+        csv << ['Report Generated', Date.today.to_s]
         csv << ['Issuer', issuer]
         csv << []
         csv << ['Metric', '# of Users']
         csv << ['Started IdV Verification', idv_doc_auth_image_vendor_submitted]
         csv << ['Incomplete Users', incomplete_users]
         csv << ['Address Confirmation Letters Requested', idv_gpo_address_letter_requested]
-        csv << ['Started In-Person Verification']
+        csv << ['Started In-Person Verification', usps_ipp_enrollment_created]
         csv << ['Alternative Process Users', alternative_process_users]
         csv << ['Success through Online Verification', idv_final_resolution]
         csv << ['Success through Address Confirmation Letters', gpo_verification_submitted]
@@ -96,7 +97,6 @@ module Reporting
       data[Events::IDV_DOC_AUTH_IMAGE_UPLOAD].to_i
     end
 
-
     # Turns query results into a hash keyed by event name, values are a count of unique users
     # for that event
     # @return [Hash<String,Integer>]
@@ -117,11 +117,17 @@ module Reporting
     end
 
     def fetch_results
-      cloudwatch_client.fetch(
-        query: query,
-        from: date.in_time_zone('UTC').beginning_of_day,
-        to: date.in_time_zone('UTC').end_of_day,
-      )
+      cloudwatch_client.fetch(query:, from:, to:)
+    end
+
+    # @return [Time]
+    def from
+      date.in_time_zone('UTC').beginning_of_day
+    end
+
+    # @return [Time]
+    def to
+      date.in_time_zone('UTC').end_of_day
     end
 
     def query
