@@ -76,12 +76,6 @@ export function getFeedback(z) {
   return `${suggestions.map((s) => lookup(s)).join('. ')}`;
 }
 
-function zScoreFeedback(password, forbiddenPasswords) {
-  const z = zxcvbn(password, forbiddenPasswords);
-
-  return z;
-}
-
 /**
  * @param {HTMLElement?} element
  *
