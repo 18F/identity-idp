@@ -131,14 +131,7 @@ describe Idv::PersonalKeyController do
         subject.idv_session.address_verification_mechanism = 'gpo'
       end
 
-      it 'sets flash.now[:success]' do
-        get :show
-        expect(flash[:success]).to eq t('idv.messages.mail_sent')
-      end
-
       it 'does not show a flash in new gpo flow' do
-        allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).and_return(true)
-
         get :show
         expect(flash[:success]).to eq nil
       end
@@ -206,8 +199,6 @@ describe Idv::PersonalKeyController do
 
       context 'with gpo personal key after verification' do
         it 'redirects to sign up completed_url for a sp' do
-          allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).
-            and_return(true)
           allow(subject).to receive(:pending_profile?).and_return(false)
           subject.session[:sp] = { ial2: true }
 

@@ -7,6 +7,8 @@ module Idv
 
     def new
       analytics.idv_address_visit
+
+      @presenter = AddressPresenter.new(pii: @pii)
     end
 
     def update

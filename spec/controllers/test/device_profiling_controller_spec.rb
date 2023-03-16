@@ -4,9 +4,9 @@ RSpec.describe Test::DeviceProfilingController do
   let(:session_id) { SecureRandom.uuid }
 
   around do |ex|
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_POOL.with { |client| client.flushdb }
     ex.run
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_POOL.with { |client| client.flushdb }
   end
 
   describe '#index' do

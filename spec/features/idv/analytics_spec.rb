@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'csv'
 
 feature 'Analytics Regression', js: true do
   include IdvStepHelper
@@ -68,9 +69,6 @@ feature 'Analytics Regression', js: true do
       'IdV: USPS address letter enqueued' => { enqueued_at: Time.zone.now.utc, resend: false, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
       'IdV: review complete' => { success: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' }, fraud_review_pending: false, fraud_rejection: false, deactivation_reason: 'gpo_verification_pending' },
       'IdV: final resolution' => { success: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' }, fraud_review_pending: false, fraud_rejection: false, deactivation_reason: 'gpo_verification_pending' },
-      'IdV: personal key visited' => { address_verification_method: 'gpo', proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
-      'IdV: personal key acknowledgment toggled' => { checked: true, proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
-      'IdV: personal key submitted' => { address_verification_method: 'gpo', proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' }, fraud_review_pending: false, fraud_rejection: false, deactivation_reason: 'gpo_verification_pending' },
       'IdV: come back later visited' => { proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', address_check: 'gpo_letter' } },
     }
   end
@@ -152,8 +150,21 @@ feature 'Analytics Regression', js: true do
     end
 
     it 'records all of the events' do
-      happy_path_events.each do |event, attributes|
-        expect(fake_analytics).to have_logged_event(event, attributes)
+      aggregate_failures 'analytics events' do
+        happy_path_events.each do |event, attributes|
+          expect(fake_analytics).to have_logged_event(event, attributes)
+        end
+      end
+
+      aggregate_failures 'populates data for each step of the Daily Dropoff Report' do
+        row = CSV.parse(
+          Reports::DailyDropoffsReport.new(Time.zone.now).report_body,
+          headers: true,
+        ).first
+
+        Reports::DailyDropoffsReport::STEPS.each do |step|
+          expect(row[step].to_i).to(be > 0, "step #{step} was counted")
+        end
       end
     end
   end
@@ -171,7 +182,6 @@ feature 'Analytics Regression', js: true do
       enter_gpo_flow
       gpo_step
       complete_review_step(user)
-      acknowledge_and_confirm_personal_key
     end
 
     it 'records all of the events' do

@@ -65,11 +65,7 @@ module Idv
 
       irs_attempts_api_tracker.idv_personal_key_generated
 
-      if idv_session.address_verification_mechanism == 'gpo'
-        if !IdentityConfig.store.gpo_personal_key_after_otp
-          flash.now[:success] = t('idv.messages.mail_sent')
-        end
-      else
+      if idv_session.address_verification_mechanism != 'gpo'
         flash.now[:success] = t('idv.messages.confirm')
       end
       flash[:allow_confirmations_continue] = true

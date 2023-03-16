@@ -561,7 +561,7 @@ describe UserMailer, type: :mailer do
       create(
         :in_person_enrollment,
         :pending,
-        selected_location_details: { name: 'FRIENDSHIP', phone: '202-842-3332' },
+        selected_location_details: { name: 'FRIENDSHIP' },
         status_updated_at: Time.zone.now - 2.hours,
       )
     end
@@ -569,12 +569,6 @@ describe UserMailer, type: :mailer do
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
         enrollment: enrollment,
-      )
-    end
-
-    it 'renders the phone number' do
-      expect(mail.html_part.body).to have_content(
-        '202-842-3332',
       )
     end
 

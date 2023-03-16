@@ -22,7 +22,6 @@ fr:
         questions: Des questions?
         retail_hours: Heures de vente au détail
         retail_hours_closed: Fermé
-        retail_phone_label: Numéro de téléphone
         return_to_partner_html: Vous pouvez maintenant fermer cette fenêtre ou %{link}
           afin d’effectuer toutes les étapes suivantes auxquelles vous pouvez
           accéder jusqu’à ce que votre identité ait été confitmée.
@@ -38,7 +37,6 @@ fr:
           d’identité en ligne, vous pourrez peut-être essayer de le faire en
           personne dans certains bureaux de poste.
       location:
-        contact_info_heading: Information de contact
         distance:
           one: 'à %{count} mile'
           other: 'à %{count} miles'
@@ -48,7 +46,6 @@ fr:
           vous pourrez peut-être vérifier en personne dans un bureau de poste
           américain local dans certains endroits.
         none_found: Aucun endroit trouvé.
-        phone: 'Téléphone:'
         po_search:
           address_search_hint: 'Exemple : 1234 N Example St., Allentown, PA 12345'
           address_search_label: Entrez une adresse pour trouver un bureau de poste près de chez vous.
@@ -68,8 +65,6 @@ fr:
               miles autour de %{address}.
           results_instructions: Sélectionnez un emplacement de bureau de poste ci-dessous,
             ou effectuez une nouvelle recherche en utilisant une autre adresse.
-            Pour l’accessibilité des installations, utilisez les informations de
-            contact indiquées pour l’emplacement du bureau de poste.
           search_button: Rechercher
         post_office: Bureau de Poste
         retail_hours_heading: Heures de vente au détail
@@ -103,18 +98,29 @@ fr:
           d’identité en personne.
     form:
       address:
+        errors:
+          unsupported_chars: 'Notre système ne parvient pas à lire les caractères suivants
+            : %{char_list}. Veuillez réessayer en utilisant d’autres caractères
+            alternatifs.'
         same_address: Cette adresse figure-t-elle sur la pièce d’identité délivrée par
           l’État que vous apportez au bureau de poste?
         same_address_choice_no: J’ai une adresse différente sur mon document d’identité
         same_address_choice_yes: Cette adresse figure sur mon document d’identité nationale
         state_prompt: '- Sélectionnez -'
       state_id:
+        address1: Adresse
+        address2: Adresse Ligne 2 (optional)
+        city: Ville
         date_hint:
           day: 'Exemple: 28'
           month: 'Exemple: 4'
           year: 'Exemple: 1986'
         dob: Date de naissance
         dob_hint: 'Exemple: 4 28 1986'
+        errors:
+          unsupported_chars: 'Notre système ne parvient pas à lire les caractères suivants
+            : %{char_list}. Veuillez réessayer en utilisant les caractères de
+            votre carte d’identité.'
         first_name: Prénom
         last_name: Nom de famille
         memorable_date:
@@ -123,11 +129,18 @@ fr:
               missing_month_day_year: Entrez une date de naissance
               range_min_age: Vous devez avoir plus de 13 ans pour utiliser %{app_name}
               range_overflow: Entrez une date qui est dans le passé
+        same_address_as_id: L’adresse de votre domicile actuel figure-t-elle sur votre
+          carte d’identité délivrée par l’État?
+        same_address_as_id_no: Non, l’adresse de mon domicile actuel ne figure pas sur
+          ma carte d’identité délivrée par l’État
+        same_address_as_id_yes: Oui, l’adresse de mon domicile actuel figure sur ma
+          carte d’identité délivrée par l’État
         state_id_jurisdiction: État
         state_id_jurisdiction_hint: Sélectionnez l’État figurant sur votre document d’identité
         state_id_jurisdiction_prompt: '- Sélectionnez -'
         state_id_number: Numéro d’identification
         state_id_number_hint: Peut comprendre des lettres et des chiffres
+        zipcode: Code postal
     headings:
       address: Entrez votre adresse actuelle
       barcode: Vous êtes prêt à vérifier votre identité en personne
@@ -137,7 +150,8 @@ fr:
       po_search:
         location: Trouver un bureau de poste participant
       prepare: Vérifiez votre identité en personne
-      state_id: Saisissez les informations figurant sur votre document d’identité
+      state_id_milestone_2: Saisissez les informations figurant sur votre carte
+        d’identité délivrée par l’État
       switch_back: Retournez sur votre ordinateur pour vous préparer à vérifier votre
         identité en personne
       update_address: Mettre à jour votre adresse actuelle

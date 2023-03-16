@@ -25,7 +25,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
     expect(page).to have_content(t('headings.verify'))
     expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
-    expect(page).to have_text(InPersonHelper::GOOD_DOB)
+    expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
     expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
     expect(page).to have_text(InPersonHelper::GOOD_ADDRESS1)
     expect(page).to have_text(InPersonHelper::GOOD_CITY)

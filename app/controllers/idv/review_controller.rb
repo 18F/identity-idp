@@ -130,8 +130,7 @@ module Idv
     end
 
     def gpo_user_flow?
-      idv_session.address_verification_mechanism == 'gpo' &&
-        IdentityConfig.store.gpo_personal_key_after_otp
+      idv_session.address_verification_mechanism == 'gpo'
     end
 
     def handle_request_enroll_exception(err)

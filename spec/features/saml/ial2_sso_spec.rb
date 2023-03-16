@@ -29,7 +29,6 @@ feature 'IAL2 Single Sign On' do
     click_on t('idv.buttons.mail.send')
     fill_in t('idv.form.password'), with: user.password
     click_continue
-    acknowledge_and_confirm_personal_key unless IdentityConfig.store.gpo_personal_key_after_otp
     click_link t('idv.cancel.actions.exit', app_name: APP_NAME)
   end
 
@@ -44,7 +43,6 @@ feature 'IAL2 Single Sign On' do
     click_on t('idv.buttons.mail.resend')
     fill_in t('idv.form.password'), with: user.password
     click_continue
-    acknowledge_and_confirm_personal_key unless IdentityConfig.store.gpo_personal_key_after_otp
     click_link t('idv.cancel.actions.exit', app_name: APP_NAME)
   end
 

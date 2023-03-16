@@ -16,7 +16,16 @@ describe PhoneRecaptchaValidator do
 
   it 'passes instance variables to validator' do
     recaptcha_validator = instance_double(RecaptchaValidator, valid?: true)
-    expect(RecaptchaValidator).to receive(:new).and_return(recaptcha_validator)
+    expect(RecaptchaValidator).to receive(:new).
+      with(
+        score_threshold: score_threshold_config,
+        analytics:,
+        recaptcha_version:,
+        extra_analytics_properties: {
+          phone_country_code: parsed_phone.country,
+        },
+      ).
+      and_return(recaptcha_validator)
 
     validator.valid?('token')
   end

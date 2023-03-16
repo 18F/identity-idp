@@ -128,7 +128,7 @@ module Idv
     end
 
     def verify_info_step_complete?
-      resolution_successful && profile_confirmation
+      resolution_successful
     end
 
     def address_step_complete?
@@ -155,9 +155,23 @@ module Idv
       invalidate_phone_step!
     end
 
+    def mark_verify_info_step_complete!
+      session[:resolution_successful] = true
+      # This is here to maintain backwards compadibility with old code.
+      # Once the code that checks `profile_confirmation` is removed from prod
+      # this setter and eventually the value in the Idv::Session struct itself
+      # can be removed.
+      session[:profile_confirmation] = true
+    end
+
     def invalidate_verify_info_step!
       session[:resolution_successful] = nil
       session[:profile_confirmation] = nil
+    end
+
+    def invalidate_steps_after_verify_info!
+      session[:address_verification_mechanism] = 'phone'
+      invalidate_phone_step!
     end
 
     def invalidate_phone_step!

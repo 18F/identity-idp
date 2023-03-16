@@ -50,7 +50,7 @@ module Proofing
         def failed_result_can_pass_with_additional_verification?(verification_response)
           return false unless verification_response.verification_status == 'failed'
           return false unless verification_response.verification_errors.keys.to_set == Set[:InstantVerify, :base]
-          return false unless verification_response.verification_errors[:base].match?(/total\.scoring\.model\.verification\.fail/)
+          return false unless verification_response.verification_errors[:base].match?(/(total|priority)\.scoring\.model\.verification\.fail/)
           return false unless attributes_requiring_additional_verification(verification_response).any?
           true
         end

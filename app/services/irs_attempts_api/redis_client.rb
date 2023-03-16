@@ -1,11 +1,8 @@
 module IrsAttemptsApi
   class RedisClient
     cattr_accessor :redis_pool do
-      ConnectionPool.new(size: 10) do
-        Redis::Namespace.new(
-          'irs-attempt-api',
-          redis: Redis.new(url: IdentityConfig.store.redis_irs_attempt_api_url),
-        )
+      ConnectionPool.new(size: IdentityConfig.store.redis_irs_attempt_api_pool_size) do
+        Redis.new(url: IdentityConfig.store.redis_irs_attempt_api_url)
       end
     end
 
@@ -29,7 +26,7 @@ module IrsAttemptsApi
     end
 
     def key(timestamp)
-      timestamp.in_time_zone('UTC').change(min: 0, sec: 0).iso8601
+      'irs-attempt-api:' + timestamp.in_time_zone('UTC').change(min: 0, sec: 0).iso8601
     end
 
     def self.clear_attempts!
