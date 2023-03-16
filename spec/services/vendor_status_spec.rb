@@ -24,8 +24,8 @@ describe VendorStatus do
       expect(subject.any_vendor_outage?).not_to be
     end
 
-    it 'correctly reports no ial2 vendor outage' do
-      expect(subject.any_ial2_vendor_outage?).not_to be
+    it 'correctly reports no idv vendor outage' do
+      expect(subject.any_idv_vendor_outage?).not_to be
     end
   end
 
@@ -42,14 +42,14 @@ describe VendorStatus do
     end
   end
 
-  context 'when an ial2 vendor has an outage' do
+  context 'when an idv vendor has an outage' do
     before do
       allow(IdentityConfig.store).to receive(:vendor_status_acuant).
         and_return(:full_outage)
     end
 
-    it 'correctly reports an ial2 vendor outage' do
-      expect(subject.any_ial2_vendor_outage?).to be
+    it 'correctly reports an idv vendor outage' do
+      expect(subject.any_idv_vendor_outage?).to be
     end
 
     context 'user coming from create_account' do
@@ -87,14 +87,14 @@ describe VendorStatus do
     end
   end
 
-  context 'when a non-ial2 vendor has an outage' do
+  context 'when a non-idv vendor has an outage' do
     before do
       allow(IdentityConfig.store).to receive(:vendor_status_sms).
         and_return(:full_outage)
     end
 
-    it 'correctly reports no ial2 vendor outage' do
-      expect(subject.any_ial2_vendor_outage?).not_to be
+    it 'correctly reports no idv vendor outage' do
+      expect(subject.any_idv_vendor_outage?).not_to be
     end
   end
 

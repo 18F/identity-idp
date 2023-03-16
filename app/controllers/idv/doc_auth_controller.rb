@@ -79,7 +79,7 @@ module Idv
     end
 
     def any_proofing_vendor_outage?(vendor_status)
-      return false unless vendor_status.any_ial2_vendor_outage?
+      return false unless vendor_status.any_idv_vendor_outage?
 
       session[:vendor_outage_redirect] = current_step
       session[:vendor_outage_redirect_from_idv] = true
