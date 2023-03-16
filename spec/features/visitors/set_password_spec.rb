@@ -98,8 +98,7 @@ feature 'Visitor sets password during signup' do
       fill_in t('forms.password'), with: 'badpwd'
       click_button t('forms.buttons.continue')
 
-      message = find('input.password-toggle__input').native.attribute('validationMessage')
-      expect(message).to eq t('errors.messages.stronger_password')
+      expect(page).to have_css('.usa-error-message', text: t('errors.messages.stronger_password'))
     end
   end
 end

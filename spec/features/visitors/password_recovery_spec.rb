@@ -180,8 +180,7 @@ feature 'Password Recovery' do
         fill_in t('forms.passwords.edit.labels.password'), with: 'invalid'
         click_button t('forms.passwords.edit.buttons.submit')
 
-        message = find('input.password-toggle__input').native.attribute('validationMessage')
-        expect(message).to eq t('errors.messages.stronger_password')
+        expect(page).to have_css('.usa-error-message', text: t('errors.messages.stronger_password'))
       end
 
       it 'displays field validation error when password fields are empty' do

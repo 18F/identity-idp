@@ -20,10 +20,8 @@ const fallback = ['pw-na', '...'];
 
 function getStrength(z) {
   // override the strength value to 2 if the password is < 12
-  if (!(z && z.password.length && z.password.length >= 12)) {
-    if (z.score >= 3) {
-      z.score = 2;
-    }
+  if (z.password.length < 12 && z.score >= 3) {
+    z.score = 2;
   }
   return z && z.password.length ? scale[z.score] : fallback;
 }
@@ -81,13 +79,6 @@ export function getFeedback(z) {
 function zScoreFeedback(password, forbiddenPasswords) {
   const z = zxcvbn(password, forbiddenPasswords);
 
-  // override the strength value to 2 if the password is < 12
-  if (!(z && z.password.length && z.password.length >= 12)) {
-    if (z.score >= 3) {
-      z.score = 2;
-    }
-  }
-
   return z;
 }
 
@@ -109,7 +100,6 @@ function analyzePw() {
   const pwCntnr = document.getElementById('pw-strength-cntnr');
   const pwStrength = document.getElementById('pw-strength-txt');
   const pwFeedback = document.getElementById('pw-strength-feedback');
-  // const submit = document.querySelector('[type="submit"]');
   const forbiddenPasswordsElement = document.querySelector('[data-forbidden]');
   const forbiddenPasswords = getForbiddenPasswords(forbiddenPasswordsElement);
 
