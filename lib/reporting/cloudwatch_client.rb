@@ -23,7 +23,7 @@ module Reporting
       @logger = logger
     end
 
-    # @param [Reporting::CloudwatchQuery] query
+    # @param [#to_s] query
     # @param [Time] from
     # @param [Time] to
     # @return [Array<Array<Types::ResultField>>]
@@ -51,7 +51,7 @@ module Reporting
 
             response = fetch_one(query:, start_time:, end_time:)
 
-            if ensure_complete_logs? && has_more_results?(size: response.results.size, query:)
+            if ensure_complete_logs? && has_more_results?(response.results.size)
               logger.info("exact limit reached, bisecting: start_time=#{start_time} end_time=#{end_time}")
               mid = midpoint(start_time:, end_time:)
 
@@ -63,7 +63,7 @@ module Reporting
             else
               logger.info("worker finished, slice duration=#{end_time - start_time}")
               in_progress[orig_range] -= 1
-              results.concat(parse_results(response.results))
+              results.concat(response.results)
             end
           end
 
@@ -83,7 +83,7 @@ module Reporting
       results
     end
 
-    # @param [Reporting::CloudwatchQuery] query
+    # @param [#to_s] query
     # @param [Integer] start_time
     # @param [Integer] end_time
     # @return [Aws::CloudWatchLogs::Types::GetQueryResultsResponse]
@@ -94,7 +94,7 @@ module Reporting
         log_group_name: 'prod_/srv/idp/shared/log/events.log',
         start_time:,
         end_time:,
-        query_string: query.to_query,
+        query_string: query.to_s,
       ).query_id
 
       wait_for_query_result(query_id)
@@ -107,8 +107,9 @@ module Reporting
     private
 
     # somehow sample responses returned 10,001 rows when we request 10,000
-    def has_more_results?(size:, query:)
-      size >= query.limit
+    # so we check for more than the limit
+    def has_more_results?(size)
+      size >= Reporting::CloudwatchQuery::MAX_LIMIT
     end
 
     # Pulls out and parses the "@message" field as JSON

@@ -22,6 +22,8 @@ module Reporting
       ].join("\n")
     end
 
+    alias_method :to_s, :to_query
+
     # Quotes a string or array to be used as a literal
     # @param [String,Array<String>] str_or_ary
     def quote(str_or_ary)
