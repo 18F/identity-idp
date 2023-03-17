@@ -30,17 +30,6 @@ module UspsInPersonProofing
       def request_facilities(_location)
         parse_facilities(JSON.parse(Fixtures.request_facilities_response))
       end
-
-      def request_pilot_facilities
-        parse_facilities(
-          JSON.load_file(
-            Rails.root.join(
-              'config',
-              'ipp_pilot_usps_facilities.json',
-            ),
-          ),
-        )
-      end
     end
   end
 end

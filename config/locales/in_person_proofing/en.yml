@@ -37,10 +37,6 @@ en:
           other: '%{count} miles away'
         inline_error: Enter a valid address with city, state, and ZIP code
         location_button: Select
-        location_step_about: If you are having trouble adding your ID, you may be able
-          to verify in person at a local United States Post Office in select
-          locations.
-        none_found: No locations found.
         po_search:
           address_search_hint: 'Example: 1234 N Example St., Allentown, PA 12345'
           address_search_label: Enter an address to find a Post Office near you
@@ -58,13 +54,11 @@ en:
           results_instructions: Select a Post Office location below, or search again using
             a different address.
           search_button: Search
-        post_office: Post Office ™
         retail_hours_heading: Retail Hours
         retail_hours_sat: 'Sat:'
         retail_hours_sun: 'Sun:'
         retail_hours_weekday: 'Monday to Friday:'
       prepare:
-        alert_selected_po_name: You’ve selected the %{name} Post Office.
         alert_selected_post_office: You’ve selected the Post Office at %{full_address}.
         privacy_disclaimer: '%{app_name} is a secure, government website. We and the
           U.S. Postal Service use your data to verify your identity.'
@@ -129,7 +123,6 @@ en:
       barcode: You’re ready to verify your identity in person
       cta: Having trouble verifying your ID online?
       cta_variant: Try verifying your ID in person
-      location: Select a location to verify your ID
       po_search:
         location: Find a participating Post Office
       prepare: Verify your identity in person

@@ -108,7 +108,6 @@ class IdentityConfig
     config.add(:attribute_encryption_key_queue, type: :json)
     config.add(:arcgis_api_username, type: :string)
     config.add(:arcgis_api_password, type: :string)
-    config.add(:arcgis_search_enabled, type: :boolean)
     config.add(:arcgis_mock_fallback, type: :boolean)
     config.add(:arcgis_api_generate_token_url, type: :string)
     config.add(:arcgis_api_suggest_url, type: :string)
