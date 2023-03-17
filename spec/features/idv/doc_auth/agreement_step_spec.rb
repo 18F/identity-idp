@@ -62,7 +62,8 @@ feature 'doc auth welcome step' do
 
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_agreement_step
-      complete_agreement_step
+      check t('doc_auth.instructions.consent', app_name: APP_NAME)
+      click_continue
     end
 
     it 'progresses to document capture' do

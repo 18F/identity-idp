@@ -96,7 +96,7 @@ RSpec::Matchers.define :have_description do |description|
   def descriptors(element)
     element['aria-describedby']&.
       split(' ')&.
-      map { |descriptor_id| page.find("##{descriptor_id}")&.text }
+      map { |descriptor_id| rendered.at_css("##{descriptor_id}")&.text }
   end
 
   match { |element| descriptors(element)&.include?(description) }

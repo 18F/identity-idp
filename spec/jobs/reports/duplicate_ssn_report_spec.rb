@@ -4,9 +4,9 @@ require 'csv'
 RSpec.describe Reports::DuplicateSsnReport do
   let(:report_date) { Date.new(2022, 2, 2) }
 
-  subject(:report) { described_class.new.tap { |r| r.report_date = report_date } }
-
   describe '#perform' do
+    subject(:report) { described_class.new }
+
     it 'runs the report and uploads to S3' do
       expect(report).to receive(:save_report)
 
@@ -15,7 +15,7 @@ RSpec.describe Reports::DuplicateSsnReport do
   end
 
   describe '#report_body' do
-    subject(:report_body) { report.report_body }
+    subject(:report_body) { described_class.new(report_date).report_body }
 
     context 'with no data' do
       it 'is an empty report' do

@@ -91,7 +91,6 @@ fr:
       pwned_password: Le mot de passe que vous avez entré n’est pas sécurisé. C’est
         dans une liste de mots de passe connus exposés dans les violations de
         données.
-      stronger_password: Entrez un mot de passe plus fort
       too_long:
         one: Est trop long (maximum de 1 caractère)
         other: est trop long (le maximum est de %{count} caractères)

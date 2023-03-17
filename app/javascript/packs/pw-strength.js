@@ -18,10 +18,19 @@ const snakeCase = (string) => string.replace(/[ -]/g, '_').replace(/\W/g, '').to
 // fallback if zxcvbn lookup fails / field is empty
 const fallback = ['pw-na', '...'];
 
+function clearErrors() {
+  const x = document.getElementsByClassName('error-message');
+  if (x.length > 0) {
+    x[0].innerHTML = '';
+  }
+}
+
 function getStrength(z) {
   // override the strength value to 2 if the password is < 12
-  if (z.password.length < 12 && z.score >= 3) {
-    z.score = 2;
+  if (!(z && z.password.length && z.password.length >= 12)) {
+    if (z.score >= 3) {
+      z.score = 2;
+    }
   }
   return z && z.password.length ? scale[z.score] : fallback;
 }
@@ -76,6 +85,18 @@ export function getFeedback(z) {
   return `${suggestions.map((s) => lookup(s)).join('. ')}`;
 }
 
+function disableSubmit(submitEl, length = 0, score = 0) {
+  if (!submitEl) {
+    return;
+  }
+
+  if (score < 3 || length < 12) {
+    submitEl.setAttribute('disabled', true);
+  } else {
+    submitEl.removeAttribute('disabled');
+  }
+}
+
 /**
  * @param {HTMLElement?} element
  *
@@ -94,40 +115,30 @@ function analyzePw() {
   const pwCntnr = document.getElementById('pw-strength-cntnr');
   const pwStrength = document.getElementById('pw-strength-txt');
   const pwFeedback = document.getElementById('pw-strength-feedback');
+  const submit = document.querySelector('[type="submit"]');
   const forbiddenPasswordsElement = document.querySelector('[data-forbidden]');
   const forbiddenPasswords = getForbiddenPasswords(forbiddenPasswordsElement);
+
+  disableSubmit(submit);
 
   // the pw strength module is hidden by default ("display-none" CSS class)
   // (so that javascript disabled browsers won't see it)
   // thus, first step is unhiding it
   pwCntnr.className = '';
 
-  function updatePasswordFeedback(cls, strength, feedback) {
+  function checkPasswordStrength(e) {
+    const z = zxcvbn(e.target.value, forbiddenPasswords);
+    const [cls, strength] = getStrength(z);
+    const feedback = getFeedback(z);
     pwCntnr.className = cls;
     pwStrength.innerHTML = strength;
     pwFeedback.innerHTML = feedback;
+
+    clearErrors();
+    disableSubmit(submit, z.password.length, z.score);
   }
 
-  function validatePasswordField(score) {
-    if (score < 3) {
-      input.setCustomValidity(t('errors.messages.stronger_password'));
-    } else {
-      input.setCustomValidity('');
-    }
-  }
-
-  function checkPasswordStrength(password) {
-    const z = zxcvbn(password, forbiddenPasswords);
-    const [cls, strength] = getStrength(z);
-    const feedback = getFeedback(z);
-
-    validatePasswordField(z.score);
-    updatePasswordFeedback(cls, strength, feedback);
-  }
-
-  input.addEventListener('input', (e) => {
-    checkPasswordStrength(e.target.value);
-  });
+  input.addEventListener('input', checkPasswordStrength);
 }
 
 document.addEventListener('DOMContentLoaded', analyzePw);

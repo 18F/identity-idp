@@ -454,6 +454,7 @@ describe Idv::DocAuthController do
       receive(:flow_session).and_return(
         'document_capture_session_uuid' => document_capture_session_uuid,
         'Idv::Steps::WelcomeStep' => true,
+        'Idv::Steps::SendLinkStep' => true,
         'Idv::Steps::LinkSentStep' => true,
         'Idv::Steps::EmailSentStep' => true,
         'Idv::Steps::UploadStep' => true,

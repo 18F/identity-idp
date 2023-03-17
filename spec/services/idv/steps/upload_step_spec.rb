@@ -61,12 +61,15 @@ describe Idv::Steps::UploadStep do
     end
 
     subject(:step) do
-      Idv::Steps::UploadStep.new(flow)
+      Idv::Steps::SendLinkStep.new(flow)
     end
 
     before do
       allow(controller).to receive(:irs_attempts_api_tracker).
         and_return(irs_attempts_api_tracker)
+      allow(IdentityConfig.store).
+        to receive(:doc_auth_combined_hybrid_handoff_enabled).
+        and_return(true)
     end
 
     describe '#extra_view_variables' do

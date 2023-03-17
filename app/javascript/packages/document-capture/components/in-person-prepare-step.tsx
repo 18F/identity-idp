@@ -20,7 +20,8 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
   const { flowPath } = useContext(UploadContext);
   const { trackEvent } = useContext(AnalyticsContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
-  const { selectedLocationAddress } = value;
+  /* Remove selectedLocationName when request_pilot_facilities removed */
+  const { selectedLocationName, selectedLocationAddress } = value;
 
   const onContinue: MouseEventHandler = async (event) => {
     event.preventDefault();
@@ -35,6 +36,14 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
 
   return (
     <>
+      {/* Remove selectedLocationName version of alert when request_pilot_facilities removed */}
+      {selectedLocationName && (
+        <Alert type="success" className="margin-bottom-4">
+          {t('in_person_proofing.body.prepare.alert_selected_po_name', {
+            name: selectedLocationName,
+          })}
+        </Alert>
+      )}
       {selectedLocationAddress && (
         <Alert type="success" className="margin-bottom-4">
           {t('in_person_proofing.body.prepare.alert_selected_post_office', {

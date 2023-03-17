@@ -7,7 +7,9 @@ import type { SetupServerApi } from 'msw/node';
 import { SWRConfig } from 'swr';
 import { I18nContext } from '@18f/identity-react-i18n';
 import { ComponentType } from 'react';
-import { ADDRESS_SEARCH_URL, LOCATIONS_URL } from './address-search';
+import { LOCATIONS_URL } from './in-person-location-step';
+import { ADDRESS_SEARCH_URL } from './address-search';
+import InPersonContext from '../context/in-person';
 import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
 
 const DEFAULT_RESPONSE = [
@@ -56,9 +58,11 @@ const DEFAULT_PROPS = {
   registerField() {},
 };
 
-describe('InPersonPostOfficeSearchStep', () => {
+describe('InPersonLocationStep', () => {
   const wrapper: ComponentType = ({ children }) => (
-    <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
+    <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
+      <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
+    </InPersonContext.Provider>
   );
 
   let server: SetupServerApi;
@@ -86,7 +90,9 @@ describe('InPersonPostOfficeSearchStep', () => {
     it('displays a try again error message', async () => {
       const { findByText, findByLabelText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
-          <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
+          <InPersonContext.Provider value={{ arcgisSearchEnabled: true }}>
+            <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
+          </InPersonContext.Provider>
         </SWRConfig>,
       );
 
