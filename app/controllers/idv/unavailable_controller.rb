@@ -2,12 +2,9 @@ module Idv
   class UnavailableController < ApplicationController
     ALLOWED_FROM_LOCATIONS = [SignUp::RegistrationsController::CREATE_ACCOUNT]
 
-    def show
-      if FeatureManagement.idv_available?
-        redirect_to sign_up_email_url if from_create_account?
-        return
-      end
+    before_action :redirect_if_idv_available_and_from_create_account
 
+    def show
       analytics.vendor_outage(
         vendor_status: {
           acuant: IdentityConfig.store.vendor_status_acuant,
@@ -28,6 +25,10 @@ module Idv
 
     def from_create_account?
       from == SignUp::RegistrationsController::CREATE_ACCOUNT
+    end
+
+    def redirect_if_idv_available_and_from_create_account
+      redirect_to sign_up_email_url if FeatureManagement.idv_available? && from_create_account?
     end
   end
 end
