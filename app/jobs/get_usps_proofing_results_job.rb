@@ -243,7 +243,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(response),
-      fraud_suspected: response['fraudSuspected'],
       passed: false,
       primary_id_type: response['primaryIdType'],
       reason: 'Unsupported ID type',
@@ -262,7 +261,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(response[:body]),
-      fraud_suspected: response['fraudSuspected'],
       passed: false,
       reason: 'Enrollment has expired',
     )
@@ -343,7 +341,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(response),
-      fraud_suspected: response['fraudSuspected'],
       passed: true,
       reason: 'Successful status update',
     )
