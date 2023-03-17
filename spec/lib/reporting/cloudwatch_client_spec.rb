@@ -5,6 +5,7 @@ RSpec.describe Reporting::CloudwatchClient do
   let(:wait_duration) { 0 }
   let(:logger) { Logger.new('/dev/null') }
   let(:slice_interval) { 1.day }
+  let(:ensure_complete_logs) { false }
   let(:query) { 'fields @message, @timestamp | limit 10000' }
 
   subject(:client) do
@@ -12,6 +13,7 @@ RSpec.describe Reporting::CloudwatchClient do
       wait_duration: wait_duration,
       logger: logger,
       slice_interval: slice_interval,
+      ensure_complete_logs: ensure_complete_logs,
     )
   end
 
@@ -31,7 +33,7 @@ RSpec.describe Reporting::CloudwatchClient do
       end
     end
 
-    before do
+    def stub_single_page
       stubbed_aws_sdk_client = Aws::CloudWatchLogs::Client.new(stub_responses: true)
 
       query_id = SecureRandom.hex
@@ -56,6 +58,8 @@ RSpec.describe Reporting::CloudwatchClient do
     end
 
     context ':slice_interval is falsy' do
+      before { stub_single_page }
+
       let(:slice_interval) { false }
       it 'does not split up the interval and queries by the from/to passed in' do
         expect(client).to receive(:fetch_one).exactly(1).times.and_call_original
@@ -65,6 +69,8 @@ RSpec.describe Reporting::CloudwatchClient do
     end
 
     context ':slice_interval is an interval' do
+      before { stub_single_page }
+
       let(:slice_interval) { 2.days }
       it 'splits the query up into the time range' do
         expect(client).to receive(:fetch_one).exactly(2).times.and_call_original
@@ -74,6 +80,8 @@ RSpec.describe Reporting::CloudwatchClient do
     end
 
     it 'converts results into hashes, without @ptr' do
+      stub_single_page
+
       results = fetch
 
       expect(results).to match_array(
@@ -84,6 +92,61 @@ RSpec.describe Reporting::CloudwatchClient do
           { '@message' => 'ddd', '@timestamp' => now.iso8601 },
         ],
       )
+    end
+
+    context ':ensure_complete_logs is true' do
+      let(:slice_interval) { 500 }
+      let(:ensure_complete_logs) { true }
+      let(:from) { Time.zone.at(1) }
+      let(:to) { Time.zone.at(1000) }
+
+      before do
+        stubbed_aws_sdk_client = Aws::CloudWatchLogs::Client.new(stub_responses: true)
+
+        stubbed_aws_sdk_client.stub_responses(
+          :start_query,
+          proc do |context|
+            start_time, end_time = context.params.values_at(:start_time, :end_time)
+
+            query_id = case [start_time, end_time]
+            when [1, 500]
+              'query_id_too_many_results'
+            when [501, 1000], [1, 249], [250, 500]
+              'query_id_normal_results'
+            else
+              raise "no start_query stub for start_time=#{start_time}, end_time=#{end_time}"
+            end
+
+            { query_id: }
+          end,
+        )
+
+        stubbed_aws_sdk_client.stub_responses(
+          :get_query_results,
+          proc do |context|
+            query_id = context.params[:query_id]
+
+            results = case query_id
+            when 'query_id_too_many_results'
+              10_001.times.map { to_result_fields('@message' => 'aaa') }
+            when 'query_id_normal_results'
+              333.times.map { to_result_fields('@message' => 'aaa') }
+            else
+              raise "Unknown query_id=#{query_id}"
+            end
+
+            { status: 'Complete', results: }
+          end,
+        )
+
+        allow(client).to receive(:cloudwatch_client).and_return(stubbed_aws_sdk_client)
+      end
+
+      it 'slices by interval and recurses as needed to get full results' do
+        results = fetch
+
+        expect(results.size).to eq(999)
+      end
     end
   end
 end

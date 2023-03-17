@@ -64,7 +64,7 @@ module Reporting
               # -1 for current work finishing, +2 for new threads enqueued
               in_progress[orig_range] += 1
 
-              queue << [(start_time..mid), orig_range]
+              queue << [(start_time..(mid - 1)), orig_range]
               queue << [(mid..end_time), orig_range]
             else
               logger.info("worker finished, slice duration=#{end_time - start_time}")
@@ -141,7 +141,7 @@ module Reporting
         low = from
         high = to
         while low < high
-          slice_end = [low + slice_interval, high].min
+          slice_end = [low + slice_interval - 1, high].min
           slices << (low..slice_end)
           low += slice_interval
         end
