@@ -766,8 +766,9 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.previous_event_name IdV: doc auth send_link submitted
   def idv_doc_auth_link_sent_submitted(**extra)
-    track_event('IdV: doc auth send_link submitted', **extra)
+    track_event('IdV: doc auth link_sent submitted', **extra)
   end
 
   def idv_doc_auth_link_sent_visited(**extra)
