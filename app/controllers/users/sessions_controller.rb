@@ -175,6 +175,7 @@ module Users
         success: success,
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
+        bad_password_count: session[:bad_password_count].to_i,
         stored_location: session['user_return_to'],
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
