@@ -28,13 +28,6 @@ module UspsInPersonProofing
       sort_by_ascending_distance(dedupe_facilities)
     end
 
-    # Temporary function to return a static set of facilities
-    # @return [Array<PostOffice>] Facility locations
-    def request_pilot_facilities
-      resp = File.read(Rails.root.join('config', 'ipp_pilot_usps_facilities.json'))
-      parse_facilities(JSON.parse(resp))
-    end
-
     # Makes HTTP request to enroll an applicant in in-person proofing.
     # Requires first name, last name, address, city, state, zip code, email address and a generated
     # unique ID. The unique ID must be no longer than 18 characters.

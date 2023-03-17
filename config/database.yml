@@ -81,6 +81,8 @@ production:
     host: <%= IdentityConfig.store.database_socket.present? ?  IdentityConfig.store.database_socket : IdentityConfig.store.database_host %>
     password: <%= IdentityConfig.store.database_password %>
     pool: <%= primary_pool %>
+    advisory_locks: <%= !IdentityConfig.store.database_socket.present? %>
+    prepared_statements: <%= !IdentityConfig.store.database_socket.present? %>
     sslmode: 'verify-full'
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     migrations_paths: db/primary_migrate

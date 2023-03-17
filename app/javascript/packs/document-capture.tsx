@@ -120,7 +120,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     cancelUrl: cancelURL,
     idvInPersonUrl: inPersonURL,
     securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
-    arcgisSearchEnabled,
     inPersonCtaVariantTestingEnabled,
     inPersonCtaVariantActive,
   } = appRoot.dataset as DOMStringMap & AppRootData;
@@ -132,7 +131,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
       InPersonContext.Provider,
       {
         value: {
-          arcgisSearchEnabled: arcgisSearchEnabled === 'true',
           inPersonCtaVariantTestingEnabled: inPersonCtaVariantTestingEnabled === true,
           inPersonCtaVariantActive,
           inPersonURL,

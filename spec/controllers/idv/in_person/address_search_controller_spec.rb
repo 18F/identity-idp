@@ -5,13 +5,10 @@ describe Idv::InPerson::AddressSearchController do
 
   let(:user) { create(:user) }
   let(:sp) { nil }
-  let(:arcgis_search_enabled) { true }
 
   before do
     stub_analytics
     stub_sign_in(user) if user
-    allow(IdentityConfig.store).to receive(:arcgis_search_enabled).
-      and_return(arcgis_search_enabled)
     allow(controller).to receive(:current_sp).and_return(sp)
   end
 
@@ -182,14 +179,6 @@ describe Idv::InPerson::AddressSearchController do
           exception_message: 'error',
           response_status_code: false,
         )
-      end
-    end
-
-    context 'with feature disabled' do
-      let(:arcgis_search_enabled) { false }
-
-      it 'renders 404' do
-        expect(response.status).to eq(404)
       end
     end
   end
