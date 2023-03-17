@@ -40,11 +40,13 @@ describe Idv::PhoneStep do
   end
   let(:trace_id) { SecureRandom.uuid }
   let(:attempts_tracker) { @irs_attempts_api_tracker }
+  let(:analytics) { FakeAnalytics.new }
 
   subject do
     described_class.new(
       idv_session: idv_session,
       trace_id: trace_id,
+      analytics: analytics,
       attempts_tracker: attempts_tracker,
     )
   end

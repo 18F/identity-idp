@@ -57,13 +57,6 @@ module Idv
       @throttle ||= Throttle.new(user: current_user, throttle_type: :proof_address)
     end
 
-    def max_attempts_reached
-      analytics.throttler_rate_limit_triggered(
-        throttle_type: :proof_address,
-        step_name: step_name,
-      )
-    end
-
     def redirect_to_next_step
       if phone_confirmation_required?
         if VendorStatus.new.all_phone_vendor_outage?
@@ -81,13 +74,7 @@ module Idv
     end
 
     def submit_proofing_attempt
-      result = step.submit(step_params.to_h)
-
-      if step.failure_reason == :fail
-        analytics.throttler_rate_limit_triggered(throttle_type: :proof_address, step_name: :phone)
-      end
-
-      result
+      step.submit(step_params.to_h)
     end
 
     def send_phone_confirmation_otp_and_handle_result
@@ -119,7 +106,6 @@ module Idv
     end
 
     def handle_proofing_failure
-      max_attempts_reached if step.failure_reason == :fail
       redirect_to failure_url(step.failure_reason)
     end
 
@@ -131,6 +117,7 @@ module Idv
       @step ||= Idv::PhoneStep.new(
         idv_session: idv_session,
         trace_id: amzn_trace_id,
+        analytics: analytics,
         attempts_tracker: irs_attempts_api_tracker,
       )
     end

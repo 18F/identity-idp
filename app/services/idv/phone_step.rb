@@ -1,8 +1,9 @@
 module Idv
   class PhoneStep
-    def initialize(idv_session:, trace_id:, attempts_tracker:)
+    def initialize(idv_session:, trace_id:, analytics:, attempts_tracker:)
       self.idv_session = idv_session
       @trace_id = trace_id
+      @analytics = analytics
       @attempts_tracker = attempts_tracker
     end
 
@@ -110,6 +111,7 @@ module Idv
 
     def throttled_result
       @attempts_tracker.idv_phone_otp_sent_rate_limited
+      @analytics.throttler_rate_limit_triggered(throttle_type: :proof_address, step_name: :phone)
       FormResponse.new(success: false)
     end
 
