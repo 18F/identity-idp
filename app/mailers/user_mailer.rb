@@ -286,7 +286,7 @@ class UserMailer < ActionMailer::Base
     ).image_data
 
     with_user_locale(user) do
-      @header = t('in_person_proofing.headings.barcode', app_name: APP_NAME)
+      @header = t('in_person_proofing.headings.barcode')
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,

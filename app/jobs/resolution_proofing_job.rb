@@ -138,7 +138,7 @@ class ResolutionProofingJob < ApplicationJob
     state_id_result = Proofing::StateIdResult.new(
       success: true, errors: {}, exception: nil, vendor_name: 'UnsupportedJurisdiction',
     )
-    if should_proof_state_id && user_can_pass_after_state_id_check?(resolution_result)
+    if should_proof_state_id
       timer.time('state_id') do
         state_id_result = state_id_proofer.proof(applicant_pii)
       end
@@ -155,20 +155,6 @@ class ResolutionProofingJob < ApplicationJob
       resolution_success: resolution_result.success?,
       state_id_success: state_id_result.success?,
     )
-  end
-
-  def user_can_pass_after_state_id_check?(resolution_result)
-    return true if resolution_result.success?
-    # For failed IV results, this method validates that the user is eligible to pass if the
-    # failed attributes are covered by the same attributes in a successful AAMVA response
-    # aka the Get-to-Yes w/ AAMVA feature.
-    return false unless resolution_result.failed_result_can_pass_with_additional_verification?
-
-    attributes_aamva_can_pass = [:address, :dob, :state_id_number]
-    results_that_cannot_pass_aamva =
-      resolution_result.attributes_requiring_additional_verification - attributes_aamva_can_pass
-
-    results_that_cannot_pass_aamva.blank?
   end
 
   def resolution_proofer

@@ -178,9 +178,13 @@ feature 'Password Recovery' do
     context 'when password form values are invalid' do
       it 'does not allow the user to submit until password score is good', js: true do
         fill_in t('forms.passwords.edit.labels.password'), with: 'invalid'
-        click_button t('forms.passwords.edit.buttons.submit')
+        expect(page).not_to have_button(t('forms.passwords.edit.buttons.submit'))
 
-        expect(page).to have_css('.usa-error-message', text: t('errors.messages.stronger_password'))
+        fill_in t('forms.passwords.edit.labels.password'), with: 'password@132!'
+        expect(page).not_to have_button(t('forms.passwords.edit.buttons.submit'))
+
+        fill_in t('forms.passwords.edit.labels.password'), with: 'a unique and exciting zxjsahfas'
+        expect(page).to have_button(t('forms.passwords.edit.buttons.submit'))
       end
 
       it 'displays field validation error when password fields are empty' do

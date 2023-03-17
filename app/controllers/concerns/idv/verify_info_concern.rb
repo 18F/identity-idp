@@ -97,8 +97,7 @@ module Idv
         extra: {
           address_edited: !!flow_session['address_edited'],
           address_line2_present: !pii[:address2].blank?,
-          pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name],
-                              [:state_id, :state_id_jurisdiction]],
+          pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name]],
         },
       )
       log_idv_verification_submitted_event(
@@ -106,14 +105,15 @@ module Idv
         failure_reason: irs_attempts_api_tracker.parse_failure_reason(form_response),
       )
 
-      form_response = form_response.merge(check_ssn) if form_response.success?
+      if form_response.success?
+        response = check_ssn
+        form_response = form_response.merge(response)
+      end
       summarize_result_and_throttle_failures(form_response)
       delete_async
 
       if form_response.success?
-        move_applicant_to_idv_session
         idv_session.mark_verify_info_step_complete!
-        idv_session.invalidate_steps_after_verify_info!
         redirect_to idv_phone_url
       else
         idv_session.invalidate_verify_info_step!
@@ -196,13 +196,27 @@ module Idv
     end
 
     def check_ssn
-      Idv::SsnForm.new(current_user).submit(ssn: pii[:ssn])
+      result = Idv::SsnForm.new(current_user).submit(ssn: pii[:ssn])
+
+      if result.success?
+        save_legacy_state
+        delete_pii
+      end
+
+      result
     end
 
-    def move_applicant_to_idv_session
+    def save_legacy_state
+      skip_legacy_steps
       idv_session.applicant = pii
       idv_session.applicant['uuid'] = current_user.uuid
-      delete_pii
+    end
+
+    def skip_legacy_steps
+      idv_session.mark_verify_info_step_complete!
+      idv_session.vendor_phone_confirmation = false
+      idv_session.user_phone_confirmation = false
+      idv_session.address_verification_mechanism = 'phone'
     end
 
     def add_proofing_costs(results)

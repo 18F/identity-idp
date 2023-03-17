@@ -169,11 +169,6 @@ module Idv
       session[:profile_confirmation] = nil
     end
 
-    def invalidate_steps_after_verify_info!
-      session[:address_verification_mechanism] = 'phone'
-      invalidate_phone_step!
-    end
-
     def invalidate_phone_step!
       session[:vendor_phone_confirmation] = nil
       session[:user_phone_confirmation] = nil

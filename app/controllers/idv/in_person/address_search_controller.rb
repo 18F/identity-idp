@@ -1,6 +1,10 @@
 module Idv
   module InPerson
     class AddressSearchController < ApplicationController
+      include RenderConditionConcern
+
+      check_or_render_not_found -> { IdentityConfig.store.arcgis_search_enabled }
+
       def index
         response = addresses(params[:address])
         render(**response)

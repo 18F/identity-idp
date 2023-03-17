@@ -4,16 +4,7 @@ namespace :users do
   namespace :review do
     desc 'Pass a user that has a pending review'
     task pass: :environment do |_task, args|
-      STDOUT.sync = true
-      print 'Enter the name of the investigator: '
-      investigator_name = STDIN.gets.chomp
-      print 'Enter the issue/ticket/reason for the investigation: '
-      investigation_number = STDIN.gets.chomp
-      print 'Enter the User UUID to pass: '
-      user_uuid = STDIN.gets.chomp
-      puts "investigator name: #{investigator_name}"
-      puts "investigation reason: #{investigation_number}"
-      puts "uuid: #{user_uuid}"
+      user_uuid = STDIN.getpass('Enter the User UUID to pass (input will be hidden):')
       user = User.find_by(uuid: user_uuid)
 
       if user.fraud_review_pending? && user.proofing_component.review_eligible?
@@ -44,22 +35,14 @@ namespace :users do
 
     desc 'Reject a user that has a pending review'
     task reject: :environment do |_task, args|
-      STDOUT.sync = true
-      print 'Enter the name of the investigator: '
-      investigator_name = STDIN.gets.chomp
-      print 'Enter the issue/ticket/reason for the investigation: '
-      investigation_number = STDIN.gets.chomp
-      print 'Enter the User UUID to reject: '
-      user_uuid = STDIN.gets.chomp
-      puts "investigator name: #{investigator_name}"
-      puts "investigation reason: #{investigation_number}"
-      puts "uuid: #{user_uuid}"
+      user_uuid = STDIN.getpass('Enter the User UUID to reject (input will be hidden):')
       user = User.find_by(uuid: user_uuid)
 
       if user.fraud_review_pending? && user.proofing_component.review_eligible?
         profile = user.fraud_review_pending_profile
 
         profile.reject_for_fraud(notify_user: true)
+
         puts "User's profile has been deactivated due to fraud rejection."
       elsif !user.proofing_component.review_eligible?
         puts 'User is past the 30 day review eligibility'

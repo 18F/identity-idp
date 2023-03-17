@@ -158,7 +158,7 @@ feature 'Analytics Regression', js: true do
 
       aggregate_failures 'populates data for each step of the Daily Dropoff Report' do
         row = CSV.parse(
-          Reports::DailyDropoffsReport.new.tap { |r| r.report_date = Time.zone.now }.report_body,
+          Reports::DailyDropoffsReport.new(Time.zone.now).report_body,
           headers: true,
         ).first
 

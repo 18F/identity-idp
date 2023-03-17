@@ -4,7 +4,11 @@ module Reports
   class DuplicateSsnReport < BaseReport
     REPORT_NAME = 'duplicate-ssn-report'
 
-    attr_accessor :report_date
+    attr_reader :report_date
+
+    def initialize(report_date = nil)
+      @report_date = report_date
+    end
 
     def perform(report_date)
       @report_date = report_date
