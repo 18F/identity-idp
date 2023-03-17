@@ -7,7 +7,6 @@ RSpec.describe Reports::DuplicateSsnReport do
   subject(:report) { described_class.new.tap { |r| r.report_date = report_date } }
 
   describe '#perform' do
-
     it 'runs the report and uploads to S3' do
       expect(report).to receive(:save_report)
 
