@@ -13,12 +13,7 @@ import AddressSearch, {
 import InPersonLocations, { FormattedLocation } from './in-person-locations';
 import { InPersonContext } from '../context';
 
-function InPersonLocationPostOfficeSearchStep({
-  onChange,
-  toPreviousStep,
-  toNextStep,
-  registerField,
-}) {
+function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
   const { inPersonCtaVariantActive } = useContext(InPersonContext);
   const { t } = useI18n();
   const [inProgress, setInProgress] = useState<boolean>(false);
@@ -78,7 +73,8 @@ function InPersonLocationPostOfficeSearchStep({
           setAutoSubmit(true);
           setImmediate(() => {
             // continue with navigation
-            toNextStep();
+            e.target.disabled = false;
+            e.target.click();
             // allow process to be re-triggered in case submission did not work as expected
             setAutoSubmit(false);
           });

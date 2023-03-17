@@ -53,7 +53,6 @@ const MULTI_LOCATION_RESPONSE = [
 
 const DEFAULT_PROPS = {
   toPreviousStep() {},
-  toNextStep() {},
   onChange() {},
   value: {},
   registerField() {},
