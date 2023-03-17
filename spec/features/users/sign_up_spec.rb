@@ -153,11 +153,9 @@ feature 'Sign Up' do
       # asynchronous result while avoiding modifying the default otherwise.
       #
       # See: https://github.com/teamcapybara/capybara/blob/3.38.0/lib/capybara/selenium/driver.rb#L146
-      original_default_max_wait_time = Capybara.default_max_wait_time
-      Capybara.default_max_wait_time = 5
-      result = page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
-      Capybara.default_max_wait_time = original_default_max_wait_time
-      result
+      Capybara.using_wait_time(5) do
+        page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
+      end
     end
 
     context 'user enters their email as their password', email: true do
