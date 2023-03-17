@@ -202,9 +202,6 @@ describe Idv::PhoneStep do
         Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
 
         subject.submit(phone: bad_phone)
-        expect(subject.async_state.done?).to eq true
-        subject.async_state_done(subject.async_state)
-
         expect(subject.failure_reason).to eq(:fail)
       end
     end

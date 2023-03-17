@@ -7,6 +7,9 @@ module Idv
     end
 
     def submit(step_params)
+      throttle.increment!
+      return throttled_result if throttle.throttled?
+
       self.step_params = step_params
       idv_session.previous_phone_step_params = step_params.slice(:phone, :otp_delivery_preference)
       proof_address
@@ -34,8 +37,6 @@ module Idv
     def async_state_done(async_state)
       @idv_result = async_state.result
 
-      throttle.increment! unless failed_due_to_timeout_or_exception?
-      @attempts_tracker.idv_phone_otp_sent_rate_limited if throttle.throttled?
       success = idv_result[:success]
       handle_successful_proofing_attempt if success
 
@@ -104,6 +105,11 @@ module Idv
 
     def throttle
       @throttle ||= Throttle.new(user: idv_session.current_user, throttle_type: :proof_address)
+    end
+
+    def throttled_result
+      @attempts_tracker.idv_phone_otp_sent_rate_limited
+      FormResponse.new(success: false)
     end
 
     def failed_due_to_timeout_or_exception?
