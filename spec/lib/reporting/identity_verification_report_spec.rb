@@ -99,6 +99,18 @@ RSpec.describe Reporting::IdentityVerificationReport do
       end
     end
 
+    context 'with --help' do
+      let(:argv) { %w[--help] }
+
+      it 'prints help and exits uncleanly' do
+        expect(Reporting::IdentityVerificationReport).to receive(:exit).and_return(1)
+
+        parse!
+
+        expect(stdout.string).to include('Usage:')
+      end
+    end
+
     context 'with --date and --issuer' do
       let(:argv) { %W[--date 2023-1-1 --issuer #{issuer}]}
 
@@ -110,7 +122,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         )
       end
 
-      it 'has a STDERR logger' do
+      it 'has a STDERR logger by default' do
         logger = parse![:logger]
 
         expect(logger.instance_variable_get(:@logdev).dev).to eq(STDERR)
@@ -124,6 +136,16 @@ RSpec.describe Reporting::IdentityVerificationReport do
         logger = parse![:logger]
 
         expect(logger.instance_variable_get(:@logdev)).to be_nil
+      end
+    end
+
+    context 'with --verbose' do
+      let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --verbose]}
+
+      it 'has a STDERR logger' do
+        logger = parse![:logger]
+
+        expect(logger.instance_variable_get(:@logdev).dev).to eq(STDERR)
       end
     end
   end

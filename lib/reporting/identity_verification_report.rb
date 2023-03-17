@@ -192,7 +192,7 @@ module Reporting
           silent = true
         end
 
-        opts.on('--verboase', 'includes verbose logging to STDERR') do
+        opts.on('--verbose', 'includes verbose logging to STDERR') do
           silent = false
         end
 
