@@ -322,12 +322,12 @@ RSpec.describe 'In Person Proofing', js: true do
 
     it 'resumes desktop session with in-person proofing', allow_browser_log: true do
       user = nil
-      phone_number = '415-555-0199'
+
       perform_in_browser(:desktop) do
         user = sign_in_and_2fa_user
-        complete_doc_auth_steps_before_upload_step
-        clear_and_fill_in(:doc_auth_phone, phone_number)
-        click_send_link
+        complete_doc_auth_steps_before_send_link_step
+        fill_in :doc_auth_phone, with: '415-555-0199'
+        click_idv_continue
 
         expect(page).to have_content(t('doc_auth.headings.text_message'))
       end

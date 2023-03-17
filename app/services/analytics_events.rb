@@ -729,6 +729,10 @@ module AnalyticsEvents
     track_event('IdV: doc auth cancel_link_sent submitted', **extra)
   end
 
+  def idv_doc_auth_cancel_send_link_submitted(**extra)
+    track_event('IdV: doc auth cancel_send_link submitted', **extra)
+  end
+
   # @identity.idp.previous_event_name IdV: in person proofing cancel_update_ssn submitted
   def idv_doc_auth_cancel_update_ssn_submitted(**extra)
     track_event('IdV: doc auth cancel_update_ssn submitted', **extra)
@@ -777,6 +781,14 @@ module AnalyticsEvents
 
   def idv_doc_auth_redo_document_capture_submitted(**extra)
     track_event('IdV: doc auth redo_document_capture submitted', **extra)
+  end
+
+  def idv_doc_auth_send_link_visited(**extra)
+    track_event('IdV: doc auth send_link visited', **extra)
+  end
+
+  def idv_doc_auth_send_link_submitted(**extra)
+    track_event('IdV: doc auth send_link submitted', **extra)
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing ssn submitted
