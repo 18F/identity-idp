@@ -7,6 +7,7 @@ shared_examples 'a system email' do
   it 'does not include markup or layout with lack of broad email support' do
     body = mail.parts.first.body
 
+    # https://www.caniemail.com/features/image-svg/
     expect(body).not_to have_css('img[src$=".svg"]')
   end
 end
