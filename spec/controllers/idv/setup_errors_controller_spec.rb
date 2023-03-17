@@ -28,7 +28,8 @@ describe Idv::SetupErrorsController do
   it 'asks user to call 2 weeks from verified_at date' do
     get :show
 
-    two_weeks = verify_date + 14.days
-    expect(response.body).to include(two_weeks.to_s)
+    two_weeks = (verify_date + 14.days).to_s
+    two_weeks_formatted = I18n.l(Date.parse(two_weeks), format: I18n.t('time.formats.event_date'))
+    expect(response.body).to include(two_weeks_formatted)
   end
 end
