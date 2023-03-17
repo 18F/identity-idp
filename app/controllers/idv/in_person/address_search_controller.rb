@@ -1,10 +1,6 @@
 module Idv
   module InPerson
     class AddressSearchController < ApplicationController
-      include RenderConditionConcern
-
-      check_or_render_not_found -> { IdentityConfig.store.arcgis_search_enabled }
-
       rescue_from Faraday::ConnectionFailed, Faraday::TimeoutError,
                   Faraday::ClientError, StandardError,
                   with: :report_errors

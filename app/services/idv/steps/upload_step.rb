@@ -21,27 +21,14 @@ module Idv
         # app/views/idv/doc_auth/upload.html.erb
         if params[:type] == 'desktop'
           handle_desktop_selection
-        elsif params[:combined]
-          # The user was shown the new combined view and
-          # submitted a phone number to this step with feature flag on
-          # OR
-          # The user was originally shown the new combined view,
-          # but has submitted to a step with the feature flag off
-          # (50/50 from new to old)
-          handle_phone_submission
         else
-          handle_mobile_selection
+          return bypass_send_link_steps if mobile_device?
+          handle_phone_submission
         end
       end
 
       def extra_view_variables
-        if IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
-          {
-            idv_phone_form: build_form,
-          }
-        else
-          {}
-        end
+        { idv_phone_form: build_form }
       end
 
       private
@@ -63,24 +50,11 @@ module Idv
       end
 
       def form_submit
-        return super if !IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
-        return super if params[:type] == 'desktop'
-
-        # Remove after 50/50 deploy w/ flag
-        return super if params[:type] != 'combined'
+        return super unless params[:type] == 'mobile'
 
         params = permit(:phone)
         params[:otp_delivery_preference] = 'sms'
         build_form.submit(params)
-      end
-
-      # To be removed after 50/50
-      def handle_mobile_selection
-        if mobile_device?
-          bypass_send_link_steps
-        else
-          send_user_to_send_link_step
-        end
       end
 
       def handle_phone_submission
@@ -125,13 +99,7 @@ module Idv
         form_response(destination: :email_sent)
       end
 
-      def send_user_to_send_link_step
-        mark_step_complete(:email_sent)
-        form_response(destination: :send_link)
-      end
-
       def bypass_send_link_steps
-        mark_step_complete(:send_link)
         mark_step_complete(:link_sent)
         mark_step_complete(:email_sent)
         form_response(destination: :document_capture)

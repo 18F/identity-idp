@@ -17,10 +17,10 @@ feature 'Visitor sets password during signup' do
       confirm_last_user
     end
 
-    it 'does not allow the user to submit the form' do
+    it 'visitor gets field is required message' do
       fill_in t('forms.password'), with: ''
-
-      expect(page).to_not have_button(t('forms.buttons.continue'))
+      click_button t('forms.buttons.continue')
+      expect(page).to have_content t('simple_form.required.text')
     end
   end
 
@@ -64,9 +64,12 @@ feature 'Visitor sets password during signup' do
   end
 
   context 'password is invalid' do
-    scenario 'visitor is redirected back to password form' do
+    before do
       create(:user, :unconfirmed)
       confirm_last_user
+    end
+
+    scenario 'visitor is redirected back to password form' do
       fill_in t('forms.password'), with: 'Q!2e'
 
       click_button t('forms.buttons.continue')
@@ -76,8 +79,6 @@ feature 'Visitor sets password during signup' do
     end
 
     scenario 'visitor gets password help message' do
-      create(:user, :unconfirmed)
-      confirm_last_user
       fill_in t('forms.password'), with: '1234567891011'
 
       click_button t('forms.buttons.continue')
@@ -86,13 +87,18 @@ feature 'Visitor sets password during signup' do
     end
 
     scenario 'visitor gets password pwned message' do
-      create(:user, :unconfirmed)
-      confirm_last_user
       fill_in t('forms.password'), with: '3.1415926535'
 
       click_button t('forms.buttons.continue')
 
       expect(page).to have_content t('errors.messages.pwned_password')
+    end
+
+    scenario 'visitor gets enter a stronger password message', js: true do
+      fill_in t('forms.password'), with: 'badpwd'
+      click_button t('forms.buttons.continue')
+
+      expect(page).to have_css('.usa-error-message', text: t('errors.messages.stronger_password'))
     end
   end
 end

@@ -18,6 +18,11 @@ module DocAuthHelper
     session
   end
 
+  def clear_and_fill_in(field_name, text)
+    fill_in field_name, with: ''
+    fill_in field_name, with: text
+  end
+
   def fill_out_ssn_form_with_ssn_that_fails_resolution
     fill_in t('idv.form.ssn_label_html'), with: SSN_THAT_FAILS_RESOLUTION
   end
@@ -62,10 +67,6 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :document_capture)
   end
 
-  def idv_doc_auth_send_link_step
-    idv_doc_auth_step_path(step: :send_link)
-  end
-
   def idv_doc_auth_link_sent_step
     idv_doc_auth_step_path(step: :link_sent)
   end
@@ -90,7 +91,11 @@ module DocAuthHelper
   end
 
   def complete_agreement_step
-    find('label', text: t('doc_auth.instructions.consent', app_name: APP_NAME)).click
+    find(
+      'label',
+      text: t('doc_auth.instructions.consent', app_name: APP_NAME),
+      wait: 5,
+    ).click
     click_on t('doc_auth.buttons.continue')
   end
 
@@ -101,7 +106,7 @@ module DocAuthHelper
   end
 
   def complete_upload_step
-    click_on t('doc_auth.info.upload_computer_link')
+    click_on t('forms.buttons.upload_photos')
   end
 
   def complete_doc_auth_steps_before_document_capture_step(expect_accessible: false)
@@ -126,7 +131,7 @@ module DocAuthHelper
   def complete_doc_auth_steps_before_email_sent_step
     allow(BrowserCache).to receive(:parse).and_return(mobile_device)
     complete_doc_auth_steps_before_upload_step
-    click_on t('doc_auth.info.upload_computer_link')
+    complete_upload_step
   end
 
   def complete_doc_auth_steps_before_phone_otp_step(expect_accessible: false)
@@ -170,21 +175,9 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     click_button t('idv.buttons.change_address_label')
   end
 
-  def complete_doc_auth_steps_before_send_link_step
-    complete_doc_auth_steps_before_upload_step
-    if IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
-      click_on t('forms.buttons.send_link')
-    else
-      click_on t('doc_auth.buttons.use_phone')
-    end
-  end
-
   def complete_doc_auth_steps_before_link_sent_step
-    complete_doc_auth_steps_before_send_link_step
-    if !IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
-      fill_out_doc_auth_phone_form_ok
-    end
-    click_idv_continue
+    complete_doc_auth_steps_before_upload_step
+    click_send_link
   end
 
   def complete_all_doc_auth_steps(expect_accessible: false)

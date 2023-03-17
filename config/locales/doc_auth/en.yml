@@ -13,7 +13,6 @@ en:
       take_picture: Take photo
       take_picture_retry: Retake photo
       upload_picture: Upload photo
-      use_phone: Use your phone
     errors:
       alerts:
         barcode_content_check: We couldn’t read the barcode on the back of your ID. It
@@ -126,10 +125,7 @@ en:
       secure_account: Secure your account
       ssn: Enter your Social Security number
       ssn_update: Update your Social Security number
-      take_picture: Take a photo with a phone
       text_message: We sent a message to your phone
-      upload: How would you like to upload your state-issued ID?
-      upload_from_phone: Take a photo with a mobile phone to upload your ID
       verify_identity: Verify your identity
       welcome: Get started verifying your identity
     hybrid_flow_warning:
@@ -145,7 +141,6 @@ en:
     info:
       address_guidance_puerto_rico_html: For Puerto Rico residents:<br><br>Please
         enter urbanization or condominium on address line 2.
-      camera_required: Your mobile phone must have a camera and a web browser.
       capture_status_big_document: Too Close
       capture_status_capturing: Capturing
       capture_status_none: Align
@@ -167,6 +162,7 @@ en:
       interstitial_thanks: Thanks for your patience!
       irs_reproofing_explanation: As an extra security measure, you must verify your identity again for IRS
       keep_window_open: Do not close this window.
+      learn_more: Learn more about how we protect your sensitive information
       lets_go: 'Identity verification happens in two parts:'
       link_sent: Please check your phone and follow instructions to take a photo of
         your state-issued ID.
@@ -179,17 +175,10 @@ en:
       secure_account: We’ll encrypt your account with your password. Encryption means
         your data is protected and only you will be able to access or change
         your information.
-      ssn: We need your Social Security number to validate your name, date of birth
-        and address.  Your Social Security number is encrypted.  With your
-        consent, we share this information with the government agency you are
-        trying to access to verify your identity.
+      ssn: We need your Social Security number to verify your name, date of birth and
+        address.
       tag: Recommended
-      take_picture: Use the camera on your mobile phone and upload images of your
-        ID.  We only use the images to verify your identity.
       upload: We’ll collect information about you by reading your state-issued ID.
-      upload_computer_link: Upload from your computer
-      upload_from_computer: Don’t have a phone?
-      upload_from_phone: Upload pictures directly from your phone camera
       verify_identity: We’ll ask for your personal information to verify your identity
         against public records.
       welcome_html: '%{sp_name} needs to make sure you are you — not someone
@@ -206,8 +195,6 @@ en:
         instructions to verify your identity.
       learn_more: Learn more about our privacy and security measures
       privacy: Our privacy and security standards
-      send_sms: We’ll send a text message to your device with a link.  Follow that
-        link to your browser to take photos of the front and back of your ID.
       switch_back: Switch back to your computer to finish verifying your identity.
       switch_back_image: Arrow pointing from phone to computer
       test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are

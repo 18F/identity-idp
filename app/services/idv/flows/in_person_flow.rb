@@ -58,7 +58,7 @@ module Idv
         return {} if @flow_session[:pii_from_user][:same_address_as_id].nil?
         {
           same_address_as_id: @flow_session[:pii_from_user][:same_address_as_id].to_s == 'true',
-          pii_like_keypaths: [[:same_address_as_id]],
+          pii_like_keypaths: [[:same_address_as_id], [:state_id, :state_id_jurisdiction]],
         }
       end
     end

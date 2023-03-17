@@ -13,7 +13,6 @@ fr:
       take_picture: Prendre une photo
       take_picture_retry: Reprendre la photo
       upload_picture: Télécharger une photo
-      use_phone: Utilisez votre téléphone
     errors:
       alerts:
         barcode_content_check: Nous n’avons pas pu lire le code-barres au verso de votre
@@ -158,12 +157,7 @@ fr:
       secure_account: Sécuriser votre compte
       ssn: Saisissez votre numéro de sécurité sociale
       ssn_update: Mettre à jour votre numéro de Sécurité Sociale
-      take_picture: Prendre une photo avec un téléphone
       text_message: Nous avons envoyé un message à votre téléphone
-      upload: Comment souhaitez-vous télécharger votre carte d’identité délivrée par
-        l’État?
-      upload_from_phone: Prenez une photo avec un téléphone portable pour télécharger
-        votre pièce d’identité
       verify_identity: Vérifier votre identité
       welcome: Commencez à vérifier votre identité
     hybrid_flow_warning:
@@ -181,7 +175,6 @@ fr:
       address_guidance_puerto_rico_html: Pour les résidents de Porto
         Rico:<br><br>Veuillez indiquer l’urbanisation ou la copropriété à la
         ligne 2 de votre adresse.
-      camera_required: Votre téléphone portable doit avoir une caméra et un navigateur Web.
       capture_status_big_document: Trop près
       capture_status_capturing: Prendre la photo
       capture_status_none: Alignez
@@ -206,6 +199,8 @@ fr:
       irs_reproofing_explanation: Comme mesure de sécurité supplémentaire, vous devez
         vérifier à nouveau votre identité pour l’IRS.
       keep_window_open: Ne fermez pas cette fenêtre.
+      learn_more: En savoir plus sur la façon dont nous protégeons vos informations
+        confidentielles
       lets_go: La vérification de l’identité se fait en deux temps
       link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour
         prendre une photo de votre identité émise par l’État.
@@ -221,21 +216,11 @@ fr:
       secure_account: Nous chiffrerons votre compte avec votre mot de passe. Le
         chiffrage signifie que vos données sont protégées et que vous êtes le/la
         seul(e) à pouvoir accéder à vos informations ou les modifier.
-      ssn: Nous avons besoin de votre numéro de sécurité sociale pour valider votre
-        nom, date de naissance et adresse. Votre numéro de sécurité sociale est
-        crypté. Avec votre accord, nous partageons ce informations auprès de
-        l’agence gouvernementale à laquelle vous essayez d’accéder pour vérifier
-        votre identité.
+      ssn: Nous avons besoin de votre numéro de sécurité sociale pour vérifier votre
+        nom, date de naissance et adresse.
       tag: Recommandation
-      take_picture: Utilisez l’appareil photo sur votre téléphone portable et
-        téléchargez des images de votre identifiant. Nous utilisons uniquement
-        les images pour vérifier votre identité.
       upload: Nous recueillons des informations sur vous en lisant votre carte
         d’identité délivrée par l’État.
-      upload_computer_link: Téléchargez depuis votre ordinateur
-      upload_from_computer: Vous n’avez pas de téléphone?
-      upload_from_phone: Téléchargez des images directement depuis l’appareil photo de
-        votre téléphone
       verify_identity: Nous vous demanderons vos informations personnelles afin de
         vérifier votre identité par rapport aux registres publics.
       welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
@@ -252,9 +237,6 @@ fr:
         suivez les instructions pour vérifier votre identité.
       learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
       privacy: Nos normes de confidentialité et de sécurité
-      send_sms: Nous enverrons un message texte à votre appareil avec un lien. Suivez
-        ce lien vers votre navigateur pour prendre des photos du recto et du
-        verso de votre identifiant.
       switch_back: Retournez sur votre ordinateur pour continuer à vérifier votre identité.
       switch_back_image: Flèche pointant du téléphone vers l’ordinateur
       test_ssn: Dans l’environnement de test seuls les SSN commençant par “900-” ou
