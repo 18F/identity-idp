@@ -15,8 +15,8 @@ fr:
           seront pas sauvegardées et vous devrez recommencer le processus.
         email_sent: Nous avons envoyé ces informations à l’adresse électronique que vous
           avez utilisée pour vous connecter.
-        items_to_bring: 'N’oubliez pas d’apporter les articles suivants avec vous au
-          bureau de poste:'
+        items_to_bring: 'Présentez les éléments suivants à n’importe quel collaborateur
+          d’un bureau de Poste:'
         learn_more: En savoir davantage sur ce qu’il faut apporter.
         location_details: Détails de l’emplacement
         questions: Des questions?
@@ -137,7 +137,7 @@ fr:
         zipcode: Code postal
     headings:
       address: Entrez votre adresse actuelle
-      barcode: Vous êtes prêt à vérifier votre identité en personne
+      barcode: Vous êtes prêt à vérifier votre identité en personne avec %{app_name}
       cta: Vous avez des difficultés à vérifier votre identité en ligne?
       cta_variant: Essayez de vérifier votre identité en personne
       po_search:
@@ -171,7 +171,8 @@ fr:
         acceptable_documents:
           - Permis de conduire d’État
           - Document d’identité de non-conducteur d’État
-        heading: Votre document d’identité délivré par l’État
+        heading: Votre permis de conduire ou votre permis d’État Carte d’identité de
+          non-conducteur
         info: 'Votre pièce d’identité ne doit pas être expirée. Les formes
           d’identification acceptables sont:'
         no_other_documents: Nous n’acceptons actuellement aucune autre forme

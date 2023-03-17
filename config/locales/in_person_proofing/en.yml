@@ -13,7 +13,7 @@ en:
         deadline_restart: If you go after the deadline, your information will not be
           saved and you will need to restart the process.
         email_sent: We have sent this information to the email you used to log in.
-        items_to_bring: 'Remember to bring these items with you to the Post Office:'
+        items_to_bring: 'Show the following items to any Post Office associate:'
         learn_more: Learn more about what to bring
         location_details: Location details
         questions: Question?
@@ -120,7 +120,7 @@ en:
         zipcode: ZIP Code
     headings:
       address: Enter your current address
-      barcode: You’re ready to verify your identity in person
+      barcode: You’re ready to verify your identity in person with %{app_name}
       cta: Having trouble verifying your ID online?
       cta_variant: Try verifying your ID in person
       po_search:
@@ -151,7 +151,7 @@ en:
         acceptable_documents:
           - State Driver’s License
           - State Non-Driver’s Identification Card
-        heading: Your state-issued ID
+        heading: Your State Driver’s License or State Non-Driver’s Identification Card
         info: 'Your ID must not be expired. Acceptable forms of ID are:'
         no_other_documents: We do not currently accept any other forms of
           identification, such as passports and military IDs.

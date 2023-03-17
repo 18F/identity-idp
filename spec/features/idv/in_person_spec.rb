@@ -98,7 +98,7 @@ RSpec.describe 'In Person Proofing', js: true do
       enrollment_code = JSON.parse(
         UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
       )['enrollmentCode']
-      expect(page).to have_content(t('in_person_proofing.headings.barcode'))
+      expect(page).to have_content(t('in_person_proofing.headings.barcode', app_name: APP_NAME))
       expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
       expect(page).to have_content(
         t('in_person_proofing.body.barcode.deadline', deadline: deadline),
@@ -226,7 +226,7 @@ RSpec.describe 'In Person Proofing', js: true do
     enrollment_code = JSON.parse(
       UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
     )['enrollmentCode']
-    expect(page).to have_content(t('in_person_proofing.headings.barcode'))
+    expect(page).to have_content(t('in_person_proofing.headings.barcode', app_name: APP_NAME))
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
     expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
     expect(page).to have_content('MILWAUKEE')
