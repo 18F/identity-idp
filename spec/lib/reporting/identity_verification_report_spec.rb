@@ -29,7 +29,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
         # Incomplete user
         { 'user_id' => 'user5', 'name' => 'IdV: doc auth image upload vendor submitted' },
-      ]
+      ],
     )
 
     allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
@@ -41,7 +41,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
       expected_csv = [
         ['Report Timeframe', "#{report.from} to #{report.to}"],
-        ['Report Generated', Date.today.to_s],
+        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
         ['Issuer', issuer],
         [],
         ['Metric', '# of Users'],
@@ -112,7 +112,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
     end
 
     context 'with --date and --issuer' do
-      let(:argv) { %W[--date 2023-1-1 --issuer #{issuer}]}
+      let(:argv) { %W[--date 2023-1-1 --issuer #{issuer}] }
 
       it 'returns the parsed options' do
         expect(parse!).to match(
@@ -130,7 +130,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
     end
 
     context 'with --silent' do
-      let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --silent]}
+      let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --silent] }
 
       it 'has a null logger' do
         logger = parse![:logger]
@@ -140,7 +140,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
     end
 
     context 'with --verbose' do
-      let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --verbose]}
+      let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --verbose] }
 
       it 'has a STDERR logger' do
         logger = parse![:logger]

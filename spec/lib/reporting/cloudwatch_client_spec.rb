@@ -48,7 +48,7 @@ RSpec.describe Reporting::CloudwatchClient do
             to_result_fields('@message' => 'ccc', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
             to_result_fields('@message' => 'ddd', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
             # rubocop:enable Layout/LineLength
-          ]
+          ],
         },
       )
 
