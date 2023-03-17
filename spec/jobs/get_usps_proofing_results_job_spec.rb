@@ -55,7 +55,6 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
           wait_until: anything,
           service_provider: pending_enrollment.issuer,
           timestamp: Time.zone.now,
-          user_id: pending_enrollment.user_id,
         )
       end
     end
@@ -443,7 +442,6 @@ RSpec.describe GetUspsProofingResultsJob do
               email_type: 'Success',
               service_provider: anything,
               timestamp: anything,
-              user_id: anything,
               wait_until: wait_until,
             )
           end
@@ -468,7 +466,6 @@ RSpec.describe GetUspsProofingResultsJob do
               email_type: 'Failed',
               service_provider: anything,
               timestamp: anything,
-              user_id: anything,
               wait_until: wait_until,
             )
           end
@@ -523,7 +520,6 @@ RSpec.describe GetUspsProofingResultsJob do
             email_type: 'Success',
             service_provider: anything,
             timestamp: anything,
-            user_id: anything,
             wait_until: nil,
           )
 
@@ -565,7 +561,6 @@ RSpec.describe GetUspsProofingResultsJob do
             email_type: 'Failed',
             service_provider: anything,
             timestamp: anything,
-            user_id: anything,
             wait_until: nil,
           )
 
@@ -607,7 +602,6 @@ RSpec.describe GetUspsProofingResultsJob do
             email_type: 'Failed fraud suspected',
             service_provider: anything,
             timestamp: anything,
-            user_id: anything,
             wait_until: nil,
           )
 
@@ -653,7 +647,6 @@ RSpec.describe GetUspsProofingResultsJob do
             email_type: 'Failed unsupported ID type',
             service_provider: anything,
             timestamp: anything,
-            user_id: anything,
             wait_until: nil,
           )
         end

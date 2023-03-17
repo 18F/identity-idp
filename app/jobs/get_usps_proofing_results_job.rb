@@ -106,7 +106,6 @@ class GetUspsProofingResultsJob < ApplicationJob
   def email_analytics_attributes(enrollment)
     {
       timestamp: Time.zone.now,
-      user_id: enrollment.user_id,
       service_provider: enrollment.issuer,
       wait_until: mail_delivery_params(enrollment.proofed_at)[:wait_until],
     }
