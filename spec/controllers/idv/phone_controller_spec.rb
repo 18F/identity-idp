@@ -485,12 +485,9 @@ describe Idv::PhoneController do
           stub_verify_steps_one_and_two(user)
 
           throttle = Throttle.new(throttle_type: :proof_address, user: user)
-          (max_attempts - 1).times do
-            throttle.increment!
-          end
+          throttle.increment_to_throttled!
 
           put :create, params: { idv_phone_form: { phone: bad_phone } }
-          get :new
         end
 
         it 'tracks throttled event' do

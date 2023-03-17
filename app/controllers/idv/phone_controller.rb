@@ -81,7 +81,13 @@ module Idv
     end
 
     def submit_proofing_attempt
-      step.submit(step_params.to_h)
+      result = step.submit(step_params.to_h)
+
+      if step.failure_reason == :fail
+        analytics.throttler_rate_limit_triggered(throttle_type: :proof_address, step_name: :phone)
+      end
+
+      result
     end
 
     def send_phone_confirmation_otp_and_handle_result

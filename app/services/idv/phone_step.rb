@@ -17,6 +17,7 @@ module Idv
 
     def failure_reason
       return :fail if throttle.throttled?
+      return if idv_result.nil?
       return :timeout if idv_result[:timed_out]
       return :jobfail if idv_result[:exception].present?
       return :warning if idv_result[:success] != true
