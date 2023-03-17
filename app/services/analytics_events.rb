@@ -729,10 +729,6 @@ module AnalyticsEvents
     track_event('IdV: doc auth cancel_link_sent submitted', **extra)
   end
 
-  def idv_doc_auth_cancel_send_link_submitted(**extra)
-    track_event('IdV: doc auth cancel_send_link submitted', **extra)
-  end
-
   # @identity.idp.previous_event_name IdV: in person proofing cancel_update_ssn submitted
   def idv_doc_auth_cancel_update_ssn_submitted(**extra)
     track_event('IdV: doc auth cancel_update_ssn submitted', **extra)
@@ -781,14 +777,6 @@ module AnalyticsEvents
 
   def idv_doc_auth_redo_document_capture_submitted(**extra)
     track_event('IdV: doc auth redo_document_capture submitted', **extra)
-  end
-
-  def idv_doc_auth_send_link_visited(**extra)
-    track_event('IdV: doc auth send_link visited', **extra)
-  end
-
-  def idv_doc_auth_send_link_submitted(**extra)
-    track_event('IdV: doc auth send_link submitted', **extra)
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing ssn submitted
@@ -3496,6 +3484,22 @@ module AnalyticsEvents
   def contact_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
     track_event(
       'Contact Page Redirect',
+      redirect_url: redirect_url,
+      step: step,
+      location: location,
+      flow: flow,
+      **extra,
+    )
+  end
+
+  # @param [String] redirect_url URL user was directed to
+  # @param [String, nil] step which step
+  # @param [String, nil] location which part of a step, if applicable
+  # @param ["idv", String, nil] flow which flow
+  # User was redirected to the login.gov policy page
+  def policy_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
+    track_event(
+      'Policy Page Redirect',
       redirect_url: redirect_url,
       step: step,
       location: location,

@@ -18,7 +18,7 @@
     ) %>
 
 <%= render PageHeadingComponent.new(class: 'text-center') do %>
-  <%= t('in_person_proofing.headings.barcode') %>
+  <%= t('in_person_proofing.headings.barcode', app_name: APP_NAME) %>
 <% end %>
 
 <%= render AlertComponent.new(class: 'margin-y-4', text_tag: :div) do %>
