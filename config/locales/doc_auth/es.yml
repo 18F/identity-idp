@@ -13,6 +13,7 @@ es:
       take_picture: Tomar una foto
       take_picture_retry: Retirar la foto
       upload_picture: Subir foto
+      use_phone: Usa tu telefono
     errors:
       alerts:
         barcode_content_check: No pudimos leer el código de barras en el reverso de su
@@ -151,7 +152,11 @@ es:
       secure_account: Asegure su cuenta
       ssn: Ingresa tu número de Seguro Social
       ssn_update: Actualice su número de Seguro Social
+      take_picture: Toma una foto con un teléfono
       text_message: Enviamos un mensaje a su teléfono
+      upload: '¿Cómo le gustaría subir su documento de identidad expedido por el
+        estado?'
+      upload_from_phone: Tome una foto con un teléfono móvil para cargar su identificación
       verify_identity: Verifique su identidad
       welcome: Comience a verificar su identidad
     hybrid_flow_warning:
@@ -170,6 +175,7 @@ es:
       address_guidance_puerto_rico_html: Para residentes de Puerto
         Rico:<br><br>Incluyan en su dirección la urbanización o departamento en
         la línea de dirección 2.
+      camera_required: Su teléfono móvil debe tener una cámara y un navegador web.
       capture_status_big_document: Demasiado cerca
       capture_status_capturing: Capturando
       capture_status_none: Alinea
@@ -212,8 +218,13 @@ es:
       ssn: Necesitamos tu número de Seguro Social para validar tu nombre, fecha de
         nacimiento y dirección.
       tag: Recomendado
+      take_picture: Use la cámara en su teléfono móvil y cargue imágenes de su
+        identificación. Solo usamos las imágenes para verificar su identidad.
       upload: Recopilaremos información sobre usted leyendo su documento de identidad
         expedido por el estado.
+      upload_computer_link: Sube desde tu computadora
+      upload_from_computer: '¿No tiene un teléfono?'
+      upload_from_phone: Sube imágenes directamente desde la cámara de tu teléfono
       verify_identity: Le preguntaremos sus datos personales para verificar su
         identidad comparándola con los registros públicos.
       welcome_html: '%{sp_name} necesita asegurarse de que es usted y no es alguien
@@ -230,6 +241,9 @@ es:
         escritorio y siga las instrucciones para verificar su identidad.
       learn_more: Obtenga más información sobre nuestras medidas de privacidad y seguridad
       privacy: Nuestras normas de privacidad y seguridad
+      send_sms: Le enviaremos un mensaje de texto a su dispositivo con un enlace. Siga
+        ese enlace a su navegador para tomar fotografías de la parte delantera y
+        trasera de su identificación.
       switch_back: Regrese a su computadora para continuar con la verificación de su
         identidad.
       switch_back_image: Flecha que apunta del teléfono a la computadora
