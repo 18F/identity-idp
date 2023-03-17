@@ -12,7 +12,7 @@ fr:
     contact_support: Contactez %{app_name} le support
     continue_sign_in: Continuer la connexion
     create_account: Créer un compte
-    exit_login: Quitter Login.gov
+    exit_login: Quitter %{app_name}
     go_back: Retourner
     help: Aide
     new_window: '(ouvre une nouvelle fenêtre)'
