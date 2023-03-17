@@ -55,7 +55,7 @@ module Reporting
         @progress_bar = ProgressBar.create(
           starting_at: 0,
           total: queue.size,
-          format: 'Querying log slices [%c/%C] |%B| %a',
+          format: 'Querying log slices %j%% [%c/%C] |%B| %a',
           output: @progress.respond_to?(:fileno) ? @progress : STDERR,
         )
       end
@@ -99,6 +99,7 @@ module Reporting
       end
 
       until (num_in_progress = in_progress.sum(&:last)).zero?
+        @progress_bar&.refresh
         log("waiting, num_in_progress=#{num_in_progress}, queue_size=#{queue.size}")
         sleep wait_duration
       end
