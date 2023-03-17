@@ -76,4 +76,8 @@ RSpec.describe Reporting::IdentityVerificationReport do
       )
     end
   end
+
+  describe '.parse!' do
+    # WRITE SPECS FOR MEEEEE
+  end
 end

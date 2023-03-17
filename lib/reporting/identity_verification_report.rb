@@ -2,6 +2,7 @@
 
 # rubocop:disable Rails/Output
 require 'csv'
+require 'optparse'
 begin
   require 'reporting/cloudwatch_client'
   require 'reporting/cloudwatch_query'
@@ -160,64 +161,67 @@ module Reporting
         slice_interval: 3.hours,
       )
     end
-  end
-end
 
-# rubocop:disable Rails/Exit
-if __FILE__ == $PROGRAM_NAME
-  require 'optparse'
-
-  date = nil
-  issuer = nil
-  silent = false
-
-  program_name = Pathname.new($PROGRAM_NAME).relative_path_from(__dir__)
-
-  parser = OptionParser.new do |opts|
-    opts.banner = <<~TXT
-      Usage:
-
-      #{program_name} --date YYYY-MM-DD --issuer ISSUER
-
-      Options:
-    TXT
-
-    opts.on('--date=DATE', 'date to run the report in YYYY-MM-DD format') do |date_v|
-      date = Date.parse(date_v)
-    end
-
-    opts.on('--issuer=ISSUER') do |issuer_v|
-      issuer = issuer_v
-    end
-
-    opts.on('--silent', 'silences logging to STDERR') do
-      silent = true
-    end
-
-    opts.on('--verboase', 'includes verbose logging to STDERR') do
+    # rubocop:disable Rails/Exit
+    # @return [Hash]
+    def self.parse!(argv)
+      date = nil
+      issuer = nil
       silent = false
+
+      program_name = Pathname.new($PROGRAM_NAME).relative_path_from(__dir__)
+
+      parser = OptionParser.new do |opts|
+        opts.banner = <<~TXT
+          Usage:
+
+          #{program_name} --date YYYY-MM-DD --issuer ISSUER
+
+          Options:
+        TXT
+
+        opts.on('--date=DATE', 'date to run the report in YYYY-MM-DD format') do |date_v|
+          date = Date.parse(date_v)
+        end
+
+        opts.on('--issuer=ISSUER') do |issuer_v|
+          issuer = issuer_v
+        end
+
+        opts.on('--silent', 'silences logging to STDERR') do
+          silent = true
+        end
+
+        opts.on('--verboase', 'includes verbose logging to STDERR') do
+          silent = false
+        end
+
+        opts.on('-h', '--help') do
+          puts opts
+          exit 0
+        end
+      end
+
+      parser.parse!(argv)
+
+      if !date || !issuer
+        puts parser
+        exit 0
+      end
+
+      {
+        date: date,
+        issuer: issuer,
+        logger: silent ? Logger.new('/dev/null') : Logger.new(STDERR),
+      }
     end
-
-    opts.on('-h', '--help') do
-      puts opts
-      exit 0
-    end
+    # rubocop:enable Rails/Exit
   end
-
-  parser.parse!(ARGV)
-
-  if !date || !issuer
-    puts parser
-    exit 0
-  end
-
-  csv = Reporting::IdentityVerificationReport.new(
-    date: date,
-    issuer: issuer,
-    logger: silent ? Logger.new('/dev/null') : Logger.new(STDERR),
-  ).to_csv
-
-  puts csv
 end
-# rubocop:enable Rails/Exit
+
+if __FILE__ == $PROGRAM_NAME
+  options = Reporting::IdentityVerificationReport.parse!(ARGV)
+
+  puts Reporting::IdentityVerificationReport.new(**options).to_csv
+end
 # rubocop:enable Rails/Output
