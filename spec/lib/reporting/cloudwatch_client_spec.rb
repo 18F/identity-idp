@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 require 'reporting/cloudwatch_client'
 
 RSpec.describe Reporting::CloudwatchClient do
@@ -7,6 +7,7 @@ RSpec.describe Reporting::CloudwatchClient do
   let(:slice_interval) { 1.day }
   let(:ensure_complete_logs) { false }
   let(:query) { 'fields @message, @timestamp | limit 10000' }
+  let(:progress) { false }
 
   subject(:client) do
     Reporting::CloudwatchClient.new(
@@ -14,6 +15,7 @@ RSpec.describe Reporting::CloudwatchClient do
       logger: logger,
       slice_interval: slice_interval,
       ensure_complete_logs: ensure_complete_logs,
+      progress: progress,
     )
   end
 
@@ -92,6 +94,18 @@ RSpec.describe Reporting::CloudwatchClient do
           { '@message' => 'ddd', '@timestamp' => now.iso8601 },
         ],
       )
+    end
+
+    context ':progress' do
+      let(:progress) { StringIO.new }
+
+      it 'logs a progress bar to the given IO' do
+        stub_single_page
+
+        fetch
+
+        expect(progress.string).to include('=====')
+      end
     end
 
     context ':ensure_complete_logs is true' do

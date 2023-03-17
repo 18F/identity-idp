@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 require 'reporting/identity_verification_report'
 
 RSpec.describe Reporting::IdentityVerificationReport do
@@ -118,34 +118,25 @@ RSpec.describe Reporting::IdentityVerificationReport do
         expect(parse!).to match(
           date: Date.new(2023, 1, 1),
           issuer: issuer,
-          logger: kind_of(Logger),
+          verbose: false,
+          progress: true,
         )
       end
+    end
 
-      it 'has a STDERR logger by default' do
-        logger = parse![:logger]
+    context 'with --no-verbose' do
+      let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --no-verbose] }
 
-        expect(logger.instance_variable_get(:@logdev).dev).to eq(STDERR)
+      it 'has verbose false' do
+        expect(parse![:verbose]).to eq(false)
       end
     end
 
-    context 'with --silent' do
-      let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --silent] }
+    context 'with --no-progress' do
+      let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --no-progress] }
 
-      it 'has a null logger' do
-        logger = parse![:logger]
-
-        expect(logger.instance_variable_get(:@logdev)).to be_nil
-      end
-    end
-
-    context 'with --verbose' do
-      let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --verbose] }
-
-      it 'has a STDERR logger' do
-        logger = parse![:logger]
-
-        expect(logger.instance_variable_get(:@logdev).dev).to eq(STDERR)
+      it 'has a progress false' do
+        expect(parse![:progress]).to eq(false)
       end
     end
   end

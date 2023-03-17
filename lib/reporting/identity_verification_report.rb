@@ -15,7 +15,7 @@ module Reporting
   class IdentityVerificationReport
     include CloudwatchQuery::Quoting
 
-    attr_reader :issuer, :date, :logger
+    attr_reader :issuer, :date
 
     module Events
       IDV_DOC_AUTH_IMAGE_UPLOAD = 'IdV: doc auth image upload vendor submitted'
@@ -32,10 +32,19 @@ module Reporting
 
     # @param [String] isssuer
     # @param [Date] date
-    def initialize(issuer:, date:, logger: Logger.new(STDERR))
+    def initialize(issuer:, date:, verbose: false, progress: false)
       @issuer = issuer
       @date = date
-      @logger = logger
+      @verbose = verbose
+      @progress = progress
+    end
+
+    def verbose?
+      @verbose
+    end
+
+    def progress?
+      @progress
     end
 
     def to_csv
@@ -157,8 +166,9 @@ module Reporting
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
         ensure_complete_logs: true,
         num_threads: 5,
-        logger: logger,
         slice_interval: 3.hours,
+        progress: progress?,
+        logger: verbose? ? Logger.new(STDERR) : nil,
       )
     end
 
@@ -167,7 +177,8 @@ module Reporting
     def self.parse!(argv, out: STDOUT)
       date = nil
       issuer = nil
-      silent = false
+      verbose = false
+      progress = true
 
       program_name = Pathname.new($PROGRAM_NAME).relative_path_from(__dir__)
 
@@ -188,12 +199,12 @@ module Reporting
           issuer = issuer_v
         end
 
-        opts.on('--silent', 'silences logging to STDERR') do
-          silent = true
+        opts.on('--[no-]verbose', 'log details STDERR, default to off') do |verbose_v|
+          verbose = verbose_v
         end
 
-        opts.on('--verbose', 'includes verbose logging to STDERR') do
-          silent = false
+        opts.on('--[no-]progress', 'shows a progress bar or hides it, defaults on') do |progress_v|
+          progress = progress_v
         end
 
         opts.on('-h', '--help') do
@@ -212,7 +223,8 @@ module Reporting
       {
         date: date,
         issuer: issuer,
-        logger: silent ? Logger.new('/dev/null') : Logger.new(STDERR),
+        verbose: verbose,
+        progress: progress,
       }
     end
     # rubocop:enable Rails/Exit

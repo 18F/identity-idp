@@ -1,6 +1,7 @@
 require 'aws-sdk-cloudwatchlogs'
 require 'concurrent-ruby'
 require 'reporting/cloudwatch_query'
+require 'ruby-progressbar'
 
 module Reporting
   class CloudwatchClient
@@ -14,18 +15,22 @@ module Reporting
     #  two queries until we're certain we've queried all rows
     # @param [ActiveSupport::Duration,Boolean,nil] slice_interval starting interval to split up and
     #  query across, or something falsy to indicate not to slice the query
+    # @param [Boolean,nil,IO,#fileno] progress whether or not to show progress, and which IO
+    #  to send send the progress bar to (defaults to STDERR)
     def initialize(
       ensure_complete_logs: true,
       num_threads: DEFAULT_NUM_THREADS,
       wait_duration: DEFAULT_WAIT_DURATION,
       slice_interval: 1.day,
-      logger: Logger.new(STDERR)
+      logger: nil,
+      progress: true
     )
       @ensure_complete_logs = ensure_complete_logs
       @num_threads = num_threads
       @wait_duration = wait_duration
       @slice_interval = slice_interval
       @logger = logger
+      @progress = progress
     end
 
     # @param [#to_s] query
@@ -46,8 +51,17 @@ module Reporting
         queue << [range, range]
       end
 
-      logger.info("starting query, queue_size=#{queue.length} num_threads=#{num_threads}")
-      logger.info("=== query ===\n#{query}\n=== query ===")
+      if show_progress?
+        @progress_bar = ProgressBar.create(
+          starting_at: 0,
+          total: queue.size,
+          format: 'Querying log slices [%c/%C] |%B| %a',
+          output: @progress.respond_to?(:fileno) ? @progress : STDERR,
+        )
+      end
+
+      log("starting query, queue_size=#{queue.length} num_threads=#{num_threads}")
+      log("=== query ===\n#{query}\n=== query ===")
 
       threads = num_threads.times.map do |thread_idx|
         Thread.new do
@@ -56,24 +70,27 @@ module Reporting
             end_time = range.end.to_i
 
             response = fetch_one(query:, start_time:, end_time:)
+            @progress_bar&.increment
 
             if ensure_complete_logs? && has_more_results?(response.results.size)
-              logger.info("more results, bisecting: start_time=#{start_time} end_time=#{end_time}")
+              log("more results, bisecting: start_time=#{start_time} end_time=#{end_time}")
               mid = midpoint(start_time:, end_time:)
 
               # -1 for current work finishing, +2 for new threads enqueued
               in_progress[orig_range] += 1
 
+              @progress_bar&.total += 2
+
               queue << [(start_time..(mid - 1)), orig_range]
               queue << [(mid..end_time), orig_range]
             else
-              logger.info("worker finished, slice duration=#{end_time - start_time}")
+              log("worker finished, slice_duration=#{end_time - start_time}")
               in_progress[orig_range] -= 1
               results.concat(parse_results(response.results))
             end
           end
 
-          logger.info("thread done thread_idx=#{thread_idx}")
+          log("thread done thread_idx=#{thread_idx}")
 
           nil
         end.tap do |thread|
@@ -82,11 +99,13 @@ module Reporting
       end
 
       until (num_in_progress = in_progress.sum(&:last)).zero?
-        logger.info("waiting, num_in_progress=#{num_in_progress}, queue_size=#{queue.size}")
+        log("waiting, num_in_progress=#{num_in_progress}, queue_size=#{queue.size}")
         sleep wait_duration
       end
       queue.close
       threads.each(&:value) # wait for all threads
+
+      @progress_bar&.finish
 
       results
     ensure
@@ -98,7 +117,7 @@ module Reporting
     # @param [Integer] end_time
     # @return [Aws::CloudWatchLogs::Types::GetQueryResultsResponse]
     def fetch_one(query:, start_time:, end_time:)
-      logger.info("starting query: #{start_time}..#{end_time}")
+      log("starting query: #{start_time}..#{end_time}")
 
       query_id = cloudwatch_client.start_query(
         # NOTE: this should be configurable as well
@@ -115,7 +134,21 @@ module Reporting
       @ensure_complete_logs
     end
 
+    def show_progress?
+      !!@progress
+    end
+
     private
+
+    def log(message)
+      if logger
+        if @progress_bar
+          @progress_bar.log(message)
+        else
+          logger.info(message)
+        end
+      end
+    end
 
     # somehow sample responses returned 10,001 rows when we request 10,000
     # so we check for more than the limit
@@ -161,13 +194,13 @@ module Reporting
       start = Time.now.to_f
 
       loop do
-        logger.info("waiting on query_id=#{query_id}")
+        log("waiting on query_id=#{query_id}")
         sleep wait_duration
         response = cloudwatch_client.get_query_results(query_id: query_id)
         case response.status
         when 'Complete', 'Failed', 'Cancelled'
           duration = Time.now.to_f - start
-          logger.info(
+          log(
             "finished query_id=#{query_id}, status=#{response.status}, duration=#{duration}",
           )
           return response
