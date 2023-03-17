@@ -164,7 +164,7 @@ module Reporting
 
     # rubocop:disable Rails/Exit
     # @return [Hash]
-    def self.parse!(argv)
+    def self.parse!(argv, out: STDOUT)
       date = nil
       issuer = nil
       silent = false
@@ -197,16 +197,16 @@ module Reporting
         end
 
         opts.on('-h', '--help') do
-          puts opts
-          exit 0
+          out.puts opts
+          exit 1
         end
       end
 
       parser.parse!(argv)
 
       if !date || !issuer
-        puts parser
-        exit 0
+        out.puts parser
+        exit 1
       end
 
       {

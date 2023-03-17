@@ -78,6 +78,53 @@ RSpec.describe Reporting::IdentityVerificationReport do
   end
 
   describe '.parse!' do
-    # WRITE SPECS FOR MEEEEE
+    before do
+      allow(Reporting::IdentityVerificationReport).to receive(:exit)
+    end
+
+    let(:stdout) { StringIO.new }
+    let(:argv) { [] }
+
+    subject(:parse!) { Reporting::IdentityVerificationReport.parse!(argv, out: stdout) }
+
+    context 'with no arguments' do
+      let(:argv) { [] }
+
+      it 'prints help and exits uncleanly' do
+        expect(Reporting::IdentityVerificationReport).to receive(:exit).and_return(1)
+
+        parse!
+
+        expect(stdout.string).to include('Usage:')
+      end
+    end
+
+    context 'with --date and --issuer' do
+      let(:argv) { %W[--date 2023-1-1 --issuer #{issuer}]}
+
+      it 'returns the parsed options' do
+        expect(parse!).to match(
+          date: Date.new(2023, 1, 1),
+          issuer: issuer,
+          logger: kind_of(Logger),
+        )
+      end
+
+      it 'has a STDERR logger' do
+        logger = parse![:logger]
+
+        expect(logger.instance_variable_get(:@logdev).dev).to eq(STDERR)
+      end
+    end
+
+    context 'with --silent' do
+      let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --silent]}
+
+      it 'has a null logger' do
+        logger = parse![:logger]
+
+        expect(logger.instance_variable_get(:@logdev)).to be_nil
+      end
+    end
   end
 end
