@@ -146,7 +146,7 @@ describe Idv::InPerson::AddressSearchController do
 
         expect(@analytics).to have_logged_event(
           'Request ArcGIS Address Candidates: request failed',
-          api_status_code: 422,
+          api_status_code: response.status,
           exception_class: server_error.class,
           exception_message: server_error.message,
           response_body_present:
@@ -195,6 +195,19 @@ describe Idv::InPerson::AddressSearchController do
           exception_class: StandardError,
           exception_message: 'error',
           response_status_code: false,
+        )
+      end
+
+      it 'logs the arcgis request failure' do
+        get :index
+        expect(@analytics).to have_logged_event(
+          'Request ArcGIS Address Candidates: request failed',
+          api_status_code: 500,
+          exception_class: StandardError,
+          exception_message: 'error',
+          response_status_code: false,
+          response_body_present: false,
+          response_body: false,
         )
       end
     end
