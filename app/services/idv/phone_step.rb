@@ -8,8 +8,8 @@ module Idv
     end
 
     def submit(step_params)
-      throttle.increment!
       return throttled_result if throttle.throttled?
+      throttle.increment!
 
       self.step_params = step_params
       idv_session.previous_phone_step_params = step_params.slice(:phone, :otp_delivery_preference)
