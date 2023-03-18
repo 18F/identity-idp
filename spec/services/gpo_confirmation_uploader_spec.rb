@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe GpoConfirmationUploader do
-  let(:uploader) { described_class.new }
+  let(:uploader) { described_class.new(now) }
+  let(:now) { Time.zone.now }
 
   let(:export) { 'foo|bar' }
   let(:confirmations) do
@@ -115,7 +116,7 @@ RSpec.describe GpoConfirmationUploader do
   end
 
   def upload_folder
-    timestamp = Time.zone.now.strftime('%Y%m%d-%H%M%S')
+    timestamp = now.strftime('%Y%m%d-%H%M%S')
     File.join(IdentityConfig.store.usps_upload_sftp_directory, "batch#{timestamp}.psv")
   end
 
