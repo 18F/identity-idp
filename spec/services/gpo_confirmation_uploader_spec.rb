@@ -53,12 +53,13 @@ RSpec.describe GpoConfirmationUploader do
     subject { uploader.send(:upload_export, export) }
 
     let(:sftp_connection) { instance_double('Net::SFTP::Session') }
-    let(:string_io) { StringIO.new(export) }
 
     it 'uploads the export via sftp' do
       expect(Net::SFTP).to receive(:start).with(*sftp_options).and_yield(sftp_connection)
-      expect(StringIO).to receive(:new).with(export).and_return(string_io)
-      expect(sftp_connection).to receive(:upload!).with(string_io, upload_folder)
+      expect(sftp_connection).to receive(:upload!) do |string_io, folder|
+        expect(string_io.string).to eq(export)
+        expect(folder).to eq(upload_folder)
+      end
 
       subject
     end
