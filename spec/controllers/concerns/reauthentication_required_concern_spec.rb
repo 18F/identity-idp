@@ -1,32 +1,26 @@
 require 'rails_helper'
 
-describe ReauthenticationRequiredConcern do
+describe ReauthenticationRequiredConcern, type: :controller do
   let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
 
-  class ReauthenticationRequiredController < ApplicationController
+  controller ApplicationController do
     include ReauthenticationRequiredConcern
 
     before_action :confirm_recently_authenticated
 
-    def show
+    def index
       render plain: 'Hello'
     end
   end
 
   describe '#confirm_recently_authenticated' do
-    controller ReauthenticationRequiredController do
-    end
-
     before(:each) do
       stub_sign_in(user)
-      routes.draw do
-        get 'show' => 'reauthentication_required#show'
-      end
     end
 
     context 'recently authenticated' do
       it 'allows action' do
-        get :show
+        get :index
 
         expect(response.body).to eq 'Hello'
       end
@@ -38,13 +32,13 @@ describe ReauthenticationRequiredConcern do
       end
 
       it 'redirects to password confirmation' do
-        get :show
+        get :index
 
         expect(response).to redirect_to user_password_confirm_url
       end
 
       it 'sets context to authentication' do
-        get :show
+        get :index
 
         expect(controller.user_session[:context]).to eq 'reauthentication'
       end
