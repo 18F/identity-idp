@@ -138,9 +138,6 @@ describe Idv::PhoneStep do
 
       expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_sent_rate_limited)
       subject.submit(phone: bad_phone)
-
-      # TODO: Is this line needed?
-      throttle.reset!
     end
 
     it 'marks the phone as unconfirmed if it matches 2FA phone' do
