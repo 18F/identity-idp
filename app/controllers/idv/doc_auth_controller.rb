@@ -74,7 +74,7 @@ module Idv
 
       vendor_status = OutageStatus.new
 
-      return redirect_for_proofing_vendor_outage(vendor_status) if vendor_status.any_idv_vendor_outage?
+      return redirect_for_proofing_vendor_outage if vendor_status.any_idv_vendor_outage?
       return redirect_for_gpo_only(vendor_status) if vendor_status.gpo_only?
     end
 
@@ -89,7 +89,7 @@ module Idv
       redirect_to idv_outage_url
     end
 
-    def redirect_for_proofing_vendor_outage(vendor_status)
+    def redirect_for_proofing_vendor_outage
       session[:vendor_outage_redirect] = current_step
       session[:vendor_outage_redirect_from_idv] = true
 

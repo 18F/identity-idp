@@ -9,7 +9,7 @@
 <%= render PageHeadingComponent.new.with_content(t('vendor_outage.alerts.pinpoint.idv.header')) %>
 
 <p>
-  <%= t('vendor_outage.alerts.pinpoint.idv.message_html', sp_name: current_sp&.friendly_name || APP_NAME) %>
+  <%= t('vendor_outage.alerts.pinpoint.idv.message_html', app_name: APP_NAME, sp_name: current_sp&.friendly_name || APP_NAME) %>
 </p>
 
 <span><%= t('vendor_outage.alerts.pinpoint.idv.options_prompt') %></span>
