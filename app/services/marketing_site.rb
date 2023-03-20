@@ -25,7 +25,7 @@ class MarketingSite
   end
 
   def self.security_and_privacy_practices_url
-    URI.join(BASE_URL, locale_segment, 'policy').to_s
+    URI.join(BASE_URL, locale_segment, 'policy/').to_s
   end
 
   def self.security_and_privacy_how_it_works_url
@@ -45,7 +45,7 @@ class MarketingSite
   end
 
   def self.contact_url
-    URI.join(BASE_URL, locale_segment, 'contact').to_s
+    URI.join(BASE_URL, locale_segment, 'contact/').to_s
   end
 
   def self.nice_help_url
@@ -53,7 +53,7 @@ class MarketingSite
   end
 
   def self.help_url
-    URI.join(BASE_URL, locale_segment, 'help').to_s
+    URI.join(BASE_URL, locale_segment, 'help/').to_s
   end
 
   def self.help_authentication_app_url
