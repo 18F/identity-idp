@@ -1,9 +1,12 @@
 module Users
-  class EmailsController < ReauthnRequiredController
+  class EmailsController < ApplicationController
+    include ReauthenticationRequiredConcern
+
     before_action :confirm_two_factor_authenticated
     before_action :authorize_user_to_edit_email, except: %i[add show verify resend]
     before_action :check_max_emails_per_account, only: %i[show add]
     before_action :retain_confirmed_emails, only: %i[delete]
+    before_action :confirm_recently_authenticated
 
     def show
       @add_user_email_form = AddUserEmailForm.new

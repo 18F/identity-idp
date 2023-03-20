@@ -1,19 +1,26 @@
 require 'rails_helper'
 
-describe ReauthnRequiredController do
+describe ReauthenticationRequiredConcern do
   let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
 
+  class ReauthenticationRequiredController < ApplicationController
+    include ReauthenticationRequiredConcern
+
+    before_action :confirm_recently_authenticated
+
+    def show
+      render plain: 'Hello'
+    end
+  end
+
   describe '#confirm_recently_authenticated' do
-    controller do
-      def show
-        render plain: 'Hello'
-      end
+    controller ReauthenticationRequiredController do
     end
 
     before(:each) do
       stub_sign_in(user)
       routes.draw do
-        get 'show' => 'reauthn_required#show'
+        get 'show' => 'reauthentication_required#show'
       end
     end
 
