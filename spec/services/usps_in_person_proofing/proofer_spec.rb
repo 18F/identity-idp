@@ -7,15 +7,26 @@ RSpec.describe UspsInPersonProofing::Proofer do
   let(:root_url) { 'http://my.root.url' }
   let(:usps_ipp_sponsor_id) { 1 }
 
+  before do
+    allow(IdentityConfig.store).to receive(:usps_ipp_root_url).and_return(root_url)
+  end
+
   describe '#retrieve_token!' do
-    it 'sets token and token_expires_at' do
+    it 'sets token and expiry' do
+      expect(cache).to receive(:write).with(
+        UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY,
+        an_instance_of(String),
+        hash_including(expires_at: an_instance_of(ActiveSupport::TimeWithZone)),
+      ).twice
       stub_request_token
       subject.retrieve_token!
 
-      expect(subject.token).to be_present
+      expect(subject.token).to eq(
+        '==PZWyMP2ZHGOIeTd17YomIf7XjZUL4G93dboY1pTsuTJN0s9BwMYvOcIS9B3gRvloK2sroi9uFXdXrFuly7==',
+      )
     end
 
-    it 'calls the endpoint with the expected params' do
+    it 'calls the authenticate endpoint with the expected params' do
       stub_request_token
 
       username = 'test username'
@@ -90,6 +101,43 @@ RSpec.describe UspsInPersonProofing::Proofer do
         ttl = Rails.cache.redis.ttl(UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY)
         expect(ttl).to be > 0
       end
+    end
+  end
+
+  describe '#token' do
+    let(:expires_in) { 15.minutes }
+
+    it 'uses the cached token if it is not expired' do
+      stub_request_token
+
+      subject.token
+      next_request_time = Time.zone.now + expires_in - 5.minutes
+      travel_to(next_request_time) do
+        subject.token
+      end
+      expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate").once
+    end
+
+    it 'retrieves a new token if the token is expired' do
+      stub_request_token
+
+      subject.token
+      expired_time = Time.zone.now + expires_in
+      travel_to(expired_time) do
+        subject.token
+      end
+      expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate").twice
+    end
+
+    it 'retrieves a new token if the token is about to expire' do
+      stub_request_token
+
+      subject.token
+      almost_expired_time = Time.zone.now + expires_in - 50.seconds
+      travel_to(almost_expired_time) do
+        subject.token
+      end
+      expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate").twice
     end
   end
 

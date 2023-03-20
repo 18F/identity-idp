@@ -105,7 +105,7 @@ module UspsInPersonProofing
       body = request_token
       # Refresh our token early so that it won't expire while a request is in-flight. We expect 15m
       # expirys for tokens but are careful not to trim the expiry by too much, just in case
-      expires_in = body['expires_in']
+      expires_in = body['expires_in'].seconds
       if expires_in - AUTH_TOKEN_PREMATURE_EXPIRY_MINUTES > 0
         expires_in -= AUTH_TOKEN_PREMATURE_EXPIRY_MINUTES
       end
