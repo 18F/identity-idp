@@ -27,7 +27,7 @@
       heading: t('components.troubleshooting_options.default_heading'),
       options: [
         {
-          url: MarketingSite.contact_url,
+          url: contact_redirect_path(flow: :two_factor_authentication, step: :otp_expired),
           text: t('links.contact_support', app_name: APP_NAME),
           new_tab: true,
         },

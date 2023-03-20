@@ -7,6 +7,15 @@ describe 'two_factor_authentication/otp_expired/show.html.erb' do
     render
   end
 
+  it 'includes link to contact support' do
+    render
+
+    expect(rendered).to have_link(
+      t('links.contact_support', app_name: APP_NAME),
+      href: contact_redirect_path(flow: :two_factor_authentication, step: :otp_expired),
+    )
+  end
+
   context 'when a user selects sms as their otp delivery preference' do
     let(:otp_delivery_preference) { 'sms' }
     it 'resends the code via sms' do
