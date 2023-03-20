@@ -86,7 +86,7 @@ module Idv
       session[:vendor_outage_redirect] = current_step
       session[:vendor_outage_redirect_from_idv] = true
 
-      redirect_to idv_vendor_outage_url
+      redirect_to idv_outage_url
     end
 
     def redirect_for_proofing_vendor_outage(vendor_status)

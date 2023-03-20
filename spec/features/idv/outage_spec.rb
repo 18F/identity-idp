@@ -12,7 +12,7 @@ def sign_in_with_idv_required(user:, sms_or_totp: :sms)
   click_submit_default
 end
 
-feature 'vendor_outage_spec' do
+feature 'IdV Outage Spec' do
   include PersonalKeyHelper
   include IdvStepHelper
 
@@ -33,7 +33,7 @@ feature 'vendor_outage_spec' do
         it 'shows vendor outage page before idv welcome page' do
           sign_in_with_idv_required(user: user, sms_or_totp: :totp)
 
-          expect(current_path).to eq idv_vendor_outage_path
+          expect(current_path).to eq idv_outage_path
 
           click_idv_continue
 
@@ -63,7 +63,7 @@ feature 'vendor_outage_spec' do
     it 'shows vendor outage page before idv welcome page' do
       sign_in_with_idv_required(user: user, sms_or_totp: :sms)
 
-      expect(current_path).to eq idv_vendor_outage_path
+      expect(current_path).to eq idv_outage_path
 
       click_idv_continue
 

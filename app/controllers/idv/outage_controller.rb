@@ -1,5 +1,5 @@
 module Idv
-  class VendorOutageController < ApplicationController
+  class OutageController < ApplicationController
     include IdvSession
     include StepIndicatorConcern
 
