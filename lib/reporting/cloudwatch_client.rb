@@ -41,14 +41,14 @@ module Reporting
       results = Concurrent::Array.new
       in_progress = Concurrent::Hash.new(0)
 
-      # Time slices to query, a tuple of range_to_query, original_range [Range<Time>, Range<Time]]
-      # we track the number of live threads by how many jobs connected to each original_range
+      # Time slices to query, a tuple of range_to_query, range_id [Range<Time>, Integer]
+      # we track the number of live threads by how many jobs connected to each range_id
       # are still working
       queue = Queue.new
 
-      slice_time_range(from:, to:).map do |range|
-        in_progress[range] += 1
-        queue << [range, range]
+      slice_time_range(from:, to:).each_with_index.map do |range, range_id|
+        in_progress[range_id] += 1
+        queue << [range, range_id]
       end
 
       if show_progress?
@@ -65,7 +65,7 @@ module Reporting
 
       threads = num_threads.times.map do |thread_idx|
         Thread.new do
-          while (range, orig_range = queue.pop)
+          while (range, range_id = queue.pop)
             start_time = range.begin.to_i
             end_time = range.end.to_i
 
@@ -77,15 +77,15 @@ module Reporting
               mid = midpoint(start_time:, end_time:)
 
               # -1 for current work finishing, +2 for new threads enqueued
-              in_progress[orig_range] += 1
+              in_progress[range_id] += 1
 
               @progress_bar&.total += 2
 
-              queue << [(start_time..(mid - 1)), orig_range]
-              queue << [(mid..end_time), orig_range]
+              queue << [(start_time..(mid - 1)), range_id]
+              queue << [(mid..end_time), range_id]
             else
               log("worker finished, slice_duration=#{end_time - start_time}")
-              in_progress[orig_range] -= 1
+              in_progress[range_id] -= 1
               results.concat(parse_results(response.results))
             end
           end
