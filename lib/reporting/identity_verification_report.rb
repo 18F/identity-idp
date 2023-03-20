@@ -5,7 +5,7 @@ require 'csv'
 require 'optparse'
 begin
   require 'reporting/cloudwatch_client'
-  require 'reporting/cloudwatch_query'
+  require 'reporting/cloudwatch_query_quoting'
 rescue LoadError => e
   warn 'could not load paths, try running with "bundle exec rails runner"'
   raise e
@@ -13,7 +13,7 @@ end
 
 module Reporting
   class IdentityVerificationReport
-    include CloudwatchQuery::Quoting
+    include Reporting::CloudwatchQueryQuoting
 
     attr_reader :issuer, :date
 

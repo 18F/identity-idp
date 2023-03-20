@@ -1,12 +1,12 @@
 require 'aws-sdk-cloudwatchlogs'
 require 'concurrent-ruby'
-require 'reporting/cloudwatch_query'
 require 'ruby-progressbar'
 
 module Reporting
   class CloudwatchClient
     DEFAULT_NUM_THREADS = 5
     DEFAULT_WAIT_DURATION = 3
+    MAX_RESULTS_LIMIT = 10_000
 
     attr_reader :num_threads, :wait_duration, :slice_interval, :logger
 
@@ -154,7 +154,7 @@ module Reporting
     # somehow sample responses returned 10,001 rows when we request 10,000
     # so we check for more than the limit
     def has_more_results?(size)
-      size >= Reporting::CloudwatchQuery::MAX_LIMIT
+      size >= MAX_RESULTS_LIMIT
     end
 
     # Turns the key-value array from Cloudwatch into hashes
