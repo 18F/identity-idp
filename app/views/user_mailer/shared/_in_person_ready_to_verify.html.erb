@@ -21,12 +21,15 @@
       <td>
         <h3 class="font-heading-md text-bold"><%= t('in_person_proofing.process.barcode.heading') %></h3>
         <p><%= t('in_person_proofing.process.barcode.info') %></p>
-        <%= render BarcodeComponent.new(
-              barcode_data: @presenter.enrollment_code,
-              barcode_image_url: @presenter.barcode_image_url,
-              label: nil,
-              label_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
-            ) %>
+        <div class="display-inline-block">
+          <%= render 'idv/shared/mini_logo', filename: 'logo.png' %>
+          <%= render BarcodeComponent.new(
+                barcode_data: @presenter.enrollment_code,
+                barcode_image_url: @presenter.barcode_image_url,
+                label: nil,
+                label_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
+              ) %>
+        </div>
       </td>
     </tr>
     <tr>
