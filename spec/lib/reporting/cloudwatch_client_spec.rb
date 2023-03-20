@@ -56,7 +56,7 @@ RSpec.describe Reporting::CloudwatchClient do
         },
       )
 
-      allow(client).to receive(:cloudwatch_client).and_return(stubbed_aws_sdk_client)
+      allow(client).to receive(:aws_client).and_return(stubbed_aws_sdk_client)
     end
 
     context ':slice_interval is falsy' do
@@ -153,7 +153,7 @@ RSpec.describe Reporting::CloudwatchClient do
           end,
         )
 
-        allow(client).to receive(:cloudwatch_client).and_return(stubbed_aws_sdk_client)
+        allow(client).to receive(:aws_client).and_return(stubbed_aws_sdk_client)
       end
 
       it 'slices by interval and recurses as needed to get full results' do

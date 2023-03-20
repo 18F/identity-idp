@@ -120,7 +120,7 @@ module Reporting
     def fetch_one(query:, start_time:, end_time:)
       log("starting query: #{start_time}..#{end_time}")
 
-      query_id = cloudwatch_client.start_query(
+      query_id = aws_client.start_query(
         # NOTE: this should be configurable as well
         log_group_name: 'prod_/srv/idp/shared/log/events.log',
         start_time:,
@@ -197,7 +197,7 @@ module Reporting
       loop do
         log("waiting on query_id=#{query_id}")
         sleep wait_duration
-        response = cloudwatch_client.get_query_results(query_id: query_id)
+        response = aws_client.get_query_results(query_id: query_id)
         case response.status
         when 'Complete', 'Failed', 'Cancelled'
           duration = Time.now.to_f - start
@@ -212,8 +212,8 @@ module Reporting
     end
     # rubocop:enable Rails/TimeZone
 
-    def cloudwatch_client
-      @cloudwatch_client ||= Aws::CloudWatchLogs::Client.new(region: 'us-west-2')
+    def aws_client
+      @aws_client ||= Aws::CloudWatchLogs::Client.new(region: 'us-west-2')
     end
   end
 end
