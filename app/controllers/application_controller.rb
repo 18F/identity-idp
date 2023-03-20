@@ -156,14 +156,13 @@ class ApplicationController < ActionController::Base
   def redirect_with_flash_if_timeout
     return unless params[:timeout]
 
-    case params[:timeout]
-    when 'session'
+    if params[:timeout] == 'session'
       flash[:info] = t(
         'notices.session_timedout',
         app_name: APP_NAME,
         minutes: IdentityConfig.store.session_timeout_in_minutes,
       )
-    when 'form'
+    elsif current_user.blank?
       flash[:info] = t(
         'notices.session_cleared',
         minutes: IdentityConfig.store.session_timeout_in_minutes,

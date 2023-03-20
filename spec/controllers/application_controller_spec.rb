@@ -341,7 +341,7 @@ describe ApplicationController do
       it 'does not display flash message' do
         allow(subject).to receive(:current_user).and_return(user)
 
-        get :index, params: { timeout: true, request_id: '123' }
+        get :index, params: { timeout: 'form', request_id: '123' }
 
         expect(flash[:info]).to be_nil
       end
@@ -352,7 +352,7 @@ describe ApplicationController do
         receive(:redirect_to).and_raise(ActionController::UrlGenerationError.new('bad request'))
       allow(subject).to receive(:current_user).and_return(user)
 
-      get :index, params: { timeout: true, request_id: '123' }
+      get :index, params: { timeout: 'form', request_id: '123' }
 
       expect(response).to be_bad_request
     end
@@ -361,7 +361,7 @@ describe ApplicationController do
       it 'displays a flash message' do
         allow(subject).to receive(:current_user).and_return(nil)
 
-        get :index, params: { timeout: true, request_id: '123' }
+        get :index, params: { timeout: 'form', request_id: '123' }
 
         expect(flash[:info]).to eq t(
           'notices.session_cleared',
