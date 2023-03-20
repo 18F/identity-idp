@@ -105,7 +105,11 @@ module UspsInPersonProofing
       body = request_token
       # Refresh our token early so that it won't expire while a request is in-flight. We expect 15m
       # expirys for tokens but are careful not to trim the expiry by too much, just in case
-      expires_in = [body['expires_in'] - AUTH_TOKEN_PREMATURE_EXPIRY_MINUTES, 1.minute].max
+      expires_in = body['expires_in']
+      if expires_in - AUTH_TOKEN_PREMATURE_EXPIRY_MINUTES > 0
+        expires_in -= AUTH_TOKEN_PREMATURE_EXPIRY_MINUTES
+      end
+
       expires_at = Time.zone.now + expires_in
       token = "#{body['token_type']} #{body['access_token']}"
       Rails.cache.write(AUTH_TOKEN_CACHE_KEY, token, expires_at: expires_at)
