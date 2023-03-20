@@ -2,7 +2,7 @@ import { isValidNumber, isValidNumberForRegion } from 'libphonenumber-js';
 import 'intl-tel-input/build/js/utils.js';
 import intlTelInput from 'intl-tel-input';
 import type { CountryCode } from 'libphonenumber-js';
-import type { Plugin as IntlTelInputPlugin, IntlTelInputGlobals, Options } from 'intl-tel-input';
+import type { Plugin as IntlTelInputPlugin, Options } from 'intl-tel-input';
 import { replaceVariables } from '@18f/identity-i18n';
 import { CAPTCHA_EVENT_NAME } from '@18f/identity-captcha-submit-button/captcha-submit-button-element';
 
@@ -21,8 +21,6 @@ interface IntlTelInput extends IntlTelInputPlugin {
 
   options: Options;
 }
-
-const { intlTelInputUtils } = window as typeof window & IntlTelInputGlobals;
 
 const isPhoneValid = (phone, countryCode) => {
   let phoneValid = isValidNumber(phone, countryCode);
@@ -48,15 +46,12 @@ export class PhoneInputElement extends HTMLElement {
 
   codeWrapper: Element | null;
 
-  exampleText: Element | null;
-
   iti: IntlTelInput;
 
   connectedCallback() {
     const textInput = this.querySelector<HTMLInputElement>('.phone-input__number');
     const codeInput = this.querySelector<HTMLSelectElement>('.phone-input__international-code');
     this.codeWrapper = this.querySelector('.phone-input__international-code-wrapper');
-    this.exampleText = this.querySelector('.phone-input__example');
 
     try {
       this.deliveryMethods = JSON.parse(this.dataset.deliveryMethods || '');
@@ -74,11 +69,9 @@ export class PhoneInputElement extends HTMLElement {
     this.textInput.addEventListener('countrychange', () => this.syncCountryChangeToCodeInput());
     this.textInput.addEventListener('input', () => this.validate());
     this.codeInput.addEventListener('change', () => this.formatTextInput());
-    this.codeInput.addEventListener('change', () => this.setExampleNumber());
     this.codeInput.addEventListener('change', () => this.validate());
     this.ownerDocument.addEventListener(CAPTCHA_EVENT_NAME, this.handleCaptchaChallenge);
 
-    this.setExampleNumber();
     this.validate();
   }
 
@@ -239,17 +232,6 @@ export class PhoneInputElement extends HTMLElement {
    */
   isSupportedCountry(): boolean {
     return this.deliveryMethods.some((delivery) => this.isDeliveryOptionSupported(delivery));
-  }
-
-  setExampleNumber() {
-    const { exampleText, iti } = this;
-    const { iso2 = 'us' } = iti.getSelectedCountryData();
-
-    if (exampleText) {
-      const { nationalMode } = iti.options;
-      const numberType = intlTelInputUtils.numberType[iti.options.placeholderNumberType!];
-      exampleText.textContent = intlTelInputUtils.getExampleNumber(iso2, nationalMode!, numberType);
-    }
   }
 
   handleCaptchaChallenge = (event: Event) => {

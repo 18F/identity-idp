@@ -80,10 +80,6 @@ describe('PhoneInput', () => {
         ${!isSingleOption && !isNonUSSingleOption ? MULTIPLE_OPTIONS_HTML : ''}
       </div>
       <label class="usa-label" for="phone_form_phone">Phone number</label>
-      <div class="usa-hint">
-        Example:
-        <span class="phone-input__example"></span>
-      </div>
       <lg-validated-field>
         <script type="application/json" class="validated-field__error-strings">
           {
