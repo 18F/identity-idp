@@ -44,7 +44,7 @@ describe TwoFactorAuthentication::VoiceSelectionPresenter do
 
     context 'voice vendor outage' do
       before do
-        allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).with(:voice).
+        allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:voice).
           and_return(true)
       end
 

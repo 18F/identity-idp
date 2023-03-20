@@ -440,7 +440,7 @@ feature 'doc auth verify_info step', :js do
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
         and_return(fake_attempts_tracker)
-      allow_any_instance_of(VendorStatus).to receive(:any_phone_vendor_outage?).and_return(true)
+      allow_any_instance_of(OutageStatus).to receive(:any_phone_vendor_outage?).and_return(true)
       visit_idp_from_sp_with_ial2(:oidc)
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step

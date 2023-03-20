@@ -1,4 +1,4 @@
-class VendorStatus
+class OutageStatus
   include ActionView::Helpers::TranslationHelper
 
   def initialize(from: nil, from_idv: nil, sp: nil)

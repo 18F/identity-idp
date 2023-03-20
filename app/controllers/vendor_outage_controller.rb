@@ -1,6 +1,6 @@
 class VendorOutageController < ApplicationController
   def show
-    vendor_status = VendorStatus.new(
+    vendor_status = OutageStatus.new(
       sp: current_sp,
       from: session.delete(:vendor_outage_redirect),
       from_idv: session.delete(:vendor_outage_redirect_from_idv),

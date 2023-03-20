@@ -62,7 +62,7 @@ module Idv
 
     def redirect_to_next_step
       if phone_confirmation_required?
-        if VendorStatus.new.all_phone_vendor_outage?
+        if OutageStatus.new.all_phone_vendor_outage?
           redirect_to vendor_outage_path(from: :idv_phone)
         else
           send_phone_confirmation_otp_and_handle_result

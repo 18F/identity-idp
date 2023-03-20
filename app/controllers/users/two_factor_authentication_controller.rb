@@ -43,7 +43,7 @@ module Users
     end
 
     def phone_redirect
-      return unless phone_enabled? && !VendorStatus.new.any_phone_vendor_outage?
+      return unless phone_enabled? && !OutageStatus.new.any_phone_vendor_outage?
       validate_otp_delivery_preference_and_send_code
       true
     end
@@ -145,7 +145,7 @@ module Users
     end
 
     def redirect_to_vendor_outage_if_phone_only
-      return unless VendorStatus.new.all_phone_vendor_outage? &&
+      return unless OutageStatus.new.all_phone_vendor_outage? &&
                     phone_enabled? &&
                     !MfaPolicy.new(current_user).multiple_factors_enabled?
       redirect_to vendor_outage_path(from: :two_factor_authentication)

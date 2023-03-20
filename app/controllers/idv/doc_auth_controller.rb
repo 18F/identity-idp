@@ -72,7 +72,7 @@ module Idv
     def check_for_outage
       return if session[:skip_vendor_outage]
 
-      vendor_status = VendorStatus.new
+      vendor_status = OutageStatus.new
 
       return redirect_for_proofing_vendor_outage(vendor_status) if vendor_status.any_idv_vendor_outage?
       return redirect_for_gpo_only(vendor_status) if vendor_status.gpo_only?

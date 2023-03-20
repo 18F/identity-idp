@@ -476,7 +476,7 @@ describe NewPhoneForm do
 
     context 'sms outage' do
       before do
-        allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
+        allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
       end
 
       it 'is false' do
@@ -492,7 +492,7 @@ describe NewPhoneForm do
 
     context 'sms outage' do
       before do
-        allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
+        allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
       end
 
       it 'is true' do

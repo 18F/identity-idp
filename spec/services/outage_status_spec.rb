@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-describe VendorStatus do
+describe OutageStatus do
   let(:from) { nil }
   let(:from_idv) { nil }
   let(:sp) { nil }
   subject(:vendor_status) do
-    VendorStatus.new(from: from, from_idv: from_idv, sp: sp)
+    OutageStatus.new(from: from, from_idv: from_idv, sp: sp)
   end
 
   it 'raises an error if passed an unknown vendor' do
@@ -14,7 +14,7 @@ describe VendorStatus do
 
   context 'when all vendors are operational' do
     before do
-      VendorStatus::ALL_VENDORS.each do |vendor|
+      OutageStatus::ALL_VENDORS.each do |vendor|
         allow(IdentityConfig.store).to receive("vendor_status_#{vendor}".to_sym).
           and_return(:operational)
       end
@@ -30,7 +30,7 @@ describe VendorStatus do
   end
 
   context 'when any vendor has an outage' do
-    VendorStatus::ALL_VENDORS.each do |vendor|
+    OutageStatus::ALL_VENDORS.each do |vendor|
       before do
         allow(IdentityConfig.store).to receive("vendor_status_#{vendor}".to_sym).
           and_return(:full_outage)
@@ -163,7 +163,7 @@ describe VendorStatus do
     context 'phone vendor outage' do
       before do
         allow(vendor_status).to receive(:vendor_outage?).and_return(false)
-        VendorStatus::PHONE_VENDORS.each do |vendor|
+        OutageStatus::PHONE_VENDORS.each do |vendor|
           allow(vendor_status).to receive(:vendor_outage?).with(vendor).and_return(true)
         end
       end
@@ -188,7 +188,7 @@ describe VendorStatus do
       expect(analytics).to receive(:track_event).with(
         'Vendor Outage',
         redirect_from: from,
-        vendor_status: VendorStatus::ALL_VENDORS.index_with do |_vendor|
+        vendor_status: OutageStatus::ALL_VENDORS.index_with do |_vendor|
           satisfy { |status| IdentityConfig::VENDOR_STATUS_OPTIONS.include?(status) }
         end,
       )
