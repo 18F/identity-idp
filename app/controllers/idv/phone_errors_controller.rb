@@ -1,5 +1,6 @@
 module Idv
   class PhoneErrorsController < ApplicationController
+    include StepIndicatorConcern
     include IdvSession
 
     before_action :confirm_two_factor_authenticated
