@@ -26,9 +26,7 @@ production:
       ActionController::RoutingError
       ActionDispatch::Http::MimeNegotiation::InvalidType
       GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
-    ].tap do |errors|
-      errors << 'Errno::EADDRINUSE' if Identity::Hostdata.instance_role == 'worker'
-    end.join(',') %>"
+    ].join(',') %>"
   license_key: <%= IdentityConfig.store.newrelic_license_key %>
   log_level: info
   monitor_mode: true
