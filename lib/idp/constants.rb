@@ -106,5 +106,6 @@ module Idp
 
     MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION = 'North Dakota'
     MOCK_IDV_APPLICANT_FULL_STATE = 'Montana'
+    MOCK_IDV_APPLICANT_PUERTO_RICO = 'Puerto Rico'
   end
 end

@@ -507,7 +507,28 @@ RSpec.describe 'In Person Proofing', js: true do
       # prepare page
       complete_prepare_step(user)
 
-      complete_state_id_step(user, same_address_as_id: false, include_address: true)
+      complete_state_id_step(user, same_address_as_id: false, double_address_verification: true)
+
+      complete_address_step(user, double_address_verification: true)
+    end
+
+    context 'when users select Puerto Rico' do
+      it 'displays hint text' do
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing(user)
+        search_for_post_office
+
+        # location page
+        location = page.find_all('.location-collection-item')[1]
+        location.click_button(t('in_person_proofing.body.location.location_button'))
+
+        # prepare page
+        complete_prepare_step(user)
+
+        complete_state_id_step(user, same_address_as_id: false, double_address_verification: true)
+
+        complete_address_step(user, double_address_verification: true, select_puerto_rico: true)
+      end
     end
   end
 end

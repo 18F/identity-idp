@@ -6,26 +6,41 @@
   <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.address')) %>
 <% end %>
 
-<p>
-  <%= t('in_person_proofing.body.address.info') %>
-  <%= new_window_link_to(
-        t('in_person_proofing.body.address.learn_more'),
-        MarketingSite.help_center_article_url(
-          category: 'verify-your-identity',
-          article: 'verify-your-identity-in-person',
-        ),
-      ) %>
-</p>
+<% unless IdentityConfig.store.in_person_capture_secondary_id_enabled %>
+  <p>
+    <%= t('in_person_proofing.body.address.info') %>
+    <%= new_window_link_to(
+          t('in_person_proofing.body.address.learn_more'),
+          MarketingSite.help_center_article_url(
+            category: 'verify-your-identity',
+            article: 'verify-your-identity-in-person',
+          ),
+        ) %>
+  </p>
+<% end %>
 
 <%= simple_form_for(
       form, url: url_for, method: 'PUT',
             html: { autocomplete: 'off' }
     ) do |f| %>
+    <% if IdentityConfig.store.in_person_capture_secondary_id_enabled %>
+      <%= render ValidatedFieldComponent.new(
+          collection: us_states_territories,
+          form: f,
+          label: t('idv.form.state'),
+          label_html: { class: 'usa-label' },
+          name: :state,
+          prompt: t('in_person_proofing.form.address.state_prompt'),
+          required: true,
+          selected: pii[:state],
+        ) %>
+    <% end %>
   <%= render ValidatedFieldComponent.new(
         form: f,
         input_html: { value: pii[:address1] },
         label: t('idv.form.address1'),
         label_html: { class: 'usa-label' },
+        hint: '',
         maxlength: 255,
         name: :address1,
         required: true,
@@ -33,8 +48,9 @@
   <%= render ValidatedFieldComponent.new(
         form: f,
         input_html: { value: pii[:address2] },
-        label: t('idv.form.address2_optional'),
+        label: IdentityConfig.store.in_person_capture_secondary_id_enabled ? t('idv.form.address2') : t('idv.form.address2_optional'),
         label_html: { class: 'usa-label' },
+        hint: '',
         maxlength: 255,
         name: :address2,
         required: false,
@@ -48,16 +64,19 @@
         name: :city,
         required: true,
       ) %>
-  <%= render ValidatedFieldComponent.new(
-        collection: us_states_territories,
-        form: f,
-        label: t('idv.form.state'),
-        label_html: { class: 'usa-label' },
-        name: :state,
-        prompt: t('in_person_proofing.form.address.state_prompt'),
-        required: true,
-        selected: pii[:state],
-      ) %>
+
+  <% unless IdentityConfig.store.in_person_capture_secondary_id_enabled %>
+    <%= render ValidatedFieldComponent.new(
+          collection: us_states_territories,
+          form: f,
+          label: t('idv.form.state'),
+          label_html: { class: 'usa-label' },
+          name: :state,
+          prompt: t('in_person_proofing.form.address.state_prompt'),
+          required: true,
+          selected: pii[:state],
+        ) %>
+  <% end %>
 
   <div class="tablet:grid-col-6">
     <%# using :tel for mobile numeric keypad %>
@@ -74,19 +93,21 @@
         ) %>
   </div>
 
-  <%= render ValidatedFieldComponent.new(
-        as: :radio_buttons,
-        checked: pii[:same_address_as_id],
-        collection: [
-          [t('in_person_proofing.form.address.same_address_choice_yes'), true],
-          [t('in_person_proofing.form.address.same_address_choice_no'), false],
-        ],
-        form: f,
-        label: t('in_person_proofing.form.address.same_address'),
-        name: :same_address_as_id,
-        required: true,
-        wrapper: :uswds_radio_buttons,
-      ) %>
+  <% unless IdentityConfig.store.in_person_capture_secondary_id_enabled %>
+    <%= render ValidatedFieldComponent.new(
+          as: :radio_buttons,
+          checked: pii[:same_address_as_id],
+          collection: [
+            [t('in_person_proofing.form.address.same_address_choice_yes'), true],
+            [t('in_person_proofing.form.address.same_address_choice_no'), false],
+          ],
+          form: f,
+          label: t('in_person_proofing.form.address.same_address'),
+          name: :same_address_as_id,
+          required: true,
+          wrapper: :uswds_radio_buttons,
+        ) %>
+  <% end %>
 
   <%= f.submit class: 'margin-top-1' do %>
     <% if updating_address %>
@@ -103,4 +124,4 @@
   <%= render 'idv/doc_auth/cancel', step: 'address' %>
 <% end %>
 
-<%= javascript_packs_tag_once('formatted-fields') %>
+<%= javascript_packs_tag_once('formatted-fields', 'puerto-rico-hint') %>
