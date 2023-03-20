@@ -128,7 +128,7 @@ RSpec.describe MarketingSite do
   describe '.help_center_article_url' do
     let(:category) {}
     let(:article) {}
-    let(:anchor) {}
+    let(:article_anchor) {}
     let(:result) { MarketingSite.help_center_article_url(category: category, article: article) }
 
     context 'with invalid article' do
@@ -154,9 +154,9 @@ RSpec.describe MarketingSite do
     context 'with anchor' do
       let(:category) { 'verify-your-identity' }
       let(:article) { 'accepted-state-issued-identification' }
-      let(:anchor) { 'test-anchor-url' }
+      let(:article_anchor) { 'test-anchor-url' }
       let(:result) do
-        MarketingSite.help_center_article_url(category: category, article: article, anchor: anchor)
+        MarketingSite.help_center_article_url(category:, article:, article_anchor:)
       end
 
       it 'returns article URL' do
@@ -170,7 +170,7 @@ RSpec.describe MarketingSite do
   describe '.valid_help_center_article?' do
     let(:category) {}
     let(:article) {}
-    let(:result) { MarketingSite.valid_help_center_article?(category: category, article: article) }
+    let(:result) { MarketingSite.valid_help_center_article?(category:, article:) }
 
     context 'with invalid article' do
       let(:category) { 'foo' }
@@ -184,6 +184,15 @@ RSpec.describe MarketingSite do
       let(:article) { 'accepted-state-issued-identification' }
 
       it { expect(result).to eq(true) }
+
+      context 'with anchor' do
+        let(:article_anchor) { 'test-anchor-url' }
+        let(:result) do
+          MarketingSite.valid_help_center_article?(category:, article:, article_anchor:)
+        end
+
+        it { expect(result).to eq(true) }
+      end
     end
   end
 end

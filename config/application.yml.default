@@ -119,7 +119,6 @@ hide_phone_mfa_signup: false
 identity_pki_disabled: false
 identity_pki_local_dev: false
 idv_attempt_window_in_hours: 6
-idv_contact_url: https://www.example.com
 idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13

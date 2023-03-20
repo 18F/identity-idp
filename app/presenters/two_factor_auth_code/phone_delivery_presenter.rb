@@ -58,18 +58,22 @@ module TwoFactorAuthCode
       [
         troubleshoot_change_phone_or_method_option,
         {
-          url: MarketingSite.help_center_article_url(
+          url: help_center_redirect_path(
             category: 'get-started',
             article: 'authentication-options',
-            anchor: 'didn-t-receive-your-one-time-code',
+            article_anchor: 'didn-t-receive-your-one-time-code',
+            flow: :two_factor_authentication,
+            step: :otp_confirmation,
           ),
           text: t('two_factor_authentication.phone_verification.troubleshooting.code_not_received'),
           new_tab: true,
         },
         {
-          url: MarketingSite.help_center_article_url(
+          url: help_center_redirect_path(
             category: 'get-started',
             article: 'authentication-options',
+            flow: :two_factor_authentication,
+            step: :otp_confirmation,
           ),
           text: t('two_factor_authentication.phone_verification.troubleshooting.learn_more'),
           new_tab: true,
