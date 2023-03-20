@@ -3,8 +3,9 @@ require 'reporting/cloudwatch_client'
 
 RSpec.describe Reporting::CloudwatchClient do
   let(:wait_duration) { 0 }
-  let(:logger) { Logger.new('/dev/null') }
-  let(:slice_interval) { 1.day }
+  let(:logger_io) { StringIO.new }
+  let(:logger) { Logger.new(logger_io) }
+  let(:slice) { 1.day }
   let(:ensure_complete_logs) { false }
   let(:query) { 'fields @message, @timestamp | limit 10000' }
   let(:progress) { false }
@@ -13,17 +14,23 @@ RSpec.describe Reporting::CloudwatchClient do
     Reporting::CloudwatchClient.new(
       wait_duration: wait_duration,
       logger: logger,
-      slice_interval: slice_interval,
+      slice: slice,
       ensure_complete_logs: ensure_complete_logs,
       progress: progress,
     )
+  end
+
+  let(:stubbed_aws_sdk_client) { Aws::CloudWatchLogs::Client.new(stub_responses: true) }
+
+  before do
+    allow(client).to receive(:aws_client).and_return(stubbed_aws_sdk_client)
   end
 
   describe '#fetch' do
     let(:from) { 3.days.ago }
     let(:to) { 1.day.ago }
     let(:now) { Time.zone.now }
-    let(:slice_interval) { false }
+    let(:slice) { false }
 
     subject(:fetch) { client.fetch(query:, from:, to:) }
 
@@ -36,8 +43,6 @@ RSpec.describe Reporting::CloudwatchClient do
     end
 
     def stub_single_page
-      stubbed_aws_sdk_client = Aws::CloudWatchLogs::Client.new(stub_responses: true)
-
       query_id = SecureRandom.hex
 
       stubbed_aws_sdk_client.stub_responses(:start_query, { query_id: query_id })
@@ -55,14 +60,12 @@ RSpec.describe Reporting::CloudwatchClient do
           ],
         },
       )
-
-      allow(client).to receive(:aws_client).and_return(stubbed_aws_sdk_client)
     end
 
-    context ':slice_interval is falsy' do
+    context ':slice is falsy' do
       before { stub_single_page }
 
-      let(:slice_interval) { false }
+      let(:slice) { false }
       it 'does not split up the interval and queries by the from/to passed in' do
         expect(client).to receive(:fetch_one).exactly(1).times.and_call_original
 
@@ -70,12 +73,30 @@ RSpec.describe Reporting::CloudwatchClient do
       end
     end
 
-    context ':slice_interval is an interval' do
+    context ':slice is a duration' do
       before { stub_single_page }
 
-      let(:slice_interval) { 2.days }
+      let(:slice) { 2.days }
+
       it 'splits the query up into the time range' do
         expect(client).to receive(:fetch_one).exactly(2).times.and_call_original
+
+        fetch
+      end
+    end
+
+    context ':slice is an array' do
+      before { stub_single_page }
+
+      let(:slice) { [1..2, 3..4, 5..6] }
+
+      it 'uses the slices directly' do
+        expect(client).to receive(:fetch_one).
+          with(hash_including(start_time: 1, end_time: 2)).and_call_original
+        expect(client).to receive(:fetch_one).
+          with(hash_including(start_time: 3, end_time: 4)).and_call_original
+        expect(client).to receive(:fetch_one).
+          with(hash_including(start_time: 5, end_time: 6)).and_call_original
 
         fetch
       end
@@ -109,14 +130,12 @@ RSpec.describe Reporting::CloudwatchClient do
     end
 
     context ':ensure_complete_logs is true' do
-      let(:slice_interval) { 500 }
+      let(:slice) { 500 }
       let(:ensure_complete_logs) { true }
       let(:from) { Time.zone.at(1) }
       let(:to) { Time.zone.at(1000) }
 
       before do
-        stubbed_aws_sdk_client = Aws::CloudWatchLogs::Client.new(stub_responses: true)
-
         stubbed_aws_sdk_client.stub_responses(
           :start_query,
           proc do |context|
@@ -152,14 +171,30 @@ RSpec.describe Reporting::CloudwatchClient do
             { status: 'Complete', results: }
           end,
         )
-
-        allow(client).to receive(:aws_client).and_return(stubbed_aws_sdk_client)
       end
 
       it 'slices by interval and recurses as needed to get full results' do
         results = fetch
 
         expect(results.size).to eq(999)
+      end
+    end
+
+    context 'query is before Cloudwatch Insights Availability and AWS errors' do
+      before do
+        stubbed_aws_sdk_client.stub_responses(
+          :start_query,
+          Aws::CloudWatchLogs::Errors::InvalidParameterException.new(
+            nil,
+            'End time should not be before the service was generally available',
+          ),
+        )
+      end
+
+      it 'logs a warning and returns an empty array for that range' do
+        expect(fetch).to eq([])
+
+        expect(logger_io.string).to include('is before Cloudwatch Insights availability')
       end
     end
   end

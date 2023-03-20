@@ -9,38 +9,44 @@ describe DataRequests::FetchCloudwatchLogs do
       Date.new(2020, 8, 7),
     ]
 
-    mock_cloudwatch_client = Aws::CloudWatchLogs::Client.new(stub_responses: true)
-    mock_cloudwatch_client.stub_responses(
-      :start_query,
-      { query_id: '123abc' },
-      { query_id: '456def' },
-    )
-    mock_cloudwatch_client.stub_responses(
-      :get_query_results,
-      { status: 'Running' },
-      { status: 'Running' },
-      {
-        status: 'Complete',
-        results: [
-          [
-            { field: '@timestamp', value: 'timestamp-1' },
-            { field: '@message', value: 'message-1' },
-          ],
+    Aws.config[:cloudwatchlogs] = {
+      stub_responses: {
+        start_query: [
+          { query_id: '123abc' },
+          { query_id: '456def' },
         ],
-      },
-      {
-        status: 'Complete',
-        results: [
-          [
-            { field: '@timestamp', value: 'timestamp-2' },
-            { field: '@message', value: 'message-2' },
-          ],
-        ],
-      },
-    )
-    allow(Aws::CloudWatchLogs::Client).to receive(:new).and_return(mock_cloudwatch_client)
+        get_query_results: [
+          { status: 'Running' },
+          { status: 'Running' },
+          {
+            status: 'Complete',
+            results: [
+              [
+                { field: '@timestamp', value: 'timestamp-1' },
+                { field: '@message', value: 'message-1' },
+              ],
+            ],
+          },
+          {
+            status: 'Complete',
+            results: [
+              [
+                { field: '@timestamp', value: 'timestamp-2' },
+                { field: '@message', value: 'message-2' },
+              ],
+            ],
+          },
+        ]
+      }
+    }
 
-    subject = described_class.new(uuid, dates)
+    cloudwatch_client_options = {
+      num_threads: 1,
+      wait_duration: 0,
+      progress: false,
+    }
+
+    subject = described_class.new(uuid, dates, cloudwatch_client_options:)
 
     allow(subject).to receive(:sleep)
     allow(subject).to receive(:warn)

@@ -1,3 +1,5 @@
+require 'reporting/cloudwatch_client'
+
 module DataRequests
   # This class depends on the AWS cloudwatch SDK gem. That gem is only available
   # in development. The IDP role is not able to query cloudwatch logs. As a
@@ -6,30 +8,31 @@ module DataRequests
   class FetchCloudwatchLogs
     ResultRow = Struct.new(:timestamp, :message)
 
-    attr_reader :uuid, :dates
+    attr_reader :uuid, :dates, :cloudwatch_client_options
 
-    def initialize(uuid, dates)
+    def initialize(uuid, dates, cloudwatch_client_options: {})
       @uuid = uuid
       @dates = dates
+      @cloudwatch_client_options = cloudwatch_client_options
     end
 
     def call
       raise "Only run #{self.class.name} locally" if Identity::Hostdata.in_datacenter?
 
-      start_queries.flatten.uniq.sort_by(&:timestamp)
+      start_queries.map do |row|
+        ResultRow.new(row['@timestamp'], row['@message'])
+      end.uniq.sort_by(&:timestamp)
     end
 
     private
 
-    def build_result_rows_from_aws_result(aws_results)
-      aws_results.map do |aws_result|
-        ResultRow.new(aws_result.first.value, aws_result.second.value)
-      end
-    end
-
     def cloudwatch_client
-      require 'aws-sdk-cloudwatchlogs'
-      @cloudwatch_client ||= Aws::CloudWatchLogs::Client.new region: 'us-west-2'
+      @cloudwatch_client ||= Reporting::CloudwatchClient.new(
+        ensure_complete_logs: true,
+        slice: query_ranges,
+        logger: logger,
+        **cloudwatch_client_options,
+      )
     end
 
     def query_string
@@ -39,53 +42,25 @@ module DataRequests
       QUERY
     end
 
+    def query_ranges
+      dates.map do |date|
+        in_utc = date.in_time_zone('UTC')
+        in_utc.beginning_of_day..in_utc.end_of_day
+      end
+    end
+
+    def logger
+      @logger ||= Logger.new(STDERR, level: :warn)
+    end
+
     def start_queries
-      results = Concurrent::Array.new
-      errors = Concurrent::Array.new
-      thread_pool = Concurrent::FixedThreadPool.new(1, fallback_policy: :abort)
-
-      dates.each do |date|
-        thread_pool.post do
-          warn "Downloading logs for #{date}"
-          results.push(wait_for_query_result(start_query(date)))
-        rescue Aws::CloudWatchLogs::Errors::InvalidParameterException => e
-          if !e.message.match?(/End time should not be before the service was generally available/)
-            errors.push(e)
-          end
-        rescue => e
-          errors.push(e)
-        end
-      end
-
-      thread_pool.shutdown
-      thread_pool.wait_for_termination
-
-      if errors.any?
-        warn "#{errors.count} errors"
-        raise errors.first
-      end
-
-      results
-    end
-
-    def start_query(date)
-      query_start = (date - 12.hours).to_i
-      query_end = (date + 36.hours).to_i
-
-      cloudwatch_client.start_query(
-        log_group_name: 'prod_/srv/idp/shared/log/events.log',
-        start_time: query_start,
-        end_time: query_end,
-        query_string: query_string,
-      ).query_id
-    end
-
-    def wait_for_query_result(query_id)
-      loop do
-        sleep 3
-        response = cloudwatch_client.get_query_results(query_id: query_id)
-        return build_result_rows_from_aws_result(response.results) if response.status == 'Complete'
-      end
+      cloudwatch_client.fetch(
+        # NOTE :from and :to are just placeholders here since we passed :slice to the constructor
+        # Maybe we can redo the options to only need one of them?
+        from: dates.min,
+        to: dates.max,
+        query: query_string,
+      )
     end
   end
 end

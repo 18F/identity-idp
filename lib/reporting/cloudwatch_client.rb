@@ -8,27 +8,30 @@ module Reporting
     DEFAULT_WAIT_DURATION = 3
     MAX_RESULTS_LIMIT = 10_000
 
-    attr_reader :num_threads, :wait_duration, :slice_interval, :logger
+    attr_reader :num_threads, :wait_duration, :slice, :logger
 
     # @param [Boolean] ensure_complete_logs when true, will detect when queries return exactly
     #  10,000 rows (Cloudwatch Insights max limit) and then recursively split the query window into
     #  two queries until we're certain we've queried all rows
-    # @param [ActiveSupport::Duration,Boolean,nil] slice_interval starting interval to split up and
-    #  query across, or something falsy to indicate not to slice the query
+    # @param [ActiveSupport::Duration,#to_i,Boolean,nil] slice How to slice up the query over time.
+    #  * Pass an Integer (number of seconds) or an ActiveSupport::Duration such as 1.day to slice up
+    #    the query by that number of seconds
+    #  * Pass an Array<Range<Time>> to use specific slices
+    #  * Pass something falsy to indicate skip to slicing the query
     # @param [Boolean,nil,IO,#fileno] progress whether or not to show progress, and which IO
     #  to send send the progress bar to (defaults to STDERR)
     def initialize(
       ensure_complete_logs: true,
       num_threads: DEFAULT_NUM_THREADS,
       wait_duration: DEFAULT_WAIT_DURATION,
-      slice_interval: 1.day,
+      slice: 1.day,
       logger: nil,
       progress: true
     )
       @ensure_complete_logs = ensure_complete_logs
       @num_threads = num_threads
       @wait_duration = wait_duration
-      @slice_interval = slice_interval
+      @slice = slice
       @logger = logger
       @progress = progress
     end
@@ -60,8 +63,8 @@ module Reporting
         )
       end
 
-      log("starting query, queue_size=#{queue.length} num_threads=#{num_threads}")
-      log("=== query ===\n#{query}\n=== query ===")
+      log(:info, "starting query, queue_size=#{queue.length} num_threads=#{num_threads}")
+      log(:info, "=== query ===\n#{query}\n=== query ===")
 
       threads = num_threads.times.map do |thread_idx|
         Thread.new do
@@ -73,7 +76,7 @@ module Reporting
             @progress_bar&.increment
 
             if ensure_complete_logs? && has_more_results?(response.results.size)
-              log("more results, bisecting: start_time=#{start_time} end_time=#{end_time}")
+              log(:info, "more results, bisecting: start_time=#{start_time} end_time=#{end_time}")
               mid = midpoint(start_time:, end_time:)
 
               # -1 for current work finishing, +2 for new threads enqueued
@@ -84,13 +87,13 @@ module Reporting
               queue << [(start_time..(mid - 1)), range_id]
               queue << [(mid..end_time), range_id]
             else
-              log("worker finished, slice_duration=#{end_time - start_time}")
+              log(:info, "worker finished, slice_duration=#{end_time - start_time}")
               in_progress[range_id] -= 1
               results.concat(parse_results(response.results))
             end
           end
 
-          log("thread done thread_idx=#{thread_idx}")
+          log(:info, "thread done thread_idx=#{thread_idx}")
 
           nil
         end.tap do |thread|
@@ -100,7 +103,7 @@ module Reporting
 
       until (num_in_progress = in_progress.sum(&:last)).zero?
         @progress_bar&.refresh
-        log("waiting, num_in_progress=#{num_in_progress}, queue_size=#{queue.size}")
+        log(:info, "waiting, num_in_progress=#{num_in_progress}, queue_size=#{queue.size}")
         sleep wait_duration
       end
       queue.close
@@ -118,7 +121,7 @@ module Reporting
     # @param [Integer] end_time
     # @return [Aws::CloudWatchLogs::Types::GetQueryResultsResponse]
     def fetch_one(query:, start_time:, end_time:)
-      log("starting query: #{start_time}..#{end_time}")
+      log(:info, "starting query: #{start_time}..#{end_time}")
 
       query_id = aws_client.start_query(
         # NOTE: this should be configurable as well
@@ -129,6 +132,13 @@ module Reporting
       ).query_id
 
       wait_for_query_result(query_id)
+    rescue Aws::CloudWatchLogs::Errors::InvalidParameterException => err
+      if err.message =~ /End time should not be before the service was generally available/
+        log(:warn, "query end_time=#{end_time} (#{Time.zone.at(end_time)}) is before Cloudwatch Insights availability, skipping")
+        Aws::CloudWatchLogs::Types::GetQueryResultsResponse.new(results: [])
+      else
+        raise err
+      end
     end
 
     def ensure_complete_logs?
@@ -141,12 +151,13 @@ module Reporting
 
     private
 
-    def log(message)
+    def log(level, message)
       if logger
-        if @progress_bar
-          @progress_bar.log(message)
+        int_level = Logger.const_get(level.upcase)
+        if @progress_bar && int_level >= logger.level
+          @progress_bar.log("#{level.upcase}: #{message}")
         else
-          logger.info(message)
+          logger.add(int_level) { message }
         end
       end
     end
@@ -170,14 +181,16 @@ module Reporting
 
     # @return [Array<Range<Time>>]
     def slice_time_range(from:, to:)
-      if slice_interval
+      if slice.kind_of?(Array)
+        slice
+      elsif slice.respond_to?(:to_i)
         slices = []
         low = from
         high = to
         while low < high
-          slice_end = [low + slice_interval - 1, high].min
+          slice_end = [low + slice - 1, high].min
           slices << (low..slice_end)
-          low += slice_interval
+          low += slice
         end
         slices
       else
@@ -195,14 +208,14 @@ module Reporting
       start = Time.now.to_f
 
       loop do
-        log("waiting on query_id=#{query_id}")
+        log(:info, "waiting on query_id=#{query_id}")
         sleep wait_duration
         response = aws_client.get_query_results(query_id: query_id)
         case response.status
         when 'Complete', 'Failed', 'Cancelled'
           duration = Time.now.to_f - start
           log(
-            "finished query_id=#{query_id}, status=#{response.status}, duration=#{duration}",
+            :info, "finished query_id=#{query_id}, status=#{response.status}, duration=#{duration}",
           )
           return response
         else
