@@ -44,7 +44,6 @@ address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US
 allow_otp_countdown_expired_redirect: false
 arcgis_api_username: ''
 arcgis_api_password: ''
-arcgis_search_enabled: true
 arcgis_mock_fallback: true
 arcgis_api_generate_token_url: 'https://gis.gsa.gov/portal/sharing/rest/generateToken'
 arcgis_api_suggest_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/suggest'

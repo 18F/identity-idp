@@ -205,15 +205,6 @@ RSpec.describe UspsInPersonProofing::Proofer do
     end
   end
 
-  describe '#request_pilot_facilities' do
-    it 'returns facilities' do
-      facilities = subject.request_pilot_facilities
-      expect(facilities.length).to eq(7)
-
-      check_facility(facilities[0])
-    end
-  end
-
   describe '#request_enroll' do
     let(:cache) { double(ActiveSupport::Cache::MemoryStore) }
     let(:redis) { double(Redis) }

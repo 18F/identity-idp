@@ -25,10 +25,9 @@ locals:
 
 <p>
   <%= t('doc_auth.info.ssn') %>
-</p>
-
-<p>
-  <%= new_window_link_to(t('doc_auth.instructions.learn_more'), MarketingSite.security_and_privacy_practices_url) %>
+  <%= new_window_link_to(MarketingSite.security_and_privacy_practices_url, class: 'display-inline') do %>
+    <%= t('doc_auth.info.learn_more') %>
+  <% end %>
 </p>
 
 <% if FeatureManagement.proofing_device_profiling_collecting_enabled? %>
