@@ -10,7 +10,7 @@ en:
       pinpoint:
         idv:
           header: We can only verify your identity by mail right now
-          message_html: Unfortunately, Login.gov is having technical difficulties. We’re
+          message_html: Unfortunately, %{app_name} is having technical difficulties. We’re
             working to resolve an error so that we can verify your identity for
             <strong>%{sp_name}</strong> quickly.
           options_html:

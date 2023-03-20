@@ -12,7 +12,7 @@ es:
       pinpoint:
         idv:
           header: Solo podemos verificar su identidad por correo en este momento
-          message_html: Desafortunadamente, Login.gov está teniendo dificultades técnicas.
+          message_html: Desafortunadamente, %{app_name} está teniendo dificultades técnicas.
             Estamos trabajando para resolver un error y poder verificar su
             identidad en <strong>%{sp_name}</strong> rápidamente.
           options_html:

@@ -11,7 +11,7 @@ fr:
       pinpoint:
         idv:
           header: Pour le moment, nous ne pouvons vérifier votre identité que par courrier
-          message_html: Malheureusement, Login.gov rencontre des difficultés techniques.
+          message_html: Malheureusement, %{app_name} rencontre des difficultés techniques.
             Nous travaillons à la résolution d’une erreur afin de pouvoir
             vérifier rapidement votre identité pour <strong>%{sp_name}</strong>.
           options_html:
