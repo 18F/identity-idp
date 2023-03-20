@@ -152,6 +152,15 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 expect(controller).to redirect_to(idv_setup_errors_url)
               end
             end
+
+            context 'user is rejected due to fraud' do
+              let(:user) { create(:profile, fraud_rejection: true).user }
+
+              it 'redirects to fraud rejection page if user is fraud rejected ' do
+                action
+                expect(controller).to redirect_to(idv_verify_errors_url)
+              end
+            end
           end
 
           context 'profile is reset' do

@@ -10,7 +10,7 @@ module FraudReviewConcern
   end
 
   def redirect_to_fraud_rejection
-    redirect_to idv_setup_errors_url
+    redirect_to idv_verify_errors_url
   end
 
   def fraud_review_pending?
