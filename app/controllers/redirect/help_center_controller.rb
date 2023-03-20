@@ -14,11 +14,8 @@ module Redirect
     end
 
     def article_params
-      begin
-        category, article = params.require([:category, :article])
-      rescue ActionController::ParameterMissing; end
-
-      { category:, article:, article_anchor: params[:article_anchor] }
+      category, article, article_anchor = params.values_at(:category, :article, :article_anchor)
+      { category:, article:, article_anchor: }
     end
   end
 end
