@@ -12,9 +12,9 @@ es:
       pinpoint:
         idv:
           header: Solo podemos verificar su identidad por correo en este momento
-          message_html: Desafortunadamente, %{app_name} está teniendo dificultades técnicas.
-            Estamos trabajando para resolver un error y poder verificar su
-            identidad en <strong>%{sp_name}</strong> rápidamente.
+          message_html: Desafortunadamente, %{app_name} está teniendo dificultades
+            técnicas. Estamos trabajando para resolver un error y poder
+            verificar su identidad en <strong>%{sp_name}</strong> rápidamente.
           options_html:
             - <a href="%{status_page_url}" class="usa-link usa-link--external"
               target="_blank">Reciba actualizaciones en nuestra página de
