@@ -206,28 +206,28 @@ RSpec.describe MarketingSite do
   describe '.valid_help_center_article?' do
     let(:category) {}
     let(:article) {}
-    let(:url) { MarketingSite.valid_help_center_article?(category:, article:) }
+    let(:result) { MarketingSite.valid_help_center_article?(category:, article:) }
 
     context 'with invalid article' do
       let(:category) { 'foo' }
       let(:article) { 'bar' }
 
-      it { expect(url).to eq(false) }
+      it { expect(result).to eq(false) }
     end
 
     context 'with valid article' do
       let(:category) { 'verify-your-identity' }
       let(:article) { 'accepted-state-issued-identification' }
 
-      it { expect(url).to eq(true) }
+      it { expect(result).to eq(true) }
 
       context 'with anchor' do
         let(:article_anchor) { 'test-anchor-url' }
-        let(:url) do
+        let(:result) do
           MarketingSite.valid_help_center_article?(category:, article:, article_anchor:)
         end
 
-        it { expect(url).to eq(true) }
+        it { expect(result).to eq(true) }
       end
     end
   end
