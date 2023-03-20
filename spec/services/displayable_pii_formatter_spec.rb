@@ -168,7 +168,7 @@ describe DisplayablePiiFormatter do
         let(:dob) { '1990-01-02' }
 
         it 'returns a formatted birdate' do
-          expect(formatter.format.birthdate).to eq('January 02, 1990')
+          expect(formatter.format.birthdate).to eq('January 2, 1990')
         end
       end
 
@@ -176,7 +176,7 @@ describe DisplayablePiiFormatter do
         let(:dob) { '01/02/1990' }
 
         it 'returns a formatted birdate' do
-          expect(formatter.format.birthdate).to eq('January 02, 1990')
+          expect(formatter.format.birthdate).to eq('January 2, 1990')
         end
       end
     end
