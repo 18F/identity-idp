@@ -1,5 +1,17 @@
 require 'rails_helper'
 
+def expect_facility_fields_to_be_present(facility)
+  expect(facility.address).to be_present
+  expect(facility.city).to be_present
+  expect(facility.name).to be_present
+  expect(facility.saturday_hours).to be_present
+  expect(facility.state).to be_present
+  expect(facility.sunday_hours).to be_present
+  expect(facility.weekday_hours).to be_present
+  expect(facility.zip_code_4).to be_present
+  expect(facility.zip_code_5).to be_present
+end
+
 RSpec.describe UspsInPersonProofing::Proofer do
   include UspsIppHelper
 
@@ -106,13 +118,20 @@ RSpec.describe UspsInPersonProofing::Proofer do
   end
 
   describe '#token' do
+    expires_at = nil
     let(:expires_in) { 15.minutes }
 
-    it 'uses the cached token if it is not expired' do
+    before do
       stub_request_token
+    end
 
-      subject.token
-      next_request_time = Time.zone.now + expires_in - 5.minutes
+    before(:each) do
+      subject.retrieve_token!
+      expires_at = Time.zone.now + expires_in
+    end
+
+    it 'uses the cached token if it is not expired' do
+      next_request_time = expires_at - 5.minutes
       travel_to(next_request_time) do
         subject.token
       end
@@ -120,68 +139,19 @@ RSpec.describe UspsInPersonProofing::Proofer do
     end
 
     it 'retrieves a new token if the token is expired' do
-      stub_request_token
-
-      subject.token
-      expired_time = Time.zone.now + expires_in
-      travel_to(expired_time) do
+      travel_to(expires_at) do
         subject.token
       end
       expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate").twice
     end
 
     it 'retrieves a new token if the token is about to expire' do
-      stub_request_token
-
-      subject.token
-      almost_expired_time = Time.zone.now + expires_in - 50.seconds
-      travel_to(almost_expired_time) do
+      almost_expired_at = expires_at - 50.seconds
+      travel_to(almost_expired_at) do
         subject.token
       end
       expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate").twice
     end
-  end
-
-  def check_facility(facility)
-    expect(facility.address).to be_present
-    expect(facility.city).to be_present
-    expect(facility.name).to be_present
-    expect(facility.saturday_hours).to be_present
-    expect(facility.state).to be_present
-    expect(facility.sunday_hours).to be_present
-    expect(facility.weekday_hours).to be_present
-    expect(facility.zip_code_4).to be_present
-    expect(facility.zip_code_5).to be_present
-  end
-
-  def set_up_expired_token(cache, redis)
-    allow(Rails).to receive(:cache).and_return(
-      cache,
-    )
-    allow(cache).to receive(:redis).and_return(redis)
-    allow(redis).to receive(:ttl).and_return(0)
-
-    stub_expired_request_token
-  end
-
-  def check_for_token_refresh_and_method_call(cache, redis)
-    expect(IdentityConfig.store).to receive(:usps_ipp_root_url).
-      and_return(root_url).exactly(3).times
-    expect(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).
-      and_return(usps_ipp_sponsor_id)
-
-    expect(cache).to receive(:write).with(
-      UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY,
-      an_instance_of(String),
-      hash_including(expires_at: an_instance_of(ActiveSupport::TimeWithZone)),
-    ).twice
-
-    expect(redis).to receive(:expireat).with(
-      UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY,
-      an_instance_of(Integer),
-    ).twice
-
-    expect(cache).to receive(:read).with(UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY)
   end
 
   describe '#request_facilities' do
@@ -203,7 +173,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
       stub_request_facilities
       facilities = subject.request_facilities(location)
 
-      check_facility(facilities[0])
+      expect_facility_fields_to_be_present(facilities[0])
     end
 
     it 'returns facilities sorted by ascending distance' do
@@ -229,23 +199,27 @@ RSpec.describe UspsInPersonProofing::Proofer do
     end
 
     context 'when the auth token is expired' do
+      expires_at = nil
       let(:expires_in) { 15.minutes }
 
       before do
         stub_request_facilities
       end
 
+      before(:each) do
+        subject.retrieve_token!
+        expires_at = Time.zone.now + expires_in
+      end
+
       it 'refreshes the auth token before making the request' do
-        subject.token
-        expired_time = Time.zone.now + expires_in
         facilities = nil
-        travel_to(expired_time) do
+        travel_to(expires_at) do
           facilities = subject.request_facilities(location)
         end
 
         expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate").twice
         expect(facilities.length).to eq(10)
-        check_facility(facilities[0])
+        expect_facility_fields_to_be_present(facilities[0])
       end
     end
   end
@@ -308,17 +282,22 @@ RSpec.describe UspsInPersonProofing::Proofer do
     end
 
     context 'when the auth token is expired' do
+      expires_at = nil
       let(:expires_in) { 15.minutes }
 
       before do
         stub_request_enroll
       end
 
+      before(:each) do
+        subject.retrieve_token!
+        expires_at = Time.zone.now + expires_in
+      end
+
       it 'refreshes the auth token before making the request' do
         subject.token
-        expired_time = Time.zone.now + expires_in
         enrollment = nil
-        travel_to(expired_time) do
+        travel_to(expires_at) do
           enrollment = subject.request_enroll(applicant)
         end
 
@@ -386,17 +365,22 @@ RSpec.describe UspsInPersonProofing::Proofer do
     end
 
     context 'when the auth token is expired' do
+      expires_at = nil
       let(:expires_in) { 15.minutes }
 
       before do
         stub_request_passed_proofing_results
       end
 
+      before(:each) do
+        subject.retrieve_token!
+        expires_at = Time.zone.now + expires_in
+      end
+
       it 'refreshes the auth token before making the request' do
         subject.token
-        expired_time = Time.zone.now + expires_in
         proofing_results = nil
-        travel_to(expired_time) do
+        travel_to(expires_at) do
           proofing_results = subject.request_proofing_results(
             applicant.unique_id,
             applicant.enrollment_code,
@@ -418,7 +402,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
       )
     end
 
-    before do
+    before(:each) do
       stub_request_token
     end
 
@@ -431,14 +415,21 @@ RSpec.describe UspsInPersonProofing::Proofer do
     end
 
     context 'when the auth token is expired' do
+      expires_at = nil
       let(:expires_in) { 15.minutes }
 
-      it 'refreshes the auth token before making the request' do
-        subject.token
-        expired_time = Time.zone.now + expires_in
+      before do
         stub_request_enrollment_code
+      end
+
+      before(:each) do
+        subject.retrieve_token!
+        expires_at = Time.zone.now + expires_in
+      end
+
+      it 'refreshes the auth token before making the request' do
         enrollment = nil
-        travel_to(expired_time) do
+        travel_to(expires_at) do
           enrollment = subject.request_enrollment_code(applicant)
         end
 
