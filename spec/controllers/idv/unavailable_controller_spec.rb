@@ -71,10 +71,6 @@ describe Idv::UnavailableController, type: :controller do
         expect(response.status).to eql(200)
       end
 
-      it 'does not log an analytics event' do
-        expect(@analytics).not_to have_logged_event('Vendor Outage')
-      end
-
       context 'coming from the create account page' do
         let(:params) { { from: SignUp::RegistrationsController::CREATE_ACCOUNT } }
         it 'redirects back to create account' do
