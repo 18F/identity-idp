@@ -63,7 +63,7 @@ module Reporting
         )
       end
 
-      log(:info, "starting query, queue_size=#{queue.length} num_threads=#{num_threads}")
+      log(:debug, "starting query, queue_size=#{queue.length} num_threads=#{num_threads}")
       log(:info, "=== query ===\n#{query}\n=== query ===")
 
       threads = num_threads.times.map do |thread_idx|
@@ -87,13 +87,13 @@ module Reporting
               queue << [(start_time..(mid - 1)), range_id]
               queue << [(mid..end_time), range_id]
             else
-              log(:info, "worker finished, slice_duration=#{end_time - start_time}")
+              log(:debug, "worker finished, slice_duration=#{end_time - start_time}")
               in_progress[range_id] -= 1
               results.concat(parse_results(response.results))
             end
           end
 
-          log(:info, "thread done thread_idx=#{thread_idx}")
+          log(:debug, "thread done thread_idx=#{thread_idx}")
 
           nil
         end.tap do |thread|
@@ -103,7 +103,7 @@ module Reporting
 
       until (num_in_progress = in_progress.sum(&:last)).zero?
         @progress_bar&.refresh
-        log(:info, "waiting, num_in_progress=#{num_in_progress}, queue_size=#{queue.size}")
+        log(:debug, "waiting, num_in_progress=#{num_in_progress}, queue_size=#{queue.size}")
         sleep wait_duration
       end
       queue.close
@@ -121,7 +121,7 @@ module Reporting
     # @param [Integer] end_time
     # @return [Aws::CloudWatchLogs::Types::GetQueryResultsResponse]
     def fetch_one(query:, start_time:, end_time:)
-      log(:info, "starting query: #{start_time}..#{end_time}")
+      log(:debug, "starting query: #{start_time}..#{end_time}")
 
       query_id = aws_client.start_query(
         # NOTE: this should be configurable as well
@@ -210,14 +210,15 @@ module Reporting
       start = Time.now.to_f
 
       loop do
-        log(:info, "waiting on query_id=#{query_id}")
+        log(:debug, "waiting on query_id=#{query_id}")
         sleep wait_duration
         response = aws_client.get_query_results(query_id: query_id)
         case response.status
         when 'Complete', 'Failed', 'Cancelled'
           duration = Time.now.to_f - start
           log(
-            :info, "finished query_id=#{query_id}, status=#{response.status}, duration=#{duration}",
+            :debug,
+            "finished query_id=#{query_id}, status=#{response.status}, duration=#{duration}",
           )
           return response
         else
