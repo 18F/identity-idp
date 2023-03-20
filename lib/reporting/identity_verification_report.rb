@@ -146,6 +146,7 @@ module Reporting
         event_names: quote(Events.all_events),
         usps_enrollment_status_updated: quote(Events::USPS_ENROLLMENT_STATUS_UPDATED),
         gpo_verification_submitted: quote(Events::GPO_VERIFICATION_SUBMITTED),
+        idv_final_resolution: quote(Events::IDV_FINAL_RESOLUTION),
       }
 
       format(<<~QUERY, params)
@@ -158,6 +159,8 @@ module Reporting
                  or (name != %{usps_enrollment_status_updated})
         | filter (name = %{gpo_verification_submitted} and properties.event_properties.success = 1)
                  or (name != %{gpo_verification_submitted})
+        | filter (name = %{idv_final_resolution} and isblank(properties.event_properties.deactivation_reason))
+                 or (name != %{idv_final_resolution})
         | limit 10000
       QUERY
     end
