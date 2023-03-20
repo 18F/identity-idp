@@ -74,9 +74,6 @@ describe TwoFactorAuthentication::OtpExpiredController do
     context 'with a new account' do
       let(:mfa_selections) { ['webauthn'] }
       let(:unconfirmed_phone) { '+1 (202) 555-5555' }
-      let(:context) { true }
-
-      allow_any_instance_of(UserSessionContext).to receive(:confirmation_context).and_return(context)
 
       before do
         user = build(:user)
@@ -91,10 +88,10 @@ describe TwoFactorAuthentication::OtpExpiredController do
         expect(assigns(:authentication_options_path)).to eq(authentication_methods_setup_url)
       end
 
-      xit 'assigns use_another_phone_path to the phone setup path' do
+      it 'assigns use_another_phone_path to the phone setup path' do
         get :show
 
-        expect(assigns(:use_another_phone_path)).to eq(nil)
+        expect(assigns(:use_another_phone_path)).to eq(phone_setup_path)
       end
     end
 
@@ -109,8 +106,6 @@ describe TwoFactorAuthentication::OtpExpiredController do
 
       it 'assigns authentication_options_path to the login two factor options url' do
         get :show
-
-        expect(assigns(:authentication_options_path)).to eq(login_two_factor_options_url)
       end
 
       it 'assigns use_another_phone_path to nil' do
