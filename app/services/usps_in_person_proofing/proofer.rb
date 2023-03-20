@@ -2,7 +2,7 @@ module UspsInPersonProofing
   class Proofer
     AUTH_TOKEN_CACHE_KEY = :usps_ippaas_api_auth_token
     # Automatically refresh our auth token if it is within this many minutes of expiring
-    AUTH_TOKEN_PREMATURE_EXPIRY_MINUTES = 1
+    AUTH_TOKEN_PREMATURE_EXPIRY_MINUTES = 1.minute
 
     # Makes HTTP request to get nearby in-person proofing facilities
     # Requires address, city, state and zip code.
@@ -103,12 +103,10 @@ module UspsInPersonProofing
     # @return [String] the token
     def retrieve_token!
       body = request_token
-      expires_at = Time.zone.now + body['expires_in']
       # Refresh our token early so that it won't expire while a request is in-flight. We expect 15m
       # expirys for tokens but are careful not to trim the expiry by too much, just in case
-      if expires_at - AUTH_TOKEN_PREMATURE_EXPIRY_MINUTES > Time.zone.now
-        expires_at -= AUTH_TOKEN_PREMATURE_EXPIRY_MINUTES
-      end
+      expires_in = [body['expires_in'] - AUTH_TOKEN_PREMATURE_EXPIRY_MINUTES, 1.minute].max
+      expires_at = Time.zone.now + expires_in
       token = "#{body['token_type']} #{body['access_token']}"
       Rails.cache.write(AUTH_TOKEN_CACHE_KEY, token, expires_at: expires_at)
       # If using a redis cache we have to manually set the expires_at. This is because we aren't
