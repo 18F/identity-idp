@@ -5,6 +5,10 @@ module FraudReviewConcern
     redirect_to_fraud_review if fraud_review_pending?
   end
 
+  def handle_fraud_rejection
+    redirect_to_fraud_rejection if fraud_rejection?
+  end
+
   def redirect_to_fraud_review
     redirect_to idv_setup_errors_url
   end

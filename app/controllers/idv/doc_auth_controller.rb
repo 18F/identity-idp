@@ -3,6 +3,7 @@ module Idv
     before_action :confirm_two_factor_authenticated
     before_action :redirect_if_pending_in_person_enrollment
     before_action :handle_pending_fraud_review
+    before_action :handle_fraud_rejection
     before_action :redirect_if_pending_profile
     before_action :extend_timeout_using_meta_refresh_for_select_paths
 
