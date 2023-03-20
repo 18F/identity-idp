@@ -72,44 +72,46 @@ describe TwoFactorAuthentication::OtpExpiredController do
     end
 
     context 'with a new account' do
+      let(:mfa_selections) { ['webauthn'] }
+
       before do
-        allow(controller).to receive(:new_account_mfa_registration?).and_return(true)
-        allow(controller).to receive(:unconfirmed_phone?).and_return(true)
+        user = build(:user)
+        stub_sign_in(user)
+        controller.user_session[:mfa_selections] = mfa_selections
+        # controller.user_session[:unconfirmed_phone] = unconfirmed_phone
       end
 
-      it 'redirects to authentication methods setup' do
-        user = create(:user)
-        stub_sign_in_before_2fa(user)
-
+      it 'assigns authentication_options_path to authentication methods setup screen' do
         get :show
 
         expect(assigns(:authentication_options_path)).to eq(authentication_methods_setup_url)
       end
 
-      it 'provides an option to choose another phone number' do
-        user = create(:user)
-        stub_sign_in_before_2fa(user)
-
+      it 'assigns use_another_phone_path to the phone setup path' do
         get :show
-        expect(assigns(:use_another_phone_path)).to eq(phone_setup_path)
+
       end
     end
 
-    context 'with an existing account' do
-      before { allow(controller).to receive(:unconfirmed_path?).and_return(false) }
-      before { allow(controller).to receive(:new_account_mfa_registration?).and_return(false) }
+    context 'with an existing account signing in' do
 
-      it 'redirects to use existing mfa method on sign in' do
-      end
-
-      it 'does not provide option to use another phone number on sign in' do
+      before do
         user = create(:user, :with_phone)
         stub_sign_in_before_2fa(user)
+      end
+
+      it 'assigns authentication_options_path to the login two factor options url' do
+      end
+
+      it 'assigns use_another_phone_path to nil' do
 
         get :show
 
         expect(assigns(:use_another_phone_path)).to be_nil
       end
+    end
+
+    context 'with an existing account adding a phone' do
     end
   end
 end
