@@ -416,7 +416,7 @@ describe Users::TotpSetupController, devise: true do
     context 'when totp is the last mfa method' do
       it 'does not disable totp' do
         user = create(:user, :with_authentication_app)
-        sign_in user
+        stub_sign_in user
 
         delete :disable
         expect(response).to redirect_to(account_two_factor_authentication_path)

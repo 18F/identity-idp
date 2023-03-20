@@ -34,7 +34,13 @@ describe ReauthenticationRequiredConcern, type: :controller do
       it 'redirects to password confirmation' do
         get :index
 
-        expect(response).to redirect_to user_password_confirm_url
+        expect(response).to redirect_to login_two_factor_options_url(reauthn: true)
+      end
+
+      it 'redirects to 2FA options' do
+        get :show
+
+        expect(response).to redirect_to login_two_factor_options_url(reauthn: true)
       end
 
       it 'sets context to authentication' do

@@ -44,8 +44,9 @@ feature 'View personal key', js: true do
         click_on(t('account.links.regenerate_personal_key'), match: :prefer_exact)
 
         # reauthn
-        fill_in t('account.index.password'), with: user.password
-        click_continue
+        expect(current_path).to eq login_two_factor_options_path
+        find("label[for='two_factor_options_form_selection_sms']").click
+        click_on t('forms.buttons.continue')
         fill_in_code_with_last_phone_otp
         click_submit_default
 
