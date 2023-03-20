@@ -42,10 +42,10 @@ module DataRequests
       QUERY
     end
 
+    # @return [Array<Range<Time>>]
     def query_ranges
       dates.map do |date|
-        in_utc = date.in_time_zone('UTC')
-        in_utc.beginning_of_day..in_utc.end_of_day
+        date.in_time_zone('UTC').all_day
       end
     end
 

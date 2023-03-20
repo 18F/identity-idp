@@ -36,8 +36,8 @@ describe DataRequests::FetchCloudwatchLogs do
               ],
             ],
           },
-        ]
-      }
+        ],
+      },
     }
 
     cloudwatch_client_options = {

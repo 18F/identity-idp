@@ -133,8 +133,10 @@ module Reporting
 
       wait_for_query_result(query_id)
     rescue Aws::CloudWatchLogs::Errors::InvalidParameterException => err
-      if err.message =~ /End time should not be before the service was generally available/
+      if err.message.match?(/End time should not be before the service was generally available/)
+        # rubocop:disable Layout/LineLength
         log(:warn, "query end_time=#{end_time} (#{Time.zone.at(end_time)}) is before Cloudwatch Insights availability, skipping")
+        # rubocop:enable Layout/LineLength
         Aws::CloudWatchLogs::Types::GetQueryResultsResponse.new(results: [])
       else
         raise err
@@ -181,7 +183,7 @@ module Reporting
 
     # @return [Array<Range<Time>>]
     def slice_time_range(from:, to:)
-      if slice.kind_of?(Array)
+      if slice.is_a?(Array)
         slice
       elsif slice.respond_to?(:to_i)
         slices = []
