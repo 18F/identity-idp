@@ -168,7 +168,7 @@ module Reporting
     def cloudwatch_client
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
         ensure_complete_logs: true,
-        slice_interval: 3.hours,
+        slice: 3.hours,
         progress: progress?,
         logger: verbose? ? Logger.new(STDERR) : nil,
       )
