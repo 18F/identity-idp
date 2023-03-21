@@ -25,15 +25,15 @@
     ) do |f| %>
     <% if IdentityConfig.store.in_person_capture_secondary_id_enabled %>
       <%= render ValidatedFieldComponent.new(
-          collection: us_states_territories,
-          form: f,
-          label: t('idv.form.state'),
-          label_html: { class: 'usa-label' },
-          name: :state,
-          prompt: t('in_person_proofing.form.address.state_prompt'),
-          required: true,
-          selected: pii[:state],
-        ) %>
+            collection: us_states_territories,
+            form: f,
+            label: t('idv.form.state'),
+            label_html: { class: 'usa-label' },
+            name: :state,
+            prompt: t('in_person_proofing.form.address.state_prompt'),
+            required: true,
+            selected: pii[:state],
+          ) %>
     <% end %>
   <%= render ValidatedFieldComponent.new(
         form: f,
