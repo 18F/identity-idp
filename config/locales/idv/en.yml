@@ -93,8 +93,9 @@ en:
         warning: Please check the information you entered and try again. Common mistakes
           are an incorrect Social Security number or ZIP Code.
       setup:
-        fail_html: Call %{contact_number} and provide them with the error code %{support_code}.
         fail_date_html: Call our contact center by %{date} to continue verifying your identity.
+        fail_html: Call %{contact_number} and provide them with the error code
+          %{support_code}.
         heading: Please give us a call
       timeout: We are experiencing higher than usual wait time processing your
         request. Please try again.
