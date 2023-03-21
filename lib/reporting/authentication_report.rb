@@ -91,7 +91,7 @@ module Reporting
           sp_redirect_initiated_after_oidc,
           format_as_percent(
             numerator: sp_redirect_initiated_after_oidc,
-            denominator: oidc_auth_request
+            denominator: oidc_auth_request,
           ),
         ]
       end
