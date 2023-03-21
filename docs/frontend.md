@@ -1,4 +1,4 @@
-# Front-end architecture
+# Front-end Architecture
 
 ## CSS + HTML
 
