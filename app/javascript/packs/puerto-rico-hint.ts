@@ -3,7 +3,8 @@ import { t } from '@18f/identity-i18n';
 const selector = document.getElementById('in_person_address_state');
 
 selector?.addEventListener('change', (event) => {
-  if (event?.target?.value === 'PR') {
+  const { value } = event?.target as HTMLFormElement;
+  if (value === 'PR') {
     const hints = document.querySelectorAll('.usa-hint');
     const firstHint = hints[0];
     const secondHint = hints[1];

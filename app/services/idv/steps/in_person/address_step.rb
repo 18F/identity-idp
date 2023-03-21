@@ -18,7 +18,10 @@ module Idv
 
         def call
           Idv::InPerson::AddressForm::ATTRIBUTES.each do |attr|
-            next if attr == :same_address_as_id
+            if attr == :same_address_as_id && IdentityConfig.store.
+                in_person_capture_secondary_id_enabled
+              next
+            end
             flow_session[:pii_from_user][attr] = flow_params[attr]
           end
         end

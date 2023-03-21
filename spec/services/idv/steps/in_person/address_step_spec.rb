@@ -23,6 +23,10 @@ describe Idv::Steps::InPerson::AddressStep do
   end
 
   describe '#call' do
+    before do
+      allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+        and_return(false)
+    end
     context 'with values submitted' do
       let(:address1) { '1 FAKE RD' }
       let(:address2) { 'APT 1B' }
