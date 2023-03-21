@@ -14,7 +14,7 @@ module Reporting
   class IdentityVerificationReport
     include Reporting::CloudwatchQueryQuoting
 
-    attr_reader :issuer, :date_range
+    attr_reader :issuer, :time_range
 
     module Events
       IDV_DOC_AUTH_IMAGE_UPLOAD = 'IdV: doc auth image upload vendor submitted'
@@ -31,9 +31,9 @@ module Reporting
 
     # @param [String] isssuer
     # @param [Range<Time>] date
-    def initialize(issuer:, date_range:, verbose: false, progress: false)
+    def initialize(issuer:, time_range:, verbose: false, progress: false)
       @issuer = issuer
-      @date_range = date_range
+      @time_range = time_range
       @verbose = verbose
       @progress = progress
     end
@@ -48,7 +48,7 @@ module Reporting
 
     def to_csv
       CSV.generate do |csv|
-        csv << ['Report Timeframe', "#{date_range.begin} to #{date_range.end}"]
+        csv << ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"]
         csv << ['Report Generated', Date.today.to_s] # rubocop:disable Rails/Date
         csv << ['Issuer', issuer]
         csv << []
@@ -126,7 +126,7 @@ module Reporting
     end
 
     def fetch_results
-      cloudwatch_client.fetch(query:, from: date_range.begin, to: date_range.end)
+      cloudwatch_client.fetch(query:, from: time_range.begin, to: time_range.end)
     end
 
     def query

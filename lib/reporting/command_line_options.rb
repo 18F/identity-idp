@@ -59,7 +59,7 @@ module Reporting
         exit 1
       else
         {
-          date_range: date_range(date:, period:),
+          time_range: time_range(date:, period:),
           issuer: issuer,
           verbose: verbose,
           progress: progress,
@@ -70,7 +70,7 @@ module Reporting
 
     # @param [Date]
     # @return [Range<Time>]
-    def date_range(date:, period:)
+    def time_range(date:, period:)
       orig_beginning_of_week = Date.beginning_of_week
       Date.beginning_of_week = :sunday
 
