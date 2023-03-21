@@ -3,12 +3,13 @@ yields: Warning text to show.
 locals:
 * contact_support_option: Whether to show "Contact Support" option. Defaults to false.
 * name: Slug describing warning screen, for use in analytics.
+* heading: Heading text, defaults to idv.failure.phone.heading
 %>
 <%= render(
       'idv/shared/error',
       type: :warning,
       title: t('titles.failure.phone_verification'),
-      heading: t('idv.failure.phone.heading'),
+      heading: local_assigns.fetch(:heading, t('idv.failure.phone.heading')),
       action: {
         text: t('idv.failure.button.warning'),
         url: idv_phone_path,

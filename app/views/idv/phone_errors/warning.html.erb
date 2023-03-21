@@ -1,4 +1,65 @@
-<%= render('idv/phone_errors/warning') do %>
-  <p><%= t('idv.failure.phone.warning') %></p>
-  <p><strong><%= t('idv.failure.attempts', count: @remaining_attempts) %></strong></p>
-<% end %>
+<%= render(
+      'idv/shared/error',
+      type: :warning,
+      title: t('titles.failure.phone_verification'),
+      heading: t('idv.failure.phone.warning.heading'),
+      current_step: :verify_phone_or_address,
+      options: [
+        decorated_session.sp_name && {
+          url: return_to_sp_failure_to_proof_path(
+            step: 'phone',
+            location: local_assigns.fetch(:name, 'warning'),
+          ),
+          text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+          new_tab: true,
+        },
+      ].select(&:present?),
+    ) do %>
+
+      <p>
+        <%= t('idv.failure.phone.warning.you_entered') %>
+        <strong><%= PhoneFormatter.format(@number_entered, country_code: @country_code) %></strong>
+      </p>
+
+      <p>
+        <%= t('idv.failure.phone.warning.next_steps_html') %>
+        <%= new_window_link_to(
+              t('idv.failure.phone.warning.learn_more_link'),
+              help_center_redirect_path(
+                category: 'verify-your-identity',
+                article: 'phone-number-and-phone-plan-in-your-name',
+                flow: :idv,
+                step: :phone,
+                location: 'learn_more',
+              ),
+            ) %>
+      </p>
+
+      <p>
+        <strong><%= t('idv.failure.attempts', count: @remaining_attempts) %></strong>
+      </p>
+
+      <div class="margin-top-5 margin-bottom-5">
+        <%= button_or_link_to(
+              t('idv.failure.phone.warning.try_again_button'),
+              idv_phone_path,
+              class: 'usa-button usa-button--big usa-button--wide',
+            ) %>
+      </div>
+
+      <% if @gpo_letter_available %>
+        <hr>
+
+        <h2><%= t('idv.failure.phone.warning.gpo.heading') %></h2>
+
+        <p><%= t('idv.failure.phone.warning.gpo.explanation_html') %></p>
+
+        <div class="margin-top-5 margin-bottom-5">
+          <%= button_or_link_to(
+                t('idv.failure.phone.warning.gpo.button'),
+                idv_gpo_path,
+                class: 'usa-button usa-button--outline',
+              ) %>
+        </div>
+      <% end %>
+    <% end %>
