@@ -97,7 +97,7 @@ describe DisplayablePiiFormatter do
         expect(result.full_name).to eq('Testy Testerson')
         expect(result.social_security_number).to eq('900-12-3456')
         expect(result.address).to eq('123 main st Washington, DC 20405')
-        expect(result.birthdate).to eq('January 01, 1990')
+        expect(result.birthdate).to eq('January 1, 1990')
         expect(result.phone).to eq('+1 202-212-1000')
       end
     end
