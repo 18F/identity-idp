@@ -1,9 +1,9 @@
 require 'rails_helper'
 require 'aws-sdk-cloudwatchlogs'
 
-describe DataRequests::FetchCloudwatchLogs do
+RSpec.describe DataRequests::FetchCloudwatchLogs do
+  let(:uuid) { 'super-fun-but-fake-uuid' }
   it 'starts queries for each date and returns processed results' do
-    uuid = 'super-fun-but-fake-uuid'
     dates = [
       Date.new(2020, 3, 18),
       Date.new(2020, 8, 7),
@@ -48,9 +48,6 @@ describe DataRequests::FetchCloudwatchLogs do
 
     subject = described_class.new(uuid, dates, cloudwatch_client_options:)
 
-    allow(subject).to receive(:sleep)
-    allow(subject).to receive(:warn)
-
     results = subject.call
 
     expect(results.length).to eq(2)
@@ -66,5 +63,62 @@ describe DataRequests::FetchCloudwatchLogs do
     expect do
       described_class.new('fake-uuid', []).call
     end.to raise_error('Only run DataRequests::FetchCloudwatchLogs locally')
+  end
+
+  describe '#query_ranges' do
+    subject(:query_ranges) do
+      described_class.new(uuid, dates).query_ranges
+    end
+
+    context 'with a bunch of consecutive days' do
+      let(:dates) do
+        [
+          Date.new(2023, 1, 1),
+          Date.new(2023, 1, 2),
+          Date.new(2023, 1, 3),
+          # gap
+          Date.new(2023, 1, 5),
+          Date.new(2023, 1, 6),
+          Date.new(2023, 1, 7),
+        ]
+      end
+
+      it 'groups consecutive days into a single range, and pads by 12 hours' do
+        expect(query_ranges).to eq(
+          [
+            # rubocop:disable Layout/LineLength
+            (Date.new(2023, 1, 1).beginning_of_day - 12.hours)..(Date.new(2023, 1, 3).end_of_day + 12.hours),
+            (Date.new(2023, 1, 5).beginning_of_day - 12.hours)..(Date.new(2023, 1, 7).end_of_day + 12.hours),
+            # rubocop:enable Layout/LineLength
+          ],
+        )
+      end
+    end
+
+    context 'with more than 7 consecutive days' do
+      let(:dates) do
+        [
+          Date.new(2023, 1, 1),
+          Date.new(2023, 1, 2),
+          Date.new(2023, 1, 3),
+          Date.new(2023, 1, 4),
+          Date.new(2023, 1, 5),
+          Date.new(2023, 1, 6),
+          Date.new(2023, 1, 7),
+          # slice goes here
+          Date.new(2023, 1, 8),
+          Date.new(2023, 1, 9),
+        ]
+      end
+
+      it 'splits up consecutive ranges of more than 7 days into adjacent ranges' do
+        expect(query_ranges).to eq(
+          [
+            (Date.new(2023, 1, 1).beginning_of_day - 12.hours)..Date.new(2023, 1, 7).end_of_day,
+            Date.new(2023, 1, 8).beginning_of_day..(Date.new(2023, 1, 9).end_of_day + 12.hours),
+          ],
+        )
+      end
+    end
   end
 end

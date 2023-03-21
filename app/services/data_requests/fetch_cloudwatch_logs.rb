@@ -24,6 +24,45 @@ module DataRequests
       end.uniq.sort_by(&:timestamp)
     end
 
+    # @return [Array<Range<Time>>]
+    def query_ranges
+      ranges = []
+
+      # Converts a set of consecutive dates into a Range
+      # @param [Array<Date>] run
+      # @return [Array<Range<Time>>]
+      run_to_range = ->(run) do
+        # break up runs by week so that queries stay a reasonable size
+        if run.size > 7
+          first, *mid, last = run.each_slice(7).map do |slice|
+            slice.first.beginning_of_day..slice.last.end_of_day
+          end
+
+          [(first.begin - 12.hours)..first.end, *mid, last.begin..(last.end + 12.hours)]
+        else
+          (run.first.beginning_of_day - 12.hours)..(run.last.end_of_day + 12.hours)
+        end
+      end
+
+      current_run = []
+
+      [*dates, nil].each_cons(2).each do |first, second|
+        current_run << first
+
+        if !second || first + 1 == second
+          next
+        else
+          ranges << run_to_range[current_run]
+
+          current_run = []
+        end
+      end
+
+      ranges << run_to_range[current_run]
+
+      ranges.flatten
+    end
+
     private
 
     def cloudwatch_client
@@ -40,13 +79,6 @@ module DataRequests
         fields @timestamp, @message
         | filter @message like /#{uuid}/
       QUERY
-    end
-
-    # @return [Array<Range<Time>>]
-    def query_ranges
-      dates.map do |date|
-        date.in_time_zone('UTC').all_day
-      end
     end
 
     def logger
