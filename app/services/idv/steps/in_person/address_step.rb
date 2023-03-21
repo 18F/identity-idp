@@ -9,11 +9,16 @@ module Idv
         end
 
         def self.analytics_submitted_event
-          :idv_in_person_proofing_address_submitted
+          if IdentityConfig.store.in_person_capture_secondary_id_enabled
+            :idv_in_person_proofing_residential_address_submitted
+          else
+            :idv_in_person_proofing_address_submitted
+          end
         end
 
         def call
           Idv::InPerson::AddressForm::ATTRIBUTES.each do |attr|
+            next if attr == :same_address_as_id
             flow_session[:pii_from_user][attr] = flow_params[attr]
           end
         end

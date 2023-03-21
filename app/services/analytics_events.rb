@@ -646,6 +646,10 @@ module AnalyticsEvents
     track_event('IdV: in person proofing prepare submitted', flow_path: flow_path, **extra)
   end
 
+  def idv_in_person_proofing_residential_address_submitted(**extra)
+    track_event('IdV: in person proofing residential address submitted', **extra)
+  end
+
   def idv_in_person_proofing_address_submitted(**extra)
     track_event('IdV: in person proofing address submitted', **extra)
   end

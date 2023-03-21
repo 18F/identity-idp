@@ -5,8 +5,8 @@ module Idv
       include Idv::FormAddressValidator
 
       included do
-        validates :same_address_as_id,
-                  presence: true
+        # validates :same_address_as_id,
+        # presence: true
 
         validates_with UspsInPersonProofing::TransliterableValidator,
                        fields: [:city],
