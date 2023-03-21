@@ -35,7 +35,7 @@ module Idv
         private
 
         def capture_secondary_id_enabled
-          idv_session&.current_user&.establishing_in_person_enrollment&.capture_secondary_id_enabled
+          current_user.establishing_in_person_enrollment.capture_secondary_id_enabled
         end
 
         def updating_state_id
