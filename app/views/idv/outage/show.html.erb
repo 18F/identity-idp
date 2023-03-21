@@ -1,48 +1,41 @@
 <%= render StepIndicatorComponent.new(
-      steps: step_indicator_steps,
-      current_step: :getting_started,
-      locale_scope: 'idv',
-      class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-    ) %>
+    steps: step_indicator_steps,
+    current_step: :getting_started,
+    locale_scope: 'idv',
+    class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+) %>
 
-<%= render(AlertIconComponent.new) %>
-<%= render PageHeadingComponent.new.with_content(t('vendor_outage.alerts.pinpoint.idv.header')) %>
-
-<p>
-  <%= t('vendor_outage.alerts.pinpoint.idv.message_html', app_name: APP_NAME, sp_name: current_sp&.friendly_name || APP_NAME) %>
-</p>
-
-<span><%= t('vendor_outage.alerts.pinpoint.idv.options_prompt') %></span>
-<ul class="margin-bottom-5">
-  <% t('vendor_outage.alerts.pinpoint.idv.options_html', status_page_url: StatusPage.base_url).each do | option | %>
-    <li>
-      <%= option %>
-    </li>
-  <% end %>
-</ul>
-
-<div class="grid-row margin-bottom-3">
-<%= render ButtonComponent.new(
+<%= render StatusPageComponent.new(status: :warning) do |component| %>
+  <% component.header { t('vendor_outage.alerts.pinpoint.idv.header') } %>
+  <p>
+    <%= t('vendor_outage.alerts.pinpoint.idv.message_html', app_name: APP_NAME, sp_name: current_sp&.friendly_name || APP_NAME) %>
+  </p>
+  <span><%= t('vendor_outage.alerts.pinpoint.idv.options_prompt') %></span>
+  <ul class="margin-bottom-5">
+    <% t('vendor_outage.alerts.pinpoint.idv.options_html', status_page_url: StatusPage.base_url).each do | option | %>
+      <li>
+        <%= option %>
+      </li>
+    <% end %>
+  </ul>
+  <% component.action_button(
       action: ->(**tag_options, &block) do
-        link_to(idv_doc_auth_step_path(step: :welcome), **tag_options, &block)
+      link_to(idv_doc_auth_step_path(step: :welcome), **tag_options, &block)
       end,
       big: true,
       wide: true,
       class: 'usa-button',
-    ).with_content(t('doc_auth.buttons.continue')) %>
-</div>
-
-<div class="grid-row">
-    <%= render ButtonComponent.new(
-          action: ->(**tag_options, &block) do
-            link_to(idv_doc_auth_step_path(step: :welcome), **tag_options, &block)
-          end,
-          big: true,
-          wide: true,
-          outline: true,
-          class: 'usa-button',
-        ).with_content(t('links.exit_login', app_name: APP_NAME)) %>
-</div>
+  ).with_content(t('doc_auth.buttons.continue')) %>
+  <% component.action_button(
+      action: ->(**tag_options, &block) do
+      link_to(exit_url, **tag_options, &block)
+      end,
+      big: true,
+      wide: true,
+      outline: true,
+      class: 'usa-button',
+  ).with_content(t('links.exit_login', app_name: APP_NAME)) %>
+<% end %>
 
 <%= render(
       'shared/troubleshooting_options',

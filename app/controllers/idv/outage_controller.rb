@@ -7,7 +7,11 @@ module Idv
 
     def show
       session[:skip_vendor_outage] = true
-      render :show, locals: { current_sp: current_sp }
+      render :show, locals: { current_sp: current_sp, exit_url: get_exit_url }
+    end
+
+    def get_exit_url
+      current_sp.return_to_sp_url || account_path
     end
   end
 end

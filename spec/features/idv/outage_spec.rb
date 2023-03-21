@@ -40,6 +40,14 @@ feature 'IdV Outage Spec' do
           expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
         end
 
+        it 'returns to the correct page when clicking to exit', js: true do
+          sign_in_with_idv_required(user: user, sms_or_totp: :totp)
+
+          click_on t('links.exit_login', app_name: APP_NAME)
+
+          expect(current_url).to eq 'https://example.com/'
+        end
+
         it 'skips the hybrid handoff screen and proceeds to doc capture' do
           sign_in_with_idv_required(user: user, sms_or_totp: :totp)
           click_idv_continue
@@ -60,7 +68,7 @@ feature 'IdV Outage Spec' do
         and_return(true)
     end
 
-    it 'shows vendor outage page before idv welcome page' do
+    it 'shows vendor outage page before idv welcome page', js: true do
       sign_in_with_idv_required(user: user, sms_or_totp: :sms)
 
       expect(current_path).to eq idv_outage_path
