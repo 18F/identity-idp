@@ -6,7 +6,12 @@ module Accounts
 
     before_action :confirm_two_factor_authenticated
     before_action :prompt_for_password_if_pii_locked
-    before_action :confirm_recently_authenticated
+    before_action :confirm_recently_authenticated, if: -> do
+      !IdentityConfig.store.reauthentication_for_second_factor_management_enabled
+    end
+    before_action :confirm_recently_authenticated_2fa, if: -> do
+      IdentityConfig.store.reauthentication_for_second_factor_management_enabled
+    end
 
     def new
       analytics.profile_personal_key_visit
