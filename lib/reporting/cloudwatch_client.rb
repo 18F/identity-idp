@@ -13,7 +13,8 @@ module Reporting
     # @param [Boolean] ensure_complete_logs when true, will detect when queries return exactly
     #  10,000 rows (Cloudwatch Insights max limit) and then recursively split the query window into
     #  two queries until we're certain we've queried all rows
-    # @param [ActiveSupport::Duration,#to_i,Boolean,nil] slice_interval How to slice up the query over time.
+    # @param [ActiveSupport::Duration,#to_i,Boolean,nil] slice_interval How to slice up the query
+    #  over time.
     #  * Pass an Integer (number of seconds) or an ActiveSupport::Duration such as 1.day to slice up
     #    the query by that number of seconds
     #  * Pass something falsy to indicate skip to slicing the query
