@@ -55,11 +55,11 @@ RSpec.describe Reporting::AuthenticationReport do
         ['New Users Started IAL1 Verification', '4', '100.0%'],
         ['New Users Completed IAL1 Password Setup', '3', '75.0%'],
         ['New Users Completed IAL1 MFA', '2', '50.0%'],
-        ['New IAL1 Users Consented to IRS Access', '1', '25.0%'],
+        ['New IAL1 Users Consented to Partner', '1', '25.0%'],
         [],
         ['Total # of IAL1 Users', '2'],
         [],
-        ['AAL2 Authentication Requests from IRS', '5', '100.0%'],
+        ['AAL2 Authentication Requests from Partner', '5', '100.0%'],
         ['AAL2 Authenticated Requests', '2', '40.0%'],
       ]
 

@@ -71,7 +71,7 @@ module Reporting
           format_as_percent(numerator: user_fully_registered, denominator: email_confirmation),
         ]
         csv << [
-          'New IAL1 Users Consented to IRS Access',
+          'New IAL1 Users Consented to Partner',
           sp_redirect_initiated_new_users,
           format_as_percent(
             numerator: sp_redirect_initiated_new_users,
@@ -82,7 +82,7 @@ module Reporting
         csv << ['Total # of IAL1 Users', sp_redirect_initiated_all]
         csv << []
         csv << [
-          'AAL2 Authentication Requests from IRS',
+          'AAL2 Authentication Requests from Partner',
           oidc_auth_request,
           format_as_percent(numerator: oidc_auth_request, denominator: oidc_auth_request),
         ]
