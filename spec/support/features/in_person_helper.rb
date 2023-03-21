@@ -68,16 +68,13 @@ module InPersonHelper
 
   def complete_location_step(_user = nil)
     search_for_post_office
-    first('.location-collection-item').
-      click_button(t('in_person_proofing.body.location.location_button'))
+    within first('.location-collection-item') do
+      click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
+    end
   end
 
   def complete_prepare_step(_user = nil)
-    # Wait for page to load before clicking continue
-    expect(page).to have_content(
-      t('in_person_proofing.headings.prepare'),
-    )
-    click_link t('forms.buttons.continue')
+    click_spinner_button_and_wait t('forms.buttons.continue')
   end
 
   def complete_state_id_step(_user = nil, same_address_as_id: true, include_address: false)

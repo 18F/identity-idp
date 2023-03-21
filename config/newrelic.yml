@@ -21,7 +21,12 @@ production:
   error_collector:
     enabled: true
     capture_source: true
-    ignore_errors: "ActionController::RoutingError,ActionController::BadRequest,ActionDispatch::Http::MimeNegotiation::InvalidType,GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError"
+    ignore_errors: "<%= %w[
+      ActionController::BadRequest
+      ActionController::RoutingError
+      ActionDispatch::Http::MimeNegotiation::InvalidType
+      GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
+    ].join(',') %>"
   license_key: <%= IdentityConfig.store.newrelic_license_key %>
   log_level: info
   monitor_mode: true

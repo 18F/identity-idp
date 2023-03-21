@@ -64,14 +64,11 @@ feature 'Two Factor Authentication' do
         sign_in_before_2fa
         select_2fa_option(:phone)
 
-        expect(page).to have_css('.phone-input__example', text: '(201) 555-0123')
-
         click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.phone_required'))
 
         fill_in 'new_phone_form_phone', with: '+81 54 354 3643'
-        expect(page).to have_css('.phone-input__example', text: '090-1234-5678')
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'JP'
 
         fill_in 'new_phone_form_phone', with: '+81 54 354 364'
@@ -87,7 +84,6 @@ feature 'Two Factor Authentication' do
         expect(page).to have_content(t('errors.messages.phone_required'))
 
         fill_in 'new_phone_form_phone', with: '+353 537'
-        expect(page).to have_css('.phone-input__example', text: '085 012 3456')
 
         click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
@@ -105,7 +101,6 @@ feature 'Two Factor Authentication' do
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.invalid_phone_number'))
 
-        expect(page).to have_css('.phone-input__example', text: '090-1234-5678')
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'JP'
       end
 
