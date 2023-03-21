@@ -111,6 +111,10 @@ fr:
           votre identité. Vous devrez leur fournir le code d’erreur
           <strong>%{support_code}</strong>.
         heading: S’il vous plaît, appelez-nous
+      verify:
+        fail_link_html: Obtenez de l'aide auprès de <strong>%{sp_name}</strong>
+        fail_text: pour accéder aux services.
+        heading: Nous n’avons pas pu vérifier votre identité
       timeout: Le temps d’attente pour le traitement de votre demande est plus long
         que d’habitude Veuillez réessayer.
     forgot_password:
