@@ -52,7 +52,7 @@ RSpec.describe Reporting::AuthenticationReport do
         ['New Users Completed IAL1 MFA', '2', '50.0%'],
         ['New IAL1 Users Consented to IRS Access', '1', '25.0%'],
         [],
-        ['Total # of IAL1 Users', '2']
+        ['Total # of IAL1 Users', '2'],
       ]
 
       aggregate_failures do

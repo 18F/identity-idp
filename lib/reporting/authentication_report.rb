@@ -1,7 +1,14 @@
 # frozen_string_literal: true
+
 require 'csv'
-require 'reporting/cloudwatch_client'
-require 'reporting/cloudwatch_query_quoting'
+begin
+  require 'reporting/cloudwatch_client'
+  require 'reporting/cloudwatch_query_quoting'
+  require 'reporting/command_line_options'
+rescue LoadError => e
+  warn 'could not load paths, try running with "bundle exec rails runner"'
+  raise e
+end
 
 module Reporting
   class AuthenticationReport
@@ -37,6 +44,7 @@ module Reporting
       @progress
     end
 
+    # rubocop:disable Metrics/BlockLength
     def to_csv
       CSV.generate do |csv|
         csv << ['Report Timeframe', "#{from} to #{to}"]
@@ -64,12 +72,16 @@ module Reporting
         csv << [
           'New IAL1 Users Consented to IRS Access',
           sp_redirect_initiated_new_users,
-          format_as_percent(numerator: sp_redirect_initiated_new_users, denominator: email_confirmation),
+          format_as_percent(
+            numerator: sp_redirect_initiated_new_users,
+            denominator: email_confirmation,
+          ),
         ]
         csv << []
         csv << ['Total # of IAL1 Users', sp_redirect_initiated_all]
       end
     end
+    # rubocop:enable Metrics/BlockLength
 
     # event name => set(user ids)
     # @return Hash<String,Set<String>>
@@ -92,20 +104,18 @@ module Reporting
     end
 
     def two_fa_setup_visited
-      # TODO: do we want to skip set intersection here
-      # TODO: memoize this?
-      (data[Events::TWO_FA_SETUP_VISITED] & data[Events::EMAIL_CONFIRMATION]).count
+      @two_fa_setup_visited ||=
+        (data[Events::TWO_FA_SETUP_VISITED] & data[Events::EMAIL_CONFIRMATION]).count
     end
 
     def user_fully_registered
-      # TODO: do we want to skip set intersection here
-      # TODO: memoize this?
-      (data[Events::USER_FULLY_REGISTERED] & data[Events::EMAIL_CONFIRMATION]).count
+      @user_fully_registered ||=
+        (data[Events::USER_FULLY_REGISTERED] & data[Events::EMAIL_CONFIRMATION]).count
     end
 
     def sp_redirect_initiated_new_users
-      # TODO: memoize this?
-      (data[Events::SP_REDIRECT] & data[Events::EMAIL_CONFIRMATION]).count
+      @sp_redirect_initiated_new_users ||=
+        (data[Events::SP_REDIRECT] & data[Events::EMAIL_CONFIRMATION]).count
     end
 
     def sp_redirect_initiated_all
@@ -130,7 +140,7 @@ module Reporting
       params = {
         issuer: quote(issuer),
         event_names: quote(Events.all_events),
-        email_confirmation: quote(Events::EMAIL_CONFIRMATION)
+        email_confirmation: quote(Events::EMAIL_CONFIRMATION),
       }
 
       format(<<~QUERY, params)
@@ -160,3 +170,11 @@ module Reporting
     end
   end
 end
+
+# rubocop:disable Rails/Output
+if __FILE__ == $PROGRAM_NAME
+  options = Reporting::CommandLineOptions.new.parse!(ARGV)
+
+  puts Reporting::AuthenticationReport.new(**options).to_csv
+end
+# rubocop:enable Rails/Output
