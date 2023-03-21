@@ -89,7 +89,7 @@ feature 'Changing authentication factor' do
   end
 
   def complete_2fa_confirmation_without_entering_otp
-    expect(current_path).to eq login_two_factor_options_path(reauthn: true)
+    expect(current_path).to eq login_two_factor_options_path
 
     find("label[for='two_factor_options_form_selection_sms']").click
     click_on t('forms.buttons.continue')
