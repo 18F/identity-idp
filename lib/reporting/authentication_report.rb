@@ -17,6 +17,7 @@ module Reporting
     attr_reader :issuer, :date
 
     module Events
+      OIDC_AUTH_REQUEST = 'OpenID Connect: authorization request'
       EMAIL_CONFIRMATION = 'User Registration: Email Confirmation'
       TWO_FA_SETUP_VISITED = 'User Registration: 2FA Setup visited'
       USER_FULLY_REGISTERED = 'User Registration: User Fully Registered'
@@ -79,6 +80,20 @@ module Reporting
         ]
         csv << []
         csv << ['Total # of IAL1 Users', sp_redirect_initiated_all]
+        csv << []
+        csv << [
+          'AAL2 Authentication Requests from IRS',
+          oidc_auth_request,
+          format_as_percent(numerator: oidc_auth_request, denominator: oidc_auth_request),
+        ]
+        csv << [
+          'AAL2 Authenticated Requests',
+          sp_redirect_initiated_after_oidc,
+          format_as_percent(
+            numerator: sp_redirect_initiated_after_oidc,
+            denominator: oidc_auth_request
+          ),
+        ]
       end
     end
     # rubocop:enable Metrics/BlockLength
@@ -120,6 +135,15 @@ module Reporting
 
     def sp_redirect_initiated_all
       data[Events::SP_REDIRECT].count
+    end
+
+    def oidc_auth_request
+      data[Events::OIDC_AUTH_REQUEST].count
+    end
+
+    def sp_redirect_initiated_after_oidc
+      @sp_redirect_initiated_after_oidc ||=
+        (data[Events::SP_REDIRECT] & data[Events::OIDC_AUTH_REQUEST]).count
     end
 
     def fetch_results

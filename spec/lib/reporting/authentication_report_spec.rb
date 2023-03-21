@@ -12,24 +12,29 @@ RSpec.describe Reporting::AuthenticationReport do
       'Reporting::CloudwatchClient',
       fetch: [
         # finishes funnel
+        { 'user_id' => 'user1', 'name' => 'OpenID Connect: authorization request' },
         { 'user_id' => 'user1', 'name' => 'User Registration: Email Confirmation' },
         { 'user_id' => 'user1', 'name' => 'User Registration: 2FA Setup visited' },
         { 'user_id' => 'user1', 'name' => 'User Registration: User Fully Registered' },
         { 'user_id' => 'user1', 'name' => 'SP redirect initiated' },
 
         # first 3 steps
+        { 'user_id' => 'user2', 'name' => 'OpenID Connect: authorization request' },
         { 'user_id' => 'user2', 'name' => 'User Registration: Email Confirmation' },
         { 'user_id' => 'user2', 'name' => 'User Registration: 2FA Setup visited' },
         { 'user_id' => 'user2', 'name' => 'User Registration: User Fully Registered' },
 
         # first 2 steps
+        { 'user_id' => 'user3', 'name' => 'OpenID Connect: authorization request' },
         { 'user_id' => 'user3', 'name' => 'User Registration: Email Confirmation' },
         { 'user_id' => 'user3', 'name' => 'User Registration: 2FA Setup visited' },
 
         # first step only
+        { 'user_id' => 'user4', 'name' => 'OpenID Connect: authorization request' },
         { 'user_id' => 'user4', 'name' => 'User Registration: Email Confirmation' },
 
         # already existing user, just signing in
+        { 'user_id' => 'user5', 'name' => 'OpenID Connect: authorization request' },
         { 'user_id' => 'user5', 'name' => 'SP redirect initiated' },
       ],
     )
@@ -53,6 +58,9 @@ RSpec.describe Reporting::AuthenticationReport do
         ['New IAL1 Users Consented to IRS Access', '1', '25.0%'],
         [],
         ['Total # of IAL1 Users', '2'],
+        [],
+        ['AAL2 Authentication Requests from IRS', '5', '100.0%'],
+        ['AAL2 Authenticated Requests', '2', '40.0%'],
       ]
 
       aggregate_failures do
