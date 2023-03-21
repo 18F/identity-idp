@@ -13,8 +13,11 @@ module Reporting
     # @param [Boolean] ensure_complete_logs when true, will detect when queries return exactly
     #  10,000 rows (Cloudwatch Insights max limit) and then recursively split the query window into
     #  two queries until we're certain we've queried all rows
-    # @param [ActiveSupport::Duration,Boolean,nil] slice_interval starting interval to split up and
-    #  query across, or something falsy to indicate not to slice the query
+    # @param [ActiveSupport::Duration,#to_i,Boolean,nil] slice_interval How to slice up the query
+    #  over time.
+    #  * Pass an Integer (number of seconds) or an ActiveSupport::Duration such as 1.day to slice up
+    #    the query by that number of seconds
+    #  * Pass something falsy to indicate skip to slicing the query
     # @param [Boolean,nil,IO,#fileno] progress whether or not to show progress, and which IO
     #  to send send the progress bar to (defaults to STDERR)
     def initialize(
@@ -33,11 +36,13 @@ module Reporting
       @progress = progress
     end
 
+    # Either both (from, to) or time_slices must be provided
     # @param [#to_s] query
     # @param [Time] from
     # @param [Time] to
+    # @param [Array<Range<Time>>] time_slices Pass an to use specific slices
     # @return [Array<Hash>]
-    def fetch(query:, from:, to:)
+    def fetch(query:, from: nil, to: nil, time_slices: nil)
       results = Concurrent::Array.new
       in_progress = Concurrent::Hash.new(0)
 
@@ -46,7 +51,7 @@ module Reporting
       # are still working
       queue = Queue.new
 
-      slice_time_range(from:, to:).each_with_index.map do |range, range_id|
+      slice_time_range(from:, to:, time_slices:).each_with_index.map do |range, range_id|
         in_progress[range_id] += 1
         queue << [range, range_id]
       end
@@ -60,8 +65,8 @@ module Reporting
         )
       end
 
-      log("starting query, queue_size=#{queue.length} num_threads=#{num_threads}")
-      log("=== query ===\n#{query}\n=== query ===")
+      log(:debug, "starting query, queue_size=#{queue.length} num_threads=#{num_threads}")
+      log(:info, "=== query ===\n#{query}\n=== query ===")
 
       threads = num_threads.times.map do |thread_idx|
         Thread.new do
@@ -73,7 +78,7 @@ module Reporting
             @progress_bar&.increment
 
             if ensure_complete_logs? && has_more_results?(response.results.size)
-              log("more results, bisecting: start_time=#{start_time} end_time=#{end_time}")
+              log(:info, "more results, bisecting: start_time=#{start_time} end_time=#{end_time}")
               mid = midpoint(start_time:, end_time:)
 
               # -1 for current work finishing, +2 for new threads enqueued
@@ -84,13 +89,13 @@ module Reporting
               queue << [(start_time..(mid - 1)), range_id]
               queue << [(mid..end_time), range_id]
             else
-              log("worker finished, slice_duration=#{end_time - start_time}")
+              log(:debug, "worker finished, slice_duration=#{end_time - start_time}")
               in_progress[range_id] -= 1
               results.concat(parse_results(response.results))
             end
           end
 
-          log("thread done thread_idx=#{thread_idx}")
+          log(:debug, "thread done thread_idx=#{thread_idx}")
 
           nil
         end.tap do |thread|
@@ -100,7 +105,7 @@ module Reporting
 
       until (num_in_progress = in_progress.sum(&:last)).zero?
         @progress_bar&.refresh
-        log("waiting, num_in_progress=#{num_in_progress}, queue_size=#{queue.size}")
+        log(:debug, "waiting, num_in_progress=#{num_in_progress}, queue_size=#{queue.size}")
         sleep wait_duration
       end
       queue.close
@@ -110,7 +115,7 @@ module Reporting
 
       results
     ensure
-      threads.each(&:kill)
+      threads&.each(&:kill)
     end
 
     # @param [#to_s] query
@@ -118,7 +123,7 @@ module Reporting
     # @param [Integer] end_time
     # @return [Aws::CloudWatchLogs::Types::GetQueryResultsResponse]
     def fetch_one(query:, start_time:, end_time:)
-      log("starting query: #{start_time}..#{end_time}")
+      log(:debug, "starting query: #{start_time}..#{end_time}")
 
       query_id = aws_client.start_query(
         # NOTE: this should be configurable as well
@@ -129,6 +134,15 @@ module Reporting
       ).query_id
 
       wait_for_query_result(query_id)
+    rescue Aws::CloudWatchLogs::Errors::InvalidParameterException => err
+      if err.message.match?(/End time should not be before the service was generally available/)
+        # rubocop:disable Layout/LineLength
+        log(:warn, "query end_time=#{end_time} (#{Time.zone.at(end_time)}) is before Cloudwatch Insights availability, skipping")
+        # rubocop:enable Layout/LineLength
+        Aws::CloudWatchLogs::Types::GetQueryResultsResponse.new(results: [])
+      else
+        raise err
+      end
     end
 
     def ensure_complete_logs?
@@ -141,12 +155,13 @@ module Reporting
 
     private
 
-    def log(message)
+    def log(level, message)
       if logger
-        if @progress_bar
-          @progress_bar.log(message)
+        int_level = Logger.const_get(level.upcase)
+        if @progress_bar && int_level >= logger.level
+          @progress_bar.log("#{level.upcase}: #{message}")
         else
-          logger.info(message)
+          logger.add(int_level) { message }
         end
       end
     end
@@ -169,8 +184,14 @@ module Reporting
     end
 
     # @return [Array<Range<Time>>]
-    def slice_time_range(from:, to:)
-      if slice_interval
+    def slice_time_range(from:, to:, time_slices:)
+      if (!from || !to) && !time_slices
+        raise ArgumentError, 'either both :from and :to, or :time_slices must be provided'
+      end
+
+      if time_slices.present?
+        time_slices
+      elsif slice_interval
         slices = []
         low = from
         high = to
@@ -195,13 +216,14 @@ module Reporting
       start = Time.now.to_f
 
       loop do
-        log("waiting on query_id=#{query_id}")
+        log(:debug, "waiting on query_id=#{query_id}")
         sleep wait_duration
         response = aws_client.get_query_results(query_id: query_id)
         case response.status
         when 'Complete', 'Failed', 'Cancelled'
           duration = Time.now.to_f - start
           log(
+            :debug,
             "finished query_id=#{query_id}, status=#{response.status}, duration=#{duration}",
           )
           return response

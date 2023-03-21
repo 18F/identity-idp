@@ -1,3 +1,5 @@
+require 'reporting/cloudwatch_client'
+
 module DataRequests
   # This class depends on the AWS cloudwatch SDK gem. That gem is only available
   # in development. The IDP role is not able to query cloudwatch logs. As a
@@ -6,30 +8,70 @@ module DataRequests
   class FetchCloudwatchLogs
     ResultRow = Struct.new(:timestamp, :message)
 
-    attr_reader :uuid, :dates
+    attr_reader :uuid, :dates, :cloudwatch_client_options
 
-    def initialize(uuid, dates)
+    def initialize(uuid, dates, cloudwatch_client_options: {})
       @uuid = uuid
       @dates = dates
+      @cloudwatch_client_options = cloudwatch_client_options
     end
 
     def call
       raise "Only run #{self.class.name} locally" if Identity::Hostdata.in_datacenter?
 
-      start_queries.flatten.uniq.sort_by(&:timestamp)
+      start_queries.map do |row|
+        ResultRow.new(row['@timestamp'], row['@message'])
+      end.uniq.sort_by(&:timestamp)
+    end
+
+    # @return [Array<Range<Time>>]
+    def query_ranges
+      ranges = []
+
+      # Converts a set of consecutive dates into a Range
+      # @param [Array<Date>] run
+      # @return [Array<Range<Time>>]
+      run_to_range = ->(run) do
+        # break up runs by week so that queries stay a reasonable size
+        if run.size > 7
+          first, *mid, last = run.each_slice(7).map do |slice|
+            slice.first.beginning_of_day..slice.last.end_of_day
+          end
+
+          [(first.begin - 12.hours)..first.end, *mid, last.begin..(last.end + 12.hours)]
+        else
+          (run.first.beginning_of_day - 12.hours)..(run.last.end_of_day + 12.hours)
+        end
+      end
+
+      current_run = []
+
+      [*dates, nil].each_cons(2).each do |first, second|
+        current_run << first
+
+        if !second || first + 1 == second
+          next
+        else
+          ranges << run_to_range[current_run]
+
+          current_run = []
+        end
+      end
+
+      ranges << run_to_range[current_run]
+
+      ranges.flatten
     end
 
     private
 
-    def build_result_rows_from_aws_result(aws_results)
-      aws_results.map do |aws_result|
-        ResultRow.new(aws_result.first.value, aws_result.second.value)
-      end
-    end
-
     def cloudwatch_client
-      require 'aws-sdk-cloudwatchlogs'
-      @cloudwatch_client ||= Aws::CloudWatchLogs::Client.new region: 'us-west-2'
+      @cloudwatch_client ||= Reporting::CloudwatchClient.new(
+        ensure_complete_logs: true,
+        slice_interval: false,
+        logger: logger,
+        **cloudwatch_client_options,
+      )
     end
 
     def query_string
@@ -39,53 +81,15 @@ module DataRequests
       QUERY
     end
 
+    def logger
+      @logger ||= Logger.new(STDERR, level: :warn)
+    end
+
     def start_queries
-      results = Concurrent::Array.new
-      errors = Concurrent::Array.new
-      thread_pool = Concurrent::FixedThreadPool.new(1, fallback_policy: :abort)
-
-      dates.each do |date|
-        thread_pool.post do
-          warn "Downloading logs for #{date}"
-          results.push(wait_for_query_result(start_query(date)))
-        rescue Aws::CloudWatchLogs::Errors::InvalidParameterException => e
-          if !e.message.match?(/End time should not be before the service was generally available/)
-            errors.push(e)
-          end
-        rescue => e
-          errors.push(e)
-        end
-      end
-
-      thread_pool.shutdown
-      thread_pool.wait_for_termination
-
-      if errors.any?
-        warn "#{errors.count} errors"
-        raise errors.first
-      end
-
-      results
-    end
-
-    def start_query(date)
-      query_start = (date - 12.hours).to_i
-      query_end = (date + 36.hours).to_i
-
-      cloudwatch_client.start_query(
-        log_group_name: 'prod_/srv/idp/shared/log/events.log',
-        start_time: query_start,
-        end_time: query_end,
-        query_string: query_string,
-      ).query_id
-    end
-
-    def wait_for_query_result(query_id)
-      loop do
-        sleep 3
-        response = cloudwatch_client.get_query_results(query_id: query_id)
-        return build_result_rows_from_aws_result(response.results) if response.status == 'Complete'
-      end
+      cloudwatch_client.fetch(
+        time_slices: query_ranges,
+        query: query_string,
+      )
     end
   end
 end
