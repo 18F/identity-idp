@@ -1,4 +1,4 @@
-# Back-end archictecture
+# Back-end Architecture
 
 The IDP is a Rails application, that follows many typical Rails conventions.
 
