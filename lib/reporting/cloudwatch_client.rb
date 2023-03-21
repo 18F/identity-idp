@@ -8,15 +8,14 @@ module Reporting
     DEFAULT_WAIT_DURATION = 3
     MAX_RESULTS_LIMIT = 10_000
 
-    attr_reader :num_threads, :wait_duration, :slice, :logger
+    attr_reader :num_threads, :wait_duration, :slice_interval, :logger
 
     # @param [Boolean] ensure_complete_logs when true, will detect when queries return exactly
     #  10,000 rows (Cloudwatch Insights max limit) and then recursively split the query window into
     #  two queries until we're certain we've queried all rows
-    # @param [ActiveSupport::Duration,#to_i,Boolean,nil] slice How to slice up the query over time.
+    # @param [ActiveSupport::Duration,#to_i,Boolean,nil] slice_interval How to slice up the query over time.
     #  * Pass an Integer (number of seconds) or an ActiveSupport::Duration such as 1.day to slice up
     #    the query by that number of seconds
-    #  * Pass an Array<Range<Time>> to use specific slices
     #  * Pass something falsy to indicate skip to slicing the query
     # @param [Boolean,nil,IO,#fileno] progress whether or not to show progress, and which IO
     #  to send send the progress bar to (defaults to STDERR)
@@ -24,23 +23,25 @@ module Reporting
       ensure_complete_logs: true,
       num_threads: DEFAULT_NUM_THREADS,
       wait_duration: DEFAULT_WAIT_DURATION,
-      slice: 1.day,
+      slice_interval: 1.day,
       logger: nil,
       progress: true
     )
       @ensure_complete_logs = ensure_complete_logs
       @num_threads = num_threads
       @wait_duration = wait_duration
-      @slice = slice
+      @slice_interval = slice_interval
       @logger = logger
       @progress = progress
     end
 
+    # Either both (from, to) or time_slices must be provided
     # @param [#to_s] query
     # @param [Time] from
     # @param [Time] to
+    # @param [Array<Range<Time>>] time_slices Pass an to use specific slices
     # @return [Array<Hash>]
-    def fetch(query:, from:, to:)
+    def fetch(query:, from: nil, to: nil, time_slices: nil)
       results = Concurrent::Array.new
       in_progress = Concurrent::Hash.new(0)
 
@@ -49,7 +50,7 @@ module Reporting
       # are still working
       queue = Queue.new
 
-      slice_time_range(from:, to:).each_with_index.map do |range, range_id|
+      slice_time_range(from:, to:, time_slices:).each_with_index.map do |range, range_id|
         in_progress[range_id] += 1
         queue << [range, range_id]
       end
@@ -113,7 +114,7 @@ module Reporting
 
       results
     ensure
-      threads.each(&:kill)
+      threads&.each(&:kill)
     end
 
     # @param [#to_s] query
@@ -182,17 +183,21 @@ module Reporting
     end
 
     # @return [Array<Range<Time>>]
-    def slice_time_range(from:, to:)
-      if slice.is_a?(Array)
-        slice
-      elsif slice.respond_to?(:to_i)
+    def slice_time_range(from:, to:, time_slices:)
+      if (!from || !to) && !time_slices
+        raise ArgumentError, 'either both :from and :to, or :time_slices must be provided'
+      end
+
+      if time_slices.present?
+        time_slices
+      elsif slice_interval
         slices = []
         low = from
         high = to
         while low < high
-          slice_end = [low + slice - 1, high].min
+          slice_end = [low + slice_interval - 1, high].min
           slices << (low..slice_end)
-          low += slice
+          low += slice_interval
         end
         slices
       else

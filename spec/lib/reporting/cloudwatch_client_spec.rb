@@ -5,18 +5,18 @@ RSpec.describe Reporting::CloudwatchClient do
   let(:wait_duration) { 0 }
   let(:logger_io) { StringIO.new }
   let(:logger) { Logger.new(logger_io) }
-  let(:slice) { 1.day }
+  let(:slice_interval) { 1.day }
   let(:ensure_complete_logs) { false }
   let(:query) { 'fields @message, @timestamp | limit 10000' }
   let(:progress) { false }
 
   subject(:client) do
     Reporting::CloudwatchClient.new(
-      wait_duration: wait_duration,
-      logger: logger,
-      slice: slice,
-      ensure_complete_logs: ensure_complete_logs,
-      progress: progress,
+      wait_duration:,
+      logger:,
+      slice_interval:,
+      ensure_complete_logs:,
+      progress:,
     )
   end
 
@@ -30,9 +30,10 @@ RSpec.describe Reporting::CloudwatchClient do
     let(:from) { 3.days.ago }
     let(:to) { 1.day.ago }
     let(:now) { Time.zone.now }
-    let(:slice) { false }
+    let(:slice_interval) { false }
+    let(:time_slices) { nil }
 
-    subject(:fetch) { client.fetch(query:, from:, to:) }
+    subject(:fetch) { client.fetch(query:, from:, to:, time_slices:) }
 
     # Helps mimic Array<Aws::CloudWatchLogs::Types::ResultField>
     # @return [Array<Hash>]
@@ -62,10 +63,10 @@ RSpec.describe Reporting::CloudwatchClient do
       )
     end
 
-    context ':slice is falsy' do
+    context ':slice_interval is falsy' do
       before { stub_single_page }
 
-      let(:slice) { false }
+      let(:slice_interval) { false }
       it 'does not split up the interval and queries by the from/to passed in' do
         expect(client).to receive(:fetch_one).exactly(1).times.and_call_original
 
@@ -73,10 +74,10 @@ RSpec.describe Reporting::CloudwatchClient do
       end
     end
 
-    context ':slice is a duration' do
+    context ':slice_interval is a duration' do
       before { stub_single_page }
 
-      let(:slice) { 2.days }
+      let(:slice_interval) { 2.days }
 
       it 'splits the query up into the time range' do
         expect(client).to receive(:fetch_one).exactly(2).times.and_call_original
@@ -85,10 +86,12 @@ RSpec.describe Reporting::CloudwatchClient do
       end
     end
 
-    context ':slice is an array' do
+    context ':time_slices is an array' do
       before { stub_single_page }
 
-      let(:slice) { [1..2, 3..4, 5..6] }
+      let(:to) { nil }
+      let(:from) { nil }
+      let(:time_slices) { [1..2, 3..4, 5..6] }
 
       it 'uses the slices directly' do
         expect(client).to receive(:fetch_one).
@@ -130,7 +133,7 @@ RSpec.describe Reporting::CloudwatchClient do
     end
 
     context ':ensure_complete_logs is true' do
-      let(:slice) { 500 }
+      let(:slice_interval) { 500 }
       let(:ensure_complete_logs) { true }
       let(:from) { Time.zone.at(1) }
       let(:to) { Time.zone.at(1000) }

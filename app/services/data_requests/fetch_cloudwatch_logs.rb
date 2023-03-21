@@ -68,7 +68,7 @@ module DataRequests
     def cloudwatch_client
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
         ensure_complete_logs: true,
-        slice: query_ranges,
+        slice_interval: false,
         logger: logger,
         **cloudwatch_client_options,
       )
@@ -87,10 +87,7 @@ module DataRequests
 
     def start_queries
       cloudwatch_client.fetch(
-        # NOTE :from and :to are just placeholders here since we passed :slice to the constructor
-        # Maybe we can redo the options to only need one of them?
-        from: dates.min,
-        to: dates.max,
+        time_slices: query_ranges,
         query: query_string,
       )
     end
