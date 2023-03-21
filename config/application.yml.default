@@ -249,6 +249,7 @@ rack_mini_profiler: false
 rack_timeout_service_timeout_seconds: 15
 rails_mailer_previews_enabled: false
 reauthn_window: 120
+reauthentication_for_second_factor_management_enabled: true
 recaptcha_site_key_v2: ''
 recaptcha_site_key_v3: ''
 recaptcha_secret_key_v2: ''
@@ -466,6 +467,7 @@ production:
   piv_cac_verify_token_secret:
   platform_auth_set_up_enabled: false
   session_encryptor_alert_enabled: true
+  reauthentication_for_second_factor_management_enabled: false
   recurring_jobs_disabled_names: "[]"
   redis_irs_attempt_api_url: redis://redis.login.gov.internal:6379/2
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
