@@ -21,6 +21,7 @@ class InPersonEnrollment < ApplicationRecord
 
   before_save(:on_status_updated, if: :will_save_change_to_status?)
   before_create(:set_unique_id, unless: :unique_id)
+  before_create(:set_capture_secondary_id)
 
   def self.is_pending_and_established_between(early_benchmark, late_benchmark)
     where(status: :pending).
@@ -113,6 +114,12 @@ class InPersonEnrollment < ApplicationRecord
     unless profile.user == user
       errors.add :profile, I18n.t('idv.failure.exceptions.internal_error'),
                  type: :in_person_enrollment_user_profile_mismatch
+    end
+  end
+
+  def set_capture_secondary_id
+    if IdentityConfig.store.in_person_capture_secondary_id_enabled
+      self.capture_secondary_id_enabled = true
     end
   end
 end
