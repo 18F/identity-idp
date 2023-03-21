@@ -36,6 +36,8 @@ We aim to keep Controllers simple and lean, and put business logic in Form
 classes, and hand those results (FormResponse) to our Analytics class to get
 logged in a consistent way.
 
+For details on frontend form behaviors, refer to the [equivalent section of the Front-end Architecture document](./frontend.md#forms).
+
 ### FormResponse
 
 The [FormResponse](../app/services/form_response.rb) is a simple structure to help

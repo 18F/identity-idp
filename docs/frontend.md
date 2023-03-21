@@ -236,6 +236,8 @@ yarn run lint --fix
 Login.gov is a form-heavy application, and there are some conventions to consider when implementing
 a new form.
 
+For details on back-end form processing, refer to the [equivalent section of the Back-end Architecture document](./backend.md#forms-formresponse-analytics-and-controllers).
+
 ### Form Rendering
 
 [Simple Form](https://github.com/heartcombo/simple_form) is a wrapper which enhances [Ruby on Rails' default `form_for` helper](https://guides.rubyonrails.org/form_helpers.html),
