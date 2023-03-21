@@ -24,6 +24,7 @@ describe Idv::Steps::UploadStep do
       ActionController::Parameters.new(
         {
           doc_auth: { phone: '(201) 555-1212' },
+          combined: true,
         },
       )
     end
@@ -61,7 +62,7 @@ describe Idv::Steps::UploadStep do
     end
 
     subject(:step) do
-      Idv::Steps::SendLinkStep.new(flow)
+      Idv::Steps::UploadStep.new(flow)
     end
 
     before do
