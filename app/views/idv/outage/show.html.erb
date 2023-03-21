@@ -1,9 +1,9 @@
 <%= render StepIndicatorComponent.new(
-    steps: step_indicator_steps,
-    current_step: :getting_started,
-    locale_scope: 'idv',
-    class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-) %>
+      steps: step_indicator_steps,
+      current_step: :getting_started,
+      locale_scope: 'idv',
+      class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+    ) %>
 
 <%= render StatusPageComponent.new(status: :warning) do |component| %>
   <% component.header { t('vendor_outage.alerts.pinpoint.idv.header') } %>
@@ -19,22 +19,22 @@
     <% end %>
   </ul>
   <% component.action_button(
-      action: ->(**tag_options, &block) do
-      link_to(idv_doc_auth_step_path(step: :welcome), **tag_options, &block)
-      end,
-      big: true,
-      wide: true,
-      class: 'usa-button',
-  ).with_content(t('doc_auth.buttons.continue')) %>
+       action: ->(**tag_options, &block) do
+         link_to(idv_doc_auth_step_path(step: :welcome), **tag_options, &block)
+       end,
+       big: true,
+       wide: true,
+       class: 'usa-button',
+     ).with_content(t('doc_auth.buttons.continue')) %>
   <% component.action_button(
-      action: ->(**tag_options, &block) do
-      link_to(exit_url, **tag_options, &block)
-      end,
-      big: true,
-      wide: true,
-      outline: true,
-      class: 'usa-button',
-  ).with_content(t('links.exit_login', app_name: APP_NAME)) %>
+       action: ->(**tag_options, &block) do
+         link_to(exit_url, **tag_options, &block)
+       end,
+       big: true,
+       wide: true,
+       outline: true,
+       class: 'usa-button',
+     ).with_content(t('links.exit_login', app_name: APP_NAME)) %>
 <% end %>
 
 <%= render(
