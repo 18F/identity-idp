@@ -18,7 +18,7 @@
 
       <p>
         <%= t('idv.failure.phone.warning.you_entered') %>
-        <strong><%= PhoneFormatter.format(@number_entered, country_code: @country_code) %></strong>
+        <strong><%= PhoneFormatter.format(@phone, country_code: @country_code) %></strong>
       </p>
 
       <p>

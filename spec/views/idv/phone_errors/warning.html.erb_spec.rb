@@ -4,9 +4,9 @@ describe 'idv/phone_errors/warning.html.erb' do
   let(:sp_name) { 'Example SP' }
   let(:remaining_attempts) { 5 }
   let(:gpo_letter_available) { false }
-  let(:number_entered) { '+13602345678' }
+  let(:phone) { '+13602345678' }
   let(:country_code) { 'US' }
-  let(:formatted_number_entered) { '+1 360-234-5678' }
+  let(:formatted_phone) { '+1 360-234-5678' }
 
   before do
     decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
@@ -14,7 +14,7 @@ describe 'idv/phone_errors/warning.html.erb' do
     assign(:gpo_letter_available, gpo_letter_available)
     assign(:remaining_attempts, remaining_attempts)
     assign(:country_code, country_code)
-    assign(:number_entered, number_entered)
+    assign(:phone, phone)
 
     render
   end
@@ -25,7 +25,7 @@ describe 'idv/phone_errors/warning.html.erb' do
 
   it 'shows number entered' do
     expect(rendered).to have_text(t('idv.failure.phone.warning.you_entered'))
-    expect(rendered).to have_text(formatted_number_entered)
+    expect(rendered).to have_text(formatted_phone)
   end
 
   it 'shows next steps' do
