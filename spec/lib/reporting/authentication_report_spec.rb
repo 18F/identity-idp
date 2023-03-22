@@ -3,9 +3,9 @@ require 'reporting/authentication_report'
 
 RSpec.describe Reporting::AuthenticationReport do
   let(:issuer) { 'my:example:issuer' }
-  let(:date) { Date.new(2022, 1, 1) }
+  let(:time_range) { Date.new(2022, 1, 1).all_day }
 
-  subject(:report) { Reporting::AuthenticationReport.new(issuer:, date:) }
+  subject(:report) { Reporting::AuthenticationReport.new(issuer:, time_range:) }
 
   before do
     cloudwatch_client = double(
@@ -47,7 +47,7 @@ RSpec.describe Reporting::AuthenticationReport do
       csv = CSV.parse(report.to_csv, headers: false)
 
       expected_csv = [
-        ['Report Timeframe', "#{report.from} to #{report.to}"],
+        ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
         ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
         ['Issuer', issuer],
         [],

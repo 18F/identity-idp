@@ -14,7 +14,7 @@ module Reporting
   class AuthenticationReport
     include Reporting::CloudwatchQueryQuoting
 
-    attr_reader :issuer, :date
+    attr_reader :issuer, :time_range
 
     module Events
       OIDC_AUTH_REQUEST = 'OpenID Connect: authorization request'
@@ -29,10 +29,10 @@ module Reporting
     end
 
     # @param [String] isssuer
-    # @param [Date] date
-    def initialize(issuer:, date:, verbose: false, progress: false)
+    # @param [Range<Time>] time_range
+    def initialize(issuer:, time_range:, verbose: false, progress: false)
       @issuer = issuer
-      @date = date
+      @time_range = time_range
       @verbose = verbose
       @progress = progress
     end
@@ -48,7 +48,7 @@ module Reporting
     # rubocop:disable Metrics/BlockLength
     def to_csv
       CSV.generate do |csv|
-        csv << ['Report Timeframe', "#{from} to #{to}"]
+        csv << ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"]
         csv << ['Report Generated', Date.today.to_s] # rubocop:disable Rails/Date
         csv << ['Issuer', issuer]
         csv << []
@@ -147,17 +147,7 @@ module Reporting
     end
 
     def fetch_results
-      cloudwatch_client.fetch(query:, from:, to:)
-    end
-
-    # @return [Time]
-    def from
-      date.in_time_zone('UTC').beginning_of_day
-    end
-
-    # @return [Time]
-    def to
-      date.in_time_zone('UTC').end_of_day
+      cloudwatch_client.fetch(query:, from: time_range.begin, to: time_range.end)
     end
 
     def query
