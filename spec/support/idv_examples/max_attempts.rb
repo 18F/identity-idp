@@ -52,7 +52,7 @@ shared_examples 'verification step max attempts' do |step, sp|
       (Throttle.max_attempts(:proof_address) - 1).times do
         fill_out_phone_form_fail
         click_idv_continue_for_step(step)
-        click_on t('idv.failure.button.warning')
+        click_on t('idv.failure.phone.warning.try_again_button')
       end
 
       fill_out_phone_form_ok
@@ -67,7 +67,7 @@ shared_examples 'verification step max attempts' do |step, sp|
     (Throttle.max_attempts(:proof_address) - 1).times do
       yield
       click_idv_continue_for_step(step)
-      click_on t('idv.failure.button.warning')
+      click_on t('idv.failure.phone.warning.try_again_button')
     end
     yield
     click_idv_continue_for_step(step)

@@ -141,19 +141,29 @@ feature 'idv phone step', :js do
   it_behaves_like 'async timed out'
 
   context "when the user's information cannot be verified" do
+    it 'reports the number the user entered' do
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step
+      fill_out_phone_form_fail
+      click_idv_send_security_code
+
+      expect(page).to have_content(t('idv.failure.phone.warning.heading'))
+      expect(page).to have_content('+1 703-555-5555')
+    end
+
     it 'links to verify by mail, from which user can return back to the warning screen' do
       start_idv_from_sp
       complete_idv_steps_before_phone_step
       fill_out_phone_form_fail
       click_idv_send_security_code
 
-      expect(page).to have_content(t('idv.failure.phone.warning'))
+      expect(page).to have_content(t('idv.failure.phone.warning.heading'))
 
-      click_on t('idv.troubleshooting.options.verify_by_mail')
+      click_on t('idv.failure.phone.warning.gpo.button')
       expect(page).to have_content(t('idv.titles.mail.verify'))
 
       click_doc_auth_back_link
-      expect(page).to have_content(t('idv.failure.phone.warning'))
+      expect(page).to have_content(t('idv.failure.phone.warning.heading'))
     end
 
     it 'does not render the link to proof by mail if proofing by mail is disabled' do
@@ -166,10 +176,10 @@ feature 'idv phone step', :js do
         fill_out_phone_form_fail
         click_idv_send_security_code
 
-        expect(page).to have_content(t('idv.failure.phone.warning'))
+        expect(page).to have_content(t('idv.failure.phone.warning.heading'))
         expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
 
-        click_on t('idv.failure.button.warning')
+        click_on t('idv.failure.phone.warning.try_again_button')
       end
 
       fill_out_phone_form_fail
