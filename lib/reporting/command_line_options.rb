@@ -72,7 +72,7 @@ module Reporting
     # @return [Range<Time>]
     def time_range(date:, period:)
       orig_beginning_of_week = Date.beginning_of_week
-      Date.beginning_of_week = :saturday
+      Date.beginning_of_week = :sunday
 
       utc = date.in_time_zone('UTC')
 
