@@ -21,7 +21,6 @@ module InPersonHelper
   GOOD_CITY = Idp::Constants::MOCK_IDV_APPLICANT[:city]
   GOOD_ZIPCODE = Idp::Constants::MOCK_IDV_APPLICANT[:zipcode]
   GOOD_STATE = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE
-  PUERTO_RICO = Idp::Constants::MOCK_IDV_APPLICANT_PUERTO_RICO
 
   def fill_out_state_id_form_ok(double_address_verification: false)
     fill_in t('in_person_proofing.form.state_id.first_name'), with: GOOD_FIRST_NAME
@@ -43,22 +42,12 @@ module InPersonHelper
     end
   end
 
-  def fill_out_address_form_ok(double_address_verification: false, select_puerto_rico: false)
+  def fill_out_address_form_ok(double_address_verification: false)
     fill_in t('idv.form.address1'), with: GOOD_ADDRESS1
     fill_in t('idv.form.address2_optional'), with: GOOD_ADDRESS2 unless double_address_verification
     fill_in t('idv.form.city'), with: GOOD_CITY
     fill_in t('idv.form.zipcode'), with: GOOD_ZIPCODE
-    if select_puerto_rico
-      select PUERTO_RICO, from: t('idv.form.state')
-      expect(page).to have_content(
-        t('forms.example') + ' 150 Calle A Apt 3',
-      )
-      expect(page).to have_content(
-        t('forms.example') + ' URB Las Gladiolas',
-      )
-    else
-      select GOOD_STATE, from: t('idv.form.state')
-    end
+    select GOOD_STATE, from: t('idv.form.state')
     unless double_address_verification
       choose t('in_person_proofing.form.address.same_address_choice_yes')
     end
@@ -102,12 +91,8 @@ module InPersonHelper
     end
   end
 
-  def complete_address_step(_user = nil, double_address_verification: false,
-                            select_puerto_rico: false)
-    fill_out_address_form_ok(
-      double_address_verification: double_address_verification,
-      select_puerto_rico: select_puerto_rico,
-    )
+  def complete_address_step(_user = nil, double_address_verification: false)
+    fill_out_address_form_ok(double_address_verification:)
     click_idv_continue
   end
 
