@@ -3,9 +3,9 @@ require 'reporting/identity_verification_report'
 
 RSpec.describe Reporting::IdentityVerificationReport do
   let(:issuer) { 'my:example:issuer' }
-  let(:date) { Date.new(2022, 1, 1) }
+  let(:time_range) { Date.new(2022, 1, 1).all_day }
 
-  subject(:report) { Reporting::IdentityVerificationReport.new(issuer:, date:) }
+  subject(:report) { Reporting::IdentityVerificationReport.new(issuer:, time_range:) }
 
   before do
     cloudwatch_client = double(
@@ -40,7 +40,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
       csv = CSV.parse(report.to_csv, headers: false)
 
       expected_csv = [
-        ['Report Timeframe', "#{report.from} to #{report.to}"],
+        ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
         ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
         ['Issuer', issuer],
         [],
@@ -74,70 +74,6 @@ RSpec.describe Reporting::IdentityVerificationReport do
         'IdV: USPS address letter requested' => 1,
         'USPS IPPaaS enrollment created' => 1,
       )
-    end
-  end
-
-  describe '.parse!' do
-    before do
-      allow(Reporting::IdentityVerificationReport).to receive(:exit)
-    end
-
-    let(:stdout) { StringIO.new }
-    let(:argv) { [] }
-
-    subject(:parse!) { Reporting::IdentityVerificationReport.parse!(argv, out: stdout) }
-
-    context 'with no arguments' do
-      let(:argv) { [] }
-
-      it 'prints help and exits uncleanly' do
-        expect(Reporting::IdentityVerificationReport).to receive(:exit).and_return(1)
-
-        parse!
-
-        expect(stdout.string).to include('Usage:')
-      end
-    end
-
-    context 'with --help' do
-      let(:argv) { %w[--help] }
-
-      it 'prints help and exits uncleanly' do
-        expect(Reporting::IdentityVerificationReport).to receive(:exit).and_return(1)
-
-        parse!
-
-        expect(stdout.string).to include('Usage:')
-      end
-    end
-
-    context 'with --date and --issuer' do
-      let(:argv) { %W[--date 2023-1-1 --issuer #{issuer}] }
-
-      it 'returns the parsed options' do
-        expect(parse!).to match(
-          date: Date.new(2023, 1, 1),
-          issuer: issuer,
-          verbose: false,
-          progress: true,
-        )
-      end
-    end
-
-    context 'with --no-verbose' do
-      let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --no-verbose] }
-
-      it 'has verbose false' do
-        expect(parse![:verbose]).to eq(false)
-      end
-    end
-
-    context 'with --no-progress' do
-      let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --no-progress] }
-
-      it 'has a progress false' do
-        expect(parse![:progress]).to eq(false)
-      end
     end
   end
 end
