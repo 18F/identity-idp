@@ -1,6 +1,8 @@
 require_relative 'document_capture_step_helper'
+require_relative 'interaction_helper'
 
 module DocAuthHelper
+  include InteractionHelper
   include DocumentCaptureStepHelper
 
   GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
@@ -80,7 +82,7 @@ module DocAuthHelper
   end
 
   def complete_welcome_step
-    click_on t('doc_auth.buttons.continue')
+    click_spinner_button_and_wait t('doc_auth.buttons.continue')
   end
 
   def complete_doc_auth_steps_before_agreement_step(expect_accessible: false)
@@ -121,6 +123,7 @@ module DocAuthHelper
     attach_file I18n.t('doc_auth.headings.document_capture_front'), File.expand_path(proofing_yml)
     attach_file I18n.t('doc_auth.headings.document_capture_back'), File.expand_path(proofing_yml)
     click_on I18n.t('forms.buttons.submit.default')
+    expect(page).to have_current_path(idv_ssn_url, wait: 10)
   end
 
   def complete_doc_auth_steps_before_email_sent_step

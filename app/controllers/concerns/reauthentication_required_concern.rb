@@ -1,8 +1,4 @@
-class ReauthnRequiredController < ApplicationController
-  before_action :confirm_recently_authenticated
-
-  private
-
+module ReauthenticationRequiredConcern
   def confirm_recently_authenticated
     @reauthn = reauthn?
     return unless user_signed_in?
@@ -10,6 +6,8 @@ class ReauthnRequiredController < ApplicationController
 
     prompt_for_current_password
   end
+
+  private
 
   def recently_authenticated?
     return false if user_session.blank?
