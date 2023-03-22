@@ -105,8 +105,8 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def email_analytics_attributes(enrollment)
     {
+      enrollment_code: enrollment.enrollment_code,
       timestamp: Time.zone.now,
-      user_id: enrollment.user_id,
       service_provider: enrollment.issuer,
       wait_until: mail_delivery_params(enrollment.proofed_at)[:wait_until],
     }
@@ -244,7 +244,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(response),
-      fraud_suspected: response['fraudSuspected'],
       passed: false,
       primary_id_type: response['primaryIdType'],
       reason: 'Unsupported ID type',
@@ -263,7 +262,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(response[:body]),
-      fraud_suspected: response['fraudSuspected'],
       passed: false,
       reason: 'Enrollment has expired',
     )
@@ -282,6 +280,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     else
       analytics(user: enrollment.user).
         idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(
+          **email_analytics_attributes(enrollment),
           enrollment_id: enrollment.id,
         )
       enrollment.update(deadline_passed_sent: true)
@@ -344,7 +343,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(response),
-      fraud_suspected: response['fraudSuspected'],
       passed: true,
       reason: 'Successful status update',
     )
@@ -419,6 +417,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def mail_delivery_params(proofed_at)
+    return {} if proofed_at.blank?
     mail_delay_hours = IdentityConfig.store.in_person_results_delay_in_hours ||
                        DEFAULT_EMAIL_DELAY_IN_HOURS
     wait_until = proofed_at + mail_delay_hours.hours

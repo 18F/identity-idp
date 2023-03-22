@@ -43,7 +43,11 @@ class EventDisavowalController < ApplicationController
 
   def validate_disavowed_event
     result = EventDisavowal::ValidateDisavowedEvent.new(disavowed_event).call
-    return if result.success?
+    if result.success?
+      sign_out
+      return
+    end
+
     analytics.event_disavowal_token_invalid(**result.to_h)
     flash[:error] = (result.errors[:event] || result.errors.first.last).first
     redirect_to root_url

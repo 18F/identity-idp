@@ -8,7 +8,7 @@ describe Redirect::ContactController do
   describe '#show' do
     let(:location_params) { { flow: 'flow', step: 'step', location: 'location', foo: 'bar' } }
     it 'redirects to contact page' do
-      redirect_url = IdentityConfig.store.idv_contact_url
+      redirect_url = MarketingSite.contact_url
 
       get :show, params: location_params
 
@@ -17,7 +17,7 @@ describe Redirect::ContactController do
         'Contact Page Redirect',
         flow: 'flow',
         location: 'location',
-        redirect_url: redirect_url,
+        redirect_url:,
         step: 'step',
       )
     end
