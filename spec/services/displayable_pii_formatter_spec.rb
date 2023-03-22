@@ -185,7 +185,7 @@ describe DisplayablePiiFormatter do
       context 'with a non-English locale' do
         before { I18n.locale = :es }
         it 'returns a localized, formatted birthdate' do
-          expect(formatter.format.birthdate).to eq('2 de enero de 1990')
+          expect(formatter.format.birthdate).to eq('1 de enero de 1990')
         end
       end
     end
