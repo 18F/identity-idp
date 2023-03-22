@@ -20,6 +20,7 @@ module Idv
 
         def extra_view_variables
           {
+            capture_secondary_id_enabled: capture_secondary_id_enabled,
             pii: pii,
             step_url: method(:idv_in_person_step_url),
           }
@@ -31,6 +32,10 @@ module Idv
           ProofingComponent.
             create_or_find_by(user: current_user).
             update(document_check: Idp::Constants::Vendors::USPS)
+        end
+
+        def capture_secondary_id_enabled
+          current_user.establishing_in_person_enrollment.capture_secondary_id_enabled
         end
 
         def pii
