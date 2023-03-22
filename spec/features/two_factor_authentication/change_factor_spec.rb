@@ -71,7 +71,8 @@ feature 'Changing authentication factor' do
 
   context 'when logged in at AAL1' do
     it 'requires 2FA authentication to manage 2FA configurations' do
-      sign_in_and_2fa_user_with_remember_device
+      user = user_with_2fa
+      sign_in_with_warden(user, auth_method: 'remember_device')
       visit add_phone_path
       expect(current_path).to eq login_two_factor_options_path
       find("label[for='two_factor_options_form_selection_sms']").click

@@ -211,11 +211,6 @@ module Features
       user
     end
 
-    def sign_in_and_2fa_user_with_remember_device(user = user_with_2fa)
-      sign_in_with_warden(user, auth_method: 'remember_device')
-      user
-    end
-
     def user_with_2fa
       create(:user, :signed_up, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
     end
