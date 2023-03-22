@@ -42,7 +42,6 @@ module ReauthenticationRequiredConcern
   def prompt_for_second_factor
     store_location(request.url)
     user_session[:context] = 'reauthentication'
-    user_session[:factor_to_change] = factor_from_controller_name
 
     redirect_to login_two_factor_options_path(reauthn: true)
   end
