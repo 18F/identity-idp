@@ -107,12 +107,12 @@ es:
           identidad. Deberá proporcionarnos el código de error
           <strong>%{support_code}</strong>.
         heading: Llámenos
+      timeout: Estamos experimentando un tiempo de espera superior al habitual al
+        procesar su solicitud. Inténtalo de nuevo.
       verify:
         fail_link_html: Obtenga ayuda en <strong>%{sp_name}</strong>
         fail_text: para acceder a los servicios.
         heading: No hemos podido verificar su identidad
-      timeout: Estamos experimentando un tiempo de espera superior al habitual al
-        procesar su solicitud. Inténtalo de nuevo.
     forgot_password:
       link_text: '¿Se te olvidó tu contraseña?'
       modal_header: '¿Estás seguro de que no puedes recordar tu contraseña?'

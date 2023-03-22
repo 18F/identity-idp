@@ -97,12 +97,12 @@ en:
           to continue verifying your identity. You will need to provide them
           with the error code <strong>%{support_code}</strong>.'
         heading: Please give us a call
+      timeout: We are experiencing higher than usual wait time processing your
+        request. Please try again.
       verify:
         fail_link_html: Get help at <strong>%{sp_name}</strong>
         fail_text: to access services.
-        heading: We couldn't verify your identity
-      timeout: We are experiencing higher than usual wait time processing your
-        request. Please try again.
+        heading: We couldn’t verify your identity
     forgot_password:
       link_text: Forgot password?
       modal_header: Are you sure you can’t remember your password?
