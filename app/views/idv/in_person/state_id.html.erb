@@ -97,7 +97,7 @@
         ) %>
   </div>
     
-  <% if IdentityConfig.store.in_person_capture_secondary_id_enabled %>
+  <% if capture_secondary_id_enabled %>
       <%= render ValidatedFieldComponent.new(
             name: :state_id_address1,
             form: f,
@@ -141,7 +141,7 @@
           selected: pii[:state_id_jurisdiction],
         ) %>
   </div>
-  <% if IdentityConfig.store.in_person_capture_secondary_id_enabled %>
+  <% if capture_secondary_id_enabled %>
     <div class="tablet:grid-col-8 margin-bottom-5">
       <%= render ValidatedFieldComponent.new(
             name: :state_id_zipcode,
