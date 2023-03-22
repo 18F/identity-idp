@@ -1,7 +1,7 @@
 require 'rails_helper'
-require 'aws-sdk-cloudwatchlogs'
+require 'data_requests/local'
 
-RSpec.describe DataRequests::FetchCloudwatchLogs do
+RSpec.describe DataRequests::Local::FetchCloudwatchLogs do
   let(:uuid) { 'super-fun-but-fake-uuid' }
   it 'starts queries for each date and returns processed results' do
     dates = [
@@ -62,7 +62,7 @@ RSpec.describe DataRequests::FetchCloudwatchLogs do
 
     expect do
       described_class.new('fake-uuid', []).call
-    end.to raise_error('Only run DataRequests::FetchCloudwatchLogs locally')
+    end.to raise_error('Only run DataRequests::Local::FetchCloudwatchLogs locally')
   end
 
   describe '#query_ranges' do
