@@ -6,7 +6,7 @@
   <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.address')) %>
 <% end %>
 
-<% unless IdentityConfig.store.in_person_capture_secondary_id_enabled %>
+<% unless capture_secondary_id_enabled %>
   <p>
     <%= t('in_person_proofing.body.address.info') %>
     <%= new_window_link_to(
@@ -23,7 +23,7 @@
       form, url: url_for, method: 'PUT',
             html: { autocomplete: 'off' }
     ) do |f| %>
-    <% if IdentityConfig.store.in_person_capture_secondary_id_enabled %>
+    <% if capture_secondary_id_enabled %>
       <%= render ValidatedFieldComponent.new(
             collection: us_states_territories,
             form: f,
@@ -47,7 +47,7 @@
   <%= render ValidatedFieldComponent.new(
         form: f,
         input_html: { value: pii[:address2] },
-        label: IdentityConfig.store.in_person_capture_secondary_id_enabled ? t('idv.form.address2') : t('idv.form.address2_optional'),
+        label: capture_secondary_id_enabled ? t('idv.form.address2') : t('idv.form.address2_optional'),
         label_html: { class: 'usa-label' },
         maxlength: 255,
         name: :address2,
@@ -63,7 +63,7 @@
         required: true,
       ) %>
 
-  <% unless IdentityConfig.store.in_person_capture_secondary_id_enabled %>
+  <% unless capture_secondary_id_enabled %>
     <%= render ValidatedFieldComponent.new(
           collection: us_states_territories,
           form: f,
@@ -91,7 +91,7 @@
         ) %>
   </div>
 
-  <% unless IdentityConfig.store.in_person_capture_secondary_id_enabled %>
+  <% unless capture_secondary_id_enabled %>
     <%= render ValidatedFieldComponent.new(
           as: :radio_buttons,
           checked: pii[:same_address_as_id],
