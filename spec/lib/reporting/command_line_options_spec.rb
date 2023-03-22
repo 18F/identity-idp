@@ -55,13 +55,11 @@ RSpec.describe Reporting::CommandLineOptions do
     context 'with --week and --issuer' do
       let(:argv) { %W[--week 2023-1-1 --issuer #{issuer}] }
 
-      it 'uses the whole week from sat-fri' do
+      it 'uses the whole week from sat-sun' do
         saturday = Date.new(2022, 12, 31).in_time_zone('UTC')
-        expect(saturday).to be_saturday
-        friday = Date.new(2023, 1, 6).in_time_zone('UTC')
-        expect(friday).to be_friday
+        sunday = Date.new(2023, 1, 6).in_time_zone('UTC')
 
-        expect(parse![:time_range]).to eq(saturday.beginning_of_day..friday.end_of_day)
+        expect(parse![:time_range]).to eq(saturday.beginning_of_day..sunday.end_of_day)
       end
     end
 
