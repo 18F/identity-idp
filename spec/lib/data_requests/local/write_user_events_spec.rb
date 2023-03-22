@@ -1,6 +1,7 @@
 require 'rails_helper'
+require 'data_requests/local'
 
-describe DataRequests::WriteUserEvents do
+describe DataRequests::Local::WriteUserEvents do
   let(:requesting_issuer_uuid) { SecureRandom.uuid }
 
   describe '#call' do

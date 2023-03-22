@@ -1,10 +1,11 @@
 require 'rails_helper'
+require 'data_requests/local'
 
-RSpec.describe DataRequests::WriteCloudwatchLogs do
+RSpec.describe DataRequests::Local::WriteCloudwatchLogs do
   let(:now) { Time.zone.now }
 
   def build_result_row(event_properties = {})
-    DataRequests::FetchCloudwatchLogs::ResultRow.new(
+    DataRequests::Local::FetchCloudwatchLogs::ResultRow.new(
       Time.zone.now,
       {
         time: now.iso8601,
@@ -37,7 +38,7 @@ RSpec.describe DataRequests::WriteCloudwatchLogs do
   end
 
   subject(:writer) do
-    DataRequests::WriteCloudwatchLogs.new(cloudwatch_results, @output_dir)
+    DataRequests::Local::WriteCloudwatchLogs.new(cloudwatch_results, @output_dir)
   end
 
   describe '#call' do
@@ -59,7 +60,7 @@ RSpec.describe DataRequests::WriteCloudwatchLogs do
     context 'missing data' do
       let(:cloudwatch_results) do
         [
-          DataRequests::FetchCloudwatchLogs::ResultRow.new(now, {}.to_json),
+          DataRequests::Local::FetchCloudwatchLogs::ResultRow.new(now, {}.to_json),
         ]
       end
 
