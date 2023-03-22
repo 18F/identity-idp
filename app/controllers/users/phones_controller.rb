@@ -8,12 +8,7 @@ module Users
     before_action :redirect_if_phone_vendor_outage
     before_action :check_max_phone_numbers_per_account, only: %i[add create]
     before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?
-    before_action :confirm_recently_authenticated, if: -> do
-      !IdentityConfig.store.reauthentication_for_second_factor_management_enabled
-    end
-    before_action :confirm_recently_authenticated_2fa, if: -> do
-      IdentityConfig.store.reauthentication_for_second_factor_management_enabled
-    end
+    before_action :confirm_recently_authenticated
 
     def add
       user_session[:phone_id] = nil

@@ -16,6 +16,9 @@ describe ReauthenticationRequiredConcern, type: :controller do
 
     before(:each) do
       stub_sign_in(user)
+      allow(IdentityConfig.store).to receive(
+        :reauthentication_for_second_factor_management_enabled,
+      ).and_return(false)
     end
 
     context 'recently authenticated' do
