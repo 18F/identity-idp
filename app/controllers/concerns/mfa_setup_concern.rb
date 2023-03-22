@@ -40,7 +40,11 @@ module MfaSetupConcern
 
   def confirm_user_authenticated_for_2fa_setup
     authenticate_user!(force: true)
-    return if user_fully_authenticated? && !UserSessionContext.reauthentication_context?(context)
+    if IdentityConfig.store.reauthentication_for_second_factor_management_enabled
+      return if user_fully_authenticated? && !UserSessionContext.reauthentication_context?(context)
+    elsif user_fully_authenticated?
+      return
+    end
     return unless MfaPolicy.new(current_user).two_factor_enabled?
     redirect_to user_two_factor_authentication_url
   end
