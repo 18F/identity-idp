@@ -109,15 +109,8 @@ module UspsInPersonProofing
       if expires_in - AUTH_TOKEN_PREEMPTIVE_EXPIRY_MINUTES > 0
         expires_in -= AUTH_TOKEN_PREEMPTIVE_EXPIRY_MINUTES
       end
-
-      expires_at = Time.zone.now + expires_in
       token = "#{body['token_type']} #{body['access_token']}"
-      Rails.cache.write(AUTH_TOKEN_CACHE_KEY, token, expires_at: expires_at)
-      # If using a redis cache we have to manually set the expires_at. This is because we aren't
-      # using a dedicated Redis cache and instead are just using our existing Redis server with
-      # mixed usage patterns. Without this cache entries don't expire.
-      # More at https://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html
-      Rails.cache.try(:redis)&.expireat(AUTH_TOKEN_CACHE_KEY, expires_at.to_i)
+      Rails.cache.write(AUTH_TOKEN_CACHE_KEY, token, expires_in: expires_in)
       token
     end
 
