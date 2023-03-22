@@ -24,7 +24,7 @@
   <%= t(
         'user_mailer.personal_key_sign_in.help_html',
         app_name: APP_NAME,
-        reset_password_url: event_disavowal_url(disavowal_token: @disavowal_token),
+        reset_password_url: forgot_password_url,
         account_url: account_url,
       ) %>
 </p>
