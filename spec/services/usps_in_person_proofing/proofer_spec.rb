@@ -31,7 +31,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
       expect(Rails.cache).to receive(:write).with(
         UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY,
         an_instance_of(String),
-        hash_including(expires_at: an_instance_of(ActiveSupport::TimeWithZone)),
+        hash_including(expires_in: an_instance_of(ActiveSupport::Duration)),
       ).twice
       stub_request_token
       subject.retrieve_token!
