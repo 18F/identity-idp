@@ -6,10 +6,7 @@ module Idv
       end
 
       def call
-        mark_step_incomplete(:send_link)
-        if IdentityConfig.store.doc_auth_combined_hybrid_handoff_enabled
-          mark_step_incomplete(:upload)
-        end
+        mark_step_incomplete(:upload)
       end
     end
   end
