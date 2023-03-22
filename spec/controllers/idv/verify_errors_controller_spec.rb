@@ -8,6 +8,12 @@ describe Idv::VerifyErrorsController do
   end
 
   it 'renders the show template' do
+    stub_analytics
+
+    expect(@analytics).to receive(:track_event).with(
+      'IdV: Verify errors visited',
+    )
+
     get :show
 
     expect(response).to render_template :show

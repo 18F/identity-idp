@@ -3,7 +3,7 @@ module Idv
     before_action :confirm_two_factor_authenticated
 
     def show
-      #analytics.idv_verify_errors_visited 
+      analytics.idv_verify_errors_visited
     end
   end
 end

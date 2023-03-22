@@ -3488,6 +3488,11 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when user reaches verify errors due to being rejected due to fraud
+  def idv_verify_errors_visited
+    track_event('IdV: Verify errors visited')
+  end
+
   # @param [String] redirect_url URL user was directed to
   # @param [String, nil] step which step
   # @param [String, nil] location which part of a step, if applicable
