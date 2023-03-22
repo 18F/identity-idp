@@ -11,7 +11,7 @@ module Idv
     end
 
     def exit_url
-      current_sp.return_to_sp_url || account_path
+      current_sp&.return_to_sp_url || account_path
     end
   end
 end

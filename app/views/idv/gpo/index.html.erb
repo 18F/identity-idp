@@ -42,5 +42,4 @@
       ],
     ) %>
 
-<% back_or_cancel_params = @presenter.back_or_cancel_parameters %>
-<%= render back_or_cancel_params.delete(:path), back_or_cancel_params %>
+<%= render @presenter.back_or_cancel_partial, @presenter.back_or_cancel_parameters %>

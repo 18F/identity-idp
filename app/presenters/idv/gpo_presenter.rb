@@ -26,11 +26,19 @@ module Idv
       current_user.decorate.pending_profile_requires_verification?
     end
 
+    def back_or_cancel_partial
+      if OutageStatus.new.gpo_only?
+        'idv/doc_auth/cancel'
+      else
+        'idv/shared/back'
+      end
+    end
+
     def back_or_cancel_parameters
       if OutageStatus.new.gpo_only?
-        { path: 'idv/doc_auth/cancel', step: 'gpo' }
+        { step: 'gpo' }
       else
-        { path: 'idv/shared/back', fallback_path: fallback_back_path }
+        { fallback_path: fallback_back_path }
       end
     end
 
