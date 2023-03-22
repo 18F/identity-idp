@@ -26,8 +26,9 @@ RSpec.describe 'In Person Proofing', js: true do
       search_for_post_office
 
       # location page
-      bethesda_location = page.find_all('.location-collection-item')[1]
-      bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
+      within page.first('.location-collection-item') do
+        click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
+      end
 
       # prepare page
       complete_prepare_step(user)
@@ -98,7 +99,7 @@ RSpec.describe 'In Person Proofing', js: true do
       enrollment_code = JSON.parse(
         UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
       )['enrollmentCode']
-      expect(page).to have_content(t('in_person_proofing.headings.barcode'))
+      expect(page).to have_content(t('in_person_proofing.headings.barcode', app_name: APP_NAME))
       expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
       expect(page).to have_content(
         t('in_person_proofing.body.barcode.deadline', deadline: deadline),
@@ -125,8 +126,9 @@ RSpec.describe 'In Person Proofing', js: true do
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
     search_for_post_office
-    bethesda_location = page.find_all('.location-collection-item')[1]
-    bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
+    within page.first('.location-collection-item') do
+      click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
+    end
 
     # prepare page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
@@ -226,7 +228,8 @@ RSpec.describe 'In Person Proofing', js: true do
     enrollment_code = JSON.parse(
       UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
     )['enrollmentCode']
-    expect(page).to have_content(t('in_person_proofing.headings.barcode'))
+    expect(page).to have_css("img[alt='#{APP_NAME}']")
+    expect(page).to have_content(t('in_person_proofing.headings.barcode', app_name: APP_NAME))
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
     expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
     expect(page).to have_content('MILWAUKEE')
@@ -260,8 +263,9 @@ RSpec.describe 'In Person Proofing', js: true do
     # location page
     expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
     search_for_post_office
-    bethesda_location = page.find_all('.location-collection-item')[1]
-    bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
+    within page.first('.location-collection-item') do
+      click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
+    end
 
     # prepare page
     expect(page).to have_content(t('in_person_proofing.headings.prepare'))
@@ -340,8 +344,9 @@ RSpec.describe 'In Person Proofing', js: true do
 
         click_link t('in_person_proofing.body.cta.button')
         search_for_post_office
-        bethesda_location = page.find_all('.location-collection-item')[1]
-        bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
+        within page.first('.location-collection-item') do
+          click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
+        end
 
         click_idv_continue
 
@@ -500,8 +505,9 @@ RSpec.describe 'In Person Proofing', js: true do
       search_for_post_office
 
       # location page
-      location = page.find_all('.location-collection-item')[1]
-      location.click_button(t('in_person_proofing.body.location.location_button'))
+      within page.first('.location-collection-item') do
+        click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
+      end
 
       # prepare page
       complete_prepare_step(user)

@@ -77,6 +77,7 @@ en:
         select a different number and try again.
       pwned_password: The password you entered is not safe. It’s in a list of known
         passwords exposed in data breaches.
+      stronger_password: Enter a stronger password
       too_long:
         one: is too long (maximum is 1 character)
         other: is too long (maximum is %{count} characters)

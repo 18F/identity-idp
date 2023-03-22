@@ -52,10 +52,10 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
         expect(job_analytics).to have_logged_event(
           'GetUspsProofingResultsJob: Success or failure email initiated',
           email_type: anything,
+          enrollment_code: pending_enrollment.enrollment_code,
           wait_until: anything,
           service_provider: pending_enrollment.issuer,
           timestamp: Time.zone.now,
-          user_id: pending_enrollment.user_id,
         )
       end
     end
@@ -376,7 +376,11 @@ RSpec.describe GetUspsProofingResultsJob do
             expect(pending_enrollment.deadline_passed_sent).to be true
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: deadline passed email initiated',
+              enrollment_code: pending_enrollment.enrollment_code,
               enrollment_id: pending_enrollment.id,
+              service_provider: pending_enrollment.issuer,
+              timestamp: anything,
+              wait_until: nil,
             )
           end
         end
@@ -441,9 +445,9 @@ RSpec.describe GetUspsProofingResultsJob do
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Success or failure email initiated',
               email_type: 'Success',
+              enrollment_code: pending_enrollment.enrollment_code,
               service_provider: anything,
               timestamp: anything,
-              user_id: anything,
               wait_until: wait_until,
             )
           end
@@ -466,9 +470,9 @@ RSpec.describe GetUspsProofingResultsJob do
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Success or failure email initiated',
               email_type: 'Failed',
+              enrollment_code: pending_enrollment.enrollment_code,
               service_provider: anything,
               timestamp: anything,
-              user_id: anything,
               wait_until: wait_until,
             )
           end
@@ -521,9 +525,9 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Success or failure email initiated',
             email_type: 'Success',
+            enrollment_code: pending_enrollment.enrollment_code,
             service_provider: anything,
             timestamp: anything,
-            user_id: anything,
             wait_until: nil,
           )
 
@@ -563,9 +567,9 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Success or failure email initiated',
             email_type: 'Failed',
+            enrollment_code: pending_enrollment.enrollment_code,
             service_provider: anything,
             timestamp: anything,
-            user_id: anything,
             wait_until: nil,
           )
 
@@ -605,9 +609,9 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Success or failure email initiated',
             email_type: 'Failed fraud suspected',
+            enrollment_code: pending_enrollment.enrollment_code,
             service_provider: anything,
             timestamp: anything,
-            user_id: anything,
             wait_until: nil,
           )
 
@@ -651,9 +655,9 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Success or failure email initiated',
             email_type: 'Failed unsupported ID type',
+            enrollment_code: pending_enrollment.enrollment_code,
             service_provider: anything,
             timestamp: anything,
-            user_id: anything,
             wait_until: nil,
           )
         end

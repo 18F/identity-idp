@@ -12,8 +12,6 @@ module DocAuth
 
           side = alert[:side] || 'no_side'
 
-          check_for_dupe!(log_alert_results, side, alert_name_key, alert[:result])
-
           log_alert_results[alert_name_key] = {
             "#{side}": alert[:result],
           }
@@ -21,15 +19,6 @@ module DocAuth
       end
 
       log_alert_results
-    end
-
-    private
-
-    def check_for_dupe!(log_alert_results, side, alert_name_key, result)
-      alert_value = log_alert_results.dig(alert_name_key, side.to_sym)
-      if alert_value.present?
-        Rails.logger.info("ALERT ALREADY HAS A VALUE: #{alert_value}, #{result}")
-      end
     end
   end
 end

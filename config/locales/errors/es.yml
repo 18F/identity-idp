@@ -81,6 +81,7 @@ es:
         premium. Por favor, seleccione otro número e inténtelo de nuevo.
       pwned_password: La contraseña que ingresaste no es segura. Está en una lista de
         contraseñas conocidas expuestas en violaciones de datos.
+      stronger_password: Introduzca una contraseña más segura
       too_long:
         one: es demasiado largo (el máximo es 1 carácter)
         other: es demasiado largo (el máximo es %{count} caracteres)

@@ -1,10 +1,12 @@
 module Users
-  class EditPhoneController < ReauthnRequiredController
+  class EditPhoneController < ApplicationController
     include RememberDeviceConcern
+    include ReauthenticationRequiredConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_user_can_edit_phone
     before_action :confirm_user_can_remove_phone, only: %i[destroy]
+    before_action :confirm_recently_authenticated
 
     def edit
       analytics.phone_change_viewed

@@ -205,7 +205,7 @@ module ArcgisApi
         IdentityConfig.store.arcgis_api_generate_token_url,
         URI.encode_www_form(body),
       ) do |req|
-        req.options.context = { service_name: 'usps_token' }
+        req.options.context = { service_name: 'arcgis_token' }
       end.body
     end
   end
