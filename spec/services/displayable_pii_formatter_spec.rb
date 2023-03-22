@@ -97,7 +97,7 @@ describe DisplayablePiiFormatter do
         expect(result.full_name).to eq('Testy Testerson')
         expect(result.social_security_number).to eq('900-12-3456')
         expect(result.address).to eq('123 main st Washington, DC 20405')
-        expect(result.birthdate).to eq('January 01, 1990')
+        expect(result.birthdate).to eq('January 1, 1990')
         expect(result.phone).to eq('+1 202-212-1000')
       end
     end
@@ -168,7 +168,8 @@ describe DisplayablePiiFormatter do
         let(:dob) { '1990-01-02' }
 
         it 'returns a formatted birdate' do
-          expect(formatter.format.birthdate).to eq('January 02, 1990')
+          formatted_date = I18n.l(DateParser.parse_legacy(dob), format: :long)
+          expect(formatter.format.birthdate).to eq(formatted_date)
         end
       end
 
@@ -176,7 +177,15 @@ describe DisplayablePiiFormatter do
         let(:dob) { '01/02/1990' }
 
         it 'returns a formatted birdate' do
-          expect(formatter.format.birthdate).to eq('January 02, 1990')
+          formatted_date = I18n.l(DateParser.parse_legacy(dob), format: :long)
+          expect(formatter.format.birthdate).to eq(formatted_date)
+        end
+      end
+
+      context 'with a non-English locale' do
+        before { I18n.locale = :es }
+        it 'returns a localized, formatted birthdate' do
+          expect(formatter.format.birthdate).to eq('1 de enero de 1990')
         end
       end
     end
