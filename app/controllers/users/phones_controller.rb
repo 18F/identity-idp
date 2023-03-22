@@ -1,12 +1,14 @@
 module Users
-  class PhonesController < ReauthnRequiredController
+  class PhonesController < ApplicationController
     include PhoneConfirmation
     include RecaptchaConcern
+    include ReauthenticationRequiredConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :redirect_if_phone_vendor_outage
     before_action :check_max_phone_numbers_per_account, only: %i[add create]
     before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?
+    before_action :confirm_recently_authenticated
 
     def add
       user_session[:phone_id] = nil

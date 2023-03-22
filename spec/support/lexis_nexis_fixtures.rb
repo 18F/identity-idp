@@ -84,6 +84,20 @@ module LexisNexisFixtures
       JSON.parse(raw).to_json
     end
 
+    def instant_verify_drivers_license_failure_response_json
+      raw = read_fixture_file_at_path(
+        'instant_verify/drivers_license_failure_response.json',
+      )
+      JSON.parse(raw).to_json
+    end
+
+    def instant_verify_drivers_license_info_missing_response_json
+      raw = read_fixture_file_at_path(
+        'instant_verify/drivers_license_info_missing_response.json',
+      )
+      JSON.parse(raw).to_json
+    end
+
     def phone_finder_request_json
       raw = read_fixture_file_at_path('phone_finder/request.json')
       JSON.parse(raw).to_json

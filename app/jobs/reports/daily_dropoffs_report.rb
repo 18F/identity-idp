@@ -19,11 +19,7 @@ module Reports
       verified
     ].freeze
 
-    attr_reader :report_date
-
-    def initialize(report_date = nil)
-      @report_date = report_date
-    end
+    attr_accessor :report_date
 
     def perform(report_date)
       @report_date = report_date

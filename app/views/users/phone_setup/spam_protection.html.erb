@@ -44,9 +44,11 @@
        ).with_content(t('two_factor_authentication.login_options_link_text')) %>
   <% end %>
   <% c.option(
-       url: MarketingSite.help_center_article_url(
+       url: help_center_redirect_path(
          category: 'get-started',
          article: 'authentication-options',
+         flow: :two_factor_authentication,
+         step: :phone_setup_spam_protection,
        ),
        new_tab: true,
      ).with_content(t('two_factor_authentication.phone_verification.troubleshooting.learn_more')) %>

@@ -1,10 +1,12 @@
 module Accounts
   # Lets users generate a new personal key
-  class PersonalKeysController < ReauthnRequiredController
+  class PersonalKeysController < ApplicationController
     include PersonalKeyConcern
+    include ReauthenticationRequiredConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :prompt_for_password_if_pii_locked
+    before_action :confirm_recently_authenticated
 
     def new
       analytics.profile_personal_key_visit

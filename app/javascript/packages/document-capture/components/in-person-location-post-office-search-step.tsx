@@ -73,6 +73,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
           setAutoSubmit(true);
           setImmediate(() => {
             // continue with navigation
+            e.target.disabled = false;
             e.target.click();
             // allow process to be re-triggered in case submission did not work as expected
             setAutoSubmit(false);
