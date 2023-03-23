@@ -15,7 +15,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
       data: event_values, timestamp: timestamp, public_key_str: public_key,
     )
 
-    create_and_upload_to_attempts_s3_resource(
+    upload_to_s3_response = create_and_upload_to_attempts_s3_resource(
       bucket_name: s3_helper.attempts_bucket_name, filename: result.filename,
       encrypted_data: result.encrypted_data
     )
@@ -31,6 +31,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     )
 
     log_irs_attempts_events_job_info(result, events, start_time)
+    redis_client.remove_events(timestamp: timestamp) if upload_to_s3_response&.etag
     irs_attempts_api_log_file
   end
 
