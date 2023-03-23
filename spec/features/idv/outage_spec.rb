@@ -39,7 +39,6 @@ feature 'IdV Outage Spec' do
     end
   end
 
-
   context 'force GPO only without phone outages', js: true do
     before do
       allow(IdentityConfig.store).to receive(:feature_idv_force_gpo_verification_enabled).
