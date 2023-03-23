@@ -8,6 +8,12 @@ module Idv
 
       attr_accessor(*ATTRIBUTES)
 
+      attr_reader :capture_secondary_id_enabled
+
+      def initialize(capture_secondary_id_enabled:)
+        @capture_secondary_id_enabled = capture_secondary_id_enabled
+      end
+
       def self.model_name
         ActiveModel::Name.new(self, nil, 'InPersonAddress')
       end

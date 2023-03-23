@@ -55,7 +55,7 @@ module Idv
         end
 
         def form
-          @form ||= Idv::InPerson::AddressForm.new
+          @form ||= Idv::InPerson::AddressForm.new(capture_secondary_id_enabled:)
         end
 
         def form_submit
