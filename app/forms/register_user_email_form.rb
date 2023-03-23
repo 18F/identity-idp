@@ -84,6 +84,7 @@ class RegisterUserEmailForm
     # To prevent discovery of existing emails, we check to see if the email is
     # already taken and if so, we act as if the user registration was successful.
     if email_taken? && user_unconfirmed?
+      update_user_language_preference
       send_sign_up_unconfirmed_email(request_id)
     elsif email_taken?
       send_sign_up_confirmed_email
@@ -95,6 +96,12 @@ class RegisterUserEmailForm
         instructions: instructions,
         password_reset_requested: password_reset_requested?,
       )
+    end
+  end
+
+  def update_user_language_preference
+    if existing_user.email_language != email_language
+      existing_user.update(email_language: email_language)
     end
   end
 
