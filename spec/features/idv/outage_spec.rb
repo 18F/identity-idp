@@ -20,6 +20,26 @@ feature 'IdV Outage Spec' do
   let(:new_password) { 'some really awesome new password' }
   let(:pii) { { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' } }
 
+  context 'GPO only enabled, but user starts over', js: true do
+    before do
+      allow(IdentityConfig.store).to receive(:feature_idv_force_gpo_verification_enabled).
+        and_return(true)
+    end
+
+    it 'shows mail only warning page before idv welcome page' do
+      sign_in_with_idv_required(user: user)
+
+      expect(current_path).to eq idv_mail_only_warning_path
+
+      complete_doc_auth_steps_before_document_capture_step
+      click_on t('links.cancel')
+      click_on t('idv.cancel.actions.start_over')
+
+      expect(current_path).to eq idv_mail_only_warning_path
+    end
+  end
+
+
   context 'force GPO only without phone outages', js: true do
     before do
       allow(IdentityConfig.store).to receive(:feature_idv_force_gpo_verification_enabled).

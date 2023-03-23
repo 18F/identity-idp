@@ -70,7 +70,7 @@ module Idv
     end
 
     def check_for_outage
-      return if session[:skip_vendor_outage]
+      return if flow_session[:skip_vendor_outage]
 
       return redirect_for_proofing_vendor_outage if OutageStatus.new.any_idv_vendor_outage?
       return redirect_for_gpo_only if FeatureManagement.idv_gpo_only?
