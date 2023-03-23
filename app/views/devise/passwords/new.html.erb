@@ -1,7 +1,7 @@
 <% title t('titles.passwords.forgot') %>
 <% request_id = params[:request_id] || sp_session[:request_id] %>
 
-<%= render 'shared/sp_alert' %>
+<%= render 'shared/sp_alert', section: 'forgot_password' %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.passwords.forgot')) %>
 

@@ -240,6 +240,7 @@ prepare_deploy:
     - cp config/application.yml.default.ci config/application.yml
     - ./deploy/build
     - ./deploy/build-post-config
+    - bundle exec rails zeitwerk:check
     - make build_artifact ARTIFACT_DESTINATION_FILE='./tmp/idp.tar.gz'
     - bundle exec ./scripts/artifact-upload './tmp/idp.tar.gz'
 

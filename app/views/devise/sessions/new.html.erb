@@ -17,7 +17,7 @@
 <% else %>
   <%= render PageHeadingComponent.new.with_content(decorated_session.new_session_heading) %>
 <% end %>
-<%= render 'shared/sp_alert' %>
+<%= render 'shared/sp_alert', section: 'sign_in' %>
 
 <%= simple_form_for(
       resource,

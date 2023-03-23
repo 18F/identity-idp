@@ -1,8 +1,10 @@
 module Users
-  class PivCacSetupController < ReauthnRequiredController
+  class PivCacSetupController < ApplicationController
     include PhoneConfirmation
+    include ReauthenticationRequiredConcern
 
     before_action :confirm_two_factor_authenticated
+    before_action :confirm_recently_authenticated
 
     def delete; end
 

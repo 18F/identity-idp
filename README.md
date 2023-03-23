@@ -7,9 +7,12 @@ This repository contains the core code base and documentation for the identity m
 
 ## Contributing to this code base
 
-Thank you for your interest in contributing to the Login.gov IdP! For complete instructions on how to contribute code, please read through our [CONTRIBUTING.md](CONTRIBUTING.md) documentation.
+Thank you for your interest in contributing to the Login.gov IdP! For instructions on how to contribute and to learn more about conventions at Login.gov, refer to the following resources:
 
-You may also want to read the [the Login.gov team Handbook](https://handbook.login.gov/).
+- [The Contributing Guide](CONTRIBUTING.md) includes basic guidelines around pull requests, commit messages, and the code review process.
+- [Front-end Architecture](./docs/frontend.md) provides a high-level overview of frontend development practices and tools.
+- [Back-end Architecture](./docs/backend.md) outlines a similar overview for backend development practices and tools.
+- [The Login.gov Handbook](https://handbook.login.gov/) describes organizational practices, including process runbooks and team structures.
 
 ## Creating your local development environment
 
