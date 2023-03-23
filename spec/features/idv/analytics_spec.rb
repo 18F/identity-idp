@@ -196,7 +196,8 @@ feature 'Analytics Regression', js: true do
 
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(false)
+      allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+        and_return(false)
       allow(AbTests::IN_PERSON_CTA).to receive(:bucket).and_return(:in_person_variant_a)
       allow(IdentityConfig.store).to receive(:in_person_cta_variant_testing_enabled).
         and_return(false)
