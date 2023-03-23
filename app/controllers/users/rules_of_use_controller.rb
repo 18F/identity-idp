@@ -1,7 +1,10 @@
 module Users
   class RulesOfUseController < ApplicationController
+    include SecureHeadersConcern
+
     before_action :confirm_signed_in
     before_action :confirm_need_to_accept_rules_of_use
+    before_action :apply_secure_headers_override
 
     def new
       analytics.rules_of_use_visit
