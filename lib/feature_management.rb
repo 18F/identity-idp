@@ -156,4 +156,10 @@ class FeatureManagement
     return false if OutageStatus.new.any_phone_vendor_outage?
     true
   end
+
+  def self.idv_gpo_only?
+    IdentityConfig.store.feature_idv_force_gpo_verification_enabled ||
+      OutageStatus.new.any_phone_vendor_outage?
+
+  end
 end
