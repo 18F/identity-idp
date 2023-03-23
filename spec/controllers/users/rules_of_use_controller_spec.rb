@@ -121,6 +121,27 @@ RSpec.describe Users::RulesOfUseController do
 
         action
       end
+
+      it 'includes service provider URIs in form action content security policy header' do
+        sp = create(:service_provider, issuer: 'example-issuer', redirect_uris: ['https://example.com'])
+        params = {
+          client_id: sp.issuer,
+          response_type: 'code',
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          scope: 'openid email',
+          redirect_uri: sp.redirect_uris.first,
+          state: '1234567890123456789012',
+          nonce: '1234567890123456789012',
+        }
+        session[:sp] = {
+          issuer: sp.issuer,
+          request_url: "http://test.com?#{URI.encode_www_form(params)}",
+        }
+        action
+        form_action = response.request.content_security_policy.form_action
+        csp_array = ["'self'", 'https://example.com']
+        expect(form_action).to match_array(csp_array)
+      end
     end
 
     context 'when the user needs to accept the rules of use and does not accept them' do
