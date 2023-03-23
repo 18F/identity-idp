@@ -30,16 +30,18 @@ module Idv
       end
 
       def report_errors(error)
-        remapped_error = {
-          Faraday::ClientError => :bad_request,
-          Faraday::ConnectionFailed => :bad_request,
-          Faraday::TimeoutError => :bad_request,
-          ActionController::InvalidAuthenticityToken => :bad_request,
-        }[error.class] || :internal_server_error
-
-        errors = if error.instance_of?(Faraday::ClientError)
-                   error.response_body && error.response_body[:details]
+        remapped_error = case error
+        when Faraday::ClientError, Faraday::ConnectionFailed, Faraday::TimeoutError,
+          ActionController::InvalidAuthenticityToken
+          :bad_request
+        else
+          :internal_server_error
         end
+
+        errors = if error.respond_to?(:response_body)
+                   error.response_body && error.response_body[:details]
+                 end
+
         errors ||= 'ArcGIS error performing operation'
 
         analytics.idv_in_person_locations_searched(
