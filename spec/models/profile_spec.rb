@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe Profile do
   let(:user) { create(:user, :signed_up, password: 'a really long sekrit') }
-  let(:hashed_uuid) { Digest::SHA1.hexdigest(user.uuid) }
   let(:another_user) { create(:user, :signed_up) }
   let(:profile) { create(:profile, user: user) }
 
@@ -317,8 +316,6 @@ describe Profile do
         expect(profile.irs_attempts_api_tracker).to receive(:fraud_review_adjudicated).
           with(
             decision: 'pass',
-            # FIXME: stub these out somewhere, or should we move this test?
-            fraud_event_id: nil,
             cached_irs_session_id: nil,
             cached_login_session_id: nil,
           )
@@ -419,7 +416,6 @@ describe Profile do
             with(
               decision: 'manual_reject',
               # FIXME: These shouldn't be nil.
-              fraud_event_id: nil,
               cached_irs_session_id: nil,
               cached_login_session_id: nil,
             )
@@ -438,7 +434,6 @@ describe Profile do
             with(
               decision: 'automatic_reject',
               # FIXME:
-              fraud_event_id: nil,
               cached_irs_session_id: nil,
               cached_login_session_id: nil,
             )

@@ -68,16 +68,13 @@ module IrsAttemptsApi
     end
 
     # @param [String] decision One of 'pass', 'manual_reject', or 'automated_reject'
-    # @param [Integer] fraud_event_id Can be used to correlate with an idv_tmx_fraud_check event
     # @param [String] cached_irs_session_id The IRS session id ('tid') the user had when flagged
     # @param [String] cached_login_session_id The Login.gov session id the user had when flagged
     # A profile offlined for review has been approved or rejected.
-    def fraud_review_adjudicated(decision:, fraud_event_id:, cached_irs_session_id:,
-                                 cached_login_session_id:)
+    def fraud_review_adjudicated(decision:, cached_irs_session_id:, cached_login_session_id:)
       track_event(
         :fraud_review_adjudicated,
         decision: decision,
-        fraud_event_id: fraud_event_id,
         cached_irs_session_id: cached_irs_session_id,
         cached_login_session_id: cached_login_session_id,
       )
@@ -298,15 +295,13 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success
-    # @param [Integer] fraud_event_id - Maps to a fraud_review_adjudicated event
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # This event will capture the result of the TMX fraud check
     # during Identity Verification
-    def idv_tmx_fraud_check(success:, fraud_event_id:, failure_reason: nil)
+    def idv_tmx_fraud_check(success:, failure_reason: nil)
       track_event(
         :idv_tmx_fraud_check,
         success: success,
-        fraud_event_id: fraud_event_id,
         failure_reason: failure_reason,
       )
     end

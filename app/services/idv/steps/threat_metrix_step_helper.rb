@@ -54,11 +54,10 @@ module Idv
         success = result[:review_status] == 'pass'
 
         unless success
-          fraud_event = FraudEvent.create(
+          fraud_event = FraudReviewRequest.create(
             user: user,
             irs_session_id: irs_attempts_api_session_id,
-            # I think the to_s here is only needed in badly-constructed tests?
-            login_session_id: Digest::SHA1.hexdigest(user&.unique_session_id.to_s),
+            login_session_id: Digest::SHA1.hexdigest(user.unique_session_id.to_s),
           )
 
           if (tmx_summary_reason_code = result.dig(:response_body, :tmx_summary_reason_code))
@@ -71,7 +70,6 @@ module Idv
         irs_attempts_api_tracker.idv_tmx_fraud_check(
           success: success,
           failure_reason: failure_reason,
-          fraud_event_id: fraud_event&.id,
         )
       end
     end

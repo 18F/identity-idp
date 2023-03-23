@@ -209,9 +209,6 @@ describe Idv::VerifyInfoController do
         allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
         allow(IdentityConfig.store).to receive(:irs_attempt_api_track_tmx_fraud_check_event).
           and_return(true)
-        # maw: This is rather inelegant, but gets tests passing for the moment.
-        # Should really stub this out better.
-        allow_any_instance_of(FraudEvent).to receive(:id).and_return(123)
       end
 
       context 'when threatmetrix response is Pass' do
@@ -220,7 +217,6 @@ describe Idv::VerifyInfoController do
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: true,
-            fraud_event_id: nil,
             failure_reason: nil,
           )
           get :show
@@ -233,7 +229,6 @@ describe Idv::VerifyInfoController do
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
-            fraud_event_id: 123,
             failure_reason: expected_failure_reason,
           )
           get :show
@@ -246,7 +241,6 @@ describe Idv::VerifyInfoController do
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
-            fraud_event_id: 123,
             failure_reason: expected_failure_reason,
           )
           get :show
@@ -259,7 +253,6 @@ describe Idv::VerifyInfoController do
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
-            fraud_event_id: 123,
             failure_reason: expected_failure_reason,
           )
           get :show
