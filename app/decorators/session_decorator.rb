@@ -39,7 +39,7 @@ class SessionDecorator
 
   def requested_attributes; end
 
-  def sp_alert(_path); end
+  def sp_alert(_section); end
 
   def requested_more_recent_verification?
     false
