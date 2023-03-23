@@ -96,7 +96,7 @@ feature 'idv gpo otp verification step', :js do
 
   context 'with gpo feature disabled' do
     before do
-      allow(IdentityConfig.store).to receive(:enable_gpo_verification?).and_return(true)
+      allow(IdentityConfig.store).to receive(:gpo_verification_enabled?).and_return(true)
     end
 
     it 'allows a user to verify their account for an existing pending profile' do

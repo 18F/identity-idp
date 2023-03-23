@@ -52,7 +52,7 @@ class FeatureManagement
     IdentityConfig.store.use_dashboard_service_providers
   end
 
-  def self.enable_gpo_verification?
+  def self.gpo_verification_enabled?
     # leaving the usps name for backwards compatibility
     IdentityConfig.store.enable_usps_verification
   end
