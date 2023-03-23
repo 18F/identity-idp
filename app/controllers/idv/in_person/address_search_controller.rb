@@ -31,8 +31,10 @@ module Idv
 
       def report_errors(error)
         remapped_error = case error
-        when Faraday::ClientError, Faraday::ConnectionFailed, Faraday::TimeoutError,
-          ActionController::InvalidAuthenticityToken
+        when Faraday::ClientError,
+             Faraday::ConnectionFailed,
+             Faraday::TimeoutError,
+             ActionController::InvalidAuthenticityToken
           :bad_request
         else
           :internal_server_error
