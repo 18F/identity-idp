@@ -72,7 +72,7 @@ class Profile < ApplicationRecord
     fraud_event = user.fraud_events&.last # TBD - what if this isn't found?
     irs_attempts_api_tracker&.fraud_review_adjudicated(
       decision: notify_user ? 'manual_reject' : 'automatic_reject',
-      fraud_event__id: fraud_event&.id,
+      fraud_event_id: fraud_event&.id,
       cached_irs_session_id: fraud_event&.irs_session_id,
       cached_login_session_id: fraud_event&.login_session_id,
     )

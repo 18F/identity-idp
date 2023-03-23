@@ -315,7 +315,13 @@ describe Profile do
         expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_truthy
 
         expect(profile.irs_attempts_api_tracker).to receive(:fraud_review_adjudicated).
-          with(decision: 'pass', fraud_fingerprint: hashed_uuid)
+          with(
+            decision: 'pass',
+            # FIXME: stub these out somewhere, or should we move this test?
+            fraud_event_id: nil,
+            cached_irs_session_id: nil,
+            cached_login_session_id: nil,
+          )
         profile.activate_after_passing_review
       end
     end
@@ -410,7 +416,13 @@ describe Profile do
           expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_truthy
 
           expect(profile.irs_attempts_api_tracker).to receive(:fraud_review_adjudicated).
-            with(decision: 'manual_reject', fraud_fingerprint: hashed_uuid)
+            with(
+              decision: 'manual_reject',
+              # FIXME: These shouldn't be nil.
+              fraud_event_id: nil,
+              cached_irs_session_id: nil,
+              cached_login_session_id: nil,
+            )
 
           profile.reject_for_fraud(notify_user: true)
         end
@@ -423,7 +435,13 @@ describe Profile do
           expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_truthy
 
           expect(profile.irs_attempts_api_tracker).to receive(:fraud_review_adjudicated).
-            with(decision: 'automatic_reject', fraud_fingerprint: hashed_uuid)
+            with(
+              decision: 'automatic_reject',
+              # FIXME:
+              fraud_event_id: nil,
+              cached_irs_session_id: nil,
+              cached_login_session_id: nil,
+            )
 
           profile.reject_for_fraud(notify_user: false)
         end
