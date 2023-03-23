@@ -479,28 +479,25 @@ describe Idv::PhoneController do
 
       context 'when the user is throttled by submission' do
         before do
+          stub_analytics
+
           user = create(:user, with: { phone: '+1 (415) 555-0130' })
           stub_verify_steps_one_and_two(user)
+
           throttle = Throttle.new(throttle_type: :proof_address, user: user)
-          (max_attempts - 1).times do
-            throttle.increment!
-          end
+          throttle.increment_to_throttled!
+
+          put :create, params: { idv_phone_form: { phone: bad_phone } }
         end
 
         it 'tracks throttled event' do
-          stub_analytics
-          allow(@analytics).to receive(:track_event)
-
-          expect(@analytics).to receive(:track_event).with(
+          expect(@analytics).to have_logged_event(
             'Throttler Rate Limit Triggered',
             {
               throttle_type: :proof_address,
               step_name: :phone,
             },
           )
-
-          put :create, params: { idv_phone_form: { phone: bad_phone } }
-          get :new
         end
       end
     end

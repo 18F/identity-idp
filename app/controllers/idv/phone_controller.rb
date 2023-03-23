@@ -14,9 +14,14 @@ module Idv
     def new
       analytics.idv_phone_use_different(step: params[:step]) if params[:step]
 
+      async_state = step.async_state
+
+      # It's possible that create redirected here after a success and left the
+      # throttle maxed out. Check for success before checking throttle.
+      return async_state_done(async_state) if async_state.done?
+
       redirect_to failure_url(:fail) and return if throttle.throttled?
 
-      async_state = step.async_state
       if async_state.none?
         Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
           call(:verify_phone, :view, true)
@@ -29,8 +34,6 @@ module Idv
         analytics.proofing_address_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
         render :new, locals: { gpo_letter_available: gpo_letter_available }
-      elsif async_state.done?
-        async_state_done(async_state)
       end
     end
 
@@ -55,13 +58,6 @@ module Idv
 
     def throttle
       @throttle ||= Throttle.new(user: current_user, throttle_type: :proof_address)
-    end
-
-    def max_attempts_reached
-      analytics.throttler_rate_limit_triggered(
-        throttle_type: :proof_address,
-        step_name: step_name,
-      )
     end
 
     def redirect_to_next_step
@@ -113,7 +109,6 @@ module Idv
     end
 
     def handle_proofing_failure
-      max_attempts_reached if step.failure_reason == :fail
       redirect_to failure_url(step.failure_reason)
     end
 
@@ -125,6 +120,7 @@ module Idv
       @step ||= Idv::PhoneStep.new(
         idv_session: idv_session,
         trace_id: amzn_trace_id,
+        analytics: analytics,
         attempts_tracker: irs_attempts_api_tracker,
       )
     end
