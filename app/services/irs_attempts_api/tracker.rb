@@ -43,8 +43,7 @@ module IrsAttemptsApi
 
       if enabled?
         if IdentityConfig.store.irs_attempt_api_payload_size_logging_enabled
-          # analytics may be nil when called from outside ApplicationController
-          analytics&.irs_attempts_api_event_metadata(
+          analytics.irs_attempts_api_event_metadata(
             event_type: event_type,
             unencrypted_payload_num_bytes: event.payload_json.bytesize,
             recorded: true,

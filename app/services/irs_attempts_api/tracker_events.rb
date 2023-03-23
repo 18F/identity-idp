@@ -67,8 +67,10 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [String] decision One of 'reject' or 'pass'
-    # @param [String] fraud_fingerprint An opaque identifier to correlate with a TMX check
+    # @param [String] decision One of 'pass', 'manual_reject', or 'automated_reject'
+    # @param [Integer] fraud_event_id Can be used to correlate with an idv_tmx_fraud_check event
+    # @param [String] cached_irs_session_id The IRS session id ('tid') the user had when flagged
+    # @param [String] cached_login_session_id The Login.gov session id the user had when flagged
     # A profile offlined for review has been approved or rejected.
     def fraud_review_adjudicated(decision:, fraud_event_id:, cached_irs_session_id:,
                                  cached_login_session_id:)
@@ -296,6 +298,7 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success
+    # @param [Integer] fraud_event_id - Can be used to correlate events with fraud_review_adjudicated events
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # This event will capture the result of the TMX fraud check
     # during Identity Verification
