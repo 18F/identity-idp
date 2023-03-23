@@ -103,7 +103,7 @@ fr:
         state_prompt: '- Sélectionnez -'
       state_id:
         address1: Adresse
-        address2: Adresse Ligne 2 (optional)
+        address2: Adresse ligne 2 (optional)
         city: Ville
         date_hint:
           day: 'Exemple: 28'
