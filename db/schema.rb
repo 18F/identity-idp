@@ -307,6 +307,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_22_000756) do
     t.boolean "late_reminder_sent", default: false, comment: "late reminder to complete IPP before deadline sent"
     t.boolean "deadline_passed_sent", default: false, comment: "deadline passed email sent for expired enrollment"
     t.datetime "proofed_at", precision: nil, comment: "timestamp when user attempted to proof at a Post Office"
+    t.boolean "capture_secondary_id_enabled", default: false, comment: "record and proof state ID and residential addresses separately"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
     t.index ["status_check_attempted_at"], name: "index_in_person_enrollments_on_status_check_attempted_at", where: "(status = 1)"
     t.index ["unique_id"], name: "index_in_person_enrollments_on_unique_id", unique: true

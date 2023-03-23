@@ -79,6 +79,15 @@ describe Idv::Steps::InPerson::StateIdStep do
     let(:first_name) { 'First name' }
     let(:pii_from_user) { flow.flow_session[:pii_from_user] }
     let(:params) { ActionController::Parameters.new }
+    let(:capture_secondary_id_enabled) { true }
+    let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
+
+    before(:each) do
+      allow(step).to receive(:current_user).
+        and_return(user)
+      allow(user).to receive(:establishing_in_person_enrollment).
+        and_return(enrollment)
+    end
 
     context 'first name and dob are set' do
       it 'returns extra view variables' do
@@ -120,6 +129,23 @@ describe Idv::Steps::InPerson::StateIdStep do
           ),
           parsed_dob: Date.parse(dob),
           updating_state_id: false,
+        )
+      end
+    end
+
+    context 'with secondary capture enabled' do
+      it 'returns capture enabled = true' do
+        expect(step.extra_view_variables).to include(
+          capture_secondary_id_enabled: true,
+        )
+      end
+    end
+
+    context 'with secondary capture disabled' do
+      let(:capture_secondary_id_enabled) { false }
+      it 'returns capture enabled = false' do
+        expect(step.extra_view_variables).to include(
+          capture_secondary_id_enabled: false,
         )
       end
     end

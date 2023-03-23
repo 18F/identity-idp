@@ -325,12 +325,12 @@ RSpec.describe 'In Person Proofing', js: true do
 
     it 'resumes desktop session with in-person proofing', allow_browser_log: true do
       user = nil
-
+      phone_number = '415-555-0199'
       perform_in_browser(:desktop) do
         user = sign_in_and_2fa_user
-        complete_doc_auth_steps_before_send_link_step
-        fill_in :doc_auth_phone, with: '415-555-0199'
-        click_idv_continue
+        complete_doc_auth_steps_before_upload_step
+        clear_and_fill_in(:doc_auth_phone, phone_number)
+        click_send_link
 
         expect(page).to have_content(t('doc_auth.headings.text_message'))
       end
@@ -491,28 +491,72 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
-  context 'validate_id_and_residential_addresses feature flag enabled', allow_browser_log: true do
+  context 'in_person_capture_secondary_id_enabled feature flag disabled, then enabled during flow',
+          allow_browser_log: true do
     let(:user) { user_with_2fa }
 
-    before do
+    before(:each) do
       allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
-        and_return(true)
-    end
+        and_return(false)
 
-    it 'captures the address, address line 2, city, state and zip code' do
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
-      search_for_post_office
+      complete_location_step(user)
 
-      # location page
-      within page.first('.location-collection-item') do
-        click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
-      end
+      expect(page).to have_content(
+        t('in_person_proofing.headings.prepare'),
+      )
+    end
 
+    it 'does not capture separate state id address from residential address' do
+      allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+        and_return(true)
+      # prepare page
+      complete_prepare_step(user)
+      complete_state_id_step(user)
+      complete_address_step(user)
+      complete_ssn_step(user)
+    end
+  end
+
+  context 'in_person_capture_secondary_id_enabled feature flag enabled', allow_browser_log: true do
+    let(:user) { user_with_2fa }
+
+    before(:each) do
+      allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+        and_return(true)
+
+      sign_in_and_2fa_user(user)
+      begin_in_person_proofing(user)
+      complete_location_step(user)
+
+      expect(page).to have_content(
+        t('in_person_proofing.headings.prepare'),
+      )
+    end
+
+    def it_captures_address_with_state_id
       # prepare page
       complete_prepare_step(user)
 
       complete_state_id_step(user, same_address_as_id: false, include_address: true)
+    end
+
+    context 'flag remains enabled' do
+      it 'captures the address, address line 2, city, state and zip code' do
+        it_captures_address_with_state_id
+      end
+    end
+
+    context 'flag is then disabled' do
+      before(:each) do
+        allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+          and_return(false)
+      end
+
+      it 'captures the address, address line 2, city, state and zip code' do
+        it_captures_address_with_state_id
+      end
     end
   end
 end

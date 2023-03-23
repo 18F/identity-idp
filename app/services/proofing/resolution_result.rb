@@ -10,7 +10,7 @@ module Proofing
                 :attributes_requiring_additional_verification,
                 :reference,
                 :vendor_workflow,
-                :drivers_license_check_info
+                :drivers_license_info_matches
 
     def initialize(
       success: nil,
@@ -22,7 +22,7 @@ module Proofing
       failed_result_can_pass_with_additional_verification: false,
       attributes_requiring_additional_verification: [],
       vendor_workflow: nil,
-      drivers_license_check_info: nil
+      drivers_license_info_matches: false
     )
       @success = success
       @errors = errors
@@ -35,7 +35,7 @@ module Proofing
       @attributes_requiring_additional_verification =
         attributes_requiring_additional_verification
       @vendor_workflow = vendor_workflow
-      @drivers_license_check_info = drivers_license_check_info
+      @drivers_license_info_matches = drivers_license_info_matches
     end
 
     def success?
@@ -58,12 +58,16 @@ module Proofing
         attributes_requiring_additional_verification: attributes_requiring_additional_verification,
         vendor_name: vendor_name,
         vendor_workflow: vendor_workflow,
-        drivers_license_check_info: drivers_license_check_info,
+        drivers_license_info_matches: drivers_license_info_matches,
       }
     end
 
     def failed_result_can_pass_with_additional_verification?
       failed_result_can_pass_with_additional_verification
+    end
+
+    def drivers_license_info_matches?
+      drivers_license_info_matches
     end
   end
 end

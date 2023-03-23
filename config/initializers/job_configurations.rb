@@ -143,7 +143,7 @@ else
       duplicate_ssn: {
         class: 'Reports::DuplicateSsnReport',
         cron: cron_24h,
-        args: -> { [Time.zone.today] },
+        args: -> { [Time.zone.yesterday] },
       },
     }
   end
