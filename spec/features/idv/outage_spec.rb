@@ -20,6 +20,42 @@ feature 'IdV Outage Spec' do
   let(:new_password) { 'some really awesome new password' }
   let(:pii) { { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' } }
 
+  context 'force GPO only without phone outages', js: true do
+    before do
+      allow(IdentityConfig.store).to receive(:feature_idv_force_gpo_verification_enabled).
+        and_return(true)
+      allow(IdentityConfig.store).to receive(:vendor_status_sms).
+        and_return(:operational)
+      allow(IdentityConfig.store).to receive(:vendor_status_voice).
+        and_return(:operational)
+    end
+
+    it 'shows mail only warning page before idv welcome page' do
+      sign_in_with_idv_required(user: user)
+
+      expect(current_path).to eq idv_mail_only_warning_path
+
+      click_idv_continue
+
+      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
+    end
+  end
+
+  context 'force GPO only, but GPO not enabled', js: true do
+    before do
+      allow(IdentityConfig.store).to receive(:feature_idv_force_gpo_verification_enabled).
+        and_return(true)
+      allow(IdentityConfig.store).to receive(:enable_usps_verification).
+        and_return(false)
+    end
+
+    it 'shows mail only warning page before idv welcome page' do
+      sign_in_with_idv_required(user: user)
+
+      expect(current_path).to eq vendor_outage_path
+    end
+  end
+
   context 'phone outage', js: true do
     let(:user) { user_with_totp_2fa }
 

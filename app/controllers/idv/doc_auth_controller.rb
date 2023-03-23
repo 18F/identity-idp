@@ -84,7 +84,7 @@ module Idv
     end
 
     def redirect_for_gpo_only
-      redirect_to vendor_outage_url unless FeatureManagement.gpo_verification_enabled?
+      return redirect_to vendor_outage_url unless FeatureManagement.gpo_verification_enabled?
 
       # During a phone outage, skip the hybrid handoff
       # step and go straight to document upload
