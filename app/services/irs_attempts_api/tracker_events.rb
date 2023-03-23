@@ -298,7 +298,7 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success
-    # @param [Integer] fraud_event_id - Can be used to correlate events with fraud_review_adjudicated events
+    # @param [Integer] fraud_event_id - Maps to a fraud_review_adjudicated event
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # This event will capture the result of the TMX fraud check
     # during Identity Verification

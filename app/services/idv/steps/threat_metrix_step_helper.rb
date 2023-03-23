@@ -61,7 +61,7 @@ module Idv
             login_session_id: Digest::SHA1.hexdigest(user&.unique_session_id.to_s),
           )
 
-          if (tmx_summary_reason_code = result.dig(:response_body,:tmx_summary_reason_code))
+          if (tmx_summary_reason_code = result.dig(:response_body, :tmx_summary_reason_code))
             failure_reason = {
               tmx_summary_reason_code: tmx_summary_reason_code,
             }
