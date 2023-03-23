@@ -12,7 +12,7 @@ module Idv
       end
 
       def call
-        flow_session[:skip_upload_step] = true unless OutageStatus.new.allow_hybrid_flow?
+        flow_session[:skip_upload_step] = true unless FeatureManagement.idv_allow_hybrid_flow?
 
         return no_camera_redirect if params[:no_camera]
 

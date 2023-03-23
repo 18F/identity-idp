@@ -149,4 +149,11 @@ class FeatureManagement
       raise 'Invalid value for proofing_device_profiling'
     end
   end
+
+  # Whether or not idv hybrid mode is available
+  def self.idv_allow_hybrid_flow?
+    return false unless IdentityConfig.store.feature_idv_hybrid_flow_enabled
+    return false if OutageStatus.new.any_phone_vendor_outage?
+    true
+  end
 end

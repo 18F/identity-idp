@@ -81,7 +81,7 @@ module Idv
     def redirect_for_gpo_only(vendor_status)
       # During a phone outage, skip the hybrid handoff
       # step and go straight to document upload
-      flow_session[:skip_upload_step] = true unless vendor_status.allow_hybrid_flow?
+      flow_session[:skip_upload_step] = true unless FeatureManagement.idv_allow_hybrid_flow?
 
       session[:vendor_outage_redirect] = current_step
       session[:vendor_outage_redirect_from_idv] = true
