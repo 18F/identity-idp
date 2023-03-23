@@ -30,10 +30,10 @@ feature 'IdV Outage Spec' do
             and_return(:full_outage)
         end
 
-        it 'shows vendor outage page before idv welcome page' do
+        it 'shows mail only warning page before idv welcome page' do
           sign_in_with_idv_required(user: user, sms_or_totp: :totp)
 
-          expect(current_path).to eq idv_outage_path
+          expect(current_path).to eq idv_mail_only_warning_path
 
           click_idv_continue
 
@@ -68,10 +68,10 @@ feature 'IdV Outage Spec' do
         and_return(true)
     end
 
-    it 'shows vendor outage page before idv welcome page', js: true do
+    it 'shows mail only warning page before idv welcome page', js: true do
       sign_in_with_idv_required(user: user, sms_or_totp: :sms)
 
-      expect(current_path).to eq idv_outage_path
+      expect(current_path).to eq idv_mail_only_warning_path
 
       click_idv_continue
 
@@ -96,7 +96,7 @@ feature 'IdV Outage Spec' do
         and_return(false)
     end
 
-    it 'does not show the vendor outage page before idv welcome page' do
+    it 'does not show the mail only warning page before idv welcome page' do
       sign_in_with_idv_required(user: user, sms_or_totp: :sms)
 
       expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)

@@ -1,5 +1,5 @@
 module Idv
-  class OutageController < ApplicationController
+  class GpoOnlyWarningController < ApplicationController
     include IdvSession
     include StepIndicatorConcern
 
