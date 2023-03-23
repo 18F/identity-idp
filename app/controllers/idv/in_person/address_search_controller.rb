@@ -2,7 +2,7 @@ module Idv
   module InPerson
     class AddressSearchController < ApplicationController
       rescue_from Faraday::ConnectionFailed, Faraday::TimeoutError,
-                  Faraday::ClientError, StandardError,
+                  Faraday::ClientError, ActionController::InvalidAuthenticityToken, StandardError,
                   with: :report_errors
 
       def index
@@ -34,6 +34,7 @@ module Idv
           Faraday::ClientError => :bad_request,
           Faraday::ConnectionFailed => :bad_request,
           Faraday::TimeoutError => :bad_request,
+          ActionController::InvalidAuthenticityToken => :bad_request,
         }[error.class] || :internal_server_error
 
         errors = if error.instance_of?(Faraday::ClientError)
