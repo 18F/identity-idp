@@ -50,6 +50,16 @@ module Idv
       def log_irs_tmx_fraud_check_event(result, user)
         return unless IdentityConfig.store.irs_attempt_api_track_tmx_fraud_check_event
         return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
+
+        # This doesn't really feel like the right place, but there's not a more obvious one.
+        # We currently only need this for Attempts API stuff.
+        fraud_event = FraudEvent.create(
+          user: user,
+          irs_session_id: irs_attempts_api_session_id,
+          # I think the to_s here is only needed in badly-constructed tests?
+          login_session_id: Digest::SHA1.hexdigest(user&.unique_session_id.to_s),
+        )
+
         success = result[:review_status] == 'pass'
 
         if !success && (tmx_summary_reason_code = result.dig(
@@ -63,7 +73,7 @@ module Idv
 
         irs_attempts_api_tracker.idv_tmx_fraud_check(
           success: success,
-          fraud_fingerprint: Digest::SHA1.hexdigest(user&.uuid),
+          fraud_event_id: fraud_event.id,
           failure_reason: failure_reason,
         )
       end

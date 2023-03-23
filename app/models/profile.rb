@@ -49,9 +49,12 @@ class Profile < ApplicationRecord
 
   def activate_after_passing_review
     update!(fraud_review_pending: false, fraud_rejection: false)
+    fraud_event = user.fraud_events&.last
     irs_attempts_api_tracker&.fraud_review_adjudicated(
       decision: 'pass',
-      fraud_fingerprint: Digest::SHA1.hexdigest(user.uuid),
+      fraud_event_id: fraud_event&.id,
+      cached_irs_session_id: fraud_event&.irs_session_id,
+      cached_login_session_id: fraud_event&.login_session_id,
     )
     activate
   end
@@ -66,9 +69,12 @@ class Profile < ApplicationRecord
 
   def reject_for_fraud(notify_user:)
     update!(active: false, fraud_review_pending: false, fraud_rejection: true)
+    fraud_event = user.fraud_events&.last # TBD - what if this isn't found?
     irs_attempts_api_tracker&.fraud_review_adjudicated(
       decision: notify_user ? 'manual_reject' : 'automatic_reject',
-      fraud_fingerprint: Digest::SHA1.hexdigest(user.uuid),
+      fraud_event__id: fraud_event&.id,
+      cached_irs_session_id: fraud_event&.irs_session_id,
+      cached_login_session_id: fraud_event&.login_session_id,
     )
     UserAlerts::AlertUserAboutAccountRejected.call(user) if notify_user
   end

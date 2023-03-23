@@ -44,6 +44,7 @@ class User < ApplicationRecord
            source: :service_provider_record
   has_many :sign_in_restrictions, dependent: :destroy
   has_many :in_person_enrollments, dependent: :destroy
+  has_many :fraud_events # TBD, do we want to support multiple?
 
   has_one :pending_in_person_enrollment,
           -> { where(status: :pending).order(created_at: :desc) },

@@ -70,11 +70,14 @@ module IrsAttemptsApi
     # @param [String] decision One of 'reject' or 'pass'
     # @param [String] fraud_fingerprint An opaque identifier to correlate with a TMX check
     # A profile offlined for review has been approved or rejected.
-    def fraud_review_adjudicated(decision:, fraud_fingerprint:)
+    def fraud_review_adjudicated(decision:, fraud_event_id:, cached_irs_session_id:,
+                                 cached_login_session_id:)
       track_event(
         :fraud_review_adjudicated,
         decision: decision,
-        fraud_fingerprint: fraud_fingerprint,
+        fraud_event_id: fraud_event_id,
+        cached_irs_session_id: cached_irs_session_id,
+        cached_login_session_id: cached_login_session_id,
       )
     end
 
@@ -296,11 +299,11 @@ module IrsAttemptsApi
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # This event will capture the result of the TMX fraud check
     # during Identity Verification
-    def idv_tmx_fraud_check(success:, fraud_fingerprint:, failure_reason: nil)
+    def idv_tmx_fraud_check(success:, fraud_event_id:, failure_reason: nil)
       track_event(
         :idv_tmx_fraud_check,
         success: success,
-        fraud_fingerprint: fraud_fingerprint,
+        fraud_event_id: fraud_event_id,
         failure_reason: failure_reason,
       )
     end
