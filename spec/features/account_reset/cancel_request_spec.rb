@@ -20,8 +20,18 @@ describe 'Account Reset Request: Cancellation' do
       click_button t('account_reset.request.yes_continue')
 
       travel_to(Time.zone.now + 2.days + 1.second) do
-        number_of_emails_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
+        number_of_emails_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(
+          Time.zone.today,
+        )
+
+        puts '----'
+        puts 'DELIVERIES:'
+        puts ActionMailer::Base.deliveries.inspect
+        puts '----'
+
         expect(number_of_emails_sent).to eql(1)
+        expect_delivered_email_count(2)
+
         open_last_email
         click_email_link_matching(/cancel\?token/)
         click_button t('account_reset.cancel_request.cancel_button')
