@@ -4,8 +4,6 @@ class IdvController < ApplicationController
   include FraudReviewConcern
 
   before_action :confirm_two_factor_authenticated
-  before_action :handle_pending_fraud_review
-  before_action :handle_fraud_rejection
   before_action :profile_needs_reactivation?, only: [:index]
 
   def index

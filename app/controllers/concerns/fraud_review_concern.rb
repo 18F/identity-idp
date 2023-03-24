@@ -1,6 +1,11 @@
 module FraudReviewConcern
   extend ActiveSupport::Concern
 
+  included do
+    before_action :handle_pending_fraud_review
+    before_action :handle_fraud_rejection
+  end
+
   def handle_pending_fraud_review
     redirect_to_fraud_review if fraud_review_pending?
   end
