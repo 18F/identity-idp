@@ -269,7 +269,7 @@ class QueryCloudwatch
 end
 
 if __FILE__ == $PROGRAM_NAME
-  config = QueryCloudwatch.parse!(ARGV, STDIN)
+  config = QueryCloudwatch.parse!(argv: ARGV, stdin: STDIN, stdout: STDOUT)
 
   QueryCloudwatch.new(config).run
 end
