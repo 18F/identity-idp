@@ -71,13 +71,13 @@ class QueryCloudwatch
   end
 
   # @return [Config]
-  def self.parse!(argv:, stdin:, stdout:)
+  def self.parse!(argv:, stdin:, stdout:, now: Time.now)
     config = Config.new(
       log: nil,
       group: nil,
       slice: parse_duration('1w'),
       format: :csv,
-      to: Time.now, # rubocop:disable Rails/TimeZone
+      to: now,
       complete: false,
       progress: true,
     )
@@ -156,7 +156,7 @@ class QueryCloudwatch
         'query start, see Timestamps above for examples'
       ) do |str|
         if (duration = parse_duration(str))
-          config.from = duration.ago
+          config.from = duration.ago(now)
         else
           config.from = Time.parse(str) # rubocop:disable Rails/TimeZone
         end
@@ -167,7 +167,7 @@ class QueryCloudwatch
         '(optional, defaults to now) query end, see Timestamps above for examples'
       ) do |str|
         if (duration = parse_duration(str))
-          config.to = duration.ago
+          config.to = duration.ago(now)
         else
           config.to = Time.parse(str) # rubocop:disable Rails/TimeZone
         end

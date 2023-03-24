@@ -7,7 +7,8 @@ RSpec.describe QueryCloudwatch do
     let(:argv) { [] }
     let(:stdout) { StringIO.new }
     let(:required_parameters) { %w[--from 1d --group some/log --query fields\ @message] }
-    subject(:parse!) { QueryCloudwatch.parse!(argv:, stdin:, stdout:) }
+    let(:now) { Time.zone.now }
+    subject(:parse!) { QueryCloudwatch.parse!(argv:, stdin:, stdout:, now:) }
 
     before do
       allow(QueryCloudwatch).to receive(:exit)
@@ -59,6 +60,38 @@ RSpec.describe QueryCloudwatch do
         it 'assigns query to query' do
           config = parse!
           expect(config.query).to include 'fields @message'
+        end
+      end
+    end
+
+    context '--app and --env and --log' do
+      let(:required_nongroup_parameters) { %w[--from 1d --query fields\ @message] }
+      let(:argv) { required_parameters + %w[--app idp --env int --log events.log] }
+
+      it 'builds a log group' do
+        config = parse!
+        expect(config.group).to eq('int_/srv/idp/shared/log/events.log')
+      end
+    end
+
+    context 'with --to' do
+      let(:argv) { required_parameters + ['--to', to] }
+
+      context 'with a duration' do
+        let(:to) { '5w' }
+
+        it 'parses the duration' do
+          config = parse!
+          expect(config.to).to eq(5.weeks.ago(now))
+        end
+      end
+
+      context 'with a timestamp' do
+        let(:to) { '2023-01-01T00:00:00Z' }
+
+        it 'parses the timestmap' do
+          config = parse!
+          expect(config.to).to eq(Date.new(2023, 1, 1).in_time_zone('UTC').beginning_of_day)
         end
       end
     end
@@ -117,6 +150,15 @@ RSpec.describe QueryCloudwatch do
       end
     end
 
+    context 'with --slice' do
+      let(:argv) { required_parameters + %w[--slice 3mon] }
+
+      it 'assigns the slice duration' do
+        config = parse!
+        expect(config.slice).to eq(3.months)
+      end
+    end
+
     def build_stdin_without_query
       StringIO.new.tap do |io|
         allow(io).to receive(:tty?).and_return(true)
@@ -125,6 +167,36 @@ RSpec.describe QueryCloudwatch do
 
     def build_stdin_with_query(query)
       StringIO.new(query)
+    end
+  end
+
+  describe '.parse_duration' do
+    it 'parses min as minutes' do
+      expect(QueryCloudwatch.parse_duration('1111min')).to eq(1111.minutes)
+    end
+
+    it 'parses h as hours' do
+      expect(QueryCloudwatch.parse_duration('2h')).to eq(2.hours)
+    end
+
+    it 'parses d as days' do
+      expect(QueryCloudwatch.parse_duration('3d')).to eq(3.days)
+    end
+
+    it 'parses w as weeks' do
+      expect(QueryCloudwatch.parse_duration('4w')).to eq(4.weeks)
+    end
+
+    it 'parses mon as months' do
+      expect(QueryCloudwatch.parse_duration('5mon')).to eq(5.months)
+    end
+
+    it 'parses y as years' do
+      expect(QueryCloudwatch.parse_duration('6y')).to eq(6.years)
+    end
+
+    it 'is nil for unknown' do
+      expect(QueryCloudwatch.parse_duration('7x')).to be_nil
     end
   end
 
