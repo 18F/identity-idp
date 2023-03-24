@@ -26,7 +26,7 @@ class QueryCloudwatch
     :format,
     :complete,
     :progress,
-    keyword_init: true
+    keyword_init: true,
   )
 
   attr_reader :config
@@ -35,23 +35,14 @@ class QueryCloudwatch
     @config = config
   end
 
-  def run
+  def run(out: STDOUT)
     cloudwatch_client.fetch(
       query: config.query,
       from: config.from,
       to: config.to,
     ) do |row|
-      puts format_response(row)
+      out.puts format_response(row)
     end
-  end
-
-  def cloudwatch_client
-    @cloudwatch_client ||= Reporting::CloudwatchClient.new(
-      ensure_complete_logs: config.complete,
-      log_group_name: config.group,
-      progress: config.progress,
-      slice_interval: config.slice,
-    )
   end
 
   # Relies on the fact that hashes preserve insertion order
@@ -69,6 +60,15 @@ class QueryCloudwatch
     end
   end
 
+  def cloudwatch_client
+    @cloudwatch_client ||= Reporting::CloudwatchClient.new(
+      ensure_complete_logs: config.complete,
+      log_group_name: config.group,
+      progress: config.progress,
+      slice_interval: config.slice,
+    )
+  end
+
   # @return [Config]
   def self.parse!(argv, stdin)
     config = Config.new(
@@ -76,11 +76,12 @@ class QueryCloudwatch
       group: nil,
       slice: parse_duration('1w'),
       format: :csv,
-      to: Time.now,
+      to: Time.now, # rubocop:disable Rails/TimeZone
       complete: false,
       progress: true,
     )
 
+    # rubocop:disable Metrics/BlockLength
     OptionParser.new do |opts|
       opts.banner = <<~TXT
         Usage
@@ -142,23 +143,32 @@ class QueryCloudwatch
         config.log = log
       end
 
-      opts.on('--group GROUP', 'shorthand log group (ex "int_/srv/idp/shared/log/production.log")') do |group|
+      opts.on(
+        '--group GROUP',
+        'shorthand log group (ex "int_/srv/idp/shared/log/production.log")',
+      ) do |group|
         config.group = group
       end
 
-      opts.on('--from STR', '--start STR', 'query start, see Timestamps above for examples') do |str|
+      opts.on(
+        '--from STR', '--start STR',
+        'query start, see Timestamps above for examples'
+      ) do |str|
         if (duration = parse_duration(str))
           config.from = duration.ago
         else
-          config.from = Time.parse(str)
+          config.from = Time.parse(str) # rubocop:disable Rails/TimeZone
         end
       end
 
-      opts.on('--to STR', '--end STR', '(optional, defaults to now) query end, see Timestamps above for examples') do |str|
+      opts.on(
+        '--to STR', '--end STR',
+        '(optional, defaults to now) query end, see Timestamps above for examples'
+      ) do |str|
         if (duration = parse_duration(str))
           config.to = duration.ago
         else
-          config.to = Time.parse(str)
+          config.to = Time.parse(str) # rubocop:disable Rails/TimeZone
         end
       end
 
@@ -178,7 +188,10 @@ class QueryCloudwatch
         config.format = :csv
       end
 
-      opts.on('--[no-]complete', 'whether or not to split query slices if exactly 10k rows are returned, defaults to off') do |complete|
+      opts.on(
+        '--[no-]complete',
+        'whether or not to split query slices if exactly 10k rows are returned, defaults to off',
+      ) do |complete|
         config.complete = complete
       end
 
@@ -186,12 +199,13 @@ class QueryCloudwatch
         config.progress = progress
       end
 
-
-      opts.on("-h", "--help", "Prints this help") do
+      opts.on('-h', '--help', 'Prints this help') do
         puts opts
         exit
+        return
       end
     end.parse!(argv)
+    # rubocop:enable Metrics/BlockLength
 
     if (app = config.app) && (env = config.env) && !(log = config.log).blank?
       config.group = build_group(app: app, env: env, log: log)
@@ -200,16 +214,14 @@ class QueryCloudwatch
     errors = []
 
     if config.group.blank?
-      errors << "ERROR: missing log group --group or (--app and --env and --log)"
+      errors << 'ERROR: missing log group --group or (--app and --env and --log)'
     end
 
-    if !config.from
-      errors << "ERROR: missing time range --from or --start"
-    end
+    errors << 'ERROR: missing time range --from or --start' if !config.from
 
     if !config.query
       if stdin.tty?
-        errors << "ERROR: missing query, either STDIN or --query)"
+        errors << 'ERROR: missing query, either STDIN or --query)'
       else
         config.query = STDIN.read
       end
@@ -218,6 +230,7 @@ class QueryCloudwatch
     if !errors.empty?
       puts errors
       exit 1
+      return
     end
 
     config

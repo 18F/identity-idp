@@ -43,10 +43,16 @@ module Reporting
     # @param [Time] from
     # @param [Time] to
     # @param [Array<Range<Time>>] time_slices Pass an to use specific slices
-    # @yieldparam [Hash] row if a block is given, each row is yielded to the block as it is parsed
-    # @return [Array<Hash>]
+    # @raise [ArgumentError] raised when incorrect time parameters are received
+    # @overload fetch(query:, from:, to:)
+    #   The block-less form returns the array of *all* results at the end
+    #   @return [Array<Hash>]
+    # @overload fetch(query: time_slices:) { |row| "..." }
+    #   The block form yields each result row as its ready to the block and returns nil
+    #   @yieldparam [Hash] row a row of the query result
+    #   @return [nil]
     def fetch(query:, from: nil, to: nil, time_slices: nil)
-      results = Concurrent::Array.new
+      results = Concurrent::Array.new if !block_given?
       each_result_queue = Queue.new if block_given?
       in_progress = Concurrent::Hash.new(0)
 
@@ -72,6 +78,7 @@ module Reporting
       log(:debug, "starting query, queue_size=#{queue.length} num_threads=#{num_threads}")
       log(:info, "=== query ===\n#{query}\n=== query ===")
 
+      # rubocop:disable Metrics/BlockLength
       threads = num_threads.times.map do |thread_idx|
         Thread.new do
           while (range, range_id = queue.pop)
@@ -97,7 +104,7 @@ module Reporting
               in_progress[range_id] -= 1
               parsed_results = parse_results(response.results)
 
-              results.concat(parsed_results)
+              results&.concat(parsed_results)
               if each_result_queue
                 parsed_results.each do |row|
                   each_result_queue << row
@@ -113,6 +120,7 @@ module Reporting
           thread.abort_on_exception = true
         end
       end
+      # rubocop:enable Metrics/BlockLength
 
       if each_result_queue
         threads << Thread.new do
