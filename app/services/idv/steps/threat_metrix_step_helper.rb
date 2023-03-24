@@ -54,7 +54,7 @@ module Idv
         success = result[:review_status] == 'pass'
 
         unless success
-          fraud_event = FraudReviewRequest.create(
+          FraudReviewRequest.create(
             user: user,
             irs_session_id: irs_attempts_api_session_id,
             login_session_id: Digest::SHA1.hexdigest(user.unique_session_id.to_s),
