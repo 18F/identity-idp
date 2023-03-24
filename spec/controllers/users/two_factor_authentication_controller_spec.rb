@@ -219,7 +219,7 @@ describe Users::TwoFactorAuthenticationController do
 
       context 'when no options are enabled and available for use' do
         before do
-          allow_any_instance_of(VendorStatus).to receive(:any_phone_vendor_outage?).and_return(true)
+          allow_any_instance_of(OutageStatus).to receive(:any_phone_vendor_outage?).and_return(true)
         end
 
         it 'redirects to mfa options page' do
@@ -243,7 +243,7 @@ describe Users::TwoFactorAuthenticationController do
 
     context 'when phone is sole configured mfa and full phone vendor outage' do
       before do
-        allow_any_instance_of(VendorStatus).to receive(:all_phone_vendor_outage?).and_return(true)
+        allow_any_instance_of(OutageStatus).to receive(:all_phone_vendor_outage?).and_return(true)
       end
 
       it 'redirects to vendor outage page' do

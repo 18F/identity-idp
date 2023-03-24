@@ -390,4 +390,45 @@ feature 'doc auth verify_info step', :js do
       expect(page).to have_current_path(idv_phone_path)
     end
   end
+
+  context 'phone vendor outage' do
+    let(:fake_analytics) { FakeAnalytics.new }
+    let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+
+    # values from Idp::Constants::MOCK_IDV_APPLICANT
+    let(:fake_pii_details) do
+      {
+        document_state: 'MT',
+        document_number: '1111111111111',
+        document_issued: '2019-12-31',
+        document_expiration: '2099-12-31',
+        first_name: 'FAKEY',
+        last_name: 'MCFAKERSON',
+        date_of_birth: '1938-10-06',
+        address: '1 FAKE RD',
+      }
+    end
+
+    before do
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+      allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
+        and_return(fake_attempts_tracker)
+      allow_any_instance_of(OutageStatus).to receive(:any_phone_vendor_outage?).and_return(true)
+      visit_idp_from_sp_with_ial2(:oidc)
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_verify_step
+    end
+
+    it 'should be at the verify step page' do
+      expect(page).to have_current_path(idv_verify_info_path)
+    end
+
+    it 'redirects to the gpo page when continuing from verify info page' do
+      click_idv_continue
+      expect(page).to have_current_path(idv_gpo_path)
+
+      click_on 'Cancel'
+      expect(page).to have_current_path(idv_cancel_path(step: :gpo))
+    end
+  end
 end
