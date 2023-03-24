@@ -90,7 +90,20 @@ es:
           Vuelve a intentarlo.
         timeout: Nuestra solicitud para verificar tu información ha caducado. Vuelve a
           intentarlo.
-        warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
+        warning:
+          gpo:
+            button: Verificar por correo
+            explanation: Si no dispones de otro número de teléfono para intentarlo,
+              verifícalo por correo.
+            heading: Verificar por correo
+            how_long_it_takes: Suele tardar entre 3 y 7 días laborables.
+          heading: No pudimos asociarlo a este número
+          learn_more_link: 'Más información sobre qué número de teléfono usar'
+          next_steps_html: 'Vuelva a intentarlo con <strong>otro</strong> número que
+            utilice a menudo y desde hace tiempo. Puede ser un número del
+            trabajo o particular.'
+          try_again_button: 'Try another number' #TODO
+          you_entered: 'Ud. entregó:'
       sessions:
         exception: Hubo un error interno al procesar su solicitud.
         fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong> Por su

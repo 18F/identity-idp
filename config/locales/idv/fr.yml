@@ -94,7 +94,20 @@ fr:
           pour le moment. Veuillez réessayer.
         timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez
           réessayer.
-        warning: Veuillez vérifier les informations que vous avez saisies et réessayer.
+        warning:
+          gpo:
+            button: Vérifier par courrier
+            explanation: Si vous n’avez pas d’autre numéro de téléphone à essayer, vérifiez
+              plutôt par courrier.
+            heading: Vérifier par courrier
+            how_long_it_takes: Cette procédure prend typiquement 3 à 7 jours ouvrables.
+          heading: Nous n’avons pas pu vous associer à ce numéro
+          learn_more_link: 'Más información sobre qué número de teléfono usar'
+          next_steps_html: 'Veuillez réessayer avec <strong>un autre</strong> numéro que
+            vous utilisez souvent et depuis longtemps. Il peut s’agir d’un
+            numéro professionnel ou personnel.'
+          try_again_button: 'Try another number' #TODO
+          you_entered: 'Tu as soumis:'
       sessions:
         exception: Une erreur interne s’est produite lors du traitement de votre demande.
         fail_html: '<strong>Veuillez réessayer dans %{timeout}.</strong> Pour votre
