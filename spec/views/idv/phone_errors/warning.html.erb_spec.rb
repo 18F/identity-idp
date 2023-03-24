@@ -79,6 +79,8 @@ describe 'idv/phone_errors/warning.html.erb' do
         t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
         href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'warning'),
       )
+    end
+    it 'does not render link to gpo flow' do
       expect(rendered).not_to have_link(
         t('idv.troubleshooting.options.verify_by_mail'),
         href: idv_gpo_path,
@@ -94,8 +96,15 @@ describe 'idv/phone_errors/warning.html.erb' do
     end
 
     it 'explains gpo' do
-      expect(rendered).to include(
-        t('idv.failure.phone.warning.gpo.explanation_html'),
+      expect(rendered).to have_text(
+        t('idv.failure.phone.warning.gpo.explanation'),
+      )
+    end
+
+    it 'says how long gpo takes' do
+      expect(rendered).to have_css(
+        'strong',
+        text: t('idv.failure.phone.warning.gpo.how_long_it_takes'),
       )
     end
 

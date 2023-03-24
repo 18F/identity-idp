@@ -86,10 +86,10 @@ en:
         warning:
           gpo:
             button: Verify by mail
-            explanation_html: If you don’t have another phone number to try, verify by mail
-              instead. <strong>This typically takes 3 - 7 business
-              days.</strong>
+            explanation: If you don’t have another phone number to try, verify by mail
+              instead.
             heading: Verify by mail
+            how_long_it_takes: This typically takes 3 - 7 business days.
           heading: We couldn’t match you to this number
           learn_more_link: 'Learn more about what phone number to use'
           next_steps_html: 'Please try again with <strong>another</strong> number that you

@@ -52,7 +52,10 @@
 
         <h2><%= t('idv.failure.phone.warning.gpo.heading') %></h2>
 
-        <p><%= t('idv.failure.phone.warning.gpo.explanation_html') %></p>
+        <p>
+          <%= t('idv.failure.phone.warning.gpo.explanation') %>
+          <strong><%= t('idv.failure.phone.warning.gpo.how_long_it_takes') %></strong>
+        </p>
 
         <div class="margin-top-5 margin-bottom-5">
           <%= button_or_link_to(
