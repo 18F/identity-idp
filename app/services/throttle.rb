@@ -104,7 +104,7 @@ class Throttle
       @redis_attempted_at = nil
     else
       @redis_attempted_at =
-        ActiveSupport::TimeZone['UTC'].at(expiretime) -
+        ActiveSupport::TimeZone['UTC'].at(expiretime).in_time_zone(Time.zone) -
         Throttle.attempt_window_in_minutes(throttle_type).minutes
     end
 
@@ -122,17 +122,18 @@ class Throttle
 
   def increment_to_throttled!
     value = Throttle.max_attempts(throttle_type)
+    now = Time.zone.now
 
     REDIS_THROTTLE_POOL.with do |client|
-      client.setex(
+      client.set(
         key,
-        Throttle.attempt_window_in_minutes(throttle_type).minutes.seconds.to_i,
         value,
+        exat: now.to_i + Throttle.attempt_window_in_minutes(throttle_type).minutes.seconds.to_i,
       )
     end
 
     @redis_attempts = value.to_i
-    @redis_attempted_at = Time.zone.now
+    @redis_attempted_at = now
 
     attempts
   end
