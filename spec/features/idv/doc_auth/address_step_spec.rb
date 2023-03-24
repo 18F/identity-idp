@@ -10,9 +10,17 @@ feature 'doc auth verify step', :js do
       complete_doc_auth_steps_before_address_step
     end
 
+    it 'renders the Puerto Rico address guidance as hidden text'
+      guidance = page.find_by_id('puerto-rico-extra-text')
+      expected_guidance_text = t('doc_auth.info.address_guidance_puerto_rico_html').gsub('<br>', "\n")
+
+      expect(guidance.text).to include(expected_guidance_text)
+      expect(guidance).not_to be_visible
+    end
+
+
     it 'allows the user to enter in a new address' do
       expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-      expect(page).not_to have_content(t('doc_auth.info.address_guidance_puerto_rico_html'))
       expect(page).not_to have_content(t('forms.example'))
       fill_out_address_form_ok
 
@@ -40,13 +48,6 @@ feature 'doc auth verify step', :js do
 
       expect(page).to have_current_path(idv_doc_auth_welcome_step)
     end
-
-    it 'does not show the address guidance and hint text' do
-      expect(page).not_to have_content(
-        :visible,
-        t('doc_auth.info.address_guidance_puerto_rico_html'),
-      )
-    end
   end
 
   context 'with a Puerto Rico address' do
@@ -57,10 +58,12 @@ feature 'doc auth verify step', :js do
       complete_ssn_step
     end
 
-    it 'shows address guidance and hint text' do
-      expect(page.body).to include(
-        t('doc_auth.info.address_guidance_puerto_rico_html'),
-      )
+    it 'renders the Puerto Rico address guidance as visible text' do
+      guidance = page.find_by_id('puerto-rico-extra-text')
+      expected_guidance_text = t('doc_auth.info.address_guidance_puerto_rico_html').gsub('<br>', "\n")
+
+      expect(guidance.text).to include(expected_guidance_text)
+      expect(guidance).to be_visible
     end
 
     it 'accepts a Puerto Rico style address' do
