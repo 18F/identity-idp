@@ -9,14 +9,16 @@
 
 <% title t('titles.doc_auth.address') %>
 
-<% if @presenter.puerto_rico_address? %>
-  <%= render AlertComponent.new(
-        type: :info,
-        class: 'margin-bottom-4',
-      ) do %>
-    <%= t('doc_auth.info.address_guidance_puerto_rico_html') %>
-  <% end %>
-<% end %>
+<%=
+
+  render AlertComponent.new(
+      type: :info,
+      id: 'puerto-rico-extra-text',
+      class: 'margin-bottom-4',
+  ) do
+      t('doc_auth.info.address_guidance_puerto_rico_html')
+    end
+%>
 
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.address')) %>
 
@@ -82,3 +84,4 @@
 
 <%= render 'idv/shared/back', step: 'verify' %>
 <%= javascript_packs_tag_once('formatted-fields') %>
+<%= javascript_packs_tag_once('puerto-rico-guidance') %>

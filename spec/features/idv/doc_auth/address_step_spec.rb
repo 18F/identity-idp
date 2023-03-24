@@ -4,7 +4,7 @@ feature 'doc auth verify step', :js do
   include IdvStepHelper
   include DocAuthHelper
 
-  context 'with mainland address' do
+  context 'with a mainland address' do
     before do
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_address_step
@@ -40,9 +40,16 @@ feature 'doc auth verify step', :js do
 
       expect(page).to have_current_path(idv_doc_auth_welcome_step)
     end
+
+    it 'does not show the address guidance and hint text' do
+      expect(page).not_to have_content(
+        :visible,
+        t('doc_auth.info.address_guidance_puerto_rico_html'),
+      )
+    end
   end
 
-  context 'with Puerto Rico address' do
+  context 'with a Puerto Rico address' do
     before do
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_document_capture_step
@@ -51,8 +58,13 @@ feature 'doc auth verify step', :js do
     end
 
     it 'shows address guidance and hint text' do
+      expect(page.body).to include(
+        t('doc_auth.info.address_guidance_puerto_rico_html'),
+      )
+    end
+
+    it 'accepts a Puerto Rico style address' do
       expect(page).to have_current_path(idv_address_url)
-      expect(page.body).to include(t('doc_auth.info.address_guidance_puerto_rico_html'))
       expect(page).to have_content(t('forms.example'))
       fill_in 'idv_form_address1', with: '123 Calle Carlos'
       fill_in 'idv_form_address2', with: 'URB Las Gladiolas'
