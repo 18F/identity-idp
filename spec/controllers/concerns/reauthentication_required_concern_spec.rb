@@ -87,6 +87,17 @@ describe ReauthenticationRequiredConcern, type: :controller do
 
         expect(controller.user_session[:context]).to eq 'reauthentication'
       end
+
+      it 'records analytics' do
+        controller.user_session[:auth_method] = 'totp'
+        stub_analytics
+        expect(@analytics).to receive(:track_event).with(
+          'User 2FA Reauthentication Required',
+          authenticated_at: controller.user_session[:authn_at],
+          auth_method: 'totp',
+        )
+        get :index
+      end
     end
   end
 end

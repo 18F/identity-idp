@@ -19,6 +19,11 @@ module ReauthenticationRequiredConcern
     return if recently_authenticated? && user_session[:auth_method] != 'remember_device'
     return if in_multi_mfa_selection_flow?
 
+    analytics.user_2fa_reauthentication_required(
+      auth_method: user_session[:auth_method],
+      authenticated_at: user_session[:authn_at],
+    )
+
     prompt_for_second_factor
   end
 
