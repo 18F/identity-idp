@@ -539,7 +539,14 @@ RSpec.describe 'In Person Proofing', js: true do
       # prepare page
       complete_prepare_step(user)
 
-      complete_state_id_step(user, same_address_as_id: false, include_address: true)
+      complete_state_id_step(user, same_address_as_id: false, double_address_verification: true)
+
+      complete_address_step(user, double_address_verification: true)
+
+      # Ensure the page submitted successfully
+      expect(page).to have_content(
+        t('idv.form.ssn_label_html'),
+      )
     end
 
     context 'flag remains enabled' do
