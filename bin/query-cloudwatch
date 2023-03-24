@@ -28,7 +28,6 @@ class QueryCloudwatch
     :progress,
     :wait_duration,
     keyword_init: true,
-
   )
 
   attr_reader :config
