@@ -1,15 +1,6 @@
 require 'rails_helper'
 
 feature 'Sign in' do
-  before(:all) do
-    @original_capyabara_wait = Capybara.default_max_wait_time
-    Capybara.default_max_wait_time = 5
-  end
-
-  after(:all) do
-    Capybara.default_max_wait_time = @original_capyabara_wait
-  end
-
   include SessionTimeoutWarningHelper
   include ActionView::Helpers::DateHelper
   include PersonalKeyHelper
@@ -247,14 +238,19 @@ feature 'Sign in' do
   end
 
   context 'session approaches timeout', js: true do
+    around do |example|
+      with_forgery_protection { example.run }
+    end
+
     before :each do
       allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
-      allow(IdentityConfig.store).to receive(:session_check_delay).and_return(2)
+      allow(IdentityConfig.store).to receive(:session_check_delay).and_return(0)
       allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds).
         and_return(Devise.timeout_in)
 
       sign_in_and_2fa_user
-      visit root_path
+      visit forget_all_browsers_path
+      expect(page).to have_css('.usa-js-modal--active', wait: 5)
     end
 
     scenario 'user sees warning before session times out' do
@@ -276,9 +272,15 @@ feature 'Sign in' do
       expect(page).to have_content(pattern2, wait: 5)
     end
 
-    scenario 'user can continue browsing' do
-      find_button(t('notices.timeout_warning.signed_in.continue')).click
+    scenario 'user can continue browsing with refreshed CSRF token' do
+      expect do
+        click_button t('notices.timeout_warning.signed_in.continue')
+        expect(page).not_to have_css('.usa-js-modal--active', wait: 5)
+      end.to change { find('[name=authenticity_token]', visible: false).value }
 
+      expect(current_path).to eq forget_all_browsers_path
+
+      click_button t('forms.buttons.confirm')
       expect(current_path).to eq account_path
     end
 
@@ -293,7 +295,7 @@ feature 'Sign in' do
   context 'user only signs in via email and password', js: true do
     it 'displays the session timeout warning with partially signed in copy' do
       allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
-      allow(IdentityConfig.store).to receive(:session_check_delay).and_return(2)
+      allow(IdentityConfig.store).to receive(:session_check_delay).and_return(0)
       allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds).
         and_return(Devise.timeout_in)
 
@@ -301,6 +303,7 @@ feature 'Sign in' do
       sign_in_user(user)
       visit user_two_factor_authentication_path
 
+      expect(page).to have_css('.usa-js-modal--active', wait: 5)
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.continue'))
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.sign_out'))
     end
@@ -323,12 +326,8 @@ feature 'Sign in' do
   end
 
   context 'signing back in after session timeout length' do
-    before do
-      ActionController::Base.allow_forgery_protection = true
-    end
-
-    after do
-      ActionController::Base.allow_forgery_protection = false
+    around do |example|
+      with_forgery_protection { example.run }
     end
 
     it 'fails to sign in the user, with CSRF error' do
@@ -992,5 +991,12 @@ feature 'Sign in' do
     click_submit_default
     expect(current_path).to eq login_add_piv_cac_prompt_path
     fill_in 'name', with: 'Card 1'
+  end
+
+  def with_forgery_protection
+    original_allow_forgery_protection = ActionController::Base.allow_forgery_protection
+    ActionController::Base.allow_forgery_protection = true
+    yield
+    ActionController::Base.allow_forgery_protection = original_allow_forgery_protection
   end
 end
