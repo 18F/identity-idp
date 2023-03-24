@@ -6,6 +6,7 @@ RSpec.describe QueryCloudwatch do
     let(:stdin) { build_stdin_without_query }
     let(:argv) { [] }
     let(:stdout) { StringIO.new }
+    let(:required_parameters) { %W[--from 1d --group some/log --query #{"fields @message"}] }
     subject(:parse!) { QueryCloudwatch.parse!(argv:, stdin:, stdout:)}
 
     before do
@@ -29,6 +30,37 @@ RSpec.describe QueryCloudwatch do
       end
     end
 
+    context "passing in a query" do
+      let(:required_nonquery_args) { %w[--from 1d --group some/log] }
+      context "passing in no query" do
+        let(:argv) { required_nonquery_args }
+        let(:stdin) { build_stdin_without_query }
+
+        it "returns an error" do
+          parse!
+          expect(stdout.string).to include "ERROR"
+        end
+      end
+      
+      context "passing in a query in argv" do
+        let(:stdin) { build_stdin_without_query }
+        let(:argv) { required_parameters }
+
+        it "assigns query to query" do
+          config = parse!
+          expect(config.query).to include "fields @message"
+        end
+      end
+
+      context "passing in a query in stdin" do
+        let(:stdin) { build_stdin_with_query("fields @message") }
+
+        it "assigns query to query"
+          config = parse!
+          expect(config.query).to include "fields @message"
+        end
+      end
+    end
   
     context "with --no-progress" do
       let(:argv) { required_parameters + %w[--no-progress] }
