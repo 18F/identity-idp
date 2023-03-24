@@ -7,6 +7,8 @@ describe Users::TotpSetupController, devise: true do
         :before,
         :authenticate_user!,
         :confirm_user_authenticated_for_2fa_setup,
+        :apply_secure_headers_override,
+        :confirm_recently_authenticated_2fa,
       )
     end
   end
