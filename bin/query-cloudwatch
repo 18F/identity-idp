@@ -55,8 +55,7 @@ class QueryCloudwatch
     when :json
       row.to_json
     else
-      puts "unknown format #{config.format}"
-      exit 1
+      raise "unknown format #{config.format}"
     end
   end
 
@@ -70,7 +69,7 @@ class QueryCloudwatch
   end
 
   # @return [Config]
-  def self.parse!(argv, stdin)
+  def self.parse!(argv:, stdin:, stdout:)
     config = Config.new(
       log: nil,
       group: nil,
@@ -200,9 +199,9 @@ class QueryCloudwatch
       end
 
       opts.on('-h', '--help', 'Prints this help') do
-        puts opts
+        stdout.puts opts
         exit
-        return
+        return # rubocop:disable Lint/NonLocalExitFromIterator, Lint/UnreachableCode
       end
     end.parse!(argv)
     # rubocop:enable Metrics/BlockLength
@@ -223,14 +222,14 @@ class QueryCloudwatch
       if stdin.tty?
         errors << 'ERROR: missing query, either STDIN or --query)'
       else
-        config.query = STDIN.read
+        config.query = stdin.read
       end
     end
 
     if !errors.empty?
-      puts errors
+      stdout.puts errors
       exit 1
-      return
+      return # rubocop:disable Lint/UnreachableCode
     end
 
     config
