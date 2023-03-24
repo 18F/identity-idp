@@ -11,7 +11,7 @@ module Idv
     def warning
       @remaining_attempts = throttle.remaining_count
       @phone = idv_session.previous_phone_step_params[:phone]
-      @country_code = idv_session.previous_phone_step_params[:country_code]
+      @country_code = idv_session.previous_phone_step_params[:international_code]
       track_event(type: :warning)
     end
 

@@ -93,7 +93,7 @@ describe Idv::PhoneErrorsController do
     allow(idv_session).to receive(:current_user).and_return(user)
     allow(idv_session).to receive(:previous_phone_step_params).and_return(
       phone: phone,
-      country_code: country_code,
+      international_code: country_code,
     )
     allow(subject).to receive(:remaining_attempts).and_return(5)
     allow(controller).to receive(:idv_session).and_return(idv_session)
