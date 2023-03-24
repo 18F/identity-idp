@@ -123,7 +123,7 @@ module Idv
     end
 
     def next_step_url
-      return idv_gpo_url if OutageStatus.new.gpo_only?
+      return idv_gpo_url if FeatureManagement.idv_gpo_only?
       idv_phone_url
     end
 

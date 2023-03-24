@@ -20,6 +20,36 @@ feature 'IdV Outage Spec' do
   let(:new_password) { 'some really awesome new password' }
   let(:pii) { { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' } }
 
+  context 'vendor_status_lexisnexis_phone_finder set to full_outage', js: true do
+    before do
+      allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_phone_finder).
+        and_return(:full_outage)
+    end
+
+    it 'takes the user through the mail only flow, allowing hybrid' do
+      sign_in_with_idv_required(user: user)
+
+      expect(current_path).to eq idv_mail_only_warning_path
+
+      click_idv_continue
+
+      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
+
+      complete_welcome_step
+      complete_agreement_step
+
+      # Still offer the option for hybrid flow
+      expect(current_path).to eq idv_doc_auth_step_path(step: :upload)
+
+      complete_upload_step
+      complete_document_capture_step
+      complete_ssn_step
+      complete_verify_step
+
+      expect(current_path).to eq idv_gpo_path
+    end
+  end
+
   context 'GPO only enabled, but user starts over', js: true do
     before do
       allow(IdentityConfig.store).to receive(:feature_idv_force_gpo_verification_enabled).

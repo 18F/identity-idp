@@ -27,7 +27,7 @@ module Idv
     end
 
     def back_or_cancel_partial
-      if OutageStatus.new.gpo_only?
+      if FeatureManagement.idv_gpo_only?
         'idv/doc_auth/cancel'
       else
         'idv/shared/back'
@@ -35,7 +35,7 @@ module Idv
     end
 
     def back_or_cancel_parameters
-      if OutageStatus.new.gpo_only?
+      if FeatureManagement.idv_gpo_only?
         { step: 'gpo' }
       else
         { fallback_path: fallback_back_path }

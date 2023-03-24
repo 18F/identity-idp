@@ -19,6 +19,8 @@ class OutageStatus
       IdentityConfig.store.vendor_status_lexisnexis_instant_verify
     when :lexisnexis_trueid
       IdentityConfig.store.vendor_status_lexisnexis_trueid
+    when :lexisnexis_phone_finder
+      IdentityConfig.store.vendor_status_lexisnexis_phone_finder
     when :sms
       IdentityConfig.store.vendor_status_sms
     when :voice
@@ -49,14 +51,8 @@ class OutageStatus
     all_vendor_outage?(PHONE_VENDORS)
   end
 
-  def gpo_only?
-    IdentityConfig.store.feature_idv_force_gpo_verification_enabled ||
-      any_phone_vendor_outage?
-  end
-
-  def allow_hybrid_flow?
-    IdentityConfig.store.feature_idv_hybrid_flow_enabled &&
-      !any_phone_vendor_outage?
+  def phone_finder_outage?
+    all_vendor_outage?([:lexisnexis_phone_finder])
   end
 
   def from_idv?
