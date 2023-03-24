@@ -94,24 +94,20 @@ function success(data: PingResponse) {
 }
 
 function ping() {
-  try {
-    request('/active').then(success);
-  } catch (error) {
-    notifyNewRelic(error, 'ping');
-  }
+  request('/active')
+    .then(success)
+    .catch((error) => notifyNewRelic(error, 'ping'));
 
   setTimeout(ping, frequency);
 }
 
 function keepalive() {
-  try {
-    request('/sessions/keepalive', { method: 'POST' }).then((data) => {
+  request('/sessions/keepalive', { method: 'POST' })
+    .then((data) => {
       success(data);
       modal.hide();
-    });
-  } catch (error) {
-    notifyNewRelic(error, 'keepalive');
-  }
+    })
+    .catch((error) => notifyNewRelic(error, 'keepalive'));
 }
 
 keepaliveEl?.addEventListener('click', keepalive, false);
