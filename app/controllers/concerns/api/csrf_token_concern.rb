@@ -1,6 +1,6 @@
 module Api
   module CsrfTokenConcern
-    def include_csrf_token_header
+    def add_csrf_token_header_to_response
       response.set_header('X-CSRF-Token', form_authenticity_token)
     end
   end

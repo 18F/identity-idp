@@ -1,11 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Api::CsrfTokenConcern, type: :controller do
-  describe '#include_csrf_token_header' do
+  describe '#add_csrf_token_header_to_response' do
     controller ApplicationController do
       include Api::CsrfTokenConcern
 
-      before_action :include_csrf_token_header
+      before_action :add_csrf_token_header_to_response
 
       def index; end
     end
