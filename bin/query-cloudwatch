@@ -1,0 +1,263 @@
+#!/usr/bin/env ruby
+Dir.chdir(File.dirname(__FILE__)) { require 'bundler/setup' }
+
+require 'active_support'
+require 'active_support/core_ext/integer/time'
+require 'aws-sdk-cloudwatchlogs'
+require 'concurrent-ruby'
+require 'csv'
+require 'json'
+require 'optparse'
+require 'optparse/time'
+
+$LOAD_PATH.unshift(File.expand_path(File.join(__dir__, '../lib')))
+require 'reporting/cloudwatch_client'
+
+class QueryCloudwatch
+  Config = Struct.new(
+    :log,
+    :group,
+    :slice,
+    :env,
+    :app,
+    :from,
+    :to,
+    :query,
+    :format,
+    :complete,
+    :progress,
+    keyword_init: true
+  )
+
+  attr_reader :config
+
+  def initialize(config)
+    @config = config
+  end
+
+  def run
+    cloudwatch_client.fetch(
+      query: config.query,
+      from: config.from,
+      to: config.to,
+    ) do |row|
+      puts format_response(row)
+    end
+  end
+
+  def cloudwatch_client
+    @cloudwatch_client ||= Reporting::CloudwatchClient.new(
+      ensure_complete_logs: config.complete,
+      log_group_name: config.group,
+      progress: config.progress,
+      slice_interval: config.slice,
+    )
+  end
+
+  # Relies on the fact that hashes preserve insertion order
+  # @param [Hash] row
+  # @return [String]
+  def format_response(row)
+    case config.format
+    when :csv
+      row.values.to_csv
+    when :json
+      row.to_json
+    else
+      puts "unknown format #{config.format}"
+      exit 1
+    end
+  end
+
+  # @return [Config]
+  def self.parse!(argv, stdin)
+    config = Config.new(
+      log: nil,
+      group: nil,
+      slice: parse_duration('1w'),
+      format: :csv,
+      to: Time.now,
+      complete: false,
+      progress: true,
+    )
+
+    OptionParser.new do |opts|
+      opts.banner = <<~TXT
+        Usage
+        =======================
+
+          #{$PROGRAM_NAME} [OPTIONS]
+
+        Script to query cloudwatch, splits a query up across multiple timeframes and combines
+        results (useful for querying a log period of time)
+
+        Examples
+        =======================
+
+        Query last 7 days, shorthand log, group query in STDIN
+
+        #{$PROGRAM_NAME} --from 7d --env int --app idp --log events.log <<QUERY
+          fields @timestamp
+          | limit 9999
+        QUERY
+
+        Query full log group, full timestamps, query as an arugment
+
+        #{$PROGRAM_NAME} \\
+          --group int_/srv/idp/shared/log/production.log \\
+          --start "2020-01-01T00:00:00-00:00" \\
+          --to "2020-12-31T23:59:59-00:00" \\
+          --query "fields @timestamp | limit 9999"
+
+        Timestamps
+        =======================
+
+        * Can be anything Ruby's Time.parse understands:
+
+          "2021-01-01T00:00:00-07:00"
+          "2021-01-01 00:00:00 -0700"
+
+        * Can be represented as duration shorthands:
+
+          10min - 10 minutes ago
+          9h    - 9 hours ago
+          8d    - 8 days ago
+          7w    - 7 weeks ago
+          6mon  - 6 months ago
+          5y    - 5 years ago
+
+        Options
+        =======================
+      TXT
+
+      opts.on('--env ENV', '(optional)') do |env|
+        config.env = env
+      end
+
+      opts.on('--app APP', '(optional)') do |app|
+        config.app = app
+      end
+
+      opts.on('--log LOG', 'shorthand log group (ex "events.log"), needs --app and --env') do |log|
+        config.log = log
+      end
+
+      opts.on('--group GROUP', 'shorthand log group (ex "int_/srv/idp/shared/log/production.log")') do |group|
+        config.group = group
+      end
+
+      opts.on('--from STR', '--start STR', 'query start, see Timestamps above for examples') do |str|
+        if (duration = parse_duration(str))
+          config.from = duration.ago
+        else
+          config.from = Time.parse(str)
+        end
+      end
+
+      opts.on('--to STR', '--end STR', '(optional, defaults to now) query end, see Timestamps above for examples') do |str|
+        if (duration = parse_duration(str))
+          config.to = duration.ago
+        else
+          config.to = Time.parse(str)
+        end
+      end
+
+      opts.on('--query QUERY', 'Cloudwatch Insights query') do |query|
+        config.query = query
+      end
+
+      opts.on('--slice SLICE', '(optional) query slice size duration, defaults to 1w') do |slice|
+        config.slice = parse_duration(slice)
+      end
+
+      opts.on('--json', 'format output as newline-delimited JSON (nd-json)') do
+        config.format = :json
+      end
+
+      opts.on('--csv', '(default) format output as CSV') do
+        config.format = :csv
+      end
+
+      opts.on('--[no-]complete', 'whether or not to split query slices if exactly 10k rows are returned, defaults to off') do |complete|
+        config.complete = complete
+      end
+
+      opts.on('--[no-]progress', 'whether or not show a progress bar, defaults to on') do |progress|
+        config.progress = progress
+      end
+
+
+      opts.on("-h", "--help", "Prints this help") do
+        puts opts
+        exit
+      end
+    end.parse!(argv)
+
+    if (app = config.app) && (env = config.env) && !(log = config.log).blank?
+      config.group = build_group(app: app, env: env, log: log)
+    end
+
+    errors = []
+
+    if config.group.blank?
+      errors << "ERROR: missing log group --group or (--app and --env and --log)"
+    end
+
+    if !config.from
+      errors << "ERROR: missing time range --from or --start"
+    end
+
+    if !config.query
+      if stdin.tty?
+        errors << "ERROR: missing query, either STDIN or --query)"
+      else
+        config.query = STDIN.read
+      end
+    end
+
+    if !errors.empty?
+      puts errors
+      exit 1
+    end
+
+    config
+  end
+
+  # @param [String] log ex production.log
+  # @param [String] app ex idp
+  # @param [String] env ex int
+  def self.build_group(log:, app:, env:)
+    "#{env}_/srv/#{app}/shared/log/#{log}"
+  end
+
+  # @param [String] value a string such as 1min, 2h, 3d, 4w, 5mon, 6y
+  # @return [ActiveSupport::Duration]
+  def self.parse_duration(value)
+    if (match = value.match(/^(?<number>\d+)(?<unit>\D+)$/))
+      number = Integer(match[:number], 10)
+
+      duration = case match[:unit]
+      when 'min'
+        number.minutes
+      when 'h'
+        number.hours
+      when 'd'
+        number.days
+      when 'w'
+        number.weeks
+      when 'mon'
+        number.months
+      when 'y'
+        number.years
+      end
+
+      return duration if duration
+    end
+  end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  config = QueryCloudwatch.parse!(ARGV, STDIN)
+
+  QueryCloudwatch.new(config).run
+end

@@ -8,7 +8,7 @@ module Reporting
     DEFAULT_WAIT_DURATION = 3
     MAX_RESULTS_LIMIT = 10_000
 
-    attr_reader :num_threads, :wait_duration, :slice_interval, :logger
+    attr_reader :num_threads, :wait_duration, :slice_interval, :logger, :log_group_name
 
     # @param [Boolean] ensure_complete_logs when true, will detect when queries return exactly
     #  10,000 rows (Cloudwatch Insights max limit) and then recursively split the query window into
@@ -26,7 +26,8 @@ module Reporting
       wait_duration: DEFAULT_WAIT_DURATION,
       slice_interval: 1.day,
       logger: nil,
-      progress: true
+      progress: true,
+      log_group_name: 'prod_/srv/idp/shared/log/events.log'
     )
       @ensure_complete_logs = ensure_complete_logs
       @num_threads = num_threads
@@ -34,6 +35,7 @@ module Reporting
       @slice_interval = slice_interval
       @logger = logger
       @progress = progress
+      @log_group_name = log_group_name
     end
 
     # Either both (from, to) or time_slices must be provided
@@ -41,9 +43,11 @@ module Reporting
     # @param [Time] from
     # @param [Time] to
     # @param [Array<Range<Time>>] time_slices Pass an to use specific slices
+    # @yieldparam [Hash] row if a block is given, each row is yielded to the block as it is parsed
     # @return [Array<Hash>]
     def fetch(query:, from: nil, to: nil, time_slices: nil)
       results = Concurrent::Array.new
+      each_result_queue = Queue.new if block_given?
       in_progress = Concurrent::Hash.new(0)
 
       # Time slices to query, a tuple of range_to_query, range_id [Range<Time>, Integer]
@@ -91,7 +95,14 @@ module Reporting
             else
               log(:debug, "worker finished, slice_duration=#{end_time - start_time}")
               in_progress[range_id] -= 1
-              results.concat(parse_results(response.results))
+              parsed_results = parse_results(response.results)
+
+              results.concat(parsed_results)
+              if each_result_queue
+                parsed_results.each do |row|
+                  each_result_queue << row
+                end
+              end
             end
           end
 
@@ -103,12 +114,21 @@ module Reporting
         end
       end
 
+      if each_result_queue
+        threads << Thread.new do
+          while (row = each_result_queue.pop)
+            yield row
+          end
+        end
+      end
+
       until (num_in_progress = in_progress.sum(&:last)).zero?
         @progress_bar&.refresh
         log(:debug, "waiting, num_in_progress=#{num_in_progress}, queue_size=#{queue.size}")
         sleep wait_duration
       end
       queue.close
+      each_result_queue&.close
       threads.each(&:value) # wait for all threads
 
       @progress_bar&.finish
@@ -126,8 +146,7 @@ module Reporting
       log(:debug, "starting query: #{start_time}..#{end_time}")
 
       query_id = aws_client.start_query(
-        # NOTE: this should be configurable as well
-        log_group_name: 'prod_/srv/idp/shared/log/events.log',
+        log_group_name: log_group_name,
         start_time:,
         end_time:,
         query_string: query.to_s,
