@@ -103,10 +103,7 @@ function ping() {
 
 function keepalive() {
   request('/sessions/keepalive', { method: 'POST' })
-    .then((data) => {
-      success(data);
-      modal.hide();
-    })
+    .then(success)
     .catch((error) => notifyNewRelic(error, 'keepalive'));
 }
 
