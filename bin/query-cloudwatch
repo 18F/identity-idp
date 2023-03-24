@@ -26,7 +26,9 @@ class QueryCloudwatch
     :format,
     :complete,
     :progress,
+    :wait_duration,
     keyword_init: true,
+
   )
 
   attr_reader :config
@@ -35,13 +37,13 @@ class QueryCloudwatch
     @config = config
   end
 
-  def run(out: STDOUT)
+  def run(stdout: STDOUT)
     cloudwatch_client.fetch(
       query: config.query,
       from: config.from,
       to: config.to,
     ) do |row|
-      out.puts format_response(row)
+      stdout.puts format_response(row)
     end
   end
 
@@ -65,6 +67,7 @@ class QueryCloudwatch
       log_group_name: config.group,
       progress: config.progress,
       slice_interval: config.slice,
+      **config.to_h.slice(:wait_duration).compact,
     )
   end
 
