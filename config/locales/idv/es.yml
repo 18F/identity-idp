@@ -91,6 +91,9 @@ es:
         timeout: Nuestra solicitud para verificar tu información ha caducado. Vuelve a
           intentarlo.
         warning:
+          attempts:
+            one: For security reasons, you have one attempt remaining.
+            other: For security reasons, you have %{count} attempts remaining.
           gpo:
             button: Verificar por correo
             explanation: Si no dispones de otro número de teléfono para intentarlo,

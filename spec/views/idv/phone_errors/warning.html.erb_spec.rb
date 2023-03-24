@@ -46,7 +46,12 @@ describe 'idv/phone_errors/warning.html.erb' do
   end
 
   it 'shows remaining attempts' do
-    expect(rendered).to have_text(t('idv.failure.attempts', count: remaining_attempts))
+    expect(rendered).to have_text(
+      t(
+        'idv.failure.phone.warning.attempts',
+        count: remaining_attempts,
+      ),
+    )
   end
 
   it 'shows a primary action' do

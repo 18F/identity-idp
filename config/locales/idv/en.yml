@@ -84,6 +84,9 @@ en:
           Please try again.
         timeout: Our request to verify your information timed out. Please try again.
         warning:
+          attempts:
+            one: For security reasons, you have one attempt remaining.
+            other: For security reasons, you have %{count} attempts remaining.
           gpo:
             button: Verify by mail
             explanation: If you don’t have another phone number to try, verify by mail

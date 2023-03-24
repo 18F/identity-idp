@@ -95,6 +95,9 @@ fr:
         timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez
           réessayer.
         warning:
+          attempts:
+            one: For security reasons, you have one attempt remaining.
+            other: For security reasons, you have %{count} attempts remaining.
           gpo:
             button: Vérifier par courrier
             explanation: Si vous n’avez pas d’autre numéro de téléphone à essayer, vérifiez
