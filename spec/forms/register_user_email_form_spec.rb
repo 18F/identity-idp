@@ -53,40 +53,57 @@ describe RegisterUserEmailForm do
     end
 
     context 'when email is already taken and existing user is unconfirmed' do
-      it 'sends confirmation instructions to existing user' do
-        user = create(:user, email: 'existing@test.com', confirmed_at: nil, uuid: '123')
-        allow(User).to receive(:find_with_email).with(user.email).and_return(user)
-
-        send_sign_up_email_confirmation = instance_double(SendSignUpEmailConfirmation)
-        expect(send_sign_up_email_confirmation).to receive(:call)
-        expect(SendSignUpEmailConfirmation).to receive(:new).with(
-          user,
-        ).and_return(send_sign_up_email_confirmation)
-
-        extra = {
+      let(:email_address) { 'existing@test.com' }
+      let!(:existing_user) do
+        create(:user, email: email_address, email_language: 'en', confirmed_at: nil, uuid: '123')
+      end
+      let(:params) do
+        {
+          email: 'EXISTING@test.com',
+          email_language: 'fr',
+          terms_accepted: '1',
+        }
+      end
+      let(:extra_params) do
+        {
           email_already_exists: true,
           throttled: false,
-          user_id: user.uuid,
+          user_id: existing_user.uuid,
           domain_name: 'test.com',
         }
+      end
+      let(:send_sign_up_email_confirmation) { instance_double(SendSignUpEmailConfirmation) }
 
-        expect(subject.submit(email: user.email, terms_accepted: '1').to_h).to eq(
+      it 'sends confirmation instructions to existing user' do
+        expect(send_sign_up_email_confirmation).to receive(:call)
+        expect(SendSignUpEmailConfirmation).to receive(:new).with(
+          existing_user,
+        ).and_return(send_sign_up_email_confirmation)
+
+        result = subject.submit(params).to_h
+
+        expect(result).to eq(
           success: true,
           errors: {},
-          **extra,
+          **extra_params,
         )
+      end
+
+      it 'updates users language preference' do
+        expect do
+          subject.submit(params)
+        end.to change { existing_user.reload.email_language }.from('en').to('fr')
       end
 
       it 'creates throttle events after reaching throttle limit' do
         expect(attempts_tracker).to receive(
           :user_registration_email_submission_rate_limited,
         ).with(
-          email: 'test@example.com', email_already_registered: false,
+          email: email_address, email_already_registered: false,
         )
 
-        create(:user, email: 'test@example.com', confirmed_at: nil, uuid: '123')
         IdentityConfig.store.reg_unconfirmed_email_max_attempts.times do
-          subject.submit(email: 'test@example.com', terms_accepted: '1')
+          subject.submit(email: email_address, terms_accepted: '1')
         end
 
         expect(analytics).to have_logged_event(
