@@ -26,15 +26,24 @@ describe('SpinnerButtonElement', () => {
     inForm,
     isButtonTo,
   }: WrapperOptions = {}) {
+    let tag;
+    if (tagName === 'a') {
+      tag = '<a href="#">Click Me</a>';
+    } else {
+      tag = '<input type="submit" value="Click Me">';
+    }
+
+    if (isButtonTo) {
+      tag = `<form action="#">${tag}</form>`;
+    }
+
     let html = `
       <lg-spinner-button
         long-wait-duration-ms="${longWaitDurationMs}"
         ${spinOnClick === undefined ? '' : `spin-on-click="${spinOnClick}"`}
       >
         <div class="spinner-button__content">
-          ${isButtonTo ? '<form action="#">' : ''}
-          ${tagName === 'a' ? '<a href="#">Click Me</a>' : '<input type="submit" value="Click Me">'}
-          ${isButtonTo ? '</form>' : ''}
+          ${tag}
           <span class="spinner-dots" aria-hidden="true">
             <span class="spinner-dots__dot"></span>
             <span class="spinner-dots__dot"></span>
