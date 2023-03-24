@@ -149,10 +149,14 @@ module Idv
 
     def invalidate_steps_after_ssn!
       # Guard against unvalidated attributes from in-person flow in review controller
-      session[:applicant] = nil
+      clear_applicant!
 
       invalidate_verify_info_step!
       invalidate_phone_step!
+    end
+
+    def clear_applicant!
+      session[:applicant] = nil
     end
 
     def mark_verify_info_step_complete!

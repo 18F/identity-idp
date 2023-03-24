@@ -3,10 +3,12 @@ module Idv
     include IdvSession
     include StepIndicatorConcern
     include StepUtilitiesConcern
+    include DocumentCaptureConcern
 
     before_action :render_404_if_document_capture_controller_disabled
     before_action :confirm_two_factor_authenticated
     before_action :confirm_agreement_step_complete
+    before_action :override_document_capture_step_csp
 
     def show
       increment_step_counts
@@ -164,14 +166,14 @@ module Idv
       if store_in_session
         flow_session[:pii_from_doc] ||= {}
         flow_session[:pii_from_doc].merge!(pii_from_doc)
-        idv_session.delete('applicant')
+        idv_session.clear_applicant!
       end
       track_document_state(pii_from_doc[:state])
     end
 
     def track_document_state(state)
       return unless IdentityConfig.store.state_tracking_enabled && state
-      doc_auth_log = DocAuthLog.find_by(user_id: user_id)
+      doc_auth_log = DocAuthLog.find_by(user_id: current_user.id)
       return unless doc_auth_log
       doc_auth_log.state = state
       doc_auth_log.save!

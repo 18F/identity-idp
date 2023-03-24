@@ -139,4 +139,14 @@ feature 'doc auth document capture step', :js do
 
     expect(DocAuthLog.find_by(user_id: user.id).state).to be_nil
   end
+
+  def expect_costing_for_document
+    %i[acuant_front_image acuant_back_image acuant_result].each do |cost_type|
+      expect(costing_for(cost_type)).to be_present
+    end
+  end
+
+  def costing_for(cost_type)
+    SpCost.where(ial: 2, issuer: 'urn:gov:gsa:openidconnect:sp:server', cost_type: cost_type.to_s)
+  end
 end
