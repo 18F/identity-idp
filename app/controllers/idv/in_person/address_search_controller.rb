@@ -1,8 +1,9 @@
 module Idv
   module InPerson
     class AddressSearchController < ApplicationController
-      rescue_from Faraday::ConnectionFailed, Faraday::TimeoutError,
-                  Faraday::ClientError, ActionController::InvalidAuthenticityToken, StandardError,
+      rescue_from ActionController::InvalidAuthenticityToken,
+                  Faraday::Error,
+                  StandardError,
                   with: :report_errors
 
       def index
@@ -31,9 +32,7 @@ module Idv
 
       def report_errors(error)
         remapped_error = case error
-        when Faraday::ClientError,
-             Faraday::ConnectionFailed,
-             Faraday::TimeoutError,
+        when Faraday::Error,
              ActionController::InvalidAuthenticityToken
           :bad_request
         else
