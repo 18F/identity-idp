@@ -95,8 +95,6 @@ export interface UploadErrorResponse {
   result_failed: boolean;
 }
 
-export type UploadResponse = UploadSuccessResponse | UploadErrorResponse;
-
 export type UploadImplementation = (
   payload: Record<string, any>,
   options: UploadOptions,
