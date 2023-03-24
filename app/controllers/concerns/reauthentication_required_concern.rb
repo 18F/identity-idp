@@ -16,7 +16,9 @@ module ReauthenticationRequiredConcern
   def confirm_recently_authenticated_2fa
     @reauthn = reauthn?
     return unless user_fully_authenticated?
-    return if recently_authenticated? && user_session[:auth_method] != 'remember_device'
+    non_remembered_device_authentication = user_session[:auth_method].present? &&
+                                           user_session[:auth_method] != 'remember_device'
+    return if recently_authenticated? && non_remembered_device_authentication
     return if in_multi_mfa_selection_flow?
 
     analytics.user_2fa_reauthentication_required(
