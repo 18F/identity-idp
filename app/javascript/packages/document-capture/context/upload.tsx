@@ -12,7 +12,6 @@ const UploadContext = createContext({
   backgroundUploadURLs: {} as Record<string, string>,
   backgroundUploadEncryptKey: undefined as CryptoKey | undefined,
   flowPath: 'standard' as FlowPath,
-  csrf: null as string | null,
   formData: {} as Record<string, any>,
 });
 
@@ -45,11 +44,6 @@ interface UploadOptions {
    * Endpoint to which payload should be sent.
    */
   endpoint: string;
-
-  /**
-   * CSRF token to send as parameter to upload implementation.
-   */
-  csrf: string | null;
 }
 
 export interface UploadSuccessResponse {
@@ -101,6 +95,8 @@ export interface UploadErrorResponse {
   result_failed: boolean;
 }
 
+export type UploadResponse = UploadSuccessResponse | UploadErrorResponse;
+
 export type UploadImplementation = (
   payload: Record<string, any>,
   options: UploadOptions,
@@ -143,11 +139,6 @@ interface UploadContextProviderProps {
   statusPollInterval?: number;
 
   /**
-   * CSRF token to send as parameter to upload implementation.
-   */
-  csrf: string | null;
-
-  /**
    * Extra form data to merge into the payload before uploading
    */
   formData?: Record<string, any>;
@@ -177,27 +168,25 @@ function UploadContextProvider({
   endpoint,
   statusEndpoint,
   statusPollInterval,
-  csrf,
   formData = DEFAULT_FORM_DATA,
   flowPath,
   children,
 }: UploadContextProviderProps) {
-  const uploadWithCSRF = (payload) => upload({ ...payload, ...formData }, { endpoint, csrf });
+  const uploadWithFormData = (payload) => upload({ ...payload, ...formData }, { endpoint });
 
   const getStatus = () =>
     statusEndpoint
-      ? upload({ ...formData }, { endpoint: statusEndpoint, method: 'PUT', csrf })
+      ? upload({ ...formData }, { endpoint: statusEndpoint, method: 'PUT' })
       : Promise.reject();
 
   const value = useObjectMemo({
-    upload: uploadWithCSRF,
+    upload: uploadWithFormData,
     getStatus,
     statusPollInterval,
     backgroundUploadURLs,
     backgroundUploadEncryptKey,
     isMockClient,
     flowPath,
-    csrf,
     formData,
   });
 
