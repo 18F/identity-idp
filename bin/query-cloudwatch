@@ -44,6 +44,9 @@ class QueryCloudwatch
     ) do |row|
       stdout.puts format_response(row)
     end
+  rescue Interrupt
+    # catch interrupts (ctrl-c) and directly exit, this skips printing the backtrace
+    exit 1
   end
 
   # Relies on the fact that hashes preserve insertion order
