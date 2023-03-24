@@ -69,7 +69,12 @@ export function toFormEntryError(uploadFieldError: UploadFieldError): UploadForm
 }
 
 const upload: UploadImplementation = async function (payload, { method = 'POST', endpoint }) {
-  const response = await request(endpoint, { method, body: toFormData(payload), read: false });
+  const response = await request(endpoint, {
+    method,
+    body: toFormData(payload),
+    json: false,
+    read: false,
+  });
 
   if (!response.ok && !response.status.toString().startsWith('4')) {
     // 4xx is an expected error state, handled after JSON deserialization. Anything else not OK
