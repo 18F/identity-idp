@@ -2096,6 +2096,18 @@ module AnalyticsEvents
     )
   end
 
+  # User has attempted to access an action that requires re-authenticating
+  # @param [String] auth_method
+  # @param [String] authenticated_at
+  def user_2fa_reauthentication_required(auth_method:, authenticated_at:, **extra)
+    track_event(
+      'User 2FA Reauthentication Required',
+      auth_method: auth_method,
+      authenticated_at: authenticated_at,
+      **extra,
+    )
+  end
+
   # User registration has been hadnded off to agency page
   # @param [Boolean] ial2
   # @param [Integer] ialmax

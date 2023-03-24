@@ -194,13 +194,14 @@ module Features
       user
     end
 
-    def sign_in_with_warden(user)
+    def sign_in_with_warden(user, auth_method: nil)
       login_as(user, scope: :user, run_callbacks: false)
       allow(user).to receive(:need_two_factor_authentication?).and_return(false)
 
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
         session['warden.user.user.session'] = { authn_at: Time.zone.now }
+        session['warden.user.user.session']['auth_method'] = auth_method if auth_method
       end
       visit account_path
     end
