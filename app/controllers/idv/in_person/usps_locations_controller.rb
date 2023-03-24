@@ -12,9 +12,8 @@ module Idv
 
       before_action :confirm_authenticated_for_api, only: [:update]
 
-      rescue_from Faraday::TimeoutError,
-                  Faraday::BadRequestError,
-                  Faraday::ForbiddenError,
+      rescue_from ActionController::InvalidAuthenticityToken,
+                  Faraday::Error,
                   StandardError,
                   with: :handle_error
 
@@ -58,9 +57,7 @@ module Idv
       def handle_error(err)
         remapped_error = case err
         when ActionController::InvalidAuthenticityToken,
-             Faraday::BadRequestError,
-             Faraday::ForbiddenError,
-             Faraday::TimeoutError
+             Faraday::Error
           :unprocessable_entity
         else
           :internal_server_error
