@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-describe VendorStatus do
+describe OutageStatus do
   let(:from) { nil }
   let(:from_idv) { nil }
   let(:sp) { nil }
   subject(:vendor_status) do
-    VendorStatus.new(from: from, from_idv: from_idv, sp: sp)
+    OutageStatus.new(from: from, from_idv: from_idv, sp: sp)
   end
 
   it 'raises an error if passed an unknown vendor' do
@@ -14,7 +14,7 @@ describe VendorStatus do
 
   context 'when all vendors are operational' do
     before do
-      VendorStatus::ALL_VENDORS.each do |vendor|
+      OutageStatus::ALL_VENDORS.each do |vendor|
         allow(IdentityConfig.store).to receive("vendor_status_#{vendor}".to_sym).
           and_return(:operational)
       end
@@ -24,13 +24,13 @@ describe VendorStatus do
       expect(subject.any_vendor_outage?).not_to be
     end
 
-    it 'correctly reports no ial2 vendor outage' do
-      expect(subject.any_ial2_vendor_outage?).not_to be
+    it 'correctly reports no idv vendor outage' do
+      expect(subject.any_idv_vendor_outage?).not_to be
     end
   end
 
   context 'when any vendor has an outage' do
-    VendorStatus::ALL_VENDORS.each do |vendor|
+    OutageStatus::ALL_VENDORS.each do |vendor|
       before do
         allow(IdentityConfig.store).to receive("vendor_status_#{vendor}".to_sym).
           and_return(:full_outage)
@@ -42,14 +42,14 @@ describe VendorStatus do
     end
   end
 
-  context 'when an ial2 vendor has an outage' do
+  context 'when an idv vendor has an outage' do
     before do
       allow(IdentityConfig.store).to receive(:vendor_status_acuant).
         and_return(:full_outage)
     end
 
-    it 'correctly reports an ial2 vendor outage' do
-      expect(subject.any_ial2_vendor_outage?).to be
+    it 'correctly reports an idv vendor outage' do
+      expect(subject.any_idv_vendor_outage?).to be
     end
 
     context 'user coming from create_account' do
@@ -87,14 +87,14 @@ describe VendorStatus do
     end
   end
 
-  context 'when a non-ial2 vendor has an outage' do
+  context 'when a non-idv vendor has an outage' do
     before do
       allow(IdentityConfig.store).to receive(:vendor_status_sms).
         and_return(:full_outage)
     end
 
-    it 'correctly reports no ial2 vendor outage' do
-      expect(subject.any_ial2_vendor_outage?).not_to be
+    it 'correctly reports no idv vendor outage' do
+      expect(subject.any_idv_vendor_outage?).not_to be
     end
   end
 
@@ -163,7 +163,7 @@ describe VendorStatus do
     context 'phone vendor outage' do
       before do
         allow(vendor_status).to receive(:vendor_outage?).and_return(false)
-        VendorStatus::PHONE_VENDORS.each do |vendor|
+        OutageStatus::PHONE_VENDORS.each do |vendor|
           allow(vendor_status).to receive(:vendor_outage?).with(vendor).and_return(true)
         end
       end
@@ -188,7 +188,7 @@ describe VendorStatus do
       expect(analytics).to receive(:track_event).with(
         'Vendor Outage',
         redirect_from: from,
-        vendor_status: VendorStatus::ALL_VENDORS.index_with do |_vendor|
+        vendor_status: OutageStatus::ALL_VENDORS.index_with do |_vendor|
           satisfy { |status| IdentityConfig::VENDOR_STATUS_OPTIONS.include?(status) }
         end,
       )

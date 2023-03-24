@@ -6,6 +6,7 @@ module Users
     include SecureHeadersConcern
     include RememberDeviceConcern
     include Ial2ProfileConcern
+    include Api::CsrfTokenConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
@@ -15,6 +16,7 @@ module Users
     before_action :check_user_needs_redirect, only: [:new]
     before_action :apply_secure_headers_override, only: [:new, :create]
     before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
+    after_action :add_csrf_token_header_to_response, only: [:keepalive]
 
     def new
       analytics.sign_in_page_visit(

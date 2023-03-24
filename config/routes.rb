@@ -302,6 +302,7 @@ Rails.application.routes.draw do
       get '/activated' => 'idv#activated'
     end
     scope '/verify', module: 'idv', as: 'idv' do
+      get '/mail_only_warning' => 'gpo_only_warning#show'
       get '/come_back_later' => 'come_back_later#show'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'
@@ -372,7 +373,7 @@ Rails.application.routes.draw do
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
     post '/account/verify' => 'idv/gpo_verify#create'
-    if FeatureManagement.enable_gpo_verification?
+    if FeatureManagement.gpo_verification_enabled?
       scope '/verify', module: 'idv', as: 'idv' do
         get '/usps' => 'gpo#index', as: :gpo
         put '/usps' => 'gpo#create'

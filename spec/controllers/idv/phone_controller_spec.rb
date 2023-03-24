@@ -325,7 +325,7 @@ describe Idv::PhoneController do
 
         context 'with full vendor outage' do
           before do
-            allow_any_instance_of(VendorStatus).to receive(:all_phone_vendor_outage?).
+            allow_any_instance_of(OutageStatus).to receive(:all_phone_vendor_outage?).
               and_return(true)
           end
 
@@ -367,7 +367,7 @@ describe Idv::PhoneController do
 
         context 'with full vendor outage' do
           before do
-            allow_any_instance_of(VendorStatus).to receive(:all_phone_vendor_outage?).
+            allow_any_instance_of(OutageStatus).to receive(:all_phone_vendor_outage?).
               and_return(true)
           end
 

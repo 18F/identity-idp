@@ -46,11 +46,11 @@ class NewPhoneForm
   end
 
   def delivery_preference_sms?
-    !VendorStatus.new.vendor_outage?(:sms)
+    !OutageStatus.new.vendor_outage?(:sms)
   end
 
   def delivery_preference_voice?
-    VendorStatus.new.vendor_outage?(:sms) || setup_voice_preference?
+    OutageStatus.new.vendor_outage?(:sms) || setup_voice_preference?
   end
 
   # @return [Telephony::PhoneNumberInfo, nil]

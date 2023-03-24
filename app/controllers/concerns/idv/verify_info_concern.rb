@@ -114,12 +114,17 @@ module Idv
         move_applicant_to_idv_session
         idv_session.mark_verify_info_step_complete!
         idv_session.invalidate_steps_after_verify_info!
-        redirect_to idv_phone_url
+        redirect_to next_step_url
       else
         idv_session.invalidate_verify_info_step!
       end
 
       analytics.idv_doc_auth_verify_proofing_results(**form_response.to_h)
+    end
+
+    def next_step_url
+      return idv_gpo_url if OutageStatus.new.gpo_only?
+      idv_phone_url
     end
 
     def summarize_result_and_throttle_failures(summary_result)
