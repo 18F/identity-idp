@@ -53,14 +53,12 @@ module Users
     end
 
     def active
-      response.headers['Etag'] = '' # clear etags to prevent caching
       session[:pinged_at] = now
       Rails.logger.debug(alive?: alive?, expires_at: expires_at)
       render json: { live: alive?, timeout: expires_at, remaining: remaining_session_time }
     end
 
     def keepalive
-      response.headers['Etag'] = '' # clear etags to prevent caching
       session[:session_expires_at] = now + Devise.timeout_in if alive?
       analytics.session_kept_alive if alive?
 

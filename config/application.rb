@@ -105,6 +105,8 @@ module Identity
     }
     config.action_mailer.observers = %w[EmailDeliveryObserver]
 
+    config.middleware.delete Rack::ETag
+
     require 'headers_filter'
     config.middleware.insert_before 0, HeadersFilter
     require 'utf8_sanitizer'
