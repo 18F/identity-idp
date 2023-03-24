@@ -23,8 +23,10 @@ production:
     capture_source: true
     ignore_errors: "<%= %w[
       ActionController::BadRequest
+      ActionController::ParameterMissing
       ActionController::RoutingError
       ActionDispatch::Http::MimeNegotiation::InvalidType
+      ActionDispatch::Http::Parameters::ParseError
       GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
     ].join(',') %>"
   license_key: <%= IdentityConfig.store.newrelic_license_key %>
