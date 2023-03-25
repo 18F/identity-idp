@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::VerifyErrorsController do
+describe Idv::NotVerifiedController do
   let(:user) { build_stubbed(:user, :signed_up) }
 
   before do
@@ -11,7 +11,7 @@ describe Idv::VerifyErrorsController do
     stub_analytics
 
     expect(@analytics).to receive(:track_event).with(
-      'IdV: Verify errors visited',
+      'IdV: Not verified visited',
     )
 
     get :show

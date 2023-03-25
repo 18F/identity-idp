@@ -328,7 +328,7 @@ Rails.application.routes.draw do
       get '/session/errors/exception' => 'session_errors#exception'
       get '/session/errors/throttled' => 'session_errors#throttled'
       get '/setup_errors' => 'setup_errors#show'
-      get '/verify_errors' => 'verify_errors#show'
+      get '/not_verified' => 'not_verified#show'
       delete '/session' => 'sessions#destroy'
       get '/cancel/' => 'cancellations#new', as: :cancel
       put '/cancel' => 'cancellations#update'

@@ -44,7 +44,7 @@ describe IdvController do
 
       get :index
 
-      expect(response).to redirect_to(idv_verify_errors_url)
+      expect(response).to redirect_to(idv_not_verified_url)
     end
 
     context 'if number of attempts has been exceeded' do

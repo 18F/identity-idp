@@ -158,7 +158,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
               it 'redirects to fraud rejection page if user is fraud rejected ' do
                 action
-                expect(controller).to redirect_to(idv_verify_errors_url)
+                expect(controller).to redirect_to(idv_not_verified_url)
               end
             end
           end
