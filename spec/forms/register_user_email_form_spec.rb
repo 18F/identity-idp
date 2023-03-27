@@ -9,22 +9,24 @@ describe RegisterUserEmailForm do
 
   describe '#submit' do
     context 'when email is already taken' do
-      it 'sets success to true to prevent revealing account existence' do
-        existing_user = create(:user, :signed_up, email: 'taken@gmail.com')
-
-        extra = {
+      let(:email_address) { 'taken@gmail.com' }
+      let!(:existing_user) { create(:user, :signed_up, email: email_address) }
+      let(:extra_params) do
+        {
           email_already_exists: true,
           throttled: false,
           user_id: existing_user.uuid,
           domain_name: 'gmail.com',
         }
+      end
 
+      it 'sets success to true to prevent revealing account existence' do
         expect(subject.submit(email: 'TAKEN@gmail.com', terms_accepted: '1').to_h).to eq(
           success: true,
           errors: {},
-          **extra,
+          **extra_params,
         )
-        expect(subject.email).to eq 'taken@gmail.com'
+        expect(subject.email).to eq email_address
         expect_delivered_email_count(1)
         expect_delivered_email(
           to: [subject.email],
@@ -36,13 +38,11 @@ describe RegisterUserEmailForm do
         expect(attempts_tracker).to receive(
           :user_registration_email_submission_rate_limited,
         ).with(
-          email: 'taken@example.com', email_already_registered: true,
+          email: email_address, email_already_registered: true,
         )
 
-        create(:user, :signed_up, email: 'taken@example.com')
-
         IdentityConfig.store.reg_confirmed_email_max_attempts.times do
-          subject.submit(email: 'TAKEN@example.com', terms_accepted: '1')
+          subject.submit(email: 'TAKEN@gmail.com', terms_accepted: '1')
         end
 
         expect(analytics).to have_logged_event(
