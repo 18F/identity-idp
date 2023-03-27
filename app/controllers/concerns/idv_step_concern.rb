@@ -18,7 +18,7 @@ module IdvStepConcern
     end
   end
 
-  def confirm_profile_not_already_confirmed
+  def confirm_verify_info_step_needed
     return unless idv_session.verify_info_step_complete?
     redirect_to idv_review_url
   end

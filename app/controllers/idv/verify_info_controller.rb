@@ -7,7 +7,7 @@ module Idv
     include Steps::ThreatMetrixStepHelper
 
     before_action :confirm_ssn_step_complete
-    before_action :confirm_profile_not_already_confirmed
+    before_action :confirm_verify_info_step_needed
 
     def show
       @in_person_proofing = false

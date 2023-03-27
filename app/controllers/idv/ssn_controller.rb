@@ -6,7 +6,7 @@ module Idv
     include StepUtilitiesConcern
     include Steps::ThreatMetrixStepHelper
 
-    before_action :confirm_profile_not_already_confirmed
+    before_action :confirm_verify_info_step_needed
     before_action :confirm_pii_from_doc
 
     attr_accessor :error_message
