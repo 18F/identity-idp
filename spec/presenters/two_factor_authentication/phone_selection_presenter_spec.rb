@@ -34,7 +34,7 @@ RSpec.describe TwoFactorAuthentication::PhoneSelectionPresenter do
 
     context 'all phone vendor outage' do
       before do
-        allow_any_instance_of(VendorStatus).to receive(:all_phone_vendor_outage?).and_return(true)
+        allow_any_instance_of(OutageStatus).to receive(:all_phone_vendor_outage?).and_return(true)
       end
 
       it { expect(presenter_without_mfa.disabled?).to eq(true) }

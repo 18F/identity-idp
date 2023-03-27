@@ -1,10 +1,10 @@
-import { Button } from '@18f/identity-components';
+import { SpinnerButton } from '@18f/identity-spinner-button';
 import { useI18n } from '@18f/identity-react-i18n';
 
 interface LocationCollectionItemProps {
   distance?: string;
   formattedCityStateZip: string;
-  handleSelect: (event: React.FormEvent<HTMLInputElement>, selection: number) => void;
+  handleSelect: (event: React.MouseEvent, selection: number) => void;
   name?: string;
   saturdayHours: string;
   selectId: number;
@@ -60,18 +60,16 @@ function LocationCollectionItem({
                 {`${t('in_person_proofing.body.location.retail_hours_sun')} ${sundayHours}`}
               </div>
             )}
-            <Button
-              id={`location_button_mobile_${selectId}`}
+            <SpinnerButton
               className="tablet:display-none margin-top-2 width-full"
               onClick={(event) => handleSelect(event, selectId)}
               type="submit"
             >
               {t('in_person_proofing.body.location.location_button')}
-            </Button>
+            </SpinnerButton>
           </div>
           <div className="grid-col-auto">
-            <Button
-              id={`location_button_desktop_${selectId}`}
+            <SpinnerButton
               className="display-none tablet:display-inline-block"
               onClick={(event) => {
                 handleSelect(event, selectId);
@@ -79,7 +77,7 @@ function LocationCollectionItem({
               type="submit"
             >
               {t('in_person_proofing.body.location.location_button')}
-            </Button>
+            </SpinnerButton>
           </div>
         </div>
       </div>

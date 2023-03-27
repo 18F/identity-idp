@@ -1,6 +1,8 @@
 require_relative 'document_capture_step_helper'
+require_relative 'interaction_helper'
 
 module DocAuthHelper
+  include InteractionHelper
   include DocumentCaptureStepHelper
 
   GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
@@ -77,11 +79,13 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_welcome_step(expect_accessible: false)
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
+    click_idv_continue if current_path == idv_mail_only_warning_path
+
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
 
   def complete_welcome_step
-    click_on t('doc_auth.buttons.continue')
+    click_spinner_button_and_wait t('doc_auth.buttons.continue')
   end
 
   def complete_doc_auth_steps_before_agreement_step(expect_accessible: false)
@@ -106,6 +110,10 @@ module DocAuthHelper
   end
 
   def complete_upload_step
+    # If there is a phone outage, the upload step is
+    # skipped and the user is taken straight to
+    # document capture.
+    return if OutageStatus.new.any_phone_vendor_outage?
     click_on t('forms.buttons.upload_photos')
   end
 
@@ -126,6 +134,7 @@ module DocAuthHelper
     attach_file I18n.t('doc_auth.headings.document_capture_front'), File.expand_path(proofing_yml)
     attach_file I18n.t('doc_auth.headings.document_capture_back'), File.expand_path(proofing_yml)
     click_on I18n.t('forms.buttons.submit.default')
+    expect(page).to have_current_path(idv_ssn_url, wait: 10)
   end
 
   def complete_doc_auth_steps_before_email_sent_step

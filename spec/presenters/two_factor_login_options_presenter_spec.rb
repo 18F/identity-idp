@@ -112,8 +112,8 @@ describe TwoFactorLoginOptionsPresenter do
     context 'disabled options' do
       before do
         create(:phone_configuration, user: user, phone: '(202) 555-1111')
-        allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).and_return(false)
-        allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
+        allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).and_return(false)
+        allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
       end
 
       it 'returns first enabled index' do

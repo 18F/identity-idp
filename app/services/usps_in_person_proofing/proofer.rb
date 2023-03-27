@@ -1,7 +1,8 @@
 module UspsInPersonProofing
   class Proofer
     AUTH_TOKEN_CACHE_KEY = :usps_ippaas_api_auth_token
-    AUTH_TOKEN_REFRESH_THRESHOLD = 5
+    # Automatically refresh our auth token if it is within this many minutes of expiring
+    AUTH_TOKEN_PREEMPTIVE_EXPIRY_MINUTES = 1.minute
 
     # Makes HTTP request to get nearby in-person proofing facilities
     # Requires address, city, state and zip code.
@@ -102,14 +103,14 @@ module UspsInPersonProofing
     # @return [String] the token
     def retrieve_token!
       body = request_token
-      expires_at = Time.zone.now + body['expires_in']
+      # Refresh our token early so that it won't expire while a request is in-flight. We expect 15m
+      # expirys for tokens but are careful not to trim the expiry by too much, just in case
+      expires_in = body['expires_in'].seconds
+      if expires_in - AUTH_TOKEN_PREEMPTIVE_EXPIRY_MINUTES > 0
+        expires_in -= AUTH_TOKEN_PREEMPTIVE_EXPIRY_MINUTES
+      end
       token = "#{body['token_type']} #{body['access_token']}"
-      Rails.cache.write(AUTH_TOKEN_CACHE_KEY, token, expires_at: expires_at)
-      # If using a redis cache we have to manually set the expires_at. This is because we aren't
-      # using a dedicated Redis cache and instead are just using our existing Redis server with
-      # mixed usage patterns. Without this cache entries don't expire.
-      # More at https://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html
-      Rails.cache.try(:redis)&.expireat(AUTH_TOKEN_CACHE_KEY, expires_at.to_i)
+      Rails.cache.write(AUTH_TOKEN_CACHE_KEY, token, expires_in: expires_in)
       token
     end
 
@@ -148,10 +149,6 @@ module UspsInPersonProofing
     # already cached.
     # @return [Hash] Headers to add to USPS requests
     def dynamic_headers
-      token_remaining_time = Rails.cache.redis.ttl(AUTH_TOKEN_CACHE_KEY)
-      if token_remaining_time != -2 && token_remaining_time <= AUTH_TOKEN_REFRESH_THRESHOLD
-        retrieve_token!
-      end
       {
         'Authorization' => token,
         'RequestID' => request_id,

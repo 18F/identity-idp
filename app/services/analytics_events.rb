@@ -646,6 +646,10 @@ module AnalyticsEvents
     track_event('IdV: in person proofing prepare submitted', flow_path: flow_path, **extra)
   end
 
+  def idv_in_person_proofing_residential_address_submitted(**extra)
+    track_event('IdV: in person proofing residential address submitted', **extra)
+  end
+
   def idv_in_person_proofing_address_submitted(**extra)
     track_event('IdV: in person proofing address submitted', **extra)
   end
@@ -762,8 +766,9 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.previous_event_name IdV: doc auth send_link submitted
   def idv_doc_auth_link_sent_submitted(**extra)
-    track_event('IdV: doc auth send_link submitted', **extra)
+    track_event('IdV: doc auth link_sent submitted', **extra)
   end
 
   def idv_doc_auth_link_sent_visited(**extra)
@@ -2091,6 +2096,18 @@ module AnalyticsEvents
     track_event(
       'User marked authenticated',
       authentication_type: authentication_type,
+      **extra,
+    )
+  end
+
+  # User has attempted to access an action that requires re-authenticating
+  # @param [String] auth_method
+  # @param [String] authenticated_at
+  def user_2fa_reauthentication_required(auth_method:, authenticated_at:, **extra)
+    track_event(
+      'User 2FA Reauthentication Required',
+      auth_method: auth_method,
+      authenticated_at: authenticated_at,
       **extra,
     )
   end

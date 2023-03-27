@@ -3,6 +3,13 @@ shared_examples 'a system email' do
     expect(mail.from).to eq [IdentityConfig.store.email_from]
     expect(mail[:from].display_names).to eq [IdentityConfig.store.email_from_display_name]
   end
+
+  it 'does not include markup or layout with lack of broad email support' do
+    body = mail.parts.first.body
+
+    # https://www.caniemail.com/features/image-svg/
+    expect(body).not_to have_css('img[src$=".svg"]')
+  end
 end
 
 # expects there to be a let(:user) in scope

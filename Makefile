@@ -133,8 +133,8 @@ browsers.json: yarn.lock .browserslistrc ## Generates browsers.json browser supp
 	yarn generate-browsers-json
 
 test: export RAILS_ENV := test
-test: $(CONFIG) ## Runs RSpec and yarn tests in parallel
-	bundle exec rake parallel:spec && yarn test
+test: $(CONFIG) ## Runs RSpec and yarn tests
+	bundle exec rspec && yarn test
 
 test_serial: export RAILS_ENV := test
 test_serial: $(CONFIG) ## Runs RSpec and yarn tests serially

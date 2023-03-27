@@ -14,7 +14,7 @@ describe 'GPO verification routes' do
   ].freeze
 
   before do
-    allow(FeatureManagement).to receive(:enable_gpo_verification?).
+    allow(FeatureManagement).to receive(:gpo_verification_enabled?).
       and_return(enable_gpo_verification)
     Rails.application.reload_routes!
   end
