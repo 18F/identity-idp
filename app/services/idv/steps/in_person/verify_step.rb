@@ -20,7 +20,7 @@ module Idv
 
         def extra_view_variables
           {
-            capture_secondary_id_enabled: capture_secondary_id_enabled,
+            capture_secondary_id_enabled:,
             pii: pii,
             step_url: method(:idv_in_person_step_url),
           }
