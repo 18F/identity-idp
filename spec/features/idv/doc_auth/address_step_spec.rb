@@ -4,20 +4,33 @@ feature 'doc auth verify step', :js do
   include IdvStepHelper
   include DocAuthHelper
 
+  let(:puerto_rico_guidance_text) do
+    t('doc_auth.info.address_guidance_puerto_rico_html').gsub('<br>', "\n")
+  end
+
   context 'with a mainland address' do
     before do
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_address_step
     end
 
-    it 'renders the Puerto Rico address guidance as hidden text'
-      guidance = page.find_by_id('puerto-rico-extra-text')
-      expected_guidance_text = t('doc_auth.info.address_guidance_puerto_rico_html').gsub('<br>', "\n")
+    it 'renders the Puerto Rico address guidance as hidden text' do
+      guidance = page.find_by_id('puerto-rico-extra-text', visible: false)
 
-      expect(guidance.text).to include(expected_guidance_text)
       expect(guidance).not_to be_visible
     end
 
+    context 'that gets changed to a Puerto Rico address' do
+      before do
+        select 'Puerto Rico', from: 'idv_form_state'
+      end
+
+      it 'shows the Puerto Rico address guidance' do
+        guidance = page.find_by_id('puerto-rico-extra-text')
+
+        expect(guidance).to be_visible
+      end
+    end
 
     it 'allows the user to enter in a new address' do
       expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
@@ -60,9 +73,8 @@ feature 'doc auth verify step', :js do
 
     it 'renders the Puerto Rico address guidance as visible text' do
       guidance = page.find_by_id('puerto-rico-extra-text')
-      expected_guidance_text = t('doc_auth.info.address_guidance_puerto_rico_html').gsub('<br>', "\n")
 
-      expect(guidance.text).to include(expected_guidance_text)
+      expect(guidance.text).to include(puerto_rico_guidance_text)
       expect(guidance).to be_visible
     end
 
@@ -73,6 +85,18 @@ feature 'doc auth verify step', :js do
       fill_in 'idv_form_address2', with: 'URB Las Gladiolas'
       click_button t('forms.buttons.submit.update')
       expect(page).to have_current_path(idv_verify_info_path)
+    end
+
+    context 'that gets changed to a mainland address' do
+      before do
+        select 'Wyoming', from: 'idv_form_state'
+      end
+
+      it 'hides the Puerto Rico address guidance' do
+        guidance = page.find_by_id('puerto-rico-extra-text', visible: false)
+
+        expect(guidance).not_to be_visible
+      end
     end
   end
 
