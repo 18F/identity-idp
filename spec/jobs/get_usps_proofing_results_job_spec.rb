@@ -10,35 +10,35 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
       )
 
       job.perform(Time.zone.now)
-    end
 
-    response = JSON.parse(response_json)
-    expect(job_analytics).to have_logged_event(
-      'GetUspsProofingResultsJob: Enrollment status updated',
-      assurance_level: response['assuranceLevel'],
-      enrollment_code: pending_enrollment.enrollment_code,
-      enrollment_id: pending_enrollment.id,
-      failure_reason: response['failureReason'],
-      fraud_suspected: response['fraudSuspected'],
-      issuer: pending_enrollment.issuer,
-      minutes_since_last_status_check: 15.0,
-      minutes_since_last_status_update: 2.days.in_minutes,
-      minutes_to_completion: 3.days.in_minutes,
-      minutes_since_established: 3.days.in_minutes,
-      passed: passed,
-      primary_id_type: response['primaryIdType'],
-      proofing_city: response['proofingCity'],
-      proofing_post_office: response['proofingPostOffice'],
-      proofing_state: response['proofingState'],
-      reason: anything,
-      response_message: response['responseMessage'],
-      response_present: true,
-      scan_count: response['scanCount'],
-      secondary_id_type: response['secondaryIdType'],
-      status: response['status'],
-      transaction_end_date_time: anything,
-      transaction_start_date_time: anything,
-    )
+      response = JSON.parse(response_json)
+      expect(job_analytics).to have_logged_event(
+        'GetUspsProofingResultsJob: Enrollment status updated',
+        assurance_level: response['assuranceLevel'],
+        enrollment_code: pending_enrollment.enrollment_code,
+        enrollment_id: pending_enrollment.id,
+        failure_reason: response['failureReason'],
+        fraud_suspected: response['fraudSuspected'],
+        issuer: pending_enrollment.issuer,
+        minutes_since_last_status_check: 15.0,
+        minutes_since_last_status_update: 2.days.in_minutes,
+        minutes_to_completion: 3.days.in_minutes,
+        minutes_since_established: 3.days.in_minutes,
+        passed: passed,
+        primary_id_type: response['primaryIdType'],
+        proofing_city: response['proofingCity'],
+        proofing_post_office: response['proofingPostOffice'],
+        proofing_state: response['proofingState'],
+        reason: anything,
+        response_message: response['responseMessage'],
+        response_present: true,
+        scan_count: response['scanCount'],
+        secondary_id_type: response['secondaryIdType'],
+        status: response['status'],
+        transaction_end_date_time: anything,
+        transaction_start_date_time: anything,
+      )
+    end
   end
 
   context 'email_analytics_attributes' do
@@ -72,11 +72,11 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
       pending_enrollment.reload
       expect(pending_enrollment.status_updated_at).to eq(Time.zone.now)
       expect(pending_enrollment.status_check_attempted_at).to eq(Time.zone.now)
+
+      expect(pending_enrollment.status).to eq(status)
+
+      expect(pending_enrollment.profile.active).to eq(passed)
     end
-
-    expect(pending_enrollment.status).to eq(status)
-
-    expect(pending_enrollment.profile.active).to eq(passed)
   end
 end
 
@@ -86,24 +86,23 @@ RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class
                                                                 response_message: nil,
                                                                 response_status_code: nil|
   it 'logs an error message and leaves the enrollment and profile pending' do
-    job.perform(Time.zone.now)
-    pending_enrollment.reload
+      job.perform(Time.zone.now)
+      pending_enrollment.reload
 
-    expect(pending_enrollment.pending?).to eq(true)
-    expect(pending_enrollment.profile.active).to eq(false)
-    expect(job_analytics).to have_logged_event(
-      'GetUspsProofingResultsJob: Exception raised',
-      hash_including(
-        minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
-        enrollment_code: pending_enrollment.enrollment_code,
-        enrollment_id: pending_enrollment.id,
-        exception_class: exception_class,
-        exception_message: exception_message,
-        reason: reason,
-        response_message: response_message,
-        response_status_code: response_status_code,
-      ),
-    )
+      expect(pending_enrollment.pending?).to eq(true)
+      expect(pending_enrollment.profile.active).to eq(false)
+      expect(job_analytics).to have_logged_event(
+        'GetUspsProofingResultsJob: Exception raised',
+        hash_including(
+          enrollment_code: pending_enrollment.enrollment_code,
+          enrollment_id: pending_enrollment.id,
+          exception_class: exception_class,
+          exception_message: exception_message,
+          reason: reason,
+          response_message: response_message,
+          response_status_code: response_status_code,
+        ),
+      )
   end
 
   it 'updates the status_check_attempted_at timestamp' do
@@ -129,7 +128,6 @@ RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response'
     expect(job_analytics).to have_logged_event(
       'GetUspsProofingResultsJob: Exception raised',
       hash_including(
-        minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
         response_present: false,
         exception_class: error_type.to_s,
       ),
@@ -311,7 +309,6 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Exception raised',
             hash_including(
-              minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
               exception_message: error_message,
             ),
           )
@@ -518,8 +515,9 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
-              minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
               reason: 'Successful status update',
+              transaction_end_date_time: transaction_end_date_time,
+              transaction_start_date_time: transaction_start_date_time,
             ),
           )
           expect(job_analytics).to have_logged_event(
@@ -530,14 +528,20 @@ RSpec.describe GetUspsProofingResultsJob do
             timestamp: anything,
             wait_until: nil,
           )
+        end
 
-          expect(job_analytics).to have_logged_event(
-            'GetUspsProofingResultsJob: Enrollment status updated',
-            hash_including(
-              transaction_end_date_time: transaction_end_date_time,
-              transaction_start_date_time: transaction_start_date_time,
-            ),
-          )
+        it 'logs the minutes since establishment' do
+          freeze_time do
+            job.perform(Time.zone.now)
+
+            expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
+            expect(job_analytics).to have_logged_event(
+              'GetUspsProofingResultsJob: Enrollment status updated',
+              hash_including(
+                minutes_since_established: range_approximating(3.days.in_minutes, vary_left: -5, vary_right: 5),
+              ),
+            )
+          end
         end
       end
 
@@ -561,7 +565,10 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
-              minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
+              passed: false,
+              reason: 'Failed status',
+              transaction_end_date_time: transaction_end_date_time,
+              transaction_start_date_time: transaction_start_date_time,
             ),
           )
           expect(job_analytics).to have_logged_event(
@@ -571,14 +578,6 @@ RSpec.describe GetUspsProofingResultsJob do
             service_provider: anything,
             timestamp: anything,
             wait_until: nil,
-          )
-
-          expect(job_analytics).to have_logged_event(
-            'GetUspsProofingResultsJob: Enrollment status updated',
-            hash_including(
-              transaction_end_date_time: transaction_end_date_time,
-              transaction_start_date_time: transaction_start_date_time,
-            ),
           )
         end
       end
@@ -603,7 +602,9 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
-              minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
+              fraud_suspected: true,
+              transaction_end_date_time: transaction_end_date_time,
+              transaction_start_date_time: transaction_start_date_time,
             ),
           )
           expect(job_analytics).to have_logged_event(
@@ -613,14 +614,6 @@ RSpec.describe GetUspsProofingResultsJob do
             service_provider: anything,
             timestamp: anything,
             wait_until: nil,
-          )
-
-          expect(job_analytics).to have_logged_event(
-            'GetUspsProofingResultsJob: Enrollment status updated',
-            hash_including(
-              transaction_end_date_time: transaction_end_date_time,
-              transaction_start_date_time: transaction_start_date_time,
-            ),
           )
         end
       end
@@ -645,7 +638,6 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
-              minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
               reason: 'Unsupported ID type',
               transaction_end_date_time: transaction_end_date_time,
               transaction_start_date_time: transaction_start_date_time,
@@ -683,7 +675,6 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
-              minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
               reason: 'Enrollment has expired',
               transaction_end_date_time: nil,
               transaction_start_date_time: nil,
@@ -714,7 +705,6 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
-              minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
               reason: 'Enrollment has expired',
             ),
           )
@@ -744,7 +734,6 @@ RSpec.describe GetUspsProofingResultsJob do
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Unexpected response received',
               hash_including(
-                minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
                 reason: 'Invalid enrollment code',
               ),
             )
@@ -768,7 +757,6 @@ RSpec.describe GetUspsProofingResultsJob do
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Unexpected response received',
               hash_including(
-                minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
                 reason: 'Invalid applicant unique id',
               ),
             )
@@ -805,7 +793,6 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Exception raised',
             hash_including(
-              minutes_since_established: range_approximating(3.days.in_minutes, vary_right: 5),
               status: 'Not supported',
             ),
           )
@@ -919,11 +906,6 @@ RSpec.describe GetUspsProofingResultsJob do
 
           expect(job_analytics).not_to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
-          )
-
-          expect(job_analytics).to have_logged_event(
-            'GetUspsProofingResultsJob: Enrollment incomplete',
-            hash_including(minutes_since_established: 3.days.in_minutes),
           )
         end
       end
