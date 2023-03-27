@@ -7,7 +7,7 @@ module Idv
     include Steps::ThreatMetrixStepHelper
 
     before_action :confirm_verify_info_step_needed
-    before_action :confirm_pii_from_doc
+    before_action :confirm_document_capture_complete
 
     attr_accessor :error_message
 

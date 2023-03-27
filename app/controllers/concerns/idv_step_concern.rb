@@ -8,7 +8,7 @@ module IdvStepConcern
     before_action :confirm_idv_needed
   end
 
-  def confirm_pii_from_doc
+  def confirm_document_capture_complete
     @pii = flow_session&.[]('pii_from_doc') # hash with indifferent access
     return if @pii.present?
 
