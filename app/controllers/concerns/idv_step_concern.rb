@@ -18,6 +18,11 @@ module IdvStepConcern
     end
   end
 
+  def confirm_profile_not_already_confirmed
+    return unless idv_session.verify_info_step_complete?
+    redirect_to idv_review_url
+  end
+
   def confirm_address_step_complete
     return if idv_session.address_step_complete?
 

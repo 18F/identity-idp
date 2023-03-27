@@ -19,11 +19,6 @@ module Idv
       redirect_to idv_doc_auth_url
     end
 
-    def confirm_profile_not_already_confirmed
-      return unless idv_session.verify_info_step_complete?
-      redirect_to idv_review_url
-    end
-
     # Copied from capture_doc_flow.rb
     # and from doc_auth_flow.rb
     def acuant_sdk_ab_test_analytics_args

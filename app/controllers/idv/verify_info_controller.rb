@@ -6,7 +6,6 @@ module Idv
     include VerifyInfoConcern
     include Steps::ThreatMetrixStepHelper
 
-    before_action :confirm_two_factor_authenticated
     before_action :confirm_ssn_step_complete
     before_action :confirm_profile_not_already_confirmed
 
