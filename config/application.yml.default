@@ -315,6 +315,7 @@ usps_upload_sftp_timeout: 5
 valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true","http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true","http://idmanagement.gov/ns/assurance/aal/2?hspd12=true"]'
 vendor_status_acuant: 'operational'
 vendor_status_lexisnexis_instant_verify: 'operational'
+vendor_status_lexisnexis_phone_finder: 'operational'
 vendor_status_lexisnexis_trueid: 'operational'
 vendor_status_sms: 'operational'
 vendor_status_voice: 'operational'
