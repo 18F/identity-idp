@@ -207,7 +207,7 @@ module Features
     end
 
     def sign_in_and_2fa_user(user = user_with_2fa)
-      sign_in_with_warden(user)
+      sign_in_with_warden(user, auth_method: 'phone')
       user
     end
 

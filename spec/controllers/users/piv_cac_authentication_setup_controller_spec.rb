@@ -76,6 +76,7 @@ describe Users::PivCacAuthenticationSetupController do
         allow(subject).to receive(:user_session).and_return(piv_cac_nonce: nonce)
         subject.user_session[:piv_cac_nickname] = nickname
         subject.user_session[:authn_at] = Time.zone.now
+        subject.user_session[:auth_method] = 'phone'
       end
 
       let(:nonce) { 'nonce' }
