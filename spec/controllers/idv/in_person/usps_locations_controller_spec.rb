@@ -186,11 +186,11 @@ describe Idv::InPerson::UspsLocationsController do
         allow(proofer).to receive(:request_facilities).with(address).and_raise(server_error)
       end
 
-      it 'returns an internal server error' do
+      it 'returns an unprocessible entity client error' do
         subject
         expect(@analytics).to have_logged_event(
           'Request USPS IPP locations: request failed',
-          api_status_code: 500,
+          api_status_code: 422,
           exception_class: server_error.class,
           exception_message: server_error.message,
           response_body_present:
@@ -200,7 +200,7 @@ describe Idv::InPerson::UspsLocationsController do
         )
 
         status = response.status
-        expect(status).to eq 500
+        expect(status).to eq 422
       end
     end
 
@@ -222,7 +222,7 @@ describe Idv::InPerson::UspsLocationsController do
         subject
         expect(@analytics).to have_logged_event(
           'Request USPS IPP locations: request failed',
-          api_status_code: 500,
+          api_status_code: 422,
           exception_class: exception.class,
           exception_message: exception.message,
           response_body_present:

@@ -1,6 +1,18 @@
 require 'rails_helper'
 
 describe Users::BackupCodeSetupController do
+  describe 'before_actions' do
+    it 'includes appropriate before_actions' do
+      expect(subject).to have_actions(
+        :before,
+        :authenticate_user!,
+        :confirm_user_authenticated_for_2fa_setup,
+        :apply_secure_headers_override,
+        :confirm_recently_authenticated_2fa,
+      )
+    end
+  end
+
   it 'creates backup codes and logs expected events' do
     user = create(:user, :signed_up)
     stub_sign_in(user)

@@ -6,7 +6,8 @@ module Idv
 
       included do
         validates :same_address_as_id,
-                  presence: true
+                  presence: true,
+                  unless: :capture_secondary_id_enabled?
 
         validates_with UspsInPersonProofing::TransliterableValidator,
                        fields: [:city],

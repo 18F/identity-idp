@@ -71,8 +71,8 @@
       <%= f.radio_button(
             :otp_delivery_preference,
             :sms,
-            checked: !VendorStatus.new.vendor_outage?(:sms), # We want SMS to be default checked
-            disabled: VendorStatus.new.vendor_outage?(:sms),
+            checked: !OutageStatus.new.vendor_outage?(:sms), # We want SMS to be default checked
+            disabled: OutageStatus.new.vendor_outage?(:sms),
             class: 'usa-radio__input usa-radio__input--bordered',
           ) %>
         <%= f.label :otp_delivery_preference_sms, t('two_factor_authentication.otp_delivery_preference.sms'), class: 'usa-radio__label width-full' %>
@@ -81,7 +81,7 @@
       <%= f.radio_button(
             :otp_delivery_preference,
             :voice,
-            disabled: VendorStatus.new.vendor_outage?(:voice),
+            disabled: OutageStatus.new.vendor_outage?(:voice),
             class: 'usa-radio__input usa-radio__input--bordered',
           ) %>
       <%= f.label :otp_delivery_preference_voice, t('two_factor_authentication.otp_delivery_preference.voice'), class: 'usa-radio__label width-full' %>

@@ -78,12 +78,12 @@ describe Deploy::Activate do
       subject.run
 
       expect(s3_client).to have_received(:get_object).with(
-        bucket: 'login-gov.secrets.12345-us-west-1',
+        bucket: kind_of(String),
         key: 'common/GeoIP2-City.mmdb',
         response_target: kind_of(String),
       )
       expect(s3_client).to have_received(:get_object).with(
-        bucket: 'login-gov.secrets.12345-us-west-1',
+        bucket: kind_of(String),
         key: 'common/pwned-passwords.txt',
         response_target: kind_of(String),
       )

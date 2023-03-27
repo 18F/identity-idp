@@ -20,12 +20,6 @@ RSpec.describe Reporting::CloudwatchClient do
     )
   end
 
-  let(:stubbed_aws_sdk_client) { Aws::CloudWatchLogs::Client.new(stub_responses: true) }
-
-  before do
-    allow(client).to receive(:aws_client).and_return(stubbed_aws_sdk_client)
-  end
-
   describe '#fetch' do
     let(:from) { 3.days.ago }
     let(:to) { 1.day.ago }
@@ -46,21 +40,22 @@ RSpec.describe Reporting::CloudwatchClient do
     def stub_single_page
       query_id = SecureRandom.hex
 
-      stubbed_aws_sdk_client.stub_responses(:start_query, { query_id: query_id })
-      stubbed_aws_sdk_client.stub_responses(
-        :get_query_results,
-        {
-          status: 'Complete',
-          results: [
-            # rubocop:disable Layout/LineLength
-            to_result_fields('@message' => 'aaa', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
-            to_result_fields('@message' => 'bbb', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
-            to_result_fields('@message' => 'ccc', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
-            to_result_fields('@message' => 'ddd', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
-            # rubocop:enable Layout/LineLength
-          ],
+      Aws.config[:cloudwatchlogs] = {
+        stub_responses: {
+          start_query: { query_id: query_id },
+          get_query_results: {
+            status: 'Complete',
+            results: [
+              # rubocop:disable Layout/LineLength
+              to_result_fields('@message' => 'aaa', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
+              to_result_fields('@message' => 'bbb', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
+              to_result_fields('@message' => 'ccc', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
+              to_result_fields('@message' => 'ddd', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
+              # rubocop:enable Layout/LineLength
+            ],
+          },
         },
-      )
+      }
     end
 
     context ':slice_interval is falsy' do
@@ -120,6 +115,25 @@ RSpec.describe Reporting::CloudwatchClient do
       )
     end
 
+    it 'yields each row to the block and returns nil with a block' do
+      stub_single_page
+
+      results = []
+      direct_return = client.fetch(query:, from:, to:, time_slices:) do |row|
+        results << row
+      end
+
+      expect(direct_return).to be_nil
+      expect(results).to match_array(
+        [
+          { '@message' => 'aaa', '@timestamp' => now.iso8601 },
+          { '@message' => 'bbb', '@timestamp' => now.iso8601 },
+          { '@message' => 'ccc', '@timestamp' => now.iso8601 },
+          { '@message' => 'ddd', '@timestamp' => now.iso8601 },
+        ],
+      )
+    end
+
     context ':progress' do
       let(:progress) { StringIO.new }
 
@@ -139,41 +153,38 @@ RSpec.describe Reporting::CloudwatchClient do
       let(:to) { Time.zone.at(1000) }
 
       before do
-        stubbed_aws_sdk_client.stub_responses(
-          :start_query,
-          proc do |context|
-            start_time, end_time = context.params.values_at(:start_time, :end_time)
+        Aws.config[:cloudwatchlogs] = {
+          stub_responses: {
+            start_query: proc do |context|
+              start_time, end_time = context.params.values_at(:start_time, :end_time)
 
-            query_id = case [start_time, end_time]
-            when [1, 500]
-              'query_id_too_many_results'
-            when [501, 1000], [1, 249], [250, 500]
-              'query_id_normal_results'
-            else
-              raise "no start_query stub for start_time=#{start_time}, end_time=#{end_time}"
-            end
+              query_id = case [start_time, end_time]
+              when [1, 500]
+                'query_id_too_many_results'
+              when [501, 1000], [1, 249], [250, 500]
+                'query_id_normal_results'
+              else
+                raise "no start_query stub for start_time=#{start_time}, end_time=#{end_time}"
+              end
 
-            { query_id: }
-          end,
-        )
+              { query_id: }
+            end,
+            get_query_results: proc do |context|
+              query_id = context.params[:query_id]
 
-        stubbed_aws_sdk_client.stub_responses(
-          :get_query_results,
-          proc do |context|
-            query_id = context.params[:query_id]
+              results = case query_id
+              when 'query_id_too_many_results'
+                10_001.times.map { to_result_fields('@message' => 'aaa') }
+              when 'query_id_normal_results'
+                333.times.map { to_result_fields('@message' => 'aaa') }
+              else
+                raise "Unknown query_id=#{query_id}"
+              end
 
-            results = case query_id
-            when 'query_id_too_many_results'
-              10_001.times.map { to_result_fields('@message' => 'aaa') }
-            when 'query_id_normal_results'
-              333.times.map { to_result_fields('@message' => 'aaa') }
-            else
-              raise "Unknown query_id=#{query_id}"
-            end
-
-            { status: 'Complete', results: }
-          end,
-        )
+              { status: 'Complete', results: }
+            end,
+          },
+        }
       end
 
       it 'slices by interval and recurses as needed to get full results' do
@@ -185,13 +196,14 @@ RSpec.describe Reporting::CloudwatchClient do
 
     context 'query is before Cloudwatch Insights Availability and AWS errors' do
       before do
-        stubbed_aws_sdk_client.stub_responses(
-          :start_query,
-          Aws::CloudWatchLogs::Errors::InvalidParameterException.new(
-            nil,
-            'End time should not be before the service was generally available',
-          ),
-        )
+        Aws.config[:cloudwatchlogs] = {
+          stub_responses: {
+            start_query: Aws::CloudWatchLogs::Errors::InvalidParameterException.new(
+              nil,
+              'End time should not be before the service was generally available',
+            ),
+          },
+        }
       end
 
       it 'logs a warning and returns an empty array for that range' do

@@ -12,10 +12,43 @@ interface RequestOptions extends RequestInit {
   csrf?: boolean | CSRFGetter;
 }
 
-const getCSRFToken = () =>
-  document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content;
+class CSRF {
+  static get token(): string | null {
+    return this.#tokenMetaElement?.content || null;
+  }
 
-export async function request<Response>(
+  static set token(value: string | null) {
+    if (!value) {
+      return;
+    }
+
+    if (this.#tokenMetaElement) {
+      this.#tokenMetaElement.content = value;
+    }
+
+    this.#paramInputElements.forEach((input) => {
+      input.value = value;
+    });
+  }
+
+  static get param(): string | undefined {
+    return this.#paramMetaElement?.content;
+  }
+
+  static get #tokenMetaElement(): HTMLMetaElement | null {
+    return document.querySelector('meta[name="csrf-token"]');
+  }
+
+  static get #paramMetaElement(): HTMLMetaElement | null {
+    return document.querySelector('meta[name="csrf-param"]');
+  }
+
+  static get #paramInputElements(): NodeListOf<HTMLInputElement> {
+    return document.querySelectorAll(`input[name="${this.param}"]`);
+  }
+}
+
+export async function request<Response = any>(
   url: string,
   options: Partial<RequestOptions> = {},
 ): Promise<Response> {
@@ -24,7 +57,7 @@ export async function request<Response>(
   headers = new Headers(headers);
 
   if (csrf) {
-    const csrfToken = typeof csrf === 'boolean' ? getCSRFToken() : csrf();
+    const csrfToken = typeof csrf === 'boolean' ? CSRF.token : csrf();
 
     if (csrfToken) {
       headers.set('X-CSRF-Token', csrfToken);
@@ -41,9 +74,11 @@ export async function request<Response>(
   }
 
   const response = await window.fetch(url, { ...fetchOptions, headers, body });
-  if (response.ok) {
-    return json ? response.json() : response.text();
+  CSRF.token = response.headers.get('X-CSRF-Token');
+
+  if (!response.ok) {
+    throw new Error();
   }
 
-  throw new Error(await response.json());
+  return json ? response.json() : response.text();
 }

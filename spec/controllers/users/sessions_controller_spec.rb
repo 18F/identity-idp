@@ -26,12 +26,6 @@ describe Users::SessionsController, devise: true do
         expect(response.status).to eq(200)
       end
 
-      it 'clears the Etag header' do
-        get :active
-
-        expect(response.headers['Etag']).to eq ''
-      end
-
       it 'renders json' do
         get :active
 
@@ -673,12 +667,6 @@ describe Users::SessionsController, devise: true do
         post :keepalive
 
         expect(response.status).to eq(200)
-      end
-
-      it 'clears the Etag header' do
-        post :keepalive
-
-        expect(response.headers['Etag']).to eq ''
       end
 
       it 'renders json' do

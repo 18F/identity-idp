@@ -34,7 +34,7 @@ module Rack
     # not blocklisting & safelisting
     Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new(
       namespace: 'rack-attack',
-      url: IdentityConfig.store.redis_throttle_url,
+      redis: REDIS_THROTTLE_POOL,
       expires_in: 2.weeks.to_i,
     )
 

@@ -41,6 +41,8 @@ module Flow
       @flow.controller.url_options
     end
 
+    delegate :analytics_visited_event, :analytics_submitted_event, to: :class
+
     private
 
     def create_response(form_submit_response, call_response)

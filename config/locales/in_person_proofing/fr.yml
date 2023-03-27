@@ -136,7 +136,7 @@ fr:
         state_id_number_hint: Peut comprendre des lettres et des chiffres
         zipcode: Code postal
     headings:
-      address: Entrez votre adresse actuelle
+      address: Indiquez votre adresse résidentielle actuelle
       barcode: Vous êtes prêt à vérifier votre identité en personne avec %{app_name}
       cta: Vous avez des difficultés à vérifier votre identité en ligne?
       cta_variant: Essayez de vérifier votre identité en personne

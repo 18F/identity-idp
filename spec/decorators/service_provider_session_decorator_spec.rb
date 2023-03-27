@@ -42,10 +42,10 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
   end
 
-  describe '#custom_alert' do
+  describe '#sp_alert' do
     context 'sp has custom alert' do
       it 'uses the custom template' do
-        expect(subject.custom_alert('sign_in')).
+        expect(subject.sp_alert('sign_in')).
           to eq "<b>custom sign in help text for #{sp.friendly_name}</b>"
       end
     end
@@ -54,7 +54,7 @@ RSpec.describe ServiceProviderSessionDecorator do
       let(:sp) { build_stubbed(:service_provider_without_help_text) }
 
       it 'returns nil' do
-        expect(subject.custom_alert('sign_in')).
+        expect(subject.sp_alert('sign_in')).
           to be_nil
       end
     end
@@ -63,7 +63,7 @@ RSpec.describe ServiceProviderSessionDecorator do
       let(:sp) { build(:service_provider, help_text: nil) }
 
       it 'returns nil' do
-        expect(subject.custom_alert('sign_in')).
+        expect(subject.sp_alert('sign_in')).
           to be_nil
       end
     end
@@ -72,7 +72,7 @@ RSpec.describe ServiceProviderSessionDecorator do
       let(:sp) { build_stubbed(:service_provider, :with_blank_help_text) }
 
       it 'returns nil' do
-        expect(subject.custom_alert('sign_in')).
+        expect(subject.sp_alert('sign_in')).
           to be_nil
       end
     end

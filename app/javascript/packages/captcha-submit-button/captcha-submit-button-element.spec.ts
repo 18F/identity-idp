@@ -1,6 +1,6 @@
 import type { SinonStub } from 'sinon';
 import userEvent from '@testing-library/user-event';
-import { screen, waitFor } from '@testing-library/dom';
+import { screen, waitFor, fireEvent } from '@testing-library/dom';
 import { useSandbox, useDefineProperty } from '@18f/identity-test-helpers';
 import '@18f/identity-spinner-button/spinner-button-element';
 import { CAPTCHA_EVENT_NAME } from './captcha-submit-button-element';
@@ -35,58 +35,30 @@ describe('CaptchaSubmitButtonElement', () => {
       `;
     });
 
-    it('submits the form', async () => {
+    it('does not prevent default form submission', async () => {
       const button = screen.getByRole('button', { name: 'Submit' });
       const form = document.querySelector('form')!;
 
-      sandbox.stub(form, 'submit');
+      let didSubmit = false;
+      form.addEventListener('submit', (event) => {
+        expect(event.defaultPrevented).to.equal(false);
+        event.preventDefault();
+        didSubmit = true;
+      });
 
       await userEvent.click(button);
-      await waitFor(() => expect((form.submit as SinonStub).called).to.be.true());
+      await waitFor(() => expect(didSubmit).to.be.true());
     });
 
-    context('with form validation errors', () => {
-      beforeEach(() => {
-        document.body.innerHTML = `
-          <form>
-            <input required>
-            <lg-captcha-submit-button>
-              <lg-spinner-button>
-                <button>Submit</button>
-              </lg-spinner-button>
-            </lg-captcha-submit-button>
-          </form>
-        `;
-      });
+    it('unbinds form events when disconnected', () => {
+      const submitButton = document.querySelector('lg-captcha-submit-button')!;
+      const form = submitButton.form!;
+      form.removeChild(submitButton);
 
-      it('does not submit the form and reports validity', async () => {
-        const button = screen.getByRole('button', { name: 'Submit' });
-        const form = document.querySelector('form')!;
-        const input = document.querySelector('input')!;
+      sandbox.spy(submitButton, 'shouldInvokeChallenge');
+      fireEvent.submit(form);
 
-        let didSubmit = false;
-        form.addEventListener('submit', (event) => {
-          event.preventDefault();
-          didSubmit = true;
-        });
-
-        let didReportInvalid = false;
-        input.addEventListener('invalid', () => {
-          didReportInvalid = true;
-        });
-
-        await userEvent.click(button);
-
-        expect(didSubmit).to.be.false();
-        expect(didReportInvalid).to.be.true();
-      });
-
-      it('stops or otherwise prevents the spinner button from spinning', async () => {
-        const button = screen.getByRole('button', { name: 'Submit' });
-        await userEvent.click(button);
-
-        expect(document.querySelector('.spinner-button--spinner-active')).to.not.exist();
-      });
+      expect(submitButton.shouldInvokeChallenge).not.to.have.been.called();
     });
 
     context('with configured recaptcha', () => {
@@ -130,7 +102,7 @@ describe('CaptchaSubmitButtonElement', () => {
         expect(grecaptcha.execute).to.have.been.calledWith(RECAPTCHA_SITE_KEY, {
           action: RECAPTCHA_ACTION_NAME,
         });
-        expect(Object.fromEntries(new FormData(form))).to.deep.equal({
+        expect(Object.fromEntries(new window.FormData(form))).to.deep.equal({
           recaptcha_token: RECAPTCHA_TOKEN_VALUE,
         });
       });
@@ -145,10 +117,14 @@ describe('CaptchaSubmitButtonElement', () => {
           const button = screen.getByRole('button', { name: 'Submit' });
           const form = document.querySelector('form')!;
 
-          sandbox.stub(form, 'submit');
+          let didSubmit = false;
+          form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            didSubmit = true;
+          });
 
           await userEvent.click(button);
-          await waitFor(() => expect((form.submit as SinonStub).called).to.be.true());
+          await waitFor(() => expect(didSubmit).to.be.true());
 
           expect(grecaptcha.ready).not.to.have.been.called();
         });

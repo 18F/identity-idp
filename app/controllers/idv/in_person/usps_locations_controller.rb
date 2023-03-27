@@ -12,9 +12,8 @@ module Idv
 
       before_action :confirm_authenticated_for_api, only: [:update]
 
-      rescue_from Faraday::TimeoutError,
-                  Faraday::BadRequestError,
-                  Faraday::ForbiddenError,
+      rescue_from ActionController::InvalidAuthenticityToken,
+                  Faraday::Error,
                   StandardError,
                   with: :handle_error
 
@@ -56,12 +55,13 @@ module Idv
       protected
 
       def handle_error(err)
-        remapped_error = {
-          Faraday::TimeoutError => :unprocessable_entity,
-          Faraday::BadRequestError => :unprocessable_entity,
-          Faraday::ForbiddenError => :unprocessable_entity,
-          ActionController::InvalidAuthenticityToken => :unprocessable_entity,
-        }[err.class] || :internal_server_error
+        remapped_error = case err
+        when ActionController::InvalidAuthenticityToken,
+             Faraday::Error
+          :unprocessable_entity
+        else
+          :internal_server_error
+        end
 
         analytics.idv_in_person_locations_request_failure(
           api_status_code: Rack::Utils.status_code(remapped_error),

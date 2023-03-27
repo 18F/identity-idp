@@ -63,8 +63,6 @@ Dir.chdir APP_ROOT do
   run "docker-compose run --rm app bundle exec rake db:environment:set"
   # This populates the dev database with sample data
   run "docker-compose run --rm app bundle exec rake dev:prime"
-  # Create all parallel test databases
-  run "docker-compose run --rm app bundle exec rake parallel:setup"
 
   puts "== Shut down cluster =="
   run "docker-compose down"

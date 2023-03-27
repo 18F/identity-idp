@@ -1,4 +1,4 @@
-class VendorStatus
+class OutageStatus
   include ActionView::Helpers::TranslationHelper
 
   def initialize(from: nil, from_idv: nil, sp: nil)
@@ -7,9 +7,9 @@ class VendorStatus
     @sp = sp
   end
 
-  IAL2_VENDORS = %i[acuant lexisnexis_instant_verify lexisnexis_trueid].freeze
+  IDV_VENDORS = %i[acuant lexisnexis_instant_verify lexisnexis_trueid].freeze
   PHONE_VENDORS = %i[sms voice].freeze
-  ALL_VENDORS = (IAL2_VENDORS + PHONE_VENDORS).freeze
+  ALL_VENDORS = (IDV_VENDORS + PHONE_VENDORS).freeze
 
   def vendor_outage?(vendor)
     status = case vendor
@@ -19,6 +19,8 @@ class VendorStatus
       IdentityConfig.store.vendor_status_lexisnexis_instant_verify
     when :lexisnexis_trueid
       IdentityConfig.store.vendor_status_lexisnexis_trueid
+    when :lexisnexis_phone_finder
+      IdentityConfig.store.vendor_status_lexisnexis_phone_finder
     when :sms
       IdentityConfig.store.vendor_status_sms
     when :voice
@@ -37,8 +39,8 @@ class VendorStatus
     vendors.all? { |vendor| vendor_outage?(vendor) }
   end
 
-  def any_ial2_vendor_outage?
-    any_vendor_outage?(IAL2_VENDORS)
+  def any_idv_vendor_outage?
+    any_vendor_outage?(IDV_VENDORS)
   end
 
   def any_phone_vendor_outage?
@@ -47,6 +49,10 @@ class VendorStatus
 
   def all_phone_vendor_outage?
     all_vendor_outage?(PHONE_VENDORS)
+  end
+
+  def phone_finder_outage?
+    all_vendor_outage?([:lexisnexis_phone_finder])
   end
 
   def from_idv?
@@ -58,7 +64,7 @@ class VendorStatus
   #
   # @return [String, nil] the localized message.
   def outage_message
-    if any_ial2_vendor_outage?
+    if any_idv_vendor_outage?
       if from_idv?
         if sp
           t('vendor_outage.blocked.idv.with_sp', service_provider: sp.friendly_name)

@@ -43,5 +43,15 @@ module Idv
         service_provider: current_sp,
       ).present?
     end
+
+    def document_capture_session
+      @document_capture_session ||= DocumentCaptureSession.find_by(
+        uuid: flow_session[document_capture_session_uuid_key],
+      )
+    end
+
+    def document_capture_session_uuid_key
+      :document_capture_session_uuid
+    end
   end
 end
