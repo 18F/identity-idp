@@ -1,15 +1,21 @@
-function show_or_hide_puerto_rico_guidance(for_state_code)
+function showOrHidePuertoRicoGuidance(forStateCode)
 {
-  console.log(`show_or_hide_puerto_rico_guidance(${for_state_code})`);
-  let puerto_rico_guidance = document.getElementById('puerto-rico-extra-text');
-  puerto_rico_guidance.style.display = (for_state_code === 'PR' ? 'block' : 'none');
+  let puertoRicoGuidance = document.getElementById('puerto-rico-extra-text');
+  if (forStateCode === 'PR') {
+    puertoRicoGuidance.classList.remove('display-none');
+    puertoRicoGuidance.classList.add('display-block');
+  }
+  else {
+    puertoRicoGuidance.classList.remove('display-block');
+    puertoRicoGuidance.classList.add('display-none');
+  }
 }
 
-function on_state_selection_change()
+function onStateSelectionChange()
 {
-  let state_selector = document.getElementById('idv_form_state');
-  show_or_hide_puerto_rico_guidance(state_selector.value);
+  let stateSelector = document.getElementById('idv_form_state');
+  showOrHidePuertoRicoGuidance(stateSelector.value);
 }
 
-document.getElementById('idv_form_state').addEventListener("change", on_state_selection_change);
-on_state_selection_change(); // set initial visibility
+document.getElementById('idv_form_state').addEventListener("change", onStateSelectionChange);
+onStateSelectionChange(); // set initial visibility
