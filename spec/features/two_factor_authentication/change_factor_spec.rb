@@ -73,12 +73,21 @@ feature 'Changing authentication factor' do
     it 'requires 2FA authentication to manage 2FA configurations' do
       user = user_with_2fa
       sign_in_with_warden(user, auth_method: 'remember_device')
+
+      # Ensure reauthentication context does not prompt incorrectly
+      visit webauthn_setup_path
+      expect(current_path).to eq login_two_factor_options_path
+
       visit add_phone_path
       expect(current_path).to eq login_two_factor_options_path
+
       find("label[for='two_factor_options_form_selection_sms']").click
       click_on t('forms.buttons.continue')
       fill_in_code_with_last_phone_otp
       click_submit_default
+      expect(current_path).to eq add_phone_path
+
+      visit add_phone_path
       expect(current_path).to eq add_phone_path
     end
   end
