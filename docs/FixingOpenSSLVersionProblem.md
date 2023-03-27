@@ -59,7 +59,7 @@ And re-install, using the correct OpenSSL installation:
 Use the `ruby-build` instructions; `chruby` doesn't require anything special.
 
 ### Rebuilding Ruby using `rbenv`
-Use the `ruby-build` instructions; `rbenv` doesn't require anything special.
+Use the `ruby-build` instructions; `rbenv` doesn't require anything special, although use `~/.rbenv/versions` for the install location, not `~/.rubies`.
 
 ### Rebuilding Ruby using `ruby-build`
 Make sure ruby-build is up to date
