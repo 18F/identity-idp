@@ -4,7 +4,7 @@ require_relative '../spec/simplecov_helper'
 
 module SimpleCov
   module ResultMerger
-    RSPEC_FILENAME_REGEX = %r{^(?<filename>[-_\w\d/.]+(\.rb)?)}
+    RSPEC_FILENAME_REGEX = %r{^(?<filename>[-_\w\d/.]+(?<extension>\.rb)?)}
     def self.merging!
       SimplecovHelper.configure
       fix_gitlab_paths if ENV['GITLAB_CI']
