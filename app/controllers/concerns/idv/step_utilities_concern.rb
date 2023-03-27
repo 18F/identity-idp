@@ -11,14 +11,6 @@ module Idv
       flow_session[:flow_path]
     end
 
-    def confirm_pii_from_doc
-      @pii = flow_session&.[]('pii_from_doc') # hash with indifferent access
-      return if @pii.present?
-
-      flow_session&.delete('Idv::Steps::DocumentCaptureStep')
-      redirect_to idv_doc_auth_url
-    end
-
     # Copied from capture_doc_flow.rb
     # and from doc_auth_flow.rb
     def acuant_sdk_ab_test_analytics_args
