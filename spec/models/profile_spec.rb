@@ -358,7 +358,7 @@ describe Profile do
         )
         expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_falsey
 
-        expect(profile.irs_attempts_api_tracker).to be nil
+        expect(profile.irs_attempts_api_tracker).not_to receive(:fraud_review_adjudicated)
         profile.activate_after_passing_review
       end
     end
@@ -478,7 +478,7 @@ describe Profile do
 
         expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_falsey
 
-        expect(profile.irs_attempts_api_tracker).to be nil
+        expect(profile.irs_attempts_api_tracker).not_to receive(:fraud_review_adjudicated)
 
         profile.reject_for_fraud(notify_user: true)
       end

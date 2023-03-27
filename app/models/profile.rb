@@ -133,7 +133,7 @@ class Profile < ApplicationRecord
       cookie_device_uuid: nil,
       sp_request_uri: nil,
       enabled_for_session: initiating_service_provider&.irs_attempts_api_enabled?,
-      analytics:  Analytics.new(
+      analytics: Analytics.new(
         user: user,
         request: nil,
         sp: initiating_service_provider&.issuer,
