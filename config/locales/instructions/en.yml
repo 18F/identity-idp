@@ -91,15 +91,16 @@ en:
         online accounts such as banks, email and social media.
       help_text_header: Password safety tips
       info:
-        lead: It must be at least %{min_length} characters long and not be a commonly
-          used password. That’s it!
+        lead: Your password must be %{min_length} characters or longer. Don’t use common
+          phrases or repeated characters, like abc or 111.
       password_key: You need your 16-character personal key to reset your password if
         you verified your identity with this account. If you don’t have it, you
         can still reset your password and then reverify your identity.
+      password_tip: Avoid reusing passwords from your other accounts, such as your banks, email and social media. Don't include words from your email address. 
       strength:
         i: Very weak
         ii: Weak
-        iii: So-so
+        iii: Average
         intro: 'Password strength: '
         iv: Good
         v: Great!

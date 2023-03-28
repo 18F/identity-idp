@@ -97,16 +97,17 @@ es:
         y medios sociales.
       help_text_header: Consejos de seguridad de contraseña
       info:
-        lead: Su contraseña debe tener al menos %{min_length} caracteres y no ser una
-          contraseña común. ¡Eso es todo!
+        lead: Su contraseña deberá tener %{min_length} caracteres o más. No use
+          expresiones comunes ni caracteres repetidos, como “abc” o “111″.
       password_key: Si verificó su identidad con esta cuenta, necesita su clave
         personal de 16 caracteres para restablecer su contraseña. Si no cuenta
         con ella, de todos modos puede restablecer su contraseña y luego volver
         a verificar su identidad.
+      password_tip: Evite reutilizar las contraseñas de sus otras cuentas, como las bancarias, las de correo electrónico y las de redes sociales. No incluya palabras de su dirección de correo electrónico.
       strength:
         i: Muy débil
         ii: Débil
-        iii: Más o menos
+        iii: Promedio
         intro: 'Seguridad de la contraseña:'
         iv: Buena
         v: '¡Muy buena!'
