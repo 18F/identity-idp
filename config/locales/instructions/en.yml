@@ -86,9 +86,8 @@ en:
       wrong_number: Entered the wrong phone number?
     password:
       forgot: Don’t know your password? Reset it after confirming your email address.
-      help_text: Avoid reusing passwords from your other accounts, such as your
-        banks, email and social media. Don’t include words from your email
-        address.
+      help_text: Avoid reusing passwords from your other accounts, such as your banks,
+        email and social media. Don’t include words from your email address.
       help_text_header: Password safety tips
       info:
         lead: Your password must be %{min_length} characters or longer. Don’t use common

@@ -102,8 +102,8 @@ fr:
         confirmé votre adresse courriel.
       help_text: Évitez de réutiliser les mots de passe de vos autres comptes, tels
         que ceux de vos banques, de vos comptes de courriel et de vos réseaux
-        sociaux. N’incluez pas les mots de votre adresse de courriel.
-        bancaires, les comptes courriel et les comptes de médias sociaux.
+        sociaux. N’incluez pas les mots de votre adresse de courriel. bancaires,
+        les comptes courriel et les comptes de médias sociaux.
       help_text_header: Conseils sur la sécurité du mot de passe
       info:
         lead: Votre mot de passe doit comporter %{min_length} caractères ou plus.
