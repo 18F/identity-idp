@@ -119,7 +119,7 @@ en:
         state_id_number_hint: May include letters and numbers
         zipcode: ZIP Code
     headings:
-      address: Enter your current address
+      address: Enter your current residential address
       barcode: You’re ready to verify your identity in person with %{app_name}
       cta: Having trouble verifying your ID online?
       cta_variant: Try verifying your ID in person

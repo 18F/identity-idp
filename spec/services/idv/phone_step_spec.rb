@@ -40,11 +40,13 @@ describe Idv::PhoneStep do
   end
   let(:trace_id) { SecureRandom.uuid }
   let(:attempts_tracker) { @irs_attempts_api_tracker }
+  let(:analytics) { FakeAnalytics.new }
 
   subject do
     described_class.new(
       idv_session: idv_session,
       trace_id: trace_id,
+      analytics: analytics,
       attempts_tracker: attempts_tracker,
     )
   end
@@ -116,27 +118,26 @@ describe Idv::PhoneStep do
     it 'increments step attempts' do
       expect do
         subject.submit(phone: bad_phone)
-        expect(subject.async_state.done?).to eq true
-        subject.async_state_done(subject.async_state)
       end.to(change { throttle.fetch_state!.attempts }.by(1))
     end
 
-    it 'does not increment step attempts when the vendor request times out' do
-      expect { subject.submit(phone: timeout_phone) }.to_not change { throttle.attempts }
+    it 'increments step attempts when the vendor request times out' do
+      expect do
+        subject.submit(phone: timeout_phone)
+      end.to(change { throttle.fetch_state!.attempts }.by(1))
     end
 
     it 'does not increment step attempts when the vendor raises an exception' do
-      expect { subject.submit(phone: fail_phone) }.to_not change { throttle.attempts }
+      expect do
+        subject.submit(phone: fail_phone)
+      end.to(change { throttle.fetch_state!.attempts }.by(1))
     end
 
     it 'logs a throttled attempts_tracker event' do
       throttle.increment_to_throttled!
 
-      subject.submit(phone: bad_phone)
       expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_sent_rate_limited)
-      subject.async_state_done(subject.async_state)
-
-      throttle.reset!
+      subject.submit(phone: bad_phone)
     end
 
     it 'marks the phone as unconfirmed if it matches 2FA phone' do
@@ -200,9 +201,6 @@ describe Idv::PhoneStep do
         Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
 
         subject.submit(phone: bad_phone)
-        expect(subject.async_state.done?).to eq true
-        subject.async_state_done(subject.async_state)
-
         expect(subject.failure_reason).to eq(:fail)
       end
     end

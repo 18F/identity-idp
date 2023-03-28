@@ -14,7 +14,11 @@ module RememberDeviceConcern
   end
 
   def check_remember_device_preference
-    return unless UserSessionContext.authentication_or_reauthentication_context?(context)
+    if IdentityConfig.store.reauthentication_for_second_factor_management_enabled
+      return unless UserSessionContext.authentication_context?(context)
+    else
+      return unless UserSessionContext.authentication_or_reauthentication_context?(context)
+    end
     return if remember_device_cookie.nil?
     return unless remember_device_cookie.valid_for_user?(
       user: current_user,

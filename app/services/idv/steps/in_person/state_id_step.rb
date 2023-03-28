@@ -24,7 +24,7 @@ module Idv
 
         def extra_view_variables
           {
-            capture_secondary_id_enabled:,
+            capture_secondary_id_enabled: capture_secondary_id_enabled?,
             form:,
             pii:,
             parsed_dob:,
@@ -34,7 +34,7 @@ module Idv
 
         private
 
-        def capture_secondary_id_enabled
+        def capture_secondary_id_enabled?
           current_user.establishing_in_person_enrollment.capture_secondary_id_enabled
         end
 

@@ -44,7 +44,7 @@ describe TwoFactorAuthentication::SmsSelectionPresenter do
 
     context 'sms vendor outage' do
       before do
-        allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
+        allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
       end
 
       it { expect(subject.disabled?).to eq(true) }

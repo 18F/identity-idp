@@ -31,7 +31,7 @@ module Users
     private
 
     def redirect_if_phone_vendor_outage
-      return unless VendorStatus.new.all_phone_vendor_outage?
+      return unless OutageStatus.new.all_phone_vendor_outage?
       redirect_to vendor_outage_path(from: :users_phones)
     end
 

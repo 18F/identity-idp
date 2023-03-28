@@ -37,6 +37,6 @@ class VendorOutageAlertComponent < BaseComponent
   end
 
   def vendor_status
-    @vendor_status ||= VendorStatus.new
+    @vendor_status ||= OutageStatus.new
   end
 end

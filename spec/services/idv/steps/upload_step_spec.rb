@@ -68,9 +68,6 @@ describe Idv::Steps::UploadStep do
     before do
       allow(controller).to receive(:irs_attempts_api_tracker).
         and_return(irs_attempts_api_tracker)
-      allow(IdentityConfig.store).
-        to receive(:doc_auth_combined_hybrid_handoff_enabled).
-        and_return(true)
     end
 
     describe '#extra_view_variables' do

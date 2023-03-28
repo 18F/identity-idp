@@ -1,6 +1,6 @@
 class VendorOutageController < ApplicationController
   def show
-    vendor_status = VendorStatus.new(
+    vendor_status = OutageStatus.new(
       sp: current_sp,
       from: session.delete(:vendor_outage_redirect),
       from_idv: session.delete(:vendor_outage_redirect_from_idv),
@@ -17,7 +17,7 @@ class VendorOutageController < ApplicationController
   end
 
   def gpo_letter_available?
-    FeatureManagement.enable_gpo_verification? &&
+    FeatureManagement.gpo_verification_enabled? &&
       current_user &&
       !Idv::GpoMail.new(current_user).mail_spammed?
   end

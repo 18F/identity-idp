@@ -6,7 +6,7 @@ describe VendorOutageController do
   end
 
   it 'tracks an analytics event' do
-    expect_any_instance_of(VendorStatus).to receive(:track_event).with(@analytics)
+    expect_any_instance_of(OutageStatus).to receive(:track_event).with(@analytics)
 
     get :show
   end

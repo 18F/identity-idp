@@ -1,12 +1,16 @@
 module Idv
   class PhoneStep
-    def initialize(idv_session:, trace_id:, attempts_tracker:)
+    def initialize(idv_session:, trace_id:, analytics:, attempts_tracker:)
       self.idv_session = idv_session
       @trace_id = trace_id
+      @analytics = analytics
       @attempts_tracker = attempts_tracker
     end
 
     def submit(step_params)
+      return throttled_result if throttle.throttled?
+      throttle.increment!
+
       self.step_params = step_params
       idv_session.previous_phone_step_params = step_params.slice(:phone, :otp_delivery_preference)
       proof_address
@@ -14,6 +18,7 @@ module Idv
 
     def failure_reason
       return :fail if throttle.throttled?
+      return :no_idv_result if idv_result.nil?
       return :timeout if idv_result[:timed_out]
       return :jobfail if idv_result[:exception].present?
       return :warning if idv_result[:success] != true
@@ -34,8 +39,6 @@ module Idv
     def async_state_done(async_state)
       @idv_result = async_state.result
 
-      throttle.increment! unless failed_due_to_timeout_or_exception?
-      @attempts_tracker.idv_phone_otp_sent_rate_limited if throttle.throttled?
       success = idv_result[:success]
       handle_successful_proofing_attempt if success
 
@@ -104,6 +107,12 @@ module Idv
 
     def throttle
       @throttle ||= Throttle.new(user: idv_session.current_user, throttle_type: :proof_address)
+    end
+
+    def throttled_result
+      @attempts_tracker.idv_phone_otp_sent_rate_limited
+      @analytics.throttler_rate_limit_triggered(throttle_type: :proof_address, step_name: :phone)
+      FormResponse.new(success: false)
     end
 
     def failed_due_to_timeout_or_exception?
