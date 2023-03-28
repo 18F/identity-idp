@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_20_235607) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_22_000756) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -224,6 +224,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_20_235607) do
     t.index ["device_id", "created_at"], name: "index_events_on_device_id_and_created_at"
     t.index ["disavowal_token_fingerprint"], name: "index_events_on_disavowal_token_fingerprint"
     t.index ["user_id", "created_at"], name: "index_events_on_user_id_and_created_at"
+  end
+
+  create_table "fraud_review_requests", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "uuid"
+    t.string "irs_session_id"
+    t.string "login_session_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_fraud_review_requests_on_user_id"
   end
 
   create_table "iaa_gtcs", force: :cascade do |t|

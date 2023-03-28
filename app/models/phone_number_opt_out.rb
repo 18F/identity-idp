@@ -1,4 +1,4 @@
-# Represents a record of a phone number that has beed opted out of SMS in AWS Pinpoint
+# Represents a record of a phone number that has been opted out of SMS in AWS Pinpoint
 # AWS maintains separate opt-out lists per region, so this helps us keep track across regions
 class PhoneNumberOptOut < ApplicationRecord
   include NonNullUuid
