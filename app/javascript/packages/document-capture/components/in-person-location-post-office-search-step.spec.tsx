@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { I18n } from '@18f/identity-i18n';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
-import type { SetupServerApi } from 'msw/node';
+import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
 import { I18nContext } from '@18f/identity-react-i18n';
 import { ComponentType } from 'react';
@@ -61,7 +61,7 @@ describe('InPersonPostOfficeSearchStep', () => {
     <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
   );
 
-  let server: SetupServerApi;
+  let server: SetupServer;
 
   before(() => {
     server = setupServer();
