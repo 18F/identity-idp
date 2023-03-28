@@ -24,11 +24,6 @@ interface PingResponse {
   live: boolean;
 
   /**
-   * Time remaining in active session, in seconds.
-   */
-  remaining: number;
-
-  /**
    * ISO8601-formatted date string for session timeout.
    */
   timeout: string;
@@ -64,7 +59,7 @@ function handleTimeout(redirectURL: string) {
 }
 
 function success(data: PingResponse) {
-  let timeRemaining = data.remaining * 1000;
+  let timeRemaining = new Date(data.timeout).valueOf() - Date.now();
   const showWarning = timeRemaining < warning;
 
   if (!data.live) {
