@@ -12,6 +12,9 @@ Rails.application.routes.draw do
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/risc/security_events' => 'risc/security_events#create'
   post '/api/irs_attempts_api/security_events' => 'api/irs_attempts_api#create'
+  get '/api/sessions' => 'api/sessions#show'
+  put '/api/sessions' => 'api/sessions#update'
+  delete '/api/sessions' => 'api/sessions#destroy'
 
   # SAML secret rotation paths
   SamlEndpoint.suffixes.each do |suffix|
