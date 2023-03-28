@@ -24,7 +24,6 @@ feature 'doc auth document capture step', :js do
 
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_document_capture_step
-    visit(idv_document_capture_url)
   end
 
   it 'shows the new DocumentCapture page for desktop standard flow' do
