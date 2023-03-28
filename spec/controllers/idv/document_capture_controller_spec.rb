@@ -5,7 +5,6 @@ describe Idv::DocumentCaptureController do
 
   let(:flow_session) do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      'pii_from_doc' => Idp::Constants::MOCK_IDV_APPLICANT.dup,
       :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
       :flow_path => 'standard',
       'Idv::Steps::AgreementStep' => true }
@@ -107,6 +106,15 @@ describe Idv::DocumentCaptureController do
           get :show
 
           expect(response).to redirect_to(idv_doc_auth_url)
+        end
+      end
+
+      context 'With pii in session' do
+        it 'redirects to ssn step' do
+          flow_session['pii_from_doc'] = Idp::Constants::MOCK_IDV_APPLICANT
+          get :show
+
+          expect(response).to redirect_to(idv_ssn_url)
         end
       end
     end

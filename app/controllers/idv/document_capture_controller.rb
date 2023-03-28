@@ -8,6 +8,7 @@ module Idv
     before_action :render_404_if_document_capture_controller_disabled
     before_action :confirm_two_factor_authenticated
     before_action :confirm_agreement_step_complete
+    before_action :confirm_document_capture_needed
     before_action :override_document_capture_step_csp
 
     def show
@@ -65,6 +66,13 @@ module Idv
       return if flow_session['Idv::Steps::AgreementStep']
 
       redirect_to idv_doc_auth_url
+    end
+
+    def confirm_document_capture_needed
+      pii = flow_session&.[]('pii_from_doc') # hash with indifferent access
+      return if pii.blank?
+
+      redirect_to idv_ssn_url
     end
 
     def analytics_arguments
