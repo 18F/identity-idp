@@ -10,9 +10,9 @@ locals:
   <div class='margin-top-4 margin-bottom-2'>
   <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 border-bottom border-primary-light">
     <dl class="grid-col-fill margin-y-0">
-    <% if capture_secondary_id_enabled %>
-      <strong><%= t('headings.state_id') %></strong>
-    <% end %>
+      <% if capture_secondary_id_enabled %>
+        <strong><%= t('headings.state_id') %></strong>
+      <% end %>
       <div>
         <dt class="display-inline"> <%= t('idv.form.first_name') %>: </dt>
         <dd class="display-inline margin-left-0"> <%= pii[:first_name] %> </dd>
@@ -110,16 +110,16 @@ locals:
       <div>
         <%= t('idv.form.ssn') %> :
         <%= render(
-            'shared/masked_text',
-            text: SsnFormatter.format(pii[:ssn]),
-            masked_text: SsnFormatter.format_masked(pii[:ssn]),
-            accessible_masked_text: t(
-              'idv.accessible_labels.masked_ssn',
-              first_number: pii[:ssn][0],
-              last_number: pii[:ssn][-1],
-            ),
-            toggle_label: t('forms.ssn.show'),
-          ) %>
+              'shared/masked_text',
+              text: SsnFormatter.format(pii[:ssn]),
+              masked_text: SsnFormatter.format_masked(pii[:ssn]),
+              accessible_masked_text: t(
+                'idv.accessible_labels.masked_ssn',
+                first_number: pii[:ssn][0],
+                last_number: pii[:ssn][-1],
+              ),
+              toggle_label: t('forms.ssn.show'),
+            ) %>
       </div>
     </div>
     <div class='grid-auto'>
