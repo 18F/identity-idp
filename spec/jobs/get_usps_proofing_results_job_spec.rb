@@ -22,8 +22,14 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
         issuer: pending_enrollment.issuer,
         minutes_since_last_status_check: 15.0,
         minutes_since_last_status_update: 2.days.in_minutes,
-        minutes_to_completion: range_approximating(3.days.in_minutes, vary_left: -60, vary_right: 5),
-        minutes_since_established: range_approximating(3.days.in_minutes, vary_left: -60, vary_right: 5),
+        minutes_to_completion: range_approximating(
+          3.days.in_minutes, vary_left: -60,
+                             vary_right: 5
+        ),
+        minutes_since_established: range_approximating(
+          3.days.in_minutes, vary_left: -60,
+                             vary_right: 5
+        ),
         passed: passed,
         primary_id_type: response['primaryIdType'],
         proofing_city: response['proofingCity'],
@@ -37,9 +43,9 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
         status: response['status'],
         transaction_end_date_time: anything,
         transaction_start_date_time: anything,
-        )
-      end
+      )
     end
+  end
 
   context 'email_analytics_attributes' do
     before(:each) do
@@ -86,23 +92,23 @@ RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class
                                                                 response_message: nil,
                                                                 response_status_code: nil|
   it 'logs an error message and leaves the enrollment and profile pending' do
-      job.perform(Time.zone.now)
-      pending_enrollment.reload
+    job.perform(Time.zone.now)
+    pending_enrollment.reload
 
-      expect(pending_enrollment.pending?).to eq(true)
-      expect(pending_enrollment.profile.active).to eq(false)
-      expect(job_analytics).to have_logged_event(
-        'GetUspsProofingResultsJob: Exception raised',
-        hash_including(
-          enrollment_code: pending_enrollment.enrollment_code,
-          enrollment_id: pending_enrollment.id,
-          exception_class: exception_class,
-          exception_message: exception_message,
-          reason: reason,
-          response_message: response_message,
-          response_status_code: response_status_code,
-        ),
-      )
+    expect(pending_enrollment.pending?).to eq(true)
+    expect(pending_enrollment.profile.active).to eq(false)
+    expect(job_analytics).to have_logged_event(
+      'GetUspsProofingResultsJob: Exception raised',
+      hash_including(
+        enrollment_code: pending_enrollment.enrollment_code,
+        enrollment_id: pending_enrollment.id,
+        exception_class: exception_class,
+        exception_message: exception_message,
+        reason: reason,
+        response_message: response_message,
+        response_status_code: response_status_code,
+      ),
+    )
   end
 
   it 'updates the status_check_attempted_at timestamp' do
