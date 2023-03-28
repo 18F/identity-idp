@@ -54,14 +54,14 @@ module Users
     def active
       session[:pinged_at] = now
       Rails.logger.debug(alive?: alive?, expires_at: expires_at)
-      render json: { live: alive?, timeout: expires_at }
+      render json: { live: alive?, timeout: expires_at, remaining: remaining_session_time }
     end
 
     def keepalive
       session[:session_expires_at] = now + Devise.timeout_in if alive?
       analytics.session_kept_alive if alive?
 
-      render json: { live: alive?, timeout: expires_at }
+      render json: { live: alive?, timeout: expires_at, remaining: remaining_session_time }
     end
 
     def timeout
@@ -150,6 +150,10 @@ module Users
 
     def expires_at
       session[:session_expires_at]&.to_datetime || (now - 1)
+    end
+
+    def remaining_session_time
+      expires_at.to_i - Time.zone.now.to_i
     end
 
     def browser_is_ie11?
