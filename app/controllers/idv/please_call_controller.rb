@@ -1,5 +1,5 @@
 module Idv
-  class SetupErrorsController < ApplicationController
+  class PleaseCallController < ApplicationController
     before_action :confirm_two_factor_authenticated
 
     FRAUD_REVIEW_CONTACT_WITHIN_DAYS = 14.days
