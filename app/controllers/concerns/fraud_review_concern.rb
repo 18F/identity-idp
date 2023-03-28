@@ -1,9 +1,9 @@
 module FraudReviewConcern
   extend ActiveSupport::Concern
 
-  included do
-    before_action :handle_pending_fraud_review
-    before_action :handle_fraud_rejection
+  def handle_fraud
+    handle_pending_fraud_review
+    handle_fraud_rejection
   end
 
   def handle_pending_fraud_review

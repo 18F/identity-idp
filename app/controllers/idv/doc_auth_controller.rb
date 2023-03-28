@@ -12,6 +12,7 @@ module Idv
     include FraudReviewConcern
 
     before_action :redirect_if_flow_completed
+    before_action :handle_fraud
     before_action :override_document_capture_step_csp
     before_action :update_if_skipping_upload
     # rubocop:disable Rails/LexicallyScopedActionFilter
