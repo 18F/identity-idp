@@ -240,6 +240,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [String] user_id
   # @param [Boolean] user_locked_out if the user is currently locked out of their second factor
+  # @param [String] bad_password_count represents number of prior login failures
   # @param [String] stored_location the URL to return to after signing in
   # @param [Boolean] sp_request_url_present if was an SP request URL in the session
   # @param [Boolean] remember_device if the remember device cookie was present
@@ -248,6 +249,7 @@ module AnalyticsEvents
     success:,
     user_id:,
     user_locked_out:,
+    bad_password_count:,
     stored_location:,
     sp_request_url_present:,
     remember_device:,
@@ -258,6 +260,7 @@ module AnalyticsEvents
       success: success,
       user_id: user_id,
       user_locked_out: user_locked_out,
+      bad_password_count: bad_password_count,
       stored_location: stored_location,
       sp_request_url_present: sp_request_url_present,
       remember_device: remember_device,
