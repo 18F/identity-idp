@@ -429,7 +429,7 @@ class ApplicationController < ActionController::Base
     if IdentityConfig.store.saml_internal_post
       return unless sp_session[:request_url].present?
       request_url = URI(sp_session[:request_url])
-      url = if request_url.path.match?('saml')
+      url = if request_url.path.start_with?('/api/saml/')
               sp_session[:final_auth_request] = true
               complete_saml_url
             else
