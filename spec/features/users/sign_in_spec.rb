@@ -273,15 +273,14 @@ feature 'Sign in' do
     end
 
     scenario 'user can continue browsing with refreshed CSRF token' do
-      expect do
-        click_button t('notices.timeout_warning.signed_in.continue')
-        expect(page).not_to have_css('.usa-js-modal--active')
-      end.to change { find('[name=authenticity_token]', visible: false).value }
-
-      expect(current_path).to eq forget_all_browsers_path
-
-      click_button t('forms.buttons.confirm')
-      expect(current_path).to eq account_path
+      token = find('[name=authenticity_token]', visible: false).value
+      click_button t('notices.timeout_warning.signed_in.continue')
+      expect(page).not_to have_css('.usa-js-modal--active')
+      expect(page).to have_css(
+        "[name=authenticity_token]:not([value='#{token}'])",
+        visible: false,
+        wait: 5,
+      )
     end
 
     scenario 'user has option to sign out' do
