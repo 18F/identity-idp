@@ -10,13 +10,13 @@ module Api
     respond_to :json
 
     def show
-      render json: { active: active?, timeout: timeout }
+      render json: { live: live?, timeout: timeout }
     end
 
     def update
-      analytics.session_kept_alive if active?
+      analytics.session_kept_alive if live?
       update_last_request_at
-      render json: { active: active?, timeout: timeout }
+      render json: { live: live?, timeout: timeout }
     end
 
     def destroy
@@ -33,7 +33,7 @@ module Api
       request.env['devise.skip_trackable'] = true
     end
 
-    def active?
+    def live?
       timeout.future?
     end
 
