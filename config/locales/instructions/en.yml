@@ -86,9 +86,9 @@ en:
       wrong_number: Entered the wrong phone number?
     password:
       forgot: Don’t know your password? Reset it after confirming your email address.
-      help_text: The longer and more unusual the password, the harder it is to guess.
-        So avoid using common phrases. Also avoid repeating passwords from other
-        online accounts such as banks, email and social media.
+      help_text: Avoid reusing passwords from your other accounts, such as your
+        banks, email and social media. Don’t include words from your email
+        address.
       help_text_header: Password safety tips
       info:
         lead: Your password must be %{min_length} characters or longer. Don’t use common
@@ -96,16 +96,13 @@ en:
       password_key: You need your 16-character personal key to reset your password if
         you verified your identity with this account. If you don’t have it, you
         can still reset your password and then reverify your identity.
-      password_tip: Avoid reusing passwords from your other accounts, such as your
-        banks, email and social media. Don’t include words from your email
-        address.
       strength:
         i: Very weak
         ii: Weak
         iii: Average
         intro: 'Password strength: '
         iv: Good
-        v: Great!
+        v: Great
     sp_handoff_bounced: Your sign in was successful, but %{sp_name} sent you back to
       %{app_name}. Please contact %{sp_link} for help.
     sp_handoff_bounced_with_no_sp: your service provider
