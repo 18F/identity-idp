@@ -113,7 +113,9 @@ fr:
         réinitialiser votre mot de passe si vous avez vérifié votre identité
         avec ce compte. Si vous ne l’avez pas, vous pouvez toujours
         réinitialiser votre mot de passe et ensuite revérifier votre identité.
-      password_tip: Évitez de réutiliser les mots de passe de vos autres comptes, tels que ceux de vos banques, de vos comptes de courriel et de vos réseaux sociaux. N'incluez pas les mots de votre adresse de courriel.
+      password_tip: Évitez de réutiliser les mots de passe de vos autres comptes, tels
+        que ceux de vos banques, de vos comptes de courriel et de vos réseaux
+        sociaux. N’incluez pas les mots de votre adresse de courriel.
       strength:
         i: Très faible
         ii: Faible

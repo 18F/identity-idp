@@ -96,7 +96,9 @@ en:
       password_key: You need your 16-character personal key to reset your password if
         you verified your identity with this account. If you don’t have it, you
         can still reset your password and then reverify your identity.
-      password_tip: Avoid reusing passwords from your other accounts, such as your banks, email and social media. Don't include words from your email address. 
+      password_tip: Avoid reusing passwords from your other accounts, such as your
+        banks, email and social media. Don’t include words from your email
+        address.
       strength:
         i: Very weak
         ii: Weak

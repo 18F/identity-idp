@@ -103,7 +103,9 @@ es:
         personal de 16 caracteres para restablecer su contraseña. Si no cuenta
         con ella, de todos modos puede restablecer su contraseña y luego volver
         a verificar su identidad.
-      password_tip: Evite reutilizar las contraseñas de sus otras cuentas, como las bancarias, las de correo electrónico y las de redes sociales. No incluya palabras de su dirección de correo electrónico.
+      password_tip: Evite reutilizar las contraseñas de sus otras cuentas, como las
+        bancarias, las de correo electrónico y las de redes sociales. No incluya
+        palabras de su dirección de correo electrónico.
       strength:
         i: Muy débil
         ii: Débil
