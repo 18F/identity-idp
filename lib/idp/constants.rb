@@ -86,10 +86,6 @@ module Idp
       first_name: 'FAKEY',
       middle_name: nil,
       last_name: 'MCFAKERSON',
-      state_id_address1: '123 Way St',
-      state_id_address2: '2nd Address Line',
-      state_id_city: 'Best City',
-      state_id_zipcode: '12345',
       address1: '1 FAKE RD',
       address2: nil,
       city: 'GREAT FALLS',
@@ -103,6 +99,13 @@ module Idp
       state_id_issued: '2019-12-31',
       phone: nil,
     }.freeze
+
+    MOCK_IDV_APPLICANT_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT.merge(
+      state_id_address1: '123 Way St',
+      state_id_address2: '2nd Address Line',
+      state_id_city: 'Best City',
+      state_id_zipcode: '12345',
+    ).freeze
 
     MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900-66-1234').freeze
 

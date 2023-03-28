@@ -21,10 +21,10 @@ module InPersonHelper
   GOOD_CITY = Idp::Constants::MOCK_IDV_APPLICANT[:city]
   GOOD_ZIPCODE = Idp::Constants::MOCK_IDV_APPLICANT[:zipcode]
   GOOD_STATE = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE
-  GOOD_STATE_ID_ADDRESS1 = Idp::Constants::MOCK_IDV_APPLICANT[:state_id_address1]
-  GOOD_STATE_ID_ADDRESS2 = Idp::Constants::MOCK_IDV_APPLICANT[:state_id_address2]
-  GOOD_STATE_ID_CITY = Idp::Constants::MOCK_IDV_APPLICANT[:city]
-  GOOD_STATE_ID_ZIPCODE = Idp::Constants::MOCK_IDV_APPLICANT[:zipcode]
+  GOOD_STATE_ID_ADDRESS1 = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:state_id_address1]
+  GOOD_STATE_ID_ADDRESS2 = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:state_id_address2]
+  GOOD_STATE_ID_CITY = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:city]
+  GOOD_STATE_ID_ZIPCODE = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:zipcode]
 
   def fill_out_state_id_form_ok(double_address_verification: false, same_address_as_id: false)
     fill_in t('in_person_proofing.form.state_id.first_name'), with: GOOD_FIRST_NAME
