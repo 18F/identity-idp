@@ -70,7 +70,7 @@ module Idv
     def analytics_arguments
       {
         flow_path: flow_path,
-        step: 'document capture',
+        step: 'document_capture',
         step_count: current_flow_step_counts['Idv::Steps::DocumentCaptureStep'],
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,

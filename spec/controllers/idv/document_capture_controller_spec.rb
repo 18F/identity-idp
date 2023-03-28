@@ -67,7 +67,7 @@ describe Idv::DocumentCaptureController do
           analytics_id: 'Doc Auth',
           flow_path: 'standard',
           irs_reproofing: false,
-          step: 'document capture',
+          step: 'document_capture',
           step_count: 1,
         }
       end
@@ -118,7 +118,7 @@ describe Idv::DocumentCaptureController do
           analytics_id: 'Doc Auth',
           flow_path: 'standard',
           irs_reproofing: false,
-          step: 'document capture',
+          step: 'document_capture',
           step_count: 1,
         }
       end
