@@ -386,8 +386,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
       let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
 
-      it 'returns 1' do
-        expect(form.aal).to eq(1)
+      it 'returns default constant' do # AAL1 isn't a valid AAL, so the default is returned
+        expect(form.aal).to eq('urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo')
       end
     end
 
@@ -459,9 +459,9 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
       let(:acr_values) { Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF }
 
-      it 'returns AAL1' do
+      it 'returns nil' do # AAL1 isn't a valid AAL, so expect nil
         requested_aal_value = form.requested_aal_value
-        expect(requested_aal_value).to eq(Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF)
+        expect(requested_aal_value).to eq(nil)
       end
     end
 
@@ -477,9 +477,9 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
       let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
 
-      it 'returns AAL1' do
+      it 'returns nil' do # AAL1 isn't a valid AAL, so expect nil
         requested_aal_value = form.requested_aal_value
-        expect(requested_aal_value).to eq(Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF)
+        expect(requested_aal_value).to eq(nil)
       end
     end
 
