@@ -24,11 +24,12 @@ describe 'Account Reset Request: Cancellation' do
           Time.zone.today,
         )
 
+        # rubocop:disable Rails/Output
         puts '----'
         puts 'DELIVERIES:'
         puts ActionMailer::Base.deliveries.inspect
         puts '----'
-
+        # rubocop:enable Rails/Output
         expect(number_of_emails_sent).to eql(1)
         expect_delivered_email_count(2)
 
