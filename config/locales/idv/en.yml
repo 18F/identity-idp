@@ -100,7 +100,6 @@ en:
             number.'
           try_again_button: 'Try another number'
           you_entered: 'You entered:'
-        # warning: Please check the information you entered and try again.
       sessions:
         exception: There was an internal error processing your request.
         fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,

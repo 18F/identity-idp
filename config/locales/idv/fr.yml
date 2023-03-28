@@ -96,8 +96,8 @@ fr:
           réessayer.
         warning:
           attempts:
-            one: For security reasons, you have one attempt remaining.
-            other: For security reasons, you have %{count} attempts remaining.
+            one: Pour des raisons de sécurité, il vous reste une tentative.
+            other: Pour des raisons de sécurité, il vous reste %{count} tentatives.
           gpo:
             button: Vérifier par courrier
             explanation: Si vous n’avez pas d’autre numéro de téléphone à essayer, vérifiez
@@ -106,10 +106,10 @@ fr:
             how_long_it_takes: Cette procédure prend typiquement 3 à 7 jours ouvrables.
           heading: Nous n’avons pas pu vous associer à ce numéro
           learn_more_link: 'Más información sobre qué número de teléfono usar'
-          next_steps_html: 'Veuillez réessayer avec <strong>un autre</strong> numéro que
+          next_steps_html: 'Veuillez réessayer avec <strong>un autre numéro</strong> que
             vous utilisez souvent et depuis longtemps. Il peut s’agir d’un
             numéro professionnel ou personnel.'
-          try_again_button: 'Try another number' #TODO
+          try_again_button: 'Essayez un autre numéro'
           you_entered: 'Tu as soumis:'
       sessions:
         exception: Une erreur interne s’est produite lors du traitement de votre demande.
