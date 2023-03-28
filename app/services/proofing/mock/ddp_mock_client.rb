@@ -54,12 +54,13 @@ module Proofing
       def review_status(session_id:)
         device_status = DeviceProfilingBackend.new.profiling_result(session_id) || 'pass'
 
-        case device_status
-        when 'no_result'
-          return nil
-        when 'reject', 'review', 'pass'
-          device_status
-        end
+        # case device_status
+        # when 'no_result'
+        #   return nil
+        # when 'reject', 'review', 'pass'
+        #   device_status
+        # end
+        device_status
       end
     end
   end

@@ -88,6 +88,7 @@ RSpec.feature 'Users pending threatmetrix review', :js do
 
   scenario 'users pending threatmetrix No Result, it logs idv_tmx_fraud_check event', :js do
     freeze_time do
+      complete_all_idv_steps_with(threatmetrix: 'No Result')
       expect_pending_failure_reason(threatmetrix: 'No Result')
     end
   end
