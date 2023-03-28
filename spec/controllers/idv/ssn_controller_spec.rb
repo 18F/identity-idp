@@ -194,7 +194,23 @@ describe Idv::SsnController do
         put :update
         expect(flow_session['Idv::Steps::DocumentCaptureStep']).to eq nil
         expect(response.status).to eq 302
+        expect(response).to redirect_to idv_doc_auth_url
       end
+    end
+  end
+
+  describe 'doc_auth_document_capture_controller_enabled flag is true' do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_document_capture_controller_enabled).
+        and_return(true)
+    end
+
+    it 'redirects to document_capture_controller when pii_from_doc is not present' do
+      flow_session.delete('pii_from_doc')
+      flow_session['Idv::Steps::DocumentCaptureStep'] = true
+      put :update
+      expect(response.status).to eq 302
+      expect(response).to redirect_to idv_document_capture_url
     end
   end
 end

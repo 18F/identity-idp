@@ -12,8 +12,12 @@ module IdvStepConcern
     @pii = flow_session&.[]('pii_from_doc') # hash with indifferent access
     return if @pii.present?
 
-    flow_session&.delete('Idv::Steps::DocumentCaptureStep')
-    redirect_to idv_doc_auth_url
+    if IdentityConfig.store.doc_auth_document_capture_controller_enabled
+      redirect_to idv_document_capture_url
+    else
+      flow_session&.delete('Idv::Steps::DocumentCaptureStep')
+      redirect_to idv_doc_auth_url
+    end
   end
 
   def confirm_verify_info_step_complete
