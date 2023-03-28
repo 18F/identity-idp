@@ -26,7 +26,7 @@ module InPersonHelper
   GOOD_STATE_ID_CITY = Idp::Constants::MOCK_IDV_APPLICANT[:city]
   GOOD_STATE_ID_ZIPCODE = Idp::Constants::MOCK_IDV_APPLICANT[:zipcode]
 
-  def fill_out_state_id_form_ok(double_address_verification: false)
+  def fill_out_state_id_form_ok(double_address_verification: false, same_address_as_id: false)
     fill_in t('in_person_proofing.form.state_id.first_name'), with: GOOD_FIRST_NAME
     fill_in t('in_person_proofing.form.state_id.last_name'), with: GOOD_LAST_NAME
     year, month, day = GOOD_DOB.split('-')
@@ -38,20 +38,32 @@ module InPersonHelper
     fill_in t('in_person_proofing.form.state_id.state_id_number'), with: GOOD_STATE_ID_NUMBER
 
     if double_address_verification
-      fill_in t('in_person_proofing.form.state_id.address1'), with: GOOD_ADDRESS1
-      fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_ADDRESS2
-      fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_CITY
-      fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_ZIPCODE
-      choose t('in_person_proofing.form.state_id.same_address_as_id_no')
+      fill_in t('in_person_proofing.form.state_id.address1'), with: GOOD_STATE_ID_ADDRESS1
+      fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_STATE_ID_ADDRESS2
+      fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_STATE_ID_CITY
+      fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_STATE_ID_ZIPCODE
+      if same_address_as_id
+        choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
+      else
+        choose t('in_person_proofing.form.state_id.same_address_as_id_no')
+      end
     end
   end
 
-  def fill_out_address_form_ok(double_address_verification: false)
-    fill_in t('idv.form.address1'), with: GOOD_ADDRESS1
+  def fill_out_address_form_ok(double_address_verification: false, same_address_as_id: false)
+    fill_in t('idv.form.address1'),
+            with: same_address_as_id ? GOOD_STATE_ID_ADDRESS1 : GOOD_ADDRESS1
     fill_in t('idv.form.address2_optional'), with: GOOD_ADDRESS2 unless double_address_verification
-    fill_in t('idv.form.city'), with: GOOD_CITY
-    fill_in t('idv.form.zipcode'), with: GOOD_ZIPCODE
-    select GOOD_STATE, from: t('idv.form.state')
+    fill_in t('idv.form.address2'),
+            with: same_address_as_id ? GOOD_STATE_ID_ADDRESS2 : GOOD_ADDRESS2
+    fill_in t('idv.form.city'), with: same_address_as_id ? GOOD_STATE_ID_CITY : GOOD_CITY
+    fill_in t('idv.form.zipcode'), with: same_address_as_id ? GOOD_STATE_ID_ZIPCODE : GOOD_ZIPCODE
+    if same_address_as_id
+      select GOOD_STATE_ID_JURISDICTION,
+             from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
+    else
+      select GOOD_STATE, from: t('idv.form.state')
+    end
     unless double_address_verification
       choose t('in_person_proofing.form.address.same_address_choice_yes')
     end
@@ -80,6 +92,7 @@ module InPersonHelper
   end
 
   def complete_prepare_step(_user = nil)
+    expect(page).to have_text(t('forms.buttons.continue'), wait: 10)
     click_spinner_button_and_wait t('forms.buttons.continue')
   end
 
@@ -87,7 +100,10 @@ module InPersonHelper
                              double_address_verification: false)
     # Wait for page to load before attempting to fill out form
     expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
-    fill_out_state_id_form_ok(double_address_verification: double_address_verification)
+    fill_out_state_id_form_ok(
+      double_address_verification: double_address_verification,
+      same_address_as_id: same_address_as_id,
+    )
     click_idv_continue
     unless double_address_verification && same_address_as_id
       expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
@@ -96,7 +112,7 @@ module InPersonHelper
   end
 
   def complete_address_step(_user = nil, double_address_verification: false)
-    fill_out_address_form_ok(double_address_verification:)
+    fill_out_address_form_ok(double_address_verification: double_address_verification)
     click_idv_continue
   end
 

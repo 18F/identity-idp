@@ -14,8 +14,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
 
   context 'capture secondary id is not enabled' do
     let(:capture_secondary_id_enabled) { false }
-    let(:include_address) { false }
-    let(:same_address_as_id) { true }
+    let(:double_address_verification) { false }
 
     before do
       allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
@@ -30,8 +29,8 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       begin_in_person_proofing(user)
       complete_location_step(user)
       complete_prepare_step(user)
-      complete_state_id_step(user)
-      complete_address_step(user)
+      complete_state_id_step(user, double_address_verification: double_address_verification)
+      complete_address_step(user, double_address_verification: double_address_verification)
       complete_ssn_step(user)
 
       # verify page
@@ -40,7 +39,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
       expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
-      expect_good_state_id_address
+      expect_good_address
       expect(page).to have_text('9**-**-***4')
 
       # click update state ID button
@@ -58,7 +57,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       fill_in t('idv.form.address1'), with: 'bad address'
       click_doc_auth_back_link
       expect(page).to have_content(t('headings.verify'))
-      expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_ADDRESS1)
+      expect(page).to have_text(InPersonHelper::GOOD_ADDRESS1)
       expect(page).not_to have_text('bad address')
 
       # click update ssn button
@@ -81,7 +80,8 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
     let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
     let(:user) { user_with_2fa }
     let(:same_address_as_id) { false }
-    let(:include_address) { true }
+    let(:double_address_verification) { true }
+
     before do
       allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
         and_return(true)
@@ -96,8 +96,11 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       begin_in_person_proofing(user)
       complete_location_step(user)
       complete_prepare_step(user)
-      complete_state_id_step(user, same_address_as_id, include_address)
-      complete_address_step(user)
+      complete_state_id_step(
+        user, same_address_as_id: same_address_as_id,
+              double_address_verification: double_address_verification
+      )
+      complete_address_step(user, double_address_verification: double_address_verification)
       complete_ssn_step(user)
 
       # verify page
@@ -110,11 +113,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
       expect_good_state_id_address
       expect(page).to have_content(t('headings.residential_address'))
-      expect(page).to have_text(InPersonHelper::GOOD_ADDRESS1)
-      expect(page).to have_text(InPersonHelper::GOOD_ADDRESS2)
-      expect(page).to have_text(InPersonHelper::GOOD_CITY)
-      expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state])
-      expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
+      expect_good_address
       expect(page).to have_content(t('headings.ssn'))
       expect(page).to have_text('9**-**-***4')
 
@@ -127,14 +126,13 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
     let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
     let(:user) { user_with_2fa }
     let(:same_address_as_id) { true }
-    let(:include_address) { true }
+    let(:double_address_verification) { true }
 
     before do
       allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
         and_return(true)
       allow(user).to receive(:establishing_in_person_enrollment).
         and_return(enrollment)
-      allow(subject).to receive(:remote_identity_proofing).and_return(false)
     end
 
     it 'shows same address in state id and current residential sections',
@@ -143,8 +141,14 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       begin_in_person_proofing(user)
       complete_location_step(user)
       complete_prepare_step(user)
-      complete_state_id_step(user, same_address_as_id, include_address)
-      fill_out_address_form_ok(same_address_as_id)
+      complete_state_id_step(
+        user, same_address_as_id: same_address_as_id,
+              double_address_verification: double_address_verification
+      )
+      fill_out_address_form_ok(
+        same_address_as_id: same_address_as_id,
+        double_address_verification: double_address_verification,
+      )
       click_idv_continue
       complete_ssn_step(user)
 
