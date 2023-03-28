@@ -1,13 +1,13 @@
 module Idv
   class SsnController < ApplicationController
     include IdvSession
+    include IdvStepConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
     include Steps::ThreatMetrixStepHelper
 
-    before_action :confirm_two_factor_authenticated
-    before_action :confirm_profile_not_already_confirmed
-    before_action :confirm_pii_from_doc
+    before_action :confirm_verify_info_step_needed
+    before_action :confirm_document_capture_complete
 
     attr_accessor :error_message
 
