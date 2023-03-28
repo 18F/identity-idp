@@ -212,5 +212,14 @@ describe Idv::SsnController do
       expect(response.status).to eq 302
       expect(response).to redirect_to idv_document_capture_url
     end
+
+    it 'in hybrid flow it does not redirect to document_capture_controller' do
+      flow_session.delete('pii_from_doc')
+      flow_session['Idv::Steps::DocumentCaptureStep'] = true
+      flow_session[:flow_path] = 'hybrid'
+      put :update
+      expect(response.status).to eq 302
+      expect(response).to redirect_to idv_doc_auth_url
+    end
   end
 end
