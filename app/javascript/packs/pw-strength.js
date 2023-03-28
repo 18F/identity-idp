@@ -130,4 +130,4 @@ function analyzePw() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', analyzePw);
+document.addEventListener('focusout', analyzePw);
