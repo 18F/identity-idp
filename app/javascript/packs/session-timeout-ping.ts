@@ -75,9 +75,6 @@ function success(data: PingResponse) {
       countdownEl.expiration = new Date(data.timeout);
       countdownEl.start();
     });
-  } else {
-    modal.hide();
-    countdownEls.forEach((countdownEl) => countdownEl.stop());
   }
 
   if (timeRemaining < frequency) {
@@ -97,9 +94,11 @@ function ping() {
 }
 
 function keepalive() {
-  request('/sessions/keepalive', { method: 'POST' })
-    .then(success)
-    .catch((error) => notifyNewRelic(error, 'keepalive'));
+  modal.hide();
+  countdownEls.forEach((countdownEl) => countdownEl.stop());
+  request('/sessions/keepalive', { method: 'POST' }).catch((error) => {
+    notifyNewRelic(error, 'keepalive');
+  });
 }
 
 keepaliveEl?.addEventListener('click', keepalive, false);
