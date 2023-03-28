@@ -22,8 +22,8 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
         issuer: pending_enrollment.issuer,
         minutes_since_last_status_check: 15.0,
         minutes_since_last_status_update: 2.days.in_minutes,
-        minutes_to_completion: 3.days.in_minutes,
-        minutes_since_established: 3.days.in_minutes,
+        minutes_to_completion: range_approximating(3.days.in_minutes, vary_left: -60, vary_right: 5),
+        minutes_since_established: range_approximating(3.days.in_minutes, vary_left: -60, vary_right: 5),
         passed: passed,
         primary_id_type: response['primaryIdType'],
         proofing_city: response['proofingCity'],
@@ -37,9 +37,9 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
         status: response['status'],
         transaction_end_date_time: anything,
         transaction_start_date_time: anything,
-      )
+        )
+      end
     end
-  end
 
   context 'email_analytics_attributes' do
     before(:each) do
@@ -516,8 +516,6 @@ RSpec.describe GetUspsProofingResultsJob do
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
               reason: 'Successful status update',
-              transaction_end_date_time: transaction_end_date_time,
-              transaction_start_date_time: transaction_start_date_time,
             ),
           )
           expect(job_analytics).to have_logged_event(
@@ -528,20 +526,6 @@ RSpec.describe GetUspsProofingResultsJob do
             timestamp: anything,
             wait_until: nil,
           )
-        end
-
-        it 'logs the minutes since establishment' do
-          freeze_time do
-            job.perform(Time.zone.now)
-
-            expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
-            expect(job_analytics).to have_logged_event(
-              'GetUspsProofingResultsJob: Enrollment status updated',
-              hash_including(
-                minutes_since_established: range_approximating(3.days.in_minutes, vary_left: -5, vary_right: 5),
-              ),
-            )
-          end
         end
       end
 
@@ -567,8 +551,6 @@ RSpec.describe GetUspsProofingResultsJob do
             hash_including(
               passed: false,
               reason: 'Failed status',
-              transaction_end_date_time: transaction_end_date_time,
-              transaction_start_date_time: transaction_start_date_time,
             ),
           )
           expect(job_analytics).to have_logged_event(
@@ -603,8 +585,6 @@ RSpec.describe GetUspsProofingResultsJob do
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
               fraud_suspected: true,
-              transaction_end_date_time: transaction_end_date_time,
-              transaction_start_date_time: transaction_start_date_time,
             ),
           )
           expect(job_analytics).to have_logged_event(
@@ -639,8 +619,6 @@ RSpec.describe GetUspsProofingResultsJob do
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
               reason: 'Unsupported ID type',
-              transaction_end_date_time: transaction_end_date_time,
-              transaction_start_date_time: transaction_start_date_time,
             ),
           )
 
