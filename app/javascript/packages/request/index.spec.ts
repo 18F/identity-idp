@@ -148,6 +148,37 @@ describe('request', () => {
     });
   });
 
+  context('with read=false option', () => {
+    it('returns the raw response', async () => {
+      sandbox.stub(window, 'fetch').resolves(new Response(JSON.stringify({})));
+      const response = await request('https://example.com', { read: false });
+      expect(response.status).to.equal(200);
+    });
+  });
+
+  context('with unsuccessful response', () => {
+    beforeEach(() => {
+      sandbox.stub(window, 'fetch').resolves(new Response(JSON.stringify({}), { status: 400 }));
+    });
+
+    it('throws an error', async () => {
+      await request('https://example.com', { read: false })
+        .then(() => {
+          throw new Error('Unexpected promise resolution');
+        })
+        .catch((error) => {
+          expect(error).to.exist();
+        });
+    });
+
+    context('with read=false option', () => {
+      it('returns the raw response', async () => {
+        const response = await request('https://example.com', { read: false });
+        expect(response.status).to.equal(400);
+      });
+    });
+  });
+
   context('with response including csrf token', () => {
     beforeEach(() => {
       sandbox.stub(window, 'fetch').callsFake(() =>
