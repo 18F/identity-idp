@@ -1,6 +1,6 @@
 import { forceRedirect } from '@18f/identity-url';
-import { requestSessionStatus, requestSessionKeepAlive } from '@18f/identity-session-timeout';
-import type { SessionStatusResponse } from '@18f/identity-session-timeout';
+import { requestSessionStatus, requestSessionKeepAlive } from '@18f/identity-session';
+import type { SessionStatusResponse } from '@18f/identity-session';
 import type { CountdownElement } from '@18f/identity-countdown/countdown-element';
 import type { ModalElement } from '@18f/identity-modal';
 
