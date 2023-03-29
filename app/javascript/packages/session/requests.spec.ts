@@ -6,8 +6,8 @@ import {
   KEEP_ALIVE_API_ENDPOINT,
   requestSessionStatus,
   extendSession,
-} from './index';
-import type { SessionStatusResponse } from './index';
+} from './requests';
+import type { SessionStatusResponse } from './requests';
 
 describe('requestSessionStatus', () => {
   let isLive: boolean;
