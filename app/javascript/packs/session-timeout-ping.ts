@@ -1,6 +1,6 @@
 import { forceRedirect } from '@18f/identity-url';
 import { requestSessionStatus, extendSession } from '@18f/identity-session';
-import type { SessionStatusResponse } from '@18f/identity-session';
+import type { SessionStatus } from '@18f/identity-session';
 import type { CountdownElement } from '@18f/identity-countdown/countdown-element';
 import type { ModalElement } from '@18f/identity-modal';
 
@@ -47,11 +47,11 @@ function handleTimeout(redirectURL: string) {
   forceRedirect(redirectURL);
 }
 
-function success(data: SessionStatusResponse) {
+function success(data: SessionStatus) {
   let timeRemaining = new Date(data.timeout).valueOf() - Date.now();
   const showWarning = timeRemaining < warning;
 
-  if (!data.live) {
+  if (!data.isLive) {
     if (timeoutUrl) {
       handleTimeout(timeoutUrl);
     }

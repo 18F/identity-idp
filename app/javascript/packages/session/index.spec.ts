@@ -10,14 +10,14 @@ import {
 import type { SessionStatusResponse } from './index';
 
 describe('requestSessionStatus', () => {
-  let live: boolean;
+  let isLive: boolean;
   let timeout: string;
 
   let server: SetupServer;
   before(() => {
     server = setupServer(
       rest.get<{}, {}, SessionStatusResponse>(STATUS_API_ENDPOINT, (_req, res, ctx) =>
-        res(ctx.json({ live, timeout })),
+        res(ctx.json({ live: isLive, timeout })),
       ),
     );
     server.listen();
@@ -29,27 +29,27 @@ describe('requestSessionStatus', () => {
 
   context('session inactive', () => {
     beforeEach(() => {
-      live = false;
+      isLive = false;
       timeout = new Date().toISOString();
     });
 
     it('resolves to the status', async () => {
       const result = await requestSessionStatus();
 
-      expect(result).to.deep.equal({ live: false, timeout });
+      expect(result).to.deep.equal({ isLive: false, timeout });
     });
   });
 
   context('session active', () => {
     beforeEach(() => {
-      live = true;
+      isLive = true;
       timeout = new Date(Date.now() + 1000).toISOString();
     });
 
     it('resolves to the status', async () => {
       const result = await requestSessionStatus();
 
-      expect(result).to.deep.equal({ live: true, timeout });
+      expect(result).to.deep.equal({ isLive: true, timeout });
     });
   });
 });
@@ -74,6 +74,6 @@ describe('extendSession', () => {
   it('resolves to the status', async () => {
     const result = await extendSession();
 
-    expect(result).to.deep.equal({ live: true, timeout });
+    expect(result).to.deep.equal({ isLive: true, timeout });
   });
 });
