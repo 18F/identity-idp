@@ -85,6 +85,16 @@ es:
           otros registros
         jobfail: Algo ha fallado y no podemos procesar tu solicitud en este momento.
           Vuelve a intentarlo.
+        rate_limited:
+          body: Por motivos de seguridad, se limita el número de veces que puede intentar
+            verificar su número de teléfono por Internet. Tendrás que esperar
+            %{time_left} y volver a empezar antes de volver a intentar la
+            verificación por teléfono.
+          gpo:
+            button: Verificar por correo
+            prompt: Continúa ahora con la verificación por correo, que suele tardar entre 3
+              y 7 días laborables.
+          heading: 'No hemos podido verificar su identidad por teléfono'
         timeout: Nuestra solicitud para verificar tu información ha caducado. Vuelve a
           intentarlo.
         warning:
