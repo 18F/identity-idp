@@ -309,6 +309,8 @@ RSpec.describe GetUspsProofingResultsJob do
             'GetUspsProofingResultsJob: Exception raised',
             hash_including(
               exception_message: error_message,
+              exception_class: 'StandardError',
+              reason: 'Request Exception',
             ),
           )
         end
