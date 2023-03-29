@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::SessionsController do
+RSpec.describe Api::Internal::SessionsController do
   let(:user) { nil }
 
   around do |example|
