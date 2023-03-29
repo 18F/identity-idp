@@ -48,6 +48,21 @@ describe SamlCompletionController do
       end
     end
 
+    context 'with an invalid sp_session_request_url' do
+      before do
+        expect(controller).to receive(:sp_session).at_least(:once).and_return(
+          {
+            request_url: 'https://example.gov/openid_connect/authorize',
+          },
+        )
+      end
+
+      it 'renders 404 not found' do
+        get :index
+        expect(response).to be_not_found
+      end
+    end
+
     context 'with a nil service provider request session' do
       before { expect(controller).to receive(:sp_from_sp_session).and_return nil }
 
