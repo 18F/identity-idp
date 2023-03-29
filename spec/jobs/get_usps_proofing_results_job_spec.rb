@@ -72,7 +72,6 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
       pending_enrollment.reload
       expect(pending_enrollment.status_updated_at).to eq(Time.zone.now)
       expect(pending_enrollment.status_check_attempted_at).to eq(Time.zone.now)
-
       expect(pending_enrollment.status).to eq(status)
 
       expect(pending_enrollment.profile.active).to eq(passed)
