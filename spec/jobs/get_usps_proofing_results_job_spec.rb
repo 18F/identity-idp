@@ -718,6 +718,7 @@ RSpec.describe GetUspsProofingResultsJob do
               'GetUspsProofingResultsJob: Unexpected response received',
               hash_including(
                 reason: 'Invalid enrollment code',
+                response_message: /Enrollment code [0-9]{16} does not exist/,
               ),
             )
           end
