@@ -28,7 +28,10 @@ module Idv
       @pii = user_session.dig('idv/doc_auth', 'pii_from_doc')
       return if @pii.present?
 
-      if IdentityConfig.store.doc_auth_document_capture_controller_enabled
+      flow_path = user_session.dig('idv/doc_auth', :flow_path)
+
+      if (IdentityConfig.store.doc_auth_document_capture_controller_enabled &&
+        flow_path == 'standard')
         redirect_to idv_document_capture_url
       else
         redirect_to idv_doc_auth_url

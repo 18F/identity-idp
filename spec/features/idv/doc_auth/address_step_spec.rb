@@ -61,17 +61,23 @@ feature 'doc auth verify step', :js do
     end
   end
 
-  context 'with document capture controller flag set' do
+  context 'with document capture controller flag set, no PII in session' do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_document_capture_controller_enabled).
         and_return(true)
       sign_in_and_2fa_user
-      complete_doc_auth_steps_before_document_capture_step
     end
 
-    it 'shows address guidance and hint text' do
+    it 'goes to new document capture page on standard flow' do
+      complete_doc_auth_steps_before_document_capture_step
       visit(idv_address_url)
       expect(page).to have_current_path(idv_document_capture_url)
+    end
+
+    it 'stays in FSM on hybrid flow' do
+      complete_doc_auth_steps_before_link_sent_step
+      visit(idv_address_url)
+      expect(page).to have_current_path(idv_doc_auth_link_sent_step)
     end
   end
 end
