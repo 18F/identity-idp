@@ -40,7 +40,7 @@ module Idv
       elsif in_person_enrollment?
         idv_in_person_ready_to_verify_url
       elsif blocked_by_device_profiling?
-        idv_setup_errors_url
+        idv_please_call_url
       elsif session[:sp] && !pending_profile?
         sign_up_completed_url
       else

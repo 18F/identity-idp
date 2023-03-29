@@ -226,7 +226,7 @@ RSpec.describe Idv::GpoVerifyController do
 
             action
 
-            expect(response).to redirect_to(idv_setup_errors_url)
+            expect(response).to redirect_to(idv_please_call_url)
           end
 
           it 'does not show a flash message' do
@@ -260,7 +260,7 @@ RSpec.describe Idv::GpoVerifyController do
 
             action
 
-            expect(response).to redirect_to(idv_setup_errors_url)
+            expect(response).to redirect_to(idv_please_call_url)
           end
         end
       end
