@@ -96,23 +96,20 @@ module ArcgisApi
     # it expires after 1 hour
     # @return [String] Auth token
     def retrieve_token!
-      begin
-        token, expires = request_token.fetch_values('token', 'expires')
-      rescue => err
-        token = 'invalidtoken'
-        expires = 1000
-        # Log an invalid token, this can be because the service is down or the
-        # user/password is no longer valid
-        analytics.idv_arcgis_request_failure(
-          exception_class: 'ArcGIS',
-          exception_message: 'Invalid token, service unavailable or credentials incorrect',
-          response_body_present: false,
-          response_body: '',
-          response_status_code: 400,
-          api_status_code: 400,
-        )
-      end
-
+      token, expires = request_token.fetch_values('token', 'expires')
+    rescue
+      Rails.cache.delete(API_TOKEN_CACHE_KEY)
+      # Log an invalid token, this can be because the service is down or the
+      # user/password is no longer valid
+      analytics.idv_arcgis_request_failure(
+        exception_class: 'ArcGIS',
+        exception_message: 'Invalid token, service unavailable or credentials incorrect',
+        response_body_present: false,
+        response_body: '',
+        response_status_code: 400,
+        api_status_code: 400,
+      )
+    else
       expires_at = Time.zone.at(expires / 1000)
       Rails.cache.write(API_TOKEN_CACHE_KEY, token, expires_at: expires_at)
       # If using a redis cache we have to manually set the expires_at. This is because we aren't
@@ -223,15 +220,16 @@ module ArcgisApi
       }
 
       parse_token(
-        faraday.post(IdentityConfig.store.arcgis_api_generate_token_url, URI.encode_www_form(body),) do |req|
+        faraday.post(
+          IdentityConfig.store.arcgis_api_generate_token_url, URI.encode_www_form(body)
+        ) do |req|
           req.options.context = { service_name: 'arcgis_token' }
-        end.body
+        end.body,
       )
     end
 
     def analytics(user: AnonymousUser.new)
       Analytics.new(user: user, request: nil, session: {}, sp: nil)
     end
-
   end
 end
