@@ -1,16 +1,11 @@
 function showOrHidePuertoRicoGuidance(forStateCode) {
+  const isPuertoRico = forStateCode === 'PR';
   const puertoRicoGuidance = document.getElementById('puerto-rico-extra-text');
-  if (forStateCode === 'PR') {
-    puertoRicoGuidance?.classList?.remove('display-none');
-    puertoRicoGuidance?.classList?.add('display-block');
-  } else {
-    puertoRicoGuidance?.classList?.remove('display-block');
-    puertoRicoGuidance?.classList?.add('display-none');
-  }
+  puertoRicoGuidance.classList?.toggle('display-none', !isPuertoRico);
 }
 
 function onStateSelectionChange() {
-  const stateSelector = <HTMLInputElement>document.getElementById('idv_form_state');
+  const stateSelector: HTMLInputElement = document.getElementById('idv_form_state');
   showOrHidePuertoRicoGuidance(stateSelector?.value);
 }
 
