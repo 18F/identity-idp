@@ -43,7 +43,7 @@ namespace :users do
 
           STDOUT.puts "User's profile has been activated and the user has been emailed."
         else
-          STDOUT.puts "There was an error activating the user's profile please try again"
+          STDOUT.puts "There was an error activating the user's profile. Please try again"
         end
       else
         STDOUT.puts 'User is past the 30 day review eligibility'
