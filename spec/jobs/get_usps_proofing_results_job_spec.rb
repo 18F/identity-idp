@@ -22,14 +22,8 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
         issuer: pending_enrollment.issuer,
         minutes_since_last_status_check: 15.0,
         minutes_since_last_status_update: 2.days.in_minutes,
-        minutes_to_completion: range_approximating(
-          3.days.in_minutes, vary_left: -60,
-                             vary_right: 5
-        ),
-        minutes_since_established: range_approximating(
-          3.days.in_minutes, vary_left: -60,
-                             vary_right: 5
-        ),
+        minutes_to_completion: 3.days.in_minutes,
+        minutes_since_established: 3.days.in_minutes,
         passed: passed,
         primary_id_type: response['primaryIdType'],
         proofing_city: response['proofingCity'],
