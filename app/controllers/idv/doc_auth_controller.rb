@@ -2,7 +2,6 @@ module Idv
   class DocAuthController < ApplicationController
     before_action :confirm_two_factor_authenticated
     before_action :redirect_if_pending_in_person_enrollment
-    before_action :handle_pending_fraud_review
     before_action :redirect_if_pending_profile
     before_action :extend_timeout_using_meta_refresh_for_select_paths
 
@@ -13,6 +12,7 @@ module Idv
     include FraudReviewConcern
 
     before_action :redirect_if_flow_completed
+    before_action :handle_fraud
     before_action :override_document_capture_step_csp
     before_action :update_if_skipping_upload
     # rubocop:disable Rails/LexicallyScopedActionFilter

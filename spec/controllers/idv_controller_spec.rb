@@ -27,6 +27,26 @@ describe IdvController do
       get :index
     end
 
+    it 'redirects to sad face page if fraud review is pending' do
+      profile = create(:profile, fraud_review_pending: true)
+
+      stub_sign_in(profile.user)
+
+      get :index
+
+      expect(response).to redirect_to(idv_setup_errors_url)
+    end
+
+    it 'redirects to fraud rejection page if profile is rejected' do
+      profile = create(:profile, fraud_rejection: true)
+
+      stub_sign_in(profile.user)
+
+      get :index
+
+      expect(response).to redirect_to(idv_not_verified_url)
+    end
+
     context 'if number of attempts has been exceeded' do
       before do
         user = create(:user)

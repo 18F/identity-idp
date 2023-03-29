@@ -3496,6 +3496,11 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when user reaches verify errors due to being rejected due to fraud
+  def idv_not_verified_visited
+    track_event('IdV: Not verified visited')
+  end
+
   # @param [String] redirect_url URL user was directed to
   # @param [String, nil] step which step
   # @param [String, nil] location which part of a step, if applicable
