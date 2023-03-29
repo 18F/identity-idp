@@ -130,4 +130,6 @@ function analyzePw() {
   });
 }
 
+document.addEventListener('keydown', analyzePw);
+document.addEventListener('touchout', analyzePw);
 document.addEventListener('focusout', analyzePw);
