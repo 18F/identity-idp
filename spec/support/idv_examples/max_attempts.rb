@@ -1,12 +1,7 @@
 shared_examples 'verification step max attempts' do |step, sp|
   include ActionView::Helpers::DateHelper
 
-  let(:locale) { LinkLocaleResolver.locale }
   let(:user) { user_with_2fa }
-  let(:step_locale_key) do
-    return :sessions if step == :profile
-    step
-  end
 
   before do
     start_idv_from_sp(sp)
@@ -33,12 +28,12 @@ shared_examples 'verification step max attempts' do |step, sp|
     end
 
     scenario 'user sees the failure screen' do
-      expect(page).to have_content(t("idv.failure.#{step_locale_key}.heading"))
+      expect(page).to have_content(t('idv.failure.phone.rate_limited.heading'))
       expect(page).to have_content(
         strip_tags(
           t(
-            'idv.failure.phone.fail_html',
-            timeout: distance_of_time_in_words(
+            'idv.failure.phone.rate_limited.body',
+            time_left: distance_of_time_in_words(
               IdentityConfig.store.idv_attempt_window_in_hours.hours,
             ),
           ),
@@ -74,8 +69,8 @@ shared_examples 'verification step max attempts' do |step, sp|
   end
 
   def expect_user_to_fail_at_phone_step
-    expect(page).to have_content(t("idv.failure.#{step_locale_key}.heading"))
-    expect(current_url).to eq(idv_phone_errors_failure_url(locale: locale))
-    expect(page).to have_link(t('idv.troubleshooting.options.verify_by_mail'))
+    expect(page).to have_content(t('idv.failure.phone.rate_limited.heading'))
+    expect(current_url).to eq(idv_phone_errors_failure_url)
+    expect(page).to have_link(t('idv.failure.phone.rate_limited.gpo.button'))
   end
 end
