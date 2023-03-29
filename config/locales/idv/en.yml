@@ -76,9 +76,6 @@ en:
           back later.
         text_html: Please try again. If you keep getting these errors, %{link}.
       phone:
-        fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,
-          we limit the number of times you can attempt to verify your phone
-          number online.'
         heading: We could not match this phone number to other records
         jobfail: Something went wrong and we cannot process your request at this time.
           Please try again.
