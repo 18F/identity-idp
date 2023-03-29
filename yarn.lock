@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@18f/identity-design-system@file:../identity-style-guide":
+  version "6.7.0"
+  dependencies:
+    "@uswds/uswds" "^3.4.1"
+
 "@ampproject/remapping@^2.1.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@ampproject/remapping/-/remapping-2.2.0.tgz#56c133824780de3174aed5ab6834f3026790154d"
@@ -1684,6 +1689,16 @@
   resolved "https://registry.yarnpkg.com/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz#aa58042711d6e3275dd37dc597e5d31e8c290a44"
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
+"@uswds/uswds@^3.4.1":
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/@uswds/uswds/-/uswds-3.4.1.tgz#dd15644d791e1969dff2394d9d2ec2ea1e795128"
+  integrity sha512-eLYbWUqf9eWUa2P6CO3ckIjtQyM3AylrIOHxN5gYG3P62TDd3FzRDyoACfvOe6CNk0w0PqXWJnuPzxpNoOgWNA==
+  dependencies:
+    classlist-polyfill "1.0.3"
+    object-assign "4.1.1"
+    receptor "1.0.0"
+    resolve-id-refs "0.1.0"
+
 "@webassemblyjs/ast@1.11.1":
   version "1.11.1"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.11.1.tgz#2bfd767eae1a6996f432ff7e8d7fc75679c0b6a7"
@@ -2909,11 +2924,6 @@ domhandler@^4.2.0, domhandler@^4.3.0:
   dependencies:
     domelementtype "^2.2.0"
 
-domready@1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/domready/-/domready-1.0.8.tgz#91f252e597b65af77e745ae24dd0185d5e26d58c"
-  integrity sha1-kfJS5Ze2Wvd+dFriTdAYXV4m1Yw=
-
 domutils@^2.8.0:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/domutils/-/domutils-2.8.0.tgz#4437def5db6e2d1f5d6ee859bd95ca7d02048135"
@@ -3968,14 +3978,6 @@ iconv-lite@0.6.3, iconv-lite@^0.6.3:
   integrity sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==
   dependencies:
     safer-buffer ">= 2.1.2 < 3.0.0"
-
-identity-style-guide@^6.7.0:
-  version "6.7.0"
-  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-6.7.0.tgz#2901c72deee7e1f30c4a784b0f07b12b9cd6a1de"
-  integrity sha512-kXITvbEJWlj7fjSLVbeqZ7hnQ20RL51VFFoANojbVChVeVebOeyb3NIAX9mQ1sIVS34ycnKypM/jdoHmj4Dh/g==
-  dependencies:
-    domready "1.0.8"
-    uswds "^2.13.3"
 
 ieee754@^1.1.13:
   version "1.2.1"
@@ -6677,17 +6679,6 @@ use-sync-external-store@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz#7dbefd6ef3fe4e767a0cf5d7287aacfb5846928a"
   integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==
-
-uswds@^2.13.3:
-  version "2.13.3"
-  resolved "https://registry.yarnpkg.com/uswds/-/uswds-2.13.3.tgz#f2a0623b496941ff30ad3a0ea1610407d35a6b14"
-  integrity sha512-qCblljeaRvS3+PrSxoHqQwmMnp746+Y1YZA34BkTzJknvo2bhhdzGE21yJaInumzIqV3glLD13TFdRwrwikMMQ==
-  dependencies:
-    classlist-polyfill "1.0.3"
-    domready "1.0.8"
-    object-assign "4.1.1"
-    receptor "1.0.0"
-    resolve-id-refs "0.1.0"
 
 util-deprecate@^1.0.1, util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   version "1.0.2"

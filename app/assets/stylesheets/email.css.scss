@@ -1,7 +1,8 @@
-@import 'required';
+@forward 'required';
+@use '@18f/identity-design-system/dist/assets/scss/uswds-theme' as *;
+@import 'variables/app';
 @import 'variables/email';
 @import 'foundation-emails/scss/foundation-emails';
-@import 'identity-style-guide/dist/assets/scss/packages/required';
 
 .gray {
   &:active,

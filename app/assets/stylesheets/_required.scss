@@ -1,1 +1,22 @@
-@import 'variables/vendor';
+@use '@18f/identity-design-system/dist/assets/scss/uswds-theme' with (
+  $theme-body-font-size: 'sm',
+  $theme-font-path: '.',
+  $theme-image-path: '@18f/identity-design-system/dist/assets/img',
+  $theme-global-border-box-sizing: true,
+  $theme-global-link-styles: true,
+  $theme-grid-container-max-width: 'tablet-lg',
+  $theme-header-min-width: 'tablet',
+  $theme-link-visited-color: 'primary',
+  $theme-style-body-element: true,
+  $theme-utility-breakpoints: (
+    'card': false,
+    'card-lg': false,
+    'mobile': false,
+    'mobile-lg': false,
+    'tablet': true,
+    'tablet-lg': false,
+    'desktop': false,
+    'desktop-lg': false,
+    'widescreen': false,
+  )
+);

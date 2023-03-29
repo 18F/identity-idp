@@ -1,3 +1,5 @@
+@use 'uswds-core' as *;
+
 .usa-alert--info-important {
   @include u-bg('accent-cool-darker');
   color: color('white');

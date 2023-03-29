@@ -18,7 +18,7 @@
     "clean": "rm -rf public/packs/*",
     "prebuild": "yarn run clean",
     "build": "webpack && yarn generate-browsers-json",
-    "build:css": "build-sass app/assets/stylesheets/*.css.scss --out-dir=app/assets/builds"
+    "build:css": "build-sass app/assets/stylesheets/*.css.scss --load-path=node_modules/@uswds/uswds/packages --out-dir=app/assets/builds"
   },
   "dependencies": {
     "@babel/core": "^7.20.7",
@@ -33,7 +33,7 @@
     "core-js": "^3.21.1",
     "fast-glob": "^3.2.7",
     "foundation-emails": "^2.3.1",
-    "identity-style-guide": "^6.7.0",
+    "@18f/identity-design-system": "file:../identity-style-guide",
     "intl-tel-input": "^17.0.19",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
