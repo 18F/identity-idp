@@ -741,6 +741,7 @@ RSpec.describe GetUspsProofingResultsJob do
               'GetUspsProofingResultsJob: Unexpected response received',
               hash_including(
                 reason: 'Invalid applicant unique id',
+                response_message: /Applicant [0-9a-z]{18} does not exist/,
               ),
             )
           end
