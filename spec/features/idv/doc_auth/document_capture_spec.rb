@@ -41,6 +41,11 @@ feature 'doc auth document capture step', :js do
       irs_reproofing: false,
       acuant_sdk_upgrade_ab_test_bucket: :default,
     )
+
+    visit(idv_ssn_url)
+    expect(page).to have_current_path(idv_document_capture_url)
+    visit(idv_address_url)
+    expect(page).to have_current_path(idv_document_capture_url)
   end
 
   it 'logs return to sp link click' do
@@ -115,6 +120,15 @@ feature 'doc auth document capture step', :js do
     expect(page).to have_current_path(idv_ssn_url)
     expect_costing_for_document
     expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
+
+    visit(idv_document_capture_url)
+    expect(page).to have_current_path(idv_ssn_url)
+    fill_out_ssn_form_ok
+    click_idv_continue
+    complete_verify_step
+    expect(page).to have_current_path(idv_phone_url)
+    visit(idv_document_capture_url)
+    expect(page).to have_current_path(idv_phone_url)
   end
 
   it 'catches network connection errors on post_front_image', allow_browser_log: true do
