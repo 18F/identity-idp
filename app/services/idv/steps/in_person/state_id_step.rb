@@ -24,6 +24,7 @@ module Idv
 
         def extra_view_variables
           {
+            capture_secondary_id_enabled: capture_secondary_id_enabled?,
             form:,
             pii:,
             parsed_dob:,
@@ -32,6 +33,10 @@ module Idv
         end
 
         private
+
+        def capture_secondary_id_enabled?
+          current_user.establishing_in_person_enrollment.capture_secondary_id_enabled
+        end
 
         def updating_state_id
           flow_session[:pii_from_user].has_key?(:first_name)

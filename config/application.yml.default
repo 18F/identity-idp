@@ -44,7 +44,6 @@ address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US
 allow_otp_countdown_expired_redirect: false
 arcgis_api_username: ''
 arcgis_api_password: ''
-arcgis_search_enabled: true
 arcgis_mock_fallback: true
 arcgis_api_generate_token_url: 'https://gis.gsa.gov/portal/sharing/rest/generateToken'
 arcgis_api_suggest_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/suggest'
@@ -67,7 +66,6 @@ broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 component_previews_enabled: false
 country_phone_number_overrides: '{}'
-doc_auth_combined_hybrid_handoff_enabled: false
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_sharpness_threshold: 40
 doc_auth_error_glare_threshold: 40
@@ -111,17 +109,17 @@ enable_usps_verification: true
 encrypted_document_storage_enabled: true
 encrypted_document_storage_s3_bucket: 'test-bucket-changeme'
 event_disavowal_expiration_hours: 240
+feature_idv_force_gpo_verification_enabled: false
+feature_idv_hybrid_flow_enabled: true
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 good_job_max_threads: 5
 good_job_queues: 'default:5;low:1;*'
 good_job_queue_select_limit: 5_000
 gpo_designated_receiver_pii: '{}'
-gpo_personal_key_after_otp: false
 hide_phone_mfa_signup: false
 identity_pki_disabled: false
 identity_pki_local_dev: false
 idv_attempt_window_in_hours: 6
-idv_contact_url: https://www.example.com
 idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13
@@ -156,6 +154,7 @@ irs_attempt_api_event_ttl_seconds: 86400
 irs_attempt_api_event_count_default: 1000
 irs_attempt_api_event_count_max: 10000
 irs_attempt_api_payload_size_logging_enabled: true
+irs_attempt_api_track_idv_fraud_review: false
 irs_attempt_api_track_tmx_fraud_check_event: false
 key_pair_generation_percent: 0
 logins_per_ip_track_only_mode: false
@@ -251,6 +250,7 @@ rack_mini_profiler: false
 rack_timeout_service_timeout_seconds: 15
 rails_mailer_previews_enabled: false
 reauthn_window: 120
+reauthentication_for_second_factor_management_enabled: true
 recaptcha_site_key_v2: ''
 recaptcha_site_key_v3: ''
 recaptcha_secret_key_v2: ''
@@ -258,6 +258,8 @@ recaptcha_secret_key_v3: ''
 recovery_code_length: 4
 redis_irs_attempt_api_url: redis://localhost:6379/2
 redis_throttle_url: redis://localhost:6379/1
+redis_throttle_alternate_url: ''
+redis_throttle_alternate_pool_write_enabled: false
 redis_url: redis://localhost:6379/0
 redis_pool_size: 10
 redis_session_pool_size: 10
@@ -314,6 +316,7 @@ usps_upload_sftp_timeout: 5
 valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true","http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true","http://idmanagement.gov/ns/assurance/aal/2?hspd12=true"]'
 vendor_status_acuant: 'operational'
 vendor_status_lexisnexis_instant_verify: 'operational'
+vendor_status_lexisnexis_phone_finder: 'operational'
 vendor_status_lexisnexis_trueid: 'operational'
 vendor_status_sms: 'operational'
 vendor_status_voice: 'operational'
@@ -466,6 +469,7 @@ production:
   piv_cac_verify_token_secret:
   platform_auth_set_up_enabled: false
   session_encryptor_alert_enabled: true
+  reauthentication_for_second_factor_management_enabled: false
   recurring_jobs_disabled_names: "[]"
   redis_irs_attempt_api_url: redis://redis.login.gov.internal:6379/2
   redis_throttle_url: redis://redis.login.gov.internal:6379/1

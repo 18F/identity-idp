@@ -67,6 +67,19 @@ module IrsAttemptsApi
       )
     end
 
+    # @param [String] decision One of 'pass', 'manual_reject', or 'automated_reject'
+    # @param [String] cached_irs_session_id The IRS session id ('tid') the user had when flagged
+    # @param [String] cached_login_session_id The Login.gov session id the user had when flagged
+    # A profile offlined for review has been approved or rejected.
+    def fraud_review_adjudicated(decision:, cached_irs_session_id:, cached_login_session_id:)
+      track_event(
+        :fraud_review_adjudicated,
+        decision: decision,
+        cached_irs_session_id: cached_irs_session_id,
+        cached_login_session_id: cached_login_session_id,
+      )
+    end
+
     # @param ["mobile", "desktop"] upload_method method chosen for uploading id verification
     # A user has selected id document upload method
     def idv_document_upload_method_selected(upload_method:)

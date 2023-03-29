@@ -10,6 +10,7 @@ class CloudFrontHeaderParser
 
   # Source IP and port for client connection to CloudFront
   def viewer_address
+    return nil unless @request&.headers
     @request.headers['CloudFront-Viewer-Address']
   end
 end

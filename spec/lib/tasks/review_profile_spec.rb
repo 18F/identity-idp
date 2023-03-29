@@ -13,7 +13,11 @@ describe 'review_profile' do
   before do
     Rake.application.rake_require('lib/tasks/review_profile', [Rails.root.to_s])
     Rake::Task.define_task(:environment)
-    allow(STDIN).to receive(:getpass) { user.uuid }
+    allow(STDIN).to receive(:gets).and_return(
+      "John Doe\n",
+      "Rspec Test\n",
+      user.uuid,
+    )
   end
 
   describe 'users:review:pass' do

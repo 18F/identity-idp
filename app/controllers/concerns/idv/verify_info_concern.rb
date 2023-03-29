@@ -97,7 +97,8 @@ module Idv
         extra: {
           address_edited: !!flow_session['address_edited'],
           address_line2_present: !pii[:address2].blank?,
-          pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name]],
+          pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name],
+                              [:state_id, :state_id_jurisdiction]],
         },
       )
       log_idv_verification_submitted_event(
@@ -105,21 +106,25 @@ module Idv
         failure_reason: irs_attempts_api_tracker.parse_failure_reason(form_response),
       )
 
-      if form_response.success?
-        response = check_ssn
-        form_response = form_response.merge(response)
-      end
+      form_response = form_response.merge(check_ssn) if form_response.success?
       summarize_result_and_throttle_failures(form_response)
       delete_async
 
       if form_response.success?
-        idv_session.resolution_successful = true
-        redirect_to idv_phone_url
+        move_applicant_to_idv_session
+        idv_session.mark_verify_info_step_complete!
+        idv_session.invalidate_steps_after_verify_info!
+        redirect_to next_step_url
       else
-        idv_session.resolution_successful = false
+        idv_session.invalidate_verify_info_step!
       end
 
       analytics.idv_doc_auth_verify_proofing_results(**form_response.to_h)
+    end
+
+    def next_step_url
+      return idv_gpo_url if FeatureManagement.idv_gpo_only?
+      idv_phone_url
     end
 
     def summarize_result_and_throttle_failures(summary_result)
@@ -196,28 +201,13 @@ module Idv
     end
 
     def check_ssn
-      result = Idv::SsnForm.new(current_user).submit(ssn: pii[:ssn])
-
-      if result.success?
-        save_legacy_state
-        delete_pii
-      end
-
-      result
+      Idv::SsnForm.new(current_user).submit(ssn: pii[:ssn])
     end
 
-    def save_legacy_state
-      skip_legacy_steps
+    def move_applicant_to_idv_session
       idv_session.applicant = pii
       idv_session.applicant['uuid'] = current_user.uuid
-    end
-
-    def skip_legacy_steps
-      idv_session.profile_confirmation = true
-      idv_session.vendor_phone_confirmation = false
-      idv_session.user_phone_confirmation = false
-      idv_session.address_verification_mechanism = 'phone'
-      idv_session.resolution_successful = 'phone'
+      delete_pii
     end
 
     def add_proofing_costs(results)
@@ -231,7 +221,7 @@ module Idv
         elsif stage == :threatmetrix
           # transaction_id comes from request_id
           tmx_id = hash[:transaction_id]
-          log_irs_tmx_fraud_check_event(hash) if tmx_id
+          log_irs_tmx_fraud_check_event(hash, current_user) if tmx_id
           add_cost(:threatmetrix, transaction_id: tmx_id) if tmx_id
         end
       end

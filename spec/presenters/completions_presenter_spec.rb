@@ -323,7 +323,7 @@ describe CompletionsPresenter do
               address: '123 main st apt 123 Washington, DC 20405',
               phone: '+1 202-212-1000',
               all_emails: [current_user.email],
-              birthdate: 'January 01, 1990',
+              birthdate: 'January 1, 1990',
               social_security_number: '900-12-3456',
               verified_at: nil,
               x509_subject: nil,

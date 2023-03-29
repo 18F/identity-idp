@@ -18,11 +18,28 @@ module Idv
     end
 
     def fallback_back_path
+      return idv_verify_info_path if OutageStatus.new.any_phone_vendor_outage?
       user_needs_address_otp_verification? ? idv_gpo_verify_path : idv_phone_path
     end
 
     def resend_requested?
       current_user.decorate.pending_profile_requires_verification?
+    end
+
+    def back_or_cancel_partial
+      if FeatureManagement.idv_gpo_only?
+        'idv/doc_auth/cancel'
+      else
+        'idv/shared/back'
+      end
+    end
+
+    def back_or_cancel_parameters
+      if FeatureManagement.idv_gpo_only?
+        { step: 'gpo' }
+      else
+        { fallback_path: fallback_back_path }
+      end
     end
 
     private

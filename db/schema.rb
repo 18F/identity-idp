@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_07_203559) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_22_000756) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -26,6 +26,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_07_203559) do
     t.string "granted_token"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.string "requesting_issuer"
     t.index ["cancelled_at", "granted_at", "requested_at"], name: "index_account_reset_requests_on_timestamps"
     t.index ["granted_token"], name: "index_account_reset_requests_on_granted_token", unique: true
     t.index ["request_token"], name: "index_account_reset_requests_on_request_token", unique: true
@@ -225,6 +226,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_07_203559) do
     t.index ["user_id", "created_at"], name: "index_events_on_user_id_and_created_at"
   end
 
+  create_table "fraud_review_requests", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "uuid"
+    t.string "irs_session_id"
+    t.string "login_session_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_fraud_review_requests_on_user_id"
+  end
+
   create_table "iaa_gtcs", force: :cascade do |t|
     t.string "gtc_number", null: false
     t.integer "mod_number", default: 0, null: false
@@ -298,6 +309,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_07_203559) do
     t.boolean "late_reminder_sent", default: false, comment: "late reminder to complete IPP before deadline sent"
     t.boolean "deadline_passed_sent", default: false, comment: "deadline passed email sent for expired enrollment"
     t.datetime "proofed_at", precision: nil, comment: "timestamp when user attempted to proof at a Post Office"
+    t.boolean "capture_secondary_id_enabled", default: false, comment: "record and proof state ID and residential addresses separately"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
     t.index ["status_check_attempted_at"], name: "index_in_person_enrollments_on_status_check_attempted_at", where: "(status = 1)"
     t.index ["unique_id"], name: "index_in_person_enrollments_on_unique_id", unique: true

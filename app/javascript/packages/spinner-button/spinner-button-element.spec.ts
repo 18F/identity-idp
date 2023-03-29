@@ -3,7 +3,6 @@ import { getByRole, fireEvent, screen } from '@testing-library/dom';
 import type { SinonStub } from 'sinon';
 import { useSandbox } from '@18f/identity-test-helpers';
 import './spinner-button-element';
-import type { SpinnerButtonElement } from './spinner-button-element';
 
 describe('SpinnerButtonElement', () => {
   const sandbox = useSandbox({ useFakeTimers: true });
@@ -14,20 +13,37 @@ describe('SpinnerButtonElement', () => {
 
   interface WrapperOptions {
     actionMessage?: string;
-
     tagName?: string;
-
     spinOnClick?: boolean;
+    inForm?: boolean;
+    isButtonTo?: boolean;
   }
 
-  function createWrapper({ actionMessage, tagName = 'a', spinOnClick }: WrapperOptions = {}) {
-    document.body.innerHTML = `
+  function createWrapper({
+    actionMessage,
+    tagName = 'a',
+    spinOnClick,
+    inForm,
+    isButtonTo,
+  }: WrapperOptions = {}) {
+    let tag;
+    if (tagName === 'a') {
+      tag = '<a href="#">Click Me</a>';
+    } else {
+      tag = '<input type="submit" value="Click Me">';
+    }
+
+    if (isButtonTo) {
+      tag = `<form action="#">${tag}</form>`;
+    }
+
+    let html = `
       <lg-spinner-button
         long-wait-duration-ms="${longWaitDurationMs}"
         ${spinOnClick === undefined ? '' : `spin-on-click="${spinOnClick}"`}
       >
         <div class="spinner-button__content">
-          ${tagName === 'a' ? '<a href="#">Click Me</a>' : '<input type="submit" value="Click Me">'}
+          ${tag}
           <span class="spinner-dots" aria-hidden="true">
             <span class="spinner-dots__dot"></span>
             <span class="spinner-dots__dot"></span>
@@ -44,7 +60,13 @@ describe('SpinnerButtonElement', () => {
         }
       </lg-spinner-button>`;
 
-    return document.body.firstElementChild as SpinnerButtonElement;
+    if (inForm) {
+      html = `<form action="#">${html}</form>`;
+    }
+
+    document.body.innerHTML = html;
+
+    return document.querySelector('lg-spinner-button')!;
   }
 
   it('shows spinner on click', async () => {
@@ -56,24 +78,64 @@ describe('SpinnerButtonElement', () => {
     expect(wrapper.classList.contains('spinner-button--spinner-active')).to.be.true();
   });
 
-  it('disables button without preventing form handlers', async () => {
-    const wrapper = createWrapper({ tagName: 'button' });
-    let submitted = false;
-    const form = document.createElement('form');
-    form.action = '#';
-    form.addEventListener('submit', (event) => {
-      submitted = true;
-      event.preventDefault();
+  context('inside form', () => {
+    it('disables button without preventing form handlers', async () => {
+      const wrapper = createWrapper({ tagName: 'button', inForm: true });
+      let didSubmit = false;
+      wrapper.form!.addEventListener('submit', (event) => {
+        didSubmit = true;
+        event.preventDefault();
+      });
+      const button = screen.getByRole('button', { name: 'Click Me' });
+
+      await userEvent.type(button, '{Enter}');
+      clock.tick(0);
+
+      expect(didSubmit).to.be.true();
+      expect(button.hasAttribute('disabled')).to.be.true();
     });
-    document.body.appendChild(form);
-    form.appendChild(wrapper);
+
+    it('unbinds events when disconnected', () => {
+      const wrapper = createWrapper({ tagName: 'button', inForm: true });
+      const form = wrapper.form!;
+      form.removeChild(wrapper);
+
+      sandbox.spy(wrapper, 'toggleSpinner');
+      fireEvent.submit(form);
+
+      expect(wrapper.toggleSpinner).not.to.have.been.called();
+    });
+  });
+
+  context('with form inside (button_to)', () => {
+    it('disables button without preventing form handlers', async () => {
+      const wrapper = createWrapper({ tagName: 'button', isButtonTo: true });
+      let didSubmit = false;
+      wrapper.form!.addEventListener('submit', (event) => {
+        didSubmit = true;
+        event.preventDefault();
+      });
+      const button = screen.getByRole('button', { name: 'Click Me' });
+
+      await userEvent.type(button, '{Enter}');
+      clock.tick(0);
+
+      expect(didSubmit).to.be.true();
+      expect(button.hasAttribute('disabled')).to.be.true();
+    });
+  });
+
+  it('does not show spinner if form is invalid', async () => {
+    const wrapper = createWrapper({ tagName: 'button', inForm: true });
+    const form = wrapper.closest('form')!;
+    const input = document.createElement('input');
+    input.required = true;
+    form.appendChild(input);
     const button = screen.getByRole('button', { name: 'Click Me' });
 
     await userEvent.type(button, '{Enter}');
-    clock.tick(0);
 
-    expect(submitted).to.be.true();
-    expect(button.hasAttribute('disabled')).to.be.true();
+    expect(wrapper.classList.contains('spinner-button--spinner-active')).to.be.false();
   });
 
   it('announces action message', async () => {

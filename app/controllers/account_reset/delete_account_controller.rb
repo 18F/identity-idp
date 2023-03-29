@@ -3,7 +3,7 @@ module AccountReset
     def show
       render :show and return unless token
 
-      result = AccountReset::ValidateGrantedToken.new(token).call
+      result = AccountReset::ValidateGrantedToken.new(token, request, analytics).call
       analytics.account_reset_granted_token_validation(**result.to_h)
 
       if result.success?
@@ -15,13 +15,9 @@ module AccountReset
 
     def delete
       granted_token = session.delete(:granted_token)
-      result = AccountReset::DeleteAccount.new(granted_token).call
+      result = AccountReset::DeleteAccount.new(granted_token, request, analytics).call
       analytics.account_reset_delete(**result.to_h.except(:email))
 
-      irs_attempts_api_tracker.account_reset_account_deleted(
-        success: result.success?,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-      )
       if result.success?
         handle_successful_deletion(result)
       else

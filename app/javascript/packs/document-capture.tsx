@@ -14,6 +14,7 @@ import {
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { trackEvent as baseTrackEvent } from '@18f/identity-analytics';
+import { request } from '@18f/identity-request';
 import type { FlowPath, DeviceContextValue } from '@18f/identity-document-capture';
 
 /**
@@ -81,7 +82,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
 (async () => {
   const backgroundUploadURLs = getBackgroundUploadURLs();
   const isAsyncForm = Object.keys(backgroundUploadURLs).length > 0;
-  const csrf = getMetaContent('csrf-token');
 
   const formData: Record<string, any> = {
     document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
@@ -104,11 +104,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     formData.step = 'verify_document';
   }
 
-  const keepAlive = () =>
-    window.fetch(keepAliveEndpoint, {
-      method: 'POST',
-      headers: [csrf && ['X-CSRF-Token', csrf]].filter(Boolean) as [string, string][],
-    });
+  const keepAlive = () => request(keepAliveEndpoint, { method: 'POST' });
 
   const {
     helpCenterRedirectUrl: helpCenterRedirectURL,
@@ -120,7 +116,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     cancelUrl: cancelURL,
     idvInPersonUrl: inPersonURL,
     securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
-    arcgisSearchEnabled,
     inPersonCtaVariantTestingEnabled,
     inPersonCtaVariantActive,
   } = appRoot.dataset as DOMStringMap & AppRootData;
@@ -132,7 +127,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
       InPersonContext.Provider,
       {
         value: {
-          arcgisSearchEnabled: arcgisSearchEnabled === 'true',
           inPersonCtaVariantTestingEnabled: inPersonCtaVariantTestingEnabled === true,
           inPersonCtaVariantActive,
           inPersonURL,
@@ -157,7 +151,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
         endpoint: String(appRoot.getAttribute('data-endpoint')),
         statusEndpoint: String(appRoot.getAttribute('data-status-endpoint')),
         statusPollInterval: Number(appRoot.getAttribute('data-status-poll-interval-ms')),
-        csrf,
         isMockClient,
         backgroundUploadURLs,
         backgroundUploadEncryptKey,

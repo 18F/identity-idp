@@ -8,6 +8,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+      and_return(false)
   end
 
   context 'ThreatMetrix review pending' do
@@ -24,8 +26,9 @@ RSpec.describe 'In Person Proofing', js: true do
       search_for_post_office
 
       # location page
-      bethesda_location = page.find_all('.location-collection-item')[1]
-      bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
+      within page.first('.location-collection-item') do
+        click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
+      end
 
       # prepare page
       complete_prepare_step(user)
@@ -96,7 +99,7 @@ RSpec.describe 'In Person Proofing', js: true do
       enrollment_code = JSON.parse(
         UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
       )['enrollmentCode']
-      expect(page).to have_content(t('in_person_proofing.headings.barcode'))
+      expect(page).to have_content(t('in_person_proofing.headings.barcode', app_name: APP_NAME))
       expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
       expect(page).to have_content(
         t('in_person_proofing.body.barcode.deadline', deadline: deadline),
@@ -123,8 +126,9 @@ RSpec.describe 'In Person Proofing', js: true do
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
     search_for_post_office
-    bethesda_location = page.find_all('.location-collection-item')[1]
-    bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
+    within page.first('.location-collection-item') do
+      click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
+    end
 
     # prepare page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
@@ -132,8 +136,10 @@ RSpec.describe 'In Person Proofing', js: true do
     complete_prepare_step(user)
 
     # state ID page
-    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-    expect(page).to have_content(t('in_person_proofing.headings.state_id'))
+    expect_in_person_step_indicator_current_step(
+      t('step_indicator.flows.idv.verify_info'),
+    )
+    expect(page).to have_content(t('in_person_proofing.headings.state_id_milestone_2'))
     complete_state_id_step(user)
 
     # address page
@@ -169,6 +175,7 @@ RSpec.describe 'In Person Proofing', js: true do
     # click update address button
     click_button t('idv.buttons.change_address_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_address'))
+    choose t('in_person_proofing.form.address.same_address_choice_yes')
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
 
@@ -221,7 +228,8 @@ RSpec.describe 'In Person Proofing', js: true do
     enrollment_code = JSON.parse(
       UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
     )['enrollmentCode']
-    expect(page).to have_content(t('in_person_proofing.headings.barcode'))
+    expect(page).to have_css("img[alt='#{APP_NAME}']")
+    expect(page).to have_content(t('in_person_proofing.headings.barcode', app_name: APP_NAME))
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
     expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
     expect(page).to have_content('MILWAUKEE')
@@ -255,8 +263,9 @@ RSpec.describe 'In Person Proofing', js: true do
     # location page
     expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
     search_for_post_office
-    bethesda_location = page.find_all('.location-collection-item')[1]
-    bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
+    within page.first('.location-collection-item') do
+      click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
+    end
 
     # prepare page
     expect(page).to have_content(t('in_person_proofing.headings.prepare'))
@@ -316,12 +325,12 @@ RSpec.describe 'In Person Proofing', js: true do
 
     it 'resumes desktop session with in-person proofing', allow_browser_log: true do
       user = nil
-
+      phone_number = '415-555-0199'
       perform_in_browser(:desktop) do
         user = sign_in_and_2fa_user
-        complete_doc_auth_steps_before_send_link_step
-        fill_in :doc_auth_phone, with: '415-555-0199'
-        click_idv_continue
+        complete_doc_auth_steps_before_upload_step
+        clear_and_fill_in(:doc_auth_phone, phone_number)
+        click_send_link
 
         expect(page).to have_content(t('doc_auth.headings.text_message'))
       end
@@ -335,8 +344,9 @@ RSpec.describe 'In Person Proofing', js: true do
 
         click_link t('in_person_proofing.body.cta.button')
         search_for_post_office
-        bethesda_location = page.find_all('.location-collection-item')[1]
-        bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
+        within page.first('.location-collection-item') do
+          click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
+        end
 
         click_idv_continue
 
@@ -375,8 +385,6 @@ RSpec.describe 'In Person Proofing', js: true do
       click_on t('idv.buttons.mail.send')
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
       complete_review_step
-      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
-      acknowledge_and_confirm_personal_key unless IdentityConfig.store.gpo_personal_key_after_otp
 
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
       expect(page).to have_content(t('idv.titles.come_back_later'))
@@ -403,7 +411,6 @@ RSpec.describe 'In Person Proofing', js: true do
       click_on t('idv.troubleshooting.options.verify_by_mail')
       click_on t('idv.buttons.mail.send')
       complete_review_step
-      acknowledge_and_confirm_personal_key unless IdentityConfig.store.gpo_personal_key_after_otp
       click_idv_continue
       click_on t('account.index.verification.reactivate_button')
       click_on t('idv.messages.clear_and_start_over')
@@ -481,6 +488,82 @@ RSpec.describe 'In Person Proofing', js: true do
       fill_in t('idv.form.city'), with: InPersonHelper::GOOD_CITY
       click_idv_continue
       expect(page).to have_current_path(idv_in_person_step_path(step: :ssn), wait: 10)
+    end
+  end
+
+  context 'in_person_capture_secondary_id_enabled feature flag disabled, then enabled during flow',
+          allow_browser_log: true do
+    let(:user) { user_with_2fa }
+
+    before(:each) do
+      allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+        and_return(false)
+
+      sign_in_and_2fa_user(user)
+      begin_in_person_proofing(user)
+      complete_location_step(user)
+
+      expect(page).to have_content(
+        t('in_person_proofing.headings.prepare'),
+      )
+    end
+
+    it 'does not capture separate state id address from residential address' do
+      allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+        and_return(true)
+      # prepare page
+      complete_prepare_step(user)
+      complete_state_id_step(user)
+      complete_address_step(user)
+      complete_ssn_step(user)
+    end
+  end
+
+  context 'in_person_capture_secondary_id_enabled feature flag enabled', allow_browser_log: true do
+    let(:user) { user_with_2fa }
+
+    before(:each) do
+      allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+        and_return(true)
+
+      sign_in_and_2fa_user(user)
+      begin_in_person_proofing(user)
+      complete_location_step(user)
+
+      expect(page).to have_content(
+        t('in_person_proofing.headings.prepare'),
+      )
+    end
+
+    def it_captures_address_with_state_id
+      # prepare page
+      complete_prepare_step(user)
+
+      complete_state_id_step(user, same_address_as_id: false, double_address_verification: true)
+
+      complete_address_step(user, double_address_verification: true)
+
+      # Ensure the page submitted successfully
+      expect(page).to have_content(
+        t('idv.form.ssn_label_html'),
+      )
+    end
+
+    context 'flag remains enabled' do
+      it 'captures the address, address line 2, city, state and zip code' do
+        it_captures_address_with_state_id
+      end
+    end
+
+    context 'flag is then disabled' do
+      before(:each) do
+        allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+          and_return(false)
+      end
+
+      it 'captures the address, address line 2, city, state and zip code' do
+        it_captures_address_with_state_id
+      end
     end
   end
 end

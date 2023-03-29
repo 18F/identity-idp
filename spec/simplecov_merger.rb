@@ -4,7 +4,7 @@ require_relative '../spec/simplecov_helper'
 
 module SimpleCov
   module ResultMerger
-    RSPEC_FILENAME_REGEX = %r{^(?<filename>[_\w\d/.]+\.rb)}
+    RSPEC_FILENAME_REGEX = %r{^(?<filename>[-_\w\d/.]+(?<extension>\.rb)?)}
     def self.merging!
       SimplecovHelper.configure
       fix_gitlab_paths if ENV['GITLAB_CI']
@@ -41,7 +41,7 @@ module SimpleCov
       File.write('rspec_json/rspec.json', merged_hash.to_json)
 
       knapsack = merged_hash['examples'].group_by do |x|
-        RSPEC_FILENAME_REGEX.match(x['id'][2..])['filename']
+        RSPEC_FILENAME_REGEX.match(x['id'][2..])[:filename]
       end.map do |filename, examples|
         [filename, examples.map { |x| x['run_time'] }.sum]
       end.sort.to_h

@@ -23,7 +23,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     encoded_iv = Base64.strict_encode64(result.iv)
     encoded_encrypted_key = Base64.strict_encode64(result.encrypted_key)
 
-    irs_attempt_api_log_file = IrsAttemptApiLogFile.create(
+    irs_attempts_api_log_file = IrsAttemptApiLogFile.create(
       filename: result.filename,
       iv: encoded_iv,
       encrypted_key: encoded_encrypted_key,
@@ -31,7 +31,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     )
 
     log_irs_attempts_events_job_info(result, events, start_time)
-    irs_attempt_api_log_file
+    irs_attempts_api_log_file
   end
 
   def create_and_upload_to_attempts_s3_resource(bucket_name:, filename:, encrypted_data:)

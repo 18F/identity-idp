@@ -16,7 +16,7 @@ module TwoFactorAuthentication
     end
 
     def disabled?
-      VendorStatus.new.vendor_outage?(:sms)
+      OutageStatus.new.vendor_outage?(:sms)
     end
   end
 end

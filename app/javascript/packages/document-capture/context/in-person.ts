@@ -2,11 +2,6 @@ import { createContext } from 'react';
 
 export interface InPersonContextProps {
   /**
-   * Feature flag for enabling address search
-   */
-  arcgisSearchEnabled?: boolean;
-
-  /**
    * Whether or not A/B testing of the in-person proofing CTA is enabled.
    */
   inPersonCtaVariantTestingEnabled?: boolean;
@@ -23,7 +18,6 @@ export interface InPersonContextProps {
 }
 
 const InPersonContext = createContext<InPersonContextProps>({
-  arcgisSearchEnabled: false,
   inPersonCtaVariantTestingEnabled: false,
   inPersonCtaVariantActive: '',
 });

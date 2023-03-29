@@ -275,15 +275,12 @@ describe('document-capture/components/document-capture', () => {
     sandbox
       .stub(window, 'fetch')
       .withArgs(endpoint)
-      .resolves({
-        ok: false,
-        status: 418,
-        url: endpoint,
-        json: () =>
-          Promise.resolve({
-            redirect: '#teapot',
-          }),
-      });
+      .resolves(
+        new Response(JSON.stringify({ redirect: '#teapot' }), {
+          status: 418,
+          url: endpoint,
+        }),
+      );
 
     const frontImage = getByLabelText('doc_auth.headings.document_capture_front');
     const backImage = getByLabelText('doc_auth.headings.document_capture_back');
@@ -305,7 +302,7 @@ describe('document-capture/components/document-capture', () => {
   it('renders async upload pending progress', async () => {
     const statusChecks = 3;
     let remainingStatusChecks = statusChecks;
-    sandbox.stub(window, 'fetch').resolves({ ok: true, headers: new window.Headers() });
+    sandbox.stub(window, 'fetch').resolves(new Response());
     const upload = sinon.stub().callsFake((payload, { endpoint }) => {
       switch (endpoint) {
         case 'about:blank#upload':
@@ -393,13 +390,11 @@ describe('document-capture/components/document-capture', () => {
       sandbox.stub(window, 'fetch');
       window.fetch.withArgs('about:blank#front').returns(
         new Promise((resolve, reject) => {
-          completeUploadAsSuccess = () => resolve({ ok: true, headers: new window.Headers() });
+          completeUploadAsSuccess = () => resolve(new Response());
           completeUploadAsFailure = () => reject(new Error());
         }),
       );
-      window.fetch
-        .withArgs('about:blank#back')
-        .resolves({ ok: true, headers: new window.Headers() });
+      window.fetch.withArgs('about:blank#back').resolves(new Response());
       upload = sinon.stub().resolves({ success: true, isPending: false });
       const key = await window.crypto.subtle.generateKey(
         {
@@ -514,12 +509,12 @@ describe('document-capture/components/document-capture', () => {
         sandbox
           .stub(window, 'fetch')
           .withArgs(endpoint)
-          .resolves({
-            ok: false,
-            status: 400,
-            url: endpoint,
-            json: () => ({ success: false, remaining_attempts: 1, errors: [{}] }),
-          });
+          .resolves(
+            new Response(JSON.stringify({ success: false, remaining_attempts: 1, errors: [{}] }), {
+              status: 400,
+              url: endpoint,
+            }),
+          );
 
         expect(queryByText('idv.troubleshooting.options.verify_in_person')).not.to.exist();
         await userEvent.click(getByText('forms.buttons.submit.default'));

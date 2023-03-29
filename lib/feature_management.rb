@@ -52,7 +52,7 @@ class FeatureManagement
     IdentityConfig.store.use_dashboard_service_providers
   end
 
-  def self.enable_gpo_verification?
+  def self.gpo_verification_enabled?
     # leaving the usps name for backwards compatibility
     IdentityConfig.store.enable_usps_verification
   end
@@ -148,5 +148,19 @@ class FeatureManagement
     else
       raise 'Invalid value for proofing_device_profiling'
     end
+  end
+
+  # Whether or not idv hybrid mode is available
+  def self.idv_allow_hybrid_flow?
+    return false unless IdentityConfig.store.feature_idv_hybrid_flow_enabled
+    return false if OutageStatus.new.any_phone_vendor_outage?
+    true
+  end
+
+  def self.idv_gpo_only?
+    outage_status = OutageStatus.new
+    IdentityConfig.store.feature_idv_force_gpo_verification_enabled ||
+      outage_status.any_phone_vendor_outage? ||
+      outage_status.phone_finder_outage?
   end
 end

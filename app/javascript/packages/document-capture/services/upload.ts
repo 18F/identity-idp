@@ -1,5 +1,6 @@
 import { FormError } from '@18f/identity-form-steps';
 import { forceRedirect } from '@18f/identity-url';
+import { request } from '@18f/identity-request';
 import type {
   UploadSuccessResponse,
   UploadErrorResponse,
@@ -67,12 +68,13 @@ export function toFormEntryError(uploadFieldError: UploadFieldError): UploadForm
   return formEntryError;
 }
 
-const upload: UploadImplementation = async function (payload, { method = 'POST', endpoint, csrf }) {
-  const headers: HeadersInit = {};
-  if (csrf) {
-    headers['X-CSRF-Token'] = csrf;
-  }
-  const response = await window.fetch(endpoint, { method, headers, body: toFormData(payload) });
+const upload: UploadImplementation = async function (payload, { method = 'POST', endpoint }) {
+  const response = await request(endpoint, {
+    method,
+    body: toFormData(payload),
+    json: false,
+    read: false,
+  });
 
   if (!response.ok && !response.status.toString().startsWith('4')) {
     // 4xx is an expected error state, handled after JSON deserialization. Anything else not OK

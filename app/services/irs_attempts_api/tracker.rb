@@ -16,7 +16,7 @@ module IrsAttemptsApi
     end
 
     def track_event(event_type, metadata = {})
-      return if !enabled?
+      return unless enabled?
 
       if metadata.has_key?(:failure_reason) &&
          (metadata[:failure_reason].blank? ||

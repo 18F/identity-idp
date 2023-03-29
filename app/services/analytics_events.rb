@@ -240,6 +240,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [String] user_id
   # @param [Boolean] user_locked_out if the user is currently locked out of their second factor
+  # @param [String] bad_password_count represents number of prior login failures
   # @param [String] stored_location the URL to return to after signing in
   # @param [Boolean] sp_request_url_present if was an SP request URL in the session
   # @param [Boolean] remember_device if the remember device cookie was present
@@ -248,6 +249,7 @@ module AnalyticsEvents
     success:,
     user_id:,
     user_locked_out:,
+    bad_password_count:,
     stored_location:,
     sp_request_url_present:,
     remember_device:,
@@ -258,6 +260,7 @@ module AnalyticsEvents
       success: success,
       user_id: user_id,
       user_locked_out: user_locked_out,
+      bad_password_count: bad_password_count,
       stored_location: stored_location,
       sp_request_url_present: sp_request_url_present,
       remember_device: remember_device,
@@ -646,6 +649,10 @@ module AnalyticsEvents
     track_event('IdV: in person proofing prepare submitted', flow_path: flow_path, **extra)
   end
 
+  def idv_in_person_proofing_residential_address_submitted(**extra)
+    track_event('IdV: in person proofing residential address submitted', **extra)
+  end
+
   def idv_in_person_proofing_address_submitted(**extra)
     track_event('IdV: in person proofing address submitted', **extra)
   end
@@ -729,10 +736,6 @@ module AnalyticsEvents
     track_event('IdV: doc auth cancel_link_sent submitted', **extra)
   end
 
-  def idv_doc_auth_cancel_send_link_submitted(**extra)
-    track_event('IdV: doc auth cancel_send_link submitted', **extra)
-  end
-
   # @identity.idp.previous_event_name IdV: in person proofing cancel_update_ssn submitted
   def idv_doc_auth_cancel_update_ssn_submitted(**extra)
     track_event('IdV: doc auth cancel_update_ssn submitted', **extra)
@@ -766,8 +769,9 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.previous_event_name IdV: doc auth send_link submitted
   def idv_doc_auth_link_sent_submitted(**extra)
-    track_event('IdV: doc auth send_link submitted', **extra)
+    track_event('IdV: doc auth link_sent submitted', **extra)
   end
 
   def idv_doc_auth_link_sent_visited(**extra)
@@ -781,14 +785,6 @@ module AnalyticsEvents
 
   def idv_doc_auth_redo_document_capture_submitted(**extra)
     track_event('IdV: doc auth redo_document_capture submitted', **extra)
-  end
-
-  def idv_doc_auth_send_link_visited(**extra)
-    track_event('IdV: doc auth send_link visited', **extra)
-  end
-
-  def idv_doc_auth_send_link_submitted(**extra)
-    track_event('IdV: doc auth send_link submitted', **extra)
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing ssn submitted
@@ -921,7 +917,7 @@ module AnalyticsEvents
   # The "hybrid handoff" step: Desktop user has submitted their choice to
   # either continue via desktop ("document_capture" destination) or switch
   # to mobile phone ("send_link" destination) to perform document upload.
-  # Mobile users sill log this event but with skip_upload_step = true
+  # Mobile users still log this event but with skip_upload_step = true
   def idv_doc_auth_upload_submitted(**extra)
     track_event('IdV: doc auth upload submitted', **extra)
   end
@@ -2103,6 +2099,18 @@ module AnalyticsEvents
     track_event(
       'User marked authenticated',
       authentication_type: authentication_type,
+      **extra,
+    )
+  end
+
+  # User has attempted to access an action that requires re-authenticating
+  # @param [String] auth_method
+  # @param [String] authenticated_at
+  def user_2fa_reauthentication_required(auth_method:, authenticated_at:, **extra)
+    track_event(
+      'User 2FA Reauthentication Required',
+      auth_method: auth_method,
+      authenticated_at: authenticated_at,
       **extra,
     )
   end
@@ -3496,6 +3504,22 @@ module AnalyticsEvents
   def contact_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
     track_event(
       'Contact Page Redirect',
+      redirect_url: redirect_url,
+      step: step,
+      location: location,
+      flow: flow,
+      **extra,
+    )
+  end
+
+  # @param [String] redirect_url URL user was directed to
+  # @param [String, nil] step which step
+  # @param [String, nil] location which part of a step, if applicable
+  # @param ["idv", String, nil] flow which flow
+  # User was redirected to the login.gov policy page
+  def policy_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
+    track_event(
+      'Policy Page Redirect',
       redirect_url: redirect_url,
       step: step,
       location: location,

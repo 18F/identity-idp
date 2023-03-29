@@ -26,12 +26,6 @@ describe Users::SessionsController, devise: true do
         expect(response.status).to eq(200)
       end
 
-      it 'clears the Etag header' do
-        get :active
-
-        expect(response.headers['Etag']).to eq ''
-      end
-
       it 'renders json' do
         get :active
 
@@ -199,6 +193,7 @@ describe Users::SessionsController, devise: true do
 
   describe 'POST /' do
     include AccountResetHelper
+
     it 'tracks the successful authentication for existing user' do
       user = create(:user, :signed_up)
       subject.session['user_return_to'] = mock_valid_site
@@ -209,6 +204,7 @@ describe Users::SessionsController, devise: true do
         success: true,
         user_id: user.uuid,
         user_locked_out: false,
+        bad_password_count: 0,
         stored_location: mock_valid_site,
         sp_request_url_present: false,
         remember_device: false,
@@ -231,6 +227,7 @@ describe Users::SessionsController, devise: true do
         success: false,
         user_id: user.uuid,
         user_locked_out: false,
+        bad_password_count: 1,
         stored_location: nil,
         sp_request_url_present: false,
         remember_device: false,
@@ -249,6 +246,7 @@ describe Users::SessionsController, devise: true do
         success: false,
         user_id: 'anonymous-uuid',
         user_locked_out: false,
+        bad_password_count: 1,
         stored_location: nil,
         sp_request_url_present: false,
         remember_device: false,
@@ -287,6 +285,7 @@ describe Users::SessionsController, devise: true do
         success: false,
         user_id: user.uuid,
         user_locked_out: true,
+        bad_password_count: 0,
         stored_location: nil,
         sp_request_url_present: false,
         remember_device: false,
@@ -298,6 +297,30 @@ describe Users::SessionsController, devise: true do
       post :create, params: { user: { email: user.email.upcase, password: user.password } }
     end
 
+    it 'tracks count of multiple unsuccessful authentication attempts' do
+      user = create(
+        :user,
+        :signed_up,
+      )
+
+      stub_analytics
+
+      analytics_hash = {
+        success: false,
+        user_id: user.uuid,
+        user_locked_out: false,
+        bad_password_count: 2,
+        stored_location: nil,
+        sp_request_url_present: false,
+        remember_device: false,
+      }
+
+      post :create, params: { user: { email: user.email.upcase, password: 'invalid' } }
+      expect(@analytics).to receive(:track_event).
+        with('Email and Password Authentication', analytics_hash)
+      post :create, params: { user: { email: user.email.upcase, password: 'invalid' } }
+    end
+
     it 'tracks the presence of SP request_url in session' do
       subject.session[:sp] = { request_url: mock_valid_site }
       stub_analytics
@@ -305,6 +328,7 @@ describe Users::SessionsController, devise: true do
         success: false,
         user_id: 'anonymous-uuid',
         user_locked_out: false,
+        bad_password_count: 1,
         stored_location: nil,
         sp_request_url_present: true,
         remember_device: false,
@@ -374,6 +398,7 @@ describe Users::SessionsController, devise: true do
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
+          bad_password_count: 0,
           stored_location: nil,
           sp_request_url_present: false,
           remember_device: false,
@@ -446,6 +471,7 @@ describe Users::SessionsController, devise: true do
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
+          bad_password_count: 0,
           stored_location: nil,
           sp_request_url_present: false,
           remember_device: true,
@@ -471,6 +497,7 @@ describe Users::SessionsController, devise: true do
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
+          bad_password_count: 0,
           stored_location: nil,
           sp_request_url_present: false,
           remember_device: true,
@@ -673,12 +700,6 @@ describe Users::SessionsController, devise: true do
         post :keepalive
 
         expect(response.status).to eq(200)
-      end
-
-      it 'clears the Etag header' do
-        post :keepalive
-
-        expect(response.headers['Etag']).to eq ''
       end
 
       it 'renders json' do

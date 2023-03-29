@@ -70,7 +70,7 @@ class DisplayablePiiFormatter
 
   def dob
     pii_dob = pii[:dob]
-    pii_dob ? DateParser.parse_legacy(pii_dob).to_formatted_s(:long) : ''
+    pii_dob ? I18n.l(DateParser.parse_legacy(pii_dob), format: :long) : ''
   end
 
   def phone

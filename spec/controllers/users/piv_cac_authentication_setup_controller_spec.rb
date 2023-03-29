@@ -1,6 +1,17 @@
 require 'rails_helper'
 
 describe Users::PivCacAuthenticationSetupController do
+  describe 'before_actions' do
+    it 'includes appropriate before_actions' do
+      expect(subject).to have_actions(
+        :before,
+        :authenticate_user!,
+        :confirm_user_authenticated_for_2fa_setup,
+        :confirm_recently_authenticated_2fa,
+      )
+    end
+  end
+
   describe 'when not signed in' do
     describe 'GET index' do
       it 'redirects to root url' do
@@ -64,6 +75,8 @@ describe Users::PivCacAuthenticationSetupController do
         allow(PivCacService).to receive(:decode_token).with(bad_token) { bad_token_response }
         allow(subject).to receive(:user_session).and_return(piv_cac_nonce: nonce)
         subject.user_session[:piv_cac_nickname] = nickname
+        subject.user_session[:authn_at] = Time.zone.now
+        subject.user_session[:auth_method] = 'phone'
       end
 
       let(:nonce) { 'nonce' }

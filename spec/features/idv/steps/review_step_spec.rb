@@ -82,7 +82,6 @@ feature 'idv review step', :js do
     end
 
     it 'sends you to the come_back_later page after review step' do
-      allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).and_return(true)
       fill_in 'Password', with: user_password
       click_continue
 

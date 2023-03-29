@@ -102,10 +102,10 @@ es:
           Los errores más comunes suelen producirse al ingresar un Número de
           Seguridad Social o un Código Postal incorrecto.
       setup:
-        fail_html: Llame a nuestro centro de contacto al
-          <strong>%{contact_number}</strong> para seguir verificando su
-          identidad. Deberá proporcionarnos el código de error
-          <strong>%{support_code}</strong>.
+        fail_date_html: Llame a nuestro centro de atención antes del %{date} para seguir
+          verificando su identidad.
+        fail_html: Llame al %{contact_number} y facilíteles el código de error
+          %{support_code}.
         heading: Llámenos
       timeout: Estamos experimentando un tiempo de espera superior al habitual al
         procesar su solicitud. Inténtalo de nuevo.
@@ -163,7 +163,6 @@ es:
         timeframe_html: Las cartas se envían al día siguiente por First Class Mail de
           USPS y <strong>suelen tardar entre 3 y 7 días hábiles en
           llegar</strong>.
-      mail_sent: Su carta está en camino
       otp_delivery_method_description: Si ha introducido un teléfono fijo más arriba,
         seleccione “Llamada telefónica” más abajo.
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar

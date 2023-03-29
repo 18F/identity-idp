@@ -74,8 +74,6 @@ feature 'idv gpo otp verification step', :js do
 
   context 'with gpo personal key after verification' do
     it 'shows the user a personal key after verification' do
-      allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).
-        and_return(true)
       sign_in_live_with_2fa(user)
 
       expect(current_path).to eq idv_gpo_verify_path
@@ -98,7 +96,7 @@ feature 'idv gpo otp verification step', :js do
 
   context 'with gpo feature disabled' do
     before do
-      allow(IdentityConfig.store).to receive(:enable_gpo_verification?).and_return(true)
+      allow(IdentityConfig.store).to receive(:gpo_verification_enabled?).and_return(true)
     end
 
     it 'allows a user to verify their account for an existing pending profile' do

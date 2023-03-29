@@ -6,9 +6,8 @@ module Idv
     include VerifyInfoConcern
     include Steps::ThreatMetrixStepHelper
 
-    before_action :confirm_two_factor_authenticated
     before_action :confirm_ssn_step_complete
-    before_action :confirm_profile_not_already_confirmed
+    before_action :confirm_verify_info_step_needed
 
     def show
       @in_person_proofing = false
@@ -128,7 +127,7 @@ module Idv
     # copied from verify_base_step. May want reconciliation with phone_step
     def process_async_state(current_async_state)
       if current_async_state.none?
-        idv_session.resolution_successful = false
+        idv_session.invalidate_verify_info_step!
         render :show
       elsif current_async_state.in_progress?
         render 'shared/wait'
@@ -138,7 +137,7 @@ module Idv
         render :show
 
         delete_async
-        idv_session.resolution_successful = false
+        idv_session.invalidate_verify_info_step!
 
         log_idv_verification_submitted_event(
           success: false,

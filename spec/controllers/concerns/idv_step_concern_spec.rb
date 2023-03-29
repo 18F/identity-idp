@@ -128,8 +128,7 @@ describe 'IdvStepConcern' do
 
     context 'the user has completed the verify info step' do
       it 'does not redirect and renders the view' do
-        idv_session.profile_confirmation = true
-        idv_session.resolution_successful = 'phone'
+        idv_session.resolution_successful = true
 
         get :show
 
@@ -140,7 +139,6 @@ describe 'IdvStepConcern' do
 
     context 'the user has not completed the verify info step' do
       it 'redirects to the remote verify info step' do
-        idv_session.profile_confirmation = nil
         idv_session.resolution_successful = nil
 
         get :show
@@ -151,7 +149,6 @@ describe 'IdvStepConcern' do
 
     context 'the user has not completed the verify info step with an in-person enrollment' do
       it 'redirects to the in-person verify info step' do
-        idv_session.profile_confirmation = nil
         idv_session.resolution_successful = nil
 
         ProofingComponent.find_or_create_by(

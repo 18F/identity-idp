@@ -139,6 +139,12 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
+      # Send Duplicate SSN report to S3
+      duplicate_ssn: {
+        class: 'Reports::DuplicateSsnReport',
+        cron: cron_24h,
+        args: -> { [Time.zone.yesterday] },
+      },
     }
   end
   # rubocop:enable Metrics/BlockLength

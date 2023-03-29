@@ -23,3 +23,7 @@
     transform: translateY(-50%);
   }
 }
+
+.usa-alert__text > p:last-child {
+  margin-bottom: 0;
+}

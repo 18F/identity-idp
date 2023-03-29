@@ -291,6 +291,7 @@ Rails.application.routes.draw do
     get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof', as: :return_to_sp_failure_to_proof
     get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
     get '/redirect/contact/' => 'redirect/contact#show', as: :contact_redirect
+    get '/redirect/policy/' => 'redirect/policy#show', as: :policy_redirect
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 
@@ -301,12 +302,14 @@ Rails.application.routes.draw do
       get '/activated' => 'idv#activated'
     end
     scope '/verify', module: 'idv', as: 'idv' do
+      get '/mail_only_warning' => 'gpo_only_warning#show'
       get '/come_back_later' => 'come_back_later#show'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'
       get '/forgot_password' => 'forgot_password#new'
       post '/forgot_password' => 'forgot_password#update'
       get '/document_capture' => 'document_capture#show'
+      put '/document_capture' => 'document_capture#update'
       get '/ssn' => 'ssn#show'
       put '/ssn' => 'ssn#update'
       get '/verify_info' => 'verify_info#show'
@@ -371,7 +374,7 @@ Rails.application.routes.draw do
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
     post '/account/verify' => 'idv/gpo_verify#create'
-    if FeatureManagement.enable_gpo_verification?
+    if FeatureManagement.gpo_verification_enabled?
       scope '/verify', module: 'idv', as: 'idv' do
         get '/usps' => 'gpo#index', as: :gpo
         put '/usps' => 'gpo#create'

@@ -13,8 +13,8 @@ describe 'users/two_factor_authentication_setup/index.html.erb' do
 
   context 'all phone vendor outage' do
     before do
-      allow_any_instance_of(VendorStatus).to receive(:all_vendor_outage?).
-        with(VendorStatus::PHONE_VENDORS).and_return(true)
+      allow_any_instance_of(OutageStatus).to receive(:all_vendor_outage?).
+        with(OutageStatus::PHONE_VENDORS).and_return(true)
     end
 
     it 'renders alert banner' do
@@ -32,8 +32,8 @@ describe 'users/two_factor_authentication_setup/index.html.erb' do
 
   context 'single phone vendor outage' do
     before do
-      allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).and_return(false)
-      allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
+      allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).and_return(false)
+      allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
     end
 
     it 'does not render alert banner' do

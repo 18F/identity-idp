@@ -125,14 +125,6 @@ RSpec.describe Idv::GpoVerifyController do
         disavowal_event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
           where.not(disavowal_token_fingerprint: nil).count
         expect(disavowal_event_count).to eq 1
-        expect(response).to redirect_to(sign_up_completed_url)
-      end
-
-      it 'redirects to the personal key page if new gpo flow is enabled' do
-        allow(IdentityConfig.store).to receive(:gpo_personal_key_after_otp).and_return(true)
-
-        action
-
         expect(response).to redirect_to(idv_personal_key_url)
       end
 
@@ -205,7 +197,7 @@ RSpec.describe Idv::GpoVerifyController do
             disavowal_event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
               where.not(disavowal_token_fingerprint: nil).count
             expect(disavowal_event_count).to eq 1
-            expect(response).to redirect_to(sign_up_completed_url)
+            expect(response).to redirect_to(idv_personal_key_url)
           end
         end
       end

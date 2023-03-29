@@ -11,19 +11,6 @@ module Idv
       flow_session[:flow_path]
     end
 
-    def confirm_pii_from_doc
-      @pii = flow_session&.[]('pii_from_doc') # hash with indifferent access
-      return if @pii.present?
-
-      flow_session&.delete('Idv::Steps::DocumentCaptureStep')
-      redirect_to idv_doc_auth_url
-    end
-
-    def confirm_profile_not_already_confirmed
-      return unless idv_session.profile_confirmation == true
-      redirect_to idv_review_url
-    end
-
     # Copied from capture_doc_flow.rb
     # and from doc_auth_flow.rb
     def acuant_sdk_ab_test_analytics_args
@@ -42,6 +29,16 @@ module Idv
       effective_user&.decorate&.reproof_for_irs?(
         service_provider: current_sp,
       ).present?
+    end
+
+    def document_capture_session
+      @document_capture_session ||= DocumentCaptureSession.find_by(
+        uuid: flow_session[document_capture_session_uuid_key],
+      )
+    end
+
+    def document_capture_session_uuid_key
+      :document_capture_session_uuid
     end
   end
 end

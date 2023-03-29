@@ -12,7 +12,10 @@ module Idv
       end
 
       def call
+        flow_session[:skip_upload_step] = true unless FeatureManagement.idv_allow_hybrid_flow?
+
         return no_camera_redirect if params[:no_camera]
+
         create_document_capture_session(document_capture_session_uuid_key)
         cancel_previous_in_person_enrollments
       end
