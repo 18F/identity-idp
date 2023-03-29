@@ -27,7 +27,12 @@ module Idv
     def confirm_document_capture_complete
       @pii = user_session.dig('idv/doc_auth', 'pii_from_doc')
       return if @pii.present?
-      redirect_to idv_doc_auth_url
+
+      if IdentityConfig.store.doc_auth_document_capture_controller_enabled
+        redirect_to idv_document_capture_url
+      else
+        redirect_to idv_doc_auth_url
+      end
     end
 
     def idv_form

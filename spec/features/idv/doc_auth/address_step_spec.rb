@@ -60,4 +60,18 @@ feature 'doc auth verify step', :js do
       expect(page).to have_current_path(idv_verify_info_path)
     end
   end
+
+  context 'with document capture controller flag set' do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_document_capture_controller_enabled).
+        and_return(true)
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_document_capture_step
+    end
+
+    it 'shows address guidance and hint text' do
+      visit(idv_address_url)
+      expect(page).to have_current_path(idv_document_capture_url)
+    end
+  end
 end
