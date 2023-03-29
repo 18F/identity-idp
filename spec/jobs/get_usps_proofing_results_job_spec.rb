@@ -517,6 +517,7 @@ RSpec.describe GetUspsProofingResultsJob do
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
               reason: 'Successful status update',
+              passed: true,
             ),
           )
           expect(job_analytics).to have_logged_event(
