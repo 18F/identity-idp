@@ -31,6 +31,7 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         )
       end
 
+      let!(:s3_put_object_response) { double(etag: true) }
       before do
         allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:irs_attempt_api_aws_s3_enabled).and_return(true)
@@ -45,7 +46,7 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
 
         allow_any_instance_of(described_class).to receive(
           :create_and_upload_to_attempts_s3_resource,
-        )
+        ).and_return(s3_put_object_response)
 
         allow_any_instance_of(described_class).to receive(:duration_ms).and_return(0.1234)
 
@@ -103,6 +104,46 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         expect(result[:requested_time]).to eq(
           IrsAttemptsApi::EnvelopeEncryptor.formatted_timestamp(start_time),
         )
+      end
+
+      context 'When irs delete events feature flag and s3 put_object response is true' do
+        before do
+          allow(IdentityConfig.store).to receive(:irs_attempt_api_delete_events_after_s3_upload).
+            and_return(true)
+        end
+
+        it 'delete the events from redis' do
+          IrsAttemptsEventsBatchJob.perform_now
+          events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: start_time)
+          expect(events.count).to eq 0
+        end
+      end
+
+      context 'When irs delete events feature flag is false' do
+        before do
+          allow(IdentityConfig.store).to receive(:irs_attempt_api_delete_events_after_s3_upload).
+            and_return(false)
+        end
+
+        it 'does not delete the events from redis' do
+          IrsAttemptsEventsBatchJob.perform_now
+          events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: start_time)
+          expect(events.count).to eq 2
+        end
+      end
+
+      context 'When irs delete events feature flag is true and s3 put_object response is false' do
+        let!(:s3_put_object_response) { double(etag: false) }
+        before do
+          allow(IdentityConfig.store).to receive(:irs_attempt_api_delete_events_after_s3_upload).
+            and_return(true)
+        end
+
+        it 'does not delete the events from redis' do
+          IrsAttemptsEventsBatchJob.perform_now
+          events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: start_time)
+          expect(events.count).to eq 2
+        end
       end
     end
 
