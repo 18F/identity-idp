@@ -11,7 +11,9 @@ locals:
   <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 border-bottom border-primary-light">
     <dl class="grid-col-fill margin-y-0">
       <% if capture_secondary_id_enabled %>
-        <strong><%= t('headings.state_id') %></strong>
+        <div class="padding-y-1">
+          <strong><%= t('headings.state_id') %></strong>
+        </div>
       <% end %>
       <div>
         <dt class="display-inline"> <%= t('idv.form.first_name') %>: </dt>
@@ -61,7 +63,7 @@ locals:
         <%= button_to(
               step_url.call(step: :redo_state_id),
               method: :put,
-              class: 'usa-button usa-button--unstyled',
+              class: 'usa-button usa-button--unstyled padding-y-1',
               'aria-label': t('idv.buttons.change_state_id_label'),
             ) { t('idv.buttons.change_label') } %>
       </div>
@@ -70,7 +72,9 @@ locals:
     <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 padding-top-1 border-bottom border-primary-light">
         <dl class='grid-col-fill margin-y-0'>
           <% if capture_secondary_id_enabled %>
-            <strong><%= remote_identity_proofing ? t('headings.address') : t('headings.residential_address') %></strong>
+            <div class="padding-y-1">
+              <strong><%= remote_identity_proofing ? t('headings.address') : t('headings.residential_address') %></strong>
+            </div>
           <% end %>
           <div>
               <dt class="display-inline"> <%= t('idv.form.address1') %>: </dt>
@@ -97,7 +101,7 @@ locals:
           <%= button_to(
                 step_url.call(step: :redo_address),
                 method: :put,
-                class: 'usa-button usa-button--unstyled',
+                class: 'usa-button usa-button--unstyled padding-y-1',
                 'aria-label': t('idv.buttons.change_address_label'),
               ) { t('idv.buttons.change_label') } %>
         </div>
@@ -105,7 +109,9 @@ locals:
   <div class="grid-row grid-gap grid-gap-2 padding-top-1">
     <div class='grid-col-fill'>
       <% if capture_secondary_id_enabled %>
-        <strong><%= t('headings.ssn') %></strong>
+        <div class="padding-y-1">
+          <strong ><%= t('headings.ssn') %></strong>
+        </div>
       <% end %>
       <div>
         <%= t('idv.form.ssn') %> :
@@ -126,7 +132,7 @@ locals:
       <%= button_to(
             step_url.call(step: :redo_ssn),
             method: :put,
-            class: 'usa-button usa-button--unstyled',
+            class: 'usa-button usa-button--unstyled padding-y-1',
             'aria-label': t('idv.buttons.change_ssn_label'),
           ) { t('idv.buttons.change_label') } %>
     </div>
