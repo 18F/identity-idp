@@ -17,7 +17,7 @@ namespace :users do
       user = User.find_by(uuid: user_uuid)
 
       if !user
-        STDOUT.puts "Error: Could not find user with that UUID"
+        STDOUT.puts 'Error: Could not find user with that UUID'
         next
       end
 
@@ -65,7 +65,7 @@ namespace :users do
       user = User.find_by(uuid: user_uuid)
 
       if !user
-        STDOUT.puts "Error: Could not find user with that UUID"
+        STDOUT.puts 'Error: Could not find user with that UUID'
         next
       end
 
