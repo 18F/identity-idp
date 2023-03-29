@@ -64,15 +64,23 @@ namespace :users do
       STDOUT.puts "uuid: #{user_uuid}"
       user = User.find_by(uuid: user_uuid)
 
-      if user.fraud_review_pending? && user.proofing_component.review_eligible?
+      if !user
+        STDOUT.puts "Error: Could not find user with that UUID"
+        next
+      end
+
+      if !user.fraud_review_pending?
+        STDOUT.puts 'Error: User does not have a pending fraud review'
+        next
+      end
+
+      if user.proofing_component.review_eligible?
         profile = user.fraud_review_pending_profile
 
         profile.reject_for_fraud(notify_user: true)
         STDOUT.puts "User's profile has been deactivated due to fraud rejection."
-      elsif !user.proofing_component.review_eligible?
-        STDOUT.puts 'User is past the 30 day review eligibility'
       else
-        STDOUT.puts 'User was not found pending a review'
+        STDOUT.puts 'User is past the 30 day review eligibility'
       end
     end
   end
