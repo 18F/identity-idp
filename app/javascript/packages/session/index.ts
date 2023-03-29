@@ -28,5 +28,5 @@ export const requestSessionStatus = () => request<SessionStatusResponse>(STATUS_
  *
  * @return A promise resolving to the updated session status.
  */
-export const requestSessionKeepAlive = () =>
+export const extendSession = () =>
   request<SessionStatusResponse>(KEEP_ALIVE_API_ENDPOINT, { method: 'POST' });

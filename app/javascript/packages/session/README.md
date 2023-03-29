@@ -14,12 +14,12 @@ import { requestSessionStatus } from '@18f/identity-session';
 const { live, timeout } = await requestSessionStatus();
 ```
 
-### `requestSessionKeepAlive`
+### `extendSession`
 
 Request that the current session be kept alive.
 
 ```ts
-import { requestSessionKeepAlive } from '@18f/identity-session';
+import { extendSession } from '@18f/identity-session';
 
-const { live, timeout } = await requestSessionKeepAlive();
+const { live, timeout } = await extendSession();
 ```

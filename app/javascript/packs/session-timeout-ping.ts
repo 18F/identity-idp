@@ -1,5 +1,5 @@
 import { forceRedirect } from '@18f/identity-url';
-import { requestSessionStatus, requestSessionKeepAlive } from '@18f/identity-session';
+import { requestSessionStatus, extendSession } from '@18f/identity-session';
 import type { SessionStatusResponse } from '@18f/identity-session';
 import type { CountdownElement } from '@18f/identity-countdown/countdown-element';
 import type { ModalElement } from '@18f/identity-modal';
@@ -85,7 +85,7 @@ function ping() {
 function keepalive() {
   modal.hide();
   countdownEls.forEach((countdownEl) => countdownEl.stop());
-  requestSessionKeepAlive().catch((error) => notifyNewRelic(error, 'keepalive'));
+  extendSession().catch((error) => notifyNewRelic(error, 'keepalive'));
 }
 
 keepaliveEl?.addEventListener('click', keepalive, false);

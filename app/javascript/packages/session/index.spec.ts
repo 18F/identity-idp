@@ -5,7 +5,7 @@ import {
   STATUS_API_ENDPOINT,
   KEEP_ALIVE_API_ENDPOINT,
   requestSessionStatus,
-  requestSessionKeepAlive,
+  extendSession,
 } from './index';
 import type { SessionStatusResponse } from './index';
 
@@ -54,7 +54,7 @@ describe('requestSessionStatus', () => {
   });
 });
 
-describe('requestSessionKeepAlive', () => {
+describe('extendSession', () => {
   const timeout = new Date(Date.now() + 1000).toISOString();
 
   let server: SetupServer;
@@ -72,7 +72,7 @@ describe('requestSessionKeepAlive', () => {
   });
 
   it('resolves to the status', async () => {
-    const result = await requestSessionKeepAlive();
+    const result = await extendSession();
 
     expect(result).to.deep.equal({ live: true, timeout });
   });
