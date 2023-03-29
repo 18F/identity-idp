@@ -622,6 +622,7 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
             hash_including(
+              passed: false,
               reason: 'Unsupported ID type',
             ),
           )
