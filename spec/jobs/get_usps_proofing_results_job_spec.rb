@@ -588,7 +588,7 @@ RSpec.describe GetUspsProofingResultsJob do
             hash_including(
               fraud_suspected: true,
               passed: false,
-              reason: "Failed status",
+              reason: 'Failed status',
             ),
           )
           expect(job_analytics).to have_logged_event(
