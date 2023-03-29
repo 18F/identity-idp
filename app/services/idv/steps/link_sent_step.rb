@@ -3,7 +3,7 @@ module Idv
     class LinkSentStep < DocAuthBaseStep
       STEP_INDICATOR_STEP = :verify_id
 
-      HYBRID_FLOW_STEPS = %i[upload send_link link_sent email_sent document_capture]
+      HYBRID_FLOW_STEPS = %i[upload link_sent email_sent document_capture]
 
       def self.analytics_visited_event
         :idv_doc_auth_link_sent_visited

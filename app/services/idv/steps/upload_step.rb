@@ -72,7 +72,6 @@ module Idv
           failure_reason: failure_reason,
         )
 
-        mark_step_complete(:send_link)
         mark_step_complete(:email_sent)
 
         build_telephony_form_response(telephony_result)
@@ -91,7 +90,6 @@ module Idv
       end
 
       def send_user_to_email_sent_step
-        mark_step_complete(:send_link)
         mark_step_complete(:link_sent)
         UserMailer.with(
           user: current_user, email_address: current_user.confirmed_email_addresses.first,

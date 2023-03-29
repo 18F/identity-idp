@@ -24,11 +24,6 @@ interface PingResponse {
   live: boolean;
 
   /**
-   * Time remaining in active session, in seconds.
-   */
-  remaining: number;
-
-  /**
    * ISO8601-formatted date string for session timeout.
    */
   timeout: string;
@@ -64,7 +59,7 @@ function handleTimeout(redirectURL: string) {
 }
 
 function success(data: PingResponse) {
-  let timeRemaining = data.remaining * 1000;
+  let timeRemaining = new Date(data.timeout).valueOf() - Date.now();
   const showWarning = timeRemaining < warning;
 
   if (!data.live) {
@@ -80,9 +75,6 @@ function success(data: PingResponse) {
       countdownEl.expiration = new Date(data.timeout);
       countdownEl.start();
     });
-  } else {
-    modal.hide();
-    countdownEls.forEach((countdownEl) => countdownEl.stop());
   }
 
   if (timeRemaining < frequency) {
@@ -102,9 +94,11 @@ function ping() {
 }
 
 function keepalive() {
-  request('/sessions/keepalive', { method: 'POST' })
-    .then(success)
-    .catch((error) => notifyNewRelic(error, 'keepalive'));
+  modal.hide();
+  countdownEls.forEach((countdownEl) => countdownEl.stop());
+  request('/sessions/keepalive', { method: 'POST' }).catch((error) => {
+    notifyNewRelic(error, 'keepalive');
+  });
 }
 
 keepaliveEl?.addEventListener('click', keepalive, false);

@@ -917,7 +917,7 @@ module AnalyticsEvents
   # The "hybrid handoff" step: Desktop user has submitted their choice to
   # either continue via desktop ("document_capture" destination) or switch
   # to mobile phone ("send_link" destination) to perform document upload.
-  # Mobile users sill log this event but with skip_upload_step = true
+  # Mobile users still log this event but with skip_upload_step = true
   def idv_doc_auth_upload_submitted(**extra)
     track_event('IdV: doc auth upload submitted', **extra)
   end
@@ -3494,6 +3494,11 @@ module AnalyticsEvents
       proofing_components: proofing_components,
       **extra,
     )
+  end
+
+  # Tracks when user reaches verify errors due to being rejected due to fraud
+  def idv_not_verified_visited
+    track_event('IdV: Not verified visited')
   end
 
   # @param [String] redirect_url URL user was directed to

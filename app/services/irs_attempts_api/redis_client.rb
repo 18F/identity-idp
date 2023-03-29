@@ -25,6 +25,15 @@ module IrsAttemptsApi
       events
     end
 
+    def remove_events(timestamp:)
+      return unless IdentityConfig.store.irs_attempt_api_delete_events_after_s3_upload
+
+      key = key(timestamp)
+      redis_pool.with do |client|
+        client.del(key)
+      end
+    end
+
     def key(timestamp)
       'irs-attempt-api:' + timestamp.in_time_zone('UTC').change(min: 0, sec: 0).iso8601
     end

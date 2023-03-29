@@ -31,7 +31,7 @@ describe Idv::SsnController do
     it 'checks that the previous step is complete' do
       expect(subject).to have_actions(
         :before,
-        :confirm_pii_from_doc,
+        :confirm_document_capture_complete,
       )
     end
   end
