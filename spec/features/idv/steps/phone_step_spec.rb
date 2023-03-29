@@ -121,24 +121,20 @@ feature 'idv phone step', :js do
     expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
   end
 
-  shared_examples 'async timed out' do
-    it 'allows resubmitting form' do
-      user = user_with_2fa
-      start_idv_from_sp
-      complete_idv_steps_before_phone_step(user)
+  it 'allows resubmitting form' do
+    user = user_with_2fa
+    start_idv_from_sp
+    complete_idv_steps_before_phone_step(user)
 
-      allow(DocumentCaptureSession).to receive(:find_by).and_return(nil)
-      fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
-      click_idv_send_security_code
-      expect(page).to have_content(t('idv.failure.timeout'))
-      expect(page).to have_current_path(idv_phone_path)
-      allow(DocumentCaptureSession).to receive(:find_by).and_call_original
-      click_idv_send_security_code
-      expect(page).to have_current_path(idv_otp_verification_path)
-    end
+    allow(DocumentCaptureSession).to receive(:find_by).and_return(nil)
+    fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
+    click_idv_send_security_code
+    expect(page).to have_content(t('idv.failure.timeout'))
+    expect(page).to have_current_path(idv_phone_path)
+    allow(DocumentCaptureSession).to receive(:find_by).and_call_original
+    click_idv_send_security_code
+    expect(page).to have_current_path(idv_otp_verification_path)
   end
-
-  it_behaves_like 'async timed out'
 
   context "when the user's information cannot be verified" do
     it 'reports the number the user entered' do
