@@ -127,6 +127,7 @@ RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response'
     expect(job_analytics).to have_logged_event(
       'GetUspsProofingResultsJob: Exception raised',
       hash_including(
+        reason: 'Request exception',
         response_present: false,
         exception_class: error_type.to_s,
       ),
