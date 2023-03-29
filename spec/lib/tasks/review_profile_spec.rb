@@ -46,7 +46,7 @@ describe 'review_profile' do
 
     context 'when the user does not exist' do
       let(:user) { nil }
-      let(:uuid) { SecureRandom.uuid }
+      let(:uuid) { 'not-a-real-uuid' }
 
       it 'prints an error' do
         invoke_task
@@ -87,7 +87,7 @@ describe 'review_profile' do
 
     context 'when the user does not exist' do
       let(:user) { nil }
-      let(:uuid) { SecureRandom.uuid }
+      let(:uuid) { 'not-a-real-uuid' }
 
       it 'prints an error' do
         invoke_task
