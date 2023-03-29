@@ -5,7 +5,7 @@ function showOrHidePuertoRicoGuidance(forStateCode) {
 }
 
 function onStateSelectionChange() {
-  const stateSelector: HTMLInputElement = document.getElementById('idv_form_state');
+  const stateSelector: HTMLInputElement | null = document.getElementById('idv_form_state');
   showOrHidePuertoRicoGuidance(stateSelector?.value);
 }
 
