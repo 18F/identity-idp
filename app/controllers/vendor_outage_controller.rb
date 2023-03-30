@@ -1,13 +1,8 @@
 class VendorOutageController < ApplicationController
   def show
-    vendor_status = OutageStatus.new(
-      sp: current_sp,
-      from: session.delete(:vendor_outage_redirect),
-      from_idv: session.delete(:vendor_outage_redirect_from_idv),
-    )
-    @specific_message = vendor_status.outage_message
+    @specific_message = OutageStatus.new.outage_message
     @show_gpo_option = from_idv_phone? && gpo_letter_available?
-    vendor_status.track_event(analytics)
+    OutageStatus.new.track_event(analytics)
   end
 
   private

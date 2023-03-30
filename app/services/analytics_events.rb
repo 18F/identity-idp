@@ -2909,12 +2909,11 @@ module AnalyticsEvents
     track_event('User Registration: 2FA Setup visited')
   end
 
-  # @param [String] redirect_from
+  # @param [String,nil] redirect_from
   # @param [Hash] vendor_status
   # Tracks when vendor has outage
   def vendor_outage(
-    redirect_from:,
-    vendor_status:,
+    vendor_status:, redirect_from: nil,
     **extra
   )
     track_event(
