@@ -33,11 +33,11 @@
       <% end %>
       <%= c.item(heading: t('doc_auth.instructions.bullet3')) do %>
         <ul class="usa-list">
-          <% t('doc_auth.instructions.text3_html').each do | bullet_item | %>
+          <% t('doc_auth.instructions.text3_html').each do |bullet_item| %>
             <li><%= bullet_item %></li>
           <% end %>
-          </ul>
-          <%= new_window_link_to(
+        </ul>
+        <%= new_window_link_to(
                 t('idv.troubleshooting.options.learn_more_address_verification_options'),
                 help_center_redirect_path(
                   category: 'verify-your-identity',
