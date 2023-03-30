@@ -420,9 +420,18 @@ RSpec.describe 'In Person Proofing', js: true do
   end
 
   context 'transliteration' do
+    let(:capture_secondary_id_enabled) { true }
+    let(:double_address_verification) { true }
+    let(:user) { user_with_2fa }
+    let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
+
     before(:each) do
       allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
         and_return(true)
+      allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+        and_return(true)
+      allow(user).to receive(:establishing_in_person_enrollment).
+        and_return(enrollment)
     end
     it 'shows validation errors', allow_browser_log: true do
       sign_in_and_2fa_user
@@ -431,10 +440,14 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_prepare_step
       expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
 
-      fill_out_state_id_form_ok
+      fill_out_state_id_form_ok(double_address_verification: double_address_verification)
       fill_in t('in_person_proofing.form.state_id.first_name'), with: 'T0mmy "Lee"'
       fill_in t('in_person_proofing.form.state_id.last_name'), with: 'Джейкоб'
+      fill_in t('in_person_proofing.form.state_id.address1'), with: '#1 $treet'
+      fill_in t('in_person_proofing.form.state_id.address2'), with: 'Gr@nd Lañe^'
+      fill_in t('in_person_proofing.form.state_id.city'), with: 'B3st C!ty'
       click_idv_continue
+
       expect(page).to have_content(
         I18n.t(
           'in_person_proofing.form.state_id.errors.unsupported_chars',
@@ -449,16 +462,43 @@ RSpec.describe 'In Person Proofing', js: true do
         ),
       )
 
+      expect(page).to have_content(
+        I18n.t(
+          'in_person_proofing.form.state_id.errors.unsupported_chars',
+          char_list: '$',
+        ),
+      )
+
+      expect(page).to have_content(
+        I18n.t(
+          'in_person_proofing.form.state_id.errors.unsupported_chars',
+          char_list: '@, ^',
+        ),
+      )
+
+      expect(page).to have_content(
+        I18n.t(
+          'in_person_proofing.form.state_id.errors.unsupported_chars',
+          char_list: '!, 3',
+        ),
+      )
+
+      # re-fill form with good inputs
       fill_in t('in_person_proofing.form.state_id.first_name'),
               with: InPersonHelper::GOOD_FIRST_NAME
       fill_in t('in_person_proofing.form.state_id.last_name'), with: InPersonHelper::GOOD_LAST_NAME
+      fill_in t('in_person_proofing.form.state_id.address1'),
+              with: InPersonHelper::GOOD_STATE_ID_ADDRESS1
+      fill_in t('in_person_proofing.form.state_id.address2'),
+              with: InPersonHelper::GOOD_STATE_ID_ADDRESS2
+      fill_in t('in_person_proofing.form.state_id.city'), with: InPersonHelper::GOOD_STATE_ID_CITY
       click_idv_continue
 
       expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
-      fill_out_address_form_ok
+      fill_out_address_form_ok(double_address_verification: double_address_verification)
 
       fill_in t('idv.form.address1'), with: 'Джордж'
-      fill_in t('idv.form.address2_optional'), with: '(Nope) = %'
+      fill_in t('idv.form.address2'), with: '(Nope) = %'
       fill_in t('idv.form.city'), with: 'Елена'
       click_idv_continue
 
@@ -483,8 +523,9 @@ RSpec.describe 'In Person Proofing', js: true do
         ),
       )
 
+      # re-fill form with good inputs
       fill_in t('idv.form.address1'), with: InPersonHelper::GOOD_ADDRESS1
-      fill_in t('idv.form.address2_optional'), with: InPersonHelper::GOOD_ADDRESS2
+      fill_in t('idv.form.address2'), with: InPersonHelper::GOOD_ADDRESS2
       fill_in t('idv.form.city'), with: InPersonHelper::GOOD_CITY
       click_idv_continue
       expect(page).to have_current_path(idv_in_person_step_path(step: :ssn), wait: 10)
