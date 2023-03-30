@@ -7,7 +7,7 @@ module Idv
 
     before_action :render_404_if_document_capture_controller_disabled
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_agreement_step_complete
+    before_action :confirm_upload_step_complete
     before_action :confirm_document_capture_needed
     before_action :override_document_capture_step_csp
 
@@ -62,8 +62,8 @@ module Idv
       render_not_found unless IdentityConfig.store.doc_auth_document_capture_controller_enabled
     end
 
-    def confirm_agreement_step_complete
-      return if flow_session['Idv::Steps::AgreementStep']
+    def confirm_upload_step_complete
+      return if flow_session['Idv::Steps::UploadStep']
 
       redirect_to idv_doc_auth_url
     end

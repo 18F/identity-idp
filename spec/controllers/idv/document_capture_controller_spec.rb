@@ -7,7 +7,7 @@ describe Idv::DocumentCaptureController do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
       :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
       :flow_path => 'standard',
-      'Idv::Steps::AgreementStep' => true }
+      'Idv::Steps::UploadStep' => true }
   end
 
   let(:user) { create(:user) }
@@ -42,10 +42,10 @@ describe Idv::DocumentCaptureController do
       )
     end
 
-    it 'checks that agreement step is complete' do
+    it 'checks that upload step is complete' do
       expect(subject).to have_actions(
         :before,
-        :confirm_agreement_step_complete,
+        :confirm_upload_step_complete,
       )
     end
   end
@@ -99,9 +99,9 @@ describe Idv::DocumentCaptureController do
         )
       end
 
-      context 'agreement step is not complete' do
+      context 'upload step is not complete' do
         it 'redirects to idv_doc_auth_url' do
-          flow_session['Idv::Steps::AgreementStep'] = nil
+          flow_session['Idv::Steps::UploadStep'] = nil
 
           get :show
 
