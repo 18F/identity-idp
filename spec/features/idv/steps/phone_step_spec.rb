@@ -4,9 +4,15 @@ feature 'idv phone step', :js do
   include IdvStepHelper
   include IdvHelper
 
+  let(:user) { user_with_2fa }
+  let(:gpo_enabled) { true }
+
+  before do
+    allow(IdentityConfig.store).to receive(:enable_usps_verification).and_return(gpo_enabled)
+  end
+
   context 'defaults on page load' do
     it 'selects sms delivery option by default', js: true do
-      user = user_with_2fa
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
       expect(page).to have_checked_field(
@@ -18,7 +24,6 @@ feature 'idv phone step', :js do
   context 'with valid information' do
     it 'redirects to the otp confirmation step when the phone matches the 2fa phone number',
        js: true do
-      user = user_with_2fa
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
@@ -77,8 +82,6 @@ feature 'idv phone step', :js do
     end
 
     it 'is not re-entrant after confirming OTP' do
-      user = user_with_2fa
-
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
       fill_out_phone_form_ok
@@ -122,7 +125,6 @@ feature 'idv phone step', :js do
   end
 
   it 'allows resubmitting form' do
-    user = user_with_2fa
     start_idv_from_sp
     complete_idv_steps_before_phone_step(user)
 
@@ -194,5 +196,41 @@ feature 'idv phone step', :js do
     it_behaves_like 'verification step max attempts', :phone
     it_behaves_like 'verification step max attempts', :phone, :oidc
     it_behaves_like 'verification step max attempts', :phone, :saml
+  end
+
+  context 'when the user is rate-limited' do
+    before do
+      start_idv_from_sp
+      complete_idv_steps_before_step(:phone, user)
+    end
+
+    around do |ex|
+      freeze_time { ex.run }
+    end
+
+    before do
+      (Throttle.max_attempts(:proof_address) - 1).times do
+        fill_out_phone_form_fail
+        click_idv_continue_for_step(:phone)
+        click_on t('idv.failure.phone.warning.try_again_button')
+      end
+      click_idv_continue_for_step(:phone)
+    end
+
+    it 'still lets them access the GPO flow and return to the error' do
+      click_on t('idv.failure.phone.rate_limited.gpo.button')
+      expect(page).to have_content(t('idv.titles.mail.verify'))
+      click_doc_auth_back_link
+      expect(page).to have_content(t('idv.failure.phone.rate_limited.heading'))
+    end
+
+    context 'GPO is disabled' do
+      let(:gpo_enabled) { false }
+
+      it 'does not link out to GPO flow' do
+        expect(page).not_to have_content(t('idv.failure.phone.rate_limited.gpo.prompt'))
+        expect(page).not_to have_content(t('idv.failure.phone.rate_limited.gpo.button'))
+      end
+    end
   end
 end
