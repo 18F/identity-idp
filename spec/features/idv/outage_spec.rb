@@ -235,8 +235,7 @@ feature 'IdV Outage Spec' do
       it 'prevents a user from creating an account' do
         visit_idp_from_sp_with_ial2(:oidc)
         click_link t('links.create_account')
-        expect(current_path).to eq vendor_outage_path
-        expect(page).to have_content(t('vendor_outage.blocked.idv.generic'))
+        expect(page).to have_content(t('idv.unavailable.idv_explanation.with_sp', sp: 'Test SP'))
       end
     end
   end
