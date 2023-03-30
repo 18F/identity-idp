@@ -3486,11 +3486,12 @@ module AnalyticsEvents
     track_event('Account Reset: Cancel Account Recovery Options')
   end
 
+  # @identity.idp.previous_event_name IdV: Verify setup errors visited
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # Tracks when the user reaches the verify setup errors page after failing proofing
-  def idv_setup_errors_visited(proofing_components: nil, **extra)
+  # Tracks when the user reaches the verify please call page after failing proofing
+  def idv_please_call_visited(proofing_components: nil, **extra)
     track_event(
-      'IdV: Verify setup errors visited',
+      'IdV: Verify please call visited',
       proofing_components: proofing_components,
       **extra,
     )

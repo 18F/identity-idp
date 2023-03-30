@@ -31,7 +31,7 @@ module Idv
       idv_proofing_resolution_result_missing
       idv_review_complete
       idv_review_info_visited
-      idv_setup_errors_visited
+      idv_please_call_visited
       idv_start_over
     ].freeze
 

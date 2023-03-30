@@ -34,7 +34,7 @@ describe IdvController do
 
       get :index
 
-      expect(response).to redirect_to(idv_setup_errors_url)
+      expect(response).to redirect_to(idv_please_call_url)
     end
 
     it 'redirects to fraud rejection page if profile is rejected' do

@@ -52,7 +52,7 @@ feature 'idv gpo otp verification step', :js do
 
     context 'ThreatMetrix says "review"' do
       let(:threatmetrix_review_status) { 'review' }
-      let(:redirect_after_verification) { idv_setup_errors_path }
+      let(:redirect_after_verification) { idv_please_call_path }
       let(:profile_should_be_active) { false }
       let(:fraud_review_pending) { true }
       it_behaves_like 'gpo otp verification'
@@ -60,7 +60,7 @@ feature 'idv gpo otp verification step', :js do
 
     context 'ThreatMetrix says "reject"' do
       let(:threatmetrix_review_status) { 'reject' }
-      let(:redirect_after_verification) { idv_setup_errors_path }
+      let(:redirect_after_verification) { idv_please_call_path }
       let(:profile_should_be_active) { false }
       let(:fraud_review_pending) { true }
       it_behaves_like 'gpo otp verification'
