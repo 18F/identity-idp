@@ -7,9 +7,11 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   let(:user) { build(:user) }
   let(:current_address_matches_id) { false }
   let(:pii) do
-    Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.
-      merge(same_address_as_id: current_address_matches_id).
-      transform_keys(&:to_s)
+    Pii::Attributes.new_from_hash(
+      Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.
+        merge(same_address_as_id: current_address_matches_id).
+        transform_keys(&:to_s),
+    )
   end
   subject(:subject) { described_class }
   let(:subject_analytics) { FakeAnalytics.new }
@@ -97,16 +99,18 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
 
         describe 'double address verification' do
           let(:pii) do
-            Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.
-              merge(same_address_as_id: current_address_matches_id).
-              merge(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS).
-              transform_keys(&:to_s).freeze
+            Pii::Attributes.new_from_hash(
+              Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.
+                merge(same_address_as_id: current_address_matches_id).
+                merge(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS).
+                transform_keys(&:to_s),
+            )
           end
 
-          context 'DAV enabled' do
+          context 'feature enabled' do
             let(:in_person_capture_secondary_id_enabled) { true }
 
-            it 'maps DAV enrollment fields' do
+            it 'maps enrollment address fields' do
               expect(proofer).to receive(:request_enroll) do |applicant|
                 ADDR = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS
                 expect(applicant).to have_attributes(
@@ -128,10 +132,10 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
             end
           end
 
-          context 'DAV disabled' do
+          context 'feature disabled' do
             let(:in_person_capture_secondary_id_enabled) { false }
 
-            it 'does not map DAV enrollment fields' do
+            it 'does not map enrollment address fields' do
               expect(proofer).to receive(:request_enroll) do |applicant|
                 expect(applicant).to have_attributes(
                   address: Idp::Constants::MOCK_IDV_APPLICANT[:address1],
