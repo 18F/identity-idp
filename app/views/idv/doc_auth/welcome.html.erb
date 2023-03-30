@@ -32,10 +32,10 @@
         <p><%= t('doc_auth.instructions.text2') %></p>
       <% end %>
       <%= c.item(heading: t('doc_auth.instructions.bullet3')) do %>
-          <ul class="usa-list">
-            <li><%= t('doc_auth.instructions.text3_html') %></li>
-            <li><%= t('doc_auth.instructions.text4_html') %></li>
-              
+        <ul class="usa-list">
+          <% t('doc_auth.instructions.text3_html').each do | bullet_item | %>
+            <li><%= bullet_item %></li>
+          <% end %>
           </ul>
           <%= new_window_link_to(
                 t('idv.troubleshooting.options.learn_more_address_verification_options'),

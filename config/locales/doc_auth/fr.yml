@@ -244,12 +244,13 @@ fr:
         champ.
       text1: Votre carte d’identité ne doit pas être expirée.
       text2: Vous n’aurez pas besoin de la carte sur vous.
-      text3_html: '<strong>Vérification par téléphone</strong> : Nous appellerons ou
-        enverrons un SMS à votre numéro de téléphone. Cela prend quelques
-        minutes.'
-      text4_html: '<strong>Vérification par courrier</strong> : Nous vous enverrons
-        une lettre à votre adresse personnelle. Cela prend de 3 à 7 jours
-        ouvrables.'
+      text3_html:
+        - '<strong>Vérification par téléphone</strong> : Nous appellerons ou
+          enverrons un SMS à votre numéro de téléphone. Cela prend quelques
+          minutes.'
+        - '<strong>Vérification par courrier</strong> : Nous vous enverrons une
+          lettre à votre adresse personnelle. Cela prend de 3 à 7 jours
+          ouvrables.'
       welcome: 'Vous aurez besoin de votre:'
     tips:
       capture_troubleshooting_blurry: La photo que vous avez ajoutée est trop floue.
