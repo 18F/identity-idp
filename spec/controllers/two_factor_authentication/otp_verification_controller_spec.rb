@@ -148,8 +148,13 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
     context 'when the user has reached the max number of OTP attempts' do
       it 'tracks the event' do
-        allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
-        sign_in_before_2fa
+        user = create(
+          :user,
+          :signed_up,
+          second_factor_attempts_count:
+            IdentityConfig.store.login_otp_confirmation_max_attempts - 1,
+        )
+        sign_in_before_2fa(user)
 
         properties = {
           success: false,
@@ -347,8 +352,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
     end
 
     context 'phone confirmation' do
+      let(:user) { create(:user, :signed_up) }
       before do
-        sign_in_as_user
+        sign_in_as_user(user)
         subject.user_session[:unconfirmed_phone] = '+1 (703) 555-5555'
         subject.user_session[:context] = 'confirmation'
 
@@ -503,8 +509,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
           context 'user has exceeded the maximum number of attempts' do
             it 'tracks the attempt event' do
-              allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
-              sign_in_before_2fa
+              sign_in_before_2fa(user)
+              user.second_factor_attempts_count =
+                IdentityConfig.store.login_otp_confirmation_max_attempts - 1
+              user.save
 
               stub_attempts_tracker
               expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_rate_limited).

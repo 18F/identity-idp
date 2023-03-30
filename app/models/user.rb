@@ -156,6 +156,31 @@ class User < ApplicationRecord
     nil
   end
 
+  def increment_second_factor_attempts_count!
+    User.transaction do
+      sql = <<-SQL
+      UPDATE users
+      SET second_factor_attempts_count = COALESCE(second_factor_attempts_count, 0) + 1,
+      updated_at = NOW(),
+      second_factor_locked_at = CASE
+        WHEN COALESCE(second_factor_attempts_count, 0) + 1 >= ?
+        THEN NOW()
+        ELSE NULL
+        END WHERE id = ? RETURNING second_factor_attempts_count, second_factor_locked_at;
+      SQL
+      query = User.sanitize_sql_array(
+        [sql,
+         IdentityConfig.store.login_otp_confirmation_max_attempts, self.id],
+      )
+      result = User.connection.execute(query)
+      self.second_factor_attempts_count = result.first.fetch('second_factor_attempts_count')
+      self.second_factor_locked_at = result.first.fetch('second_factor_locked_at')
+      self.clear_attribute_changes([:second_factor_attempts_count, :second_factor_locked_at])
+    end
+
+    nil
+  end
+
   MINIMUM_LIKELY_ENCRYPTED_DATA_LENGTH = 1000
 
   def broken_personal_key?
