@@ -29,7 +29,6 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
       setIsSubmitting(true);
       removeUnloadProtection();
       await trackEvent('IdV: prepare submitted');
-      // window.location.href = (event.target as HTMLAnchorElement).href;
       window.location.href = inPersonURL!;
     }
   };
