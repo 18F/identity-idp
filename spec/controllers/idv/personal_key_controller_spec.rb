@@ -317,9 +317,9 @@ describe Idv::PersonalKeyController do
           profile.deactivate_for_fraud_review
         end
 
-        it 'redirects to idv setup errors path' do
+        it 'redirects to idv please call path' do
           patch :update
-          expect(response).to redirect_to idv_setup_errors_path
+          expect(response).to redirect_to idv_please_call_path
         end
 
         it 'logs key submitted event' do
@@ -342,9 +342,9 @@ describe Idv::PersonalKeyController do
           profile.deactivate_for_fraud_review
         end
 
-        it 'redirects to idv setup errors path' do
+        it 'redirects to idv please call path' do
           patch :update
-          expect(response).to redirect_to idv_setup_errors_path
+          expect(response).to redirect_to idv_please_call_path
         end
 
         it 'logs key submitted event' do

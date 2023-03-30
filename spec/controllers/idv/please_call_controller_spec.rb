@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::SetupErrorsController do
+describe Idv::PleaseCallController do
   let(:user) { create(:user) }
   let(:verify_date) { 20.days.ago }
 
@@ -14,7 +14,7 @@ describe Idv::SetupErrorsController do
     stub_analytics
 
     expect(@analytics).to receive(:track_event).with(
-      'IdV: Verify setup errors visited',
+      'IdV: Verify please call visited',
       proofing_components: nil,
     )
 

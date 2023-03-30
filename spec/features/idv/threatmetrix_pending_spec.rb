@@ -40,7 +40,7 @@ RSpec.feature 'Users pending threatmetrix review', :js do
     acknowledge_and_confirm_personal_key
 
     expect(page).to have_content(t('idv.failure.setup.heading'))
-    expect(page).to have_current_path(idv_setup_errors_path)
+    expect(page).to have_current_path(idv_please_call_path)
 
     # User unable to sign into OIDC with IdV
     set_new_browser_session
@@ -48,7 +48,7 @@ RSpec.feature 'Users pending threatmetrix review', :js do
     sign_in_live_with_2fa(user)
 
     expect(page).to have_content(t('idv.failure.setup.heading'))
-    expect(page).to have_current_path(idv_setup_errors_path)
+    expect(page).to have_current_path(idv_please_call_path)
 
     # User unable to sign into SAML with IdV
     set_new_browser_session
@@ -56,7 +56,7 @@ RSpec.feature 'Users pending threatmetrix review', :js do
     sign_in_live_with_2fa(user)
 
     expect(page).to have_content(t('idv.failure.setup.heading'))
-    expect(page).to have_current_path(idv_setup_errors_path)
+    expect(page).to have_current_path(idv_please_call_path)
 
     # User able to sign for IAL1
     set_new_browser_session
@@ -95,7 +95,7 @@ RSpec.feature 'Users pending threatmetrix review', :js do
   def expect_pending_failure_reason(threatmetrix:)
     complete_all_idv_steps_with(threatmetrix: threatmetrix)
     expect(page).to have_content(t('idv.failure.setup.heading'))
-    expect(page).to have_current_path(idv_setup_errors_path)
+    expect(page).to have_current_path(idv_please_call_path)
     expect_irs_event(
       expected_success: false,
       expected_failure_reason: DocAuthHelper::SAMPLE_TMX_SUMMARY_REASON_CODE,
