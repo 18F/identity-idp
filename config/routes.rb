@@ -13,6 +13,14 @@ Rails.application.routes.draw do
   post '/api/risc/security_events' => 'risc/security_events#create'
   post '/api/irs_attempts_api/security_events' => 'api/irs_attempts_api#create'
 
+  namespace :api do
+    namespace :internal do
+      get '/sessions' => 'sessions#show'
+      put '/sessions' => 'sessions#update'
+      delete '/sessions' => 'sessions#destroy'
+    end
+  end
+
   # SAML secret rotation paths
   SamlEndpoint.suffixes.each do |suffix|
     get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata', format: false
