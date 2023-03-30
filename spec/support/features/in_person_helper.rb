@@ -38,6 +38,7 @@ module InPersonHelper
     fill_in t('in_person_proofing.form.state_id.state_id_number'), with: GOOD_STATE_ID_NUMBER
 
     if double_address_verification
+      select GOOD_STATE, from: t('in_person_proofing.form.state_id.state_id_state')
       fill_in t('in_person_proofing.form.state_id.address1'), with: GOOD_STATE_ID_ADDRESS1
       fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_STATE_ID_ADDRESS2
       fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_STATE_ID_CITY

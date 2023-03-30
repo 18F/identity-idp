@@ -84,6 +84,21 @@
       %>
   </div>
 
+  <% if capture_secondary_id_enabled %>
+    <div class="margin-bottom-4">
+      <%= render ValidatedFieldComponent.new(
+            name: :state_id_state,
+            collection: us_states_territories,
+            form: f,
+            hint: t('in_person_proofing.form.state_id.state_id_state_hint'),
+            label: t('in_person_proofing.form.state_id.state_id_state'),
+            label_html: { class: 'usa-label' },
+            prompt: t('in_person_proofing.form.state_id.state_id_state_prompt'),
+            required: true,
+            selected: pii[:state_id_state],
+          ) %>
+    </div>
+  <% end %>
   <div class="tablet:grid-col-8 margin-bottom-5">
     <%= render ValidatedFieldComponent.new(
           name: :state_id_number,

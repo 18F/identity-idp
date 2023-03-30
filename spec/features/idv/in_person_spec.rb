@@ -519,7 +519,7 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
-  context 'in_person_capture_secondary_id_enabled feature flag enabled', allow_browser_log: true do
+  shared_examples 'captures address with state id' do
     let(:user) { user_with_2fa }
 
     before(:each) do
@@ -531,12 +531,11 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_location_step(user)
 
       expect(page).to have_content(
-        t('in_person_proofing.headings.prepare'),
+        t('in_person_proofing.headings.prepare'), wait: 5
       )
     end
-
-    def it_captures_address_with_state_id
-      # prepare page
+    # prepare page
+    it 'successfully proceeds through the flow' do
       complete_prepare_step(user)
 
       complete_state_id_step(user, same_address_as_id: false, double_address_verification: true)
@@ -548,11 +547,11 @@ RSpec.describe 'In Person Proofing', js: true do
         t('idv.form.ssn_label_html'),
       )
     end
+  end
 
+  context 'in_person_capture_secondary_id_enabled feature flag enabled', allow_browser_log: true do
     context 'flag remains enabled' do
-      it 'captures the address, address line 2, city, state and zip code' do
-        it_captures_address_with_state_id
-      end
+      it_behaves_like 'captures address with state id'
     end
 
     context 'flag is then disabled' do
@@ -561,9 +560,7 @@ RSpec.describe 'In Person Proofing', js: true do
           and_return(false)
       end
 
-      it 'captures the address, address line 2, city, state and zip code' do
-        it_captures_address_with_state_id
-      end
+      it_behaves_like 'captures address with state id'
     end
   end
 end
