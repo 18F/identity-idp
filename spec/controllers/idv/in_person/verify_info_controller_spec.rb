@@ -35,7 +35,7 @@ describe Idv::InPerson::VerifyInfoController do
     it 'confirms verify step not already complete' do
       expect(subject).to have_actions(
         :before,
-        :confirm_profile_not_already_confirmed,
+        :confirm_verify_info_step_needed,
       )
     end
 

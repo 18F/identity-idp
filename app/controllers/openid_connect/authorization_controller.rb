@@ -21,6 +21,7 @@ module OpenidConnect
 
     def index
       return redirect_to_fraud_review if fraud_review_pending_for_ial2_request?
+      return redirect_to_fraud_rejection if fraud_rejection_for_ial2_request?
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
       return redirect_to(sign_up_completed_url) if needs_completion_screen_reason
       link_identity_to_service_provider
@@ -88,6 +89,11 @@ module OpenidConnect
     def fraud_review_pending_for_ial2_request?
       return false unless @authorize_form.ial2_or_greater?
       fraud_review_pending?
+    end
+
+    def fraud_rejection_for_ial2_request?
+      return false unless @authorize_form.ial2_or_greater?
+      fraud_rejection?
     end
 
     def profile_or_identity_needs_verification?

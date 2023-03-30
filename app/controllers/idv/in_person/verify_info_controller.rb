@@ -9,7 +9,7 @@ module Idv
       before_action :renders_404_if_flag_not_set
       before_action :confirm_two_factor_authenticated
       before_action :confirm_ssn_step_complete
-      before_action :confirm_profile_not_already_confirmed
+      before_action :confirm_verify_info_step_needed
 
       def show
         @in_person_proofing = true
@@ -107,7 +107,7 @@ module Idv
         redirect_to idv_in_person_url
       end
 
-      def confirm_profile_not_already_confirmed
+      def confirm_verify_info_step_needed
         # todo: should this instead be like so?
         # return unless idv_session.resolution_successful == true
         return unless idv_session.verify_info_step_complete?

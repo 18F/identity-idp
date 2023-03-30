@@ -123,7 +123,7 @@ module Idv
     end
 
     def next_step_url
-      return idv_gpo_url if OutageStatus.new.gpo_only?
+      return idv_gpo_url if FeatureManagement.idv_gpo_only?
       idv_phone_url
     end
 
@@ -221,7 +221,7 @@ module Idv
         elsif stage == :threatmetrix
           # transaction_id comes from request_id
           tmx_id = hash[:transaction_id]
-          log_irs_tmx_fraud_check_event(hash) if tmx_id
+          log_irs_tmx_fraud_check_event(hash, current_user) if tmx_id
           add_cost(:threatmetrix, transaction_id: tmx_id) if tmx_id
         end
       end

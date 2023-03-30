@@ -7,9 +7,15 @@ interface RequestOptions extends RequestInit {
   json?: object | boolean;
 
   /**
-   * Whether to include CSRF token in the request. Defaults to true.
+   * Whether to include the default CSRF token in the request, or use a custom implementation to
+   * retrieve a CSRF token. Defaults to true.
    */
   csrf?: boolean | CSRFGetter;
+
+  /**
+   * Whether to automatically read the response as JSON or text. Defaults to true.
+   */
+  read?: boolean;
 }
 
 class CSRF {
@@ -49,10 +55,15 @@ class CSRF {
 }
 
 export async function request<Response = any>(
-  url: string,
-  options: Partial<RequestOptions> = {},
-): Promise<Response> {
-  const { csrf = true, json = true, ...fetchOptions } = options;
+  url,
+  options?: Partial<RequestOptions> & { read?: true },
+): Promise<Response>;
+export async function request(
+  url,
+  options?: Partial<RequestOptions> & { read?: false },
+): Promise<Response>;
+export async function request(url: string, options: Partial<RequestOptions> = {}) {
+  const { csrf = true, json = true, read = true, ...fetchOptions } = options;
   let { body, headers } = fetchOptions;
   headers = new Headers(headers);
 
@@ -76,9 +87,13 @@ export async function request<Response = any>(
   const response = await window.fetch(url, { ...fetchOptions, headers, body });
   CSRF.token = response.headers.get('X-CSRF-Token');
 
-  if (!response.ok) {
-    throw new Error();
+  if (read) {
+    if (!response.ok) {
+      throw new Error();
+    }
+
+    return json ? response.json() : response.text();
   }
 
-  return json ? response.json() : response.text();
+  return response;
 }

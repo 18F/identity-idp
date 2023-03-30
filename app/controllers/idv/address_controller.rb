@@ -3,7 +3,7 @@ module Idv
     include IdvSession
 
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_pii_from_doc
+    before_action :confirm_document_capture_complete
 
     def new
       analytics.idv_address_visit
@@ -24,7 +24,7 @@ module Idv
 
     private
 
-    def confirm_pii_from_doc
+    def confirm_document_capture_complete
       @pii = user_session.dig('idv/doc_auth', 'pii_from_doc')
       return if @pii.present?
       redirect_to idv_doc_auth_url

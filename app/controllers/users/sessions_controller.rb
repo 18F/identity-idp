@@ -32,8 +32,6 @@ module Users
     end
 
     def create
-      track_authentication_attempt(auth_params[:email])
-
       return process_locked_out_session if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
 
@@ -42,6 +40,7 @@ module Users
       handle_valid_authentication
     ensure
       increment_session_bad_password_count if throttle_password_failure && !current_user
+      track_authentication_attempt(auth_params[:email])
     end
 
     def destroy
@@ -175,6 +174,7 @@ module Users
         success: success,
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
+        bad_password_count: session[:bad_password_count].to_i,
         stored_location: session['user_return_to'],
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,

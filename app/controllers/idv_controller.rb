@@ -4,8 +4,8 @@ class IdvController < ApplicationController
   include FraudReviewConcern
 
   before_action :confirm_two_factor_authenticated
-  before_action :handle_pending_fraud_review
   before_action :profile_needs_reactivation?, only: [:index]
+  before_action :handle_fraud
 
   def index
     if decorated_session.requested_more_recent_verification? ||

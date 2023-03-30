@@ -21,7 +21,6 @@ describe('document-capture/context/upload', () => {
       'backgroundUploadEncryptKey',
       'flowPath',
       'formData',
-      'csrf',
     ]);
 
     expect(result.current.upload).to.equal(defaultUpload);
@@ -30,7 +29,6 @@ describe('document-capture/context/upload', () => {
     expect(result.current.isMockClient).to.be.false();
     expect(result.current.backgroundUploadURLs).to.deep.equal({});
     expect(result.current.backgroundUploadEncryptKey).to.be.undefined();
-    expect(result.current.csrf).to.be.null();
     expect(await result.current.getStatus()).to.deep.equal({});
   });
 
@@ -72,7 +70,7 @@ describe('document-capture/context/upload', () => {
     sandbox
       .stub(window, 'fetch')
       .withArgs(statusEndpoint)
-      .resolves({ ok: true, url: statusEndpoint, json: () => Promise.resolve({ success: true }) });
+      .resolves(new Response(JSON.stringify({ success: true }), { url: statusEndpoint }));
 
     await result.current.getStatus();
     expect(result.current.statusPollInterval).to.equal(1000);
@@ -109,18 +107,16 @@ describe('document-capture/context/upload', () => {
     expect(result.current.backgroundUploadEncryptKey).to.equal(key);
   });
 
-  it('can provide endpoint and csrf to make available to uploader', async () => {
+  it('provides endpoint to custom uploader', async () => {
     const { result } = renderHook(() => useContext(UploadContext), {
       wrapper: ({ children }) => (
         <UploadContextProvider
-          upload={(payload, { endpoint, csrf }) =>
+          upload={(payload, { endpoint }) =>
             Promise.resolve({
               ...payload,
               receivedEndpoint: endpoint,
-              receivedCSRF: csrf,
             })
           }
-          csrf="example"
           endpoint="https://example.com"
         >
           {children}
@@ -132,7 +128,6 @@ describe('document-capture/context/upload', () => {
     expect(uploadResult).to.deep.equal({
       sent: true,
       receivedEndpoint: 'https://example.com',
-      receivedCSRF: 'example',
     });
   });
 

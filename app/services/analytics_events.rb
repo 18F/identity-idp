@@ -240,6 +240,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [String] user_id
   # @param [Boolean] user_locked_out if the user is currently locked out of their second factor
+  # @param [String] bad_password_count represents number of prior login failures
   # @param [String] stored_location the URL to return to after signing in
   # @param [Boolean] sp_request_url_present if was an SP request URL in the session
   # @param [Boolean] remember_device if the remember device cookie was present
@@ -248,6 +249,7 @@ module AnalyticsEvents
     success:,
     user_id:,
     user_locked_out:,
+    bad_password_count:,
     stored_location:,
     sp_request_url_present:,
     remember_device:,
@@ -258,6 +260,7 @@ module AnalyticsEvents
       success: success,
       user_id: user_id,
       user_locked_out: user_locked_out,
+      bad_password_count: bad_password_count,
       stored_location: stored_location,
       sp_request_url_present: sp_request_url_present,
       remember_device: remember_device,
@@ -914,7 +917,7 @@ module AnalyticsEvents
   # The "hybrid handoff" step: Desktop user has submitted their choice to
   # either continue via desktop ("document_capture" destination) or switch
   # to mobile phone ("send_link" destination) to perform document upload.
-  # Mobile users sill log this event but with skip_upload_step = true
+  # Mobile users still log this event but with skip_upload_step = true
   def idv_doc_auth_upload_submitted(**extra)
     track_event('IdV: doc auth upload submitted', **extra)
   end
@@ -3491,6 +3494,11 @@ module AnalyticsEvents
       proofing_components: proofing_components,
       **extra,
     )
+  end
+
+  # Tracks when user reaches verify errors due to being rejected due to fraud
+  def idv_not_verified_visited
+    track_event('IdV: Not verified visited')
   end
 
   # @param [String] redirect_url URL user was directed to

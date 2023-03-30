@@ -100,6 +100,13 @@ module Idp
       phone: nil,
     }.freeze
 
+    MOCK_IDV_APPLICANT_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT.merge(
+      state_id_address1: '123 Way St',
+      state_id_address2: '2nd Address Line',
+      state_id_city: 'Best City',
+      state_id_zipcode: '12345',
+    ).freeze
+
     MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900-66-1234').freeze
 
     MOCK_IDV_APPLICANT_WITH_PHONE = MOCK_IDV_APPLICANT_WITH_SSN.merge(phone: '12025551212').freeze
