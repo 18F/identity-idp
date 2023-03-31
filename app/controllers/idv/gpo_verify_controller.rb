@@ -43,7 +43,7 @@ module Idv
           if result.extra[:pending_in_person_enrollment]
             redirect_to idv_in_person_ready_to_verify_url
           else
-            event, _disavowal_token = create_user_event_with_disavowal(:account_verified)
+            event, _disavowal_token = create_user_event(:account_verified)
 
             if result.extra[:threatmetrix_check_failed] && threatmetrix_enabled?
               redirect_to_fraud_review
