@@ -100,6 +100,10 @@ module Idv
       def bypass_send_link_steps
         mark_step_complete(:link_sent)
         mark_step_complete(:email_sent)
+        if IdentityConfig.store.doc_auth_document_capture_controller_enabled
+          flow_session[:flow_path] = @flow.flow_path
+          redirect_to idv_document_capture_url
+        end
         form_response(destination: :document_capture)
       end
 
