@@ -342,7 +342,7 @@ RSpec.describe 'In Person Proofing', js: true do
         mock_doc_auth_attention_with_barcode
         attach_and_submit_images
 
-        click_link t('in_person_proofing.body.cta.button')
+        click_button t('in_person_proofing.body.cta.button')
         search_for_post_office
         within page.first('.location-collection-item') do
           click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
