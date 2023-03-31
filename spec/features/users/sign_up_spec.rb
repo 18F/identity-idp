@@ -123,7 +123,7 @@ feature 'Sign Up' do
     # slowly the test runs
     throttled_message = I18n.t(
       'errors.messages.phone_confirmation_throttled',
-      timeout: '10|9',
+      timeout: '(10|9) minutes',
     )
 
     expect(current_path).to eq(authentication_methods_setup_path)
