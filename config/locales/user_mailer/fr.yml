@@ -40,12 +40,12 @@ fr:
         compte ne sera pas supprimé tant que vous ne l’aurez pas confirmé.'
       subject: Comment supprimer votre compte %{app_name}
     account_verified:
+      change_password_link: changer votre mot de passe
       contact_link: nous contacter
-      disavowal_link: changer votre mot de passe
       intro_html: Vous avez vérifié avec succès votre identité auprès de %{sp_name} le
         %{date} en utilisant %{app_name}. Si vous n’avez pas effectué cette
         action, veuillez %{contact_link} et vous connecter pour
-        %{disavowal_link}.
+        %{change_password_link}.
       subject: Vous avez vérifié votre identité avec %{sp_name}
     add_email:
       footer: Ce lien expirera dans %{confirmation_period}.
