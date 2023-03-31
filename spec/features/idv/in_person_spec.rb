@@ -518,7 +518,7 @@ RSpec.describe 'In Person Proofing', js: true do
         fill_in t('in_person_proofing.form.state_id.first_name'), with: 'T0mmy "Lee"'
         fill_in t('in_person_proofing.form.state_id.last_name'), with: 'Джейкоб'
         click_idv_continue
-        # binding.pry
+
         expect(page).to have_content(
           I18n.t(
             'in_person_proofing.form.state_id.errors.unsupported_chars',
