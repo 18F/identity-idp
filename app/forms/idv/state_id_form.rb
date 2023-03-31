@@ -20,9 +20,12 @@ module Idv
     def submit(params)
       consume_params(params)
 
-      cleaned_errors = errors.deep_dup
+      cleaned_errors = errors.dup
       cleaned_errors.delete(:first_name, :nontransliterable_field)
       cleaned_errors.delete(:last_name, :nontransliterable_field)
+      cleaned_errors.delete(:state_id_city, :nontransliterable_field)
+      cleaned_errors.delete(:state_id_address1, :nontransliterable_field)
+      cleaned_errors.delete(:state_id_address2, :nontransliterable_field)
 
       FormResponse.new(
         success: valid?,
