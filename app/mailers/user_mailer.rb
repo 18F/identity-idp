@@ -241,7 +241,7 @@ class UserMailer < ActionMailer::Base
   end
 
   # remove disavowal_token after next deploy
-  def account_verified(date_time:, sp_name:, disavowal_token: nil)
+  def account_verified(date_time:, sp_name:, disavowal_token: nil) # rubocop:disable Lint/UnusedMethodArgument
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 
     with_user_locale(user) do
