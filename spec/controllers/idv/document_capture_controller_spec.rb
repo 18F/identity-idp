@@ -109,7 +109,7 @@ describe Idv::DocumentCaptureController do
         end
       end
 
-      context 'With pii in session' do
+      context 'with pii in session' do
         it 'redirects to ssn step' do
           flow_session['pii_from_doc'] = Idp::Constants::MOCK_IDV_APPLICANT
           get :show
