@@ -31,8 +31,8 @@ namespace :users do
         profile.activate_after_passing_review
 
         if profile.active?
-          event, _disavowal_token = UserEventCreator.new(current_user: user).
-            create_out_of_band_user_event_with_disavowal(:account_verified)
+          event = UserEventCreator.new(current_user: user).
+            create_out_of_band_user_event(:account_verified)
 
           UserAlerts::AlertUserAboutAccountVerified.call(
             user: user,
