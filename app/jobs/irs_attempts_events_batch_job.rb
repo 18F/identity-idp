@@ -5,6 +5,13 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     enabled = IdentityConfig.store.irs_attempt_api_enabled && s3_helper.attempts_s3_write_enabled
     return nil unless enabled
 
+    previous_hour = timestamp - 1.hour
+    # Check if previous hour was properly loaded
+    if (!IrsAttemptApiLogFile.find_by(requested_time: timestamp_key(key: previous_hour)) && reasonable_timespan(previous_hour))
+      # An hour was missed queue a job to get that hour
+      IrsAttemptsEventsBatchJob.perform_later(previous_hour)
+    end
+
     start_time = Time.zone.now
     events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: timestamp)
     event_values = events.values.join("\r\n")
@@ -27,12 +34,20 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
       filename: result.filename,
       iv: encoded_iv,
       encrypted_key: encoded_encrypted_key,
-      requested_time: IrsAttemptsApi::EnvelopeEncryptor.formatted_timestamp(timestamp),
+      requested_time: timestamp_key(key: timestamp),
     )
 
     log_irs_attempts_events_job_info(result, events, start_time)
     redis_client.remove_events(timestamp: timestamp) if upload_to_s3_response&.etag
     irs_attempts_api_log_file
+  end
+
+  def timestamp_key(key:)
+    IrsAttemptsApi::EnvelopeEncryptor.formatted_timestamp(key)
+  end
+
+  def reasonable_timespan(check_time)
+    check_time > (Time.zone.now - 3.days)
   end
 
   def create_and_upload_to_attempts_s3_resource(bucket_name:, filename:, encrypted_data:)
