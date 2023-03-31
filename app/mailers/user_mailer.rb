@@ -240,13 +240,13 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def account_verified(date_time:, sp_name:, disavowal_token:)
+  # remove disavowal_token after next deploy
+  def account_verified(date_time:, sp_name:, disavowal_token: nil)
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 
     with_user_locale(user) do
       @date = I18n.l(date_time, format: :event_date)
       @sp_name = sp_name
-      @disavowal_token = disavowal_token
       mail(
         to: email_address.email,
         subject: t('user_mailer.account_verified.subject', sp_name: @sp_name),
