@@ -7,7 +7,10 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
 
     previous_hour = timestamp - 1.hour
     # Check if previous hour was properly loaded
-    if (!IrsAttemptApiLogFile.find_by(requested_time: timestamp_key(key: previous_hour)) && reasonable_timespan(previous_hour))
+    if (
+      !IrsAttemptApiLogFile.find_by(requested_time: timestamp_key(key: previous_hour)) &&
+      reasonable_timespan(previous_hour)
+    )
       # An hour was missed queue a job to get that hour
       IrsAttemptsEventsBatchJob.perform_later(previous_hour)
     end

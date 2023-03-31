@@ -26,12 +26,12 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
           {
             event_key: 'key3',
             jwe: 'some_previous_event_data_encrypted_with_jwe',
-            timestamp: start_time - 1.hours + 10.minutes,
+            timestamp: start_time - 1.hour + 10.minutes,
           },
           {
             event_key: 'key4',
             jwe: 'some_other_previous_event_data_encrypted_with_jwe',
-            timestamp: start_time - 1.hours + 15.minutes,
+            timestamp: start_time - 1.hour + 15.minutes,
           },
         ]
       end
@@ -67,7 +67,7 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         travel_to start_time + 1.hour
 
         redis_client = IrsAttemptsApi::RedisClient.new
-        (events+old_events).each do |event|
+        (events + old_events).each do |event|
           redis_client.write_event(
             event_key: event[:event_key],
             jwe: event[:jwe],
@@ -183,7 +183,7 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
       end
 
       context 'When there are missing previous files' do
-        it 'batches and writes expected attempt events to encrypted file and calls BatchJob on previous hour' do
+        it 'batches/writes expected attempt events and calls BatchJob on previous hour' do
           allow(described_class).to receive(:reasonable_timespan).and_return(true)
 
           expect(IrsAttemptsApi::EnvelopeEncryptor).to receive(:encrypt).with(
@@ -193,7 +193,7 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
           )
 
           expect(described_class).to receive(:perform_later).with(
-            start_time - 1.hours
+            start_time - 1.hour,
           )
 
           expect_any_instance_of(described_class).to receive(
@@ -233,15 +233,16 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
           )
         end
 
-        it 'batches and writes expected attempt events to encrypted file and does not call BatchJob on previous hour' do
-          test_timestampkey = IrsAttemptsApi::EnvelopeEncryptor.formatted_timestamp(start_time - 1.hours)
-          testlog = IrsAttemptApiLogFile.create(
+        it 'batches/writes expected attempt events and does not call BatchJob on previous hour' do
+          test_timestampkey =
+            IrsAttemptsApi::EnvelopeEncryptor.formatted_timestamp(start_time - 1.hour)
+          IrsAttemptApiLogFile.create(
             filename: 'prev_filename_1',
             iv: 'mock_encoded_iv',
             encrypted_key: 'mock_encoded_encrypted_key',
             requested_time: test_timestampkey,
           )
-          
+
           allow(described_class).to receive(:reasonable_timespan).and_return(true)
 
           expect(IrsAttemptsApi::EnvelopeEncryptor).to receive(:encrypt).with(
