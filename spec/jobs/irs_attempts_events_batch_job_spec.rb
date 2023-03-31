@@ -77,24 +77,14 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
       end
 
       context 'When there are no missing previous files' do
-        let(:envelope_encryptor_result) do
-          IrsAttemptsApi::EnvelopeEncryptor::Result.new(
-            filename: 'test-filename',
-            iv: 'test-iv',
-            encrypted_key: 'test-encrypted-key',
-            encrypted_data: 'test-encrypted-data',
-          )
-        end
-
         before do
-          test_timestampkey = (start_time - 1.hour).strftime('%Y%m%dT%HZ')
-          testlog = IrsAttemptApiLogFile.create(
+          IrsAttemptApiLogFile.create(
             filename: 'prev_filename_1',
             iv: 'mock_encoded_iv',
             encrypted_key: 'mock_encoded_encrypted_key',
-            requested_time: test_timestampkey,
+            requested_time:
+              IrsAttemptsApi::EnvelopeEncryptor.formatted_timestamp(start_time - 1.hour),
           )
-          allow(IrsAttemptApiLogFile).to receive(:find_by).with(anything).and_return(testlog)
         end
 
         it 'batches and writes attempt events to an encrypted file' do
@@ -187,7 +177,7 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
           allow(described_class).to receive(:reasonable_timespan).and_return(true)
 
           expect(IrsAttemptsApi::EnvelopeEncryptor).to receive(:encrypt).with(
-            data: events[0..1].pluck(:jwe).join("\r\n"),
+            data: events.pluck(:jwe).join("\r\n"),
             timestamp: start_time,
             public_key_str: encoded_public_key,
           )
@@ -234,19 +224,18 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         end
 
         it 'batches/writes expected attempt events and does not call BatchJob on previous hour' do
-          test_timestampkey =
-            IrsAttemptsApi::EnvelopeEncryptor.formatted_timestamp(start_time - 1.hour)
           IrsAttemptApiLogFile.create(
             filename: 'prev_filename_1',
             iv: 'mock_encoded_iv',
             encrypted_key: 'mock_encoded_encrypted_key',
-            requested_time: test_timestampkey,
+            requested_time:
+              IrsAttemptsApi::EnvelopeEncryptor.formatted_timestamp(start_time - 1.hour),
           )
 
           allow(described_class).to receive(:reasonable_timespan).and_return(true)
 
           expect(IrsAttemptsApi::EnvelopeEncryptor).to receive(:encrypt).with(
-            data: events[0..1].pluck(:jwe).join("\r\n"),
+            data: events.pluck(:jwe).join("\r\n"),
             timestamp: start_time,
             public_key_str: encoded_public_key,
           )
