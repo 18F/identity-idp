@@ -34,13 +34,6 @@ module UspsInPersonProofing
         end
       end
 
-      def establishing_in_person_enrollment_for_user(user)
-        enrollment = user.establishing_in_person_enrollment
-        return enrollment if enrollment.present?
-
-        InPersonEnrollment.create!(user: user, profile: nil)
-      end
-
       def create_usps_enrollment(enrollment, pii)
         # Use the enrollment's unique_id value if it exists, otherwise use the deprecated
         # #usps_unique_id value in order to remain backwards-compatible. LG-7024 will remove this
