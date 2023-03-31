@@ -9,12 +9,6 @@ RSpec.describe SessionDecorator do
     end
   end
 
-  describe '#registration_heading' do
-    it 'returns the correct partial' do
-      expect(subject.registration_heading).to eq 'sign_up/registrations/registration_heading'
-    end
-  end
-
   describe '#verification_method_choice' do
     it 'returns the correct string' do
       expect(subject.verification_method_choice).to eq(

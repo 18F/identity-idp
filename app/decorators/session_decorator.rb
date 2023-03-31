@@ -3,10 +3,6 @@ class SessionDecorator
     @view_context = view_context
   end
 
-  def registration_heading
-    'sign_up/registrations/registration_heading'
-  end
-
   def new_session_heading
     I18n.t('headings.sign_in_without_sp')
   end
