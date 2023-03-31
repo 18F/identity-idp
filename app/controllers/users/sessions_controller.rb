@@ -28,6 +28,7 @@ module Users
       @request_id = request_id_if_valid
       @ial = sp_session_ial
       @browser_is_ie11 = browser_is_ie11?
+      @a_b_test_bucket = AbTests::SIGN_IN.bucket(request.ip)
       super
     end
 

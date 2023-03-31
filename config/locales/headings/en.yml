@@ -62,6 +62,7 @@ en:
     session_timeout_warning: Need more time?
     sign_in_with_sp: Sign in to continue to %{sp}
     sign_in_without_sp: Sign in
+    sign_in_returning_users: Sign in for returning users
     sp_handoff_bounced: There was a problem connecting to %{sp_name}
     ssn: Social Security Number
     state_id: State-issued ID
