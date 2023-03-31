@@ -44,7 +44,6 @@ module Idv
 
         pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
         pii[:state_id_type] = 'drivers_license' unless pii.blank?
-        add_proofing_component
 
         ssn_throttle.increment!
         if ssn_throttle.throttled?
@@ -93,12 +92,6 @@ module Idv
 
       def renders_404_if_flag_not_set
         render_not_found unless IdentityConfig.store.in_person_verify_info_controller_enabled
-      end
-
-      def add_proofing_component
-        ProofingComponent.
-          create_or_find_by(user: current_user).
-          update(document_check: Idp::Constants::Vendors::USPS)
       end
 
       # copied from address_controller
