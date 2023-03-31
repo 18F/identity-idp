@@ -56,13 +56,6 @@ class MarketingSite
     URI.join(BASE_URL, locale_segment, 'help/').to_s
   end
 
-  def self.verify_your_identity_accepted_id_url
-    help_center_article_url(
-      category: 'verify-your-identity',
-      article: 'accepted-state-issued-identification',
-    )
-  end
-
   def self.help_authentication_app_url
     help_center_article_url(
       category: 'creating-an-account',
