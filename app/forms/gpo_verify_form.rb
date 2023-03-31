@@ -23,6 +23,7 @@ class GpoVerifyForm
         pending_profile&.deactivate(:in_person_verification_pending)
       elsif threatmetrix_check_failed? && threatmetrix_enabled?
         pending_profile&.deactivate_for_fraud_review
+        pending_profile&.update!(verified_at: Time.zone.now)
       else
         activate_profile
       end

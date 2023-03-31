@@ -32,19 +32,21 @@
         <p><%= t('doc_auth.instructions.text2') %></p>
       <% end %>
       <%= c.item(heading: t('doc_auth.instructions.bullet3')) do %>
-        <p>
-          <%= t('doc_auth.instructions.text3') %>
-          <%= new_window_link_to(
-                t('idv.troubleshooting.options.learn_more_address_verification_options'),
-                help_center_redirect_path(
-                  category: 'verify-your-identity',
-                  article: 'phone-number-and-phone-plan-in-your-name',
-                  flow: :idv,
-                  step: :welcome,
-                  location: 'you_will_need',
-                ),
-              ) %>
-        </p>
+        <ul class="usa-list">
+          <% t('doc_auth.instructions.text3_html').each do |bullet_item| %>
+            <li><%= bullet_item %></li>
+          <% end %>
+        </ul>
+        <%= new_window_link_to(
+              t('idv.troubleshooting.options.learn_more_address_verification_options'),
+              help_center_redirect_path(
+                category: 'verify-your-identity',
+                article: 'phone-number',
+                flow: :idv,
+                step: :welcome,
+                location: 'you_will_need',
+              ),
+            ) %>
       <% end %>
     <% end %>
 
@@ -80,7 +82,7 @@
             {
               url: help_center_redirect_path(
                 category: 'verify-your-identity',
-                article: 'phone-number-and-phone-plan-in-your-name',
+                article: 'phone-number',
                 flow: :idv,
                 step: :welcome,
                 location: 'missing_items',

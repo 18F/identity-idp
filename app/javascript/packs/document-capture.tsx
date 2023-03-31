@@ -14,8 +14,8 @@ import {
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { trackEvent as baseTrackEvent } from '@18f/identity-analytics';
-import { request } from '@18f/identity-request';
 import type { FlowPath, DeviceContextValue } from '@18f/identity-document-capture';
+import { extendSession } from '@18f/identity-session';
 
 /**
  * @see MarketingSiteContextProvider
@@ -39,7 +39,6 @@ interface AppRootData {
 
 const appRoot = document.getElementById('document-capture-form')!;
 const isMockClient = appRoot.hasAttribute('data-mock-client');
-const keepAliveEndpoint = appRoot.getAttribute('data-keep-alive-endpoint')!;
 const glareThreshold = Number(appRoot.getAttribute('data-glare-threshold')) ?? undefined;
 const sharpnessThreshold = Number(appRoot.getAttribute('data-sharpness-threshold')) ?? undefined;
 
@@ -103,8 +102,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     formData.encryption_key = btoa(String.fromCharCode(...new Uint8Array(exportedKey)));
     formData.step = 'verify_document';
   }
-
-  const keepAlive = () => request(keepAliveEndpoint, { method: 'POST' });
 
   const {
     helpCenterRedirectUrl: helpCenterRedirectURL,
@@ -176,7 +173,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
         maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
       },
     ],
-    [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
+    [DocumentCapture, { isAsyncForm, onStepChange: extendSession }],
   );
 
   render(<App />, appRoot);

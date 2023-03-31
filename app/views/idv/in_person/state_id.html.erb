@@ -23,6 +23,18 @@
       </li>
     <% end %>
   </ul>
+  <p>
+  <%= t('in_person_proofing.body.state_id.questions') %>
+  <%= link_to(
+        MarketingSite.help_center_article_url(
+          category: 'verify-your-identity',
+          article: 'accepted-state-issued-identification',
+        ),
+        class: 'display-inline',
+      ) do %>
+    <%= t('in_person_proofing.body.state_id.learn_more_link') %>
+  <% end %>
+</p>
 <% end %>
 
 <%= simple_form_for form,

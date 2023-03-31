@@ -26,7 +26,6 @@ es:
       cta: '¿Es la primera vez que utiliza %{app_name}?'
       sp_text: está utilizando %{app_name} para permitirle iniciar sesión en su cuenta
         de forma segura.
-    create_account_without_sp: Establezca una cuenta de %{app_name}
     edit_info:
       password: Cambie su contraseña
       phone: Administrar la configuración de su teléfono

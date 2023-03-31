@@ -89,6 +89,9 @@ es:
         info_html: Ingrese la información <strong>exactamente como aparece en su cédula
           de identidad emitida por el estado.</strong> Utilizaremos esta
           información para confirmar que coincide con su cédula en persona.
+        learn_more_link: Obtenga más información sobre los documentos de identificación
+          aceptados.
+        questions: '¿Alguna pregunta?'
     form:
       address:
         errors:

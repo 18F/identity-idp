@@ -229,7 +229,7 @@ fr:
     instructions:
       bullet1: Carte d’identité délivrée par l’État
       bullet2: Numéro de sécurité sociale
-      bullet3: Numéro de téléphone
+      bullet3: Numéro de téléphone OU adresse du domicile
       consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
         conserver et partager vos renseignements personnels. Nous les utilisons
         pour vérifier votre identité.
@@ -244,9 +244,13 @@ fr:
         champ.
       text1: Votre carte d’identité ne doit pas être expirée.
       text2: Vous n’aurez pas besoin de la carte sur vous.
-      text3: Nous appellerons ou enverrons un SMS à ce numéro pour vérifier votre
-        identité. Si nous ne pouvons pas vérifier votre numéro de téléphone,
-        vous pouvez le faire par courrier.
+      text3_html:
+        - '<strong>Vérification par téléphone</strong> : Nous appellerons ou
+          enverrons un SMS à votre numéro de téléphone. Cela prend quelques
+          minutes.'
+        - '<strong>Vérification par courrier</strong> : Nous vous enverrons une
+          lettre à votre adresse personnelle. Cela prend de 3 à 7 jours
+          ouvrables.'
       welcome: 'Vous aurez besoin de votre:'
     tips:
       capture_troubleshooting_blurry: La photo que vous avez ajoutée est trop floue.
