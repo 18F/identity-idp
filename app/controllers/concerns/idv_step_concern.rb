@@ -12,8 +12,10 @@ module IdvStepConcern
     @pii = flow_session&.[]('pii_from_doc') # hash with indifferent access
     return if @pii.present?
 
-    if (IdentityConfig.store.doc_auth_document_capture_controller_enabled &&
-      flow_session&.[](:flow_path) == 'standard')
+    flow_path = flow_session&.[](:flow_path)
+
+    if IdentityConfig.store.doc_auth_document_capture_controller_enabled &&
+       flow_path == 'standard'
       redirect_to idv_document_capture_url
     else
       flow_session&.delete('Idv::Steps::DocumentCaptureStep')
