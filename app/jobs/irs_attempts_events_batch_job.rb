@@ -7,7 +7,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
 
     previous_hour = timestamp - 1.hour
     # Check if previous hour was properly loaded
-    IrsAttemptsEventsBatchJob.perform_later(previous_hour) if log_file_record_missed(previous_hour)
+    IrsAttemptsEventsBatchJob.perform_later(previous_hour) if missing_log_file?(previous_hour)
 
     start_time = Time.zone.now
     events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: timestamp)
@@ -43,7 +43,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     IrsAttemptsApi::EnvelopeEncryptor.formatted_timestamp(key)
   end
 
-  def log_file_record_missed(previous_hour)
+  def missing_log_file?(previous_hour)
     previous_hour_log_file_hash = {
       requested_time: timestamp_key(key: previous_hour),
     }
