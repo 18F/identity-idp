@@ -7,13 +7,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
 
     previous_hour = timestamp - 1.hour
     # Check if previous hour was properly loaded
-    if (
-      !IrsAttemptApiLogFile.find_by(requested_time: timestamp_key(key: previous_hour)) &&
-      reasonable_timespan(previous_hour)
-    )
-      # An hour was missed queue a job to get that hour
-      IrsAttemptsEventsBatchJob.perform_later(previous_hour)
-    end
+    IrsAttemptsEventsBatchJob.perform_later(previous_hour) if log_file_record_missed(previous_hour)
 
     start_time = Time.zone.now
     events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: timestamp)
@@ -47,6 +41,15 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
 
   def timestamp_key(key:)
     IrsAttemptsApi::EnvelopeEncryptor.formatted_timestamp(key)
+  end
+
+  def log_file_record_missed(previous_hour)
+    previous_hour_log_file_hash = {
+      requested_time: timestamp_key(key: previous_hour),
+    }
+
+    !IrsAttemptApiLogFile.find_by(previous_hour_log_file_hash) &&
+      reasonable_timespan(previous_hour)
   end
 
   def reasonable_timespan(check_time)
