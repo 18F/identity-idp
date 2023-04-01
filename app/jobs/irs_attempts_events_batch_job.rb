@@ -50,7 +50,7 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
   end
 
   def reasonable_timespan(check_time)
-    check_time > (Time.zone.now - 3.days)
+    check_time.after?(3.days.ago)
   end
 
   def create_and_upload_to_attempts_s3_resource(bucket_name:, filename:, encrypted_data:)
