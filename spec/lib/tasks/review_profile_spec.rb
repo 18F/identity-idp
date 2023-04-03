@@ -37,7 +37,6 @@ describe 'review_profile' do
         expect(UserAlerts::AlertUserAboutAccountVerified).to receive(:call).with(
           user: user,
           date_time: Time.zone.now,
-          disavowal_token: kind_of(String),
           sp_name: nil,
         )
         invoke_task

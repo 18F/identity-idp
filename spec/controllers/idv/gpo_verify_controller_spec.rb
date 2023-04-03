@@ -122,9 +122,9 @@ RSpec.describe Idv::GpoVerifyController do
 
         action
 
-        disavowal_event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
-          where.not(disavowal_token_fingerprint: nil).count
-        expect(disavowal_event_count).to eq 1
+        event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
+          where(disavowal_token_fingerprint: nil).count
+        expect(event_count).to eq 1
         expect(response).to redirect_to(idv_personal_key_url)
       end
 
@@ -194,9 +194,9 @@ RSpec.describe Idv::GpoVerifyController do
 
             action
 
-            disavowal_event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
-              where.not(disavowal_token_fingerprint: nil).count
-            expect(disavowal_event_count).to eq 1
+            event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
+              where(disavowal_token_fingerprint: nil).count
+            expect(event_count).to eq 1
             expect(response).to redirect_to(idv_personal_key_url)
           end
         end
