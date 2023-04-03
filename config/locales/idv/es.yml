@@ -130,6 +130,7 @@ es:
       dob: Fecha de nacimiento
       first_name: Nombre de pila
       id_number: Número de cédula
+      issuing_state: Estado emisor
       last_name: Apellido
       password: Contraseña
       ssn: Número de seguridad social

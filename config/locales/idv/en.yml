@@ -121,6 +121,7 @@ en:
       dob: Date of birth
       first_name: First name
       id_number: ID number
+      issuing_state: Issuing state
       last_name: Last name
       password: Password
       ssn: Social Security number

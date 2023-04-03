@@ -4,8 +4,8 @@ module Idv
     include FormStateIdValidator
 
     ATTRIBUTES = %i[first_name last_name dob state_id_address1 state_id_address2
-                    state_id_city state_id_zipcode state_id_jurisdiction state_id_number
-                    same_address_as_id].freeze
+                    state_id_city state_id_zipcode state_id_jurisdiction
+                    state_id_state state_id_number same_address_as_id].freeze
 
     attr_accessor(*ATTRIBUTES)
 

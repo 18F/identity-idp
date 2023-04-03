@@ -110,6 +110,8 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
+      expect(page).to have_text(t('idv.form.issuing_state'))
+      expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_STATE_CODE)
       expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
       expect_good_state_id_address
       expect(page).to have_content(t('headings.residential_address'))
@@ -159,6 +161,8 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
+      expect(page).to have_text(t('idv.form.issuing_state'))
+      expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE)
       expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
       expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_ADDRESS1).twice
       expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_ADDRESS2).twice

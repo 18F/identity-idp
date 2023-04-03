@@ -10,7 +10,11 @@ module Pii
     # The user's residential address
     :address1, :address2, :city, :state, :zipcode, :same_address_as_id,
     # The address on a user's state-issued ID, which may be different from their residential address
-    :state_id_address1, :state_id_address2, :state_id_city, :state_id_jurisdiction, :state_id_zipcode, # rubocop:disable Layout/LineLength
+    :state_id_address1, :state_id_address2, :state_id_city, :state_id_zipcode,
+    # the state in the state id address, which may not be the state that issued the ID
+    :state_id_jurisdiction,
+    # the state that issued the id, which may be different than the state in the state id address
+    :state_id_state,
     :ssn, :dob, :phone,
     *DEPRECATED_PII_ATTRIBUTES
   ) do

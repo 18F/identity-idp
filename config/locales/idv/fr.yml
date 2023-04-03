@@ -135,6 +135,7 @@ fr:
       dob: Date de naissance
       first_name: Prénom
       id_number: Numéro d’identification
+      issuing_state: État émetteur
       last_name: Nom de famille
       password: Mot de passe
       ssn: Numéro de sécurité sociale
