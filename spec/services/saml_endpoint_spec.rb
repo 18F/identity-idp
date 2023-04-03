@@ -36,7 +36,7 @@ describe SamlEndpoint do
         subject.secret_key.to_pem,
       ).to eq(
         OpenSSL::PKey::RSA.new(
-          AppArtifacts.store.saml_2022_key,
+          AppArtifacts.store.saml_2023_key,
           'trust-but-verify',
         ).to_pem,
       )
@@ -66,7 +66,7 @@ describe SamlEndpoint do
       expect(
         subject.x509_certificate,
       ).to eq(
-        AppArtifacts.store.saml_2022_cert,
+        AppArtifacts.store.saml_2023_cert,
       )
     end
   end
