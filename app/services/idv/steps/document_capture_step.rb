@@ -41,6 +41,7 @@ module Idv
       private
 
       def exit_flow_state_machine
+        idv_session
         flow_session[:flow_path] = @flow.flow_path
       end
 
