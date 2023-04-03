@@ -4,6 +4,7 @@ module Idv
       include IdvSession
       include StepIndicatorConcern
       include StepUtilitiesConcern
+      include Steps::ThreatMetrixStepHelper
       include VerifyInfoConcern
 
       before_action :renders_404_if_flag_not_set
