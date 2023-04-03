@@ -32,7 +32,7 @@ locals:
       <% if !remote_identity_proofing && capture_secondary_id_enabled %>
         <div>
           <dt class="display-inline"> <%= t('idv.form.issuing_state') %>: </dt>
-          <dd class="display-inline margin-left-0"> <%= pii[:state_id_state] %> </dd>
+          <dd class="display-inline margin-left-0"> <%= pii[:state_id_jurisdiction] %> </dd>
         </div>
       <% end %>
       <% if !remote_identity_proofing %>
@@ -56,7 +56,7 @@ locals:
         </div>
         <div>
           <dt class="display-inline"> <%= t('idv.form.state') %>: </dt>
-          <dd class="display-inline margin-left-0"> <%= pii[:state_id_jurisdiction] %> </dd>
+          <dd class="display-inline margin-left-0"> <%= pii[:state_id_state] %> </dd>
         </div>
         <div>
           <dt class="display-inline"> <%= t('idv.form.zipcode') %>: </dt>

@@ -61,7 +61,7 @@ module InPersonHelper
     fill_in t('idv.form.zipcode'), with: same_address_as_id ? GOOD_STATE_ID_ZIPCODE : GOOD_ZIPCODE
     if same_address_as_id
       select GOOD_STATE_ID_JURISDICTION,
-             from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
+             from: t('in_person_proofing.form.state_id.state_id_state')
     else
       select GOOD_STATE, from: t('idv.form.state')
     end
