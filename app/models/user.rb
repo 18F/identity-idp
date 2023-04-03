@@ -158,15 +158,18 @@ class User < ApplicationRecord
 
   def increment_second_factor_attempts_count!
     User.transaction do
-      sql = <<-SQL
-      UPDATE users
-      SET second_factor_attempts_count = COALESCE(second_factor_attempts_count, 0) + 1,
-      updated_at = NOW(),
-      second_factor_locked_at = CASE
-        WHEN COALESCE(second_factor_attempts_count, 0) + 1 >= ?
-        THEN NOW()
-        ELSE NULL
-        END WHERE id = ? RETURNING second_factor_attempts_count, second_factor_locked_at;
+      sql = <<~SQL
+        UPDATE users
+        SET
+          second_factor_attempts_count = COALESCE(second_factor_attempts_count, 0) + 1,
+          updated_at = NOW(),
+          second_factor_locked_at = CASE
+            WHEN COALESCE(second_factor_attempts_count, 0) + 1 >= ?
+            THEN NOW()
+            ELSE NULL
+            END
+        WHERE id = ?
+        RETURNING second_factor_attempts_count, second_factor_locked_at;
       SQL
       query = User.sanitize_sql_array(
         [sql,
