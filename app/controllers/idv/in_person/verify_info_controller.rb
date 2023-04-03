@@ -1,14 +1,13 @@
 module Idv
   module InPerson
     class VerifyInfoController < ApplicationController
-      include IdvSession
+      include IdvStepConcern
       include StepIndicatorConcern
       include StepUtilitiesConcern
       include Steps::ThreatMetrixStepHelper
       include VerifyInfoConcern
 
       before_action :renders_404_if_flag_not_set
-      before_action :confirm_two_factor_authenticated
       before_action :confirm_ssn_step_complete
       before_action :confirm_verify_info_step_needed
 
