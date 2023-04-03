@@ -83,21 +83,21 @@ module Idp
     AAL3 = 3
 
     MOCK_IDV_APPLICANT = {
-      first_name: 'FAKEY',
-      middle_name: nil,
-      last_name: 'MCFAKERSON',
       address1: '1 FAKE RD',
       address2: nil,
       city: 'GREAT FALLS',
-      state: 'MT',
-      zipcode: '59010',
       dob: '1938-10-06',
-      state_id_number: '1111111111111',
-      state_id_jurisdiction: 'ND',
-      state_id_type: 'drivers_license',
+      first_name: 'FAKEY',
+      last_name: 'MCFAKERSON',
+      middle_name: nil,
+      phone: nil,
+      state: 'MT',
       state_id_expiration: '2099-12-31',
       state_id_issued: '2019-12-31',
-      phone: nil,
+      state_id_jurisdiction: 'ND',
+      state_id_number: '1111111111111',
+      state_id_type: 'drivers_license',
+      zipcode: '59010',
     }.freeze
 
     MOCK_IDV_APPLICANT_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT.merge(
@@ -113,5 +113,15 @@ module Idp
 
     MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION = 'North Dakota'
     MOCK_IDV_APPLICANT_FULL_STATE = 'Montana'
+
+    MOCK_IDV_APPLICANT_WITH_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT_WITH_SSN.merge(
+      {
+        same_address_as_id: false,
+        state_id_address1: '73 FAKE CIRCLE',
+        state_id_address2: '#2',
+        state_id_city: 'LESSER FALLS',
+        state_id_zipcode: '59022',
+      },
+    ).freeze
   end
 end
