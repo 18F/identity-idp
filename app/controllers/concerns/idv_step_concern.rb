@@ -16,6 +16,11 @@ module IdvStepConcern
     flow_session&.[]('pii_from_doc')
   end
 
+  # copied from doc_auth_controller
+  def flow_path
+    flow_session[:flow_path]
+  end
+
   def confirm_document_capture_complete
     return if pii_from_doc.present?
 

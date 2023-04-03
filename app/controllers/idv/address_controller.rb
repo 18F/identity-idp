@@ -3,7 +3,6 @@ module Idv
     include IdvSession
     include IdvStepConcern
 
-    before_action :confirm_two_factor_authenticated
     before_action :confirm_document_capture_complete
 
     def new
@@ -24,20 +23,6 @@ module Idv
     end
 
     private
-
-    # def confirm_document_capture_complete
-    #   @pii = user_session.dig('idv/doc_auth', 'pii_from_doc')
-    #   return if @pii.present?
-    #
-    #   flow_path = user_session.dig('idv/doc_auth', :flow_path)
-    #
-    #   if IdentityConfig.store.doc_auth_document_capture_controller_enabled &&
-    #      flow_path == 'standard'
-    #     redirect_to idv_document_capture_url
-    #   else
-    #     redirect_to idv_doc_auth_url
-    #   end
-    # end
 
     def idv_form
       Idv::AddressForm.new(pii_from_doc)

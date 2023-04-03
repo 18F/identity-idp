@@ -2,6 +2,7 @@ module Idv
   module InPerson
     class VerifyInfoController < ApplicationController
       include IdvSession
+      include IdvStepConcern
       include StepIndicatorConcern
       include StepUtilitiesConcern
       include VerifyInfoConcern

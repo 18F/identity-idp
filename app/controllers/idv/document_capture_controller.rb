@@ -1,6 +1,7 @@
 module Idv
   class DocumentCaptureController < ApplicationController
     include IdvSession
+    include IdvStepConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
     include DocumentCaptureConcern
