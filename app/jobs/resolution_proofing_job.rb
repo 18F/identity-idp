@@ -46,6 +46,8 @@ class ResolutionProofingJob < ApplicationJob
       timer: timer,
       applicant_pii: applicant_pii,
       should_proof_state_id: should_proof_state_id,
+      capture_secondary_id_enabled:
+        user.establishing_in_person_enrollment&.capture_secondary_id_enabled,
     )
 
     if optional_threatmetrix_result.present?
@@ -126,8 +128,18 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   # @return [CallbackLogData]
-  def proof_lexisnexis_then_aamva(timer:, applicant_pii:, should_proof_state_id:)
+  def proof_lexisnexis_then_aamva(timer:, applicant_pii:, should_proof_state_id:,
+                                  capture_secondary_id_enabled:)
+    # Proof the user's state ID address if the user is going through the double address
+    # verification flow and has a different address listed on their state ID. Otherwise
+    # proof their residential address
+    if capture_secondary_id_enabled && applicant_pii[:same_address_as_id] == false
+      applicant_pii = with_state_id_address(applicant_pii)
+    end
+
     resolution_result = timer.time('resolution') do
+      # todo (LG-8693): Proof the user's state ID address in addition to (rather than instead
+      # of) their residential address
       resolution_proofer.proof(applicant_pii)
     end
 
@@ -219,4 +231,23 @@ class ResolutionProofingJob < ApplicationJob
       update(threatmetrix: true,
              threatmetrix_review_status: threatmetrix_result.review_status)
   end
+
+  # Make a copy of pii with the user's state ID address overwriting the address keys
+  def with_state_id_address(pii)
+    pii_with_state_id_address = pii.transform_keys(SECONDARY_ID_ADDRESS_MAP)
+    # todo (LG-9237): Remove the below lines once the user's state ID address state
+    # is saved as :state_id_state
+    pii_with_state_id_address[:state_id_jurisdiction] = pii[:state_id_jurisdiction]
+    pii_with_state_id_address
+  end
+
+  SECONDARY_ID_ADDRESS_MAP = {
+    state_id_address1: :address1,
+    state_id_address2: :address2,
+    state_id_city: :city,
+    # todo (LG-9237): Change below to `state_id_state: :state` once we are collecting
+    # user's state ID address state as :state_id_state
+    state_id_jurisdiction: :state,
+    state_id_zipcode: :zipcode,
+  }.freeze
 end
