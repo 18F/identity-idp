@@ -126,7 +126,7 @@ module Idv
     end
 
     def step_params
-      params.require(:idv_phone_form).permit(:phone, :otp_delivery_preference)
+      params.require(:idv_phone_form).permit(:phone, :international_code, :otp_delivery_preference)
     end
 
     def confirm_step_needed

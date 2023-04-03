@@ -4,9 +4,15 @@ feature 'idv phone step', :js do
   include IdvStepHelper
   include IdvHelper
 
+  let(:user) { user_with_2fa }
+  let(:gpo_enabled) { true }
+
+  before do
+    allow(IdentityConfig.store).to receive(:enable_usps_verification).and_return(gpo_enabled)
+  end
+
   context 'defaults on page load' do
     it 'selects sms delivery option by default', js: true do
-      user = user_with_2fa
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
       expect(page).to have_checked_field(
@@ -18,7 +24,6 @@ feature 'idv phone step', :js do
   context 'with valid information' do
     it 'redirects to the otp confirmation step when the phone matches the 2fa phone number',
        js: true do
-      user = user_with_2fa
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
@@ -77,8 +82,6 @@ feature 'idv phone step', :js do
     end
 
     it 'is not re-entrant after confirming OTP' do
-      user = user_with_2fa
-
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
       fill_out_phone_form_ok
@@ -121,39 +124,44 @@ feature 'idv phone step', :js do
     expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
   end
 
-  shared_examples 'async timed out' do
-    it 'allows resubmitting form' do
-      user = user_with_2fa
-      start_idv_from_sp
-      complete_idv_steps_before_phone_step(user)
+  it 'allows resubmitting form' do
+    start_idv_from_sp
+    complete_idv_steps_before_phone_step(user)
 
-      allow(DocumentCaptureSession).to receive(:find_by).and_return(nil)
-      fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
-      click_idv_send_security_code
-      expect(page).to have_content(t('idv.failure.timeout'))
-      expect(page).to have_current_path(idv_phone_path)
-      allow(DocumentCaptureSession).to receive(:find_by).and_call_original
-      click_idv_send_security_code
-      expect(page).to have_current_path(idv_otp_verification_path)
-    end
+    allow(DocumentCaptureSession).to receive(:find_by).and_return(nil)
+    fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
+    click_idv_send_security_code
+    expect(page).to have_content(t('idv.failure.timeout'))
+    expect(page).to have_current_path(idv_phone_path)
+    allow(DocumentCaptureSession).to receive(:find_by).and_call_original
+    click_idv_send_security_code
+    expect(page).to have_current_path(idv_otp_verification_path)
   end
 
-  it_behaves_like 'async timed out'
-
   context "when the user's information cannot be verified" do
+    it 'reports the number the user entered' do
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step
+      fill_out_phone_form_fail
+      click_idv_send_security_code
+
+      expect(page).to have_content(t('idv.failure.phone.warning.heading'))
+      expect(page).to have_content('+1 703-555-5555')
+    end
+
     it 'links to verify by mail, from which user can return back to the warning screen' do
       start_idv_from_sp
       complete_idv_steps_before_phone_step
       fill_out_phone_form_fail
       click_idv_send_security_code
 
-      expect(page).to have_content(t('idv.failure.phone.warning'))
+      expect(page).to have_content(t('idv.failure.phone.warning.heading'))
 
-      click_on t('idv.troubleshooting.options.verify_by_mail')
+      click_on t('idv.failure.phone.warning.gpo.button')
       expect(page).to have_content(t('idv.titles.mail.verify'))
 
       click_doc_auth_back_link
-      expect(page).to have_content(t('idv.failure.phone.warning'))
+      expect(page).to have_content(t('idv.failure.phone.warning.heading'))
     end
 
     it 'does not render the link to proof by mail if proofing by mail is disabled' do
@@ -166,10 +174,10 @@ feature 'idv phone step', :js do
         fill_out_phone_form_fail
         click_idv_send_security_code
 
-        expect(page).to have_content(t('idv.failure.phone.warning'))
+        expect(page).to have_content(t('idv.failure.phone.warning.heading'))
         expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
 
-        click_on t('idv.failure.button.warning')
+        click_on t('idv.failure.phone.warning.try_again_button')
       end
 
       fill_out_phone_form_fail
@@ -188,5 +196,41 @@ feature 'idv phone step', :js do
     it_behaves_like 'verification step max attempts', :phone
     it_behaves_like 'verification step max attempts', :phone, :oidc
     it_behaves_like 'verification step max attempts', :phone, :saml
+  end
+
+  context 'when the user is rate-limited' do
+    before do
+      start_idv_from_sp
+      complete_idv_steps_before_step(:phone, user)
+    end
+
+    around do |ex|
+      freeze_time { ex.run }
+    end
+
+    before do
+      (Throttle.max_attempts(:proof_address) - 1).times do
+        fill_out_phone_form_fail
+        click_idv_continue_for_step(:phone)
+        click_on t('idv.failure.phone.warning.try_again_button')
+      end
+      click_idv_continue_for_step(:phone)
+    end
+
+    it 'still lets them access the GPO flow and return to the error' do
+      click_on t('idv.failure.phone.rate_limited.gpo.button')
+      expect(page).to have_content(t('idv.titles.mail.verify'))
+      click_doc_auth_back_link
+      expect(page).to have_content(t('idv.failure.phone.rate_limited.heading'))
+    end
+
+    context 'GPO is disabled' do
+      let(:gpo_enabled) { false }
+
+      it 'does not link out to GPO flow' do
+        expect(page).not_to have_content(t('idv.failure.phone.rate_limited.gpo.prompt'))
+        expect(page).not_to have_content(t('idv.failure.phone.rate_limited.gpo.button'))
+      end
+    end
   end
 end

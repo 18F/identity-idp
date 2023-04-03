@@ -76,14 +76,36 @@ en:
           back later.
         text_html: Please try again. If you keep getting these errors, %{link}.
       phone:
-        fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,
-          we limit the number of times you can attempt to verify your phone
-          number online.'
         heading: We could not match this phone number to other records
         jobfail: Something went wrong and we cannot process your request at this time.
           Please try again.
+        rate_limited:
+          body: For security reasons, we limit the number of times you can attempt to
+            verify your phone number online. You will need to wait %{time_left}
+            and start over before trying to verify by phone again.
+          gpo:
+            button: Verify by mail
+            prompt: Continue now by verifying by mail, which typically takes 3 - 7 business
+              days.
+          heading: 'We couldn’t verify your identity by phone'
         timeout: Our request to verify your information timed out. Please try again.
-        warning: Please check the information you entered and try again.
+        warning:
+          attempts:
+            one: For security reasons, you have one attempt remaining.
+            other: For security reasons, you have %{count} attempts remaining.
+          gpo:
+            button: Verify by mail
+            explanation: If you don’t have another phone number to try, verify by mail
+              instead.
+            heading: Verify by mail
+            how_long_it_takes: This typically takes 3 - 7 business days.
+          heading: We couldn’t match you to this number
+          learn_more_link: 'Learn more about what phone number to use'
+          next_steps_html: 'Please try again with <strong>another</strong> number that you
+            use often and have used for a long time. This can be a work or home
+            number.'
+          try_again_button: 'Try another number'
+          you_entered: 'You entered:'
       sessions:
         exception: There was an internal error processing your request.
         fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,

@@ -12,7 +12,10 @@ module Idv
       throttle.increment!
 
       self.step_params = step_params
-      idv_session.previous_phone_step_params = step_params.slice(:phone, :otp_delivery_preference)
+      idv_session.previous_phone_step_params = step_params.slice(
+        :phone, :international_code,
+        :otp_delivery_preference
+      )
       proof_address
     end
 
