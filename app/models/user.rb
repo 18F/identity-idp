@@ -172,9 +172,9 @@ class User < ApplicationRecord
         [sql,
          IdentityConfig.store.login_otp_confirmation_max_attempts, self.id],
       )
-      result = User.connection.execute(query)
-      self.second_factor_attempts_count = result.first.fetch('second_factor_attempts_count')
-      self.second_factor_locked_at = result.first.fetch('second_factor_locked_at')
+      result = User.connection.execute(query).first
+      self.second_factor_attempts_count = result.fetch('second_factor_attempts_count')
+      self.second_factor_locked_at = result.fetch('second_factor_locked_at')
       self.clear_attribute_changes([:second_factor_attempts_count, :second_factor_locked_at])
     end
 
