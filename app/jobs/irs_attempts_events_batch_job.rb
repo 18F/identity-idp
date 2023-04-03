@@ -49,10 +49,10 @@ class IrsAttemptsEventsBatchJob < ApplicationJob
     }
 
     !IrsAttemptApiLogFile.find_by(previous_hour_log_file_hash) &&
-      reasonable_timespan(previous_hour)
+      reasonable_timespan?(previous_hour)
   end
 
-  def reasonable_timespan(check_time)
+  def reasonable_timespan?(check_time)
     check_time.after?(3.days.ago)
   end
 
