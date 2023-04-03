@@ -120,7 +120,7 @@ feature 'Sign Up' do
     end
 
     # whether it says '9 minutes' or '10 minutes' depends on how
-    # slowly the test runs
+    # slowly the test runs.
     throttled_message = I18n.t(
       'errors.messages.phone_confirmation_throttled',
       timeout: '(10|9) minutes',
