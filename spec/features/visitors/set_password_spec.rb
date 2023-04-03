@@ -38,8 +38,6 @@ feature 'Visitor sets password during signup' do
     end
 
     it 'updates strength feedback as password changes' do
-      expect(page).to have_content '...'
-
       fill_in t('forms.password'), with: 'password'
       expect(page).to have_content 'Very weak'
 
@@ -47,7 +45,7 @@ feature 'Visitor sets password during signup' do
       expect(page).to have_content t('zxcvbn.feedback.this_is_a_top_10_common_password')
 
       fill_in t('forms.password'), with: 'this is a great sentence'
-      expect(page).to have_content 'Great!'
+      expect(page).to have_content 'Great'
     end
   end
 

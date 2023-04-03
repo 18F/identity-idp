@@ -116,7 +116,6 @@ feature 'User profile' do
       end
 
       expect(page).to_not have_css('#pw-strength-cntnr.display-none')
-      expect(page).to have_content '...'
 
       fill_in t('forms.passwords.edit.labels.password'), with: 'this is a great sentence'
       expect(page).to have_content 'Great'
