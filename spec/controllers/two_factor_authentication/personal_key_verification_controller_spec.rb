@@ -98,7 +98,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       let(:payload) { { personal_key_form: personal_key } }
 
       before do
-        user = build(:user, :with_personal_key, :with_phone, with: { phone: '+1 (703) 555-1212' })
+        user = create(:user, :with_personal_key, :with_phone, with: { phone: '+1 (703) 555-1212' })
         stub_sign_in_before_2fa(user)
         form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
@@ -118,8 +118,10 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
     end
 
     context 'when the user enters an invalid personal key' do
+      let(:user) do
+        create(:user, :with_personal_key, :with_phone, with: { phone: '+1 (703) 555-1212' })
+      end
       before do
-        user = build(:user, :with_personal_key, :with_phone, with: { phone: '+1 (703) 555-1212' })
         stub_sign_in_before_2fa(user)
         form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
@@ -144,13 +146,15 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       end
 
       it 'tracks the max attempts event' do
-        allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
         properties = {
           success: false,
           errors: {},
           multi_factor_auth_method: 'personal-key',
         }
 
+        user.second_factor_attempts_count =
+          IdentityConfig.store.login_otp_confirmation_max_attempts - 1
+        user.save
         stub_analytics
         stub_attempts_tracker
 

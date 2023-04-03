@@ -177,7 +177,9 @@ describe TwoFactorAuthentication::PivCacVerificationController do
       render_views
 
       it 'tracks the event' do
-        allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
+        user.second_factor_attempts_count =
+          IdentityConfig.store.login_otp_confirmation_max_attempts - 1
+        user.save
         stub_sign_in_before_2fa(user)
 
         stub_analytics

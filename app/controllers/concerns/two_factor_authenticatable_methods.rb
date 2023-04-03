@@ -171,14 +171,7 @@ module TwoFactorAuthenticatableMethods
   end
 
   def update_invalid_user
-    current_user.second_factor_attempts_count += 1
-    attributes = {}
-    attributes[:second_factor_locked_at] = Time.zone.now if current_user.max_login_attempts?
-
-    UpdateUser.new(
-      user: current_user,
-      attributes: attributes,
-    ).call
+    current_user.increment_second_factor_attempts_count!
   end
 
   def handle_valid_otp_for_confirmation_context
