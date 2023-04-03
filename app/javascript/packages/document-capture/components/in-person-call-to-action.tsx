@@ -30,7 +30,7 @@ function InPersonCallToAction({ altHeading, altPrompt, altButtonText }: InPerson
         isBig
         isOutline
         isWide
-        href="#location"
+        href="#prepare"
         className="margin-top-3 margin-bottom-1"
         onClick={() =>
           trackEvent('IdV: verify in person troubleshooting option clicked', {

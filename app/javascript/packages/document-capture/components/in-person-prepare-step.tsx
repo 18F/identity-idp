@@ -59,7 +59,7 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
       {flowPath === 'hybrid' && <FormStepsButton.Continue />}
       {inPersonURL && flowPath === 'standard' && (
         <div className="margin-y-5">
-          <SpinnerButton href={inPersonURL} onClick={onContinue} isBig isWide>
+          <SpinnerButton href="#location" onClick={onContinue} isBig isWide>
             {t('forms.buttons.continue')}
           </SpinnerButton>
         </div>

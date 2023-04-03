@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { Alert, PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
+import { removeUnloadProtection } from '@18f/identity-url';
 import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
 import AddressSearch, {
@@ -14,8 +15,9 @@ import InPersonLocations, { FormattedLocation } from './in-person-locations';
 import { InPersonContext } from '../context';
 
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
-  const { inPersonCtaVariantActive } = useContext(InPersonContext);
+  const { inPersonCtaVariantActive, inPersonURL } = useContext(InPersonContext);
   const { t } = useI18n();
+
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [isLoadingLocations, setLoadingLocations] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
@@ -75,6 +77,15 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
             // continue with navigation
             e.target.disabled = false;
             e.target.click();
+
+            e.preventDefault();
+
+            removeUnloadProtection();
+
+            if (inPersonURL) {
+              window.location.href = inPersonURL;
+            }
+
             // allow process to be re-triggered in case submission did not work as expected
             setAutoSubmit(false);
           });
