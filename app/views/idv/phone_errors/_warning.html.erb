@@ -25,10 +25,10 @@ locals:
             article: 'phone-number',
             flow: :idv,
             step: :phone,
+            location: local_assigns.fetch(:name, 'warning'),
           ),
           text: t('idv.troubleshooting.options.learn_more_verify_by_phone'),
           new_tab: true,
-          location: local_assigns.fetch(:name, 'warning'),
         },
         @gpo_letter_available && {
           text: t('idv.troubleshooting.options.verify_by_mail'),
