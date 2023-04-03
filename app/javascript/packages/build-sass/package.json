@@ -14,7 +14,8 @@
   },
   "files": [
     "index.js",
-    "cli.js"
+    "cli.js",
+    "get-error-sass-stack-paths.js"
   ],
   "license": "CC0-1.0",
   "bugs": {
