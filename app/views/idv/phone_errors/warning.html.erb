@@ -40,11 +40,11 @@
       </p>
 
       <div class="margin-top-5 margin-bottom-5">
-        <%= button_or_link_to(
-              t('idv.failure.phone.warning.try_again_button'),
-              idv_phone_path,
-              class: 'usa-button usa-button--big usa-button--wide',
-            ) %>
+        <%= render ButtonComponent.new(
+              action: ->(**tag_options, &block) { link_to idv_phone_path, **tag_options, &block },
+              big: true,
+              wide: true,
+            ).with_content(t('idv.failure.phone.warning.try_again_button')) %>
       </div>
 
       <% if @gpo_letter_available %>
@@ -58,11 +58,10 @@
         </p>
 
         <div class="margin-top-5 margin-bottom-5">
-          <%= button_or_link_to(
-                t('idv.failure.phone.warning.gpo.button'),
-                idv_gpo_path,
-                class: 'usa-button usa-button--outline',
-              ) %>
+          <%= render ButtonComponent.new(
+                action: ->(**tag_options, &block) { link_to idv_gpo_path, **tag_options, &block },
+                outline: true,
+              ).with_content(t('idv.failure.phone.warning.gpo.button')) %>
         </div>
       <% end %>
     <% end %>
