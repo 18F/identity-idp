@@ -106,11 +106,10 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
       context 'When there are no missing previous files' do
         before do
           IrsAttemptApiLogFile.create(**previous_hour_log_file)
+          expect_any_instance_of(described_class).not_to receive(:perform_later)
         end
 
         it 'batches/writes attempt events, and does not call BatchJob on previous hour' do
-          expect(described_class).not_to receive(:perform_later)
-
           expect(IrsAttemptsApi::EnvelopeEncryptor).to receive(:encrypt).with(
             **expected_encrypted_events,
           )
