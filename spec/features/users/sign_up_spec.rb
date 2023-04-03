@@ -108,7 +108,7 @@ feature 'Sign Up' do
     expect(page).to have_content(I18n.t('telephony.error.friendly_message.generic'))
   end
 
-  scenario 'rate limits sign-up phone confirmation attempts', js: true do
+  scenario 'rate limits sign-up phone confirmation attempts' do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(999)
 
     sign_up_and_set_password
