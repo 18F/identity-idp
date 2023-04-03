@@ -10,19 +10,16 @@ class SamlCompletionController < ApplicationController
   def index
     request_url = URI(sp_session[:request_url])
     action_path = build_action_path(request_url.path)
+    return render_not_found if !action_path
 
-    if !action_path
-      render_not_found
-    else
-      # Takes the query params which were set internally in the
-      # sp_session (so they should always be valid).
-      # A bad request that originated outside of the IDP would have
-      # already responded with a 400 status before reaching this point.
-      form_params = UriService.params(request_url)
+    # Takes the query params which were set internally in the
+    # sp_session (so they should always be valid).
+    # A bad request that originated outside of the IDP would have
+    # already responded with a 400 status before reaching this point.
+    form_params = UriService.params(request_url)
 
-      render 'shared/saml_post_form', locals: { action_url: action_path, form_params: form_params },
-                                      layout: false
-    end
+    render 'shared/saml_post_form', locals: { action_url: action_path, form_params: form_params },
+                                    layout: false
   end
 
   def verify_sp_session_exists
