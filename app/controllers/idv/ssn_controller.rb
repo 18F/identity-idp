@@ -56,7 +56,7 @@ module Idv
     private
 
     def next_url
-      if @pii[:state] == 'PR'
+      if pii_from_doc[:state] == 'PR'
         idv_address_url
       else
         idv_verify_info_url

@@ -40,7 +40,7 @@ module Idv
     # end
 
     def idv_form
-      Idv::AddressForm.new(@pii)
+      Idv::AddressForm.new(pii_from_doc)
     end
 
     def success

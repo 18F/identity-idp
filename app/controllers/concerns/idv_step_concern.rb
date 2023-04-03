@@ -13,7 +13,7 @@ module IdvStepConcern
   end
 
   def pii_from_doc
-    @pii ||= flow_session&.[]('pii_from_doc')
+    flow_session&.[]('pii_from_doc')
   end
 
   def confirm_document_capture_complete
