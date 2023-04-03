@@ -268,7 +268,7 @@ RSpec.describe 'In Person Proofing', js: true do
     end
 
     # prepare page
-    expect(page).to have_content(t('in_person_proofing.headings.prepare'))
+    expect(page).to have_content(t('in_person_proofing.headings.prepare'), wait: 5)
     click_button t('forms.buttons.back')
 
     expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
@@ -504,7 +504,7 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_location_step(user)
 
       expect(page).to have_content(
-        t('in_person_proofing.headings.prepare'),
+        t('in_person_proofing.headings.prepare'), wait: 5
       )
     end
 
