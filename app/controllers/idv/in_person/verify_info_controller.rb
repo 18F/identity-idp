@@ -12,8 +12,6 @@ module Idv
       before_action :confirm_verify_info_step_needed
 
       def show
-        @in_person_proofing = true
-        @verify_info_submit_path = idv_in_person_verify_info_path
         @step_indicator_steps = step_indicator_steps
 
         increment_step_counts
@@ -145,13 +143,13 @@ module Idv
       def process_async_state(current_async_state)
         if current_async_state.none?
           idv_session.resolution_successful = false
-          render 'idv/verify_info/show'
+          render 'idv/in_person/verify_info/show'
         elsif current_async_state.in_progress?
           render 'shared/wait'
         elsif current_async_state.missing?
           analytics.idv_proofing_resolution_result_missing
           flash.now[:error] = I18n.t('idv.failure.timeout')
-          render 'idv/verify_info/show'
+          render 'idv/in_person/verify_info/show'
 
           delete_async
           idv_session.resolution_successful = false

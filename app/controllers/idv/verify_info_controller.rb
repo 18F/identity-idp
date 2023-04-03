@@ -10,8 +10,6 @@ module Idv
     before_action :confirm_verify_info_step_needed
 
     def show
-      @in_person_proofing = false
-      @verify_info_submit_path = idv_verify_info_path
       @step_indicator_steps = step_indicator_steps
 
       increment_step_counts
