@@ -39,7 +39,7 @@
         <strong><%= t('idv.failure.phone.warning.attempts', count: @remaining_attempts) %></strong>
       </p>
 
-      <div class="margin-top-5 margin-bottom-5">
+      <div class="margin-y-5">
         <%= render ButtonComponent.new(
               action: ->(**tag_options, &block) { link_to idv_phone_path, **tag_options, &block },
               big: true,
@@ -57,7 +57,7 @@
           <strong><%= t('idv.failure.phone.warning.gpo.how_long_it_takes') %></strong>
         </p>
 
-        <div class="margin-top-5 margin-bottom-5">
+        <div class="margin-y-5">
           <%= render ButtonComponent.new(
                 action: ->(**tag_options, &block) { link_to idv_gpo_path, **tag_options, &block },
                 outline: true,
