@@ -236,6 +236,7 @@ class IdentityConfig
     config.add(:irs_attempt_api_payload_size_logging_enabled, type: :boolean)
     config.add(:irs_attempt_api_track_idv_fraud_review, type: :boolean)
     config.add(:irs_attempt_api_track_tmx_fraud_check_event, type: :boolean)
+    config.add(:irs_attempt_api_delete_events_after_s3_upload, type: :boolean)
     config.add(:irs_attempt_api_public_key)
     config.add(:irs_attempt_api_public_key_id)
     config.add(:lexisnexis_base_url, type: :string)

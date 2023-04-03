@@ -77,6 +77,8 @@ en:
         info_html: Enter information <strong>exactly as it appears on your state-issued
           ID.</strong> We will use this information to confirm it matches your
           ID in person.
+        learn_more_link: Learn more about accepted forms of ID.
+        questions: Questions?
     form:
       address:
         errors:

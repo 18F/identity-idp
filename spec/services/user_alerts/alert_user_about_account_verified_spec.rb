@@ -3,7 +3,6 @@ require 'rails_helper'
 describe UserAlerts::AlertUserAboutAccountVerified do
   describe '#call' do
     let(:user) { create(:user, :signed_up) }
-    let(:disavowal_token) { 'the_disavowal_token' }
     let(:device) { create(:device, user: user) }
     let(:date_time) { Time.zone.now }
 
@@ -16,24 +15,20 @@ describe UserAlerts::AlertUserAboutAccountVerified do
         user: user,
         date_time: date_time,
         sp_name: '',
-        disavowal_token: disavowal_token,
       )
 
       expect_delivered_email_count(3)
       expect_delivered_email(
         to: [confirmed_email_addresses[0].email],
         subject: t('user_mailer.account_verified.subject', sp_name: ''),
-        body: [disavowal_token],
       )
       expect_delivered_email(
         to: [confirmed_email_addresses[1].email],
         subject: t('user_mailer.account_verified.subject', sp_name: ''),
-        body: [disavowal_token],
       )
       expect_delivered_email(
         to: [confirmed_email_addresses[2].email],
         subject: t('user_mailer.account_verified.subject', sp_name: ''),
-        body: [disavowal_token],
       )
     end
   end

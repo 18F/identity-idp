@@ -34,28 +34,36 @@ module UspsInPersonProofing
         end
       end
 
-      def establishing_in_person_enrollment_for_user(user)
-        enrollment = user.establishing_in_person_enrollment
-        return enrollment if enrollment.present?
-
-        InPersonEnrollment.create!(user: user, profile: nil)
-      end
-
+      # Create and start tracking an in-person enrollment with USPS
+      #
+      # @param [InPersonEnrollment] enrollment The new enrollment record for tracking the enrollment
+      # @param [Pii::Attributes] pii The PII associated with the in-person enrollment
+      # @return [String] The enrollment code
+      # @raise [Exception::RequestEnrollException] Raised with a problem creating the enrollment
       def create_usps_enrollment(enrollment, pii)
         # Use the enrollment's unique_id value if it exists, otherwise use the deprecated
         # #usps_unique_id value in order to remain backwards-compatible. LG-7024 will remove this
         unique_id = enrollment.unique_id || enrollment.usps_unique_id
-        address = [pii['address1'], pii['address2']].select(&:present?).join(' ')
+        pii = pii.to_h
+
+        # If we're using secondary ID capture (aka double address verification),
+        # then send the state ID address to USPS. Otherwise send the residential address.
+        if enrollment.capture_secondary_id_enabled? && !pii[:same_address_as_id]
+          pii = pii.except(*SECONDARY_ID_ADDRESS_MAP.values).
+            transform_keys(SECONDARY_ID_ADDRESS_MAP)
+        end
+
+        address = [pii[:address1], pii[:address2]].select(&:present?).join(' ')
 
         applicant = UspsInPersonProofing::Applicant.new(
           {
             unique_id: unique_id,
-            first_name: transliterate(pii['first_name']),
-            last_name: transliterate(pii['last_name']),
+            first_name: transliterate(pii[:first_name]),
+            last_name: transliterate(pii[:last_name]),
             address: transliterate(address),
-            city: transliterate(pii['city']),
-            state: pii['state'],
-            zip_code: pii['zipcode'],
+            city: transliterate(pii[:city]),
+            state: pii[:state],
+            zip_code: pii[:zipcode],
             email: 'no-reply@login.gov',
           },
         )
@@ -85,6 +93,14 @@ module UspsInPersonProofing
       end
 
       private
+
+      SECONDARY_ID_ADDRESS_MAP = {
+        state_id_address1: :address1,
+        state_id_address2: :address2,
+        state_id_city: :city,
+        state_id_jurisdiction: :state,
+        state_id_zipcode: :zipcode,
+      }.freeze
 
       def handle_bad_request_error(err, enrollment)
         message = err.response.dig(:body, 'responseMessage') || err.message

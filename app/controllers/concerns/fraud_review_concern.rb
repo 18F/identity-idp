@@ -15,7 +15,7 @@ module FraudReviewConcern
   end
 
   def redirect_to_fraud_review
-    redirect_to idv_setup_errors_url
+    redirect_to idv_please_call_url
   end
 
   def redirect_to_fraud_rejection
