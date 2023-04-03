@@ -31,11 +31,11 @@
           <strong><%= t('idv.failure.phone.rate_limited.gpo.prompt') %></strong>
         </p>
         <div class="margin-top-5 margin-bottom-5">
-          <%= button_or_link_to(
-                t('idv.failure.phone.rate_limited.gpo.button'),
-                idv_gpo_path,
-                class: 'usa-button usa-button--big usa-button--wide',
-              ) %>
+          <%= render ButtonComponent.new(
+                action: ->(**tag_options, &block) { link_to idv_gpo_path, **tag_options, &block },
+                big: true,
+                wide: true,
+              ).with_content(t('idv.failure.phone.rate_limited.gpo.button')) %>
         </div>
       <% end %>
     <% end %>
