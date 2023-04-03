@@ -125,9 +125,13 @@ function analyzePw() {
     updatePasswordFeedback(cls, strength, feedback);
   }
 
-  input.addEventListener('input', (e) => {
-    checkPasswordStrength(e.target.value);
-  });
+  input.addEventListener(
+    'input',
+    (e) => {
+      checkPasswordStrength(e.target.value);
+    },
+    { once: true },
+  );
 }
 
 document.addEventListener('keydown', analyzePw);
