@@ -292,7 +292,7 @@ rules_of_use_horizon_years: 6
 rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timestamp than this, update directly in S3
 s3_public_reports_enabled: false
 s3_reports_enabled: false
-saml_internal_post: false
+saml_internal_post: true
 saml_secret_rotation_enabled: false
 seed_agreements_data: true
 service_provider_request_ttl_hours: 24
