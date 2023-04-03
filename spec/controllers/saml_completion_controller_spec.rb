@@ -5,7 +5,7 @@ describe SamlCompletionController do
     render_views
     include ActionView::Helpers::FormTagHelper
 
-    let(:form_action_regex) { /<form.+action=".+\/api\/saml\/finalauthpost\d{4}.+"/ }
+    let(:form_action_regex) { /<form.+action="\/api\/saml\/finalauthpost\d{4}.+"/ }
     let(:saml_request) { 'abc123' }
     let(:relay_state) { 'def456' }
     let(:sig_alg) { 'aes256' }
@@ -41,6 +41,21 @@ describe SamlCompletionController do
 
     context 'with a blank service provider request session' do
       before { expect(controller).to receive(:sp_session).at_least(:once).and_return({}) }
+
+      it 'renders 404 not found' do
+        get :index
+        expect(response).to be_not_found
+      end
+    end
+
+    context 'with an invalid sp_session_request_url' do
+      before do
+        expect(controller).to receive(:sp_session).at_least(:once).and_return(
+          {
+            request_url: 'https://example.gov/openid_connect/authorize',
+          },
+        )
+      end
 
       it 'renders 404 not found' do
         get :index

@@ -48,9 +48,6 @@ function handleTimeout(redirectURL: string) {
 }
 
 function success(data: SessionStatus) {
-  let timeRemaining = new Date(data.timeout).valueOf() - Date.now();
-  const showWarning = timeRemaining < warning;
-
   if (!data.isLive) {
     if (timeoutUrl) {
       handleTimeout(timeoutUrl);
@@ -58,6 +55,8 @@ function success(data: SessionStatus) {
     return;
   }
 
+  const timeRemaining = new Date(data.timeout).valueOf() - Date.now();
+  const showWarning = timeRemaining < warning;
   if (showWarning) {
     modal.show();
     countdownEls.forEach((countdownEl) => {
@@ -66,8 +65,7 @@ function success(data: SessionStatus) {
     });
   }
 
-  if (timeRemaining < frequency) {
-    timeRemaining = timeRemaining < 0 ? 0 : timeRemaining;
+  if (timeRemaining > 0 && timeRemaining < frequency) {
     // Disable reason: circular dependency between ping and success
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     setTimeout(ping, timeRemaining);
