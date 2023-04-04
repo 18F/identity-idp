@@ -97,11 +97,6 @@ function analyzePw() {
   const forbiddenPasswordsElement = document.querySelector('[data-forbidden]');
   const forbiddenPasswords = getForbiddenPasswords(forbiddenPasswordsElement);
 
-  // the pw strength module is hidden by default ("display-none" CSS class)
-  // (so that javascript disabled browsers won't see it)
-  // thus, first step is unhiding it
-  pwCntnr.className = '';
-
   function updatePasswordFeedback(cls, strength, feedback) {
     pwCntnr.className = cls;
     pwStrength.innerHTML = strength;
@@ -125,13 +120,9 @@ function analyzePw() {
     updatePasswordFeedback(cls, strength, feedback);
   }
 
-  input.addEventListener(
-    'input',
-    (e) => {
-      checkPasswordStrength(e.target.value);
-    },
-    { once: true },
-  );
+  input.addEventListener('input', (e) => {
+    checkPasswordStrength(e.target.value);
+  });
 }
 
-document.addEventListener('keydown', analyzePw);
+document.addEventListener('DOMContentLoaded', analyzePw);
