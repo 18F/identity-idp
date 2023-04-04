@@ -9,6 +9,7 @@ module Users
 
     def index
       two_factor_options_form
+      @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(request.ip)
       @presenter = two_factor_options_presenter
       analytics.user_registration_2fa_setup_visit
     end
@@ -42,6 +43,7 @@ module Users
     def two_factor_options_presenter
       TwoFactorOptionsPresenter.new(
         user_agent: request.user_agent,
+        bucket: @sign_up_mfa_selection_order_bucket,
         user: current_user,
         phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
         piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
