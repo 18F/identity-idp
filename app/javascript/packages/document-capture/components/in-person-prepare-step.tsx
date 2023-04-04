@@ -2,7 +2,6 @@ import { useContext, useState } from 'react';
 import type { MouseEventHandler } from 'react';
 import { Alert, Link, PageHeading, ProcessList, ProcessListItem } from '@18f/identity-components';
 import { removeUnloadProtection } from '@18f/identity-url';
-import useHistoryParam from '@18f/identity-form-steps/use-history-param';
 import { getConfigValue } from '@18f/identity-config';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
@@ -22,7 +21,6 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
   const { trackEvent } = useContext(AnalyticsContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
   const { selectedLocationAddress } = value;
-  const [, setStepName] = useHistoryParam(undefined);
 
   const onContinue: MouseEventHandler = async (event) => {
     event.preventDefault();
@@ -31,7 +29,7 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
       setIsSubmitting(true);
       removeUnloadProtection();
       await trackEvent('IdV: prepare submitted');
-      setStepName((event.target as HTMLAnchorElement).href);
+      window.location.href = (event.target as HTMLAnchorElement).href;
     }
   };
 
