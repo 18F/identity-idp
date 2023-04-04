@@ -27,6 +27,14 @@ class Profile < ApplicationRecord
 
   attr_reader :personal_key
 
+  def fraud_review_pending?
+    !!(fraud_review_pending || fraud_review_pending_at)
+  end
+
+  def fraud_rejection?
+    !!(fraud_rejection || fraud_rejection_at)
+  end
+
   # rubocop:disable Rails/SkipsModelValidations
   def activate
     return if fraud_review_pending? || fraud_rejection?
