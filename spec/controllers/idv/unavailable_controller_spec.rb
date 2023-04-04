@@ -63,7 +63,7 @@ describe Idv::UnavailableController, type: :controller do
     context 'IdV is enabled' do
       let(:idv_available) { true }
 
-      it 'renders the view' do
+      it 'renders the view  when from: is nil' do
         expect(response).to render_template('idv/unavailable/show')
       end
 
