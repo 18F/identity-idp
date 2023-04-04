@@ -42,7 +42,7 @@ describe Idv::UnavailableController, type: :controller do
       let(:params) do
         { from: SignUp::RegistrationsController::CREATE_ACCOUNT }
       end
-      it 'logs an analytics event' do
+      it 'logs an analytics event with redirect_from CREATE_ACCOUNT' do
         expect(@analytics).to have_logged_event(
           'Vendor Outage',
           redirect_from: SignUp::RegistrationsController::CREATE_ACCOUNT,
