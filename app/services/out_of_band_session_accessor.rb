@@ -28,7 +28,7 @@ class OutOfBandSessionAccessor
   end
 
   def destroy
-    session_store.send(:destroy_session_from_sid, session_uuid, drop: true)
+    session_store.send(:delete_session, {}, Rack::Session::SessionId.new(session_uuid), drop: true)
   end
 
   # @api private
@@ -60,13 +60,21 @@ class OutOfBandSessionAccessor
       'warden.user.user.session' => data.to_h,
     }
 
-    session_store.
-      send(:set_session, {}, session_uuid, session_data, expire_after: expiration.to_i)
+    session_store.send(
+      :write_session,
+      {},
+      Rack::Session::SessionId.new(session_uuid),
+      session_data,
+      expire_after: expiration.to_i,
+    )
   end
 
   # @return [Hash]
   def session_data
-    @session_data ||= session_store.send(:load_session_from_redis, session_uuid) || {}
+    @session_data ||= session_store.send(
+      :find_session, {},
+      Rack::Session::SessionId.new(session_uuid)
+    ).last || {}
   end
 
   def session_store
