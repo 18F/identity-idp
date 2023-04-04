@@ -23,8 +23,8 @@ module SamlAuthHelper
     settings.double_quote_xml_attribute_values = true
 
     # IdP setting
-    settings.idp_sso_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/auth2022"
-    settings.idp_slo_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/logout2022"
+    settings.idp_sso_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/auth2023"
+    settings.idp_slo_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/logout2023"
     settings.idp_cert_fingerprint = idp_fingerprint
     settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'
 
@@ -79,7 +79,7 @@ module SamlAuthHelper
   end
 
   def saml_remote_logout_request_url(overrides: {}, params: {})
-    overrides[:idp_slo_target_url] = "http://#{IdentityConfig.store.domain_name}/api/saml/remotelogout2022"
+    overrides[:idp_slo_target_url] = "http://#{IdentityConfig.store.domain_name}/api/saml/remotelogout2023"
     logout_request.create(
       saml_settings(overrides: overrides),
       params,
@@ -108,12 +108,12 @@ module SamlAuthHelper
 
   def saml_post_auth(saml_request)
     # POST redirect binding Authn Request
-    request.path = '/api/saml/authpost2022'
+    request.path = '/api/saml/authpost2023'
     post :auth, params: { SAMLRequest: CGI.unescape(saml_request) }
   end
 
   def saml_final_post_auth(saml_request)
-    request.path = '/api/saml/finalauthpost2022'
+    request.path = '/api/saml/finalauthpost2023'
     post :auth, params: { SAMLRequest: CGI.unescape(saml_request) }
   end
 
@@ -130,7 +130,7 @@ module SamlAuthHelper
   end
 
   def saml_test_idp_cert
-    AppArtifacts.store.saml_2022_cert
+    AppArtifacts.store.saml_2023_cert
   end
 
   public

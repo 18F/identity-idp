@@ -20,7 +20,7 @@ describe SamlCompletionController do
           Signature: signature,
         }
       end
-      let(:sp_session_request_url) { 'http://example.gov/api/saml/auth2022' }
+      let(:sp_session_request_url) { 'http://example.gov/api/saml/auth2023' }
 
       before do
         expect(controller).to receive(:sp_session).at_least(:once).and_return(
