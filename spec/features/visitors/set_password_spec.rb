@@ -39,7 +39,7 @@ feature 'Visitor sets password during signup' do
 
     it 'updates strength feedback as password changes' do
       expect(page).not_to have_content(t('instructions.password.strength.intro'))
-      
+   
       fill_in t('forms.password'), with: 'password'
       expect(page).to have_content(t('instructions.password.strength.intro'))
       expect(page).to have_content t('instructions.password.strength.i')
