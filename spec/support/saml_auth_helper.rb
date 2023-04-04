@@ -24,7 +24,7 @@ module SamlAuthHelper
 
     # IdP setting
     settings.idp_sso_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/auth2023"
-    settings.idp_slo_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/logout2022"
+    settings.idp_slo_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/logout2023"
     settings.idp_cert_fingerprint = idp_fingerprint
     settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'
 
@@ -79,7 +79,7 @@ module SamlAuthHelper
   end
 
   def saml_remote_logout_request_url(overrides: {}, params: {})
-    overrides[:idp_slo_target_url] = "http://#{IdentityConfig.store.domain_name}/api/saml/remotelogout2022"
+    overrides[:idp_slo_target_url] = "http://#{IdentityConfig.store.domain_name}/api/saml/remotelogout2023"
     logout_request.create(
       saml_settings(overrides: overrides),
       params,
