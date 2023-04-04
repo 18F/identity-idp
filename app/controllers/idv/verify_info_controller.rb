@@ -121,29 +121,5 @@ module Idv
     def increment_step_counts
       current_flow_step_counts['verify'] += 1
     end
-
-    # copied from verify_base_step. May want reconciliation with phone_step
-    def process_async_state(current_async_state)
-      if current_async_state.none?
-        idv_session.invalidate_verify_info_step!
-        render :show
-      elsif current_async_state.in_progress?
-        render 'shared/wait'
-      elsif current_async_state.missing?
-        analytics.idv_proofing_resolution_result_missing
-        flash.now[:error] = I18n.t('idv.failure.timeout')
-        render :show
-
-        delete_async
-        idv_session.invalidate_verify_info_step!
-
-        log_idv_verification_submitted_event(
-          success: false,
-          failure_reason: { idv_verification: [:timeout] },
-        )
-      elsif current_async_state.done?
-        async_state_done(current_async_state)
-      end
-    end
   end
 end

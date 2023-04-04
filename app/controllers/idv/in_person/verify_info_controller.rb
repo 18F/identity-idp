@@ -138,30 +138,6 @@ module Idv
           irs_reproofing: irs_reproofing?,
         }.merge(**acuant_sdk_ab_test_analytics_args)
       end
-
-      # copied from verify_base_step. May want reconciliation with phone_step
-      def process_async_state(current_async_state)
-        if current_async_state.none?
-          idv_session.resolution_successful = false
-          render 'idv/in_person/verify_info/show'
-        elsif current_async_state.in_progress?
-          render 'shared/wait'
-        elsif current_async_state.missing?
-          analytics.idv_proofing_resolution_result_missing
-          flash.now[:error] = I18n.t('idv.failure.timeout')
-          render 'idv/in_person/verify_info/show'
-
-          delete_async
-          idv_session.resolution_successful = false
-
-          log_idv_verification_submitted_event(
-            success: false,
-            failure_reason: { idv_verification: [:timeout] },
-          )
-        elsif current_async_state.done?
-          async_state_done(current_async_state)
-        end
-      end
     end
   end
 end
