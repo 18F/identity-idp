@@ -1,8 +1,10 @@
 class VendorOutageController < ApplicationController
   def show
-    @specific_message = OutageStatus.new.outage_message
+    outage_status = OutageStatus.new
+
+    @specific_message = outage_status.outage_message
     @show_gpo_option = from_idv_phone? && gpo_letter_available?
-    OutageStatus.new.track_event(analytics)
+    outage_status.track_event(analytics)
   end
 
   private
