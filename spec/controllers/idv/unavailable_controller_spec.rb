@@ -20,7 +20,7 @@ describe Idv::UnavailableController, type: :controller do
       expect(response.status).to eql(200)
     end
 
-    it 'logs an analytics event' do
+    it 'logs an analytics event with redirect_from nil' do
       expect(@analytics).to have_logged_event(
         'Vendor Outage',
         redirect_from: nil,
