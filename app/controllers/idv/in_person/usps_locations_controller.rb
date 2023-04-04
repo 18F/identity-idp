@@ -38,21 +38,28 @@ module Idv
         render json: response.to_json
       end
 
-      def proofer
-        @proofer ||= EnrollmentHelper.usps_proofer
-      end
-
       # save the Post Office location the user selected to an enrollment
       def update
         enrollment.update!(
           selected_location_details: update_params.as_json,
           issuer: current_sp&.issuer,
         )
+        add_proofing_component
 
         render json: { success: true }, status: :ok
       end
 
-      protected
+      private
+
+      def proofer
+        @proofer ||= EnrollmentHelper.usps_proofer
+      end
+
+      def add_proofing_component
+        ProofingComponent.
+          create_or_find_by(user: effective_user).
+          update(document_check: Idp::Constants::Vendors::USPS)
+      end
 
       def handle_error(err)
         remapped_error = case err
