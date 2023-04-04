@@ -78,9 +78,13 @@ describe TwoFactorAuthentication::TotpVerificationController do
 
     context 'when the user has reached the max number of TOTP attempts' do
       it 'tracks the event' do
-        allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
-        sign_in_before_2fa
-        user = subject.current_user
+        user = create(
+          :user,
+          :signed_up,
+          second_factor_attempts_count:
+            IdentityConfig.store.login_otp_confirmation_max_attempts - 1,
+        )
+        sign_in_before_2fa(user)
         @secret = user.generate_totp_secret
         Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
 

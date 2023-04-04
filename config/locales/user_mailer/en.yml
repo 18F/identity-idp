@@ -38,11 +38,11 @@ en:
         account will not be deleted until you confirm.'
       subject: How to delete your %{app_name} account
     account_verified:
+      change_password_link: change your password
       contact_link: contact us
-      disavowal_link: change your password
       intro_html: You successfully verified your identity with %{sp_name} on %{date}
         using %{app_name}. If you did not perform this action, please
-        %{contact_link} and sign in to %{disavowal_link}.
+        %{contact_link} and sign in to %{change_password_link}.
       subject: You verified your identity with %{sp_name}.
     add_email:
       footer: This link will expire in %{confirmation_period}.

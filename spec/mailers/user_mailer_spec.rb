@@ -554,6 +554,10 @@ describe UserMailer, type: :mailer do
         )
       expect(mail.to).to eq(nil)
     end
+
+    it 'links to the forgot password page' do
+      expect(mail.html_part.body).to have_selector("a[href='#{new_user_password_url}']")
+    end
   end
 
   describe '#in_person_ready_to_verify' do

@@ -81,16 +81,39 @@ es:
           continúa, regrese más tarde.
         text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
       phone:
-        fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong> Por su
-          seguridad, limitamos el número de veces que puede intentar verificar
-          su número de teléfono en línea.'
         heading: No pudimos encontrar coincidencias entre este número de teléfono y
           otros registros
         jobfail: Algo ha fallado y no podemos procesar tu solicitud en este momento.
           Vuelve a intentarlo.
+        rate_limited:
+          body: Por motivos de seguridad, se limita el número de veces que puede intentar
+            verificar su número de teléfono por Internet. Tendrás que esperar
+            %{time_left} y volver a empezar antes de volver a intentar la
+            verificación por teléfono.
+          gpo:
+            button: Verificar por correo
+            prompt: Continúa ahora con la verificación por correo, que suele tardar entre 3
+              y 7 días laborables.
+          heading: 'No hemos podido verificar su identidad por teléfono'
         timeout: Nuestra solicitud para verificar tu información ha caducado. Vuelve a
           intentarlo.
-        warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
+        warning:
+          attempts:
+            one: Por razones de seguridad, dispone de un solo intento.
+            other: Por razones de seguridad, le quedan %{count} intentos.
+          gpo:
+            button: Verificar por correo
+            explanation: Si no dispones de otro número de teléfono para intentarlo,
+              verifícalo por correo.
+            heading: Verificar por correo
+            how_long_it_takes: Suele tardar entre 3 y 7 días laborables.
+          heading: No pudimos asociarlo a este número
+          learn_more_link: 'Más información sobre qué número de teléfono usar'
+          next_steps_html: 'Vuelva a intentarlo con <strong>otro número</strong> que
+            utilice a menudo y desde hace tiempo. Puede ser un número del
+            trabajo o particular.'
+          try_again_button: 'Intente con otro número'
+          you_entered: 'Ud. entregó:'
       sessions:
         exception: Hubo un error interno al procesar su solicitud.
         fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong> Por su

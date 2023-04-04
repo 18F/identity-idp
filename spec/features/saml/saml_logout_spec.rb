@@ -120,7 +120,7 @@ feature 'SAML logout' do
           },
         )
 
-        expect(current_path).to eq(api_saml_logout2022_path)
+        expect(current_path).to eq(api_saml_logout2023_path)
         expect(page.driver.status_code).to eq(400)
 
         # The user should be signed in
@@ -134,7 +134,7 @@ feature 'SAML logout' do
     it 'logs the user out and redirects to the sign in page' do
       sign_in_and_2fa_user(user)
 
-      visit api_saml_logout2022_path
+      visit api_saml_logout2023_path
 
       expect(page).to have_content(t('devise.sessions.signed_out'))
       expect(page).to have_current_path(root_path)

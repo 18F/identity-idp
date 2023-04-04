@@ -62,6 +62,7 @@ shared_examples_for 'an idv phone errors controller action' do
   end
 
   context 'the user is not authenticated and not recovering their account' do
+    let(:user) { nil }
     it 'redirects to sign in' do
       get action
 
@@ -83,11 +84,17 @@ describe Idv::PhoneErrorsController do
   let(:idv_session) { double }
   let(:idv_session_user_phone_confirmation) { false }
   let(:user) { nil }
+  let(:phone) { '3602345678' }
+  let(:country_code) { 'US' }
 
   before do
     allow(idv_session).to receive(:user_phone_confirmation).
       and_return(idv_session_user_phone_confirmation)
     allow(idv_session).to receive(:current_user).and_return(user)
+    allow(idv_session).to receive(:previous_phone_step_params).and_return(
+      phone: phone,
+      international_code: country_code,
+    )
     allow(subject).to receive(:remaining_attempts).and_return(5)
     allow(controller).to receive(:idv_session).and_return(idv_session)
     stub_sign_in(user) if user
@@ -99,12 +106,21 @@ describe Idv::PhoneErrorsController do
   describe '#warning' do
     let(:action) { :warning }
     let(:template) { 'idv/phone_errors/warning' }
+    let(:user) { create(:user) }
 
     it_behaves_like 'an idv phone errors controller action'
 
-    context 'with throttle attempts' do
-      let(:user) { create(:user) }
+    it 'assigns phone' do
+      get action
+      expect(assigns(:phone)).to eql(phone)
+    end
 
+    it 'assigns country_code' do
+      get action
+      expect(assigns(:country_code)).to eql(country_code)
+    end
+
+    context 'with throttle attempts' do
       before do
         Throttle.new(throttle_type: :proof_address, user: user).increment!
       end

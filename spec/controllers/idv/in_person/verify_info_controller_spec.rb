@@ -158,12 +158,6 @@ describe Idv::InPerson::VerifyInfoController do
           expect(response).to redirect_to(idv_session_errors_ssn_failure_url)
         end
       end
-
-      it 'updates proofing component vendor' do
-        put :update
-
-        expect(user.proofing_component.document_check).to eq Idp::Constants::Vendors::USPS
-      end
     end
   end
 end
