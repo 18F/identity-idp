@@ -60,6 +60,8 @@
         <div class="margin-y-5">
           <%= render ButtonComponent.new(
                 action: ->(**tag_options, &block) { link_to idv_gpo_path, **tag_options, &block },
+                big: true,
+                wide: true,
                 outline: true,
               ).with_content(t('idv.failure.phone.warning.gpo.button')) %>
         </div>
