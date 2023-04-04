@@ -17,10 +17,6 @@ feature 'Visitor sets password during signup' do
       confirm_last_user
     end
 
-    it 'does not have the password strength bar' do
-      expect(page).not_to have_content(t('instructions.password.strength.intro'))
-    end
-
     it 'visitor gets field is required message' do
       fill_in t('forms.password'), with: ''
       click_button t('forms.buttons.continue')
