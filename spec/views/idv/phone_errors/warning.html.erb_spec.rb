@@ -37,7 +37,7 @@ describe 'idv/phone_errors/warning.html.erb' do
       t('idv.failure.phone.warning.learn_more_link'),
       href: help_center_redirect_path(
         category: 'verify-your-identity',
-        article: 'phone-number-and-phone-plan-in-your-name',
+        article: 'phone-number',
         flow: :idv,
         step: :phone,
         location: 'learn_more',

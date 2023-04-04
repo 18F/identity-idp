@@ -54,8 +54,6 @@ module Identity
     end
 
     config.load_defaults '7.0'
-    # Delete after deploying once
-    config.active_support.cache_format_version = 6.1
     config.active_record.belongs_to_required_by_default = false
     config.active_record.legacy_connection_handling = false
     config.assets.unknown_asset_fallback = true
