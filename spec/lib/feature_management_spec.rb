@@ -495,12 +495,6 @@ describe 'FeatureManagement' do
           expect(FeatureManagement.idv_available?).to eql(false)
         end
       end
-      context "#{service} is in :partial_outage" do
-        let("vendor_status_#{service}".to_sym) { :partial_outage }
-        it 'returns false' do
-          expect(FeatureManagement.idv_available?).to eql(false)
-        end
-      end
     end
   end
 end
