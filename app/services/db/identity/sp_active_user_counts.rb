@@ -1,7 +1,7 @@
 module Db
   module Identity
     class SpActiveUserCounts
-      def self.call(start, finish = Time.zone.now)
+      def self.by_issuer(start, finish = Time.zone.now)
         params = {
           start: ActiveRecord::Base.connection.quote(start),
           finish: ActiveRecord::Base.connection.quote(finish),
@@ -32,7 +32,44 @@ module Db
           WHERE union_of_ial1_and_ial2_results.issuer = service_providers.issuer
           GROUP BY service_providers.issuer ORDER BY service_providers.issuer
         SQL
-        ActiveRecord::Base.connection.execute(sql)
+        ActiveRecord::Base.connection.execute(sql).to_a
+      end
+
+      def self.overall(start, finish = Time.zone.now)
+        params = {
+          start: ActiveRecord::Base.connection.quote(start),
+          finish: ActiveRecord::Base.connection.quote(finish),
+        }
+        sql = format(<<~SQL, params)
+          SELECT
+            COUNT(by_user.is_ial1) AS ial1_active
+          , COUNT(by_user.is_ial2) AS ial2_active
+          FROM (
+            SELECT
+              identities.user_id
+            , BOOL_OR(last_ial1_authenticated_at BETWEEN %{start} AND %{finish}) AS is_ial1
+            , BOOL_OR(last_ial2_authenticated_at BETWEEN %{start} AND %{finish}) AS is_ial2
+            FROM identities
+            WHERE
+                 (last_ial1_authenticated_at BETWEEN %{start} AND %{finish})
+              OR (last_ial2_authenticated_at BETWEEN %{start} AND %{finish})
+            GROUP BY identities.user_id
+          ) by_user
+        SQL
+
+        results = ActiveRecord::Base.connection.execute(sql).to_a
+
+        total_ial1_active = results.first&.fetch('ial1_active') || 0
+        total_ial2_active = results.first&.fetch('ial2_active') || 0
+
+        [
+          {
+            issuer: 'LOGIN_ALL',
+            app_id: nil,
+            total_ial1_active:,
+            total_ial2_active:,
+          }.transform_keys(&:to_s),
+        ]
       end
     end
   end

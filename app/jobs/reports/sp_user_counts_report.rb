@@ -6,7 +6,7 @@ module Reports
 
     def perform(_date)
       user_counts = transaction_with_timeout do
-        Db::Identity::SpUserCounts.call
+        Db::Identity::SpUserCounts.by_issuer + Db::Identity::SpUserCounts.overall
       end
 
       track_report_data_events(user_counts)

@@ -1,7 +1,7 @@
 module Db
   module Identity
     class SpUserCounts
-      def self.call
+      def self.by_issuer
         sql = <<~SQL
           SELECT
             service_provider AS issuer,
@@ -13,7 +13,38 @@ module Db
           WHERE identities.service_provider = service_providers.issuer
           GROUP BY identities.service_provider ORDER BY identities.service_provider
         SQL
-        ActiveRecord::Base.connection.execute(sql)
+        ActiveRecord::Base.connection.execute(sql).to_a
+      end
+
+      def self.overall
+        sql = <<~SQL
+          SELECT
+            COUNT(*) AS num_users
+          , by_user.is_ial2
+          FROM (
+            SELECT
+              identities.user_id
+            , BOOL_OR(identities.verified_at IS NOT NULL) AS is_ial2
+            FROM identities
+            GROUP BY identities.user_id
+          ) by_user
+          GROUP BY by_user.is_ial2
+        SQL
+
+        results = ActiveRecord::Base.connection.execute(sql).to_a
+
+        ial1_total = results.find { |r| !r['is_ial2'] }&.fetch('num_users') || 0
+        ial2_total = results.find { |r| r['is_ial2'] }&.fetch('num_users') || 0
+
+        [
+          {
+            issuer: 'LOGIN_ALL',
+            app_id: nil,
+            total: ial1_total + ial2_total,
+            ial1_total:,
+            ial2_total:,
+          }.transform_keys(&:to_s),
+        ]
       end
     end
   end
