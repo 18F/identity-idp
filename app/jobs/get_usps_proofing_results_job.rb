@@ -117,6 +117,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollment_code: enrollment.enrollment_code,
       enrollment_id: enrollment.id,
       minutes_since_last_status_check: enrollment.minutes_since_last_status_check,
+      minutes_since_last_status_check_completed:
+        enrollment.minutes_since_last_status_check_completed,
       minutes_since_last_status_update: enrollment.minutes_since_last_status_update,
       minutes_since_established: enrollment.minutes_since_established,
       minutes_to_completion: complete ? enrollment.minutes_since_established : nil,

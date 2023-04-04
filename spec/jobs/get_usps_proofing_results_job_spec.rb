@@ -6,6 +6,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
       pending_enrollment.update(
         enrollment_established_at: Time.zone.now - 3.days,
         status_check_attempted_at: Time.zone.now - 15.minutes,
+        status_check_completed_at: Time.zone.now - 17.minutes,
         status_updated_at: Time.zone.now - 2.days,
       )
 
@@ -21,6 +22,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
         fraud_suspected: response['fraudSuspected'],
         issuer: pending_enrollment.issuer,
         minutes_since_last_status_check: 15.0,
+        minutes_since_last_status_check_completed: 17.0,
         minutes_since_last_status_update: 2.days.in_minutes,
         minutes_to_completion: 3.days.in_minutes,
         minutes_since_established: 3.days.in_minutes,
