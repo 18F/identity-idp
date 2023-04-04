@@ -1,19 +1,17 @@
 module Idv
   module InPerson
     class VerifyInfoController < ApplicationController
-      include IdvSession
+      include IdvStepConcern
       include StepIndicatorConcern
       include StepUtilitiesConcern
+      include Steps::ThreatMetrixStepHelper
       include VerifyInfoConcern
 
       before_action :renders_404_if_flag_not_set
-      before_action :confirm_two_factor_authenticated
       before_action :confirm_ssn_step_complete
       before_action :confirm_verify_info_step_needed
 
       def show
-        @in_person_proofing = true
-        @verify_info_submit_path = idv_in_person_verify_info_path
         @step_indicator_steps = step_indicator_steps
 
         increment_step_counts
@@ -44,7 +42,6 @@ module Idv
 
         pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
         pii[:state_id_type] = 'drivers_license' unless pii.blank?
-        add_proofing_component
 
         ssn_throttle.increment!
         if ssn_throttle.throttled?
@@ -95,12 +92,6 @@ module Idv
         render_not_found unless IdentityConfig.store.in_person_verify_info_controller_enabled
       end
 
-      def add_proofing_component
-        ProofingComponent.
-          create_or_find_by(user: current_user).
-          update(document_check: Idp::Constants::Vendors::USPS)
-      end
-
       # copied from address_controller
       def confirm_ssn_step_complete
         return if pii.present? && pii[:ssn].present?
@@ -146,30 +137,6 @@ module Idv
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
         }.merge(**acuant_sdk_ab_test_analytics_args)
-      end
-
-      # copied from verify_base_step. May want reconciliation with phone_step
-      def process_async_state(current_async_state)
-        if current_async_state.none?
-          idv_session.resolution_successful = false
-          render 'idv/verify_info/show'
-        elsif current_async_state.in_progress?
-          render 'shared/wait'
-        elsif current_async_state.missing?
-          analytics.idv_proofing_resolution_result_missing
-          flash.now[:error] = I18n.t('idv.failure.timeout')
-          render 'idv/verify_info/show'
-
-          delete_async
-          idv_session.resolution_successful = false
-
-          log_idv_verification_submitted_event(
-            success: false,
-            failure_reason: { idv_verification: [:timeout] },
-          )
-        elsif current_async_state.done?
-          async_state_done(current_async_state)
-        end
       end
     end
   end
