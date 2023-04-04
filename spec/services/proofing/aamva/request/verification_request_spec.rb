@@ -103,6 +103,12 @@ describe Proofing::Aamva::Request::VerificationRequest do
 
         expect(result.success?).to eq(true)
       end
+
+      it 'sends state id jurisdiction to AAMVA' do
+        applicant.state_id_data.state_id_jurisdiction = 'NY'
+
+        expect(subject.body).to match(/MessageDestinationId>NY/)
+      end
     end
 
     # rubocop:disable Layout/LineLength
