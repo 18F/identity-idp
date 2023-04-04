@@ -371,6 +371,7 @@ describe Profile do
 
       expect(profile).to_not be_active
       expect(profile.fraud_review_pending).to eq(true)
+      expect(profile.fraud_review_pending_at).to_not be_nil
       expect(profile.fraud_rejection).to eq(false)
     end
   end
@@ -400,6 +401,10 @@ describe Profile do
 
       it 'sends an email' do
         expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(1)
+      end
+
+      it 'sets the fraud_rejection_at timestamp' do
+        expect(profile.fraud_rejection_at).to_not be_nil
       end
     end
 
