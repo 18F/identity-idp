@@ -18,13 +18,11 @@ module IdvStepConcern
 
   # copied from doc_auth_controller
   def flow_path
-    flow_session[:flow_path]
+    flow_session&.[](:flow_path)
   end
 
   def confirm_document_capture_complete
     return if pii_from_doc.present?
-
-    flow_path = flow_session&.[](:flow_path)
 
     if IdentityConfig.store.doc_auth_document_capture_controller_enabled &&
        flow_path == 'standard'
