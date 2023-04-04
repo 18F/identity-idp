@@ -17,6 +17,10 @@ feature 'Visitor sets password during signup' do
       confirm_last_user
     end
 
+    it 'does not have the password strength bar' do
+      expect(page).not_to have_content(t('instructions.password.strength.intro'))
+    end
+
     it 'visitor gets field is required message' do
       fill_in t('forms.password'), with: ''
       click_button t('forms.buttons.continue')
@@ -37,15 +41,20 @@ feature 'Visitor sets password during signup' do
       confirm_last_user
     end
 
+    it 'does not have the password strength bar' do
+      fill_in t('forms.password'), with: 'howdy'
+      expect(page).to have_content(t('instructions.password.strength.intro'))
+    end
+
     it 'updates strength feedback as password changes' do
       fill_in t('forms.password'), with: 'password'
-      expect(page).to have_content 'Very weak'
+      expect(page).to have_content t('instructions.password.strength.i')
 
       fill_in t('forms.password'), with: '123456789'
       expect(page).to have_content t('zxcvbn.feedback.this_is_a_top_10_common_password')
 
       fill_in t('forms.password'), with: 'this is a great sentence'
-      expect(page).to have_content 'Great'
+      expect(page).to have_content t('instructions.password.strength.iv')
     end
   end
 
