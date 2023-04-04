@@ -115,10 +115,10 @@ feature 'User profile' do
         click_link 'Edit', href: manage_password_path
       end
 
-      expect(page).to_not have_css('#pw-strength-cntnr.display-none')
+      expect(page).not_to have_content(t('instructions.password.strength.intro'))
 
       fill_in t('forms.passwords.edit.labels.password'), with: 'this is a great sentence'
-      expect(page).to have_content 'Great'
+      expect(page).to have_content t('instructions.password.strength.v')
 
       check t('components.password_toggle.toggle_label')
 
