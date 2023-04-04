@@ -11,11 +11,13 @@ module Users
       two_factor_options_form
       @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(request.ip)
       @presenter = two_factor_options_presenter
-      analytics.user_registration_2fa_setup_visit
+      analytics.user_registration_2fa_setup_visit(sign_up_mfa_priority_bucket: @sign_up_mfa_selection_order_bucket)
     end
 
     def create
       result = submit_form
+      @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(request.ip)
+      result = result.merge(sign_up_mfa_priority_bucket: @sign_up_mfa_selection_order_bucket)
       analytics.user_registration_2fa_setup(**result.to_h)
       irs_attempts_api_tracker.mfa_enroll_options_selected(
         success: result.success?,

@@ -12,11 +12,13 @@ module Users
       @after_setup_path = after_mfa_setup_path
       @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(request.ip)
       @presenter = two_factor_options_presenter
-      analytics.user_registration_2fa_additional_setup_visit
+      analytics.user_registration_2fa_additional_setup_visit(sign_up_mfa_priority_bucket: @sign_up_mfa_selection_order_bucket)
     end
 
     def update
       result = submit_form
+      @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(request.ip)
+      result = result.merge(sign_up_mfa_priority_bucket: @sign_up_mfa_selection_order_bucket)
       analytics.user_registration_2fa_additional_setup(**result.to_h)
 
       if result.success?
