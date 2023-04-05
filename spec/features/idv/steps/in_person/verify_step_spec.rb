@@ -111,7 +111,8 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
       expect(page).to have_text(
-        "#{I18n.t('idv.form.issuing_state')}: #{Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURIS}",
+        "#{I18n.t('idv.form.issuing_state')}: #{Idp::Constants::
+        MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION}",
       )
       expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
       expect_good_state_id_address
@@ -163,13 +164,18 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
       expect(page).to have_text(
-        "#{I18n.t('idv.form.issuing_state')}: #{Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURIS}",
+        "#{I18n.t('idv.form.issuing_state')}: #{Idp::Constants::
+        MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION}",
       )
       expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
       expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_ADDRESS1).twice
       expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_ADDRESS2).twice
       expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_CITY).twice
-      expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]).twice
+      expect(page).to have_text(
+        Idp::Constants::
+                MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:state_id_state],
+      ).twice
+      expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]).once
       expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_ZIPCODE).twice
       expect(page).to have_content(t('headings.residential_address'))
       expect(page).to have_content(t('headings.ssn'))
