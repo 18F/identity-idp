@@ -50,7 +50,7 @@
         required: true,
       ) %>
 
-  <%= f.input :request_id, as: :hidden, input_html: { value: params[:request_id] || request_id } %>
+  <%= f.input :request_id, as: :hidden %>
   <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-y-5' %>
 <% end %>
 

@@ -12,6 +12,7 @@ module SignUp
 
     def new
       @register_user_email_form = RegisterUserEmailForm.new(
+        request_id:,
         analytics: analytics,
         attempts_tracker: irs_attempts_api_tracker,
       )
@@ -20,11 +21,12 @@ module SignUp
         sign_in_a_b_test_bucket: @sign_in_a_b_test_bucket,
         from_sign_in: params[:source] == 'sign_in',
       )
-      render :new, locals: { request_id: nil }, formats: :html
+      render :new, formats: :html
     end
 
     def create
       @register_user_email_form = RegisterUserEmailForm.new(
+        request_id:,
         analytics: analytics,
         attempts_tracker: irs_attempts_api_tracker,
       )
@@ -41,7 +43,7 @@ module SignUp
       if result.success?
         process_successful_creation
       else
-        render :new, locals: { request_id: sp_request_id }
+        render :new
       end
     end
 
@@ -55,7 +57,7 @@ module SignUp
     end
 
     def permitted_params
-      params.require(:user).permit(:email, :email_language, :request_id, :terms_accepted)
+      params.require(:user).permit(:email, :email_language, :terms_accepted)
     end
 
     def process_successful_creation
@@ -65,15 +67,19 @@ module SignUp
       resend_confirmation = params[:user][:resend]
       session[:email] = @register_user_email_form.email
 
-      redirect_to sign_up_verify_email_url(
-        resend: resend_confirmation, request_id: permitted_params[:request_id],
-      )
+      redirect_to sign_up_verify_email_url(resend: resend_confirmation)
     end
 
-    def sp_request_id
-      request_id = permitted_params.fetch(:request_id, '')
+    def param_request_id
+      params.dig(:user, :request_id).presence
+    end
 
-      ServiceProviderRequestProxy.from_uuid(request_id).uuid
+    def session_request_id
+      sp_session[:request_id]
+    end
+
+    def request_id
+      ServiceProviderRequestProxy.from_uuid(param_request_id || session_request_id).uuid
     end
 
     def redirect_if_ial2_and_idv_unavailable

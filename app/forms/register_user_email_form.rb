@@ -6,7 +6,7 @@ class RegisterUserEmailForm
   validate :validate_terms_accepted
   validates_inclusion_of :email_language, in: I18n.available_locales.map(&:to_s).append(nil)
 
-  attr_reader :email_address, :terms_accepted
+  attr_reader :request_id, :email_address, :terms_accepted
   attr_accessor :email_language
   attr_accessor :password_reset_requested
 
@@ -14,7 +14,8 @@ class RegisterUserEmailForm
     ActiveModel::Name.new(self, nil, 'User')
   end
 
-  def initialize(analytics:, attempts_tracker:, password_reset_requested: false)
+  def initialize(request_id:, analytics:, attempts_tracker:, password_reset_requested: false)
+    @request_id = request_id
     @throttled = false
     @password_reset_requested = password_reset_requested
     @analytics = analytics
@@ -41,7 +42,6 @@ class RegisterUserEmailForm
       email: params[:email],
       email_language: params[:email_language],
     )
-    self.request_id = params[:request_id]
 
     self.success = valid?
     process_successful_submission(request_id, instructions) if success
@@ -61,7 +61,7 @@ class RegisterUserEmailForm
   private
 
   attr_writer :email, :email_address
-  attr_accessor :success, :request_id
+  attr_accessor :success
 
   def build_user_and_email_address_with_email(email:, email_language:)
     self.email_address = user.email_addresses.build(
