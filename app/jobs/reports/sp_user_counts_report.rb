@@ -9,9 +9,7 @@ module Reports
         Db::Identity::SpUserCounts.call
       end
 
-      results = save_report(REPORT_NAME, user_counts.to_json, extension: 'json')
-
-      results
+      save_report(REPORT_NAME, user_counts.to_json, extension: 'json')
     end
   end
 end
