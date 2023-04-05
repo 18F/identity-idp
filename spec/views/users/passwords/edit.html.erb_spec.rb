@@ -28,8 +28,9 @@ describe 'users/passwords/edit.html.erb' do
   it 'contains minimum password length requirements' do
     render
 
-    expect(rendered).to have_content t(
-      'instructions.password.info.lead', min_length: Devise.password_length.first
-    )
+    expect(rendered).to have_content strip_tags(
+      t('instructions.password.info.lead_html',
+        min_length: Devise.password_length.min
+    ))
   end
 end
