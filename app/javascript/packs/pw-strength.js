@@ -17,6 +17,7 @@ const snakeCase = (string) => string.replace(/[ -]/g, '_').replace(/\W/g, '').to
 
 // fallback if zxcvbn lookup fails / field is empty
 const fallback = ['pw-na', '...'];
+const pwMinimumLength = document.getElementById('pw-strength-cntnr').getAttribute('data-pw-length');
 
 function getStrength(z) {
   // override the strength value to 2 if the password is < 12
@@ -67,15 +68,15 @@ export function getFeedback(z) {
   }
 
   if (!warning && !suggestions.length) {
+    if (z.password.length < pwMinimumLength) {
+      return t('errors.attributes.password.too_short.other', { count: pwMinimumLength });
+    }
+
     return '&nbsp;';
   }
 
   if (warning) {
     return lookup(warning);
-  }
-
-  if (z.password.length < 12) {
-    return t('errors.attributes.password.too_short');
   }
 
   return `${suggestions.map((s) => lookup(s)).join('. ')}`;
