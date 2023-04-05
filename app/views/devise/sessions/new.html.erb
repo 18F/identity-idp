@@ -54,11 +54,13 @@
     <h2 class='separator-text'>
       <%= t('headings.create_account_with_sp.cta', app_name: APP_NAME) %>
     </h2>
-    <%= link_to(
-          t('links.create_account'),
-          sign_up_email_url(request_id: @request_id, source: :sign_in),
-          class: 'usa-button usa-button--big usa-button--outline usa-button--full-width margin-bottom-105',
-        ) %>
+    <%= render ButtonComponent.new(
+          action: ->(**tag_options, &block) { link_to(sign_up_email_url(source: :sign_in), **tag_options, &block) },
+          big: true,
+          outline: true,
+          full_width: true,
+          class: 'margin-bottom-105',
+        ).with_content(t('links.create_account')) %>
   <% end %>
 <% end %>
 <% if @ial && desktop_device? %>
@@ -83,10 +85,7 @@
   <% end %>
 
   <div class="margin-bottom-1">
-    <%= link_to(
-          t('links.passwords.forgot'),
-          new_user_password_url(request_id: @request_id),
-        ) %>
+    <%= link_to(t('links.passwords.forgot'), new_user_password_url) %>
   </div>
 
   <p class="margin-y-1">
