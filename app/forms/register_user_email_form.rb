@@ -14,7 +14,7 @@ class RegisterUserEmailForm
     ActiveModel::Name.new(self, nil, 'User')
   end
 
-  def initialize(request_id:, analytics:, attempts_tracker:, password_reset_requested: false)
+  def initialize(analytics:, attempts_tracker:, request_id: nil, password_reset_requested: false)
     @request_id = request_id
     @throttled = false
     @password_reset_requested = password_reset_requested

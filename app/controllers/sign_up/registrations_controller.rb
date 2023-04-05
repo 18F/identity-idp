@@ -12,7 +12,6 @@ module SignUp
 
     def new
       @register_user_email_form = RegisterUserEmailForm.new(
-        request_id:,
         analytics: analytics,
         attempts_tracker: irs_attempts_api_tracker,
       )
@@ -70,16 +69,8 @@ module SignUp
       redirect_to sign_up_verify_email_url(resend: resend_confirmation)
     end
 
-    def param_request_id
-      params.dig(:user, :request_id).presence
-    end
-
-    def session_request_id
-      sp_session[:request_id]
-    end
-
     def request_id
-      ServiceProviderRequestProxy.from_uuid(param_request_id || session_request_id).uuid
+      ServiceProviderRequestProxy.from_uuid(sp_session[:request_id]).uuid
     end
 
     def redirect_if_ial2_and_idv_unavailable
