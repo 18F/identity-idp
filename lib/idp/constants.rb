@@ -116,7 +116,7 @@ module Idp
 
     MOCK_IDV_APPLICANT_WITH_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT_WITH_SSN.merge(
       {
-        same_address_as_id: false,
+        same_address_as_id: 'false',
         state_id_address1: '73 FAKE CIRCLE',
         state_id_address2: '#2',
         state_id_city: 'LESSER FALLS',
