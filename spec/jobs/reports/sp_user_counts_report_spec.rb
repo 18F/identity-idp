@@ -17,7 +17,7 @@ RSpec.describe Reports::SpUserCountsReport do
           ial1_total: 0,
           ial2_total: 0,
           app_id: nil,
-        }
+        },
       ],
     )
   end
@@ -81,7 +81,7 @@ RSpec.describe Reports::SpUserCountsReport do
     create(:service_provider_identity, user_id: 1, service_provider: issuer)
     create(:service_provider_identity, user_id: 2, service_provider: issuer)
     create(
-      :service_provider_identity, :verified, user_id: 3, service_provider: issuer,
+      :service_provider_identity, :verified, user_id: 3, service_provider: issuer
     )
 
     issuer2 = 'issuer2'
@@ -95,7 +95,7 @@ RSpec.describe Reports::SpUserCountsReport do
         total: 3,
         ial1_total: 2,
         ial2_total: 1,
-        app_id: app_id
+        app_id: app_id,
       },
       {
         issuer: issuer2,
@@ -110,7 +110,7 @@ RSpec.describe Reports::SpUserCountsReport do
         ial1_total: 2,
         ial2_total: 1,
         app_id: nil,
-      }
+      },
     ]
 
     result = JSON.parse(subject.perform(Time.zone.today), symbolize_names: true)

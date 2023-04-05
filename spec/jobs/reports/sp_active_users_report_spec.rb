@@ -17,7 +17,7 @@ describe Reports::SpActiveUsersReport do
           app_id: nil,
           total_ial1_active: 0,
           total_ial2_active: 0,
-        }
+        },
       ],
     )
   end
@@ -110,7 +110,7 @@ describe Reports::SpActiveUsersReport do
         app_id: nil,
         total_ial1_active: 0,
         total_ial2_active: 3,
-      }
+      },
     ]
 
     report = JSON.parse(subject.perform(job_date), symbolize_names: true)
