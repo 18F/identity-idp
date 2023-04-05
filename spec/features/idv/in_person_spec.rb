@@ -122,6 +122,10 @@ RSpec.describe 'In Person Proofing', js: true do
     sign_in_and_2fa_user(user)
     begin_in_person_proofing(user)
 
+    # prepare page
+    expect(page).to have_content(t('in_person_proofing.headings.prepare'))
+    complete_prepare_step(user)
+    
     # location page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
@@ -129,11 +133,6 @@ RSpec.describe 'In Person Proofing', js: true do
     within page.first('.location-collection-item') do
       click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
     end
-
-    # prepare page
-    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
-    expect(page).to have_content(t('in_person_proofing.headings.prepare'))
-    complete_prepare_step(user)
 
     # state ID page
     expect_in_person_step_indicator_current_step(
@@ -256,25 +255,27 @@ RSpec.describe 'In Person Proofing', js: true do
     complete_all_in_person_proofing_steps
   end
 
-  it 'allows the user to go back to document capture from prepare step', allow_browser_log: true do
+  it 'allows the user to go back to document capture from location step', allow_browser_log: true do
     sign_in_and_2fa_user
     begin_in_person_proofing
 
-    # location page
-    expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
-    search_for_post_office
-    within page.first('.location-collection-item') do
-      click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
-    end
-
     # prepare page
     expect(page).to have_content(t('in_person_proofing.headings.prepare'))
-    click_button t('forms.buttons.back')
+    complete_prepare_step
 
+    # location page
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
 
+    # location page results
     search_for_post_office
     expect(page).to have_css('.location-collection-item', wait: 10)
+
+    # back to prepare page
+    click_button t('forms.buttons.back')
+    expect(page).to have_content(t('in_person_proofing.headings.prepare'))
+
+    # back to doc capture page
     click_button t('forms.buttons.back')
 
     # Note: This is specifically for failed barcodes. Other cases may use
