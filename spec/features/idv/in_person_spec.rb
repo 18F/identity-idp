@@ -125,7 +125,7 @@ RSpec.describe 'In Person Proofing', js: true do
     # prepare page
     expect(page).to have_content(t('in_person_proofing.headings.prepare'))
     complete_prepare_step(user)
-    
+
     # location page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
