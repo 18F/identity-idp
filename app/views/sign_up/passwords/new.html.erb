@@ -11,7 +11,7 @@
       method: :post,
       html: { autocomplete: 'off' },
     ) do |f| %>
-  <%= render PasswordToggleComponent.new(
+  <%= render PasswordConfirmationComponent.new(
         form: f,
         field_options: {
           label: t('forms.password'),

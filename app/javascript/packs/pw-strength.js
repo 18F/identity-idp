@@ -90,7 +90,8 @@ export function getForbiddenPasswords(element) {
 }
 
 function analyzePw() {
-  const input = document.querySelector('.password-toggle__input');
+  // TODO: Temporarily changed value
+  const input = document.querySelector('.password-confirmation__input1');
   const pwCntnr = document.getElementById('pw-strength-cntnr');
   const pwStrength = document.getElementById('pw-strength-txt');
   const pwFeedback = document.getElementById('pw-strength-feedback');
