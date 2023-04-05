@@ -294,7 +294,10 @@ describe Profile do
 
   describe '#activate_after_passing_review' do
     it 'activates a profile if it passes fraud review' do
-      profile = create(:profile, user: user, active: false, fraud_review_pending_at: Time.zone.today - 1.day)
+      profile = create(
+        :profile, user: user, active: false,
+                  fraud_review_pending_at: Time.zone.today - 1.day
+      )
       profile.activate_after_passing_review
 
       expect(profile).to be_active
