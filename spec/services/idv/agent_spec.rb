@@ -4,7 +4,7 @@ require 'ostruct'
 describe Idv::Agent do
   include IdvHelper
 
-  let(:user) { build(:user) }
+  let(:user) { create(:user) }
 
   let(:bad_phone) do
     Proofing::Mock::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER

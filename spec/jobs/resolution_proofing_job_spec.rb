@@ -313,9 +313,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
       it 'verifies the state ID address with AAMVA and LexisNexis' do
         stub_vendor_requests
 
-        expect_any_instance_of(Proofing::LexisNexis::InstantVerify::Proofer).to receive(:proof).with(
-          hash_including(state_id_address),
-        ).and_call_original
+        expect_any_instance_of(Proofing::LexisNexis::InstantVerify::Proofer).to receive(:proof).
+          with(hash_including(state_id_address)).and_call_original
         expect_any_instance_of(Proofing::Aamva::Proofer).to receive(:proof).with(
           hash_including(state_id_address),
         ).and_call_original
