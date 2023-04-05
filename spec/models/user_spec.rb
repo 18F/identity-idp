@@ -510,6 +510,35 @@ RSpec.describe User do
     end
   end
 
+  describe '#fraud_review_eligible?' do
+    context 'when verified_at is nil' do
+      it 'returns false' do
+        user = User.new
+        create(:profile, user: user, fraud_review_pending: true, verified_at: nil)
+
+        expect(user.fraud_review_eligible?).to be_falsey
+      end
+    end
+
+    context 'when verified_at is within 30 days' do
+      it 'returns true' do
+        user = User.new
+        create(:profile, user: user, fraud_review_pending: true, verified_at: 15.days.ago)
+
+        expect(user.fraud_review_eligible?).to eq true
+      end
+    end
+
+    context 'when verified_at is older than 30 days' do
+      it 'returns false' do
+        user = User.new
+        create(:profile, user: user, fraud_review_pending: true, verified_at: 45.days.ago)
+
+        expect(user.fraud_review_eligible?).to eq false
+      end
+    end
+  end
+
   describe '#fraud_review_pending?' do
     it 'returns true if fraud review is pending' do
       user = User.new
