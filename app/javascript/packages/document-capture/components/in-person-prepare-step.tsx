@@ -29,7 +29,7 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
       setIsSubmitting(true);
       removeUnloadProtection();
       await trackEvent('IdV: prepare submitted');
-      window.location.href = (event.target as HTMLAnchorElement).href;
+      window.location.href = inPersonURL!;
     }
   };
 
@@ -59,7 +59,7 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
       {flowPath === 'hybrid' && <FormStepsButton.Continue />}
       {inPersonURL && flowPath === 'standard' && (
         <div className="margin-y-5">
-          <SpinnerButton href={inPersonURL} onClick={onContinue} isBig isWide>
+          <SpinnerButton onClick={onContinue} isBig isWide>
             {t('forms.buttons.continue')}
           </SpinnerButton>
         </div>
@@ -78,7 +78,7 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
         )}
       </p>
       <InPersonTroubleshootingOptions />
-      <BackButton includeBorder onClick={toPreviousStep} />
+      <BackButton role="link" includeBorder onClick={toPreviousStep} />
     </>
   );
 }

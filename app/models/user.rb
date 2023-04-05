@@ -102,6 +102,11 @@ class User < ApplicationRecord
     profiles.gpo_verification_pending.order(created_at: :desc).first
   end
 
+  def fraud_review_eligible?
+    return false if !fraud_review_pending?
+    fraud_review_pending_profile.verified_at&.after?(30.days.ago)
+  end
+
   def fraud_review_pending?
     fraud_review_pending_profile.present?
   end
