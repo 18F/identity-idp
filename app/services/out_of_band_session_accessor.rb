@@ -72,8 +72,7 @@ class OutOfBandSessionAccessor
   # @return [Hash]
   def session_data
     @session_data ||= session_store.send(
-      :find_session, {},
-      Rack::Session::SessionId.new(session_uuid)
+      :find_session, {}, Rack::Session::SessionId.new(session_uuid),
     ).last || {}
   end
 
