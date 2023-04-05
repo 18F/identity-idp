@@ -105,6 +105,7 @@ module Idp
       state_id_address2: '2nd Address Line',
       state_id_city: 'Best City',
       state_id_zipcode: '12345',
+      state_id_state: 'Montana',
     ).freeze
 
     MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900-66-1234').freeze
