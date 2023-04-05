@@ -8,7 +8,7 @@ describe Users::BackupCodeSetupController do
         :authenticate_user!,
         :confirm_user_authenticated_for_2fa_setup,
         :apply_secure_headers_override,
-        :confirm_recently_authenticated_2fa,
+        [:confirm_recently_authenticated_2fa, except: ['reminder']],
       )
     end
   end

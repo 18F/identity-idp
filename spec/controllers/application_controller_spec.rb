@@ -402,7 +402,7 @@ describe ApplicationController do
     end
 
     context 'with a SAML request' do
-      let(:sp_session_request_url) { '/api/saml/auth2022' }
+      let(:sp_session_request_url) { '/api/saml/auth2023' }
       it 'returns the saml completion url' do
         expect(url_with_updated_params).to eq complete_saml_url
       end
@@ -440,9 +440,9 @@ describe ApplicationController do
     context 'with saml_internal_post feature flag set to false' do
       before { allow(IdentityConfig.store).to receive(:saml_internal_post).and_return false }
       context 'with a SAML request' do
-        let(:sp_session_request_url) { '/api/saml/auth2022?SAMLRequest=blah' }
+        let(:sp_session_request_url) { '/api/saml/auth2023?SAMLRequest=blah' }
         it 'returns the original request url' do
-          expect(url_with_updated_params).to eq '/api/saml/auth2022?SAMLRequest=blah'
+          expect(url_with_updated_params).to eq '/api/saml/auth2023?SAMLRequest=blah'
         end
       end
 

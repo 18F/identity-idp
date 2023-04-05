@@ -1,6 +1,6 @@
 {
   "name": "@18f/identity-build-sass",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": false,
   "description": "Stylesheet compilation utility with reasonable defaults and fast performance.",
   "type": "module",
@@ -14,7 +14,8 @@
   },
   "files": [
     "index.js",
-    "cli.js"
+    "cli.js",
+    "get-error-sass-stack-paths.js"
   ],
   "license": "CC0-1.0",
   "bugs": {
