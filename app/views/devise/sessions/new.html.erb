@@ -34,17 +34,18 @@
         class: 'margin-bottom-4',
         field_options: { required: true },
       ) %>
-  <%= f.input :request_id, as: :hidden, input_html: { value: @request_id } %>
   <div class='margin-bottom-4'>
     <%= f.submit t('links.next'), full_width: true, wide: false %>
     <h2 class='separator-text'>
       <%= t('headings.create_account_with_sp.cta', app_name: APP_NAME) %>
     </h2>
-    <%= link_to(
-          t('links.create_account'),
-          sign_up_email_url(request_id: @request_id),
-          class: 'usa-button usa-button--big usa-button--outline usa-button--full-width margin-top-1',
-        ) %>
+    <%= render ButtonComponent.new(
+          action: ->(**tag_options, &block) { link_to(sign_up_email_url, **tag_options, &block) },
+          big: true,
+          outline: true,
+          full_width: true,
+          class: 'margin-top-1',
+        ).with_content(t('links.create_account')) %>
   </div>
 <% end %>
 <% if @ial && desktop_device? %>
@@ -69,10 +70,7 @@
   <% end %>
 
   <div class="margin-bottom-1">
-    <%= link_to(
-          t('links.passwords.forgot'),
-          new_user_password_url(request_id: @request_id),
-        ) %>
+    <%= link_to(t('links.passwords.forgot'), new_user_password_url) %>
   </div>
 
   <p class="margin-y-1">

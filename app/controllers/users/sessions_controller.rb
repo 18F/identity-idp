@@ -25,7 +25,6 @@ module Users
       )
       override_csp_for_google_analytics
 
-      @request_id = request_id_if_valid
       @ial = sp_session_ial
       @browser_is_ie11 = browser_is_ie11?
       super
@@ -121,7 +120,7 @@ module Users
     end
 
     def auth_params
-      params.require(:user).permit(:email, :password, :request_id)
+      params.require(:user).permit(:email, :password)
     end
 
     def process_locked_out_user
@@ -217,14 +216,6 @@ module Users
       AccountReset::FindPendingRequestForUser.new(
         current_user,
       ).call
-    end
-
-    LETTERS_AND_DASHES = /\A[a-z0-9-]+\Z/i
-
-    def request_id_if_valid
-      request_id = (params[:request_id] || sp_session[:request_id]).to_s
-
-      request_id if LETTERS_AND_DASHES.match?(request_id)
     end
 
     def override_csp_for_google_analytics

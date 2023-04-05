@@ -1,7 +1,5 @@
 <% title t('titles.passwords.change') %>
 
-<% request_id = params[:request_id] || sp_session[:request_id] %>
-
 <%= render PageHeadingComponent.new.with_content(t('headings.passwords.change')) %>
 
 <p><%= t('instructions.password.password_key') %></p>
@@ -21,7 +19,6 @@
           required: true,
         },
       ) %>
-  <%= hidden_field_tag('request_id', request_id) %>
   <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>
   <%= f.submit t('forms.passwords.edit.buttons.submit'), class: 'display-block margin-y-5' %>
 <% end %>
