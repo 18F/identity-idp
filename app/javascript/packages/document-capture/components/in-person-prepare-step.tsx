@@ -16,9 +16,9 @@ import { InPersonContext } from '../context';
 function InPersonPrepareStep({ toPreviousStep, value }) {
   const { t } = useI18n();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { inPersonURL } = useContext(InPersonContext);
+  const { inPersonURL, inPersonCtaVariantActive } = useContext(InPersonContext);
   const { flowPath } = useContext(UploadContext);
-  const { trackEvent } = useContext(AnalyticsContext);
+  const { trackEvent, setSubmitEventMetadata } = useContext(AnalyticsContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
   const { selectedLocationAddress } = value;
 
@@ -28,6 +28,7 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
     if (!isSubmitting) {
       setIsSubmitting(true);
       removeUnloadProtection();
+      setSubmitEventMetadata({in_person_cta_variant: inPersonCtaVariantActive })
       await trackEvent('IdV: prepare submitted');
       window.location.href = (event.target as HTMLAnchorElement).href;
     }

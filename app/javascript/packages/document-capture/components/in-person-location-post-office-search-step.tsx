@@ -21,7 +21,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [isLoadingLocations, setLoadingLocations] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
-  const { setSubmitEventMetadata } = useContext(AnalyticsContext);
+  const { setSubmitEventMetadata, trackEvent } = useContext(AnalyticsContext);
   const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
     null,
   );
@@ -47,7 +47,6 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       const selectedLocationAddress = `${streetAddress}, ${formattedCityStateZip}`;
       setSubmitEventMetadata({
         selected_location: selectedLocationAddress,
-        in_person_cta_variant: inPersonCtaVariantActive,
       });
       onChange({ selectedLocationAddress });
       if (autoSubmit) {
@@ -71,6 +70,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
           json: selected,
           method: 'PUT',
         });
+        await trackEvent('IdV: location submitted');
         if (mountedRef.current) {
           setAutoSubmit(true);
           setImmediate(() => {
@@ -81,7 +81,6 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
             e.preventDefault();
 
             removeUnloadProtection();
-
             if (inPersonURL) {
               window.location.href = inPersonURL;
             }
