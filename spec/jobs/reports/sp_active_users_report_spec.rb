@@ -52,7 +52,7 @@ describe Reports::SpActiveUsersReport do
       {
         issuer: 'LOGIN_ALL',
         app_id: nil,
-        total_ial1_active: 2,
+        total_ial1_active: 1,
         total_ial2_active: 3,
       },
     ]
@@ -108,7 +108,7 @@ describe Reports::SpActiveUsersReport do
       {
         issuer: 'LOGIN_ALL',
         app_id: nil,
-        total_ial1_active: 2,
+        total_ial1_active: 0,
         total_ial2_active: 3,
       }
     ]

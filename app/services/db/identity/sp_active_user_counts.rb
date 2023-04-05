@@ -42,13 +42,11 @@ module Db
         }
         sql = format(<<~SQL, params)
           SELECT
-            COUNT(by_user.is_ial1) AS ial1_active
+            COUNT(*) AS total
           , COUNT(by_user.is_ial2) AS ial2_active
           FROM (
             SELECT
               identities.user_id
-            , BOOL_OR(last_ial1_authenticated_at BETWEEN %{start} AND %{finish})
-              AND BOOL_AND(last_ial2_authenticated_at NOT BETWEEN %{start} AND %{finish}) AS is_ial1
             , BOOL_OR(last_ial2_authenticated_at BETWEEN %{start} AND %{finish}) AS is_ial2
             FROM identities
             WHERE
@@ -58,10 +56,11 @@ module Db
           ) by_user
         SQL
 
-        results = ActiveRecord::Base.connection.execute(sql).to_a
+        row = ActiveRecord::Base.connection.execute(sql).to_a.first
 
-        total_ial1_active = results.first&.fetch('ial1_active') || 0
-        total_ial2_active = results.first&.fetch('ial2_active') || 0
+        total = row&.fetch('total') || 0
+        total_ial2_active = row&.fetch('ial2_active') || 0
+        total_ial1_active = total - total_ial2_active
 
         [
           {
