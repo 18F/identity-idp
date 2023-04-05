@@ -73,7 +73,7 @@ module InPersonHelper
     complete_doc_auth_steps_before_document_capture_step
     mock_doc_auth_attention_with_barcode
     attach_and_submit_images
-    click_link t('in_person_proofing.body.cta.button')
+    click_button t('in_person_proofing.body.cta.button')
   end
 
   def search_for_post_office
