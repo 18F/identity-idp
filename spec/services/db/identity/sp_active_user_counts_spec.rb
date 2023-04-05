@@ -118,6 +118,7 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
     end
 
     it 'counts the numbers of users that were ial1 active and ial2 active' do
+      # ial1 and ial2, counts as ial2
       create(
         :service_provider_identity,
         user_id: 1,
@@ -131,6 +132,7 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
         last_ial2_authenticated_at: now,
       )
 
+      # ial1 only, counts as ial1
       create(
         :service_provider_identity,
         user_id: 2,
@@ -144,7 +146,7 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
       expect(result.first).to eq(
         'issuer' => 'LOGIN_ALL',
         'app_id' => nil,
-        'total_ial1_active' => 2,
+        'total_ial1_active' => 1,
         'total_ial2_active' => 1,
       )
     end

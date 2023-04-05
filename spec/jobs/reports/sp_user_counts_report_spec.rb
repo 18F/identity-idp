@@ -6,7 +6,7 @@ RSpec.describe Reports::SpUserCountsReport do
   let(:issuer) { 'foo' }
   let(:app_id) { 'app_id' }
 
-  it 'is empty' do
+  it 'has overall data' do
     report = JSON.parse(subject.perform(Time.zone.today), symbolize_names: true)
 
     expect(report).to eq(

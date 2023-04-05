@@ -47,7 +47,8 @@ module Db
           FROM (
             SELECT
               identities.user_id
-            , BOOL_OR(last_ial1_authenticated_at BETWEEN %{start} AND %{finish}) AS is_ial1
+            , BOOL_OR(last_ial1_authenticated_at BETWEEN %{start} AND %{finish})
+              AND BOOL_AND(last_ial2_authenticated_at NOT BETWEEN %{start} AND %{finish}) AS is_ial1
             , BOOL_OR(last_ial2_authenticated_at BETWEEN %{start} AND %{finish}) AS is_ial2
             FROM identities
             WHERE
