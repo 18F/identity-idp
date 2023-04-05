@@ -90,8 +90,9 @@ en:
         email and social media. Don’t include words from your email address.
       help_text_header: Password safety tips
       info:
-        lead: Your password must be %{min_length} characters or longer. Don’t use common
-          phrases or repeated characters, like abc or 111.
+        lead_html: Your password must be <strong> %{min_length} characters </strong> or
+          longer. Don’t use common phrases or repeated characters, like abc or
+          111.
       password_key: You need your 16-character personal key to reset your password if
         you verified your identity with this account. If you don’t have it, you
         can still reset your password and then reverify your identity.

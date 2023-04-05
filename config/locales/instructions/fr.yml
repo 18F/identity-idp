@@ -106,9 +106,9 @@ fr:
         les comptes courriel et les comptes de médias sociaux.
       help_text_header: Conseils sur la sécurité du mot de passe
       info:
-        lead: Votre mot de passe doit comporter %{min_length} caractères ou plus.
-          N’utilisez pas de phrases courantes ou de caractères répétés, comme «
-          abc » ou « 111 ».
+        lead_html: Votre mot de passe doit comporter <strong>%{min_length}
+          caractères</strong> ou plus. N’utilisez pas de phrases courantes ou de
+          caractères répétés, comme « abc » ou « 111 ».
       password_key: Vous avez besoin de votre clé personnelle de 16 caractères pour
         réinitialiser votre mot de passe si vous avez vérifié votre identité
         avec ce compte. Si vous ne l’avez pas, vous pouvez toujours

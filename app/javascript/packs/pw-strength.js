@@ -67,6 +67,10 @@ export function getFeedback(z) {
   }
 
   if (!warning && !suggestions.length) {
+    if (z.password.length < 12) {
+      return t('errors.attributes.password.too_short.other');
+    }
+
     return '&nbsp;';
   }
   if (warning) {

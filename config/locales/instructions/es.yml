@@ -96,8 +96,9 @@ es:
         palabras de su dirección de correo electrónico.
       help_text_header: Consejos de seguridad de contraseña
       info:
-        lead: Su contraseña deberá tener %{min_length} caracteres o más. No use
-          expresiones comunes ni caracteres repetidos, como “abc” o “111″.
+        lead_html: Su contraseña deberá tener <strong>%{min_length} caracteres</strong>
+          o más. No use expresiones comunes ni caracteres repetidos, como “abc”
+          o “111″.
       password_key: Si verificó su identidad con esta cuenta, necesita su clave
         personal de 16 caracteres para restablecer su contraseña. Si no cuenta
         con ella, de todos modos puede restablecer su contraseña y luego volver
