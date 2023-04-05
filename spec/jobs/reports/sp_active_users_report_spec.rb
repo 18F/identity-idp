@@ -46,7 +46,7 @@ describe Reports::SpActiveUsersReport do
       {
         issuer: issuer,
         app_id: app_id,
-        total_ial1_active: 2,
+        total_ial1_active: 1,
         total_ial2_active: 3,
       },
       {
@@ -102,7 +102,7 @@ describe Reports::SpActiveUsersReport do
       {
         issuer: issuer,
         app_id: app_id,
-        total_ial1_active: 2,
+        total_ial1_active: 0,
         total_ial2_active: 3,
       },
       {

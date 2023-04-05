@@ -6,32 +6,31 @@ module Db
           start: ActiveRecord::Base.connection.quote(start),
           finish: ActiveRecord::Base.connection.quote(finish),
         }
+
         sql = format(<<~SQL, params)
           SELECT
-            service_providers.issuer,
-            MAX(app_id) AS app_id,
-            CAST(SUM(total_ial1_active) AS INTEGER) AS total_ial1_active,
-            CAST(SUM(total_ial2_active) AS INTEGER) AS total_ial2_active
-          FROM (
-            (SELECT
-              service_provider AS issuer,
-              count(*) AS total_ial1_active,
-              0 AS total_ial2_active
-            FROM identities
-            WHERE %{start} <= last_ial1_authenticated_at AND last_ial1_authenticated_at <= %{finish}
-            GROUP BY issuer ORDER BY issuer)
-            UNION
-            (SELECT
-              service_provider AS issuer,
-              0 AS total_ial1_active,
-              count(*) AS total_ial2_active
-            FROM identities
-            WHERE %{start} <= last_ial2_authenticated_at AND last_ial2_authenticated_at <= %{finish}
-            GROUP BY issuer ORDER BY issuer)
-          ) AS union_of_ial1_and_ial2_results, service_providers
-          WHERE union_of_ial1_and_ial2_results.issuer = service_providers.issuer
-          GROUP BY service_providers.issuer ORDER BY service_providers.issuer
+            identities.service_provider AS issuer
+          , MAX(service_providers.app_id) AS app_id
+          , COUNT(*) - SUM(
+              CASE
+              WHEN identities.last_ial2_authenticated_at BETWEEN %{start} AND %{finish} THEN 1
+              ELSE 0
+              END
+            ) AS total_ial1_active
+          , SUM(
+              CASE
+              WHEN identities.last_ial2_authenticated_at BETWEEN %{start} AND %{finish} THEN 1
+              ELSE 0
+              END
+            ) AS total_ial2_active
+          FROM identities
+          JOIN service_providers ON service_providers.issuer = identities.service_provider
+          WHERE
+               (identities.last_ial1_authenticated_at BETWEEN %{start} AND %{finish})
+            OR (identities.last_ial2_authenticated_at BETWEEN %{start} AND %{finish})
+          GROUP BY identities.service_provider
         SQL
+
         ActiveRecord::Base.connection.execute(sql).to_a
       end
 
@@ -47,11 +46,11 @@ module Db
           FROM (
             SELECT
               identities.user_id
-            , BOOL_OR(last_ial2_authenticated_at BETWEEN %{start} AND %{finish}) AS is_ial2
+            , BOOL_OR(identities.last_ial2_authenticated_at BETWEEN %{start} AND %{finish}) AS is_ial2
             FROM identities
             WHERE
-                 (last_ial1_authenticated_at BETWEEN %{start} AND %{finish})
-              OR (last_ial2_authenticated_at BETWEEN %{start} AND %{finish})
+                 (identities.last_ial1_authenticated_at BETWEEN %{start} AND %{finish})
+              OR (identities.last_ial2_authenticated_at BETWEEN %{start} AND %{finish})
             GROUP BY identities.user_id
           ) by_user
         SQL
