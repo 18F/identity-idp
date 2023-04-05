@@ -103,6 +103,7 @@ class User < ApplicationRecord
   end
 
   def fraud_review_eligible?
+    return false if !fraud_review_pending?
     fraud_review_pending_profile.verified_at&.after?(30.days.ago)
   end
 
