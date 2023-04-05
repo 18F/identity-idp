@@ -3,8 +3,7 @@ require 'rails_helper'
 describe RegisterUserEmailForm do
   let(:analytics) { FakeAnalytics.new }
   let(:attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
-  let(:request_id) { nil }
-  subject { RegisterUserEmailForm.new(analytics:, attempts_tracker:, request_id:) }
+  subject { RegisterUserEmailForm.new(analytics: analytics, attempts_tracker: attempts_tracker) }
 
   it_behaves_like 'email validation'
 
@@ -226,11 +225,10 @@ describe RegisterUserEmailForm do
     end
 
     context 'when request_id is invalid' do
-      let(:request_id) { 'fake_id' }
-
       it 'returns successful and does not include request_id in email' do
         submit_form = subject.submit(
           email: 'not_taken@example.com',
+          request_id: 'fake_id',
           terms_accepted: '1',
         )
 
@@ -243,19 +241,17 @@ describe RegisterUserEmailForm do
     end
 
     context 'when request_id is valid' do
-      let(:sp_request) do
-        ServiceProviderRequestProxy.create(
+      it 'returns success with no errors' do
+        sp_request = ServiceProviderRequestProxy.create(
           issuer: 'urn:gov:gsa:openidconnect:sp:sinatra',
           loa: 'http://idmanagement.gov/ns/assurance/loa/1',
           url: 'http://localhost:3000/openid_connect/authorize',
           uuid: SecureRandom.uuid,
         )
-      end
-      let(:request_id) { sp_request.uuid }
-
-      it 'returns success with no errors' do
+        request_id = sp_request.uuid
         submit_form = subject.submit(
           email: 'not_taken@example.com',
+          request_id: request_id,
           terms_accepted: '1',
         )
         extra = {
@@ -278,11 +274,10 @@ describe RegisterUserEmailForm do
     end
 
     context 'when request_id is blank' do
-      let(:request_id) { nil }
-
       it 'returns success with no errors' do
         submit_form = subject.submit(
           email: 'not_taken@gmail.com',
+          request_id: nil,
           terms_accepted: '1',
         )
         extra = {

@@ -25,12 +25,11 @@ module SignUp
 
     def create
       @register_user_email_form = RegisterUserEmailForm.new(
-        request_id:,
         analytics: analytics,
         attempts_tracker: irs_attempts_api_tracker,
       )
 
-      result = @register_user_email_form.submit(permitted_params)
+      result = @register_user_email_form.submit(permitted_params.merge(request_id:))
 
       analytics.user_registration_email(**result.to_h)
       irs_attempts_api_tracker.user_registration_email_submitted(
