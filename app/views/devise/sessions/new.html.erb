@@ -48,7 +48,6 @@
         class: 'margin-bottom-4',
         field_options: { required: true },
       ) %>
-  <%= f.input :request_id, as: :hidden, input_html: { value: @request_id } %>
   <%= f.submit t('links.next'), full_width: true, wide: false %>
   <% if @sign_in_a_b_test_bucket == :default %>
     <h2 class='separator-text'>
