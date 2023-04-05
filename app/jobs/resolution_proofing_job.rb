@@ -133,7 +133,7 @@ class ResolutionProofingJob < ApplicationJob
     # Proof the user's state ID address if the user is going through the double address
     # verification flow and has a different address listed on their state ID. Otherwise
     # proof their residential address
-    if capture_secondary_id_enabled && applicant_pii[:same_address_as_id] == false
+    if capture_secondary_id_enabled && applicant_pii[:same_address_as_id] == 'false'
       applicant_pii = with_state_id_address(applicant_pii)
     end
 
