@@ -30,7 +30,10 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
         user_id: 3, service_provider: issuer2, uuid: 'foo3',
         last_ial1_authenticated_at: now
       )
-      result = { issuer: issuer, app_id: app_id1, total_ial1_active: 2, total_ial2_active: 0 }.to_json
+      result = { issuer: issuer,
+                 app_id: app_id1,
+                 total_ial1_active: 2,
+                 total_ial2_active: 0 }.to_json
       result2 = { issuer: issuer2,
                   app_id: app_id2,
                   total_ial1_active: 1,
@@ -57,7 +60,10 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
         user_id: 3, service_provider: issuer2, uuid: 'foo3',
         last_ial2_authenticated_at: now
       )
-      result = { issuer: issuer, app_id: app_id1, total_ial1_active: 0, total_ial2_active: 2 }.to_json
+      result = { issuer: issuer,
+                 app_id: app_id1,
+                 total_ial1_active: 0,
+                 total_ial2_active: 2 }.to_json
       result2 = { issuer: issuer2,
                   app_id: app_id2,
                   total_ial1_active: 0,
@@ -88,7 +94,10 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
         user_id: 4, service_provider: issuer2, uuid: 'foo4',
         last_ial2_authenticated_at: now
       )
-      result = { issuer: issuer, app_id: app_id1, total_ial1_active: 1, total_ial2_active: 1 }.to_json
+      result = { issuer: issuer,
+                 app_id: app_id1,
+                 total_ial1_active: 1,
+                 total_ial2_active: 1 }.to_json
       result2 = { issuer: issuer2,
                   app_id: app_id2,
                   total_ial1_active: 0,
