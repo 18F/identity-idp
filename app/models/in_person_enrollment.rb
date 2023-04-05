@@ -73,6 +73,11 @@ class InPersonEnrollment < ApplicationRecord
     (Time.zone.now - status_check_attempted_at).seconds.in_minutes.round(2)
   end
 
+  def minutes_since_last_status_check_completed
+    return unless status_check_completed_at.present?
+    (Time.zone.now - status_check_completed_at).seconds.in_minutes.round(2)
+  end
+
   def minutes_since_last_status_update
     return unless status_updated_at.present?
     (Time.zone.now - status_updated_at).seconds.in_minutes.round(2)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_22_000756) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_03_232935) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -310,6 +310,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_22_000756) do
     t.boolean "deadline_passed_sent", default: false, comment: "deadline passed email sent for expired enrollment"
     t.datetime "proofed_at", precision: nil, comment: "timestamp when user attempted to proof at a Post Office"
     t.boolean "capture_secondary_id_enabled", default: false, comment: "record and proof state ID and residential addresses separately"
+    t.datetime "status_check_completed_at", comment: "The last time a status check was successfully completed"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
     t.index ["status_check_attempted_at"], name: "index_in_person_enrollments_on_status_check_attempted_at", where: "(status = 1)"
     t.index ["unique_id"], name: "index_in_person_enrollments_on_unique_id", unique: true
