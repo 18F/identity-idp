@@ -2800,7 +2800,7 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param [String] sign_up_mfa_priority_bucket
   # Tracks when the the user has selected and submitted additional MFA methods on user registration
-  def user_registration_2fa_additional_setup(success:, sign_up_mfa_priority_bucket: ,
+  def user_registration_2fa_additional_setup(success:, sign_up_mfa_priority_bucket:,
                                              errors: nil, **extra)
     track_event(
       'User Registration: Additional 2FA Setup',
@@ -2815,7 +2815,7 @@ module AnalyticsEvents
 
   # Tracks when user visits additional MFA selection page
   # @param [String] sign_up_mfa_priority_bucket
-  def user_registration_2fa_additional_setup_visit(sign_up_mfa_priority_bucket: , **extra)
+  def user_registration_2fa_additional_setup_visit(sign_up_mfa_priority_bucket:, **_extra)
     track_event(
       'User Registration: Additional 2FA Setup visited', {
         sign_up_mfa_priority_bucket: sign_up_mfa_priority_bucket,
@@ -2832,11 +2832,10 @@ module AnalyticsEvents
   # Tracks when the the user has selected and submitted MFA auth methods on user registration
   def user_registration_2fa_setup(
     success:,
-    errors: nil,
+    sign_up_mfa_priority_bucket:, errors: nil,
     selected_mfa_count: nil,
     enabled_mfa_methods_count: nil,
     selection: nil,
-    sign_up_mfa_priority_bucket:,
     **extra
   )
     track_event(
@@ -2917,7 +2916,7 @@ module AnalyticsEvents
 
   # Tracks when user visits MFA selection page
   # @param [String] sign_up_mfa_priority_bucket
-  def user_registration_2fa_setup_visit(sign_up_mfa_priority_bucket:, **extra)
+  def user_registration_2fa_setup_visit(sign_up_mfa_priority_bucket:, **_extra)
     track_event(
       'User Registration: 2FA Setup visited', {
         sign_up_mfa_priority_bucket: sign_up_mfa_priority_bucket,
