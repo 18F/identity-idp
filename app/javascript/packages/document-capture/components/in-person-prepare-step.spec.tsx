@@ -39,7 +39,7 @@ describe('InPersonPrepareStep', () => {
         { wrapper },
       );
 
-      await userEvent.click(getByRole('link', { name: 'forms.buttons.continue' }));
+      await userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
       await waitFor(() => window.location.hash === inPersonURL);
 
       expect(trackEvent).to.have.been.calledWith('IdV: prepare submitted');
@@ -60,10 +60,10 @@ describe('InPersonPrepareStep', () => {
           { wrapper },
         );
 
-        const link = getByRole('link', { name: 'forms.buttons.continue' });
+        const button = getByRole('button', { name: 'forms.buttons.continue' });
 
-        const didFollowLinkOnFirstClick = fireEvent.click(link);
-        const didFollowLinkOnSecondClick = fireEvent.click(link);
+        const didFollowLinkOnFirstClick = fireEvent.click(button);
+        const didFollowLinkOnSecondClick = fireEvent.click(button);
 
         clock.tick(delay);
 
