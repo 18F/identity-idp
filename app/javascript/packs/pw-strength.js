@@ -17,7 +17,6 @@ const snakeCase = (string) => string.replace(/[ -]/g, '_').replace(/\W/g, '').to
 
 // fallback if zxcvbn lookup fails / field is empty
 const fallback = ['pw-na', '...'];
-const pwMinimumLength = document.getElementById('pw-strength-cntnr').getAttribute('data-pw-length');
 
 function getStrength(z) {
   // override the strength value to 2 if the password is < 12
@@ -28,6 +27,10 @@ function getStrength(z) {
 }
 
 export function getFeedback(z) {
+  const pwMinimumLength = document
+    .getElementById('pw-strength-cntnr')
+    .getAttribute('data-pw-length');
+
   if (!z || !z.password || z.score > 2) {
     return '&nbsp;';
   }
