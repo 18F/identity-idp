@@ -63,7 +63,7 @@ module Db
 
         [
           {
-            issuer: 'LOGIN_ALL',
+            issuer: nil,
             app_id: nil,
             total_ial1_active:,
             total_ial2_active:,

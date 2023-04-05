@@ -110,7 +110,7 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
 
       expect(result.size).to eq(1)
       expect(result.first).to eq(
-        'issuer' => 'LOGIN_ALL',
+        'issuer' => nil,
         'app_id' => nil,
         'total_ial1_active' => 0,
         'total_ial2_active' => 0,
@@ -144,7 +144,7 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
 
       expect(result.size).to eq(1)
       expect(result.first).to eq(
-        'issuer' => 'LOGIN_ALL',
+        'issuer' => nil,
         'app_id' => nil,
         'total_ial1_active' => 1,
         'total_ial2_active' => 1,

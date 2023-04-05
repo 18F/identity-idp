@@ -12,7 +12,7 @@ RSpec.describe Reports::SpUserCountsReport do
     expect(report).to eq(
       [
         {
-          issuer: 'LOGIN_ALL',
+          issuer: nil,
           total: 0,
           ial1_total: 0,
           ial2_total: 0,
@@ -45,7 +45,7 @@ RSpec.describe Reports::SpUserCountsReport do
           app_id: '',
           ial1_user_total: 3,
           ial2_user_total: 0,
-          issuer: 'LOGIN_ALL',
+          issuer: nil,
           name: 'Report SP User Counts',
           time: timestamp,
           user_total: 3,
@@ -105,7 +105,7 @@ RSpec.describe Reports::SpUserCountsReport do
         app_id: app_id2,
       },
       {
-        issuer: 'LOGIN_ALL',
+        issuer: nil,
         total: 3,
         ial1_total: 2,
         ial2_total: 1,

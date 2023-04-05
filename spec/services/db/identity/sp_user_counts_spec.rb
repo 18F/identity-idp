@@ -45,7 +45,7 @@ RSpec.describe Db::Identity::SpUserCounts do
       expect(result.size).to eq(1)
 
       expect(result.first).to eq(
-        'issuer' => 'LOGIN_ALL',
+        'issuer' => nil,
         'app_id' => nil,
         'total' => 0,
         'ial1_total' => 0,
@@ -63,7 +63,7 @@ RSpec.describe Db::Identity::SpUserCounts do
       expect(result.size).to eq(1)
 
       expect(result.first).to eq(
-        'issuer' => 'LOGIN_ALL',
+        'issuer' => nil,
         'app_id' => nil,
         'total' => 2,
         'ial1_total' => 1,

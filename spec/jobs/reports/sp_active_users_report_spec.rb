@@ -13,7 +13,7 @@ describe Reports::SpActiveUsersReport do
     expect(report).to eq(
       [
         {
-          issuer: 'LOGIN_ALL',
+          issuer: nil,
           app_id: nil,
           total_ial1_active: 0,
           total_ial2_active: 0,
@@ -50,7 +50,7 @@ describe Reports::SpActiveUsersReport do
         total_ial2_active: 3,
       },
       {
-        issuer: 'LOGIN_ALL',
+        issuer: nil,
         app_id: nil,
         total_ial1_active: 1,
         total_ial2_active: 3,
@@ -106,7 +106,7 @@ describe Reports::SpActiveUsersReport do
         total_ial2_active: 3,
       },
       {
-        issuer: 'LOGIN_ALL',
+        issuer: nil,
         app_id: nil,
         total_ial1_active: 0,
         total_ial2_active: 3,
