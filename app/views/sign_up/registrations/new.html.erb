@@ -15,9 +15,11 @@
         ],
         class: 'margin-bottom-4',
       ) %>
-<% end %>
 
-<%= render PageHeadingComponent.new.with_content(t('titles.registrations.new')) %>
+  <%= render PageHeadingComponent.new.with_content(t('headings.create_account_new_users')) %>
+<% else %>
+  <%= render PageHeadingComponent.new.with_content(t('titles.registrations.new')) %>
+<% end %>
 
 <%= simple_form_for(
       @register_user_email_form,

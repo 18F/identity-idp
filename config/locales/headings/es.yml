@@ -62,6 +62,8 @@ es:
     session_timeout_warning: '¿Necesita más tiempo?'
     sign_in_with_sp: Iniciar sesión para continuar con %{sp}
     sign_in_without_sp: Iniciar sesión
+    sign_in_existing_users: Iniciar sesión para usuarios existentes
+    create_account_new_users: Crear una cuenta para usuarios nuevos
     sp_handoff_bounced: Hubo un problema al conectarse a %{sp_name}
     ssn: Número de seguro social
     state_id: Documento de identidad emitido por el estado
