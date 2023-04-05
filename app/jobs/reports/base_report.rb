@@ -50,14 +50,6 @@ module Reports
       upload_file_to_s3_timestamped_and_latest(report_name, body, extension)
     end
 
-    def track_report_data_event(event, hash = {})
-      write_hash_to_reports_log({ name: event, time: Time.zone.now.iso8601 }.merge(hash))
-    end
-
-    def write_hash_to_reports_log(log_hash)
-      reports_logger.info(log_hash.to_json)
-    end
-
     def reports_logger
       @reports_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'reports.log'))
     end
