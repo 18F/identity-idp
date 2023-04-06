@@ -122,5 +122,20 @@ describe Proofing::LexisNexis::Ddp::Proofer do
         expect(result.exception).to eq(error)
       end
     end
+
+    context 'when the review status has an unexpected value' do
+      let(:response_body) do
+        JSON.parse(LexisNexisFixtures.ddp_success_response_json).merge(
+          review_status: 'unexpected_review_status_that_causes_problems',
+        ).to_json
+      end
+
+      it 'returns an exception result' do
+        result = subject.proof(applicant)
+
+        expect(result.success?).to eq(false)
+        expect(result.exception.inspect).to match(/unexpected_review_status_that_causes_problems/)
+      end
+    end
   end
 end
