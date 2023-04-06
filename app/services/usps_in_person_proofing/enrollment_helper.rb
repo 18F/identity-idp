@@ -98,7 +98,7 @@ module UspsInPersonProofing
         state_id_address1: :address1,
         state_id_address2: :address2,
         state_id_city: :city,
-        state_id_jurisdiction: :state,
+        state_id_state: :state,
         state_id_zipcode: :zipcode,
       }.freeze
 
