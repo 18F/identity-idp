@@ -106,8 +106,11 @@ describe Proofing::Aamva::Request::VerificationRequest do
 
       it 'sends state id jurisdiction to AAMVA' do
         applicant.state_id_data.state_id_jurisdiction = 'NY'
-
-        expect(subject.body).to match(/MessageDestinationId>NY/)
+        expect(
+          Nokogiri::XML(subject.body) do |config|
+            config.strict
+          end.text,
+        ).to match(/NY/)
       end
     end
 
