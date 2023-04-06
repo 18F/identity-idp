@@ -91,8 +91,8 @@ en:
         same_address_choice_yes: This address is on my state-issued ID
         state_prompt: '- Select -'
       state_id:
-        address1: Address
-        address2: Address line 2 (optional)
+        address1: Address line 1
+        address2: Address line 2
         city: City
         date_hint:
           day: 'Example: 28'
@@ -111,20 +111,24 @@ en:
               missing_month_day_year: Enter a date of birth
               range_min_age: You must be over 13 years of age to use %{app_name}
               range_overflow: Enter a date that is in the past
-        same_address_as_id: Is your current residential address listed on your state-issued ID?
-        same_address_as_id_no: No, my current residential address is not listed on my state-issued ID
-        same_address_as_id_yes: Yes, my current residential address is listed on my state-issued ID
-        state_id_jurisdiction: State
-        state_id_jurisdiction_hint: Select the state shown on your ID
+        same_address_as_id: Do you currently live at the address listed on your state-issued ID?
+        same_address_as_id_no: No, I live at a different address
+        same_address_as_id_yes: Yes, I live at the address on my state-issued ID
+        state_id_jurisdiction: Issuing state
+        state_id_jurisdiction_hint: This is the state that issued your ID
         state_id_jurisdiction_prompt: '- Select -'
         state_id_number: ID number
         state_id_number_hint: May include letters and numbers
+        state_id_state: State
+        state_id_state_hint: Select the state shown on your ID
+        state_id_state_prompt: '- Select -'
         zipcode: ZIP Code
     headings:
       address: Enter your current residential address
       barcode: You’re ready to verify your identity in person with %{app_name}
       cta: Having trouble verifying your ID online?
       cta_variant: Try verifying your ID in person
+      id_address: Address on your ID
       po_search:
         location: Find a participating Post Office
       prepare: Verify your identity in person
