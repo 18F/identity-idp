@@ -85,7 +85,7 @@ class RegisterUserEmailForm
     # already taken and if so, we act as if the user registration was successful.
     if email_taken? && user_unconfirmed?
       update_user_language_preference
-      send_sign_up_unconfirmed_email(request_id)
+      send_sign_up_unconfirmed_email(email_request_id(request_id))
     elsif email_taken?
       send_sign_up_confirmed_email
     else

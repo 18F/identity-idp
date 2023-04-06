@@ -24,6 +24,7 @@ module SignUp
         attempts_tracker: irs_attempts_api_tracker,
       )
 
+      permitted_params[:request_id] = sp_request.uuid
       result = @register_user_email_form.submit(permitted_params)
 
       analytics.user_registration_email(**result.to_h)
@@ -36,7 +37,7 @@ module SignUp
       if result.success?
         process_successful_creation
       else
-        render :new, locals: { request_id: sp_request_id }
+        render :new, locals: { request_id: sp_request.uuid }
       end
     end
 
@@ -65,10 +66,11 @@ module SignUp
       )
     end
 
-    def sp_request_id
+    def sp_request
+      return @sp_request if defined?(@sp_request)
       request_id = permitted_params.fetch(:request_id, '')
 
-      ServiceProviderRequestProxy.from_uuid(request_id).uuid
+      @sp_request = ServiceProviderRequestProxy.from_uuid(request_id)
     end
 
     def redirect_if_ial2_and_idv_unavailable
