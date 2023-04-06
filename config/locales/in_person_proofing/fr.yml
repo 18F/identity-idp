@@ -130,8 +130,8 @@ fr:
         same_address_as_id_no: Non, j’habite à une adresse différente
         same_address_as_id_yes: Oui, j’habite à l’adresse indiquée sur ma pièce
           d’identité émise par l’État
-        state_id_jurisdiction: État
-        state_id_jurisdiction_hint: Sélectionnez l’État figurant sur votre document d’identité
+        state_id_jurisdiction: État émetteur
+        state_id_jurisdiction_hint: Il s’agit de l’État qui a émis votre pièce d’identité
         state_id_jurisdiction_prompt: '- Sélectionnez -'
         state_id_number: Numéro d’identification
         state_id_number_hint: Peut comprendre des lettres et des chiffres

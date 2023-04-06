@@ -129,8 +129,8 @@ es:
           estatal de identidad?
         same_address_as_id_no: No, vivo en otra dirección
         same_address_as_id_yes: Sí, vivo en la misma dirección
-        state_id_jurisdiction: Estado
-        state_id_jurisdiction_hint: Seleccione el estado que aparece en su cédula
+        state_id_jurisdiction: Estado emisor
+        state_id_jurisdiction_hint: Este es el estado que emitió su identificación
         state_id_jurisdiction_prompt: '- Seleccione -'
         state_id_number: Número de cédula
         state_id_number_hint: Puede incluir letras y números
