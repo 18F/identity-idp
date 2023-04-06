@@ -101,7 +101,7 @@ function analyzePw() {
   const pwFeedback = document.getElementById('pw-strength-feedback');
   const forbiddenPasswordsElement = document.querySelector('[data-forbidden]');
   const forbiddenPasswords = getForbiddenPasswords(forbiddenPasswordsElement);
-  const minPasswordLength = pwCntnr.getAttribute(['data-pw-min-length']);
+  const minPasswordLength = +pwCntnr.getAttribute(['data-pw-min-length']);
 
   function updatePasswordFeedback(cls, strength, feedback) {
     pwCntnr.className = cls;

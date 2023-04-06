@@ -49,6 +49,9 @@ feature 'Visitor sets password during signup' do
 
       fill_in t('forms.password'), with: 'this is a great sentence'
       expect(page).to have_content t('instructions.password.strength.v')
+
+      fill_in t('forms.password'), with: ':b/}6tT#,'
+      expect(page).to have_content t('errors.attributes.password.too_short.other', count: 12)
     end
   end
 
