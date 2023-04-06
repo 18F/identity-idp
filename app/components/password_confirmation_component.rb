@@ -15,12 +15,11 @@ class PasswordConfirmationComponent < BaseComponent
   end
 
   def default_label
-    t('components.password_toggle.label')
+    t('components.password_confirmation.label')
   end
 
-  # TODO: Add translation
   def confirmation_label
-    'todo replace'
+    t('components.password_confirmation.confirm_label')
   end
 
   def toggle_id

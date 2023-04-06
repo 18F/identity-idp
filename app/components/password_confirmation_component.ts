@@ -1,8 +1,8 @@
 import { trackEvent } from '@18f/identity-analytics';
+import { t } from '@18f/identity-i18n';
 
 class PasswordConfirmationElement extends HTMLElement {
   connectedCallback() {
-    console.log("hello...");
     this.toggle.addEventListener('change', () => this.setInputType());
     this.toggle.addEventListener('click', () => this.trackToggleEvent());
     this.input_confirmation.addEventListener('input', () => this.validatePassword());
@@ -37,14 +37,12 @@ class PasswordConfirmationElement extends HTMLElement {
   }
 
   validatePassword() {
-    console.log("validatePassword");
     const password = this.input.value;
     const confirmation = this.input_confirmation.value;
 
     if (password && password !== confirmation) {
-      // TODO: Change message
-      console.log("passwords do not match");
-      this.input_confirmation.setCustomValidity('passwords do not match!');      
+      const errorMsg = t('components.password_confirmation.errors.mismatch');
+      this.input_confirmation.setCustomValidity(errorMsg);
     } else {
       this.input_confirmation.setCustomValidity('');
     }
