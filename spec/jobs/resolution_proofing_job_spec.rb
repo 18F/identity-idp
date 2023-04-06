@@ -335,8 +335,18 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
         perform
 
+        result = document_capture_session.load_proofing_result[:result]
+        result_context = result[:context]
+        result_context_stages = result_context[:stages]
+        result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
 
-        #binding.pry
+        expect(result[:success]).to be false
+        expect(result[:exception]).to match(/unexpected_review_status_that_causes_problems/)
+        expect(result[:timed_out]).to be false
+
+        expect(result_context_stages_threatmetrix[:exception]).to match(
+          /unexpected_review_status_that_causes_problems/,
+        )
       end
     end
 
