@@ -31,6 +31,11 @@ RSpec.describe BackupCodeGenerator do
     expect(success).to eq false
   end
 
+  it 'should reject nil codes' do
+    success = generator.verify(nil)
+    expect(success).to eq false
+  end
+
   it 'creates codes with the same salt for that batch' do
     generator.create
 
