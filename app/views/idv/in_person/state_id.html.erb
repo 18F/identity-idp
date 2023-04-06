@@ -193,7 +193,6 @@
             required: true,
           ) %>
     </div>
-    <h2><%= t('in_person_proofing.form.state_id.same_address_as_id') %></h2>
     <%= render ValidatedFieldComponent.new(
           as: :radio_buttons,
           checked: pii[:same_address_as_id],
@@ -202,6 +201,8 @@
             [t('in_person_proofing.form.state_id.same_address_as_id_no'), false],
           ],
           form: f,
+          label: t('in_person_proofing.form.state_id.same_address_as_id'),
+          label_html: {class: 'font-heading-2xl'},
           name: :same_address_as_id,
           required: true,
           wrapper: :uswds_radio_buttons,
