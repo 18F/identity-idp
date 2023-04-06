@@ -45,6 +45,13 @@ en:
     password_toggle:
       label: Password
       toggle_label: Show password
+    password_confirmation:
+      label: Password
+      confirm_label: Confirm password
+      toggle_label: Show password
+      errors:
+        empty: Type your password again  
+        mismatch: Your passwords don't match
     phone_input:
       country_code_label: Country code
     print_button:
