@@ -17,7 +17,7 @@ feature 'sp active users report' do
                  app_id: nil,
                  total_ial1_active: 1,
                  total_ial2_active: 0 }].to_json
-    expect(Db::Identity::SpActiveUserCounts.call('01-01-2019').to_json).to eq(results)
+    expect(Db::Identity::SpActiveUserCounts.by_issuer('01-01-2019').to_json).to eq(results)
   end
 
   it 'reports a user as ial2 active for an ial2 sign in' do
@@ -36,6 +36,6 @@ feature 'sp active users report' do
                  app_id: nil,
                  total_ial1_active: 0,
                  total_ial2_active: 1 }].to_json
-    expect(Db::Identity::SpActiveUserCounts.call('01-01-2019').to_json).to eq(results)
+    expect(Db::Identity::SpActiveUserCounts.by_issuer('01-01-2019').to_json).to eq(results)
   end
 end
