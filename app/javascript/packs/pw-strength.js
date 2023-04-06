@@ -8,7 +8,7 @@ import { t } from '@18f/identity-i18n';
 const scale = {
   0: ['pw-very-weak', t('instructions.password.strength.i')],
   1: ['pw-weak', t('instructions.password.strength.ii')],
-  2: ['pw-so-so', t('instructions.password.strength.iii')],
+  2: ['pw-average', t('instructions.password.strength.iii')],
   3: ['pw-good', t('instructions.password.strength.iv')],
   4: ['pw-great', t('instructions.password.strength.v')],
 };
@@ -27,15 +27,13 @@ function getStrength(z) {
 }
 
 export function getFeedback(z) {
-  const pwMinimumLength = document
-    .getElementById('pw-strength-cntnr')
-    .getAttribute('data-pw-length');
-
   if (!z || !z.password || z.score > 2) {
     return '&nbsp;';
   }
 
   const { warning, suggestions } = z.feedback;
+  const pwMinimumLength =
+    document.getElementById('pw-strength-cntnr').getAttribute(['data-pw-length']) || '12';
 
   function lookup(str) {
     // i18n-tasks-use t('zxcvbn.feedback.a_word_by_itself_is_easy_to_guess')
