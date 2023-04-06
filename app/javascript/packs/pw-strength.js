@@ -26,14 +26,20 @@ function getStrength(z) {
   return z && z.password.length ? scale[z.score] : fallback;
 }
 
-export function getFeedback(z) {
+export function getFeedback(z, { minimumLength }) {
   if (!z || !z.password || z.score > 2) {
     return '&nbsp;';
   }
 
   const { warning, suggestions } = z.feedback;
-  const pwMinimumLength =
-    document.getElementById('pw-strength-cntnr').getAttribute(['data-pw-length']) || '12';
+
+  if (!warning && !suggestions.length) {
+    if (z.password.length < minimumLength) {
+      return t('errors.attributes.password.too_short.other', { count: minimumLength });
+    }
+
+    return '&nbsp;';
+  }
 
   function lookup(str) {
     // i18n-tasks-use t('zxcvbn.feedback.a_word_by_itself_is_easy_to_guess')
@@ -68,14 +74,6 @@ export function getFeedback(z) {
     return t(`zxcvbn.feedback.${snakeCase(str)}`);
   }
 
-  if (!warning && !suggestions.length) {
-    if (z.password.length < pwMinimumLength) {
-      return t('errors.attributes.password.too_short.other', { count: pwMinimumLength });
-    }
-
-    return '&nbsp;';
-  }
-
   if (warning) {
     return lookup(warning);
   }
@@ -103,6 +101,7 @@ function analyzePw() {
   const pwFeedback = document.getElementById('pw-strength-feedback');
   const forbiddenPasswordsElement = document.querySelector('[data-forbidden]');
   const forbiddenPasswords = getForbiddenPasswords(forbiddenPasswordsElement);
+  const minPasswordLength = pwCntnr.getAttribute(['data-pw-min-length']);
 
   function updatePasswordFeedback(cls, strength, feedback) {
     pwCntnr.className = cls;
@@ -121,7 +120,7 @@ function analyzePw() {
   function checkPasswordStrength(password) {
     const z = zxcvbn(password, forbiddenPasswords);
     const [cls, strength] = getStrength(z);
-    const feedback = getFeedback(z);
+    const feedback = getFeedback(z, { minimumLength: minPasswordLength });
 
     validatePasswordField(z.score);
     updatePasswordFeedback(cls, strength, feedback);

@@ -40,19 +40,21 @@ describe('pw-strength', () => {
     it('returns an empty result for empty password', () => {
       const z = zxcvbn('');
 
-      expect(getFeedback(z)).to.equal(EMPTY_RESULT);
+      expect(getFeedback(z, { minimumLength: 12 })).to.equal(EMPTY_RESULT);
     });
 
     it('returns an empty result for a strong password', () => {
       const z = zxcvbn('!Juq2Uk2**RBEsA8');
 
-      expect(getFeedback(z)).to.equal(EMPTY_RESULT);
+      expect(getFeedback(z, { minimumLength: 12 })).to.equal(EMPTY_RESULT);
     });
 
     it('returns feedback for a weak password', () => {
       const z = zxcvbn('password');
 
-      expect(getFeedback(z)).to.equal('zxcvbn.feedback.this_is_a_top_10_common_password');
+      expect(getFeedback(z, { minimumLength: 12 })).to.equal(
+        'zxcvbn.feedback.this_is_a_top_10_common_password',
+      );
     });
   });
 });
