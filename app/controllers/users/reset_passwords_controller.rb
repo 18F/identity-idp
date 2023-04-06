@@ -1,5 +1,7 @@
 module Users
   class ResetPasswordsController < Devise::PasswordsController
+    before_action :store_sp_metadata_in_session, only: [:edit]
+
     def new
       analytics.password_reset_visit
       @password_reset_email_form = PasswordResetEmailForm.new('')
@@ -56,6 +58,11 @@ module Users
     end
 
     protected
+
+    def store_sp_metadata_in_session
+      return if params[:request_id].blank?
+      StoreSpMetadataInSession.new(session:, request_id: params[:request_id]).call
+    end
 
     def forbidden_passwords(email_addresses)
       email_addresses.flat_map do |email_address|

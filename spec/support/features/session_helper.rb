@@ -690,5 +690,9 @@ module Features
 
       expect(current_path).to eq new_user_session_path
     end
+
+    def expect_branded_experience
+      expect(page).to have_css('.page-header--basic img ~ img')
+    end
   end
 end
