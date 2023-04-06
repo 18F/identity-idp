@@ -28,13 +28,6 @@ describe Idv::DocumentCaptureController do
   end
 
   describe 'before_actions' do
-    it 'checks that feature flag is enabled' do
-      expect(subject).to have_actions(
-        :before,
-        :render_404_if_document_capture_controller_disabled,
-      )
-    end
-
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
         :before,
@@ -152,19 +145,6 @@ describe Idv::DocumentCaptureController do
           change { doc_auth_log.reload.document_capture_submit_count }.from(0).to(1),
         )
       end
-    end
-  end
-
-  context 'when doc_auth_document_capture_controller_enabled is false' do
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_document_capture_controller_enabled).
-        and_return(false)
-    end
-
-    it 'returns 404' do
-      get :show
-
-      expect(response.status).to eq(404)
     end
   end
 end

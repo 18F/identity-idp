@@ -112,7 +112,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
           address={foundAddress?.address || ''}
         />
       )}
-      <BackButton includeBorder onClick={toPreviousStep} />
+      <BackButton role="link" includeBorder onClick={toPreviousStep} />
     </>
   );
 }

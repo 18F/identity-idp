@@ -71,9 +71,7 @@ def parsed_only_action(action)
 end
 
 def parsed_except_action(action)
-  except_option = unless_option_for(action)[0]
-
-  "#{except_option.class}OptionParser".constantize.new(except_option).parse
+  unless_option_for(action)[0].instance_variable_get(:@actions).to_a
 end
 
 class ProcOptionParser

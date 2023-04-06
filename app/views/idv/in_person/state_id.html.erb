@@ -96,6 +96,21 @@
       %>
   </div>
 
+  <% if capture_secondary_id_enabled %>
+    <div class="margin-bottom-4">
+      <%= render ValidatedFieldComponent.new(
+            name: :state_id_jurisdiction,
+            collection: us_states_territories,
+            form: f,
+            hint: t('in_person_proofing.form.state_id.state_id_jurisdiction_hint'),
+            label: t('in_person_proofing.form.state_id.state_id_jurisdiction'),
+            label_html: { class: 'usa-label' },
+            prompt: t('in_person_proofing.form.state_id.state_id_jurisdiction_prompt'),
+            required: true,
+            selected: pii[:state_id_jurisdiction],
+          ) %>
+    </div>
+  <% end %>
   <div class="tablet:grid-col-8 margin-bottom-5">
     <%= render ValidatedFieldComponent.new(
           name: :state_id_number,
@@ -110,6 +125,17 @@
   </div>
     
   <% if capture_secondary_id_enabled %>
+    <h2> <%= t('in_person_proofing.headings.id_address') %> </h2>
+      <%= render ValidatedFieldComponent.new(
+            name: :state_id_state,
+            collection: us_states_territories,
+            form: f,
+            label: t('in_person_proofing.form.state_id.state_id_state'),
+            label_html: { class: 'usa-label' },
+            prompt: t('in_person_proofing.form.state_id.state_id_state_prompt'),
+            required: true,
+            selected: pii[:state_id_state],
+          ) %>
       <%= render ValidatedFieldComponent.new(
             name: :state_id_address1,
             form: f,
@@ -140,19 +166,21 @@
             required: true,
           ) %>
   <% end %>
-  <div class="margin-bottom-4">
-    <%= render ValidatedFieldComponent.new(
-          name: :state_id_jurisdiction,
-          collection: us_states_territories,
-          form: f,
-          hint: t('in_person_proofing.form.state_id.state_id_jurisdiction_hint'),
-          label: t('in_person_proofing.form.state_id.state_id_jurisdiction'),
-          label_html: { class: 'usa-label' },
-          prompt: t('in_person_proofing.form.state_id.state_id_jurisdiction_prompt'),
-          required: true,
-          selected: pii[:state_id_jurisdiction],
-        ) %>
-  </div>
+  <% unless capture_secondary_id_enabled %>
+    <div class="margin-bottom-4">
+      <%= render ValidatedFieldComponent.new(
+            name: :state_id_jurisdiction,
+            collection: us_states_territories,
+            form: f,
+            hint: t('in_person_proofing.form.state_id.state_id_state_hint'),
+            label: t('in_person_proofing.form.state_id.state_id_jurisdiction'),
+            label_html: { class: 'usa-label' },
+            prompt: t('in_person_proofing.form.state_id.state_id_jurisdiction_prompt'),
+            required: true,
+            selected: pii[:state_id_jurisdiction],
+          ) %>
+    </div>
+  <% end %>
   <% if capture_secondary_id_enabled %>
     <div class="tablet:grid-col-8 margin-bottom-5">
       <%= render ValidatedFieldComponent.new(
@@ -165,19 +193,19 @@
             required: true,
           ) %>
     </div>
-      <%= render ValidatedFieldComponent.new(
-            as: :radio_buttons,
-            checked: pii[:same_address_as_id],
-            collection: [
-              [t('in_person_proofing.form.state_id.same_address_as_id_yes'), true],
-              [t('in_person_proofing.form.state_id.same_address_as_id_no'), false],
-            ],
-            form: f,
-            label: t('in_person_proofing.form.state_id.same_address_as_id'),
-            name: :same_address_as_id,
-            required: true,
-            wrapper: :uswds_radio_buttons,
-          ) %>
+    <h2><%= t('in_person_proofing.form.state_id.same_address_as_id') %></h2>
+    <%= render ValidatedFieldComponent.new(
+          as: :radio_buttons,
+          checked: pii[:same_address_as_id],
+          collection: [
+            [t('in_person_proofing.form.state_id.same_address_as_id_yes'), true],
+            [t('in_person_proofing.form.state_id.same_address_as_id_no'), false],
+          ],
+          form: f,
+          name: :same_address_as_id,
+          required: true,
+          wrapper: :uswds_radio_buttons,
+        ) %>
   <% end %>
 
   <%= f.submit do %>

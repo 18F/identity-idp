@@ -79,8 +79,6 @@ RSpec.describe IrsAttemptsEventsBatchJob, type: :job do
         allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:irs_attempt_api_aws_s3_enabled).and_return(true)
 
-        allow_any_instance_of(described_class).to receive(:reasonable_timespan?).and_return(true)
-
         allow(IdentityConfig.store).to receive(:irs_attempt_api_public_key).
           and_return(encoded_public_key)
 
