@@ -21,14 +21,6 @@ class StoreSpMetadataInSession
     @ial_context ||= IalContext.new(ial: sp_request.ial, service_provider: service_provider)
   end
 
-  def event_attributes
-    {
-      event: 'StoreSpMetadataInSession',
-      request_id_present: request_id.present?,
-      sp_request_class: sp_request.class.to_s,
-    }.to_json
-  end
-
   def sp_request
     @sp_request ||= ServiceProviderRequestProxy.from_uuid(request_id)
   end
