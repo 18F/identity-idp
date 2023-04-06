@@ -35,6 +35,6 @@ RSpec.describe TabNavigationComponent, type: :component do
   end
 
   def is_current_link?(link)
-    !link.matches_css?('.usa-button--outline')
+    link.matches_css?('[aria-current="page"]:not(.usa-button--outline)')
   end
 end
