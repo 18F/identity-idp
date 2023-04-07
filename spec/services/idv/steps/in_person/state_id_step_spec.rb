@@ -161,8 +161,8 @@ describe Idv::Steps::InPerson::StateIdStep do
   end
 
   describe 'skip address step?' do
-    let(:pii_from_user) { flow.flow_session[:pii_from_user]}
-    let(:params) { ActionController::Parameters.new({state_id: submitted_values}) }
+    let(:pii_from_user) { flow.flow_session[:pii_from_user] }
+    let(:params) { ActionController::Parameters.new({ state_id: submitted_values }) }
     let(:capture_secondary_id_enabled) { true }
     let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
     let(:dob) { '1980-01-01' }
@@ -180,7 +180,7 @@ describe Idv::Steps::InPerson::StateIdStep do
         state_id_address1: state_id_address1,
         state_id_address2: state_id_address2,
         state_id_zipcode: state_id_zipcode,
-        same_address_as_id: same_address_as_id
+        same_address_as_id: same_address_as_id,
       }
     end
 

@@ -655,7 +655,8 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
-  context 'in_person_capture_secondary_id_enabled feature flag enabled and same address as id', allow_browser_log: true do
+  context 'in_person_capture_secondary_id_enabled feature flag enabled and same address as id',
+          allow_browser_log: true do
     let(:user) { user_with_2fa }
 
     it 'skips the address page' do
