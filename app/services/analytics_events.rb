@@ -2955,10 +2955,12 @@ module AnalyticsEvents
 
   # Tracks when user visits enter email page
   # @param [String] sign_in_a_b_test_bucket
-  def user_registration_enter_email_visit(sign_in_a_b_test_bucket:, **extra)
+  # @param [Boolean] from_sign_in
+  def user_registration_enter_email_visit(sign_in_a_b_test_bucket:, from_sign_in:, **extra)
     track_event(
       'User Registration: enter email visited',
       sign_in_a_b_test_bucket:,
+      from_sign_in:,
       **extra,
     )
   end

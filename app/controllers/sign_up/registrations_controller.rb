@@ -17,6 +17,7 @@ module SignUp
       @sign_in_a_b_test_bucket = AbTests::SIGN_IN.bucket(session.id)
       analytics.user_registration_enter_email_visit(
         sign_in_a_b_test_bucket: @sign_in_a_b_test_bucket,
+        from_sign_in: params[:source] == 'sign_in',
       )
       render :new, locals: { request_id: nil }, formats: :html
     end
