@@ -62,5 +62,15 @@ RSpec.describe Proofing::Mock::DdpMockClient do
         expect(result.response_body['review_status']).to eq('pass')
       end
     end
+
+    context 'with failed request' do
+      let(:redis_result) { 'pass' }
+
+      subject(:instance) { described_class.new response_fixture_file: 'error_response.json' }
+
+      it 'records request error' do
+        expect(result.errors).to eql({ request_result: ['fail_invalid_parameter'] })
+      end
+    end
   end
 end

@@ -48,11 +48,13 @@ module Proofing
 
         review_status = review_status_for(session_id: applicant[:threatmetrix_session_id])
         response_body = response_body_json(review_status: review_status)
+        request_result = response_body['request_result']
 
         result.review_status = review_status
         result.response_body = response_body
 
         result.add_error(:review_status, review_status) unless review_status == 'pass'
+        result.add_error(:request_result, request_result) unless request_result == 'success'
 
         result
       end
