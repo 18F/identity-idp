@@ -41,7 +41,7 @@ describe 'devise/sessions/new.html.erb' do
 
     expect(rendered).
       to have_link(
-        t('links.create_account'), href: sign_up_email_url(request_id: nil)
+        t('links.create_account'), href: sign_up_email_url(request_id: nil, source: :sign_in)
       )
   end
 
