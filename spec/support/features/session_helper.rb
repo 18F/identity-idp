@@ -683,9 +683,8 @@ module Features
       expect(current_path).to eq edit_user_password_path
     end
 
-    def fill_reset_password_form(without_request_id: nil)
+    def fill_reset_password_form
       fill_in t('forms.passwords.edit.labels.password'), with: 'newVal!dPassw0rd'
-      find_field('request_id', type: :hidden).set(nil) if without_request_id
       click_button t('forms.passwords.edit.buttons.submit')
 
       expect(current_path).to eq new_user_session_path
