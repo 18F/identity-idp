@@ -97,6 +97,13 @@ class ResolutionProofingJob < ApplicationJob
       review_status: threatmetrix_result.review_status,
       response_body: response_h,
     }
+
+    if exception.present?
+      callback_log_data.result.merge!(
+        success: false,
+        exception: exception,
+      )
+    end
   end
 
   def proof_lexisnexis_ddp_with_threatmetrix_if_needed(
