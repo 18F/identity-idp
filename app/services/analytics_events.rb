@@ -2991,6 +2991,7 @@ module AnalyticsEvents
   # @param [String] service_provider_name
   # @param [String] page_occurence
   # @param [String] needs_completion_screen_reason
+  # @param [String] sign_in_a_b_test_bucket
   # @param [Array] sp_request_requested_attributes
   # @param [Array] sp_session_requested_attributes
   def user_registration_complete(
@@ -2998,6 +2999,7 @@ module AnalyticsEvents
     service_provider_name:,
     page_occurence:,
     needs_completion_screen_reason:,
+    sign_in_a_b_test_bucket:,
     sp_session_requested_attributes:,
     sp_request_requested_attributes: nil,
     ialmax: nil,
@@ -3010,6 +3012,7 @@ module AnalyticsEvents
       service_provider_name: service_provider_name,
       page_occurence: page_occurence,
       needs_completion_screen_reason: needs_completion_screen_reason,
+      sign_in_a_b_test_bucket:,
       sp_request_requested_attributes: sp_request_requested_attributes,
       sp_session_requested_attributes: sp_session_requested_attributes,
       **extra,

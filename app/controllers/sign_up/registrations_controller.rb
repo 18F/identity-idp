@@ -2,6 +2,7 @@ module SignUp
   class RegistrationsController < ApplicationController
     include PhoneConfirmation
     include ApplicationHelper # for ial2_requested?
+    include SignInABTestConcern
 
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
     before_action :require_no_authentication
@@ -14,7 +15,7 @@ module SignUp
         analytics: analytics,
         attempts_tracker: irs_attempts_api_tracker,
       )
-      @sign_in_a_b_test_bucket = AbTests::SIGN_IN.bucket(session.id)
+      @sign_in_a_b_test_bucket = sign_in_a_b_test_bucket
       analytics.user_registration_enter_email_visit(
         sign_in_a_b_test_bucket: @sign_in_a_b_test_bucket,
         from_sign_in: params[:source] == 'sign_in',

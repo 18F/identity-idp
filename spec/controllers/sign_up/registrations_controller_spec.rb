@@ -28,9 +28,9 @@ describe SignUp::RegistrationsController, devise: true do
 
     it 'tracks visit event' do
       stub_analytics
-      allow(AbTests::SIGN_IN).to receive(:bucket).and_return(:default)
+      allow(controller).to receive(:sign_in_a_b_test_bucket).and_return(:default)
 
-      allow(@analytics).to receive(:track_event).with(
+      expect(@analytics).to receive(:track_event).with(
         'User Registration: enter email visited',
         sign_in_a_b_test_bucket: :default,
         from_sign_in: false,
@@ -42,9 +42,9 @@ describe SignUp::RegistrationsController, devise: true do
     context 'with source parameter' do
       it 'tracks visit event' do
         stub_analytics
-        allow(AbTests::SIGN_IN).to receive(:bucket).and_return(:default)
+        allow(controller).to receive(:sign_in_a_b_test_bucket).and_return(:default)
 
-        allow(@analytics).to receive(:track_event).with(
+        expect(@analytics).to receive(:track_event).with(
           'User Registration: enter email visited',
           sign_in_a_b_test_bucket: :default,
           from_sign_in: true,

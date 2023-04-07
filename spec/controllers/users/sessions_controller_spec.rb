@@ -590,7 +590,7 @@ describe Users::SessionsController, devise: true do
       it 'tracks page visit, any alert flashes, and the Devise stored location' do
         stub_analytics
         allow(controller).to receive(:flash).and_return(alert: 'hello')
-        allow(AbTests::SIGN_IN).to receive(:bucket).and_return(:default)
+        allow(controller).to receive(:sign_in_a_b_test_bucket).and_return(:default)
         subject.session['user_return_to'] = mock_valid_site
 
         expect(@analytics).to receive(:track_event).with(
