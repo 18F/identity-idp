@@ -22,6 +22,7 @@ en:
       prompt: Are you sure you want to cancel?
     confirmations:
       new: Send another confirmation email
+    create_account_new_users: Create an account for new users
     create_account_with_sp:
       cta: First time using %{app_name}?
       sp_text: is using %{app_name} to allow you to sign in to your account safely and
@@ -60,10 +61,9 @@ en:
       new: Use your PIV/CAC card to secure your account
     residential_address: Current residential address
     session_timeout_warning: Need more time?
+    sign_in_existing_users: Sign in for existing users
     sign_in_with_sp: Sign in to continue to %{sp}
     sign_in_without_sp: Sign in
-    sign_in_existing_users: Sign in for existing users
-    create_account_new_users: Create an account for new users
     sp_handoff_bounced: There was a problem connecting to %{sp_name}
     ssn: Social Security Number
     state_id: State-issued ID
