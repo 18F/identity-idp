@@ -47,6 +47,17 @@ module LexisNexisFixtures
       JSON.parse(raw).to_json
     end
 
+    def ddp_unexpected_review_status
+      'unexpected_review_status_that_causes_problems'
+    end
+
+    def ddp_unexpected_review_status_response_json
+      raw = read_fixture_file_at_path('ddp/successful_response.json')
+      JSON.parse(raw).merge(
+        review_status: ddp_unexpected_review_status,
+      ).to_json
+    end
+
     def instant_verify_request_json
       raw = read_fixture_file_at_path('instant_verify/request.json')
       JSON.parse(raw).to_json
