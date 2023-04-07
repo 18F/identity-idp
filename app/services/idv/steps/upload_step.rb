@@ -19,12 +19,15 @@ module Idv
 
         # See the simple_form_for in
         # app/views/idv/doc_auth/upload.html.erb
-        if params[:type] == 'desktop'
-          bypass_send_link_steps
-        else
-          return bypass_send_link_steps if mobile_device?
+        if hybrid_flow_chosen?
           handle_phone_submission
+        else
+          bypass_send_link_steps
         end
+      end
+
+      def hybrid_flow_chosen?
+        params[:type] != 'desktop' && !mobile_device?
       end
 
       def extra_view_variables
