@@ -45,17 +45,16 @@ module Idv
           else
             event, _disavowal_token = create_user_event(:account_verified)
 
-            if result.extra[:threatmetrix_check_failed] && threatmetrix_enabled?
-              redirect_to_fraud_review
-            else
+            if !current_user.fraud_review_pending?
               UserAlerts::AlertUserAboutAccountVerified.call(
                 user: current_user,
                 date_time: event.created_at,
                 sp_name: decorated_session.sp_name,
               )
               flash[:success] = t('account.index.verification.success')
-              redirect_to next_step
             end
+
+            redirect_to next_step
           end
         else
           flash[:error] = @gpo_verify_form.errors.first.message
