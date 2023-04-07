@@ -81,7 +81,7 @@ describe TwoFactorOptionsPresenter do
         described_class.new(user_agent: user_agent, priority_bucket: :authentication_app_priority)
       end
 
-      it 'supplies all authn as the first option' do
+      it 'supplies auth app as the first option' do
         expect(presenter.options.first.class).to eq(
           TwoFactorAuthentication::AuthAppSelectionPresenter,
         )

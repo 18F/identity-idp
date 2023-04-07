@@ -9,7 +9,7 @@ module Users
 
     def index
       two_factor_options_form
-      @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(session.id)
+      @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
       @presenter = two_factor_options_presenter
       analytics.user_registration_2fa_setup_visit(
         sign_up_mfa_priority_bucket: @sign_up_mfa_selection_order_bucket,
@@ -18,7 +18,7 @@ module Users
 
     def create
       result = submit_form
-      @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(session.id)
+      @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
       analytics_hash = result.to_h.merge(
         sign_up_mfa_priority_bucket: @sign_up_mfa_selection_order_bucket,
       )
