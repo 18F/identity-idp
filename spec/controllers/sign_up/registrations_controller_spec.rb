@@ -25,6 +25,19 @@ describe SignUp::RegistrationsController, devise: true do
       expect { get :new }.
         to raise_error(Mime::Type::InvalidMimeType)
     end
+
+    context 'IdV unavailable' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_available).and_return(false)
+      end
+      it 'redirects to idv vendor outage page when ial2 requested' do
+        allow(controller).to receive(:ial2_requested?).and_return(true)
+        get :new
+        expect(response).to redirect_to(
+          idv_unavailable_path(from: SignUp::RegistrationsController::CREATE_ACCOUNT),
+        )
+      end
+    end
   end
 
   describe '#create' do

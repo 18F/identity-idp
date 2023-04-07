@@ -5,7 +5,7 @@ module SignUp
 
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
     before_action :require_no_authentication
-    before_action :redirect_if_ial2_and_vendor_outage
+    before_action :redirect_if_ial2_and_idv_unavailable
 
     CREATE_ACCOUNT = 'create_account'
 
@@ -71,11 +71,10 @@ module SignUp
       ServiceProviderRequestProxy.from_uuid(request_id).uuid
     end
 
-    def redirect_if_ial2_and_vendor_outage
-      return unless ial2_requested? && OutageStatus.new.any_idv_vendor_outage?
-
-      session[:vendor_outage_redirect] = CREATE_ACCOUNT
-      return redirect_to vendor_outage_url
+    def redirect_if_ial2_and_idv_unavailable
+      if ial2_requested? && !FeatureManagement.idv_available?
+        redirect_to idv_unavailable_path(from: CREATE_ACCOUNT)
+      end
     end
   end
 end
