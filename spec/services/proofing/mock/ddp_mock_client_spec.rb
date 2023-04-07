@@ -49,6 +49,9 @@ RSpec.describe Proofing::Mock::DdpMockClient do
         expect(result.review_status).to eq('reject')
         expect(result.response_body['review_status']).to eq('reject')
       end
+      it 'has an error on result' do
+        expect(result.errors).to eql(review_status: ['reject'])
+      end
     end
 
     context 'with pass' do
