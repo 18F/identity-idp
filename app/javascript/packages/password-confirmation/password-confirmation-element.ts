@@ -5,7 +5,7 @@ class PasswordConfirmationElement extends HTMLElement {
   connectedCallback() {
     this.toggle.addEventListener('change', () => this.setInputType());
     this.toggle.addEventListener('click', () => this.trackToggleEvent());
-    this.input_confirmation.addEventListener('input', () => this.validatePassword());
+    this.input_confirmation.addEventListener('change', () => this.validatePassword());
     this.setInputType();
   }
 
@@ -13,19 +13,23 @@ class PasswordConfirmationElement extends HTMLElement {
    * Checkbox toggle for visibility.
    */
   get toggle(): HTMLInputElement {
-    return this.querySelector('.password-toggle__toggle')!;
+    return this.querySelector('.password-toggle__toggle')! as HTMLInputElement;
   }
 
   /**
    * Text or password input.
    */
   get input(): HTMLInputElement {
-    return this.querySelector('.password-confirmation__input1')!;
+    return this.querySelector('.password-confirmation__input1')! as HTMLInputElement;
   }
 
+  /**
+   * Text or password confirmation input.
+   */
   get input_confirmation(): HTMLInputElement {
-    return this.querySelector('.password-confirmation__input2')!;
+    return this.querySelector('.password-confirmation__input2')! as HTMLInputElement;
   }
+
   setInputType() {
     const checked = this.toggle.checked ? 'text' : 'password';
     this.input.type = checked;
