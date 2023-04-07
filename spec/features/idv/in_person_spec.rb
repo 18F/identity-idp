@@ -654,4 +654,24 @@ RSpec.describe 'In Person Proofing', js: true do
       end
     end
   end
+
+  context 'in_person_capture_secondary_id_enabled feature flag enabled and same address as id', allow_browser_log: true do
+    let(:user) { user_with_2fa }
+
+    it 'skips the address page' do
+      allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+        and_return(true)
+      sign_in_and_2fa_user(user)
+      begin_in_person_proofing(user)
+      complete_location_step(user)
+      complete_prepare_step(user)
+      complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
+      # skip address step
+      complete_ssn_step(user)
+      # Ensure the page submitted successfully
+      expect(page).to have_content(
+        t('idv.form.ssn_label_html'),
+      )
+    end
+  end
 end

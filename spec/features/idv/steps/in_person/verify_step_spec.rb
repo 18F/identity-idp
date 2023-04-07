@@ -145,10 +145,6 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
         user, same_address_as_id: same_address_as_id,
               double_address_verification: double_address_verification
       )
-      fill_out_address_form_ok(
-        same_address_as_id: same_address_as_id,
-        double_address_verification: double_address_verification,
-      )
       click_idv_continue
       complete_ssn_step(user)
 

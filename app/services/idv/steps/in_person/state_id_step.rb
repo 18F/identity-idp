@@ -19,7 +19,6 @@ module Idv
           # Accept Date of Birth from both memorable date and input date components
           formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
           flow_session[:pii_from_user][:dob] = formatted_dob if formatted_dob
-
           if capture_secondary_id_enabled? && flow_session[:pii_from_user][:same_address_as_id] == 'true'
             flow_session[:pii_from_user][:address1] = flow_params[:state_id_address1]
             flow_session[:pii_from_user][:address2] = flow_params[:state_id_address2]
