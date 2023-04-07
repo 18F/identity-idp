@@ -2,15 +2,19 @@ module FormPasswordValidator
   extend ActiveSupport::Concern
 
   included do
-    attr_accessor :password
+    attr_accessor :password, :password_confirmation
     attr_reader :user
 
     validates :password,
               presence: true,
               length: { in: Devise.password_length }
+    validates :password_confirmation,
+              presence: true,
+              length: { in: Devise.password_length }
     validate :password_graphemes_length
     validate :strong_password
     validate :not_pwned
+    validate :passwords_match
   end
 
   private
@@ -48,6 +52,12 @@ module FormPasswordValidator
     return if password.blank? || !PwnedPasswords::LookupPassword.call(password)
 
     errors.add :password, :pwned_password, type: :pwned_password
+  end
+
+  def passwords_match
+    if password != password_confirmation
+      errors.add(:password_confirmation, :confirmation, type: :mismatch)
+    end
   end
 
   def min_password_score

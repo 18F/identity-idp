@@ -44,7 +44,7 @@ module SignUp
     end
 
     def permitted_params
-      params.require(:password_form).permit(:confirmation_token, :password, :request_id)
+      params.require(:password_form).permit(:confirmation_token, :password, :password_confirmation, :request_id)
     end
 
     def process_successful_password_creation
