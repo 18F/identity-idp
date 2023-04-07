@@ -24,7 +24,6 @@ feature 'doc auth verify step', :js do
     "#{t('forms.example')} 00926"
   end
 
-
   context 'with a mainland address' do
     before do
       sign_in_and_2fa_user
@@ -41,12 +40,10 @@ feature 'doc auth verify step', :js do
 
     context 'that gets changed to a Puerto Rico address' do
       before do
-        binding.pry
         select 'Puerto Rico', from: 'idv_form_state'
       end
 
       it 'shows the Puerto Rico address guidance' do
-        binding.pry
         expect(page).to have_content(puerto_rico_guidance_text)
         expect(page).to have_content(puerto_rico_address1_hint)
         expect(page).to have_content(puerto_rico_address2_hint)
@@ -94,11 +91,12 @@ feature 'doc auth verify step', :js do
       complete_ssn_step
     end
 
-    it 'renders the Puerto Rico address guidance as visible text' do
-      guidance = page.find_by_id('puerto-rico-extra-text')
-
-      expect(guidance.text).to include(puerto_rico_guidance_text)
-      expect(guidance).to be_visible
+    it 'shows the Puerto Rico address guidance' do
+      expect(page).to have_content(puerto_rico_guidance_text)
+      expect(page).to have_content(puerto_rico_address1_hint)
+      expect(page).to have_content(puerto_rico_address2_hint)
+      expect(page).to have_content(puerto_rico_city_hint)
+      expect(page).to have_content(puerto_rico_zipcode_hint)
     end
 
     it 'accepts a Puerto Rico style address' do
@@ -116,9 +114,11 @@ feature 'doc auth verify step', :js do
       end
 
       it 'hides the Puerto Rico address guidance' do
-        guidance = page.find_by_id('puerto-rico-extra-text', visible: false)
-
-        expect(guidance).not_to be_visible
+        expect(page).not_to have_content(puerto_rico_guidance_text)
+        expect(page).not_to have_content(puerto_rico_address1_hint)
+        expect(page).not_to have_content(puerto_rico_address2_hint)
+        expect(page).not_to have_content(puerto_rico_city_hint)
+        expect(page).not_to have_content(puerto_rico_zipcode_hint)
       end
     end
   end
