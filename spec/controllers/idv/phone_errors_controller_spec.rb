@@ -86,15 +86,19 @@ describe Idv::PhoneErrorsController do
   let(:user) { nil }
   let(:phone) { '3602345678' }
   let(:country_code) { 'US' }
+  let(:previous_phone_step_params) do
+    {
+      phone: phone,
+      international_code: country_code,
+    }
+  end
 
   before do
     allow(idv_session).to receive(:user_phone_confirmation).
       and_return(idv_session_user_phone_confirmation)
     allow(idv_session).to receive(:current_user).and_return(user)
-    allow(idv_session).to receive(:previous_phone_step_params).and_return(
-      phone: phone,
-      international_code: country_code,
-    )
+    allow(idv_session).to receive(:previous_phone_step_params).
+      and_return(previous_phone_step_params)
     allow(subject).to receive(:remaining_attempts).and_return(5)
     allow(controller).to receive(:idv_session).and_return(idv_session)
     stub_sign_in(user) if user
@@ -118,6 +122,13 @@ describe Idv::PhoneErrorsController do
     it 'assigns country_code' do
       get action
       expect(assigns(:country_code)).to eql(country_code)
+    end
+
+    context 'not knowing about a phone just entered' do
+      let(:previous_phone_step_params) { nil }
+      it 'does not crash' do
+        get action
+      end
     end
 
     context 'with throttle attempts' do
