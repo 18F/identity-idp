@@ -18,8 +18,8 @@
   <%= render TabNavigationComponent.new(
         label: t('account.login.tab_navigation'),
         routes: [
-          { text: t('links.next'), path: root_path },
-          { text: t('links.create_account'), path: sign_up_email_path },
+          { text: t('links.next'), path: new_user_session_url(request_id: @request_id) },
+          { text: t('links.create_account'), path: sign_up_email_url(request_id: @request_id) },
         ],
         class: 'margin-bottom-4',
       ) %>
