@@ -692,7 +692,8 @@ module Features
     end
 
     def expect_branded_experience
-      expect(page).to have_css('.page-header--basic img ~ img')
+      # Check for branded experience as being the header containing the Login.gov and partner logos
+      expect(page).to have_css(".page-header--basic img[alt='#{APP_NAME}'] ~ img")
     end
   end
 end
