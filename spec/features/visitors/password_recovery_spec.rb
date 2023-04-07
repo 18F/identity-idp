@@ -143,12 +143,13 @@ feature 'Password Recovery' do
     before do
       @user = create(:user, :signed_up)
 
-      visit_idp_from_sp_with_ial1(:oidc)
-      click_link t('links.passwords.forgot')
-      fill_in t('account.index.email'), with: @user.email
-      click_button t('forms.buttons.continue')
+      perform_in_browser(:one) do
+        visit_idp_from_sp_with_ial1(:oidc)
+        click_link t('links.passwords.forgot')
+        fill_in t('account.index.email'), with: @user.email
+        click_button t('forms.buttons.continue')
+      end
 
-      Capybara.current_session.reset!
       set_current_email(last_email)
       click_email_link_matching(Regexp.new(edit_user_password_path))
     end
