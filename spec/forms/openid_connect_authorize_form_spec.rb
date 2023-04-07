@@ -357,11 +357,19 @@ RSpec.describe OpenidConnectAuthorizeForm do
   end
 
   describe '#aal' do
+    context 'when no AAL passed' do
+      let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns 0' do
+        expect(form.aal).to eq(0)
+      end
+    end
+
     context 'when DEFAULT_AAL passed' do
       let(:acr_values) { Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF }
 
       it 'returns 0' do
-        expect(form.aal).to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
+        expect(form.aal).to eq(0)
       end
     end
 
@@ -404,9 +412,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(form.aal).to eq(3)
       end
     end
-  end
 
-  describe '#aal' do
     context 'when IAL and AAL passed' do
       aal2 = Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
       ial2 = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
@@ -426,21 +432,18 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'when AAL2 passed' do
       let(:acr_values) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
 
-      it 'returns AAl2' do
-        requested_aal_value = form.requested_aal_value
-        expect(requested_aal_value).to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
+      it 'returns AAL2' do
+        expect(form.requested_aal_value).to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
       end
     end
 
     context 'when AAL2_PHISHING_RESISTANT passed' do
-      let(:phishing_resistant) do
-        Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF
-      end
-      let(:acr_values) { phishing_resistant }
+      let(:acr_values) { Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF }
 
       it 'returns AAL2+Phishing Resistant' do
-        requested_aal_value = form.requested_aal_value
-        expect(requested_aal_value).to eq(phishing_resistant)
+        expect(form.requested_aal_value).to eq(
+          Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+        )
       end
     end
 
@@ -448,8 +451,9 @@ RSpec.describe OpenidConnectAuthorizeForm do
       let(:acr_values) { Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF }
 
       it 'returns AAL2+HSPD12' do
-        requested_aal_value = form.requested_aal_value
-        expect(requested_aal_value).to eq(Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF)
+        expect(form.requested_aal_value).to eq(
+          Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
+        )
       end
     end
 
@@ -457,8 +461,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       let(:acr_values) { Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF }
 
       it 'returns AAL3' do
-        requested_aal_value = form.requested_aal_value
-        expect(requested_aal_value).to eq(Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF)
+        expect(form.requested_aal_value).to eq(Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF)
       end
     end
 
@@ -466,8 +469,9 @@ RSpec.describe OpenidConnectAuthorizeForm do
       let(:acr_values) { Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF }
 
       it 'returns AAL3+HSPD12' do
-        requested_aal_value = form.requested_aal_value
-        expect(requested_aal_value).to eq(Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF)
+        expect(form.requested_aal_value).to eq(
+          Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
+        )
       end
     end
 
@@ -477,9 +481,10 @@ RSpec.describe OpenidConnectAuthorizeForm do
          Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF].join(' ')
       end
 
-      it 'returns AAL3+HSPD12' do
-        requested_aal_value = form.requested_aal_value
-        expect(requested_aal_value).to eq(Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF)
+      it 'returns AAL2+HSPD12' do
+        expect(form.requested_aal_value).to eq(
+          Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
+        )
       end
     end
 
@@ -493,9 +498,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
          #{phishing_resistant}"
       end
 
-      it 'returns AAL3+HSPD12' do
-        requested_aal_value = form.requested_aal_value
-        expect(requested_aal_value).to eq(phishing_resistant)
+      it 'returns AAL2+HSPD12' do
+        expect(form.requested_aal_value).to eq(phishing_resistant)
       end
     end
 
@@ -511,7 +515,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
          #{Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF}"
       end
 
-      it 'returns AAL3+HSPD12' do
+      it 'returns AAL2+HSPD12' do
         requested_aal_value = form.requested_aal_value
         expect(requested_aal_value).to eq(phishing_resistant)
       end
