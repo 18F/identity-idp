@@ -9,16 +9,16 @@ module IdvStepConcern
   end
 
   def flow_session
-    user_session['idv/doc_auth']
+    user_session.fetch('idv/doc_auth', {})
   end
 
   def pii_from_doc
-    flow_session&.[]('pii_from_doc')
+    flow_session['pii_from_doc']
   end
 
   # copied from doc_auth_controller
   def flow_path
-    flow_session&.[](:flow_path)
+    flow_session[:flow_path]
   end
 
   def confirm_document_capture_complete
@@ -28,7 +28,7 @@ module IdvStepConcern
        flow_path == 'standard'
       redirect_to idv_document_capture_url
     else
-      flow_session&.delete('Idv::Steps::DocumentCaptureStep')
+      flow_session.delete('Idv::Steps::DocumentCaptureStep')
       redirect_to idv_doc_auth_url
     end
   end
