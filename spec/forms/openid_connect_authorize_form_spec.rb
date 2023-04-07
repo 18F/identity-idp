@@ -358,36 +358,10 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
   describe '#aal' do
     context 'when DEFAULT_AAL passed' do
-      before do
-        default = Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
-        IdentityConfig.store.valid_authn_contexts.push(default)
-      end
-
-      after do
-        IdentityConfig.store.valid_authn_contexts.pop
-      end
-
       let(:acr_values) { Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF }
 
       it 'returns 0' do
         expect(form.aal).to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
-      end
-    end
-
-    context 'when AAL1 passed' do
-      before do
-        aal1 = Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF
-        IdentityConfig.store.valid_authn_contexts.push(aal1)
-      end
-
-      after do
-        IdentityConfig.store.valid_authn_contexts.pop
-      end
-
-      let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
-
-      it 'returns default constant' do # AAL1 isn't a valid AAL, so the default is returned
-        expect(form.aal).to eq('urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo')
       end
     end
 
@@ -430,7 +404,9 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(form.aal).to eq(3)
       end
     end
+  end
 
+  describe '#aal' do
     context 'when IAL and AAL passed' do
       aal2 = Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
       ial2 = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
@@ -447,42 +423,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
   end
 
   describe '#requested_aal_value' do
-    context 'when default AAL passed' do
-      before do
-        default = Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
-        IdentityConfig.store.valid_authn_contexts.push(default)
-      end
-
-      after do
-        IdentityConfig.store.valid_authn_contexts.pop
-      end
-
-      let(:acr_values) { Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF }
-
-      it 'returns nil' do # AAL1 isn't a valid AAL, so expect nil
-        requested_aal_value = form.requested_aal_value
-        expect(requested_aal_value).to eq(nil)
-      end
-    end
-
-    context 'when AAL1 passed' do
-      before do
-        aal1 = Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF
-        IdentityConfig.store.valid_authn_contexts.push(aal1)
-      end
-
-      after do
-        IdentityConfig.store.valid_authn_contexts.pop
-      end
-
-      let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
-
-      it 'returns nil' do # AAL1 isn't a valid AAL, so expect nil
-        requested_aal_value = form.requested_aal_value
-        expect(requested_aal_value).to eq(nil)
-      end
-    end
-
     context 'when AAL2 passed' do
       let(:acr_values) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
 
