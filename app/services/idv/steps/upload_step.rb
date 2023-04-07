@@ -20,7 +20,7 @@ module Idv
         # See the simple_form_for in
         # app/views/idv/doc_auth/upload.html.erb
         if params[:type] == 'desktop'
-          handle_desktop_selection
+          bypass_send_link_steps
         else
           return bypass_send_link_steps if mobile_device?
           handle_phone_submission
@@ -32,14 +32,6 @@ module Idv
       end
 
       private
-
-      def handle_desktop_selection
-        if mobile_device?
-          send_user_to_email_sent_step
-        else
-          bypass_send_link_steps
-        end
-      end
 
       def build_form
         Idv::PhoneForm.new(
@@ -72,8 +64,6 @@ module Idv
           failure_reason: failure_reason,
         )
 
-        mark_step_complete(:email_sent)
-
         build_telephony_form_response(telephony_result)
       end
 
@@ -89,17 +79,8 @@ module Idv
         identity&.friendly_name || APP_NAME
       end
 
-      def send_user_to_email_sent_step
-        mark_step_complete(:link_sent)
-        UserMailer.with(
-          user: current_user, email_address: current_user.confirmed_email_addresses.first,
-        ).doc_auth_desktop_link_to_sp(application, link).deliver_now_or_later
-        form_response(destination: :email_sent)
-      end
-
       def bypass_send_link_steps
         mark_step_complete(:link_sent)
-        mark_step_complete(:email_sent)
         if IdentityConfig.store.doc_auth_document_capture_controller_enabled
           flow_session[:flow_path] = @flow.flow_path
           redirect_to idv_document_capture_url

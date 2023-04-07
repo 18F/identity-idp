@@ -7,7 +7,6 @@ module Funnel
         upload
         send_link
         link_sent
-        email_sent
         front_image
         back_image
         mobile_front_image
