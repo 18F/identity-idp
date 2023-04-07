@@ -16,10 +16,12 @@
       ].select(&:present?),
     ) do %>
 
-      <p>
-        <%= t('idv.failure.phone.warning.you_entered') %>
-        <strong><%= PhoneFormatter.format(@phone, country_code: @country_code) %></strong>
-      </p>
+      <% if @phone %>
+        <p>
+          <%= t('idv.failure.phone.warning.you_entered') %>
+          <strong><%= PhoneFormatter.format(@phone, country_code: @country_code) %></strong>
+        </p>
+      <% end %>
 
       <p>
         <%= t('idv.failure.phone.warning.next_steps_html') %>
