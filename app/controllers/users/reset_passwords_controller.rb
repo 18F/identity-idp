@@ -19,19 +19,24 @@ module Users
     end
 
     def edit
-      result = PasswordResetTokenValidator.new(token_user).submit
+      if user_params[:reset_password_token]
+        session[:reset_password_token] = user_params[:reset_passwork_token]
+        
+      elsif session[:reset_passwork_token]
+        result = PasswordResetTokenValidator.new(token_user).submit
 
-      analytics.password_reset_token(**result.to_h)
-      irs_attempts_api_tracker.forgot_password_email_confirmed(
-        success: result.success?,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-      )
+        analytics.password_reset_token(**result.to_h)
+        irs_attempts_api_tracker.forgot_password_email_confirmed(
+          success: result.success?,
+          failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
+        )
 
-      if result.success?
-        @reset_password_form = ResetPasswordForm.new(build_user)
-        @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
-      else
-        handle_invalid_or_expired_token(result)
+        if result.success?
+          @reset_password_form = ResetPasswordForm.new(build_user)
+          @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
+        else
+          handle_invalid_or_expired_token(result)
+        end
       end
     end
 
@@ -117,7 +122,7 @@ module Users
     end
 
     def token_user
-      @token_user ||= User.with_reset_password_token(params[:reset_password_token])
+      @token_user ||= User.with_reset_password_token(session[:reset_password_token])
     end
 
     def build_user
