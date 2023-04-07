@@ -56,5 +56,16 @@ describe('pw-strength', () => {
         'zxcvbn.feedback.this_is_a_top_10_common_password',
       );
     });
+
+    it('shows feedback when a password is too short', () => {
+      const z = zxcvbn('_3G%JMyR"');
+      const minPasswordLength = 12;
+      // console.log(z.password.length, minPasswordLength, z.score, z.feedback)
+
+      expect(getFeedback(z, { minimumLength: minPasswordLength })).to.equal(
+        'errors.attributes.password.too_short.other',
+        { count: minPasswordLength },
+      );
+    });
   });
 });
