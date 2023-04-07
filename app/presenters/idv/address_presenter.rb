@@ -29,7 +29,7 @@ module Idv
     end
 
     def hint_class
-      ['display-none']
+      ['display-none', 'puerto-rico-extras']
     end
   end
 end

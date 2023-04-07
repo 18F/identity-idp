@@ -8,27 +8,50 @@ feature 'doc auth verify step', :js do
     t('doc_auth.info.address_guidance_puerto_rico_html').gsub('<br>', "\n")
   end
 
+  let(:puerto_rico_address1_hint) do
+    "#{t('forms.example')} 150 Calle A Apt 3"
+  end
+
+  let(:puerto_rico_address2_hint) do
+    "#{t('forms.example')} URB Las Gladiolas"
+  end
+
+  let(:puerto_rico_city_hint) do
+    "#{t('forms.example')} San Juan"
+  end
+
+  let(:puerto_rico_zipcode_hint) do
+    "#{t('forms.example')} 00926"
+  end
+
+
   context 'with a mainland address' do
     before do
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_address_step
     end
 
-    it 'renders the Puerto Rico address guidance as hidden text' do
-      guidance = page.find_by_id('puerto-rico-extra-text', visible: false)
-
-      expect(guidance).not_to be_visible
+    it 'does not show the Puerto Rico guidance and hint fields' do
+      expect(page).not_to have_content(puerto_rico_guidance_text)
+      expect(page).not_to have_content(puerto_rico_address1_hint)
+      expect(page).not_to have_content(puerto_rico_address2_hint)
+      expect(page).not_to have_content(puerto_rico_city_hint)
+      expect(page).not_to have_content(puerto_rico_zipcode_hint)
     end
 
     context 'that gets changed to a Puerto Rico address' do
       before do
+        binding.pry
         select 'Puerto Rico', from: 'idv_form_state'
       end
 
       it 'shows the Puerto Rico address guidance' do
-        guidance = page.find_by_id('puerto-rico-extra-text')
-
-        expect(guidance).to be_visible
+        binding.pry
+        expect(page).to have_content(puerto_rico_guidance_text)
+        expect(page).to have_content(puerto_rico_address1_hint)
+        expect(page).to have_content(puerto_rico_address2_hint)
+        expect(page).to have_content(puerto_rico_city_hint)
+        expect(page).to have_content(puerto_rico_zipcode_hint)
       end
     end
 
