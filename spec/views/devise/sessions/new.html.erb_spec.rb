@@ -33,10 +33,10 @@ describe 'devise/sessions/new.html.erb' do
     render
   end
 
-  it 'has a page heading' do
+  it 'has a localized page heading' do
     render
 
-    expect(rendered).to have_content(t('headings.sign_in_without_sp'))
+    expect(rendered).to have_selector('h1', text: t('headings.sign_in_without_sp'))
   end
 
   it 'includes a link to create a new account' do
@@ -177,10 +177,10 @@ describe 'devise/sessions/new.html.erb' do
   context 'with tabbed layout A/B test' do
     let(:sign_in_a_b_test_bucket) { :tabbed }
 
-    it 'has a page heading' do
+    it 'has a localized page heading' do
       render
 
-      expect(rendered).to have_content(t('headings.sign_in_existing_users'))
+      expect(rendered).to have_selector('h1', text: t('headings.sign_in_existing_users'))
     end
 
     it 'includes a link to create a new account' do
