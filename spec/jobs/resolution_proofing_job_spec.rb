@@ -328,10 +328,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
     context 'with an invalid threatmetrix review_status value' do
       it 'stores an exception result' do
-        threatmetrix_response = JSON.parse(LexisNexisFixtures.ddp_success_response_json).merge(
-          review_status: 'unexpected_review_status_that_causes_problems',
-        ).to_json
-        stub_vendor_requests(threatmetrix_response: threatmetrix_response)
+        stub_vendor_requests(
+          threatmetrix_response: LexisNexisFixtures.ddp_unexpected_review_status_response_json,
+        )
 
         perform
 
@@ -341,11 +340,11 @@ RSpec.describe ResolutionProofingJob, type: :job do
         result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
 
         expect(result[:success]).to be false
-        expect(result[:exception]).to match(/unexpected_review_status_that_causes_problems/)
+        expect(result[:exception]).to include(LexisNexisFixtures.ddp_unexpected_review_status)
         expect(result[:timed_out]).to be false
 
-        expect(result_context_stages_threatmetrix[:exception]).to match(
-          /unexpected_review_status_that_causes_problems/,
+        expect(result_context_stages_threatmetrix[:exception]).to include(
+          LexisNexisFixtures.ddp_unexpected_review_status,
         )
       end
     end
