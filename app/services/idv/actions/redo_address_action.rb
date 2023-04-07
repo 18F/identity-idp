@@ -6,7 +6,6 @@ module Idv
       end
 
       def call
-        mark_step_incomplete(:address)
         redirect_to idv_address_url
       end
     end
