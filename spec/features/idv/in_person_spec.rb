@@ -656,13 +656,17 @@ RSpec.describe 'In Person Proofing', js: true do
           allow_browser_log: true do
     let(:user) { user_with_2fa }
 
-    it 'skips the address page' do
+    before(:each) do
       allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
         and_return(true)
+
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
       complete_location_step(user)
       complete_prepare_step(user)
+    end
+
+    it 'skips the address page' do
       complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
       # skip address step
       complete_ssn_step(user)
@@ -670,6 +674,18 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_content(
         t('idv.form.ssn_label_html'),
       )
+    end
+
+    it 'can redo the address page form' do
+      complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
+      # skip address step
+      complete_ssn_step(user)
+      # click update address button on the verify page
+      click_button t('idv.buttons.change_address_label')
+      expect(page).to have_content(t('in_person_proofing.headings.update_address'))
+      fill_out_address_form_ok(double_address_verification: true, same_address_as_id: true)
+      click_button t('forms.buttons.submit.update')
+      expect(page).to have_content(t('headings.verify'))
     end
   end
 end

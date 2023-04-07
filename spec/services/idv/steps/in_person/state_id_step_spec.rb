@@ -36,7 +36,7 @@ describe Idv::Steps::InPerson::StateIdStep do
           first_name: first_name,
           last_name: last_name,
           dob: dob,
-          state_id_jurisdiction: state_id_jurisdiction,
+          state_id_state: state_id_state,
           state_id_number: state_id_number,
         }
       end
@@ -59,7 +59,7 @@ describe Idv::Steps::InPerson::StateIdStep do
         expect(pii_from_user[:first_name]).to eq first_name
         expect(pii_from_user[:last_name]).to eq last_name
         expect(pii_from_user[:dob]).to eq dob
-        expect(pii_from_user[:state_id_jurisdiction]).to eq state_id_jurisdiction
+        expect(pii_from_user[:state_id_state]).to eq state_id_state
         expect(pii_from_user[:state_id_number]).to eq state_id_number
       end
 
@@ -166,7 +166,7 @@ describe Idv::Steps::InPerson::StateIdStep do
     let(:capture_secondary_id_enabled) { true }
     let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
     let(:dob) { '1980-01-01' }
-    let(:state_id_jurisdiction) { 'Nevada' }
+    let(:state_id_state) { 'Nevada' }
     let(:state_id_city) { 'Twin Peaks' }
     let(:state_id_address1) { '123 Sesame Street' }
     let(:state_id_address2) { 'Apt. #C' }
@@ -175,7 +175,7 @@ describe Idv::Steps::InPerson::StateIdStep do
     let(:submitted_values) do
       {
         dob: dob,
-        state_id_jurisdiction: state_id_jurisdiction,
+        state_id_state: state_id_state,
         state_id_city: state_id_city,
         state_id_address1: state_id_address1,
         state_id_address2: state_id_address2,
