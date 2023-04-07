@@ -9,7 +9,7 @@ module IdvStepConcern
   end
 
   def flow_session
-    user_session.fetch('idv/doc_auth', {})
+    user_session['idv/doc_auth'] || {}
   end
 
   def pii_from_doc
