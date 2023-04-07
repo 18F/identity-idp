@@ -10,11 +10,11 @@
 
 <% if decorated_session.sp_name %>
   <%= render 'sign_up/registrations/sp_registration_heading' %>
-<% elsif @a_b_test_bucket == :default %>
+<% elsif @sign_in_a_b_test_bucket == :default %>
   <%= render PageHeadingComponent.new.with_content(decorated_session.new_session_heading) %>
 <% end %>
 
-<% if @a_b_test_bucket == :tabbed %>
+<% if @sign_in_a_b_test_bucket == :tabbed %>
   <%= render TabNavigationComponent.new(
         label: t('account.login.tab_navigation'),
         routes: [
@@ -50,7 +50,7 @@
       ) %>
   <%= f.input :request_id, as: :hidden, input_html: { value: @request_id } %>
   <%= f.submit t('links.next'), full_width: true, wide: false %>
-  <% if @a_b_test_bucket == :default %>
+  <% if @sign_in_a_b_test_bucket == :default %>
     <h2 class='separator-text'>
       <%= t('headings.create_account_with_sp.cta', app_name: APP_NAME) %>
     </h2>
