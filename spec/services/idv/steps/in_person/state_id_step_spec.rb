@@ -29,7 +29,7 @@ describe Idv::Steps::InPerson::StateIdStep do
       let(:first_name) { 'Natalya' }
       let(:last_name) { 'Rostova' }
       let(:dob) { '1980-01-01' }
-      let(:state_id_jurisdiction) { 'Nevada' }
+      let(:state_id_state) { 'Nevada' }
       let(:state_id_number) { 'ABC123234' }
       let(:submitted_values) do
         {
