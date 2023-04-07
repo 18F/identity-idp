@@ -7,7 +7,7 @@ describe Users::TwoFactorAuthenticationSetupController do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).
-        with('User Registration: 2FA Setup visited', { sign_up_mfa_priority_bucket: :default })
+        with('User Registration: 2FA Setup visited', sign_up_mfa_priority_bucket: :default)
 
       get :index
     end
