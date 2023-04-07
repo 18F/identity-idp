@@ -35,7 +35,7 @@ module SignUp
     end
 
     def request_id
-      params.fetch(:_request_id)
+      params[:_request_id]
     end
   end
 end
