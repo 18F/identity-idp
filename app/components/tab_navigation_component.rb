@@ -6,4 +6,10 @@ class TabNavigationComponent < BaseComponent
     @routes = routes
     @tag_options = tag_options
   end
+
+  def is_current_path?(path)
+    request.path == URI.parse(path).path
+  rescue URI::InvalidURIError
+    false
+  end
 end

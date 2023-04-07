@@ -5,8 +5,8 @@
         <%= render ButtonComponent.new(
               action: ->(**tag_options, &block) { link_to(route[:path], **tag_options, &block) },
               big: true,
-              outline: route[:path] != request.path,
-              aria: { current: route[:path] == request.path ? 'page' : nil },
+              outline: !is_current_path?(route[:path]),
+              aria: { current: is_current_path?(route[:path]) ? 'page' : nil },
               class: 'grid-col',
             ).with_content(route[:text]) %>
       </li>

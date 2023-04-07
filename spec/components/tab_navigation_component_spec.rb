@@ -32,6 +32,48 @@ RSpec.describe TabNavigationComponent, type: :component do
       expect(rendered).to have_link('First') { |link| is_current_link?(link) }
       expect(rendered).to have_link('Second') { |link| !is_current_link?(link) }
     end
+
+    context 'with routes defining full URL' do
+      let(:routes) do
+        [
+          { path: 'https://example.com/first', text: 'First' },
+          { path: 'https://example.com/second', text: 'Second' },
+        ]
+      end
+
+      it 'renders current link as highlighted' do
+        expect(rendered).to have_link('First') { |link| is_current_link?(link) }
+        expect(rendered).to have_link('Second') { |link| !is_current_link?(link) }
+      end
+    end
+
+    context 'with routes including query parameters' do
+      let(:routes) do
+        [
+          { path: '/first?foo=bar', text: 'First' },
+          { path: '/second?foo=bar', text: 'Second' },
+        ]
+      end
+
+      it 'renders current link as highlighted' do
+        expect(rendered).to have_link('First') { |link| is_current_link?(link) }
+        expect(rendered).to have_link('Second') { |link| !is_current_link?(link) }
+      end
+    end
+
+    context 'unparseable route' do
+      let(:routes) do
+        [
+          { path: '😬', text: 'First' },
+          { path: '😬', text: 'Second' },
+        ]
+      end
+
+      it 'renders gracefully without highlighted link' do
+        expect(rendered).to have_link('First') { |link| !is_current_link?(link) }
+        expect(rendered).to have_link('Second') { |link| !is_current_link?(link) }
+      end
+    end
   end
 
   def is_current_link?(link)
