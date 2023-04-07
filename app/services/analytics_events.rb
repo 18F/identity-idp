@@ -2701,12 +2701,14 @@ module AnalyticsEvents
 
   # @param [String] flash
   # @param [String] stored_location
+  # @param [String] sign_in_a_b_test_bucket
   # tracks when a user visits the sign in page
-  def sign_in_page_visit(flash:, stored_location:, **extra)
+  def sign_in_page_visit(flash:, stored_location:, sign_in_a_b_test_bucket:, **extra)
     track_event(
       'Sign in page visited',
       flash: flash,
       stored_location: stored_location,
+      sign_in_a_b_test_bucket:,
       **extra,
     )
   end
@@ -2952,8 +2954,13 @@ module AnalyticsEvents
   end
 
   # Tracks when user visits enter email page
-  def user_registration_enter_email_visit
-    track_event('User Registration: enter email visited')
+  # @param [String] sign_in_a_b_test_bucket
+  def user_registration_enter_email_visit(sign_in_a_b_test_bucket:, **extra)
+    track_event(
+      'User Registration: enter email visited',
+      sign_in_a_b_test_bucket:,
+      **extra,
+    )
   end
 
   # @param [Integer] enabled_mfa_methods_count

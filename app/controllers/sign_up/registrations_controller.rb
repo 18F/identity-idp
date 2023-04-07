@@ -14,8 +14,10 @@ module SignUp
         analytics: analytics,
         attempts_tracker: irs_attempts_api_tracker,
       )
-      analytics.user_registration_enter_email_visit
       @sign_in_a_b_test_bucket = AbTests::SIGN_IN.bucket(session.id)
+      analytics.user_registration_enter_email_visit(
+        sign_in_a_b_test_bucket: @sign_in_a_b_test_bucket,
+      )
       render :new, locals: { request_id: nil }, formats: :html
     end
 
