@@ -5,6 +5,7 @@ module SignUp
     before_action :find_user_with_confirmation_token
     before_action :confirm_user_needs_sign_up_confirmation
     before_action :stop_if_invalid_token
+    before_action :store_sp_metadata_in_session, only: [:create]
 
     def create
       clear_setup_piv_cac_from_sign_in
@@ -26,10 +27,15 @@ module SignUp
         success: true,
         failure_reason: nil,
       )
-      request_id = params.fetch(:_request_id, '')
-      redirect_to sign_up_enter_password_url(
-        request_id: request_id, confirmation_token: @confirmation_token,
-      )
+      redirect_to sign_up_enter_password_url(confirmation_token: @confirmation_token)
+    end
+
+    def store_sp_metadata_in_session
+      StoreSpMetadataInSession.new(session:, request_id:).call if request_id.present?
+    end
+
+    def request_id
+      params[:_request_id]
     end
   end
 end
