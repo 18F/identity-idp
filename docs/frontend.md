@@ -15,7 +15,7 @@
 To the extent possible, use design system components and utilities when implementing designs.
 
 **Components** are simple and consistent solutions to common user interface needs, like form fields,
-buttons, and icons. Any of the [U.S. Web Design system components](](https://designsystem.digital.gov/components/overview/))
+buttons, and icons. Any of the [U.S. Web Design system components](https://designsystem.digital.gov/components/overview/)
 are available to use. Through the Login.gov Design System, we have customized some of these
 components to suit our needs.
 
