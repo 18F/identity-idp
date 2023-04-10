@@ -4,7 +4,7 @@
 
 ### At a Glance
 
-- Leverages components and utilities from the [Login.gov Design System](https://design.login.gov/),
+- Leverages components and utilities from the [Login.gov Design System](https://github.com/18f/identity-style-guide),
   which is based on the [U.S. Web Design System](https://designsystem.digital.gov/).
 - Uses [Sass](https://sass-lang.com/) as the CSS preprocessor and [Stylelint](https://stylelint.io/)
   to keep files tidy.
@@ -15,11 +15,9 @@
 To the extent possible, use design system components and utilities when implementing designs.
 
 **Components** are simple and consistent solutions to common user interface needs, like form fields,
-buttons, and icons. Any component from the U.S. Web Design system is available to use. Through the
-Login.gov Design System, we have customized some of these components to suit our needs.
-
-- [Login.gov components](https://design.login.gov/components/)
-- [U.S. Web Design System components](https://designsystem.digital.gov/components/overview/)
+buttons, and icons. Any of the [U.S. Web Design system components](](https://designsystem.digital.gov/components/overview/))
+are available to use. Through the Login.gov Design System, we have customized some of these
+components to suit our needs.
 
 **Utilities** are CSS classes which allow you to add consistent styling to an HTML element, such as
 margins or borders.
@@ -169,7 +167,7 @@ Custom elements provide several advantages in that they...
 - can be initialized from any markup renderer, supporting both server-side (ViewComponent) and
   client-side (React) component implementations
 - have no dependencies, limiting overall page size in the critical path
-- are portable and avoid vendor lock-in (e.g. for use in a [design system](https://design.login.gov))
+- are portable and avoid vendor lock-in
 
 ### Localization
 
