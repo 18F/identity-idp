@@ -85,18 +85,7 @@ class ResolutionProofingJob < ApplicationJob
   def add_threatmetrix_result_to_callback_result(callback_log_data:, threatmetrix_result:)
     exception = threatmetrix_result.exception.inspect if threatmetrix_result.exception
 
-    response_h = Proofing::LexisNexis::Ddp::ResponseRedacter.
-      redact(threatmetrix_result.response_body)
-    callback_log_data.result[:context][:stages][:threatmetrix] = {
-      client: lexisnexis_ddp_proofer.class.vendor_name,
-      errors: threatmetrix_result.errors,
-      exception: exception,
-      success: threatmetrix_result.success?,
-      timed_out: threatmetrix_result.timed_out?,
-      transaction_id: threatmetrix_result.transaction_id,
-      review_status: threatmetrix_result.review_status,
-      response_body: response_h,
-    }
+    callback_log_data.result[:context][:stages][:threatmetrix] = threatmetrix_result.to_h
 
     if exception.present?
       callback_log_data.result.merge!(
