@@ -171,7 +171,16 @@ module ArcgisApi
         # {"error"=>{"code"=>400, "message"=>"", "details"=>[""]}}
         error_code = response_body.dig('error', 'code')
         error_message = response_body.dig('error', 'message') || "Received error code #{error_code}"
-
+        # log an error
+        analytics.idv_arcgis_request_failure(
+          exception_class: 'ArcGIS',
+          exception_message: error_message,
+          response_body_present: false,
+          response_body: '',
+          response_status_code: error_code,
+          api_status_code: error_code,
+        )
+        Rails.cache.delete(API_TOKEN_CACHE_KEY) # this might only be needed for local testing
         raise Faraday::ClientError.new(
           RuntimeError.new(error_message),
           {
@@ -202,11 +211,16 @@ module ArcgisApi
       }
 
       faraday.post(
-        IdentityConfig.store.arcgis_api_generate_token_url,
-        URI.encode_www_form(body),
+        IdentityConfig.store.arcgis_api_generate_token_url, URI.encode_www_form(body)
       ) do |req|
         req.options.context = { service_name: 'arcgis_token' }
-      end.body
+      end.body.tap do |body|
+        handle_api_errors(body)
+      end
+    end
+
+    def analytics(user: AnonymousUser.new)
+      Analytics.new(user: user, request: nil, session: {}, sp: nil)
     end
   end
 end
