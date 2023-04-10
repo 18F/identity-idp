@@ -73,10 +73,6 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :link_sent)
   end
 
-  def idv_doc_auth_email_sent_step
-    idv_doc_auth_step_path(step: :email_sent)
-  end
-
   def complete_doc_auth_steps_before_welcome_step(expect_accessible: false)
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
     click_idv_continue if current_path == idv_mail_only_warning_path
@@ -135,12 +131,6 @@ module DocAuthHelper
     attach_file I18n.t('doc_auth.headings.document_capture_back'), File.expand_path(proofing_yml)
     click_on I18n.t('forms.buttons.submit.default')
     expect(page).to have_current_path(idv_ssn_url, wait: 10)
-  end
-
-  def complete_doc_auth_steps_before_email_sent_step
-    allow(BrowserCache).to receive(:parse).and_return(mobile_device)
-    complete_doc_auth_steps_before_upload_step
-    complete_upload_step
   end
 
   def complete_doc_auth_steps_before_phone_otp_step(expect_accessible: false)
