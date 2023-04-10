@@ -33,7 +33,7 @@ feature 'idv phone step', :js do
     end
   end
 
-  context 'invalid form information' do
+  context 'with invalid form information' do
     it 'displays error message if no phone number is entered' do
       start_idv_from_sp
       complete_idv_steps_before_phone_step
