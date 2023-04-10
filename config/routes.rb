@@ -325,6 +325,7 @@ Rails.application.routes.draw do
       post '/forgot_password' => 'forgot_password#update'
       get '/document_capture' => 'document_capture#show'
       put '/document_capture' => 'document_capture#update'
+      get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
       get '/ssn' => 'ssn#show'
       put '/ssn' => 'ssn#update'
       get '/verify_info' => 'verify_info#show'
