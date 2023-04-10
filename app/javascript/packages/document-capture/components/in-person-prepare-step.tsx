@@ -28,7 +28,7 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
     if (!isSubmitting) {
       setIsSubmitting(true);
       removeUnloadProtection();
-      setSubmitEventMetadata({in_person_cta_variant: inPersonCtaVariantActive })
+      setSubmitEventMetadata({ in_person_cta_variant: inPersonCtaVariantActive });
       await trackEvent('IdV: prepare submitted');
       window.location.href = (event.target as HTMLAnchorElement).href;
     }

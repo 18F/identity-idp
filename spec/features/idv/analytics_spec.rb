@@ -88,7 +88,7 @@ feature 'Analytics Regression', js: true do
       'IdV: verify in person troubleshooting option clicked' => { flow_path: 'standard', in_person_cta_variant: 'in_person_variant_a' },
       'IdV: in person proofing prepare visited' => { flow_path: 'standard' },
       'IdV: in person proofing prepare submitted' => { flow_path: 'standard' },
-      'IdV: in person proofing location visited' => { flow_path: 'standard' },
+      'IdV: in person proofing location visited' => { flow_path: 'standard', in_person_cta_variant: 'in_person_variant_a' },
       'IdV: in person proofing location submitted' => { flow_path: 'standard', selected_location: '606 E JUNEAU AVE, MILWAUKEE, WI, 53202-9998', in_person_cta_variant: 'in_person_variant_a' },
       'IdV: in person proofing state_id visited' => { step: 'state_id', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false },
       'IdV: in person proofing state_id submitted' => { success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {} },

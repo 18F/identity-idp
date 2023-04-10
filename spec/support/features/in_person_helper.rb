@@ -142,6 +142,7 @@ module InPersonHelper
     expect(page).to have_css(
       '.step-indicator__step',
       text: t('step_indicator.flows.idv.find_a_post_office'),
+      wait: 10,
     )
 
     expect_step_indicator_current_step(text)

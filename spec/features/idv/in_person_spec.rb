@@ -344,12 +344,12 @@ RSpec.describe 'In Person Proofing', js: true do
         attach_and_submit_images
 
         click_link t('in_person_proofing.body.cta.button')
+        click_idv_continue
+
         search_for_post_office
         within page.first('.location-collection-item') do
           click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
         end
-
-        click_idv_continue
 
         expect(page).to have_content(t('in_person_proofing.headings.switch_back'))
       end
