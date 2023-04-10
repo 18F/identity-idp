@@ -394,7 +394,11 @@ describe Profile do
 
     context 'it notifies the user' do
       let(:profile) do
-        profile = create(:profile, user: user, fraud_review_pending_at: Time.zone.today - 1.day)
+        profile = create(
+          :profile,
+          user: user,
+          fraud_review_pending_at: Time.zone.today - 1.day,
+        )
         profile.reject_for_fraud(notify_user: true)
         profile
       end
@@ -408,6 +412,7 @@ describe Profile do
       end
 
       it 'sets the fraud_rejection_at timestamp' do
+        binding.pry
         expect(profile.fraud_rejection_at).to_not be_nil
       end
     end
