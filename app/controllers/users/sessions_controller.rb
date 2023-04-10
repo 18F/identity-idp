@@ -13,6 +13,7 @@ module Users
 
     skip_before_action :session_expires_at, only: %i[active keepalive]
     skip_before_action :require_no_authentication, only: [:new]
+    before_action :store_sp_metadata_in_session, only: [:new]
     before_action :check_user_needs_redirect, only: [:new]
     before_action :apply_secure_headers_override, only: [:new, :create]
     before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
@@ -189,6 +190,15 @@ module Users
 
     def user_locked_out?(user)
       UserDecorator.new(user).locked_out?
+    end
+
+    def store_sp_metadata_in_session
+      return if sp_session[:issuer] || request_id.blank?
+      StoreSpMetadataInSession.new(session: session, request_id: request_id).call
+    end
+
+    def request_id
+      params.fetch(:request_id, '')
     end
 
     def next_url_after_valid_authentication
