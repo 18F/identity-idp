@@ -70,7 +70,7 @@ feature 'IdV Outage Spec' do
 
   after do
     # Don't leave stale routes sitting around.
-    # (First clean up the stubs we wired up in `before`)
+    # Reset all the feature flags that cause route changes before reloading routes for any specs that run next.
 
     vendors.each do |service|
       vendor_status_key = "vendor_status_#{service}".to_sym
