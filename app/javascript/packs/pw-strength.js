@@ -89,45 +89,47 @@ export function getForbiddenPasswords(element) {
   }
 }
 
-function analyzePw() {
-  // TODO: Temporarily changed value
-  const input = document.querySelector('.password-confirmation__input1');
+function updatePasswordFeedback(cls, strength, feedback) {
   const pwCntnr = document.getElementById('pw-strength-cntnr');
   const pwStrength = document.getElementById('pw-strength-txt');
   const pwFeedback = document.getElementById('pw-strength-feedback');
+
+  pwCntnr.className = cls;
+  pwStrength.innerHTML = strength;
+  pwFeedback.innerHTML = feedback;
+}
+
+function validatePasswordField(score, input) {
+  if (score < 3) {
+    input.setCustomValidity(t('errors.messages.stronger_password'));
+  } else {
+    input.setCustomValidity('');
+  }
+}
+
+function checkPasswordStrength(password, forbiddenPasswords, input) {
+  const z = zxcvbn(password, forbiddenPasswords);
+  const [cls, strength] = getStrength(z);
+  const feedback = getFeedback(z);
+
+  validatePasswordField(z.score, input);
+  updatePasswordFeedback(cls, strength, feedback);
+}
+
+function analyzePw() {
+  const input = document.querySelector('.password-toggle__input') || document.querySelector('.password-confirmation__input1');
   const forbiddenPasswordsElement = document.querySelector('[data-forbidden]');
   const forbiddenPasswords = getForbiddenPasswords(forbiddenPasswordsElement);
 
   // the pw strength module is hidden by default ("display-none" CSS class)
   // (so that javascript disabled browsers won't see it)
   // thus, first step is unhiding it
+  const pwCntnr = document.getElementById('pw-strength-cntnr');
   pwCntnr.className = '';
 
-  function updatePasswordFeedback(cls, strength, feedback) {
-    pwCntnr.className = cls;
-    pwStrength.innerHTML = strength;
-    pwFeedback.innerHTML = feedback;
-  }
-
-  function validatePasswordField(score) {
-    if (score < 3) {
-      input.setCustomValidity(t('errors.messages.stronger_password'));
-    } else {
-      input.setCustomValidity('');
-    }
-  }
-
-  function checkPasswordStrength(password) {
-    const z = zxcvbn(password, forbiddenPasswords);
-    const [cls, strength] = getStrength(z);
-    const feedback = getFeedback(z);
-
-    validatePasswordField(z.score);
-    updatePasswordFeedback(cls, strength, feedback);
-  }
-
   input.addEventListener('input', (e) => {
-    checkPasswordStrength(e.target.value);
+    const password = e.target.value;
+    checkPasswordStrength(password, forbiddenPasswords, input);
   });
 }
 
