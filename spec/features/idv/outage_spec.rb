@@ -31,8 +31,7 @@ feature 'IdV Outage Spec' do
   let(:feature_idv_force_gpo_verification_enabled) { false }
   let(:feature_idv_hybrid_flow_enabled) { true }
 
-  before do
-    # Wire up various let()s to configuration keys
+  let(:vendors) do
     %w[
       acuant
       lexisnexis_instant_verify
@@ -40,17 +39,26 @@ feature 'IdV Outage Spec' do
       lexisnexis_trueid
       sms
       voice
-    ].each do |service|
+    ]
+  end
+
+  let(:config_flags) do
+    %w[
+      enable_usps_verification
+      feature_idv_force_gpo_verification_enabled
+      feature_idv_hybrid_flow_enabled
+    ]
+  end
+
+  before do
+    # Wire up various let()s to configuration keys
+    vendors.each do |service|
       vendor_status_key = "vendor_status_#{service}".to_sym
       allow(IdentityConfig.store).to receive(vendor_status_key).
         and_return(send(vendor_status_key))
     end
 
-    %w[
-      enable_usps_verification
-      feature_idv_force_gpo_verification_enabled
-      feature_idv_hybrid_flow_enabled
-    ].each do |key|
+    config_flags.each do |key|
       allow(IdentityConfig.store).to receive(key).
         and_return(send(key))
     end
@@ -61,7 +69,19 @@ feature 'IdV Outage Spec' do
   end
 
   after do
-    # Don't leave stale routes sitting around.
+    # Don't leave stale routes sitting around!
+    # - Reset all the feature flags that could cause route changes
+    # - Reload routes to reset the environment for any specs that run next
+
+    vendors.each do |service|
+      vendor_status_key = "vendor_status_#{service}".to_sym
+      allow(IdentityConfig.store).to receive(vendor_status_key).and_call_original
+    end
+
+    config_flags.each do |key|
+      allow(IdentityConfig.store).to receive(key).and_call_original
+    end
+
     Rails.application.reload_routes!
   end
 
