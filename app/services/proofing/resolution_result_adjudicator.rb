@@ -24,6 +24,7 @@ module Proofing
         extra: {
           exception: exception,
           timed_out: timed_out?,
+          threatmetrix_review_status: device_profiling_result.review_status,
           context: {
             device_profiling_adjudication_reason: device_profiling_reason,
             resolution_adjudication_reason: resolution_reason,
