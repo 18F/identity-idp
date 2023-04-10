@@ -31,5 +31,28 @@ describe SamlPostController do
 
       expect(response.body).not_to match(hidden_field_tag('Foo', 'bar'))
     end
+
+    context 'with an invalid year in the path' do
+      let(:path_year) { SamlEndpoint.suffixes.last.to_i + 2 }
+
+      before do
+        allow(controller).to receive(:request).and_wrap_original do |impl|
+          req = impl.call
+          req.path = "https://example.gov/api/saml/auth#{path_year}"
+          req
+        end
+      end
+
+      it 'renders 404 not found' do
+        post :auth, params: {
+          'SAMLRequest' => saml_request,
+          'RelayState' => relay_state,
+          'SigAlg' => sig_alg,
+          'Signature' => signature,
+        }
+
+        expect(response).to be_not_found
+      end
+    end
   end
 end
