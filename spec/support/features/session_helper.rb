@@ -396,33 +396,33 @@ module Features
       visit_landing_page_and_click_create_account_with_request_id(sp_request_id)
 
       expect(current_url).to eq sign_up_email_url(request_id: sp_request_id)
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect_branded_experience
 
       submit_form_with_invalid_email
 
       expect(current_url).to eq sign_up_email_url
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect_branded_experience
 
       submit_form_with_valid_but_wrong_email
 
       expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id)
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect_branded_experience
 
       click_link_to_use_a_different_email
 
       expect(current_url).to eq sign_up_email_url(request_id: sp_request_id)
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect_branded_experience
 
       submit_form_with_valid_email(email)
 
       expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id)
       expect(last_email.html_part.body.raw_source).to include "?_request_id=#{sp_request_id}"
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect_branded_experience
 
       click_link_to_resend_the_email
 
       expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id, resend: true)
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect_branded_experience
 
       attempt_to_confirm_email_with_invalid_token(sp_request_id)
 
@@ -436,11 +436,11 @@ module Features
     def confirm_email_in_a_different_browser(email)
       click_confirmation_link_in_email(email)
 
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect_branded_experience
 
       submit_form_with_invalid_password
 
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect_branded_experience
 
       submit_form_with_valid_password_confirmation
 
@@ -690,12 +690,16 @@ module Features
       expect(current_path).to eq edit_user_password_path
     end
 
-    def fill_reset_password_form(without_request_id: nil)
+    def fill_reset_password_form
       fill_in t('forms.passwords.edit.labels.password'), with: 'newVal!dPassw0rd'
-      find_field('request_id', type: :hidden).set(nil) if without_request_id
       click_button t('forms.passwords.edit.buttons.submit')
 
       expect(current_path).to eq new_user_session_path
+    end
+
+    def expect_branded_experience
+      # Check for branded experience as being the header containing the Login.gov and partner logos
+      expect(page).to have_css(".page-header--basic img[alt='#{APP_NAME}'] ~ img")
     end
   end
 end
