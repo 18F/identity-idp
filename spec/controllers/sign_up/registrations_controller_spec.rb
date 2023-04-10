@@ -52,6 +52,7 @@ describe SignUp::RegistrationsController, devise: true do
 
         get :new, params: { source: :sign_in }
       end
+    end
 
     context 'IdV unavailable' do
       before do
