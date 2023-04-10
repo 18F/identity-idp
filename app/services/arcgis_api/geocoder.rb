@@ -97,19 +97,6 @@ module ArcgisApi
     # @return [String] Auth token
     def retrieve_token!
       token, expires = request_token.fetch_values('token', 'expires')
-    rescue
-      Rails.cache.delete(API_TOKEN_CACHE_KEY)
-      # Log an invalid token, this can be because the service is down or the
-      # user/password is no longer valid
-      analytics.idv_arcgis_request_failure(
-        exception_class: 'ArcGIS',
-        exception_message: 'Invalid token, service unavailable or credentials incorrect',
-        response_body_present: false,
-        response_body: '',
-        response_status_code: 400,
-        api_status_code: 400,
-      )
-    else
       expires_at = Time.zone.at(expires / 1000)
       Rails.cache.write(API_TOKEN_CACHE_KEY, token, expires_at: expires_at)
       # If using a redis cache we have to manually set the expires_at. This is because we aren't
@@ -184,7 +171,16 @@ module ArcgisApi
         # {"error"=>{"code"=>400, "message"=>"", "details"=>[""]}}
         error_code = response_body.dig('error', 'code')
         error_message = response_body.dig('error', 'message') || "Received error code #{error_code}"
-
+        # log an error
+        analytics.idv_arcgis_request_failure(
+          exception_class: 'ArcGIS',
+          exception_message: error_message,
+          response_body_present: false,
+          response_body: '',
+          response_status_code: error_code,
+          api_status_code: error_code,
+        )
+        Rails.cache.delete(API_TOKEN_CACHE_KEY) # this might only be needed for local testing
         raise Faraday::ClientError.new(
           RuntimeError.new(error_message),
           {
@@ -203,11 +199,6 @@ module ArcgisApi
       { 'Authorization' => "Bearer #{token}" }
     end
 
-    def parse_token(response_body)
-      handle_api_errors(response_body)
-      response_body
-    end
-
     # Makes HTTP request to authentication endpoint and
     # returns the token and when it expires (1 hour).
     # @return [Hash] API response
@@ -219,13 +210,13 @@ module ArcgisApi
         f: 'json',
       }
 
-      parse_token(
-        faraday.post(
-          IdentityConfig.store.arcgis_api_generate_token_url, URI.encode_www_form(body)
-        ) do |req|
-          req.options.context = { service_name: 'arcgis_token' }
-        end.body,
-      )
+      faraday.post(
+        IdentityConfig.store.arcgis_api_generate_token_url, URI.encode_www_form(body)
+      ) do |req|
+        req.options.context = { service_name: 'arcgis_token' }
+      end.body.tap do |body|
+        handle_api_errors(body)
+      end
     end
 
     def analytics(user: AnonymousUser.new)
