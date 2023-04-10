@@ -27,7 +27,7 @@ function getStrength(z) {
 }
 
 export function getFeedback(z, { minimumLength }) {
-  if (!z || !z.password || z.score > 2) {
+  if (!z || !z.password) {
     return '&nbsp;';
   }
 
@@ -119,8 +119,14 @@ function analyzePw() {
 
   function checkPasswordStrength(password) {
     const z = zxcvbn(password, forbiddenPasswords);
+    const passwordInformation = {
+      score: z.score,
+      password: z.password,
+      feedback: z.feedback,
+    };
+
     const [cls, strength] = getStrength(z);
-    const feedback = getFeedback(z, { minimumLength: minPasswordLength });
+    const feedback = getFeedback(passwordInformation, { minimumLength: minPasswordLength });
 
     validatePasswordField(z.score);
     updatePasswordFeedback(cls, strength, feedback);
