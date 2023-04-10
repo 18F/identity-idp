@@ -753,10 +753,6 @@ module AnalyticsEvents
     track_event('IdV: doc auth document_capture submitted', **extra)
   end
 
-  def idv_doc_auth_email_sent_visited(**extra)
-    track_event('IdV: doc auth email_sent visited', **extra)
-  end
-
   # @param [String] step_name which step the user was on
   # @param [Integer] remaining_attempts how many attempts the user has left before we throttle them
   # The user visited an error page due to an encountering an exception talking to a proofing vendor
