@@ -22,7 +22,7 @@ module TwoFactorAuthentication
       irs_attempts_api_tracker.mfa_login_totp(success: result.success?)
 
       if result.success?
-        handle_valid_otp
+        handle_valid_otp(nil, auth_method: 'authenticator')
       else
         handle_invalid_otp(context: context, type: 'totp')
       end

@@ -78,7 +78,7 @@ module Users
         presented: true,
       )
 
-      handle_valid_otp(next_step)
+      handle_valid_otp(next_step, auth_method: 'piv_cac')
     end
 
     def next_step
