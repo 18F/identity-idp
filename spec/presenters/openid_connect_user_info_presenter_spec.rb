@@ -18,6 +18,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       service_provider: service_provider.issuer,
       scope: scope,
       aal: 2,
+      requested_aal_value: Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
     )
   end
 
@@ -28,7 +29,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
     it 'has basic attributes' do
       ial = Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[identity.ial]
-      aal = Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[identity.aal]
+      aal = Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF
 
       aggregate_failures do
         expect(user_info[:sub]).to eq(identity.uuid)

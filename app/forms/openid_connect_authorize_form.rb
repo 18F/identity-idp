@@ -18,6 +18,11 @@ class OpenidConnectAuthorizeForm
   ].freeze
 
   ATTRS = [:unauthorized_scope, :acr_values, :scope, :verified_within, *SIMPLE_ATTRS].freeze
+  AALS_BY_PRIORITY = [Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF].freeze
 
   attr_reader(*ATTRS)
 
@@ -81,6 +86,7 @@ class OpenidConnectAuthorizeForm
       rails_session_id: rails_session_id,
       ial: ial_context.ial,
       aal: aal,
+      requested_aal_value: requested_aal_value,
       scope: scope.join(' '),
       code_challenge: code_challenge,
     )
@@ -110,7 +116,11 @@ class OpenidConnectAuthorizeForm
   end
 
   def aal
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[aal_values.sort.max] ||
+    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[requested_aal_value]
+  end
+
+  def requested_aal_value
+    highest_level_aal(aal_values) ||
       Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
   end
 
@@ -254,5 +264,9 @@ class OpenidConnectAuthorizeForm
         type: :no_auth
       )
     end
+  end
+
+  def highest_level_aal(aal_values)
+    AALS_BY_PRIORITY.find { |aal| aal_values.include?(aal) }
   end
 end

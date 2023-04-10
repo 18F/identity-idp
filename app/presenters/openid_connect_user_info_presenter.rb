@@ -22,7 +22,7 @@ class OpenidConnectUserInfoPresenter
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
     info[:ial] = Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[identity.ial]
-    info[:aal] = Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[identity.aal]
+    info[:aal] = identity.requested_aal_value
 
     scoper.filter(info)
   end

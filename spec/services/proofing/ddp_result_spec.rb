@@ -66,21 +66,14 @@ describe Proofing::DdpResult do
   describe '#success?' do
     subject { result.success? }
 
-    context 'when there is an error AND an exception' do
-      let(:result) do
-        Proofing::DdpResult.new(exception: StandardError.new).add_error('foobar')
-      end
-      it { is_expected.to eq(false) }
-    end
-
-    context 'when there is an error and no exception' do
-      let(:result) { Proofing::DdpResult.new.add_error('foobar') }
-      it { is_expected.to eq(false) }
-    end
-
-    context 'when there is no error and no exception' do
-      let(:result) { Proofing::DdpResult.new }
+    context 'when it is successful' do
+      let(:result) { Proofing::DdpResult.new(success: true) }
       it { is_expected.to eq(true) }
+    end
+
+    context 'when it is unsuccessful' do
+      let(:result) { Proofing::DdpResult.new(success: false) }
+      it { is_expected.to eq(false) }
     end
   end
 
@@ -121,17 +114,6 @@ describe Proofing::DdpResult do
         result = Proofing::DdpResult.new
         result.transaction_id = transaction_id
         expect(result.transaction_id).to eq(transaction_id)
-      end
-    end
-  end
-
-  describe 'reference' do
-    context 'when provided' do
-      it 'is present' do
-        reference = SecureRandom.uuid
-        result = Proofing::DdpResult.new
-        result.reference = reference
-        expect(result.reference).to eq(reference)
       end
     end
   end
