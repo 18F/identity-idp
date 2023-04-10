@@ -233,8 +233,6 @@ fr:
       consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
         conserver et partager vos renseignements personnels. Nous les utilisons
         pour vérifier votre identité.
-      email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau et
-        suivez les instructions pour vérifier votre identité.
       learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
       privacy: Nos normes de confidentialité et de sécurité
       switch_back: Retournez sur votre ordinateur pour continuer à vérifier votre identité.
