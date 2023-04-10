@@ -4,7 +4,10 @@ class SamlPostController < ApplicationController
 
   def auth
     action_url = build_action_url(request.path)
-    render_not_found and return if !action_url
+    if !action_url
+      render_not_found
+      return
+    end
 
     form_params = params.permit(:SAMLRequest, :RelayState, :SigAlg, :Signature)
 
