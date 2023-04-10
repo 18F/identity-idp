@@ -188,14 +188,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def doc_auth_desktop_link_to_sp(application, link)
-    with_user_locale(user) do
-      @link = link
-      @application = application
-      mail(to: email_address.email, subject: t('user_mailer.doc_auth_link.subject'))
-    end
-  end
-
   def letter_reminder
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 
