@@ -372,14 +372,12 @@ RSpec.describe ResolutionProofingJob, type: :job do
         )
 
         # result[:context][:stages][:threatmetrix]
-        expect(result_context_stages_threatmetrix[:client]).to eq('DdpMock')
+        expect(result_context_stages_threatmetrix[:client]).to eq('lexisnexis')
         expect(result_context_stages_threatmetrix[:errors]).to eq({})
         expect(result_context_stages_threatmetrix[:exception]).to eq(nil)
         expect(result_context_stages_threatmetrix[:success]).to eq(true)
         expect(result_context_stages_threatmetrix[:timed_out]).to eq(false)
-        expect(result_context_stages_threatmetrix[:transaction_id]).to eq(
-          'ddp-mock-transaction-id-123',
-        )
+        expect(result_context_stages_threatmetrix[:transaction_id]).to eq('1234')
         expect(result_context_stages_threatmetrix[:review_status]).to eq('pass')
         expect(result_context_stages_threatmetrix[:response_body]).to eq(
           JSON.parse(LexisNexisFixtures.ddp_success_redacted_response_json, symbolize_names: true),
