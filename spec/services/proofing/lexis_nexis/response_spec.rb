@@ -33,7 +33,7 @@ describe Proofing::LexisNexis::Response do
         errors = subject.verification_errors
 
         expect(errors).to be_a(Hash)
-        expect(errors).to include(:base, :InstantVerify)
+        expect(errors).to include(:base, :'Execute Instant Verify')
       end
     end
 
@@ -41,7 +41,7 @@ describe Proofing::LexisNexis::Response do
       it 'returns a hash of error' do
         errors = subject.verification_errors
 
-        expect(errors).to have_key(:InstantVerify)
+        expect(errors).to have_key(:'Execute Instant Verify')
       end
     end
   end
@@ -76,7 +76,7 @@ describe Proofing::LexisNexis::Response do
           errors = subject.verification_errors
 
           expect(errors).to be_a(Hash)
-          expect(errors).to include(:base, :InstantVerify)
+          expect(errors).to include(:base, :'Execute Instant Verify')
           expect(errors[:base]).to eq("Invalid status in response body: 'fake_status'")
         end
       end
