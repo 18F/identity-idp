@@ -448,6 +448,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_04_131517) do
     t.boolean "fraud_rejection", default: false
     t.datetime "fraud_review_pending_at"
     t.datetime "fraud_rejection_at"
+    t.string "fraud_state"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
     t.index ["fraud_review_pending"], name: "index_profiles_on_fraud_review_pending"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
