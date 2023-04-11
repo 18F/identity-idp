@@ -89,7 +89,7 @@ module TwoFactorAuthentication
     end
 
     def handle_valid_otp
-      handle_valid_otp_for_authentication_context
+      handle_valid_otp_for_authentication_context(auth_method: 'personal_key')
       if decorated_user.identity_verified? || decorated_user.password_reset_profile.present?
         redirect_to manage_personal_key_url
       elsif MfaPolicy.new(current_user).two_factor_enabled?
