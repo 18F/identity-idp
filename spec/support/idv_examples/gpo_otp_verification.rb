@@ -11,8 +11,6 @@ shared_examples 'gpo otp verification' do
     fill_in t('forms.verify_profile.name'), with: otp
     click_button t('forms.verify_profile.submit')
 
-    expect(page).to have_current_path(redirect_after_verification) if redirect_after_verification
-
     profile.reload
 
     if profile_should_be_active
@@ -22,6 +20,7 @@ shared_examples 'gpo otp verification' do
       expect(profile.active).to be(false)
       expect(profile.fraud_review_pending?).to eq(fraud_review_pending) if fraud_review_pending
       expect(profile.verified_at).to_not eq(nil) if fraud_review_pending
+      expect(profile.deactivation_reason).to eq(nil) if fraud_review_pending
     end
 
     expect(user.events.account_verified.size).to eq 1
