@@ -34,6 +34,12 @@ class Profile < ApplicationRecord
     state :reviewing, :rejected, :passed
   end
 
+  def fraud_review_pending
+  end
+
+  def fraud_rejection
+  end
+
   def fraud_review_pending?
     !!(fraud_review_pending || fraud_review_pending_at)
   end
@@ -49,12 +55,11 @@ class Profile < ApplicationRecord
     is_reproof = Profile.find_by(user_id: user_id, active: true)
     transaction do
       Profile.where(user_id: user_id).update_all(active: false)
+      pass
       update!(
         active: true,
         activated_at: now,
         deactivation_reason: nil,
-        fraud_review_pending: false,
-        fraud_rejection: false,
         verified_at: now,
       )
     end
@@ -63,12 +68,7 @@ class Profile < ApplicationRecord
   # rubocop:enable Rails/SkipsModelValidations
 
   def activate_after_passing_review
-    update!(
-      fraud_review_pending: false,
-      fraud_rejection: false,
-      fraud_review_pending_at: nil,
-      fraud_rejection_at: nil,
-    )
+    pass
     track_fraud_review_adjudication(decision: 'pass')
     activate
   end
@@ -78,23 +78,13 @@ class Profile < ApplicationRecord
   end
 
   def deactivate_for_fraud_review
-    update!(
-      active: false,
-      fraud_review_pending: true,
-      fraud_rejection: false,
-      fraud_review_pending_at: Time.zone.now,
-      fraud_rejection_at: nil,
-    )
+    review
+    update!(active: false)
   end
 
   def reject_for_fraud(notify_user:)
-    update!(
-      active: false,
-      fraud_review_pending: false,
-      fraud_rejection: true,
-      fraud_review_pending_at: nil,
-      fraud_rejection_at: Time.zone.now,
-    )
+    reject
+    update!(active: false)
     track_fraud_review_adjudication(
       decision: notify_user ? 'manual_reject' : 'automatic_reject',
     )
@@ -176,12 +166,6 @@ class Profile < ApplicationRecord
   end
 
   private
-
-  def fraud_review_pending
-  end
-
-  def fraud_rejection
-  end
 
   def track_fraud_review_adjudication(decision:)
     if IdentityConfig.store.irs_attempt_api_track_idv_fraud_review
